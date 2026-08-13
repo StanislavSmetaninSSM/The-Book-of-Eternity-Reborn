@@ -1,0 +1,18 @@
+{
+  "sessionId": "fixture-session",
+  "requestId": "fixture-request",
+  "turnNumber": 43,
+  "requestTimestamp": "2026-08-13T00:00:00Z",
+  "playerAction": "Validator fixture: validate exact Mortal location current-schema operations.",
+  "files": {},
+  "snapshotFileHashes": {},
+  "clientOwnedValidationHashes": {},
+  "rollbackBackups": {
+    "game_state/world/current_location.json": "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+    "game_state/world/world_map.json": "game_state/control/pending_turn_snapshot/game_state/world/world_map.json",
+    "game_state/world/location_identity_index.json": "game_state/control/pending_turn_snapshot/game_state/world/location_identity_index.json"
+  },
+  "rollbackBaselineFiles": [],
+  "sourceLabel": "validator fixture",
+  "manifestPayloadHash": ""
+}

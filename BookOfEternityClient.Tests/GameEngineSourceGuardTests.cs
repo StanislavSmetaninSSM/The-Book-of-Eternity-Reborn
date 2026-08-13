@@ -198,13 +198,22 @@ public sealed class GameEngineSourceGuardTests
 
         Assert.True(baselineIndex >= 0, "Fresh Mortal bootstrap must materialize client-owned baseline files before the GM sees the first Mortal turn.");
         Assert.True(snapshotIndex >= 0, "Fresh Mortal bootstrap must create a rollback baseline before dispatch.");
-        Assert.True(baselineIndex < snapshotIndex, "Fresh Mortal bootstrap baseline files must exist before pending-turn snapshot authority is captured.");
-        Assert.True(scaffoldIndex > snapshotIndex, "Fresh Mortal bootstrap scaffold must be written after baseline authority exists.");
-        Assert.True(scaffoldIndex < requestWriteIndex, "Fresh Mortal bootstrap scaffold must be available before GM sees input/turn_request.json.");
+        Assert.True(baselineIndex < scaffoldIndex, "Fresh Mortal bootstrap neutral roots must exist before location reservations are written.");
+        Assert.True(scaffoldIndex < snapshotIndex, "Fresh Mortal bootstrap scaffold must be captured by pending-turn snapshot authority.");
+        Assert.True(snapshotIndex < requestWriteIndex, "The complete bootstrap baseline and scaffold snapshot must exist before GM sees input/turn_request.json.");
         Assert.Contains("MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles", source, StringComparison.Ordinal);
         Assert.Contains("game_state/control/mortal_bootstrap_scaffold.json", source, StringComparison.Ordinal);
         Assert.Contains("MORTAL BOOTSTRAP BASELINE", source, StringComparison.Ordinal);
         Assert.Contains("baselineMaterializedBeforeDispatch", source, StringComparison.Ordinal);
+
+        var scaffoldWriter = ExtractMethodSource(
+            source,
+            "private async Task WriteMortalBootstrapScaffoldAsync(");
+        var compactScaffoldWriter = string.Concat(scaffoldWriter.Where(c => !char.IsWhiteSpace(c)));
+        Assert.Contains(
+            "RegisterMortalBootstrapSnapshotFile(rollbackSnapshot,MortalBootstrapLocationScaffold.StatePath);",
+            compactScaffoldWriter,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -382,7 +391,7 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("\"offscreenSceneActorRule\"", method, StringComparison.Ordinal);
         Assert.Contains("NPCsInScene is only for actors physically present in currentLocationData", method, StringComparison.Ordinal);
         Assert.Contains("voices behind a door", method, StringComparison.Ordinal);
-        Assert.Contains("nearbyExitLocationId", method, StringComparison.Ordinal);
+        Assert.Contains("unmaterialized nearby place", method, StringComparison.Ordinal);
         Assert.Contains("Prevent npc_scene_location_mismatch", method, StringComparison.Ordinal);
     }
 
@@ -399,16 +408,20 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
-    public void MortalBootstrapScaffold_MustPublishCanonicalCoordinateAuthority()
+    public void MortalBootstrapScaffold_MustPublishExactLocationReservations()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
         var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
 
-        Assert.Contains("\"canonicalCoordinateAuthority\"", method, StringComparison.Ordinal);
-        Assert.Contains("\"currentLocationCoordinates\"", method, StringComparison.Ordinal);
-        Assert.Contains("\"nearbyExitCoordinates\"", method, StringComparison.Ordinal);
-        Assert.Contains("current_location_coordinates_mismatch", method, StringComparison.Ordinal);
-        Assert.Contains("Copy these exact coordinates", method, StringComparison.Ordinal);
+        Assert.Contains("\"locationMaterializationRequest\"", method, StringComparison.Ordinal);
+        Assert.Contains("MortalBootstrapLocationScaffold.CreatePendingRequest", method, StringComparison.Ordinal);
+        Assert.Contains("ordinary complete materialization routes", method, StringComparison.Ordinal);
+        Assert.Contains("exact temporary refs", method, StringComparison.Ordinal);
+        Assert.Contains("never author adjacency summaries", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"canonicalCoordinateAuthority\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"suggestedStableIds\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("knownExits", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("adjacencyMap", method, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -976,9 +989,12 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("ValidateAcceptedTurnOutcomeWithRepairLoopAsync(", turnSource, StringComparison.Ordinal);
         Assert.Contains("activeSnapshotContext,", turnSource, StringComparison.Ordinal);
         Assert.Contains("ValidatedPendingTurnSnapshotContext? activeSnapshotContext,", validationSource, StringComparison.Ordinal);
-        Assert.Contains("var canonicalRefresh = await RefreshAcceptedTurnCanonicalStateForValidationAsync(", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("AcceptedTurnCanonicalRefreshResult canonicalRefresh;", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("canonicalRefresh = await RefreshAcceptedTurnCanonicalStateForValidationAsync(", acceptedTurnValidation, StringComparison.Ordinal);
         Assert.Contains("expectedTurn,", acceptedTurnValidation, StringComparison.Ordinal);
         Assert.Contains("activeSnapshotContext);", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("catch (SessionReplacedException)", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("FailClosedAcceptedTurnCanonicalRefreshAsync(", acceptedTurnValidation, StringComparison.Ordinal);
         Assert.DoesNotContain("var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);", validationSource, StringComparison.Ordinal);
     }
 
@@ -1205,7 +1221,9 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("ResolveActivePendingTurnSnapshotContextAsync()", source, StringComparison.Ordinal);
         Assert.Contains("IsMatchingRepairReady(ready, pendingSnapshot.Context)", source, StringComparison.Ordinal);
         Assert.Contains("BuildProtocolRequestMetadata(pendingSnapshot)", source, StringComparison.Ordinal);
-        Assert.Contains("BuildValidationRepairRequestInstructions(pendingSnapshot)", source, StringComparison.Ordinal);
+        Assert.Contains("BuildValidationRepairRequestInstructions(", source, StringComparison.Ordinal);
+        Assert.Contains("pendingSnapshot,", source, StringComparison.Ordinal);
+        Assert.Contains("fullTurnResubmissionRequired);", source, StringComparison.Ordinal);
         Assert.Contains("BuildProtocolRequestMetadataWarning(pendingSnapshot)", source, StringComparison.Ordinal);
         Assert.Contains("BuildInvalidRepairReadyRepairHint(pendingSnapshot)", source, StringComparison.Ordinal);
         Assert.Contains("BuildMismatchedRepairReadyRepairHint(pendingSnapshot)", source, StringComparison.Ordinal);
@@ -1299,18 +1317,33 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
-    public void DiagnosticOnlyValidationRepair_MustPreserveFailureReportAfterRollback()
+    public void DiagnosticOnlyValidationRepair_MustLeaveRollbackToAcceptedTurnCaller()
     {
         var source = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
         var method = ExtractMethodSource(source, "private async Task<bool> FailClosedDiagnosticOnlyValidationRepairAsync(");
 
-        var rollbackIndex = method.IndexOf("await RestorePreTurnBackupForSessionAsync(", StringComparison.Ordinal);
-        var reportWriteIndex = method.IndexOf("await WriteValidationRepairFileForSessionAsync(", StringComparison.Ordinal);
-        var cleanupIndex = method.IndexOf("await DeleteValidationRepairFilesForSessionAsync(", StringComparison.Ordinal);
+        var reportWriteIndex = method.IndexOf("() => WriteValidationRepairFileForSessionAsync(", StringComparison.Ordinal);
+        var cleanupIndex = method.IndexOf("() => DeleteValidationRepairFilesForSessionAsync(", StringComparison.Ordinal);
 
-        Assert.True(rollbackIndex >= 0, "Diagnostic-only fail-closed path should use rollback when available.");
-        Assert.True(reportWriteIndex > rollbackIndex, "Diagnostic failure report must be written after rollback so the backup restore cannot erase it.");
+        Assert.DoesNotContain("RestorePreTurnBackupForSessionAsync", method, StringComparison.Ordinal);
+        Assert.Contains("RunBestEffortFailClosedBookkeepingAsync(", method, StringComparison.Ordinal);
+        Assert.Contains("return false;", method, StringComparison.Ordinal);
+        Assert.True(reportWriteIndex >= 0, "Diagnostic-only fail-closed path must preserve an operator report.");
         Assert.True(cleanupIndex > reportWriteIndex, "Repair cleanup must not run before the preserved diagnostic failure report is written.");
+    }
+
+    [Fact]
+    public void GameLoopFailureScreen_MustLogButNeverEchoExceptionTextToPlayer()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(source, "private async Task EnterGameLoop()");
+
+        Assert.Contains("LogError(ex);", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("EscapeMarkup(ex.Message)", method, StringComparison.Ordinal);
+        Assert.Contains(
+            "Мир не смог безопасно завершить действие. Подробности сохранены для диагностики.",
+            method,
+            StringComparison.Ordinal);
     }
 
     [Fact]

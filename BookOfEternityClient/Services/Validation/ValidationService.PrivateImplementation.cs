@@ -535,13 +535,13 @@ public partial class ValidationService
 
     private sealed class WorldLocationStateIndex
     {
-        public Dictionary<string, HashSet<string>> CoordinateKeysByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, HashSet<string>> LinkTargetCoordinateKeysBySourceLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, HashSet<string>> StorageIdsByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, HashSet<string>> ThreatIdsByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, HashSet<string>> ThreatIdsWithCurrentActivityByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, string> LocationTypesByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, string> BiomesByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, HashSet<string>> CoordinateKeysByLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, HashSet<string>> LinkTargetCoordinateKeysBySourceLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, HashSet<string>> StorageIdsByLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, HashSet<string>> ThreatIdsByLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, HashSet<string>> ThreatIdsWithCurrentActivityByLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, string> LocationTypesByLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, string> BiomesByLocationId { get; } = new(StringComparer.Ordinal);
     }
 
     private sealed class FactionSubEntityStateIndex
@@ -632,6 +632,7 @@ public class ValidationIssue
     internal IReadOnlyList<string> RepairTargetFiles { get; }
     internal FactionTouchKind? FactionRepairClassification { get; set; }
     internal MortalItemRepairContext? MortalItemRepairContext { get; set; }
+    internal MortalLocationRepairContext? MortalLocationRepairContext { get; set; }
 
     public ValidationIssue(
         string filePath,
@@ -746,6 +747,8 @@ public class ValidationIssue
     private static bool IsClientOwnedSurfacePath(string normalizedPath)
     {
         return MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
+               normalizedPath.Equals(MortalLocationIdentityState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.StartsWith(MortalLocationIdentityState.StatePath + ".", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.OrdinalIgnoreCase) ||

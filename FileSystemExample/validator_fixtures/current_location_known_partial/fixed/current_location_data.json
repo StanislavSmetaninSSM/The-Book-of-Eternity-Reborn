@@ -1,11 +1,12 @@
 {
   "currentLocationData": {
-    "locationId": "loc_city_square_001",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "z": 0
+    "locationId": "loc_valmont_private_chambers",
+    "lastEventsDescription": "#[42] - 1 Month of Beginnings 124 г., 07:45: Асуран остаётся в своих покоях.",
+    "currentWeather": {
+      "description": "За окнами держится холодный утренний туман.",
+      "tendency": "NO_CHANGE",
+      "visibility": "reduced"
     },
-    "lastEventsDescription": "#[12]. Merchants reopened their stalls."
+    "currentInteractions": []
   }
 }

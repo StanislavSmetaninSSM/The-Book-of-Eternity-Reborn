@@ -131,6 +131,7 @@ internal sealed class ValidatorFixtureHarness : IDisposable
         issues.AddRange(await _validator.ValidateAcceptedTurnQteOfferAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnMortalCombatMaterializationAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());
+        issues.AddRange(await _validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync());
         issues.AddRange(await _validator.ValidatePendingMemoryLegacyApplicationAsync());
         return issues;
     }

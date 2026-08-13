@@ -66,7 +66,25 @@ public sealed class TradeRequestLockOrderingTests
         {
             var canonicalContended = new TaskCompletionSource(
                 TaskCreationOptions.RunContinuationsAsynchronously);
-            var fs = CreateFileSystem(root, canonicalContended);
+            var leaseBoundMutationStarted = new TaskCompletionSource(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            var observeLeaseBoundMutation = 0;
+            var fs = CreateFileSystem(
+                root,
+                canonicalContended,
+                path =>
+                {
+                    if (Volatile.Read(ref observeLeaseBoundMutation) == 1 &&
+                        string.Equals(
+                            path,
+                            ShiningTradeRequestState.PendingRequestsPath,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        leaseBoundMutationStarted.TrySetResult();
+                    }
+
+                    return Task.CompletedTask;
+                });
             fs.EnsureDirectoryStructure();
             await ShiningTradeRequestState.WriteRequestAsync(
                 fs,
@@ -83,14 +101,15 @@ public sealed class TradeRequestLockOrderingTests
                     CreateShiningRequest("request_unbound", "faction_unbound"));
                 await canonicalContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
+                Volatile.Write(ref observeLeaseBoundMutation, 1);
                 leaseBoundWrite = ShiningTradeRequestState.TryWriteScopedRequestAsync(
                     fs,
                     lease,
                     CreateShiningRequest("request_bound", "faction_bound"),
                     CreateShiningScope());
                 completedBeforeLeaseRelease = await CompletesWithinAsync(
-                    leaseBoundWrite,
-                    TimeSpan.FromMilliseconds(500));
+                    leaseBoundMutationStarted.Task,
+                    TimeSpan.FromSeconds(5));
             }
             finally
             {
@@ -101,7 +120,7 @@ public sealed class TradeRequestLockOrderingTests
 
             Assert.True(
                 completedBeforeLeaseRelease,
-                "Lease-bound Shining trade writes must not wait behind an unbound writer that is waiting for the same canonical lease.");
+                "The lease-bound Shining trade write must reach its canonical mutation boundary while the unbound writer is still waiting for the held canonical lease.");
         }
         finally
         {
@@ -111,7 +130,8 @@ public sealed class TradeRequestLockOrderingTests
 
     private static FileSystemManager CreateFileSystem(
         string root,
-        TaskCompletionSource canonicalContended) =>
+        TaskCompletionSource canonicalContended,
+        Func<string, Task>? beforeCanonicalMutationBoundaryAsync = null) =>
         new(
             root,
             NullLogger<FileSystemManager>.Instance,
@@ -122,7 +142,9 @@ public sealed class TradeRequestLockOrderingTests
                 {
                     canonicalContended.TrySetResult();
                     return Task.CompletedTask;
-                }
+                },
+                BeforeCanonicalMutationBoundaryAsync =
+                    beforeCanonicalMutationBoundaryAsync
             });
 
     private static GuardianTradeRequestState.PendingGuardianTradeRequest CreateGuardianRequest() =>

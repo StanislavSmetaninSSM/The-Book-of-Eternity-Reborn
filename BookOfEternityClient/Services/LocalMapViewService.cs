@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
 
@@ -42,40 +43,53 @@ public static class LocalMapViewService
     {
         var currentJson = await fs.ReadFileAsync("game_state/world/current_location.json");
         var worldMapJson = await fs.ReadFileAsync("game_state/world/world_map.json");
-        var factionJson = await fs.ReadFileAsync("game_state/factions/faction_core.json");
-        using var currentDoc = TryParse(currentJson);
-        using var worldMapDoc = TryParse(worldMapJson);
-        using var factionDoc = TryParse(factionJson);
+        var identityJson = await fs.ReadFileAsync(MortalLocationIdentityState.StatePath);
 
-        var nodes = new Dictionary<string, NodeDraft>(StringComparer.OrdinalIgnoreCase);
-        var links = new Dictionary<string, MapLinkDto>(StringComparer.OrdinalIgnoreCase);
-        var currentNodeId = string.Empty;
+        var authority = MortalLocationPlayerProjection.Create(
+            worldMapJson,
+            currentJson,
+            identityJson);
+        var nodes = new Dictionary<string, NodeDraft>(StringComparer.Ordinal);
+        var links = new Dictionary<string, MapLinkDto>(StringComparer.Ordinal);
+        var currentNodeId = authority.CurrentLocationId ?? string.Empty;
+        var rumorOrdinal = 0;
 
-        if (currentDoc != null && currentDoc.RootElement.ValueKind == JsonValueKind.Object)
+        foreach (var location in authority.Locations)
         {
-            var current = UnwrapCurrentLocationRoot(currentDoc.RootElement);
-            currentNodeId = ResolveLocationId(current, "current_location");
-            AddLocationNode(nodes, current, currentNodeId, isCurrent: true);
-            AddAdjacencyLinks(nodes, links, currentNodeId, current);
+            if (location.DiscoveryTier == "rumored")
+            {
+                AddRumoredLocationNode(nodes, location, ++rumorOrdinal);
+                continue;
+            }
+
+            using var locationDocument = JsonDocument.Parse(location.Data.ToJsonString());
+            AddLocationNode(
+                nodes,
+                locationDocument.RootElement,
+                location.Identity,
+                location.IsCurrent,
+                applyFactionControl: false);
+            ApplyFactionControl(nodes[location.Identity], location.FactionControls);
         }
 
-        if (worldMapDoc != null && worldMapDoc.RootElement.ValueKind == JsonValueKind.Object)
+        foreach (var link in authority.Links)
         {
-            var mapRoot = UnwrapWorldMapRoot(worldMapDoc.RootElement);
-            AddLocationArray(nodes, mapRoot, "locations");
-            AddLocationArray(nodes, mapRoot, "knownLocations");
-            AddLocationArray(nodes, mapRoot, "newLocations");
-            AddLocationArray(nodes, mapRoot, "locationUpdates");
-            AddLinkArray(links, mapRoot, "links");
-            AddLinkArray(links, mapRoot, "paths");
-            AddLinkArray(links, mapRoot, "newLinks");
+            using var linkDocument = JsonDocument.Parse(link.Data.ToJsonString());
+            var linkRoot = linkDocument.RootElement;
+            links[link.Identity] = new MapLinkDto
+            {
+                Id = link.Identity,
+                SourceNodeId = link.SourceIdentity,
+                TargetNodeId = link.TargetIdentity,
+                Label = GetString(linkRoot, "directionLabel"),
+                State = linkRoot.TryGetProperty("access", out var access) &&
+                        access.ValueKind == JsonValueKind.Object
+                    ? GetString(access, "state")
+                    : string.Empty,
+                Layer = WorldLayerId
+            };
         }
 
-        if (factionDoc != null && factionDoc.RootElement.ValueKind == JsonValueKind.Object)
-            ApplyFactionTerritoryClaims(nodes, factionDoc.RootElement);
-
-        ApplyFallbackLayout(nodes.Values);
-        FinalizePlaceholderDetails(nodes.Values);
         AttachLocationImages(fs, nodes.Values);
         var nodeDtos = nodes.Values
             .Select(static node => node.ToDto())
@@ -109,8 +123,9 @@ public static class LocalMapViewService
             ZLevels = zLevels,
             Nodes = nodeDtos,
             Links = links.Values
-                .OrderBy(static link => link.SourceNodeId, StringComparer.OrdinalIgnoreCase)
-                .ThenBy(static link => link.TargetNodeId, StringComparer.OrdinalIgnoreCase)
+                .OrderBy(static link => link.SourceNodeId, StringComparer.Ordinal)
+                .ThenBy(static link => link.TargetNodeId, StringComparer.Ordinal)
+                .ThenBy(static link => link.Id, StringComparer.Ordinal)
                 .ToList(),
             Regions = BuildPoliticalRegions(nodes.Values)
         };
@@ -1036,7 +1051,13 @@ public static class LocalMapViewService
         }
     }
 
-    private static void AddLocationNode(Dictionary<string, NodeDraft> nodes, JsonElement location, string id, bool isCurrent, bool isPlaceholder = false)
+    private static void AddLocationNode(
+        Dictionary<string, NodeDraft> nodes,
+        JsonElement location,
+        string id,
+        bool isCurrent,
+        bool isPlaceholder = false,
+        bool applyFactionControl = true)
     {
         if (string.IsNullOrWhiteSpace(id))
             return;
@@ -1066,21 +1087,42 @@ public static class LocalMapViewService
         AddDetail(draft, "Тип", DescribeMapNodeType(draft.Type));
         AddDetail(draft, "Регион", GetString(location, "region", "area"));
         AddDetail(draft, "Биом", DescribeMapBiome(GetString(location, "biome")));
-        AddDetail(draft, "Известность", DescribeDiscoveryState(GetString(location, "knownState", "discoveryState", "knownStatus", "state")));
-        if (TryGetBool(location, out var discovered, "discovered", "isDiscovered", "known"))
-            AddDetail(draft, "Открыта", discovered ? "да" : "нет");
+        var discoveryState = location.TryGetProperty("discovery", out var discovery) &&
+                             discovery.ValueKind == JsonValueKind.Object
+            ? GetString(discovery, "tier")
+            : string.Empty;
+        AddDetail(draft, "Известность", DescribeDiscoveryState(discoveryState));
         AddDetail(draft, "Описание", GetString(location, "description", "shortDescription"));
         AddDetail(
             draft,
             "Последние события",
             StripMapHistoricalTurnAnchor(GetString(location, "lastEventsDescription", "recentEvents", "currentStateSummary")));
-        AddDetail(draft, "Выходы", DescribeAdjacency(location));
         AddDetail(draft, "Хранилища", DescribeArrayCount(location, "locationStorages"));
         AddDetail(draft, "Угрозы", DescribeArrayCount(location, "activeThreats"));
         if (draft.HasCoordinates)
             AddDetail(draft, "Координаты", $"{draft.X:0.#}, {draft.Y:0.#}, z={draft.Z}");
 
-        ApplyFactionControl(draft, location);
+        if (applyFactionControl)
+            ApplyFactionControl(draft, location);
+    }
+
+    private static void AddRumoredLocationNode(
+        IDictionary<string, NodeDraft> nodes,
+        MortalLocationPlayerLocation location,
+        int ordinal)
+    {
+        var viewLocalId = $"rumor_view_{ordinal:D4}";
+        var draft = new NodeDraft
+        {
+            Id = viewLocalId,
+            Label = location.Label,
+            Type = "rumor",
+            Layer = WorldLayerId,
+            IsRumored = true
+        };
+        AddDetail(draft, "Известность", "слух");
+        AddDetail(draft, "Слух", location.RumorSummary ?? string.Empty);
+        nodes[viewLocalId] = draft;
     }
 
     private static void ApplyFactionControl(NodeDraft draft, JsonElement location)
@@ -1123,60 +1165,35 @@ public static class LocalMapViewService
         AddPoliticalDetails(draft);
     }
 
-    private static void ApplyFactionTerritoryClaims(Dictionary<string, NodeDraft> nodes, JsonElement factionRoot)
+    private static void ApplyFactionControl(
+        NodeDraft draft,
+        IReadOnlyCollection<MortalLocationPlayerFactionControl> controls)
     {
-        if (!factionRoot.TryGetProperty("factions", out var factions) || factions.ValueKind != JsonValueKind.Array)
-            return;
-
-        foreach (var faction in factions.EnumerateArray())
+        var bestControl = int.MinValue;
+        foreach (var control in controls)
         {
-            if (faction.ValueKind != JsonValueKind.Object ||
-                !faction.TryGetProperty("controlledTerritories", out var territories) ||
-                territories.ValueKind != JsonValueKind.Array)
+            var key = string.IsNullOrWhiteSpace(control.Identity)
+                ? control.Label
+                : control.Identity;
+            if (!string.IsNullOrWhiteSpace(key))
+                draft.Influence[key] = control.ControlLevel;
+            draft.FactionControls.Add(new FactionControlDraft
             {
-                continue;
-            }
+                FactionId = control.Identity,
+                FactionName = control.Label,
+                ControlType = control.ControlType,
+                ControlLevel = control.ControlLevel
+            });
 
-            var factionId = GetString(faction, "factionId", "id");
-            var factionName = GetString(faction, "factionName", "name");
-            if (string.IsNullOrWhiteSpace(factionId) && string.IsNullOrWhiteSpace(factionName))
-                continue;
-
-            foreach (var territory in territories.EnumerateArray())
+            if (control.ControlLevel > bestControl)
             {
-                if (territory.ValueKind != JsonValueKind.Object)
-                    continue;
-
-                var locationId = GetString(territory, "locationId", "id");
-                if (string.IsNullOrWhiteSpace(locationId) || !nodes.TryGetValue(locationId, out var node))
-                    continue;
-
-                if (string.IsNullOrWhiteSpace(node.OwnerFactionId) && string.IsNullOrWhiteSpace(node.OwnerFactionName))
-                {
-                    node.OwnerFactionId = factionId;
-                    node.OwnerFactionName = factionName;
-                }
-
-                var key = string.IsNullOrWhiteSpace(factionId) ? factionName : factionId;
-                if (!string.IsNullOrWhiteSpace(key) && !node.Influence.ContainsKey(key))
-                    node.Influence[key] = 100;
-
-                if (node.FactionControls.All(existing =>
-                    !string.Equals(existing.FactionId, factionId, StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(existing.FactionName, factionName, StringComparison.OrdinalIgnoreCase)))
-                {
-                    node.FactionControls.Add(new FactionControlDraft
-                    {
-                        FactionId = factionId,
-                        FactionName = factionName,
-                        ControlType = "Territory",
-                        ControlLevel = 100
-                    });
-                }
-
-                AddPoliticalDetails(node);
+                bestControl = control.ControlLevel;
+                draft.OwnerFactionId = control.Identity;
+                draft.OwnerFactionName = control.Label;
             }
         }
+
+        AddPoliticalDetails(draft);
     }
 
     private static List<MapRegionDto> BuildPoliticalRegions(IEnumerable<NodeDraft> nodes) =>
@@ -1316,7 +1333,7 @@ public static class LocalMapViewService
         if (candidates.Count == 0)
             return;
 
-        foreach (var node in nodes.Where(static node => !node.IsPlaceholder))
+        foreach (var node in nodes.Where(static node => !node.IsPlaceholder && !node.IsRumored))
         {
             var imagePath = FindLatestImageCandidate(candidates, node.Id, node.Label);
             if (string.IsNullOrWhiteSpace(imagePath))
@@ -1667,6 +1684,7 @@ public static class LocalMapViewService
         public string OwnerFactionId { get; set; } = string.Empty;
         public string OwnerFactionName { get; set; } = string.Empty;
         public bool IsPlaceholder { get; set; }
+        public bool IsRumored { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
         public string ImageAltText { get; set; } = string.Empty;
         public Dictionary<string, int> Influence { get; } = new(StringComparer.OrdinalIgnoreCase);

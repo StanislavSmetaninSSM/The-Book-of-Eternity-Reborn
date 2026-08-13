@@ -599,6 +599,9 @@ public partial class ExplorerMode
 
     private static string DescribeQuestStructuredValue(JsonElement element)
     {
+        if (MortalItemPlayerProjection.IsInternalItemDto(element))
+            return string.Empty;
+
         return element.ValueKind switch
         {
             JsonValueKind.Object => string.Join("; ", element.EnumerateObject()

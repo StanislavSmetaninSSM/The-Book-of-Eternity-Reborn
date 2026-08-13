@@ -209,7 +209,7 @@ public sealed partial class NpcTradeService
         if (npc == null || !LocalInteractionScopeService.IsMortalActorLocal(localScope, npc))
             return Array.Empty<NpcSellOffer>();
 
-        if (!NpcTradeAllowedHere(npc, out _))
+        if (!NpcTradeAllowedHere(npc, localScope, out _))
             return Array.Empty<NpcSellOffer>();
 
         var npcTrade = ReadNpcTradeValue(npc);
@@ -1368,14 +1368,6 @@ public sealed partial class NpcTradeService
         }
     }
 
-    private bool NpcTradeAllowedHere(JsonObject npc, out string? blockedReason)
-    {
-        var (currentLocationId, currentLocationName) = ReadCurrentLocationIdentitySync();
-        var availability = EvaluateTradeAvailability(npc, currentLocationId, currentLocationName);
-        blockedReason = availability.BlockReason;
-        return availability.TradeAvailable;
-    }
-
     private static bool NpcTradeAllowedHere(
         JsonObject npc,
         LocalInteractionScope localScope,
@@ -1428,29 +1420,6 @@ public sealed partial class NpcTradeService
         return npc != null && LocalInteractionScopeService.IsMortalActorLocal(scope, npc)
             ? scope
             : null;
-    }
-
-    private (string locationId, string locationName) ReadCurrentLocationIdentitySync()
-    {
-        try
-        {
-            var json = _fs.ReadFileAsync("game_state/world/current_location.json").GetAwaiter().GetResult();
-            if (string.IsNullOrWhiteSpace(json))
-                return ("", "");
-
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-            if (root.TryGetProperty("currentLocationData", out var wrapped) && wrapped.ValueKind == JsonValueKind.Object)
-                root = wrapped;
-
-            return (
-                GetFirstNonEmptyString(root, "locationId", "currentLocationId") ?? "",
-                GetFirstNonEmptyString(root, "name", "currentLocation") ?? "");
-        }
-        catch
-        {
-            return ("", "");
-        }
     }
 
     private static MerchantProfile? ResolveMerchantProfile(JsonObject npc)

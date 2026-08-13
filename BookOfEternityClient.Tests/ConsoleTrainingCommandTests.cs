@@ -164,14 +164,7 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
         }
         """);
 
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "currentLocationData": {
-            "locationId": "loc_training_yard",
-            "name": "Тренировочный двор"
-          }
-        }
-        """);
+        await SeedCanonicalMortalLocationAsync("loc_training_yard", "Тренировочный двор");
 
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
         {
@@ -235,14 +228,7 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
           "turnNumber": 9
         }
         """);
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "currentLocationData": {
-            "locationId": "loc_training_yard",
-            "name": "Тренировочный двор"
-          }
-        }
-        """);
+        await SeedCanonicalMortalLocationAsync("loc_training_yard", "Тренировочный двор");
 
         var localTeacher = BuildTeacher("npc_teacher_local", "Рейна Быстрый Нож", "loc_training_yard");
         var remoteTeacher = BuildTeacher("npc_teacher_remote", "Дальний наставник", "loc_remote_tower");
@@ -280,6 +266,20 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
             ["offers"] = new System.Text.Json.Nodes.JsonArray()
         };
         return teacher;
+    }
+
+    private async Task SeedCanonicalMortalLocationAsync(string locationId, string displayName)
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(locationId, displayName);
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location).ToJsonString());
     }
 
     private static string ExtractRenderableText(IRenderable renderable)

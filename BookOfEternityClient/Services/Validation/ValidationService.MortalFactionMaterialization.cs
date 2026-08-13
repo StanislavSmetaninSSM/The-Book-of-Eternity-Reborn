@@ -1221,63 +1221,122 @@ public partial class ValidationService
         return result;
     }
 
-    private async Task<MortalLocationAuthority> ReadMortalLocationAuthorityAsync()
+    internal async Task<MortalLocationAuthority> ReadMortalLocationAuthorityAsync()
     {
-        var locationsBySourceAndId =
-            new Dictionary<
-                (string RootPath, string LocationId),
-                MortalLocationAuthorityEntry>();
-        var locationsWithoutIds =
-            new List<MortalLocationAuthorityEntry>();
-        foreach (var path in new[]
+        var locationsById = new Dictionary<string, MortalLocationAuthorityEntry>(
+            StringComparer.Ordinal);
+        var sameTurnRawLocations = new List<MortalLocationAuthorityEntry>();
+        foreach (var json in new[]
                  {
-                     "game_state/world/current_location.json",
-                     "game_state/world/world_map.json"
+                     await ReadPreTurnTrackedFileAsync(
+                         MortalLocationMaterializationContract.WorldMapPath),
+                     await _fs.ReadFileAsync(
+                         MortalLocationMaterializationContract.WorldMapPath)
                  })
         {
-            foreach (var json in new[]
-                     {
-                         await ReadPreTurnTrackedFileAsync(path),
-                         await _fs.ReadFileAsync(path)
-                     })
+            if (string.IsNullOrWhiteSpace(json))
+                continue;
+            try
             {
-                if (string.IsNullOrWhiteSpace(json))
-                    continue;
-                try
+                using var document = JsonDocument.Parse(json);
+                foreach (var location in ReadExactCanonicalWorldMapLocations(
+                             document.RootElement))
                 {
-                    using var document = JsonDocument.Parse(json);
-                    foreach (var location in EnumerateLocationLikeObjects(
-                                 document.RootElement))
+                    var locationId = ReadExactCanonicalLocationId(location);
+                    if (locationId != null)
                     {
-                        var clone = location.Clone();
-                        var locationId = ReadMortalString(
-                            clone,
-                            "locationId");
-                        var entry = new MortalLocationAuthorityEntry(
-                            clone,
-                            path);
-                        if (string.IsNullOrWhiteSpace(locationId))
-                            locationsWithoutIds.Add(entry);
-                        else
-                            locationsBySourceAndId[(path, locationId)] =
-                                entry;
+                        locationsById[locationId] = new MortalLocationAuthorityEntry(
+                            location,
+                            MortalLocationMaterializationContract.WorldMapPath);
                     }
                 }
-                catch (JsonException)
-                {
-                    // Ordinary state-file validation owns malformed JSON.
-                }
+            }
+            catch (JsonException)
+            {
+                // Ordinary state-file validation owns malformed JSON.
             }
         }
 
-        var locations = locationsBySourceAndId.Values
-            .Concat(locationsWithoutIds)
-            .ToArray();
+        foreach (var (path, wrapper, route) in new[]
+                 {
+                     (
+                         MortalLocationMaterializationContract.CurrentLocationPath,
+                         "currentLocationData",
+                         "current_scene_creation"),
+                     (
+                         MortalLocationMaterializationContract.WorldMapPath,
+                         "worldMapUpdates",
+                         "world_map_creation")
+                 })
+        {
+            var json = await _fs.ReadFileAsync(path);
+            if (string.IsNullOrWhiteSpace(json))
+                continue;
+
+            try
+            {
+                using var document = JsonDocument.Parse(json);
+                foreach (var location in ReadExactRawMortalLocationCreations(
+                             document.RootElement,
+                             wrapper,
+                             route))
+                {
+                    sameTurnRawLocations.Add(new MortalLocationAuthorityEntry(
+                        location,
+                        path));
+                }
+            }
+            catch (JsonException)
+            {
+                // Raw materialization validation owns malformed JSON.
+            }
+        }
+
         return new MortalLocationAuthority(
-            locationsBySourceAndId.Keys
-                .Select(key => key.LocationId)
-                .ToHashSet(StringComparer.Ordinal),
-            locations);
+            locationsById.Keys.ToHashSet(StringComparer.Ordinal),
+            locationsById.Values.Concat(sameTurnRawLocations).ToArray());
+    }
+
+    private static IReadOnlyList<JsonElement> ReadExactRawMortalLocationCreations(
+        JsonElement root,
+        string wrapper,
+        string route)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(wrapper, out var carrier))
+        {
+            return Array.Empty<JsonElement>();
+        }
+
+        if (string.Equals(wrapper, "currentLocationData", StringComparison.Ordinal))
+        {
+            return carrier.ValueKind == JsonValueKind.Object &&
+                   !MortalLocationMaterializationContract.ValidateRawLocation(
+                           carrier,
+                           MortalLocationMaterializationContract.CurrentLocationPath + ".currentLocationData",
+                           route)
+                       .Any(static issue => issue.Severity == IssueSeverity.Error)
+                ? new[] { carrier.Clone() }
+                : Array.Empty<JsonElement>();
+        }
+
+        if (carrier.ValueKind != JsonValueKind.Object ||
+            !carrier.TryGetProperty("newLocations", out var locations) ||
+            locations.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<JsonElement>();
+        }
+
+        return locations.EnumerateArray()
+            .Where(location => location.ValueKind == JsonValueKind.Object &&
+                               !MortalLocationMaterializationContract.ValidateRawLocation(
+                                       location,
+                                       MortalLocationMaterializationContract.WorldMapPath +
+                                       ".worldMapUpdates.newLocations[]",
+                                       route)
+                                   .Any(static issue => issue.Severity == IssueSeverity.Error))
+            .Select(static location => location.Clone())
+            .ToArray();
     }
 
     private async Task<MortalNpcAuthority> ReadMortalNpcAuthorityAsync()
@@ -1896,11 +1955,11 @@ public partial class ValidationService
         string FactionId,
         bool HasExplicitNullFactionId);
 
-    private sealed record MortalLocationAuthority(
+    internal sealed record MortalLocationAuthority(
         HashSet<string> LocationIds,
         IReadOnlyList<MortalLocationAuthorityEntry> Locations);
 
-    private sealed record MortalLocationAuthorityEntry(
+    internal sealed record MortalLocationAuthorityEntry(
         JsonElement Location,
         string RootPath);
 

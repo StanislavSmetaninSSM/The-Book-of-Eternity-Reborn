@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "realm": "mortal_world",
+  "locationEntries": [
+    {
+      "locationId": "loc_valmont_private_chambers",
+      "initialId": "locref_fixture_5828d42f921320f5",
+      "materializationId": "mlocmat_fixture_5828d42f921320f5",
+      "receiptId": "mlocrec_fixture_5828d42f921320f5",
+      "realm": "mortal_world",
+      "route": "world_map_creation",
+      "sourceTurn": 42,
+      "sourceAuthorityKind": "turn_outcome",
+      "sourceAuthorityId": "turn_42",
+      "coordinatesAtCreation": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "state": "active",
+      "transitions": []
+    }
+  ],
+  "linkEntries": []
+}

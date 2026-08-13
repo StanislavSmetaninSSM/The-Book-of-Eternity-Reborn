@@ -4954,6 +4954,8 @@ public partial class ValidationService
     private static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
     {
         return MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
+               normalizedPath.Equals(MortalLocationIdentityState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.StartsWith(MortalLocationIdentityState.StatePath + ".", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.OrdinalIgnoreCase) ||
@@ -5185,7 +5187,7 @@ public partial class ValidationService
                 else if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
                          !string.IsNullOrWhiteSpace(currentSceneLocationId) &&
                          !string.IsNullOrWhiteSpace(currentLocationId) &&
-                         !string.Equals(currentLocationId, currentSceneLocationId, StringComparison.OrdinalIgnoreCase))
+                         !string.Equals(currentLocationId, currentSceneLocationId, StringComparison.Ordinal))
                 {
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.currentLocationId",
@@ -5214,7 +5216,7 @@ public partial class ValidationService
                 else if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
                          !string.IsNullOrWhiteSpace(currentSceneInitialId) &&
                          !string.IsNullOrWhiteSpace(initialLocationId) &&
-                         !string.Equals(initialLocationId, currentSceneInitialId, StringComparison.OrdinalIgnoreCase))
+                         !string.Equals(initialLocationId, currentSceneInitialId, StringComparison.Ordinal))
                 {
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.initialLocationId",
@@ -6152,33 +6154,20 @@ public partial class ValidationService
 
     private HashSet<string> ReadKnownPermanentLocationIdsSync()
     {
-        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var relativePath in new[]
-                 {
-                     "game_state/world/current_location.json",
-                     "game_state/world/world_map.json"
-                 })
-        {
-            var json = ReadPreTurnTrackedFileSync(relativePath);
-            if (string.IsNullOrWhiteSpace(json))
-                continue;
+        var ids = new HashSet<string>(StringComparer.Ordinal);
+        var json = ReadPreTurnTrackedFileSync(
+            MortalLocationMaterializationContract.WorldMapPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return ids;
 
-            try
-            {
-                using var document = JsonDocument.Parse(json);
-                foreach (var location in EnumerateLocationLikeObjects(
-                             document.RootElement,
-                             includeLocationUpdates: false))
-                {
-                    var locationId = GetFirstNonEmptyString(location, "locationId");
-                    if (!string.IsNullOrWhiteSpace(locationId))
-                        ids.Add(locationId);
-                }
-            }
-            catch (JsonException)
-            {
-                // Unusable pre-turn location authority yields no trusted permanent IDs.
-            }
+        try
+        {
+            using var document = JsonDocument.Parse(json);
+            ids.UnionWith(ReadExactCanonicalWorldMapLocationIds(document.RootElement));
+        }
+        catch (JsonException)
+        {
+            // Unusable pre-turn location authority yields no trusted permanent IDs.
         }
 
         return ids;
@@ -6186,16 +6175,16 @@ public partial class ValidationService
 
     private static HashSet<string> CollectSameTurnLocationInitialIds(JsonElement root)
     {
-        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var candidates = new List<string>();
 
         if (root.TryGetProperty("currentLocationData", out var currentLocation) &&
-            currentLocation.ValueKind == JsonValueKind.Object &&
-            currentLocation.TryGetProperty("locationId", out var locationId) &&
-            locationId.ValueKind == JsonValueKind.Null)
+            currentLocation.ValueKind == JsonValueKind.Object)
         {
-            var initialId = GetFirstNonEmptyString(currentLocation, "initialId");
-            if (!string.IsNullOrWhiteSpace(initialId))
-                ids.Add(initialId);
+            CollectValidatedSameTurnLocationInitialId(
+                currentLocation,
+                "currentLocationData",
+                "current_scene_creation",
+                candidates);
         }
 
         JsonElement updatesRoot = root;
@@ -6204,15 +6193,48 @@ public partial class ValidationService
 
         if (updatesRoot.TryGetProperty("newLocations", out var newLocations) && newLocations.ValueKind == JsonValueKind.Array)
         {
+            var index = 0;
             foreach (var location in newLocations.EnumerateArray())
             {
-                var initialId = GetFirstNonEmptyString(location, "initialId");
-                if (!string.IsNullOrWhiteSpace(initialId))
-                    ids.Add(initialId);
+                CollectValidatedSameTurnLocationInitialId(
+                    location,
+                    $"worldMapUpdates.newLocations[{index}]",
+                    "world_map_creation",
+                    candidates);
+                index++;
             }
         }
 
+        var ids = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var group in candidates.GroupBy(
+                     MortalLocationIdentityState.BuildConfusableKey,
+                     StringComparer.Ordinal))
+        {
+            if (group.Count() == 1)
+                ids.Add(group.Single());
+        }
+
         return ids;
+    }
+
+    private static void CollectValidatedSameTurnLocationInitialId(
+        JsonElement location,
+        string context,
+        string route,
+        ICollection<string> candidates)
+    {
+        if (location.ValueKind != JsonValueKind.Object ||
+            MortalLocationMaterializationContract.ValidateRawLocation(location, context, route)
+                .Any(static issue => issue.Severity == IssueSeverity.Error) ||
+            !location.TryGetProperty("initialId", out var initialId) ||
+            initialId.ValueKind != JsonValueKind.String)
+        {
+            return;
+        }
+
+        var value = initialId.GetString();
+        if (!string.IsNullOrEmpty(value) && string.Equals(value, value.Trim(), StringComparison.Ordinal))
+            candidates.Add(value);
     }
 
     private void ValidateNpcSceneIdentity(JsonElement item, string itemContext, List<ValidationIssue> issues)
@@ -8066,7 +8088,6 @@ public partial class ValidationService
                 repairHint: "Используй либо incremental timeChange, либо absolute setWorldTime. Для большого time skip/rewind оставь только setWorldTime, потому что он override'ит обычный timeChange для этого хода."));
         }
 
-        ValidateCurrentLocationData(root, contextPrefix, issues);
         ValidateWorldMapUpdates(root, contextPrefix, issues);
         ValidateArrayOfObjectsField(root, contextPrefix, issues, "worldEventsLog");
         ValidateRivalSoulArcArray(root, contextPrefix, issues, "UpdateRivalSoulArcs");

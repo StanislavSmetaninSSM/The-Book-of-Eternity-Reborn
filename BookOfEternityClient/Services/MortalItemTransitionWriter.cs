@@ -602,6 +602,10 @@ internal sealed partial class MortalItemTransitionWriter
             writeLease,
             StorageTransportMoveService.CurrentLocationPath,
             required: false);
+        var offscreenLocationStorage = await LoadObjectAsync(
+            writeLease,
+            MortalLocationStorageContentsState.StatePath,
+            required: false);
         var vehicles = await LoadVehiclesAsync(writeLease);
         var indexJson = await _fs.ReadFileAsync(writeLease, MortalItemIdentityState.StatePath);
         if (string.IsNullOrWhiteSpace(indexJson))
@@ -635,6 +639,7 @@ internal sealed partial class MortalItemTransitionWriter
             inventory,
             npcCore,
             location,
+            offscreenLocationStorage,
             vehicles,
             companions,
             additionalDocuments,
@@ -646,6 +651,7 @@ internal sealed partial class MortalItemTransitionWriter
         string.Equals(path, StorageTransportMoveService.InventoryPath, StringComparison.OrdinalIgnoreCase) ||
         string.Equals(path, NpcCoreChangesContract.NpcCorePath, StringComparison.OrdinalIgnoreCase) ||
         string.Equals(path, StorageTransportMoveService.CurrentLocationPath, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(path, MortalLocationStorageContentsState.StatePath, StringComparison.OrdinalIgnoreCase) ||
         string.Equals(path, StorageTransportMoveService.VehiclesPath, StringComparison.OrdinalIgnoreCase);
 
     private async Task<StateDocument?> LoadObjectAsync(
@@ -694,7 +700,8 @@ internal sealed partial class MortalItemTransitionWriter
             null,
             state.Location?.CatalogRoot,
             state.Vehicles?.CatalogRoot,
-            state.Companions));
+            state.Companions,
+            state.OffscreenLocationStorage?.CatalogRoot));
 
     private static string? ValidateComposedState(
         LoadedState loadedState,
@@ -1150,6 +1157,7 @@ internal sealed partial class MortalItemTransitionWriter
         StateDocument? Inventory,
         StateDocument? NpcCore,
         StateDocument? Location,
+        StateDocument? OffscreenLocationStorage,
         StateDocument? Vehicles,
         IReadOnlyDictionary<string, JsonObject> Companions,
         IReadOnlyDictionary<string, StateDocument> AdditionalDocuments,
@@ -1175,7 +1183,14 @@ internal sealed partial class MortalItemTransitionWriter
 
         internal IEnumerable<StateDocument> Documents()
         {
-            foreach (var document in new[] { Inventory, NpcCore, Location, Vehicles })
+            foreach (var document in new[]
+                     {
+                         Inventory,
+                         NpcCore,
+                         Location,
+                         OffscreenLocationStorage,
+                         Vehicles
+                     })
             {
                 if (document != null)
                     yield return document;

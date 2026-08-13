@@ -135,6 +135,35 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
     }
 
     [Fact]
+    public async Task GetSellableItemsAsync_UsesResolvedCanonicalScopeInsteadOfLegacyCurrentFileShape()
+    {
+        await SeedBaseStateAsync(
+            includeTradeInventory: true,
+            includeTradeReceipt: true,
+            includeSellableInventoryItem: true);
+        var acceptedScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        Assert.True(acceptedScope.IsResolved);
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            """
+            {
+              "currentLocationData": {
+                "locationId": "loc_remote",
+                "name": "Рыночная площадь"
+              }
+            }
+            """);
+        var resolver = new SequenceLocalInteractionScopeResolver(acceptedScope, acceptedScope);
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance, resolver);
+
+        var offers = await service.GetSellableItemsAsync("npc_merchant_001");
+
+        var offer = Assert.Single(offers);
+        Assert.Equal("item_sell_lantern_001", offer.ItemId);
+        Assert.True(resolver.ResolveCallCount >= 2);
+    }
+
+    [Fact]
     public async Task GetSellableItemsAsync_HidesRejectedItemsAndExactEquippedCanonicalItem()
     {
         await SeedBaseStateAsync(
@@ -887,12 +916,7 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
         }
         """);
 
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_market_square",
-          "name": "Рыночная площадь"
-        }
-        """);
+        await SeedMortalLocationAsync("loc_market_square", "Рыночная площадь");
 
         await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
         {
@@ -1236,6 +1260,20 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
             MortalItemIdentityState.StatePath,
             MortalItemTestFixture.CreateIndexForCarriers(indexedCarriers.ToArray())
                 .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private async Task SeedMortalLocationAsync(string locationId, string displayName)
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(locationId, displayName);
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location).ToJsonString());
     }
 
     private static JsonObject CreateCanonicalSellableItem(

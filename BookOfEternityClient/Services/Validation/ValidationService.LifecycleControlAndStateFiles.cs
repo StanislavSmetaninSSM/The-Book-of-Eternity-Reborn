@@ -120,17 +120,16 @@ public partial class ValidationService
 
     private async Task ValidateWorldQuestCombatFactionStateFiles(List<ValidationIssue> issues)
     {
-        await ValidateFlexibleStateFile("game_state/world/current_location.json", null, issues,
-            ValidateWorldQuestCombatFactionContract);
-        await ValidateFlexibleStateFile("game_state/world/world_map.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "worldMapUpdates", "newLocations", "newLinks", "locationUpdates",
-                "storageUpdates", "storagesToRemove",
-                "linkUpdates", "linksToRemove",
-                "threatsToAdd", "threatsToUpdate", "threatsToRemove", "completeThreatActivities"
-            }, issues,
-            ValidateWorldQuestCombatFactionContract);
+        await ValidateMortalLocationStateFileRootAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            "currentLocationData",
+            MortalCurrentLocationStateFields,
+            issues);
+        await ValidateMortalLocationStateFileRootAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            "worldMapUpdates",
+            MortalWorldMapStateFields,
+            issues);
         await ValidateFlexibleStateFile("game_state/world/world_events.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "worldEventsLog" }, issues,
             ValidateWorldQuestCombatFactionContract);
@@ -229,6 +228,102 @@ public partial class ValidationService
         await ValidateFlexibleStateFile("game_state/factions/faction_chronicles.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "factionChronicleUpdates", "entries" }, issues,
             ValidateWorldQuestCombatFactionContract);
+    }
+
+    private static readonly HashSet<string> MortalWorldMapStateFields = new(
+        new[] { "schemaVersion", "realm", "locations", "links" },
+        StringComparer.Ordinal);
+
+    private static IReadOnlySet<string> MortalCurrentLocationStateFields =>
+        new HashSet<string>(
+            CurrentProjectionSharedFields.Concat(new[]
+            {
+                "locationStorages",
+                "currentWeather",
+                "currentInteractions",
+                "currentChronology"
+            }),
+            StringComparer.Ordinal);
+
+    private async Task ValidateMortalLocationStateFileRootAsync(
+        string filePath,
+        string rawWrapperField,
+        IReadOnlySet<string> canonicalFields,
+        List<ValidationIssue> issues)
+    {
+        if (!ShouldValidateStateFile(filePath))
+            return;
+
+        var json = await _fs.ReadFileAsync(filePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        try
+        {
+            using var document = JsonDocument.Parse(json);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(new ValidationIssue(
+                    filePath,
+                    IssueSeverity.Error,
+                    "Mortal location state must have an exact object root.",
+                    code: "mortal_location_state_invalid_root",
+                    section: "Location",
+                    expected: "JSON object",
+                    actual: document.RootElement.ValueKind.ToString()));
+                return;
+            }
+
+            var properties = document.RootElement.EnumerateObject().ToArray();
+            if (document.RootElement.TryGetProperty(rawWrapperField, out _))
+            {
+                if (properties.Length == 1)
+                    return;
+
+                foreach (var property in properties.Where(property =>
+                             !string.Equals(property.Name, rawWrapperField, StringComparison.Ordinal)))
+                {
+                    AddUnknownMortalLocationStateField(filePath, rawWrapperField, property.Name, issues);
+                }
+                return;
+            }
+
+            foreach (var property in properties)
+            {
+                if (!canonicalFields.Contains(property.Name))
+                    AddUnknownMortalLocationStateField(filePath, canonicalFields, property.Name, issues);
+            }
+        }
+        catch (JsonException exception)
+        {
+            issues.Add(new ValidationIssue(
+                filePath,
+                IssueSeverity.Error,
+                "Mortal location state contains malformed JSON.",
+                code: "mortal_location_state_invalid_json",
+                section: "Location",
+                expected: "valid JSON object",
+                actual: exception.Message));
+        }
+    }
+
+    private static void AddUnknownMortalLocationStateField(
+        string filePath,
+        object expectedFields,
+        string actualField,
+        List<ValidationIssue> issues)
+    {
+        var expected = expectedFields is IEnumerable<string> fields
+            ? string.Join(", ", fields.OrderBy(static field => field, StringComparer.Ordinal))
+            : expectedFields.ToString();
+        issues.Add(new ValidationIssue(
+            $"{filePath}.{actualField}",
+            IssueSeverity.Error,
+            "Mortal location state contains a non-canonical top-level field.",
+            code: "mortal_location_state_unknown_top_level_field",
+            section: "Location",
+            expected: expected,
+            actual: actualField));
     }
 
     private async Task ValidateMetaMiscStateFiles(List<ValidationIssue> issues)

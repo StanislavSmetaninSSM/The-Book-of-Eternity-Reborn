@@ -36,6 +36,36 @@ public sealed partial class MortalItemIdentityTransitionTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_LocalTransferValidatesButDoesNotMutateOffscreenStorageCarrier()
+    {
+        await using var context = await TransitionContext.CreateAsync();
+        var offscreenItem = MortalItemTestFixture.CreateCanonicalRoot(
+            "itm_offscreen_transition_guard");
+        await context.AddOffscreenItemAsync(
+            offscreenItem,
+            "loc_remote",
+            "storage_remote");
+        var offscreenBefore = await context.ReadAsync(
+            MortalLocationStorageContentsState.StatePath);
+
+        var result = await context.TransferAsync(
+            context.ItemId,
+            PlayerCarrier(),
+            Coordinate("vehicle_inventory", "vehicle_test"));
+
+        Assert.True(result.Success, result.Message);
+        Assert.Equal(
+            offscreenBefore,
+            await context.ReadAsync(MortalLocationStorageContentsState.StatePath));
+        var index = MortalItemIdentityState.Parse(
+            await context.ReadAsync(MortalItemIdentityState.StatePath));
+        Assert.Equal(
+            "location_storage",
+            index.EntriesByItemId["itm_offscreen_transition_guard"]
+                ["currentCarrier"]!["kind"]!.GetValue<string>());
+    }
+
+    [Fact]
     public async Task ExecuteAsync_ExactIdSelectsOneOfTwoSameNamedItems()
     {
         var other = MortalItemTestFixture.CreateCanonicalRoot("itm_same_name_other");
@@ -507,6 +537,26 @@ public sealed partial class MortalItemIdentityTransitionTests
                     Turn: 43,
                     AuthorityKind: "storage_move",
                     AuthorityId: "storage_move_43"));
+        }
+
+        internal async Task AddOffscreenItemAsync(
+            JsonObject item,
+            string locationId,
+            string storageId)
+        {
+            await WriteAsync(
+                MortalLocationStorageContentsState.StatePath,
+                MortalLocationStorageContentsState.BuildCanonicalRoot(
+                    new Dictionary<MortalLocationStorageKey, JsonArray>
+                    {
+                        [new MortalLocationStorageKey(locationId, storageId)] =
+                            new JsonArray(item.DeepClone())
+                    }));
+            await WriteAsync(
+                MortalItemIdentityState.StatePath,
+                MortalItemTestFixture.CreateIndexForCarriers(
+                    (Item, "player_inventory", "player", null),
+                    (item, "location_storage", locationId, storageId)));
         }
 
         internal async Task<MortalItemTransitionResult> CreateItemAsync(

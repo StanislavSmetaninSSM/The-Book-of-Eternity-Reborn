@@ -173,33 +173,32 @@ public partial class ExplorerMode
 
             // Location storages link — interactive
             var accessibleStorageChoices = new Dictionary<int, (string name, string storageId, int contCount)>();
-            var locStorDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/current_location.json");
-            if (locStorDoc != null)
+            var acceptedCurrentLocation = await StorageTransportMoveService
+                .ReadAcceptedCurrentLocationSnapshotAsync(_fs);
+            if (acceptedCurrentLocation?["locationStorages"] is JsonArray locationStorages)
             {
-                var locStorRoot = locStorDoc.RootElement;
-                if (locStorRoot.TryGetProperty("locationStorages", out var lStorages) && lStorages.ValueKind == JsonValueKind.Array && lStorages.GetArrayLength() > 0)
+                foreach (var storage in locationStorages.OfType<JsonObject>())
                 {
-                    foreach (var st in lStorages.EnumerateArray())
+                    var storageName = ReadPlayerNodeString(storage, "name");
+                    if (string.IsNullOrWhiteSpace(storageName))
+                        storageName = "Хранилище";
+                    var storageId = ReadPlayerNodeString(storage, "storageId");
+                    var hasAccess = storage["hasFullAccess"] is JsonValue accessValue &&
+                                    accessValue.TryGetValue<bool>(out var parsedAccess) &&
+                                    parsedAccess;
+                    var contentsCount = storage["contents"] is JsonArray contents
+                        ? contents.OfType<JsonObject>().Count(static item =>
+                            MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _))
+                        : 0;
+                    var choiceIndex = choices.Count;
+                    if (hasAccess)
                     {
-                        var sName = GetStr(st, "name", "Хранилище");
-                        var sId = GetStr(st, "storageId", "");
-                        var hasAccess = st.TryGetProperty("hasFullAccess", out var ha) && ha.ValueKind == JsonValueKind.True;
-                        var contCount = 0;
-                        if (st.TryGetProperty("contents", out var cont) && cont.ValueKind == JsonValueKind.Array)
-                        {
-                            contCount = cont.EnumerateArray().Count(static item =>
-                                MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _));
-                        }
-                        var choiceIndex = choices.Count;
-                        if (hasAccess)
-                        {
-                            choices.Add(GameInterface.SafePromptChoice($"📦 {sName} ({contCount} пр.) → управление"));
-                            accessibleStorageChoices[choiceIndex] = (sName, sId, contCount);
-                        }
-                        else
-                        {
-                            choices.Add(GameInterface.SafePromptChoice($"📦 🔒 {sName} ({contCount} пр.)"));
-                        }
+                        choices.Add(GameInterface.SafePromptChoice($"📦 {storageName} ({contentsCount} пр.) → управление"));
+                        accessibleStorageChoices[choiceIndex] = (storageName, storageId, contentsCount);
+                    }
+                    else
+                    {
+                        choices.Add(GameInterface.SafePromptChoice($"📦 🔒 {storageName} ({contentsCount} пр.)"));
                     }
                 }
             }

@@ -123,8 +123,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var detailText = ExtractRenderedText();
         Assert.Contains("Событие: Беспорядки у Северных ворот", detailText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("торговая площадь закрыта до следующего утра", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стража сохранила свидетельские записи", detailText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("eventId", detailText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/world", detailText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("PRIVATE_CONSOLE_WORLD_NEWS_LOCATION_REPAIR", detailText, StringComparison.Ordinal);
+        Assert.DoesNotContain("mortal_location_materialization_repair", detailText, StringComparison.Ordinal);
+        Assert.DoesNotContain("rawCoordinate", detailText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -472,7 +476,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                     eventId = "riots_at_gate",
                     title = "Беспорядки у Северных ворот",
                     timestamp = "день 42, утро",
-                    location = "Северные ворота",
+                    locationId = "loc_north_gate",
                     visibility = "public",
                     status = "active",
                     category = "городские слухи",
@@ -480,12 +484,42 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                     summary = "Стража закрыла торговую площадь.",
                     involvedNPCs = new[] { "Мира Ключница" },
                     affectedFactions = new[] { "Городская стража" },
-                    affectedLocations = new[] { "Северные ворота" },
+                    affectedLocations = new[]
+                    {
+                        new
+                        {
+                            locationId = "loc_north_gate",
+                            locationName = "Северные ворота",
+                            impactDescription = "У ворот усилили дозор."
+                        }
+                    },
                     consequences = new[] { "торговая площадь закрыта до следующего утра" },
-                    followUp = "Капитан ждёт свидетелей."
+                    followUp = "Капитан ждёт свидетелей.",
+                    impact = new
+                    {
+                        visibleMeaning = "Стража сохранила свидетельские записи",
+                        operatorPacket = new
+                        {
+                            kind = "mortal_location_materialization_repair",
+                            title = "PRIVATE_CONSOLE_WORLD_NEWS_LOCATION_REPAIR",
+                            rawCoordinate = "worldMapUpdates.newLocations[0]",
+                            targetFiles = new[] { "game_state/world/world_map.json" }
+                        }
+                    }
                 }
             }
         });
+
+        var gate = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_north_gate",
+            "Северные ворота",
+            "visited",
+            x: 4,
+            y: 8);
+        await WriteCanonicalMortalLocationStateAsync(
+            [gate],
+            MortalLocationTestFixture.CreateCurrentProjection(gate),
+            [gate]);
 
         await WriteJsonAsync("game_state/world/world_flags.json", new
         {

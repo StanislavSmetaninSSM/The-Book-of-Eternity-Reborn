@@ -272,8 +272,8 @@ CLI Agent automatically loads current game state from:
   "retrieveFromLocationStorage": "array of storage_withdrawal_objects",
   
   // WORLD STATE
-  "currentLocationData": "object (full Location Object for a new location, or known-location shorthand with locationId + coordinates + lastEventsDescription)",
-  "worldMapUpdates": "object with map changes",
+  "currentLocationData": "object (complete current_scene_creation candidate, or exact existing locationId selection with current-only fields)",
+  "worldMapUpdates": "object with current-schema location/link creation and exact lifecycle commands",
   "worldEventsLog": "array of world_event_objects", 
   "UpdateRivalSoulArcs": "array of rival_soul_arc_objects for other souls' milestone-based destiny lines in the current mortal life",
   "worldStateFlags": "array of flag_objects",
@@ -525,9 +525,56 @@ game_session/
 - `game_state/inventory/storage_operations.json` ← `moveToLocationStorage`, `retrieveFromLocationStorage`
 
 #### **WORLD STATE**
-- `game_state/world/current_location.json` ← `currentLocationData`
-- `game_state/world/world_map.json` ← `worldMapUpdates`
-- `worldMapUpdates` atomic commands include `newLocations`, `locationUpdates`, `storageUpdates`, `storagesToRemove`, `newLinks`, `linkUpdates`, `linksToRemove`, `threatsToAdd`, `threatsToUpdate`, `threatsToRemove`, `completeThreatActivities`
+- **Mortal Location Materialization v1** governs every Mortal location and
+  directed link. The GM authors raw commands; the client validates, assigns
+  permanent identities and receipts, and composes canonical state.
+- Raw `currentLocationData` maps to a new selected scene only when it is one
+  complete candidate with `locationId = null` and
+  `materialization.route = current_scene_creation`. Otherwise it selects one
+  accepted scene by exact permanent `locationId` and may carry only
+  `lastEventsDescription`, `currentWeather`, `currentInteractions`,
+  and `currentChronology`. Never echo `locationStorages` or `contents` during
+  existing movement: the client preserves current/offscreen storage item
+  continuity and applies storage metadata through separate governed commands.
+- Raw `worldMapUpdates.newLocations[]` creates complete remote candidates with
+  `locationId = null` and `materialization.route = world_map_creation`.
+  `worldMapUpdates.newLinks[]` creates complete directed links with
+  `linkId = null` and `materialization.route = world_map_link_creation`.
+- Existing edits use exact permanent identity: `locationUpdates[]`,
+  `locationDiscoveryTransitions[]`, `storageUpdates[]`, `storagesToRemove[]`,
+  `linkUpdates[]`, `linkRemovals[]`, `threatsToAdd[]`, `threatsToUpdate[]`,
+  `threatsToRemove[]`, and `completeThreatActivities[]`. Exact permanent
+  `locationId` and exact permanent `linkId` are case-sensitive and
+  Unicode-exact; names, coordinates, ordinals, paths, aliases, and normalized
+  values are never authority.
+- Existing-location selection may reselect the exact current location. A
+  changed destination additionally requires one pre-turn exact directed
+  current→destination link that is non-hidden/player-known and has
+  `access.state=open` with no requirements. Reverse-only, hidden, conditional,
+  and sealed links do not authorize movement.
+- `locationUpdates[]` cannot author `eventDescriptions` or `activeThreats`.
+  Every raw new-location object also keeps `activeThreats` empty; a same-turn
+  threat is a separate `threatsToAdd[]` command with null `threatId` and the
+  exact new-location `initialTargetLocationId`, so the client assigns identity.
+  Storage metadata changes use only exact `storageUpdates[]`/
+  `storagesToRemove[]`; non-empty storage removal fails until item lifecycle
+  authority clears its contents. Owner changes include `newOwner`, the complete
+  `newAuthorizedUsers`, and synchronized `newHasFullAccess`; authorization-list
+  changes also include the synchronized access flag. Threat additions receive client-owned
+  permanent IDs, partial updates deep-merge, removals bind exact IDs, and
+  `completeThreatActivities[]` archives the activity and clears it atomically.
+- Materialization section dispositions describe creation-time evidence. Later
+  accepted storage/threat commands do not rewrite or reseal that historical
+  envelope. Unknown world-map command fields fail closed.
+- `game_state/world/world_map.json` is the sole canonical semantic owner of
+  `locations[]` and directed `links[]`. `game_state/world/current_location.json`
+  is a client-composed projection of one accepted map location plus current-only
+  weather/interactions/chronology and current storage contents.
+- `game_state/world/location_identity_index.json`, permanent IDs,
+  `materializationReceipt`, receipts, seals, transitions, rollback state, and
+  derived navigation are client-owned and are never GM output or repair targets.
+- `knownExits` and `adjacencyMap` are client-derived. Do not author them. A
+  reverse direction requires its own accepted directed link.
 - `game_state/world/world_events.json` ← `worldEventsLog`
 - `game_state/world/rival_soul_arcs.json` ← `UpdateRivalSoulArcs`
 - `game_state/world/world_flags.json` ← `worldStateFlags`, `removeWorldStateFlags`
@@ -547,10 +594,16 @@ World-location contract notes:
   - it may be stored as direct weather fields (`tendency`, `description`, etc.)
   - or as the accepted-turn wrapper object under `weatherChange`
   - the client/runtime reads both forms for compatibility
-- `currentLocationData` is dual-shape:
-  - For a truly new current location, send the full Location Object.
-  - For returning to a known location, the base shorthand is `locationId`, `coordinates`, and `lastEventsDescription`.
-  - If the current turn must also update player-facing current-location substructures, the known-location shape may additionally carry `internalDifficultyProfile`, `externalDifficultyProfile`, and/or `locationStorages`.
+- Every new location/link candidate carries a complete
+  `materialization.sections` declaration, one turn-unique `initialId`, one
+  independent materialization ID, exact source turn/authority, and state
+  `complete`. Receipt-less canonical objects are invalid; there is no runtime
+  legacy promotion or missing-z compatibility.
+- Fresh Mortal bootstrap reads the client-owned
+  `game_state/control/mortal_bootstrap_scaffold.json` without changing it. One
+  coherent response creates the reserved start plus either the reserved
+  neighbor/directed link or a narrative-only unresolved exit with no canonical
+  identity claim.
 - `eventDescriptions` is a read-only historical archive. Read it from location context if present, but do not emit it in `currentLocationData` or `worldMapUpdates`.
 - For current-turn location history, write only `lastEventsDescription`.
 - `rival_soul_arcs.json` is a life-scoped background-pressure surface for OTHER souls, not a player quest journal.
@@ -895,10 +948,20 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 
 ### Contract Repair Handshake
 - `validation_repair_request.json` is authoritative when the client rejects an already written GM turn after validation.
-- GM must fix the current files **in place** and then write `validation_repair_ready.json`.
+- Ordinary bounded repair packets may require an in-place correction followed
+  by `validation_repair_ready.json`, as specified by that packet.
+- A `mortal_location_materialization_repair` is different: before dispatch the
+  client restores the validated pre-turn baseline. The request sets the
+  full-turn resubmission obligation and lists every required changed path. The
+  GM/worker must regenerate one complete coherent raw response, including all
+  intended location, actor, faction, item, narrative, interface, and other turn
+  effects. A ready-only response, an in-place canonical patch, a named-leaf-only
+  patch, stale output, or formatting-only output is rejected.
 - `validation_repair_ready.json` must be valid JSON and must copy the exact `sessionId`, `requestId`, and `turnNumber` from the current `validation_repair_request.json`.
 - If `validation_repair_ready.json` is malformed or mismatched, the client rewrites `validation_repair_request.json` with `invalid_repair_ready_json` or `mismatched_repair_ready_context` and waits again.
-- This repair handshake is not a new turn and must not produce a new `turn_request.json`.
+- The repair handshake reuses the current request metadata and must not create
+  a new `turn_request.json`; full-turn resubmission regenerates the rejected
+  response package for that same turn.
 - If the client rolls back a rejected or failed turn, the rollback target is the full pre-turn tracked file set: existing tracked files are restored, and newly created tracked files are removed.
 - Late `ready/turn_error.json` after a cancelled wait is still treated as a valid late signal and must be safe to consume/clean up.
 - Malformed or mismatched terminal `ready/turn_complete.json` / `ready/turn_error.json` after retry window is a protocol failure of the current wait cycle, not a repair-loop case by itself.

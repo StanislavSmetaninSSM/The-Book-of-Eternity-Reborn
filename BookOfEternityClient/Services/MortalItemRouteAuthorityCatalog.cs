@@ -29,6 +29,8 @@ internal sealed class MortalItemRouteAuthorityCatalog
     private const string NpcCorePath = "game_state/npcs/npc_core.json";
     private const string NpcCommandsPath = "game_state/npcs/npc_inventory.json";
     private const string CurrentLocationPath = "game_state/world/current_location.json";
+    private const string OffscreenLocationStoragePath =
+        "game_state/world/location_storage_contents.json";
     private const string VehiclesPath = "game_state/misc/vehicles.json";
     private const string QuestHistoryPath = "game_state/quests/quest_history.json";
     private const string TurnRequestPath = "input/turn_request.json";
@@ -59,7 +61,8 @@ internal sealed class MortalItemRouteAuthorityCatalog
 
     internal static async Task<MortalItemRouteAuthorityCatalog> BuildAsync(
         FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates = null)
     {
         ArgumentNullException.ThrowIfNull(fs);
 
@@ -67,6 +70,10 @@ internal sealed class MortalItemRouteAuthorityCatalog
         var npcCore = ParseObject(await ReadAsync(fs, writeLease, NpcCorePath));
         var npcCommands = ParseObject(await ReadAsync(fs, writeLease, NpcCommandsPath));
         var currentLocation = ParseObject(await ReadAsync(fs, writeLease, CurrentLocationPath));
+        var offscreenLocationStorage = ParseObject(await ReadAsync(
+            fs,
+            writeLease,
+            OffscreenLocationStoragePath));
         var vehicles = ParseVehicles(await ReadAsync(fs, writeLease, VehiclesPath));
         var turnRequest = ParseObject(await ReadAsync(fs, writeLease, TurnRequestPath));
         var questHistory = ParseObject(await ReadAsync(fs, writeLease, QuestHistoryPath));
@@ -102,7 +109,8 @@ internal sealed class MortalItemRouteAuthorityCatalog
                 npcCommands,
                 currentLocation,
                 vehicles,
-                new Dictionary<string, JsonObject>(StringComparer.Ordinal)));
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal),
+                offscreenLocationStorage));
         var builder = new Builder(
             turnRequest,
             npcCore,
@@ -111,7 +119,8 @@ internal sealed class MortalItemRouteAuthorityCatalog
             baselineTradeRequests,
             questHistory,
             baselineNpcCore,
-            baselineLocation);
+            baselineLocation,
+            acceptedStorageCoordinates);
         foreach (var occurrence in carrierCatalog.Occurrences)
         {
             if (IsRawCreation(occurrence.Item))
@@ -221,6 +230,8 @@ internal sealed class MortalItemRouteAuthorityCatalog
             _tradeAuthoritiesByCreationRef;
         private readonly Dictionary<string, string> _questAuthorityByCreationRef;
         private readonly HashSet<string> _baselineStorageAuthorities;
+        private readonly Dictionary<string, SameTurnStorageAuthority>
+            _sameTurnStorageAuthoritiesByCarrier;
 
         internal Builder(
             JsonObject? turnRequest,
@@ -230,7 +241,8 @@ internal sealed class MortalItemRouteAuthorityCatalog
             JsonObject? tradeRequests,
             JsonObject? questHistory,
             JsonObject? baselineNpcCore,
-            JsonObject? baselineLocation)
+            JsonObject? baselineLocation,
+            IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates)
         {
             _turn = ReadInt(turnRequest?["turnNumber"]);
             _lootAuthorities = BuildLootAuthorities(turnRequest, _turn);
@@ -251,6 +263,8 @@ internal sealed class MortalItemRouteAuthorityCatalog
                 npcCore);
             _questAuthorityByCreationRef = BuildQuestAuthorities(questHistory);
             _baselineStorageAuthorities = BuildStorageAuthorities(baselineLocation);
+            _sameTurnStorageAuthoritiesByCarrier = BuildSameTurnStorageAuthorities(
+                acceptedStorageCoordinates);
         }
 
         internal Dictionary<string, MortalItemRouteAuthority> ByCreationRef { get; } =
@@ -339,13 +353,13 @@ internal sealed class MortalItemRouteAuthorityCatalog
                     occurrence.Carrier.Kind,
                     "location_storage",
                     StringComparison.Ordinal) &&
-                !IsBaselineStorageCarrier(occurrence.Carrier))
+                !IsAcceptedStorageCarrier(occurrence.Carrier))
             {
                 AddIssue(
                     occurrence,
                     "mortal_item_materialization_route_authority_missing",
-                    "A Mortal item route may target only a location storage present in the validated pre-turn baseline.",
-                    "exact pre-turn locationId:storageId carrier authority",
+                    "A Mortal item route may target only an exact validated pre-turn or accepted same-turn current-location storage.",
+                    "exact accepted location/storage carrier authority",
                     $"{occurrence.Carrier.OwnerId}:{occurrence.Carrier.ContainerId ?? "missing"}",
                     creationRef);
                 return null;
@@ -405,10 +419,23 @@ internal sealed class MortalItemRouteAuthorityCatalog
                     var candidate = occurrence.Carrier.ContainerId == null
                         ? null
                         : $"{occurrence.Carrier.OwnerId}:{occurrence.Carrier.ContainerId}";
-                    expectedAuthorityId = candidate != null &&
-                                          _baselineStorageAuthorities.Contains(candidate)
-                        ? candidate
-                        : null;
+                    if (candidate != null &&
+                        _baselineStorageAuthorities.Contains(candidate))
+                    {
+                        expectedAuthorityId = candidate;
+                    }
+                    else if (candidate != null &&
+                             _sameTurnStorageAuthoritiesByCarrier.TryGetValue(
+                                 candidate,
+                                 out var sameTurnAuthority))
+                    {
+                        expectedAuthorityId = sameTurnAuthority.AuthorityId;
+                        destination = sameTurnAuthority.Destination;
+                    }
+                    else
+                    {
+                        expectedAuthorityId = null;
+                    }
                     break;
                 }
                 default:
@@ -483,13 +510,49 @@ internal sealed class MortalItemRouteAuthorityCatalog
             return projection;
         }
 
-        private bool IsBaselineStorageCarrier(MortalItemCarrierCoordinate carrier)
+        private bool IsAcceptedStorageCarrier(MortalItemCarrierCoordinate carrier)
         {
             if (carrier.ContainerId == null)
                 return false;
-            return _baselineStorageAuthorities.Contains(
-                $"{carrier.OwnerId}:{carrier.ContainerId}");
+            var key = $"{carrier.OwnerId}:{carrier.ContainerId}";
+            return _baselineStorageAuthorities.Contains(key) ||
+                   _sameTurnStorageAuthoritiesByCarrier.ContainsKey(key);
         }
+
+        private static Dictionary<string, SameTurnStorageAuthority>
+            BuildSameTurnStorageAuthorities(
+                IReadOnlyList<MortalLocationStorageCoordinate>? coordinates)
+        {
+            var result = new Dictionary<string, SameTurnStorageAuthority>(
+                StringComparer.Ordinal);
+            if (coordinates == null)
+                return result;
+
+            foreach (var coordinate in coordinates)
+            {
+                if (coordinate.InitialLocationId == null)
+                    continue;
+                var authorityId =
+                    $"{coordinate.InitialLocationId}:{coordinate.StorageId}";
+                var authority = new SameTurnStorageAuthority(
+                    authorityId,
+                    new MortalItemCarrierCoordinate(
+                        "location_storage",
+                        coordinate.LocationId,
+                        coordinate.StorageId,
+                        Array.Empty<string>()));
+                result.TryAdd(authorityId, authority);
+                result.TryAdd(
+                    $"{coordinate.LocationId}:{coordinate.StorageId}",
+                    authority);
+            }
+
+            return result;
+        }
+
+        private sealed record SameTurnStorageAuthority(
+            string AuthorityId,
+            MortalItemCarrierCoordinate Destination);
 
         private static string? ResolveExpectedAuthority(
             IReadOnlySet<string> candidates,

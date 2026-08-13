@@ -191,9 +191,13 @@ internal static class MortalItemRepairPacketBuilder
     {
         var normalized = Normalize(path);
         return IsRootOrDescendant(
-            normalized,
-            MortalItemIdentityState.StatePath,
-            StringComparison.OrdinalIgnoreCase);
+                   normalized,
+                   MortalItemIdentityState.StatePath,
+                   StringComparison.OrdinalIgnoreCase) ||
+               IsRootOrDescendant(
+                   normalized,
+                   MortalLocationStorageContentsState.StatePath,
+                   StringComparison.OrdinalIgnoreCase);
     }
 
     private static MortalItemRepairPacket? BuildPacket(

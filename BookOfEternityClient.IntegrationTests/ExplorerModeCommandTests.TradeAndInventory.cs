@@ -108,27 +108,29 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                     ["Finger1"] = "ring_bracket_001"
                 }
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        await WriteJsonAsync("game_state/world/current_location.json", new
-        {
-            name = "Тестовая площадь",
-            locationStorages = new[]
-            {
-                new
-                {
-                    storageId = "storage_bracket_001",
-                    name = "Сундук [broken",
-                    hasFullAccess = true,
-                    contents = Array.Empty<object>()
-                },
-                new
-                {
-                    storageId = "storage_locked_bracket_001",
-                    name = "Сейф [debug]",
-                    hasFullAccess = false,
-                    contents = Array.Empty<object>()
-                }
-            }
-        });
+        var bracketLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_inventory_bracket",
+            "Тестовая площадь",
+            "visited");
+        bracketLocation["locationStorages"] = new JsonArray(
+            MortalLocationTestFixture.CreateStorageMetadata(
+                "storage_bracket_001",
+                "Сундук [broken",
+                hasFullAccess: true),
+            MortalLocationTestFixture.CreateStorageMetadata(
+                "storage_locked_bracket_001",
+                "Сейф [debug]",
+                hasFullAccess: false));
+        bracketLocation["materialization"]!["sections"]!["storageMetadata"] =
+            new JsonObject { ["disposition"] = "populated", ["reason"] = null };
+        MortalLocationTestFixture.ResealCanonicalLocation(bracketLocation);
+        var bracketCurrent = MortalLocationTestFixture.CreateCurrentProjection(bracketLocation);
+        foreach (var storage in bracketCurrent["locationStorages"]!.AsArray().OfType<JsonObject>())
+            storage["contents"] = new JsonArray();
+        await WriteCanonicalMortalLocationStateAsync(
+            [bracketLocation],
+            bracketCurrent,
+            [bracketLocation]);
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
@@ -168,20 +170,24 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 ["equippedItems"] = new JsonObject()
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
-        await _fs.WriteFileAtomicAsync(
-            "game_state/world/current_location.json",
-            new JsonObject
-            {
-                ["name"] = "Тестовая площадь",
-                ["locationStorages"] = new JsonArray(
-                    new JsonObject
-                    {
-                        ["storageId"] = "storage_count_001",
-                        ["name"] = "Сундук счётчика",
-                        ["hasFullAccess"] = true,
-                        ["contents"] = new JsonArray(accepted, rejected)
-                    })
-            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var countLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_storage_count_001",
+            "Тестовая площадь",
+            "visited");
+        countLocation["locationStorages"] = new JsonArray(
+            MortalLocationTestFixture.CreateStorageMetadata(
+                "storage_count_001",
+                "Сундук счётчика",
+                hasFullAccess: true));
+        countLocation["materialization"]!["sections"]!["storageMetadata"] =
+            new JsonObject { ["disposition"] = "populated", ["reason"] = null };
+        MortalLocationTestFixture.ResealCanonicalLocation(countLocation);
+        var countCurrent = MortalLocationTestFixture.CreateCurrentProjection(countLocation);
+        countCurrent["locationStorages"]![0]!["contents"] = new JsonArray(accepted, rejected);
+        await WriteCanonicalMortalLocationStateAsync(
+            [countLocation],
+            countCurrent,
+            [countLocation]);
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
@@ -1240,21 +1246,24 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         await _fs.WriteFileAtomicAsync(
             MortalItemIdentityState.StatePath,
             MortalItemTestFixture.CreateIndex(apple).ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        await WriteJsonAsync("game_state/world/current_location.json", new
-        {
-            locationId = "loc_storage_move_001",
-            name = "Тестовая площадь",
-            locationStorages = new[]
-            {
-                new
-                {
-                    storageId = "storage_chest_001",
-                    name = "Сундук",
-                    hasFullAccess = true,
-                    contents = Array.Empty<object>()
-                }
-            }
-        });
+        var storageLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_storage_move_001",
+            "Тестовая площадь",
+            "visited");
+        storageLocation["locationStorages"] = new JsonArray(
+            MortalLocationTestFixture.CreateStorageMetadata(
+                "storage_chest_001",
+                "Сундук",
+                hasFullAccess: true));
+        storageLocation["materialization"]!["sections"]!["storageMetadata"] =
+            new JsonObject { ["disposition"] = "populated", ["reason"] = null };
+        MortalLocationTestFixture.ResealCanonicalLocation(storageLocation);
+        var storageCurrent = MortalLocationTestFixture.CreateCurrentProjection(storageLocation);
+        storageCurrent["locationStorages"]![0]!["contents"] = new JsonArray();
+        await WriteCanonicalMortalLocationStateAsync(
+            [storageLocation],
+            storageCurrent,
+            [storageLocation]);
 
         _console.QueueSelection("🎒", "📦 Сундук (0 пр.) → управление");
         _console.QueueSelection("Сундук", "📥 Положить предмет в хранилище (1 в инвентаре)", "← Назад к инвентарю");

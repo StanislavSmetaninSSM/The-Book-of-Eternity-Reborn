@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 
@@ -376,16 +377,10 @@ internal static class NpcCoreChangesContract
     {
         var permanentLocationIds = new HashSet<string>(StringComparer.Ordinal);
         var sameTurnLocationIds = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var path in new[]
-                 {
-                     "game_state/world/current_location.json",
-                     "game_state/world/world_map.json"
-                 })
-        {
-            var root = await ReadObjectAsync(fs, path);
-            if (root != null)
-                CollectLocationAuthority(root, permanentLocationIds, sameTurnLocationIds);
-        }
+        await ReadExactLocationAuthorityAsync(
+            fs,
+            permanentLocationIds,
+            sameTurnLocationIds);
 
         var factionNamesById = new Dictionary<string, string>(StringComparer.Ordinal);
         var factionRoot = await ReadObjectAsync(fs, "game_state/factions/faction_core.json");
@@ -1471,27 +1466,103 @@ internal static class NpcCoreChangesContract
         }
     }
 
-    private static void CollectLocationAuthority(
-        JsonNode? node,
+    private static async Task ReadExactLocationAuthorityAsync(
+        FileSystemManager fs,
         HashSet<string> permanentIds,
         HashSet<string> sameTurnIds)
     {
-        switch (node)
+        var sameTurnCandidates = new List<string>();
+        var worldMapJson = await fs.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath);
+        if (!string.IsNullOrWhiteSpace(worldMapJson))
         {
-            case JsonObject obj:
-                if (TryReadNonEmptyString(obj["locationId"], out var locationId))
-                    permanentIds.Add(locationId!);
-                else if (TryReadNonEmptyString(obj["initialId"], out var initialId))
-                    sameTurnIds.Add(initialId!);
-
-                foreach (var property in obj)
-                    CollectLocationAuthority(property.Value, permanentIds, sameTurnIds);
-                break;
-            case JsonArray array:
-                foreach (var item in array)
-                    CollectLocationAuthority(item, permanentIds, sameTurnIds);
-                break;
+            try
+            {
+                using var document = JsonDocument.Parse(worldMapJson);
+                permanentIds.UnionWith(
+                    ValidationService.ReadExactCanonicalWorldMapLocationIds(document.RootElement));
+                CollectExactRawWorldMapLocationInitialIds(document.RootElement, sameTurnCandidates);
+            }
+            catch (JsonException)
+            {
+                // Ordinary state validation owns malformed world-map JSON.
+            }
         }
+
+        var currentJson = await fs.ReadFileAsync(MortalLocationMaterializationContract.CurrentLocationPath);
+        if (!string.IsNullOrWhiteSpace(currentJson))
+        {
+            try
+            {
+                using var document = JsonDocument.Parse(currentJson);
+                if (document.RootElement.ValueKind == JsonValueKind.Object &&
+                    document.RootElement.TryGetProperty("currentLocationData", out var candidate) &&
+                    candidate.ValueKind == JsonValueKind.Object)
+                {
+                    CollectValidatedRawLocationInitialId(
+                        candidate,
+                        "currentLocationData",
+                        "current_scene_creation",
+                        sameTurnCandidates);
+                }
+            }
+            catch (JsonException)
+            {
+                // Ordinary state validation owns malformed current-location JSON.
+            }
+        }
+
+        foreach (var group in sameTurnCandidates.GroupBy(
+                     MortalLocationIdentityState.BuildConfusableKey,
+                     StringComparer.Ordinal))
+        {
+            if (group.Count() == 1)
+                sameTurnIds.Add(group.Single());
+        }
+    }
+
+    private static void CollectExactRawWorldMapLocationInitialIds(
+        JsonElement root,
+        ICollection<string> sameTurnCandidates)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty("worldMapUpdates", out var updates) ||
+            updates.ValueKind != JsonValueKind.Object ||
+            !updates.TryGetProperty("newLocations", out var locations) ||
+            locations.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var index = 0;
+        foreach (var candidate in locations.EnumerateArray())
+        {
+            CollectValidatedRawLocationInitialId(
+                candidate,
+                $"worldMapUpdates.newLocations[{index}]",
+                "world_map_creation",
+                sameTurnCandidates);
+            index++;
+        }
+    }
+
+    private static void CollectValidatedRawLocationInitialId(
+        JsonElement candidate,
+        string context,
+        string route,
+        ICollection<string> sameTurnCandidates)
+    {
+        if (candidate.ValueKind != JsonValueKind.Object ||
+            MortalLocationMaterializationContract.ValidateRawLocation(candidate, context, route)
+                .Any(static issue => issue.Severity == IssueSeverity.Error) ||
+            !candidate.TryGetProperty("initialId", out var initialId) ||
+            initialId.ValueKind != JsonValueKind.String)
+        {
+            return;
+        }
+
+        var value = initialId.GetString();
+        if (!string.IsNullOrEmpty(value) && string.Equals(value, value.Trim(), StringComparison.Ordinal))
+            sameTurnCandidates.Add(value);
     }
 
     private static void CollectFactionAuthority(JsonNode? node, Dictionary<string, string> factionNamesById)

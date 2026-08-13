@@ -342,8 +342,6 @@ public sealed record BrowserGameScreenTurnStateDto(
     string Title,
     string Message,
     bool CanStartBrowserWrite,
-    string ValidationState,
-    string ValidationLabel,
     string Phase,
     string PhaseLabel,
     string Severity,
@@ -357,12 +355,10 @@ public sealed record BrowserGameScreenTurnStateDto(
         new("composing-action", "Игрок готовит действие", "Текст или быстрая сцена находятся в фазе подготовки до безопасной записи.", "player-default"),
         new("turn-submitted", "Ход отправляется", "Локальная запись уже начата; повторные действия заблокированы.", "player-default"),
         new("waiting-gm", "Ожидаем ответ ГМа", "Ход отправлен, и нужно дождаться результата ГМа.", "player-default"),
-        new("ready", "Ответ ГМа готов", "Ответ ГМа готов к принятию через обычный turn lifecycle.", "player-default"),
+        new("ready", "Ответ мира готов", "Результат хода готов к показу игроку.", "player-default"),
         new("accepted", "Ответ ГМа принят", "Результат ответа ГМа уже принят в локальное состояние.", "player-default"),
-        new("validation-failed", "Проверка не прошла", "Состояние требует починки перед продолжением.", "advanced-only"),
-        new("repair-required", "Нужна починка", "Незавершённый ход оставил следы отката. Сначала завершите починку.", "advanced-only"),
-        new("error-restored", "Ошибка восстановлена", "Ход ГМа завершился ошибкой; откат/починка должны быть разобраны.", "advanced-only"),
-        new("cancelled", "Ход отменён", "Ожидающий ход был отменён или очищен безопасным lifecycle-действием.", "player-default")
+        new("blocked", "Ход временно недоступен", "Мир пока не готов продолжить этот ход.", "player-default"),
+        new("cancelled", "Ход отменён", "Ожидающий ход был отменён; можно выбрать другое действие.", "player-default")
     ];
 
     public static BrowserGameScreenTurnStateDto From(BrowserLifecycleDashboardDto lifecycle, QteWebStateDto qte)
@@ -374,75 +370,54 @@ public sealed record BrowserGameScreenTurnStateDto(
                 ArtifactExists(lifecycle.PendingTurn, BrowserPendingTurnInspector.ExplorerRollbackDirectory))
             {
                 return Create(
-                    state: "pending-turn-repair",
-                    title: "Требуется починка незавершённого хода",
-                    message: lifecycle.Guidance.FirstOrDefault()?.Message ?? lifecycle.PendingTurn.Message,
+                    state: "blocked",
+                    title: "Мир временно остановился",
+                    message: "Предыдущий ход не завершился безопасно, поэтому продолжение пока недоступно.",
                     canStartBrowserWrite: false,
                     lifecycle: lifecycle,
-                    phase: "repair-required",
+                    phase: "blocked",
                     severity: "error",
-                    playerGuidance: "Ожидающий ход оставил следы отката. Сначала завершите починку в расширенном режиме, затем возвращайтесь к игре.",
-                    actions:
-                    [
-                        Action(
-                            "open-repair-guidance",
-                            "Открыть подсказки починки",
-                            "Операции починки и детали отката доступны в расширенном режиме.",
-                            "advanced-only")
-                    ]);
+                    playerGuidance: "Вернитесь к последнему доступному состоянию или повторите попытку позже.",
+                    actions: []);
             }
 
             if (ArtifactExists(lifecycle.PendingTurn, BrowserPendingTurnInspector.TurnErrorPath))
             {
                 return Create(
-                    state: "gm-turn-error",
-                    title: "Ход ГМа завершился ошибкой",
-                    message: lifecycle.Guidance.FirstOrDefault()?.Message ?? lifecycle.PendingTurn.Message,
+                    state: "blocked",
+                    title: "Мир не смог завершить ход",
+                    message: "Результат предыдущего хода не был принят.",
                     canStartBrowserWrite: false,
                     lifecycle: lifecycle,
-                    phase: "error-restored",
+                    phase: "blocked",
                     severity: "error",
-                    playerGuidance: "Последний ход ГМа завершился ошибкой. Откройте починку в расширенном режиме, прежде чем продолжать игру.",
-                    actions:
-                    [
-                        Action(
-                            "open-advanced-repair",
-                            "Открыть починку в расширенном режиме",
-                            "Используйте техническую панель, чтобы разобрать ошибку хода и восстановление состояния.",
-                            "advanced-only")
-                    ]);
+                    playerGuidance: "Вернитесь к последнему доступному состоянию или повторите действие позже.",
+                    actions: []);
             }
 
             if (ArtifactExists(lifecycle.PendingTurn, BrowserPendingTurnInspector.TurnCompletePath))
             {
                 return Create(
                     state: "ready-gm-response",
-                    title: "Ответ ГМа готов к принятию",
-                    message: lifecycle.Guidance.FirstOrDefault()?.Message ?? lifecycle.PendingTurn.Message,
+                    title: "Ответ мира готов",
+                    message: "Мир завершил обработку хода и готов показать результат.",
                     canStartBrowserWrite: false,
                     lifecycle: lifecycle,
                     phase: "ready",
                     severity: "success",
-                    playerGuidance: "Ответ ГМа готов: примите его через обычную обработку хода, прежде чем начинать новый ввод.",
-                    actions:
-                    [
-                        Action(
-                            "accept-gm-response",
-                            "Принять ответ ГМа",
-                            "Принятие ответа остаётся в безопасном жизненном цикле; кнопка для обычного режима будет добавлена позже.",
-                            "advanced-only")
-                    ]);
+                    playerGuidance: "Дождитесь появления результата, прежде чем начинать новое действие.",
+                    actions: []);
             }
 
             return Create(
                 state: "pending-gm-turn",
                 title: "Ожидает ответ ГМа",
-                message: lifecycle.PendingTurn.Message,
+                message: "Отправленный ход ещё обрабатывается.",
                 canStartBrowserWrite: false,
                 lifecycle: lifecycle,
                 phase: "waiting-gm",
                 severity: "warning",
-                playerGuidance: "Ход отправлен ГМу. Дождитесь ответа перед любыми новыми действиями.",
+                playerGuidance: "Дождитесь ответа перед любыми новыми действиями.",
                 actions:
                 [
                     Action(
@@ -456,23 +431,15 @@ public sealed record BrowserGameScreenTurnStateDto(
         if (qte.State == "Failed")
         {
             return Create(
-                state: "qte-error",
-                title: "Состояние QTE требует проверки",
-                message: qte.Error ??
-                         "Состояние быстрой сцены повреждено.",
+                state: "blocked",
+                title: "Быстрая сцена временно недоступна",
+                message: "Эту сцену сейчас нельзя безопасно продолжить.",
                 canStartBrowserWrite: false,
                 lifecycle: lifecycle,
-                phase: "validation-failed",
+                phase: "blocked",
                 severity: "error",
-                playerGuidance: "Не начинайте новый ход, пока состояние QTE не будет проверено или восстановлено.",
-                actions:
-                [
-                    Action(
-                        "review-qte-state",
-                        "Проверить состояние QTE",
-                        "Откройте расширенный режим для диагностики и восстановления состояния быстрой сцены.",
-                        "advanced-only")
-                ]);
+                playerGuidance: "Вернитесь к последнему доступному состоянию или повторите попытку позже.",
+                actions: []);
         }
 
         if (qte.State is "Offer" or "Active")
@@ -498,24 +465,21 @@ public sealed record BrowserGameScreenTurnStateDto(
 
         if (!lifecycle.CanStartBrowserWrite)
         {
-            var blockedMessage = lifecycle.LocalUiLock is { Exists: true, IsStale: false }
-                ? $"Локальная запись уже удерживается: {lifecycle.LocalUiLock.OwnerLabel}. Дождитесь завершения операции или истечения lease."
-                : lifecycle.PendingTurn.Message;
             return Create(
                 state: "blocked",
-                title: "Локальная запись заблокирована",
-                message: blockedMessage,
+                title: "Действие временно недоступно",
+                message: "Другая операция ещё не завершилась.",
                 canStartBrowserWrite: false,
                 lifecycle: lifecycle,
                 phase: "turn-submitted",
                 severity: "warning",
-                playerGuidance: "Локальная запись уже идёт или защищена блокировкой. Не запускайте второй ход до завершения текущей операции.",
+                playerGuidance: "Дождитесь завершения текущей операции, прежде чем начинать новую.",
                 actions:
                 [
                     Action(
                         "wait-local-write",
-                        "Дождаться локальной записи",
-                        "Повторите действие после освобождения локальной UI-блокировки.",
+                        "Подождать",
+                        "Повторите действие после завершения текущей операции.",
                         "player-default")
                 ]);
         }
@@ -523,22 +487,15 @@ public sealed record BrowserGameScreenTurnStateDto(
         if (lifecycle.Validation.ErrorCount > 0)
         {
             return Create(
-                state: "validation-errors",
-                title: "Требуется проверка состояния",
-                message: lifecycle.Validation.StatusLabel,
+                state: "blocked",
+                title: "Мир временно остановился",
+                message: "Текущее состояние мира не позволяет продолжить ход.",
                 canStartBrowserWrite: false,
                 lifecycle: lifecycle,
-                phase: "validation-failed",
+                phase: "blocked",
                 severity: "error",
-                playerGuidance: "Проверка нашла ошибки состояния. Подробности и операции починки доступны в расширенном режиме.",
-                actions:
-                [
-                    Action(
-                        "review-validation",
-                        "Проверить состояние",
-                        "Откройте расширенный режим, чтобы увидеть группы ошибок и выполнить починку.",
-                        "advanced-only")
-                ]);
+                playerGuidance: "Вернитесь к последнему доступному состоянию или повторите попытку позже.",
+                actions: []);
         }
 
         return Create(
@@ -575,8 +532,6 @@ public sealed record BrowserGameScreenTurnStateDto(
             Title: title,
             Message: message,
             CanStartBrowserWrite: canStartBrowserWrite,
-            ValidationState: lifecycle.Validation.State,
-            ValidationLabel: lifecycle.Validation.StatusLabel,
             Phase: phase,
             PhaseLabel: ToPhaseLabel(phase),
             Severity: severity,
@@ -635,30 +590,30 @@ public sealed record BrowserGameScreenActionComposerDto(
             {
                 return new BrowserGameScreenActionComposerDto(
                     CanSubmit: false,
-                    Mode: "repair-required",
-                    Placeholder: "Требуется починка незавершённого хода...",
-                    Guidance: "Ожидающий ход оставил следы отката. Завершите починку в расширенном режиме перед продолжением.",
-                    DisabledReason: lifecycle.PendingTurn.Message);
+                    Mode: "blocked",
+                    Placeholder: "Продолжение хода временно недоступно...",
+                    Guidance: "Вернитесь к последнему доступному состоянию или повторите попытку позже.",
+                    DisabledReason: "Предыдущий ход не завершился безопасно.");
             }
 
             if (BrowserGameScreenTurnStateDto.ArtifactExists(lifecycle.PendingTurn, BrowserPendingTurnInspector.TurnErrorPath))
             {
                 return new BrowserGameScreenActionComposerDto(
                     CanSubmit: false,
-                    Mode: "gm-turn-error",
-                    Placeholder: "Ход ГМа завершился ошибкой...",
-                    Guidance: "Последний ход ГМа завершился ошибкой. Откройте расширенный режим для починки.",
-                    DisabledReason: lifecycle.PendingTurn.Message);
+                    Mode: "blocked",
+                    Placeholder: "Мир не смог завершить ход...",
+                    Guidance: "Вернитесь к последнему доступному состоянию или повторите действие позже.",
+                    DisabledReason: "Результат предыдущего хода не был принят.");
             }
 
             if (BrowserGameScreenTurnStateDto.ArtifactExists(lifecycle.PendingTurn, BrowserPendingTurnInspector.TurnCompletePath))
             {
                 return new BrowserGameScreenActionComposerDto(
                     CanSubmit: false,
-                    Mode: "ready-gm-response",
-                    Placeholder: "Ответ ГМа готов к принятию...",
-                    Guidance: "Ответ ГМа готов. Примите его через расширенный режим перед новым вводом.",
-                    DisabledReason: lifecycle.PendingTurn.Message);
+                    Mode: "blocked",
+                    Placeholder: "Ответ мира готов...",
+                    Guidance: "Дождитесь появления результата, прежде чем начинать новое действие.",
+                    DisabledReason: "Результат хода ещё открывается.");
             }
 
             return new BrowserGameScreenActionComposerDto(
@@ -666,18 +621,17 @@ public sealed record BrowserGameScreenActionComposerDto(
                 Mode: "waiting-for-gm",
                 Placeholder: "ГМ обрабатывает ход...",
                 Guidance: "Ход отправлен ГМу. Дождитесь ответа перед новыми действиями.",
-                DisabledReason: lifecycle.PendingTurn.Message);
+                DisabledReason: "Отправленный ход ещё обрабатывается.");
         }
 
         if (qte.State == "Failed")
         {
             return new BrowserGameScreenActionComposerDto(
                 CanSubmit: false,
-                Mode: "qte-error",
-                Placeholder: "Требуется проверка состояния QTE...",
-                Guidance: "Не отправляйте новый ход до восстановления состояния быстрой сцены.",
-                DisabledReason: qte.Error ??
-                                "Состояние QTE требует проверки.");
+                Mode: "blocked",
+                Placeholder: "Быстрая сцена временно недоступна...",
+                Guidance: "Вернитесь к последнему доступному состоянию или повторите попытку позже.",
+                DisabledReason: "Эту сцену сейчас нельзя безопасно продолжить.");
         }
 
         if (qte.State is "Offer" or "Active")
@@ -694,10 +648,10 @@ public sealed record BrowserGameScreenActionComposerDto(
         {
             return new BrowserGameScreenActionComposerDto(
                 CanSubmit: false,
-                Mode: "repair-required",
-                Placeholder: "Требуется починка состояния...",
-                Guidance: "Исправьте ошибки проверки перед новым художественным вводом.",
-                DisabledReason: lifecycle.Validation.StatusLabel);
+                Mode: "blocked",
+                Placeholder: "Продолжение хода временно недоступно...",
+                Guidance: "Вернитесь к последнему доступному состоянию или повторите попытку позже.",
+                DisabledReason: "Текущее состояние мира не позволяет продолжить ход.");
         }
 
         if (!lifecycle.CanStartBrowserWrite)
@@ -706,8 +660,8 @@ public sealed record BrowserGameScreenActionComposerDto(
                 CanSubmit: false,
                 Mode: "blocked",
                 Placeholder: "Локальная запись сейчас недоступна...",
-                Guidance: "Проверьте панель состояния или расширенный режим.",
-                DisabledReason: lifecycle.Guidance.FirstOrDefault()?.Message ?? "Локальная запись заблокирована.");
+                Guidance: "Дождитесь завершения текущей операции и повторите действие.",
+                DisabledReason: "Другая операция ещё не завершилась.");
         }
 
         return new BrowserGameScreenActionComposerDto(

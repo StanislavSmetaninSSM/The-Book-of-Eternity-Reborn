@@ -13,31 +13,20 @@ public partial class ValidationService
 {
     private async Task<HashSet<string>> ReadKnownLocationIdsAsync()
     {
-        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var ids = new HashSet<string>(StringComparer.Ordinal);
+        var json = await ReadPreTurnTrackedFileAsync(
+            MortalLocationMaterializationContract.WorldMapPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return ids;
 
-        foreach (var json in new[]
-                 {
-                     await ReadPreTurnTrackedFileAsync("game_state/world/current_location.json"),
-                     await ReadPreTurnTrackedFileAsync("game_state/world/world_map.json")
-                 })
+        try
         {
-            if (string.IsNullOrWhiteSpace(json))
-                continue;
-
-            try
-            {
-                using var doc = JsonDocument.Parse(json);
-                foreach (var location in EnumerateLocationLikeObjects(doc.RootElement, includeLocationUpdates: false))
-                {
-                    var locationId = GetFirstNonEmptyString(location, "locationId");
-                    if (!string.IsNullOrWhiteSpace(locationId))
-                        ids.Add(locationId);
-                }
-            }
-            catch
-            {
-                // ignored
-            }
+            using var document = JsonDocument.Parse(json);
+            ids.UnionWith(ReadExactCanonicalWorldMapLocationIds(document.RootElement));
+        }
+        catch (JsonException)
+        {
+            // Unusable pre-turn map grants no location authority.
         }
 
         return ids;
@@ -47,26 +36,20 @@ public partial class ValidationService
     private async Task<WorldLocationStateIndex> ReadPreTurnWorldLocationStateIndexAsync()
     {
         var index = new WorldLocationStateIndex();
+        var json = await ReadPreTurnTrackedFileAsync(
+            MortalLocationMaterializationContract.WorldMapPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return index;
 
-        foreach (var json in new[]
-                 {
-                     await ReadPreTurnTrackedFileAsync("game_state/world/current_location.json"),
-                     await ReadPreTurnTrackedFileAsync("game_state/world/world_map.json")
-                 })
+        try
         {
-            if (string.IsNullOrWhiteSpace(json))
-                continue;
-
-            try
-            {
-                using var doc = JsonDocument.Parse(json);
-                foreach (var location in EnumerateLocationLikeObjects(doc.RootElement, includeLocationUpdates: false))
-                    RegisterWorldLocationState(index, location);
-            }
-            catch
-            {
-                // ignored
-            }
+            using var document = JsonDocument.Parse(json);
+            foreach (var location in ReadExactCanonicalWorldMapLocations(document.RootElement))
+                RegisterWorldLocationState(index, location);
+        }
+        catch (JsonException)
+        {
+            // Unusable pre-turn map grants no location authority.
         }
 
         return index;
@@ -545,11 +528,13 @@ public partial class ValidationService
                 var root = doc.RootElement;
                 var locationNode = root;
                 var locationContext = "game_state/world/current_location.json";
+                var isRawCurrentLocationCarrier = false;
                 if (root.TryGetProperty("currentLocationData", out var currentLocationData) &&
                     currentLocationData.ValueKind == JsonValueKind.Object)
                 {
                     locationNode = currentLocationData;
                     locationContext = "game_state/world/current_location.json.currentLocationData";
+                    isRawCurrentLocationCarrier = true;
                 }
 
                 var currentLocationId = GetFirstNonEmptyString(locationNode, "locationId");
@@ -573,15 +558,40 @@ public partial class ValidationService
                     knownCoordinatesForLocation.Count > 0 &&
                     !knownCoordinatesForLocation.Contains(currentCoordinateKey))
                 {
-                    issues.Add(new ValidationIssue(
+                    var mismatch = new ValidationIssue(
                         $"{locationContext}.coordinates",
                         IssueSeverity.Error,
                         "known currentLocationData использует coordinates, которые не совпадают с canonical coordinates этой locationId",
                         code: "current_location_coordinates_mismatch",
-                        section: "Location",
+                        actor: isRawCurrentLocationCarrier
+                            ? "mortal_location:existing:" + currentLocationId
+                            : null,
+                        section: isRawCurrentLocationCarrier
+                            ? "MortalLocationMaterialization"
+                            : "Location",
                         expected: "existing coordinates for the specified locationId from canonical world state",
                         actual: currentCoordinateKey,
-                        repairHint: "Для known location передавай exact coordinates из canonical world state этой locationId. Если локация действительно новая, используй locationId = null и полный location object."));
+                        repairHint: "Для known location передавай exact coordinates из canonical world state этой locationId. Если локация действительно новая, используй locationId = null и полный location object.",
+                        repairTargetFiles: isRawCurrentLocationCarrier
+                            ? new[] { MortalLocationMaterializationContract.CurrentLocationPath }
+                            : null);
+                    if (isRawCurrentLocationCarrier)
+                    {
+                        string? materializationId = null;
+                        if (locationNode.TryGetProperty("materialization", out var envelope) &&
+                            envelope.ValueKind == JsonValueKind.Object)
+                        {
+                            materializationId = GetFirstNonEmptyString(envelope, "materializationId");
+                        }
+                        mismatch.MortalLocationRepairContext = new MortalLocationRepairContext(
+                            "currentLocationData",
+                            "mortal_location",
+                            InitialId: null,
+                            MaterializationId: materializationId,
+                            RepairableFields: new[] { "coordinates" },
+                            ExistingId: currentLocationId);
+                    }
+                    issues.Add(mismatch);
                 }
                 else if (string.IsNullOrWhiteSpace(currentLocationId) &&
                          locationNode.TryGetProperty("coordinates", out var currentCoordinatesForNewLocation) &&
@@ -610,12 +620,6 @@ public partial class ValidationService
             {
                 using var doc = JsonDocument.Parse(worldMapJson);
                 var sameTurnLocationInitialIds = CollectSameTurnLocationInitialIds(doc.RootElement);
-                var index = 0;
-                foreach (var location in EnumerateLocationLikeObjects(doc.RootElement))
-                {
-                    ValidateAdjacencyTargets(location, $"game_state/world/world_map.json.locations[{index++}]", knownLocationIds, issues);
-                }
-
                 var updatesRoot = doc.RootElement.TryGetProperty("worldMapUpdates", out var worldMapUpdates) &&
                                   worldMapUpdates.ValueKind == JsonValueKind.Object
                     ? worldMapUpdates
@@ -2839,65 +2843,123 @@ public partial class ValidationService
     }
 
 
-    private static IEnumerable<JsonElement> EnumerateLocationLikeObjects(JsonElement root, bool includeLocationUpdates = true)
+    internal static IReadOnlyList<string> ReadExactCanonicalWorldMapLocationIds(
+        JsonElement root)
     {
-        if (root.ValueKind == JsonValueKind.Object &&
-            root.TryGetProperty("currentLocationData", out var currentLocationData) &&
-            currentLocationData.ValueKind == JsonValueKind.Object)
+        return ReadExactCanonicalWorldMapLocations(root)
+            .Select(static location => ReadExactCanonicalLocationId(location)!)
+            .ToArray();
+    }
+
+    private static IReadOnlyList<JsonElement> ReadExactCanonicalWorldMapLocations(
+        JsonElement root)
+    {
+        if (!HasExactCanonicalWorldMapRoot(root, out var locations))
+            return Array.Empty<JsonElement>();
+
+        var candidates = new List<(JsonElement Location, string AliasKey)>();
+        var aliasCounts = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var location in locations.EnumerateArray())
         {
-            yield return currentLocationData;
-        }
-
-        if (root.ValueKind == JsonValueKind.Object &&
-            (root.TryGetProperty("locationId", out _) || root.TryGetProperty("locationType", out _)))
-        {
-            yield return root;
-        }
-
-        if (root.ValueKind != JsonValueKind.Object)
-            yield break;
-
-        if (root.TryGetProperty("worldMapUpdates", out var worldMapUpdates) &&
-            worldMapUpdates.ValueKind == JsonValueKind.Object)
-        {
-            foreach (var item in EnumerateLocationLikeObjects(worldMapUpdates, includeLocationUpdates))
-                yield return item;
-        }
-
-        foreach (var propName in includeLocationUpdates
-                     ? new[] { "newLocations", "locations", "locationUpdates" }
-                     : new[] { "newLocations", "locations" })
-        {
-            if (!root.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)
-                continue;
-
-            foreach (var item in arr.EnumerateArray())
+            var locationId = ReadExactCanonicalLocationId(location);
+            if (locationId == null ||
+                MortalLocationMaterializationContract.ValidateCanonicalLocation(
+                        location,
+                        MortalLocationMaterializationContract.WorldMapPath + ".locations[]")
+                    .Any(static issue => issue.Severity == IssueSeverity.Error))
             {
-                if (item.ValueKind == JsonValueKind.Object)
-                    yield return item;
+                continue;
             }
+
+            var aliasKey = MortalLocationIdentityState.BuildConfusableKey(locationId);
+            candidates.Add((location.Clone(), aliasKey));
+            aliasCounts[aliasKey] = aliasCounts.GetValueOrDefault(aliasKey) + 1;
         }
+
+        return candidates
+            .Where(candidate => aliasCounts[candidate.AliasKey] == 1)
+            .Select(static candidate => candidate.Location)
+            .ToArray();
+    }
+
+    private static bool HasExactCanonicalWorldMapRoot(
+        JsonElement root,
+        out JsonElement locations)
+    {
+        locations = default;
+        if (root.ValueKind != JsonValueKind.Object)
+            return false;
+
+        var properties = root.EnumerateObject().ToArray();
+        if (properties.Length != 4 ||
+            !properties.Select(static property => property.Name)
+                .ToHashSet(StringComparer.Ordinal)
+                .SetEquals(new[] { "schemaVersion", "realm", "locations", "links" }) ||
+            !root.TryGetProperty("schemaVersion", out var schemaVersion) ||
+            schemaVersion.ValueKind != JsonValueKind.Number ||
+            !schemaVersion.TryGetInt32(out var version) || version != 1 ||
+            !root.TryGetProperty("realm", out var realm) ||
+            realm.ValueKind != JsonValueKind.String ||
+            !string.Equals(realm.GetString(), "mortal_world", StringComparison.Ordinal) ||
+            !root.TryGetProperty("locations", out locations) ||
+            locations.ValueKind != JsonValueKind.Array ||
+            !root.TryGetProperty("links", out var links) ||
+            links.ValueKind != JsonValueKind.Array)
+        {
+            locations = default;
+            return false;
+        }
+
+        return true;
+    }
+
+    private static string? ReadExactCanonicalLocationId(JsonElement location)
+    {
+        if (location.ValueKind != JsonValueKind.Object)
+            return null;
+
+        string? result = null;
+        var matches = 0;
+        foreach (var property in location.EnumerateObject())
+        {
+            if (!string.Equals(property.Name, "locationId", StringComparison.OrdinalIgnoreCase))
+                continue;
+            if (!string.Equals(property.Name, "locationId", StringComparison.Ordinal) ||
+                ++matches != 1 ||
+                property.Value.ValueKind != JsonValueKind.String)
+            {
+                return null;
+            }
+
+            result = property.Value.GetString();
+        }
+
+        return matches == 1 &&
+               !string.IsNullOrEmpty(result) &&
+               string.Equals(result, result.Trim(), StringComparison.Ordinal)
+            ? result
+            : null;
     }
 
 
     private static void RegisterWorldLocationState(WorldLocationStateIndex index, JsonElement location)
     {
-        var locationId = GetFirstNonEmptyString(location, "locationId");
-        if (string.IsNullOrWhiteSpace(locationId))
+        var locationId = ReadExactCanonicalLocationId(location);
+        if (locationId == null)
             return;
 
-        var locationType = GetFirstNonEmptyString(location, "locationType");
-        if (!string.IsNullOrWhiteSpace(locationType))
+        var locationType = ReadExactWorldLocationString(location, "locationType");
+        if (locationType != null)
             index.LocationTypesByLocationId[locationId] = locationType;
 
-        var biome = GetFirstNonEmptyString(location, "biome");
-        if (!string.IsNullOrWhiteSpace(biome))
+        var biome = ReadExactWorldLocationString(location, "biome");
+        if (biome != null)
             index.BiomesByLocationId[locationId] = biome;
 
         if (location.TryGetProperty("coordinates", out var coordinates) &&
             TryGetNormalizedLocationCoordinatesKey(coordinates, out var coordinateKey))
         {
-            AddDictionarySetValue(index.CoordinateKeysByLocationId, locationId, coordinateKey);
+            AddExactDictionarySetValue(index.CoordinateKeysByLocationId, locationId, coordinateKey);
         }
 
         if (location.TryGetProperty("adjacencyMap", out var adjacencyMap) &&
@@ -2912,7 +2974,7 @@ public partial class ValidationService
                     continue;
                 }
 
-                AddDictionarySetValue(index.LinkTargetCoordinateKeysBySourceLocationId, locationId, targetCoordinateKey);
+                AddExactDictionarySetValue(index.LinkTargetCoordinateKeysBySourceLocationId, locationId, targetCoordinateKey);
             }
         }
 
@@ -2921,9 +2983,9 @@ public partial class ValidationService
         {
             foreach (var storage in storages.EnumerateArray())
             {
-                var storageId = GetFirstNonEmptyString(storage, "storageId");
-                if (!string.IsNullOrWhiteSpace(storageId))
-                    AddDictionarySetValue(index.StorageIdsByLocationId, locationId, storageId);
+                var storageId = ReadExactWorldLocationString(storage, "storageId");
+                if (storageId != null)
+                    AddExactDictionarySetValue(index.StorageIdsByLocationId, locationId, storageId);
             }
         }
 
@@ -2932,18 +2994,36 @@ public partial class ValidationService
         {
             foreach (var threat in activeThreats.EnumerateArray())
             {
-                var threatId = GetFirstNonEmptyString(threat, "threatId");
-                if (!string.IsNullOrWhiteSpace(threatId))
+                var threatId = ReadExactWorldLocationString(threat, "threatId");
+                if (threatId != null)
                 {
-                    AddDictionarySetValue(index.ThreatIdsByLocationId, locationId, threatId);
+                    AddExactDictionarySetValue(index.ThreatIdsByLocationId, locationId, threatId);
                     if (threat.TryGetProperty("currentActivity", out var currentActivity) &&
                         currentActivity.ValueKind == JsonValueKind.Object)
                     {
-                        AddDictionarySetValue(index.ThreatIdsWithCurrentActivityByLocationId, locationId, threatId);
+                        AddExactDictionarySetValue(index.ThreatIdsWithCurrentActivityByLocationId, locationId, threatId);
                     }
                 }
             }
         }
+    }
+
+    private static string? ReadExactWorldLocationString(
+        JsonElement value,
+        string propertyName)
+    {
+        if (value.ValueKind != JsonValueKind.Object ||
+            !value.TryGetProperty(propertyName, out var property) ||
+            property.ValueKind != JsonValueKind.String)
+        {
+            return null;
+        }
+
+        var result = property.GetString();
+        return !string.IsNullOrEmpty(result) &&
+               string.Equals(result, result.Trim(), StringComparison.Ordinal)
+            ? result
+            : null;
     }
 
 
@@ -2991,6 +3071,20 @@ public partial class ValidationService
         if (!dictionary.TryGetValue(key, out var values))
         {
             values = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            dictionary[key] = values;
+        }
+
+        values.Add(value);
+    }
+
+    private static void AddExactDictionarySetValue(
+        Dictionary<string, HashSet<string>> dictionary,
+        string key,
+        string value)
+    {
+        if (!dictionary.TryGetValue(key, out var values))
+        {
+            values = new HashSet<string>(StringComparer.Ordinal);
             dictionary[key] = values;
         }
 

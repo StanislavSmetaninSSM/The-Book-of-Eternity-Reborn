@@ -50,6 +50,69 @@ public sealed class MortalItemCarrierCatalogTests
     }
 
     [Fact]
+    public void Build_IndexesOffscreenLocationStorageAsTheSameLogicalCarrierKind()
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot("itm_offscreen_storage");
+        var offscreen = MortalLocationStorageContentsState.BuildCanonicalRoot(
+            new Dictionary<MortalLocationStorageKey, JsonArray>
+            {
+                [new MortalLocationStorageKey(
+                    "loc_remote",
+                    "storage_chest")] = new JsonArray(item)
+            });
+
+        var result = MortalItemCarrierCatalog.Build(new MortalItemCarrierCatalogInput(
+            null,
+            null,
+            null,
+            null,
+            null,
+            EmptyCompanions(),
+            offscreen));
+
+        Assert.Empty(result.Issues);
+        AssertCarrier(
+            result,
+            "itm_offscreen_storage",
+            "location_storage",
+            "loc_remote",
+            "storage_chest");
+        var occurrence = Assert.Single(result.ByItemId["itm_offscreen_storage"]);
+        Assert.Equal(MortalLocationStorageContentsState.StatePath, occurrence.FilePath);
+        Assert.Equal(
+            MortalLocationStorageContentsState.StatePath + ".entries[0].contents[0]",
+            occurrence.JsonPath);
+    }
+
+    [Fact]
+    public void Build_CurrentAndOffscreenCopiesReportOneDuplicatePhysicalOccurrence()
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot("itm_duplicate_storage");
+        var offscreen = MortalLocationStorageContentsState.BuildCanonicalRoot(
+            new Dictionary<MortalLocationStorageKey, JsonArray>
+            {
+                [new MortalLocationStorageKey(
+                    "loc_remote",
+                    "storage_chest")] = new JsonArray(item.DeepClone())
+            });
+
+        var result = MortalItemCarrierCatalog.Build(new MortalItemCarrierCatalogInput(
+            null,
+            null,
+            null,
+            CurrentLocation("loc_remote", "storage_chest", item),
+            null,
+            EmptyCompanions(),
+            offscreen));
+
+        Assert.Equal(2, result.ByItemId["itm_duplicate_storage"].Count);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_materialization_duplicate_item_id");
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_materialization_duplicate_receipt_id");
+    }
+
+    [Fact]
     public void Build_UsesContentsPathAsExactNestedContainerCoordinate()
     {
         var parent = MortalItemTestFixture.CreateCanonicalRoot("itm_satchel");

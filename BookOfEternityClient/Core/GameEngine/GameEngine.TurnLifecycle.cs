@@ -17,7 +17,6 @@ namespace BookOfEternityClient.Core;
 public partial class GameEngine
 {
     private const string PostAcceptedMaterializedStateValidationSource = "пост-материализации принятого хода";
-    private const string MortalBootstrapScaffoldPath = "game_state/control/mortal_bootstrap_scaffold.json";
     private const string GmRuntimeUnavailableHarnessSource = "gm_runtime_unavailable";
     private const string GmTerminalWaitTimeoutHarnessSource = "gm_terminal_wait_timeout";
     private const string GmDaemonStatusPath = "game_state/control/gm_daemon_status.json";
@@ -93,7 +92,7 @@ public partial class GameEngine
                 ClearTransientOutputFiles();
                 await RollbackRejectedAcceptedTurnAsync(
                     rollbackSnapshot,
-                    "[yellow]↩ Ответ GM отклонён проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                    "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
                 await CleanupPendingTurnSnapshotAsync();
                 return false;
             }
@@ -113,7 +112,7 @@ public partial class GameEngine
                 _fs.DeleteFile("ready/turn_error.json");
                 await RollbackRejectedAcceptedTurnAsync(
                     rollbackSnapshot,
-                    "[yellow]↩ Материализованное состояние после хода отклонено проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                    "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
                 await CleanupPendingTurnSnapshotAsync();
                 return false;
             }
@@ -809,7 +808,7 @@ public partial class GameEngine
                         _fs.DeleteFile("ready/turn_complete.json");
                         await RollbackRejectedAcceptedTurnAsync(
                             rollbackSnapshot,
-                            "[yellow]↩ Поздний ответ GM отклонён после материализации. Состояние откатилось к последней стабильной версии.[/]");
+                            "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
                         await CleanupPendingTurnSnapshotAsync();
                         return true;
                     }
@@ -876,7 +875,7 @@ public partial class GameEngine
                     _fs.DeleteFile("ready/turn_complete.json");
                     await RollbackRejectedAcceptedTurnAsync(
                         rollbackSnapshot,
-                        "[yellow]↩ Поздний ответ GM отклонён проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                        "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
                     await CleanupPendingTurnSnapshotAsync();
                 }
             }
@@ -1077,8 +1076,8 @@ public partial class GameEngine
             catch (Exception ex)
             {
                 LogError(ex);
-                AnsiConsole.MarkupLine($"\n[red]❌ Ошибка в игровом цикле: {GameInterface.EscapeMarkup(ex.Message)}[/]");
-                AnsiConsole.MarkupLine("[dim]Ошибка сохранена в game_session/error_log.txt. Данные не потеряны.[/]");
+                AnsiConsole.MarkupLine("\n[red]❌ Мир не смог безопасно завершить действие. Подробности сохранены для диагностики.[/]");
+                AnsiConsole.MarkupLine("[dim]Вернитесь к последнему доступному состоянию и повторите действие позже.[/]");
                 AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
                 RecordGameLoopErrorObservation(ex);
                 _inputSource.ReadKey(intercept: true);
@@ -1301,7 +1300,7 @@ public partial class GameEngine
             _fs.DeleteFile("input/turn_request.json");
             await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,
-                "[yellow]↩ Ответ GM отклонён проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
             await CleanupPendingTurnSnapshotAsync();
             return;
         }
@@ -1324,7 +1323,7 @@ public partial class GameEngine
             _fs.DeleteFile("input/turn_request.json");
             await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,
-                "[yellow]↩ Материализованное состояние после хода отклонено проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
             await CleanupPendingTurnSnapshotAsync();
             return;
         }
@@ -2132,7 +2131,7 @@ public partial class GameEngine
                     _fs.DeleteFile("ready/turn_complete.json");
                     await RollbackRejectedAcceptedTurnAsync(
                         BuildValidatedRollbackSnapshot(snapshotContext),
-                        "[yellow]↩ Оценка жизни отклонена проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                        "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
                     await CleanupPendingTurnSnapshotAsync();
                     return true;
                 }
@@ -2669,7 +2668,7 @@ public partial class GameEngine
                 Timestamp = DateTime.UtcNow.ToString("o"),
                 GameMode = "normal",
                 SystemReminder = await BuildTurnSystemReminderAsync(
-                    "MORTAL BOOTSTRAP BASELINE: this is the first Mortal World turn of a new incarnation. The client materialized only a setting-neutral structural baseline before this request; it did not infer actors, items, skills, capabilities, money, or experience from player prose. These files are captured in pending_turn_snapshot. Read game_state/control/mortal_bootstrap_scaffold.json, develop the existing stable world ids, and materialize every first-turn actor with the complete actor envelope because no bootstrap actor is grandfathered by the baseline. Use canonical turn anchors exactly like #[3]. text for location/quest logs, do not write #3 - date, and do not edit client-owned game_state/world/guardian_corrections.json.")
+                    "MORTAL BOOTSTRAP BASELINE: this is the first Mortal World turn of a new incarnation. The client wrote a setting-neutral empty world map, pending current-location root, and empty location identity index; no Mortal location exists yet. Read game_state/control/mortal_bootstrap_scaffold.json and satisfy locationMaterializationRequest through the ordinary complete currentLocationData/worldMapUpdates materialization routes. Never copy reserved permanent IDs into raw GM output. Materialize every first-turn actor with the complete actor envelope because no bootstrap actor is grandfathered by the baseline. Use canonical turn anchors exactly like #[3]. text for location/quest logs, do not write #3 - date, and do not edit client-owned control, identity-index, receipt, seal, or guardian-correction fields.")
             };
             AttachFreshDiceAndGacha(request);
             request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync("Mortal World");
@@ -2680,8 +2679,14 @@ public partial class GameEngine
                 charDesc,
                 worldDesc,
                 circumstances);
+            await WriteMortalBootstrapScaffoldAsync(
+                rollbackBackups,
+                request,
+                newIncarnationNumber,
+                charDesc,
+                worldDesc,
+                circumstances);
             await CreateCanonicalBaselineSnapshotAsync(request, rollbackBackups, "GM-инициированного воплощения");
-            await WriteMortalBootstrapScaffoldAsync(request, newIncarnationNumber, charDesc, worldDesc, circumstances);
             manifestCreated = true;
             ClearTransientOutputFiles();
             await _fs.WriteFileAtomicAsync("input/turn_request.json",
@@ -2887,6 +2892,7 @@ public partial class GameEngine
     }
 
     private async Task WriteMortalBootstrapScaffoldAsync(
+        RollbackSnapshot? rollbackSnapshot,
         TurnRequest request,
         int incarnationNumber,
         string? characterDescription,
@@ -2904,6 +2910,7 @@ public partial class GameEngine
             "lore/codex_entries.json",
             "game_state/world/current_location.json",
             "game_state/world/world_map.json",
+            MortalLocationIdentityState.StatePath,
             "game_state/world/world_events.json",
             "game_state/inventory/items.json",
             "game_state/player/experience.json",
@@ -2922,6 +2929,7 @@ public partial class GameEngine
             "lore/codex_entries.json",
             "game_state/world/current_location.json",
             "game_state/world/world_map.json",
+            MortalLocationIdentityState.StatePath,
             "game_state/world/world_events.json",
             "game_state/inventory/items.json",
             "game_state/player/experience.json",
@@ -2939,7 +2947,7 @@ public partial class GameEngine
             ["purpose"] = "fresh_mortal_world_bootstrap",
             ["authority"] = "client-authored harness contract; Mortal mechanics become authoritative only through explicit structured GM declarations and canonical GM state",
             ["baselineMaterializedBeforeDispatch"] = true,
-            ["gmWorkflow"] = "The client wrote only a setting-neutral structural baseline and saved it into pending_turn_snapshot. It does not assign a default level, XP threshold, carrying capacity, faction resources, influence, control, or universal power profile. playerAuthoredStart is narrative context, not mechanical authority. Record every chosen skill, item, actor capability, resource, money, progression, carrying rule, and faction mechanic in structuredGmAuthority and write the matching complete canonical GM output. Every actor first created on this turn requires a complete materialization envelope.",
+            ["gmWorkflow"] = "The client wrote only a setting-neutral structural baseline and saved it into pending_turn_snapshot. No Mortal location exists until the GM satisfies locationMaterializationRequest through the ordinary complete materialization routes. The client does not assign a default level, XP threshold, carrying capacity, faction resources, influence, control, or universal power profile. playerAuthoredStart is narrative context, not mechanical authority. Record every chosen skill, item, actor capability, resource, money, progression, carrying rule, and faction mechanic in structuredGmAuthority and write the matching complete canonical GM output. Every actor and location first created on this turn requires its complete materialization envelope.",
             ["sessionId"] = request.SessionId,
             ["requestId"] = request.RequestId,
             ["turnNumber"] = request.TurnNumber,
@@ -2951,6 +2959,12 @@ public partial class GameEngine
                 ["worldDescription"] = worldDescription ?? string.Empty,
                 ["startingCircumstances"] = startingCircumstances ?? string.Empty
             },
+            ["locationMaterializationRequest"] =
+                MortalBootstrapLocationScaffold.CreatePendingRequest(
+                    incarnationNumber,
+                    request.SessionId,
+                    request.RequestId,
+                    request.TurnNumber),
             ["structuredGmAuthority"] = new JsonObject
             {
                 ["authoritySource"] = "explicit_structured_gm_output_only",
@@ -2979,54 +2993,8 @@ public partial class GameEngine
                 ["requiredEventIds"] = new JsonArray($"world_event_{idSuffix}_opening"),
                 ["rule"] = "Preserve the client-authored opening event in game_state/world/world_events.json and enrich it when useful; do not leave /новости_мира empty after bootstrap."
             },
-            ["suggestedStableIds"] = new JsonObject
-            {
-                ["currentLocationId"] = $"loc_{idSuffix}_start",
-                ["nearbyExitLocationId"] = $"loc_{idSuffix}_nearby_exit"
-            },
             ["requiredMortalBootstrapFiles"] = requiredMortalBootstrapFiles,
             ["preMaterializedBaselineFiles"] = preMaterializedBaselineFiles,
-            ["locationRequirements"] = new JsonObject
-            {
-                ["currentLocationMustUseStableLocationId"] = true,
-                ["knownExitsMinimum"] = 1,
-                ["worldMapLinksMinimum"] = 1,
-                ["requiredArrayProperties"] = new JsonArray
-                {
-                    "activeThreats",
-                    "adjacencyMap",
-                    "factionControl",
-                    "locationStorages",
-                    "knownExits"
-                },
-                ["noNullForRequiredCollectionsOnBootstrap"] = true,
-                ["coordinatesRequired"] = true
-            },
-            ["canonicalCoordinateAuthority"] = new JsonObject
-            {
-                ["prevents"] = "current_location_coordinates_mismatch",
-                ["rule"] = "Copy these exact coordinates for these locationId values. Do not invent a different z-level or map coordinate for the same stable id.",
-                ["currentLocationId"] = $"loc_{idSuffix}_start",
-                ["currentLocationCoordinates"] = new JsonObject
-                {
-                    ["x"] = 0,
-                    ["y"] = 0,
-                    ["z"] = 0
-                },
-                ["nearbyExitLocationId"] = $"loc_{idSuffix}_nearby_exit",
-                ["nearbyExitCoordinates"] = new JsonObject
-                {
-                    ["x"] = 1,
-                    ["y"] = 0,
-                    ["z"] = 0
-                },
-                ["mustMatchAcrossSurfaces"] = new JsonArray
-                {
-                    "game_state/world/current_location.json.coordinates for currentLocationId",
-                    "game_state/world/world_map.json newLocations[].coordinates for the same locationId",
-                    "current_location adjacencyMap[].targetCoordinates and world_map newLinks[].targetCoordinates for the targetLocationId"
-                }
-            },
             ["factionRequirements"] = new JsonObject
             {
                 ["bootstrapCollectionStartsEmpty"] = true,
@@ -3036,7 +3004,7 @@ public partial class GameEngine
             {
                 ["materializeActionableStartingProps"] = true,
                 ["startingItemOrPropIfNarrated"] = "If narration gives the player an inspectable object, sealed container, letter, weapon, clue, or tool, create or reference a matching canonical inventory/storage/location object.",
-                ["navigationScaffoldRule"] = "Preserve the client-owned current location, known exit, coordinates, and map link as neutral identity/navigation scaffolding. Do not assign location type, travel mode, link type, biome, safety, or difficulty until the GM explicitly materializes those setting-owned values.",
+                ["navigationScaffoldRule"] = "Materialize the reserved visited start through currentLocationData. Either materialize the reserved complete neighbor plus one directed newLinks entry, or leave the possible exit narrative-only without any neighbor/link identity, endpoint, coordinate, or canonical entry. Reservations constrain identity and coordinates but do not supply setting-owned semantics.",
                 ["actorRule"] = "Use semantic GM judgment over the complete setting and scene. When a non-player actor becomes concrete, author the complete setting-appropriate actor and materialization envelope; never ask the client to derive an actor from vocabulary."
             },
             ["trainingAuthoringGuidance"] = new JsonObject
@@ -3112,47 +3080,64 @@ public partial class GameEngine
                         "progressionTrackers"
                     },
                     ["sceneNpcLocationRule"] = "For NPCsInScene in a known current location, set currentLocationId to currentLocationData.locationId and initialLocationId to JSON null. For NPCsInScene in a same-turn new location, set initialLocationId to currentLocationData.initialId/newLocations.initialId and currentLocationId to JSON null. Always keep currentLocationName as the visible current location name.",
-                    ["offscreenSceneActorRule"] = "NPCsInScene is only for actors physically present in currentLocationData. Offscreen voices, voices behind a door, guards in a nearby corridor, people near nearbyExitLocationId, and route or exit pressure are not NPCsInScene for the current room; keep them in narrative, currentLocationData, quest/faction/location memory, Actors outside scope, or UpdateNPCs at their own location only if they are durable known actors.",
+                    ["offscreenSceneActorRule"] = "NPCsInScene is only for actors physically present in currentLocationData. Offscreen voices, voices behind a door, guards in an unmaterialized nearby place, and route or exit pressure are not NPCsInScene for the current room; keep them in narrative, quest/faction/location memory, Actors outside scope, or UpdateNPCs at their own exact accepted location only if they are durable known actors.",
                     ["actorScopeRule"] = "Every non-player Mortal World actor named as relevant in gm_thoughts_markdown must have a persistent NPC/faction/quest/inventory surface or be moved to actors outside scope. Do not use Relevant actors for offscreen pressure that does not receive a structured update.",
                     ["playerCharacterRule"] = "The player character from characterDescription is not an NPC and does not need game_state/npcs persistence. If you name the player character in Relevant actors, make clear they are the player character, not an NPC; never materialize the player character through NPCsInScene or UpdateNPCs."
                 },
                 ["currentLocationMinimum"] = new JsonObject
                 {
                     ["targetFile"] = "game_state/world/current_location.json",
+                    ["route"] = "currentLocationData with locationId=null and exact reserved initialId",
                     ["requiredFields"] = new JsonArray
                     {
                         "locationId",
+                        "initialId",
+                        "realm",
                         "name",
                         "displayName",
+                        "purpose",
                         "description",
+                        "image_prompt",
+                        "locationType",
+                        "biome/biomeDescription or indoorType",
                         "region",
                         "coordinates",
-                        "knownExits",
-                        "adjacencyMap",
                         "factionControl",
                         "locationStorages",
                         "activeThreats",
-                        "lastEventsDescription"
+                        "lastEventsDescription",
+                        "materialization"
                     },
+                    ["ordinaryContractRule"] = "Use the full ordinary Mortal location schema and exact scaffold sourceAuthority. Do not write a permanent locationId, materializationReceipt, seal, identity-index entry, or derived exit summary.",
                     ["lastEventsTimestampRule"] = "Use canonical historical-entry timestamp format when lastEventsDescription carries a timestamp; otherwise keep a readable event summary without a fake timestamp."
                 },
                 ["worldMapMinimum"] = new JsonObject
                 {
                     ["targetFile"] = "game_state/world/world_map.json",
+                    ["route"] = "worldMapUpdates.newLocations[] plus worldMapUpdates.newLinks[]",
                     ["requiredLocationFields"] = new JsonArray
                     {
-                        "locationId",
+                        "locationId=null",
+                        "initialId",
                         "name",
                         "displayName",
+                        "purpose",
                         "region",
                         "description",
-                        "coordinates"
+                        "coordinates",
+                        "materialization"
                     },
-                    ["requiredLinkPreviewFields"] = new JsonArray
+                    ["requiredLinkFields"] = new JsonArray
                     {
-                        "targetLocationId",
-                        "targetName",
-                        "targetCoordinates"
+                        "linkId=null",
+                        "initialId",
+                        "sourceInitialId",
+                        "targetInitialId",
+                        "linkType",
+                        "travelMode",
+                        "access",
+                        "discovery",
+                        "materialization"
                     },
                     ["requiredActiveThreatFields"] = new JsonArray
                     {
@@ -3224,7 +3209,7 @@ public partial class GameEngine
                         },
                         ["narrativePressureRule"] = "If a scene has only vague pressure or tension, keep activeThreats empty and describe it in faction chronicle or current location events. Do not create string-only activeThreat stubs."
                     },
-                    ["linkRule"] = "Preserve the neutral bootstrap map location/link pair and exact targetCoordinates. Add setting-owned traversal or difficulty fields only through explicit GM materialization."
+                    ["linkRule"] = "Use the exact reserved temporary endpoints for the directed bootstrap link. The client assigns reserved permanent IDs and derives player exits only after acceptance; never author adjacency summaries."
                 },
                 ["inventoryItemMinimum"] = new JsonObject
                 {
@@ -3299,10 +3284,10 @@ public partial class GameEngine
                 "Prevent npc_contract_unknown_top_level_key: keep npc_core.json top-level collections in the documented NPC surfaces; do not write schemaVersion, npcs, or npcInteractionJournalUpdates there.",
                 "Prevent npc_contract_unknown_top_level_key: do not write NPCJournals, NPCQuestUpdates, or NPCRelationshipUpdates as top-level keys in game_state/npcs/npc_core.json.",
                 "Prevent npc_full_object_missing_required_fields: NPCsInScene/UpdateNPCs entries must be full canonical NPC objects, not name-only rows.",
-                "Prevent npc_scene_location_mismatch: NPCsInScene is only for actors physically present in currentLocationData; offscreen voices, nearbyExitLocationId actors, and corridor/door pressure must stay outside NPCsInScene until the player reaches or directly interacts with them.",
+                "Prevent npc_scene_location_mismatch: NPCsInScene is only for actors physically present in currentLocationData; offscreen voices and actors in unmaterialized nearby places must stay outside NPCsInScene until the player reaches or directly interacts with them.",
                 "Prevent mortal_relevant_actor_missing_persistence: every Mortal relevant actor in gm_thoughts_markdown needs a matching persistent surface or must be moved outside scope.",
                 "Prevent player character NPC false positives: the player character is controlled by player state, not game_state/npcs, and should not be materialized as an NPC.",
-                "Prevent current_location_coordinates_mismatch: copy canonicalCoordinateAuthority coordinates exactly for suggested stable location ids across current_location, world_map newLocations, adjacencyMap, and newLinks.",
+                "Prevent mortal_bootstrap_location_reservation_mismatch: use the exact temporary refs, source authority, and coordinates from locationMaterializationRequest. Keep permanent reservations, receipts, seals, and the identity index client-owned.",
                 "Prevent faction_full_object_partial_optional_extension_data: if you create a durable faction, create complete faction core plus sidecars; do not mix partial optional arrays into a full faction object.",
                 "Prevent item_missing_equipment_slot/item_missing_durability: every starting item needs a valid slot when equipment-like and durability as a percentage string such as 100% when player-visible.",
                 "Prevent invalid_string_array_item and player-facing turn anchors in item journalEntries: journalEntries[] entries must be non-empty strings, not objects, and must not start with technical prefixes such as '#[3].'.",
@@ -3317,7 +3302,10 @@ public partial class GameEngine
             }
         };
 
-        await _fs.WriteFileAtomicAsync(MortalBootstrapScaffoldPath, root.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(MortalBootstrapLocationScaffold.StatePath, root.ToJsonString(JsonOpts));
+        RegisterMortalBootstrapSnapshotFile(
+            rollbackSnapshot,
+            MortalBootstrapLocationScaffold.StatePath);
     }
 
     private async Task<bool> HasAcceptedTurnAuthorityForIncarnationTriggerAsync(

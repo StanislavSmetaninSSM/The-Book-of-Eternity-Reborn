@@ -108,7 +108,8 @@ internal static class MortalItemPlayerProjection
     private static readonly HashSet<string> RepairPacketKinds = new(StringComparer.Ordinal)
     {
         "mortal_item_materialization_repair",
-        "mortal_item_identity_authority_repair"
+        "mortal_item_identity_authority_repair",
+        "mortal_location_materialization_repair"
     };
 
     private static readonly HashSet<string> RepairPacketSignatureFieldNames = new(StringComparer.OrdinalIgnoreCase)
@@ -176,6 +177,40 @@ internal static class MortalItemPlayerProjection
         "kind",
         "authorityId"
     };
+
+    private static readonly HashSet<string> ValidationRepairRequestFieldNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "metadataDiagnosticOnly",
+        "revalidationAttempt",
+        "gmInstructions",
+        "summaryGroups",
+        "harnessRepairPackets",
+        "errors"
+    };
+
+    private static readonly HashSet<string> ValidationDiagnosticFailureReportFieldNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "detectedAtUtc",
+        "reason",
+        "rollbackAvailable",
+        "summaryGroups",
+        "errors"
+    };
+
+    private static readonly HashSet<string> LocationStorageContentsRootFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "schemaVersion",
+            "entries"
+        };
+
+    private static readonly HashSet<string> LocationStorageContentsEntryFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "locationId",
+            "storageId",
+            "contents"
+        };
 
     internal static bool IsInternalField(string? fieldName) =>
         !string.IsNullOrWhiteSpace(fieldName) && InternalAuthorityFieldNames.Contains(fieldName);
@@ -248,46 +283,92 @@ internal static class MortalItemPlayerProjection
     }
 
     internal static JsonNode? CloneSemanticValue(JsonNode? node) =>
-        CloneSemanticValue(node, itemContext: false);
+        CloneSemanticValue(node, itemContext: false, suppressInternalDtos: false);
 
     internal static JsonNode? CloneItemSemanticValue(JsonNode? node) =>
-        CloneSemanticValue(node, itemContext: true);
+        CloneSemanticValue(node, itemContext: true, suppressInternalDtos: true);
 
-    private static JsonNode? CloneSemanticValue(JsonNode? node, bool itemContext)
+    internal static JsonNode? CloneMortalMaterializationSemanticValue(JsonNode? node) =>
+        CloneSemanticValue(node, itemContext: false, suppressInternalDtos: true);
+
+    private static JsonNode? CloneSemanticValue(
+        JsonNode? node,
+        bool itemContext,
+        bool suppressInternalDtos)
     {
         return node switch
         {
             null => null,
-            JsonObject obj when itemContext && IsInternalItemDtoShape(obj) => null,
-            JsonObject obj => CloneSemanticObject(obj, itemContext),
-            JsonArray array => CloneSemanticArray(array, itemContext),
+            JsonObject obj when suppressInternalDtos && IsInternalItemDtoShape(obj) => null,
+            JsonObject obj => CloneSemanticObject(obj, itemContext, suppressInternalDtos),
+            JsonArray array => CloneSemanticArray(array, itemContext, suppressInternalDtos),
             _ => node.DeepClone()
         };
     }
 
     internal static string FormatSemanticValue(JsonElement value, string? fieldName = null)
+        => FormatSemanticValue(
+            value,
+            fieldName,
+            itemContext: true,
+            suppressInternalDtos: true);
+
+    internal static string FormatMortalMaterializationSemanticValue(
+        JsonElement value,
+        string? fieldName = null)
+        => FormatSemanticValue(
+            value,
+            fieldName,
+            itemContext: false,
+            suppressInternalDtos: true);
+
+    private static string FormatSemanticValue(
+        JsonElement value,
+        string? fieldName,
+        bool itemContext,
+        bool suppressInternalDtos)
     {
-        if (IsInternalItemField(fieldName))
+        var isInternal = itemContext
+            ? IsInternalItemField(fieldName)
+            : IsInternalField(fieldName);
+        if (isInternal)
             return string.Empty;
-        if (value.ValueKind == JsonValueKind.Object && IsInternalItemDtoShape(value))
+        if (suppressInternalDtos &&
+            value.ValueKind == JsonValueKind.Object &&
+            IsInternalItemDtoShape(value))
+        {
             return string.Empty;
+        }
 
         return value.ValueKind switch
         {
             JsonValueKind.Array => string.Join("; ", value.EnumerateArray()
-                .Select(item => FormatSemanticValue(item, fieldName))
+                .Select(item => FormatSemanticValue(
+                    item,
+                    fieldName,
+                    itemContext,
+                    suppressInternalDtos))
                 .Where(static item => !string.IsNullOrWhiteSpace(item))),
             JsonValueKind.Object => string.Join("; ", value.EnumerateObject()
-                .Where(property => !IsInternalItemField(property.Name))
+                .Where(property => itemContext
+                    ? !IsInternalItemField(property.Name)
+                    : !IsInternalField(property.Name))
                 .Select(property => FormatFieldValue(
                     property.Name,
-                    FormatSemanticValue(property.Value, property.Name)))
+                    FormatSemanticValue(
+                        property.Value,
+                        property.Name,
+                        itemContext,
+                        suppressInternalDtos)))
                 .Where(static item => !string.IsNullOrWhiteSpace(item))),
             _ => StructuredBonusDisplay.FormatValue(value, fieldName)
         };
     }
 
-    private static JsonObject CloneSemanticObject(JsonObject source, bool itemContext)
+    private static JsonObject CloneSemanticObject(
+        JsonObject source,
+        bool itemContext,
+        bool suppressInternalDtos)
     {
         var result = new JsonObject();
         foreach (var property in source)
@@ -298,7 +379,10 @@ internal static class MortalItemPlayerProjection
             if (isInternal)
                 continue;
 
-            var projected = CloneSemanticValue(property.Value, itemContext);
+            var projected = CloneSemanticValue(
+                property.Value,
+                itemContext,
+                suppressInternalDtos);
             if (property.Value != null && projected == null)
                 continue;
             result[property.Key] = projected;
@@ -307,12 +391,15 @@ internal static class MortalItemPlayerProjection
         return result;
     }
 
-    private static JsonArray CloneSemanticArray(JsonArray source, bool itemContext)
+    private static JsonArray CloneSemanticArray(
+        JsonArray source,
+        bool itemContext,
+        bool suppressInternalDtos)
     {
         var result = new JsonArray();
         foreach (var value in source)
         {
-            var projected = CloneSemanticValue(value, itemContext);
+            var projected = CloneSemanticValue(value, itemContext, suppressInternalDtos);
             if (value != null && projected == null)
                 continue;
             result.Add(projected);
@@ -327,7 +414,8 @@ internal static class MortalItemPlayerProjection
             source.Select(static property => property.Key),
             StringComparer.OrdinalIgnoreCase);
         return IsInternalItemDtoShape(fields, TryReadString(source, "kind")) ||
-               ContainsIdentityIndexEntry(source);
+               ContainsIdentityIndexEntry(source) ||
+               IsLocationStorageContentsState(source, fields);
     }
 
     private static bool IsInternalItemDtoShape(JsonElement source)
@@ -336,7 +424,8 @@ internal static class MortalItemPlayerProjection
             source.EnumerateObject().Select(static property => property.Name),
             StringComparer.OrdinalIgnoreCase);
         return IsInternalItemDtoShape(fields, TryReadString(source, "kind")) ||
-               ContainsIdentityIndexEntry(source);
+               ContainsIdentityIndexEntry(source) ||
+               IsLocationStorageContentsState(source, fields);
     }
 
     private static bool IsInternalItemDtoShape(HashSet<string> fields, string? kind)
@@ -354,8 +443,87 @@ internal static class MortalItemPlayerProjection
             return true;
         if (fields.IsSupersetOf(SourceAuthorityFieldNames))
             return true;
+        if (fields.IsSupersetOf(ValidationRepairRequestFieldNames))
+            return true;
+        if (fields.IsSupersetOf(ValidationDiagnosticFailureReportFieldNames))
+            return true;
 
         return fields.IsSupersetOf(CarrierCoordinateFieldNames);
+    }
+
+    private static bool IsLocationStorageContentsState(
+        JsonObject source,
+        HashSet<string> fields)
+    {
+        if (!fields.IsSupersetOf(LocationStorageContentsRootFieldNames))
+            return false;
+
+        var schema = source.FirstOrDefault(property =>
+            string.Equals(property.Key, "schemaVersion", StringComparison.OrdinalIgnoreCase)).Value;
+        var entries = source.FirstOrDefault(property =>
+            string.Equals(property.Key, "entries", StringComparison.OrdinalIgnoreCase)).Value as JsonArray;
+        if (schema is not JsonValue scalar ||
+            !scalar.TryGetValue<int>(out var version) ||
+            version != 1 ||
+            entries == null)
+        {
+            return false;
+        }
+
+        return entries.Count == 0 || entries.OfType<JsonObject>().Any(entry =>
+            LocationStorageContentsEntryFieldNames.IsSubsetOf(
+                entry.Select(static property => property.Key)) &&
+            entry.FirstOrDefault(property =>
+                string.Equals(property.Key, "contents", StringComparison.OrdinalIgnoreCase)).Value
+                is JsonArray);
+    }
+
+    private static bool IsLocationStorageContentsState(
+        JsonElement source,
+        HashSet<string> fields)
+    {
+        if (!fields.IsSupersetOf(LocationStorageContentsRootFieldNames))
+            return false;
+
+        JsonElement? schema = null;
+        JsonElement? entries = null;
+        foreach (var property in source.EnumerateObject())
+        {
+            if (string.Equals(property.Name, "schemaVersion", StringComparison.OrdinalIgnoreCase))
+                schema = property.Value;
+            else if (string.Equals(property.Name, "entries", StringComparison.OrdinalIgnoreCase))
+                entries = property.Value;
+        }
+        if (!schema.HasValue ||
+            schema.Value.ValueKind != JsonValueKind.Number ||
+            !schema.Value.TryGetInt32(out var version) ||
+            version != 1 ||
+            !entries.HasValue ||
+            entries.Value.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        var hasEntries = false;
+        foreach (var entry in entries.Value.EnumerateArray())
+        {
+            hasEntries = true;
+            if (entry.ValueKind != JsonValueKind.Object)
+                continue;
+            var entryFields = new HashSet<string>(
+                entry.EnumerateObject().Select(static property => property.Name),
+                StringComparer.OrdinalIgnoreCase);
+            if (!entryFields.IsSupersetOf(LocationStorageContentsEntryFieldNames))
+                continue;
+            if (entry.EnumerateObject().Any(property =>
+                    string.Equals(property.Name, "contents", StringComparison.OrdinalIgnoreCase) &&
+                    property.Value.ValueKind == JsonValueKind.Array))
+            {
+                return true;
+            }
+        }
+
+        return !hasEntries;
     }
 
     private static bool ContainsIdentityIndexEntry(JsonObject source)

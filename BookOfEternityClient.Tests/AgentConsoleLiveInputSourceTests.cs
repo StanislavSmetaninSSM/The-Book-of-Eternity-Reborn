@@ -577,10 +577,23 @@ public sealed class AgentConsoleLiveInputSourceTests
     public async Task EnqueueLine_WhenReadKeyIsPending_RejectsWithoutPoisoningQueue()
     {
         var store = new AgentConsoleStateStore();
-        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromSeconds(5));
+        var activeReadRegistered = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var input = new AgentConsoleLiveInputSource(
+            store,
+            readTimeout: TimeSpan.FromSeconds(5),
+            maxQueueLength: AgentConsoleLiveInputSource.DefaultMaxQueueLength,
+            hooks: new AgentConsoleLiveInputSourceHooks
+            {
+                ActiveReadRegistered = inputKind =>
+                {
+                    if (inputKind == AgentConsoleInputKind.Key)
+                        activeReadRegistered.TrySetResult();
+                }
+            });
         var readTask = Task.Run(() => input.ReadKey(intercept: true));
 
-        await Task.Delay(50);
+        await activeReadRegistered.Task.WaitAsync(TimeSpan.FromSeconds(1));
         var rejected = input.EnqueueLine("/directive");
 
         Assert.False(rejected.Accepted);

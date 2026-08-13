@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 
@@ -55,6 +56,8 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
 
     private const string SoulStatePath = "game_state/meta/soul_state.json";
     private const string MortalLocationPath = "game_state/world/current_location.json";
+    private const string MortalWorldMapPath = "game_state/world/world_map.json";
+    private const string MortalLocationIdentityPath = MortalLocationIdentityState.StatePath;
     private const string GuardiansPath = "game_state/meta/guardians.json";
     private const string ShiningAbodePath = "game_state/meta/shining_abode_state.json";
 
@@ -115,18 +118,8 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
     {
         if (!scope.IsResolved || scope.RealmKind != LocalInteractionRealmKind.Mortal)
             return false;
-
-        var locationIds = GetNonEmptyStrings(
-            actor,
-            "currentLocationId",
-            "initialLocationId",
-            "locationId");
-        var locationNames = GetNonEmptyStrings(
-            actor,
-            "currentLocation",
-            "currentLocationName",
-            "locationName");
-        return AliasesMatchLocation(locationIds, locationNames, scope.LocationId, scope.LocationName);
+        return TryReadExactString(actor, "currentLocationId", out var currentLocationId) &&
+               string.Equals(currentLocationId, scope.LocationId, StringComparison.Ordinal);
     }
 
     public static bool IsAfterlifeActorLocal(LocalInteractionScope scope, JsonObject actor)
@@ -209,14 +202,9 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
         string? currentLocationId,
         string? currentLocationName)
     {
-        var actorAliases = BuildAliasSet(actorLocationId, actorLocationName);
-        var currentAliases = BuildAliasSet(currentLocationId, currentLocationName);
-        if (actorAliases.Count == 0 || currentAliases.Count == 0 || !actorAliases.Overlaps(currentAliases))
-            return false;
-
-        return actorAliases.Count <= 1 ||
-               currentAliases.Count <= 1 ||
-               actorAliases.SetEquals(currentAliases);
+        return IsExactIdentity(actorLocationId) &&
+               IsExactIdentity(currentLocationId) &&
+               string.Equals(actorLocationId, currentLocationId, StringComparison.Ordinal);
     }
 
     private async Task<LocalInteractionScope> ResolveMortalAsync(
@@ -224,16 +212,23 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
         IReadOnlyList<LocalInteractionAuthoritySnapshot> authoritySnapshots)
     {
         var locationRead = await ReadAuthorityObjectAsync(writeLease, MortalLocationPath);
-        var root = locationRead.Root;
-        var resolvedSnapshots = AppendSnapshot(authoritySnapshots, locationRead.Snapshot);
-        var location = root?["currentLocationData"] as JsonObject ?? root;
-        var locationId = GetFirstString(location, "locationId", "currentLocationId", "initialId", "id");
-        var locationName = GetFirstString(location, "name", "currentLocation", "currentLocationName", "displayName");
-        if (string.IsNullOrWhiteSpace(locationId) && string.IsNullOrWhiteSpace(locationName))
+        var mapRead = await ReadAuthorityObjectAsync(writeLease, MortalWorldMapPath);
+        var indexRead = await ReadAuthorityObjectAsync(writeLease, MortalLocationIdentityPath);
+        var resolvedSnapshots = AppendSnapshot(
+            AppendSnapshot(
+                AppendSnapshot(authoritySnapshots, locationRead.Snapshot),
+                mapRead.Snapshot),
+            indexRead.Snapshot);
+        if (!TryResolveExactCanonicalMortalCurrent(
+                locationRead.Root,
+                mapRead.Root,
+                indexRead.Root,
+                out var locationId,
+                out var locationName))
         {
             return LocalInteractionScope.Unresolved(
                 LocalInteractionRealmKind.Mortal,
-                "Текущая локация не определена. Обучение и торговля доступны только рядом с персонажем.",
+                "Текущая локация не подтверждена картой. Обучение и торговля временно недоступны.",
                 resolvedSnapshots);
         }
 
@@ -247,6 +242,77 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
             LocalFactionIds: new HashSet<string>(StringComparer.OrdinalIgnoreCase),
             UnavailableReason: null,
             AuthoritySnapshots: resolvedSnapshots);
+    }
+
+    private static bool TryResolveExactCanonicalMortalCurrent(
+        JsonObject? current,
+        JsonObject? map,
+        JsonObject? identityRoot,
+        out string locationId,
+        out string locationName)
+    {
+        locationId = string.Empty;
+        locationName = string.Empty;
+        if (current == null || map == null || identityRoot == null ||
+            !TryReadExactString(current, "locationId", out var currentId) ||
+            map.Count != 4 ||
+            map["schemaVersion"] is not JsonValue schemaVersionNode ||
+            !schemaVersionNode.TryGetValue<int>(out var schemaVersion) || schemaVersion != 1 ||
+            !TryReadExactString(map, "realm", out var realm) || realm != "mortal_world" ||
+            map["locations"] is not JsonArray locations || map["links"] is not JsonArray)
+        {
+            return false;
+        }
+
+        var identityState = MortalLocationIdentityState.Parse(identityRoot);
+        if (identityState.Issues.Count != 0 || !identityState.IsAcceptedCanonicalLocation(current))
+            return false;
+
+        var planning = MortalLocationAcceptedTurnPlanner.Build(new MortalLocationAcceptedTurnInput(
+            map,
+            current,
+            identityRoot,
+            RawCurrentLocationData: null,
+            RawWorldMapUpdates: null,
+            Turn: 1));
+        if (!planning.Success)
+            return false;
+
+        using var currentDocument = JsonDocument.Parse(current.ToJsonString());
+        if (MortalLocationMaterializationContract.ValidateCanonicalCurrentLocation(
+                currentDocument.RootElement,
+                MortalLocationMaterializationContract.CurrentLocationPath).Count != 0 ||
+            !string.Equals(
+                GetFirstString(current["discovery"] as JsonObject, "tier"),
+                "visited",
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var matches = locations.OfType<JsonObject>()
+            .Where(location => TryReadExactString(location, "locationId", out var candidateId) &&
+                               string.Equals(candidateId, currentId, StringComparison.Ordinal))
+            .Take(2)
+            .ToArray();
+        if (matches.Length != 1 || !identityState.IsAcceptedCanonicalLocation(matches[0]))
+            return false;
+
+        foreach (var pair in matches[0])
+        {
+            if (!current.TryGetPropertyValue(pair.Key, out var currentValue) ||
+                !MortalLocationMaterializationContract.SharedCurrentProjectionValueEquals(
+                    pair.Key,
+                    pair.Value,
+                    currentValue))
+            {
+                return false;
+            }
+        }
+
+        locationId = currentId;
+        locationName = GetFirstString(matches[0], "displayName", "name");
+        return locationName.Length > 0;
     }
 
     private async Task<LocalInteractionScope> ResolveChaosSeaAsync(
@@ -563,6 +629,21 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
 
         return value.TryGetValue<string>(out var result) ? result?.Trim() ?? string.Empty : string.Empty;
     }
+
+    private static bool TryReadExactString(JsonObject root, string field, out string result)
+    {
+        result = string.Empty;
+        if (root[field] is not JsonValue value || !value.TryGetValue<string>(out var text) ||
+            !IsExactIdentity(text))
+        {
+            return false;
+        }
+        result = text;
+        return true;
+    }
+
+    private static bool IsExactIdentity(string? value) =>
+        !string.IsNullOrEmpty(value) && string.Equals(value, value.Trim(), StringComparison.Ordinal);
 
     private static bool GetBoolean(JsonNode? node, bool defaultValue)
     {

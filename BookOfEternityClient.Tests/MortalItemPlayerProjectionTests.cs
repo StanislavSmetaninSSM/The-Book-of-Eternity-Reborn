@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using Xunit;
 
@@ -81,6 +82,65 @@ public sealed class MortalItemPlayerProjectionTests
         Assert.DoesNotContain("active", formatted, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void MortalMaterializationProjection_SuppressesRepairWrappersAndPreservesAdjacentSemantics()
+    {
+        var source = new JsonObject
+        {
+            ["repairRequest"] = CreateValidationRepairRequest(),
+            ["diagnosticReport"] = CreateValidationDiagnosticFailureReport(),
+            ["offscreenStorageAuthority"] =
+                MortalLocationStorageContentsState.BuildCanonicalRoot(
+                    new Dictionary<MortalLocationStorageKey, JsonArray>
+                    {
+                        [new MortalLocationStorageKey(
+                            "loc_private_offscreen",
+                            "storage_private_offscreen")] = new JsonArray(
+                            CreatePrivateOffscreenItem())
+                    }),
+            ["legitimateGuidance"] = new JsonObject
+            {
+                ["title"] = "Следопытская памятка",
+                ["steps"] = new JsonArray("Идти вдоль реки"),
+                ["reason"] = "Тропа безопаснее ночью"
+            }
+        };
+
+        var projected = Assert.IsType<JsonObject>(
+            MortalItemPlayerProjection.CloneMortalMaterializationSemanticValue(source));
+
+        Assert.Null(projected["repairRequest"]);
+        Assert.Null(projected["diagnosticReport"]);
+        Assert.Null(projected["offscreenStorageAuthority"]);
+        Assert.Equal(
+            "Следопытская памятка",
+            projected["legitimateGuidance"]?["title"]?.GetValue<string>());
+        Assert.Equal(
+            "Идти вдоль реки",
+            projected["legitimateGuidance"]?["steps"]?[0]?.GetValue<string>());
+        Assert.Equal(
+            "Тропа безопаснее ночью",
+            projected["legitimateGuidance"]?["reason"]?.GetValue<string>());
+
+        using var document = JsonDocument.Parse(source.ToJsonString());
+        var formatted = MortalItemPlayerProjection.FormatMortalMaterializationSemanticValue(
+            document.RootElement);
+        Assert.Contains("Следопытская памятка", formatted, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE GM INSTRUCTIONS", formatted, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE DIAGNOSTIC REASON", formatted, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE OFFSCREEN STORAGE ITEM", formatted, StringComparison.Ordinal);
+        Assert.DoesNotContain("mortal_location_materialization_governed_field_missing", formatted, StringComparison.Ordinal);
+    }
+
+    private static JsonObject CreatePrivateOffscreenItem()
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot(
+            "itm_private_offscreen_projection");
+        item["name"] = "PRIVATE OFFSCREEN STORAGE ITEM";
+        MortalItemTestFixture.ResealCanonical(item);
+        return item;
+    }
+
     private static JsonObject CreateRepairPacket() =>
         new()
         {
@@ -141,6 +201,58 @@ public sealed class MortalItemPlayerProjectionTests
                     ["parentItemIds"] = new JsonArray(),
                     ["mergedIntoItemId"] = null,
                     ["transitions"] = new JsonArray(CreateTransition())
+                })
+        };
+
+    private static JsonObject CreateValidationRepairRequest() =>
+        new()
+        {
+            ["sessionId"] = "session_private",
+            ["requestId"] = "request_private",
+            ["turnNumber"] = 42,
+            ["metadataDiagnosticOnly"] = false,
+            ["source"] = "private validation source",
+            ["detectedAtUtc"] = "2026-08-12T00:00:00Z",
+            ["revalidationAttempt"] = 2,
+            ["fullTurnResubmissionRequired"] = true,
+            ["gmInstructions"] = "PRIVATE GM INSTRUCTIONS",
+            ["summaryGroups"] = new JsonArray("PRIVATE SUMMARY GROUP"),
+            ["harnessRepairPackets"] = new JsonArray(CreateRepairPacket()),
+            ["resubmissionObligations"] = new JsonArray(
+                new JsonObject
+                {
+                    ["actor"] = "mortal_location:new:locref_private",
+                    ["route"] = "current_scene_creation",
+                    ["rawCarrier"] = "currentLocationData"
+                }),
+            ["requiredResubmissionPaths"] = new JsonArray("output/narrative_response.json"),
+            ["errors"] = new JsonArray(
+                new JsonObject
+                {
+                    ["code"] = "mortal_location_materialization_governed_field_missing",
+                    ["message"] = "PRIVATE VALIDATION MESSAGE",
+                    ["actor"] = "mortal_location:new:locref_private",
+                    ["expected"] = "complete description",
+                    ["actual"] = "missing"
+                })
+        };
+
+    private static JsonObject CreateValidationDiagnosticFailureReport() =>
+        new()
+        {
+            ["source"] = "private diagnostic source",
+            ["detectedAtUtc"] = "2026-08-12T00:00:00Z",
+            ["reason"] = "PRIVATE DIAGNOSTIC REASON",
+            ["rollbackAvailable"] = true,
+            ["summaryGroups"] = new JsonArray("PRIVATE DIAGNOSTIC SUMMARY"),
+            ["errors"] = new JsonArray(
+                new JsonObject
+                {
+                    ["code"] = "accepted_turn_invalid_snapshot_baseline",
+                    ["message"] = "PRIVATE DIAGNOSTIC MESSAGE",
+                    ["actor"] = "mortal_location:index",
+                    ["expected"] = "validated baseline",
+                    ["actual"] = "missing"
                 })
         };
 }

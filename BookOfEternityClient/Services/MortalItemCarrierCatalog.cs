@@ -39,11 +39,38 @@ internal sealed record MortalItemCarrierCatalogInput(
     JsonObject? NpcInventoryCommands,
     JsonObject? CurrentLocation,
     JsonObject? Vehicles,
-    IReadOnlyDictionary<string, JsonObject> CompanionRoots);
+    IReadOnlyDictionary<string, JsonObject> CompanionRoots,
+    JsonObject? OffscreenLocationStorageContents = null);
 
 internal sealed record MortalItemCatalogScanMetrics(int Items, int Companions, int Routes)
 {
     internal int TotalVisited => Items + Companions + Routes;
+}
+
+internal static class MortalItemCurrentLocationCarrier
+{
+    internal static JsonObject? Select(JsonObject? root)
+    {
+        if (root == null || root["currentLocationData"] is not JsonObject command)
+            return root;
+
+        // An existing-location command is a transient movement/refresh wrapper.
+        // Item-owned storage contents remain on the canonical sibling until the
+        // location plan parks or preserves them. A genuinely new current scene
+        // owns its storage contents inside the creation wrapper itself.
+        return ReadExactString(command["locationId"]) != null &&
+               ReadExactString(root["locationId"]) != null
+            ? root
+            : command;
+    }
+
+    private static string? ReadExactString(JsonNode? node) =>
+        node is JsonValue value &&
+        value.TryGetValue<string>(out var text) &&
+        !string.IsNullOrEmpty(text) &&
+        string.Equals(text, text.Trim(), StringComparison.Ordinal)
+            ? text
+            : null;
 }
 
 /// <summary>
@@ -99,6 +126,7 @@ internal sealed class MortalItemCarrierCatalog
         builder.ScanNpcCore(input.NpcCore);
         builder.ScanNpcInventoryCommands(input.NpcInventoryCommands);
         builder.ScanCurrentLocation(input.CurrentLocation);
+        builder.ScanOffscreenLocationStorages(input.OffscreenLocationStorageContents);
         builder.ScanVehicles(input.Vehicles);
         builder.ScanCompanionRoots(input.CompanionRoots);
         return new MortalItemCarrierCatalog(builder);
@@ -374,7 +402,7 @@ internal sealed class MortalItemCarrierCatalog
                 return;
 
             RouteNodesVisited++;
-            var location = root["currentLocationData"] as JsonObject ?? root;
+            var location = MortalItemCurrentLocationCarrier.Select(root)!;
             var locationPath = ReferenceEquals(location, root)
                 ? CurrentLocationPath
                 : $"{CurrentLocationPath}.currentLocationData";
@@ -402,7 +430,7 @@ internal sealed class MortalItemCarrierCatalog
                 {
                     locationId = ReadCarrierIdentity(
                         location,
-                        new[] { "locationId", "id" },
+                        new[] { "locationId", "initialId", "id" },
                         locationPath,
                         "location owner");
                     locationIdentityRead = true;
@@ -435,6 +463,49 @@ internal sealed class MortalItemCarrierCatalog
                     new MortalItemCarrierCoordinate(
                         "location_storage",
                         locationId ?? string.Empty,
+                        storageId,
+                        Array.Empty<string>()));
+            }
+        }
+
+        internal void ScanOffscreenLocationStorages(JsonObject? root)
+        {
+            if (root == null)
+                return;
+
+            RouteNodesVisited++;
+            var parsed = MortalLocationStorageContentsState.Parse(root);
+            foreach (var issue in parsed.Issues)
+            {
+                Issues.Add(new MortalItemCarrierCatalogIssue(
+                    issue.Code ?? "mortal_location_storage_contents_invalid",
+                    issue.FilePath,
+                    issue.Message,
+                    "locationStorageCoordinate",
+                    issue.Actual));
+            }
+            if (parsed.Issues.Count != 0)
+                return;
+
+            var entries = parsed.Root["entries"]!.AsArray();
+            for (var index = 0; index < entries.Count; index++)
+            {
+                if (entries[index] is not JsonObject entry ||
+                    entry["contents"] is not JsonArray contents)
+                {
+                    continue;
+                }
+
+                RouteNodesVisited++;
+                var locationId = ReadString(entry["locationId"]) ?? string.Empty;
+                var storageId = ReadString(entry["storageId"]);
+                ScanItemArray(
+                    contents,
+                    MortalLocationStorageContentsState.StatePath,
+                    $"{MortalLocationStorageContentsState.StatePath}.entries[{index}].contents",
+                    new MortalItemCarrierCoordinate(
+                        "location_storage",
+                        locationId,
                         storageId,
                         Array.Empty<string>()));
             }

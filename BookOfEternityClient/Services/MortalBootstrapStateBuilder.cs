@@ -33,12 +33,7 @@ public static class MortalBootstrapStateBuilder
         var character = FirstNonEmpty(characterDescription, $"персонаж инкарнации #{lifeNumber}");
         var world = FirstNonEmpty(worldDescription, "новый смертный мир");
         var circumstances = FirstNonEmpty(startingCircumstances, "первая сцена смертной жизни ещё не уточнена");
-        var currentLocationId = $"loc_{idSuffix}_start";
-        var nearbyExitId = $"loc_{idSuffix}_nearby_exit";
-        var locationName = "Стартовая сцена новой жизни";
-        var exitName = "Ближайший выход из стартовой сцены";
         var shortCircumstances = TrimSentence(circumstances, 180);
-        var turnAnchor = $"#[{turn}].";
 
         var files = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
         {
@@ -60,7 +55,7 @@ public static class MortalBootstrapStateBuilder
                         ["regionId"] = $"region_{idSuffix}_start",
                         ["name"] = "Стартовый регион",
                         ["description"] = world,
-                        ["knownLocations"] = new JsonArray(currentLocationId, nearbyExitId)
+                        ["knownLocations"] = new JsonArray()
                     }
                 }
             },
@@ -96,20 +91,9 @@ public static class MortalBootstrapStateBuilder
                 }
             },
             ["lore/codex_entries.json"] = BuildCodexEntries(idSuffix, lifeNumber, timestamp, world),
-            ["game_state/world/current_location.json"] = BuildCurrentLocation(
-                currentLocationId,
-                nearbyExitId,
-                locationName,
-                exitName,
-                shortCircumstances,
-                $"{turnAnchor} Начало смертной жизни: {shortCircumstances}"),
-            ["game_state/world/world_map.json"] = BuildWorldMap(
-                currentLocationId,
-                nearbyExitId,
-                locationName,
-                exitName,
-                shortCircumstances,
-                $"{turnAnchor} Первый ориентир новой жизни отмечен по выбранным обстоятельствам."),
+            [MortalLocationMaterializationContract.CurrentLocationPath] = BuildPendingCurrentLocation(),
+            [MortalLocationMaterializationContract.WorldMapPath] = BuildEmptyWorldMap(),
+            [MortalLocationIdentityState.StatePath] = MortalLocationIdentityState.CreateEmptyRoot(),
             ["game_state/inventory/items.json"] = BuildInventory(),
             [MortalItemIdentityState.StatePath] = MortalItemIdentityState.CreateEmptyRoot(),
             ["game_state/inventory/item_resources.json"] = BuildEmptyEntries(),
@@ -210,122 +194,22 @@ public static class MortalBootstrapStateBuilder
             ["equippedItems"] = new JsonObject()
         };
 
-    private static JsonObject BuildCurrentLocation(
-        string currentLocationId,
-        string nearbyExitId,
-        string locationName,
-        string exitName,
-        string shortCircumstances,
-        string lastEventsDescription) =>
+    private static JsonObject BuildPendingCurrentLocation() =>
         new()
         {
-            ["locationId"] = currentLocationId,
-            ["name"] = locationName,
-            ["displayName"] = locationName,
-            ["region"] = "Стартовый регион",
-            ["description"] = shortCircumstances,
-            ["coordinates"] = Coordinates(0, 0, 0),
-            ["knownExits"] = new JsonArray
-            {
-                new JsonObject
-                {
-                    ["targetLocationId"] = nearbyExitId,
-                    ["targetName"] = exitName,
-                    ["direction"] = "наружу",
-                    ["isKnown"] = true,
-                    ["summary"] = "Первый очевидный путь из стартовой сцены."
-                }
-            },
-            ["adjacencyMap"] = new JsonArray
-            {
-                new JsonObject
-                {
-                    ["targetLocationId"] = nearbyExitId,
-                    ["targetName"] = exitName,
-                    ["direction"] = "наружу",
-                    ["isKnown"] = true,
-                    ["name"] = "Путь из стартовой сцены",
-                    ["shortDescription"] = "Первый известный выход, который ГМ может уточнить художественно.",
-                    ["linkState"] = "known",
-                    ["targetCoordinates"] = Coordinates(1, 0, 0)
-                }
-            },
-            ["factionControl"] = new JsonArray(),
-            ["locationStorages"] = new JsonArray(),
-            ["activeThreats"] = new JsonArray(),
-            ["lastEventsDescription"] = lastEventsDescription
+            ["schemaVersion"] = 1,
+            ["realm"] = "mortal_world",
+            ["locationId"] = null,
+            ["state"] = "pending_materialization"
         };
 
-    private static JsonObject BuildWorldMap(
-        string currentLocationId,
-        string nearbyExitId,
-        string locationName,
-        string exitName,
-        string shortCircumstances,
-        string lastEventsDescription) =>
+    private static JsonObject BuildEmptyWorldMap() =>
         new()
         {
-            ["newLocations"] = new JsonArray
-            {
-                new JsonObject
-                {
-                    ["locationId"] = currentLocationId,
-                    ["name"] = locationName,
-                    ["displayName"] = locationName,
-                    ["region"] = "Стартовый регион",
-                    ["description"] = shortCircumstances,
-                    ["coordinates"] = Coordinates(0, 0, 0),
-                    ["exits"] = new JsonArray
-                    {
-                        new JsonObject
-                        {
-                            ["targetLocationId"] = nearbyExitId,
-                            ["direction"] = "наружу",
-                            ["isKnown"] = true
-                        }
-                    },
-                    ["lastEventsDescription"] = lastEventsDescription
-                },
-                new JsonObject
-                {
-                    ["locationId"] = nearbyExitId,
-                    ["name"] = exitName,
-                    ["displayName"] = exitName,
-                    ["region"] = "Стартовый регион",
-                    ["description"] = "Ближайшая ещё не раскрытая точка выхода из стартовой сцены.",
-                    ["coordinates"] = Coordinates(1, 0, 0),
-                    ["exits"] = new JsonArray
-                    {
-                        new JsonObject
-                        {
-                            ["targetLocationId"] = currentLocationId,
-                            ["direction"] = "обратно",
-                            ["isKnown"] = true
-                        }
-                    },
-                    ["lastEventsDescription"] = lastEventsDescription
-                }
-            },
-            ["newLinks"] = new JsonArray
-            {
-                new JsonObject
-                {
-                    ["sourceLocationId"] = currentLocationId,
-                    ["targetLocationId"] = nearbyExitId,
-                    ["name"] = "Путь из стартовой сцены",
-                    ["shortDescription"] = "Связь между стартовой точкой и ближайшим выходом.",
-                    ["linkState"] = "known",
-                    ["direction"] = "наружу",
-                    ["isKnown"] = true,
-                    ["targetName"] = exitName,
-                    ["targetCoordinates"] = Coordinates(1, 0, 0)
-                }
-            },
-            ["worldMapUpdates"] = new JsonObject
-            {
-                ["currentLocationId"] = currentLocationId,
-                ["lastEventsDescription"] = lastEventsDescription
-            }
+            ["schemaVersion"] = 1,
+            ["realm"] = "mortal_world",
+            ["locations"] = new JsonArray(),
+            ["links"] = new JsonArray()
         };
 
     private static JsonObject BuildCodexEntries(
@@ -401,13 +285,6 @@ public static class MortalBootstrapStateBuilder
             result[category] = counts[category];
         return result;
     }
-
-    private static JsonObject Coordinates(int x, int y, int z) => new()
-    {
-        ["x"] = x,
-        ["y"] = y,
-        ["z"] = z
-    };
 
     private static string FirstNonEmpty(params string?[] values) =>
         values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value))?.Trim() ?? string.Empty;

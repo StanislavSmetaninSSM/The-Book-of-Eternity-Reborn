@@ -223,12 +223,7 @@ public sealed class ActorMemoryServiceTests : IDisposable
     [Fact]
     public async Task BuildSystemReminderFragmentAsync_MortalWorld_IncludesNpcThoughtsAndEvents()
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_market",
-          "name": "Рынок"
-        }
-        """);
+        await SeedMortalLocationAsync("loc_market", "Рынок");
 
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
         {
@@ -327,12 +322,7 @@ public sealed class ActorMemoryServiceTests : IDisposable
     [Fact]
     public async Task BuildSystemReminderFragmentAsync_MortalWorld_PrefersRecentContinuityNearCurrentTurn()
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_market",
-          "name": "Рынок"
-        }
-        """);
+        await SeedMortalLocationAsync("loc_market", "Рынок");
 
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
         {
@@ -387,12 +377,7 @@ public sealed class ActorMemoryServiceTests : IDisposable
     [Fact]
     public async Task BuildSystemReminderFragmentAsync_MortalWorld_FallsBackToLatestContinuityWhenNoRecentEntriesExist()
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_market",
-          "name": "Рынок"
-        }
-        """);
+        await SeedMortalLocationAsync("loc_market", "Рынок");
 
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
         {
@@ -441,12 +426,7 @@ public sealed class ActorMemoryServiceTests : IDisposable
     [Fact]
     public async Task BuildSystemReminderFragmentAsync_MortalWorld_IgnoresAliasOnlyNpcCoreSections()
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_market",
-          "name": "Рынок"
-        }
-        """);
+        await SeedMortalLocationAsync("loc_market", "Рынок");
 
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
         {
@@ -475,6 +455,77 @@ public sealed class ActorMemoryServiceTests : IDisposable
         var reminder = await _service.BuildSystemReminderFragmentAsync("Mortal World", 10);
 
         Assert.Null(reminder);
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_MortalWorld_RequiresReceiptBearingCurrentLocation()
+    {
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            """
+            {
+              "locationId": "loc_market",
+              "name": "Рынок"
+            }
+            """);
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "NPCsInScene": [
+            {
+              "NPCId": "npc_receiptless_location",
+              "name": "Ложная память",
+              "currentLocationId": "loc_market"
+            }
+          ]
+        }
+        """);
+
+        var reminder = await _service.BuildSystemReminderFragmentAsync("Mortal World", 10);
+
+        Assert.Null(reminder);
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_MortalWorld_UsesExactCaseSensitiveNpcLocationId()
+    {
+        await SeedMortalLocationAsync("loc_market", "Рынок");
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "NPCsInScene": [
+            {
+              "NPCId": "npc_exact_location",
+              "name": "Точный свидетель",
+              "currentLocationId": "loc_market"
+            },
+            {
+              "NPCId": "npc_case_alias",
+              "name": "Ложный свидетель",
+              "currentLocationId": "LOC_MARKET",
+              "currentLocation": "Рынок"
+            }
+          ]
+        }
+        """);
+
+        var reminder = await _service.BuildSystemReminderFragmentAsync("Mortal World", 10);
+
+        Assert.NotNull(reminder);
+        Assert.Contains("Точный свидетель", reminder, StringComparison.Ordinal);
+        Assert.DoesNotContain("Ложный свидетель", reminder, StringComparison.Ordinal);
+    }
+
+    private async Task SeedMortalLocationAsync(string locationId, string displayName)
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(locationId, displayName);
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location).ToJsonString());
     }
 
     public void Dispose()

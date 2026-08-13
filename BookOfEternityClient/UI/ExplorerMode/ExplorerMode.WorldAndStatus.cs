@@ -39,10 +39,32 @@ public partial class ExplorerMode
         WaitForKey();
     }
 
-    private async Task ShowLocationDetailPanel(JsonElement loc, bool isCurrent)
+    private async Task ShowLocationDetailPanel(
+        MortalLocationPlayerLocation location,
+        MortalLocationPlayerCatalog catalog)
     {
-        var name = GetLocationName(loc);
-        var playerLevel = await GetPlayerLevelAsync();
+        using var locationDocument = JsonDocument.Parse(location.Data.ToJsonString());
+        var loc = locationDocument.RootElement;
+        var name = location.Label;
+        var isCurrent = location.IsCurrent;
+        if (location.DiscoveryTier == "rumored")
+        {
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", new[]
+            {
+                $"[bold yellow]❔ {Markup.Escape(name)}[/]",
+                string.Empty,
+                Markup.Escape(location.RumorSummary ?? "Об этом месте пока ходят только смутные слухи.")
+            })))
+            {
+                Header = new PanelHeader($" ❔ {Markup.Escape(name)} ", Justify.Center),
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Yellow),
+                Padding = new Padding(2, 1)
+            });
+            WaitForKey();
+            return;
+        }
+
         var lines = new List<string>();
         lines.Add($"[bold green]{(isCurrent ? "📍" : "🗺")} {Markup.Escape(name)}[/]");
         lines.Add("");
@@ -92,7 +114,8 @@ public partial class ExplorerMode
             var featureStrs = new List<string>();
             foreach (var f in features.EnumerateArray())
             {
-                var fStr = f.ValueKind == JsonValueKind.String ? f.GetString() ?? "" : f.ToString();
+                var fStr = MortalItemPlayerProjection
+                    .FormatMortalMaterializationSemanticValue(f);
                 if (!string.IsNullOrEmpty(fStr)) featureStrs.Add(fStr);
             }
             if (featureStrs.Count > 0)
@@ -125,27 +148,32 @@ public partial class ExplorerMode
             }
         }
 
-        // Difficulty profiles with visual bars + human-readable labels
+        // Current-schema difficulty profiles.
         void ShowDifficulty(string label, string propName)
         {
             if (!loc.TryGetProperty(propName, out var diff) || diff.ValueKind != JsonValueKind.Object) return;
-            var combat = GetInt(diff, "combat", 0);
-            var env = GetInt(diff, "environment", 0);
-            var social = GetInt(diff, "social", 0);
-            var explore = GetInt(diff, "exploration", 0);
-
-            var (overallLabel, overallColor) = GetProfileDifficultyLabel(diff, playerLevel);
+            var danger = GetStr(diff, "danger", "");
+            var recommendedLevel = GetInt(diff, "recommendedLevel", 0);
+            var difficultyDescription = GetStr(diff, "description", "");
+            var (dangerLabel, dangerColor) = danger.Trim().ToLowerInvariant() switch
+            {
+                "low" => ("низкая", "green"),
+                "medium" or "moderate" => ("средняя", "yellow"),
+                "high" => ("высокая", "orange1"),
+                "critical" or "extreme" => ("критическая", "red"),
+                _ => (danger, "white")
+            };
 
             lines.Add("");
-            lines.Add($"  [bold]{label}:[/]  [{overallColor}]{overallLabel}[/] [dim](ур. {playerLevel})[/]");
-            lines.Add($"    ⚔ Бой:          {DifficultyBar(combat)}  {DifficultyWithLabel(combat, playerLevel)}");
-            lines.Add($"    🌿 Окружение:    {DifficultyBar(env)}  {DifficultyWithLabel(env, playerLevel)}");
-            lines.Add($"    💬 Социальная:   {DifficultyBar(social)}  {DifficultyWithLabel(social, playerLevel)}");
-            lines.Add($"    🔍 Исследование: {DifficultyBar(explore)}  {DifficultyWithLabel(explore, playerLevel)}");
+            lines.Add($"  [bold]{label}:[/] [{dangerColor}]{Markup.Escape(dangerLabel)}[/]");
+            if (recommendedLevel > 0)
+                lines.Add($"    Рекомендуемый уровень: [white]{recommendedLevel}[/]");
+            if (!string.IsNullOrWhiteSpace(difficultyDescription))
+                lines.Add($"    [dim]{Markup.Escape(difficultyDescription)}[/]");
         }
 
-        ShowDifficulty("🔒 Сложность (для своих)", "internalDifficultyProfile");
-        ShowDifficulty("⚠ Сложность (для чужих)", "externalDifficultyProfile");
+        ShowDifficulty("🔒 Сложность (для своих)", "internalDifficulty");
+        ShowDifficulty("⚠ Сложность (для чужих)", "externalDifficulty");
 
         // Active threats — FULL detail
         if (loc.TryGetProperty("activeThreats", out var threats) && threats.ValueKind == JsonValueKind.Array && threats.GetArrayLength() > 0)
@@ -156,42 +184,36 @@ public partial class ExplorerMode
                 RenderThreatFull(lines, t);
         }
 
-        // Adjacent locations — enriched with linkType, description, estimated difficulty
-        if (loc.TryGetProperty("adjacencyMap", out var adj) && adj.ValueKind == JsonValueKind.Array && adj.GetArrayLength() > 0)
+        // Directed exits come only from accepted canonical link authority.
+        var visibleExits = catalog.Links
+            .Where(link => string.Equals(link.SourceIdentity, location.Identity, StringComparison.Ordinal))
+            .ToArray();
+        if (visibleExits.Length > 0)
         {
             lines.Add("");
             lines.Add("  [bold]🧭 Соседние локации:[/]");
-            foreach (var entry in adj.EnumerateArray())
+            foreach (var link in visibleExits)
             {
-                var aName = GetStr(entry, "name", GetStr(entry, "targetLocationName", GetStr(entry, "targetLocationId", "?")));
-                var dir = GetStr(entry, "direction", "");
-                var dist = GetStr(entry, "distance", "");
-                var linkState = GetStr(entry, "linkState", "");
-                var linkType = GetStr(entry, "linkType", "");
-                var shortDesc = GetStr(entry, "shortDescription", "");
+                if (!catalog.TryGetLocation(link.TargetIdentity, out var target) || target == null)
+                    continue;
+                var direction = ReadPlayerNodeString(link.Data, "directionLabel");
+                var linkType = ReadPlayerNodeString(link.Data, "linkType");
+                var description = ReadPlayerNodeString(link.Data, "description");
+                var access = link.Data["access"] as JsonObject;
+                var linkState = ReadPlayerNodeString(access, "state");
+                var blockReason = ReadPlayerNodeString(access, "reason");
                 var linkStateLabel = ExplorerPlayerFacingLabels.LocationLinkState(linkState);
                 var linkColor = ExplorerPlayerFacingLabels.LocationLinkStateColor(linkState);
-                var line = $"    → [{linkColor}]{Markup.Escape(aName)}[/]";
+                var line = $"    → [{linkColor}]{Markup.Escape(target.Label)}[/]";
                 if (!string.IsNullOrEmpty(linkType)) line += $" [dim]⟨{Markup.Escape(linkType)}⟩[/]";
-                if (!string.IsNullOrEmpty(dir)) line += $" ({Markup.Escape(dir)})";
-                if (!string.IsNullOrEmpty(dist)) line += $" [dim]{Markup.Escape(dist)}[/]";
+                if (!string.IsNullOrEmpty(direction)) line += $" ({Markup.Escape(direction)})";
                 if (!string.IsNullOrEmpty(linkStateLabel))
                     line += $" [{linkColor}]({Markup.Escape(linkStateLabel)})[/]";
                 lines.Add(line);
-                if (!string.IsNullOrEmpty(shortDesc))
-                    lines.Add($"      [dim]{Markup.Escape(shortDesc)}[/]");
-
-                // Estimated difficulty for adjacent location
-                if (entry.TryGetProperty("estimatedExternalDifficultyProfile", out var estExt) && estExt.ValueKind == JsonValueKind.Object)
-                {
-                    var (estLabel, estColor) = GetProfileDifficultyLabel(estExt, playerLevel);
-                    lines.Add($"      [dim]Сложность: [{estColor}]{estLabel}[/][/]");
-                }
-                else if (entry.TryGetProperty("estimatedInternalDifficultyProfile", out var estInt) && estInt.ValueKind == JsonValueKind.Object)
-                {
-                    var (estLabel, estColor) = GetProfileDifficultyLabel(estInt, playerLevel);
-                    lines.Add($"      [dim]Сложность: [{estColor}]{estLabel}[/][/]");
-                }
+                if (!string.IsNullOrEmpty(description))
+                    lines.Add($"      [dim]{Markup.Escape(description)}[/]");
+                if (!string.IsNullOrEmpty(blockReason))
+                    lines.Add($"      [yellow]{Markup.Escape(blockReason)}[/]");
             }
         }
 
@@ -257,10 +279,8 @@ public partial class ExplorerMode
                 // Contents — show item names, not just count
                 if (st.TryGetProperty("contents", out var cont) && cont.ValueKind == JsonValueKind.Array)
                 {
-                    var acceptedContents = cont.EnumerateArray()
-                        .Where(static item => MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _))
-                        .ToArray();
-                    var contCount = acceptedContents.Length;
+                    var projectedContents = cont.EnumerateArray().ToArray();
+                    var contCount = projectedContents.Length;
                     if (contCount == 0)
                     {
                         lines.Add($"      [dim]Пусто[/]");
@@ -269,7 +289,7 @@ public partial class ExplorerMode
                     {
                         lines.Add($"      Предметов: [white]{contCount}[/]");
                         var shown = 0;
-                        foreach (var ci in acceptedContents)
+                        foreach (var ci in projectedContents)
                         {
                             if (++shown > 8)
                             {
@@ -302,13 +322,7 @@ public partial class ExplorerMode
             }
         }
 
-        // Image prompt hint
-        var imgPrompt = GetStr(loc, "image_prompt", "");
-        if (!string.IsNullOrEmpty(imgPrompt))
-        {
-            lines.Add("");
-            lines.Add($"  [dim italic]🖼️ {Markup.Escape(imgPrompt)}[/]");
-        }
+        const string imgPrompt = "";
 
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
@@ -318,7 +332,7 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        await WaitForKeyWithImage("location", name, imgPrompt, GetStr(loc, "locationId", GetStr(loc, "targetLocationId", name)));
+        await WaitForKeyWithImage("location", name, imgPrompt, location.DetailSelector ?? name);
     }
 
     /// <summary>Returns difficulty value with a colored label, e.g. "25 Нормально".</summary>
@@ -795,114 +809,6 @@ public partial class ExplorerMode
         var days = hours / 24;
         hours %= 24;
         return hours > 0 ? $"{days}д {hours}ч" : $"{days}д";
-    }
-
-    private async Task RenderAsciiMap(int playerX, int playerY, int playerZ, string playerLocName, JsonElement curLoc, JsonDocument? mapDoc)
-    {
-        // Collect all known points on this z-level
-        var points = new Dictionary<(int x, int y), (string name, bool isCurrent)>();
-        points[(playerX, playerY)] = (playerLocName, true);
-
-        // From adjacencyMap of current location
-        if (curLoc.TryGetProperty("adjacencyMap", out var adj) && adj.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var entry in adj.EnumerateArray())
-            {
-                var tx = playerX; var ty = playerY; var tz = playerZ;
-                if (entry.TryGetProperty("targetCoordinates", out var tc))
-                {
-                    tx = GetInt(tc, "x", playerX); ty = GetInt(tc, "y", playerY); tz = GetInt(tc, "z", playerZ);
-                }
-                if (tz == playerZ && !points.ContainsKey((tx, ty)))
-                    points[(tx, ty)] = (GetStr(entry, "name", "?"), false);
-            }
-        }
-
-        // From world_map newLocations on same z-level
-        if (mapDoc != null && mapDoc.RootElement.TryGetProperty("newLocations", out var newLocs) && newLocs.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var loc in newLocs.EnumerateArray())
-            {
-                if (loc.TryGetProperty("coordinates", out var lc))
-                {
-                    var lx = GetInt(lc, "x", 0); var ly = GetInt(lc, "y", 0); var lz = GetInt(lc, "z", 0);
-                    if (lz == playerZ && !points.ContainsKey((lx, ly)))
-                        points[(lx, ly)] = (GetStr(loc, "name", "?"), false);
-                }
-            }
-        }
-
-        if (points.Count < 2) return; // No map to show with only 1 point
-
-        // Determine bounds
-        var minX = points.Keys.Min(p => p.x);
-        var maxX = points.Keys.Max(p => p.x);
-        var minY = points.Keys.Min(p => p.y);
-        var maxY = points.Keys.Max(p => p.y);
-
-        // Clamp to reasonable size (±5 from player)
-        minX = Math.Max(minX, playerX - 5); maxX = Math.Min(maxX, playerX + 5);
-        minY = Math.Max(minY, playerY - 5); maxY = Math.Min(maxY, playerY + 5);
-
-        var width = maxX - minX + 1;
-        var height = maxY - minY + 1;
-
-        // Build grid — note: Y increases going North, so render top-to-bottom = maxY first
-        var lines = new List<string>();
-        var legend = new List<string>();
-        int legendIdx = 1;
-        var legendMap = new Dictionary<(int, int), int>();
-
-        for (int y = maxY; y >= minY; y--)
-        {
-            var row = "";
-            for (int x = minX; x <= maxX; x++)
-            {
-                if (points.TryGetValue((x, y), out var pt))
-                {
-                    if (pt.isCurrent)
-                        row += "[bold green][@][/]";
-                    else
-                    {
-                        legendMap[(x, y)] = legendIdx;
-                        row += $"[cyan][{legendIdx}][/]";
-                        legend.Add($"  [cyan][{legendIdx}][/] {Markup.Escape(pt.name)}");
-                        legendIdx++;
-                    }
-                }
-                else
-                {
-                    row += "[dim] · [/]";
-                }
-            }
-            lines.Add(row);
-        }
-
-        // Compass labels
-        var mapText = new List<string>();
-        var centerPad = new string(' ', Math.Max(0, (width * 3) / 2 - 1));
-        mapText.Add($"{centerPad}[dim]N[/]");
-        mapText.Add($"{centerPad}[dim]↑[/]");
-        foreach (var line in lines) mapText.Add($"  {line}");
-        mapText.Add($"{centerPad}[dim]↓[/]");
-        mapText.Add($"{centerPad}[dim]S[/]");
-        if (legend.Count > 0)
-        {
-            mapText.Add("");
-            mapText.Add($"[bold green][[@]][/] = Вы здесь");
-            mapText.AddRange(legend);
-        }
-
-        var zLabel = playerZ > 0 ? $"↑{playerZ}" : playerZ < 0 ? $"↓{Math.Abs(playerZ)}" : "наземный";
-
-        WriteLine();
-        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", mapText)))
-        {
-            Header = new PanelHeader($" 🗺 Карта (уровень: {zLabel}) ", Justify.Center),
-            Border = BoxBorder.Double,
-            BorderStyle = new Style(Color.Green),
-            Padding = new Padding(2, 1)
-        });
     }
 
     private async Task ShowDetailedStatus()

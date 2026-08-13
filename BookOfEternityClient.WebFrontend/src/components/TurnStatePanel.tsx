@@ -21,9 +21,9 @@ export function TurnStatePanel({ turnState }: { turnState: TurnState }) {
     .slice(0, 8);
 
   return (
-    <section className={`turn-state-card ${resolveTurnStateClass(turnState)}`} aria-label="Жизненный цикл хода">
+    <section className={`turn-state-card ${resolveTurnStateClass(turnState)}`} aria-label="Состояние хода">
       <header className="turn-state-card__header">
-        <p className="panel-eyebrow">Жизненный цикл хода</p>
+        <p className="panel-eyebrow">Состояние хода</p>
         <h3>{formatTurnStateTitle(turnState)}</h3>
         <span className="status-pill">{phaseLabel}</span>
       </header>
@@ -65,7 +65,7 @@ export function TurnStatePanel({ turnState }: { turnState: TurnState }) {
 }
 
 function resolveTurnStateClass(turnState: TurnState): string {
-  if (turnState.severity === 'error' || turnState.validationState === 'repair-required') {
+  if (turnState.severity === 'error') {
     return 'turn-state-card--repair';
   }
 

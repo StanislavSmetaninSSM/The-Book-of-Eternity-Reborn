@@ -57,7 +57,7 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         }
 
         Assert.Equal(100, observed.Max(item => item.EntryCount));
-        Assert.Equal(285_015, observed.Max(item => item.ExpandedBytes));
+        Assert.Equal(324_297, observed.Max(item => item.ExpandedBytes));
         Assert.Equal(61_375, observed.Max(item => item.LargestEntryBytes));
         Assert.Equal(3_552, observed.Max(item => item.NameUtf8Bytes));
 
@@ -323,6 +323,72 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         }
     }
 
+    [Fact]
+    public void MortalCommandDisplaySaveFixture_MortalLocationsUseCurrentMaterializationAndIdentityIndex()
+    {
+        var fixturePath = Path.Combine(
+            TestRepoPaths.BaseSessionRoot,
+            "saves",
+            "manual_saves",
+            "mortal_world_command_display_fixture.zip");
+        using var archive = ZipFile.OpenRead(fixturePath);
+        var map = ReadArchiveObject(archive, MortalLocationMaterializationContract.WorldMapPath);
+        var current = ReadArchiveObject(archive, MortalLocationMaterializationContract.CurrentLocationPath);
+        var indexRoot = ReadArchiveObject(archive, MortalLocationIdentityState.StatePath);
+
+        var locations = map["locations"]?.AsArray() ??
+                        throw new InvalidDataException("Reusable Mortal save must contain canonical locations[].");
+        var links = map["links"]?.AsArray() ??
+                    throw new InvalidDataException("Reusable Mortal save must contain canonical links[].");
+        Assert.NotEmpty(locations);
+
+        foreach (var location in locations.OfType<JsonObject>())
+        {
+            using var document = JsonDocument.Parse(location.ToJsonString());
+            Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalLocation(
+                document.RootElement,
+                "reusable Mortal save location"));
+        }
+
+        foreach (var link in links.OfType<JsonObject>())
+        {
+            using var document = JsonDocument.Parse(link.ToJsonString());
+            Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalLink(
+                document.RootElement,
+                "reusable Mortal save link"));
+        }
+
+        using (var currentDocument = JsonDocument.Parse(current.ToJsonString()))
+        {
+            Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalCurrentLocation(
+                currentDocument.RootElement,
+                "reusable Mortal save current location"));
+        }
+
+        var currentLocationId = current["locationId"]!.GetValue<string>();
+        var mapCurrent = Assert.Single(
+            locations.OfType<JsonObject>(),
+            location => string.Equals(
+                location["locationId"]?.GetValue<string>(),
+                currentLocationId,
+                StringComparison.Ordinal));
+        foreach (var (field, mapValue) in mapCurrent)
+        {
+            Assert.True(
+                current.TryGetPropertyValue(field, out var currentValue) &&
+                MortalLocationMaterializationContract.SharedCurrentProjectionValueEquals(
+                    field,
+                    mapValue,
+                    currentValue),
+                $"Reusable Mortal save current field '{field}' must match canonical map metadata.");
+        }
+
+        var index = MortalLocationIdentityState.Parse(indexRoot);
+        Assert.Empty(index.Issues);
+        Assert.Empty(index.ValidateCanonicalState(map));
+        Assert.True(index.LocationEntriesById.ContainsKey(currentLocationId));
+    }
+
     [Theory]
     [InlineData("fixed")]
     [InlineData("broken")]
@@ -557,19 +623,19 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         Assert.Contains(" г., ", lastEvents, StringComparison.Ordinal);
 
         Assert.True(
-            root.TryGetProperty("normalizedWeatherState", out var weather) &&
+            root.TryGetProperty("currentWeather", out var weather) &&
             weather.ValueKind == JsonValueKind.Object,
-            "FileSystemExample current_location.json must include normalizedWeatherState with GM-safe shape.");
+            "FileSystemExample current_location.json must include currentWeather with GM-safe shape.");
         Assert.True(
             weather.TryGetProperty("description", out var description) &&
             description.ValueKind == JsonValueKind.String &&
             !string.IsNullOrWhiteSpace(description.GetString()),
-            "normalizedWeatherState.description must be a non-empty player-facing string.");
+            "currentWeather.description must be a non-empty player-facing string.");
         Assert.True(
             weather.TryGetProperty("tendency", out var tendency) &&
             tendency.ValueKind == JsonValueKind.String &&
             !string.IsNullOrWhiteSpace(tendency.GetString()),
-            "normalizedWeatherState.tendency must be a non-empty tendency string.");
+            "currentWeather.tendency must be a non-empty tendency string.");
         var allowedTendencies = new HashSet<string>(StringComparer.Ordinal)
         {
             "IMPROVE",
@@ -589,7 +655,78 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         };
         Assert.True(
             allowedTendencies.Contains(tendency.GetString() ?? string.Empty),
-            "normalizedWeatherState.tendency must use canonical weather command values, not descriptive aliases.");
+            "currentWeather.tendency must use canonical weather command values, not descriptive aliases.");
+    }
+
+    [Fact]
+    public void GameSessionFixture_MortalLocationUsesCurrentMaterializationAndIdentityIndex()
+    {
+        var worldRoot = Path.Combine(
+            TestRepoPaths.BaseSessionRoot,
+            "game_state",
+            "world");
+        var current = JsonNode.Parse(File.ReadAllText(
+            Path.Combine(worldRoot, "current_location.json")))!.AsObject();
+        var map = JsonNode.Parse(File.ReadAllText(
+            Path.Combine(worldRoot, "world_map.json")))!.AsObject();
+        var indexRoot = JsonNode.Parse(File.ReadAllText(
+            Path.Combine(worldRoot, "location_identity_index.json")))!.AsObject();
+
+        var location = Assert.Single(
+            map["locations"]!.AsArray().OfType<JsonObject>());
+        using var locationDocument = JsonDocument.Parse(location.ToJsonString());
+        using var currentDocument = JsonDocument.Parse(current.ToJsonString());
+        Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalLocation(
+            locationDocument.RootElement,
+            "FileSystemExample world_map location"));
+        Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalLocation(
+            currentDocument.RootElement,
+            "FileSystemExample current location"));
+
+        var locationId = location["locationId"]!.GetValue<string>();
+        Assert.Equal(locationId, current["locationId"]!.GetValue<string>());
+        Assert.Equal(
+            location["materializationReceipt"]!["receiptId"]!.GetValue<string>(),
+            current["materializationReceipt"]!["receiptId"]!.GetValue<string>());
+        Assert.Empty(map["links"]!.AsArray());
+
+        var index = MortalLocationIdentityState.Parse(indexRoot);
+        Assert.Empty(index.Issues);
+        Assert.Empty(index.ValidateCanonicalState(map));
+        Assert.True(index.LocationEntriesById.ContainsKey(locationId));
+    }
+
+    [Fact]
+    public void ValidatorFixture_MortalLocationBackupUsesCurrentCanonicalMapAndIndex()
+    {
+        var fixtureRoot = Path.Combine(
+            TestRepoPaths.ValidatorFixturesRoot,
+            "_shared",
+            "mortal_location");
+        var map = JsonNode.Parse(File.ReadAllText(
+            Path.Combine(fixtureRoot, "world_map_backup.json")))!.AsObject();
+        var indexRoot = JsonNode.Parse(File.ReadAllText(
+            Path.Combine(fixtureRoot, "location_identity_index_backup.json")))!.AsObject();
+
+        foreach (var location in map["locations"]!.AsArray().OfType<JsonObject>())
+        {
+            using var document = JsonDocument.Parse(location.ToJsonString());
+            Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalLocation(
+                document.RootElement,
+                "shared validator fixture location"));
+        }
+
+        foreach (var link in map["links"]!.AsArray().OfType<JsonObject>())
+        {
+            using var document = JsonDocument.Parse(link.ToJsonString());
+            Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalLink(
+                document.RootElement,
+                "shared validator fixture link"));
+        }
+
+        var index = MortalLocationIdentityState.Parse(indexRoot);
+        Assert.Empty(index.Issues);
+        Assert.Empty(index.ValidateCanonicalState(map));
     }
 
     private static string ToFixtureRelativePath(string fullPath)

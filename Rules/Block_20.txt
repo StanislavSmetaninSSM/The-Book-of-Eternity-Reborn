@@ -1,1503 +1,448 @@
 <instructionblock id="20">
- <title>
-  Location Management and Cartography
- </title>
+ <title>Mortal Location Materialization v1</title>
  <description>
-  This section defines rules for managing and reporting data about the player's current location, its virtual coordinates, and its connections to adjacent locations to build a persistent world map.
+  Current-schema rules for authoring Mortal locations, directed links, current
+  selection, topology, storage/threat commands, bootstrap, and bounded repair.
  </description>
- <instructiontext>
-  <![CDATA[
+ <instructiontext><![CDATA[
 
-            When the player moves to a new location, the GM must generate or update its data.
-            - When a location is first discovered, you MUST generate its coordinates, full description, and a map of adjacent locations ('adjacencyMap').
-            - When returning to a known location, you provide its existing ID and coordinates, and only update the 'lastEventsDescription'.
-            - If the player discovers a location not on the adjacency map (e.g., through a secret passage), you must generate it and establish a new link via 'worldMapUpdates'.
-            The goal is to provide enough structured data for the client system to construct a visual map.
+MORTAL LOCATION MATERIALIZATION V1 — NON-NEGOTIABLE MODEL
 
-            CLI WORLD SIMULATION SCHEDULER:
-            In CLI mode, off-screen world simulation is NOT optional.
-            The client enforces a fixed World Simulation Cycle of 240 minutes for:
-            - world events
-            - off-screen NPC movements and activities
-            - threats
-            - natural / political / environmental world changes
-            If `progressionControl` says world cycles are due, you MUST process them during the turn.
+1. The GM authors complete raw semantics. The client assigns every permanent
+   location/link identity, materializationReceipt, seal, identity-index entry,
+   lifecycle transition, and derived navigation surface.
+2. `game_state/world/world_map.json.locations[]` is the sole durable semantic
+   authority for Mortal locations. `world_map.json.links[]` is the sole durable
+   authority for directed links.
+3. `current_location.json` is a projection of one accepted map location plus
+   current-only weather, interactions, chronology, and current storage contents.
+4. Names, descriptions, coordinates, ordinals, paths, case-folded values, and
+   Unicode-confusable values never identify a location or link. Identity is
+   case-sensitive and Unicode-exact.
+5. knownExits and adjacencyMap are client-derived. The GM never writes either
+   field. One directed accepted link produces at most one directed visible edge;
+   the reverse direction requires its own accepted link.
+6. Receipt-less canonical locations/links are invalid. The game has not shipped,
+   so no legacy promotion or missing-z compatibility exists.
 
-            ]]>
- </instructiontext>
+The only raw creation routes are:
+
+- `currentLocationData` + `materialization.route=current_scene_creation` for one
+  genuinely new selected current scene;
+- `worldMapUpdates.newLocations[]` +
+  `materialization.route=world_map_creation` for each genuinely new remote scene;
+- `worldMapUpdates.newLinks[]` +
+  `materialization.route=world_map_link_creation` for each genuinely new
+  directed link.
+
+Every creation has `locationId = null` or `linkId = null`, one exact turn-unique
+`initialId`, one independent materializationId, exact sourceTurn/sourceAuthority,
+state `complete`, and a complete `materialization.sections` declaration.
+
+Never author materializationReceipt, a permanent locationId/linkId,
+`location_identity_index.json`, receiptId, seal, transition history, requestId,
+sessionId, reservationId, or client rollback/snapshot state.
+
+]]></instructiontext>
  <content type="ruleset">
-  <rule id="20.0">
-   <title>
-    CRITICAL DIRECTIVE: The Multi-Faceted Threat Protocol (Profile Generation)
-   </title>
-   <description>
-    This is the mandatory protocol for assessing the challenge of any location. 
-                    This protocol ensures that a location's challenge is nuanced and directly tied to the type of action the player attempts.
-   </description>
-   <instructiontext>
-    <![CDATA[
-                    When creating a new location, you MUST generate its 'internalDifficultyProfile' and 'externalDifficultyProfile' by calculating each of the four values below separately. 
-                    These values are NOT static; they MUST be updated when the player's actions fundamentally change the nature of the location.
 
-                    CRITICAL DESIGN DIRECTIVE: The Principle of Varied Threats.
-                    When designing the challenges of a new location, you, the Game Master, MUST strive to ensure that at least TWO of the four difficulty facets 
-                    (Combat, Environment, Social, Exploration) represent a significant challenge for the player. 
-                    This is a mandatory design principle to prevent the possibility of solving all problems with a single skill 
-                    (e.g., only through combat, or only through persuasion) and to encourage creative, multi-faceted gameplay. 
-                    A location with only one real threat is considered poor design.
-                    
-                    ]]>
-   </instructiontext>
-   <content type="ruleset">
-    <rule id="20.0.1">
-     <title>
-      Step 1: Calculate the Four Facets of Difficulty
-     </title>
-     <content type="rule_text">
-      <![CDATA[
-
-                            a) Combat Difficulty (How powerful are the enemies?):
-                               - This is the ONLY value that scales with the player's level to keep major threats relevant.
-                               - Formula:                               
-                               'Combat = DominantThreatIndex(DTI) + PlayerScalingFactor(PSF)'
-
-                               - Calculation of Dominant Threat Index (DTI):
-                                   1. Identify Inhabitants and Calibrate Levels: 
-                                   Identify the key creatures or NPCs that define the challenge. 
-                                   For each, assign a 'level' by strictly referencing the Level Calibration Matrix (Rule #5.24).
-
-                                   2. Identify the "Alpha": Find the inhabitant with the single highest level ('HighestLevel').
-
-                                   3. Calculate Average of "Betas": 
-                                   Calculate the average level of ALL OTHER inhabitants ('AverageOfOthers'). 
-                                   If the Alpha is solitary, this value is 0.
-
-                                   4. Calculate the Weighted Average: 
-                                   'WeightedAverageLevel = (HighestLevel * 0.7) + (AverageOfOthers * 0.3)'.
-
-                                   5. Apply Density Modifier:
-                                   'DTI = WeightedAverageLevel * DensityModifier', 
-                                   where the modifier is: 1.0 (Solitary), 1.2 (Squad), 1.35 (Garrison), 1.5 (Horde).
-
-                            b) Environment Difficulty (How dangerous is the place itself?):
-                               - This value is STATIC and does NOT scale with the player. It represents objective danger.
-                               - Assessment: Direct GM assessment based on threats.
-                               - 0-10 (Safe): "Main city street", "Quiet meadow".
-                               - 15-30 (Hazardous): "Ruins with simple traps", "Narrow bridge over lava".
-                               - 35-50+ (Deadly): "Volcanic lair", "Ancient tomb with complex magical traps".
-
-                            c) Social Difficulty (How hostile are the locals?):
-                               - This value is DYNAMIC and depends on the player's social standing.
-                               - Formula: 
-                               'Social = BaseHostility - (PlayerReputationWithDominantFaction / 2)'
-                               - 'BaseHostility': The location's baseline hostility (0 for a friendly village, 40 for an enemy city).
-                               - 'PlayerReputation...': The player's reputation with the dominant faction (-100 to 100).
-                               
-                               Example: 
-                               In a guard-controlled city (BaseHostility 10) with a reputation of +50, Social Difficulty = 10 - (50/2) = -15. 
-                               (Negative values mean checks will be very easy).
-
-                            d) Exploration Difficulty (How hard are the secrets to find?):
-                               - This value is STATIC. It represents the complexity of puzzles and secrets.
-                               - Assessment: Direct GM assessment.
-                               - 0-10 (Obvious): "The information is on the table".
-                               - 15-30 (Hidden): "A secret lever behind a bookshelf", "An encrypted message".
-                               - 35-50+ (Enigmatic): "A complex astronomical puzzle", "An ancient ritual to open a gateway".
-
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.0.2">
-     <title>
-      Step 2: The Linking Protocol - How the Profile Affects Gameplay
-     </title>
-     <description>
-      This is the most critical part. It links the correct difficulty profile directly to the Action Check system.
-     </description>
-     <content type="rule_text">
-      <![CDATA[
-                    
-                            When any character performs an Action Check (InstructionBlock #12), you MUST first determine the correct difficulty profile and then select the appropriate value from it to calculate the 'ActionDifficultModificator'. This is a mandatory two-step process.
-
-                            1.  Choose the Profile: 
-                                First, you MUST execute the Duality of Threat Protocol (Rule #20.B) to determine if the actor is an "Insider" or an "Outsider". 
-                                This will tell you whether to use the 'internalDifficultyProfile' or the 'externalDifficultyProfile'.
-
-                            2.  Select the Facet: Once you have chosen the correct profile, select the value from that profile corresponding to the action type:
-                                -   If the action is COMBAT (attack, use a combat skill) -> Use the chosen profile's 'combat' value.
-                                -   If the action is PHYSICAL (jump a chasm, dodge a trap) -> Use the chosen profile's 'environment' value.
-                                -   If the action is SOCIAL (persuade, intimidate, trade) -> Use the chosen profile's 'social' value.
-                                -   If the action is INTELLECTUAL (search for secrets, decipher) -> Use the chosen profile's 'exploration' value.
-
-                            This protocol ensures that an enemy ('Outsider') trying to fight in a player's fortress faces the high 'externalDifficultyProfile.combat' value, while the player ('Insider') trying to persuade their own staff in the same fortress faces the low 'internalDifficultyProfile.social' value.
-                    
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.0.3">
-     <title>
-      Step 3: The World Reacts Protocol (Dynamic Updates)
-     </title>
-     <description>
-      The difficulty profiles are not static. The player's actions MUST change them.
-     </description>
-     <content type="rule_text">
-      <![CDATA[
-
-                            After a significant event, you MUST update the location's 'internalDifficultyProfile' and/or 'externalDifficultyProfile' to reflect the new reality. 
-                            Your update must be logical and consider who is affected by the change.
-
-                            -   Player eliminates an objective threat: 
-                                If the player slays a dragon that was a threat to everyone, the 'combat' difficulty in its lair plummets in BOTH the 'internalDifficultyProfile' and 'externalDifficultyProfile'.
-
-                            -   Player disarms traps: 
-                                If the player disables traps in a tomb, the 'environment' difficulty drops for BOTH profiles, as the physical danger is removed for all.
-
-                            -   Player gains trust in a town: 
-                                If the player becomes the hero of a town, the 'social' difficulty for interacting with locals drops significantly, but ONLY in the 'internalDifficultyProfile'. 
-                                For hostile outsiders, the town, now more unified and protective of its hero, might become an even tougher social nut to crack, potentially increasing the 'externalDifficultyProfile.social'.
-
-                            You MUST report this update by sending the updated 'currentLocationData' object (or using 'worldMapUpdates' for off-screen locations) and log the reason for the changes to each profile in 'gm_thoughts_markdown'. 
-                            This makes the player's actions feel impactful and logical.
-                    
-                            ]]>
-     </content>
-    </rule>
-   </content>
-  </rule>
-  <rule id="20.0.A">
-   <title>
-    GM GUIDELINES: Calibrating External Difficulty Profile Values
-   </title>
-   <description>
-    This is a mandatory reference table for the GM to ensure that the 'externalDifficultyProfile' values of a location are appropriately scaled. 
-                    This profile represents the objective danger of a location.
-                    Setting difficulties outside these recommended ranges can lead to an unbalanced play experience. 
-                    This table provides a "baseline" difficulty for an "Outsider"; the GM can and should create more challenging locations, but must provide narrative warnings as per Rule #20.A.
-   </description>
-   <content type="rule_text">
-    <![CDATA[
-
-                    Use the following table as a guide when creating new locations or assessing their objective challenge. 
-                    The "Standard Challenge" represents a fair, engaging difficulty for a character of that level who is an "Outsider" to the location.
-
-                    +---------------------------+-------------------------------------+-----------------------------------------------------------------+
-                    | Player Level Range        | Recommended                         | Narrative Description of Higher Difficulties (for this level)   |
-                    |                           | 'externalDifficultyProfile'         |                                                                 |
-                    |                           | Value for a STANDARD Challenge      |                                                                 |
-                    +===========================+=====================================+=================================================================+
-                    | TIER 1: NOVICE (1-10)     |                                     |                                                                 |
-                    +---------------------------+-------------------------------------+-----------------------------------------------------------------+
-                    | 1 - 5                     | 10 - 25                             | Hard (26-40): A "dungeon boss" level threat. Requires teamwork  |
-                    |                           |                                     | or clever tactics.                                              |
-                    |                           |                                     | Deadly (41+): An almost certain death, meant to be avoided.     |
-                    +---------------------------+-------------------------------------+-----------------------------------------------------------------+
-                    | 6 - 10                    | 20 - 40                             | Hard (41-55): A significant regional threat. The climax of an   |
-                    |                           |                                     | early-game story arc.                                           |
-                    |                           |                                     | Deadly (56+): A legendary creature far beyond their means.       |
-                    +===========================+=====================================+=================================================================+
-                    | TIER 2: ADEPT (11-30)     |                                     |                                                                 |
-                    +---------------------------+-------------------------------------+-----------------------------------------------------------------+
-                    | 11 - 20                   | 35 - 55                             | Hard (56-70): A challenge for a seasoned hero, requiring mastery|
-                    |                           |                                     | of their core skills.                                           |
-                    |                           |                                     | Deadly (71+): A threat that could endanger a whole city.       |
-                    +---------------------------+-------------------------------------+-----------------------------------------------------------------+
-                    | 21 - 30                   | 50 - 70                             | Hard (71-85): An elite-level threat, a true test for a veteran.|
-                    |                           |                                     | Deadly (86+): A legendary challenge spoken of in whispers.      |
-                    +===========================+=====================================+=================================================================+
-                    | TIER 3: ELITE (31-60)     |                                     |                                                                 |
-                    +---------------------------+-------------------------------------+-----------------------------------------------------------------+
-                    | 31 - 45                   | 65 - 85                             | Hard (86-100): A legendary threat that even elite heroes would  |
-                    |                           |                                     | form parties to face.                                           |
-                    |                           |                                     | Deadly (101+): A mythic challenge, bordering on the divine.     |
-                    +---------------------------+-------------------------------------+-----------------------------------------------------------------+
-                    | 46 - 60                   | 80 - 100                            | Hard (101-120): A mythic beast or demigod-level entity.         |
-                    |                           |                                     | Deadly (121+): A world-ending threat requiring epic strategy.    |
-                    +===========================+=====================================+=================================================================+
-                    | TIER 4: LEGENDARY (61-100)|                                     |                                                                 |
-                    +---------------------------+-------------------------------------+-----------------------------------------------------------------+
-                    | 61 - 80                   | 95 - 120                            | Hard (121-140): A challenge for the greatest legends of the age.|
-                    |                           |                                     | Deadly (141+): A threat on a cosmic scale.                      |
-                    +---------------------------+-------------------------------------+-----------------------------------------------------------------+
-                    | 81 - 100                  | 110 - 150                           | Hard (151-180): A direct challenge to a god or a fundamental    |
-                    |                           |                                     | force of nature.                                                |
-                    |                           |                                     | Deadly (181+): A reality-altering threat.                       |
-                    +===========================+=====================================+=================================================================+
-                    | TIER 5: MYTHIC (101+)     | 150+                                | At this stage, "difficulty" is less about numbers and more      |
-                    |                           |                                     | about solving cosmic puzzles, finding conceptual weaknesses,    |
-                    |                           |                                     | or altering the rules of existence. Threats are abstract and    |
-                    |                           |                                     | world-defining.                                                 |
-                    +---------------------------+-------------------------------------+-----------------------------------------------------------------+
-
-                    GM MANDATE:
-
-                    1.  Use "Standard Challenge" as your baseline for the 'externalDifficultyProfile' during normal story progression.
-
-                    2.  When you create a location with a "Hard" or "Deadly" 'externalDifficultyProfile' relative to the player's current level, you MUST provide clear narrative warnings about the extreme danger, as per the Logical Progression Protocol (Rule #20.A).
-                    
-                    3.  These values apply to any single facet of the 'externalDifficultyProfile' (combat, environment, social, exploration).
-                    
-                    4.  The 'internalDifficultyProfile' is set based on narrative logic (e.g., very low for a player's home base) and is not bound by this scaling table.
-
-                    ]]>
-   </content>
-  </rule>
-  <rule id="20.A">
-   <title>
-    CRITICAL DIRECTIVE: The Logical Progression Protocol for Location Generation
-   </title>
-   <description>
-    This is a foundational protocol to prevent unfair difficulty spikes and ensure a logical progression of challenges. 
-                    It governs the generation of the 'externalDifficultyProfile' for any new location adjacent to an existing one, ensuring a logical progression of objective world difficulty.
-   </description>
-   <instructiontext>
-    <![CDATA[
-
-                    When you generate a new adjacent location and its 'adjacencyMap' entry, you MUST ensure that its difficulty progresses in a logical and fair manner.
-                    The world should feel consistent, not randomly punitive. You MUST follow this three-step protocol.
-
-                    ]]>
-   </instructiontext>
-   <content type="ruleset">
-    <rule id="20.A.1">
-     <title>
-      Step 1: The Adjacency Rule (The Soft Cap)
-     </title>
-     <content type="rule_text">
-      <![CDATA[
-
-                            By default, the difficulty of a new, adjacent location should not drastically differ from the player's current location.
-
-                            1.  Get the 'externalDifficultyProfile' of the current location. 
-                                The world's objective difficulty progression should be based on the challenge it presents to outsiders.
-
-                            2.  Define a 'DifficultyDelta'. For a standard connection ('linkType' like 'Road', 'Path', 'Door'), this value is 15.
-
-                            3.  The 'externalDifficultyProfile' of the new location you are generating MUST fall within this range.
-                                For example, 'NewExternalProfile.combat' must be between '(CurrentExternalProfile.combat - 15)' and '(CurrentExternalProfile.combat + 15)'.
-                                This applies to all four facets of the external profile. 
-                                The internal profile can be set independently based on the new location's nature.
-
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.A.2">
-     <title>
-      Step 2: The Narrative Override (Breaking the Cap)
-     </title>
-     <content type="rule_text">
-      <![CDATA[
-
-                            You are permitted to break the "Soft Cap" from Step 1 ONLY for locations of high narrative importance or known danger (e.g., the entrance to a legendary dungeon, a cursed forest, the capital city).
-                            However, if you choose to override the soft cap, you MUST proceed to Step 3.
-
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.A.3">
-     <title>
-      Step 3: The Mandatory Warning Protocol
-     </title>
-     <content type="rule_text">
-      <![CDATA[
-
-                            If you break the soft cap and create a location with a significantly higher difficulty, you are OBLIGATED to warn the player through the 'adjacencyMap' entry.
-
-                            1.  Set the 'linkState' to 'Dangerous'.
-                            2.  The 'shortDescription' of the path MUST contain explicit words of warning that signal extreme danger.
-
-                            This ensures that the player can make an informed choice rather than walking into an unfair death trap.
-
-                            ]]>
-     </content>
-    </rule>
-   </content>
-  </rule>
-  <rule id="20.B">
-   <title>
-    CRITICAL DIRECTIVE: The Duality of Threat Protocol (Internal vs. External Difficulty)
-   </title>
-   <description>
-    This is the mandatory protocol that determines which of the two difficulty profiles to use for any action check within a location.
-   </description>
-   <instructiontext>
-    <![CDATA[
-
-                    When a character (player, NPC, or enemy) performs an action whose difficulty depends on the location, you MUST perform the following check to select the correct difficulty profile. 
-                    The entire process MUST be logged in 'gm_thoughts_markdown'.
-
-                    1.  Identify the Actor: Who is performing the action?
-
-                    2.  Determine the Actor's Affiliation: Is the actor an "Insider" or an "Outsider" in relation to the current location?
-                        -   An actor is considered an Insider if ANY of the following conditions are met:
-                            a) The actor is the Player Character, and the location is their designated property or headquarters (e.g., their house, their faction's base).
-                            b) The actor is an NPC who is a member or a sworn ally of the faction that has primary control over the location (as per the 'factionControl' field).
-                            c) The actor has been explicitly granted full access by the location's owner.
-
-                        -   If none of these conditions are met, the actor is an Outsider.
-
-                    3.  Adjudicate:
-                        -   If the actor is an Insider, you MUST use the values from 'internalDifficultyProfile' for the action check.
-                        -   If the actor is an Outsider, you MUST use the values from 'externalDifficultyProfile'.
-
-                    4.  Logging: You must document your choice and the reason for it.
-                        -   Example (Insider): "Actor is the Player in their own fortress. Status: 'Insider'. Using internalDifficultyProfile for this check."
-                        -   Example (Outsider): "Actor is an enemy bandit. Status: 'Outsider'. Using externalDifficultyProfile for this check."
-
-                    This protocol is the sole authority for choosing a difficulty profile. Its application is mandatory for all location-based checks.
-
-                    ]]>
-   </instructiontext>
-  </rule>
-  <rule id="20.C">
-   <title>
-    CRITICAL DIRECTIVE: The Atomic Storage Management Protocol
-   </title>
-   <description>
-    This protocol defines the mandatory, atomic commands for updating and removing location-based storages.
-                    This is the ONLY correct method for modifying the 'locationStorages' array.
-   </description>
-   <instructiontext>
-    <![CDATA[
-
-                    You are STRICTLY FORBIDDEN from modifying an off-screen location's 'locationStorages' array directly by re-sending the entire array.
-                    This deprecated method is unsafe and will cause data loss.
-                    ALL changes to existing off-screen storages MUST be performed using the 'storageUpdates' and 'storagesToRemove' commands within the 'worldMapUpdates' object.
-                    CLI exception: when updating the player's CURRENT known location this turn, the currentLocationData shorthand may additionally carry locationStorages alongside locationId + coordinates + lastEventsDescription, as documented in CLI_API_Specification.md / Block_CLI_Operations.
-
-                    ]]>
-   </instructiontext>
-   <content type="ruleset">
-    <rule id="20.C.1">
-     <title>
-      Updating an Existing Storage ('storageUpdates')
-     </title>
-     <instructiontext>
-      Use this command to apply partial updates to a storage unit, such as changing its name, description, capacity, or owner.
-     </instructiontext>
-     <content language="json" type="code_example">
-      <![CDATA[
-
-                            // Structure for objects in the 'worldMapUpdates.storageUpdates' array:
-                            {
-                                "targetLocationId": "guid_of_the_location_containing_the_storage",
-                                "storageId": "guid_of_the_storage_to_update",
-                                "update": {
-                                    // This object follows the Law of Partial Updates.
-                                    // Include ONLY the fields of the Storage Object that have changed.
-                                    "newName": "Новое название хранилища",
-                                    "newDescription": "Новое описание",
-                                    "newCapacity": 25,
-                                    "newOwner": { "ownerType": "Faction", "ownerId": "faction-guid-01", "ownerName": "Имя Фракции" }
-                                }
-                            }
-
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.C.2">
-     <title>
-      Removing a Storage ('storagesToRemove')
-     </title>
-     <instructiontext>
-      Use this command to permanently remove a storage unit from a location.
-     </instructiontext>
-     <content language="json" type="code_example">
-      <![CDATA[
-
-                            // Structure for objects in the 'worldMapUpdates.storagesToRemove' array:
-                            {
-                                "targetLocationId": "guid_of_the_location_containing_the_storage",
-                                "storageId": "guid_of_the_storage_to_remove"
-                            }
-
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.C.3">
-     <title>
-      Protocol for Application
-     </title>
-     <content type="rule_text">
-      <![CDATA[
-
-                            1.  Trigger: The player's action logically results in the modification or destruction of a storage unit.
-                            2.  Identify: Uniquely identify the target storage by its 'storageId' and its parent 'targetLocationId' from the Context.
-                            3.  Report: Generate the appropriate command ('storageUpdates' or 'storagesToRemove') and place it within the 'worldMapUpdates' object.
-                            4.  Log and Narrate: Log the reason for the change in 'gm_thoughts_markdown' and describe the event in the 'response'.
-
-                            ]]>
-     </content>
-    </rule>
-   </content>
-  </rule>
   <rule id="20.1">
-   <title>
-    Location Data Object Structure ('currentLocationData')
-   </title>
-   <instructiontext>
-    The 'currentLocationData' key holds a single object describing the location the player is in THIS TURN.
-   </instructiontext>
-   <content language="json" type="code_example">
-    <![CDATA[
+   <title>Complete Mortal location creation</title>
+   <instructiontext><![CDATA[
 
-                    Full-object format for 'currentLocationData' when the location is truly new this turn
-                    (or when describing the canonical stored shape after normalization):
+A new location is complete on first creation. Do not create placeholders for a
+future visit. The exact raw object is:
 
-                     {
-                        "locationId": "system_assigned_guid_or_null_for_new",
-                        "initialId": "turn_local_reference_tag_string_or_null",
-                        "name": "current_location_name_string",
-                        "coordinates": { "x": "integer", "y": "integer", "z": "integer" },
-                        "locationType": "'indoor' | 'outdoor'",
-                        "biome": "string_or_null",
-                        "indoorType": "string_or_null",
-                        "internalDifficultyProfile": {
-                            "combat": "integer",
-                            "environment": "integer",
-                            "social": "integer",
-                            "exploration": "integer"
-                        },
-                        "externalDifficultyProfile": {
-                            "combat": "integer",
-                            "environment": "integer",
-                            "social": "integer",
-                            "exploration": "integer"
-                        },
-                        "factionControl": [
-                            {
-                                "factionId": "guid_of_the_faction",
-                                "factionName": "Name of the faction",
-                                "controlType": "'Military' | 'Economic' | 'Social' | 'Covert'",
-                                "controlLevel": "integer (0-100)"
-                            }
-                        ],
-                        "description": "current_location_description_string_if_new",
-                        "lastEventsDescription": "location_last_events_this_turn_string",
-                        "image_prompt": "prompt_for_location_image_string_if_new_english_only",
-                        "adjacencyMap": [ /* array of adjacency_map_entry_objects or null */ ],
-                        "locationStorages": [ /* array of Storage Objects or null */ ],
-                        "activeThreats": [ /* Array of Active Threat Objects or null */ ],
-                        "eventDescriptions": ["array_of_historical_event_strings_or_null_READ_ONLY_SYSTEM_MANAGED_NOT_GM_AUTHORED"]
-                    }
+```json
+{
+  "locationId": null,
+  "initialId": "locref_turn_unique",
+  "realm": "mortal_world",
+  "name": "Краткое имя",
+  "displayName": "Игровое отображаемое имя",
+  "purpose": "Зачем эта локация существует в мире и ходе",
+  "description": "Полное художественное описание",
+  "image_prompt": "English visual prompt, no text",
+  "locationType": "outdoor",
+  "biome": "setting_specific_biome",
+  "biomeDescription": "Физическая характеристика биома",
+  "indoorType": null,
+  "features": ["выразительная деталь"],
+  "region": "Регион",
+  "parentLocationId": null,
+  "parentInitialId": null,
+  "coordinates": { "x": 0, "y": 0, "z": 0 },
+  "discovery": {
+    "tier": "visited",
+    "audience": "player_known",
+    "rumorSummary": null
+  },
+  "internalDifficulty": {
+    "danger": "low",
+    "recommendedLevel": 1,
+    "description": "Почему локация такова для находящихся внутри"
+  },
+  "externalDifficulty": {
+    "danger": "moderate",
+    "recommendedLevel": 1,
+    "description": "Почему подход/внешний контур таков"
+  },
+  "lastEventsDescription": "Событие текущего хода",
+  "eventDescriptions": [],
+  "factionControl": [],
+  "actorBindings": [],
+  "locationStorages": [],
+  "activeThreats": [],
+  "loreBindings": [],
+  "customStates": [],
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mlocmat_turn_unique",
+    "entityKind": "mortal_location",
+    "realm": "mortal_world",
+    "route": "current_scene_creation",
+    "sourceTurn": 1,
+    "sourceAuthority": {
+      "kind": "turn_outcome",
+      "authorityId": "turn_1"
+    },
+    "initialId": "locref_turn_unique",
+    "state": "complete",
+    "sections": {
+      "presentation": { "disposition": "populated", "reason": null },
+      "physical": { "disposition": "populated", "reason": null },
+      "placement": { "disposition": "populated", "reason": null },
+      "discovery": { "disposition": "populated", "reason": null },
+      "difficulty": { "disposition": "populated", "reason": null },
+      "chronicle": { "disposition": "populated", "reason": null },
+      "factionControl": { "disposition": "empty_by_design", "reason": "Фракционного контроля нет." },
+      "actorBindings": { "disposition": "empty_by_design", "reason": "Постоянных акторов нет." },
+      "storageMetadata": { "disposition": "empty_by_design", "reason": "Хранилищ нет." },
+      "activeThreats": { "disposition": "empty_by_design", "reason": "Активных угроз нет." },
+      "loreBindings": { "disposition": "empty_by_design", "reason": "Lore-привязок нет." },
+      "customStates": { "disposition": "empty_by_design", "reason": "Особых состояний нет." },
+      "topology": { "disposition": "empty_by_design", "reason": "Локация намеренно изолирована." }
+    }
+  }
+}
+```
 
-                    When returning to a KNOWN location, do NOT resend this full object.
-                    Use the known-location shorthand instead:
+For `worldMapUpdates.newLocations[]`, use the same complete shape but route
+`world_map_creation`. A remote location may be hidden, rumored, discovered, or
+visited, but it receives no current-only fields and its storage `contents` must
+be empty. For `currentLocationData`, currentWeather/currentInteractions/
+currentChronology may be added without replacing any governed map section.
 
-                     {
-                        "locationId": "existing_known_location_guid",
-                        "coordinates": { "x": "integer", "y": "integer", "z": "integer_or_legacy_omitted_for_old_2D_locations" },
-                        "lastEventsDescription": "location_last_events_this_turn_string"
-                     }
+Physical shape is closed:
 
-                    ]]>
-   </content>
+- outdoor: non-empty biome and biomeDescription, `indoorType: null`;
+- indoor: `biome: null`, `biomeDescription: null`, non-empty indoorType.
+
+Coordinates contain numeric/integer x, y, and z. They are unique placement,
+never identity. Parent selectors use at most one exact `parentLocationId` or
+`parentInitialId`; they must resolve uniquely and must not form a cycle.
+
+Discovery pairs are closed:
+
+- hidden/gm_only with null rumorSummary;
+- rumored/player_known with non-empty rumorSummary;
+- discovered/player_known with null rumorSummary;
+- visited/player_known with null rumorSummary.
+
+Every required section is `populated`. Each governed optional collection is
+either physically populated with disposition `populated`, or physically empty
+with disposition `empty_by_design` and a concrete in-world reason. Do not use
+omission, null placeholders, or invented semantic defaults.
+
+Ordinary source authority is exactly
+`{ "kind":"turn_outcome", "authorityId":"turn_<sourceTurn>" }`.
+Bootstrap authority is the exact open scaffold request described in Rule 20.7.
+
+]]></instructiontext>
   </rule>
+
   <rule id="20.2">
-   <title>
-    Field Definitions and Location Types
-   </title>
-   <content type="rule_text">
-    <![CDATA[
+   <title>Complete directed link creation and derived topology</title>
+   <instructiontext><![CDATA[
 
-                    1.  "locationId": (string GUID or null) 
-                        For a new location, this is 'null'. 
-                        When moving to a known location, this MUST be its ID from the 'worldMap' in Context.
+Create a directed link only in `worldMapUpdates.newLinks[]`:
 
-                    2.  "name": (string) 
-                        Current location's name. Must be translated.
+```json
+{
+  "linkId": null,
+  "initialId": "linkref_turn_unique",
+  "sourceLocationId": "loc_existing_exact_or_null",
+  "sourceInitialId": null,
+  "targetLocationId": null,
+  "targetInitialId": "locref_same_turn_exact_or_null",
+  "name": "Тропа к башне",
+  "description": "Короткое описание пути",
+  "directionLabel": "на северо-восток",
+  "linkType": "path",
+  "travelMode": "foot",
+  "access": { "state": "open", "reason": null, "requirements": [] },
+  "discovery": {
+    "tier": "discovered",
+    "audience": "player_known",
+    "rumorSummary": null
+  },
+  "customStates": [],
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mlinkmat_turn_unique",
+    "entityKind": "mortal_location_link",
+    "realm": "mortal_world",
+    "route": "world_map_link_creation",
+    "sourceTurn": 1,
+    "sourceAuthority": { "kind": "turn_outcome", "authorityId": "turn_1" },
+    "initialId": "linkref_turn_unique",
+    "state": "complete",
+    "sections": {
+      "endpoints": { "disposition": "populated", "reason": null },
+      "presentation": { "disposition": "populated", "reason": null },
+      "traversal": { "disposition": "populated", "reason": null },
+      "access": { "disposition": "populated", "reason": null },
+      "discovery": { "disposition": "populated", "reason": null },
+      "customStates": { "disposition": "empty_by_design", "reason": "Особых состояний пути нет." }
+    }
+  }
+}
+```
 
-                    3.  "coordinates": (object) 
-                        The location's position on a virtual 3D grid.
-                        - When creating a new location adjacent to an existing one (with coordinates {x, y, z}), its coordinates should be logical 
-                        (e.g., North is {x, y+1, z}, East is {x+1, y, z}, Southwest is {x-1, y-1, z}).
-                        - For vertical movement: Up is {x, y, z+1}, Down is {x, y, z-1}.
-                        - The very first location in the game starts at {x:0, y:0, z:0}.
-                        - The GM must check the 'worldMap' in Context to avoid placing a new location at already occupied coordinates.
-                        - Z coordinate represents vertical levels:
-                          • z = 0: Ground level (default for most outdoor locations)
-                          • z > 0: Above ground (building floors, sky platforms, flying cities, tree canopies)
-                          • z < 0: Below ground (basements, caves, dungeons, underground levels)
-                        - Multi-level structures can now be properly represented (e.g., "Tavern Ground Floor" at {5,3,0} and "Tavern Second Floor" at {5,3,1}).
+Exactly one source selector and one target selector is non-null. A permanent
+selector binds one exact permanent locationId. A temporary selector binds one
+accepted same-turn initialId. Missing, dual, non-string, whitespace-padded,
+wrong-case, Unicode-confusable, historical, self, ambiguous, or cross-realm
+selectors fail closed. Do not infer an endpoint from name, coordinates,
+description, visible direction, or another link.
 
-                    4.  "locationType": (string, mandatory) 
-                        This is the most important classification for a location. You MUST choose one:
-                        -   'outdoor': An exterior location, exposed to the elements (e.g., forest, road, city square, ruin courtyard). 
-                            Weather directly affects this area.
-                        -   'indoor': An interior, enclosed space (e.g., a room in a building, a cave, a shop, a dungeon corridor). 
-                            Weather is external and does not directly affect this area, though it might be observable (e.g., hearing rain on the roof).
+Set a location topology section to `populated` exactly when accepted incident
+links exist in the same creation package. Otherwise use `empty_by_design` with
+a reason. A narrative-only unresolved exit is ordinary prose/current
+interaction with no initialId, linkId, endpoint selector, coordinate reservation,
+or map node; it never asserts a canonical route.
 
-                    5.  "biome": (string, optional) 
-                        This field is MANDATORY if 'locationType' is 'outdoor', and should be OMITTED if 'locationType' is 'indoor'. 
-                        It describes the natural environment. 
-                        Refer to Rule #20.5 for the list of valid biomes.
-
-                    6.  "indoorType": (string, optional) Used ONLY if 'locationType' is 'indoor'. 
-                        Provides more context about the interior space. Choose from:
-                        - 'Building': A man-made structure (house, tavern, castle room, shop).
-                        - 'Dungeon': A constructed underground complex (crypt, prison, ruin).
-                        - 'CaveSystem': A natural underground formation.
-                        - 'Vehicle': The interior of a large vehicle (ship's cabin, train car).
-                        - 'UniqueIndoor': A surreal or magical interior space (e.g., inside a giant's stomach).
-        
-                    7.  "internalDifficultyProfile": (object)
-                         A mandatory object containing four independent difficulty values, calculated as per the Multi-Faceted Threat Protocol (Rule #20.0). 
-                         This profile defines the location's challenge for its owner and their allies (Insiders).
-                         - 'combat': The challenge posed by hostile inhabitants.
-                         - 'environment': The danger posed by the location itself (traps, hazards).
-                         - 'social': The difficulty of social interactions with the local populace.
-                         - 'exploration': The complexity of finding secrets and information.
-
-                    8.  "externalDifficultyProfile": (object)
-                         A mandatory object containing four independent difficulty values, calculated as per the same protocol.
-                         This profile defines the location's challenge for enemies and neutral parties (Outsiders).
-                         - 'combat': The challenge posed by hostile inhabitants.
-                         - 'environment': The danger posed by the location itself (traps, hazards).
-                         - 'social': The difficulty of social interactions with the local populace.
-                         - 'exploration': The complexity of finding secrets and information.
-
-                    9.  "factionControl": (array of objects or null) 
-                        An array detailing the sphere of influence each faction exerts over the location. 
-                        This is defined in detail in Rule #20.2.A. An empty array signifies an uncontrolled or wild territory.
-
-                    10. "description": (string) 
-                        A full, artistic description, generated ONLY for new locations. 
-                        This description MUST incorporate the current 'date.timeOfDay' and 'weather' from the 'worldState' to paint a complete picture (as per Rule #5.21). 
-                        Furthermore, the description MUST narratively justify the values in BOTH the 'internalDifficultyProfile' and 'externalDifficultyProfile'.
-                        If the profiles differ significantly, the description must explain why.
-
-                        Example (for a Player's Fortress): 
-                        - 'external.combat' is high: "The walls are patrolled by elite guards, and automated turrets track every movement."
-                        - 'internal.combat' is low: "To you, however, the guards offer a respectful nod, and the security systems recognize you as their master."
-                        - 'external.environment' is high: "The approach is a deadly maze of pressure plates and laser grids."
-                        - 'internal.environment' is low: "You walk a pre-programmed safe path, the traps deactivating before you."
-
-                    11. "lastEventsDescription": (string) 
-                        A summary of the events that occurred during the current turn. 
-                        CRITICAL PROTOCOL REMINDER: This field is your External Memory. 
-                        You MUST follow the detailed logging requirements of Rule #18.A when filling this field. 
-                        Your summary must be rich with details (Who, What, Why, Outcome).
-
-                    12. "image_prompt": (string) 
-                        A detailed, English-only prompt (max 150 chars) for generating the location's image, created only for new locations.
-                        This field is MANDATORY for all newly created locations.
-
-                    13. "adjacencyMap": (array or null) 
-                        A map of connections to adjacent locations, generated only for new locations. 
-                        See Rule #20.3 for its structure.
-
-                    14. "locationStorages": (array of objects or null)
-                        An array containing objects for persistent storage units available in this location (e.g., personal chests, guild vaults). 
-                        The structure of each storage object is defined in Rule #20.9. 
-                        This array is a feature of the location, not items in a player's inventory.
-
-                    15. "activeThreats": (array of objects or null)
-                        An array that tracks all active, persistent, non-NPC threats within this location (e.g., 'The Gloomfang Pack', 'The Spreading Void Corruption'). 
-                        The complete structure and all field definitions for these objects are specified in Rule #20.12.
-
-                    16. "eventDescriptions": (array of strings or null)
-                        CRITICAL DIRECTIVE: This is a READ-ONLY historical log of the location, managed by the game system. It may contain a very large amount of text.
-                        You, the GM, MUST read this array to understand the location's history.
-                        You are STRICTLY AND ABSOLUTELY FORBIDDEN from ever including the 'eventDescriptions' field in your JSON response. 
-                        Attempting to reproduce this field will cause a critical system failure by exceeding the output size limit. 
-                        Your only interaction with this system is to READ the history here, and WRITE the single new entry for the current turn into 'lastEventsDescription'.
-
-                    ]]>
-   </content>
+]]></instructiontext>
   </rule>
+
   <rule id="20.3">
-   <title>
-    Adjacent Location Map Generation ('adjacencyMap')
-   </title>
-   <description>
-    When a location is first created, the GM must generate a map of adjacent locations.
-   </description>
-   <content type="ruleset">
-    <rule id="20.3.1">
-     <title>
-      Triggering Condition and Structure
-     </title>
-     <instructiontext>
-      The 'adjacencyMap' array is filled ONLY when a location is first created. It is an array of objects, each representing a connection.
-     </instructiontext>
-     <content language="json" type="code_example">
-      <![CDATA[
+   <title>Existing movement and narrow location lifecycle</title>
+   <instructiontext><![CDATA[
 
-                            Mandatory format for each object in 'adjacencyMap' array:
-                            {
-                                "name": "name_of_the_adjacent_location_string",
-                                "shortDescription": "brief_one_sentence_teaser_description_string",
-                                "linkType": "'Road', 'Path', 'Secret Passage', 'Stairs Up', 'Stairs Down', 'Ladder Up', 'Ladder Down', 'Rope Up', 'Rope Down', 'Elevator Up', 'Elevator Down', 'Teleporter', 'Door', 'Gate', 'Waterway', 'Wilderness', 'Shaft Up', 'Shaft Down'",
-                                "linkState": "'Safe', 'Dangerous', 'Hidden', 'Blocked', 'Requires Key'",
-                                "targetCoordinates": { "x": "integer", "y": "integer" },
-                                "estimatedInternalDifficultyProfile": {
-                                    "combat": "integer",
-                                    "environment": "integer",
-                                    "social": "integer",
-                                    "exploration": "integer"
-                                },
-                                "estimatedExternalDifficultyProfile": {
-                                    "combat": "integer",
-                                    "environment": "integer",
-                                    "social": "integer",
-                                    "exploration": "integer"
-                                }
-                            }
+Move/select an existing scene with exact permanent locationId:
 
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.3.2">
-     <title>
-      Field Definitions for Adjacency Map Entry
-     </title>
-     <content type="rule_text">
-      <![CDATA[
+```json
+{
+  "currentLocationData": {
+    "locationId": "loc_exact_destination",
+    "lastEventsDescription": "Что изменилось при прибытии",
+    "currentWeather": {},
+    "currentInteractions": [],
+    "currentChronology": []
+  }
+}
+```
 
-                            1.  "name": (string) The name of the adjacent location. Translate.
-                            
-                            2.  "shortDescription": (string) A one-sentence teaser. Translate.
-                            
-                            3.  "linkType": (string) The type of connection. Choose from the list or a logical equivalent.
-                            
-                            4.  "linkState": (string) The current state of the connection. 'Hidden' requires a Perception check to find. 'Blocked' requires an action to clear.
-                            
-                            5.  "targetCoordinates": (object) The coordinates {x, y, z} of the adjacent location, determined logically.
-                            
-                            6.  "estimatedInternalDifficultyProfile": (object) 
-                                The GM's logical estimation of the internal difficulty of the adjacent location. 
-                                This preview informs the player how safe or easy the location might be for them if they were to control it.
+This selector carries no coordinates, name, initialId, placement, difficulty,
+envelope, receipt, or derived exits. Re-selecting the exact current location is
+allowed. Changing location requires one accepted pre-turn open directed link whose
+sourceLocationId is the exact pre-turn current locationId, whose targetLocationId
+is the requested exact destination, whose access is `open` with an empty
+requirements array, and whose discovery and destination are non-hidden and
+`player_known`. A reverse-only, hidden, `conditional`, or `sealed` link does not
+authorize traversal. This selector never creates reachability.
+Existing movement carries only exact selection and operational fields. Never
+include locationStorages or contents in that payload. The client preserves
+storage item contents, parks the previous current scene, and restores the
+destination scene atomically. Storage metadata changes remain separate
+`worldMapUpdates.storageUpdates[]` commands.
 
-                            7. "estimatedExternalDifficultyProfile": (object) 
-                                The GM's logical estimation of the external difficulty of the adjacent location. 
-                                This preview informs the player of the objective danger and the level of opposition they might face there.
+Persistent edits use `worldMapUpdates.locationUpdates[]`, exact permanent
+locationId, and at least one field from this closed mutable catalog:
+name, displayName, purpose, description, image_prompt, internalDifficulty,
+externalDifficulty, lastEventsDescription, factionControl, actorBindings,
+loreBindings, customStates. `eventDescriptions` is a system-managed archive;
+`activeThreats` changes only through the atomic threat commands below. Do not
+move, reparent, reidentify, reseal, or change discovery through this patch.
 
-                            ]]>
-     </content>
-    </rule>
-   </content>
+Discovery advances only through `worldMapUpdates.locationDiscoveryTransitions[]`:
+
+```json
+{
+  "locationId": "loc_exact",
+  "fromTier": "hidden",
+  "toTier": "rumored",
+  "toAudience": "player_known",
+  "rumorSummary": "За болотом видели огни старой крепости.",
+  "reason": "Герой получил точный слух от картографа."
+}
+```
+
+Allowed forward edges are hidden→rumored/discovered/visited,
+rumored→discovered/visited, and discovered→visited. The exact pre-state must
+match. A transition never reveals a hidden link or supplies identity by itself.
+
+]]></instructiontext>
   </rule>
+
   <rule id="20.4">
-   <title>
-    Dynamic Discovery and Map Updates
-   </title>
-   <description>
-    Handles cases where the player discovers a path or location not on the pre-generated adjacency map.
-   </description>
-   <content type="rule_text">
-    <![CDATA[
+   <title>Exact link lifecycle</title>
+   <instructiontext><![CDATA[
 
-                    If the player, through their actions (e.g., a successful Perception check revealing a secret door), discovers a new exit from their current location:
-                    1.  Generate the New Adjacent Location: 
-                    Create a new "Adjacency Map Entry" object for this newly discovered location, following the structure in #20.3.1. 
-                    This includes assigning it new, logical coordinates.
-                    
-                    2.  Report the Map Update: 
-                    This new entry must be reported via the 'worldMapUpdates' key. 
-                    The value for 'worldMapUpdates' is an object with a single key "newLinks", which is an array. 
-                    Each object in "newLinks" has 'sourceLocationId' (the ID of the location where the discovery was made) and a 'link' (the Adjacency Map Entry object itself).
-                    
-                    3.  Narrate the Discovery: 
-                    The 'response' text must describe how the player found this new path.
-                    
-                    When the player travels to this newly discovered location, it will then be fully generated as a new 'currentLocationData'.
-                    
-                    ]]>
-   </content>
+Update one accepted link with `worldMapUpdates.linkUpdates[]` and exact
+permanent identity: use the exact permanent linkId. Allowed fields are name,
+description, directionLabel, access,
+and discovery. A complete access patch has state (`open`, `conditional`, or
+`sealed`), reason, and requirements. A discovery patch carries exact fromTier,
+toTier, toAudience, and rumorSummary. Endpoints, identity, linkType, route,
+envelope, and receipt are immutable.
+
+Remove one accepted link only through `worldMapUpdates.linkRemovals[]`:
+
+```json
+{
+  "linkId": "lnk_exact",
+  "sourceLocationId": "loc_exact_source",
+  "targetLocationId": "loc_exact_target",
+  "reason": "Мост окончательно разрушен паводком."
+}
+```
+
+All three IDs must match the exact accepted pre-state. Removal retires only that
+directed link and its client index entry. It never deletes either endpoint,
+never removes a reverse link implicitly, and never permits reuse of retired
+initial/materialization evidence.
+
+]]></instructiontext>
   </rule>
-  <rule id="20.4.A">
-   <title>
-    CRITICAL DIRECTIVE: Updating Off-Screen Locations ('worldMapUpdates')
-   </title>
-   <description>
-    This rule defines the mandatory protocol for applying changes to known locations on the world map that the player is NOT currently in. 
-                    This is the ONLY correct method for simulating off-screen events and prevents the corruption of 'currentLocationData'.
-   </description>
-   <instructiontext>
-    <![CDATA[
 
-                    When a world event (from the World Progression step) affects a location where the player is NOT present, you are STRICTLY FORBIDDEN from using the 'currentLocationData' key to report this change.
-                    Instead, you MUST use the 'locationUpdates' array within the 'worldMapUpdates' key.
-
-                    ]]>
-   </instructiontext>
-   <content type="ruleset">
-    <rule id="20.4.A.1">
-     <title>
-      Structure and Usage
-     </title>
-     <content language="json" type="code_example">
-      <![CDATA[
-
-                            "worldMapUpdates": {
-                                "locationUpdates": [
-                                    {
-                                        "locationId": "guid_of_the_existing_off-screen_location_to_update",
-                                        // This object follows the Law of Partial Updates.
-                                        // Include ONLY the fields of the location that have changed.
-                                        "newInternalDifficultyProfile": { "combat": 5, "environment": 10, "social": 0, "exploration": 5 },
-                                        "newExternalDifficultyProfile": { "combat": 40, "environment": 55, "social": 10, "exploration": 30 },
-                                        "newLastEventsDescription": "#[turn_number]. The corruption in this forest has visibly worsened.",
-                                        "newName": "The Corrupted Forest" // Optional: if the name itself changes
-                                    }
-                                ]
-                            }
-
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.4.A.2">
-     <title>
-      Process Flow
-     </title>
-     <content type="rule_text">
-      <![CDATA[
-                            
-                            1.  Identify an off-screen event from the World Progression analysis that affects a known location.
-
-                            2.  Retrieve the 'locationId' of the affected location from the 'worldMap' in the Context.
-
-                            3.  Create an object containing this 'locationId' and only the specific properties that need to be updated 
-                                (e.g., 'newInternalDifficultyProfile', 'newExternalDifficultyProfile', 'newLastEventsDescription').
-                            
-                            4.  Add this object to the 'locationUpdates' array inside the 'worldMapUpdates' key.
-                            
-                            5.  Log the reason for the off-screen update in 'gm_thoughts_markdown'.
-
-                            ]]>
-     </content>
-    </rule>
-   </content>
-  </rule>
-  <rule id="20.4.B">
-   <title>
-    CRITICAL DIRECTIVE: Creating New Off-Screen Locations ('newLocations')
-   </title>
-   <description>
-    This is the mandatory protocol for creating a new, complete, off-screen location as a result of a world event. 
-                    This command allows for the immediate creation of fully detailed locations that the player has not yet visited.
-   </description>
-   <instructiontext>
-    <![CDATA[
-
-                    When a world event (from InstructionBlock 30) results in the discovery or creation of a new location where the player is NOT present, you MUST use the 'newLocations' array within the 'worldMapUpdates' key.
-                    
-                    ]]>
-   </instructiontext>
-   <content type="rule_text">
-    <![CDATA[
-
-                    1.  Trigger: 
-                        A world event logically creates a new location (e.g., an earthquake reveals a cave system, an explorer faction establishes a new outpost).
-
-                    2.  Action: 
-                        You MUST generate a COMPLETE Location Data Object for this new location, following all rules from #20.1 and #20.2.
-                        - The 'locationId' for this new object MUST be 'null'.
-                        - It MUST have a full 'description', a 'biome' (if outdoor), a logically derived 'internalDifficultyProfile' and 'externalDifficultyProfile', and, crucially, a set of 'coordinates' that do not conflict with existing known locations.
-                        - Fill all other location fields as per the rules - it should be a full, COMPLETE Location Data Object, with all available fields filled out.
-
-                    3.  Reporting: 
-                        Place this complete new location object inside the 'worldMapUpdates.newLocations' array.
-
-                    4.  System Behavior: 
-                        The game system will process this object, create the new location in the world map, assign it a permanent GUID, and it will be available for future reference (e.g., for NPC travel or future 'locationUpdates') in the next turn's Context.
-
-                    This protocol is the SOLE correct method for creating a full off-screen location. 
-                    The 'newLinks' command should now be used primarily for discovering new PATHS between EXISTING locations.
-
-                    ]]>
-   </content>
-  </rule>
-  <rule id="20.4.C">
-   <title>
-    Backward Compatibility for Legacy Coordinates
-   </title>
-   <description>
-    This rule defines how to handle locations that may still exist with only X and Y coordinates from before the Z coordinate system was implemented.
-   </description>
-   <content type="rule_text">
-    <![CDATA[
-                    
-                    When working with the world map or location data, you may encounter older locations that only have "x" and "y" coordinates without a "z" coordinate.
-                    
-                    MANDATORY HANDLING PROTOCOL:
-                    1.  If a location in Context has coordinates like {"x": 5, "y": 3} without a "z" field, treat it as having z: 0 (ground level).
-                    
-                    2.  When updating such locations via 'worldMapUpdates.locationUpdates', you SHOULD add the missing Z coordinate:
-                        - For outdoor locations: default to z: 0
-                        - For indoor locations in buildings: z: 0 for ground floor, adjust as needed for upper floors
-                        - For caves/dungeons: z: -1 or lower as appropriate
-                        
-                    3.  When creating adjacency links TO legacy locations, use the appropriate Z coordinate (typically 0) in 'targetCoordinates'.
-                    
-                    4.  NEVER assume that missing Z means the location is invalid - always default to z: 0 for compatibility.
-                    
-                    This ensures smooth transition from the old 2D coordinate system to the new 3D system without breaking existing game states.
-                    
-                    ]]>
-   </content>
-  </rule>
   <rule id="20.5">
-   <title>
-    Outdoor Biome Types ('biome')
-   </title>
-   <description>
-    This rule defines the mandatory 'biome' property for all 'outdoor' locations. 
-                    This property dictates environmental characteristics for weather, flora, and fauna.
-   </description>
-   <content type="ruleset">
-    <rule id="20.5.1">
-     <title>
-      Purpose and Importance of Biomes
-     </title>
-     <content type="rule_text">
-      <![CDATA[
+   <title>Exact governed companion commands</title>
+   <instructiontext><![CDATA[
 
-                            Every 'outdoor' location MUST be assigned a 'biome'. This is critical for the server's weather engine. 
-                            Your narrative descriptions for 'outdoor' locations MUST be consistent with the assigned biome. 
-                            For 'indoor' locations, this field is not used.
-                            
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.5.2">
-     <title>
-      Predefined Biome Types
-     </title>
-     <instructiontext>
-      When creating a new 'outdoor' location, you MUST assign one of the following exact, case-sensitive strings to its 'biome' property.
-     </instructiontext>
-     <content type="rule_text">
-      <![CDATA[
+Location storages and threats remain semantic children of one exact accepted
+location. Their IDs are case-sensitive and Unicode-exact; display names are not
+authority.
 
-                            -   'TemperateForest'
-                            -   'Desert'
-                            -   'ArcticTundra'
-                            -   'Mountains'
-                            -   'Swamp'
-                            -   'Plains'
-                            -   'Urban' (for outdoor city areas like streets and squares)
-                            -   'Coastal'
-                            -   'Unique' (for surreal or magical outdoor environments. Requires a 'biomeDescription' field).
+Every raw new-location object MUST contain `activeThreats: []`. To materialize
+a threat in that same turn, use a separate `worldMapUpdates.threatsToAdd[]`
+command with `threatId: null`, `targetLocationId: null`, and the exact
+`initialTargetLocationId`. Never embed a GM-selected permanent threat ID in a
+new location; the client assigns it.
 
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.5.3">
-     <title>
-      Assigning a Biome
-     </title>
-     <content type="rule_text">
-      <![CDATA[
+- `worldMapUpdates.storageUpdates[]` binds exact targetLocationId + storageId
+  and contains a non-empty `update` object with only `newName`,
+  `newDescription`, `newCapacity`, `newOwner`, `newAuthorizedUsers`, and/or
+  `newHasFullAccess`. `newOwner` requires both access fields in the same patch;
+  `newAuthorizedUsers` requires `newHasFullAccess`. The client applies this
+  partial patch while preserving exact storage identity and item contents.
+- `worldMapUpdates.storagesToRemove[]` binds exact targetLocationId + storageId.
+  Removal is accepted only after that storage has no item contents; item
+  lifecycle authority must move or destroy bound items first.
+- `worldMapUpdates.threatsToAdd[]`, `threatsToUpdate[]`,
+  `threatsToRemove[]`, and `completeThreatActivities[]` bind exact accepted
+  location/threat authority according to their closed command shapes.
+- A new threat has `threatId = null`. For an existing location use exact
+  `targetLocationId`; for a same-turn new location use
+  `targetLocationId = null` plus exact `initialTargetLocationId`. The client
+  assigns the permanent `threat_...` ID. `threatsToUpdate[]` deep-merges its
+  non-terminal partial threat/currentActivity patch; update, removal, and
+  completion for the same threat cannot be mixed in one accepted turn.
+- `completeThreatActivities[]` is valid only when the exact threat already has
+  non-null currentActivity in the accepted pre-turn location. The client
+  archives the completed activity in system-managed `eventDescriptions`, then
+  sets `currentActivity` to null. Do not author that archive entry directly.
 
-                            When you generate a new location, you must logically deduce its biome from its name, description, and geographical context. 
-                            The chosen biome must be reflected in your detailed 'description' for the location.
-                            For example, a location named "The Sun-Scorched Wastes" must be assigned the 'Desert' biome, and its description should mention sand and heat, not lush trees.
-                            
-                            ]]>
-     </content>
-    </rule>
-   </content>
+These commands mutate canonical `world_map.json`, rebuild the current projection
+when present, and append client-owned location lifecycle evidence. The immutable
+materialization section dispositions continue to describe the creation payload;
+later accepted storage/threat count changes do not rewrite or reseal that
+historical envelope. These dispositions are immutable creation evidence, not
+live counters. Any unknown `worldMapUpdates` command fails closed.
+
+Remote new location storages cannot contain raw items. A genuinely new item in
+an accepted same-turn current-location storage follows the independent Mortal
+Item Materialization v1 `storage_placement` route with exact
+`<initialLocationId>:<storageId>` source authority. Moving an accepted item is
+an exact itemId transfer and preserves its envelope/receipt. Location creation
+does not authorize item, storage, actor, faction, lore, or threat identity
+invention outside their own contracts.
+
+]]></instructiontext>
   </rule>
+
   <rule id="20.6">
-   <title>
-    Player-Initiated Movement and adjacencyMap Authority
-   </title>
-   <description>
-    This rule establishes the authority of the 'adjacencyMap' and location description as the primary sources for valid movement, 
-                    and provides a clear protocol for handling player movement requests that do not match these sources.
-   </description>
-   <instructiontext>
-    <![CDATA[
+   <title>Client-owned canonical state and no-legacy policy</title>
+   <instructiontext><![CDATA[
 
-                    When a player declares their intent to move to a new location, you MUST follow this strict adjudication protocol. 
-                    The player's freedom is in their attempt, not in their automatic success.
-                    
-                    ]]>
-   </instructiontext>
-   <content type="ruleset">
-    <rule id="20.6.1">
-     <title>
-      Step 1: Check for Direct Match in adjacencyMap
-     </title>
-     <content type="rule_text">
-      <![CDATA[
+The GM reads canonical map/current state from Context but never writes canonical
+receipts or identity history. The client owns:
 
-                            First, check if the player's intended destination matches a 'name' in the current location's 'adjacencyMap' array.
+- `game_state/world/location_identity_index.json`;
+- materializationReceipt, receiptId, seal, permanent IDs, transitions;
+- current projection assembly and all derived map/navigation DTOs;
+- rollback snapshots, pending validation state, and repair diagnostics.
 
-                            - If YES: The move is valid. Proceed by checking the 'linkState'. 
-                            If the path is not 'Safe' (e.g., 'Blocked', 'Requires Key'), narrate the obstacle. 
-                            If it is 'Safe', proceed with the move.
+Never infer identity from a display name. Never use case-insensitive matching,
+Unicode normalization, coordinate matching, slugs, ordinals, file paths,
+knownExits, adjacencyMap, aliases, or historical retired origins as authority.
+Never promote receipt-less development data. If the canonical snapshot is
+missing, malformed, ambiguous, or inconsistent with the index, stop the turn.
 
-                            - If NO: Proceed to Step 2.
-
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.6.2">
-     <title>
-      Step 2: Check for Implied Path in Location Description
-     </title>
-     <content type="rule_text">
-      <![CDATA[
-
-                            If no direct match was found, re-read the full 'description' of the current location. 
-                            Check for any phrases that imply an unlisted path 
-                            (e.g., "a dusty staircase leads upwards", "a heavy curtain conceals part of the wall", "a faint draft comes from a crack in the floor").
-                            
-                            - If YES: Treat this as a player discovery. 
-                            You MUST generate a new 'adjacencyMapEntry' for this path and report it via the 'worldMapUpdates' key (as per Rule 20.4).
-                            Then, allow the player to move.
-
-                            - If NO: Proceed to Step 3.
-
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.6.3">
-     <title>
-      Step 3: Adjudicate Based on Plausibility
-     </title>
-     <content type="rule_text">
-      <![CDATA[
-
-                            If the path is neither explicitly mapped nor implicitly described, you must make a judgment call based on the location's nature.
-                            a) Plausible but Unseen: 
-                            If the destination is highly plausible for the location type (e.g., a "kitchen" in a tavern, a "guard's barracks" in a fort) but not visible, 
-                            you MUST NOT simply move the player. Instead, you MUST prompt them for an action.
-                            
-                            - Example Response: 
-                            "From where you stand, you don't see an entrance to the kitchen. You could search for a service door." 
-
-                            This converts an invalid movement command into a valid in-game action (e.g., a Perception check).
-                            
-                            b) Implausible / Non-Existent: 
-                            If the destination is illogical for the current location (e.g., a "third floor" in a small hut, an "ocean view" in a mountain cave), 
-                            you MUST deny the movement.
-                            Your 'response' must clearly and politely state that such a location does not exist from this point, grounding the player in the reality of the world.
-                            
-                            - Example Response: 
-                            "You look around the cozy tavern, but it's clearly a two-story building. 
-                            There are no stairs or paths that lead to a third floor."
-                            
-                            This protocol ensures that the world map remains consistent and that exploration is a meaningful part of the game.
-
-                            ]]>
-     </content>
-    </rule>
-   </content>
+]]></instructiontext>
   </rule>
+
   <rule id="20.7">
-   <title>
-    CRITICAL DIRECTIVE: Updating Existing Links ('linkUpdates')
-   </title>
-   <description>
-    This is the mandatory protocol for modifying the properties of an existing connection between two locations. 
-                    This allows for dynamic changes to the world map, such as a path becoming more dangerous or a gate being unlocked.
-   </description>
-   <content type="ruleset">
-    <rule id="20.7.1">
-     <title>
-      Trigger and Structure
-     </title>
-     <content type="rule_text">
-      <![CDATA[
+   <title>Mortal bootstrap</title>
+   <instructiontext><![CDATA[
 
-                            When a world event or player action alters an existing path, you MUST use the 'linkUpdates' array within the 'worldMapUpdates' key.
+Fresh Mortal state contains neutral empty map/current/index roots and one
+client-owned `game_state/control/mortal_bootstrap_scaffold.json`. The GM must
+not create, delete, settle, or alter the scaffold.
 
-                            Structure for each object in 'linkUpdates':
-                            {
-                                "sourceLocationId": "guid_of_the_location_where_the_link_originates",
-                                "targetCoordinates": { "x": "integer", "y": "integer" }, // Coordinates of the destination to uniquely identify the link
-                                "updatedLink": {
-                                    // This object follows the Law of Partial Updates.
-                                    // Include ONLY the fields of the link that have changed.
-                                    "newName": "Новое название пути, если изменилось",
-                                    "newShortDescription": "Новое краткое описание",
-                                    "newLinkState": "'Safe', 'Dangerous', 'Blocked', etc."
-                                }
-                            }
+For an open scaffold, one coherent full-turn response must materialize:
 
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.7.2">
-     <title>
-      Process and Logging
-     </title>
-     <content type="rule_text">
-      <![CDATA[
+1. one complete visited/player_known start through `currentLocationData` with
+   exact reserved initialId, coordinates, sourceTurn, and sourceAuthority
+   `{kind:"mortal_bootstrap_scaffold", authorityId:<exact request>}`;
+2. either one complete reserved neighbor through `newLocations[]` plus one
+   complete reserved directed link through `newLinks[]`, or one narrative-only
+   unresolved exit that asserts no canonical identity/endpoint/reservation.
 
-                            1.  Identify the Link: 
-                                Uniquely identify the link to be updated using the 'sourceLocationId' and the 'targetCoordinates' of its destination.
-                           
-                            2.  Define Changes: 
-                                Create a partial 'updatedLink' object containing only the properties that have changed.
-                            
-                            3.  Report: 
-                                Add the complete object to the 'linkUpdates' array.
-                            
-                            4.  Log: 
-                                In 'gm_thoughts_markdown', log the reason for the link update. 
-                                Example: "World event 'Bridge Collapse' changed the link from 'loc-river-crossing-01' to '{x:10, y:12}' to 'Blocked'."
-                            
-                            ]]>
-     </content>
-    </rule>
-   </content>
+The client validates the pre-turn scaffold byte/semantically exactly, accepts
+the ordinary creation contracts, assigns permanent IDs/receipts, and only then
+settles the scaffold. Missing, rewritten, forged-settled, wrong-case,
+wrong-coordinate, or partially consumed reservations fail closed.
+
+]]></instructiontext>
   </rule>
+
   <rule id="20.8">
-   <title>
-    CRITICAL DIRECTIVE: Removing Existing Links ('linksToRemove')
-   </title>
-   <description>
-    This is the mandatory protocol for permanently deleting a connection between two locations, representing catastrophic changes to the world map.
-   </description>
-   <content type="ruleset">
-    <rule id="20.8.1">
-     <title>
-      Trigger and Structure
-     </title>
-     <content type="rule_text">
-      <![CDATA[
+   <title>Bounded repair and full-turn resubmission</title>
+   <instructiontext><![CDATA[
 
-                            When a world event or player action completely destroys a path, you MUST use the 'linksToRemove' array within the 'worldMapUpdates' key.
+A safe issue may produce a bounded `mortal_location_materialization_repair`
+packet only when one exact actor, carrier, route, raw coordinate, target file,
+and repairable field are proven. Permanent identity, receipt/seal, source
+authority, bootstrap scaffold, identity index, snapshot/rollback state,
+ambiguous selectors, confusables, historical replay, duplicate JSON properties,
+or mixed protected targets always stop before GM dispatch.
 
-                            Structure for each object in 'linksToRemove':
-                            {
-                                "sourceLocationId": "guid_of_the_location_where_the_link_originates",
-                                "targetCoordinates": { "x": "integer", "y": "integer" } // Coordinates of the destination to uniquely identify the link
-                            }
+Before an actionable packet is dispatched, the client restores the validated
+pre-turn baseline. The GM/worker must perform full-turn resubmission: regenerate
+one complete coherent raw package, including all intended location, actor,
+faction, item, narrative, interface, and other turn outputs. Writing only a
+ready marker, patching canonical files in place, or resubmitting only the named
+leaf is invalid. Required paths must be freshly and semantically resubmitted;
+stale or formatting-only output is rejected.
 
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.8.2">
-     <title>
-      Process and Logging
-     </title>
-     <content type="rule_text">
-      <![CDATA[
+The player sees only a generic in-world failure/status. Validation codes,
+repair instructions, actor IDs, paths, receipts, seals, indexes, snapshots,
+rollback evidence, worker/harness terminology, and packet DTOs are operator-only
+and must not appear in console/browser/narrative/map/quest/news output.
 
-                            1.  Identify the Link: 
-                                Uniquely identify the link to be removed using its 'sourceLocationId' and 'targetCoordinates'.
-
-                            2.  Report: 
-                                Add the identification object to the 'linksToRemove' array.
-
-                            3.  Log: 
-                                In 'gm_thoughts_markdown', log the reason for the link's removal.
-                                Example: "The 'Volcanic Eruption' event has permanently destroyed the mountain pass from 'loc-peak-base-01' to '{x:25, y:30}'."
-                           
-                            ]]>
-     </content>
-    </rule>
-   </content>
+]]></instructiontext>
   </rule>
-  <rule id="20.9">
-   <title>
-    CRITICAL DIRECTIVE: The Location Storage Protocol
-   </title>
-   <description>
-    This rule defines the structure and management of persistent player-accessible storages within a location, such as personal chests, guild vaults, or workshop containers.
-   </description>
-   <content type="ruleset">
-    <rule id="20.9.1">
-     <title>
-      Location Storage Object Structure
-     </title>
-     <instructiontext>
-      Each object in the 'locationStorages' array represents a single, distinct storage unit. 
-                            This object is NOT an item itself, but a permanent feature of the location.
-     </instructiontext>
-     <content language="json" type="code_example">
-      <![CDATA[
 
-                            Mandatory format for a Storage Object:
-                            {
-                                "storageId": "system_assigned_guid_or_null_for_new",
-                                "name": "user_readable_name_of_the_storage_string",
-                                "description": "user_readable_description_of_the_storage_string",
-                                "image_prompt": "detailed_image_prompt_for_storage_string_english_only",
-                                "capacity": "integer_max_number_of_item_stacks",
-                                "volume": "double_max_internal_volume_in_dm3",
-                                "owner": {
-                                    "ownerType": "'Player' | 'Faction' | 'Shared'",
-                                    "ownerId": "guid_of_the_primary_player_owner_or_faction",
-                                    "ownerName": "name_of_the_primary_owner_or_faction"
-                                },
-                                "authorizedUsers": [ 
-                                    {
-                                        "playerId": "guid_of_the_authorized_player",
-                                        "playerName": "name_of_the_authorized_player"
-                                    }
-                                ],
-                                "contents": [
-                                    /* Array of COMPLETE Item Objects (as per Block 10) that are currently inside this storage.
-                                    NOTE: This array is for system state tracking; GM must use atomic commands to modify it. */
-                                ],
-                                "hasFullAccess": "boolean" 
-                            }
-
-                            ]]>
-     </content>
-     <rule id="20.9.1.1">
-      <title>
-       Field Definitions Update for Shared Storage
-      </title>
-      <content type="rule_text">
-       <![CDATA[
-
-                                1. "owner.ownerType": (string, MANDATORY)
-                                   - OPTION: 'Shared'. This indicates that the storage is owned by a primary player but is accessible to others.
-                                   - When 'ownerType' is 'Shared', the 'ownerId' and 'ownerName' fields refer to the PRIMARY OWNER who has administrative rights (can grant/revoke access).
-
-                                2. "authorizedUsers": (array of objects or null, NEW)
-                                   - This field is used ONLY when 'ownerType' is 'Shared'.
-                                   - It contains an array of objects, where each object identifies a player who has been granted access by the primary owner.
-
-                                ]]>
-      </content>
-     </rule>
-    </rule>
-   </content>
-  </rule>
-  <rule id="20.10">
-   <title>
-    The Storage Access Control Protocol
-   </title>
-   <description>
-    This is the mandatory protocol for adjudicating player attempts to interact with a location storage to determine if they have the necessary permissions.
-   </description>
-   <instructiontext>
-    This protocol must be executed before granting access or setting the 'hasFullAccess' flag.
-   </instructiontext>
-   <content type="rule_text">
-    <![CDATA[
-
-                    1.  Identify the Target Storage and the Active Player.
-
-                    2.  Check for Player Ownership:
-                        - IF 'storage.owner.ownerType' is 'Player' AND 'storage.owner.ownerId' matches the 'playerCharacter.id', THEN access is GRANTED.
-                        - If access is granted, STOP HERE.
-
-                    3.  Check for Shared Access (NEW STEP):
-                        - IF 'storage.owner.ownerType' is 'Shared', THEN:
-                            i.  Check if the active player is the PRIMARY OWNER ('storage.owner.ownerId' matches 'playerCharacter.id'). If yes, access is GRANTED.
-                            ii. If not the owner, iterate through the 'storage.authorizedUsers' array. Check if any 'playerId' in the array matches the 'playerCharacter.id'.
-                            iii. IF a match is found, THEN access is GRANTED.
-                        - If access is granted, STOP HERE.
-
-                    4.  Check for Faction Ownership and Player Rank:
-                        - IF 'storage.owner.ownerType' is 'Faction', THEN:
-                            i.  Find the player's affiliation with the owner faction in 'Context.relevantFactions'.
-                            ii. Check the faction's 'ranks' array. Does the player's 'playerRank' have a benefit that explicitly grants access to this type of storage (e.g., "Доступ к гильдейскому складу")?
-                            iii. IF both membership and the necessary rank benefit are confirmed, THEN access is GRANTED.
-        
-                    5.  Otherwise, access is DENIED.
-
-                    ]]>
-   </content>
-  </rule>
-  <rule id="20.11">
-   <title>
-    CRITICAL DIRECTIVE: The UI Access Flag Protocol
-   </title>
-   <description>
-    This is the mandatory protocol for pre-authorizing player access to location storages for the User Interface. 
-                    This rule MUST be executed every time 'currentLocationData' is being updated or created.
-   </description>
-   <instructiontext>
-    <![CDATA[
-
-                    When generating or updating the 'currentLocationData', you MUST iterate through every storage object within its 'locationStorages' array.
-                    For each storage, you must perform the access check for the CURRENT ACTIVE PLAYER and set the 'hasFullAccess' flag based on the result.
-                    
-                    ]]>
-   </instructiontext>
-   <content type="rule_text">
-    <![CDATA[
-
-                    For each 'storageObject' in 'locationStorages':
-
-                    1.  Perform Access Check: Execute the logic from the "Storage Access Control Protocol" (Rule 20.10) for the current 'playerCharacter'.
-                    
-                    2.  Set the Flag:
-                        -   IF the check results in "Access GRANTED", you MUST add/set the field '"hasFullAccess": true'.
-                        -   IF the check results in "Access DENIED", you MUST add/set the field '"hasFullAccess": false'.
-                    
-                    3.  Ensure Accuracy: 
-                        This flag MUST accurately reflect the player's current permissions based on their ownership or faction rank at the time of the response generation.
-                    
-                    This flag provides an unambiguous signal to the UI about whether direct interaction is allowed.
-
-                    ]]>
-   </content>
-  </rule>
-  <rule id="20.12">
-   <title>
-    CRITICAL DIRECTIVE: The Active Threats Data Protocol
-   </title>
-   <description>
-    This section is the single source of truth for the structure of the 'activeThreats' array and its objects. 
-                    This array is a property of the Location Data Object and tracks all persistent, non-NPC threats within a location.
-   </description>
-   <content type="ruleset">
-    <rule id="20.12.1">
-     <title>
-      Active Threat Object Structure
-     </title>
-     <instructiontext>
-      Each object in a location's 'activeThreats' array represents a single, dynamic threat and MUST adhere to the following structure.
-     </instructiontext>
-     <content language="json" type="code_example">
-      <![CDATA[
-
-                            {
-                                "threatId": "system_assigned_guid_or_null_for_new",
-                                "name": "User-readable name of the threat",
-                                "threatArchetype": {
-                                    "motivation": "'Domination' | 'Consumption' | 'Preservation' | 'Corruption' | 'Accumulation' | 'Execution' | 'Custom'",
-                                    "method": "'Overt' | 'Covert' | 'Deceptive' | 'Opportunistic' | 'Systemic' | 'Custom'",
-                                    "customMotivation": "string_if_motivation_is_Custom_or_null",
-                                    "customMethod": "string_if_method_is_Custom_or_null"
-                                },
-                                "intensity": "integer (0-100+)",
-                                "longTermGoal": "A string describing the threat's overarching, multi-stage objective.",
-                                "currentActivity": {
-                                    "activityName": "user_readable_name_of_the_current_task",
-                                    "description": "detailed_description_of_the_current_step",
-                                    "totalTimeCostMinutes": "integer_total_estimated_time_for_this_step",
-                                    "timeSpentMinutes": "integer_time_already_spent_on_this_step"
-                                },
-                                "impactProfile": {
-                                    "primaryTargetType": "'Faction' | 'Location' | 'Resource'",
-                                    "primaryTargetId": "guid_of_the_target_faction_or_location_or_null",
-                                    "primaryTargetName": "Name of the primary target",
-                                    "primaryImpact": "'Military' | 'Economic' | 'Social' | 'Covert' | 'Stability' | 'Environment'",
-                                    "baseImpactValue": "integer"
-                                }
-                            }
-
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.12.2">
-     <title>
-      Field Definitions for Active Threat Object
-     </title>
-     <content type="rule_text">
-      <![CDATA[
-
-                            1.  "threatId": (string GUID or null) A system-assigned unique ID.
-                                MUST be 'null' for new threats.
-
-                            2.  "name": (string) The user-readable name of the threat (e.g., "The Gloomfang Pack"). 
-                                Must be translated.
-
-                            3.  "threatArchetype": (object, MANDATORY) Defines the threat's core behavior.
-
-                                - "motivation": (string) The fundamental driving force (WHAT the threat wants). E.g., 'Domination', 'Consumption'.
-
-                                - "method": (string) The threat's operational style (HOW it acts). E.g., 'Overt', 'Covert'.
-
-                                - "customMotivation", "customMethod": (string or null) 
-                                  These fields MUST be filled if the corresponding main field is 'Custom', providing a user-readable description.
-
-                            4.  "intensity": (integer, 0-100+) The threat's power level, analogous to a level. 
-                                It is the primary statistic used in Threat Action Resolution checks.
-
-                            5.  "longTermGoal": (string) A description of the threat's ultimate, multi-stage ambition (e.g., "Destroy Oakhaven Village"). 
-                                This goal is broken down into smaller tasks.
-
-                            6.  "currentActivity": (object or null) THIS IS THE CORE STATE MECHANIC. If 'null', the threat is IDLE. If populated, the threat is BUSY. 
-                                The structure and fields are IDENTICAL to the 'currentActivity' object for NPCs (Rule 19.1.2) for system-wide consistency.
-
-                            7.  "impactProfile": (object, MANDATORY) Describes the mechanical consequences of the threat's successful actions.
-
-                                - "primaryTargetType": (string) Must be one of: 'Faction', 'Location', or 'Resource'.
-
-                                - "primaryTargetId": (string GUID or null) The unique ID of the specific faction or location being targeted.
-
-                                - "primaryTargetName": (string) The name of the target, for clarity.
-
-                                - "primaryImpact": (string) The specific game mechanic the threat affects. 
-                                  This MUST correspond to a faction 'powerProfile' scale or a location 'difficultyProfile' scale (e.g., 'Military', 'Environment').
-
-                                - "baseImpactValue": (integer) The base "damage" the threat deals to its target's mechanic per successful action.
-                            
-                            ]]>
-     </content>
-    </rule>
-   </content>
-  </rule>
-  <rule id="20.13">
-   <title>
-    CRITICAL DIRECTIVE: Atomic Commands for Threat Management
-   </title>
-   <description>
-    This section defines the purpose and usage for the 'threatsToAdd', 'threatsToUpdate', and 'threatsToRemove' commands.
-                    These commands are nested within the 'worldMapUpdates' object and are the ONLY valid methods for modifying a location's 'activeThreats' array.
-   </description>
-   <content type="ruleset">
-    <rule id="20.13.1">
-     <title>
-      Command 1: Adding a New Threat ('threatsToAdd')
-     </title>
-     <instructiontext>
-      Use this command when a new persistent threat emerges in a location.
-     </instructiontext>
-     <content language="json" type="code_example">
-      <![CDATA[
-
-                            // Structure for objects in the 'threatsToAdd' array (within 'worldMapUpdates'):
-                            [
-                                {
-                                    "targetLocationId": "guid_of_the_location",
-                                    "initialTargetLocationId": "turn_local_reference_tag_string_or_null",
-                                    "threat": { 
-                                        "threatId": null,
-                                        // ... The complete Active Threat Object structure as defined in Rule 20.12 ...
-                                    }
-                                }
-                            ]
-
-                            ]]>
-     </content>
-     <content type="rule_text">
-      <![CDATA[
-
-                            -   TRIGGER: A world event or player action creates a new threat.
-                            -   ACTION: You MUST create a complete "Active Threat Object" with its 'threatId' set to 'null'. 
-                                This object is nested within a parent 'threatsToAdd' object.
-
-                            -   CRITICAL DIRECTIVE FOR TARGETING:
-                                -   For an EXISTING location: The parent object MUST specify the permanent 'targetLocationId' of the location from the Context. 
-                                    The 'initialTargetLocationId' field should be null or omitted.
-
-                                -   For a NEW location created in the SAME turn:
-                                    The parent object MUST set 'targetLocationId' to 'null' and instead use the new 'initialTargetLocationId' field. 
-                                    The value of this field MUST be the exact 'initialId' tag you assigned to the new location (as per Rule 20.1). 
-                                    This creates the necessary link for the system to process.
-                            
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.13.2">
-     <title>
-      Command 2: Updating an Existing Threat ('threatsToUpdate')
-     </title>
-     <instructiontext>
-      This is the most common command, used every time a threat's state changes during world simulation.
-     </instructiontext>
-     <content language="json" type="code_example">
-      <![CDATA[
-
-                            // Structure for objects in the 'threatsToUpdate' array (within 'worldMapUpdates'):
-                            [
-                                {
-                                    "targetLocationId": "guid_of_the_location",
-                                    "threatUpdate": {
-                                        "threatId": "guid_of_the_threat_to_update",
-                                        // This object follows the Law of Partial Updates.
-                                        // Include ONLY the fields that have changed.
-                                        "currentActivity": {
-                                            "timeSpentMinutes": 240
-                                        }
-                                    }
-                                }
-                            ]
-
-                            ]]>
-     </content>
-     <content type="rule_text">
-      <![CDATA[
-
-                            -   TRIGGER: A threat's 'currentActivity' progresses or changes, or its 'intensity' is modified.
-                            -   ACTION: You MUST create a partial update object that follows the "Law of Partial Updates". 
-                                It MUST contain the 'threatId' of the threat to update, and ONLY the fields whose values have changed. 
-                                This partial object is nested within a parent object specifying the 'targetLocationId' and added to the 'threatsToUpdate' array.
-                            
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.13.3">
-     <title>
-      Command 3: Removing a Threat ('threatsToRemove')
-     </title>
-     <instructiontext>
-      Use this command when a threat is permanently eliminated from the world.
-     </instructiontext>
-     <content language="json" type="code_example">
-      <![CDATA[
-
-                            // Structure for objects in the 'threatsToRemove' array (within 'worldMapUpdates'):
-                            [
-                                {
-                                    "targetLocationId": "guid_of_the_location",
-                                    "threatId": "guid_of_the_threat_to_remove"
-                                }
-                            ]
-
-                            ]]>
-     </content>
-     <content type="rule_text">
-      <![CDATA[
-
-                            -   TRIGGER: The player successfully defeats the threat, or a world event removes it (e.g., as a result of a 'Critical Failure' in its own activity).
-
-                            -   ACTION: You MUST create an object containing the 'targetLocationId' and the 'threatId' of the threat to be removed. This object is added to the 'threatsToRemove' array.
-                            
-                            ]]>
-     </content>
-    </rule>
-    <rule id="20.13.4">
-     <title>
-      Command 4: Completing a Threat's Activity ('completeThreatActivities')
-     </title>
-     <instructiontext>
-      Use this command when a threat's current activity is permanently concluded (either through success or failure), as determined by the adjudication protocol in Rule 30.1.B.3.
-     </instructiontext>
-     <content language="json" type="code_example">
-      <![CDATA[
-
-                            // Structure for objects in the 'completeThreatActivities' array (within 'worldMapUpdates'):
-                            [
-                                {
-                                    "targetLocationId": "guid_of_the_location_where_the_threat_is",
-                                    "threatId": "guid_of_the_threat_whose_activity_is_complete",
-                                    "threatName": "user_readable_name_of_the_threat",
-                                    "finalState": "'Completed' | 'Abandoned'",
-                                    "narrativeSummary": "A brief, one-sentence summary of the final result for the historical log."
-                                }
-                            ]
-
-                            ]]>
-     </content>
-     <content type="rule_text">
-      <![CDATA[
-
-                            -   TRIGGER: 
-                                The simulation of a threat's action (Rule 30.1.B.2) results in its current task being completed or abandoned.
-                            
-                            -   ACTION: 
-                                You MUST use this command to signal the conclusion of the activity. 
-                                The game system will use this to archive the task and set the threat's 'currentActivity' to null, making it idle for the next cycle.
-                            
-                            -   It is FORBIDDEN to use 'threatsToUpdate' to set 'currentActivity' to null for a completed task.
-                            
-                            ]]>
-     </content>
-    </rule>
-   </content>
-  </rule>
  </content>
- <rule id="20.mortal_item_materialization_v1">
-  <description>Mortal Item Materialization v1 storage placement</description>
-  <content><![CDATA[
-  A genuinely new item whose first durable carrier is an already-valid location storage uses storage_placement, sourceAuthority.kind location_storage, and the exact current location/storage authority. Author a complete raw item with existedId = null, turn-unique creationRef, every governed semantic field, and all twelve materialization.sections. This route does not authorize creating or repairing the storage itself.
-
-  Moving an accepted item into or out of storage is transfer by exact itemId and preserves its materialization envelope and receipt. contentsPath is null or an ordered array of permanent parent item IDs; display names are not authority. The GM never creates itemId, materializationReceipt, item_identity_index.json, seals, transitions, or lineage. Receipt-less canonical storage contents are rejected because the game has not shipped and no legacy promotion path exists.
-  ]]></content>
- </rule>
 </instructionblock>

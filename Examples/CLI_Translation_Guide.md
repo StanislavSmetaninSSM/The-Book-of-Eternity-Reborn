@@ -24,11 +24,39 @@ JSON Response Field               →    CLI File Location
 ├── "playerStatus": {...}         →    game_state/core/player_status.json
 ├── "UpdateNPCs": [...]           →    game_state/npcs/npc_core.json
 ├── "NPCCoreChanges": [...]       →    game_state/npcs/npc_core.json (validated non-carrier reducer input)
-├── "worldMapUpdates": {...}      →    game_state/world/world_map.json
+├── "currentLocationData": {...}  →    validated raw current-scene command; client composes game_state/world/current_location.json
+├── "worldMapUpdates": {...}      →    validated raw map commands; client composes game_state/world/world_map.json
 ├── "metaStateUpdates": {...}     →    game_state/meta/soul_state.json
 ├── "UpdateGuardians": [...]      →    game_state/meta/guardians.json
 └── ... (all other fields)       →    (see Block_CLI_Operations.txt CLI.3)
 ```
+
+Mortal Location Materialization v1 is an important exception to a literal
+field-to-file copy. The GM authors only complete raw routes
+`current_scene_creation`, `world_map_creation`, and
+`world_map_link_creation`, or exact permanent-ID lifecycle commands such as
+`locationDiscoveryTransitions[]`, `linkRemovals[]`, `storageUpdates[]`,
+`storagesToRemove[]`, `threatsToAdd[]`, `threatsToUpdate[]`,
+`threatsToRemove[]`, and `completeThreatActivities[]`. A changed selection also
+needs one exact open directed pre-turn current-to-destination link with no
+requirements and player-known non-hidden visibility. The client validates
+them, assigns permanent IDs/receipts, writes
+`location_identity_index.json`, builds the current projection, and derives
+navigation. knownExits and adjacencyMap are client-derived. Never translate a
+display name, coordinate, ordinal, alias, case-folded value, or Unicode-normalized
+value into location identity.
+Storage updates preserve contents, storage removal requires emptiness, and the
+owner/access snapshot changes use synchronized `newOwner`,
+`newAuthorizedUsers`, and `newHasFullAccess`. The client assigns new threat
+identity and owns the completion archive: keep embedded `activeThreats` empty
+on raw location creation and use a separate null-ID `threatsToAdd[]` command
+with exact `initialTargetLocationId` for a same-turn threat. Immutable
+materialization section dispositions remain creation evidence.
+
+For `mortal_location_materialization_repair`, the validated pre-turn baseline
+has already been restored. Translation means full-turn resubmission of every
+required response path for the same request, not an in-place patch of
+`world_map.json`, `current_location.json`, or the identity index.
 
 ## 🔄 CLI Translation Process
 

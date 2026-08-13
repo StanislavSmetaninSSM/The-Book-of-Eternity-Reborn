@@ -176,12 +176,22 @@ public partial class ValidationService
 
     private void ValidateCurrentLocationData(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        if (string.Equals(
+                contextPrefix,
+                MortalLocationMaterializationContract.CurrentLocationPath,
+                StringComparison.Ordinal) &&
+            !root.TryGetProperty("currentLocationData", out _))
+        {
+            return;
+        }
+
         var found = false;
         if (root.TryGetProperty("currentLocationData", out var location))
         {
             found = true;
             var locationContext = $"{contextPrefix}.currentLocationData";
-            ValidateCurrentLocationResponseObject(location, locationContext, issues);
+            if (!IsRawCurrentLocationCreationCandidate(location))
+                ValidateCurrentLocationResponseObject(location, locationContext, issues);
         }
         else if (root.ValueKind == JsonValueKind.Object &&
                  (root.TryGetProperty("locationId", out _) || root.TryGetProperty("locationType", out _)))
@@ -315,6 +325,15 @@ public partial class ValidationService
 
     private void ValidateWorldMapUpdates(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        if (string.Equals(
+                contextPrefix,
+                MortalLocationMaterializationContract.WorldMapPath,
+                StringComparison.Ordinal) &&
+            !root.TryGetProperty("worldMapUpdates", out _))
+        {
+            return;
+        }
+
         JsonElement updates;
         string context;
         if (root.TryGetProperty("worldMapUpdates", out updates))
@@ -329,32 +348,14 @@ public partial class ValidationService
             context = contextPrefix;
         }
 
-        if (updates.TryGetProperty("newLocations", out var newLocations))
-        {
-            RequireArrayOfObjects(newLocations, $"{context}.newLocations", issues);
-            if (newLocations.ValueKind == JsonValueKind.Array)
-            {
-                var index = 0;
-                foreach (var item in newLocations.EnumerateArray())
-                {
-                    if (item.ValueKind == JsonValueKind.Object)
-                        ValidateNewLocationObject(item, $"{context}.newLocations[{index}]", issues);
-                    index++;
-                }
-            }
-        }
-        if (updates.TryGetProperty("newLinks", out var newLinks))
-            ValidateWorldMapNewLinks(newLinks, $"{context}.newLinks", issues);
-        if (updates.TryGetProperty("locationUpdates", out var locationUpdates))
-            ValidateLocationUpdateArray(locationUpdates, $"{context}.locationUpdates", issues);
+        // The exact materialization planner owns creation, movement, topology,
+        // and canonical application of every location lifecycle command. This
+        // schema validator still supplies the detailed field-level diagnostics
+        // for governed storage/threat command payloads before planning.
         if (updates.TryGetProperty("storageUpdates", out var storageUpdates))
             ValidateLocationStorageUpdates(storageUpdates, $"{context}.storageUpdates", issues);
         if (updates.TryGetProperty("storagesToRemove", out var storagesToRemove))
             ValidateLocationStorageRemovals(storagesToRemove, $"{context}.storagesToRemove", issues);
-        if (updates.TryGetProperty("linkUpdates", out var linkUpdates))
-            ValidateLocationLinkUpdates(linkUpdates, $"{context}.linkUpdates", issues);
-        if (updates.TryGetProperty("linksToRemove", out var linksToRemove))
-            ValidateLocationLinkRemovals(linksToRemove, $"{context}.linksToRemove", issues);
         if (updates.TryGetProperty("threatsToAdd", out var threatsToAdd))
             ValidateLocationThreatAdds(threatsToAdd, $"{context}.threatsToAdd", issues);
         if (updates.TryGetProperty("threatsToUpdate", out var threatsToUpdate))

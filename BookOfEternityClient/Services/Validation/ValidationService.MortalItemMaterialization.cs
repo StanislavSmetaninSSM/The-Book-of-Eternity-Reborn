@@ -47,10 +47,16 @@ public partial class ValidationService
     private async Task ValidateAcceptedTurnRawMortalItemMaterializationAsync(
         List<ValidationIssue> issues)
     {
+        var locationPlanningIssues = new List<ValidationIssue>();
+        var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
+            locationPlanningIssues);
         var current = await LoadMortalItemCatalogAsync(
             writeLease: null,
             includeNpcInventoryCommands: true,
-            issues);
+            issues,
+            locationPlanningIssues.Any(issue => issue.Severity == IssueSeverity.Error)
+                ? null
+                : locationPlan);
         MortalItemRouteAuthorityCatalog? routeAuthorities = null;
         MortalItemIdentityParseResult? currentIndex = null;
         try
@@ -81,7 +87,12 @@ public partial class ValidationService
             }
         }
 
-        routeAuthorities = await MortalItemRouteAuthorityCatalog.BuildAsync(_fs);
+        routeAuthorities = await MortalItemRouteAuthorityCatalog.BuildAsync(
+            _fs,
+            acceptedStorageCoordinates: locationPlanningIssues.Any(issue =>
+                issue.Severity == IssueSeverity.Error)
+                ? null
+                : locationPlan?.AcceptedStorageCoordinates);
         AddRouteAuthorityIssues(routeAuthorities, issues);
 
         currentIndex = MortalItemIdentityState.Parse(current.IdentityIndexJson);
@@ -97,6 +108,10 @@ public partial class ValidationService
                 issues.Add(MissingItemSnapshotBaselineIssue("raw item creation"));
             return;
         }
+
+        await ValidateRawOffscreenLocationStorageAuthorityAsync(
+            snapshotLookup.Manifest,
+            issues);
 
         foreach (var occurrence in current.Catalog.Occurrences.Where(occurrence =>
                      IsRawMortalItemCreation(occurrence.Item)))
@@ -509,10 +524,80 @@ public partial class ValidationService
             normalized.StartsWith(root + "[", StringComparison.Ordinal));
     }
 
+    private async Task ValidateRawOffscreenLocationStorageAuthorityAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        List<ValidationIssue> issues)
+    {
+        var path = MortalLocationStorageContentsState.StatePath;
+        var preTurnExists = manifest.Files.ContainsKey(path);
+        var currentExists = _fs.FileExists(path);
+        if (!preTurnExists && !currentExists)
+            return;
+
+        string? preTurnJson = null;
+        string? currentJson = null;
+        MortalLocationStorageContentsParseResult? preTurn = null;
+        MortalLocationStorageContentsParseResult? current = null;
+        if (preTurnExists)
+        {
+            preTurnJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path);
+            preTurn = TryParseOffscreenLocationStorageState(preTurnJson);
+        }
+        if (currentExists)
+        {
+            currentJson = await _fs.ReadFileAsync(path);
+            current = TryParseOffscreenLocationStorageState(currentJson);
+        }
+
+        if (preTurnExists == currentExists &&
+            preTurn != null &&
+            current != null &&
+            JsonNode.DeepEquals(preTurn.Root, current.Root))
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            "The GM-authored raw package changed the client-owned offscreen location-storage item authority.",
+            code: "mortal_location_storage_contents_gm_authored_client_field",
+            actor: "mortal_location_storage_contents",
+            section: "MortalItemMaterialization",
+            expected: preTurnExists
+                ? "canonical state exactly equivalent to the validated pre-turn snapshot"
+                : "file absent as in the validated pre-turn snapshot",
+            actual: currentExists
+                ? currentJson ?? "unreadable current state"
+                : "file removed",
+            repairHint: "Restore the exact client-owned file from the validated pre-turn snapshot; the GM must never author offscreen item contents.",
+            category: IssueCategory.ClientOwnedSurface,
+            repairTargetFiles: new[] { path }));
+    }
+
+    private static MortalLocationStorageContentsParseResult?
+        TryParseOffscreenLocationStorageState(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+        try
+        {
+            if (JsonNode.Parse(json) is not JsonObject root)
+                return null;
+            var parsed = MortalLocationStorageContentsState.Parse(root);
+            return parsed.Issues.Count == 0 ? parsed : null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
     private async Task<MortalItemCatalogFiles> LoadMortalItemCatalogAsync(
         FileSystemManager.CanonicalWriteLease? writeLease,
         bool includeNpcInventoryCommands,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        MortalLocationAcceptedTurnPlan? effectiveLocationPlan = null)
     {
         var playerJson = await ReadCurrentItemFileAsync(
             writeLease,
@@ -528,6 +613,9 @@ public partial class ValidationService
         var currentLocationJson = await ReadCurrentItemFileAsync(
             writeLease,
             StorageTransportMoveService.CurrentLocationPath);
+        var offscreenLocationStorageJson = await ReadCurrentItemFileAsync(
+            writeLease,
+            MortalLocationStorageContentsState.StatePath);
         var vehiclesJson = await ReadCurrentItemFileAsync(
             writeLease,
             StorageTransportMoveService.VehiclesPath);
@@ -551,12 +639,18 @@ public partial class ValidationService
                 npcCommandsJson,
                 "game_state/npcs/npc_inventory.json",
                 issues),
+            effectiveLocationPlan?.FinalCurrentLocation ??
             ParseCarrierObject(
                 currentLocationJson,
                 StorageTransportMoveService.CurrentLocationPath,
                 issues),
             ParseVehiclesObject(vehiclesJson, issues),
-            companions);
+            companions,
+            effectiveLocationPlan?.FinalStorageContents ??
+            ParseCarrierObject(
+                offscreenLocationStorageJson,
+                MortalLocationStorageContentsState.StatePath,
+                issues));
         return new MortalItemCatalogFiles(
             MortalItemCarrierCatalog.Build(input),
             identityIndexJson);
@@ -587,6 +681,9 @@ public partial class ValidationService
         var currentLocationJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest,
             StorageTransportMoveService.CurrentLocationPath);
+        var offscreenLocationStorageJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+            lookup.Manifest,
+            MortalLocationStorageContentsState.StatePath);
         var vehiclesJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest,
             StorageTransportMoveService.VehiclesPath);
@@ -626,7 +723,11 @@ public partial class ValidationService
                 StorageTransportMoveService.CurrentLocationPath,
                 baselineIssues),
             ParseVehiclesObject(vehiclesJson, baselineIssues),
-            companions);
+            companions,
+            ParseCarrierObject(
+                offscreenLocationStorageJson,
+                MortalLocationStorageContentsState.StatePath,
+                baselineIssues));
         var catalog = MortalItemCarrierCatalog.Build(input);
         if (baselineIssues.Count > 0 || catalog.Issues.Count > 0)
         {

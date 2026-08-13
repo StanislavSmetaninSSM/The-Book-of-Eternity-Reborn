@@ -78,7 +78,10 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 Если клиент отклонил уже записанный ход:
 - прочитай текущий `game_state/control/validation_repair_request.json`
-- исправь уже записанные файлы **in place**
+- для обычного bounded packet исправь только разрешённые packet-ом цели
+- для `mortal_location_materialization_repair` учти, что validated pre-turn
+  baseline уже восстановлен: выполни full-turn resubmission всего связного
+  response package, а не in-place patch canonical-файла
 - не создавай новый `turn_request.json`
 - создай новый `game_state/control/validation_repair_ready.json` с точными metadata из текущего repair request
 
@@ -95,6 +98,58 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 - Технические identity/title поля нейтральных локаций и выходов нужно заменить конкретными названиями мира, сохранив стабильные id и навигационную связь. Фразы вроде «стартовая сцена» в обычном narrative description не являются ошибкой placeholder.
 
 Если один из этих якорей потерян, repair packet `mortal_bootstrap_materialization_repair` указывает точные `targetFiles` и требует восстановить baseline in place. Не удаляй явно заданную компетенцию, NPC или первую новость ради уменьшения объёма первого хода.
+
+---
+
+## Mortal Location Materialization v1
+
+Для Mortal World локации и направленные связи создаются только через raw
+accepted-turn commands. Не редактируй canonical map/current/index как авторский
+источник и не придумывай permanent ID:
+
+- `currentLocationData` с `locationId = null` и
+  `materialization.route = current_scene_creation` создаёт одну полную новую
+  выбранную сцену;
+- `worldMapUpdates.newLocations[]` с `locationId = null` и route
+  `world_map_creation` создаёт полные удалённые сцены;
+- `worldMapUpdates.newLinks[]` с `linkId = null` и route
+  `world_map_link_creation` создаёт полные направленные связи;
+- переход в известную сцену использует только exact permanent locationId и
+  current-only поля; смена сцены требует exact open directed pre-turn
+  current→destination link с `access.state=open`, пустыми requirements и
+  player-known non-hidden link/destination. Reverse-only, hidden, conditional и
+  sealed routes не разрешают движение;
+- persistent edits используют exact permanent locationId, а link
+  update/removal — exact permanent linkId. Storage/threat lifecycle authoring
+  идёт только через `storageUpdates[]`, `storagesToRemove[]`,
+  `threatsToAdd[]`, `threatsToUpdate[]`, `threatsToRemove[]` и
+  `completeThreatActivities[]`: сохраняй contents, удаляй только пустое
+  storage, оставляй новый threatId null для client assignment и не пиши
+  system-owned archive напрямую;
+- discovery меняется через `locationDiscoveryTransitions[]`, удаление связи —
+  через `linkRemovals[]`; knownExits and adjacencyMap are client-derived;
+- `world_map.json` владеет canonical locations/links,
+  `current_location.json` является client projection, а
+  `location_identity_index.json`, permanent IDs, receipts, seals, transitions,
+  snapshots и rollback evidence полностью client-owned.
+
+Immutable `materialization.sections` остаются creation evidence: принятые
+storage/threat lifecycle commands не переписывают envelope, receipt или seal.
+Неизвестный `worldMapUpdates` command приводит к fail-closed rejection.
+
+Новая location/link entity сразу содержит полный художественный и механический
+shape, `materialization.sections`, turn-unique `initialId`, exact source
+authority и state `complete`. Имя, координаты, case-folded/Unicode-normalized
+значение и ordinal никогда не являются identity. Для первого Mortal хода читай
+client-owned `mortal_bootstrap_scaffold.json`, не изменяй его и создай один
+coherent reserved start + neighbor/link package либо narrative-only unresolved
+exit без canonical identity claim.
+
+Если packet kind равен `mortal_location_materialization_repair`, client до
+dispatch восстанавливает validated pre-turn baseline. Полный ответ хода должен
+быть заново сгенерирован как full-turn resubmission: location, actor, faction,
+item, narrative, interface и прочие intended outputs. Ready-only, leaf-only,
+in-place canonical patch, stale output и formatting-only rewrite недопустимы.
 
 ---
 
@@ -550,11 +605,16 @@ MATH ASSISTANT / МАТЕМАТИК:
 **При отклонении клиентом как contract violation после `turn_complete.json`:**
 - клиент создаёт `game_state/control/validation_repair_request.json`
 - daemon должен повторно пинговать GM, чтобы тот прочитал этот файл
-- GM исправляет уже записанные файлы in place
+- для обычного bounded repair GM исправляет только перечисленные packet-ом
+  GM-owned цели; для `mortal_location_materialization_repair` client сначала
+  восстанавливает validated pre-turn baseline, а GM выполняет full-turn
+  resubmission всего coherent raw response package
 - после исправлений GM создаёт `game_state/control/validation_repair_ready.json`
 - клиент повторно валидирует состояние и либо принимает ход, либо обновляет repair request новым списком ошибок
 - если `validation_repair_ready.json` невалиден как JSON или содержит неправильные `sessionId/requestId/turnNumber`, клиент отклоняет ready-сигнал, переписывает `validation_repair_request.json`, и daemon должен пинговать GM повторно
-- repair loop не является новым ходом; GM не должен создавать новый `turn_request.json`
+- repair loop использует те же metadata и не создаёт новый `turn_request.json`;
+  location full-turn resubmission повторно создаёт response package именно для
+  этого отклонённого хода
 - если `validation_repair_request.json.harnessRepairPackets[].kind` равен `accepted_turn_output_artifact_repair`, это узкий output-only repair уже принятого хода: GM должен читать compact template `game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md`, переписать только перечисленные player-facing output artifacts (`output/narrative_response.json`, `output/interface_updates.json`, `output/debug_logs.json`) и завершить через `Complete-BoeValidationRepair`; canonical `game_state/*` файлы нельзя трогать, если текущий repair request не перечисляет отдельные canonical errors
 - если один repair request перечисляет и canonical, и player-facing цели, GM сначала завершает все canonical-записи и только затем переписывает зависящие от них narrative/interface artifacts; клиент сохраняет original canonical target set на всех следующих output-only попытках, требует чтобы output был strictly newer каждой последней фактической записи retained target, считает equal timestamps stale, не использует request/dispatch/start как границу и при ненаблюдаемой записи блокирует принятие
 - при рестарте daemon обязан повторно обработать уже существующий `validation_repair_request.json`
