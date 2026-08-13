@@ -922,6 +922,8 @@ additional React field or component.
 | T100 second rebased-candidate PreMerge fixture failure | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge` | `TestResults/test-lanes/20260813-225817-137-55912-31ce559afc534a84894c29b4e876f573-premerge` | 441 | 2 stale browser location/weather fixture assertions | 0 | 0 | Complete |
 | T100 remaining browser fixture corrections GREEN | focused Integration weather/privacy and accepted location-storage detail filter | `TestResults/test-lanes/20260813-230325-081-28396-953130eacb7a4dae89ff6281ccede369-focused` | 2 | 0 | 0 | 0 | Complete |
 | T100 complete browser command presentation GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExplorerWebCommandServiceTests"` | `TestResults/test-lanes/20260813-230408-769-14440-266b0d6727d2437ca6b4ffc6f19b480a-focused` | 475 | 0 | 0 | 0 | Complete |
+| T100 third rebased-candidate PreMerge external guard failure | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge` | `TestResults/test-lanes/20260813-230814-834-44144-78622b89dda64540b0aa7285293d4203-premerge` | 2034 | 1 #1525 LICENSE raw-byte hash mismatch under Windows `core.autocrlf=true` | 0 | 0 | Complete |
+| #1525 cross-platform publication guard GREEN | focused Fast `RepositoryPublicationDocumentationTests` | `TestResults/test-lanes/20260813-231559-336-33216-cfd68d230c054f05ac4a73fe29cfd17f-focused` | 7 | 0 | 0 | 0 | Complete |
 
 For T076, `ValidationService.MortalFactionMaterialization` owns the exact
 receipt-bearing canonical map plus validated same-turn location authority.
