@@ -153,10 +153,14 @@ public sealed class ConsoleE2ESmokeTests : IDisposable
 
         Assert.Equal(2, result.ExitCode);
         Assert.Contains("Console E2E scripted input failed at step 4", result.Stderr, StringComparison.Ordinal);
-        Assert.Contains("requested text input", result.Stdout, StringComparison.Ordinal);
+        Assert.DoesNotContain("requested text input", result.Stdout, StringComparison.Ordinal);
+        Assert.Contains("Мир не смог безопасно завершить действие", result.Stdout, StringComparison.Ordinal);
         Assert.Contains("Статус", result.Stdout, StringComparison.Ordinal);
         Assert.Contains("Здоров", result.Stdout, StringComparison.Ordinal);
         Assert.Contains("Деньги", result.Stdout, StringComparison.Ordinal);
+        Assert.True(
+            result.Stdout.Split("✦ Ваш ход ✦", StringSplitOptions.None).Length >= 3,
+            $"Expected the main input screen both before and after the status key prompt.{Environment.NewLine}STDOUT tail:{Environment.NewLine}{Tail(result.Stdout, 10_000)}");
     }
 
     [Fact]
