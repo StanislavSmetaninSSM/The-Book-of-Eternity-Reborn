@@ -135,6 +135,36 @@ Adding the effect phase occupied the last `uint` flag. The phase enum now uses
 `ulong`, preserving a real unknown-bit fail-closed guard without changing the
 defined phase order or selection semantics.
 
+### Task 7 accepted mechanics snapshot evidence
+
+| Boundary | RED result | GREEN result | Green tests |
+| --- | --- | --- | ---: |
+| Immutable all-or-nothing snapshot API | `TestResults/test-lanes/20260815-075556-717-55648-0eb11b14e88a4ab78052e9154854e295-focused` | `TestResults/test-lanes/20260815-081542-563-22808-f1b701fd4663495286672d2744a9036a-focused` | 34 |
+| Exact Block 5 characteristic catalog | `TestResults/test-lanes/20260815-080459-052-38868-21d39b90a60b4dc8b46f874654563ea7-focused` | `TestResults/test-lanes/20260815-091318-036-3324-2a942f7254b34b31910fc2775760e811-focused` | 54 |
+| Aggregate percentage/cap/floor semantics | `TestResults/test-lanes/20260815-080918-525-38028-920b7632a75c417b962340bafee05723-focused` | `TestResults/test-lanes/20260815-081542-563-22808-f1b701fd4663495286672d2744a9036a-focused` | 34 |
+| Hidden effects apply without player-safe audit disclosure | `TestResults/test-lanes/20260815-081302-428-38600-50da44b6b81d4a5aa156fd7dd1b44079-focused` | `TestResults/test-lanes/20260815-081542-563-22808-f1b701fd4663495286672d2744a9036a-focused` | 34 |
+| Wrong-typed governed sibling carrier rejects the whole snapshot | `TestResults/test-lanes/20260815-084903-761-12700-30ee4fa1adb84d80ae8ebd88379d0279-focused` | `TestResults/test-lanes/20260815-091318-036-3324-2a942f7254b34b31910fc2775760e811-focused` | 54 |
+| Finite out-of-Int32 characteristic aggregate fails closed | `TestResults/test-lanes/20260815-085718-263-3324-0b185988f2b24baf8f37acc94d97df86-focused` | `TestResults/test-lanes/20260815-091318-036-3324-2a942f7254b34b31910fc2775760e811-focused` | 54 |
+| Hidden characteristic mechanics stay internal while direct console/shared browser projections remain safe | `TestResults/test-lanes/20260815-085304-691-43656-3ef512d044de4106996d4ef7fdff4105-focused`; `TestResults/test-lanes/20260815-090146-237-36928-fce2b363fd0a4555b1ce6a6642c8c1e4-focused` | `TestResults/test-lanes/20260815-090238-686-55632-b7f488b307eb416dab47fc87262b9d1b-focused`; `TestResults/test-lanes/20260815-090345-811-15484-17fd42ff51254fa2bcf9f507ed50ec3d-focused` | 2 |
+| Missing/wrong-type player-safe computed map never falls back to internal values | `TestResults/test-lanes/20260815-090747-882-35720-4cda4c16cc614c6bb586ac81134420e1-focused` | `TestResults/test-lanes/20260815-090838-664-49496-3ad05329191a4bea9c5b1199019394a5-focused` | 3 |
+| Unrelated normalization is a no-op, commandless combatant refs still publish, and a published validated plan is consumed | `TestResults/test-lanes/20260815-082252-230-38628-f1a5c5bf2ee94423ba39949cc5659838-focused`; `TestResults/test-lanes/20260815-091945-981-41912-3028ded2fc8e4b18a53cda46b4df66b8-focused` | `TestResults/test-lanes/20260815-082449-941-20056-37a2b8a317da444a8595a1a0d380948f-focused`; `TestResults/test-lanes/20260815-082602-698-39028-64f6879400a34df7b2ccfefd7ada4ac4-focused`; `TestResults/test-lanes/20260815-092031-448-47408-9620e1d76b284a6b8d81bd4634ead2fa-focused` | 4 |
+| Reserved future pending-effect path is explicitly inventoried, not activated | `TestResults/test-lanes/20260815-082636-432-51948-005858e21a264ab8b8a60a46698e7766-fast` | `TestResults/test-lanes/20260815-082903-661-32512-b1a2f1a96df740239dd15f40d8e2f5bf-focused` | 1 |
+| Final Task 7 normalizer control | — | `TestResults/test-lanes/20260815-092133-666-27872-47f720acd7a24ce38c301d7abbe1926d-focused` | 27 |
+| Final Task 7 Fast control | — | `TestResults/test-lanes/20260815-092308-521-57072-f1333ebcd02045bdaab0d3deadefd2ed-fast` | 3441 |
+
+`EffectMechanicsSnapshot` reads all six canonical carriers plus the identity
+index under one publication-read lease. Any malformed carrier, duplicate,
+component/profile error, target mismatch, or carrier/index disagreement rejects
+the whole snapshot and contributes zero active-effect mechanics. Static source
+definitions remain authority only and are not counted as active instances.
+The current `CharacteristicsService` consumes only exact player
+`characteristic_modifier` components, using the twelve-value Block 5 catalog,
+source-value caps, summed flat/percentage values, and one final floor. Hidden
+effects retain internal GM/QTE mechanics but never enter player-safe totals,
+attribution, direct console stats, or the shared console/browser stats DTO. A
+missing/malformed safe map fails closed to base/permanent values; legacy internal
+computed maps are not treated as a compatibility projection.
+
 ## 2. Contract and Identity Control
 
 ```powershell

@@ -79,7 +79,7 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 - [x] T024 [P] [US1] Add RED raw/composed validation tests for missing source/target/display/component/lifetime/stack/removal, unknown/duplicate fields, direct carrier/index mutation, and pristine missing-carrier initialization in `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.cs`
 - [x] T025 [P] [US1] Add RED same-turn composition tests for accepted item, actor, faction, location, quest/event, wound, and `combatantRef` source/target exports without trusting raw sibling JSON in `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Sources.cs`
 - [x] T026 [P] [US1] Add RED normalizer tests for player, NPC with adjacent wound state, enemy/ally buff-debuff category, transient command consumption, identity-index creation, and post-state agreement in `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Effects.cs`
-- [ ] T027 [P] [US1] Add RED mechanics-snapshot tests proving one malformed sibling invalidates all active mechanics and static passive definitions are not double-counted in `BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.cs`
+- [x] T027 [P] [US1] Add RED mechanics-snapshot tests proving one malformed sibling (including wrong-typed governed owners/collections) invalidates all active mechanics and static passive definitions are not double-counted in `BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.cs`
 
 ### Implementation for User Story 1
 
@@ -92,9 +92,9 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 - [x] T034 [US1] Add closed `activeEffectDefinitions[]` validation calls to NPC/faction/location/event/actor source validators in `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, `ValidationService.MortalFactionMaterialization.cs`, `ValidationService.MortalLocationMaterialization.cs`, and `ValidationService.AfterlifeEntityProfiles.cs` until T025 is GREEN
 - [x] T035 [US1] Implement effect canonical writes after source-owning normalizers, preserve unrelated carrier subtrees, consume/delete transient commands, and write the identity index under the bound lease in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs` until T026 is GREEN
 - [x] T036 [US1] Call `NormalizeEffectsAsync` after all source-owning normalizers in `BookOfEternityClient/Services/CanonicalStateNormalizer.cs` and extend effect state paths in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs`
-- [ ] T037 [US1] Implement the immutable accepted all-or-nothing component/read model in `BookOfEternityClient/Services/EffectMechanicsSnapshot.cs` until T027 is GREEN
-- [ ] T038 [US1] Replace raw player effect alias reads with `EffectMechanicsSnapshot` in `BookOfEternityClient/Services/CharacteristicsService.cs` and keep static source bonuses separate
-- [ ] T039 [US1] Run the US1 focused unit and integration filters from `specs/1535-complete-effect-materialization/quickstart.md`, capture RED→GREEN result paths in the implementation log section of `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`, and commit the US1 slice
+- [x] T037 [US1] Implement the immutable accepted all-or-nothing component/read model in `BookOfEternityClient/Services/EffectMechanicsSnapshot.cs` until T027 is GREEN
+- [x] T038 [US1] Replace raw player effect alias reads with `EffectMechanicsSnapshot` in `BookOfEternityClient/Services/CharacteristicsService.cs`, keep static source bonuses separate, fail closed on numeric overflow, and publish only a separate hidden-safe characteristic projection to ordinary console/browser consumers
+- [x] T039 [US1] Run the US1 focused unit and integration filters from `specs/1535-complete-effect-materialization/quickstart.md`, capture RED→GREEN result paths in the implementation log section of `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`, and commit the US1 slice
 
 **Checkpoint**: Complete Mortal active-effect creation is independently usable; malformed state contributes zero mechanics.
 

@@ -31,6 +31,16 @@ public sealed class CanonicalStateNormalizerEffectTests
     }
 
     [Fact]
+    public async Task NormalizeEffects_WithoutCommandsOrCombatantRefsDoesNotRequireTurnRequest()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+
+        var plan = await context.Normalizer.NormalizeEffectsAsync(backups: null);
+
+        Assert.Null(plan);
+    }
+
+    [Fact]
     public async Task Apply_PlayerWritesCompleteCarrierAndIndexThenConsumesCommand()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
@@ -67,6 +77,38 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.PlayerWoundsPath))!.AsArray()[0]!.AsObject();
         Assert.Equal("severe", wound["severity"]!.GetValue<string>());
         Assert.Single(wound["activeEffectDefinitions"]!.AsArray());
+    }
+
+    [Fact]
+    public async Task NormalizeEffects_AfterSuccessfulPublicationConsumesValidatedPlan()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await context.SeedPlayerWoundSourceAsync();
+        await context.CaptureValidatedPendingSnapshotAsync();
+        var backups = await context.ReadPendingSnapshotBackupsAsync();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            EffectMaterializationTestFixture.CreateCommandRoot(
+                EffectMaterializationTestFixture.CreateApplyCommand()));
+
+        await ValidateRawPlanAsync(context);
+        var publishedPlan = await context.Normalizer.NormalizeEffectsAsync(backups);
+        Assert.NotNull(publishedPlan);
+
+        context.FileSystem.DeleteFile("input/turn_request.json");
+        var before = await context.CaptureBytesAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath,
+            EffectMaterializationTestContext.IdentityIndexPath,
+            EffectMaterializationTestContext.CommandPath);
+
+        var repeatedPlan = await context.Normalizer.NormalizeEffectsAsync(backups: null);
+
+        Assert.Null(repeatedPlan);
+        var after = await context.CaptureBytesAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath,
+            EffectMaterializationTestContext.IdentityIndexPath,
+            EffectMaterializationTestContext.CommandPath);
+        Assert.Equal(before, after);
     }
 
     [Fact]

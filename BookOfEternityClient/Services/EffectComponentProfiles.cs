@@ -21,11 +21,9 @@ internal static class EffectComponentProfiles
         "componentId", "profile", "priority", "payload"
     };
 
-    private static readonly HashSet<string> Characteristics = new(StringComparer.Ordinal)
-    {
-        "strength", "dexterity", "endurance", "intelligence", "wisdom", "charisma",
-        "initiative", "perception", "willpower", "luck"
-    };
+    private static readonly HashSet<string> Characteristics = new(
+        BookOfEternityClient.Configuration.Characteristics.All,
+        StringComparer.Ordinal);
 
     private static readonly HashSet<string> ModifierOperations = new(StringComparer.Ordinal)
     {

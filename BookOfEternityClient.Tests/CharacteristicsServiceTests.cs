@@ -620,6 +620,218 @@ public sealed class CharacteristicsServiceTests : IDisposable
         Assert.Equal(1, result.Stats[Characteristics.Attractiveness].PermanentlyModified);
     }
 
+    [Fact]
+    public async Task ComputeAsync_AcceptedEffectSnapshotAppliesOnceWithoutCountingItsStaticDefinition()
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "characteristic_modifier");
+        await WriteJsonAsync(
+            EffectCarrierCatalog.PlayerPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(effect.DeepClone())
+            });
+        await WriteJsonAsync(
+            EffectIdentityState.StatePath,
+            EffectMaterializationTestFixture.CreateIdentityIndex(effect));
+        await WriteJsonAsync(
+            "game_state/player/skills_passive.json",
+            new JsonObject
+            {
+                ["passiveSkillChanges"] = new JsonArray(new JsonObject
+                {
+                    ["skillId"] = "skill_effect_definition_owner",
+                    ["skillName"] = "Стойка следопыта",
+                    ["structuredBonuses"] = new JsonArray(new JsonObject
+                    {
+                        ["description"] = "Ловкость +4",
+                        ["bonusType"] = "Characteristic",
+                        ["target"] = Characteristics.Dexterity,
+                        ["valueType"] = "Flat",
+                        ["value"] = 4,
+                        ["application"] = "Permanent",
+                        ["condition"] = null
+                    }),
+                    ["activeEffectDefinitions"] = new JsonArray(
+                        EffectMaterializationTestFixture.CreateDefinition(
+                            profile: "characteristic_modifier"))
+                })
+            });
+
+        var result = await _service.ComputeAsync();
+
+        var dexterity = result.Stats[Characteristics.Dexterity];
+        Assert.Equal(4, dexterity.PermanentBonus);
+        Assert.Equal(-2, dexterity.TemporaryBonus);
+        Assert.Single(dexterity.PermanentSources);
+        Assert.Single(dexterity.TemporarySources);
+    }
+
+    [Fact]
+    public async Task ComputeAsync_MalformedSiblingCarrierSuppressesEveryActiveEffectMechanic()
+    {
+        var valid = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "characteristic_modifier");
+        var malformed = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            ownerKind: "npc",
+            profile: "characteristic_modifier");
+        malformed["effectId"] = "effect_test_malformed_npc";
+        malformed["source"]!["sourceId"] = "wound_test_malformed_npc";
+        malformed["stacking"]!["stackKey"] = "malformed_npc";
+        malformed["chronology"]!["lastTransitionId"] = "effect_transition_malformed_npc";
+        malformed["chronology"]!["createdEventRef"] = "turn_43:malformed_npc";
+        malformed["components"]![0]!.AsObject().Remove("payload");
+
+        await WriteJsonAsync(
+            EffectCarrierCatalog.PlayerPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(valid.DeepClone())
+            });
+        await WriteJsonAsync(
+            EffectCarrierCatalog.NpcPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["entries"] = new JsonArray(new JsonObject
+                {
+                    ["NPCId"] = "npc_test_healer",
+                    ["activeEffects"] = new JsonArray(malformed.DeepClone())
+                })
+            });
+        await WriteJsonAsync(
+            EffectIdentityState.StatePath,
+            EffectMaterializationTestFixture.CreateIdentityIndex(valid, malformed));
+
+        var result = await _service.ComputeAsync();
+
+        Assert.Equal(0, result.Stats[Characteristics.Dexterity].TemporaryBonus);
+        Assert.Empty(result.Stats[Characteristics.Dexterity].TemporarySources);
+    }
+
+    [Fact]
+    public async Task ComputeAsync_PercentEffectModifiersAggregateBeforeOneFloorRounding()
+    {
+        var first = CreateDistinctCharacteristicEffect(
+            "effect_test_percent_first",
+            "effect_transition_percent_first",
+            "turn_43:percent_first",
+            50,
+            capMaximum: 10);
+        first["components"]![0]!["payload"]!["operation"] = "percent";
+        var second = CreateDistinctCharacteristicEffect(
+            "effect_test_percent_second",
+            "effect_transition_percent_second",
+            "turn_44:percent_second",
+            10);
+        second["components"]![0]!["payload"]!["operation"] = "percent";
+
+        await WriteJsonAsync(
+            "game_state/misc/characteristics.json",
+            new JsonObject { [Characteristics.Dexterity] = 15 });
+        await WriteJsonAsync(
+            EffectCarrierCatalog.PlayerPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(first.DeepClone(), second.DeepClone())
+            });
+        var identityIndex = EffectMaterializationTestFixture.CreateIdentityIndex(first, second);
+        identityIndex["entries"]![0]!["transitions"]![0]!["transitionId"] =
+            "effect_transition_percent_first";
+        identityIndex["entries"]![0]!["transitions"]![0]!["eventRef"] =
+            "turn_43:percent_first";
+        identityIndex["entries"]![1]!["transitions"]![0]!["transitionId"] =
+            "effect_transition_percent_second";
+        identityIndex["entries"]![1]!["transitions"]![0]!["eventRef"] =
+            "turn_44:percent_second";
+        await WriteJsonAsync(EffectIdentityState.StatePath, identityIndex);
+
+        var result = await _service.ComputeAsync();
+
+        var dexterity = result.Stats[Characteristics.Dexterity];
+        Assert.Equal(3, dexterity.TemporaryBonus);
+        Assert.Equal(18, dexterity.Modified);
+        Assert.Equal(3, dexterity.TemporarySources.Sum(static source => source.Value));
+    }
+
+    [Fact]
+    public async Task ComputeAsync_FiniteEffectAggregateOutsideInt32FailsClosedWithoutSaturation()
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "characteristic_modifier");
+        effect["components"]![0]!["payload"]!["operation"] = "percent";
+        effect["components"]![0]!["payload"]!["value"] = 1_000_000;
+
+        await WriteJsonAsync(
+            "game_state/misc/characteristics.json",
+            new JsonObject { [Characteristics.Dexterity] = 300_000 });
+        await WriteJsonAsync(
+            EffectCarrierCatalog.PlayerPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(effect.DeepClone())
+            });
+        await WriteJsonAsync(
+            EffectIdentityState.StatePath,
+            EffectMaterializationTestFixture.CreateIdentityIndex(effect));
+
+        var result = await _service.ComputeAsync();
+
+        var dexterity = result.Stats[Characteristics.Dexterity];
+        Assert.Equal(300_000, dexterity.Modified);
+        Assert.Equal(0, dexterity.TemporaryBonus);
+        Assert.Empty(dexterity.TemporarySources);
+    }
+
+    [Fact]
+    public async Task ComputeAsync_HiddenEffectChangesInternalMechanicsWithoutPlayerVisibleAttribution()
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "characteristic_modifier");
+        effect["display"]!["visibility"] = "hidden";
+
+        await WriteJsonAsync(
+            "game_state/misc/characteristics.json",
+            new JsonObject { [Characteristics.Dexterity] = 10 });
+        await WriteJsonAsync(
+            EffectCarrierCatalog.PlayerPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(effect.DeepClone())
+            });
+        await WriteJsonAsync(
+            EffectIdentityState.StatePath,
+            EffectMaterializationTestFixture.CreateIdentityIndex(effect));
+
+        var result = await _service.ComputeAsync();
+
+        var dexterity = result.Stats[Characteristics.Dexterity];
+        Assert.Equal(8, dexterity.Modified);
+        Assert.Equal(-2, dexterity.TemporaryBonus);
+        Assert.Equal(10, dexterity.PlayerVisibleModified);
+        Assert.Equal(0, dexterity.PlayerVisibleTemporaryBonus);
+        Assert.Empty(dexterity.PlayerVisibleTemporarySources);
+
+        await _service.ComputeAndWriteAsync();
+        var computed = JsonNode.Parse((await _fs.ReadFileAsync(
+            "game_state/player/computed_characteristics.json"))!)!.AsObject();
+        Assert.Equal(
+            8,
+            computed["modifiedCharacteristics"]![Characteristics.Dexterity]!.GetValue<int>());
+        Assert.Equal(
+            10,
+            computed["playerVisibleModifiedCharacteristics"]![Characteristics.Dexterity]!.GetValue<int>());
+        Assert.DoesNotContain(
+            "Скрытый эффект",
+            computed.ToJsonString(),
+            StringComparison.Ordinal);
+    }
+
     private async Task WriteJsonAsync(string relativePath, object payload)
     {
         await _fs.WriteFileAtomicAsync(
@@ -676,6 +888,33 @@ public sealed class CharacteristicsServiceTests : IDisposable
                 ["application"] = "Permanent",
                 ["condition"] = null
             });
+
+    private static JsonObject CreateDistinctCharacteristicEffect(
+        string effectId,
+        string transitionId,
+        string eventRef,
+        int modifier,
+        int? capMaximum = null)
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "characteristic_modifier");
+        effect["effectId"] = effectId;
+        effect["source"]!["sourceId"] = "wound_" + effectId;
+        effect["stacking"]!["stackKey"] = effectId;
+        effect["chronology"]!["lastTransitionId"] = transitionId;
+        effect["chronology"]!["createdEventRef"] = eventRef;
+        var payload = effect["components"]![0]!["payload"]!.AsObject();
+        payload["value"] = modifier;
+        if (capMaximum.HasValue)
+        {
+            payload["cap"] = new JsonObject
+            {
+                ["minimum"] = -100,
+                ["maximum"] = capMaximum.Value
+            };
+        }
+        return effect;
+    }
 
     private async Task WritePendingTurnSnapshotManifestAsync(params string[] trackedPaths)
     {

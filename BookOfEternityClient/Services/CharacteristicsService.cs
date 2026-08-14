@@ -43,9 +43,13 @@ public class CharacteristicsService
         int TemporaryBonus,
         int PermanentlyModified,  // Base + PermanentBonus
         int Modified,             // PermanentlyModified + TemporaryBonus
+        int PlayerVisibleTemporaryBonus,
+        int PlayerVisibleModified,
         List<BonusSource> PermanentSources,
-        List<BonusSource> TemporarySources
-    );
+        List<BonusSource> TemporarySources)
+    {
+        public IReadOnlyList<BonusSource> PlayerVisibleTemporarySources => TemporarySources;
+    }
 
     public record BonusSource(string Origin, string Description, int Value);
 
@@ -85,8 +89,17 @@ public class CharacteristicsService
         // Source 3: Passive skills (structuredBonuses)
         await CollectPassiveSkillBonuses(permanentBonuses, temporaryBonuses);
 
-        // Source 4: Temporary effects (buffs/debuffs)
-        await CollectTemporaryEffects(temporaryBonuses);
+        var playerVisibleTemporaryBonuses = temporaryBonuses.ToDictionary(
+            static pair => pair.Key,
+            static pair => new List<BonusSource>(pair.Value),
+            StringComparer.Ordinal);
+
+        // Source 4: complete accepted active-effect snapshot
+        await CollectTemporaryEffects(
+            baseStats,
+            permanentBonuses,
+            temporaryBonuses,
+            playerVisibleTemporaryBonuses);
 
         // Build result
         var stats = new Dictionary<string, StatBreakdown>();
@@ -95,13 +108,15 @@ public class CharacteristicsService
             var baseVal = baseStats.GetValueOrDefault(name, 1);
             var permBonus = permanentBonuses[name].Sum(b => b.Value);
             var tempBonus = temporaryBonuses[name].Sum(b => b.Value);
+            var playerVisibleTempBonus = playerVisibleTemporaryBonuses[name].Sum(b => b.Value);
             var permMod = baseVal + permBonus;
             var modified = permMod + tempBonus;
+            var playerVisibleModified = permMod + playerVisibleTempBonus;
 
             stats[name] = new StatBreakdown(
                 name, baseVal, permBonus, tempBonus,
-                permMod, modified,
-                permanentBonuses[name], temporaryBonuses[name]
+                permMod, modified, playerVisibleTempBonus, playerVisibleModified,
+                permanentBonuses[name], playerVisibleTemporaryBonuses[name]
             );
         }
 
@@ -544,31 +559,160 @@ public class CharacteristicsService
     }
 
     /// <summary>
-    /// Temporary effects: activeBuffs/activeDebuffs with stat bonuses.
+    /// Temporary characteristic modifiers from one complete accepted effect snapshot.
     /// </summary>
-    private async Task CollectTemporaryEffects(Dictionary<string, List<BonusSource>> temporary)
+    private async Task CollectTemporaryEffects(
+        Dictionary<string, int> baseStats,
+        Dictionary<string, List<BonusSource>> permanent,
+        Dictionary<string, List<BonusSource>> temporary,
+        Dictionary<string, List<BonusSource>> playerVisibleTemporary)
     {
-        var json = await _fs.ReadFileAsync("game_state/player/effects.json");
-        if (json == null) return;
-
         try
         {
-            using var doc = JsonDocument.Parse(json);
-            CollectEffectsFromArray(doc.RootElement, "playerActiveEffectsChanges", temporary);
-            CollectEffectsFromArray(doc.RootElement, "activeBuffs", temporary);
-            CollectEffectsFromArray(doc.RootElement, "activeDebuffs", temporary);
-
-            // Root-level array
-            if (doc.RootElement.ValueKind == JsonValueKind.Array)
+            var snapshot = await EffectMechanicsSnapshot.LoadAsync(_fs);
+            if (!snapshot.IsAccepted)
             {
-                foreach (var effect in doc.RootElement.EnumerateArray())
-                    ExtractEffectBonuses(effect, temporary);
+                _logger.LogWarning(
+                    "Временные эффекты не применены: complete effect snapshot отклонён ({IssueCount} ошибок)",
+                    snapshot.Issues.Count);
+                return;
+            }
+
+            var modifiers = new Dictionary<string, List<AcceptedCharacteristicModifier>>(
+                StringComparer.Ordinal);
+            var playerVisibleModifiers = new Dictionary<string, List<AcceptedCharacteristicModifier>>(
+                StringComparer.Ordinal);
+            foreach (var characteristic in Characteristics.All)
+            {
+                modifiers[characteristic] = new List<AcceptedCharacteristicModifier>();
+                playerVisibleModifiers[characteristic] = new List<AcceptedCharacteristicModifier>();
+            }
+
+            foreach (var component in snapshot.Components)
+            {
+                if (!string.Equals(component.TargetKind, "player", StringComparison.Ordinal) ||
+                    !string.Equals(component.TargetId, "player_current", StringComparison.Ordinal) ||
+                    !string.Equals(component.Profile, "characteristic_modifier", StringComparison.Ordinal) ||
+                    !TryReadCharacteristicModifier(
+                        component.Payload,
+                        out var characteristic,
+                        out var operation,
+                        out var numericValue))
+                {
+                    continue;
+                }
+
+                modifiers[characteristic].Add(new AcceptedCharacteristicModifier(
+                    component.EffectName,
+                    operation,
+                    numericValue));
+                if (component.IsPlayerVisible)
+                {
+                    playerVisibleModifiers[characteristic].Add(new AcceptedCharacteristicModifier(
+                        component.EffectName,
+                        operation,
+                        numericValue));
+                }
+            }
+
+            var projectedTemporary = new Dictionary<string, List<BonusSource>>(StringComparer.Ordinal);
+            var projectedPlayerVisibleTemporary = new Dictionary<string, List<BonusSource>>(StringComparer.Ordinal);
+            foreach (var characteristic in Characteristics.All)
+            {
+                var baseline = (double)baseStats.GetValueOrDefault(characteristic, 1) +
+                    permanent[characteristic].Sum(static source => (long)source.Value) +
+                    temporary[characteristic].Sum(static source => (long)source.Value);
+                if (!double.IsFinite(baseline) || baseline is < int.MinValue or > int.MaxValue)
+                {
+                    _logger.LogWarning(
+                        "Временные эффекты не применены: baseline характеристики {Characteristic} вышел за числовые границы",
+                        characteristic);
+                    return;
+                }
+                if (!TryProjectCharacteristicModifiers(
+                        characteristic,
+                        baseline,
+                        modifiers[characteristic],
+                        out var fullProjection) ||
+                    !TryProjectCharacteristicModifiers(
+                        characteristic,
+                        baseline,
+                        playerVisibleModifiers[characteristic],
+                        out var visibleProjection))
+                    return;
+
+                projectedTemporary[characteristic] = fullProjection;
+                projectedPlayerVisibleTemporary[characteristic] = visibleProjection;
+            }
+
+            foreach (var characteristic in Characteristics.All)
+            {
+                temporary[characteristic].AddRange(projectedTemporary[characteristic]);
+                playerVisibleTemporary[characteristic].AddRange(
+                    projectedPlayerVisibleTemporary[characteristic]);
             }
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Ошибка чтения временных эффектов");
         }
+    }
+
+    private bool TryProjectCharacteristicModifiers(
+        string characteristic,
+        double baseline,
+        IReadOnlyList<AcceptedCharacteristicModifier> modifiers,
+        out List<BonusSource> projection)
+    {
+        projection = new List<BonusSource>();
+        if (!TryFloorToInt(baseline, out var resolved))
+        {
+            _logger.LogWarning(
+                "Временные эффекты не применены: baseline характеристики {Characteristic} вышел за числовые границы",
+                characteristic);
+            return false;
+        }
+        var flat = 0d;
+        var percent = 0d;
+        foreach (var modifier in modifiers)
+        {
+            if (string.Equals(modifier.Operation, "flat", StringComparison.Ordinal))
+                flat += modifier.Value;
+            else
+                percent += modifier.Value;
+
+            var nextRaw = (baseline + flat) * (1d + percent / 100d);
+            if (!TryFloorToInt(nextRaw, out var next))
+            {
+                _logger.LogWarning(
+                    "Временные эффекты не применены: итоговый modifier характеристики {Characteristic} вышел за числовые границы",
+                    characteristic);
+                return false;
+            }
+
+            var deltaLong = (long)next - resolved;
+            if (deltaLong is < int.MinValue or > int.MaxValue)
+            {
+                _logger.LogWarning(
+                    "Временные эффекты не применены: delta характеристики {Characteristic} вышла за числовые границы",
+                    characteristic);
+                return false;
+            }
+            var delta = (int)deltaLong;
+            resolved = next;
+            if (delta == 0)
+                continue;
+
+            var description = string.Equals(modifier.Operation, "percent", StringComparison.Ordinal)
+                ? $"{modifier.Value:+0.##;-0.##}% ({delta:+#;-#;0})"
+                : $"{modifier.Value:+0.##;-0.##} ({delta:+#;-#;0})";
+            projection.Add(new BonusSource(
+                $"✨ {modifier.EffectName}",
+                description,
+                delta));
+        }
+
+        return true;
     }
 
     // ═══════════════════════════════════════════
@@ -647,64 +791,70 @@ public class CharacteristicsService
         }
     }
 
-    private void CollectEffectsFromArray(JsonElement root, string propName,
-        Dictionary<string, List<BonusSource>> temporary)
+    private static bool TryReadCharacteristicModifier(
+        JsonElement payload,
+        out string characteristic,
+        out string operation,
+        out double value)
     {
-        if (!root.TryGetProperty(propName, out var arr)) return;
-        if (arr.ValueKind != JsonValueKind.Array) return;
-
-        foreach (var effect in arr.EnumerateArray())
-            ExtractEffectBonuses(effect, temporary);
-    }
-
-    private void ExtractEffectBonuses(JsonElement effect,
-        Dictionary<string, List<BonusSource>> temporary)
-    {
-        var effectName = GetStr(effect, "effectName",
-            GetStr(effect, "name",
-                GetStr(effect, "buffName",
-                    GetStr(effect, "debuffName", "Эффект"))));
-
-        // Check structuredBonuses on effects too
-        if (effect.TryGetProperty("structuredBonuses", out var sb) &&
-            sb.ValueKind == JsonValueKind.Array)
+        characteristic = string.Empty;
+        operation = string.Empty;
+        value = 0;
+        if (payload.ValueKind != JsonValueKind.Object ||
+            !payload.TryGetProperty("characteristic", out var characteristicNode) ||
+            characteristicNode.ValueKind != JsonValueKind.String ||
+            !payload.TryGetProperty("operation", out var operationNode) ||
+            operationNode.ValueKind != JsonValueKind.String ||
+            !payload.TryGetProperty("value", out var valueNode) ||
+            valueNode.ValueKind != JsonValueKind.Number ||
+            !valueNode.TryGetDouble(out var numericValue) ||
+            !double.IsFinite(numericValue))
         {
-            foreach (var bonus in sb.EnumerateArray())
+            return false;
+        }
+
+        characteristic = characteristicNode.GetString() ?? string.Empty;
+        if (!Characteristics.All.Contains(characteristic, StringComparer.Ordinal))
+            return false;
+
+        operation = operationNode.GetString() ?? string.Empty;
+        if (operation is not ("flat" or "percent") || numericValue == 0d)
+            return false;
+
+        if (payload.TryGetProperty("cap", out var cap) && cap.ValueKind == JsonValueKind.Object)
+        {
+            if (cap.TryGetProperty("minimum", out var minimum) &&
+                minimum.ValueKind == JsonValueKind.Number &&
+                minimum.TryGetDouble(out var minimumValue))
             {
-                var bonusType = GetStr(bonus, "bonusType", "");
-                if (!bonusType.Equals("Characteristic", StringComparison.OrdinalIgnoreCase)) continue;
-
-                var target = GetStr(bonus, "target", "").ToLowerInvariant();
-                if (!temporary.ContainsKey(target)) continue;
-
-                var value = 0;
-                if (bonus.TryGetProperty("value", out var v) && v.ValueKind == JsonValueKind.Number)
-                    value = v.GetInt32();
-                if (value != 0)
-                {
-                    temporary[target].Add(new BonusSource(
-                        $"✨ {effectName}", GetStr(bonus, "description", $"{value}"), value));
-                }
+                numericValue = Math.Max(numericValue, minimumValue);
+            }
+            if (cap.TryGetProperty("maximum", out var maximum) &&
+                maximum.ValueKind == JsonValueKind.Number &&
+                maximum.TryGetDouble(out var maximumValue))
+            {
+                numericValue = Math.Min(numericValue, maximumValue);
             }
         }
 
-        // Direct stat modification fields on the effect itself
-        if (effect.TryGetProperty("statModifications", out var mods) &&
-            mods.ValueKind == JsonValueKind.Object)
-        {
-            foreach (var prop in mods.EnumerateObject())
-            {
-                var statName = prop.Name.ToLowerInvariant();
-                if (!temporary.ContainsKey(statName)) continue;
-                var value = prop.Value.ValueKind == JsonValueKind.Number ? prop.Value.GetInt32() : 0;
-                if (value != 0)
-                {
-                    temporary[statName].Add(new BonusSource(
-                        $"✨ {effectName}", $"{(value > 0 ? "+" : "")}{value}", value));
-                }
-            }
-        }
+        value = numericValue;
+        return value != 0d;
     }
+
+    private static bool TryFloorToInt(double value, out int result)
+    {
+        result = 0;
+        if (!double.IsFinite(value) || value is < int.MinValue or > int.MaxValue)
+            return false;
+
+        result = (int)Math.Floor(value);
+        return true;
+    }
+
+    private sealed record AcceptedCharacteristicModifier(
+        string EffectName,
+        string Operation,
+        double Value);
 
     // ═══════════════════════════════════════════
     //  Private: Write computed result
@@ -715,6 +865,7 @@ public class CharacteristicsService
         var standard = new Dictionary<string, int>();
         var permanentlyModified = new Dictionary<string, int>();
         var modified = new Dictionary<string, int>();
+        var playerVisibleModified = new Dictionary<string, int>();
         var breakdown = new Dictionary<string, object>();
 
         foreach (var (name, stat) in result.Stats)
@@ -722,6 +873,7 @@ public class CharacteristicsService
             standard[name] = stat.BaseValue;
             permanentlyModified[name] = stat.PermanentlyModified;
             modified[name] = stat.Modified;
+            playerVisibleModified[name] = stat.PlayerVisibleModified;
 
             if (stat.PermanentBonus != 0 || stat.TemporaryBonus != 0)
             {
@@ -735,9 +887,9 @@ public class CharacteristicsService
                 {
                     @base = stat.BaseValue,
                     permanentBonus = stat.PermanentBonus,
-                    temporaryBonus = stat.TemporaryBonus,
+                    temporaryBonus = stat.PlayerVisibleTemporaryBonus,
                     permanentlyModified = stat.PermanentlyModified,
-                    modified = stat.Modified,
+                    modified = stat.PlayerVisibleModified,
                     sources
                 };
             }
@@ -751,6 +903,7 @@ public class CharacteristicsService
             characteristics = standard,
             permanentlyModifiedCharacteristics = permanentlyModified,
             modifiedCharacteristics = modified,
+            playerVisibleModifiedCharacteristics = playerVisibleModified,
             breakdown,
             _lastComputed = DateTime.UtcNow.ToString("o")
         };

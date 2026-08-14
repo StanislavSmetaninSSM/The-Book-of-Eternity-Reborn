@@ -309,12 +309,36 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return;
         }
 
-        var structuredBlock = BuildStructuredStatsDossier(obj, title, translateKey);
+        var playerRoot = string.Equals(
+            path,
+            "game_state/player/computed_characteristics.json",
+            StringComparison.OrdinalIgnoreCase)
+            ? ProjectPlayerVisibleComputedStats(obj)
+            : obj;
+        var structuredBlock = BuildStructuredStatsDossier(playerRoot, title, translateKey);
         if (structuredBlock != null)
         {
             blocks.Add(structuredBlock);
             return;
         }
+    }
+
+    private static JsonObject ProjectPlayerVisibleComputedStats(JsonObject root)
+    {
+        if (root["playerVisibleModifiedCharacteristics"] is not JsonObject playerVisibleFinal)
+            return new JsonObject();
+
+        var projected = new JsonObject();
+        if (root["playerLevel"] is JsonValue playerLevel)
+            projected["playerLevel"] = playerLevel.DeepClone();
+        if (root["unspentStatPoints"] is JsonValue unspentStatPoints)
+            projected["unspentStatPoints"] = unspentStatPoints.DeepClone();
+        if (root["characteristics"] is JsonObject baseline)
+            projected["base"] = baseline.DeepClone();
+        if (root["permanentlyModifiedCharacteristics"] is JsonObject permanent)
+            projected["permanentlyModified"] = permanent.DeepClone();
+        projected["final"] = playerVisibleFinal.DeepClone();
+        return projected;
     }
 
     private static UiEntityDossierBlock? BuildStructuredStatsDossier(

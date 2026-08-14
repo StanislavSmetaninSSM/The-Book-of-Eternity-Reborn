@@ -241,6 +241,24 @@ Each component has:
 
 Profile payload schemas are closed. Optional display text never substitutes for a required mechanical field.
 
+`characteristic_modifier.characteristic` uses the exact twelve-value Block 5 runtime
+catalog: `strength`, `dexterity`, `constitution`, `intelligence`, `wisdom`, `faith`,
+`attractiveness`, `trade`, `persuasion`, `perception`, `luck`, and `speed`. Its optional
+`cap` clamps the source-resolved numeric `value` before aggregation. For one accepted
+player snapshot, flat values are summed with base and static permanent bonuses,
+percentage values are then summed into one multiplier, and the final characteristic is
+floored once. A finite intermediate/final aggregate outside `Int32` rejects the complete
+active-effect characteristic projection; it is never saturated or partially applied.
+Static `structuredBonuses` and `activeEffectDefinitions` remain separate source authority
+and are never counted as live effect instances.
+
+The internal computed characteristic value retains every accepted mechanic for GM/QTE
+resolution. A separate client-owned `playerVisibleModifiedCharacteristics` projection is
+derived from visible effects only. Hidden/GM-only components, their attribution rows, and
+their numeric implications are absent from ordinary console/browser stats. Missing or
+wrong-typed safe projection data never falls back to internal `modifiedCharacteristics`.
+This field is derived client state, not a GM-authored response contract.
+
 ## 5. Stacking State
 
 ```json

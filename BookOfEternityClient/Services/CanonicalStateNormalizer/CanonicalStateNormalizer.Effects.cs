@@ -33,6 +33,9 @@ public partial class CanonicalStateNormalizer
                 exception);
         }
 
+        if (!hasCommand && !EffectAcceptedTurnPlanAuthority.HasValidated(_fs))
+            return null;
+
         var request = await ReadNodeAsync("input/turn_request.json") as JsonObject
             ?? throw new InvalidDataException(
                 "Effect normalization requires the accepted turn request authority.");
@@ -84,6 +87,7 @@ public partial class CanonicalStateNormalizer
             EffectAcceptedTurnPlan.IdentityIndexPath,
             plan.IdentityIndexAfterImage.ToJsonString(JsonOpts));
         DeleteEffectCommandRoot();
+        EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs);
         return plan;
     }
 

@@ -70,6 +70,18 @@ The isolated worktree initially lacked generated NuGet assets. After restoring t
 | `Focused` phase-capacity RED | `TestResults/test-lanes/20260815-010449-286-52284-76c278ebe12d459d8d24b967fb6466a8-focused` | 28 | 27 | 1 | 0 | no | complete | `00:00:16.4513424` |
 | `Focused` phase-capacity GREEN | `TestResults/test-lanes/20260815-010554-687-48404-9d0a13b5632a41318751f496cbd2a966-focused` | 28 | 28 | 0 | 0 | no | complete | `00:01:01.0768762` |
 | `Focused Integration` Task 6 final control | `TestResults/test-lanes/20260815-010704-512-30164-a6451d76977d45128f9ca3622d0076da-focused` | 90 | 90 | 0 | 0 | no | complete | `00:01:04.1366021` |
+| `Focused` mechanics snapshot API RED | `TestResults/test-lanes/20260815-075556-717-55648-0eb11b14e88a4ab78052e9154854e295-focused` | 0 | 0 | build RED | 0 | no | complete | `00:00:37.6231878` |
+| `Focused` runtime characteristic catalog RED | `TestResults/test-lanes/20260815-080459-052-38868-21d39b90a60b4dc8b46f874654563ea7-focused` | 19 | 13 | 6 | 0 | no | complete | `00:00:21.7206293` |
+| `Focused` aggregate percentage semantics RED | `TestResults/test-lanes/20260815-080918-525-38028-920b7632a75c417b962340bafee05723-focused` | 1 | 0 | 1 | 0 | no | complete | `00:00:23.9368216` |
+| `Focused` hidden-audit privacy RED | `TestResults/test-lanes/20260815-081302-428-38600-50da44b6b81d4a5aa156fd7dd1b44079-focused` | 1 | 0 | 1 | 0 | no | complete | `00:00:21.9786895` |
+| `Focused` Task 7 final mechanics control | `TestResults/test-lanes/20260815-081542-563-22808-f1b701fd4663495286672d2744a9036a-focused` | 34 | 34 | 0 | 0 | no | complete | `00:00:58.0718431` |
+| `Fast` no-op normalization regression discovery | `TestResults/test-lanes/20260815-081752-158-54468-2dfd8bb4464545179440a0040a4cc1d5-fast` | 855 | 854 | 1 | 0 | no | complete | `00:01:23.6995464` |
+| `Focused Integration` no-op normalization RED | `TestResults/test-lanes/20260815-082252-230-38628-f1a5c5bf2ee94423ba39949cc5659838-focused` | 1 | 0 | 1 | 0 | no | complete | `00:00:29.5824176` |
+| `Focused Integration` no-op/commandless-plan GREEN | `TestResults/test-lanes/20260815-082449-941-20056-37a2b8a317da444a8595a1a0d380948f-focused` | 2 | 2 | 0 | 0 | no | complete | `00:01:03.5664155` |
+| `Focused` original no-op regression GREEN | `TestResults/test-lanes/20260815-082602-698-39028-64f6879400a34df7b2ccfefd7ada4ac4-focused` | 1 | 1 | 0 | 0 | no | complete | `00:00:24.4999251` |
+| `Fast` reserved pending-path registry discovery | `TestResults/test-lanes/20260815-082636-432-51948-005858e21a264ab8b8a60a46698e7766-fast` | 1709 | 1708 | 1 | 0 | no | complete | `00:01:28.6646467` |
+| `Focused` reserved pending-path registry GREEN | `TestResults/test-lanes/20260815-082903-661-32512-b1a2f1a96df740239dd15f40d8e2f5bf-focused` | 1 | 1 | 0 | 0 | no | complete | `00:00:11.2219777` |
+| `Fast` Task 7 final control | `TestResults/test-lanes/20260815-082928-974-55048-67b89b3394654cd2aac547b5ca0e9a65-fast` | 3428 | 3428 | 0 | 0 | no | complete | `00:03:01.1766140` |
 
 The first Integration attempt stopped before the intended RED because NuGet
 assets had been cleaned. After the documented project restore, the repeated
@@ -536,9 +548,20 @@ git commit -m "feat: publish canonical active effects (#1535)"
 
 **Files:**
 - Create: `BookOfEternityClient/Services/EffectMechanicsSnapshot.cs`
+- Modify: `BookOfEternityClient/Services/EffectCarrierCatalog.cs`
 - Modify: `BookOfEternityClient/Services/CharacteristicsService.cs`
+- Modify: `BookOfEternityClient/Services/EffectComponentProfiles.cs`
+- Modify: `BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs`
 - Create: `BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.cs`
 - Modify: `BookOfEternityClient.Tests/CharacteristicsServiceTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Effects.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs`
+- Modify: `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs`
+- Modify: `BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs`
+- Modify: `OtherGuides/Afterlife_Pending_Control_Surface_Inventory.json`
+- Modify: `specs/1535-complete-effect-materialization/data-model.md`
 
 **Snapshot surface:**
 
@@ -553,29 +576,29 @@ internal sealed record EffectMechanicsSnapshot(
 }
 ```
 
-- [ ] **Step 1: Add all-or-nothing RED tests**
+- [x] **Step 1: Add all-or-nothing RED tests**
 
-Assert a valid modifier applies once; one malformed sibling, duplicate effect, target mismatch, bad component, bad index entry, or unsupported profile makes the whole governed active snapshot contribute zero. Static `structuredBonuses` and source definitions remain separate and are not double-counted.
+Assert a valid modifier applies once; one malformed sibling (including a wrong-typed governed owner/collection), duplicate effect, target mismatch, bad component, bad index entry, or unsupported profile makes the whole governed active snapshot contribute zero. Static `structuredBonuses` and source definitions remain separate and are not double-counted.
 
-- [ ] **Step 2: Run RED**
+- [x] **Step 2: Run RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectMechanicsSnapshotTests|FullyQualifiedName~CharacteristicsServiceTests"
 ```
 
-- [ ] **Step 3: Implement immutable component projection**
+- [x] **Step 3: Implement immutable component projection**
 
 Build from the validated carrier catalog and identity state, sort by effect/component identity, and return no partial mechanics on any authority issue. Keep audit metadata player-safe and free of raw DTOs.
 
-- [ ] **Step 4: Migrate CharacteristicsService**
+- [x] **Step 4: Migrate CharacteristicsService**
 
-Delete raw active-effect alias parsing. Apply only supported characteristic/resistance contributions from the snapshot; leave static item/skill/source bonuses on their existing governed route.
+Delete raw active-effect alias parsing. Apply only supported characteristic contributions in this consumer; reject finite aggregate values outside `Int32` instead of saturating; leave resistance profiles for their owning future consumer and keep static item/skill/source bonuses on their existing governed route. Keep internal mechanics for GM/QTE consumers while deriving a separate fail-closed player-visible characteristic projection that omits hidden/GM-only implications and never falls back to the internal map.
 
-- [ ] **Step 5: Run GREEN and legacy double-count control**
+- [x] **Step 5: Run GREEN and legacy double-count control**
 
 Verify one definition plus one active instance contributes exactly one active mechanic, not two.
 
-- [ ] **Step 6: Run one meaningful Fast checkpoint**
+- [x] **Step 6: Run one meaningful Fast checkpoint**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
@@ -583,10 +606,37 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
 
 Inspect `summary.json`; record total, pass/fail, duplicates, timeout, cleanup, wall, and result path here. Do not rerun Fast merely because subsequent focused work begins.
 
-- [ ] **Step 7: Commit the US1 mechanics slice**
+Earlier Fast attempts were intentionally not accepted as the checkpoint: they
+exposed an unconditional effect-normalizer dependency on `turn_request.json`
+for unrelated normalization, an undocumented reserved
+`pending_effect_resolutions.json` path, and then review found that a successfully
+published validated plan remained cached. Dedicated RED→GREEN tests fixed all
+three without weakening commandless `combatantRef` publication or activating
+the future pending contract. The stale-plan regression failed at
+`TestResults/test-lanes/20260815-091945-981-41912-3028ded2fc8e4b18a53cda46b4df66b8-focused`
+and passed at
+`TestResults/test-lanes/20260815-092031-448-47408-9620e1d76b284a6b8d81bd4634ead2fa-focused`.
+The final Fast checkpoint at
+`TestResults/test-lanes/20260815-092308-521-57072-f1333ebcd02045bdaab0d3deadefd2ed-fast`
+passed 3441/3441 in 3:04.974 with zero duplicates, no timeout, and complete
+owned-tree cleanup.
+
+GM synchronization check: this slice adds no new GM-authored field or response
+surface. The characteristic profile validator now follows the already documented
+Block 5 twelve-characteristic catalog, and the existing quickstart contains the
+worked `effectChanges[]` authoring example. The future pending-resolution file
+remains explicitly inactive until T043/T049–T050; its GM contract, prompts, and
+worked receipt example therefore remain in their owning later slice.
+`playerVisibleModifiedCharacteristics` is a client-derived projection field in
+the GM-reference computed-characteristics file, not GM-authored authority; GM/QTE
+mechanics continue to use internal `modifiedCharacteristics`/`Modified`. Therefore
+no GM prompt or worked authoring example changes are required for this privacy-only
+projection field.
+
+- [x] **Step 7: Commit the US1 mechanics slice**
 
 ```powershell
-git add -- BookOfEternityClient/Services/EffectMechanicsSnapshot.cs BookOfEternityClient/Services/CharacteristicsService.cs BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.cs BookOfEternityClient.Tests/CharacteristicsServiceTests.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
+git add -- BookOfEternityClient/Services/EffectMechanicsSnapshot.cs BookOfEternityClient/Services/EffectCarrierCatalog.cs BookOfEternityClient/Services/CharacteristicsService.cs BookOfEternityClient/Services/EffectComponentProfiles.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.cs BookOfEternityClient.Tests/CharacteristicsServiceTests.cs BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Effects.cs BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs OtherGuides/Afterlife_Pending_Control_Surface_Inventory.json specs/1535-complete-effect-materialization/data-model.md specs/1535-complete-effect-materialization/quickstart.md specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
 git diff --cached --check
 git commit -m "feat: derive accepted active effect mechanics (#1535)"
 ```

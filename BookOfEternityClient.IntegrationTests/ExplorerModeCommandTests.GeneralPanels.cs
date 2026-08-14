@@ -14,6 +14,61 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class ExplorerModeCommandTests : IDisposable
 {
+    [Fact]
+    public async Task TryProcessCommand_StatsDoesNotRevealHiddenEffectOrItsDerivedDelta()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync(
+            "game_state/misc/characteristics.json",
+            new JsonObject { [Characteristics.Dexterity] = 10 });
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "characteristic_modifier");
+        effect["display"]!["visibility"] = "hidden";
+        await WriteJsonAsync(
+            EffectCarrierCatalog.PlayerPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(effect.DeepClone())
+            });
+        await WriteJsonAsync(
+            EffectIdentityState.StatePath,
+            EffectMaterializationTestFixture.CreateIdentityIndex(effect));
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/статы"));
+
+        Assert.Null(ex);
+        var rendered = ExtractRenderedText();
+        Assert.DoesNotContain("Скрытый эффект", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("Кровотечение", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("(-2)", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("⏳", rendered, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_StatusDoesNotFallbackToInternalComputedValuesWithoutSafeProjection()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync(
+            "game_state/misc/characteristics.json",
+            new JsonObject { [Characteristics.Dexterity] = 10 });
+        await WriteJsonAsync(
+            "game_state/player/computed_characteristics.json",
+            new JsonObject
+            {
+                ["characteristics"] = new JsonObject { [Characteristics.Dexterity] = 10 },
+                ["permanentlyModifiedCharacteristics"] = new JsonObject { [Characteristics.Dexterity] = 10 },
+                ["modifiedCharacteristics"] = new JsonObject { [Characteristics.Dexterity] = 987654 }
+            });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/статус"));
+
+        Assert.Null(ex);
+        Assert.DoesNotContain("987654", ExtractRenderedText(), StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData("/душа")]
     [InlineData("/хранители")]

@@ -1030,7 +1030,8 @@ public partial class ExplorerMode
             var cr = compCharDoc.RootElement;
             if (cr.TryGetProperty("characteristics", out var bc) && bc.ValueKind == JsonValueKind.Object) baseChars = bc;
             if (cr.TryGetProperty("permanentlyModifiedCharacteristics", out var pm) && pm.ValueKind == JsonValueKind.Object) permChars = pm;
-            if (cr.TryGetProperty("modifiedCharacteristics", out var mc) && mc.ValueKind == JsonValueKind.Object) modChars = mc;
+            if (cr.TryGetProperty("playerVisibleModifiedCharacteristics", out var pvc) && pvc.ValueKind == JsonValueKind.Object)
+                modChars = pvc;
             unspentStatPoints = GetInt(cr, "unspentStatPoints", 0);
         }
         var charSource = modChars ?? permChars ?? baseChars ?? (charDoc != null ? charDoc.RootElement : (JsonElement?)null);
@@ -1503,7 +1504,7 @@ public partial class ExplorerMode
 
                 if (computed.Stats.TryGetValue(scalingKey, out var scaleStat))
                 {
-                    var charVal = scaleStat.PermanentlyModified + scaleStat.TemporaryBonus;
+                    var charVal = scaleStat.PlayerVisibleModified;
                     var lvl = computed.PlayerLevel;
                     var mastery = GetSkillMasterySnapshot(name, s, masteryLookup);
                     var mastLvl = mastery.Level > 0 ? mastery.Level : 1;
@@ -1816,7 +1817,8 @@ public partial class ExplorerMode
             return;
         }
 
-        var hasBonuses = result.Stats.Values.Any(s => s.PermanentBonus != 0 || s.TemporaryBonus != 0);
+        var hasBonuses = result.Stats.Values.Any(s =>
+            s.PermanentBonus != 0 || s.PlayerVisibleTemporaryBonus != 0);
         var lines = new List<string>();
 
         // Header with level and unspent points
@@ -1878,10 +1880,10 @@ public partial class ExplorerMode
 
                 // Add temp bonus indicator if present
                 var totalStr = $"[bold {totalColor}]{stat.PermanentlyModified}[/]";
-                if (stat.TemporaryBonus != 0)
+                if (stat.PlayerVisibleTemporaryBonus != 0)
                 {
-                    var tmpColor = stat.TemporaryBonus > 0 ? "aqua" : "red";
-                    totalStr += $" [{tmpColor}]({(stat.TemporaryBonus > 0 ? "+" : "")}{stat.TemporaryBonus})[/]";
+                    var tmpColor = stat.PlayerVisibleTemporaryBonus > 0 ? "aqua" : "red";
+                    totalStr += $" [{tmpColor}]({(stat.PlayerVisibleTemporaryBonus > 0 ? "+" : "")}{stat.PlayerVisibleTemporaryBonus})[/]";
                 }
 
                 table.AddRow(ruName, $"[white]{stat.BaseValue}[/]", bonusStr, totalStr, bar, desc);
@@ -1900,7 +1902,7 @@ public partial class ExplorerMode
         foreach (var charName in Characteristics.All)
         {
             if (!result.Stats.TryGetValue(charName, out var stat)) continue;
-            if (stat.PermanentSources.Count == 0 && stat.TemporarySources.Count == 0) continue;
+            if (stat.PermanentSources.Count == 0 && stat.PlayerVisibleTemporarySources.Count == 0) continue;
 
             var ruName = Characteristics.RussianNames[charName];
             sourceLines.Add($"  [bold]{Markup.Escape(ruName)}:[/]");
@@ -1909,7 +1911,7 @@ public partial class ExplorerMode
                 var sign = src.Value > 0 ? "+" : "";
                 sourceLines.Add($"    [green]📌 {Markup.Escape(src.Origin)}:[/] [white]{sign}{src.Value}[/] [dim](пост.)[/]");
             }
-            foreach (var src in stat.TemporarySources)
+            foreach (var src in stat.PlayerVisibleTemporarySources)
             {
                 var sign = src.Value > 0 ? "+" : "";
                 sourceLines.Add($"    [aqua]⏳ {Markup.Escape(src.Origin)}:[/] [white]{sign}{src.Value}[/] [dim](врем.)[/]");
@@ -1942,7 +1944,7 @@ public partial class ExplorerMode
         // ── Derived combat parameters (from Rules Block 5, 13, 14) ──
         {
             int GetPerm(string name) => result.Stats.TryGetValue(name, out var s) ? s.PermanentlyModified : 0;
-            int GetMod(string name) => result.Stats.TryGetValue(name, out var s) ? (s.PermanentlyModified + s.TemporaryBonus) : 0;
+            int GetMod(string name) => result.Stats.TryGetValue(name, out var s) ? s.PlayerVisibleModified : 0;
             var lvl = result.PlayerLevel;
 
             var permStr = GetPerm(Characteristics.Strength);

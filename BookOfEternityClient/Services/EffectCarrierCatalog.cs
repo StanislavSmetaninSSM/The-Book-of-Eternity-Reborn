@@ -178,7 +178,22 @@ internal sealed class EffectCarrierCatalog
             for (var index = 0; index < combatants.Count; index++)
             {
                 if (combatants[index] is not JsonObject combatant)
+                {
+                    Add(
+                        $"{filePath}.{collection}[{index}]",
+                        "effect_materialization_invalid_field",
+                        "combatant object",
+                        Describe(combatants[index]));
                     continue;
+                }
+                ValidateOptionalArrayField(
+                    combatant,
+                    "activeBuffs",
+                    $"{filePath}.{collection}[{index}].activeBuffs");
+                ValidateOptionalArrayField(
+                    combatant,
+                    "activeDebuffs",
+                    $"{filePath}.{collection}[{index}].activeDebuffs");
                 if (combatant.ContainsKey("combatantRef"))
                 {
                     Add(
@@ -236,11 +251,34 @@ internal sealed class EffectCarrierCatalog
 
             for (var index = 0; index < profiles.Count; index++)
             {
-                if (profiles[index] is not JsonObject profile ||
-                    !TryReadExact(profile["actorId"], out var actorId) ||
-                    !TryReadExact(profile["actorType"], out var actorType) ||
-                    profile["activeEffects"] is not JsonArray effects)
+                if (profiles[index] is not JsonObject profile)
                 {
+                    Add(
+                        $"{AfterlifeProfilesPath}.profiles[{index}]",
+                        "effect_materialization_invalid_field",
+                        "afterlife profile object",
+                        Describe(profiles[index]));
+                    continue;
+                }
+                if (!profile.ContainsKey("activeEffects"))
+                    continue;
+                if (profile["activeEffects"] is not JsonArray effects)
+                {
+                    Add(
+                        $"{AfterlifeProfilesPath}.profiles[{index}].activeEffects",
+                        "effect_materialization_invalid_field",
+                        "canonical active effect array",
+                        Describe(profile["activeEffects"]));
+                    continue;
+                }
+                if (!TryReadExact(profile["actorId"], out var actorId) ||
+                    !TryReadExact(profile["actorType"], out var actorType))
+                {
+                    Add(
+                        $"{AfterlifeProfilesPath}.profiles[{index}]",
+                        "effect_materialization_invalid_field",
+                        "exact actorType and actorId for an activeEffects carrier",
+                        profile.ToJsonString());
                     continue;
                 }
                 var targetKind = actorType switch
@@ -265,18 +303,47 @@ internal sealed class EffectCarrierCatalog
         {
             if (root == null)
                 return;
-            if (root["activeConflict"] is not JsonObject conflict)
+            if (!root.ContainsKey("activeConflict") || root["activeConflict"] == null)
                 return;
-            if (!TryReadExact(conflict["conflictId"], out var conflictId) ||
-                conflict["combatConditions"] is not JsonArray conditions)
+            if (root["activeConflict"] is not JsonObject conflict)
             {
+                Add(
+                    SpiritualConflictPath + ".activeConflict",
+                    "effect_materialization_invalid_field",
+                    "active conflict object or null",
+                    Describe(root["activeConflict"]));
+                return;
+            }
+            if (conflict["combatConditions"] is not JsonArray conditions)
+            {
+                Add(
+                    SpiritualConflictPath + ".activeConflict.combatConditions",
+                    "effect_materialization_invalid_field",
+                    "canonical combat condition array",
+                    Describe(conflict["combatConditions"]));
+                return;
+            }
+            if (!TryReadExact(conflict["conflictId"], out var conflictId))
+            {
+                Add(
+                    SpiritualConflictPath + ".activeConflict.conflictId",
+                    "effect_materialization_invalid_field",
+                    "exact active conflict identity",
+                    Describe(conflict["conflictId"]));
                 return;
             }
 
             for (var index = 0; index < conditions.Count; index++)
             {
                 if (conditions[index] is not JsonObject condition)
+                {
+                    Add(
+                        $"{SpiritualConflictPath}.activeConflict.combatConditions[{index}]",
+                        "effect_materialization_invalid_field",
+                        "canonical combat condition object",
+                        Describe(conditions[index]));
                     continue;
+                }
                 var jsonPath = $"{SpiritualConflictPath}.activeConflict.combatConditions[{index}]";
                 if (!TryReadExact(condition["effectId"], out var effectId))
                 {
@@ -435,6 +502,18 @@ internal sealed class EffectCarrierCatalog
         {
             InvalidEffectIds.Add(effectId);
             Add(path, "effect_materialization_target_carrier_mismatch", expected, actual);
+        }
+
+        private void ValidateOptionalArrayField(JsonObject owner, string field, string path)
+        {
+            if (owner.ContainsKey(field) && owner[field] is not JsonArray)
+            {
+                Add(
+                    path,
+                    "effect_materialization_invalid_field",
+                    "canonical active effect array",
+                    Describe(owner[field]));
+            }
         }
 
         private void Add(string path, string code, string expected, string actual) =>

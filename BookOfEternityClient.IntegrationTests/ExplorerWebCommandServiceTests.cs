@@ -1897,10 +1897,9 @@ public sealed class ExplorerWebCommandServiceTests :
         """);
         await _fs.WriteFileAtomicAsync("game_state/player/computed_characteristics.json", """
         {
-          "healthMax": 120,
-          "carryWeight": 18,
-          "arcaneFocus": 7,
-          "base": {
+          "playerLevel": 2,
+          "unspentStatPoints": 0,
+          "characteristics": {
             "strength": 5,
             "dexterity": 7,
             "constitution": 6,
@@ -1914,21 +1913,35 @@ public sealed class ExplorerWebCommandServiceTests :
             "luck": 7,
             "speed": 6
           },
-          "equipmentBonuses": {
-            "magicFlowSense": 2,
-            "arcaneLore": 1,
-            "stealth": 1,
-            "aristocraticReputation": 3
+          "permanentlyModifiedCharacteristics": {
+            "strength": 5,
+            "dexterity": 7,
+            "constitution": 6,
+            "intelligence": 13,
+            "wisdom": 10,
+            "faith": 3,
+            "attractiveness": 11,
+            "trade": 6,
+            "persuasion": 9,
+            "perception": 12,
+            "luck": 7,
+            "speed": 6
           },
-          "temporaryModifiers": [
-            {
-              "source": "Головная боль после тяжёлых снов",
-              "target": "perception",
-              "value": -1,
-              "expiresAt": "полдень"
-            }
-          ],
-          "final": {
+          "modifiedCharacteristics": {
+            "strength": 5,
+            "dexterity": 7,
+            "constitution": 6,
+            "intelligence": 13,
+            "wisdom": 10,
+            "faith": 3,
+            "attractiveness": 11,
+            "trade": 6,
+            "persuasion": 9,
+            "perception": 11,
+            "luck": 7,
+            "speed": 6
+          },
+          "playerVisibleModifiedCharacteristics": {
             "strength": 5,
             "dexterity": 7,
             "constitution": 6,
@@ -1955,12 +1968,8 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.Contains("Восприятие", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Воля", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Расчётные показатели", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Максимум здоровья", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Грузоподъёмность", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Магический фокус", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Базовое значение", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Бонусы снаряжения", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Временные модификаторы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Постоянные модификаторы", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Итоговое значение", text, StringComparison.OrdinalIgnoreCase);
 
         var statsDossier = Assert.Single(
@@ -1978,24 +1987,12 @@ public sealed class ExplorerWebCommandServiceTests :
             item.Label.Equals("Ловкость", StringComparison.OrdinalIgnoreCase) &&
             item.Value.Equals("7", StringComparison.OrdinalIgnoreCase));
 
-        var equipmentPanel = Assert.Single(
+        var permanentPanel = Assert.Single(
             statsDossier.Sections,
-            static section => section.Title.Equals("Бонусы снаряжения", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(equipmentPanel.Facts, static item =>
-            item.Label.Equals("Чувство магических потоков", StringComparison.OrdinalIgnoreCase) &&
-            item.Value.Equals("2", StringComparison.OrdinalIgnoreCase));
-
-        var modifiersPanel = Assert.Single(
-            statsDossier.Sections,
-            static section => section.Title.Equals("Временные модификаторы", StringComparison.OrdinalIgnoreCase));
-        var modifierEntry = Assert.Single(modifiersPanel.Cards);
-        var modifierFacts = EnumerateCardFacts(modifierEntry).ToList();
-        Assert.Contains(modifierFacts, static item =>
-            item.Label.Equals("Источник", StringComparison.OrdinalIgnoreCase) &&
-            item.Value.Contains("Головная боль после тяжёлых снов", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(modifierFacts, static item =>
-            item.Label.Equals("Цель", StringComparison.OrdinalIgnoreCase) &&
-            item.Value.Equals("Восприятие", StringComparison.OrdinalIgnoreCase));
+            static section => section.Title.Equals("Постоянные модификаторы", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(permanentPanel.Facts, static item =>
+            item.Label.Equals("Восприятие", StringComparison.OrdinalIgnoreCase) &&
+            item.Value.Equals("12", StringComparison.OrdinalIgnoreCase));
 
         var finalPanel = Assert.Single(
             statsDossier.Sections,
@@ -2015,6 +2012,84 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.DoesNotContain("dexterity:", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("source:", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("target:", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Stats_CurrentComputedProjectionSuppressesInternalHiddenMechanics()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/misc/characteristics.json", """
+        {
+          "dexterity": 10
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/player/computed_characteristics.json", """
+        {
+          "playerLevel": 2,
+          "unspentStatPoints": 0,
+          "characteristics": { "dexterity": 10 },
+          "permanentlyModifiedCharacteristics": { "dexterity": 10 },
+          "modifiedCharacteristics": { "dexterity": 987654 },
+          "playerVisibleModifiedCharacteristics": { "dexterity": 10 },
+          "breakdown": {
+            "dexterity": {
+              "temporaryBonus": 987644,
+              "sources": [ "Скрытый эффект: тайная_дельта" ]
+            }
+          }
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/stats", AdvancedEnabled: false));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Ловкость", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("10", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("987654", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("987644", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("Скрытый эффект", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("тайная_дельта", payload, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("missing")]
+    [InlineData("wrong_type")]
+    public async Task ExecuteAsync_Stats_MissingSafeComputedProjectionFailsClosed(string defect)
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(
+            "game_state/misc/characteristics.json",
+            "{ \"dexterity\": 10 }");
+        var computed = new JsonObject
+        {
+            ["characteristics"] = new JsonObject { ["dexterity"] = 10 },
+            ["permanentlyModifiedCharacteristics"] = new JsonObject { ["dexterity"] = 10 },
+            ["modifiedCharacteristics"] = new JsonObject { ["dexterity"] = 987654 },
+            ["breakdown"] = new JsonObject
+            {
+                ["dexterity"] = new JsonObject
+                {
+                    ["temporaryBonus"] = 987644,
+                    ["sources"] = new JsonArray("Скрытый эффект: тайная_дельта")
+                }
+            }
+        };
+        if (defect == "wrong_type")
+            computed["playerVisibleModifiedCharacteristics"] = "malformed";
+        await _fs.WriteFileAtomicAsync(
+            "game_state/player/computed_characteristics.json",
+            computed.ToJsonString());
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/stats", AdvancedEnabled: false));
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain("987654", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("987644", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("Скрытый эффект", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("тайная_дельта", payload, StringComparison.Ordinal);
     }
 
     [Fact]
