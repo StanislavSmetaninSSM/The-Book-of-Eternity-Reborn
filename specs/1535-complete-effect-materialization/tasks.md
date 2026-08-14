@@ -48,10 +48,10 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 
 ### Identity and carrier RED/GREEN
 
-- [ ] T012 [P] Add RED identity-index tests for closed root/entry/owner/stack/transition shapes, active/terminal agreement, exact/confusable global uniqueness, immutable terminal evidence, and GM-authored index rejection in `BookOfEternityClient.Tests/EffectIdentityStateTests.cs`
-- [ ] T013 Implement random opaque effect/transition identity allocation, exact/confusable identity rules, index parse/create/validate/update helpers, and terminal history in `BookOfEternityClient/Services/EffectIdentityState.cs` until T012 is GREEN
-- [ ] T014 [P] Add RED carrier-catalog tests for one logical occurrence, player/NPC/combat buff-debuff/profile/condition coordinates, duplicate cross-carrier occurrence, adjacent wound preservation, and unsupported legacy carrier shape in `BookOfEternityClient.Tests/EffectCarrierCatalogTests.cs`
-- [ ] T015 Implement allowlisted owner coordinates, canonical carrier parsing, direct-mutation comparison, and one-occurrence reconciliation in `BookOfEternityClient/Services/EffectCarrierCatalog.cs` until T014 is GREEN
+- [x] T012 [P] Add RED identity-index tests for closed root/entry/owner/stack/transition shapes, active/terminal agreement, exact/confusable global uniqueness, immutable terminal evidence, and GM-authored index rejection in `BookOfEternityClient.Tests/EffectIdentityStateTests.cs`
+- [x] T013 Implement random opaque effect/transition identity allocation, exact/confusable identity rules, index parse/create/validate/update helpers, and terminal history in `BookOfEternityClient/Services/EffectIdentityState.cs` until T012 is GREEN
+- [x] T014 [P] Add RED carrier-catalog tests for one logical occurrence, player/NPC/combat buff-debuff/profile/condition coordinates, duplicate cross-carrier occurrence, adjacent wound preservation, and unsupported legacy carrier shape in `BookOfEternityClient.Tests/EffectCarrierCatalogTests.cs`
+- [x] T015 Implement allowlisted owner coordinates, canonical carrier parsing, direct-mutation comparison, and one-occurrence reconciliation in `BookOfEternityClient/Services/EffectCarrierCatalog.cs` until T014 is GREEN
 
 ### Source/target and plan-cache RED/GREEN
 

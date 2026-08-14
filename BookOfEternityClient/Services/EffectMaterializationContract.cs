@@ -176,9 +176,11 @@ internal static class EffectMaterializationContract
         foreach (var entry in entries.EnumerateArray())
         {
             var entryPath = $"{path}.entries[{index++}]";
-            if (entry.ValueKind != JsonValueKind.Object || !HasExactFields(entry, Set("NPCId", "activeEffects")))
+            if (entry.ValueKind != JsonValueKind.Object ||
+                !entry.TryGetProperty("NPCId", out _) ||
+                !entry.TryGetProperty("activeEffects", out _))
             {
-                Add(issues, entryPath, "effect_materialization_legacy_carrier_unsupported", "{NPCId, activeEffects} entry", entry.GetRawText());
+                Add(issues, entryPath, "effect_materialization_legacy_carrier_unsupported", "entry containing NPCId and activeEffects while preserving adjacent NPC state", entry.GetRawText());
                 continue;
             }
 

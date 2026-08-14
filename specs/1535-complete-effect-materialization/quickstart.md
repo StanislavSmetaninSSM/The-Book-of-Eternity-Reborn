@@ -53,6 +53,19 @@ prose-without-mechanics, exact/confusable definition key, and legacy-carrier
 negative controls. All recorded lanes had zero duplicate IDs, no timeout, and
 complete owned-tree cleanup.
 
+### Task 3 identity and carrier evidence
+
+| Boundary | RED result | GREEN result | Green tests |
+| --- | --- | --- | ---: |
+| Identity index and owner-carrier authority | `TestResults/test-lanes/20260814-213825-580-54224-e84a066a3091429a871a5042a972bb77-focused` | `TestResults/test-lanes/20260814-214311-977-51088-25c1f82d24804eb8904e1a572b837aee-focused` | 26 |
+| Combined foundational control | — | `TestResults/test-lanes/20260814-214356-410-20460-bf20e324700d4ccc900a8843dfb0714a-focused` | 127 |
+
+The identity RED failed on the missing client identity/carrier production API.
+GREEN proves random opaque prefixes, closed immutable transitions, active and
+terminal agreement, exact/confusable uniqueness, direct-index mutation
+rejection, all approved owner families, byte-identical cross-carrier duplicate
+rejection, and preservation of adjacent NPC wound/profile state.
+
 ## 2. Contract and Identity Control
 
 ```powershell

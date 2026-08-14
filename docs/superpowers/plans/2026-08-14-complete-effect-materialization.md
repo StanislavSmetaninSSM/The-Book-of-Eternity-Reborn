@@ -39,6 +39,9 @@ The isolated worktree initially lacked generated NuGet assets. After restoring t
 | `Focused Integration` context GREEN | `TestResults/test-lanes/20260814-210622-008-44200-76e97ad1b8894f91aa6d898ce20d779b-focused` | 4 | 4 | 0 | 0 | no | complete | `00:00:34.2071216` |
 | `Focused` effect-contract RED | `TestResults/test-lanes/20260814-211506-098-19088-f1600182c52a4dbaa9304b85ab610865-focused` | 0 | 0 | build RED | 0 | no | complete | `00:00:47.8860037` |
 | `Focused` effect-contract GREEN | `TestResults/test-lanes/20260814-213329-791-14516-ea2ec87d69c34244abc572e63d27a488-focused` | 101 | 101 | 0 | 0 | no | complete | `00:00:25.0347077` |
+| `Focused` identity/carrier RED | `TestResults/test-lanes/20260814-213825-580-54224-e84a066a3091429a871a5042a972bb77-focused` | 0 | 0 | build RED | 0 | no | complete | `00:00:31.0908359` |
+| `Focused` identity/carrier GREEN | `TestResults/test-lanes/20260814-214311-977-51088-25c1f82d24804eb8904e1a572b837aee-focused` | 26 | 26 | 0 | 0 | no | complete | `00:00:28.5068719` |
+| `Focused` foundational control | `TestResults/test-lanes/20260814-214356-410-20460-bf20e324700d4ccc900a8843dfb0714a-focused` | 127 | 127 | 0 | 0 | no | complete | `00:00:11.7326069` |
 
 The first Integration attempt stopped before the intended RED because NuGet
 assets had been cleaned. After the documented project restore, the repeated
@@ -264,33 +267,33 @@ internal sealed class EffectCarrierCatalog
 }
 ```
 
-- [ ] **Step 1: Add identity-index RED tests**
+- [x] **Step 1: Add identity-index RED tests**
 
 Test the closed root/entry/owner/stack/transition shapes, random ID prefixes, active/terminal agreement, immutable terminal evidence, positive turn/event authority, duplicate exact/case/confusable IDs across entries and transitions, replay IDs, and GM-authored index mutation rejection.
 
-- [ ] **Step 2: Add carrier RED tests**
+- [x] **Step 2: Add carrier RED tests**
 
 Test player, NPC, Mortal buff/debuff, afterlife profile, and spiritual-condition coordinates; duplicate cross-carrier occurrence; target/carrier mismatch; adjacent NPC wound preservation; map/profile sibling preservation; and unsupported non-empty legacy shapes.
 
-- [ ] **Step 3: Run RED**
+- [x] **Step 3: Run RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectIdentityStateTests|FullyQualifiedName~EffectCarrierCatalogTests"
 ```
 
-- [ ] **Step 4: Implement identity parsing before mutation APIs**
+- [x] **Step 4: Implement identity parsing before mutation APIs**
 
 Parse raw JSON with duplicate detection, validate every transition as a closed immutable record, build exact and confusable dictionaries once, and expose serialization only from validated state.
 
-- [ ] **Step 5: Implement allowlisted carrier enumeration**
+- [x] **Step 5: Implement allowlisted carrier enumeration**
 
 Catalog only the five approved owner families. For NPCs, replace only `activeEffects`; for combatants, distinguish `activeBuffs` and `activeDebuffs`; for spiritual conflicts, adapt `combatConditions` without adding a duplicate generic array.
 
-- [ ] **Step 6: Run GREEN plus duplicate-carrier control**
+- [x] **Step 6: Run GREEN plus duplicate-carrier control**
 
 Require all tests green and explicitly verify that two byte-identical instances in different carriers still fail as two logical occurrences.
 
-- [ ] **Step 7: Commit identity/carrier authority**
+- [x] **Step 7: Commit identity/carrier authority**
 
 ```powershell
 git add -- BookOfEternityClient/Services/EffectIdentityState.cs BookOfEternityClient/Services/EffectCarrierCatalog.cs BookOfEternityClient.Tests/EffectIdentityStateTests.cs BookOfEternityClient.Tests/EffectCarrierCatalogTests.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
