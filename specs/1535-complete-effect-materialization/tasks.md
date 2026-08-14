@@ -26,8 +26,8 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 - [x] T001 Confirm issue #1535 is open/triaged, branch `1535-effect-materialization` is based on current `origin/main`, and `git status --short --branch` contains only #1535 work in `E:/Games/worktrees/boe-1535-effect-materialization`
 - [x] T002 Read `AGENTS.md`, `.specify/memory/constitution.md`, `specs/1535-complete-effect-materialization/spec.md`, `plan.md`, `data-model.md`, all `contracts/*.md`, `quickstart.md`, and `docs/superpowers/specs/2026-08-14-effect-materialization-design.md`; record any implementation conflict in `specs/1535-complete-effect-materialization/research.md` before coding
 - [x] T003 Record the current local Fast baseline result and dependency-restore prerequisite in `specs/1535-complete-effect-materialization/quickstart.md`; do not run or enable GitHub Actions
-- [ ] T004 [P] Inventory every active-effect command/carrier/reader/mechanics consumer in `BookOfEternityClient/`, `Rules/`, `OtherGuides/`, `Examples/`, and `FileSystemExample/` and reconcile the concrete path matrix in `specs/1535-complete-effect-materialization/plan.md`
-- [ ] T005 [P] Add an implementation fixture/path ownership outline for player, NPC, combatant, afterlife profile, spiritual conflict, identity index, command staging, and pending resolution in `BookOfEternityClient.IntegrationTests/EffectMaterializationTestContext.cs`
+- [x] T004 [P] Inventory every active-effect command/carrier/reader/mechanics consumer in `BookOfEternityClient/`, `Rules/`, `OtherGuides/`, `Examples/`, and `FileSystemExample/` and reconcile the concrete path matrix in `specs/1535-complete-effect-materialization/plan.md`
+- [x] T005 [P] Add an implementation fixture/path ownership outline for player, NPC, combatant, afterlife profile, spiritual conflict, identity index, command staging, and pending resolution in `BookOfEternityClient.IntegrationTests/EffectMaterializationTestContext.cs`
 
 ---
 

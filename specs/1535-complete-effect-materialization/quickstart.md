@@ -28,6 +28,19 @@ restoring the two test projects shown above, the unchanged feature base passed:
 This is dependency-restoration evidence, not a product regression. Future
 Focused and broad controls must still use `scripts/test-csharp.ps1`.
 
+### Task 1 fixture/context evidence
+
+| Boundary | RED result | GREEN result | Green tests |
+| --- | --- | --- | ---: |
+| Shared deterministic fixture | `TestResults/test-lanes/20260814-210058-504-47372-b5dd4f879e17400c88cb885d90c7a3e8-focused` | `TestResults/test-lanes/20260814-210323-432-29280-c4c4f652d51d45a5a114e5cec7d042e6-focused` | 6 |
+| File-backed Integration context | `TestResults/test-lanes/20260814-210502-155-22620-230144b9623a420ba278102cb6dead11-focused` | `TestResults/test-lanes/20260814-210622-008-44200-76e97ad1b8894f91aa6d898ce20d779b-focused` | 4 |
+
+The first Integration attempt at
+`TestResults/test-lanes/20260814-210434-143-22176-81d6bb932d684926b88b9492ea6ce8e0-focused`
+failed before the intended RED because the isolated Integration project lacked
+`obj/project.assets.json`. After the prerequisite restore, the repeated run
+failed for the intended missing context type and is the RED recorded above.
+
 ## 2. Contract and Identity Control
 
 ```powershell

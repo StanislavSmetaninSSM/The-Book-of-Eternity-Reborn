@@ -33,8 +33,17 @@ The isolated worktree initially lacked generated NuGet assets. After restoring t
 | Lane | Result directory | Total | Passed | Failed | Duplicates | Timed out | Cleanup | Wall time |
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |
 | `Fast` | `TestResults/test-lanes/20260814-155111-688-51532-c209acdb419149cd906a66a3c36a0158-fast` | 3172 | 3172 | 0 | 0 | no | complete | `00:04:56.3252288` |
+| `Focused` fixture RED | `TestResults/test-lanes/20260814-210058-504-47372-b5dd4f879e17400c88cb885d90c7a3e8-focused` | 0 | 0 | build RED | 0 | no | complete | `00:00:50.9158022` |
+| `Focused` fixture GREEN | `TestResults/test-lanes/20260814-210323-432-29280-c4c4f652d51d45a5a114e5cec7d042e6-focused` | 6 | 6 | 0 | 0 | no | complete | `00:00:31.7565685` |
+| `Focused Integration` context RED | `TestResults/test-lanes/20260814-210502-155-22620-230144b9623a420ba278102cb6dead11-focused` | 0 | 0 | build RED | 0 | no | complete | `00:00:21.1074697` |
+| `Focused Integration` context GREEN | `TestResults/test-lanes/20260814-210622-008-44200-76e97ad1b8894f91aa6d898ce20d779b-focused` | 4 | 4 | 0 | 0 | no | complete | `00:00:34.2071216` |
 
-The implementation session appends every inspected RED/GREEN result directory to this section before marking the corresponding Spec Kit task complete.
+The first Integration attempt stopped before the intended RED because NuGet
+assets had been cleaned. After the documented project restore, the repeated
+run produced the expected missing-context compile failure. That infrastructure
+attempt is recorded in `quickstart.md` but is not behavioral RED. The
+implementation session appends every inspected RED/GREEN result directory to
+this section before marking the corresponding Spec Kit task complete.
 
 ## File Responsibility Map
 

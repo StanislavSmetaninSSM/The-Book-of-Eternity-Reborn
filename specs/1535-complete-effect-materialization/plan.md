@@ -219,6 +219,28 @@ Research decisions and rejected alternatives are recorded in [research.md](resea
 9. Migrate active new-game files, helper fixtures, Mortal/afterlife prompts, rules, examples, manifest, daemon reminders, and documentation/source guards; remove positive legacy routes/sentinels while retaining labeled negative fixtures.
 10. Run quickstart-focused filters through the implementation, one meaningful Fast checkpoint, required FullValidation/LifecycleIntegration, manual console/browser checks, and one clean-candidate PreMerge immediately before integration.
 
+## Concrete Active-Effect Path Matrix
+
+The detailed reader/writer/GM/example inventory is maintained in
+[effect-surface-inventory.md](effect-surface-inventory.md). Canonical ownership
+used by fixtures, validation, planning, normalization, snapshots, rollback, and
+player projection is:
+
+| Logical surface | Physical path | GM direct post-state | Client responsibility | First tasks |
+| --- | --- | --- | --- | --- |
+| Mortal player | `game_state/player/effects.json` | forbidden | Validate/project `activeEffects[]` after accepted commands | T014–T038 |
+| Named NPC | `game_state/npcs/npc_effects.json` | forbidden | Preserve adjacent wounds and project exact NPC entries | T014–T038 |
+| Enemy combatants | `game_state/combat/enemies.json` | non-empty active arrays forbidden | Assign anchors and publish complete buff/debuff arrays | T017–T036 |
+| Ally combatants | `game_state/combat/allies.json` | non-empty active arrays forbidden | Assign anchors and publish complete buff/debuff arrays | T017–T036 |
+| Persistent afterlife actors | `game_state/meta/afterlife_entity_profiles.json` | direct active post-state forbidden | Preserve profiles and publish `activeEffects[]` | T053–T063 |
+| Spiritual conditions | `game_state/meta/afterlife_spiritual_conflict_state.json` | direct lifecycle post-state forbidden | Adapt `combatConditions[]` to common identity/lifecycle | T054–T063 |
+| Identity/history | `game_state/effects/effect_identity_index.json` | never | Allocate, reconcile, retain terminal history | T012–T036 |
+| Transient commands | `game_state/effects/effect_commands.json` | response distribution only | Validate, plan, consume, delete | T023–T036 |
+| Pending resolution | `game_state/control/pending_effect_resolutions.json` | never | Create requests, validate receipts, snapshot, clean | T043, T049–T050 |
+
+Static source definitions remain embedded with their owning accepted entities;
+there is no global semantic definition registry or additional blessing carrier.
+
 ## Complexity Tracking
 
 No constitution exception is required.

@@ -193,3 +193,25 @@ This phase resolves the implementation choices needed to plan a common runtime-e
 **Alternatives considered**:
 
 - CI-only evidence: rejected because Actions are disabled and local lanes are authoritative for this repository.
+
+## Implementation Inventory Result
+
+The implementation preflight classified the exact repository surfaces in
+[effect-surface-inventory.md](effect-surface-inventory.md). The targeted scan
+found 94 non-generated code/rule/guide/example/fixture files and added ten
+indirect executable or contract paths whose implementations do not contain the
+searched property names themselves.
+
+The inventory confirms three categories that implementation must not collapse:
+
+1. `playerActiveEffectsChanges` and `NPCEffectChanges` are incomplete legacy
+   application routes and are removed rather than aliased.
+2. `structuredBonuses`, `combatEffect`, Fate Card effects, special-art combat
+   descriptions, and Shining blessing entitlement remain static/source or
+   separate-entitlement authority.
+3. Active runtime state is confined to the planned player, NPC, combatant,
+   persistent afterlife profile, and spiritual-condition carriers plus the
+   identity, transient command, and pending-resolution roots.
+
+This inventory is the path-ownership source for T028–T110. Any newly discovered
+effect-shaped path must be classified there before its reader or writer changes.
