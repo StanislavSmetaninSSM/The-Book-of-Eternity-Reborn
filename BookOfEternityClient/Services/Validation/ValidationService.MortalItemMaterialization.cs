@@ -47,6 +47,7 @@ public partial class ValidationService
     private async Task ValidateAcceptedTurnRawMortalItemMaterializationAsync(
         List<ValidationIssue> issues)
     {
+        MortalItemAcceptedEffectSourceAuthority.InvalidateValidatedSources(_fs);
         var locationPlanningIssues = new List<ValidationIssue>();
         var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
             locationPlanningIssues);
@@ -178,6 +179,21 @@ public partial class ValidationService
                 current.Catalog,
                 routeAuthorities,
                 currentIndex);
+        }
+
+        if (issues.All(issue => issue.Severity != IssueSeverity.Error))
+        {
+            var acceptedSnapshot = await LoadValidatedPendingTurnSnapshotLookupAsync();
+            if (acceptedSnapshot.Status == ValidatedPendingTurnSnapshotStatus.Usable &&
+                acceptedSnapshot.Manifest != null)
+            {
+                MortalItemAcceptedEffectSourceAuthority.RegisterValidatedSources(
+                    _fs,
+                    acceptedSnapshot.Manifest.SessionId,
+                    acceptedSnapshot.Manifest.RequestId,
+                    current.Catalog,
+                    currentIndex?.EntriesByItemId.Keys ?? Array.Empty<string>());
+            }
         }
     }
 

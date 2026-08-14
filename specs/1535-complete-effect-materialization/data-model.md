@@ -49,7 +49,7 @@ Common fields:
 | --- | --- | --- |
 | `operation` | string | Exact `apply`, `dispel`, or `remove` |
 | `target` | object | Exact target selector from the target catalog |
-| `eventRef` | object | Exact accepted event/turn/exchange evidence; not a client transition ID |
+| `eventRef` | object | Exact accepted event/turn/exchange evidence; not a client transition ID. For multiple common effect commands, use `turn_<turn>` for entry 1 and `turn_<turn>_effect_<ordinal>` for later one-based entries. |
 | `reason` | string | Non-empty GM-readable reason; never mechanical authority by itself |
 
 `apply` adds:
@@ -91,7 +91,24 @@ An apply command selects exactly one of `targetId` (pre-existing/effective perma
 }
 ```
 
-The parent entity supplies realm and owner authority. `definitionKey` selects one exact materializable definition inside that source. A source may be pre-turn canonical or an accepted same-turn entity exported by its own materialization plan.
+For a client-assigned same-turn source identity, the raw selector instead uses:
+
+```json
+{
+  "kind": "item|location",
+  "sourceRef": "exact-same-turn-ref",
+  "definitionKey": "exact-definition-key"
+}
+```
+
+The raw selector contains exactly one of `sourceId` or `sourceRef`. `sourceId`
+selects a validated pre-turn identity or a validated same-turn owner whose
+effective identity is already stable. `sourceRef` selects an exact temporary
+reference exported by another accepted plan, such as a new item or location
+whose permanent ID is client-assigned. The parent entity supplies realm and
+owner authority. `definitionKey` selects one exact materializable definition
+inside that source. Canonical active instances always store the resolved
+`sourceId`, never `sourceRef`.
 
 ## 2. Static Active-Effect Definition
 
@@ -269,6 +286,17 @@ Every active instance has exactly one mode and only the fields legal for that mo
 | `manual` | Non-empty registered removal authorities | One exact allowed authority closes it |
 
 An optional `displayText` may explain the lifetime in-world but cannot drive completion.
+
+For `source_bound`, `activePredicate` is an exact closed token. The registry is:
+
+| Predicate | Compatible source kinds | Satisfied by |
+| --- | --- | --- |
+| `active` | Every registered source kind | The exact owning contract says the source is current and non-terminal; examples include an active quest/event, an unhealed wound, a current location/hazard, a carried item, or an unlocked learned owner. |
+| `carried` | `item` only | The exact item is in the accepted player-inventory carrier and `MortalItemLocalActionPolicy` classifies it as carried by the player. |
+| `equipped` | `item` only | The exact carried item ID or accepted same-turn creation reference is present in the validated equipment authority. |
+| `unlocked` | `skill`, `spiritual_art`, `fate_card`, `combat_action` only | The exact owner exists in its accepted learned/unlocked contour and is active under that contour's own status rules. Afterlife Fate Cards use profile `status`; NPC Fate Cards use their validated `isUnlocked` field. |
+
+Unknown tokens, source-kind-incompatible tokens, and predicates not satisfied by the composed accepted owner state fail closed even when no apply command references the definition. Status spelling/casing follows the owning validator; the effect adapter does not invent a second status grammar.
 
 ## 7. Trigger and Removal Models
 

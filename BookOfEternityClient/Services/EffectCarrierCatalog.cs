@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -78,6 +80,41 @@ internal sealed class EffectCarrierCatalog
         return new EffectCarrierCatalog(builder);
     }
 
+    internal static string CreateAuthorityFingerprint(EffectCarrierCatalogInput input)
+    {
+        var catalog = Build(input);
+        var root = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["occurrences"] = new JsonArray(catalog.Occurrences
+                .OrderBy(static occurrence => occurrence.FilePath, StringComparer.Ordinal)
+                .ThenBy(static occurrence => occurrence.JsonPath, StringComparer.Ordinal)
+                .ThenBy(static occurrence => occurrence.EffectId, StringComparer.Ordinal)
+                .Select(static occurrence => (JsonNode)new JsonObject
+                {
+                    ["effectId"] = occurrence.EffectId,
+                    ["filePath"] = occurrence.FilePath,
+                    ["jsonPath"] = occurrence.JsonPath,
+                    ["ownerKind"] = occurrence.Coordinate.Kind,
+                    ["ownerId"] = occurrence.Coordinate.OwnerId,
+                    ["category"] = occurrence.Coordinate.Category,
+                    ["effect"] = occurrence.Effect.DeepClone()
+                }).ToArray()),
+            ["issues"] = new JsonArray(catalog.Issues
+                .OrderBy(static issue => issue.FilePath, StringComparer.Ordinal)
+                .ThenBy(static issue => issue.Code, StringComparer.Ordinal)
+                .Select(static issue => (JsonNode)new JsonObject
+                {
+                    ["filePath"] = issue.FilePath,
+                    ["code"] = issue.Code,
+                    ["expected"] = issue.Expected,
+                    ["actual"] = issue.Actual
+                }).ToArray())
+        };
+        return Convert.ToHexString(SHA256.HashData(
+            Encoding.UTF8.GetBytes(root.ToJsonString())));
+    }
+
     private sealed class Builder
     {
         internal List<EffectCarrierOccurrence> Occurrences { get; } = new();
@@ -140,8 +177,29 @@ internal sealed class EffectCarrierCatalog
 
             for (var index = 0; index < combatants.Count; index++)
             {
-                if (combatants[index] is not JsonObject combatant || !TryReadExact(combatant["combatantId"], out var combatantId))
+                if (combatants[index] is not JsonObject combatant)
                     continue;
+                if (combatant.ContainsKey("combatantRef"))
+                {
+                    Add(
+                        $"{filePath}.{collection}[{index}].combatantRef",
+                        "effect_target_combatant_ref_not_consumed",
+                        "field absent after client allocation of combatantId",
+                        combatant["combatantRef"]?.ToJsonString() ?? "null");
+                }
+                if (!TryReadExact(combatant["combatantId"], out var combatantId))
+                {
+                    if (HasNonEmptyArray(combatant["activeBuffs"]) ||
+                        HasNonEmptyArray(combatant["activeDebuffs"]))
+                    {
+                        Add(
+                            $"{filePath}.{collection}[{index}]",
+                            "effect_materialization_legacy_carrier_unsupported",
+                            "client-owned combatantId before any non-empty activeBuffs/activeDebuffs carrier",
+                            combatant.ToJsonString());
+                    }
+                    continue;
+                }
                 if (combatant["activeBuffs"] is JsonArray buffs)
                 {
                     ScanCanonicalArray(
@@ -334,6 +392,19 @@ internal sealed class EffectCarrierCatalog
                         effect["target"]?.ToJsonString() ?? "missing");
                 }
 
+                if (string.Equals(coordinate.Kind, "combatant", StringComparison.Ordinal) &&
+                    (effect["display"] is not JsonObject display ||
+                     !TryReadExact(display["category"], out var category) ||
+                     !string.Equals(category, coordinate.Category, StringComparison.Ordinal)))
+                {
+                    InvalidEffectIds.Add(effectId);
+                    Add(
+                        jsonPath + ".display.category",
+                        "effect_materialization_combat_category_collection_mismatch",
+                        $"category '{coordinate.Category}' matching the physical combat collection",
+                        effect["display"]?["category"]?.ToJsonString() ?? "missing");
+                }
+
                 AddOccurrence(effectId, filePath, jsonPath, coordinate, effect);
             }
         }
@@ -384,6 +455,9 @@ internal sealed class EffectCarrierCatalog
                 : string.Empty;
             return value.Length > 0 && string.Equals(value, value.Trim(), StringComparison.Ordinal);
         }
+
+        private static bool HasNonEmptyArray(JsonNode? node) =>
+            node is JsonArray { Count: > 0 };
 
         private static string Describe(JsonNode? node) => node?.ToJsonString() ?? "missing";
     }

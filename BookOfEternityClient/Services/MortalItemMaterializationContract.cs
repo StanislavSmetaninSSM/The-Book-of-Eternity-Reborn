@@ -164,6 +164,13 @@ internal static class MortalItemMaterializationContract
         ValidateIdentity(item, context, phase, issues);
         ValidateEnvelope(item, context, issues);
         ValidateGovernedFields(item, context, issues);
+        if (item.TryGetProperty("activeEffectDefinitions", out var definitions))
+        {
+            issues.AddRange(EffectSourceDefinitionContract.ValidateArray(
+                definitions,
+                context + ".activeEffectDefinitions",
+                "mortal_world"));
+        }
 
         if (phase == MortalItemMaterializationPhase.CanonicalPostSeal)
             ValidateReceipt(item, context, issues);
@@ -850,6 +857,7 @@ internal static class MortalItemMaterializationContract
                 HasNonEmptyArray(item, "structuredBonuses") ||
                 HasNonEmptyArray(item, "combatEffect") ||
                 HasNonEmptyArray(item, "customProperties") ||
+                HasNonEmptyArray(item, "activeEffectDefinitions") ||
                 ReadNonEmptyString(item, "mechanicalSummaryAuthority") != null,
             "equipment" =>
                 HasNonEmptyStringOrArray(item, "equipmentSlot") ||

@@ -156,12 +156,41 @@ internal static class EffectMaterializationContract
         string path,
         List<ValidationIssue> issues)
     {
-        var fields = Set("schemaVersion", "entries");
-        if (!HasExactFields(root, fields))
+        var visibleFields = root.EnumerateObject()
+            .Where(static property => !property.Name.StartsWith("_", StringComparison.Ordinal))
+            .Select(static property => property.Name)
+            .ToHashSet(StringComparer.Ordinal);
+        var allowedFields = Set("schemaVersion", "entries", "NPCWoundChanges");
+        var hasSchemaVersion = visibleFields.Contains("schemaVersion");
+        var hasEntries = visibleFields.Contains("entries");
+        var hasWoundChanges = visibleFields.Contains("NPCWoundChanges");
+        if (visibleFields.Except(allowedFields, StringComparer.Ordinal).Any() ||
+            hasSchemaVersion != hasEntries ||
+            (!hasSchemaVersion && !hasWoundChanges))
         {
-            Add(issues, path, "effect_materialization_legacy_carrier_unsupported", "{schemaVersion, entries} current NPC carrier", root.GetRawText());
+            Add(
+                issues,
+                path,
+                "effect_materialization_legacy_carrier_unsupported",
+                "{schemaVersion, entries} current NPC carrier with optional NPCWoundChanges and _ metadata, or an adjacent-only NPCWoundChanges command surface",
+                root.GetRawText());
             return;
         }
+
+        if (hasWoundChanges &&
+            (!root.TryGetProperty("NPCWoundChanges", out var woundChanges) ||
+             woundChanges.ValueKind != JsonValueKind.Array))
+        {
+            Add(
+                issues,
+                path + ".NPCWoundChanges",
+                "effect_materialization_invalid_field",
+                "array",
+                Describe(root, "NPCWoundChanges"));
+        }
+
+        if (!hasSchemaVersion)
+            return;
 
         RequireExactInt(root, path, "schemaVersion", SchemaVersion, issues);
         if (!root.TryGetProperty("entries", out var entries) || entries.ValueKind != JsonValueKind.Array)

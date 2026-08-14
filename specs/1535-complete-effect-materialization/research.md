@@ -63,14 +63,25 @@ This phase resolves the implementation choices needed to plan a common runtime-e
 
 ## Decision 6: Build exact source and target catalogs from the composed state
 
-**Decision**: `EffectSourceAuthority` and `EffectTargetAuthority` combine the validated pre-turn snapshot with accepted same-turn identities supplied by existing item, actor, faction, location, quest, and other applicable plans. Matching is ordinal and also detects trimmed, case, Unicode-confusable, historical, ambiguous, and cross-realm selectors.
+**Decision**: `EffectSourceAuthority` and `EffectTargetAuthority` combine the
+validated pre-turn snapshot only with explicit accepted same-turn DTO exports.
+Client-assigned item/location identities arrive as exact `sourceRef -> sourceId`
+plan exports. Owners with stable accepted effective IDs are validated by their
+own contract/materializer before a closed adapter emits their source/target
+exports. The effect planner never scans raw sibling JSON. Raw validation caches
+the exact resulting plan, and canonical publication has no fallback that can
+rebuild it from files after other normalizers run. Matching is ordinal and also
+detects trimmed, case, Unicode-confusable, historical, ambiguous, and
+cross-realm selectors.
 
 **Rationale**: Effects often arise from a source or target created in the same response. Reading only on-disk pre-turn files would reject valid composition; trusting raw sibling JSON would bypass its owning materializer.
 
 **Alternatives considered**:
 
 - Name-based resolution: rejected because names are display semantics, not authority.
-- Read raw source files directly: rejected because raw candidates have not yet earned canonical identity.
+- Read raw source files directly or rebuild the plan during publication:
+  rejected because raw candidates have not earned authority and a second build
+  would validate and publish against different inputs.
 
 ## Decision 7: Give anonymous Mortal combatants a stable combat-local target anchor
 
@@ -104,6 +115,7 @@ This phase resolves the implementation choices needed to plan a common runtime-e
 
 **Alternatives considered**:
 
+- Open-ended `activePredicate` strings: rejected because creation and later lifecycle evaluation would disagree and GM prose could become mechanics. The closed registry is `active`, `carried`, `equipped`, and `unlocked`, with source-kind compatibility and owning-state semantics shared by validation, planning, publication, and lifecycle work.
 - Let the GM send `currentStacks` and `remaining`: rejected as derived-state authoring.
 - Preserve numeric or text sentinels: rejected by the approved no-compatibility decision.
 

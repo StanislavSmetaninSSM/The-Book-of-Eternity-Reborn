@@ -60,13 +60,26 @@ world_event, fate_card, combat_action
 
 An exact source match requires:
 
-- exact source kind and permanent/effective source ID;
+- exact source kind and exactly one selector: `sourceId` for a validated
+  permanent/effective identity, or `sourceRef` for an exact client-assigned
+  same-turn identity exported by its accepted plan;
 - exact `definitionKey` inside that source;
 - source realm compatible with target realm;
 - allowed target kind;
 - all requested parameter keys and values inside declared bounds;
 - complete component/stack/lifetime/trigger/removal/link policy;
 - source current state authorizes application (for example equipped, learned, active, unlocked, wounded, quest-active, or event-active when required).
+
+For a `source_bound` definition, `activePredicate` is one exact registered token:
+
+| Token | Allowed source kinds | Exact current-state authority |
+| --- | --- | --- |
+| `active` | All registered source kinds | The owning validator's composed state classifies the exact source as current/non-terminal. |
+| `carried` | `item` | The accepted player-inventory carrier and item local-action policy both prove the exact item is carried. |
+| `equipped` | `item` | The accepted equipment authority points to the exact stable item ID or validated same-turn item reference. |
+| `unlocked` | `skill`, `spiritual_art`, `fate_card`, `combat_action` | The source is present in the owning learned/unlocked contour and satisfies that contour's canonical state token. |
+
+The owner boundary validates registry membership and source-kind compatibility even when no command uses the definition. Apply resolution additionally requires the predicate in the source export's `SatisfiedPredicates`; post-seal resolution derives the same set from final canonical owners. Afterlife Fate Cards derive `unlocked` from profile `status`, while NPC Fate Cards derive it from their validated `isUnlocked` field. Case handling is inherited from each owning contract, never guessed by the effect layer.
 
 Rejected source selectors include:
 
@@ -107,6 +120,18 @@ For a same-turn target, the raw selector contains `targetRef` instead of `target
 ## 6. Same-Turn Composition
 
 The effect planner may consume only explicit effective-identity exports from another accepted plan. It must not parse raw sibling objects to invent authority.
+
+- Item and location plans export exact `sourceRef -> sourceId` mappings for
+  their client-assigned same-turn identities.
+- Owners whose accepted effective IDs are already stable are first validated
+  by their own current contract/materializer and then exported through a closed
+  effect DTO adapter. The adapter, not the effect planner, reads that accepted
+  owner shape.
+- Raw validation stores the exact resulting `EffectAcceptedTurnPlan` in the
+  accepted-turn cache. Canonical publication must consume that validated plan;
+  it must not rebuild source or target authority from post-normalizer files.
+- Canonical effects contain the resolved `sourceId` and `targetId` only. Raw
+  `sourceRef` and `targetRef` never become durable state.
 
 Representative valid compositions:
 

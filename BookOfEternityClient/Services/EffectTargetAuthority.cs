@@ -14,7 +14,8 @@ internal sealed record EffectTargetExport(
     string Kind,
     string TargetId,
     bool SameTurn,
-    string? TargetRef = null);
+    string? TargetRef = null,
+    string? BoundNpcId = null);
 
 internal sealed record EffectTargetAuthorityInput(
     IReadOnlyList<EffectTargetExport> PreTurnTargets,
@@ -66,11 +67,14 @@ internal sealed class EffectTargetAuthority
         _invalidTargets = new HashSet<EffectTargetKey>(builder.InvalidTargets);
         Issues = builder.Issues.ToArray();
         Fingerprint = CreateFingerprint(_targets.Values, _targetsByRef, Issues);
+        CanonicalFingerprint = CreateCanonicalFingerprint(_targets.Values, Issues);
     }
 
     internal IReadOnlyList<ValidationIssue> Issues { get; }
 
     internal string Fingerprint { get; }
+
+    internal string CanonicalFingerprint { get; }
 
     internal static EffectTargetAuthority Build(EffectTargetAuthorityInput input)
     {
@@ -82,15 +86,81 @@ internal sealed class EffectTargetAuthority
         {
             foreach (var pair in input.CombatantIdentities.CombatantIdsByRef)
             {
+                input.CombatantIdentities.TryGetBoundNpcId(
+                    pair.Key,
+                    out var boundNpcId);
                 builder.Add(new EffectTargetExport(
                     "mortal_world",
                     "combatant",
                     pair.Value,
                     SameTurn: true,
-                    TargetRef: pair.Key), sameTurn: true);
+                    TargetRef: pair.Key,
+                    BoundNpcId: boundNpcId), sameTurn: true);
             }
         }
         return new EffectTargetAuthority(builder);
+    }
+
+    internal IReadOnlyList<ValidationIssue> ValidateNamedCombatantBindings(
+        EffectCarrierCatalogInput carriers)
+    {
+        ArgumentNullException.ThrowIfNull(carriers);
+        var issues = new List<ValidationIssue>();
+        ValidateNamedCombatantBindings(
+            carriers.EnemyCombatants,
+            EffectCarrierCatalog.EnemiesPath,
+            "enemiesData",
+            issues);
+        ValidateNamedCombatantBindings(
+            carriers.AllyCombatants,
+            EffectCarrierCatalog.AlliesPath,
+            "alliesData",
+            issues);
+        return issues;
+    }
+
+    private void ValidateNamedCombatantBindings(
+        JsonObject? root,
+        string path,
+        string collection,
+        List<ValidationIssue> issues)
+    {
+        if (root?[collection] is not JsonArray combatants)
+            return;
+        for (var index = 0; index < combatants.Count; index++)
+        {
+            if (combatants[index] is not JsonObject combatant ||
+                !combatant.TryGetPropertyValue("NPCId", out var npcNode) ||
+                npcNode == null)
+            {
+                continue;
+            }
+
+            var issuePath = $"{path}.{collection}[{index}].NPCId";
+            if (!TryReadExact(npcNode, out var npcId))
+            {
+                issues.Add(NewCombatantBindingIssue(
+                    issuePath,
+                    "effect_target_combatant_npc_binding_invalid",
+                    "null or one exact non-empty NPCId",
+                    npcNode.ToJsonString()));
+                continue;
+            }
+
+            var key = new EffectTargetKey("mortal_world", "npc", npcId);
+            if (_targets.ContainsKey(key) && !_invalidTargets.Contains(key))
+                continue;
+
+            var alias = Alias(key.Realm, key.Kind, key.TargetId);
+            var code = _aliases.TryGetValue(alias, out var candidates) && candidates.Count > 0
+                ? "effect_target_combatant_npc_binding_confusable"
+                : "effect_target_combatant_npc_binding_unresolved";
+            issues.Add(NewCombatantBindingIssue(
+                issuePath,
+                code,
+                "one exact accepted named-NPC identity in the composed target authority",
+                npcId));
+        }
     }
 
     internal EffectTargetResolution Resolve(JsonObject selector, string realm)
@@ -195,7 +265,8 @@ internal sealed class EffectTargetAuthority
                     ["kind"] = target.Kind,
                     ["targetId"] = target.TargetId,
                     ["sameTurn"] = target.SameTurn,
-                    ["targetRef"] = target.TargetRef
+                    ["targetRef"] = target.TargetRef,
+                    ["boundNpcId"] = target.BoundNpcId
                 }).ToArray()),
             ["refs"] = new JsonArray(refs
                 .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
@@ -211,6 +282,35 @@ internal sealed class EffectTargetAuthority
                 ["code"] = issue.Code,
                 ["path"] = issue.FilePath
             }).ToArray())
+        };
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(root.ToJsonString())));
+    }
+
+    private static string CreateCanonicalFingerprint(
+        IEnumerable<EffectTargetExport> targets,
+        IReadOnlyList<ValidationIssue> issues)
+    {
+        var root = new JsonObject
+        {
+            ["targets"] = new JsonArray(targets
+                .OrderBy(static target => target.Realm, StringComparer.Ordinal)
+                .ThenBy(static target => target.Kind, StringComparer.Ordinal)
+                .ThenBy(static target => target.TargetId, StringComparer.Ordinal)
+                .Select(target => (JsonNode)new JsonObject
+                {
+                    ["realm"] = target.Realm,
+                    ["kind"] = target.Kind,
+                    ["targetId"] = target.TargetId,
+                    ["boundNpcId"] = target.BoundNpcId
+                }).ToArray()),
+            ["issues"] = new JsonArray(issues
+                .OrderBy(static issue => issue.FilePath, StringComparer.Ordinal)
+                .ThenBy(static issue => issue.Code, StringComparer.Ordinal)
+                .Select(issue => (JsonNode)new JsonObject
+                {
+                    ["code"] = issue.Code,
+                    ["path"] = issue.FilePath
+                }).ToArray())
         };
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(root.ToJsonString())));
     }
@@ -237,6 +337,21 @@ internal sealed class EffectTargetAuthority
             expected: expected,
             actual: actual,
             repairHint: "Use one exact current targetId or one accepted same-turn targetRef; do not use names, indices, aliases, historical IDs, or cross-realm targets.");
+
+    private static ValidationIssue NewCombatantBindingIssue(
+        string path,
+        string code,
+        string expected,
+        string actual) =>
+        new(
+            path,
+            IssueSeverity.Error,
+            "Named combatant binding does not match exact accepted NPC authority.",
+            code: code,
+            section: "effect_materialization",
+            expected: expected,
+            actual: actual,
+            repairHint: "Use null for an anonymous combatant or the exact NPCId of one accepted named NPC; do not infer an NPC from a name or alias.");
 
     private sealed class Builder
     {
@@ -266,7 +381,8 @@ internal sealed class EffectTargetAuthority
         {
             var path = $"targets[{export.Kind}:{export.TargetId}]";
             if (!Realms.Contains(export.Realm) || !TargetKinds.Contains(export.Kind) ||
-                !TryExact(export.TargetId) || export.TargetRef != null && !TryExact(export.TargetRef))
+                !TryExact(export.TargetId) || export.TargetRef != null && !TryExact(export.TargetRef) ||
+                export.BoundNpcId != null && !TryExact(export.BoundNpcId))
             {
                 Issues.Add(NewIssue(path, "effect_target_authority_invalid_export", "exact supported target export", export.ToString()));
                 return;

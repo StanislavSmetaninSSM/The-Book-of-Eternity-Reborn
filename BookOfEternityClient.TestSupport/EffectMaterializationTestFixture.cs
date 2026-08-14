@@ -44,12 +44,7 @@ internal static class EffectMaterializationTestFixture
             },
             ["triggers"] = new JsonArray(CreateTurnEndTrigger()),
             ["removal"] = CreateRemoval(),
-            ["links"] = new JsonArray(new JsonObject
-            {
-                ["kind"] = "wound",
-                ["targetId"] = "wound_test_torn_side",
-                ["role"] = "source"
-            })
+            ["links"] = CreateLinks(profile)
         };
     }
 
@@ -147,12 +142,7 @@ internal static class EffectMaterializationTestFixture
             },
             ["triggers"] = new JsonArray(CreateTurnEndTrigger()),
             ["removal"] = CreateRemoval(),
-            ["links"] = new JsonArray(new JsonObject
-            {
-                ["kind"] = "wound",
-                ["targetId"] = "wound_test_torn_side",
-                ["role"] = "source"
-            }),
+            ["links"] = CreateLinks(profile),
             ["chronology"] = new JsonObject
             {
                 ["createdAtTurn"] = 42,
@@ -228,6 +218,180 @@ internal static class EffectMaterializationTestFixture
         {
             ["effectChanges"] = effectChanges,
             ["effectResolutionReceipts"] = new JsonArray()
+        };
+    }
+
+    internal static JsonObject CreateSameTurnMortalActor(string initialId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(initialId);
+        var actor = MortalActorTestFixtures.CreateActor(initialId);
+        actor["NPCId"] = null;
+        actor["initialId"] = initialId;
+        actor["personalityTraits"] = new JsonArray(
+            CreatePersonalityTrait(
+                "Внимательность",
+                "Замечает расхождения в записях.",
+                "Очень внимателен",
+                8),
+            CreatePersonalityTrait(
+                "Осторожность",
+                "Проверяет каждое свидетельство дважды.",
+                "Осторожен",
+                7),
+            CreatePersonalityTrait(
+                "Последовательность",
+                "Не меняет вывод без новых доказательств.",
+                "Последователен",
+                6));
+        actor["materialization"] = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["materializationId"] = $"mat_{initialId}_turn_42",
+            ["actorType"] = "mortal_npc",
+            ["actorId"] = initialId,
+            ["materializedAtTurn"] = 42,
+            ["state"] = "complete",
+            ["capabilities"] = new JsonObject
+            {
+                ["canFight"] = false,
+                ["canTeach"] = true,
+                ["canTrade"] = false,
+                ["ownsItems"] = false
+            },
+            ["sections"] = new JsonObject
+            {
+                ["skills"] = EmptyDisposition("Этот NPC не использует активные или пассивные навыки."),
+                ["inventory"] = EmptyDisposition("Этот NPC не носит личных предметов."),
+                ["fateCards"] = EmptyDisposition("Карта судьбы ещё не открыта."),
+                ["personalQuests"] = EmptyDisposition("Личная просьба пока не сформировалась."),
+                ["relationships"] = new JsonObject { ["state"] = "populated" }
+            }
+        };
+        return actor;
+    }
+
+    internal static JsonObject CreateSameTurnMortalFaction(string initialId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(initialId);
+        return new JsonObject
+        {
+            ["factionId"] = null,
+            ["initialId"] = initialId,
+            ["isNewFaction"] = true,
+            ["name"] = "Орден точного следа",
+            ["description"] = "Небольшое братство, сохраняющее точную историю событий.",
+            ["image_prompt"] = "weathered archivists beneath a dark stone arch, realistic lighting",
+            ["factionColor"] = "#6B627A",
+            ["purpose"] = "Сохранять точные связи между причинами и последствиями.",
+            ["currentAgenda"] = "Проверить записи последнего перехода.",
+            ["principles"] = new JsonArray("Ни одна связь не выводится из догадки."),
+            ["memory"] = new JsonObject
+            {
+                ["summary"] = "Орден возник вокруг старого архива.",
+                ["lastUpdatedTurn"] = 42,
+                ["enduringFacts"] = new JsonArray("Архив хранит только проверенные записи."),
+                ["openThreads"] = new JsonArray("Источник последней аномалии неизвестен.")
+            },
+            ["governance"] = new JsonObject
+            {
+                ["model"] = "Совет хранителей",
+                ["decisionProcess"] = "Решение принимается после сверки записей."
+            },
+            ["leadership"] = new JsonObject
+            {
+                ["leadershipState"] = "vacant",
+                ["summary"] = "Пост главы пока свободен.",
+                ["leaderNpcIds"] = new JsonArray()
+            },
+            ["powerProfile"] = new JsonObject
+            {
+                ["military"] = 0,
+                ["economic"] = 0,
+                ["social"] = 0,
+                ["covert"] = 0,
+                ["logistics"] = 0,
+                ["stability"] = 0,
+                ["arcane_tech"] = 0,
+                ["exploration"] = 0
+            },
+            ["ranks"] = new JsonObject { ["branches"] = new JsonArray() },
+            ["structuredBonuses"] = new JsonArray(),
+            ["resources"] = new JsonObject
+            {
+                ["metaResources"] = new JsonArray(),
+                ["strategicGoods"] = new JsonArray()
+            },
+            ["relations"] = new JsonArray(),
+            ["activeProjects"] = new JsonArray(),
+            ["completedProjects"] = new JsonArray(),
+            ["controlledTerritories"] = new JsonArray(),
+            ["customStates"] = new JsonArray(),
+            ["scribeChronicle"] = new JsonArray("#42 - Орден закрепил первую запись."),
+            ["isPlayerFaction"] = false,
+            ["isPlayerMember"] = false,
+            ["playerRank"] = null,
+            ["playerBranch"] = null,
+            ["playerStrategyDirective"] = null,
+            ["reputation"] = 0,
+            ["reputationDescription"] = null,
+            ["level"] = 1,
+            ["experience"] = 0,
+            ["experienceForNextLevel"] = 100,
+            ["developmentArchetype"] = "Custodian",
+            ["activeEffectDefinitions"] = new JsonArray(CreateDefinition()),
+            ["materialization"] = new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["materializationId"] = $"fmat_{initialId}_turn_42",
+                ["factionType"] = "mortal_faction",
+                ["factionId"] = initialId,
+                ["materializedAtTurn"] = 42,
+                ["state"] = "complete",
+                ["capabilities"] = new JsonObject
+                {
+                    ["hasFormalHierarchy"] = false,
+                    ["usesFactionResources"] = false,
+                    ["maintainsRelations"] = false,
+                    ["runsProjects"] = false,
+                    ["holdsTerritoryOrInfluence"] = false,
+                    ["supportsPlayerMembership"] = false,
+                    ["usesCustomMechanics"] = false
+                },
+                ["sections"] = new JsonObject
+                {
+                    ["hierarchy"] = EmptyDisposition("Формальных рангов пока нет."),
+                    ["resources"] = EmptyDisposition("Формальных ресурсов пока нет."),
+                    ["relations"] = EmptyDisposition("Формальных отношений пока нет."),
+                    ["projects"] = EmptyDisposition("Проектов пока нет."),
+                    ["territoryAndInfluence"] = EmptyDisposition("Территория не заявлена."),
+                    ["playerMembership"] = EmptyDisposition("Игрок не состоит во фракции."),
+                    ["customStates"] = EmptyDisposition("Особых состояний пока нет.")
+                }
+            }
+        };
+    }
+
+    internal static JsonObject CreateSameTurnCombatant(string combatantRef)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(combatantRef);
+        return new JsonObject
+        {
+            ["combatantRef"] = combatantRef,
+            ["NPCId"] = null,
+            ["name"] = "Налётчик",
+            ["image_prompt"] = "dark fantasy roadside raider, realistic lighting",
+            ["description"] = "Одинокий налётчик с изношенным клинком.",
+            ["type"] = "humanoid",
+            ["isGroup"] = false,
+            ["maxHealth"] = "100%",
+            ["maxPoise"] = "100%",
+            ["currentHealth"] = "100%",
+            ["currentPoise"] = "100%",
+            ["initiative"] = 17,
+            ["actions"] = new JsonArray(),
+            ["resistances"] = new JsonArray(),
+            ["activeBuffs"] = new JsonArray(),
+            ["activeDebuffs"] = new JsonArray()
         };
     }
 
@@ -397,6 +561,36 @@ internal static class EffectMaterializationTestFixture
             ["onSourceLoss"] = "expire",
             ["onConditionLoss"] = null,
             ["manualAuthorities"] = new JsonArray()
+        };
+
+    private static JsonArray CreateLinks(string profile) =>
+        string.Equals(profile, "wound_consequence", StringComparison.Ordinal)
+            ? new JsonArray(new JsonObject
+            {
+                ["kind"] = "wound",
+                ["targetId"] = "wound_test_torn_side",
+                ["role"] = "source"
+            })
+            : new JsonArray();
+
+    private static JsonObject EmptyDisposition(string reason) =>
+        new()
+        {
+            ["state"] = "empty_by_design",
+            ["reason"] = reason
+        };
+
+    private static JsonObject CreatePersonalityTrait(
+        string name,
+        string description,
+        string valueDescription,
+        int value) =>
+        new()
+        {
+            ["traitName"] = name,
+            ["description"] = description,
+            ["valueDescription"] = valueDescription,
+            ["value"] = value
         };
 
     private static JsonObject CreateApplyTransition(string effectId) =>

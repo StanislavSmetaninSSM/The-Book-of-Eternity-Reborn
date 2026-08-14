@@ -110,6 +110,31 @@ The staging RED isolated generic `_lastUpdated` metadata; the narrow GREEN keeps
 all canonical-file timestamps while leaving only the two closed transient effect
 arrays in `effect_commands.json`.
 
+### Task 6 raw validation and canonical publication evidence
+
+| Boundary | RED result | GREEN result | Green tests |
+| --- | --- | --- | ---: |
+| Explicit accepted-plan exports; no raw sibling or publication fallback | `TestResults/test-lanes/20260815-004112-462-55940-a47a252ce01a479984366d67c66a8ae9-focused` | `TestResults/test-lanes/20260815-004433-206-18488-319db491335f4be6b048a58585315b86-focused` | 2 |
+| Canonical publication and command consumption | — | `TestResults/test-lanes/20260815-005735-444-13396-c11397c44c164f36ba6eccd9ae107339-focused` | 8 |
+| Raw/composed validation and same-turn owner adapters | — | `TestResults/test-lanes/20260815-005822-150-51972-18f2208b4f1c4449b6e8531dd75fe95d-focused` | 37 |
+| Source, planner, cache, and item authority control | — | `TestResults/test-lanes/20260815-005910-154-41368-c3617723ad10477bb871447b0e6a329e-focused` | 155 |
+| Validation-phase flag capacity | `TestResults/test-lanes/20260815-010449-286-52284-76c278ebe12d459d8d24b967fb6466a8-focused` | `TestResults/test-lanes/20260815-010554-687-48404-9d0a13b5632a41318751f496cbd2a966-focused` | 28 |
+| Malformed-present authority (`empty`, whitespace, late JSON `null`) | `TestResults/test-lanes/20260815-071348-161-42140-051c63f99d29462ba153d7901e2d3c2f-focused`; `TestResults/test-lanes/20260815-072316-498-44252-aa2b0e6493474859a1ac9f377c9db4da-focused` | `TestResults/test-lanes/20260815-072900-141-42364-25379c74eed94acd94e8b71fb204f5f0-focused` | 12 |
+| Optional receipts-only root is a consumed no-op | `TestResults/test-lanes/20260815-072624-761-30956-e776b91f32964fd8aa2a12da2a2d21bb-focused` | `TestResults/test-lanes/20260815-072816-752-56376-6495f464a1944aed9e99b2a822fe10af-focused` | 1 |
+| Accepted turn/event handoff rejects late turn mutation | `TestResults/test-lanes/20260815-073651-639-48964-3881995b5d874c2b96408b2674aaa017-focused` | `TestResults/test-lanes/20260815-073831-615-37716-46bd35213a4d4b628329392afa448fbf-focused` | 1 |
+| Final Task 6 Integration control | — | `TestResults/test-lanes/20260815-074014-231-22712-9823ff35f5494c9c8153666f20cd0e3a-focused` | 154 |
+| Final Task 6 unit control | — | `TestResults/test-lanes/20260815-074207-479-21552-3795b00a2e544763b5df8431db431a22-focused` | 205 |
+
+Same-turn item and location sources use `sourceRef` and are resolved only from
+their accepted plan exports. Stable-ID owners are validated first and exported
+through a closed adapter. Canonical publication consumes the exact plan cached
+by raw validation; it cannot rebuild authority after another normalizer changes
+the files.
+
+Adding the effect phase occupied the last `uint` flag. The phase enum now uses
+`ulong`, preserving a real unknown-bit fail-closed guard without changing the
+defined phase order or selection semantics.
+
 ## 2. Contract and Identity Control
 
 ```powershell
@@ -148,6 +173,16 @@ GM response excerpt:
   ]
 }
 ```
+
+When one response contains multiple `effectChanges[]`, the first entry uses
+`turn_<turn>` and each later entry uses its exact one-based position, such as
+`turn_42_effect_2`. This is accepted-turn evidence only; the client still owns
+the unique durable transition and event history.
+
+If the skill itself is accepted in the same turn and already has a stable
+effective ID, its owning validator must pass before the effect adapter exports
+that ID. A newly materialized item or location instead uses `sourceRef` in the
+raw command; the canonical effect still stores only the resolved `sourceId`.
 
 Expected:
 

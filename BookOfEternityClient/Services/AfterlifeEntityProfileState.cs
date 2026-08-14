@@ -62,6 +62,30 @@ internal static class AfterlifeEntityProfileState
         "Сияющая Обитель"
     };
 
+    internal static bool TryNormalizeEffectRealm(
+        string? realm,
+        out string normalizedRealm)
+    {
+        var value = realm?.Trim();
+        if (string.Equals(value, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "chaos_sea", StringComparison.Ordinal))
+        {
+            normalizedRealm = "chaos_sea";
+            return true;
+        }
+        if (string.Equals(value, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "shining_abode", StringComparison.Ordinal))
+        {
+            normalizedRealm = "shining_abode";
+            return true;
+        }
+
+        normalizedRealm = string.Empty;
+        return false;
+    }
+
     public static readonly HashSet<string> StandardArtIds = new(StringComparer.OrdinalIgnoreCase)
     {
         "pressure",

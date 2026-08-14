@@ -4,6 +4,10 @@ namespace BookOfEternityClient.Services;
 
 internal static class EffectSourceDefinitionContract
 {
+    private sealed record ComponentValidationResult(
+        HashSet<string> ParameterNames,
+        HashSet<string> ComponentIds);
+
     private static readonly HashSet<string> DefinitionFields = Set(
         "schemaVersion", "definitionKey", "display", "allowedRealms", "allowedTargetKinds",
         "components", "parameterBounds", "stacking", "lifetime", "triggers", "removal", "links");
@@ -119,11 +123,20 @@ internal static class EffectSourceDefinitionContract
         ValidateDisplay(definition, path, issues);
         ValidateClosedStringArray(definition, path, "allowedRealms", Realms, requireRealm: realm, issues);
         ValidateClosedStringArray(definition, path, "allowedTargetKinds", TargetKinds, requireRealm: null, issues);
-        var componentParameters = ValidateComponents(definition, path, issues);
-        ValidateParameterBounds(definition, path, componentParameters, issues);
+        var componentValidation = ValidateComponents(definition, path, issues);
+        ValidateParameterBounds(
+            definition,
+            path,
+            componentValidation.ParameterNames,
+            issues);
         ValidateStacking(definition, path, issues);
-        ValidateLifetime(definition, path, issues);
-        ValidateTriggers(definition, path, issues);
+        var consumingEventTypes = ValidateLifetime(definition, path, issues);
+        ValidateTriggers(
+            definition,
+            path,
+            componentValidation.ComponentIds,
+            consumingEventTypes,
+            issues);
         ValidateRemoval(definition, path, issues);
         ValidateLinks(definition, path, issues);
     }
@@ -140,19 +153,22 @@ internal static class EffectSourceDefinitionContract
         RequireClosedString(display, displayPath, "visibility", Visibilities, issues);
     }
 
-    private static HashSet<string> ValidateComponents(JsonElement root, string path, List<ValidationIssue> issues)
+    private static ComponentValidationResult ValidateComponents(
+        JsonElement root,
+        string path,
+        List<ValidationIssue> issues)
     {
         var parameterNames = new HashSet<string>(StringComparer.Ordinal);
+        var ids = new HashSet<string>(StringComparer.Ordinal);
         if (!root.TryGetProperty("components", out var components) ||
             components.ValueKind != JsonValueKind.Array ||
             components.GetArrayLength() == 0)
         {
             Add(issues, path + ".components", "effect_source_definition_invalid_components", "non-empty registered component template array", Describe(root, "components"));
-            return parameterNames;
+            return new ComponentValidationResult(parameterNames, ids);
         }
 
         var componentIssues = new List<ValidationIssue>();
-        var ids = new HashSet<string>(StringComparer.Ordinal);
         var aliases = new HashSet<string>(StringComparer.Ordinal);
         var index = 0;
         foreach (var component in components.EnumerateArray())
@@ -182,7 +198,7 @@ internal static class EffectSourceDefinitionContract
                 issue.Expected ?? "complete registered component template",
                 issue.Actual ?? issue.Message);
         }
-        return parameterNames;
+        return new ComponentValidationResult(parameterNames, ids);
     }
 
     private static void ValidateParameterBounds(
@@ -265,14 +281,17 @@ internal static class EffectSourceDefinitionContract
         ValidateNullableClosedString(stacking, stackingPath, "mergeRule", MergeRules, policy == "merge", issues);
     }
 
-    private static void ValidateLifetime(JsonElement root, string path, List<ValidationIssue> issues)
+    private static HashSet<string>? ValidateLifetime(
+        JsonElement root,
+        string path,
+        List<ValidationIssue> issues)
     {
         if (!TryGetObject(root, path, "lifetime", issues, out var lifetime))
-            return;
+            return null;
         var lifetimePath = path + ".lifetime";
         var mode = RequireClosedString(lifetime, lifetimePath, "mode", LifetimeModes, issues);
         if (mode == null)
-            return;
+            return null;
 
         switch (mode)
         {
@@ -285,7 +304,10 @@ internal static class EffectSourceDefinitionContract
                 ValidateClosedObject(lifetime, lifetimePath, Set("mode", "initialUses", "consumingEventTypes"), issues);
                 RequirePositiveInt(lifetime, lifetimePath, "initialUses", issues);
                 ValidateClosedStringArray(lifetime, lifetimePath, "consumingEventTypes", EventTypes, requireRealm: null, issues);
-                break;
+                return ReadRegisteredStringSet(
+                    lifetime,
+                    "consumingEventTypes",
+                    EventTypes);
             case "until_time":
                 ValidateClosedObject(lifetime, lifetimePath, Set("mode", "duration", "timeAuthority"), issues);
                 RequirePositiveInt(lifetime, lifetimePath, "duration", issues);
@@ -297,7 +319,21 @@ internal static class EffectSourceDefinitionContract
                 break;
             case "source_bound":
                 ValidateClosedObject(lifetime, lifetimePath, Set("mode", "activePredicate", "onSourceLoss"), issues);
-                RequireExactIdentifier(lifetime, lifetimePath, "activePredicate", issues);
+                var activePredicate = RequireExactIdentifier(
+                    lifetime,
+                    lifetimePath,
+                    "activePredicate",
+                    issues);
+                if (activePredicate != null &&
+                    !EffectSourcePredicateCatalog.IsRegistered(activePredicate))
+                {
+                    Add(
+                        issues,
+                        lifetimePath + ".activePredicate",
+                        "effect_source_definition_invalid_active_predicate",
+                        "registered active predicate: active, carried, equipped, or unlocked",
+                        activePredicate);
+                }
                 RequireClosedString(lifetime, lifetimePath, "onSourceLoss", Set("expire", "suspend"), issues);
                 break;
             case "condition_bound":
@@ -314,9 +350,15 @@ internal static class EffectSourceDefinitionContract
                 RequireExactStringArray(lifetime, lifetimePath, "authorities", allowEmpty: false, issues);
                 break;
         }
+        return null;
     }
 
-    private static void ValidateTriggers(JsonElement root, string path, List<ValidationIssue> issues)
+    private static void ValidateTriggers(
+        JsonElement root,
+        string path,
+        IReadOnlySet<string> componentIds,
+        IReadOnlySet<string>? consumingEventTypes,
+        List<ValidationIssue> issues)
     {
         if (!root.TryGetProperty("triggers", out var triggers) || triggers.ValueKind != JsonValueKind.Array)
         {
@@ -325,6 +367,7 @@ internal static class EffectSourceDefinitionContract
         }
         var ids = new HashSet<string>(StringComparer.Ordinal);
         var aliases = new HashSet<string>(StringComparer.Ordinal);
+        var seenConsumingEventTypes = new HashSet<string>(StringComparer.Ordinal);
         var index = 0;
         foreach (var trigger in triggers.EnumerateArray())
         {
@@ -338,12 +381,111 @@ internal static class EffectSourceDefinitionContract
             var id = RequireExactIdentifier(trigger, triggerPath, "triggerId", issues);
             if (id != null && (!ids.Add(id) || !aliases.Add(MortalLocationIdentityState.BuildConfusableKey(id))))
                 Add(issues, triggerPath + ".triggerId", "effect_source_definition_invalid_field", "unique exact/confusable triggerId", id);
-            RequireClosedString(trigger, triggerPath, "eventType", EventTypes, issues);
+            var eventType = RequireClosedString(
+                trigger,
+                triggerPath,
+                "eventType",
+                EventTypes,
+                issues);
             RequireBoundedInt(trigger, triggerPath, "priority", -10_000, 10_000, issues);
-            RequireExactStringArray(trigger, triggerPath, "componentIds", allowEmpty: false, issues);
+            ValidateTriggerComponentReferences(
+                trigger,
+                triggerPath,
+                componentIds,
+                issues);
+            var consumesUses = trigger.TryGetProperty("consumeUses", out var consumesNode) &&
+                consumesNode.ValueKind is JsonValueKind.True or JsonValueKind.False
+                    ? consumesNode.GetBoolean()
+                    : (bool?)null;
             RequireBoolean(trigger, triggerPath, "consumeUses", issues);
+            if (eventType != null && consumesUses.HasValue &&
+                consumesUses.Value != (consumingEventTypes?.Contains(eventType) == true))
+            {
+                Add(
+                    issues,
+                    triggerPath + ".consumeUses",
+                    "effect_source_definition_consuming_trigger_mismatch",
+                    consumingEventTypes == null
+                        ? "false outside uses lifetime"
+                        : "true exactly for lifetime.consumingEventTypes",
+                    consumesUses.Value.ToString());
+            }
+            if (eventType != null && consumesUses == true)
+                seenConsumingEventTypes.Add(eventType);
             RequireClosedString(trigger, triggerPath, "resolutionMode", ResolutionModes, issues);
         }
+
+        if (consumingEventTypes != null &&
+            !seenConsumingEventTypes.SetEquals(consumingEventTypes))
+        {
+            Add(
+                issues,
+                path + ".lifetime.consumingEventTypes",
+                "effect_source_definition_consuming_trigger_mismatch",
+                "exact event-type set represented by consumeUses=true triggers",
+                string.Join(",", seenConsumingEventTypes.OrderBy(
+                    static value => value,
+                    StringComparer.Ordinal)));
+        }
+    }
+
+    private static void ValidateTriggerComponentReferences(
+        JsonElement trigger,
+        string path,
+        IReadOnlySet<string> componentIds,
+        List<ValidationIssue> issues)
+    {
+        if (!trigger.TryGetProperty("componentIds", out var references) ||
+            references.ValueKind != JsonValueKind.Array ||
+            references.GetArrayLength() == 0)
+        {
+            Add(
+                issues,
+                path + ".componentIds",
+                "effect_source_definition_invalid_trigger_component",
+                "non-empty componentId array resolving inside this definition",
+                Describe(trigger, "componentIds"));
+            return;
+        }
+
+        var exact = new HashSet<string>(StringComparer.Ordinal);
+        var aliases = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var reference in references.EnumerateArray())
+        {
+            var referencePath = $"{path}.componentIds[{index++}]";
+            if (!TryReadExactIdentifier(reference, out var componentId) ||
+                !exact.Add(componentId) ||
+                !aliases.Add(MortalLocationIdentityState.BuildConfusableKey(componentId)) ||
+                !componentIds.Contains(componentId))
+            {
+                Add(
+                    issues,
+                    referencePath,
+                    "effect_source_definition_invalid_trigger_component",
+                    "one unique exact componentId from this definition",
+                    reference.GetRawText());
+            }
+        }
+    }
+
+    private static HashSet<string> ReadRegisteredStringSet(
+        JsonElement root,
+        string field,
+        IReadOnlySet<string> allowed)
+    {
+        var result = new HashSet<string>(StringComparer.Ordinal);
+        if (!root.TryGetProperty(field, out var values) ||
+            values.ValueKind != JsonValueKind.Array)
+        {
+            return result;
+        }
+        foreach (var value in values.EnumerateArray())
+        {
+            if (TryReadExactIdentifier(value, out var text) && allowed.Contains(text))
+                result.Add(text);
+        }
+        return result;
     }
 
     private static void ValidateRemoval(JsonElement root, string path, List<ValidationIssue> issues)

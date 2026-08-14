@@ -51,6 +51,93 @@ public sealed class EffectSourceAuthorityTests
         Assert.True(result.Source!.SameTurn);
     }
 
+    [Fact]
+    public void Resolve_SameTurnSourceRefReturnsPermanentEffectiveIdentity()
+    {
+        var sameTurn = Source("location", "loc_permanent_same_turn") with
+        {
+            SameTurn = true,
+            SourceRef = "locref_same_turn"
+        };
+        var authority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+            Array.Empty<EffectSourceExport>(),
+            new[] { sameTurn },
+            EmptySet()));
+        var selector = new JsonObject
+        {
+            ["kind"] = "location",
+            ["sourceRef"] = "locref_same_turn",
+            ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
+        };
+
+        var result = authority.Resolve(
+            selector,
+            "mortal_world",
+            "player",
+            new JsonObject { ["amount"] = 3 });
+
+        Assert.True(result.Success);
+        Assert.Equal("loc_permanent_same_turn", result.Source!.Key.SourceId);
+        Assert.True(result.Source.SameTurn);
+    }
+
+    [Theory]
+    [InlineData("LOCREF_SAME_TURN", "effect_source_selector_confusable")]
+    [InlineData("locref_unknown", "effect_source_selector_unresolved")]
+    public void Resolve_SameTurnSourceRefRejectsAliasAndUnknown(
+        string sourceRef,
+        string expectedCode)
+    {
+        var sameTurn = Source("location", "loc_permanent_same_turn") with
+        {
+            SameTurn = true,
+            SourceRef = "locref_same_turn"
+        };
+        var authority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+            Array.Empty<EffectSourceExport>(),
+            new[] { sameTurn },
+            EmptySet()));
+
+        var result = authority.Resolve(
+            new JsonObject
+            {
+                ["kind"] = "location",
+                ["sourceRef"] = sourceRef,
+                ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
+            },
+            "mortal_world",
+            "player",
+            new JsonObject { ["amount"] = 3 });
+
+        Assert.Contains(result.Issues, issue => issue.Code == expectedCode);
+    }
+
+    [Fact]
+    public void Resolve_ClientAssignedSameTurnSourceIdIsNotGmSelectable()
+    {
+        var sameTurn = Source("item", "itm_client_assigned") with
+        {
+            SameTurn = true,
+            SourceRef = "new_item_same_turn"
+        };
+        var authority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+            Array.Empty<EffectSourceExport>(),
+            new[] { sameTurn },
+            EmptySet()));
+
+        var result = authority.Resolve(
+            new EffectSourceKey(
+                "mortal_world",
+                "item",
+                "itm_client_assigned",
+                EffectMaterializationTestFixture.DefinitionKey),
+            "player",
+            new JsonObject { ["amount"] = 3 });
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "effect_source_same_turn_id_forbidden");
+    }
+
     [Theory]
     [InlineData(false, true, "effect_source_not_materializable")]
     [InlineData(true, false, "effect_source_inactive")]
@@ -68,6 +155,89 @@ public sealed class EffectSourceAuthorityTests
 
         Assert.False(result.Success);
         Assert.Contains(result.Issues, issue => issue.Code == expectedCode);
+    }
+
+    [Fact]
+    public void Resolve_SourceBoundItemRequiresItsExactSatisfiedPredicate()
+    {
+        const string itemId = "itm_predicate_authority";
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "source_bound",
+            ["activePredicate"] = "equipped",
+            ["onSourceLoss"] = "expire"
+        };
+        var unequipped = Build(new EffectSourceExport(
+            "mortal_world",
+            "item",
+            itemId,
+            new JsonArray(definition.DeepClone()),
+            Materializable: true,
+            Active: true,
+            SameTurn: false,
+            SatisfiedPredicates: new HashSet<string>(StringComparer.Ordinal) { "carried" }));
+        var equipped = Build(new EffectSourceExport(
+            "mortal_world",
+            "item",
+            itemId,
+            new JsonArray(definition.DeepClone()),
+            Materializable: true,
+            Active: true,
+            SameTurn: false,
+            SatisfiedPredicates: new HashSet<string>(StringComparer.Ordinal) { "carried", "equipped" }));
+        var key = new EffectSourceKey(
+            "mortal_world",
+            "item",
+            itemId,
+            EffectMaterializationTestFixture.DefinitionKey);
+
+        var rejected = unequipped.Resolve(
+            key,
+            "player",
+            new JsonObject { ["amount"] = 3 });
+        var accepted = equipped.Resolve(
+            key,
+            "player",
+            new JsonObject { ["amount"] = 3 });
+
+        Assert.Contains(rejected.Issues, issue =>
+            issue.Code == "effect_source_predicate_unsatisfied");
+        Assert.True(accepted.Success);
+    }
+
+    [Fact]
+    public void Resolve_SourceBoundPredicateMustMatchSourceKind()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "source_bound",
+            ["activePredicate"] = "equipped",
+            ["onSourceLoss"] = "expire"
+        };
+        var authority = Build(new EffectSourceExport(
+            "mortal_world",
+            "wound",
+            "wound_predicate_authority",
+            new JsonArray(definition),
+            Materializable: true,
+            Active: true,
+            SameTurn: false,
+            SatisfiedPredicates: new HashSet<string>(StringComparer.Ordinal) { "equipped" }));
+
+        var result = authority.Resolve(
+            new EffectSourceKey(
+                "mortal_world",
+                "wound",
+                "wound_predicate_authority",
+                EffectMaterializationTestFixture.DefinitionKey),
+            "player",
+            new JsonObject { ["amount"] = 3 });
+
+        Assert.Contains(authority.Issues, issue =>
+            issue.Code == "effect_source_predicate_incompatible");
+        Assert.False(result.Success);
     }
 
     [Fact]
@@ -167,6 +337,62 @@ public sealed class EffectSourceAuthorityTests
 
         Assert.Contains(authority.Issues, issue =>
             issue.Code is "effect_source_definition_confusable_key" or "effect_source_authority_confusable_source");
+    }
+
+    [Fact]
+    public void Build_RejectsUnresolvedDefinitionLinkTarget()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["links"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "wound",
+            ["targetId"] = "wound_missing_link_target",
+            ["role"] = "context"
+        });
+        var authority = Build(new EffectSourceExport(
+            "mortal_world",
+            "wound",
+            "wound_current_source",
+            new JsonArray(definition),
+            Materializable: true,
+            Active: true,
+            SameTurn: false));
+
+        Assert.Contains(authority.Issues, issue =>
+            issue.Code == "effect_source_link_target_unresolved");
+    }
+
+    [Fact]
+    public void Build_AcceptsExactDefinitionLinkToComposedOwnerWithoutDefinitions()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["links"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "quest",
+            ["targetId"] = "quest_exact_context",
+            ["role"] = "context"
+        });
+        var source = new EffectSourceExport(
+            "mortal_world",
+            "wound",
+            "wound_current_source",
+            new JsonArray(definition),
+            Materializable: true,
+            Active: true,
+            SameTurn: false);
+        var linkedOwner = new EffectSourceExport(
+            "mortal_world",
+            "quest",
+            "quest_exact_context",
+            new JsonArray(),
+            Materializable: false,
+            Active: true,
+            SameTurn: false);
+
+        var authority = Build(source, linkedOwner);
+
+        Assert.DoesNotContain(authority.Issues, issue =>
+            issue.Code?.StartsWith("effect_source_link_target_", StringComparison.Ordinal) == true);
     }
 
     private static EffectSourceAuthority Build(params EffectSourceExport[] exports) =>

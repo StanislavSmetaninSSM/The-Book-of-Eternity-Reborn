@@ -1283,7 +1283,7 @@ public partial class CanonicalStateNormalizer
     {
         var existing = quests
             .OfType<JsonObject>()
-            .FirstOrDefault(item => MatchesByAnyIdentity(item, candidate, "questId", "initialId", "questName", "title", "name"));
+            .FirstOrDefault(item => MatchesQuestIdentity(item, candidate));
 
         var appendEntry = GetNodeString(candidate["__appendDetailsLogEntry"]);
         candidate.Remove("__appendDetailsLogEntry");
@@ -1306,6 +1306,31 @@ public partial class CanonicalStateNormalizer
             detailsLog.Add(appendEntry);
         }
         quests.Add(clone);
+    }
+
+    private static bool MatchesQuestIdentity(JsonObject left, JsonObject right)
+    {
+        var leftQuestId = GetNodeString(left["questId"]);
+        var rightQuestId = GetNodeString(right["questId"]);
+        if (!string.IsNullOrWhiteSpace(leftQuestId) ||
+            !string.IsNullOrWhiteSpace(rightQuestId))
+        {
+            return !string.IsNullOrWhiteSpace(leftQuestId) &&
+                   !string.IsNullOrWhiteSpace(rightQuestId) &&
+                   string.Equals(leftQuestId, rightQuestId, StringComparison.Ordinal);
+        }
+
+        var leftInitialId = GetNodeString(left["initialId"]);
+        var rightInitialId = GetNodeString(right["initialId"]);
+        if (!string.IsNullOrWhiteSpace(leftInitialId) ||
+            !string.IsNullOrWhiteSpace(rightInitialId))
+        {
+            return !string.IsNullOrWhiteSpace(leftInitialId) &&
+                   !string.IsNullOrWhiteSpace(rightInitialId) &&
+                   string.Equals(leftInitialId, rightInitialId, StringComparison.Ordinal);
+        }
+
+        return MatchesByAnyIdentity(left, right, "questName", "title", "name");
     }
 
     private static bool MatchesByAnyIdentity(JsonObject left, JsonObject right, params string[] keys)

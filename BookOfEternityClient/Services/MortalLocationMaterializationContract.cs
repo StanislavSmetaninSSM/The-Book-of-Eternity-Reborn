@@ -532,6 +532,7 @@ internal static class MortalLocationMaterializationContract
         ValidateLocationStorageIdentities(value, context, issues);
         ValidateLocationThreatIdentities(value, context, issues);
         ValidateLocationThreatSemantics(value, context, issues);
+        ValidateLocationHazardSources(value, context, issues);
         ValidateLocationLoreBindings(value, context, issues);
         if (value.TryGetProperty("customStates", out var customStates))
         {
@@ -632,6 +633,125 @@ internal static class MortalLocationMaterializationContract
             issues.AddRange(MortalLocationActiveThreatContract.Validate(
                 threat,
                 $"{context}.activeThreats[{index++}]"));
+        }
+    }
+
+    private static void ValidateLocationHazardSources(
+        JsonElement location,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        var exactHazardIds = new HashSet<string>(StringComparer.Ordinal);
+        var confusableHazardIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var collectionName in new[] { "hazards", "activeHazards" })
+        {
+            if (!location.TryGetProperty(collectionName, out var hazards))
+                continue;
+            if (hazards.ValueKind != JsonValueKind.Array)
+            {
+                issues.Add(Issue(
+                    $"{context}.{collectionName}",
+                    "mortal_location_hazard_sources_not_array",
+                    "Location hazard source collection must be an array when present.",
+                    "array",
+                    hazards.ValueKind.ToString()));
+                continue;
+            }
+
+            var index = 0;
+            foreach (var hazard in hazards.EnumerateArray())
+            {
+                var hazardContext = $"{context}.{collectionName}[{index++}]";
+                if (hazard.ValueKind != JsonValueKind.Object)
+                {
+                    issues.Add(Issue(
+                        hazardContext,
+                        "mortal_location_hazard_source_not_object",
+                        "A materializable location hazard source must be an object.",
+                        "hazard source object",
+                        hazard.ValueKind.ToString()));
+                    continue;
+                }
+
+                var hazardId = ReadExactNonEmptyString(hazard, "hazardId");
+                if (hazardId == null)
+                {
+                    issues.Add(Issue(
+                        hazardContext + ".hazardId",
+                        "mortal_location_hazard_source_identity_invalid",
+                        "A materializable location hazard requires one exact non-empty hazardId.",
+                        "exact non-empty hazardId",
+                        Describe(hazard, "hazardId")));
+                }
+                else if (!exactHazardIds.Add(hazardId))
+                {
+                    issues.Add(Issue(
+                        hazardContext + ".hazardId",
+                        "mortal_location_hazard_source_identity_duplicate",
+                        "A location cannot contain the same exact hazard source more than once.",
+                        "unique exact hazardId across hazards and activeHazards",
+                        hazardId));
+                }
+                else if (!confusableHazardIds.Add(
+                             MortalLocationIdentityState.BuildConfusableKey(hazardId)))
+                {
+                    issues.Add(Issue(
+                        hazardContext + ".hazardId",
+                        "mortal_location_hazard_source_identity_confusable",
+                        "Location hazard identities must remain unique under case and Unicode-confusable normalization.",
+                        "unique non-confusable hazardId across hazards and activeHazards",
+                        hazardId));
+                }
+
+                foreach (var conflictingIdentityField in new[]
+                         {
+                             "locationId", "skillId", "cardId", "fateCardId", "artId",
+                             "spiritualArtId", "combatActionId", "actionId"
+                         })
+                {
+                    if (!hazard.TryGetProperty(conflictingIdentityField, out _))
+                        continue;
+                    issues.Add(Issue(
+                        hazardContext + "." + conflictingIdentityField,
+                        "mortal_location_hazard_source_identity_conflict",
+                        "A hazard source cannot carry an identity selector belonging to another source kind.",
+                        "only exact hazardId identity on this owner contour",
+                        conflictingIdentityField));
+                }
+
+                if (hazard.TryGetProperty("isInactive", out var isInactive) &&
+                    isInactive.ValueKind is not JsonValueKind.True and not JsonValueKind.False)
+                {
+                    issues.Add(Issue(
+                        hazardContext + ".isInactive",
+                        "mortal_location_hazard_source_state_invalid",
+                        "Hazard isInactive must be boolean when present.",
+                        "boolean",
+                        isInactive.ValueKind.ToString()));
+                }
+
+                foreach (var stateField in new[] { "status", "state", "availability" })
+                {
+                    if (!hazard.TryGetProperty(stateField, out _))
+                        continue;
+                    if (ReadExactNonEmptyString(hazard, stateField) != null)
+                        continue;
+                    issues.Add(Issue(
+                        hazardContext + "." + stateField,
+                        "mortal_location_hazard_source_state_invalid",
+                        "Hazard state selectors must be exact non-empty strings when present.",
+                        "exact non-empty string",
+                        Describe(hazard, stateField)));
+                }
+
+                if (hazard.TryGetProperty("activeEffectDefinitions", out var definitions))
+                {
+                    issues.AddRange(EffectSourceDefinitionContract.ValidateArray(
+                        definitions,
+                        hazardContext + ".activeEffectDefinitions",
+                        "mortal_world"));
+                }
+            }
         }
     }
 

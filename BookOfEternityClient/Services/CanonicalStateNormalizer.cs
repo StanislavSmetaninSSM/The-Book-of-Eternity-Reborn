@@ -73,6 +73,13 @@ public partial class CanonicalStateNormalizer
         NpcInteractionJournalState.StatePath,
         "game_state/inventory/items.json",
         MortalItemIdentityState.StatePath,
+        EffectCarrierCatalog.PlayerPath,
+        EffectCarrierCatalog.NpcPath,
+        EffectCarrierCatalog.EnemiesPath,
+        EffectCarrierCatalog.AlliesPath,
+        EffectCarrierCatalog.AfterlifeProfilesPath,
+        EffectCarrierCatalog.SpiritualConflictPath,
+        EffectAcceptedTurnPlan.IdentityIndexPath,
         "game_state/inventory/item_resources.json",
         "game_state/inventory/item_bonds.json",
         "game_state/inventory/item_text_updates.json",
@@ -95,6 +102,8 @@ public partial class CanonicalStateNormalizer
             AfterlifeStoryOutlineState.StatePath,
             SarefMainStoryState.StatePath
         })
+        .Concat(EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
+        .Distinct(StringComparer.Ordinal)
         .ToArray();
 
     public static readonly string[] NormalizerRollbackTrackedFiles = NormalizerBackupInputFiles
@@ -105,7 +114,9 @@ public partial class CanonicalStateNormalizer
             MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
             "game_state/inventory/recipes.json",
             CraftRequestState.PendingRequestPath,
-            NpcTradeRequestState.PendingRequestPath
+            NpcTradeRequestState.PendingRequestPath,
+            EffectAcceptedTurnPlan.CommandPath,
+            "game_state/control/pending_effect_resolutions.json"
         })
         .Distinct(StringComparer.Ordinal)
         .ToArray();
@@ -223,5 +234,7 @@ public partial class CanonicalStateNormalizer
         await NormalizeItemJournalsAsync(backups);
         await NormalizeGuardianThoughtJournalAsync(backups);
         await NormalizeGuardianSocialJournalAsync(backups);
+        await NormalizePlayerSkillStateAsync(backups);
+        await NormalizeEffectsAsync(backups, mortalLocationPlan);
     }
 }

@@ -13,15 +13,25 @@ internal sealed record EffectCombatantIdentityBuildResult(
 internal sealed class EffectCombatantIdentityState
 {
     private readonly Dictionary<string, string> _combatantIdsByRef;
+    private readonly Dictionary<string, string> _npcIdsByRef;
     private readonly ReadOnlyDictionary<string, string> _readOnlyCombatantIdsByRef;
 
-    private EffectCombatantIdentityState(Dictionary<string, string> combatantIdsByRef)
+    private EffectCombatantIdentityState(
+        Dictionary<string, string> combatantIdsByRef,
+        Dictionary<string, string> npcIdsByRef)
     {
         _combatantIdsByRef = combatantIdsByRef;
+        _npcIdsByRef = npcIdsByRef;
         _readOnlyCombatantIdsByRef = new ReadOnlyDictionary<string, string>(_combatantIdsByRef);
         var root = new JsonObject();
         foreach (var pair in _combatantIdsByRef.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
-            root[pair.Key] = pair.Value;
+        {
+            root[pair.Key] = new JsonObject
+            {
+                ["combatantId"] = pair.Value,
+                ["NPCId"] = _npcIdsByRef.GetValueOrDefault(pair.Key)
+            };
+        }
         Fingerprint = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(root.ToJsonString())));
     }
 
@@ -31,6 +41,9 @@ internal sealed class EffectCombatantIdentityState
 
     internal bool TryResolve(string combatantRef, out string combatantId) =>
         _combatantIdsByRef.TryGetValue(combatantRef, out combatantId!);
+
+    internal bool TryGetBoundNpcId(string combatantRef, out string npcId) =>
+        _npcIdsByRef.TryGetValue(combatantRef, out npcId!);
 
     internal static EffectCombatantIdentityBuildResult BuildNew(
         JsonArray rawCombatants,
@@ -68,18 +81,21 @@ internal sealed class EffectCombatantIdentityState
             return new EffectCombatantIdentityBuildResult(null, rawCombatants.DeepClone().AsArray(), issues);
 
         var mapping = new Dictionary<string, string>(StringComparer.Ordinal);
+        var npcBindings = new Dictionary<string, string>(StringComparer.Ordinal);
         var rewritten = new JsonArray();
         foreach (var candidate in refs)
         {
             var combatantId = identityFactory.CreateCombatantId();
             mapping.Add(candidate.Ref, combatantId);
+            if (TryReadExact(candidate.Combatant["NPCId"], out var npcId))
+                npcBindings.Add(candidate.Ref, npcId);
             var clone = candidate.Combatant.DeepClone().AsObject();
             clone.Remove("combatantRef");
             clone["combatantId"] = combatantId;
             rewritten.Add(clone);
         }
         return new EffectCombatantIdentityBuildResult(
-            new EffectCombatantIdentityState(mapping),
+            new EffectCombatantIdentityState(mapping, npcBindings),
             rewritten,
             Array.Empty<ValidationIssue>());
     }

@@ -860,6 +860,12 @@ public partial class ValidationService
             var itemContext = $"{contextPrefix}.{propName}[{index++}]";
             if (!RequireObject(item, itemContext, issues)) continue;
 
+            ValidateActiveEffectDefinitionsIfPresent(
+                item,
+                itemContext,
+                "mortal_world",
+                issues);
+
             if (!HasAnyNonEmptyString(item, "name", "enemyName", "allyName"))
             {
                 issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,

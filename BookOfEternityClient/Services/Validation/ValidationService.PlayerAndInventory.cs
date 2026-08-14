@@ -135,6 +135,9 @@ public partial class ValidationService
 
     private async Task ValidatePlayerContractFile(string filePath, HashSet<string> allowedKeys, List<ValidationIssue> issues)
     {
+        if (!ShouldValidateStateFile(filePath))
+            return;
+
         var json = await _fs.ReadFileAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
@@ -3390,12 +3393,23 @@ public partial class ValidationService
 
     private async Task ValidatePlayerFile(string filePath, List<ValidationIssue> issues)
     {
+        if (!ShouldValidateStateFile(filePath))
+            return;
+
         var json = await _fs.ReadFileAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
         try
         {
             using var doc = JsonDocument.Parse(json);
+            if (filePath.EndsWith(
+                    "game_state/player/wounds.json",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                ValidateWoundsContainer(doc.RootElement, filePath, issues);
+                return;
+            }
+
             if (filePath.EndsWith("game_state/core/player_status.json", StringComparison.OrdinalIgnoreCase))
             {
                 await ValidateFileFields(filePath,
@@ -3416,8 +3430,6 @@ public partial class ValidationService
                 ValidateExperienceFile(doc.RootElement, filePath, issues);
             else if (filePath.EndsWith("game_state/player/effects.json", StringComparison.OrdinalIgnoreCase))
                 ValidateEffectsContainer(doc.RootElement, filePath, issues);
-            else if (filePath.EndsWith("game_state/player/wounds.json", StringComparison.OrdinalIgnoreCase))
-                ValidateWoundsContainer(doc.RootElement, filePath, issues);
             else if (filePath.EndsWith("game_state/player/custom_states.json", StringComparison.OrdinalIgnoreCase))
                 ValidateCustomStatesContainer(doc.RootElement, filePath, issues);
             else if (filePath.EndsWith("game_state/player/stealth.json", StringComparison.OrdinalIgnoreCase))
@@ -3464,7 +3476,11 @@ public partial class ValidationService
         ValidatePlayerInventoryArray(root, contextPrefix, issues, "removeRecipes");
         ValidatePlayerInventoryArray(root, contextPrefix, issues, "moveToLocationStorage");
         ValidatePlayerInventoryArray(root, contextPrefix, issues, "retrieveFromLocationStorage");
-        ValidateEffectsProperty(root, contextPrefix, issues, "playerActiveEffectsChanges");
+        RejectLegacyEffectRouteIfPresent(
+            root,
+            contextPrefix,
+            issues,
+            "playerActiveEffectsChanges");
         ValidateWoundsProperty(root, contextPrefix, issues, "playerWoundChanges");
         ValidateCustomStatesProperty(root, contextPrefix, issues, "customStateChanges");
         ValidateStealthProperty(root, contextPrefix, issues, "playerStealthStateChange");
@@ -3906,6 +3922,11 @@ public partial class ValidationService
 
     private static void ValidateActiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
+        ValidateActiveEffectDefinitionsIfPresent(
+            item,
+            itemContext,
+            "mortal_world",
+            issues);
         RequireString(item, itemContext, issues, "skillName");
         RequireString(item, itemContext, issues, "skillDescription");
         RequireString(item, itemContext, issues, "rarity");
@@ -4004,6 +4025,11 @@ public partial class ValidationService
 
     private static void ValidatePassiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
+        ValidateActiveEffectDefinitionsIfPresent(
+            item,
+            itemContext,
+            "mortal_world",
+            issues);
         RequireString(item, itemContext, issues, "skillName");
         RequireString(item, itemContext, issues, "skillDescription");
         RequireString(item, itemContext, issues, "rarity");
@@ -6900,6 +6926,16 @@ public partial class ValidationService
             return;
         }
 
+        if (root.TryGetProperty("schemaVersion", out _) ||
+            root.TryGetProperty("activeEffects", out _))
+        {
+            issues.AddRange(EffectMaterializationContract.ValidateCarrier(
+                root,
+                contextPrefix,
+                EffectCarrierKind.Player));
+            return;
+        }
+
         if (LooksLikeEffectObject(root))
         {
             ValidateEffectObject(root, contextPrefix, issues);
@@ -7073,6 +7109,37 @@ public partial class ValidationService
     {
         if (!RequireObject(action, context, issues))
             return;
+
+        ValidateActiveEffectDefinitionsIfPresent(
+            action,
+            context,
+            "mortal_world",
+            issues);
+        if (action.TryGetProperty("activeEffectDefinitions", out _))
+        {
+            var identityFields = new[] { "combatActionId", "actionId" };
+            var presentIdentityFields = identityFields
+                .Where(field => action.TryGetProperty(field, out _))
+                .ToArray();
+            var exactIdentityFields = presentIdentityFields
+                .Where(field =>
+                    action.GetProperty(field).ValueKind == JsonValueKind.String &&
+                    action.GetProperty(field).GetString() is { Length: > 0 } value &&
+                    string.Equals(value, value.Trim(), StringComparison.Ordinal))
+                .ToArray();
+            if (presentIdentityFields.Length != 1 || exactIdentityFields.Length != 1)
+            {
+                issues.Add(new ValidationIssue(
+                    context,
+                    IssueSeverity.Error,
+                    "Materializable Combat Action должен иметь ровно один точный combatActionId или actionId.",
+                    code: "combat_action_effect_source_identity_invalid",
+                    section: section,
+                    expected: "exactly one exact non-empty combatActionId or actionId",
+                    actual: string.Join(",", presentIdentityFields),
+                    repairHint: "Для Combat Action с activeEffectDefinitions укажи один точный стабильный идентификатор действия без второго alias-поля."));
+            }
+        }
 
         if (action.TryGetProperty("isActivatedEffect", out _))
             ValidateOptionalBool(action, context, issues, "isActivatedEffect");
@@ -7296,6 +7363,20 @@ public partial class ValidationService
             if (!RequireObject(effect, effectContext, issues))
                 continue;
 
+            if (effect.TryGetProperty("entityKind", out var entityKind) &&
+                entityKind.ValueKind == JsonValueKind.String &&
+                string.Equals(
+                    entityKind.GetString(),
+                    "active_effect",
+                    StringComparison.Ordinal))
+            {
+                issues.AddRange(EffectMaterializationContract.Validate(
+                    effect,
+                    effectContext,
+                    EffectMaterializationPhase.CanonicalActive));
+                continue;
+            }
+
             ValidateCombatantActiveEffectObject(effect, effectContext, issues);
         }
     }
@@ -7409,6 +7490,12 @@ public partial class ValidationService
     {
         if (!RequireObject(item, context, issues))
             return;
+
+        ValidateActiveEffectDefinitionsIfPresent(
+            item,
+            context,
+            "mortal_world",
+            issues);
 
         RequireAnyString(item, context, issues, "woundName", "name");
         ValidateOptionalString(item, context, issues, "severity");

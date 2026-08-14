@@ -35,6 +35,9 @@ public partial class CanonicalStateNormalizer
         }
 
         var acceptedTurn = await TryReadCurrentTurnNumberAsync();
+        var acceptedRequest = await ReadNodeAsync("input/turn_request.json") as JsonObject;
+        var acceptedSessionId = ReadExactMortalItemIdentity(acceptedRequest?["sessionId"]);
+        var acceptedRequestId = ReadExactMortalItemIdentity(acceptedRequest?["requestId"]);
         var indexJson = await ReadCanonicalFileAsync(MortalItemIdentityState.StatePath);
         var parsedIndex = MortalItemIdentityState.Parse(indexJson);
         var acceptedCreationEvidence =
@@ -101,7 +104,27 @@ public partial class CanonicalStateNormalizer
                     $"Mortal item creationRef '{creationRef}' has no exact route authority.");
             }
 
-            var itemId = CreateUniqueMortalItemId(knownItemIds);
+            string itemId;
+            if (acceptedSessionId != null &&
+                acceptedRequestId != null &&
+                MortalItemAcceptedEffectSourceAuthority.TryGetAllocatedItemId(
+                    _fs,
+                    acceptedSessionId,
+                    acceptedRequestId,
+                    creationRef,
+                    out var allocatedItemId))
+            {
+                if (!knownItemIds.Add(allocatedItemId))
+                {
+                    throw new InvalidDataException(
+                        $"Reserved Mortal item identity '{allocatedItemId}' collides with current identity authority.");
+                }
+                itemId = allocatedItemId;
+            }
+            else
+            {
+                itemId = CreateUniqueMortalItemId(knownItemIds);
+            }
             creationMap.Add(creationRef, itemId);
             pending.Add(new PendingMortalItemCreation(
                 rawItem,
@@ -1290,6 +1313,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 .ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(writeLease));
             issues.AddRange(await validator
                 .ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(writeLease));
+            issues.AddRange(await validator
+                .ValidateAcceptedTurnCanonicalEffectMaterializationAsync(writeLease));
             if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
                 await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
             return issues;

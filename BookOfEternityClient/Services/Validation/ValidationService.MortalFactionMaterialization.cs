@@ -266,6 +266,11 @@ public partial class ValidationService
         MortalNpcAuthority npcAuthority,
         List<ValidationIssue> issues)
     {
+        ValidateActiveEffectDefinitionsIfPresent(
+            target.Faction,
+            target.Context,
+            "mortal_world",
+            issues);
         ValidateMortalSemanticCore(
             target.Faction,
             target.Context,
@@ -333,6 +338,11 @@ public partial class ValidationService
         List<ValidationIssue> issues)
     {
         var factionId = target.FactionId;
+        ValidateActiveEffectDefinitionsIfPresent(
+            target.Faction,
+            target.Context,
+            "mortal_world",
+            issues);
         ValidateCanonicalMortalSemanticCore(
             target.Faction,
             target.Context,

@@ -449,6 +449,12 @@ public partial class ValidationService
             var itemContext = $"{contextPrefix}.{propName}[{index++}]";
             if (!RequireObject(item, itemContext, issues)) continue;
 
+            ValidateActiveEffectDefinitionsIfPresent(
+                item,
+                itemContext,
+                "mortal_world",
+                issues);
+
             var questId = GetFirstNonEmptyString(item, "questId");
             var initialId = GetFirstNonEmptyString(item, "initialId");
             var isQuestLogAppend = IsQuestPartialLogAppend(item);

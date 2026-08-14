@@ -16,6 +16,7 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
     internal const string IdentityIndexPath = "game_state/effects/effect_identity_index.json";
     internal const string CommandPath = "game_state/effects/effect_commands.json";
     internal const string PendingResolutionPath = "game_state/control/pending_effect_resolutions.json";
+    internal const string PlayerWoundsPath = "game_state/player/wounds.json";
 
     internal static readonly string[] OwnedPaths =
     {
@@ -156,6 +157,38 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
 
         return result;
     }
+
+    internal async Task<IReadOnlyDictionary<string, string>> ReadPendingSnapshotBackupsAsync()
+    {
+        var manifest = (await ReadJsonAsync(
+            "game_state/control/pending_turn_snapshot.json"))?.AsObject()
+            ?? throw new InvalidOperationException("Pending-turn snapshot manifest is missing.");
+        var files = manifest["files"]?.AsObject()
+            ?? throw new InvalidOperationException("Pending-turn snapshot file map is missing.");
+        return files.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value?.GetValue<string>()
+                ?? throw new InvalidOperationException("Pending-turn snapshot path is null."),
+            StringComparer.Ordinal);
+    }
+
+    internal Task SeedPlayerWoundSourceAsync(JsonObject? definition = null)
+    {
+        return WriteJsonAsync(
+            PlayerWoundsPath,
+            new JsonArray(new JsonObject
+            {
+                ["woundId"] = "wound_test_torn_side",
+                ["woundName"] = "Рваная рана в боку",
+                ["severity"] = "severe",
+                ["description"] = "Края раны снова разошлись.",
+                ["activeEffectDefinitions"] = new JsonArray(
+                    definition ?? EffectMaterializationTestFixture.CreateDefinition())
+            }));
+    }
+
+    internal Task SyncPendingSnapshotAuthorityAsync() =>
+        PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(FileSystem);
 
     public ValueTask DisposeAsync()
     {

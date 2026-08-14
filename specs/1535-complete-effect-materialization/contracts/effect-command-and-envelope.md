@@ -55,6 +55,11 @@ Rules:
 4. The source determines display, component templates, bounds, stack, lifetime, trigger, removal, and visibility policy.
 5. An instantaneous source action without a declared active-instance definition produces no active effect.
 6. A target selector contains exactly one of `targetId` or same-turn `targetRef`. `targetRef` must resolve through an accepted target plan and is replaced by the client-owned permanent target ID in the canonical instance.
+7. The first `effectChanges[]` entry uses accepted-turn authority `turn_<turn>`.
+   Each additional entry uses the exact one-based ordinal authority
+   `turn_<turn>_effect_<ordinal>` (for example `turn_42_effect_2`). The
+   client maps these bounded public authorities to unique internal event
+   evidence; arbitrary suffixes and reuse by two entries fail closed.
 
 ## 4. Dispel and Remove Commands
 

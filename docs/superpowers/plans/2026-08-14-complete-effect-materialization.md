@@ -62,6 +62,14 @@ The isolated worktree initially lacked generated NuGet assets. After restoring t
 | `Focused` multi-event catalog GREEN | `TestResults/test-lanes/20260814-224059-722-52852-7b4f96066a5d44efba32fe43d803f8e0-focused` | 1 | 1 | 0 | 0 | no | complete | `00:00:29.3001222` |
 | `Focused` Task 5 final combined control | `TestResults/test-lanes/20260814-224221-441-33532-ad147e4676194f568d6601290d05a6ec-focused` | 211 | 211 | 0 | 0 | no | complete | `00:00:27.1128659` |
 | `Focused` Integration compile/context control | `TestResults/test-lanes/20260814-224351-103-14004-05203a0578e9419e8fc6d34c6cc08a62-focused` | 4 | 4 | 0 | 0 | no | complete | `00:00:34.7856305` |
+| `Focused` explicit export boundary RED | `TestResults/test-lanes/20260815-004112-462-55940-a47a252ce01a479984366d67c66a8ae9-focused` | 2 | 0 | 2 | 0 | no | complete | `00:00:40.2088627` |
+| `Focused` explicit export boundary GREEN | `TestResults/test-lanes/20260815-004433-206-18488-319db491335f4be6b048a58585315b86-focused` | 2 | 2 | 0 | 0 | no | complete | `00:01:09.2652325` |
+| `Focused` canonical publication control | `TestResults/test-lanes/20260815-005735-444-13396-c11397c44c164f36ba6eccd9ae107339-focused` | 8 | 8 | 0 | 0 | no | complete | `00:00:38.4929828` |
+| `Focused` raw/composed validation control | `TestResults/test-lanes/20260815-005822-150-51972-18f2208b4f1c4449b6e8531dd75fe95d-focused` | 37 | 37 | 0 | 0 | no | complete | `00:00:39.1469037` |
+| `Focused` authority/planner/item control | `TestResults/test-lanes/20260815-005910-154-41368-c3617723ad10477bb871447b0e6a329e-focused` | 155 | 155 | 0 | 0 | no | complete | `00:00:23.6709005` |
+| `Focused` phase-capacity RED | `TestResults/test-lanes/20260815-010449-286-52284-76c278ebe12d459d8d24b967fb6466a8-focused` | 28 | 27 | 1 | 0 | no | complete | `00:00:16.4513424` |
+| `Focused` phase-capacity GREEN | `TestResults/test-lanes/20260815-010554-687-48404-9d0a13b5632a41318751f496cbd2a966-focused` | 28 | 28 | 0 | 0 | no | complete | `00:01:01.0768762` |
+| `Focused Integration` Task 6 final control | `TestResults/test-lanes/20260815-010704-512-30164-a6451d76977d45128f9ca3622d0076da-focused` | 90 | 90 | 0 | 0 | no | complete | `00:01:04.1366021` |
 
 The first Integration attempt stopped before the intended RED because NuGet
 assets had been cleaned. After the documented project restore, the repeated
@@ -484,37 +492,37 @@ git commit -m "feat: plan active effect applications (#1535)"
 - Create: `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Sources.cs`
 - Create: `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Effects.cs`
 
-- [ ] **Step 1: Add raw/composed validation RED tests**
+- [x] **Step 1: Add raw/composed validation RED tests**
 
 Cover missing sections, malformed components, direct carrier/index mutation, one logical occurrence, missing pristine initialization, non-empty legacy rejection, exact source/target failures, same-turn item/actor/faction/location/quest/event/wound/combatant exports, and zero writes on failure.
 
-- [ ] **Step 2: Add normalizer RED tests**
+- [x] **Step 2: Add normalizer RED tests**
 
 Cover player, NPC with adjacent wound data, combat buff/debuff category, command consumption, identity index, same-plan IDs, source-definition preservation, unrelated sibling preservation, and final carrier/index agreement.
 
-- [ ] **Step 3: Run RED integration filters**
+- [x] **Step 3: Run RED integration filters**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectMaterializationValidationTests|FullyQualifiedName~CanonicalStateNormalizerEffectTests"
 ```
 
-- [ ] **Step 4: Add definition validation at every source boundary**
+- [x] **Step 4: Add definition validation at every source boundary**
 
 Invoke the shared definition contract from player/item/quest/wound/combat/NPC/faction/location/event/actor/profile validators. Do not copy the profile schema into each validator.
 
-- [ ] **Step 5: Insert effect validation after source plans**
+- [x] **Step 5: Insert effect validation after source plans**
 
-Raw validation builds or retrieves the cached effect plan only after all applicable source and target plans are available. Canonical post-validation verifies carriers, identity index, pending state, and mechanics snapshot from the complete composed after-state.
+Raw validation builds or retrieves the cached effect plan only after all applicable source and target plans are available. Canonical post-validation verifies carriers, identity index, and exact source/target/mechanics agreement from the complete composed after-state; it does not claim the later lifecycle pending-state or consumer-snapshot work.
 
-- [ ] **Step 6: Publish after all source-owning normalizers**
+- [x] **Step 6: Publish after all source-owning normalizers**
 
-Under the existing bound lease, write every planned carrier/index/pending/companion path, preserve unrelated subtrees, consume the command root, and post-validate. Extend tracked item/effect paths without changing transaction ownership.
+Under the existing bound lease, write every planned carrier and identity-index path, preserve unrelated subtrees, consume the command root, and post-validate source/target/mechanics agreement. Pending resolutions, lifecycle scheduling, and mechanics-consumer snapshots remain assigned to T040+ and T027/T037+.
 
-- [ ] **Step 7: Run GREEN and inspect exact files**
+- [x] **Step 7: Run GREEN and inspect exact files**
 
 Verify the command file is absent, the canonical effect and index contain the cached random IDs, and adjacent NPC wound bytes/semantics remain unchanged.
 
-- [ ] **Step 8: Commit trustworthy Mortal creation**
+- [x] **Step 8: Commit trustworthy Mortal creation**
 
 ```powershell
 git add -- BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs BookOfEternityClient/Services/MortalItemMaterializationContract.cs BookOfEternityClient/Services/CanonicalStateNormalizer.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.cs BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Sources.cs BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Effects.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md

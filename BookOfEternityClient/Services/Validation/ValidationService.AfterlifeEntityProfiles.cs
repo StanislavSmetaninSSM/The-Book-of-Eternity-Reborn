@@ -390,6 +390,19 @@ public partial class ValidationService
                 actual: realm));
         }
 
+        var effectRealm = AfterlifeEntityProfileState.TryNormalizeEffectRealm(
+            realm,
+            out var normalizedEffectRealm)
+            ? normalizedEffectRealm
+            : IsChaosSeaProfile(profile)
+                ? "chaos_sea"
+                : "shining_abode";
+        ValidateActiveEffectDefinitionsIfPresent(
+            profile,
+            context,
+            effectRealm,
+            issues);
+
         if (!string.IsNullOrWhiteSpace(actorType) && !string.IsNullOrWhiteSpace(actorId))
         {
             var identity = $"{actorType}:{actorId}";
@@ -415,9 +428,16 @@ public partial class ValidationService
         ValidateAfterlifeProfileCurrencies(profile, context, issues);
         ValidateAfterlifeProfileProgression(profile, context, issues);
         ValidateAfterlifeProfileStandardArts(profile, context, issues);
-        ValidateAfterlifeProfileSpecialArts(profile, context, actorType, actorId, issues, requireCurrentSpecialArtCombatEffect);
+        ValidateAfterlifeProfileSpecialArts(
+            profile,
+            context,
+            actorType,
+            actorId,
+            effectRealm,
+            issues,
+            requireCurrentSpecialArtCombatEffect);
         ValidateAfterlifeProfileCustomStates(profile, context, issues);
-        ValidateAfterlifeProfileFateCards(profile, context, issues);
+        ValidateAfterlifeProfileFateCards(profile, context, effectRealm, issues);
         ValidateAfterlifeProfileSoulDissipation(profile, context, issues);
         ValidateAfterlifeProfileProgressionStrategy(profile, context, issues);
         ValidateAfterlifeProfileProgressionLedger(profile, context, issues);
@@ -530,7 +550,11 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateAfterlifeProfileFateCards(JsonElement profile, string context, List<ValidationIssue> issues)
+    private void ValidateAfterlifeProfileFateCards(
+        JsonElement profile,
+        string context,
+        string effectRealm,
+        List<ValidationIssue> issues)
     {
         if (!profile.TryGetProperty("fateCards", out var fateCards))
             return;
@@ -565,6 +589,12 @@ public partial class ValidationService
                     actual: card.ValueKind.ToString()));
                 continue;
             }
+
+            ValidateActiveEffectDefinitionsIfPresent(
+                card,
+                cardContext,
+                effectRealm,
+                issues);
 
             var cardId = RequireProfileString(card, cardContext, "cardId", "afterlife_entity_profile_fate_card_missing_card_id", issues);
             RequireProfileString(card, cardContext, "nameRu", "afterlife_entity_profile_fate_card_missing_name_ru", issues);
@@ -2302,6 +2332,7 @@ public partial class ValidationService
         string context,
         string? profileActorType,
         string? profileActorId,
+        string effectRealm,
         List<ValidationIssue> issues,
         bool requireCurrentSpecialArtCombatEffect = false)
     {
@@ -2325,6 +2356,12 @@ public partial class ValidationService
                     actual: art.ValueKind.ToString()));
                 continue;
             }
+
+            ValidateActiveEffectDefinitionsIfPresent(
+                art,
+                artContext,
+                effectRealm,
+                issues);
 
             var artId = RequireProfileString(art, artContext, "artId", "afterlife_entity_profile_special_art_missing_id", issues);
             if (!string.IsNullOrWhiteSpace(artId) && !ids.Add(artId))

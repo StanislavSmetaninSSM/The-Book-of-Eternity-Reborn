@@ -23,7 +23,6 @@ internal static class EffectAcceptedTurnPlanner
         ArgumentNullException.ThrowIfNull(identityFactory);
         var issues = new List<ValidationIssue>();
         issues.AddRange(input.SourceAuthority.Issues);
-        issues.AddRange(input.TargetAuthority.Issues);
         if (!TryExact(input.SessionId) || !TryExact(input.SnapshotToken) || !TryExact(input.Realm))
             Add(issues, "effectAcceptedTurn", "effect_plan_input_invalid", "exact session, snapshot, and realm authority", input.SessionId + "/" + input.SnapshotToken + "/" + input.Realm);
 
@@ -32,24 +31,53 @@ internal static class EffectAcceptedTurnPlanner
         if (!TryReadPositiveInt(input.EventInput["turn"], out turn))
             Add(issues, "eventInput.turn", "effect_plan_event_authority_invalid", "positive accepted turn", Describe(input.EventInput["turn"]));
         var acceptedEvents = ParseAcceptedEvents(input.EventInput["events"], issues);
+        if (issues.Count > 0)
+            return Failed(issues);
+
+        var carriers = input.PreTurnCarriers ??
+            new EffectCarrierCatalogInput(null, null, null, null, null, null);
+        var publicationCarrierBaselines = carriers;
+        var carrierAuthorityFingerprint =
+            EffectCarrierCatalog.CreateAuthorityFingerprint(publicationCarrierBaselines);
+        PrepareCombatantTargets(
+            input,
+            carriers,
+            identityFactory,
+            issues,
+            out var preparedCarriers,
+            out var targetAuthority,
+            out var combatantIds);
+        issues.AddRange(targetAuthority.Issues);
+        issues.AddRange(targetAuthority.ValidateNamedCombatantBindings(
+            preparedCarriers));
+        if (issues.Count > 0)
+            return Failed(issues);
+
+        var effectiveInput = input with
+        {
+            TargetAuthority = targetAuthority,
+            PreTurnCarriers = preparedCarriers
+        };
 
         var applications = ParseApplications(
-            input,
+            effectiveInput,
             acceptedEvents,
             issues);
         if (issues.Count > 0)
             return Failed(issues);
 
-        var carriers = input.PreTurnCarriers ?? new EffectCarrierCatalogInput(null, null, null, null, null, null);
+        carriers = effectiveInput.PreTurnCarriers!;
         var carrierCatalog = EffectCarrierCatalog.Build(carriers);
         issues.AddRange(carrierCatalog.Issues);
-        var identityRoot = input.PreTurnIdentityIndex?.DeepClone().AsObject() ?? EmptyIdentityIndex();
+        var identityBeforeImage = input.PreTurnIdentityIndex?.DeepClone().AsObject();
+        var identityRoot = identityBeforeImage?.DeepClone().AsObject() ?? EmptyIdentityIndex();
         var identityState = ParseIdentity(identityRoot);
         issues.AddRange(identityState.Issues);
         if (issues.Count > 0)
             return Failed(issues);
 
         var workspace = new CarrierWorkspace(carriers);
+        workspace.IncludeRewrittenCombatantRoots(publicationCarrierBaselines);
         var prepared = new List<PreparedApplication>(applications.Count);
         foreach (var application in applications)
         {
@@ -100,8 +128,12 @@ internal static class EffectAcceptedTurnPlanner
             return Failed(issues);
 
         var afterImages = workspace.AfterImages;
+        var carrierBeforeImages = afterImages.Keys.ToDictionary(
+            static path => path,
+            path => GetCarrierRoot(publicationCarrierBaselines, path)?.DeepClone().AsObject(),
+            StringComparer.Ordinal);
         var touchedPaths = afterImages.Keys
-            .Concat(prepared.Count > 0 ? new[] { EffectAcceptedTurnPlan.IdentityIndexPath } : Array.Empty<string>())
+            .Append(EffectAcceptedTurnPlan.IdentityIndexPath)
             .Append(EffectAcceptedTurnPlan.CommandPath)
             .Distinct(StringComparer.Ordinal)
             .OrderBy(static path => path, StringComparer.Ordinal)
@@ -109,21 +141,134 @@ internal static class EffectAcceptedTurnPlanner
         return new EffectAcceptedTurnPlanningResult(
             new EffectAcceptedTurnPlan(
                 fingerprint,
+                carrierAuthorityFingerprint,
+                input.SourceAuthority.CanonicalFingerprint,
+                targetAuthority.CanonicalFingerprint,
+                combatantIds,
                 effectIds,
                 transitionIds,
                 prepared.Select(static item => item.Application.Source.Key).ToArray(),
                 prepared.Select(static item => item.Application.Target).ToArray(),
+                prepared
+                    .Select(static item => item.Application.Source)
+                    .DistinctBy(static entry => entry.Key)
+                    .ToArray(),
                 activeEffects,
+                carrierBeforeImages,
                 afterImages,
+                identityBeforeImage,
                 identityRoot,
                 touchedPaths,
                 new[] { EffectAcceptedTurnPlan.CommandPath }),
             Array.Empty<ValidationIssue>());
     }
 
+    private static JsonObject? GetCarrierRoot(
+        EffectCarrierCatalogInput carriers,
+        string path) => path switch
+    {
+        EffectCarrierCatalog.PlayerPath => carriers.PlayerEffects,
+        EffectCarrierCatalog.NpcPath => carriers.NpcEffects,
+        EffectCarrierCatalog.EnemiesPath => carriers.EnemyCombatants,
+        EffectCarrierCatalog.AlliesPath => carriers.AllyCombatants,
+        EffectCarrierCatalog.AfterlifeProfilesPath => carriers.AfterlifeProfiles,
+        EffectCarrierCatalog.SpiritualConflictPath => carriers.SpiritualConflict,
+        _ => throw new InvalidOperationException(
+            $"Unsupported effect carrier baseline path '{path}'.")
+    };
+
+    private static void PrepareCombatantTargets(
+        EffectAcceptedTurnInput input,
+        EffectCarrierCatalogInput carriers,
+        EffectIdentityFactory identityFactory,
+        List<ValidationIssue> issues,
+        out EffectCarrierCatalogInput preparedCarriers,
+        out EffectTargetAuthority targetAuthority,
+        out IReadOnlyList<string> allocatedCombatantIds)
+    {
+        preparedCarriers = carriers;
+        targetAuthority = input.TargetAuthority;
+        allocatedCombatantIds = Array.Empty<string>();
+        if (input.TargetAuthorityInput == null)
+            return;
+
+        var candidates = new JsonArray();
+        var coordinates = new List<(bool Enemy, int Index)>();
+        CollectNewCombatantCandidates(
+            carriers.EnemyCombatants,
+            "enemiesData",
+            enemy: true,
+            candidates,
+            coordinates);
+        CollectNewCombatantCandidates(
+            carriers.AllyCombatants,
+            "alliesData",
+            enemy: false,
+            candidates,
+            coordinates);
+        if (candidates.Count == 0)
+            return;
+
+        var identityBuild = EffectCombatantIdentityState.BuildNew(
+            candidates,
+            identityFactory);
+        issues.AddRange(identityBuild.Issues);
+        if (identityBuild.State == null || identityBuild.Issues.Count > 0)
+            return;
+
+        var enemies = carriers.EnemyCombatants?.DeepClone().AsObject();
+        var allies = carriers.AllyCombatants?.DeepClone().AsObject();
+        for (var candidateIndex = 0; candidateIndex < coordinates.Count; candidateIndex++)
+        {
+            var coordinate = coordinates[candidateIndex];
+            var root = coordinate.Enemy ? enemies : allies;
+            var collection = coordinate.Enemy ? "enemiesData" : "alliesData";
+            if (root?[collection] is not JsonArray combatants)
+                continue;
+            combatants[coordinate.Index] =
+                identityBuild.RewrittenCombatants[candidateIndex]?.DeepClone();
+        }
+
+        preparedCarriers = carriers with
+        {
+            EnemyCombatants = enemies,
+            AllyCombatants = allies
+        };
+        targetAuthority = EffectTargetAuthority.Build(
+            input.TargetAuthorityInput with
+            {
+                CombatantIdentities = identityBuild.State
+            });
+        allocatedCombatantIds = identityBuild.State.CombatantIdsByRef
+            .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
+            .Select(static pair => pair.Value)
+            .ToArray();
+    }
+
+    private static void CollectNewCombatantCandidates(
+        JsonObject? root,
+        string collection,
+        bool enemy,
+        JsonArray candidates,
+        List<(bool Enemy, int Index)> coordinates)
+    {
+        if (root?[collection] is not JsonArray combatants)
+            return;
+        for (var index = 0; index < combatants.Count; index++)
+        {
+            if (combatants[index] is not JsonObject combatant ||
+                !combatant.ContainsKey("combatantRef"))
+            {
+                continue;
+            }
+            candidates.Add(combatant.DeepClone());
+            coordinates.Add((enemy, index));
+        }
+    }
+
     private static List<Application> ParseApplications(
         EffectAcceptedTurnInput input,
-        IReadOnlyDictionary<string, EventAuthority> acceptedEvents,
+        IReadOnlyList<EventAuthority> acceptedEvents,
         List<ValidationIssue> issues)
     {
         var result = new List<Application>();
@@ -158,7 +303,7 @@ internal static class EffectAcceptedTurnPlanner
                 Add(issues, path + ".reason", "effect_plan_command_invalid", "non-empty readable reason", Describe(change["reason"]));
             if (TryResolveEventRef(
                     change["eventRef"],
-                    acceptedEvents,
+                    index < acceptedEvents.Count ? acceptedEvents[index] : null,
                     path + ".eventRef",
                     issues,
                     out var acceptedEventRef) &&
@@ -182,10 +327,8 @@ internal static class EffectAcceptedTurnPlanner
             }
 
             if (change["source"] is not JsonObject source ||
-                !HasOnly(source, "kind", "sourceId", "definitionKey") ||
-                !TryReadExact(source["kind"], out var sourceKind) ||
-                !TryReadExact(source["sourceId"], out var sourceId) ||
-                !TryReadExact(source["definitionKey"], out var definitionKey))
+                !TryReadExact(source["kind"], out _) ||
+                !TryReadExact(source["definitionKey"], out _))
             {
                 Add(issues, path + ".source", "effect_plan_command_invalid", "closed exact source selector", Describe(change["source"]));
                 continue;
@@ -197,7 +340,8 @@ internal static class EffectAcceptedTurnPlanner
             }
 
             var sourceResolution = input.SourceAuthority.Resolve(
-                new EffectSourceKey(input.Realm, sourceKind, sourceId, definitionKey),
+                source,
+                input.Realm,
                 targetKind,
                 parameters);
             var targetResolution = input.TargetAuthority.Resolve(target, input.Realm);
@@ -338,7 +482,9 @@ internal static class EffectAcceptedTurnPlanner
                     .ToHashSet(StringComparer.Ordinal);
                 lifetime["consumingTriggerIds"] = new JsonArray(definition["triggers"]!.AsArray()
                     .OfType<JsonObject>()
-                    .Where(trigger => consumingTypes.Contains(trigger["eventType"]!.GetValue<string>()))
+                    .Where(trigger =>
+                        trigger["consumeUses"]?.GetValue<bool>() == true &&
+                        consumingTypes.Contains(trigger["eventType"]!.GetValue<string>()))
                     .Select(trigger => (JsonNode)trigger["triggerId"]!.GetValue<string>())
                     .ToArray());
                 return true;
@@ -360,7 +506,7 @@ internal static class EffectAcceptedTurnPlanner
                 lifetime["onSceneExit"] = policy["onSceneExit"]!.DeepClone();
                 return true;
             case "source_bound":
-                lifetime["linkKind"] = source.Kind;
+                lifetime["linkKind"] = EffectSourceAuthority.CanonicalLinkKind(source.Kind);
                 lifetime["targetId"] = source.SourceId;
                 lifetime["activePredicate"] = policy["activePredicate"]!.DeepClone();
                 lifetime["onSourceLoss"] = policy["onSourceLoss"]!.DeepClone();
@@ -429,7 +575,7 @@ internal static class EffectAcceptedTurnPlanner
             else if (!RootFields.Contains(property.Key))
                 Add(issues, property.Key, "effect_plan_unknown_field", "effectChanges or effectResolutionReceipts", property.Key);
         }
-        if (root["effectChanges"] is not JsonArray)
+        if (root.ContainsKey("effectChanges") && root["effectChanges"] is not JsonArray)
             Add(issues, "effectChanges", "effect_plan_input_invalid", "effectChanges array", Describe(root["effectChanges"]));
         if (root.ContainsKey("effectResolutionReceipts") && root["effectResolutionReceipts"] is not JsonArray)
             Add(issues, "effectResolutionReceipts", "effect_plan_input_invalid", "effectResolutionReceipts array", Describe(root["effectResolutionReceipts"]));
@@ -439,7 +585,7 @@ internal static class EffectAcceptedTurnPlanner
 
     private static bool TryResolveEventRef(
         JsonNode? node,
-        IReadOnlyDictionary<string, EventAuthority> acceptedEvents,
+        EventAuthority? expectedEvent,
         string path,
         List<ValidationIssue> issues,
         out string acceptedEventRef)
@@ -453,26 +599,31 @@ internal static class EffectAcceptedTurnPlanner
             return false;
         }
 
-        if (!acceptedEvents.TryGetValue(EventAuthorityKey(kind, authorityId), out var accepted))
+        if (expectedEvent == null ||
+            !string.Equals(kind, expectedEvent.Kind, StringComparison.Ordinal) ||
+            !string.Equals(authorityId, expectedEvent.AuthorityId, StringComparison.Ordinal))
         {
             Add(
                 issues,
                 path,
                 "effect_plan_event_authority_mismatch",
-                "one exact validated accepted event authority",
+                expectedEvent == null
+                    ? "accepted event authority at the same effectChanges ordinal"
+                    : expectedEvent.Kind + ":" + expectedEvent.AuthorityId,
                 kind + ":" + authorityId);
             return false;
         }
 
-        acceptedEventRef = accepted.EventRef;
+        acceptedEventRef = expectedEvent.EventRef;
         return true;
     }
 
-    private static IReadOnlyDictionary<string, EventAuthority> ParseAcceptedEvents(
+    private static IReadOnlyList<EventAuthority> ParseAcceptedEvents(
         JsonNode? node,
         List<ValidationIssue> issues)
     {
-        var result = new Dictionary<string, EventAuthority>(StringComparer.Ordinal);
+        var result = new List<EventAuthority>();
+        var authorityKeys = new HashSet<string>(StringComparer.Ordinal);
         if (node is not JsonArray events || events.Count == 0)
         {
             Add(issues, "eventInput.events", "effect_plan_event_authority_invalid", "non-empty accepted event authority array", Describe(node));
@@ -499,12 +650,14 @@ internal static class EffectAcceptedTurnPlanner
                 MortalLocationIdentityState.BuildConfusableKey(kind),
                 MortalLocationIdentityState.BuildConfusableKey(authorityId));
             var eventAlias = MortalLocationIdentityState.BuildConfusableKey(eventRef);
-            if (!result.TryAdd(key, new EventAuthority(kind, authorityId, eventRef)) ||
+            if (!authorityKeys.Add(key) ||
                 !authorityAliases.Add(authorityAlias) ||
                 !eventRefs.Add(eventAlias))
             {
                 Add(issues, path, "effect_plan_event_authority_ambiguous", "globally exact/confusable-unique accepted event authority and eventRef", value.ToJsonString());
+                continue;
             }
+            result.Add(new EventAuthority(kind, authorityId, eventRef));
         }
         return result;
     }
@@ -614,6 +767,21 @@ internal static class EffectAcceptedTurnPlanner
 
         internal IReadOnlyDictionary<string, JsonObject> AfterImages => _afterImages;
 
+        internal void IncludeRewrittenCombatantRoots(
+            EffectCarrierCatalogInput publicationBaselines)
+        {
+            if (_enemies != null &&
+                !JsonNode.DeepEquals(_enemies, publicationBaselines.EnemyCombatants))
+            {
+                _afterImages[EffectCarrierCatalog.EnemiesPath] = _enemies;
+            }
+            if (_allies != null &&
+                !JsonNode.DeepEquals(_allies, publicationBaselines.AllyCombatants))
+            {
+                _afterImages[EffectCarrierCatalog.AlliesPath] = _allies;
+            }
+        }
+
         internal bool TryLocate(
             EffectTargetKey target,
             string category,
@@ -645,6 +813,12 @@ internal static class EffectAcceptedTurnPlanner
                         ["schemaVersion"] = EffectMaterializationContract.SchemaVersion,
                         ["entries"] = new JsonArray()
                     };
+                    if (_npcs["entries"] == null &&
+                        _npcs["NPCWoundChanges"] is JsonArray)
+                    {
+                        _npcs["schemaVersion"] = EffectMaterializationContract.SchemaVersion;
+                        _npcs["entries"] = new JsonArray();
+                    }
                     if (_npcs["entries"] is not JsonArray entries)
                         return InvalidCarrier(issues, EffectCarrierCatalog.NpcPath, _npcs, out slot);
                     var matches = entries.OfType<JsonObject>()
@@ -695,6 +869,16 @@ internal static class EffectAcceptedTurnPlanner
             out CarrierSlot slot)
         {
             slot = null!;
+            if (category is not ("buff" or "debuff"))
+            {
+                Add(
+                    issues,
+                    "source.display.category",
+                    "effect_plan_combat_category_unsupported",
+                    "buff or debuff for a category-separated Mortal combatant carrier",
+                    category);
+                return false;
+            }
             var matches = new List<(string Path, JsonObject Root, JsonObject Combatant)>();
             AddCombatantMatches(_enemies, EffectCarrierCatalog.EnemiesPath, "enemiesData", targetId, matches);
             AddCombatantMatches(_allies, EffectCarrierCatalog.AlliesPath, "alliesData", targetId, matches);

@@ -175,6 +175,104 @@ public sealed class EffectSourceDefinitionContractTests
     }
 
     [Fact]
+    public void ValidateArray_SourceBoundLifetimeRejectsUnregisteredActivePredicate()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "source_bound",
+            ["activePredicate"] = "gm_invented_predicate",
+            ["onSourceLoss"] = "expire"
+        };
+        using var document = Parse(new JsonArray(definition));
+
+        Assert.Contains(
+            EffectSourceDefinitionContract.ValidateArray(
+                document.RootElement,
+                "source.activeEffectDefinitions",
+                "mortal_world"),
+            issue => issue.Code == "effect_source_definition_invalid_active_predicate");
+    }
+
+    [Fact]
+    public void ValidateArray_TriggerComponentIdsMustResolveWithinDefinition()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["triggers"]![0]!["componentIds"] = new JsonArray(
+            "component_missing",
+            "component_missing");
+        using var document = Parse(new JsonArray(definition));
+
+        var issues = EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_definition_invalid_trigger_component");
+    }
+
+    [Fact]
+    public void ValidateArray_UsesLifetimeRequiresExactConsumingTriggerSet()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "uses",
+            ["initialUses"] = 2,
+            ["consumingEventTypes"] = new JsonArray("owner_turn_end")
+        };
+        definition["triggers"]![0]!["consumeUses"] = false;
+        using var document = Parse(new JsonArray(definition));
+
+        var issues = EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_definition_consuming_trigger_mismatch");
+    }
+
+    [Fact]
+    public void ValidateArray_UsesLifetimeRequiresTriggerForEveryConsumingEventType()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "uses",
+            ["initialUses"] = 2,
+            ["consumingEventTypes"] = new JsonArray("owner_damaged")
+        };
+        definition["triggers"]![0]!["consumeUses"] = false;
+        using var document = Parse(new JsonArray(definition));
+
+        var issues = EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_definition_consuming_trigger_mismatch");
+    }
+
+    [Fact]
+    public void ValidateArray_NonUsesLifetimeRejectsConsumingTrigger()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["triggers"]![0]!["consumeUses"] = true;
+        using var document = Parse(new JsonArray(definition));
+
+        var issues = EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_definition_consuming_trigger_mismatch");
+    }
+
+    [Fact]
     public void ValidateArray_DuplicateRawProperty_IsRejectedBeforeNodeConversion()
     {
         var json = new JsonArray(EffectMaterializationTestFixture.CreateDefinition()).ToJsonString();

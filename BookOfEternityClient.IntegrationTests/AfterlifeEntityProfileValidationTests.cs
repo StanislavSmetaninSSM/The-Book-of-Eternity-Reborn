@@ -55,6 +55,25 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_MalformedOwnedEffectDefinitionFailsAtProfileBoundary()
+    {
+        var root = JsonNode.Parse(BuildValidProfileJson())!.AsObject();
+        var profile = root[AfterlifeEntityProfileState.ProfilesProperty]![0]!.AsObject();
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["allowedRealms"] = new JsonArray("chaos_sea");
+        definition.Remove("removal");
+        profile["activeEffectDefinitions"] = new JsonArray(definition);
+        await WriteProfileStateAsync(root.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_definition_missing_field" &&
+            issue.FilePath.Contains("profiles[0].activeEffectDefinitions", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ValidAfterlifeRelationshipGate_PassesProfileValidation()
     {
         await WriteProfileStateAsync(BuildValidProfileJson().Replace(
@@ -1799,7 +1818,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """;
 
-    private static string BuildValidProfileJson() =>
+    internal static string BuildValidProfileJson() =>
         """
         {
           "schemaVersion": 1,

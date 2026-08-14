@@ -113,6 +113,112 @@ public sealed class EffectAcceptedTurnPlannerTests
     }
 
     [Theory]
+    [InlineData("condition")]
+    [InlineData("environmental")]
+    [InlineData("mixed")]
+    public void Build_CombatantApplyRejectsCategoryWithoutCanonicalCollection(
+        string category)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["display"]!["category"] = category;
+        var combatRoot = new JsonObject
+        {
+            ["enemiesData"] = new JsonArray(new JsonObject
+            {
+                ["combatantId"] = EffectMaterializationTestFixture.CombatantId,
+                ["activeBuffs"] = new JsonArray(),
+                ["activeDebuffs"] = new JsonArray()
+            })
+        };
+        var input = CreateInput(
+            targetKind: "combatant",
+            definition: definition,
+            carriers: new EffectCarrierCatalogInput(null, null, combatRoot, null, null, null));
+
+        var result = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(input);
+
+        Assert.Null(result.Plan);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "effect_plan_combat_category_unsupported");
+    }
+
+    [Theory]
+    [InlineData("condition")]
+    [InlineData("environmental")]
+    [InlineData("mixed")]
+    public void Build_PlayerApplyAllowsRegisteredNonCombatCategory(string category)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["display"]!["category"] = category;
+        var result = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(
+            CreateInput(definition: definition));
+
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(result.Plan);
+        Assert.Empty(result.Issues);
+        Assert.Equal(
+            category,
+            plan.ActiveEffects.Single()["display"]!["category"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void Build_SourceBoundCombatActionUsesCanonicalCombatLinkKind()
+    {
+        const string actionId = "combat_action_guarded_thrust";
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "source_bound",
+            ["activePredicate"] = "active",
+            ["onSourceLoss"] = "expire"
+        };
+        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        command["source"]!["kind"] = "combat_action";
+        command["source"]!["sourceId"] = actionId;
+        var input = CreateInput(command: command, definition: definition) with
+        {
+            SourceAuthority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+                new[]
+                {
+                    new EffectSourceExport(
+                        "mortal_world",
+                        "combat_action",
+                        actionId,
+                        new JsonArray(definition.DeepClone()),
+                        Materializable: true,
+                        Active: true,
+                        SameTurn: false)
+                },
+                Array.Empty<EffectSourceExport>(),
+                new HashSet<string>(StringComparer.Ordinal)))
+        };
+
+        var result = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(input);
+
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(result.Plan);
+        Assert.Empty(result.Issues);
+        var effect = Assert.Single(plan.ActiveEffects);
+        Assert.Equal("combat", effect["lifetime"]!["linkKind"]!.GetValue<string>());
+        using var document = JsonDocument.Parse(effect.ToJsonString());
+        Assert.Empty(EffectMaterializationContract.Validate(
+            document.RootElement,
+            "activeEffect",
+            EffectMaterializationPhase.CanonicalActive));
+        var bindingIssues = new List<ValidationIssue>();
+        ValidationService.ValidateCanonicalEffectBindings(
+            EffectCarrierCatalog.Build(new EffectCarrierCatalogInput(
+                plan.CarrierAfterImages[EffectCarrierCatalog.PlayerPath],
+                null,
+                null,
+                null,
+                null,
+                null)),
+            input.SourceAuthority,
+            input.TargetAuthority,
+            bindingIssues);
+        Assert.Empty(bindingIssues);
+    }
+
+    [Theory]
     [InlineData("effectId")]
     [InlineData("currentStacks")]
     [InlineData("remainingTurns")]
@@ -175,6 +281,30 @@ public sealed class EffectAcceptedTurnPlannerTests
         Assert.False(FileMapping.FieldToFile.ContainsKey("NPCEffectChanges"));
     }
 
+    [Fact]
+    public void Build_ReceiptsOnlyRootTreatsAbsentEffectChangesAsEmpty()
+    {
+        var factory = new CountingFactory();
+        var input = CreateInput() with
+        {
+            RawCommands = new JsonObject
+            {
+                ["effectResolutionReceipts"] = new JsonArray()
+            }
+        };
+
+        var result = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
+
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(result.Plan);
+        Assert.Empty(result.Issues);
+        Assert.Empty(plan.ActiveEffects);
+        Assert.Empty(plan.AllocatedEffectIds);
+        Assert.Empty(plan.AllocatedTransitionIds);
+        Assert.Equal(0, factory.EffectCalls);
+        Assert.Equal(0, factory.TransitionCalls);
+        Assert.Contains(EffectAcceptedTurnPlan.CommandPath, plan.DeletedPaths);
+    }
+
     [Theory]
     [InlineData("playerActiveEffectsChanges")]
     [InlineData("NPCEffectChanges")]
@@ -224,7 +354,7 @@ public sealed class EffectAcceptedTurnPlannerTests
             });
 
         Assert.Null(result.Plan);
-        Assert.Contains(result.Issues, issue => issue.Code == "effect_plan_event_replay_conflict");
+        Assert.Contains(result.Issues, issue => issue.Code == "effect_plan_event_authority_mismatch");
         Assert.Equal(0, factory.EffectCalls);
         Assert.Equal(0, factory.TransitionCalls);
     }
@@ -262,6 +392,37 @@ public sealed class EffectAcceptedTurnPlannerTests
             plan.IdentityIndexAfterImage["entries"]!.AsArray()
                 .Select(static entry => entry!["transitions"]![0]!["eventRef"]!.GetValue<string>())
                 .ToArray());
+    }
+
+    [Fact]
+    public void Build_SwappedOrdinalEventAuthoritiesFailBeforeIdentityAllocation()
+    {
+        var first = EffectMaterializationTestFixture.CreateApplyCommand();
+        var second = EffectMaterializationTestFixture.CreateApplyCommand();
+        first["eventRef"]!["authorityId"] = "turn_42_followup";
+        second["eventRef"]!["authorityId"] = "turn_42";
+        second["reason"] = "Рана дала второе независимое осложнение.";
+        var input = CreateInput() with
+        {
+            RawCommands = EffectMaterializationTestFixture.CreateCommandRoot(first, second),
+            EventInput = new JsonObject
+            {
+                ["turn"] = 42,
+                ["events"] = new JsonArray(
+                    CreateAcceptedEvent("accepted_turn", "turn_42", "turn_42:wound_opened"),
+                    CreateAcceptedEvent("accepted_turn", "turn_42_followup", "turn_42:wound_followup"))
+            }
+        };
+        var factory = new CountingFactory();
+
+        var result = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
+
+        Assert.Null(result.Plan);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "effect_plan_event_authority_mismatch" &&
+            string.Equals(issue.FilePath, "effectChanges[0].eventRef", StringComparison.Ordinal));
+        Assert.Equal(0, factory.EffectCalls);
+        Assert.Equal(0, factory.TransitionCalls);
     }
 
     [Fact]
@@ -412,6 +573,63 @@ public sealed class EffectAcceptedTurnPlannerTests
             },
             PreTurnCarriers: carriers,
             PreTurnIdentityIndex: null);
+    }
+
+    [Fact]
+    public void ValidatedPlanHandoffSurvivesSourceNormalizationButRejectsChangedCommandsOrEvents()
+    {
+        var input = CreateInput();
+        var cache = new EffectAcceptedTurnPlanCache(new CountingFactory());
+        var validated = cache.GetOrBuildValidated(input);
+        var normalizedSourceInput = Change(input, "source");
+
+        Assert.True(cache.TryGetValidated(
+            normalizedSourceInput.SessionId,
+            normalizedSourceInput.SnapshotToken,
+            normalizedSourceInput.RawCommands,
+            normalizedSourceInput.EventInput,
+            out var handedOff));
+        Assert.Same(validated, handedOff);
+
+        var changedCommands = Change(input, "commands");
+        Assert.False(cache.TryGetValidated(
+            changedCommands.SessionId,
+            changedCommands.SnapshotToken,
+            changedCommands.RawCommands,
+            changedCommands.EventInput,
+            out _));
+
+        var changedEventInput = Change(input, "event");
+        Assert.False(cache.TryGetValidated(
+            changedEventInput.SessionId,
+            changedEventInput.SnapshotToken,
+            changedEventInput.RawCommands,
+            changedEventInput.EventInput,
+            out _));
+    }
+
+    [Fact]
+    public void FailedRevalidationClearsPreviouslyValidatedPlanHandoff()
+    {
+        var input = CreateInput();
+        var cache = new EffectAcceptedTurnPlanCache(new CountingFactory());
+        Assert.True(cache.GetOrBuildValidated(input).Success);
+        var invalidInput = input with
+        {
+            SourceAuthority = EffectSourceAuthority.Build(
+                new EffectSourceAuthorityInput(
+                    Array.Empty<EffectSourceExport>(),
+                    Array.Empty<EffectSourceExport>(),
+                    new HashSet<string>(StringComparer.Ordinal)))
+        };
+
+        Assert.False(cache.GetOrBuildValidated(invalidInput).Success);
+        Assert.False(cache.TryGetValidated(
+            input.SessionId,
+            input.SnapshotToken,
+            input.RawCommands,
+            input.EventInput,
+            out _));
     }
 
     private static EffectAcceptedTurnInput Change(EffectAcceptedTurnInput input, string part) =>

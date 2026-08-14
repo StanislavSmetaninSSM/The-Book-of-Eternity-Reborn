@@ -74,7 +74,6 @@ public partial class ValidationService
         "NPCQuestUpdates",
         "NPCRelationshipChanges",
         "NPCRelationshipLockUpdates",
-        "NPCEffectChanges",
         "NPCWoundChanges",
         "NPCPersonalityTraitChanges",
         "NPCActivityUpdates",
@@ -4524,6 +4523,9 @@ public partial class ValidationService
 
     private async Task ValidateNpcFile(string filePath, HashSet<string> allowedKeys, List<ValidationIssue> issues)
     {
+        if (!ShouldValidateStateFile(filePath))
+            return;
+
         var json = await _fs.ReadFileAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
@@ -4543,6 +4545,12 @@ public partial class ValidationService
                     repairHint: $"Сохрани {filePath} как JSON object с допустимыми NPC top-level ключами: {string.Join(", ", allowedKeys.OrderBy(x => x))}."));
                 return;
             }
+
+            RejectLegacyEffectRouteIfPresent(
+                doc.RootElement,
+                filePath,
+                issues,
+                "NPCEffectChanges");
 
             var visibleProps = doc.RootElement.EnumerateObject()
                 .Where(prop => !prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
@@ -4585,6 +4593,16 @@ public partial class ValidationService
                 skipManifestedCompanionSourceValidation:
                     filePath.Equals("game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase) &&
                     hasUnsupportedVisibleTopLevelKeys);
+
+            if (filePath.Equals(
+                    EffectCarrierCatalog.NpcPath,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                issues.AddRange(EffectMaterializationContract.ValidateCarrier(
+                    doc.RootElement,
+                    filePath,
+                    EffectCarrierKind.Npc));
+            }
         }
         catch (JsonException ex)
         {
@@ -5032,7 +5050,11 @@ public partial class ValidationService
         ValidateNpcRelationshipChanges(root, contextPrefix, issues);
         ValidateInterNpcRelationshipChanges(root, contextPrefix, issues);
         ValidateNpcRelationshipLockUpdates(root, contextPrefix, issues);
-        ValidateNpcIdentityArray(root, contextPrefix, issues, "NPCEffectChanges", "effectsApplied");
+        RejectLegacyEffectRouteIfPresent(
+            root,
+            contextPrefix,
+            issues,
+            "NPCEffectChanges");
         ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCWoundChanges");
         ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCPersonalityTraitChanges");
         ValidateNpcActivityUpdates(root, contextPrefix, issues);
@@ -5419,6 +5441,11 @@ public partial class ValidationService
         string sectionName,
         bool requiresCompletePersonality)
     {
+        ValidateActiveEffectDefinitionsIfPresent(
+            item,
+            itemContext,
+            "mortal_world",
+            issues);
         var missingFields = new List<string>();
         foreach (var requiredStringField in new[] { "image_prompt", "rarity", "worldview", "personalityArchetype", "culturalStance", "race", "class", "appearanceDescription", "history", "progressionType" })
         {
@@ -5670,6 +5697,24 @@ public partial class ValidationService
             ValidateNpcEquippedItemsObject(equippedItems, $"{itemContext}.equippedItems", issues);
         if (item.TryGetProperty("fateCards", out var fateCards))
             ValidateNpcFateCardArray(fateCards, $"{itemContext}.fateCards", issues);
+        if (item.TryGetProperty("actions", out var actions) &&
+            actions.ValueKind != JsonValueKind.Null)
+        {
+            ValidateCombatActionArray(
+                actions,
+                $"{itemContext}.actions",
+                issues,
+                section: "NPC");
+        }
+        if (item.TryGetProperty("combatActions", out var combatActions) &&
+            combatActions.ValueKind != JsonValueKind.Null)
+        {
+            ValidateCombatActionArray(
+                combatActions,
+                $"{itemContext}.combatActions",
+                issues,
+                section: "NPC");
+        }
         if (item.TryGetProperty("inventory", out var inventory) && inventory.ValueKind != JsonValueKind.Null)
         {
             ValidateArrayItems(
@@ -5925,6 +5970,12 @@ public partial class ValidationService
             var cardContext = $"{context}[{index++}]";
             if (!RequireObject(card, cardContext, issues))
                 continue;
+
+            ValidateActiveEffectDefinitionsIfPresent(
+                card,
+                cardContext,
+                "mortal_world",
+                issues);
 
             RequireString(card, cardContext, issues, "cardId");
             RequireString(card, cardContext, issues, "name");
@@ -8090,6 +8141,19 @@ public partial class ValidationService
 
         ValidateWorldMapUpdates(root, contextPrefix, issues);
         ValidateArrayOfObjectsField(root, contextPrefix, issues, "worldEventsLog");
+        if (root.TryGetProperty("worldEventsLog", out var worldEvents) &&
+            worldEvents.ValueKind == JsonValueKind.Array)
+        {
+            var eventIndex = 0;
+            foreach (var worldEvent in worldEvents.EnumerateArray())
+            {
+                ValidateActiveEffectDefinitionsIfPresent(
+                    worldEvent,
+                    $"{contextPrefix}.worldEventsLog[{eventIndex++}]",
+                    "mortal_world",
+                    issues);
+            }
+        }
         ValidateRivalSoulArcArray(root, contextPrefix, issues, "UpdateRivalSoulArcs");
         ValidateRivalSoulArcArray(root, contextPrefix, issues, "arcs");
         ValidateWorldStateFlagsArray(root, contextPrefix, issues, "worldStateFlags");

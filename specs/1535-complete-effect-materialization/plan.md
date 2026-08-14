@@ -186,7 +186,11 @@ Research decisions and rejected alternatives are recorded in [research.md](resea
 2. `effectChanges[]`/`effectResolutionReceipts[]` are the only common application/result routes and are fully consumed; old player/NPC and direct carrier routes are removed.
 3. A closed optional `activeEffectDefinitions[]` or an equivalent proven adapter supplies exact materializable source policy.
 4. Random permanent identities are generated once in one cached accepted plan, not independently regenerated or derived from GM input.
-5. Source/target catalogs compose pre-turn authority with exact same-turn plan exports; names, raw siblings, aliases, and cross-realm inference are forbidden.
+5. Source/target catalogs compose pre-turn authority only with explicit exact
+   same-turn DTO exports: client-assigned item/location refs come from their
+   accepted plans, while stable-ID owners pass their own validator before an
+   adapter exports them. Names, raw sibling scans, aliases, cross-realm
+   inference, and commit-time plan rebuilding are forbidden.
 6. Anonymous Mortal combatants use exact same-turn `combatantRef` and receive stable client-owned combat-local anchors once before they can be canonical effect targets.
 7. Nine registered component profiles, five stack policies, and eight lifetime modes replace arbitrary pseudo-mechanics and duration sentinels.
 8. The client advances lifecycle in one deterministic phase order; only bounded story-facing work reaches the GM.

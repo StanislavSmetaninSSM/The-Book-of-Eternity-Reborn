@@ -72,7 +72,9 @@
 
 ### 3.5 Source-bound
 
-- Binds to one exact source/link and registered active predicate.
+- Binds to one exact source/link and one exact predicate from the closed registry `active|carried|equipped|unlocked`.
+- `active` is valid for every registered source kind; `carried` and `equipped` are item-only; `unlocked` is limited to skill, spiritual art, Fate Card, and combat action.
+- Predicate satisfaction is derived from the exact accepted owner/equipment state described by the source/target authority contract; prose and duplicate status inference are forbidden.
 - On source loss, source declares `suspend` or `expire`.
 - Rebinding to another source is forbidden.
 

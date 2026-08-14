@@ -1084,13 +1084,22 @@ public partial class ValidationService
             var candidateIssues = isLink
                 ? MortalLocationMaterializationContract.ValidateRawLink(value, context, route)
                 : MortalLocationMaterializationContract.ValidateRawLocation(value, context, route);
+            var mutableCandidateIssues = candidateIssues.ToList();
+            if (!isLink)
+            {
+                ValidateActiveEffectDefinitionsIfPresent(
+                    value,
+                    context,
+                    "mortal_world",
+                    mutableCandidateIssues);
+            }
             AttachMortalLocationRepairContexts(
-                candidateIssues,
+                mutableCandidateIssues,
                 value,
                 context,
                 $"{carrierPathPrefix}.{property}[{index}]",
                 isLink ? "mortal_location_link" : "mortal_location");
-            issues.AddRange(candidateIssues);
+            issues.AddRange(mutableCandidateIssues);
             index++;
         }
     }
@@ -1245,9 +1254,19 @@ public partial class ValidationService
             }
             using var document = JsonDocument.Parse(value.ToJsonString());
             var context = $"{MortalLocationMaterializationContract.WorldMapPath}.{(links ? "links" : "locations")}[{index}]";
-            issues.AddRange(links
+            var candidateIssues = links
                 ? MortalLocationMaterializationContract.ValidateCanonicalLink(document.RootElement, context)
-                : MortalLocationMaterializationContract.ValidateCanonicalLocation(document.RootElement, context));
+                : MortalLocationMaterializationContract.ValidateCanonicalLocation(document.RootElement, context);
+            var mutableCandidateIssues = candidateIssues.ToList();
+            if (!links)
+            {
+                ValidateActiveEffectDefinitionsIfPresent(
+                    document.RootElement,
+                    context,
+                    "mortal_world",
+                    mutableCandidateIssues);
+            }
+            issues.AddRange(mutableCandidateIssues);
         }
     }
 
