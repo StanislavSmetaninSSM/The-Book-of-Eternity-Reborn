@@ -3,13 +3,15 @@ using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
-internal sealed class EffectIdentityFactory
+internal class EffectIdentityFactory
 {
-    internal string CreateEffectId() => "effect_" + Guid.NewGuid().ToString("N");
+    internal virtual string CreateEffectId() => "effect_" + Guid.NewGuid().ToString("N");
 
-    internal string CreateTransitionId() => "effect_transition_" + Guid.NewGuid().ToString("N");
+    internal virtual string CreateTransitionId() => "effect_transition_" + Guid.NewGuid().ToString("N");
 
-    internal string CreateResolutionId() => "effect_resolution_" + Guid.NewGuid().ToString("N");
+    internal virtual string CreateResolutionId() => "effect_resolution_" + Guid.NewGuid().ToString("N");
+
+    internal virtual string CreateCombatantId() => "combatant_" + Guid.NewGuid().ToString("N");
 }
 
 internal sealed record EffectIdentityOwner(

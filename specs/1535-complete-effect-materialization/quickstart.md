@@ -66,6 +66,27 @@ terminal agreement, exact/confusable uniqueness, direct-index mutation
 rejection, all approved owner families, byte-identical cross-carrier duplicate
 rejection, and preservation of adjacent NPC wound/profile state.
 
+### Task 4 exact source, target, combatant, and plan-cache evidence
+
+| Boundary | RED result | GREEN result | Green tests |
+| --- | --- | --- | ---: |
+| Source, target/combatant, and accepted-turn cache authority | `TestResults/test-lanes/20260814-214808-735-19056-ca2223a834824bc9903366e513ed7bfe-focused` | `TestResults/test-lanes/20260814-215457-332-5996-1e7b370e730347d7af3f2cc1ab9c4899-focused` | 48 |
+| Same-turn selector hardening | `TestResults/test-lanes/20260814-220355-174-20284-cb940c85a8a24a96a19a2f8f6ca7b3fe-focused` | `TestResults/test-lanes/20260814-220445-223-56300-a835a997224c4f4abd40679daa0498be-focused` | 22 |
+| Immutable plan and catalog hardening | `TestResults/test-lanes/20260814-220702-246-52480-89537691dbdc455fa3531fb1551c29f9-focused` | `TestResults/test-lanes/20260814-220738-267-20256-a651fffc9d534be1a88065d1acebcc17-focused` | 55 |
+| Combined foundational authority control | — | `TestResults/test-lanes/20260814-220814-083-15604-35e8f01e875947b38cd13d7f5b5211cd-focused` | 176 |
+| Foundational phase `Fast` checkpoint | — | `TestResults/test-lanes/20260814-215832-804-30660-300e5200e2064f7bbca598f766eb6058-fast` | 3347 |
+
+The RED was the expected compile failure for the absent authority and plan
+types. GREEN proves all eleven source adapters, exact parameter and target-kind
+binding, passive/instantaneous non-promotion, exact/confusable/historical and
+cross-realm rejection, client-owned combatant IDs, all declared target families,
+and a one-instance cache whose fingerprint invalidates on every accepted input
+or authority change without deriving permanent IDs from that fingerprint. The
+review hardening additionally proves that same-turn targets are addressable only
+through one exact non-confusable `targetRef`, and that cached plans, combatant
+mappings, and returned source definitions cannot mutate their authority behind
+read-only interfaces.
+
 ## 2. Contract and Identity Control
 
 ```powershell

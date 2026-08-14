@@ -55,13 +55,13 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 
 ### Source/target and plan-cache RED/GREEN
 
-- [ ] T016 [P] Add RED exact source authority tests for skill/art/item/wound/quest/location/hazard/faction/event/Fate Card/combat adapters, same-turn effective identity, passive/instantaneous non-promotion, case/confusable/historical/cross-realm rejection, and parameter bounds in `BookOfEternityClient.Tests/EffectSourceAuthorityTests.cs`
-- [ ] T017 [P] Add RED exact target authority tests for player/NPC/combatant/Guardian/resident/radiant/afterlife actor/spiritual side, same-turn `combatantRef` to client-owned `combatantId`, forbidden GM permanent combatant ID, same-turn actor target, name/index/case/confusable/historical ambiguity, and realm mismatch in `BookOfEternityClient.Tests/EffectTargetAuthorityTests.cs`
-- [ ] T018 Implement one-pass source catalog composition and closed source-kind adapters in `BookOfEternityClient/Services/EffectSourceAuthority.cs` until T016 is GREEN
-- [ ] T019 Implement one-pass target catalog composition, actor/profile binding, exact temporary-to-permanent combatant mapping in `BookOfEternityClient/Services/EffectCombatantIdentityState.cs`, stable combat-local anchor support, and realm matching in `BookOfEternityClient/Services/EffectTargetAuthority.cs` until T017 is GREEN
-- [ ] T020 [P] Add RED plan-cache tests proving one random allocation, same plan instance across raw/companion/commit callers, invalidation on session/snapshot/input/source/target change, and no deterministic GM-derivable ID in `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs`
-- [ ] T021 Implement immutable plan/result/input records and random identity factory in `BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs`
-- [ ] T022 Implement accepted-input fingerprinting and one-instance cache authority in `BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs` until T020 is GREEN
+- [x] T016 [P] Add RED exact source authority tests for skill/art/item/wound/quest/location/hazard/faction/event/Fate Card/combat adapters, same-turn effective identity, passive/instantaneous non-promotion, case/confusable/historical/cross-realm rejection, and parameter bounds in `BookOfEternityClient.Tests/EffectSourceAuthorityTests.cs`
+- [x] T017 [P] Add RED exact target authority tests for player/NPC/combatant/Guardian/resident/radiant/afterlife actor/spiritual side, same-turn `combatantRef` to client-owned `combatantId`, forbidden GM permanent combatant ID, same-turn actor target, name/index/case/confusable/historical ambiguity, and realm mismatch in `BookOfEternityClient.Tests/EffectTargetAuthorityTests.cs`
+- [x] T018 Implement one-pass source catalog composition and closed source-kind adapters in `BookOfEternityClient/Services/EffectSourceAuthority.cs` until T016 is GREEN
+- [x] T019 Implement one-pass target catalog composition, actor/profile binding, exact temporary-to-permanent combatant mapping in `BookOfEternityClient/Services/EffectCombatantIdentityState.cs`, stable combat-local anchor support, and realm matching in `BookOfEternityClient/Services/EffectTargetAuthority.cs` until T017 is GREEN
+- [x] T020 [P] Add RED plan-cache tests proving one random allocation, same plan instance across raw/companion/commit callers, invalidation on session/snapshot/input/source/target change, and no deterministic GM-derivable ID in `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs`
+- [x] T021 Implement immutable plan/result/input records and random identity factory in `BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs`
+- [x] T022 Implement accepted-input fingerprinting and one-instance cache authority in `BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs` until T020 is GREEN
 
 **Checkpoint**: Focused contract, definition, profile, identity, carrier, source, target, and plan-cache filters are GREEN; no gameplay consumer has been migrated yet.
 

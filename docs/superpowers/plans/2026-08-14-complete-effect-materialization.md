@@ -42,6 +42,14 @@ The isolated worktree initially lacked generated NuGet assets. After restoring t
 | `Focused` identity/carrier RED | `TestResults/test-lanes/20260814-213825-580-54224-e84a066a3091429a871a5042a972bb77-focused` | 0 | 0 | build RED | 0 | no | complete | `00:00:31.0908359` |
 | `Focused` identity/carrier GREEN | `TestResults/test-lanes/20260814-214311-977-51088-25c1f82d24804eb8904e1a572b837aee-focused` | 26 | 26 | 0 | 0 | no | complete | `00:00:28.5068719` |
 | `Focused` foundational control | `TestResults/test-lanes/20260814-214356-410-20460-bf20e324700d4ccc900a8843dfb0714a-focused` | 127 | 127 | 0 | 0 | no | complete | `00:00:11.7326069` |
+| `Focused` source/target/cache RED | `TestResults/test-lanes/20260814-214808-735-19056-ca2223a834824bc9903366e513ed7bfe-focused` | 0 | 0 | build RED | 0 | no | complete | `00:00:16.9791643` |
+| `Focused` source/target/cache GREEN | `TestResults/test-lanes/20260814-215457-332-5996-1e7b370e730347d7af3f2cc1ab9c4899-focused` | 48 | 48 | 0 | 0 | no | complete | `00:00:28.3723791` |
+| `Focused` same-turn target boundary RED | `TestResults/test-lanes/20260814-220355-174-20284-cb940c85a8a24a96a19a2f8f6ca7b3fe-focused` | 22 | 18 | 4 | 0 | no | complete | `00:00:15.2956292` |
+| `Focused` same-turn target boundary GREEN | `TestResults/test-lanes/20260814-220445-223-56300-a835a997224c4f4abd40679daa0498be-focused` | 22 | 22 | 0 | 0 | no | complete | `00:00:28.9805420` |
+| `Focused` immutable authority RED | `TestResults/test-lanes/20260814-220702-246-52480-89537691dbdc455fa3531fb1551c29f9-focused` | 55 | 52 | 3 | 0 | no | complete | `00:00:15.3208184` |
+| `Focused` immutable authority GREEN | `TestResults/test-lanes/20260814-220738-267-20256-a651fffc9d534be1a88065d1acebcc17-focused` | 55 | 55 | 0 | 0 | no | complete | `00:00:27.9265826` |
+| `Focused` combined authority control | `TestResults/test-lanes/20260814-220814-083-15604-35e8f01e875947b38cd13d7f5b5211cd-focused` | 176 | 176 | 0 | 0 | no | complete | `00:00:11.9360379` |
+| `Fast` foundational phase checkpoint | `TestResults/test-lanes/20260814-215832-804-30660-300e5200e2064f7bbca598f766eb6058-fast` | 3347 | 3347 | 0 | 0 | no | complete | `00:02:46.4211170` |
 
 The first Integration attempt stopped before the intended RED because NuGet
 assets had been cleaned. After the documented project restore, the repeated
@@ -341,41 +349,41 @@ internal static class EffectAcceptedTurnPlanAuthority
 }
 ```
 
-- [ ] **Step 1: Add source RED tests**
+- [x] **Step 1: Add source RED tests**
 
 Cover skill, spiritual art, item, wound, quest, location, hazard, faction, event, Fate Card, and combat adapters; pre-turn and accepted same-turn exports; passive/instantaneous definitions; parameter bounds; exact/case/confusable/historical/cross-realm selectors; and duplicate definitions.
 
-- [ ] **Step 2: Add target/combatant RED tests**
+- [x] **Step 2: Add target/combatant RED tests**
 
 Cover player, NPC, Guardian, resident, Shining faction head, radiant actor, persistent afterlife profile, spiritual side, and Mortal combatant. Raw new combatants may expose exact `combatantRef` only; the client allocates `combatantId`, and canonical effect targets store only that permanent ID.
 
-- [ ] **Step 3: Add cache RED tests**
+- [x] **Step 3: Add cache RED tests**
 
 Inject a counting identity factory. Assert one random allocation and the same plan object across raw validation, companion validation, mechanics derivation, and commit. Changing session, validated snapshot, raw commands, source catalog, target catalog, or event input must invalidate the cache.
 
-- [ ] **Step 4: Run RED**
+- [x] **Step 4: Run RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectSourceAuthorityTests|FullyQualifiedName~EffectTargetAuthorityTests|FullyQualifiedName~EffectAcceptedTurnPlannerTests"
 ```
 
-- [ ] **Step 5: Build source and target dictionaries once**
+- [x] **Step 5: Build source and target dictionaries once**
 
 Compose validated pre-turn authorities with explicit exports from already-built same-turn item/actor/faction/location/quest/wound/combat/afterlife plans. Never infer authority from raw sibling JSON, names, UI selectors, or file order.
 
-- [ ] **Step 6: Implement stable combat-local anchors**
+- [x] **Step 6: Implement stable combat-local anchors**
 
 Resolve each exact raw `combatantRef` once, allocate a random `combatantId`, rewrite the accepted combatant object, and export that mapping to the effect plan. Reject submitted permanent IDs and duplicate/confusable refs.
 
-- [ ] **Step 7: Implement immutable plan cache**
+- [x] **Step 7: Implement immutable plan cache**
 
 Fingerprint the accepted input plus validated snapshot/session and serialized source/target catalogs, but never derive permanent IDs from the hash. Store the first random plan result in a `ConditionalWeakTable<FileSystemManager, EffectAcceptedTurnPlanCache>` as the location planner does.
 
-- [ ] **Step 8: Run GREEN and assert factory count**
+- [x] **Step 8: Run GREEN and assert factory count**
 
 Require exactly one effect ID and one transition ID allocation for one accepted application across all callers.
 
-- [ ] **Step 9: Commit exact authority**
+- [x] **Step 9: Commit exact authority**
 
 ```powershell
 git add -- BookOfEternityClient/Services/EffectSourceAuthority.cs BookOfEternityClient/Services/EffectTargetAuthority.cs BookOfEternityClient/Services/EffectCombatantIdentityState.cs BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs BookOfEternityClient.Tests/EffectSourceAuthorityTests.cs BookOfEternityClient.Tests/EffectTargetAuthorityTests.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
