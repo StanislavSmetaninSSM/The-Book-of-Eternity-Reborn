@@ -87,6 +87,29 @@ through one exact non-confusable `targetRef`, and that cached plans, combatant
 mappings, and returned source definitions cannot mutate their authority behind
 read-only interfaces.
 
+### Task 5 common command surface and pure apply planner evidence
+
+| Boundary | RED result | GREEN result | Green tests |
+| --- | --- | --- | ---: |
+| Complete Mortal apply plan | `TestResults/test-lanes/20260814-221442-928-23352-6c3d2c4e6a234f6c92c8fec7fe45f161-focused` | `TestResults/test-lanes/20260814-222548-108-3708-2d0a52aa9f104e659efc5b047186510e-focused` | 27 |
+| Closed StateDistributor command root | `TestResults/test-lanes/20260814-222205-619-18488-c84d2d50fbfa48e487f61ed97f20e75e-focused` | `TestResults/test-lanes/20260814-222240-514-40488-80d7bd8118b2446a8478ab15a88fff7e-focused` | 1 |
+| Exact accepted-event binding | `TestResults/test-lanes/20260814-223158-481-29252-c98d73e7d6814d2d84660866cc34217d-focused` | `TestResults/test-lanes/20260814-223318-864-27964-98bd016b6a5145e78f7d4407f6c78cf9-focused` | 31 |
+| Cached JSON after-image immutability | `TestResults/test-lanes/20260814-223515-805-22356-c856c1031d644a419250c5ddf4ee0b8c-focused` | `TestResults/test-lanes/20260814-223550-119-46708-98fa3e20173f47d2bd324a48fec24b83-focused` | 1 |
+| Multiple distinct accepted events | `TestResults/test-lanes/20260814-223937-577-40996-ecd5710492de4afab9ae09e1d5732fac-focused` | `TestResults/test-lanes/20260814-224059-722-52852-7b4f96066a5d44efba32fe43d803f8e0-focused` | 1 |
+| Combined foundational Task 5 control | — | `TestResults/test-lanes/20260814-224221-441-33532-ad147e4676194f568d6601290d05a6ec-focused` | 211 |
+
+The planner RED failed only on the absent after-image/input API. GREEN proves a
+complete source-parameterized player, NPC, buff, and debuff instance; exact
+carrier and identity after-images; adjacent-state and raw-input preservation;
+client post-state and legacy-route rejection before allocation; cache
+invalidation for carrier/index changes; exact command-to-accepted-event binding;
+duplicate-event rejection before identity allocation; immutable cached JSON
+after-images; multiple distinct event applications with distinct transition
+evidence; and command deletion in touched paths.
+The staging RED isolated generic `_lastUpdated` metadata; the narrow GREEN keeps
+all canonical-file timestamps while leaving only the two closed transient effect
+arrays in `effect_commands.json`.
+
 ## 2. Contract and Identity Control
 
 ```powershell

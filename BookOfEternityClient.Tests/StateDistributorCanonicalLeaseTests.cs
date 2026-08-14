@@ -2,6 +2,7 @@ using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -157,6 +158,31 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
             () => distributor.DistributeAsync(CreateWeatherResponse()));
 
         Assert.Equal(malformedBytes, await _fs.ReadFileBytesAsync(WeatherPath));
+    }
+
+    [Fact]
+    public async Task DistributeAsync_EffectCommandsRemainClosedTransientRootWithoutTimestampMetadata()
+    {
+        var distributor = new StateDistributor(
+            _fs,
+            NullLogger<StateDistributor>.Instance);
+        var response = new GameResponse
+        {
+            EffectChanges = JsonSerializer.Deserialize<JsonElement[]>(
+                "[{\"operation\":\"apply\"}]")!,
+            EffectResolutionReceipts = Array.Empty<JsonElement>()
+        };
+
+        var modified = await distributor.DistributeAsync(response);
+
+        Assert.Contains(EffectAcceptedTurnPlan.CommandPath, modified);
+        using var document = JsonDocument.Parse(
+            await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath) ?? "{}");
+        Assert.Equal(
+            new[] { "effectChanges", "effectResolutionReceipts" },
+            document.RootElement.EnumerateObject()
+                .Select(static property => property.Name)
+                .OrderBy(static name => name, StringComparer.Ordinal));
     }
 
     private FileSystemManager CreateFileSystem(FileSystemManagerHooks? hooks = null)

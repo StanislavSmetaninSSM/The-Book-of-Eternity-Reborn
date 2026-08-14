@@ -50,6 +50,18 @@ The isolated worktree initially lacked generated NuGet assets. After restoring t
 | `Focused` immutable authority GREEN | `TestResults/test-lanes/20260814-220738-267-20256-a651fffc9d534be1a88065d1acebcc17-focused` | 55 | 55 | 0 | 0 | no | complete | `00:00:27.9265826` |
 | `Focused` combined authority control | `TestResults/test-lanes/20260814-220814-083-15604-35e8f01e875947b38cd13d7f5b5211cd-focused` | 176 | 176 | 0 | 0 | no | complete | `00:00:11.9360379` |
 | `Fast` foundational phase checkpoint | `TestResults/test-lanes/20260814-215832-804-30660-300e5200e2064f7bbca598f766eb6058-fast` | 3347 | 3347 | 0 | 0 | no | complete | `00:02:46.4211170` |
+| `Focused` pure apply planner RED | `TestResults/test-lanes/20260814-221442-928-23352-6c3d2c4e6a234f6c92c8fec7fe45f161-focused` | 0 | 0 | build RED | 0 | no | complete | `00:00:20.1025977` |
+| `Focused` pure apply planner GREEN | `TestResults/test-lanes/20260814-222548-108-3708-2d0a52aa9f104e659efc5b047186510e-focused` | 27 | 27 | 0 | 0 | no | complete | `00:00:15.4131956` |
+| `Focused` closed transient staging RED | `TestResults/test-lanes/20260814-222205-619-18488-c84d2d50fbfa48e487f61ed97f20e75e-focused` | 1 | 0 | 1 | 0 | no | complete | `00:00:15.1502048` |
+| `Focused` closed transient staging GREEN | `TestResults/test-lanes/20260814-222240-514-40488-80d7bd8118b2446a8478ab15a88fff7e-focused` | 1 | 1 | 0 | 0 | no | complete | `00:00:24.8983156` |
+| `Focused` accepted-event binding RED | `TestResults/test-lanes/20260814-223158-481-29252-c98d73e7d6814d2d84660866cc34217d-focused` | 31 | 29 | 2 | 0 | no | complete | `00:00:15.1191792` |
+| `Focused` accepted-event binding GREEN | `TestResults/test-lanes/20260814-223318-864-27964-98bd016b6a5145e78f7d4407f6c78cf9-focused` | 31 | 31 | 0 | 0 | no | complete | `00:00:29.1165812` |
+| `Focused` cached JSON immutability RED | `TestResults/test-lanes/20260814-223515-805-22356-c856c1031d644a419250c5ddf4ee0b8c-focused` | 1 | 0 | 1 | 0 | no | complete | `00:00:14.6559935` |
+| `Focused` cached JSON immutability GREEN | `TestResults/test-lanes/20260814-223550-119-46708-98fa3e20173f47d2bd324a48fec24b83-focused` | 1 | 1 | 0 | 0 | no | complete | `00:00:28.1040361` |
+| `Focused` multi-event catalog RED | `TestResults/test-lanes/20260814-223937-577-40996-ecd5710492de4afab9ae09e1d5732fac-focused` | 1 | 0 | 1 | 0 | no | complete | `00:00:14.8930462` |
+| `Focused` multi-event catalog GREEN | `TestResults/test-lanes/20260814-224059-722-52852-7b4f96066a5d44efba32fe43d803f8e0-focused` | 1 | 1 | 0 | 0 | no | complete | `00:00:29.3001222` |
+| `Focused` Task 5 final combined control | `TestResults/test-lanes/20260814-224221-441-33532-ad147e4676194f568d6601290d05a6ec-focused` | 211 | 211 | 0 | 0 | no | complete | `00:00:27.1128659` |
+| `Focused` Integration compile/context control | `TestResults/test-lanes/20260814-224351-103-14004-05203a0578e9419e8fc6d34c6cc08a62-focused` | 4 | 4 | 0 | 0 | no | complete | `00:00:34.7856305` |
 
 The first Integration attempt stopped before the intended RED because NuGet
 assets had been cleaned. After the documented project restore, the repeated
@@ -405,18 +417,17 @@ git commit -m "feat: bind exact effect source and target authority (#1535)"
 
 ```json
 {
-  "schemaVersion": 1,
   "effectChanges": [
     {
       "operation": "apply",
-      "target": { "kind": "player", "targetId": "player" },
+      "target": { "kind": "player", "targetId": "player_current" },
       "source": {
         "kind": "wound",
         "sourceId": "wound_exact",
         "definitionKey": "bleeding_consequence"
       },
       "parameters": null,
-      "eventRef": { "kind": "turn", "id": "turn_42" },
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
       "reason": "Рана снова открылась"
     }
   ],
@@ -424,33 +435,33 @@ git commit -m "feat: bind exact effect source and target authority (#1535)"
 }
 ```
 
-- [ ] **Step 1: Add planner RED tests**
+- [x] **Step 1: Add planner RED tests**
 
 Assert `apply` builds one complete active instance, correct owner carrier, identity entry, touched paths, and command deletion. Reject submitted post-state fields, effect IDs, stack counters, lifetime remaining state, transition IDs, receipts, missing source parameters, wrong target, and direct carrier/index post-state.
 
-- [ ] **Step 2: Run RED**
+- [x] **Step 2: Run RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectAcceptedTurnPlannerTests"
 ```
 
-- [ ] **Step 3: Replace response fields**
+- [x] **Step 3: Replace response fields**
 
 Add only `EffectChanges` and `EffectResolutionReceipts` common response properties. Remove positive mappings for `playerActiveEffectsChanges` and `NPCEffectChanges`; do not retain aliases.
 
-- [ ] **Step 4: Map transient staging**
+- [x] **Step 4: Map transient staging**
 
 Map both fields to `game_state/effects/effect_commands.json`. The command root is transient, never canonical durable authority, and is deleted after successful consumption.
 
-- [ ] **Step 5: Implement pure apply planning**
+- [x] **Step 5: Implement pure apply planning**
 
 Parse the closed command, resolve source/target from accepted catalogs, bind source-owned parameters, construct display/components/lifetime/stack/triggers/removal/links, allocate identities once, and deep-clone unrelated carrier fields. Return issues and after-images; perform no filesystem writes.
 
-- [ ] **Step 6: Run GREEN plus legacy-route negative tests**
+- [x] **Step 6: Run GREEN plus legacy-route negative tests**
 
 Require valid apply green and old command properties rejected or ignored as explicitly invalid contract input—not silently applied.
 
-- [ ] **Step 7: Commit the MVP plan input**
+- [x] **Step 7: Commit the MVP plan input**
 
 ```powershell
 git add -- BookOfEternityClient/Models/GameResponse.cs BookOfEternityClient/Configuration/FileMapping.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md

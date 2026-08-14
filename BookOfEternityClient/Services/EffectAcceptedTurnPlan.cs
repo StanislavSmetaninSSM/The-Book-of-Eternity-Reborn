@@ -10,22 +10,46 @@ internal sealed record EffectAcceptedTurnInput(
     EffectSourceAuthority SourceAuthority,
     EffectTargetAuthority TargetAuthority,
     JsonObject EventInput,
-    string Realm = "mortal_world");
+    string Realm = "mortal_world",
+    EffectCarrierCatalogInput? PreTurnCarriers = null,
+    JsonObject? PreTurnIdentityIndex = null);
 
 internal sealed class EffectAcceptedTurnPlan
 {
+    private readonly JsonObject[] _activeEffects;
+    private readonly Dictionary<string, JsonObject> _carrierAfterImages;
+    private readonly JsonObject _identityIndexAfterImage;
+
+    internal const string CommandPath = "game_state/effects/effect_commands.json";
+    internal const string IdentityIndexPath = "game_state/effects/effect_identity_index.json";
+
     internal EffectAcceptedTurnPlan(
         string inputFingerprint,
         IReadOnlyList<string> allocatedEffectIds,
         IReadOnlyList<string> allocatedTransitionIds,
         IReadOnlyList<EffectSourceKey> sources,
-        IReadOnlyList<EffectTargetKey> targets)
+        IReadOnlyList<EffectTargetKey> targets,
+        IReadOnlyList<JsonObject> activeEffects,
+        IReadOnlyDictionary<string, JsonObject> carrierAfterImages,
+        JsonObject identityIndexAfterImage,
+        IReadOnlyList<string> touchedPaths,
+        IReadOnlyList<string> deletedPaths)
     {
         InputFingerprint = inputFingerprint;
-        AllocatedEffectIds = new ReadOnlyCollection<string>(allocatedEffectIds.ToArray());
-        AllocatedTransitionIds = new ReadOnlyCollection<string>(allocatedTransitionIds.ToArray());
-        Sources = new ReadOnlyCollection<EffectSourceKey>(sources.ToArray());
-        Targets = new ReadOnlyCollection<EffectTargetKey>(targets.ToArray());
+        AllocatedEffectIds = ReadOnly(allocatedEffectIds);
+        AllocatedTransitionIds = ReadOnly(allocatedTransitionIds);
+        Sources = ReadOnly(sources);
+        Targets = ReadOnly(targets);
+        _activeEffects = activeEffects
+            .Select(static effect => effect.DeepClone().AsObject())
+            .ToArray();
+        _carrierAfterImages = carrierAfterImages.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.DeepClone().AsObject(),
+            StringComparer.Ordinal);
+        _identityIndexAfterImage = identityIndexAfterImage.DeepClone().AsObject();
+        TouchedPaths = ReadOnly(touchedPaths);
+        DeletedPaths = ReadOnly(deletedPaths);
     }
 
     internal string InputFingerprint { get; }
@@ -37,6 +61,26 @@ internal sealed class EffectAcceptedTurnPlan
     internal IReadOnlyList<EffectSourceKey> Sources { get; }
 
     internal IReadOnlyList<EffectTargetKey> Targets { get; }
+
+    internal IReadOnlyList<JsonObject> ActiveEffects =>
+        new ReadOnlyCollection<JsonObject>(
+            _activeEffects.Select(static effect => effect.DeepClone().AsObject()).ToArray());
+
+    internal IReadOnlyDictionary<string, JsonObject> CarrierAfterImages =>
+        new ReadOnlyDictionary<string, JsonObject>(
+            _carrierAfterImages.ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal));
+
+    internal JsonObject IdentityIndexAfterImage => _identityIndexAfterImage.DeepClone().AsObject();
+
+    internal IReadOnlyList<string> TouchedPaths { get; }
+
+    internal IReadOnlyList<string> DeletedPaths { get; }
+
+    private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>
+        new(values.ToArray());
 }
 
 internal sealed record EffectAcceptedTurnPlanningResult(
@@ -44,113 +88,4 @@ internal sealed record EffectAcceptedTurnPlanningResult(
     IReadOnlyList<ValidationIssue> Issues)
 {
     internal bool Success => Plan != null && Issues.Count == 0;
-}
-
-internal static class EffectAcceptedTurnPlanBuilder
-{
-    internal static EffectAcceptedTurnPlanningResult Build(
-        EffectAcceptedTurnInput input,
-        string fingerprint,
-        EffectIdentityFactory identityFactory)
-    {
-        ArgumentNullException.ThrowIfNull(input);
-        ArgumentNullException.ThrowIfNull(identityFactory);
-        var issues = new List<ValidationIssue>();
-        issues.AddRange(input.SourceAuthority.Issues);
-        issues.AddRange(input.TargetAuthority.Issues);
-        if (!TryExact(input.SessionId) || !TryExact(input.SnapshotToken) || !TryExact(input.Realm))
-        {
-            Add(issues, "effectAcceptedTurn", "effect_plan_input_invalid", "exact session, snapshot, and realm authority", input.SessionId + "/" + input.SnapshotToken + "/" + input.Realm);
-        }
-        if (input.RawCommands["effectChanges"] is not JsonArray changes)
-        {
-            Add(issues, "effectChanges", "effect_plan_input_invalid", "effectChanges array", input.RawCommands.ToJsonString());
-            return new EffectAcceptedTurnPlanningResult(null, issues);
-        }
-
-        var resolvedSources = new List<EffectSourceKey>();
-        var resolvedTargets = new List<EffectTargetKey>();
-        for (var index = 0; index < changes.Count; index++)
-        {
-            if (changes[index] is not JsonObject change ||
-                !TryRead(change["operation"], out var operation) ||
-                !string.Equals(operation, "apply", StringComparison.Ordinal))
-            {
-                continue;
-            }
-            var path = $"effectChanges[{index}]";
-            if (change["source"] is not JsonObject source ||
-                !TryRead(source["kind"], out var sourceKind) ||
-                !TryRead(source["sourceId"], out var sourceId) ||
-                !TryRead(source["definitionKey"], out var definitionKey) ||
-                change["target"] is not JsonObject target ||
-                !TryRead(target["kind"], out var targetKind))
-            {
-                Add(issues, path, "effect_plan_input_invalid", "complete exact apply source and target selectors", change.ToJsonString());
-                continue;
-            }
-            var sourceResolution = input.SourceAuthority.Resolve(
-                new EffectSourceKey(input.Realm, sourceKind, sourceId, definitionKey),
-                targetKind,
-                change["parameters"] as JsonObject);
-            var targetResolution = input.TargetAuthority.Resolve(target, input.Realm);
-            issues.AddRange(sourceResolution.Issues.Select(issue => Prefix(issue, path + ".source")));
-            issues.AddRange(targetResolution.Issues.Select(issue => Prefix(issue, path + ".target")));
-            if (sourceResolution.Success && targetResolution.Success)
-            {
-                resolvedSources.Add(sourceResolution.Source!.Key);
-                resolvedTargets.Add(targetResolution.Target!);
-            }
-        }
-
-        if (issues.Count > 0)
-            return new EffectAcceptedTurnPlanningResult(null, issues);
-
-        var effectIds = new List<string>(resolvedSources.Count);
-        var transitionIds = new List<string>(resolvedSources.Count);
-        for (var index = 0; index < resolvedSources.Count; index++)
-        {
-            effectIds.Add(identityFactory.CreateEffectId());
-            transitionIds.Add(identityFactory.CreateTransitionId());
-        }
-        return new EffectAcceptedTurnPlanningResult(
-            new EffectAcceptedTurnPlan(
-                fingerprint,
-                effectIds,
-                transitionIds,
-                resolvedSources,
-                resolvedTargets),
-            Array.Empty<ValidationIssue>());
-    }
-
-    private static ValidationIssue Prefix(ValidationIssue issue, string prefix) =>
-        new(
-            prefix + "." + issue.FilePath,
-            issue.Severity,
-            issue.Message,
-            code: issue.Code,
-            section: issue.Section,
-            expected: issue.Expected,
-            actual: issue.Actual,
-            repairHint: issue.RepairHint);
-
-    private static bool TryRead(JsonNode? node, out string value)
-    {
-        value = node is JsonValue jsonValue && jsonValue.TryGetValue<string>(out var text) ? text : string.Empty;
-        return TryExact(value);
-    }
-
-    private static bool TryExact(string value) =>
-        value.Length > 0 && string.Equals(value, value.Trim(), StringComparison.Ordinal);
-
-    private static void Add(List<ValidationIssue> issues, string path, string code, string expected, string actual) =>
-        issues.Add(new ValidationIssue(
-            path,
-            IssueSeverity.Error,
-            "Accepted effect plan input is incomplete or lacks exact source/target authority.",
-            code: code,
-            section: "effect_materialization",
-            expected: expected,
-            actual: actual,
-            repairHint: "Resubmit one coherent effect command package against the current validated session and authority catalogs."));
 }

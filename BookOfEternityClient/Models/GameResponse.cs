@@ -105,8 +105,11 @@ public class GameResponse
     // ═══════════════════════════════════════════════
     // PLAYER EFFECTS, WOUNDS, MISC
     // ═══════════════════════════════════════════════
-    [JsonPropertyName("playerActiveEffectsChanges")]
-    public JsonElement[]? PlayerActiveEffectsChanges { get; set; }
+    [JsonPropertyName("effectChanges")]
+    public JsonElement[]? EffectChanges { get; set; }
+
+    [JsonPropertyName("effectResolutionReceipts")]
+    public JsonElement[]? EffectResolutionReceipts { get; set; }
 
     [JsonPropertyName("calculatedWeightData")]
     public JsonElement? CalculatedWeightData { get; set; }
@@ -254,9 +257,6 @@ public class GameResponse
 
     [JsonPropertyName("NPCPassiveSkillMasteryChanges")]
     public JsonElement[]? NPCPassiveSkillMasteryChanges { get; set; }
-
-    [JsonPropertyName("NPCEffectChanges")]
-    public JsonElement[]? NPCEffectChanges { get; set; }
 
     [JsonPropertyName("NPCWoundChanges")]
     public JsonElement[]? NPCWoundChanges { get; set; }

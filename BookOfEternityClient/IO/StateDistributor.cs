@@ -276,8 +276,10 @@ public class StateDistributor
             existingData[key] = value;
         }
 
-        // Add metadata
-        existingData["_lastUpdated"] = JsonSerializer.SerializeToElement(DateTime.UtcNow.ToString("o"));
+        // Transient effect commands are a closed accepted-turn input contract,
+        // not a canonical state document with distribution metadata.
+        if (!relativePath.Equals(EffectAcceptedTurnPlan.CommandPath, StringComparison.OrdinalIgnoreCase))
+            existingData["_lastUpdated"] = JsonSerializer.SerializeToElement(DateTime.UtcNow.ToString("o"));
 
         // Serialize and write
         var merged = JsonSerializer.Serialize(existingData, JsonOpts);

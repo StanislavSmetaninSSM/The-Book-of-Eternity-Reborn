@@ -31,7 +31,7 @@ internal sealed class EffectAcceptedTurnPlanCache
         {
             if (string.Equals(_fingerprint, fingerprint, StringComparison.Ordinal) && _result != null)
                 return _result;
-            var result = EffectAcceptedTurnPlanBuilder.Build(input, fingerprint, _identityFactory);
+            var result = EffectAcceptedTurnPlanner.Build(input, fingerprint, _identityFactory);
             _fingerprint = fingerprint;
             _result = result;
             return result;
@@ -49,10 +49,25 @@ internal sealed class EffectAcceptedTurnPlanCache
             ["rawCommands"] = input.RawCommands.DeepClone(),
             ["sourceAuthorityFingerprint"] = input.SourceAuthority.Fingerprint,
             ["targetAuthorityFingerprint"] = input.TargetAuthority.Fingerprint,
-            ["eventInput"] = input.EventInput.DeepClone()
+            ["eventInput"] = input.EventInput.DeepClone(),
+            ["preTurnCarriers"] = CloneCarriers(input.PreTurnCarriers),
+            ["preTurnIdentityIndex"] = input.PreTurnIdentityIndex?.DeepClone()
         };
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(root.ToJsonString())));
     }
+
+    private static JsonObject? CloneCarriers(EffectCarrierCatalogInput? carriers) =>
+        carriers == null
+            ? null
+            : new JsonObject
+            {
+                ["playerEffects"] = carriers.PlayerEffects?.DeepClone(),
+                ["npcEffects"] = carriers.NpcEffects?.DeepClone(),
+                ["enemyCombatants"] = carriers.EnemyCombatants?.DeepClone(),
+                ["allyCombatants"] = carriers.AllyCombatants?.DeepClone(),
+                ["afterlifeProfiles"] = carriers.AfterlifeProfiles?.DeepClone(),
+                ["spiritualConflict"] = carriers.SpiritualConflict?.DeepClone()
+            };
 }
 
 internal static class EffectAcceptedTurnPlanAuthority

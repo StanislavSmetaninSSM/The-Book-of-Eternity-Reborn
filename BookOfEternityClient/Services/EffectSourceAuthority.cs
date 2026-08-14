@@ -143,13 +143,24 @@ internal sealed class EffectSourceAuthority
         JsonObject? parameters,
         List<ValidationIssue> issues)
     {
-        if (parameters == null)
-            return;
         if (definition["parameterBounds"] is not JsonObject bounds)
         {
-            Add(issues, "source.parameterBounds", "effect_source_parameter_forbidden", "closed source parameter bounds", "missing");
+            if (parameters != null && parameters.Count > 0)
+                Add(issues, "source.parameterBounds", "effect_source_parameter_forbidden", "closed source parameter bounds", "missing");
             return;
         }
+        foreach (var bound in bounds)
+        {
+            if (bound.Value is JsonObject boundObject &&
+                boundObject["required"] is JsonValue requiredValue &&
+                requiredValue.TryGetValue<bool>(out var required) && required &&
+                (parameters == null || !parameters.ContainsKey(bound.Key) || parameters[bound.Key] == null))
+            {
+                Add(issues, "parameters." + bound.Key, "effect_source_parameter_required", "required source-owned parameter", "missing");
+            }
+        }
+        if (parameters == null)
+            return;
         foreach (var parameter in parameters)
         {
             var path = "parameters." + parameter.Key;

@@ -75,7 +75,7 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 
 ### Tests for User Story 1 (RED first)
 
-- [ ] T023 [P] [US1] Add RED planner tests for `apply`, forbidden submitted post-state, valid player/NPC/combatant final carriers, source parameters, and exact final index/touched paths in `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs`
+- [x] T023 [P] [US1] Add RED planner tests for `apply`, forbidden submitted post-state, valid player/NPC/combatant final carriers, source parameters, and exact final index/touched paths in `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs`
 - [ ] T024 [P] [US1] Add RED raw/composed validation tests for missing source/target/display/component/lifetime/stack/removal, unknown/duplicate fields, direct carrier/index mutation, and pristine missing-carrier initialization in `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.cs`
 - [ ] T025 [P] [US1] Add RED same-turn composition tests for accepted item, actor, faction, location, quest/event, wound, and `combatantRef` source/target exports without trusting raw sibling JSON in `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Sources.cs`
 - [ ] T026 [P] [US1] Add RED normalizer tests for player, NPC with adjacent wound state, enemy/ally buff-debuff category, transient command consumption, identity-index creation, and post-state agreement in `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Effects.cs`
@@ -83,9 +83,9 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 
 ### Implementation for User Story 1
 
-- [ ] T028 [US1] Add `EffectChanges` and `EffectResolutionReceipts` response properties and remove legacy player/NPC effect application properties in `BookOfEternityClient/Models/GameResponse.cs`
-- [ ] T029 [US1] Map the two common response fields to transient `game_state/effects/effect_commands.json` and remove legacy application mappings in `BookOfEternityClient/Configuration/FileMapping.cs`
-- [ ] T030 [US1] Implement apply parsing, exact source/target resolution including one-time `combatantRef` mapping, source-bound parameter resolution, final component/display/link creation, client identity allocation, and complete final carrier/index planning in `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs` until T023 is GREEN
+- [x] T028 [US1] Add `EffectChanges` and `EffectResolutionReceipts` response properties and remove legacy player/NPC effect application properties in `BookOfEternityClient/Models/GameResponse.cs`
+- [x] T029 [US1] Map the two common response fields to transient `game_state/effects/effect_commands.json` and remove legacy application mappings in `BookOfEternityClient/Configuration/FileMapping.cs`
+- [x] T030 [US1] Implement apply parsing, exact source/target resolution including one-time `combatantRef` mapping, source-bound parameter resolution, final component/display/link creation, client identity allocation, and complete final carrier/index planning in `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs` until T023 is GREEN
 - [ ] T031 [US1] Add raw, composed, continuity, client-owned-field, source/target, carrier/index, and post-seal validation integration in `BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs` until T024 is GREEN
 - [ ] T032 [US1] Invoke effect raw/composed phases after applicable source/target materialization plans and before accepted publication in `BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs`
 - [ ] T033 [US1] Add closed `activeEffectDefinitions[]` validation calls to source-owning player/item/quest/wound/combat contracts in `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs`, and `BookOfEternityClient/Services/MortalItemMaterializationContract.cs`
