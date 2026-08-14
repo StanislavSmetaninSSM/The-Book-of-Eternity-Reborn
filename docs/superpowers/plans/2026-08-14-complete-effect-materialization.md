@@ -37,6 +37,8 @@ The isolated worktree initially lacked generated NuGet assets. After restoring t
 | `Focused` fixture GREEN | `TestResults/test-lanes/20260814-210323-432-29280-c4c4f652d51d45a5a114e5cec7d042e6-focused` | 6 | 6 | 0 | 0 | no | complete | `00:00:31.7565685` |
 | `Focused Integration` context RED | `TestResults/test-lanes/20260814-210502-155-22620-230144b9623a420ba278102cb6dead11-focused` | 0 | 0 | build RED | 0 | no | complete | `00:00:21.1074697` |
 | `Focused Integration` context GREEN | `TestResults/test-lanes/20260814-210622-008-44200-76e97ad1b8894f91aa6d898ce20d779b-focused` | 4 | 4 | 0 | 0 | no | complete | `00:00:34.2071216` |
+| `Focused` effect-contract RED | `TestResults/test-lanes/20260814-211506-098-19088-f1600182c52a4dbaa9304b85ab610865-focused` | 0 | 0 | build RED | 0 | no | complete | `00:00:47.8860037` |
+| `Focused` effect-contract GREEN | `TestResults/test-lanes/20260814-213329-791-14516-ea2ec87d69c34244abc572e63d27a488-focused` | 101 | 101 | 0 | 0 | no | complete | `00:00:25.0347077` |
 
 The first Integration attempt stopped before the intended RED because NuGet
 assets had been cleaned. After the documented project restore, the repeated
@@ -44,6 +46,15 @@ run produced the expected missing-context compile failure. That infrastructure
 attempt is recorded in `quickstart.md` but is not behavioral RED. The
 implementation session appends every inspected RED/GREEN result directory to
 this section before marking the corresponding Spec Kit task complete.
+
+The Task 2 RED failed only on the deliberately absent envelope, profile,
+source-definition, phase, carrier, and fixture-profile APIs. The first GREEN
+also completed twice (`20260814-212802-...` and `20260814-212817-...`, 65/65)
+because the command transport returned before the owned lane finished; the
+final strengthened fixture-and-contract control above is the recorded result.
+A later test-only
+compile correction (`20260814-213013-...`) changed an xUnit theory argument
+from an internal enum to its string name; production behavior did not change.
 
 ## File Responsibility Map
 
@@ -95,7 +106,9 @@ public static class EffectMaterializationTestFixture
 
     public static JsonObject CreateDefinition(string profile = "periodic_damage");
     public static JsonObject CreateApplyCommand(string targetKind = "player");
-    public static JsonObject CreateCanonicalEffect(string ownerKind = "player");
+    public static JsonObject CreateCanonicalEffect(
+        string ownerKind = "player",
+        string profile = "periodic_damage");
     public static JsonObject CreateIdentityIndex(params JsonObject[] effects);
     public static JsonObject CreateCommandRoot(params JsonObject[] changes);
     public static JsonObject CreatePendingResolutionRoot();
@@ -178,19 +191,19 @@ internal static class EffectSourceDefinitionContract
 }
 ```
 
-- [ ] **Step 1: Write closed-envelope RED tests**
+- [x] **Step 1: Write closed-envelope RED tests**
 
 Cover every required root section, duplicate property, unknown property, wrong scalar/container type, forbidden active identity in definitions, missing canonical identity, active/terminal state mismatch, and missing-pristine versus non-empty legacy carrier behavior.
 
-- [ ] **Step 2: Write all nine profile RED tests**
+- [x] **Step 2: Write all nine profile RED tests**
 
 Cover `characteristic_modifier`, `roll_modifier`, `resistance_modifier`, `periodic_damage`, `periodic_restore`, `action_control`, `event_reaction`, `wound_consequence`, and `afterlife_combat_condition`. Assert finite/bounded values, closed enum values, exact registered operands, unknown-field rejection, and no prose-only mechanic.
 
-- [ ] **Step 3: Write definition RED tests**
+- [x] **Step 3: Write definition RED tests**
 
 Assert exact/confusable uniqueness of `definitionKey`, complete target/realm/component/parameter/stack/lifetime/trigger/removal policy, source parameter bounds, and rejection of `effectId`, current stacks, remaining counters, transitions, receipts, or terminal history.
 
-- [ ] **Step 4: Run RED**
+- [x] **Step 4: Run RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectMaterializationContractTests|FullyQualifiedName~EffectSourceDefinitionContractTests"
@@ -198,19 +211,19 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 
 Expected: compile failure for the three missing production types.
 
-- [ ] **Step 5: Implement exact JSON validation helpers**
+- [x] **Step 5: Implement exact JSON validation helpers**
 
 Validate raw `JsonElement` before `JsonNode` conversion so duplicate properties remain observable. Use closed field sets per discriminated mode and produce stable `effect_materialization_*` issue codes with exact paths.
 
-- [ ] **Step 6: Implement profile registry behavior**
+- [x] **Step 6: Implement profile registry behavior**
 
 Each profile record supplies `ValidatePayload`, deterministic/receipt resolution metadata, legal merge reducers, and a safe projection descriptor. Do not execute mechanics in the contract layer.
 
-- [ ] **Step 7: Run GREEN and one malformed-control mutation**
+- [x] **Step 7: Run GREEN and one malformed-control mutation**
 
 Re-run the filter, then mutate a valid fixture to include a non-finite number and an unknown nested field; both must fail with bounded issue paths.
 
-- [ ] **Step 8: Commit the closed semantic vocabulary**
+- [x] **Step 8: Commit the closed semantic vocabulary**
 
 ```powershell
 git add -- BookOfEternityClient/Services/EffectMaterializationContract.cs BookOfEternityClient/Services/EffectSourceDefinitionContract.cs BookOfEternityClient/Services/EffectComponentProfiles.cs BookOfEternityClient.Tests/EffectMaterializationContractTests.cs BookOfEternityClient.Tests/EffectSourceDefinitionContractTests.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md

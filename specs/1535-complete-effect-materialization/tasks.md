@@ -39,12 +39,12 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 
 ### Contract and source-definition RED/GREEN
 
-- [ ] T006 [P] Add RED closed-envelope tests for required sections, duplicate/unknown fields, wrong types, client-owned fields, and missing pristine versus non-empty legacy carriers in `BookOfEternityClient.Tests/EffectMaterializationContractTests.cs`
-- [ ] T007 [P] Add RED registered-profile payload tests for all nine initial component profiles, non-finite/out-of-bound values, unknown profiles, and prose-only mechanics in `BookOfEternityClient.Tests/EffectMaterializationContractTests.cs`
-- [ ] T008 [P] Add RED static `activeEffectDefinitions[]` tests for exact/confusable `definitionKey`, target/realm/component/parameter/stack/lifetime/trigger/removal completeness, and forbidden active identity fields in `BookOfEternityClient.Tests/EffectSourceDefinitionContractTests.cs`
-- [ ] T009 Implement the closed canonical instance parser/validator and mode-specific lifetime/stack/trigger/removal/link validation in `BookOfEternityClient/Services/EffectMaterializationContract.cs` until T006 is GREEN
-- [ ] T010 Implement the discriminated component registry, payload validators, deterministic component metadata, merge rules, and projection descriptors in `BookOfEternityClient/Services/EffectComponentProfiles.cs` until T007 is GREEN
-- [ ] T011 Implement the embeddable static source-definition contract and parameter-bound validation in `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs` until T008 is GREEN
+- [x] T006 [P] Add RED closed-envelope tests for required sections, duplicate/unknown fields, wrong types, client-owned fields, and missing pristine versus non-empty legacy carriers in `BookOfEternityClient.Tests/EffectMaterializationContractTests.cs`
+- [x] T007 [P] Add RED registered-profile payload tests for all nine initial component profiles, non-finite/out-of-bound values, unknown profiles, and prose-only mechanics in `BookOfEternityClient.Tests/EffectMaterializationContractTests.cs`
+- [x] T008 [P] Add RED static `activeEffectDefinitions[]` tests for exact/confusable `definitionKey`, target/realm/component/parameter/stack/lifetime/trigger/removal completeness, and forbidden active identity fields in `BookOfEternityClient.Tests/EffectSourceDefinitionContractTests.cs`
+- [x] T009 Implement the closed canonical instance parser/validator and mode-specific lifetime/stack/trigger/removal/link validation in `BookOfEternityClient/Services/EffectMaterializationContract.cs` until T006 is GREEN
+- [x] T010 Implement the discriminated component registry, payload validators, deterministic component metadata, merge rules, and projection descriptors in `BookOfEternityClient/Services/EffectComponentProfiles.cs` until T007 is GREEN
+- [x] T011 Implement the embeddable static source-definition contract and parameter-bound validation in `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs` until T008 is GREEN
 
 ### Identity and carrier RED/GREEN
 

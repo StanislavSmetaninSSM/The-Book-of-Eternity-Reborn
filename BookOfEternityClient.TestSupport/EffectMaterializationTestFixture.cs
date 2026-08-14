@@ -12,9 +12,6 @@ internal static class EffectMaterializationTestFixture
 
     internal static JsonObject CreateDefinition(string profile = "periodic_damage")
     {
-        if (!string.Equals(profile, "periodic_damage", StringComparison.Ordinal))
-            throw new ArgumentOutOfRangeException(nameof(profile), profile, "Unsupported test profile.");
-
         return new JsonObject
         {
             ["schemaVersion"] = 1,
@@ -28,16 +25,8 @@ internal static class EffectMaterializationTestFixture
             },
             ["allowedRealms"] = new JsonArray("mortal_world"),
             ["allowedTargetKinds"] = new JsonArray("player", "npc", "combatant"),
-            ["components"] = new JsonArray(CreatePeriodicDamageComponent()),
-            ["parameterBounds"] = new JsonObject
-            {
-                ["amount"] = new JsonObject
-                {
-                    ["kind"] = "number",
-                    ["minimum"] = 1,
-                    ["maximum"] = 10
-                }
-            },
+            ["components"] = new JsonArray(CreateComponent(profile)),
+            ["parameterBounds"] = CreateParameterBounds(profile),
             ["stacking"] = new JsonObject
             {
                 ["stackKey"] = "bleeding",
@@ -101,7 +90,9 @@ internal static class EffectMaterializationTestFixture
         };
     }
 
-    internal static JsonObject CreateCanonicalEffect(string ownerKind = "player")
+    internal static JsonObject CreateCanonicalEffect(
+        string ownerKind = "player",
+        string profile = "periodic_damage")
     {
         var targetId = ownerKind switch
         {
@@ -137,7 +128,7 @@ internal static class EffectMaterializationTestFixture
                 ["sourceId"] = "wound_test_torn_side",
                 ["definitionKey"] = DefinitionKey
             },
-            ["components"] = new JsonArray(CreatePeriodicDamageComponent()),
+            ["components"] = new JsonArray(CreateComponent(profile)),
             ["lifetime"] = new JsonObject
             {
                 ["mode"] = "turns",
@@ -283,6 +274,108 @@ internal static class EffectMaterializationTestFixture
                 ["damageType"] = "bleeding",
                 ["floorPolicy"] = "registered_resource_floor"
             }
+        };
+
+    private static JsonObject CreateComponent(string profile) =>
+        profile switch
+        {
+            "characteristic_modifier" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["characteristic"] = "dexterity",
+                ["operation"] = "flat",
+                ["value"] = -2
+            }),
+            "roll_modifier" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["operations"] = new JsonArray("attack_roll"),
+                ["contribution"] = "disadvantage"
+            }),
+            "resistance_modifier" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["resistance"] = "bleeding",
+                ["operation"] = "flat",
+                ["value"] = -1,
+                ["cap"] = new JsonObject
+                {
+                    ["minimum"] = -100,
+                    ["maximum"] = 100
+                }
+            }),
+            "periodic_damage" => CreatePeriodicDamageComponent(),
+            "periodic_restore" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["resource"] = "health",
+                ["amount"] = 3,
+                ["capPolicy"] = "registered_resource_cap"
+            }),
+            "action_control" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["action"] = "movement",
+                ["operation"] = "restrict"
+            }),
+            "event_reaction" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["eventType"] = "owner_damaged",
+                ["resultKind"] = "apply_definition",
+                ["definitionKey"] = DefinitionKey,
+                ["dependency"] = "after_current_event"
+            }),
+            "wound_consequence" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["woundId"] = "wound_test_torn_side",
+                ["symptom"] = "bleeding",
+                ["consequence"] = "periodic_damage"
+            }),
+            "afterlife_combat_condition" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["conditionKind"] = "burden",
+                ["targetSide"] = "opponent",
+                ["actorId"] = "afterlife_actor_test",
+                ["operations"] = new JsonArray("presence_exchange"),
+                ["axes"] = new JsonArray("presence"),
+                ["counterplay"] = new JsonArray("purification"),
+                ["payoff"] = "attrition",
+                ["exchangeLimit"] = 3,
+                ["sceneLimit"] = 1
+            }),
+            _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, "Unsupported test profile.")
+        };
+
+    private static JsonObject CreateProfileComponent(string profile, JsonObject payload) =>
+        new()
+        {
+            ["componentId"] = "component_001",
+            ["profile"] = profile,
+            ["priority"] = 100,
+            ["payload"] = payload
+        };
+
+    private static JsonObject CreateParameterBounds(string profile) =>
+        profile switch
+        {
+            "characteristic_modifier" or "resistance_modifier" => new JsonObject
+            {
+                ["value"] = CreateNumericBound(-100, 100)
+            },
+            "periodic_damage" or "periodic_restore" => new JsonObject
+            {
+                ["amount"] = CreateNumericBound(1, 10)
+            },
+            "afterlife_combat_condition" => new JsonObject
+            {
+                ["exchangeLimit"] = CreateNumericBound(1, 10)
+            },
+            "roll_modifier" or "action_control" or "event_reaction" or "wound_consequence" =>
+                new JsonObject(),
+            _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, "Unsupported test profile.")
+        };
+
+    private static JsonObject CreateNumericBound(int minimum, int maximum) =>
+        new()
+        {
+            ["kind"] = "number",
+            ["minimum"] = minimum,
+            ["maximum"] = maximum
         };
 
     private static JsonObject CreateTurnEndTrigger() =>

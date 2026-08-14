@@ -1,0 +1,611 @@
+using System.Text.Json;
+
+namespace BookOfEternityClient.Services;
+
+internal static class EffectSourceDefinitionContract
+{
+    private static readonly HashSet<string> DefinitionFields = Set(
+        "schemaVersion", "definitionKey", "display", "allowedRealms", "allowedTargetKinds",
+        "components", "parameterBounds", "stacking", "lifetime", "triggers", "removal", "links");
+
+    private static readonly HashSet<string> RequiredFields = new(DefinitionFields, StringComparer.Ordinal);
+
+    private static readonly HashSet<string> ClientOwnedFields = Set(
+        "effectId", "state", "currentStacks", "remainingTurns", "remainingUses", "chronology",
+        "materialization", "materializationReceipt", "materializationId", "receipt", "receiptId",
+        "receiptSeal", "transitionId", "transitions", "identityIndex", "carrierPath",
+        "terminalState", "terminalReason", "createdAtTurn", "lastTransitionId", "lastTransitionTurn");
+
+    private static readonly HashSet<string> Realms = Set("mortal_world", "chaos_sea", "shining_abode");
+    private static readonly HashSet<string> TargetKinds = Set(
+        "player", "npc", "combatant", "guardian", "resident", "radiant_actor",
+        "afterlife_actor", "spiritual_conflict_side");
+    private static readonly HashSet<string> Categories = Set("buff", "debuff", "condition", "environmental", "mixed");
+    private static readonly HashSet<string> Visibilities = Set("visible", "hidden", "gm_only");
+    private static readonly HashSet<string> StackPolicies = Set("independent", "stack", "refresh", "replace", "merge");
+    private static readonly HashSet<string> AtMaximumPolicies = Set("no_change", "refresh", "component_response");
+    private static readonly HashSet<string> RefreshModes = Set("reset", "extend");
+    private static readonly HashSet<string> MergeRules = Set("sum", "minimum", "maximum", "profile_specific");
+    private static readonly HashSet<string> LifetimeModes = Set(
+        "turns", "uses", "until_time", "scene", "source_bound", "condition_bound", "permanent", "manual");
+    private static readonly HashSet<string> AdvancePhases = Set(
+        "owner_turn_start", "owner_turn_end", "world_turn_start", "world_turn_end");
+    private static readonly HashSet<string> EventTypes = Set(
+        "owner_turn_start", "owner_turn_end", "owner_damaged", "owner_restored",
+        "owner_action_started", "owner_action_completed", "scene_started", "scene_ended",
+        "source_state_changed", "condition_changed");
+    private static readonly HashSet<string> ResolutionModes = Set("deterministic", "bounded_receipt");
+    private static readonly HashSet<string> LossPolicies = Set("expire", "suspend", "no_change");
+    private static readonly HashSet<string> LinkKinds = Set(
+        "wound", "skill", "spiritual_art", "item", "quest", "location", "hazard", "faction",
+        "world_event", "fate_card", "combat");
+    private static readonly HashSet<string> LinkRoles = Set("source", "condition", "context", "cleanup_companion");
+
+    internal static IReadOnlyList<ValidationIssue> ValidateArray(
+        JsonElement definitions,
+        string path,
+        string realm)
+    {
+        var issues = new List<ValidationIssue>();
+        if (definitions.ValueKind != JsonValueKind.Array)
+        {
+            Add(issues, path, "effect_source_definition_invalid_field", "activeEffectDefinitions array", definitions.ValueKind.ToString());
+            return issues;
+        }
+        if (!Realms.Contains(realm))
+        {
+            Add(issues, path, "effect_source_definition_invalid_field", "current registered source realm", realm);
+            return issues;
+        }
+
+        FindDuplicateProperties(definitions, path, issues);
+        var exactKeys = new HashSet<string>(StringComparer.Ordinal);
+        var aliasKeys = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var definition in definitions.EnumerateArray())
+        {
+            var definitionPath = $"{path}[{index++}]";
+            ValidateDefinition(definition, definitionPath, realm, exactKeys, aliasKeys, issues);
+        }
+        return issues;
+    }
+
+    private static void ValidateDefinition(
+        JsonElement definition,
+        string path,
+        string realm,
+        HashSet<string> exactKeys,
+        HashSet<string> aliasKeys,
+        List<ValidationIssue> issues)
+    {
+        if (definition.ValueKind != JsonValueKind.Object)
+        {
+            Add(issues, path, "effect_source_definition_invalid_field", "closed source definition object", definition.ValueKind.ToString());
+            return;
+        }
+
+        foreach (var property in definition.EnumerateObject())
+        {
+            if (ClientOwnedFields.Contains(property.Name))
+            {
+                Add(issues, path + "." + property.Name, "effect_source_definition_client_field_forbidden", "field absent from static source authority", property.Value.GetRawText());
+            }
+            else if (!DefinitionFields.Contains(property.Name))
+            {
+                Add(issues, path + "." + property.Name, "effect_source_definition_unknown_field", "registered static definition field", property.Name);
+            }
+        }
+
+        foreach (var field in RequiredFields)
+        {
+            if (!definition.TryGetProperty(field, out _))
+                Add(issues, path + "." + field, "effect_source_definition_missing_field", "required complete source policy field", "missing");
+        }
+
+        RequireExactInt(definition, path, "schemaVersion", EffectMaterializationContract.SchemaVersion, issues);
+        var definitionKey = RequireExactIdentifier(definition, path, "definitionKey", issues);
+        if (definitionKey != null)
+        {
+            if (!exactKeys.Add(definitionKey))
+            {
+                Add(issues, path + ".definitionKey", "effect_source_definition_duplicate_key", "one exact definitionKey per source", definitionKey);
+            }
+            else if (!aliasKeys.Add(MortalLocationIdentityState.BuildConfusableKey(definitionKey)))
+            {
+                Add(issues, path + ".definitionKey", "effect_source_definition_confusable_key", "one exact/confusable definitionKey per source", definitionKey);
+            }
+        }
+
+        ValidateDisplay(definition, path, issues);
+        ValidateClosedStringArray(definition, path, "allowedRealms", Realms, requireRealm: realm, issues);
+        ValidateClosedStringArray(definition, path, "allowedTargetKinds", TargetKinds, requireRealm: null, issues);
+        var componentParameters = ValidateComponents(definition, path, issues);
+        ValidateParameterBounds(definition, path, componentParameters, issues);
+        ValidateStacking(definition, path, issues);
+        ValidateLifetime(definition, path, issues);
+        ValidateTriggers(definition, path, issues);
+        ValidateRemoval(definition, path, issues);
+        ValidateLinks(definition, path, issues);
+    }
+
+    private static void ValidateDisplay(JsonElement root, string path, List<ValidationIssue> issues)
+    {
+        if (!TryGetObject(root, path, "display", issues, out var display))
+            return;
+        var displayPath = path + ".display";
+        ValidateClosedObject(display, displayPath, Set("name", "description", "category", "visibility"), issues);
+        RequireReadableString(display, displayPath, "name", issues);
+        RequireReadableString(display, displayPath, "description", issues);
+        RequireClosedString(display, displayPath, "category", Categories, issues);
+        RequireClosedString(display, displayPath, "visibility", Visibilities, issues);
+    }
+
+    private static HashSet<string> ValidateComponents(JsonElement root, string path, List<ValidationIssue> issues)
+    {
+        var parameterNames = new HashSet<string>(StringComparer.Ordinal);
+        if (!root.TryGetProperty("components", out var components) ||
+            components.ValueKind != JsonValueKind.Array ||
+            components.GetArrayLength() == 0)
+        {
+            Add(issues, path + ".components", "effect_source_definition_invalid_components", "non-empty registered component template array", Describe(root, "components"));
+            return parameterNames;
+        }
+
+        var componentIssues = new List<ValidationIssue>();
+        var ids = new HashSet<string>(StringComparer.Ordinal);
+        var aliases = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var component in components.EnumerateArray())
+        {
+            var componentPath = $"{path}.components[{index++}]";
+            EffectComponentProfiles.ValidateComponent(component, componentPath, componentIssues);
+            if (component.ValueKind != JsonValueKind.Object)
+                continue;
+            if (TryReadExactIdentifier(component, "componentId", out var componentId) &&
+                (!ids.Add(componentId) || !aliases.Add(MortalLocationIdentityState.BuildConfusableKey(componentId))))
+            {
+                Add(issues, componentPath + ".componentId", "effect_source_definition_invalid_components", "unique exact/confusable componentId", componentId);
+            }
+            if (component.TryGetProperty("payload", out var payload) && payload.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var property in payload.EnumerateObject())
+                    parameterNames.Add(property.Name);
+            }
+        }
+
+        foreach (var issue in componentIssues)
+        {
+            Add(
+                issues,
+                issue.FilePath,
+                "effect_source_definition_invalid_components",
+                issue.Expected ?? "complete registered component template",
+                issue.Actual ?? issue.Message);
+        }
+        return parameterNames;
+    }
+
+    private static void ValidateParameterBounds(
+        JsonElement root,
+        string path,
+        IReadOnlySet<string> componentParameters,
+        List<ValidationIssue> issues)
+    {
+        if (!TryGetObject(root, path, "parameterBounds", issues, out var bounds))
+            return;
+        var boundsPath = path + ".parameterBounds";
+        var aliases = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var parameter in bounds.EnumerateObject())
+        {
+            var parameterPath = boundsPath + "." + parameter.Name;
+            if (parameter.Name.Length == 0 || !string.Equals(parameter.Name, parameter.Name.Trim(), StringComparison.Ordinal) ||
+                !aliases.Add(MortalLocationIdentityState.BuildConfusableKey(parameter.Name)) ||
+                !componentParameters.Contains(parameter.Name))
+            {
+                Add(issues, parameterPath, "effect_source_definition_invalid_parameter_bound", "one exact component payload parameter", parameter.Name);
+            }
+            ValidateParameterBound(parameter.Value, parameterPath, issues);
+        }
+    }
+
+    private static void ValidateParameterBound(
+        JsonElement bound,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (bound.ValueKind != JsonValueKind.Object)
+        {
+            Add(issues, path, "effect_source_definition_invalid_parameter_bound", "closed parameter bound object", bound.GetRawText());
+            return;
+        }
+        ValidateClosedObject(bound, path, Set("kind", "minimum", "maximum", "allowedValues", "required"), issues, "effect_source_definition_invalid_parameter_bound");
+        var kind = RequireClosedString(bound, path, "kind", Set("number", "integer", "enum", "identity", "boolean"), issues, "effect_source_definition_invalid_parameter_bound");
+        if (kind is "number" or "integer")
+        {
+            var hasMinimum = TryReadFinite(bound, "minimum", out var minimum);
+            var hasMaximum = TryReadFinite(bound, "maximum", out var maximum);
+            if (!hasMinimum)
+                Add(issues, path + ".minimum", "effect_source_definition_invalid_parameter_bound", "finite minimum", Describe(bound, "minimum"));
+            if (!hasMaximum)
+                Add(issues, path + ".maximum", "effect_source_definition_invalid_parameter_bound", "finite maximum", Describe(bound, "maximum"));
+            if (hasMinimum && hasMaximum && minimum > maximum)
+                Add(issues, path, "effect_source_definition_invalid_parameter_bound", "minimum <= maximum", bound.GetRawText());
+            if (kind == "integer" &&
+                (hasMinimum && minimum != Math.Truncate(minimum) || hasMaximum && maximum != Math.Truncate(maximum)))
+            {
+                Add(issues, path, "effect_source_definition_invalid_parameter_bound", "integer minimum and maximum", bound.GetRawText());
+            }
+        }
+        else if (kind == "enum")
+        {
+            RequireExactStringArray(bound, path, "allowedValues", allowEmpty: false, issues, "effect_source_definition_invalid_parameter_bound");
+        }
+        else if (bound.TryGetProperty("allowedValues", out var values) && values.ValueKind != JsonValueKind.Null)
+        {
+            Add(issues, path + ".allowedValues", "effect_source_definition_invalid_parameter_bound", "field absent or null for this bound kind", values.GetRawText());
+        }
+
+        if (bound.TryGetProperty("required", out var required) && required.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+            Add(issues, path + ".required", "effect_source_definition_invalid_parameter_bound", "boolean when present", required.GetRawText());
+    }
+
+    private static void ValidateStacking(JsonElement root, string path, List<ValidationIssue> issues)
+    {
+        if (!TryGetObject(root, path, "stacking", issues, out var stacking))
+            return;
+        var stackingPath = path + ".stacking";
+        ValidateClosedObject(stacking, stackingPath, Set("stackKey", "policy", "maxStacks", "atMaximum", "refreshMode", "mergeRule"), issues);
+        RequireExactIdentifier(stacking, stackingPath, "stackKey", issues);
+        var policy = RequireClosedString(stacking, stackingPath, "policy", StackPolicies, issues);
+        var maxStacks = RequirePositiveInt(stacking, stackingPath, "maxStacks", issues);
+        if (policy == "independent" && maxStacks != 1)
+            Add(issues, stackingPath + ".maxStacks", "effect_source_definition_invalid_field", "1 for independent policy", maxStacks?.ToString() ?? "missing");
+        RequireClosedString(stacking, stackingPath, "atMaximum", AtMaximumPolicies, issues);
+        ValidateNullableClosedString(stacking, stackingPath, "refreshMode", RefreshModes, policy == "refresh", issues);
+        ValidateNullableClosedString(stacking, stackingPath, "mergeRule", MergeRules, policy == "merge", issues);
+    }
+
+    private static void ValidateLifetime(JsonElement root, string path, List<ValidationIssue> issues)
+    {
+        if (!TryGetObject(root, path, "lifetime", issues, out var lifetime))
+            return;
+        var lifetimePath = path + ".lifetime";
+        var mode = RequireClosedString(lifetime, lifetimePath, "mode", LifetimeModes, issues);
+        if (mode == null)
+            return;
+
+        switch (mode)
+        {
+            case "turns":
+                ValidateClosedObject(lifetime, lifetimePath, Set("mode", "initialTurns", "advancePhase"), issues);
+                RequirePositiveInt(lifetime, lifetimePath, "initialTurns", issues);
+                RequireClosedString(lifetime, lifetimePath, "advancePhase", AdvancePhases, issues);
+                break;
+            case "uses":
+                ValidateClosedObject(lifetime, lifetimePath, Set("mode", "initialUses", "consumingEventTypes"), issues);
+                RequirePositiveInt(lifetime, lifetimePath, "initialUses", issues);
+                ValidateClosedStringArray(lifetime, lifetimePath, "consumingEventTypes", EventTypes, requireRealm: null, issues);
+                break;
+            case "until_time":
+                ValidateClosedObject(lifetime, lifetimePath, Set("mode", "duration", "timeAuthority"), issues);
+                RequirePositiveInt(lifetime, lifetimePath, "duration", issues);
+                RequireExactIdentifier(lifetime, lifetimePath, "timeAuthority", issues);
+                break;
+            case "scene":
+                ValidateClosedObject(lifetime, lifetimePath, Set("mode", "onSceneExit"), issues);
+                RequireClosedString(lifetime, lifetimePath, "onSceneExit", Set("expire", "suspend"), issues);
+                break;
+            case "source_bound":
+                ValidateClosedObject(lifetime, lifetimePath, Set("mode", "activePredicate", "onSourceLoss"), issues);
+                RequireExactIdentifier(lifetime, lifetimePath, "activePredicate", issues);
+                RequireClosedString(lifetime, lifetimePath, "onSourceLoss", Set("expire", "suspend"), issues);
+                break;
+            case "condition_bound":
+                ValidateClosedObject(lifetime, lifetimePath, Set("mode", "conditionKey", "operandBounds", "onConditionLoss"), issues);
+                RequireExactIdentifier(lifetime, lifetimePath, "conditionKey", issues);
+                RequireObject(lifetime, lifetimePath, "operandBounds", issues);
+                RequireClosedString(lifetime, lifetimePath, "onConditionLoss", Set("expire", "suspend"), issues);
+                break;
+            case "permanent":
+                ValidateClosedObject(lifetime, lifetimePath, Set("mode"), issues);
+                break;
+            case "manual":
+                ValidateClosedObject(lifetime, lifetimePath, Set("mode", "authorities"), issues);
+                RequireExactStringArray(lifetime, lifetimePath, "authorities", allowEmpty: false, issues);
+                break;
+        }
+    }
+
+    private static void ValidateTriggers(JsonElement root, string path, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty("triggers", out var triggers) || triggers.ValueKind != JsonValueKind.Array)
+        {
+            Add(issues, path + ".triggers", "effect_source_definition_invalid_field", "trigger template array", Describe(root, "triggers"));
+            return;
+        }
+        var ids = new HashSet<string>(StringComparer.Ordinal);
+        var aliases = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var trigger in triggers.EnumerateArray())
+        {
+            var triggerPath = $"{path}.triggers[{index++}]";
+            if (trigger.ValueKind != JsonValueKind.Object)
+            {
+                Add(issues, triggerPath, "effect_source_definition_invalid_field", "closed trigger template", trigger.GetRawText());
+                continue;
+            }
+            ValidateClosedObject(trigger, triggerPath, Set("triggerId", "eventType", "priority", "componentIds", "consumeUses", "resolutionMode"), issues);
+            var id = RequireExactIdentifier(trigger, triggerPath, "triggerId", issues);
+            if (id != null && (!ids.Add(id) || !aliases.Add(MortalLocationIdentityState.BuildConfusableKey(id))))
+                Add(issues, triggerPath + ".triggerId", "effect_source_definition_invalid_field", "unique exact/confusable triggerId", id);
+            RequireClosedString(trigger, triggerPath, "eventType", EventTypes, issues);
+            RequireBoundedInt(trigger, triggerPath, "priority", -10_000, 10_000, issues);
+            RequireExactStringArray(trigger, triggerPath, "componentIds", allowEmpty: false, issues);
+            RequireBoolean(trigger, triggerPath, "consumeUses", issues);
+            RequireClosedString(trigger, triggerPath, "resolutionMode", ResolutionModes, issues);
+        }
+    }
+
+    private static void ValidateRemoval(JsonElement root, string path, List<ValidationIssue> issues)
+    {
+        if (!TryGetObject(root, path, "removal", issues, out var removal))
+            return;
+        var removalPath = path + ".removal";
+        ValidateClosedObject(removal, removalPath, Set("dispelCategories", "cureKinds", "onSourceLoss", "onConditionLoss", "manualAuthorities"), issues);
+        RequireExactStringArray(removal, removalPath, "dispelCategories", allowEmpty: true, issues);
+        RequireExactStringArray(removal, removalPath, "cureKinds", allowEmpty: true, issues);
+        RequireClosedString(removal, removalPath, "onSourceLoss", LossPolicies, issues);
+        ValidateNullableClosedString(removal, removalPath, "onConditionLoss", LossPolicies, false, issues);
+        RequireExactStringArray(removal, removalPath, "manualAuthorities", allowEmpty: true, issues);
+    }
+
+    private static void ValidateLinks(JsonElement root, string path, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty("links", out var links) || links.ValueKind != JsonValueKind.Array)
+        {
+            Add(issues, path + ".links", "effect_source_definition_invalid_field", "link template array", Describe(root, "links"));
+            return;
+        }
+        var keys = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var link in links.EnumerateArray())
+        {
+            var linkPath = $"{path}.links[{index++}]";
+            if (link.ValueKind != JsonValueKind.Object)
+            {
+                Add(issues, linkPath, "effect_source_definition_invalid_field", "closed link template", link.GetRawText());
+                continue;
+            }
+            ValidateClosedObject(link, linkPath, Set("kind", "targetId", "role"), issues);
+            var kind = RequireClosedString(link, linkPath, "kind", LinkKinds, issues);
+            var target = RequireExactIdentifier(link, linkPath, "targetId", issues);
+            var role = RequireClosedString(link, linkPath, "role", LinkRoles, issues);
+            if (kind != null && target != null && role != null && !keys.Add(kind + "\u001f" + MortalLocationIdentityState.BuildConfusableKey(target) + "\u001f" + role))
+                Add(issues, linkPath, "effect_source_definition_invalid_field", "unique exact/confusable link template", link.GetRawText());
+        }
+    }
+
+    private static void ValidateClosedStringArray(
+        JsonElement root,
+        string path,
+        string field,
+        IReadOnlySet<string> allowed,
+        string? requireRealm,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var array) || array.ValueKind != JsonValueKind.Array || array.GetArrayLength() == 0)
+        {
+            Add(issues, path + "." + field, "effect_source_definition_invalid_field", "non-empty registered string array", Describe(root, field));
+            return;
+        }
+        var values = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var item in array.EnumerateArray())
+        {
+            var itemPath = $"{path}.{field}[{index++}]";
+            if (!TryReadExactIdentifier(item, out var text) || !allowed.Contains(text) || !values.Add(text))
+                Add(issues, itemPath, "effect_source_definition_invalid_field", "one unique registered exact value", item.GetRawText());
+        }
+        if (requireRealm != null && !values.Contains(requireRealm))
+            Add(issues, path + "." + field, "effect_source_definition_invalid_field", $"array containing source realm {requireRealm}", array.GetRawText());
+    }
+
+    private static bool TryGetObject(
+        JsonElement root,
+        string path,
+        string field,
+        List<ValidationIssue> issues,
+        out JsonElement value)
+    {
+        if (root.TryGetProperty(field, out value) && value.ValueKind == JsonValueKind.Object)
+            return true;
+        Add(issues, path + "." + field, "effect_source_definition_invalid_field", "object", Describe(root, field));
+        return false;
+    }
+
+    private static void RequireObject(JsonElement root, string path, string field, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var value) || value.ValueKind != JsonValueKind.Object)
+            Add(issues, path + "." + field, "effect_source_definition_invalid_field", "object", Describe(root, field));
+    }
+
+    private static string? RequireClosedString(
+        JsonElement root,
+        string path,
+        string field,
+        IReadOnlySet<string> allowed,
+        List<ValidationIssue> issues,
+        string code = "effect_source_definition_invalid_field")
+    {
+        var value = RequireExactIdentifier(root, path, field, issues, code);
+        if (value != null && !allowed.Contains(value))
+        {
+            Add(issues, path + "." + field, code, string.Join(" | ", allowed.OrderBy(static item => item, StringComparer.Ordinal)), value);
+            return null;
+        }
+        return value;
+    }
+
+    private static string? RequireExactIdentifier(
+        JsonElement root,
+        string path,
+        string field,
+        List<ValidationIssue> issues,
+        string code = "effect_source_definition_invalid_field")
+    {
+        if (root.TryGetProperty(field, out var value) && TryReadExactIdentifier(value, out var text))
+            return text;
+        Add(issues, path + "." + field, code, "exact non-empty string without surrounding whitespace", Describe(root, field));
+        return null;
+    }
+
+    private static void RequireReadableString(JsonElement root, string path, string field, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var value) || value.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(value.GetString()))
+            Add(issues, path + "." + field, "effect_source_definition_invalid_field", "non-empty player-readable string", Describe(root, field));
+    }
+
+    private static int? RequirePositiveInt(JsonElement root, string path, string field, List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(field, out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out var number) && number > 0)
+            return number;
+        Add(issues, path + "." + field, "effect_source_definition_invalid_field", "positive integer", Describe(root, field));
+        return null;
+    }
+
+    private static void RequireBoundedInt(JsonElement root, string path, string field, int minimum, int maximum, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var value) || value.ValueKind != JsonValueKind.Number ||
+            !value.TryGetInt32(out var number) || number < minimum || number > maximum)
+            Add(issues, path + "." + field, "effect_source_definition_invalid_field", $"integer from {minimum} through {maximum}", Describe(root, field));
+    }
+
+    private static void RequireExactInt(JsonElement root, string path, string field, int expected, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var value) || value.ValueKind != JsonValueKind.Number || !value.TryGetInt32(out var number) || number != expected)
+            Add(issues, path + "." + field, "effect_source_definition_invalid_field", expected.ToString(), Describe(root, field));
+    }
+
+    private static void RequireBoolean(JsonElement root, string path, string field, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var value) || value.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+            Add(issues, path + "." + field, "effect_source_definition_invalid_field", "boolean", Describe(root, field));
+    }
+
+    private static void ValidateNullableClosedString(
+        JsonElement root,
+        string path,
+        string field,
+        IReadOnlySet<string> allowed,
+        bool required,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var value) || value.ValueKind == JsonValueKind.Null)
+        {
+            if (required)
+                Add(issues, path + "." + field, "effect_source_definition_invalid_field", string.Join(" | ", allowed), "null or missing");
+            return;
+        }
+        if (!TryReadExactIdentifier(value, out var text) || !allowed.Contains(text))
+            Add(issues, path + "." + field, "effect_source_definition_invalid_field", string.Join(" | ", allowed), value.GetRawText());
+    }
+
+    private static void RequireExactStringArray(
+        JsonElement root,
+        string path,
+        string field,
+        bool allowEmpty,
+        List<ValidationIssue> issues,
+        string code = "effect_source_definition_invalid_field")
+    {
+        if (!root.TryGetProperty(field, out var array) || array.ValueKind != JsonValueKind.Array || (!allowEmpty && array.GetArrayLength() == 0))
+        {
+            Add(issues, path + "." + field, code, allowEmpty ? "exact string array" : "non-empty exact string array", Describe(root, field));
+            return;
+        }
+        var keys = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var item in array.EnumerateArray())
+        {
+            var itemPath = $"{path}.{field}[{index++}]";
+            if (!TryReadExactIdentifier(item, out var value) || !keys.Add(MortalLocationIdentityState.BuildConfusableKey(value)))
+                Add(issues, itemPath, code, "one unique exact/confusable non-empty string", item.GetRawText());
+        }
+    }
+
+    private static void ValidateClosedObject(
+        JsonElement value,
+        string path,
+        IReadOnlySet<string> allowed,
+        List<ValidationIssue> issues,
+        string code = "effect_source_definition_invalid_field")
+    {
+        foreach (var property in value.EnumerateObject())
+        {
+            if (!allowed.Contains(property.Name))
+                Add(issues, path + "." + property.Name, code, "registered current-schema field", property.Name);
+        }
+    }
+
+    private static void FindDuplicateProperties(JsonElement value, string path, List<ValidationIssue> issues)
+    {
+        switch (value.ValueKind)
+        {
+            case JsonValueKind.Object:
+                var names = new HashSet<string>(StringComparer.Ordinal);
+                foreach (var property in value.EnumerateObject())
+                {
+                    var propertyPath = path + "." + property.Name;
+                    if (!names.Add(property.Name))
+                        Add(issues, propertyPath, "effect_source_definition_duplicate_property", "one occurrence of each exact property", property.Name);
+                    FindDuplicateProperties(property.Value, propertyPath, issues);
+                }
+                break;
+            case JsonValueKind.Array:
+                var index = 0;
+                foreach (var item in value.EnumerateArray())
+                    FindDuplicateProperties(item, $"{path}[{index++}]", issues);
+                break;
+        }
+    }
+
+    private static bool TryReadFinite(JsonElement root, string field, out double number)
+    {
+        number = 0;
+        return root.TryGetProperty(field, out var value) && value.ValueKind == JsonValueKind.Number &&
+               value.TryGetDouble(out number) && double.IsFinite(number);
+    }
+
+    private static bool TryReadExactIdentifier(JsonElement root, string field, out string value)
+    {
+        value = string.Empty;
+        return root.TryGetProperty(field, out var element) && TryReadExactIdentifier(element, out value);
+    }
+
+    private static bool TryReadExactIdentifier(JsonElement value, out string text)
+    {
+        text = value.ValueKind == JsonValueKind.String ? value.GetString() ?? string.Empty : string.Empty;
+        return text.Length > 0 && string.Equals(text, text.Trim(), StringComparison.Ordinal);
+    }
+
+    private static HashSet<string> Set(params string[] values) => new(values, StringComparer.Ordinal);
+
+    private static string Describe(JsonElement root, string field) =>
+        root.TryGetProperty(field, out var value) ? value.GetRawText() : "missing";
+
+    private static void Add(
+        List<ValidationIssue> issues,
+        string path,
+        string code,
+        string expected,
+        string actual) =>
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            "Static active-effect definition violates its closed source-authority contract.",
+            code: code,
+            section: "effect_materialization",
+            expected: expected,
+            actual: actual,
+            repairHint: "Resubmit one complete source definition without active identity, history, receipt, or unknown policy fields."));
+}

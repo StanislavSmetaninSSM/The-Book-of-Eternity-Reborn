@@ -41,6 +41,18 @@ failed before the intended RED because the isolated Integration project lacked
 `obj/project.assets.json`. After the prerequisite restore, the repeated run
 failed for the intended missing context type and is the RED recorded above.
 
+### Task 2 closed contract evidence
+
+| Boundary | RED result | GREEN result | Green tests |
+| --- | --- | --- | ---: |
+| Envelope, nine profiles, source definitions, fixture control | `TestResults/test-lanes/20260814-211506-098-19088-f1600182c52a4dbaa9304b85ab610865-focused` | `TestResults/test-lanes/20260814-213329-791-14516-ea2ec87d69c34244abc572e63d27a488-focused` | 101 |
+
+The RED was the expected compile failure for the not-yet-created contract
+types. The GREEN includes malformed non-finite numeric, unknown nested field,
+prose-without-mechanics, exact/confusable definition key, and legacy-carrier
+negative controls. All recorded lanes had zero duplicate IDs, no timeout, and
+complete owned-tree cleanup.
+
 ## 2. Contract and Identity Control
 
 ```powershell
