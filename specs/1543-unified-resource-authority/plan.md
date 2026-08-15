@@ -1,0 +1,322 @@
+# Implementation Plan: Unified Resource Authority
+
+**Branch**: `1535-effect-materialization` | **Date**: 2026-08-15 | **Spec**: [spec.md](spec.md)
+
+**Input**: Approved feature specification from `specs/1543-unified-resource-authority/spec.md` and approved architecture from `docs/superpowers/specs/2026-08-15-unified-resource-authority-design.md`.
+
+## Summary
+
+Replace every included persisted health/energy/poise/charge/ammunition/durability/action-point/current-max authority with one sealed resource definition catalog, one live state ledger, immutable transition history, and one transient command surface. Generalize combat/resource owner identity, reduce every authorized ordinary or effect-generated mutation through exact decimal arithmetic, and orchestrate resources plus Effect Task 9 through one cached `AcceptedMechanicsPlan` that publishes atomically under the existing canonical write lease/rollback contour. UI and GM context consume safe in-memory projections; active templates/examples switch directly and old technical saves are rejected without migration or fallback.
+
+## Technical Context
+
+**Language/Version**: C# 12 on .NET 8; PowerShell 7 for bounded local verification; existing React/Vite/TypeScript frontend changes only if current typed DTOs cannot consume the safe C# resource projection.
+
+**Primary Dependencies**: Existing `FileSystemManager`, `PendingTurnSnapshotAuthority`, `ValidationService`, `CanonicalStateNormalizer`, accepted-turn write lease/repair/rollback loop, `StateDistributor`, Mortal actor/item/location plans, effect source/target/carrier/index/lifecycle services from #1535, `StateManager`, console/browser result builders, Spectre.Console, xUnit 2.9.2, Microsoft.NET.Test.Sdk 17.11.1, `System.Text.Json`/`JsonNode`, and SHA-256 fingerprints. No new runtime package or cloud service.
+
+**Storage**: File-backed JSON. Protected canonical roots are `game_state/resources/resource_definitions.json`, `resource_state.json`, and `resource_history.json`; transient input is `resource_commands.json`; bounded effect/resource pending work remains under `game_state/control/`. Final domain files contain owner bindings and narrative/non-resource state only, never current/max mirrors.
+
+**Testing**: Test-first xUnit unit/contract/integration coverage through `scripts/test-csharp.ps1`; documentation/source guards; scale guards; failure-injection lifecycle tests; one meaningful Fast checkpoint; FullValidation because shared Mortal/afterlife docs/examples/manifests change; LifecycleIntegration because accepted-turn planning, pending control, rollback, and stale output change; one final PreMerge after #1543 and resumed #1535 Task 9 are merge-ready.
+
+**Target Platform**: Local Windows console/browser game client on .NET 8; production contracts remain portable offline .NET code.
+
+**Project Type**: Local console/browser game client with a C# runtime, separate fast/integration test projects, file-backed GM contracts, and React/Vite browser frontend.
+
+**Performance Goals**: Build definition, owner, state, history, effect source/target/carrier, pending, replay, and trigger indexes once per accepted plan. Doubling representative populations must remain at or below 2.5x measured planner/validation work; player status/detail views remain interactive and never replay full history.
+
+**Constraints**: No migration, compatibility reader, legacy promotion, dual write, or raw fallback; no GitHub Actions; exact ordinal/confusable authority; exact decimal/quantum arithmetic; random client IDs allocated once; no arbitrary paths or expressions; one complete plan; deterministic four-phase ordering; bounded graph; byte/existence rollback; console/browser parity; player-facing Russian copy and recursive privacy; currencies/accounting/progression remain outside.
+
+**Scale/Scope**: Up to 256 definitions, 20,000 live entries, 512 pre-trigger mutations, 1,024 trigger nodes/depth 32, untruncated history, eight owner kinds, player/NPC/combat/group/item/afterlife/effect cutovers, active template plus shared Mortal/afterlife prompts/examples/manifests.
+
+**Source Issue(s)**: [#1543](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1543); blocked consumer [#1535](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1535)
+
+**Contract Scope**: Player-facing console/browser; GM-facing Mortal/afterlife prompts and examples; runtime state; validation; normalization/publication; owner lifecycle; effect lifecycle; bounded pending/receipt; repair/rollback; docs/manifests/templates/source guards; no unrelated visual redesign.
+
+**Verification Commands**:
+
+```powershell
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ResourceMaterializationContractTests|FullyQualifiedName~ResourceDefinitionCatalogTests|FullyQualifiedName~ResourceStateContractTests|FullyQualifiedName~ResourceHistoryStateTests|FullyQualifiedName~ResourceOwnerAuthorityTests|FullyQualifiedName~ResourceMutationReducerTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AcceptedMechanicsPlannerTests|FullyQualifiedName~AcceptedMechanicsPlanCacheTests|FullyQualifiedName~ResourceTriggerGraphTests|FullyQualifiedName~ResourcePendingResolutionTests|FullyQualifiedName~ResourceProjectionServiceTests|FullyQualifiedName~ResourcePlayerPrivacyTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourceMaterializationValidationTests|FullyQualifiedName~ResourceOwnerMaterializationTests|FullyQualifiedName~ResourceCombatOwnerTests|FullyQualifiedName~ResourceItemOwnerTests|FullyQualifiedName~ResourceAfterlifeOwnerTests|FullyQualifiedName~CanonicalStateNormalizerResourceTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalResourceCutoverTests|FullyQualifiedName~ResourceCombatIntegrationTests|FullyQualifiedName~ResourceItemIntegrationTests|FullyQualifiedName~AfterlifeResourceCutoverTests|FullyQualifiedName~EffectResourceMaterializationTests|FullyQualifiedName~ResourcePendingResolutionIntegrationTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourceConsoleBrowserParityTests|FullyQualifiedName~ExplorerModeCommandTests|FullyQualifiedName~ExplorerWebCommandServiceTests|FullyQualifiedName~MortalBootstrapValidationTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~PromptDocumentationCoverageTests|FullyQualifiedName~AfterlifeDocumentationCoverageTests|FullyQualifiedName~ResourceContractSourceGuardTests|FullyQualifiedName~ResourceAuthorityScaleTests|FullyQualifiedName~AcceptedMechanicsPlannerScaleTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExampleDocumentationValidationTests|FullyQualifiedName~FileSystemExampleFixtureIntegrityTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane LifecycleIntegration
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge
+```
+
+Do not run a duplicate Fast immediately before PreMerge. Do not use GitHub Actions.
+
+## Constitution Check
+
+*GATE before research: PASS. Re-check after Phase 1 design: PASS.*
+
+- **GitHub traceability**: Issue #1543 owns the resource feature and #1535 records it as the blocker for Effect Task 9. Both are linked from spec, plan, tasks, contracts, data model, quickstart, Superpowers design, and final implementation plan.
+- **Spec Kit fit**: This is a cross-domain epic changing canonical state, validation, normalization, pending/rollback, console/browser projections, afterlife, GM contracts, examples, and multiple sessions.
+- **Player-facing integrity**: One projection feeds console/browser; in-world Russian copy remains; hidden/GM-only resources and internal owner/history/pending/repair data are recursively absent.
+- **Contract/state authority**: Definitions and owners authorize mechanics; the client owns state/history/ordering/IDs/pending/publication; Mortal and afterlife prompts/docs/examples/manifests/tests change with executable contracts.
+- **Test-first path**: Closed contract/reducer/owner RED tests precede production types; domain cutover RED integration precedes field removal; privacy/rollback/source-guard RED tests precede final removal.
+- **Verification evidence**: Focused controls, one Fast checkpoint, conditional FullValidation and LifecycleIntegration, manual console/browser parity spot-check, scale guard, and one final PreMerge are specified.
+- **Agent orchestration**: Work remains in the existing isolated worktree. No subagent is required by this plan; any later explicit delegation must include #1543/#1535, this Spec Kit set, Superpowers TDD/review/verification, and bounded commands.
+- **Pre-release save policy**: Active bootstrap/templates/examples/tests switch directly. Old legacy resource state is incompatible; no migration or compatibility branch is planned.
+
+## Project Structure
+
+### Documentation (this feature)
+
+```text
+specs/1543-unified-resource-authority/
+├── spec.md
+├── plan.md
+├── research.md
+├── data-model.md
+├── quickstart.md
+├── checklists/
+│   └── requirements.md
+├── contracts/
+│   ├── accepted-mechanics-publication.md
+│   ├── resource-definition-and-command.md
+│   ├── resource-owner-authority.md
+│   ├── resource-pending-resolution.md
+│   ├── resource-projection-and-cutover.md
+│   └── resource-transition-and-history.md
+└── tasks.md
+
+docs/superpowers/
+├── specs/2026-08-15-unified-resource-authority-design.md
+└── plans/2026-08-15-unified-resource-authority.md
+```
+
+### New resource/mechanics source units
+
+```text
+BookOfEternityClient/Services/
+├── ResourceMaterializationContract.cs       # strict roots/records/scalars/shared constants
+├── ResourceDefinitionCatalog.cs             # sealed definitions, built-ins, setting proposals
+├── ResourceCapacityFormulaCatalog.cs        # closed formula registry and exact capacity results
+├── ResourceStateContract.cs                 # live ledger parsing, indexing, state agreement
+├── ResourceHistoryState.cs                  # immutable transitions, replay index, continuity
+├── ResourceOwnerAuthority.cs                # composed owners/capabilities/exact refs/fingerprint
+├── CombatantIdentityState.cs                # common combatant/group member client identity
+├── ResourceMutationReducer.cs               # pure one-mutation/capacity arithmetic and events
+├── ResourceMutationSourceCatalog.cs         # closed source routes -> phase/priority/policies
+├── ResourceAcceptedTurnInputComposer.cs      # bounded resource/owner/effect input composition
+├── AcceptedMechanicsPlan.cs                  # immutable complete after-image records
+├── AcceptedMechanicsPlanCache.cs             # one validated full-fingerprint handoff
+├── AcceptedMechanicsPlanner.cs               # cross-domain ordering and trigger DAG
+├── ResourcePendingResolutionState.cs         # bounded requests, receipts, replay evidence
+├── ResourceProjectionService.cs              # safe typed player/GM in-memory projection
+├── ResourceRepairPacketBuilder.cs            # bounded omission-only repair projection
+├── ResourcePlayerFailureMessages.cs          # fixed Russian player copy
+├── CanonicalStateNormalizer/
+│   └── CanonicalStateNormalizer.AcceptedMechanics.cs
+└── Validation/
+    └── ValidationService.ResourceMaterialization.cs
+```
+
+`EffectCombatantIdentityState.cs` is replaced by the common `CombatantIdentityState.cs`; effect target/planner callers are updated in the same identity task. `CanonicalStateNormalizer.Effects.cs` remains an effect after-image helper but no longer owns an independent publication transaction.
+
+### Existing production files modified by the authority and publication foundation
+
+```text
+BookOfEternityClient/
+├── Configuration/FileMapping.cs
+├── Models/GameResponse.cs
+├── Models/GameState/AggregatedGameState.cs
+├── Core/StateManager.cs
+├── Core/GameEngine/
+│   ├── GameEngine.AgentConsole.cs
+│   ├── GameEngine.IncarnationAndAfterlife.cs
+│   ├── GameEngine.MainMenu.cs
+│   ├── GameEngine.SessionAndSnapshots.cs
+│   ├── GameEngine.TurnLifecycle.cs
+│   └── GameEngine.ValidationAndRepair.cs
+├── Services/
+│   ├── CanonicalStateNormalizer.cs
+│   ├── LiveTurnPreparationService.cs
+│   ├── EffectAcceptedTurnInputComposer.cs
+│   ├── EffectAcceptedTurnPlan.cs
+│   ├── EffectAcceptedTurnPlanCache.cs
+│   ├── EffectAcceptedTurnPlanner.cs
+│   ├── EffectCarrierCatalog.cs
+│   ├── EffectLifecycleScheduler.cs
+│   ├── EffectMechanicsSnapshot.cs
+│   ├── EffectTargetAuthority.cs
+│   ├── MortalItemMaterializationContract.cs
+│   ├── MortalItemTransitionWriter.cs
+│   ├── MortalItemTransitionWriter.Stacks.cs
+│   ├── ShiningBlessingEffectState.cs
+│   ├── AfterlifeSpiritualConflictState.cs
+│   ├── AfterlifeSpiritualConflictTurnPreviewService.cs
+│   ├── GuardianGachaChargeRules.cs
+│   ├── ShiningAbodeState.cs
+│   ├── ShiningAbodeState.Gacha.cs
+│   ├── CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs
+│   ├── CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs
+│   ├── CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs
+│   ├── CanonicalStateNormalizer/CanonicalStateNormalizer.SharedAndSoulHelpers.cs
+│   ├── Validation/ValidationService.AfterlifeSpiritualConflict.cs
+│   ├── Validation/ValidationService.BootstrapAndProtocol.cs
+│   ├── Validation/ValidationService.EffectMaterialization.cs
+│   ├── Validation/ValidationService.InventoryNpcWorldCrossRefs.cs
+│   ├── Validation/ValidationService.MathAssistant.cs
+│   ├── Validation/ValidationService.NpcWorldAndMeta.cs
+│   ├── Validation/ValidationService.PlayerAndInventory.cs
+│   └── Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs
+└── game_master_daemon.ps1
+```
+
+The task inventory must add any newly discovered active writer/reader before its cutover task is marked complete; the final legacy source guard is the executable completeness check.
+
+### Existing player/GM projection files modified
+
+```text
+BookOfEternityClient/
+├── UI/GameInterface.cs
+├── UI/ExplorerUniversalMetaCommandResultBuilder.cs
+├── UI/ExplorerMortalWorldCommandResultBuilder.cs
+├── UI/ExplorerAfterlifeCombatCommandResultBuilder.cs
+├── UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs
+├── UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs
+├── UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs
+├── UI/ExplorerMode/ExplorerMode.Inventory.cs
+├── UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs
+├── UI/ExplorerMode/ExplorerMode.Npcs.Rendering.cs
+├── UI/ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs
+├── UI/ExplorerMode/ExplorerMode.Afterlife.GuardiansProjectsTrade.cs
+├── UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.ActionPreviews.cs
+├── UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.Actions.cs
+├── UI/ExplorerMode/ExplorerMode.Afterlife.StatusAudit.cs
+└── WebUi/BrowserGameScreenService.cs
+```
+
+React files change only if browser DTO tests prove the current generic/status rendering cannot consume the projected shape.
+
+### New tests
+
+```text
+BookOfEternityClient.Tests/
+├── ResourceMaterializationContractTests.cs
+├── ResourceDefinitionCatalogTests.cs
+├── ResourceCapacityFormulaCatalogTests.cs
+├── ResourceStateContractTests.cs
+├── ResourceHistoryStateTests.cs
+├── ResourceOwnerAuthorityTests.cs
+├── CombatantIdentityStateTests.cs
+├── ResourceMutationReducerTests.cs
+├── AcceptedMechanicsPlannerTests.cs
+├── AcceptedMechanicsPlanCacheTests.cs
+├── ResourceTriggerGraphTests.cs
+├── ResourcePendingResolutionTests.cs
+├── ResourceProjectionServiceTests.cs
+├── ResourcePlayerPrivacyTests.cs
+├── ResourceAuthorityScaleTests.cs
+└── ResourceContractSourceGuardTests.cs
+
+BookOfEternityClient.IntegrationTests/
+├── ResourceMaterializationTestContext.cs
+├── ResourceMaterializationTestContext.Owners.cs
+├── ResourceMaterializationTestContext.Publication.cs
+├── ResourceMaterializationValidationTests.cs
+├── ResourceOwnerMaterializationTests.cs
+├── ResourceCombatOwnerTests.cs
+├── ResourceItemOwnerTests.cs
+├── ResourceAfterlifeOwnerTests.cs
+├── CanonicalStateNormalizerTests.Resources.cs
+├── MortalResourceCutoverTests.cs
+├── ResourceCombatIntegrationTests.cs
+├── ResourceItemIntegrationTests.cs
+├── AfterlifeResourceCutoverTests.cs
+├── EffectResourceMaterializationTests.cs
+├── ResourcePendingResolutionIntegrationTests.cs
+├── ResourceConsoleBrowserParityTests.cs
+├── ResourceMaterializationLifecycleTests.cs
+└── AcceptedMechanicsPlannerScaleTests.cs
+```
+
+Existing effect, Mortal bootstrap/item/combat, afterlife spiritual-conflict/gacha/blessing, Explorer, browser, documentation, example, and fixture tests are updated rather than duplicated where they already own the behavior.
+
+### GM contracts, examples, templates, and source guards
+
+```text
+CLI_API_Specification.md
+CLI_Agent_Daemon_Specification.md
+BookOfEternityClient/Launcher/CLI_Launch_Script.md
+TaskGuides/CLI_Step_Main.txt
+Rules/Block_0.txt
+Rules/Block_2.txt
+Rules/Block_5.txt
+Rules/Block_6.txt
+Rules/Block_10.txt
+Rules/Block_12.txt
+Rules/Block_13.txt
+Rules/Block_15.txt
+Rules/Block_15.A.txt
+Rules/Block_17.txt
+Rules/Block_32_Guardians.txt
+Rules/Block_CLI_Operations.txt
+Rules/Block_FINAL.txt
+Examples/E_Block_5.txt
+Examples/E_Block_6.txt
+Examples/E_Block_10.txt
+Examples/E_Block_13.txt
+Examples/E_Block_15.A.txt
+Examples/E_Block_16.txt
+Examples/E_Block_17.txt
+Examples/E_Block_21.txt
+Examples/E_Block_32.txt
+Examples/E_CLI_Afterlife_Turns.txt
+Examples/E_CLI_Mortal_Resources.txt
+Examples/example_validation_manifest.json
+OtherGuides/Afterlife_Contract_Matrix.md
+OtherGuides/Afterlife_Combat_Terminology_Glossary.md
+FileSystemExample/game_session/game_state/resources/resource_definitions.json
+FileSystemExample/game_session/game_state/resources/resource_state.json
+FileSystemExample/game_session/game_state/resources/resource_history.json
+FileSystemExample/game_session/game_state/core/player_status.json
+FileSystemExample/game_session/game_state/inventory/items.json
+FileSystemExample/validator_fixtures/resource_materialization/**
+BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs
+BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs
+```
+
+The source guard maintains a narrow explicit allow-list for historical design/audit documents; active prompts, examples, templates, mechanical consumers, and mappings must contain zero removed authority.
+
+**Structure Decision**: Keep the existing single C# runtime and partial-class validation/normalizer organization. Add focused resource/mechanics services under `BookOfEternityClient/Services`, focused test files in the existing unit/integration projects, and contract artifacts under `specs/1543-unified-resource-authority`. Generalize only the combat identity and accepted mechanics transaction boundaries that must be shared; do not introduce a new project, database, package, or frontend redesign.
+
+## Implementation Phases
+
+### Phase A — Contract and pure authority foundation
+
+Create strict definition/state/history/command contracts, exact scalar helpers, built-in catalog, capacity formula registry, common owner authority, and generalized combat/group identity. Nothing reads/writes legacy values yet; unit RED/GREEN proves all invariants.
+
+### Phase B — Pure reducer and accepted mechanics plan
+
+Create mutation/capacity reducers, replay/event indexes, source route catalog, trigger DAG, bounded pending receipt model, immutable full plan, and full-fingerprint cache. Refactor Effect Task 6/8 plans to be a subplan of `AcceptedMechanicsPlan` without executing periodic resource components yet.
+
+### Phase C — Canonical validation/publication/bootstrap
+
+Add response mapping, resource raw/canonical validation, snapshot/rollback tracking, bootstrap roots, lease preflight, atomic publication, post-validation, bounded repair, and failure copy. Commands can initialize/test the ledger, but final merge remains blocked until all old authorities are removed.
+
+### Phase D — Owner and ordinary Mortal cutover
+
+Cut player, named NPC, anonymous/group combat, item resource/durability, ordinary damage/heal/recovery/cost/use/repair/fire/reload, GM context, and associated UI reads to common owners/mutations/projections. Remove legacy mappings/validators/writers in the same domain slice.
+
+### Phase E — Afterlife cutover
+
+Cut spiritual action points, Guardian/Shining per-return gacha attempts, and numeric blessing rerolls to registered formulas and common mutations. Preserve currencies, progression, relations, faction ledgers, and spiritual axes. Update matrix/examples/manifests and run conditional afterlife docs/full validation.
+
+### Phase F — Resume Effect Task 9
+
+Add periodic damage/restore, resource-event triggers, finite graph execution, bounded story requests/receipts, downstream mutations, effect lifetime advancement, terminal cleanup, and complete resource/effect atomic publication. Mark #1535 T042–T043/T047/T049–T050 only after exact evidence.
+
+### Phase G — Projection/privacy and complete breaking cleanup
+
+Finish every console/browser/GM projection, delete all persisted mirrors/fallbacks/legacy fields and obsolete sidecars, migrate active templates/examples/fixtures, add source guard/performance/rollback matrix, run Fast, FullValidation, LifecycleIntegration, final review, and one PreMerge.
+
+## Complexity Tracking
+
+No constitution violation requires an exception. The common owner and accepted mechanics abstractions replace existing duplicated authorities and remain inside the existing runtime/test projects.

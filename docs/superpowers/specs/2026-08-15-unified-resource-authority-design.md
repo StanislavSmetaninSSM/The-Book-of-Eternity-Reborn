@@ -6,7 +6,7 @@
 
 **Blocked feature:** [#1535](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1535), Effect Task 9
 
-**Status:** Approved architecture; awaiting review of this written design before implementation planning
+**Status:** Approved architecture and written design; implementation planning authorized
 
 ## 1. Context
 
@@ -45,6 +45,7 @@ The resource subsystem must provide:
 - individual, anonymous, and group-member combatant resources;
 - item charges, ammunition, durability, and other bounded item resources;
 - afterlife action economy and other spendable spiritual reserves;
+- Guardian and Shining Abode per-return gacha attempts plus numeric blessing rerolls;
 - ordinary damage, healing, recovery, costs, spending, restoration, and gain;
 - deterministic periodic effect damage/restoration;
 - bounded effect receipts that resolve into authorized resource mutations;
@@ -65,6 +66,8 @@ Money, currencies, treasuries, faction resource ledgers, and market/accounting b
 - **Exactly once:** client-owned transition evidence prevents replay across retries and saves.
 - **No compatibility layer:** legacy resource fields are removed as authority rather than read, promoted, or synchronized indefinitely.
 - **Derived means non-authoritative:** UI and GM context projections are generated in memory from the accepted ledger.
+
+The initial client-owned limits are 256 definitions, 20,000 live entries, 256 capacity transitions per turn, 512 ordinary/internal mutations before trigger expansion, 1,024 graph nodes, dependency depth 32, and 64 pending resource-resolution requests per turn. They are closed technical constants, not GM-authored policy. History remains untruncated; any compaction requires a separate tracked feature.
 
 ## 5. Canonical Files
 
@@ -99,6 +102,9 @@ A definition has one exact, case-sensitive, Unicode-confusable-unique `resourceK
     "kind": "definition_fixed",
     "value": 100
   },
+  "initializationPolicy": {
+    "kind": "maximum"
+  },
   "allowedOwnerKinds": ["player", "npc", "combatant", "combat_group_member"],
   "allowedOperations": ["damage", "restore"],
   "defaultFloorPolicy": "clamp_to_minimum",
@@ -116,11 +122,14 @@ Closed definition catalogs:
 - `numericKind`: `integer` or `decimal`;
 - `unit`: registered built-in unit or an exact materialized setting unit;
 - capacity kind: `definition_fixed`, `instance_fixed`, or `registered_formula`;
+- initialization kind: `minimum`, `maximum`, `fixed`, or `registered_formula`;
 - operation: `damage`, `restore`, `spend`, or `gain`;
 - visibility: `player_visible`, `owner_visible`, `gm_only`, or `hidden`;
 - floor/cap behavior: an explicit registered policy, never prose.
 
 `registered_formula` points to a closed client implementation. It cannot contain source code, an expression language, a path, or a GM-selected method name.
+
+Initialization is separately sealed because a maximum does not imply the correct starting value for every mechanic. The policy computes an absent coordinate's initial current value from the resolved minimum/maximum or one closed formula; the GM never submits canonical current state.
 
 Built-in definitions are shipped in the active new-game template. A setting-defined resource is accepted only through a dedicated materialization command. The GM may propose its semantic key and bounded policy, but the client validates uniqueness, creates the seal, and publishes the canonical definition. An ordinary turn cannot mutate a sealed definition.
 
@@ -345,6 +354,8 @@ Item charges, ammunition, durability, and bounded reserves become item-owned res
 ### 14.4 Afterlife
 
 Persistent afterlife actors use persistent resource owners. Conflict action economy and other temporary reserves use scoped owners. Conflict start creates them, exchange operations mutate them, and conflict close retires them.
+
+Guardian and Shining Abode gacha attempts use registered per-return capacity/initialization formulas and common spend/gain mutations. Numeric blessing rerolls use persistent actor-owned resource entries. Boolean/free-shape/free-retune entitlements remain typed entitlements rather than numeric resources.
 
 Specialized spiritual-combat axes and conditions remain specialized mechanics; only genuinely spendable/restorable quantities enter the resource ledger. Currency, treasury, and faction accounting remain outside it.
 
