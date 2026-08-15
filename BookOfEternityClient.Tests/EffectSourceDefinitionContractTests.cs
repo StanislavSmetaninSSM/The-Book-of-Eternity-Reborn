@@ -19,6 +19,91 @@ public sealed class EffectSourceDefinitionContractTests
             "mortal_world"));
     }
 
+    [Fact]
+    public void ValidateArray_IndependentPolicyAllowsBoundedSimultaneousInstances()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["stacking"] = new JsonObject
+        {
+            ["stackKey"] = "bleeding",
+            ["policy"] = "independent",
+            ["maxStacks"] = 2,
+            ["atMaximum"] = "no_change",
+            ["refreshMode"] = null,
+            ["mergeRule"] = null
+        };
+        using var document = Parse(new JsonArray(definition));
+
+        Assert.Empty(EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world"));
+    }
+
+    [Theory]
+    [InlineData("world_time.currentTimeInMinutes", true)]
+    [InlineData("gm_clock", false)]
+    public void ValidateArray_UntilTimeUsesRegisteredCanonicalAuthority(
+        string timeAuthority,
+        bool expectedValid)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "until_time",
+            ["duration"] = 30,
+            ["timeAuthority"] = timeAuthority
+        };
+        using var document = Parse(new JsonArray(definition));
+
+        var issues = EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world");
+
+        Assert.Equal(expectedValid, issues.Count == 0);
+        if (!expectedValid)
+        {
+            Assert.Contains(issues, issue =>
+                issue.Code == "effect_source_definition_invalid_field" &&
+                issue.FilePath.EndsWith(".lifetime.timeAuthority", StringComparison.Ordinal));
+        }
+    }
+
+    [Theory]
+    [InlineData("periodic_damage", "sum", true)]
+    [InlineData("roll_modifier", "sum", false)]
+    [InlineData("event_reaction", "profile_specific", true)]
+    public void ValidateArray_MergeReducerMustBeRegisteredForEveryComponentProfile(
+        string profile,
+        string mergeRule,
+        bool expectedValid)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition(profile);
+        definition["stacking"] = new JsonObject
+        {
+            ["stackKey"] = "effect_merge",
+            ["policy"] = "merge",
+            ["maxStacks"] = 3,
+            ["atMaximum"] = "no_change",
+            ["refreshMode"] = null,
+            ["mergeRule"] = mergeRule
+        };
+        using var document = Parse(new JsonArray(definition));
+
+        var issues = EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world");
+
+        Assert.Equal(expectedValid, issues.Count == 0);
+        if (!expectedValid)
+        {
+            Assert.Contains(issues, issue =>
+                issue.Code == "effect_source_definition_invalid_merge_rule");
+        }
+    }
+
     [Theory]
     [InlineData("characteristic_modifier")]
     [InlineData("roll_modifier")]

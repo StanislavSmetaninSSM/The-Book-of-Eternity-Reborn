@@ -651,42 +651,119 @@ git commit -m "feat: derive accepted active effect mechanics (#1535)"
 - Create: `BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Lifetime.cs`
 - Create: `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Lifecycle.cs`
 - Modify: `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`
+- Modify: `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`
+- Modify: `BookOfEternityClient/Services/EffectMaterializationContract.cs`
+- Modify: `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs`
+- Modify: `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs`
+- Modify: `BookOfEternityClient.Tests/EffectMaterializationContractTests.cs`
+- Modify: `BookOfEternityClient.Tests/EffectSourceDefinitionContractTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Effects.cs`
+- Modify: `specs/1535-complete-effect-materialization/contracts/effect-stacking-and-lifecycle.md`
+- Modify: `specs/1535-complete-effect-materialization/data-model.md`
+- Modify: `specs/1535-complete-effect-materialization/quickstart.md`
+- Modify: `specs/1535-complete-effect-materialization/tasks.md`
 
-- [ ] **Step 1: Add stack RED tests**
+- [x] **Step 1: Add stack RED tests**
 
 Cover independent bounded instances, stack max behavior, refresh reset/extend, replace terminal plus new identity, registered merge reducers, policy mismatch, overflow, stale replay, and stable stack coordinates.
 
-- [ ] **Step 2: Add lifetime RED tests**
+- [x] **Step 2: Add lifetime RED tests**
 
 Cover `turns`, `uses`, `until_time`, `scene`, `source_bound`, `condition_bound`, authorized `permanent`, and registered `manual`; equality boundaries; suspension versus expiry; realm transitions; and forbidden `999`, negative, zero, prose, or unknown modes.
 
-- [ ] **Step 3: Add composed lifecycle RED tests**
+`until_time` uses exact `world_time.currentTimeInMinutes`: source definitions
+declare positive duration plus that authority token, and the client derives a
+checked numeric canonical deadline. Independent source `maxStacks` bounds the
+number of simultaneous identities while every instance remains `1/1`.
+
+- [x] **Step 3: Add composed lifecycle RED tests**
 
 Cover apply+remove, apply+expiry, refresh+advance, source loss+reapply, replace, replay, command consumption, session replacement, and exact terminal identity history.
 
-- [ ] **Step 4: Run RED**
+- [x] **Step 4: Run RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectLifecycleSchedulerTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectMaterializationValidationTests"
 ```
 
-- [ ] **Step 5: Implement pure stack reducers**
+RED evidence: scheduler files first failed to compile at
+`TestResults/test-lanes/20260815-093710-932-1808-5cf5850d67304e8b948df51434811e6a-focused`;
+the first behavior run at
+`TestResults/test-lanes/20260815-094118-362-18720-812fd49d199f4dc9956470a02b36d142-focused`
+passed 19/25 and failed the six still-unimplemented reducers. The initial
+composed lifecycle run at
+`TestResults/test-lanes/20260815-095112-940-30916-c5f5199743414ce3869a763c3220f888-focused`
+failed 5/5. Focused boundary REDs also captured missing independent source
+bounds at
+`TestResults/test-lanes/20260815-101704-820-30024-fd5b5f0ebccd4cdb827bc6732a25e1fb-focused`,
+missing numeric `until_time` materialization at
+`TestResults/test-lanes/20260815-102252-253-53056-14b3db871bf74f1aaf5986a6f7939d15-focused`,
+invalid merge/profile compatibility at
+`TestResults/test-lanes/20260815-102611-872-28816-95f18f381ac94b45b005665acbf5f9c4-focused`,
+missing production world-time composition at
+`TestResults/test-lanes/20260815-102910-672-29100-13eae9d4e8014d0090753a8e5f53eded-focused`,
+stale direct-time precedence over an accepted same-turn override at
+`TestResults/test-lanes/20260815-113511-595-46168-002f6886b84441d2947168834542f605-focused`,
+and the disconnected manual lifetime authority at
+`TestResults/test-lanes/20260815-114404-600-51900-1b557de328564621b1d8cc4a0b185c3b-focused`.
+
+- [x] **Step 5: Implement pure stack reducers**
 
 Resolve source-owned stack coordinates. Each reducer returns final active/terminal entries and transitions; none writes files or mutates the input node.
 
-- [ ] **Step 6: Implement pure lifetime reducers**
+- [x] **Step 6: Implement pure lifetime reducers**
 
 Use accepted chronology/events only. Never ask the GM to decrement counters, choose terminal identity, or restate post-state.
 
-- [ ] **Step 7: Add dispel/remove planning**
+Task 8 integrates bound continuation, remove/dispel, application/stack outcome,
+and non-trigger lifetime advancement. Periodic/event trigger execution,
+`component_response`, and pending receipts remain explicitly assigned to Task 9
+(T042–T043/T047/T049–T050); this slice fails closed instead of approximating
+those future phases.
+
+`profile_specific` merge execution also remains in the registered component
+phase. The current production adapter supplies Mortal player owner-turn and
+exact world-time events; uses, scene, and condition reducers require exact
+events from their owning trigger/scene/condition adapters and fail closed when
+that authority is absent.
+
+- [x] **Step 7: Add dispel/remove planning**
 
 Require exact existing `effectId` plus an authority permitted by the active instance. Retargeting, stale IDs, cross-owner removal, and repair-based identity changes fail closed.
 
-- [ ] **Step 8: Run GREEN and commit**
+Manual lifetime authority is read from the source-owned
+`lifetime.authorities[]` catalog; it is not required to be redundantly copied
+into `removal.manualAuthorities[]`. The focused boundary went GREEN at
+`TestResults/test-lanes/20260815-114458-323-50948-2acbd1766a064bcb84c294e07900e490-focused`.
+
+GREEN evidence: same-turn world-time override precedence and unresolved
+override fail-closed behavior passed 3/3 at
+`TestResults/test-lanes/20260815-113604-531-21828-47a48685bde04049bdd00751cb539c5e-focused`.
+The final Task 8 unit filter passed 182/182 at
+`TestResults/test-lanes/20260815-115235-521-11188-85f42a78f97d45168ead51a55565086f-focused`;
+the combined effect validation/normalizer integration filter passed 175/175 at
+`TestResults/test-lanes/20260815-115306-653-42636-dbe01612d3bc430195663116aced8ae2-focused`.
+The meaningful local Fast checkpoint passed 3479/3479 with zero failures,
+duplicates, timeout, or cleanup failure in `00:03:22.2727046` at
+`TestResults/test-lanes/20260815-115648-189-18352-684ba6813920411793285b3f9c6c8718-fast`.
+
+GM synchronization rationale: Task 8 adds no new raw field beyond the common
+`effectChanges[]`/source-definition contract already specified by this feature,
+and every stack/lifetime after-image remains client-owned. Live GM rules,
+prompts, active fixtures, and worked examples intentionally remain inactive
+until the tracked Phase 9 work T097–T110 can publish the complete executable
+contract rather than a partial one. No Chaos Sea, Shining Abode, pending-control,
+or afterlife GM-authored contract changes in this slice, so the afterlife matrix
+and examples do not change here.
+
+- [x] **Step 8: Run GREEN and commit**
 
 ```powershell
-git add -- BookOfEternityClient/Services/EffectLifecycleScheduler.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Stacking.cs BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Lifetime.cs BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Lifecycle.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
+git add -- BookOfEternityClient/Services/EffectLifecycleScheduler.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs BookOfEternityClient/Services/EffectMaterializationContract.cs BookOfEternityClient/Services/EffectSourceDefinitionContract.cs BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Stacking.cs BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Lifetime.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs BookOfEternityClient.Tests/EffectMaterializationContractTests.cs BookOfEternityClient.Tests/EffectSourceDefinitionContractTests.cs BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Lifecycle.cs BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.cs BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Effects.cs specs/1535-complete-effect-materialization/contracts/effect-stacking-and-lifecycle.md specs/1535-complete-effect-materialization/data-model.md specs/1535-complete-effect-materialization/quickstart.md specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
 git diff --cached --check
 git commit -m "feat: schedule effect stacking and lifetime (#1535)"
 ```

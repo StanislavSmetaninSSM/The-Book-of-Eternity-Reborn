@@ -108,22 +108,22 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 
 ### Tests for User Story 2 (RED first)
 
-- [ ] T040 [P] [US2] Add RED stack-policy tests for independent bounds, stack max behavior, reset/extend refresh, replace terminal/new identity, merge rules, conflicting policy, overflow, and event replay in `BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Stacking.cs`
-- [ ] T041 [P] [US2] Add RED lifetime tests for turns, uses, until-time equality, scene close, source/condition suspend-expire, authorized permanent/manual, forbidden sentinels, and realm transition in `BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Lifetime.cs`
+- [x] T040 [P] [US2] Add RED stack-policy tests for independent bounds, stack max behavior, reset/extend refresh, replace terminal/new identity, merge rules, conflicting policy, overflow, and event replay in `BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Stacking.cs`
+- [x] T041 [P] [US2] Add RED lifetime tests for turns, uses, until-time equality, scene close, source/condition suspend-expire, authorized permanent/manual, forbidden sentinels, and realm transition in `BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Lifetime.cs`
 - [ ] T042 [P] [US2] Add RED ordering/trigger tests for phase order, priority/effect/component ordering, periodic damage/restore, event reaction, duplicate event, cycle, and expansion bound in `BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Triggers.cs`
 - [ ] T043 [P] [US2] Add RED pending-resolution tests for exact request/receipt, stale/partial/cross-target/out-of-bound receipt, one-time consumption, and deterministic components requiring no GM work in `BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Resolutions.cs`
-- [ ] T044 [P] [US2] Add RED composed lifecycle integration tests for apply+remove, apply+expiry, refresh+advance, source loss+reapply, replay, session replacement, and command consumption in `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Lifecycle.cs`
+- [x] T044 [P] [US2] Add RED composed lifecycle integration tests for apply+remove, apply+expiry, refresh+advance, source loss+reapply, replay, session replacement, and command consumption in `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Lifecycle.cs`
 
 ### Implementation for User Story 2
 
-- [ ] T045 [US2] Implement source-authorized stack coordinate resolution and all five policy reducers in `BookOfEternityClient/Services/EffectLifecycleScheduler.cs` until T040 is GREEN
-- [ ] T046 [US2] Implement all eight mode-specific continuation/advancement/terminal reducers and exact realm-transition policy in `BookOfEternityClient/Services/EffectLifecycleScheduler.cs` until T041 is GREEN
+- [x] T045 [US2] Implement source-authorized stack coordinate resolution and all five policy reducers in `BookOfEternityClient/Services/EffectLifecycleScheduler.cs` until T040 is GREEN
+- [x] T046 [US2] Implement all eight mode-specific continuation/advancement/terminal reducers and exact realm-transition policy in `BookOfEternityClient/Services/EffectLifecycleScheduler.cs` until T041 is GREEN
 - [ ] T047 [US2] Implement deterministic scheduler phases, trigger selection/order, periodic operations, event reactions, duplicate-event protection, graph cycle detection, and expansion limits in `BookOfEternityClient/Services/EffectLifecycleScheduler.cs` until T042 is GREEN
-- [ ] T048 [US2] Implement `dispel`/`remove` command parsing, exact allowed authority, terminal transitions, replace cleanup, and effect-owned companion disposition in `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`
-- [ ] T049 [US2] Implement client-owned pending resolution root/request construction and exact receipt validation/consumption in `BookOfEternityClient/Services/EffectPendingResolutionState.cs` and `BookOfEternityClient/Services/EffectLifecycleScheduler.cs` until T043 is GREEN
+- [x] T048 [US2] Implement `dispel`/`remove` command parsing, exact allowed authority, terminal transitions, replace cleanup, and effect-owned companion disposition in `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`
+- [ ] T049 [US2] Implement client-owned pending resolution root/request construction, exact receipt validation/consumption, and pending-receipt integration into the cached accepted plan/final state in `BookOfEternityClient/Services/EffectPendingResolutionState.cs`, `BookOfEternityClient/Services/EffectLifecycleScheduler.cs`, and `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs` until T043 is GREEN
 - [ ] T050 [US2] Add `pending_effect_resolutions.json` to protected control validation, snapshot authority, session replacement, and cleanup in `BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs` and `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`
-- [ ] T051 [US2] Integrate due lifecycle events and pending receipts into the cached accepted plan and final carrier/index state in `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs` until T044 is GREEN
-- [ ] T052 [US2] Run the US2 focused filters and the periodic/trigger quickstart scenarios, record RED→GREEN evidence in `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`, and commit the US2 slice
+- [x] T051 [US2] Integrate due non-trigger lifecycle events into the cached accepted plan and final carrier/index state in `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs` until T044 is GREEN
+- [x] T052 [US2] Run the Task 8 stack/lifetime/remove focused filters and quickstart scenarios, record RED→GREEN evidence in `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`, and commit this US2 slice; trigger/receipt controls remain with T042–T043/T047/T049–T050
 
 **Checkpoint**: Reapplication and lifecycle are deterministic and retry-safe across accepted turns.
 

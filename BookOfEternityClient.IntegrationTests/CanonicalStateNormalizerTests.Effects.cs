@@ -68,9 +68,10 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.IdentityIndexPath))!.AsObject();
         var entry = Assert.IsType<JsonObject>(Assert.Single(index["entries"]!.AsArray()));
         Assert.Equal(effect["effectId"]!.GetValue<string>(), entry["effectId"]!.GetValue<string>());
+        var transitions = entry["transitions"]!.AsArray();
         Assert.Equal(
             effect["chronology"]!["lastTransitionId"]!.GetValue<string>(),
-            entry["transitions"]![0]!["transitionId"]!.GetValue<string>());
+            transitions[transitions.Count - 1]!["transitionId"]!.GetValue<string>());
         Assert.Null(await context.ReadJsonAsync(EffectMaterializationTestContext.CommandPath));
 
         var wound = (await context.ReadJsonAsync(

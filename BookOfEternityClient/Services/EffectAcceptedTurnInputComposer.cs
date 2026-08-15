@@ -1,9 +1,12 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
 internal static class EffectAcceptedTurnInputComposer
 {
+    internal const string WorldTimePath = "game_state/world/world_time.json";
+
     internal const string PlayerWoundsPath = "game_state/player/wounds.json";
 
     internal static readonly string[] SameTurnOwnerAuthorityPaths =
@@ -119,7 +122,8 @@ internal static class EffectAcceptedTurnInputComposer
         IReadOnlyList<EffectSourceExport>? acceptedPlanSourceExports = null,
         IReadOnlyList<EffectTargetExport>? acceptedPlanTargetExports = null,
         IReadOnlySet<EffectSourceOwnerKey>? replacedSourceOwners = null,
-        IReadOnlySet<EffectTargetKey>? replacedTargets = null)
+        IReadOnlySet<EffectTargetKey>? replacedTargets = null,
+        long? currentWorldTime = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
         ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
@@ -172,7 +176,7 @@ internal static class EffectAcceptedTurnInputComposer
             rawCommands.DeepClone().AsObject(),
             sourceAuthority,
             targetAuthority,
-            BuildAcceptedEventInput(turn, rawCommands),
+            BuildAcceptedEventInput(turn, rawCommands, currentWorldTime),
             PreTurnCarriers: CloneCarriers(acceptedCarriers),
             PreTurnIdentityIndex: preTurnIdentityIndex?.DeepClone().AsObject(),
             TargetAuthorityInput: targetAuthorityInput);
@@ -195,7 +199,8 @@ internal static class EffectAcceptedTurnInputComposer
 
     internal static JsonObject BuildAcceptedEventInput(
         int turn,
-        JsonObject rawCommands)
+        JsonObject rawCommands,
+        long? currentWorldTime = null)
     {
         var operationCount = rawCommands["effectChanges"] is JsonArray changes
             ? changes.Count
@@ -215,11 +220,81 @@ internal static class EffectAcceptedTurnInputComposer
                     : $"turn_{turn}:accepted_effect:{ordinal}"
             });
         }
-        return new JsonObject
+        var result = new JsonObject
         {
             ["turn"] = turn,
-            ["events"] = events
+            ["events"] = events,
+            ["lifecycleEvents"] = new JsonArray(new JsonObject
+            {
+                ["eventRef"] = $"turn_{turn}:lifecycle:owner_turn_end:player_current",
+                ["turn"] = turn,
+                ["phase"] = "owner_turn_end",
+                ["target"] = new JsonObject
+                {
+                    ["kind"] = "player",
+                    ["targetId"] = "player_current"
+                },
+                ["triggerId"] = null,
+                ["currentTime"] = currentWorldTime,
+                ["currentSceneId"] = null,
+                ["sceneClosed"] = false,
+                ["sourceSatisfied"] = null,
+                ["conditionSatisfied"] = null,
+                ["currentRealm"] = "mortal_world"
+            })
         };
+        if (currentWorldTime.HasValue)
+        {
+            result["currentTime"] = currentWorldTime.Value;
+            result["timeAuthority"] =
+                EffectSourceDefinitionContract.CanonicalWorldTimeAuthority;
+        }
+        return result;
+    }
+
+    internal static long? ReadCanonicalWorldTime(string? json)
+    {
+        if (json == null)
+            return null;
+        try
+        {
+            using var document = JsonDocument.Parse(json);
+            var root = document.RootElement;
+            if (root.ValueKind != JsonValueKind.Object)
+                return null;
+            if (root.TryGetProperty("setWorldTime", out var setWorldTime) &&
+                setWorldTime.ValueKind != JsonValueKind.Null)
+            {
+                if (setWorldTime.ValueKind == JsonValueKind.Object &&
+                    TryReadNonNegativeLong(
+                        setWorldTime,
+                        "currentTimeInMinutes",
+                        out var acceptedAbsolute))
+                {
+                    return acceptedAbsolute;
+                }
+                return null;
+            }
+            if (TryReadNonNegativeLong(root, "currentTimeInMinutes", out var direct))
+                return direct;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+        return null;
+    }
+
+    private static bool TryReadNonNegativeLong(
+        JsonElement root,
+        string field,
+        out long value)
+    {
+        value = -1;
+        return root.TryGetProperty(field, out var node) &&
+            node.ValueKind == JsonValueKind.Number &&
+            node.TryGetInt64(out value) &&
+            value >= 0;
     }
 
     internal static EffectAcceptedOwnerExports CollectValidatedSameTurnOwnerExports(

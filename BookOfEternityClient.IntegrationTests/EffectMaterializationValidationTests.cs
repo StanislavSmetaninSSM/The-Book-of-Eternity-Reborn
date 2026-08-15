@@ -79,10 +79,11 @@ public sealed partial class EffectMaterializationValidationTests
 
         var index = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.IdentityIndexPath))!.AsObject();
-        var eventRefs = index["entries"]!.AsArray()
+        var entry = Assert.IsType<JsonObject>(Assert.Single(index["entries"]!.AsArray()));
+        var eventRefs = entry["transitions"]!.AsArray()
             .OfType<JsonObject>()
-            .Select(entry => entry["transitions"]![0]!["eventRef"]!.GetValue<string>())
-            .OrderBy(static value => value, StringComparer.Ordinal)
+            .Where(transition => transition["kind"]!.GetValue<string>() is "create" or "stack")
+            .Select(transition => transition["eventRef"]!.GetValue<string>())
             .ToArray();
         Assert.Equal(
             new[]

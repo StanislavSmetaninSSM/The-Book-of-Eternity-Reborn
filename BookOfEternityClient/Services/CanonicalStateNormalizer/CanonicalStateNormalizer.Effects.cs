@@ -48,9 +48,12 @@ public partial class CanonicalStateNormalizer
         var turn = ReadPositiveEffectInt(request["turnNumber"])
             ?? throw new InvalidDataException(
                 "Effect normalization requires the exact positive accepted turnNumber.");
+        var currentWorldTime = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
+            await ReadCanonicalFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath));
         var eventInput = EffectAcceptedTurnInputComposer.BuildAcceptedEventInput(
             turn,
-            commands);
+            commands,
+            currentWorldTime);
         if (!EffectAcceptedTurnPlanAuthority.TryGetValidated(
                 _fs,
                 sessionId,

@@ -40,6 +40,36 @@ public sealed class EffectMaterializationContractTests
     }
 
     [Theory]
+    [InlineData(100L, true)]
+    [InlineData(-1L, false)]
+    [InlineData("100", false)]
+    public void Validate_UntilTimeRequiresNonNegativeCanonicalWorldMinutes(
+        object deadline,
+        bool expectedValid)
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        effect["lifetime"] = new JsonObject
+        {
+            ["mode"] = "until_time",
+            ["deadline"] = JsonValue.Create(deadline)
+        };
+        using var document = Parse(effect);
+
+        var issues = EffectMaterializationContract.Validate(
+            document.RootElement,
+            "effects[0]",
+            EffectMaterializationPhase.CanonicalActive);
+
+        Assert.Equal(expectedValid, issues.Count == 0);
+        if (!expectedValid)
+        {
+            Assert.Contains(issues, issue =>
+                issue.Code == "effect_materialization_invalid_field" &&
+                issue.FilePath == "effects[0].lifetime.deadline");
+        }
+    }
+
+    [Theory]
     [MemberData(nameof(RequiredRootFieldCases))]
     public void Validate_MissingRequiredRootField_IsRejected(string field)
     {

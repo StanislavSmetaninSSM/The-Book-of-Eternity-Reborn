@@ -236,11 +236,11 @@ Expected:
 
 Run source fixtures for each policy:
 
-1. `independent`: two distinct accepted events create two IDs; replay creates none.
+1. `independent`: with source `maxStacks=2`, three distinct accepted events create exactly two IDs; each canonical instance remains `currentStacks=1,maxStacks=1`, and replay creates none.
 2. `stack`: count rises to `maxStacks`; boundary application follows source max behavior.
 3. `refresh`: same ID and count; exact lifetime reset/extend behavior.
 4. `replace`: old index entry becomes terminal `replaced`; one new active ID.
-5. `merge`: only registered bounded component fields combine deterministically.
+5. `merge`: only registered bounded component fields combine deterministically, and every component profile must authorize the selected reducer.
 
 Expected: the GM never submits post-count, remaining lifetime, replacement ID, or merged payload.
 
@@ -250,7 +250,7 @@ Exercise:
 
 - turns: 1 → expiry after the declared owner phase;
 - uses: 1 → governed trigger consumption → expiry;
-- exact time: deadline equal to accepted current time;
+- exact time: source `duration=30` plus accepted `world_time.currentTimeInMinutes=120` creates numeric deadline `150`; exact same-turn `setWorldTime.currentTimeInMinutes=300` instead creates `330`; an override without that exact numeric value cannot reuse the retained `120`; deadline equality expires it;
 - scene: exact scene closure;
 - source-bound: source lost with both `suspend` and `expire` policies;
 - condition-bound: registered condition turns false;
@@ -258,6 +258,16 @@ Exercise:
 - manual: accepted only with non-empty registered removal authority.
 
 Expected: each event advances exactly once; numeric/text persistence sentinels fail.
+
+This slice intentionally stops before trigger execution and bounded receipts.
+`component_response`, periodic/event triggers, and
+`pending_effect_resolutions.json` remain owned by T042–T043/T047/T049–T050 and
+must fail closed rather than being approximated by the stack/lifetime reducer.
+The pure scheduler already covers all eight lifetime reducers. The production
+Mortal adapter in this slice supplies owner-turn and exact world-time events;
+uses, scene, and condition advancement waits for its owning exact trigger or
+scene/condition adapter. `profile_specific` merge execution is likewise kept in
+the later registered component phase.
 
 ## 7. Periodic and Triggered Ordering
 

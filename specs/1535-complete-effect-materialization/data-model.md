@@ -274,11 +274,11 @@ This field is derived client state, not a GM-authored response contract.
 
 Rules by policy:
 
-- `independent`: each accepted application gets a new identity; `currentStacks` and `maxStacks` are `1`.
+- `independent`: each accepted application gets a new identity; source-definition `maxStacks` bounds simultaneous identities at the logical coordinate, while every canonical instance stores `currentStacks=1` and `maxStacks=1`.
 - `stack`: preserve identity and increase `currentStacks` to the source-owned maximum.
 - `refresh`: preserve identity/count and use exact `reset` or bounded `extend` lifetime behavior.
 - `replace`: terminate the old instance as `replaced` and create a new identity in one transition.
-- `merge`: preserve identity and combine only profile-declared fields through a registered deterministic `sum`, `minimum`, `maximum`, or profile-specific bounded rule.
+- `merge`: preserve identity and combine only profile-declared fields through a deterministic reducer registered by every component profile in the source definition; a globally named reducer does not authorize an incompatible profile.
 
 Logical stack coordinate:
 
@@ -286,7 +286,7 @@ Logical stack coordinate:
 (realm, target.kind, target.targetId, source.kind, source.sourceId, stackKey)
 ```
 
-For `independent`, multiple active entries may share the coordinate only when the source explicitly authorizes the independent policy. Other policies permit at most one active entry per coordinate.
+For `independent`, multiple active entries may share the coordinate only when the source explicitly authorizes the independent policy and their count does not exceed source-definition `maxStacks`. Other policies permit at most one active entry per coordinate. A source-declared `component_response` at a stack boundary is executed only by the registered deterministic trigger/component phase; the stack reducer never invents an equivalent response.
 
 ## 6. Lifetime State
 
@@ -296,7 +296,7 @@ Every active instance has exactly one mode and only the fields legal for that mo
 | --- | --- | --- |
 | `turns` | `remainingTurns` positive integer; exact owner-turn phase | Reaches zero after one governed advancement |
 | `uses` | `remainingUses` positive integer; exact consuming trigger set | Reaches zero after governed consumptions |
-| `until_time` | Exact canonical world-time deadline | Current accepted time reaches/passes deadline |
+| `until_time` | Non-negative integer `deadline` derived from exact `world_time.currentTimeInMinutes` plus positive source duration | Current accepted time reaches/passes deadline |
 | `scene` | Exact `sceneId`/conflict ID | Exact scene closes or changes per source rule |
 | `source_bound` | Exact source/link plus `onSourceLoss` | Source is no longer active/attached/equipped/maintained |
 | `condition_bound` | Registered condition key and exact operands | Condition evaluates false in composed state |
@@ -304,6 +304,25 @@ Every active instance has exactly one mode and only the fields legal for that mo
 | `manual` | Non-empty registered removal authorities | One exact allowed authority closes it |
 
 An optional `displayText` may explain the lifetime in-world but cannot drive completion.
+
+For `until_time`, the source definition declares exact
+`timeAuthority=world_time.currentTimeInMinutes` and a positive `duration`. The
+client reads the accepted world-time value, computes the deadline with checked
+`Int64` arithmetic, and stores only that canonical integer deadline. An exact
+same-turn `setWorldTime.currentTimeInMinutes` overrides a retained root value;
+an override without that exact number cannot fall back to stale time for a new
+effect. A missing authority, GM-authored deadline, overflow, string timestamp,
+or display phrase cannot become time authority.
+
+For `manual`, the non-empty source-owned `lifetime.authorities[]` is itself an
+exact removal-authority catalog. `removal.manualAuthorities[]` may add other
+source-declared manual routes but is not a required duplicate of the lifetime
+catalog.
+
+The common Task 8 reducer supports all eight modes, but it never invents missing
+runtime context. The current Mortal adapter supplies owner-turn and exact
+world-time events. Uses await accepted trigger events, and scene/condition modes
+require an owning accepted adapter to provide exact scene or condition evidence.
 
 For `source_bound`, `activePredicate` is an exact closed token. The registry is:
 

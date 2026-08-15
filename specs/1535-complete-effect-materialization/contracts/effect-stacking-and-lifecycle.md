@@ -17,7 +17,8 @@
 
 - Each accepted application creates a new effect identity.
 - Each instance has `currentStacks=1`, `maxStacks=1`.
-- The source may declare a bounded number of simultaneous independent instances.
+- Source-definition `maxStacks` is the bounded number of simultaneous independent identities at the logical coordinate; it is not copied into an individual instance.
+- Reapplication at that bound follows the exact source `atMaximum` policy. A component response is legal only after its registered trigger/component execution path is available; otherwise it fails closed before publication.
 - Event replay never creates an additional instance.
 
 ### 2.2 `stack`
@@ -25,6 +26,7 @@
 - One active identity exists per logical coordinate.
 - Reapplication increments count up to exact `maxStacks`.
 - At maximum, the source declares `no_change`, bounded lifetime refresh, or a registered component response.
+- `component_response` belongs to the deterministic trigger/component phase and cannot be approximated by changing stacks or lifetime in the stack reducer.
 - Component scaling by stacks is profile-declared; prose does not scale mechanics.
 
 ### 2.3 `refresh`
@@ -43,7 +45,9 @@
 
 - Preserve one active identity.
 - Merge only source-declared component fields using registered deterministic rules.
+- The selected reducer must be registered by every component profile in the definition; a globally known reducer is not sufficient authority for an incompatible profile.
 - Reject incompatible component sets, unknown fields, overflow, non-finite values, or an absent merge rule.
+- `profile_specific` execution remains part of the registered component phase; the common stack reducer fails closed until that profile-owned reducer is available.
 
 ## 3. Closed Lifetime Modes
 
@@ -61,7 +65,10 @@
 
 ### 3.3 Exact time
 
-- Uses one canonical timestamp/deadline in the game world-time authority.
+- The source declares a positive `duration` and exact `timeAuthority=world_time.currentTimeInMinutes`.
+- The client reads the accepted non-negative `world_time.currentTimeInMinutes` value and computes `deadline=currentTime+duration` with checked `Int64` arithmetic.
+- An exact same-turn `setWorldTime.currentTimeInMinutes` overrides a retained root value. If the override omits that exact numeric authority, a new `until_time` application fails closed instead of deriving a deadline from stale time.
+- The canonical active instance stores only the resulting non-negative integer `deadline`; the GM never authors that deadline.
 - Display phrases may accompany but never replace the deadline.
 - Expire when accepted time is equal to or later than the deadline.
 
@@ -93,7 +100,14 @@
 ### 3.8 Manual
 
 - Allowed only with non-empty registered cure/dispel/removal authorities.
+- `lifetime.authorities[]` is source-owned terminal authority and is honored by exact `remove`; it need not be duplicated into `removal.manualAuthorities[]`.
 - A generic GM reason is insufficient authority.
+
+Task 8 provides pure reducers for every lifetime mode. Production adapters in
+this slice emit the accepted Mortal owner-turn phase and exact world-time
+authority. Trigger-driven uses plus scene/condition contexts remain unavailable
+unless an owning accepted adapter supplies their exact client-validated event
+context; missing context fails closed and is never inferred from GM prose.
 
 ## 4. Scheduler Phase Order
 

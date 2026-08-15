@@ -110,6 +110,8 @@ public partial class ValidationService
             issues);
         var preTurnSources = await ReadSnapshotEffectSourceRootsAsync(manifest, issues);
         var acceptedSources = await ReadCurrentEffectSourceRootsAsync(issues);
+        var currentWorldTime = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
+            await _fs.ReadFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath));
         issues.AddRange(EffectAcceptedTurnInputComposer
             .ValidateAcceptedSkillComposition(preTurnSources, acceptedSources));
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
@@ -123,7 +125,8 @@ public partial class ValidationService
                 .BuildCanonicalSourceAuthority(acceptedSources);
             issues.AddRange(sourceAuthority.Issues);
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) ||
-                !EffectAcceptedTurnInputComposer.HasPendingCombatantRefs(currentCarriers))
+                (!EffectAcceptedTurnInputComposer.HasPendingCombatantRefs(currentCarriers) &&
+                 EffectCarrierCatalog.Build(currentCarriers).Occurrences.Count == 0))
             {
                 return;
             }
@@ -171,7 +174,8 @@ public partial class ValidationService
                 identityAcceptedPlanSources,
                 identityOwnerExports.Targets,
                 identityReplacedSourceOwners,
-                identityOwnerExports.ReplacedTargets);
+                identityOwnerExports.ReplacedTargets,
+                currentWorldTime);
             var identityResult = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
                 _fs,
                 identityInput);
@@ -226,7 +230,8 @@ public partial class ValidationService
             acceptedPlanSources,
             ownerExports.Targets,
             replacedSourceOwners,
-            ownerExports.ReplacedTargets);
+            ownerExports.ReplacedTargets,
+            currentWorldTime);
         var result = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(_fs, input);
         issues.AddRange(result.Issues);
     }
@@ -941,6 +946,13 @@ public partial class ValidationService
         var projectedPolicy = policy.DeepClone().AsObject();
         projectedActual.Remove("currentStacks");
         projectedPolicy.Remove("atMaximum");
+        if (string.Equals(
+                ReadExact(projectedPolicy["policy"]),
+                "independent",
+                StringComparison.Ordinal))
+        {
+            projectedPolicy["maxStacks"] = 1;
+        }
         return JsonNode.DeepEquals(projectedActual, projectedPolicy);
     }
 

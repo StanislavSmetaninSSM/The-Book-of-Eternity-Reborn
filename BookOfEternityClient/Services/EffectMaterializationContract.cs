@@ -350,7 +350,7 @@ internal static class EffectMaterializationContract
                 break;
             case "until_time":
                 ValidateClosedObject(lifetime, lifetimePath, Set("mode", "deadline", "displayText"), issues, "effect_materialization_unknown_field");
-                RequireExactIdentifier(lifetime, lifetimePath, "deadline", issues);
+                RequireNonNegativeLong(lifetime, lifetimePath, "deadline", issues);
                 break;
             case "scene":
                 ValidateClosedObject(lifetime, lifetimePath, Set("mode", "sceneId", "onSceneExit", "displayText"), issues, "effect_materialization_unknown_field");
@@ -622,6 +622,23 @@ internal static class EffectMaterializationContract
             return number;
         }
         Add(issues, path + "." + field, "effect_materialization_invalid_field", "positive integer", Describe(root, field));
+        return null;
+    }
+
+    private static long? RequireNonNegativeLong(
+        JsonElement root,
+        string path,
+        string field,
+        List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(field, out var value) &&
+            value.ValueKind == JsonValueKind.Number &&
+            value.TryGetInt64(out var number) &&
+            number >= 0)
+        {
+            return number;
+        }
+        Add(issues, path + "." + field, "effect_materialization_invalid_field", "non-negative canonical world-time integer", Describe(root, field));
         return null;
     }
 

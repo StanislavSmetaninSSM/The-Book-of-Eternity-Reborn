@@ -218,6 +218,49 @@ public sealed class EffectAcceptedTurnPlannerTests
         Assert.Empty(bindingIssues);
     }
 
+    [Fact]
+    public void Build_UntilTimeDerivesCanonicalDeadlineFromAcceptedWorldTime()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "until_time",
+            ["duration"] = 30,
+            ["timeAuthority"] = "world_time.currentTimeInMinutes"
+        };
+        var input = CreateInput(definition: definition);
+        input.EventInput["currentTime"] = 120L;
+        input.EventInput["timeAuthority"] = "world_time.currentTimeInMinutes";
+
+        var result = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(input);
+
+        var effect = Assert.Single(Assert.IsType<EffectAcceptedTurnPlan>(result.Plan).ActiveEffects);
+        Assert.Empty(result.Issues);
+        Assert.Equal("until_time", effect["lifetime"]!["mode"]!.GetValue<string>());
+        Assert.Equal(150L, effect["lifetime"]!["deadline"]!.GetValue<long>());
+    }
+
+    [Fact]
+    public void Build_UntilTimeRejectsMissingAcceptedWorldTimeBeforeAllocation()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "until_time",
+            ["duration"] = 30,
+            ["timeAuthority"] = "world_time.currentTimeInMinutes"
+        };
+        var factory = new CountingFactory();
+
+        var result = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(
+            CreateInput(definition: definition));
+
+        Assert.Null(result.Plan);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "effect_plan_lifetime_context_missing");
+        Assert.Equal(0, factory.EffectCalls);
+    }
+
     [Theory]
     [InlineData("effectId")]
     [InlineData("currentStacks")]
@@ -382,15 +425,17 @@ public sealed class EffectAcceptedTurnPlannerTests
         var plan = Assert.IsType<EffectAcceptedTurnPlan>(
             new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input).Plan);
 
-        Assert.Equal(2, plan.ActiveEffects.Count);
-        Assert.Equal(2, plan.AllocatedEffectIds.Count);
+        var effect = Assert.Single(plan.ActiveEffects);
+        Assert.Equal(2, effect["stacking"]!["currentStacks"]!.GetValue<int>());
+        Assert.Single(plan.AllocatedEffectIds);
         Assert.Equal(2, plan.AllocatedTransitionIds.Count);
-        Assert.Equal(2, factory.EffectCalls);
+        Assert.Equal(1, factory.EffectCalls);
         Assert.Equal(2, factory.TransitionCalls);
         Assert.Equal(
             new[] { "turn_42:wound_opened", "turn_42:wound_followup" },
-            plan.IdentityIndexAfterImage["entries"]!.AsArray()
-                .Select(static entry => entry!["transitions"]![0]!["eventRef"]!.GetValue<string>())
+            Assert.Single(plan.IdentityIndexAfterImage["entries"]!.AsArray())!["transitions"]!
+                .AsArray()
+                .Select(static transition => transition!["eventRef"]!.GetValue<string>())
                 .ToArray());
     }
 

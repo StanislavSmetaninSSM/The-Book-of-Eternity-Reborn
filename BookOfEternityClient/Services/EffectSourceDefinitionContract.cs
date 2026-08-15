@@ -4,9 +4,12 @@ namespace BookOfEternityClient.Services;
 
 internal static class EffectSourceDefinitionContract
 {
+    internal const string CanonicalWorldTimeAuthority = "world_time.currentTimeInMinutes";
+
     private sealed record ComponentValidationResult(
         HashSet<string> ParameterNames,
-        HashSet<string> ComponentIds);
+        HashSet<string> ComponentIds,
+        HashSet<string> Profiles);
 
     private static readonly HashSet<string> DefinitionFields = Set(
         "schemaVersion", "definitionKey", "display", "allowedRealms", "allowedTargetKinds",
@@ -129,7 +132,11 @@ internal static class EffectSourceDefinitionContract
             path,
             componentValidation.ParameterNames,
             issues);
-        ValidateStacking(definition, path, issues);
+        ValidateStacking(
+            definition,
+            path,
+            componentValidation.Profiles,
+            issues);
         var consumingEventTypes = ValidateLifetime(definition, path, issues);
         ValidateTriggers(
             definition,
@@ -160,12 +167,13 @@ internal static class EffectSourceDefinitionContract
     {
         var parameterNames = new HashSet<string>(StringComparer.Ordinal);
         var ids = new HashSet<string>(StringComparer.Ordinal);
+        var profiles = new HashSet<string>(StringComparer.Ordinal);
         if (!root.TryGetProperty("components", out var components) ||
             components.ValueKind != JsonValueKind.Array ||
             components.GetArrayLength() == 0)
         {
             Add(issues, path + ".components", "effect_source_definition_invalid_components", "non-empty registered component template array", Describe(root, "components"));
-            return new ComponentValidationResult(parameterNames, ids);
+            return new ComponentValidationResult(parameterNames, ids, profiles);
         }
 
         var componentIssues = new List<ValidationIssue>();
@@ -182,6 +190,8 @@ internal static class EffectSourceDefinitionContract
             {
                 Add(issues, componentPath + ".componentId", "effect_source_definition_invalid_components", "unique exact/confusable componentId", componentId);
             }
+            if (TryReadExactIdentifier(component, "profile", out var profile))
+                profiles.Add(profile);
             if (component.TryGetProperty("payload", out var payload) && payload.ValueKind == JsonValueKind.Object)
             {
                 foreach (var property in payload.EnumerateObject())
@@ -198,7 +208,7 @@ internal static class EffectSourceDefinitionContract
                 issue.Expected ?? "complete registered component template",
                 issue.Actual ?? issue.Message);
         }
-        return new ComponentValidationResult(parameterNames, ids);
+        return new ComponentValidationResult(parameterNames, ids, profiles);
     }
 
     private static void ValidateParameterBounds(
@@ -265,7 +275,11 @@ internal static class EffectSourceDefinitionContract
             Add(issues, path + ".required", "effect_source_definition_invalid_parameter_bound", "boolean when present", required.GetRawText());
     }
 
-    private static void ValidateStacking(JsonElement root, string path, List<ValidationIssue> issues)
+    private static void ValidateStacking(
+        JsonElement root,
+        string path,
+        IReadOnlySet<string> componentProfiles,
+        List<ValidationIssue> issues)
     {
         if (!TryGetObject(root, path, "stacking", issues, out var stacking))
             return;
@@ -273,12 +287,34 @@ internal static class EffectSourceDefinitionContract
         ValidateClosedObject(stacking, stackingPath, Set("stackKey", "policy", "maxStacks", "atMaximum", "refreshMode", "mergeRule"), issues);
         RequireExactIdentifier(stacking, stackingPath, "stackKey", issues);
         var policy = RequireClosedString(stacking, stackingPath, "policy", StackPolicies, issues);
-        var maxStacks = RequirePositiveInt(stacking, stackingPath, "maxStacks", issues);
-        if (policy == "independent" && maxStacks != 1)
-            Add(issues, stackingPath + ".maxStacks", "effect_source_definition_invalid_field", "1 for independent policy", maxStacks?.ToString() ?? "missing");
+        RequirePositiveInt(stacking, stackingPath, "maxStacks", issues);
         RequireClosedString(stacking, stackingPath, "atMaximum", AtMaximumPolicies, issues);
         ValidateNullableClosedString(stacking, stackingPath, "refreshMode", RefreshModes, policy == "refresh", issues);
-        ValidateNullableClosedString(stacking, stackingPath, "mergeRule", MergeRules, policy == "merge", issues);
+        var mergeRule = ValidateNullableClosedString(
+            stacking,
+            stackingPath,
+            "mergeRule",
+            MergeRules,
+            policy == "merge",
+            issues);
+        if (policy == "merge" && mergeRule != null)
+        {
+            foreach (var profile in componentProfiles.OrderBy(
+                         static value => value,
+                         StringComparer.Ordinal))
+            {
+                if (EffectComponentProfiles.TryGetDescriptor(profile, out var descriptor) &&
+                    !descriptor.LegalMergeReducers.Contains(mergeRule))
+                {
+                    Add(
+                        issues,
+                        stackingPath + ".mergeRule",
+                        "effect_source_definition_invalid_merge_rule",
+                        $"merge reducer registered for component profile {profile}",
+                        mergeRule);
+                }
+            }
+        }
     }
 
     private static HashSet<string>? ValidateLifetime(
@@ -311,7 +347,12 @@ internal static class EffectSourceDefinitionContract
             case "until_time":
                 ValidateClosedObject(lifetime, lifetimePath, Set("mode", "duration", "timeAuthority"), issues);
                 RequirePositiveInt(lifetime, lifetimePath, "duration", issues);
-                RequireExactIdentifier(lifetime, lifetimePath, "timeAuthority", issues);
+                RequireClosedString(
+                    lifetime,
+                    lifetimePath,
+                    "timeAuthority",
+                    Set(CanonicalWorldTimeAuthority),
+                    issues);
                 break;
             case "scene":
                 ValidateClosedObject(lifetime, lifetimePath, Set("mode", "onSceneExit"), issues);
@@ -634,7 +675,7 @@ internal static class EffectSourceDefinitionContract
             Add(issues, path + "." + field, "effect_source_definition_invalid_field", "boolean", Describe(root, field));
     }
 
-    private static void ValidateNullableClosedString(
+    private static string? ValidateNullableClosedString(
         JsonElement root,
         string path,
         string field,
@@ -646,10 +687,14 @@ internal static class EffectSourceDefinitionContract
         {
             if (required)
                 Add(issues, path + "." + field, "effect_source_definition_invalid_field", string.Join(" | ", allowed), "null or missing");
-            return;
+            return null;
         }
         if (!TryReadExactIdentifier(value, out var text) || !allowed.Contains(text))
+        {
             Add(issues, path + "." + field, "effect_source_definition_invalid_field", string.Join(" | ", allowed), value.GetRawText());
+            return null;
+        }
+        return text;
     }
 
     private static void RequireExactStringArray(
