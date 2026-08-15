@@ -42,6 +42,7 @@ The resource subsystem must provide:
 
 - player health, energy, poise, and materialized setting-defined resources such as mana or stamina;
 - named NPC resources;
+- vehicle health and any materialized bounded vehicle reserve;
 - individual, anonymous, and group-member combatant resources;
 - item charges, ammunition, durability, and other bounded item resources;
 - afterlife action economy and other spendable spiritual reserves;
@@ -146,6 +147,7 @@ Every resource-bearing entity resolves to one stable `resourceOwnerId`:
 | Named NPC represented in combat | the same permanent NPC ID |
 | Anonymous individual combatant | client-owned permanent combatant ID |
 | Combat group member | client-owned permanent member ID created with the group |
+| Vehicle | permanent vehicle ID |
 | Inventory or world item | permanent item ID |
 | Persistent afterlife actor/profile | permanent actor/profile ID |
 | Afterlife conflict participant/side | client-owned scoped owner ID created with the conflict |
@@ -153,6 +155,8 @@ Every resource-bearing entity resolves to one stable `resourceOwnerId`:
 The owning actor/item/combat/conflict materializer creates or resolves the resource owner. A raw resource command cannot invent an owner.
 
 Named NPC combat representations reference the NPC resource owner and do not fork health into a combat-local copy. Anonymous combatants remain combat-owned. Group members receive stable member IDs instead of positional array identity. Scoped afterlife owners are terminally retired when their conflict closes; persistent actors retain their persistent resource owner.
+
+Vehicles use their permanent `vehicleId`. `UpdateVehicles` may change narrative, location, availability, actions, and other vehicle-owned companions, but it cannot replace health or another accepted bounded reserve. Activation, parking, transport movement, and inventory-carrier use preserve the same resource coordinate; destruction retires it atomically.
 
 ## 8. Resource State
 
@@ -347,11 +351,15 @@ Named NPCs retain one resource owner inside and outside combat. Anonymous combat
 
 Combat entry, update, defeat, exit, and named-NPC reconciliation are resource-plan operations, not ad hoc field copying.
 
-### 14.3 Items
+### 14.3 Vehicles
+
+Vehicle health and any accepted bounded reserve become vehicle-owned resource entries. `UpdateVehicles` no longer writes `currentHealth`/`maxHealth`; vehicle creation exports capacity authority, and later damage/restoration uses common mutations. Activation, parking, movement, and use as an item carrier preserve identity. Destruction retires live vehicle resources in the same plan.
+
+### 14.4 Items
 
 Item charges, ammunition, durability, and bounded reserves become item-owned resource entries. Item movement does not move or duplicate the resource entry because identity remains the item ID. Item destruction or terminal consumption closes its resources atomically with the item transition.
 
-### 14.4 Afterlife
+### 14.5 Afterlife
 
 Persistent afterlife actors use persistent resource owners. Conflict action economy and other temporary reserves use scoped owners. Conflict start creates them, exchange operations mutate them, and conflict close retires them.
 
@@ -359,7 +367,7 @@ Guardian and Shining Abode gacha attempts use registered per-return capacity/ini
 
 Specialized spiritual-combat axes and conditions remain specialized mechanics; only genuinely spendable/restorable quantities enter the resource ledger. Currency, treasury, and faction accounting remain outside it.
 
-### 14.5 Effects
+### 14.6 Effects
 
 Effect Task 9 resumes only after the preceding owners and ordinary operations use the resource planner. `periodic_damage` and `periodic_restore` emit mutations against exact target coordinates. Unsupported target/resource combinations are impossible when the source definition is accepted because definition/owner capability is checked at application and again at execution.
 
@@ -416,10 +424,10 @@ Required coverage includes:
 - exact decimal, integer, quantum, minimum, capacity, floor, cap, and overflow boundaries;
 - stable mutation ordering and non-commutative boundary cases;
 - exact replay, conflicting replay, stale history, cycle, and expansion-limit cases;
-- player, named NPC, named NPC in combat, anonymous combatant, group member, item, persistent afterlife actor, and scoped conflict owner cases;
+- player, named NPC, named NPC in combat, anonymous combatant, group member, vehicle, item, persistent afterlife actor, and scoped conflict owner cases;
 - same-turn owner/definition creation and mutation;
 - ordinary damage, healing, recovery, spend, gain, item use, and the equivalent effect-triggered result;
-- combat entry/exit, group member defeat, item move/destruction, and conflict close;
+- combat entry/exit, group member defeat, vehicle movement/destruction, item move/destruction, and conflict close;
 - bounded receipt success plus missing, stale, partial, extra, cross-target, wrong-operation, and out-of-bound rejection;
 - direct ledger/history mutation and late TOCTOU mutation with zero writes;
 - forced write and post-validation failures with byte/existence rollback across every touched path;

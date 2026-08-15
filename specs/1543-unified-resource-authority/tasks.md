@@ -18,13 +18,13 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 
 **Purpose**: Lock scope, current evidence, exact writers/readers, and the breaking cutover boundary before behavior changes.
 
-- [ ] T001 Confirm issues #1543 and #1535 are open, #1535 records the #1543 blocker, branch/worktree are `1535-effect-materialization` and `E:/Games/worktrees/boe-1535-effect-materialization`, and record the status in `docs/superpowers/plans/2026-08-15-unified-resource-authority.md`
-- [ ] T002 Read `AGENTS.md`, `.specify/memory/constitution.md`, every `specs/1543-unified-resource-authority/*.md`, every `contracts/*.md`, `docs/testing.md`, and `docs/superpowers/specs/2026-08-15-unified-resource-authority-design.md`; record implementation conflicts and resolutions in `specs/1543-unified-resource-authority/research.md`
-- [ ] T003 Capture one current meaningful Fast baseline with `scripts/test-csharp.ps1` and record exact summary path/count/time/cleanup in `specs/1543-unified-resource-authority/quickstart.md`; do not invoke GitHub Actions
-- [ ] T004 [P] Inventory every active resource writer/mapping/validator/normalizer in `BookOfEternityClient/` and reconcile the exact production path table in `specs/1543-unified-resource-authority/plan.md`
-- [ ] T005 [P] Inventory every resource reader/projection/action gate in `BookOfEternityClient/` and reconcile console/browser/GM consumers in `specs/1543-unified-resource-authority/plan.md`
-- [ ] T006 [P] Inventory every active Mortal/afterlife prompt/example/manifest/template/fixture occurrence of removed authority fields in `Rules/`, `TaskGuides/`, `OtherGuides/`, `Examples/`, `FileSystemExample/`, `CLI_API_Specification.md`, `CLI_Agent_Daemon_Specification.md`, and `BookOfEternityClient/game_master_daemon.ps1`; record the cutover matrix in `specs/1543-unified-resource-authority/plan.md`
-- [ ] T007 Add shared exact fixture/root builders and byte/existence snapshot helpers in `BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs`, `ResourceMaterializationTestContext.Owners.cs`, and `ResourceMaterializationTestContext.Publication.cs`
+- [X] T001 Confirm issues #1543 and #1535 are open, #1535 records the #1543 blocker, branch/worktree are `1535-effect-materialization` and `E:/Games/worktrees/boe-1535-effect-materialization`, and record the status in `docs/superpowers/plans/2026-08-15-unified-resource-authority.md`
+- [X] T002 Read `AGENTS.md`, `.specify/memory/constitution.md`, every `specs/1543-unified-resource-authority/*.md`, every `contracts/*.md`, `docs/testing.md`, and `docs/superpowers/specs/2026-08-15-unified-resource-authority-design.md`; record implementation conflicts and resolutions in `specs/1543-unified-resource-authority/research.md`
+- [X] T003 Capture one current meaningful Fast baseline with `scripts/test-csharp.ps1` and record exact summary path/count/time/cleanup in `specs/1543-unified-resource-authority/quickstart.md`; do not invoke GitHub Actions
+- [X] T004 [P] Inventory every active resource writer/mapping/validator/normalizer in `BookOfEternityClient/` and reconcile the exact production path table in `specs/1543-unified-resource-authority/plan.md`
+- [X] T005 [P] Inventory every resource reader/projection/action gate in `BookOfEternityClient/` and reconcile console/browser/GM consumers in `specs/1543-unified-resource-authority/plan.md`
+- [X] T006 [P] Inventory every active Mortal/afterlife prompt/example/manifest/template/fixture occurrence of removed authority fields in `Rules/`, `TaskGuides/`, `OtherGuides/`, `Examples/`, `FileSystemExample/`, `CLI_API_Specification.md`, `CLI_Agent_Daemon_Specification.md`, and `BookOfEternityClient/game_master_daemon.ps1`; record the cutover matrix in `specs/1543-unified-resource-authority/plan.md`
+- [X] T007 Add shared exact fixture/root builders and byte/existence snapshot helpers in `BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs`, `ResourceMaterializationTestContext.Owners.cs`, and `ResourceMaterializationTestContext.Publication.cs`
 
 ---
 
@@ -44,7 +44,7 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 - [ ] T015 Implement immutable state entries, coordinate index, canonical ordering, capacity agreement, and state fingerprint in `BookOfEternityClient/Services/ResourceStateContract.cs` until T014 is GREEN
 - [ ] T016 [P] Add RED history-root/transition/source/continuity/immutable/replay/conflicting-replay/terminal/duplicate/confusable tests in `BookOfEternityClient.Tests/ResourceHistoryStateTests.cs`
 - [ ] T017 Implement immutable history parsing, replay index, chronology continuity, append helpers, canonical ordering, and history fingerprint in `BookOfEternityClient/Services/ResourceHistoryState.cs` until T016 is GREEN
-- [ ] T018 [P] Add RED owner catalog tests for player, NPC, anonymous combatant, group member, item, afterlife actor/conflict side/scope, same-turn refs, capabilities, realm, lifecycle, duplicate/confusable/historical/name/index rejection in `BookOfEternityClient.Tests/ResourceOwnerAuthorityTests.cs`
+- [ ] T018 [P] Add RED owner catalog tests for player, NPC, anonymous combatant, group member, vehicle, item, afterlife actor/conflict side/scope, same-turn refs, capabilities, realm, lifecycle, duplicate/confusable/historical/name/index rejection in `BookOfEternityClient.Tests/ResourceOwnerAuthorityTests.cs`
 - [ ] T019 [P] Add RED common combatant/member identity tests for all refs consumed without effects/resources, named NPC binding, group reorder, forbidden submitted IDs, duplicate/confusable refs, and residual canonical refs in `BookOfEternityClient.Tests/CombatantIdentityStateTests.cs`
 - [ ] T020 Replace `BookOfEternityClient/Services/EffectCombatantIdentityState.cs` with common `BookOfEternityClient/Services/CombatantIdentityState.cs`, allocate/rewrite combatant and member IDs once, and update `EffectTargetAuthority.cs`, `EffectAcceptedTurnPlan.cs`, `EffectAcceptedTurnPlanner.cs`, and their tests until T019 is GREEN
 - [ ] T021 Implement composed exact owner/capability/ref/fingerprint authority in `BookOfEternityClient/Services/ResourceOwnerAuthority.cs` until T018 is GREEN
@@ -102,16 +102,16 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 
 ## Phase 5: User Story 3 — Complete Owner Lifecycle Across the Game (Priority: P1)
 
-**Goal**: Cut player, NPC, combat, group member, item, and afterlife owner creation/continuity/terminal cleanup to common resource authority.
+**Goal**: Cut player, NPC, vehicle, combat, group member, item, and afterlife owner creation/continuity/terminal cleanup to common resource authority.
 
 **Independent Test**: Create, move/enter, reorder, suspend, retire, and remove every owner family; exact values follow identity and no orphan/duplicate/positional state exists.
 
 ### Owner-plan integration
 
-- [ ] T051 [P] [US3] Add RED player/NPC/same-turn NPC/named-NPC-in-combat/anonymous combatant/group member lifecycle tests in `BookOfEternityClient.IntegrationTests/ResourceOwnerMaterializationTests.cs` and `ResourceCombatOwnerTests.cs`
+- [ ] T051 [P] [US3] Add RED player/NPC/same-turn NPC/named-NPC-in-combat/anonymous combatant/group member/vehicle lifecycle tests in `BookOfEternityClient.IntegrationTests/ResourceOwnerMaterializationTests.cs`, `ResourceCombatOwnerTests.cs`, and `ResourceVehicleOwnerTests.cs`
 - [ ] T052 [P] [US3] Add RED inventory/NPC/location/offscreen item movement, split/merge/destruction/nonempty removal, capacity, and same-turn item tests in `BookOfEternityClient.IntegrationTests/ResourceItemOwnerTests.cs`
 - [ ] T053 [P] [US3] Add RED persistent afterlife actor/conflict side/realm/scope/return-cycle creation and retirement tests in `BookOfEternityClient.IntegrationTests/ResourceAfterlifeOwnerTests.cs`
-- [ ] T054 [US3] Compose player/NPC/combat/group/item/afterlife owner exports from validated owner after-images in `BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs` until T051–T053 owner-resolution cases are GREEN
+- [ ] T054 [US3] Compose player/NPC/vehicle/combat/group/item/afterlife owner exports from validated owner after-images in `BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs` until T051–T053 owner-resolution cases are GREEN
 - [ ] T055 [US3] Publish all accepted combatant/member permanent IDs even without resource/effect commands and reject residual refs in `CombatantIdentityState.cs`, `ValidationService.QuestsRivalsFactionsAndWorld.cs`, and common publication
 
 ### Mortal player cutover
@@ -122,8 +122,8 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 
 ### NPC and combat cutover
 
-- [ ] T059 [P] [US3] Add RED named NPC health continuity, individual health/poise, group-member resources/reorder/defeat, no positional arrays, and legacy rejection tests in `BookOfEternityClient.IntegrationTests/ResourceCombatIntegrationTests.cs`
-- [ ] T060 [US3] Remove NPC current/max health authority and resolve NPC resource owners in `ValidationService.NpcWorldAndMeta.cs`, `ValidationService.InventoryNpcWorldCrossRefs.cs`, and NPC normalizer/consumer paths until T059 named-NPC cases are GREEN
+- [ ] T059 [P] [US3] Add RED named NPC health continuity, vehicle health/create/update/move/destroy continuity, individual health/poise, group-member resources/reorder/defeat, no positional arrays, and legacy rejection tests in `BookOfEternityClient.IntegrationTests/ResourceCombatIntegrationTests.cs` and `ResourceVehicleIntegrationTests.cs`
+- [ ] T060 [US3] Remove NPC and vehicle current/max health authority and resolve their resource owners in `ValidationService.NpcWorldAndMeta.cs`, `ValidationService.MetaCodexAndAchievements.cs`, `ValidationService.InventoryNpcWorldCrossRefs.cs`, `StorageTransportMoveService.cs`, and NPC/vehicle normalizer/consumer paths until T059 named-NPC and vehicle cases are GREEN
 - [ ] T061 [US3] Replace individual `currentHealth/currentPoise` and group `healthStates[]` with owner/member bindings and resource mutations in `ValidationService.QuestsRivalsFactionsAndWorld.cs`, combat response handling, `EffectCarrierCatalog.cs`, and common publication until T059 combat cases are GREEN
 - [ ] T062 [US3] Add group member lifecycle/terminal companion after-images and exact rollback tracking in `AcceptedMechanicsPlanner.cs` and `CanonicalStateNormalizer.AcceptedMechanics.cs`
 
@@ -155,7 +155,7 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 
 - [ ] T075 [P] [US4] Add RED periodic damage/restore component-to-coordinate, unsupported resource/owner, quantum/bounds, replay, and 100-run ordinary-versus-effect byte-equivalent state/history determinism tests in `BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.cs`
 - [ ] T076 [P] [US4] Add RED resource event trigger ordering, depletion/fill, nested chain, cycle/expansion, effect uses/lifetime, and terminal cleanup tests in `BookOfEternityClient.Tests/ResourceTriggerGraphTests.cs` and `EffectLifecycleSchedulerTests.Lifetime.cs`
-- [ ] T077 [P] [US4] Add RED full player/NPC/combat/afterlife periodic publication, resource/effect atomicity, and source/target disappearance tests in `BookOfEternityClient.IntegrationTests/EffectResourceMaterializationTests.cs`
+- [ ] T077 [P] [US4] Add RED full player/NPC/vehicle/combat/afterlife periodic publication where the effect target catalog permits the owner, resource/effect atomicity, and source/target disappearance tests in `BookOfEternityClient.IntegrationTests/EffectResourceMaterializationTests.cs`
 - [ ] T078 [US4] Resolve periodic component payloads to exact `ResourceCoordinate` and internal mutations in `EffectAcceptedTurnPlanner.cs`, `EffectComponentProfiles.cs`, and `AcceptedMechanicsPlanner.cs` until T075 is GREEN
 - [ ] T079 [US4] Feed actual resource events into effect trigger selection/execution and return downstream mutations to the same reducer in `AcceptedMechanicsPlanner.cs` until T076 is GREEN
 - [ ] T080 [US4] Advance effect uses/time/scene/source/condition lifetime and terminal identity/index cleanup after graph execution in `EffectLifecycleScheduler.cs`, `EffectAcceptedTurnPlanner.cs`, and common plan publication
@@ -179,7 +179,7 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 - [ ] T089 [US5] Implement immutable accepted snapshot parsing and safe player/GM projections in `BookOfEternityClient/Services/ResourceProjectionService.cs` until T087–T088 are GREEN
 - [ ] T090 [US5] Populate in-memory player status resources from `ResourceProjectionService` while preserving narrative condition/money in `BookOfEternityClient/Core/StateManager.cs` and `Models/GameState/AggregatedGameState.cs`
 - [ ] T091 [US5] Cut status bar, console status/stats/meta, agent console, and shared Mortal result builder to the projection in `UI/GameInterface.cs`, `ExplorerMode.WorldAndStatus.cs`, `ExplorerMode.MetaStoryAndStatus.cs`, `ExplorerUniversalMetaCommandResultBuilder.cs`, `ExplorerMortalWorldCommandResultBuilder.cs`, and `GameEngine.AgentConsole.cs`
-- [ ] T092 [US5] Cut NPC/combat/item detail and action eligibility to exact projections in `ExplorerMode.Npcs.ListAndDetails.cs`, `ExplorerMode.Npcs.Rendering.cs`, `ExplorerMode.Inventory.cs`, `ExplorerMortalWorldCommandResultBuilder.cs`, and `ExplorerLifecycleLocalTurnCommandResultBuilder.cs`
+- [ ] T092 [US5] Cut NPC/vehicle/combat/item detail and action eligibility to exact projections in `ExplorerMode.Npcs.ListAndDetails.cs`, `ExplorerMode.Npcs.Rendering.cs`, `ExplorerMode.MetaLoreAndTravel.cs`, `ExplorerMode.Inventory.cs`, `ExplorerMortalWorldCommandResultBuilder.cs`, and `ExplorerLifecycleLocalTurnCommandResultBuilder.cs`
 - [ ] T093 [US5] Cut afterlife spiritual conflict/gacha/status/previews to projections in `ExplorerMode.Afterlife.SpiritualConflict.cs`, `ExplorerMode.Afterlife.GuardiansProjectsTrade.cs`, `ExplorerMode.Afterlife.ShiningAbode.ActionPreviews.cs`, `ExplorerMode.Afterlife.ShiningAbode.Actions.cs`, `ExplorerMode.Afterlife.StatusAudit.cs`, and `ExplorerAfterlifeCombatCommandResultBuilder.cs`
 - [ ] T094 [US5] Cut browser game-screen/status DTO construction to projection-only values and no raw fallback in `BookOfEternityClient/WebUi/BrowserGameScreenService.cs`
 - [ ] T095 [P] [US5] Add console/browser/GM-context semantic parity and missing/wrong-type/hidden projection integration tests in `BookOfEternityClient.IntegrationTests/ResourceConsoleBrowserParityTests.cs`
@@ -205,7 +205,7 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 - [ ] T106 [US6] Update afterlife action-point/gacha/reroll contracts and exact no-currency boundary in `OtherGuides/Afterlife_Contract_Matrix.md`, `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`, `Examples/E_CLI_Afterlife_Turns.txt`, relevant `Rules/Block_21.txt`/`Block_32_Guardians.txt`, task/daemon guidance, and `example_validation_manifest.json`
 - [ ] T107 [US6] Replace active template roots and removed fields in `FileSystemExample/game_session/game_state/`, add `FileSystemExample/validator_fixtures/resource_materialization/`, and update fixture manifests/readmes
 - [ ] T108 [US6] Update documentation/source-guard tests in `BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs`, `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`, and fixture integrity tests until production examples validate
-- [ ] T109 [US6] Add old technical save incompatibility tests for each removed player/NPC/combat/item/afterlife authority in `BookOfEternityClient.IntegrationTests/ResourceMaterializationValidationTests.cs`
+- [ ] T109 [US6] Add old technical save incompatibility tests for each removed player/NPC/vehicle/combat/item/afterlife authority in `BookOfEternityClient.IntegrationTests/ResourceMaterializationValidationTests.cs`
 - [ ] T110 [US6] Run US6 lifecycle, source-guard, docs/example, FullValidation, and template filters; record exact evidence, inspect rollback bytes/existence and stale-output suppression, and commit the US6 slice
 
 ---
@@ -266,7 +266,7 @@ No parallel task may mutate shared production files concurrently without an expl
 
 - **US1**: Complete built-in/setting definitions and representative owner state accept; direct/legacy/malformed/ambiguous state yields zero writes.
 - **US2**: Pure reducer/planner produces exact deterministic values/events/history under boundary/order/replay tests and no file mutation.
-- **US3**: Every supported owner survives creation/movement/entry/reorder/exit or retires correctly with no duplicate/orphan/positional authority.
+- **US3**: Every supported owner, including vehicles, survives creation/movement/entry/reorder/exit or retires correctly with no duplicate/orphan/positional authority.
 - **US4**: Ordinary and effect-equivalent operations match; periodic/event/pending flows use one plan and one reducer exactly once.
 - **US5**: Console/browser/GM projections are semantically aligned, usable, safe, and have no raw fallback or internal/hidden leak.
 - **US6**: Failure injection restores all bytes/prior absence, legacy saves/fields reject, and active prompts/examples/templates validate only the new authority.

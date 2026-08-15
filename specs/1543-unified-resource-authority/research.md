@@ -26,6 +26,7 @@ This research resolves implementation choices left below the approved architectu
 
 - Mortal player `health`, `energy`, and `poise`;
 - named NPC health and any materialized bounded NPC reserve;
+- vehicle health and any materialized bounded vehicle reserve, keyed by permanent `vehicleId`;
 - individual combatant health/poise and stable group-member health/poise;
 - item durability, generic `resourceType/resource/maximumResource`, charges, and ammunition when present;
 - afterlife spiritual-conflict action points;
@@ -210,3 +211,23 @@ Money, Ink Feathers, Light Sparks, treasuries, faction resource ledgers, prices,
 - No performance guard: rejected because history and cross-domain catalog scans can accidentally become quadratic.
 - Introduce a database/index service: rejected as unnecessary architectural expansion for a local file-backed game.
 - Use GitHub Actions: rejected by explicit user instruction and repository policy.
+
+## Decision 17: Phase-1 executable inventory correction — vehicles
+
+**Decision**: Add `vehicle` as a ninth closed resource owner kind. Existing `game_state/misc/vehicles.json` objects have a stable `vehicleId` and mechanically authoritative `currentHealth`/`maxHealth`, so vehicle health satisfies the same admission test as NPC/combat health. The cutover removes those writable vehicle fields, initializes health through accepted vehicle materialization, preserves the coordinate through activation/parking/movement, and retires it on destruction.
+
+**Rationale**: The first executable inventory found that the approved eight-owner draft omitted an active bounded mechanic. Leaving it in `UpdateVehicles` would violate the single-authority goal and the user's explicit requirement not to discard difficult existing mechanics. The fix is made in specification artifacts before runtime implementation rather than hidden behind a later adapter.
+
+**Alternatives considered**:
+
+- Treat vehicle health as narrative metadata: rejected because production validates and renders it as current/max mechanical health and permits partial updates.
+- Reuse `item` ownership because vehicles can carry inventory: rejected because vehicles have their own permanent identity and lifecycle.
+- Defer vehicles to a follow-up: rejected because the final no-mirror boundary would be false at merge.
+
+## Implementation preflight conflicts and resolutions (2026-08-15)
+
+- Issues #1543 and #1535 are open; #1535 records #1543 as the blocker for Effect Task 9. The active branch/root are `1535-effect-materialization` and `E:/Games/worktrees/boe-1535-effect-materialization`.
+- Repository policy and `docs/testing.md` agree on bounded PowerShell lanes, a five-minute Fast limit, a twenty-minute PreMerge limit, no duplicate Fast immediately before PreMerge, and no GitHub Actions. No implementation-plan conflict remains.
+- The initial design said eight owner kinds, but the executable scan found vehicle health. Decision 17 resolves the mismatch by adding `vehicle` everywhere before production behavior is written.
+- Broad token collisions were reviewed and remain outside the ledger by explicit policy: owner-bond/reputation/mastery/experience are relationships/progression; Ink Feathers, Light Sparks, treasuries, faction ledgers, prices, and trade balances are accounting; effect stacks/uses/turns are effect lifetime; QTE counters and lock-pin durability are QTE-local state; spiritual power/shield values are specialized conflict axes or immutable audit; item stack count remains item lifecycle. These exclusions are not compatibility fallbacks and may enter only through a separately tracked contract change.
+- No runtime migration, compatibility reader, dual write, raw projection fallback, Actions workflow, or cloud dependency is authorized.

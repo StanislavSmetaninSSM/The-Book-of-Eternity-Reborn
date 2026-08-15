@@ -26,7 +26,7 @@ Replace every included persisted health/energy/poise/charge/ammunition/durabilit
 
 **Constraints**: No migration, compatibility reader, legacy promotion, dual write, or raw fallback; no GitHub Actions; exact ordinal/confusable authority; exact decimal/quantum arithmetic; random client IDs allocated once; no arbitrary paths or expressions; one complete plan; deterministic four-phase ordering; bounded graph; byte/existence rollback; console/browser parity; player-facing Russian copy and recursive privacy; currencies/accounting/progression remain outside.
 
-**Scale/Scope**: Up to 256 definitions, 20,000 live entries, 512 pre-trigger mutations, 1,024 trigger nodes/depth 32, untruncated history, eight owner kinds, player/NPC/combat/group/item/afterlife/effect cutovers, active template plus shared Mortal/afterlife prompts/examples/manifests.
+**Scale/Scope**: Up to 256 definitions, 20,000 live entries, 512 pre-trigger mutations, 1,024 trigger nodes/depth 32, untruncated history, nine owner kinds, player/NPC/vehicle/combat/group/item/afterlife/effect cutovers, active template plus shared Mortal/afterlife prompts/examples/manifests.
 
 **Source Issue(s)**: [#1543](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1543); blocked consumer [#1535](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1535)
 
@@ -37,8 +37,8 @@ Replace every included persisted health/energy/poise/charge/ammunition/durabilit
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ResourceMaterializationContractTests|FullyQualifiedName~ResourceDefinitionCatalogTests|FullyQualifiedName~ResourceStateContractTests|FullyQualifiedName~ResourceHistoryStateTests|FullyQualifiedName~ResourceOwnerAuthorityTests|FullyQualifiedName~ResourceMutationReducerTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AcceptedMechanicsPlannerTests|FullyQualifiedName~AcceptedMechanicsPlanCacheTests|FullyQualifiedName~ResourceTriggerGraphTests|FullyQualifiedName~ResourcePendingResolutionTests|FullyQualifiedName~ResourceProjectionServiceTests|FullyQualifiedName~ResourcePlayerPrivacyTests"
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourceMaterializationValidationTests|FullyQualifiedName~ResourceOwnerMaterializationTests|FullyQualifiedName~ResourceCombatOwnerTests|FullyQualifiedName~ResourceItemOwnerTests|FullyQualifiedName~ResourceAfterlifeOwnerTests|FullyQualifiedName~CanonicalStateNormalizerResourceTests"
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalResourceCutoverTests|FullyQualifiedName~ResourceCombatIntegrationTests|FullyQualifiedName~ResourceItemIntegrationTests|FullyQualifiedName~AfterlifeResourceCutoverTests|FullyQualifiedName~EffectResourceMaterializationTests|FullyQualifiedName~ResourcePendingResolutionIntegrationTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourceMaterializationValidationTests|FullyQualifiedName~ResourceOwnerMaterializationTests|FullyQualifiedName~ResourceCombatOwnerTests|FullyQualifiedName~ResourceVehicleOwnerTests|FullyQualifiedName~ResourceItemOwnerTests|FullyQualifiedName~ResourceAfterlifeOwnerTests|FullyQualifiedName~CanonicalStateNormalizerResourceTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalResourceCutoverTests|FullyQualifiedName~ResourceCombatIntegrationTests|FullyQualifiedName~ResourceVehicleIntegrationTests|FullyQualifiedName~ResourceItemIntegrationTests|FullyQualifiedName~AfterlifeResourceCutoverTests|FullyQualifiedName~EffectResourceMaterializationTests|FullyQualifiedName~ResourcePendingResolutionIntegrationTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourceConsoleBrowserParityTests|FullyQualifiedName~ExplorerModeCommandTests|FullyQualifiedName~ExplorerWebCommandServiceTests|FullyQualifiedName~MortalBootstrapValidationTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~PromptDocumentationCoverageTests|FullyQualifiedName~AfterlifeDocumentationCoverageTests|FullyQualifiedName~ResourceContractSourceGuardTests|FullyQualifiedName~ResourceAuthorityScaleTests|FullyQualifiedName~AcceptedMechanicsPlannerScaleTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExampleDocumentationValidationTests|FullyQualifiedName~FileSystemExampleFixtureIntegrityTests"
@@ -163,13 +163,72 @@ BookOfEternityClient/
 │   ├── Validation/ValidationService.EffectMaterialization.cs
 │   ├── Validation/ValidationService.InventoryNpcWorldCrossRefs.cs
 │   ├── Validation/ValidationService.MathAssistant.cs
+│   ├── Validation/ValidationService.MetaCodexAndAchievements.cs
 │   ├── Validation/ValidationService.NpcWorldAndMeta.cs
 │   ├── Validation/ValidationService.PlayerAndInventory.cs
-│   └── Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs
+│   ├── Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs
+│   ├── MortalItemCarrierCatalog.cs
+│   ├── MortalItemRouteAuthorityCatalog.cs
+│   ├── PlayerGuardianFoundationState.cs
+│   └── StorageTransportMoveService.cs
 └── game_master_daemon.ps1
 ```
 
 The task inventory must add any newly discovered active writer/reader before its cutover task is marked complete; the final legacy source guard is the executable completeness check.
+
+### Phase-1 executable cutover inventory (2026-08-15)
+
+The inventory is path-based, not token-only. A listed file may own several contours; every listed active writer/reader must be cut over or retained only under the explicit exclusion table. `StateDistributor` is included because it stages mapped GM response fragments even when it does not name each domain field directly.
+
+#### Writers, stagers, normalizers, validators, and lifecycle owners
+
+| Authority contour | Active production paths to cut over |
+| --- | --- |
+| Shared response/staging/bootstrap/snapshot/publication | `Models/GameResponse.cs`; `Configuration/FileMapping.cs`; `IO/StateDistributor.cs`; `Services/MortalBootstrapStateBuilder.cs`; `Core/GameEngine/GameEngine.TurnLifecycle.cs`; `Core/GameEngine/GameEngine.SessionAndSnapshots.cs`; `Services/LiveTurnPreparationService.cs`; `Services/CanonicalStateNormalizer.cs` |
+| Mortal player health/energy/poise | `Services/Validation/ValidationService.PlayerAndInventory.cs`; `ValidationService.PrivateImplementation.cs`; `ValidationService.MathAssistant.cs`; `ValidationService.BootstrapAndProtocol.cs`; `Services/ShiningBlessingEffectState.cs`; the shared response/mapping/bootstrap paths above |
+| Named NPC health | `Services/Validation/ValidationService.NpcWorldAndMeta.cs`; `ValidationService.InventoryNpcWorldCrossRefs.cs`; `ValidationService.MetaCodexAndAchievements.cs`; shared response/staging/publication paths |
+| Vehicle health and lifecycle | `Models/GameResponse.cs`; `Configuration/FileMapping.cs`; `Services/Validation/ValidationService.MetaCodexAndAchievements.cs`; `ValidationService.InventoryNpcWorldCrossRefs.cs`; `ValidationService.LifecycleControlAndStateFiles.cs`; `ValidationService.MortalItemMaterialization.cs`; `Services/StorageTransportMoveService.cs`; `MortalItemCarrierCatalog.cs`; `MortalItemRouteAuthorityCatalog.cs`; `MortalItemTransitionWriter.cs`; `CanonicalStateNormalizer.MortalItems.cs` |
+| Individual/group combat health and poise | `Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs`; `Services/EffectCarrierCatalog.cs`; shared response/staging/publication paths |
+| Item durability/charges/ammunition/generic reserve | `Models/GameResponse.cs`; `Configuration/FileMapping.cs`; `Services/MortalItemMaterializationContract.cs`; `MortalItemTransitionWriter.cs`; `MortalItemTransitionWriter.Stacks.cs`; `CanonicalStateNormalizer.InventorySidecars.cs`; `CanonicalStateNormalizer.FactionAndInventoryHelpers.cs`; `CanonicalStateNormalizer.MortalItems.cs`; `ValidationService.PlayerAndInventory.cs`; `ValidationService.NpcWorldAndMeta.cs`; `ValidationService.InventoryNpcWorldCrossRefs.cs`; `ValidationService.MortalItemMaterialization.cs`; `ValidationService.LifecycleControlAndStateFiles.cs`; `MortalBootstrapStateBuilder.cs` |
+| Afterlife spiritual action points | `Services/AfterlifeSpiritualConflictState.cs`; `AfterlifeSpiritualConflictTurnPreviewService.cs`; `ValidationService.AfterlifeSpiritualConflict.cs`; `ValidationService.AfterlifeCombatConditions.cs`; `Core/GameEngine/GameEngine.ValidationAndRepair.cs`; `CanonicalStateNormalizer.SharedAndSoulHelpers.cs` |
+| Guardian/Shining per-return attempts and formula inputs | `Services/GuardianGachaChargeRules.cs`; `PlayerGuardianFoundationState.cs`; `SystemGuardianLibraryService.cs`; `ShiningAbodeState.cs`; `ShiningAbodeState.Gacha.cs`; `Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs`; `GameEngine.MainMenu.cs`; `GameEngine.TurnLifecycle.cs`; `CanonicalStateNormalizer.SharedAndSoulHelpers.cs`; `ValidationService.GuardianPolicyKernel.cs`; `ValidationService.GuardianProjectsAndGacha.cs`; `ValidationService.GuardiansAndAfterlife.cs`; `ValidationService.LifecycleControlAndStateFiles.cs`; `ValidationService.ShiningAbode.cs` |
+| Numeric blessing/memory/relic rerolls | `Services/ShiningBlessingEffectState.cs`; `ShiningAbodeState.cs`; `ShiningAbodeState.Gameplay.cs`; `Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs`; `ValidationService.AfterlifeArchiveTradeAndLifecycle.cs`; `ValidationService.LifecycleControlAndStateFiles.cs`; `ValidationService.ShiningAbode.cs` |
+| Effect-generated resource operations and common publication | `Services/EffectAcceptedTurnInputComposer.cs`; `EffectAcceptedTurnPlan.cs`; `EffectAcceptedTurnPlanCache.cs`; `EffectAcceptedTurnPlanner.cs`; `EffectLifecycleScheduler.cs`; `CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs`; `Validation/ValidationService.EffectMaterialization.cs` |
+
+#### Readers, projections, and action gates
+
+| Consumer contour | Active production paths to cut over |
+| --- | --- |
+| Player status/stats/browser | `Core/StateManager.cs`; `Models/GameState/AggregatedGameState.cs`; `UI/GameInterface.cs`; `UI/ExplorerUniversalMetaCommandResultBuilder.cs`; `UI/ExplorerMortalWorldCommandResultBuilder.cs`; `UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs`; `ExplorerMode.MetaStoryAndStatus.cs`; `WebUi/BrowserGameScreenService.cs` |
+| NPC, vehicle, and combat detail/action views | `UI/ExplorerMortalWorldCommandResultBuilder.cs`; `UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs`; `ExplorerMode.MetaLoreAndTravel.cs`; `ExplorerMode.Npcs.ListAndDetails.cs`; `ExplorerMode.Npcs.Rendering.cs`; `Services/StorageTransportMoveService.cs` |
+| Item detail/use/trade/transport | `Services/InventoryEquipmentService.cs`; `NpcTradeService.cs`; `StorageTransportMoveService.cs`; `UI/ExplorerMode/ExplorerMode.Inventory.cs`; `ExplorerMode.Npcs.Rendering.cs`; `UI/ExplorerMortalWorldCommandResultBuilder.cs`; `ExplorerLifecycleLocalTurnCommandResultBuilder.cs` |
+| Spiritual conflict action economy | `Services/AfterlifeSpiritualConflictTurnPreviewService.cs`; `UI/ExplorerAfterlifeCombatCommandResultBuilder.cs`; `ExplorerLifecycleLocalTurnCommandResultBuilder.cs`; `UI/ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs` |
+| Guardian/Shining attempts and rerolls | `UI/ExplorerMode/ExplorerMode.Afterlife.GuardiansProjectsTrade.cs`; `ExplorerMode.Afterlife.PlayerGuardianFoundation.cs`; `ExplorerMode.Afterlife.ShiningAbode.ActionPreviews.cs`; `ExplorerMode.Afterlife.ShiningAbode.Actions.cs`; `ExplorerMode.Afterlife.ShiningAbode.Gates.cs`; `ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs`; `ExplorerMode.Afterlife.StatusAudit.cs`; `ExplorerMode.Npcs.ListAndDetails.cs`; `UI/ExplorerShiningAbodeCommandResultBuilder.cs` |
+| GM/agent context | `Core/GameEngine/GameEngine.AgentConsole.cs`; `Core/GameEngine/GameEngine.TurnLifecycle.cs`; `game_master_daemon.ps1`; the CLI/rule/example inventory below |
+
+#### GM prompt, example, manifest, and active-template cutover matrix
+
+| Scope | Exact active paths inspected and owned by the final cutover |
+| --- | --- |
+| Shared API/daemon/launcher/task | `CLI_API_Specification.md`; `CLI_Agent_Daemon_Specification.md`; `BookOfEternityClient/Launcher/CLI_Launch_Script.md`; `TaskGuides/CLI_Step_Main.txt`; `BookOfEternityClient/game_master_daemon.ps1` |
+| Mortal rules | `Rules/Block_0.txt`; `Block_2.txt`; `Block_2.5.txt`; `Block_2.6.txt`; `Block_5.txt`; `Block_6.txt`; `Block_9_Universal_Tool_Functions.txt`; `Block_10.txt`; `Block_11.txt`; `Block_12.txt`; `Block_13.txt`; `Block_15.txt`; `Block_15.A.txt`; `Block_17.txt`; `Block_19.txt`; `Block_19.A.txt`; `Block_CLI_Operations.txt`; `Block_FINAL.txt` |
+| Afterlife rules/guides | `Rules/Block_21.txt`; `Rules/Block_32_Guardians.txt`; `OtherGuides/Afterlife_Contract_Matrix.md`; `OtherGuides/Afterlife_Combat_Terminology_Glossary.md` |
+| Worked examples and manifest | `Examples/CLI_Translation_Guide.md`; `E_Block_2.5.txt`; `E_Block_5.txt`; `E_Block_6.txt`; `E_Block_9_Updated.txt`; `E_Block_10.txt`; `E_Block_10.V.txt`; `E_Block_13.txt`; `E_Block_15.A.txt`; `E_Block_16.txt`; `E_Block_17.txt`; `E_Block_19.txt`; `E_Block_19.A.txt`; `E_Block_21.txt`; `E_Block_32.txt`; `E_CLI_Afterlife_Turns.txt`; `E_CLI_Mortal_Item_Materialization.txt`; `E_CLI_NPC_Trade.txt`; `E_CLI_Step_Main.txt`; `E_Soul_Relic_Integration.txt`; new `E_CLI_Mortal_Resources.txt`; `example_validation_manifest.json` |
+| Active template and fixtures | `FileSystemExample/game_session/game_state/core/player_status.json`; `game_state/player/player_status.json`; `game_state/inventory/items.json`; `game_state/misc/vehicles.json` when present; Guardian/Shining state containing attempts/rerolls; `validator_fixtures/combat_group_health_states/**`; item/vehicle/Guardian/Shining fixtures found by the source guard; new `validator_fixtures/resource_materialization/**` |
+
+#### Reviewed same-token exclusions
+
+| Token family | Retained authority and rationale |
+| --- | --- |
+| `ownerBondLevelCurrent/Max`, mastery, experience, levels, reputation/relationship values | Relationship/progression authority; not damage/restore/spend/gain state |
+| Ink Feathers, Light Sparks, treasury/faction `resourceType`, prices, trade balances | Currency/accounting authority explicitly outside FR-060 |
+| Effect stacks, uses, duration, `turnsRemaining` | Effect identity/lifetime authority, not a general owner resource |
+| QTE progress, mistake/noise caps, lock-pin `durability` | Ephemeral QTE-local state; must not be admitted by the resource source guard |
+| Spiritual power/strain/shield and offensive-project power/shield audit values | Specialized afterlife axes or immutable calculation audit, not a spendable current/max ledger value |
+| Item stack `count` | Item identity/split/merge lifecycle; resource companions follow the surviving item identity but count is not admitted as a resource |
+| Archive `project_fuel` request names | Archive entry reservation/transfer workflow, not a scalar fuel pool |
+
+The executable inventory corrected one planning omission: vehicle health qualifies and therefore adds the ninth owner kind. No other reviewed token family may enter implicitly; any future admission requires an explicit tracked contract update.
 
 ### Existing player/GM projection files modified
 
@@ -182,6 +241,7 @@ BookOfEternityClient/
 ├── UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs
 ├── UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs
 ├── UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs
+├── UI/ExplorerMode/ExplorerMode.MetaLoreAndTravel.cs
 ├── UI/ExplorerMode/ExplorerMode.Inventory.cs
 ├── UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs
 ├── UI/ExplorerMode/ExplorerMode.Npcs.Rendering.cs
@@ -223,11 +283,13 @@ BookOfEternityClient.IntegrationTests/
 ├── ResourceMaterializationValidationTests.cs
 ├── ResourceOwnerMaterializationTests.cs
 ├── ResourceCombatOwnerTests.cs
+├── ResourceVehicleOwnerTests.cs
 ├── ResourceItemOwnerTests.cs
 ├── ResourceAfterlifeOwnerTests.cs
 ├── CanonicalStateNormalizerTests.Resources.cs
 ├── MortalResourceCutoverTests.cs
 ├── ResourceCombatIntegrationTests.cs
+├── ResourceVehicleIntegrationTests.cs
 ├── ResourceItemIntegrationTests.cs
 ├── AfterlifeResourceCutoverTests.cs
 ├── EffectResourceMaterializationTests.cs
@@ -256,12 +318,15 @@ Rules/Block_13.txt
 Rules/Block_15.txt
 Rules/Block_15.A.txt
 Rules/Block_17.txt
+Rules/Block_19.txt
+Rules/Block_19.A.txt
 Rules/Block_32_Guardians.txt
 Rules/Block_CLI_Operations.txt
 Rules/Block_FINAL.txt
 Examples/E_Block_5.txt
 Examples/E_Block_6.txt
 Examples/E_Block_10.txt
+Examples/E_Block_10.V.txt
 Examples/E_Block_13.txt
 Examples/E_Block_15.A.txt
 Examples/E_Block_16.txt
@@ -303,7 +368,7 @@ Add response mapping, resource raw/canonical validation, snapshot/rollback track
 
 ### Phase D — Owner and ordinary Mortal cutover
 
-Cut player, named NPC, anonymous/group combat, item resource/durability, ordinary damage/heal/recovery/cost/use/repair/fire/reload, GM context, and associated UI reads to common owners/mutations/projections. Remove legacy mappings/validators/writers in the same domain slice.
+Cut player, named NPC, vehicle, anonymous/group combat, item resource/durability, ordinary damage/heal/recovery/cost/use/repair/fire/reload, GM context, and associated UI reads to common owners/mutations/projections. Remove legacy mappings/validators/writers in the same domain slice.
 
 ### Phase E — Afterlife cutover
 

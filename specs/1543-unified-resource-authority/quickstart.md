@@ -13,6 +13,18 @@ This guide is the executable validation handoff for [#1543](https://github.com/S
 - Use PowerShell 7 and `scripts/test-csharp.ps1`; never run an unbounded full-solution `dotnet test` and never enable or invoke GitHub Actions.
 - Read `docs/testing.md` before choosing a lane.
 
+### Phase-1 baseline evidence (2026-08-15)
+
+- Issues: #1543 `OPEN`; #1535 `OPEN` and explicitly blocked by #1543 for Effect Task 9.
+- Workspace: branch `1535-effect-materialization`; root `E:/Games/worktrees/boe-1535-effect-materialization`; clean before implementation.
+- Command: `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast`.
+- Result: exit `0`; timeout `false`; `3479/3479` executed and passed; failures `0`; duplicate test IDs `0`; owned-tree cleanup `complete`; wall `00:04:02.3268448`.
+- Summary: `TestResults/test-lanes/20260815-152211-507-33852-278bd0d07af7444aaa060a26783f082c-fast/summary.json`.
+- Harness RED 1: `TestResults/test-lanes/20260815-153733-515-18216-f163ecfa317c4cf2a846976d0654ff8f-focused/summary.json`; expected build failure because `ResourceMaterializationTestContext` did not exist.
+- Harness RED 2: `TestResults/test-lanes/20260815-153846-219-17504-c9674d2b64a04d999064e487ad9f804e-focused/summary.json`; expected build failure after the strict-root assertion was added and before the harness existed.
+- Harness GREEN (final Task-1 snapshot): `TestResults/test-lanes/20260815-154703-722-41500-00f376b0b55348318972aaa262945bce-focused/summary.json`; exit `0`; timeout `false`; `6/6` executed and passed; failures `0`; duplicate test IDs `0`; owned-tree cleanup `complete`; wall `00:00:15.8617710`.
+- GitHub Actions were neither enabled nor invoked.
+
 ## 3. Canonical example state
 
 The active new-game example must contain:
@@ -23,13 +35,14 @@ game_state/resources/resource_state.json
 game_state/resources/resource_history.json
 ```
 
-It must not contain persisted mechanical values in the removed player, NPC, combat, item, or afterlife fields. `resource_commands.json` is absent outside an accepted staged turn.
+It must not contain persisted mechanical values in the removed player, NPC, vehicle, combat, item, or afterlife fields. `resource_commands.json` is absent outside an accepted staged turn.
 
 Minimum built-in examples:
 
 - Mortal `player_current`: health, energy, poise;
 - one named NPC health owner;
 - one anonymous combatant and one stable group member;
+- one vehicle health owner bound to permanent `vehicleId`;
 - one item with durability and one with charges/ammunition;
 - one afterlife spiritual-action-points owner;
 - one Guardian/Shining per-return charge owner;
@@ -68,28 +81,29 @@ Expected:
 ## 6. Owner lifecycle RED/GREEN
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourceOwnerMaterializationTests|FullyQualifiedName~ResourceCombatOwnerTests|FullyQualifiedName~ResourceItemOwnerTests|FullyQualifiedName~ResourceAfterlifeOwnerTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourceOwnerMaterializationTests|FullyQualifiedName~ResourceCombatOwnerTests|FullyQualifiedName~ResourceVehicleOwnerTests|FullyQualifiedName~ResourceItemOwnerTests|FullyQualifiedName~ResourceAfterlifeOwnerTests"
 ```
 
 Expected:
 
-- player, named NPC, anonymous combatant, group member, item, persistent afterlife actor, conflict side, and afterlife scope resolve exact owners;
+- player, named NPC, anonymous combatant, group member, vehicle, item, persistent afterlife actor, conflict side, and afterlife scope resolve exact owners;
 - named NPC combat entry uses the same owner;
 - every accepted `combatantRef`/`memberRef` is consumed even without a resource/effect command;
 - item movement preserves the coordinate;
+- vehicle activation/parking/movement preserves the coordinate and destruction retires it;
 - member/item/conflict terminal transitions leave history and no orphan live state;
 - case/confusable/historical/cross-realm/unknown bindings fail atomically.
 
 ## 7. Mortal ordinary-operation cutover
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalResourceCutoverTests|FullyQualifiedName~ResourceCombatIntegrationTests|FullyQualifiedName~ResourceItemIntegrationTests|FullyQualifiedName~MortalBootstrapValidationTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalResourceCutoverTests|FullyQualifiedName~ResourceCombatIntegrationTests|FullyQualifiedName~ResourceVehicleIntegrationTests|FullyQualifiedName~ResourceItemIntegrationTests|FullyQualifiedName~MortalBootstrapValidationTests"
 ```
 
 Expected:
 
-- ordinary damage, healing, energy spend/gain, poise damage/restore, item use/repair/fire/reload use the reducer;
-- legacy player delta, NPC/combat health, group health array, durability, and item resource commands are rejected;
+- ordinary damage, healing, energy spend/gain, poise damage/restore, vehicle damage/restore, and item use/repair/fire/reload use the reducer;
+- legacy player delta, NPC/vehicle/combat health, group health array, durability, and item resource commands are rejected;
 - no persisted legacy mirror remains after bootstrap or a turn;
 - one invalid sibling produces zero resource/owner/effect/output writes.
 

@@ -72,7 +72,7 @@ History is not truncated by these limits. A separate tracked feature is required
   "initializationPolicy": {
     "kind": "maximum"
   },
-  "allowedOwnerKinds": ["player", "npc", "combatant", "combat_group_member"],
+  "allowedOwnerKinds": ["player", "npc", "combatant", "combat_group_member", "vehicle"],
   "allowedOperations": ["damage", "restore"],
   "defaultFloorPolicy": "clamp_to_minimum",
   "defaultCapPolicy": "clamp_to_maximum",
@@ -153,7 +153,7 @@ The active new-game template includes at least:
 
 | Key | Owners | Operations | Capacity source |
 | --- | --- | --- | --- |
-| `health` | player, npc, combatant, combat_group_member | damage, restore | definition fixed 100 unless a separately registered owner policy is selected |
+| `health` | player, npc, combatant, combat_group_member, vehicle | damage, restore | definition fixed 100 unless a separately registered owner policy is selected |
 | `energy` | player, npc, combatant | spend, gain | definition fixed 100 |
 | `poise` | player, combatant, combat_group_member | damage, restore | definition fixed 100 |
 | `durability` | item | damage, restore | instance fixed |
@@ -182,6 +182,7 @@ Closed owner kinds:
 - `npc`
 - `combatant`
 - `combat_group_member`
+- `vehicle`
 - `item`
 - `afterlife_actor`
 - `afterlife_conflict_side`
@@ -196,6 +197,7 @@ Closed owner kinds:
 | Named NPC combat representation | Same `mortal_world/npc/<permanent NPCId>` owner; combat row contains only binding |
 | Anonymous individual combatant | `mortal_world/combatant/<client combatantId>` |
 | Combat group member | `mortal_world/combat_group_member/<client memberId>` |
+| Vehicle | `mortal_world/vehicle/<permanent vehicleId>` |
 | Mortal item | `mortal_world/item/<permanent itemId>` |
 | Persistent afterlife profile | `<current realm>/afterlife_actor/<permanent actor/profile id>` |
 | Afterlife conflict side | `<realm>/afterlife_conflict_side/<client conflict-scoped id>` |
@@ -623,15 +625,19 @@ Persisted player status retains narrative identity/condition and money only. `he
 
 NPC `currentHealthPercentage`/`maxHealthPercentage` are removed. Individual combat `currentHealth`/`currentPoise` and group `healthStates[]` are removed. Combat state retains stable owner bindings and descriptive/action state. Group rows carry stable member records rather than positional health arrays.
 
-### 12.3 Items
+### 12.3 Vehicles
+
+Vehicle `currentHealth`/`maxHealth` are removed from `vehicles.json`. A new vehicle exports permanent `vehicleId`, health capability, and capacity authority; accepted damage/restoration uses common mutations. Activation, parking, movement, and use as an item carrier preserve the coordinate. Permanent destruction retires every live vehicle resource atomically. Vehicle display/location/actions remain vehicle-owned companions.
+
+### 12.4 Items
 
 Item `durability`/`maxDurability` and the `item_resources.json` current/max resource authority are removed. Item definitions/materialization declare resource capabilities/initial capacity through the accepted resource owner plan; inventory and NPC item resource commands become common resource changes. Item movement preserves the same coordinate; destruction/terminal consumption retires it atomically.
 
-### 12.4 Afterlife
+### 12.5 Afterlife
 
 `activeConflict.actionEconomy.*.current/max`, Guardian/Shining `chargesUsedThisReturn/chargesPerReturn`, and numeric blessing reroll counters cease to be persisted mechanical values. Their owning states retain references/audit/display companions only when needed. Capacity formulas bind spirit focus, reputation/return-cycle authority, or accepted entitlement creation. Currencies and faction accounting remain untouched.
 
-### 12.5 Effects
+### 12.6 Effects
 
 `periodic_damage` and `periodic_restore` components resolve an exact resource coordinate and emit internal mutations. Resource-event triggers consume registered events from actual results. Story-facing resource receipts use the bounded request model. No effect component reads or writes legacy resource fields.
 

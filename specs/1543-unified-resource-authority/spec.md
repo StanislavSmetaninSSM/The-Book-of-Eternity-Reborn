@@ -66,9 +66,10 @@ As a player, I want the same resource to follow the same logical actor or item t
 
 1. **Given** a named NPC with accepted health, **When** that NPC enters and leaves combat, **Then** combat references the same resource owner and no combat-local health copy becomes authoritative.
 2. **Given** an anonymous combatant or group member, **When** it is materialized, **Then** the client creates a stable owner identity before any resource mutation and never uses list position as identity.
-3. **Given** an item with charges, ammunition, durability, or another bounded reserve, **When** the item moves between valid carriers, **Then** the resource remains attached to the permanent item identity without duplication.
-4. **Given** a persistent afterlife actor and a conflict-scoped participant, **When** the conflict closes, **Then** only the scoped resource owner is terminally retired while persistent actor resources remain.
-5. **Given** owner destruction or terminal consumption, **When** cleanup is authorized, **Then** terminal history is prepared and no live orphan state remains.
+3. **Given** a vehicle with accepted health, **When** it is updated, activated, parked, moved, or destroyed, **Then** health remains attached to the permanent vehicle identity and cannot be replaced through `UpdateVehicles`.
+4. **Given** an item with charges, ammunition, durability, or another bounded reserve, **When** the item moves between valid carriers, **Then** the resource remains attached to the permanent item identity without duplication.
+5. **Given** a persistent afterlife actor and a conflict-scoped participant, **When** the conflict closes, **Then** only the scoped resource owner is terminally retired while persistent actor resources remain.
+6. **Given** owner destruction or terminal consumption, **When** cleanup is authorized, **Then** terminal history is prepared and no live orphan state remains.
 
 ---
 
@@ -131,6 +132,7 @@ As a player, I want a failed resource/effect transition to restore the complete 
 - Two definitions or owners differ only by case, normalization, or a Unicode confusable.
 - The same event, operation, transition, or receipt identity is reused with identical versus different semantics.
 - A named NPC appears both as an NPC and combatant, or two combatants claim the same named NPC binding.
+- A vehicle is created with a temporary identity, partially updated beside a health mutation, activated/parked, or removed while nonterminal health remains.
 - A group changes order, loses one member, adds a member, or submits a stale positional health array.
 - An item moves, stacks, splits, merges, is destroyed, or is consumed while a resource mutation is also pending.
 - A source or target is created in the same accepted turn and referenced through its exact temporary authority.
@@ -207,6 +209,7 @@ As a player, I want a failed resource/effect transition to restore the complete 
 - **FR-058**: Mortal and afterlife GM prompts, documentation, worked examples, manifests, and source-guard tests MUST be updated with the executable resource contract in the same feature.
 - **FR-059**: The feature MUST include at least one worked Mortal example and one worked afterlife example covering legal resource authoring without direct canonical writes.
 - **FR-060**: Currency, treasury, faction-accounting, and market-balance systems MUST remain separate and MUST NOT be silently routed through this resource authority.
+- **FR-061**: Vehicle health and any accepted bounded vehicle reserve MUST use the permanent vehicle identity and accepted resource authority; `UpdateVehicles`, vehicle movement/activation, and removal MUST NOT retain or create a second mechanical value.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -229,7 +232,7 @@ As a player, I want a failed resource/effect transition to restore the complete 
 
 - **SC-001**: Every included built-in mechanic and every accepted setting-defined resource has exactly one accepted current value and zero persisted legacy mechanical mirrors.
 - **SC-002**: Representative ordinary and effect-generated equivalent operations produce byte-equivalent semantic results and history across 100 repeated deterministic runs.
-- **SC-003**: All supported owner families pass creation, continuity, movement/entry, and terminal cleanup scenarios without duplicate or orphan state.
+- **SC-003**: All supported owner families, including vehicles, pass creation, continuity, movement/entry, and terminal cleanup scenarios without duplicate or orphan state.
 - **SC-004**: Exact replay creates zero duplicate transitions, while every conflicting replay case is rejected with zero published changes.
 - **SC-005**: Every defined numeric, quantum, capacity, clamp, overflow, and ordering boundary has an automated positive and negative scenario.
 - **SC-006**: Every injected publication and post-validation failure restores 100% of touched paths by bytes and prior existence and leaves no stale player output.
@@ -240,7 +243,7 @@ As a player, I want a failed resource/effect transition to restore the complete 
 
 ## Verification Plan *(mandatory)*
 
-- **C# verification**: Focused unit and integration filters for resource contracts, definitions, state/history, owner authority, reducer, accepted mechanics plan, owner cutovers, effect integration, rollback, and projections; one meaningful `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast`; one final `PreMerge` only after #1543 and resumed #1535 Task 9 are merge-ready.
+- **C# verification**: Focused unit and integration filters for resource contracts, definitions, state/history, owner authority, reducer, accepted mechanics plan, player/NPC/vehicle/combat/item/afterlife owner cutovers, effect integration, rollback, and projections; one meaningful `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast`; one final `PreMerge` only after #1543 and resumed #1535 Task 9 are merge-ready.
 - **Documentation/contract verification**: Focused `AfterlifeDocumentationCoverageTests`, prompt/source guards, and `ExampleDocumentationValidationTests`; conditional `FullValidation` because Mortal and afterlife prompts/examples/manifests change.
 - **Frontend verification**: Existing C# browser DTO/service tests; run `npm run verify` only if the React/Vite client contract or rendering code changes rather than consuming the existing typed DTO shape.
 - **Manual/player-facing verification**: Compare console and browser status, combatant, item, and afterlife resource views; inspect hidden/GM-only privacy; exercise one Mortal and one afterlife GM-authored resource turn without technical terminology leaking to the player.

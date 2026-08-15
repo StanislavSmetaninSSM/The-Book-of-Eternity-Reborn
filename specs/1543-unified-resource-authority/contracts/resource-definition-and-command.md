@@ -18,7 +18,7 @@ The shared Mortal/afterlife response may contain:
 
 All three fields are optional arrays. They are staged together in the transient resource command root. Any unknown command-root property, duplicate property, wrong root, or wrong array/object type blocks the complete accepted turn.
 
-Legacy `currentHealthChange`, `currentEnergyChange`, `currentPoiseChange`, `inventoryItemsResources`, `NPCInventoryResourcesChanges`, direct NPC/combat health fields, item durability/resource fields, and afterlife action-economy/charge current values are forbidden after cutover.
+Legacy `currentHealthChange`, `currentEnergyChange`, `currentPoiseChange`, `inventoryItemsResources`, `NPCInventoryResourcesChanges`, direct NPC/combat/vehicle health fields, item durability/resource fields, and afterlife action-economy/charge current values are forbidden after cutover.
 
 ## 3. Definition creation
 

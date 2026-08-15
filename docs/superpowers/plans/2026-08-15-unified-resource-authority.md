@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use `executing-plans` to implement this plan task-by-task.
 
-**Goal:** Replace every included player, NPC, combat, item, afterlife, and effect-specific bounded quantity with one sealed resource definition catalog, one live ledger, immutable transition history, and one atomic accepted-mechanics publication plan, then resume Effect Task 9 on that shared authority.
+**Goal:** Replace every included player, NPC, vehicle, combat, item, afterlife, and effect-specific bounded quantity with one sealed resource definition catalog, one live ledger, immutable transition history, and one atomic accepted-mechanics publication plan, then resume Effect Task 9 on that shared authority.
 
 **Architecture:** Keep the existing .NET 8 file-backed runtime and partial validation/normalizer structure. Add strict resource contracts, pure exact-decimal reducers, composed owner authority, and an immutable `AcceptedMechanicsPlan`; generalize the existing effect combat identity and publication handoff instead of adding a parallel adapter. All domain writers become authorized mutation producers, all readers consume non-persisted projections, and the final branch removes every legacy resource mirror without migration or fallback.
 
@@ -37,12 +37,28 @@ The Spec Kit checklist `T001`–`T121` is the authoritative fine-grained complet
 **Files:**
 
 - Modify: `specs/1543-unified-resource-authority/research.md`
+- Modify: `specs/1543-unified-resource-authority/spec.md`
 - Modify: `specs/1543-unified-resource-authority/plan.md`
+- Modify: `specs/1543-unified-resource-authority/tasks.md`
+- Modify: `specs/1543-unified-resource-authority/data-model.md`
+- Modify: `specs/1543-unified-resource-authority/contracts/*.md`
 - Modify: `specs/1543-unified-resource-authority/quickstart.md`
+- Modify: `docs/superpowers/specs/2026-08-15-unified-resource-authority-design.md`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.Owners.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.Publication.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContextTests.cs`
+
+**Execution checkpoint (2026-08-15):**
+
+- #1543 and #1535 are open; #1535 names #1543 as the Effect Task 9 blocker.
+- Branch/root are exactly `1535-effect-materialization` and `E:/Games/worktrees/boe-1535-effect-materialization`; the worktree was clean before Task 1 edits.
+- Baseline Fast is GREEN: `3479/3479`, failures `0`, duplicates `0`, timeout `false`, cleanup `complete`, wall `00:04:02.3268448`, summary `TestResults/test-lanes/20260815-152211-507-33852-278bd0d07af7444aaa060a26783f082c-fast/summary.json`.
+- The path/token inventory found one included mechanic missing from the draft: vehicle `currentHealth/maxHealth` under stable `vehicleId`. The design/spec/contracts/tasks now add `vehicle` as the ninth owner; no runtime code is changed in this correction.
+- Reviewed false positives remain deliberately outside: relationships/progression, accounting/currencies, effect lifetime, QTE-local counters, specialized afterlife axes/audit, and item stack count. Exact classifications are recorded in the Spec Kit plan/research.
+- Harness RED evidence: `TestResults/test-lanes/20260815-153733-515-18216-f163ecfa317c4cf2a846976d0654ff8f-focused/summary.json` and `TestResults/test-lanes/20260815-153846-219-17504-c9674d2b64a04d999064e487ad9f804e-focused/summary.json`; both fail at build because the test-owned context does not yet exist.
+- Harness GREEN evidence (final Task-1 snapshot): `TestResults/test-lanes/20260815-154703-722-41500-00f376b0b55348318972aaa262945bce-focused/summary.json`; `6/6` passed, failures `0`, duplicates `0`, timeout `false`, cleanup `complete`, wall `00:00:15.8617710`.
+- GitHub Actions were not enabled or invoked.
 
 **Step 1: Confirm the owned workspace before any behavior edit**
 
@@ -102,7 +118,7 @@ The context must:
 - seed exact JSON without lossy parse/reserialize when byte evidence matters;
 - capture `CanonicalBeforeImage(bool Existed, byte[]? Bytes)` equivalents;
 - assert no mutation, exact bytes, prior absence, and command consumption;
-- expose owner builders for all eight owner kinds without supplying protected IDs from GM payloads.
+- expose owner builders for all nine owner kinds without supplying protected IDs from GM payloads.
 
 Do not add production resource behavior in this task.
 
@@ -712,7 +728,7 @@ git commit -m "feat: publish accepted resource state atomically (#1543)"
 
 ---
 
-### Task 8: Cut Mortal player, NPC, and combat resources to common owners and mutations
+### Task 8: Cut Mortal player, NPC, vehicle, and combat resources to common owners and mutations
 
 **Spec Kit tasks:** T051, T054–T062
 
@@ -724,25 +740,29 @@ git commit -m "feat: publish accepted resource state atomically (#1543)"
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.MathAssistant.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs`
 - Modify: `BookOfEternityClient/Services/EffectCarrierCatalog.cs`
 - Modify: `BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs`
 - Modify: `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
+- Modify: `BookOfEternityClient/Services/StorageTransportMoveService.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceOwnerMaterializationTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceCombatOwnerTests.cs`
+- Create: `BookOfEternityClient.IntegrationTests/ResourceVehicleOwnerTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/MortalResourceCutoverTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceCombatIntegrationTests.cs`
+- Create: `BookOfEternityClient.IntegrationTests/ResourceVehicleIntegrationTests.cs`
 
 **Step 1: RED owner continuity and legacy rejection**
 
-Test player bootstrap and ordinary damage/heal/spend/gain; named NPC inside/outside combat; anonymous combatant; stable group member across reorder/add/remove/defeat; named-NPC binding ambiguity; same-turn NPC/combat refs; terminal cleanup; direct percentage/delta/current/max/positional-array submissions; and one invalid sibling causing zero state/history/owner writes.
+Test player bootstrap and ordinary damage/heal/spend/gain; named NPC inside/outside combat; vehicle create/update/activate/park/move/destroy; anonymous combatant; stable group member across reorder/add/remove/defeat; named-NPC binding ambiguity; same-turn NPC/combat refs; terminal cleanup; direct percentage/delta/current/max/positional-array submissions; and one invalid sibling causing zero state/history/owner writes.
 
 Run:
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourceOwnerMaterializationTests|FullyQualifiedName~ResourceCombatOwnerTests|FullyQualifiedName~MortalResourceCutoverTests|FullyQualifiedName~ResourceCombatIntegrationTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourceOwnerMaterializationTests|FullyQualifiedName~ResourceCombatOwnerTests|FullyQualifiedName~ResourceVehicleOwnerTests|FullyQualifiedName~MortalResourceCutoverTests|FullyQualifiedName~ResourceCombatIntegrationTests|FullyQualifiedName~ResourceVehicleIntegrationTests"
 ```
 
 Expected RED: current domain fields remain authoritative.
@@ -759,16 +779,20 @@ Remove NPC current/max health as writable authority. Compose exact permanent NPC
 
 Remove individual `currentHealth/currentPoise` and positional group `healthStates[]`. Store only stable `combatantId`/`memberId`, exact named-NPC binding when applicable, and narrative/action state. All damage/heal/poise operations become common mutations. Defeat/exit either preserves named/persistent owners or terminally retires scoped owners according to the owner plan.
 
-**Step 5: Preserve Shining survival/restoration as registered outcomes**
+**Step 5: Cut vehicle health authority**
+
+Remove `currentHealth/maxHealth` from `UpdateVehicles` and canonical vehicle companions. Vehicle materialization exports permanent `vehicleId`, health capability, and capacity authority. Activation, parking, movement, and inventory-carrier operations preserve the same coordinate; destruction retires it atomically. Vehicle status/detail projections use the ledger with no raw fallback.
+
+**Step 6: Preserve Shining survival/restoration as registered outcomes**
 
 Update `ShiningBlessingEffectState.cs` only through the common system-outcome adapter; do not route currencies or boolean entitlements into the ledger.
 
-**Step 6: GREEN, search removed authority, and commit**
+**Step 7: GREEN, search removed authority, and commit**
 
 Run the same Focused integration filter plus:
 
 ```powershell
-rg -n "currentHealthChange|currentEnergyChange|currentPoiseChange|healthPercentage|energyPercentage|poisePercentage|currentHealth|currentPoise|healthStates" BookOfEternityClient
+rg -n "currentHealthChange|currentEnergyChange|currentPoiseChange|healthPercentage|energyPercentage|poisePercentage|currentHealth|currentPoise|healthStates|maxHealth" BookOfEternityClient
 git diff --check
 ```
 
@@ -777,7 +801,7 @@ Every remaining hit must be a rejected-legacy detector, historical documentation
 Commit:
 
 ```powershell
-git add BookOfEternityClient BookOfEternityClient.IntegrationTests/ResourceOwnerMaterializationTests.cs BookOfEternityClient.IntegrationTests/ResourceCombatOwnerTests.cs BookOfEternityClient.IntegrationTests/MortalResourceCutoverTests.cs BookOfEternityClient.IntegrationTests/ResourceCombatIntegrationTests.cs specs/1543-unified-resource-authority docs/superpowers/plans/2026-08-15-unified-resource-authority.md
+git add BookOfEternityClient BookOfEternityClient.IntegrationTests/ResourceOwnerMaterializationTests.cs BookOfEternityClient.IntegrationTests/ResourceCombatOwnerTests.cs BookOfEternityClient.IntegrationTests/ResourceVehicleOwnerTests.cs BookOfEternityClient.IntegrationTests/MortalResourceCutoverTests.cs BookOfEternityClient.IntegrationTests/ResourceCombatIntegrationTests.cs BookOfEternityClient.IntegrationTests/ResourceVehicleIntegrationTests.cs specs/1543-unified-resource-authority docs/superpowers/plans/2026-08-15-unified-resource-authority.md
 git commit -m "feat: cut mortal and combat resources to ledger (#1543)"
 ```
 
@@ -958,7 +982,7 @@ git commit -m "feat: unify afterlife resource authority (#1543)"
 
 **Step 1: RED ordinary/effect equivalence and 100-run determinism**
 
-Add periodic damage/restore cases for player, NPC, combatant, group member, and afterlife owner; unsupported resource/owner; quantum/bounds; exact replay; and byte-equivalent semantic resource/history output between ordinary and effect-generated mutations across 100 fresh randomized-enumeration runs.
+Add periodic damage/restore cases for player, NPC, vehicle where the effect target catalog permits it, combatant, group member, and afterlife owner; unsupported resource/owner; quantum/bounds; exact replay; and byte-equivalent semantic resource/history output between ordinary and effect-generated mutations across 100 fresh randomized-enumeration runs.
 
 ```csharp
 [Fact]
@@ -1217,7 +1241,7 @@ Update the contract matrix, glossary, launcher/daemon guidance, relevant Rules, 
 
 **Step 7: Replace the active template and fixtures**
 
-Seed only the three canonical resource roots; omit `resource_commands.json` outside a staged turn. Remove player/NPC/combat/item/afterlife mechanical mirrors. Update fixture manifests/readmes and add positive/negative validator fixtures. Never preserve an old fixture merely to demonstrate compatibility.
+Seed only the three canonical resource roots; omit `resource_commands.json` outside a staged turn. Remove player/NPC/vehicle/combat/item/afterlife mechanical mirrors. Update fixture manifests/readmes and add positive/negative validator fixtures. Never preserve an old fixture merely to demonstrate compatibility.
 
 **Step 8: GREEN documentation, rollback, source guard, and FullValidation**
 
@@ -1359,7 +1383,7 @@ Present the reviewed commit SHA, exact verification evidence, changed paths, and
 #1543 is complete only when all of the following are simultaneously true:
 
 - every included mechanic has one accepted resource definition/state/history authority;
-- all eight owner families use stable exact identity and complete lifecycle rules;
+- all nine owner families use stable exact identity and complete lifecycle rules;
 - ordinary, item, afterlife, and effect operations use one reducer and one plan;
 - Effect Task 9 periodic/resource-event/pending behavior is integrated without an effect-only adapter;
 - console, browser, and GM context use safe non-persisted projections;

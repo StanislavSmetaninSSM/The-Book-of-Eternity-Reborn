@@ -42,23 +42,27 @@ Remove persisted health/energy/poise percentages and their legacy delta response
 
 Remove NPC current/max health mirrors and combatant `currentHealth`, `currentPoise`, and group `healthStates[]`. Combat/NPC state retains identity, description, actions, effects, and resource-owner bindings. Detail, combat, target, and GM views resolve resources by exact owner.
 
-## 7. Item cutover
+## 7. Vehicle cutover
+
+Remove vehicle `currentHealth`/`maxHealth` from `UpdateVehicles` and canonical vehicle companions. Vehicle status/detail/action eligibility resolves permanent `vehicleId` through the accepted projection. Activation, parking, location changes, and destruction use owner lifecycle authority and never a raw health fallback.
+
+## 8. Item cutover
 
 Remove item durability/max-durability current authority and the legacy item-resource sidecar values/commands. Item materialization declares resource capabilities/capacity; use, repair, firing, charge consumption, movement, destruction, and UI all use the common resource plan/projection.
 
-## 8. Afterlife cutover
+## 9. Afterlife cutover
 
 Remove persisted current/max action-economy pools, per-return gacha used/max counters, and numeric reroll mirrors. Spiritual conflict, Guardian/Shining gacha, blessing entitlements, previews, journals, and status views use accepted resource projections and transition evidence. Currency, treasury, faction resource ledger, progression, and spiritual combat axes remain specialized.
 
-## 9. Effect integration
+## 10. Effect integration
 
-Periodic damage/restore and resource-event triggers use exact projected owner/resource capability at application and the accepted resource plan at execution. No effect adapter reads a legacy player/NPC/combat/item/afterlife field.
+Periodic damage/restore and resource-event triggers use exact projected owner/resource capability at application and the accepted resource plan at execution. No effect adapter reads a legacy player/NPC/vehicle/combat/item/afterlife field.
 
-## 10. No migration
+## 11. No migration
 
 Active templates, examples, manifests, and fixtures are rewritten directly. Any old save with a removed legacy resource field or missing required resource authority is incompatible. No compatibility reader, promotion, dual-write, synchronization, or fallback is permitted.
 
-## 11. Documentation proof
+## 12. Documentation proof
 
 The same change updates:
 

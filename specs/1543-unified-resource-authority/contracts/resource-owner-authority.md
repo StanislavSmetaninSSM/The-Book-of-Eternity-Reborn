@@ -12,6 +12,7 @@ A resource coordinate is valid only when its owner exists in the complete accept
 | `npc` | One permanent accepted Mortal NPC ID |
 | `combatant` | One client-owned permanent anonymous combatant ID |
 | `combat_group_member` | One client-owned permanent group member ID |
+| `vehicle` | One permanent accepted vehicle ID |
 | `item` | One permanent item ID from the accepted item identity catalog |
 | `afterlife_actor` | One permanent accepted afterlife profile/actor ID |
 | `afterlife_conflict_side` | One client-owned identity scoped to an active conflict |
@@ -44,19 +45,23 @@ A group contains stable member records. New members carry `memberRef` and omit `
 
 Reordering members preserves coordinates. Removing a member requires exact terminal owner evidence and retires only that member's resources. Group deletion retires every still-live member atomically.
 
-## 6. Items
+## 6. Vehicles
+
+Vehicles use permanent `vehicleId` resource ownership. Activation, parking, movement, and item-carrier participation do not change the coordinate. `UpdateVehicles` cannot write current/maximum resource values. New vehicle materialization supplies capacity authority; destruction requires terminal history before the vehicle resource is removed.
+
+## 7. Items
 
 Item resources use permanent item identity regardless of inventory, equipment, NPC inventory, location storage, offscreen storage, or another valid carrier. Movement changes no resource coordinate. Split/merge/stack operations must explicitly define which permanent item identities survive before any resource plan is accepted.
 
 Item destruction or terminal consumption retires all item resources only after immutable terminal evidence is prepared. A raw removal cannot silently discard nonempty resource state.
 
-## 7. Afterlife owners and scopes
+## 8. Afterlife owners and scopes
 
 Persistent profiles keep one permanent resource owner per realm binding. Active spiritual-conflict sides use conflict-scoped IDs. Per-return Guardian/Shining reserves use accepted actor/scope IDs and registered return-cycle capacity authority.
 
 Conflict close or return-cycle replacement retires scoped resources. Persistent actor resources survive unrelated conflict closure. Currencies, progression, relationships, and faction accounting are not owner exports for this ledger.
 
-## 8. Capability and lifecycle
+## 9. Capability and lifecycle
 
 An owner export contains an exact set of resource keys/capabilities derived from its accepted definition/materialization state. A definition's `allowedOwnerKinds` is necessary but insufficient: the owner must also permit that resource.
 
@@ -69,6 +74,6 @@ active/suspended -> terminal
 
 An inactive, removed, wrong-realm, historical, ambiguous, or unaccepted owner cannot initialize or mutate a coordinate. Terminal owners cannot be revived by a resource command.
 
-## 9. Fingerprint
+## 10. Fingerprint
 
 The canonical owner fingerprint includes every accepted owner key, lifecycle state, capability, exact NPC binding, and same-turn ref mapping. Owners with no current resource entries still participate so a late client-owned ID or capability mutation invalidates publication.
