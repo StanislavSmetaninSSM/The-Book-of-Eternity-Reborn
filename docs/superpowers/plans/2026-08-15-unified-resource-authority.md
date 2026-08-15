@@ -293,7 +293,7 @@ Test exact `(realm, ownerKind, resourceOwnerId, resourceKey)` uniqueness, stable
 
 **Step 2: RED history/replay tests**
 
-Test append-only transition shape, exact before/after chain, event/source/receipt binding, terminal evidence, exact replay no-op, conflicting replay failure, duplicate/confusable operation and transition IDs, chronology mismatch, and no truncation.
+Test append-only transition shape, exact before/after chain, event/source/receipt binding, terminal evidence, exact replay no-op, conflicting replay failure, duplicate/confusable operation and transition IDs, chronology mismatch, no truncation, unique non-negative per-turn `executionSequence` that preserves actual phase/DAG order regardless of event ordinal or lexical origin, explicit capacity dispositions that forbid arbitrary current rewrites, sealed static initialization policy agreement, and max-scale arithmetic that cannot be proven by rounded decimal intermediates.
 
 Run:
 
@@ -302,6 +302,29 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 ```
 
 Expected RED: missing state/history types or unimplemented validations.
+
+**Execution checkpoint (2026-08-15):**
+
+- State RED: `TestResults/test-lanes/20260815-164524-592-30380-887b6462604249e6877a133e552f488d-focused/summary.json`; expected build failure before `ResourceStateContract` existed.
+- State GREEN: `TestResults/test-lanes/20260815-165010-088-29464-e28451046d0c4c9fb5da903d3c38aedc-focused/summary.json`; `31/31`, failures `0`, duplicates `0`, timeout `false`, cleanup `complete`.
+- History RED: `TestResults/test-lanes/20260815-165505-677-46248-1bddeb4a69284d6595583047850042ad-focused/summary.json`; expected build failure before immutable history/replay types existed.
+- State↔history agreement RED: `TestResults/test-lanes/20260815-170434-939-51912-3dd2d38725cc4ed88920171418e47098-focused/summary.json`; expected build failure before the agreement gate existed. GREEN: `TestResults/test-lanes/20260815-170525-218-20688-9c0af1de5981442f9d72fb11831256bd-focused/summary.json`; `33/33`.
+- Initialize-lifecycle RED: `TestResults/test-lanes/20260815-170804-314-33660-6c52afca753f4a198dce592ccfdf1d50-focused/summary.json`; `34/35` before initialization was restricted to active state.
+- Final combined Task-3 GREEN: `TestResults/test-lanes/20260815-170843-851-19000-dd077cb0ca1a44b489776d06ddf0dec2-focused/summary.json`; `68/68`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- Expanded Task-2+3 compatibility control: `TestResults/test-lanes/20260815-171335-724-6536-5b2f1b18a33b43c6b82e3d09e010bac9-focused/summary.json`; `166/166`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- Review RED/GREEN: decimal-scale canonicalization `20260815-171547-981-32300-c992fcea1c0f41738293921b8150d5e8-focused` (`0/2`) -> `20260815-171637-123-43104-a0e0bae789de403fb9b18cae24a68f58-focused` (`2/2`); terminal-only confusable coordinate `20260815-171829-639-52036-5bd46162cc8e4ab6bc50216d1129731a-focused` (`0/1`) -> `20260815-172003-801-44408-da93d0dc334e4db393d7a381023a01ea-focused` (`1/1`); clamped integer quantum `20260815-172159-972-17244-6bc4c5c77d074c9ba850b6a710f9e2a1-focused` (`0/1`) -> `20260815-172254-037-31156-ba26d4b7d1af404dbb3186115f5cc347-focused` (`1/1`).
+- Final post-review Task-2+3 control: `TestResults/test-lanes/20260815-172438-891-14496-49e48093d3384a76bc2a7ccb5798c556-focused/summary.json`; `170/170`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- Ordering RED/GREEN: event ordinal/phase ordering `20260815-173333-855-53400-db8034bc80244aaebe51857d87e3e85c-focused` -> `20260815-173519-087-46964-9d61886d2e614ed387267d61c91d5922-focused`; DAG lexical inversion and explicit execution sequence `20260815-173840-685-41892-ebebadeed2184be88adea3307de936fe-focused` -> `20260815-173951-093-35536-74a90c8830ef4936ad385e02d59f63c9-focused`.
+- Capacity-disposition RED/GREEN: `TestResults/test-lanes/20260815-174600-773-50036-bece17b6810b48349247627d0f39c377-focused/summary.json` (`0/2`) -> `TestResults/test-lanes/20260815-174900-685-44276-e918f13d792e4db6b0491c357241a9f6-focused/summary.json` (`3/3`). Reconfigure now proves preserve, exact clamp, or exact ratio scaling and cannot rewrite current arbitrarily.
+- Pre-independent-review Task-2+3 control after ordering/capacity review: `TestResults/test-lanes/20260815-175724-287-21772-33386f7f63d746859fe2e8d8006a6fac-focused/summary.json`; `175/175`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- Initialization-policy review RED/GREEN: `TestResults/test-lanes/20260815-180933-371-55304-15a892430a724fa2b430cf99706f9998-focused/summary.json` (`0/3`) -> `TestResults/test-lanes/20260815-181058-601-30332-bdaac3df18474547a927e90992ced419-focused/summary.json` (`3/3`). The history parser now proves sealed `minimum`, `maximum`, and `fixed` initialization locally; typed registered-formula recomputation remains explicitly assigned to the composed reducer.
+- Exact-arithmetic review RED: rounded ratio/ordinary mutation `TestResults/test-lanes/20260815-181457-525-15004-1f406a6eb18c49b9acb140bdb1d1122e-focused/summary.json` (`0/2`), rounded quantum subtraction `TestResults/test-lanes/20260815-181551-821-35700-0b70881f74b047bc9b37e8bbb0237e67-focused/summary.json` (`0/1`), and missing shared helpers `TestResults/test-lanes/20260815-181637-330-56232-82fd125097ef4453b7d0d252ce1ed826-focused/summary.json` (expected compile RED). Coefficient/scale arithmetic GREEN is `TestResults/test-lanes/20260815-181930-810-54456-81d21df58bbc4d9f8d294be6d018530f-focused/summary.json` (`4/4`); full contract/history GREEN is `TestResults/test-lanes/20260815-182244-887-21012-8722a04ddc974109ad80707e230b0d9d-focused/summary.json` (`88/88`).
+- Pre-final clamp review Task-2+3 control: `TestResults/test-lanes/20260815-182614-352-33816-80c054cdd55a4d97be9fafc75d1fbd66-focused/summary.json`; `182/182`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- Requested-candidate clamp RED/GREEN: `TestResults/test-lanes/20260815-183219-021-22400-d10603c5acce4c04a04867ab7e6bc70f-focused/summary.json` (`0/2`) -> `TestResults/test-lanes/20260815-183307-136-2576-957a4d91c9fd4eff887e5285fd373dd8-focused/summary.json` (`2/2`). Both max-scale loss and `decimal.MaxValue` overflow are now rejected before a zero-applied clamp can hide them; full contract/history GREEN is `TestResults/test-lanes/20260815-183405-535-25020-5f4e4b69937c4c2cbad416971323deb2-focused/summary.json` (`90/90`).
+- Pre-positive-clamp-control Task-2+3 run: `TestResults/test-lanes/20260815-183449-234-56688-53eca58be84940c3993577efe711b8a9-focused/summary.json`; `184/184`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- Exact legitimate min/max clamp control: `TestResults/test-lanes/20260815-183845-646-34548-150b3ec89aa34605afc5b119883addec-focused/summary.json`; `2/2`. Fresh final reviewed Task-2+3 control: `TestResults/test-lanes/20260815-183915-753-7996-94e3b96e46d048bba4712cbb0105b0c7-focused/summary.json`; `186/186`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- Review corrected the earlier flat scalar history sketch: every row now carries complete nullable state snapshots, an explicit capacity disposition, and an execution sequence, so reconfigure/suspend/resume/retire preserve maximum, capacity fingerprint, current-value policy, lifecycle, terminal evidence, and actual dependency order. Static initialization policy is proven from the sealed definition, and exact coefficient/scale arithmetic prevents decimal scale reduction from laundering a false ratio, quantum alignment, or no-op mutation. `semantic_replay` remains an in-memory result and never becomes a duplicate stored row.
+- This slice is entirely client-owned and adds no response field, FileMapping route, GM-authored output, or afterlife runtime contract; active GM prompts/examples/manifests intentionally remain unchanged while the durable Spec Kit contract is updated.
 
 **Step 3: Implement immutable state and history models**
 
@@ -326,19 +349,24 @@ internal sealed record ResourceTransition(
     string TransitionId,
     string OperationId,
     string EventRef,
-    ResourceMutationOrigin Origin,
-    ResourceOperation Operation,
+    string OriginKind,
+    string OriginId,
+    ResourceMutationPhase Phase,
+    int Priority,
     ResourceCoordinate Coordinate,
+    ResourceTransitionOperation Operation,
     decimal RequestedAmount,
     decimal AppliedAmount,
-    decimal Before,
-    decimal After,
-    JsonObject SourceEvidence,
+    ResourceTransitionOutcome Outcome,
+    ResourceStateSnapshot? BeforeState,
+    ResourceStateSnapshot? AfterState,
+    ResourceSourceEvidence SourceEvidence,
+    string PolicyFingerprint,
     string? ReceiptId,
     int Turn);
 ```
 
-`ResourceStateContract.Parse` returns both a canonical coordinate index and issues. `ResourceHistoryState.Parse` builds transition/replay indexes once. Public getters return immutable values or defensive clones.
+`ResourceStateContract.ParseCanonical` returns a canonical coordinate index and issues. `ResourceHistoryState.ParseCanonical` builds transition/replay indexes once, and `ValidateStateAgreement` proves exact live-snapshot/chronology/terminal agreement. Public getters return immutable values or defensive collections.
 
 **Step 4: Prove fingerprints and ordering**
 
@@ -567,6 +595,7 @@ git commit -m "refactor: create accepted mechanics plan authority (#1543)"
 **Files:**
 
 - Create: `BookOfEternityClient/Services/ResourceMutationReducer.cs`
+- Create: `BookOfEternityClient/Services/ResourceHistoryWorkingSet.cs`
 - Create: `BookOfEternityClient/Services/ResourceMutationSourceCatalog.cs`
 - Create: `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - Create: `BookOfEternityClient.Tests/ResourceMutationReducerTests.cs`
@@ -597,9 +626,9 @@ public void Reduce_AppliesSequentialClampWithoutPreSumming()
 ```csharp
 internal static ResourceMutationResult Reduce(
     ResourceWorkingLedger ledger,
+    ResourceHistoryWorkingSet history,
     AuthorizedResourceMutation mutation,
-    ResourceDefinitionCatalog definitions,
-    ResourceHistoryState history);
+    ResourceDefinitionCatalog definitions);
 
 internal static ResourceCapacityResult ApplyCapacityTransition(
     ResourceWorkingLedger ledger,
@@ -607,7 +636,9 @@ internal static ResourceCapacityResult ApplyCapacityTransition(
     ResourceDefinitionCatalog definitions);
 ```
 
-The reducer reads no files, selects no source policy, and creates no pending work. It returns a new ledger, transition, registered applied events, replay result, or bounded issues. Use checked `decimal`; never coerce to `double` or round to quantum.
+The reducer reads no files, selects no source policy, and creates no pending work. It returns a new ledger, transition, registered applied events, replay result, or bounded issues. Persist only exact `decimal`, but prove intermediate addition/subtraction, quantum alignment, and ratio equality with coefficient/scale `BigInteger` arithmetic before constructing the result; never coerce to `double`, trust checked-decimal scale reduction, or round to quantum.
+
+`AcceptedMechanicsPlanner` creates one isolated `ResourceHistoryWorkingSet` from the validated immutable history before the first mutation. The working set indexes baseline identity, replay, and per-coordinate continuity once, admits same-turn transitions incrementally, and is discarded with the plan on any issue. After all phases and graph nodes succeed, call `Freeze()` exactly once to run complete validation, canonical sorting, immutable index construction, and fingerprinting. Do not call `ResourceHistoryState.Append` or otherwise rebuild/re-sort/re-fingerprint the full untruncated history after each mutation.
 
 **Step 3: RED source-route and four-phase tests**
 
@@ -626,7 +657,7 @@ internal static AcceptedMechanicsPlanningResult Build(
     AcceptedMechanicsIdentityFactory identityFactory);
 ```
 
-Build all indexes once, create the working ledger, apply capacity/lifecycle transitions, traverse the four phases, emit registered events after actual results, build the entire DAG before trigger execution, and return either one complete plan or issues with zero after-images. The planner must not write files or create pending work for deterministic mutations.
+Build all indexes once, create the working ledger and one history working set, apply capacity/lifecycle transitions, traverse the four phases, emit registered events after actual results, build the entire DAG before trigger execution, assign unique per-turn `executionSequence` values from the final topological order, freeze history once, and return either one complete plan or issues with zero after-images. The planner must not write files or create pending work for deterministic mutations.
 
 **Step 6: GREEN, purity review, and commit**
 
@@ -643,7 +674,7 @@ Expected: tests GREEN and the purity search has no runtime file access.
 Commit:
 
 ```powershell
-git add BookOfEternityClient/Services/ResourceMutationReducer.cs BookOfEternityClient/Services/ResourceMutationSourceCatalog.cs BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs BookOfEternityClient.Tests/ResourceMutationReducerTests.cs BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.cs BookOfEternityClient.Tests/ResourceTriggerGraphTests.cs specs/1543-unified-resource-authority docs/superpowers/plans/2026-08-15-unified-resource-authority.md
+git add BookOfEternityClient/Services/ResourceMutationReducer.cs BookOfEternityClient/Services/ResourceHistoryWorkingSet.cs BookOfEternityClient/Services/ResourceMutationSourceCatalog.cs BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs BookOfEternityClient.Tests/ResourceMutationReducerTests.cs BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.cs BookOfEternityClient.Tests/ResourceTriggerGraphTests.cs specs/1543-unified-resource-authority docs/superpowers/plans/2026-08-15-unified-resource-authority.md
 git commit -m "feat: reduce resource mutations deterministically (#1543)"
 ```
 
@@ -716,7 +747,7 @@ Replace `NormalizeEffectsAsync` as an independent transaction; retain only effec
 
 **Step 4: Wire snapshots, rollback, and bootstrap**
 
-Add all four resource paths to canonical accumulated, backup, rollback, pending-snapshot, session cleanup, and save/load contours. Bootstrap built-in definitions plus player health/energy/poise states and empty history. Missing roots are legal only within the proven pristine bootstrap transition; an old technical save fails as incompatible.
+Add all four resource paths to canonical accumulated, backup, rollback, pending-snapshot, session cleanup, and save/load contours. Bootstrap built-in definitions plus player health/energy/poise states and one immutable `initialize` history row per state coordinate. Missing roots are legal only within the proven pristine bootstrap transition; an old technical save fails as incompatible.
 
 **Step 5: GREEN and Phase checkpoint**
 
@@ -1294,7 +1325,7 @@ Before committing, inspect `git status --short` and exclude unrelated user files
 
 **Step 1: RED closed limits and scale guards**
 
-Test 256/257 definitions, 20,000/20,001 live entries, 256/257 capacity transitions, 512/513 pre-trigger mutations, 1,024/1,025 graph nodes, depth 32/33, and 64/65 pending requests. Measure representative doubled definition/owner/state/history and planner/trigger populations; require work or elapsed benchmark ratio at or below 2.5x using the repository's stable measurement convention.
+Test 256/257 definitions, 20,000/20,001 live entries, 256/257 capacity transitions, 512/513 pre-trigger mutations, 1,024/1,025 graph nodes, depth 32/33, and 64/65 pending requests. Assert one history working-set seed and one freeze per plan and no canonical-history rebuild per mutation. Measure representative doubled definition/owner/state/history and planner/trigger populations; require work or elapsed benchmark ratio at or below 2.5x using the repository's stable measurement convention.
 
 Run:
 
@@ -1307,7 +1338,7 @@ Expected RED if any catalog is rebuilt per mutation/consumer or a bound is not e
 
 **Step 2: Optimize only measured repeated work**
 
-Cache definition, owner, state, history, replay, effect source/target/carrier, pending, and event indexes inside one immutable plan input. Do not change limits, filters, assertions, test counts, lane timeout, or concurrency to make the guard pass. Re-run only the two Focused scale commands until GREEN.
+Cache definition, owner, state, history, replay, effect source/target/carrier, pending, and event indexes inside one immutable plan input. Reuse one plan-local history working set and freeze it once. Do not change limits, filters, assertions, test counts, lane timeout, or concurrency to make the guard pass. Re-run only the two Focused scale commands until GREEN.
 
 **Step 3: Run one meaningful Fast checkpoint**
 

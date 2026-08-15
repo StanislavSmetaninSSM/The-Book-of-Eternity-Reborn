@@ -99,6 +99,7 @@ BookOfEternityClient/Services/
 ├── ResourceCapacityFormulaCatalog.cs        # closed formula registry and exact capacity results
 ├── ResourceStateContract.cs                 # live ledger parsing, indexing, state agreement
 ├── ResourceHistoryState.cs                  # immutable transitions, replay index, continuity
+├── ResourceHistoryWorkingSet.cs             # one plan-local incremental history builder/freeze
 ├── ResourceOwnerAuthority.cs                # composed owners/capabilities/exact refs/fingerprint
 ├── CombatantIdentityState.cs                # common combatant/group member client identity
 ├── ResourceMutationReducer.cs               # pure one-mutation/capacity arithmetic and events
@@ -356,11 +357,11 @@ The source guard maintains a narrow explicit allow-list for historical design/au
 
 ### Phase A — Contract and pure authority foundation
 
-Create strict definition/state/history/command contracts, exact scalar helpers, built-in catalog, capacity formula registry, common owner authority, and generalized combat/group identity. Nothing reads/writes legacy values yet; unit RED/GREEN proves all invariants.
+Create strict definition/state/history/command contracts, exact coefficient/scale scalar helpers, built-in catalog, capacity formula registry, common owner authority, and generalized combat/group identity. Static initialization is checked locally; registered-formula initialization remains bound to the later composed typed owner authority. Nothing reads/writes legacy values yet; unit RED/GREEN proves all invariants.
 
 ### Phase B — Pure reducer and accepted mechanics plan
 
-Create mutation/capacity reducers, replay/event indexes, source route catalog, trigger DAG, bounded pending receipt model, immutable full plan, and full-fingerprint cache. Refactor Effect Task 6/8 plans to be a subplan of `AcceptedMechanicsPlan` without executing periodic resource components yet.
+Create mutation/capacity reducers, one plan-local indexed `ResourceHistoryWorkingSet` with incremental admission and one final freeze, replay/event indexes, source route catalog, trigger DAG, bounded pending receipt model, immutable full plan, and full-fingerprint cache. The reducer must not rebuild, resort, or refingerprint the untruncated canonical history per mutation. Refactor Effect Task 6/8 plans to be a subplan of `AcceptedMechanicsPlan` without executing periodic resource components yet.
 
 ### Phase C — Canonical validation/publication/bootstrap
 

@@ -48,6 +48,8 @@ Money, Ink Feathers, Light Sparks, treasuries, faction resource ledgers, prices,
 
 **Decision**: Use four paths under `game_state/resources/`: sealed definitions, live state, immutable history, and transient commands. No domain file retains a persisted current/max mirror after cutover.
 
+Each immutable history row carries complete nullable before/after state snapshots (current, maximum, capacity binding, lifecycle), not only a scalar delta. Bootstrap writes one `initialize` row per live coordinate; retirement writes `live -> null` terminal evidence. This keeps capacity and lifecycle replay under the same authority as ordinary mutations.
+
 **Rationale**: Definitions, live values, replay history, and untrusted commands have different ownership and mutation rules. Keeping them separate makes direct-mutation and rollback checks explicit while preserving one logical authority.
 
 **Alternatives considered**:
@@ -58,7 +60,7 @@ Money, Ink Feathers, Light Sparks, treasuries, faction resource ledgers, prices,
 
 ## Decision 4: Exact numeric representation
 
-**Decision**: Parse and retain resource numbers as .NET `decimal`; reject exponent/precision/range forms that cannot round-trip exactly through the canonical JSON number representation. `integer` requires an exact integral decimal. `quantum` is a positive decimal and `(value - minimum) / quantum` must be integral for state and mutation results.
+**Decision**: Parse and retain resource numbers as .NET `decimal`; reject exponent/precision/range forms that cannot round-trip exactly through the canonical JSON number representation. `integer` requires an exact integral decimal. `quantum` is a positive decimal and `(value - minimum) / quantum` must be integral for state and mutation results. Internally, exact checks decompose each decimal into a signed `BigInteger` coefficient and scale: addition/subtraction must produce a representable 96-bit scale-28 result, ratios compare unrounded cross-products, and quantum alignment uses exact subtraction/modulo. `checked(decimal)` is not accepted as an exactness proof because scale reduction can round without overflow.
 
 **Rationale**: The game needs deterministic ordered arithmetic and exact quantum checks. Binary floating point is unsuitable, while arbitrary precision is unnecessary for bounded game resources and would expand dependencies.
 
@@ -66,7 +68,7 @@ Money, Ink Feathers, Light Sparks, treasuries, faction resource ledgers, prices,
 
 - `double`: rejected due to non-exact decimal and ordering divergence.
 - Scaled `long` only: rejected because setting-defined decimal quantum would require one global scale or hidden rounding.
-- Arbitrary-precision decimal package: rejected as unnecessary dependency and state complexity for the accepted bounded catalog.
+- Arbitrary-precision persisted values or a decimal package: rejected as unnecessary state/dependency complexity. `BigInteger` is used only as a dependency-free intermediate proof for already bounded canonical decimals and is never persisted as resource authority.
 
 ## Decision 5: Built-in definition and capacity policy
 
@@ -94,9 +96,9 @@ Money, Ink Feathers, Light Sparks, treasuries, faction resource ledgers, prices,
 
 ## Decision 7: One mutation reducer and cross-domain orchestrator
 
-**Decision**: `ResourceMutationReducer` performs only exact arithmetic and history production for one authorized mutation against an immutable working ledger. `AcceptedMechanicsPlanner` owns ordered domain adapters, resource events, effect trigger graph traversal, effect lifecycle, pending work, and the complete after-state.
+**Decision**: `ResourceMutationReducer` performs only exact arithmetic and transition production for one authorized mutation against an immutable working ledger view. `AcceptedMechanicsPlanner` owns ordered domain adapters, one isolated indexed `ResourceHistoryWorkingSet`, resource events, effect trigger graph traversal, effect lifecycle, pending work, and the complete after-state. The working set is seeded once, incrementally indexes baseline and same-turn replay/continuity authority, and freezes to one immutable canonical history after all mutations succeed.
 
-**Rationale**: Arithmetic must be independently testable and source-neutral, but effects require feedback from applied resource results. One orchestrator avoids circular normalizer dependencies and effect-only adapters.
+**Rationale**: Arithmetic must be independently testable and source-neutral, but effects require feedback from applied resource results. One orchestrator avoids circular normalizer dependencies and effect-only adapters. Separating persisted immutable history from a plan-local indexed builder prevents untruncated history from being revalidated, sorted, and fingerprinted after every mutation while retaining atomic discard-on-error semantics.
 
 **Alternatives considered**:
 
@@ -106,9 +108,9 @@ Money, Ink Feathers, Light Sparks, treasuries, faction resource ledgers, prices,
 
 ## Decision 8: Mutation order and graph bounds
 
-**Decision**: Use closed phases `direct_cost`, `direct_outcome`, `registered_system_outcome`, and `effect_trigger`. Within a phase, sort by registered priority, exact `originId`, then client-owned `operationId`. Apply sequentially. Trigger expansion uses a DAG keyed by event/trigger/operation identity, rejects cycles, and enforces registered per-turn node/depth limits recorded in the technical contract.
+**Decision**: Use closed phases `direct_cost`, `direct_outcome`, `registered_system_outcome`, and `effect_trigger`. Within each ready set, sort by registered priority, exact `originId`, then client-owned `operationId`. Trigger expansion uses a DAG keyed by event/trigger/operation identity, rejects cycles, and enforces registered per-turn node/depth limits recorded in the technical contract. After the complete topological order is known, assign each stored transition a unique non-negative `executionSequence` within the turn and use it as the canonical history order and protected replay evidence.
 
-**Rationale**: Clamps and depletion events make order observable. Stable ordering and hard graph limits are required for replay and denial-of-service safety.
+**Rationale**: Clamps and depletion events make order observable. Stable ordering and hard graph limits are required for replay and denial-of-service safety. A phase/priority/lexical sort alone cannot reconstruct a dependency-constrained execution order, so immutable history needs the explicit client-owned sequence.
 
 **Alternatives considered**:
 
@@ -120,7 +122,7 @@ Money, Ink Feathers, Light Sparks, treasuries, faction resource ledgers, prices,
 
 **Decision**: Capacity changes require their own source-authorized transition and one of `preserve`, `clamp_to_new_maximum`, or `scale_ratio_exact`. They run before ordinary mutations for newly created/reconfigured coordinates and otherwise at the registered system phase. `scale_ratio_exact` rejects inexact quantum results.
 
-**Rationale**: Maximum changes alter the meaning of the current value and must not be smuggled in as gain/restore or raw state replacement.
+**Rationale**: Maximum changes alter the meaning of the current value and must not be smuggled in as gain/restore or raw state replacement. The chosen disposition is stored as immutable transition evidence and participates in replay/fingerprint validation; otherwise a structurally valid reconfigure row could launder an arbitrary current value while retaining plausible before/after snapshots.
 
 **Alternatives considered**:
 
@@ -202,7 +204,7 @@ Money, Ink Feathers, Light Sparks, treasuries, faction resource ledgers, prices,
 
 ## Decision 16: Verification and performance contour
 
-**Decision**: Unit-test closed contracts, exact arithmetic, replay, ordering, and graph behavior; integration-test owner composition, publication, rollback, legacy rejection, projections, prompts, and examples. Index definition/state/history/owner/source/target catalogs once per plan. Doubling a representative population must remain at or below 2.5x planner/validation work. Use only bounded local test lanes; GitHub Actions remain disabled.
+**Decision**: Unit-test closed contracts, exact arithmetic, replay, ordering, and graph behavior; integration-test owner composition, publication, rollback, legacy rejection, projections, prompts, and examples. Index definition/state/history/owner/source/target catalogs once per plan. Seed one history working set per plan, incrementally append all same-turn transitions, and freeze/sort/fingerprint it once; the reducer may not call a whole-history rebuild per mutation. Doubling a representative population must remain at or below 2.5x planner/validation work. Use only bounded local test lanes; GitHub Actions remain disabled.
 
 **Rationale**: The repository already has a bounded local runner and effect performance precedent. Linear or near-linear catalogs are sufficient for local save scale without premature storage optimization.
 

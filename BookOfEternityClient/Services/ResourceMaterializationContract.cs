@@ -16,6 +16,9 @@ internal sealed record ResourceRootParseResult(
 
 internal static class ResourceMaterializationContract
 {
+    private static readonly BigInteger DecimalMaxCoefficient =
+        (BigInteger.One << 96) - BigInteger.One;
+
     internal const int SchemaVersion = 1;
 
     internal const string DefinitionsPath = "game_state/resources/resource_definitions.json";
@@ -167,14 +170,7 @@ internal static class ResourceMaterializationContract
         if (!TryParseNumberRational(value.GetRawText(), out var rawCoefficient, out var rawScale))
             return false;
 
-        var bits = decimal.GetBits(candidate);
-        var decimalCoefficient =
-            new BigInteger((uint)bits[0]) |
-            (new BigInteger((uint)bits[1]) << 32) |
-            (new BigInteger((uint)bits[2]) << 64);
-        if ((bits[3] & int.MinValue) != 0)
-            decimalCoefficient = -decimalCoefficient;
-        var decimalScale = (bits[3] >> 16) & 0xFF;
+        GetDecimalRational(candidate, out var decimalCoefficient, out var decimalScale);
 
         NormalizeDecimalRational(ref rawCoefficient, ref rawScale);
         NormalizeDecimalRational(ref decimalCoefficient, ref decimalScale);
@@ -244,14 +240,51 @@ internal static class ResourceMaterializationContract
         if (quantum <= 0m)
             return false;
 
-        try
-        {
-            return (value - minimum) % quantum == 0m;
-        }
-        catch (OverflowException)
-        {
-            return false;
-        }
+        GetDecimalRational(value, out var valueCoefficient, out var valueScale);
+        GetDecimalRational(minimum, out var minimumCoefficient, out var minimumScale);
+        var differenceScale = Math.Max(valueScale, minimumScale);
+        var differenceCoefficient =
+            ScaleCoefficient(valueCoefficient, valueScale, differenceScale) -
+            ScaleCoefficient(minimumCoefficient, minimumScale, differenceScale);
+        NormalizeDecimalRational(ref differenceCoefficient, ref differenceScale);
+
+        GetDecimalRational(quantum, out var quantumCoefficient, out var quantumScale);
+        var commonScale = Math.Max(differenceScale, quantumScale);
+        var alignedDifference = ScaleCoefficient(
+            differenceCoefficient,
+            differenceScale,
+            commonScale);
+        var alignedQuantum = ScaleCoefficient(
+            quantumCoefficient,
+            quantumScale,
+            commonScale);
+        return alignedQuantum > 0 && alignedDifference % alignedQuantum == 0;
+    }
+
+    internal static bool TryAddExact(decimal left, decimal right, out decimal result) =>
+        TryCombineExact(left, right, subtractRight: false, out result);
+
+    internal static bool TrySubtractExact(decimal left, decimal right, out decimal result) =>
+        TryCombineExact(left, right, subtractRight: true, out result);
+
+    internal static bool ProductsEqualExact(
+        decimal leftFirst,
+        decimal leftSecond,
+        decimal rightFirst,
+        decimal rightSecond)
+    {
+        GetDecimalRational(leftFirst, out var leftFirstCoefficient, out var leftFirstScale);
+        GetDecimalRational(leftSecond, out var leftSecondCoefficient, out var leftSecondScale);
+        GetDecimalRational(rightFirst, out var rightFirstCoefficient, out var rightFirstScale);
+        GetDecimalRational(rightSecond, out var rightSecondCoefficient, out var rightSecondScale);
+
+        var leftCoefficient = leftFirstCoefficient * leftSecondCoefficient;
+        var leftScale = leftFirstScale + leftSecondScale;
+        var rightCoefficient = rightFirstCoefficient * rightSecondCoefficient;
+        var rightScale = rightFirstScale + rightSecondScale;
+        NormalizeDecimalRational(ref leftCoefficient, ref leftScale);
+        NormalizeDecimalRational(ref rightCoefficient, ref rightScale);
+        return leftCoefficient == rightCoefficient && leftScale == rightScale;
     }
 
     internal static string BuildConfusableKey(string value) =>
@@ -465,6 +498,70 @@ internal static class ResourceMaterializationContract
             scale = 0;
         }
 
+        return true;
+    }
+
+    private static bool TryCombineExact(
+        decimal left,
+        decimal right,
+        bool subtractRight,
+        out decimal result)
+    {
+        GetDecimalRational(left, out var leftCoefficient, out var leftScale);
+        GetDecimalRational(right, out var rightCoefficient, out var rightScale);
+        var scale = Math.Max(leftScale, rightScale);
+        var coefficient = ScaleCoefficient(leftCoefficient, leftScale, scale) +
+            (subtractRight ? -1 : 1) *
+            ScaleCoefficient(rightCoefficient, rightScale, scale);
+        return TryCreateDecimal(coefficient, scale, out result);
+    }
+
+    private static void GetDecimalRational(
+        decimal value,
+        out BigInteger coefficient,
+        out int scale)
+    {
+        var bits = decimal.GetBits(value);
+        coefficient =
+            new BigInteger((uint)bits[0]) |
+            (new BigInteger((uint)bits[1]) << 32) |
+            (new BigInteger((uint)bits[2]) << 64);
+        if ((bits[3] & int.MinValue) != 0)
+            coefficient = -coefficient;
+        scale = (bits[3] >> 16) & 0xFF;
+        NormalizeDecimalRational(ref coefficient, ref scale);
+    }
+
+    private static BigInteger ScaleCoefficient(
+        BigInteger coefficient,
+        int sourceScale,
+        int targetScale) =>
+        sourceScale == targetScale
+            ? coefficient
+            : coefficient * BigInteger.Pow(10, targetScale - sourceScale);
+
+    private static bool TryCreateDecimal(
+        BigInteger coefficient,
+        int scale,
+        out decimal result)
+    {
+        NormalizeDecimalRational(ref coefficient, ref scale);
+        var magnitude = BigInteger.Abs(coefficient);
+        if (scale is < 0 or > 28 || magnitude > DecimalMaxCoefficient)
+        {
+            result = 0m;
+            return false;
+        }
+
+        var lo = (uint)(magnitude & uint.MaxValue);
+        var mid = (uint)((magnitude >> 32) & uint.MaxValue);
+        var hi = (uint)((magnitude >> 64) & uint.MaxValue);
+        result = new decimal(
+            unchecked((int)lo),
+            unchecked((int)mid),
+            unchecked((int)hi),
+            coefficient.Sign < 0,
+            (byte)scale);
         return true;
     }
 

@@ -180,6 +180,53 @@ public sealed class ResourceMaterializationContractTests
     }
 
     [Fact]
+    public void QuantumAlignment_DoesNotRoundAwayMaxScaleMinimum()
+    {
+        var minimum = decimal.Parse(
+            "0.0000000000000000000000000001",
+            System.Globalization.CultureInfo.InvariantCulture);
+
+        Assert.False(ResourceMaterializationContract.IsQuantumAligned(
+            value: 10m,
+            minimum,
+            quantum: 1m));
+    }
+
+    [Fact]
+    public void ExactDecimalArithmetic_RejectsScaleLossAndComparesProductsWithoutRounding()
+    {
+        var culture = System.Globalization.CultureInfo.InvariantCulture;
+        var quantum = decimal.Parse("0.0000000000000000000000000001", culture);
+        var unequalRatioCurrent = decimal.Parse(
+            "0.0500000000000000000000000001",
+            culture);
+
+        Assert.False(ResourceMaterializationContract.TryAddExact(
+            10m,
+            quantum,
+            out _));
+        Assert.False(ResourceMaterializationContract.TrySubtractExact(
+            -10m,
+            quantum,
+            out _));
+        Assert.True(ResourceMaterializationContract.TryAddExact(
+            0.1m,
+            0.2m,
+            out var exactSum));
+        Assert.Equal(0.3m, exactSum);
+        Assert.False(ResourceMaterializationContract.ProductsEqualExact(
+            unequalRatioCurrent,
+            0.1m,
+            0.05m,
+            0.1m));
+        Assert.True(ResourceMaterializationContract.ProductsEqualExact(
+            0.1m,
+            0.1m,
+            0.05m,
+            0.2m));
+    }
+
+    [Fact]
     public void ValidateRawDefinitionFields_RejectsClientOwnedFieldsAtAnyDepth()
     {
         using var document = JsonDocument.Parse("""

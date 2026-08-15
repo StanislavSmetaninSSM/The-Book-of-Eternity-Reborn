@@ -93,7 +93,7 @@ A definition has one exact, case-sensitive, Unicode-confusable-unique `resourceK
   "resourceKey": "health",
   "displayName": "Здоровье",
   "numericKind": "integer",
-  "unit": "percent",
+  "unit": "percent_point",
   "quantum": 1,
   "minimumPolicy": {
     "kind": "definition_fixed",
@@ -179,12 +179,14 @@ An entry contains:
   "current": 85,
   "maximum": 100,
   "capacityBinding": {
-    "kind": "definition_fixed",
-    "authorityKey": "health"
+    "kind": "registered_formula",
+    "authorityKey": "mortal_health_capacity_v1",
+    "authorityFingerprint": "sha256:<64 lowercase hex>"
   },
   "state": "active",
   "chronology": {
     "createdAtTurn": 1,
+    "createdEventRef": "bootstrap_1",
     "lastTransitionId": "resource_transition_<opaque>",
     "lastEventRef": "turn_42",
     "lastTransitionTurn": 42
@@ -194,7 +196,7 @@ An entry contains:
 
 Rules:
 
-- all arithmetic uses exact `decimal`, never binary floating-point;
+- canonical values use exact `decimal`, never binary floating-point; coefficient/scale `BigInteger` intermediates prove quantum alignment, cross-product equality, and representability before a result is accepted, because checked decimal arithmetic can still round by reducing scale;
 - values must be representable by the definition's `numericKind` and `quantum`;
 - one coordinate has exactly one state entry;
 - current and maximum must satisfy the definition and capacity binding;
@@ -213,18 +215,33 @@ Rules:
   "originKind": "effect_component",
   "originId": "component_001",
   "operationId": "operation_<opaque>",
+  "executionSequence": 7,
   "coordinate": {},
   "operation": "damage",
-  "amount": 3,
-  "before": 88,
-  "after": 85,
+  "capacityDisposition": null,
+  "requestedAmount": 3,
+  "appliedAmount": 3,
+  "outcome": "applied",
+  "beforeState": {
+    "current": 88,
+    "maximum": 100,
+    "capacityBinding": {},
+    "state": "active"
+  },
+  "afterState": {
+    "current": 85,
+    "maximum": 100,
+    "capacityBinding": {},
+    "state": "active"
+  },
   "sourceEvidence": {},
+  "policyFingerprint": "sha256:<64 lowercase hex>",
   "receiptId": null,
   "turn": 42
 }
 ```
 
-Transition IDs, operation IDs, and applicable receipt IDs are client-owned and globally exact/confusable-unique. The same accepted event/origin/operation returns the previous result or no-ops. Reuse with different semantics is a protected conflict.
+Transition IDs, operation IDs, and applicable receipt IDs are client-owned and globally exact/confusable-unique. `executionSequence` is client-owned, unique within a turn, assigned after the complete phase/DAG order is known, and part of protected replay semantics. Full snapshots make ordinary, capacity, lifecycle, and terminal transitions one immutable chain: initialize is absence-to-active and must match the sealed static initialization policy (with registered-formula authority recomputed by the composed reducer), retire is live-to-absence, and no row follows retirement. Every row also stores an explicit nullable `capacityDisposition`: initialization uses `initialize_from_definition`; reconfigure uses exactly `preserve`, `clamp_to_new_maximum`, or `scale_ratio_exact`; every other operation uses null. This makes the current-value consequence of a capacity change provable rather than trusting an arbitrary after-image. The same accepted event/origin/coordinate/operation and exact protected semantics returns the previous result without storing a second row; reuse with different semantics is a protected conflict.
 
 History retention and compaction may be optimized only if replay evidence remains equivalent and is separately specified and tested. This feature does not introduce lossy history cleanup.
 
@@ -269,7 +286,7 @@ Ordinary combat, healing, recovery, costs, items, afterlife operations, and effe
 
 Initialization and capacity reconfiguration are not ordinary mutations. They require the owning materialization or a separately authorized capacity transition.
 
-A capacity transition uses a closed current-value disposition: `preserve`, `clamp_to_new_maximum`, or `scale_ratio_exact`. The source contract selects the disposition. `scale_ratio_exact` fails if the result cannot be represented by the target quantum; it never rounds. Reducing capacity below current without an authorized disposition fails before publication.
+A capacity transition uses a closed current-value disposition: `preserve`, `clamp_to_new_maximum`, or `scale_ratio_exact`. The source contract selects the disposition. `scale_ratio_exact` fails if the result cannot be represented by the target quantum; it never rounds. Ordinary min/max clamps likewise prove an exactly representable full requested candidate that crosses the bound and a separately exact applied candidate that reaches it; zero applied amount cannot mask an overflowing request. Reducing capacity below current without an authorized disposition fails before publication.
 
 ## 11. Accepted-Turn Order
 
@@ -289,7 +306,7 @@ The composed accepted turn follows this order:
 12. publish all paths atomically and consume transient commands;
 13. post-validate; on failure, restore every touched path byte-for-byte and by prior existence.
 
-The closed resource phases are `direct_cost`, `direct_outcome`, `registered_system_outcome`, and `effect_trigger`. An adapter assigns the phase from its registered source route; the GM cannot choose it. Applied resource results emit only registered events such as `resource_damaged`, `resource_restored`, `resource_spent`, `resource_gained`, `resource_depleted`, or `resource_filled`.
+The closed resource phases are `direct_cost`, `direct_outcome`, `registered_system_outcome`, and `effect_trigger`. An adapter assigns the phase from its registered source route; the GM cannot choose it. After the complete DAG order is known, the client assigns `executionSequence`; canonical history uses `turn` plus that sequence, so accepted-event ordinal, priority, and lexical origin IDs cannot invert a dependency edge. Applied resource results emit only registered events such as `resource_damaged`, `resource_restored`, `resource_spent`, `resource_gained`, `resource_depleted`, or `resource_filled`.
 
 Mutations are not summed before application because ordered floor/cap behavior is observable. A clamp is legal only when the governing definition/source policy explicitly declares it. Otherwise an out-of-range transition fails closed.
 
@@ -297,7 +314,9 @@ One invalid mutation, missing owner, unknown resource, quantum mismatch, overflo
 
 ## 12. Planner Boundaries
 
-The arithmetic boundary is a pure `ResourceMutationReducer`. It applies one already-authorized mutation to an immutable working ledger and returns the new ledger, result event, transition evidence, and issues. It knows nothing about effects, files, prompts, or source-specific commands.
+The arithmetic boundary is a pure `ResourceMutationReducer`. It applies one already-authorized mutation to an immutable working ledger view and returns the new ledger, result event, transition evidence, and issues. It knows nothing about effects, files, prompts, or source-specific commands.
+
+The planner owns one isolated `ResourceHistoryWorkingSet` for the complete turn. It seeds exact/confusable identity, replay, and coordinate-tail indexes from the immutable canonical history once, incrementally admits reducer transitions, and exposes earlier same-turn replay authority to later phases. Only after every phase and graph node succeeds does it freeze the set into one fully validated, canonically sorted, immutable history after-image and compute its fingerprint. The canonical history `Append` helper is not used as the per-mutation planning path.
 
 The cross-domain `AcceptedMechanicsPlanner` owns phase traversal. It composes direct operations, calls the resource reducer, feeds the resulting registered events to the effect trigger graph, applies downstream mutations, and returns either:
 

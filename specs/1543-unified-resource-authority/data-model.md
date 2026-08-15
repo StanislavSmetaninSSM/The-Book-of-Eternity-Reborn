@@ -19,7 +19,7 @@ All roots are strict JSON objects. Duplicate properties at any depth, unknown fi
 
 ## 2. Shared scalar rules
 
-- Canonical numbers are JSON numbers parsed as exact .NET `decimal`.
+- Canonical numbers are JSON numbers parsed as exact .NET `decimal`; arithmetic proof decomposes them into signed integer coefficient plus scale so intermediate comparisons never inherit `decimal` scale reduction.
 - Exponent or precision forms are accepted only when they round-trip to the same exact decimal value.
 - `integer` definitions require `decimal.Truncate(value) == value`.
 - `quantum` is positive. A value is aligned when `(value - minimum) / quantum` is integral.
@@ -66,8 +66,8 @@ History is not truncated by these limits. A separate tracked feature is required
     "value": 0
   },
   "capacityPolicy": {
-    "kind": "definition_fixed",
-    "value": 100
+    "kind": "registered_formula",
+    "formulaKey": "mortal_health_capacity_v1"
   },
   "initializationPolicy": {
     "kind": "maximum"
@@ -260,9 +260,9 @@ Named combatants may carry `NPCId`; it must resolve exactly to composed NPC auth
   "current": 85,
   "maximum": 100,
   "capacityBinding": {
-    "kind": "definition_fixed",
-    "authorityKey": "health",
-    "authorityFingerprint": "<sha256>"
+    "kind": "registered_formula",
+    "authorityKey": "mortal_health_capacity_v1",
+    "authorityFingerprint": "sha256:<64 lowercase hex>"
   },
   "state": "active",
   "chronology": {
@@ -311,6 +311,7 @@ Every variant includes a client-computed `authorityFingerprint`. Raw commands ca
   "originId": "component_001",
   "phase": "effect_trigger",
   "priority": 200,
+  "executionSequence": 7,
   "coordinate": {
     "realm": "mortal_world",
     "ownerKind": "player",
@@ -318,22 +319,44 @@ Every variant includes a client-computed `authorityFingerprint`. Raw commands ca
     "resourceKey": "health"
   },
   "operation": "damage",
+  "capacityDisposition": null,
   "requestedAmount": 3,
   "appliedAmount": 3,
   "outcome": "applied",
-  "before": 88,
-  "after": 85,
+  "beforeState": {
+    "current": 88,
+    "maximum": 100,
+    "capacityBinding": {
+      "kind": "registered_formula",
+      "authorityKey": "mortal_health_capacity_v1",
+      "authorityFingerprint": "sha256:<64 lowercase hex>"
+    },
+    "state": "active"
+  },
+  "afterState": {
+    "current": 85,
+    "maximum": 100,
+    "capacityBinding": {
+      "kind": "registered_formula",
+      "authorityKey": "mortal_health_capacity_v1",
+      "authorityFingerprint": "sha256:<64 lowercase hex>"
+    },
+    "state": "active"
+  },
   "sourceEvidence": {
     "sourceKind": "effect_component",
     "sourceId": "component_001",
-    "authorityFingerprint": "<sha256>"
+    "authorityFingerprint": "sha256:<64 lowercase hex>"
   },
+  "policyFingerprint": "sha256:<64 lowercase hex>",
   "receiptId": null,
   "turn": 42
 }
 ```
 
-Closed `outcome` values are `applied`, `clamped_minimum`, `clamped_maximum`, and `semantic_replay`. A replay does not append a second entry; the previous entry is returned to the planner as the result.
+`beforeState` and `afterState` are complete immutable snapshots of current, maximum, capacity binding, and lifecycle. `initialize` requires absent `beforeState`, an active `afterState`, and `capacityDisposition: initialize_from_definition`; the history parser proves `minimum`, `maximum`, and `fixed` initialization directly from the sealed definition, while `registered_formula` is additionally recomputed from typed composed owner authority by the reducer. `retire` requires a live `beforeState`, absent `afterState`, exact `owner_lifecycle` source evidence, and a null disposition. Reconfigure requires an actual maximum or capacity-binding change plus exactly one explicit disposition: `preserve`, `clamp_to_new_maximum`, or `scale_ratio_exact`. Preserve keeps current exact; clamp produces `min(before.current, after.maximum)` with exact applied/clamped evidence; ratio scaling must satisfy exact coefficient/scale cross multiplication and the target quantum without rounding. Ordinary arithmetic separately proves the complete requested candidate and the applied candidate: both must be representable, the requested candidate must cross the relevant bound for a clamp, and the applied candidate must equal the after-state at that bound. A checked operation that silently reduces scale is invalid even when `appliedAmount` is zero. Suspend, resume, retire, and ordinary mutations require a null disposition.
+
+Stored transition operations are `initialize`, `reconfigure`, `suspend`, `resume`, `retire`, `damage`, `restore`, `spend`, and `gain`. Stored `outcome` values are only `applied`, `clamped_minimum`, and `clamped_maximum`. Every row carries the explicit nullable `capacityDisposition`; it is protected replay evidence and prevents capacity transitions from laundering an arbitrary current value. `semantic_replay` is an in-memory reducer result: it returns the previous entry and never appends a second history row. `executionSequence` is a non-negative client-owned identity of the transition's actual position within its turn; it is unique within that turn and is protected replay semantics.
 
 Replay identity is the exact tuple:
 
@@ -341,9 +364,17 @@ Replay identity is the exact tuple:
 eventRef + originKind + originId + coordinate + operation
 ```
 
-If the tuple exists and amount/source/policy semantics match, it is an exact replay. If any semantic differs, it is a protected conflicting replay.
+If the tuple exists and requested amount, source evidence, policy fingerprint, phase, priority, and receipt semantics match, it is an exact replay. Newly allocated transition/operation IDs are not part of replay matching. If any protected semantic differs, it is a conflicting replay.
 
-History entries are immutable and canonically sorted by turn, eventRef, phase, priority, originId, operationId. Existing entries may never be removed, reordered semantically, or rewritten by accepted input.
+History entries are immutable and canonically sorted by turn and `executionSequence`, then phase, priority, originId, operationId, eventRef, and transitionId as deterministic consistency tie-breakers. The sequence is assigned only after the complete phase/DAG order is known; event ordinal and lexical identities can never reorder an accepted dependency chain. Existing entries may never be removed, reordered semantically, or rewritten by accepted input.
+
+For every coordinate, the first transition is `initialize`, each next `beforeState` equals the prior `afterState`, and no transition follows `retire`. Every nonterminal history chain has exactly one live ledger entry whose snapshot and chronology equal the chain's first/latest transitions; a terminal chain has none.
+
+### 6.1 Plan-local history working set
+
+Persisted history remains immutable and untruncated. During one accepted turn, `AcceptedMechanicsPlanner` creates one isolated `ResourceHistoryWorkingSet` from the validated `ResourceHistoryState`. It reuses baseline indexes for transition/operation/receipt uniqueness, confusable identities, replay keys, coordinates, and per-coordinate tails, and incrementally indexes newly accepted transitions. Exact replay can therefore see both baseline and earlier same-turn transitions without reparsing or rebuilding the full history.
+
+The working set is never published or shared between plans. A failed mutation or graph blocks the whole plan and the set is discarded. On successful completion, one `Freeze()` call performs full cross-entry validation, canonical ordering, immutable index construction, and fingerprinting and produces the only `ResourceHistoryState` after-image. The ordinary reducer/planner path must not call the baseline state's whole-history `Append` helper once per mutation.
 
 ## 7. Transient command root
 
