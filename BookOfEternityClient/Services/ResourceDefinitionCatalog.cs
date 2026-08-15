@@ -300,6 +300,28 @@ internal sealed class ResourceDefinitionCatalog
             : new ResourceDefinitionCatalogResult(null, issues.ToArray());
     }
 
+    internal static IReadOnlyList<ValidationIssue> ValidateRawProposal(
+        JsonElement proposal,
+        string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        var issues = new List<ValidationIssue>();
+        ResourceMaterializationContract.FindDuplicateProperties(
+            proposal,
+            path,
+            issues,
+            "resource_materialization_duplicate_property");
+        issues.AddRange(ResourceMaterializationContract.ValidateRawDefinitionFields(
+            proposal,
+            path));
+        _ = ParseDefinition(
+            proposal,
+            path,
+            requireMaterialization: false,
+            issues);
+        return issues.ToArray();
+    }
+
     internal static ResourceDefinitionMaterializationResult MaterializeProposal(
         JsonElement proposal,
         ResourceDefinitionCatalog existingCatalog,

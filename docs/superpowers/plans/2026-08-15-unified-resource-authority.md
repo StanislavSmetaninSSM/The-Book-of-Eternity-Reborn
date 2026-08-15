@@ -580,6 +580,14 @@ Execution evidence (2026-08-15):
 - Future-refactor preservation: the effect plan is an immutable common-plan subplan, not a second resource adapter. The existing effect cache remains only until tracked T032–T035/T048 move validation/publication callers; T078–T080 remain the explicit resource-event/effect-trigger/lifetime continuation. No migration, legacy fallback, or domain cutover was introduced in this foundation.
 - Prompt/docs/examples rationale: Task 5 remains client-owned plan/cache infrastructure and adds no GM-authored response property, mapping, mechanic field, pending/control surface, or afterlife contract. The tracked US1/US6 tasks own those synchronized prompt/example changes.
 
+Task-5b command-envelope execution evidence (2026-08-15):
+
+- Response/mapping RED `TestResults/test-lanes/20260815-193216-881-51464-548f0cb539314e4688e66c6cb78241fe-focused/summary.json` failed at build on the three missing response properties. The first implementation run `TestResults/test-lanes/20260815-193318-542-54200-6ac0702b6b134352b1079b628232aed8-focused/summary.json` passed `47/48` and correctly exposed `_lastUpdated` leaking into the transient command root. Final GREEN `TestResults/test-lanes/20260815-193434-078-47964-d815a11bb33e40bd8954e9ede90f530d-focused/summary.json` passes `48/48`.
+- Strict composer RED `TestResults/test-lanes/20260815-193917-474-54192-2cf6ab22c6fb4c0ab63dc7a0a40e9979-focused/summary.json` is the expected missing-type build failure. GREEN `TestResults/test-lanes/20260815-194213-762-18232-41027d70a00c41d58aaa19b2ab5eacab-focused/summary.json` passes `28/28`.
+- Combined response/mapping/composer control `TestResults/test-lanes/20260815-194449-767-50984-a4d6fb0b8024470dbcb64f7d8cde8c12-focused/summary.json` passes `76/76`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- The parser is duplicate-safe at every depth, distinguishes absent from present malformed input, closes every object/selector, validates exact definition/owner/source identities and exact positive decimals, enforces technical limits, preserves one global ordinal, and returns defensive after-images.
+- Implementation-order correction: the pure reducer/common planner below is completed before Task 7 publication. A bootstrap-only temporary planner would violate the approved one-model architecture. Legacy player/item routes remain only until the tracked T057/T065 atomic cutovers; their absence assertions stay in T056/T063 as this plan already required.
+
 **Step 5: Implement the strict command composer**
 
 Parse the transient root as:

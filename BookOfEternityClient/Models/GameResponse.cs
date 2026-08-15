@@ -111,6 +111,15 @@ public class GameResponse
     [JsonPropertyName("effectResolutionReceipts")]
     public JsonElement[]? EffectResolutionReceipts { get; set; }
 
+    [JsonPropertyName("resourceDefinitionCreations")]
+    public JsonElement[]? ResourceDefinitionCreations { get; set; }
+
+    [JsonPropertyName("resourceCapacityChanges")]
+    public JsonElement[]? ResourceCapacityChanges { get; set; }
+
+    [JsonPropertyName("resourceChanges")]
+    public JsonElement[]? ResourceChanges { get; set; }
+
     [JsonPropertyName("calculatedWeightData")]
     public JsonElement? CalculatedWeightData { get; set; }
 

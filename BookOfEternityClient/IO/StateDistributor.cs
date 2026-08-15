@@ -276,9 +276,10 @@ public class StateDistributor
             existingData[key] = value;
         }
 
-        // Transient effect commands are a closed accepted-turn input contract,
-        // not a canonical state document with distribution metadata.
-        if (!relativePath.Equals(EffectAcceptedTurnPlan.CommandPath, StringComparison.OrdinalIgnoreCase))
+        // Transient mechanics commands are closed accepted-turn input contracts,
+        // not canonical state documents with distribution metadata.
+        if (!relativePath.Equals(EffectAcceptedTurnPlan.CommandPath, StringComparison.OrdinalIgnoreCase) &&
+            !relativePath.Equals(ResourceMaterializationContract.CommandPath, StringComparison.OrdinalIgnoreCase))
             existingData["_lastUpdated"] = JsonSerializer.SerializeToElement(DateTime.UtcNow.ToString("o"));
 
         // Serialize and write

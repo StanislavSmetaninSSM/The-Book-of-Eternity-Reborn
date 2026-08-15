@@ -185,6 +185,52 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
                 .OrderBy(static name => name, StringComparer.Ordinal));
     }
 
+    [Fact]
+    public async Task DistributeAsync_ResourceCommandsPreserveAllThreeArraysInOneTransientRoot()
+    {
+        var distributor = new StateDistributor(
+            _fs,
+            NullLogger<StateDistributor>.Instance);
+        var response = new GameResponse
+        {
+            ResourceDefinitionCreations = JsonSerializer.Deserialize<JsonElement[]>(
+                "[{\"resourceKey\":\"focus\"}]")!,
+            ResourceCapacityChanges = JsonSerializer.Deserialize<JsonElement[]>(
+                "[{\"operation\":\"initialize\"}]")!,
+            ResourceChanges = JsonSerializer.Deserialize<JsonElement[]>(
+                "[{\"operation\":\"spend\"}]")!
+        };
+
+        var modified = await distributor.DistributeAsync(response);
+
+        Assert.Contains(ResourceMaterializationContract.CommandPath, modified);
+        using var document = JsonDocument.Parse(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.CommandPath) ?? "{}");
+        var root = document.RootElement;
+        Assert.Equal("focus", root
+            .GetProperty("resourceDefinitionCreations")[0]
+            .GetProperty("resourceKey")
+            .GetString());
+        Assert.Equal("initialize", root
+            .GetProperty("resourceCapacityChanges")[0]
+            .GetProperty("operation")
+            .GetString());
+        Assert.Equal("spend", root
+            .GetProperty("resourceChanges")[0]
+            .GetProperty("operation")
+            .GetString());
+        Assert.Equal(
+            new[]
+            {
+                "resourceCapacityChanges",
+                "resourceChanges",
+                "resourceDefinitionCreations"
+            },
+            root.EnumerateObject()
+                .Select(static property => property.Name)
+                .OrderBy(static name => name, StringComparer.Ordinal));
+    }
+
     private FileSystemManager CreateFileSystem(FileSystemManagerHooks? hooks = null)
     {
         var fs = new FileSystemManager(

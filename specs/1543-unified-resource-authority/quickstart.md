@@ -80,6 +80,16 @@ This guide is the executable validation handoff for [#1543](https://github.com/S
 - The planned follow-on refactor remains explicit: `EffectAcceptedTurnPlan` is retained as the common plan's immutable `EffectPlan` subplan, while T032–T035/T048 wire the common validation/publication contour and retire the independent effect handoff only after all callers move. T078–T080 still own periodic resource components, trigger feedback, effect lifetime, and terminal cleanup. No migration or compatibility fallback was added.
 - This foundation is client-owned and does not yet add a GM-authored resource response field or runtime file mapping; therefore prompts/examples/manifests remain unchanged. Those surfaces are synchronized in their tracked US1/US6 tasks. GitHub Actions remain disabled and unused.
 
+### Task-5b resource command-envelope evidence (2026-08-15)
+
+- Response/mapping RED: `TestResults/test-lanes/20260815-193216-881-51464-548f0cb539314e4688e66c6cb78241fe-focused/summary.json`; expected build failure before the three `GameResponse` properties existed.
+- The first implementation run exposed an invalid transient-root `_lastUpdated` sibling: `TestResults/test-lanes/20260815-193318-542-54200-6ac0702b6b134352b1079b628232aed8-focused/summary.json` (`47/48`). Final response/mapping/distributor GREEN is `TestResults/test-lanes/20260815-193434-078-47964-d815a11bb33e40bd8954e9ede90f530d-focused/summary.json` (`48/48`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`).
+- Strict composer RED: `TestResults/test-lanes/20260815-193917-474-54192-2cf6ab22c6fb4c0ab63dc7a0a40e9979-focused/summary.json`; expected build failure before the composer/types existed. GREEN is `TestResults/test-lanes/20260815-194213-762-18232-41027d70a00c41d58aaa19b2ab5eacab-focused/summary.json` (`28/28`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`).
+- Combined response/mapping/composer control: `TestResults/test-lanes/20260815-194449-767-50984-a4d6fb0b8024470dbcb64f7d8cde8c12-focused/summary.json`; `76/76`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- The transient root is closed and metadata-free; missing is distinct from malformed; duplicate properties are rejected recursively; definition/capacity/ordinary commands use exact bounded selectors and exact positive decimal amounts. Global command ordinals are retained for T047 event binding.
+- Legacy player/item response properties and mappings deliberately remain until their atomic T057/T065 consumer cutovers. This is not compatibility support: no common/legacy dual write is introduced, and the executable absence guards remain tracked in T056/T063.
+- The response fields are not considered a finished GM capability until raw validation, the common reducer/plan, atomic publication, and synchronized Mortal/afterlife GM examples are complete in this feature. No merge or public handoff occurs at this intermediate checkpoint; GitHub Actions remain disabled and unused.
+
 ## 3. Canonical example state
 
 The active new-game example must contain:

@@ -1,4 +1,7 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -6,6 +9,66 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ResourceMaterializationContractTests
 {
+    [Fact]
+    public void ResponseModelAndMappingExposeCommonTransientResourceRoutes()
+    {
+        var responseFields = typeof(GameResponse)
+            .GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public)
+            .Select(property => property.GetCustomAttributes(typeof(JsonPropertyNameAttribute), inherit: false)
+                .OfType<JsonPropertyNameAttribute>()
+                .SingleOrDefault()
+                ?.Name)
+            .Where(static name => name != null)
+            .ToHashSet(StringComparer.Ordinal);
+
+        var expectedFields = new[]
+        {
+            "resourceDefinitionCreations",
+            "resourceCapacityChanges",
+            "resourceChanges"
+        };
+
+        Assert.All(expectedFields, field => Assert.Contains(field, responseFields));
+        Assert.All(expectedFields, field => Assert.Equal(
+            ResourceMaterializationContract.CommandPath,
+            FileMapping.FieldToFile[field]));
+    }
+
+    [Fact]
+    public void ResponseSerializationPreservesEverySuppliedResourceCommandArray()
+    {
+        var response = new GameResponse
+        {
+            ResourceDefinitionCreations = JsonSerializer.Deserialize<JsonElement[]>(
+                "[{\"resourceKey\":\"focus\"}]")!,
+            ResourceCapacityChanges = JsonSerializer.Deserialize<JsonElement[]>(
+                "[{\"operation\":\"initialize\"}]")!,
+            ResourceChanges = JsonSerializer.Deserialize<JsonElement[]>(
+                "[{\"operation\":\"spend\"}]")!
+        };
+
+        using var document = JsonDocument.Parse(JsonSerializer.Serialize(response));
+
+        Assert.Equal(
+            "focus",
+            document.RootElement
+                .GetProperty("resourceDefinitionCreations")[0]
+                .GetProperty("resourceKey")
+                .GetString());
+        Assert.Equal(
+            "initialize",
+            document.RootElement
+                .GetProperty("resourceCapacityChanges")[0]
+                .GetProperty("operation")
+                .GetString());
+        Assert.Equal(
+            "spend",
+            document.RootElement
+                .GetProperty("resourceChanges")[0]
+                .GetProperty("operation")
+                .GetString());
+    }
+
     [Fact]
     public void ParseDefinitions_MissingIsAllowedOnlyForExplicitPristineBootstrap()
     {

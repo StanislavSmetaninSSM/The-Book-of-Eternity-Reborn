@@ -63,12 +63,12 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 
 **Independent Test**: Bootstrap and setting-expand definitions/states for representative owners; direct/ambiguous/legacy/malformed state produces issues and zero canonical writes.
 
-- [ ] T026 [P] [US1] Add RED response/model/mapping contract tests for `resourceDefinitionCreations`, `resourceCapacityChanges`, and `resourceChanges`, plus absence of removed player/item legacy mappings, in `BookOfEternityClient.Tests/ResourceMaterializationContractTests.cs`
+- [x] T026 [P] [US1] Add RED response/model/mapping contract tests for `resourceDefinitionCreations`, `resourceCapacityChanges`, and `resourceChanges` in `BookOfEternityClient.Tests/ResourceMaterializationContractTests.cs`; executable absence guards for player/item legacy mappings remain owned by T056/T063 at their atomic cutovers
 - [ ] T027 [P] [US1] Add RED raw/canonical validation tests for pristine bootstrap, strict roots, direct definition/state/history mutation, legacy fields, same-turn definition/owner refs, wrong realm, and command consumption in `BookOfEternityClient.IntegrationTests/ResourceMaterializationValidationTests.cs`
 - [ ] T028 [P] [US1] Add RED canonical publication tests for definitions/state/history/commands, untouched subtree preservation, literal-null/malformed late changes, full-fingerprint TOCTOU, and post-state agreement in `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Resources.cs`
-- [ ] T029 [US1] Add resource response properties and remove legacy player/item-resource response properties in `BookOfEternityClient/Models/GameResponse.cs`
-- [ ] T030 [US1] Map the three resource fields to `game_state/resources/resource_commands.json` and remove legacy player/item resource mappings in `BookOfEternityClient/Configuration/FileMapping.cs`
-- [ ] T031 [US1] Implement duplicate-safe resource command parsing and definition/capacity/ordinary selector validation in `BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs` until T027 is GREEN
+- [x] T029 [US1] Add resource response properties in `BookOfEternityClient/Models/GameResponse.cs`; remove player/item legacy response properties only with their T057/T065 consumer cutovers
+- [x] T030 [US1] Map the three resource fields to `game_state/resources/resource_commands.json`; remove legacy player/item resource mappings only with their T057/T065 consumer cutovers
+- [x] T031 [US1] Implement duplicate-safe resource command parsing and definition/capacity/ordinary selector validation in `BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs`
 - [ ] T032 [US1] Implement raw, continuity, direct-mutation, legacy-authority, owner/definition/state/history/command, and canonical agreement phases in `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs` until T027 is GREEN
 - [ ] T033 [US1] Invoke resource raw validation before effect raw planning and invalidate the common plan on every early failure in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
 - [ ] T034 [US1] Add resource roots to canonical accumulated/backup/rollback contours and replace independent effect publication entry with common mechanics publication in `BookOfEternityClient/Services/CanonicalStateNormalizer.cs`
