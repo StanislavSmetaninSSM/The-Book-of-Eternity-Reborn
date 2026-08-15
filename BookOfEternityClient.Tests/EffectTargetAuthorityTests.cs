@@ -44,11 +44,11 @@ public sealed class EffectTargetAuthorityTests
             ["name"] = "Налётчик"
         });
 
-        var result = EffectCombatantIdentityState.BuildNew(raw, factory);
+        var result = CombatantIdentityState.BuildNew(raw, factory);
 
         Assert.Empty(result.Issues);
         Assert.Equal(1, factory.CombatantCalls);
-        Assert.True(result.State!.TryResolve("combatant_ref_raider", out var combatantId));
+        Assert.True(result.State!.TryResolveCombatant("combatant_ref_raider", out var combatantId));
         Assert.StartsWith("combatant_", combatantId, StringComparison.Ordinal);
         Assert.Equal(combatantId, result.RewrittenCombatants[0]!["combatantId"]!.GetValue<string>());
         Assert.Null(result.RewrittenCombatants[0]!["combatantRef"]);
@@ -58,7 +58,7 @@ public sealed class EffectTargetAuthorityTests
     [Fact]
     public void CombatantState_ExposesReadOnlyReferenceMapping()
     {
-        var result = EffectCombatantIdentityState.BuildNew(
+        var result = CombatantIdentityState.BuildNew(
             new JsonArray(new JsonObject { ["combatantRef"] = "combatant_ref_raider" }),
             new CountingEffectIdentityFactory());
 
@@ -70,7 +70,7 @@ public sealed class EffectTargetAuthorityTests
     [Fact]
     public void Resolve_SameTurnCombatantRefStoresOnlyPermanentTargetId()
     {
-        var combatants = EffectCombatantIdentityState.BuildNew(
+        var combatants = CombatantIdentityState.BuildNew(
             new JsonArray(new JsonObject { ["combatantRef"] = "combatant_ref_raider" }),
             new CountingEffectIdentityFactory());
         var authority = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
@@ -93,10 +93,10 @@ public sealed class EffectTargetAuthorityTests
     [Fact]
     public void Resolve_SameTurnPermanentTargetIdCannotReplaceRequiredTargetRef()
     {
-        var combatants = EffectCombatantIdentityState.BuildNew(
+        var combatants = CombatantIdentityState.BuildNew(
             new JsonArray(new JsonObject { ["combatantRef"] = "combatant_ref_raider" }),
             new CountingEffectIdentityFactory());
-        Assert.True(combatants.State!.TryResolve("combatant_ref_raider", out var combatantId));
+        Assert.True(combatants.State!.TryResolveCombatant("combatant_ref_raider", out var combatantId));
         var authority = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
             Array.Empty<EffectTargetExport>(),
             Array.Empty<EffectTargetExport>(),
@@ -123,11 +123,11 @@ public sealed class EffectTargetAuthorityTests
             },
             new JsonObject { ["combatantRef"] = "COMBATANT_REF_RAIDER" });
 
-        var result = EffectCombatantIdentityState.BuildNew(raw, new CountingEffectIdentityFactory());
+        var result = CombatantIdentityState.BuildNew(raw, new CountingEffectIdentityFactory());
 
         Assert.Null(result.State);
-        Assert.Contains(result.Issues, issue => issue.Code == "effect_target_combatant_id_forbidden");
-        Assert.Contains(result.Issues, issue => issue.Code == "effect_target_combatant_ref_confusable");
+        Assert.Contains(result.Issues, issue => issue.Code == "mechanics_combatant_id_forbidden");
+        Assert.Contains(result.Issues, issue => issue.Code == "mechanics_identity_ref_confusable");
     }
 
     [Theory]

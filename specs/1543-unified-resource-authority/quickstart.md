@@ -59,6 +59,15 @@ This guide is the executable validation handoff for [#1543](https://github.com/S
 - Scalability review keeps the immutable canonical history as the Task-3 authority and reserves a separate T039/T041/T046 `ResourceHistoryWorkingSet`: one baseline index seed, incremental same-turn replay/continuity admission, and one final full validation/sort/fingerprint. The future reducer is explicitly forbidden from calling the whole-history `Append` path per mutation; T111 measures this contour.
 - No GM-authored surface changes in Task 3; active prompts/examples/manifests remain unchanged by design. GitHub Actions remain disabled and unused.
 
+### Task-4 owner/common-identity evidence (2026-08-15)
+
+- Owner/common-identity RED: `TestResults/test-lanes/20260815-184853-327-30232-202d06451bb0438a8abae73824cfa140-focused/summary.json`; expected build failure before `ResourceOwnerAuthority` and `CombatantIdentityState` existed.
+- Compile-fix evidence: `TestResults/test-lanes/20260815-185731-698-33500-293cc634634548168f9878770267ee74-focused/summary.json` and `TestResults/test-lanes/20260815-185913-744-48236-fec50d0a5c7342c7a3c3e5536d8cbda5-focused/summary.json`; both failed only on the newly generalized tuple/API references before correction.
+- Narrow GREEN: `TestResults/test-lanes/20260815-190130-170-28124-419ceefb9f9a4618b724afb2d5167e75-focused/summary.json`; `43/43`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- Final common-owner/effect compatibility GREEN: `TestResults/test-lanes/20260815-190315-160-19392-c2684c5e553e48d58f1c1ce74b2f14ca-focused/summary.json`; `89/89`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- `EffectCombatantIdentityState` has zero remaining production/test references. The common identity allocates and consumes every accepted combatant/member ref, while the composed owner authority covers all nine owner families without name/index fallback.
+- This slice is client-owned authority infrastructure only; it adds no GM-authored command, state surface, response field, prompt, example, or afterlife contract. GitHub Actions remain disabled and unused.
+
 ## 3. Canonical example state
 
 The active new-game example must contain:

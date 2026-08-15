@@ -452,6 +452,15 @@ git diff --check
 
 Expected: the old class has zero production references, canonical refs are rejected, and all selected tests pass.
 
+Execution evidence (2026-08-15):
+
+- RED `TestResults/test-lanes/20260815-184853-327-30232-202d06451bb0438a8abae73824cfa140-focused/summary.json` fails at build on the intentionally missing common owner/combat identity types.
+- Transitional compile failures `20260815-185731...` and `20260815-185913...` isolated the generalized tuple name and renamed `TryResolveCombatant` call sites; neither reached behavioral execution.
+- Narrow GREEN `TestResults/test-lanes/20260815-190130-170-28124-419ceefb9f9a4618b724afb2d5167e75-focused/summary.json` passes `43/43`.
+- Final Task-4 compatibility GREEN `TestResults/test-lanes/20260815-190315-160-19392-c2684c5e553e48d58f1c1ce74b2f14ca-focused/summary.json` passes `89/89`, failures `0`, duplicates `0`, timeout `false`, cleanup `complete`, and build warnings/errors `0/0`.
+- `rg` finds zero `EffectCombatantIdentityState` references under production/unit/integration sources. The retained implementation is one common combatant/member allocation state plus one composed nine-family resource-owner authority.
+- Prompt/docs/examples rationale: this slice changes only client-owned identity and authority infrastructure. It introduces no GM-authored field, response, command, prompt, example, manifest, or afterlife pending/control surface, so no GM-facing documentation update is required beyond this technical Spec Kit evidence.
+
 Commit:
 
 ```powershell

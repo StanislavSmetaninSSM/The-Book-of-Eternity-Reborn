@@ -21,7 +21,7 @@ internal sealed record EffectTargetAuthorityInput(
     IReadOnlyList<EffectTargetExport> PreTurnTargets,
     IReadOnlyList<EffectTargetExport> SameTurnTargets,
     IReadOnlySet<string> HistoricalTargetIds,
-    EffectCombatantIdentityState? CombatantIdentities);
+    CombatantIdentityState? CombatantIdentities);
 
 internal sealed record EffectTargetResolution(
     EffectTargetKey? Target,

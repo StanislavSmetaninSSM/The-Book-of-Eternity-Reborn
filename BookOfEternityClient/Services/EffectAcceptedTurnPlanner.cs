@@ -242,7 +242,7 @@ internal static class EffectAcceptedTurnPlanner
         if (candidates.Count == 0)
             return;
 
-        var identityBuild = EffectCombatantIdentityState.BuildNew(
+        var identityBuild = CombatantIdentityState.BuildNew(
             candidates,
             identityFactory);
         issues.AddRange(identityBuild.Issues);
