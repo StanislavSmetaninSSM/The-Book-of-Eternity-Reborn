@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using System.Globalization;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
@@ -209,6 +210,22 @@ internal sealed class ResourceDefinitionCatalog
 
     internal static ResourceDefinitionCatalog CreateBuiltIn() =>
         new(CreateBuiltInDefinitions());
+
+    internal ResourceDefinitionCatalog With(ResourceDefinition definition)
+    {
+        ArgumentNullException.ThrowIfNull(definition);
+        return new ResourceDefinitionCatalog(Definitions.Append(definition));
+    }
+
+    internal JsonObject ToCanonicalRoot() => new()
+    {
+        ["schemaVersion"] = ResourceMaterializationContract.SchemaVersion,
+        ["definitions"] = new JsonArray(Definitions
+            .Select(static definition => (JsonNode)ToCanonicalDefinition(definition))
+            .ToArray())
+    };
+
+    internal string ToCanonicalJson() => ToCanonicalRoot().ToJsonString();
 
     internal bool TryResolveExact(string resourceKey, out ResourceDefinition? definition) =>
         _byKey.TryGetValue(resourceKey, out definition);
@@ -481,6 +498,103 @@ internal sealed class ResourceDefinitionCatalog
         ResourceOwnerKind.AfterlifeScope => "afterlife_scope",
         _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
     };
+
+    private static JsonObject ToCanonicalDefinition(ResourceDefinition definition)
+    {
+        var capacity = new JsonObject
+        {
+            ["kind"] = definition.CapacityPolicy.Kind switch
+            {
+                ResourceCapacityKind.DefinitionFixed => "definition_fixed",
+                ResourceCapacityKind.InstanceFixed => "instance_fixed",
+                ResourceCapacityKind.RegisteredFormula => "registered_formula",
+                _ => throw new ArgumentOutOfRangeException()
+            }
+        };
+        if (definition.CapacityPolicy.Value.HasValue)
+            capacity["value"] = definition.CapacityPolicy.Value.Value;
+        if (definition.CapacityPolicy.FormulaKey != null)
+            capacity["formulaKey"] = definition.CapacityPolicy.FormulaKey;
+
+        var initialization = new JsonObject
+        {
+            ["kind"] = definition.InitializationPolicy.Kind switch
+            {
+                ResourceInitializationKind.Minimum => "minimum",
+                ResourceInitializationKind.Maximum => "maximum",
+                ResourceInitializationKind.Fixed => "fixed",
+                ResourceInitializationKind.RegisteredFormula => "registered_formula",
+                _ => throw new ArgumentOutOfRangeException()
+            }
+        };
+        if (definition.InitializationPolicy.Value.HasValue)
+            initialization["value"] = definition.InitializationPolicy.Value.Value;
+        if (definition.InitializationPolicy.FormulaKey != null)
+            initialization["formulaKey"] = definition.InitializationPolicy.FormulaKey;
+
+        return new JsonObject
+        {
+            ["resourceKey"] = definition.ResourceKey,
+            ["definitionVersion"] = definition.DefinitionVersion,
+            ["displayName"] = definition.DisplayName,
+            ["numericKind"] = definition.NumericKind == ResourceNumericKind.Integer
+                ? "integer"
+                : "decimal",
+            ["unit"] = definition.Unit,
+            ["quantum"] = definition.Quantum,
+            ["minimumPolicy"] = new JsonObject
+            {
+                ["kind"] = "definition_fixed",
+                ["value"] = definition.MinimumPolicy.Value
+            },
+            ["capacityPolicy"] = capacity,
+            ["initializationPolicy"] = initialization,
+            ["allowedOwnerKinds"] = new JsonArray(definition.AllowedOwnerKinds
+                .OrderBy(GetOwnerKindToken, StringComparer.Ordinal)
+                .Select(static kind => (JsonNode)GetOwnerKindToken(kind))
+                .ToArray()),
+            ["allowedOperations"] = new JsonArray(definition.AllowedOperations
+                .Select(static operation => operation switch
+                {
+                    ResourceOperation.Damage => "damage",
+                    ResourceOperation.Restore => "restore",
+                    ResourceOperation.Spend => "spend",
+                    ResourceOperation.Gain => "gain",
+                    _ => throw new ArgumentOutOfRangeException()
+                })
+                .OrderBy(static token => token, StringComparer.Ordinal)
+                .Select(static token => (JsonNode)token)
+                .ToArray()),
+            ["defaultFloorPolicy"] = definition.FloorPolicy switch
+            {
+                ResourceBoundPolicy.RejectBelowMinimum => "reject_below_minimum",
+                ResourceBoundPolicy.ClampToMinimum => "clamp_to_minimum",
+                _ => throw new InvalidOperationException("Invalid floor policy.")
+            },
+            ["defaultCapPolicy"] = definition.CapPolicy switch
+            {
+                ResourceBoundPolicy.RejectAboveMaximum => "reject_above_maximum",
+                ResourceBoundPolicy.ClampToMaximum => "clamp_to_maximum",
+                _ => throw new InvalidOperationException("Invalid cap policy.")
+            },
+            ["visibility"] = definition.Visibility switch
+            {
+                ResourceVisibility.PlayerVisible => "player_visible",
+                ResourceVisibility.OwnerVisible => "owner_visible",
+                ResourceVisibility.GmOnly => "gm_only",
+                ResourceVisibility.Hidden => "hidden",
+                _ => throw new ArgumentOutOfRangeException()
+            },
+            ["materialization"] = new JsonObject
+            {
+                ["schemaVersion"] = definition.Materialization.SchemaVersion,
+                ["definitionId"] = definition.Materialization.DefinitionId,
+                ["seal"] = definition.Materialization.Seal,
+                ["createdAtTurn"] = definition.Materialization.CreatedAtTurn,
+                ["createdEventRef"] = definition.Materialization.CreatedEventRef
+            }
+        };
+    }
 
     private static ResourceDefinition? ParseDefinition(
         JsonElement element,

@@ -1,5 +1,9 @@
 using System.Collections.Frozen;
 using System.Collections.ObjectModel;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
@@ -180,6 +184,485 @@ internal sealed class AcceptedMechanicsIdentityFactory
 
 internal static class AcceptedMechanicsPlanner
 {
+    internal static AcceptedMechanicsPlanningResult BuildAcceptedPlan(
+        AcceptedMechanicsInput input,
+        string inputFingerprint)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentException.ThrowIfNullOrWhiteSpace(inputFingerprint);
+        var context = input.PlanningContext;
+        if (context == null)
+        {
+            return new AcceptedMechanicsPlanningResult(
+                null,
+                Issue(
+                    "accepted_mechanics_planning_context_missing",
+                    "validated typed mechanics planning context",
+                    "missing"));
+        }
+
+        var issues = new List<ValidationIssue>();
+        var definitions = context.Definitions;
+        var sameTurnDefinitions = new Dictionary<string, ResourceDefinition>(
+            StringComparer.Ordinal);
+        foreach (var creation in context.Commands.DefinitionCreations
+                     .OrderBy(static value => value.CommandOrdinal))
+        {
+            using var proposal = JsonDocument.Parse(creation.Definition.ToJsonString());
+            var materialized = ResourceDefinitionCatalog.MaterializeProposal(
+                proposal.RootElement,
+                definitions,
+                input.Turn,
+                creation.EventRef,
+                static () => new ResourceDefinitionIdentity(
+                    "resource_definition_" + Guid.NewGuid().ToString("N"),
+                    "resource_definition_seal_" + Guid.NewGuid().ToString("N")));
+            issues.AddRange(materialized.Issues);
+            if (!materialized.IsValid || materialized.Definition == null)
+                continue;
+            definitions = definitions.With(materialized.Definition);
+            sameTurnDefinitions.Add(creation.DefinitionRef, materialized.Definition);
+        }
+
+        var capacityTransitions = ComposeCapacityTransitions(
+            input,
+            context,
+            definitions,
+            sameTurnDefinitions,
+            issues);
+        var mutations = ComposeOrdinaryMutations(
+            input,
+            context,
+            definitions,
+            issues);
+        if (issues.Count != 0)
+            return new AcceptedMechanicsPlanningResult(null, issues);
+
+        var resourceResult = BuildResources(
+            new AcceptedMechanicsResourceInput(
+                input.Turn,
+                definitions,
+                context.State,
+                context.History,
+                context.Sources,
+                mutations,
+                capacityTransitions),
+            new AcceptedMechanicsIdentityFactory());
+        if (!resourceResult.IsValid ||
+            resourceResult.StateAfterImage == null ||
+            resourceResult.HistoryAfterImage == null)
+        {
+            return new AcceptedMechanicsPlanningResult(null, resourceResult.Issues);
+        }
+        var ownerAgreementIssues = context.Owners.ValidateCanonicalAgreement(
+            resourceResult.StateAfterImage,
+            resourceResult.HistoryAfterImage);
+        if (ownerAgreementIssues.Count != 0)
+            return new AcceptedMechanicsPlanningResult(null, ownerAgreementIssues);
+
+        var definitionAfterImage = definitions.ToCanonicalRoot();
+        var stateAfterImage = JsonNode.Parse(
+            resourceResult.StateAfterImage.ToCanonicalJson())!.AsObject();
+        var historyAfterImage = JsonNode.Parse(
+            resourceResult.HistoryAfterImage.ToCanonicalJson())!.AsObject();
+        var effectPlan = context.EffectPlan;
+        var carriers = effectPlan?.CarrierAfterImages ??
+            new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        var effectIdentity = effectPlan?.IdentityIndexAfterImage ??
+            context.EffectIdentityRoot;
+        var touched = new HashSet<string>(StringComparer.Ordinal)
+        {
+            ResourceMaterializationContract.DefinitionsPath,
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath,
+            EffectAcceptedTurnPlan.IdentityIndexPath
+        };
+        if (!context.Commands.IsMissing)
+            touched.Add(ResourceMaterializationContract.CommandPath);
+        if (effectPlan != null)
+        {
+            touched.UnionWith(effectPlan.TouchedPaths);
+            touched.UnionWith(effectPlan.DeletedPaths);
+        }
+        var consumed = new HashSet<string>(StringComparer.Ordinal);
+        if (!context.Commands.IsMissing)
+            consumed.Add(ResourceMaterializationContract.CommandPath);
+        if (effectPlan != null)
+            consumed.UnionWith(effectPlan.DeletedPaths);
+
+        return new AcceptedMechanicsPlanningResult(
+            new AcceptedMechanicsPlan(
+                inputFingerprint,
+                definitionAfterImage,
+                stateAfterImage,
+                historyAfterImage,
+                carriers,
+                effectIdentity,
+                new Dictionary<string, JsonObject?>(),
+                new Dictionary<string, JsonObject>(),
+                input.BeforeImages,
+                touched.ToArray(),
+                consumed.ToArray(),
+                input.AuthorityFingerprints,
+                resourceResult.Events,
+                new ResourceProjectionInput(
+                    definitionAfterImage,
+                    stateAfterImage,
+                    historyAfterImage,
+                    context.Owners.Fingerprint),
+                context.Owners,
+                effectPlan),
+            Array.Empty<ValidationIssue>());
+    }
+
+    private static IReadOnlyList<ResourceCapacityIntent> ComposeCapacityTransitions(
+        AcceptedMechanicsInput input,
+        AcceptedMechanicsPlanningContext context,
+        ResourceDefinitionCatalog definitions,
+        IReadOnlyDictionary<string, ResourceDefinition> sameTurnDefinitions,
+        List<ValidationIssue> issues)
+    {
+        var result = new List<ResourceCapacityIntent>();
+        var supplied = context.CapacityTransitions.ToArray();
+        var consumed = new HashSet<int>();
+        foreach (var command in context.Commands.CapacityChanges
+                     .OrderBy(static value => value.CommandOrdinal))
+        {
+            var definition = ResolveCapacityDefinition(
+                command,
+                definitions,
+                sameTurnDefinitions,
+                issues);
+            if (definition == null)
+                continue;
+            var owner = ResolveOwner(input.Realm, command.Target, definition, context, issues);
+            if (owner == null)
+                continue;
+            var coordinate = new ResourceCoordinate(
+                owner.Key.Realm,
+                owner.Key.OwnerKind,
+                owner.Key.ResourceOwnerId,
+                definition.ResourceKey);
+
+            var matches = supplied
+                .Select((value, index) => (value, index))
+                .Where(candidate => !consumed.Contains(candidate.index) &&
+                    CapacityIntentMatchesCommand(candidate.value, command, coordinate))
+                .ToArray();
+            if (matches.Length > 1)
+            {
+                AddIssue(
+                    issues,
+                    "resource_capacity_adapter_ambiguous",
+                    "one exact validated capacity adapter intent",
+                    command.EventRef);
+                continue;
+            }
+            if (matches.Length == 1)
+            {
+                var candidate = matches[0];
+                if (!ValidateCapacityIntentAgainstCommand(
+                        candidate.value,
+                        command,
+                        definition,
+                        issues))
+                {
+                    continue;
+                }
+                consumed.Add(candidate.index);
+                result.Add(candidate.value);
+                continue;
+            }
+
+            var setting = BuildSettingCapacityIntent(
+                command,
+                definition,
+                owner,
+                coordinate,
+                issues);
+            if (setting != null)
+                result.Add(setting);
+        }
+
+        foreach (var index in Enumerable.Range(0, supplied.Length))
+        {
+            if (!consumed.Contains(index))
+            {
+                AddIssue(
+                    issues,
+                    "resource_capacity_adapter_unbound",
+                    "every validated capacity adapter intent bound to one exact accepted command",
+                    supplied[index].EventRef);
+            }
+        }
+        return result;
+    }
+
+    private static IReadOnlyList<ResourceMutationIntent> ComposeOrdinaryMutations(
+        AcceptedMechanicsInput input,
+        AcceptedMechanicsPlanningContext context,
+        ResourceDefinitionCatalog definitions,
+        List<ValidationIssue> issues)
+    {
+        var result = new List<ResourceMutationIntent>();
+        foreach (var command in context.Commands.ResourceChanges
+                     .OrderBy(static value => value.CommandOrdinal))
+        {
+            if (!definitions.TryResolveExact(command.ResourceKey, out var definition) ||
+                definition == null)
+            {
+                AddIssue(
+                    issues,
+                    "resource_planner_definition_unknown",
+                    "one exact sealed resource definition",
+                    command.ResourceKey);
+                continue;
+            }
+            var owner = ResolveOwner(input.Realm, command.Target, definition, context, issues);
+            if (owner == null)
+                continue;
+            result.Add(new ResourceMutationIntent(
+                command.EventRef,
+                new ResourceCoordinate(
+                    owner.Key.Realm,
+                    owner.Key.OwnerKind,
+                    owner.Key.ResourceOwnerId,
+                    definition.ResourceKey),
+                command.Amount,
+                new ResourceMutationSourceRequest(
+                    command.Source.Kind,
+                    command.Source.SourceId,
+                    command.Operation),
+                Array.Empty<ResourceOperationKey>(),
+                Array.Empty<ResourceMutationEventRequirement>(),
+                ReceiptId: null));
+        }
+        return result;
+    }
+
+    private static ResourceDefinition? ResolveCapacityDefinition(
+        ResourceCapacityCommand command,
+        ResourceDefinitionCatalog definitions,
+        IReadOnlyDictionary<string, ResourceDefinition> sameTurnDefinitions,
+        List<ValidationIssue> issues)
+    {
+        ResourceDefinition? definition;
+        if (command.ResourceDefinitionRef != null)
+        {
+            sameTurnDefinitions.TryGetValue(command.ResourceDefinitionRef, out definition);
+        }
+        else
+        {
+            definitions.TryResolveExact(command.ResourceKey!, out definition);
+        }
+        if (definition != null)
+            return definition;
+        AddIssue(
+            issues,
+            command.ResourceDefinitionRef != null
+                ? "resource_command_definition_ref_unknown"
+                : "resource_planner_definition_unknown",
+            command.ResourceDefinitionRef != null
+                ? "one exact same-turn accepted definitionRef"
+                : "one exact sealed resource definition",
+            command.ResourceDefinitionRef ?? command.ResourceKey ?? "missing");
+        return null;
+    }
+
+    private static ResourceOwnerAuthorityEntry? ResolveOwner(
+        string realm,
+        ResourceCommandTarget target,
+        ResourceDefinition definition,
+        AcceptedMechanicsPlanningContext context,
+        List<ValidationIssue> issues)
+    {
+        var resolution = context.Owners.Resolve(new ResourceOwnerRequest(
+            realm,
+            target.OwnerKind,
+            definition.ResourceKey,
+            target.TargetId,
+            target.TargetRef));
+        issues.AddRange(resolution.Issues);
+        return resolution.Entry;
+    }
+
+    private static bool CapacityIntentMatchesCommand(
+        ResourceCapacityIntent intent,
+        ResourceCapacityCommand command,
+        ResourceCoordinate coordinate) =>
+        string.Equals(intent.EventRef, command.EventRef, StringComparison.Ordinal) &&
+        string.Equals(intent.OriginKind, command.Source.Kind, StringComparison.Ordinal) &&
+        string.Equals(intent.OriginId, command.Source.SourceId, StringComparison.Ordinal) &&
+        intent.Coordinate == coordinate &&
+        intent.Operation == command.Operation;
+
+    private static bool ValidateCapacityIntentAgainstCommand(
+        ResourceCapacityIntent intent,
+        ResourceCapacityCommand command,
+        ResourceDefinition definition,
+        List<ValidationIssue> issues)
+    {
+        var valid = intent.CurrentDisposition == command.CurrentDisposition;
+        if (command.Operation is ResourceCapacityOperation.Initialize or
+            ResourceCapacityOperation.Reconfigure)
+        {
+            valid &= intent.ResolvedCapacity != null;
+            valid &= definition.CapacityPolicy.Kind switch
+            {
+                ResourceCapacityKind.DefinitionFixed =>
+                    command.Capacity == null &&
+                    intent.ResolvedCapacity?.Binding.Kind ==
+                        ResourceCapacityKind.DefinitionFixed,
+                ResourceCapacityKind.InstanceFixed =>
+                    command.Capacity is
+                    {
+                        Kind: ResourceCapacityKind.InstanceFixed,
+                        Maximum: not null
+                    } &&
+                    intent.ResolvedCapacity?.Binding.Kind ==
+                        ResourceCapacityKind.InstanceFixed &&
+                    intent.ResolvedCapacity.Maximum == command.Capacity.Maximum,
+                ResourceCapacityKind.RegisteredFormula =>
+                    command.Capacity is
+                    {
+                        Kind: ResourceCapacityKind.RegisteredFormula,
+                        FormulaKey: not null
+                    } &&
+                    string.Equals(
+                        command.Capacity.FormulaKey,
+                        definition.CapacityPolicy.FormulaKey,
+                        StringComparison.Ordinal) &&
+                    intent.ResolvedCapacity?.Binding.Kind ==
+                        ResourceCapacityKind.RegisteredFormula,
+                _ => false
+            };
+        }
+        else
+        {
+            valid &= command.Capacity == null && intent.ResolvedCapacity == null;
+        }
+        if (valid)
+            return true;
+        AddIssue(
+            issues,
+            "resource_capacity_adapter_mismatch",
+            "validated adapter intent exactly matches command capacity and disposition",
+            command.EventRef);
+        return false;
+    }
+
+    private static ResourceCapacityIntent? BuildSettingCapacityIntent(
+        ResourceCapacityCommand command,
+        ResourceDefinition definition,
+        ResourceOwnerAuthorityEntry owner,
+        ResourceCoordinate coordinate,
+        List<ValidationIssue> issues)
+    {
+        if (command.Operation != ResourceCapacityOperation.Initialize ||
+            command.ResourceDefinitionRef == null ||
+            !string.Equals(command.Source.Kind, "setting_materialization", StringComparison.Ordinal) ||
+            !string.Equals(
+                command.Source.SourceId,
+                command.ResourceDefinitionRef,
+                StringComparison.Ordinal))
+        {
+            AddIssue(
+                issues,
+                "resource_capacity_source_unknown",
+                "exact validated owner/capacity adapter or same-turn setting initialization source",
+                command.Source.Kind + "/" + command.Source.SourceId);
+            return null;
+        }
+
+        var formulaOwner = new ResourceFormulaOwner(
+            coordinate.Realm,
+            coordinate.OwnerKind,
+            coordinate.ResourceOwnerId);
+        ResourceCapacityInput? capacityInput = definition.CapacityPolicy.Kind switch
+        {
+            ResourceCapacityKind.DefinitionFixed when command.Capacity == null =>
+                new DefinitionFixedCapacityInput(formulaOwner),
+            ResourceCapacityKind.InstanceFixed when command.Capacity is
+            {
+                Kind: ResourceCapacityKind.InstanceFixed,
+                Maximum: not null
+            } => new InstanceFixedCapacityInput(
+                formulaOwner,
+                command.Capacity.Maximum.Value,
+                CreateSettingCapacityFingerprint(command, definition, owner)),
+            _ => null
+        };
+        if (capacityInput == null)
+        {
+            AddIssue(
+                issues,
+                definition.CapacityPolicy.Kind == ResourceCapacityKind.RegisteredFormula
+                    ? "resource_capacity_formula_authority_missing"
+                    : "resource_command_capacity_policy_mismatch",
+                "command capacity shape and typed owner authority required by sealed definition",
+                command.EventRef);
+            return null;
+        }
+
+        var resolved = ResolvedResourceCapacity.Resolve(
+            definition,
+            coordinate,
+            capacityInput,
+            instanceAuthorityKey: definition.CapacityPolicy.Kind ==
+                ResourceCapacityKind.InstanceFixed
+                ? command.EventRef
+                : null,
+            includeInitialization: true);
+        if (!resolved.IsValid || resolved.Capacity == null)
+        {
+            issues.AddRange(resolved.Issues);
+            return null;
+        }
+        var sourceFingerprint = CreateSettingCapacityFingerprint(command, definition, owner);
+        return new ResourceCapacityIntent(
+            command.EventRef,
+            command.Source.Kind,
+            command.Source.SourceId,
+            coordinate,
+            command.Operation,
+            resolved.Capacity,
+            command.CurrentDisposition,
+            ResourceMutationPhase.RegisteredSystemOutcome,
+            Priority: 50,
+            new ResourceSourceEvidence(
+                command.Source.Kind,
+                command.Source.SourceId,
+                sourceFingerprint),
+            resolved.Capacity.Initialization!.AuthorityFingerprint,
+            ReceiptId: null);
+    }
+
+    private static string CreateSettingCapacityFingerprint(
+        ResourceCapacityCommand command,
+        ResourceDefinition definition,
+        ResourceOwnerAuthorityEntry owner)
+    {
+        var text = string.Join(
+            "\0",
+            "setting-resource-capacity-v1",
+            command.EventRef,
+            command.Source.Kind,
+            command.Source.SourceId,
+            owner.AuthorityFingerprint,
+            owner.Key.Realm,
+            ResourceDefinitionCatalog.GetOwnerKindToken(owner.Key.OwnerKind),
+            owner.Key.ResourceOwnerId,
+            definition.ResourceKey,
+            definition.Materialization.DefinitionId,
+            definition.Materialization.Seal,
+            command.Capacity?.Kind.ToString() ?? "definition_fixed",
+            command.Capacity?.Maximum?.ToString(
+                System.Globalization.CultureInfo.InvariantCulture) ?? "null",
+            command.Capacity?.FormulaKey ?? "null");
+        return "sha256:" + Convert.ToHexString(
+            SHA256.HashData(Encoding.UTF8.GetBytes(text))).ToLowerInvariant();
+    }
+
     internal static AcceptedMechanicsResourcePlanningResult BuildResources(
         AcceptedMechanicsResourceInput input,
         AcceptedMechanicsIdentityFactory identityFactory)

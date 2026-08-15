@@ -66,6 +66,7 @@ internal sealed class ResourceOwnerAuthority
     private readonly Dictionary<string, ResourceOwnerAuthorityEntry> _sameTurnRefs;
     private readonly Dictionary<string, List<ResourceOwnerKey>> _ownerAliases;
     private readonly Dictionary<string, List<string>> _refAliases;
+    private readonly HashSet<ResourceOwnerKey> _historicalOwners;
     private readonly HashSet<string> _historicalAliases;
     private readonly ReadOnlyDictionary<ResourceOwnerKey, ResourceOwnerAuthorityEntry>
         _readOnlyEntries;
@@ -87,6 +88,9 @@ internal sealed class ResourceOwnerAuthority
             static pair => pair.Key,
             static pair => pair.Value.ToList(),
             StringComparer.Ordinal);
+        _historicalOwners = new HashSet<ResourceOwnerKey>(
+            builder.HistoricalOwners,
+            ResourceOwnerKeyComparer.Instance);
         _historicalAliases = new HashSet<string>(builder.HistoricalAliases, StringComparer.Ordinal);
         _readOnlyEntries = new ReadOnlyDictionary<ResourceOwnerKey, ResourceOwnerAuthorityEntry>(
             _entries);
@@ -112,6 +116,47 @@ internal sealed class ResourceOwnerAuthority
         builder.AddRange(input.PreTurnOwners, sameTurn: false, "preTurnOwners");
         builder.AddRange(input.SameTurnOwners, sameTurn: true, "sameTurnOwners");
         return new ResourceOwnerAuthority(builder);
+    }
+
+    internal static ResourceOwnerAuthority CreateCurrentPlayerAuthority(
+        ResourceDefinitionCatalog definitions,
+        IEnumerable<string?>? sameTurnCapabilities = null)
+    {
+        ArgumentNullException.ThrowIfNull(definitions);
+        var capabilities = definitions.Definitions
+            .Where(static definition =>
+                definition.AllowedOwnerKinds.Contains(ResourceOwnerKind.Player))
+            .Select(static definition => definition.ResourceKey)
+            .Concat(sameTurnCapabilities ?? Array.Empty<string?>())
+            .Where(static key => ResourceMaterializationContract.IsExactIdentifier(key))
+            .Select(static key => key!)
+            .ToHashSet(StringComparer.Ordinal);
+        using var fingerprintBuilder = new ResourceFingerprintBuilder(
+            "resource-owner-player-current-v1");
+        foreach (var capability in capabilities.OrderBy(
+                     static value => value,
+                     StringComparer.Ordinal))
+        {
+            fingerprintBuilder.Append(capability);
+        }
+        var fingerprint = fingerprintBuilder.Build();
+        return Build(new ResourceOwnerAuthorityInput(
+            new[]
+            {
+                new ResourceOwnerExport(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Player,
+                        "player_current"),
+                    ResourceOwnerLifecycle.Active,
+                    SameTurn: false,
+                    OwnerRef: null,
+                    BoundNpcId: null,
+                    capabilities,
+                    fingerprint)
+            },
+            Array.Empty<ResourceOwnerExport>(),
+            Array.Empty<ResourceOwnerKey>()));
     }
 
     internal ResourceOwnerAuthorityResolution Resolve(ResourceOwnerRequest request)
@@ -265,6 +310,116 @@ internal sealed class ResourceOwnerAuthority
             : new ResourceOwnerAuthorityResolution(null, issues);
     }
 
+    internal IReadOnlyList<ValidationIssue> ValidateCanonicalAgreement(
+        ResourceStateLedger state,
+        ResourceHistoryState history)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(history);
+        var issues = new List<ValidationIssue>();
+        if (Issues.Count > 0)
+        {
+            Add(
+                issues,
+                "resourceOwners",
+                "resource_owner_authority_invalid",
+                "issue-free composed owner authority",
+                Issues.Count.ToString());
+            return issues;
+        }
+
+        var liveCoordinates = new HashSet<ResourceCoordinate>(
+            state.Entries.Select(static entry => entry.Coordinate),
+            ResourceCoordinateComparer.Instance);
+        var index = 0;
+        foreach (var entry in state.Entries)
+        {
+            ValidateCanonicalCoordinate(
+                entry.Coordinate,
+                requireLiveOwner: true,
+                $"resourceState.entries[{index++}]",
+                issues);
+        }
+
+        index = 0;
+        foreach (var coordinate in history.Transitions
+                     .Select(static transition => transition.Coordinate)
+                     .Distinct(ResourceCoordinateComparer.Instance))
+        {
+            if (!liveCoordinates.Contains(coordinate))
+            {
+                ValidateCanonicalCoordinate(
+                    coordinate,
+                    requireLiveOwner: false,
+                    $"resourceHistory.coordinates[{index}]",
+                    issues);
+            }
+            index++;
+        }
+        return issues;
+    }
+
+    private void ValidateCanonicalCoordinate(
+        ResourceCoordinate coordinate,
+        bool requireLiveOwner,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var key = new ResourceOwnerKey(
+            coordinate.Realm,
+            coordinate.OwnerKind,
+            coordinate.ResourceOwnerId);
+        if (_entries.TryGetValue(key, out var entry))
+        {
+            if (requireLiveOwner && entry.Lifecycle == ResourceOwnerLifecycle.Terminal)
+            {
+                Add(
+                    issues,
+                    path,
+                    "resource_owner_terminal_state_forbidden",
+                    "active or suspended exact owner for every live resource coordinate",
+                    DescribeCoordinate(coordinate));
+            }
+            if (!entry.ResourceCapabilities.Contains(coordinate.ResourceKey))
+            {
+                Add(
+                    issues,
+                    path + ".resourceKey",
+                    "resource_owner_capability_missing",
+                    "resource key explicitly exported by the exact owner",
+                    coordinate.ResourceKey);
+            }
+            return;
+        }
+
+        if (!requireLiveOwner && _historicalOwners.Contains(key))
+            return;
+
+        var alias = OwnerAlias(key);
+        var historicalAlias = HistoricalAlias(key);
+        var code = _ownerAliases.ContainsKey(alias)
+            ? "resource_owner_identity_confusable"
+            : _historicalAliases.Contains(historicalAlias)
+                ? "resource_owner_historical"
+                : _entries.Keys.Any(candidate =>
+                    candidate.OwnerKind == key.OwnerKind &&
+                    string.Equals(
+                        candidate.ResourceOwnerId,
+                        key.ResourceOwnerId,
+                        StringComparison.Ordinal) &&
+                    !string.Equals(candidate.Realm, key.Realm, StringComparison.Ordinal))
+                    ? "resource_owner_realm_mismatch"
+                    : "resource_owner_unresolved";
+        Add(
+            issues,
+            path,
+            code,
+            requireLiveOwner
+                ? "one exact composed current owner"
+                : "one exact composed current or historical owner",
+            DescribeCoordinate(coordinate));
+    }
+
     private static ResourceOwnerAuthorityEntry CopyEntry(ResourceOwnerAuthorityEntry entry) =>
         entry with
         {
@@ -336,6 +491,10 @@ internal sealed class ResourceOwnerAuthority
     private static string DescribeRequest(ResourceOwnerRequest request) =>
         $"{request.Realm}/{OwnerKindToken(request.OwnerKind)}/" +
         $"{request.ResourceOwnerId ?? request.OwnerRef ?? "<missing>"}/{request.ResourceKey}";
+
+    private static string DescribeCoordinate(ResourceCoordinate coordinate) =>
+        $"{coordinate.Realm}/{OwnerKindToken(coordinate.OwnerKind)}/" +
+        $"{coordinate.ResourceOwnerId}/{coordinate.ResourceKey}";
 
     private static bool IsRealmAllowed(string realm, ResourceOwnerKind kind)
     {
@@ -573,6 +732,23 @@ internal sealed class ResourceOwnerAuthority
             }
             return valid;
         }
+    }
+
+    private sealed class ResourceOwnerKeyComparer : IEqualityComparer<ResourceOwnerKey>
+    {
+        internal static ResourceOwnerKeyComparer Instance { get; } = new();
+
+        public bool Equals(ResourceOwnerKey? x, ResourceOwnerKey? y) =>
+            ReferenceEquals(x, y) ||
+            (x != null && y != null &&
+             x.OwnerKind == y.OwnerKind &&
+             string.Equals(x.Realm, y.Realm, StringComparison.Ordinal) &&
+             string.Equals(x.ResourceOwnerId, y.ResourceOwnerId, StringComparison.Ordinal));
+
+        public int GetHashCode(ResourceOwnerKey obj) => HashCode.Combine(
+            StringComparer.Ordinal.GetHashCode(obj.Realm),
+            obj.OwnerKind,
+            StringComparer.Ordinal.GetHashCode(obj.ResourceOwnerId));
     }
 }
 

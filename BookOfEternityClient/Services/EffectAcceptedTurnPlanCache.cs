@@ -112,6 +112,20 @@ internal sealed class EffectAcceptedTurnPlanCache
             return _validatedResult != null;
     }
 
+    internal bool TryPeekValidated(out EffectAcceptedTurnPlanningResult result)
+    {
+        lock (_gate)
+        {
+            if (_validatedResult != null)
+            {
+                result = _validatedResult;
+                return true;
+            }
+        }
+        result = null!;
+        return false;
+    }
+
     private static string CreateFingerprint(EffectAcceptedTurnInput input)
     {
         var root = new JsonObject
@@ -206,5 +220,14 @@ internal static class EffectAcceptedTurnPlanAuthority
         ArgumentNullException.ThrowIfNull(fileSystem);
         return Caches.GetValue(fileSystem, static _ => new EffectAcceptedTurnPlanCache())
             .HasValidated();
+    }
+
+    internal static bool TryPeekValidated(
+        FileSystemManager fileSystem,
+        out EffectAcceptedTurnPlanningResult result)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        return Caches.GetValue(fileSystem, static _ => new EffectAcceptedTurnPlanCache())
+            .TryPeekValidated(out result);
     }
 }

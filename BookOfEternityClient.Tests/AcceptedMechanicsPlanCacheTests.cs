@@ -420,6 +420,10 @@ public sealed class AcceptedMechanicsPlanCacheTests
                         state,
                         history,
                         input.AuthorityFingerprints.Owners),
+                    ResourceOwnerAuthority.Build(new ResourceOwnerAuthorityInput(
+                        Array.Empty<ResourceOwnerExport>(),
+                        Array.Empty<ResourceOwnerExport>(),
+                        Array.Empty<ResourceOwnerKey>())),
                     effectPlan: null),
                 ResultIssues);
         }

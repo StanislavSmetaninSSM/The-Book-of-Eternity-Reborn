@@ -716,15 +716,30 @@ git commit -m "feat: reduce resource mutations deterministically (#1543)"
 
 - Create: `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs`
 - Create: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
+- Create: `BookOfEternityClient/Services/ResourceBootstrapStateBuilder.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
-- Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`
+- Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`
-- Modify: `BookOfEternityClient/Services/LiveTurnPreparationService.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs`
-- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs`
+- Modify: `BookOfEternityClient/Services/AcceptedMechanicsPlan.cs`
+- Modify: `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs`
+- Modify: `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
+- Modify: `BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs`
+- Modify: `BookOfEternityClient/Services/ResourceDefinitionCatalog.cs`
+- Modify: `BookOfEternityClient/Services/ResourceOwnerAuthority.cs`
+- Modify: `BookOfEternityClient/Services/SaveLoadService.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceMaterializationValidationTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Resources.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs`
+- Modify: `BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.cs`
+- Modify: `BookOfEternityClient.Tests/GameEngineSourceGuardTests.cs`
+- Modify: `BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs`
+- Modify: `BookOfEternityClient.Tests/QteSceneServiceTests.cs`
+- Modify: `BookOfEternityClient.Tests/SessionOperationContextTests.cs`
+- Modify: `BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs`
 
 **Step 1: RED raw/canonical and publication tests**
 
@@ -789,10 +804,21 @@ git diff --check
 
 Review that there is one cache and one publication lease. Record exact RED/GREEN summary paths in this plan and `quickstart.md` during execution.
 
+Execution evidence (2026-08-15):
+
+- Every bare run ID below is the exact directory under `TestResults/test-lanes/`; its evidence file is `<run-id>/summary.json`.
+- Entry/publication RED `20260815-210743-024-14572-2e64904e0ea44bb3853f8f85cb7b7ba0-focused` -> initial GREEN `20260815-211407-431-34460-73c6aa8467c54fc587b5a36ded225195-focused` (`8/8`). Effect-only common-plan RED/GREEN: `20260815-212056-190-49048-93d8c54422dd48afa529ed36b4285c82-focused` (`8/11`) -> `20260815-212352-949-54756-dd45e97e5408486c9f5cc203c7e94868-focused` (`11/11`).
+- Bootstrap/pristine/BOM RED/GREEN families: `20260815-212630-440-29808-5988491934e340bd8239b547d7e06f5a-focused` -> `20260815-212748-525-3900-abba547bc9dc4d1e82c6fe6de644585e-focused`, `20260815-213544-664-39432-09cff4aeba554c638e31c483e070537e-focused` -> `20260815-213628-361-54264-e7517cd67d994644a77840b97b34b0a2-focused`, and `20260815-213221-371-57040-808fd125e8554b13bab46a0d97ff164a-focused` -> `20260815-213317-302-42628-465561c6f95845309a22488a87115f82-focused`. Save incompatibility RED/GREEN: `20260815-214558-064-52716-a4f854948c694f5fb2191bf047a4477e-focused` -> `20260815-214725-968-49272-066abeab6b23481b8373c6f5f9f650b9-focused`; full save/load GREEN `20260815-225610-770-28464-e57763b494624841a7bfddc0c1282b4e-focused` (`69/69`); pending snapshot GREEN `20260815-215418-696-17656-0d315e11ecce4cdf9ede0fd4f886f6ee-focused` (`1/1`).
+- Publication equality/rollback RED/GREEN: `20260815-215607-616-38436-7056cbd40f1540df8d290eebbb9e577f-focused` (`2/4`) -> `20260815-215749-493-48552-cb16c685bc6a4c629289c0a51dd0020e-focused` (`4/4`); injected write rollback `20260815-220027-299-12320-d25972ccb3dd430b855ff27a1b58555c-focused` (`1/1`); effect/common fingerprint `20260815-221157-346-40140-f470ebc980e2451f827f6f419d401b2a-focused` -> `20260815-221309-388-40096-ae70e84dfe5d4148a84582cef8754316-focused`.
+- Review RED/GREEN: owner agreement `20260815-223207-459-53544-3aeaba0c42ad4f60992a2bc5f1d18b29-focused` -> `20260815-223654-516-28368-df0feb9b041543b1bd5cbcc6f775ed59-focused`; save/load owner agreement `20260815-223938-339-44524-5b7db6d74c364b32971f35de12051589-focused` -> `20260815-224112-130-51024-75d6b928cc3b4bf4804e3d25a40e5c0f-focused`; non-destructive Mortal bootstrap `20260815-224438-370-17532-f3de509280f049ab8168a3b0b0488dd3-focused` -> `20260815-224536-351-32492-f2f5c13430ec465d9276e49719ea10c5-focused`; owner-kind capability `20260815-224857-712-22156-5d62d91aee1e43098ded8072d06ab058-focused` -> `20260815-224945-646-16828-f7e80f71d1a245a69e3e47e4e627cd3b-focused`; common-handoff invalidation `20260815-232059-304-16200-290604a94f4b4084aeea7d53f6775bdc-focused` -> `20260815-232147-107-52924-642d209c892e401ba42fc97e1270f093-focused`.
+- Final focused: `20260815-232245-586-39276-0e4d0d6a9ea24d4c9f552e35c7a7d947-focused` (`29/29` integration), `20260815-225417-704-42708-a8c79bef313c4ae18ced25392647ffb0-focused` (`27/27` effect compatibility), `20260815-225507-455-49416-4e77bc1a6b5e46838a88fb52a551488c-focused` (`254/254` unit), `20260815-225547-923-53600-0c02e0a265dd4ff1a8965045dc0aabfb-focused` (`118/118` bootstrap/snapshot guards), `20260815-225610-770-28464-e57763b494624841a7bfddc0c1282b4e-focused` (`69/69` save/load). Fixture-only Fast follow-ups are `20260815-230236-883-47956-718b65c7eb894b14bd6b7bbc59cfe293-focused` -> `20260815-230410-818-2652-67f86c17816345c0a0b5a8f5921b09d1-focused` and `20260815-230851-791-54704-72bc84b1e062415486ad5beab63a403c-focused` -> `20260815-230921-009-27312-12e8493db07f416988ddade74ef82d95-focused`.
+- Final meaningful Fast: `TestResults/test-lanes/20260815-232323-370-17256-698e67268d6b4ba8baf1663a9596743e-fast/summary.json`; exit `0`; timeout `false`; `3807/3807`; failures `0`; duplicates `0`; cleanup `complete`; wall `00:02:47.0066298`.
+- Review result: one cache/plan/lease and no independent production effect publisher; reducer/planner filesystem search is empty; `git diff --check` passes with line-ending warnings only. Snapshot production code already enumerates the canonical game-state tree, so the resource-root requirement needed an executable `LiveTurnPreparationServiceTests` guard rather than a second path list. Later T054+ owner composers and T100–T108 GM/docs/template cutovers remain explicit; no compatibility reader, migration, fallback, or interim public GM contract was introduced.
+
 Commit:
 
 ```powershell
-git add BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs BookOfEternityClient/Services/CanonicalStateNormalizer.cs BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs BookOfEternityClient/Services/LiveTurnPreparationService.cs BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs BookOfEternityClient.IntegrationTests/ResourceMaterializationValidationTests.cs BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Resources.cs specs/1543-unified-resource-authority docs/superpowers/plans/2026-08-15-unified-resource-authority.md
+git add BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs BookOfEternityClient/Services/ResourceBootstrapStateBuilder.cs BookOfEternityClient/Services/CanonicalStateNormalizer.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs BookOfEternityClient/Services/AcceptedMechanicsPlan.cs BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs BookOfEternityClient/Services/ResourceDefinitionCatalog.cs BookOfEternityClient/Services/ResourceOwnerAuthority.cs BookOfEternityClient/Services/SaveLoadService.cs BookOfEternityClient.IntegrationTests/ResourceMaterializationValidationTests.cs BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Resources.cs BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.cs BookOfEternityClient.Tests/GameEngineSourceGuardTests.cs BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs BookOfEternityClient.Tests/QteSceneServiceTests.cs BookOfEternityClient.Tests/SessionOperationContextTests.cs BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs specs/1543-unified-resource-authority docs/superpowers/plans/2026-08-15-unified-resource-authority.md
 git commit -m "feat: publish accepted resource state atomically (#1543)"
 ```
 

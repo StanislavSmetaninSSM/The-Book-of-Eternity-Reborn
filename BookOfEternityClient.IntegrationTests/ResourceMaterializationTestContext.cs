@@ -23,7 +23,9 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
 
     private readonly string _expectedTempRoot;
 
-    private ResourceMaterializationTestContext(string rootPath)
+    private ResourceMaterializationTestContext(
+        string rootPath,
+        FileSystemManagerHooks? hooks = null)
     {
         RootPath = Path.GetFullPath(rootPath);
         _expectedTempRoot = Path.GetFullPath(Path.GetTempPath()).TrimEnd(
@@ -33,7 +35,9 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         Directory.CreateDirectory(RootPath);
         FileSystem = new FileSystemManager(
             RootPath,
-            NullLogger<FileSystemManager>.Instance);
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
         FileSystem.EnsureDirectoryStructure();
         Validator = new ValidationService(
             FileSystem,
@@ -51,12 +55,13 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
 
     internal string RootPath { get; }
 
-    internal static Task<ResourceMaterializationTestContext> CreateAsync()
+    internal static Task<ResourceMaterializationTestContext> CreateAsync(
+        FileSystemManagerHooks? hooks = null)
     {
         var rootPath = Path.Combine(
             Path.GetTempPath(),
             "boe-resource-materialization-" + Guid.NewGuid().ToString("N"));
-        return Task.FromResult(new ResourceMaterializationTestContext(rootPath));
+        return Task.FromResult(new ResourceMaterializationTestContext(rootPath, hooks));
     }
 
     internal Task WriteExactBytesAsync(string relativePath, byte[] bytes)
@@ -87,7 +92,9 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         return Task.CompletedTask;
     }
 
-    internal async Task CaptureValidatedPendingSnapshotAsync(int turn = 42)
+    internal async Task CaptureValidatedPendingSnapshotAsync(
+        int turn = 42,
+        string currentRealm = "Mortal World")
     {
         const string sessionId = "session_resource_materialization";
         const string requestId = "request_resource_materialization";
@@ -100,7 +107,8 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
                 ["sessionId"] = sessionId,
                 ["requestId"] = requestId,
                 ["turnNumber"] = turn,
-                ["playerAction"] = playerAction
+                ["playerAction"] = playerAction,
+                ["currentRealm"] = currentRealm
             }.ToJsonString());
 
         var files = new JsonObject();

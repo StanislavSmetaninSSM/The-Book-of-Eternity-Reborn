@@ -1127,6 +1127,29 @@ public partial class GameEngine
                     _fs.WriteFileAtomicAsync(bootstrapFile.Key, bootstrapFile.Value.ToJsonString(JsonOpts)).Wait();
                 }
 
+                var resourceBootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+                if (!resourceBootstrap.IsValid ||
+                    resourceBootstrap.Definitions == null ||
+                    resourceBootstrap.State == null ||
+                    resourceBootstrap.History == null)
+                {
+                    throw new InvalidDataException(
+                        "Fresh game resource bootstrap failed: " +
+                        string.Join(
+                            "; ",
+                            resourceBootstrap.Issues.Select(static issue =>
+                                issue.Code ?? issue.Message)));
+                }
+                _fs.WriteFileAtomicAsync(
+                    ResourceMaterializationContract.DefinitionsPath,
+                    resourceBootstrap.Definitions.ToCanonicalJson()).Wait();
+                _fs.WriteFileAtomicAsync(
+                    ResourceMaterializationContract.StatePath,
+                    resourceBootstrap.State.ToCanonicalJson()).Wait();
+                _fs.WriteFileAtomicAsync(
+                    ResourceMaterializationContract.HistoryPath,
+                    resourceBootstrap.History.ToCanonicalJson()).Wait();
+
                 var playerChronicle = new
                 {
                     entries = Array.Empty<object>()

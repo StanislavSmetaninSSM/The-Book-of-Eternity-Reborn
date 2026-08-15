@@ -2775,6 +2775,61 @@ public partial class GameEngine
         string? worldDescription,
         string? startingCircumstances)
     {
+        var definitionsResult = ResourceDefinitionCatalog.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            allowMissingPristine: false);
+        if (definitionsResult.Catalog == null || definitionsResult.Issues.Count != 0)
+        {
+            throw new InvalidDataException(
+                "Mortal resource bootstrap requires the existing sealed resource catalog.");
+        }
+        var existingStateResult = ResourceStateContract.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            definitionsResult.Catalog,
+            allowMissingPristine: false);
+        var existingHistoryResult = ResourceHistoryState.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+            definitionsResult.Catalog,
+            allowMissingPristine: false);
+        if (existingStateResult.Ledger == null || existingHistoryResult.History == null ||
+            existingStateResult.Issues.Count != 0 || existingHistoryResult.Issues.Count != 0 ||
+            existingHistoryResult.History.ValidateStateAgreement(
+                existingStateResult.Ledger).Count != 0)
+        {
+            throw new InvalidDataException(
+                "Mortal resource bootstrap requires one valid existing state/history authority.");
+        }
+
+        var computedCharacteristics = await _charService.ComputeAsync();
+        int Permanent(string characteristic) =>
+            computedCharacteristics.Stats.TryGetValue(characteristic, out var value)
+                ? value.PermanentlyModified
+                : throw new InvalidDataException(
+                    $"Mortal resource bootstrap requires permanent characteristic '{characteristic}'.");
+        var resourceBootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+            definitionsResult.Catalog,
+            existingStateResult.Ledger,
+            existingHistoryResult.History,
+            incarnationNumber,
+            turnNumber,
+            Permanent(Characteristics.Strength),
+            Permanent(Characteristics.Constitution),
+            Permanent(Characteristics.Intelligence),
+            Permanent(Characteristics.Wisdom),
+            Permanent(Characteristics.Faith));
+        if (!resourceBootstrap.IsValid ||
+            resourceBootstrap.Definitions == null ||
+            resourceBootstrap.State == null ||
+            resourceBootstrap.History == null)
+        {
+            throw new InvalidDataException(
+                "Mortal resource bootstrap failed: " +
+                string.Join(
+                    "; ",
+                    resourceBootstrap.Issues.Select(static issue =>
+                        issue.Code ?? issue.Message)));
+        }
+
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber,
             turnNumber,
@@ -2790,6 +2845,21 @@ public partial class GameEngine
             else
                 await _fs.WriteFileAtomicAsync(path, json.ToJsonString(JsonOpts));
 
+            RegisterMortalBootstrapSnapshotFile(rollbackSnapshot, path);
+        }
+
+        var resourceFiles = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            [ResourceMaterializationContract.DefinitionsPath] =
+                resourceBootstrap.Definitions.ToCanonicalJson(),
+            [ResourceMaterializationContract.StatePath] =
+                resourceBootstrap.State.ToCanonicalJson(),
+            [ResourceMaterializationContract.HistoryPath] =
+                resourceBootstrap.History.ToCanonicalJson()
+        };
+        foreach (var (path, json) in resourceFiles)
+        {
+            await _fs.WriteFileAtomicAsync(path, json);
             RegisterMortalBootstrapSnapshotFile(rollbackSnapshot, path);
         }
 

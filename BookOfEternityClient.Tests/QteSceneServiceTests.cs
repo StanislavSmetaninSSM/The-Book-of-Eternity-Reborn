@@ -1862,6 +1862,7 @@ public sealed class QteSceneServiceTests : IDisposable
 
     private async Task<SaveLoadService> CreateSaveLoadServiceAsync()
     {
+        await SeedPristineResourceStateAsync();
         var settings = new GameSettings();
         var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
         await stateManager.RefreshGameStateAsync();
@@ -1883,6 +1884,8 @@ public sealed class QteSceneServiceTests : IDisposable
 
     private async Task SeedMinimalValidatedMortalStateAsync()
     {
+        await SeedPristineResourceStateAsync();
+
         await _fs.WriteFileAtomicAsync(
             MortalItemIdentityState.StatePath,
             MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
@@ -1910,6 +1913,22 @@ public sealed class QteSceneServiceTests : IDisposable
           "entries": []
         }
         """);
+    }
+
+    private async Task SeedPristineResourceStateAsync()
+    {
+        var resources = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(resources.IsValid, string.Join("; ", resources.Issues.Select(issue => issue.Code)));
+
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            resources.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            resources.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            resources.History!.ToCanonicalJson());
     }
 
     private static void AssertMetricValue(JsonElement scoreContainer, string metricId, double expectedValue)

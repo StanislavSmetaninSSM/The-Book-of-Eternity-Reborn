@@ -218,7 +218,8 @@ internal sealed class AcceptedMechanicsInput
         JsonObject InternalInputs,
         AcceptedMechanicsAuthorityFingerprints AuthorityFingerprints,
         IReadOnlyDictionary<string, CanonicalBeforeImage> BeforeImages,
-        IReadOnlyList<ValidationIssue> ValidationIssues)
+        IReadOnlyList<ValidationIssue> ValidationIssues,
+        AcceptedMechanicsPlanningContext? PlanningContext = null)
     {
         _binding = new AcceptedMechanicsPlanBinding(
             SessionId,
@@ -235,6 +236,7 @@ internal sealed class AcceptedMechanicsInput
             BeforeImages);
         ArgumentNullException.ThrowIfNull(ValidationIssues);
         _validationIssues = ValidationIssues.ToArray();
+        this.PlanningContext = PlanningContext;
     }
 
     internal string SessionId => _binding.SessionId;
@@ -266,6 +268,8 @@ internal sealed class AcceptedMechanicsInput
     internal IReadOnlyList<ValidationIssue> ValidationIssues =>
         Array.AsReadOnly(_validationIssues.ToArray());
 
+    internal AcceptedMechanicsPlanningContext? PlanningContext { get; }
+
     internal AcceptedMechanicsPlanBinding CreateBinding() => new(
         SessionId,
         RequestId,
@@ -279,6 +283,57 @@ internal sealed class AcceptedMechanicsInput
         InternalInputs,
         AuthorityFingerprints,
         BeforeImages);
+}
+
+internal sealed class AcceptedMechanicsPlanningContext
+{
+    private readonly JsonObject _definitionRoot;
+    private readonly JsonObject _effectIdentityRoot;
+    private readonly ResourceCapacityIntent[] _capacityTransitions;
+
+    internal AcceptedMechanicsPlanningContext(
+        JsonObject definitionRoot,
+        ResourceDefinitionCatalog definitions,
+        ResourceStateLedger state,
+        ResourceHistoryState history,
+        ResourceOwnerAuthority owners,
+        ResourceMutationSourceCatalog sources,
+        ResourceCommandCompositionResult commands,
+        JsonObject effectIdentityRoot,
+        EffectAcceptedTurnPlan? effectPlan,
+        IReadOnlyList<ResourceCapacityIntent>? capacityTransitions = null)
+    {
+        _definitionRoot = (definitionRoot ?? throw new ArgumentNullException(nameof(definitionRoot)))
+            .DeepClone().AsObject();
+        Definitions = definitions ?? throw new ArgumentNullException(nameof(definitions));
+        State = state ?? throw new ArgumentNullException(nameof(state));
+        History = history ?? throw new ArgumentNullException(nameof(history));
+        Owners = owners ?? throw new ArgumentNullException(nameof(owners));
+        Sources = sources ?? throw new ArgumentNullException(nameof(sources));
+        Commands = commands ?? throw new ArgumentNullException(nameof(commands));
+        _effectIdentityRoot = (effectIdentityRoot ??
+            throw new ArgumentNullException(nameof(effectIdentityRoot))).DeepClone().AsObject();
+        EffectPlan = effectPlan;
+        _capacityTransitions = capacityTransitions?.Select(value =>
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            ArgumentNullException.ThrowIfNull(value.Coordinate);
+            ArgumentNullException.ThrowIfNull(value.SourceEvidence);
+            return value;
+        }).ToArray() ?? Array.Empty<ResourceCapacityIntent>();
+    }
+
+    internal JsonObject DefinitionRoot => _definitionRoot.DeepClone().AsObject();
+    internal ResourceDefinitionCatalog Definitions { get; }
+    internal ResourceStateLedger State { get; }
+    internal ResourceHistoryState History { get; }
+    internal ResourceOwnerAuthority Owners { get; }
+    internal ResourceMutationSourceCatalog Sources { get; }
+    internal ResourceCommandCompositionResult Commands { get; }
+    internal JsonObject EffectIdentityRoot => _effectIdentityRoot.DeepClone().AsObject();
+    internal EffectAcceptedTurnPlan? EffectPlan { get; }
+    internal IReadOnlyList<ResourceCapacityIntent> CapacityTransitions =>
+        Array.AsReadOnly(_capacityTransitions.ToArray());
 }
 
 internal sealed record ResourceAppliedEvent(
@@ -361,6 +416,7 @@ internal sealed class AcceptedMechanicsPlan
         AcceptedMechanicsAuthorityFingerprints authorityFingerprints,
         IReadOnlyList<ResourceAppliedEvent> resourceEvents,
         ResourceProjectionInput projectionInput,
+        ResourceOwnerAuthority ownerAuthority,
         EffectAcceptedTurnPlan? effectPlan)
     {
         if (!ResourceMaterializationContract.IsAuthorityFingerprint(inputFingerprint))
@@ -385,6 +441,7 @@ internal sealed class AcceptedMechanicsPlan
             .ThenBy(static value => value.OperationId, StringComparer.Ordinal)
             .ToArray();
         ProjectionInput = projectionInput ?? throw new ArgumentNullException(nameof(projectionInput));
+        OwnerAuthority = ownerAuthority ?? throw new ArgumentNullException(nameof(ownerAuthority));
         EffectPlan = effectPlan;
 
         TouchedPaths = NormalizePaths(touchedPaths, nameof(touchedPaths));
@@ -424,6 +481,8 @@ internal sealed class AcceptedMechanicsPlan
         Array.AsReadOnly(_resourceEvents.ToArray());
 
     internal ResourceProjectionInput ProjectionInput { get; }
+
+    internal ResourceOwnerAuthority OwnerAuthority { get; }
 
     internal EffectAcceptedTurnPlan? EffectPlan { get; }
 

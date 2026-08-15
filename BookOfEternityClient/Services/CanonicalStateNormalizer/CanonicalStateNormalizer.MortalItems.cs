@@ -1314,6 +1314,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
             issues.AddRange(await validator
                 .ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(writeLease));
             issues.AddRange(await validator
+                .ValidateAcceptedTurnCanonicalResourceMaterializationAsync(writeLease));
+            issues.AddRange(await validator
                 .ValidateAcceptedTurnCanonicalEffectMaterializationAsync(writeLease));
             if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
                 await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);

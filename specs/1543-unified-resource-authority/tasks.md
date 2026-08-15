@@ -64,18 +64,18 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 **Independent Test**: Bootstrap and setting-expand definitions/states for representative owners; direct/ambiguous/legacy/malformed state produces issues and zero canonical writes.
 
 - [x] T026 [P] [US1] Add RED response/model/mapping contract tests for `resourceDefinitionCreations`, `resourceCapacityChanges`, and `resourceChanges` in `BookOfEternityClient.Tests/ResourceMaterializationContractTests.cs`; executable absence guards for player/item legacy mappings remain owned by T056/T063 at their atomic cutovers
-- [ ] T027 [P] [US1] Add RED raw/canonical validation tests for pristine bootstrap, strict roots, direct definition/state/history mutation, legacy fields, same-turn definition/owner refs, wrong realm, and command consumption in `BookOfEternityClient.IntegrationTests/ResourceMaterializationValidationTests.cs`
-- [ ] T028 [P] [US1] Add RED canonical publication tests for definitions/state/history/commands, untouched subtree preservation, literal-null/malformed late changes, full-fingerprint TOCTOU, and post-state agreement in `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Resources.cs`
+- [X] T027 [P] [US1] Add RED raw/canonical validation tests for pristine bootstrap, strict roots, direct definition/state/history mutation, legacy fields, same-turn definition/owner refs, wrong realm, and command consumption in `BookOfEternityClient.IntegrationTests/ResourceMaterializationValidationTests.cs`
+- [X] T028 [P] [US1] Add RED canonical publication tests for definitions/state/history/commands, untouched subtree preservation, literal-null/malformed late changes, full-fingerprint TOCTOU, and post-state agreement in `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Resources.cs`
 - [x] T029 [US1] Add resource response properties in `BookOfEternityClient/Models/GameResponse.cs`; remove player/item legacy response properties only with their T057/T065 consumer cutovers
 - [x] T030 [US1] Map the three resource fields to `game_state/resources/resource_commands.json`; remove legacy player/item resource mappings only with their T057/T065 consumer cutovers
 - [x] T031 [US1] Implement duplicate-safe resource command parsing and definition/capacity/ordinary selector validation in `BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs`
-- [ ] T032 [US1] Implement raw, continuity, direct-mutation, legacy-authority, owner/definition/state/history/command, and canonical agreement phases in `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs` until T027 is GREEN
-- [ ] T033 [US1] Invoke resource raw validation before effect raw planning and invalidate the common plan on every early failure in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
-- [ ] T034 [US1] Add resource roots to canonical accumulated/backup/rollback contours and replace independent effect publication entry with common mechanics publication in `BookOfEternityClient/Services/CanonicalStateNormalizer.cs`
-- [ ] T035 [US1] Implement lease-bound exact preflight and atomic definition/state/history/command publication in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs` until T028 is GREEN
-- [ ] T036 [US1] Add new-game/bootstrap creation of built-in definitions, player health/energy/poise state, and one immutable initialize-history row per created coordinate in `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs` and validate exact state/history chronology agreement in `BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs`
-- [ ] T037 [US1] Add resource files to accepted pending-turn snapshots, rollback baselines, session cleanup, save/load preservation, and incompatible-legacy detection in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`, `BookOfEternityClient/Services/LiveTurnPreparationService.cs`, and existing save/load validation paths
-- [ ] T038 [US1] Run US1 focused unit/integration/bootstrap filters, record evidence, review exact files/touched paths/rollback scope, and commit the US1 slice
+- [X] T032 [US1] Implement raw, continuity, direct-mutation, legacy-authority, owner/definition/state/history/command, and canonical agreement phases in `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs` until T027 is GREEN
+- [X] T033 [US1] Invoke resource raw validation before effect raw planning and invalidate the common plan on every early failure in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
+- [X] T034 [US1] Add resource roots to canonical accumulated/backup/rollback contours and replace independent effect publication entry with common mechanics publication in `BookOfEternityClient/Services/CanonicalStateNormalizer.cs`
+- [X] T035 [US1] Implement lease-bound exact preflight and atomic definition/state/history/command publication in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs` until T028 is GREEN
+- [X] T036 [US1] Add new-game/bootstrap creation of built-in definitions, player health/energy/poise state, and one immutable initialize-history row per created coordinate in `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs` and validate exact state/history chronology agreement in `BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs`
+- [X] T037 [US1] Add resource files to accepted pending-turn snapshots, rollback baselines, session cleanup, save/load preservation, and incompatible-legacy detection in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`, `BookOfEternityClient/Services/LiveTurnPreparationService.cs`, and existing save/load validation paths
+- [X] T038 [US1] Run US1 focused unit/integration/bootstrap filters, record evidence, review exact files/touched paths/rollback scope, and commit the US1 slice
 
 ---
 
@@ -94,9 +94,9 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 - [X] T045 [P] [US2] Add RED graph duplicate/missing-dependency/cycle/1,025-node/depth-33/stable-order/nested-resource-event tests in `BookOfEternityClient.Tests/ResourceTriggerGraphTests.cs`
 - [X] T046 [US2] Implement the immutable working ledger, exactly one indexed history working set per plan, four-phase traversal, resource event propagation, finite DAG executor, and one final history freeze/sort/fingerprint in `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs` until T044–T045 are GREEN
 - [X] T047 [US2] Compose accepted events by exact command ordinal and bind every GM/local/system mutation to one replay key in `BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs`
-- [ ] T048 [US2] Wire successful raw validation to `AcceptedMechanicsPlanCache.GetOrBuildValidated` and publication to exact retrieval/consume in `ValidationService.ResourceMaterialization.cs` and `CanonicalStateNormalizer.AcceptedMechanics.cs`
-- [ ] T049 [US2] Add state/history/event post-seal agreement and full canonical validation calls in `ValidationService.ResourceMaterialization.cs`
-- [ ] T050 [US2] Run US2 reducer/planner/graph filters, record evidence, inspect purity/no-write guarantees, and commit the US2 slice
+- [X] T048 [US2] Wire successful raw validation to `AcceptedMechanicsPlanCache.GetOrBuildValidated` and publication to exact retrieval/consume in `ValidationService.ResourceMaterialization.cs` and `CanonicalStateNormalizer.AcceptedMechanics.cs`
+- [X] T049 [US2] Add state/history/event post-seal agreement and full canonical validation calls in `ValidationService.ResourceMaterialization.cs`
+- [X] T050 [US2] Run US2 reducer/planner/graph filters, record evidence, inspect purity/no-write guarantees, and commit the US2 slice
 
 ---
 

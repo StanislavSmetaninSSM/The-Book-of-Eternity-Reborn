@@ -142,6 +142,60 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void NewGameAndMortalBootstrap_MustPublishUnifiedResourceAuthority()
+    {
+        var mainMenu = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+        var newGame = ExtractMethodSource(
+            mainMenu,
+            "private async Task<string> InitializeChaosSea(");
+        Assert.Contains(
+            "ResourceBootstrapStateBuilder.BuildPristine()",
+            newGame,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ResourceMaterializationContract.DefinitionsPath",
+            newGame,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ResourceMaterializationContract.StatePath",
+            newGame,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ResourceMaterializationContract.HistoryPath",
+            newGame,
+            StringComparison.Ordinal);
+
+        var lifecycle = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var mortalBootstrap = ExtractMethodSource(
+            lifecycle,
+            "private async Task WriteMortalBootstrapBaselineAsync(");
+        Assert.Contains(
+            "ResourceBootstrapStateBuilder.BuildMortalPlayer(",
+            mortalBootstrap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ResourceDefinitionCatalog.ParseCanonical(",
+            mortalBootstrap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ResourceStateContract.ParseCanonical(",
+            mortalBootstrap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ResourceHistoryState.ParseCanonical(",
+            mortalBootstrap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "computedCharacteristics.Stats",
+            mortalBootstrap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "RegisterMortalBootstrapSnapshotFile(rollbackSnapshot, path)",
+            mortalBootstrap,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void NewGameBootstrap_MustBindRotatedGenerationThroughInitialTurnPublication()
     {
         var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");

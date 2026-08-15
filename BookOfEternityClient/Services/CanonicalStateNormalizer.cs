@@ -80,6 +80,9 @@ public partial class CanonicalStateNormalizer
         EffectCarrierCatalog.AfterlifeProfilesPath,
         EffectCarrierCatalog.SpiritualConflictPath,
         EffectAcceptedTurnPlan.IdentityIndexPath,
+        ResourceMaterializationContract.DefinitionsPath,
+        ResourceMaterializationContract.StatePath,
+        ResourceMaterializationContract.HistoryPath,
         "game_state/inventory/item_resources.json",
         "game_state/inventory/item_bonds.json",
         "game_state/inventory/item_text_updates.json",
@@ -116,6 +119,7 @@ public partial class CanonicalStateNormalizer
             CraftRequestState.PendingRequestPath,
             NpcTradeRequestState.PendingRequestPath,
             EffectAcceptedTurnPlan.CommandPath,
+            ResourceMaterializationContract.CommandPath,
             "game_state/control/pending_effect_resolutions.json"
         })
         .Distinct(StringComparer.Ordinal)
@@ -235,6 +239,6 @@ public partial class CanonicalStateNormalizer
         await NormalizeGuardianThoughtJournalAsync(backups);
         await NormalizeGuardianSocialJournalAsync(backups);
         await NormalizePlayerSkillStateAsync(backups);
-        await NormalizeEffectsAsync(backups, mortalLocationPlan);
+        await NormalizeAcceptedMechanicsAsync(backups, mortalLocationPlan);
     }
 }

@@ -80,6 +80,8 @@ public partial class ValidationService
 
     private async Task ValidateRequiredFields(List<ValidationIssue> issues)
     {
+        issues.AddRange(await ValidateAcceptedTurnCanonicalResourceMaterializationAsync());
+
         // Soul state must have soulName and currentRealm
         await ValidateFileFields("game_state/meta/soul_state.json",
             new[] { "soulName", "currentRealm" }, issues);

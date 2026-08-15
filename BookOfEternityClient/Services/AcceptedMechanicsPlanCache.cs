@@ -1,6 +1,8 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
+using System.Runtime.CompilerServices;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
@@ -15,6 +17,7 @@ internal sealed class AcceptedMechanicsPlanCache
     private string? _inputFingerprint;
     private AcceptedMechanicsPlanningResult? _planningResult;
     private string? _validatedBindingFingerprint;
+    private AcceptedMechanicsPlanBinding? _validatedBinding;
     private AcceptedMechanicsPlanningResult? _validatedResult;
 
     internal AcceptedMechanicsPlanCache(AcceptedMechanicsPlanFactory planner) =>
@@ -67,6 +70,7 @@ internal sealed class AcceptedMechanicsPlanCache
             }
 
             _validatedBindingFingerprint = fingerprint;
+            _validatedBinding = input.CreateBinding();
             _validatedResult = result;
             return result;
         }
@@ -103,9 +107,40 @@ internal sealed class AcceptedMechanicsPlanCache
             InvalidateValidatedCore();
     }
 
+    internal bool TryPeekValidated(
+        out AcceptedMechanicsPlanBinding binding,
+        out AcceptedMechanicsPlanningResult result)
+    {
+        lock (_gate)
+        {
+            if (_validatedBinding != null && _validatedResult != null)
+            {
+                binding = new AcceptedMechanicsPlanBinding(
+                    _validatedBinding.SessionId,
+                    _validatedBinding.RequestId,
+                    _validatedBinding.SnapshotToken,
+                    _validatedBinding.Realm,
+                    _validatedBinding.Turn,
+                    _validatedBinding.AcceptedEvents,
+                    _validatedBinding.ResourceCommands,
+                    _validatedBinding.EffectCommands,
+                    _validatedBinding.PendingInput,
+                    _validatedBinding.InternalInputs,
+                    _validatedBinding.AuthorityFingerprints,
+                    _validatedBinding.BeforeImages);
+                result = _validatedResult;
+                return true;
+            }
+        }
+        binding = null!;
+        result = null!;
+        return false;
+    }
+
     private void InvalidateValidatedCore()
     {
         _validatedBindingFingerprint = null;
+        _validatedBinding = null;
         _validatedResult = null;
     }
 
@@ -221,4 +256,56 @@ internal sealed class AcceptedMechanicsPlanCache
             return new JsonArray(valueArray.Select(Canonicalize).ToArray());
         return node?.DeepClone();
     }
+}
+
+internal static class AcceptedMechanicsPlanAuthority
+{
+    private static readonly ConditionalWeakTable<FileSystemManager, AcceptedMechanicsPlanCache>
+        Caches = new();
+
+    internal static AcceptedMechanicsPlanningResult GetOrBuildValidated(
+        FileSystemManager fileSystem,
+        AcceptedMechanicsInput input)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(input);
+        return Cache(fileSystem).GetOrBuildValidated(input);
+    }
+
+    internal static bool TryTakeValidated(
+        FileSystemManager fileSystem,
+        AcceptedMechanicsPlanBinding liveBinding,
+        out AcceptedMechanicsPlanningResult result)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(liveBinding);
+        return Cache(fileSystem).TryTakeValidated(liveBinding, out result);
+    }
+
+    internal static void InvalidateValidated(FileSystemManager fileSystem)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        Cache(fileSystem).InvalidateValidated();
+    }
+
+    internal static bool HasValidated(FileSystemManager fileSystem)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        return Cache(fileSystem).HasValidated;
+    }
+
+    internal static bool TryPeekValidated(
+        FileSystemManager fileSystem,
+        out AcceptedMechanicsPlanBinding binding,
+        out AcceptedMechanicsPlanningResult result)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        return Cache(fileSystem).TryPeekValidated(out binding, out result);
+    }
+
+    private static AcceptedMechanicsPlanCache Cache(FileSystemManager fileSystem) =>
+        Caches.GetValue(
+            fileSystem,
+            static _ => new AcceptedMechanicsPlanCache(
+                AcceptedMechanicsPlanner.BuildAcceptedPlan));
 }

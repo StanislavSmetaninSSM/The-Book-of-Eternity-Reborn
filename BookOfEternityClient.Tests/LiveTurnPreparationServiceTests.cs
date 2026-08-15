@@ -61,6 +61,9 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
 
         Assert.Contains("game_state/meta/soul_state.json", manifest.Files.Keys);
         Assert.Contains("game_state/world/current_location.json", manifest.Files.Keys);
+        Assert.Contains(ResourceMaterializationContract.DefinitionsPath, manifest.Files.Keys);
+        Assert.Contains(ResourceMaterializationContract.StatePath, manifest.Files.Keys);
+        Assert.Contains(ResourceMaterializationContract.HistoryPath, manifest.Files.Keys);
         Assert.Contains("game_state/control/pending_ink_actions.json", manifest.Files.Keys);
         Assert.Contains("lore/codex_entries.json", manifest.Files.Keys);
         Assert.DoesNotContain("game_state/control/gm_bridge_status.json", manifest.Files.Keys);
@@ -290,6 +293,16 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
           "name": "Покои виконта"
         }
         """);
+        var resourceBootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            resourceBootstrap.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            resourceBootstrap.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            resourceBootstrap.History!.ToCanonicalJson());
         await _fs.WriteFileAtomicAsync("game_state/control/pending_ink_actions.json", """
         {
           "actions": []
