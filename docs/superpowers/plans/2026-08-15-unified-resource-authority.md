@@ -569,6 +569,17 @@ Every JSON property is defensively cloned; every collection is immutable and can
 
 `AcceptedMechanicsPlanCache.GetOrBuildValidated(input)` owns random identity allocation. `TryTakeValidated(liveBinding, out result)` must compare the full input binding and consume exactly once. Validation entry invalidates before every possible early return. The existing `EffectAcceptedTurnPlan` becomes a subplan/value inside the common plan; remove its independent validated cache only after all callers are switched in Task 7.
 
+Execution evidence (2026-08-15):
+
+- Type/cache RED `TestResults/test-lanes/20260815-190804-468-51056-9c0361055921412ea415de21239db914-focused/summary.json` is the expected missing-type build failure. First GREEN `TestResults/test-lanes/20260815-191328-090-11864-9bfd9073faf645d8a099326172b7c286-focused/summary.json` passes `29/29`.
+- Local review added two fail-closed regressions: planner exceptions must invalidate a prior handoff and returned issue collections must be immutable. RED `TestResults/test-lanes/20260815-191604-928-41540-d7ef7bec7c5c48d487b8c38ee198aba3-focused/summary.json` passes `29/31`; GREEN `TestResults/test-lanes/20260815-191656-102-40652-31dd13fcc37842febe6cc5500fc21ab0-focused/summary.json` passes `31/31`.
+- A changed live publication binding must terminally invalidate the handoff. RED `TestResults/test-lanes/20260815-191919-477-44740-c30044a486f74e978840d3a933fa6748-focused/summary.json` passes `1/2`; GREEN `TestResults/test-lanes/20260815-191957-142-52232-dfce620ec8454547949845021d62e5f8-focused/summary.json` passes `2/2`.
+- A planner failure with neither a plan nor issues is converted to a bounded protected issue (`192154...` RED), and rooted/noncanonical before-image paths fail before caching (`192250...` RED). Final focused cache GREEN is `TestResults/test-lanes/20260815-192445-744-29996-d23f432c2db14621a5058e27d3b829fa-focused/summary.json`, `39/39`.
+- Final Phase-2 control `TestResults/test-lanes/20260815-192635-421-14676-5d478306e0624027979271e47b2f44b0-focused/summary.json` passes `314/314`, failures `0`, duplicates `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- Review result: no open Critical/Important/Minor finding. The full input fingerprint covers session/request/snapshot/realm/turn, exact event/resource/effect/pending/internal roots, twelve authority fingerprints, and exact before-image bytes/prior absence. Every JSON/byte/collection after-image is defensive; touched/consumed paths are canonical and covered by before-images; successful retrieval consumes once; every early failure/mismatch clears the validated handoff.
+- Future-refactor preservation: the effect plan is an immutable common-plan subplan, not a second resource adapter. The existing effect cache remains only until tracked T032–T035/T048 move validation/publication callers; T078–T080 remain the explicit resource-event/effect-trigger/lifetime continuation. No migration, legacy fallback, or domain cutover was introduced in this foundation.
+- Prompt/docs/examples rationale: Task 5 remains client-owned plan/cache infrastructure and adds no GM-authored response property, mapping, mechanic field, pending/control surface, or afterlife contract. The tracked US1/US6 tasks own those synchronized prompt/example changes.
+
 **Step 5: Implement the strict command composer**
 
 Parse the transient root as:

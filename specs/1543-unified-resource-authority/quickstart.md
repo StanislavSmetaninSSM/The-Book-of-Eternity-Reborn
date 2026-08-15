@@ -68,6 +68,18 @@ This guide is the executable validation handoff for [#1543](https://github.com/S
 - `EffectCombatantIdentityState` has zero remaining production/test references. The common identity allocates and consumes every accepted combatant/member ref, while the composed owner authority covers all nine owner families without name/index fallback.
 - This slice is client-owned authority infrastructure only; it adds no GM-authored command, state surface, response field, prompt, example, or afterlife contract. GitHub Actions remain disabled and unused.
 
+### Task-5 accepted-mechanics plan/cache evidence (2026-08-15)
+
+- Plan/cache RED: `TestResults/test-lanes/20260815-190804-468-51056-9c0361055921412ea415de21239db914-focused/summary.json`; expected build failure before `AcceptedMechanicsInput`, `AcceptedMechanicsPlan`, `CanonicalBeforeImage`, authority fingerprints, planning result, and cache existed.
+- First cache GREEN: `TestResults/test-lanes/20260815-191328-090-11864-9bfd9073faf645d8a099326172b7c286-focused/summary.json`; `29/29`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`.
+- Review RED/GREEN proves exception-safe handoff invalidation and defensive planning-result issues: `TestResults/test-lanes/20260815-191604-928-41540-d7ef7bec7c5c48d487b8c38ee198aba3-focused/summary.json` (`29/31`) to `TestResults/test-lanes/20260815-191656-102-40652-31dd13fcc37842febe6cc5500fc21ab0-focused/summary.json` (`31/31`).
+- Changed-live-binding consume RED/GREEN: `TestResults/test-lanes/20260815-191919-477-44740-c30044a486f74e978840d3a933fa6748-focused/summary.json` (`1/2`) to `TestResults/test-lanes/20260815-191957-142-52232-dfce620ec8454547949845021d62e5f8-focused/summary.json` (`2/2`). A mismatched preflight now invalidates rather than preserving a retryable stale handoff.
+- Empty planner failure and rooted-path REDs are `TestResults/test-lanes/20260815-192154-135-30148-2ec6aa4f299c40229757378579c647bc-focused/summary.json` (`0/1`) and `TestResults/test-lanes/20260815-192250-529-21520-d1f1564154a94b4eb0e59bdf00724828-focused/summary.json` (`3/4`). Final cache GREEN is `TestResults/test-lanes/20260815-192445-744-29996-d23f432c2db14621a5058e27d3b829fa-focused/summary.json`; `39/39`.
+- Final Phase-2 compatibility control: `TestResults/test-lanes/20260815-192635-421-14676-5d478306e0624027979271e47b2f44b0-focused/summary.json`; `314/314`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`.
+- The common plan defensively owns every resource/effect/pending/owner after-image, exact present-vs-missing before-image, touched/consumed path, event/projection input, and all twelve authority fingerprints. The cache canonicalizes object/dictionary order, invokes the planner once per exact input, clears on every failed validation/exception/mismatch, and consumes an exact live binding once.
+- The planned follow-on refactor remains explicit: `EffectAcceptedTurnPlan` is retained as the common plan's immutable `EffectPlan` subplan, while T032–T035/T048 wire the common validation/publication contour and retire the independent effect handoff only after all callers move. T078–T080 still own periodic resource components, trigger feedback, effect lifetime, and terminal cleanup. No migration or compatibility fallback was added.
+- This foundation is client-owned and does not yet add a GM-authored resource response field or runtime file mapping; therefore prompts/examples/manifests remain unchanged. Those surfaces are synchronized in their tracked US1/US6 tasks. GitHub Actions remain disabled and unused.
+
 ## 3. Canonical example state
 
 The active new-game example must contain:

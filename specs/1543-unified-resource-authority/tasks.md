@@ -48,10 +48,10 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 - [X] T019 [P] Add RED common combatant/member identity tests for all refs consumed without effects/resources, named NPC binding, group reorder, forbidden submitted IDs, duplicate/confusable refs, and residual canonical refs in `BookOfEternityClient.Tests/CombatantIdentityStateTests.cs`
 - [X] T020 Replace `BookOfEternityClient/Services/EffectCombatantIdentityState.cs` with common `BookOfEternityClient/Services/CombatantIdentityState.cs`, allocate/rewrite combatant and member IDs once, and update `EffectTargetAuthority.cs`, `EffectAcceptedTurnPlan.cs`, `EffectAcceptedTurnPlanner.cs`, and their tests until T019 is GREEN
 - [X] T021 Implement composed exact owner/capability/ref/fingerprint authority in `BookOfEternityClient/Services/ResourceOwnerAuthority.cs` until T018 is GREEN
-- [ ] T022 [P] Add RED immutable plan record, exact before-image, touched/consumed path, full authority fingerprint, one random ID allocation, and failed-validation invalidation tests in `BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.cs`
-- [ ] T023 Define `AcceptedMechanicsInput`, `AcceptedMechanicsPlan`, `CanonicalBeforeImage`, authority fingerprint, after-image, event, and planning result records in `BookOfEternityClient/Services/AcceptedMechanicsPlan.cs`
-- [ ] T024 Implement one-instance full-input fingerprint and validated/consumed cache in `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs` until T022 is GREEN
-- [ ] T025 Run the Phase 2 focused filters from `specs/1543-unified-resource-authority/quickstart.md`, record RED/GREEN summary paths in `docs/superpowers/plans/2026-08-15-unified-resource-authority.md`, review the Phase 2 diff, and commit the foundation slice
+- [X] T022 [P] Add RED immutable plan record, exact before-image, touched/consumed path, full authority fingerprint, one random ID allocation, and failed-validation invalidation tests in `BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.cs`
+- [X] T023 Define `AcceptedMechanicsInput`, `AcceptedMechanicsPlan`, `CanonicalBeforeImage`, authority fingerprint, after-image, event, and planning result records in `BookOfEternityClient/Services/AcceptedMechanicsPlan.cs`
+- [X] T024 Implement one-instance full-input fingerprint and validated/consumed cache in `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs` until T022 is GREEN
+- [X] T025 Run the Phase 2 focused filters from `specs/1543-unified-resource-authority/quickstart.md`, record RED/GREEN summary paths in `docs/superpowers/plans/2026-08-15-unified-resource-authority.md`, review the Phase 2 diff, and commit the foundation slice
 
 **Checkpoint**: Strict resource/owner/plan types exist, effect targets use common combat identity, and no domain value has yet been migrated.
 
