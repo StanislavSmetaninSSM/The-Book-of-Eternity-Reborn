@@ -117,6 +117,35 @@ internal sealed class ResourceCommandCompositionResult
         Array.AsReadOnly(_issues.ToArray());
 }
 
+internal sealed record ResourceAcceptedEventAuthority(
+    int CommandOrdinal,
+    string EventRef);
+
+internal sealed class ResourceAcceptedEventBindingResult
+{
+    private readonly JsonObject _root;
+    private readonly ResourceAcceptedEventAuthority[] _events;
+    private readonly ValidationIssue[] _issues;
+
+    internal ResourceAcceptedEventBindingResult(
+        JsonObject root,
+        IEnumerable<ResourceAcceptedEventAuthority> events,
+        IEnumerable<ValidationIssue> issues)
+    {
+        _root = (root ?? throw new ArgumentNullException(nameof(root)))
+            .DeepClone().AsObject();
+        _events = (events ?? throw new ArgumentNullException(nameof(events))).ToArray();
+        _issues = (issues ?? throw new ArgumentNullException(nameof(issues))).ToArray();
+    }
+
+    internal JsonObject Root => _root.DeepClone().AsObject();
+    internal IReadOnlyList<ResourceAcceptedEventAuthority> Events =>
+        Array.AsReadOnly(_events.ToArray());
+    internal IReadOnlyList<ValidationIssue> Issues =>
+        Array.AsReadOnly(_issues.ToArray());
+    internal bool IsValid => _issues.Length == 0;
+}
+
 internal static class ResourceAcceptedTurnInputComposer
 {
     private static readonly FrozenSet<string> RootFields = Set(
@@ -206,6 +235,68 @@ internal static class ResourceAcceptedTurnInputComposer
                 resourceChanges,
                 issues);
         }
+    }
+
+    internal static ResourceAcceptedEventBindingResult BindAcceptedEvents(
+        int turn,
+        ResourceCommandCompositionResult commands)
+    {
+        ArgumentNullException.ThrowIfNull(commands);
+        if (!commands.IsValid)
+        {
+            return AcceptedEventsResult(
+                Array.Empty<ResourceAcceptedEventAuthority>(),
+                commands.Issues);
+        }
+
+        var issues = new List<ValidationIssue>();
+        if (turn <= 0)
+        {
+            Add(
+                issues,
+                ResourceMaterializationContract.CommandPath + ".events",
+                "resource_command_event_authority_mismatch",
+                "positive accepted turn",
+                turn.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            return AcceptedEventsResult(
+                Array.Empty<ResourceAcceptedEventAuthority>(),
+                issues);
+        }
+
+        var submitted = commands.DefinitionCreations
+            .Select(static value => (value.CommandOrdinal, value.EventRef))
+            .Concat(commands.CapacityChanges.Select(static value =>
+                (value.CommandOrdinal, value.EventRef)))
+            .Concat(commands.ResourceChanges.Select(static value =>
+                (value.CommandOrdinal, value.EventRef)))
+            .OrderBy(static value => value.CommandOrdinal)
+            .ToArray();
+        var events = new List<ResourceAcceptedEventAuthority>(submitted.Length);
+        foreach (var command in submitted)
+        {
+            var expected = FormattableString.Invariant(
+                $"turn_{turn}:resource:{command.CommandOrdinal}");
+            if (!string.Equals(command.EventRef, expected, StringComparison.Ordinal))
+            {
+                Add(
+                    issues,
+                    ResourceMaterializationContract.CommandPath +
+                    $".events[{command.CommandOrdinal - 1}]",
+                    "resource_command_event_authority_mismatch",
+                    expected,
+                    command.EventRef);
+                continue;
+            }
+            events.Add(new ResourceAcceptedEventAuthority(
+                command.CommandOrdinal,
+                command.EventRef));
+        }
+
+        return issues.Count == 0
+            ? AcceptedEventsResult(events, Array.Empty<ValidationIssue>())
+            : AcceptedEventsResult(
+                Array.Empty<ResourceAcceptedEventAuthority>(),
+                issues);
     }
 
     private static void ParseDefinitions(
@@ -732,6 +823,30 @@ internal static class ResourceAcceptedTurnInputComposer
             capacities ?? Array.Empty<ResourceCapacityCommand>(),
             changes ?? Array.Empty<ResourceOrdinaryCommand>(),
             issues ?? Array.Empty<ValidationIssue>());
+
+    private static ResourceAcceptedEventBindingResult AcceptedEventsResult(
+        IEnumerable<ResourceAcceptedEventAuthority> events,
+        IEnumerable<ValidationIssue> issues)
+    {
+        var snapshot = events.ToArray();
+        var eventArray = new JsonArray();
+        foreach (var value in snapshot)
+        {
+            eventArray.Add(new JsonObject
+            {
+                ["commandOrdinal"] = value.CommandOrdinal,
+                ["eventRef"] = value.EventRef
+            });
+        }
+        return new ResourceAcceptedEventBindingResult(
+            new JsonObject
+            {
+                ["schemaVersion"] = ResourceMaterializationContract.SchemaVersion,
+                ["events"] = eventArray
+            },
+            snapshot,
+            issues);
+    }
 
     private static FrozenSet<string> Set(params string[] values) =>
         values.ToFrozenSet(StringComparer.Ordinal);

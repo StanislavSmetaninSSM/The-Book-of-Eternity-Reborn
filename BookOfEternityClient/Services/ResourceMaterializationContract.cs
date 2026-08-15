@@ -287,6 +287,43 @@ internal static class ResourceMaterializationContract
         return leftCoefficient == rightCoefficient && leftScale == rightScale;
     }
 
+    internal static bool TryScaleRatioExact(
+        decimal current,
+        decimal newMaximum,
+        decimal oldMaximum,
+        out decimal result)
+    {
+        result = 0m;
+        if (oldMaximum == 0m)
+            return false;
+
+        GetDecimalRational(current, out var currentCoefficient, out var currentScale);
+        GetDecimalRational(newMaximum, out var newCoefficient, out var newScale);
+        GetDecimalRational(oldMaximum, out var oldCoefficient, out var oldScale);
+        var numerator = currentCoefficient * newCoefficient * BigInteger.Pow(10, oldScale);
+        var denominator = oldCoefficient * BigInteger.Pow(10, currentScale + newScale);
+        if (denominator.IsZero)
+            return false;
+        if (denominator.Sign < 0)
+        {
+            numerator = -numerator;
+            denominator = -denominator;
+        }
+
+        var divisor = BigInteger.GreatestCommonDivisor(BigInteger.Abs(numerator), denominator);
+        numerator /= divisor;
+        denominator /= divisor;
+        for (var scale = 0; scale <= 28; scale++)
+        {
+            var scaled = numerator * BigInteger.Pow(10, scale);
+            var quotient = BigInteger.DivRem(scaled, denominator, out var remainder);
+            if (remainder.IsZero)
+                return TryCreateDecimal(quotient, scale, out result);
+        }
+
+        return false;
+    }
+
     internal static string BuildConfusableKey(string value) =>
         MortalLocationIdentityState.BuildConfusableKey(value);
 

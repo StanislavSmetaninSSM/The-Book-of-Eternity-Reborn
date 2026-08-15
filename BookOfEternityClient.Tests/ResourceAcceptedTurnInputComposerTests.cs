@@ -236,6 +236,66 @@ public sealed class ResourceAcceptedTurnInputComposerTests
         Assert.Empty(result.ResourceChanges);
     }
 
+    [Fact]
+    public void BindAcceptedEvents_ComposesExactGlobalCommandOrdinals()
+    {
+        var commands = ResourceAcceptedTurnInputComposer.Parse(ValidRoot());
+
+        var result = ResourceAcceptedTurnInputComposer.BindAcceptedEvents(
+            turn: 7,
+            commands);
+
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
+        Assert.Equal(
+            new[]
+            {
+                (1, "turn_7:resource:1"),
+                (2, "turn_7:resource:2"),
+                (3, "turn_7:resource:3")
+            },
+            result.Events.Select(static value =>
+                (value.CommandOrdinal, value.EventRef)));
+        Assert.Equal(3, result.Root["events"]!.AsArray().Count);
+    }
+
+    [Theory]
+    [InlineData("swapped")]
+    [InlineData("reused")]
+    [InlineData("stale_turn")]
+    public void BindAcceptedEvents_RejectsSwappedReusedOrStaleAuthority(
+        string mutation)
+    {
+        var root = JsonNode.Parse(ValidRoot())!.AsObject();
+        var turn = 7;
+        if (mutation == "swapped")
+        {
+            root["resourceDefinitionCreations"]![0]!["eventRef"] =
+                "turn_7:resource:2";
+            root["resourceCapacityChanges"]![0]!["eventRef"] =
+                "turn_7:resource:1";
+        }
+        else if (mutation == "reused")
+        {
+            root["resourceCapacityChanges"]![0]!["eventRef"] =
+                "turn_7:resource:1";
+        }
+        else
+        {
+            turn = 8;
+        }
+        var commands = ResourceAcceptedTurnInputComposer.Parse(root.ToJsonString());
+        Assert.True(commands.IsValid, string.Join(Environment.NewLine, commands.Issues));
+
+        var result = ResourceAcceptedTurnInputComposer.BindAcceptedEvents(
+            turn,
+            commands);
+
+        Assert.False(result.IsValid);
+        Assert.Empty(result.Events);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_command_event_authority_mismatch");
+    }
+
     private static JsonArray Repeat(JsonNode value, int count)
     {
         var result = new JsonArray();

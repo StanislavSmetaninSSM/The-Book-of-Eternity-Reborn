@@ -275,6 +275,30 @@ internal sealed class ResourceHistoryState
         }
     }
 
+    internal static ResourceHistoryStateResult CreateValidated(
+        IEnumerable<ResourceTransition> transitions,
+        ResourceDefinitionCatalog definitions)
+    {
+        ArgumentNullException.ThrowIfNull(transitions);
+        ArgumentNullException.ThrowIfNull(definitions);
+        var candidates = transitions.ToArray();
+        var issues = new List<ValidationIssue>();
+        ValidateTransitions(candidates, definitions, issues);
+        return issues.Count == 0
+            ? new ResourceHistoryStateResult(
+                new ResourceHistoryState(candidates),
+                Array.Empty<ValidationIssue>())
+            : new ResourceHistoryStateResult(null, issues.ToArray());
+    }
+
+    internal static ResourceReplayProbe CreateReplayProbe(ResourceTransition transition) =>
+        ToReplayProbe(transition);
+
+    internal static bool ReplaySemanticsMatch(
+        ResourceTransition transition,
+        ResourceReplayProbe probe) =>
+        ReplaySemanticsEqual(transition, probe);
+
     internal bool TryResolveExactTransition(
         string transitionId,
         out ResourceTransition? transition) =>
