@@ -7,7 +7,7 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 
 **Input**: Design documents from `specs/1535-complete-effect-materialization/`
 **Source issue**: [#1535](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1535)
-**Prerequisites**: [spec.md](spec.md), [plan.md](plan.md), [research.md](research.md), [data-model.md](data-model.md), [contracts/](contracts/), [quickstart.md](quickstart.md), approved [Superpowers design](../../docs/superpowers/specs/2026-08-14-effect-materialization-design.md)
+**Prerequisites**: [spec.md](spec.md), [plan.md](plan.md), [research.md](research.md), [data-model.md](data-model.md), [contracts/](contracts/), [quickstart.md](quickstart.md), approved [Superpowers design](../../docs/superpowers/specs/2026-08-14-effect-materialization-design.md). T042–T043/T047/T049–T050 additionally require completed blocking resource foundation [#1543](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1543) and its approved design at [2026-08-15-unified-resource-authority-design.md](../../docs/superpowers/specs/2026-08-15-unified-resource-authority-design.md).
 
 **Tests**: Every behavior task follows RED → GREEN → focused verification. No runtime migration or compatibility reader may be added. All verification is local; GitHub Actions remain disabled.
 
@@ -101,6 +101,8 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 ---
 
 ## Phase 4: User Story 2 — Deterministic Stacking and Lifetime (Priority: P1)
+
+**Blocking dependency for remaining trigger work**: Do not start or mark T042–T043/T047/T049–T050 complete until #1543 has replaced legacy resource authority with the canonical resource ledger and accepted mechanics planner. Periodic operations and bounded resource receipts MUST use that foundation; effect-only field adapters are forbidden.
 
 **Goal**: Resolve every repeated application, tick, trigger, use, lifetime, dispel, removal, suspension, and terminal transition in a stable exactly-once order.
 
@@ -282,7 +284,7 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 - **Phase 1 — Setup**: Starts from approved design and clean isolated worktree.
 - **Phase 2 — Foundations**: Depends on Phase 1 and blocks every user story.
 - **US1 (Phase 3)**: Depends on all foundational contracts/authority; establishes usable Mortal creation and mechanics boundary.
-- **US2 (Phase 4)**: Depends on US1 canonical instances/planner; adds stack/lifecycle.
+- **US2 (Phase 4)**: Depends on US1 canonical instances/planner; completed stack/lifetime work remains valid, while T042–T043/T047/T049–T050 additionally depend on completed #1543 resource materialization and transition authority.
 - **US3 (Phase 5)**: Depends on US1/US2 common instance and lifecycle; adds cross-realm adapters.
 - **US4 (Phase 6)**: Depends on accepted mechanics/projection authority from US1–US3.
 - **US5 (Phase 7)**: Depends on all planned publication paths from US1–US3 so failure injection is complete; may begin repair-builder unit work after Phase 2.

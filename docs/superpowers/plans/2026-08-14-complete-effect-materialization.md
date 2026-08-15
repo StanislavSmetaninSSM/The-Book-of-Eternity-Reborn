@@ -11,6 +11,7 @@
 ## Global Constraints
 
 - Source task is GitHub issue [#1535](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1535). Keep every code, test, fixture, prompt, example, and contract change traceable to it.
+- Effect Task 9 trigger/resource execution is blocked by [#1543](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1543) and its approved [unified resource authority design](../specs/2026-08-15-unified-resource-authority-design.md). Do not add effect-only legacy field adapters; resume Task 9 only after the canonical ledger and accepted mechanics planner are complete.
 - Work only in `E:\Games\worktrees\boe-1535-effect-materialization` on branch `1535-effect-materialization`. Preserve the user's dirty main worktree and unrelated generated `bin/obj` files.
 - The game is pre-release. Missing pristine effect roots may initialize empty; any non-empty legacy carrier is invalid. Do not add migration, promotion, compatibility, or fallback readers.
 - Do not create, enable, or run GitHub Actions. Verification is local through `pwsh -NoProfile -File .\scripts\test-csharp.ps1`.
@@ -771,6 +772,8 @@ git commit -m "feat: schedule effect stacking and lifetime (#1535)"
 ---
 
 ### Task 9: Implement Triggers, Periodic Work, and Bounded Receipts (T042–T043, T047, T049–T050)
+
+**BLOCKED BY #1543**: This task resumes only after the unified resource materialization feature has completed its full no-migration cutover. Periodic damage/restoration and bounded resource receipts must publish through the shared resource ledger and `AcceptedMechanicsPlanner`, not through `currentHealthChange`, percentage fields, combat health arrays, item resource fields, afterlife action-economy fields, or any other effect-only adapter.
 
 **Files:**
 - Modify: `BookOfEternityClient/Services/EffectLifecycleScheduler.cs`

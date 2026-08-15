@@ -10,7 +10,7 @@
 
 ## Source Issues & Scope *(mandatory)*
 
-- **Source GitHub issue(s)**: [#1535 — Enforce complete effect materialization across Mortal World and afterlife](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1535)
+- **Source GitHub issue(s)**: [#1535 — Enforce complete effect materialization across Mortal World and afterlife](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1535); blocking foundation [#1543 — Materialize one canonical resource authority](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1543)
 - **Issue type**: P1 cross-realm canonical-state and validation feature
 - **Spec Kit justification**: The feature changes GM-authored commands, canonical runtime state, identity and lifecycle authority, derived mechanics, accepted-turn and afterlife transactions, rollback and repair, console/browser projections, and both Mortal and afterlife documentation across many files and sessions.
 - **Contract scope**: Player-facing console and browser; GM-facing prompts and examples; Mortal World and afterlife runtime state; validation; normalization; lifecycle scheduling; identity and source authority; rollback and repair; documentation and manifests.
@@ -258,4 +258,5 @@ As a player, I want wounds and their symptoms to remain related but independentl
 - Existing afterlife spiritual-combat condition semantics are valid specialized mechanics and are adapted rather than replaced.
 - Persistent afterlife actor effects use the accepted owner/profile authority; Shining blessing entitlements remain client-derived pending state.
 - Wound lifecycle and healing remain owned by #1536; #1535 only establishes exact links and effect-side behavior.
+- Trigger execution, periodic damage/restoration, and bounded resource receipts in T042–T043/T047/T049–T050 are blocked by #1543. They MUST use its single canonical resource ledger and accepted mechanics planner rather than effect-only adapters or legacy resource fields.
 - All gameplay remains local/offline; the feature introduces no cloud service, telemetry, or GitHub Actions dependency.

@@ -12,7 +12,7 @@ Replace the unrelated Mortal player/NPC/combat and afterlife active-effect write
 
 **Language/Version**: C# 12 on .NET 8; PowerShell 7 for bounded local verification; existing React/Vite/TypeScript frontend changes only if current generic DTO rendering cannot express the safe effect projection.
 
-**Primary Dependencies**: Existing `ValidationService`, `CanonicalStateNormalizer`, `FileSystemManager`, `PendingTurnSnapshotAuthority`, accepted-turn repair/rollback loop, `StateDistributor`, `CharacteristicsService`, `AfterlifeSpiritualConflictState`, `AfterlifeEntityProfileState`, existing item/location/actor/faction materialization plan authorities, `MortalItemPlayerProjection` technical DTO suppression patterns, Spectre.Console, xUnit 2.9.2, Microsoft.NET.Test.Sdk 17.11.1, and `System.Text.Json` / `JsonNode`.
+**Primary Dependencies**: Blocking canonical resource authority [#1543](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1543) for Task 9 trigger/resource execution; existing `ValidationService`, `CanonicalStateNormalizer`, `FileSystemManager`, `PendingTurnSnapshotAuthority`, accepted-turn repair/rollback loop, `StateDistributor`, `CharacteristicsService`, `AfterlifeSpiritualConflictState`, `AfterlifeEntityProfileState`, existing item/location/actor/faction materialization plan authorities, `MortalItemPlayerProjection` technical DTO suppression patterns, Spectre.Console, xUnit 2.9.2, Microsoft.NET.Test.Sdk 17.11.1, and `System.Text.Json` / `JsonNode`.
 
 **Storage**: File-backed JSON. Transient commands stage in `game_state/effects/effect_commands.json`; active instances remain in `game_state/player/effects.json`, `game_state/npcs/npc_effects.json`, accepted Mortal combatant `activeBuffs`/`activeDebuffs`, accepted afterlife profile `activeEffects[]`, or active spiritual-conflict `combatConditions[]`; `game_state/effects/effect_identity_index.json` is client-owned identity/history authority; `game_state/control/pending_effect_resolutions.json` is client-owned bounded GM-work authority.
 
@@ -28,7 +28,7 @@ Replace the unrelated Mortal player/NPC/combat and afterlife active-effect write
 
 **Scale/Scope**: Nine registered component profiles, five stacking policies, eight lifetime modes, player/NPC/combatant/afterlife-profile/spiritual-conflict carriers, representative skill/art/item/wound/quest/location/hazard/faction/event/Fate Card/combat sources, bounded trigger resolution, player projection, GM docs/examples, and local verification.
 
-**Source Issue(s)**: [#1535](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1535)
+**Source Issue(s)**: [#1535](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1535); blocking foundation [#1543](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1543)
 
 **Contract Scope**: Player-facing console/browser; GM-facing rules/prompts/examples; Mortal and afterlife runtime state; validation/normalization; identity/source/target authority; deterministic lifecycle; derived mechanics; pending resolution; repair/rollback; documentation/manifests/source guards; no visual redesign unless required by an existing typed frontend boundary.
 
