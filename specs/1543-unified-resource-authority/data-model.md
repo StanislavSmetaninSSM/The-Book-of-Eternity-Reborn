@@ -25,7 +25,7 @@ All roots are strict JSON objects. Duplicate properties at any depth, unknown fi
 - `quantum` is positive. A value is aligned when `(value - minimum) / quantum` is integral.
 - `amount` is strictly positive and quantum-aligned for the target definition.
 - No NaN, infinity, binary floating-point tolerance, implicit rounding, or string-encoded number is accepted.
-- Exact identifiers are non-empty, already trimmed, case-sensitive, normalization-stable, and unique by the repository's Unicode-confusable key.
+- Exact identifiers are non-empty, already trimmed, case-sensitive, normalization-stable, free of control/format/line-separator characters, and unique by the repository's Unicode-confusable key.
 - Realm tokens are `mortal_world`, `chaos_sea`, or `shining_abode`.
 
 Initial technical limits are closed constants, not GM-authored settings:
@@ -128,11 +128,25 @@ The authorized owner/capacity transition supplies an exact maximum for each stat
 ```json
 {
   "kind": "registered_formula",
-  "formulaKey": "afterlife_spirit_focus_action_points_v1"
+  "formulaKey": "afterlife_spiritual_action_points_v1"
 }
 ```
 
 The formula catalog is closed in client code. No expression, JSON path, source code, method name, or arbitrary parameter bag is allowed.
+
+Version 1 registers exactly these capacity functions:
+
+| Formula key | Closed typed inputs |
+| --- | --- |
+| `mortal_health_capacity_v1` | player permanent Strength/Constitution, or a validated materialized maximum for npc/combatant/group-member/vehicle |
+| `mortal_energy_capacity_v1` | player permanent Constitution/Intelligence/Wisdom/Faith, or a validated materialized maximum for npc/combatant |
+| `mortal_poise_capacity_v1` | player permanent Strength/Constitution/Intelligence/Wisdom, or a validated materialized maximum for combatant/group-member |
+| `afterlife_spiritual_action_points_v1` | actor Spirit Focus tier, or exact conflict-side ID plus its validated maximum |
+| `afterlife_return_gacha_attempts_v1` | Guardian reputation/Abode Power/founder bonus/return-cycle ID, or Shining radiance tier/return-cycle ID |
+
+Every typed input includes an exact SHA-256 owner-authority fingerprint. The resolved capacity fingerprint additionally binds the sealed definition ID/seal, exact owner coordinate, formula key, every consumed scalar, and result. `instance_fixed` similarly binds the exact accepted capacity-authority fingerprint. A changed definition, owner authority, return cycle, characteristic, tier, or accepted maximum is stale input; it is not silently reused.
+
+The three Mortal formulas preserve the existing mechanics rather than forcing a universal maximum of 100. Player maxima use the current exact equations: health `100 + Constitution*2 + Strength`, energy `100 + trunc(Constitution*0.75) + trunc(Intelligence*0.75) + trunc(Wisdom*0.75) + trunc(Faith*0.75)`, and poise `100 + trunc(Strength*1.5) + trunc(Constitution*1.5) + trunc(Intelligence*1.5) + trunc(Wisdom*1.5)`. Other allowed owners use their validated materialization maximum through the same formula key; the GM cannot choose a method or inject a path/expression.
 
 ### 3.4 InitializationPolicy
 
@@ -142,10 +156,10 @@ Closed variants:
 { "kind": "minimum" }
 { "kind": "maximum" }
 { "kind": "fixed", "value": 3 }
-{ "kind": "registered_formula", "formulaKey": "guardian_return_charges_initial_v1" }
+{ "kind": "registered_formula", "formulaKey": "afterlife_return_gacha_attempts_v1" }
 ```
 
-The result must satisfy numeric kind, quantum, minimum, and resolved maximum. A formula reads only the validated owner/context snapshot declared by its registration.
+The result must satisfy numeric kind, quantum, minimum, and resolved maximum. A formula reads only the validated owner/context snapshot declared by its registration. Initialization is resolved separately from capacity and its fingerprint binds the resolved-capacity fingerprint, maximum, sealed initialization policy, typed formula authority when used, and exact result.
 
 ### 3.5 Built-in definitions
 
@@ -153,14 +167,14 @@ The active new-game template includes at least:
 
 | Key | Owners | Operations | Capacity source |
 | --- | --- | --- | --- |
-| `health` | player, npc, combatant, combat_group_member, vehicle | damage, restore | definition fixed 100 unless a separately registered owner policy is selected |
-| `energy` | player, npc, combatant | spend, gain | definition fixed 100 |
-| `poise` | player, combatant, combat_group_member | damage, restore | definition fixed 100 |
+| `health` | player, npc, combatant, combat_group_member, vehicle | damage, restore | registered `mortal_health_capacity_v1` typed by owner |
+| `energy` | player, npc, combatant | spend, gain | registered `mortal_energy_capacity_v1` typed by owner |
+| `poise` | player, combatant, combat_group_member | damage, restore | registered `mortal_poise_capacity_v1` typed by owner |
 | `durability` | item | damage, restore | instance fixed |
 | `charges` | item | spend, gain | instance fixed |
 | `ammunition` | item | spend, gain | instance fixed |
-| `spiritual_action_points` | afterlife_actor, afterlife_conflict_side | spend, gain | registered spirit-focus formula or authorized instance fixed for opposition |
-| `gacha_attempts` | afterlife_actor, afterlife_scope | spend, gain | registered per-return formula |
+| `spiritual_action_points` | afterlife_actor, afterlife_conflict_side | spend, gain | registered `afterlife_spiritual_action_points_v1` with actor/conflict-side typed inputs |
+| `gacha_attempts` | afterlife_actor, afterlife_scope | spend, gain | registered `afterlife_return_gacha_attempts_v1` with Guardian/Shining typed inputs |
 | `blessing_rerolls` | afterlife_actor | spend, gain | instance fixed |
 
 Mana, stamina, and setting-specific equivalents are not implicit aliases. They exist only after an exact definition is materialized.

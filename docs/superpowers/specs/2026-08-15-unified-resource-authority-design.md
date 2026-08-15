@@ -100,13 +100,13 @@ A definition has one exact, case-sensitive, Unicode-confusable-unique `resourceK
     "value": 0
   },
   "capacityPolicy": {
-    "kind": "definition_fixed",
-    "value": 100
+    "kind": "registered_formula",
+    "formulaKey": "mortal_health_capacity_v1"
   },
   "initializationPolicy": {
     "kind": "maximum"
   },
-  "allowedOwnerKinds": ["player", "npc", "combatant", "combat_group_member"],
+  "allowedOwnerKinds": ["player", "npc", "combatant", "combat_group_member", "vehicle"],
   "allowedOperations": ["damage", "restore"],
   "defaultFloorPolicy": "clamp_to_minimum",
   "defaultCapPolicy": "clamp_to_maximum",
@@ -129,6 +129,8 @@ Closed definition catalogs:
 - floor/cap behavior: an explicit registered policy, never prose.
 
 `registered_formula` points to a closed client implementation. It cannot contain source code, an expression language, a path, or a GM-selected method name.
+
+The version-1 registry contains only `mortal_health_capacity_v1`, `mortal_energy_capacity_v1`, `mortal_poise_capacity_v1`, `afterlife_spiritual_action_points_v1`, and `afterlife_return_gacha_attempts_v1`. Each accepts a closed C# input type, not a dictionary: player characteristic inputs or a validated materialized Mortal maximum; actor Spirit Focus or conflict-side maximum; Guardian reputation/Abode Power/founder bonus/return cycle or Shining radiance/return cycle. Every input carries its owner-authority SHA-256 fingerprint. Capacity output binds that fingerprint and the sealed definition identity. This preserves existing variable player, NPC, combat, group, vehicle, Guardian, Shining, and opposition mechanics without adding owner-specific JSON formulas.
 
 Initialization is separately sealed because a maximum does not imply the correct starting value for every mechanic. The policy computes an absent coordinate's initial current value from the resolved minimum/maximum or one closed formula; the GM never submits canonical current state.
 

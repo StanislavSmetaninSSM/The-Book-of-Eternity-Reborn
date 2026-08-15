@@ -34,12 +34,12 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 
 **⚠️ CRITICAL**: No domain cutover begins until this phase is GREEN.
 
-- [ ] T008 [P] Add RED wrong-root/null/empty/whitespace/duplicate/unknown/client-owned-field/limit tests in `BookOfEternityClient.Tests/ResourceMaterializationContractTests.cs`
-- [ ] T009 Implement strict duplicate-safe roots, exact identifiers/numbers/quantum helpers, closed tokens, and technical limits in `BookOfEternityClient/Services/ResourceMaterializationContract.cs` until T008 is GREEN
-- [ ] T010 [P] Add RED built-in/setting definition, materialization seal, initialization, capacity variant, owner/operation, unit, case/confusable, and no-update tests in `BookOfEternityClient.Tests/ResourceDefinitionCatalogTests.cs`
-- [ ] T011 Implement definition parsing, built-in version-1 catalog, proposal validation/sealing, exact lookup, canonical sort, and no-revision rules in `BookOfEternityClient/Services/ResourceDefinitionCatalog.cs` until T010 is GREEN
-- [ ] T012 [P] Add RED registered/fixed/instance capacity and exact owner-input fingerprint tests for health, spirit focus, Guardian/Shining gacha, and blessing rerolls in `BookOfEternityClient.Tests/ResourceCapacityFormulaCatalogTests.cs`
-- [ ] T013 Implement the closed capacity/initialization formula registry with exact decimal results and no expression/path/method selection in `BookOfEternityClient/Services/ResourceCapacityFormulaCatalog.cs` until T012 is GREEN
+- [X] T008 [P] Add RED wrong-root/null/empty/whitespace/duplicate/unknown/client-owned-field/limit tests in `BookOfEternityClient.Tests/ResourceMaterializationContractTests.cs`
+- [X] T009 Implement strict duplicate-safe roots, exact identifiers/numbers/quantum helpers, closed tokens, and technical limits in `BookOfEternityClient/Services/ResourceMaterializationContract.cs` until T008 is GREEN
+- [X] T010 [P] Add RED built-in/setting definition, materialization seal, initialization, capacity variant, owner/operation, unit, case/confusable, and no-update tests in `BookOfEternityClient.Tests/ResourceDefinitionCatalogTests.cs`
+- [X] T011 Implement definition parsing, built-in version-1 catalog, proposal validation/sealing, exact lookup, canonical sort, and no-revision rules in `BookOfEternityClient/Services/ResourceDefinitionCatalog.cs` until T010 is GREEN
+- [X] T012 [P] Add RED registered/fixed/instance capacity and exact owner-input fingerprint tests for health, spirit focus, Guardian/Shining gacha, and blessing rerolls in `BookOfEternityClient.Tests/ResourceCapacityFormulaCatalogTests.cs`
+- [X] T013 Implement the closed capacity/initialization formula registry with exact decimal results and no expression/path/method selection in `BookOfEternityClient/Services/ResourceCapacityFormulaCatalog.cs` until T012 is GREEN
 - [ ] T014 [P] Add RED state-root/coordinate/chronology/capacity-binding/duplicate/confusable/quantum/current-max/state/limit tests in `BookOfEternityClient.Tests/ResourceStateContractTests.cs`
 - [ ] T015 Implement immutable state entries, coordinate index, canonical ordering, capacity agreement, and state fingerprint in `BookOfEternityClient/Services/ResourceStateContract.cs` until T014 is GREEN
 - [ ] T016 [P] Add RED history-root/transition/source/continuity/immutable/replay/conflicting-replay/terminal/duplicate/confusable tests in `BookOfEternityClient.Tests/ResourceHistoryStateTests.cs`

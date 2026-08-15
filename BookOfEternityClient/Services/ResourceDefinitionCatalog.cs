@@ -1,0 +1,1404 @@
+using System.Collections.Frozen;
+using System.Globalization;
+using System.Text.Json;
+
+namespace BookOfEternityClient.Services;
+
+internal enum ResourceNumericKind
+{
+    Integer,
+    Decimal
+}
+
+internal enum ResourceOwnerKind
+{
+    Player,
+    Npc,
+    Combatant,
+    CombatGroupMember,
+    Vehicle,
+    Item,
+    AfterlifeActor,
+    AfterlifeConflictSide,
+    AfterlifeScope
+}
+
+internal enum ResourceOperation
+{
+    Damage,
+    Restore,
+    Spend,
+    Gain
+}
+
+internal enum ResourceMinimumKind
+{
+    DefinitionFixed
+}
+
+internal enum ResourceCapacityKind
+{
+    DefinitionFixed,
+    InstanceFixed,
+    RegisteredFormula
+}
+
+internal enum ResourceInitializationKind
+{
+    Minimum,
+    Maximum,
+    Fixed,
+    RegisteredFormula
+}
+
+internal enum ResourceBoundPolicy
+{
+    RejectBelowMinimum,
+    ClampToMinimum,
+    RejectAboveMaximum,
+    ClampToMaximum
+}
+
+internal enum ResourceVisibility
+{
+    PlayerVisible,
+    OwnerVisible,
+    GmOnly,
+    Hidden
+}
+
+internal sealed record ResourceMinimumPolicy(
+    ResourceMinimumKind Kind,
+    decimal Value);
+
+internal sealed record ResourceCapacityPolicy(
+    ResourceCapacityKind Kind,
+    decimal? Value,
+    string? FormulaKey);
+
+internal sealed record ResourceInitializationPolicy(
+    ResourceInitializationKind Kind,
+    decimal? Value,
+    string? FormulaKey);
+
+internal sealed record ResourceDefinitionMaterialization(
+    int SchemaVersion,
+    string DefinitionId,
+    string Seal,
+    int CreatedAtTurn,
+    string CreatedEventRef);
+
+internal sealed record ResourceDefinitionIdentity(
+    string DefinitionId,
+    string Seal);
+
+internal sealed record ResourceDefinition(
+    string ResourceKey,
+    int DefinitionVersion,
+    string DisplayName,
+    ResourceNumericKind NumericKind,
+    string Unit,
+    decimal Quantum,
+    ResourceMinimumPolicy MinimumPolicy,
+    ResourceCapacityPolicy CapacityPolicy,
+    ResourceInitializationPolicy InitializationPolicy,
+    IReadOnlySet<ResourceOwnerKind> AllowedOwnerKinds,
+    IReadOnlySet<ResourceOperation> AllowedOperations,
+    ResourceBoundPolicy FloorPolicy,
+    ResourceBoundPolicy CapPolicy,
+    ResourceVisibility Visibility,
+    ResourceDefinitionMaterialization Materialization);
+
+internal sealed record ResourceDefinitionCatalogResult(
+    ResourceDefinitionCatalog? Catalog,
+    IReadOnlyList<ValidationIssue> Issues,
+    bool IsMissing = false)
+{
+    internal bool IsValid => Issues.Count == 0;
+}
+
+internal sealed record ResourceDefinitionMaterializationResult(
+    ResourceDefinition? Definition,
+    IReadOnlyList<ValidationIssue> Issues)
+{
+    internal bool IsValid => Definition != null && Issues.Count == 0;
+}
+
+internal sealed class ResourceDefinitionCatalog
+{
+    private static readonly FrozenSet<string> RawDefinitionFields = Set(
+        "resourceKey",
+        "definitionVersion",
+        "displayName",
+        "numericKind",
+        "unit",
+        "quantum",
+        "minimumPolicy",
+        "capacityPolicy",
+        "initializationPolicy",
+        "allowedOwnerKinds",
+        "allowedOperations",
+        "defaultFloorPolicy",
+        "defaultCapPolicy",
+        "visibility");
+
+    private static readonly FrozenSet<string> CanonicalDefinitionFields =
+        RawDefinitionFields.Append("materialization")
+            .ToFrozenSet(StringComparer.Ordinal);
+
+    private static readonly FrozenSet<string> MinimumFixedFields = Set("kind", "value");
+    private static readonly FrozenSet<string> KindOnlyFields = Set("kind");
+    private static readonly FrozenSet<string> FormulaFields = Set("kind", "formulaKey");
+    private static readonly FrozenSet<string> MaterializationFields = Set(
+        "schemaVersion", "definitionId", "seal", "createdAtTurn", "createdEventRef");
+
+    private static readonly FrozenDictionary<string, ResourceNumericKind> NumericKinds =
+        Map(
+            ("integer", ResourceNumericKind.Integer),
+            ("decimal", ResourceNumericKind.Decimal));
+
+    private static readonly FrozenDictionary<string, ResourceOwnerKind> OwnerKinds =
+        Map(
+            ("player", ResourceOwnerKind.Player),
+            ("npc", ResourceOwnerKind.Npc),
+            ("combatant", ResourceOwnerKind.Combatant),
+            ("combat_group_member", ResourceOwnerKind.CombatGroupMember),
+            ("vehicle", ResourceOwnerKind.Vehicle),
+            ("item", ResourceOwnerKind.Item),
+            ("afterlife_actor", ResourceOwnerKind.AfterlifeActor),
+            ("afterlife_conflict_side", ResourceOwnerKind.AfterlifeConflictSide),
+            ("afterlife_scope", ResourceOwnerKind.AfterlifeScope));
+
+    private static readonly FrozenDictionary<string, ResourceOperation> Operations =
+        Map(
+            ("damage", ResourceOperation.Damage),
+            ("restore", ResourceOperation.Restore),
+            ("spend", ResourceOperation.Spend),
+            ("gain", ResourceOperation.Gain));
+
+    private static readonly FrozenDictionary<string, ResourceBoundPolicy> FloorPolicies =
+        Map(
+            ("reject_below_minimum", ResourceBoundPolicy.RejectBelowMinimum),
+            ("clamp_to_minimum", ResourceBoundPolicy.ClampToMinimum));
+
+    private static readonly FrozenDictionary<string, ResourceBoundPolicy> CapPolicies =
+        Map(
+            ("reject_above_maximum", ResourceBoundPolicy.RejectAboveMaximum),
+            ("clamp_to_maximum", ResourceBoundPolicy.ClampToMaximum));
+
+    private static readonly FrozenDictionary<string, ResourceVisibility> Visibilities =
+        Map(
+            ("player_visible", ResourceVisibility.PlayerVisible),
+            ("owner_visible", ResourceVisibility.OwnerVisible),
+            ("gm_only", ResourceVisibility.GmOnly),
+            ("hidden", ResourceVisibility.Hidden));
+
+    private readonly FrozenDictionary<string, ResourceDefinition> _byKey;
+
+    private ResourceDefinitionCatalog(IEnumerable<ResourceDefinition> definitions)
+    {
+        Definitions = definitions
+            .OrderBy(static definition => definition.ResourceKey, StringComparer.Ordinal)
+            .ToArray();
+        _byKey = Definitions.ToFrozenDictionary(
+            static definition => definition.ResourceKey,
+            StringComparer.Ordinal);
+    }
+
+    internal IReadOnlyList<ResourceDefinition> Definitions { get; }
+
+    internal static ResourceDefinitionCatalog CreateBuiltIn() =>
+        new(CreateBuiltInDefinitions());
+
+    internal bool TryResolveExact(string resourceKey, out ResourceDefinition? definition) =>
+        _byKey.TryGetValue(resourceKey, out definition);
+
+    internal static ResourceDefinitionCatalogResult ParseCanonical(
+        string? json,
+        bool allowMissingPristine)
+    {
+        var rootResult = ResourceMaterializationContract.ParseDefinitions(
+            json,
+            allowMissingPristine);
+        if (!rootResult.IsValid || rootResult.Root == null)
+        {
+            return rootResult.IsMissing && rootResult.IsValid
+                ? new ResourceDefinitionCatalogResult(
+                    new ResourceDefinitionCatalog(Array.Empty<ResourceDefinition>()),
+                    Array.Empty<ValidationIssue>(),
+                    IsMissing: true)
+                : new ResourceDefinitionCatalogResult(null, rootResult.Issues, rootResult.IsMissing);
+        }
+
+        var issues = new List<ValidationIssue>();
+        var definitions = new List<ResourceDefinition>();
+        var exactKeys = new HashSet<string>(StringComparer.Ordinal);
+        var confusableKeys = new HashSet<string>(StringComparer.Ordinal);
+        var exactDefinitionIds = new HashSet<string>(StringComparer.Ordinal);
+        var confusableDefinitionIds = new HashSet<string>(StringComparer.Ordinal);
+        var exactSeals = new HashSet<string>(StringComparer.Ordinal);
+        var confusableSeals = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var element in rootResult.Root.Value
+                     .GetProperty("definitions")
+                     .EnumerateArray())
+        {
+            var path = $"{ResourceMaterializationContract.DefinitionsPath}.definitions[{index++}]";
+            var definition = ParseDefinition(
+                element,
+                path,
+                requireMaterialization: true,
+                issues);
+            if (definition == null)
+                continue;
+
+            if (!exactKeys.Add(definition.ResourceKey))
+            {
+                Add(
+                    issues,
+                    path + ".resourceKey",
+                    "resource_definition_duplicate_key",
+                    "one exact resourceKey in the sealed catalog",
+                    definition.ResourceKey);
+            }
+            else if (!confusableKeys.Add(
+                         ResourceMaterializationContract.BuildConfusableKey(
+                             definition.ResourceKey)))
+            {
+                Add(
+                    issues,
+                    path + ".resourceKey",
+                    "resource_definition_confusable_key",
+                    "one exact/confusable resourceKey in the sealed catalog",
+                    definition.ResourceKey);
+            }
+
+            ValidateUniqueMaterializationValue(
+                definition.Materialization.DefinitionId,
+                path + ".materialization.definitionId",
+                exactDefinitionIds,
+                confusableDefinitionIds,
+                "resource_definition_duplicate_materialization_id",
+                "resource_definition_confusable_materialization_id",
+                issues);
+            ValidateUniqueMaterializationValue(
+                definition.Materialization.Seal,
+                path + ".materialization.seal",
+                exactSeals,
+                confusableSeals,
+                "resource_definition_duplicate_seal",
+                "resource_definition_confusable_seal",
+                issues);
+
+            definitions.Add(definition);
+        }
+
+        return issues.Count == 0
+            ? new ResourceDefinitionCatalogResult(
+                new ResourceDefinitionCatalog(definitions),
+                Array.Empty<ValidationIssue>())
+            : new ResourceDefinitionCatalogResult(null, issues.ToArray());
+    }
+
+    internal static ResourceDefinitionMaterializationResult MaterializeProposal(
+        JsonElement proposal,
+        ResourceDefinitionCatalog existingCatalog,
+        int createdAtTurn,
+        string? createdEventRef,
+        Func<ResourceDefinitionIdentity> allocateIdentity)
+    {
+        ArgumentNullException.ThrowIfNull(existingCatalog);
+        ArgumentNullException.ThrowIfNull(allocateIdentity);
+        var issues = new List<ValidationIssue>();
+        var path = "resourceDefinitionCreation.definition";
+
+        if (existingCatalog.Definitions.Count >= ResourceMaterializationContract.MaxDefinitions)
+        {
+            Add(
+                issues,
+                "resourceDefinitionCreation",
+                "resource_definition_limit_exceeded",
+                $"fewer than {ResourceMaterializationContract.MaxDefinitions} existing definitions before creation",
+                existingCatalog.Definitions.Count.ToString(CultureInfo.InvariantCulture));
+        }
+
+        ResourceMaterializationContract.FindDuplicateProperties(
+            proposal,
+            path,
+            issues,
+            "resource_materialization_duplicate_property");
+        issues.AddRange(ResourceMaterializationContract.ValidateRawDefinitionFields(
+            proposal,
+            path));
+
+        var parsed = ParseDefinition(
+            proposal,
+            path,
+            requireMaterialization: false,
+            issues);
+        if (createdAtTurn < 0)
+        {
+            Add(
+                issues,
+                path + ".materialization.createdAtTurn",
+                "resource_definition_invalid_materialization",
+                "non-negative accepted turn",
+                createdAtTurn.ToString(CultureInfo.InvariantCulture));
+        }
+        var validatedCreatedEventRef =
+            ResourceMaterializationContract.IsExactIdentifier(createdEventRef)
+                ? createdEventRef
+                : null;
+        if (validatedCreatedEventRef == null)
+        {
+            Add(
+                issues,
+                path + ".materialization.createdEventRef",
+                "resource_definition_invalid_materialization",
+                "exact accepted event reference",
+                createdEventRef ?? "null");
+        }
+
+        if (parsed != null)
+        {
+            if (existingCatalog.TryResolveExact(parsed.ResourceKey, out _))
+            {
+                Add(
+                    issues,
+                    path + ".resourceKey",
+                    "resource_definition_rewrite_forbidden",
+                    "new exact resourceKey",
+                    parsed.ResourceKey);
+            }
+            else
+            {
+                var confusable = ResourceMaterializationContract.BuildConfusableKey(
+                    parsed.ResourceKey);
+                if (existingCatalog.Definitions.Any(definition =>
+                        string.Equals(
+                            ResourceMaterializationContract.BuildConfusableKey(
+                                definition.ResourceKey),
+                            confusable,
+                            StringComparison.Ordinal)))
+                {
+                    Add(
+                        issues,
+                        path + ".resourceKey",
+                        "resource_definition_confusable_key",
+                        "new exact/confusable resourceKey",
+                        parsed.ResourceKey);
+                }
+            }
+        }
+
+        if (parsed == null || validatedCreatedEventRef == null || issues.Count != 0)
+            return new ResourceDefinitionMaterializationResult(null, issues.ToArray());
+
+        var identity = allocateIdentity();
+        if (identity == null ||
+            !ResourceMaterializationContract.IsExactIdentifier(identity.DefinitionId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(identity.Seal))
+        {
+            Add(
+                issues,
+                path + ".materialization",
+                "resource_definition_invalid_materialization",
+                "client-generated exact definition identity and seal",
+                identity == null
+                    ? "null"
+                    : $"definitionId={identity.DefinitionId}; seal={identity.Seal}");
+            return new ResourceDefinitionMaterializationResult(null, issues.ToArray());
+        }
+
+
+        ValidateNewMaterializationValue(
+            identity.DefinitionId,
+            path + ".materialization.definitionId",
+            existingCatalog.Definitions.Select(
+                static definition => definition.Materialization.DefinitionId),
+            "resource_definition_duplicate_materialization_id",
+            "resource_definition_confusable_materialization_id",
+            issues);
+        ValidateNewMaterializationValue(
+            identity.Seal,
+            path + ".materialization.seal",
+            existingCatalog.Definitions.Select(
+                static definition => definition.Materialization.Seal),
+            "resource_definition_duplicate_seal",
+            "resource_definition_confusable_seal",
+            issues);
+        if (issues.Count != 0)
+            return new ResourceDefinitionMaterializationResult(null, issues.ToArray());
+
+        return new ResourceDefinitionMaterializationResult(
+            parsed with
+            {
+                Materialization = new ResourceDefinitionMaterialization(
+                    ResourceMaterializationContract.SchemaVersion,
+                    identity.DefinitionId,
+                    identity.Seal,
+                    createdAtTurn,
+                    validatedCreatedEventRef)
+            },
+            Array.Empty<ValidationIssue>());
+    }
+
+    internal static bool TryParseOwnerKind(string token, out ResourceOwnerKind kind) =>
+        OwnerKinds.TryGetValue(token, out kind);
+
+    internal static string GetOwnerKindToken(ResourceOwnerKind kind) => kind switch
+    {
+        ResourceOwnerKind.Player => "player",
+        ResourceOwnerKind.Npc => "npc",
+        ResourceOwnerKind.Combatant => "combatant",
+        ResourceOwnerKind.CombatGroupMember => "combat_group_member",
+        ResourceOwnerKind.Vehicle => "vehicle",
+        ResourceOwnerKind.Item => "item",
+        ResourceOwnerKind.AfterlifeActor => "afterlife_actor",
+        ResourceOwnerKind.AfterlifeConflictSide => "afterlife_conflict_side",
+        ResourceOwnerKind.AfterlifeScope => "afterlife_scope",
+        _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+    };
+
+    private static ResourceDefinition? ParseDefinition(
+        JsonElement element,
+        string path,
+        bool requireMaterialization,
+        List<ValidationIssue> issues)
+    {
+        if (element.ValueKind != JsonValueKind.Object)
+        {
+            Add(
+                issues,
+                path,
+                "resource_definition_invalid_field",
+                "closed resource definition object",
+                element.ValueKind.ToString());
+            return null;
+        }
+
+        var startIssueCount = issues.Count;
+        var allowedFields = requireMaterialization
+            ? CanonicalDefinitionFields
+            : RawDefinitionFields;
+        ResourceMaterializationContract.ValidateClosedObject(
+            element,
+            path,
+            allowedFields,
+            issues,
+            "resource_definition_unknown_field");
+        foreach (var field in allowedFields)
+        {
+            if (!element.TryGetProperty(field, out _))
+            {
+                Add(
+                    issues,
+                    path + "." + field,
+                    "resource_definition_missing_field",
+                    "required complete definition field",
+                    "missing");
+            }
+        }
+
+        var resourceKey = ReadExactIdentifier(element, path, "resourceKey", issues);
+        var version = ReadExactInt(element, path, "definitionVersion", 1, issues);
+        var displayName = ReadReadableString(element, path, "displayName", issues);
+        var numericKind = ReadClosedToken(
+            element,
+            path,
+            "numericKind",
+            NumericKinds,
+            issues);
+        var unit = ReadExactIdentifier(element, path, "unit", issues);
+        var quantum = ReadDecimal(element, path, "quantum", issues);
+        var minimumPolicy = ParseMinimumPolicy(element, path, issues);
+        var capacityPolicy = ParseCapacityPolicy(element, path, issues);
+        var initializationPolicy = ParseInitializationPolicy(element, path, issues);
+        var ownerKinds = ParseClosedArray(
+            element,
+            path,
+            "allowedOwnerKinds",
+            OwnerKinds,
+            "owner_kind",
+            issues);
+        var operations = ParseClosedArray(
+            element,
+            path,
+            "allowedOperations",
+            Operations,
+            "operation",
+            issues);
+        var floorPolicy = ReadClosedToken(
+            element,
+            path,
+            "defaultFloorPolicy",
+            FloorPolicies,
+            issues);
+        var capPolicy = ReadClosedToken(
+            element,
+            path,
+            "defaultCapPolicy",
+            CapPolicies,
+            issues);
+        var visibility = ReadClosedToken(
+            element,
+            path,
+            "visibility",
+            Visibilities,
+            issues);
+        var materialization = requireMaterialization
+            ? ParseMaterialization(element, path, issues)
+            : PlaceholderMaterialization;
+
+        if (numericKind.HasValue &&
+            quantum.HasValue &&
+            minimumPolicy != null &&
+            capacityPolicy != null &&
+            initializationPolicy != null &&
+            ownerKinds != null)
+        {
+            ValidateNumericPolicy(
+                numericKind.Value,
+                quantum.Value,
+                minimumPolicy,
+                capacityPolicy,
+                initializationPolicy,
+                ownerKinds,
+                path,
+                issues);
+        }
+
+        if (issues.Count != startIssueCount ||
+            resourceKey == null ||
+            !version.HasValue ||
+            displayName == null ||
+            !numericKind.HasValue ||
+            unit == null ||
+            !quantum.HasValue ||
+            minimumPolicy == null ||
+            capacityPolicy == null ||
+            initializationPolicy == null ||
+            ownerKinds == null ||
+            operations == null ||
+            !floorPolicy.HasValue ||
+            !capPolicy.HasValue ||
+            !visibility.HasValue ||
+            materialization == null)
+        {
+            return null;
+        }
+
+        return new ResourceDefinition(
+            resourceKey,
+            version.Value,
+            displayName,
+            numericKind.Value,
+            unit,
+            quantum.Value,
+            minimumPolicy,
+            capacityPolicy,
+            initializationPolicy,
+            ownerKinds,
+            operations,
+            floorPolicy.Value,
+            capPolicy.Value,
+            visibility.Value,
+            materialization);
+    }
+
+    private static ResourceMinimumPolicy? ParseMinimumPolicy(
+        JsonElement root,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var policyPath = path + ".minimumPolicy";
+        if (!TryGetObject(root, "minimumPolicy", policyPath, issues, out var policy))
+            return null;
+        ResourceMaterializationContract.ValidateClosedObject(
+            policy,
+            policyPath,
+            MinimumFixedFields,
+            issues,
+            "resource_definition_unknown_field");
+        var kind = ReadExactIdentifier(policy, policyPath, "kind", issues);
+        var value = ReadDecimal(policy, policyPath, "value", issues);
+        if (!string.Equals(kind, "definition_fixed", StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                policyPath + ".kind",
+                "resource_definition_invalid_field",
+                "definition_fixed",
+                kind ?? "missing");
+            return null;
+        }
+
+        return value.HasValue
+            ? new ResourceMinimumPolicy(ResourceMinimumKind.DefinitionFixed, value.Value)
+            : null;
+    }
+
+    private static ResourceCapacityPolicy? ParseCapacityPolicy(
+        JsonElement root,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var policyPath = path + ".capacityPolicy";
+        if (!TryGetObject(root, "capacityPolicy", policyPath, issues, out var policy))
+            return null;
+        var kind = ReadExactIdentifier(policy, policyPath, "kind", issues);
+        switch (kind)
+        {
+            case "definition_fixed":
+                ResourceMaterializationContract.ValidateClosedObject(
+                    policy,
+                    policyPath,
+                    MinimumFixedFields,
+                    issues,
+                    "resource_definition_unknown_field");
+                var value = ReadDecimal(policy, policyPath, "value", issues);
+                return value.HasValue
+                    ? new ResourceCapacityPolicy(
+                        ResourceCapacityKind.DefinitionFixed,
+                        value.Value,
+                        null)
+                    : null;
+
+            case "instance_fixed":
+                ResourceMaterializationContract.ValidateClosedObject(
+                    policy,
+                    policyPath,
+                    KindOnlyFields,
+                    issues,
+                    "resource_definition_unknown_field");
+                return new ResourceCapacityPolicy(
+                    ResourceCapacityKind.InstanceFixed,
+                    null,
+                    null);
+
+            case "registered_formula":
+                ResourceMaterializationContract.ValidateClosedObject(
+                    policy,
+                    policyPath,
+                    FormulaFields,
+                    issues,
+                    "resource_definition_unknown_field");
+                var formulaKey = ReadExactIdentifier(
+                    policy,
+                    policyPath,
+                    "formulaKey",
+                    issues);
+                if (formulaKey != null &&
+                    !ResourceCapacityFormulaCatalog.IsRegisteredFormulaKey(formulaKey))
+                {
+                    Add(
+                        issues,
+                        policyPath + ".formulaKey",
+                        "resource_definition_formula_unknown",
+                        "registered client capacity formula key",
+                        formulaKey);
+                    return null;
+                }
+                return formulaKey == null
+                    ? null
+                    : new ResourceCapacityPolicy(
+                        ResourceCapacityKind.RegisteredFormula,
+                        null,
+                        formulaKey);
+
+            default:
+                Add(
+                    issues,
+                    policyPath + ".kind",
+                    "resource_definition_invalid_field",
+                    "definition_fixed | instance_fixed | registered_formula",
+                    kind ?? "missing");
+                return null;
+        }
+    }
+
+    private static ResourceInitializationPolicy? ParseInitializationPolicy(
+        JsonElement root,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var policyPath = path + ".initializationPolicy";
+        if (!TryGetObject(root, "initializationPolicy", policyPath, issues, out var policy))
+            return null;
+        var kind = ReadExactIdentifier(policy, policyPath, "kind", issues);
+        switch (kind)
+        {
+            case "minimum":
+                ResourceMaterializationContract.ValidateClosedObject(
+                    policy, policyPath, KindOnlyFields, issues, "resource_definition_unknown_field");
+                return new ResourceInitializationPolicy(
+                    ResourceInitializationKind.Minimum, null, null);
+            case "maximum":
+                ResourceMaterializationContract.ValidateClosedObject(
+                    policy, policyPath, KindOnlyFields, issues, "resource_definition_unknown_field");
+                return new ResourceInitializationPolicy(
+                    ResourceInitializationKind.Maximum, null, null);
+            case "fixed":
+                ResourceMaterializationContract.ValidateClosedObject(
+                    policy, policyPath, MinimumFixedFields, issues, "resource_definition_unknown_field");
+                var value = ReadDecimal(policy, policyPath, "value", issues);
+                return value.HasValue
+                    ? new ResourceInitializationPolicy(
+                        ResourceInitializationKind.Fixed, value.Value, null)
+                    : null;
+            case "registered_formula":
+                ResourceMaterializationContract.ValidateClosedObject(
+                    policy, policyPath, FormulaFields, issues, "resource_definition_unknown_field");
+                var formulaKey = ReadExactIdentifier(
+                    policy,
+                    policyPath,
+                    "formulaKey",
+                    issues);
+                if (formulaKey != null &&
+                    !ResourceCapacityFormulaCatalog.IsRegisteredFormulaKey(formulaKey))
+                {
+                    Add(
+                        issues,
+                        policyPath + ".formulaKey",
+                        "resource_definition_formula_unknown",
+                        "registered client initialization formula key",
+                        formulaKey);
+                    return null;
+                }
+                return formulaKey == null
+                    ? null
+                    : new ResourceInitializationPolicy(
+                        ResourceInitializationKind.RegisteredFormula,
+                        null,
+                        formulaKey);
+            default:
+                Add(
+                    issues,
+                    policyPath + ".kind",
+                    "resource_definition_invalid_field",
+                    "minimum | maximum | fixed | registered_formula",
+                    kind ?? "missing");
+                return null;
+        }
+    }
+
+    private static ResourceDefinitionMaterialization? ParseMaterialization(
+        JsonElement root,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var materializationPath = path + ".materialization";
+        if (!TryGetObject(
+                root,
+                "materialization",
+                materializationPath,
+                issues,
+                out var materialization))
+        {
+            return null;
+        }
+
+        ResourceMaterializationContract.ValidateClosedObject(
+            materialization,
+            materializationPath,
+            MaterializationFields,
+            issues,
+            "resource_definition_unknown_field");
+        var schemaVersion = ReadExactInt(
+            materialization,
+            materializationPath,
+            "schemaVersion",
+            ResourceMaterializationContract.SchemaVersion,
+            issues);
+        var definitionId = ReadExactIdentifier(
+            materialization,
+            materializationPath,
+            "definitionId",
+            issues);
+        var seal = ReadExactIdentifier(
+            materialization,
+            materializationPath,
+            "seal",
+            issues);
+        var turn = ReadNonNegativeInt(
+            materialization,
+            materializationPath,
+            "createdAtTurn",
+            issues);
+        var eventRef = ReadExactIdentifier(
+            materialization,
+            materializationPath,
+            "createdEventRef",
+            issues);
+        return schemaVersion.HasValue && definitionId != null && seal != null &&
+               turn.HasValue && eventRef != null
+            ? new ResourceDefinitionMaterialization(
+                schemaVersion.Value,
+                definitionId,
+                seal,
+                turn.Value,
+                eventRef)
+            : null;
+    }
+
+    private static void ValidateNumericPolicy(
+        ResourceNumericKind numericKind,
+        decimal quantum,
+        ResourceMinimumPolicy minimum,
+        ResourceCapacityPolicy capacity,
+        ResourceInitializationPolicy initialization,
+        IReadOnlySet<ResourceOwnerKind> ownerKinds,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var invalid = quantum <= 0m;
+        if (numericKind == ResourceNumericKind.Integer)
+        {
+            invalid |= !ResourceMaterializationContract.IsIntegral(quantum) ||
+                       !ResourceMaterializationContract.IsIntegral(minimum.Value);
+        }
+
+        if (capacity.Kind == ResourceCapacityKind.DefinitionFixed)
+        {
+            var maximum = capacity.Value!.Value;
+            invalid |= maximum <= minimum.Value ||
+                       !ResourceMaterializationContract.IsQuantumAligned(
+                           maximum,
+                           minimum.Value,
+                           quantum);
+            if (numericKind == ResourceNumericKind.Integer)
+                invalid |= !ResourceMaterializationContract.IsIntegral(maximum);
+
+            if (initialization.Kind == ResourceInitializationKind.Fixed &&
+                initialization.Value.HasValue)
+            {
+                invalid |= initialization.Value.Value < minimum.Value ||
+                           initialization.Value.Value > maximum;
+            }
+        }
+
+        if (initialization.Kind == ResourceInitializationKind.Fixed &&
+            initialization.Value.HasValue)
+        {
+            invalid |= !ResourceMaterializationContract.IsQuantumAligned(
+                initialization.Value.Value,
+                minimum.Value,
+                quantum);
+            if (numericKind == ResourceNumericKind.Integer)
+                invalid |= !ResourceMaterializationContract.IsIntegral(
+                    initialization.Value.Value);
+        }
+
+        if (invalid)
+        {
+            Add(
+                issues,
+                path,
+                "resource_definition_invalid_numeric_policy",
+                "positive exact quantum and definition values aligned to numeric kind/minimum/capacity",
+                $"numericKind={numericKind}; quantum={quantum}; minimum={minimum.Value}; capacity={capacity.Value}; initialization={initialization.Value}");
+        }
+
+        ValidateFormulaOwnerCompatibility(
+            capacity.FormulaKey,
+            ownerKinds,
+            path + ".capacityPolicy.formulaKey",
+            issues);
+        ValidateFormulaOwnerCompatibility(
+            initialization.FormulaKey,
+            ownerKinds,
+            path + ".initializationPolicy.formulaKey",
+            issues);
+    }
+
+    private static void ValidateFormulaOwnerCompatibility(
+        string? formulaKey,
+        IReadOnlySet<ResourceOwnerKind> ownerKinds,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (formulaKey == null ||
+            ResourceCapacityFormulaCatalog.SupportsEveryOwnerKind(formulaKey, ownerKinds))
+        {
+            return;
+        }
+
+        Add(
+            issues,
+            path,
+            "resource_definition_formula_owner_mismatch",
+            "registered formula supporting every allowed owner kind",
+            formulaKey);
+    }
+
+    private static FrozenSet<T>? ParseClosedArray<T>(
+        JsonElement root,
+        string path,
+        string field,
+        IReadOnlyDictionary<string, T> catalog,
+        string label,
+        List<ValidationIssue> issues)
+        where T : struct, Enum
+    {
+        var arrayPath = path + "." + field;
+        if (!root.TryGetProperty(field, out var array) ||
+            array.ValueKind != JsonValueKind.Array ||
+            array.GetArrayLength() == 0)
+        {
+            Add(
+                issues,
+                arrayPath,
+                "resource_definition_invalid_field",
+                $"non-empty registered {label} array",
+                ResourceMaterializationContract.Describe(root, field));
+            return null;
+        }
+
+        var result = new HashSet<T>();
+        var exact = new HashSet<string>(StringComparer.Ordinal);
+        var confusable = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var value in array.EnumerateArray())
+        {
+            var valuePath = $"{arrayPath}[{index++}]";
+            if (value.ValueKind != JsonValueKind.String ||
+                !ResourceMaterializationContract.IsExactIdentifier(value.GetString()))
+            {
+                Add(
+                    issues,
+                    valuePath,
+                    "resource_definition_invalid_field",
+                    $"exact registered {label}",
+                    value.GetRawText());
+                continue;
+            }
+
+            var token = value.GetString()!;
+            if (!exact.Add(token))
+            {
+                Add(
+                    issues,
+                    valuePath,
+                    $"resource_definition_duplicate_{label}",
+                    $"one exact {label}",
+                    token);
+                continue;
+            }
+            if (!confusable.Add(ResourceMaterializationContract.BuildConfusableKey(token)))
+            {
+                Add(
+                    issues,
+                    valuePath,
+                    $"resource_definition_confusable_{label}",
+                    $"one exact/confusable {label}",
+                    token);
+                continue;
+            }
+            if (!catalog.TryGetValue(token, out var parsed))
+            {
+                Add(
+                    issues,
+                    valuePath,
+                    "resource_definition_invalid_field",
+                    $"registered {label}",
+                    token);
+                continue;
+            }
+
+            result.Add(parsed);
+        }
+
+        return result.Count == 0 ? null : result.ToFrozenSet();
+    }
+
+    private static void ValidateUniqueMaterializationValue(
+        string value,
+        string path,
+        HashSet<string> exactValues,
+        HashSet<string> confusableValues,
+        string duplicateCode,
+        string confusableCode,
+        List<ValidationIssue> issues)
+    {
+        if (!exactValues.Add(value))
+        {
+            Add(
+                issues,
+                path,
+                duplicateCode,
+                "one exact client-owned materialization identity",
+                value);
+            return;
+        }
+
+        if (!confusableValues.Add(ResourceMaterializationContract.BuildConfusableKey(value)))
+        {
+            Add(
+                issues,
+                path,
+                confusableCode,
+                "one exact/confusable client-owned materialization identity",
+                value);
+        }
+    }
+
+    private static void ValidateNewMaterializationValue(
+        string value,
+        string path,
+        IEnumerable<string> existingValues,
+        string duplicateCode,
+        string confusableCode,
+        List<ValidationIssue> issues)
+    {
+        var values = existingValues.ToArray();
+        if (values.Any(existing => string.Equals(existing, value, StringComparison.Ordinal)))
+        {
+            Add(
+                issues,
+                path,
+                duplicateCode,
+                "new exact client-owned materialization identity",
+                value);
+            return;
+        }
+
+        var confusable = ResourceMaterializationContract.BuildConfusableKey(value);
+        if (values.Any(existing => string.Equals(
+                ResourceMaterializationContract.BuildConfusableKey(existing),
+                confusable,
+                StringComparison.Ordinal)))
+        {
+            Add(
+                issues,
+                path,
+                confusableCode,
+                "new exact/confusable client-owned materialization identity",
+                value);
+        }
+    }
+
+    private static string? ReadExactIdentifier(
+        JsonElement root,
+        string path,
+        string field,
+        List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(field, out var value) &&
+            value.ValueKind == JsonValueKind.String &&
+            ResourceMaterializationContract.IsExactIdentifier(value.GetString()))
+        {
+            return value.GetString();
+        }
+
+        Add(
+            issues,
+            path + "." + field,
+            "resource_definition_invalid_field",
+            "exact non-empty normalization-stable string",
+            ResourceMaterializationContract.Describe(root, field));
+        return null;
+    }
+
+    private static string? ReadReadableString(
+        JsonElement root,
+        string path,
+        string field,
+        List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(field, out var value) &&
+            value.ValueKind == JsonValueKind.String &&
+            ResourceMaterializationContract.IsExactIdentifier(value.GetString()))
+        {
+            return value.GetString();
+        }
+
+        Add(
+            issues,
+            path + "." + field,
+            "resource_definition_invalid_field",
+            "non-empty normalized display string without surrounding whitespace",
+            ResourceMaterializationContract.Describe(root, field));
+        return null;
+    }
+
+    private static decimal? ReadDecimal(
+        JsonElement root,
+        string path,
+        string field,
+        List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(field, out var value) &&
+            ResourceMaterializationContract.TryReadExactDecimal(value, out var number))
+        {
+            return number;
+        }
+
+        Add(
+            issues,
+            path + "." + field,
+            "resource_definition_invalid_field",
+            "exact JSON decimal number",
+            ResourceMaterializationContract.Describe(root, field));
+        return null;
+    }
+
+    private static int? ReadExactInt(
+        JsonElement root,
+        string path,
+        string field,
+        int expected,
+        List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(field, out var value) &&
+            value.ValueKind == JsonValueKind.Number &&
+            value.TryGetInt32(out var number) &&
+            number == expected)
+        {
+            return number;
+        }
+
+        Add(
+            issues,
+            path + "." + field,
+            "resource_definition_invalid_field",
+            expected.ToString(CultureInfo.InvariantCulture),
+            ResourceMaterializationContract.Describe(root, field));
+        return null;
+    }
+
+    private static int? ReadNonNegativeInt(
+        JsonElement root,
+        string path,
+        string field,
+        List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(field, out var value) &&
+            value.ValueKind == JsonValueKind.Number &&
+            value.TryGetInt32(out var number) &&
+            number >= 0)
+        {
+            return number;
+        }
+
+        Add(
+            issues,
+            path + "." + field,
+            "resource_definition_invalid_materialization",
+            "non-negative integer",
+            ResourceMaterializationContract.Describe(root, field));
+        return null;
+    }
+
+    private static T? ReadClosedToken<T>(
+        JsonElement root,
+        string path,
+        string field,
+        IReadOnlyDictionary<string, T> catalog,
+        List<ValidationIssue> issues)
+        where T : struct, Enum
+    {
+        var token = ReadExactIdentifier(root, path, field, issues);
+        if (token != null && catalog.TryGetValue(token, out var value))
+            return value;
+
+        if (token != null)
+        {
+            Add(
+                issues,
+                path + "." + field,
+                "resource_definition_invalid_field",
+                string.Join(" | ", catalog.Keys.OrderBy(static key => key, StringComparer.Ordinal)),
+                token);
+        }
+        return null;
+    }
+
+    private static bool TryGetObject(
+        JsonElement root,
+        string field,
+        string path,
+        List<ValidationIssue> issues,
+        out JsonElement value)
+    {
+        if (root.TryGetProperty(field, out value) &&
+            value.ValueKind == JsonValueKind.Object)
+        {
+            return true;
+        }
+
+        Add(
+            issues,
+            path,
+            "resource_definition_invalid_field",
+            "object",
+            ResourceMaterializationContract.Describe(root, field));
+        return false;
+    }
+
+    private static IReadOnlyList<ResourceDefinition> CreateBuiltInDefinitions()
+    {
+        var minimum = new ResourceMinimumPolicy(ResourceMinimumKind.DefinitionFixed, 0m);
+        var instanceFixed = new ResourceCapacityPolicy(
+            ResourceCapacityKind.InstanceFixed, null, null);
+        var initializeMaximum = new ResourceInitializationPolicy(
+            ResourceInitializationKind.Maximum, null, null);
+
+        return
+        [
+            BuiltIn(
+                "health", "Здоровье", "percent_point", minimum,
+                new ResourceCapacityPolicy(
+                    ResourceCapacityKind.RegisteredFormula,
+                    null,
+                    ResourceCapacityFormulaCatalog.MortalHealthCapacityV1),
+                initializeMaximum,
+                Owners(
+                    ResourceOwnerKind.Player,
+                    ResourceOwnerKind.Npc,
+                    ResourceOwnerKind.Combatant,
+                    ResourceOwnerKind.CombatGroupMember,
+                    ResourceOwnerKind.Vehicle),
+                OperationsSet(ResourceOperation.Damage, ResourceOperation.Restore),
+                ResourceBoundPolicy.ClampToMinimum,
+                ResourceBoundPolicy.ClampToMaximum),
+            BuiltIn(
+                "energy", "Энергия", "point", minimum,
+                new ResourceCapacityPolicy(
+                    ResourceCapacityKind.RegisteredFormula,
+                    null,
+                    ResourceCapacityFormulaCatalog.MortalEnergyCapacityV1),
+                initializeMaximum,
+                Owners(ResourceOwnerKind.Player, ResourceOwnerKind.Npc, ResourceOwnerKind.Combatant),
+                OperationsSet(ResourceOperation.Spend, ResourceOperation.Gain),
+                ResourceBoundPolicy.RejectBelowMinimum,
+                ResourceBoundPolicy.ClampToMaximum),
+            BuiltIn(
+                "poise", "Стойкость", "point", minimum,
+                new ResourceCapacityPolicy(
+                    ResourceCapacityKind.RegisteredFormula,
+                    null,
+                    ResourceCapacityFormulaCatalog.MortalPoiseCapacityV1),
+                initializeMaximum,
+                Owners(ResourceOwnerKind.Player, ResourceOwnerKind.Combatant, ResourceOwnerKind.CombatGroupMember),
+                OperationsSet(ResourceOperation.Damage, ResourceOperation.Restore),
+                ResourceBoundPolicy.ClampToMinimum,
+                ResourceBoundPolicy.ClampToMaximum),
+            BuiltIn(
+                "durability", "Прочность", "point", minimum, instanceFixed,
+                initializeMaximum,
+                Owners(ResourceOwnerKind.Item),
+                OperationsSet(ResourceOperation.Damage, ResourceOperation.Restore),
+                ResourceBoundPolicy.ClampToMinimum,
+                ResourceBoundPolicy.ClampToMaximum),
+            BuiltIn(
+                "charges", "Заряды", "charge", minimum, instanceFixed,
+                initializeMaximum,
+                Owners(ResourceOwnerKind.Item),
+                OperationsSet(ResourceOperation.Spend, ResourceOperation.Gain),
+                ResourceBoundPolicy.RejectBelowMinimum,
+                ResourceBoundPolicy.ClampToMaximum),
+            BuiltIn(
+                "ammunition", "Боезапас", "round", minimum, instanceFixed,
+                initializeMaximum,
+                Owners(ResourceOwnerKind.Item),
+                OperationsSet(ResourceOperation.Spend, ResourceOperation.Gain),
+                ResourceBoundPolicy.RejectBelowMinimum,
+                ResourceBoundPolicy.ClampToMaximum),
+            BuiltIn(
+                "spiritual_action_points", "Очки духовного действия", "point", minimum,
+                new ResourceCapacityPolicy(
+                    ResourceCapacityKind.RegisteredFormula,
+                    null,
+                    ResourceCapacityFormulaCatalog.AfterlifeSpiritualActionPointsV1),
+                initializeMaximum,
+                Owners(ResourceOwnerKind.AfterlifeActor, ResourceOwnerKind.AfterlifeConflictSide),
+                OperationsSet(ResourceOperation.Spend, ResourceOperation.Gain),
+                ResourceBoundPolicy.RejectBelowMinimum,
+                ResourceBoundPolicy.ClampToMaximum),
+            BuiltIn(
+                "gacha_attempts", "Попытки призыва", "attempt", minimum,
+                new ResourceCapacityPolicy(
+                    ResourceCapacityKind.RegisteredFormula,
+                    null,
+                    ResourceCapacityFormulaCatalog.AfterlifeReturnGachaAttemptsV1),
+                initializeMaximum,
+                Owners(ResourceOwnerKind.AfterlifeActor, ResourceOwnerKind.AfterlifeScope),
+                OperationsSet(ResourceOperation.Spend, ResourceOperation.Gain),
+                ResourceBoundPolicy.RejectBelowMinimum,
+                ResourceBoundPolicy.ClampToMaximum),
+            BuiltIn(
+                "blessing_rerolls", "Перебросы благословения", "reroll", minimum,
+                instanceFixed,
+                initializeMaximum,
+                Owners(ResourceOwnerKind.AfterlifeActor),
+                OperationsSet(ResourceOperation.Spend, ResourceOperation.Gain),
+                ResourceBoundPolicy.RejectBelowMinimum,
+                ResourceBoundPolicy.ClampToMaximum)
+        ];
+    }
+
+    private static ResourceDefinition BuiltIn(
+        string key,
+        string displayName,
+        string unit,
+        ResourceMinimumPolicy minimum,
+        ResourceCapacityPolicy capacity,
+        ResourceInitializationPolicy initialization,
+        FrozenSet<ResourceOwnerKind> owners,
+        FrozenSet<ResourceOperation> operations,
+        ResourceBoundPolicy floorPolicy,
+        ResourceBoundPolicy capPolicy) =>
+        new(
+            key,
+            1,
+            displayName,
+            ResourceNumericKind.Integer,
+            unit,
+            1m,
+            minimum,
+            capacity,
+            initialization,
+            owners,
+            operations,
+            floorPolicy,
+            capPolicy,
+            ResourceVisibility.PlayerVisible,
+            new ResourceDefinitionMaterialization(
+                ResourceMaterializationContract.SchemaVersion,
+                $"resource_definition_builtin_{key}_v1",
+                $"resource_definition_seal_builtin_{key}_v1",
+                0,
+                "bootstrap_0"));
+
+    private static ResourceDefinitionMaterialization PlaceholderMaterialization { get; } =
+        new(0, string.Empty, string.Empty, 0, string.Empty);
+
+    private static FrozenSet<ResourceOwnerKind> Owners(params ResourceOwnerKind[] values) =>
+        values.ToFrozenSet();
+
+    private static FrozenSet<ResourceOperation> OperationsSet(params ResourceOperation[] values) =>
+        values.ToFrozenSet();
+
+    private static FrozenSet<string> Set(params string[] values) =>
+        values.ToFrozenSet(StringComparer.Ordinal);
+
+    private static FrozenDictionary<string, T> Map<T>(params (string Key, T Value)[] values)
+        where T : struct, Enum =>
+        values.ToFrozenDictionary(static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
+
+    private static void Add(
+        List<ValidationIssue> issues,
+        string path,
+        string code,
+        string expected,
+        string actual) =>
+        ResourceMaterializationContract.AddIssue(
+            issues,
+            path,
+            code,
+            expected,
+            actual,
+            code.Contains("client", StringComparison.Ordinal)
+                ? IssueCategory.ClientOwnedSurface
+                : IssueCategory.StateConsistency);
+}

@@ -161,6 +161,17 @@ git commit -m "test: lock resource authority inventory (#1543)"
 - Create: `BookOfEternityClient.Tests/ResourceDefinitionCatalogTests.cs`
 - Create: `BookOfEternityClient.Tests/ResourceCapacityFormulaCatalogTests.cs`
 
+**Execution checkpoint (2026-08-15):**
+
+- Contract/definition/formula RED summaries: `20260815-155710-015-49484-de5d819a9e684f22bd6278e5921c66dc-focused`, `20260815-155803-263-56844-1dcddf84cbe74cf8a18c258dbaf7c00a-focused`, and `20260815-155817-070-47076-1e519cd3071a48fb9819f89c9c6b40e5-focused`; each is the expected build failure before its production type existed.
+- Initial warning-free GREEN: `TestResults/test-lanes/20260815-161005-214-42364-6359775727804188888bf2dc485334ce-focused/summary.json`, `80/80`, failures `0`, duplicates `0`, timeout `false`, cleanup `complete`.
+- Implementation review found that a single fixed maximum of 100 would discard the current player characteristic equations and already-supported NPC/combat/group/vehicle maxima such as 28, 30, and 40. The corrected model keeps one sealed definition per key but uses three closed Mortal owner-typed formulas. It also uses one typed actor/conflict formula for spiritual action points and one typed Guardian/Shining formula for gacha attempts. No formula/path/expression bag was introduced.
+- Owner-typed capacity plus separately bound initialization RED: `TestResults/test-lanes/20260815-162015-617-42904-6c99e1af2afd45199d82fb7aa57fad8d-focused/summary.json`; expected missing-key/type/resolver build failure. First corrected combined GREEN: `TestResults/test-lanes/20260815-162422-035-18084-9e60a4074c5c4a6e9983701bbc385e25-focused/summary.json`, `93/93`.
+- Catalog limit and client identity/seal collision RED/GREEN: `TestResults/test-lanes/20260815-162830-623-7888-9151c4cd8e604342be793c86f36ffed8-focused/summary.json` (`23/26`) to `TestResults/test-lanes/20260815-162937-229-54592-6a491fc4e40b468eb3da8ad2fc95f3f2-focused/summary.json` (`26/26`).
+- Unsafe control/bidirectional-format identifier RED/GREEN: `TestResults/test-lanes/20260815-163115-462-55040-4d064e2b9d894edb8b777de0f1212262-focused/summary.json` (`7/9`) to `TestResults/test-lanes/20260815-163206-319-45804-d59158a750b64eca987e58f526c4b1dc-focused/summary.json` (`9/9`).
+- Final combined Task-2 GREEN: `TestResults/test-lanes/20260815-163421-269-37484-bd8cfe7ab53644109046e35425c1a980-focused/summary.json`; `98/98`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, wall `00:00:15.4103477`, build warnings/errors `0/0`.
+- The diff review and disabled-Actions check are recorded before the selective commit; the resulting commit SHA is reported in the handoff rather than self-referenced inside its own tree.
+
 **Step 1: RED strict-root and scalar tests**
 
 Cover missing versus present `null`, empty/whitespace, wrong root kind, malformed JSON, duplicate properties at every depth, unknown closed fields, trimmed/case/confusable identifiers, unsupported numbers, precision, non-integral integer values, invalid quantum, and every technical limit boundary.

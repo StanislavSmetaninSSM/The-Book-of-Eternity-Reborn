@@ -64,6 +64,10 @@ Allowed operations:
 
 For `definition_fixed`, submitted `capacity` is forbidden. For `instance_fixed`, it is `{ "kind":"instance_fixed", "maximum": <exact positive number> }`. For `registered_formula`, it names only the exact formula key already sealed in the definition; all formula inputs come from validated owner state.
 
+The version-1 registered keys are exactly `mortal_health_capacity_v1`, `mortal_energy_capacity_v1`, `mortal_poise_capacity_v1`, `afterlife_spiritual_action_points_v1`, and `afterlife_return_gacha_attempts_v1`. Their input variants are closed typed client records; the GM cannot supply a parameter bag. Mortal player variants consume the exact permanent characteristics used by the existing maximum equations, while other allowed Mortal owners consume their validated materialization maximum. Afterlife variants consume Spirit Focus/conflict-side authority or Guardian/Shining return-cycle authority. Every variant binds the exact owner-authority fingerprint, and every resolved capacity binds the sealed definition ID/seal.
+
+Initialization is resolved after capacity. `minimum`, `maximum`, and `fixed` are sealed static policies; `registered_formula` uses one of the same closed typed functions. The initialization fingerprint includes the resolved-capacity fingerprint and maximum, so a stale capacity cannot initialize a coordinate.
+
 The GM does not author current state. Initialization uses the definition initialization policy. Reconfiguration applies only the selected closed disposition and fails on inexact ratio or unauthorized clamp.
 
 ## 5. Ordinary changes

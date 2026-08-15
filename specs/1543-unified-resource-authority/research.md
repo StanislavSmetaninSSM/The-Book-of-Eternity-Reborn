@@ -70,9 +70,9 @@ Money, Ink Feathers, Light Sparks, treasuries, faction resource ledgers, prices,
 
 ## Decision 5: Built-in definition and capacity policy
 
-**Decision**: Active templates ship built-in version-1 definitions. Health, energy, poise, action points, charges, ammunition, durability, and rerolls use integer quantum `1` unless a source-specific registered definition states otherwise. Capacity is one of `definition_fixed`, `instance_fixed`, or a closed `registered_formula`; formulas receive a validated owner snapshot and return an exact capacity without arbitrary expressions.
+**Decision**: Active templates ship built-in version-1 definitions. Health, energy, poise, action points, charges, ammunition, durability, and rerolls use integer quantum `1` unless a source-specific registered definition states otherwise. Capacity is one of `definition_fixed`, `instance_fixed`, or a closed `registered_formula`; formulas receive a typed validated owner snapshot plus its exact authority fingerprint and return an exact capacity without arbitrary expressions. Health, energy, and poise use closed owner-typed formulas so player characteristic-derived maxima and existing NPC/combat/group/vehicle materialized maxima share one definition without forcing every owner to 100. Spiritual action points use one formula with actor Spirit-Focus and conflict-side typed variants. Gacha attempts use one formula with Guardian and Shining typed variants. Initialization is resolved independently and binds the resolved-capacity fingerprint.
 
-**Rationale**: Built-ins must work before the GM can act, while settings need bounded extensibility. Registered formulas cover existing derived maxima such as spirit-focus action points and Guardian reputation gacha capacity without exposing code selection to the GM.
+**Rationale**: Built-ins must work before the GM can act, while settings need bounded extensibility. Registered formulas cover existing player characteristic maxima, per-owner Mortal maxima, spirit-focus/conflict-side action points, and Guardian/Shining return capacity without exposing code selection to the GM. A single `definition_fixed=100` health/energy/poise policy was rejected during implementation review because it would discard already supported 28/30/40-style combat and vehicle maxima and the player's characteristic-derived values.
 
 **Alternatives considered**:
 
