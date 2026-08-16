@@ -73,7 +73,6 @@ $script:TurnCount = 0
 $script:ErrorCount = 0
 $script:StartTime = Get-Date
 $script:IsProcessing = $false
-$script:BootstrapSent = $false
 $script:ObservedTerminalRequestKeys = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
 $script:RepoRootPath = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $script:TaskGuideMainPath = Join-Path $script:RepoRootPath "TaskGuides\CLI_Step_Main.txt"
@@ -5352,36 +5351,6 @@ function Send-ToCliWindow {
         Write-Log "  -> SendKeys failed: $_. Command in clipboard." -Level "WARN" -Color Yellow
         return "failed"
     }
-}
-
-function Ensure-CliBootstrapSent {
-    if ($script:BootstrapSent) { return $true }
-
-    $message = @"
-BOOTSTRAP GM SESSION
-
-This is bootstrap only, not an active turn.
-Do NOT write ready/turn_complete.json or ready/turn_error.json yet.
-A real turn prompt will explicitly reference input\turn_request.json with the current sessionId/requestId/turnNumber.
-$($script:GmContextPackDirective)
-$($script:GmTurnHelperDirective)
-
-Read '$($script:GmContextPackManifestPath)' and '$($script:GmContextPackRoot)\README.md' as the session-local starting context.
-Bootstrap scope: read only context_pack_manifest.json and README.md.
-Do not open copied guides/examples during bootstrap.
-Open large copied docs only when a per-turn, repair, or terminal-failure prompt explicitly names them.
-Do not browse repository implementation code or repo-root planning documents during bootstrap.
-After bootstrap, reply with exactly BOE_GM_BOOTSTRAP_READY and finish your response.
-Do not keep this bootstrap request open; returning to the CLI input prompt is what lets the bridge accept the real turn.
-"@
-    $dispatch = Send-ToCliWindow -Message $message
-    if ($dispatch -eq "sent" -or $dispatch -eq "clipboard") {
-        $script:BootstrapSent = $true
-        Write-Log "  -> Bootstrap launch script dispatched" -Color Green
-        return $true
-    }
-
-    return $false
 }
 
 function Dispatch-WithRetry {
