@@ -559,6 +559,17 @@
         "Shining Abode"
       ],
       "description": "Client-owned spiritual_action_points, gacha_attempts, and blessing_rerolls use exact resourceOwnerBindings and immutable common history; the GM writes only resourceMaterialization for a new scoped opposition plus the established audit or gameplay result, never actionEconomy, numeric gacha counters, blessing mirrors, ledger values, or client IDs. Ink Feathers, Light Sparks, treasuries, faction accounting, progression, relationships, and spiritual power/strain/shield remain specialized. No migration or legacy fallback exists."
+    },
+    {
+      "contractId": "afterlife_actor_resource_materialization_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json + game_state/resources/resource_state.json + game_state/resources/resource_history.json",
+      "responseSurface": "afterlifeEntityProfiles[].resourceMaterialization",
+      "realms": [
+        "Chaos Sea",
+        "Shining Abode"
+      ],
+      "description": "A complete first Actor Materialization profile may initialize a pre-sealed setting-defined afterlife_actor resource. The exact actorId remains canonical, materializationId is the same-turn ownerRef, no second actor ID or actorRef is created, resourceMaterialization is client-consumed, and existing materialized profiles may not resend it."
     }
   ],
   "syntaxExemptions": [

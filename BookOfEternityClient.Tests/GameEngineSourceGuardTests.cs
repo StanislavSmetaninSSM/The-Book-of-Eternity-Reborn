@@ -1052,6 +1052,13 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("activeSnapshotContext);", acceptedTurnValidation, StringComparison.Ordinal);
         Assert.Contains("catch (SessionReplacedException)", acceptedTurnValidation, StringComparison.Ordinal);
         Assert.Contains("FailClosedAcceptedTurnCanonicalRefreshAsync(", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("canonicalRefresh.MechanicsPlan is { AwaitsPendingResolution: true }", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("BuildBoundedResourceResolutionResubmissionIssue(pendingPlan)", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("WaitForContractRepairAsync(", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.True(
+            acceptedTurnValidation.IndexOf("AwaitsPendingResolution: true", StringComparison.Ordinal) <
+            acceptedTurnValidation.IndexOf("canonicalRefresh.PostSealIssues", StringComparison.Ordinal),
+            "A bounded receipt obligation must stop ordinary acceptance before post-seal/output completion.");
         Assert.DoesNotContain("var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);", validationSource, StringComparison.Ordinal);
     }
 
@@ -1662,7 +1669,7 @@ public sealed class GameEngineSourceGuardTests
         var snapshotSource = ReadGameEnginePartialSource("GameEngine.SessionAndSnapshots.cs");
         var canonicalRefresh = ExtractMethodSource(
             snapshotSource,
-            "private async Task<IReadOnlyList<ValidationIssue>> RefreshCanonicalStateAsync(");
+            "private async Task<AcceptedTurnCanonicalStateRefresh.Result> RefreshCanonicalStateAsync(");
 
         Assert.Contains("RefreshAcceptedTurnCanonicalStateForValidationAsync", source, StringComparison.Ordinal);
         Assert.Equal(1, source.Split("RefreshCanonicalStateAsync(snapshot)", StringSplitOptions.None).Length - 1);
@@ -1670,7 +1677,8 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("private async Task RefreshRuntimeStateAsync()", source, StringComparison.Ordinal);
         Assert.Contains("await RefreshRuntimeStateAsync();", source, StringComparison.Ordinal);
         Assert.Contains("IReadOnlyDictionary<string, string> backups)", canonicalRefresh, StringComparison.Ordinal);
-        Assert.Contains("AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(", canonicalRefresh, StringComparison.Ordinal);
+        Assert.Contains("AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(", canonicalRefresh, StringComparison.Ordinal);
+        Assert.Contains("return result;", canonicalRefresh, StringComparison.Ordinal);
     }
 
     [Fact]

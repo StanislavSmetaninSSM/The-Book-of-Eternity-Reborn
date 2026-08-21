@@ -10,12 +10,15 @@
 validated source entity ── activeEffectDefinitions[] / closed adapter
                                   │
                                   v
-effectChanges[] ──> EffectAcceptedTurnPlan ──> owner active carrier
-                             │                       │
-                             ├──> effect identity index
-                             ├──> pending bounded resolution
-                             ├──> effect-owned companions
-                             └──> accepted mechanics snapshot / player projection
+effectChanges[] ──> subordinate EffectAcceptedTurnPlan
+                                  │
+                                  v
+                         AcceptedMechanicsPlan
+                         │        │        │
+                         │        │        ├──> bounded pending / terminal receipt evidence
+                         │        ├──> canonical resource state + history
+                         ├──> owner carriers + effect identity index
+                         └──> effect-owned companions / accepted projections
 ```
 
 Static source definitions and active instances are separate entities. The source owns what may be applied; the client owns active identity, resolution of stacking/lifetime, transition history, and publication. Every active instance appears in exactly one logical owner carrier and exactly one identity-index entry.
@@ -37,7 +40,7 @@ Rules:
 
 - The root is created only by response-field distribution.
 - It is raw accepted-turn input, not canonical state.
-- The effect normalizer consumes it and removes it before accepted publication completes.
+- The common accepted-mechanics publisher consumes it and removes it in the same lease-bound publication as every effect/resource after-image.
 - A pre-existing command root outside the active accepted response is stale/untrusted and fails closed.
 - Legacy `playerActiveEffectsChanges` and `NPCEffectChanges` are not aliases.
 
@@ -79,7 +82,7 @@ Common fields:
 }
 ```
 
-An apply command selects exactly one of `targetId` (pre-existing/effective permanent target) or `targetRef` (an exact same-turn temporary reference exported by the target's accepted plan). A new raw Mortal combatant carries `combatantRef`; the cached plan allocates its client-owned stable `combatantId`, rewrites the combatant, and resolves a same-turn `targetRef` to that result. Canonical active instances always store `targetId`, never `targetRef`. Named NPC combatants also bind the combat-local anchor to exact NPC authority. For `spiritual_conflict_side`, the selector resolves inside one exact active conflict and side/participant authority. No names, indices, case variants, aliases, or historical IDs are accepted.
+An apply command selects exactly one of `targetId` (pre-existing/effective permanent target) or `targetRef` (an exact same-turn temporary reference exported by the target's accepted plan). A new anonymous Mortal combatant carries `combatantRef`; the cached common plan allocates its client-owned stable `combatantId`, rewrites the combatant, and resolves a same-turn `targetRef` to that result. A same-turn named combat representation instead carries only `npcRef`, which must resolve through accepted NPC materialization to canonical `NPCId`; it does not receive a second combat-local identity and effects target the exact NPC authority. Canonical active instances always store `targetId`, never either raw ref. For `spiritual_conflict_side`, the selector resolves inside one exact active conflict and side/participant authority. No names, indices, case variants, aliases, or historical IDs are accepted.
 
 ### 1.4 Source Selector
 
@@ -410,13 +413,13 @@ Path: `game_state/npcs/npc_effects.json`
 }
 ```
 
-There is at most one entry per exact/confusable NPC ID. Wound state may share the physical file only if its existing canonical subtree is preserved byte-semantically by the effect normalizer.
+There is at most one entry per exact/confusable NPC ID. Wound state may share the physical file only if its existing canonical subtree is preserved byte-semantically by the common accepted-mechanics publisher while applying the effect carrier after-image.
 
 ### 9.3 Mortal combatants
 
 Paths: `game_state/combat/enemies.json` and `game_state/combat/allies.json`.
 
-Each accepted combatant has one client-owned stable `combatantId`. New raw combatants use one exact/confusable-unique `combatantRef`, which is consumed during accepted planning and never remains canonical. Existing `activeBuffs` and `activeDebuffs` remain presentation/category-separated canonical arrays containing complete active instances. Their union must agree with the identity authority, and no effect may occur in both arrays.
+Each anonymous accepted combatant has one client-owned stable `combatantId`. New anonymous rows use one exact/confusable-unique `combatantRef`, which is consumed during accepted planning and never remains canonical. Named combat representations use the one existing NPC identity: same-turn rows submit only exact `npcRef`, canonical rows contain only exact `NPCId`, and neither form may also carry `combatantRef`/`combatantId`. Named effects live in the NPC effect carrier and target kind `npc`; anonymous effects remain in the combat row. Existing `activeBuffs` and `activeDebuffs` remain presentation/category-separated canonical arrays containing complete anonymous-combatant instances. Their union must agree with the identity authority, and no effect may occur in both arrays.
 
 ### 9.4 Persistent afterlife actors
 
@@ -481,25 +484,32 @@ Index rules:
 - Source, target, realm, owner, stack, and chronology agree with the active instance.
 - GM state, repair packets, and player projections never author or expose the index.
 
-## 11. Accepted Effect Plan
+## 11. Accepted Mechanics Plan and Effect Subplan
 
-In-memory only:
+Both are in-memory only. `EffectAcceptedTurnPlan` is a subordinate proposal that
+allocates random effect/combat identities once and supplies complete effect
+carrier/index after-images to the common planner. It has no independent
+publication handoff. `AcceptedMechanicsPlan` is the only publishable plan:
 
 | Field | Meaning |
 | --- | --- |
-| `InputFingerprint` | Accepted raw input plus validated snapshot/session/source/target authority fingerprint |
-| `Issues` | Raw, composed, protected, and repairable issues with exact actor/path binding |
-| `FinalCarriers` | Complete final JSON for every touched logical owner |
-| `FinalIdentityIndex` | Complete final client identity authority |
-| `FinalPendingResolutions` | Complete bounded work root or absent state |
-| `CompanionWrites` | Exact effect-owned companion changes |
-| `MechanicsSnapshot` | Complete accepted derived component set |
-| `PlayerProjection` | Safe visible effect data derived from the same accepted set |
-| `TouchedPaths` | Exact canonical write/creation/deletion set |
+| `InputFingerprint` / `AuthorityFingerprints` | Exact session, request, snapshot, accepted events, commands, pending input, source/target/owner catalogs, carriers, index, ledger, and internal-input binding |
+| `EffectPlan` | The exact subordinate effect plan used while constructing this common plan; never a separately consumable publication token |
+| resource definition/state/history after-images | Complete canonical common-ledger result |
+| effect carrier/index after-images | Complete final JSON for every touched logical owner and the identity authority |
+| pending after-images / GM packet | Complete bounded work or terminal receipt evidence and its safe operator projection |
+| owner companion after-images/transitions | Exact effect/resource-owned companion changes |
+| before-images, touched paths, consumed paths | Exact lease preflight, canonical write/creation/deletion, and command-consumption set |
+| resource events / projection input | Accepted common mechanics output used by downstream lifecycle and safe projections |
 
-The same plan object is reused by raw validation, effect-aware companion validation, normalization, and post-check. It is invalidated on changed snapshot, session, raw input, source authority, target authority, or relevant same-turn plan.
+Raw effect validation may retain its validated subordinate result only long
+enough for the resource validator to build the common plan. Normalization takes
+and consumes exactly one cached `AcceptedMechanicsPlan`; no effect-only cache API
+may authorize writes. Any change to session, request, snapshot, accepted input,
+source/target/owner authority, carrier/index, resource state/history, pending
+state, internal inputs, or exact before-images invalidates publication.
 
-## 12. Pending Effect Resolution
+## 12. Bounded Resource Resolution for Effects
 
 Client-owned path: `game_state/control/pending_effect_resolutions.json`
 
@@ -510,22 +520,56 @@ Client-owned path: `game_state/control/pending_effect_resolutions.json`
   "requests": [
     {
       "requestId": "effect_resolution_<opaque>",
-      "effectId": "effect_<opaque>",
-      "target": {},
-      "source": {},
-      "triggerId": "on_owner_turn_end",
+      "acceptedRequestId": "request_42",
+      "requestTurn": 42,
       "eventRef": "turn_42:end",
-      "allowedResultKinds": ["narrated_no_state_change"],
-      "allowedTargetPaths": [],
-      "numericBounds": {},
+      "effectAuthority": {
+        "bindingKind": "permanent|same_turn_ref|accepted_application",
+        "authorityId": "..."
+      },
+      "source": {},
+      "sourceAuthority": {},
+      "target": {},
+      "targetAuthority": {},
+      "triggerId": "on_owner_turn_end",
+      "coordinate": {},
+      "resourceAuthority": {},
+      "operation": "damage|restore",
+      "allowedResults": [
+        { "resultKind": "narrated_no_state_change" },
+        {
+          "resultKind": "resource_delta",
+          "operation": "damage|restore",
+          "minimumAmount": 0,
+          "maximumAmount": 3
+        }
+      ],
       "requiredCompanions": [],
-      "fullTurnResubmissionRequired": true
+      "fullTurnResubmissionRequired": true,
+      "state": "pending",
+      "projection": {}
     }
-  ]
+  ],
+  "terminalReceipts": []
 }
 ```
 
-The GM sees a bounded task packet through technical context and returns a corresponding `effectResolutionReceipts[]` command. Missing, stale, extra, partial, cross-target, or out-of-bound receipts fail closed. The request and receipt are internal DTOs and are suppressed as whole shapes from player projections.
+This is the common `ResourcePendingResolutionState`, not a second effect-owned
+mechanics authority. The protected record additionally seals exact
+session/request, source/target/resource binding, policy/full-turn/replay
+fingerprints, and chronology. A same-turn unpublished effect binds through its
+accepted application event rather than through a predictable or durable raw ID.
+
+The GM sees only the bounded safe projection and returns a corresponding
+`effectResolutionReceipts[]` command with `requestId`, one allowed result,
+optional bounded amount, and narrative reason. Missing, stale, extra, partial,
+cross-target, wrong-operation, ambiguous-ref, conflicting-replay, or
+out-of-bound receipts fail closed. The entire original turn must be resubmitted;
+no resource/effect mechanics publish before a valid receipt. Successful
+publication moves the receipt to immutable terminal evidence and consumes both
+pending request and transient commands exactly once. The authoritative closed
+shape and privacy rules live in
+[`resource-pending-resolution.md`](../1543-unified-resource-authority/contracts/resource-pending-resolution.md).
 
 ## 13. Accepted Mechanics Snapshot
 

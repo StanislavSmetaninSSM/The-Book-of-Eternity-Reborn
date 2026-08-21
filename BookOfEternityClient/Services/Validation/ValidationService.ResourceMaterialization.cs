@@ -18,11 +18,14 @@ public partial class ValidationService
         var definitionsJson = await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath);
         var stateJson = await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath);
         var historyJson = await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath);
+        var pendingResolutionJson = await _fs.ReadFileAsync(
+            ResourcePendingResolutionState.PendingPath);
 
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
             lookup.Manifest == null)
         {
-            if (commandJson != null || definitionsJson != null || stateJson != null || historyJson != null)
+            if (commandJson != null || definitionsJson != null || stateJson != null ||
+                historyJson != null || pendingResolutionJson != null)
             {
                 issues.Add(ResourceIssue(
                     ResourceMaterializationContract.CommandPath,
@@ -41,6 +44,7 @@ public partial class ValidationService
         var definitions = definitionsResult.Catalog;
         ResourceStateContractResult? stateResult = null;
         ResourceHistoryStateResult? historyResult = null;
+        ResourcePendingResolutionState? pendingResolutionState = null;
         if (definitions != null)
         {
             stateResult = ResourceStateContract.ParseCanonical(
@@ -55,6 +59,12 @@ public partial class ValidationService
             issues.AddRange(historyResult.Issues);
             if (stateResult.Ledger != null && historyResult.History != null)
                 issues.AddRange(historyResult.History.ValidateStateAgreement(stateResult.Ledger));
+            var pendingResult = ResourcePendingResolutionState.ParseCanonical(
+                pendingResolutionJson,
+                definitions,
+                allowMissingPristine: true);
+            issues.AddRange(pendingResult.Issues);
+            pendingResolutionState = pendingResult.State;
         }
 
         await ValidateResourceSnapshotContinuityAsync(
@@ -120,10 +130,15 @@ public partial class ValidationService
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
 
+        var effectCommandJson = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
+        var isTerminalReceiptReplay = IsTerminalEffectReceiptReplay(
+            effectCommandJson,
+            pendingResolutionState);
         var effectIssues = new List<ValidationIssue>();
         await ValidateAcceptedTurnRawEffectMaterializationAsync(
             effectIssues,
-            ownerComposition);
+            ownerComposition,
+            isTerminalReceiptReplay);
         issues.AddRange(effectIssues);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
@@ -204,11 +219,7 @@ public partial class ValidationService
             return issues;
         }
 
-        var manifestJson = await _fs.ReadFileAsync(PendingTurnSnapshotManifestPath);
-        var pendingInput = TryParseStrictResourceObject(manifestJson, out var pendingRoot)
-            ? pendingRoot
-            : new JsonObject();
-        var effectCommandJson = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
+        var pendingInput = pendingResolutionState?.ToCanonicalRoot() ?? new JsonObject();
         var effectCommands = effectCommandJson == null
             ? EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot()
             : ParseStrictObjectOrEmpty(effectCommandJson);
@@ -236,12 +247,14 @@ public partial class ValidationService
             EffectAcceptedTurnPlan.IdentityIndexPath,
             "input/turn_request.json",
             PendingTurnSnapshotManifestPath,
-            PendingTurnSnapshotAuthority.AuthorityPath
+            PendingTurnSnapshotAuthority.AuthorityPath,
+            ResourcePendingResolutionState.PendingPath
         };
         if (effectPlan != null)
         {
             beforePaths.UnionWith(effectPlan.TouchedPaths);
             beforePaths.UnionWith(effectPlan.DeletedPaths);
+            beforePaths.UnionWith(effectPlan.CarrierBeforeImages.Keys);
         }
         beforePaths.UnionWith(ownerComposition.OwnerCompanionAfterImages.Keys);
         beforePaths.UnionWith(ownerComposition.OwnerTransitions.Select(static value => value.Path));
@@ -279,6 +292,9 @@ public partial class ValidationService
                 (effectCommandJson ?? "<missing>")),
             Pending: HashNode("accepted-mechanics-pending-v1", pendingInput),
             InternalInputs: HashNode("accepted-mechanics-internal-v1", internalInputs));
+        var planningCommands = isTerminalReceiptReplay
+            ? ResourceAcceptedTurnInputComposer.Parse("{}")
+            : commands;
         var context = new AcceptedMechanicsPlanningContext(
             internalInputs["definitions"]!.AsObject(),
             definitions,
@@ -286,14 +302,15 @@ public partial class ValidationService
             historyResult.History,
             owners,
             sourcesResult.Catalog,
-            commands,
+            planningCommands,
             effectIdentity,
             effectPlan,
             ownerCapacityDrafts: ownerComposition.CapacityDrafts,
             terminalOwners: ownerComposition.TerminalOwners,
             ownerCompanionAfterImages: ownerComposition.OwnerCompanionAfterImages,
             ownerTransitions: ownerComposition.OwnerTransitions,
-            registeredSystemOutcomes: registeredSystemOutcomes);
+            registeredSystemOutcomes: registeredSystemOutcomes,
+            pendingResolutionState: pendingResolutionState);
         var input = new AcceptedMechanicsInput(
             manifest.SessionId,
             manifest.RequestId,
@@ -314,6 +331,43 @@ public partial class ValidationService
         if (result.Success)
             EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs);
         return issues;
+    }
+
+    private static bool IsTerminalEffectReceiptReplay(
+        string? effectCommandJson,
+        ResourcePendingResolutionState? pendingState)
+    {
+        if (effectCommandJson == null ||
+            pendingState == null ||
+            pendingState.Requests.Count != 0 ||
+            pendingState.TerminalReceipts.Count == 0)
+        {
+            return false;
+        }
+        try
+        {
+            if (JsonNode.Parse(effectCommandJson) is not JsonObject root ||
+                (root.ContainsKey("effectChanges") &&
+                 root["effectChanges"] is not JsonArray) ||
+                root["effectResolutionReceipts"] is not JsonArray receipts ||
+                receipts.Count == 0)
+            {
+                return false;
+            }
+            var terminalIds = pendingState.TerminalReceipts
+                .Select(static value => value.RequestId)
+                .ToHashSet(StringComparer.Ordinal);
+            return receipts.OfType<JsonObject>().Count() == receipts.Count &&
+                receipts.OfType<JsonObject>().All(receipt =>
+                    receipt["requestId"] is JsonValue requestIdNode &&
+                    requestIdNode.TryGetValue<string>(out var requestId) &&
+                    terminalIds.Contains(requestId));
+        }
+        catch (Exception exception) when (
+            exception is JsonException or InvalidOperationException or ArgumentException)
+        {
+            return false;
+        }
     }
 
     private async Task<MortalResourceOwnerRoots> ReadMortalResourceOwnerRootsAsync(

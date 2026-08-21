@@ -37,10 +37,8 @@ internal static class EffectSourceDefinitionContract
         "turns", "uses", "until_time", "scene", "source_bound", "condition_bound", "permanent", "manual");
     private static readonly HashSet<string> AdvancePhases = Set(
         "owner_turn_start", "owner_turn_end", "world_turn_start", "world_turn_end");
-    private static readonly HashSet<string> EventTypes = Set(
-        "owner_turn_start", "owner_turn_end", "owner_damaged", "owner_restored",
-        "owner_action_started", "owner_action_completed", "scene_started", "scene_ended",
-        "source_state_changed", "condition_changed");
+    private static readonly IReadOnlySet<string> EventTypes =
+        EffectEventTypeCatalog.Registered;
     private static readonly HashSet<string> ResolutionModes = Set("deterministic", "bounded_receipt");
     private static readonly HashSet<string> LossPolicies = Set("expire", "suspend", "no_change");
     private static readonly HashSet<string> LinkKinds = Set(

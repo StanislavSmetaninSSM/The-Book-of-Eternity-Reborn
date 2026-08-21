@@ -31,7 +31,8 @@ internal sealed record AuthorizedResourceMutation(
     IReadOnlyList<ResourceOperationKey> Dependencies,
     ResourceSourceEvidence SourceEvidence,
     string? ReceiptId,
-    int Turn);
+    int Turn,
+    ResourceMutationResultConstraint? ResultConstraint = null);
 
 internal sealed record ResolvedResourceInitialization(
     decimal Current,
@@ -370,6 +371,20 @@ internal static class ResourceMutationReducer
             Add(issues, "resource_mutation_arithmetic_inexact",
                 "exactly representable non-overflowing requested candidate",
                 $"{beforeEntry.Current}/{mutation.Amount}");
+            return MutationFailure(issues);
+        }
+
+        if (mutation.ResultConstraint is { } constraint &&
+            (constraint.RejectBelow.HasValue &&
+             requestedCandidate < constraint.RejectBelow.Value ||
+             constraint.RejectAbove.HasValue &&
+             requestedCandidate > constraint.RejectAbove.Value))
+        {
+            Add(
+                issues,
+                "resource_mutation_result_constraint_violated",
+                "requested result within the source-sealed exact result constraint",
+                requestedCandidate.ToString());
             return MutationFailure(issues);
         }
 
@@ -743,6 +758,32 @@ internal static class ResourceMutationReducer
         {
             Add(issues, "resource_mutation_amount_invalid",
                 "positive exact definition-quantized amount", mutation.Amount.ToString());
+        }
+        if (mutation.ResultConstraint is { } constraint)
+        {
+            var invalidBelow = constraint.RejectBelow.HasValue &&
+                (!IsDefinitionNumberValid(
+                    constraint.RejectBelow.Value,
+                    definition,
+                    alignToMinimum: true) ||
+                 constraint.RejectBelow.Value < definition.MinimumPolicy.Value);
+            var invalidAbove = constraint.RejectAbove.HasValue &&
+                (!IsDefinitionNumberValid(
+                    constraint.RejectAbove.Value,
+                    definition,
+                    alignToMinimum: true) ||
+                 constraint.RejectAbove.Value < definition.MinimumPolicy.Value);
+            if (invalidBelow || invalidAbove ||
+                constraint.RejectBelow.HasValue &&
+                constraint.RejectAbove.HasValue &&
+                constraint.RejectBelow.Value > constraint.RejectAbove.Value)
+            {
+                Add(
+                    issues,
+                    "resource_mutation_result_constraint_invalid",
+                    "null or exact definition-aligned result bounds ordered above the resource minimum",
+                    $"below={constraint.RejectBelow};above={constraint.RejectAbove}");
+            }
         }
         ValidateIdentityAndEvidence(
             mutation.TransitionId,

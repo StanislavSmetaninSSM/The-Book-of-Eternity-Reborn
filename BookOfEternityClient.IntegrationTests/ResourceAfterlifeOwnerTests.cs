@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -6,6 +7,65 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ResourceAfterlifeOwnerTests
 {
+    [Fact]
+    public void Compose_NewAfterlifeActorMaterializesSettingDefinedResource()
+    {
+        var definitions = WithAfterlifeIntegrity(RequireDefinitions());
+        const string actorId = "resident_soul_integrity_keeper";
+        var acceptedProfile = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile(
+            "resident",
+            actorId,
+            "Shining Abode",
+            materializedAtTurn: 42);
+        acceptedProfile["resourceMaterialization"] = new JsonObject
+        {
+            ["resources"] = new JsonArray(new JsonObject
+            {
+                ["resourceKey"] = "soul_integrity",
+                ["maximum"] = 10
+            })
+        };
+        var emptyProfiles = Profiles();
+
+        var result = AfterlifeResourceOwnerComposer.Compose(
+            new AfterlifeResourceOwnerCompositionInput(
+                definitions,
+                new AfterlifeResourceOwnerRoots(
+                    emptyProfiles,
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(2)),
+                new AfterlifeResourceOwnerRoots(
+                    Profiles(acceptedProfile),
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(2))));
+
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
+        var owner = Assert.Single(
+            result.Authority!.Entries.Values,
+            entry => entry.Key.OwnerKind == ResourceOwnerKind.AfterlifeActor);
+        Assert.True(owner.SameTurn);
+        Assert.Equal(
+            acceptedProfile[ActorMaterializationContract.PropertyName]!["materializationId"]!
+                .GetValue<string>(),
+            owner.SameTurnRef);
+        Assert.Equal(actorId, owner.Key.ResourceOwnerId);
+        Assert.Contains("soul_integrity", owner.ResourceCapabilities);
+        var draft = Assert.Single(result.CapacityDrafts);
+        Assert.Equal(owner.Key.Realm, draft.Coordinate.Realm);
+        Assert.Equal(owner.Key.OwnerKind, draft.Coordinate.OwnerKind);
+        Assert.Equal(owner.Key.ResourceOwnerId, draft.Coordinate.ResourceOwnerId);
+        Assert.Equal("soul_integrity", draft.Coordinate.ResourceKey);
+        Assert.Equal(10m, draft.AcceptedMaximum);
+
+        var afterImage = result.OwnerCompanionAfterImages[
+            AfterlifeEntityProfileState.StatePath];
+        var canonicalProfile = Assert.IsType<JsonObject>(
+            Assert.Single(afterImage[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray()));
+        Assert.Equal(actorId, canonicalProfile["actorId"]!.GetValue<string>());
+        Assert.False(canonicalProfile.ContainsKey("actorRef"));
+        Assert.False(canonicalProfile.ContainsKey("resourceMaterialization"));
+    }
+
     [Fact]
     public async Task AcceptedTurn_ConflictStartUsesTheCommonOwnerPlanAndPublication()
     {
@@ -646,6 +706,51 @@ public sealed class ResourceAfterlifeOwnerTests
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
         return Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);
+    }
+
+    private static ResourceDefinitionCatalog WithAfterlifeIntegrity(
+        ResourceDefinitionCatalog definitions)
+    {
+        var proposal = new JsonObject
+        {
+            ["resourceKey"] = "soul_integrity",
+            ["definitionVersion"] = 1,
+            ["displayName"] = "Целостность души",
+            ["numericKind"] = "integer",
+            ["unit"] = "point",
+            ["quantum"] = 1,
+            ["minimumPolicy"] = new JsonObject
+            {
+                ["kind"] = "definition_fixed",
+                ["value"] = 0
+            },
+            ["capacityPolicy"] = new JsonObject
+            {
+                ["kind"] = "instance_fixed"
+            },
+            ["initializationPolicy"] = new JsonObject
+            {
+                ["kind"] = "maximum"
+            },
+            ["allowedOwnerKinds"] = new JsonArray("afterlife_actor"),
+            ["allowedOperations"] = new JsonArray("damage", "restore"),
+            ["defaultFloorPolicy"] = "clamp_to_minimum",
+            ["defaultCapPolicy"] = "clamp_to_maximum",
+            ["visibility"] = "owner_visible"
+        };
+        using var document = JsonDocument.Parse(proposal.ToJsonString());
+        var materialized = ResourceDefinitionCatalog.MaterializeProposal(
+            document.RootElement,
+            definitions,
+            createdAtTurn: 1,
+            createdEventRef: "turn_1:resource_definition:1",
+            static () => new ResourceDefinitionIdentity(
+                "resource_definition_soul_integrity",
+                "resource_definition_seal_soul_integrity"));
+        Assert.True(
+            materialized.IsValid,
+            string.Join(Environment.NewLine, materialized.Issues));
+        return definitions.With(materialized.Definition!);
     }
 
     private static JsonObject Profiles(params JsonObject[] profiles) =>

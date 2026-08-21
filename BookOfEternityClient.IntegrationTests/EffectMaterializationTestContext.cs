@@ -61,12 +61,31 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
 
     internal string RootPath { get; }
 
-    internal static Task<EffectMaterializationTestContext> CreateAsync()
+    internal static async Task<EffectMaterializationTestContext> CreateAsync()
     {
         var rootPath = Path.Combine(
             Path.GetTempPath(),
             "boe-effect-materialization-" + Guid.NewGuid().ToString("N"));
-        return Task.FromResult(new EffectMaterializationTestContext(rootPath));
+        var context = new EffectMaterializationTestContext(rootPath);
+        await context.SeedMortalPlayerResourcesAsync(turn: 41);
+        return context;
+    }
+
+    internal async Task<EffectAcceptedTurnPlan?> NormalizeAcceptedEffectsAsync(
+        IReadOnlyDictionary<string, string>? backups)
+    {
+        await using var writeLease = await FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var plan = await Normalizer.BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups);
+        return plan?.EffectPlan;
+    }
+
+    internal async Task<AcceptedMechanicsPlan?> NormalizeAccumulatedStateWithAcceptedMechanicsAsync(
+        IReadOnlyDictionary<string, string>? backups)
+    {
+        await using var writeLease = await FileSystem.AcquireCanonicalWriteLeaseAsync();
+        return await Normalizer.BindTo(writeLease)
+            .NormalizeAccumulatedStateWithPlanAsync(backups);
     }
 
     internal Task WriteJsonAsync(string relativePath, JsonNode value)
@@ -83,7 +102,9 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
         return string.IsNullOrWhiteSpace(json) ? null : JsonNode.Parse(json);
     }
 
-    internal async Task CaptureValidatedPendingSnapshotAsync(int turn = 42)
+    internal async Task CaptureValidatedPendingSnapshotAsync(
+        int turn = 42,
+        string currentRealm = "Mortal World")
     {
         const string sessionId = "session_effect_materialization";
         const string requestId = "request_effect_materialization";
@@ -96,6 +117,7 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
                 ["sessionId"] = sessionId,
                 ["requestId"] = requestId,
                 ["turnNumber"] = turn,
+                ["currentRealm"] = currentRealm,
                 ["playerAction"] = playerAction
             });
 
@@ -170,6 +192,33 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
             static pair => pair.Value?.GetValue<string>()
                 ?? throw new InvalidOperationException("Pending-turn snapshot path is null."),
             StringComparer.Ordinal);
+    }
+
+    internal async Task SeedMortalPlayerResourcesAsync(int turn = 42)
+    {
+        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+            incarnationNumber: 1,
+            turn,
+            permanentStrength: 10,
+            permanentConstitution: 10,
+            permanentIntelligence: 10,
+            permanentWisdom: 10,
+            permanentFaith: 10);
+        if (!resources.IsValid)
+        {
+            throw new InvalidOperationException(
+                string.Join(Environment.NewLine, resources.Issues));
+        }
+
+        await WriteJsonAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            JsonNode.Parse(resources.Definitions!.ToCanonicalJson())!);
+        await WriteJsonAsync(
+            ResourceMaterializationContract.StatePath,
+            JsonNode.Parse(resources.State!.ToCanonicalJson())!);
+        await WriteJsonAsync(
+            ResourceMaterializationContract.HistoryPath,
+            JsonNode.Parse(resources.History!.ToCanonicalJson())!);
     }
 
     internal Task SeedPlayerWoundSourceAsync(JsonObject? definition = null)

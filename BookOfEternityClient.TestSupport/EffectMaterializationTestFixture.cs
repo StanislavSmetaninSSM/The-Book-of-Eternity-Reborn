@@ -55,6 +55,8 @@ internal static class EffectMaterializationTestFixture
             "player" => "player_current",
             "npc" => "npc_test_healer",
             "combatant" => CombatantId,
+            "guardian" or "resident" or "radiant_actor" or "afterlife_actor" =>
+                "afterlife_actor_test",
             _ => throw new ArgumentOutOfRangeException(nameof(targetKind), targetKind, "Unsupported test target.")
         };
 
@@ -94,6 +96,8 @@ internal static class EffectMaterializationTestFixture
             "player" => "player_current",
             "npc" => "npc_test_healer",
             "combatant" => CombatantId,
+            "guardian" or "resident" or "radiant_actor" or "afterlife_actor" =>
+                "afterlife_actor_test",
             _ => throw new ArgumentOutOfRangeException(nameof(ownerKind), ownerKind, "Unsupported test owner.")
         };
 
@@ -164,9 +168,10 @@ internal static class EffectMaterializationTestFixture
             var target = effect["target"]!.DeepClone().AsObject();
             var source = effect["source"]!.DeepClone().AsObject();
             var stacking = effect["stacking"]!.AsObject();
-            var ownerKind = target["kind"]!.GetValue<string>();
+            var targetKind = target["kind"]!.GetValue<string>();
+            var ownerKind = targetKind;
             var ownerId = target["targetId"]!.GetValue<string>();
-            var carrier = ResolveCarrier(ownerKind);
+            var carrier = ResolveCarrier(targetKind);
 
             entries.Add(new JsonObject
             {
@@ -185,7 +190,7 @@ internal static class EffectMaterializationTestFixture
                 ["stackCoordinate"] = new JsonObject
                 {
                     ["realm"] = effect["realm"]!.GetValue<string>(),
-                    ["targetKind"] = ownerKind,
+                    ["targetKind"] = targetKind,
                     ["targetId"] = ownerId,
                     ["sourceKind"] = source["kind"]!.GetValue<string>(),
                     ["sourceId"] = source["sourceId"]!.GetValue<string>(),
@@ -611,6 +616,9 @@ internal static class EffectMaterializationTestFixture
             "player" => ("game_state/player/effects.json", "activeEffects"),
             "npc" => ("game_state/npcs/npc_effects.json", "activeEffects"),
             "combatant" => ("game_state/combat/enemies.json", "activeDebuffs"),
+            "guardian" or "resident" or "radiant_actor" or "afterlife_actor" => (
+                "game_state/meta/afterlife_entity_profiles.json",
+                "activeEffects"),
             _ => throw new ArgumentOutOfRangeException(nameof(ownerKind), ownerKind, "Unsupported test owner.")
         };
 }

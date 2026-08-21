@@ -12,6 +12,7 @@ public sealed partial class EffectMaterializationValidationTests
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         var definition = EffectMaterializationTestFixture.CreateDefinition();
         var existing = CreateLifecycleEffect(definition, currentStacks: 1);
+        await context.SeedMortalPlayerResourcesAsync(turn: 42);
         await SeedLifecycleStateAsync(context, definition, existing);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         var backups = await context.ReadPendingSnapshotBackupsAsync();
@@ -22,10 +23,13 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await using var writeLease = await context.FileSystem
+            .AcquireCanonicalWriteLeaseAsync();
+        await context.Normalizer.BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups);
 
         var effect = await ReadSinglePlayerEffectAsync(context);
         Assert.Equal(
@@ -77,10 +81,10 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
         var effect = await ReadSinglePlayerEffectAsync(context);
         Assert.Equal("until_time", effect["lifetime"]!["mode"]!.GetValue<string>());
         Assert.Equal(150L, effect["lifetime"]!["deadline"]!.GetValue<long>());
@@ -128,10 +132,10 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
         var effect = await ReadSinglePlayerEffectAsync(context);
         Assert.Equal(330L, effect["lifetime"]!["deadline"]!.GetValue<long>());
     }
@@ -208,6 +212,7 @@ public sealed partial class EffectMaterializationValidationTests
             ["mode"] = "until_time",
             ["deadline"] = 120L
         };
+        await context.SeedMortalPlayerResourcesAsync(turn: 42);
         await SeedLifecycleStateAsync(context, definition, existing);
         await context.WriteJsonAsync(
             "game_state/world/world_time.json",
@@ -223,10 +228,13 @@ public sealed partial class EffectMaterializationValidationTests
         var backups = await context.ReadPendingSnapshotBackupsAsync();
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await using var writeLease = await context.FileSystem
+            .AcquireCanonicalWriteLeaseAsync();
+        await context.Normalizer.BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups);
         var player = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath))!.AsObject();
         Assert.Empty(player["activeEffects"]!.AsArray());
@@ -261,10 +269,10 @@ public sealed partial class EffectMaterializationValidationTests
                 atMaximum));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
         var player = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath))!.AsObject();
         var effects = player["activeEffects"]!.AsArray().OfType<JsonObject>().ToArray();
@@ -296,10 +304,10 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
         var effect = await ReadSinglePlayerEffectAsync(context);
         Assert.Equal(2, effect["stacking"]!["currentStacks"]!.GetValue<int>());
         Assert.Equal(
@@ -324,10 +332,10 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestFixture.CreateCommandRoot(remove, apply));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
 
         var effect = await ReadSinglePlayerEffectAsync(context);
         var newEffectId = effect["effectId"]!.GetValue<string>();
@@ -365,10 +373,10 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
 
         var replacement = await ReadSinglePlayerEffectAsync(context);
         var replacementId = replacement["effectId"]!.GetValue<string>();
@@ -399,6 +407,7 @@ public sealed partial class EffectMaterializationValidationTests
             definition,
             currentStacks: 1,
             remainingTurns: 1);
+        await context.SeedMortalPlayerResourcesAsync(turn: 42);
         await SeedLifecycleStateAsync(context, definition, existing);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         var backups = await context.ReadPendingSnapshotBackupsAsync();
@@ -409,10 +418,13 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await using var writeLease = await context.FileSystem
+            .AcquireCanonicalWriteLeaseAsync();
+        await context.Normalizer.BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups);
         var effect = await ReadSinglePlayerEffectAsync(context);
         Assert.Equal(
             EffectMaterializationTestFixture.EffectId,
@@ -444,10 +456,10 @@ public sealed partial class EffectMaterializationValidationTests
                 CreateTerminalCommand("dispel", "physical_treatment", "turn_43")));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
         var player = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath))!.AsObject();
         Assert.Empty(player["activeEffects"]!.AsArray());
@@ -487,10 +499,10 @@ public sealed partial class EffectMaterializationValidationTests
                 CreateTerminalCommand("remove", "quest_cleanup", "turn_43")));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
         var player = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath))!.AsObject();
         Assert.Empty(player["activeEffects"]!.AsArray());
@@ -605,6 +617,7 @@ public sealed partial class EffectMaterializationValidationTests
             ["activePredicate"] = "active",
             ["onSourceLoss"] = "expire"
         };
+        await context.SeedMortalPlayerResourcesAsync(turn: 42);
         await SeedLifecycleStateAsync(context, definition, existing);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         var backups = await context.ReadPendingSnapshotBackupsAsync();
@@ -627,10 +640,13 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await using var writeLease = await context.FileSystem
+            .AcquireCanonicalWriteLeaseAsync();
+        await context.Normalizer.BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups);
         var effect = await ReadSinglePlayerEffectAsync(context);
         Assert.Equal(
             replacementSourceId,
@@ -657,15 +673,19 @@ public sealed partial class EffectMaterializationValidationTests
             definition,
             currentStacks: 1,
             remainingTurns: 1);
+        await context.SeedMortalPlayerResourcesAsync(turn: 42);
         await SeedLifecycleStateAsync(context, definition, existing);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         var backups = await context.ReadPendingSnapshotBackupsAsync();
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         AssertNoEffectErrors(issues);
-        var plan = await context.Normalizer.NormalizeEffectsAsync(backups);
+        await using var writeLease = await context.FileSystem
+            .AcquireCanonicalWriteLeaseAsync();
+        var plan = await context.Normalizer.BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups);
         Assert.NotNull(plan);
         var player = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath))!.AsObject();
@@ -708,7 +728,7 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestContext.IdentityIndexPath,
             EffectMaterializationTestContext.CommandPath);
 
-        var plan = await context.Normalizer.NormalizeEffectsAsync(backups);
+        var plan = await context.NormalizeAcceptedEffectsAsync(backups);
 
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,

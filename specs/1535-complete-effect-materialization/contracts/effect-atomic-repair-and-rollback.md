@@ -11,12 +11,13 @@ One accepted effect transition includes:
 - every touched active owner carrier;
 - `effect_identity_index.json`;
 - `pending_effect_resolutions.json`;
+- canonical resource definition/state/history after-images and resource-event history produced by effect components;
 - effect-owned companion state;
 - source/target state changed by other accepted materializers;
 - derived mechanics state if persisted;
 - player narrative and interface output.
 
-It reuses the accepted-turn/afterlife canonical write lease, before-images, post-check, rollback snapshot, repair loop, session replacement guard, and stale-output detector. No effect-specific writer may publish outside that boundary.
+It is published only as one `AcceptedMechanicsPlan` and reuses the accepted-turn/afterlife canonical write lease, before-images, post-check, rollback snapshot, repair loop, session replacement guard, and stale-output detector. `EffectAcceptedTurnPlan` is a subordinate immutable proposal; no effect-specific cache handoff or writer may publish outside the common boundary.
 
 ## 2. Acceptance Sequence
 
@@ -24,10 +25,10 @@ It reuses the accepted-turn/afterlife canonical write lease, before-images, post
 2. Validate direct-mutation continuity against the rollback snapshot.
 3. Compose exact source/target catalogs, including accepted same-turn plan exports.
 4. Parse command operations, due events, and pending receipts.
-5. Build or retrieve one cached plan; allocate IDs once.
-6. Validate final carriers, index, stacks, trigger graph, companions, and mechanics snapshot.
+5. Build the subordinate effect plan, allocate IDs once, and bind it into one cached `AcceptedMechanicsPlan` with the common resource reducer, event graph, pending state, and exact authority fingerprints.
+6. Validate final resources/history, carriers, index, stacks, trigger graph, pending/terminal receipts, companions, and mechanics snapshot.
 7. Capture exact before-images/existence for all touched paths.
-8. Publish plan paths under one canonical write lease.
+8. Take the validated common plan once and publish all plan paths under one canonical write lease.
 9. Re-read and validate the complete post-state and output freshness.
 10. Commit only after every check succeeds; otherwise restore the full baseline.
 

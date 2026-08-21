@@ -178,7 +178,11 @@ internal static class EffectAcceptedTurnInputComposer
             rawCommands.DeepClone().AsObject(),
             sourceAuthority,
             targetAuthority,
-            BuildAcceptedEventInput(turn, rawCommands, currentWorldTime),
+            BuildAcceptedEventInput(
+                turn,
+                rawCommands,
+                currentWorldTime,
+                acceptedCarriers),
             PreTurnCarriers: CloneCarriers(acceptedCarriers),
             PreTurnIdentityIndex: preTurnIdentityIndex?.DeepClone().AsObject(),
             TargetAuthorityInput: targetAuthorityInput,
@@ -208,7 +212,8 @@ internal static class EffectAcceptedTurnInputComposer
     internal static JsonObject BuildAcceptedEventInput(
         int turn,
         JsonObject rawCommands,
-        long? currentWorldTime = null)
+        long? currentWorldTime = null,
+        EffectCarrierCatalogInput? acceptedCarriers = null)
     {
         var operationCount = rawCommands["effectChanges"] is JsonArray changes
             ? changes.Count
@@ -228,19 +233,52 @@ internal static class EffectAcceptedTurnInputComposer
                     : $"turn_{turn}:accepted_effect:{ordinal}"
             });
         }
-        var result = new JsonObject
+        var lifecycleTargets = new HashSet<(string Realm, string Kind, string TargetId)>
         {
-            ["turn"] = turn,
-            ["events"] = events,
-            ["lifecycleEvents"] = new JsonArray(new JsonObject
+            ("mortal_world", "player", "player_current")
+        };
+        if (acceptedCarriers != null)
+        {
+            foreach (var occurrence in EffectCarrierCatalog.Build(acceptedCarriers).Occurrences)
             {
-                ["eventRef"] = $"turn_{turn}:lifecycle:owner_turn_end:player_current",
+                if (occurrence.Effect["target"] is not JsonObject target ||
+                    !TryReadExact(occurrence.Effect["realm"], out var realm) ||
+                    !TryReadExact(target["kind"], out var kind) ||
+                    !TryReadExact(target["targetId"], out var targetId))
+                {
+                    continue;
+                }
+                lifecycleTargets.Add((realm, kind, targetId));
+            }
+        }
+        if (rawCommands["effectChanges"] is JsonArray effectChanges)
+        {
+            foreach (var change in effectChanges.OfType<JsonObject>())
+            {
+                if (change["target"] is JsonObject target &&
+                    TryReadExact(target["kind"], out var kind) &&
+                    TryReadExact(target["targetId"], out var targetId))
+                {
+                    lifecycleTargets.Add(("mortal_world", kind, targetId));
+                }
+            }
+        }
+        var lifecycleEvents = new JsonArray(lifecycleTargets
+            .OrderBy(static target => target.Realm, StringComparer.Ordinal)
+            .ThenBy(static target => target.Kind, StringComparer.Ordinal)
+            .ThenBy(static target => target.TargetId, StringComparer.Ordinal)
+            .Select(target => (JsonNode)new JsonObject
+            {
+                ["eventRef"] = target == ("mortal_world", "player", "player_current")
+                    ? $"turn_{turn}:lifecycle:owner_turn_end:player_current"
+                    : $"turn_{turn}:lifecycle:owner_turn_end:{target.Realm}:{target.Kind}:{target.TargetId}",
                 ["turn"] = turn,
                 ["phase"] = "owner_turn_end",
+                ["realm"] = target.Realm,
                 ["target"] = new JsonObject
                 {
-                    ["kind"] = "player",
-                    ["targetId"] = "player_current"
+                    ["kind"] = target.Kind,
+                    ["targetId"] = target.TargetId
                 },
                 ["triggerId"] = null,
                 ["currentTime"] = currentWorldTime,
@@ -248,8 +286,13 @@ internal static class EffectAcceptedTurnInputComposer
                 ["sceneClosed"] = false,
                 ["sourceSatisfied"] = null,
                 ["conditionSatisfied"] = null,
-                ["currentRealm"] = "mortal_world"
-            })
+                ["currentRealm"] = target.Realm
+            }).ToArray());
+        var result = new JsonObject
+        {
+            ["turn"] = turn,
+            ["events"] = events,
+            ["lifecycleEvents"] = lifecycleEvents
         };
         if (currentWorldTime.HasValue)
         {
@@ -1163,7 +1206,43 @@ internal static class EffectAcceptedTurnInputComposer
         CollectCombatants(carriers.EnemyCombatants, "enemiesData", result);
         CollectCombatants(carriers.AllyCombatants, "alliesData", result);
         CollectNpcTargets(sourceRoots, includeTemporaryRefs, result);
+        CollectAfterlifeTargets(carriers.AfterlifeProfiles, result);
         return result;
+    }
+
+    private static void CollectAfterlifeTargets(
+        JsonObject? root,
+        List<EffectTargetExport> targets)
+    {
+        if (root?[AfterlifeEntityProfileState.ProfilesProperty] is not JsonArray profiles)
+            return;
+        foreach (var profile in profiles.OfType<JsonObject>())
+        {
+            if (!TryReadExact(profile["actorId"], out var actorId) ||
+                !TryReadExact(profile["actorType"], out var actorType) ||
+                profile["realm"] is not JsonValue realmNode ||
+                !realmNode.TryGetValue<string>(out var declaredRealm) ||
+                !AfterlifeEntityProfileState.TryNormalizeEffectRealm(
+                    declaredRealm,
+                    out var realm))
+            {
+                continue;
+            }
+
+            var targetKind = actorType switch
+            {
+                "guardian" => "guardian",
+                "resident" or "shining_resident" => "resident",
+                "radiant_actor" => "radiant_actor",
+                "player_soul" => "player",
+                _ => "afterlife_actor"
+            };
+            targets.Add(new EffectTargetExport(
+                realm,
+                targetKind,
+                actorId,
+                SameTurn: false));
+        }
     }
 
     private static void CollectNpcTargets(

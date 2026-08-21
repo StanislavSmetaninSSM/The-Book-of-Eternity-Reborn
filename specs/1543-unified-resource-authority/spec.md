@@ -166,8 +166,8 @@ As a player, I want a failed resource/effect transition to restore the complete 
 - **FR-015**: An anonymous individual combatant MUST use a client-owned stable combatant identity.
 - **FR-016**: Every combat-group member MUST use a client-owned stable member identity; array position or display name MUST NOT be authority.
 - **FR-017**: An item resource MUST use the permanent item identity and remain unchanged in identity across valid carrier movement.
-- **FR-018**: Persistent afterlife actors MUST use persistent profile/actor identity, while conflict-scoped participants MUST use client-owned scoped identity retired with the conflict.
-- **FR-019**: A raw resource command MUST NOT invent a permanent owner and MUST resolve exact existing or validated same-turn owner authority.
+- **FR-018**: Persistent afterlife actors MUST use persistent profile/actor identity, while conflict-scoped participants MUST use client-owned scoped identity retired with the conflict. A same-turn afterlife actor MUST reuse the exact canonical `actorId` sealed by Actor Materialization; the resource layer MUST NOT allocate a second actor identity or accept `actorRef`.
+- **FR-019**: A raw resource command MUST NOT invent a permanent owner and MUST resolve exact existing or validated same-turn owner authority. For a newly materialized afterlife actor, the immutable Actor Materialization `materializationId` is the one-turn resource `ownerRef`, while actor/effect selectors continue to use canonical `actorId`.
 - **FR-020**: Accepted history MUST retain immutable transition identity, event, origin, operation, coordinate, before/after, source evidence, receipt binding when present, and turn.
 - **FR-021**: Transition, operation, and receipt identities MUST be client-owned and exact/confusable-unique.
 - **FR-022**: Exact semantic replay MUST return the previous accepted result or no-op without duplicate history; conflicting reuse MUST fail the entire transition.

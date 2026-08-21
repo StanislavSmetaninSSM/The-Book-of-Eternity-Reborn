@@ -220,6 +220,22 @@ internal sealed class EffectTargetAuthority
         return new EffectTargetResolution(null, issues);
     }
 
+    internal bool TryResolveAcceptedTarget(
+        EffectTargetKey key,
+        out EffectTargetExport? target)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+        if (_targets.TryGetValue(key, out var candidate) &&
+            !_invalidTargets.Contains(key))
+        {
+            target = candidate with { };
+            return true;
+        }
+
+        target = null;
+        return false;
+    }
+
     private EffectTargetResolution ResolveRef(JsonNode? node, string realm, string kind)
     {
         var issues = new List<ValidationIssue>();

@@ -4131,6 +4131,42 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var matrixSection = ExtractRequiredSection(
+            matrix,
+            "## Actor Materialization v1",
+            "## GM Decision Loop");
+        var exampleSection = ExtractRequiredSection(
+            examples,
+            "AFTERLIFE ACTOR MATERIALIZATION V1",
+            "Shared Block 5 Combat Action effect reminder");
+
+        foreach (var text in new[] { matrixSection, exampleSection, daemon })
+        {
+            Assert.Contains("resourceMaterialization", text, StringComparison.Ordinal);
+            Assert.Contains("setting-defined resource", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("materializationId", text, StringComparison.Ordinal);
+            Assert.Contains("same-turn ownerRef", text, StringComparison.Ordinal);
+            Assert.Contains("no second actor ID", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("existing materialized profile", text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains(
+            "afterlife_actor_resource_materialization_v1",
+            manifest,
+            StringComparison.Ordinal);
+        Assert.Contains("\"resourceMaterialization\"", exampleSection, StringComparison.Ordinal);
+        Assert.Contains("\"resourceKey\": \"soul_integrity\"", exampleSection, StringComparison.Ordinal);
+        Assert.Contains("\"maximum\": 10", exampleSection, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"actorRef\"", exampleSection, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void T155_AfterlifeActorLifecycleTeachingVisibilityAndAcceptedTypes_AreDocumented()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

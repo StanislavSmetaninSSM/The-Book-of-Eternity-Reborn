@@ -364,6 +364,33 @@ public partial class GameEngine
                 continue;
             }
 
+            if (canonicalRefresh.MechanicsPlan is { AwaitsPendingResolution: true } pendingPlan)
+            {
+                criticalRepairAttempt++;
+                var pendingErrors = new List<ValidationIssue>
+                {
+                    BuildBoundedResourceResolutionResubmissionIssue(pendingPlan)
+                };
+                lastCriticalRepairErrors = pendingErrors;
+                lastCriticalRepairAttempt = criticalRepairAttempt;
+                lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                var pendingStartedAtUtc = DateTime.UtcNow;
+                if (!await WaitForContractRepairAsync(
+                        source,
+                        pendingErrors,
+                        criticalRepairAttempt,
+                        rollbackSnapshot,
+                        lastCriticalRepairSessionGeneration))
+                {
+                    return false;
+                }
+                lastCriticalRepairStartedAtUtc = pendingStartedAtUtc;
+                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    pendingErrors,
+                    pendingStartedAtUtc);
+                continue;
+            }
+
             var postSealErrors = PrioritizeValidationErrors(
                     canonicalRefresh.PostSealIssues.Where(issue => issue.Severity == IssueSeverity.Error))
                 .ToList();
@@ -640,13 +667,46 @@ public partial class GameEngine
         if (snapshot == null)
             return new AcceptedTurnCanonicalRefreshResult(false, Array.Empty<ValidationIssue>());
 
-        var postSealIssues = await RefreshCanonicalStateAsync(snapshot);
-        return new AcceptedTurnCanonicalRefreshResult(true, postSealIssues);
+        var refresh = await RefreshCanonicalStateAsync(snapshot);
+        return new AcceptedTurnCanonicalRefreshResult(
+            true,
+            refresh.Issues,
+            refresh.MechanicsPlan);
     }
 
     private sealed record AcceptedTurnCanonicalRefreshResult(
         bool BaselineUsable,
-        IReadOnlyList<ValidationIssue> PostSealIssues);
+        IReadOnlyList<ValidationIssue> PostSealIssues,
+        AcceptedMechanicsPlan? MechanicsPlan = null);
+
+    private static ValidationIssue BuildBoundedResourceResolutionResubmissionIssue(
+        AcceptedMechanicsPlan plan)
+    {
+        var packet = plan.PendingGmPacket ??
+            throw new InvalidOperationException(
+                "Pending accepted mechanics plan has no safe GM packet.");
+        return new ValidationIssue(
+            EffectAcceptedTurnPlan.CommandPath,
+            IssueSeverity.Error,
+            "A bounded effect/resource result requires one complete same-turn resubmission before any mechanics or player-facing output can be accepted.",
+            code: "resource_pending_full_turn_resubmission_required",
+            section: "AcceptedMechanicsPendingResolution",
+            expected: "effectResolutionReceipts[] containing exactly one closed receipt for every safe request, followed by complete validation of the same accepted turn",
+            actual: packet.ToJsonString(),
+            repairHint:
+                "Не читай и не изменяй технический pending-файл. Сохрани тот же sessionId/requestId/turn и все уже авторизованные изменения хода. " +
+                "В game_state/effects/effect_commands.json верни полный корень с прежним effectChanges[] и effectResolutionReceipts[]. " +
+                "Для каждого requestId из safe packet выбери ровно один resultKind: narrated_no_state_change без amount либо resource_delta с amount в указанном диапазоне; всегда добавь краткую внутриигровую reason. " +
+                "Не указывай target/resource/operation/realm/координаты и не пытайся писать resource_state, resource_history или active effect carriers. " +
+                "Обнови narrative/interface/debug output под выбранный исход, затем заверши текущий validation-repair без нового хода.",
+            repairTargetFiles: new[]
+            {
+                EffectAcceptedTurnPlan.CommandPath,
+                "output/narrative_response.json",
+                "output/interface_updates.json",
+                "output/debug_logs.json"
+            });
+    }
 
     private async Task FailClosedAcceptedTurnCanonicalRefreshAsync(
         string source,

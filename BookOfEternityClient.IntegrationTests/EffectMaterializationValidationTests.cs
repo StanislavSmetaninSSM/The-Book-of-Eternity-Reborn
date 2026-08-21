@@ -71,11 +71,11 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestFixture.CreateCommandRoot(first, second));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
 
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
 
         var index = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.IdentityIndexPath))!.AsObject();

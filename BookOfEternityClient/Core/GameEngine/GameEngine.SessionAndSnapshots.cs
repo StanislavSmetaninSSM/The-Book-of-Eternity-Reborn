@@ -185,17 +185,17 @@ public partial class GameEngine
         });
     }
 
-    private async Task<IReadOnlyList<ValidationIssue>> RefreshCanonicalStateAsync(
+    private async Task<AcceptedTurnCanonicalStateRefresh.Result> RefreshCanonicalStateAsync(
         IReadOnlyDictionary<string, string> backups)
     {
-        var postSealIssues = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
             _fs,
             _normalizer,
             _validator,
             backups);
-        if (!postSealIssues.Any(issue => issue.Severity == IssueSeverity.Error))
+        if (!result.Issues.Any(issue => issue.Severity == IssueSeverity.Error))
             await RefreshRuntimeStateAsync();
-        return postSealIssues;
+        return result;
     }
 
     private async Task EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync(

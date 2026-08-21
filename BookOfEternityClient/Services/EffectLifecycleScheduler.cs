@@ -718,12 +718,44 @@ internal static class EffectLifecycleScheduler
                 "non-empty exact trigger identity array",
                 Describe(lifetime["consumingTriggerIds"]));
         }
-        var consumes = lifecycleEvent.TriggerId != null && triggerIds
+        if (lifecycleEvent.TriggerId is not { } exactTriggerId)
+            return LifetimeResult("no_change", effect);
+        var consumes = triggerIds
             .OfType<JsonValue>()
             .Any(node => node.TryGetValue<string>(out var id) &&
-                string.Equals(id, lifecycleEvent.TriggerId, StringComparison.Ordinal));
+                string.Equals(id, exactTriggerId, StringComparison.Ordinal));
         if (!consumes)
             return LifetimeResult("no_change", effect);
+
+        if (effect["triggers"] is not JsonArray triggers)
+        {
+            return LifetimeFailure(
+                "effect.triggers",
+                "effect_lifecycle_trigger_catalog_invalid",
+                "canonical trigger array containing the exact consuming trigger",
+                Describe(effect["triggers"]));
+        }
+
+        var matchingTriggers = triggers
+            .OfType<JsonObject>()
+            .Where(trigger => TryExact(trigger["triggerId"], out var id) &&
+                string.Equals(id, exactTriggerId, StringComparison.Ordinal))
+            .ToArray();
+        if (matchingTriggers.Length != 1 ||
+            !TryExact(matchingTriggers[0]["eventType"], out var eventType) ||
+            matchingTriggers[0]["consumeUses"] is not JsonValue consumeUsesNode ||
+            !consumeUsesNode.TryGetValue<bool>(out var consumeUses) ||
+            !consumeUses)
+        {
+            return LifetimeFailure(
+                "effect.triggers",
+                "effect_lifecycle_consuming_trigger_invalid",
+                "one exact consumeUses trigger matching the lifetime trigger identity",
+                exactTriggerId);
+        }
+        if (!string.Equals(eventType, lifecycleEvent.Phase, StringComparison.Ordinal))
+            return LifetimeResult("no_change", effect);
+
         if (remaining == 1)
             return LifetimeResult("expire", null);
         lifetime["remainingUses"] = remaining - 1;

@@ -30,7 +30,7 @@ This phase resolves the implementation choices needed to plan a common runtime-e
 
 ## Decision 3: Replace legacy application routes with one transient command surface
 
-**Decision**: Add `effectChanges[]` and `effectResolutionReceipts[]` to the accepted GM response. `StateDistributor` stages them together in `game_state/effects/effect_commands.json`; the effect normalizer consumes and removes the transient command file in the same accepted transaction. `playerActiveEffectsChanges`, `NPCEffectChanges`, direct non-empty combat active arrays, and direct `combatConditions[]` mutation cease to be application routes.
+**Decision**: Add `effectChanges[]` and `effectResolutionReceipts[]` to the accepted GM response. `StateDistributor` stages them together in `game_state/effects/effect_commands.json`; the common accepted-mechanics publisher consumes and removes the transient command file in the same resource/effect transaction. `playerActiveEffectsChanges`, `NPCEffectChanges`, direct non-empty combat active arrays, and direct `combatConditions[]` mutation cease to be application routes.
 
 **Rationale**: A common command can target any supported owner and lets one planner resolve identity, stack, lifetime, and source authority. Mapping commands directly into distributed canonical carriers would recreate independent partial writers.
 
@@ -85,7 +85,7 @@ cross-realm selectors.
 
 ## Decision 7: Give anonymous Mortal combatants a stable combat-local target anchor
 
-**Decision**: Accepted combatants must expose an exact stable client-owned `combatantId`. A new raw combatant carries an exact same-turn `combatantRef`; the cached accepted plan allocates and exports the permanent combat-local identity. Existing named NPC combatants also bind that anchor to exact NPC authority. Same-turn effect targets use `targetRef`, later targets use `targetId`, and exactly one is allowed. Non-empty raw `activeBuffs`/`activeDebuffs` are rejected and same-turn effects use `effectChanges[]` against the accepted temporary anchor.
+**Decision (refined by #1543)**: Anonymous accepted combatants expose an exact stable client-owned `combatantId`. A new anonymous raw combatant carries an exact same-turn `combatantRef`; the cached accepted-mechanics plan allocates and exports the permanent combat-local identity. A named combat representation reuses the one NPC identity instead: a same-turn row carries only `npcRef`, canonical state carries only `NPCId`, and no second `combatantId` is allocated. Same-turn effect targets use the corresponding exact accepted ref, later targets use the permanent NPC or anonymous-combatant ID, and exactly one selector is allowed. Non-empty raw `activeBuffs`/`activeDebuffs` are rejected and same-turn effects use `effectChanges[]` against the accepted authority.
 
 **Rationale**: Array index and display name cannot safely identify an effect target across retries, sorting, or combat updates.
 

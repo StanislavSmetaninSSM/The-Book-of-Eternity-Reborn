@@ -233,7 +233,7 @@ ResourceOwnerExport(
   AuthorityFingerprint: string)
 ```
 
-`OwnerRef` is accepted only in the same turn and is consumed when the owning materializer publishes the permanent identity. `Capabilities` contains exact resource keys allowed by the validated owner/source contract. `RealmIndependentResourceCapabilities` is a client-sealed, duplicate/confusable-free subset of `Capabilities`; an unknown, unexported, ambiguous, or raw-authored exception is invalid. A definition's allowed owner kind, the owner's capability, and the shared per-capability activity resolver must all authorize initialization/mutation.
+`OwnerRef` is accepted only in the same turn and is consumed when the owning materializer publishes the permanent identity. For client-allocated identities it is the owning temporary ref. A newly materialized afterlife profile is different: Actor Materialization already seals its final exact `actorId`, so the resource composer preserves that ID, creates no second actor ID, forbids `actorRef`, and uses the immutable `materializationId` as the one-turn resource `OwnerRef`. `Capabilities` contains exact resource keys allowed by the validated owner/source contract. `RealmIndependentResourceCapabilities` is a client-sealed, duplicate/confusable-free subset of `Capabilities`; an unknown, unexported, ambiguous, or raw-authored exception is invalid. A definition's allowed owner kind, the owner's capability, and the shared per-capability activity resolver must all authorize initialization/mutation.
 
 For the persistent `player_soul` owner, realm binding and resource activity are separate. Ordinary capabilities follow the active/suspended realm binding. A sealed realm-independent capability remains active while the owner persists across realms. Version 1 marks only `blessing_rerolls` realm-independent; `spiritual_action_points` remains realm-bound. The exact subset participates in the owner fingerprint and is consumed by owner resolution, lifecycle planning, and canonical state agreement.
 
@@ -311,7 +311,7 @@ Every variant includes a client-computed `authorityFingerprint`. Raw commands ca
   "operationId": "resource_operation_<opaque>",
   "eventRef": "turn_42_effect_2",
   "originKind": "effect_component",
-  "originId": "component_001",
+  "originId": "effect_component_<opaque effect-trigger-component identity>",
   "phase": "effect_trigger",
   "priority": 200,
   "executionSequence": 7,
@@ -348,7 +348,7 @@ Every variant includes a client-computed `authorityFingerprint`. Raw commands ca
   },
   "sourceEvidence": {
     "sourceKind": "effect_component",
-    "sourceId": "component_001",
+    "sourceId": "effect_component_<opaque effect-trigger-component identity>",
     "authorityFingerprint": "sha256:<64 lowercase hex>"
   },
   "policyFingerprint": "sha256:<64 lowercase hex>",
@@ -606,9 +606,26 @@ Shining survival is the first production registered-outcome adapter. One newly v
   "requestTurn": 42,
   "eventRef": "turn_42_effect_2",
   "effectId": "effect_<opaque>",
+  "effectAuthority": {
+    "bindingKind": "accepted_application",
+    "authorityId": "turn_42:accepted_effect"
+  },
   "source": {},
+  "sourceAuthority": {
+    "bindingKind": "permanent",
+    "authorityId": "wound_exact"
+  },
   "target": {},
+  "targetAuthority": {
+    "bindingKind": "permanent",
+    "authorityId": "player_current"
+  },
   "triggerId": "trigger_001",
+  "coordinate": {},
+  "resourceAuthority": {
+    "bindingKind": "permanent",
+    "authorityId": "player_current"
+  },
   "allowedResults": [
     { "resultKind": "narrated_no_state_change" },
     {
@@ -625,7 +642,15 @@ Shining survival is the first production registered-outcome adapter. One newly v
 }
 ```
 
-The player/GM projection never exposes protected IDs, paths, or fingerprints. The technical record binds the exact resource coordinate and policies internally even though the GM packet uses safe labels.
+The player/GM projection never exposes protected IDs, paths, or fingerprints.
+The technical record binds the exact resource coordinate and policies
+internally even though the GM packet uses safe labels. Permanent entities bind
+their exact permanent IDs. A validated same-turn entity binds its exact
+temporary ref, and a newly applied effect binds its exact accepted application
+event. Resubmission may allocate a different unpublished random permanent ID;
+the client re-resolves the stable authority and rewrites the receipt-derived
+mutation to the freshly validated coordinate/effect after-image. Random IDs are
+never made deterministic or exposed as GM-derivable authority.
 
 ### 10.2 Receipt
 
@@ -647,7 +672,10 @@ absent -> pending -> resolved_and_consumed
                   -> terminal_rejected (operator evidence only)
 ```
 
-No resource/effect mechanical after-image is published at `pending`. A valid receipt is transformed into a normal mutation during the coherent resubmitted turn. Replay returns terminal evidence without applying another mutation.
+No resource/effect mechanical after-image is published at `pending`. A valid
+receipt is transformed into a normal mutation during the coherent resubmitted
+turn. Exact terminal replay suppresses the already-consumed original effect and
+resource commands, returns terminal evidence, and applies no second mutation.
 
 ## 11. Resource projections
 
@@ -702,11 +730,15 @@ Item `durability`/`maxDurability` and the `item_resources.json` current/max reso
 
 `activeConflict.actionEconomy.*.current/max`, Guardian/Shining `chargesUsedThisReturn/chargesPerReturn`, and numeric blessing reroll counters cease to be persisted mechanical values. Their owning states retain references/audit/display companions only when needed. Capacity formulas bind spirit focus, reputation/return-cycle authority, or accepted entitlement creation. Currencies and faction accounting remain untouched.
 
+A complete first non-player afterlife profile may also carry a closed `resourceMaterialization.resources[]` envelope for pre-sealed setting-defined resources whose `allowedOwnerKinds` admits `afterlife_actor`. The common owner materialization planner consumes exact `resourceKey`/`maximum`, validates instance-fixed or registered-formula capacity authority, strips the envelope, adds client-owned `resourceOwnerBindings`, and initializes state/history atomically. Existing profiles cannot resend the envelope and direct current values are never accepted.
+
 Client-owned Shining transitions use a sealed transition kind rather than inferring legality from an after-image. `SynchronizeCurrentShining` is exactly Shining Abode -> Shining Abode; `OrdinaryReentryFromChaosSea` and `AscensionFromChaosSea` are exactly Chaos Sea -> Shining Abode. Ascension additionally requires maximum enlightenment and no pending life-transition command in the same fresh canonical snapshot. One write lease covers every authoritative read, composed profile/binding/resource after-image, before-image comparison, publication, and rollback. Ordinary Shining -> Chaos Sea travel preserves the current Guardian return cycle and spent attempts; only a Mortal-death -> Chaos Sea transition establishes/refills a new incarnation-bound Guardian cycle.
 
 ### 12.6 Effects
 
-`periodic_damage` and `periodic_restore` components resolve an exact resource coordinate and emit internal mutations. Resource-event triggers consume registered events from actual results. Story-facing resource receipts use the bounded request model. No effect component reads or writes legacy resource fields.
+`periodic_damage` and `periodic_restore` components resolve their exact resource key through the sealed common definition catalog, map the accepted canonical effect target to one exact resource owner, and emit internal mutations. The source identity is client-derived from the exact effect ID, trigger ID, and component ID rather than reusing the component-local ID; its authority fingerprint additionally binds the target owner, trigger policy, component payload, and sealed definition. Every `effect_component` source is bound to that exact owner, so its mutation cannot be replayed against another coordinate.
+
+`registered_resource_floor` and `registered_resource_cap` retain the sealed common definition bounds. `may_reach_zero` is valid only when zero is representable under the resource minimum. `cannot_reduce_below_one` adds a source-sealed reject-below-one result constraint evaluated inside the common reducer; it never performs effect-local arithmetic or forges a clamped history row. Restore policies never authorize exceeding the hard accepted maximum; `may_exceed_soft_cap` only permits an owning-domain soft threshold to be crossed. Resource-event triggers consume registered events from actual results. Story-facing resource receipts use the bounded request model. No effect component reads or writes legacy resource fields.
 
 ## 13. Validation invariants
 
@@ -715,7 +747,7 @@ Client-owned Shining transitions use a sealed transition kind rather than inferr
 - Every capacity binding resolves its exact accepted authority.
 - Every current value is reproducible from the previous accepted value plus immutable transitions within the current supported history contour.
 - Every mutation source and target exists in the composed accepted after-state.
-- Every same-turn ref is consumed into one client-owned permanent identity.
+- Every same-turn ref is consumed into one permanent identity; for an Actor-Materialized afterlife profile, the final `actorId` is already sealed and its `materializationId` is consumed only as the resource-owner handoff authority.
 - Every command is absent after successful publication.
 - No legacy resource authority field exists in active canonical state.
 - Resource and effect after-images agree on every resource-linked component, trigger result, pending request, and terminal transition.

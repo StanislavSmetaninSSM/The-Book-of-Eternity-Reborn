@@ -19,11 +19,14 @@ internal sealed partial class MortalItemMaterializationTestContext
     internal async Task<MortalItemRouteArrangement> ArrangeRouteAsync(
         string route,
         string authorityKind,
-        JsonObject rawItem)
+        JsonObject rawItem,
+        bool includeMortalPlayerResources = false)
     {
         ArgumentNullException.ThrowIfNull(rawItem);
 
         await BuildMortalBootstrapAsync();
+        if (includeMortalPlayerResources)
+            await SeedMortalPlayerResourcesAsync();
         await ArrangeRouteBaselineAsync(route);
         await CaptureValidatedPendingSnapshotAsync(RouteTurn);
         var item = rawItem.DeepClone().AsObject();

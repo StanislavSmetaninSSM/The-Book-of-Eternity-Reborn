@@ -378,7 +378,7 @@ Cut spiritual action points, Guardian/Shining per-return gacha attempts, and num
 
 ### Phase F — Resume Effect Task 9
 
-Add periodic damage/restore, resource-event triggers, finite graph execution, bounded story requests/receipts, downstream mutations, effect lifetime advancement, terminal cleanup, and complete resource/effect atomic publication. Mark #1535 T042–T043/T047/T049–T050 only after exact evidence.
+Add periodic damage/restore, resource-event triggers, finite graph execution, bounded story requests/receipts, downstream mutations, effect lifetime advancement, terminal cleanup, and complete resource/effect atomic publication. Reuse one shared owner-capacity materialization planner across Mortal and afterlife owners; a first afterlife profile preserves the exact Actor-Materialized `actorId`, uses `materializationId` only as the same-turn resource handoff, and never introduces `actorRef` or a second identity. Mark #1535 T042–T043/T047/T049–T050 only after exact evidence.
 
 ### Phase G — Projection/privacy and complete breaking cleanup
 

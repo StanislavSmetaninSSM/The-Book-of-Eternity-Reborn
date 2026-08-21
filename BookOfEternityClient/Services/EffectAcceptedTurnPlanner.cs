@@ -17,6 +17,931 @@ internal static class EffectAcceptedTurnPlanner
         "activeEffects", "activeBuffs", "activeDebuffs", "combatConditions",
         "effectIdentityIndex", "playerActiveEffectsChanges", "NPCEffectChanges");
 
+    internal sealed record EffectPeriodicResourceResolution(
+        IReadOnlyList<ResourceMutationSourceExport> SourceExports,
+        IReadOnlyList<ResourceMutationIntent> Mutations,
+        IReadOnlyList<ValidationIssue> Issues)
+    {
+        internal bool IsValid => Issues.Count == 0;
+
+        internal IReadOnlyList<EffectResourceTriggerExecution> TriggerExecutions
+        {
+            get;
+            init;
+        } = Array.Empty<EffectResourceTriggerExecution>();
+
+        internal IReadOnlyList<EffectBoundedResourceResolution> PendingResolutions
+        {
+            get;
+            init;
+        } = Array.Empty<EffectBoundedResourceResolution>();
+    }
+
+    internal sealed record EffectBoundedResourceResolution(
+        string EventRef,
+        string EffectId,
+        ResourcePendingAuthorityBinding EffectAuthority,
+        JsonObject Source,
+        ResourcePendingAuthorityBinding SourceAuthority,
+        JsonObject Target,
+        ResourcePendingAuthorityBinding TargetAuthority,
+        string TriggerId,
+        string EventKind,
+        ResourceCoordinate Coordinate,
+        ResourcePendingAuthorityBinding ResourceAuthority,
+        ResourceOperation Operation,
+        decimal MinimumAmount,
+        decimal MaximumAmount,
+        string SourceAuthorityFingerprint,
+        string PolicyFingerprint,
+        IReadOnlyList<ResourceOperationKey> Dependencies,
+        IReadOnlyList<ResourceMutationEventRequirement> EventRequirements,
+        ResourceMutationResultConstraint? ResultConstraint,
+        int? RemainingUseBudget,
+        string SafeSourceLabel,
+        string SafeTargetLabel,
+        string SafeResourceLabel,
+        string SafeOperationLabel);
+
+    internal sealed record EffectResourceTriggerExecution(
+        string EffectId,
+        string TriggerId,
+        string EventKind,
+        string EventRef,
+        IReadOnlyList<ResourceOperationKey> MutationKeys,
+        int? RemainingUseBudget);
+
+    internal static EffectPeriodicResourceResolution ResolvePeriodicResourceMutations(
+        JsonObject effect,
+        string triggerId,
+        EffectLifecycleEvent acceptedEvent,
+        EffectTargetAuthority targetAuthority,
+        ResourceOwnerAuthority ownerAuthority,
+        ResourceDefinitionCatalog definitions,
+        EffectSourceAuthorityEntry? sourceAuthority = null)
+    {
+        ArgumentNullException.ThrowIfNull(effect);
+        ArgumentNullException.ThrowIfNull(acceptedEvent);
+        ArgumentNullException.ThrowIfNull(targetAuthority);
+        ArgumentNullException.ThrowIfNull(ownerAuthority);
+        ArgumentNullException.ThrowIfNull(definitions);
+
+        var issues = new List<ValidationIssue>();
+        issues.AddRange(targetAuthority.Issues);
+        issues.AddRange(ownerAuthority.Issues);
+        using (var document = JsonDocument.Parse(effect.ToJsonString()))
+        {
+            issues.AddRange(EffectMaterializationContract.Validate(
+                document.RootElement,
+                "effect",
+                EffectMaterializationPhase.CanonicalActive));
+        }
+
+        var hasEffectId = TryReadExact(effect["effectId"], out var effectId);
+        var hasRealm = TryReadExact(effect["realm"], out var realm);
+        var hasState = TryReadExact(effect["state"], out var state);
+        var target = effect["target"] as JsonObject;
+        var hasTargetKind = TryReadExact(target?["kind"], out var targetKind);
+        var hasTargetId = TryReadExact(target?["targetId"], out var targetId);
+        var targetKindSupported = hasTargetKind &&
+            TryMapEffectTargetKind(targetKind, out _);
+        if (hasTargetKind && !targetKindSupported)
+        {
+            Add(
+                issues,
+                "effect.target.kind",
+                "effect_resource_target_unsupported",
+                "effect target kind with a registered resource-owner mapping",
+                targetKind);
+        }
+        if (!TryExact(triggerId) ||
+            acceptedEvent.Turn <= 0 ||
+            !TryExact(acceptedEvent.EventRef) ||
+            !TryExact(acceptedEvent.TriggerId ?? string.Empty) ||
+            !string.Equals(
+                acceptedEvent.TriggerId,
+                triggerId,
+                StringComparison.Ordinal) ||
+            !TryExact(acceptedEvent.Phase ?? string.Empty))
+        {
+            Add(
+                issues,
+                "effect.event",
+                "effect_resource_event_authority_invalid",
+                "positive accepted event with exact matching triggerId, phase, and eventRef",
+                $"turn={acceptedEvent.Turn};trigger={acceptedEvent.TriggerId};phase={acceptedEvent.Phase};eventRef={acceptedEvent.EventRef}");
+        }
+        if (hasState && !string.Equals(state, "active", StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                "effect.state",
+                "effect_resource_effect_inactive",
+                "active canonical effect",
+                state);
+        }
+
+        if (issues.Count != 0 || !hasEffectId || !hasRealm ||
+            !hasTargetKind || !hasTargetId || target == null ||
+            !targetKindSupported)
+        {
+            return FailedPeriodicResourceResolution(issues);
+        }
+
+        var targetKey = new EffectTargetKey(realm, targetKind, targetId);
+        if (!targetAuthority.TryResolveAcceptedTarget(targetKey, out var targetExport) ||
+            targetExport == null)
+        {
+            Add(
+                issues,
+                "effect.target",
+                "effect_resource_target_unresolved",
+                "one exact accepted canonical effect target",
+                $"{realm}/{targetKind}/{targetId}");
+            return FailedPeriodicResourceResolution(issues);
+        }
+
+        if (!TryMapEffectTargetToResourceOwner(
+                targetKey,
+                targetExport,
+                out var ownerKey))
+        {
+            Add(
+                issues,
+                "effect.target.kind",
+                "effect_resource_target_unsupported",
+                "effect target kind with one exact resource owner",
+                targetKind);
+            return FailedPeriodicResourceResolution(issues);
+        }
+
+        var triggers = effect["triggers"]!.AsArray().OfType<JsonObject>().ToArray();
+        var triggerMatches = triggers.Where(candidate =>
+                string.Equals(
+                    candidate["triggerId"]?.GetValue<string>(),
+                    triggerId,
+                    StringComparison.Ordinal))
+            .ToArray();
+        if (triggerMatches.Length != 1)
+        {
+            Add(
+                issues,
+                "effect.triggers",
+                "effect_resource_trigger_unresolved",
+                "one exact selected trigger",
+                triggerId);
+            return FailedPeriodicResourceResolution(issues);
+        }
+
+        var trigger = triggerMatches[0];
+        var triggerEventType = trigger["eventType"]!.GetValue<string>();
+        if (!string.Equals(
+                triggerEventType,
+                acceptedEvent.Phase,
+                StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                "effect.triggers.eventType",
+                "effect_resource_trigger_event_mismatch",
+                triggerEventType,
+                acceptedEvent.Phase!);
+        }
+        var resolutionMode = trigger["resolutionMode"]!.GetValue<string>();
+        var isBoundedResolution = string.Equals(
+            resolutionMode,
+            "bounded_receipt",
+            StringComparison.Ordinal);
+        if (!isBoundedResolution && !string.Equals(
+                resolutionMode,
+                "deterministic",
+                StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                "effect.triggers.resolutionMode",
+                "effect_resource_resolution_mode_invalid",
+                "deterministic or bounded_receipt trigger resolution",
+                resolutionMode);
+        }
+        if (issues.Count != 0)
+            return FailedPeriodicResourceResolution(issues);
+
+        var components = effect["components"]!.AsArray().OfType<JsonObject>().ToArray();
+        var selected = new List<(EffectPeriodicResourceComponent Parsed, JsonObject Node)>();
+        foreach (var componentIdNode in trigger["componentIds"]!.AsArray())
+        {
+            var componentId = componentIdNode!.GetValue<string>();
+            var matches = components.Where(candidate =>
+                    string.Equals(
+                        candidate["componentId"]?.GetValue<string>(),
+                        componentId,
+                        StringComparison.Ordinal))
+                .ToArray();
+            if (matches.Length != 1)
+            {
+                Add(
+                    issues,
+                    "effect.triggers.componentIds",
+                    "effect_resource_component_unresolved",
+                    "one exact component owned by this effect",
+                    componentId);
+                continue;
+            }
+
+            var profile = matches[0]["profile"]!.GetValue<string>();
+            if (profile is not ("periodic_damage" or "periodic_restore"))
+                continue;
+            using var componentDocument = JsonDocument.Parse(
+                matches[0].ToJsonString());
+            var parsed = EffectComponentProfiles.ParsePeriodicResourceComponent(
+                componentDocument.RootElement,
+                $"effect.components[{componentId}]");
+            issues.AddRange(parsed.Issues);
+            if (parsed.IsValid)
+                selected.Add((parsed.Component!, matches[0]));
+        }
+        if (issues.Count != 0)
+            return FailedPeriodicResourceResolution(issues);
+
+        var sourceExports = new List<ResourceMutationSourceExport>();
+        var mutations = new List<ResourceMutationIntent>();
+        var pendingResolutions = new List<EffectBoundedResourceResolution>();
+        foreach (var candidate in selected
+                     .OrderBy(static value => value.Parsed.Priority)
+                     .ThenBy(
+                         static value => value.Parsed.ComponentId,
+                         StringComparer.Ordinal))
+        {
+            var component = candidate.Parsed;
+            if (!definitions.TryResolveExact(
+                    component.ResourceKey,
+                    out var definition) ||
+                definition == null)
+            {
+                Add(
+                    issues,
+                    $"effect.components[{component.ComponentId}].payload.resource",
+                    "effect_resource_definition_unknown",
+                    "one exact sealed common resource definition",
+                    component.ResourceKey);
+                continue;
+            }
+            if (!definition.AllowedOwnerKinds.Contains(ownerKey.OwnerKind))
+            {
+                Add(
+                    issues,
+                    $"effect.components[{component.ComponentId}].payload.resource",
+                    "effect_resource_owner_kind_forbidden",
+                    "target owner kind allowed by the sealed resource definition",
+                    ownerKey.OwnerKind.ToString());
+                continue;
+            }
+            if (!definition.AllowedOperations.Contains(component.Operation))
+            {
+                Add(
+                    issues,
+                    $"effect.components[{component.ComponentId}].profile",
+                    "effect_resource_operation_forbidden",
+                    "periodic operation allowed by the sealed resource definition",
+                    component.Operation.ToString());
+                continue;
+            }
+
+            var ownerResolution = ownerAuthority.ResolveAcceptedCoordinate(
+                ownerKey,
+                component.ResourceKey);
+            issues.AddRange(ownerResolution.Issues);
+            if (!ownerResolution.Success)
+                continue;
+
+            var constraint = ResolvePeriodicResultConstraint(
+                component,
+                definition,
+                issues);
+            if (issues.Count != 0)
+                continue;
+
+            var effectAuthority = ResolvePendingEffectAuthority(
+                effect,
+                acceptedEvent.Turn);
+            var sameTurn = string.Equals(
+                effectAuthority.BindingKind,
+                "accepted_application",
+                StringComparison.Ordinal);
+            var sourceBinding = CreatePendingSourceAuthority(
+                effect["source"]!.AsObject(),
+                sourceAuthority);
+            var targetBinding = CreatePendingTargetAuthority(targetExport);
+            var resourceBinding = CreatePendingResourceAuthority(
+                ownerResolution.Entry!);
+            var sourceId = CreatePeriodicSourceId(
+                effectId,
+                triggerId,
+                component.ComponentId);
+            var sourceFingerprint = isBoundedResolution
+                ? CreateBoundedCandidateSourceFingerprint(
+                    effectAuthority,
+                    sourceBinding,
+                    targetBinding,
+                    resourceBinding,
+                    realm,
+                    targetKind,
+                    ownerKey.OwnerKind,
+                    trigger,
+                    component,
+                    definition)
+                : CreatePeriodicSourceFingerprint(
+                    effectId,
+                    realm,
+                    targetKey,
+                    ownerKey,
+                    trigger,
+                    component,
+                    definition);
+            if (isBoundedResolution)
+            {
+                pendingResolutions.Add(new EffectBoundedResourceResolution(
+                    acceptedEvent.EventRef,
+                    effectId,
+                    effectAuthority,
+                    effect["source"]!.DeepClone().AsObject(),
+                    sourceBinding,
+                    target.DeepClone().AsObject(),
+                    targetBinding,
+                    triggerId,
+                    acceptedEvent.Phase!,
+                    new ResourceCoordinate(
+                        ownerKey.Realm,
+                        ownerKey.OwnerKind,
+                        ownerKey.ResourceOwnerId,
+                        component.ResourceKey),
+                    resourceBinding,
+                    component.Operation,
+                    MinimumAmount: 0m,
+                    MaximumAmount: component.Amount,
+                    sourceFingerprint,
+                    CreateBoundedResolutionPolicyFingerprint(
+                        sourceFingerprint,
+                        component,
+                        definition,
+                        constraint),
+                    Array.Empty<ResourceOperationKey>(),
+                    Array.Empty<ResourceMutationEventRequirement>(),
+                    constraint,
+                    ReadRemainingUseBudget(effect, triggerId),
+                    ReadSafeSourceLabel(effect),
+                    ReadSafeTargetLabel(targetKind),
+                    definition.DisplayName,
+                    ReadSafeOperationLabel(component.Operation)));
+                continue;
+            }
+            sourceExports.Add(new ResourceMutationSourceExport(
+                "effect_component",
+                sourceId,
+                sourceFingerprint,
+                ResourceMutationSourceState.Active,
+                sameTurn,
+                ownerKey));
+            mutations.Add(new ResourceMutationIntent(
+                acceptedEvent.EventRef,
+                new ResourceCoordinate(
+                    ownerKey.Realm,
+                    ownerKey.OwnerKind,
+                    ownerKey.ResourceOwnerId,
+                    component.ResourceKey),
+                component.Amount,
+                new ResourceMutationSourceRequest(
+                    "effect_component",
+                    sourceId,
+                    component.Operation),
+                Array.Empty<ResourceOperationKey>(),
+                Array.Empty<ResourceMutationEventRequirement>(),
+                ReceiptId: null,
+                ResultConstraint: constraint));
+        }
+
+        return issues.Count == 0
+            ? new EffectPeriodicResourceResolution(
+                sourceExports.ToArray(),
+                mutations.ToArray(),
+                Array.Empty<ValidationIssue>())
+            {
+                PendingResolutions = pendingResolutions.ToArray()
+            }
+            : FailedPeriodicResourceResolution(issues);
+    }
+
+    internal static EffectPeriodicResourceResolution ResolveResourceEventMutations(
+        JsonObject effect,
+        string triggerId,
+        ResourceOperationKey producer,
+        string eventKind,
+        int turn,
+        EffectTargetAuthority targetAuthority,
+        ResourceOwnerAuthority ownerAuthority,
+        ResourceDefinitionCatalog definitions,
+        EffectSourceAuthorityEntry? sourceAuthority = null)
+    {
+        ArgumentNullException.ThrowIfNull(effect);
+        ArgumentNullException.ThrowIfNull(producer);
+        ArgumentNullException.ThrowIfNull(targetAuthority);
+        ArgumentNullException.ThrowIfNull(ownerAuthority);
+        ArgumentNullException.ThrowIfNull(definitions);
+
+        var issues = new List<ValidationIssue>();
+        if (!EffectEventTypeCatalog.IsResourceEvent(eventKind))
+        {
+            Add(
+                issues,
+                "effect.triggers.eventType",
+                "effect_resource_event_kind_invalid",
+                "one closed common resource event kind",
+                eventKind ?? "null");
+        }
+        if (turn <= 0)
+        {
+            Add(
+                issues,
+                "effect.event.turn",
+                "effect_resource_event_authority_invalid",
+                "positive accepted turn",
+                turn.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        }
+        if (issues.Count != 0)
+            return FailedPeriodicResourceResolution(issues);
+
+        var exactEventKind = eventKind!;
+        var eventRef = CreateResourceEventTriggerRef(
+            effect,
+            triggerId,
+            producer,
+            exactEventKind,
+            turn);
+        var resolved = ResolvePeriodicResourceMutations(
+            effect,
+            triggerId,
+            new EffectLifecycleEvent(
+                eventRef,
+                turn,
+                Phase: exactEventKind,
+                TriggerId: triggerId),
+            targetAuthority,
+            ownerAuthority,
+            definitions,
+            sourceAuthority);
+        if (!resolved.IsValid)
+            return resolved;
+
+        return new EffectPeriodicResourceResolution(
+            resolved.SourceExports,
+            resolved.Mutations.Select(mutation => mutation with
+            {
+                EventRequirements = new[]
+                {
+                    new ResourceMutationEventRequirement(producer, exactEventKind)
+                }
+            }).ToArray(),
+            Array.Empty<ValidationIssue>())
+        {
+            PendingResolutions = resolved.PendingResolutions.Select(pending => pending with
+            {
+                EventRequirements = new[]
+                {
+                    new ResourceMutationEventRequirement(producer, exactEventKind)
+                }
+            }).ToArray()
+        };
+    }
+
+    internal static EffectPeriodicResourceResolution ResolveDuePeriodicResourceMutations(
+        EffectAcceptedTurnPlan plan,
+        ResourceOwnerAuthority ownerAuthority,
+        ResourceDefinitionCatalog definitions)
+    {
+        ArgumentNullException.ThrowIfNull(plan);
+        ArgumentNullException.ThrowIfNull(ownerAuthority);
+        ArgumentNullException.ThrowIfNull(definitions);
+
+        var issues = new List<ValidationIssue>();
+        var catalog = EffectCarrierCatalog.Build(plan.ResourceTriggerCarriers);
+        issues.AddRange(catalog.Issues);
+        var sourceExports = new Dictionary<(string Kind, string Id), ResourceMutationSourceExport>();
+        var mutations = new List<ResourceMutationIntent>();
+        var pendingResolutions = new List<EffectBoundedResourceResolution>();
+        var triggerExecutions = new List<EffectResourceTriggerExecution>();
+        if (plan.EventInput["lifecycleEvents"] is not JsonArray lifecycleEvents)
+            return new EffectPeriodicResourceResolution(
+                Array.Empty<ResourceMutationSourceExport>(),
+                Array.Empty<ResourceMutationIntent>(),
+                issues);
+
+        foreach (var node in lifecycleEvents)
+        {
+            if (!TryParseLifecycleAuthority(node, issues, out var authority))
+                continue;
+            var occurrences = catalog.Occurrences
+                .Where(occurrence => occurrence.Effect["target"] is JsonObject target &&
+                    string.Equals(
+                        target["kind"]?.GetValue<string>(),
+                        authority.Target.Kind,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        target["targetId"]?.GetValue<string>(),
+                        authority.Target.TargetId,
+                        StringComparison.Ordinal))
+                .OrderBy(static occurrence => occurrence.EffectId, StringComparer.Ordinal);
+            foreach (var occurrence in occurrences)
+            {
+                if (occurrence.Effect["triggers"] is not JsonArray triggers)
+                    continue;
+                foreach (var trigger in triggers.OfType<JsonObject>()
+                             .Where(trigger =>
+                                 string.Equals(
+                                     trigger["eventType"]?.GetValue<string>(),
+                                     authority.Phase,
+                                     StringComparison.Ordinal))
+                             .OrderBy(trigger => trigger["priority"]!.GetValue<int>())
+                             .ThenBy(
+                                 trigger => trigger["triggerId"]!.GetValue<string>(),
+                                 StringComparer.Ordinal))
+                {
+                    if (!TryReadExact(trigger["triggerId"], out var triggerId))
+                        continue;
+                    var pendingEffectAuthority = ResolvePendingEffectAuthority(
+                        occurrence.Effect,
+                        authority.Turn);
+                    var acceptedEvent = new EffectLifecycleEvent(
+                        $"{authority.EventRef}:{pendingEffectAuthority.AuthorityId}:{triggerId}",
+                        authority.Turn,
+                        authority.Phase,
+                        triggerId,
+                        authority.CurrentTime,
+                        authority.CurrentSceneId,
+                        authority.SceneClosed,
+                        authority.SourceSatisfied,
+                        authority.ConditionSatisfied,
+                        authority.CurrentRealm);
+                    var resolved = ResolvePeriodicResourceMutations(
+                        occurrence.Effect,
+                        triggerId,
+                        acceptedEvent,
+                        plan.TargetAuthority,
+                        ownerAuthority,
+                        definitions,
+                        ResolvePlanSourceBinding(plan, occurrence.Effect));
+                    issues.AddRange(resolved.Issues);
+                    if (!resolved.IsValid)
+                        continue;
+                    foreach (var source in resolved.SourceExports)
+                    {
+                        var key = (source.SourceKind, source.SourceId);
+                        if (sourceExports.TryGetValue(key, out var existing) && existing != source)
+                        {
+                            Add(
+                                issues,
+                                "effect.resourceSources",
+                                "effect_resource_source_conflict",
+                                "one exact source policy per effect/trigger/component",
+                                source.SourceKind + "/" + source.SourceId);
+                            continue;
+                        }
+                        sourceExports[key] = source;
+                    }
+                    mutations.AddRange(resolved.Mutations);
+                    pendingResolutions.AddRange(resolved.PendingResolutions);
+                    if (resolved.Mutations.Count != 0)
+                    {
+                        triggerExecutions.Add(new EffectResourceTriggerExecution(
+                            occurrence.EffectId,
+                            triggerId,
+                            authority.Phase,
+                            acceptedEvent.EventRef,
+                            resolved.Mutations
+                                .Select(static mutation => mutation.Key)
+                                .ToArray(),
+                            ReadRemainingUseBudget(
+                                occurrence.Effect,
+                                triggerId)));
+                    }
+                }
+            }
+        }
+
+        return issues.Count == 0
+            ? new EffectPeriodicResourceResolution(
+                sourceExports.Values
+                    .OrderBy(static source => source.SourceKind, StringComparer.Ordinal)
+                    .ThenBy(static source => source.SourceId, StringComparer.Ordinal)
+                    .ToArray(),
+                mutations.ToArray(),
+                Array.Empty<ValidationIssue>())
+            {
+                TriggerExecutions = triggerExecutions.ToArray(),
+                PendingResolutions = pendingResolutions.ToArray()
+            }
+            : FailedPeriodicResourceResolution(issues);
+    }
+
+    private static bool EffectTargetsResourceOwner(
+        JsonObject effect,
+        ResourceCoordinate coordinate)
+    {
+        if (effect["target"] is not JsonObject target ||
+            !TryReadExact(effect["realm"], out var realm) ||
+            !TryReadExact(target["kind"], out var targetKind) ||
+            !TryReadExact(target["targetId"], out var targetId) ||
+            !TryMapEffectTargetKind(targetKind, out var ownerKind))
+        {
+            return false;
+        }
+
+        return string.Equals(realm, coordinate.Realm, StringComparison.Ordinal) &&
+            ownerKind == coordinate.OwnerKind &&
+               string.Equals(
+                   targetId,
+                   coordinate.ResourceOwnerId,
+                   StringComparison.Ordinal);
+    }
+
+    private static int? ReadRemainingUseBudget(
+        JsonObject effect,
+        string triggerId)
+    {
+        if (effect["lifetime"] is not JsonObject lifetime ||
+            !string.Equals(
+                lifetime["mode"]?.GetValue<string>(),
+                "uses",
+                StringComparison.Ordinal) ||
+            !TryReadPositiveInt(lifetime["remainingUses"], out var remainingUses) ||
+            lifetime["consumingTriggerIds"] is not JsonArray consumingTriggerIds ||
+            !consumingTriggerIds.OfType<JsonValue>().Any(value =>
+                value.TryGetValue<string>(out var candidate) &&
+                string.Equals(candidate, triggerId, StringComparison.Ordinal)))
+        {
+            return null;
+        }
+
+        return remainingUses;
+    }
+
+    internal static EffectPeriodicResourceResolution ResolveResourceEventMutations(
+        EffectAcceptedTurnPlan plan,
+        ResourceAppliedEvent producerEvent,
+        ResourceOperationKey producer,
+        ResourceOwnerAuthority ownerAuthority,
+        ResourceDefinitionCatalog definitions)
+    {
+        ArgumentNullException.ThrowIfNull(plan);
+        ArgumentNullException.ThrowIfNull(producerEvent);
+        ArgumentNullException.ThrowIfNull(producer);
+        ArgumentNullException.ThrowIfNull(ownerAuthority);
+        ArgumentNullException.ThrowIfNull(definitions);
+
+        var issues = new List<ValidationIssue>();
+        if (!EffectEventTypeCatalog.IsResourceEvent(producerEvent.EventKind) ||
+            producerEvent.Turn <= 0 ||
+            producerEvent.Coordinate != producer.Coordinate)
+        {
+            Add(
+                issues,
+                "effect.resourceEvent",
+                "effect_resource_event_authority_invalid",
+                "one exact emitted resource event bound to its producer coordinate",
+                $"{producerEvent.EventKind}/{producerEvent.Turn}/{producerEvent.Coordinate}");
+            return FailedPeriodicResourceResolution(issues);
+        }
+
+        var catalog = EffectCarrierCatalog.Build(plan.ResourceTriggerCarriers);
+        issues.AddRange(catalog.Issues);
+        var sourceExports = new Dictionary<(string Kind, string Id), ResourceMutationSourceExport>();
+        var mutations = new List<ResourceMutationIntent>();
+        var pendingResolutions = new List<EffectBoundedResourceResolution>();
+        var executions = new List<EffectResourceTriggerExecution>();
+        foreach (var occurrence in catalog.Occurrences
+                     .Where(occurrence => EffectTargetsResourceOwner(
+                         occurrence.Effect,
+                         producerEvent.Coordinate))
+                     .OrderBy(static occurrence => occurrence.EffectId, StringComparer.Ordinal))
+        {
+            if (occurrence.Effect["triggers"] is not JsonArray triggers)
+                continue;
+            foreach (var trigger in triggers.OfType<JsonObject>()
+                         .Where(trigger => string.Equals(
+                             trigger["eventType"]?.GetValue<string>(),
+                             producerEvent.EventKind,
+                             StringComparison.Ordinal))
+                         .OrderBy(trigger => trigger["priority"]!.GetValue<int>())
+                         .ThenBy(
+                             trigger => trigger["triggerId"]!.GetValue<string>(),
+                             StringComparer.Ordinal))
+            {
+                if (!TryReadExact(trigger["triggerId"], out var triggerId))
+                    continue;
+                var resolved = ResolveResourceEventMutations(
+                    occurrence.Effect,
+                    triggerId,
+                    producer,
+                    producerEvent.EventKind,
+                    producerEvent.Turn,
+                    plan.TargetAuthority,
+                    ownerAuthority,
+                    definitions,
+                    ResolvePlanSourceBinding(plan, occurrence.Effect));
+                issues.AddRange(resolved.Issues);
+                if (!resolved.IsValid)
+                    continue;
+                foreach (var source in resolved.SourceExports)
+                {
+                    var key = (source.SourceKind, source.SourceId);
+                    if (sourceExports.TryGetValue(key, out var existing) && existing != source)
+                    {
+                        Add(
+                            issues,
+                            "effect.resourceSources",
+                            "effect_resource_source_conflict",
+                            "one exact source policy per effect/trigger/component",
+                            source.SourceKind + "/" + source.SourceId);
+                        continue;
+                    }
+                    sourceExports[key] = source;
+                }
+                mutations.AddRange(resolved.Mutations);
+                pendingResolutions.AddRange(resolved.PendingResolutions);
+                if (resolved.Mutations.Count != 0)
+                {
+                    executions.Add(new EffectResourceTriggerExecution(
+                        occurrence.EffectId,
+                        triggerId,
+                        producerEvent.EventKind,
+                        resolved.Mutations[0].EventRef,
+                        resolved.Mutations
+                            .Select(static mutation => mutation.Key)
+                            .ToArray(),
+                        ReadRemainingUseBudget(
+                            occurrence.Effect,
+                            triggerId)));
+                }
+            }
+        }
+
+        return issues.Count == 0
+            ? new EffectPeriodicResourceResolution(
+                sourceExports.Values
+                    .OrderBy(static source => source.SourceKind, StringComparer.Ordinal)
+                    .ThenBy(static source => source.SourceId, StringComparer.Ordinal)
+                    .ToArray(),
+                mutations.ToArray(),
+                Array.Empty<ValidationIssue>())
+            {
+                TriggerExecutions = executions.ToArray(),
+                PendingResolutions = pendingResolutions.ToArray()
+            }
+            : FailedPeriodicResourceResolution(issues);
+    }
+
+    internal static EffectAcceptedTurnPlanningResult FinalizeAfterResourceGraph(
+        EffectAcceptedTurnPlan plan,
+        IReadOnlyList<EffectResourceTriggerExecution> executedTriggers,
+        EffectIdentityFactory identityFactory)
+    {
+        ArgumentNullException.ThrowIfNull(plan);
+        ArgumentNullException.ThrowIfNull(executedTriggers);
+        ArgumentNullException.ThrowIfNull(identityFactory);
+
+        var issues = new List<ValidationIssue>();
+        var eventInput = plan.EventInput;
+        if (!TryReadPositiveInt(eventInput["turn"], out var turn))
+        {
+            Add(
+                issues,
+                "eventInput.turn",
+                "effect_plan_event_authority_invalid",
+                "positive accepted turn",
+                Describe(eventInput["turn"]));
+            return Failed(issues);
+        }
+
+        var workspace = new CarrierWorkspace(plan.ResourceTriggerCarriers);
+        var identityRoot = plan.IdentityIndexAfterImage;
+        var identityState = ParseIdentity(identityRoot);
+        issues.AddRange(identityState.Issues);
+        if (identityState.State == null || issues.Count != 0)
+            return Failed(issues);
+        var processedEventRefs = identityState.State.Entries
+            .SelectMany(static entry => entry.Transitions)
+            .Select(static transition => transition.EventRef)
+            .ToHashSet(StringComparer.Ordinal);
+        var transitionIds = plan.AllocatedTransitionIds.ToList();
+        var activeEffects = plan.ActiveEffects
+            .Select(static effect => effect.DeepClone().AsObject())
+            .ToList();
+        var executionKeys = new HashSet<string>(StringComparer.Ordinal);
+
+        foreach (var execution in executedTriggers)
+        {
+            if (!execution.RemainingUseBudget.HasValue)
+                continue;
+            var executionKey = string.Join(
+                "\0",
+                execution.EffectId,
+                execution.TriggerId,
+                execution.EventKind,
+                execution.EventRef);
+            if (!executionKeys.Add(executionKey))
+            {
+                Add(
+                    issues,
+                    "effect.resourceTriggerExecutions",
+                    "effect_resource_trigger_execution_duplicate",
+                    "one exact applied trigger activation",
+                    executionKey.Replace('\0', '/'));
+                continue;
+            }
+
+            var catalog = EffectCarrierCatalog.Build(workspace.ToInput());
+            issues.AddRange(catalog.Issues);
+            if (!catalog.TryResolveOne(execution.EffectId, out var occurrence))
+            {
+                Add(
+                    issues,
+                    "effect.resourceTriggerExecutions",
+                    "effect_resource_trigger_lifetime_target_unresolved",
+                    "one exact active effect for an applied consuming trigger",
+                    execution.EffectId);
+                continue;
+            }
+            ApplyLifecycleReduction(
+                occurrence,
+                new EffectLifecycleEvent(
+                    execution.EventRef,
+                    turn,
+                    execution.EventKind,
+                    execution.TriggerId),
+                workspace,
+                identityRoot,
+                identityFactory,
+                transitionIds,
+                activeEffects,
+                processedEventRefs,
+                issues);
+        }
+        if (issues.Count != 0)
+            return Failed(issues);
+
+        ApplyDueLifecycleEvents(
+            eventInput,
+            sourceAuthority: null,
+            workspace,
+            identityRoot,
+            identityFactory,
+            transitionIds,
+            activeEffects,
+            processedEventRefs,
+            issues,
+            boundContinuationsOnly: false);
+        ValidateAfterImages(workspace, identityRoot, activeEffects, issues);
+        if (issues.Count != 0)
+            return Failed(issues);
+
+        var afterImages = plan.CarrierAfterImages.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.DeepClone().AsObject(),
+            StringComparer.Ordinal);
+        foreach (var pair in workspace.AfterImages)
+            afterImages[pair.Key] = pair.Value.DeepClone().AsObject();
+        var touchedPaths = plan.TouchedPaths
+            .Concat(afterImages.Keys)
+            .Append(EffectAcceptedTurnPlan.IdentityIndexPath)
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(static path => path, StringComparer.Ordinal)
+            .ToArray();
+
+        return new EffectAcceptedTurnPlanningResult(
+            new EffectAcceptedTurnPlan(
+                plan.InputFingerprint,
+                plan.CarrierAuthorityFingerprint,
+                plan.SourceAuthorityFingerprint,
+                plan.TargetAuthorityFingerprint,
+                plan.AllocatedCombatantIds,
+                plan.AllocatedEffectIds,
+                transitionIds,
+                plan.Sources,
+                plan.Targets,
+                plan.SourceBindings,
+                activeEffects,
+                plan.ResourceTriggerCarriers,
+                plan.TargetAuthority,
+                eventInput,
+                plan.CarrierBeforeImages,
+                afterImages,
+                plan.IdentityIndexBeforeImage,
+                identityRoot,
+                touchedPaths,
+                plan.DeletedPaths),
+            Array.Empty<ValidationIssue>());
+    }
+
     internal static EffectAcceptedTurnPlanningResult Build(
         EffectAcceptedTurnInput input,
         string fingerprint,
@@ -145,24 +1070,22 @@ internal static class EffectAcceptedTurnPlanner
         if (issues.Count > 0)
             return Failed(issues);
 
-        ApplyDueLifecycleEvents(
-            input.EventInput,
-            input.SourceAuthority,
-            workspace,
-            identityRoot,
-            identityFactory,
-            transitionIds,
-            activeEffects,
-            processedEventRefs,
-            issues,
-            boundContinuationsOnly: false);
+        var resourceTriggerCarriers = workspace.ToInput();
 
         ValidateAfterImages(workspace, identityRoot, activeEffects, issues);
         if (issues.Count > 0)
             return Failed(issues);
 
         var afterImages = workspace.AfterImages;
-        var carrierBeforeImages = afterImages.Keys.ToDictionary(
+        var carrierBeforeImages = new[]
+        {
+            EffectCarrierCatalog.PlayerPath,
+            EffectCarrierCatalog.NpcPath,
+            EffectCarrierCatalog.EnemiesPath,
+            EffectCarrierCatalog.AlliesPath,
+            EffectCarrierCatalog.AfterlifeProfilesPath,
+            EffectCarrierCatalog.SpiritualConflictPath
+        }.ToDictionary(
             static path => path,
             path => GetCarrierRoot(publicationCarrierBaselines, path)?.DeepClone().AsObject(),
             StringComparer.Ordinal);
@@ -187,6 +1110,9 @@ internal static class EffectAcceptedTurnPlanner
                     .DistinctBy(static entry => entry.Key)
                     .ToArray(),
                 activeEffects,
+                resourceTriggerCarriers,
+                targetAuthority,
+                input.EventInput,
                 carrierBeforeImages,
                 afterImages,
                 identityBeforeImage,
@@ -774,7 +1700,7 @@ internal static class EffectAcceptedTurnPlanner
 
     private static void ApplyDueLifecycleEvents(
         JsonObject eventInput,
-        EffectSourceAuthority sourceAuthority,
+        EffectSourceAuthority? sourceAuthority,
         CarrierWorkspace workspace,
         JsonObject identityRoot,
         EffectIdentityFactory identityFactory,
@@ -812,81 +1738,123 @@ internal static class EffectAcceptedTurnPlanner
                 var sourceSatisfied = authority.SourceSatisfied;
                 if (mode == "source_bound" && !sourceSatisfied.HasValue)
                 {
+                    if (sourceAuthority == null)
+                    {
+                        Add(
+                            issues,
+                            "effect.source",
+                            "effect_lifecycle_source_authority_missing",
+                            "one exact source authority for source-bound continuation",
+                            occurrence.EffectId);
+                        continue;
+                    }
                     sourceSatisfied = IsSourceBindingSatisfied(
                         occurrence.Effect,
                         sourceAuthority);
                 }
-                var reduction = EffectLifecycleScheduler.AdvanceLifetime(
-                    new EffectLifetimeReductionInput(
-                        occurrence.Effect,
-                        new EffectLifecycleEvent(
-                            eventRef,
-                            authority.Turn,
-                            authority.Phase,
-                            authority.TriggerId,
-                            authority.CurrentTime,
-                            authority.CurrentSceneId,
-                            authority.SceneClosed,
-                            sourceSatisfied,
-                            authority.ConditionSatisfied,
-                            authority.CurrentRealm),
-                        processedEventRefs));
-                issues.AddRange(reduction.Issues);
-                if (!reduction.Success || reduction.Outcome == "no_change")
-                    continue;
-
-                var transitionId = identityFactory.CreateTransitionId();
-                transitionIds.Add(transitionId);
-                if (reduction.Outcome == "expire")
-                {
-                    if (!workspace.TryRemoveEffect(occurrence.EffectId, out _))
-                    {
-                        Add(
-                            issues,
-                            "activeEffects",
-                            "effect_lifecycle_expiry_target_unresolved",
-                            "one exact mutable active effect",
-                            occurrence.EffectId);
-                        continue;
-                    }
-                    AppendIdentityTransition(
-                        identityRoot,
-                        occurrence.EffectId,
-                        "expired",
-                        CreateTransition(
-                            transitionId,
-                            "expire",
-                            authority.Turn,
-                            eventRef,
-                            new[] { occurrence.EffectId },
-                            Array.Empty<string>()),
-                        issues);
-                    RemoveAffected(activeEffects, occurrence.EffectId);
-                }
-                else if (reduction.UpdatedEffect is JsonObject updated)
-                {
-                    UpdateEffectChronology(updated, transitionId, authority.Turn);
-                    workspace.TryReplaceEffect(occurrence.EffectId, updated);
-                    var transitionKind = reduction.Outcome == "advance"
-                        ? "consume"
-                        : reduction.Outcome;
-                    AppendIdentityTransition(
-                        identityRoot,
-                        occurrence.EffectId,
-                        updated["state"]!.GetValue<string>(),
-                        CreateTransition(
-                            transitionId,
-                            transitionKind,
-                            authority.Turn,
-                            eventRef,
-                            new[] { occurrence.EffectId },
-                            new[] { occurrence.EffectId }),
-                        issues);
-                    AddOrReplaceAffected(activeEffects, updated);
-                }
-                processedEventRefs.Add(eventRef);
+                ApplyLifecycleReduction(
+                    occurrence,
+                    new EffectLifecycleEvent(
+                        eventRef,
+                        authority.Turn,
+                        authority.Phase,
+                        authority.TriggerId,
+                        authority.CurrentTime,
+                        authority.CurrentSceneId,
+                        authority.SceneClosed,
+                        sourceSatisfied,
+                        authority.ConditionSatisfied,
+                        authority.CurrentRealm),
+                    workspace,
+                    identityRoot,
+                    identityFactory,
+                    transitionIds,
+                    activeEffects,
+                    processedEventRefs,
+                    issues);
             }
         }
+    }
+
+    private static void ApplyLifecycleReduction(
+        EffectCarrierOccurrence occurrence,
+        EffectLifecycleEvent lifecycleEvent,
+        CarrierWorkspace workspace,
+        JsonObject identityRoot,
+        EffectIdentityFactory identityFactory,
+        List<string> transitionIds,
+        List<JsonObject> activeEffects,
+        HashSet<string> processedEventRefs,
+        List<ValidationIssue> issues)
+    {
+        var reduction = EffectLifecycleScheduler.AdvanceLifetime(
+            new EffectLifetimeReductionInput(
+                occurrence.Effect,
+                lifecycleEvent,
+                processedEventRefs));
+        issues.AddRange(reduction.Issues);
+        if (!reduction.Success || reduction.Outcome == "no_change")
+            return;
+
+        var transitionId = identityFactory.CreateTransitionId();
+        transitionIds.Add(transitionId);
+        if (reduction.Outcome == "expire")
+        {
+            if (!workspace.TryRemoveEffect(occurrence.EffectId, out _))
+            {
+                Add(
+                    issues,
+                    "activeEffects",
+                    "effect_lifecycle_expiry_target_unresolved",
+                    "one exact mutable active effect",
+                    occurrence.EffectId);
+                return;
+            }
+            AppendIdentityTransition(
+                identityRoot,
+                occurrence.EffectId,
+                "expired",
+                CreateTransition(
+                    transitionId,
+                    "expire",
+                    lifecycleEvent.Turn,
+                    lifecycleEvent.EventRef,
+                    new[] { occurrence.EffectId },
+                    Array.Empty<string>()),
+                issues);
+            RemoveAffected(activeEffects, occurrence.EffectId);
+        }
+        else if (reduction.UpdatedEffect is JsonObject updated)
+        {
+            UpdateEffectChronology(updated, transitionId, lifecycleEvent.Turn);
+            if (!workspace.TryReplaceEffect(occurrence.EffectId, updated))
+            {
+                Add(
+                    issues,
+                    "activeEffects",
+                    "effect_lifecycle_update_target_unresolved",
+                    "one exact mutable active effect",
+                    occurrence.EffectId);
+                return;
+            }
+            var transitionKind = reduction.Outcome == "advance"
+                ? "consume"
+                : reduction.Outcome;
+            AppendIdentityTransition(
+                identityRoot,
+                occurrence.EffectId,
+                updated["state"]!.GetValue<string>(),
+                CreateTransition(
+                    transitionId,
+                    transitionKind,
+                    lifecycleEvent.Turn,
+                    lifecycleEvent.EventRef,
+                    new[] { occurrence.EffectId },
+                    new[] { occurrence.EffectId }),
+                issues);
+            AddOrReplaceAffected(activeEffects, updated);
+        }
+        processedEventRefs.Add(lifecycleEvent.EventRef);
     }
 
     private static bool IsSourceBindingSatisfied(
@@ -923,6 +1891,7 @@ internal static class EffectAcceptedTurnPlanner
             !TryReadExact(value["eventRef"], out var eventRef) ||
             !TryReadPositiveInt(value["turn"], out var turn) ||
             !TryReadExact(value["phase"], out var phase) ||
+            !TryReadExact(value["realm"], out var realm) ||
             value["target"] is not JsonObject target ||
             !TryReadExact(target["kind"], out var targetKind) ||
             !TryReadExact(target["targetId"], out var targetId))
@@ -939,7 +1908,7 @@ internal static class EffectAcceptedTurnPlanner
             eventRef,
             turn,
             phase,
-            new EffectTargetKey("mortal_world", targetKind, targetId),
+            new EffectTargetKey(realm, targetKind, targetId),
             ReadOptionalExact(value["triggerId"]),
             TryReadNonNegativeLong(value["currentTime"], out var currentTime)
                 ? currentTime
@@ -1272,8 +2241,6 @@ internal static class EffectAcceptedTurnPlanner
             Add(issues, "effectChanges", "effect_plan_input_invalid", "effectChanges array", Describe(root["effectChanges"]));
         if (root.ContainsKey("effectResolutionReceipts") && root["effectResolutionReceipts"] is not JsonArray)
             Add(issues, "effectResolutionReceipts", "effect_plan_input_invalid", "effectResolutionReceipts array", Describe(root["effectResolutionReceipts"]));
-        else if (root["effectResolutionReceipts"] is JsonArray receipts && receipts.Count > 0)
-            Add(issues, "effectResolutionReceipts", "effect_plan_receipt_not_supported", "empty until bounded receipt planning is enabled", receipts.ToJsonString());
     }
 
     private static bool TryResolveEventRef(
@@ -1401,6 +2368,403 @@ internal static class EffectAcceptedTurnPlanner
         using var document = JsonDocument.Parse(root.ToJsonString());
         return EffectIdentityState.Parse(document.RootElement, EffectAcceptedTurnPlan.IdentityIndexPath);
     }
+
+    private static bool TryMapEffectTargetKind(
+        string targetKind,
+        out ResourceOwnerKind ownerKind)
+    {
+        ownerKind = targetKind switch
+        {
+            "player" => ResourceOwnerKind.Player,
+            "npc" => ResourceOwnerKind.Npc,
+            "combatant" => ResourceOwnerKind.Combatant,
+            "guardian" or "resident" or "radiant_actor" or "afterlife_actor" =>
+                ResourceOwnerKind.AfterlifeActor,
+            "spiritual_conflict_side" => ResourceOwnerKind.AfterlifeConflictSide,
+            _ => default
+        };
+        return targetKind is
+            "player" or
+            "npc" or
+            "combatant" or
+            "guardian" or
+            "resident" or
+            "radiant_actor" or
+            "afterlife_actor" or
+            "spiritual_conflict_side";
+    }
+
+    private static bool TryMapEffectTargetToResourceOwner(
+        EffectTargetKey target,
+        EffectTargetExport export,
+        out ResourceOwnerKey owner)
+    {
+        if (!TryMapEffectTargetKind(target.Kind, out var ownerKind))
+        {
+            owner = null!;
+            return false;
+        }
+
+        var ownerId = target.TargetId;
+        if (string.Equals(target.Kind, "player", StringComparison.Ordinal) &&
+            !string.Equals(target.Realm, "mortal_world", StringComparison.Ordinal) &&
+            string.Equals(target.TargetId, "player_soul", StringComparison.Ordinal))
+        {
+            ownerKind = ResourceOwnerKind.AfterlifeActor;
+        }
+        else if (string.Equals(target.Kind, "combatant", StringComparison.Ordinal) &&
+            export.BoundNpcId != null)
+        {
+            ownerKind = ResourceOwnerKind.Npc;
+            ownerId = export.BoundNpcId;
+        }
+        owner = new ResourceOwnerKey(target.Realm, ownerKind, ownerId);
+        return true;
+    }
+
+    private static ResourceMutationResultConstraint? ResolvePeriodicResultConstraint(
+        EffectPeriodicResourceComponent component,
+        ResourceDefinition definition,
+        List<ValidationIssue> issues)
+    {
+        if (component.Operation != ResourceOperation.Damage)
+            return null;
+        if (string.Equals(
+                component.BoundPolicy,
+                "registered_resource_floor",
+                StringComparison.Ordinal))
+        {
+            return null;
+        }
+        if (string.Equals(
+                component.BoundPolicy,
+                "may_reach_zero",
+                StringComparison.Ordinal))
+        {
+            if (definition.MinimumPolicy.Value > 0m)
+            {
+                Add(
+                    issues,
+                    $"effect.components[{component.ComponentId}].payload.floorPolicy",
+                    "effect_resource_floor_policy_incompatible",
+                    "sealed resource minimum at or below zero",
+                    definition.MinimumPolicy.Value.ToString());
+            }
+            return null;
+        }
+        if (string.Equals(
+                component.BoundPolicy,
+                "cannot_reduce_below_one",
+                StringComparison.Ordinal))
+        {
+            if (definition.MinimumPolicy.Value >= 1m)
+                return null;
+            if (!ResourceMaterializationContract.IsQuantumAligned(
+                    1m,
+                    definition.MinimumPolicy.Value,
+                    definition.Quantum))
+            {
+                Add(
+                    issues,
+                    $"effect.components[{component.ComponentId}].payload.floorPolicy",
+                    "effect_resource_floor_policy_incompatible",
+                    "resource definition capable of representing exact current value one",
+                    definition.ResourceKey);
+                return null;
+            }
+            return new ResourceMutationResultConstraint(
+                RejectBelow: 1m,
+                RejectAbove: null);
+        }
+
+        Add(
+            issues,
+            $"effect.components[{component.ComponentId}].payload.floorPolicy",
+            "effect_resource_floor_policy_unknown",
+            "registered closed periodic-damage floor policy",
+            component.BoundPolicy);
+        return null;
+    }
+
+    private static string CreatePeriodicSourceId(
+        string effectId,
+        string triggerId,
+        string componentId)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-resource-source-id-v1");
+        builder.Append(effectId);
+        builder.Append(triggerId);
+        builder.Append(componentId);
+        return "effect_component_" + builder.Build()["sha256:".Length..];
+    }
+
+    private static string CreateResourceEventTriggerRef(
+        JsonObject effect,
+        string triggerId,
+        ResourceOperationKey producer,
+        string eventKind,
+        int turn)
+    {
+        var effectAuthority = ResolvePendingEffectAuthority(effect, turn);
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-resource-trigger-event-v1");
+        builder.Append(effectAuthority.BindingKind);
+        builder.Append(effectAuthority.AuthorityId);
+        builder.Append(triggerId);
+        builder.Append(eventKind);
+        builder.Append(producer.EventRef);
+        builder.Append(producer.OriginKind);
+        builder.Append(producer.OriginId);
+        ResourceStateContract.AppendCoordinate(builder, producer.Coordinate);
+        builder.Append((int)producer.Operation);
+        return "effect_resource_event_" + builder.Build()["sha256:".Length..];
+    }
+
+    private static string CreatePeriodicSourceFingerprint(
+        string effectId,
+        string realm,
+        EffectTargetKey target,
+        ResourceOwnerKey owner,
+        JsonObject trigger,
+        EffectPeriodicResourceComponent component,
+        ResourceDefinition definition)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-resource-source-authority-v1");
+        builder.Append(effectId);
+        builder.Append(realm);
+        builder.Append(target.Kind);
+        builder.Append(target.TargetId);
+        builder.Append((int)owner.OwnerKind);
+        builder.Append(owner.ResourceOwnerId);
+        builder.Append(trigger["triggerId"]!.GetValue<string>());
+        builder.Append(trigger["eventType"]!.GetValue<string>());
+        builder.Append(trigger["priority"]!.GetValue<int>());
+        builder.Append(trigger["consumeUses"]!.GetValue<bool>());
+        builder.Append(trigger["resolutionMode"]!.GetValue<string>());
+        builder.Append(component.ComponentId);
+        builder.Append(component.Profile);
+        builder.Append(component.Priority);
+        builder.Append(component.ResourceKey);
+        builder.Append(component.Amount);
+        builder.Append((int)component.Operation);
+        builder.Append(component.BoundPolicy);
+        builder.Append(definition.DefinitionVersion);
+        builder.Append(definition.Materialization.DefinitionId);
+        builder.Append(definition.Materialization.Seal);
+        return builder.Build();
+    }
+
+    private static ResourcePendingAuthorityBinding CreatePendingSourceAuthority(
+        JsonObject source,
+        EffectSourceAuthorityEntry? sourceAuthority)
+    {
+        if (sourceAuthority is { SameTurn: true, SourceRef: { } sourceRef } &&
+            TryExact(sourceRef))
+        {
+            return new ResourcePendingAuthorityBinding(
+                "same_turn_ref",
+                sourceRef);
+        }
+        if (sourceAuthority is { SameTurn: true })
+        {
+            return new ResourcePendingAuthorityBinding(
+                "permanent",
+                source["sourceId"]!.GetValue<string>());
+        }
+        return new ResourcePendingAuthorityBinding(
+            "permanent",
+            source["sourceId"]!.GetValue<string>());
+    }
+
+    private static ResourcePendingAuthorityBinding ResolvePendingEffectAuthority(
+        JsonObject effect,
+        int turn)
+    {
+        if (effect["chronology"] is JsonObject chronology &&
+            chronology["createdAtTurn"] is JsonValue createdAtTurnNode &&
+            createdAtTurnNode.TryGetValue<int>(out var createdAtTurn) &&
+            createdAtTurn == turn &&
+            TryReadExact(chronology["createdEventRef"], out var createdEventRef))
+        {
+            return new ResourcePendingAuthorityBinding(
+                "accepted_application",
+                createdEventRef);
+        }
+        return new ResourcePendingAuthorityBinding(
+            "permanent",
+            TryReadExact(effect["effectId"], out var effectId)
+                ? effectId
+                : "missing");
+    }
+
+    private static EffectSourceAuthorityEntry? ResolvePlanSourceBinding(
+        EffectAcceptedTurnPlan plan,
+        JsonObject effect)
+    {
+        if (effect["source"] is not JsonObject source ||
+            !TryReadExact(effect["realm"], out var realm) ||
+            !TryReadExact(source["kind"], out var kind) ||
+            !TryReadExact(source["sourceId"], out var sourceId) ||
+            !TryReadExact(source["definitionKey"], out var definitionKey))
+        {
+            return null;
+        }
+        var key = new EffectSourceKey(realm, kind, sourceId, definitionKey);
+        return plan.SourceBindings.SingleOrDefault(binding => binding.Key == key);
+    }
+
+    private static ResourcePendingAuthorityBinding CreatePendingTargetAuthority(
+        EffectTargetExport target)
+    {
+        if (target is { SameTurn: true, TargetRef: { } targetRef } &&
+            TryExact(targetRef))
+        {
+            return new ResourcePendingAuthorityBinding(
+                "same_turn_ref",
+                targetRef);
+        }
+        return new ResourcePendingAuthorityBinding(
+            "permanent",
+            target.TargetId);
+    }
+
+    private static ResourcePendingAuthorityBinding CreatePendingResourceAuthority(
+        ResourceOwnerAuthorityEntry owner)
+    {
+        if (owner is { SameTurn: true, SameTurnRef: { } sameTurnRef } &&
+            TryExact(sameTurnRef))
+        {
+            return new ResourcePendingAuthorityBinding(
+                "same_turn_ref",
+                sameTurnRef);
+        }
+        return new ResourcePendingAuthorityBinding(
+            "permanent",
+            owner.Key.ResourceOwnerId);
+    }
+
+    private static string CreateBoundedCandidateSourceFingerprint(
+        ResourcePendingAuthorityBinding effectAuthority,
+        ResourcePendingAuthorityBinding sourceAuthority,
+        ResourcePendingAuthorityBinding targetAuthority,
+        ResourcePendingAuthorityBinding resourceAuthority,
+        string realm,
+        string targetKind,
+        ResourceOwnerKind ownerKind,
+        JsonObject trigger,
+        EffectPeriodicResourceComponent component,
+        ResourceDefinition definition)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-bounded-candidate-authority-v1");
+        AppendPendingAuthority(builder, effectAuthority);
+        AppendPendingAuthority(builder, sourceAuthority);
+        AppendPendingAuthority(builder, targetAuthority);
+        AppendPendingAuthority(builder, resourceAuthority);
+        builder.Append(realm);
+        builder.Append(targetKind);
+        builder.Append((int)ownerKind);
+        builder.Append(trigger["triggerId"]!.GetValue<string>());
+        builder.Append(trigger["eventType"]!.GetValue<string>());
+        builder.Append(trigger["priority"]!.GetValue<int>());
+        builder.Append(trigger["consumeUses"]!.GetValue<bool>());
+        builder.Append(trigger["resolutionMode"]!.GetValue<string>());
+        builder.Append(component.ComponentId);
+        builder.Append(component.Profile);
+        builder.Append(component.Priority);
+        builder.Append(component.ResourceKey);
+        builder.Append(component.Amount);
+        builder.Append((int)component.Operation);
+        builder.Append(component.BoundPolicy);
+        builder.Append(definition.ResourceKey);
+        builder.Append(definition.DefinitionVersion);
+        return builder.Build();
+    }
+
+    private static void AppendPendingAuthority(
+        ResourceFingerprintBuilder builder,
+        ResourcePendingAuthorityBinding binding)
+    {
+        builder.Append(binding.BindingKind);
+        builder.Append(binding.AuthorityId);
+    }
+
+    private static string CreateBoundedResolutionPolicyFingerprint(
+        string sourceAuthorityFingerprint,
+        EffectPeriodicResourceComponent component,
+        ResourceDefinition definition,
+        ResourceMutationResultConstraint? constraint)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-bounded-resource-policy-v1");
+        builder.Append(sourceAuthorityFingerprint);
+        builder.Append(component.Amount);
+        builder.Append((int)component.Operation);
+        builder.Append(component.BoundPolicy);
+        builder.Append(definition.ResourceKey);
+        builder.Append(definition.DefinitionVersion);
+        builder.Append(definition.Quantum);
+        builder.Append((int)definition.NumericKind);
+        builder.Append((int)definition.FloorPolicy);
+        builder.Append((int)definition.CapPolicy);
+        builder.Append(constraint?.RejectBelow?.ToString(
+            System.Globalization.CultureInfo.InvariantCulture) ?? "<none>");
+        builder.Append(constraint?.RejectAbove?.ToString(
+            System.Globalization.CultureInfo.InvariantCulture) ?? "<none>");
+        return builder.Build();
+    }
+
+    private static string ReadSafeSourceLabel(JsonObject effect)
+    {
+        if (effect["display"] is JsonObject display)
+        {
+            if (display["sourceLabel"] is JsonValue sourceLabelNode &&
+                sourceLabelNode.TryGetValue<string>(out var sourceLabel) &&
+                !string.IsNullOrWhiteSpace(sourceLabel))
+            {
+                return sourceLabel.Trim();
+            }
+            if (display["name"] is JsonValue nameNode &&
+                nameNode.TryGetValue<string>(out var name) &&
+                !string.IsNullOrWhiteSpace(name))
+            {
+                return name.Trim();
+            }
+        }
+        return "активный эффект";
+    }
+
+    private static string ReadSafeTargetLabel(string targetKind) =>
+        targetKind switch
+        {
+            "player" => "герой",
+            "npc" => "персонаж",
+            "combatant" => "участник боя",
+            "guardian" => "Хранитель",
+            "resident" => "резидент",
+            "radiant_actor" => "сияющий персонаж",
+            "afterlife_actor" => "обитатель посмертия",
+            _ => "цель эффекта"
+        };
+
+    private static string ReadSafeOperationLabel(ResourceOperation operation) =>
+        operation switch
+        {
+            ResourceOperation.Damage => "урон",
+            ResourceOperation.Restore => "восстановление",
+            ResourceOperation.Spend => "расход",
+            ResourceOperation.Gain => "получение",
+            _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, null)
+        };
+
+    private static EffectPeriodicResourceResolution FailedPeriodicResourceResolution(
+        IEnumerable<ValidationIssue> issues) =>
+        new(
+            Array.Empty<ResourceMutationSourceExport>(),
+            Array.Empty<ResourceMutationIntent>(),
+            issues.ToArray());
 
     private static EffectAcceptedTurnPlanningResult Failed(List<ValidationIssue> issues) =>
         new(null, issues.ToArray());

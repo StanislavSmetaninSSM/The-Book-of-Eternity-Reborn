@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -174,6 +175,173 @@ public sealed class ResourceTriggerGraphTests
         Assert.Equal(3, result.Graph.MaximumDepth);
     }
 
+    [Fact]
+    public void EffectAdapter_BindsDeclaredResourceEventTriggerToExactProducerOperation()
+    {
+        var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
+        var ownerKey = new ResourceOwnerKey(
+            "mortal_world",
+            ResourceOwnerKind.Player,
+            "player_current");
+        var owners = ResourceOwnerAuthority.Build(new ResourceOwnerAuthorityInput(
+            new[]
+            {
+                new ResourceOwnerExport(
+                    ownerKey,
+                    ResourceOwnerLifecycle.Active,
+                    SameTurn: false,
+                    OwnerRef: null,
+                    BoundNpcId: null,
+                    new HashSet<string>(StringComparer.Ordinal) { "health" },
+                    FingerprintA)
+            },
+            Array.Empty<ResourceOwnerExport>(),
+            Array.Empty<ResourceOwnerKey>()));
+        var targets = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
+            new[]
+            {
+                new EffectTargetExport(
+                    "mortal_world",
+                    "player",
+                    "player_current",
+                    SameTurn: false)
+            },
+            Array.Empty<EffectTargetExport>(),
+            new HashSet<string>(StringComparer.Ordinal),
+            CombatantIdentities: null));
+        Assert.Empty(owners.Issues);
+        Assert.Empty(targets.Issues);
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "periodic_restore");
+        effect["triggers"]![0]!["triggerId"] = "on_resource_depleted";
+        effect["triggers"]![0]!["eventType"] = "resource_depleted";
+        var producer = new ResourceMutationIntent(
+            "turn_43:damage:1",
+            new ResourceCoordinate(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "health"),
+            Amount: 10m,
+            new ResourceMutationSourceRequest(
+                "combat_outcome",
+                "combat_damage_alpha",
+                ResourceOperation.Damage),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: null);
+
+        var resolution = InvokeResourceEventResolution(
+            effect,
+            "on_resource_depleted",
+            producer.Key,
+            "resource_depleted",
+            turn: 43,
+            targets,
+            owners,
+            definitions);
+
+        Assert.Empty(resolution.Issues);
+        var source = Assert.Single(resolution.SourceExports);
+        var mutation = Assert.Single(resolution.Mutations);
+        Assert.Equal("effect_component", source.SourceKind);
+        Assert.Equal(ownerKey, source.BoundOwner);
+        var requirement = Assert.Single(mutation.EventRequirements);
+        Assert.Equal(producer.Key, requirement.Producer);
+        Assert.Equal("resource_depleted", requirement.EventKind);
+        Assert.Equal(ResourceOperation.Restore, mutation.Source.Operation);
+    }
+
+    [Fact]
+    public void Build_OrdersNestedResourceEventReadySetAndRejectsEventCycleAndExpansion()
+    {
+        var root = Node("root_damage", originId: "root");
+        var first = Node(
+            "effect_a",
+            phase: ResourceMutationPhase.EffectTrigger,
+            priority: 200,
+            originId: "effect_a",
+            eventRequirements: new[]
+            {
+                new ResourceEventRequirement("root_damage", "resource_depleted")
+            });
+        var second = Node(
+            "effect_b",
+            phase: ResourceMutationPhase.EffectTrigger,
+            priority: 200,
+            originId: "effect_b",
+            eventRequirements: new[]
+            {
+                new ResourceEventRequirement("root_damage", "resource_depleted")
+            });
+        var nested = Node(
+            "effect_nested",
+            phase: ResourceMutationPhase.EffectTrigger,
+            priority: 100,
+            originId: "effect_0_nested",
+            eventRequirements: new[]
+            {
+                new ResourceEventRequirement("effect_b", "resource_filled")
+            });
+        var ordered = ResourceTriggerGraph.Build(new[] { nested, second, root, first });
+        var cycle = ResourceTriggerGraph.Build(new[]
+        {
+            Node(
+                "cycle_a",
+                eventRequirements: new[]
+                {
+                    new ResourceEventRequirement("cycle_b", "resource_depleted")
+                }),
+            Node(
+                "cycle_b",
+                eventRequirements: new[]
+                {
+                    new ResourceEventRequirement("cycle_a", "resource_filled")
+                })
+        });
+        var expansion = ResourceTriggerGraph.Build(Enumerable.Range(0, 1025)
+            .Select(index => Node(
+                $"event_node_{index:D4}",
+                eventRequirements: index == 0
+                    ? Array.Empty<ResourceEventRequirement>()
+                    : new[]
+                    {
+                        new ResourceEventRequirement(
+                            $"event_node_{index - 1:D4}",
+                            index % 2 == 0
+                                ? "resource_depleted"
+                                : "resource_filled")
+                    })));
+
+        Assert.True(ordered.IsValid, string.Join(Environment.NewLine, ordered.Issues));
+        Assert.Equal(
+            new[] { "root_damage", "effect_a", "effect_b", "effect_nested" },
+            ordered.Graph!.OrderedNodes.Select(static node => node.NodeId));
+        Assert.Contains(cycle.Issues, issue => issue.Code == "resource_graph_cycle");
+        Assert.Contains(expansion.Issues, issue =>
+            issue.Code == "resource_graph_node_limit_exceeded");
+    }
+
+    private static EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution
+        InvokeResourceEventResolution(
+            JsonObject effect,
+            string triggerId,
+            ResourceOperationKey producer,
+            string eventKind,
+            int turn,
+            EffectTargetAuthority targets,
+            ResourceOwnerAuthority owners,
+            ResourceDefinitionCatalog definitions)
+        => EffectAcceptedTurnPlanner.ResolveResourceEventMutations(
+            effect,
+            triggerId,
+            producer,
+            eventKind,
+            turn,
+            targets,
+            owners,
+            definitions);
+
     private static IReadOnlyList<ResourceTriggerGraphNode> Chain(int count) =>
         Enumerable.Range(0, count)
             .Select(index => Node(
@@ -199,4 +367,7 @@ public sealed class ResourceTriggerGraphTests
             operationId,
             dependencies ?? Array.Empty<string>(),
             eventRequirements ?? Array.Empty<ResourceEventRequirement>());
+
+    private const string FingerprintA =
+        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 }

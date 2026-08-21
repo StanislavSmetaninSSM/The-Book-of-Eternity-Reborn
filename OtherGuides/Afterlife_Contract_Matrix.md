@@ -93,6 +93,8 @@ A physical resident record may disappear from `guardian_abode_residents.json.ent
 
 The immutable envelope is stored as `materialization` on the same profile:
 
+If that first profile also initializes a pre-sealed setting-defined resource whose `allowedOwnerKinds` includes `afterlife_actor`, the same full profile may carry one closed `resourceMaterialization.resources[]` envelope with exact `resourceKey` and `maximum` pairs. The client preserves the exact actor `actorId` and Actor Materialization envelope, creates no second actor ID, and uses the actor `materializationId` as the same-turn ownerRef for common resource authority. Actor/effect selectors continue to use the exact canonical `actorId`; never add `actorRef`. The client removes `resourceMaterialization`, creates `resourceOwnerBindings`, and publishes the common resource state/history atomically. An existing materialized profile must not resend `resourceMaterialization`; later capacity changes use their registered lifecycle/capacity route rather than a full-profile resend. Unknown definitions, unsupported owner kinds/formulas, duplicate/confusable keys, direct current values, legacy refs, and unsealed prose-derived capabilities fail closed.
+
 ```json
 {
   "actorType": "guardian",

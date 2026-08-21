@@ -6,13 +6,13 @@
 
 ## Summary
 
-Replace the unrelated Mortal player/NPC/combat and afterlife active-effect write paths with one setting-agnostic materialization boundary. The GM requests `apply`, `dispel`, or `remove` through a transient `effectChanges[]` command. The client resolves exact source and target authority, assigns permanent effect and transition identities once, applies source-owned stacking and lifetime rules, schedules deterministic lifecycle work, validates the complete composed effect set, and publishes distributed owner carriers plus a client-owned identity index atomically. Static `combatEffect`, `structuredBonuses`, Fate Card, item, skill, wound, quest, location, event, and spiritual-art definitions remain source templates. No runtime migration or legacy compatibility path is added.
+Replace the unrelated Mortal player/NPC/combat and afterlife active-effect write paths with one setting-agnostic materialization boundary. The GM requests `apply`, `dispel`, or `remove` through a transient `effectChanges[]` command. The client resolves exact source and target authority, assigns permanent effect and transition identities once, applies source-owned stacking and lifetime rules, schedules deterministic lifecycle work, validates the complete composed effect set, and publishes distributed owner carriers plus the client-owned identity index atomically through the one common `AcceptedMechanicsPlan`. Static `combatEffect`, `structuredBonuses`, Fate Card, item, skill, wound, quest, location, event, and spiritual-art definitions remain source templates. No runtime migration or legacy compatibility path is added.
 
 ## Technical Context
 
 **Language/Version**: C# 12 on .NET 8; PowerShell 7 for bounded local verification; existing React/Vite/TypeScript frontend changes only if current generic DTO rendering cannot express the safe effect projection.
 
-**Primary Dependencies**: Blocking canonical resource authority [#1543](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1543) for Task 9 trigger/resource execution; existing `ValidationService`, `CanonicalStateNormalizer`, `FileSystemManager`, `PendingTurnSnapshotAuthority`, accepted-turn repair/rollback loop, `StateDistributor`, `CharacteristicsService`, `AfterlifeSpiritualConflictState`, `AfterlifeEntityProfileState`, existing item/location/actor/faction materialization plan authorities, `MortalItemPlayerProjection` technical DTO suppression patterns, Spectre.Console, xUnit 2.9.2, Microsoft.NET.Test.Sdk 17.11.1, and `System.Text.Json` / `JsonNode`.
+**Primary Dependencies**: Shared canonical resource authority [#1543](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1543), whose US4/T085 slice supplies Task 9 trigger/resource/pending execution and the sole accepted publication plan; existing `ValidationService`, `CanonicalStateNormalizer`, `FileSystemManager`, `PendingTurnSnapshotAuthority`, accepted-turn repair/rollback loop, `StateDistributor`, `CharacteristicsService`, `AfterlifeSpiritualConflictState`, `AfterlifeEntityProfileState`, existing item/location/actor/faction materialization plan authorities, `MortalItemPlayerProjection` technical DTO suppression patterns, Spectre.Console, xUnit 2.9.2, Microsoft.NET.Test.Sdk 17.11.1, and `System.Text.Json` / `JsonNode`.
 
 **Storage**: File-backed JSON. Transient commands stage in `game_state/effects/effect_commands.json`; active instances remain in `game_state/player/effects.json`, `game_state/npcs/npc_effects.json`, accepted Mortal combatant `activeBuffs`/`activeDebuffs`, accepted afterlife profile `activeEffects[]`, or active spiritual-conflict `combatConditions[]`; `game_state/effects/effect_identity_index.json` is client-owned identity/history authority; `game_state/control/pending_effect_resolutions.json` is client-owned bounded GM-work authority.
 
@@ -102,14 +102,17 @@ BookOfEternityClient/
 │   ├── EffectComponentProfiles.cs
 │   ├── EffectIdentityState.cs
 │   ├── EffectCarrierCatalog.cs
-│   ├── EffectCombatantIdentityState.cs
+│   ├── CombatantIdentityState.cs
 │   ├── EffectSourceAuthority.cs
 │   ├── EffectTargetAuthority.cs
 │   ├── EffectAcceptedTurnPlan.cs
 │   ├── EffectAcceptedTurnPlanner.cs
 │   ├── EffectAcceptedTurnPlanCache.cs
 │   ├── EffectLifecycleScheduler.cs
-│   ├── EffectPendingResolutionState.cs
+│   ├── ResourcePendingResolutionState.cs
+│   ├── AcceptedMechanicsPlan.cs
+│   ├── AcceptedMechanicsPlanCache.cs
+│   ├── AcceptedMechanicsPlanner.cs
 │   ├── EffectMechanicsSnapshot.cs
 │   ├── EffectRepairPacketBuilder.cs
 │   ├── CharacteristicsService.cs
@@ -176,7 +179,7 @@ CLI_API_Specification.md, CLI_Agent_Daemon_Specification.md,
 BookOfEternityClient/game_master_daemon.ps1
 ```
 
-**Structure Decision**: Keep active semantic instances with their owners and add one small shared effect contract/planner/scheduler/index/projection layer under `Services`. Stage all effect operations in one transient file, consume them after source-owning normalizers have established accepted same-turn identities, and publish through the existing accepted canonical transaction. Use afterlife profiles as the sole persistent afterlife actor-effect carrier and an adapter for specialized `combatConditions[]`; do not duplicate effects in Guardian/resident source files or add a global semantic effect registry.
+**Structure Decision**: Keep active semantic instances with their owners and one focused effect contract/planner/scheduler/index/projection layer under `Services`. The effect planner is a subordinate builder inside the shared accepted-mechanics transaction, not a second publisher. Stage all effect operations in one transient file, consume them after source-owning normalizers have established accepted same-turn identities, and publish effect/resource/pending after-images through the sole cached `AcceptedMechanicsPlan`. Use afterlife profiles as the sole persistent afterlife actor-effect carrier and an adapter for specialized `combatConditions[]`; do not duplicate effects in Guardian/resident source files or add a global semantic effect registry.
 
 ## Phase 0: Research Outcomes
 
@@ -185,13 +188,13 @@ Research decisions and rejected alternatives are recorded in [research.md](resea
 1. Active instances are distinct from static `combatEffect`, `structuredBonuses`, Fate Card, item, skill/art, wound, quest, location, faction, event, hazard, and combat-action definitions.
 2. `effectChanges[]`/`effectResolutionReceipts[]` are the only common application/result routes and are fully consumed; old player/NPC and direct carrier routes are removed.
 3. A closed optional `activeEffectDefinitions[]` or an equivalent proven adapter supplies exact materializable source policy.
-4. Random permanent identities are generated once in one cached accepted plan, not independently regenerated or derived from GM input.
+4. Random permanent identities are generated once in the subordinate effect plan retained by one cached `AcceptedMechanicsPlan`, never independently regenerated, separately published, or derived from GM input.
 5. Source/target catalogs compose pre-turn authority only with explicit exact
    same-turn DTO exports: client-assigned item/location refs come from their
    accepted plans, while stable-ID owners pass their own validator before an
    adapter exports them. Names, raw sibling scans, aliases, cross-realm
    inference, and commit-time plan rebuilding are forbidden.
-6. Anonymous Mortal combatants use exact same-turn `combatantRef` and receive stable client-owned combat-local anchors once before they can be canonical effect targets.
+6. Anonymous Mortal combatants use exact same-turn `combatantRef` and receive stable client-owned combat-local anchors once. Named combat representations use exact `npcRef -> NPCId` authority and never receive a second combat identity.
 7. Nine registered component profiles, five stack policies, and eight lifetime modes replace arbitrary pseudo-mechanics and duration sentinels.
 8. The client advances lifecycle in one deterministic phase order; only bounded story-facing work reaches the GM.
 9. Afterlife `combatConditions[]` retain specialized axes/counterplay but use common identity/history; persistent afterlife actor effects live only in accepted profiles.
@@ -214,9 +217,9 @@ Research decisions and rejected alternatives are recorded in [research.md](resea
 
 1. Add RED contract/identity/source-definition tests, then implement closed envelope/component/source-definition/index parsing without changing consumers.
 2. Add RED source/target authority tests and build one-pass exact catalogs, stable combat-local anchors, and same-turn plan exports.
-3. Add RED planner/plan-cache tests and implement `effectChanges[]`, random one-time identity allocation, stack/lifetime resolution, direct-mutation protection, trigger graph validation, and complete final carrier/index planning.
-4. Add RED Mortal carrier and normalizer integration tests; replace player/NPC legacy writes, preserve adjacent wound state, carry accepted combat arrays, run effect normalization after source-owning normalizers, consume commands, and join rollback tracking.
-5. Add RED lifecycle/mechanics tests; implement deterministic scheduler, pending receipts, effect-owned companions, and all-or-nothing `EffectMechanicsSnapshot`; migrate `CharacteristicsService` and affected combat/action consumers off raw aliases.
+3. Add RED planner/plan-cache tests and implement `effectChanges[]`, random one-time identity allocation, stack/lifetime resolution, direct-mutation protection, trigger graph validation, and complete effect carrier/index subplanning.
+4. Add RED Mortal carrier and normalizer integration tests; replace player/NPC legacy writes, preserve adjacent wound state, carry accepted combat arrays, feed the validated effect subplan into the common planner after source-owning normalizers, consume commands, and publish only through the accepted-mechanics rollback boundary.
+5. Add RED lifecycle/mechanics tests; implement deterministic scheduler, common bounded resource receipts, effect-owned companions, and all-or-nothing `EffectMechanicsSnapshot`; migrate `CharacteristicsService` and affected combat/action consumers off raw aliases.
 6. Add RED afterlife adapter tests; route spiritual condition creation/consumption through common operations, retain legal axes/counterplay, and add persistent profile effects without touching Shining blessing entitlements.
 7. Add RED repair/failure-injection tests; integrate bounded packets, baseline-before-dispatch, coherent full-response resubmission, operator diagnostics, helper-failure safety, stale-output suppression, and byte/existence-exact rollback.
 8. Add RED console/browser parity and privacy tests; implement one `EffectPlayerProjection`, opaque action selectors, submit-time accepted revalidation, whole technical DTO suppression, and wound-independent copy.
@@ -234,8 +237,8 @@ player projection is:
 | --- | --- | --- | --- | --- |
 | Mortal player | `game_state/player/effects.json` | forbidden | Validate/project `activeEffects[]` after accepted commands | T014–T038 |
 | Named NPC | `game_state/npcs/npc_effects.json` | forbidden | Preserve adjacent wounds and project exact NPC entries | T014–T038 |
-| Enemy combatants | `game_state/combat/enemies.json` | non-empty active arrays forbidden | Assign anchors and publish complete buff/debuff arrays | T017–T036 |
-| Ally combatants | `game_state/combat/allies.json` | non-empty active arrays forbidden | Assign anchors and publish complete buff/debuff arrays | T017–T036 |
+| Enemy combatants | `game_state/combat/enemies.json` | non-empty active arrays forbidden | Assign anonymous anchors; bind named rows to the one NPC identity; publish complete anonymous buff/debuff arrays | T017–T036 |
+| Ally combatants | `game_state/combat/allies.json` | non-empty active arrays forbidden | Assign anonymous anchors; bind named rows to the one NPC identity; publish complete anonymous buff/debuff arrays | T017–T036 |
 | Persistent afterlife actors | `game_state/meta/afterlife_entity_profiles.json` | direct active post-state forbidden | Preserve profiles and publish `activeEffects[]` | T053–T063 |
 | Spiritual conditions | `game_state/meta/afterlife_spiritual_conflict_state.json` | direct lifecycle post-state forbidden | Adapt `combatConditions[]` to common identity/lifecycle | T054–T063 |
 | Identity/history | `game_state/effects/effect_identity_index.json` | never | Allocate, reconcile, retain terminal history | T012–T036 |
@@ -251,6 +254,7 @@ No constitution exception is required.
 
 - `effect_identity_index.json` owns only identity, carrier coordinate, stack coordinate, lifecycle, and replay evidence. It is not a second semantic active-effect store.
 - `effect_commands.json` is transient staging consumed inside one accepted transaction, not durable canonical state.
-- `pending_effect_resolutions.json` is client-owned bounded work, not a GM-editable mechanics registry.
+- `pending_effect_resolutions.json` is the common client-owned bounded resource-work root for effect triggers, not a GM-editable mechanics registry.
+- `EffectAcceptedTurnPlanCache` may retain one validated subordinate result only for common-plan construction; it has no independent consume/publication API.
 - Distributed owner carriers prevent a global semantic hot file while the shared planner/index/snapshot prevent divergent contracts.
 - The specialized afterlife adapter preserves existing gameplay rather than forking identity and retry semantics.

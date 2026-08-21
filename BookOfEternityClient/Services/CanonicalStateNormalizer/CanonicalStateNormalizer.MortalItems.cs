@@ -1292,7 +1292,25 @@ public partial class CanonicalStateNormalizer
 
 internal static class AcceptedTurnCanonicalStateRefresh
 {
+    internal sealed record Result(
+        IReadOnlyList<ValidationIssue> Issues,
+        AcceptedMechanicsPlan? MechanicsPlan);
+
     internal static async Task<IReadOnlyList<ValidationIssue>> NormalizeAndValidateAsync(
+        FileSystemManager fs,
+        CanonicalStateNormalizer normalizer,
+        ValidationService validator,
+        IReadOnlyDictionary<string, string> backups)
+    {
+        var result = await NormalizeAndValidateWithPlanAsync(
+            fs,
+            normalizer,
+            validator,
+            backups);
+        return result.Issues;
+    }
+
+    internal static async Task<Result> NormalizeAndValidateWithPlanAsync(
         FileSystemManager fs,
         CanonicalStateNormalizer normalizer,
         ValidationService validator,
@@ -1307,7 +1325,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
         var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
         try
         {
-            await normalizer.BindTo(writeLease).NormalizeAccumulatedStateAsync(backups);
+            var mechanicsPlan = await normalizer.BindTo(writeLease)
+                .NormalizeAccumulatedStateWithPlanAsync(backups);
             var issues = new List<ValidationIssue>();
             issues.AddRange(await validator
                 .ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(writeLease));
@@ -1319,7 +1338,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 .ValidateAcceptedTurnCanonicalEffectMaterializationAsync(writeLease));
             if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
                 await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
-            return issues;
+            return new Result(issues, mechanicsPlan);
         }
         catch (Exception exception)
         {

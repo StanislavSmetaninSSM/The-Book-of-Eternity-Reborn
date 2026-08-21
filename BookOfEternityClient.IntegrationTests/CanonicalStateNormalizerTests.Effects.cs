@@ -31,11 +31,11 @@ public sealed class CanonicalStateNormalizerEffectTests
     }
 
     [Fact]
-    public async Task NormalizeEffects_WithoutCommandsOrCombatantRefsDoesNotRequireTurnRequest()
+    public async Task AcceptedMechanics_WithoutCommandsOrCombatantRefsDoesNotRequireTurnRequest()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
 
-        var plan = await context.Normalizer.NormalizeEffectsAsync(backups: null);
+        var plan = await context.NormalizeAcceptedEffectsAsync(backups: null);
 
         Assert.Null(plan);
     }
@@ -53,7 +53,7 @@ public sealed class CanonicalStateNormalizerEffectTests
                 EffectMaterializationTestFixture.CreateApplyCommand()));
 
         await ValidateRawPlanAsync(context);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
 
         await AssertCanonicalCarrierPassesLegacyStatePhaseAsync(
             context,
@@ -81,7 +81,7 @@ public sealed class CanonicalStateNormalizerEffectTests
     }
 
     [Fact]
-    public async Task NormalizeEffects_AfterSuccessfulPublicationConsumesValidatedPlan()
+    public async Task AcceptedMechanics_AfterSuccessfulPublicationConsumesValidatedPlan()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         await context.SeedPlayerWoundSourceAsync();
@@ -93,7 +93,7 @@ public sealed class CanonicalStateNormalizerEffectTests
                 EffectMaterializationTestFixture.CreateApplyCommand()));
 
         await ValidateRawPlanAsync(context);
-        var publishedPlan = await context.Normalizer.NormalizeEffectsAsync(backups);
+        var publishedPlan = await context.NormalizeAcceptedEffectsAsync(backups);
         Assert.NotNull(publishedPlan);
 
         context.FileSystem.DeleteFile("input/turn_request.json");
@@ -102,7 +102,7 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.IdentityIndexPath,
             EffectMaterializationTestContext.CommandPath);
 
-        var repeatedPlan = await context.Normalizer.NormalizeEffectsAsync(backups: null);
+        var repeatedPlan = await context.NormalizeAcceptedEffectsAsync(backups: null);
 
         Assert.Null(repeatedPlan);
         var after = await context.CaptureBytesAsync(
@@ -129,9 +129,9 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath);
 
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => context.Normalizer.NormalizeEffectsAsync(backups));
+            () => context.NormalizeAcceptedEffectsAsync(backups));
 
-        Assert.Contains("validated accepted effect plan", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("validated common plan", exception.Message, StringComparison.Ordinal);
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.IdentityIndexPath,
@@ -148,7 +148,7 @@ public sealed class CanonicalStateNormalizerEffectTests
         string changedAuthority)
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerWoundSourceAsync(CreateNonResourceDefinition());
         var targetKind = changedAuthority == "target" ? "npc" : "player";
         if (targetKind == "npc")
         {
@@ -167,7 +167,7 @@ public sealed class CanonicalStateNormalizerEffectTests
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand(targetKind)));
+                CreateNonResourceApplyCommand(targetKind)));
         await ValidateRawPlanAsync(context);
 
         switch (changedAuthority)
@@ -216,9 +216,9 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath);
 
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => context.Normalizer.NormalizeEffectsAsync(backups));
+            () => context.NormalizeAcceptedEffectsAsync(backups));
 
-        Assert.Contains("changed after effect validation", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("changed after", exception.Message, StringComparison.Ordinal);
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.NpcEffectsPath,
@@ -231,7 +231,7 @@ public sealed class CanonicalStateNormalizerEffectTests
     public async Task Apply_ValidatedPlanRejectsUntouchedCarrierIndexDivergenceBeforePublication()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerWoundSourceAsync(CreateNonResourceDefinition());
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject
@@ -241,7 +241,9 @@ public sealed class CanonicalStateNormalizerEffectTests
                     ["NPCId"] = "npc_test_healer"
                 })
             });
-        var existingEffect = EffectMaterializationTestFixture.CreateCanonicalEffect("npc");
+        var existingEffect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            "npc",
+            "action_control");
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.NpcEffectsPath,
             new JsonObject
@@ -261,7 +263,7 @@ public sealed class CanonicalStateNormalizerEffectTests
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand()));
+                CreateNonResourceApplyCommand()));
         await ValidateRawPlanAsync(context);
 
         await context.WriteJsonAsync(
@@ -282,9 +284,9 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath);
 
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => context.Normalizer.NormalizeEffectsAsync(backups));
+            () => context.NormalizeAcceptedEffectsAsync(backups));
 
-        Assert.Contains("changed after effect validation", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("changed after validation", exception.Message, StringComparison.Ordinal);
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.NpcEffectsPath,
@@ -297,7 +299,7 @@ public sealed class CanonicalStateNormalizerEffectTests
     public async Task Apply_ValidatedPlanRejectsCoordinatedUntouchedEffectAndSourceMutation()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerWoundSourceAsync(CreateNonResourceDefinition());
         var wounds = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.PlayerWoundsPath))!.AsArray();
         var secondWound = wounds[0]!.DeepClone().AsObject();
@@ -317,7 +319,9 @@ public sealed class CanonicalStateNormalizerEffectTests
                     ["NPCId"] = "npc_test_healer"
                 })
             });
-        var existingEffect = EffectMaterializationTestFixture.CreateCanonicalEffect("npc");
+        var existingEffect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            "npc",
+            "action_control");
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.NpcEffectsPath,
             new JsonObject
@@ -334,7 +338,7 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestFixture.CreateIdentityIndex(existingEffect));
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateNonResourceApplyCommand();
         command["source"]!["sourceId"] = "wound_test_second_source";
         command["source"]!["definitionKey"] = "second_bleeding_consequence";
         await context.WriteJsonAsync(
@@ -344,13 +348,13 @@ public sealed class CanonicalStateNormalizerEffectTests
 
         var npcRoot = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.NpcEffectsPath))!.AsObject();
-        npcRoot["entries"]![0]!["activeEffects"]![0]!["components"]![0]!["payload"]!["amount"] = 4;
+        npcRoot["entries"]![0]!["activeEffects"]![0]!["components"]![0]!["payload"]!["action"] = "attack";
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.NpcEffectsPath,
             npcRoot);
         wounds = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.PlayerWoundsPath))!.AsArray();
-        wounds[0]!["activeEffectDefinitions"]![0]!["components"]![0]!["payload"]!["amount"] = 4;
+        wounds[0]!["activeEffectDefinitions"]![0]!["components"]![0]!["payload"]!["action"] = "attack";
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerWoundsPath,
             wounds);
@@ -362,9 +366,9 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.PlayerWoundsPath);
 
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => context.Normalizer.NormalizeEffectsAsync(backups));
+            () => context.NormalizeAcceptedEffectsAsync(backups));
 
-        Assert.Contains("changed after effect validation", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("changed after validation", exception.Message, StringComparison.Ordinal);
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.NpcEffectsPath,
@@ -383,6 +387,10 @@ public sealed class CanonicalStateNormalizerEffectTests
             "combatant_ref_preexisting_empty");
         combatant.Remove("combatantRef");
         combatant["combatantId"] = "combatant_preexisting_empty";
+        combatant.Remove("currentHealth");
+        combatant.Remove("maxHealth");
+        combatant.Remove("currentPoise");
+        combatant.Remove("maxPoise");
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath,
             new JsonObject { ["enemiesData"] = new JsonArray(combatant) });
@@ -407,9 +415,9 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath);
 
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => context.Normalizer.NormalizeEffectsAsync(backups));
+            () => context.NormalizeAcceptedEffectsAsync(backups));
 
-        Assert.Contains("changed after effect validation", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("changed after validation", exception.Message, StringComparison.Ordinal);
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.EnemyCombatantsPath,
@@ -454,7 +462,7 @@ public sealed class CanonicalStateNormalizerEffectTests
             worldEvents);
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.Contains(issues, issue =>
             issue.Code == "effect_source_definition_missing_field");
         var before = await context.CaptureBytesAsync(
@@ -463,9 +471,9 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath);
 
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => context.Normalizer.NormalizeEffectsAsync(backups));
+            () => context.NormalizeAcceptedEffectsAsync(backups));
 
-        Assert.Contains("requires one validated accepted effect plan", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("requires one validated common plan", exception.Message, StringComparison.Ordinal);
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.IdentityIndexPath,
@@ -498,9 +506,9 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath);
 
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => context.Normalizer.NormalizeEffectsAsync(backups));
+            () => context.NormalizeAcceptedEffectsAsync(backups));
 
-        Assert.Contains("duplicate", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("changed after validation", exception.Message, StringComparison.Ordinal);
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.IdentityIndexPath,
@@ -530,7 +538,7 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath);
 
         await Assert.ThrowsAsync<InvalidDataException>(
-            () => context.Normalizer.NormalizeEffectsAsync(backups));
+            () => context.NormalizeAcceptedEffectsAsync(backups));
 
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
@@ -554,7 +562,7 @@ public sealed class CanonicalStateNormalizerEffectTests
             });
 
         await ValidateRawPlanAsync(context);
-        var plan = await context.Normalizer.NormalizeEffectsAsync(backups);
+        var plan = await context.NormalizeAcceptedEffectsAsync(backups);
 
         Assert.NotNull(plan);
         Assert.Empty(plan.ActiveEffects);
@@ -585,9 +593,9 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath);
 
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => context.Normalizer.NormalizeEffectsAsync(backups));
+            () => context.NormalizeAcceptedEffectsAsync(backups));
 
-        Assert.Contains("changed after effect validation", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("changed after validation", exception.Message, StringComparison.Ordinal);
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.IdentityIndexPath,
@@ -616,9 +624,9 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath);
 
         var exception = await Assert.ThrowsAsync<InvalidDataException>(
-            () => context.Normalizer.NormalizeEffectsAsync(backups));
+            () => context.NormalizeAcceptedEffectsAsync(backups));
 
-        Assert.Contains("changed after effect validation", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("changed after validation", exception.Message, StringComparison.Ordinal);
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.IdentityIndexPath,
@@ -630,13 +638,13 @@ public sealed class CanonicalStateNormalizerEffectTests
     public async Task Apply_ValidatedPlanRejectsLateWhitespaceCommand()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerWoundSourceAsync(CreateNonResourceDefinition());
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand()));
+                CreateNonResourceApplyCommand()));
         await ValidateRawPlanAsync(context);
         await context.FileSystem.WriteFileAtomicAsync(
             EffectMaterializationTestContext.CommandPath,
@@ -647,7 +655,7 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath);
 
         await Assert.ThrowsAsync<InvalidDataException>(
-            () => context.Normalizer.NormalizeEffectsAsync(backups));
+            () => context.NormalizeAcceptedEffectsAsync(backups));
 
         var after = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
@@ -726,7 +734,7 @@ public sealed class CanonicalStateNormalizerEffectTests
     public async Task Apply_NpcPreservesAdjacentWoundState()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerWoundSourceAsync(CreateNonResourceDefinition());
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject
@@ -756,10 +764,10 @@ public sealed class CanonicalStateNormalizerEffectTests
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand("npc")));
+                CreateNonResourceApplyCommand("npc")));
 
         await ValidateRawPlanAsync(context);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
 
         await AssertCanonicalCarrierPassesLegacyStatePhaseAsync(
             context,
@@ -805,13 +813,15 @@ public sealed class CanonicalStateNormalizerEffectTests
                     EffectMaterializationTestFixture.CreateSameTurnMortalFaction(
                         factionInitialId))
             });
+        var sameTurnActor = EffectMaterializationTestFixture.CreateSameTurnMortalActor(
+            npcInitialId);
+        sameTurnActor["resourceMaterialization"] = CreateResourceMaterialization(
+            ("health", 60m));
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject
             {
-                ["UpdateNPCs"] = new JsonArray(
-                    EffectMaterializationTestFixture.CreateSameTurnMortalActor(
-                        npcInitialId))
+                ["UpdateNPCs"] = new JsonArray(sameTurnActor)
             });
         var command = EffectMaterializationTestFixture.CreateApplyCommand("npc");
         command["target"] = new JsonObject
@@ -825,22 +835,13 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var rawIssues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+        var rawIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.True(
             rawIssues.All(issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, rawIssues.Select(issue => issue.Code)));
 
-        var normalizedActor = EffectMaterializationTestFixture
-            .CreateSameTurnMortalActor(npcInitialId);
-        normalizedActor["NPCId"] = npcInitialId;
-        normalizedActor.Remove("initialId");
-        await context.WriteJsonAsync(
-            "game_state/npcs/npc_core.json",
-            new JsonObject
-            {
-                ["NPCsInScene"] = new JsonArray(normalizedActor)
-            });
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAccumulatedStateWithAcceptedMechanicsAsync(backups);
 
         var root = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.NpcEffectsPath))!.AsObject();
@@ -859,7 +860,7 @@ public sealed class CanonicalStateNormalizerEffectTests
         string expectedCollection)
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        var definition = CreateNonResourceDefinition();
         definition["display"]!["category"] = category;
         await context.SeedPlayerWoundSourceAsync(definition);
         await context.WriteJsonAsync(
@@ -879,10 +880,10 @@ public sealed class CanonicalStateNormalizerEffectTests
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand("combatant")));
+                CreateNonResourceApplyCommand("combatant")));
 
         await ValidateRawPlanAsync(context);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
 
         await AssertCanonicalCarrierPassesLegacyStatePhaseAsync(
             context,
@@ -902,7 +903,7 @@ public sealed class CanonicalStateNormalizerEffectTests
     public async Task Apply_AllyCombatantPublishesOnlyThePlannedBuffCollection()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        var definition = CreateNonResourceDefinition();
         definition["display"]!["category"] = "buff";
         await context.SeedPlayerWoundSourceAsync(definition);
         await context.WriteJsonAsync(
@@ -922,10 +923,10 @@ public sealed class CanonicalStateNormalizerEffectTests
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand("combatant")));
+                CreateNonResourceApplyCommand("combatant")));
 
         await ValidateRawPlanAsync(context);
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
 
         var root = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.AllyCombatantsPath))!.AsObject();
@@ -939,12 +940,37 @@ public sealed class CanonicalStateNormalizerEffectTests
         EffectMaterializationTestContext context)
     {
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.True(
             issues.All(static issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, issues.Select(static issue =>
                 $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
     }
+
+    private static JsonObject CreateNonResourceDefinition()
+    {
+        return EffectMaterializationTestFixture.CreateDefinition("action_control");
+    }
+
+    private static JsonObject CreateNonResourceApplyCommand(string targetKind = "player")
+    {
+        var command = EffectMaterializationTestFixture.CreateApplyCommand(targetKind);
+        command["parameters"] = new JsonObject();
+        return command;
+    }
+
+    private static JsonObject CreateResourceMaterialization(
+        params (string Key, decimal Maximum)[] resources) =>
+        new()
+        {
+            ["resources"] = new JsonArray(resources
+                .Select(resource => (JsonNode)new JsonObject
+                {
+                    ["resourceKey"] = resource.Key,
+                    ["maximum"] = resource.Maximum
+                })
+                .ToArray())
+        };
 
     private static async Task AssertCanonicalCarrierPassesLegacyStatePhaseAsync(
         EffectMaterializationTestContext context,

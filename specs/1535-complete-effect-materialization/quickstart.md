@@ -127,9 +127,11 @@ arrays in `effect_commands.json`.
 
 Same-turn item and location sources use `sourceRef` and are resolved only from
 their accepted plan exports. Stable-ID owners are validated first and exported
-through a closed adapter. Canonical publication consumes the exact plan cached
-by raw validation; it cannot rebuild authority after another normalizer changes
-the files.
+through a closed adapter. Raw effect validation retains one exact subordinate
+effect plan for common-plan construction. Canonical publication consumes only
+the resulting cached `AcceptedMechanicsPlan`; the effect cache has no separate
+publication token and neither layer may rebuild authority after another
+normalizer changes the files.
 
 Adding the effect phase occupied the last `uint` flag. The phase enum now uses
 `ulong`, preserving a real unknown-bit fail-closed guard without changing the
@@ -148,7 +150,7 @@ defined phase order or selection semantics.
 | Hidden characteristic mechanics stay internal while direct console/shared browser projections remain safe | `TestResults/test-lanes/20260815-085304-691-43656-3ef512d044de4106996d4ef7fdff4105-focused`; `TestResults/test-lanes/20260815-090146-237-36928-fce2b363fd0a4555b1ce6a6642c8c1e4-focused` | `TestResults/test-lanes/20260815-090238-686-55632-b7f488b307eb416dab47fc87262b9d1b-focused`; `TestResults/test-lanes/20260815-090345-811-15484-17fd42ff51254fa2bcf9f507ed50ec3d-focused` | 2 |
 | Missing/wrong-type player-safe computed map never falls back to internal values | `TestResults/test-lanes/20260815-090747-882-35720-4cda4c16cc614c6bb586ac81134420e1-focused` | `TestResults/test-lanes/20260815-090838-664-49496-3ad05329191a4bea9c5b1199019394a5-focused` | 3 |
 | Unrelated normalization is a no-op, commandless combatant refs still publish, and a published validated plan is consumed | `TestResults/test-lanes/20260815-082252-230-38628-f1a5c5bf2ee94423ba39949cc5659838-focused`; `TestResults/test-lanes/20260815-091945-981-41912-3028ded2fc8e4b18a53cda46b4df66b8-focused` | `TestResults/test-lanes/20260815-082449-941-20056-37a2b8a317da444a8595a1a0d380948f-focused`; `TestResults/test-lanes/20260815-082602-698-39028-64f6879400a34df7b2ccfefd7ada4ac4-focused`; `TestResults/test-lanes/20260815-092031-448-47408-9620e1d76b284a6b8d81bd4634ead2fa-focused` | 4 |
-| Reserved future pending-effect path is explicitly inventoried, not activated | `TestResults/test-lanes/20260815-082636-432-51948-005858e21a264ab8b8a60a46698e7766-fast` | `TestResults/test-lanes/20260815-082903-661-32512-b1a2f1a96df740239dd15f40d8e2f5bf-focused` | 1 |
+| Task 7 reserved the pending-effect path before its later Task 9 activation | `TestResults/test-lanes/20260815-082636-432-51948-005858e21a264ab8b8a60a46698e7766-fast` | `TestResults/test-lanes/20260815-082903-661-32512-b1a2f1a96df740239dd15f40d8e2f5bf-focused` | 1 |
 | Final Task 7 normalizer control | — | `TestResults/test-lanes/20260815-092133-666-27872-47f720acd7a24ce38c301d7abbe1926d-focused` | 27 |
 | Final Task 7 Fast control | — | `TestResults/test-lanes/20260815-092308-521-57072-f1333ebcd02045bdaab0d3deadefd2ed-fast` | 3441 |
 
@@ -259,15 +261,35 @@ Exercise:
 
 Expected: each event advances exactly once; numeric/text persistence sentinels fail.
 
-This slice intentionally stops before trigger execution and bounded receipts.
-`component_response`, periodic/event triggers, and
-`pending_effect_resolutions.json` remain owned by T042–T043/T047/T049–T050 and
-must fail closed rather than being approximated by the stack/lifetime reducer.
-The pure scheduler already covers all eight lifetime reducers. The production
-Mortal adapter in this slice supplies owner-turn and exact world-time events;
-uses, scene, and condition advancement waits for its owning exact trigger or
-scene/condition adapter. `profile_specific` merge execution is likewise kept in
-the later registered component phase.
+Task 9 now executes periodic resource work, resource-event trigger feedback,
+uses advancement, bounded receipts, and terminal cleanup through #1543's common
+ledger and `AcceptedMechanicsPlan`. There is no effect-only arithmetic or
+publisher. The pure scheduler covers all eight lifetime reducers; production
+adapters currently supply owner-turn, exact world-time, and executed resource
+events. Scene and condition advancement still fail closed until their later
+owning exact adapters supply those events, and the later afterlife/projection/
+repair/wound/migration tasks remain open.
+
+### Task 9 common-plan and bounded-receipt evidence (2026-08-21)
+
+| Boundary | RED result | GREEN result | Green tests |
+| --- | --- | --- | ---: |
+| Closed bounded request/receipt contract | `TestResults/test-lanes/20260821-153057-727-28780-61405f057897424b88f09b352008a292-focused` (`23/25`) | `TestResults/test-lanes/20260821-153234-691-27676-3bca33722c354f3a8878a312c64efb0d-focused` | 25 |
+| Full-turn pending publication/receipt/rollback | `TestResults/test-lanes/20260821-153959-271-39120-65e8dd3036e74560bfcf9572d16d21c8-focused` (`0/3`) | `TestResults/test-lanes/20260821-155344-617-11788-6a28f8a5746446daa1577067783ae298-focused` | 3 |
+| Same-turn unpublished effect rebinds by accepted application, never by predicted random ID | `TestResults/test-lanes/20260821-164655-867-35136-c1d018711df24345bd344bb2d2036900-focused` | `TestResults/test-lanes/20260821-165811-784-18448-6f3bf75cd04b4bd59071a947712cd45f-focused` | 1 |
+| Terminal semantic replay and complete pending controls | — | `TestResults/test-lanes/20260821-164926-671-19052-9ca7962a2d6a42eea7f5da43c05df6e7-focused`; `TestResults/test-lanes/20260821-170559-758-46844-52acecb09ee24e1ab93fadb3e15299f5-focused` | 29 + 4 |
+| Independent effect publication/cache handoff removed | `TestResults/test-lanes/20260821-173041-298-7788-8211c4986c4347aebfe741b473e41291-focused` | `TestResults/test-lanes/20260821-173239-135-42304-592d8e60517f4071a1194103d90a4161-focused` | 3 |
+| Remaining effect validation callers migrated to the common plan | `TestResults/test-lanes/20260821-173455-115-24408-e1792ff912dc4c43bfe12edb60536c75-focused` (`139/148`) | `TestResults/test-lanes/20260821-175114-670-30688-2123dee4b4f1466294a33e4065b2b89d-focused` | 148 |
+| Final T086 combined unit/integration/Fast controls | — | `TestResults/test-lanes/20260821-180604-546-2708-85b2f850c9824e468a33fc50dd02e2a9-focused`; `TestResults/test-lanes/20260821-180628-499-26240-d3d401e6a2b04bde9c4e9a201a2b30cd-focused`; `TestResults/test-lanes/20260821-181034-943-2272-ec1beda269a24b0b94e30d8d904a9488-fast` | 164 + 188 + 3920 |
+
+Every GREEN artifact exited `0`, timed out `false`, reported zero duplicate test
+IDs, and completed owned-tree cleanup. The common pending state publishes no
+resource/effect mechanics before a valid receipt; successful full-turn
+resubmission consumes request, receipt, and commands exactly once, while exact
+semantic replay returns terminal evidence without allocating or applying again.
+The final T086 controls also built with zero warnings/errors; every lane exited
+`0`, timed out `false`, reported zero duplicate IDs, and completed owned-tree
+cleanup.
 
 ## 7. Periodic and Triggered Ordering
 
@@ -289,6 +311,9 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject In
 Expected:
 
 - exact named NPC effect appears in its one NPC carrier entry;
+- a same-turn named combat representation submits only exact `npcRef`, becomes
+  canonical `NPCId`, receives no second `combatantId`, and routes its effect to
+  the NPC carrier;
 - a new anonymous combatant exposes an exact same-turn `combatantRef`, receives a client-owned stable combat-local ID once, and the canonical effect stores only that permanent target;
 - non-empty raw `activeBuffs`/`activeDebuffs` without `effectChanges[]` fail;
 - case/name/index targeting fails;

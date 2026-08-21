@@ -12,7 +12,6 @@ internal sealed class EffectAcceptedTurnPlanCache
     private readonly EffectIdentityFactory _identityFactory;
     private string? _fingerprint;
     private EffectAcceptedTurnPlanningResult? _result;
-    private string? _validatedBindingFingerprint;
     private EffectAcceptedTurnPlanningResult? _validatedResult;
 
     internal EffectAcceptedTurnPlanCache()
@@ -48,68 +47,23 @@ internal sealed class EffectAcceptedTurnPlanCache
         {
             lock (_gate)
             {
-                _validatedBindingFingerprint = null;
                 _validatedResult = null;
             }
             return result;
         }
         lock (_gate)
         {
-            _validatedBindingFingerprint = CreateValidatedBindingFingerprint(
-                input.SessionId,
-                input.SnapshotToken,
-                input.RawCommands,
-                input.EventInput);
             _validatedResult = result;
         }
         return result;
-    }
-
-    internal bool TryGetValidated(
-        string sessionId,
-        string snapshotToken,
-        JsonObject rawCommands,
-        JsonObject eventInput,
-        out EffectAcceptedTurnPlanningResult result)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
-        ArgumentNullException.ThrowIfNull(rawCommands);
-        ArgumentNullException.ThrowIfNull(eventInput);
-        var fingerprint = CreateValidatedBindingFingerprint(
-            sessionId,
-            snapshotToken,
-            rawCommands,
-            eventInput);
-        lock (_gate)
-        {
-            if (_validatedResult != null &&
-                string.Equals(
-                    _validatedBindingFingerprint,
-                    fingerprint,
-                    StringComparison.Ordinal))
-            {
-                result = _validatedResult;
-                return true;
-            }
-        }
-        result = null!;
-        return false;
     }
 
     internal void InvalidateValidated()
     {
         lock (_gate)
         {
-            _validatedBindingFingerprint = null;
             _validatedResult = null;
         }
-    }
-
-    internal bool HasValidated()
-    {
-        lock (_gate)
-            return _validatedResult != null;
     }
 
     internal bool TryPeekValidated(out EffectAcceptedTurnPlanningResult result)
@@ -140,22 +94,6 @@ internal sealed class EffectAcceptedTurnPlanCache
             ["eventInput"] = input.EventInput.DeepClone(),
             ["preTurnCarriers"] = CloneCarriers(input.PreTurnCarriers),
             ["preTurnIdentityIndex"] = input.PreTurnIdentityIndex?.DeepClone()
-        };
-        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(root.ToJsonString())));
-    }
-
-    private static string CreateValidatedBindingFingerprint(
-        string sessionId,
-        string snapshotToken,
-        JsonObject rawCommands,
-        JsonObject eventInput)
-    {
-        var root = new JsonObject
-        {
-            ["sessionId"] = sessionId,
-            ["snapshotToken"] = snapshotToken,
-            ["rawCommands"] = rawCommands.DeepClone(),
-            ["eventInput"] = eventInput.DeepClone()
         };
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(root.ToJsonString())));
     }
@@ -195,31 +133,11 @@ internal static class EffectAcceptedTurnPlanAuthority
             .GetOrBuildValidated(input);
     }
 
-    internal static bool TryGetValidated(
-        FileSystemManager fileSystem,
-        string sessionId,
-        string snapshotToken,
-        JsonObject rawCommands,
-        JsonObject eventInput,
-        out EffectAcceptedTurnPlanningResult result)
-    {
-        ArgumentNullException.ThrowIfNull(fileSystem);
-        return Caches.GetValue(fileSystem, static _ => new EffectAcceptedTurnPlanCache())
-            .TryGetValidated(sessionId, snapshotToken, rawCommands, eventInput, out result);
-    }
-
     internal static void InvalidateValidated(FileSystemManager fileSystem)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         Caches.GetValue(fileSystem, static _ => new EffectAcceptedTurnPlanCache())
             .InvalidateValidated();
-    }
-
-    internal static bool HasValidated(FileSystemManager fileSystem)
-    {
-        ArgumentNullException.ThrowIfNull(fileSystem);
-        return Caches.GetValue(fileSystem, static _ => new EffectAcceptedTurnPlanCache())
-            .HasValidated();
     }
 
     internal static bool TryPeekValidated(

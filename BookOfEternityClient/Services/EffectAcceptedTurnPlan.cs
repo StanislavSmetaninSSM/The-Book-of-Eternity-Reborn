@@ -25,6 +25,8 @@ internal sealed class EffectAcceptedTurnPlan
     private readonly JsonObject _identityIndexAfterImage;
     private readonly JsonObject? _identityIndexBeforeImage;
     private readonly EffectSourceAuthorityEntry[] _sourceBindings;
+    private readonly EffectCarrierCatalogInput _resourceTriggerCarriers;
+    private readonly JsonObject _eventInput;
 
     internal const string CommandPath = "game_state/effects/effect_commands.json";
     internal const string IdentityIndexPath = "game_state/effects/effect_identity_index.json";
@@ -41,6 +43,9 @@ internal sealed class EffectAcceptedTurnPlan
         IReadOnlyList<EffectTargetKey> targets,
         IReadOnlyList<EffectSourceAuthorityEntry> sourceBindings,
         IReadOnlyList<JsonObject> activeEffects,
+        EffectCarrierCatalogInput resourceTriggerCarriers,
+        EffectTargetAuthority targetAuthority,
+        JsonObject eventInput,
         IReadOnlyDictionary<string, JsonObject?> carrierBeforeImages,
         IReadOnlyDictionary<string, JsonObject> carrierAfterImages,
         JsonObject? identityIndexBeforeImage,
@@ -66,6 +71,11 @@ internal sealed class EffectAcceptedTurnPlan
         _activeEffects = activeEffects
             .Select(static effect => effect.DeepClone().AsObject())
             .ToArray();
+        _resourceTriggerCarriers = CloneCarriers(
+            resourceTriggerCarriers ?? throw new ArgumentNullException(nameof(resourceTriggerCarriers)));
+        TargetAuthority = targetAuthority ?? throw new ArgumentNullException(nameof(targetAuthority));
+        _eventInput = (eventInput ?? throw new ArgumentNullException(nameof(eventInput)))
+            .DeepClone().AsObject();
         _carrierAfterImages = carrierAfterImages.ToDictionary(
             static pair => pair.Key,
             static pair => pair.Value.DeepClone().AsObject(),
@@ -109,6 +119,13 @@ internal sealed class EffectAcceptedTurnPlan
         new ReadOnlyCollection<JsonObject>(
             _activeEffects.Select(static effect => effect.DeepClone().AsObject()).ToArray());
 
+    internal EffectCarrierCatalogInput ResourceTriggerCarriers =>
+        CloneCarriers(_resourceTriggerCarriers);
+
+    internal EffectTargetAuthority TargetAuthority { get; }
+
+    internal JsonObject EventInput => _eventInput.DeepClone().AsObject();
+
     internal IReadOnlyDictionary<string, JsonObject> CarrierAfterImages =>
         new ReadOnlyDictionary<string, JsonObject>(
             _carrierAfterImages.ToDictionary(
@@ -134,6 +151,15 @@ internal sealed class EffectAcceptedTurnPlan
 
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>
         new(values.ToArray());
+
+    private static EffectCarrierCatalogInput CloneCarriers(EffectCarrierCatalogInput value) =>
+        new(
+            value.PlayerEffects?.DeepClone().AsObject(),
+            value.NpcEffects?.DeepClone().AsObject(),
+            value.EnemyCombatants?.DeepClone().AsObject(),
+            value.AllyCombatants?.DeepClone().AsObject(),
+            value.AfterlifeProfiles?.DeepClone().AsObject(),
+            value.SpiritualConflict?.DeepClone().AsObject());
 }
 
 internal sealed record EffectAcceptedTurnPlanningResult(

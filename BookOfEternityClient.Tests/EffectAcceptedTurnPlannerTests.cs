@@ -621,36 +621,17 @@ public sealed class EffectAcceptedTurnPlannerTests
     }
 
     [Fact]
-    public void ValidatedPlanHandoffSurvivesSourceNormalizationButRejectsChangedCommandsOrEvents()
+    public void ValidatedEffectSubplanIsExposedOnlyToTheCommonPlannerByPeek()
     {
         var input = CreateInput();
         var cache = new EffectAcceptedTurnPlanCache(new CountingFactory());
         var validated = cache.GetOrBuildValidated(input);
-        var normalizedSourceInput = Change(input, "source");
 
-        Assert.True(cache.TryGetValidated(
-            normalizedSourceInput.SessionId,
-            normalizedSourceInput.SnapshotToken,
-            normalizedSourceInput.RawCommands,
-            normalizedSourceInput.EventInput,
-            out var handedOff));
+        Assert.True(cache.TryPeekValidated(out var handedOff));
         Assert.Same(validated, handedOff);
 
-        var changedCommands = Change(input, "commands");
-        Assert.False(cache.TryGetValidated(
-            changedCommands.SessionId,
-            changedCommands.SnapshotToken,
-            changedCommands.RawCommands,
-            changedCommands.EventInput,
-            out _));
-
-        var changedEventInput = Change(input, "event");
-        Assert.False(cache.TryGetValidated(
-            changedEventInput.SessionId,
-            changedEventInput.SnapshotToken,
-            changedEventInput.RawCommands,
-            changedEventInput.EventInput,
-            out _));
+        cache.InvalidateValidated();
+        Assert.False(cache.TryPeekValidated(out _));
     }
 
     [Fact]
@@ -669,12 +650,7 @@ public sealed class EffectAcceptedTurnPlannerTests
         };
 
         Assert.False(cache.GetOrBuildValidated(invalidInput).Success);
-        Assert.False(cache.TryGetValidated(
-            input.SessionId,
-            input.SnapshotToken,
-            input.RawCommands,
-            input.EventInput,
-            out _));
+        Assert.False(cache.TryPeekValidated(out _));
     }
 
     private static EffectAcceptedTurnInput Change(EffectAcceptedTurnInput input, string part) =>

@@ -5,95 +5,6 @@ namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
-    internal async Task<EffectAcceptedTurnPlan?> NormalizeEffectsAsync(
-        IReadOnlyDictionary<string, string>? backups,
-        MortalLocationAcceptedTurnPlan? mortalLocationPlan = null)
-    {
-        var commandJson = await ReadCanonicalFileAsync(EffectAcceptedTurnPlan.CommandPath);
-        var hasCommand = commandJson != null;
-
-        JsonObject commands;
-        if (!hasCommand)
-        {
-            commands = EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot();
-        }
-        else try
-        {
-            using var commandDocument = JsonDocument.Parse(commandJson!);
-            EnsureEffectPublicationJsonHasUniqueProperties(
-                commandDocument.RootElement,
-                EffectAcceptedTurnPlan.CommandPath,
-                commandRoot: true);
-            commands = JsonNode.Parse(commandDocument.RootElement.GetRawText())!.AsObject();
-        }
-        catch (Exception exception) when (exception is JsonException or InvalidOperationException)
-        {
-            throw new InvalidDataException(
-                "Effect normalization requires a valid command root object.",
-                exception);
-        }
-
-        if (!hasCommand && !EffectAcceptedTurnPlanAuthority.HasValidated(_fs))
-            return null;
-
-        var request = await ReadNodeAsync("input/turn_request.json") as JsonObject
-            ?? throw new InvalidDataException(
-                "Effect normalization requires the accepted turn request authority.");
-        var sessionId = ReadExactEffectString(request["sessionId"])
-            ?? throw new InvalidDataException(
-                "Effect normalization requires an exact accepted sessionId.");
-        var requestId = ReadExactEffectString(request["requestId"])
-            ?? throw new InvalidDataException(
-                "Effect normalization requires an exact accepted requestId.");
-        var turn = ReadPositiveEffectInt(request["turnNumber"])
-            ?? throw new InvalidDataException(
-                "Effect normalization requires the exact positive accepted turnNumber.");
-        var currentWorldTime = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
-            await ReadCanonicalFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath));
-        var eventInput = EffectAcceptedTurnInputComposer.BuildAcceptedEventInput(
-            turn,
-            commands,
-            currentWorldTime);
-        if (!EffectAcceptedTurnPlanAuthority.TryGetValidated(
-                _fs,
-                sessionId,
-                requestId,
-                commands,
-                eventInput,
-                out var result))
-        {
-            if (!hasCommand)
-                return null;
-            throw new InvalidDataException(
-                "Effect normalization requires one validated accepted effect plan bound to the exact session, snapshot, and raw command root.");
-        }
-        if (!result.Success || result.Plan == null)
-        {
-            var issue = result.Issues.FirstOrDefault();
-            throw new InvalidDataException(
-                issue == null
-                    ? "Effect normalization failed without a bounded issue."
-                    : $"Effect normalization failed: {issue.Code} at {issue.FilePath}.");
-        }
-
-        var plan = result.Plan;
-        await ValidateEffectPlanPublicationBindingAsync(plan);
-        foreach (var afterImage in plan.CarrierAfterImages.OrderBy(
-                     static pair => pair.Key,
-                     StringComparer.Ordinal))
-        {
-            await WriteCanonicalFileAtomicAsync(
-                afterImage.Key,
-                afterImage.Value.ToJsonString(JsonOpts));
-        }
-        await WriteCanonicalFileAtomicAsync(
-            EffectAcceptedTurnPlan.IdentityIndexPath,
-            plan.IdentityIndexAfterImage.ToJsonString(JsonOpts));
-        DeleteEffectCommandRoot();
-        EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs);
-        return plan;
-    }
-
     private async Task ValidateEffectPlanPublicationBindingAsync(
         EffectAcceptedTurnPlan plan)
     {
@@ -328,23 +239,10 @@ public partial class CanonicalStateNormalizer
     private static InvalidDataException StaleEffectPlan(string path) =>
         new($"Effect authority at '{path}' changed after effect validation.");
 
-    private void DeleteEffectCommandRoot()
-    {
-        if (_writeLease == null)
-            _fs.DeleteFile(EffectAcceptedTurnPlan.CommandPath);
-        else
-            _fs.DeleteFile(_writeLease, EffectAcceptedTurnPlan.CommandPath);
-    }
-
     private static string? ReadExactEffectString(JsonNode? node) =>
         node is JsonValue value && value.TryGetValue<string>(out var text) &&
         text.Length > 0 && string.Equals(text, text.Trim(), StringComparison.Ordinal)
             ? text
-            : null;
-
-    private static int? ReadPositiveEffectInt(JsonNode? node) =>
-        node is JsonValue value && value.TryGetValue<int>(out var number) && number > 0
-            ? number
             : null;
 
 }

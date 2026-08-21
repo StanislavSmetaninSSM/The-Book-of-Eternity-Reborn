@@ -4,14 +4,14 @@
 
 **Goal:** Make every durable active effect in the Mortal World and afterlife a complete, source-authorized, client-identified runtime instance with deterministic mechanics, stacking, lifetime, rollback, and one safe player projection.
 
-**Architecture:** Static `combatEffect`, `structuredBonuses`, Fate Card effects, wound consequences, skills, arts, items, quests, locations, factions, events, hazards, and combat actions remain source templates. The GM submits only transient `effectChanges[]` and bounded `effectResolutionReceipts[]`. One cached accepted-turn plan resolves exact source and target authority, allocates random client-owned identities once, advances stacking/lifetime/triggers, and produces complete owner-carrier, identity-index, pending-resolution, mechanics-snapshot, and player-projection after-images. The effect normalizer runs after every source-owning normalizer inside the existing accepted transaction. Afterlife profiles carry persistent actor effects; spiritual `combatConditions[]` keep their specialized fields through one shared identity/lifecycle adapter. No runtime migration or compatibility reader is added.
+**Architecture:** Static `combatEffect`, `structuredBonuses`, Fate Card effects, wound consequences, skills, arts, items, quests, locations, factions, events, hazards, and combat actions remain source templates. The GM submits only transient `effectChanges[]` and bounded `effectResolutionReceipts[]`. A subordinate effect plan resolves exact source and target authority, allocates random client-owned identities once, and supplies complete carrier/index proposals to one cached `AcceptedMechanicsPlan`. The common plan alone advances resource/lifecycle/trigger work, owns pending/terminal receipts and before-images, and publishes all resource/effect/companion after-images after every source-owning normalizer. Afterlife profiles carry persistent actor effects; spiritual `combatConditions[]` keep their specialized fields through one shared identity/lifecycle adapter. No independent effect publisher, runtime migration, or compatibility reader is added.
 
 **Tech Stack:** C# 12, .NET 8, `System.Text.Json` / `JsonNode`, existing `ValidationService`, `CanonicalStateNormalizer`, `FileSystemManager.CanonicalWriteLease`, accepted-turn snapshot/repair/rollback services, Spectre.Console, browser C# DTO builders, xUnit 2.9.2, Microsoft.NET.Test.Sdk 17.11.1, PowerShell 7 bounded test lanes, and the existing React/Vite frontend only if a typed DTO boundary actually changes.
 
 ## Global Constraints
 
 - Source task is GitHub issue [#1535](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1535). Keep every code, test, fixture, prompt, example, and contract change traceable to it.
-- Effect Task 9 trigger/resource execution is blocked by [#1543](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1543) and its approved [unified resource authority design](../specs/2026-08-15-unified-resource-authority-design.md). Do not add effect-only legacy field adapters; resume Task 9 only after the canonical ledger and accepted mechanics planner are complete.
+- Effect Task 9 trigger/resource/pending execution is implemented by [#1543](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1543) US4/T085 and its approved [unified resource authority design](../specs/2026-08-15-unified-resource-authority-design.md). The canonical ledger and accepted-mechanics planner are the only execution/publication authority; do not add effect-only legacy field adapters or restore the retired publisher.
 - Work only in `E:\Games\worktrees\boe-1535-effect-materialization` on branch `1535-effect-materialization`. Preserve the user's dirty main worktree and unrelated generated `bin/obj` files.
 - The game is pre-release. Missing pristine effect roots may initialize empty; any non-empty legacy carrier is invalid. Do not add migration, promotion, compatibility, or fallback readers.
 - Do not create, enable, or run GitHub Actions. Verification is local through `pwsh -NoProfile -File .\scripts\test-csharp.ps1`.
@@ -109,17 +109,19 @@ from an internal enum to its string name; production behavior did not change.
 | `BookOfEternityClient/Services/EffectComponentProfiles.cs` | Nine registered mechanical component payload validators, execution metadata, merge rules, and projection descriptors. |
 | `BookOfEternityClient/Services/EffectIdentityState.cs` | Client identity index, random IDs, active/terminal entries, transitions, replay evidence, and global exact/confusable uniqueness. |
 | `BookOfEternityClient/Services/EffectCarrierCatalog.cs` | One-pass player, NPC, Mortal combatant, afterlife profile, and spiritual-condition carrier catalog. |
-| `BookOfEternityClient/Services/EffectCombatantIdentityState.cs` | Stable client combatant anchors and exact same-turn `combatantRef` mapping. |
+| `BookOfEternityClient/Services/CombatantIdentityState.cs` | Stable anonymous combatant anchors and exact same-turn `combatantRef` mapping; named rows reuse exact NPC identity. |
 | `BookOfEternityClient/Services/EffectSourceAuthority.cs` | Exact pre-turn plus accepted same-turn source-definition catalog. |
 | `BookOfEternityClient/Services/EffectTargetAuthority.cs` | Exact owner/actor/combatant/profile/conflict target catalog and realm binding. |
 | `BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs` | Immutable input/result/after-image records and identity factory seam. |
-| `BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs` | One plan instance per accepted snapshot/session/input/source/target fingerprint. |
+| `BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs` | One validated subordinate effect result per exact effect input, exposed only to common-plan construction. |
+| `BookOfEternityClient/Services/AcceptedMechanicsPlan.cs` / `AcceptedMechanicsPlanCache.cs` | Sole immutable publication plan and validated consume-once handoff for resource/effect/pending/companion state. |
 | `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs` | Parse operations, resolve authority, schedule transitions, and build complete final state without writes. |
 | `BookOfEternityClient/Services/EffectLifecycleScheduler.cs` | Deterministic stacking, lifetime, trigger, periodic, event, and terminal reducers. |
-| `BookOfEternityClient/Services/EffectPendingResolutionState.cs` | Client-owned bounded request creation and exact receipt consumption. |
+| `BookOfEternityClient/Services/ResourcePendingResolutionState.cs` | Common client-owned bounded resource request creation, exact receipt validation, and terminal replay consumption for story-facing effect triggers. |
 | `BookOfEternityClient/Services/EffectMechanicsSnapshot.cs` | Immutable all-or-nothing accepted component/read model for mechanics consumers. |
 | `BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs` | Raw, composed, continuity, direct-mutation, and canonical post-seal validation. |
-| `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs` | Publish planned carrier/index/pending/companion after-images and consume transient commands. |
+| `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs` | Effect-specific publication preflight used by the common normalizer; it exposes no independent writer. |
+| `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs` | Sole lease-bound publisher for resource/effect/pending/companion after-images and transient command consumption. |
 | `BookOfEternityClient/Services/EffectRepairPacketBuilder.cs` | Bounded effect repair candidate binding and protected-authority pre-dispatch stop. |
 | `BookOfEternityClient/UI/EffectPlayerProjection.cs` | One accepted, visibility-aware, recursively sanitized projection for both clients. |
 | `BookOfEternityClient.TestSupport/EffectMaterializationTestFixture.cs` | Deterministic complete raw/canonical/index/source/target fixtures shared by unit and integration tests. |
@@ -349,7 +351,7 @@ git commit -m "feat: add effect identity and carrier authority (#1535)"
 **Files:**
 - Create: `BookOfEternityClient/Services/EffectSourceAuthority.cs`
 - Create: `BookOfEternityClient/Services/EffectTargetAuthority.cs`
-- Create: `BookOfEternityClient/Services/EffectCombatantIdentityState.cs`
+- Modify: `BookOfEternityClient/Services/CombatantIdentityState.cs` (the final common authority that replaced the initial effect-local prototype in #1543 T020)
 - Create: `BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs`
 - Create: `BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs`
 - Create: `BookOfEternityClient.Tests/EffectSourceAuthorityTests.cs`
@@ -388,11 +390,11 @@ Cover skill, spiritual art, item, wound, quest, location, hazard, faction, event
 
 - [x] **Step 2: Add target/combatant RED tests**
 
-Cover player, NPC, Guardian, resident, Shining faction head, radiant actor, persistent afterlife profile, spiritual side, and Mortal combatant. Raw new combatants may expose exact `combatantRef` only; the client allocates `combatantId`, and canonical effect targets store only that permanent ID.
+Cover player, NPC, Guardian, resident, Shining faction head, radiant actor, persistent afterlife profile, spiritual side, and Mortal combatant. Anonymous raw combatants expose exact `combatantRef` and receive one client-owned `combatantId`; named combatants expose exact `npcRef`, bind directly to the existing `NPCId`, and never receive a second combat-local identity.
 
 - [x] **Step 3: Add cache RED tests**
 
-Inject a counting identity factory. Assert one random allocation and the same plan object across raw validation, companion validation, mechanics derivation, and commit. Changing session, validated snapshot, raw commands, source catalog, target catalog, or event input must invalidate the cache.
+Inject a counting identity factory. Assert one random allocation and the same subordinate effect result across raw validation and common-plan construction, then assert that only the encompassing `AcceptedMechanicsPlan` is cached and consumed for publication. Changing session, validated snapshot, raw commands, source catalog, target catalog, event input, resource authority, or pending authority must invalidate the publishable common plan.
 
 - [x] **Step 4: Run RED**
 
@@ -406,11 +408,11 @@ Compose validated pre-turn authorities with explicit exports from already-built 
 
 - [x] **Step 6: Implement stable combat-local anchors**
 
-Resolve each exact raw `combatantRef` once, allocate a random `combatantId`, rewrite the accepted combatant object, and export that mapping to the effect plan. Reject submitted permanent IDs and duplicate/confusable refs.
+Resolve each exact anonymous raw `combatantRef` once, allocate a random `combatantId`, rewrite the accepted combatant object, and export that mapping to the effect subplan. Resolve each named `npcRef` against composed NPC authority and write only its existing `NPCId`. Reject submitted permanent IDs, unresolved named refs, and duplicate/confusable refs.
 
 - [x] **Step 7: Implement immutable plan cache**
 
-Fingerprint the accepted input plus validated snapshot/session and serialized source/target catalogs, but never derive permanent IDs from the hash. Store the first random plan result in a `ConditionalWeakTable<FileSystemManager, EffectAcceptedTurnPlanCache>` as the location planner does.
+Fingerprint the accepted input plus validated snapshot/session and serialized source/target catalogs, but never derive permanent IDs from the hash. Retain the first random effect result only as a subordinate validated handoff to the common planner; `AcceptedMechanicsPlanCache` owns the sole publishable cached plan.
 
 - [x] **Step 8: Run GREEN and assert factory count**
 
@@ -419,7 +421,7 @@ Require exactly one effect ID and one transition ID allocation for one accepted 
 - [x] **Step 9: Commit exact authority**
 
 ```powershell
-git add -- BookOfEternityClient/Services/EffectSourceAuthority.cs BookOfEternityClient/Services/EffectTargetAuthority.cs BookOfEternityClient/Services/EffectCombatantIdentityState.cs BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs BookOfEternityClient.Tests/EffectSourceAuthorityTests.cs BookOfEternityClient.Tests/EffectTargetAuthorityTests.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
+git add -- BookOfEternityClient/Services/EffectSourceAuthority.cs BookOfEternityClient/Services/EffectTargetAuthority.cs BookOfEternityClient/Services/CombatantIdentityState.cs BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs BookOfEternityClient.Tests/EffectSourceAuthorityTests.cs BookOfEternityClient.Tests/EffectTargetAuthorityTests.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
 git diff --cached --check
 git commit -m "feat: bind exact effect source and target authority (#1535)"
 ```
@@ -773,49 +775,88 @@ git commit -m "feat: schedule effect stacking and lifetime (#1535)"
 
 ### Task 9: Implement Triggers, Periodic Work, and Bounded Receipts (T042–T043, T047, T049–T050)
 
-**BLOCKED BY #1543**: This task resumes only after the unified resource materialization feature has completed its full no-migration cutover. Periodic damage/restoration and bounded resource receipts must publish through the shared resource ledger and `AcceptedMechanicsPlanner`, not through `currentHealthChange`, percentage fields, combat health arrays, item resource fields, afterlife action-economy fields, or any other effect-only adapter.
+**IMPLEMENTED THROUGH #1543 US4/T085**: Periodic damage/restoration,
+resource-event feedback, uses advancement, terminal cleanup, and bounded resource
+receipts publish through the shared ledger and `AcceptedMechanicsPlanner`. No
+`currentHealthChange`, percentage field, combat health array, item resource
+field, afterlife action-economy field, or effect-only publisher is an adapter.
 
 **Files:**
 - Modify: `BookOfEternityClient/Services/EffectLifecycleScheduler.cs`
-- Create: `BookOfEternityClient/Services/EffectPendingResolutionState.cs`
-- Modify: `BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs`
+- Modify: `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`
+- Modify: `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
+- Create: `BookOfEternityClient/Services/ResourcePendingResolutionState.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`
-- Create: `BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Triggers.cs`
-- Create: `BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Resolutions.cs`
+- Modify: `BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.cs`
+- Modify: `BookOfEternityClient.Tests/ResourceTriggerGraphTests.cs`
+- Create: `BookOfEternityClient.Tests/ResourcePendingResolutionTests.cs`
+- Create: `BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs`
+- Create: `BookOfEternityClient.Tests/EffectMaterializationSourceGuardTests.cs`
 
-- [ ] **Step 1: Add trigger/order RED tests**
+- [x] **Step 1: Add trigger/order RED tests**
 
 Assert phase order, then priority, effect ID, and component ID order; periodic damage/restore; accepted event reaction; duplicate event suppression; cycle detection; dependency validation; and a bounded expansion ceiling.
 
-- [ ] **Step 2: Add pending-resolution RED tests**
+- [x] **Step 2: Add pending-resolution RED tests**
 
-Assert exact request and receipt shape, one-time consumption, deterministic components creating no GM request, stale/partial/extra/cross-target/out-of-bound receipt rejection, protected GM edits to pending state, and session replacement cleanup.
+Assert exact request and receipt shape, one-time and terminal replay consumption,
+deterministic components creating no GM request, stale/partial/extra/cross-target/
+wrong-operation/out-of-bound receipt rejection, same-turn accepted-application
+rebinding, protected GM edits, full-turn resubmission, rollback, and output
+suppression.
 
-- [ ] **Step 3: Run RED**
+- [x] **Step 3: Run RED**
 
-```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectLifecycleSchedulerTests"
-```
+Trigger/resource RED evidence is recorded in #1543 quickstart T075–T080.
+Pending contract RED is `20260821-153057-...` (`23/25`), pending integration
+RED is `20260821-153959-...` (`0/3`), same-turn accepted-application rebinding
+RED is `20260821-164655-...` (`0/1`), independent publisher source-guard RED
+is `20260821-173041-...` (`0/1`), and remaining caller migration RED is
+`20260821-173455-...` (`139/148`).
 
-- [ ] **Step 4: Implement deterministic event graph execution**
+- [x] **Step 4: Implement deterministic event graph execution**
 
 Build event/component indexes once. Reject cycles before applying any result. Enforce one accepted event identity and one execution per subscribed component.
 
-- [ ] **Step 5: Implement bounded pending state**
+- [x] **Step 5: Implement bounded pending state**
 
-The client writes `game_state/control/pending_effect_resolutions.json`; the GM sees only the declared story-facing fields and replies through `effectResolutionReceipts[]`. Exact IDs, targets, operands, result kind, and bounds must agree.
+The common client state writes `game_state/control/pending_effect_resolutions.json`;
+the GM sees only safe labels and allowed results and replies through
+`effectResolutionReceipts[]`. Exact session/request/event, effect/source/target/
+resource bindings, operation, bounds, companions, policy, and full-turn
+fingerprint must agree. An unpublished same-turn effect binds through its
+accepted application event, not through a predicted random ID.
 
-- [ ] **Step 6: Protect lifecycle-control state**
+- [x] **Step 6: Protect lifecycle-control state and retire effect-only publication**
 
-Add pending effects to validated snapshot, session binding, protected mutation checks, rollback tracking, and cleanup. Missing pristine is empty; GM-authored or stale non-empty state is protected failure.
+Bind pending work to validated snapshot/session/full-turn state, protected
+mutation checks, rollback tracking, command cleanup, and immutable terminal
+replay evidence. Missing pristine is empty; GM-authored or stale non-empty state
+is protected failure. Remove `NormalizeEffectsAsync` and the effect cache's
+independent consume/status APIs; only one cached `AcceptedMechanicsPlan` may
+publish after the effect-specific preflight.
 
-- [ ] **Step 7: Run GREEN and commit**
+- [x] **Step 7: Run GREEN and commit**
 
 ```powershell
-git add -- BookOfEternityClient/Services/EffectLifecycleScheduler.cs BookOfEternityClient/Services/EffectPendingResolutionState.cs BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Triggers.cs BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Resolutions.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AcceptedMechanicsPlannerTests|FullyQualifiedName~ResourceTriggerGraphTests|FullyQualifiedName~ResourcePendingResolutionTests|FullyQualifiedName~EffectLifecycleSchedulerTests|FullyQualifiedName~EffectMaterializationSourceGuardTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectResourceMaterializationTests|FullyQualifiedName~ResourcePendingResolutionIntegrationTests|FullyQualifiedName~EffectMaterializationValidationTests|FullyQualifiedName~CanonicalStateNormalizerEffectTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
+git diff --check
+git add -- BookOfEternityClient BookOfEternityClient.Tests BookOfEternityClient.IntegrationTests BookOfEternityClient.TestSupport specs/1535-complete-effect-materialization specs/1543-unified-resource-authority docs/superpowers/plans/2026-08-14-complete-effect-materialization.md docs/superpowers/plans/2026-08-15-unified-resource-authority.md docs/superpowers/specs/2026-08-15-unified-resource-authority-design.md OtherGuides/Afterlife_Contract_Matrix.md Examples/E_CLI_Afterlife_Turns.txt Examples/example_validation_manifest.json
 git diff --cached --check
 git commit -m "feat: resolve deterministic effect triggers (#1535)"
 ```
+
+Final T086 GREEN evidence: combined unit `20260821-180604-...` (`164/164`),
+combined integration `20260821-180628-...` (`188/188`), and meaningful Fast
+`20260821-181034-...` (`3920/3920`). All exited `0`, timed out `false`, reported
+duplicate IDs `0`, completed owned-tree cleanup, and built with zero
+warnings/errors. The exact artifact paths are recorded in both feature
+quickstarts and the #1543 implementation plan.
 
 ---
 

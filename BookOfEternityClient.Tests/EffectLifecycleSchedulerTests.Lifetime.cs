@@ -42,6 +42,9 @@ public sealed partial class EffectLifecycleSchedulerTests
     public void AdvanceLifetime_UsesConsumesOnlyDeclaredTriggerAndExpiresAtOne()
     {
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        effect["triggers"]![0]!["triggerId"] = "trigger_consume";
+        effect["triggers"]![0]!["eventType"] = "owner_turn_end";
+        effect["triggers"]![0]!["consumeUses"] = true;
         effect["lifetime"] = new JsonObject
         {
             ["mode"] = "uses",
@@ -52,6 +55,7 @@ public sealed partial class EffectLifecycleSchedulerTests
         var unrelated = Advance(effect, new EffectLifecycleEvent(
             "turn_43:other",
             43,
+            Phase: "owner_turn_end",
             TriggerId: "trigger_other"));
         Assert.True(unrelated.Success);
         Assert.Equal("no_change", unrelated.Outcome);
@@ -59,9 +63,72 @@ public sealed partial class EffectLifecycleSchedulerTests
         var consumed = Advance(effect, new EffectLifecycleEvent(
             "turn_43:consume",
             43,
+            Phase: "owner_turn_end",
             TriggerId: "trigger_consume"));
         Assert.True(consumed.Success);
         Assert.Equal("expire", consumed.Outcome);
+    }
+
+    [Fact]
+    public void AdvanceLifetime_UsesRequiresExactDeclaredTriggerEventType()
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        effect["triggers"]![0]!["triggerId"] = "trigger_resource_depleted";
+        effect["triggers"]![0]!["eventType"] = "resource_depleted";
+        effect["triggers"]![0]!["consumeUses"] = true;
+        effect["lifetime"] = new JsonObject
+        {
+            ["mode"] = "uses",
+            ["remainingUses"] = 2,
+            ["consumingTriggerIds"] = new JsonArray("trigger_resource_depleted")
+        };
+
+        var wrongEvent = Advance(effect, new EffectLifecycleEvent(
+            "turn_43:resource_filled:trigger_resource_depleted",
+            43,
+            Phase: "resource_filled",
+            TriggerId: "trigger_resource_depleted"));
+
+        Assert.True(wrongEvent.Success);
+        Assert.Equal("no_change", wrongEvent.Outcome);
+        Assert.Equal(
+            2,
+            wrongEvent.UpdatedEffect!["lifetime"]!["remainingUses"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public void AdvanceLifetime_ExactResourceEventUseExpiresForTerminalCleanupAndRejectsReplay()
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        effect["triggers"]![0]!["triggerId"] = "trigger_resource_depleted";
+        effect["triggers"]![0]!["eventType"] = "resource_depleted";
+        effect["triggers"]![0]!["consumeUses"] = true;
+        effect["lifetime"] = new JsonObject
+        {
+            ["mode"] = "uses",
+            ["remainingUses"] = 1,
+            ["consumingTriggerIds"] = new JsonArray("trigger_resource_depleted")
+        };
+        const string eventRef = "turn_43:resource_depleted:trigger_resource_depleted";
+        var lifecycleEvent = new EffectLifecycleEvent(
+            eventRef,
+            43,
+            Phase: "resource_depleted",
+            TriggerId: "trigger_resource_depleted");
+
+        var expired = Advance(effect, lifecycleEvent);
+        var replay = EffectLifecycleScheduler.AdvanceLifetime(
+            new EffectLifetimeReductionInput(
+                effect,
+                lifecycleEvent,
+                new HashSet<string>(StringComparer.Ordinal) { eventRef }));
+
+        Assert.True(expired.Success);
+        Assert.Equal("expire", expired.Outcome);
+        Assert.Null(expired.UpdatedEffect);
+        Assert.False(replay.Success);
+        Assert.Contains(replay.Issues, issue =>
+            issue.Code == "effect_lifecycle_event_replay");
     }
 
     [Theory]

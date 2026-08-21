@@ -62,23 +62,25 @@ public partial class CanonicalStateNormalizer
                 "Accepted mechanics validated handoff changed before publication.");
         }
 
-        var writes = new Dictionary<string, JsonObject>(StringComparer.Ordinal)
+        var writes = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        if (!plan.AwaitsPendingResolution)
         {
-            [ResourceMaterializationContract.DefinitionsPath] = plan.DefinitionAfterImage,
-            [ResourceMaterializationContract.StatePath] = plan.StateAfterImage,
-            [ResourceMaterializationContract.HistoryPath] = plan.HistoryAfterImage,
-            [EffectAcceptedTurnPlan.IdentityIndexPath] = plan.EffectIdentityAfterImage
-        };
-        foreach (var pair in plan.OwnerCompanionAfterImages)
-            writes[pair.Key] = pair.Value;
-        foreach (var pair in plan.EffectCarrierAfterImages)
-            writes[pair.Key] = pair.Value;
+            writes[ResourceMaterializationContract.DefinitionsPath] = plan.DefinitionAfterImage;
+            writes[ResourceMaterializationContract.StatePath] = plan.StateAfterImage;
+            writes[ResourceMaterializationContract.HistoryPath] = plan.HistoryAfterImage;
+            writes[EffectAcceptedTurnPlan.IdentityIndexPath] = plan.EffectIdentityAfterImage;
+            foreach (var pair in plan.OwnerCompanionAfterImages)
+                writes[pair.Key] = pair.Value;
+            foreach (var pair in plan.EffectCarrierAfterImages)
+                writes[pair.Key] = pair.Value;
+        }
         foreach (var pair in plan.PendingAfterImages)
         {
             if (pair.Value != null)
                 writes[pair.Key] = pair.Value;
         }
-        await AddOwnerTransitionWritesAsync(plan, writes);
+        if (!plan.AwaitsPendingResolution)
+            await AddOwnerTransitionWritesAsync(plan, writes);
 
         foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
         {
@@ -96,8 +98,20 @@ public partial class CanonicalStateNormalizer
             _fs.DeleteFile(_writeLease, path);
         }
 
-        await ValidatePublishedOwnerTransitionsAsync(plan);
-        await ValidatePublishedResourceAfterImagesAsync(plan);
+        if (plan.AwaitsPendingResolution)
+        {
+            var pending = plan.PendingAfterImages[ResourcePendingResolutionState.PendingPath]
+                ?? throw new InvalidDataException(
+                    "Pending accepted mechanics plan has no technical pending after-image.");
+            await ReadExactPublishedAfterImageAsync(
+                ResourcePendingResolutionState.PendingPath,
+                pending);
+        }
+        else
+        {
+            await ValidatePublishedOwnerTransitionsAsync(plan);
+            await ValidatePublishedResourceAfterImagesAsync(plan);
+        }
         return plan;
     }
 

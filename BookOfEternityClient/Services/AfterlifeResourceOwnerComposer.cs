@@ -76,6 +76,7 @@ internal static class AfterlifeResourceOwnerComposer
         var historicalOwners = new List<ResourceOwnerKey>();
         var terminalOwners = new List<ResourceOwnerKey>();
         var capacityDrafts = new List<ResourceOwnerCapacityDraft>();
+        var materializationCandidates = new List<ResourceOwnerMaterializationCandidate>();
         var afterImages = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
 
         var acceptedProfiles = input.Accepted.Profiles;
@@ -88,6 +89,7 @@ internal static class AfterlifeResourceOwnerComposer
             historicalOwners,
             terminalOwners,
             capacityDrafts,
+            materializationCandidates,
             input.PreTurn.SoulState,
             input.Accepted.SoulState,
             issues);
@@ -147,6 +149,15 @@ internal static class AfterlifeResourceOwnerComposer
                 acceptedShining.DeepClone().AsObject();
         }
 
+        capacityDrafts.AddRange(
+            ResourceOwnerMaterializationPlanner.ComposeCapacityDrafts(
+                input.Definitions,
+                sameTurnExports,
+                materializationCandidates,
+                issues));
+        if (issues.Count != 0)
+            return Invalid(issues);
+
         var authority = ResourceOwnerAuthority.Build(new ResourceOwnerAuthorityInput(
             preTurnExports,
             sameTurnExports,
@@ -173,6 +184,7 @@ internal static class AfterlifeResourceOwnerComposer
         List<ResourceOwnerKey> historicalOwners,
         List<ResourceOwnerKey> terminalOwners,
         List<ResourceOwnerCapacityDraft> capacityDrafts,
+        List<ResourceOwnerMaterializationCandidate> materializationCandidates,
         JsonObject preTurnSoulState,
         JsonObject acceptedSoulState,
         List<ValidationIssue> issues)
@@ -239,12 +251,33 @@ internal static class AfterlifeResourceOwnerComposer
                 }
                 if (!previous.TryGetValue(actorId, out var previousActor))
                 {
+                    if (!TryComposeSameTurnMaterializedActor(
+                            definitions,
+                            profile,
+                            path,
+                            actorId,
+                            realm,
+                            previousAliases,
+                            currentActorIds,
+                            currentAliases,
+                            sameTurnExports,
+                            capacityDrafts,
+                            materializationCandidates,
+                            acceptedSoulState,
+                            issues))
+                    {
+                        continue;
+                    }
+                    continue;
+                }
+                if (profile.ContainsKey("resourceMaterialization"))
+                {
                     Add(
                         issues,
-                        path + ".actorId",
-                        "resource_owner_afterlife_actor_permanent_id_forbidden",
-                        "pre-turn permanent actorId or a same-turn actorRef",
-                        actorId);
+                        path + ".resourceMaterialization",
+                        "resource_owner_materialization_existing_forbidden",
+                        "field absent for every existing owner",
+                        Describe(profile["resourceMaterialization"]));
                     continue;
                 }
                 if (!currentActorIds.Add(actorId) ||
@@ -342,76 +375,12 @@ internal static class AfterlifeResourceOwnerComposer
                 continue;
             }
 
-            if (!TryReadExact(profile["actorRef"], out var actorRef) ||
-                !TryReadRealm(profile, path, out var sameTurnRealm, issues))
-            {
-                Add(
-                    issues,
-                    path,
-                    "resource_owner_afterlife_actor_identity_invalid",
-                    "exact pre-turn actorId or exact same-turn actorRef",
-                    profile.ToJsonString());
-                continue;
-            }
-            if (profile.ContainsKey("actorId"))
-            {
-                Add(
-                    issues,
-                    path,
-                    "resource_owner_afterlife_actor_identity_ambiguous",
-                    "exactly one actorId or actorRef",
-                    profile.ToJsonString());
-                continue;
-            }
-
-            var permanentId = "afterlife_actor_" + Guid.NewGuid().ToString("N");
-            if (!currentActorIds.Add(permanentId) ||
-                !currentAliases.Add(ResourceMaterializationContract.BuildConfusableKey(permanentId)))
-            {
-                Add(
-                    issues,
-                    path,
-                    "resource_owner_afterlife_actor_identity_ambiguous",
-                    "one exact/confusable-unique accepted actor identity",
-                    permanentId);
-                continue;
-            }
-
-            profile["actorId"] = permanentId;
-            profile.Remove("actorRef");
-            var sameTurnBindings = new[]
-            {
-                new ActorRealmBinding(
-                    sameTurnRealm,
-                    permanentId,
-                    ResourceOwnerLifecycle.Active,
-                    path + "." + BindingsProperty)
-            };
-            profile[BindingsProperty] = BuildActorBindings(sameTurnBindings);
-            var sameTurnExport = CreateExport(
-                definitions,
-                sameTurnRealm,
-                ResourceOwnerKind.AfterlifeActor,
-                permanentId,
-                profile,
-                sameTurn: true,
-                ownerRef: actorRef,
-                lifecycle: ResourceOwnerLifecycle.Active);
-            sameTurnExports.Add(sameTurnExport);
-            if (IsPlayerSoul(profile))
-            {
-                if (!TryCreateActorActionPointCapacityDraft(
-                        definitions,
-                        sameTurnExport,
-                        actorRef,
-                        acceptedSoulState,
-                        out var draft,
-                        issues))
-                {
-                    continue;
-                }
-                capacityDrafts.Add(draft!);
-            }
+            Add(
+                issues,
+                path,
+                "resource_owner_afterlife_actor_identity_invalid",
+                "exact canonical actorId backed by pre-turn authority or one complete same-turn actor materialization envelope; actorRef is forbidden",
+                profile.ToJsonString());
         }
 
         foreach (var removed in previous.Values.Where(actor =>
@@ -427,6 +396,135 @@ internal static class AfterlifeResourceOwnerComposer
                 terminalOwners.Add(key);
             }
         }
+    }
+
+    private static bool TryComposeSameTurnMaterializedActor(
+        ResourceDefinitionCatalog definitions,
+        JsonObject profile,
+        string path,
+        string actorId,
+        string realm,
+        IReadOnlySet<string> previousAliases,
+        HashSet<string> currentActorIds,
+        HashSet<string> currentAliases,
+        List<ResourceOwnerExport> sameTurnExports,
+        List<ResourceOwnerCapacityDraft> capacityDrafts,
+        List<ResourceOwnerMaterializationCandidate> materializationCandidates,
+        JsonObject acceptedSoulState,
+        List<ValidationIssue> issues)
+    {
+        if (profile.ContainsKey(BindingsProperty))
+        {
+            Add(
+                issues,
+                path + "." + BindingsProperty,
+                "resource_owner_afterlife_actor_binding_preassigned",
+                "client-owned binding absent on a new accepted actor",
+                Describe(profile[BindingsProperty]));
+            return false;
+        }
+
+        var issueCount = issues.Count;
+        try
+        {
+            using var document = JsonDocument.Parse(profile.ToJsonString());
+            issues.AddRange(ActorMaterializationContract.ValidateHistoricalAfterlifeProfile(
+                document.RootElement,
+                path));
+        }
+        catch (JsonException)
+        {
+            Add(
+                issues,
+                path,
+                "resource_owner_afterlife_actor_materialization_invalid",
+                "one complete same-turn actor materialization envelope",
+                profile.ToJsonString());
+        }
+        if (issues.Count != issueCount)
+            return false;
+
+        if (profile[ActorMaterializationContract.PropertyName] is not JsonObject actorEnvelope ||
+            !TryReadExact(actorEnvelope["materializationId"], out var materializationId))
+        {
+            Add(
+                issues,
+                path + "." + ActorMaterializationContract.PropertyName + ".materializationId",
+                "resource_owner_afterlife_actor_materialization_invalid",
+                "exact actor-bound materializationId",
+                Describe(profile[ActorMaterializationContract.PropertyName]));
+            return false;
+        }
+
+        var actorAlias = ResourceMaterializationContract.BuildConfusableKey(actorId);
+        if (!currentActorIds.Add(actorId) ||
+            !currentAliases.Add(actorAlias) ||
+            previousAliases.Contains(actorAlias))
+        {
+            Add(
+                issues,
+                path + ".actorId",
+                "resource_owner_afterlife_actor_identity_ambiguous",
+                "one exact/confusable-unique accepted actor identity",
+                actorId);
+            return false;
+        }
+
+        var binding = new ActorRealmBinding(
+            realm,
+            actorId,
+            ResourceOwnerLifecycle.Active,
+            path + "." + BindingsProperty);
+        profile[BindingsProperty] = BuildActorBindings(new[] { binding });
+        if (profile.TryGetPropertyValue("resourceMaterialization", out var materialization))
+        {
+            if (materialization is not JsonObject envelope)
+            {
+                Add(
+                    issues,
+                    path + ".resourceMaterialization",
+                    "resource_owner_materialization_shape_invalid",
+                    "closed object containing only a non-empty resources array",
+                    Describe(materialization));
+                return false;
+            }
+            materializationCandidates.Add(new ResourceOwnerMaterializationCandidate(
+                path,
+                new ResourceOwnerKey(
+                    realm,
+                    ResourceOwnerKind.AfterlifeActor,
+                    actorId),
+                materializationId,
+                envelope.DeepClone().AsObject(),
+                Array.Empty<string>()));
+            profile.Remove("resourceMaterialization");
+        }
+
+        var sameTurnExport = CreateExport(
+            definitions,
+            realm,
+            ResourceOwnerKind.AfterlifeActor,
+            actorId,
+            profile,
+            sameTurn: true,
+            ownerRef: materializationId,
+            lifecycle: ResourceOwnerLifecycle.Active);
+        sameTurnExports.Add(sameTurnExport);
+        if (!IsPlayerSoul(profile))
+            return true;
+
+        if (!TryCreateActorActionPointCapacityDraft(
+                definitions,
+                sameTurnExport,
+                materializationId,
+                acceptedSoulState,
+                out var draft,
+                issues))
+        {
+            return false;
+        }
+        capacityDrafts.Add(draft!);
+        return true;
     }
 
     private static bool TryCreateActorActionPointCapacityDraft(
@@ -1545,7 +1643,7 @@ internal static class AfterlifeResourceOwnerComposer
         var capabilities = definitions.Definitions
             .Where(definition =>
                 definition.AllowedOwnerKinds.Contains(ownerKind) &&
-                IsAfterlifeCapabilityAllowed(ownerKind, owner, definition.ResourceKey))
+                IsAfterlifeCapabilityAllowed(ownerKind, owner, definition))
             .Select(static definition => definition.ResourceKey)
             .ToHashSet(StringComparer.Ordinal);
         using var fingerprint = new ResourceFingerprintBuilder(
@@ -1604,21 +1702,30 @@ internal static class AfterlifeResourceOwnerComposer
     private static bool IsAfterlifeCapabilityAllowed(
         ResourceOwnerKind ownerKind,
         JsonObject owner,
-        string resourceKey) => ownerKind switch
+        ResourceDefinition definition)
     {
-        ResourceOwnerKind.AfterlifeConflictSide =>
-            string.Equals(resourceKey, "spiritual_action_points", StringComparison.Ordinal),
-        ResourceOwnerKind.AfterlifeScope =>
-            string.Equals(resourceKey, "gacha_attempts", StringComparison.Ordinal),
-        ResourceOwnerKind.AfterlifeActor when IsPlayerSoul(owner) =>
-            string.Equals(resourceKey, "spiritual_action_points", StringComparison.Ordinal) ||
-            string.Equals(resourceKey, "blessing_rerolls", StringComparison.Ordinal),
-        ResourceOwnerKind.AfterlifeActor when
-            TryReadExact(owner["actorType"], out var actorType) &&
-            string.Equals(actorType, "guardian", StringComparison.Ordinal) =>
-            string.Equals(resourceKey, "gacha_attempts", StringComparison.Ordinal),
-        _ => false
-    };
+        // Setting-defined resources use the same sealed allowedOwnerKinds authority as
+        // Mortal owners. Built-ins retain their narrower afterlife role contracts.
+        if (definition.Materialization.CreatedAtTurn > 0)
+            return true;
+
+        var resourceKey = definition.ResourceKey;
+        return ownerKind switch
+        {
+            ResourceOwnerKind.AfterlifeConflictSide =>
+                string.Equals(resourceKey, "spiritual_action_points", StringComparison.Ordinal),
+            ResourceOwnerKind.AfterlifeScope =>
+                string.Equals(resourceKey, "gacha_attempts", StringComparison.Ordinal),
+            ResourceOwnerKind.AfterlifeActor when IsPlayerSoul(owner) =>
+                string.Equals(resourceKey, "spiritual_action_points", StringComparison.Ordinal) ||
+                string.Equals(resourceKey, "blessing_rerolls", StringComparison.Ordinal),
+            ResourceOwnerKind.AfterlifeActor when
+                TryReadExact(owner["actorType"], out var actorType) &&
+                string.Equals(actorType, "guardian", StringComparison.Ordinal) =>
+                string.Equals(resourceKey, "gacha_attempts", StringComparison.Ordinal),
+            _ => false
+        };
+    }
 
     private static bool IsPlayerSoul(JsonObject owner) =>
         TryReadExact(owner["actorType"], out var actorType) &&

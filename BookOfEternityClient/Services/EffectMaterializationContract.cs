@@ -47,10 +47,8 @@ internal static class EffectMaterializationContract
     private static readonly HashSet<string> RefreshModes = Set("reset", "extend");
     private static readonly HashSet<string> MergeRules = Set(
         "sum", "minimum", "maximum", "profile_specific");
-    private static readonly HashSet<string> EventTypes = Set(
-        "owner_turn_start", "owner_turn_end", "owner_damaged", "owner_restored",
-        "owner_action_started", "owner_action_completed", "scene_started", "scene_ended",
-        "source_state_changed", "condition_changed");
+    private static readonly IReadOnlySet<string> EventTypes =
+        EffectEventTypeCatalog.Registered;
     private static readonly HashSet<string> ResolutionModes = Set("deterministic", "bounded_receipt");
     private static readonly HashSet<string> SourceLossPolicies = Set("expire", "suspend", "no_change");
     private static readonly HashSet<string> LinkKinds = Set(

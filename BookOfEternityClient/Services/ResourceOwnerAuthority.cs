@@ -385,6 +385,92 @@ internal sealed class ResourceOwnerAuthority
             : new ResourceOwnerAuthorityResolution(null, issues);
     }
 
+    internal ResourceOwnerAuthorityResolution ResolveAcceptedCoordinate(
+        ResourceOwnerKey key,
+        string resourceKey)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+        var issues = new List<ValidationIssue>();
+        if (Issues.Count > 0)
+        {
+            Add(
+                issues,
+                "owner",
+                "resource_owner_authority_invalid",
+                "issue-free composed owner authority",
+                Issues.Count.ToString());
+            return new ResourceOwnerAuthorityResolution(null, issues);
+        }
+
+        if (!IsRealmAllowed(key.Realm, key.OwnerKind) ||
+            !ResourceMaterializationContract.IsExactIdentifier(
+                key.ResourceOwnerId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(resourceKey))
+        {
+            Add(
+                issues,
+                "owner",
+                "resource_owner_selector_invalid",
+                "closed exact accepted owner coordinate",
+                $"{key.Realm}/{OwnerKindToken(key.OwnerKind)}/{key.ResourceOwnerId}/{resourceKey}");
+            return new ResourceOwnerAuthorityResolution(null, issues);
+        }
+
+        if (!_entries.TryGetValue(key, out var entry))
+        {
+            var alias = OwnerAlias(key);
+            var historicalAlias = HistoricalAlias(key);
+            var code = _ownerAliases.ContainsKey(alias)
+                ? "resource_owner_identity_confusable"
+                : _historicalAliases.Contains(historicalAlias)
+                    ? "resource_owner_historical"
+                    : _entries.Keys.Any(candidate =>
+                        candidate.OwnerKind == key.OwnerKind &&
+                        string.Equals(
+                            candidate.ResourceOwnerId,
+                            key.ResourceOwnerId,
+                            StringComparison.Ordinal) &&
+                        !string.Equals(
+                            candidate.Realm,
+                            key.Realm,
+                            StringComparison.Ordinal))
+                        ? "resource_owner_realm_mismatch"
+                        : "resource_owner_unresolved";
+            Add(
+                issues,
+                "owner",
+                code,
+                "one exact composed accepted owner",
+                $"{key.Realm}/{OwnerKindToken(key.OwnerKind)}/{key.ResourceOwnerId}");
+            return new ResourceOwnerAuthorityResolution(null, issues);
+        }
+
+        if (!entry.ResourceCapabilities.Contains(resourceKey))
+        {
+            Add(
+                issues,
+                "owner.resourceKey",
+                "resource_owner_capability_missing",
+                "resource key explicitly exported by the owner",
+                resourceKey);
+        }
+        else if (!entry.IsResourceCapabilityActive(resourceKey))
+        {
+            Add(
+                issues,
+                "owner",
+                "resource_owner_inactive",
+                "active accepted resource capability",
+                LifecycleToken(entry.Lifecycle));
+        }
+
+        return issues.Count == 0
+            ? new ResourceOwnerAuthorityResolution(
+                CopyEntry(entry),
+                Array.Empty<ValidationIssue>())
+            : new ResourceOwnerAuthorityResolution(null, issues);
+    }
+
     internal IReadOnlyList<ValidationIssue> ValidateCanonicalAgreement(
         ResourceStateLedger state,
         ResourceHistoryState history,

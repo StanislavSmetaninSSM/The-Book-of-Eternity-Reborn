@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -46,7 +48,12 @@ public sealed class AcceptedMechanicsPlannerTests
                 "mortal_world",
                 ResourceOwnerKind.Item,
                 "source_alpha")
-            : null;
+            : string.Equals(sourceKind, "effect_component", StringComparison.Ordinal)
+                ? new ResourceOwnerKey(
+                    "mortal_world",
+                    ResourceOwnerKind.Player,
+                    "player_current")
+                : null;
         var catalog = CreateCatalog(new ResourceMutationSourceExport(
             sourceKind,
             "source_alpha",
@@ -240,6 +247,59 @@ public sealed class AcceptedMechanicsPlannerTests
         Assert.NotEqual(
             first.Route!.PolicyBinding.AuthorityFingerprint,
             changed.Route!.PolicyBinding.AuthorityFingerprint);
+    }
+
+    [Fact]
+    public void SourceCatalog_EffectComponentRequiresExactTargetOwnerBinding()
+    {
+        var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
+        Assert.True(definitions.TryResolveExact("health", out var definition));
+        var owner = new ResourceOwnerKey(
+            "mortal_world",
+            ResourceOwnerKind.Player,
+            "player_current");
+        var bound = ResourceMutationSourceCatalog.Create(new[]
+        {
+            new ResourceMutationSourceExport(
+                "effect_component",
+                "effect_component_alpha",
+                FingerprintA,
+                ResourceMutationSourceState.Active,
+                SameTurn: false,
+                owner)
+        });
+        var unbound = ResourceMutationSourceCatalog.Create(new[]
+        {
+            new ResourceMutationSourceExport(
+                "effect_component",
+                "effect_component_beta",
+                FingerprintB,
+                ResourceMutationSourceState.Active,
+                SameTurn: false)
+        });
+
+        Assert.True(bound.IsValid, string.Join(Environment.NewLine, bound.Issues));
+        var exact = bound.Catalog!.Resolve(
+            new ResourceMutationSourceRequest(
+                "effect_component",
+                "effect_component_alpha",
+                ResourceOperation.Damage),
+            definition!,
+            HealthCoordinate);
+        var wrongTarget = bound.Catalog.Resolve(
+            new ResourceMutationSourceRequest(
+                "effect_component",
+                "effect_component_alpha",
+                ResourceOperation.Damage),
+            definition!,
+            HealthCoordinate with { ResourceOwnerId = "player_other" });
+
+        Assert.True(exact.IsValid, string.Join(Environment.NewLine, exact.Issues));
+        Assert.Contains(wrongTarget.Issues, issue =>
+            issue.Code == "resource_source_target_mismatch");
+        Assert.Null(unbound.Catalog);
+        Assert.Contains(unbound.Issues, issue =>
+            issue.Code == "resource_source_owner_binding_required");
     }
 
     [Fact]
@@ -677,6 +737,992 @@ public sealed class AcceptedMechanicsPlannerTests
         Assert.Equal("owner_lifecycle", transition.SourceEvidence.SourceKind);
     }
 
+    [Theory]
+    [InlineData("periodic_damage", "Damage", 10, 7)]
+    [InlineData("periodic_restore", "Restore", 5, 8)]
+    public void SelectedPeriodicComponent_ResolvesExactCoordinateAndUsesCommonReducer(
+        string profile,
+        string operationToken,
+        int current,
+        int expectedCurrent)
+    {
+        var baseline = BaselineHealth(current);
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            ownerKind: "player",
+            profile);
+        var acceptedEvent = new EffectLifecycleEvent(
+            EventRef: "turn_43:effect:on_owner_turn_end",
+            Turn: 43,
+            Phase: "owner_turn_end",
+            TriggerId: "on_owner_turn_end");
+
+        var resolution = InvokePeriodicResourceResolution(
+            effect,
+            "on_owner_turn_end",
+            acceptedEvent,
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+
+        Assert.Empty(resolution.Issues);
+        var source = Assert.Single(resolution.SourceExports);
+        var mutation = Assert.Single(resolution.Mutations);
+        var operation = Enum.Parse<ResourceOperation>(operationToken);
+        Assert.Equal(HealthCoordinate, mutation.Coordinate);
+        Assert.Equal(operation, mutation.Source.Operation);
+        Assert.Equal(3m, mutation.Amount);
+        Assert.Equal(acceptedEvent.EventRef, mutation.EventRef);
+        Assert.Equal("effect_component", mutation.Source.SourceKind);
+        Assert.Equal(mutation.Source.SourceId, source.SourceId);
+        Assert.NotEqual("component_001", source.SourceId);
+
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: acceptedEvent.Turn,
+                Definitions: baseline.Definitions,
+                State: baseline.State,
+                History: baseline.History,
+                Sources: CreateCatalog(source),
+                Mutations: new[] { mutation }),
+            IdentityFactory());
+
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
+        Assert.Equal(expectedCurrent, Assert.Single(result.StateAfterImage!.Entries).Current);
+        var transition = Assert.Single(result.AppliedTransitions);
+        Assert.Equal(ResourceMutationPhase.EffectTrigger, transition.Phase);
+        Assert.Equal(source.SourceId, transition.OriginId);
+        Assert.Equal(source.AuthorityFingerprint, transition.SourceEvidence.AuthorityFingerprint);
+    }
+
+    [Fact]
+    public void SelectedPeriodicComponent_RejectsUnknownResource()
+    {
+        var baseline = BaselineHealth(current: 10m);
+        var acceptedEvent = PeriodicEvent();
+        var unknownResource = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        unknownResource["components"]![0]!["payload"]!["resource"] = "unknown_vitality";
+
+        var unknownResolution = InvokePeriodicResourceResolution(
+            unknownResource,
+            "on_owner_turn_end",
+            acceptedEvent,
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+
+        Assert.Contains(unknownResolution.Issues, issue =>
+            issue.Code == "effect_resource_definition_unknown");
+        Assert.Empty(unknownResolution.Mutations);
+    }
+
+    [Theory]
+    [InlineData("vehicle", "vehicle_alpha")]
+    [InlineData("combat_group_member", "member_alpha")]
+    public void SelectedPeriodicComponent_RejectsTargetKindAbsentFromEffectAuthority(
+        string targetKind,
+        string targetId)
+    {
+        var baseline = BaselineHealth(current: 10m);
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        effect["target"] = new JsonObject
+        {
+            ["kind"] = targetKind,
+            ["targetId"] = targetId
+        };
+
+        var targetResolution = InvokePeriodicResourceResolution(
+            effect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+
+        Assert.Contains(targetResolution.Issues, issue =>
+            issue.Code == "effect_resource_target_unsupported");
+        Assert.Empty(targetResolution.Mutations);
+    }
+
+    [Fact]
+    public void SelectedPeriodicComponent_RejectsInvalidComposedAuthoritySibling()
+    {
+        var baseline = BaselineHealth(current: 10m);
+        var targets = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
+            new[]
+            {
+                new EffectTargetExport(
+                    "mortal_world",
+                    "player",
+                    "player_current",
+                    SameTurn: false),
+                new EffectTargetExport(
+                    "mortal_world",
+                    "npc",
+                    "npc_duplicate",
+                    SameTurn: false),
+                new EffectTargetExport(
+                    "mortal_world",
+                    "npc",
+                    "npc_duplicate",
+                    SameTurn: false)
+            },
+            Array.Empty<EffectTargetExport>(),
+            new HashSet<string>(StringComparer.Ordinal),
+            CombatantIdentities: null));
+        var duplicateItem = new ResourceOwnerExport(
+            new ResourceOwnerKey(
+                "mortal_world",
+                ResourceOwnerKind.Item,
+                "item_duplicate"),
+            ResourceOwnerLifecycle.Active,
+            SameTurn: false,
+            OwnerRef: null,
+            BoundNpcId: null,
+            new HashSet<string>(StringComparer.Ordinal) { "charges" },
+            FingerprintB);
+        var owners = ResourceOwnerAuthority.Build(new ResourceOwnerAuthorityInput(
+            baseline.Owners.ExportInput().PreTurnOwners
+                .Concat(new[] { duplicateItem, duplicateItem })
+                .ToArray(),
+            Array.Empty<ResourceOwnerExport>(),
+            Array.Empty<ResourceOwnerKey>()));
+        Assert.Contains(targets.Issues, issue =>
+            issue.Code == "effect_target_authority_duplicate_target");
+        Assert.Contains(owners.Issues, issue =>
+            issue.Code == "resource_owner_identity_duplicate");
+
+        var resolution = InvokePeriodicResourceResolution(
+            EffectMaterializationTestFixture.CreateCanonicalEffect(),
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            targets,
+            owners,
+            baseline.Definitions);
+
+        Assert.Contains(resolution.Issues, issue =>
+            issue.Code == "effect_target_authority_duplicate_target");
+        Assert.Contains(resolution.Issues, issue =>
+            issue.Code == "resource_owner_identity_duplicate");
+        Assert.Empty(resolution.SourceExports);
+        Assert.Empty(resolution.Mutations);
+    }
+
+    [Fact]
+    public void SelectedPeriodicComponent_RejectsOwnerWithoutExactResourceCapability()
+    {
+        var baseline = BaselineHealth(current: 10m);
+        var owners = ResourceOwnerAuthority.Build(new ResourceOwnerAuthorityInput(
+            new[]
+            {
+                new ResourceOwnerExport(
+                    new ResourceOwnerKey("mortal_world", ResourceOwnerKind.Player, "player_current"),
+                    ResourceOwnerLifecycle.Active,
+                    SameTurn: false,
+                    OwnerRef: null,
+                    BoundNpcId: null,
+                    new HashSet<string>(StringComparer.Ordinal) { "energy" },
+                    FingerprintA)
+            },
+            Array.Empty<ResourceOwnerExport>(),
+            Array.Empty<ResourceOwnerKey>()));
+        Assert.Empty(owners.Issues);
+
+        var resolution = InvokePeriodicResourceResolution(
+            EffectMaterializationTestFixture.CreateCanonicalEffect(),
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            owners,
+            baseline.Definitions);
+
+        Assert.Contains(resolution.Issues, issue =>
+            issue.Code == "resource_owner_capability_missing");
+        Assert.Empty(resolution.Mutations);
+    }
+
+    [Theory]
+    [InlineData("npc", "Npc", "npc_test_healer", null)]
+    [InlineData("combatant", "Combatant", EffectMaterializationTestFixture.CombatantId, null)]
+    [InlineData("combatant", "Npc", "npc_test_healer", "npc_test_healer")]
+    public void SelectedPeriodicComponent_MapsPermittedMortalTargetToExactResourceOwner(
+        string targetKind,
+        string ownerKindToken,
+        string resourceOwnerId,
+        string? boundNpcId)
+    {
+        var ownerKind = Enum.Parse<ResourceOwnerKind>(ownerKindToken);
+        var targetId = targetKind == "combatant"
+            ? EffectMaterializationTestFixture.CombatantId
+            : resourceOwnerId;
+        var baseline = BaselineHealth(
+            current: 10m,
+            ownerKind,
+            resourceOwnerId,
+            targetKind,
+            targetId,
+            boundNpcId);
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(targetKind);
+
+        var resolution = InvokePeriodicResourceResolution(
+            effect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+
+        Assert.Empty(resolution.Issues);
+        Assert.Equal(
+            baseline.Coordinate,
+            Assert.Single(resolution.Mutations).Coordinate);
+    }
+
+    [Fact]
+    public void SelectedPeriodicComponent_MapsAfterlifeActorToSettingDefinedResource()
+    {
+        var baseline = BaselineAfterlifeIntegrity(current: 10m);
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        effect["realm"] = "chaos_sea";
+        effect["target"] = new JsonObject
+        {
+            ["kind"] = "afterlife_actor",
+            ["targetId"] = "afterlife_actor_alpha"
+        };
+        effect["components"]![0]!["payload"]!["resource"] = "soul_integrity";
+
+        var resolution = InvokePeriodicResourceResolution(
+            effect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+
+        Assert.Empty(resolution.Issues);
+        Assert.Equal(
+            baseline.Coordinate,
+            Assert.Single(resolution.Mutations).Coordinate);
+    }
+
+    [Fact]
+    public void SelectedPeriodicComponent_MapsRealmSpecificPlayerSoulToAfterlifeOwner()
+    {
+        var definitions = CreateAfterlifeIntegrityDefinitions();
+        var coordinate = new ResourceCoordinate(
+            "chaos_sea",
+            ResourceOwnerKind.AfterlifeActor,
+            "player_soul",
+            "soul_integrity");
+        var baseline = BaselinePeriodicResource(
+            definitions,
+            coordinate,
+            current: 10m,
+            targetKind: "player",
+            targetId: "player_soul",
+            boundNpcId: null);
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        effect["realm"] = "chaos_sea";
+        effect["target"] = new JsonObject
+        {
+            ["kind"] = "player",
+            ["targetId"] = "player_soul"
+        };
+        effect["components"]![0]!["payload"]!["resource"] = "soul_integrity";
+
+        var resolution = InvokePeriodicResourceResolution(
+            effect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+
+        Assert.Empty(resolution.Issues);
+        Assert.Equal(
+            baseline.Coordinate,
+            Assert.Single(resolution.Mutations).Coordinate);
+    }
+
+    [Fact]
+    public void SelectedPeriodicComponent_ResolvesAcceptedSameTurnPermanentTargetInternally()
+    {
+        var baseline = BaselineHealth(
+            current: 10m,
+            ResourceOwnerKind.Npc,
+            "npc_same_turn",
+            targetKind: "npc",
+            targetId: "npc_same_turn");
+        var owners = ResourceOwnerAuthority.Build(new ResourceOwnerAuthorityInput(
+            Array.Empty<ResourceOwnerExport>(),
+            new[]
+            {
+                new ResourceOwnerExport(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Npc,
+                        "npc_same_turn"),
+                    ResourceOwnerLifecycle.Active,
+                    SameTurn: true,
+                    OwnerRef: "npc_ref_same_turn",
+                    BoundNpcId: "npc_same_turn",
+                    new HashSet<string>(StringComparer.Ordinal) { "health" },
+                    FingerprintA)
+            },
+            Array.Empty<ResourceOwnerKey>()));
+        var targets = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
+            Array.Empty<EffectTargetExport>(),
+            new[]
+            {
+                new EffectTargetExport(
+                    "mortal_world",
+                    "npc",
+                    "npc_same_turn",
+                    SameTurn: true,
+                    TargetRef: "npc_ref_same_turn")
+            },
+            new HashSet<string>(StringComparer.Ordinal),
+            CombatantIdentities: null));
+        Assert.Empty(owners.Issues);
+        Assert.Empty(targets.Issues);
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("npc");
+        effect["target"]!["targetId"] = "npc_same_turn";
+
+        var resolution = InvokePeriodicResourceResolution(
+            effect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            targets,
+            owners,
+            baseline.Definitions);
+
+        Assert.Empty(resolution.Issues);
+        Assert.Equal(
+            baseline.Coordinate,
+            Assert.Single(resolution.Mutations).Coordinate);
+    }
+
+    [Fact]
+    public void BoundedPeriodicComponent_BindsSameTurnTargetAndResourceByExactRef()
+    {
+        var baseline = BaselineHealth(
+            current: 10m,
+            ResourceOwnerKind.Npc,
+            "npc_same_turn",
+            targetKind: "npc",
+            targetId: "npc_same_turn");
+        var owners = ResourceOwnerAuthority.Build(new ResourceOwnerAuthorityInput(
+            Array.Empty<ResourceOwnerExport>(),
+            new[]
+            {
+                new ResourceOwnerExport(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Npc,
+                        "npc_same_turn"),
+                    ResourceOwnerLifecycle.Active,
+                    SameTurn: true,
+                    OwnerRef: "npc_ref_same_turn",
+                    BoundNpcId: "npc_same_turn",
+                    new HashSet<string>(StringComparer.Ordinal) { "health" },
+                    FingerprintA)
+            },
+            Array.Empty<ResourceOwnerKey>()));
+        var targets = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
+            Array.Empty<EffectTargetExport>(),
+            new[]
+            {
+                new EffectTargetExport(
+                    "mortal_world",
+                    "npc",
+                    "npc_same_turn",
+                    SameTurn: true,
+                    TargetRef: "npc_ref_same_turn")
+            },
+            new HashSet<string>(StringComparer.Ordinal),
+            CombatantIdentities: null));
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("npc");
+        effect["target"]!["targetId"] = "npc_same_turn";
+        effect["source"]!["sourceId"] = "wound_same_turn";
+        effect["triggers"]![0]!["resolutionMode"] = "bounded_receipt";
+        var source = new EffectSourceAuthorityEntry(
+            new EffectSourceKey(
+                "mortal_world",
+                "wound",
+                "wound_same_turn",
+                "bleeding_consequence"),
+            new JsonObject(),
+            Materializable: true,
+            Active: true,
+            SameTurn: true,
+            SourceRef: "wound_ref_same_turn",
+            new HashSet<string>(StringComparer.Ordinal) { "active" });
+
+        var resolution = EffectAcceptedTurnPlanner.ResolvePeriodicResourceMutations(
+            effect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            targets,
+            owners,
+            baseline.Definitions,
+            source);
+
+        Assert.Empty(resolution.Issues);
+        Assert.Empty(resolution.Mutations);
+        var pending = Assert.Single(resolution.PendingResolutions);
+        Assert.Equal(
+            new ResourcePendingAuthorityBinding(
+                "same_turn_ref",
+                "npc_ref_same_turn"),
+            pending.TargetAuthority);
+        Assert.Equal(
+            new ResourcePendingAuthorityBinding(
+                "same_turn_ref",
+                "npc_ref_same_turn"),
+            pending.ResourceAuthority);
+        Assert.Equal(
+            new ResourcePendingAuthorityBinding(
+                "permanent",
+                "effect_test_bleeding"),
+            pending.EffectAuthority);
+        Assert.Equal(
+            new ResourcePendingAuthorityBinding(
+                "same_turn_ref",
+                "wound_ref_same_turn"),
+            pending.SourceAuthority);
+    }
+
+    [Fact]
+    public void BoundedPeriodicComponent_IgnoresUnpublishedDefinitionIdentityInAuthorityBinding()
+    {
+        var baseline = BaselineHealth(current: 10m);
+        Assert.True(baseline.Definitions.TryResolveExact("health", out var health));
+        var empty = ResourceDefinitionCatalog.ParseCanonical(
+            json: null,
+            allowMissingPristine: true).Catalog!;
+        var firstDefinitions = empty.With(health! with
+        {
+            Materialization = new ResourceDefinitionMaterialization(
+                ResourceMaterializationContract.SchemaVersion,
+                "resource_definition_health_first",
+                "resource_definition_seal_health_first",
+                42,
+                "turn_42:resource:1")
+        });
+        var secondDefinitions = empty.With(health with
+        {
+            Materialization = new ResourceDefinitionMaterialization(
+                ResourceMaterializationContract.SchemaVersion,
+                "resource_definition_health_second",
+                "resource_definition_seal_health_second",
+                42,
+                "turn_42:resource:1")
+        });
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        effect["triggers"]![0]!["resolutionMode"] = "bounded_receipt";
+
+        var first = InvokePeriodicResourceResolution(
+            effect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            firstDefinitions);
+        var second = InvokePeriodicResourceResolution(
+            effect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            secondDefinitions);
+
+        Assert.Empty(first.Issues);
+        Assert.Empty(second.Issues);
+        var firstPending = Assert.Single(first.PendingResolutions);
+        var secondPending = Assert.Single(second.PendingResolutions);
+        Assert.Equal(
+            firstPending.SourceAuthorityFingerprint,
+            secondPending.SourceAuthorityFingerprint);
+        Assert.Equal(firstPending.PolicyFingerprint, secondPending.PolicyFingerprint);
+    }
+
+    [Fact]
+    public void SelectedPeriodicComponent_BindsSourceIdentityToEffectTriggerAndComponent()
+    {
+        var baseline = BaselineHealth(current: 10m);
+        var firstEffect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        var secondEffect = firstEffect.DeepClone().AsObject();
+        secondEffect["effectId"] = "effect_test_bleeding_other";
+        var secondTrigger = firstEffect["triggers"]![0]!.DeepClone().AsObject();
+        secondTrigger["triggerId"] = "on_owner_turn_end_secondary";
+        firstEffect["triggers"]!.AsArray().Add(secondTrigger);
+
+        var first = InvokePeriodicResourceResolution(
+            firstEffect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+        var sameComponentOtherTrigger = InvokePeriodicResourceResolution(
+            firstEffect,
+            "on_owner_turn_end_secondary",
+            PeriodicEvent() with
+            {
+                EventRef = "turn_43:effect:on_owner_turn_end_secondary",
+                TriggerId = "on_owner_turn_end_secondary"
+            },
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+        var sameComponentOtherEffect = InvokePeriodicResourceResolution(
+            secondEffect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+
+        var sourceIds = new[] { first, sameComponentOtherTrigger, sameComponentOtherEffect }
+            .Select(result => Assert.Single(result.SourceExports).SourceId)
+            .ToArray();
+        Assert.Equal(3, sourceIds.Distinct(StringComparer.Ordinal).Count());
+        Assert.All(sourceIds, sourceId =>
+            Assert.StartsWith("effect_component_", sourceId, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void SelectedPeriodicComponent_RejectsMismatchedTriggerEventPhase()
+    {
+        var baseline = BaselineHealth(current: 10m);
+
+        var resolution = InvokePeriodicResourceResolution(
+            EffectMaterializationTestFixture.CreateCanonicalEffect(),
+            "on_owner_turn_end",
+            PeriodicEvent() with { Phase = "owner_turn_start" },
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+
+        Assert.Contains(resolution.Issues, issue =>
+            issue.Code == "effect_resource_trigger_event_mismatch");
+        Assert.Empty(resolution.Mutations);
+    }
+
+    [Fact]
+    public void SelectedPeriodicDamage_EnforcesClosedFloorPolicyInCommonReducer()
+    {
+        var baseline = BaselineHealth(current: 10m);
+        var surviveAtOne = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        surviveAtOne["components"]![0]!["payload"]!["amount"] = 9;
+        surviveAtOne["components"]![0]!["payload"]!["floorPolicy"] =
+            "cannot_reduce_below_one";
+        var cannotReachZero = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        cannotReachZero["components"]![0]!["payload"]!["amount"] = 10;
+        cannotReachZero["components"]![0]!["payload"]!["floorPolicy"] =
+            "cannot_reduce_below_one";
+        var mayReachZero = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        mayReachZero["components"]![0]!["payload"]!["amount"] = 10;
+        mayReachZero["components"]![0]!["payload"]!["floorPolicy"] =
+            "may_reach_zero";
+
+        var atOne = ResolveAndApplyPeriodicResource(surviveAtOne, baseline);
+        var rejectedZero = ResolveAndApplyPeriodicResource(cannotReachZero, baseline);
+        var atZero = ResolveAndApplyPeriodicResource(mayReachZero, baseline);
+
+        Assert.True(atOne.IsValid, string.Join(Environment.NewLine, atOne.Issues));
+        Assert.Equal(1m, Assert.Single(atOne.StateAfterImage!.Entries).Current);
+        Assert.False(rejectedZero.IsValid);
+        Assert.Contains(rejectedZero.Issues, issue =>
+            issue.Code == "resource_mutation_result_constraint_violated");
+        Assert.True(atZero.IsValid, string.Join(Environment.NewLine, atZero.Issues));
+        Assert.Equal(0m, Assert.Single(atZero.StateAfterImage!.Entries).Current);
+    }
+
+    [Fact]
+    public void SelectedPeriodicComponent_LeavesQuantumAndBoundsToCommonReducer()
+    {
+        var quantumBaseline = BaselineHealth(current: 10m);
+        var quantumEffect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        quantumEffect["components"]![0]!["payload"]!["amount"] = 0.5m;
+        var quantumResolution = InvokePeriodicResourceResolution(
+            quantumEffect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            quantumBaseline.Targets,
+            quantumBaseline.Owners,
+            quantumBaseline.Definitions);
+        Assert.Empty(quantumResolution.Issues);
+        var quantumSource = Assert.Single(quantumResolution.SourceExports);
+        var quantumMutation = Assert.Single(quantumResolution.Mutations);
+
+        var quantumResult = AcceptedMechanicsPlanner.BuildResources(
+            ResourceInput(quantumBaseline, quantumSource, quantumMutation),
+            IdentityFactory());
+
+        Assert.False(quantumResult.IsValid);
+        Assert.Contains(quantumResult.Issues, issue =>
+            issue.Code == "resource_mutation_amount_invalid");
+
+        var floorResult = ApplyPeriodicComponent(
+            BaselineHealth(current: 10m),
+            profile: "periodic_damage",
+            amount: 12m);
+        var capResult = ApplyPeriodicComponent(
+            BaselineHealth(current: 5m),
+            profile: "periodic_restore",
+            amount: 12m);
+        Assert.True(floorResult.IsValid, string.Join(Environment.NewLine, floorResult.Issues));
+        Assert.True(capResult.IsValid, string.Join(Environment.NewLine, capResult.Issues));
+        Assert.Equal(0m, Assert.Single(floorResult.StateAfterImage!.Entries).Current);
+        Assert.Equal(
+            ResourceTransitionOutcome.ClampedMinimum,
+            Assert.Single(floorResult.AppliedTransitions).Outcome);
+        Assert.Equal(10m, Assert.Single(capResult.StateAfterImage!.Entries).Current);
+        Assert.Equal(
+            ResourceTransitionOutcome.ClampedMaximum,
+            Assert.Single(capResult.AppliedTransitions).Outcome);
+    }
+
+    [Fact]
+    public void SelectedPeriodicComponent_ExactReplayDoesNotAppendOrEmitAgain()
+    {
+        var baseline = BaselineHealth(current: 10m);
+        var resolution = InvokePeriodicResourceResolution(
+            EffectMaterializationTestFixture.CreateCanonicalEffect(),
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+        Assert.Empty(resolution.Issues);
+        var source = Assert.Single(resolution.SourceExports);
+        var mutation = Assert.Single(resolution.Mutations);
+        var first = AcceptedMechanicsPlanner.BuildResources(
+            ResourceInput(baseline, source, mutation),
+            IdentityFactory());
+        Assert.True(first.IsValid, string.Join(Environment.NewLine, first.Issues));
+
+        var replay = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: PeriodicEvent().Turn,
+                Definitions: baseline.Definitions,
+                State: first.StateAfterImage!,
+                History: first.HistoryAfterImage!,
+                Sources: CreateCatalog(source),
+                Mutations: new[] { mutation }),
+            IdentityFactory(seed: 50));
+
+        Assert.True(replay.IsValid, string.Join(Environment.NewLine, replay.Issues));
+        Assert.Empty(replay.AppliedTransitions);
+        Assert.Empty(replay.Events);
+        Assert.Single(replay.ReplayTransitions);
+        Assert.Equal(first.StateAfterImage!.ToCanonicalJson(), replay.StateAfterImage!.ToCanonicalJson());
+        Assert.Equal(first.HistoryAfterImage!.ToCanonicalJson(), replay.HistoryAfterImage!.ToCanonicalJson());
+    }
+
+    [Fact]
+    public void Planner_ChangedResultConstraintConflictsWithImmutableReplayPolicy()
+    {
+        var baseline = BaselineHealth(current: 10m);
+        var resolution = InvokePeriodicResourceResolution(
+            EffectMaterializationTestFixture.CreateCanonicalEffect(),
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+        Assert.Empty(resolution.Issues);
+        var source = Assert.Single(resolution.SourceExports);
+        var mutation = Assert.Single(resolution.Mutations);
+        var first = AcceptedMechanicsPlanner.BuildResources(
+            ResourceInput(baseline, source, mutation),
+            IdentityFactory());
+        Assert.True(first.IsValid, string.Join(Environment.NewLine, first.Issues));
+
+        var changedConstraint = mutation with
+        {
+            ResultConstraint = new ResourceMutationResultConstraint(
+                RejectBelow: 1m,
+                RejectAbove: null)
+        };
+        var replay = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: PeriodicEvent().Turn,
+                Definitions: baseline.Definitions,
+                State: first.StateAfterImage!,
+                History: first.HistoryAfterImage!,
+                Sources: CreateCatalog(source),
+                Mutations: new[] { changedConstraint }),
+            IdentityFactory(seed: 50));
+
+        Assert.False(replay.IsValid);
+        Assert.Contains(replay.Issues, issue =>
+            issue.Code == "resource_transition_conflicting_replay");
+        Assert.Null(replay.StateAfterImage);
+        Assert.Null(replay.HistoryAfterImage);
+    }
+
+    [Fact]
+    public void OrdinaryAndSelectedPeriodicDamage_AreSemanticallyByteEquivalentAcrossOneHundredRuns()
+    {
+        var baseline = BaselineHealth(current: 10m);
+        var ordinarySource = new ResourceMutationSourceExport(
+            "combat_outcome",
+            "ordinary_equivalent_damage",
+            FingerprintB,
+            ResourceMutationSourceState.Active,
+            SameTurn: false);
+        var ordinaryMutation = new ResourceMutationIntent(
+            PeriodicEvent().EventRef,
+            HealthCoordinate,
+            Amount: 3m,
+            new ResourceMutationSourceRequest(
+                ordinarySource.SourceKind,
+                ordinarySource.SourceId,
+                ResourceOperation.Damage),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: null);
+        var ordinary = AcceptedMechanicsPlanner.BuildResources(
+            ResourceInput(baseline, ordinarySource, ordinaryMutation),
+            IdentityFactory());
+        Assert.True(ordinary.IsValid, string.Join(Environment.NewLine, ordinary.Issues));
+        var expected = SerializeSemanticResourceResult(ordinary);
+
+        for (var run = 0; run < 100; run++)
+        {
+            var resolution = InvokePeriodicResourceResolution(
+                EffectMaterializationTestFixture.CreateCanonicalEffect(),
+                "on_owner_turn_end",
+                PeriodicEvent(),
+                baseline.Targets,
+                baseline.Owners,
+                baseline.Definitions);
+            Assert.Empty(resolution.Issues);
+            var source = Assert.Single(resolution.SourceExports);
+            var mutation = Assert.Single(resolution.Mutations);
+            var noise = new[]
+            {
+                new ResourceMutationSourceExport(
+                    "narrative_outcome",
+                    "noise_alpha",
+                    FingerprintA,
+                    ResourceMutationSourceState.Active,
+                    SameTurn: false),
+                new ResourceMutationSourceExport(
+                    "registered_system_outcome",
+                    "noise_beta",
+                    FingerprintB,
+                    ResourceMutationSourceState.Active,
+                    SameTurn: false),
+                source
+            };
+            var randomized = run % 2 == 0
+                ? noise
+                : noise.Reverse().ToArray();
+            var actual = AcceptedMechanicsPlanner.BuildResources(
+                new AcceptedMechanicsResourceInput(
+                    Turn: PeriodicEvent().Turn,
+                    Definitions: baseline.Definitions,
+                    State: baseline.State,
+                    History: baseline.History,
+                    Sources: CreateCatalog(randomized),
+                    Mutations: new[] { mutation }),
+                IdentityFactory(seed: run + 100));
+
+            Assert.True(actual.IsValid, string.Join(Environment.NewLine, actual.Issues));
+            Assert.Equal(expected, SerializeSemanticResourceResult(actual));
+        }
+    }
+
+    [Theory]
+    [InlineData(3, 3, 2, 3)]
+    [InlineData(3, 2, 1, 1)]
+    public void ResourceEventTriggeredPeriodicRestore_ReentersSameReducerOnlyOnActualBoundaryEvent(
+        int current,
+        int damage,
+        int expectedTransitionCount,
+        int expectedCurrent)
+    {
+        var baseline = BaselineHealth(current);
+        var rootSource = new ResourceMutationSourceExport(
+            "combat_outcome",
+            "combat_damage_resource_event",
+            FingerprintB,
+            ResourceMutationSourceState.Active,
+            SameTurn: false);
+        var root = new ResourceMutationIntent(
+            "turn_43:combat_damage:1",
+            HealthCoordinate,
+            damage,
+            new ResourceMutationSourceRequest(
+                rootSource.SourceKind,
+                rootSource.SourceId,
+                ResourceOperation.Damage),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: null);
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "periodic_restore");
+        effect["triggers"]![0]!["triggerId"] = "on_resource_depleted";
+        effect["triggers"]![0]!["eventType"] = "resource_depleted";
+        var resolution = InvokeResourceEventResolution(
+            effect,
+            "on_resource_depleted",
+            root.Key,
+            "resource_depleted",
+            turn: 43,
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+        Assert.Empty(resolution.Issues);
+        var effectSource = Assert.Single(resolution.SourceExports);
+        var effectMutation = Assert.Single(resolution.Mutations);
+
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 43,
+                Definitions: baseline.Definitions,
+                State: baseline.State,
+                History: baseline.History,
+                Sources: CreateCatalog(rootSource, effectSource),
+                Mutations: new[] { effectMutation, root }),
+            IdentityFactory());
+
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
+        Assert.Equal(expectedCurrent, Assert.Single(result.StateAfterImage!.Entries).Current);
+        Assert.Equal(expectedTransitionCount, result.AppliedTransitions.Count);
+        if (expectedTransitionCount == 2)
+        {
+            Assert.Equal(
+                new[] { rootSource.SourceId, effectSource.SourceId },
+                result.AppliedTransitions.Select(static transition => transition.OriginId));
+            Assert.Equal(
+                new[]
+                {
+                    "resource_damaged",
+                    "resource_depleted",
+                    "resource_restored"
+                },
+                result.Events.Select(static resourceEvent => resourceEvent.EventKind));
+        }
+        else
+        {
+            Assert.DoesNotContain(result.AppliedTransitions, transition =>
+                transition.OriginId == effectSource.SourceId);
+        }
+    }
+
+    [Fact]
+    public void ResourceEventCycle_IsRejectedBeforeAnyReducerAppend()
+    {
+        var baseline = BaselineHealth(current: 3m);
+        var rootSource = new ResourceMutationSourceExport(
+            "combat_outcome",
+            "cycle_root",
+            FingerprintA,
+            ResourceMutationSourceState.Active,
+            SameTurn: false);
+        var root = new ResourceMutationIntent(
+            "turn_43:cycle:root",
+            baseline.Coordinate,
+            3m,
+            new ResourceMutationSourceRequest(
+                rootSource.SourceKind,
+                rootSource.SourceId,
+                ResourceOperation.Damage),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: null);
+
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 43,
+                Definitions: baseline.Definitions,
+                State: baseline.State,
+                History: baseline.History,
+                Sources: CreateCatalog(rootSource),
+                Mutations: new[] { root },
+                EventMutationResolver: ResolveCycle),
+            IdentityFactory());
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue => issue.Code == "resource_graph_cycle");
+        Assert.Equal(0, result.Statistics.HistoryAppendCount);
+
+        EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution ResolveCycle(
+            ResourceAppliedEvent resourceEvent,
+            ResourceOperationKey producer)
+        {
+            var restores = string.Equals(
+                resourceEvent.EventKind,
+                "resource_damaged",
+                StringComparison.Ordinal);
+            var damages = string.Equals(
+                resourceEvent.EventKind,
+                "resource_restored",
+                StringComparison.Ordinal);
+            if (!restores && !damages)
+            {
+                return new EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution(
+                    Array.Empty<ResourceMutationSourceExport>(),
+                    Array.Empty<ResourceMutationIntent>(),
+                    Array.Empty<ValidationIssue>());
+            }
+
+            var effectId = restores ? "effect_cycle_a" : "effect_cycle_b";
+            var triggerId = restores ? "on_depleted" : "on_filled";
+            var sourceId = restores ? "cycle_effect_a" : "cycle_effect_b";
+            var fingerprint = restores ? FingerprintA : FingerprintB;
+            var operation = restores
+                ? ResourceOperation.Restore
+                : ResourceOperation.Damage;
+            var eventRef = producer.EventRef + ":" + triggerId;
+            var source = new ResourceMutationSourceExport(
+                "effect_component",
+                sourceId,
+                fingerprint,
+                ResourceMutationSourceState.Active,
+                SameTurn: false,
+                new ResourceOwnerKey(
+                    producer.Coordinate.Realm,
+                    producer.Coordinate.OwnerKind,
+                    producer.Coordinate.ResourceOwnerId));
+            var mutation = new ResourceMutationIntent(
+                eventRef,
+                producer.Coordinate,
+                3m,
+                new ResourceMutationSourceRequest(
+                    source.SourceKind,
+                    source.SourceId,
+                    operation),
+                new[] { producer },
+                new[]
+                {
+                    new ResourceMutationEventRequirement(
+                        producer,
+                        resourceEvent.EventKind)
+                },
+                ReceiptId: null);
+            return new EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution(
+                new[] { source },
+                new[] { mutation },
+                Array.Empty<ValidationIssue>())
+            {
+                TriggerExecutions = new[]
+                {
+                    new EffectAcceptedTurnPlanner.EffectResourceTriggerExecution(
+                        effectId,
+                        triggerId,
+                        resourceEvent.EventKind,
+                        eventRef,
+                        new[] { mutation.Key },
+                        RemainingUseBudget: null)
+                }
+            };
+        }
+    }
+
     private static AcceptedMechanicsResourceInput Input(
         Baseline baseline,
         IReadOnlyList<ResourceMutationIntent> intents) =>
@@ -687,6 +1733,167 @@ public sealed class AcceptedMechanicsPlannerTests
             History: baseline.History,
             Sources: baseline.Sources,
             Mutations: intents);
+
+    private static AcceptedMechanicsResourceInput ResourceInput(
+        PeriodicBaseline baseline,
+        ResourceMutationSourceExport source,
+        ResourceMutationIntent mutation) =>
+        new(
+            Turn: PeriodicEvent().Turn,
+            Definitions: baseline.Definitions,
+            State: baseline.State,
+            History: baseline.History,
+            Sources: CreateCatalog(source),
+            Mutations: new[] { mutation });
+
+    private static AcceptedMechanicsResourcePlanningResult ApplyPeriodicComponent(
+        PeriodicBaseline baseline,
+        string profile,
+        decimal amount)
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            ownerKind: "player",
+            profile);
+        effect["components"]![0]!["payload"]!["amount"] = amount;
+        var resolution = InvokePeriodicResourceResolution(
+            effect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+        Assert.Empty(resolution.Issues);
+        var source = Assert.Single(resolution.SourceExports);
+        var mutation = Assert.Single(resolution.Mutations);
+        return AcceptedMechanicsPlanner.BuildResources(
+            ResourceInput(baseline, source, mutation),
+            IdentityFactory());
+    }
+
+    private static AcceptedMechanicsResourcePlanningResult ResolveAndApplyPeriodicResource(
+        JsonObject effect,
+        PeriodicBaseline baseline)
+    {
+        var resolution = InvokePeriodicResourceResolution(
+            effect,
+            "on_owner_turn_end",
+            PeriodicEvent(),
+            baseline.Targets,
+            baseline.Owners,
+            baseline.Definitions);
+        Assert.Empty(resolution.Issues);
+        var source = Assert.Single(resolution.SourceExports);
+        var mutation = Assert.Single(resolution.Mutations);
+        return AcceptedMechanicsPlanner.BuildResources(
+            ResourceInput(baseline, source, mutation),
+            IdentityFactory());
+    }
+
+    private static EffectLifecycleEvent PeriodicEvent() => new(
+        EventRef: "turn_43:effect:on_owner_turn_end",
+        Turn: 43,
+        Phase: "owner_turn_end",
+        TriggerId: "on_owner_turn_end");
+
+    private static string SerializeSemanticResourceResult(
+        AcceptedMechanicsResourcePlanningResult result)
+    {
+        var state = Assert.Single(result.StateAfterImage!.Entries);
+        var transition = Assert.Single(result.AppliedTransitions);
+        return new JsonObject
+        {
+            ["state"] = SnapshotNode(new ResourceStateSnapshot(
+                state.Current,
+                state.Maximum,
+                state.CapacityBinding,
+                state.State)),
+            ["transition"] = new JsonObject
+            {
+                ["eventRef"] = transition.EventRef,
+                ["coordinate"] = CoordinateNode(transition.Coordinate),
+                ["operation"] = transition.Operation.ToString(),
+                ["requestedAmount"] = transition.RequestedAmount,
+                ["appliedAmount"] = transition.AppliedAmount,
+                ["outcome"] = transition.Outcome.ToString(),
+                ["capacityDisposition"] = transition.CapacityDisposition?.ToString(),
+                ["beforeState"] = SnapshotNode(transition.BeforeState),
+                ["afterState"] = SnapshotNode(transition.AfterState),
+                ["turn"] = transition.Turn,
+                ["executionSequence"] = transition.ExecutionSequence
+            },
+            ["events"] = new JsonArray(result.Events.Select(value => (JsonNode)new JsonObject
+            {
+                ["eventKind"] = value.EventKind,
+                ["eventRef"] = value.EventRef,
+                ["coordinate"] = CoordinateNode(value.Coordinate),
+                ["before"] = value.Before,
+                ["after"] = value.After,
+                ["appliedAmount"] = value.AppliedAmount,
+                ["turn"] = value.Turn,
+                ["executionSequence"] = value.ExecutionSequence
+            }).ToArray())
+        }.ToJsonString();
+    }
+
+    private static JsonObject CoordinateNode(ResourceCoordinate coordinate) => new()
+    {
+        ["realm"] = coordinate.Realm,
+        ["ownerKind"] = coordinate.OwnerKind.ToString(),
+        ["resourceOwnerId"] = coordinate.ResourceOwnerId,
+        ["resourceKey"] = coordinate.ResourceKey
+    };
+
+    private static JsonNode? SnapshotNode(ResourceStateSnapshot? snapshot) =>
+        snapshot == null
+            ? null
+            : new JsonObject
+            {
+                ["current"] = snapshot.Current,
+                ["maximum"] = snapshot.Maximum,
+                ["capacityBinding"] = new JsonObject
+                {
+                    ["kind"] = snapshot.CapacityBinding.Kind.ToString(),
+                    ["authorityKey"] = snapshot.CapacityBinding.AuthorityKey,
+                    ["authorityFingerprint"] = snapshot.CapacityBinding.AuthorityFingerprint
+                },
+                ["state"] = snapshot.State.ToString()
+            };
+
+    private static EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution
+        InvokePeriodicResourceResolution(
+        JsonObject effect,
+        string triggerId,
+        EffectLifecycleEvent acceptedEvent,
+        EffectTargetAuthority targets,
+        ResourceOwnerAuthority owners,
+        ResourceDefinitionCatalog definitions) =>
+        EffectAcceptedTurnPlanner.ResolvePeriodicResourceMutations(
+            effect,
+            triggerId,
+            acceptedEvent,
+            targets,
+            owners,
+            definitions);
+
+    private static EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution
+        InvokeResourceEventResolution(
+            JsonObject effect,
+            string triggerId,
+            ResourceOperationKey producer,
+            string eventKind,
+            int turn,
+            EffectTargetAuthority targets,
+            ResourceOwnerAuthority owners,
+            ResourceDefinitionCatalog definitions)
+        => EffectAcceptedTurnPlanner.ResolveResourceEventMutations(
+            effect,
+            triggerId,
+            producer,
+            eventKind,
+            turn,
+            targets,
+            owners,
+            definitions);
 
     private static ResourceMutationIntent Intent(
         string eventRef,
@@ -718,6 +1925,21 @@ public sealed class AcceptedMechanicsPlannerTests
                 new("effect_component", "effect_alpha", FingerprintA, ResourceMutationSourceState.Active, false)
             ];
         }
+        sources = sources.Select(source =>
+                string.Equals(
+                    source.SourceKind,
+                    "effect_component",
+                    StringComparison.Ordinal) &&
+                source.BoundOwner == null
+                    ? source with
+                    {
+                        BoundOwner = new ResourceOwnerKey(
+                            ChargesCoordinate.Realm,
+                            ChargesCoordinate.OwnerKind,
+                            ChargesCoordinate.ResourceOwnerId)
+                    }
+                    : source)
+            .ToArray();
 
         var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
         var binding = new ResourceCapacityBinding(
@@ -780,6 +2002,227 @@ public sealed class AcceptedMechanicsPlannerTests
             CreateCatalog(sources));
     }
 
+    private static PeriodicBaseline BaselineHealth(
+        decimal current,
+        ResourceOwnerKind ownerKind = ResourceOwnerKind.Player,
+        string resourceOwnerId = "player_current",
+        string targetKind = "player",
+        string targetId = "player_current",
+        string? boundNpcId = null)
+    {
+        var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
+        var coordinate = new ResourceCoordinate(
+            "mortal_world",
+            ownerKind,
+            resourceOwnerId,
+            "health");
+        return BaselinePeriodicResource(
+            definitions,
+            coordinate,
+            current,
+            targetKind,
+            targetId,
+            boundNpcId);
+    }
+
+    private static PeriodicBaseline BaselineAfterlifeIntegrity(decimal current)
+    {
+        var definitions = CreateAfterlifeIntegrityDefinitions();
+        var coordinate = new ResourceCoordinate(
+            "chaos_sea",
+            ResourceOwnerKind.AfterlifeActor,
+            "afterlife_actor_alpha",
+            "soul_integrity");
+        return BaselinePeriodicResource(
+            definitions,
+            coordinate,
+            current,
+            targetKind: "afterlife_actor",
+            targetId: coordinate.ResourceOwnerId,
+            boundNpcId: null);
+    }
+
+    private static PeriodicBaseline BaselinePeriodicResource(
+        ResourceDefinitionCatalog definitions,
+        ResourceCoordinate coordinate,
+        decimal current,
+        string targetKind,
+        string targetId,
+        string? boundNpcId)
+    {
+        Assert.True(definitions.TryResolveExact(coordinate.ResourceKey, out var definition));
+        var binding = new ResourceCapacityBinding(
+            definition!.CapacityPolicy.Kind,
+            definition.CapacityPolicy.FormulaKey ??
+            "capacity_test_" + coordinate.ResourceKey,
+            FingerprintA);
+        var initializedSnapshot = new ResourceStateSnapshot(
+            Current: 10m,
+            Maximum: 10m,
+            binding,
+            ResourceLifecycleState.Active);
+        var initialize = new ResourceTransition(
+            TransitionId: "transition_health_initialize",
+            OperationId: "operation_health_initialize",
+            EventRef: "turn_1:resource:1",
+            OriginKind: "owner_materialization",
+            OriginId: "player_current",
+            Phase: ResourceMutationPhase.RegisteredSystemOutcome,
+            Priority: 50,
+            ExecutionSequence: 0,
+            Coordinate: coordinate,
+            Operation: ResourceTransitionOperation.Initialize,
+            RequestedAmount: 0m,
+            AppliedAmount: 0m,
+            Outcome: ResourceTransitionOutcome.Applied,
+            CapacityDisposition: ResourceCapacityDisposition.InitializeFromDefinition,
+            BeforeState: null,
+            AfterState: initializedSnapshot,
+            SourceEvidence: new ResourceSourceEvidence(
+                "owner_materialization",
+                "player_current",
+                FingerprintA),
+            PolicyFingerprint: FingerprintA,
+            ReceiptId: null,
+            Turn: 1);
+        var transitions = new List<ResourceTransition> { initialize };
+        ResourceTransition? latest = null;
+        if (current != 10m)
+        {
+            latest = new ResourceTransition(
+                TransitionId: "transition_health_baseline_damage",
+                OperationId: "operation_health_baseline_damage",
+                EventRef: "turn_1:resource:2",
+                OriginKind: "combat_outcome",
+                OriginId: "baseline_damage",
+                Phase: ResourceMutationPhase.DirectOutcome,
+                Priority: 100,
+                ExecutionSequence: 1,
+                Coordinate: HealthCoordinate,
+                Operation: ResourceTransitionOperation.Damage,
+                RequestedAmount: 10m - current,
+                AppliedAmount: 10m - current,
+                Outcome: ResourceTransitionOutcome.Applied,
+                CapacityDisposition: null,
+                BeforeState: initializedSnapshot,
+                AfterState: initializedSnapshot with { Current = current },
+                SourceEvidence: new ResourceSourceEvidence(
+                    "combat_outcome",
+                    "baseline_damage",
+                    FingerprintB),
+                PolicyFingerprint: FingerprintB,
+                ReceiptId: null,
+                Turn: 1);
+            transitions.Add(latest);
+        }
+        var historyResult = ResourceHistoryState.CreateValidated(
+            transitions,
+            definitions);
+        Assert.True(
+            historyResult.IsValid,
+            string.Join(Environment.NewLine, historyResult.Issues));
+        var state = new ResourceStateLedger(new[]
+        {
+            new ResourceStateEntry(
+                coordinate,
+                current,
+                10m,
+                binding,
+                ResourceLifecycleState.Active,
+                new ResourceChronology(
+                    CreatedAtTurn: 1,
+                    CreatedEventRef: initialize.EventRef,
+                    LastTransitionId: (latest ?? initialize).TransitionId,
+                    LastEventRef: (latest ?? initialize).EventRef,
+                    LastTransitionTurn: 1))
+        });
+        var owners = ResourceOwnerAuthority.Build(new ResourceOwnerAuthorityInput(
+            new[]
+            {
+                new ResourceOwnerExport(
+                    new ResourceOwnerKey(
+                        coordinate.Realm,
+                        coordinate.OwnerKind,
+                        coordinate.ResourceOwnerId),
+                    ResourceOwnerLifecycle.Active,
+                    SameTurn: false,
+                    OwnerRef: null,
+                    BoundNpcId: null,
+                    new HashSet<string>(StringComparer.Ordinal) { coordinate.ResourceKey },
+                    FingerprintA)
+            },
+            Array.Empty<ResourceOwnerExport>(),
+            Array.Empty<ResourceOwnerKey>()));
+        Assert.Empty(owners.Issues);
+        var targets = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
+            new[]
+            {
+                new EffectTargetExport(
+                    coordinate.Realm,
+                    targetKind,
+                    targetId,
+                    SameTurn: false,
+                    BoundNpcId: boundNpcId)
+            },
+            Array.Empty<EffectTargetExport>(),
+            new HashSet<string>(StringComparer.Ordinal),
+            CombatantIdentities: null));
+        Assert.Empty(targets.Issues);
+        Assert.Empty(historyResult.History!.ValidateStateAgreement(state));
+        Assert.Empty(owners.ValidateCanonicalAgreement(state, historyResult.History));
+        return new PeriodicBaseline(
+            definitions,
+            state,
+            historyResult.History,
+            owners,
+            targets,
+            coordinate);
+    }
+
+    private static ResourceDefinitionCatalog CreateAfterlifeIntegrityDefinitions()
+    {
+        var proposal = new JsonObject
+        {
+            ["resourceKey"] = "soul_integrity",
+            ["definitionVersion"] = 1,
+            ["displayName"] = "Целостность души",
+            ["numericKind"] = "integer",
+            ["unit"] = "point",
+            ["quantum"] = 1,
+            ["minimumPolicy"] = new JsonObject
+            {
+                ["kind"] = "definition_fixed",
+                ["value"] = 0
+            },
+            ["capacityPolicy"] = new JsonObject
+            {
+                ["kind"] = "instance_fixed"
+            },
+            ["initializationPolicy"] = new JsonObject
+            {
+                ["kind"] = "maximum"
+            },
+            ["allowedOwnerKinds"] = new JsonArray("afterlife_actor"),
+            ["allowedOperations"] = new JsonArray("damage", "restore"),
+            ["defaultFloorPolicy"] = "clamp_to_minimum",
+            ["defaultCapPolicy"] = "clamp_to_maximum",
+            ["visibility"] = "owner_visible"
+        };
+        using var document = JsonDocument.Parse(proposal.ToJsonString());
+        var materialized = ResourceDefinitionCatalog.MaterializeProposal(
+            document.RootElement,
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            createdAtTurn: 1,
+            createdEventRef: "turn_1:resource_definition:1",
+            static () => new ResourceDefinitionIdentity(
+                "resource_definition_soul_integrity",
+                "resource_definition_seal_soul_integrity"));
+        Assert.True(
+            materialized.IsValid,
+            string.Join(Environment.NewLine, materialized.Issues));
+        return ResourceDefinitionCatalog.CreateBuiltIn().With(materialized.Definition!);
+    }
+
     private static AcceptedMechanicsIdentityFactory IdentityFactory(int seed = 1)
     {
         var next = seed;
@@ -793,11 +2236,25 @@ public sealed class AcceptedMechanicsPlannerTests
         "item_alpha",
         "charges");
 
+    private static ResourceCoordinate HealthCoordinate { get; } = new(
+        "mortal_world",
+        ResourceOwnerKind.Player,
+        "player_current",
+        "health");
+
     private sealed record Baseline(
         ResourceDefinitionCatalog Definitions,
         ResourceStateLedger State,
         ResourceHistoryState History,
         ResourceMutationSourceCatalog Sources);
+
+    private sealed record PeriodicBaseline(
+        ResourceDefinitionCatalog Definitions,
+        ResourceStateLedger State,
+        ResourceHistoryState History,
+        ResourceOwnerAuthority Owners,
+        EffectTargetAuthority Targets,
+        ResourceCoordinate Coordinate);
 
     private static ResourceMutationSourceCatalog CreateCatalog(
         params ResourceMutationSourceExport[] exports)

@@ -154,7 +154,7 @@ Every resource-bearing entity resolves to one stable `resourceOwnerId`:
 | Persistent afterlife actor/profile | permanent actor/profile ID |
 | Afterlife conflict participant/side | client-owned scoped owner ID created with the conflict |
 
-The owning actor/item/combat/conflict materializer creates or resolves the resource owner. A raw resource command cannot invent an owner.
+The owning actor/item/combat/conflict materializer creates or resolves the resource owner. A raw resource command cannot invent an owner. A first afterlife profile already has its final exact `actorId` sealed by Actor Materialization: the resource layer creates no second actor ID, forbids `actorRef`, and uses that envelope's immutable `materializationId` only as the same-turn resource ownerRef.
 
 Named NPC combat representations reference the NPC resource owner and do not fork health into a combat-local copy. Anonymous combatants remain combat-owned. Group members receive stable member IDs instead of positional array identity. Scoped afterlife owners are terminally retired when their conflict closes; persistent actors retain their persistent resource owner.
 
@@ -213,7 +213,7 @@ Rules:
   "transitionId": "resource_transition_<opaque>",
   "eventRef": "turn_42_effect_2",
   "originKind": "effect_component",
-  "originId": "component_001",
+  "originId": "effect_component_<opaque effect-trigger-component identity>",
   "operationId": "operation_<opaque>",
   "executionSequence": 7,
   "coordinate": {},
@@ -383,6 +383,8 @@ Item charges, ammunition, durability, and bounded reserves become item-owned res
 ### 14.5 Afterlife
 
 Persistent afterlife actors use persistent resource owners. Conflict action economy and other temporary reserves use scoped owners. Conflict start creates them, exchange operations mutate them, and conflict close retires them.
+
+A complete first afterlife profile may carry a closed `resourceMaterialization.resources[]` envelope for pre-sealed setting-defined resources allowed on `afterlife_actor`. The shared Mortal/afterlife owner-materialization planner consumes exact key/maximum capacity authority, strips the envelope, and publishes client-owned realm bindings plus state/history atomically. Existing profiles cannot resend this envelope.
 
 Guardian and Shining Abode gacha attempts use registered per-return capacity/initialization formulas and common spend/gain mutations. Numeric blessing rerolls use persistent actor-owned resource entries. Boolean/free-shape/free-retune entitlements remain typed entitlements rather than numeric resources.
 

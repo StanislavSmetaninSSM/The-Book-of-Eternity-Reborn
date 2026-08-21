@@ -311,7 +311,8 @@ internal sealed class AcceptedMechanicsPlanningContext
         IReadOnlyList<ResourceOwnerKey>? terminalOwners = null,
         IReadOnlyDictionary<string, JsonObject>? ownerCompanionAfterImages = null,
         IReadOnlyList<AcceptedMechanicsOwnerTransition>? ownerTransitions = null,
-        IReadOnlyList<IResourceRegisteredSystemOutcomeDraft>? registeredSystemOutcomes = null)
+        IReadOnlyList<IResourceRegisteredSystemOutcomeDraft>? registeredSystemOutcomes = null,
+        ResourcePendingResolutionState? pendingResolutionState = null)
     {
         _definitionRoot = (definitionRoot ?? throw new ArgumentNullException(nameof(definitionRoot)))
             .DeepClone().AsObject();
@@ -380,6 +381,7 @@ internal sealed class AcceptedMechanicsPlanningContext
         _registeredSystemOutcomes = registeredSystemOutcomes?.Select(value =>
             value ?? throw new ArgumentNullException(nameof(registeredSystemOutcomes))).ToArray() ??
             Array.Empty<IResourceRegisteredSystemOutcomeDraft>();
+        PendingResolutionState = pendingResolutionState;
     }
 
     internal JsonObject DefinitionRoot => _definitionRoot.DeepClone().AsObject();
@@ -407,6 +409,7 @@ internal sealed class AcceptedMechanicsPlanningContext
         Array.AsReadOnly(_terminalOwners.ToArray());
     internal IReadOnlyList<IResourceRegisteredSystemOutcomeDraft> RegisteredSystemOutcomes =>
         Array.AsReadOnly(_registeredSystemOutcomes.ToArray());
+    internal ResourcePendingResolutionState? PendingResolutionState { get; }
 }
 
 internal sealed record ResourceAppliedEvent(
@@ -470,6 +473,7 @@ internal sealed class AcceptedMechanicsPlan
     private readonly Dictionary<string, JsonObject> _effectCarrierAfterImages;
     private readonly JsonObject _effectIdentityAfterImage;
     private readonly Dictionary<string, JsonObject?> _pendingAfterImages;
+    private readonly JsonObject? _pendingGmPacket;
     private readonly Dictionary<string, JsonObject> _ownerCompanionAfterImages;
     private readonly AcceptedMechanicsOwnerTransition[] _ownerTransitions;
     private readonly Dictionary<string, CanonicalBeforeImage> _beforeImages;
@@ -492,7 +496,8 @@ internal sealed class AcceptedMechanicsPlan
         ResourceProjectionInput projectionInput,
         ResourceOwnerAuthority ownerAuthority,
         EffectAcceptedTurnPlan? effectPlan,
-        IReadOnlyList<AcceptedMechanicsOwnerTransition>? ownerTransitions = null)
+        IReadOnlyList<AcceptedMechanicsOwnerTransition>? ownerTransitions = null,
+        JsonObject? pendingGmPacket = null)
     {
         if (!ResourceMaterializationContract.IsAuthorityFingerprint(inputFingerprint))
             throw new ArgumentException("Expected a lowercase SHA-256 plan fingerprint.", nameof(inputFingerprint));
@@ -503,6 +508,7 @@ internal sealed class AcceptedMechanicsPlan
         _effectCarrierAfterImages = CloneObjects(effectCarrierAfterImages, nameof(effectCarrierAfterImages));
         _effectIdentityAfterImage = Clone(effectIdentityAfterImage, nameof(effectIdentityAfterImage));
         _pendingAfterImages = CloneNullableObjects(pendingAfterImages, nameof(pendingAfterImages));
+        _pendingGmPacket = pendingGmPacket?.DeepClone().AsObject();
         _ownerCompanionAfterImages = CloneObjects(ownerCompanionAfterImages, nameof(ownerCompanionAfterImages));
         _ownerTransitions = ownerTransitions?.Select(value =>
             (value ?? throw new ArgumentNullException(nameof(ownerTransitions))).Clone()).ToArray() ??
@@ -542,6 +548,10 @@ internal sealed class AcceptedMechanicsPlan
 
     internal IReadOnlyDictionary<string, JsonObject?> PendingAfterImages =>
         ReadOnlyNullableObjects(_pendingAfterImages);
+
+    internal bool AwaitsPendingResolution => _pendingGmPacket != null;
+
+    internal JsonObject? PendingGmPacket => _pendingGmPacket?.DeepClone().AsObject();
 
     internal IReadOnlyDictionary<string, JsonObject> OwnerCompanionAfterImages =>
         ReadOnlyObjects(_ownerCompanionAfterImages);

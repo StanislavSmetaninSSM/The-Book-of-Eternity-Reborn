@@ -20,8 +20,8 @@ The GM may receive opaque existing `effectId` values in technical context only t
 
 ## 2. Identity Allocation
 
-- Allocate random opaque identities once inside one cached `EffectAcceptedTurnPlan`.
-- Reuse the same plan instance across raw validation, companion validation, normalization, and post-check.
+- Allocate random opaque effect and anonymous-combat identities once inside the subordinate `EffectAcceptedTurnPlan` while building one cached `AcceptedMechanicsPlan`.
+- Reuse the same common plan instance across raw validation, companion validation, normalization, publication, and post-check. The subordinate effect cache exposes no independent publication handoff.
 - Replaying the same accepted operation under the same session/snapshot reuses its transition outcome or becomes a no-op; it never allocates a second result.
 - A changed session, snapshot, source catalog, target catalog, input, or relevant same-turn plan invalidates the cache.
 - Do not derive permanent IDs from GM-visible input.
@@ -99,7 +99,7 @@ The target catalog is composed from validated pre-turn owners plus accepted same
 | --- | --- |
 | `player` | Exact current Mortal player or accepted `player_soul` profile, realm-specific |
 | `npc` | Exact accepted named-NPC identity |
-| `combatant` | Stable client-owned combat-local `combatantId`; a new raw combatant uses exact same-turn `combatantRef`, and named NPC binding must agree if present |
+| `combatant` | Stable client-owned combat-local `combatantId` for anonymous combat only; a new anonymous row uses exact same-turn `combatantRef` |
 | `guardian` | Exact accepted Guardian/profile binding |
 | `resident` | Exact accepted Abode/Shining resident/profile binding |
 | `radiant_actor` | Exact accepted radiant actor/profile binding |
@@ -127,9 +127,10 @@ The effect planner may consume only explicit effective-identity exports from ano
   by their own current contract/materializer and then exported through a closed
   effect DTO adapter. The adapter, not the effect planner, reads that accepted
   owner shape.
-- Raw validation stores the exact resulting `EffectAcceptedTurnPlan` in the
-  accepted-turn cache. Canonical publication must consume that validated plan;
-  it must not rebuild source or target authority from post-normalizer files.
+- Raw effect validation retains the exact subordinate `EffectAcceptedTurnPlan`
+  only for construction of the cached `AcceptedMechanicsPlan`. Canonical
+  publication consumes only that common plan; no effect-only cache API may
+  authorize writes or rebuild source/target authority from post-normalizer files.
 - Canonical effects contain the resolved `sourceId` and `targetId` only. Raw
   `sourceRef` and `targetRef` never become durable state.
 

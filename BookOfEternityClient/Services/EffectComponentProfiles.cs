@@ -14,6 +14,22 @@ internal sealed record EffectComponentProfileDescriptor(
     IReadOnlySet<string> LegalMergeReducers,
     string ProjectionDescriptor);
 
+internal sealed record EffectPeriodicResourceComponent(
+    string ComponentId,
+    string Profile,
+    int Priority,
+    string ResourceKey,
+    decimal Amount,
+    ResourceOperation Operation,
+    string BoundPolicy);
+
+internal sealed record EffectPeriodicResourceComponentResult(
+    EffectPeriodicResourceComponent? Component,
+    IReadOnlyList<ValidationIssue> Issues)
+{
+    internal bool IsValid => Component != null && Issues.Count == 0;
+}
+
 internal static class EffectComponentProfiles
 {
     private static readonly HashSet<string> ComponentFields = new(StringComparer.Ordinal)
@@ -47,11 +63,6 @@ internal static class EffectComponentProfiles
         "necrotic", "spiritual"
     };
 
-    private static readonly HashSet<string> ResourceKinds = new(StringComparer.Ordinal)
-    {
-        "health", "mana", "stamina", "presence", "influence", "willpower"
-    };
-
     private static readonly HashSet<string> DamageTypes = new(StringComparer.Ordinal)
     {
         "physical", "magical", "fire", "frost", "poison", "bleeding", "radiant",
@@ -78,12 +89,8 @@ internal static class EffectComponentProfiles
         "grant", "restrict", "forbid", "cost_modifier"
     };
 
-    private static readonly HashSet<string> EventTypes = new(StringComparer.Ordinal)
-    {
-        "owner_turn_start", "owner_turn_end", "owner_damaged", "owner_restored",
-        "owner_action_started", "owner_action_completed", "scene_started", "scene_ended",
-        "source_state_changed", "condition_changed"
-    };
+    private static readonly IReadOnlySet<string> EventTypes =
+        EffectEventTypeCatalog.Registered;
 
     private static readonly HashSet<string> ReactionResultKinds = new(StringComparer.Ordinal)
     {
@@ -158,6 +165,62 @@ internal static class EffectComponentProfiles
         string profile,
         out EffectComponentProfileDescriptor descriptor) =>
         Descriptors.TryGetValue(profile, out descriptor!);
+
+    internal static EffectPeriodicResourceComponentResult ParsePeriodicResourceComponent(
+        JsonElement component,
+        string path)
+    {
+        var issues = new List<ValidationIssue>();
+        ValidateComponent(component, path, issues);
+        if (issues.Count != 0)
+            return new EffectPeriodicResourceComponentResult(null, issues.ToArray());
+
+        var profile = component.GetProperty("profile").GetString()!;
+        if (profile is not ("periodic_damage" or "periodic_restore"))
+        {
+            Add(
+                issues,
+                path + ".profile",
+                "effect_resource_profile_unsupported",
+                "periodic_damage or periodic_restore",
+                profile);
+            return new EffectPeriodicResourceComponentResult(null, issues.ToArray());
+        }
+
+        var payload = component.GetProperty("payload");
+        if (!ResourceMaterializationContract.TryReadExactDecimal(
+                payload.GetProperty("amount"),
+                out var amount) ||
+            amount <= 0m)
+        {
+            Add(
+                issues,
+                path + ".payload.amount",
+                "effect_resource_amount_unrepresentable",
+                "positive exactly representable decimal amount",
+                payload.GetProperty("amount").GetRawText());
+            return new EffectPeriodicResourceComponentResult(null, issues.ToArray());
+        }
+
+        var policyField = string.Equals(
+            profile,
+            "periodic_damage",
+            StringComparison.Ordinal)
+            ? "floorPolicy"
+            : "capPolicy";
+        return new EffectPeriodicResourceComponentResult(
+            new EffectPeriodicResourceComponent(
+                component.GetProperty("componentId").GetString()!,
+                profile,
+                component.GetProperty("priority").GetInt32(),
+                payload.GetProperty("resource").GetString()!,
+                amount,
+                string.Equals(profile, "periodic_damage", StringComparison.Ordinal)
+                    ? ResourceOperation.Damage
+                    : ResourceOperation.Restore,
+                payload.GetProperty(policyField).GetString()!),
+            Array.Empty<ValidationIssue>());
+    }
 
     internal static void ValidateComponent(
         JsonElement component,
@@ -276,7 +339,7 @@ internal static class EffectComponentProfiles
         List<ValidationIssue> issues)
     {
         ValidateClosedObject(payload, path, Set("resource", "amount", "damageType", "floorPolicy"), issues);
-        RequireClosedString(payload, path, "resource", ResourceKinds, issues);
+        RequireExactIdentifier(payload, path, "resource", issues);
         RequireFinitePositive(payload, path, "amount", issues);
         RequireClosedString(payload, path, "damageType", DamageTypes, issues);
         RequireClosedString(payload, path, "floorPolicy", FloorPolicies, issues);
@@ -288,7 +351,7 @@ internal static class EffectComponentProfiles
         List<ValidationIssue> issues)
     {
         ValidateClosedObject(payload, path, Set("resource", "amount", "capPolicy"), issues);
-        RequireClosedString(payload, path, "resource", ResourceKinds, issues);
+        RequireExactIdentifier(payload, path, "resource", issues);
         RequireFinitePositive(payload, path, "amount", issues);
         RequireClosedString(payload, path, "capPolicy", CapPolicies, issues);
     }

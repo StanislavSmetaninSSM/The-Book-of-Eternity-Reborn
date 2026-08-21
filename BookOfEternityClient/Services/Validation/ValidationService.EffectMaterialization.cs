@@ -38,7 +38,7 @@ public partial class ValidationService
         ValidateAcceptedTurnRawEffectMaterializationAsync()
     {
         var issues = new List<ValidationIssue>();
-        await ValidateAcceptedTurnRawEffectMaterializationAsync(issues, null);
+        await ValidateAcceptedTurnRawEffectMaterializationAsync(issues, null, false);
         return issues;
     }
 
@@ -64,7 +64,8 @@ public partial class ValidationService
 
     private async Task ValidateAcceptedTurnRawEffectMaterializationAsync(
         List<ValidationIssue> issues,
-        ResourceOwnerCompositionResult? resourceOwners)
+        ResourceOwnerCompositionResult? resourceOwners,
+        bool suppressEffectExecutionForTerminalReceiptReplay)
     {
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs);
         var commandJson = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
@@ -240,6 +241,18 @@ public partial class ValidationService
             currentWorldTime,
             publicationCarrierBaselines: currentCarriers,
             preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities);
+        if (suppressEffectExecutionForTerminalReceiptReplay)
+        {
+            var replayEventInput = input.EventInput;
+            replayEventInput["lifecycleEvents"] = new JsonArray();
+            var replayCommands = input.RawCommands.DeepClone().AsObject();
+            replayCommands["effectChanges"] = new JsonArray();
+            input = input with
+            {
+                RawCommands = replayCommands,
+                EventInput = replayEventInput
+            };
+        }
         var result = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(_fs, input);
         issues.AddRange(result.Issues);
     }
@@ -1046,13 +1059,18 @@ public partial class ValidationService
         var target = effect["target"] as JsonObject;
         var source = effect["source"] as JsonObject;
         var stacking = effect["stacking"] as JsonObject;
+        var targetKind = ReadExact(target?["kind"]);
+        var expectedOwnerKind = occurrence.Coordinate.Kind is
+            "afterlife_profile" or "spiritual_conflict"
+                ? targetKind
+                : occurrence.Coordinate.Kind;
         var firstTransition = entry.Transitions.FirstOrDefault();
         var lastTransition = entry.Transitions.LastOrDefault();
         var agrees = string.Equals(entry.State, ReadExact(effect["state"]), StringComparison.Ordinal) &&
                      string.Equals(entry.Realm, ReadExact(effect["realm"]), StringComparison.Ordinal) &&
                      JsonNode.DeepEquals(entry.Target, target) &&
                      JsonNode.DeepEquals(entry.Source, source) &&
-                     string.Equals(entry.Owner.Kind, occurrence.Coordinate.Kind, StringComparison.Ordinal) &&
+                     string.Equals(entry.Owner.Kind, expectedOwnerKind, StringComparison.Ordinal) &&
                      string.Equals(entry.Owner.OwnerId, occurrence.Coordinate.OwnerId, StringComparison.Ordinal) &&
                      string.Equals(entry.Owner.CarrierPath, occurrence.FilePath, StringComparison.Ordinal) &&
                      string.Equals(entry.Owner.Collection, expectedCollection, StringComparison.Ordinal) &&

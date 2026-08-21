@@ -19,6 +19,46 @@ public sealed class EffectSourceDefinitionContractTests
             "mortal_world"));
     }
 
+    [Theory]
+    [InlineData("resource_damaged")]
+    [InlineData("resource_restored")]
+    [InlineData("resource_spent")]
+    [InlineData("resource_gained")]
+    [InlineData("resource_depleted")]
+    [InlineData("resource_filled")]
+    public void ValidateArray_AcceptsClosedCommonResourceTriggerEvents(string eventType)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["triggers"]![0]!["eventType"] = eventType;
+        using var document = Parse(new JsonArray(definition));
+
+        Assert.Empty(EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world"));
+    }
+
+    [Theory]
+    [InlineData("resource_damaged")]
+    [InlineData("resource_restored")]
+    [InlineData("resource_spent")]
+    [InlineData("resource_gained")]
+    [InlineData("resource_depleted")]
+    [InlineData("resource_filled")]
+    public void ValidateArray_EventReactionAcceptsClosedCommonResourceEvents(
+        string eventType)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition(
+            profile: "event_reaction");
+        definition["components"]![0]!["payload"]!["eventType"] = eventType;
+        using var document = Parse(new JsonArray(definition));
+
+        Assert.Empty(EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world"));
+    }
+
     [Fact]
     public void ValidateArray_IndependentPolicyAllowsBoundedSimultaneousInstances()
     {

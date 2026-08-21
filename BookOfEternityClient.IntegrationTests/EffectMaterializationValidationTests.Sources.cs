@@ -852,10 +852,10 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
         var rawIssues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.DoesNotContain(rawIssues, issue => issue.Severity == IssueSeverity.Error);
 
-        await context.Normalizer.NormalizeAccumulatedStateAsync(backups);
+        await context.NormalizeAccumulatedStateWithAcceptedMechanicsAsync(backups);
         var postIssues = await context.Validator
             .ValidateAcceptedTurnCanonicalEffectMaterializationAsync();
         Assert.DoesNotContain(postIssues, issue => issue.Severity == IssueSeverity.Error);
@@ -983,11 +983,11 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
 
-        await context.Normalizer.NormalizeAccumulatedStateAsync(backups);
+        await context.NormalizeAccumulatedStateWithAcceptedMechanicsAsync(backups);
 
         var normalized = (await context.ReadJsonAsync(
             "game_state/quests/regular_quests.json"))!.AsObject();
@@ -1576,7 +1576,7 @@ public sealed partial class EffectMaterializationValidationTests
     }
 
     [Fact]
-    public async Task RawApply_SameTurnExistingItemPlacementUsesComposedInactiveState()
+    public async Task RawApply_SameTurnExistingItemPlacementUsesComposedNonPlayerState()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         const string itemId = "itm_moved_out_of_backpack_effect_source";
@@ -1618,7 +1618,8 @@ public sealed partial class EffectMaterializationValidationTests
             .ValidateAcceptedTurnRawEffectMaterializationAsync();
 
         Assert.DoesNotContain(itemIssues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.Contains(issues, issue => issue.Code == "effect_source_inactive");
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_selector_unresolved");
     }
 
     [Fact]
@@ -1701,13 +1702,15 @@ public sealed partial class EffectMaterializationValidationTests
                     EffectMaterializationTestFixture.CreateSameTurnMortalFaction(
                         factionInitialId))
             });
+        var sameTurnNpc = EffectMaterializationTestFixture.CreateSameTurnMortalActor(
+            "npcref_test_healer");
+        sameTurnNpc["resourceMaterialization"] = CreateResourceMaterialization(
+            ("health", 60m));
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject
             {
-                ["UpdateNPCs"] = new JsonArray(
-                    EffectMaterializationTestFixture.CreateSameTurnMortalActor(
-                        "npcref_test_healer"))
+                ["UpdateNPCs"] = new JsonArray(sameTurnNpc)
             });
         var command = EffectMaterializationTestFixture.CreateApplyCommand("npc");
         command["target"] = new JsonObject
@@ -1750,13 +1753,16 @@ public sealed partial class EffectMaterializationValidationTests
             MortalLocationMaterializationContract.WorldMapPath,
             MortalLocationTestFixture.CreateWorldMap(canonicalLocation));
         await context.CaptureValidatedPendingSnapshotAsync();
+        var sameTurnNpc = EffectMaterializationTestFixture.CreateSameTurnMortalActor(
+            newNpcRef);
+        sameTurnNpc["resourceMaterialization"] = CreateResourceMaterialization(
+            ("health", 60m));
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject
             {
                 ["NPCsInScene"] = new JsonArray(existingNpc.DeepClone()),
-                ["UpdateNPCs"] = new JsonArray(
-                    EffectMaterializationTestFixture.CreateSameTurnMortalActor(newNpcRef))
+                ["UpdateNPCs"] = new JsonArray(sameTurnNpc)
             });
         var command = EffectMaterializationTestFixture.CreateApplyCommand("npc");
         command["target"] = new JsonObject
@@ -1779,6 +1785,7 @@ public sealed partial class EffectMaterializationValidationTests
     {
         await using var context = await MortalItemMaterializationTestContext.CreateAsync();
         await context.BuildMortalBootstrapAsync();
+        await context.SeedMortalPlayerResourcesAsync();
         context.FileSystem.DeleteFile(
             MortalLocationMaterializationContract.CurrentLocationPath);
         await context.CaptureValidatedPendingSnapshotAsync();
@@ -1809,13 +1816,19 @@ public sealed partial class EffectMaterializationValidationTests
         var locationIssues =
             await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
         var effectIssues =
-            await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+            await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(locationIssues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.DoesNotContain(effectIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(
+            effectIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, effectIssues.Select(issue =>
+                $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
 
         var postIssues = await context.NormalizeAcceptedTurnWithIssuesAsync();
-        Assert.DoesNotContain(postIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(
+            postIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, postIssues.Select(issue =>
+                $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
         var map = (await context.ReadJsonAsync(
             MortalLocationMaterializationContract.WorldMapPath))!.AsObject();
         var canonicalLocation = map["locations"]!.AsArray()
@@ -1840,6 +1853,7 @@ public sealed partial class EffectMaterializationValidationTests
         await using var context = await MortalItemMaterializationTestContext.CreateAsync();
         const string hazardId = "hazard_same_turn_effect_source";
         await context.BuildMortalBootstrapAsync();
+        await context.SeedMortalPlayerResourcesAsync();
         context.FileSystem.DeleteFile(
             MortalLocationMaterializationContract.CurrentLocationPath);
         await context.CaptureValidatedPendingSnapshotAsync();
@@ -1875,13 +1889,19 @@ public sealed partial class EffectMaterializationValidationTests
         var locationIssues =
             await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
         var effectIssues =
-            await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+            await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(locationIssues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.DoesNotContain(effectIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(
+            effectIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, effectIssues.Select(issue =>
+                $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
 
         var postIssues = await context.NormalizeAcceptedTurnWithIssuesAsync();
-        Assert.DoesNotContain(postIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(
+            postIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, postIssues.Select(issue =>
+                $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
         var effectCarrier = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath))!.AsObject();
         var effect = Assert.IsType<JsonObject>(
@@ -1911,7 +1931,8 @@ public sealed partial class EffectMaterializationValidationTests
         var arrangement = await context.ArrangeRouteAsync(
             "player_acquisition",
             "turn_outcome",
-            rawItem);
+            rawItem,
+            includeMortalPlayerResources: true);
         var command = EffectMaterializationTestFixture.CreateApplyCommand();
         command["source"] = new JsonObject
         {
@@ -1926,13 +1947,19 @@ public sealed partial class EffectMaterializationValidationTests
         var itemIssues =
             await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
         var effectIssues =
-            await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+            await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(itemIssues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.DoesNotContain(effectIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(
+            effectIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, effectIssues.Select(issue =>
+                $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
 
         var postIssues = await context.NormalizeAcceptedTurnWithIssuesAsync();
-        Assert.DoesNotContain(postIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(
+            postIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, postIssues.Select(issue =>
+                $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
         var items = (await context.ReadJsonAsync(
             InventoryEquipmentService.ItemsPath))!.AsObject();
         var canonicalItem = items["items"]!.AsArray()
@@ -2042,7 +2069,7 @@ public sealed partial class EffectMaterializationValidationTests
     }
 
     [Fact]
-    public async Task RawApply_NewNamedCombatantRejectsUnknownNpcBinding()
+    public async Task RawApply_NewNamedCombatRepresentationRejectsUnknownNpcRef()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         await context.SeedPlayerWoundSourceAsync();
@@ -2054,29 +2081,32 @@ public sealed partial class EffectMaterializationValidationTests
             new JsonObject { ["enemiesData"] = new JsonArray() });
         await context.CaptureValidatedPendingSnapshotAsync();
 
-        var combatant = EffectMaterializationTestFixture.CreateSameTurnCombatant(
+        var combatant = CreateMaterializedCombatant(
             "combatant_ref_unknown_named_npc");
-        combatant["NPCId"] = "npc_missing_combatant_binding";
+        combatant.Remove("resourceMaterialization");
+        combatant.Remove("combatantRef");
+        combatant["npcRef"] = "npcref_missing_combatant_binding";
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath,
             new JsonObject
             {
                 ["enemiesData"] = new JsonArray(combatant)
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand("combatant");
+        var command = EffectMaterializationTestFixture.CreateApplyCommand("npc");
         command["target"] = new JsonObject
         {
-            ["kind"] = "combatant",
-            ["targetRef"] = "combatant_ref_unknown_named_npc"
+            ["kind"] = "npc",
+            ["targetRef"] = "npcref_missing_combatant_binding"
         };
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.Contains(issues, issue =>
-            issue.Code == "effect_target_combatant_npc_binding_unresolved");
+            issue.Code == "resource_owner_combat_npc_ref_unresolved");
     }
 
     [Fact]
@@ -2106,7 +2136,7 @@ public sealed partial class EffectMaterializationValidationTests
     }
 
     [Fact]
-    public async Task RawApply_NewNamedCombatantAcceptsExactSameTurnNpcBinding()
+    public async Task RawApply_NewNamedCombatRepresentationBindsSameTurnNpcAndEffectTarget()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         const string npcInitialId = "npcref_named_combatant_healer";
@@ -2125,63 +2155,63 @@ public sealed partial class EffectMaterializationValidationTests
             new JsonObject { ["enemiesData"] = new JsonArray() });
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
+        var sameTurnNpc = EffectMaterializationTestFixture.CreateSameTurnMortalActor(
+            npcInitialId);
+        sameTurnNpc["resourceMaterialization"] = CreateResourceMaterialization(
+            ("health", 60m));
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject
             {
-                ["UpdateNPCs"] = new JsonArray(
-                    EffectMaterializationTestFixture.CreateSameTurnMortalActor(
-                        npcInitialId))
+                ["UpdateNPCs"] = new JsonArray(sameTurnNpc)
             });
-        var combatant = EffectMaterializationTestFixture.CreateSameTurnCombatant(
+        var combatant = CreateMaterializedCombatant(
             "combatant_ref_named_healer");
-        combatant["NPCId"] = npcInitialId;
+        combatant.Remove("resourceMaterialization");
+        combatant.Remove("combatantRef");
+        combatant["npcRef"] = npcInitialId;
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath,
             new JsonObject
             {
                 ["enemiesData"] = new JsonArray(combatant)
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand("combatant");
+        var command = EffectMaterializationTestFixture.CreateApplyCommand("npc");
         command["target"] = new JsonObject
         {
-            ["kind"] = "combatant",
-            ["targetRef"] = "combatant_ref_named_healer"
+            ["kind"] = "npc",
+            ["targetRef"] = npcInitialId
         };
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var rawIssues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+        var rawIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.True(
             rawIssues.All(issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, rawIssues.Select(issue =>
                 $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
 
-        var normalizedActor = EffectMaterializationTestFixture
-            .CreateSameTurnMortalActor(npcInitialId);
-        normalizedActor["NPCId"] = npcInitialId;
-        normalizedActor.Remove("initialId");
-        await context.WriteJsonAsync(
-            "game_state/npcs/npc_core.json",
-            new JsonObject
-            {
-                ["NPCsInScene"] = new JsonArray(normalizedActor)
-            });
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAccumulatedStateWithAcceptedMechanicsAsync(backups);
 
         var root = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath))!.AsObject();
         var canonicalCombatant = Assert.IsType<JsonObject>(
             Assert.Single(root["enemiesData"]!.AsArray()));
         Assert.Equal(npcInitialId, canonicalCombatant["NPCId"]!.GetValue<string>());
-        Assert.StartsWith(
-            "combatant_",
-            canonicalCombatant["combatantId"]!.GetValue<string>(),
-            StringComparison.Ordinal);
-        Assert.Null(canonicalCombatant["combatantRef"]);
-        Assert.Single(canonicalCombatant["activeDebuffs"]!.AsArray());
+        Assert.False(canonicalCombatant.ContainsKey("npcRef"));
+        Assert.False(canonicalCombatant.ContainsKey("combatantId"));
+        Assert.False(canonicalCombatant.ContainsKey("combatantRef"));
+        Assert.Empty(canonicalCombatant["activeDebuffs"]!.AsArray());
+
+        var npcEffects = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.NpcEffectsPath))!.AsObject();
+        var npcCarrier = Assert.IsType<JsonObject>(
+            Assert.Single(npcEffects["entries"]!.AsArray()));
+        Assert.Equal(npcInitialId, npcCarrier["NPCId"]!.GetValue<string>());
+        Assert.Single(npcCarrier["activeEffects"]!.AsArray());
     }
 
     [Fact]
@@ -2202,7 +2232,7 @@ public sealed partial class EffectMaterializationValidationTests
             new JsonObject
             {
                 ["enemiesData"] = new JsonArray(
-                    EffectMaterializationTestFixture.CreateSameTurnCombatant(
+                    CreateMaterializedCombatant(
                         EffectMaterializationTestFixture.CombatantRef))
             });
         var command = EffectMaterializationTestFixture.CreateApplyCommand("combatant");
@@ -2215,14 +2245,15 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, issues.Select(issue =>
                 $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
 
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
 
         var root = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath))!.AsObject();
@@ -2251,9 +2282,9 @@ public sealed partial class EffectMaterializationValidationTests
             new JsonObject { ["enemiesData"] = new JsonArray() });
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
-        var targeted = EffectMaterializationTestFixture.CreateSameTurnCombatant(
+        var targeted = CreateMaterializedCombatant(
             "combatant_ref_targeted_raider");
-        var sibling = EffectMaterializationTestFixture.CreateSameTurnCombatant(
+        var sibling = CreateMaterializedCombatant(
             "combatant_ref_unreferenced_scout");
         sibling["name"] = "Разведчик";
         sibling["initiative"] = 11;
@@ -2273,13 +2304,14 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, issues.Select(issue =>
                 $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
-        await context.Normalizer.NormalizeEffectsAsync(backups);
+        await context.NormalizeAcceptedEffectsAsync(backups);
 
         var root = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath))!.AsObject();
@@ -2317,17 +2349,18 @@ public sealed partial class EffectMaterializationValidationTests
             new JsonObject
             {
                 ["enemiesData"] = new JsonArray(
-                    EffectMaterializationTestFixture.CreateSameTurnCombatant(
+                    CreateMaterializedCombatant(
                         "combatant_ref_commandless_raider"))
             });
 
-        var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, issues.Select(issue =>
                 $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
-        var plan = await context.Normalizer.NormalizeEffectsAsync(backups);
+        var plan = await context.NormalizeAcceptedEffectsAsync(backups);
 
         Assert.NotNull(plan);
         Assert.Contains(EffectAcceptedTurnPlan.IdentityIndexPath, plan.TouchedPaths);
@@ -2361,17 +2394,18 @@ public sealed partial class EffectMaterializationValidationTests
             new JsonObject
             {
                 ["enemiesData"] = new JsonArray(
-                    EffectMaterializationTestFixture.CreateSameTurnCombatant(
+                    CreateMaterializedCombatant(
                         "combatant_ref_commandless_with_source_change"))
             });
 
-        var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, issues.Select(issue =>
                 $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
-        var plan = await context.Normalizer.NormalizeEffectsAsync(backups);
+        var plan = await context.NormalizeAcceptedEffectsAsync(backups);
 
         Assert.NotNull(plan);
         var root = (await context.ReadJsonAsync(
@@ -2522,6 +2556,33 @@ public sealed partial class EffectMaterializationValidationTests
             skill["activeEffectDefinitions"] = new JsonArray(definition);
         return skill;
     }
+
+    private static JsonObject CreateMaterializedCombatant(string combatantRef)
+    {
+        var combatant = EffectMaterializationTestFixture.CreateSameTurnCombatant(
+            combatantRef);
+        combatant.Remove("currentHealth");
+        combatant.Remove("maxHealth");
+        combatant.Remove("currentPoise");
+        combatant.Remove("maxPoise");
+        combatant["resourceMaterialization"] = CreateResourceMaterialization(
+            ("health", 100m),
+            ("poise", 100m));
+        return combatant;
+    }
+
+    private static JsonObject CreateResourceMaterialization(
+        params (string Key, decimal Maximum)[] resources) =>
+        new()
+        {
+            ["resources"] = new JsonArray(resources
+                .Select(resource => (JsonNode)new JsonObject
+                {
+                    ["resourceKey"] = resource.Key,
+                    ["maximum"] = resource.Maximum
+                })
+                .ToArray())
+        };
 
     private static JsonNode CreateCanonicalSourceRoot(
         string path,

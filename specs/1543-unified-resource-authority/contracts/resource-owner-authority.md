@@ -26,10 +26,11 @@ The raw owner uses exactly one temporary ref declared by its owning contract:
 
 - `combatantRef` for a new individual combatant;
 - `memberRef` for a new group member;
-- the existing actor/item/profile temporary reference field for its materializer;
+- the existing actor/item/profile temporary reference field for a client-allocated identity;
+- for a first Actor-Materialized afterlife profile, the immutable `materializationId`, while the already sealed canonical `actorId` remains the permanent profile/effect identity;
 - a client-created scope/ref supplied by the owning local transition where GM authorship is not allowed.
 
-The common owner plan allocates every permanent ID once, rewrites all accepted owner after-images, and exports a ref-to-key map. Canonical state must contain no temporary refs after publication.
+The common owner plan allocates every client-owned permanent ID once, rewrites all accepted owner after-images, and exports a ref-to-key map. It does not allocate or rename an afterlife `actorId` already sealed by Actor Materialization; it binds that exact ID through `materializationId`, creates client-owned realm/resource bindings, and consumes only the resource materialization envelope. Canonical state must contain no temporary refs after publication.
 
 A raw resource target may use the exact accepted ref but cannot submit the resulting permanent ID. Case/confusable/duplicate refs and cross-kind reuse fail the whole plan.
 
@@ -64,6 +65,8 @@ Item destruction or terminal consumption retires all item resources only after i
 Version 1 seals `blessing_rerolls` as realm-independent for `player_soul`; `spiritual_action_points` remains realm-bound. The same capability-activity resolver is mandatory for owner resolution, lifecycle transition generation, and canonical state agreement. No caller may special-case a resource key outside the sealed owner export.
 
 Active spiritual-conflict sides use conflict-scoped IDs. Per-return Guardian/Shining reserves use accepted actor/scope IDs and registered return-cycle capacity authority.
+
+A complete first afterlife profile may initialize pre-sealed setting-defined `afterlife_actor` resources through one closed `resourceMaterialization.resources[]` envelope. The shared owner materialization planner validates exact/confusable-unique resource keys, sealed owner-kind/capacity authority, and exact maximums, then publishes bindings plus common state/history atomically. Existing materialized profiles may not resend the envelope; `actorRef`, a second generated actor ID, direct current values, and prose-derived capabilities are forbidden.
 
 Every client-owned Shining transition plan declares exactly one transition kind:
 

@@ -191,7 +191,14 @@ public partial class CanonicalStateNormalizer
         return new CanonicalStateNormalizer(_fs, _logger, writeLease);
     }
 
-    public async Task NormalizeAccumulatedStateAsync(IReadOnlyDictionary<string, string>? backups = null)
+    public async Task NormalizeAccumulatedStateAsync(
+        IReadOnlyDictionary<string, string>? backups = null)
+    {
+        await NormalizeAccumulatedStateWithPlanAsync(backups);
+    }
+
+    internal async Task<AcceptedMechanicsPlan?> NormalizeAccumulatedStateWithPlanAsync(
+        IReadOnlyDictionary<string, string>? backups = null)
     {
         var prevalidatedAcceptedMechanicsPlan =
             await PrevalidateAcceptedMechanicsBeforeNormalizationAsync();
@@ -239,7 +246,7 @@ public partial class CanonicalStateNormalizer
         await NormalizeGuardianThoughtJournalAsync(backups);
         await NormalizeGuardianSocialJournalAsync(backups);
         await NormalizePlayerSkillStateAsync(backups);
-        await NormalizeAcceptedMechanicsAsync(
+        return await NormalizeAcceptedMechanicsAsync(
             backups,
             mortalLocationPlan,
             prevalidatedAcceptedMechanicsPlan);
