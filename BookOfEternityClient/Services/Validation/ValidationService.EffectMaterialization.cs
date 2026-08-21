@@ -215,7 +215,7 @@ public partial class ValidationService
                 identityReplacedSourceOwners,
                 identityOwnerExports.ReplacedTargets,
                 currentWorldTime,
-                publicationCarrierBaselines: plannedCarriers,
+                publicationCarrierBaselines: currentCarriers,
                 preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities,
                 realm: acceptedRealm);
             var identityResult = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
@@ -279,7 +279,7 @@ public partial class ValidationService
             replacedSourceOwners,
             ownerExports.ReplacedTargets,
             currentWorldTime,
-            publicationCarrierBaselines: plannedCarriers,
+            publicationCarrierBaselines: currentCarriers,
             preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities,
             realm: acceptedRealm);
         if (suppressEffectExecutionForTerminalReceiptReplay)
