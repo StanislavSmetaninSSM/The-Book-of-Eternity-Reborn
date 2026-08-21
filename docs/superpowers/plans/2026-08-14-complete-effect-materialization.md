@@ -1134,41 +1134,94 @@ manifests, and afterlife contract documentation require no update.
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs`
 - Modify: `BookOfEternityClient/UI/EffectPlayerProjection.cs`
 - Modify: `BookOfEternityClient/UI/ExplorerMortalEffectDetailActions.cs`
+- Modify: `specs/1535-complete-effect-materialization/contracts/effect-identity-source-target-authority.md`
 
-- [ ] **Step 1: Add wound authority RED tests**
+- [x] **Step 1: Add wound authority RED tests**
 
 Cover exact wound link and source-bound definition, missing/case/confusable/stale wound, no repair retarget, and explicit absence of wound-write capability from the effect plan.
 
-- [ ] **Step 2: Add composed RED tests**
+- [x] **Step 2: Add composed RED tests**
 
 Cover apply, dispel, remove, expiry, source loss, simultaneous accepted wound treatment, direct effect-side wound mutation, adjacent NPC wound state, and byte/semantic wound preservation after both success and rollback.
 
-- [ ] **Step 3: Add copy/action RED tests**
+- [x] **Step 3: Add copy/action RED tests**
 
 The player must see that suppressing/removing an effect does not treat the wound. A wound-treatment action and an effect-removal action remain distinct and independently revalidated.
 
-- [ ] **Step 4: Run RED**
+- [x] **Step 4: Run RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectSourceAuthorityTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectMaterializationValidationTests|FullyQualifiedName~ExplorerModeCommandTests|FullyQualifiedName~ExplorerWebCommandServiceTests"
 ```
 
-- [ ] **Step 5: Implement read-only wound source linkage**
+- [x] **Step 5: Implement read-only wound source linkage**
 
 The adapter may read exact wound identity/state and receive accepted wound-plan source-loss/treatment events. It may not write wound fields or infer treatment from effect terminal state.
 
-- [ ] **Step 6: Preserve wound-owned subtrees**
+- [x] **Step 6: Preserve wound-owned subtrees**
 
 Effect normalization replaces only the active-effect field and exact effect-owned companions. Assert wound state before/after with deep semantic equality and exact bytes where the containing file can remain byte-identical.
 
-- [ ] **Step 7: Run GREEN and commit**
+- [x] **Step 7: Run GREEN and commit**
 
 ```powershell
-git add -- BookOfEternityClient.Tests/EffectSourceAuthorityTests.Wounds.cs BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Wounds.cs BookOfEternityClient/Services/EffectSourceAuthority.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs BookOfEternityClient/UI/EffectPlayerProjection.cs BookOfEternityClient/UI/ExplorerMortalEffectDetailActions.cs BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Effects.cs BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.Effects.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
+git add -- BookOfEternityClient.Tests/EffectSourceAuthorityTests.Wounds.cs BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Wounds.cs BookOfEternityClient/Services/EffectSourceAuthority.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs BookOfEternityClient/UI/EffectPlayerProjection.cs BookOfEternityClient/UI/ExplorerMortalEffectDetailActions.cs BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Effects.cs BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.Effects.cs specs/1535-complete-effect-materialization/contracts/effect-identity-source-target-authority.md specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
 git diff --cached --check
 git commit -m "feat: keep wound and effect lifecycle independent (#1535)"
 ```
+
+**Task 12 evidence (2026-08-22):**
+
+| Boundary | RED result | GREEN result | Green tests |
+| --- | --- | --- | ---: |
+| Exact wound link, payload/source identity, source-bound ownership, and no retarget | `TestResults/test-lanes/20260822-003653-254-18236-e028647ce1204b1db892f9374ba729c1-focused` (`1/7`; six intended failures) | `TestResults/test-lanes/20260822-004017-488-21488-c19a89bc9a80452d92d22398320a30d9-focused`; full authority class `TestResults/test-lanes/20260822-005210-207-41368-f590a74bb6b74d8bbe20b38efb7e446b-focused` | 7; 31 |
+| Apply/dispel/remove/expiry/source-loss, simultaneous treatment, direct mutation rejection, NPC adjacency, and success/rollback preservation | source-link cases above supplied the missing production invariant; the pre-existing generic field-ownership tests were already GREEN | `TestResults/test-lanes/20260822-004542-782-14712-d6def05e13444905a30b0ca3d88b2587-focused`; complete effect integration class `TestResults/test-lanes/20260822-010241-604-34176-86a1314800504b5793a678c732aacc77-focused` | 7; 156 |
+| Effect-only copy, action payload, and console/browser revalidation | `TestResults/test-lanes/20260822-004756-442-14920-94102944238e4c61b2cd02a475d7939c-focused` (`0/2`) | `TestResults/test-lanes/20260822-005102-332-25308-316de633b4c74d64b42bbcb684edc202-focused`; console `TestResults/test-lanes/20260822-010748-142-42168-2c7b67548a11494080687d5870e1af27-focused`; browser `TestResults/test-lanes/20260822-010812-395-31824-4047ab51a9d24fbcaa20a10b3f92a81d-focused`; final combined exact filter `TestResults/test-lanes/20260822-011132-964-40016-e1cd7db96db246c78d7f407aa3262fc4-focused` | 2; 6; 11; 17 |
+| Shared combatant identity publication discovered by the story gate (#1543) | `TestResults/test-lanes/20260822-005805-099-9772-0826f0a37ff6410aa765ed005a7135ae-focused` (`0/1`) | `TestResults/test-lanes/20260822-010054-931-46340-ff7a21e8c71144bc9e5c0818c0c6b9a8-focused` | 3 |
+
+Every listed final GREEN artifact exited `0`, timed out `false`, reported zero
+duplicate test IDs, and completed owned-tree cleanup. The initially prescribed
+combined partial-class filter at
+`TestResults/test-lanes/20260822-005251-565-35708-03782927f962476fb4352974f8f02387-focused`
+was retained as a diagnostic timeout rather than reported as GREEN: it selected
+the entire multi-file `ExplorerModeCommandTests` suite, including unrelated
+resource/fixture failures. The exact effect integration, console-effect, and
+browser-effect filters above replace that over-broad selector with complete
+story-owned coverage.
+
+The meaningful Fast checkpoint was also recorded honestly. Two ordinary
+parallel attempts exposed unrelated timing-sensitive tests; every reported
+failure passed under its exact isolated filter. A supported serial diagnostic
+at
+`TestResults/test-lanes/20260822-012252-265-33284-7a817de64ece4a76847728745b8c4f47-fast`
+executed and passed all `1996/1996` discovered tests with zero duplicates and
+complete cleanup, then the lane watchdog returned `124` at
+`00:05:00.2577124` after both test shards had reported success. A final normal
+parallel control at
+`TestResults/test-lanes/20260822-012813-594-47600-93e9e44666e5449a9fbe9052e412d8ba-fast`
+again failed only unrelated lease/input timeout tests that were already GREEN
+in isolation. No Task-12-owned test or production path failed; the serial
+all-pass artifact is retained instead of disguising the runner/contention
+condition with repeated retries.
+
+The effect-only removal scenario is asserted mechanically rather than inferred
+from copy: `WoundConsequence_TerminalEffectOperationNeverTreatsWound` removes the
+effect, records the exact terminal identity transition, proves the wound path is
+absent from every effect-plan write/delete collection, and compares
+`wounds.json` byte-for-byte. Simultaneous accepted treatment proves the inverse:
+the wound owner may publish healing, and the effect layer may only consume that
+as declared source loss without rewriting the treatment.
+
+No new planner or normalizer write capability was necessary. Their existing
+closed command fields and carrier-only after-images already enforced T093/T094;
+the new integration suite makes that architectural boundary executable. The
+durable authority contract is updated here. GM prompt/rule/example migration and
+worked wound examples remain explicitly tracked by T097–T110 and must complete
+before feature integration; this intermediate slice is not claiming those
+Phase-9 gates complete. No afterlife runtime contract, frontend source, or typed
+frontend DTO changed, so no afterlife matrix or frontend build is required for
+this slice.
 
 ---
 

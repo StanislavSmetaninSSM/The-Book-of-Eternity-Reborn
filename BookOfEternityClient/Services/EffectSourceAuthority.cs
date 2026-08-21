@@ -103,6 +103,7 @@ internal sealed class EffectSourceAuthority
         builder.AddRange(input.PreTurnSources, sameTurn: false);
         builder.AddRange(input.SameTurnSources, sameTurn: true);
         builder.ValidateDefinitionLinks();
+        builder.ValidateWoundBindings();
         return new EffectSourceAuthority(builder);
     }
 
@@ -708,6 +709,146 @@ internal sealed class EffectSourceAuthority
                 }
             }
         }
+
+        internal void ValidateWoundBindings()
+        {
+            foreach (var entry in Entries.Values.OrderBy(
+                         static value => value.Key.ToString(),
+                         StringComparer.Ordinal))
+            {
+                var consequenceComponents = entry.Definition["components"] is JsonArray components
+                    ? components
+                        .Select(static (component, index) => (component, index))
+                        .Where(static candidate =>
+                            candidate.component is JsonObject component &&
+                            string.Equals(
+                                ReadExact(component["profile"]),
+                                "wound_consequence",
+                                StringComparison.Ordinal))
+                        .Select(static candidate =>
+                            ((JsonObject)candidate.component!, candidate.index))
+                        .ToArray()
+                    : Array.Empty<(JsonObject Component, int Index)>();
+                if (consequenceComponents.Length == 0)
+                    continue;
+
+                var definitionPath =
+                    $"sources[{entry.Key.Kind}:{entry.Key.SourceId}]." +
+                    $"activeEffectDefinitions[{entry.Key.DefinitionKey}]";
+                var woundSourceLinks = entry.Definition["links"] is JsonArray links
+                    ? links
+                        .OfType<JsonObject>()
+                        .Where(static link =>
+                            string.Equals(
+                                ReadExact(link["kind"]),
+                                "wound",
+                                StringComparison.Ordinal) &&
+                            string.Equals(
+                                ReadExact(link["role"]),
+                                "source",
+                                StringComparison.Ordinal))
+                        .ToArray()
+                    : Array.Empty<JsonObject>();
+
+                if (woundSourceLinks.Length == 0)
+                {
+                    RejectWoundBinding(
+                        entry.Key,
+                        definitionPath + ".links",
+                        "effect_source_wound_link_missing",
+                        "one exact wound source link for every wound_consequence",
+                        "missing");
+                    continue;
+                }
+                if (woundSourceLinks.Length != 1 ||
+                    !TryReadExactString(
+                        woundSourceLinks[0]["targetId"],
+                        out var linkedWoundId))
+                {
+                    RejectWoundBinding(
+                        entry.Key,
+                        definitionPath + ".links",
+                        "effect_source_wound_link_ambiguous",
+                        "one exact/confusable-unique wound source link",
+                        woundSourceLinks.Length.ToString());
+                    continue;
+                }
+
+                foreach (var (component, componentIndex) in consequenceComponents)
+                {
+                    var payloadWoundId = component["payload"] is JsonObject payload &&
+                                         TryReadExactString(
+                                             payload["woundId"],
+                                             out var candidate)
+                        ? candidate
+                        : string.Empty;
+                    if (!string.Equals(
+                            payloadWoundId,
+                            linkedWoundId,
+                            StringComparison.Ordinal))
+                    {
+                        RejectWoundBinding(
+                            entry.Key,
+                            $"{definitionPath}.components[{componentIndex}].payload.woundId",
+                            "effect_source_wound_link_mismatch",
+                            "payload woundId equal to the exact wound source link",
+                            payloadWoundId);
+                    }
+                    if (string.Equals(
+                            entry.Key.Kind,
+                            "wound",
+                            StringComparison.Ordinal) &&
+                        !string.Equals(
+                            payloadWoundId,
+                            entry.Key.SourceId,
+                            StringComparison.Ordinal))
+                    {
+                        RejectWoundBinding(
+                            entry.Key,
+                            $"{definitionPath}.components[{componentIndex}].payload.woundId",
+                            "effect_source_wound_payload_mismatch",
+                            "payload woundId equal to the exact wound source identity",
+                            payloadWoundId);
+                    }
+                }
+
+                if (entry.Definition["lifetime"] is JsonObject lifetime &&
+                    string.Equals(
+                        ReadExact(lifetime["mode"]),
+                        "source_bound",
+                        StringComparison.Ordinal) &&
+                    (!string.Equals(
+                         entry.Key.Kind,
+                         "wound",
+                         StringComparison.Ordinal) ||
+                     !string.Equals(
+                         linkedWoundId,
+                         entry.Key.SourceId,
+                         StringComparison.Ordinal)))
+                {
+                    RejectWoundBinding(
+                        entry.Key,
+                        definitionPath + ".lifetime",
+                        "effect_source_wound_source_bound_mismatch",
+                        "source-bound wound consequence owned by its exact linked wound",
+                        entry.Key.ToString());
+                }
+            }
+        }
+
+        private void RejectWoundBinding(
+            EffectSourceKey key,
+            string path,
+            string code,
+            string expected,
+            string actual)
+        {
+            InvalidKeys.Add(key);
+            Issues.Add(NewIssue(path, code, expected, actual));
+        }
+
+        private static string? ReadExact(JsonNode? node) =>
+            TryReadExactString(node, out var value) ? value : null;
 
         private void RegisterOwner(EffectSourceExport export, string sourcePath)
         {

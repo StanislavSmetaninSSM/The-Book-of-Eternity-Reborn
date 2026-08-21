@@ -394,6 +394,12 @@ internal static class EffectPlayerProjection
         EffectAcceptedInstance accepted,
         JsonElement removal)
     {
+        var woundBoundary = IsWoundDerived(accepted.CanonicalEffect)
+            ? "Действие подавляет только последствие эффекта и само по себе не лечит связанную рану; лечение раны выполняется отдельно."
+            : null;
+        var revalidatedDescription =
+            "Доступность будет повторно проверена перед действием." +
+            (woundBoundary == null ? string.Empty : " " + woundBoundary);
         foreach (var value in EnumerateStrings(removal, "dispelCategories"))
         {
             yield return CreateActionAuthority(
@@ -402,7 +408,7 @@ internal static class EffectPlayerProjection
                 "dispel_category",
                 value,
                 $"Противодействовать: {DescribeToken(value)}",
-                "Доступность будет повторно проверена перед действием.");
+                revalidatedDescription);
         }
 
         foreach (var value in EnumerateStrings(removal, "cureKinds"))
@@ -413,7 +419,9 @@ internal static class EffectPlayerProjection
                 "cure_kind",
                 value,
                 $"Ослабить последствие: {DescribeToken(value)}",
-                "Это снимает только последствие эффекта и само по себе не лечит связанную рану.");
+                woundBoundary == null
+                    ? "Это снимает только выбранный эффект."
+                    : woundBoundary);
         }
 
         foreach (var value in EnumerateStrings(removal, "manualAuthorities"))
@@ -424,8 +432,35 @@ internal static class EffectPlayerProjection
                 "manual_authority",
                 value,
                 $"Снять эффект: {DescribeToken(value)}",
-                "Доступность будет повторно проверена перед действием.");
+                revalidatedDescription);
         }
+    }
+
+    private static bool IsWoundDerived(JsonElement effect)
+    {
+        if (effect.TryGetProperty("source", out var source) &&
+            source.ValueKind == JsonValueKind.Object &&
+            string.Equals(ReadString(source, "kind"), "wound", StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        if (effect.TryGetProperty("components", out var components) &&
+            components.ValueKind == JsonValueKind.Array &&
+            components.EnumerateArray().Any(static component =>
+                string.Equals(
+                    ReadString(component, "profile"),
+                    "wound_consequence",
+                    StringComparison.Ordinal)))
+        {
+            return true;
+        }
+
+        return effect.TryGetProperty("links", out var links) &&
+               links.ValueKind == JsonValueKind.Array &&
+               links.EnumerateArray().Any(static link =>
+                   string.Equals(ReadString(link, "kind"), "wound", StringComparison.Ordinal) &&
+                   string.Equals(ReadString(link, "role"), "source", StringComparison.Ordinal));
     }
 
     private static ActionAuthority CreateActionAuthority(

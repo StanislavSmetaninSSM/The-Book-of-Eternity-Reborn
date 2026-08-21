@@ -91,6 +91,13 @@ Rejected source selectors include:
 - cross-realm sources without an explicit registered cross-life policy;
 - definitions that describe only an instantaneous action or passive static mechanic.
 
+A `wound_consequence` component requires exactly one `links[]` entry with
+`kind=wound` and `role=source`; its exact `targetId` must equal the component
+payload's exact `woundId`. When the consequence uses `source_bound`, the source
+itself must be that same exact wound. This binding grants read-only source and
+source-loss authority only: applying, dispelling, removing, or expiring the
+effect never grants permission to mutate or heal the wound carrier.
+
 ## 5. Target Authority
 
 The target catalog is composed from validated pre-turn owners plus accepted same-turn effective actor/combat identities.

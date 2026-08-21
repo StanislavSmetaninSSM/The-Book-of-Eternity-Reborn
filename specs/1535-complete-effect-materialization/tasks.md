@@ -223,17 +223,17 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 
 ### Tests for User Story 6 (RED first)
 
-- [ ] T089 [P] [US6] Add RED contract/source tests for exact wound link, source-bound definition, case/confusable/missing wound rejection, and no repair retarget in `BookOfEternityClient.Tests/EffectSourceAuthorityTests.Wounds.cs`
-- [ ] T090 [P] [US6] Add RED composed integration tests for apply, dispel, remove, expire, source loss, simultaneous wound treatment, direct effect-side wound mutation, and byte/semantic wound preservation in `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Wounds.cs`
-- [ ] T091 [P] [US6] Add RED console/browser wording and action tests that distinguish effect suppression from wound treatment and never claim wound healing in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Effects.cs` and `ExplorerWebCommandServiceTests.Effects.cs`
+- [x] T089 [P] [US6] Add RED contract/source tests for exact wound link, source-bound definition, case/confusable/missing wound rejection, and no repair retarget in `BookOfEternityClient.Tests/EffectSourceAuthorityTests.Wounds.cs`
+- [x] T090 [P] [US6] Add RED composed integration tests for apply, dispel, remove, expire, source loss, simultaneous wound treatment, direct effect-side wound mutation, and byte/semantic wound preservation in `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Wounds.cs`
+- [x] T091 [P] [US6] Add RED console/browser wording and action tests that distinguish effect suppression from wound treatment and never claim wound healing in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Effects.cs` and `ExplorerWebCommandServiceTests.Effects.cs`
 
 ### Implementation for User Story 6
 
-- [ ] T092 [US6] Implement exact wound source adapter/link authority and source-loss export without wound-write capability in `BookOfEternityClient/Services/EffectSourceAuthority.cs` until T089 is GREEN
-- [ ] T093 [US6] Enforce effect-plan field ownership so effect operations cannot mutate wound carrier sections and only accepted wound-plan events may change linked effect state in `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs` until T090 is GREEN
-- [ ] T094 [US6] Preserve adjacent player/NPC wound state byte-semantically during effect carrier normalization and rollback in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs`
-- [ ] T095 [US6] Update effect/wound player projection copy and action eligibility in `BookOfEternityClient/UI/EffectPlayerProjection.cs` and `BookOfEternityClient/UI/ExplorerMortalEffectDetailActions.cs` until T091 is GREEN
-- [ ] T096 [US6] Run US6 focused wound/effect filters and manual effect-only removal scenario, record RED→GREEN evidence in `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`, and commit the US6 slice
+- [x] T092 [US6] Implement exact wound source adapter/link authority and source-loss export without wound-write capability in `BookOfEternityClient/Services/EffectSourceAuthority.cs` until T089 is GREEN
+- [x] T093 [US6] Enforce effect-plan field ownership so effect operations cannot mutate wound carrier sections and only accepted wound-plan events may change linked effect state in `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs` until T090 is GREEN
+- [x] T094 [US6] Preserve adjacent player/NPC wound state byte-semantically during effect carrier normalization and rollback in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs`
+- [x] T095 [US6] Update effect/wound player projection copy and action eligibility in `BookOfEternityClient/UI/EffectPlayerProjection.cs` and `BookOfEternityClient/UI/ExplorerMortalEffectDetailActions.cs` until T091 is GREEN
+- [x] T096 [US6] Run US6 focused wound/effect filters and manual effect-only removal scenario, record RED→GREEN evidence in `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`, and commit the US6 slice
 
 **Checkpoint**: Wounds and effects are linked but independently governed; effect deletion is never healing.
 

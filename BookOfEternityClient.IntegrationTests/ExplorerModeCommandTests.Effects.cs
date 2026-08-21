@@ -77,6 +77,7 @@ public sealed partial class ExplorerModeCommandTests
         var entry = Assert.Single(projection.Entries);
         var action = Assert.Single(entry.Actions, candidate =>
             candidate.Label.Contains("Противодействовать", StringComparison.Ordinal));
+        Assert.Contains("не лечит", action.Description, StringComparison.OrdinalIgnoreCase);
 
         var detailException = await Record.ExceptionAsync(() =>
             _explorer.TryProcessCommand("/эффекты эффект " + entry.Selector));
@@ -96,6 +97,7 @@ public sealed partial class ExplorerModeCommandTests
         Assert.Null(actionException);
         Assert.Contains("Подтвердить выбранное противодействие", actionText, StringComparison.Ordinal);
         Assert.Contains("заново проверено", actionText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не лечит", actionText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(EffectMaterializationTestFixture.EffectId, actionText, StringComparison.Ordinal);
     }
 

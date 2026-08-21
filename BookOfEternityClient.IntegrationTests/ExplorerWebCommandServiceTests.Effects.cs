@@ -96,6 +96,14 @@ public sealed class ExplorerWebCommandServiceEffectTests : IDisposable
         var actionPayload = JsonSerializer.Serialize(effectAction, JsonOptions);
 
         Assert.Contains("effect_action_", effectAction.Command, StringComparison.Ordinal);
+        Assert.Contains(
+            "не лечит",
+            effectAction.Payload!["description"]!.GetValue<string>(),
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(
+            "effect_only",
+            effectAction.Payload!["actionScope"]!.GetValue<string>());
+        Assert.False(effectAction.Payload!["woundTreatment"]!.GetValue<bool>());
         Assert.DoesNotContain(EffectMaterializationTestFixture.EffectId, actionPayload, StringComparison.Ordinal);
         Assert.DoesNotContain("wound_test_torn_side", actionPayload, StringComparison.Ordinal);
 

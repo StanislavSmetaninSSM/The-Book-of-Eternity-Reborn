@@ -41,7 +41,9 @@ internal static class ExplorerMortalEffectDetailActions
             {
                 ["selector"] = action.Selector,
                 ["label"] = action.Label,
-                ["description"] = action.Description
+                ["description"] = action.Description,
+                ["actionScope"] = "effect_only",
+                ["woundTreatment"] = false
             }
         }).ToArray();
 
