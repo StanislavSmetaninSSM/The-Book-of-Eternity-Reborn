@@ -262,6 +262,121 @@ internal sealed class EffectSourceAuthority
         return new EffectSourceResolution(null, issues);
     }
 
+    internal EffectSourceResolution ResolveRepairCandidate(
+        JsonObject selector,
+        string realm,
+        string targetKind)
+    {
+        ArgumentNullException.ThrowIfNull(selector);
+        var issues = new List<ValidationIssue>();
+        if (!TryReadExactString(selector["kind"], out var kind) ||
+            !SourceKinds.Contains(kind) ||
+            !TryReadExactString(selector["definitionKey"], out var definitionKey))
+        {
+            Add(
+                issues,
+                "source",
+                "effect_source_selector_invalid",
+                "closed source kind and exact definitionKey",
+                selector.ToJsonString());
+            return new EffectSourceResolution(null, issues);
+        }
+
+        var hasId = selector.ContainsKey("sourceId") && selector["sourceId"] != null;
+        var hasRef = selector.ContainsKey("sourceRef") && selector["sourceRef"] != null;
+        if (hasId == hasRef ||
+            selector.Any(pair => pair.Key is not
+                ("kind" or "sourceId" or "sourceRef" or "definitionKey")))
+        {
+            Add(
+                issues,
+                "source",
+                "effect_source_selector_invalid",
+                "kind and definitionKey plus exactly one sourceId or sourceRef",
+                selector.ToJsonString());
+            return new EffectSourceResolution(null, issues);
+        }
+
+        if (hasId)
+        {
+            if (!TryReadExactString(selector["sourceId"], out var sourceId))
+            {
+                Add(
+                    issues,
+                    "source.sourceId",
+                    "effect_source_selector_invalid",
+                    "exact non-empty sourceId",
+                    selector["sourceId"]?.ToJsonString() ?? "missing");
+                return new EffectSourceResolution(null, issues);
+            }
+            return ResolveByKey(
+                new EffectSourceKey(realm, kind, sourceId, definitionKey),
+                targetKind,
+                parameters: null,
+                allowResolvedSameTurnIdentity: false,
+                validateParameters: false,
+                validateApplicationAuthority: true);
+        }
+
+        if (!TryReadExactString(selector["sourceRef"], out var sourceRef))
+        {
+            Add(
+                issues,
+                "source.sourceRef",
+                "effect_source_selector_invalid",
+                "exact same-turn sourceRef",
+                selector["sourceRef"]?.ToJsonString() ?? "missing");
+            return new EffectSourceResolution(null, issues);
+        }
+        var reference = new EffectSourceReferenceKey(
+            realm,
+            kind,
+            sourceRef,
+            definitionKey);
+        if (_byRef.TryGetValue(reference, out var entry) &&
+            !_invalidRefs.Contains(reference))
+        {
+            if (!entry.Materializable)
+            {
+                Add(
+                    issues,
+                    "source",
+                    "effect_source_not_materializable",
+                    "source definition explicitly materializable as an active instance",
+                    entry.Key.ToString());
+            }
+            if (!entry.Active)
+            {
+                Add(
+                    issues,
+                    "source",
+                    "effect_source_inactive",
+                    "source current state authorizes application",
+                    entry.Key.ToString());
+            }
+            ValidateActivePredicate(entry, issues);
+            ValidateTargetKind(entry.Definition, targetKind, issues);
+            return issues.Count == 0
+                ? new EffectSourceResolution(
+                    entry with
+                    {
+                        Definition = entry.Definition.DeepClone().AsObject()
+                    },
+                    Array.Empty<ValidationIssue>())
+                : new EffectSourceResolution(null, issues);
+        }
+
+        Add(
+            issues,
+            "source.sourceRef",
+            _refsByAlias.ContainsKey(RefAlias(realm, kind, sourceRef, definitionKey))
+                ? "effect_source_selector_confusable"
+                : "effect_source_selector_unresolved",
+            "one exact accepted same-turn sourceRef export",
+            sourceRef);
+        return new EffectSourceResolution(null, issues);
+    }
+
     private static void ValidateResolvedEntry(
         EffectSourceAuthorityEntry entry,
         string targetKind,

@@ -1,13 +1,25 @@
 using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models.GameState;
-using System.Text;
 using Spectre.Console;
 
 namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
+    private const string PlayerSafePausedScreenId = "world-turn-paused";
+    private const string PlayerSafeWaitingTitle = "Мир отвечает";
+    private const string PlayerSafeWaitingText =
+        "Мир завершает последствия вашего действия. Подождите немного.";
+    private const string PlayerSafePausedTitle = "Течение мира приостановлено";
+    private const string PlayerSafePausedText =
+        "Мир ещё не готов продолжить ход. Подождите, пока течение событий снова станет устойчивым.";
+    private const string PlayerSafeInputBlockedText =
+        "Мир ещё не готов принять новое действие.";
+    private const string PlayerSafeTurnErrorTitle = "Ход прервался";
+    private const string PlayerSafeTurnErrorText =
+        "Действие не было применено. Мир не смог безопасно завершить этот ход; повторите действие позже или выберите другой путь.";
+
     private void RecordConsoleObservation(
         ConsoleE2EInputMode inputMode,
         string screenTitle,
@@ -79,13 +91,46 @@ public partial class GameEngine
 
     private void RecordGameLoopErrorObservation(Exception ex)
     {
-        RecordConsoleObservation(
-            ConsoleE2EInputMode.Error,
-            "Ошибка игрового цикла",
-            $"Ошибка в игровом цикле: {ex.Message}\nОшибка сохранена в game_session/error_log.txt. Данные не потеряны.\n{_loc.T("press_any_key")}",
-            [],
-            selectedOption: null,
-            slug: "game-loop-error");
+        _ = ex;
+        var playerText = $"{PlayerSafeTurnErrorText}\n{_loc.T("press_any_key")}";
+        if (_inputSource is ConsoleE2EScriptedInputSource scriptedInput)
+        {
+            scriptedInput.WriteObservation(
+                ConsoleE2EInputMode.Error,
+                PlayerSafeTurnErrorTitle,
+                playerText,
+                [],
+                selectedOption: null,
+                slug: PlayerSafePausedScreenId,
+                logPath: null);
+        }
+
+        if (_inputSource is not AgentConsoleLiveInputSource liveInput)
+            return;
+
+        var now = DateTimeOffset.UtcNow;
+        liveInput.PublishSnapshot(new AgentConsoleSnapshot
+        {
+            ScreenId = PlayerSafePausedScreenId,
+            Mode = AgentConsoleMode.Error,
+            Title = PlayerSafeTurnErrorTitle,
+            PlainText = playerText,
+            AwaitingInput = true,
+            InputKind = AgentConsoleInputKind.Key,
+            Actions =
+            [
+                new AgentConsoleAction
+                {
+                    Id = "continue",
+                    Label = "Продолжить",
+                    Shortcut = "Enter",
+                    IsDefault = true
+                }
+            ],
+            RenderedAtUtc = now,
+            UpdatedAtUtc = now,
+            Diagnostics = []
+        }, "Течение мира временно приостановлено.");
     }
 
     private void PublishAgentConsoleGmWaitingSnapshot(
@@ -98,7 +143,7 @@ public partial class GameEngine
         var now = DateTimeOffset.UtcNow;
         liveInput.PublishSnapshot(new AgentConsoleSnapshot
         {
-            ScreenId = "gm-waiting",
+            ScreenId = "world-awaiting-continuation",
             Mode = AgentConsoleMode.Loading,
             Title = title,
             PlainText = plainText,
@@ -106,80 +151,27 @@ public partial class GameEngine
             InputKind = AgentConsoleInputKind.None,
             RenderedAtUtc = now,
             UpdatedAtUtc = now
-        }, "Waiting for GM response.");
+        }, "Течение мира ожидает продолжения.");
     }
 
-    private void PublishAgentConsoleValidationRepairSnapshot(ValidationRepairRequest request)
+    private void PublishAgentConsoleValidationRepairSnapshot()
     {
         if (_inputSource is not AgentConsoleLiveInputSource liveInput)
             return;
 
-        var lines = new List<string>
-        {
-            $"Ремонт данных: ход {request.TurnNumber}, попытка {request.RevalidationAttempt}",
-            $"Источник проверки: {request.Source}",
-            $"Запрос: {request.RequestId}",
-            string.Empty
-        };
-
-        if (request.SummaryGroups.Count > 0)
-        {
-            lines.Add("Сводка ошибок:");
-            foreach (var summary in request.SummaryGroups.Take(6))
-                lines.Add("- " + summary);
-            lines.Add(string.Empty);
-        }
-
-        if (request.HarnessRepairPackets.Count > 0)
-        {
-            lines.Add("Harness-пакеты:");
-            foreach (var packet in request.HarnessRepairPackets.Take(4))
-                lines.Add("- " + JoinNonEmpty(packet.Kind, packet.Title));
-            lines.Add(string.Empty);
-        }
-
-        if (request.Errors.Count > 0)
-        {
-            lines.Add("Первые ошибки:");
-            foreach (var error in request.Errors.Take(5))
-            {
-                var code = string.IsNullOrWhiteSpace(error.Code) ? "validation_error" : error.Code;
-                var path = string.IsNullOrWhiteSpace(error.FilePath) ? "<unknown path>" : error.FilePath;
-                lines.Add("- " + code + " :: " + path);
-                if (!string.IsNullOrWhiteSpace(error.Message))
-                    lines.Add("  " + error.Message);
-            }
-            lines.Add(string.Empty);
-        }
-
-        lines.Add("GM сейчас исправляет данные и должен завершить ремонт через Complete-BoeValidationRepair или validation_repair_ready.json.");
-
-        var diagnostics = request.Errors
-            .Take(AgentConsoleLimits.MaxDiagnostics)
-            .Select(error => new AgentConsoleDiagnostic
-            {
-                Severity = AgentConsoleDiagnosticSeverity.Warning,
-                Code = "validation-repair-progress",
-                Message = string.IsNullOrWhiteSpace(error.Code)
-                    ? "Validation repair is in progress."
-                    : $"Validation repair is in progress: {error.Code}",
-                Detail = BuildValidationRepairDiagnosticDetail(error)
-            })
-            .ToArray();
-
         var now = DateTimeOffset.UtcNow;
         liveInput.PublishSnapshot(new AgentConsoleSnapshot
         {
-            ScreenId = "gm-validation-repair",
+            ScreenId = PlayerSafePausedScreenId,
             Mode = AgentConsoleMode.Loading,
-            Title = "Ремонт данных",
-            PlainText = string.Join(Environment.NewLine, lines),
+            Title = PlayerSafePausedTitle,
+            PlainText = PlayerSafePausedText,
             AwaitingInput = false,
             InputKind = AgentConsoleInputKind.None,
             RenderedAtUtc = now,
             UpdatedAtUtc = now,
-            Diagnostics = diagnostics
-        }, "Validation repair request published.");
+            Diagnostics = []
+        }, "Течение мира временно приостановлено.");
     }
 
     private IDisposable? BeginAgentConsoleInputBlockFromCurrentSnapshot(string reason)
@@ -188,20 +180,6 @@ public partial class GameEngine
             return null;
 
         return liveInput.BeginInputBlockFromCurrentSnapshot(reason);
-    }
-
-    private static string BuildValidationRepairDiagnosticDetail(ValidationRepairIssue error)
-    {
-        var detail = new StringBuilder();
-        if (!string.IsNullOrWhiteSpace(error.FilePath))
-            detail.Append(error.FilePath);
-        if (!string.IsNullOrWhiteSpace(error.Message))
-        {
-            if (detail.Length > 0)
-                detail.Append(": ");
-            detail.Append(error.Message);
-        }
-        return detail.ToString();
     }
 
     private bool ConfirmWithConsoleObservation(

@@ -195,21 +195,21 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 
 ### Tests for User Story 5 (RED first)
 
-- [ ] T077 [P] [US5] Add RED repair-builder tests for one bounded semantic omission, protected identity/source/target/realm/stack/receipt/history/cycle/direct-mutation errors, protected target files, exact packet serialization, and full-resubmission obligation in `BookOfEternityClient.Tests/EffectRepairPacketBuilderTests.cs`
-- [ ] T078 [P] [US5] Add RED real validation-loop tests for baseline-before-dispatch, unavailable snapshot no-dispatch, ready-only no-op rejection, partial-effect-only retry rejection, complete response replay, semantic freshness, worker parity, and session replacement in `BookOfEternityClient.IntegrationTests/EffectMaterializationRepairLifecycleTests.cs`
-- [ ] T079 [P] [US5] Add RED failure-injection matrix after every actual effect/carrier/index/pending/companion/output publication and post-check in `BookOfEternityClient.IntegrationTests/EffectMaterializationLifecycleTests.cs`
-- [ ] T080 [P] [US5] Add RED privacy tests for helper/report/cleanup/rollback exceptions, persistent operator diagnostics, and zero technical vocabulary/exception text in full caller output in `BookOfEternityClient.IntegrationTests/EffectMaterializationRepairLifecycleTests.Privacy.cs`
+- [x] T077 [P] [US5] Add RED repair-builder tests for one bounded semantic omission, protected identity/source/target/realm/stack/receipt/history/cycle/direct-mutation errors, protected target files, exact packet serialization, and full-resubmission obligation in `BookOfEternityClient.Tests/EffectRepairPacketBuilderTests.cs`
+- [x] T078 [P] [US5] Add RED real validation-loop tests for baseline-before-dispatch, unavailable snapshot no-dispatch, ready-only no-op rejection, partial-effect-only retry rejection, complete response replay, semantic freshness, worker parity, and session replacement in `BookOfEternityClient.IntegrationTests/EffectMaterializationRepairLifecycleTests.cs`
+- [x] T079 [P] [US5] Add RED failure-injection matrix after every actual effect/carrier/index/pending/companion/output publication and post-check in `BookOfEternityClient.IntegrationTests/EffectMaterializationLifecycleTests.cs`
+- [x] T080 [P] [US5] Add RED privacy tests for helper/report/cleanup/rollback exceptions, persistent operator diagnostics, and zero technical vocabulary/exception text in full caller output in `BookOfEternityClient.IntegrationTests/EffectMaterializationRepairLifecycleTests.Privacy.cs`
 
 ### Implementation for User Story 5
 
-- [ ] T081 [US5] Implement exact candidate binding, repairable field catalog, protected code/path/target rules, packet serialization, and coherent resubmission obligations in `BookOfEternityClient/Services/EffectRepairPacketBuilder.cs` until T077 is GREEN
-- [ ] T082 [US5] Route effect issues into the existing validation repair request/worker packet without broadening source/target/client authority in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
-- [ ] T083 [US5] Restore validated baseline before actionable dispatch, preserve one in-memory full-response obligation, require canonical semantic freshness, and prevent ready-only/partial no-op acceptance in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs` until T078 is GREEN
-- [ ] T084 [US5] Add every effect command/carrier/index/pending/companion/output path to accepted snapshot and rollback tracking while excluding durable operator diagnostics in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`
-- [ ] T085 [US5] Make effect diagnostic/report/transient cleanup best-effort for ordinary exceptions while preserving session-replacement propagation and one caller-owned rollback in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
-- [ ] T086 [US5] Publish all planned effect paths through the bound canonical write lease and post-validate the complete carrier/index/mechanics set in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs` until T079 is GREEN
-- [ ] T087 [US5] Replace every reachable outer player failure/cancellation/stall/retry exception path with fixed in-world Russian copy and operator-only exact logging in `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs` until T080 is GREEN
-- [ ] T088 [US5] Run US5 focused repair filters and `LifecycleIntegration -Filter "FullyQualifiedName~EffectMaterializationLifecycleTests"`, record exact result artifacts, and commit the US5 slice
+- [x] T081 [US5] Implement exact candidate binding, repairable field catalog, protected code/path/target rules, packet serialization, and coherent resubmission obligations in `BookOfEternityClient/Services/EffectRepairPacketBuilder.cs` until T077 is GREEN
+- [x] T082 [US5] Route effect issues into the existing validation repair request/worker packet without broadening source/target/client authority in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
+- [x] T083 [US5] Restore validated baseline before actionable dispatch, preserve one in-memory full-response obligation, require canonical semantic freshness, and prevent ready-only/partial no-op acceptance in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs` until T078 is GREEN
+- [x] T084 [US5] Add every effect command/carrier/index/pending/companion/output path to accepted snapshot and rollback tracking while excluding durable operator diagnostics in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`
+- [x] T085 [US5] Make effect diagnostic/report/transient cleanup best-effort for ordinary exceptions while preserving session-replacement propagation and one caller-owned rollback in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
+- [x] T086 [US5] Publish all planned effect paths through the bound canonical write lease and post-validate the complete carrier/index/mechanics set in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs` until T079 is GREEN
+- [x] T087 [US5] Replace every reachable outer player failure/cancellation/stall/retry exception path with fixed in-world Russian copy and operator-only exact logging in `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs` until T080 is GREEN
+- [x] T088 [US5] Run the supported US5 focused unit/integration controls, one full `LifecycleIntegration` diagnostic, and a Fast checkpoint; record exact artifacts and commit the US5 slice
 
 **Checkpoint**: Effect failures cannot partially publish, leak internals, retarget authority, or accept an empty retry.
 

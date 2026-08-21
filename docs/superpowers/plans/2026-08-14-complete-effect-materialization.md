@@ -1229,64 +1229,126 @@ this slice.
 
 **Files:**
 - Create: `BookOfEternityClient/Services/EffectRepairPacketBuilder.cs`
+- Modify: `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`
+- Modify: `BookOfEternityClient/Services/EffectSourceAuthority.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
+- Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`
+- Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`
+- Modify: `BookOfEternityClient/Core/StateManager.cs`
 - Create: `BookOfEternityClient.Tests/EffectRepairPacketBuilderTests.cs`
+- Modify: `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs`
+- Modify: `BookOfEternityClient.Tests/AgentConsoleObservationTests.cs`
+- Modify: `BookOfEternityClient.Tests/GameEngineSourceGuardTests.cs`
+- Modify: `BookOfEternityClient.Tests/ValidationRepairRequestTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/EffectMaterializationRepairLifecycleTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/EffectMaterializationRepairLifecycleTests.Privacy.cs`
 - Create: `BookOfEternityClient.IntegrationTests/EffectMaterializationLifecycleTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/EffectMaterializationTestContext.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationRepairLifecycleTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Routes.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/ResourceOwnerMaterializationTests.cs`
+- Modify: `specs/1535-complete-effect-materialization/tasks.md`
+- Modify: `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`
 
-- [ ] **Step 1: Add repair-builder RED tests**
+- [x] **Step 1: Add repair-builder RED tests**
 
 Allow only one exact source-owned semantic omission with an exact actor/path and bounded correction. Protect identity, source/target selector, realm, stack coordinate/policy, receipt/history, cycle/replay, direct carrier/index/pending mutation, ambiguous target, and any protected client-owned target path.
 
-- [ ] **Step 2: Add real repair-loop RED tests**
+- [x] **Step 2: Add real repair-loop RED tests**
 
 Cover baseline-before-dispatch, unavailable snapshot no-dispatch, ready-only no-op rejection, partial-effect-only retry rejection, complete coherent response replay, canonical semantic freshness rather than formatting-only freshness, worker parity, and session replacement.
 
-- [ ] **Step 3: Add failure-injection RED matrix**
+- [x] **Step 3: Add failure-injection RED matrix**
 
 Inject after each actual published player/NPC/combat/profile/condition carrier, identity index, pending root, effect-owned companion, narrative/interface output, and post-check. Capture the full tracked set before the turn and require byte/existence-exact restoration.
 
-- [ ] **Step 4: Add full caller privacy RED tests**
+- [x] **Step 4: Add full caller privacy RED tests**
 
 Inject diagnostic write, repair-file cleanup, rollback evidence, and restore failures. The player output must contain fixed in-world Russian copy and no exception text, paths, IDs, codes, validation/materialization/repair/rollback/backup/harness/agent vocabulary. Exact detail remains operator-only and survives rollback.
 
-- [ ] **Step 5: Run RED**
+- [x] **Step 5: Run RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectRepairPacketBuilderTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectMaterializationRepairLifecycleTests|FullyQualifiedName~EffectMaterializationLifecycleTests"
 ```
 
-- [ ] **Step 6: Implement bounded packet classification**
+- [x] **Step 6: Implement bounded packet classification**
 
 Bind candidates to the exact accepted effect operation and source/target authority. If any issue or `RepairTargetFiles` entry is protected, ambiguous, historical, confusable, duplicate, or client-owned, return no actionable packet and persist a path-bound operator diagnostic.
 
-- [ ] **Step 7: Restore before dispatch and require full replay**
+- [x] **Step 7: Restore before dispatch and require full replay**
 
 Restore the validated baseline before any actionable request/worker dispatch. Keep one in-memory obligation covering every changed accepted-turn path, actor, route, and effect operation. A ready signal, formatting-only output rewrite, missing candidate, or partial location/effect response cannot become a successful no-op.
 
-- [ ] **Step 8: Guarantee one caller-owned rollback**
+- [x] **Step 8: Guarantee one caller-owned rollback**
 
 Diagnostic/report/transient cleanup is best-effort for ordinary exceptions and must still return failure; preserve session-replacement propagation. Do not restore inside a helper and then restore again in the caller.
 
-- [ ] **Step 9: Run GREEN and required lifecycle lane**
+- [x] **Step 9: Run GREEN and required lifecycle lane**
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane LifecycleIntegration -Filter "FullyQualifiedName~EffectMaterializationLifecycleTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectRepairPacketBuilderTests|FullyQualifiedName~EffectAcceptedTurnPlannerTests|FullyQualifiedName~AgentConsoleObservationTests|FullyQualifiedName~GmResponseWaits_MustPublishAgentConsoleLoadingSnapshotBeforeTerminalWait"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectMaterializationLifecycleTests|FullyQualifiedName~EffectMaterializationRepairLifecycleTests|FullyQualifiedName~WriteValidationRepairRequestAsync_WithAgentConsole_PublishesPlayerSafeWaitingSnapshot|FullyQualifiedName~ShowTurnErrorMessageAsync_PublishesPlayerSafeRecoveryScreen|FullyQualifiedName~RepairResubmission_FormattingOnlyJsonDoesNotSatisfyChangedPathObligation|FullyQualifiedName~WaitForContractRepairAsync_WhenSessionIsReplaced_AbortsBeforeLegacyRepairOrRollback|FullyQualifiedName~WaitForContractRepairAsync_StaleCapturedSession_AbortsBeforeDispatchAndRollback|FullyQualifiedName~MortalLocationMaterializationValidationTests.ValidateCrossReferences_ExistingCoordinateMismatchBuildsOnlyBoundedLocationPacket"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane LifecycleIntegration
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
 ```
 
 Inspect exact test counts, duplicates, timeout, cleanup, and byte/existence assertions.
 
-- [ ] **Step 10: Commit atomic failure handling**
+- [x] **Step 10: Commit atomic failure handling**
 
 ```powershell
-git add -- BookOfEternityClient/Services/EffectRepairPacketBuilder.cs BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs BookOfEternityClient.Tests/EffectRepairPacketBuilderTests.cs BookOfEternityClient.IntegrationTests/EffectMaterializationRepairLifecycleTests.cs BookOfEternityClient.IntegrationTests/EffectMaterializationRepairLifecycleTests.Privacy.cs BookOfEternityClient.IntegrationTests/EffectMaterializationLifecycleTests.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
+git add -- BookOfEternityClient/Services/EffectRepairPacketBuilder.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient/Services/EffectSourceAuthority.cs BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs BookOfEternityClient/Core/StateManager.cs BookOfEternityClient.Tests/EffectRepairPacketBuilderTests.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs BookOfEternityClient.Tests/AgentConsoleObservationTests.cs BookOfEternityClient.Tests/GameEngineSourceGuardTests.cs BookOfEternityClient.Tests/ValidationRepairRequestTests.cs BookOfEternityClient.IntegrationTests/EffectMaterializationRepairLifecycleTests.cs BookOfEternityClient.IntegrationTests/EffectMaterializationRepairLifecycleTests.Privacy.cs BookOfEternityClient.IntegrationTests/EffectMaterializationLifecycleTests.cs BookOfEternityClient.IntegrationTests/EffectMaterializationTestContext.cs BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs BookOfEternityClient.IntegrationTests/MortalLocationMaterializationRepairLifecycleTests.cs BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Routes.cs BookOfEternityClient.IntegrationTests/ResourceOwnerMaterializationTests.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
 git diff --cached --check
 git commit -m "feat: make effect repair and rollback atomic (#1535)"
 ```
+
+**Task 13 evidence (2026-08-22):**
+
+| Boundary | RED result | GREEN result |
+| --- | --- | --- |
+| Bounded packet classification, protected authority, exact correction, and full-response obligation | focused builder/planner failures captured before implementation | `TestResults/test-lanes/20260822-031551-453-18884-41198fc5adce47e1b3f11b76a63b5dee-focused` (`77/77`) and final `TestResults/test-lanes/20260822-043616-514-44476-0b66b5f7553343c3958da12e5be8c96d-focused` (`93/93`) |
+| Baseline-before-dispatch, semantic replay, session replacement, and rollback matrix | privacy/replay/rollback RED artifacts `20260822-034908-296`, `20260822-035037-178`, `20260822-040146-978`, and `20260822-040543-074` | `TestResults/test-lanes/20260822-040343-194-22388-2ae61842c3d642f4bb253817287a59a5-focused` (`3/3`), `20260822-040627-367-47008-e93d19a7e1174824a494c393d054d793-focused` (`1/1`), and final combined `20260822-043638-004-14292-2b46111043ad4273bc8a5dac993aa8f6-focused` (`38/38`) |
+| Duplicate-property replay and player-safe terminal copy | `20260822-042335-902`, `20260822-042735-666`, and `20260822-042930-518` each failed the new focused regression | `20260822-042426-555`, `20260822-042815-797`, and `20260822-043009-630` each passed its exact regression (`1/1`) |
+| Reflection/source-guard callers after the repair and privacy changes | Fast exposed stale assumptions at `TestResults/test-lanes/20260822-041159-795-20020-d059b07281e24fbdbd42e4f4ba3bc0d1-fast` and `20260822-043834-414-40288-1d3c7c7421ab4881bd5c2ea97bb31817-fast` | exact regressions `20260822-041456-593-26756-5e412cf6f6eb4881929474d10af651a9-focused`, `20260822-041604-061-11540-7515bdefc1ba4827a2130cd06ab2b0df-focused`, and `20260822-044116-527-23600-d399fbb205954a6490562912ea98b392-focused` (`1/1` each), then final Fast `20260822-044144-271-25680-33fe033532964d59be51c902e721f663-fast` (`4010/4010`) |
+| Shared combatant identity has one carrier producer | PreMerge exposed a stale assertion at `TestResults/test-lanes/20260822-044639-476-41476-778af9f2156545ceac84843e038032ea-premerge`; isolated RED `20260822-045200-931-41048-db812f17ebcb4eb8ad690b9f16d657f6-focused` (`0/1`) | `TestResults/test-lanes/20260822-045305-814-32728-9518298fa79447389ac9a3a1216267e8-focused` (`1/1`) now proves the effect plan is the sole combat-root producer and shares the permanent ID with resource authority |
+
+Every reported GREEN artifact exited `0`, timed out `false`, completed owned-tree
+cleanup, and reported zero duplicate test IDs. The full supported
+`LifecycleIntegration` diagnostic at
+`TestResults/test-lanes/20260822-032949-636-22676-b777a96ca61443409076f1b2742325cb-lifecycleintegration` discovered
+274 tests but reached the lane's fixed ten-minute watchdog before producing a
+TRX; it exited `124`, timed out `true`, completed cleanup, and is deliberately
+not reported as GREEN. The runner does not support `-Filter` for this lane, so
+the exact Focused unit/integration controls above are the authoritative US5
+story evidence. The final Fast artifact above is current after the last source
+change.
+
+The final PreMerge diagnostic at
+`TestResults/test-lanes/20260822-044639-476-41476-778af9f2156545ceac84843e038032ea-premerge`
+completed frontend verification/build, timed out `false`, cleaned its owned tree,
+and reported zero duplicate IDs, but was not GREEN. After the shared-identity
+assertion above was corrected, the remaining failures reproduce independently
+at `20260822-045355-581-16716-3d620aa92bfa495fb690fbd68aa25088-focused`
+and `20260822-045427-111-6860-121d14531a754de29bf5330844569697-focused`:
+the active `FileSystemExample` is rejected by the already-enabled canonical
+resource/effect contracts, which also prevents the save fixture from being
+created. That is the explicit T097-T100 Task-14 active-fixture migration gate,
+not a Task-13 repair/runtime failure. This slice is committed with that
+dependency recorded; the feature is not merge-ready until Task 14 makes the
+fixture/FullValidation/PreMerge boundary GREEN.
+
+The repair packet, durable diagnostics, rollback orchestration, and player-safe
+copy are client/operator-owned surfaces. They add no GM-authored field, command,
+response contract, or afterlife runtime contour, so no GM prompt, example,
+manifest, afterlife matrix, or frontend typed-contract update belongs to this
+slice. Task 14/T097-T110 remains the explicit owner of synchronized GM rules,
+worked examples, manifests, and active fixture migration.
 
 ---
 

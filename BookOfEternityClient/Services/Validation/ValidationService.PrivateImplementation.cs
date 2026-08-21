@@ -622,6 +622,7 @@ public class ValidationIssue
     internal FactionTouchKind? FactionRepairClassification { get; set; }
     internal MortalItemRepairContext? MortalItemRepairContext { get; set; }
     internal MortalLocationRepairContext? MortalLocationRepairContext { get; set; }
+    internal EffectRepairContext? EffectRepairContext { get; set; }
 
     public ValidationIssue(
         string filePath,

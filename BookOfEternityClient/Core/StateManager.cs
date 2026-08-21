@@ -120,6 +120,12 @@ public class StateManager
         await RefreshGameStateCoreAsync(writeLease);
     }
 
+    internal async Task RefreshGameStateAfterExactRollbackAsync()
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        await RefreshGameStateCoreAsync(writeLease);
+    }
+
     private async Task RefreshGameStateCoreAsync(
         FileSystemManager.CanonicalWriteLease writeLease)
     {

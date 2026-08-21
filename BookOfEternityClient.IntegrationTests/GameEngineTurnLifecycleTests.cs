@@ -205,7 +205,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task ShowTurnErrorMessageAsync_PublishesAgentConsoleTimeoutRecoveryScreen()
+    public async Task ShowTurnErrorMessageAsync_PublishesPlayerSafeRecoveryScreen()
     {
         var store = new AgentConsoleStateStore();
         using var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromSeconds(5));
@@ -227,15 +227,19 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         Assert.NotNull(method);
         var task = Assert.IsAssignableFrom<Task>(method!.Invoke(engine, new object[] { "ready/turn_error.json" })!);
 
-        var snapshot = await WaitForAgentConsoleSnapshotAsync(store, "gm-turn-error");
+        var snapshot = await WaitForAgentConsoleSnapshotAsync(store, "world-turn-paused");
 
         Assert.Equal(AgentConsoleMode.Error, snapshot.Mode);
         Assert.True(snapshot.AwaitingInput);
         Assert.Equal(AgentConsoleInputKind.Key, snapshot.InputKind);
-        Assert.Contains("Timeout after 900s", snapshot.PlainText, StringComparison.Ordinal);
+        Assert.Equal("Ход прервался", snapshot.Title);
         Assert.Contains("Действие не было применено", snapshot.PlainText, StringComparison.Ordinal);
-        Assert.Contains(snapshot.Diagnostics, diagnostic =>
-            string.Equals(diagnostic.Code, "gm-turn-error", StringComparison.OrdinalIgnoreCase));
+        AssertPlayerAgentConsoleSnapshotIsPrivate(
+            snapshot,
+            store.GetEvents(),
+            "Timeout after 900s",
+            "session-timeout",
+            "request-timeout");
 
         input.EnqueueKey(Key(ConsoleKey.Enter));
         await task.WaitAsync(TimeSpan.FromSeconds(5));
@@ -568,6 +572,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                 null,
                 capturedGeneration,
                 null,
+                null,
+                null,
                 null
             })!);
 
@@ -618,6 +624,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                 1,
                 rollbackSnapshot,
                 capturedGeneration,
+                null,
+                null,
                 null,
                 null
             })!);
@@ -1110,7 +1118,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task WriteValidationRepairRequestAsync_WithAgentConsole_PublishesRepairProgressSnapshot()
+    public async Task WriteValidationRepairRequestAsync_WithAgentConsole_PublishesPlayerSafeWaitingSnapshot()
     {
         const string sessionId = "session-repair-console";
         const string requestId = "request-repair-console";
@@ -1157,17 +1165,18 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
 
         var snapshot = store.GetSnapshot();
         Assert.NotNull(snapshot);
-        Assert.Equal("gm-validation-repair", snapshot!.ScreenId);
+        Assert.Equal("world-turn-paused", snapshot!.ScreenId);
         Assert.Equal(AgentConsoleMode.Loading, snapshot.Mode);
         Assert.False(snapshot.AwaitingInput);
-        Assert.Contains("Ремонт данных", snapshot.Title, StringComparison.Ordinal);
-        Assert.Contains("ход 12", snapshot.PlainText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("попытка 2", snapshot.PlainText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("current_location_unknown_location_id", snapshot.PlainText, StringComparison.Ordinal);
-        Assert.Contains("game_state/world/current_location.json.locationId", snapshot.PlainText, StringComparison.Ordinal);
-        Assert.Contains(snapshot.Diagnostics, diagnostic =>
-            diagnostic.Severity == AgentConsoleDiagnosticSeverity.Warning &&
-            string.Equals(diagnostic.Code, "validation-repair-progress", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal("Течение мира приостановлено", snapshot.Title);
+        AssertPlayerAgentConsoleSnapshotIsPrivate(
+            snapshot,
+            store.GetEvents(),
+            "current_location_unknown_location_id",
+            "game_state/world/current_location.json.locationId",
+            requestId,
+            "known location id",
+            "loc_gate");
     }
 
     [Fact]
@@ -10931,39 +10940,41 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     private GameEngine CreateGameEngine(
         IConsoleInputSource? inputSource = null,
         Action<GameSettings>? configureSettings = null,
-        GameEngineSessionFinalizationHooks? finalizationHooks = null)
+        GameEngineSessionFinalizationHooks? finalizationHooks = null,
+        FileSystemManager? fileSystem = null)
     {
+        var fs = fileSystem ?? _fs;
         var settings = new GameSettings();
         configureSettings?.Invoke(settings);
-        var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
+        var stateManager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
         var localization = new LocalizationManager { CurrentLanguage = "ru" };
         var gameLoop = new GameLoop();
-        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        var progressionSchedule = new ProgressionScheduleService(_fs, NullLogger<ProgressionScheduleService>.Instance);
+        var normalizer = new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var progressionSchedule = new ProgressionScheduleService(fs, NullLogger<ProgressionScheduleService>.Instance);
         var gameInterface = new GameInterface(localization, settings);
         var clipboardService = new TestClipboardService();
-        var explorer = new ExplorerMode(stateManager, _fs, localization, clipboardService: clipboardService, console: new TestExplorerConsole());
-        var saveLoad = new SaveLoadService(_fs, stateManager, NullLogger<SaveLoadService>.Instance);
-        var imageService = new ImageService(_fs, settings, localization, NullLogger<ImageService>.Instance);
-        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var characteristicsService = new CharacteristicsService(_fs, stateManager, NullLogger<CharacteristicsService>.Instance);
-        var storyService = new StoryService(_fs, NullLogger<StoryService>.Instance);
-        var actorMemoryService = new ActorMemoryService(_fs, NullLogger<ActorMemoryService>.Instance);
-        var audioService = new AudioService(_fs, settings, NullLogger<AudioService>.Instance);
+        var explorer = new ExplorerMode(stateManager, fs, localization, clipboardService: clipboardService, console: new TestExplorerConsole());
+        var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
+        var imageService = new ImageService(fs, settings, localization, NullLogger<ImageService>.Instance);
+        var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+        var characteristicsService = new CharacteristicsService(fs, stateManager, NullLogger<CharacteristicsService>.Instance);
+        var storyService = new StoryService(fs, NullLogger<StoryService>.Instance);
+        var actorMemoryService = new ActorMemoryService(fs, NullLogger<ActorMemoryService>.Instance);
+        var audioService = new AudioService(fs, settings, NullLogger<AudioService>.Instance);
         var consoleAppearance = new ConsoleAppearanceService(settings, NullLogger<ConsoleAppearanceService>.Instance);
-        var systemModService = new SystemModService(_fs, settings, NullLogger<SystemModService>.Instance);
-        var systemGuardianLibraryService = new SystemGuardianLibraryService(_fs, NullLogger<SystemGuardianLibraryService>.Instance);
-        var criticalStateHealth = new CriticalStateHealthService(_fs, NullLogger<CriticalStateHealthService>.Instance);
-        var worldDirectiveService = new WorldDirectiveService(_fs, NullLogger<WorldDirectiveService>.Instance);
-        var scenarioCoreService = new ScenarioCoreService(_fs, NullLogger<ScenarioCoreService>.Instance);
-        var afterlifeArchiveCandidateService = new AfterlifeArchiveCandidateService(_fs, NullLogger<AfterlifeArchiveCandidateService>.Instance);
-        var afterlifeReturnGuardService = new AfterlifeReturnGuardService(_fs, NullLogger<AfterlifeReturnGuardService>.Instance);
-        var rivalSoulArcService = new RivalSoulArcService(_fs, NullLogger<RivalSoulArcService>.Instance);
-        var guardianCorrectionService = new GuardianCorrectionService(_fs, scenarioCoreService, NullLogger<GuardianCorrectionService>.Instance);
-        var pendingTurnState = new PendingTurnStateService(_fs, NullLogger<PendingTurnStateService>.Instance);
-        var stateDistributor = new StateDistributor(_fs, NullLogger<StateDistributor>.Instance);
+        var systemModService = new SystemModService(fs, settings, NullLogger<SystemModService>.Instance);
+        var systemGuardianLibraryService = new SystemGuardianLibraryService(fs, NullLogger<SystemGuardianLibraryService>.Instance);
+        var criticalStateHealth = new CriticalStateHealthService(fs, NullLogger<CriticalStateHealthService>.Instance);
+        var worldDirectiveService = new WorldDirectiveService(fs, NullLogger<WorldDirectiveService>.Instance);
+        var scenarioCoreService = new ScenarioCoreService(fs, NullLogger<ScenarioCoreService>.Instance);
+        var afterlifeArchiveCandidateService = new AfterlifeArchiveCandidateService(fs, NullLogger<AfterlifeArchiveCandidateService>.Instance);
+        var afterlifeReturnGuardService = new AfterlifeReturnGuardService(fs, NullLogger<AfterlifeReturnGuardService>.Instance);
+        var rivalSoulArcService = new RivalSoulArcService(fs, NullLogger<RivalSoulArcService>.Instance);
+        var guardianCorrectionService = new GuardianCorrectionService(fs, scenarioCoreService, NullLogger<GuardianCorrectionService>.Instance);
+        var pendingTurnState = new PendingTurnStateService(fs, NullLogger<PendingTurnStateService>.Instance);
+        var stateDistributor = new StateDistributor(fs, NullLogger<StateDistributor>.Instance);
         var qteSceneService = new QteSceneService(
-            _fs,
+            fs,
             settings,
             characteristicsService,
             imageService,
@@ -10975,7 +10986,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             NullLogger<QteSceneService>.Instance);
 
         var engine = new GameEngine(
-            _fs,
+            fs,
             stateManager,
             gameLoop,
             normalizer,

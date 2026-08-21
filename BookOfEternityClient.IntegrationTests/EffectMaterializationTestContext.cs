@@ -34,7 +34,9 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
 
     private readonly string _expectedTempRoot;
 
-    private EffectMaterializationTestContext(string rootPath)
+    private EffectMaterializationTestContext(
+        string rootPath,
+        FileSystemManagerHooks? hooks = null)
     {
         RootPath = Path.GetFullPath(rootPath);
         _expectedTempRoot = Path.GetFullPath(Path.GetTempPath()).TrimEnd(
@@ -44,7 +46,9 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
         Directory.CreateDirectory(RootPath);
         FileSystem = new FileSystemManager(
             RootPath,
-            NullLogger<FileSystemManager>.Instance);
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
         FileSystem.EnsureDirectoryStructure();
         Validator = new ValidationService(
             FileSystem,
@@ -62,12 +66,13 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
 
     internal string RootPath { get; }
 
-    internal static async Task<EffectMaterializationTestContext> CreateAsync()
+    internal static async Task<EffectMaterializationTestContext> CreateAsync(
+        FileSystemManagerHooks? hooks = null)
     {
         var rootPath = Path.Combine(
             Path.GetTempPath(),
             "boe-effect-materialization-" + Guid.NewGuid().ToString("N"));
-        var context = new EffectMaterializationTestContext(rootPath);
+        var context = new EffectMaterializationTestContext(rootPath, hooks);
         await context.SeedMortalPlayerResourcesAsync(turn: 41);
         return context;
     }

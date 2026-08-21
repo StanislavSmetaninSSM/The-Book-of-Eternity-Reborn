@@ -539,7 +539,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             "CaptureChangedRollbackTrackedPathsForRepairSessionAsync",
             rollbackSnapshot,
             repairSessionGeneration);
-        var requiredPaths = Assert.IsAssignableFrom<IReadOnlyList<string>>(changedResult);
+        var requiredPaths = ReadRepairResubmissionPaths(changedResult);
         Assert.Contains(outputPath, requiredPaths, StringComparer.OrdinalIgnoreCase);
 
         await InvokePrivateTaskAsync(
@@ -558,7 +558,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             engine,
             "AreRollbackTrackedPathsResubmittedForRepairSessionAsync",
             rollbackSnapshot,
-            requiredPaths,
+            changedResult,
             repairSessionGeneration);
         Assert.False(formattingOnlyAccepted);
 
@@ -569,7 +569,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             engine,
             "AreRollbackTrackedPathsResubmittedForRepairSessionAsync",
             rollbackSnapshot,
-            requiredPaths,
+            changedResult,
             repairSessionGeneration);
         Assert.True(semanticChangeAccepted);
     }

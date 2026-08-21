@@ -225,7 +225,10 @@ public partial class GameEngine
         string? lastCriticalRepairSessionGeneration = null;
         IReadOnlyList<MortalLocationRepairRetryObligation>? mortalLocationRetryObligations = null;
         List<ValidationIssue>? mortalLocationRetryErrors = null;
-        IReadOnlyList<string>? mortalLocationRequiredResubmissionPaths = null;
+        IReadOnlyList<RepairResubmissionPathObligation>? mortalLocationRequiredResubmissionPaths = null;
+        IReadOnlyList<EffectRepairRetryObligation>? effectRetryObligations = null;
+        List<ValidationIssue>? effectRetryErrors = null;
+        IReadOnlyList<RepairResubmissionPathObligation>? effectRequiredResubmissionPaths = null;
         using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
 
         while (true)
@@ -242,6 +245,26 @@ public partial class GameEngine
                      lastCriticalRepairSessionGeneration!)))
             {
                 foreach (var retryError in mortalLocationRetryErrors!)
+                {
+                    if (!rawIssues.Any(issue =>
+                            string.Equals(issue.Code, retryError.Code, StringComparison.Ordinal) &&
+                            string.Equals(issue.FilePath, retryError.FilePath, StringComparison.Ordinal) &&
+                            string.Equals(issue.Actor, retryError.Actor, StringComparison.Ordinal)))
+                    {
+                        rawIssues.Add(retryError);
+                    }
+                }
+            }
+            if (effectRetryObligations is { Count: > 0 } &&
+                (!await HasExactEffectRepairResubmissionAsync(effectRetryObligations) ||
+                 rollbackSnapshot == null ||
+                 effectRequiredResubmissionPaths == null ||
+                 !await AreRollbackTrackedPathsResubmittedForRepairSessionAsync(
+                     rollbackSnapshot,
+                     effectRequiredResubmissionPaths,
+                     lastCriticalRepairSessionGeneration!)))
+            {
+                foreach (var retryError in effectRetryErrors!)
                 {
                     if (!rawIssues.Any(issue =>
                             string.Equals(issue.Code, retryError.Code, StringComparison.Ordinal) &&
@@ -284,6 +307,31 @@ public partial class GameEngine
                                 lastCriticalRepairSessionGeneration);
                     }
                 }
+                var actionableEffectPackets = EffectRepairPacketBuilder.Build(
+                    rawErrors,
+                    HasRollbackCapability(rollbackSnapshot));
+                if (actionableEffectPackets.Count > 0 && effectRetryObligations == null)
+                {
+                    effectRetryObligations = actionableEffectPackets
+                        .Select(packet =>
+                        {
+                            var correction = packet.ExactFieldCorrections.Single();
+                            return new EffectRepairRetryObligation(
+                                packet.Actor,
+                                packet.RawCoordinate,
+                                packet.ExpectedSource.DeepClone().AsObject(),
+                                packet.ExpectedTarget.DeepClone().AsObject(),
+                                packet.ExpectedDefinitionKey,
+                                packet.ExpectedEventRef.DeepClone().AsObject(),
+                                correction.ExpectedValueJson);
+                        })
+                        .ToArray();
+                    effectRetryErrors = rawErrors.ToList();
+                    effectRequiredResubmissionPaths =
+                        await CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
+                            rollbackSnapshot!,
+                            lastCriticalRepairSessionGeneration);
+                }
                 if (!await WaitForContractRepairAsync(
                         source,
                         rawErrors,
@@ -291,7 +339,9 @@ public partial class GameEngine
                         rollbackSnapshot,
                         lastCriticalRepairSessionGeneration,
                         mortalLocationRetryObligations,
-                        mortalLocationRequiredResubmissionPaths))
+                        mortalLocationRequiredResubmissionPaths,
+                        effectRetryObligations,
+                        effectRequiredResubmissionPaths))
                     return false;
                 lastCriticalRepairStartedAtUtc = rawRepairStartedAtUtc;
                 lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
@@ -633,6 +683,120 @@ public partial class GameEngine
     }
 
     private static string? ReadExactMortalLocationRepairString(
+        JsonObject source,
+        string property)
+    {
+        return source[property] is JsonValue value &&
+               value.TryGetValue<string>(out var text) &&
+               MortalItemIdentityRules.IsExactIdentity(text)
+            ? text
+            : null;
+    }
+
+    private async Task<bool> HasExactEffectRepairResubmissionAsync(
+        IReadOnlyList<EffectRepairRetryObligation> obligations)
+    {
+        var json = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+        try
+        {
+            var root = JsonNode.Parse(json) as JsonObject ?? throw new JsonException();
+            if (root["effectChanges"] is not JsonArray changes)
+                return false;
+
+            foreach (var obligation in obligations)
+            {
+                if (!TryParseEffectRepairActor(
+                        obligation.Actor,
+                        out var operationIndex) ||
+                    operationIndex >= changes.Count ||
+                    changes[operationIndex] is not JsonObject operation ||
+                    !string.Equals(
+                        ReadExactEffectRepairString(operation, "operation"),
+                        "apply",
+                        StringComparison.Ordinal) ||
+                    operation["source"] is not JsonObject source ||
+                    operation["target"] is not JsonObject target ||
+                    operation["eventRef"] is not JsonObject eventRef ||
+                    !JsonNode.DeepEquals(source, obligation.ExpectedSource) ||
+                    !JsonNode.DeepEquals(target, obligation.ExpectedTarget) ||
+                    !JsonNode.DeepEquals(eventRef, obligation.ExpectedEventRef) ||
+                    !string.Equals(
+                        ReadExactEffectRepairString(source, "definitionKey"),
+                        obligation.ExpectedDefinitionKey,
+                        StringComparison.Ordinal) ||
+                    operation["parameters"] is not JsonObject parameters ||
+                    !TryReadEffectRepairParameter(
+                        obligation.RawCoordinate,
+                        operationIndex,
+                        out var parameterName) ||
+                    !TryParseEffectRepairExpectedValue(
+                        obligation.ExpectedValueJson,
+                        out var expectedValue) ||
+                    !JsonNode.DeepEquals(parameters[parameterName], expectedValue))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        catch (Exception exception) when (
+            exception is JsonException or ArgumentException or InvalidOperationException)
+        {
+            return false;
+        }
+    }
+
+    private static bool TryParseEffectRepairActor(
+        string actor,
+        out int operationIndex)
+    {
+        operationIndex = -1;
+        const string prefix = "effect-apply:effectChanges[";
+        if (!actor.StartsWith(prefix, StringComparison.Ordinal) ||
+            !actor.EndsWith(']'))
+        {
+            return false;
+        }
+        var token = actor[prefix.Length..^1];
+        return int.TryParse(token, out operationIndex) &&
+               operationIndex >= 0 &&
+               string.Equals(token, operationIndex.ToString(), StringComparison.Ordinal);
+    }
+
+    private static bool TryReadEffectRepairParameter(
+        string rawCoordinate,
+        int operationIndex,
+        out string parameterName)
+    {
+        parameterName = string.Empty;
+        var prefix = $"effectChanges[{operationIndex}].parameters.";
+        if (!rawCoordinate.StartsWith(prefix, StringComparison.Ordinal))
+            return false;
+        parameterName = rawCoordinate[prefix.Length..];
+        return MortalItemIdentityRules.IsExactIdentity(parameterName) &&
+               parameterName.IndexOfAny(new[] { '.', '[', ']' }) < 0;
+    }
+
+    private static bool TryParseEffectRepairExpectedValue(
+        string valueJson,
+        out JsonNode? value)
+    {
+        value = null;
+        try
+        {
+            value = JsonNode.Parse(valueJson);
+            return value is JsonValue;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private static string? ReadExactEffectRepairString(
         JsonObject source,
         string property)
     {
@@ -1247,36 +1411,24 @@ public partial class GameEngine
 
     private void ShowContractValidationErrors(string source, List<ValidationIssue> errors)
     {
-        var summaryLines = BuildValidationSummaryLines(errors, 5);
-        var lines = new List<string>
+        foreach (var issue in errors)
         {
-            $"[bold red]Нарушение контракта GM после {GameInterface.EscapeMarkup(source)}[/]",
-            "[red]Клиент отклонил состояние как несовместимое с Rules/API.[/]",
-            ""
-        };
-
-        if (summaryLines.Count > 0)
-        {
-            lines.Add("[bold yellow]Основные группы ошибок:[/]");
-            foreach (var summary in summaryLines)
-                lines.Add($"[yellow]• {GameInterface.EscapeMarkup(summary)}[/]");
-            lines.Add("");
+            _logger.LogError(
+                "Rejected state after {Source}: code={Code}; path={Path}; message={Message}; expected={Expected}; actual={Actual}; repairHint={RepairHint}",
+                source,
+                issue.Code,
+                issue.FilePath,
+                issue.Message,
+                issue.Expected,
+                issue.Actual,
+                issue.RepairHint);
         }
 
-        foreach (var issue in errors.Take(10))
+        const string playerText =
+            "Изменения мира не были приняты. Вернитесь к последнему устойчивому состоянию и повторите действие позже.";
+        AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(playerText))
         {
-            var label = BuildIssueDisplayLabel(issue);
-            lines.Add($"[red]• {GameInterface.EscapeMarkup(label)}[/]");
-            if (!string.IsNullOrWhiteSpace(issue.RepairHint))
-                lines.Add($"  [grey]Исправление:[/] {GameInterface.EscapeMarkup(issue.RepairHint)}");
-        }
-
-        if (errors.Count > 10)
-            lines.Add($"[yellow]... и ещё {errors.Count - 10} ошибок[/]");
-
-        AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
-        {
-            Header = new PanelHeader(" Contract Error ", Justify.Center),
+            Header = new PanelHeader(" Ход не принят ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(Color.Red),
             Padding = new Padding(2, 1),
@@ -1286,39 +1438,12 @@ public partial class GameEngine
 
         if (_inputSource is AgentConsoleLiveInputSource liveInput)
         {
-            var plainLines = new List<string>
-            {
-                $"Нарушение контракта GM после {source}",
-                "Клиент отклонил состояние как несовместимое с Rules/API.",
-                ""
-            };
-
-            if (summaryLines.Count > 0)
-            {
-                plainLines.Add("Основные группы ошибок:");
-                plainLines.AddRange(summaryLines.Select(summary => "• " + summary));
-                plainLines.Add("");
-            }
-
-            foreach (var issue in errors.Take(10))
-            {
-                plainLines.Add("• " + BuildIssueDisplayLabel(issue));
-                if (!string.IsNullOrWhiteSpace(issue.RepairHint))
-                    plainLines.Add("  Исправление: " + issue.RepairHint);
-            }
-
-            if (errors.Count > 10)
-                plainLines.Add($"... и ещё {errors.Count - 10} ошибок");
-
-            plainLines.Add("");
-            plainLines.Add(_loc.T("press_any_key"));
-
             liveInput.PublishSnapshot(new AgentConsoleSnapshot
             {
-                ScreenId = "contract-validation-error",
+                ScreenId = PlayerSafePausedScreenId,
                 Mode = AgentConsoleMode.Error,
-                Title = "Нарушение контракта GM",
-                PlainText = string.Join(Environment.NewLine, plainLines),
+                Title = "Ход не принят",
+                PlainText = playerText + Environment.NewLine + _loc.T("press_any_key"),
                 AwaitingInput = true,
                 InputKind = AgentConsoleInputKind.Key,
                 Actions =
@@ -1333,16 +1458,8 @@ public partial class GameEngine
                 ],
                 RenderedAtUtc = DateTimeOffset.UtcNow,
                 UpdatedAtUtc = DateTimeOffset.UtcNow,
-                Diagnostics =
-                [
-                    new AgentConsoleDiagnostic
-                    {
-                        Severity = AgentConsoleDiagnosticSeverity.Error,
-                        Code = "contract-validation-error",
-                        Message = $"Клиент отклонил состояние после {source}."
-                    }
-                ]
-            }, "Rendered contract validation error.");
+                Diagnostics = []
+            }, "Течение мира временно приостановлено.");
         }
 
         _inputSource.ReadKey(intercept: true);
@@ -1364,20 +1481,33 @@ public partial class GameEngine
     private async Task<bool> WaitForContractRepairAsync(string source, List<ValidationIssue> errors,
         int attempt, RollbackSnapshot? rollbackSnapshot, string repairSessionGeneration,
         IReadOnlyList<MortalLocationRepairRetryObligation>? mortalLocationRetryObligations = null,
-        IReadOnlyList<string>? mortalLocationRequiredResubmissionPaths = null)
+        IReadOnlyList<RepairResubmissionPathObligation>? mortalLocationRequiredResubmissionPaths = null,
+        IReadOnlyList<EffectRepairRetryObligation>? effectRetryObligations = null,
+        IReadOnlyList<RepairResubmissionPathObligation>? effectRequiredResubmissionPaths = null)
     {
         await EnsureRepairSessionCurrentAsync(repairSessionGeneration);
+        var rollbackAvailable = HasRollbackCapability(rollbackSnapshot);
         var requiresMortalItemFailClosed =
             MortalItemRepairPacketBuilder.RequiresFailClosedRollback(errors);
         var mortalLocationRepairPackets = MortalLocationRepairPacketBuilder.Build(errors);
         var hasActionableMortalLocationRepair = mortalLocationRepairPackets.Count > 0;
         var requiresMortalLocationFailClosed =
             MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(errors) ||
-            (hasActionableMortalLocationRepair && !HasRollbackCapability(rollbackSnapshot));
-        if (requiresMortalItemFailClosed || requiresMortalLocationFailClosed)
+            (hasActionableMortalLocationRepair && !rollbackAvailable);
+        var effectRepairPackets = EffectRepairPacketBuilder.Build(
+            errors,
+            rollbackAvailable);
+        var hasActionableEffectRepair = effectRepairPackets.Count > 0;
+        var requiresEffectFailClosed =
+            EffectRepairPacketBuilder.RequiresFailClosedRollback(
+                errors,
+                rollbackAvailable);
+        if (requiresMortalItemFailClosed ||
+            requiresMortalLocationFailClosed ||
+            requiresEffectFailClosed)
         {
             _logger.LogError(
-                "Mortal materialization repair after {Source} has protected or unresolved authority; rejecting the accepted state for caller-owned rollback instead of dispatching a broad GM repair.",
+                "Materialization repair after {Source} has protected or unresolved authority; rejecting the accepted state for caller-owned rollback instead of dispatching a broad GM repair.",
                 source);
             await RunBestEffortFailClosedBookkeepingAsync(
                 "delete the transient report after protected Mortal materialization rejection",
@@ -1402,17 +1532,28 @@ public partial class GameEngine
                         rollbackSnapshot,
                         repairSessionGeneration));
             }
+            if (requiresEffectFailClosed)
+            {
+                await RunBestEffortFailClosedBookkeepingAsync(
+                    "write the protected effect diagnostic report",
+                    () => WriteProtectedEffectDiagnosticFailureReportAsync(
+                        source,
+                        errors,
+                        attempt,
+                        rollbackSnapshot,
+                        repairSessionGeneration));
+            }
             await RunBestEffortFailClosedBookkeepingAsync(
                 "clean validation-repair control files after protected Mortal materialization rejection",
                 () => DeleteValidationRepairFilesForSessionAsync(repairSessionGeneration));
             AnsiConsole.MarkupLine(
-                HasRollbackCapability(rollbackSnapshot)
+                rollbackAvailable
                     ? "[yellow]↩ Изменения мира не были приняты; состояние до хода будет восстановлено.[/]"
                     : "[yellow]⚠ Изменения мира не были приняты. Продолжение этого хода остановлено.[/]");
             return false;
         }
 
-        if (hasActionableMortalLocationRepair)
+        if (hasActionableMortalLocationRepair || hasActionableEffectRepair)
         {
             await RestorePreTurnBaselineForRepairSessionAsync(
                 rollbackSnapshot!,
@@ -1425,7 +1566,10 @@ public partial class GameEngine
             attempt,
             repairSessionGeneration,
             mortalLocationRetryObligations,
-            mortalLocationRequiredResubmissionPaths);
+            mortalLocationRequiredResubmissionPaths,
+            effectRetryObligations,
+            effectRequiredResubmissionPaths,
+            effectRepairPackets);
         ThrowIfValidationRepairDispatchSessionReplaced(dispatch);
         if (dispatch.MetadataDiagnosticOnly)
             return await FailClosedDiagnosticOnlyValidationRepairAsync(
@@ -1442,9 +1586,8 @@ public partial class GameEngine
         }
 
         using var agentConsoleRepairInputBlock = BeginAgentConsoleInputBlockFromCurrentSnapshot(
-            "Validation repair is active. Agent Console input is blocked until GM finishes data repair.");
+            PlayerSafeInputBlockedText);
 
-        var rollbackAvailable = HasRollbackCapability(rollbackSnapshot);
         while (true)
         {
             using var cts = new CancellationTokenSource();
@@ -2064,14 +2207,20 @@ public partial class GameEngine
         int attempt,
         string expectedSessionGeneration,
         IReadOnlyList<MortalLocationRepairRetryObligation>? mortalLocationRetryObligations = null,
-        IReadOnlyList<string>? mortalLocationRequiredResubmissionPaths = null)
+        IReadOnlyList<RepairResubmissionPathObligation>? mortalLocationRequiredResubmissionPaths = null,
+        IReadOnlyList<EffectRepairRetryObligation>? effectRetryObligations = null,
+        IReadOnlyList<RepairResubmissionPathObligation>? effectRequiredResubmissionPaths = null,
+        IReadOnlyList<EffectRepairPacket>? effectRepairPackets = null)
     {
         await DeleteValidationRepairFilesForSessionAsync(expectedSessionGeneration);
         var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
         var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
         var requestMetadata = BuildProtocolRequestMetadata(pendingSnapshot);
         var metadataDiagnosticOnly = BuildProtocolRequestMetadataDiagnosticOnly(pendingSnapshot);
-        var fullTurnResubmissionRequired = mortalLocationRetryObligations is { Count: > 0 };
+        var fullTurnResubmissionRequired =
+            mortalLocationRetryObligations is { Count: > 0 } ||
+            effectRetryObligations is { Count: > 0 } ||
+            effectRepairPackets is { Count: > 0 };
         var gmInstructions = BuildValidationRepairRequestInstructions(
             pendingSnapshot,
             fullTurnResubmissionRequired);
@@ -2090,8 +2239,9 @@ public partial class GameEngine
             SummaryGroups = BuildValidationSummaryLines(prioritizedErrors, 6),
             HarnessRepairPackets = BuildValidationRepairHarnessPackets(
                 prioritizedErrors,
-                await ReadCurrentGuardianRepairActorNameHintsAsync()),
-            ResubmissionObligations = mortalLocationRetryObligations?
+                await ReadCurrentGuardianRepairActorNameHintsAsync(),
+                effectRepairPackets),
+            ResubmissionObligations = (mortalLocationRetryObligations?
                 .Select(obligation => new ValidationRepairResubmissionObligation
                 {
                     Actor = obligation.Actor,
@@ -2099,11 +2249,23 @@ public partial class GameEngine
                     RawCarrier = obligation.Route is "current_scene_creation" or "current_selection"
                         ? "currentLocationData"
                         : "worldMapUpdates"
-                })
-                .ToList() ?? new List<ValidationRepairResubmissionObligation>(),
-            RequiredResubmissionPaths = mortalLocationRequiredResubmissionPaths?
-                .OrderBy(path => path, StringComparer.Ordinal)
-                .ToList() ?? new List<string>(),
+                }) ?? Enumerable.Empty<ValidationRepairResubmissionObligation>())
+                .Concat(effectRetryObligations?
+                    .Select(obligation => new ValidationRepairResubmissionObligation
+                    {
+                        Actor = obligation.Actor,
+                        Route = "effectChanges",
+                        RawCarrier = EffectAcceptedTurnPlan.CommandPath
+                    }) ?? Enumerable.Empty<ValidationRepairResubmissionObligation>())
+                .ToList(),
+            RequiredResubmissionPaths = (mortalLocationRequiredResubmissionPaths ??
+                    Array.Empty<RepairResubmissionPathObligation>())
+                .Concat(effectRequiredResubmissionPaths ??
+                        Array.Empty<RepairResubmissionPathObligation>())
+                .Select(static obligation => obligation.Path)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+                .ToList(),
             Errors = prioritizedErrors.Select(e => new ValidationRepairIssue
             {
                 Code = e.Code ?? "validation_error",
@@ -2119,7 +2281,7 @@ public partial class GameEngine
             }).ToList()
         };
 
-        PublishAgentConsoleValidationRepairSnapshot(request);
+        PublishAgentConsoleValidationRepairSnapshot();
         GmWorkerValidationRepairDispatchResult? workerResult = null;
         if (!metadataDiagnosticOnly && !fullTurnResubmissionRequired)
         {
@@ -2261,9 +2423,47 @@ public partial class GameEngine
             expectedSessionGeneration);
     }
 
+    private async Task WriteProtectedEffectDiagnosticFailureReportAsync(
+        string source,
+        IReadOnlyList<ValidationIssue> errors,
+        int attempt,
+        RollbackSnapshot? rollbackSnapshot,
+        string expectedSessionGeneration)
+    {
+        var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
+        var report = new
+        {
+            source,
+            detectedAtUtc = DateTime.UtcNow.ToString("o"),
+            attempt,
+            reason = "Protected or unresolved effect authority requires fail-closed rollback before GM repair dispatch.",
+            rollbackAvailable = HasRollbackCapability(rollbackSnapshot),
+            summaryGroups = BuildValidationSummaryLines(prioritizedErrors, 6),
+            errors = prioritizedErrors.Select(e => new
+            {
+                code = e.Code ?? "validation_error",
+                filePath = e.FilePath,
+                severity = e.Severity.ToString(),
+                category = e.Category.ToString(),
+                message = e.Message,
+                actor = e.Actor,
+                section = e.Section,
+                expected = e.Expected,
+                actual = e.Actual,
+                repairHint = e.RepairHint
+            }).ToList()
+        };
+
+        await WriteValidationRepairFileForSessionAsync(
+            ValidationDiagnosticFailureReportPath,
+            JsonSerializer.Serialize(report, JsonOpts),
+            expectedSessionGeneration);
+    }
+
     private static List<ValidationRepairHarnessPacket> BuildValidationRepairHarnessPackets(
         IReadOnlyList<ValidationIssue> errors,
-        IReadOnlyCollection<string>? guardianActorNameHints = null)
+        IReadOnlyCollection<string>? guardianActorNameHints = null,
+        IReadOnlyList<EffectRepairPacket>? effectRepairPackets = null)
     {
         var packets = new List<ValidationRepairHarnessPacket>();
         var guardianPendingCreationMaterializationErrors = errors.Where(IsGuardianPendingCreationMaterializationRepairIssue).ToList();
@@ -2343,6 +2543,11 @@ public partial class GameEngine
 
         packets.AddRange(mortalItemRepairPackets.Select(BuildMortalItemRepairHarnessPacket));
         packets.AddRange(mortalLocationRepairPackets.Select(BuildMortalLocationRepairHarnessPacket));
+        if (effectRepairPackets is { Count: > 0 })
+        {
+            packets.AddRange(effectRepairPackets.Select(
+                BuildEffectRepairHarnessPacket));
+        }
 
         foreach (var factionMaterializationGroup in factionMaterializationGroups)
         {
@@ -2481,6 +2686,69 @@ public partial class GameEngine
             Steps = source.Steps.ToList(),
             DebugLogTemplate = string.Empty,
             DoNotDo = source.DoNotDo.ToList()
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildEffectRepairHarnessPacket(
+        EffectRepairPacket source)
+    {
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = source.Kind,
+            Priority = "blocking",
+            Title = "Repair one exact source-bounded effect parameter",
+            TargetFiles = source.TargetFiles.ToList(),
+            TemplateRefs = new List<string>
+            {
+                "specs/1535-complete-effect-materialization/contracts/effect-command-and-envelope.md",
+                "specs/1535-complete-effect-materialization/contracts/effect-atomic-repair-and-rollback.md"
+            },
+            CanonicalActorNames = new List<string> { source.Actor },
+            Actor = source.Actor,
+            TransitionClass = "apply",
+            Route = source.Route,
+            RawCarrier = EffectAcceptedTurnPlan.CommandPath,
+            RawCoordinate = source.RawCoordinate,
+            ExpectedSource = source.ExpectedSource.DeepClone().AsObject(),
+            ExpectedTarget = source.ExpectedTarget.DeepClone().AsObject(),
+            ExpectedDefinitionKey = source.ExpectedDefinitionKey,
+            ExpectedEventRef = source.ExpectedEventRef.DeepClone().AsObject(),
+            ExactFieldCorrections = source.ExactFieldCorrections
+                .Select(correction => new ValidationRepairExactFieldCorrection
+                {
+                    Path = correction.Path,
+                    Expected = correction.ExpectedValueJson,
+                    Actual = "missing",
+                    Code = correction.Code,
+                    RepairHint = correction.RepairHint
+                })
+                .ToList(),
+            FullTurnResubmissionRequired = source.FullTurnResubmissionRequired,
+            ResubmissionObligations = source.ResubmissionObligations.ToList(),
+            ExpectedShape = new List<string>
+            {
+                "One complete rejected-turn response with the exact effect operation restored.",
+                "The listed scalar parameter equals the one source-owned value.",
+                "All unrelated accepted-turn changes and player-facing output are resubmitted coherently."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Edit only the listed rawCoordinate in effect_commands.json.",
+                "Preserve exact source, target, definitionKey, eventRef, and every unrelated response path.",
+                "Signal ready only after the complete response has been rewritten."
+            },
+            Steps = new List<string>
+            {
+                "Restore the full rejected response against the already restored pre-turn baseline.",
+                "Apply the one exactFieldCorrection without changing any selector or client-owned state.",
+                "Resubmit every required path, then signal validation repair ready."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not author effectId, stack/lifetime state, transition history, receipt, index, pending, carrier, resource, or wound state.",
+                "Do not retarget the source, target, realm, event, wound, or owner.",
+                "Do not submit a ready marker or effect-only fragment without the complete rejected response."
+            }
         };
     }
 
@@ -6098,27 +6366,24 @@ public partial class GameEngine
             }
         }
 
-        var recoveryText = "Действие не было применено. Состояние возвращается к последней стабильной версии; после возврата к ходу можно повторить действие или выбрать другой путь.";
+        _logger.LogError("Turn ended with an operator-side terminal error: {ErrorMessage}", errorMsg);
         var pressAnyKey = _loc.T("press_any_key");
-        AnsiConsole.MarkupLine($"[red]❌ Ошибка GM: {GameInterface.EscapeMarkup(errorMsg)}[/]");
-        AnsiConsole.MarkupLine($"[yellow]{GameInterface.EscapeMarkup(recoveryText)}[/]");
+        AnsiConsole.MarkupLine($"[red]❌ {GameInterface.EscapeMarkup(PlayerSafeTurnErrorTitle)}[/]");
+        AnsiConsole.MarkupLine($"[yellow]{GameInterface.EscapeMarkup(PlayerSafeTurnErrorText)}[/]");
         AnsiConsole.MarkupLine($"[grey]{GameInterface.EscapeMarkup(pressAnyKey)}[/]");
 
         if (_inputSource is AgentConsoleLiveInputSource liveInput)
         {
             var plainText = string.Join(Environment.NewLine, new[]
             {
-                "Ошибка GM",
-                errorMsg,
-                "",
-                recoveryText,
+                PlayerSafeTurnErrorText,
                 pressAnyKey
             });
             liveInput.PublishSnapshot(new AgentConsoleSnapshot
             {
-                ScreenId = "gm-turn-error",
+                ScreenId = PlayerSafePausedScreenId,
                 Mode = AgentConsoleMode.Error,
-                Title = "Ошибка GM",
+                Title = PlayerSafeTurnErrorTitle,
                 PlainText = plainText,
                 AwaitingInput = true,
                 InputKind = AgentConsoleInputKind.Key,
@@ -6134,17 +6399,8 @@ public partial class GameEngine
                 ],
                 RenderedAtUtc = DateTimeOffset.UtcNow,
                 UpdatedAtUtc = DateTimeOffset.UtcNow,
-                Diagnostics =
-                [
-                    new AgentConsoleDiagnostic
-                    {
-                        Severity = AgentConsoleDiagnosticSeverity.Error,
-                        Code = "gm-turn-error",
-                        Message = "GM turn ended with a terminal error.",
-                        Detail = errorMsg
-                    }
-                ]
-            }, "Rendered GM turn error.");
+                Diagnostics = []
+            }, "Течение мира временно приостановлено.");
         }
 
         _inputSource.ReadKey(intercept: true);
@@ -6176,13 +6432,13 @@ public partial class GameEngine
         await WriteTerminalProtocolFailureRequestAsync($"terminal protocol failure: {sourceLabel}", protocolErrors);
         _fs.DeleteFile("input/turn_request.json");
 
-        AnsiConsole.MarkupLine("[yellow]⚠ Текущий ответ GM отклонён клиентом. Состояние возвращено к последней стабильной версии.[/]");
+        AnsiConsole.MarkupLine("[yellow]⚠ Текущий ход не был принят. Мир возвращается к последнему устойчивому состоянию.[/]");
 
         if (HasRollbackCapability(rollbackSnapshot))
         {
             await RestorePreTurnBackup(rollbackSnapshot!);
             CleanupBackup(rollbackSnapshot!);
-            AnsiConsole.MarkupLine("[yellow]↩ Последняя стабильная версия состояния восстановлена после отклонения ответа GM.[/]");
+            AnsiConsole.MarkupLine("[yellow]↩ Последнее устойчивое состояние мира восстановлено.[/]");
         }
 
         await CleanupPendingTurnSnapshotAsync();
@@ -6216,13 +6472,13 @@ public partial class GameEngine
         ClearReadySignals();
         ClearTransientOutputFiles();
 
-        AnsiConsole.MarkupLine("[yellow]⚠ Клиент не смог безопасно принять ответ GM и восстановил последнюю стабильную версию состояния.[/]");
+        AnsiConsole.MarkupLine("[yellow]⚠ Текущий ход не удалось безопасно завершить. Мир возвращается к последнему устойчивому состоянию.[/]");
 
         if (HasRollbackCapability(rollbackSnapshot))
         {
             await RestorePreTurnBackup(rollbackSnapshot!);
             CleanupBackup(rollbackSnapshot!);
-            AnsiConsole.MarkupLine("[yellow]↩ Последняя стабильная версия состояния восстановлена после потери корректного ответа GM.[/]");
+            AnsiConsole.MarkupLine("[yellow]↩ Последнее устойчивое состояние мира восстановлено.[/]");
         }
 
         await CleanupPendingTurnSnapshotAsync();
@@ -6311,13 +6567,13 @@ public partial class GameEngine
         ClearReadySignals();
         ClearTransientOutputFiles();
 
-        AnsiConsole.MarkupLine("[yellow]⚠ Клиент обнаружил внутреннюю несогласованность в ответе GM и восстановил последнюю стабильную версию состояния.[/]");
+        AnsiConsole.MarkupLine("[yellow]⚠ Текущий ход завершился неустойчиво. Мир возвращается к последнему устойчивому состоянию.[/]");
 
         if (HasRollbackCapability(rollbackSnapshot))
         {
             await RestorePreTurnBackup(rollbackSnapshot!);
             CleanupBackup(rollbackSnapshot!);
-            AnsiConsole.MarkupLine("[yellow]↩ Последняя стабильная версия состояния восстановлена после конфликтующих ответов GM.[/]");
+            AnsiConsole.MarkupLine("[yellow]↩ Последнее устойчивое состояние мира восстановлено.[/]");
         }
 
         await CleanupPendingTurnSnapshotAsync();

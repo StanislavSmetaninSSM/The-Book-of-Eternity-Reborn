@@ -272,12 +272,16 @@ public sealed class ResourceOwnerMaterializationTests
         Assert.True(owner.Success, string.Join(Environment.NewLine, owner.Issues));
         var permanentId = owner.Entry!.Key.ResourceOwnerId;
 
-        var combatRoot = plan.OwnerCompanionAfterImages[EffectCarrierCatalog.EnemiesPath];
+        var effectPlan = Assert.IsType<EffectAcceptedTurnPlan>(plan.EffectPlan);
+        var combatRoot = effectPlan.CarrierAfterImages[EffectCarrierCatalog.EnemiesPath];
         var combatant = Assert.IsType<JsonObject>(
             Assert.Single(combatRoot["enemiesData"]!.AsArray()));
         Assert.Equal(permanentId, combatant["combatantId"]!.GetValue<string>());
         Assert.Null(combatant["combatantRef"]);
-        Assert.Equal(new[] { permanentId }, plan.EffectPlan!.AllocatedCombatantIds);
+        Assert.Equal(new[] { permanentId }, effectPlan.AllocatedCombatantIds);
+        Assert.DoesNotContain(
+            EffectCarrierCatalog.EnemiesPath,
+            plan.OwnerCompanionAfterImages.Keys);
     }
 
     [Fact]

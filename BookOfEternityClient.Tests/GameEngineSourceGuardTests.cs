@@ -426,7 +426,7 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("request.WaitingMessage", method, StringComparison.Ordinal);
         Assert.Contains("playerFacingTurn: false", method, StringComparison.Ordinal);
         Assert.Contains("await _explorer.TryProcessCommand(request.OriginalCommand)", method, StringComparison.Ordinal);
-        Assert.Contains("Повторный автозапрос не отправлен", method, StringComparison.Ordinal);
+        Assert.Contains("Мир не будет повторять это ожидание автоматически", method, StringComparison.Ordinal);
 
         var processPlayerTurn = ExtractMethodSource(source, "private async Task ProcessPlayerTurn(");
         Assert.Contains("bool playerFacingTurn = true", processPlayerTurn, StringComparison.Ordinal);
@@ -585,7 +585,7 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("AgentConsoleMode.Loading", helper, StringComparison.Ordinal);
         Assert.Contains("AwaitingInput = false", helper, StringComparison.Ordinal);
         Assert.Contains("InputKind = AgentConsoleInputKind.None", helper, StringComparison.Ordinal);
-        Assert.Contains("ScreenId = \"gm-waiting\"", helper, StringComparison.Ordinal);
+        Assert.Contains("ScreenId = \"world-awaiting-continuation\"", helper, StringComparison.Ordinal);
     }
 
     [Fact]

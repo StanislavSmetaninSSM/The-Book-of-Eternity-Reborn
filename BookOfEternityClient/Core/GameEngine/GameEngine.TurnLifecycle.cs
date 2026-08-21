@@ -39,8 +39,8 @@ public partial class GameEngine
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
         PublishAgentConsoleGmWaitingSnapshot(
-            "Ожидание мастера",
-            "GM обрабатывает ход. Агент-консоль ждёт готовый ответ или запрос на ремонт данных.");
+            PlayerSafeWaitingTitle,
+            PlayerSafeWaitingText);
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
@@ -52,11 +52,11 @@ public partial class GameEngine
             {
                 await RestorePreTurnBackup(rollbackSnapshot!);
                 CleanupBackup(rollbackSnapshot!);
-                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён, состояние восстановлено из rollback backup. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
+                AnsiConsole.MarkupLine("[dim]Переходный ход отменён. Мир вернулся к состоянию до этого действия; позднее завершение событий останется отложенным.[/]");
             }
             else
             {
-                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён. Rollback backup для этого режима недоступен; если GM завершит уже отправленный ход позже, он всё равно придёт как отложенный ответ.[/]");
+                AnsiConsole.MarkupLine("[dim]Переходный ход отменён. В этом режиме прежнее состояние нельзя вернуть автоматически; позднее завершение событий останется отложенным.[/]");
             }
             return false;
         }
@@ -122,9 +122,9 @@ public partial class GameEngine
 
             _gameLoop.IncrementTurn();
 
-            // Debug: log narrative length to help diagnose rendering issues
+            // Debug: log narrative length to help diagnose rendering issues.
             if (string.IsNullOrEmpty(response?.Response))
-                AnsiConsole.MarkupLine("[yellow dim]⚠ Нарратив пуст в ответе GM[/]");
+                _logger.LogWarning("Accepted turn narrative is empty.");
 
             _lastResponse = response;
             _pendingImagePrompt = null;
@@ -195,7 +195,7 @@ public partial class GameEngine
         {
             await RestorePreTurnBackup(rollbackSnapshot!);
             CleanupBackup(rollbackSnapshot!);
-            AnsiConsole.MarkupLine("[yellow]↩ Переходный ход завершился ошибкой GM. Состояние откатилось к последней стабильной версии.[/]");
+            AnsiConsole.MarkupLine("[yellow]↩ Переходный ход не был принят. Мир вернулся к последнему устойчивому состоянию.[/]");
         }
 
         await CleanupPendingTurnSnapshotAsync();
@@ -217,8 +217,8 @@ public partial class GameEngine
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
         PublishAgentConsoleGmWaitingSnapshot(
-            "Ожидание мастера",
-            "GM обрабатывает переход. Агент-консоль ждёт готовый ответ или запрос на ремонт данных.");
+            PlayerSafeWaitingTitle,
+            PlayerSafeWaitingText);
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
@@ -229,11 +229,11 @@ public partial class GameEngine
             {
                 await RestorePreTurnBackup(rollbackSnapshot!);
                 CleanupBackup(rollbackSnapshot!);
-                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён, состояние восстановлено из rollback backup. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
+                AnsiConsole.MarkupLine("[dim]Переходный ход отменён. Мир вернулся к состоянию до этого действия; позднее завершение событий останется отложенным.[/]");
             }
             else
             {
-                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён. Rollback backup для этого режима недоступен; если GM завершит уже отправленный ход позже, он всё равно придёт как отложенный ответ.[/]");
+                AnsiConsole.MarkupLine("[dim]Переходный ход отменён. В этом режиме прежнее состояние нельзя вернуть автоматически; позднее завершение событий останется отложенным.[/]");
             }
             return false;
         }
@@ -258,7 +258,7 @@ public partial class GameEngine
             {
                 await RestorePreTurnBackup(rollbackSnapshot!);
                 CleanupBackup(rollbackSnapshot!);
-                AnsiConsole.MarkupLine("[yellow]↩ Переходный ход завершился ошибкой GM. Состояние откатилось к последней стабильной версии.[/]");
+                AnsiConsole.MarkupLine("[yellow]↩ Переходный ход не был принят. Мир вернулся к последнему устойчивому состоянию.[/]");
             }
 
             await CleanupPendingTurnSnapshotAsync();
@@ -276,10 +276,44 @@ public partial class GameEngine
         if (!HasRollbackCapability(rollbackSnapshot))
             return;
 
-        await RestorePreTurnBackup(rollbackSnapshot!);
-        CleanupBackup(rollbackSnapshot!);
-        if (!string.IsNullOrWhiteSpace(playerMessage))
-            AnsiConsole.MarkupLine(playerMessage);
+        try
+        {
+            await RestorePreTurnBackup(rollbackSnapshot!);
+            CleanupBackup(rollbackSnapshot!);
+            if (!string.IsNullOrWhiteSpace(playerMessage))
+                AnsiConsole.MarkupLine(playerMessage);
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            _inGame = false;
+            _logger.LogError(
+                exception,
+                "Rejected accepted-turn rollback failed; evidence is retained and the session remains stopped.");
+            await RunBestEffortFailClosedBookkeepingAsync(
+                "write the rejected accepted-turn rollback failure diagnostic",
+                async () =>
+                {
+                    var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                    var report = new
+                    {
+                        detectedAtUtc = DateTime.UtcNow.ToString("o"),
+                        reason = "Rejected accepted-turn rollback failed; evidence was retained.",
+                        exceptionType = exception.GetType().FullName,
+                        message = exception.Message,
+                        details = exception.ToString()
+                    };
+                    await WriteValidationRepairFileForSessionAsync(
+                        ValidationDiagnosticFailureReportPath,
+                        JsonSerializer.Serialize(report, JsonOpts),
+                        sessionGeneration);
+                });
+            AnsiConsole.MarkupLine(
+                "[yellow]⚠ Изменения мира не были приняты. Мир не удалось вернуть к устойчивой точке; продолжение остановлено.[/]");
+        }
     }
 
     private async Task ApplyPendingShiningBlessingRuntimeEffectsAsync(ValidatedPendingTurnSnapshotContext? snapshotContext)
@@ -421,9 +455,9 @@ public partial class GameEngine
                         if (elapsed < 15)
                             ctx.Status($"[cyan]{_loc.T("thinking")}[/]");
                         else if (elapsed < 120)
-                            ctx.Status($"[yellow]⏳ Ожидание GM-демона... ({elapsed}с) (Escape = отменить)[/]");
+                            ctx.Status($"[yellow]⏳ Мир продолжает складывать последствия... ({elapsed}с) (Escape = отменить)[/]");
                         else
-                            ctx.Status($"[yellow]⏳ GM обрабатывает ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
+                            ctx.Status($"[yellow]⏳ Мир ещё не завершил ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
 
                         await Task.Delay(1000);
                     }
@@ -796,7 +830,7 @@ public partial class GameEngine
                 {
                     var lateResponse = await BuildGameResponseFromFiles();
                     if (lateResponse == null || string.IsNullOrEmpty(lateResponse.Response))
-                        AnsiConsole.MarkupLine("[yellow dim]⚠ Нарратив пуст в late response GM[/]");
+                        _logger.LogWarning("Accepted late-turn narrative is empty.");
                     _pendingImagePrompt = null;
                     CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction);
                     var lateAction = snapshotContext?.PlayerAction ?? string.Empty;
@@ -1097,13 +1131,13 @@ public partial class GameEngine
         var repeatedInPlaceRequest = _explorer.ConsumePendingInPlaceGmRequest();
         if (repeatedInPlaceRequest != null)
         {
-            AnsiConsole.MarkupLine("[yellow]⚠️ Витрина всё ещё не готова после ответа ГМ. Повторный автозапрос не отправлен, чтобы не зациклить ожидание.[/]");
+            AnsiConsole.MarkupLine("[yellow]⚠️ Витрина всё ещё не готова. Мир не будет повторять это ожидание автоматически.[/]");
             return;
         }
 
         if (!string.IsNullOrWhiteSpace(refreshResult))
         {
-            AnsiConsole.MarkupLine("[yellow]⚠️ Команда после обновления всё ещё требует действия ГМ. Повторный автозапрос не отправлен.[/]");
+            AnsiConsole.MarkupLine("[yellow]⚠️ После обновления действие всё ещё недоступно. Мир не будет повторять запрос автоматически.[/]");
         }
     }
 
@@ -1243,8 +1277,8 @@ public partial class GameEngine
             throw new InvalidOperationException("Turn staging failed before rollback snapshot and request were created.");
 
         PublishAgentConsoleGmWaitingSnapshot(
-            waitingTitle ?? "Ожидание мастера",
-            waitingText ?? "GM обрабатывает ход. Агент-консоль ждёт готовый ответ или запрос на ремонт данных.");
+            waitingTitle ?? PlayerSafeWaitingTitle,
+            waitingText ?? PlayerSafeWaitingText);
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
@@ -1256,7 +1290,7 @@ public partial class GameEngine
             _qteSceneService.ClearOfferFile();
             await RestorePreTurnBackup(backedUpFiles);
             CleanupAfterCancelledChaosSeaMarkerTurn(action);
-            AnsiConsole.MarkupLine("[dim]Изменения локально отменены, состояние восстановлено. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
+            AnsiConsole.MarkupLine("[dim]Изменения отменены, прежнее состояние восстановлено. Позднее завершение событий останется отложенным.[/]");
             CleanupBackup(backedUpFiles);
             return;
         }

@@ -306,6 +306,73 @@ public sealed class EffectAcceptedTurnPlannerTests
     }
 
     [Fact]
+    public void Build_AttachesExactRepairContextForSingletonRequiredParameter()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["parameterBounds"]!["amount"]!["required"] = true;
+        definition["parameterBounds"]!["amount"]!["minimum"] = 3;
+        definition["parameterBounds"]!["amount"]!["maximum"] = 3;
+        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        command["parameters"] = new JsonObject();
+
+        var result = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(
+            CreateInput(command: command, definition: definition));
+
+        Assert.Null(result.Plan);
+        var issue = Assert.Single(result.Issues, issue =>
+            issue.Code == "effect_source_parameter_required");
+        Assert.Equal("effectChanges[0].parameters.amount", issue.FilePath);
+        Assert.Equal("effect-apply:effectChanges[0]", issue.Actor);
+        var context = Assert.IsType<EffectRepairContext>(issue.EffectRepairContext);
+        Assert.Equal("3", context.ExpectedValueJson);
+        Assert.Single(EffectRepairPacketBuilder.Build(
+            result.Issues,
+            rollbackAvailable: true));
+    }
+
+    [Fact]
+    public void Build_DoesNotAttachRepairContextForNonSingletonRequiredParameter()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["parameterBounds"]!["amount"]!["required"] = true;
+        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        command["parameters"] = new JsonObject();
+
+        var result = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(
+            CreateInput(command: command, definition: definition));
+
+        Assert.Null(result.Plan);
+        var issue = Assert.Single(result.Issues, issue =>
+            issue.Code == "effect_source_parameter_required");
+        Assert.Null(issue.EffectRepairContext);
+        Assert.Empty(EffectRepairPacketBuilder.Build(
+            result.Issues,
+            rollbackAvailable: true));
+    }
+
+    [Fact]
+    public void Build_DoesNotRoundDistinctLargeBoundsIntoRepairableSingleton()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["parameterBounds"]!["amount"]!["required"] = true;
+        definition["parameterBounds"]!["amount"]!["minimum"] = 9007199254740992m;
+        definition["parameterBounds"]!["amount"]!["maximum"] = 9007199254740993m;
+        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        command["parameters"] = new JsonObject();
+
+        var result = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(
+            CreateInput(command: command, definition: definition));
+
+        Assert.Null(result.Plan);
+        var issue = Assert.Single(result.Issues, issue =>
+            issue.Code == "effect_source_parameter_required");
+        Assert.Null(issue.EffectRepairContext);
+        Assert.Empty(EffectRepairPacketBuilder.Build(
+            result.Issues,
+            rollbackAvailable: true));
+    }
+
+    [Fact]
     public void ResponseModelAndMappingExposeOnlyCommonTransientEffectRoutes()
     {
         var responseFields = typeof(GameResponse)

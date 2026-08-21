@@ -248,7 +248,7 @@ public sealed class ValidationRepairRequestTests
             BindingFlags.NonPublic | BindingFlags.Static);
         Assert.NotNull(builder);
 
-        var packets = builder!.Invoke(null, new object?[] { new[] { issue }, null });
+        var packets = builder!.Invoke(null, new object?[] { new[] { issue }, null, null });
         using var document = JsonDocument.Parse(JsonSerializer.Serialize(
             packets,
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));

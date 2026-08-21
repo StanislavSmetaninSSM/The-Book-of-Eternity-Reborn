@@ -1439,7 +1439,17 @@ internal static class EffectAcceptedTurnPlanner
             input.Realm,
             targetKind,
             parameters);
-        issues.AddRange(sourceResolution.Issues.Select(issue => Prefix(issue, path + ".source")));
+        var sourceIssues = BuildApplicationSourceIssues(
+            input,
+            change,
+            source,
+            targetKind,
+            targetResolution,
+            path,
+            issueCount,
+            issues.Count,
+            sourceResolution);
+        issues.AddRange(sourceIssues);
         if (issues.Count == issueCount && sourceResolution.Success && targetResolution.Success)
         {
             if (string.Equals(
@@ -1467,6 +1477,148 @@ internal static class EffectAcceptedTurnPlanner
                 targetResolution.Target!,
                 parameters?.DeepClone().AsObject(),
                 acceptedEventRef));
+        }
+    }
+
+    private static IReadOnlyList<ValidationIssue> BuildApplicationSourceIssues(
+        EffectAcceptedTurnInput input,
+        JsonObject change,
+        JsonObject source,
+        string targetKind,
+        EffectTargetResolution targetResolution,
+        string operationPath,
+        int operationIssueCount,
+        int currentIssueCount,
+        EffectSourceResolution sourceResolution)
+    {
+        var canBindRepair =
+            currentIssueCount == operationIssueCount &&
+            targetResolution.Success &&
+            sourceResolution.Issues.Count == 1 &&
+            string.Equals(
+                sourceResolution.Issues[0].Code,
+                "effect_source_parameter_required",
+                StringComparison.Ordinal) &&
+            sourceResolution.Issues[0].FilePath.StartsWith(
+                "parameters.",
+                StringComparison.Ordinal);
+        EffectSourceAuthorityEntry? repairSource = null;
+        if (canBindRepair)
+        {
+            var repairResolution = input.SourceAuthority.ResolveRepairCandidate(
+                source,
+                input.Realm,
+                targetKind);
+            if (repairResolution.Success)
+                repairSource = repairResolution.Source;
+        }
+
+        return sourceResolution.Issues.Select(issue =>
+        {
+            var isParameter = issue.FilePath.StartsWith(
+                "parameters.",
+                StringComparison.Ordinal);
+            var exactPath = isParameter
+                ? operationPath + "." + issue.FilePath
+                : operationPath + ".source." + issue.FilePath;
+            EffectRepairContext? repairContext = null;
+            if (repairSource != null &&
+                isParameter &&
+                TryResolveSingletonParameterValue(
+                    repairSource.Definition,
+                    issue.FilePath["parameters.".Length..],
+                    out var expectedValueJson) &&
+                change["target"] is JsonObject target &&
+                change["eventRef"] is JsonObject eventRef &&
+                TryReadExact(source["definitionKey"], out var definitionKey))
+            {
+                repairContext = new EffectRepairContext(
+                    "effect-apply:" + operationPath,
+                    "effectChanges",
+                    exactPath,
+                    source.DeepClone().AsObject(),
+                    target.DeepClone().AsObject(),
+                    definitionKey,
+                    eventRef.DeepClone().AsObject(),
+                    expectedValueJson);
+            }
+
+            var prefixed = new ValidationIssue(
+                exactPath,
+                issue.Severity,
+                issue.Message,
+                code: issue.Code,
+                actor: repairContext?.Actor ?? issue.Actor,
+                section: issue.Section,
+                expected: issue.Expected,
+                actual: issue.Actual,
+                repairHint: issue.RepairHint,
+                category: issue.Category,
+                repairTargetFiles: repairContext == null
+                    ? issue.RepairTargetFiles
+                    : new[] { EffectAcceptedTurnPlan.CommandPath });
+            prefixed.EffectRepairContext = repairContext;
+            return prefixed;
+        }).ToArray();
+    }
+
+    private static bool TryResolveSingletonParameterValue(
+        JsonObject definition,
+        string parameter,
+        out string expectedValueJson)
+    {
+        expectedValueJson = string.Empty;
+        if (definition["parameterBounds"] is not JsonObject bounds ||
+            bounds[parameter] is not JsonObject bound ||
+            bound["required"] is not JsonValue requiredValue ||
+            !requiredValue.TryGetValue<bool>(out var required) ||
+            !required ||
+            !TryReadExact(bound["kind"], out var kind))
+        {
+            return false;
+        }
+
+        if (string.Equals(kind, "enum", StringComparison.Ordinal) &&
+            bound["allowedValues"] is JsonArray { Count: 1 } allowed &&
+            allowed[0] is JsonValue value &&
+            value.TryGetValue<string>(out var token) &&
+            !string.IsNullOrEmpty(token) &&
+            string.Equals(token, token.Trim(), StringComparison.Ordinal))
+        {
+            expectedValueJson = value.ToJsonString();
+            return true;
+        }
+
+        if (kind is not ("number" or "integer") ||
+            !TryReadExactRepairNumber(bound["minimum"], out var minimum) ||
+            !TryReadExactRepairNumber(bound["maximum"], out var maximum) ||
+            minimum != maximum ||
+            kind == "integer" && minimum != decimal.Truncate(minimum))
+        {
+            return false;
+        }
+
+        expectedValueJson = bound["minimum"]!.ToJsonString();
+        return true;
+    }
+
+    private static bool TryReadExactRepairNumber(
+        JsonNode? node,
+        out decimal number)
+    {
+        number = 0;
+        if (node is not JsonValue)
+            return false;
+        try
+        {
+            using var document = JsonDocument.Parse(node.ToJsonString());
+            return ResourceMaterializationContract.TryReadExactDecimal(
+                document.RootElement,
+                out number);
+        }
+        catch (JsonException)
+        {
+            return false;
         }
     }
 
