@@ -30,6 +30,16 @@ internal sealed record EffectMechanicsAuditEntry(
     string State,
     IReadOnlyList<string> Profiles);
 
+internal sealed record EffectAcceptedInstance(
+    string EffectId,
+    string Realm,
+    string TargetKind,
+    string TargetId,
+    string OwnerKind,
+    string OwnerId,
+    string? Category,
+    JsonElement CanonicalEffect);
+
 internal sealed record EffectMechanicsSnapshot(
     bool IsAccepted,
     IReadOnlyList<EffectMechanicalComponent> Components,
@@ -37,6 +47,9 @@ internal sealed record EffectMechanicsSnapshot(
     IReadOnlyList<ValidationIssue> Issues)
 {
     internal const string Source = "accepted_effect_mechanics_snapshot_v1";
+
+    internal IReadOnlyList<EffectAcceptedInstance> Effects { get; init; } =
+        Array.Empty<EffectAcceptedInstance>();
 
     internal static EffectMechanicsSnapshot Build(EffectMechanicsInput input)
     {
@@ -76,6 +89,7 @@ internal sealed record EffectMechanicsSnapshot(
 
         var components = new List<EffectMechanicalComponent>();
         var audit = new List<EffectMechanicsAuditEntry>();
+        var effects = new List<EffectAcceptedInstance>();
         foreach (var occurrence in catalog.Occurrences
                      .OrderBy(static occurrence => occurrence.EffectId, StringComparer.Ordinal))
         {
@@ -99,6 +113,16 @@ internal sealed record EffectMechanicsSnapshot(
             var targetKind = ReadExact(target?["kind"]) ?? string.Empty;
             var targetId = ReadExact(target?["targetId"]) ?? string.Empty;
             var profiles = new List<string>();
+
+            effects.Add(new EffectAcceptedInstance(
+                occurrence.EffectId,
+                ReadExact(effect["realm"]) ?? string.Empty,
+                targetKind,
+                targetId,
+                occurrence.Coordinate.Kind,
+                occurrence.Coordinate.OwnerId,
+                occurrence.Coordinate.Category,
+                ToDetachedElement(effect)));
 
             if (effect["components"] is JsonArray effectComponents)
             {
@@ -146,7 +170,10 @@ internal sealed record EffectMechanicsSnapshot(
                 .ThenBy(static component => component.EffectId, StringComparer.Ordinal)
                 .ThenBy(static component => component.ComponentId, StringComparer.Ordinal)),
             ReadOnly(audit),
-            Array.Empty<ValidationIssue>());
+            Array.Empty<ValidationIssue>())
+        {
+            Effects = ReadOnly(effects)
+        };
     }
 
     internal static async Task<EffectMechanicsSnapshot> LoadAsync(FileSystemManager fs)

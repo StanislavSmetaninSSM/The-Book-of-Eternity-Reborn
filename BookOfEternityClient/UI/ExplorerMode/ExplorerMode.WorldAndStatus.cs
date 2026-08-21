@@ -828,7 +828,11 @@ public partial class ExplorerMode
         var transDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/transformation.json");
         var stealthDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/stealth.json");
         var scDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/status_changes.json");
-        var effDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/effects.json");
+        var effectProjection = EffectPlayerProjection.Build(new EffectPlayerProjectionInput(
+            await EffectMechanicsSnapshot.LoadAsync(_fs),
+            Realm: "mortal_world",
+            TargetKind: "player",
+            TargetId: "player_current"));
         var wndDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/wounds.json");
         var customStatesDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/custom_states.json");
 
@@ -1010,11 +1014,21 @@ public partial class ExplorerMode
         if (!string.IsNullOrEmpty(autoCombatSkill))
             leftContent.AddRow(new Markup($"[cyan]⚔ Авто-бой:[/] {Markup.Escape(autoCombatSkill)}"));
 
-        if (state.PlayerStatus.ActiveConditions.Length > 0)
+        if (!effectProjection.IsAvailable)
         {
-            leftContent.AddRow(new Markup("[yellow]Активные состояния:[/]"));
-            foreach (var c in state.PlayerStatus.ActiveConditions)
-                leftContent.AddRow(new Markup($"[yellow]•[/] {Markup.Escape(c)}"));
+            leftContent.AddRow(new Markup(
+                $"[yellow]Эффекты:[/] {Markup.Escape(effectProjection.StatusMessage)}"));
+        }
+        else if (effectProjection.Entries.Count > 0)
+        {
+            leftContent.AddRow(new Markup("[yellow]Активные эффекты:[/]"));
+            foreach (var effect in effectProjection.Entries)
+            {
+                var description = string.IsNullOrWhiteSpace(effect.Summary)
+                    ? effect.Name
+                    : $"{effect.Name}: {effect.Summary}";
+                leftContent.AddRow(new Markup($"[yellow]•[/] {Markup.Escape(description)}"));
+            }
         }
 
         // ── Right: characteristics (use computed if available) ──
@@ -1197,10 +1211,10 @@ public partial class ExplorerMode
                 extraText.Add($"[bold red]⚔️ ВЫ В БОЮ! Врагов: {enemyCount}[/] [dim](подробнее: /бой)[/]");
         }
 
-        if (effDoc != null)
+        if (!effectProjection.IsAvailable || effectProjection.Entries.Count > 0)
         {
             if (extraText.Count > 0) extraText.Add("");
-            AppendStatusEffectPreview(extraText, effDoc.RootElement);
+            AppendStatusEffectPreview(extraText, effectProjection);
         }
 
         if (wndDoc != null)

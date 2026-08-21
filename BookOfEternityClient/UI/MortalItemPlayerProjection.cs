@@ -109,7 +109,9 @@ internal static class MortalItemPlayerProjection
     {
         "mortal_item_materialization_repair",
         "mortal_item_identity_authority_repair",
-        "mortal_location_materialization_repair"
+        "mortal_location_materialization_repair",
+        "effect_materialization_repair",
+        "effect_identity_authority_repair"
     };
 
     private static readonly HashSet<string> RepairPacketSignatureFieldNames = new(StringComparer.OrdinalIgnoreCase)
@@ -212,6 +214,90 @@ internal static class MortalItemPlayerProjection
             "contents"
         };
 
+    private static readonly HashSet<string> CanonicalActiveEffectFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "schemaVersion",
+            "entityKind",
+            "effectId",
+            "state",
+            "realm",
+            "target",
+            "display",
+            "source",
+            "components",
+            "lifetime",
+            "stacking",
+            "triggers",
+            "removal",
+            "links",
+            "chronology"
+        };
+
+    private static readonly HashSet<string> EffectIdentityEntryFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "effectId",
+            "state",
+            "realm",
+            "owner",
+            "target",
+            "source",
+            "stackCoordinate",
+            "createdAtTurn",
+            "transitions"
+        };
+
+    private static readonly HashSet<string> EffectTransitionFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "transitionId",
+            "kind",
+            "turn",
+            "eventRef",
+            "sourceEffectIds",
+            "resultEffectIds",
+            "receiptId"
+        };
+
+    private static readonly HashSet<string> EffectSourceAuthorityFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "kind",
+            "sourceId",
+            "definitionKey"
+        };
+
+    private static readonly HashSet<string> EffectTargetAuthorityFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "kind",
+            "targetId"
+        };
+
+    private static readonly HashSet<string> EffectStackCoordinateFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "realm",
+            "targetKind",
+            "targetId",
+            "sourceKind",
+            "sourceId",
+            "stackKey"
+        };
+
+    private static readonly HashSet<string> PendingEffectResolutionFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "requestId",
+            "effectId",
+            "operation",
+            "source",
+            "target",
+            "requiredFields",
+            "fullTurnResubmissionRequired"
+        };
+
     internal static bool IsInternalField(string? fieldName) =>
         !string.IsNullOrWhiteSpace(fieldName) && InternalAuthorityFieldNames.Contains(fieldName);
 
@@ -289,6 +375,9 @@ internal static class MortalItemPlayerProjection
         CloneSemanticValue(node, itemContext: true, suppressInternalDtos: true);
 
     internal static JsonNode? CloneMortalMaterializationSemanticValue(JsonNode? node) =>
+        CloneSemanticValue(node, itemContext: false, suppressInternalDtos: true);
+
+    internal static JsonNode? CloneEffectSemanticValue(JsonNode? node) =>
         CloneSemanticValue(node, itemContext: false, suppressInternalDtos: true);
 
     private static JsonNode? CloneSemanticValue(
@@ -415,6 +504,7 @@ internal static class MortalItemPlayerProjection
             StringComparer.OrdinalIgnoreCase);
         return IsInternalItemDtoShape(fields, TryReadString(source, "kind")) ||
                ContainsIdentityIndexEntry(source) ||
+               ContainsEffectIdentityIndexEntry(source) ||
                IsLocationStorageContentsState(source, fields);
     }
 
@@ -425,6 +515,7 @@ internal static class MortalItemPlayerProjection
             StringComparer.OrdinalIgnoreCase);
         return IsInternalItemDtoShape(fields, TryReadString(source, "kind")) ||
                ContainsIdentityIndexEntry(source) ||
+               ContainsEffectIdentityIndexEntry(source) ||
                IsLocationStorageContentsState(source, fields);
     }
 
@@ -446,6 +537,20 @@ internal static class MortalItemPlayerProjection
         if (fields.IsSupersetOf(ValidationRepairRequestFieldNames))
             return true;
         if (fields.IsSupersetOf(ValidationDiagnosticFailureReportFieldNames))
+            return true;
+        if (fields.IsSupersetOf(CanonicalActiveEffectFieldNames))
+            return true;
+        if (fields.IsSupersetOf(EffectIdentityEntryFieldNames))
+            return true;
+        if (fields.IsSupersetOf(EffectTransitionFieldNames))
+            return true;
+        if (fields.IsSupersetOf(EffectSourceAuthorityFieldNames))
+            return true;
+        if (fields.IsSupersetOf(EffectTargetAuthorityFieldNames))
+            return true;
+        if (fields.IsSupersetOf(EffectStackCoordinateFieldNames))
+            return true;
+        if (fields.IsSupersetOf(PendingEffectResolutionFieldNames))
             return true;
 
         return fields.IsSupersetOf(CarrierCoordinateFieldNames);
@@ -557,6 +662,43 @@ internal static class MortalItemPlayerProjection
                     entry.EnumerateObject().Select(static field => field.Name),
                     StringComparer.OrdinalIgnoreCase);
                 return fields.IsSupersetOf(IdentityEntryFieldNames);
+            });
+        }
+
+        return false;
+    }
+
+    private static bool ContainsEffectIdentityIndexEntry(JsonObject source)
+    {
+        var entries = source.FirstOrDefault(property =>
+            string.Equals(property.Key, "entries", StringComparison.OrdinalIgnoreCase)).Value as JsonArray;
+        return entries != null && entries.OfType<JsonObject>().Any(entry =>
+        {
+            var fields = new HashSet<string>(
+                entry.Select(static property => property.Key),
+                StringComparer.OrdinalIgnoreCase);
+            return fields.IsSupersetOf(EffectIdentityEntryFieldNames);
+        });
+    }
+
+    private static bool ContainsEffectIdentityIndexEntry(JsonElement source)
+    {
+        foreach (var property in source.EnumerateObject())
+        {
+            if (!string.Equals(property.Name, "entries", StringComparison.OrdinalIgnoreCase) ||
+                property.Value.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            return property.Value.EnumerateArray().Any(entry =>
+            {
+                if (entry.ValueKind != JsonValueKind.Object)
+                    return false;
+                var fields = new HashSet<string>(
+                    entry.EnumerateObject().Select(static field => field.Name),
+                    StringComparer.OrdinalIgnoreCase);
+                return fields.IsSupersetOf(EffectIdentityEntryFieldNames);
             });
         }
 

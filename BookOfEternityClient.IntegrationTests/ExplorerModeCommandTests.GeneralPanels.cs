@@ -2895,7 +2895,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task TryProcessCommand_Effects_InMortalRealm_WithStatusConditionsAndOtherSections_RendersStatusFallback()
+    public async Task TryProcessCommand_Effects_InMortalRealm_WithLegacyEffects_FailsClosedWithoutUnrelatedStateFallback()
     {
         await SeedMortalStateAsync();
         await WriteJsonAsync("game_state/core/player_status.json", new
@@ -2942,12 +2942,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("effects_status_fallback_with_other_sections");
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Подробная запись эффекта ещё не заведена", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Лёгкое недомогание", renderedText, StringComparison.Ordinal);
-        Assert.Contains("Тело ломит, а мысли держатся будто сквозь туман.", renderedText, StringComparison.Ordinal);
-        Assert.Contains("Головная боль после тяжёлых снов (-1 к Восприятию до полудня)", renderedText, StringComparison.Ordinal);
-        Assert.Contains("Порез", renderedText, StringComparison.Ordinal);
-        Assert.Contains("Голод", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Сейчас невозможно надёжно определить действующие эффекты", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Подробная запись эффекта ещё не заведена", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Лёгкое недомогание", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Тело ломит, а мысли держатся будто сквозь туман.", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Головная боль после тяжёлых снов (-1 к Восприятию до полудня)", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Порез", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Голод", renderedText, StringComparison.Ordinal);
         Assert.DoesNotContain("game_state/player/effects.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("DTO", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("API", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -2957,7 +2958,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task TryProcessCommand_Effects_InMortalRealm_WithStatusConditionsAndMissingStructuredEffects_RendersStatusFallback(
+    public async Task TryProcessCommand_Effects_InMortalRealm_WithStatusConditions_DoesNotUseStatusFallback(
         bool writeEmptyStructuredEffects)
     {
         await SeedMortalStateAsync();
@@ -2992,11 +2993,15 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("effects_status_fallback");
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Подробная запись эффекта ещё не заведена", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Лёгкое недомогание", renderedText, StringComparison.Ordinal);
-        Assert.Contains("Тело ломит, а мысли держатся будто сквозь туман.", renderedText, StringComparison.Ordinal);
-        Assert.Contains("Головная боль после тяжёлых снов (-1 к Восприятию до полудня)", renderedText, StringComparison.Ordinal);
-        Assert.Contains("Магический резонанс: слабое покалывание в пальцах", renderedText, StringComparison.Ordinal);
+        if (writeEmptyStructuredEffects)
+            Assert.Contains("Сейчас невозможно надёжно определить действующие эффекты", renderedText, StringComparison.Ordinal);
+        else
+            Assert.Contains("Сейчас нет видимых действующих эффектов", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Подробная запись эффекта ещё не заведена", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Лёгкое недомогание", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Тело ломит, а мысли держатся будто сквозь туман.", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Головная боль после тяжёлых снов (-1 к Восприятию до полудня)", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Магический резонанс: слабое покалывание в пальцах", renderedText, StringComparison.Ordinal);
         Assert.DoesNotContain("game_state/player/effects.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("DTO", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("API", renderedText, StringComparison.OrdinalIgnoreCase);

@@ -4,6 +4,7 @@ using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.WebUi;
@@ -17,6 +18,7 @@ public sealed class BrowserMortalWorldWriteService
     private const string NpcCorePath = "game_state/npcs/npc_core.json";
     private const string FactionCorePath = "game_state/factions/faction_core.json";
     private const string SoulStatePath = "game_state/meta/soul_state.json";
+    private const string PendingPlayerActionPath = "input/pending_player_action.json";
 
     private readonly FileSystemManager _fs;
     private readonly BrowserLocalWriteCoordinator _coordinator;
@@ -114,9 +116,79 @@ public sealed class BrowserMortalWorldWriteService
             "/vehicle_move" or "/транспорт_предметы" => await ApplyVehicleItemMoveAsync(writeLease, answers, owner),
             "/npc_trade" or "/торговля_нпс" => await ApplyNpcTradeAsync(writeLease, command, answers, owner),
             "/craft" or "/ремесло" => await ApplyCraftAsync(writeLease, answers, owner),
+            "/effects" or "/эффекты" => await ApplyEffectActionAsync(writeLease, command, answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
         };
     }
+
+    private async Task<BrowserPromptWriteResult> ApplyEffectActionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string command,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_effect_action"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите выбранное противодействие эффекту.");
+
+        var selector = ReadEffectActionSelector(command);
+        if (string.IsNullOrWhiteSpace(selector))
+            return EffectActionUnavailable();
+
+        var input = new EffectPlayerProjectionInput(
+            await EffectMechanicsSnapshot.LoadAsync(_fs, writeLease),
+            Realm: "mortal_world",
+            TargetKind: "player",
+            TargetId: "player_current");
+        var projection = EffectPlayerProjection.Build(input);
+        if (!EffectPlayerProjection.TryResolveAction(input, selector, out var resolution) ||
+            !ExplorerMortalEffectDetailActions.TryFindAction(
+                projection,
+                selector,
+                out var effect,
+                out var action) ||
+            !string.Equals(resolution.Realm, effect.Realm, StringComparison.Ordinal) ||
+            !string.Equals(resolution.TargetKind, effect.TargetKind, StringComparison.Ordinal) ||
+            !string.Equals(resolution.TargetId, effect.TargetId, StringComparison.Ordinal) ||
+            !string.Equals(resolution.Operation, action.Kind, StringComparison.Ordinal))
+        {
+            return EffectActionUnavailable();
+        }
+
+        var playerAction =
+            $"Противодействовать эффекту «{effect.Name}»: {action.Label}. " +
+            "Разреши действие только по текущей принятой механике эффекта; " +
+            "снятие последствия само по себе не лечит связанную рану.";
+        var pending = new JsonObject
+        {
+            ["playerAction"] = playerAction,
+            ["submittedAtUtc"] = NowText(),
+            ["source"] = "browser-effect-action"
+        };
+
+        return await ExecuteAtomicAsync(
+            writeLease,
+            owner,
+            "Отправка противодействия эффекту",
+            [PendingPlayerActionPath],
+            async lease => await _fs.WriteFileAtomicAsync(
+                lease,
+                PendingPlayerActionPath,
+                pending.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)),
+            "Действие отправлено",
+            "Выбранное противодействие повторно проверено и отправлено Мастеру для разрешения.",
+            new JsonObject
+            {
+                ["effectName"] = effect.Name,
+                ["action"] = action.Label
+            });
+    }
+
+    private static BrowserPromptWriteResult EffectActionUnavailable() =>
+        BrowserPromptWriteResult.Failed(
+            CommandExecutionState.Blocked,
+            UiNotificationSeverity.Warning,
+            "Действие недоступно",
+            "Выбранное действие эффекта больше недоступно. Откройте список эффектов заново.");
 
     private async Task<BrowserPromptWriteResult> ApplyWorldSetupAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -1069,6 +1141,19 @@ public sealed class BrowserMortalWorldWriteService
     {
         var split = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
         return split.Length < 2 ? string.Empty : split[1].Trim();
+    }
+
+    private static string ReadEffectActionSelector(string command)
+    {
+        var parts = command.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length != 3)
+            return string.Empty;
+
+        var actionToken = parts[1].ToLowerInvariant();
+        if (actionToken is not ("action" or "действие"))
+            return string.Empty;
+
+        return parts[2];
     }
 
     private static bool TryParseTradeChoice(string choice, out string operation, out string targetId)

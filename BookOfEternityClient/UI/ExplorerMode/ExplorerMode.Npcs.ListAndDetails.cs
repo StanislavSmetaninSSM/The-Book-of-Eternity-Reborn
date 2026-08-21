@@ -42,7 +42,10 @@ private async Task ShowNPCs()
         var goalDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_goals.json");
         var actDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_activities.json");
         var npcInvDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_inventory.json");
-        var npcEffDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_effects.json");
+        var npcEffectProjection = EffectPlayerProjection.Build(new EffectPlayerProjectionInput(
+            await EffectMechanicsSnapshot.LoadAsync(_fs),
+            Realm: "mortal_world",
+            TargetKind: "npc"));
         var npcSkillDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_skills.json");
 
         var debugMode = _stateManager.Settings.AllowHistoryManipulation;
@@ -76,7 +79,7 @@ private async Task ShowNPCs()
             var selIdx = choices.IndexOf(selected);
             if (selIdx < 0 || selIdx >= npcs.Count) break;
 
-            await ShowNpcDetailPanel(npcs[selIdx], renameMap, relDoc, goalDoc, actDoc, npcInvDoc, npcEffDoc, npcSkillDoc,
+            await ShowNpcDetailPanel(npcs[selIdx], renameMap, relDoc, goalDoc, actDoc, npcInvDoc, npcEffectProjection, npcSkillDoc,
                 debugMode, persDoc, jourDoc, npcInteractionDoc, maskDoc, memDoc, fateDoc, customDoc);
         }
     }
@@ -107,7 +110,7 @@ private async Task ShowNPCs()
 
     private async Task ShowNpcDetailPanel(JsonElement npc, Dictionary<string, string> renameMap,
         JsonDocument? relDoc, JsonDocument? goalDoc,
-        JsonDocument? actDoc, JsonDocument? invDoc, JsonDocument? effDoc, JsonDocument? skillDoc,
+        JsonDocument? actDoc, JsonDocument? invDoc, EffectPlayerProjectionResult effectProjection, JsonDocument? skillDoc,
         bool debugMode = false, JsonDocument? persDoc = null, JsonDocument? jourDoc = null, JsonDocument? npcInteractionDoc = null,
         JsonDocument? maskDoc = null, JsonDocument? memDoc = null,
         JsonDocument? fateDoc = null, JsonDocument? customDoc = null)
@@ -822,7 +825,7 @@ private async Task ShowNPCs()
         RenderNpcInventory(lines, npc, debugMode);
 
         // ── Эффекты (npc_effects) ──
-        RenderNpcEffects(lines, effDoc, npcId, originalName, debugMode);
+        RenderNpcEffects(lines, effectProjection, npcId);
 
         // ── Навыки (npc_skills) ──
         RenderNpcSkills(lines, skillDoc, npcId, originalName, debugMode);
@@ -870,7 +873,7 @@ private async Task ShowNPCs()
                 Goals: ToJsonNode(goalDoc),
                 Activities: ToJsonNode(actDoc),
                 Inventory: ToJsonNode(invDoc),
-                Effects: ToJsonNode(effDoc),
+                Effects: effectProjection,
                 Skills: ToJsonNode(skillDoc),
                 Personality: ToJsonNode(persDoc),
                 Journals: ToJsonNode(jourDoc),

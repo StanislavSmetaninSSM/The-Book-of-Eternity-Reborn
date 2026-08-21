@@ -58,65 +58,9 @@ public partial class ExplorerMode
             return;
         }
 
-        await _stateManager.RefreshGameStateAsync();
-        var root = await ReadJsonObjectForAfterlifeStatusAsync(AfterlifeSpiritualConflictState.StatePath);
-        var active = root?["activeConflict"] as JsonObject;
-
-        var lines = new List<string>
-        {
-            "[bold cyan]Духовный конфликт посмертия[/]",
-            "",
-            "Это отдельная загробная система конфликтов. Она не использует здоровье, энергию и смертные боевые навыки.",
-            "Конфликт начинает ГМ по роли: по заявке игрока или когда актор посмертия сам инициирует давление.",
-            "Победа в проверяемом конфликте может дать награду: в Море Хаоса — Чернильные Перья, в обычной активной Сияющей Обители — Искры Света.",
-            "Награда появляется только за полноценный проверяемый конфликт; отмена, отсутствие эффекта, добровольное отступление и переговоры без состязания валюту не дают.",
-            ""
-        };
-
-        if (active == null)
-        {
-            lines.Add("[dim]Активного духовного конфликта нет.[/]");
-            lines.Add("");
-            lines.Add("Когда в сцене появится проверяемое духовное противостояние, здесь будут видны стороны, позиция, напряжение и доступные действия.");
-        }
-        else
-        {
-            lines.Add("[bold]Активный конфликт:[/] [white]идёт[/]");
-            lines.Add($"  • Область: [white]{Markup.Escape(FormatAfterlifeRealmLabel(AfterlifeSpiritualConflictState.GetNodeString(active["realm"])))}[/]");
-            lines.Add($"  • Модель сторон: [white]{Markup.Escape(FormatSideModelLabel(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"])))}[/]");
-            lines.Add($"  • Позиция конфликта: [white]{Markup.Escape(FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"])))}[/]");
-            lines.Add($"  • Напряжение стороны игрока: [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/]");
-            lines.Add($"  • Напряжение противостоящей стороны: [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
-            lines.Add($"  • Контроль/оковы: [white]{Markup.Escape(DescribeControlState(active["controlState"] as JsonObject))}[/]");
-            lines.Add($"  • ОД: [white]{Markup.Escape(DescribeActionEconomy(active["actionEconomy"] as JsonObject))}[/]");
-            lines.Add($"  • Состояние завершения: [white]{Markup.Escape(FormatResolutionStateLabel(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"])))}[/]");
-            lines.Add("");
-            AppendConflictSideSummary(lines, "Сторона игрока", active["playerSide"] as JsonObject);
-            AppendConflictSideSummary(lines, "Противостоящая сторона", active["oppositionSide"] as JsonObject);
-            AppendVisibleCombatConditions(lines, active["combatConditions"] as JsonArray);
-            lines.Add("");
-            lines.Add($"  • Записано обменов действиями: [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/]");
-        }
-
-        lines.Add("");
-        lines.Add("[bold]Команды:[/]");
-        lines.Add("  • /spiritual_combat_log — журнал духовного боя: обмены действиями, завершённые конфликты, кубики, позиция, напряжение и награды.");
-        lines.Add("  • /spiritual_combat_help — подробная справка: тактика, позиция, кубики, криты, награды и прокачка.");
-        lines.Add("  • /spiritual_action — отправить действие в активном духовном конфликте с явным тегом для ГМ.");
-        lines.Add("  • Обычная художественная заявка во время активного конфликта тоже должна резолвиться ГМ как действие конфликта.");
-        lines.Add("  • /spiritual_arts — посмотреть ранги, уровни духовных искусств и применимые действия.");
-
-        Clear();
-        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
-        {
-            Header = new PanelHeader(" ⚔ Духовный конфликт посмертия ", Justify.Center),
-            Border = BoxBorder.Double,
-            BorderStyle = new Style(_stateManager.CurrentState.IsInShiningAbode ? Color.Gold1 : Color.Cyan1),
-            Padding = new Padding(2, 1),
-            Expand = true
-        });
-
-        WaitForKey();
+        await RenderAcceptedSpiritualProjectionAsync(
+            "/spiritual_conflict",
+            "Духовный конфликт");
     }
 
     private async Task ShowSpiritualCombatLogAsync()
@@ -130,67 +74,27 @@ public partial class ExplorerMode
             return;
         }
 
-        await _stateManager.RefreshGameStateAsync();
-        var root = await ReadJsonObjectForAfterlifeStatusAsync(AfterlifeSpiritualConflictState.StatePath);
-        var playerFacingRoot = BuildPlayerFacingCombatConditionAudit(root) as JsonObject;
-        var active = playerFacingRoot?["activeConflict"] as JsonObject;
-        var recentConflicts = playerFacingRoot?["recentConflicts"] as JsonArray;
-        var lines = new List<string>
+        await RenderAcceptedSpiritualProjectionAsync(
+            "/spiritual_combat_log",
+            "Журнал духовного боя");
+    }
+
+    private async Task RenderAcceptedSpiritualProjectionAsync(
+        string command,
+        string title)
+    {
+        var result = await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(
+            command,
+            _stateManager,
+            _fs);
+        if (result == null)
         {
-            "[bold cyan]Журнал духовного боя[/]",
-            "",
-            "Это не журнал смертного боя: здесь показаны обмены действиями, завершённые конфликты, броски, позиция, напряжение и награды.",
-            ""
-        };
-
-        var wroteEntry = false;
-        if (active != null)
-        {
-            lines.Add("[bold]Активный конфликт:[/] [white]идёт[/]");
-            lines.Add($"  • Область: [white]{Markup.Escape(FormatAfterlifeRealmLabel(AfterlifeSpiritualConflictState.GetNodeString(active["realm"])))}[/]");
-            lines.Add($"  • Модель сторон: [white]{Markup.Escape(FormatSideModelLabel(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"])))}[/]");
-            lines.Add($"  • Текущая позиция: [white]{Markup.Escape(FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"])))}[/]");
-            lines.Add($"  • Текущее напряжение: игрок=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/], противник=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
-            lines.Add($"  • Текущий контроль/оковы: [white]{Markup.Escape(DescribeControlState(active["controlState"] as JsonObject))}[/]");
-            lines.Add("");
-            AppendVisibleCombatConditions(lines, active["combatConditions"] as JsonArray);
-
-            if (active["exchangeLog"] is JsonArray activeExchangeLog && activeExchangeLog.Count > 0)
-            {
-                AppendSpiritualExchangeLog(lines, activeExchangeLog);
-                wroteEntry = true;
-            }
-            else
-            {
-                lines.Add("  • Обменов в журнале действий пока нет.");
-            }
-        }
-
-        if (recentConflicts is { Count: > 0 })
-        {
-            if (active != null)
-                lines.Add("");
-
-            AppendSpiritualRecentConflictLog(lines, recentConflicts);
-            wroteEntry = true;
-        }
-
-        if (!wroteEntry)
-        {
-            lines.Add("[dim]Журнал духовного боя пуст: нет обменов действий и недавних завершённых конфликтов.[/]");
-            lines.Add("Когда ГМ проведёт спорный обмен или завершение конфликта, запись появится здесь вместе с бросками и наградой.");
+            ShowEmptyPanel(title, "Безопасная проекция духовного конфликта недоступна.");
+            return;
         }
 
         Clear();
-        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
-        {
-            Header = new PanelHeader(" ⚔ Журнал духовного боя ", Justify.Center),
-            Border = BoxBorder.Double,
-            BorderStyle = new Style(_stateManager.CurrentState.IsInShiningAbode ? Color.Gold1 : Color.Cyan1),
-            Padding = new Padding(2, 1),
-            Expand = true
-        });
-
+        ExplorerCommandResultConsoleRenderer.Render(_console, result);
         WaitForKey();
     }
 
@@ -1736,124 +1640,6 @@ public partial class ExplorerMode
             "" => "?",
             _ => value ?? "?"
         };
-
-    private static void AppendVisibleCombatConditions(List<string> lines, JsonArray? combatConditions)
-    {
-        if (combatConditions == null)
-            return;
-
-        var visible = combatConditions
-            .OfType<JsonObject>()
-            .Where(AfterlifeCombatConditionPlayerAuditSanitizer.IsVisibleToPlayer)
-            .Where(static condition => string.Equals(AfterlifeSpiritualConflictState.GetNodeString(condition["status"]) ?? "active", "active", StringComparison.OrdinalIgnoreCase))
-            .ToArray();
-        if (visible.Length == 0)
-            return;
-
-        lines.Add("[bold]Боевые условия[/] [dim](combatConditions)[/]");
-        foreach (var condition in visible)
-        {
-            var name = AfterlifeSpiritualConflictState.GetNodeString(condition["displayName"]) ??
-                       AfterlifeSpiritualConflictState.GetNodeString(condition["name"]) ??
-                       AfterlifeSpiritualConflictState.GetNodeString(condition["conditionId"]) ??
-                       "Без названия";
-            var kind = AfterlifeSpiritualConflictState.GetNodeString(condition["kind"]) ?? "?";
-            var target = DescribeCombatConditionTarget(condition);
-            var source = DescribeCombatConditionSource(condition["source"] as JsonObject);
-            var operations = DescribeCombatConditionStringArray(condition["affectedOperations"] as JsonArray);
-            var duration = DescribeCombatConditionDuration(condition["duration"] as JsonObject);
-            var counterplay = DescribeCombatConditionStringArray(condition["counterplay"] as JsonArray);
-            var summary = AfterlifeSpiritualConflictState.GetNodeString(condition["summary"]) ?? "";
-            lines.Add($"  • [white]{Markup.Escape(name)}[/] ({Markup.Escape(kind)}): цель={Markup.Escape(target)}, источник={Markup.Escape(source)}, действия={Markup.Escape(operations)}, срок={Markup.Escape(duration)}");
-            lines.Add($"    Ответ: {Markup.Escape(counterplay)}");
-            if (!string.IsNullOrWhiteSpace(summary))
-                lines.Add($"    Итог: {Markup.Escape(summary)}");
-        }
-
-        lines.Add("");
-    }
-
-    private static string DescribeCombatConditionTarget(JsonObject condition)
-    {
-        if (condition["target"] is JsonObject target)
-        {
-            var targetSideValue = AfterlifeSpiritualConflictState.GetNodeString(target["side"]) ??
-                                  AfterlifeSpiritualConflictState.GetNodeString(target["targetSide"]) ??
-                                  "?";
-            var targetActorValue = AfterlifeSpiritualConflictState.GetNodeString(target["displayName"]) ??
-                                   AfterlifeSpiritualConflictState.GetNodeString(target["actorId"]) ??
-                                   AfterlifeSpiritualConflictState.GetNodeString(target["actorRef"]);
-            return string.IsNullOrWhiteSpace(targetActorValue)
-                ? targetSideValue
-                : $"{targetSideValue}:{targetActorValue}";
-        }
-
-        var targetSide = AfterlifeSpiritualConflictState.GetNodeString(condition["targetSide"]) ?? "?";
-        var targetActor = AfterlifeSpiritualConflictState.GetNodeString(condition["targetActorRef"]) ??
-                          AfterlifeSpiritualConflictState.GetNodeString(condition["targetActorId"]);
-        return string.IsNullOrWhiteSpace(targetActor)
-            ? targetSide
-            : $"{targetSide}:{targetActor}";
-    }
-
-    private static string DescribeCombatConditionSource(JsonObject? source)
-    {
-        if (source == null)
-            return "не указан";
-
-        var parts = new[]
-        {
-            AfterlifeSpiritualConflictState.GetNodeString(source["type"]) ??
-            AfterlifeSpiritualConflictState.GetNodeString(source["sourceType"]),
-            AfterlifeSpiritualConflictState.GetNodeString(source["actorId"]) ??
-            AfterlifeSpiritualConflictState.GetNodeString(source["sourceId"]),
-            AfterlifeSpiritualConflictState.GetNodeString(source["displayName"])
-        }
-            .Where(static value => !string.IsNullOrWhiteSpace(value))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
-        return parts.Length == 0 ? "не указан" : string.Join(":", parts);
-    }
-
-    private static string DescribeCombatConditionDuration(JsonObject? duration)
-    {
-        if (duration == null)
-            return "не указано";
-
-        var parts = new List<string>();
-        var type = AfterlifeSpiritualConflictState.GetNodeString(duration["type"]);
-        if (!string.IsNullOrWhiteSpace(type))
-            parts.Add(type);
-        if (duration.ContainsKey("remainingUses"))
-            parts.Add($"remainingUses={AfterlifeSpiritualConflictState.GetNodeInt(duration["remainingUses"])}");
-        if (duration.ContainsKey("expiresAtTurn"))
-            parts.Add($"expiresAtTurn={AfterlifeSpiritualConflictState.GetNodeInt(duration["expiresAtTurn"])}");
-        var until = AfterlifeSpiritualConflictState.GetNodeString(duration["until"]);
-        if (!string.IsNullOrWhiteSpace(until))
-            parts.Add($"until={until}");
-        return parts.Count == 0 ? "не указано" : string.Join("; ", parts);
-    }
-
-    private static string DescribeCombatConditionStringArray(JsonArray? array)
-    {
-        if (array == null)
-            return "нет";
-
-        var values = array
-            .Select(AfterlifeSpiritualConflictState.GetNodeString)
-            .Where(static value => !string.IsNullOrWhiteSpace(value))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
-        return values.Length == 0 ? "нет" : string.Join("; ", values);
-    }
-
-    private static JsonNode? BuildPlayerFacingCombatConditionAudit(JsonNode? root)
-    {
-        if (root == null)
-            return null;
-
-        return AfterlifeCombatConditionPlayerAuditSanitizer.Sanitize(root);
-    }
 
     private static void AppendSpiritualExchangeLog(List<string> lines, JsonArray exchangeLog)
     {

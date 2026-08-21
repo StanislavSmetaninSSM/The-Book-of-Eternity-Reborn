@@ -535,8 +535,6 @@ public partial class GameEngine
         if (!string.IsNullOrWhiteSpace(status.CurrentCondition))
             lines.Add($"Состояние: {status.CurrentCondition}");
 
-        if (status.ActiveConditions.Length > 0)
-            lines.Add("Активные состояния: " + string.Join("; ", status.ActiveConditions));
     }
 
     private string BuildCommandHint(AggregatedGameState state)

@@ -3,6 +3,7 @@ using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models.GameState;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.WebUi;
 
@@ -42,6 +43,7 @@ public sealed class BrowserGameScreenService
         var qte = await _qte.BuildReadOnlyStateAsync();
         var narrative = await BuildNarrativeAsync(state);
         var media = await BuildMediaAsync(narrative);
+        var playerVisibleEffects = await BuildPlayerVisibleEffectsAsync();
 
         return new BrowserGameScreenDto(
             SchemaVersion: 2,
@@ -62,7 +64,7 @@ public sealed class BrowserGameScreenService
                 HealthPercentage: state.PlayerStatus.HealthPercentage,
                 EnergyPercentage: state.PlayerStatus.EnergyPercentage,
                 PoisePercentage: state.PlayerStatus.PoisePercentage,
-                ActiveConditions: state.PlayerStatus.ActiveConditions),
+                ActiveConditions: playerVisibleEffects),
             World: new BrowserGameScreenWorldDto(
                 Location: state.CurrentLocation,
                 WorldTime: state.WorldTime,
@@ -82,6 +84,23 @@ public sealed class BrowserGameScreenService
                 IsInShiningAbodePendingBootstrap: state.IsInShiningAbodePendingBootstrap,
                 IsInAfterlifeRealm: state.IsInAfterlifeRealm,
                 CanReenterShiningAbode: state.CanReenterShiningAbode));
+    }
+
+    private async Task<IReadOnlyList<string>> BuildPlayerVisibleEffectsAsync()
+    {
+        var projection = EffectPlayerProjection.Build(new EffectPlayerProjectionInput(
+            await EffectMechanicsSnapshot.LoadAsync(_fs),
+            Realm: "mortal_world",
+            TargetKind: "player",
+            TargetId: "player_current"));
+        if (!projection.IsAvailable)
+            return [projection.StatusMessage];
+
+        return projection.Entries
+            .Select(static entry => string.IsNullOrWhiteSpace(entry.Summary)
+                ? entry.Name
+                : $"{entry.Name}: {entry.Summary}")
+            .ToArray();
     }
 
     private static bool HasPlayableSession(BrowserLifecycleDashboardDto lifecycle)

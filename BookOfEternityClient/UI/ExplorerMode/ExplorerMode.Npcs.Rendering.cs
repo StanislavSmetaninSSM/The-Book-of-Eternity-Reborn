@@ -346,34 +346,35 @@ public partial class ExplorerMode
     }
 
 
-    private void RenderNpcEffects(List<string> lines, JsonDocument? doc, string npcId, string npcName, bool debugMode)
+    private static void RenderNpcEffects(
+        List<string> lines,
+        EffectPlayerProjectionResult projection,
+        string npcId)
     {
-        if (doc == null) return;
-        var entries = CollectNpcEntries(doc, npcId, npcName);
-        if (entries.Count == 0) return;
+        if (!projection.IsAvailable)
+        {
+            lines.Add("");
+            lines.Add($"  [yellow]{Markup.Escape(projection.StatusMessage)}[/]");
+            return;
+        }
+
+        var entries = projection.Entries
+            .Where(effect =>
+                string.Equals(effect.TargetKind, "npc", StringComparison.Ordinal) &&
+                string.Equals(effect.TargetId, npcId, StringComparison.Ordinal))
+            .ToArray();
+        if (entries.Length == 0)
+            return;
 
         lines.Add("");
         lines.Add($"  [bold]✨ Эффекты:[/]");
-        foreach (var entry in entries)
+        foreach (var effect in entries)
         {
-            var effType = GetStr(entry, "effectType", GetStr(entry, "type", ""));
-            var effDesc = GetStr(entry, "description", GetStr(entry, "effect", ""));
-            var duration = GetStr(entry, "duration", GetStr(entry, "turnsRemaining", ""));
-            var isWound = effType.ToLower().Contains("wound") || effType.ToLower().Contains("ран")
-                       || effDesc.ToLower().Contains("wound") || effDesc.ToLower().Contains("ран");
-            var isDebuff = effType.ToLower().Contains("debuff") || effType.ToLower().Contains("негатив");
-            var color = isWound ? "red" : isDebuff ? "orange3" : "green";
-            var icon = isWound ? "🩸" : isDebuff ? "⚠️" : "✨";
-
-            var displayText = !string.IsNullOrEmpty(effDesc) ? effDesc : effType;
-            var line = $"    {icon} [{color}]{Markup.Escape(displayText)}[/]";
-            if (!string.IsNullOrEmpty(duration))
-                line += $" [dim](длительность: {Markup.Escape(duration)})[/]";
-            lines.Add(line);
-
-            if (debugMode)
-                RenderExtraFields(lines, entry, new[] { "NPCName", "npcName", "name",
-                    "effectType", "type", "description", "effect", "duration", "turnsRemaining" }, "      ");
+            lines.Add($"    ✨ [yellow]{Markup.Escape(effect.Name)}[/]");
+            if (!string.IsNullOrWhiteSpace(effect.Summary))
+                lines.Add($"      [dim]{Markup.Escape(effect.Summary)}[/]");
+            foreach (var fact in effect.Facts)
+                lines.Add($"      [dim]{Markup.Escape(fact.Label)}:[/] {Markup.Escape(fact.Value)}");
         }
     }
 

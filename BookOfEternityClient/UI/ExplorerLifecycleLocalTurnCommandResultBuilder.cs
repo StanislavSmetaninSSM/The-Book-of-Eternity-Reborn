@@ -4785,13 +4785,26 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var conflictRoot = await ReadJson(fs, AfterlifeSpiritualConflictState.StatePath);
         var active = (conflictRoot.Node as JsonObject)?["activeConflict"] as JsonObject;
+        var effectProjection = EffectPlayerProjection.Build(new EffectPlayerProjectionInput(
+            await EffectMechanicsSnapshot.LoadAsync(fs),
+            Realm: stateManager.CurrentState.IsInShiningAbode ? "shining_abode" : "chaos_sea",
+            TargetKind: "spiritual_conflict_side"));
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            BuildSpiritualActionDossier(active, stateManager.CurrentState.CurrentRealm)
+            BuildSpiritualActionDossier(active, stateManager.CurrentState.CurrentRealm, effectProjection)
         };
         if (includeRawDiagnostics)
-            AddRawOrWarning(blocks, "JSON: active afterlife spiritual conflict", new JsonReadResult(AfterlifeSpiritualConflictState.StatePath, conflictRoot.FileExists, AfterlifeCombatConditionPlayerAuditSanitizer.Sanitize(active), conflictRoot.Error));
+        {
+            AddRawOrWarning(
+                blocks,
+                "JSON: active afterlife spiritual conflict",
+                new JsonReadResult(
+                    AfterlifeSpiritualConflictState.StatePath,
+                    conflictRoot.FileExists,
+                    AfterlifeCombatConditionPlayerAuditSanitizer.Sanitize(active, effectProjection),
+                    conflictRoot.Error));
+        }
 
         return Result(
             command,
@@ -4829,9 +4842,12 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
             ]);
     }
 
-    private static UiEntityDossierBlock BuildSpiritualActionDossier(JsonObject? active, string? currentRealm)
+    private static UiEntityDossierBlock BuildSpiritualActionDossier(
+        JsonObject? active,
+        string? currentRealm,
+        EffectPlayerProjectionResult effectProjection)
     {
-        var visibleConditions = BuildVisibleSpiritualConditionCards(active).ToList();
+        var visibleConditions = BuildVisibleSpiritualConditionCards(active, effectProjection).ToList();
         if (visibleConditions.Count == 0)
         {
             visibleConditions.Add(new UiEntityCard
@@ -4938,53 +4954,38 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         };
     }
 
-    private static IEnumerable<UiEntityCard> BuildVisibleSpiritualConditionCards(JsonObject? active)
+    private static IEnumerable<UiEntityCard> BuildVisibleSpiritualConditionCards(
+        JsonObject? active,
+        EffectPlayerProjectionResult projection)
     {
-        if (active?["combatConditions"] is not JsonArray conditions)
+        var conflictId = GetString(active, "conflictId");
+        if (!projection.IsAvailable || string.IsNullOrWhiteSpace(conflictId))
             yield break;
 
-        foreach (var condition in conditions.OfType<JsonObject>().Where(IsPlayerVisibleSpiritualCondition))
-            yield return BuildSpiritualConditionCard(condition);
-    }
-
-    private static UiEntityCard BuildSpiritualConditionCard(JsonObject condition)
-    {
-        var source = condition["source"] as JsonObject;
-        var payoff = condition["payoff"] as JsonObject;
-        var duration = condition["duration"] as JsonObject;
-        var operations = FormatSpiritualOperations(condition["affectedOperations"] as JsonArray);
-        var counterplay = ReadStringArray(condition["counterplay"] as JsonArray).ToList();
-        List<UiEntityHint> hints = counterplay.Count == 0
-            ? []
-            : [new UiEntityHint { Title = "Как с этим работать", Text = string.Join(Environment.NewLine, counterplay), Tone = UiTone.Accent }];
-
-        return new UiEntityCard
+        var targetPrefix = conflictId + ":";
+        foreach (var effect in projection.Entries.Where(entry =>
+                     string.Equals(entry.TargetKind, "spiritual_conflict_side", StringComparison.Ordinal) &&
+                     entry.TargetId.StartsWith(targetPrefix, StringComparison.Ordinal)))
         {
-            Title = FirstNonEmpty(GetString(condition, "displayName"), GetString(condition, "conditionId"), "Условие"),
-            Subtitle = FormatSpiritualConditionKind(GetString(condition, "kind")),
-            Summary = FirstNonEmpty(GetString(condition, "summary"), "Открытое условие духовного боя."),
-            Icon = "sparkles",
-            Badges =
-            [
-                new UiEntityBadge { Label = FormatSpiritualConditionStatus(GetString(condition, "status")), Tone = UiTone.Accent },
-                new UiEntityBadge { Label = FormatSpiritualPolarity(GetString(condition, "polarity")), Tone = UiTone.Default }
-            ],
-            Facts =
-            [
-                new UiEntityFact { Label = "Источник", Value = FirstNonEmpty(GetString(source, "displayName"), FormatSpiritualSourceType(GetString(source, "type")), "не указан") },
-                new UiEntityFact { Label = "Цель", Value = FormatSpiritualConditionTargetSide(GetString(condition, "targetSide")) },
-                new UiEntityFact { Label = "Затрагивает действия", Value = operations },
-                new UiEntityFact { Label = "Эффект", Value = FormatSpiritualPayoff(payoff) },
-                new UiEntityFact { Label = "Длительность", Value = FormatSpiritualDuration(duration) }
-            ],
-            Hints = hints
-        };
-    }
-
-    private static bool IsPlayerVisibleSpiritualCondition(JsonObject condition)
-    {
-        var visibility = GetString(condition, "visibility").Trim().ToLowerInvariant();
-        return visibility is "player_visible" or "visible" or "public" or "revealed";
+            yield return new UiEntityCard
+            {
+                Title = effect.Name,
+                Subtitle = effect.State == "active" ? "Действует" : "Приостановлен",
+                Summary = FirstNonEmpty(effect.Summary, "Открытое условие духовного боя."),
+                Icon = "sparkles",
+                Facts = effect.Facts
+                    .Select(static fact => new UiEntityFact { Label = fact.Label, Value = fact.Value })
+                    .ToList(),
+                Hints = effect.Actions
+                    .Select(static action => new UiEntityHint
+                    {
+                        Title = action.Label,
+                        Text = action.Description ?? "Доступность будет проверена перед действием.",
+                        Tone = UiTone.Accent
+                    })
+                    .ToList()
+            };
+        }
     }
 
     private static JsonObject? GetObject(JsonObject? obj, string propertyName) =>

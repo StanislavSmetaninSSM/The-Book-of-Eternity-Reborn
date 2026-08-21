@@ -290,7 +290,7 @@ public sealed class ExplorerWebCommandServiceTests :
     [InlineData("/чужие_нити", "Лунный претендент")]
     [InlineData("/погода", "08:15")]
     [InlineData("/транспорт", "Серый конь")]
-    [InlineData("/эффекты", "Магический резонанс")]
+    [InlineData("/эффекты", "Кровотечение")]
     [InlineData("/бой", "Теневой посыльный")]
     [InlineData("/доступ_к_хранилищам", "Приватный письменный стол")]
     [InlineData("/взаимодействия", "странной печати")]
@@ -318,21 +318,20 @@ public sealed class ExplorerWebCommandServiceTests :
             block.EntityType == "effects" &&
             block.Title.Equals("Эффекты", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(dossier.Sections, static section =>
-            section.Title.Equals("Активные записи", StringComparison.OrdinalIgnoreCase) &&
-            section.Cards.Any(card => card.Title.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase)));
+            section.Title.Equals("Активные эффекты", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
             table.Title.Equals("Эффекты", StringComparison.OrdinalIgnoreCase) ||
             table.Title.Equals("Подробности эффектов", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.Contains(result.Actions, action =>
-            action.Label.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(action.Command, "/эффекты эффект resonance_1", StringComparison.OrdinalIgnoreCase) &&
+            action.Label.Contains("Кровотечение", StringComparison.OrdinalIgnoreCase) &&
+            action.Command.StartsWith("/эффекты эффект effect_view_", StringComparison.Ordinal) &&
             action.Style == UiActionStyle.Secondary &&
             action.RequiresConfirmation == false);
     }
 
     [Fact]
-    public async Task ExecuteAsync_EffectsFallback_RendersVisibleStatusAsDossier()
+    public async Task ExecuteAsync_EffectsLegacyStatusFallbackIsRejected()
     {
         await SeedUniversalMetaFilesAsync();
         await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", """
@@ -350,14 +349,14 @@ public sealed class ExplorerWebCommandServiceTests :
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/эффекты"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
-            block.EntityType == "visible-status-effects" &&
-            block.Title.Equals("Видимые состояния", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "visible-status-effects");
         Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         var text = CollectBlockText(result.Blocks);
-        Assert.Contains("Лёгкое недомогание", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Магический резонанс", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сейчас нет видимых действующих эффектов", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Лёгкое недомогание", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Магический резонанс", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -365,47 +364,36 @@ public sealed class ExplorerWebCommandServiceTests :
     {
         await SeedMortalEffectsDetailStateAsync();
 
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/эффекты эффект resonance_1"));
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/эффекты"));
+        var detailAction = Assert.Single(overview.Actions, static action =>
+            action.Command.StartsWith("/эффекты эффект effect_view_", StringComparison.Ordinal));
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(detailAction.Command));
         var text = CollectBlockText(result.Blocks);
         var payload = SerializeResult(result);
 
-        Assert.Equal("/эффекты эффект resonance_1", result.Command);
+        Assert.Equal(detailAction.Command, result.Command);
         Assert.Equal(CommandExecutionState.Completed, result.State);
-        Assert.Contains("Магический резонанс", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Руническая перчатка подсвечивает следы магии.", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Длительность", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("До полудня", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Кровотечение", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рана продолжает отнимать силы.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Срок действия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ещё три хода владельца", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Источник", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Руническая перчатка", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("незначительная", text, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("minor", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Структурные бонусы", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Тип бонуса", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Восприятие", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Боевые эффекты", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Резонансный толчок", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Сбивает концентрацию цели.", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Через серебряную арку", text, StringComparison.Ordinal);
-        Assert.Contains("По звону хрустального колокола", text, StringComparison.Ordinal);
-        Assert.Contains("По следу мерцающих рун", text, StringComparison.Ordinal);
+        Assert.Contains("Рваная рана", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Периодический урон", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("физическое лечение", text, StringComparison.OrdinalIgnoreCase);
         var effectDossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
             block.EntityType == "effect" &&
-            block.Title.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(
-            effectDossier.Sections.SelectMany(static section => section.Facts),
-            static fact => fact.Label.Equals("Осталось ходов", StringComparison.OrdinalIgnoreCase) &&
-                           fact.Value == "1");
+            block.Title.Contains("Кровотечение", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(effectDossier.Sections, static section =>
-            section.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase) &&
-            section.Cards.Any(card => card.Title.Contains("Восприятие", StringComparison.OrdinalIgnoreCase)));
-        Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
-            table.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase));
+            section.Title.Equals("Снятие и противодействие", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(result.Actions, action =>
             action.Label.Contains("Назад", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(action.Command, "/эффекты", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(EffectMaterializationTestFixture.EffectId, payload, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1767,22 +1755,7 @@ public sealed class ExplorerWebCommandServiceTests :
           "statsDecreased": [ "strength" ]
         }
         """);
-        await _fs.WriteFileAtomicAsync("game_state/player/effects.json", """
-        {
-          "effects": [
-            {
-              "effectId": "runic_resonance",
-              "effectName": "Магический резонанс",
-              "effectType": "buff",
-              "value": "+2",
-              "duration": 3,
-              "sourceSkill": "Руническая перчатка",
-              "targetTypeDisplayName": "Восприятие",
-              "effectDescription": "Перчатка отзывается на владельца и усиливает ощущение магических следов."
-            }
-          ]
-        }
-        """);
+        await SeedMortalEffectsDetailStateAsync();
         await _fs.WriteFileAtomicAsync("game_state/player/wounds.json", """
         {
           "wounds": [
@@ -1847,7 +1820,7 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.Contains("Понижены", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Сила", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Активные эффекты", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Магический резонанс", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Кровотечение", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Рассечённая ладонь", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Нервное напряжение", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
@@ -1872,10 +1845,10 @@ public sealed class ExplorerWebCommandServiceTests :
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains("Активные эффекты", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Магический резонанс", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Кровотечение", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(result.Actions, action =>
-            action.Label.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(action.Command, "/эффекты эффект resonance_1", StringComparison.OrdinalIgnoreCase) &&
+            action.Label.Contains("Кровотечение", StringComparison.OrdinalIgnoreCase) &&
+            action.Command.StartsWith("/эффекты эффект effect_view_", StringComparison.Ordinal) &&
             action.Style == UiActionStyle.Secondary &&
             action.RequiresConfirmation == false);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
@@ -4238,7 +4211,6 @@ public sealed class ExplorerWebCommandServiceTests :
             item =>
             {
                 item["type"] = "weapon";
-                item["durability"] = "0%";
             });
         await _fs.WriteFileAtomicAsync(
             "game_state/inventory/items.json",
@@ -4307,8 +4279,7 @@ public sealed class ExplorerWebCommandServiceTests :
             card.PrimaryAction != null &&
             !card.Summary.Contains("Прочность", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(itemSection.Cards, static card =>
-            card.Title.Equals("Сломанный лук", StringComparison.OrdinalIgnoreCase) &&
-            card.Badges.Any(badge => badge.Label.Contains("сломано", StringComparison.OrdinalIgnoreCase)));
+            card.Title.Equals("Сломанный лук", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(result.Blocks.SelectMany(EnumerateTables), static table =>
             table.Title.Contains("Предметы", StringComparison.OrdinalIgnoreCase));
 
@@ -7824,6 +7795,7 @@ public sealed class ExplorerWebCommandServiceTests :
     {
         await SeedAfterlifeCombatAndEntityFilesAsync();
         await WriteAfterlifeConflictStateWithCombatConditionsAsync();
+        await SeedAcceptedSpiritualEffectProjectionForLegacyFixtureAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_conflict"));
 
@@ -7863,6 +7835,7 @@ public sealed class ExplorerWebCommandServiceTests :
     {
         await SeedAfterlifeCombatAndEntityFilesAsync();
         await WriteAfterlifeConflictStateWithCombatConditionsAsync();
+        await SeedAcceptedSpiritualEffectProjectionForLegacyFixtureAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_conflict"));
         var text = CollectBlockText(result.Blocks);
@@ -7990,6 +7963,7 @@ public sealed class ExplorerWebCommandServiceTests :
         await SeedChaosSeaFilesAsync();
         await SeedAfterlifeCombatAndEntityFilesAsync();
         await WriteAfterlifeConflictStateWithCombatConditionsAsync();
+        await SeedAcceptedSpiritualEffectProjectionForLegacyFixtureAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_action", AdvancedEnabled: true));
 
@@ -7997,8 +7971,8 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.Equal(CommandExecutionState.RequiresInput, result.State);
         Assert.Contains("JSON: active afterlife spiritual conflict", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("ordinary_visible_roll_reason", payload, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("mark_oath_flare_001", payload, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("visible_condition_roll_source_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("mark_oath_flare_001", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("visible_condition_roll_source_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("guard_tempo_window_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_summary_legacy_marker", payload, StringComparison.OrdinalIgnoreCase);
@@ -8014,6 +7988,7 @@ public sealed class ExplorerWebCommandServiceTests :
         await SeedChaosSeaFilesAsync();
         await SeedAfterlifeCombatAndEntityFilesAsync();
         await WriteAfterlifeConflictStateWithCombatConditionsAsync();
+        await SeedAcceptedSpiritualEffectProjectionForLegacyFixtureAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_action"));
 
@@ -8731,6 +8706,7 @@ public sealed class ExplorerWebCommandServiceTests :
           "enemiesData": [
             {
               "enemyId": "shadow_messenger",
+              "combatantId": "combatant_shadow_messenger",
               "name": "Теневой посыльный",
               "type": "elite",
               "status": "hostile",
@@ -8741,15 +8717,7 @@ public sealed class ExplorerWebCommandServiceTests :
               "intent": "сорвать концентрацию мага",
               "targetPriority": "caster",
               "description": "Скользит между колоннами [red]без права на разметку[/].",
-              "activeDebuffs": [
-                {
-                  "effectType": "burn",
-                  "value": "-2 HP/ход",
-                  "duration": 2,
-                  "sourceSkill": "серебряная стрела",
-                  "effectDescription": "Горит после серебряной стрелы."
-                }
-              ],
+              "activeDebuffs": [],
               "actions": [
                 {
                   "actionName": "Теневой выпад",
@@ -8774,6 +8742,7 @@ public sealed class ExplorerWebCommandServiceTests :
           "alliesData": [
             {
               "allyId": "rina_guard",
+              "combatantId": "combatant_rina_guard",
               "name": "Рина из Серебряной стражи",
               "role": "щит",
               "status": "wounded",
@@ -8783,15 +8752,7 @@ public sealed class ExplorerWebCommandServiceTests :
               "maxPoise": 12,
               "intent": "защищает мага",
               "description": "Держит линию у разбитой арки.",
-              "activeBuffs": [
-                {
-                  "effectType": "inspire",
-                  "value": "+1 стойкость",
-                  "duration": 1,
-                  "sourceSkill": "Боевой клич",
-                  "effectDescription": "Боевой клич держит строй."
-                }
-              ],
+              "activeBuffs": [],
               "actions": [
                 {
                   "actionName": "Прикрыть щитом",
@@ -8831,6 +8792,37 @@ public sealed class ExplorerWebCommandServiceTests :
           ]
         }
         """);
+
+        var enemyEffect = CreateUiCanonicalEffect(
+            effectId: "effect_shadow_messenger_burning",
+            transitionId: "effect_transition_shadow_messenger_burning",
+            targetId: "combatant_shadow_messenger",
+            name: "Серебряное пламя",
+            description: "Горит после серебряной стрелы.",
+            category: "debuff",
+            profile: "periodic_damage");
+        var allyEffect = CreateUiCanonicalEffect(
+            effectId: "effect_rina_guard_battle_cry",
+            transitionId: "effect_transition_rina_guard_battle_cry",
+            targetId: "combatant_rina_guard",
+            name: "Боевой клич",
+            description: "Боевой клич держит строй.",
+            category: "buff",
+            profile: "characteristic_modifier");
+
+        var enemies = JsonNode.Parse((await _fs.ReadFileAsync("game_state/combat/enemies.json"))!)!.AsObject();
+        enemies["enemiesData"]![0]!["activeDebuffs"] = new JsonArray(enemyEffect.DeepClone());
+        await _fs.WriteFileAtomicAsync("game_state/combat/enemies.json", enemies.ToJsonString());
+
+        var allies = JsonNode.Parse((await _fs.ReadFileAsync("game_state/combat/allies.json"))!)!.AsObject();
+        allies["alliesData"]![0]!["activeBuffs"] = new JsonArray(allyEffect.DeepClone());
+        await _fs.WriteFileAtomicAsync("game_state/combat/allies.json", allies.ToJsonString());
+
+        var index = CreateUiEffectIdentityIndex(enemyEffect, allyEffect);
+        var allyOwner = index["entries"]![1]!["owner"]!.AsObject();
+        allyOwner["carrierPath"] = EffectCarrierCatalog.AlliesPath;
+        allyOwner["collection"] = "activeBuffs";
+        await _fs.WriteFileAtomicAsync(EffectIdentityState.StatePath, index.ToJsonString());
     }
 
     private async Task SeedRichMortalWorldNewsFilesAsync()
@@ -9225,66 +9217,20 @@ public sealed class ExplorerWebCommandServiceTests :
         """);
     }
 
-    private Task SeedMortalEffectsDetailStateAsync() =>
-        _fs.WriteFileAtomicAsync("game_state/player/effects.json", """
-        {
-          "activeEffects": [
+    private async Task SeedMortalEffectsDetailStateAsync()
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        await _fs.WriteFileAtomicAsync(
+            EffectCarrierCatalog.PlayerPath,
+            new JsonObject
             {
-              "effectId": "resonance_1",
-              "name": "Магический резонанс",
-              "effectDescription": "Руническая перчатка подсвечивает следы магии.",
-              "duration": "До полудня",
-              "source": "Руническая перчатка",
-              "severity": "minor",
-              "remainingTurns": 1,
-              "structuredBonuses": [
-                {
-                  "bonusType": "Characteristic",
-                  "target": "Восприятие",
-                  "value": -1,
-                  "valueType": "Flat",
-                  "modifierType": "temporary",
-                  "source": "Головная боль после тяжёлых снов",
-                  "summary": "Восприятие -1",
-                  "route": "Через серебряную арку"
-                }
-              ],
-              "customProperties": [
-                {
-                  "interactionType": "onUse",
-                  "route": "По звону хрустального колокола"
-                }
-              ],
-              "notes": [
-                {
-                  "route": "По следу мерцающих рун"
-                }
-              ],
-              "combatEffect": {
-                "actionName": "Резонансный толчок",
-                "isActivatedEffect": false,
-                "effects": [
-                  {
-                    "effectType": "PoiseDamage",
-                    "poiseDamage": 1,
-                    "targetTypeDisplayName": "противник",
-                    "effectDescription": "Сбивает концентрацию цели."
-                  }
-                ]
-              }
-            }
-          ],
-          "wounds": [],
-          "temporaryConditions": [
-            {
-              "conditionId": "headache_1",
-              "name": "Головная боль после тяжёлых снов",
-              "effectDescription": "-1 к Восприятию до полудня.",
-              "duration": "До 12:00"
-            }
-          ]
-        }
-        """);
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(effect.DeepClone())
+            }.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            EffectIdentityState.StatePath,
+            EffectMaterializationTestFixture.CreateIdentityIndex(effect).ToJsonString());
+    }
 
     private async Task SeedCanonicalMortalSummaryFilesAsync()
     {
@@ -9416,25 +9362,7 @@ public sealed class ExplorerWebCommandServiceTests :
         }
         """);
 
-        await _fs.WriteFileAtomicAsync("game_state/player/effects.json", """
-        {
-          "activeEffects": [
-            {
-              "name": "Магический резонанс",
-              "effectDescription": "Руническая перчатка подсвечивает следы магии.",
-              "duration": "Пока перчатка экипирована"
-            }
-          ],
-          "wounds": [],
-          "temporaryConditions": [
-            {
-              "name": "Головная боль после тяжёлых снов",
-              "effectDescription": "-1 к Восприятию до полудня.",
-              "duration": "До 12:00"
-            }
-          ]
-        }
-        """);
+        await SeedMortalEffectsDetailStateAsync();
 
         await _fs.WriteFileAtomicAsync("game_state/combat/enemies.json", """
         {
@@ -10250,8 +10178,14 @@ public sealed class ExplorerWebCommandServiceTests :
               "player": { "current": 7, "max": 8, "source": "spirit_focus" },
               "opposition": { "current": 5, "max": 6, "source": "profile" }
             },
-            "playerSide": { "leadContestant": { "actorId": "player_soul", "displayName": "Test Soul" } },
-            "oppositionSide": { "leadContestant": { "actorId": "guardian_shadow", "displayName": "Тень Хранителя" } },
+            "playerSide": {
+              "leadContestant": { "actorType": "player", "actorId": "player_soul", "displayName": "Test Soul" },
+              "supporters": []
+            },
+            "oppositionSide": {
+              "leadContestant": { "actorType": "guardian", "actorId": "guardian_shadow", "displayName": "Тень Хранителя" },
+              "supporters": []
+            },
             "exchangeLog": [
               {
                 "exchangeId": "exchange_1",
@@ -10330,8 +10264,14 @@ public sealed class ExplorerWebCommandServiceTests :
               "player": { "current": 7, "max": 8, "source": "spirit_focus" },
               "opposition": { "current": 5, "max": 6, "source": "profile" }
             },
-            "playerSide": { "leadContestant": { "actorId": "player_soul", "displayName": "Test Soul" } },
-            "oppositionSide": { "leadContestant": { "actorId": "guardian_shadow", "displayName": "Тень Хранителя" } },
+            "playerSide": {
+              "leadContestant": { "actorType": "player", "actorId": "player_soul", "displayName": "Test Soul" },
+              "supporters": []
+            },
+            "oppositionSide": {
+              "leadContestant": { "actorType": "guardian", "actorId": "guardian_shadow", "displayName": "Тень Хранителя" },
+              "supporters": []
+            },
             "combatConditions": [
               {
                 "conditionId": "mark_oath_flare_001",
@@ -10518,6 +10458,179 @@ public sealed class ExplorerWebCommandServiceTests :
           "recentConflicts": []
         }
         """);
+
+    private async Task SeedAcceptedSpiritualEffectProjectionForLegacyFixtureAsync()
+    {
+        const string conflictId = "conflict_conditions_1";
+        var visible = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            "guardian",
+            "afterlife_combat_condition");
+        visible["effectId"] = "effect_oath_flare_visible";
+        visible["realm"] = "chaos_sea";
+        visible["target"] = new JsonObject
+        {
+            ["kind"] = "spiritual_conflict_side",
+            ["targetId"] = conflictId + ":opposition"
+        };
+        visible["display"]!["name"] = "Разогретая клятва";
+        visible["display"]!["description"] =
+            "Клятва подсвечена: давление и контрприём легче направить в противника.";
+        visible["display"]!["category"] = "condition";
+        visible["display"]!["sourceLabel"] = "Клятва Азалии";
+        visible["source"]!["sourceId"] = "special_art_oath_flare";
+        visible["source"]!["definitionKey"] = "oath_flare_condition";
+        visible["stacking"]!["stackKey"] = "oath_flare_condition";
+        visible["chronology"]!["lastTransitionId"] = "effect_transition_oath_flare_visible";
+        visible["chronology"]!["createdEventRef"] = "turn_42:oath_flare_visible";
+        visible["lifetime"] = new JsonObject
+        {
+            ["mode"] = "turns",
+            ["remainingTurns"] = 1,
+            ["advancePhase"] = "afterlife_exchange_end",
+            ["displayText"] = "До конца следующего обмена"
+        };
+        var visiblePayload = visible["components"]![0]!["payload"]!.AsObject();
+        visiblePayload["conditionKind"] = "mark";
+        visiblePayload["targetSide"] = "opposition";
+        visiblePayload["actorId"] = "guardian_shadow";
+        visiblePayload["operations"] = new JsonArray("pressure", "counter");
+        visiblePayload["axes"] = new JsonArray("rollMode");
+        visiblePayload["counterplay"] = new JsonArray("break_binding", "withdraw");
+        visiblePayload["payoff"] = "attrition";
+
+        var hidden = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            "guardian",
+            "afterlife_combat_condition");
+        hidden["effectId"] = "effect_hidden_condition_marker";
+        hidden["realm"] = "chaos_sea";
+        hidden["target"] = new JsonObject
+        {
+            ["kind"] = "spiritual_conflict_side",
+            ["targetId"] = conflictId + ":player"
+        };
+        hidden["display"]!["name"] = "hidden_condition_marker";
+        hidden["display"]!["description"] = "hidden_summary_legacy_marker";
+        hidden["display"]!["category"] = "condition";
+        hidden["display"]!["visibility"] = "gm_only";
+        hidden["display"]!["sourceLabel"] = "hidden_audit_legacy_marker";
+        hidden["source"]!["sourceId"] = "story_link_hidden_condition";
+        hidden["source"]!["definitionKey"] = "hidden_condition_definition";
+        hidden["stacking"]!["stackKey"] = "hidden_condition_stack";
+        hidden["chronology"]!["lastTransitionId"] = "effect_transition_hidden_condition";
+        hidden["chronology"]!["createdEventRef"] = "turn_42:hidden_condition";
+        hidden["lifetime"] = new JsonObject
+        {
+            ["mode"] = "turns",
+            ["remainingTurns"] = 1,
+            ["advancePhase"] = "afterlife_exchange_end"
+        };
+        var hiddenPayload = hidden["components"]![0]!["payload"]!.AsObject();
+        hiddenPayload["conditionKind"] = "vow";
+        hiddenPayload["targetSide"] = "player";
+        hiddenPayload["actorId"] = "player_soul";
+        hiddenPayload["operations"] = new JsonArray("guard");
+        hiddenPayload["axes"] = new JsonArray("rollMode");
+        hiddenPayload["counterplay"] = new JsonArray("hidden_condition_marker");
+        hiddenPayload["payoff"] = "impose_disadvantage";
+
+        Assert.True(
+            AfterlifeSpiritualConflictState.TryProjectCombatCondition(
+                visible,
+                out var visibleCondition,
+                out var visibleReason),
+            visibleReason);
+        Assert.True(
+            AfterlifeSpiritualConflictState.TryProjectCombatCondition(
+                hidden,
+                out var hiddenCondition,
+                out var hiddenReason),
+            hiddenReason);
+
+        var conflict = JsonNode.Parse(
+            (await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath))!)!.AsObject();
+        conflict["activeConflict"]!["combatConditions"] = new JsonArray(
+            visibleCondition.DeepClone(),
+            hiddenCondition.DeepClone());
+        var playerRollMode = conflict["activeConflict"]!["exchangeLog"]![0]!["diceAudit"]!["rollMode"]!["player"]!.AsObject();
+        playerRollMode["advantageSources"] = new JsonArray(
+            "позиционное преимущество",
+            "ordinary_visible_roll_reason",
+            visible["effectId"]!.GetValue<string>(),
+            new JsonObject
+            {
+                ["sourceType"] = "combat_condition",
+                ["conditionId"] = visible["effectId"]!.GetValue<string>(),
+                ["level"] = "advantage",
+                ["summary"] = "visible_condition_roll_source_marker"
+            },
+            new JsonObject
+            {
+                ["sourceType"] = "guard_tempo_window",
+                ["sourceId"] = "tempo_guard_valid_001",
+                ["level"] = "advantage",
+                ["summary"] = "guard_tempo_window_marker"
+            });
+        playerRollMode["disadvantageSources"] = new JsonArray(
+            hidden["effectId"]!.GetValue<string>(),
+            new JsonObject
+            {
+                ["sourceType"] = "combat_condition",
+                ["conditionId"] = hidden["effectId"]!.GetValue<string>(),
+                ["level"] = "disadvantage",
+                ["summary"] = "hidden_summary_legacy_marker"
+            });
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            conflict.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            EffectIdentityState.StatePath,
+            CreateUiEffectIdentityIndex(visible, hidden).ToJsonString());
+
+        var snapshot = await EffectMechanicsSnapshot.LoadAsync(_fs);
+        Assert.True(
+            snapshot.IsAccepted,
+            string.Join(Environment.NewLine, snapshot.Issues.Select(static issue =>
+                $"{issue.Code} {issue.FilePath}: {issue.Actual}")));
+    }
+
+    private static JsonObject CreateUiCanonicalEffect(
+        string effectId,
+        string transitionId,
+        string targetId,
+        string name,
+        string description,
+        string category,
+        string profile)
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("combatant", profile);
+        effect["effectId"] = effectId;
+        effect["target"]!["targetId"] = targetId;
+        effect["display"]!["name"] = name;
+        effect["display"]!["description"] = description;
+        effect["display"]!["category"] = category;
+        effect["display"]!["sourceLabel"] = name;
+        effect["source"]!["sourceId"] = "source_" + effectId;
+        effect["source"]!["definitionKey"] = "definition_" + effectId;
+        effect["stacking"]!["stackKey"] = "stack_" + effectId;
+        effect["chronology"]!["lastTransitionId"] = transitionId;
+        effect["chronology"]!["createdEventRef"] = "turn_42:" + effectId;
+        return effect;
+    }
+
+    private static JsonObject CreateUiEffectIdentityIndex(params JsonObject[] effects)
+    {
+        var index = EffectMaterializationTestFixture.CreateIdentityIndex(effects);
+        var entries = index["entries"]!.AsArray();
+        for (var i = 0; i < effects.Length; i++)
+        {
+            var chronology = effects[i]["chronology"]!.AsObject();
+            var transition = entries[i]!["transitions"]![0]!.AsObject();
+            transition["transitionId"] = chronology["lastTransitionId"]!.GetValue<string>();
+            transition["eventRef"] = chronology["createdEventRef"]!.GetValue<string>();
+        }
+
+        return index;
+    }
 
     private async Task WriteAfterlifeProfilesMaskProjectionFixtureAsync()
     {
@@ -10999,10 +11112,7 @@ public sealed class ExplorerWebCommandServiceTests :
             item =>
             {
                 item["type"] = "weapon";
-                item["equipmentSlot"] = "MainHand";
-                item["durability"] = "0%";
-            },
-            "equipment");
+            });
         var soulRelic = CreateAcceptedUiItem(
             "soul_relic_1",
             "Реликвия души",
@@ -11115,8 +11225,6 @@ public sealed class ExplorerWebCommandServiceTests :
               "rarity": "Rare",
               "weight": 0.3,
               "price": 450,
-              "durability": "95%",
-              "maxDurability": "100%",
               "equipmentSlot": "Hands",
               "group": "Аксессуары",
               "bonuses": ["Чувство магических потоков +2"],

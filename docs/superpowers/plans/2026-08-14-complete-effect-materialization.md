@@ -1009,13 +1009,21 @@ git commit -m "feat: unify afterlife effect identity lifecycle (#1535)"
 
 **Files:**
 - Create: `BookOfEternityClient/UI/EffectPlayerProjection.cs`
-- Create: `BookOfEternityClient/UI/ExplorerMortalEffectDetailActions.cs`
+- Modify: `BookOfEternityClient/Services/EffectMechanicsSnapshot.cs`
+- Modify: `BookOfEternityClient/UI/ExplorerMortalEffectDetailActions.cs`
 - Modify: Mortal and afterlife readers/builders named in T070–T074
+- Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs`
+- Modify: `BookOfEternityClient/WebUi/BrowserGameScreenService.cs`
 - Modify: `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs`
+- Modify: `BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs`
+- Delete: `BookOfEternityClient/UI/MortalStatusEffectFallback.cs`
 - Create: `BookOfEternityClient.Tests/EffectPlayerProjectionTests.cs`
+- Modify: `BookOfEternityClient.Tests/AfterlifeRussianTerminologyScannerTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Effects.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.Effects.cs`
 - Create: `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Projection.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs`
 
 **Projection surface:**
 
@@ -1034,44 +1042,85 @@ internal static class EffectPlayerProjection
 }
 ```
 
-- [ ] **Step 1: Add projection/privacy RED tests**
+- [x] **Step 1: Add projection/privacy RED tests**
 
 Cover visible facts, setting-specific component catch-all, stacks/lifetime/source links, hidden and GM-only omission, malformed all-or-nothing fallback, whole identity/index/pending/repair/request/report DTO shapes, annotated supersets, and adjacent legitimate `{kind,title,steps,turn,route}` semantics.
 
-- [ ] **Step 2: Add console/browser RED tests**
+- [x] **Step 2: Add console/browser RED tests**
 
 Cover player/NPC/combatant/profile/condition rows and details, Russian in-world copy, parity, opaque selectors, stale/forged submit, accepted write-time re-resolution, malformed authority, hidden output, and serialized `/api/game-screen` privacy.
 
-- [ ] **Step 3: Run RED**
+- [x] **Step 3: Run RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectPlayerProjectionTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExplorerModeCommandTests|FullyQualifiedName~ExplorerWebCommandServiceTests|FullyQualifiedName~EffectAfterlifeAdapterTests"
 ```
 
-- [ ] **Step 4: Implement accepted visible projection**
+- [x] **Step 4: Implement accepted visible projection**
 
 Read only the accepted carrier/index snapshot. Include safe registered-profile facts and setting-specific non-internal semantics. Do not expose permanent effect IDs, source/target permanent selectors, carrier paths, transitions, receipts, pending requests, repair packets, diagnostic reports, or agent instructions.
 
-- [ ] **Step 5: Implement context-aware whole-DTO suppression**
+- [x] **Step 5: Implement context-aware whole-DTO suppression**
 
 Extend the existing recursive sanitizer with effect-specific shape signatures rather than globally hiding common semantic keys. Suppress annotated supersets of real internal DTOs; preserve neighboring world objects that merely use `kind`, `title`, `steps`, `turn`, `route`, or `source`.
 
-- [ ] **Step 6: Implement opaque actions and write-time revalidation**
+- [x] **Step 6: Implement opaque actions and write-time revalidation**
 
 Selectors are short-lived player projection handles. On submit, resolve the handle against the current accepted effect set and re-check removal authority; stale, hidden, forged, moved, terminal, or wound-treatment-confused actions perform no mutation.
 
-- [ ] **Step 7: Decide frontend scope from evidence**
+- [x] **Step 7: Decide frontend scope from evidence**
 
 If existing generic DTOs render every required fact/action, record `no frontend source change: generic blocks sufficient` here. If a typed contract changes, update `BookOfEternityClient.WebFrontend/src/` and run its repository-defined verify command.
 
-- [ ] **Step 8: Run GREEN, serialize both clients, and commit**
+- [x] **Step 8: Run GREEN, serialize both clients, and commit**
 
 ```powershell
-git add -- BookOfEternityClient/UI BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs BookOfEternityClient.Tests/EffectPlayerProjectionTests.cs BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Effects.cs BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.Effects.cs BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Projection.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
+git add -- BookOfEternityClient/Services/EffectMechanicsSnapshot.cs BookOfEternityClient/UI BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs BookOfEternityClient/WebUi/BrowserGameScreenService.cs BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs BookOfEternityClient.Tests/EffectPlayerProjectionTests.cs BookOfEternityClient.Tests/AfterlifeRussianTerminologyScannerTests.cs BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Effects.cs BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.Effects.cs BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Projection.cs specs/1535-complete-effect-materialization/quickstart.md specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
 git diff --cached --check
 git commit -m "feat: project active effects safely (#1535)"
 ```
+
+**Task 11 evidence (2026-08-21):**
+
+| Boundary | RED result | GREEN result | Green tests |
+| --- | --- | --- | ---: |
+| Accepted projection, privacy signatures, adjacent semantic objects | `TestResults/test-lanes/20260821-213028-791-32400-d317229d89b342e0a03b240c6be60ede-focused` (missing projection API) | `TestResults/test-lanes/20260821-230348-793-43528-a30a2621298a4f11b17757c73813d607-focused` | 15 |
+| Complete registered facts, Russian closed-token labels, all lifetime modes, and wide finite numbers | `TestResults/test-lanes/20260821-234325-641-44100-3d8ffba4b8eb48b8a2e20b188f7c9f78-focused` (`15/25`); `TestResults/test-lanes/20260821-235527-033-41712-d0bf25b0170e48e5912359825bb6a0a1-focused` (`31/35`) | `TestResults/test-lanes/20260821-235626-310-38900-a6323641695a4c428b627fa973acc1bc-focused` | 35 |
+| Mortal console/browser rows, details, malformed authority, and parity | `TestResults/test-lanes/20260821-213957-225-13384-1d9d4444465d4dbe9f347587b3c3814a-focused` (`4/10`) | `TestResults/test-lanes/20260821-230455-890-39192-fa338167fd0242539bf376957a6d0ae0-focused`; `TestResults/test-lanes/20260821-231922-743-41292-57ea75aa8a5447aeb63ae647196c385a-focused` | 10; 11 |
+| Opaque browser/console actions and current accepted re-resolution | `TestResults/test-lanes/20260821-223209-978-37652-034c3725e0f84ce1923511c061d9bfa3-focused`; `TestResults/test-lanes/20260821-224016-931-35500-7be3b33b69bc4bc8961b07e5aa5fd5cb-focused` (`0/2` each) | `TestResults/test-lanes/20260821-223811-654-24992-831eaffe99b6440fa9ee08ae5cfc3202-focused`; `TestResults/test-lanes/20260821-224112-554-43156-9276c231b5db4ec98afe35441a09d560-focused` | 2; 2 |
+| Afterlife console/browser projection and hidden-token audit | `TestResults/test-lanes/20260821-221009-777-46648-3e32fe9fb9c94fe2bf35587a21406e81-focused`; `TestResults/test-lanes/20260821-222102-653-40164-c75af733d8134a819e88d0d05cfca016-focused` (`0/2` each) | `TestResults/test-lanes/20260821-222414-661-43936-18b500f82ac04b1094820c1909bf62e8-focused`; `TestResults/test-lanes/20260821-232215-813-29044-36721d0bee244783b08aba0aeb1fe294-focused` | 3; 46 |
+| Serialized game-screen privacy and unavailable-state parity | `TestResults/test-lanes/20260821-225105-941-39452-78c5abfa5b6646599516e5765121fb29-focused` (`0/1`); `TestResults/test-lanes/20260821-235124-799-44560-8d22ddeca6a743fbbe43f172fbd77727-focused` (`10/11`) | `TestResults/test-lanes/20260821-235228-896-4060-be0ee5c252134882b4ca539ec552e5e3-focused` | 11 |
+| Rejected legacy/raw status fallback fixtures | `TestResults/test-lanes/20260821-231057-985-19684-264c440432564c6cb28b319801de286b-focused` (`14/16`) | `TestResults/test-lanes/20260821-231212-324-41836-b041f290eac24ec2b5631860bf1f60c4-focused` | 16 |
+| Canonical Mortal combat and afterlife-condition fixture reconciliation | `TestResults/test-lanes/20260822-001033-462-24656-edd64be0450c4d639966ccb9922eb51e-focused` (`2/6`) | `TestResults/test-lanes/20260822-001624-913-21220-1ddd923c22404d28b221965a901f6e21-focused` | 6 |
+| Strict item/resource fixture reconciliation | early `PreMerge` diagnostic `TestResults/test-lanes/20260822-001755-271-34728-8e35e1339183473697af8e4bb9adffec-premerge` | `TestResults/test-lanes/20260822-001723-493-19096-594a93f2415c459e92b08e16a5b26e20-focused` | 8 |
+| Fast control and relocated Russian terminology guard | `TestResults/test-lanes/20260821-232617-429-25204-ec1b042daa6f4f80a46610d0e2548250-fast` (`3950/3951`) | `TestResults/test-lanes/20260821-233130-685-44656-2478ca3837e84b5e9704aa7bc95676de-focused`; `TestResults/test-lanes/20260821-233206-719-16800-7eef8485be044ae480a825b31463604e-fast` | 1; 3951 |
+
+Every final GREEN artifact exited `0`, timed out `false`, reported zero duplicate
+test IDs, and completed owned-tree cleanup. The quickstart privacy/parity
+scenario was inspected across the serialized console, browser command-result,
+and game-screen assertions: visible facts/actions agree; malformed authority
+produces the same safe unavailable meaning instead of a false empty state; hidden entries and
+permanent effect/source/target IDs, carrier paths, transition IDs, receipts,
+pending/repair DTOs, and raw status fallbacks are absent; stale and forged
+opaque selectors perform no mutation.
+
+The `20260822-001755-271-34728-8e35e1339183473697af8e4bb9adffec-premerge`
+run was intentionally retained as an early broad diagnostic rather than
+misreported as the final Task-16 gate. Frontend verification/build and the
+Task-11 contours were green; the remaining active-template/save-fixture
+failures are the already-tracked #1543 T107–T110 cutover. Its stale shared
+combatant assertion was corrected under #1543 and is GREEN at
+`TestResults/test-lanes/20260822-002459-658-27276-380a38b0aa38439888f46e7485f9626f-focused`.
+No compatibility behavior or validation weakening was added.
+
+No `BookOfEternityClient.WebFrontend/src/` source or typed frontend contract
+changed. Existing generic UI blocks/actions and the existing game-screen
+`ActiveConditions` field carry the new safe content, so a frontend-source
+adapter would duplicate the shared producer contract. This slice is also
+client-owned projection/action plumbing only: it adds no GM-authored command,
+state field, response contract, or repair workflow, so GM prompts, examples,
+manifests, and afterlife contract documentation require no update.
 
 ---
 

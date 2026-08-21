@@ -543,6 +543,7 @@ public sealed class ExplorerWebPromptSessionService
             "/vehicle_move" or "/транспорт_предметы" or
             "/npc_trade" or "/торговля_нпс" or
             "/craft" or "/ремесло" or
+            "/effects" or "/эффекты" or
             "/reveal_fate" or "/открыть_судьбу" or
             "/rewrite_fate" or "/переписать_судьбу" or
             "/gacha" or "/гача" or

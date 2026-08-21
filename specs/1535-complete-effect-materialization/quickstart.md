@@ -448,6 +448,38 @@ Expected:
 - stale/forged cure/dispel selector cannot mutate state;
 - effect-only removal never claims wound healing.
 
+Task 11 RED→GREEN evidence:
+
+| Boundary | RED | GREEN | Result |
+| --- | --- | --- | ---: |
+| Accepted projection and recursive privacy | `TestResults/test-lanes/20260821-213028-791-32400-d317229d89b342e0a03b240c6be60ede-focused` | `TestResults/test-lanes/20260821-230348-793-43528-a30a2621298a4f11b17757c73813d607-focused` | 15 |
+| Complete registered facts, Russian labels, all lifetime modes, and wide finite numbers | `TestResults/test-lanes/20260821-234325-641-44100-3d8ffba4b8eb48b8a2e20b188f7c9f78-focused` (`15/25`); `TestResults/test-lanes/20260821-235527-033-41712-d0bf25b0170e48e5912359825bb6a0a1-focused` (`31/35`) | `TestResults/test-lanes/20260821-235626-310-38900-a6323641695a4c428b627fa973acc1bc-focused` | 35 |
+| Mortal browser and console parity | `TestResults/test-lanes/20260821-213957-225-13384-1d9d4444465d4dbe9f347587b3c3814a-focused` (`4/10`) | `TestResults/test-lanes/20260821-230455-890-39192-fa338167fd0242539bf376957a6d0ae0-focused`; `TestResults/test-lanes/20260821-231922-743-41292-57ea75aa8a5447aeb63ae647196c385a-focused` | 10; 11 |
+| Opaque revalidated actions | `TestResults/test-lanes/20260821-223209-978-37652-034c3725e0f84ce1923511c061d9bfa3-focused`; `TestResults/test-lanes/20260821-224016-931-35500-7be3b33b69bc4bc8961b07e5aa5fd5cb-focused` | `TestResults/test-lanes/20260821-223811-654-24992-831eaffe99b6440fa9ee08ae5cfc3202-focused`; `TestResults/test-lanes/20260821-224112-554-43156-9276c231b5db4ec98afe35441a09d560-focused` | 2; 2 |
+| Afterlife parity and hidden-token audit | `TestResults/test-lanes/20260821-221009-777-46648-3e32fe9fb9c94fe2bf35587a21406e81-focused`; `TestResults/test-lanes/20260821-222102-653-40164-c75af733d8134a819e88d0d05cfca016-focused` | `TestResults/test-lanes/20260821-232215-813-29044-36721d0bee244783b08aba0aeb1fe294-focused` | 46 |
+| Game-screen unavailable-state parity | `TestResults/test-lanes/20260821-235124-799-44560-8d22ddeca6a743fbbe43f172fbd77727-focused` (`10/11`) | `TestResults/test-lanes/20260821-235228-896-4060-be0ee5c252134882b4ca539ec552e5e3-focused` | 11 |
+| Canonical Mortal combat and afterlife-condition fixture reconciliation | `TestResults/test-lanes/20260822-001033-462-24656-edd64be0450c4d639966ccb9922eb51e-focused` (`2/6`) | `TestResults/test-lanes/20260822-001624-913-21220-1ddd923c22404d28b221965a901f6e21-focused` | 6 |
+| Strict item/resource fixture reconciliation | early `PreMerge` diagnostic `TestResults/test-lanes/20260822-001755-271-34728-8e35e1339183473697af8e4bb9adffec-premerge` | `TestResults/test-lanes/20260822-001723-493-19096-594a93f2415c459e92b08e16a5b26e20-focused` | 8 |
+| Fast control and relocated Russian terminology guard | `TestResults/test-lanes/20260821-232617-429-25204-ec1b042daa6f4f80a46610d0e2548250-fast` (`3950/3951`) | `TestResults/test-lanes/20260821-233130-685-44656-2478ca3837e84b5e9704aa7bc95676de-focused`; `TestResults/test-lanes/20260821-233206-719-16800-7eef8485be044ae480a825b31463604e-fast` | 1; 3951 |
+
+Every GREEN artifact exited `0`, timed out `false`, reported zero duplicate IDs,
+and completed owned-tree cleanup. The serialized console, browser result, and
+game-screen checks are the repeatable privacy/parity scenario: they assert the
+same visible mechanics/actions, the same safe unavailable meaning for malformed
+authority, and the absence of hidden entries, permanent
+selectors, carrier paths, transitions, receipts, pending/repair payloads, and
+legacy raw-status fallback.
+
+The `20260822-001755-271-34728-8e35e1339183473697af8e4bb9adffec-premerge`
+run was an early broad diagnostic, not the final Task-16 merge gate. It proved
+the Task-11 browser build and the corrected effect/resource fixture contours,
+then exposed the still-tracked #1543 active-template/save-fixture work owned by
+T107–T110. The shared combatant assertion found in the same run was corrected
+under #1543 and is GREEN at
+`TestResults/test-lanes/20260822-002459-658-27276-380a38b0aa38439888f46e7485f9626f-focused`.
+No validator weakening, compatibility reader, migration, or raw fallback was
+introduced to make this intermediate slice pass.
+
 ## 15. Documentation and Examples
 
 ```powershell

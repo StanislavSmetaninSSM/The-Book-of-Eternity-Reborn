@@ -167,21 +167,21 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 
 ### Tests for User Story 4 (RED first)
 
-- [ ] T065 [P] [US4] Add RED projection tests for visible profile facts, setting-specific component catch-all, lifetime/stacks/source links, hidden/GM-only omission, whole technical DTO signatures, annotated supersets, and adjacent legitimate semantic objects in `BookOfEternityClient.Tests/EffectPlayerProjectionTests.cs`
-- [ ] T066 [P] [US4] Add RED Mortal console tests for player/NPC/combatant rows/details, all-or-nothing fallback, in-world Russian copy, action eligibility, stale selector, and effect-only versus wound treatment wording in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Effects.cs`
-- [ ] T067 [P] [US4] Add RED browser tests for equivalent status/NPC/combatant cards, actions, serialized game-screen privacy, malformed authority, and stale/forged selector in `BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.Effects.cs`
-- [ ] T068 [P] [US4] Add RED afterlife console/browser condition/profile parity and hidden-token audit tests in `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Projection.cs`
+- [x] T065 [P] [US4] Add RED projection tests for visible profile facts, setting-specific component catch-all, lifetime/stacks/source links, hidden/GM-only omission, whole technical DTO signatures, annotated supersets, and adjacent legitimate semantic objects in `BookOfEternityClient.Tests/EffectPlayerProjectionTests.cs`
+- [x] T066 [P] [US4] Add RED Mortal console tests for player/NPC/combatant rows/details, all-or-nothing fallback, in-world Russian copy, action eligibility, stale selector, and effect-only versus wound treatment wording in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Effects.cs`
+- [x] T067 [P] [US4] Add RED browser tests for equivalent status/NPC/combatant cards, actions, serialized game-screen privacy, malformed authority, and stale/forged selector in `BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.Effects.cs`
+- [x] T068 [P] [US4] Add RED afterlife console/browser condition/profile parity and hidden-token audit tests in `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Projection.cs`
 
 ### Implementation for User Story 4
 
-- [ ] T069 [US4] Implement accepted-set projection, registered component projection, lifetime/stack/source/link/action facts, visibility rules, and whole internal DTO shape suppression in `BookOfEternityClient/UI/EffectPlayerProjection.cs` until T065 is GREEN
-- [ ] T070 [US4] Replace raw player/NPC/combatant effect parsing and fallback authority in `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs`, `ExplorerMode.WorldAndStatus.cs`, `ExplorerMode.Npcs.ListAndDetails.cs`, `MortalStatusEffectFallback.cs`, and `ExplorerMortalWorldCommandResultBuilder.cs` until T066 is GREEN
-- [ ] T071 [US4] Implement opaque short-lived effect action selectors and current accepted re-resolution in `BookOfEternityClient/UI/ExplorerMortalEffectDetailActions.cs` and `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs` until T067 is GREEN
-- [ ] T072 [US4] Update browser result DTO construction for player/NPC/combatant effect status and action facts in `BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs` without exposing permanent IDs
-- [ ] T073 [US4] Route spiritual-condition/profile views and audits through the shared adapter in `BookOfEternityClient/UI/ExplorerAfterlifeCombatCommandResultBuilder.cs`, `AfterlifeCombatConditionPlayerAuditSanitizer.cs`, and `ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs` until T068 is GREEN
-- [ ] T074 [US4] Extend context-aware recursive technical DTO suppression to active-effect identity/pending/repair wrappers without hiding non-effect `route/kind/title/steps/turn/source` semantics in `BookOfEternityClient/UI/MortalItemPlayerProjection.cs`
-- [ ] T075 [US4] If typed frontend contracts change, update and verify affected files under `BookOfEternityClient.WebFrontend/src/`; otherwise record the no-frontend-change rationale in `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`
-- [ ] T076 [US4] Run US4 focused console/browser/projection filters, perform the manual privacy/parity scenario from `quickstart.md`, record evidence, and commit the US4 slice
+- [x] T069 [US4] Implement accepted-set projection, registered component projection, lifetime/stack/source/link/action facts, visibility rules, and whole internal DTO shape suppression in `BookOfEternityClient/UI/EffectPlayerProjection.cs` until T065 is GREEN
+- [x] T070 [US4] Replace raw player/NPC/combatant effect parsing and fallback authority in `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs`, `ExplorerMode.WorldAndStatus.cs`, `ExplorerMode.Npcs.ListAndDetails.cs`, `MortalStatusEffectFallback.cs`, and `ExplorerMortalWorldCommandResultBuilder.cs` until T066 is GREEN
+- [x] T071 [US4] Implement opaque short-lived effect action selectors and current accepted re-resolution in `BookOfEternityClient/UI/ExplorerMortalEffectDetailActions.cs` and `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs` until T067 is GREEN
+- [x] T072 [US4] Update browser result DTO construction for player/NPC/combatant effect status and action facts in `BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs` without exposing permanent IDs
+- [x] T073 [US4] Route spiritual-condition/profile views and audits through the shared adapter in `BookOfEternityClient/UI/ExplorerAfterlifeCombatCommandResultBuilder.cs`, `AfterlifeCombatConditionPlayerAuditSanitizer.cs`, and `ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs` until T068 is GREEN
+- [x] T074 [US4] Extend context-aware recursive technical DTO suppression to active-effect identity/pending/repair wrappers without hiding non-effect `route/kind/title/steps/turn/source` semantics in `BookOfEternityClient/UI/MortalItemPlayerProjection.cs`
+- [x] T075 [US4] If typed frontend contracts change, update and verify affected files under `BookOfEternityClient.WebFrontend/src/`; otherwise record the no-frontend-change rationale in `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`
+- [x] T076 [US4] Run US4 focused console/browser/projection filters, perform the manual privacy/parity scenario from `quickstart.md`, record evidence, and commit the US4 slice
 
 **Checkpoint**: Both clients expose the same complete visible semantics and no internal authority.
 

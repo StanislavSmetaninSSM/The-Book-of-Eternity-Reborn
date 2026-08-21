@@ -189,7 +189,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         var actions = Enumerable.Empty<UiAction>();
         if (!state.IsInAfterlifeRealm)
-            actions = await AddMortalStatusDetailBlocks(blocks, fs, state.PlayerStatus.ActiveConditions);
+            actions = await AddMortalStatusDetailBlocks(blocks, fs);
 
         return Completed(command, blocks, actions);
     }
@@ -225,8 +225,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
     private static async Task<IReadOnlyList<UiAction>> AddMortalStatusDetailBlocks(
         List<UiBlock> blocks,
-        FileSystemManager fs,
-        IReadOnlyList<string> activeConditions)
+        FileSystemManager fs)
     {
         var statusRead = await ReadJson(fs, "game_state/core/player_status.json");
         var experienceRead = await ReadJson(fs, "game_state/player/experience.json");
@@ -234,7 +233,11 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         var inventoryRead = await ReadJson(fs, "game_state/inventory/items.json");
         var stealthRead = await ReadJson(fs, "game_state/player/stealth.json");
         var statusChangesRead = await ReadJson(fs, "game_state/player/status_changes.json");
-        var effectsRead = await ReadJson(fs, "game_state/player/effects.json");
+        var effectProjection = EffectPlayerProjection.Build(new EffectPlayerProjectionInput(
+            await EffectMechanicsSnapshot.LoadAsync(fs),
+            Realm: "mortal_world",
+            TargetKind: "player",
+            TargetId: "player_current"));
         var woundsRead = await ReadJson(fs, "game_state/player/wounds.json");
         var customStatesRead = await ReadJson(fs, "game_state/player/custom_states.json");
 
@@ -275,11 +278,6 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     stealthRows));
         }
 
-        if (activeConditions.Count > 0)
-        {
-            blocks.Add(BuildActiveConditionsDossier(activeConditions));
-        }
-
         var changeRows = BuildMortalStatusChangeRows(statusChanges, experience);
         if (changeRows.Count > 0)
             AddStatusRowsDossier(
@@ -292,46 +290,11 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 ["Параметр", "Изменение", "Комментарий"],
                 changeRows);
 
-        AddMortalStatusEffectBlocks(blocks, effectsRead.Node);
+        AddMortalStatusEffectBlocks(blocks, effectProjection);
         AddMortalStatusWoundBlocks(blocks, woundsRead.Node);
         AddMortalStatusCustomStateBlocks(blocks, customStatesRead.Node);
 
-        return ExplorerMortalEffectDetailActions.Build("/эффекты", effectsRead.Node);
-    }
-
-    private static UiEntityDossierBlock BuildActiveConditionsDossier(IReadOnlyList<string> activeConditions)
-    {
-        var conditions = activeConditions
-            .Where(static condition => !string.IsNullOrWhiteSpace(condition))
-            .Select(static condition => condition.Trim())
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        return new UiEntityDossierBlock
-        {
-            EntityType = "status-active-conditions",
-            Title = "Активные состояния",
-            Subtitle = "Статус персонажа",
-            Summary = conditions.Count == 1
-                ? "Сейчас активно одно состояние."
-                : $"Сейчас активно {conditions.Count} состояний.",
-            Badges =
-            [
-                new UiEntityBadge { Label = FormatStatusEntryCount(conditions.Count), Icon = "activity", Tone = UiTone.Accent }
-            ],
-            Sections =
-            [
-                new UiEntityDossierSection
-                {
-                    Id = "active-conditions",
-                    Title = "Состояния",
-                    Icon = "activity",
-                    Presentation = "list",
-                    CollectionLabel = FormatStatusEntryCount(conditions.Count),
-                    List = conditions
-                }
-            ]
-        };
+        return ExplorerMortalEffectDetailActions.Build("/эффекты", effectProjection);
     }
 
     private static UiEntityDossierBlock BuildStatusFactDossier(
@@ -513,34 +476,38 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         return rows;
     }
 
-    private static void AddMortalStatusEffectBlocks(List<UiBlock> blocks, JsonNode? effectsRoot)
+    private static void AddMortalStatusEffectBlocks(
+        List<UiBlock> blocks,
+        EffectPlayerProjectionResult projection)
     {
-        var rows = EnumerateStatusObjects(effectsRoot)
-            .Select(effect =>
+        if (!projection.IsAvailable)
+        {
+            blocks.Add(new UiMessageBlock
             {
-                var name = FirstKnown(
-                    GetString(effect, "effectName", string.Empty),
-                    GetString(effect, "name", string.Empty),
-                    TranslateEffectType(GetString(effect, "effectType", string.Empty)));
-                var type = TranslateEffectType(GetString(effect, "effectType", string.Empty));
-                var value = GetOptionalString(effect, "value");
-                var target = FirstNonEmpty(
-                    GetOptionalString(effect, "targetTypeDisplayName"),
-                    TranslateCharacteristic(GetOptionalString(effect, "targetType")));
-                var duration = GetOptionalString(effect, "duration");
-                var source = FirstNonEmpty(GetOptionalString(effect, "sourceSkill"), GetOptionalString(effect, "source"));
-                var description = FirstNonEmpty(
-                    GetOptionalString(effect, "effectDescription"),
-                    GetOptionalString(effect, "description"));
-                return Row(
-                    name,
-                    JoinKnownParts(" ", type, value),
-                    JoinKnownParts(" / ",
-                        target,
-                        string.IsNullOrWhiteSpace(duration) || duration == "0" ? string.Empty : $"{duration} ход."),
-                    JoinKnownParts(" — ", source, description));
-            })
-            .Where(static row => row.Cells.Any(static cell => !IsUnknownValue(cell)))
+                Severity = UiNotificationSeverity.Warning,
+                Title = "Эффекты",
+                Message = projection.StatusMessage
+            });
+            return;
+        }
+
+        var rows = projection.Entries
+            .Select(static effect => Row(
+                effect.Name,
+                JoinKnownParts(
+                    "; ",
+                    effect.Facts
+                        .Where(static fact => fact.Kind is not ("source" or "lifetime" or "stacks"))
+                        .Select(static fact => fact.Value)
+                        .ToArray()),
+                JoinKnownParts(
+                    " / ",
+                    effect.Facts.FirstOrDefault(static fact => fact.Kind == "lifetime")?.Value,
+                    effect.Facts.FirstOrDefault(static fact => fact.Kind == "stacks")?.Value),
+                JoinKnownParts(
+                    " — ",
+                    effect.Facts.FirstOrDefault(static fact => fact.Kind == "source")?.Value,
+                    effect.Summary)))
             .ToList();
 
         if (rows.Count == 0)
@@ -867,20 +834,6 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             ? translated
             : normalized;
     }
-
-    private static string TranslateEffectType(string? effectType) =>
-        (effectType ?? string.Empty).Trim().ToLowerInvariant() switch
-        {
-            "buff" => "усиление",
-            "debuff" => "ослабление",
-            "heal" => "лечение",
-            "healovertime" => "лечение со временем",
-            "damage" => "урон",
-            "damageovertime" => "урон со временем",
-            "control" => "контроль",
-            "damagereduction" => "снижение урона",
-            _ => EmptyFallback(effectType)
-        };
 
     private static string TranslateWoundSeverity(string? severity) =>
         (severity ?? string.Empty).Trim().ToLowerInvariant() switch

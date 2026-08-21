@@ -414,12 +414,6 @@ public class GameInterface
         content.AddRow(table);
         content.AddRow(new Markup($"[white]{conditionEmoji} Состояние: {EscapeMarkup(status.CurrentCondition ?? "—")}[/]"));
 
-        if (status.ActiveConditions.Length > 0)
-        {
-            foreach (var condition in status.ActiveConditions)
-                content.AddRow(new Markup($"[yellow]⚠ {EscapeMarkup(condition)}[/]"));
-        }
-
         var panel = new Panel(content)
         {
             Border = BoxBorder.Rounded,
