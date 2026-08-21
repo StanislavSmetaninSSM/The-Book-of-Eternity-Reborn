@@ -234,7 +234,7 @@ public partial class ExplorerMode
         lines.Add($"  • Искры Света: [white]{currentLightSparks}[/] -> [white]{nextLightSparks}[/] [dim](quotedCostLightSparks={request.QuotedCostLightSparks})[/]");
         if (relicRerollsToCommit > 0)
         {
-            var currentRelicRerolls = ShiningBlessingEffectState.GetPendingRelicRerolls(context.SoulRoot);
+            var currentRelicRerolls = context.RelicRerolls;
             lines.Add($"  • Перебросы реликвий от благословений: [white]{currentRelicRerolls}[/] -> [white]{Math.Max(0, currentRelicRerolls - relicRerollsToCommit)}[/] [dim](списываются только после подтверждения; отмена сохраняет право)[/]");
         }
 

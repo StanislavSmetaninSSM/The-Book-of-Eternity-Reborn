@@ -217,6 +217,7 @@ As a player, I want a failed resource/effect transition to restore the complete 
 - **Resource Coordinate**: The exact realm, owner kind, stable resource owner identity, and resource key that identifies one logical value.
 - **Resource State**: The current and maximum value, capacity binding, lifecycle state, and chronology for one coordinate.
 - **Resource Mutation**: One already-authorized ordered damage, restore, spend, or gain operation against one coordinate.
+- **Registered System Outcome Draft**: A client-owned no-I/O adapter result that contributes exact sources and mutations to the common plan, then derives companion after-images only from that plan's accepted resource result.
 - **Resource Transition Evidence**: Immutable accepted proof of one mutation's identity, event, origin, before/after values, source, receipt, and turn.
 - **Resource Owner**: A validated player, named NPC, anonymous combatant, group member, item, persistent afterlife actor, or conflict-scoped participant that may hold resources.
 - **Capacity Transition**: A separately authorized maximum-value change and explicit current-value disposition.

@@ -267,6 +267,28 @@ internal static class ResourceMaterializationContract
     internal static bool TrySubtractExact(decimal left, decimal right, out decimal result) =>
         TryCombineExact(left, right, subtractRight: true, out result);
 
+    internal static bool TryFloorPercentageOfIntegral(
+        decimal value,
+        int percentage,
+        out decimal result)
+    {
+        result = 0m;
+        if (value < 0m || !IsIntegral(value) || percentage is < 0 or > 100)
+            return false;
+
+        var scaled = new BigInteger(value) * percentage;
+        var floored = scaled / 100;
+        try
+        {
+            result = (decimal)floored;
+            return true;
+        }
+        catch (OverflowException)
+        {
+            return false;
+        }
+    }
+
     internal static bool ProductsEqualExact(
         decimal leftFirst,
         decimal leftSecond,

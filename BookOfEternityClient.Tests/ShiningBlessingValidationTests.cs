@@ -86,7 +86,7 @@ public sealed class ShiningBlessingValidationTests : IDisposable
     }
 
     [Fact]
-    public void ValidatePendingShiningBlessingEffects_PendingRelicEntitlementWithoutAllowance_Fails()
+    public void ValidatePendingShiningBlessingEffects_PendingRelicEntitlementWithoutResourceBindingOrBooleanAllowance_Fails()
     {
         var root = CreateBaseSoulRoot();
         root[ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
@@ -98,7 +98,6 @@ public sealed class ShiningBlessingValidationTests : IDisposable
             ["sourceCardIds"] = new JsonArray("card_relic"),
             ["relicRefinementEntitlements"] = new JsonObject
             {
-                ["rerolls"] = 0,
                 ["freeShape"] = false,
                 ["freeRetune"] = false,
                 ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
@@ -161,7 +160,7 @@ public sealed class ShiningBlessingValidationTests : IDisposable
     }
 
     [Fact]
-    public void ValidatePendingShiningBlessingEffects_ConsumedMemoryRerollsSpentBeyondGrant_Fails()
+    public void ValidatePendingShiningBlessingEffects_NumericRerollMirrors_FailClosed()
     {
         var root = CreateBaseSoulRoot();
         root[ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
@@ -181,12 +180,104 @@ public sealed class ShiningBlessingValidationTests : IDisposable
                 ["consumedAtTurn"] = 5,
                 ["consumedAtUtc"] = "2026-04-17T00:05:00Z",
                 ["sourceCardIds"] = new JsonArray("card_memory")
+            },
+            ["relicRefinementEntitlements"] = new JsonObject
+            {
+                ["rerolls"] = 1,
+                ["rerollsSpent"] = 0,
+                ["freeShape"] = false,
+                ["freeRetune"] = false,
+                ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
+                ["sourceCardIds"] = new JsonArray("card_memory")
             }
         };
 
         var issues = InvokeValidation(root);
 
-        Assert.Contains(issues, issue => string.Equals(issue.Code, "pending_shining_blessings_memory_rerolls_spent_exceeds_grant", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(4, issues.Count(issue => string.Equals(
+            issue.Code,
+            "pending_shining_blessings_numeric_reroll_mirror_forbidden",
+            StringComparison.Ordinal)));
+    }
+
+    [Fact]
+    public void ValidatePendingShiningBlessingEffects_BoundRerollAllocations_AreAcceptedWithoutNumericMirrors()
+    {
+        var root = CreateBaseSoulRoot();
+        root[ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
+        {
+            ["applicationState"] = "active",
+            ["materializedAtUtc"] = "2026-04-17T00:00:00Z",
+            ["sourcePackagePreparedAtTurn"] = 42,
+            ["currentIncarnation"] = 5,
+            ["sourceCardIds"] = new JsonArray("card_memory", "card_relic"),
+            ["sourceCardCount"] = 2,
+            ["memorySelection"] = new JsonObject
+            {
+                ["options"] = 0,
+                ["rerollResourceBinding"] = CreateRerollBinding("shining_blessing_memory_42_5"),
+                ["status"] = ShiningBlessingEffectState.MemoryStatusPendingPreTurnOneSelection,
+                ["sourceCardIds"] = new JsonArray("card_memory")
+            },
+            ["relicRefinementEntitlements"] = new JsonObject
+            {
+                ["rerollResourceBinding"] = CreateRerollBinding("shining_blessing_relic_42_5"),
+                ["freeShape"] = false,
+                ["freeRetune"] = false,
+                ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
+                ["sourceCardIds"] = new JsonArray("card_relic")
+            }
+        };
+
+        var issues = InvokeValidation(root);
+
+        Assert.DoesNotContain(issues, issue => string.Equals(
+            issue.Code,
+            "pending_shining_blessings_empty_memory_selection",
+            StringComparison.Ordinal));
+        Assert.DoesNotContain(issues, issue => string.Equals(
+            issue.Code,
+            "pending_shining_blessings_empty_relic_entitlement",
+            StringComparison.Ordinal));
+        Assert.DoesNotContain(issues, issue => issue.Code?.Contains(
+            "reroll_binding",
+            StringComparison.Ordinal) == true);
+    }
+
+    [Fact]
+    public void ValidatePendingShiningBlessingEffects_MalformedRerollBinding_FailsClosed()
+    {
+        var root = CreateBaseSoulRoot();
+        root[ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
+        {
+            ["applicationState"] = "active",
+            ["materializedAtUtc"] = "2026-04-17T00:00:00Z",
+            ["sourcePackagePreparedAtTurn"] = 42,
+            ["currentIncarnation"] = 5,
+            ["sourceCardIds"] = new JsonArray("card_memory"),
+            ["sourceCardCount"] = 1,
+            ["memorySelection"] = new JsonObject
+            {
+                ["options"] = 0,
+                ["rerollResourceBinding"] = new JsonObject
+                {
+                    ["realm"] = "shining_abode",
+                    ["ownerKind"] = "afterlife_actor",
+                    ["resourceOwnerId"] = "other_soul",
+                    ["resourceKey"] = "blessing_rerolls",
+                    ["allocationId"] = "shining_blessing_memory_42_5"
+                },
+                ["status"] = ShiningBlessingEffectState.MemoryStatusPendingPreTurnOneSelection,
+                ["sourceCardIds"] = new JsonArray("card_memory")
+            }
+        };
+
+        var issues = InvokeValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(
+            issue.Code,
+            "pending_shining_blessings_reroll_binding_invalid",
+            StringComparison.Ordinal));
     }
 
     [Fact]
@@ -256,5 +347,15 @@ public sealed class ShiningBlessingValidationTests : IDisposable
             ["currentIncarnation"] = 5,
             ["inkFeathers"] = new JsonObject { ["current"] = 0, ["total"] = 0 },
             ["soulRelics"] = new JsonObject { ["equipped"] = new JsonArray(), ["stored"] = new JsonArray() }
+        };
+
+    private static JsonObject CreateRerollBinding(string allocationId) =>
+        new()
+        {
+            ["realm"] = "shining_abode",
+            ["ownerKind"] = "afterlife_actor",
+            ["resourceOwnerId"] = "player_soul",
+            ["resourceKey"] = "blessing_rerolls",
+            ["allocationId"] = allocationId
         };
 }

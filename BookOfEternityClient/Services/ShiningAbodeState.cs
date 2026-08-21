@@ -432,8 +432,6 @@ internal static partial class ShiningAbodeState
     {
         return new JsonObject
         {
-            ["chargesPerReturn"] = 1,
-            ["chargesUsedThisReturn"] = 0,
             ["currentReturnCycleId"] = string.Empty,
             ["gachaHistory"] = new JsonArray()
         };

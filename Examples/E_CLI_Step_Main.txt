@@ -435,18 +435,18 @@ Prose State Delta Rationale / связь прозы и состояния:
 - Действия: Он приветствует душу сдержанно, проверяет её настрой и открывает разговор на своих условиях
 
 ==================================================
-4. GUARDIAN GACHA CHARGES PER RETURN
+4. GUARDIAN GACHA ATTEMPTS PER RETURN — COMMON RESOURCE AUTHORITY
 ==================================================
 
-Guardian-mediated gacha is limited per Guardian per return from mortal life:
+Guardian-mediated gacha is limited per Guardian per return from mortal life. The limits initialize the client-owned `gacha_attempts` resource; they are not persisted as Guardian counters:
 - Hostile(-100..-51): 0 attempts
 - Wary/Neutral(-50..49): 1 attempt
 - Friendly(50..129): 2 attempts
 - Devoted/Legendary(130..300): 3 attempts
 
-Direct `/gacha` remains neutral and does NOT consume Guardian charges.
+Direct `/gacha` remains neutral and does NOT consume Guardian `gacha_attempts`.
 
-Valid guardian state fragment:
+Valid Guardian state fragment after one successful pull:
 
 ```json
 {
@@ -456,8 +456,7 @@ Valid guardian state fragment:
     "currentReputation": 142
   },
   "gachaSystem": {
-    "chargesPerReturn": 3,
-    "chargesUsedThisReturn": 1,
+    "currentReturnCycleId": "chaos_return_24",
     "gachaHistory": [
       {
         "timestamp": "2026-03-09T18:42:00Z",
@@ -471,12 +470,13 @@ Valid guardian state fragment:
 ```
 
 This means:
-- Guardian-mediated pull is still allowed
-- 2 charges remain for this return
-- after the next successful `UpdateGuardians.processGacha`, used charges become `2`
+- when an exact client-owned state context/projection is supplied for this Guardian and return, it reports `gacha_attempts current=2, maximum=3`
+- Guardian-mediated pull is still allowed because current is greater than zero
+- after the next successful `UpdateGuardians.processGacha`, the client atomically spends one `gacha_attempts` unit and appends immutable resource history
 - canonical guardian history stores compact result entries: `timestamp`, `costInFeathers`, `relicId`, `finalRarity`
+- exact `resourceOwnerBindings` remain client-owned authority; do not copy or rewrite them in the GM response
 
-If `chargesUsedThisReturn` already equals `chargesPerReturn`, do NOT emit `processGacha` for that Guardian.
+If the supplied exact client-owned `gacha_attempts` context/projection has `current=0`, do NOT emit `processGacha` for that Guardian. If no exact context/projection is supplied, fail closed: do not emit `processGacha`, do not read the raw resource ledger, and do not infer availability from `gachaHistory`. Never write current/maximum counters into `gachaSystem`.
 
 ==================================================
 4.5 MEMORY GATES — VALID MECHANICAL REWARD
@@ -1804,6 +1804,14 @@ The characteristic keys in this fragment come from this current world's canonica
           "personalQuests": { "state": "empty_by_design", "reason": "Она пока не просит игрока о личной помощи." },
           "relationships": { "state": "populated" }
         }
+      },
+      "resourceMaterialization": {
+        "resources": [
+          {
+            "resourceKey": "health",
+            "maximum": 60
+          }
+        ]
       }
     }
   ]

@@ -842,6 +842,10 @@ git commit -m "feat: publish accepted resource state atomically (#1543)"
 - Modify: `BookOfEternityClient/Services/EffectCarrierCatalog.cs`
 - Modify: `BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs`
 - Modify: `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
+- Create: `BookOfEternityClient/Services/ResourceRegisteredSystemOutcomeAdapter.cs`
+- Modify: `BookOfEternityClient/Services/ShiningBlessingEffectState.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
 - Modify: `BookOfEternityClient/Services/StorageTransportMoveService.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceOwnerMaterializationTests.cs`
@@ -881,7 +885,11 @@ Remove `currentHealth/maxHealth` from `UpdateVehicles` and canonical vehicle com
 
 **Step 6: Preserve Shining survival/restoration as registered outcomes**
 
-Update `ShiningBlessingEffectState.cs` only through the common system-outcome adapter; do not route currencies or boolean entitlements into the ledger.
+Represent the pending survival blessing as one immutable no-I/O registered-outcome draft. It contributes exact `narrative_outcome`/`registered_system_outcome` sources and three derived loss-recovery mutations to the same `AcceptedMechanicsPlanner`; after direct health/energy/poise outcomes, exact integral recovery is floored once and applied in the registered phase. Project soul consumption/restored-amount audit and the exact triggering world-event downgrade only from that same resource result. Bind both companion paths to exact expected pre-publication before-images and the common rollback boundary. Remove the former runtime percentage restoration and second resource state/history publication path; keep currencies and boolean entitlements outside the ledger.
+
+Checkpoint: T056–T058 are complete. RED production authority was `20260816-014326-509-42696-c5976364934a4f0aab7ed7582301ed15-focused` (`0/1`, missing composed narrative outcome). Final controls are planner `20260816-020531-411-8556-71b000b3ecd84df8b1b70c7c9c63b2cc-focused` (`23/23`), Shining runtime/draft `20260816-020230-594-29016-5b5913f1c21145448b61f98940e94062-focused` (`21/21`), and Mortal publication/late-mutation rollback/runtime no-op/legacy rejection `20260816-020444-336-55044-fb5cc40a22514ddf8a5fb4e43e7e5f56-focused` (`7/7`). At that checkpoint T059–T062 were the next required Task-8 slice.
+
+Subsequent checkpoint: T051/T055/T059–T062 are complete. Owner composition is GREEN at `20260816-032935-885-52196-fdd0383449a74e5cbf8e36d782860e3b-focused` (`11/11`), combat at `20260816-034354-632-57332-bbb8faa1faed4b7a8cd5d3fad1b80f36-focused` (`10/10`), vehicle at `20260816-034707-311-34492-5d4342867f8e4231a89c919b2bb3c92f-focused` (`11/11`), and fresh combined post-item control at `20260816-053030-394-30352-c58d520722e041299ea192e90786490d-focused` (`34/34`). All selected lanes have failures `0`, duplicate IDs `0`, timeout `false`, and cleanup `complete`; the fresh build has warnings/errors `0/0`. Named NPCs, anonymous combatants, stable group members, and vehicles now use exact common owners; terminal/group companion after-images participate in the common before-image, write-lease, and rollback contour. UI consumers remain separately owned by T091–T092 and may not read the raw ledger.
 
 **Step 7: GREEN, search removed authority, and commit**
 
@@ -912,6 +920,7 @@ git commit -m "feat: cut mortal and combat resources to ledger (#1543)"
 - Modify: `BookOfEternityClient/Services/MortalItemMaterializationContract.cs`
 - Modify: `BookOfEternityClient/Services/MortalItemTransitionWriter.cs`
 - Modify: `BookOfEternityClient/Services/MortalItemTransitionWriter.Stacks.cs`
+- Create: `BookOfEternityClient/Services/MortalItemTransitionWriter.Resources.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.FactionAndInventoryHelpers.cs`
@@ -919,6 +928,9 @@ git commit -m "feat: cut mortal and combat resources to ledger (#1543)"
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`
 - Modify: `BookOfEternityClient/Configuration/FileMapping.cs`
 - Modify: `BookOfEternityClient/Models/GameResponse.cs`
+- Modify: `BookOfEternityClient/Services/MortalItemAcceptedEffectSourceAuthority.cs`
+- Modify: `BookOfEternityClient/Services/ResourceMutationSourceCatalog.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceItemOwnerTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceItemIntegrationTests.cs`
 
@@ -955,6 +967,10 @@ Map use/repair/fire/reload and accepted inventory/NPC operations to registered s
 
 Remove `inventoryItemsResources` and `NPCInventoryResourcesChanges` mappings/properties/application. Delete `game_state/inventory/item_resources.json` from active canonical, bootstrap, validator, normalizer, snapshot, and reader paths. Keep only a strict incompatible-save detector/source guard until the final cleanup slice.
 
+Execution checkpoint (2026-08-16): T052 and T063–T066 are complete. One permanent item owner now survives every supported carrier; instance-fixed and setting-defined capabilities initialize through the common plan; item-local cost/outcome sources are exact-owner-bound; movement preserves state/history; explicit proportional split/merge and terminal retirement are atomic. The principal GREEN controls are `20260816-052207-715-49000-3a9de042a2284c41a6850e8ae60b5fc9-focused` (`31/31`) and `20260816-052354-601-35460-9e80f35fc4a94494a09ae2c88c874eb6-focused` (`48/48`), with failures `0`, duplicate IDs `0`, timeout `false`, and cleanup `complete`. Legacy mapping/application RED→GREEN is `20260816-045750-462-21600-9c0381e14c8e4efc9b4aff411972d1e9-focused` (`0/1`) to `20260816-045901-296-56372-135e7062fedf474fbc86147fb13bd357-focused` (`1/1`); ordinary owner-bound operation RED→GREEN is `20260816-051030-964-55528-ca9202cb7bb340d08fd7fd3e85da9499-focused` to `20260816-051627-585-46008-dff6161d7e9647d1a9a877d25e23d9ed-focused` (`2/2`).
+
+T067 remains intentionally open until T087–T092 route item detail/action eligibility through `ResourceProjectionService`. The canonical writer/normalizer/bootstrap authority and accepted legacy commands are already gone, but residual UI readers are not replaced with direct raw-ledger parsing or a temporary fallback. Final source/template/docs removal occurs with that safe projection cutover.
+
 **Step 5: GREEN and commit**
 
 Run the item integration filter, then:
@@ -981,26 +997,80 @@ git commit -m "feat: move item reserves to resource authority (#1543)"
 
 **Files:**
 
+- Create: `BookOfEternityClient/Services/AfterlifeResourceOwnerComposer.cs`
+- Create: `BookOfEternityClient/Services/AfterlifeAscensionAuthority.cs`
+- Create: `BookOfEternityClient/Services/AfterlifeOwnerResourceStatePlanner.cs`
+- Create: `BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs`
+- Create: `BookOfEternityClient/Services/AfterlifeConflictActionPointProjection.cs`
+- Create: `BookOfEternityClient/Services/AfterlifeGachaAttemptProjection.cs`
+- Create: `BookOfEternityClient/Services/AfterlifeGuardianGachaResourceOutcome.cs`
+- Create: `BookOfEternityClient/Services/AfterlifeGuardianReturnCycleState.cs`
+- Create: `BookOfEternityClient/Services/AfterlifeShiningGachaResourceOutcome.cs`
+- Create: `BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs`
+- Create: `BookOfEternityClient/Services/ShiningBlessingRerollResourceService.cs`
+- Create: `BookOfEternityClient/Services/ShiningReturnCycleResourcePlanner.cs`
+- Create: `BookOfEternityClient/Services/ShiningReturnCycleResourceService.cs`
+- Modify: `BookOfEternityClient/Services/AcceptedMechanicsPlan.cs`
+- Modify: `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
+- Create: `BookOfEternityClient/Services/AcceptedMechanicsOwnerTransition.cs`
 - Modify: `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs`
 - Modify: `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs`
+- Modify: `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs`
+- Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
 - Modify: `BookOfEternityClient/Services/GuardianGachaChargeRules.cs`
 - Modify: `BookOfEternityClient/Services/ShiningAbodeState.cs`
 - Modify: `BookOfEternityClient/Services/ShiningAbodeState.Gacha.cs`
 - Modify: `BookOfEternityClient/Services/ShiningBlessingEffectState.cs`
+- Modify: `BookOfEternityClient/Services/ShiningCoreActionRequestState.cs`
+- Modify: `BookOfEternityClient/Services/TrainingService.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SharedAndSoulHelpers.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AfterlifeSpiritualConflict.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardiansAndProjects.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs`
+- Modify: `BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs`
+- Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`
+- Modify: `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs`
+- Modify: `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.ActionPreviews.cs`
+- Modify: `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.Actions.cs`
+- Modify: `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs`
+- Modify: `BookOfEternityClient/UI/ExplorerShiningAbodeCommandResultBuilder.cs`
+- Modify: `BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs`
+- Modify: `BookOfEternityClient/game_master_daemon.ps1`
+- Modify: `CLI_API_Specification.md`
+- Modify: `CLI_Agent_Daemon_Specification.md`
 - Modify: `OtherGuides/Afterlife_Contract_Matrix.md`
 - Modify: `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`
 - Modify: `Examples/E_CLI_Afterlife_Turns.txt`
+- Modify: `Examples/E_CLI_Step_Main.txt`
+- Modify: `Examples/E_Block_32.txt`
 - Modify: `Examples/example_validation_manifest.json`
 - Modify: `Rules/Block_21.txt`
 - Modify: `Rules/Block_32_Guardians.txt`
+- Modify: `TaskGuides/CLI_Step_Main.txt`
 - Modify: `BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs`
+- Modify: `BookOfEternityClient.Tests/CoordinatedStateWriteHelperTests.cs`
+- Modify: `BookOfEternityClient.Tests/GameEngineSourceGuardTests.cs`
+- Modify: `BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs`
+- Modify: `BookOfEternityClient.Tests/ShiningAbodeTradeAndForgeStateTests.cs`
+- Modify: `BookOfEternityClient.Tests/ShiningBlessingEffectStateTests.cs`
+- Modify: `BookOfEternityClient.Tests/ShiningCoreActionRequestStateTests.cs`
+- Modify: `BookOfEternityClient.Tests/TrainingServiceTests.cs`
+- Modify: `BookOfEternityClient.Tests/WebUi/BrowserGenerationFencingSourceTests.cs`
+- Modify: `BookOfEternityClient.Tests/WebUi/BrowserShiningRelicForgeParityTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/ResourceAfterlifeOwnerTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/ShiningStateValidationTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Afterlife.cs`
+- Modify: `BookOfEternityClient.TestSupport/TestExplorerConsole.cs`
+- Modify: `BookOfEternityClient.Tests/WebUi/BrowserAfterlifeWriteServiceTests.cs`
 - Modify: `BookOfEternityClient.Tests/ResourceCapacityFormulaCatalogTests.cs`
 - Modify: `BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs`
 
@@ -1031,20 +1101,46 @@ Use `gacha_attempts` with registered per-return capacity/initialization formulas
 
 **Step 5: Synchronize and verify the afterlife contract in the same slice**
 
-Update the afterlife matrix, glossary, rules, manifest, and worked turn example with the executable owner/resource/formula contract and the explicit currency/axis/entitlement exclusions. Then run the two Focused commands again followed by the mandatory documentation boundary:
+Update the afterlife matrix, glossary, rules, manifest, and worked turn example with the executable owner/resource/formula contract and the explicit currency/axis/entitlement exclusions. Then run the two Focused commands again followed by the mandatory documentation-boundary diagnostic:
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation
 ```
 
-Expected: executable afterlife state and its GM-facing contract pass together. Task 13 may reconcile later cross-domain wording, but no code-only afterlife capability is committed here.
+Expected for Task 10: executable afterlife state and its GM-facing documentation filters pass together. Run FullValidation now and classify every failure, but do not pull the active-template/save-fixture migration or the remaining cross-domain legacy cleanup forward from T102–T110 merely to make this intermediate slice green. A RED diagnostic is acceptable only when every failure is explicitly owned by those later tracked tasks; no migration, dual reader/writer, validator weakening, or fallback may be introduced. T110 remains the mandatory complete GREEN FullValidation gate after T107 migrates the active templates and fixtures.
+
+**Execution checkpoint (2026-08-16):**
+
+- Spiritual-conflict cost/recovery/publication RED `20260816-082647-026-29972-2281ea9452864f1b825482b71d20dec6-focused` (`15/19`) became GREEN at `20260816-083004-317-24880-b3ce3c5b53ff467ba85b406338d75e8b-focused` (`4/4`); the complete cutover class is GREEN at `20260816-104323-963-32684-c5315c82099f43ce904d0c650683ed54-focused` (`27/27`).
+- Shining return-cycle state RED→GREEN is `20260816-084547-841-26960-081461c43e9f4f228ff39d66fccd1d97-focused` (`0/4`) to `20260816-084650-556-40876-706217042e1844099481cc80df3c46e4-focused` (`4/4`). Blessing/reroll consumers progressed from `20260816-095850-771-7784-aee79eaa38a7413caca3e9f8cecc3301-focused` (`43/62`) to `20260816-101042-361-40944-2ddea643e86141728aa339f90365ac0a-focused` (`62/62`).
+- Reserved out-of-scope admission RED→GREEN is `20260816-104646-680-52840-ae6b667b221944cd87ee6df2bf80d809-focused` (`1/15`) to `20260816-104733-882-50716-058dc4e4d9f9447383cb8291f7ed2b1c-focused` (`15/15`). Fresh unit/source-guard control `20260816-111537-560-30940-4acbf47fe59c4af2ae98dd89582a2082-focused` passes `50/50`.
+- Documentation RED `20260816-105500-915-29468-294ed1cd894f45d1bfbe0bb6ec94abd1-focused` (`0/3`) became GREEN at `20260816-110812-163-42120-fc42d27c507a48e6a0f67bc13be67247-focused` (`3/3`); full `AfterlifeDocumentationCoverageTests` are GREEN at `20260816-110913-423-45520-7fd46e37cb1b42258dd8a0a12e5e6257-focused` (`115/115`).
+- Fresh focused controls: all owner families `20260816-111557-100-54836-6101f7087a8b4c36ab229ae83d234dbd-focused` (`30/30`), Mortal/combat/vehicle/item/bootstrap `20260816-112120-153-39164-59f21ef8491b4ca7b510388908525601-focused` (`86/86`), and afterlife cutover/validation/owners `20260816-112258-494-44060-8ab2012b1e2542b890c558bd77034cb0-focused` (`392/392`). All have failures `0`, duplicate IDs `0`, timeout `false`, and cleanup `complete`.
+- Follow-up owner/lifecycle hardening is GREEN: persistent afterlife owners progressed from `20260816-120038-989-25224-46a092950dbe4175b1062f121874a243-focused` (`8/11`) through `20260816-120328-880-29584-948927b65261448ca66755737ea35dd1-focused` (`3/11`) to `20260816-120513-351-31104-dfcd5b3d2351417986837097ff0e941d-focused` (`11/11`); common planner/authority RED `20260816-120704-277-16684-50dfa881b0724ce0a9c8d7cd874513e6-focused` (`37/40`) became GREEN at `20260816-120816-090-54124-30d6ea841fdd4e2ca67b4e532a841830-focused` (`40/40`). Spirit Focus/Radiance capacity reconfiguration is GREEN at `20260816-121024-932-54960-801257b7e2304e588da3fca4b57cbbaa-focused` (`2/2`); the reusable atomic local owner service is GREEN at `20260816-122302-999-46528-ab3949907fe946048f9f3ce2c8556ec1-focused` (`1/1`), console at `20260816-122901-426-42252-8220a888306a4ab3b97d10fda19e3dbb-focused` (`1/1`), browser at `20260816-123242-163-29840-fbc5d32346474abc9142261fe621fa8d-focused` (`1/1`), Shining return-cycle planning at `20260816-123439-363-41792-f0ff1161dc3e453795df8314be8367e3-focused` (`3/3`), and cross-realm suspend/resume at `20260816-125008-379-37220-c560a8ff93054f6f8550f26a497f75c0-focused` (`1/1`).
+- Read-only merge-gate review found five Important gaps and all five received executable RED→GREEN fixes: Shining client-owned `resourceOwnerBindings` allowlist `20260816-123707-098-40288-d1ba6e5e53e54d6ebc6ac446335655b1-focused` (`0/1`) → `20260816-123942-884-17780-aa592bcd7864483897a1f72e1d91a388-focused` (`1/1`); forbidden `activeConflict.actionEconomy` repair packet `20260816-124203-285-15548-38b7067dd4fe42b7855bbc2ad4895dc5-focused` (`0/1`) → `20260816-124316-266-9628-83375b1d8c614d848e6eb5b2feeb82bf-focused` (`1/1`); special-art legacy axis `20260816-124521-930-54332-9a06d687f1744e1cbd894e23da02f7d1-focused` (`0/2`) → `20260816-124605-731-55976-8539e2083b6449229662fdcfefe08a6f-focused` (`2/2`); persistent/same-cycle capacity reconfiguration and realm ledger lifecycle are covered by the owner evidence above. The fresh documentation class after these fixes is `20260816-125233-972-38520-d7782a28e1984de29086122a3f322c73-focused` (`115/115`).
+- Blessing bootstrap originally omitted the authoritative `soul_state.json`, so the persistent `spiritual_action_points` formula could not resolve Spirit Focus. The exact bootstrap roots were corrected without fallback: `20260816-130126-633-48536-777c3362ca1c44dea8acb9c693a05726-focused` is GREEN (`6/6`), the combined Task-10 control `20260816-130226-717-50392-bce29fcf8d7645bbb9f83ad7bc5ddc71-focused` is GREEN (`80/80`), and the expanded afterlife control `20260816-130405-342-17960-d892b6f9fda14b54afecd14345ec5630-focused` is GREEN (`398/398`).
+- The no-migration Mortal-item fixture intersection was proven rather than hidden: new NPC item routes now carry the required health resource envelope and execute the production item→resource raw-validation order. RED `20260816-131615-271-27792-41369c4e5111460ca0b45f887c1ff487-focused` (`0/1`) is superseded by `20260816-132945-319-13104-1c9f5a6d198a4759b9770e50159c82dd-focused` (`70/70`).
+- Fresh conditional FullValidation diagnostic `20260816-133413-277-32576-a67a6581285f44c389a001af43da6013-fullvalidation` reports official terminal-shard `171/271` passed and `100` failed, timeout `false`, cleanup `complete`, duplicates `0`. Because the current runner summary retains only the terminal descriptor, the complete log was also classified: `334` expected failures = Shining display-save `100`, Chaos Sea display-save `95`, Mortal display-save `95`, Guardian policy `29`, fixture integrity `4`, foundation `4`, example docs `2`, Math Assistant `2`, Mortal location lifecycle `2`, and archive/trade `1`. These are the active-template/save-fixture and residual legacy surfaces explicitly assigned to T102–T110, principally T107 and the final T110 gate. The two prior Mortal item/NPC fixture failures are gone. No compatibility behavior was added; final complete GREEN remains T110.
+- Realm mutation now uses the reusable owner-state planner/service under one lease. `player_soul` remains a persistent identity: only exact realm-bound resources suspend/resume across Chaos Sea↔Shining Abode, while Mortal World does not blanket-suspend valid persistent resources. The deliberately overbroad RED `20260816-135639-892-36504-c23cc866145a4dd8836ca1b96cc6cf77-focused` was removed; the corrected lifecycle/source-guard control is `20260816-140420-080-41976-e77aaf37d809467eb51332d4d34b431d-focused` (`37/37`).
+- Final Fast-tail fixture reconciliation is GREEN at `20260816-141300-358-23072-44e28187e8824c0baf6567f382f84004-focused` (`4/4`). The meaningful Task-10 Fast is `20260816-141337-327-28620-c1614a23718b4e23bbd5e1be73a62ef0-fast`: exit `0`, timeout `false`, `3840/3840` passed, failures `0`, duplicate IDs `0`, cleanup `complete`, wall `00:03:50.8760071`.
+- Post-evidence afterlife documentation plus source guards are GREEN at `20260816-142754-593-45976-7e0a907decdd42dabdf888a2e978bf43-focused` (`265/265`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`).
+- Fresh T074 merge-gate controls on the reviewed 2026-08-21 tree are GREEN: definition/source guards `20260821-100910-253-34684-0b7eeaeeb28d46c5812bad46ea00fa57-focused` (`50/50`); owner/Mortal/combat/vehicle `20260821-100929-732-18728-10cd00841720464981386d6638967e9f-focused` (`42/42`); item owners/operations `20260821-101002-507-38516-c474a14dc1f54eb889d85d747be07c9f-focused` (`16/16`); afterlife owners/cutover `20260821-101148-637-26964-dab7fad4f1624574ab260df44f12fac7-focused` (`49/49`); and the mandatory afterlife documentation class `20260821-101504-212-45092-d032cace66d04cf6baec98311a887664-focused` (`115/115`). Every summary reports exit `0`, failures `0`, timeout `false`, duplicate IDs `0`, cleanup `complete`, and build warnings/errors `0/0` where reported.
+- Realm-transition hardening is evidence-backed rather than prompt-only: wrong source realm RED `20260821-094251` became GREEN at `20260821-094430`; stale ascension enlightenment RED `20260821-094556` became GREEN at `20260821-094742`; and life-transition conflict RED `20260821-094911` became GREEN at `20260821-095006`. `ShiningReturnCycleTransitionKind` now seals synchronize/reentry/ascension intent, `AfterlifeAscensionAuthority` rechecks fresh prerequisites, and the canonical lease spans authoritative reads, planning, publication, and rollback. The shared realm-independent capability policy is sealed into owner authority/agreement/fingerprints: `blessing_rerolls` stays active across realm changes while `spiritual_action_points` follows the realm binding. Guardian attempt reset is restricted to a new Mortal-life return; ordinary Shining-to-Chaos exit preserves the exact cycle and spent balance.
+- The fresh documentation-boundary diagnostic is `20260821-101640-675-36656-be86c9f78db94ed7965957545843ca96-fullvalidation`: `171/271` passed, `100` failed, exit `1`, timeout `false`, duplicate IDs `0`, cleanup `complete`, wall `00:03:50.5215232`. Its `100` unique failed test names are byte-for-byte set-equal to the classified `20260816-150510-928-19064-d9efa47a16874be5acfda0a34781bbf1-fullvalidation` baseline (`OnlyNew=0`, `OnlyOld=0`); therefore T074 introduces no new FullValidation failure family. The known fixture/template/legacy groups remain assigned to T102–T110 and must become fully GREEN at T110 without migration, fallback, or validator weakening.
+- The T074 removed-authority audit covered every phase-1 inventory contour. Completed US3 domain writers, stagers, normalizers, and validators no longer author a legacy current/max/counter mirror; surviving token hits there are explicit incompatible-save/forbidden-field rejection or named exclusions such as QTE-local pin durability, currencies, progression, relationships, faction accounting, and spiritual axes. Remaining item detail/action readers are deliberately owned by open T067 after T087–T092; Mortal status/detail readers by T091–T092; Guardian/Shining player/GM projection readers by T093; and active Mortal prompts/examples/templates plus the final zero-legacy source guard by T102–T110. These tasks remain open, so the subsequent refactor is preserved rather than silently accepted as compatibility authority.
+- Prompt/example rationale for the fresh hardening: transition kind, ascension checks, lease fencing, and per-resource activity policy are client-owned authority and add no GM-authored field or command. `Rules/Block_32_Guardians.txt` was updated because Guardian reset semantics changed; existing afterlife worked examples and the `115/115` documentation guard cover the GM-facing contract, so no additional worked example is required for this client-owned sub-slice.
+- The first final-tree Fast `20260821-102219-504-47984-3a06622f97374a90b7c8c7d65d7826b1-fast` exposed `19` cascading blessing/relic fixture failures; the next run `20260821-102611-240-40588-745f1ad0876a4c05b8777bbde8823027-fast` reduced the remainder to the same two browser fixture variants. Root-cause evidence is the focused RED `20260821-102418-808-44284-44f34633a0b2408f8a2b605073d9c01b-focused` (`0/1`) followed by GREEN `20260821-102501-114-27756-7070bdf9b4cb410ba98120d90f2cd908-focused` (`1/1`), complete blessing/trade classes `20260821-102534-420-29336-e8cb808e890f437b9d4be30f08848a3a-focused` (`30/30`), browser Mortal variants `20260821-103033-705-44460-8d9f1695bb954a1b816f16b86633821f-focused` (`2/2`), and complete browser parity `20260821-103107-344-40956-2974f8007693458daa49ad670aa9d32f-focused` (`16/16`). The fixtures now model a Mortal `player_soul` with suspended afterlife binding while the sealed `blessing_rerolls` capability remains active; production authority was not weakened.
+- Final console-owner review closed the last stale-root/lease contour: concurrent Soul mutation RED `20260821-104017-847-28164-66570469c0e5454fa248c2fdefa3a776-focused` (`0/1`) became GREEN at `20260821-104246-185-3304-3d2a7520c78648169677a93bc6fabfc8-focused` (`1/1`); the expanded spiritual-art filter exposed refresh under the held lease at `20260821-104403-131-41940-cd3a21573dd54e1e83b5cf1b727da403-focused` (`9/14`) and passed `14/14` after lease disposal at `20260821-104754-151-26212-1d9c2615f540473297c999dd47b8bfa9-focused`.
+- The meaningful final T074 Fast is `20260821-104914-178-43536-0260f7b40c974fef8112ac8bd2ccfeeb-fast`: exit `0`, `3847/3847` executed and passed, failures `0`, timeout `false`, duplicate IDs `0`, cleanup `complete`, wall `00:03:53.2623518`, build warnings/errors `0/0`.
+- Generic Guardian/player/GM resource projection remains deliberately owned by T089/T093/T095. Task 10 supplies only the bounded read-only projections required by its existing consumers and does not create a partial fallback model that later projection work would have to unwind.
+- T053–T054 and T068–T074 are implemented, reviewed, evidence-backed, and closed by the Task-10 commit. GitHub Actions remain disabled and unused. T075 is the next open implementation task; T087–T110 remain explicit future projection, privacy, lifecycle, migration, and final-cutover work.
 
 Commit:
 
 ```powershell
 git diff --check
-git add BookOfEternityClient BookOfEternityClient.Tests/ResourceCapacityFormulaCatalogTests.cs BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs BookOfEternityClient.IntegrationTests/ResourceAfterlifeOwnerTests.cs BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.cs BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs OtherGuides/Afterlife_Contract_Matrix.md OtherGuides/Afterlife_Combat_Terminology_Glossary.md Examples/E_CLI_Afterlife_Turns.txt Examples/example_validation_manifest.json Rules/Block_21.txt Rules/Block_32_Guardians.txt specs/1543-unified-resource-authority docs/superpowers/plans/2026-08-15-unified-resource-authority.md
+git add BookOfEternityClient BookOfEternityClient.Tests BookOfEternityClient.IntegrationTests BookOfEternityClient.TestSupport CLI_API_Specification.md CLI_Agent_Daemon_Specification.md OtherGuides Examples Rules TaskGuides specs/1543-unified-resource-authority docs/superpowers/plans/2026-08-15-unified-resource-authority.md
 git commit -m "feat: unify afterlife resource authority (#1543)"
 ```
 

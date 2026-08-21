@@ -298,6 +298,46 @@ public sealed class ShiningTreasuryStateTests
     }
 
     [Fact]
+    public void TreasuryCycleResolution_DoesNotCreateLegacyGachaCounters()
+    {
+        var shiningRoot = ShiningAbodeState.CreateDefaultState();
+        var gachaSystem = Assert.IsType<JsonObject>(shiningRoot["gachaSystem"]);
+        gachaSystem["currentReturnCycleId"] = string.Empty;
+        var soulRoot = CreateSoulRoot(currentFeathers: 0, totalFeathers: 0, currentIncarnation: 17);
+
+        var resolved = ShiningAbodeState.TryResolveTreasuryCycleId(
+            shiningRoot,
+            soulRoot,
+            synchronizeCurrentCycle: true,
+            out var cycleId,
+            out var error);
+
+        Assert.True(resolved, error);
+        Assert.Equal("shining_return_17", cycleId);
+        Assert.Equal(cycleId, gachaSystem["currentReturnCycleId"]?.GetValue<string>());
+        Assert.False(gachaSystem.ContainsKey("chargesPerReturn"));
+        Assert.False(gachaSystem.ContainsKey("chargesUsedThisReturn"));
+    }
+
+    [Fact]
+    public void TreasuryInterestCycleSync_DoesNotCreateLegacyGachaCounters()
+    {
+        var shiningRoot = ShiningAbodeState.CreateDefaultState();
+        var gachaSystem = Assert.IsType<JsonObject>(shiningRoot["gachaSystem"]);
+        gachaSystem["currentReturnCycleId"] = string.Empty;
+        var soulRoot = CreateSoulRoot(currentFeathers: 0, totalFeathers: 0, currentIncarnation: 18);
+        var treasury = ShiningAbodeState.EnsureTreasuryObject(shiningRoot);
+        treasury["depositedInkFeathers"] = 1000;
+
+        var result = ShiningAbodeState.ClaimTreasuryInterest(shiningRoot, soulRoot);
+
+        Assert.True(result.Success, result.Message);
+        Assert.Equal("shining_return_18", gachaSystem["currentReturnCycleId"]?.GetValue<string>());
+        Assert.False(gachaSystem.ContainsKey("chargesPerReturn"));
+        Assert.False(gachaSystem.ContainsKey("chargesUsedThisReturn"));
+    }
+
+    [Fact]
     public void TreasuryExchangeRejectsExtremeInputWithoutMutatingState()
     {
         var shiningRoot = ShiningAbodeState.CreateDefaultState();

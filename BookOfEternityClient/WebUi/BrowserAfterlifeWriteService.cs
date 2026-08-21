@@ -997,7 +997,14 @@ public sealed class BrowserAfterlifeWriteService
             writeLease,
             owner,
             "Инвестиция в сияющую фракцию",
-            [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath, SoulStatePath],
+            [
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                ShiningAbodeState.StatePath,
+                GuardianAbodeResidentState.StatePath,
+                SoulStatePath,
+                ResourceMaterializationContract.StatePath,
+                ResourceMaterializationContract.HistoryPath
+            ],
             async transactionLease =>
             {
                 var shiningRoot = await ReadRequiredObjectAsync(transactionLease, ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
@@ -1374,7 +1381,9 @@ public sealed class BrowserAfterlifeWriteService
         if (relicRerollsToCommit > 0)
         {
             var soulRoot = await TryReadObjectSafeAsync(SoulStatePath);
-            if (ShiningBlessingEffectState.GetPendingRelicRerolls(soulRoot) < relicRerollsToCommit)
+            if (await ShiningBlessingEffectState.GetPendingRelicRerollsAsync(
+                    _fs,
+                    soulRoot) < relicRerollsToCommit)
             {
                 return BrowserPromptWriteResult.Failed(
                     CommandExecutionState.Blocked,
@@ -1414,7 +1423,10 @@ public sealed class BrowserAfterlifeWriteService
                 if (relicChoice == null)
                     throw new InvalidOperationException("Выбранная реликвия больше не доступна душе. Откройте ковку заново.");
 
-                if (relicRerollsToCommit > ShiningBlessingEffectState.GetPendingRelicRerolls(soulRoot))
+                if (relicRerollsToCommit >
+                    await ShiningBlessingEffectState.GetPendingRelicRerollsAsync(
+                        _fs,
+                        soulRoot))
                     throw new InvalidOperationException("Право на переброс реликвии уже недоступно. Откройте ковку заново.");
 
                 if (!ShiningAbodeState.TryQuoteForgeAction(
@@ -1798,7 +1810,13 @@ public sealed class BrowserAfterlifeWriteService
             boundLease,
             owner,
             "Browser spiritual art upgrade",
-            [SoulStatePath, ShiningAbodeState.StatePath, AfterlifeEntityProfileState.StatePath],
+            [
+                SoulStatePath,
+                ShiningAbodeState.StatePath,
+                AfterlifeEntityProfileState.StatePath,
+                ResourceMaterializationContract.StatePath,
+                ResourceMaterializationContract.HistoryPath
+            ],
             async writeLease =>
             {
                 var blocker = await TryDescribeSpiritualArtUpgradeBlockerAsync(writeLease);
@@ -1818,11 +1836,44 @@ public sealed class BrowserAfterlifeWriteService
                 if (!result.Success)
                     throw new InvalidOperationException(result.Message);
 
-                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);
-                if (currency == "light_sparks" && shiningRoot != null)
-                    await WriteObjectAsync(writeLease, ShiningAbodeState.StatePath, shiningRoot);
-                if (targetIsSpecialArt && entityProfilesRoot != null)
-                    await WriteObjectAsync(writeLease, AfterlifeEntityProfileState.StatePath, entityProfilesRoot);
+                if (targetIsSpiritFocus)
+                {
+                    var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+                        _fs,
+                        writeLease,
+                        new AfterlifeOwnerResourceAcceptedState(
+                            SoulState: soulRoot,
+                            ShiningAbode: currency == "light_sparks"
+                                ? shiningRoot
+                                : null),
+                        Math.Max(1, _stateManager.CurrentState.TurnNumber + 1));
+                    if (!resourcePlan.IsValid)
+                    {
+                        throw new InvalidOperationException(
+                            "Единый ресурсный план Средоточия Души не прошёл проверку.");
+                    }
+                    if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                            _fs,
+                            writeLease,
+                            resourcePlan))
+                    {
+                        throw new InvalidOperationException(
+                            "Owner-state или ресурсный ledger изменились во время прокачки Средоточия Души.");
+                    }
+                }
+                else
+                {
+                    await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);
+                    if (currency == "light_sparks" && shiningRoot != null)
+                        await WriteObjectAsync(writeLease, ShiningAbodeState.StatePath, shiningRoot);
+                    if (targetIsSpecialArt && entityProfilesRoot != null)
+                    {
+                        await WriteObjectAsync(
+                            writeLease,
+                            AfterlifeEntityProfileState.StatePath,
+                            entityProfilesRoot);
+                    }
+                }
                 await _stateManager.RefreshGameStateAsync(writeLease);
             },
             "Духовное искусство прокачано",

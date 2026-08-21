@@ -13,7 +13,9 @@ internal sealed record EffectAcceptedTurnInput(
     string Realm = "mortal_world",
     EffectCarrierCatalogInput? PreTurnCarriers = null,
     JsonObject? PreTurnIdentityIndex = null,
-    EffectTargetAuthorityInput? TargetAuthorityInput = null);
+    EffectTargetAuthorityInput? TargetAuthorityInput = null,
+    EffectCarrierCatalogInput? PublicationCarrierBaselines = null,
+    CombatantIdentityState? PreallocatedCombatantIdentities = null);
 
 internal sealed class EffectAcceptedTurnPlan
 {

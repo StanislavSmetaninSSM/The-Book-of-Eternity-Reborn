@@ -226,6 +226,46 @@ Each immutable history row carries complete nullable before/after state snapshot
 - Reuse `item` ownership because vehicles can carry inventory: rejected because vehicles have their own permanent identity and lifecycle.
 - Defer vehicles to a follow-up: rejected because the final no-mirror boundary would be false at merge.
 
+## Decision 18: Registered outcomes are drafts inside the common plan
+
+**Decision**: A client-owned registered-system adapter exports exact source authority plus ordinary mutation intents before reduction, then projects non-resource companion after-images from the exact common reducer result. Its expected pre-publication companion before-images participate in the common cache and lease preflight. Derived recovery is a closed policy evaluated after direct phases; adapters cannot call a reducer, edit the ledger/history, or write independently.
+
+**Rationale**: Shining survival must calculate recovery from the actual same-turn direct loss and must consume its blessing/downgrade the triggering event atomically with resource state/history. A second post-publication reducer would duplicate execution sequences and permit partial or repeated recovery. Passing a validated draft through `AcceptedMechanicsPlanner` keeps the extensibility point needed by later registered outcomes without creating subsystem-specific resource authority.
+
+**Alternatives considered**:
+
+- Keep the old runtime percentage restoration: rejected because player status would remain a second mechanical authority and retries could apply recovery twice.
+- Run a second resource plan after direct publication: rejected because history sequencing, replay, cache binding, and rollback would split across two authorities.
+- Hard-code Shining behavior directly in the reducer: rejected because the reducer must stay source-neutral and later registered systems need the same bounded composition seam.
+
+## Decision 19: Item-local operations use owner-bound sources; UI waits for the common projection
+
+**Decision**: Every accepted active item exports the closed `local_item_cost` and `local_item_outcome` sources bound to its exact permanent item owner. Item use/repair/fire/reload, NPC-carried items, and setting-defined bounded reserves all use ordinary common mutations against that same coordinate. Legacy item response mappings and application are removed, and a present legacy sidecar is incompatible. Residual item display/action readers are removed only through T067/T087–T092, where `ResourceProjectionService` supplies a safe immutable projection.
+
+**Rationale**: A global item source could spend another item's ammunition or repair another item's durability. Binding source and target to one permanent owner preserves authority across carriers. Separating the already-complete write/lifecycle cutover from the tracked projection cutover avoids both a raw-ledger UI dependency and a temporary compatibility reader without losing the planned general projection refactor.
+
+**Alternatives considered**:
+
+- Keep `item_resources.json` synchronized for existing UI: rejected as dual authority and forbidden migration.
+- Read `resource_state.json` directly in item UI until T092: rejected because it bypasses privacy, malformed-state fail-close, localization, and shared console/browser parity.
+- Register one unbound local-item source: rejected because any item could mutate any other item's coordinate.
+
+## Decision 20: Persistent afterlife actor identity is distinct from realm-bound resource activity
+
+**Decision**: `player_soul` is one persistent owner across Mortal World, Chaos Sea, and Shining Abode. Realm transitions atomically update the profile binding and suspend/resume only resource entries whose sealed owner/capability activity policy is bound to the departed/entered afterlife realm. `ResourceOwnerExport` therefore carries a client-sealed `realmIndependentResourceCapabilities` subset which is fingerprinted and resolved by the same general helper during owner lookup, lifecycle transition generation, and canonical state agreement. Version 1 admits only `blessing_rerolls` to that subset; `spiritual_action_points` remains realm-bound. Entering Mortal World does not blanket-suspend a sealed cross-realm capability.
+
+Shining entry plans also carry a closed transition kind. Current-cycle synchronization is exactly Shining -> Shining; ordinary reentry and ascension are exactly Chaos -> Shining; ascension additionally revalidates maximum enlightenment and absence of `life_transitions.json` from the fresh lease-bound snapshot. One canonical write lease begins before those authoritative reads and remains held through composed profile/resource publication and rollback. Caller-side cached realm or readiness checks are presentation only, never commit authority.
+
+**Rationale**: Owner existence, profile realm, each resource's activity scope, and the legal realm-transition edge are separate contracts. Treating every `player_soul` entry as afterlife-only would discard already valid mechanics and make future cross-realm resources impossible to model without exceptions. A sealed per-capability activity policy avoids ad-hoc resource-key checks, while the transition-kind and one-lease rule prevent stale menu state from authorizing a realm change. This keeps the common owner model extensible and preserves the later generic projection work in T089/T093/T095.
+
+**Alternatives considered**:
+
+- Suspend every `player_soul` resource outside the afterlife: rejected because `player_soul` is persistent and some resources intentionally survive realm changes.
+- Create separate player-soul identities per realm: rejected because it fragments one actor, breaks immutable history continuity, and reintroduces transfer adapters.
+- Keep realm-specific current/max mirrors: rejected as forbidden dual authority.
+- Special-case `blessing_rerolls` only inside the lifecycle planner: rejected because owner resolution and canonical agreement would disagree and the exception would not be sealed or fingerprinted.
+- Trust a realm/readiness check performed before prompting or before acquiring the write lease: rejected as a TOCTOU authorization gap.
+
 ## Implementation preflight conflicts and resolutions (2026-08-15)
 
 - Issues #1543 and #1535 are open; #1535 records #1543 as the blocker for Effect Task 9. The active branch/root are `1535-effect-materialization` and `E:/Games/worktrees/boe-1535-effect-materialization`.

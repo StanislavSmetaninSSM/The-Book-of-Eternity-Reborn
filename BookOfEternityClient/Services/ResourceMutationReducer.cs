@@ -60,6 +60,9 @@ internal sealed class ResolvedResourceCapacity
     internal ResourceCapacityBinding Binding { get; }
     internal ResolvedResourceInitialization? Initialization { get; }
 
+    internal ResolvedResourceCapacity AsReconfiguration() =>
+        new(Maximum, Binding, initialization: null);
+
     internal static ResolvedResourceCapacityResult Resolve(
         ResourceDefinition definition,
         ResourceCoordinate coordinate,

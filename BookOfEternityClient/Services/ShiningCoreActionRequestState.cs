@@ -147,13 +147,21 @@ internal static class ShiningCoreActionRequestState
         var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
         var guardiansRoot = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
         var pendingState = await ReadRequestsStateAsync(fs);
+        var gachaAttempts = IsRelicGacha(request)
+            ? AfterlifeGachaAttemptProjectionService.ResolveShining(
+                await fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+                await fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+                await fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+                shiningRoot ?? new JsonObject())
+            : null;
         return await ValidateRequestAgainstCurrentStateAsync(
             request,
             soulRoot,
             shiningRoot,
             residentRoot,
             guardiansRoot,
-            pendingState);
+            pendingState,
+            gachaAttempts);
     }
 
     internal static async Task<string?> ValidateRequestAgainstCurrentStateAsync(
@@ -166,13 +174,27 @@ internal static class ShiningCoreActionRequestState
         var residentRoot = await ReadJsonObjectAsync(fs, writeLease, GuardianAbodeResidentState.StatePath);
         var guardiansRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/guardians.json");
         var pendingState = await ReadRequestsStateAsync(fs, writeLease);
+        var gachaAttempts = IsRelicGacha(request)
+            ? AfterlifeGachaAttemptProjectionService.ResolveShining(
+                await fs.ReadFileAsync(
+                    writeLease,
+                    ResourceMaterializationContract.DefinitionsPath),
+                await fs.ReadFileAsync(
+                    writeLease,
+                    ResourceMaterializationContract.StatePath),
+                await fs.ReadFileAsync(
+                    writeLease,
+                    ResourceMaterializationContract.HistoryPath),
+                shiningRoot ?? new JsonObject())
+            : null;
         return await ValidateRequestAgainstCurrentStateAsync(
             request,
             soulRoot,
             shiningRoot,
             residentRoot,
             guardiansRoot,
-            pendingState);
+            pendingState,
+            gachaAttempts);
     }
 
     private static async Task<string?> ValidateRequestAgainstCurrentStateAsync(
@@ -181,7 +203,8 @@ internal static class ShiningCoreActionRequestState
         JsonObject? shiningRoot,
         JsonObject? residentRoot,
         JsonObject? guardiansRoot,
-        PendingCoreRequestReadState pendingState)
+        PendingCoreRequestReadState pendingState,
+        AfterlifeGachaAttemptProjectionResult? gachaAttempts)
     {
         if (shiningRoot == null)
             return "shining_abode_state.json недоступен.";
@@ -217,7 +240,12 @@ internal static class ShiningCoreActionRequestState
             ActionTypeRetireProject => await ValidateRetireProjectRequestAsync(request, shiningRoot, residentRoot),
             ActionTypeOpenGates => await ValidateOpenGatesRequestAsync(request, shiningRoot, residentRoot),
             ActionTypePrepareIncarnationPackage => await ValidatePreparePackageRequestAsync(request, shiningRoot),
-            ActionTypePullRelicGacha => await ValidateRelicGachaPullRequestAsync(request, shiningRoot, residentRoot, soulRoot),
+            ActionTypePullRelicGacha => await ValidateRelicGachaPullRequestAsync(
+                request,
+                shiningRoot,
+                residentRoot,
+                soulRoot,
+                gachaAttempts),
             ActionTypeForgeRelicReshape or
             ActionTypeForgeRelicRetuneProperty or
             ActionTypeForgeRelicStrengthenBand or
@@ -326,27 +354,22 @@ internal static class ShiningCoreActionRequestState
         int currentTurnNumber,
         int relicRerollsToCommit)
     {
-        if (relicRerollsToCommit <= 0)
-        {
-            await WriteRequestAsync(fs, request);
-            return;
-        }
-
-        const string soulStatePath = "game_state/meta/soul_state.json";
-        var preCommitSoulJson = await fs.ReadFileAsync(soulStatePath);
-        if (!await ShiningBlessingEffectState.ConsumeRelicRerollsAsync(fs, currentTurnNumber, relicRerollsToCommit))
+        var requestWrite = await BuildGuardedRequestWriteAsync(
+            fs,
+            writeLease: null,
+            request);
+        var rerollPlan = await ShiningBlessingEffectState
+            .BuildRelicRerollConsumptionPlanAsync(
+                fs,
+                writeLease: null,
+                currentTurnNumber,
+                relicRerollsToCommit);
+        if (!rerollPlan.IsValid)
             throw new InvalidOperationException("Relic reroll entitlement больше недоступен; Shining forge request не создан.");
 
-        try
-        {
-            await WriteRequestAsync(fs, request);
-        }
-        catch
-        {
-            if (preCommitSoulJson != null)
-                await fs.WriteFileAtomicAsync(soulStatePath, preCommitSoulJson);
-            throw;
-        }
+        var writes = rerollPlan.Writes.Append(requestWrite).ToArray();
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(fs, writes))
+            throw new InvalidOperationException("Shining forge request не создан: guarded resource/request commit потерял исходный baseline.");
     }
 
     internal static async Task WriteForgeRequestWithRelicRerollCommitAsync(
@@ -356,17 +379,66 @@ internal static class ShiningCoreActionRequestState
         int currentTurnNumber,
         int relicRerollsToCommit)
     {
-        if (relicRerollsToCommit > 0 &&
-            !await ShiningBlessingEffectState.ConsumeRelicRerollsAsync(
+        var requestWrite = await BuildGuardedRequestWriteAsync(
+            fs,
+            writeLease,
+            request);
+        var rerollPlan = await ShiningBlessingEffectState
+            .BuildRelicRerollConsumptionPlanAsync(
                 fs,
                 writeLease,
                 currentTurnNumber,
-                relicRerollsToCommit))
-        {
+                relicRerollsToCommit);
+        if (!rerollPlan.IsValid)
             throw new InvalidOperationException("Relic reroll entitlement больше недоступен; Shining forge request не создан.");
+
+        var writes = rerollPlan.Writes.Append(requestWrite).ToArray();
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                fs,
+                writeLease,
+                writes))
+        {
+            throw new InvalidOperationException("Shining forge request не создан: guarded resource/request commit потерял исходный baseline.");
+        }
+    }
+
+    private static async Task<CoordinatedStateWriteHelper.PlannedWrite>
+        BuildGuardedRequestWriteAsync(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease? writeLease,
+            PendingShiningCoreActionRequest request)
+    {
+        var previousJson = writeLease == null
+            ? await fs.ReadFileAsync(PendingActionsRequestPath)
+            : await fs.ReadFileAsync(writeLease, PendingActionsRequestPath);
+        var filePresent = writeLease == null
+            ? fs.FileExists(PendingActionsRequestPath)
+            : fs.FileExists(writeLease, PendingActionsRequestPath);
+        var existingState = AnalyzeRequests(previousJson, filePresent);
+        if (existingState.IsMalformed)
+        {
+            throw new InvalidOperationException(
+                "pending_shining_abode_actions.json повреждён и должен быть исправлен или очищен до записи нового core action request.");
+        }
+        if (existingState.Requests.Any(existing =>
+                !string.Equals(
+                    existing.RequestId,
+                    request.RequestId,
+                    StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidOperationException(
+                "pending_shining_abode_actions.json уже содержит live foreign core action request; guarded writer не заменяет unresolved Shining contract.");
         }
 
-        await WriteRequestAsync(fs, writeLease, request);
+        var nextJson = JsonSerializer.Serialize(new Dictionary<string, object?>
+        {
+            [RequestsProperty] = new[] { request }
+        }, JsonOpts);
+        return new CoordinatedStateWriteHelper.PlannedWrite(
+            PendingActionsRequestPath,
+            previousJson,
+            nextJson,
+            RequireCurrentBaseline: true);
     }
 
     public static bool TryBuildProjectedShiningRootForPreview(
@@ -900,7 +972,8 @@ internal static class ShiningCoreActionRequestState
         PendingShiningCoreActionRequest request,
         JsonObject shiningRoot,
         JsonObject? residentRoot,
-        JsonObject? soulRoot)
+        JsonObject? soulRoot,
+        AfterlifeGachaAttemptProjectionResult? gachaAttempts)
     {
         if (string.IsNullOrWhiteSpace(request.FactionId))
             return "pull_relic_gacha требует factionId.";
@@ -911,6 +984,11 @@ internal static class ShiningCoreActionRequestState
         var radianceTier = GetNodeInt(shiningRoot["radiance"]?["tier"]);
         if (request.RadianceTierAtRequest != radianceTier)
             return "radianceTierAtRequest должен совпадать с текущим canonical radiance tier.";
+
+        if (gachaAttempts is not { IsValid: true, Projection: not null })
+            return gachaAttempts?.Error ?? "Shining gacha resource ledger недоступен.";
+        if (gachaAttempts.Projection.Current < 1m)
+            return "Shining gacha resource ledger исчерпан: gacha_attempts = 0.";
 
         if (!ShiningAbodeState.TryQuoteRelicGachaPull(
                 JsonNode.Parse(shiningRoot.ToJsonString())!.AsObject(),
@@ -929,11 +1007,24 @@ internal static class ShiningCoreActionRequestState
             return "Quoted cost для pull_relic_gacha не совпадает с canonical quote.";
         if (!string.Equals(request.ReturnCycleId, returnCycleId, StringComparison.OrdinalIgnoreCase))
             return "returnCycleId должен совпадать с текущим Shining return cycle.";
+        if (!string.Equals(
+                request.ReturnCycleId,
+                gachaAttempts.Projection.ReturnCycleId,
+                StringComparison.Ordinal))
+        {
+            return "returnCycleId должен совпадать с exact common resource ledger binding.";
+        }
         if (request.ProjectedGachaBonusSteps != projectedBonusSteps)
             return "projectedGachaBonusSteps должен совпадать с canonical Shining banner bonus.";
 
         return null;
     }
+
+    private static bool IsRelicGacha(PendingShiningCoreActionRequest request) =>
+        string.Equals(
+            request.ActionType?.Trim(),
+            ActionTypePullRelicGacha,
+            StringComparison.OrdinalIgnoreCase);
 
     private static string? ValidateOrdinaryActiveShiningMode(JsonObject? soulRoot, JsonObject shiningRoot)
     {

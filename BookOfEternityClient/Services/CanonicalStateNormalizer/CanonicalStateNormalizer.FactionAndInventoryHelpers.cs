@@ -220,24 +220,6 @@ public partial class CanonicalStateNormalizer
         AddUniqueNode(entries, candidate);
     }
 
-    private static void ApplyInventoryResourceCommands(JsonArray entries, JsonArray commands)
-    {
-        foreach (var command in commands.OfType<JsonObject>())
-        {
-            var entry = GetOrCreateInventoryItemEntry(entries, command);
-            if (command["resource"] != null)
-                entry["resource"] = command["resource"]?.DeepClone();
-            if (command["maximumResource"] != null)
-                entry["maximumResource"] = command["maximumResource"]?.DeepClone();
-            if (!string.IsNullOrWhiteSpace(GetNodeString(command["resourceType"])))
-                entry["resourceType"] = GetNodeString(command["resourceType"]);
-            if (command["contentsPath"] != null)
-                entry["contentsPath"] = command["contentsPath"]?.DeepClone();
-            if (command["isEmpty"] != null)
-                entry["isEmpty"] = command["isEmpty"]?.DeepClone();
-        }
-    }
-
     private static void ApplyInventoryBondCommands(JsonArray entries, JsonArray commands)
     {
         foreach (var command in commands.OfType<JsonObject>())

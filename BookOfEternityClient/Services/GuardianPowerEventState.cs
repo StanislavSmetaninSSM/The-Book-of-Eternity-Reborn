@@ -275,13 +275,13 @@ internal static class GuardianPowerEventState
         });
         abodePower["history"] = history;
         guardian["abodePower"] = abodePower;
-        GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardian);
 
         if (guardiansRoot["activeGuardian"] is JsonObject activeGuardian &&
             string.Equals(GetNodeString(activeGuardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase))
         {
             activeGuardian["abodePower"] = abodePower.DeepClone();
-            GuardianGachaChargeRules.NormalizeGuardianGachaState(activeGuardian);
+            GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(activeGuardian);
         }
 
         journalEntries.Add(new JsonObject

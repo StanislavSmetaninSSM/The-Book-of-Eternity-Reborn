@@ -42,8 +42,6 @@ internal static class MortalItemTestFixture
             ["count"] = 1,
             ["weight"] = 0.1,
             ["volume"] = 0.05,
-            ["durability"] = "100%",
-            ["maxDurability"] = "100%",
             ["bonuses"] = new JsonArray(),
             ["effects"] = new JsonArray(),
             ["structuredBonuses"] = new JsonArray(),

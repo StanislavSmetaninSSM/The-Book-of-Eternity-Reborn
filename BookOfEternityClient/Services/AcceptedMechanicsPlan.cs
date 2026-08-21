@@ -290,6 +290,11 @@ internal sealed class AcceptedMechanicsPlanningContext
     private readonly JsonObject _definitionRoot;
     private readonly JsonObject _effectIdentityRoot;
     private readonly ResourceCapacityIntent[] _capacityTransitions;
+    private readonly ResourceOwnerCapacityDraft[] _ownerCapacityDrafts;
+    private readonly ResourceOwnerKey[] _terminalOwners;
+    private readonly Dictionary<string, JsonObject> _ownerCompanionAfterImages;
+    private readonly AcceptedMechanicsOwnerTransition[] _ownerTransitions;
+    private readonly IResourceRegisteredSystemOutcomeDraft[] _registeredSystemOutcomes;
 
     internal AcceptedMechanicsPlanningContext(
         JsonObject definitionRoot,
@@ -301,7 +306,12 @@ internal sealed class AcceptedMechanicsPlanningContext
         ResourceCommandCompositionResult commands,
         JsonObject effectIdentityRoot,
         EffectAcceptedTurnPlan? effectPlan,
-        IReadOnlyList<ResourceCapacityIntent>? capacityTransitions = null)
+        IReadOnlyList<ResourceCapacityIntent>? capacityTransitions = null,
+        IReadOnlyList<ResourceOwnerCapacityDraft>? ownerCapacityDrafts = null,
+        IReadOnlyList<ResourceOwnerKey>? terminalOwners = null,
+        IReadOnlyDictionary<string, JsonObject>? ownerCompanionAfterImages = null,
+        IReadOnlyList<AcceptedMechanicsOwnerTransition>? ownerTransitions = null,
+        IReadOnlyList<IResourceRegisteredSystemOutcomeDraft>? registeredSystemOutcomes = null)
     {
         _definitionRoot = (definitionRoot ?? throw new ArgumentNullException(nameof(definitionRoot)))
             .DeepClone().AsObject();
@@ -314,6 +324,22 @@ internal sealed class AcceptedMechanicsPlanningContext
         _effectIdentityRoot = (effectIdentityRoot ??
             throw new ArgumentNullException(nameof(effectIdentityRoot))).DeepClone().AsObject();
         EffectPlan = effectPlan;
+        _ownerCompanionAfterImages = new Dictionary<string, JsonObject>(
+            StringComparer.Ordinal);
+        foreach (var pair in ownerCompanionAfterImages ??
+                     new Dictionary<string, JsonObject>(StringComparer.Ordinal))
+        {
+            AcceptedMechanicsPlanBinding.ValidatePath(
+                pair.Key,
+                nameof(ownerCompanionAfterImages));
+            _ownerCompanionAfterImages.Add(
+                pair.Key,
+                (pair.Value ?? throw new ArgumentNullException(
+                    nameof(ownerCompanionAfterImages))).DeepClone().AsObject());
+        }
+        _ownerTransitions = ownerTransitions?.Select(value =>
+            (value ?? throw new ArgumentNullException(nameof(ownerTransitions))).Clone()).ToArray() ??
+            Array.Empty<AcceptedMechanicsOwnerTransition>();
         _capacityTransitions = capacityTransitions?.Select(value =>
         {
             ArgumentNullException.ThrowIfNull(value);
@@ -321,6 +347,39 @@ internal sealed class AcceptedMechanicsPlanningContext
             ArgumentNullException.ThrowIfNull(value.SourceEvidence);
             return value;
         }).ToArray() ?? Array.Empty<ResourceCapacityIntent>();
+        _ownerCapacityDrafts = ownerCapacityDrafts?.Select(value =>
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            ArgumentNullException.ThrowIfNull(value.Coordinate);
+            ArgumentNullException.ThrowIfNull(value.ResolvedCapacity);
+            ArgumentNullException.ThrowIfNull(value.SourceEvidence);
+            if (!value.ResolvedCapacity.IsValid ||
+                value.ResolvedCapacity.Capacity == null ||
+                value.AcceptedMaximum != value.ResolvedCapacity.Capacity.Maximum)
+            {
+                throw new ArgumentException(
+                    "Owner capacity drafts require one exact resolved capacity.",
+                    nameof(ownerCapacityDrafts));
+            }
+            return value;
+        }).ToArray() ?? Array.Empty<ResourceOwnerCapacityDraft>();
+        _terminalOwners = terminalOwners?.Select(value =>
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            if (!ResourceMaterializationContract.IsExactIdentifier(value.Realm) ||
+                !Enum.IsDefined(typeof(ResourceOwnerKind), value.OwnerKind) ||
+                !ResourceMaterializationContract.IsExactIdentifier(value.ResourceOwnerId))
+            {
+                throw new ArgumentException(
+                    "Terminal owners require one exact owner key.",
+                    nameof(terminalOwners));
+            }
+            return value;
+        }).Distinct().ToArray() ??
+            Array.Empty<ResourceOwnerKey>();
+        _registeredSystemOutcomes = registeredSystemOutcomes?.Select(value =>
+            value ?? throw new ArgumentNullException(nameof(registeredSystemOutcomes))).ToArray() ??
+            Array.Empty<IResourceRegisteredSystemOutcomeDraft>();
     }
 
     internal JsonObject DefinitionRoot => _definitionRoot.DeepClone().AsObject();
@@ -332,8 +391,22 @@ internal sealed class AcceptedMechanicsPlanningContext
     internal ResourceCommandCompositionResult Commands { get; }
     internal JsonObject EffectIdentityRoot => _effectIdentityRoot.DeepClone().AsObject();
     internal EffectAcceptedTurnPlan? EffectPlan { get; }
+    internal IReadOnlyDictionary<string, JsonObject> OwnerCompanionAfterImages =>
+        new ReadOnlyDictionary<string, JsonObject>(
+            _ownerCompanionAfterImages.ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal));
+    internal IReadOnlyList<AcceptedMechanicsOwnerTransition> OwnerTransitions =>
+        Array.AsReadOnly(_ownerTransitions.Select(static value => value.Clone()).ToArray());
     internal IReadOnlyList<ResourceCapacityIntent> CapacityTransitions =>
         Array.AsReadOnly(_capacityTransitions.ToArray());
+    internal IReadOnlyList<ResourceOwnerCapacityDraft> OwnerCapacityDrafts =>
+        Array.AsReadOnly(_ownerCapacityDrafts.ToArray());
+    internal IReadOnlyList<ResourceOwnerKey> TerminalOwners =>
+        Array.AsReadOnly(_terminalOwners.ToArray());
+    internal IReadOnlyList<IResourceRegisteredSystemOutcomeDraft> RegisteredSystemOutcomes =>
+        Array.AsReadOnly(_registeredSystemOutcomes.ToArray());
 }
 
 internal sealed record ResourceAppliedEvent(
@@ -398,6 +471,7 @@ internal sealed class AcceptedMechanicsPlan
     private readonly JsonObject _effectIdentityAfterImage;
     private readonly Dictionary<string, JsonObject?> _pendingAfterImages;
     private readonly Dictionary<string, JsonObject> _ownerCompanionAfterImages;
+    private readonly AcceptedMechanicsOwnerTransition[] _ownerTransitions;
     private readonly Dictionary<string, CanonicalBeforeImage> _beforeImages;
     private readonly ResourceAppliedEvent[] _resourceEvents;
 
@@ -417,7 +491,8 @@ internal sealed class AcceptedMechanicsPlan
         IReadOnlyList<ResourceAppliedEvent> resourceEvents,
         ResourceProjectionInput projectionInput,
         ResourceOwnerAuthority ownerAuthority,
-        EffectAcceptedTurnPlan? effectPlan)
+        EffectAcceptedTurnPlan? effectPlan,
+        IReadOnlyList<AcceptedMechanicsOwnerTransition>? ownerTransitions = null)
     {
         if (!ResourceMaterializationContract.IsAuthorityFingerprint(inputFingerprint))
             throw new ArgumentException("Expected a lowercase SHA-256 plan fingerprint.", nameof(inputFingerprint));
@@ -429,6 +504,9 @@ internal sealed class AcceptedMechanicsPlan
         _effectIdentityAfterImage = Clone(effectIdentityAfterImage, nameof(effectIdentityAfterImage));
         _pendingAfterImages = CloneNullableObjects(pendingAfterImages, nameof(pendingAfterImages));
         _ownerCompanionAfterImages = CloneObjects(ownerCompanionAfterImages, nameof(ownerCompanionAfterImages));
+        _ownerTransitions = ownerTransitions?.Select(value =>
+            (value ?? throw new ArgumentNullException(nameof(ownerTransitions))).Clone()).ToArray() ??
+            Array.Empty<AcceptedMechanicsOwnerTransition>();
         _beforeImages = CloneBeforeImages(beforeImages, nameof(beforeImages));
         AuthorityFingerprints = authorityFingerprints ??
             throw new ArgumentNullException(nameof(authorityFingerprints));
@@ -468,6 +546,9 @@ internal sealed class AcceptedMechanicsPlan
     internal IReadOnlyDictionary<string, JsonObject> OwnerCompanionAfterImages =>
         ReadOnlyObjects(_ownerCompanionAfterImages);
 
+    internal IReadOnlyList<AcceptedMechanicsOwnerTransition> OwnerTransitions =>
+        Array.AsReadOnly(_ownerTransitions.Select(static value => value.Clone()).ToArray());
+
     internal IReadOnlyDictionary<string, CanonicalBeforeImage> BeforeImages =>
         AcceptedMechanicsPlanBinding.CloneReadOnlyBeforeImages(_beforeImages);
 
@@ -499,6 +580,7 @@ internal sealed class AcceptedMechanicsPlan
         required.UnionWith(_effectCarrierAfterImages.Keys);
         required.UnionWith(_pendingAfterImages.Keys);
         required.UnionWith(_ownerCompanionAfterImages.Keys);
+        required.UnionWith(_ownerTransitions.Select(static value => value.Path));
         required.UnionWith(ConsumedPaths);
         foreach (var path in required)
         {

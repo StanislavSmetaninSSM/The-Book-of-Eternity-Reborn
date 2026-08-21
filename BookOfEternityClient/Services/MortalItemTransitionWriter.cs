@@ -15,6 +15,11 @@ internal enum MortalItemTransitionKind
     SemanticUpdate
 }
 
+internal enum MortalItemResourceStackDisposition
+{
+    ProportionalExact
+}
+
 internal sealed record MortalItemTransitionIntent(
     MortalItemTransitionKind Kind,
     IReadOnlyList<string> SourceItemIds,
@@ -24,7 +29,8 @@ internal sealed record MortalItemTransitionIntent(
     int Turn,
     string AuthorityKind,
     string AuthorityId,
-    string? SurvivorItemId = null);
+    string? SurvivorItemId = null,
+    MortalItemResourceStackDisposition? ResourceDisposition = null);
 
 internal sealed record MortalItemTransitionResult(
     bool Success,
@@ -72,7 +78,6 @@ internal sealed partial class MortalItemTransitionWriter
 {
     private static readonly string[] CompanionPaths =
     {
-        "game_state/inventory/item_resources.json",
         "game_state/inventory/item_bonds.json",
         "game_state/inventory/item_text_updates.json",
         "game_state/inventory/recipes.json",
@@ -98,6 +103,7 @@ internal sealed partial class MortalItemTransitionWriter
 
         if (intent.Kind is MortalItemTransitionKind.Split or
             MortalItemTransitionKind.Merge or
+            MortalItemTransitionKind.Consume or
             MortalItemTransitionKind.Destroy)
         {
             return await ExecuteStackMutationAsync(writeLease, intent, mutation);

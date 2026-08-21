@@ -296,7 +296,6 @@ public partial class GameEngine
                 ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/npcs/npc_core.json"),
                 ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/world/world_events.json"),
                 ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/npcs/npc_relationships.json"),
-                ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/core/player_status.json"),
                 ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/factions/faction_core.json"));
             if (!result.Success)
             {
@@ -2076,7 +2075,9 @@ public partial class GameEngine
                 lifecycleMarker, $"Конец смертной жизни. Причина: {reason}. {summary}");
 
             // === PHASE 3: Update realm and send life evaluation to GM ===
-            if (!await UpdateSoulStateRealm("Chaos Sea", lifeSummary))
+            if (!await UpdateSoulStateRealm(
+                    SoulRealmTransitionCause.MortalDeathToChaosSea,
+                    lifeSummary))
                 throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для перехода в Море Хаоса после завершения смертной жизни.");
             await RefreshRuntimeStateAsync();
             _fs.ClearCurrentWorldLore();
@@ -2581,25 +2582,19 @@ public partial class GameEngine
             localStateMutated = true;
             var newIncarnationNumber = _stateManager.CurrentState.Incarnation + 1;
 
-            if (!await UpdateSoulStateRealm("Mortal World", incrementIncarnation: true))
+            if (!await UpdateSoulStateRealm(
+                    SoulRealmTransitionCause.IncarnationToMortalWorld))
                 throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для начала новой смертной жизни.");
             await RefreshRuntimeStateAsync();
             await _rivalSoulArcService.ResetForNewLifeAsync();
             await _guardianCorrectionService.ApplyForNewLifeAsync(newIncarnationNumber);
             await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
 
-            // Initialize fresh mortal status
-            var status = new
-            {
-                healthPercentage = "100%",
-                energyPercentage = "100%",
-                poisePercentage = "100%",
-                currentCondition = "Здоров",
-                activeConditions = Array.Empty<string>(),
-                money = 0
-            };
+            // Narrative/economic player status is separate from the canonical
+            // health/energy/poise resource ledger initialized below.
+            var status = MortalBootstrapStateBuilder.BuildFreshPlayerStatus();
             await _fs.WriteFileAtomicAsync("game_state/core/player_status.json",
-                JsonSerializer.Serialize(status, JsonOpts));
+                status.ToJsonString(JsonOpts));
 
             // Initialize empty mortal inventory
             var inventory = new
@@ -2653,9 +2648,24 @@ public partial class GameEngine
                 AnsiConsole.WriteLine();
                 parts.Add($"Активировано Наследие Памяти: {memoryLegacySummary}.");
             }
-            var shiningMemorySelectionSummary = await ConsumePendingShiningMemorySelectionAsync();
-            if (!string.IsNullOrWhiteSpace(shiningMemorySelectionSummary))
-                parts.Add($"Выбрана эхо-память Сияющей Обители: {shiningMemorySelectionSummary}.");
+            var shiningMemorySelection = await ConsumePendingShiningMemorySelectionAsync();
+            if (!shiningMemorySelection.Success)
+            {
+                _logger.LogWarning(
+                    "Mortal bootstrap stopped because pending Shining memory selection could not be committed atomically.");
+                await CleanupUndispatchedTransitionPrepAsync(
+                    rollbackBackups,
+                    localStateMutated,
+                    manifestCreated);
+                AnsiConsole.MarkupLine("[red]⚠ Mortal bootstrap остановлен: выбор эхо-памяти не удалось безопасно зафиксировать.[/]");
+                AnsiConsole.MarkupLine("[yellow]Состояние восстановлено; pending выбор сохранён для repair/retry.[/]");
+                return false;
+            }
+            if (!string.IsNullOrWhiteSpace(shiningMemorySelection.Summary))
+            {
+                parts.Add(
+                    $"Выбрана эхо-память Сияющей Обители: {shiningMemorySelection.Summary}.");
+            }
             await ShowStatDistribution("Новая инкарнация — распределите начальные очки характеристик");
             await CapturePendingMemoryLegacyApplicationAuditAsync();
 
@@ -3481,8 +3491,13 @@ public partial class GameEngine
                 return;
             }
 
+            var localResourceTurn = Math.Max(1, _gameLoop.TurnNumber + 1);
+            {
+            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
             JsonObject? existingShiningRoot = null;
-            var existingShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            var existingShiningJson = await _fs.ReadFileAsync(
+                writeLease,
+                ShiningAbodeState.StatePath);
             if (!string.IsNullOrWhiteSpace(existingShiningJson))
             {
                 try
@@ -3496,7 +3511,9 @@ public partial class GameEngine
             }
 
             JsonObject? residentRoot = null;
-            var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+            var residentJson = await _fs.ReadFileAsync(
+                writeLease,
+                GuardianAbodeResidentState.StatePath);
             if (!string.IsNullOrWhiteSpace(residentJson))
             {
                 try
@@ -3510,7 +3527,9 @@ public partial class GameEngine
             }
 
             JsonObject? guardiansRoot = null;
-            var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+            var guardiansJson = await _fs.ReadFileAsync(
+                writeLease,
+                "game_state/meta/guardians.json");
             if (!string.IsNullOrWhiteSpace(guardiansJson))
             {
                 try
@@ -3523,8 +3542,9 @@ public partial class GameEngine
                 }
             }
 
-            var previousShiningJson = existingShiningJson;
-            var previousSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+            var previousSoulJson = await _fs.ReadFileAsync(
+                writeLease,
+                "game_state/meta/soul_state.json");
             if (string.IsNullOrWhiteSpace(previousSoulJson))
                 throw new InvalidOperationException("Не удалось прочитать soul_state.json для безопасного вознесения в Сияющую Обитель.");
 
@@ -3541,15 +3561,34 @@ public partial class GameEngine
 
             var activatedShiningRoot = ShiningAbodeState.ActivateForAscension(existingShiningRoot, residentRoot, guardiansRoot);
             soulRoot["currentRealm"] = "Shining Abode";
-            var nextSoulJson = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts);
-            if (!await TryCommitCoordinatedGameStateWritesAsync(
-                    new CoordinatedGameStateWrite(ShiningAbodeState.StatePath, previousShiningJson, activatedShiningRoot.ToJsonString(JsonOpts)),
-                    new CoordinatedGameStateWrite("game_state/meta/soul_state.json", previousSoulJson, nextSoulJson)))
+            var returnCyclePlan = await ShiningReturnCycleResourceService.BuildAsync(
+                _fs,
+                writeLease,
+                activatedShiningRoot,
+                soulRoot,
+                ShiningReturnCycleTransitionKind.AscensionFromChaosSea,
+                localResourceTurn);
+            if (!returnCyclePlan.IsValid)
             {
-                throw new InvalidOperationException("Не удалось безопасно зафиксировать ascension handoff между shining_abode_state.json и soul_state.json.");
+                var issueSummary = string.Join(
+                    "; ",
+                    returnCyclePlan.Issues.Select(issue =>
+                        $"{issue.Code ?? "shining_return_cycle_invalid"}: {issue.Actual ?? issue.Message}"));
+                throw new InvalidOperationException(
+                    $"Не удалось построить единый Shining/resource plan для ascension flow: {issueSummary}");
+            }
+            if (!await ShiningReturnCycleResourceService.TryCommitAsync(
+                    _fs,
+                    writeLease,
+                    returnCyclePlan))
+            {
+                throw new InvalidOperationException("Не удалось безопасно зафиксировать единый ascension handoff для Shining, soul и common resource ledger/history.");
+            }
             }
 
-            await SyncShiningReturnCycleLocalStateAsync();
+            await ShiningTradeService.SyncAutoRefreshRequestsForCurrentCycleAsync(
+                _fs,
+                localResourceTurn);
             await _storyService.AppendMarkerAsync(
                 "Shining Abode",
                 _stateManager.CurrentState.Incarnation,
@@ -3615,104 +3654,7 @@ public partial class GameEngine
     private async Task<bool> HasMaximumEnlightenmentAsync()
     {
         var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
-            return false;
-
-        try
-        {
-            using var doc = JsonDocument.Parse(soulJson);
-            var root = doc.RootElement;
-
-            if (root.TryGetProperty("soulProgression", out var progression) &&
-                progression.ValueKind == JsonValueKind.Object)
-            {
-                if (progression.TryGetProperty("progressPercent", out var progressPercent) &&
-                    progressPercent.ValueKind == JsonValueKind.Number &&
-                    progressPercent.TryGetDouble(out var parsedPercent) &&
-                    parsedPercent >= 100)
-                {
-                    return true;
-                }
-
-                if (progression.TryGetProperty("totalExperience", out var totalExperience) &&
-                    totalExperience.ValueKind == JsonValueKind.Number &&
-                    totalExperience.TryGetInt32(out var parsedTotalExperience) &&
-                    AfterlifeProgressionTuning.IsAscensionReadyEnlightenmentExperience(parsedTotalExperience))
-                {
-                    return true;
-                }
-
-                if (progression.TryGetProperty("tier", out var tier) &&
-                    tier.ValueKind == JsonValueKind.Number &&
-                    tier.TryGetInt32(out var parsedTier) &&
-                    parsedTier >= 4)
-                {
-                    return true;
-                }
-
-                if (progression.TryGetProperty("tierName", out var tierNameProp) &&
-                    tierNameProp.ValueKind == JsonValueKind.String &&
-                    IsTranscendenceTierName(tierNameProp.GetString()))
-                {
-                    return true;
-                }
-            }
-
-            if (root.TryGetProperty("enlightenment", out var enlightenment))
-            {
-                if (enlightenment.ValueKind == JsonValueKind.Object)
-                {
-                    if (enlightenment.TryGetProperty("currentTier", out var currentTierProp) &&
-                        currentTierProp.ValueKind == JsonValueKind.String &&
-                        IsTranscendenceTierName(currentTierProp.GetString()))
-                    {
-                        return true;
-                    }
-
-                    if (enlightenment.TryGetProperty("level", out var levelProp) &&
-                        levelProp.ValueKind == JsonValueKind.Number &&
-                        levelProp.TryGetInt32(out var parsedLevel) &&
-                        parsedLevel >= 4)
-                    {
-                        return true;
-                    }
-
-                    if (enlightenment.TryGetProperty("progressPercent", out var progressPercent) &&
-                        progressPercent.ValueKind == JsonValueKind.Number &&
-                        progressPercent.TryGetDouble(out var parsedPercent) &&
-                        parsedPercent >= 100)
-                    {
-                        return true;
-                    }
-
-                    if (enlightenment.TryGetProperty("experience", out var experienceProp) &&
-                        experienceProp.ValueKind == JsonValueKind.Number &&
-                        experienceProp.TryGetInt32(out var parsedExperience) &&
-                        AfterlifeProgressionTuning.IsAscensionReadyEnlightenmentExperience(parsedExperience))
-                    {
-                        return true;
-                    }
-                }
-                else if (enlightenment.ValueKind == JsonValueKind.Number &&
-                         enlightenment.TryGetDouble(out var numericEnlightenment) &&
-                         numericEnlightenment >= AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience)
-                {
-                    return true;
-                }
-            }
-        }
-        catch
-        {
-            return false;
-        }
-
-        return false;
-    }
-
-    private static bool IsTranscendenceTierName(string? tierName)
-    {
-        return string.Equals(tierName, "Transcendence", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(tierName, "Трансценденция", StringComparison.OrdinalIgnoreCase);
+        return AfterlifeAscensionAuthority.IsReady(soulJson);
     }
 
     private async Task<string> GetPlayerInput()
@@ -3997,7 +3939,7 @@ If a forbidden key appears in your draft response for the active realm, REMOVE i
 
 MATH ASSISTANT / МАТЕМАТИК:
 Use `mathRequests[]` / `mathAudit[]` for non-trivial mechanical arithmetic instead of relying only on prose. These fields write `game_state/meta/math_audit.json`. `mathRequests[]` is only a calculation request; `mathAudit[]` records the checked result with `formulaVersion = math_assistant_v1`, numeric variables, rounding, and `applicationState` (`calculated_only`, `applied_to_state`, or `mismatch_repair_blocking`). If the number changed game state, still write the actual target state/receipt surface and reference it through `mathAudit[].referencedBy[]`.
-For Mortal combat delta fields, references to `currentHealthChange`, `currentPoiseChange`, or `currentEnergyChange` require `mathAudit.result` to equal the exact signed numeric response change. A 13 damage hit to the player is `currentHealthChange: -13` and `result: -13`.
+For Mortal player health, energy, and poise, use `resourceChanges[]` against exact targetId `player_current`; never emit legacy percentage or current*Change fields. The common resource authority validates the operation, source, amount, chronology, bounds, and atomic state/history publication.
 For afterlife spiritual combat formulas, references to supported numeric paths such as `afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount` or a `diceAudit.margin` path require `mathAudit.result` to exactly equal that field. The afterlife validator still checks the full conflict/reward contract separately.
 
 NPC AGENCY — HARD REQUIREMENT:
@@ -4225,14 +4167,14 @@ If playerAction contains [CHAOS_SEA_DIRECT_GACHA], this is a DIRECT pull from th
 If the pull is Guardian-mediated, the 'baseRarity' from gachaBaseResult is the MINIMUM rarity. You may ONLY upgrade it using documented modifiers:
   - Abode Power rarity ceiling bonus: abodePower.currentPower >= 60 gives +1 allowed rarity step.
   - Completed relic_forging Guardian project bonus: spend the documented one-use project bonus and record sourceProjectId.
-  - Guardian reputation affects chargesPerReturn and trade pricing, not rarity odds.
+  - Guardian reputation affects the canonical gacha_attempts resource maximum and trade pricing, not rarity odds.
   - Hard/Impossible mortal-world difficulty modifiers do not change afterlife Guardian gacha rarity unless validator/audit support is explicitly added.
 Guardian-mediated pulls are LIMITED per Guardian per return from mortal life:
   - Hostile(-100..-51): blocked
   - Wary/Neutral(-50..49): 1 attempt
   - Friendly(50..129): 2 attempts
   - Devoted/Legendary(130..300): 3 attempts
-  - If chargesUsedThisReturn already equals chargesPerReturn for that Guardian, DO NOT emit processGacha for them.
+  - If that Guardian's exact canonical gacha_attempts resource current value is 0, DO NOT emit processGacha for them.
 If a Guardian-mediated pull finishes above baseRarity, include gachaBonusAudit with:
   - baseRarity
   - abodePowerBonusSteps
@@ -4253,9 +4195,10 @@ Shining banner modifiers may only increase or preserve that base rarity; they mu
 The client-authored request includes projectedGachaBonusSteps and returnCycleId. Do NOT exceed that projected bonus ceiling.
 Resolve the pull by:
   - adding exactly one Soul Relic result to soul state,
-  - updating shining_abode_state.json.gachaSystem.chargesUsedThisReturn and gachaHistory[],
+  - appending exactly one matching shining_abode_state.json.gachaSystem.gachaHistory[] entry; the client consumes one canonical gacha_attempts resource unit,
   - writing a matching coreActionReceipts[] entry with requestId, actionType=pull_relic_gacha, factionId, returnCycleId, relicId, relicName, baseRarity, finalRarity, resolvedAtTurn and resolvedAtUtc.
 Shining relic gacha consumes the quoted Ink Feather cost from the request and does NOT use Light Sparks.
+The client owns game_state/resources/resource_state.json and game_state/resources/resource_history.json. GM MUST NOT write resource_state.json or resource_history.json; author only the documented Guardian/Shining outcome and audit fields.
 
 " + _storyService.BuildStoryContext();
     }

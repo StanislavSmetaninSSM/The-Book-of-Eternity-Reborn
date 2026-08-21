@@ -83,7 +83,6 @@ public partial class CanonicalStateNormalizer
         ResourceMaterializationContract.DefinitionsPath,
         ResourceMaterializationContract.StatePath,
         ResourceMaterializationContract.HistoryPath,
-        "game_state/inventory/item_resources.json",
         "game_state/inventory/item_bonds.json",
         "game_state/inventory/item_text_updates.json",
         "game_state/npcs/item_journals.json",
@@ -194,13 +193,15 @@ public partial class CanonicalStateNormalizer
 
     public async Task NormalizeAccumulatedStateAsync(IReadOnlyDictionary<string, string>? backups = null)
     {
+        var prevalidatedAcceptedMechanicsPlan =
+            await PrevalidateAcceptedMechanicsBeforeNormalizationAsync();
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
         var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups);
         await NormalizeMortalItemsAsync(
             backups,
             mortalLocationPlan?.AcceptedStorageCoordinates);
-        await NormalizeGuardiansAsync(backups);
+        await NormalizeGuardiansAsync(backups, prevalidatedAcceptedMechanicsPlan);
         await NormalizeGuardianAbodeResidentsAsync(backups);
         await NormalizeShiningAbodeStateAsync(backups);
         await NormalizeGuardianProjectsAsync(guardianProjectInputs);
@@ -232,13 +233,15 @@ public partial class CanonicalStateNormalizer
         await NormalizeNpcJournalsAsync(backups);
         await NormalizeNpcInteractionJournalAsync(backups);
         await NormalizeInventoryItemsAsync(backups);
-        await NormalizeInventoryItemResourcesAsync(backups);
         await NormalizeInventoryItemBondsAsync(backups);
         await NormalizeInventoryItemTextsAsync(backups);
         await NormalizeItemJournalsAsync(backups);
         await NormalizeGuardianThoughtJournalAsync(backups);
         await NormalizeGuardianSocialJournalAsync(backups);
         await NormalizePlayerSkillStateAsync(backups);
-        await NormalizeAcceptedMechanicsAsync(backups, mortalLocationPlan);
+        await NormalizeAcceptedMechanicsAsync(
+            backups,
+            mortalLocationPlan,
+            prevalidatedAcceptedMechanicsPlan);
     }
 }

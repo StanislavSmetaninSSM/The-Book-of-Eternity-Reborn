@@ -73,25 +73,57 @@ public partial class ValidationService
             return issues;
         }
 
-        var owners = ResourceOwnerAuthority.CreateCurrentPlayerAuthority(
-            definitions,
-            commands.DefinitionCreations
-                .Where(static creation =>
-                    creation.Definition["allowedOwnerKinds"] is JsonArray kinds &&
-                    kinds.Any(static kind =>
-                        kind is JsonValue value &&
-                        value.TryGetValue<string>(out var token) &&
-                        string.Equals(token, "player", StringComparison.Ordinal)))
-                .Select(static creation =>
-                creation.Definition["resourceKey"]?.GetValue<string>()));
-        issues.AddRange(owners.Issues);
+        var acceptedItemOwners = MortalItemAcceptedTurnAuthority.GetValidatedOwners(
+            _fs,
+            manifest.SessionId,
+            manifest.RequestId);
+        var missingGovernedItemIds =
+            MortalItemAcceptedTurnAuthority.GetMissingGovernedItemIds(
+                _fs,
+                manifest.SessionId,
+                manifest.RequestId);
+        var mortalOwnerComposition = MortalResourceOwnerComposer.Compose(
+            new MortalResourceOwnerCompositionInput(
+                definitions,
+                await ReadMortalResourceOwnerRootsAsync(manifest, issues),
+                await ReadMortalResourceOwnerRootsAsync(null, issues),
+                BuildSameTurnResourceOwnerCapabilities(commands),
+                acceptedItemOwners,
+                missingGovernedItemIds));
+        var preTurnAfterlifeOwners = await ReadAfterlifeResourceOwnerRootsAsync(
+            manifest,
+            issues);
+        var acceptedAfterlifeOwners = await ReadAcceptedAfterlifeResourceOwnerRootsAsync(
+            manifest,
+            preTurnAfterlifeOwners,
+            issues);
+        var afterlifeOwnerComposition = AfterlifeResourceOwnerComposer.Compose(
+            new AfterlifeResourceOwnerCompositionInput(
+                definitions,
+                preTurnAfterlifeOwners,
+                acceptedAfterlifeOwners));
+        var ownerComposition = ResourceOwnerComposition.Combine(
+            mortalOwnerComposition,
+            afterlifeOwnerComposition);
+        issues.AddRange(ownerComposition.Issues);
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) ||
+            ownerComposition.Authority == null)
+        {
+            return issues;
+        }
+
+        var owners = ownerComposition.Authority;
         issues.AddRange(owners.ValidateCanonicalAgreement(
             stateResult.Ledger,
-            historyResult.History));
+            historyResult.History,
+            ownerComposition.TerminalOwners));
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
 
-        var effectIssues = await ValidateAcceptedTurnRawEffectMaterializationAsync();
+        var effectIssues = new List<ValidationIssue>();
+        await ValidateAcceptedTurnRawEffectMaterializationAsync(
+            effectIssues,
+            ownerComposition);
         issues.AddRange(effectIssues);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
@@ -106,7 +138,21 @@ public partial class ValidationService
             }
             effectPlan = effectResult.Plan;
         }
-        if (commands.IsMissing && effectPlan == null)
+        var registeredSystemOutcomes = await ComposeRegisteredResourceOutcomesAsync(
+            manifest,
+            preTurnAfterlifeOwners,
+            acceptedAfterlifeOwners,
+            ownerComposition,
+            stateResult.Ledger,
+            issues);
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+            return issues;
+        if (commands.IsMissing && effectPlan == null &&
+            registeredSystemOutcomes.Count == 0 &&
+            ownerComposition.CapacityDrafts.Count == 0 &&
+            ownerComposition.TerminalOwners.Count == 0 &&
+            ownerComposition.OwnerCompanionAfterImages.Count == 0 &&
+            ownerComposition.OwnerTransitions.Count == 0)
             return issues;
 
         var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
@@ -127,7 +173,9 @@ public partial class ValidationService
         }
 
         var sourcesResult = ResourceMutationSourceCatalog.Create(
-            Array.Empty<ResourceMutationSourceExport>());
+            registeredSystemOutcomes
+                .SelectMany(static outcome => outcome.SourceExports)
+                .Concat(BuildItemResourceSourceExports(owners)));
         issues.AddRange(sourcesResult.Issues);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) ||
             sourcesResult.Catalog == null)
@@ -170,7 +218,14 @@ public partial class ValidationService
             ["state"] = JsonNode.Parse(stateJson!)!.AsObject(),
             ["history"] = JsonNode.Parse(historyJson!)!.AsObject(),
             ["ownerFingerprint"] = owners.Fingerprint,
-            ["sourceFingerprint"] = HashText("resource-source-empty-v1", string.Empty)
+            ["sourceFingerprint"] = sourcesResult.Catalog.Fingerprint,
+            ["ownerCapacityDrafts"] = BuildOwnerCapacityDraftInput(
+                ownerComposition.CapacityDrafts),
+            ["terminalOwners"] = BuildTerminalOwnerInput(
+                ownerComposition.TerminalOwners),
+            ["ownerTransitions"] = new JsonArray(ownerComposition.OwnerTransitions
+                .Select(static value => (JsonNode)value.ToFingerprintNode())
+                .ToArray())
         };
         var beforePaths = new HashSet<string>(StringComparer.Ordinal)
         {
@@ -188,7 +243,18 @@ public partial class ValidationService
             beforePaths.UnionWith(effectPlan.TouchedPaths);
             beforePaths.UnionWith(effectPlan.DeletedPaths);
         }
-        var beforeImages = await CaptureResourceBeforeImagesAsync(beforePaths);
+        beforePaths.UnionWith(ownerComposition.OwnerCompanionAfterImages.Keys);
+        beforePaths.UnionWith(ownerComposition.OwnerTransitions.Select(static value => value.Path));
+        beforePaths.UnionWith(acceptedItemOwners.Select(static owner => owner.FilePath));
+        foreach (var outcome in registeredSystemOutcomes)
+            beforePaths.UnionWith(outcome.ExpectedBeforeImages.Keys);
+        var beforeImages = (await CaptureResourceBeforeImagesAsync(beforePaths))
+            .ToDictionary(static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
+        foreach (var outcome in registeredSystemOutcomes)
+        {
+            foreach (var pair in outcome.ExpectedBeforeImages)
+                beforeImages[pair.Key] = pair.Value;
+        }
         var fingerprints = new AcceptedMechanicsAuthorityFingerprints(
             Definitions: HashText("resource-definitions-v1", definitionsJson!),
             Owners: owners.Fingerprint,
@@ -222,7 +288,12 @@ public partial class ValidationService
             sourcesResult.Catalog,
             commands,
             effectIdentity,
-            effectPlan);
+            effectPlan,
+            ownerCapacityDrafts: ownerComposition.CapacityDrafts,
+            terminalOwners: ownerComposition.TerminalOwners,
+            ownerCompanionAfterImages: ownerComposition.OwnerCompanionAfterImages,
+            ownerTransitions: ownerComposition.OwnerTransitions,
+            registeredSystemOutcomes: registeredSystemOutcomes);
         var input = new AcceptedMechanicsInput(
             manifest.SessionId,
             manifest.RequestId,
@@ -243,6 +314,191 @@ public partial class ValidationService
         if (result.Success)
             EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs);
         return issues;
+    }
+
+    private async Task<MortalResourceOwnerRoots> ReadMortalResourceOwnerRootsAsync(
+        ValidationPendingTurnSnapshotManifest? manifest,
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease = null) =>
+        new(
+            await ReadMortalResourceOwnerRootAsync(
+                "game_state/npcs/npc_core.json",
+                "NPCsInScene",
+                manifest,
+                issues,
+                writeLease),
+            await ReadMortalResourceOwnerRootAsync(
+                EffectCarrierCatalog.EnemiesPath,
+                "enemiesData",
+                manifest,
+                issues,
+                writeLease),
+            await ReadMortalResourceOwnerRootAsync(
+                EffectCarrierCatalog.AlliesPath,
+                "alliesData",
+                manifest,
+                issues,
+                writeLease),
+            await ReadMortalResourceOwnerRootAsync(
+                StorageTransportMoveService.VehiclesPath,
+                "vehicles",
+                manifest,
+                issues,
+                writeLease));
+
+    private async Task<AfterlifeResourceOwnerRoots> ReadAfterlifeResourceOwnerRootsAsync(
+        ValidationPendingTurnSnapshotManifest? manifest,
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease = null) =>
+        new(
+            await ReadAfterlifeResourceOwnerRootAsync(
+                AfterlifeEntityProfileState.StatePath,
+                AfterlifeEntityProfileState.CreateDefaultRoot,
+                manifest,
+                issues,
+                writeLease),
+            await ReadAfterlifeResourceOwnerRootAsync(
+                AfterlifeSpiritualConflictState.StatePath,
+                AfterlifeSpiritualConflictState.CreateDefaultRoot,
+                manifest,
+                issues,
+                writeLease),
+            await ReadAfterlifeResourceOwnerRootAsync(
+                "game_state/meta/soul_state.json",
+                static () => new JsonObject(),
+                manifest,
+                issues,
+                writeLease),
+            await ReadAfterlifeResourceOwnerRootAsync(
+                ShiningAbodeState.StatePath,
+                ShiningAbodeState.CreateDefaultState,
+                manifest,
+                issues,
+                writeLease),
+            await ReadAfterlifeResourceOwnerRootAsync(
+                "game_state/meta/guardians.json",
+                static () => new JsonObject(),
+                manifest,
+                issues,
+                writeLease));
+
+    private async Task<AfterlifeResourceOwnerRoots>
+        ReadAcceptedAfterlifeResourceOwnerRootsAsync(
+            ValidationPendingTurnSnapshotManifest manifest,
+            AfterlifeResourceOwnerRoots preTurn,
+            List<ValidationIssue> issues)
+    {
+        var current = await ReadAfterlifeResourceOwnerRootsAsync(
+            manifest: null,
+            issues);
+        var profiles = AfterlifeEntityProfileState.ProjectCanonicalRoot(
+            current.Profiles,
+            preTurn.Profiles);
+        var conflict = current.SpiritualConflict;
+        if (conflict[AfterlifeSpiritualConflictState.ResponseField] is JsonObject update)
+        {
+            conflict = AfterlifeSpiritualConflictState.ApplyUpdate(
+                preTurn.SpiritualConflict,
+                update);
+        }
+        else
+        {
+            conflict.Remove(AfterlifeSpiritualConflictState.ResponseField);
+        }
+
+        return new AfterlifeResourceOwnerRoots(
+            profiles,
+            conflict,
+            current.SoulState,
+            current.ShiningAbode,
+            current.Guardians);
+    }
+
+    private async Task<JsonObject> ReadAfterlifeResourceOwnerRootAsync(
+        string path,
+        Func<JsonObject> missingFactory,
+        ValidationPendingTurnSnapshotManifest? manifest,
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease)
+    {
+        var json = manifest == null
+            ? writeLease == null
+                ? await _fs.ReadFileAsync(path)
+                : await _fs.ReadFileAsync(writeLease, path)
+            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path);
+        if (json == null)
+            return missingFactory();
+        if (TryParseStrictResourceObject(json, out var root))
+            return root;
+
+        issues.Add(ResourceIssue(
+            path,
+            "resource_owner_afterlife_root_invalid",
+            "strict object root or proven pristine absence",
+            "malformed or non-object afterlife owner root"));
+        return missingFactory();
+    }
+
+    private async Task<JsonObject> ReadMortalResourceOwnerRootAsync(
+        string path,
+        string canonicalCollection,
+        ValidationPendingTurnSnapshotManifest? manifest,
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
+    {
+        var json = manifest == null
+            ? writeLease == null
+                ? await _fs.ReadFileAsync(path)
+                : await _fs.ReadFileAsync(writeLease, path)
+            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path);
+        if (json == null)
+            return new JsonObject { [canonicalCollection] = new JsonArray() };
+        if (TryParseStrictResourceObject(json, out var root))
+            return root;
+
+        issues.Add(ResourceIssue(
+            path,
+            "resource_owner_root_invalid",
+            "strict object root or proven pristine absence",
+            "malformed or non-object owner root"));
+        return new JsonObject { [canonicalCollection] = new JsonArray() };
+    }
+
+    private static IReadOnlyDictionary<ResourceOwnerKind, IReadOnlyList<string>>
+        BuildSameTurnResourceOwnerCapabilities(ResourceCommandCompositionResult commands)
+    {
+        var capabilities = new Dictionary<ResourceOwnerKind, HashSet<string>>();
+        foreach (var creation in commands.DefinitionCreations)
+        {
+            if (creation.Definition["resourceKey"] is not JsonValue keyNode ||
+                !keyNode.TryGetValue<string>(out var resourceKey) ||
+                !ResourceMaterializationContract.IsExactIdentifier(resourceKey) ||
+                creation.Definition["allowedOwnerKinds"] is not JsonArray kinds)
+            {
+                continue;
+            }
+
+            foreach (var kindNode in kinds.OfType<JsonValue>())
+            {
+                if (!kindNode.TryGetValue<string>(out var token) ||
+                    !ResourceDefinitionCatalog.TryParseOwnerKind(token, out var ownerKind))
+                {
+                    continue;
+                }
+                if (!capabilities.TryGetValue(ownerKind, out var ownerCapabilities))
+                {
+                    ownerCapabilities = new HashSet<string>(StringComparer.Ordinal);
+                    capabilities.Add(ownerKind, ownerCapabilities);
+                }
+                ownerCapabilities.Add(resourceKey);
+            }
+        }
+
+        return capabilities.ToDictionary(
+            static pair => pair.Key,
+            static pair => (IReadOnlyList<string>)pair.Value
+                .OrderBy(static value => value, StringComparer.Ordinal)
+                .ToArray());
     }
 
     public async Task<IReadOnlyList<ValidationIssue>>
@@ -313,12 +569,38 @@ public partial class ValidationService
         if (state.Ledger != null && history.History != null)
         {
             issues.AddRange(history.History.ValidateStateAgreement(state.Ledger));
-            var owners = ResourceOwnerAuthority.CreateCurrentPlayerAuthority(
-                definitions.Catalog);
-            issues.AddRange(owners.Issues);
-            issues.AddRange(owners.ValidateCanonicalAgreement(
-                state.Ledger,
-                history.History));
+            var itemCatalog = await LoadMortalItemCatalogAsync(
+                writeLease,
+                includeNpcInventoryCommands: false,
+                issues);
+            AddCatalogIssues(itemCatalog.Catalog, issues);
+            var ownerRoots = await ReadMortalResourceOwnerRootsAsync(
+                manifest: null,
+                issues,
+                writeLease);
+            var mortalOwnerComposition = MortalResourceOwnerComposer.ComposeCanonical(
+                definitions.Catalog,
+                ownerRoots,
+                itemCatalog.Catalog);
+            var afterlifeRoots = await ReadAfterlifeResourceOwnerRootsAsync(
+                manifest: null,
+                issues,
+                writeLease);
+            var afterlifeOwnerComposition = AfterlifeResourceOwnerComposer.Compose(
+                new AfterlifeResourceOwnerCompositionInput(
+                    definitions.Catalog,
+                    afterlifeRoots,
+                    afterlifeRoots));
+            var ownerComposition = ResourceOwnerComposition.Combine(
+                mortalOwnerComposition,
+                afterlifeOwnerComposition);
+            issues.AddRange(ownerComposition.Issues);
+            if (ownerComposition.Authority != null)
+            {
+                issues.AddRange(ownerComposition.Authority.ValidateCanonicalAgreement(
+                    state.Ledger,
+                    history.History));
+            }
         }
         var commandExists = writeLease == null
             ? _fs.FileExists(ResourceMaterializationContract.CommandPath)
@@ -385,6 +667,226 @@ public partial class ValidationService
         }
         return result;
     }
+
+    private async Task<IReadOnlyList<IResourceRegisteredSystemOutcomeDraft>>
+        ComposeRegisteredResourceOutcomesAsync(
+            ValidationPendingTurnSnapshotManifest manifest,
+            AfterlifeResourceOwnerRoots preTurnAfterlifeOwners,
+            AfterlifeResourceOwnerRoots acceptedAfterlifeOwners,
+            ResourceOwnerCompositionResult ownerComposition,
+            ResourceStateLedger state,
+            List<ValidationIssue> issues)
+    {
+        var outcomes = new List<IResourceRegisteredSystemOutcomeDraft>();
+        var owners = ownerComposition.Authority!;
+        var conflictBuild = AfterlifeSpiritualConflictResourceOutcome.TryCreate(
+            manifest.TurnNumber,
+            preTurnAfterlifeOwners.SpiritualConflict,
+            acceptedAfterlifeOwners.SpiritualConflict,
+            owners,
+            state);
+        issues.AddRange(conflictBuild.Issues);
+        if (conflictBuild.Draft != null)
+            outcomes.Add(conflictBuild.Draft);
+
+        var acceptedShining = ownerComposition.OwnerCompanionAfterImages.TryGetValue(
+            ShiningAbodeState.StatePath,
+            out var shiningAfterImage)
+            ? shiningAfterImage
+            : acceptedAfterlifeOwners.ShiningAbode;
+        var shiningBytes = await _fs.ReadFileBytesAsync(ShiningAbodeState.StatePath);
+        if (shiningBytes != null)
+        {
+            var shiningBuild = AfterlifeShiningGachaResourceOutcome.TryCreate(
+                manifest.TurnNumber,
+                preTurnAfterlifeOwners.ShiningAbode,
+                acceptedShining,
+                owners,
+                state,
+                ownerComposition.CapacityDrafts,
+                new CanonicalBeforeImage(true, shiningBytes));
+            issues.AddRange(shiningBuild.Issues);
+            if (shiningBuild.Draft != null)
+                outcomes.Add(shiningBuild.Draft);
+        }
+
+        const string guardiansPath = "game_state/meta/guardians.json";
+        var guardiansBytes = await _fs.ReadFileBytesAsync(guardiansPath);
+        if (guardiansBytes != null)
+        {
+            var guardianBuild = AfterlifeGuardianGachaResourceOutcome
+                .TryCreate(
+                    manifest.TurnNumber,
+                    manifest.RequestTimestamp,
+                    preTurnAfterlifeOwners.Guardians,
+                    acceptedAfterlifeOwners.Guardians,
+                    owners,
+                    state,
+                    ownerComposition.CapacityDrafts,
+                    new CanonicalBeforeImage(true, guardiansBytes));
+            issues.AddRange(guardianBuild.Issues);
+            if (guardianBuild.Draft != null)
+                outcomes.Add(guardianBuild.Draft);
+        }
+
+        const string soulPath = "game_state/meta/soul_state.json";
+        const string worldEventsPath = "game_state/world/world_events.json";
+        var currentSoulBytes = await _fs.ReadFileBytesAsync(soulPath);
+        if (currentSoulBytes == null ||
+            !TryParseStrictResourceObject(DecodeResourceUtf8(currentSoulBytes), out var currentSoul))
+        {
+            return outcomes;
+        }
+
+        var preTurnSoulJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, soulPath);
+        var preTurnSoul = TryParseStrictResourceObject(preTurnSoulJson, out var parsedPreTurnSoul)
+            ? parsedPreTurnSoul
+            : null;
+        var lifeTransitionsJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
+        JsonObject normalizedSoul;
+        try
+        {
+            normalizedSoul = CanonicalStateNormalizer.BuildNormalizedSoulStateRoot(
+                currentSoul,
+                preTurnSoul,
+                manifest.TurnNumber,
+                CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEnd(
+                    lifeTransitionsJson,
+                    preTurnSoul,
+                    currentSoul),
+                enforceStrictCanonicalRoots: true);
+        }
+        catch (InvalidOperationException exception)
+        {
+            issues.Add(ResourceIssue(
+                soulPath,
+                "shining_survival_soul_composition_invalid",
+                "one valid normalized soul-state authority",
+                exception.Message));
+            return outcomes;
+        }
+
+        var currentWorldBytes = await _fs.ReadFileBytesAsync(worldEventsPath);
+        if (currentWorldBytes == null ||
+            !TryParseStrictResourceObject(
+                DecodeResourceUtf8(currentWorldBytes),
+                out var currentWorldEvents))
+        {
+            return outcomes;
+        }
+        var preTurnWorldEventsJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+            manifest,
+            worldEventsPath);
+        JsonNode? preTurnWorldEvents = null;
+        if (preTurnWorldEventsJson != null)
+        {
+            try
+            {
+                preTurnWorldEvents = JsonNode.Parse(preTurnWorldEventsJson);
+            }
+            catch (JsonException)
+            {
+                issues.Add(ResourceIssue(
+                    worldEventsPath,
+                    "shining_survival_world_snapshot_invalid",
+                    "validated JSON world-event snapshot",
+                    "malformed snapshot root"));
+                return outcomes;
+            }
+        }
+
+        var build = ShiningBlessingEffectState.TryCreateSurvivalResourceOutcomeDraft(
+            manifest.TurnNumber,
+            normalizedSoul,
+            currentWorldEvents,
+            preTurnWorldEvents,
+            CanonicalStateNormalizer.CreateExpectedSoulNormalizationBeforeImage(
+                currentSoulBytes,
+                currentSoul,
+                normalizedSoul),
+            new CanonicalBeforeImage(true, currentWorldBytes),
+            DateTime.UtcNow.ToString("o"));
+        issues.AddRange(build.Issues);
+        if (build.Draft != null)
+            outcomes.Add(build.Draft);
+        return outcomes;
+    }
+
+    private static IEnumerable<ResourceMutationSourceExport>
+        BuildItemResourceSourceExports(ResourceOwnerAuthority owners)
+    {
+        foreach (var owner in owners.Entries.Values
+                     .Where(static owner =>
+                         owner.Key.OwnerKind == ResourceOwnerKind.Item &&
+                         owner.Lifecycle == ResourceOwnerLifecycle.Active)
+                     .OrderBy(static owner => owner.Key.Realm, StringComparer.Ordinal)
+                     .ThenBy(static owner => owner.Key.ResourceOwnerId, StringComparer.Ordinal))
+        {
+            yield return new ResourceMutationSourceExport(
+                "local_item_cost",
+                owner.Key.ResourceOwnerId,
+                owner.AuthorityFingerprint,
+                ResourceMutationSourceState.Active,
+                owner.SameTurn,
+                owner.Key);
+            yield return new ResourceMutationSourceExport(
+                "local_item_outcome",
+                owner.Key.ResourceOwnerId,
+                owner.AuthorityFingerprint,
+                ResourceMutationSourceState.Active,
+                owner.SameTurn,
+                owner.Key);
+        }
+    }
+
+    private static string DecodeResourceUtf8(byte[] bytes)
+    {
+        var preamble = Encoding.UTF8.GetPreamble();
+        var offset = bytes.AsSpan().StartsWith(preamble) ? preamble.Length : 0;
+        return Encoding.UTF8.GetString(bytes, offset, bytes.Length - offset);
+    }
+
+    private static JsonArray BuildOwnerCapacityDraftInput(
+        IEnumerable<ResourceOwnerCapacityDraft> drafts) =>
+        new(drafts
+            .OrderBy(static draft => draft.Coordinate.Realm, StringComparer.Ordinal)
+            .ThenBy(static draft => draft.Coordinate.OwnerKind)
+            .ThenBy(static draft => draft.Coordinate.ResourceOwnerId, StringComparer.Ordinal)
+            .ThenBy(static draft => draft.Coordinate.ResourceKey, StringComparer.Ordinal)
+            .Select(draft =>
+            {
+                var capacity = draft.ResolvedCapacity.Capacity!;
+                return (JsonNode)new JsonObject
+                {
+                    ["realm"] = draft.Coordinate.Realm,
+                    ["ownerKind"] = ResourceDefinitionCatalog.GetOwnerKindToken(
+                        draft.Coordinate.OwnerKind),
+                    ["resourceOwnerId"] = draft.Coordinate.ResourceOwnerId,
+                    ["resourceKey"] = draft.Coordinate.ResourceKey,
+                    ["acceptedMaximum"] = draft.AcceptedMaximum,
+                    ["capacityFingerprint"] = capacity.Binding.AuthorityFingerprint,
+                    ["initializationFingerprint"] =
+                        capacity.Initialization!.AuthorityFingerprint,
+                    ["sourceKind"] = draft.SourceEvidence.SourceKind,
+                    ["sourceId"] = draft.SourceEvidence.SourceId,
+                    ["sourceFingerprint"] = draft.SourceEvidence.AuthorityFingerprint
+                };
+            })
+            .ToArray());
+
+    private static JsonArray BuildTerminalOwnerInput(
+        IEnumerable<ResourceOwnerKey> owners) =>
+        new(owners
+            .OrderBy(static owner => owner.Realm, StringComparer.Ordinal)
+            .ThenBy(static owner => owner.OwnerKind)
+            .ThenBy(static owner => owner.ResourceOwnerId, StringComparer.Ordinal)
+            .Select(owner => (JsonNode)new JsonObject
+            {
+                ["realm"] = owner.Realm,
+                ["ownerKind"] = ResourceDefinitionCatalog.GetOwnerKindToken(owner.OwnerKind),
+                ["resourceOwnerId"] = owner.ResourceOwnerId
+            })
+            .ToArray());
 
     private static bool TryParseResourceTurnRequest(
         string? json,

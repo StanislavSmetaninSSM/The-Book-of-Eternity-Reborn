@@ -25,7 +25,11 @@ internal sealed record ResourceOwnerExport(
     string? OwnerRef,
     string? BoundNpcId,
     IReadOnlySet<string> ResourceCapabilities,
-    string AuthorityFingerprint);
+    string AuthorityFingerprint)
+{
+    internal IReadOnlySet<string> RealmIndependentResourceCapabilities { get; init; } =
+        new ResourceReadOnlySet<string>(Array.Empty<string>(), StringComparer.Ordinal);
+}
 
 internal sealed record ResourceOwnerAuthorityInput(
     IReadOnlyList<ResourceOwnerExport> PreTurnOwners,
@@ -46,7 +50,16 @@ internal sealed record ResourceOwnerAuthorityEntry(
     string? SameTurnRef,
     string? BoundNpcId,
     IReadOnlySet<string> ResourceCapabilities,
-    string AuthorityFingerprint);
+    string AuthorityFingerprint)
+{
+    internal IReadOnlySet<string> RealmIndependentResourceCapabilities { get; init; } =
+        new ResourceReadOnlySet<string>(Array.Empty<string>(), StringComparer.Ordinal);
+
+    internal bool IsResourceCapabilityActive(string resourceKey) =>
+        Lifecycle != ResourceOwnerLifecycle.Terminal &&
+        (Lifecycle == ResourceOwnerLifecycle.Active ||
+         RealmIndependentResourceCapabilities.Contains(resourceKey));
+}
 
 internal sealed record ResourceOwnerAuthorityResolution(
     ResourceOwnerAuthorityEntry? Entry,
@@ -108,6 +121,68 @@ internal sealed class ResourceOwnerAuthority
     internal IReadOnlyList<ValidationIssue> Issues { get; }
 
     internal string Fingerprint { get; }
+
+    internal ResourceOwnerAuthorityInput ExportInput()
+    {
+        var preTurn = new List<ResourceOwnerExport>();
+        var sameTurn = new List<ResourceOwnerExport>();
+        foreach (var entry in _entries.Values.OrderBy(
+                     static value => value.Key.Realm,
+                     StringComparer.Ordinal).ThenBy(
+                     static value => value.Key.OwnerKind).ThenBy(
+                     static value => value.Key.ResourceOwnerId,
+                     StringComparer.Ordinal))
+        {
+            var export = new ResourceOwnerExport(
+                entry.Key,
+                entry.Lifecycle,
+                entry.SameTurn,
+                entry.SameTurnRef,
+                entry.BoundNpcId,
+                new HashSet<string>(entry.ResourceCapabilities, StringComparer.Ordinal),
+                entry.AuthorityFingerprint)
+            {
+                RealmIndependentResourceCapabilities = new HashSet<string>(
+                    entry.RealmIndependentResourceCapabilities,
+                    StringComparer.Ordinal)
+            };
+            (entry.SameTurn ? sameTurn : preTurn).Add(export);
+        }
+
+        return new ResourceOwnerAuthorityInput(
+            preTurn,
+            sameTurn,
+            _historicalOwners.OrderBy(
+                    static value => value.Realm,
+                    StringComparer.Ordinal)
+                .ThenBy(static value => value.OwnerKind)
+                .ThenBy(
+                    static value => value.ResourceOwnerId,
+                    StringComparer.Ordinal)
+                .ToArray());
+    }
+
+    internal static ResourceOwnerAuthority Combine(
+        params ResourceOwnerAuthority[] authorities)
+    {
+        ArgumentNullException.ThrowIfNull(authorities);
+        var preTurn = new List<ResourceOwnerExport>();
+        var sameTurn = new List<ResourceOwnerExport>();
+        var historical = new List<ResourceOwnerKey>();
+        foreach (var authority in authorities)
+        {
+            ArgumentNullException.ThrowIfNull(authority);
+            var input = authority.ExportInput();
+            preTurn.AddRange(input.PreTurnOwners);
+            sameTurn.AddRange(input.SameTurnOwners);
+            historical.AddRange(input.HistoricalOwners);
+        }
+
+        return Build(new ResourceOwnerAuthorityInput(
+            preTurn,
+            sameTurn,
+            historical));
+    }
 
     internal static ResourceOwnerAuthority Build(ResourceOwnerAuthorityInput input)
     {
@@ -286,16 +361,7 @@ internal sealed class ResourceOwnerAuthority
             }
         }
 
-        if (entry.Lifecycle != ResourceOwnerLifecycle.Active)
-        {
-            Add(
-                issues,
-                "owner",
-                "resource_owner_inactive",
-                "active accepted owner",
-                LifecycleToken(entry.Lifecycle));
-        }
-        else if (!entry.ResourceCapabilities.Contains(request.ResourceKey))
+        if (!entry.ResourceCapabilities.Contains(request.ResourceKey))
         {
             Add(
                 issues,
@@ -303,6 +369,15 @@ internal sealed class ResourceOwnerAuthority
                 "resource_owner_capability_missing",
                 "resource key explicitly exported by the owner",
                 request.ResourceKey);
+        }
+        else if (!entry.IsResourceCapabilityActive(request.ResourceKey))
+        {
+            Add(
+                issues,
+                "owner",
+                "resource_owner_inactive",
+                "active accepted owner",
+                LifecycleToken(entry.Lifecycle));
         }
 
         return issues.Count == 0
@@ -312,7 +387,8 @@ internal sealed class ResourceOwnerAuthority
 
     internal IReadOnlyList<ValidationIssue> ValidateCanonicalAgreement(
         ResourceStateLedger state,
-        ResourceHistoryState history)
+        ResourceHistoryState history,
+        IReadOnlyCollection<ResourceOwnerKey>? pendingTerminalOwners = null)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(history);
@@ -328,6 +404,24 @@ internal sealed class ResourceOwnerAuthority
             return issues;
         }
 
+        var allowedTerminalOwners = new HashSet<ResourceOwnerKey>(
+            pendingTerminalOwners ?? Array.Empty<ResourceOwnerKey>(),
+            ResourceOwnerKeyComparer.Instance);
+        foreach (var terminal in allowedTerminalOwners)
+        {
+            if (!_historicalOwners.Contains(terminal))
+            {
+                Add(
+                    issues,
+                    "resourceOwners.pendingTerminalOwners",
+                    "resource_owner_terminal_authority_invalid",
+                    "exact owner made historical by this accepted owner lifecycle",
+                    $"{terminal.Realm}/{OwnerKindToken(terminal.OwnerKind)}/{terminal.ResourceOwnerId}");
+            }
+        }
+        if (issues.Count != 0)
+            return issues;
+
         var liveCoordinates = new HashSet<ResourceCoordinate>(
             state.Entries.Select(static entry => entry.Coordinate),
             ResourceCoordinateComparer.Instance);
@@ -336,8 +430,10 @@ internal sealed class ResourceOwnerAuthority
         {
             ValidateCanonicalCoordinate(
                 entry.Coordinate,
-                requireLiveOwner: true,
+                true,
+                entry.State,
                 $"resourceState.entries[{index++}]",
+                allowedTerminalOwners,
                 issues);
         }
 
@@ -350,8 +446,10 @@ internal sealed class ResourceOwnerAuthority
             {
                 ValidateCanonicalCoordinate(
                     coordinate,
-                    requireLiveOwner: false,
+                    false,
+                    null,
                     $"resourceHistory.coordinates[{index}]",
+                    allowedTerminalOwners,
                     issues);
             }
             index++;
@@ -362,7 +460,9 @@ internal sealed class ResourceOwnerAuthority
     private void ValidateCanonicalCoordinate(
         ResourceCoordinate coordinate,
         bool requireLiveOwner,
+        ResourceLifecycleState? liveState,
         string path,
+        IReadOnlySet<ResourceOwnerKey> pendingTerminalOwners,
         List<ValidationIssue> issues)
     {
         var key = new ResourceOwnerKey(
@@ -380,6 +480,22 @@ internal sealed class ResourceOwnerAuthority
                     "active or suspended exact owner for every live resource coordinate",
                     DescribeCoordinate(coordinate));
             }
+            else if (requireLiveOwner &&
+                     liveState != (entry.IsResourceCapabilityActive(coordinate.ResourceKey)
+                         ? ResourceLifecycleState.Active
+                         : ResourceLifecycleState.Suspended))
+            {
+                var expectsActive = entry.IsResourceCapabilityActive(
+                    coordinate.ResourceKey);
+                Add(
+                    issues,
+                    path + ".state",
+                    "resource_owner_lifecycle_state_mismatch",
+                    expectsActive
+                        ? "active resource state for active owner or sealed realm-independent capability"
+                        : "suspended resource state for suspended realm-bound capability",
+                    liveState?.ToString() ?? "missing");
+            }
             if (!entry.ResourceCapabilities.Contains(coordinate.ResourceKey))
             {
                 Add(
@@ -389,6 +505,13 @@ internal sealed class ResourceOwnerAuthority
                     "resource key explicitly exported by the exact owner",
                     coordinate.ResourceKey);
             }
+            return;
+        }
+
+        if (requireLiveOwner &&
+            _historicalOwners.Contains(key) &&
+            pendingTerminalOwners.Contains(key))
+        {
             return;
         }
 
@@ -425,6 +548,9 @@ internal sealed class ResourceOwnerAuthority
         {
             ResourceCapabilities = new ResourceReadOnlySet<string>(
                 entry.ResourceCapabilities,
+                StringComparer.Ordinal),
+            RealmIndependentResourceCapabilities = new ResourceReadOnlySet<string>(
+                entry.RealmIndependentResourceCapabilities,
                 StringComparer.Ordinal)
         };
 
@@ -453,6 +579,11 @@ internal sealed class ResourceOwnerAuthority
                         .OrderBy(static capability => capability, StringComparer.Ordinal)
                         .Select(static capability => (JsonNode)capability)
                         .ToArray()),
+                    ["realmIndependentCapabilities"] = new JsonArray(
+                        entry.RealmIndependentResourceCapabilities
+                            .OrderBy(static capability => capability, StringComparer.Ordinal)
+                            .Select(static capability => (JsonNode)capability)
+                            .ToArray()),
                     ["authorityFingerprint"] = entry.AuthorityFingerprint
                 }).ToArray()),
             ["refs"] = new JsonArray(refs
@@ -650,6 +781,45 @@ internal sealed class ResourceOwnerAuthority
                 }
             }
 
+            var realmIndependentCapabilities = new HashSet<string>(StringComparer.Ordinal);
+            var realmIndependentAliases = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var capability in export.RealmIndependentResourceCapabilities)
+            {
+                if (!ResourceMaterializationContract.IsExactIdentifier(capability))
+                {
+                    Add(
+                        Issues,
+                        path + ".realmIndependentCapabilities",
+                        "resource_owner_realm_independent_capability_invalid",
+                        "exact resource key",
+                        capability ?? "null");
+                    valid = false;
+                    continue;
+                }
+                var alias = ResourceMaterializationContract.BuildConfusableKey(capability);
+                if (!realmIndependentCapabilities.Add(capability) ||
+                    !realmIndependentAliases.Add(alias))
+                {
+                    Add(
+                        Issues,
+                        path + ".realmIndependentCapabilities",
+                        "resource_owner_realm_independent_capability_confusable",
+                        "exact/confusable-unique resource capability",
+                        capability);
+                    valid = false;
+                }
+                if (!capabilities.Contains(capability))
+                {
+                    Add(
+                        Issues,
+                        path + ".realmIndependentCapabilities",
+                        "resource_owner_realm_independent_capability_unbound",
+                        "realm-independent policy only for an explicitly exported capability",
+                        capability);
+                    valid = false;
+                }
+            }
+
             if (!valid)
                 return;
 
@@ -660,7 +830,12 @@ internal sealed class ResourceOwnerAuthority
                 export.OwnerRef,
                 export.BoundNpcId,
                 new ResourceReadOnlySet<string>(capabilities, StringComparer.Ordinal),
-                export.AuthorityFingerprint);
+                export.AuthorityFingerprint)
+            {
+                RealmIndependentResourceCapabilities = new ResourceReadOnlySet<string>(
+                    realmIndependentCapabilities,
+                    StringComparer.Ordinal)
+            };
             var ownerAlias = OwnerAlias(export.Key);
             if (!OwnerAliases.TryGetValue(ownerAlias, out var aliases))
             {

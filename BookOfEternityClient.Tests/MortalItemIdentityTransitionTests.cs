@@ -475,6 +475,19 @@ public sealed partial class MortalItemIdentityTransitionTests
             var item = MortalItemTestFixture.CreateCanonicalRoot("itm_move");
             var allItems = new[] { item }.Concat(additionalItems).ToArray();
             var context = new TransitionContext(rootPath, fs, item);
+            var resourceBootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+            Assert.True(
+                resourceBootstrap.IsValid,
+                string.Join(Environment.NewLine, resourceBootstrap.Issues));
+            await context.WriteRawAsync(
+                ResourceMaterializationContract.DefinitionsPath,
+                resourceBootstrap.Definitions!.ToCanonicalJson());
+            await context.WriteRawAsync(
+                ResourceMaterializationContract.StatePath,
+                resourceBootstrap.State!.ToCanonicalJson());
+            await context.WriteRawAsync(
+                ResourceMaterializationContract.HistoryPath,
+                resourceBootstrap.History!.ToCanonicalJson());
             await context.WriteAsync(
                 StorageTransportMoveService.InventoryPath,
                 new JsonObject
@@ -538,6 +551,9 @@ public sealed partial class MortalItemIdentityTransitionTests
                     AuthorityKind: "storage_move",
                     AuthorityId: "storage_move_43"));
         }
+
+        private Task WriteRawAsync(string path, string json) =>
+            FileSystem.WriteFileAtomicAsync(path, json);
 
         internal async Task AddOffscreenItemAsync(
             JsonObject item,

@@ -1009,10 +1009,14 @@ public partial class ValidationService
             return false;
         }
 
-        if (!TryReadRequiredGenericSharedStrictNumber(gachaSystem, "chargesPerReturn") ||
-            !TryReadRequiredGenericSharedStrictNumber(gachaSystem, "chargesUsedThisReturn"))
+        if (!gachaSystem.TryGetPropertyValue("currentReturnCycleId", out var returnCycleNode) ||
+            returnCycleNode is not JsonValue returnCycleValue ||
+            !returnCycleValue.TryGetValue<string>(out var returnCycleId) ||
+            returnCycleId is null ||
+            (!string.IsNullOrEmpty(returnCycleId) &&
+             !ResourceMaterializationContract.IsExactIdentifier(returnCycleId)))
         {
-            failureDescription = $"{guardianContext}.gachaSystem missing required shared strict fields";
+            failureDescription = $"{guardianContext}.gachaSystem.currentReturnCycleId missing or invalid for shared strict guardian baseline";
             return false;
         }
 

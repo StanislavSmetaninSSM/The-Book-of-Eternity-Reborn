@@ -30,15 +30,6 @@ public class GameResponse
     [JsonPropertyName("playerStatus")]
     public PlayerStatus? PlayerStatus { get; set; }
 
-    [JsonPropertyName("currentPoiseChange")]
-    public int? CurrentPoiseChange { get; set; }
-
-    [JsonPropertyName("currentEnergyChange")]
-    public int? CurrentEnergyChange { get; set; }
-
-    [JsonPropertyName("currentHealthChange")]
-    public int? CurrentHealthChange { get; set; }
-
     [JsonPropertyName("experienceGained")]
     public int? ExperienceGained { get; set; }
 
@@ -146,9 +137,6 @@ public class GameResponse
     // ═══════════════════════════════════════════════
     [JsonPropertyName("UpdateInventory")]
     public JsonElement[]? UpdateInventory { get; set; }
-
-    [JsonPropertyName("inventoryItemsResources")]
-    public JsonElement[]? InventoryItemsResources { get; set; }
 
     [JsonPropertyName("updateItemTextContents")]
     public JsonElement[]? UpdateItemTextContents { get; set; }
@@ -296,9 +284,6 @@ public class GameResponse
 
     [JsonPropertyName("NPCEquipmentChanges")]
     public JsonElement[]? NPCEquipmentChanges { get; set; }
-
-    [JsonPropertyName("NPCInventoryResourcesChanges")]
-    public JsonElement[]? NPCInventoryResourcesChanges { get; set; }
 
     [JsonPropertyName("NPCMaskAdds")]
     public JsonElement[]? NPCMaskAdds { get; set; }
@@ -573,15 +558,6 @@ public class GameResponse
 
 public class PlayerStatus
 {
-    [JsonPropertyName("healthPercentage")]
-    public string? HealthPercentage { get; set; }
-
-    [JsonPropertyName("energyPercentage")]
-    public string? EnergyPercentage { get; set; }
-
-    [JsonPropertyName("poisePercentage")]
-    public string? PoisePercentage { get; set; }
-
     [JsonPropertyName("activeConditions")]
     public string[]? ActiveConditions { get; set; }
 

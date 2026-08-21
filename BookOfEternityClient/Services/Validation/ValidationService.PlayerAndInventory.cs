@@ -86,16 +86,19 @@ public partial class ValidationService
                 "UpdateInventory", "items", "equipmentChanges", "equipment", "equippedItems", "money", "resources",
                 "totalWeight", "maxWeight", "isOverloaded"
             }, issues);
-        await ValidateFlexibleStateFile("game_state/inventory/item_resources.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "inventoryItemsResources", "entries"
-            }, issues, ValidateInventoryItemResourcesStateFile);
-        await ValidateStrictTopLevelObjectFileAsync("game_state/inventory/item_resources.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "entries"
-            }, issues);
+        const string legacyItemResourcePath = "game_state/inventory/item_resources.json";
+        if (_fs.FileExists(legacyItemResourcePath))
+        {
+            issues.Add(new ValidationIssue(
+                legacyItemResourcePath,
+                IssueSeverity.Error,
+                "Legacy item resource sidecar запрещён; все ресурсы предметов принадлежат единому resource ledger.",
+                code: "resource_legacy_item_authority_forbidden",
+                section: "ResourceMaterialization",
+                expected: $"{ResourceMaterializationContract.DefinitionsPath} + {ResourceMaterializationContract.StatePath} + {ResourceMaterializationContract.HistoryPath}",
+                actual: legacyItemResourcePath,
+                repairHint: "Удаление или миграция старого sidecar автоматически не выполняется. Начни новую техническую сессию с unified resource roots."));
+        }
         await ValidateFlexibleStateFile("game_state/inventory/item_text_updates.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -3412,11 +3415,28 @@ public partial class ValidationService
 
             if (filePath.EndsWith("game_state/core/player_status.json", StringComparison.OrdinalIgnoreCase))
             {
+                RejectLegacyPlayerResourceFields(
+                    doc.RootElement,
+                    filePath,
+                    issues,
+                    "healthPercentage",
+                    "energyPercentage",
+                    "poisePercentage");
                 await ValidateFileFields(filePath,
-                    new[] { "healthPercentage", "energyPercentage", "poisePercentage", "currentCondition", "money" }, issues);
-                ValidatePercentageField(doc.RootElement, "healthPercentage", issues);
-                ValidatePercentageField(doc.RootElement, "energyPercentage", issues);
-                ValidatePercentageField(doc.RootElement, "poisePercentage", issues);
+                    new[] { "currentCondition", "money" }, issues);
+                RequireString(doc.RootElement, filePath, issues, "currentCondition");
+                ValidateOptionalString(
+                    doc.RootElement,
+                    filePath,
+                    issues,
+                    "currentConditionDescription");
+                if (doc.RootElement.TryGetProperty("activeConditions", out var activeConditions))
+                {
+                    RequireArrayOfStrings(
+                        activeConditions,
+                        $"{filePath}.activeConditions",
+                        issues);
+                }
                 if (doc.RootElement.TryGetProperty("money", out _))
                     ValidateNonNegativeNumberField(doc.RootElement, filePath, issues, "money");
                 return;
@@ -3447,10 +3467,14 @@ public partial class ValidationService
 
     private void ValidatePlayerContract(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        RejectLegacyPlayerResourceFields(
+            root,
+            contextPrefix,
+            issues,
+            "currentPoiseChange",
+            "currentEnergyChange",
+            "currentHealthChange");
         ValidatePlayerStatus(root, contextPrefix, issues);
-        ValidatePlayerChangeNumber(root, contextPrefix, issues, "currentPoiseChange");
-        ValidatePlayerChangeNumber(root, contextPrefix, issues, "currentEnergyChange");
-        ValidatePlayerChangeNumber(root, contextPrefix, issues, "currentHealthChange");
         ValidatePlayerChangeNumber(root, contextPrefix, issues, "experienceGained");
         ValidatePlayerChangeNumber(root, contextPrefix, issues, "moneyChange");
         ValidatePlayerStatArray(root, contextPrefix, issues, "statsIncreased");
@@ -3463,7 +3487,11 @@ public partial class ValidationService
         ValidatePlayerSkillMastery(root, contextPrefix, issues);
         ValidatePlayerInventoryCommands(root, contextPrefix, issues, "UpdateInventory");
         ValidatePlayerInventoryCommands(root, contextPrefix, issues, "items");
-        ValidatePlayerInventoryArray(root, contextPrefix, issues, "inventoryItemsResources");
+        RejectLegacyItemResourceAuthorityFields(
+            root,
+            contextPrefix,
+            issues,
+            "inventoryItemsResources");
         ValidateItemTextUpdateCommands(root, contextPrefix, issues);
         ValidateMoveInventoryItems(root, contextPrefix, issues);
         ValidateRemoveInventoryItems(root, contextPrefix, issues);
@@ -3504,14 +3532,70 @@ public partial class ValidationService
         if (!RequireObject(status, context, issues))
             return;
 
-        RequireString(status, context, issues, "healthPercentage");
-        RequireString(status, context, issues, "energyPercentage");
-        RequireString(status, context, issues, "poisePercentage");
+        RejectLegacyPlayerResourceFields(
+            status,
+            context,
+            issues,
+            "healthPercentage",
+            "energyPercentage",
+            "poisePercentage");
         RequireString(status, context, issues, "currentCondition");
         ValidateOptionalString(status, context, issues, "currentConditionDescription");
 
         if (status.TryGetProperty("activeConditions", out var activeConditions))
             RequireArrayOfStrings(activeConditions, $"{context}.activeConditions", issues);
+    }
+
+    private static void RejectLegacyPlayerResourceFields(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        params string[] fieldNames)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+            return;
+
+        foreach (var fieldName in fieldNames)
+        {
+            if (!root.TryGetProperty(fieldName, out _))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{fieldName}",
+                IssueSeverity.Error,
+                $"Legacy player resource field '{fieldName}' запрещён; здоровье, энергия и стойкость изменяются только через resourceChanges.",
+                code: "resource_legacy_player_gauge_forbidden",
+                section: "ResourceMaterialization",
+                expected: "resourceChanges[] against player_current",
+                actual: fieldName,
+                repairHint: "Удали legacy поле и вырази изменение через точную resourceChanges[] команду для player_current."));
+        }
+    }
+
+    private static void RejectLegacyItemResourceAuthorityFields(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        params string[] fieldNames)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+            return;
+
+        foreach (var fieldName in fieldNames)
+        {
+            if (!root.TryGetProperty(fieldName, out _))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{fieldName}",
+                IssueSeverity.Error,
+                $"Legacy item resource authority '{fieldName}' запрещён; используй только resourceChanges[].",
+                code: "resource_legacy_item_authority_forbidden",
+                section: "ResourceMaterialization",
+                expected: "resourceChanges[] with ownerKind=item and permanent itemId",
+                actual: fieldName,
+                repairHint: "Удали legacy поле и вырази изменение ресурса предмета через точную resourceChanges[] команду."));
+        }
     }
 
     private void ValidatePlayerChangeNumber(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
@@ -4501,7 +4585,6 @@ public partial class ValidationService
         RequireBooleanField(item, itemContext, issues, "isContainer");
         RequireBooleanField(item, itemContext, issues, "isConsumption");
         RequireBooleanField(item, itemContext, issues, "requiresTwoHands");
-        ValidateRequiredItemDurabilityField(item, itemContext, issues, "durability");
         ValidateOptionalString(item, itemContext, issues, "type");
         ValidateOptionalString(item, itemContext, issues, "group");
         ValidateOptionalNullableIntegerField(item, itemContext, issues, "capacity");
@@ -4627,23 +4710,6 @@ public partial class ValidationService
                 actual: quality,
                 repairHint: "Используй для quality только canonical item quality values из Block 10."));
         }
-    }
-
-    private void ValidateRequiredItemDurabilityField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
-    {
-        if (!root.TryGetProperty(propName, out _))
-        {
-            issues.Add(new ValidationIssue(
-                $"{contextPrefix}.{propName}",
-                IssueSeverity.Error,
-                $"Отсутствует обязательное поле: {propName}",
-                code: "item_missing_durability",
-                section: "Inventory",
-                repairHint: "Передай durability как percentage string, например 100%, по item contract."));
-            return;
-        }
-
-        ValidatePercentageStringField(root, contextPrefix, issues, propName, requirePositive: false);
     }
 
     private void ValidateNonNegativeNumericField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
@@ -5241,7 +5307,16 @@ public partial class ValidationService
                     ValidateRequiredItemQualityField(item, itemContext, issues, "quality");
                     break;
                 case "durability":
-                    ValidateRequiredItemDurabilityField(item, itemContext, issues, "durability");
+                case "maxDurability":
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.{prop.Name}",
+                        IssueSeverity.Error,
+                        "Item resource values belong only to the unified resource ledger.",
+                        code: "resource_owner_legacy_value_forbidden",
+                        section: section,
+                        expected: "field absent; use resourceChanges/resourceCapacityChanges",
+                        actual: prop.Value.ToString(),
+                        repairHint: "Удали durability/maxDurability; ресурс предмета изменяется только через общий resource command."));
                     break;
                 case "price":
                     ValidateNonNegativeIntegerField(item, itemContext, issues, "price", section);
@@ -5990,7 +6065,7 @@ public partial class ValidationService
 
     private static bool IsLikelyFullInventoryItemObject(JsonElement item)
     {
-        return HasRequiredNonEmptyStrings(item, "name", "description", "image_prompt", "quality", "durability") &&
+        return HasRequiredNonEmptyStrings(item, "name", "description", "image_prompt", "quality") &&
                item.TryGetProperty("contentsPath", out _) &&
                HasRequiredProperties(item, "price", "count", "weight", "volume", "isContainer", "isConsumption", "requiresTwoHands");
     }
@@ -6074,7 +6149,7 @@ public partial class ValidationService
                     section: "Inventory",
                     expected: "removedItemId + itemName + currentContentsPath only",
                     actual: string.Join(", ", unexpectedFields),
-                    repairHint: "Для частичного расхода или gameplay consumption меняй count/resource через UpdateInventory или inventoryItemsResources. removeInventoryItems используй только для discard полной стопки."));
+                    repairHint: "Для частичного расхода меняй count через UpdateInventory, а bounded resource — через resourceChanges. removeInventoryItems используй только для discard полной стопки."));
             }
         }
     }

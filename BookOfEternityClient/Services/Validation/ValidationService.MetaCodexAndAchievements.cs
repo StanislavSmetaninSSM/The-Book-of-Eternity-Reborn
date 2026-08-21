@@ -893,57 +893,95 @@ public partial class ValidationService
                 continue;
 
             var hasVehicleId = item.TryGetProperty("vehicleId", out var vehicleIdValue);
-            var vehicleIdIsNull = false;
-            if (!hasVehicleId)
-            {
-                issues.Add(new ValidationIssue(
-                    $"{itemContext}.vehicleId",
-                    IssueSeverity.Error,
-                    "Vehicle object должен содержать обязательное поле vehicleId",
-                    code: "vehicle_missing_vehicle_id",
-                    section: "Vehicles",
-                    expected: requireCanonicalStoredShape ? "non-empty string vehicleId" : "string vehicleId or null for brand-new vehicle creation",
-                    actual: "missing",
-                    repairHint: requireCanonicalStoredShape
-                        ? "Сохраняй canonical vehicles[] только с непустым string vehicleId."
-                        : "Для UpdateVehicles передай существующий string vehicleId или null для brand-new vehicle object по Block 10."));
-                continue;
-            }
+            var hasVehicleRef = item.TryGetProperty("vehicleRef", out var vehicleRefValue);
+            var vehicleId = hasVehicleId &&
+                            vehicleIdValue.ValueKind == JsonValueKind.String
+                ? vehicleIdValue.GetString()
+                : null;
+            var isNewVehicleCommand = !requireCanonicalStoredShape &&
+                                      hasVehicleRef &&
+                                      !hasVehicleId;
+            var isExistingVehicleUpdate = !requireCanonicalStoredShape &&
+                                          hasVehicleId &&
+                                          !hasVehicleRef;
 
             if (requireCanonicalStoredShape)
             {
-                if (vehicleIdValue.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(vehicleIdValue.GetString()))
+                if (!hasVehicleId ||
+                    vehicleIdValue.ValueKind != JsonValueKind.String ||
+                    !ResourceMaterializationContract.IsExactIdentifier(vehicleIdValue.GetString()))
                 {
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.vehicleId",
                         IssueSeverity.Error,
-                        "Canonical vehicles[].vehicleId должен быть непустой строкой",
+                        "Canonical vehicles[].vehicleId должен быть точным permanent identifier",
                         code: "vehicle_canonical_id_invalid",
                         section: "Vehicles",
-                        expected: "non-empty string vehicleId",
-                        actual: vehicleIdValue.ValueKind == JsonValueKind.String ? "empty string" : vehicleIdValue.ValueKind.ToString(),
-                        repairHint: "В canonical vehicles[] сохраняй уже назначенный string vehicleId. Null допустим только в brand-new UpdateVehicles object до нормализации."));
+                        expected: "exact non-empty permanent vehicleId",
+                        actual: hasVehicleId ? vehicleIdValue.ValueKind.ToString() : "missing",
+                        repairHint: "Canonical vehicles[] должен содержать только назначенный клиентом permanent vehicleId без временного vehicleRef."));
+                }
+
+                if (hasVehicleRef)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.vehicleRef",
+                        IssueSeverity.Error,
+                        "Canonical vehicle не может сохранять transient vehicleRef",
+                        code: "resource_owner_vehicle_ref_residual",
+                        section: "Vehicles",
+                        expected: "field absent after accepted mechanics publication",
+                        actual: vehicleRefValue.GetRawText(),
+                        repairHint: "Не записывай vehicleRef в canonical state; клиент заменяет его permanent vehicleId атомарно с ресурсами."));
                 }
             }
-            else if (vehicleIdValue.ValueKind == JsonValueKind.Null)
+            else if (isNewVehicleCommand)
             {
-                vehicleIdIsNull = true;
+                if (vehicleRefValue.ValueKind != JsonValueKind.String ||
+                    !ResourceMaterializationContract.IsExactIdentifier(vehicleRefValue.GetString()))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.vehicleRef",
+                        IssueSeverity.Error,
+                        "Новый UpdateVehicles object должен содержать точный transient vehicleRef",
+                        code: "resource_owner_vehicle_ref_ambiguous",
+                        section: "Vehicles",
+                        expected: "exact same-turn vehicleRef and no vehicleId",
+                        actual: vehicleRefValue.GetRawText(),
+                        repairHint: "Для нового транспорта передай уникальный vehicleRef; permanent vehicleId назначает только клиент."));
+                }
             }
-            else if (vehicleIdValue.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(vehicleIdValue.GetString()))
+            else if (isExistingVehicleUpdate)
+            {
+                if (vehicleIdValue.ValueKind != JsonValueKind.String ||
+                    !ResourceMaterializationContract.IsExactIdentifier(vehicleIdValue.GetString()))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.vehicleId",
+                        IssueSeverity.Error,
+                        "Update существующего транспорта должен содержать точный permanent vehicleId",
+                        code: "vehicle_command_id_invalid",
+                        section: "Vehicles",
+                        expected: "exact pre-turn vehicleId and no vehicleRef",
+                        actual: vehicleIdValue.GetRawText(),
+                        repairHint: "Для существующего транспорта передавай permanent vehicleId; для нового — только vehicleRef."));
+                }
+            }
+            else
             {
                 issues.Add(new ValidationIssue(
-                    $"{itemContext}.vehicleId",
+                    itemContext,
                     IssueSeverity.Error,
-                    "UpdateVehicles.vehicleId должен быть непустой строкой или null",
-                    code: "vehicle_command_id_invalid",
+                    "UpdateVehicles object должен содержать ровно один identity selector",
+                    code: "resource_owner_vehicle_identity_selector_invalid",
                     section: "Vehicles",
-                    expected: "non-empty string vehicleId or null for brand-new vehicle object",
-                    actual: vehicleIdValue.ValueKind == JsonValueKind.String ? "empty string" : vehicleIdValue.ValueKind.ToString(),
-                    repairHint: "Для существующего транспорта передавай string vehicleId. Для brand-new vehicle object Block 10 допускает vehicleId = null."));
+                    expected: "vehicleRef for creation XOR vehicleId for existing update",
+                    actual: item.GetRawText(),
+                    repairHint: "Для нового транспорта передай только vehicleRef. Для существующего — только permanent vehicleId."));
             }
 
-            var mustLookLikeFullVehicleObject = requireCanonicalStoredShape || vehicleIdIsNull;
-            if (!mustLookLikeFullVehicleObject && item.EnumerateObject().Count() == 1)
+            var mustLookLikeFullVehicleObject = requireCanonicalStoredShape || isNewVehicleCommand;
+            if (isExistingVehicleUpdate && item.EnumerateObject().Count() == 1)
             {
                 issues.Add(new ValidationIssue(
                     itemContext,
@@ -965,8 +1003,6 @@ public partial class ValidationService
                 RequireBooleanField(item, itemContext, issues, "isSentient");
                 RequireString(item, itemContext, issues, "availability");
                 ValidateRequiredNullableStringField(item, itemContext, issues, "currentLocationId");
-                RequireString(item, itemContext, issues, "maxHealth");
-                RequireString(item, itemContext, issues, "currentHealth");
                 ValidateIntegerField(item, itemContext, issues, "speedBonus");
                 RequireObjectArrayField(item, itemContext, issues, "actions");
                 RequireObjectArrayField(item, itemContext, issues, "resistances");
@@ -1015,10 +1051,52 @@ public partial class ValidationService
                 RequireBooleanField(item, itemContext, issues, "isSentient");
             if (item.TryGetProperty("currentLocationId", out _) && !mustLookLikeFullVehicleObject)
                 ValidateRequiredNullableStringField(item, itemContext, issues, "currentLocationId");
-            if (item.TryGetProperty("maxHealth", out _))
-                ValidatePercentageStringField(item, itemContext, issues, "maxHealth", requirePositive: true);
-            if (item.TryGetProperty("currentHealth", out _))
-                ValidatePercentageStringField(item, itemContext, issues, "currentHealth", requirePositive: false);
+            foreach (var legacyField in new[] { "maxHealth", "currentHealth" })
+            {
+                if (!item.TryGetProperty(legacyField, out var legacyValue))
+                    continue;
+
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.{legacyField}",
+                    IssueSeverity.Error,
+                    "Vehicle resource value нельзя хранить вне unified resource ledger",
+                    code: "resource_owner_legacy_value_forbidden",
+                    section: "Vehicles",
+                    expected: "field absent; use resourceMaterialization for creation or resource commands for changes",
+                    actual: legacyValue.GetRawText(),
+                    repairHint: "Удали maxHealth/currentHealth. Новый транспорт передаёт только maximum через resourceMaterialization; текущим значением владеет клиентский resource ledger."));
+            }
+
+            if (isNewVehicleCommand)
+            {
+                if (!item.TryGetProperty("resourceMaterialization", out var materialization) ||
+                    materialization.ValueKind != JsonValueKind.Object)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.resourceMaterialization",
+                        IssueSeverity.Error,
+                        "Новый транспорт должен объявить ресурсную materialization authority",
+                        code: "resource_owner_materialization_required",
+                        section: "Vehicles",
+                        expected: "closed resourceMaterialization object validated by the common resource planner",
+                        actual: item.TryGetProperty("resourceMaterialization", out var existingMaterialization)
+                            ? existingMaterialization.GetRawText()
+                            : "missing",
+                        repairHint: "Передай maximum здоровья в resourceMaterialization.resources; не передавай current/max поля."));
+                }
+            }
+            else if (item.TryGetProperty("resourceMaterialization", out var forbiddenMaterialization))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.resourceMaterialization",
+                    IssueSeverity.Error,
+                    "Resource materialization envelope допустим только при создании транспорта",
+                    code: "resource_owner_materialization_existing_forbidden",
+                    section: "Vehicles",
+                    expected: "field absent for canonical/existing vehicle",
+                    actual: forbiddenMaterialization.GetRawText(),
+                    repairHint: "Меняй capacity существующего транспорта только через resourceCapacityChanges."));
+            }
             if (item.TryGetProperty("speedBonus", out _))
                 ValidateIntegerField(item, itemContext, issues, "speedBonus");
             if (item.TryGetProperty("actions", out var actions))
@@ -1090,9 +1168,6 @@ public partial class ValidationService
                     repairHint: "Для availability=Parked передай currentLocationId конкретной локации, где оставлен транспорт."));
             }
 
-            var vehicleId = vehicleIdValue.ValueKind == JsonValueKind.String
-                ? vehicleIdValue.GetString()
-                : null;
             if (!requireCanonicalStoredShape &&
                 !mustLookLikeFullVehicleObject &&
                 !string.IsNullOrWhiteSpace(vehicleId) &&

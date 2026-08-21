@@ -1227,6 +1227,19 @@ public sealed class BrowserInventoryManagementTests : IDisposable
         IReadOnlyList<JsonObject> items,
         JsonObject equippedItems)
     {
+        var resourceBootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(
+            resourceBootstrap.IsValid,
+            string.Join(Environment.NewLine, resourceBootstrap.Issues));
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            resourceBootstrap.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            resourceBootstrap.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            resourceBootstrap.History!.ToCanonicalJson());
         await _fs.WriteFileAtomicAsync(
             InventoryEquipmentService.ItemsPath,
             new JsonObject

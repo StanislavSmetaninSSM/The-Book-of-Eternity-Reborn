@@ -14,7 +14,8 @@ internal sealed record ResourceMutationSourceExport(
     string SourceId,
     string AuthorityFingerprint,
     ResourceMutationSourceState State,
-    bool SameTurn);
+    bool SameTurn,
+    ResourceOwnerKey? BoundOwner = null);
 
 internal sealed record ResourceMutationSourceRequest(
     string SourceKind,
@@ -63,11 +64,11 @@ internal sealed class ResourceMutationSourceCatalog
                 ResourceOperation.Restore,
                 ResourceOperation.Spend,
                 ResourceOperation.Gain),
-            ["local_item_cost"] = Cost(
+            ["local_item_cost"] = ItemCost(
                 ResourceMutationPhase.DirectCost,
                 priority: 120,
                 ResourceOperation.Spend),
-            ["local_item_outcome"] = Outcome(
+            ["local_item_outcome"] = ItemOutcome(
                 ResourceMutationPhase.DirectOutcome,
                 priority: 120,
                 ResourceOperation.Damage,
@@ -109,8 +110,13 @@ internal sealed class ResourceMutationSourceCatalog
     private readonly FrozenDictionary<SourceKey, ResourceMutationSourceExport> _sources;
 
     private ResourceMutationSourceCatalog(
-        FrozenDictionary<SourceKey, ResourceMutationSourceExport> sources) =>
+        FrozenDictionary<SourceKey, ResourceMutationSourceExport> sources)
+    {
         _sources = sources;
+        Fingerprint = CreateFingerprint(sources.Values);
+    }
+
+    internal string Fingerprint { get; }
 
     internal static ResourceMutationSourceCatalogResult Create(
         IEnumerable<ResourceMutationSourceExport> exports)
@@ -132,12 +138,40 @@ internal sealed class ResourceMutationSourceCatalog
         var aliases = new HashSet<string>(StringComparer.Ordinal);
         foreach (var export in candidates)
         {
-            if (!Routes.ContainsKey(export.SourceKind))
+            if (!Routes.TryGetValue(export.SourceKind, out var routeDefinition))
             {
                 Add(
                     issues,
                     "resource_source_route_unknown",
                     "registered closed resource source route",
+                    export.SourceKind);
+                continue;
+            }
+            if (routeDefinition.BoundOwnerKind is { } boundOwnerKind)
+            {
+                if (export.BoundOwner == null ||
+                    export.BoundOwner.OwnerKind != boundOwnerKind ||
+                    !string.Equals(
+                        export.BoundOwner.ResourceOwnerId,
+                        export.SourceId,
+                        StringComparison.Ordinal))
+                {
+                    Add(
+                        issues,
+                        "resource_source_owner_binding_invalid",
+                        $"exact {boundOwnerKind} owner bound to the same sourceId",
+                        export.BoundOwner == null
+                            ? "missing"
+                            : $"{export.BoundOwner.Realm}/{export.BoundOwner.OwnerKind}/{export.BoundOwner.ResourceOwnerId}");
+                    continue;
+                }
+            }
+            else if (export.BoundOwner != null)
+            {
+                Add(
+                    issues,
+                    "resource_source_owner_binding_forbidden",
+                    "no owner binding for this source route",
                     export.SourceKind);
                 continue;
             }
@@ -201,7 +235,8 @@ internal sealed class ResourceMutationSourceCatalog
 
     internal ResourceMutationSourceResolution Resolve(
         ResourceMutationSourceRequest request,
-        ResourceDefinition definition)
+        ResourceDefinition definition,
+        ResourceCoordinate? target = null)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(definition);
@@ -234,6 +269,24 @@ internal sealed class ResourceMutationSourceCatalog
                 "resource_source_inactive",
                 "active source authority",
                 source.State.ToString());
+            return Failure(issues);
+        }
+        if (source.BoundOwner != null &&
+            (target == null ||
+             !string.Equals(source.BoundOwner.Realm, target.Realm, StringComparison.Ordinal) ||
+             source.BoundOwner.OwnerKind != target.OwnerKind ||
+             !string.Equals(
+                 source.BoundOwner.ResourceOwnerId,
+                 target.ResourceOwnerId,
+                 StringComparison.Ordinal)))
+        {
+            Add(
+                issues,
+                "resource_source_target_mismatch",
+                $"{source.BoundOwner.Realm}/{source.BoundOwner.OwnerKind}/{source.BoundOwner.ResourceOwnerId}",
+                target == null
+                    ? "missing target"
+                    : $"{target.Realm}/{target.OwnerKind}/{target.ResourceOwnerId}");
             return Failure(issues);
         }
         if (!routeDefinition.AllowedOperations.Contains(request.Operation))
@@ -297,6 +350,9 @@ internal sealed class ResourceMutationSourceCatalog
         builder.Append(source.SourceKind);
         builder.Append(source.SourceId);
         builder.Append(source.AuthorityFingerprint);
+        builder.Append(source.BoundOwner?.Realm ?? "<unbound>");
+        builder.Append(source.BoundOwner == null ? -1 : (int)source.BoundOwner.OwnerKind);
+        builder.Append(source.BoundOwner?.ResourceOwnerId ?? "<unbound>");
         builder.Append((int)route.Phase);
         builder.Append(route.Priority);
         builder.Append((int)operation);
@@ -313,6 +369,26 @@ internal sealed class ResourceMutationSourceCatalog
         IEnumerable<ValidationIssue> issues) =>
         new(null, issues.ToArray());
 
+    private static string CreateFingerprint(
+        IEnumerable<ResourceMutationSourceExport> sources)
+    {
+        using var builder = new ResourceFingerprintBuilder("resource-source-catalog-v2");
+        foreach (var source in sources
+                     .OrderBy(static value => value.SourceKind, StringComparer.Ordinal)
+                     .ThenBy(static value => value.SourceId, StringComparer.Ordinal))
+        {
+            builder.Append(source.SourceKind);
+            builder.Append(source.SourceId);
+            builder.Append(source.AuthorityFingerprint);
+            builder.Append((int)source.State);
+            builder.Append(source.SameTurn);
+            builder.Append(source.BoundOwner?.Realm ?? "<unbound>");
+            builder.Append(source.BoundOwner == null ? -1 : (int)source.BoundOwner.OwnerKind);
+            builder.Append(source.BoundOwner?.ResourceOwnerId ?? "<unbound>");
+        }
+        return builder.Build();
+    }
+
     private static SourceRouteDefinition Cost(
         ResourceMutationPhase phase,
         int priority,
@@ -321,7 +397,8 @@ internal sealed class ResourceMutationSourceCatalog
             phase,
             priority,
             operations.ToFrozenSet(),
-            RejectBounds: true);
+            RejectBounds: true,
+            BoundOwnerKind: null);
 
     private static SourceRouteDefinition Outcome(
         ResourceMutationPhase phase,
@@ -331,7 +408,30 @@ internal sealed class ResourceMutationSourceCatalog
             phase,
             priority,
             operations.ToFrozenSet(),
-            RejectBounds: false);
+            RejectBounds: false,
+            BoundOwnerKind: null);
+
+    private static SourceRouteDefinition ItemCost(
+        ResourceMutationPhase phase,
+        int priority,
+        params ResourceOperation[] operations) =>
+        new(
+            phase,
+            priority,
+            operations.ToFrozenSet(),
+            RejectBounds: true,
+            BoundOwnerKind: ResourceOwnerKind.Item);
+
+    private static SourceRouteDefinition ItemOutcome(
+        ResourceMutationPhase phase,
+        int priority,
+        params ResourceOperation[] operations) =>
+        new(
+            phase,
+            priority,
+            operations.ToFrozenSet(),
+            RejectBounds: false,
+            BoundOwnerKind: ResourceOwnerKind.Item);
 
     private static void Add(
         List<ValidationIssue> issues,
@@ -349,7 +449,8 @@ internal sealed class ResourceMutationSourceCatalog
         ResourceMutationPhase Phase,
         int Priority,
         IReadOnlySet<ResourceOperation> AllowedOperations,
-        bool RejectBounds);
+        bool RejectBounds,
+        ResourceOwnerKind? BoundOwnerKind);
 
     private sealed record SourceKey(string SourceKind, string SourceId);
 

@@ -147,6 +147,26 @@ internal sealed class ResourceDefinitionCatalog
         RawDefinitionFields.Append("materialization")
             .ToFrozenSet(StringComparer.Ordinal);
 
+    private static readonly FrozenSet<string> OutOfScopeResourceKeys = new[]
+        {
+            "money",
+            "ink_feathers",
+            "light_sparks",
+            "treasury_balance",
+            "faction_resource_ledger",
+            "experience",
+            "mastery",
+            "level",
+            "reputation",
+            "relationship",
+            "owner_bond_level",
+            "spiritual_power",
+            "spiritual_strain",
+            "spiritual_shield"
+        }
+        .Select(ResourceMaterializationContract.BuildConfusableKey)
+        .ToFrozenSet(StringComparer.Ordinal);
+
     private static readonly FrozenSet<string> MinimumFixedFields = Set("kind", "value");
     private static readonly FrozenSet<string> KindOnlyFields = Set("kind");
     private static readonly FrozenSet<string> FormulaFields = Set("kind", "formulaKey");
@@ -637,6 +657,17 @@ internal sealed class ResourceDefinitionCatalog
         }
 
         var resourceKey = ReadExactIdentifier(element, path, "resourceKey", issues);
+        if (resourceKey != null &&
+            OutOfScopeResourceKeys.Contains(
+                ResourceMaterializationContract.BuildConfusableKey(resourceKey)))
+        {
+            Add(
+                issues,
+                path + ".resourceKey",
+                "resource_definition_out_of_scope_key",
+                "a bounded scalar reserve outside currency, accounting, progression, relationship, and specialized-axis authority",
+                resourceKey);
+        }
         var version = ReadExactInt(element, path, "definitionVersion", 1, issues);
         var displayName = ReadReadableString(element, path, "displayName", issues);
         var numericKind = ReadClosedToken(
@@ -1378,6 +1409,8 @@ internal sealed class ResourceDefinitionCatalog
             ResourceCapacityKind.InstanceFixed, null, null);
         var initializeMaximum = new ResourceInitializationPolicy(
             ResourceInitializationKind.Maximum, null, null);
+        var initializeMinimum = new ResourceInitializationPolicy(
+            ResourceInitializationKind.Minimum, null, null);
 
         return
         [
@@ -1465,7 +1498,7 @@ internal sealed class ResourceDefinitionCatalog
             BuiltIn(
                 "blessing_rerolls", "Перебросы благословения", "reroll", minimum,
                 instanceFixed,
-                initializeMaximum,
+                initializeMinimum,
                 Owners(ResourceOwnerKind.AfterlifeActor),
                 OperationsSet(ResourceOperation.Spend, ResourceOperation.Gain),
                 ResourceBoundPolicy.RejectBelowMinimum,

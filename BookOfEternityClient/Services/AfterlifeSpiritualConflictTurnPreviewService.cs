@@ -27,6 +27,9 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
         var soulRoot = await ReadJsonObjectAsync("game_state/meta/soul_state.json");
         var profilesRoot = await ReadJsonObjectAsync(AfterlifeEntityProfileState.StatePath);
         var settingsRoot = await ReadJsonObjectAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath);
+        var actionPoints = await ResolveActionPointProjectionAsync(activeConflict);
+        if (actionPoints == null)
+            return null;
 
         var playerTiers = ReadTierMap(soulRoot?[AfterlifeSpiritualConflictState.SoulStateProfileProperty]?["artTiers"] as JsonObject);
         var oppositionLead = activeConflict["oppositionSide"]?["leadContestant"] as JsonObject;
@@ -52,8 +55,8 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
             ["sideModel"] = AfterlifeSpiritualConflictState.GetNodeString(activeConflict["sideModel"]) ?? "unknown",
             ["conflictPosition"] = conflictPosition,
             ["resolutionState"] = AfterlifeSpiritualConflictState.GetNodeString(activeConflict["resolutionState"]) ?? "active",
-            ["playerActionEconomy"] = CloneObject(activeConflict["actionEconomy"]?["player"] as JsonObject),
-            ["oppositionActionEconomy"] = CloneObject(activeConflict["actionEconomy"]?["opposition"] as JsonObject),
+            ["playerActionPoints"] = actionPoints.Value.Player,
+            ["oppositionActionPoints"] = actionPoints.Value.Opposition,
             ["playerActionCosts"] = BuildActionCosts(playerTiers, null, "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers"),
             ["opposition"] = new JsonObject
             {
@@ -81,6 +84,22 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
         };
 
         return preview;
+    }
+
+    private async Task<(JsonObject Player, JsonObject Opposition)?>
+        ResolveActionPointProjectionAsync(JsonObject activeConflict)
+    {
+        var result = AfterlifeConflictActionPointProjectionService.Resolve(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            activeConflict);
+        return result.IsValid && result.Projection != null
+            ? (
+                AfterlifeConflictActionPointProjectionService.ToPreviewJson(
+                    result.Projection.Player),
+                AfterlifeConflictActionPointProjectionService.ToPreviewJson(
+                    result.Projection.Opposition))
+            : null;
     }
 
     private async Task<JsonObject?> ReadJsonObjectAsync(string relativePath)
@@ -340,9 +359,6 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
             ? null
             : $"{actorType.Trim()}:{actorId.Trim()}";
     }
-
-    private static JsonObject? CloneObject(JsonObject? source) =>
-        source?.DeepClone() as JsonObject;
 
     private static bool TryGetInt(JsonNode? node, out int value)
     {

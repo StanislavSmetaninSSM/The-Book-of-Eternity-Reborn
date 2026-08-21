@@ -37,6 +37,8 @@ Closed phases execute in this order:
 
 The planner first constructs the complete finite dependency graph, executes the closed phase order, and assigns each stored transition one non-negative client-owned `executionSequence` unique within its turn. Canonical history orders by `turn`, then `executionSequence`; phase, priority, origin, operation, event, and transition identities are deterministic consistency tie-breakers only. Within a ready set: ascending registered priority, then exact `originId`, then client-owned `operationId`. Dependencies must already be satisfied. The sequence is protected replay semantics and must be identical on retry.
 
+Registered-system derived amounts are resolved only after the direct phases have completed. Version 1 permits a closed loss-recovery percentage: for one coordinate, sum the exact direct-phase loss, multiply by an integer percent from 1 through 100, divide by 100, and floor exactly once. It requires an integral quantum of `1`; a zero result creates no transition. The derived mutation still uses the ordinary reducer, source catalog, ordering, clamp/reject policy, history, and replay contract. Exact replay binds the originally stored requested amount rather than recalculating it from the retry's already-accepted state.
+
 ## 4. Applied events
 
 Every non-replay applied result emits its operation event plus optional boundary events:

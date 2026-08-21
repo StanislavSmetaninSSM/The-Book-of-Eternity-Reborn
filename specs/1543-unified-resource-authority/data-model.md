@@ -229,10 +229,13 @@ ResourceOwnerExport(
   OwnerRef: string?,
   BoundNpcId: string?,
   Capabilities: IReadOnlySet<string>,
+  RealmIndependentResourceCapabilities: IReadOnlySet<string>,
   AuthorityFingerprint: string)
 ```
 
-`OwnerRef` is accepted only in the same turn and is consumed when the owning materializer publishes the permanent identity. `Capabilities` contains exact resource keys allowed by the validated owner/source contract. A definition's allowed owner kind and the owner's capability must both authorize initialization/mutation.
+`OwnerRef` is accepted only in the same turn and is consumed when the owning materializer publishes the permanent identity. `Capabilities` contains exact resource keys allowed by the validated owner/source contract. `RealmIndependentResourceCapabilities` is a client-sealed, duplicate/confusable-free subset of `Capabilities`; an unknown, unexported, ambiguous, or raw-authored exception is invalid. A definition's allowed owner kind, the owner's capability, and the shared per-capability activity resolver must all authorize initialization/mutation.
+
+For the persistent `player_soul` owner, realm binding and resource activity are separate. Ordinary capabilities follow the active/suspended realm binding. A sealed realm-independent capability remains active while the owner persists across realms. Version 1 marks only `blessing_rerolls` realm-independent; `spiritual_action_points` remains realm-bound. The exact subset participates in the owner fingerprint and is consumed by owner resolution, lifecycle planning, and canonical state agreement.
 
 ### 4.4 Common combat identity
 
@@ -495,7 +498,22 @@ ResourceMutation(
 
 `OperationId`, phase, priority, policies, dependencies, and source evidence are client-derived. An adapter cannot write files or apply arithmetic.
 
-### 8.2 ResourceMutationResult
+A registered-system adapter may declare a closed client-owned derived amount policy instead of a GM-authored amount. The version-1 loss-recovery policy derives an exact integral percentage from the net direct-phase loss on one coordinate, floors once through coefficient/scale arithmetic, and yields no mutation when the result is zero. Replay reuses the immutable stored requested amount; it never recalculates from a later ledger or a changed owner surface.
+
+### 8.2 Registered system outcome draft
+
+```text
+ResourceRegisteredSystemOutcomeDraft(
+  Fingerprint: string,
+  SourceExports: IReadOnlyList<ResourceMutationSourceExport>,
+  Mutations: IReadOnlyList<ResourceMutationIntent>,
+  ExpectedBeforeImages: IReadOnlyDictionary<string, CanonicalBeforeImage>,
+  Project: ResourcePlanningResult -> OwnerCompanionAfterImages | Issues)
+```
+
+The draft is immutable and performs no I/O. Before planning, it contributes only exact source authority and mutations to the same four-phase reducer. After that reducer succeeds, it projects its companion after-images from the exact applied/replay transitions produced by that same result. Those companion paths and exact expected pre-publication before-images become part of the one `AcceptedMechanicsPlan`; path conflicts or projection issues discard the complete plan. A registered outcome cannot invoke a second reducer, directly change resource state/history, or publish independently.
+
+### 8.3 ResourceMutationResult
 
 ```text
 ResourceMutationResult(
@@ -508,7 +526,7 @@ ResourceMutationResult(
 
 Success has one updated ledger plus an applied or exact-replay result. Failure has no after-state.
 
-### 8.3 Resource events
+### 8.4 Resource events
 
 Closed events:
 
@@ -565,7 +583,7 @@ The plan is immutable, uses random client IDs allocated exactly once, and is cac
 2. initialize/reconfigure/suspend/resume/retire resource coordinates;
 3. apply direct costs;
 4. apply direct outcomes;
-5. apply registered system outcomes;
+5. derive and apply registered system outcomes from the resulting direct-phase loss/state;
 6. emit resource events after each actual result;
 7. reconcile effect continuation/removal/application;
 8. construct finite due trigger graph;
@@ -573,6 +591,8 @@ The plan is immutable, uses random client IDs allocated exactly once, and is cac
 10. advance effect lifetime and terminal cleanup;
 11. validate complete resource/effect/pending/owner after-state;
 12. return plan or issues, never partial after-images.
+
+Shining survival is the first production registered-outcome adapter. One newly visible ruinous Mortal event and one exact pending survival blessing contribute three player recovery mutations in `registered_system_outcome`; the same resource result then supplies the restored-amount audit while the draft consumes the blessing and downgrades the exact event in soul/world companion after-images. The former post-publication percentage-restoration path is absent, so runtime re-entry is a byte-exact no-op.
 
 ## 10. Pending resource resolution
 
@@ -676,11 +696,13 @@ Vehicle `currentHealth`/`maxHealth` are removed from `vehicles.json`. A new vehi
 
 ### 12.4 Items
 
-Item `durability`/`maxDurability` and the `item_resources.json` current/max resource authority are removed. Item definitions/materialization declare resource capabilities/initial capacity through the accepted resource owner plan; inventory and NPC item resource commands become common resource changes. Item movement preserves the same coordinate; destruction/terminal consumption retires it atomically.
+Item `durability`/`maxDurability` and the `item_resources.json` current/max resource authority are removed. Item definitions/materialization declare resource capabilities and instance-fixed initial capacities through the accepted resource owner plan; inventory and NPC item resource commands become common resource changes. Each active item exports `local_item_cost` and `local_item_outcome` sources bound to its exact permanent item owner, so use/repair/fire/reload cannot mutate another item's coordinate. Item movement across inventory, equipment, NPC, location, and offscreen carriers preserves the same coordinate. Split/merge requires an explicit `proportional_exact` disposition for every live resource; destruction/terminal consumption retires every live coordinate and appends terminal history atomically. Player-facing item values and action eligibility are derived later only through `ResourceProjectionService`; neither legacy sidecar nor raw-ledger UI fallback is allowed.
 
 ### 12.5 Afterlife
 
 `activeConflict.actionEconomy.*.current/max`, Guardian/Shining `chargesUsedThisReturn/chargesPerReturn`, and numeric blessing reroll counters cease to be persisted mechanical values. Their owning states retain references/audit/display companions only when needed. Capacity formulas bind spirit focus, reputation/return-cycle authority, or accepted entitlement creation. Currencies and faction accounting remain untouched.
+
+Client-owned Shining transitions use a sealed transition kind rather than inferring legality from an after-image. `SynchronizeCurrentShining` is exactly Shining Abode -> Shining Abode; `OrdinaryReentryFromChaosSea` and `AscensionFromChaosSea` are exactly Chaos Sea -> Shining Abode. Ascension additionally requires maximum enlightenment and no pending life-transition command in the same fresh canonical snapshot. One write lease covers every authoritative read, composed profile/binding/resource after-image, before-image comparison, publication, and rollback. Ordinary Shining -> Chaos Sea travel preserves the current Guardian return cycle and spent attempts; only a Mortal-death -> Chaos Sea transition establishes/refills a new incarnation-bound Guardian cycle.
 
 ### 12.6 Effects
 

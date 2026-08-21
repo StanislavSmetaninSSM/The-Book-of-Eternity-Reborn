@@ -6,11 +6,20 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
-internal static class MortalItemAcceptedEffectSourceAuthority
+internal sealed record MortalItemAcceptedTurnOwner(
+    string ItemId,
+    string? ItemRef,
+    string FilePath,
+    string JsonPath,
+    MortalItemCarrierCoordinate Carrier,
+    JsonObject Item,
+    bool SameTurn);
+
+internal static class MortalItemAcceptedTurnAuthority
 {
     private static readonly ConditionalWeakTable<FileSystemManager, Cache> Caches = new();
 
-    internal static void RegisterValidatedSources(
+    internal static void RegisterValidatedItems(
         FileSystemManager fs,
         string sessionId,
         string snapshotToken,
@@ -26,32 +35,27 @@ internal static class MortalItemAcceptedEffectSourceAuthority
         var newCandidates = catalog.Occurrences
             .Where(static occurrence =>
                 occurrence.ItemId == null &&
-                occurrence.CreationRef != null &&
-                string.Equals(
-                    occurrence.Carrier.Kind,
-                    "player_inventory",
-                    StringComparison.Ordinal) &&
-                MortalItemLocalActionPolicy.IsCarriedByPlayer(occurrence.Item))
+                occurrence.CreationRef != null)
             .OrderBy(static occurrence => occurrence.CreationRef, StringComparer.Ordinal)
             .Select(occurrence => new NewCandidate(
                 occurrence.CreationRef!,
-                occurrence.Item["activeEffectDefinitions"]?.DeepClone().AsArray() ??
-                    new JsonArray(),
+                occurrence.Item.DeepClone().AsObject(),
+                occurrence.FilePath,
+                occurrence.JsonPath,
+                CloneCarrier(occurrence.Carrier),
+                IsEligiblePlayerEffectSource(occurrence),
                 IsEquippedPlayerReference(catalog, occurrence.CreationRef!)))
             .ToArray();
         var stableCandidates = catalog.Occurrences
-            .Where(static occurrence =>
-                occurrence.ItemId != null &&
-                string.Equals(
-                    occurrence.Carrier.Kind,
-                    "player_inventory",
-                    StringComparison.Ordinal))
+            .Where(static occurrence => occurrence.ItemId != null)
             .OrderBy(static occurrence => occurrence.ItemId, StringComparer.Ordinal)
             .Select(occurrence => new StableCandidate(
                 occurrence.ItemId!,
-                occurrence.Item["activeEffectDefinitions"]?.DeepClone().AsArray() ??
-                    new JsonArray(),
-                MortalItemLocalActionPolicy.IsCarriedByPlayer(occurrence.Item),
+                occurrence.Item.DeepClone().AsObject(),
+                occurrence.FilePath,
+                occurrence.JsonPath,
+                CloneCarrier(occurrence.Carrier),
+                IsEligiblePlayerEffectSource(occurrence),
                 IsEquippedPlayerReference(catalog, occurrence.ItemId!)))
             .ToArray();
         var governedItemIds = knownItemIds
@@ -70,7 +74,7 @@ internal static class MortalItemAcceptedEffectSourceAuthority
             governedItemIds);
     }
 
-    internal static IReadOnlyList<EffectSourceExport> GetValidatedSources(
+    internal static IReadOnlyList<EffectSourceExport> GetValidatedEffectSources(
         FileSystemManager fs,
         string sessionId,
         string snapshotToken) =>
@@ -78,13 +82,13 @@ internal static class MortalItemAcceptedEffectSourceAuthority
             ? cache.GetSources(sessionId, snapshotToken)
             : Array.Empty<EffectSourceExport>();
 
-    internal static void InvalidateValidatedSources(FileSystemManager fs)
+    internal static void InvalidateValidatedItems(FileSystemManager fs)
     {
         ArgumentNullException.ThrowIfNull(fs);
         Caches.GetValue(fs, static _ => new Cache()).InvalidateValidated();
     }
 
-    internal static IReadOnlySet<EffectSourceOwnerKey> GetReplacedSourceOwners(
+    internal static IReadOnlySet<EffectSourceOwnerKey> GetReplacedEffectSourceOwners(
         FileSystemManager fs,
         string sessionId,
         string snapshotToken) =>
@@ -104,6 +108,22 @@ internal static class MortalItemAcceptedEffectSourceAuthority
                cache.TryGetItemId(sessionId, snapshotToken, creationRef, out itemId);
     }
 
+    internal static IReadOnlyList<MortalItemAcceptedTurnOwner> GetValidatedOwners(
+        FileSystemManager fs,
+        string sessionId,
+        string snapshotToken) =>
+        Caches.TryGetValue(fs, out var cache)
+            ? cache.GetOwners(sessionId, snapshotToken)
+            : Array.Empty<MortalItemAcceptedTurnOwner>();
+
+    internal static IReadOnlySet<string> GetMissingGovernedItemIds(
+        FileSystemManager fs,
+        string sessionId,
+        string snapshotToken) =>
+        Caches.TryGetValue(fs, out var cache)
+            ? cache.GetMissingGovernedItemIds(sessionId, snapshotToken)
+            : new HashSet<string>(StringComparer.Ordinal);
+
     private static string CreateFingerprint(
         IEnumerable<NewCandidate> newCandidates,
         IEnumerable<StableCandidate> stableCandidates,
@@ -114,14 +134,21 @@ internal static class MortalItemAcceptedEffectSourceAuthority
             ["new"] = new JsonArray(newCandidates.Select(candidate => (JsonNode)new JsonObject
             {
                 ["creationRef"] = candidate.CreationRef,
-                ["definitions"] = candidate.Definitions.DeepClone(),
+                ["item"] = candidate.Item.DeepClone(),
+                ["filePath"] = candidate.FilePath,
+                ["jsonPath"] = candidate.JsonPath,
+                ["carrier"] = CarrierNode(candidate.Carrier),
+                ["effectEligible"] = candidate.EffectEligible,
                 ["equipped"] = candidate.Equipped
             }).ToArray()),
             ["stable"] = new JsonArray(stableCandidates.Select(candidate => (JsonNode)new JsonObject
             {
                 ["itemId"] = candidate.ItemId,
-                ["definitions"] = candidate.Definitions.DeepClone(),
-                ["active"] = candidate.Active,
+                ["item"] = candidate.Item.DeepClone(),
+                ["filePath"] = candidate.FilePath,
+                ["jsonPath"] = candidate.JsonPath,
+                ["carrier"] = CarrierNode(candidate.Carrier),
+                ["effectEligible"] = candidate.EffectEligible,
                 ["equipped"] = candidate.Equipped
             }).ToArray()),
             ["governedItemIds"] = new JsonArray(
@@ -148,6 +175,28 @@ internal static class MortalItemAcceptedEffectSourceAuthority
                 OwnerId: "player"
             });
 
+    private static bool IsEligiblePlayerEffectSource(
+        MortalItemCarrierOccurrence occurrence) =>
+        string.Equals(
+            occurrence.Carrier.Kind,
+            "player_inventory",
+            StringComparison.Ordinal) &&
+        MortalItemLocalActionPolicy.IsCarriedByPlayer(occurrence.Item);
+
+    private static MortalItemCarrierCoordinate CloneCarrier(
+        MortalItemCarrierCoordinate carrier) =>
+        carrier with { ContainerPath = carrier.ContainerPath.ToArray() };
+
+    private static JsonObject CarrierNode(MortalItemCarrierCoordinate carrier) =>
+        new()
+        {
+            ["kind"] = carrier.Kind,
+            ["ownerId"] = carrier.OwnerId,
+            ["containerId"] = carrier.ContainerId,
+            ["containerPath"] = new JsonArray(
+                carrier.ContainerPath.Select(static value => (JsonNode)value).ToArray())
+        };
+
     private static IReadOnlySet<string> ItemPredicates(bool carried, bool equipped)
     {
         var predicates = new HashSet<string>(StringComparer.Ordinal);
@@ -168,6 +217,8 @@ internal static class MortalItemAcceptedEffectSourceAuthority
         private Dictionary<string, string> _itemIdsByCreationRef = new(StringComparer.Ordinal);
         private EffectSourceExport[] _sources = Array.Empty<EffectSourceExport>();
         private HashSet<EffectSourceOwnerKey> _replacedSourceOwners = new();
+        private MortalItemAcceptedTurnOwner[] _owners = Array.Empty<MortalItemAcceptedTurnOwner>();
+        private HashSet<string> _missingGovernedItemIds = new(StringComparer.Ordinal);
 
         internal void Register(
             string sessionId,
@@ -190,18 +241,30 @@ internal static class MortalItemAcceptedEffectSourceAuthority
                 var known = governedItemIds.ToHashSet(StringComparer.Ordinal);
                 var allocations = new Dictionary<string, string>(StringComparer.Ordinal);
                 var exports = new List<EffectSourceExport>();
+                var owners = new List<MortalItemAcceptedTurnOwner>();
                 foreach (var candidate in stableCandidates)
                 {
+                    owners.Add(new MortalItemAcceptedTurnOwner(
+                        candidate.ItemId,
+                        ItemRef: null,
+                        candidate.FilePath,
+                        candidate.JsonPath,
+                        CloneCarrier(candidate.Carrier),
+                        candidate.Item.DeepClone().AsObject(),
+                        SameTurn: false));
+                    if (!candidate.EffectEligible)
+                        continue;
                     exports.Add(new EffectSourceExport(
                         "mortal_world",
                         "item",
                         candidate.ItemId,
-                        candidate.Definitions.DeepClone().AsArray(),
+                        candidate.Item["activeEffectDefinitions"]?.DeepClone().AsArray() ??
+                            new JsonArray(),
                         Materializable: true,
-                        Active: candidate.Active,
+                        Active: true,
                         SameTurn: true,
                         SatisfiedPredicates: ItemPredicates(
-                            candidate.Active,
+                            carried: true,
                             candidate.Equipped)));
                 }
                 foreach (var candidate in newCandidates)
@@ -214,11 +277,22 @@ internal static class MortalItemAcceptedEffectSourceAuthority
                     while (!known.Add(itemId));
 
                     allocations.Add(candidate.CreationRef, itemId);
+                    owners.Add(new MortalItemAcceptedTurnOwner(
+                        itemId,
+                        candidate.CreationRef,
+                        candidate.FilePath,
+                        candidate.JsonPath,
+                        CloneCarrier(candidate.Carrier),
+                        candidate.Item.DeepClone().AsObject(),
+                        SameTurn: true));
+                    if (!candidate.EffectEligible)
+                        continue;
                     exports.Add(new EffectSourceExport(
                         "mortal_world",
                         "item",
                         itemId,
-                        candidate.Definitions.DeepClone().AsArray(),
+                        candidate.Item["activeEffectDefinitions"]?.DeepClone().AsArray() ??
+                            new JsonArray(),
                         Materializable: true,
                         Active: true,
                         SameTurn: true,
@@ -234,6 +308,10 @@ internal static class MortalItemAcceptedEffectSourceAuthority
                 _validated = true;
                 _itemIdsByCreationRef = allocations;
                 _sources = exports.ToArray();
+                _owners = owners.ToArray();
+                _missingGovernedItemIds = governedItemIds
+                    .Except(stableCandidates.Select(static candidate => candidate.ItemId), StringComparer.Ordinal)
+                    .ToHashSet(StringComparer.Ordinal);
                 _replacedSourceOwners = governedItemIds
                     .Select(static itemId => new EffectSourceOwnerKey(
                         "mortal_world",
@@ -300,6 +378,34 @@ internal static class MortalItemAcceptedEffectSourceAuthority
             }
         }
 
+        internal IReadOnlyList<MortalItemAcceptedTurnOwner> GetOwners(
+            string sessionId,
+            string snapshotToken)
+        {
+            lock (_gate)
+            {
+                if (!Matches(sessionId, snapshotToken))
+                    return Array.Empty<MortalItemAcceptedTurnOwner>();
+                return _owners.Select(static owner => owner with
+                {
+                    Carrier = CloneCarrier(owner.Carrier),
+                    Item = owner.Item.DeepClone().AsObject()
+                }).ToArray();
+            }
+        }
+
+        internal IReadOnlySet<string> GetMissingGovernedItemIds(
+            string sessionId,
+            string snapshotToken)
+        {
+            lock (_gate)
+            {
+                return Matches(sessionId, snapshotToken)
+                    ? new HashSet<string>(_missingGovernedItemIds, StringComparer.Ordinal)
+                    : new HashSet<string>(StringComparer.Ordinal);
+            }
+        }
+
         private bool Matches(string sessionId, string snapshotToken) =>
             _validated &&
             string.Equals(_sessionId, sessionId, StringComparison.Ordinal) &&
@@ -308,12 +414,19 @@ internal static class MortalItemAcceptedEffectSourceAuthority
 
     private sealed record NewCandidate(
         string CreationRef,
-        JsonArray Definitions,
+        JsonObject Item,
+        string FilePath,
+        string JsonPath,
+        MortalItemCarrierCoordinate Carrier,
+        bool EffectEligible,
         bool Equipped);
 
     private sealed record StableCandidate(
         string ItemId,
-        JsonArray Definitions,
-        bool Active,
+        JsonObject Item,
+        string FilePath,
+        string JsonPath,
+        MortalItemCarrierCoordinate Carrier,
+        bool EffectEligible,
         bool Equipped);
 }

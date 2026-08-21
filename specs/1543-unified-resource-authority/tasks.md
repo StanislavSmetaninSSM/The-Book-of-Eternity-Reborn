@@ -108,42 +108,42 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 
 ### Owner-plan integration
 
-- [ ] T051 [P] [US3] Add RED player/NPC/same-turn NPC/named-NPC-in-combat/anonymous combatant/group member/vehicle lifecycle tests in `BookOfEternityClient.IntegrationTests/ResourceOwnerMaterializationTests.cs`, `ResourceCombatOwnerTests.cs`, and `ResourceVehicleOwnerTests.cs`
-- [ ] T052 [P] [US3] Add RED inventory/NPC/location/offscreen item movement, split/merge/destruction/nonempty removal, capacity, and same-turn item tests in `BookOfEternityClient.IntegrationTests/ResourceItemOwnerTests.cs`
-- [ ] T053 [P] [US3] Add RED persistent afterlife actor/conflict side/realm/scope/return-cycle creation and retirement tests in `BookOfEternityClient.IntegrationTests/ResourceAfterlifeOwnerTests.cs`
-- [ ] T054 [US3] Compose player/NPC/vehicle/combat/group/item/afterlife owner exports from validated owner after-images in `BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs` until T051–T053 owner-resolution cases are GREEN
-- [ ] T055 [US3] Publish all accepted combatant/member permanent IDs even without resource/effect commands and reject residual refs in `CombatantIdentityState.cs`, `ValidationService.QuestsRivalsFactionsAndWorld.cs`, and common publication
+- [X] T051 [P] [US3] Add RED player/NPC/same-turn NPC/named-NPC-in-combat/anonymous combatant/group member/vehicle lifecycle tests in `BookOfEternityClient.IntegrationTests/ResourceOwnerMaterializationTests.cs`, `ResourceCombatOwnerTests.cs`, and `ResourceVehicleOwnerTests.cs`
+- [X] T052 [P] [US3] Add RED inventory/NPC/location/offscreen item movement, split/merge/destruction/nonempty removal, capacity, and same-turn item tests in `BookOfEternityClient.IntegrationTests/ResourceItemOwnerTests.cs`
+- [X] T053 [P] [US3] Add RED persistent afterlife actor/conflict side/realm/scope/return-cycle creation and retirement tests in `BookOfEternityClient.IntegrationTests/ResourceAfterlifeOwnerTests.cs`
+- [X] T054 [US3] Compose player/NPC/vehicle/combat/group/item/afterlife owner exports from validated owner after-images in `BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs` until T051–T053 owner-resolution cases are GREEN
+- [X] T055 [US3] Publish all accepted combatant/member permanent IDs even without resource/effect commands and reject residual refs in `CombatantIdentityState.cs`, `ValidationService.QuestsRivalsFactionsAndWorld.cs`, and common publication
 
 ### Mortal player cutover
 
-- [ ] T056 [P] [US3] Add RED bootstrap/ordinary player health-energy-poise and legacy percentage/delta rejection tests in `BookOfEternityClient.IntegrationTests/MortalResourceCutoverTests.cs`
-- [ ] T057 [US3] Remove persisted player health/energy/poise fields and delta validation/mapping/normalization from `ValidationService.PlayerAndInventory.cs`, `ValidationService.MathAssistant.cs`, `StateManager.cs`, `GameEngine.TurnLifecycle.cs`, and `GameResponse.cs`; route accepted operations through common mutations until T056 is GREEN
-- [ ] T058 [US3] Convert Shining survival/restoration bootstrap outcomes to registered player resource mutations in `BookOfEternityClient/Services/ShiningBlessingEffectState.cs` without touching currencies or boolean entitlements
+- [X] T056 [P] [US3] Add RED bootstrap/ordinary player health-energy-poise and legacy percentage/delta rejection tests in `BookOfEternityClient.IntegrationTests/MortalResourceCutoverTests.cs`
+- [X] T057 [US3] Remove persisted player health/energy/poise fields and delta validation/mapping/normalization from `ValidationService.PlayerAndInventory.cs`, `ValidationService.MathAssistant.cs`, `StateManager.cs`, `GameEngine.TurnLifecycle.cs`, and `GameResponse.cs`; route accepted operations through common mutations until T056 is GREEN
+- [X] T058 [US3] Convert Shining survival/restoration bootstrap outcomes to registered player resource mutations in `BookOfEternityClient/Services/ShiningBlessingEffectState.cs` without touching currencies or boolean entitlements
 
 ### NPC and combat cutover
 
-- [ ] T059 [P] [US3] Add RED named NPC health continuity, vehicle health/create/update/move/destroy continuity, individual health/poise, group-member resources/reorder/defeat, no positional arrays, and legacy rejection tests in `BookOfEternityClient.IntegrationTests/ResourceCombatIntegrationTests.cs` and `ResourceVehicleIntegrationTests.cs`
-- [ ] T060 [US3] Remove NPC and vehicle current/max health authority and resolve their resource owners in `ValidationService.NpcWorldAndMeta.cs`, `ValidationService.MetaCodexAndAchievements.cs`, `ValidationService.InventoryNpcWorldCrossRefs.cs`, `StorageTransportMoveService.cs`, and NPC/vehicle normalizer/consumer paths until T059 named-NPC and vehicle cases are GREEN
-- [ ] T061 [US3] Replace individual `currentHealth/currentPoise` and group `healthStates[]` with owner/member bindings and resource mutations in `ValidationService.QuestsRivalsFactionsAndWorld.cs`, combat response handling, `EffectCarrierCatalog.cs`, and common publication until T059 combat cases are GREEN
-- [ ] T062 [US3] Add group member lifecycle/terminal companion after-images and exact rollback tracking in `AcceptedMechanicsPlanner.cs` and `CanonicalStateNormalizer.AcceptedMechanics.cs`
+- [X] T059 [P] [US3] Add RED named NPC health continuity, vehicle health/create/update/move/destroy continuity, individual health/poise, group-member resources/reorder/defeat, no positional arrays, and legacy rejection tests in `BookOfEternityClient.IntegrationTests/ResourceCombatIntegrationTests.cs` and `ResourceVehicleIntegrationTests.cs`
+- [X] T060 [US3] Remove NPC and vehicle current/max health authority and resolve their resource owners in `ValidationService.NpcWorldAndMeta.cs`, `ValidationService.MetaCodexAndAchievements.cs`, `ValidationService.InventoryNpcWorldCrossRefs.cs`, `StorageTransportMoveService.cs`, and NPC/vehicle normalizer/consumer paths until T059 named-NPC and vehicle cases are GREEN
+- [X] T061 [US3] Replace individual `currentHealth/currentPoise` and group `healthStates[]` with owner/member bindings and resource mutations in `ValidationService.QuestsRivalsFactionsAndWorld.cs`, combat response handling, `EffectCarrierCatalog.cs`, and common publication until T059 combat cases are GREEN
+- [X] T062 [US3] Add group member lifecycle/terminal companion after-images and exact rollback tracking in `AcceptedMechanicsPlanner.cs` and `CanonicalStateNormalizer.AcceptedMechanics.cs`
 
 ### Item cutover
 
-- [ ] T063 [P] [US3] Add RED item durability/charges/ammunition/generic reserve use/repair/reload/fire/move/destroy plus legacy command/field rejection tests in `BookOfEternityClient.IntegrationTests/ResourceItemIntegrationTests.cs`
-- [ ] T064 [US3] Replace item `durability/maxDurability` and item sidecar current/max validation with resource capabilities/capacity bindings in `BookOfEternityClient/Services/MortalItemMaterializationContract.cs` and `ValidationService.PlayerAndInventory.cs`
-- [ ] T065 [US3] Route player/NPC inventory resource operations through common commands/mutations and remove `inventoryItemsResources`/`NPCInventoryResourcesChanges` application in `FileMapping.cs`, `CanonicalStateNormalizer.InventorySidecars.cs`, `CanonicalStateNormalizer.FactionAndInventoryHelpers.cs`, and `ValidationService.NpcWorldAndMeta.cs`
-- [ ] T066 [US3] Bind item move/split/merge/destruction/consumption to resource continuity/retirement in `MortalItemTransitionWriter.cs`, `MortalItemTransitionWriter.Stacks.cs`, and `CanonicalStateNormalizer.MortalItems.cs` until T063 is GREEN
-- [ ] T067 [US3] Delete the obsolete canonical `game_state/inventory/item_resources.json` authority from active normalizer/validation/template paths once all item consumers use the ledger
+- [X] T063 [P] [US3] Add RED item durability/charges/ammunition/generic reserve use/repair/reload/fire/move/destroy plus legacy command/field rejection tests in `BookOfEternityClient.IntegrationTests/ResourceItemIntegrationTests.cs`
+- [X] T064 [US3] Replace item `durability/maxDurability` and item sidecar current/max validation with resource capabilities/capacity bindings in `BookOfEternityClient/Services/MortalItemMaterializationContract.cs` and `ValidationService.PlayerAndInventory.cs`
+- [X] T065 [US3] Route player/NPC inventory resource operations through common commands/mutations and remove `inventoryItemsResources`/`NPCInventoryResourcesChanges` application in `FileMapping.cs`, `CanonicalStateNormalizer.InventorySidecars.cs`, `CanonicalStateNormalizer.FactionAndInventoryHelpers.cs`, and `ValidationService.NpcWorldAndMeta.cs`
+- [X] T066 [US3] Bind item move/split/merge/destruction/consumption to resource continuity/retirement in `MortalItemTransitionWriter.cs`, `MortalItemTransitionWriter.Stacks.cs`, and `CanonicalStateNormalizer.MortalItems.cs` until T063 is GREEN
+- [ ] T067 [US3] After T087–T092 move every item detail/action consumer to `ResourceProjectionService`, delete the obsolete `game_state/inventory/item_resources.json` reader/template surface; retain only strict incompatible-save rejection and never add raw-ledger or legacy fallback
 
 ### Afterlife owner/capacity cutover
 
-- [ ] T068 [P] [US3] Add RED spirit-focus player/opposition action point, cost/recovery, conflict start/close, stale formula, and no legacy pool tests in `BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.cs`
-- [ ] T069 [P] [US3] Add RED Guardian/Shining gacha spend/reset/capacity and blessing reroll entitlement resource tests in `BookOfEternityClient.Tests/ResourceCapacityFormulaCatalogTests.cs` and `BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.cs`
-- [ ] T070 [US3] Replace `activeConflict.actionEconomy` current/max arithmetic with scoped resource owners/mutations while preserving action-cost audit and spiritual axes in `AfterlifeSpiritualConflictState.cs`, `AfterlifeSpiritualConflictTurnPreviewService.cs`, `ValidationService.AfterlifeSpiritualConflict.cs`, and its normalizer
-- [ ] T071 [US3] Replace Guardian/Shining `chargesUsedThisReturn/chargesPerReturn` arithmetic with resource capacity/mutations while preserving return-cycle/gacha history in `GuardianGachaChargeRules.cs`, `ShiningAbodeState.cs`, `ShiningAbodeState.Gacha.cs`, `GameEngine.IncarnationAndAfterlife.cs`, `GameEngine.MainMenu.cs`, and `CanonicalStateNormalizer.SharedAndSoulHelpers.cs`
-- [ ] T072 [US3] Replace numeric blessing reroll mirrors with persistent actor resource entries while retaining boolean/free-shape/free-retune entitlements in `ShiningBlessingEffectState.cs` and its consumers
-- [ ] T073 [US3] Prove currencies, progression, relationships, spiritual axes, and faction accounting remain outside by adding negative admission/source-guard cases in `BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs`
-- [ ] T074 [US3] Run all US3 owner/Mortal/combat/item/afterlife focused filters, record evidence, review every removed authority in the inventory matrix, and commit the US3 slice
+- [X] T068 [P] [US3] Add RED spirit-focus player/opposition action point, cost/recovery, conflict start/close, stale formula, and no legacy pool tests in `BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.cs`
+- [X] T069 [P] [US3] Add RED Guardian/Shining gacha spend/reset/capacity and blessing reroll entitlement resource tests in `BookOfEternityClient.Tests/ResourceCapacityFormulaCatalogTests.cs` and `BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.cs`
+- [X] T070 [US3] Replace `activeConflict.actionEconomy` current/max arithmetic with scoped resource owners/mutations while preserving action-cost audit and spiritual axes in `AfterlifeSpiritualConflictState.cs`, `AfterlifeSpiritualConflictTurnPreviewService.cs`, `ValidationService.AfterlifeSpiritualConflict.cs`, and its normalizer
+- [X] T071 [US3] Replace Guardian/Shining `chargesUsedThisReturn/chargesPerReturn` arithmetic with resource capacity/mutations while preserving return-cycle/gacha history in `GuardianGachaChargeRules.cs`, `ShiningAbodeState.cs`, `ShiningAbodeState.Gacha.cs`, `GameEngine.IncarnationAndAfterlife.cs`, `GameEngine.MainMenu.cs`, and `CanonicalStateNormalizer.SharedAndSoulHelpers.cs`
+- [X] T072 [US3] Replace numeric blessing reroll mirrors with persistent actor resource entries while retaining boolean/free-shape/free-retune entitlements in `ShiningBlessingEffectState.cs` and its consumers
+- [X] T073 [US3] Prove currencies, progression, relationships, spiritual axes, and faction accounting remain outside by adding negative admission/source-guard cases in `BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs`
+- [X] T074 [US3] Run all US3 owner/Mortal/combat/item/afterlife focused filters, record evidence, review every removed authority in the inventory matrix, and commit the US3 slice
 
 ---
 

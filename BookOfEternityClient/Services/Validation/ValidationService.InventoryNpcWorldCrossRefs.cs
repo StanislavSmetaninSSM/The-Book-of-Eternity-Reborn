@@ -1337,7 +1337,7 @@ public partial class ValidationService
         var emittedGuardianBaselineIssue = false;
         foreach (var (path, sections) in new[]
                  {
-                     ("game_state/npcs/npc_inventory.json", new[] { "NPCInventoryAdds", "NPCInventoryUpdates", "NPCInventoryRemovals", "NPCEquipmentChanges", "NPCInventoryResourcesChanges" }),
+                     ("game_state/npcs/npc_inventory.json", new[] { "NPCInventoryAdds", "NPCInventoryUpdates", "NPCInventoryRemovals", "NPCEquipmentChanges" }),
                      ("game_state/npcs/npc_goals.json", new[] { "NPCGoalUpdates", "NPCQuestUpdates" }),
                      ("game_state/npcs/npc_activities.json", new[] { "NPCActivityUpdates", "completeNPCActivities" })
                  })
@@ -1589,22 +1589,15 @@ public partial class ValidationService
                     if (string.IsNullOrWhiteSpace(vehicleId) || knownVehicleIds.Contains(vehicleId))
                         continue;
 
-                    var missingFields = GetMissingVehicleFullObjectFields(vehicle);
-                    if (missingFields.Count > 0)
-                    {
-                        issues.Add(new ValidationIssue(
-                            updateContext,
-                            IssueSeverity.Error,
-                            "UpdateVehicles с новым preassigned vehicleId должен передавать полный Vehicle Object",
-                            code: "vehicle_new_preassigned_id_requires_full_object",
-                            section: "Vehicles",
-                            expected: "Full Vehicle Object for brand-new vehicle with preassigned vehicleId",
-                            actual: string.Join(", ", missingFields),
-                            repairHint: "Если выдаёшь новый транспорт с уже заданным vehicleId, передай полный Vehicle Object по Block 10. Partial updates допустимы только для уже существующих vehicleId."));
-                        continue;
-                    }
-
-                    resolvableVehicleIds.Add(vehicleId);
+                    issues.Add(new ValidationIssue(
+                        $"{updateContext}.vehicleId",
+                        IssueSeverity.Error,
+                        "Новый транспорт не может получить permanent vehicleId от GM",
+                        code: "resource_owner_vehicle_preassigned_id_forbidden",
+                        section: "Vehicles",
+                        expected: "exact validated pre-turn vehicleId or transient vehicleRef for creation",
+                        actual: vehicleId,
+                        repairHint: "Для создания используй vehicleRef и resourceMaterialization. Клиент назначит permanent vehicleId в общем accepted mechanics plan."));
                 }
             }
 
@@ -1718,25 +1711,6 @@ public partial class ValidationService
     }
 
 
-    private static List<string> GetMissingVehicleFullObjectFields(JsonElement vehicle)
-    {
-        var missingFields = new List<string>();
-        foreach (var stringField in new[] { "name", "description", "image_prompt", "type", "availability", "maxHealth", "currentHealth" })
-        {
-            if (!HasNonEmptyString(vehicle, stringField))
-                missingFields.Add(stringField);
-        }
-
-        foreach (var presentField in new[] { "isSentient", "currentLocationId", "speedBonus", "actions", "resistances", "inventory" })
-        {
-            if (!vehicle.TryGetProperty(presentField, out _))
-                missingFields.Add(presentField);
-        }
-
-        return missingFields;
-    }
-
-
     private async Task<(HashSet<string> Ids, HashSet<string> Names)> ReadKnownInventoryItemReferencesAsync()
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -1768,7 +1742,6 @@ public partial class ValidationService
     {
         foreach (var (path, collections) in new[]
                  {
-                     ("game_state/inventory/item_resources.json", new[] { "entries", "inventoryItemsResources" }),
                      ("game_state/inventory/item_bonds.json", new[] { "entries", "itemBondLevelChanges", "itemFateCardUnlocks" }),
                      ("game_state/npcs/item_journals.json", new[] { "entries", "itemJournals", "itemJournalUpdates" })
                  })
@@ -2731,8 +2704,7 @@ public partial class ValidationService
                      {
                          ("NPCInventoryUpdates", item => item.TryGetProperty("itemUpdate", out var itemUpdate) ? itemUpdate : (JsonElement?)null),
                          ("NPCInventoryRemovals", item => item),
-                         ("NPCEquipmentChanges", item => item),
-                         ("NPCInventoryResourcesChanges", item => item)
+                         ("NPCEquipmentChanges", item => item)
                      })
             {
                 if (!doc.RootElement.TryGetProperty(section, out var arr) || arr.ValueKind != JsonValueKind.Array)

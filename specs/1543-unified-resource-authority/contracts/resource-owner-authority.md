@@ -53,17 +53,31 @@ Vehicles use permanent `vehicleId` resource ownership. Activation, parking, move
 
 Item resources use permanent item identity regardless of inventory, equipment, NPC inventory, location storage, offscreen storage, or another valid carrier. Movement changes no resource coordinate. Split/merge/stack operations must explicitly define which permanent item identities survive before any resource plan is accepted.
 
+Every active item may export the closed `local_item_cost` and `local_item_outcome` source routes. The export is keyed and fingerprinted by the exact permanent item owner; source resolution additionally requires the target resource coordinate to have that same realm, owner kind, and item ID. Carrier location and display identity never grant source authority.
+
 Item destruction or terminal consumption retires all item resources only after immutable terminal evidence is prepared. A raw removal cannot silently discard nonempty resource state.
 
 ## 8. Afterlife owners and scopes
 
-Persistent profiles keep one permanent resource owner per realm binding. Active spiritual-conflict sides use conflict-scoped IDs. Per-return Guardian/Shining reserves use accepted actor/scope IDs and registered return-cycle capacity authority.
+`player_soul` is one permanent cross-realm owner. Its profile carries exact realm bindings plus a sealed, duplicate/confusable-free `realmIndependentResourceCapabilities` subset of the owner's exported capabilities. The common authority resolves activity per capability: an ordinary capability is active only while its exact realm binding is active, while a sealed realm-independent capability may remain active when that binding is suspended. Unknown, unexported, ambiguous, or unsealed capability exceptions fail closed and the policy participates in the owner fingerprint.
+
+Version 1 seals `blessing_rerolls` as realm-independent for `player_soul`; `spiritual_action_points` remains realm-bound. The same capability-activity resolver is mandatory for owner resolution, lifecycle transition generation, and canonical state agreement. No caller may special-case a resource key outside the sealed owner export.
+
+Active spiritual-conflict sides use conflict-scoped IDs. Per-return Guardian/Shining reserves use accepted actor/scope IDs and registered return-cycle capacity authority.
+
+Every client-owned Shining transition plan declares exactly one transition kind:
+
+- `SynchronizeCurrentShining`: fresh canonical Soul is Shining Abode and remains Shining Abode;
+- `OrdinaryReentryFromChaosSea`: fresh canonical Soul is Chaos Sea and the accepted after-image is Shining Abode;
+- `AscensionFromChaosSea`: the same exact realm edge plus fresh maximum-enlightenment authority and an absent `life_transitions.json` command.
+
+The transition service acquires one canonical write lease before reading Soul, profile, Shining, Guardian, conflict, resource state/history, return guard, and lifecycle-control roots. It retains that lease through owner composition, resource planning, exact before-image checks, coordinated publication, and rollback. A caller's earlier cached realm or ascension check is never transition authority.
 
 Conflict close or return-cycle replacement retires scoped resources. Persistent actor resources survive unrelated conflict closure. Currencies, progression, relationships, and faction accounting are not owner exports for this ledger.
 
 ## 9. Capability and lifecycle
 
-An owner export contains an exact set of resource keys/capabilities derived from its accepted definition/materialization state. A definition's `allowedOwnerKinds` is necessary but insufficient: the owner must also permit that resource.
+An owner export contains an exact set of resource keys/capabilities and its sealed realm-independent subset, both derived from accepted definition/materialization state. A definition's `allowedOwnerKinds` is necessary but insufficient: the owner must also permit that resource and the shared capability-activity resolver must consider it active for the accepted transition.
 
 Owner states:
 

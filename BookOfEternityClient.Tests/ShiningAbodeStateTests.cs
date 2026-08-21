@@ -268,7 +268,8 @@ public sealed class ShiningAbodeStateTests
             null,
             null,
             null,
-            null);
+            null,
+            0);
         Assert.NotNull(context);
         var choices = Assert.IsAssignableFrom<IReadOnlyList<string>>(
             method!.Invoke(
@@ -1962,7 +1963,19 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
-    public void SyncShiningReturnCycle_ResetsUsedGachaChargesOnNewCycle()
+    public void CreateDefaultState_UsesCompanionOnlyGachaState()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+
+        var gachaSystem = Assert.IsType<JsonObject>(root["gachaSystem"]);
+        Assert.False(gachaSystem.ContainsKey("chargesPerReturn"));
+        Assert.False(gachaSystem.ContainsKey("chargesUsedThisReturn"));
+        Assert.Equal(string.Empty, gachaSystem["currentReturnCycleId"]?.GetValue<string>());
+        Assert.Empty(Assert.IsType<JsonArray>(gachaSystem["gachaHistory"]));
+    }
+
+    [Fact]
+    public void SyncShiningReturnCycle_UpdatesCompanionCycleWithoutLegacyCounters()
     {
         var root = ShiningAbodeState.CreateDefaultState();
         root["radiance"] = new JsonObject
@@ -1972,8 +1985,6 @@ public sealed class ShiningAbodeStateTests
         };
         root["gachaSystem"] = new JsonObject
         {
-            ["chargesPerReturn"] = 4,
-            ["chargesUsedThisReturn"] = 3,
             ["currentReturnCycleId"] = "shining_return_2",
             ["gachaHistory"] = new JsonArray()
         };
@@ -1983,17 +1994,16 @@ public sealed class ShiningAbodeStateTests
         Assert.True(changed);
         Assert.True(cycleChanged);
         Assert.Equal("shining_return_5", root["gachaSystem"]?["currentReturnCycleId"]?.GetValue<string>());
-        Assert.Equal(0, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesPerReturn"));
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesUsedThisReturn"));
     }
 
     [Fact]
-    public void SyncShiningReturnCycle_EmptyLegacyCycleIdResetsUsedGachaCharges()
+    public void SyncShiningReturnCycle_EmptyBootstrapCyclePersistsResolvedCycle()
     {
         var root = ShiningAbodeState.CreateDefaultState();
         root["gachaSystem"] = new JsonObject
         {
-            ["chargesPerReturn"] = 3,
-            ["chargesUsedThisReturn"] = 2,
             ["currentReturnCycleId"] = "",
             ["gachaHistory"] = new JsonArray()
         };
@@ -2003,7 +2013,8 @@ public sealed class ShiningAbodeStateTests
         Assert.True(changed);
         Assert.False(cycleChanged);
         Assert.Equal("shining_return_5", root["gachaSystem"]?["currentReturnCycleId"]?.GetValue<string>());
-        Assert.Equal(0, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesPerReturn"));
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesUsedThisReturn"));
     }
 
     [Fact]
@@ -2018,8 +2029,6 @@ public sealed class ShiningAbodeStateTests
         };
         root["gachaSystem"] = new JsonObject
         {
-            ["chargesPerReturn"] = 1,
-            ["chargesUsedThisReturn"] = 0,
             ["currentReturnCycleId"] = "",
             ["gachaHistory"] = new JsonArray()
         };
@@ -2079,7 +2088,8 @@ public sealed class ShiningAbodeStateTests
 
         Assert.True(applied, error);
         Assert.Equal("shining_return_5", root["gachaSystem"]?["currentReturnCycleId"]?.GetValue<string>());
-        Assert.Equal(1, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesPerReturn"));
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesUsedThisReturn"));
         var history = Assert.IsType<JsonArray>(root["gachaSystem"]?["gachaHistory"]);
         Assert.Equal("shining_return_5", history[0]?["returnCycleId"]?.GetValue<string>());
     }

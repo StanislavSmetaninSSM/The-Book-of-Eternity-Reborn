@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
@@ -7,7 +8,8 @@ public partial class CanonicalStateNormalizer
 {
     internal async Task<AcceptedMechanicsPlan?> NormalizeAcceptedMechanicsAsync(
         IReadOnlyDictionary<string, string>? backups,
-        MortalLocationAcceptedTurnPlan? mortalLocationPlan = null)
+        MortalLocationAcceptedTurnPlan? mortalLocationPlan = null,
+        AcceptedMechanicsPlan? prevalidatedPlan = null)
     {
         if (!AcceptedMechanicsPlanAuthority.TryPeekValidated(
                 _fs,
@@ -31,9 +33,16 @@ public partial class CanonicalStateNormalizer
             throw new InvalidDataException("Validated accepted mechanics plan is incomplete.");
 
         var plan = peeked.Plan;
+        if (prevalidatedPlan != null && !ReferenceEquals(plan, prevalidatedPlan))
+        {
+            AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs);
+            throw new InvalidDataException(
+                "Accepted mechanics plan changed after the normalization preflight.");
+        }
         try
         {
-            await ValidateAcceptedMechanicsBeforeImagesAsync(plan);
+            if (prevalidatedPlan == null)
+                await ValidateAcceptedMechanicsBeforeImagesAsync(plan);
             if (plan.EffectPlan != null)
                 await ValidateEffectPlanPublicationBindingAsync(plan.EffectPlan);
         }
@@ -69,6 +78,7 @@ public partial class CanonicalStateNormalizer
             if (pair.Value != null)
                 writes[pair.Key] = pair.Value;
         }
+        await AddOwnerTransitionWritesAsync(plan, writes);
 
         foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
         {
@@ -86,8 +96,400 @@ public partial class CanonicalStateNormalizer
             _fs.DeleteFile(_writeLease, path);
         }
 
+        await ValidatePublishedOwnerTransitionsAsync(plan);
         await ValidatePublishedResourceAfterImagesAsync(plan);
         return plan;
+    }
+
+    private async Task<AcceptedMechanicsPlan?>
+        PrevalidateAcceptedMechanicsBeforeNormalizationAsync()
+    {
+        if (!AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                _fs,
+                out _,
+                out var peeked))
+        {
+            if (!CanonicalFileExists(ResourceMaterializationContract.CommandPath) &&
+                !CanonicalFileExists(EffectAcceptedTurnPlan.CommandPath))
+            {
+                return null;
+            }
+            throw new InvalidDataException(
+                "Accepted mechanics normalization requires one validated common plan.");
+        }
+        if (_writeLease == null)
+        {
+            throw new InvalidOperationException(
+                "Accepted mechanics normalization preflight requires the owning canonical write lease.");
+        }
+        if (!peeked.Success || peeked.Plan == null)
+            throw new InvalidDataException("Validated accepted mechanics plan is incomplete.");
+
+        try
+        {
+            await ValidateAcceptedMechanicsBeforeImagesAsync(peeked.Plan);
+            return peeked.Plan;
+        }
+        catch
+        {
+            AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs);
+            throw;
+        }
+    }
+
+    private async Task AddOwnerTransitionWritesAsync(
+        AcceptedMechanicsPlan plan,
+        IDictionary<string, JsonObject> writes)
+    {
+        foreach (var pathGroup in plan.OwnerTransitions
+                     .GroupBy(static value => value.Path, StringComparer.Ordinal)
+                     .OrderBy(static group => group.Key, StringComparer.Ordinal))
+        {
+            if (writes.ContainsKey(pathGroup.Key))
+            {
+                throw new InvalidDataException(
+                    $"Accepted mechanics has conflicting whole-root and typed owner writes for '{pathGroup.Key}'.");
+            }
+
+            var currentJson = await _fs.ReadFileAsync(_writeLease!, pathGroup.Key);
+            JsonObject root;
+            try
+            {
+                root = currentJson == null
+                    ? throw new InvalidDataException(
+                        $"Accepted mechanics owner root '{pathGroup.Key}' disappeared before publication.")
+                    : JsonNode.Parse(currentJson) as JsonObject ??
+                      throw new InvalidDataException(
+                          $"Accepted mechanics owner root '{pathGroup.Key}' is not an object.");
+            }
+            catch (JsonException exception)
+            {
+                throw new InvalidDataException(
+                    $"Accepted mechanics owner root '{pathGroup.Key}' is malformed.",
+                    exception);
+            }
+
+            foreach (var transition in pathGroup
+                         .OrderBy(static value => value.OwnerRef, StringComparer.Ordinal))
+            {
+                ApplyOwnerTransition(root, transition);
+            }
+            writes.Add(pathGroup.Key, root);
+        }
+    }
+
+    private static void ApplyOwnerTransition(
+        JsonObject root,
+        AcceptedMechanicsOwnerTransition transition)
+    {
+        switch (transition.Kind)
+        {
+            case AcceptedMechanicsOwnerTransitionKind.MortalNpcCreation:
+                ApplyMortalNpcCreationTransition(root, transition);
+                return;
+            case AcceptedMechanicsOwnerTransitionKind.AfterlifeGuardianGacha:
+                ApplyAfterlifeGuardianGachaTransition(root, transition);
+                return;
+            default:
+                throw new InvalidDataException(
+                    $"Unsupported accepted mechanics owner transition '{transition.Kind}'.");
+        }
+    }
+
+    private static void ApplyMortalNpcCreationTransition(
+        JsonObject root,
+        AcceptedMechanicsOwnerTransition transition)
+    {
+        var actors = GuardianPolicyContracts.EnumerateCanonicalNpcObjects(root).ToArray();
+        var matches = actors.Where(actor =>
+                TryReadExactOwnerTransitionString(actor["initialId"], out var initialId) &&
+                string.Equals(initialId, transition.OwnerRef, StringComparison.Ordinal))
+            .ToArray();
+        if (matches.Length != 1)
+        {
+            throw new InvalidDataException(
+                $"Accepted NPC owner ref '{transition.OwnerRef}' resolved {matches.Length} times at publication.");
+        }
+
+        var target = matches[0];
+        if (!target.ContainsKey("NPCId") || target["NPCId"] != null)
+        {
+            throw new InvalidDataException(
+                $"Accepted NPC owner ref '{transition.OwnerRef}' no longer has a null NPCId.");
+        }
+        if (target["resourceMaterialization"] is not JsonObject materialization ||
+            !JsonNode.DeepEquals(
+                materialization,
+                transition.ExpectedResourceMaterialization))
+        {
+            throw new InvalidDataException(
+                $"Accepted NPC owner ref '{transition.OwnerRef}' changed its resource materialization before publication.");
+        }
+        if (target.ContainsKey("currentHealthPercentage") ||
+            target.ContainsKey("maxHealthPercentage"))
+        {
+            throw new InvalidDataException(
+                $"Accepted NPC owner ref '{transition.OwnerRef}' regained legacy resource authority before publication.");
+        }
+
+        var permanentAlias = ResourceMaterializationContract.BuildConfusableKey(
+            transition.PermanentOwnerId);
+        foreach (var actor in actors)
+        {
+            if (ReferenceEquals(actor, target) ||
+                !TryReadExactOwnerTransitionString(actor["NPCId"], out var existingNpcId))
+            {
+                continue;
+            }
+            if (string.Equals(
+                    ResourceMaterializationContract.BuildConfusableKey(existingNpcId),
+                    permanentAlias,
+                    StringComparison.Ordinal))
+            {
+                throw new InvalidDataException(
+                    $"Accepted NPC permanent ID '{transition.PermanentOwnerId}' became ambiguous before publication.");
+            }
+        }
+
+        target["NPCId"] = transition.PermanentOwnerId;
+        target.Remove("initialId");
+        target.Remove("resourceMaterialization");
+    }
+
+    private static void ApplyAfterlifeGuardianGachaTransition(
+        JsonObject root,
+        AcceptedMechanicsOwnerTransition transition)
+    {
+        var guardian = ResolveExactGuardianTransitionOwner(root, transition.OwnerRef);
+        var payload = transition.Payload;
+        if (!TryReadExactOwnerTransitionString(
+                payload["returnCycleId"],
+                out var returnCycleId) ||
+            payload["expectedHistoryPrefix"] is not JsonArray expectedPrefix ||
+            payload["appendedHistoryEntries"] is not JsonArray appended ||
+            appended.Count == 0)
+        {
+            throw new InvalidDataException(
+                $"Accepted Guardian gacha transition for '{transition.OwnerRef}' has an invalid payload.");
+        }
+        if (guardian["gachaSystem"] is not JsonObject gacha ||
+            !TryReadExactOwnerTransitionString(
+                gacha["currentReturnCycleId"],
+                out var currentCycleId) ||
+            !string.Equals(currentCycleId, returnCycleId, StringComparison.Ordinal) ||
+            gacha["gachaHistory"] is not JsonArray history)
+        {
+            throw new InvalidDataException(
+                $"Guardian '{transition.OwnerRef}' changed its gacha return-cycle authority before publication.");
+        }
+        if (gacha.ContainsKey("chargesPerReturn") ||
+            gacha.ContainsKey("chargesUsedThisReturn"))
+        {
+            throw new InvalidDataException(
+                $"Guardian '{transition.OwnerRef}' regained legacy gacha counter authority before publication.");
+        }
+        if (!ArrayHasExactPrefix(history, expectedPrefix) ||
+            history.Count != expectedPrefix.Count)
+        {
+            throw new InvalidDataException(
+                $"Guardian '{transition.OwnerRef}' gacha history changed before common publication.");
+        }
+
+        foreach (var entry in appended)
+            history.Add(entry?.DeepClone());
+        ConsumeGuardianGachaCommands(root, transition.OwnerRef, appended.Count);
+        if (root["activeGuardian"] is JsonObject activeGuardian &&
+            TryReadExactOwnerTransitionString(
+                activeGuardian["guardianId"],
+                out var activeGuardianId) &&
+            string.Equals(activeGuardianId, transition.OwnerRef, StringComparison.Ordinal))
+        {
+            root["activeGuardian"] = guardian.DeepClone();
+        }
+    }
+
+    private static JsonObject ResolveExactGuardianTransitionOwner(
+        JsonObject root,
+        string guardianId)
+    {
+        if (root["guardians"] is not JsonArray guardians)
+            throw new InvalidDataException("Accepted Guardian owner root has no canonical guardians array.");
+        var exact = guardians.OfType<JsonObject>().Where(guardian =>
+            TryReadExactOwnerTransitionString(
+                guardian["guardianId"],
+                out var candidateId) &&
+            string.Equals(candidateId, guardianId, StringComparison.Ordinal)).ToArray();
+        var alias = ResourceMaterializationContract.BuildConfusableKey(guardianId);
+        var confusable = guardians.OfType<JsonObject>().Count(guardian =>
+            TryReadExactOwnerTransitionString(
+                guardian["guardianId"],
+                out var candidateId) &&
+            string.Equals(
+                ResourceMaterializationContract.BuildConfusableKey(candidateId),
+                alias,
+                StringComparison.Ordinal));
+        if (exact.Length != 1 || confusable != 1)
+        {
+            throw new InvalidDataException(
+                $"Accepted Guardian owner '{guardianId}' is no longer exact/confusable-unique.");
+        }
+        return exact[0];
+    }
+
+    private static bool ArrayHasExactPrefix(JsonArray actual, JsonArray expected)
+    {
+        if (actual.Count < expected.Count)
+            return false;
+        for (var index = 0; index < expected.Count; index++)
+        {
+            if (!JsonNode.DeepEquals(actual[index], expected[index]))
+                return false;
+        }
+        return true;
+    }
+
+    private static void ConsumeGuardianGachaCommands(
+        JsonObject root,
+        string guardianId,
+        int expectedCount)
+    {
+        if (root["UpdateGuardians"] is not JsonArray updates)
+            return;
+        var retained = new JsonArray();
+        var consumed = 0;
+        foreach (var update in updates)
+        {
+            if (update is JsonObject command &&
+                string.Equals(
+                    command["command"]?.GetValue<string>(),
+                    "processGacha",
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    command["guardianId"]?.GetValue<string>(),
+                    guardianId,
+                    StringComparison.Ordinal))
+            {
+                consumed++;
+                continue;
+            }
+            retained.Add(update?.DeepClone());
+        }
+        if (consumed != expectedCount)
+        {
+            throw new InvalidDataException(
+                $"Guardian '{guardianId}' processGacha command count changed before publication.");
+        }
+        if (retained.Count == 0)
+            root.Remove("UpdateGuardians");
+        else
+            root["UpdateGuardians"] = retained;
+    }
+
+    private async Task ValidatePublishedOwnerTransitionsAsync(
+        AcceptedMechanicsPlan plan)
+    {
+        foreach (var pathGroup in plan.OwnerTransitions
+                     .GroupBy(static value => value.Path, StringComparer.Ordinal))
+        {
+            var json = await _fs.ReadFileAsync(_writeLease!, pathGroup.Key);
+            JsonObject root;
+            try
+            {
+                root = json == null
+                    ? throw new InvalidDataException(
+                        $"Published owner root '{pathGroup.Key}' is missing.")
+                    : JsonNode.Parse(json) as JsonObject ??
+                      throw new InvalidDataException(
+                          $"Published owner root '{pathGroup.Key}' is not an object.");
+            }
+            catch (JsonException exception)
+            {
+                throw new InvalidDataException(
+                    $"Published owner root '{pathGroup.Key}' is malformed.",
+                    exception);
+            }
+
+            foreach (var transition in pathGroup)
+            {
+                if (transition.Kind == AcceptedMechanicsOwnerTransitionKind.MortalNpcCreation)
+                {
+                    var matches = GuardianPolicyContracts.EnumerateCanonicalNpcObjects(root)
+                        .Where(actor =>
+                            TryReadExactOwnerTransitionString(actor["NPCId"], out var npcId) &&
+                            string.Equals(
+                                npcId,
+                                transition.PermanentOwnerId,
+                                StringComparison.Ordinal))
+                        .ToArray();
+                    if (matches.Length != 1 ||
+                        matches[0].ContainsKey("initialId") ||
+                        matches[0].ContainsKey("resourceMaterialization"))
+                    {
+                        throw new InvalidDataException(
+                            $"Published NPC owner '{transition.PermanentOwnerId}' did not consume its temporary authority exactly once.");
+                    }
+                    continue;
+                }
+                if (transition.Kind == AcceptedMechanicsOwnerTransitionKind.AfterlifeGuardianGacha)
+                    ValidatePublishedGuardianGachaTransition(root, transition);
+            }
+        }
+    }
+
+    private static void ValidatePublishedGuardianGachaTransition(
+        JsonObject root,
+        AcceptedMechanicsOwnerTransition transition)
+    {
+        var guardian = ResolveExactGuardianTransitionOwner(root, transition.OwnerRef);
+        var payload = transition.Payload;
+        if (!TryReadExactOwnerTransitionString(
+                payload["returnCycleId"],
+                out var returnCycleId) ||
+            payload["expectedHistoryPrefix"] is not JsonArray prefix ||
+            payload["appendedHistoryEntries"] is not JsonArray appended ||
+            guardian["gachaSystem"] is not JsonObject gacha ||
+            !TryReadExactOwnerTransitionString(
+                gacha["currentReturnCycleId"],
+                out var currentCycleId) ||
+            !string.Equals(currentCycleId, returnCycleId, StringComparison.Ordinal) ||
+            gacha["gachaHistory"] is not JsonArray history ||
+            history.Count != prefix.Count + appended.Count ||
+            !ArrayHasExactPrefix(history, prefix) ||
+            gacha.ContainsKey("chargesPerReturn") ||
+            gacha.ContainsKey("chargesUsedThisReturn"))
+        {
+            throw new InvalidDataException(
+                $"Published Guardian gacha transition for '{transition.OwnerRef}' is incomplete.");
+        }
+        for (var index = 0; index < appended.Count; index++)
+        {
+            if (!JsonNode.DeepEquals(history[prefix.Count + index], appended[index]))
+            {
+                throw new InvalidDataException(
+                    $"Published Guardian gacha history for '{transition.OwnerRef}' does not match the accepted resource plan.");
+            }
+        }
+        if (root["activeGuardian"] is JsonObject activeGuardian &&
+            TryReadExactOwnerTransitionString(
+                activeGuardian["guardianId"],
+                out var activeGuardianId) &&
+            string.Equals(activeGuardianId, transition.OwnerRef, StringComparison.Ordinal) &&
+            !JsonNode.DeepEquals(activeGuardian, guardian))
+        {
+            throw new InvalidDataException(
+                $"Published active Guardian '{transition.OwnerRef}' is not synchronized.");
+        }
+    }
+
+    private static bool TryReadExactOwnerTransitionString(
+        JsonNode? node,
+        out string value)
+    {
+        value = node is JsonValue jsonValue &&
+                jsonValue.TryGetValue<string>(out var text)
+            ? text
+            : string.Empty;
+        return ResourceMaterializationContract.IsExactIdentifier(value);
     }
 
     private async Task ValidateAcceptedMechanicsBeforeImagesAsync(

@@ -325,85 +325,146 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
 
     private async Task WriteAfterlifeActiveConflictStateAsync()
     {
-        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            bootstrap.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+
+        var soulRoot = new JsonObject
         {
-          "currentRealm": "Chaos Sea",
-          "turnNumber": 6,
-          "afterlifeCombatProfile": {
-            "spiritFocusTier": 1,
-            "artTiers": {
-              "pressure": 1,
-              "guard": 2
-            }
-          }
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/meta/afterlife_spiritual_conflict_state.json", """
-        {
-          "schemaVersion": 1,
-          "activeConflict": {
-            "conflictId": "afterlife_conflict_live_001",
-            "realm": "Chaos Sea",
-            "sideModel": "direct_duel",
-            "playerSide": {
-              "leadContestant": {
-                "actorType": "player_soul",
-                "actorId": "player_soul",
-                "displayName": "Асуран"
-              },
-              "supporters": []
-            },
-            "oppositionSide": {
-              "leadContestant": {
-                "actorType": "guardian",
-                "actorId": "guardian_liora",
-                "displayName": "Лиора",
-                "actorArtTierSnapshot": {
-                  "pressure": 3,
-                  "guard": 1
-                }
-              },
-              "supporters": []
-            },
-            "playerSideStrain": "clear",
-            "oppositionSideStrain": "strained",
-            "conflictPosition": "player_advantaged",
-            "resolutionState": "active",
-            "actionEconomy": {
-              "player": {
-                "current": 6,
-                "max": 7,
-                "source": "Средоточие Души tier 1"
-              },
-              "opposition": {
-                "current": 5,
-                "max": 6,
-                "source": "guardian profile"
-              }
-            },
-            "exchangeLog": []
-          },
-          "recentConflicts": []
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/meta/afterlife_entity_profiles.json", """
-        {
-          "schemaVersion": 1,
-          "profiles": [
+            ["currentRealm"] = "Chaos Sea",
+            ["turnNumber"] = 6,
+            [AfterlifeSpiritualConflictState.SoulStateProfileProperty] = new JsonObject
             {
-              "actorType": "guardian",
-              "actorId": "guardian_liora",
-              "displayName": "Лиора",
-              "realm": "Chaos Sea",
-              "standardArts": {
-                "pressure": 4,
-                "guard": 2
-              },
-              "specialArts": []
+                [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 1,
+                ["artTiers"] = new JsonObject
+                {
+                    ["pressure"] = 1,
+                    ["guard"] = 2
+                }
             }
-          ]
-        }
-        """);
+        };
+        var profilesRoot = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["actorType"] = "player_soul",
+                    ["actorId"] = "player_soul",
+                    ["displayName"] = "Асуран",
+                    ["realm"] = "Chaos Sea",
+                    ["resourceOwnerBindings"] = new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["realm"] = "chaos_sea",
+                            ["resourceOwnerId"] = "player_soul",
+                            ["state"] = "active"
+                        }
+                    }
+                },
+                new JsonObject
+                {
+                    ["actorType"] = "guardian",
+                    ["actorId"] = "guardian_liora",
+                    ["displayName"] = "Лиора",
+                    ["realm"] = "Chaos Sea",
+                    ["resourceOwnerBindings"] = new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["realm"] = "chaos_sea",
+                            ["resourceOwnerId"] = "guardian_liora",
+                            ["state"] = "active"
+                        }
+                    },
+                    ["standardArts"] = new JsonObject
+                    {
+                        ["pressure"] = 4,
+                        ["guard"] = 2
+                    },
+                    ["specialArts"] = new JsonArray()
+                }
+            }
+        };
+        var activeConflict = new JsonObject
+        {
+            ["conflictId"] = "afterlife_conflict_live_001",
+            ["realm"] = "Chaos Sea",
+            ["sideModel"] = "direct_duel",
+            ["playerSide"] = new JsonObject
+            {
+                ["leadContestant"] = new JsonObject
+                {
+                    ["actorType"] = "player_soul",
+                    ["actorId"] = "player_soul",
+                    ["displayName"] = "Асуран"
+                },
+                ["supporters"] = new JsonArray()
+            },
+            ["oppositionSide"] = new JsonObject
+            {
+                ["leadContestant"] = new JsonObject
+                {
+                    ["actorType"] = "guardian",
+                    ["actorId"] = "guardian_liora",
+                    ["displayName"] = "Лиора",
+                    ["actorArtTierSnapshot"] = new JsonObject
+                    {
+                        ["pressure"] = 3,
+                        ["guard"] = 1
+                    }
+                },
+                ["supporters"] = new JsonArray(),
+                ["resourceMaterialization"] = new JsonObject
+                {
+                    ["resources"] = new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["resourceKey"] = "spiritual_action_points",
+                            ["maximum"] = 6
+                        }
+                    }
+                }
+            },
+            ["playerSideStrain"] = "clear",
+            ["oppositionSideStrain"] = "strained",
+            ["conflictPosition"] = "player_advantaged",
+            ["resolutionState"] = "active",
+            ["exchangeLog"] = new JsonArray()
+        };
+        var acceptedConflictRoot = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["activeConflict"] = activeConflict,
+            ["recentConflicts"] = new JsonArray()
+        };
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            soulRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            profilesRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
+        var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            _fs,
+            new AfterlifeOwnerResourceAcceptedState(
+                SpiritualConflict: acceptedConflictRoot),
+            turn: 6);
+        Assert.True(resourcePlan.IsValid, string.Join(Environment.NewLine, resourcePlan.Issues));
+        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(_fs, resourcePlan));
         await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
         {
           "difficulty": "hard"

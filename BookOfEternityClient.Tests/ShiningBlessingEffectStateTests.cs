@@ -36,7 +36,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            var result = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 3);
+            var result = await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 3);
 
             Assert.True(result.Success);
             Assert.True(result.StateChanged);
@@ -54,12 +54,14 @@ public sealed class ShiningBlessingEffectStateTests
 
             Assert.Equal("active", blessingState["applicationState"]!.GetValue<string>());
             Assert.Equal(1, memorySelection["options"]!.GetValue<int>());
-            Assert.Equal(1, memorySelection["rerolls"]!.GetValue<int>());
+            Assert.False(memorySelection.ContainsKey("rerolls"));
+            Assert.IsType<JsonObject>(memorySelection["rerollResourceBinding"]);
             Assert.Equal("applied_at_bootstrap", resourceGrant["status"]!.GetValue<string>());
             Assert.Equal(150, resourceGrant["money"]!.GetValue<int>());
             Assert.Equal(2, resourceGrant["common"]!.GetValue<int>());
             Assert.Equal(1, resourceGrant["uncommon"]!.GetValue<int>());
-            Assert.Equal(2, relicEntitlements["rerolls"]!.GetValue<int>());
+            Assert.False(relicEntitlements.ContainsKey("rerolls"));
+            Assert.IsType<JsonObject>(relicEntitlements["rerollResourceBinding"]);
             Assert.True(relicEntitlements["freeShape"]!.GetValue<bool>());
             Assert.False(relicEntitlements["freeRetune"]!.GetValue<bool>());
 
@@ -106,7 +108,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            var result = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 3);
+            var result = await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 3);
 
             Assert.True(result.Success);
             Assert.True(result.StateChanged);
@@ -150,7 +152,7 @@ public sealed class ShiningBlessingEffectStateTests
             var invalidPackage = CreatePreparedPackage();
             invalidPackage["selectedCardIds"] = new JsonArray("card_memory", "missing_card");
 
-            var result = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, invalidPackage, 3);
+            var result = await MaterializeForBootstrapWithResourceAuthorityAsync(fs, invalidPackage, 3);
 
             Assert.False(result.Success);
             Assert.False(result.StateChanged);
@@ -190,7 +192,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
 
             var reminder = await ShiningBlessingEffectState.BuildSystemReminderFragmentAsync(fs, "Mortal World", 5);
 
@@ -247,7 +249,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            var result = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 3);
+            var result = await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 3);
 
             Assert.True(result.Success);
             Assert.Contains(result.SummaryLines, line => line.Contains("descent blessing primed", StringComparison.OrdinalIgnoreCase));
@@ -292,7 +294,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
 
             var preTurnNpcCore = new JsonObject
             {
@@ -405,7 +407,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
 
             var pendingSelection = await ShiningBlessingEffectState.ReadPendingMemorySelectionAsync(fs);
 
@@ -428,7 +430,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.Equal(ShiningBlessingEffectState.GenericStatusConsumed, memorySelection["status"]!.GetValue<string>());
             Assert.Equal(3, memorySelection["selectedLifeIncarnation"]!.GetValue<int>());
             Assert.Equal("Третья жизнь в стеклянном городе.", memorySelection["selectedLifeSummary"]!.GetValue<string>());
-            Assert.Equal(1, memorySelection["rerollsSpent"]!.GetValue<int>());
+            Assert.False(memorySelection.ContainsKey("rerollsSpent"));
         }
         finally
         {
@@ -477,7 +479,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
 
             var preTurnNpcCore = new JsonObject
             {
@@ -554,7 +556,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
             await fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", new JsonObject
             {
                 [GuardianPolicyContracts.NpcCoreSceneSectionName] = new JsonArray()
@@ -594,7 +596,6 @@ public sealed class ShiningBlessingEffectStateTests
                 preTurnNpcCoreJson: null,
                 preTurnWorldEventsJson: null,
                 preTurnNpcRelationshipsJson: null,
-                preTurnPlayerStatusJson: null,
                 preTurnFactionCoreJson: preTurnFactionCore.ToJsonString());
 
             Assert.True(result.Success);
@@ -641,7 +642,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
 
             var preTurnNpcCore = new JsonObject
             {
@@ -738,7 +739,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
 
             await fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", new JsonObject
             {
@@ -804,7 +805,6 @@ public sealed class ShiningBlessingEffectStateTests
                 preTurnNpcCoreJson: null,
                 preTurnWorldEventsJson: null,
                 preTurnNpcRelationshipsJson: new JsonObject { ["NPCRelationshipChanges"] = new JsonArray() }.ToJsonString(),
-                preTurnPlayerStatusJson: null,
                 preTurnFactionCoreJson: preTurnFactionCore.ToJsonString());
 
             Assert.True(result.Success);
@@ -848,7 +848,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
 
             var preTurnNpcCore = new JsonObject
             {
@@ -909,7 +909,7 @@ public sealed class ShiningBlessingEffectStateTests
     }
 
     [Fact]
-    public async Task ApplyAcceptedTurnRuntimeEffectsAsync_ConsumesSurvivalFromRuinousWorldEventAndRestoresGauges()
+    public async Task SurvivalDraft_ComposesRecoveryAndCompanionAfterImagesThroughOneResourcePlan()
     {
         var root = CreateTempRoot();
         try
@@ -925,15 +925,9 @@ public sealed class ShiningBlessingEffectStateTests
                 ["inkFeathers"] = new JsonObject { ["current"] = 0, ["total"] = 0 },
                 ["soulRelics"] = new JsonObject { ["equipped"] = new JsonArray(), ["stored"] = new JsonArray() }
             }.ToJsonString());
-            await fs.WriteFileAtomicAsync("game_state/core/player_status.json", new JsonObject
-            {
-                ["money"] = 0,
-                ["healthPercentage"] = "60%",
-                ["energyPercentage"] = "50%",
-                ["poisePercentage"] = "40%",
-                ["currentCondition"] = "Потрясён",
-                ["activeConditions"] = new JsonArray("ruinous")
-            }.ToJsonString());
+            await fs.WriteFileAtomicAsync(
+                "game_state/core/player_status.json",
+                MortalBootstrapStateBuilder.BuildFreshPlayerStatus().ToJsonString());
             await fs.WriteFileAtomicAsync("game_state/inventory/items.json", new JsonObject
             {
                 ["items"] = new JsonArray(),
@@ -949,17 +943,80 @@ public sealed class ShiningBlessingEffectStateTests
                 ["NPCRelationshipChanges"] = new JsonArray()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
 
-            var preTurnStatus = new JsonObject
-            {
-                ["money"] = 0,
-                ["healthPercentage"] = "100%",
-                ["energyPercentage"] = "90%",
-                ["poisePercentage"] = "80%",
-                ["currentCondition"] = "Здоров",
-                ["activeConditions"] = new JsonArray()
-            };
+            var resourceBootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+                incarnationNumber: 4,
+                turn: 4,
+                permanentStrength: 10,
+                permanentConstitution: 20,
+                permanentIntelligence: 30,
+                permanentWisdom: 40,
+                permanentFaith: 50);
+            Assert.True(
+                resourceBootstrap.IsValid,
+                string.Join(Environment.NewLine, resourceBootstrap.Issues));
+            using var damageFingerprintBuilder = new ResourceFingerprintBuilder(
+                "shining-survival-test-damage-v1");
+            damageFingerprintBuilder.Append("ruinous_outcome");
+            var damageFingerprint = damageFingerprintBuilder.Build();
+            var damageSources = ResourceMutationSourceCatalog.Create(
+                new[]
+                {
+                    new ResourceMutationSourceExport(
+                        "narrative_outcome",
+                        "evt_ruinous",
+                        damageFingerprint,
+                        ResourceMutationSourceState.Active,
+                        SameTurn: true)
+                });
+            Assert.True(damageSources.IsValid, string.Join(Environment.NewLine, damageSources.Issues));
+            ResourceMutationIntent Damage(
+                string eventRef,
+                string resourceKey,
+                ResourceOperation operation) =>
+                new(
+                    eventRef,
+                    new ResourceCoordinate(
+                        "mortal_world",
+                        ResourceOwnerKind.Player,
+                        "player_current",
+                        resourceKey),
+                    40m,
+                    new ResourceMutationSourceRequest(
+                        "narrative_outcome",
+                        "evt_ruinous",
+                        operation),
+                    Array.Empty<ResourceOperationKey>(),
+                    Array.Empty<ResourceMutationEventRequirement>(),
+                    ReceiptId: null);
+            var damagedResources = AcceptedMechanicsPlanner.BuildResources(
+                new AcceptedMechanicsResourceInput(
+                    5,
+                    resourceBootstrap.Definitions!,
+                    resourceBootstrap.State!,
+                    resourceBootstrap.History!,
+                    damageSources.Catalog!,
+                    new[]
+                    {
+                        Damage("turn_5:resource:1", "health", ResourceOperation.Damage),
+                        Damage("turn_5:resource:2", "energy", ResourceOperation.Spend),
+                        Damage("turn_5:resource:3", "poise", ResourceOperation.Damage)
+                    }),
+                new AcceptedMechanicsIdentityFactory());
+            Assert.True(
+                damagedResources.IsValid,
+                string.Join(Environment.NewLine, damagedResources.Issues));
+            await fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.DefinitionsPath,
+                resourceBootstrap.Definitions!.ToCanonicalJson());
+            await fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.StatePath,
+                damagedResources.StateAfterImage!.ToCanonicalJson());
+            await fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.HistoryPath,
+                damagedResources.HistoryAfterImage!.ToCanonicalJson());
+
             var preTurnWorldEvents = new JsonObject
             {
                 ["events"] = new JsonArray()
@@ -978,33 +1035,88 @@ public sealed class ShiningBlessingEffectStateTests
             };
             await fs.WriteFileAtomicAsync("game_state/world/world_events.json", currentWorldEvents.ToJsonString());
 
-            var result = await ShiningBlessingEffectState.ApplyAcceptedTurnRuntimeEffectsAsync(
-                fs,
+            var currentSoul = JsonNode.Parse(
+                (await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+            var draftBuild = ShiningBlessingEffectState.TryCreateSurvivalResourceOutcomeDraft(
                 currentTurnNumber: 5,
-                preTurnShiningJson: null,
-                preTurnNpcCoreJson: null,
-                preTurnWorldEventsJson: preTurnWorldEvents.ToJsonString(),
-                preTurnNpcRelationshipsJson: null,
-                preTurnPlayerStatusJson: preTurnStatus.ToJsonString(),
-                preTurnFactionCoreJson: null);
-
-            Assert.True(result.Success);
-            Assert.True(result.StateChanged);
-            Assert.Contains(result.SummaryLines, line => line.Contains("survival blessing applied", StringComparison.OrdinalIgnoreCase));
+                currentSoul,
+                currentWorldEvents,
+                preTurnWorldEvents,
+                new CanonicalBeforeImage(
+                    true,
+                    (await fs.ReadFileBytesAsync("game_state/meta/soul_state.json"))!),
+                new CanonicalBeforeImage(
+                    true,
+                    (await fs.ReadFileBytesAsync("game_state/world/world_events.json"))!),
+                "2026-08-16T00:00:00.0000000Z");
+            Assert.True(draftBuild.IsValid, string.Join(Environment.NewLine, draftBuild.Issues));
+            var draft = Assert.IsAssignableFrom<IResourceRegisteredSystemOutcomeDraft>(draftBuild.Draft);
+            var composedSources = ResourceMutationSourceCatalog.Create(draft.SourceExports);
+            Assert.True(composedSources.IsValid, string.Join(Environment.NewLine, composedSources.Issues));
+            var planned = AcceptedMechanicsPlanner.BuildResources(
+                new AcceptedMechanicsResourceInput(
+                    5,
+                    resourceBootstrap.Definitions!,
+                    resourceBootstrap.State!,
+                    resourceBootstrap.History!,
+                    composedSources.Catalog!,
+                    new ResourceMutationIntent[]
+                    {
+                        Damage("turn_5:resource:1", "health", ResourceOperation.Damage),
+                        Damage("turn_5:resource:2", "energy", ResourceOperation.Spend),
+                        Damage("turn_5:resource:3", "poise", ResourceOperation.Damage)
+                    }.Concat(draft.Mutations).ToArray()),
+                new AcceptedMechanicsIdentityFactory());
+            Assert.True(planned.IsValid, string.Join(Environment.NewLine, planned.Issues));
+            var projection = draft.Project(planned);
+            Assert.True(projection.IsValid, string.Join(Environment.NewLine, projection.Issues));
+            await fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.StatePath,
+                planned.StateAfterImage!.ToCanonicalJson());
+            await fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.HistoryPath,
+                planned.HistoryAfterImage!.ToCanonicalJson());
+            foreach (var pair in projection.CompanionAfterImages)
+                await fs.WriteFileAtomicAsync(pair.Key, pair.Value.ToJsonString());
 
             var updatedWorldEvents = JsonNode.Parse((await fs.ReadFileAsync("game_state/world/world_events.json"))!)!.AsObject();
             Assert.Equal("severe", updatedWorldEvents["events"]!.AsArray()[0]!["severity"]!.GetValue<string>());
 
+            var stateResult = ResourceStateContract.ParseCanonical(
+                await fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+                resourceBootstrap.Definitions,
+                allowMissingPristine: false);
+            var historyResult = ResourceHistoryState.ParseCanonical(
+                await fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+                resourceBootstrap.Definitions,
+                allowMissingPristine: false);
+            Assert.True(stateResult.IsValid, string.Join(Environment.NewLine, stateResult.Issues));
+            Assert.True(historyResult.IsValid, string.Join(Environment.NewLine, historyResult.Issues));
+            var resources = stateResult.Ledger!.Entries.ToDictionary(
+                static entry => entry.Coordinate.ResourceKey,
+                StringComparer.Ordinal);
+            Assert.Equal(118m, resources["health"].Current);
+            Assert.Equal(172m, resources["energy"].Current);
+            Assert.Equal(218m, resources["poise"].Current);
+            Assert.Empty(historyResult.History!.ValidateStateAgreement(stateResult.Ledger));
+
             var updatedStatus = JsonNode.Parse((await fs.ReadFileAsync("game_state/core/player_status.json"))!)!.AsObject();
-            Assert.Equal("68%", updatedStatus["healthPercentage"]!.GetValue<string>());
-            Assert.Equal("58%", updatedStatus["energyPercentage"]!.GetValue<string>());
-            Assert.Equal("48%", updatedStatus["poisePercentage"]!.GetValue<string>());
+            Assert.False(updatedStatus.ContainsKey("healthPercentage"));
+            Assert.False(updatedStatus.ContainsKey("energyPercentage"));
+            Assert.False(updatedStatus.ContainsKey("poisePercentage"));
 
             var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var survival = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingSurvivalEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.GenericStatusConsumed, survival["status"]!.GetValue<string>());
             Assert.Equal("evt_ruinous", survival["consumedEventId"]!.GetValue<string>());
-            Assert.Equal(8, survival["restoredHealthPercentagePoints"]!.GetValue<int>());
+            Assert.True(JsonNode.DeepEquals(
+                new JsonObject
+                {
+                    ["energy"] = 8,
+                    ["health"] = 8,
+                    ["poise"] = 8
+                },
+                survival["restoredResourceAmounts"]));
         }
         finally
         {
@@ -1043,7 +1155,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
             await fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", new JsonObject
             {
                 [GuardianPolicyContracts.NpcCoreSceneSectionName] = new JsonArray
@@ -1096,13 +1208,6 @@ public sealed class ShiningBlessingEffectStateTests
                 preTurnNpcCoreJson: new JsonObject { [GuardianPolicyContracts.NpcCoreSceneSectionName] = new JsonArray() }.ToJsonString(),
                 preTurnWorldEventsJson: new JsonObject { ["events"] = new JsonArray() }.ToJsonString(),
                 preTurnNpcRelationshipsJson: new JsonObject { ["NPCRelationshipChanges"] = new JsonArray() }.ToJsonString(),
-                preTurnPlayerStatusJson: new JsonObject
-                {
-                    ["money"] = 0,
-                    ["healthPercentage"] = "60%",
-                    ["energyPercentage"] = "50%",
-                    ["poisePercentage"] = "40%"
-                }.ToJsonString(),
                 preTurnFactionCoreJson: null);
 
             var lines = await ShiningBlessingEffectState.BuildStatusLinesAsync(fs, currentTurnNumber: 5);
@@ -1144,8 +1249,6 @@ public sealed class ShiningBlessingEffectStateTests
                     ["memorySelection"] = new JsonObject
                     {
                         ["options"] = 1,
-                        ["rerolls"] = 1,
-                        ["rerollsSpent"] = 1,
                         ["status"] = ShiningBlessingEffectState.GenericStatusConsumed,
                         ["consumedAtTurn"] = 1,
                         ["consumedAtUtc"] = "2026-04-17T00:10:00Z",
@@ -1155,8 +1258,6 @@ public sealed class ShiningBlessingEffectStateTests
                     },
                     ["relicRefinementEntitlements"] = new JsonObject
                     {
-                        ["rerolls"] = 0,
-                        ["rerollsSpent"] = 2,
                         ["freeShape"] = false,
                         ["freeRetune"] = false,
                         ["status"] = ShiningBlessingEffectState.GenericStatusConsumed,
@@ -1176,7 +1277,10 @@ public sealed class ShiningBlessingEffectStateTests
                             ["consumedAtTurn"] = 6,
                             ["consumedAtUtc"] = "2026-04-17T00:21:00Z",
                             ["consumedEventId"] = "evt_ruinous_alpha",
-                            ["restoredHealthPercentagePoints"] = 8
+                            ["restoredResourceAmounts"] = new JsonObject
+                            {
+                                ["health"] = 8
+                            }
                         }
                     },
                     ["pendingDescentEffects"] = new JsonArray
@@ -1216,7 +1320,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.Contains(lines, line => line.Contains("спасающее благословение сработало через evt_ruinous_alpha", StringComparison.OrdinalIgnoreCase) && line.Contains("health+8", StringComparison.OrdinalIgnoreCase));
             Assert.Contains(lines, line => line.Contains("нисхождение уже закреплено на реликвии relic_echo", StringComparison.OrdinalIgnoreCase));
             Assert.Contains(lines, line => line.Contains("Истекло: route card_route", StringComparison.OrdinalIgnoreCase) && line.Contains("ходу 7", StringComparison.OrdinalIgnoreCase));
-            Assert.Contains(lines, line => line.Contains("кузнечные привилегии этой жизни исчерпаны", StringComparison.OrdinalIgnoreCase) && line.Contains("Перебросов потрачено: 2", StringComparison.OrdinalIgnoreCase));
+            Assert.Contains(lines, line => line.Contains("кузнечные привилегии этой жизни исчерпаны", StringComparison.OrdinalIgnoreCase));
         }
         finally
         {
@@ -1249,7 +1353,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
             var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var lore = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingLoreEffects"]!.AsArray()[0]!.AsObject();
             lore["clueCount"] = 2;
@@ -1325,7 +1429,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
             await fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", new JsonObject
             {
                 [GuardianPolicyContracts.NpcCoreSceneSectionName] = new JsonArray()
@@ -1402,7 +1506,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
             var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var route = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingRouteEffects"]!.AsArray()[0]!.AsObject();
             route["routeOptions"] = 2;
@@ -1478,7 +1582,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
             await fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", new JsonObject
             {
                 [GuardianPolicyContracts.NpcCoreSceneSectionName] = new JsonArray()
@@ -1570,7 +1674,7 @@ public sealed class ShiningBlessingEffectStateTests
                 ["resources"] = new JsonObject()
             }.ToJsonString());
 
-            await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
+            await MaterializeForBootstrapWithResourceAuthorityAsync(fs, CreatePreparedPackage(), 4);
 
             var preTurnNpcCore = new JsonObject
             {
@@ -1690,6 +1794,63 @@ public sealed class ShiningBlessingEffectStateTests
                 })
             }
         };
+    }
+
+    private static async Task<ShiningBlessingEffectState.BootstrapMaterializationResult>
+        MaterializeForBootstrapWithResourceAuthorityAsync(
+            FileSystemManager fs,
+            JsonObject preparedPackage,
+            int currentIncarnation)
+    {
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            bootstrap.Definitions!.ToCanonicalJson());
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+        var soulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.False(string.IsNullOrWhiteSpace(soulJson));
+        var soulRoot = JsonNode.Parse(soulJson!)!.AsObject();
+        soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty] ??= new JsonObject
+        {
+            [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0
+        };
+        await fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            soulRoot.ToJsonString());
+        await fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Душа игрока",
+                        ["realm"] = "Shining Abode",
+                        ["resourceOwnerBindings"] = new JsonArray
+                        {
+                            new JsonObject
+                            {
+                                ["realm"] = "shining_abode",
+                                ["resourceOwnerId"] = "player_soul",
+                                ["state"] = "suspended"
+                            }
+                        }
+                    }
+                }
+            }.ToJsonString());
+        return await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
+            fs,
+            preparedPackage,
+            currentIncarnation);
     }
 
     private static JsonObject CreateCard(string cardId, string family, JsonObject payload, string sourceActorId = "guardian_dawn")

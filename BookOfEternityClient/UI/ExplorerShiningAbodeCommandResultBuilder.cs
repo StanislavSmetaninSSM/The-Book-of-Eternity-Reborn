@@ -1119,7 +1119,9 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         var propertyOptions = BuildForgePropertyChoiceOptions(relics).ToList();
         var replacementOptions = BuildForgeReplacementPropertyOptions(context.SoulRoot).ToList();
         var addedPropertyOptions = BuildForgeAddedPropertyOptions(context.SoulRoot).ToList();
-        var rerolls = ShiningBlessingEffectState.GetPendingRelicRerolls(context.SoulRoot);
+        var rerolls = await ShiningBlessingEffectState.GetPendingRelicRerollsAsync(
+            fs,
+            context.SoulRoot);
 
         var blocks = new List<UiBlock>
         {

@@ -41,16 +41,30 @@ public sealed class AcceptedMechanicsPlannerTests
             ? "charges"
             : "health";
         Assert.True(definitions.TryResolveExact(resourceKey, out var definition));
+        var boundOwner = sourceKind.StartsWith("local_item_", StringComparison.Ordinal)
+            ? new ResourceOwnerKey(
+                "mortal_world",
+                ResourceOwnerKind.Item,
+                "source_alpha")
+            : null;
         var catalog = CreateCatalog(new ResourceMutationSourceExport(
             sourceKind,
             "source_alpha",
             FingerprintA,
             ResourceMutationSourceState.Active,
-            SameTurn: true));
+            SameTurn: true,
+            boundOwner));
 
         var result = catalog.Resolve(
             new ResourceMutationSourceRequest(sourceKind, "source_alpha", operation),
-            definition!);
+            definition!,
+            boundOwner == null
+                ? null
+                : new ResourceCoordinate(
+                    boundOwner.Realm,
+                    boundOwner.OwnerKind,
+                    boundOwner.ResourceOwnerId,
+                    resourceKey));
 
         Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
         Assert.Equal(expectedPhase, result.Route!.Phase);
@@ -264,6 +278,101 @@ public sealed class AcceptedMechanicsPlannerTests
         Assert.Equal(1, result.Statistics.HistoryFreezeCount);
         Assert.Equal(4, result.Statistics.HistoryAppendCount);
         Assert.Empty(result.HistoryAfterImage!.ValidateStateAgreement(result.StateAfterImage));
+    }
+
+    [Fact]
+    public void Planner_ResolvesRegisteredLossRecoveryInsideTheSingleFourPhasePlan()
+    {
+        var baseline = BaselineCharges();
+        var intents = new[]
+        {
+            Intent(
+                "turn_2:resource:1",
+                "action_cost",
+                "action_alpha",
+                ResourceOperation.Spend,
+                4m),
+            new ResourceMutationIntent(
+                "turn_2:registered_recovery:1",
+                ChargesCoordinate,
+                Amount: 0m,
+                new ResourceMutationSourceRequest(
+                    "registered_system_outcome",
+                    "system_alpha",
+                    ResourceOperation.Gain),
+                Array.Empty<ResourceOperationKey>(),
+                Array.Empty<ResourceMutationEventRequirement>(),
+                ReceiptId: null,
+                DerivedAmount: new ResourceLossRecoveryPolicy(50))
+        };
+
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            Input(baseline, intents),
+            IdentityFactory());
+
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
+        Assert.Equal(8m, result.StateAfterImage!.Entries.Single().Current);
+        Assert.Equal(
+            new[]
+            {
+                ResourceMutationPhase.DirectCost,
+                ResourceMutationPhase.RegisteredSystemOutcome
+            },
+            result.AppliedTransitions.Select(static transition => transition.Phase));
+        Assert.Equal(
+            new[] { 4m, 2m },
+            result.AppliedTransitions.Select(static transition => transition.AppliedAmount));
+        Assert.Equal(
+            new[] { 0, 1 },
+            result.AppliedTransitions.Select(static transition => transition.ExecutionSequence));
+        Assert.Empty(result.HistoryAfterImage!.ValidateStateAgreement(result.StateAfterImage));
+    }
+
+    [Fact]
+    public void Planner_ReplaysDerivedLossRecoveryFromImmutableRequestedAmount()
+    {
+        var baseline = BaselineCharges();
+        var intents = new[]
+        {
+            Intent(
+                "turn_2:resource:1",
+                "action_cost",
+                "action_alpha",
+                ResourceOperation.Spend,
+                4m),
+            new ResourceMutationIntent(
+                "turn_2:registered_recovery:1",
+                ChargesCoordinate,
+                Amount: 0m,
+                new ResourceMutationSourceRequest(
+                    "registered_system_outcome",
+                    "system_alpha",
+                    ResourceOperation.Gain),
+                Array.Empty<ResourceOperationKey>(),
+                Array.Empty<ResourceMutationEventRequirement>(),
+                ReceiptId: null,
+                DerivedAmount: new ResourceLossRecoveryPolicy(50))
+        };
+        var first = AcceptedMechanicsPlanner.BuildResources(
+            Input(baseline, intents),
+            IdentityFactory(seed: 10));
+        Assert.True(first.IsValid, string.Join(Environment.NewLine, first.Issues));
+
+        var replay = AcceptedMechanicsPlanner.BuildResources(
+            Input(
+                new Baseline(
+                    baseline.Definitions,
+                    first.StateAfterImage!,
+                    first.HistoryAfterImage!,
+                    baseline.Sources),
+                intents),
+            IdentityFactory(seed: 100));
+
+        Assert.True(replay.IsValid, string.Join(Environment.NewLine, replay.Issues));
+        Assert.Empty(replay.AppliedTransitions);
+        Assert.Equal(2, replay.ReplayTransitions.Count);
+        Assert.Equal(first.StateAfterImage!.Fingerprint, replay.StateAfterImage!.Fingerprint);
+        Assert.Equal(first.HistoryAfterImage!.Fingerprint, replay.HistoryAfterImage!.Fingerprint);
     }
 
     [Fact]
@@ -499,6 +608,73 @@ public sealed class AcceptedMechanicsPlannerTests
         Assert.Equal(
             new[] { 0, 1 },
             result.AppliedTransitions.Select(static transition => transition.ExecutionSequence));
+    }
+
+    [Theory]
+    [InlineData("Active", "Suspended", "Suspend")]
+    [InlineData("Suspended", "Active", "Resume")]
+    public void OwnerCapacityPlanner_SynchronizesLiveOwnerLifecycle(
+        string currentStateToken,
+        string ownerLifecycleToken,
+        string expectedOperationToken)
+    {
+        var currentState = Enum.Parse<ResourceLifecycleState>(currentStateToken);
+        var ownerLifecycle = Enum.Parse<ResourceOwnerLifecycle>(ownerLifecycleToken);
+        var expectedOperation = Enum.Parse<ResourceCapacityOperation>(expectedOperationToken);
+        var ownerKey = new ResourceOwnerKey(
+            ChargesCoordinate.Realm,
+            ChargesCoordinate.OwnerKind,
+            ChargesCoordinate.ResourceOwnerId);
+        var authority = ResourceOwnerAuthority.Build(new ResourceOwnerAuthorityInput(
+            new[]
+            {
+                new ResourceOwnerExport(
+                    ownerKey,
+                    ownerLifecycle,
+                    SameTurn: false,
+                    OwnerRef: null,
+                    BoundNpcId: null,
+                    new HashSet<string>(StringComparer.Ordinal) { ChargesCoordinate.ResourceKey },
+                    FingerprintA)
+            },
+            Array.Empty<ResourceOwnerExport>(),
+            Array.Empty<ResourceOwnerKey>()));
+        Assert.Empty(authority.Issues);
+        var state = new ResourceStateLedger(new[]
+        {
+            new ResourceStateEntry(
+                ChargesCoordinate,
+                Current: 5m,
+                Maximum: 10m,
+                new ResourceCapacityBinding(
+                    ResourceCapacityKind.InstanceFixed,
+                    "capacity_item_alpha_charges",
+                    FingerprintA),
+                currentState,
+                new ResourceChronology(
+                    CreatedAtTurn: 1,
+                    CreatedEventRef: "turn_1:resource:1",
+                    LastTransitionId: "transition_baseline_initialize",
+                    LastEventRef: "turn_1:resource:1",
+                    LastTransitionTurn: 1))
+        });
+        var issues = new List<ValidationIssue>();
+
+        var transitions = AcceptedMechanicsPlanner.ComposeOwnerCapacityTransitions(
+            turn: 2,
+            authority,
+            state,
+            Array.Empty<ResourceOwnerCapacityDraft>(),
+            Array.Empty<ResourceOwnerKey>(),
+            issues);
+
+        Assert.Empty(issues);
+        var transition = Assert.Single(transitions);
+        Assert.Equal(expectedOperation, transition.Operation);
+        Assert.Equal(ChargesCoordinate, transition.Coordinate);
+        Assert.Null(transition.ResolvedCapacity);
+        Assert.Null(transition.CurrentDisposition);
+        Assert.Equal("owner_lifecycle", transition.SourceEvidence.SourceKind);
     }
 
     private static AcceptedMechanicsResourceInput Input(

@@ -84,7 +84,7 @@ public partial class CanonicalStateNormalizer
                 foreach (var guardian in guardians.OfType<JsonObject>())
                 {
                     AbodePowerRules.EnsureCanonicalState(guardian);
-                    GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+                    GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardian);
                     GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
                 }
 
@@ -144,7 +144,7 @@ public partial class CanonicalStateNormalizer
             foreach (var guardian in guardians.OfType<JsonObject>())
             {
                 AbodePowerRules.EnsureCanonicalState(guardian);
-                GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+                GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardian);
                 GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
             }
 
@@ -400,7 +400,9 @@ public partial class CanonicalStateNormalizer
         result.Remove("activeGuardian");
     }
 
-    private async Task NormalizeGuardiansAsync(IReadOnlyDictionary<string, string>? backups)
+    private async Task NormalizeGuardiansAsync(
+        IReadOnlyDictionary<string, string>? backups,
+        AcceptedMechanicsPlan? acceptedMechanicsPlan)
     {
         const string path = "game_state/meta/guardians.json";
         var currentNode = await ReadNodeAsync(path);
@@ -460,7 +462,7 @@ public partial class CanonicalStateNormalizer
             foreach (var guardian in normalizedGuardians.OfType<JsonObject>())
             {
                 AbodePowerRules.EnsureCanonicalState(guardian);
-                GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+                GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardian);
                 GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
             }
 
@@ -481,7 +483,7 @@ public partial class CanonicalStateNormalizer
             }
         }
 
-        result.Remove("UpdateGuardians");
+        RetainPlannedGuardianGachaCommands(result, acceptedMechanicsPlan);
         if (!keepQuestProgressUpdates)
             result.Remove(GuardianProjectState.QuestProgressUpdatesProperty);
         result.Remove(GuardianTradeRequestState.UpdateReceiptsProperty);
@@ -489,6 +491,79 @@ public partial class CanonicalStateNormalizer
         await WriteIfChangedAsync(path, currentNode, result);
         if (powerJournalEntries.Count > 0)
             await AppendGuardianPowerJournalEntriesAsync(powerJournalEntries);
+    }
+
+    private static void RetainPlannedGuardianGachaCommands(
+        JsonObject root,
+        AcceptedMechanicsPlan? acceptedMechanicsPlan)
+    {
+        var expectedByGuardian = new Dictionary<string, int>(StringComparer.Ordinal);
+        if (acceptedMechanicsPlan != null)
+        {
+            foreach (var transition in acceptedMechanicsPlan.OwnerTransitions.Where(
+                         static transition =>
+                             transition.Kind ==
+                             AcceptedMechanicsOwnerTransitionKind.AfterlifeGuardianGacha))
+            {
+                var payload = transition.Payload;
+                if (payload["appendedHistoryEntries"] is not JsonArray appended ||
+                    appended.Count == 0 ||
+                    !expectedByGuardian.TryAdd(transition.OwnerRef, appended.Count))
+                {
+                    throw new InvalidDataException(
+                        $"Accepted Guardian gacha plan for '{transition.OwnerRef}' is ambiguous or incomplete.");
+                }
+            }
+        }
+
+        var retained = new JsonArray();
+        var actualByGuardian = new Dictionary<string, int>(StringComparer.Ordinal);
+        if (root.TryGetPropertyValue("UpdateGuardians", out var updatesNode) &&
+            updatesNode != null)
+        {
+            if (updatesNode is not JsonArray updates)
+            {
+                throw new InvalidDataException(
+                    "Guardian updates changed to a non-array before canonical publication.");
+            }
+
+            foreach (var update in updates.OfType<JsonObject>())
+            {
+                if (!string.Equals(
+                        GetNodeString(update["command"]),
+                        "processGacha",
+                        StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                var guardianId = GetNodeString(update["guardianId"]);
+                if (string.IsNullOrWhiteSpace(guardianId) ||
+                    !ResourceMaterializationContract.IsExactIdentifier(guardianId))
+                {
+                    throw new InvalidDataException(
+                        "Guardian processGacha command lost its exact guardian authority before publication.");
+                }
+
+                actualByGuardian[guardianId] =
+                    actualByGuardian.GetValueOrDefault(guardianId) + 1;
+                retained.Add(update.DeepClone());
+            }
+        }
+
+        if (actualByGuardian.Count != expectedByGuardian.Count ||
+            actualByGuardian.Any(pair =>
+                !expectedByGuardian.TryGetValue(pair.Key, out var expectedCount) ||
+                expectedCount != pair.Value))
+        {
+            throw new InvalidDataException(
+                "Guardian processGacha commands do not match the validated common resource plan.");
+        }
+
+        if (retained.Count == 0)
+            root.Remove("UpdateGuardians");
+        else
+            root["UpdateGuardians"] = retained;
     }
 
     private async Task NormalizeGuardianAbodeResidentsAsync(IReadOnlyDictionary<string, string>? backups)

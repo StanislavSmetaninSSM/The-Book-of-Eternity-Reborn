@@ -117,6 +117,11 @@ public sealed partial class MortalItemMaterializationValidationTests
             await context.WriteNewNpcSameTurnEquipmentReferenceAsync(
                 arrangement.CreationRef);
 
+            var rawIssues = await context.ValidateAcceptedTurnRawMaterializationAsync();
+            Assert.DoesNotContain(
+                rawIssues,
+                issue => issue.Severity == IssueSeverity.Error);
+
             await context.NormalizeAcceptedTurnAsync();
 
             var itemId = await context.ReadSingleActiveMortalItemIdAsync();

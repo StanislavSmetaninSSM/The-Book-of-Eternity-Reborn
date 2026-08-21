@@ -153,7 +153,7 @@ internal sealed partial class MortalItemMaterializationTestContext
 
     internal async Task<MortalItemRouteOutcome> ValidateNormalizeAndValidateAsync()
     {
-        var rawIssues = await Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        var rawIssues = await ValidateAcceptedTurnRawMaterializationAsync();
         if (rawIssues.Any(issue => issue.Severity == IssueSeverity.Error))
         {
             return new MortalItemRouteOutcome(
@@ -601,6 +601,15 @@ internal sealed partial class MortalItemMaterializationTestContext
                             ["actorId"] = NewNpcInitialId,
                             ["materializedAtTurn"] = RouteTurn,
                             ["state"] = "complete"
+                        },
+                        ["resourceMaterialization"] = new JsonObject
+                        {
+                            ["resources"] = new JsonArray(
+                                new JsonObject
+                                {
+                                    ["resourceKey"] = "health",
+                                    ["maximum"] = 60m
+                                })
                         }
                     }),
                 ["NPCsInScene"] = new JsonArray()

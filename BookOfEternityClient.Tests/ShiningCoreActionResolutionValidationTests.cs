@@ -2964,7 +2964,6 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         ["sourceCardCount"] = 1,
         ["relicRefinementEntitlements"] = new JsonObject
         {
-            ["rerolls"] = 0,
             ["freeShape"] = true,
             ["freeRetune"] = false,
             ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,

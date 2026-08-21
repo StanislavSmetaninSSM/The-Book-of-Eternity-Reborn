@@ -1900,9 +1900,6 @@ public sealed class QteSceneServiceTests : IDisposable
 
         await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", """
         {
-          "healthPercentage": "100%",
-          "energyPercentage": "100%",
-          "poisePercentage": "100%",
           "currentCondition": "Собран",
           "money": 0
         }

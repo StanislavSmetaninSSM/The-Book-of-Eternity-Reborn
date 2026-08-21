@@ -37,6 +37,8 @@ The nested definition contains every public field in [data-model.md §3](../data
 
 An existing resource key/version cannot be resent, edited, removed, or aliased. A same-turn capacity command may refer to the exact `definitionRef`; the ref is consumed and never canonical.
 
+The common catalog is for bounded consumable/mechanical reserves, not a universal numeric-property adapter. Definition creation fails closed for these reserved out-of-scope keys: `money`, `ink_feathers`, `light_sparks`, `treasury_balance`, `faction_resource_ledger`, `experience`, `mastery`, `level`, `reputation`, `relationship`, `owner_bond_level`, `spiritual_power`, `spiritual_strain`, and `spiritual_shield`. Those values remain in their established currency, treasury, faction, progression, relationship, or spiritual-axis authorities. A setting may still define a genuinely new bounded reserve such as `mana`; spelling an excluded mechanic as a setting definition does not bypass admission.
+
 ## 4. Capacity lifecycle
 
 `resourceCapacityChanges[]` uses this closed shape:
@@ -89,6 +91,8 @@ Allowed operations are `damage`, `restore`, `spend`, and `gain`. `amount` is an 
 `target` is `{kind,targetId}` for an accepted existing owner or `{kind,targetRef}` for an accepted same-turn owner. Exactly one ID/ref is present. Display names, aliases, paths, indexes, case variants, and historical identities are not accepted.
 
 `source` is `{kind,sourceId}` using the route-specific registered source catalog. Source kind decides phase, priority, applicable floor/cap binding, and allowed operation; raw input cannot override them.
+
+For item operations, `local_item_cost` and `local_item_outcome` use the exact permanent `itemId` as `sourceId` and are bound to that same item owner coordinate. They authorize ordinary use/fire/reload costs or repair/outcome changes only for their bound item. A case variant, historical item, different item target, or carrier-local alias fails with no writes; moving the item does not change this authority.
 
 `eventRef` must be the exact ordinal accepted event for that command. Swapped, reused, stale, missing, or future event refs fail closed.
 

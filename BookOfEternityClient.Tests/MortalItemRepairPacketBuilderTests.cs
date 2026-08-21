@@ -23,7 +23,7 @@ public sealed class MortalItemRepairPacketBuilderTests
             ActualEvidence: "sourceAuthority.authorityId=missing",
             RequiredCompanionTargets: new[]
             {
-                "game_state/inventory/item_resources.json"
+                "game_state/inventory/item_bonds.json"
             });
         var issues = new[]
         {
@@ -36,16 +36,16 @@ public sealed class MortalItemRepairPacketBuilderTests
                 targets: new[]
                 {
                     "game_state/inventory/items.json",
-                    "game_state/inventory/item_resources.json"
+                    "game_state/inventory/item_bonds.json"
                 },
                 context),
             CreateIssue(
-                "game_state/inventory/item_resources.json.entries[0].itemRef",
+                "game_state/inventory/item_bonds.json.entries[0].itemRef",
                 "mortal_item_materialization_orphan_companion",
                 coordinate,
                 expected: "one exact creationRef",
                 actual: "unresolved exact reference craft_result_42",
-                targets: new[] { "game_state/inventory/item_resources.json" },
+                targets: new[] { "game_state/inventory/item_bonds.json" },
                 context),
             CreateIssue(
                 "game_state/inventory/item_identity_index.json.entries[0]",
@@ -69,7 +69,7 @@ public sealed class MortalItemRepairPacketBuilderTests
         Assert.Equal(
             new[]
             {
-                "game_state/inventory/item_resources.json",
+                "game_state/inventory/item_bonds.json",
                 "game_state/inventory/items.json"
             },
             packet.TargetFiles);
@@ -85,7 +85,7 @@ public sealed class MortalItemRepairPacketBuilderTests
             packet.ExactFieldCorrections,
             correction => correction.Path.Contains("item_identity_index.json", StringComparison.Ordinal));
         Assert.Equal(
-            new[] { "game_state/inventory/item_resources.json" },
+            new[] { "game_state/inventory/item_bonds.json" },
             packet.RequiredCompanionTargets);
         Assert.Contains("craft_request:req_craft_42", packet.ExpectedAuthority);
         Assert.Contains(

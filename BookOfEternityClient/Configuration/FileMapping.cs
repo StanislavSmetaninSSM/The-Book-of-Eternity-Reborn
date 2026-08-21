@@ -9,7 +9,6 @@ public static class FileMapping
     {
         // CORE
         ["playerStatus"] = "game_state/core/player_status.json",
-        ["currentPoiseChange"] = "game_state/core/player_status.json",
 
         // PLAYER CHARACTER
         ["activeSkillChanges"] = "game_state/player/skills_active.json",
@@ -25,8 +24,6 @@ public static class FileMapping
         ["calculatedWeightData"] = "game_state/player/weight_calc.json",
         ["statsIncreased"] = "game_state/player/status_changes.json",
         ["statsDecreased"] = "game_state/player/status_changes.json",
-        ["currentEnergyChange"] = "game_state/player/status_changes.json",
-        ["currentHealthChange"] = "game_state/player/status_changes.json",
         ["moneyChange"] = "game_state/player/status_changes.json",
         ["experienceGained"] = "game_state/player/experience.json",
         ["playerEffortTrackerChange"] = "game_state/player/experience.json",
@@ -45,7 +42,6 @@ public static class FileMapping
 
         // INVENTORY SYSTEM
         ["UpdateInventory"] = "game_state/inventory/items.json",
-        ["inventoryItemsResources"] = "game_state/inventory/item_resources.json",
         ["updateItemTextContents"] = "game_state/inventory/item_text_updates.json",
         ["moveInventoryItems"] = "game_state/inventory/item_movements.json",
         ["removeInventoryItems"] = "game_state/inventory/item_removals.json",
@@ -95,7 +91,6 @@ public static class FileMapping
         ["NPCInventoryUpdates"] = "game_state/npcs/npc_inventory.json",
         ["NPCInventoryRemovals"] = "game_state/npcs/npc_inventory.json",
         ["NPCEquipmentChanges"] = "game_state/npcs/npc_inventory.json",
-        ["NPCInventoryResourcesChanges"] = "game_state/npcs/npc_inventory.json",
         ["NPCMaskAdds"] = "game_state/npcs/npc_masks.json",
         ["NPCMaskUpdates"] = "game_state/npcs/npc_masks.json",
         ["NPCMaskRemovals"] = "game_state/npcs/npc_masks.json",

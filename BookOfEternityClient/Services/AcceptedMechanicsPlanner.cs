@@ -11,6 +11,8 @@ internal sealed record ResourceMutationEventRequirement(
     ResourceOperationKey Producer,
     string EventKind);
 
+internal sealed record ResourceLossRecoveryPolicy(int RecoveryPercent);
+
 internal sealed record ResourceMutationIntent(
     string EventRef,
     ResourceCoordinate Coordinate,
@@ -18,7 +20,8 @@ internal sealed record ResourceMutationIntent(
     ResourceMutationSourceRequest Source,
     IReadOnlyList<ResourceOperationKey> Dependencies,
     IReadOnlyList<ResourceMutationEventRequirement> EventRequirements,
-    string? ReceiptId)
+    string? ReceiptId,
+    ResourceLossRecoveryPolicy? DerivedAmount = null)
 {
     internal ResourceOperationKey Key => new(
         EventRef,
@@ -69,11 +72,15 @@ internal sealed class AcceptedMechanicsResourceInput
         ResourceHistoryState History,
         ResourceMutationSourceCatalog Sources,
         IReadOnlyList<ResourceMutationIntent> Mutations,
-        IReadOnlyList<ResourceCapacityIntent>? CapacityTransitions = null)
+        IReadOnlyList<ResourceCapacityIntent>? CapacityTransitions = null,
+        int ExecutionSequenceOffset = 0)
     {
         if (Turn <= 0)
             throw new ArgumentOutOfRangeException(nameof(Turn));
+        if (ExecutionSequenceOffset < 0)
+            throw new ArgumentOutOfRangeException(nameof(ExecutionSequenceOffset));
         this.Turn = Turn;
+        this.ExecutionSequenceOffset = ExecutionSequenceOffset;
         this.Definitions = Definitions ?? throw new ArgumentNullException(nameof(Definitions));
         this.State = State ?? throw new ArgumentNullException(nameof(State));
         this.History = History ?? throw new ArgumentNullException(nameof(History));
@@ -90,6 +97,7 @@ internal sealed class AcceptedMechanicsResourceInput
     }
 
     internal int Turn { get; }
+    internal int ExecutionSequenceOffset { get; }
     internal ResourceDefinitionCatalog Definitions { get; }
     internal ResourceStateLedger State { get; }
     internal ResourceHistoryState History { get; }
@@ -234,7 +242,9 @@ internal static class AcceptedMechanicsPlanner
             input,
             context,
             definitions,
-            issues);
+            issues)
+            .Concat(context.RegisteredSystemOutcomes.SelectMany(static outcome => outcome.Mutations))
+            .ToArray();
         if (issues.Count != 0)
             return new AcceptedMechanicsPlanningResult(null, issues);
 
@@ -268,6 +278,52 @@ internal static class AcceptedMechanicsPlanner
         var effectPlan = context.EffectPlan;
         var carriers = effectPlan?.CarrierAfterImages ??
             new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        var ownerCompanionAfterImages = context.OwnerCompanionAfterImages
+            .ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal);
+        var ownerTransitions = context.OwnerTransitions
+            .Select(static value => value.Clone())
+            .ToList();
+        foreach (var outcome in context.RegisteredSystemOutcomes)
+        {
+            var projected = outcome.Project(resourceResult);
+            issues.AddRange(projected.Issues);
+            foreach (var pair in projected.CompanionAfterImages)
+            {
+                if (!ownerCompanionAfterImages.TryAdd(
+                        pair.Key,
+                        pair.Value.DeepClone().AsObject()))
+                {
+                    issues.AddRange(Issue(
+                        "resource_registered_outcome_afterimage_conflict",
+                        "one exact owner/companion after-image producer per path",
+                        pair.Key));
+                }
+            }
+            ownerTransitions.AddRange(projected.OwnerTransitions.Select(
+                static value => value.Clone()));
+        }
+        if (issues.Count != 0)
+            return new AcceptedMechanicsPlanningResult(null, issues);
+        foreach (var carrierPath in carriers.Keys)
+            ownerCompanionAfterImages.Remove(carrierPath);
+        foreach (var transitionPath in ownerTransitions
+                     .Select(static value => value.Path)
+                     .Distinct(StringComparer.Ordinal))
+        {
+            if (ownerCompanionAfterImages.ContainsKey(transitionPath) ||
+                carriers.ContainsKey(transitionPath))
+            {
+                issues.AddRange(Issue(
+                    "accepted_mechanics_owner_transition_path_conflict",
+                    "one typed owner transition or one whole-root after-image producer per path",
+                    transitionPath));
+            }
+        }
+        if (issues.Count != 0)
+            return new AcceptedMechanicsPlanningResult(null, issues);
         var effectIdentity = effectPlan?.IdentityIndexAfterImage ??
             context.EffectIdentityRoot;
         var touched = new HashSet<string>(StringComparer.Ordinal)
@@ -284,6 +340,8 @@ internal static class AcceptedMechanicsPlanner
             touched.UnionWith(effectPlan.TouchedPaths);
             touched.UnionWith(effectPlan.DeletedPaths);
         }
+        touched.UnionWith(ownerCompanionAfterImages.Keys);
+        touched.UnionWith(ownerTransitions.Select(static value => value.Path));
         var consumed = new HashSet<string>(StringComparer.Ordinal);
         if (!context.Commands.IsMissing)
             consumed.Add(ResourceMaterializationContract.CommandPath);
@@ -299,7 +357,7 @@ internal static class AcceptedMechanicsPlanner
                 carriers,
                 effectIdentity,
                 new Dictionary<string, JsonObject?>(),
-                new Dictionary<string, JsonObject>(),
+                ownerCompanionAfterImages,
                 input.BeforeImages,
                 touched.ToArray(),
                 consumed.ToArray(),
@@ -311,7 +369,8 @@ internal static class AcceptedMechanicsPlanner
                     historyAfterImage,
                     context.Owners.Fingerprint),
                 context.Owners,
-                effectPlan),
+                effectPlan,
+                ownerTransitions),
             Array.Empty<ValidationIssue>());
     }
 
@@ -322,7 +381,7 @@ internal static class AcceptedMechanicsPlanner
         IReadOnlyDictionary<string, ResourceDefinition> sameTurnDefinitions,
         List<ValidationIssue> issues)
     {
-        var result = new List<ResourceCapacityIntent>();
+        var result = ComposeOwnerCapacityTransitions(input, context, issues).ToList();
         var supplied = context.CapacityTransitions.ToArray();
         var consumed = new HashSet<int>();
         foreach (var command in context.Commands.CapacityChanges
@@ -343,6 +402,16 @@ internal static class AcceptedMechanicsPlanner
                 owner.Key.OwnerKind,
                 owner.Key.ResourceOwnerId,
                 definition.ResourceKey);
+            if (result.Any(intent => intent.Coordinate == coordinate &&
+                                     intent.Operation == ResourceCapacityOperation.Initialize))
+            {
+                AddIssue(
+                    issues,
+                    "resource_owner_materialization_capacity_conflict",
+                    "new-owner capacity supplied only by its resourceMaterialization envelope",
+                    command.EventRef);
+                continue;
+            }
 
             var matches = supplied
                 .Select((value, index) => (value, index))
@@ -397,6 +466,251 @@ internal static class AcceptedMechanicsPlanner
         }
         return result;
     }
+
+    private static IReadOnlyList<ResourceCapacityIntent> ComposeOwnerCapacityTransitions(
+        AcceptedMechanicsInput input,
+        AcceptedMechanicsPlanningContext context,
+        List<ValidationIssue> issues) =>
+        ComposeOwnerCapacityTransitions(
+            input.Turn,
+            context.Owners,
+            context.State,
+            context.OwnerCapacityDrafts,
+            context.TerminalOwners,
+            issues);
+
+    internal static IReadOnlyList<ResourceCapacityIntent> ComposeOwnerCapacityTransitions(
+        int turn,
+        ResourceOwnerAuthority owners,
+        ResourceStateLedger state,
+        IReadOnlyList<ResourceOwnerCapacityDraft> ownerCapacityDrafts,
+        IReadOnlyList<ResourceOwnerKey> terminalOwners,
+        List<ValidationIssue> issues)
+    {
+        if (turn <= 0)
+            throw new ArgumentOutOfRangeException(nameof(turn));
+        ArgumentNullException.ThrowIfNull(owners);
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(ownerCapacityDrafts);
+        ArgumentNullException.ThrowIfNull(terminalOwners);
+        ArgumentNullException.ThrowIfNull(issues);
+        var result = new List<ResourceCapacityIntent>();
+        var ordinal = 0;
+        foreach (var draft in ownerCapacityDrafts
+                     .OrderBy(static value => value.Coordinate.Realm, StringComparer.Ordinal)
+                     .ThenBy(static value => value.Coordinate.OwnerKind)
+                     .ThenBy(static value => value.Coordinate.ResourceOwnerId, StringComparer.Ordinal)
+                     .ThenBy(static value => value.Coordinate.ResourceKey, StringComparer.Ordinal))
+        {
+            var ownerKey = new ResourceOwnerKey(
+                draft.Coordinate.Realm,
+                draft.Coordinate.OwnerKind,
+                draft.Coordinate.ResourceOwnerId);
+            if (!owners.Entries.TryGetValue(ownerKey, out var owner) ||
+                !owner.ResourceCapabilities.Contains(draft.Coordinate.ResourceKey) ||
+                !draft.ResolvedCapacity.IsValid ||
+                draft.ResolvedCapacity.Capacity?.Initialization == null ||
+                !IsAuthorizedOwnerCapacitySource(owner, draft.SourceEvidence))
+            {
+                AddIssue(
+                    issues,
+                    "resource_owner_materialization_authority_invalid",
+                    "one exact owner, capability, registered lifecycle source, capacity, and initialization authority",
+                    Describe(draft.Coordinate));
+                continue;
+            }
+
+            var capacity = draft.ResolvedCapacity.Capacity;
+            var hasCurrent = state.TryResolveExact(
+                draft.Coordinate,
+                out var current) && current != null;
+            if (hasCurrent &&
+                current!.Maximum == capacity.Maximum &&
+                current.CapacityBinding == capacity.Binding)
+            {
+                continue;
+            }
+
+            ordinal++;
+            var operation = hasCurrent
+                ? ResourceCapacityOperation.Reconfigure
+                : ResourceCapacityOperation.Initialize;
+            var resolvedCapacity = hasCurrent
+                ? capacity.AsReconfiguration()
+                : capacity;
+            var disposition = hasCurrent
+                ? ResourceCurrentDisposition.ClampToNewMaximum
+                : ResourceCurrentDisposition.InitializeFromDefinition;
+            result.Add(new ResourceCapacityIntent(
+                $"turn_{turn}:resource_owner_{operation.ToString().ToLowerInvariant()}:{ordinal}",
+                OriginKind: draft.SourceEvidence.SourceKind,
+                OriginId: draft.SourceEvidence.SourceId,
+                draft.Coordinate,
+                operation,
+                resolvedCapacity,
+                disposition,
+                ResourceMutationPhase.RegisteredSystemOutcome,
+                Priority: 40,
+                draft.SourceEvidence,
+                hasCurrent
+                    ? capacity.Binding.AuthorityFingerprint
+                    : capacity.Initialization.AuthorityFingerprint,
+                ReceiptId: null));
+
+            if (!hasCurrent &&
+                !owner.IsResourceCapabilityActive(draft.Coordinate.ResourceKey))
+            {
+                ordinal++;
+                using var fingerprint = new ResourceFingerprintBuilder(
+                    "resource-owner-initial-lifecycle-v1");
+                fingerprint.Append(owners.Fingerprint);
+                fingerprint.Append(owner.AuthorityFingerprint);
+                ResourceStateContract.AppendCoordinate(fingerprint, draft.Coordinate);
+                fingerprint.Append(capacity.Initialization.AuthorityFingerprint);
+                fingerprint.Append(ResourceCapacityOperation.Suspend.ToString());
+                var authorityFingerprint = fingerprint.Build();
+                result.Add(new ResourceCapacityIntent(
+                    $"turn_{turn}:resource_owner_suspend_initialized:{ordinal}",
+                    OriginKind: "owner_lifecycle",
+                    OriginId: ownerKey.ResourceOwnerId,
+                    draft.Coordinate,
+                    ResourceCapacityOperation.Suspend,
+                    ResolvedCapacity: null,
+                    CurrentDisposition: null,
+                    ResourceMutationPhase.RegisteredSystemOutcome,
+                    Priority: 80,
+                    new ResourceSourceEvidence(
+                        "owner_lifecycle",
+                        ownerKey.ResourceOwnerId,
+                        authorityFingerprint),
+                    authorityFingerprint,
+                    ReceiptId: null));
+            }
+        }
+
+        foreach (var entry in state.Entries
+                     .OrderBy(static value => value.Coordinate.Realm, StringComparer.Ordinal)
+                     .ThenBy(static value => value.Coordinate.OwnerKind)
+                     .ThenBy(static value => value.Coordinate.ResourceOwnerId, StringComparer.Ordinal)
+                     .ThenBy(static value => value.Coordinate.ResourceKey, StringComparer.Ordinal))
+        {
+            var ownerKey = new ResourceOwnerKey(
+                entry.Coordinate.Realm,
+                entry.Coordinate.OwnerKind,
+                entry.Coordinate.ResourceOwnerId);
+            if (!owners.Entries.TryGetValue(ownerKey, out var owner) ||
+                owner.Lifecycle == ResourceOwnerLifecycle.Terminal)
+            {
+                continue;
+            }
+
+            var desiredState = owner.IsResourceCapabilityActive(
+                entry.Coordinate.ResourceKey)
+                ? ResourceLifecycleState.Active
+                : ResourceLifecycleState.Suspended;
+            if (entry.State == desiredState)
+                continue;
+
+            var operation = desiredState == ResourceLifecycleState.Active
+                ? ResourceCapacityOperation.Resume
+                : ResourceCapacityOperation.Suspend;
+            ordinal++;
+            using var fingerprint = new ResourceFingerprintBuilder(
+                "resource-owner-lifecycle-v1");
+            fingerprint.Append(owners.Fingerprint);
+            fingerprint.Append(owner.AuthorityFingerprint);
+            ResourceStateContract.AppendCoordinate(fingerprint, entry.Coordinate);
+            fingerprint.Append(entry.Chronology.LastTransitionId);
+            fingerprint.Append(operation.ToString());
+            var authorityFingerprint = fingerprint.Build();
+            result.Add(new ResourceCapacityIntent(
+                $"turn_{turn}:resource_owner_{operation.ToString().ToLowerInvariant()}:{ordinal}",
+                OriginKind: "owner_lifecycle",
+                OriginId: ownerKey.ResourceOwnerId,
+                entry.Coordinate,
+                operation,
+                ResolvedCapacity: null,
+                CurrentDisposition: null,
+                ResourceMutationPhase.RegisteredSystemOutcome,
+                Priority: 80,
+                new ResourceSourceEvidence(
+                    "owner_lifecycle",
+                    ownerKey.ResourceOwnerId,
+                    authorityFingerprint),
+                authorityFingerprint,
+                ReceiptId: null));
+        }
+
+        foreach (var terminal in terminalOwners
+                     .OrderBy(static value => value.Realm, StringComparer.Ordinal)
+                     .ThenBy(static value => value.OwnerKind)
+                     .ThenBy(static value => value.ResourceOwnerId, StringComparer.Ordinal))
+        {
+            foreach (var entry in state.Entries
+                         .Where(entry =>
+                             string.Equals(
+                                 entry.Coordinate.Realm,
+                                 terminal.Realm,
+                                 StringComparison.Ordinal) &&
+                             entry.Coordinate.OwnerKind == terminal.OwnerKind &&
+                             string.Equals(
+                                 entry.Coordinate.ResourceOwnerId,
+                                 terminal.ResourceOwnerId,
+                                 StringComparison.Ordinal))
+                         .OrderBy(static entry => entry.Coordinate.ResourceKey, StringComparer.Ordinal))
+            {
+                ordinal++;
+                using var fingerprint = new ResourceFingerprintBuilder(
+                    "mortal-resource-owner-terminal-v1");
+                fingerprint.Append(owners.Fingerprint);
+                fingerprint.Append(terminal.Realm);
+                fingerprint.Append(ResourceDefinitionCatalog.GetOwnerKindToken(
+                    terminal.OwnerKind));
+                fingerprint.Append(terminal.ResourceOwnerId);
+                ResourceStateContract.AppendCoordinate(fingerprint, entry.Coordinate);
+                fingerprint.Append(entry.Chronology.LastTransitionId);
+                var authorityFingerprint = fingerprint.Build();
+                result.Add(new ResourceCapacityIntent(
+                    $"turn_{turn}:resource_owner_retire:{ordinal}",
+                    OriginKind: "owner_lifecycle",
+                    OriginId: terminal.ResourceOwnerId,
+                    entry.Coordinate,
+                    ResourceCapacityOperation.Retire,
+                    ResolvedCapacity: null,
+                    CurrentDisposition: null,
+                    ResourceMutationPhase.RegisteredSystemOutcome,
+                    Priority: 90,
+                    new ResourceSourceEvidence(
+                        "owner_lifecycle",
+                        terminal.ResourceOwnerId,
+                        authorityFingerprint),
+                    authorityFingerprint,
+                    ReceiptId: null));
+            }
+        }
+
+        return result;
+    }
+
+    private static bool IsAuthorizedOwnerCapacitySource(
+        ResourceOwnerAuthorityEntry owner,
+        ResourceSourceEvidence source) =>
+        string.Equals(source.SourceKind, "owner_materialization", StringComparison.Ordinal)
+            ? owner.SameTurn &&
+              owner.SameTurnRef != null &&
+              string.Equals(
+                  owner.SameTurnRef,
+                  source.SourceId,
+                  StringComparison.Ordinal)
+            : (string.Equals(
+                   source.SourceKind,
+                   "owner_capacity_cycle",
+                   StringComparison.Ordinal) ||
+               string.Equals(
+                   source.SourceKind,
+                   "owner_capacity_state",
+                   StringComparison.Ordinal)) &&
+              ResourceMaterializationContract.IsExactIdentifier(source.SourceId);
 
     private static IReadOnlyList<ResourceMutationIntent> ComposeOrdinaryMutations(
         AcceptedMechanicsInput input,
@@ -721,7 +1035,7 @@ internal static class AcceptedMechanicsPlanner
         var events = new List<ResourceAppliedEvent>();
         var appliedTransitions = new List<ResourceTransition>();
         var replayTransitions = new List<ResourceTransition>();
-        var executionSequence = 0;
+        var executionSequence = input.ExecutionSequenceOffset;
 
         foreach (var capacity in capacityPreparation.Transitions)
         {
@@ -755,6 +1069,9 @@ internal static class AcceptedMechanicsPlanner
                 replayTransitions.Add(result.ReplayTransition!);
         }
 
+        var directBaselineState = workingLedger.Freeze();
+        ResourceStateLedger? postDirectState = null;
+
         var byOperationId = preparedMutations.ToDictionary(
             static value => value.OperationId,
             StringComparer.Ordinal);
@@ -766,6 +1083,22 @@ internal static class AcceptedMechanicsPlanner
                 continue;
 
             var mutation = prepared.Intent;
+            if (prepared.Route.Phase >= ResourceMutationPhase.RegisteredSystemOutcome &&
+                postDirectState == null)
+            {
+                postDirectState = workingLedger.Freeze();
+            }
+            var amountResult = ResolveMutationAmount(
+                input.History,
+                input.Definitions,
+                directBaselineState,
+                postDirectState,
+                prepared);
+            if (amountResult.Issues.Count != 0)
+                return Failure(amountResult.Issues, Statistics(workingHistory));
+            if (!amountResult.ShouldApply)
+                continue;
+
             var result = ResourceMutationReducer.Reduce(
                 workingLedger,
                 workingHistory,
@@ -777,7 +1110,7 @@ internal static class AcceptedMechanicsPlanner
                     mutation.Source.SourceId,
                     mutation.Coordinate,
                     mutation.Source.Operation,
-                    mutation.Amount,
+                    amountResult.Amount,
                     prepared.Route.Phase,
                     prepared.Route.Priority,
                     executionSequence++,
@@ -823,6 +1156,117 @@ internal static class AcceptedMechanicsPlanner
             Statistics(workingHistory));
     }
 
+    private static DerivedMutationAmountResult ResolveMutationAmount(
+        ResourceHistoryState baselineHistory,
+        ResourceDefinitionCatalog definitions,
+        ResourceStateLedger directBaselineState,
+        ResourceStateLedger? postDirectState,
+        PreparedMutation prepared)
+    {
+        var mutation = prepared.Intent;
+        if (mutation.DerivedAmount == null)
+            return new DerivedMutationAmountResult(mutation.Amount, ShouldApply: true, Array.Empty<ValidationIssue>());
+
+        var prior = baselineHistory.Transitions.SingleOrDefault(transition =>
+            string.Equals(transition.EventRef, mutation.EventRef, StringComparison.Ordinal) &&
+            string.Equals(transition.OriginKind, mutation.Source.SourceKind, StringComparison.Ordinal) &&
+            string.Equals(transition.OriginId, mutation.Source.SourceId, StringComparison.Ordinal) &&
+            ResourceCoordinateComparer.Instance.Equals(transition.Coordinate, mutation.Coordinate) &&
+            transition.Operation == ToTransitionOperation(mutation.Source.Operation));
+        if (prior != null)
+            return new DerivedMutationAmountResult(prior.RequestedAmount, ShouldApply: true, Array.Empty<ValidationIssue>());
+
+        if (postDirectState == null ||
+            !definitions.TryResolveExact(mutation.Coordinate.ResourceKey, out var definition) ||
+            definition == null ||
+            !directBaselineState.TryResolveExact(mutation.Coordinate, out var before) ||
+            before == null ||
+            !postDirectState.TryResolveExact(mutation.Coordinate, out var afterDirect) ||
+            afterDirect == null)
+        {
+            return DerivedAmountFailure(
+                "resource_planner_derived_amount_coordinate_missing",
+                "one exact active coordinate and definition before and after direct phases",
+                Describe(mutation.Key));
+        }
+
+        var policy = mutation.DerivedAmount;
+        if (mutation.Amount != 0m ||
+            policy.RecoveryPercent is <= 0 or > 100 ||
+            prepared.Route.Phase != ResourceMutationPhase.RegisteredSystemOutcome ||
+            !string.Equals(mutation.Source.SourceKind, "registered_system_outcome", StringComparison.Ordinal) ||
+            mutation.Source.Operation is not (ResourceOperation.Gain or ResourceOperation.Restore) ||
+            definition.NumericKind != ResourceNumericKind.Integer ||
+            definition.Quantum != 1m ||
+            before.State != ResourceLifecycleState.Active ||
+            afterDirect.State != ResourceLifecycleState.Active ||
+            before.Maximum != afterDirect.Maximum ||
+            before.CapacityBinding != afterDirect.CapacityBinding)
+        {
+            return DerivedAmountFailure(
+                "resource_planner_derived_amount_policy_invalid",
+                "registered-system gain/restore with zero placeholder, recovery 1..100, and one unchanged active integer quantum-1 coordinate",
+                Describe(mutation.Key));
+        }
+
+        if (!ResourceMaterializationContract.TrySubtractExact(
+                before.Current,
+                afterDirect.Current,
+                out var directLoss))
+        {
+            return DerivedAmountFailure(
+                "resource_planner_derived_amount_loss_unrepresentable",
+                "exact representable pre-direct minus post-direct current",
+                Describe(mutation.Key));
+        }
+        if (directLoss <= 0m)
+            return new DerivedMutationAmountResult(0m, ShouldApply: false, Array.Empty<ValidationIssue>());
+        if (!ResourceMaterializationContract.TryFloorPercentageOfIntegral(
+                directLoss,
+                policy.RecoveryPercent,
+                out var amount))
+        {
+            return DerivedAmountFailure(
+                "resource_planner_derived_amount_unrepresentable",
+                "exact integral loss and bounded floor percentage",
+                Describe(mutation.Key));
+        }
+        return new DerivedMutationAmountResult(
+            amount,
+            ShouldApply: amount > 0m,
+            Array.Empty<ValidationIssue>());
+    }
+
+    private static DerivedMutationAmountResult DerivedAmountFailure(
+        string code,
+        string expected,
+        string actual) =>
+        new(
+            0m,
+            ShouldApply: false,
+            new[]
+            {
+                new ValidationIssue(
+                    ResourceMaterializationContract.CommandPath,
+                    IssueSeverity.Error,
+                    "A derived registered resource outcome could not be resolved exactly.",
+                    code: code,
+                    section: "resource_planner",
+                    expected: expected,
+                    actual: actual,
+                    repairHint: "Restore the sealed resource inputs and retry the accepted turn.")
+            });
+
+    private static ResourceTransitionOperation ToTransitionOperation(ResourceOperation operation) =>
+        operation switch
+        {
+            ResourceOperation.Damage => ResourceTransitionOperation.Damage,
+            ResourceOperation.Restore => ResourceTransitionOperation.Restore,
+            ResourceOperation.Spend => ResourceTransitionOperation.Spend,
+            ResourceOperation.Gain => ResourceTransitionOperation.Gain,
+            _ => throw new ArgumentOutOfRangeException(nameof(operation))
+        };
+
     private static PreparationResult PrepareMutations(
         AcceptedMechanicsResourceInput input,
         AcceptedMechanicsIdentityFactory identityFactory,
@@ -855,7 +1299,10 @@ internal static class AcceptedMechanicsPlanner
                 continue;
             }
 
-            var source = input.Sources.Resolve(mutation.Source, definition);
+            var source = input.Sources.Resolve(
+                mutation.Source,
+                definition,
+                mutation.Coordinate);
             if (!source.IsValid || source.Route == null)
             {
                 issues.AddRange(source.Issues);
@@ -1074,6 +1521,11 @@ internal static class AcceptedMechanicsPlanner
         $"{key.Coordinate.Realm}/{key.Coordinate.ResourceOwnerId}/" +
         $"{key.Coordinate.ResourceKey}/{key.Operation}";
 
+    private static string Describe(ResourceCoordinate coordinate) =>
+        $"{coordinate.Realm}/" +
+        $"{ResourceDefinitionCatalog.GetOwnerKindToken(coordinate.OwnerKind)}/" +
+        $"{coordinate.ResourceOwnerId}/{coordinate.ResourceKey}";
+
     private static void AddIssue(
         List<ValidationIssue> issues,
         string code,
@@ -1089,6 +1541,11 @@ internal static class AcceptedMechanicsPlanner
     private sealed record UnresolvedMutation(
         ResourceMutationIntent Intent,
         ResourceAuthorizedSourceRoute Route);
+
+    private sealed record DerivedMutationAmountResult(
+        decimal Amount,
+        bool ShouldApply,
+        IReadOnlyList<ValidationIssue> Issues);
 
     private sealed class PreparedMutation
     {

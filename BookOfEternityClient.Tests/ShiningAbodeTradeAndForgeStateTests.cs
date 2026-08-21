@@ -245,7 +245,6 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
                 ["sourceCardCount"] = 1,
                 ["relicRefinementEntitlements"] = new JsonObject
                 {
-                    ["rerolls"] = 0,
                     ["freeShape"] = true,
                     ["freeRetune"] = false,
                     ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
@@ -325,28 +324,49 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
         {
             var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fs.EnsureDirectoryStructure();
-
+            var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+            Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+            await fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.DefinitionsPath,
+                bootstrap.Definitions!.ToCanonicalJson());
+            await fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.StatePath,
+                bootstrap.State!.ToCanonicalJson());
+            await fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.HistoryPath,
+                bootstrap.History!.ToCanonicalJson());
+            await fs.WriteFileAtomicAsync(
+                AfterlifeEntityProfileState.StatePath,
+                new JsonObject
+                {
+                    [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["actorType"] = "player_soul",
+                            ["actorId"] = "player_soul",
+                            ["displayName"] = "Душа игрока",
+                            ["realm"] = "Shining Abode",
+                            ["resourceOwnerBindings"] = new JsonArray
+                            {
+                                new JsonObject
+                                {
+                                    ["realm"] = "shining_abode",
+                                    ["resourceOwnerId"] = "player_soul",
+                                    ["state"] = "suspended"
+                                }
+                            }
+                        }
+                    }
+                }.ToJsonString());
             await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", new JsonObject
             {
                 ["soulName"] = "Soul",
                 ["currentRealm"] = "Mortal World",
                 ["currentIncarnation"] = 2,
-                [ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
+                ["afterlifeCombatProfile"] = new JsonObject
                 {
-                    ["applicationState"] = "active",
-                    ["materializedAtUtc"] = "2026-04-17T00:00:00Z",
-                    ["currentIncarnation"] = 2,
-                    ["sourcePackagePreparedAtTurn"] = 10,
-                    ["sourceCardIds"] = new JsonArray("card_relic"),
-                    ["sourceCardCount"] = 1,
-                    ["relicRefinementEntitlements"] = new JsonObject
-                    {
-                        ["rerolls"] = 1,
-                        ["freeShape"] = false,
-                        ["freeRetune"] = false,
-                        ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
-                        ["sourceCardIds"] = new JsonArray("card_relic")
-                    }
+                    ["spiritFocusTier"] = 0
                 },
                 ["soulRelics"] = new JsonObject
                 {
@@ -354,14 +374,56 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
                     ["stored"] = new JsonArray()
                 }
             }.ToJsonString());
+            await fs.WriteFileAtomicAsync(
+                "game_state/core/player_status.json",
+                new JsonObject { ["money"] = 0 }.ToJsonString());
+            await fs.WriteFileAtomicAsync(
+                "game_state/inventory/items.json",
+                new JsonObject
+                {
+                    ["items"] = new JsonArray(),
+                    ["equipment"] = new JsonObject(),
+                    ["resources"] = new JsonObject()
+                }.ToJsonString());
+            var materialized = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
+                fs,
+                new JsonObject
+                {
+                    ["preparedAtTurn"] = 10,
+                    ["selectedCardIds"] = new JsonArray("card_relic"),
+                    ["selectedCards"] = new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["cardId"] = "card_relic",
+                            ["dedupeKey"] = "relic:card_relic",
+                            ["sourceType"] = ShiningAbodeState.CardSourceTypeProject,
+                            ["sourceFactionId"] = "faction_dawn",
+                            ["displayName"] = "card_relic",
+                            ["displaySummary"] = "relic",
+                            ["sourceActorId"] = "guardian_dawn",
+                            ["effectFamily"] = "relic",
+                            ["rarity"] = ShiningAbodeState.RarityCommon,
+                            ["effectPayload"] = new JsonObject
+                            {
+                                ["type"] = "grant_relic_refinement",
+                                ["rerolls"] = 1,
+                                ["freeShape"] = false,
+                                ["freeRetune"] = false
+                            }
+                        }
+                    }
+                },
+                currentIncarnation: 2);
+            Assert.True(materialized.Success, materialized.ErrorMessage);
 
             var changed = await ShiningBlessingEffectState.ConsumeRelicRerollAsync(fs, currentTurnNumber: 7);
 
             Assert.True(changed);
             var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var entitlements = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["relicRefinementEntitlements"]!.AsObject();
-            Assert.Equal(0, entitlements["rerolls"]!.GetValue<int>());
-            Assert.Equal(1, entitlements["rerollsSpent"]!.GetValue<int>());
+            Assert.False(entitlements.ContainsKey("rerolls"));
+            Assert.False(entitlements.ContainsKey("rerollsSpent"));
             Assert.Equal(ShiningBlessingEffectState.GenericStatusConsumed, entitlements["status"]!.GetValue<string>());
         }
         finally
@@ -375,6 +437,50 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
             {
             }
         }
+    }
+
+    [Theory]
+    [InlineData(1, ShiningBlessingEffectState.RelicStatusPendingEntitlement)]
+    [InlineData(0, ShiningBlessingEffectState.GenericStatusConsumed)]
+    public void ConsumeForgeEntitlements_ClosesOnlyAfterBoundResourceAllocationIsExhausted(
+        int remainingRerolls,
+        string expectedStatus)
+    {
+        var soulRoot = new JsonObject
+        {
+            [ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
+            {
+                ["relicRefinementEntitlements"] = new JsonObject
+                {
+                    ["rerollResourceBinding"] = new JsonObject
+                    {
+                        ["realm"] = "shining_abode",
+                        ["ownerKind"] = "afterlife_actor",
+                        ["resourceOwnerId"] = "player_soul",
+                        ["resourceKey"] = "blessing_rerolls",
+                        ["allocationId"] = "shining_blessing_relic_10_2"
+                    },
+                    ["freeShape"] = true,
+                    ["freeRetune"] = false,
+                    ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement
+                }
+            }
+        };
+
+        Assert.True(ShiningBlessingEffectState.ConsumeForgeEntitlements(
+            soulRoot,
+            ShiningCoreActionRequestState.ActionTypeForgeRelicReshape,
+            currentTurnNumber: 17,
+            consumedAtUtc: "2026-04-17T00:17:00Z",
+            remainingRerolls));
+
+        var entitlements = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!
+            ["relicRefinementEntitlements"]!.AsObject();
+        Assert.Equal(expectedStatus, entitlements["status"]!.GetValue<string>());
+        Assert.False(entitlements["freeShape"]!.GetValue<bool>());
+        Assert.Equal(
+            remainingRerolls == 0,
+            entitlements.ContainsKey("consumedAtTurn"));
     }
 
     [Fact]

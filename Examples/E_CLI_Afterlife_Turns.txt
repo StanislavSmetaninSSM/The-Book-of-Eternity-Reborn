@@ -12,6 +12,8 @@ Read this file whenever `game_state/meta/soul_state.json.currentRealm` is `Chaos
 
 Before using an example, first select the matching rows in `OtherGuides/Afterlife_Contract_Matrix.md`. The matrix tells the GM which scheduler contour, pending file, direct action, canonical output surface, receipt/report, and forbidden substitution apply. These examples then show worked accepted-turn patterns. They are not a replacement for the full schemas.
 
+UNIFIED AFTERLIFE RESOURCE AUTHORITY: `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` are client-owned entries in `game_state/resources/resource_state.json`; their immutable transitions are in `game_state/resources/resource_history.json`, and afterlife state retains only exact `resourceOwnerBindings`. The GM reads current/maximum values only from the documented read-only client projection or state context for the specific action and never writes direct ledger values, `chargesPerReturn`, `chargesUsedThisReturn`, numeric blessing `rerolls`, or `rerollsSpent`; `actionEconomy` is forbidden as persisted state. Ink Feathers, Light Sparks, treasuries, faction accounting, progression, relationships, and spiritual power/strain/shield remain specialized. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; only the numeric allocation enters the ledger. Old saves are not migrated and there is no legacy fallback.
+
 ==================================================
 EXAMPLE INDEX
 ==================================================
@@ -1892,7 +1894,7 @@ Guardian-mediated gacha:
 - Guardian reputation affects charges/trade pricing only; it does not add rarity upgrade chance.
 - Hard/Impossible mortal-world difficulty does not add afterlife Guardian gacha rarity steps.
 - If rarity is upgraded above the client base, include `gachaBonusAudit`. It is safe to include the audit with zero bonus steps even when rarity is unchanged.
-- The accepted Guardian state must increment `gachaSystem.chargesUsedThisReturn` and append a `gachaHistory[]` entry.
+- The accepted Guardian result must consume one exact `gacha_attempts` unit in the common resource ledger and append a `gachaHistory[]` entry. The GM never writes the remaining-attempt counter.
 
 Correct guardian-mediated response fragment:
 
@@ -1940,8 +1942,7 @@ Canonical Guardian state impact, shown as a patch fragment:
 {
   "guardianId": "guard_social_azalia_001",
   "gachaSystem": {
-    "chargesPerReturn": 2,
-    "chargesUsedThisReturn": 1,
+    "currentReturnCycleId": "chaos_return_24",
     "gachaHistory": [
       {
         "timestamp": "2026-04-24T09:40:00Z",
@@ -3578,8 +3579,7 @@ Correct response/state fragment:
         "completedQuests": []
       },
       "gachaSystem": {
-        "chargesPerReturn": 4,
-        "chargesUsedThisReturn": 0,
+        "currentReturnCycleId": "chaos_return_317",
         "gachaHistory": []
       },
       "mood": {
@@ -3704,8 +3704,7 @@ Correct response/state fragment:
           "completedQuests": []
         },
         "gachaSystem": {
-          "chargesPerReturn": 5,
-          "chargesUsedThisReturn": 0,
+          "currentReturnCycleId": "chaos_return_317",
           "gachaHistory": []
         },
         "founderBonuses": {
@@ -3853,7 +3852,7 @@ Shining resident normalizer side effects:
 Canonical Shining owner-state invariants:
 - `halls[].hallId`, `factions[].factionId`, `shiningPoliticalActors[].actorId`, and every `projects[].projectId` across all factions must be unique. Duplicate ids make runtime helpers choose the first match and are invalid.
 - Supported completed projects are globally capped by Radiance tier: tier `0..1` allows `1`, tier `2..3` allows `2`, tier `4` allows `3`. If more completed projects have `isSupported = true`, preserve for repair or close an explicit `unsupport_project`; do not keep the over-cap state.
-- `gachaSystem.currentReturnCycleId` may be empty only before the first Shining return-cycle sync. While it is empty, `gachaSystem.chargesUsedThisReturn` must be `0`; positive used charges without a cycle id are stale state.
+- `gachaSystem.currentReturnCycleId` may be empty only before the first Shining return-cycle sync. Once synchronized, the exact `resourceOwnerBindings.gachaReturn` entry selects the client-owned `gacha_attempts` allocation; current/maximum counters never belong in `gachaSystem`.
 - Every current-schema Shining faction requires explicit `factionLifecycle.state`: `active`, `weakened`, `leaderless`, `broken`, or `dissolved`. Missing, blank, or unsupported lifecycle fails raw owner-state validation before normalization and never defaults to `active`.
 - Do not delete defeated factions from `factions[]`. `broken` and `dissolved` keep history/remnants through `factionLifecycle.defeatedAtTurn`, `defeatedAtUtc`, `defeatReason`, and `remnantsSummary`, while `factionStrength=0`, `leadership.leadershipState=vacant`, `tradeInventory=null`, and all projects have `isSupported=false`.
 - `leaderless` also requires vacant leadership and does not behave like a normally headed active faction until a later explicit leadership restoration. `active` and `weakened` are the operational lifecycle states.
@@ -4361,7 +4360,7 @@ Accepted `pull_relic_gacha` must:
 - never exceed `request.projectedGachaBonusSteps`;
 - add exactly one new Soul Relic to `soul_state.json`;
 - spend exact `quotedCostFeathers` and no Light Sparks unless the request says otherwise;
-- update `shining_abode_state.json.gachaSystem.chargesUsedThisReturn`, `currentReturnCycleId`, and `gachaHistory[]`;
+- consume one exact `gacha_attempts` unit through the client-owned common ledger, keep `currentReturnCycleId`, and append `shining_abode_state.json.gachaSystem.gachaHistory[]`;
 - write a receipt with `returnCycleId`, `relicId`, `relicName`, `baseRarity`, and `finalRarity`.
 
 Correct receipt fragment:
@@ -5798,8 +5797,7 @@ Correct accepted response fragment:
           "completedQuests": []
         },
         "gachaSystem": {
-          "chargesPerReturn": 0,
-          "chargesUsedThisReturn": 0,
+          "currentReturnCycleId": "chaos_return_420",
           "gachaHistory": []
         },
         "mood": {
@@ -5930,8 +5928,7 @@ Correct accepted response fragment:
         "completedQuests": []
       },
       "gachaSystem": {
-        "chargesPerReturn": 0,
-        "chargesUsedThisReturn": 0,
+        "currentReturnCycleId": "chaos_return_420",
         "gachaHistory": []
       },
       "mood": {
@@ -6968,6 +6965,7 @@ Scenario:
 - The GM starts an afterlife spiritual conflict instead of writing Mortal combat state.
 - Conflict realm/mode is authorized from the validated pre-turn afterlife snapshot. Do not make the start legal by changing `soul_state.currentRealm` or Shining `availability`/`preparedIncarnationPackage` in the same accepted response.
 - Russian labels for this system are fixed in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`: "духовный конфликт посмертия" = `afterlife spiritual conflict`, "обмен действиями" = `exchange`, "аудит кубиков" = `diceAudit`. JSON keys and enum values remain English.
+- Read `input/turn_request.json.afterlifeSpiritualConflictPreview` for exact player/opposition `spiritual_action_points`. On a new opposition, author only `oppositionSide.resourceMaterialization.resources[]`; the client allocates `resourceOwnerBindings.opposition` and writes the common state/history. `actionEconomy` is forbidden as persisted conflict state.
 
 Correct accepted response:
 
@@ -7011,11 +7009,15 @@ Correct accepted response:
           },
           "artAuthoritySource": "guardian_state.relationshipData + abodePower + narrative authority"
         },
-        "supporters": []
-      },
-      "actionEconomy": {
-        "player": { "current": 6, "max": 6, "source": "Средоточие Души tier 0" },
-        "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
+        "supporters": [],
+        "resourceMaterialization": {
+          "resources": [
+            {
+              "resourceKey": "spiritual_action_points",
+              "maximum": 6
+            }
+          ]
+        }
       },
       "exchangeLog": []
     }
@@ -7050,11 +7052,11 @@ or ordinary roleplay prose while this conflict is still active:
 Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
 ```
 
-the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, read it before writing the exchange: it is the client-owned shortcut for authoritative `actionCostAudit` tiers/costs and the first dice outcome preview, while the contract below remains canonical. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. Active conflicts with current exchanges carry afterlife-only ОД in `actionEconomy.player` and `actionEconomy.opposition`; on `mode=start`, player `current/max` comes from client-owned `soul_state.afterlifeCombatProfile.spiritFocusTier` / `Средоточие Души` (`0/1/2/3/4/5` => max ОД `6/7/8/10/12/15`, source `Средоточие Души tier N`). The GM reads `spiritFocusTier` but must not author or mutate it; `/spiritual_arts` upgrades it locally. Every new/current exchange that spends or restores ОД must include `actionCostAudit.player` with `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`, using `effectiveCost = max(minCost, baseCost - artTier)`. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; they cannot mutate player ОД through fake audit. Every exchange that resolves an active costed opposition operation must also include `actionCostAudit.opposition` in the same shape; take that operation from `incomingAction.finalOperationType` when present, otherwise from `incomingAction.operationType` or the matching `matchupAudit.oppositionOperation`; never fall back to stale `incomingAction.operationType` when `finalOperationType` exists. Take `artTier` from the validated pre-turn afterlife entity profile for the opposition lead actor, and keep final `actionEconomy.opposition.current` equal to the last current `actionCostAudit.opposition.after`. `recover_spiritual_power` / Собрать Средоточие restores +3 ОД on success, +2 on partial_success, and only +0..1 when punished by pressure, maneuver, binding, force_binding, or force_incarnation; use `riskProfile=recovery_timing` when rolled. If an active conflict already has active `controlState`, or the current exchange creates/changes active `controlState`, explicitly write both `before.controlState` and `after.controlState`; use `null` or `{ "level": "none" }` for no active control instead of omitting the field. Successful `guard` against direct pressure writes `after.tempoAdvantage` with `ownerSide=player`, `sourceOperation=guard`, `status=available`, `level=advantage|great_advantage`, id, source exchange, and summary; the next eligible non-terminal combat action must consume it in `rollMode.player.advantageSources[]` with `sourceType=guard_tempo_window` or explicitly expire/clear it. Every exchange with `diceAudit` must include `before.conflictPosition`. If `before.conflictPosition` is not `contested`, record it as exactly one `conflict_position` modifier in `modifierBreakdown` with exact matching `position` (+2 for advantaged, +4 for dominant, on the side that holds the position); do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and must not create `controlState`, `guard` safely protects player strain and may block new control but does not remove existing control; even on setback against direct pressure, player strain may worsen by at most one rank, and on full success against direct pressure it creates `tempoAdvantage`, `counter` needs incomingAction and a measured payoff on success/partial_success/countered but cannot create fresh player control from none, `maneuver` changes position and is stopped by pressure/opposing maneuver/active opposition `controlState`; if opposition `controlState.restrictedOperations` lists the attempted operation, that operation cannot succeed until control is answered, `binding` needs advantage/setup and must create or strengthen player `controlState` only after active opposition control is gone, `force_binding` needs strong leverage and at least two distinct `restrictedOperations`, failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas, `break_binding` needs binding/coercive context and must weaken/remove/reverse opposition `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`, while equal/reordered sets do not count, `incarnation_resistance` is only for force_incarnation control and does not clear ordinary binding control, failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged, `champion_coordination` is only for champion_duel, and `recover_spiritual_power` is timing-based recovery rather than attack/defense. Active `controlState` uses `level=hindered|bound|locked`, `controllerSide`, `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; missing/null means no active control for legacy entries, and `sourceOperation` is not a free operation id. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
+the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, read it before writing the exchange: it is the client-owned shortcut for authoritative `actionCostAudit` tiers/costs and the first dice outcome preview, while the contract below remains canonical. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. `spiritual_action_points` is the client-owned afterlife ОД reserve and `actionEconomy` is forbidden as persisted state. Read player/opposition current/maximum from `afterlifeSpiritualConflictPreview`; on `mode=start`, `spiritFocusTier` supplies the registered player maximum (`0/1/2/3/4/5` => `6/7/8/10/12/15`, source `Средоточие Души tier N`), while a new opposition declares only `resourceMaterialization`. Every new/current exchange that spends or restores ОД must include `actionCostAudit.player` with `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`, using `effectiveCost = max(minCost, baseCost - artTier)`. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; they cannot mutate player ОД through fake audit. Every exchange that resolves an active costed opposition operation must also include `actionCostAudit.opposition` in the same shape; take that operation from `incomingAction.finalOperationType` when present, otherwise from `incomingAction.operationType` or the matching `matchupAudit.oppositionOperation`; never fall back to stale `incomingAction.operationType` when `finalOperationType` exists. Take `artTier` from the validated pre-turn afterlife entity profile for the opposition lead actor. The client validates both audits against the exact pre-turn resource projection, publishes common resource state/history atomically, and creates or preserves exact `resourceOwnerBindings`; the GM never writes those values or identities. `recover_spiritual_power` / Собрать Средоточие restores +3 ОД on success, +2 on partial_success, and only +0..1 when punished by pressure, maneuver, binding, force_binding, or force_incarnation; use `riskProfile=recovery_timing` when rolled. If an active conflict already has active `controlState`, or the current exchange creates/changes active `controlState`, explicitly write both `before.controlState` and `after.controlState`; use `null` or `{ "level": "none" }` for no active control instead of omitting the field. Successful `guard` against direct pressure writes `after.tempoAdvantage` with `ownerSide=player`, `sourceOperation=guard`, `status=available`, `level=advantage|great_advantage`, id, source exchange, and summary; the next eligible non-terminal combat action must consume it in `rollMode.player.advantageSources[]` with `sourceType=guard_tempo_window` or explicitly expire/clear it. Every exchange with `diceAudit` must include `before.conflictPosition`. If `before.conflictPosition` is not `contested`, record it as exactly one `conflict_position` modifier in `modifierBreakdown` with exact matching `position` (+2 for advantaged, +4 for dominant, on the side that holds the position); do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and must not create `controlState`, `guard` safely protects player strain and may block new control but does not remove existing control; even on setback against direct pressure, player strain may worsen by at most one rank, and on full success against direct pressure it creates `tempoAdvantage`, `counter` needs incomingAction and a measured payoff on success/partial_success/countered but cannot create fresh player control from none, `maneuver` changes position and is stopped by pressure/opposing maneuver/active opposition `controlState`; if opposition `controlState.restrictedOperations` lists the attempted operation, that operation cannot succeed until control is answered, `binding` needs advantage/setup and must create or strengthen player `controlState` only after active opposition control is gone, `force_binding` needs strong leverage and at least two distinct `restrictedOperations`, failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas, `break_binding` needs binding/coercive context and must weaken/remove/reverse opposition `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`, while equal/reordered sets do not count, `incarnation_resistance` is only for force_incarnation control and does not clear ordinary binding control, failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged, `champion_coordination` is only for champion_duel, and `recover_spiritual_power` is timing-based recovery rather than attack/defense. Active `controlState` uses `level=hindered|bound|locked`, `controllerSide`, `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; missing/null means no active control for legacy entries, and `sourceOperation` is not a free operation id. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
 
-Action economy audit rule: if a side has no current `actionCostAudit.<side>`, keep that side's final `activeConflict.actionEconomy.<side>.current` unchanged from the validated pre-turn active conflict; do not change root ОД directly. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; fake terminal/free audits are invalid.
+Resource audit rule: if a side has no current `actionCostAudit.<side>`, emit no `spiritual_action_points` transition for that side and preserve the validated pre-turn active conflict resource projection. Do not change the common ledger, history, or `resourceOwnerBindings` directly. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; fake terminal/free audits are invalid.
 
-Validation repair note: if `game_state/control/validation_repair_request.json.harnessRepairPackets[]` contains `kind = "afterlife_spiritual_conflict_action_cost_repair"`, treat it as the executable checklist for the already written conflict file. Patch the named `exchangeLog[n].actionCostAudit.<side>.<field>` values to the packet's expected sequence, recompute dependent `after` and final `activeConflict.actionEconomy.<side>.current`, then finish with `Complete-BoeValidationRepair`. Do not create a new turn, add a new exchange, reroll dice, or edit `game_state/control/pending_turn_snapshot*`; those files are read-only authority for repair.
+Validation repair note: if `game_state/control/validation_repair_request.json.harnessRepairPackets[]` contains `kind = "afterlife_spiritual_conflict_action_cost_repair"`, treat it as the executable checklist only for the already written `exchangeLog[n].actionCostAudit.<side>.<field>` operands, then finish with `Complete-BoeValidationRepair`. Never author `actionEconomy`, `resourceOwnerBindings`, `game_state/resources/resource_state.json`, or `game_state/resources/resource_history.json`; do not create a new turn, add an exchange, reroll dice, or edit `game_state/control/pending_turn_snapshot*`.
 
 Correct contested exchange response:
 
@@ -7085,20 +7087,12 @@ Correct contested exchange response:
       "before": {
         "conflictPosition": "contested",
         "playerSideStrain": "clear",
-        "oppositionSideStrain": "clear",
-        "actionEconomy": {
-          "player": { "current": 6, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        }
+        "oppositionSideStrain": "clear"
       },
       "after": {
         "conflictPosition": "player_advantaged",
         "playerSideStrain": "clear",
-        "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 4, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        }
+        "oppositionSideStrain": "strained"
       },
       "actionCostAudit": {
         "player": {
@@ -7172,7 +7166,7 @@ Correct contested exchange response:
 
 `afterlife_spiritual_conflict_combat_conditions_v1`: `combatConditions[]` is the dedicated short-lived condition layer for afterlife spiritual combat. Use kinds `mark`, `ward`, `burden`, `opening`, and `vow`; each active entry needs visible/private identity, source, target side/actor, affected operations, finite duration/uses, `counterplay`, and summary. A condition must map to an existing legal axis: condition-backed rollMode, `conflictPosition`, legal anti-control `controlState` softening/narrowing, `playerSideStrain`, `oppositionSideStrain`, `tempoAdvantage`, `counterPayoff`, `actionCostAudit` / ОД costs, or `specialArtAudit.effectNote`. This is no generic passive stat stacking. The GM must create, consume, expire, or clear combatConditions explicitly, and ordinary player output shows visible active combatConditions while hidden/gm_only combatConditions remain private. Hidden Saref-linked or Guardian-linked setup may exist in state, but the visible `response` must stay non-spoiler.
 
-`afterlife_special_art_combat_effect_v1`: current/new teachable `specialArts[]` entries carry `specialArts[].combatEffect` beside `effectSummary`. Required fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; legal axes are afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `actionEconomy`, `actionCostAudit`, or `combatConditions`. Worked mapping: a player-owned learned special art can map `baseOperation=guard` to a one-use `rollMode.player.advantageSources[]` / `tempoAdvantage` payoff, while a non-player Guardian special art can map its opposition operation to `actionCostAudit.opposition.specialCostMultiplierPercent` and multiplied ОД plus a concrete `specialArtAudit.effectNote`. The GM must preserve `baseOperation`, read `combatEffect`, and record the exact trigger/payoff in `specialArtAudit.effectNote` or `specialArtAudits[].effectNote`; legacy `effectSummary`-only profiles remain readable.
+`afterlife_special_art_combat_effect_v1`: current/new teachable `specialArts[]` entries carry `specialArts[].combatEffect` beside `effectSummary`. Required fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; legal axes are afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. `spiritual_action_points` is the unified resource axis and must be proven through `actionCostAudit`; `actionEconomy` is forbidden. Worked mapping: a player-owned learned special art can map `baseOperation=guard` to a one-use `rollMode.player.advantageSources[]` / `tempoAdvantage` payoff, while a non-player Guardian special art can map its opposition operation to `actionCostAudit.opposition.specialCostMultiplierPercent` and multiplied ОД plus a concrete `specialArtAudit.effectNote`. The GM must preserve `baseOperation`, read `combatEffect`, and record the exact trigger/payoff in `specialArtAudit.effectNote` or `specialArtAudits[].effectNote`; legacy `effectSummary`-only profiles remain readable.
 
 #896 Predvechnye special-art combat-effect coverage start
 
@@ -7232,20 +7226,12 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
           "before": {
             "conflictPosition": "player_advantaged",
             "playerSideStrain": "clear",
-            "oppositionSideStrain": "strained",
-            "actionEconomy": {
-              "player": { "current": 8, "max": 8, "source": "Средоточие Души tier 2" },
-              "opposition": { "current": 5, "max": 6, "source": "guardian spiritual authority" }
-            }
+            "oppositionSideStrain": "strained"
           },
           "after": {
             "conflictPosition": "player_advantaged",
             "playerSideStrain": "clear",
-            "oppositionSideStrain": "strained",
-            "actionEconomy": {
-              "player": { "current": 2, "max": 8, "source": "Средоточие Души tier 2" },
-              "opposition": { "current": 5, "max": 6, "source": "guardian spiritual authority" }
-            }
+            "oppositionSideStrain": "strained"
           },
           "combatConditions": [
             {
@@ -7377,10 +7363,6 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
               "sourceOperation": "binding",
               "restrictedOperations": [ "maneuver", "force_binding" ],
               "summary": "Договор держит проход закрытым, но условие выхода ещё не раскрыто."
-            },
-            "actionEconomy": {
-              "player": { "current": 4, "max": 8, "source": "Средоточие Души tier 2" },
-              "opposition": { "current": 7, "max": 9, "source": "Seret guardian authority" }
             }
           },
           "after": {
@@ -7394,10 +7376,6 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
               "sourceOperation": "break_binding",
               "restrictedOperations": [ "force_binding" ],
               "summary": "Скрытое условие стало видимым: связь ещё мешает силовому принуждению, но манёвр выхода теперь спорен."
-            },
-            "actionEconomy": {
-              "player": { "current": 3, "max": 8, "source": "Средоточие Души tier 2" },
-              "opposition": { "current": 3, "max": 9, "source": "Seret guardian authority" }
             }
           },
           "counterPayoff": {
@@ -7478,20 +7456,12 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
       "before": {
         "conflictPosition": "contested",
         "playerSideStrain": "clear",
-        "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 5, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        }
+        "oppositionSideStrain": "strained"
       },
       "after": {
         "conflictPosition": "player_advantaged",
         "playerSideStrain": "clear",
-        "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 2, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 4, "max": 6, "source": "guardian spiritual authority" }
-        }
+        "oppositionSideStrain": "strained"
       },
       "counterPayoff": {
         "axis": "conflictPosition",
@@ -7750,10 +7720,6 @@ Correct control exchange: after the soul already has `player_advantaged`, `bindi
         "conflictPosition": "player_advantaged",
         "playerSideStrain": "clear",
         "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 6, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        },
         "controlState": {
           "level": "none",
           "controllerSide": null
@@ -7763,10 +7729,6 @@ Correct control exchange: after the soul already has `player_advantaged`, `bindi
         "conflictPosition": "player_advantaged",
         "playerSideStrain": "clear",
         "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 4, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        },
         "controlState": {
           "level": "hindered",
           "controllerSide": "player",
@@ -7841,10 +7803,6 @@ Correct break-binding exchange: `break_binding` is not a generic attack; it must
         "conflictPosition": "contested",
         "playerSideStrain": "strained",
         "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 4, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        },
         "controlState": {
           "level": "bound",
           "controllerSide": "opposition",
@@ -7858,10 +7816,6 @@ Correct break-binding exchange: `break_binding` is not a generic attack; it must
         "conflictPosition": "contested",
         "playerSideStrain": "strained",
         "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 2, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 4, "max": 6, "source": "guardian spiritual authority" }
-        },
         "controlState": {
           "level": "hindered",
           "controllerSide": "opposition",
@@ -8355,7 +8309,7 @@ Scenario:
 - Actor agency uses `afterlifeActorGoalUpdates[]`, `afterlifeActorQuestUpdates[]`, `afterlifeActorActivityUpdates[]`, and `completeAfterlifeActorActivities[]`. Canonical profiles store `goals`, `personalQuests[]`, `currentActivity`, and `completedActivities[]`; every goal/current activity needs `gmThoughtsSummary`; `currentActivity` must link to current `goals.goalId` and an active `personalQuests[].questId`. Complete activities through `completeAfterlifeActorActivities[]`; do not erase `currentActivity` directly.
 - Relationship gates use `relationships[]` plus `afterlifeRelationshipChanges[]`, `afterlifeRelationshipLockUpdates[]`, and `afterlifeBreakthroughQuestUpdates[]`. Supported axes are `trust`, `romance`, `rivalry`, `oath`, `fear`, `reverence`, and `debt`; `value >= 50` requires a positive `breakthroughQuestId` lock/proof, `value <= -50` requires `redemptionQuestId` or `pointOfNoReturn` proof. Completed breakthrough/redemption quests clear linked ids only with `_clear_`; these are afterlife-only and must not use Mortal `NPCRelationshipChanges`.
 - Actor masks use profile `masks[]` and `activeMaskId` plus `afterlifeActorMaskAdds[]`, `afterlifeActorMaskUpdates[]`, `afterlifeActorMaskRemovals[]`, and `afterlifeActorActiveMaskChanges[]`. `activeMaskId` is either an existing `masks[].maskId` or `_true_self_`; use `_true_self_`, not `null`, to remove the active mask. Each mask includes `maskId`, `displayName`, `publicArchetype`, `visiblePersonality`, hidden `concealedTruth`, `directives[]`, `revealConditions[]`, `deceptionRisk=low|medium|high|critical`, and optional `linkedThreatId` / `linkedSarefAgentId`. Ordinary player-facing UI may show only the visible mask until `isRevealed=true`; do not leak hidden truth fields before reveal, and do not use Mortal `NPCMaskAdds`.
-- Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, `effectSummary`, `specialArts[].combatEffect`, and `trainingConditions` when teachable; `combatEffect` carries `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement` for legal afterlife surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `actionEconomy`, `actionCostAudit`, or `combatConditions`. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, include at least one positive value, and may be Ink-only, Spark-only, or mixed. Spark-only learned-art upgrades are client-local to ordinary active Shining Abode.
+- Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, `effectSummary`, `specialArts[].combatEffect`, and `trainingConditions` when teachable; `combatEffect` carries `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement` for legal afterlife surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. Resource effects use `spiritual_action_points` plus `actionCostAudit`; never author `actionEconomy`. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, include at least one positive value, and may be Ink-only, Spark-only, or mixed. Spark-only learned-art upgrades are client-local to ordinary active Shining Abode.
 - Roleplay training that teaches the player a special art is recorded through `afterlifeSpecialArtLearningReceipts[]`; the teacher profile, player profile, source `specialArts[].artId`, and `canTeachPlayer=true` must resolve in profile authority. Learned special arts start at tier 0; do not use `initialTier` to grant progression.
 - Learned special arts / изученные особые духовные искусства are upgraded by the client through `/spiritual_arts`; GM conflict output may use them only from validated pre-turn authority.
 - If the GM does not write `afterlifeEntityProgressionOverrides[]`, the client uses only the current-turn `progression_report.json` whose `sessionId/requestId/turnNumber` match the current request to apply deterministic income, one affordable `progressionStrategy.priorityOrder` upgrade, `lastAutoProgressionCycleKey`, and `progressionLedger[]`; stale or missing-context reports are ignored for profile auto-progression. This is per profile realm: Chaos Sea profiles consume Chaos/Guardian/Resident contours and receive Ink Feather income only; Shining Abode profiles consume Shining contours and receive Ink Feather + Light Spark income. Priority entries may be standard art ids, `specialArts[].artId`, `enlightenment`, `radiance`, or `soul_dissipation`. Strategy constraints are executable: `resourceReserve` is a hard minimum remaining balance, `allowedSpends` is an allow-list of spend categories, and `forbiddenSpends` is a deny-list; valid categories are `standardArts`, `specialArts`, `enlightenment`, `radiance`, and `soulDissipationTier`. If both lists are present, the allow-list is applied first and the deny-list can still block the spend. Forced `specialArtTierDeltas` must target an existing `specialArts[].artId` on the same profile; unknown ids are repair-blocking, not no-op.
@@ -9166,7 +9120,7 @@ Correct reasoning checklist:
 - `actorType + actorId` is the identity key; do not create duplicate profiles for the same entity.
 - `player_soul` is a reserved identity: the player profile uses `actorType=player_soul` and `actorId=player_soul`, and no non-player profile may use that actor id.
 - `standardArts` and `specialArts[].baseOperation` use the canonical spiritual action ids, while player-facing prose may show Russian labels.
-- `specialArts[]` is more expensive than the base action: `ownerActorType/ownerActorId` must match the enclosing profile, `costMultiplierPercent` must be above 100, `upgradeCost` records higher progression cost, teachable arts must list `trainingConditions`, and current/new teachable arts must include `specialArts[].combatEffect` beside `effectSummary`. `combatEffect` uses `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; it preserves `baseOperation` and maps only to legal afterlife axes such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `actionEconomy`, `actionCostAudit`, or `combatConditions`. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, and include at least one positive value. Spark-only `upgradeCost` is valid only as a learned-art upgrade path in ordinary active Shining Abode.
+- `specialArts[]` is more expensive than the base action: `ownerActorType/ownerActorId` must match the enclosing profile, `costMultiplierPercent` must be above 100, `upgradeCost` records higher progression cost, teachable arts must list `trainingConditions`, and current/new teachable arts must include `specialArts[].combatEffect` beside `effectSummary`. `combatEffect` uses `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; it preserves `baseOperation` and maps only to legal afterlife axes such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. Resource effects must be expressed through `spiritual_action_points` plus `actionCostAudit`; `actionEconomy` is forbidden. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, and include at least one positive value. Spark-only `upgradeCost` is valid only as a learned-art upgrade path in ordinary active Shining Abode.
 - If a learned art is recognized, write `afterlifeSpecialArtLearningReceipts[]`; do not silently add it to the player without a receipt, do not grant learned-art tiers through `initialTier`, and do not reference a missing or non-teachable source art.
 - If a conflict exchange uses a special art, first read `specialArts[].combatEffect`, then include either `specialArtAudit` with `effectNote`, owner identity, `baseOperation`, and `costMultiplierPercent`, or `specialArtAudits[]` with one object per art when both player and opposition use named special arts in the same exchange; never write both fields on one exchange. Every audit must match the validated pre-turn profile of that owner, and `effectNote` must cite the combatEffect trigger/payoff actually used. Player-owned learned special arts that power the player's exchange operation require `actionCostAudit.player.specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and multiplied `effectiveCost`; non-player/incoming special arts keep the player's ordinary ОД cost, but when they power the opposition operation they must be owned by the resolved opposition actor, use the matching `specialArts[].tier` as `actionCostAudit.opposition.artTier`, and require the same special-art cost fields and multiplied `effectiveCost` under `actionCostAudit.opposition`. Do not attach a non-player special art to the player's own `exchange.operationType`, to an earlier `incomingAction.operationType`, or to any other stale candidate; if `incomingAction.finalOperationType` exists, that final operation is authoritative. Its `baseOperation` must match the resolved opposition operation used for `actionCostAudit.opposition`.
 - `customStates[]` is visible in `/afterlife_profiles`; remove ended states through `afterlifeEntityCustomStateChanges[].statesToRemove[]` instead of leaving stale states forever.

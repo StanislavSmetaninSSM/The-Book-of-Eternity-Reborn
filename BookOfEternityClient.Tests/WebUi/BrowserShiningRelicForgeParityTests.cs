@@ -483,6 +483,12 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
     {
         await SeedStoryTurnAsync(88);
         await SeedSoulRealmAsync(realm, inkFeathers);
+        await SeedBlessingRerollAuthorityAsync(realm);
+        var blessing = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
+            _fs,
+            CreateRelicRerollPackage(),
+            currentIncarnation: 3);
+        Assert.True(blessing.Success, blessing.ErrorMessage);
         await SeedGuardiansAsync();
 
         var root = new JsonObject
@@ -536,21 +542,14 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
             ["soulName"] = "Тестовая Душа",
             ["currentRealm"] = realm,
             ["currentIncarnation"] = 3,
+            [AfterlifeSpiritualConflictState.SoulStateProfileProperty] = new JsonObject
+            {
+                [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0
+            },
             ["inkFeathers"] = new JsonObject
             {
                 ["current"] = inkFeathers,
                 ["total"] = inkFeathers
-            },
-            [ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
-            {
-                ["relicRefinementEntitlements"] = new JsonObject
-                {
-                    ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
-                    ["rerolls"] = 2,
-                    ["rerollsSpent"] = 0,
-                    ["freeShape"] = false,
-                    ["freeRetune"] = false
-                }
             },
             ["soulRelics"] = new JsonObject
             {
@@ -637,9 +636,16 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
 
     private async Task SetRelicRerollsAsync(int rerolls)
     {
-        var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
-        root[ShiningBlessingEffectState.SoulStateProperty]!["relicRefinementEntitlements"]!["rerolls"] = Math.Max(0, rerolls);
-        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var current = await ShiningBlessingEffectState.GetPendingRelicRerollsAsync(_fs);
+        if (rerolls < 0 || rerolls > current)
+            throw new InvalidOperationException("Test fixture can only exhaust the current exact relic allocation.");
+        if (current > rerolls)
+        {
+            Assert.True(await ShiningBlessingEffectState.ConsumeRelicRerollsAsync(
+                _fs,
+                currentTurnNumber: 89,
+                rerollsToConsume: current - rerolls));
+        }
     }
 
     private async Task WriteBlockingPendingCoreActionRequestAsync()
@@ -804,16 +810,105 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
     }
 
     private int ReadPendingRelicRerolls()
-    {
-        var root = JsonNode.Parse((_fs.ReadFileAsync("game_state/meta/soul_state.json").GetAwaiter().GetResult())!)!.AsObject();
-        return root[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"]?["rerolls"]?.GetValue<int>() ?? 0;
-    }
+        => ShiningBlessingEffectState.GetPendingRelicRerollsAsync(_fs)
+            .GetAwaiter()
+            .GetResult();
 
     private int ReadSpentRelicRerolls()
     {
-        var root = JsonNode.Parse((_fs.ReadFileAsync("game_state/meta/soul_state.json").GetAwaiter().GetResult())!)!.AsObject();
-        return root[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"]?["rerollsSpent"]?.GetValue<int>() ?? 0;
+        var soul = JsonNode.Parse(
+            _fs.ReadFileAsync("game_state/meta/soul_state.json").GetAwaiter().GetResult()!)!
+            .AsObject();
+        var allocationId = soul[ShiningBlessingEffectState.SoulStateProperty]?
+            ["relicRefinementEntitlements"]?["rerollResourceBinding"]?
+            ["allocationId"]?.GetValue<string>();
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath)
+                .GetAwaiter().GetResult(),
+            allowMissingPristine: false);
+        Assert.True(definitions.IsValid, string.Join(Environment.NewLine, definitions.Issues));
+        var history = ResourceHistoryState.ParseCanonical(
+            _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath)
+                .GetAwaiter().GetResult(),
+            definitions.Catalog!,
+            allowMissingPristine: false);
+        Assert.True(history.IsValid, string.Join(Environment.NewLine, history.Issues));
+        return checked((int)history.History!.Transitions
+            .Where(transition =>
+                transition.Operation == ResourceTransitionOperation.Spend &&
+                string.Equals(transition.OriginId, allocationId, StringComparison.Ordinal))
+            .Sum(static transition => transition.AppliedAmount));
     }
+
+    private async Task SeedBlessingRerollAuthorityAsync(string realm)
+    {
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            bootstrap.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Тестовая Душа",
+                        ["realm"] = "Shining Abode",
+                        ["resourceOwnerBindings"] = new JsonArray
+                        {
+                            new JsonObject
+                            {
+                                ["realm"] = "shining_abode",
+                                ["resourceOwnerId"] = "player_soul",
+                                ["state"] = RealmSemantics.IsMortalRealm(realm)
+                                    ? "suspended"
+                                    : "active"
+                            }
+                        }
+                    }
+                }
+            }.ToJsonString());
+    }
+
+    private static JsonObject CreateRelicRerollPackage() =>
+        new()
+        {
+            ["preparedAtTurn"] = 80,
+            ["selectedCardIds"] = new JsonArray("card_relic_forge"),
+            ["selectedCards"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["cardId"] = "card_relic_forge",
+                    ["dedupeKey"] = "relic:card_relic_forge",
+                    ["sourceType"] = ShiningAbodeState.CardSourceTypeProject,
+                    ["sourceFactionId"] = "faction_lanterns",
+                    ["sourceActorId"] = "project_refinement_faction_lanterns",
+                    ["effectFamily"] = ShiningAbodeState.EffectFamilyRelic,
+                    ["rarity"] = ShiningAbodeState.RarityCommon,
+                    ["displayName"] = "Кузнечные перебросы",
+                    ["displaySummary"] = "Два переброса реликвии.",
+                    ["effectPayload"] = new JsonObject
+                    {
+                        ["type"] = "grant_relic_refinement",
+                        ["rerolls"] = 2,
+                        ["freeShape"] = false,
+                        ["freeRetune"] = false
+                    }
+                }
+            }
+        };
 
     private static string SelectPromptOptionValue(ExplorerCommandResult result, string promptId, string labelFragment)
     {

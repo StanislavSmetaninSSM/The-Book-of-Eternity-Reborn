@@ -9,8 +9,9 @@
     Example: Creating new Guardian with complete atomic command structure
    </title>
    <scenariocontext>
-    Player is in the Chaos Sea Hub and wants to create a Guardian focused on shadow magic and stealth.
-    They describe wanting a mysterious, morally gray mentor with tragic backstory.
+   Player is in the Chaos Sea Hub and wants to create a Guardian focused on shadow magic and stealth.
+   They describe wanting a mysterious, morally gray mentor with tragic backstory.
+   The Guardian's `gachaSystem.currentReturnCycleId` selects the return cycle; available attempts come only from the client-owned `gacha_attempts` ledger, never from persisted Guardian counters.
    </scenariocontext>
    <logoutput target="gm_thoughts_markdown">
     <![CDATA[
@@ -61,8 +62,7 @@
               "completedQuests": []
             },
             "gachaSystem": {
-              "chargesPerReturn": 1,
-              "chargesUsedThisReturn": 0,
+              "currentReturnCycleId": "chaos_return_1",
               "gachaHistory": []
             },
             "currentProject": {

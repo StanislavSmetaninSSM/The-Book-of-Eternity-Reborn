@@ -8,7 +8,6 @@ public partial class ValidationService
 {
     private static readonly string[] MortalItemCompanionPaths =
     {
-        "game_state/inventory/item_resources.json",
         "game_state/inventory/item_bonds.json",
         "game_state/inventory/item_text_updates.json",
         "game_state/inventory/recipes.json",
@@ -47,7 +46,7 @@ public partial class ValidationService
     private async Task ValidateAcceptedTurnRawMortalItemMaterializationAsync(
         List<ValidationIssue> issues)
     {
-        MortalItemAcceptedEffectSourceAuthority.InvalidateValidatedSources(_fs);
+        MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(_fs);
         var locationPlanningIssues = new List<ValidationIssue>();
         var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
             locationPlanningIssues);
@@ -187,7 +186,7 @@ public partial class ValidationService
             if (acceptedSnapshot.Status == ValidatedPendingTurnSnapshotStatus.Usable &&
                 acceptedSnapshot.Manifest != null)
             {
-                MortalItemAcceptedEffectSourceAuthority.RegisterValidatedSources(
+                MortalItemAcceptedTurnAuthority.RegisterValidatedItems(
                     _fs,
                     acceptedSnapshot.Manifest.SessionId,
                     acceptedSnapshot.Manifest.RequestId,

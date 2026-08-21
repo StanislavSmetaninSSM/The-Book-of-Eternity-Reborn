@@ -17,6 +17,12 @@ public partial class GameEngine
 {
     private sealed record CoordinatedGameStateWrite(string RelativePath, string? PreviousJson, string NextJson);
 
+    private enum SoulRealmTransitionCause
+    {
+        MortalDeathToChaosSea,
+        IncarnationToMortalWorld
+    }
+
     private Task WriteCanonicalSoulStateAsync(JsonObject root)
     {
         return _fs.WriteFileAtomicAsync(
@@ -55,83 +61,26 @@ public partial class GameEngine
     /// Updates the soul state realm and optionally appends a life entry to livesHistory.
     /// Eliminates code duplication across HandleEndOfLife, CheckLifeTransitions, HandleIncarnation.
     /// </summary>
-    private async Task<bool> UpdateSoulStateRealm(string newRealm, string? lifeSummaryToAppend = null, bool incrementIncarnation = false)
+    private async Task<bool> UpdateSoulStateRealm(
+        SoulRealmTransitionCause cause,
+        string? lifeSummaryToAppend = null)
     {
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
-        {
-            _logger.LogWarning("Не удалось обновить soul_state.currentRealm до {NewRealm}: soul_state.json отсутствует или unreadable.", newRealm);
-            return false;
-        }
-
         try
         {
-            using var doc = JsonDocument.Parse(soulJson);
-            var root = doc.RootElement;
-
-            // Reconstruct all existing properties
-            var dict = new Dictionary<string, object?>();
-
-            dict["soulName"] = root.TryGetProperty("soulName", out var sn) ? sn.GetString() : "";
-            dict["soulFormDescription"] = root.TryGetProperty("soulFormDescription", out var sfd) ? sfd.GetString() : "";
-            dict["previousSoulNames"] = root.TryGetProperty("previousSoulNames", out var previousSoulNames)
-                ? JsonSerializer.Deserialize<object>(previousSoulNames.GetRawText())
-                : Array.Empty<string>();
-            dict["currentRealm"] = newRealm;
-            var existingInc = root.TryGetProperty("currentIncarnation", out var inc) && inc.TryGetInt32(out var incVal) ? incVal : 0;
-            dict["currentIncarnation"] = incrementIncarnation ? existingInc + 1 : existingInc;
-
-            // Preserve complex objects
-            dict["enlightenment"] = root.TryGetProperty("enlightenment", out var enl)
-                ? JsonSerializer.Deserialize<object>(enl.GetRawText())
-                : new { currentTier = "Новичок", experience = 0, level = 0 };
-            dict["inkFeathers"] = root.TryGetProperty("inkFeathers", out var f)
-                ? JsonSerializer.Deserialize<object>(f.GetRawText())
-                : new { current = 0, total = 0 };
-            dict["soulRelics"] = root.TryGetProperty("soulRelics", out var sr)
-                ? JsonSerializer.Deserialize<object>(sr.GetRawText())
-                : new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() };
-
-            // Handle livesHistory — optionally append a new life entry
-            var existingHistory = new List<object>();
-            if (root.TryGetProperty("livesHistory", out var lh) &&
-                lh.ValueKind == JsonValueKind.Array)
+            if (!await TryCommitSoulRealmTransitionStateAsync(
+                    cause,
+                    lifeSummaryToAppend))
             {
-                foreach (var entry in lh.EnumerateArray())
-                    existingHistory.Add(JsonSerializer.Deserialize<object>(entry.GetRawText())!);
+                return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(lifeSummaryToAppend))
-            {
-                var lifeEntry = new
-                {
-                    incarnation = dict["currentIncarnation"],
-                    summary = lifeSummaryToAppend,
-                    endedAt = DateTime.UtcNow.ToString("o"),
-                    turnsLived = _gameLoop.TurnNumber
-                };
-                existingHistory.Add(lifeEntry);
-            }
-
-            dict["livesHistory"] = existingHistory;
-
-            foreach (var prop in root.EnumerateObject())
-            {
-                if (!dict.ContainsKey(prop.Name))
-                    dict[prop.Name] = JsonSerializer.Deserialize<object>(prop.Value.GetRawText());
-            }
-
-            await WriteCanonicalSoulStateAsync(dict);
-
-            if (string.Equals(newRealm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) &&
-                !string.IsNullOrWhiteSpace(lifeSummaryToAppend))
+            if (cause == SoulRealmTransitionCause.MortalDeathToChaosSea)
             {
                 _fs.ClearCurrentWorldLore();
                 await _rivalSoulArcService.ResetForNewLifeAsync();
                 await _guardianCorrectionService.ResetForAfterlifeAsync();
                 await _scenarioCoreService.ClearAsync();
                 _afterlifeArchiveCandidateService.Clear();
-                await ResetGuardianGachaChargesForNewReturn();
             }
 
             return true;
@@ -141,6 +90,216 @@ public partial class GameEngine
             _logger.LogWarning(ex, "Ошибка обновления soul_state.json");
             return false;
         }
+    }
+
+    private async Task<bool> TryCommitSoulRealmTransitionStateAsync(
+        SoulRealmTransitionCause cause,
+        string? lifeSummaryToAppend)
+    {
+        var newRealm = cause == SoulRealmTransitionCause.MortalDeathToChaosSea
+            ? "Chaos Sea"
+            : "Mortal World";
+        if (cause == SoulRealmTransitionCause.MortalDeathToChaosSea &&
+            string.IsNullOrWhiteSpace(lifeSummaryToAppend))
+        {
+            throw new InvalidOperationException(
+                "Mortal-death realm transition requires one exact life summary.");
+        }
+        if (cause == SoulRealmTransitionCause.IncarnationToMortalWorld &&
+            !string.IsNullOrWhiteSpace(lifeSummaryToAppend))
+        {
+            throw new InvalidOperationException(
+                "Incarnation realm transition cannot append a completed-life summary.");
+        }
+
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var soulJson = await _fs.ReadFileAsync(
+            writeLease,
+            "game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+        {
+            _logger.LogWarning(
+                "Не удалось обновить soul_state.currentRealm до {NewRealm}: soul_state.json отсутствует или unreadable.",
+                newRealm);
+            return false;
+        }
+
+        using var doc = JsonDocument.Parse(soulJson);
+        var root = doc.RootElement;
+        var dict = new Dictionary<string, object?>
+        {
+            ["soulName"] = root.TryGetProperty("soulName", out var sn) ? sn.GetString() : "",
+            ["soulFormDescription"] = root.TryGetProperty("soulFormDescription", out var sfd) ? sfd.GetString() : "",
+            ["previousSoulNames"] = root.TryGetProperty("previousSoulNames", out var previousSoulNames)
+                ? JsonSerializer.Deserialize<object>(previousSoulNames.GetRawText())
+                : Array.Empty<string>(),
+            ["currentRealm"] = newRealm
+        };
+        var existingInc = root.TryGetProperty("currentIncarnation", out var inc) &&
+                          inc.TryGetInt32(out var incVal)
+            ? incVal
+            : 0;
+        dict["currentIncarnation"] = cause == SoulRealmTransitionCause.IncarnationToMortalWorld
+            ? existingInc + 1
+            : existingInc;
+        dict["enlightenment"] = root.TryGetProperty("enlightenment", out var enl)
+            ? JsonSerializer.Deserialize<object>(enl.GetRawText())
+            : new { currentTier = "Новичок", experience = 0, level = 0 };
+        dict["inkFeathers"] = root.TryGetProperty("inkFeathers", out var f)
+            ? JsonSerializer.Deserialize<object>(f.GetRawText())
+            : new { current = 0, total = 0 };
+        dict["soulRelics"] = root.TryGetProperty("soulRelics", out var sr)
+            ? JsonSerializer.Deserialize<object>(sr.GetRawText())
+            : new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() };
+
+        var existingHistory = new List<object>();
+        if (root.TryGetProperty("livesHistory", out var lh) &&
+            lh.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in lh.EnumerateArray())
+                existingHistory.Add(JsonSerializer.Deserialize<object>(entry.GetRawText())!);
+        }
+        if (!string.IsNullOrWhiteSpace(lifeSummaryToAppend))
+        {
+            existingHistory.Add(new
+            {
+                incarnation = dict["currentIncarnation"],
+                summary = lifeSummaryToAppend,
+                endedAt = DateTime.UtcNow.ToString("o"),
+                turnsLived = _gameLoop.TurnNumber
+            });
+        }
+        dict["livesHistory"] = existingHistory;
+        foreach (var prop in root.EnumerateObject())
+        {
+            if (!dict.ContainsKey(prop.Name))
+                dict[prop.Name] = JsonSerializer.Deserialize<object>(prop.Value.GetRawText());
+        }
+
+        var acceptedSoulRoot = JsonSerializer.SerializeToNode(dict, JsonOpts) as JsonObject
+            ?? throw new InvalidOperationException(
+                "Не удалось построить accepted soul-state realm after-image.");
+        acceptedSoulRoot = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(
+            acceptedSoulRoot);
+        var acceptedProfilesRoot = await BuildPlayerSoulRealmAfterImageAsync(
+            newRealm,
+            writeLease);
+
+        JsonObject? acceptedGuardiansRoot = null;
+        if (cause == SoulRealmTransitionCause.MortalDeathToChaosSea)
+        {
+            var guardiansJson = await _fs.ReadFileAsync(
+                writeLease,
+                "game_state/meta/guardians.json");
+            if (!string.IsNullOrWhiteSpace(guardiansJson))
+            {
+                var guardiansRoot = JsonNode.Parse(guardiansJson) as JsonObject
+                    ?? throw new InvalidOperationException(
+                        "guardians.json должен быть object root для client-owned return cycle.");
+                acceptedGuardiansRoot = AfterlifeGuardianReturnCycleState.ProjectNewChaosReturn(
+                    guardiansRoot,
+                    Math.Max(1, existingInc));
+            }
+        }
+
+        var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            _fs,
+            writeLease,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: acceptedProfilesRoot,
+                SoulState: acceptedSoulRoot,
+                Guardians: acceptedGuardiansRoot),
+            Math.Max(1, _gameLoop.TurnNumber + 1));
+        if (!resourcePlan.IsValid)
+        {
+            _logger.LogWarning(
+                "Realm transition {NewRealm} rejected by common resource authority: {Issues}",
+                newRealm,
+                string.Join("; ", resourcePlan.Issues.Select(issue =>
+                    $"{issue.Code}: {issue.Actual ?? issue.Message}")));
+            return false;
+        }
+        if (await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                _fs,
+                writeLease,
+                resourcePlan))
+        {
+            return true;
+        }
+
+        _logger.LogWarning(
+            "Realm transition {NewRealm} lost its exact owner/resource baseline before publication.",
+            newRealm);
+        return false;
+    }
+
+    private Task<JsonObject?> BuildPlayerSoulRealmAfterImageAsync(string newRealm) =>
+        BuildPlayerSoulRealmAfterImageAsync(newRealm, writeLease: null);
+
+    private async Task<JsonObject?> BuildPlayerSoulRealmAfterImageAsync(
+        string newRealm,
+        FileSystemManager.CanonicalWriteLease? writeLease)
+    {
+        if (!RealmSemantics.IsMortalRealm(newRealm) &&
+            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(newRealm, out _))
+        {
+            return null;
+        }
+
+        var profilesJson = writeLease == null
+            ? await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath)
+            : await _fs.ReadFileAsync(writeLease, AfterlifeEntityProfileState.StatePath);
+        if (profilesJson == null)
+            return null;
+        if (string.IsNullOrWhiteSpace(profilesJson))
+        {
+            throw new InvalidOperationException(
+                $"{AfterlifeEntityProfileState.StatePath} пуст и не может участвовать в realm transition.");
+        }
+
+        using var document = JsonDocument.Parse(profilesJson);
+        if (document.RootElement.ValueKind != JsonValueKind.Object)
+        {
+            throw new InvalidOperationException(
+                $"{AfterlifeEntityProfileState.StatePath} должен иметь object root.");
+        }
+        var duplicateIssues = new List<ValidationIssue>();
+        ResourceMaterializationContract.FindDuplicateProperties(
+            document.RootElement,
+            AfterlifeEntityProfileState.StatePath,
+            duplicateIssues,
+            "afterlife_owner_resource_duplicate_property");
+        if (duplicateIssues.Count != 0)
+        {
+            throw new InvalidOperationException(
+                $"{AfterlifeEntityProfileState.StatePath} содержит duplicate properties.");
+        }
+
+        var profilesRoot = JsonNode.Parse(document.RootElement.GetRawText())!.AsObject();
+        if (profilesRoot[AfterlifeEntityProfileState.ProfilesProperty] is not JsonArray profiles)
+            return null;
+        var playerProfiles = profiles
+            .OfType<JsonObject>()
+            .Where(profile =>
+                string.Equals(
+                    profile["actorType"]?.GetValue<string>(),
+                    "player_soul",
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    profile["actorId"]?.GetValue<string>(),
+                    "player_soul",
+                    StringComparison.Ordinal))
+            .ToArray();
+        if (playerProfiles.Length == 0)
+            return null;
+        if (playerProfiles.Length != 1)
+        {
+            throw new InvalidOperationException(
+                "afterlife_entity_profiles.json должен содержать не более одного exact player_soul profile.");
+        }
+        return AfterlifeEntityProfileState.ProjectPlayerSoulRealm(
+            profilesRoot,
+            newRealm);
     }
 
     private async Task<bool> TryCommitCoordinatedGameStateWritesAsync(params CoordinatedGameStateWrite[] writes)
@@ -581,17 +740,26 @@ public partial class GameEngine
         }
     }
 
-    private async Task<string?> ConsumePendingShiningMemorySelectionAsync()
+    private sealed record PendingShiningMemorySelectionOutcome(
+        bool Success,
+        string? Summary);
+
+    private async Task<PendingShiningMemorySelectionOutcome>
+        ConsumePendingShiningMemorySelectionAsync()
     {
         var pendingSelection = await ShiningBlessingEffectState.ReadPendingMemorySelectionAsync(_fs);
         if (pendingSelection == null)
-            return null;
+            return new PendingShiningMemorySelectionOutcome(true, null);
 
         var candidates = pendingSelection.Candidates;
         if (candidates.Count == 0)
         {
-            await ShiningBlessingEffectState.ConsumePendingMemorySelectionAsync(_fs, _gameLoop.TurnNumber, null, 0);
-            return null;
+            var committed = await ShiningBlessingEffectState.ConsumePendingMemorySelectionAsync(
+                _fs,
+                _gameLoop.TurnNumber,
+                null,
+                0);
+            return new PendingShiningMemorySelectionOutcome(committed, null);
         }
 
         var displayCount = Math.Min(candidates.Count, Math.Max(2, 2 + pendingSelection.Options));
@@ -648,15 +816,19 @@ public partial class GameEngine
 
             if (choiceMap.TryGetValue(choice, out var selectedCandidate))
             {
-                await ShiningBlessingEffectState.ConsumePendingMemorySelectionAsync(
+                var committed = await ShiningBlessingEffectState.ConsumePendingMemorySelectionAsync(
                     _fs,
                     _gameLoop.TurnNumber,
                     selectedCandidate,
                     rerollsSpent);
+                if (!committed)
+                    return new PendingShiningMemorySelectionOutcome(false, null);
                 await RefreshRuntimeStateAsync();
                 AnsiConsole.MarkupLine($"[gold1]🧠 Эхо-память:[/] {Markup.Escape(selectedCandidate.Summary)}");
                 AnsiConsole.WriteLine();
-                return $"инкарнация #{selectedCandidate.Incarnation}: {selectedCandidate.Summary}";
+                return new PendingShiningMemorySelectionOutcome(
+                    true,
+                    $"инкарнация #{selectedCandidate.Incarnation}: {selectedCandidate.Summary}");
             }
 
             if (canReroll && choice.Contains("Сменить набор", StringComparison.OrdinalIgnoreCase))
@@ -667,13 +839,15 @@ public partial class GameEngine
                 continue;
             }
 
-            await ShiningBlessingEffectState.ConsumePendingMemorySelectionAsync(
+            var skipCommitted = await ShiningBlessingEffectState.ConsumePendingMemorySelectionAsync(
                 _fs,
                 _gameLoop.TurnNumber,
                 null,
                 rerollsSpent);
+            if (!skipCommitted)
+                return new PendingShiningMemorySelectionOutcome(false, null);
             await RefreshRuntimeStateAsync();
-            return null;
+            return new PendingShiningMemorySelectionOutcome(true, null);
         }
     }
 
@@ -850,79 +1024,6 @@ public partial class GameEngine
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Не удалось проверить applicationState pendingMemoryLegacy");
-            return false;
-        }
-    }
-
-    private async Task ResetGuardianGachaChargesForNewReturn()
-    {
-        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        if (string.IsNullOrWhiteSpace(guardiansJson))
-            return;
-
-        try
-        {
-            if (JsonNode.Parse(guardiansJson) is not JsonObject root)
-                return;
-
-            var changed = false;
-
-            void ResetGuardian(JsonObject guardian)
-            {
-                var existingGachaSystem = guardian["gachaSystem"] as JsonObject;
-                var hadChargesPerReturn = existingGachaSystem?["chargesPerReturn"] != null;
-                var hadChargesUsedThisReturn = existingGachaSystem?["chargesUsedThisReturn"] != null;
-                var hadReadableChargesPerReturn = TryReadInt(existingGachaSystem?["chargesPerReturn"], out var previousChargesPerReturn);
-                var (chargesPerReturn, currentUsedCharges) = GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
-                var gachaSystem = guardian["gachaSystem"] as JsonObject ?? new JsonObject();
-                if (!hadChargesPerReturn || !hadChargesUsedThisReturn)
-                    changed = true;
-                if (currentUsedCharges != 0)
-                    changed = true;
-                if (!hadReadableChargesPerReturn || previousChargesPerReturn != chargesPerReturn)
-                {
-                    changed = true;
-                }
-
-                gachaSystem["chargesPerReturn"] = chargesPerReturn;
-                gachaSystem["chargesUsedThisReturn"] = 0;
-                guardian["gachaSystem"] = gachaSystem;
-            }
-
-            if (root["guardians"] is JsonArray guardians)
-            {
-                foreach (var guardian in guardians.OfType<JsonObject>())
-                    ResetGuardian(guardian);
-            }
-
-            if (root["activeGuardian"] is JsonObject activeGuardian)
-                ResetGuardian(activeGuardian);
-
-            if (changed)
-            {
-                await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json",
-                    root.ToJsonString(JsonOpts));
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Ошибка сброса guardian gacha charges после возвращения в Море Хаоса");
-        }
-    }
-
-    private static bool TryReadInt(JsonNode? node, out int value)
-    {
-        value = 0;
-        if (node == null)
-            return false;
-
-        try
-        {
-            value = node.GetValue<int>();
-            return true;
-        }
-        catch
-        {
             return false;
         }
     }

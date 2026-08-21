@@ -1134,7 +1134,7 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
-    public async Task WriteForgeRequestWithRelicRerollCommitAsync_RestoresEntitlementWhenPendingWriteFails()
+    public async Task WriteForgeRequestWithRelicRerollCommitAsync_RollsBackSoulLedgerAndHistoryWhenPendingWriteFails()
     {
         var root = CreateTempRoot();
         try
@@ -1142,20 +1142,12 @@ public sealed class ShiningCoreActionRequestStateTests
             var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fs.EnsureDirectoryStructure();
             await WriteMinimalActiveShiningStateAsync(fs);
-
-            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
-            soulRoot[ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
-            {
-                ["relicRefinementEntitlements"] = new JsonObject
-                {
-                    ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
-                    ["rerolls"] = 2,
-                    ["rerollsSpent"] = 0,
-                    ["freeShape"] = false,
-                    ["freeRetune"] = false
-                }
-            };
-            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
+            await WriteBlessingRerollAuthorityAsync(fs);
+            var materialized = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
+                fs,
+                CreateRelicRerollPackage(),
+                currentIncarnation: 2);
+            Assert.True(materialized.Success, materialized.ErrorMessage);
 
             await ShiningCoreActionRequestState.WriteRequestAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
             {
@@ -1163,6 +1155,10 @@ public sealed class ShiningCoreActionRequestStateTests
                 ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
                 CreatedAtTurn = 5
             });
+
+            var soulBefore = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+            var stateBefore = await fs.ReadFileAsync(ResourceMaterializationContract.StatePath);
+            var historyBefore = await fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() => ShiningCoreActionRequestState.WriteForgeRequestWithRelicRerollCommitAsync(
                 fs,
@@ -1178,12 +1174,43 @@ public sealed class ShiningCoreActionRequestStateTests
                 currentTurnNumber: 4,
                 relicRerollsToCommit: 1));
 
-            var restoredSoulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
-            var effectState = Assert.IsType<JsonObject>(restoredSoulRoot[ShiningBlessingEffectState.SoulStateProperty]);
-            var entitlements = Assert.IsType<JsonObject>(effectState["relicRefinementEntitlements"]);
-            Assert.Equal(2, entitlements["rerolls"]?.GetValue<int>());
-            Assert.Equal(0, entitlements["rerollsSpent"]?.GetValue<int>());
-            Assert.Equal(ShiningBlessingEffectState.RelicStatusPendingEntitlement, entitlements["status"]?.GetValue<string>());
+            Assert.Equal(soulBefore, await fs.ReadFileAsync("game_state/meta/soul_state.json"));
+            Assert.Equal(stateBefore, await fs.ReadFileAsync(ResourceMaterializationContract.StatePath));
+            Assert.Equal(historyBefore, await fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath));
+            var requests = await ShiningCoreActionRequestState.ReadRequestsAsync(fs);
+            Assert.Equal("core_req_existing", Assert.Single(requests).RequestId);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_RelicGachaWithoutCommonAttemptLedger_FailsClosed()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypePullRelicGacha,
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                RadianceTierAtRequest = 2,
+                QuotedCostFeathers = 30,
+                QuotedCostLightSparks = 0,
+                ReturnCycleId = "shining_return_2",
+                ProjectedGachaBonusSteps = 1,
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("resource ledger", error, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {
@@ -1200,6 +1227,7 @@ public sealed class ShiningCoreActionRequestStateTests
             var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fs.EnsureDirectoryStructure();
             await WriteMinimalActiveShiningStateAsync(fs);
+            await InitializeShiningGachaAttemptLedgerAsync(fs);
 
             var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
             {
@@ -1222,12 +1250,71 @@ public sealed class ShiningCoreActionRequestStateTests
         }
     }
 
+    private static async Task InitializeShiningGachaAttemptLedgerAsync(
+        FileSystemManager fs)
+    {
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            bootstrap.Definitions!.ToCanonicalJson());
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+        var shining = JsonNode.Parse((await fs.ReadFileAsync(
+            ShiningAbodeState.StatePath))!)!.AsObject();
+        var soul = JsonNode.Parse((await fs.ReadFileAsync(
+            "game_state/meta/soul_state.json"))!)!.AsObject();
+        var plan = await ShiningReturnCycleResourceService.BuildAsync(
+            fs,
+            shining,
+            soul,
+            ShiningReturnCycleTransitionKind.SynchronizeCurrentShining,
+            turn: 2);
+        Assert.True(plan.IsValid, string.Join(Environment.NewLine, plan.Issues));
+        Assert.True(await ShiningReturnCycleResourceService.TryCommitAsync(fs, plan));
+    }
+
     private static async Task WriteMinimalActiveShiningStateAsync(FileSystemManager fs)
     {
+        await fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Душа игрока",
+                        ["realm"] = "Shining Abode",
+                        ["resourceOwnerBindings"] = new JsonArray
+                        {
+                            new JsonObject
+                            {
+                                ["realm"] = "shining_abode",
+                                ["resourceOwnerId"] = "player_soul",
+                                ["state"] = "active"
+                            }
+                        }
+                    }
+                }
+            }.ToJsonString());
+        await fs.WriteFileAtomicAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
         await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", new JsonObject
         {
             ["currentRealm"] = "Shining Abode",
             ["currentIncarnation"] = 2,
+            [AfterlifeSpiritualConflictState.SoulStateProfileProperty] = new JsonObject
+            {
+                [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0
+            },
             ["inkFeathers"] = new JsonObject
             {
                 ["current"] = 50
@@ -1358,6 +1445,74 @@ public sealed class ShiningCoreActionRequestStateTests
             }
         }.ToJsonString());
     }
+
+    private static async Task WriteBlessingRerollAuthorityAsync(FileSystemManager fs)
+    {
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            bootstrap.Definitions!.ToCanonicalJson());
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+        await fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Душа игрока",
+                        ["realm"] = "Shining Abode",
+                        ["resourceOwnerBindings"] = new JsonArray
+                        {
+                            new JsonObject
+                            {
+                                ["realm"] = "shining_abode",
+                                ["resourceOwnerId"] = "player_soul",
+                                ["state"] = "active"
+                            }
+                        }
+                    }
+                }
+            }.ToJsonString());
+    }
+
+    private static JsonObject CreateRelicRerollPackage() =>
+        new()
+        {
+            ["preparedAtTurn"] = 10,
+            ["selectedCardIds"] = new JsonArray("card_relic"),
+            ["selectedCards"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["cardId"] = "card_relic",
+                    ["dedupeKey"] = "relic:card_relic",
+                    ["sourceType"] = ShiningAbodeState.CardSourceTypeProject,
+                    ["sourceFactionId"] = "faction_old",
+                    ["sourceActorId"] = "project_old",
+                    ["effectFamily"] = ShiningAbodeState.EffectFamilyRelic,
+                    ["rarity"] = ShiningAbodeState.RarityCommon,
+                    ["displayName"] = "card_relic",
+                    ["displaySummary"] = "relic rerolls",
+                    ["effectPayload"] = new JsonObject
+                    {
+                        ["type"] = "grant_relic_refinement",
+                        ["rerolls"] = 2,
+                        ["freeShape"] = false,
+                        ["freeRetune"] = false
+                    }
+                }
+            }
+        };
 
     private static JsonObject CreateCard(string cardId, string effectFamily, string rarity) => new()
     {

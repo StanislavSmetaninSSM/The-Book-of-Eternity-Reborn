@@ -38,7 +38,7 @@ public partial class ValidationService
         ValidateAcceptedTurnRawEffectMaterializationAsync()
     {
         var issues = new List<ValidationIssue>();
-        await ValidateAcceptedTurnRawEffectMaterializationAsync(issues);
+        await ValidateAcceptedTurnRawEffectMaterializationAsync(issues, null);
         return issues;
     }
 
@@ -63,7 +63,8 @@ public partial class ValidationService
     }
 
     private async Task ValidateAcceptedTurnRawEffectMaterializationAsync(
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        ResourceOwnerCompositionResult? resourceOwners)
     {
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs);
         var commandJson = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
@@ -94,6 +95,9 @@ public partial class ValidationService
 
         var manifest = lookup.Manifest;
         var preTurnCarriers = await ReadSnapshotEffectCarriersAsync(manifest, issues);
+        var plannedCarriers = ApplyResourceOwnerAfterImages(
+            currentCarriers,
+            resourceOwners);
         var preTurnIndexJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             manifest,
             EffectAcceptedTurnPlan.IdentityIndexPath);
@@ -145,7 +149,7 @@ public partial class ValidationService
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
                 return;
 
-            var identityItemSources = MortalItemAcceptedEffectSourceAuthority.GetValidatedSources(
+            var identityItemSources = MortalItemAcceptedTurnAuthority.GetValidatedEffectSources(
                 _fs,
                 manifest.SessionId,
                 manifest.RequestId);
@@ -155,7 +159,7 @@ public partial class ValidationService
                     .Concat(identityOwnerExports.Sources)
                     .ToArray();
             var identityReplacedSourceOwners = identityOwnerExports.ReplacedSourceOwners
-                .Concat(MortalItemAcceptedEffectSourceAuthority.GetReplacedSourceOwners(
+                .Concat(MortalItemAcceptedTurnAuthority.GetReplacedEffectSourceOwners(
                     _fs,
                     manifest.SessionId,
                     manifest.RequestId))
@@ -168,14 +172,16 @@ public partial class ValidationService
                 manifest.TurnNumber,
                 emptyCommands,
                 preTurnCarriers,
-                currentCarriers,
+                plannedCarriers,
                 preTurnIndex,
                 preTurnSources,
                 identityAcceptedPlanSources,
                 identityOwnerExports.Targets,
                 identityReplacedSourceOwners,
                 identityOwnerExports.ReplacedTargets,
-                currentWorldTime);
+                currentWorldTime,
+                publicationCarrierBaselines: currentCarriers,
+                preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities);
             var identityResult = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
                 _fs,
                 identityInput);
@@ -203,7 +209,7 @@ public partial class ValidationService
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return;
 
-        var itemSources = MortalItemAcceptedEffectSourceAuthority.GetValidatedSources(
+        var itemSources = MortalItemAcceptedTurnAuthority.GetValidatedEffectSources(
             _fs,
             manifest.SessionId,
             manifest.RequestId);
@@ -213,7 +219,7 @@ public partial class ValidationService
                 .Concat(ownerExports.Sources)
                 .ToArray();
         var replacedSourceOwners = ownerExports.ReplacedSourceOwners
-            .Concat(MortalItemAcceptedEffectSourceAuthority.GetReplacedSourceOwners(
+            .Concat(MortalItemAcceptedTurnAuthority.GetReplacedEffectSourceOwners(
                 _fs,
                 manifest.SessionId,
                 manifest.RequestId))
@@ -224,17 +230,53 @@ public partial class ValidationService
             manifest.TurnNumber,
             commands,
             preTurnCarriers,
-            currentCarriers,
+            plannedCarriers,
             preTurnIndex,
             preTurnSources,
             acceptedPlanSources,
             ownerExports.Targets,
             replacedSourceOwners,
             ownerExports.ReplacedTargets,
-            currentWorldTime);
+            currentWorldTime,
+            publicationCarrierBaselines: currentCarriers,
+            preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities);
         var result = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(_fs, input);
         issues.AddRange(result.Issues);
     }
+
+    private static EffectCarrierCatalogInput ApplyResourceOwnerAfterImages(
+        EffectCarrierCatalogInput current,
+        ResourceOwnerCompositionResult? resourceOwners)
+    {
+        var afterImages = resourceOwners?.OwnerCompanionAfterImages;
+        return new EffectCarrierCatalogInput(
+            current.PlayerEffects?.DeepClone().AsObject(),
+            current.NpcEffects?.DeepClone().AsObject(),
+            ReadPreparedCarrier(
+                EffectCarrierCatalog.EnemiesPath,
+                current.EnemyCombatants,
+                afterImages),
+            ReadPreparedCarrier(
+                EffectCarrierCatalog.AlliesPath,
+                current.AllyCombatants,
+                afterImages),
+            ReadPreparedCarrier(
+                AfterlifeEntityProfileState.StatePath,
+                current.AfterlifeProfiles,
+                afterImages),
+            ReadPreparedCarrier(
+                AfterlifeSpiritualConflictState.StatePath,
+                current.SpiritualConflict,
+                afterImages));
+    }
+
+    private static JsonObject? ReadPreparedCarrier(
+        string path,
+        JsonObject? current,
+        IReadOnlyDictionary<string, JsonObject>? afterImages) =>
+        afterImages != null && afterImages.TryGetValue(path, out var afterImage)
+            ? afterImage.DeepClone().AsObject()
+            : current?.DeepClone().AsObject();
 
     private async Task<EffectAcceptedOwnerExports>
         ValidateAndCollectAcceptedEffectOwnerExportsAsync(

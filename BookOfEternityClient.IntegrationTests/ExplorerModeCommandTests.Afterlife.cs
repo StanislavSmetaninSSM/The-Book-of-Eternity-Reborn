@@ -5648,25 +5648,74 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
         var soulPath = _fs.ResolvePath("game_state/meta/soul_state.json");
-        var soulRoot = JsonNode.Parse((await File.ReadAllTextAsync(soulPath))!)!.AsObject();
-        soulRoot[ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
-        {
-            ["applicationState"] = "active",
-            ["materializedAtUtc"] = "2026-04-19T10:00:00Z",
-            ["currentIncarnation"] = 7,
-            ["sourcePackagePreparedAtTurn"] = 155,
-            ["sourceCardIds"] = new JsonArray("card_relic_reroll"),
-            ["sourceCardCount"] = 1,
-            ["relicRefinementEntitlements"] = new JsonObject
+        var resourceBootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(
+            resourceBootstrap.IsValid,
+            string.Join(Environment.NewLine, resourceBootstrap.Issues));
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            resourceBootstrap.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            resourceBootstrap.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            resourceBootstrap.History!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
             {
-                ["rerolls"] = 1,
-                ["freeShape"] = false,
-                ["freeRetune"] = false,
-                ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
-                ["sourceCardIds"] = new JsonArray("card_relic_reroll")
-            }
-        };
-        await File.WriteAllTextAsync(soulPath, soulRoot.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Тестовая Душа",
+                        ["realm"] = "Shining Abode",
+                        ["resourceOwnerBindings"] = new JsonArray
+                        {
+                            new JsonObject
+                            {
+                                ["realm"] = "shining_abode",
+                                ["resourceOwnerId"] = "player_soul",
+                                ["state"] = "active"
+                            }
+                        }
+                    }
+                }
+            }.ToJsonString());
+        var materialized = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
+            _fs,
+            new JsonObject
+            {
+                ["preparedAtTurn"] = 155,
+                ["selectedCardIds"] = new JsonArray("card_relic_reroll"),
+                ["selectedCards"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["cardId"] = "card_relic_reroll",
+                        ["dedupeKey"] = "relic:card_relic_reroll",
+                        ["sourceType"] = ShiningAbodeState.CardSourceTypeProject,
+                        ["sourceFactionId"] = "faction_dawn",
+                        ["sourceActorId"] = "project_refinement",
+                        ["effectFamily"] = ShiningAbodeState.EffectFamilyRelic,
+                        ["rarity"] = ShiningAbodeState.RarityCommon,
+                        ["displayName"] = "Переброс реликвии",
+                        ["displaySummary"] = "Один переброс реликвии.",
+                        ["effectPayload"] = new JsonObject
+                        {
+                            ["type"] = "grant_relic_refinement",
+                            ["rerolls"] = 1,
+                            ["freeShape"] = false,
+                            ["freeRetune"] = false
+                        }
+                    }
+                }
+            },
+            currentIncarnation: 7);
+        Assert.True(materialized.Success, materialized.ErrorMessage);
 
         _console.QueueSelection("[bold yellow]Сияющая Обитель[/]", "⚒ Торговля и кузня", "← Назад");
         _console.QueueSelection("Торговля и кузня Сияющей Обители", "⚒ Создать запрос на перековку", "← Назад");
@@ -5684,7 +5733,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.False(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
         var afterRoot = JsonNode.Parse((await File.ReadAllTextAsync(soulPath))!)!.AsObject();
         var entitlements = afterRoot[ShiningBlessingEffectState.SoulStateProperty]!["relicRefinementEntitlements"]!.AsObject();
-        Assert.Equal(1, entitlements["rerolls"]!.GetValue<int>());
+        Assert.False(entitlements.ContainsKey("rerolls"));
+        Assert.False(entitlements.ContainsKey("rerollsSpent"));
+        Assert.Equal(1, await ShiningBlessingEffectState.GetPendingRelicRerollsAsync(_fs));
         Assert.Equal(ShiningBlessingEffectState.RelicStatusPendingEntitlement, entitlements["status"]!.GetValue<string>());
 
         var renderedText = ExtractRenderedText();
@@ -10251,15 +10302,78 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     [Fact]
     public async Task TryProcessCommand_SpiritualArts_UpgradesSpiritFocusAndSpendsInkFeathers()
     {
-        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        var initialSoul = new JsonObject
         {
-            soulName = "Тестовая Душа",
-            currentRealm = "Chaos Sea",
-            currentIncarnation = 1,
-            inkFeathers = new { current = 700, total = 700 },
-            enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
-            soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 }
-        });
+            ["soulName"] = "Тестовая Душа",
+            ["currentRealm"] = "Chaos Sea",
+            ["currentIncarnation"] = 1,
+            ["inkFeathers"] = new JsonObject { ["current"] = 700, ["total"] = 700 },
+            ["enlightenment"] = new JsonObject
+            {
+                ["currentTier"] = "Illuminated",
+                ["experience"] = 100,
+                ["level"] = 5
+            },
+            ["soulProgression"] = new JsonObject
+            {
+                ["totalExperience"] = 100,
+                ["tier"] = 5,
+                ["progressPercent"] = 100
+            },
+            [AfterlifeSpiritualConflictState.SoulStateProfileProperty] =
+                AfterlifeSpiritualConflictState.CreateDefaultCombatProfile()
+        };
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            initialSoul.ToJsonString());
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            bootstrap.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Тестовая Душа",
+                        ["realm"] = "Chaos Sea",
+                        [AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] = new JsonArray
+                        {
+                            new JsonObject
+                            {
+                                ["realm"] = "chaos_sea",
+                                ["resourceOwnerId"] = "player_soul",
+                                ["state"] = "active"
+                            }
+                        }
+                    }
+                }
+            }.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            ShiningAbodeState.StatePath,
+            ShiningAbodeState.CreateDefaultState().ToJsonString());
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", "{}");
+        var initialPlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            _fs,
+            new AfterlifeOwnerResourceAcceptedState(SoulState: initialSoul),
+            turn: 1);
+        Assert.True(initialPlan.IsValid, string.Join(Environment.NewLine, initialPlan.Issues));
+        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(_fs, initialPlan));
         await _stateManager.RefreshGameStateAsync();
         _console.QueueAnySelection("⬆ Прокачать духовное искусство");
         _console.QueueSelection("Выберите духовное искусство", "Средоточие Души — уровень 0->1, макс ОД 6->7, 600 🪶");
@@ -10277,6 +10391,149 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
         Assert.Equal(100, inkFeathers["current"]?.GetValue<int>());
         Assert.Equal(700, inkFeathers["total"]?.GetValue<int>());
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            allowMissingPristine: false).Catalog!;
+        var resourceState = ResourceStateContract.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(
+            resourceState.IsValid,
+            string.Join(Environment.NewLine, resourceState.Issues));
+        var actionPoints = Assert.Single(
+            resourceState.Ledger!.Entries,
+            entry => entry.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeActor &&
+                     entry.Coordinate.ResourceOwnerId == "player_soul" &&
+                     entry.Coordinate.ResourceKey == "spiritual_action_points");
+        Assert.Equal(6m, actionPoints.Current);
+        Assert.Equal(7m, actionPoints.Maximum);
+        var resourceHistory = ResourceHistoryState.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(
+            resourceHistory.IsValid,
+            string.Join(Environment.NewLine, resourceHistory.Issues));
+        Assert.Contains(
+            resourceHistory.History!.Transitions,
+            transition => transition.Coordinate.Equals(actionPoints.Coordinate) &&
+                          transition.Operation == ResourceTransitionOperation.Reconfigure);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SpiritualArts_SpiritFocusConcurrentSoulMutationFailsClosed()
+    {
+        var initialSoul = new JsonObject
+        {
+            ["soulName"] = "Тестовая Душа",
+            ["currentRealm"] = "Chaos Sea",
+            ["currentIncarnation"] = 1,
+            ["inkFeathers"] = new JsonObject { ["current"] = 700, ["total"] = 700 },
+            ["enlightenment"] = new JsonObject
+            {
+                ["currentTier"] = "Illuminated",
+                ["experience"] = 100,
+                ["level"] = 5
+            },
+            ["soulProgression"] = new JsonObject
+            {
+                ["totalExperience"] = 100,
+                ["tier"] = 5,
+                ["progressPercent"] = 100
+            },
+            [AfterlifeSpiritualConflictState.SoulStateProfileProperty] =
+                AfterlifeSpiritualConflictState.CreateDefaultCombatProfile()
+        };
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            initialSoul.ToJsonString());
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            bootstrap.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Тестовая Душа",
+                        ["realm"] = "Chaos Sea",
+                        [AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] = new JsonArray
+                        {
+                            new JsonObject
+                            {
+                                ["realm"] = "chaos_sea",
+                                ["resourceOwnerId"] = "player_soul",
+                                ["state"] = "active"
+                            }
+                        }
+                    }
+                }
+            }.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            ShiningAbodeState.StatePath,
+            ShiningAbodeState.CreateDefaultState().ToJsonString());
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", "{}");
+        var initialPlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            _fs,
+            new AfterlifeOwnerResourceAcceptedState(SoulState: initialSoul),
+            turn: 1);
+        Assert.True(initialPlan.IsValid, string.Join(Environment.NewLine, initialPlan.Issues));
+        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(_fs, initialPlan));
+        var stateBefore = await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath);
+        var historyBefore = await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath);
+
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+        _console.QueueSelection(
+            "Выберите духовное искусство",
+            "Средоточие Души — уровень 0->1, макс ОД 6->7, 600 🪶");
+        _console.QueueAnyConfirmResponse(true);
+        _console.ConfirmCallback = () =>
+        {
+            var current = JsonNode.Parse(
+                _fs.ReadFileAsync("game_state/meta/soul_state.json")
+                    .GetAwaiter()
+                    .GetResult()!)!.AsObject();
+            current["concurrentMarker"] = "preserve_me";
+            _fs.WriteFileAtomicAsync(
+                    "game_state/meta/soul_state.json",
+                    current.ToJsonString())
+                .GetAwaiter()
+                .GetResult();
+            _console.ConfirmCallback = null;
+        };
+
+        var ex = await Record.ExceptionAsync(() =>
+            _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        var soulRoot = JsonNode.Parse(
+            (await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal("preserve_me", soulRoot["concurrentMarker"]!.GetValue<string>());
+        Assert.Equal(
+            0,
+            soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]!
+                [AfterlifeSpiritualConflictState.SpiritFocusTierProperty]!.GetValue<int>());
+        Assert.Equal(700, soulRoot["inkFeathers"]!["current"]!.GetValue<int>());
+        Assert.Equal(stateBefore, await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath));
+        Assert.Equal(historyBefore, await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath));
     }
 
     [Fact]

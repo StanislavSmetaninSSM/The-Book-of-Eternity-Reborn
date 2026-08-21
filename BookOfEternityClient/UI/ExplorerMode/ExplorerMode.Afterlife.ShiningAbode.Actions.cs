@@ -14,7 +14,8 @@ public partial class ExplorerMode
         JsonObject? ResidentRoot,
         JsonObject? GuardiansRoot,
         JsonObject? SoulRoot,
-        IReadOnlyList<ShiningContextReadIssue>? ReadIssues = null);
+        IReadOnlyList<ShiningContextReadIssue>? ReadIssues = null,
+        int RelicRerolls = 0);
 
     private async Task<ShiningContext?> LoadShiningContextAsync()
     {
@@ -88,7 +89,15 @@ public partial class ExplorerMode
 
         if (!hasMalformedLegacyPendingDiscovery && !hasMalformedTreasury)
             ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
-        return new ShiningContext(shiningRoot, residentRoot, guardiansRoot, soulRoot, readIssues);
+        var relicRerolls = await ShiningBlessingEffectState
+            .GetPendingRelicRerollsAsync(_fs, soulRoot);
+        return new ShiningContext(
+            shiningRoot,
+            residentRoot,
+            guardiansRoot,
+            soulRoot,
+            readIssues,
+            relicRerolls);
     }
 
     private async Task<bool> SaveShiningRootAsync(JsonObject root)

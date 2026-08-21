@@ -77,26 +77,14 @@ internal static class GuardianGachaChargeRules
         return 0;
     }
 
-    public static (int ChargesPerReturn, int ChargesUsedThisReturn) NormalizeGuardianGachaState(JsonObject guardian)
+    public static void NormalizeGuardianGachaCompanionState(JsonObject guardian)
     {
-        var chargesPerReturn = GetChargesPerReturnForGuardian(guardian);
-
         var gachaSystem = guardian["gachaSystem"] as JsonObject ?? new JsonObject();
         if (gachaSystem["gachaHistory"] is not JsonArray)
             gachaSystem["gachaHistory"] = new JsonArray();
-
-        var usedCharges = 0;
-        if (gachaSystem["chargesUsedThisReturn"] is JsonNode usedNode &&
-            TryGetInt(usedNode, out var parsedUsed))
-        {
-            usedCharges = parsedUsed;
-        }
-
-        gachaSystem["chargesPerReturn"] = chargesPerReturn;
-        gachaSystem["chargesUsedThisReturn"] = ClampUsedCharges(usedCharges, chargesPerReturn);
+        gachaSystem.Remove("chargesPerReturn");
+        gachaSystem.Remove("chargesUsedThisReturn");
         guardian["gachaSystem"] = gachaSystem;
-
-        return (chargesPerReturn, ClampUsedCharges(usedCharges, chargesPerReturn));
     }
 
     private static bool TryGetInt(JsonNode node, out int value)

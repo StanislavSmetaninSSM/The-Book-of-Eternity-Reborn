@@ -162,6 +162,36 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Theory]
+    [InlineData("spiritual_action_points", false)]
+    [InlineData("actionEconomy", true)]
+    public async Task ValidateGameStateAsync_SpecialArtUsesUnifiedResourceAxisInsteadOfLegacyMirror(
+        string mechanicalAxis,
+        bool shouldReject)
+    {
+        var artPayload =
+            """
+                  "effectSummary": "При успехе меняет стоимость духовного действия через общий ресурсный контракт.",
+                  "combatEffect": {
+                    "summary": "Особое искусство меняет только проверяемую стоимость духовного действия.",
+                    "trigger": "Когда искусство применяется к платному духовному действию.",
+                    "mechanicalAxis": "__AXIS__",
+                    "allowedPayoff": "Можно изменить только подтверждённый actionCostAudit и клиентскую resource transition.",
+                    "limit": "Один раз для текущего обмена.",
+                    "auditRequirement": "specialArtAudit.effectNote и actionCostAudit должны доказать изменение стоимости."
+                  }
+            """.Replace("__AXIS__", mechanicalAxis, StringComparison.Ordinal);
+
+        await WriteCurrentProfileUpdateStateAsync(BuildCurrentProfileUpdateWithSpecialArt(artPayload));
+
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
+        var hasAxisIssue = issues.Any(issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_invalid_combat_effect_axis", StringComparison.OrdinalIgnoreCase));
+
+        Assert.Equal(shouldReject, hasAxisIssue);
+    }
+
+    [Theory]
     [InlineData(
         """
               "effectSummary": "При успехе отражает часть давления в сторону противника.",

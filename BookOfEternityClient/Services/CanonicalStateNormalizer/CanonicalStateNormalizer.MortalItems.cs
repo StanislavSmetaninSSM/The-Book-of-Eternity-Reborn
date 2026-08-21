@@ -107,7 +107,7 @@ public partial class CanonicalStateNormalizer
             string itemId;
             if (acceptedSessionId != null &&
                 acceptedRequestId != null &&
-                MortalItemAcceptedEffectSourceAuthority.TryGetAllocatedItemId(
+                MortalItemAcceptedTurnAuthority.TryGetAllocatedItemId(
                     _fs,
                     acceptedSessionId,
                     acceptedRequestId,
@@ -174,6 +174,7 @@ public partial class CanonicalStateNormalizer
                 RewriteMortalItemCarrierCoordinate(
                     pendingCreation.Authority.Destination,
                     creationMap));
+            canonicalItem.Remove("resourceMaterialization");
 
             var receipt = MortalItemIdentityState.CreateRootReceipt(
                 canonicalItem,
@@ -530,7 +531,6 @@ public partial class CanonicalStateNormalizer
         var result = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         foreach (var path in new[]
                  {
-                     "game_state/inventory/item_resources.json",
                      "game_state/inventory/item_bonds.json",
                      "game_state/inventory/item_text_updates.json",
                      "game_state/inventory/recipes.json",

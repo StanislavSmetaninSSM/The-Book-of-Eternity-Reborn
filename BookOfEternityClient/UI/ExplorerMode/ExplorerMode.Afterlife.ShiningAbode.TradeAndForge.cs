@@ -1485,7 +1485,7 @@ public partial class ExplorerMode
         WaitForKey();
     }
 
-    private Task<(string? TargetFormTag, int RerollsSpent)> PromptForForgeReshapeTargetFormTagAsync(JsonObject soulRoot, JsonObject relic)
+    private async Task<(string? TargetFormTag, int RerollsSpent)> PromptForForgeReshapeTargetFormTagAsync(JsonObject soulRoot, JsonObject relic)
     {
         var currentFormTag = GetNodeString(relic["formTag"]) ?? string.Empty;
         var currentFormLabel = DescribeForgeFormTag(currentFormTag);
@@ -1498,13 +1498,14 @@ public partial class ExplorerMode
             .OrderBy(formTag => formTag, StringComparer.OrdinalIgnoreCase)
             .ToList();
         if (suggestions.Count == 0)
-            return Task.FromResult<(string? TargetFormTag, int RerollsSpent)>((NormalizeForgeFormTagInput(
+            return (NormalizeForgeFormTagInput(
                 Ask("[cyan]Новая форма реликвии:[/]", currentFormLabel).Trim(),
                 currentFormTag,
-                new[] { currentFormTag }), 0));
+                new[] { currentFormTag }), 0);
 
         var suggestionIndex = 0;
-        var initialRerolls = ShiningBlessingEffectState.GetPendingRelicRerolls(soulRoot);
+        var initialRerolls = await ShiningBlessingEffectState
+            .GetPendingRelicRerollsAsync(_fs, soulRoot);
         var rerollsReserved = 0;
         while (true)
         {
@@ -1525,12 +1526,12 @@ public partial class ExplorerMode
                 .AddChoices(actions));
 
             if (choice.Contains("Использовать предложенную форму", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(string? TargetFormTag, int RerollsSpent)>((suggestion, rerollsReserved));
+                return (suggestion, rerollsReserved);
             if (choice.Contains("Ввести форму вручную", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(string? TargetFormTag, int RerollsSpent)>((NormalizeForgeFormTagInput(
+                return (NormalizeForgeFormTagInput(
                     Ask("[cyan]Новая форма реликвии:[/]", DescribeForgeFormTag(suggestion)).Trim(),
                     suggestion,
-                    suggestions.Append(currentFormTag)), rerollsReserved));
+                    suggestions.Append(currentFormTag)), rerollsReserved);
             if (choice.Contains("Перебросить", StringComparison.OrdinalIgnoreCase))
             {
                 if (rerollsRemaining > 0)
@@ -1545,7 +1546,7 @@ public partial class ExplorerMode
                 continue;
             }
 
-            return Task.FromResult<(string? TargetFormTag, int RerollsSpent)>((null, 0));
+            return (null, 0);
         }
     }
 
@@ -1578,10 +1579,10 @@ public partial class ExplorerMode
         return trimmed;
     }
 
-    private Task<(JsonObject? ReplacementProperty, int RerollsSpent)> PromptForForgeReplacementPropertyAsync(JsonObject soulRoot, JsonObject relic, int propertyIndex)
+    private async Task<(JsonObject? ReplacementProperty, int RerollsSpent)> PromptForForgeReplacementPropertyAsync(JsonObject soulRoot, JsonObject relic, int propertyIndex)
     {
         if (!TryGetForgeProperty(relic, propertyIndex, out var currentProperty))
-            return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((null, 0));
+            return (null, 0);
 
         var suggestions = BuildForgeReplacementPropertySuggestions(soulRoot, relic, propertyIndex);
         if (suggestions.Count == 0)
@@ -1597,16 +1598,17 @@ public partial class ExplorerMode
                     "← Отмена"));
 
             if (choice.Contains("Использовать базовый шаблон", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((template, 0));
+                return (template, 0);
 
             if (choice.Contains("Отмена", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((null, 0));
+                return (null, 0);
 
-            return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((PromptForStructuredForgePropertyAsync(template, "Новое свойство"), 0));
+            return (PromptForStructuredForgePropertyAsync(template, "Новое свойство"), 0);
         }
 
         var suggestionIndex = 0;
-        var initialRerolls = ShiningBlessingEffectState.GetPendingRelicRerolls(soulRoot);
+        var initialRerolls = await ShiningBlessingEffectState
+            .GetPendingRelicRerollsAsync(_fs, soulRoot);
         var rerollsReserved = 0;
         while (true)
         {
@@ -1628,9 +1630,9 @@ public partial class ExplorerMode
                 .AddChoices(actions));
 
             if (choice.Contains("Использовать предложенный вариант", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((suggestion.DeepClone().AsObject(), rerollsReserved));
+                return (suggestion.DeepClone().AsObject(), rerollsReserved);
             if (choice.Contains("Настроить вручную", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((PromptForStructuredForgePropertyAsync(suggestion, "Новое свойство"), rerollsReserved));
+                return (PromptForStructuredForgePropertyAsync(suggestion, "Новое свойство"), rerollsReserved);
 
             if (choice.Contains("Перебросить", StringComparison.OrdinalIgnoreCase))
             {
@@ -1646,7 +1648,7 @@ public partial class ExplorerMode
                 continue;
             }
 
-            return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((null, 0));
+            return (null, 0);
         }
     }
 

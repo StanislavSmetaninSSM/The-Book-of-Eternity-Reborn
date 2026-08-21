@@ -41,9 +41,10 @@ internal static class CoordinatedStateWriteHelper
         await CommitGate.WaitAsync();
         try
         {
+            await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
             return await TryCommitCoreAsync(
                 fs,
-                writeLease: null,
+                writeLease,
                 afterWriteApplied: null,
                 writes);
         }
@@ -72,9 +73,10 @@ internal static class CoordinatedStateWriteHelper
         await CommitGate.WaitAsync();
         try
         {
+            await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
             return await TryCommitCoreAsync(
                 fs,
-                writeLease: null,
+                writeLease,
                 afterWriteApplied,
                 writes);
         }

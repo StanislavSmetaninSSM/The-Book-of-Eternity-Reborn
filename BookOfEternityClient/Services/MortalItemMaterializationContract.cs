@@ -112,7 +112,7 @@ internal static class MortalItemMaterializationContract
             },
             ["physical"] = new[]
             {
-                "price", "count", "weight", "volume", "durability", "maxDurability"
+                "price", "count", "weight", "volume"
             },
             ["mechanics"] = new[]
             {
@@ -748,14 +748,18 @@ internal static class MortalItemMaterializationContract
                 Describe(item, "count")));
         }
 
-        var durability = ReadPercentage(item, "durability");
-        var maximum = ReadPercentage(item, "maxDurability");
-        if (durability == null || maximum == null || durability > maximum)
+        foreach (var legacyField in new[] { "durability", "maxDurability" })
         {
-            issues.Add(PhysicalIssue(
-                $"{context}.durability",
-                "percentage strings with durability <= maxDurability",
-                $"durability={Describe(item, "durability")}; maxDurability={Describe(item, "maxDurability")}"));
+            if (!item.TryGetProperty(legacyField, out var legacyValue))
+                continue;
+
+            issues.Add(Issue(
+                $"{context}.{legacyField}",
+                "resource_owner_legacy_value_forbidden",
+                "Item resource values are owned exclusively by the canonical resource ledger.",
+                "field absent; initialize item resources through resourceMaterialization",
+                legacyValue.ToString(),
+                "physical"));
         }
     }
 
@@ -778,19 +782,6 @@ internal static class MortalItemMaterializationContract
             $"{context}.{field}",
             "finite number >= 0",
             Describe(item, field)));
-    }
-
-    private static int? ReadPercentage(JsonElement item, string field)
-    {
-        var value = ReadNonEmptyString(item, field);
-        if (value == null || !value.EndsWith('%') ||
-            !int.TryParse(value.AsSpan(0, value.Length - 1), out var percent) ||
-            percent is < 0 or > 100)
-        {
-            return null;
-        }
-
-        return percent;
     }
 
     private static void ValidateCanonicalEmptySurface(

@@ -509,7 +509,7 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
         }
 
         AbodePowerRules.EnsureCanonicalState(guardian);
-        GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardian);
 
         return guardian;
     }

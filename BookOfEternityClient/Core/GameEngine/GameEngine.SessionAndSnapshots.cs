@@ -124,9 +124,6 @@ public partial class GameEngine
         var st = _stateManager.CurrentState.PlayerStatus;
         response.PlayerStatus = new PlayerStatus
         {
-            HealthPercentage = st.HealthPercentage,
-            EnergyPercentage = st.EnergyPercentage,
-            PoisePercentage = st.PoisePercentage,
             CurrentCondition = st.CurrentCondition
         };
 

@@ -123,7 +123,9 @@ internal static class EffectAcceptedTurnInputComposer
         IReadOnlyList<EffectTargetExport>? acceptedPlanTargetExports = null,
         IReadOnlySet<EffectSourceOwnerKey>? replacedSourceOwners = null,
         IReadOnlySet<EffectTargetKey>? replacedTargets = null,
-        long? currentWorldTime = null)
+        long? currentWorldTime = null,
+        EffectCarrierCatalogInput? publicationCarrierBaselines = null,
+        CombatantIdentityState? preallocatedCombatantIdentities = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
         ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
@@ -167,7 +169,7 @@ internal static class EffectAcceptedTurnInputComposer
             preTurnTargets,
             sameTurnTargets,
             new HashSet<string>(StringComparer.Ordinal),
-            null);
+            preallocatedCombatantIdentities);
         var targetAuthority = EffectTargetAuthority.Build(targetAuthorityInput);
 
         return new EffectAcceptedTurnInput(
@@ -179,7 +181,10 @@ internal static class EffectAcceptedTurnInputComposer
             BuildAcceptedEventInput(turn, rawCommands, currentWorldTime),
             PreTurnCarriers: CloneCarriers(acceptedCarriers),
             PreTurnIdentityIndex: preTurnIdentityIndex?.DeepClone().AsObject(),
-            TargetAuthorityInput: targetAuthorityInput);
+            TargetAuthorityInput: targetAuthorityInput,
+            PublicationCarrierBaselines: CloneCarriers(
+                publicationCarrierBaselines ?? acceptedCarriers),
+            PreallocatedCombatantIdentities: preallocatedCombatantIdentities);
     }
 
     internal static JsonObject CreateEmptyCommandRoot() => new()
@@ -195,7 +200,10 @@ internal static class EffectAcceptedTurnInputComposer
     private static bool ContainsCombatantRef(JsonObject? root, string collection) =>
         root?[collection] is JsonArray combatants &&
         combatants.OfType<JsonObject>().Any(static combatant =>
-            combatant.ContainsKey("combatantRef"));
+            combatant.ContainsKey("combatantRef") ||
+            combatant["members"] is JsonArray members &&
+            members.OfType<JsonObject>().Any(static member =>
+                member.ContainsKey("memberRef")));
 
     internal static JsonObject BuildAcceptedEventInput(
         int turn,

@@ -44,7 +44,7 @@ public partial class ValidationService
         "oppositionSideStrain",
         "tempoAdvantage",
         "counterPayoff",
-        "actionEconomy",
+        "spiritual_action_points",
         "actionCostAudit",
         "combatCondition",
         "combatConditions"

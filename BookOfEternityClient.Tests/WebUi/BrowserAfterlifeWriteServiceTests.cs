@@ -824,6 +824,45 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
         Assert.Equal(beforeSoul, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
     }
 
+    [Fact]
+    public async Task TryApplyAsync_SpiritFocusUpgrade_ReconfiguresUnifiedActionPoints()
+    {
+        await SeedSoulStateAsync(
+            stored: Array.Empty<(string, string)>(),
+            equipped: Array.Empty<(string, string, string)>(),
+            inkFeathers: 700);
+        await SeedAfterlifeCombatProfileAsync();
+        await SeedPlayerActionPointResourcesAsync();
+
+        var result = await _service.TryApplyAsync(
+            "/spiritual_arts",
+            Answers(("upgrade_target", "spirit_focus"), ("upgrade_currency", "ink_feathers")),
+            Owner("browser-test"));
+
+        Assert.True(result.Success, result.Message);
+        var soul = await ReadSoulAsync();
+        Assert.Equal(
+            1,
+            soul[AfterlifeSpiritualConflictState.SoulStateProfileProperty]![
+                AfterlifeSpiritualConflictState.SpiritFocusTierProperty]!.GetValue<int>());
+        Assert.Equal(100, soul["inkFeathers"]!["current"]!.GetValue<int>());
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            allowMissingPristine: false).Catalog!;
+        var state = ResourceStateContract.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(state.IsValid, string.Join(Environment.NewLine, state.Issues));
+        var actionPoints = Assert.Single(
+            state.Ledger!.Entries,
+            entry => entry.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeActor &&
+                     entry.Coordinate.ResourceOwnerId == "player_soul" &&
+                     entry.Coordinate.ResourceKey == "spiritual_action_points");
+        Assert.Equal(6m, actionPoints.Current);
+        Assert.Equal(7m, actionPoints.Maximum);
+    }
+
     public void Dispose()
     {
         try
@@ -910,6 +949,60 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync(
             "game_state/meta/soul_state.json",
             soul.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+    }
+
+    private async Task SeedPlayerActionPointResourcesAsync()
+    {
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            bootstrap.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Тестовая душа",
+                        ["realm"] = "Chaos Sea",
+                        [AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] = new JsonArray
+                        {
+                            new JsonObject
+                            {
+                                ["realm"] = "chaos_sea",
+                                ["resourceOwnerId"] = "player_soul",
+                                ["state"] = "active"
+                            }
+                        }
+                    }
+                }
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            ShiningAbodeState.StatePath,
+            ShiningAbodeState.CreateDefaultState().ToJsonString());
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", "{}");
+        var soul = await ReadSoulAsync();
+        var initialPlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            _fs,
+            new AfterlifeOwnerResourceAcceptedState(SoulState: soul),
+            turn: 1);
+        Assert.True(initialPlan.IsValid, string.Join(Environment.NewLine, initialPlan.Issues));
+        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(_fs, initialPlan));
+        await _stateManager.RefreshGameStateAsync();
     }
 
     private async Task SeedPendingGachaBaseAsync(string baseRarity, int baseScore, IReadOnlyList<int> diceUsed)

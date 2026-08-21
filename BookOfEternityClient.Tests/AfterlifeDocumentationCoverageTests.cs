@@ -2323,9 +2323,93 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("relicRefinementEntitlements", doc, StringComparison.Ordinal);
             Assert.Contains("exception", doc, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("Shining forge", doc, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("rerolls/freeShape/freeRetune", doc, StringComparison.Ordinal);
+            Assert.Contains("blessing_rerolls + freeShape/freeRetune", doc, StringComparison.Ordinal);
             Assert.Contains("pending_shining_abode_actions.json", doc, StringComparison.Ordinal);
         }
+    }
+
+    [Fact]
+    public void AfterlifeResourceCutoverIsDocumentedWithoutLegacyMechanicalMirrors()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var guardianRules = ReadRepoFile("Rules", "Block_32_Guardians.txt");
+        var afterlifeRules = ReadRepoFile("Rules", "Block_21.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var mainExample = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+        var guardianExample = ReadRepoFile("Examples", "E_Block_32.txt");
+
+        foreach (var doc in new[]
+                 {
+                     matrix,
+                     glossary,
+                     guardianRules,
+                     afterlifeRules,
+                     examples,
+                     apiSpec,
+                     daemonSpec,
+                     taskGuide
+                 })
+        {
+            Assert.Contains("spiritual_action_points", doc, StringComparison.Ordinal);
+            Assert.Contains("gacha_attempts", doc, StringComparison.Ordinal);
+            Assert.Contains("blessing_rerolls", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/resources/resource_state.json", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/resources/resource_history.json", doc, StringComparison.Ordinal);
+            Assert.Contains("resourceOwnerBindings", doc, StringComparison.Ordinal);
+            Assert.Contains("blessing_rerolls + freeShape/freeRetune", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[]
+                 {
+                     guardianRules,
+                     afterlifeRules,
+                     examples,
+                     mainExample,
+                     guardianExample
+                 })
+        {
+            Assert.DoesNotContain("\"chargesPerReturn\":", doc, StringComparison.Ordinal);
+            Assert.DoesNotContain("\"chargesUsedThisReturn\":", doc, StringComparison.Ordinal);
+            Assert.DoesNotContain("\"rerollsSpent\":", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { mainExample, guardianExample })
+        {
+            Assert.Contains("gacha_attempts", doc, StringComparison.Ordinal);
+            Assert.Contains("currentReturnCycleId", doc, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("resourceOwnerBindings", mainExample, StringComparison.Ordinal);
+        Assert.Contains(
+            "reconfigures its cycle-bound capacity",
+            guardianRules,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ordinary Shining Abode -> Chaos Sea travel does not reset it",
+            guardianRules,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "retires the prior `gacha_attempts` allocation",
+            guardianRules,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "when an exact client-owned state context/projection is supplied",
+            mainExample,
+            StringComparison.Ordinal);
+        Assert.Contains("do not read the raw resource ledger", mainExample, StringComparison.Ordinal);
+        foreach (var doc in new[] { daemonSpec, taskGuide })
+        {
+            Assert.Contains("`actionEconomy` is forbidden", doc, StringComparison.Ordinal);
+            Assert.DoesNotContain(
+                "`counterPayoff`, `actionEconomy`, `actionCostAudit`",
+                doc,
+                StringComparison.Ordinal);
+        }
+        Assert.DoesNotContain("\"actionEconomy\": {", examples, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -2728,7 +2812,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("guardian_forced", text, StringComparison.Ordinal);
             Assert.Contains("diceAudit", text, StringComparison.Ordinal);
             Assert.Contains("preGeneratedDices1d20", text, StringComparison.Ordinal);
-            Assert.Contains("actionEconomy", text, StringComparison.Ordinal);
+            Assert.Contains("spiritual_action_points", text, StringComparison.Ordinal);
+            Assert.Contains("`actionEconomy` is forbidden", text, StringComparison.Ordinal);
             Assert.Contains("actionCostAudit", text, StringComparison.Ordinal);
             Assert.Contains("actionCostAudit.opposition", text, StringComparison.Ordinal);
             Assert.Contains("recover_spiritual_power", text, StringComparison.Ordinal);
@@ -3230,6 +3315,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("tempoAdvantage", combinedGuidance, StringComparison.Ordinal);
         Assert.Contains("sideStrain", combinedGuidance, StringComparison.Ordinal);
         Assert.Contains("counterPayoff", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("spiritual_action_points", combinedGuidance, StringComparison.Ordinal);
         Assert.Contains("actionCostAudit", combinedGuidance, StringComparison.Ordinal);
         Assert.Contains("player-owned learned special art", examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("non-player Guardian special art", examples, StringComparison.OrdinalIgnoreCase);

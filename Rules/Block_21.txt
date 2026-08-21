@@ -13,6 +13,8 @@
             The player's actions will have consequences, often affecting their standing with various factions like guilds, kingdoms, corporations, or secret societies.
             The GM is responsible for tracking these changes and reflecting them in NPC reactions and available opportunities.
             This block defines the structure for reporting new factions or changes to the player's status within them.
+
+            UNIFIED RESOURCE BOUNDARY: faction reputation, rank, treasury values, and faction accounting remain authoritative in this block and MUST NOT be materialized as common resources. The afterlife reserves `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` instead live in client-owned `game_state/resources/resource_state.json` with immutable `game_state/resources/resource_history.json` and exact `resourceOwnerBindings`. Persisted legacy pools/counters are forbidden. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; boolean entitlements remain outside the ledger. Ink Feathers, Light Sparks, progression, relationships, faction accounting, and spiritual power/strain/shield stay specialized. No migration or fallback is allowed.
             
             ]]>
  </instructiontext>

@@ -537,7 +537,14 @@ public partial class ExplorerMode
             return;
         }
 
-        if (!await SaveSpiritualArtUpgradeRootsAsync(projectedSoulRoot, projectedShiningRoot, currency.Value, projectedEntityProfilesRoot))
+        if (!await SaveSpiritualArtUpgradeRootsAsync(
+                beforeSoulRoot,
+                beforeShiningRoot,
+                beforeEntityProfilesRoot,
+                projectedSoulRoot,
+                projectedShiningRoot,
+                projectedEntityProfilesRoot,
+                currency.Value))
         {
             WaitForKey();
             return;
@@ -585,7 +592,14 @@ public partial class ExplorerMode
             return;
         }
 
-        if (!await SaveSpiritualArtUpgradeRootsAsync(projectedSoulRoot, projectedShiningRoot, currency.Value))
+        if (!await SaveSpiritualArtUpgradeRootsAsync(
+                beforeSoulRoot,
+                beforeShiningRoot,
+                expectedEntityProfilesRoot: null,
+                projectedSoulRoot,
+                projectedShiningRoot,
+                projectedEntityProfilesRoot: null,
+                currency.Value))
         {
             WaitForKey();
             return;
@@ -838,11 +852,41 @@ public partial class ExplorerMode
     }
 
     private async Task<bool> SaveSpiritualArtUpgradeRootsAsync(
-        JsonObject soulRoot,
-        JsonObject? shiningRoot,
-        SpiritualArtCurrency currency,
-        JsonObject? entityProfilesRoot = null)
+        JsonObject expectedSoulRoot,
+        JsonObject? expectedShiningRoot,
+        JsonObject? expectedEntityProfilesRoot,
+        JsonObject projectedSoulRoot,
+        JsonObject? projectedShiningRoot,
+        JsonObject? projectedEntityProfilesRoot,
+        SpiritualArtCurrency currency)
     {
+        var saved = await SaveSpiritualArtUpgradeRootsUnderLeaseAsync(
+            expectedSoulRoot,
+            expectedShiningRoot,
+            expectedEntityProfilesRoot,
+            projectedSoulRoot,
+            projectedShiningRoot,
+            projectedEntityProfilesRoot,
+            currency);
+        if (saved)
+            await _stateManager.RefreshGameStateAsync();
+
+        return saved;
+    }
+
+    private async Task<bool> SaveSpiritualArtUpgradeRootsUnderLeaseAsync(
+        JsonObject expectedSoulRoot,
+        JsonObject? expectedShiningRoot,
+        JsonObject? expectedEntityProfilesRoot,
+        JsonObject projectedSoulRoot,
+        JsonObject? projectedShiningRoot,
+        JsonObject? projectedEntityProfilesRoot,
+        SpiritualArtCurrency currency)
+    {
+        ArgumentNullException.ThrowIfNull(expectedSoulRoot);
+        ArgumentNullException.ThrowIfNull(projectedSoulRoot);
+
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         var blocker = await TryDescribeSpiritualArtUpgradeBlockerAsync();
         if (blocker != null)
         {
@@ -850,68 +894,115 @@ public partial class ExplorerMode
             return false;
         }
 
-        var previousSoulJson = await _fs.ReadFileAsync(SoulStatePath);
-        var previousShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
-        var previousEntityProfilesJson = entityProfilesRoot == null
+        var previousSoulJson = await _fs.ReadFileAsync(writeLease, SoulStatePath);
+        var previousShiningJson = currency == SpiritualArtCurrency.LightSparks
+            ? await _fs.ReadFileAsync(writeLease, ShiningAbodeState.StatePath)
+            : null;
+        var previousEntityProfilesJson = projectedEntityProfilesRoot == null
             ? null
-            : await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath);
-        JsonObject? previousSoulRoot = null;
-
-        if (!string.IsNullOrWhiteSpace(previousSoulJson))
+            : await _fs.ReadFileAsync(writeLease, AfterlifeEntityProfileState.StatePath);
+        if (!JsonMatchesExpectedRoot(previousSoulJson, expectedSoulRoot) ||
+            (currency == SpiritualArtCurrency.LightSparks &&
+             !JsonMatchesExpectedRoot(previousShiningJson, expectedShiningRoot)) ||
+            (projectedEntityProfilesRoot != null &&
+             !JsonMatchesExpectedRoot(
+                 previousEntityProfilesJson,
+                 expectedEntityProfilesRoot)))
         {
-            try
-            {
-                previousSoulRoot = JsonNode.Parse(previousSoulJson) as JsonObject;
-            }
-            catch
-            {
-                previousSoulRoot = null;
-            }
+            MarkupLine(
+                "[red]Прокачка духовных искусств не сохранена: исходное состояние изменилось параллельно. Обновите экран и повторите выбор.[/]");
+            return false;
+        }
 
-            if (previousSoulRoot == null)
+        var previousSpiritFocusTier = AfterlifeSpiritualConflictState.ResolveSpiritFocusTier(
+            expectedSoulRoot);
+        var acceptedSpiritFocusTier = AfterlifeSpiritualConflictState.ResolveSpiritFocusTier(
+            projectedSoulRoot);
+        if (previousSpiritFocusTier != acceptedSpiritFocusTier)
+        {
+            var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+                _fs,
+                writeLease,
+                new AfterlifeOwnerResourceAcceptedState(
+                    SoulState: projectedSoulRoot,
+                    ShiningAbode: currency == SpiritualArtCurrency.LightSparks
+                        ? projectedShiningRoot
+                        : null,
+                    Profiles: projectedEntityProfilesRoot),
+                await TryReadCurrentTurnNumberAsync());
+            if (!resourcePlan.IsValid)
             {
-                MarkupLine("[red]Прокачка духовных искусств не может сохранить операцию: текущее состояние души нечитаемо. Сначала исправь состояние души.[/]");
+                MarkupLine(
+                    "[red]Прокачка Средоточия Души отклонена: единый ресурсный план не прошёл проверку.[/]");
                 return false;
             }
+            if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                    _fs,
+                    writeLease,
+                    resourcePlan))
+            {
+                MarkupLine(
+                    "[red]Прокачка Средоточия Души не сохранена: owner-state и ресурсный ledger изменились параллельно.[/]");
+                return false;
+            }
+
+            return true;
         }
+
+        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
+        {
+            new(
+                SoulStatePath,
+                previousSoulJson,
+                GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(projectedSoulRoot)
+                    .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                RequireCurrentBaseline: true)
+        };
+        if (currency == SpiritualArtCurrency.LightSparks && projectedShiningRoot != null)
+        {
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                ShiningAbodeState.StatePath,
+                previousShiningJson,
+                projectedShiningRoot.ToJsonString(
+                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                RequireCurrentBaseline: true));
+        }
+        if (projectedEntityProfilesRoot != null)
+        {
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                AfterlifeEntityProfileState.StatePath,
+                previousEntityProfilesJson,
+                projectedEntityProfilesRoot.ToJsonString(
+                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                RequireCurrentBaseline: true));
+        }
+
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                writeLease,
+                writes.ToArray()))
+        {
+            MarkupLine(
+                "[red]Прокачка духовного искусства не сохранена: состояние изменилось параллельно или операция была безопасно отменена.[/]");
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool JsonMatchesExpectedRoot(
+        string? currentJson,
+        JsonObject? expectedRoot)
+    {
+        if (currentJson == null || expectedRoot == null)
+            return currentJson == null && expectedRoot == null;
 
         try
         {
-            await WriteCanonicalSoulStateJsonAsync(soulRoot);
-            if (currency == SpiritualArtCurrency.LightSparks && shiningRoot != null)
-                await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-            if (entityProfilesRoot != null)
-                await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, entityProfilesRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-
-            await _stateManager.RefreshGameStateAsync();
-            return true;
+            return JsonNode.DeepEquals(JsonNode.Parse(currentJson), expectedRoot);
         }
-        catch (Exception ex)
+        catch
         {
-            if (previousSoulJson == null)
-                _fs.DeleteFile(SoulStatePath);
-            else if (previousSoulRoot != null)
-                await WriteCanonicalSoulStateJsonAsync(previousSoulRoot);
-            else
-                _fs.DeleteFile(SoulStatePath);
-
-            if (currency == SpiritualArtCurrency.LightSparks)
-            {
-                if (previousShiningJson != null)
-                    await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, previousShiningJson);
-                else
-                    _fs.DeleteFile(ShiningAbodeState.StatePath);
-            }
-
-            if (entityProfilesRoot != null)
-            {
-                if (previousEntityProfilesJson != null)
-                    await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, previousEntityProfilesJson);
-                else
-                    _fs.DeleteFile(AfterlifeEntityProfileState.StatePath);
-            }
-
-            MarkupLine($"[red]Не удалось сохранить прокачку духовного искусства; состояние восстановлено: {Markup.Escape(ex.Message)}[/]");
             return false;
         }
     }

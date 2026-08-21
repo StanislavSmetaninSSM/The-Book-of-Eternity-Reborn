@@ -261,7 +261,8 @@ public static class InventoryManagementService
                 Quantity: splitQuantity,
                 Turn: turn,
                 AuthorityKind: "inventory_split",
-                AuthorityId: $"inventory_split:{turn}:{item.Identity}:{Guid.NewGuid():N}"));
+                AuthorityId: $"inventory_split:{turn}:{item.Identity}:{Guid.NewGuid():N}",
+                ResourceDisposition: MortalItemResourceStackDisposition.ProportionalExact));
         if (!transition.Success)
             return InventoryManagementWriteOutcome.Failed(MortalItemPlayerFailureMessages.TransitionRejected());
 
@@ -353,7 +354,8 @@ public static class InventoryManagementService
                 Turn: turn,
                 AuthorityKind: "inventory_merge",
                 AuthorityId: $"inventory_merge:{turn}:{item.Identity}:{Guid.NewGuid():N}",
-                SurvivorItemId: item.Identity));
+                SurvivorItemId: item.Identity,
+                ResourceDisposition: MortalItemResourceStackDisposition.ProportionalExact));
         if (!transition.Success)
             return InventoryManagementWriteOutcome.Failed(MortalItemPlayerFailureMessages.TransitionRejected());
 

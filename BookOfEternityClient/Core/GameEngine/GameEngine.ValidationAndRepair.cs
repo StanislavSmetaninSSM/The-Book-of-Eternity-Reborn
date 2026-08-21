@@ -1097,7 +1097,7 @@ public partial class GameEngine
 
         if (guardian["abodePower"] is JsonObject)
             AbodePowerRules.EnsureCanonicalState(guardian);
-        GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardian);
         GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
 
         if (guardian["musings"] is JsonArray musings)
@@ -3243,8 +3243,7 @@ public partial class GameEngine
             },
             ["gachaSystem"] = new JsonObject
             {
-                ["chargesPerReturn"] = 1,
-                ["chargesUsedThisReturn"] = 0,
+                ["currentReturnCycleId"] = string.Empty,
                 ["gachaHistory"] = new JsonArray()
             },
             ["mood"] = new JsonObject
@@ -4805,16 +4804,16 @@ public partial class GameEngine
             ExactFieldCorrections = exactFieldCorrections,
             ExpectedShape = new List<string>
             {
-                "For every current exchange, actionCostAudit.<side>.before must equal the previous current exchange's actionCostAudit.<side>.after; for the first current exchange, before must equal pre-turn activeConflict.actionEconomy.<side>.current.",
+                "For every current exchange, actionCostAudit.<side>.before must equal the previous current exchange's actionCostAudit.<side>.after; for the first current exchange, before must equal the read-only pre-turn projected spiritual_action_points current value for that side.",
                 "For paid actions, actionCostAudit.<side>.after must equal before - effectiveCost; for recovery, after must follow the documented recovery formula and stay within max.",
-                "activeConflict.actionEconomy.<side>.current must equal the last current exchange actionCostAudit.<side>.after, or remain at the pre-turn value when the side has no current audit.",
+                "The GM-authored conflict keeps only actionCostAudit evidence; spiritual_action_points state, immutable resource history, and resource-owner bindings are client-owned and are not mirrored into the conflict.",
                 "Dice values, operationType/finalOperationType, incomingAction, maneuver outcome, specialArtAudit, and matchupAudit must remain authority-bound; repair arithmetic and audit fields without inventing a new exchange."
             },
             SafeCorrectionRules = new List<string>
             {
                 "Use validation_repair_request.json.errors as the immediate repair checklist; its expected/actual values are authoritative for the listed fields.",
-                "Recompute actionCostAudit sequentially across activeConflict.exchangeLog from the pre-turn actionEconomy baseline and the previous exchange result; do not copy a later current value backward.",
-                "When fixing a before value, also recompute the same side's after and activeConflict.actionEconomy.<side>.current if they depend on that audit.",
+                "Recompute actionCostAudit sequentially across activeConflict.exchangeLog from the read-only pre-turn projected spiritual_action_points baseline and the previous exchange result; do not copy a later current value backward.",
+                "When fixing a before value, recompute only the dependent actionCostAudit fields for the same side; leave client-owned resource state, resource history, and owner bindings untouched.",
                 "If the request includes dice authorization errors, replace only the unauthorized dice/audit value with a pre-generated value from pending-turn authority; do not roll new dice manually.",
                 "If the request includes maneuver strain errors, keep strain changes out of activeConflict unless the player action was the documented strain-conversion maneuver."
             },
@@ -4822,16 +4821,18 @@ public partial class GameEngine
             {
                 "Open game_state/control/validation_repair_request.json first and repair only the listed validation errors in place.",
                 $"Patch these action-cost/audit fields exactly: {issueSummary}.",
-                "Use exactFieldCorrections[] as the machine-readable checklist: set each listed path to expected, then recompute dependent actionEconomy current values.",
+                "Use exactFieldCorrections[] as the machine-readable checklist: set each listed actionCostAudit path to expected, then recompute only dependent audit values.",
                 "In game_state/meta/afterlife_spiritual_conflict_state.json, inspect activeConflict.exchangeLog in order and recompute actionCostAudit.player/actionCostAudit.opposition before/after values from the previous current exchange.",
-                "For every listed exchangeLog[n], patch actionCostAudit.<side>.before to the expected value, then recompute that side's after using effectiveCost or the recovery rule; update activeConflict.actionEconomy.<side>.current to the final audited after value.",
-                "Use pending_turn_snapshot and control authority only as read-only baselines for pre-turn action economy, dice, and authorized operations.",
+                "For every listed exchangeLog[n], patch actionCostAudit.<side>.before to the expected projected spiritual_action_points value, then recompute that side's after using effectiveCost or the recovery rule.",
+                "Use pending_turn_snapshot and control authority only as read-only baselines for pre-turn projected spiritual_action_points, dice, and authorized operations.",
                 "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
             },
             DoNotDo = new List<string>
             {
                 "Do not create a new turn or write ready/turn_complete.json during validation repair.",
                 "Do not edit game_state/control/pending_turn_snapshot or other authority snapshot files; use pending_turn_snapshot only as a read-only baseline.",
+                "Do not author activeConflict.actionEconomy or resourceOwnerBindings; both are forbidden GM mirrors of client-owned resource authority.",
+                "Do not edit game_state/resources/resource_state.json or game_state/resources/resource_history.json during GM validation repair.",
                 "Do not change player prose, operation choices, dice rolls, special art ids, or exchange outcomes just to silence arithmetic validation.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session control files."
             }

@@ -1788,6 +1788,129 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuyTrainingAsync_AfterlifeSelfSpiritFocus_ReconfiguresUnifiedActionPointsAtomically()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        var definitions = await SeedPlayerActionPointResourcesAsync(turn: 21);
+
+        var result = await CreateService().BuyTrainingAsync(
+            "self",
+            "self_spirit_focus_tier_2",
+            currentTurn: 22);
+
+        Assert.True(result.Success, result.Message);
+        Assert.True(result.StateChanged);
+        using var soulDocument = JsonDocument.Parse(
+            (await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        Assert.Equal(
+            2,
+            soulDocument.RootElement
+                .GetProperty("afterlifeCombatProfile")
+                .GetProperty("spiritFocusTier")
+                .GetInt32());
+        Assert.Equal(
+            1600,
+            soulDocument.RootElement
+                .GetProperty("inkFeathers")
+                .GetProperty("current")
+                .GetInt32());
+
+        var state = ResourceStateContract.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(state.IsValid, string.Join(Environment.NewLine, state.Issues));
+        var actionPoints = Assert.Single(
+            state.Ledger!.Entries,
+            entry => entry.Coordinate.Realm == "chaos_sea" &&
+                     entry.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeActor &&
+                     entry.Coordinate.ResourceOwnerId == "player_soul" &&
+                     entry.Coordinate.ResourceKey == "spiritual_action_points");
+        Assert.Equal(7m, actionPoints.Current);
+        Assert.Equal(
+            AfterlifeSpiritualConflictState.GetSpiritFocusMaxActionPoints(2),
+            actionPoints.Maximum);
+
+        var history = ResourceHistoryState.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(history.IsValid, string.Join(Environment.NewLine, history.Issues));
+        Assert.Contains(
+            history.History!.Transitions,
+            transition => transition.Coordinate == actionPoints.Coordinate &&
+                          transition.Operation == ResourceTransitionOperation.Reconfigure &&
+                          transition.Turn == 22);
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_AfterlifeSelfSpiritFocus_RejectsStaleAcceptedSoulBeforeCommonPlan()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        await SeedPlayerActionPointResourcesAsync(turn: 21);
+        var stateBefore = await _fs.ReadFileBytesAsync(
+            ResourceMaterializationContract.StatePath);
+        var historyBefore = await _fs.ReadFileBytesAsync(
+            ResourceMaterializationContract.HistoryPath);
+        var service = new TrainingService(
+            _fs,
+            NullLogger<TrainingService>.Instance,
+            new LocalInteractionScopeService(_fs),
+            beforeSpiritFocusLease: async () =>
+            {
+                var concurrentSoul = JsonNode.Parse((await _fs.ReadFileAsync(
+                    "game_state/meta/soul_state.json"))!)!.AsObject();
+                concurrentSoul["concurrentGmMarker"] = "preserve";
+                await _fs.WriteFileAtomicAsync(
+                    "game_state/meta/soul_state.json",
+                    concurrentSoul.ToJsonString());
+            });
+
+        var result = await service.BuyTrainingAsync(
+            "self",
+            "self_spirit_focus_tier_2",
+            currentTurn: 22);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("измен", result.Message, StringComparison.OrdinalIgnoreCase);
+        var soulAfter = JsonNode.Parse((await _fs.ReadFileAsync(
+            "game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal("preserve", soulAfter["concurrentGmMarker"]!.GetValue<string>());
+        Assert.Equal(2500, Assert.IsType<JsonObject>(soulAfter["inkFeathers"])
+            ["current"]!.GetValue<int>());
+        Assert.Equal(
+            1,
+            Assert.IsType<JsonObject>(soulAfter["afterlifeCombatProfile"])
+                ["spiritFocusTier"]!.GetValue<int>());
+        Assert.Equal(
+            stateBefore,
+            await _fs.ReadFileBytesAsync(ResourceMaterializationContract.StatePath));
+        Assert.Equal(
+            historyBefore,
+            await _fs.ReadFileBytesAsync(ResourceMaterializationContract.HistoryPath));
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_AfterlifeSelfSpiritFocus_MissingResourceAuthorityLeavesSoulUnchanged()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        var soulBefore = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await CreateService().BuyTrainingAsync(
+            "self",
+            "self_spirit_focus_tier_2",
+            currentTurn: 22);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("ресурс", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(soulBefore, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.False(_fs.FileExists(ResourceMaterializationContract.StatePath));
+        Assert.False(_fs.FileExists(ResourceMaterializationContract.HistoryPath));
+    }
+
+    [Fact]
     public async Task BuyTrainingAsync_NonCanonicalAfterlifeSelfTraining_BlocksWithoutMutation()
     {
         await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
@@ -2288,6 +2411,55 @@ public sealed class TrainingServiceTests : IDisposable
         Assert.Equal(105, receipt.GetProperty("inkFeathersSpent").GetInt32());
     }
 
+    [Fact]
+    public async Task BuyTrainingAsync_AfterlifeMentorSpiritFocus_ReconfiguresUnifiedActionPoints()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        await SeedAfterlifeMentorAsync(
+            includeShowcase: true,
+            offerInkFeathers: 180,
+            offerSpiritFocus: true);
+        var definitions = await SeedPlayerActionPointResourcesAsync(turn: 31);
+
+        var result = await CreateService().BuyTrainingAsync(
+            "guardian_liora",
+            "mentor_liora_spirit_focus_2",
+            currentTurn: 32);
+
+        Assert.True(result.Success, result.Message);
+        Assert.True(result.StateChanged);
+        using var soulDocument = JsonDocument.Parse(
+            (await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        Assert.Equal(
+            2,
+            soulDocument.RootElement
+                .GetProperty("afterlifeCombatProfile")
+                .GetProperty("spiritFocusTier")
+                .GetInt32());
+        var state = ResourceStateContract.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(state.IsValid, string.Join(Environment.NewLine, state.Issues));
+        var actionPoints = Assert.Single(
+            state.Ledger!.Entries,
+            entry => entry.Coordinate.Realm == "chaos_sea" &&
+                     entry.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeActor &&
+                     entry.Coordinate.ResourceOwnerId == "player_soul" &&
+                     entry.Coordinate.ResourceKey == "spiritual_action_points");
+        Assert.Equal(
+            AfterlifeSpiritualConflictState.GetSpiritFocusMaxActionPoints(2),
+            actionPoints.Maximum);
+        Assert.Contains(
+            ResourceHistoryState.ParseCanonical(
+                await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+                definitions,
+                allowMissingPristine: false).History!.Transitions,
+            transition => transition.Coordinate == actionPoints.Coordinate &&
+                          transition.Operation == ResourceTransitionOperation.Reconfigure &&
+                          transition.Turn == 32);
+    }
+
     private TrainingService CreateService() =>
         new(_fs, NullLogger<TrainingService>.Instance);
 
@@ -2576,6 +2748,92 @@ public sealed class TrainingServiceTests : IDisposable
         """);
     }
 
+    private async Task<ResourceDefinitionCatalog> SeedPlayerActionPointResourcesAsync(int turn)
+    {
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        var definitions = Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            definitions.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+        var profilesRoot = _fs.FileExists(AfterlifeEntityProfileState.StatePath)
+            ? JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject()
+            : new JsonObject();
+        var profiles = profilesRoot[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray ??
+                       new JsonArray();
+        profilesRoot[AfterlifeEntityProfileState.ProfilesProperty] = profiles;
+        foreach (var existingProfile in profiles.OfType<JsonObject>())
+        {
+            if (existingProfile.ContainsKey(AfterlifeEntityProfileState.ResourceOwnerBindingsProperty))
+                continue;
+            var actorId = existingProfile["actorId"]?.GetValue<string>();
+            if (string.IsNullOrWhiteSpace(actorId))
+                continue;
+            existingProfile[AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["realm"] = "chaos_sea",
+                    ["resourceOwnerId"] = actorId,
+                    ["state"] = "active"
+                }
+            };
+            if (existingProfile["mentorTrainingShowcase"] is JsonObject showcase)
+            {
+                showcase["sourceActorSnapshotHash"] =
+                    TrainingService.ComputeSourceSnapshotHash(existingProfile);
+            }
+        }
+        profiles.Add(new JsonObject
+        {
+            ["actorType"] = "player_soul",
+            ["actorId"] = "player_soul",
+            ["displayName"] = "Тестовая душа",
+            ["realm"] = "Chaos Sea",
+            [AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["realm"] = "chaos_sea",
+                    ["resourceOwnerId"] = "player_soul",
+                    ["state"] = "active"
+                }
+            }
+        });
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            profilesRoot.ToJsonString());
+        if (!_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
+        {
+            await _fs.WriteFileAtomicAsync(
+                AfterlifeSpiritualConflictState.StatePath,
+                AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
+        }
+        if (!_fs.FileExists(ShiningAbodeState.StatePath))
+        {
+            await _fs.WriteFileAtomicAsync(
+                ShiningAbodeState.StatePath,
+                ShiningAbodeState.CreateDefaultState().ToJsonString());
+        }
+        if (!_fs.FileExists("game_state/meta/guardians.json"))
+            await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", "{}");
+        var soul = JsonNode.Parse(
+            (await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var initialPlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            _fs,
+            new AfterlifeOwnerResourceAcceptedState(SoulState: soul),
+            turn);
+        Assert.True(initialPlan.IsValid, string.Join(Environment.NewLine, initialPlan.Issues));
+        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(_fs, initialPlan));
+        return definitions;
+    }
+
     private async Task SeedMortalTeacherAsync(bool includeShowcase)
     {
         var teacher = new JsonObject
@@ -2751,7 +3009,8 @@ public sealed class TrainingServiceTests : IDisposable
     private async Task SeedAfterlifeMentorAsync(
         bool includeShowcase,
         int relationshipLevel = 62,
-        int offerInkFeathers = 180)
+        int offerInkFeathers = 180,
+        bool offerSpiritFocus = false)
     {
         await SeedChaosSeaScopeAsync(
             "guardian_liora",
@@ -2791,6 +3050,33 @@ public sealed class TrainingServiceTests : IDisposable
         if (includeShowcase)
         {
             var snapshotHash = TrainingService.ComputeSourceSnapshotHash(mentor);
+            var offer = new JsonObject
+            {
+                ["offerId"] = offerSpiritFocus
+                    ? "mentor_liora_spirit_focus_2"
+                    : "mentor_liora_guard_2",
+                ["targetKind"] = offerSpiritFocus
+                    ? "spirit_focus"
+                    : "standard_spiritual_art",
+                ["targetId"] = offerSpiritFocus ? "spirit_focus" : "guard",
+                ["targetName"] = offerSpiritFocus ? "Средоточие Души" : "Защита",
+                ["currentValue"] = 1,
+                ["targetValue"] = 2,
+                ["sourceCap"] = 4,
+                ["cost"] = new JsonObject
+                {
+                    ["inkFeathers"] = offerInkFeathers,
+                    ["lightSparks"] = 0
+                },
+                ["requirements"] = new JsonObject
+                {
+                    ["minimumRelationship"] = 50,
+                    ["maxPlayerUnlockedTier"] = 2
+                },
+                ["summary"] = offerSpiritFocus
+                    ? "Лиора помогает душе расширить Средоточие."
+                    : "Лиора показывает, как принять удар поворотом света."
+            };
             mentor["mentorTrainingShowcase"] = new JsonObject
             {
                 ["showcaseId"] = "mentor_showcase_liora_001",
@@ -2798,30 +3084,7 @@ public sealed class TrainingServiceTests : IDisposable
                 ["sourceActorId"] = "guardian_liora",
                 ["sourceActorName"] = "Лиора, Хранительница Тихого Света",
                 ["sourceActorSnapshotHash"] = snapshotHash,
-                ["offers"] = new JsonArray
-                {
-                    new JsonObject
-                    {
-                        ["offerId"] = "mentor_liora_guard_2",
-                        ["targetKind"] = "standard_spiritual_art",
-                        ["targetId"] = "guard",
-                        ["targetName"] = "Защита",
-                        ["currentValue"] = 1,
-                        ["targetValue"] = 2,
-                        ["sourceCap"] = 4,
-                        ["cost"] = new JsonObject
-                        {
-                            ["inkFeathers"] = offerInkFeathers,
-                            ["lightSparks"] = 0
-                        },
-                        ["requirements"] = new JsonObject
-                        {
-                            ["minimumRelationship"] = 50,
-                            ["maxPlayerUnlockedTier"] = 2
-                        },
-                        ["summary"] = "Лиора показывает, как принять удар поворотом света."
-                    }
-                }
+                ["offers"] = new JsonArray(offer)
             };
         }
 

@@ -141,6 +141,80 @@ public sealed class ResourceOwnerAuthorityTests
     }
 
     [Fact]
+    public void SuspendedOwner_ResolvesOnlySealedRealmIndependentCapabilityAndAgreesWithState()
+    {
+        var owner = Owner(
+            "shining_abode",
+            ResourceOwnerKind.AfterlifeActor,
+            "player_soul",
+            "spiritual_action_points") with
+        {
+            Lifecycle = ResourceOwnerLifecycle.Suspended,
+            ResourceCapabilities = Set("spiritual_action_points", "blessing_rerolls"),
+            RealmIndependentResourceCapabilities = Set("blessing_rerolls")
+        };
+        var authority = Build(new[] { owner });
+
+        var persistent = ResolveId(
+            authority,
+            "shining_abode",
+            ResourceOwnerKind.AfterlifeActor,
+            "player_soul",
+            "blessing_rerolls");
+        var realmBound = ResolveId(
+            authority,
+            "shining_abode",
+            ResourceOwnerKind.AfterlifeActor,
+            "player_soul",
+            "spiritual_action_points");
+
+        Assert.True(persistent.Success);
+        Assert.Contains(realmBound.Issues, issue => issue.Code == "resource_owner_inactive");
+
+        var state = new ResourceStateLedger(new[]
+        {
+            Entry("blessing_rerolls", ResourceLifecycleState.Active, "rerolls"),
+            Entry("spiritual_action_points", ResourceLifecycleState.Suspended, "action_points")
+        });
+        var history = ResourceHistoryState.ParseCanonical(
+            "{\"schemaVersion\":1,\"entries\":[]}",
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            allowMissingPristine: false);
+
+        Assert.True(history.IsValid);
+        Assert.Empty(authority.ValidateCanonicalAgreement(
+            state,
+            Assert.IsType<ResourceHistoryState>(history.History)));
+
+        var realmBoundOnly = Build(new[]
+        {
+            owner with { RealmIndependentResourceCapabilities = Set() }
+        });
+        Assert.NotEqual(authority.Fingerprint, realmBoundOnly.Fingerprint);
+        Assert.True(Assert.IsAssignableFrom<ISet<string>>(
+            authority.Entries[owner.Key].RealmIndependentResourceCapabilities).IsReadOnly);
+    }
+
+    [Fact]
+    public void Build_RejectsRealmIndependentCapabilityThatOwnerDidNotExport()
+    {
+        var authority = Build(new[]
+        {
+            Owner(
+                "shining_abode",
+                ResourceOwnerKind.AfterlifeActor,
+                "player_soul",
+                "spiritual_action_points") with
+            {
+                RealmIndependentResourceCapabilities = Set("blessing_rerolls")
+            }
+        });
+
+        Assert.Contains(authority.Issues, issue =>
+            issue.Code == "resource_owner_realm_independent_capability_unbound");
+    }
+
+    [Fact]
     public void Build_RejectsInvalidPlayerRealmFingerprintCapabilityAndNpcBinding()
     {
         var invalidCapability = Owner(
@@ -198,6 +272,55 @@ public sealed class ResourceOwnerAuthorityTests
             ordered.Entries[second.Key].ResourceCapabilities).IsReadOnly);
     }
 
+    [Fact]
+    public void CanonicalAgreement_RejectsOwnerAndResourceLifecycleMismatch()
+    {
+        var suspended = Owner(
+            "mortal_world",
+            ResourceOwnerKind.Item,
+            "item_alpha",
+            "charges") with
+        {
+            Lifecycle = ResourceOwnerLifecycle.Suspended
+        };
+        var authority = Build(new[] { suspended });
+        var coordinate = new ResourceCoordinate(
+            "mortal_world",
+            ResourceOwnerKind.Item,
+            "item_alpha",
+            "charges");
+        var state = new ResourceStateLedger(new[]
+        {
+            new ResourceStateEntry(
+                coordinate,
+                Current: 1m,
+                Maximum: 1m,
+                new ResourceCapacityBinding(
+                    ResourceCapacityKind.InstanceFixed,
+                    "capacity_item_alpha_charges",
+                    FingerprintA),
+                ResourceLifecycleState.Active,
+                new ResourceChronology(
+                    CreatedAtTurn: 1,
+                    CreatedEventRef: "turn_1:resource:1",
+                    LastTransitionId: "transition_initialize_item_alpha",
+                    LastEventRef: "turn_1:resource:1",
+                    LastTransitionTurn: 1))
+        });
+        var historyResult = ResourceHistoryState.ParseCanonical(
+            "{\"schemaVersion\":1,\"entries\":[]}",
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            allowMissingPristine: false);
+        Assert.True(historyResult.IsValid);
+
+        var issues = authority.ValidateCanonicalAgreement(
+            state,
+            Assert.IsType<ResourceHistoryState>(historyResult.History));
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "resource_owner_lifecycle_state_mismatch");
+    }
+
     private static ResourceOwnerAuthorityResolution ResolveId(
         ResourceOwnerAuthority authority,
         string realm,
@@ -235,6 +358,30 @@ public sealed class ResourceOwnerAuthorityTests
             BoundNpcId: kind == ResourceOwnerKind.Npc ? ownerId : null,
             Set(capability),
             FingerprintA);
+
+    private static ResourceStateEntry Entry(
+        string resourceKey,
+        ResourceLifecycleState lifecycle,
+        string identity) =>
+        new(
+            new ResourceCoordinate(
+                "shining_abode",
+                ResourceOwnerKind.AfterlifeActor,
+                "player_soul",
+                resourceKey),
+            Current: 1m,
+            Maximum: 1m,
+            new ResourceCapacityBinding(
+                ResourceCapacityKind.InstanceFixed,
+                $"capacity_{identity}",
+                FingerprintA),
+            lifecycle,
+            new ResourceChronology(
+                CreatedAtTurn: 1,
+                CreatedEventRef: $"turn_1:resource:{identity}",
+                LastTransitionId: $"transition_initialize_{identity}",
+                LastEventRef: $"turn_1:resource:{identity}",
+                LastTransitionTurn: 1));
 
     private static IReadOnlySet<string> Set(params string[] values) =>
         new HashSet<string>(values, StringComparer.Ordinal);

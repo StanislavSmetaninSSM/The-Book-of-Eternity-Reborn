@@ -17,13 +17,6 @@ public partial class ValidationService
         "mismatch_repair_blocking"
     };
 
-    private static readonly HashSet<string> MathAssistantAppliedDeltaReferenceFields = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "currentHealthChange",
-        "currentPoiseChange",
-        "currentEnergyChange"
-    };
-
     private static readonly HashSet<string> MathAssistantAppliedNumericReferencePaths = new(StringComparer.OrdinalIgnoreCase)
     {
         "afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount",
@@ -404,29 +397,9 @@ public partial class ValidationService
                 return true;
             }
 
-            if (MathAssistantAppliedDeltaReferenceFields.Contains(candidate))
-            {
-                appliedPath = candidate;
-                if (!root.TryGetProperty(candidate, out appliedNode))
-                    appliedNode = default;
-
-                return true;
-            }
         }
 
-        var lastSeparator = token.LastIndexOfAny(new[] { ':', '/', '\\', '.' });
-        var directCandidate = lastSeparator >= 0 && lastSeparator + 1 < token.Length
-            ? token[(lastSeparator + 1)..].Trim()
-            : token;
-
-        if (!MathAssistantAppliedDeltaReferenceFields.Contains(directCandidate))
-            return false;
-
-        appliedPath = directCandidate;
-        if (!root.TryGetProperty(directCandidate, out appliedNode))
-            appliedNode = default;
-
-        return true;
+        return false;
     }
 
     private static IEnumerable<string> BuildMathAssistantReferenceCandidates(string token)

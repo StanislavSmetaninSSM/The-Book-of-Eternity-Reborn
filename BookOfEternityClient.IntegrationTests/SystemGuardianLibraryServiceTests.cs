@@ -139,7 +139,11 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.IsType<JsonObject>(guardian["abodePower"]);
         Assert.IsType<JsonArray>(guardian["guardianRelationships"]);
         Assert.IsType<JsonObject>(guardian["questManagement"]);
-        Assert.IsType<JsonObject>(guardian["gachaSystem"]);
+        var gachaSystem = Assert.IsType<JsonObject>(guardian["gachaSystem"]);
+        Assert.False(gachaSystem.ContainsKey("chargesPerReturn"));
+        Assert.False(gachaSystem.ContainsKey("chargesUsedThisReturn"));
+        Assert.Equal(string.Empty, gachaSystem["currentReturnCycleId"]?.GetValue<string>());
+        Assert.Empty(Assert.IsType<JsonArray>(gachaSystem["gachaHistory"]));
 
         var initialMusing = Assert.IsType<JsonObject>(Assert.Single(Assert.IsType<JsonArray>(guardian["musings"])));
         Assert.Equal(1, initialMusing["turn"]?.GetValue<int>());
@@ -919,7 +923,7 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
             "sideStrain",
             "tempoAdvantage",
             "counterPayoff",
-            "actionEconomy",
+            "spiritual_action_points",
             "actionCostAudit",
             "DTO",
             "JSON",

@@ -516,8 +516,6 @@ public partial class ValidationService
     {
         public int? CurrentReputation { get; set; }
         public int CurrentAbodePower { get; set; } = AbodePowerRules.DefaultCurrentPower;
-        public int FounderExtraGachaCharges { get; set; }
-        public int ChargesUsedThisReturn { get; set; }
         public HashSet<string> AvailableQuestIds { get; } = new(StringComparer.OrdinalIgnoreCase);
         public HashSet<string> ActiveQuestIds { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> QuestDifficultyById { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -572,15 +570,6 @@ public partial class ValidationService
             issues.Add(new ValidationIssue(
                 "response", IssueSeverity.Warning,
                 "GM-ответ не содержит поля 'response' с текстом нарратива"));
-        }
-
-        // Validate player status percentages if present
-        if (response.TryGetProperty("playerStatus", out var status) &&
-            status.ValueKind == JsonValueKind.Object)
-        {
-            ValidatePercentageField(status, "healthPercentage", issues);
-            ValidatePercentageField(status, "energyPercentage", issues);
-            ValidatePercentageField(status, "poisePercentage", issues);
         }
 
         // Validate characteristics are within range if present

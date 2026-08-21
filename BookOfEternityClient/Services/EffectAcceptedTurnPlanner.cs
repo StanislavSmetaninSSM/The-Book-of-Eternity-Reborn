@@ -39,7 +39,7 @@ internal static class EffectAcceptedTurnPlanner
 
         var carriers = input.PreTurnCarriers ??
             new EffectCarrierCatalogInput(null, null, null, null, null, null);
-        var publicationCarrierBaselines = carriers;
+        var publicationCarrierBaselines = input.PublicationCarrierBaselines ?? carriers;
         var carrierAuthorityFingerprint =
             EffectCarrierCatalog.CreateAuthorityFingerprint(publicationCarrierBaselines);
         PrepareCombatantTargets(
@@ -224,6 +224,21 @@ internal static class EffectAcceptedTurnPlanner
         allocatedCombatantIds = Array.Empty<string>();
         if (input.TargetAuthorityInput == null)
             return;
+
+        if (input.PreallocatedCombatantIdentities != null)
+        {
+            targetAuthority = EffectTargetAuthority.Build(
+                input.TargetAuthorityInput with
+                {
+                    CombatantIdentities = input.PreallocatedCombatantIdentities
+                });
+            allocatedCombatantIds = input.PreallocatedCombatantIdentities
+                .CombatantIdsByRef
+                .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
+                .Select(static pair => pair.Value)
+                .ToArray();
+            return;
+        }
 
         var candidates = new JsonArray();
         var coordinates = new List<(bool Enemy, int Index)>();

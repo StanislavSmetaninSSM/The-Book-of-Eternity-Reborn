@@ -276,10 +276,7 @@ public static class AfterlifeSpiritualConflictState
         return normalized;
     }
 
-    public static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update) =>
-        ApplyUpdate(existingRoot, update, playerSpiritFocusTier: null);
-
-    public static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update, int? playerSpiritFocusTier)
+    public static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update)
     {
         var root = NormalizeRoot(existingRoot);
         var mode = GetNodeString(update["mode"]);
@@ -289,7 +286,7 @@ public static class AfterlifeSpiritualConflictState
         switch (mode.ToLowerInvariant())
         {
             case ModeStart:
-                return ApplyStart(root, update, playerSpiritFocusTier);
+                return ApplyStart(root, update);
             case ModeExchange:
                 return ApplyExchange(root, update);
             case ModeResolve:
@@ -312,9 +309,6 @@ public static class AfterlifeSpiritualConflictState
         var normalizedTier = Math.Clamp(tier, 0, SpiritFocusMaxTier);
         return SpiritFocusTiers.First(definition => definition.Tier == normalizedTier).MaxActionPoints;
     }
-
-    public static string BuildSpiritFocusActionEconomySource(int tier) =>
-        $"Средоточие Души tier {Math.Clamp(tier, 0, SpiritFocusMaxTier)}";
 
     public static string? GetNodeString(JsonNode? node)
     {
@@ -360,7 +354,7 @@ public static class AfterlifeSpiritualConflictState
     public static bool IsAfterlifeRealm(string? realm) =>
         NormalizeAfterlifeRealmKey(realm) != null;
 
-    private static JsonObject ApplyStart(JsonObject root, JsonObject update, int? playerSpiritFocusTier)
+    private static JsonObject ApplyStart(JsonObject root, JsonObject update)
     {
         if (root.TryGetPropertyValue("activeConflict", out var activeConflict) && activeConflict != null)
             return MarkInvalidUpdate(root, update, "start_while_conflict_active");
@@ -383,8 +377,6 @@ public static class AfterlifeSpiritualConflictState
         conflict["realm"] = realm;
         if (conflict["exchangeLog"] is not JsonArray)
             conflict["exchangeLog"] = new JsonArray();
-        if (playerSpiritFocusTier.HasValue)
-            ApplySpiritFocusActionEconomy(conflict, playerSpiritFocusTier.Value);
         NormalizeSupporterRoles(conflict["playerSide"] as JsonObject);
         NormalizeSupporterRoles(conflict["oppositionSide"] as JsonObject);
 
@@ -407,31 +399,6 @@ public static class AfterlifeSpiritualConflictState
             if (!string.IsNullOrWhiteSpace(role))
                 supporter["supportRole"] = role;
         }
-    }
-
-    private static void ApplySpiritFocusActionEconomy(JsonObject conflict, int spiritFocusTier)
-    {
-        var normalizedTier = Math.Clamp(spiritFocusTier, 0, SpiritFocusMaxTier);
-        var playerMax = GetSpiritFocusMaxActionPoints(normalizedTier);
-        var actionEconomy = conflict["actionEconomy"] as JsonObject ?? new JsonObject();
-        actionEconomy["player"] = new JsonObject
-        {
-            ["current"] = playerMax,
-            ["max"] = playerMax,
-            ["source"] = BuildSpiritFocusActionEconomySource(normalizedTier)
-        };
-
-        if (actionEconomy["opposition"] is not JsonObject)
-        {
-            actionEconomy["opposition"] = new JsonObject
-            {
-                ["current"] = 6,
-                ["max"] = 6,
-                ["source"] = "opposition spiritual authority"
-            };
-        }
-
-        conflict["actionEconomy"] = actionEconomy;
     }
 
     private static JsonObject ApplyExchange(JsonObject root, JsonObject update)
@@ -497,7 +464,6 @@ public static class AfterlifeSpiritualConflictState
         CopyIfPresent(update, active, "conflictPosition");
         CopyIfPresent(update, active, "playerSideStrain");
         CopyIfPresent(update, active, "oppositionSideStrain");
-        CopyIfPresent(update, active, "actionEconomy");
         CopyIfPresent(update, active, "resolutionState");
         CopyIfPresent(update, active, "status");
         ClearInvalidUpdateMarkers(root);
@@ -689,7 +655,6 @@ public static class AfterlifeSpiritualConflictState
         CopyIfPresent(source, target, "conflictPosition");
         CopyIfPresent(source, target, "playerSideStrain");
         CopyIfPresent(source, target, "oppositionSideStrain");
-        CopyIfPresent(source, target, "actionEconomy");
         CopyIfPresentOrNull(source, target, "controlState");
         CopyIfPresentOrNull(source, target, "tempoAdvantage");
         CopyIfPresent(source, target, "resolutionState");

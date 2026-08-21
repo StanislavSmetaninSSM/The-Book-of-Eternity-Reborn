@@ -97,6 +97,61 @@ public sealed class ShiningStateValidationTests
             issue => issue.FilePath.Contains(ShiningAbodeState.TreasuryProperty, StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptsClientOwnedShiningResourceOwnerBindings()
+    {
+        var basePath = Path.Combine(
+            Path.GetTempPath(),
+            $"boe_shining_resource_binding_validation_{Guid.NewGuid():N}");
+        try
+        {
+            var fs = new FileSystemManager(
+                basePath,
+                NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var root = CreateMinimalShiningStateForBlessingCardValidation();
+            root[AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] = new JsonObject
+            {
+                ["gachaReturn"] = new JsonObject
+                {
+                    ["resourceOwnerId"] = "afterlife_scope_shining_return_7",
+                    ["returnCycleId"] = "shining_return_7"
+                }
+            };
+            await fs.WriteFileAtomicAsync(
+                ShiningAbodeState.StatePath,
+                root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            var validator = new ValidationService(
+                fs,
+                NullLogger<ValidationService>.Instance);
+
+            var issues = await validator.ValidateGameStateAsync(
+                new GameStateValidationSelection(
+                    GameStateValidationPhase.MetaMiscStateFiles,
+                    new[] { ShiningAbodeState.StatePath }));
+
+            Assert.DoesNotContain(
+                issues,
+                issue => issue.FilePath.Contains(
+                             AfterlifeEntityProfileState.ResourceOwnerBindingsProperty,
+                             StringComparison.OrdinalIgnoreCase) &&
+                         issue.Code?.Contains(
+                             "unknown_top_level",
+                             StringComparison.OrdinalIgnoreCase) == true);
+        }
+        finally
+        {
+            try
+            {
+                if (Directory.Exists(basePath))
+                    Directory.Delete(basePath, recursive: true);
+            }
+            catch
+            {
+            }
+        }
+    }
+
     [Theory]
     [InlineData("missing")]
     [InlineData("changed")]
@@ -830,20 +885,18 @@ public sealed class ShiningStateValidationTests
     }
 
     [Fact]
-    public void ValidateShiningAbodeStateFile_EmptyGachaCycleWithUsedCharges_RaisesExplicitError()
+    public void ValidateShiningAbodeStateFile_NonExactGachaCycle_RaisesExplicitError()
     {
         var root = CreateMinimalShiningStateForBlessingCardValidation();
         root["gachaSystem"] = new JsonObject
         {
-            ["chargesPerReturn"] = 3,
-            ["chargesUsedThisReturn"] = 2,
-            ["currentReturnCycleId"] = "",
+            ["currentReturnCycleId"] = " shining_return_5 ",
             ["gachaHistory"] = new JsonArray()
         };
 
         var issues = InvokeShiningStateValidation(root);
 
-        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_gacha_used_charges_without_cycle", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_gacha_return_cycle_invalid", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

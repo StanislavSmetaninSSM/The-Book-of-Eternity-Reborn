@@ -131,9 +131,6 @@ public class StateManager
             var root = doc.RootElement;
             state.PlayerStatus = new PlayerStatusState
             {
-                HealthPercentage = GetString(root, "healthPercentage", "100%"),
-                EnergyPercentage = GetString(root, "energyPercentage", "100%"),
-                PoisePercentage = GetString(root, "poisePercentage", "100%"),
                 CurrentCondition = GetString(root, "currentCondition", "Здоров"),
                 CurrentConditionDescription = GetString(root, "currentConditionDescription", ""),
                 ActiveConditions = GetStringArray(root, "activeConditions")

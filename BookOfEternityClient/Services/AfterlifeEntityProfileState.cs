@@ -13,6 +13,7 @@ internal static class AfterlifeEntityProfileState
     public const string CustomStateChangesProperty = "afterlifeEntityCustomStateChanges";
     public const string CustomStatesProperty = "customStates";
     public const string ProgressionOverridesProperty = "afterlifeEntityProgressionOverrides";
+    internal const string ResourceOwnerBindingsProperty = "resourceOwnerBindings";
     public const string SpecialArtLearningReceiptsProperty = "afterlifeSpecialArtLearningReceipts";
     public const string FateCardUnlocksProperty = "afterlifeFateCardUnlocks";
     public const string GoalUpdatesProperty = "afterlifeActorGoalUpdates";
@@ -84,6 +85,49 @@ internal static class AfterlifeEntityProfileState
 
         normalizedRealm = string.Empty;
         return false;
+    }
+
+    internal static JsonObject ProjectPlayerSoulRealm(
+        JsonObject currentRoot,
+        string newRealm)
+    {
+        ArgumentNullException.ThrowIfNull(currentRoot);
+        if (!RealmSemantics.IsMortalRealm(newRealm) &&
+            !TryNormalizeEffectRealm(newRealm, out _))
+        {
+            throw new InvalidOperationException(
+                $"Unsupported player_soul lifecycle realm '{newRealm}'.");
+        }
+
+        var projected = currentRoot.DeepClone().AsObject();
+        if (projected[ProfilesProperty] is not JsonArray profiles)
+        {
+            throw new InvalidOperationException(
+                $"{StatePath}.{ProfilesProperty} должен быть array.");
+        }
+
+        var playerProfiles = profiles
+            .OfType<JsonObject>()
+            .Where(IsPlayerSoulProfile)
+            .ToArray();
+        if (playerProfiles.Length != 1)
+        {
+            throw new InvalidOperationException(
+                $"{StatePath} должен содержать ровно один exact player_soul profile для realm transition.");
+        }
+
+        // Mortal World is not an afterlife profile display realm. The common
+        // owner composer uses soul_state.currentRealm to suspend every
+        // realm-bound binding while preserving sealed realm-independent
+        // capabilities on the persistent player_soul identity.
+        if (RealmSemantics.IsMortalRealm(newRealm))
+            return projected;
+
+        TryNormalizeEffectRealm(newRealm, out var normalizedRealm);
+        playerProfiles[0]["realm"] = normalizedRealm == "chaos_sea"
+            ? "Chaos Sea"
+            : "Shining Abode";
+        return projected;
     }
 
     public static readonly HashSet<string> StandardArtIds = new(StringComparer.OrdinalIgnoreCase)
@@ -434,6 +478,7 @@ internal static class AfterlifeEntityProfileState
             var replacement = CloneObject(profile);
             PreserveProgressionSettlement(existing, replacement);
             PreserveHistoricalMaterialization(existing, replacement);
+            PreserveResourceOwnerBindings(existing, replacement);
             profiles[index] = replacement;
             return;
         }
@@ -451,6 +496,20 @@ internal static class AfterlifeEntityProfileState
         }
 
         replacement[ActorMaterializationContract.PropertyName] = historicalEnvelope.DeepClone();
+    }
+
+    private static void PreserveResourceOwnerBindings(
+        JsonObject existing,
+        JsonObject replacement)
+    {
+        if (replacement.ContainsKey(ResourceOwnerBindingsProperty) ||
+            existing[ResourceOwnerBindingsProperty] is not JsonArray bindings ||
+            !HasExactActorIdentity(existing, replacement))
+        {
+            return;
+        }
+
+        replacement[ResourceOwnerBindingsProperty] = bindings.DeepClone();
     }
 
     private static bool HasExactActorIdentity(JsonObject existing, JsonObject replacement)
