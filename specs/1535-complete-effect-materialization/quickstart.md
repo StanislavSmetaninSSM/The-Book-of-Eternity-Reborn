@@ -334,6 +334,49 @@ Expected:
 - hidden/GM-only condition tokens are absent from console/browser output;
 - Shining blessing entitlement cannot be authored as an active effect.
 
+Task 10 RED→GREEN evidence:
+
+| Boundary | RED | GREEN | Result |
+|---|---|---|---:|
+| Persistent afterlife profiles and blessing exclusion | `TestResults/test-lanes/20260821-183452-780-38812-91215c81b995400ca40feae57651cb5a-focused` (`4/7`) | `TestResults/test-lanes/20260821-185106-205-35676-2cc48d85abc6435090c893b0dba7af5f-focused` | 7 |
+| Specialized condition adapter and one lifetime authority | `TestResults/test-lanes/20260821-194015-225-41728-1ebb570119f74f62aa4ab4f5c18564ec-focused` (`14/16`) | `TestResults/test-lanes/20260821-194113-175-42188-14bbd9c7e13347e4861c4d5b152841c8-focused` | 16 |
+| Realm-exit source-loss policy | `TestResults/test-lanes/20260821-202233-579-16612-9ef5665e29734883950cf8e5660273a5-focused` (`0/2`) | `TestResults/test-lanes/20260821-202332-422-25876-03a615bff1b04c2fa9cb05f84f94e281-focused` | 2 |
+| Complete profile/condition/realm adapter | — | `TestResults/test-lanes/20260821-202525-320-30824-fa902ee7cb274f99b2a4344f5466c3a3-focused` | 44 |
+| Legal-axis and hidden/GM-only mechanics snapshot | — | `TestResults/test-lanes/20260821-203514-381-1820-1b65e0292210498c89014e069bd705ff-focused` | 47 |
+| Accepted preview and fail-closed index projection | — | `TestResults/test-lanes/20260821-203703-927-9304-45ffbf45bbbb45789459fa59b5fc25bf-focused` | 2 |
+| Existing afterlife validators plus complete adapter | — | `TestResults/test-lanes/20260821-203807-257-7164-e27e24aad3284b8ea59ae1d28f4ff131-focused` | 451 |
+| Live-turn preview uses a canonical condition carrier | `TestResults/test-lanes/20260821-205728-026-44544-efa4884dee2f405b8aa090794931c902-focused` (`0/1`) | `TestResults/test-lanes/20260821-205819-407-32320-b0347112b1d84a9597aa090044848943-focused` | 1 |
+| Combined snapshot/source/live-turn unit control | — | `TestResults/test-lanes/20260821-205852-428-16580-8b822615c2cf43e9aab123593f28ab74-focused` | 102 |
+
+Every GREEN artifact exited `0`, timed out `false`, reported zero duplicate test
+IDs, and completed owned-tree cleanup. The GM preview is private, derived only
+from `accepted_effect_mechanics_snapshot_v1`, and omitted wholesale when the
+carrier/index authority is not accepted.
+
+Final Task 10 controls:
+
+- `TestResults/test-lanes/20260821-210230-956-32864-d8887d98eb094575a41d4115922e4ff6-focused`:
+  afterlife validators/adapters `451/451`;
+- `TestResults/test-lanes/20260821-210724-108-42980-0949ff6d8eba404f98afad01033d54ef-focused`:
+  afterlife documentation/source guards `116/116`;
+- `TestResults/test-lanes/20260821-210747-640-43624-705b99fc343f4bbea3a0aeff70ba5cad-fullvalidation`:
+  the lane intentionally remains non-green on deferred migration work, but all
+  four shard logs contain the exact same 334 unique failed test names as
+  baseline `20260816-150510-...` (`NEW_ONLY=0`, `OLD_ONLY=0`);
+- `TestResults/test-lanes/20260821-211412-905-30568-0281743931394ca19e315e0506069179-fast`
+  found two stale catalog fixtures (`979/981`), the focused repair passed at
+  `20260821-211803-556-11764-0ed8f8e039994d908508c877f0462e52-focused`
+  (`2/2`), and final Fast
+  `20260821-211834-151-4760-485f57c9a87a4c72aace789a365abd8c-fast`
+  passed `3936/3936`.
+
+The final Fast build had zero warnings/errors and every final green lane exited
+`0`, timed out `false`, reported zero duplicate IDs, and completed owned-tree
+cleanup. No frontend source changed because this slice adds only a private GM
+preview through the existing generic JSON turn-request transport. No runtime
+migration or compatibility reader was added; active fixture migration remains
+T101/T110.
+
 ## 10. Wound Independence
 
 Apply a wound-derived source-bound consequence, then:

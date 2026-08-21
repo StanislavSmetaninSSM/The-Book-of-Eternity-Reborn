@@ -117,6 +117,52 @@ public static class AfterlifeSpiritualConflictState
         "no_effect"
     };
 
+    internal static readonly IReadOnlySet<string> CombatConditionKinds =
+        new HashSet<string>(StringComparer.Ordinal)
+        {
+            "mark", "ward", "burden", "opening", "vow"
+        };
+
+    internal static readonly IReadOnlySet<string> CombatConditionTargetSides =
+        new HashSet<string>(StringComparer.Ordinal)
+        {
+            "player", "opposition"
+        };
+
+    internal static readonly IReadOnlySet<string> CombatConditionMechanicalAxes =
+        new HashSet<string>(StringComparer.Ordinal)
+        {
+            "rollMode",
+            "conflictPosition",
+            "controlState",
+            "playerSideStrain",
+            "oppositionSideStrain",
+            "tempoAdvantage",
+            "counterPayoff",
+            "actionCostAudit",
+            "actionCostAudit.player",
+            "actionCostAudit.opposition",
+            "specialArtAudit.effectNote",
+            "specialArtAudits.effectNote"
+        };
+
+    internal static readonly IReadOnlyList<string> CombatConditionProjectionFields =
+    [
+        "conditionId",
+        "displayName",
+        "kind",
+        "status",
+        "targetSide",
+        "targetActorId",
+        "mechanicalAxes",
+        "affectedOperations",
+        "counterplay",
+        "payoff",
+        "duration",
+        "summary",
+        "visibility"
+    ];
+
     public static async Task<string?> TryDescribeActiveConflictBlockerAsync(
         FileSystemManager fs,
         string closureHint)
@@ -354,6 +400,249 @@ public static class AfterlifeSpiritualConflictState
     public static bool IsAfterlifeRealm(string? realm) =>
         NormalizeAfterlifeRealmKey(realm) != null;
 
+    internal static bool TryResolveEffectTarget(
+        JsonObject? root,
+        string side,
+        out EffectTargetKey target)
+    {
+        target = null!;
+        if (!CombatConditionTargetSides.Contains(side) ||
+            root?["activeConflict"] is not JsonObject conflict ||
+            !TryReadExactEffectToken(conflict["conflictId"], out var conflictId) ||
+            !TryReadExactEffectToken(conflict["realm"], out var rawRealm) ||
+            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(rawRealm, out var realm) ||
+            !TryReadExactEffectToken(conflict["resolutionState"], out var resolutionState) ||
+            !string.Equals(resolutionState, "active", StringComparison.Ordinal) ||
+            conflict[$"{side}Side"] is not JsonObject)
+        {
+            return false;
+        }
+
+        target = new EffectTargetKey(
+            realm,
+            "spiritual_conflict_side",
+            $"{conflictId}:{side}");
+        return true;
+    }
+
+    internal static bool TryValidateCombatConditionParticipantBinding(
+        JsonObject? root,
+        EffectTargetKey target,
+        JsonObject definitionOrEffect,
+        out string reason)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+        ArgumentNullException.ThrowIfNull(definitionOrEffect);
+        reason = string.Empty;
+
+        if (!string.Equals(
+                target.Kind,
+                "spiritual_conflict_side",
+                StringComparison.Ordinal) ||
+            root?["activeConflict"] is not JsonObject conflict ||
+            !TryReadExactEffectToken(conflict["conflictId"], out var conflictId) ||
+            definitionOrEffect["components"] is not JsonArray { Count: 1 } components ||
+            components[0] is not JsonObject component ||
+            !TryReadExactEffectToken(component["profile"], out var profile) ||
+            !string.Equals(
+                profile,
+                "afterlife_combat_condition",
+                StringComparison.Ordinal) ||
+            component["payload"] is not JsonObject payload ||
+            !TryReadExactEffectToken(payload["targetSide"], out var targetSide) ||
+            !CombatConditionTargetSides.Contains(targetSide) ||
+            !TryReadExactEffectToken(payload["actorId"], out var actorId) ||
+            !string.Equals(
+                target.TargetId,
+                $"{conflictId}:{targetSide}",
+                StringComparison.Ordinal))
+        {
+            reason = "one exact active conflict-side target and combat-condition participant selector";
+            return false;
+        }
+
+        var participants = new List<(string ActorId, string Side)>();
+        foreach (var side in CombatConditionTargetSides)
+        {
+            if (conflict[$"{side}Side"] is not JsonObject sideState ||
+                sideState["leadContestant"] is not JsonObject lead ||
+                !TryReadExactEffectToken(lead["actorId"], out var leadActorId) ||
+                sideState["supporters"] is not JsonArray supporters)
+            {
+                reason = "complete exact current conflict participant authority";
+                return false;
+            }
+
+            participants.Add((leadActorId, side));
+            foreach (var supporterNode in supporters)
+            {
+                if (supporterNode is not JsonObject supporter ||
+                    !TryReadExactEffectToken(
+                        supporter["actorId"],
+                        out var supporterActorId))
+                {
+                    reason = "complete exact current conflict participant authority";
+                    return false;
+                }
+
+                participants.Add((supporterActorId, side));
+            }
+        }
+
+        var participantAliases = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var participant in participants)
+        {
+            if (!participantAliases.Add(
+                    MortalLocationIdentityState.BuildConfusableKey(
+                        participant.ActorId)))
+            {
+                reason = "exact and confusable-unique current conflict participant identities";
+                return false;
+            }
+        }
+
+        var matches = participants
+            .Where(participant => string.Equals(
+                participant.ActorId,
+                actorId,
+                StringComparison.Ordinal))
+            .ToArray();
+        if (matches.Length != 1 ||
+            !string.Equals(matches[0].Side, targetSide, StringComparison.Ordinal))
+        {
+            reason = $"one exact participant of the {targetSide} conflict side";
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool TryReadExactEffectToken(JsonNode? node, out string value)
+    {
+        value = string.Empty;
+        if (node is not JsonValue jsonValue ||
+            !jsonValue.TryGetValue<string>(out var text) ||
+            text.Length == 0 ||
+            !string.Equals(text, text.Trim(), StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        value = text;
+        return true;
+    }
+
+    internal static bool TryProjectCombatCondition(
+        JsonObject effect,
+        out JsonObject condition,
+        out string reason)
+    {
+        ArgumentNullException.ThrowIfNull(effect);
+        condition = null!;
+        reason = string.Empty;
+        if (effect["components"] is not JsonArray { Count: 1 } components ||
+            components[0] is not JsonObject component ||
+            !TryReadExactEffectToken(component["profile"], out var profile) ||
+            !string.Equals(profile, "afterlife_combat_condition", StringComparison.Ordinal) ||
+            component["payload"] is not JsonObject payload)
+        {
+            reason = "exactly one afterlife_combat_condition component";
+            return false;
+        }
+
+        if (!TryReadExactEffectToken(effect["effectId"], out var effectId) ||
+            !TryReadExactEffectToken(effect["state"], out var state) ||
+            effect["target"] is not JsonObject target ||
+            !TryReadExactEffectToken(target["kind"], out var targetKind) ||
+            !string.Equals(targetKind, "spiritual_conflict_side", StringComparison.Ordinal) ||
+            !TryReadExactEffectToken(target["targetId"], out var targetId) ||
+            !TryReadExactEffectToken(payload["conditionKind"], out var conditionKind) ||
+            !CombatConditionKinds.Contains(conditionKind) ||
+            !TryReadExactEffectToken(payload["targetSide"], out var targetSide) ||
+            !CombatConditionTargetSides.Contains(targetSide) ||
+            !targetId.EndsWith(":" + targetSide, StringComparison.Ordinal) ||
+            !TryReadExactEffectToken(payload["actorId"], out var actorId) ||
+            payload["operations"] is not JsonArray operations ||
+            payload["axes"] is not JsonArray axes ||
+            payload["counterplay"] is not JsonArray counterplay ||
+            !TryReadExactEffectToken(payload["payoff"], out var payoff) ||
+            effect["display"] is not JsonObject display ||
+            !TryReadExactEffectToken(display["name"], out var displayName) ||
+            !TryReadExactEffectToken(display["description"], out var summary) ||
+            !TryReadExactEffectToken(display["visibility"], out var visibility) ||
+            !TryProjectCombatConditionDuration(effect["lifetime"] as JsonObject, out var duration))
+        {
+            reason = "complete exact common effect and specialized condition payload";
+            return false;
+        }
+
+        condition = effect.DeepClone().AsObject();
+        condition["conditionId"] = effectId;
+        condition["displayName"] = displayName;
+        condition["kind"] = conditionKind;
+        condition["status"] = string.Equals(state, "active", StringComparison.Ordinal)
+            ? "active"
+            : "blocked";
+        condition["targetSide"] = targetSide;
+        condition["targetActorId"] = actorId;
+        condition["mechanicalAxes"] = axes.DeepClone();
+        condition["affectedOperations"] = operations.DeepClone();
+        condition["counterplay"] = counterplay.DeepClone();
+        condition["payoff"] = new JsonObject
+        {
+            ["sourceType"] = "combat_condition",
+            ["effect"] = payoff
+        };
+        condition["duration"] = duration;
+        condition["summary"] = summary;
+        condition["visibility"] = visibility;
+        return true;
+    }
+
+    private static bool TryProjectCombatConditionDuration(
+        JsonObject? lifetime,
+        out JsonObject duration)
+    {
+        duration = null!;
+        if (lifetime == null ||
+            !TryReadExactEffectToken(lifetime["mode"], out var mode))
+        {
+            return false;
+        }
+
+        duration = new JsonObject { ["type"] = mode };
+        switch (mode)
+        {
+            case "uses" when TryReadPositiveEffectInt(lifetime["remainingUses"], out var uses):
+                duration["remainingUses"] = uses;
+                return true;
+            case "turns" when
+                TryReadPositiveEffectInt(lifetime["remainingTurns"], out var turns) &&
+                TryReadExactEffectToken(lifetime["advancePhase"], out var phase) &&
+                string.Equals(
+                    phase,
+                    "afterlife_exchange_end",
+                    StringComparison.Ordinal):
+                duration["type"] = "exchanges";
+                duration["remainingExchanges"] = turns;
+                return true;
+            case "scene" when TryReadExactEffectToken(lifetime["sceneId"], out var sceneId):
+                duration["expiresAtScene"] = sceneId;
+                return true;
+            default:
+                duration = null!;
+                return false;
+        }
+    }
+
+    private static bool TryReadPositiveEffectInt(JsonNode? node, out int value)
+    {
+        value = 0;
+        return node is JsonValue jsonValue &&
+               jsonValue.TryGetValue<int>(out value) &&
+               value > 0;
+    }
+
     private static JsonObject ApplyStart(JsonObject root, JsonObject update)
     {
         if (root.TryGetPropertyValue("activeConflict", out var activeConflict) && activeConflict != null)
@@ -377,6 +666,7 @@ public static class AfterlifeSpiritualConflictState
         conflict["realm"] = realm;
         if (conflict["exchangeLog"] is not JsonArray)
             conflict["exchangeLog"] = new JsonArray();
+        conflict["combatConditions"] = new JsonArray();
         NormalizeSupporterRoles(conflict["playerSide"] as JsonObject);
         NormalizeSupporterRoles(conflict["oppositionSide"] as JsonObject);
 
@@ -443,6 +733,8 @@ public static class AfterlifeSpiritualConflictState
             ApplyExchangeControlStateToReplacement(replacement, exchange, active);
             log.Add(exchange.DeepClone());
             replacement["exchangeLog"] = MergeExchangeLogs(log, replacement["exchangeLog"] as JsonArray);
+            replacement["combatConditions"] =
+                active["combatConditions"]?.DeepClone() ?? new JsonArray();
             root["activeConflict"] = replacement;
             ClearInvalidUpdateMarkers(root);
             return root;

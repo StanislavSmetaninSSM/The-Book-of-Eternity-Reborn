@@ -44,7 +44,12 @@ public partial class CanonicalStateNormalizer
             if (prevalidatedPlan == null)
                 await ValidateAcceptedMechanicsBeforeImagesAsync(plan);
             if (plan.EffectPlan != null)
-                await ValidateEffectPlanPublicationBindingAsync(plan.EffectPlan);
+            {
+                await ValidateEffectPlanPublicationBindingAsync(
+                    plan.EffectPlan,
+                    plan.OwnerCompanionAfterImages,
+                    validateExactCarrierBeforeImages: prevalidatedPlan == null);
+            }
         }
         catch
         {

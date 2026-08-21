@@ -74,6 +74,40 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CanonicalActiveEffectsPassAtProfileBoundary()
+    {
+        var root = JsonNode.Parse(BuildValidProfileJson())!.AsObject();
+        var profile = root[AfterlifeEntityProfileState.ProfilesProperty]![0]!.AsObject();
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("guardian");
+        effect["realm"] = "chaos_sea";
+        effect["target"]!["targetId"] = "guardian_mirror";
+        profile["activeEffects"] = new JsonArray(effect);
+        await WriteProfileStateAsync(root.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "afterlife_entity_profile_invalid_active_effects");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MalformedActiveEffectsFailAtProfileBoundary()
+    {
+        var root = JsonNode.Parse(BuildValidProfileJson())!.AsObject();
+        var profile = root[AfterlifeEntityProfileState.ProfilesProperty]![0]!.AsObject();
+        profile["activeEffects"] = new JsonObject();
+        await WriteProfileStateAsync(root.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_entity_profile_invalid_active_effects" &&
+            issue.FilePath.EndsWith("profiles[0].activeEffects", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ValidAfterlifeRelationshipGate_PassesProfileValidation()
     {
         await WriteProfileStateAsync(BuildValidProfileJson().Replace(

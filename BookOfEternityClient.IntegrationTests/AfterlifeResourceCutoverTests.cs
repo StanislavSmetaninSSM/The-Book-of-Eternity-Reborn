@@ -280,6 +280,100 @@ public sealed class AfterlifeResourceCutoverTests
             opposition["resourceOwnerId"]!.GetValue<string>());
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Preview_UsesAcceptedConditionMechanicsSnapshotOrFailsClosed(
+        bool corruptIdentityIndex)
+    {
+        await using var context = await CreateActionPointContextAsync(
+            playerCurrent: 4m,
+            oppositionCurrent: 5m);
+        var conflict = ActiveConflict("conflict_resource_cost");
+        conflict["sideModel"] = "direct_duel";
+        conflict["conflictPosition"] = "contested";
+        conflict["playerSideStrain"] = "clear";
+        conflict["oppositionSideStrain"] = "clear";
+        conflict["playerSide"] = new JsonObject
+        {
+            ["leadContestant"] = new JsonObject
+            {
+                ["actorType"] = "player",
+                ["actorId"] = "player_soul",
+                ["displayName"] = "Асуран"
+            },
+            ["supporters"] = new JsonArray()
+        };
+        conflict["oppositionSide"] = new JsonObject
+        {
+            ["leadContestant"] = new JsonObject
+            {
+                ["actorType"] = "guardian",
+                ["actorId"] = "guardian_preview_condition",
+                ["displayName"] = "Хранитель печати"
+            },
+            ["supporters"] = new JsonArray(),
+            ["resourceMaterialization"] = new JsonObject
+            {
+                ["resources"] = new JsonArray(new JsonObject
+                {
+                    ["resourceKey"] = "spiritual_action_points",
+                    ["maximum"] = 6
+                })
+            }
+        };
+        var effect = CreatePreviewConditionEffect();
+        conflict["combatConditions"] = new JsonArray(effect.DeepClone());
+        await context.WriteExactJsonAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeConflict"] = conflict,
+                ["recentConflicts"] = new JsonArray()
+            }.ToJsonString());
+        var identity = EffectMaterializationTestFixture.CreateIdentityIndex(effect);
+        if (corruptIdentityIndex)
+        {
+            identity["entries"]![0]!["owner"]!["ownerId"] =
+                "conflict_resource_cost:player";
+        }
+        await context.WriteExactJsonAsync(
+            EffectIdentityState.StatePath,
+            identity.ToJsonString());
+
+        var preview = await new AfterlifeSpiritualConflictTurnPreviewService(
+                context.FileSystem)
+            .BuildAsync(
+                turnNumber: 42,
+                preGeneratedDices1d20: [10, 11],
+                currentRealm: "Chaos Sea");
+
+        if (corruptIdentityIndex)
+        {
+            Assert.Null(preview);
+            return;
+        }
+
+        var result = Assert.IsType<JsonObject>(preview);
+        var mechanics = Assert.IsType<JsonObject>(result["conditionMechanics"]);
+        Assert.Equal(
+            EffectMechanicsSnapshot.Source,
+            mechanics["source"]!.GetValue<string>());
+        var contribution = Assert.IsType<JsonObject>(
+            Assert.Single(mechanics["contributions"]!.AsArray()));
+        Assert.Equal(
+            EffectMaterializationTestFixture.EffectId,
+            contribution["conditionId"]!.GetValue<string>());
+        Assert.Equal(
+            ["actionCostAudit.opposition"],
+            contribution["mechanicalAxes"]!.AsArray()
+                .Select(static axis => axis!.GetValue<string>())
+                .ToArray());
+        Assert.False(contribution["isPlayerVisible"]!.GetValue<bool>());
+        Assert.False(result.ContainsKey("modifiedCharacteristics"));
+    }
+
     [Fact]
     public void ConflictReducer_StartNeverCreatesLegacyActionEconomy()
     {
@@ -3084,4 +3178,72 @@ public sealed class AfterlifeResourceCutoverTests
                 }
             }
         };
+
+    private static JsonObject CreatePreviewConditionEffect()
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "afterlife_combat_condition");
+        effect["realm"] = "chaos_sea";
+        effect["target"] = new JsonObject
+        {
+            ["kind"] = "spiritual_conflict_side",
+            ["targetId"] = "conflict_resource_cost:opposition"
+        };
+        effect["display"]!["name"] = "Скрытая цена печати";
+        effect["display"]!["description"] =
+            "Цена усложняет следующее действие стороны.";
+        effect["display"]!["category"] = "condition";
+        effect["display"]!["visibility"] = "gm_only";
+        effect["source"] = new JsonObject
+        {
+            ["kind"] = "spiritual_art",
+            ["sourceId"] = "art_preview_condition",
+            ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
+        };
+        effect["components"] = new JsonArray(new JsonObject
+        {
+            ["componentId"] = "component_001",
+            ["profile"] = "afterlife_combat_condition",
+            ["priority"] = 100,
+            ["payload"] = new JsonObject
+            {
+                ["conditionKind"] = "burden",
+                ["targetSide"] = "opposition",
+                ["actorId"] = "guardian_preview_condition",
+                ["operations"] = new JsonArray("pressure"),
+                ["axes"] = new JsonArray("actionCostAudit.opposition"),
+                ["counterplay"] = new JsonArray(
+                    "Ответить действием guard или counter."),
+                ["payoff"] = "increase_action_cost"
+            }
+        });
+        effect["lifetime"] = new JsonObject
+        {
+            ["mode"] = "uses",
+            ["remainingUses"] = 2,
+            ["consumingTriggerIds"] = new JsonArray("condition_exchange_consumed"),
+            ["displayText"] = "Ещё два обмена"
+        };
+        effect["triggers"] = new JsonArray(new JsonObject
+        {
+            ["triggerId"] = "condition_exchange_consumed",
+            ["eventType"] = "afterlife_exchange_end",
+            ["priority"] = 100,
+            ["componentIds"] = new JsonArray("component_001"),
+            ["consumeUses"] = true,
+            ["resolutionMode"] = "deterministic"
+        });
+        Assert.True(
+            AfterlifeSpiritualConflictState.TryProjectCombatCondition(
+                effect,
+                out var projected,
+                out var reason),
+            reason);
+        foreach (var field in AfterlifeSpiritualConflictState
+                     .CombatConditionProjectionFields)
+        {
+            effect[field] = projected[field]?.DeepClone();
+        }
+        return effect;
+    }
 }

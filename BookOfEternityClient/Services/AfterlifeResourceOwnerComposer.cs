@@ -95,7 +95,7 @@ internal static class AfterlifeResourceOwnerComposer
             issues);
         if (issues.Count != 0)
             return Invalid(issues);
-        if (!JsonNode.DeepEquals(input.Accepted.Profiles, acceptedProfiles))
+        if (!JsonNode.DeepEquals(input.PreTurn.Profiles, acceptedProfiles))
         {
             afterImages[AfterlifeEntityProfileState.StatePath] =
                 acceptedProfiles.DeepClone().AsObject();

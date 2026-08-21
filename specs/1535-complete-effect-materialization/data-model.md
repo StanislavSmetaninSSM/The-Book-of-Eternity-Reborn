@@ -589,6 +589,17 @@ EffectMechanicsSnapshot
 
 Consumers do not scan raw carrier aliases or interpret prose. If carrier/index agreement fails, the snapshot is rejected and contributes no mechanical component.
 
+For an active afterlife spiritual conflict, the private GM turn preview projects
+only snapshot components whose profile is `afterlife_combat_condition` and whose
+exact realm/target is the current conflict side. The bounded projection is
+`afterlifeSpiritualConflictPreview.conditionMechanics` with source
+`accepted_effect_mechanics_snapshot_v1`; it carries `conditionId`, component
+priority, side/actor, kind, affected operations, legal axes, counterplay,
+source-owned payoff, stacks, and a visibility flag. It does not reinterpret the
+component as a Mortal characteristic modifier. Hidden/GM-only components may
+execute in this private GM projection, but their names/descriptions are masked
+and they remain absent from the player-visible snapshot audit.
+
 ## 14. Player Projection
 
 A projected visible effect contains only:

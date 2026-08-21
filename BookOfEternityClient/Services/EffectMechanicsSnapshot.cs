@@ -36,6 +36,8 @@ internal sealed record EffectMechanicsSnapshot(
     IReadOnlyList<EffectMechanicsAuditEntry> Audit,
     IReadOnlyList<ValidationIssue> Issues)
 {
+    internal const string Source = "accepted_effect_mechanics_snapshot_v1";
+
     internal static EffectMechanicsSnapshot Build(EffectMechanicsInput input)
     {
         ArgumentNullException.ThrowIfNull(input);

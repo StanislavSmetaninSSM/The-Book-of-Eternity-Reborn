@@ -158,11 +158,17 @@ public sealed class EffectSourceDefinitionContractTests
     {
         using var document = Parse(new JsonArray(
             EffectMaterializationTestFixture.CreateDefinition(profile)));
+        var realm = string.Equals(
+            profile,
+            "afterlife_combat_condition",
+            StringComparison.Ordinal)
+            ? "chaos_sea"
+            : "mortal_world";
 
         Assert.Empty(EffectSourceDefinitionContract.ValidateArray(
             document.RootElement,
             "source.activeEffectDefinitions",
-            "mortal_world"));
+            realm));
     }
 
     [Theory]

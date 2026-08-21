@@ -91,10 +91,19 @@ internal static class EffectAcceptedTurnPlanner
         issues.AddRange(ownerAuthority.Issues);
         using (var document = JsonDocument.Parse(effect.ToJsonString()))
         {
-            issues.AddRange(EffectMaterializationContract.Validate(
-                document.RootElement,
-                "effect",
-                EffectMaterializationPhase.CanonicalActive));
+            var isSpiritualCondition = effect["target"] is JsonObject effectTarget &&
+                string.Equals(
+                    effectTarget["kind"]?.GetValue<string>(),
+                    "spiritual_conflict_side",
+                    StringComparison.Ordinal);
+            issues.AddRange(isSpiritualCondition
+                ? EffectMaterializationContract.ValidateAfterlifeCombatCondition(
+                    document.RootElement,
+                    "effect")
+                : EffectMaterializationContract.Validate(
+                    document.RootElement,
+                    "effect",
+                    EffectMaterializationPhase.CanonicalActive));
         }
 
         var hasEffectId = TryReadExact(effect["effectId"], out var effectId);
@@ -541,7 +550,12 @@ internal static class EffectAcceptedTurnPlanner
             if (!TryParseLifecycleAuthority(node, issues, out var authority))
                 continue;
             var occurrences = catalog.Occurrences
-                .Where(occurrence => occurrence.Effect["target"] is JsonObject target &&
+                .Where(occurrence =>
+                    string.Equals(
+                        occurrence.Effect["realm"]?.GetValue<string>(),
+                        authority.Target.Realm,
+                        StringComparison.Ordinal) &&
+                    occurrence.Effect["target"] is JsonObject target &&
                     string.Equals(
                         target["kind"]?.GetValue<string>(),
                         authority.Target.Kind,
@@ -549,7 +563,10 @@ internal static class EffectAcceptedTurnPlanner
                     string.Equals(
                         target["targetId"]?.GetValue<string>(),
                         authority.Target.TargetId,
-                        StringComparison.Ordinal))
+                        StringComparison.Ordinal) &&
+                    !WasCreatedByCausalEvent(
+                        occurrence.Effect,
+                        authority.CausalEventRef))
                 .OrderBy(static occurrence => occurrence.EffectId, StringComparer.Ordinal);
             foreach (var occurrence in occurrences)
             {
@@ -900,6 +917,13 @@ internal static class EffectAcceptedTurnPlanner
             processedEventRefs,
             issues,
             boundContinuationsOnly: false);
+        if (plan.CarrierBeforeImages.TryGetValue(
+                EffectCarrierCatalog.SpiritualConflictPath,
+                out var acceptedSpiritualConflict))
+        {
+            workspace.FinalizeAcceptedSpiritualConflict(
+                acceptedSpiritualConflict);
+        }
         ValidateAfterImages(workspace, identityRoot, activeEffects, issues);
         if (issues.Count != 0)
             return Failed(issues);
@@ -1418,6 +1442,26 @@ internal static class EffectAcceptedTurnPlanner
         issues.AddRange(sourceResolution.Issues.Select(issue => Prefix(issue, path + ".source")));
         if (issues.Count == issueCount && sourceResolution.Success && targetResolution.Success)
         {
+            if (string.Equals(
+                    targetResolution.Target!.Kind,
+                    "spiritual_conflict_side",
+                    StringComparison.Ordinal) &&
+                !AfterlifeSpiritualConflictState
+                    .TryValidateCombatConditionParticipantBinding(
+                        input.PreTurnCarriers?.SpiritualConflict,
+                        targetResolution.Target,
+                        sourceResolution.Source!.Definition,
+                        out var participantReason))
+            {
+                Add(
+                    issues,
+                    path + ".source",
+                    "effect_target_spiritual_participant_unresolved",
+                    "source-owned actorId bound to one exact participant of the selected current conflict side",
+                    participantReason);
+                return;
+            }
+
             applications.Add(new Application(
                 sourceResolution.Source!,
                 targetResolution.Target!,
@@ -1640,6 +1684,26 @@ internal static class EffectAcceptedTurnPlanner
                 createEventRef,
                 resolution.NewEffectComponents,
                 resolution.NewEffectStacking);
+            if (string.Equals(
+                    application.Target.Kind,
+                    "spiritual_conflict_side",
+                    StringComparison.Ordinal))
+            {
+                if (!AfterlifeSpiritualConflictState.TryProjectCombatCondition(
+                        effect,
+                        out var condition,
+                        out var adapterReason))
+                {
+                    Add(
+                        issues,
+                        "effectChanges.target",
+                        "effect_plan_afterlife_condition_adapter_invalid",
+                        "one complete finite afterlife combat-condition projection",
+                        adapterReason);
+                    return;
+                }
+                effect = condition;
+            }
             slot.Collection.Add(effect.DeepClone());
             workspace.Touch(slot);
             activeEffects.Add(effect);
@@ -1717,7 +1781,12 @@ internal static class EffectAcceptedTurnPlanner
             if (!TryParseLifecycleAuthority(node, issues, out var authority))
                 continue;
             var occurrences = EffectCarrierCatalog.Build(workspace.ToInput()).Occurrences
-                .Where(occurrence => occurrence.Effect["target"] is JsonObject target &&
+                .Where(occurrence =>
+                    string.Equals(
+                        occurrence.Effect["realm"]?.GetValue<string>(),
+                        authority.Target.Realm,
+                        StringComparison.Ordinal) &&
+                    occurrence.Effect["target"] is JsonObject target &&
                     string.Equals(
                         target["kind"]?.GetValue<string>(),
                         authority.Target.Kind,
@@ -1725,7 +1794,10 @@ internal static class EffectAcceptedTurnPlanner
                     string.Equals(
                         target["targetId"]?.GetValue<string>(),
                         authority.Target.TargetId,
-                        StringComparison.Ordinal))
+                        StringComparison.Ordinal) &&
+                    !WasCreatedByCausalEvent(
+                        occurrence.Effect,
+                        authority.CausalEventRef))
                 .OrderBy(static occurrence => occurrence.EffectId, StringComparer.Ordinal)
                 .ToArray();
             foreach (var occurrence in occurrences)
@@ -1734,6 +1806,27 @@ internal static class EffectAcceptedTurnPlanner
                 var isBoundContinuation = mode is "source_bound" or "condition_bound";
                 if (boundContinuationsOnly != isBoundContinuation)
                     continue;
+                var triggerId = authority.TriggerId;
+                if (triggerId == null &&
+                    string.Equals(mode, "uses", StringComparison.Ordinal) &&
+                    IsAfterlifeCombatCondition(occurrence.Effect) &&
+                    string.Equals(
+                        authority.Phase,
+                        "afterlife_exchange_end",
+                        StringComparison.Ordinal) &&
+                    !TryResolveOneConsumingTrigger(
+                        occurrence.Effect,
+                        authority.Phase,
+                        out triggerId))
+                {
+                    Add(
+                        issues,
+                        occurrence.JsonPath + ".triggers",
+                        "effect_lifecycle_consuming_trigger_invalid",
+                        "one exact afterlife exchange trigger consuming the bounded condition use",
+                        authority.Phase);
+                    continue;
+                }
                 var eventRef = authority.EventRef + ":" + occurrence.EffectId;
                 var sourceSatisfied = authority.SourceSatisfied;
                 if (mode == "source_bound" && !sourceSatisfied.HasValue)
@@ -1758,13 +1851,15 @@ internal static class EffectAcceptedTurnPlanner
                         eventRef,
                         authority.Turn,
                         authority.Phase,
-                        authority.TriggerId,
+                        triggerId,
                         authority.CurrentTime,
                         authority.CurrentSceneId,
                         authority.SceneClosed,
-                        sourceSatisfied,
-                        authority.ConditionSatisfied,
-                        authority.CurrentRealm),
+                    sourceSatisfied,
+                    authority.ConditionSatisfied,
+                    authority.CurrentRealm,
+                    authority.CausalEventRef,
+                    authority.TargetSatisfied),
                     workspace,
                     identityRoot,
                     identityFactory,
@@ -1774,6 +1869,39 @@ internal static class EffectAcceptedTurnPlanner
                     issues);
             }
         }
+    }
+
+    private static bool IsAfterlifeCombatCondition(JsonObject effect) =>
+        effect["components"] is JsonArray { Count: 1 } components &&
+        components[0] is JsonObject component &&
+        string.Equals(
+            component["profile"]?.GetValue<string>(),
+            "afterlife_combat_condition",
+            StringComparison.Ordinal);
+
+    private static bool TryResolveOneConsumingTrigger(
+        JsonObject effect,
+        string phase,
+        out string? triggerId)
+    {
+        triggerId = null;
+        if (effect["triggers"] is not JsonArray triggers)
+            return false;
+        var matching = triggers
+            .OfType<JsonObject>()
+            .Where(trigger =>
+                string.Equals(
+                    trigger["eventType"]?.GetValue<string>(),
+                    phase,
+                    StringComparison.Ordinal) &&
+                trigger["consumeUses"]?.GetValue<bool>() == true)
+            .Select(trigger => trigger["triggerId"]?.GetValue<string>())
+            .Where(static id => !string.IsNullOrEmpty(id))
+            .ToArray();
+        if (matching.Length != 1)
+            return false;
+        triggerId = matching[0];
+        return true;
     }
 
     private static void ApplyLifecycleReduction(
@@ -1917,9 +2045,22 @@ internal static class EffectAcceptedTurnPlanner
             value["sceneClosed"]?.GetValue<bool>() == true,
             value["sourceSatisfied"]?.GetValue<bool>(),
             value["conditionSatisfied"]?.GetValue<bool>(),
-            ReadOptionalExact(value["currentRealm"]));
+            ReadOptionalExact(value["currentRealm"]),
+            ReadOptionalExact(value["causalEventRef"]),
+            value["targetSatisfied"]?.GetValue<bool>());
         return true;
     }
+
+    private static bool WasCreatedByCausalEvent(
+        JsonObject effect,
+        string? causalEventRef) =>
+        causalEventRef != null &&
+        effect["chronology"] is JsonObject chronology &&
+        TryReadExact(chronology["createdEventRef"], out var createdEventRef) &&
+        string.Equals(
+            createdEventRef,
+            causalEventRef,
+            StringComparison.Ordinal);
 
     private static void AppendIdentityTransition(
         JsonObject identityRoot,
@@ -2219,10 +2360,19 @@ internal static class EffectAcceptedTurnPlanner
         foreach (var effect in activeEffects)
         {
             using var document = JsonDocument.Parse(effect.ToJsonString());
-            issues.AddRange(EffectMaterializationContract.Validate(
-                document.RootElement,
-                "plannedActiveEffect",
-                EffectMaterializationPhase.CanonicalActive));
+            var isSpiritualCondition = effect["target"] is JsonObject target &&
+                string.Equals(
+                    target["kind"]?.GetValue<string>(),
+                    "spiritual_conflict_side",
+                    StringComparison.Ordinal);
+            issues.AddRange(isSpiritualCondition
+                ? EffectMaterializationContract.ValidateAfterlifeCombatCondition(
+                    document.RootElement,
+                    "plannedActiveEffect")
+                : EffectMaterializationContract.Validate(
+                    document.RootElement,
+                    "plannedActiveEffect",
+                    EffectMaterializationPhase.CanonicalActive));
         }
         issues.AddRange(EffectCarrierCatalog.Build(workspace.ToInput()).Issues);
         issues.AddRange(ParseIdentity(identityRoot).Issues);
@@ -2820,7 +2970,9 @@ internal static class EffectAcceptedTurnPlanner
         bool SceneClosed,
         bool? SourceSatisfied,
         bool? ConditionSatisfied,
-        string? CurrentRealm);
+        string? CurrentRealm,
+        string? CausalEventRef,
+        bool? TargetSatisfied);
 
     private sealed record EventAuthority(string Kind, string AuthorityId, string EventRef);
 
@@ -2842,7 +2994,7 @@ internal static class EffectAcceptedTurnPlanner
         private readonly JsonObject? _enemies;
         private readonly JsonObject? _allies;
         private readonly JsonObject? _afterlifeProfiles;
-        private readonly JsonObject? _spiritualConflict;
+        private JsonObject? _spiritualConflict;
         private readonly Dictionary<string, JsonObject> _afterImages = new(StringComparer.Ordinal);
 
         internal CarrierWorkspace(EffectCarrierCatalogInput input)
@@ -2918,6 +3070,20 @@ internal static class EffectAcceptedTurnPlanner
             if (matches.Count != 1)
                 return false;
             var match = matches[0];
+            if (string.Equals(
+                    match.Slot.Path,
+                    EffectCarrierCatalog.SpiritualConflictPath,
+                    StringComparison.Ordinal))
+            {
+                if (!AfterlifeSpiritualConflictState.TryProjectCombatCondition(
+                        replacement,
+                        out var projectedReplacement,
+                        out _))
+                {
+                    return false;
+                }
+                replacement = projectedReplacement;
+            }
             match.Slot.Collection[match.Index] = replacement.DeepClone();
             Touch(match.Slot);
             return true;
@@ -2938,6 +3104,22 @@ internal static class EffectAcceptedTurnPlanner
             }
         }
 
+        internal void FinalizeAcceptedSpiritualConflict(
+            JsonObject? acceptedRoot)
+        {
+            if (acceptedRoot == null ||
+                acceptedRoot["activeConflict"] != null ||
+                _spiritualConflict?["activeConflict"] is not JsonObject lifecycleConflict ||
+                lifecycleConflict["combatConditions"] is not JsonArray { Count: 0 })
+            {
+                return;
+            }
+
+            _spiritualConflict = acceptedRoot.DeepClone().AsObject();
+            _afterImages[EffectCarrierCatalog.SpiritualConflictPath] =
+                _spiritualConflict;
+        }
+
         internal bool TryLocate(
             EffectTargetKey target,
             string category,
@@ -2948,6 +3130,13 @@ internal static class EffectAcceptedTurnPlanner
             switch (target.Kind)
             {
                 case "player":
+                    if (!string.Equals(
+                            target.Realm,
+                            "mortal_world",
+                            StringComparison.Ordinal))
+                    {
+                        return TryLocateAfterlifeProfile(target, issues, out slot);
+                    }
                     if (!string.Equals(target.TargetId, "player_current", StringComparison.Ordinal))
                     {
                         Add(issues, "target.targetId", "effect_plan_target_carrier_unresolved", "player_current logical player owner", target.TargetId);
@@ -3004,8 +3193,15 @@ internal static class EffectAcceptedTurnPlanner
                     return true;
                 case "combatant":
                     return TryLocateCombatant(target.TargetId, category, issues, out slot);
+                case "guardian":
+                case "resident":
+                case "radiant_actor":
+                case "afterlife_actor":
+                    return TryLocateAfterlifeProfile(target, issues, out slot);
+                case "spiritual_conflict_side":
+                    return TryLocateSpiritualConflict(target, issues, out slot);
                 default:
-                    Add(issues, "target.kind", "effect_plan_target_carrier_unsupported", "Mortal player, NPC, or combatant carrier", target.Kind);
+                    Add(issues, "target.kind", "effect_plan_target_carrier_unsupported", "Mortal or persistent afterlife actor carrier", target.Kind);
                     return false;
             }
         }
@@ -3051,6 +3247,107 @@ internal static class EffectAcceptedTurnPlanner
                 return InvalidCarrier(issues, match.Path, match.Combatant, out slot);
             _afterImages[match.Path] = match.Root;
             slot = new CarrierSlot(match.Path, collectionName, effects, match.Root);
+            return true;
+        }
+
+        private bool TryLocateAfterlifeProfile(
+            EffectTargetKey target,
+            List<ValidationIssue> issues,
+            out CarrierSlot slot)
+        {
+            slot = null!;
+            if (_afterlifeProfiles?[AfterlifeEntityProfileState.ProfilesProperty]
+                is not JsonArray profiles)
+            {
+                return InvalidCarrier(
+                    issues,
+                    EffectCarrierCatalog.AfterlifeProfilesPath,
+                    _afterlifeProfiles,
+                    out slot);
+            }
+
+            var matches = profiles
+                .OfType<JsonObject>()
+                .Where(profile =>
+                    AfterlifeEntityProfileState.TryResolveEffectTarget(
+                        profile,
+                        out var candidate) &&
+                    candidate == target)
+                .ToArray();
+            if (matches.Length != 1)
+            {
+                Add(
+                    issues,
+                    "target.targetId",
+                    matches.Length == 0
+                        ? "effect_plan_target_carrier_unresolved"
+                        : "effect_plan_target_carrier_ambiguous",
+                    "one exact accepted afterlife profile carrier in the target realm",
+                    $"{target.Realm}/{target.Kind}/{target.TargetId}");
+                return false;
+            }
+
+            var profile = matches[0];
+            if (!profile.ContainsKey("activeEffects"))
+                profile["activeEffects"] = new JsonArray();
+            if (profile["activeEffects"] is not JsonArray effects)
+                return InvalidCarrier(
+                    issues,
+                    EffectCarrierCatalog.AfterlifeProfilesPath,
+                    profile,
+                    out slot);
+
+            _afterImages[EffectCarrierCatalog.AfterlifeProfilesPath] =
+                _afterlifeProfiles;
+            slot = new CarrierSlot(
+                EffectCarrierCatalog.AfterlifeProfilesPath,
+                "activeEffects",
+                effects,
+                _afterlifeProfiles);
+            return true;
+        }
+
+        private bool TryLocateSpiritualConflict(
+            EffectTargetKey target,
+            List<ValidationIssue> issues,
+            out CarrierSlot slot)
+        {
+            slot = null!;
+            var side = AfterlifeSpiritualConflictState.CombatConditionTargetSides
+                .SingleOrDefault(candidate =>
+                    AfterlifeSpiritualConflictState.TryResolveEffectTarget(
+                        _spiritualConflict,
+                        candidate,
+                        out var resolved) &&
+                    resolved == target);
+            if (side == null ||
+                _spiritualConflict?["activeConflict"] is not JsonObject conflict)
+            {
+                Add(
+                    issues,
+                    "target.targetId",
+                    "effect_plan_target_carrier_unresolved",
+                    "one exact active spiritual-conflict side in the target realm",
+                    $"{target.Realm}/{target.Kind}/{target.TargetId}");
+                return false;
+            }
+
+            if (!conflict.ContainsKey("combatConditions"))
+                conflict["combatConditions"] = new JsonArray();
+            if (conflict["combatConditions"] is not JsonArray conditions)
+                return InvalidCarrier(
+                    issues,
+                    EffectCarrierCatalog.SpiritualConflictPath,
+                    conflict,
+                    out slot);
+
+            _afterImages[EffectCarrierCatalog.SpiritualConflictPath] =
+                _spiritualConflict;
+            slot = new CarrierSlot(
+                EffectCarrierCatalog.SpiritualConflictPath,
+                "combatConditions",
+                conditions,
+                _spiritualConflict);
             return true;
         }
 
@@ -3158,11 +3455,16 @@ internal static class EffectAcceptedTurnPlanner
         private static bool InvalidCarrier(
             List<ValidationIssue> issues,
             string path,
-            JsonObject actual,
+            JsonObject? actual,
             out CarrierSlot slot)
         {
             slot = null!;
-            Add(issues, path, "effect_plan_target_carrier_invalid", "current canonical owner carrier", actual.ToJsonString());
+            Add(
+                issues,
+                path,
+                "effect_plan_target_carrier_invalid",
+                "current canonical owner carrier",
+                actual?.ToJsonString() ?? "missing");
             return false;
         }
 

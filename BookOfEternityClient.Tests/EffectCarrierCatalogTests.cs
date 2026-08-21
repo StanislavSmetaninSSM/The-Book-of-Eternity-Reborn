@@ -33,7 +33,12 @@ public sealed class EffectCarrierCatalogTests
         AssertOccurrence(catalog, "effect_buff", "combatant", "combatant_raider", "buff");
         AssertOccurrence(catalog, "effect_debuff", "combatant", "combatant_raider", "debuff");
         AssertOccurrence(catalog, "effect_guardian", "afterlife_profile", "guardian_mirror", null);
-        AssertOccurrence(catalog, "effect_condition", "spiritual_conflict", "conflict_test", "player");
+        AssertOccurrence(
+            catalog,
+            "effect_condition",
+            "spiritual_conflict",
+            "conflict_test:player",
+            "player");
     }
 
     [Fact]
@@ -171,6 +176,7 @@ public sealed class EffectCarrierCatalogTests
         {
             ["actorType"] = actorType,
             ["actorId"] = actorId,
+            ["realm"] = "Chaos Sea",
             ["activeEffects"] = new JsonArray(effect)
         })
     };
@@ -181,30 +187,91 @@ public sealed class EffectCarrierCatalogTests
         ["activeConflict"] = new JsonObject
         {
             ["conflictId"] = conflictId,
+            ["realm"] = "Chaos Sea",
+            ["resolutionState"] = "active",
+            ["playerSide"] = new JsonObject
+            {
+                ["leadContestant"] = new JsonObject
+                {
+                    ["actorId"] = "player_soul"
+                },
+                ["supporters"] = new JsonArray()
+            },
+            ["oppositionSide"] = new JsonObject
+            {
+                ["leadContestant"] = new JsonObject
+                {
+                    ["actorId"] = "guardian_mirror"
+                },
+                ["supporters"] = new JsonArray()
+            },
             ["combatConditions"] = new JsonArray(condition)
         },
         ["recentConflicts"] = new JsonArray()
     };
 
-    private static JsonObject SpiritualCondition(string effectId, string conflictId, string side) => new()
+    private static JsonObject SpiritualCondition(
+        string effectId,
+        string conflictId,
+        string side)
     {
-        ["effectId"] = effectId,
-        ["state"] = "active",
-        ["realm"] = "chaos_sea",
-        ["target"] = new JsonObject
+        var actorId = string.Equals(side, "player", StringComparison.Ordinal)
+            ? "player_soul"
+            : "guardian_mirror";
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "afterlife_combat_condition");
+        effect["effectId"] = effectId;
+        effect["realm"] = "chaos_sea";
+        effect["target"] = new JsonObject
         {
             ["kind"] = "spiritual_conflict_side",
             ["targetId"] = conflictId + ":" + side
-        },
-        ["source"] = new JsonObject
+        };
+        effect["source"] = new JsonObject
         {
             ["kind"] = "spiritual_art",
             ["sourceId"] = "art_test",
             ["definitionKey"] = "condition_test"
-        },
-        ["kind"] = "burden",
-        ["targetSide"] = side
-    };
+        };
+        effect["display"]!["category"] = "condition";
+        effect["components"] = new JsonArray(new JsonObject
+        {
+            ["componentId"] = "component_001",
+            ["profile"] = "afterlife_combat_condition",
+            ["priority"] = 100,
+            ["payload"] = new JsonObject
+            {
+                ["conditionKind"] = "burden",
+                ["targetSide"] = side,
+                ["actorId"] = actorId,
+                ["operations"] = new JsonArray("pressure"),
+                ["axes"] = new JsonArray("rollMode"),
+                ["counterplay"] = new JsonArray("Ответить действием guard."),
+                ["payoff"] = "impose_disadvantage"
+            }
+        });
+        effect["lifetime"] = new JsonObject
+        {
+            ["mode"] = "turns",
+            ["remainingTurns"] = 3,
+            ["advancePhase"] = "afterlife_exchange_end",
+            ["displayText"] = "Три обмена"
+        };
+
+        Assert.True(
+            AfterlifeSpiritualConflictState.TryProjectCombatCondition(
+                effect,
+                out var projected,
+                out var reason),
+            reason);
+        foreach (var field in AfterlifeSpiritualConflictState
+                     .CombatConditionProjectionFields)
+        {
+            effect[field] = projected[field]?.DeepClone();
+        }
+
+        return effect;
+    }
 
     private static JsonObject Effect(
         string targetKind,

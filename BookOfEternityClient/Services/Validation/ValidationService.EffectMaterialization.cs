@@ -70,6 +70,17 @@ public partial class ValidationService
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs);
         var commandJson = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
         var currentCarriers = await ReadEffectCarriersAsync(null, issues);
+        if (currentCarriers.SpiritualConflict?[AfterlifeSpiritualConflictState.ResponseField]
+            is JsonNode spiritualConflictUpdate)
+        {
+            using var updateDocument = JsonDocument.Parse(
+                spiritualConflictUpdate.ToJsonString());
+            ValidateNoDirectCombatConditionAuthoring(
+                updateDocument.RootElement,
+                EffectCarrierCatalog.SpiritualConflictPath + "." +
+                AfterlifeSpiritualConflictState.ResponseField,
+                issues);
+        }
         var currentIndexJson = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.IdentityIndexPath);
         _ = ParseEffectObjectRoot(
             currentIndexJson,
@@ -95,10 +106,28 @@ public partial class ValidationService
         }
 
         var manifest = lookup.Manifest;
+        var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+        if (!TryParseResourceTurnRequest(
+                requestJson,
+                manifest.SessionId,
+                manifest.RequestId,
+                manifest.TurnNumber,
+                out _,
+                out var acceptedRealm))
+        {
+            issues.Add(NewEffectIssue(
+                "input/turn_request.json",
+                "effect_materialization_turn_authority_invalid",
+                "exact pending snapshot session/request/turn/current-realm authority",
+                "missing or mismatched request"));
+            return;
+        }
         var preTurnCarriers = await ReadSnapshotEffectCarriersAsync(manifest, issues);
-        var plannedCarriers = ApplyResourceOwnerAfterImages(
-            currentCarriers,
-            resourceOwners);
+        var plannedCarriers = ProjectAcceptedSpiritualConflictCarrier(
+            ApplyResourceOwnerAfterImages(
+                currentCarriers,
+                resourceOwners),
+            preTurnCarriers.SpiritualConflict);
         var preTurnIndexJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             manifest,
             EffectAcceptedTurnPlan.IdentityIndexPath);
@@ -159,6 +188,11 @@ public partial class ValidationService
                     .Concat(identityItemSources)
                     .Concat(identityOwnerExports.Sources)
                     .ToArray();
+            var identityAcceptedPlanTargets = identityOwnerExports.Targets
+                .Concat(EffectAcceptedTurnInputComposer.CollectAfterlifePlanTargets(
+                    resourceOwners?.Authority,
+                    plannedCarriers.AfterlifeProfiles))
+                .ToArray();
             var identityReplacedSourceOwners = identityOwnerExports.ReplacedSourceOwners
                 .Concat(MortalItemAcceptedTurnAuthority.GetReplacedEffectSourceOwners(
                     _fs,
@@ -177,12 +211,13 @@ public partial class ValidationService
                 preTurnIndex,
                 preTurnSources,
                 identityAcceptedPlanSources,
-                identityOwnerExports.Targets,
+                identityAcceptedPlanTargets,
                 identityReplacedSourceOwners,
                 identityOwnerExports.ReplacedTargets,
                 currentWorldTime,
-                publicationCarrierBaselines: currentCarriers,
-                preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities);
+                publicationCarrierBaselines: plannedCarriers,
+                preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities,
+                realm: acceptedRealm);
             var identityResult = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
                 _fs,
                 identityInput);
@@ -219,6 +254,11 @@ public partial class ValidationService
                 .Concat(itemSources)
                 .Concat(ownerExports.Sources)
                 .ToArray();
+        var acceptedPlanTargets = ownerExports.Targets
+            .Concat(EffectAcceptedTurnInputComposer.CollectAfterlifePlanTargets(
+                resourceOwners?.Authority,
+                plannedCarriers.AfterlifeProfiles))
+            .ToArray();
         var replacedSourceOwners = ownerExports.ReplacedSourceOwners
             .Concat(MortalItemAcceptedTurnAuthority.GetReplacedEffectSourceOwners(
                 _fs,
@@ -235,12 +275,13 @@ public partial class ValidationService
             preTurnIndex,
             preTurnSources,
             acceptedPlanSources,
-            ownerExports.Targets,
+            acceptedPlanTargets,
             replacedSourceOwners,
             ownerExports.ReplacedTargets,
             currentWorldTime,
-            publicationCarrierBaselines: currentCarriers,
-            preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities);
+            publicationCarrierBaselines: plannedCarriers,
+            preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities,
+            realm: acceptedRealm);
         if (suppressEffectExecutionForTerminalReceiptReplay)
         {
             var replayEventInput = input.EventInput;
@@ -281,6 +322,30 @@ public partial class ValidationService
                 AfterlifeSpiritualConflictState.StatePath,
                 current.SpiritualConflict,
                 afterImages));
+    }
+
+    private static EffectCarrierCatalogInput ProjectAcceptedSpiritualConflictCarrier(
+        EffectCarrierCatalogInput carriers,
+        JsonObject? preTurnSpiritualConflict)
+    {
+        var current = carriers.SpiritualConflict;
+        if (current?[AfterlifeSpiritualConflictState.ResponseField] is not JsonObject update)
+            return carriers;
+
+        var baseline = current.DeepClone().AsObject();
+        baseline.Remove(AfterlifeSpiritualConflictState.ResponseField);
+        if (baseline["activeConflict"] is not JsonObject &&
+            preTurnSpiritualConflict != null)
+        {
+            baseline = preTurnSpiritualConflict.DeepClone().AsObject();
+        }
+
+        return carriers with
+        {
+            SpiritualConflict = AfterlifeSpiritualConflictState.ApplyUpdate(
+                baseline,
+                update)
+        };
     }
 
     private static JsonObject? ReadPreparedCarrier(

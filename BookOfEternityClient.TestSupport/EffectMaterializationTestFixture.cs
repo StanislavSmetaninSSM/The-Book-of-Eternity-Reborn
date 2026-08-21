@@ -12,6 +12,10 @@ internal static class EffectMaterializationTestFixture
 
     internal static JsonObject CreateDefinition(string profile = "periodic_damage")
     {
+        var isAfterlifeCondition = string.Equals(
+            profile,
+            "afterlife_combat_condition",
+            StringComparison.Ordinal);
         return new JsonObject
         {
             ["schemaVersion"] = 1,
@@ -23,8 +27,12 @@ internal static class EffectMaterializationTestFixture
                 ["category"] = "debuff",
                 ["visibility"] = "visible"
             },
-            ["allowedRealms"] = new JsonArray("mortal_world"),
-            ["allowedTargetKinds"] = new JsonArray("player", "npc", "combatant"),
+            ["allowedRealms"] = isAfterlifeCondition
+                ? new JsonArray("chaos_sea")
+                : new JsonArray("mortal_world"),
+            ["allowedTargetKinds"] = isAfterlifeCondition
+                ? new JsonArray("spiritual_conflict_side")
+                : new JsonArray("player", "npc", "combatant"),
             ["components"] = new JsonArray(CreateComponent(profile)),
             ["parameterBounds"] = CreateParameterBounds(profile),
             ["stacking"] = new JsonObject
@@ -36,12 +44,19 @@ internal static class EffectMaterializationTestFixture
                 ["refreshMode"] = null,
                 ["mergeRule"] = null
             },
-            ["lifetime"] = new JsonObject
-            {
-                ["mode"] = "turns",
-                ["initialTurns"] = 3,
-                ["advancePhase"] = "owner_turn_end"
-            },
+            ["lifetime"] = isAfterlifeCondition
+                ? new JsonObject
+                {
+                    ["mode"] = "turns",
+                    ["initialTurns"] = 3,
+                    ["advancePhase"] = "afterlife_exchange_end"
+                }
+                : new JsonObject
+                {
+                    ["mode"] = "turns",
+                    ["initialTurns"] = 3,
+                    ["advancePhase"] = "owner_turn_end"
+                },
             ["triggers"] = new JsonArray(CreateTurnEndTrigger()),
             ["removal"] = CreateRemoval(),
             ["links"] = CreateLinks(profile)
@@ -498,14 +513,12 @@ internal static class EffectMaterializationTestFixture
             "afterlife_combat_condition" => CreateProfileComponent(profile, new JsonObject
             {
                 ["conditionKind"] = "burden",
-                ["targetSide"] = "opponent",
+                ["targetSide"] = "opposition",
                 ["actorId"] = "afterlife_actor_test",
-                ["operations"] = new JsonArray("presence_exchange"),
-                ["axes"] = new JsonArray("presence"),
+                ["operations"] = new JsonArray("pressure"),
+                ["axes"] = new JsonArray("rollMode"),
                 ["counterplay"] = new JsonArray("purification"),
-                ["payoff"] = "attrition",
-                ["exchangeLimit"] = 3,
-                ["sceneLimit"] = 1
+                ["payoff"] = "attrition"
             }),
             _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, "Unsupported test profile.")
         };
@@ -530,11 +543,8 @@ internal static class EffectMaterializationTestFixture
             {
                 ["amount"] = CreateNumericBound(1, 10)
             },
-            "afterlife_combat_condition" => new JsonObject
-            {
-                ["exchangeLimit"] = CreateNumericBound(1, 10)
-            },
-            "roll_modifier" or "action_control" or "event_reaction" or "wound_consequence" =>
+            "afterlife_combat_condition" or "roll_modifier" or "action_control" or
+                "event_reaction" or "wound_consequence" =>
                 new JsonObject(),
             _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, "Unsupported test profile.")
         };
@@ -619,6 +629,9 @@ internal static class EffectMaterializationTestFixture
             "guardian" or "resident" or "radiant_actor" or "afterlife_actor" => (
                 "game_state/meta/afterlife_entity_profiles.json",
                 "activeEffects"),
+            "spiritual_conflict_side" => (
+                "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "combatConditions"),
             _ => throw new ArgumentOutOfRangeException(nameof(ownerKind), ownerKind, "Unsupported test owner.")
         };
 }

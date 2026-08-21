@@ -3256,9 +3256,11 @@ public sealed class AfterlifeDocumentationCoverageTests
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
         var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
         var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
-        var combinedGuidance = matrix + examples + daemonSpec + daemonScript + glossary;
+        var combinedGuidance = matrix + examples + apiSpec + daemonSpec + daemonScript + taskGuide + glossary;
 
         foreach (var text in new[] { matrix, examples, daemonSpec, daemonScript, glossary })
         {
@@ -3273,11 +3275,16 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("actionCostAudit", text, StringComparison.Ordinal);
         }
 
-        Assert.Contains("visible active combatConditions", combinedGuidance, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("hidden/gm_only combatConditions", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("visible", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden/gm_only", combinedGuidance, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("specialArtAudit.effectNote", combinedGuidance, StringComparison.Ordinal);
         Assert.Contains("no generic passive stat stacking", combinedGuidance, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("create, consume, expire, or clear combatConditions", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("client-materialized", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("effectChanges[]", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("afterlifeSpiritualConflictPreview.conditionMechanics", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("accepted_effect_mechanics_snapshot_v1", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("never author", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"combatConditions\":", examples, StringComparison.Ordinal);
         Assert.Contains("condition-backed rollMode", combinedGuidance, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("afterlife_spiritual_conflict_combat_conditions_v1", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_spiritual_conflict_combat_conditions_v1", manifest, StringComparison.Ordinal);

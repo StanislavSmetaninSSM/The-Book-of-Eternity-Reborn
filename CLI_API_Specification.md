@@ -779,6 +779,7 @@ Quest state contract notes:
 
 #### **AFTERLIFE SPIRITUAL CONFLICT**
 - `afterlifeSpiritualConflictUpdate` is the only GM-authored response surface for afterlife duels/conflicts in ordinary `Chaos Sea` or ordinary active `Shining Abode`.
+- Exception for active condition lifecycle: `combatConditions[]` itself is client-owned and must never be authored under `afterlifeSpiritualConflictUpdate`. Request condition apply/dispel/remove through top-level `effectChanges[]`. Read current accepted contributions only from `input/turn_request.json.afterlifeSpiritualConflictPreview.conditionMechanics` with `source=accepted_effect_mechanics_snapshot_v1`, apply them to their exact `affectedOperations` / `mechanicalAxes`, and cite the supplied `conditionId` in the matching conflict audit. The client owns carrier identity, stacking, lifetime, and history.
 - Russian player/GM labels are fixed in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`; keep canonical JSON keys and enum values in English.
 - It writes `game_state/meta/afterlife_spiritual_conflict_state.json`, whose canonical root is `{ "schemaVersion": 1, "activeConflict": object|null, "recentConflicts": [] }`.
 - Supported update modes are `start`, `exchange`, `resolve`, and `repair_cancel`.

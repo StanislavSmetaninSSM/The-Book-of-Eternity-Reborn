@@ -402,6 +402,7 @@ public partial class ValidationService
             context,
             effectRealm,
             issues);
+        ValidateAfterlifeProfileActiveEffects(profile, context, issues);
 
         if (!string.IsNullOrWhiteSpace(actorType) && !string.IsNullOrWhiteSpace(actorId))
         {
@@ -446,6 +447,38 @@ public partial class ValidationService
         ValidateAfterlifeProfileRelationships(profile, context, issues);
         ValidateAfterlifeProfileMasks(profile, context, issues);
         ValidateStringArrayIfPresent(profile, context, "warnings", "afterlife_entity_profile_warnings_not_array", issues);
+    }
+
+    private static void ValidateAfterlifeProfileActiveEffects(
+        JsonElement profile,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!profile.TryGetProperty("activeEffects", out var activeEffects))
+            return;
+
+        var effectsContext = $"{context}.activeEffects";
+        if (activeEffects.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                effectsContext,
+                IssueSeverity.Error,
+                "activeEffects профиля сущности посмертия должен быть каноническим массивом активных эффектов.",
+                code: "afterlife_entity_profile_invalid_active_effects",
+                section: "AfterlifeEntityProfiles",
+                expected: "array of canonical active-effect instances",
+                actual: activeEffects.ValueKind.ToString()));
+            return;
+        }
+
+        var index = 0;
+        foreach (var effect in activeEffects.EnumerateArray())
+        {
+            issues.AddRange(EffectMaterializationContract.Validate(
+                effect,
+                $"{effectsContext}[{index++}]",
+                EffectMaterializationPhase.CanonicalActive));
+        }
     }
 
     private void ValidateAfterlifeProfileCurrencies(JsonElement profile, string context, List<ValidationIssue> issues)

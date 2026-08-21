@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -238,6 +239,205 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
 
     internal Task SyncPendingSnapshotAuthorityAsync() =>
         PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(FileSystem);
+
+    internal async Task<JsonObject> MaterializeAfterlifeActorAsync(
+        string actorType,
+        string actorId,
+        string realm,
+        string sourceArtId,
+        JsonObject sourceDefinition,
+        decimal resourceMaximum = 10m)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(actorType);
+        ArgumentException.ThrowIfNullOrWhiteSpace(actorId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(realm);
+        ArgumentException.ThrowIfNullOrWhiteSpace(sourceArtId);
+        ArgumentNullException.ThrowIfNull(sourceDefinition);
+
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        if (!bootstrap.IsValid)
+        {
+            throw new InvalidOperationException(
+                string.Join(Environment.NewLine, bootstrap.Issues));
+        }
+
+        var definitions = WithAfterlifeIntegrity(bootstrap.Definitions!);
+        await WriteJsonAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            JsonNode.Parse(definitions.ToCanonicalJson())!);
+        await WriteJsonAsync(
+            ResourceMaterializationContract.StatePath,
+            JsonNode.Parse(bootstrap.State!.ToCanonicalJson())!);
+        await WriteJsonAsync(
+            ResourceMaterializationContract.HistoryPath,
+            JsonNode.Parse(bootstrap.History!.ToCanonicalJson())!);
+        await WriteJsonAsync(
+            AfterlifeProfilesPath,
+            AfterlifeEntityProfileState.CreateDefaultRoot());
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new JsonObject
+            {
+                ["currentRealm"] = realm,
+                [AfterlifeSpiritualConflictState.SoulStateProfileProperty] = new JsonObject
+                {
+                    [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0
+                }
+            });
+        var acceptedRoot = AfterlifeEntityProfileState.CreateDefaultRoot();
+        var profile = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile(
+            actorType,
+            actorId,
+            realm,
+            materializedAtTurn: 42,
+            specialArts: new JsonArray(new JsonObject
+            {
+                ["artId"] = sourceArtId,
+                ["displayName"] = "Печать точного следа",
+                ["effectDescription"] = "Закрепляет проверяемое духовное последствие.",
+                ["owner"] = actorId,
+                ["baseOperation"] = "guard",
+                ["activeEffectDefinitions"] = new JsonArray(sourceDefinition.DeepClone())
+            }));
+        profile["activeEffects"] = new JsonArray();
+        profile["resourceMaterialization"] = new JsonObject
+        {
+            ["resources"] = new JsonArray(new JsonObject
+            {
+                ["resourceKey"] = "soul_integrity",
+                ["maximum"] = resourceMaximum
+            })
+        };
+        if (string.Equals(actorType, "player_soul", StringComparison.Ordinal))
+        {
+            profile.Remove(ActorMaterializationContract.PropertyName);
+            profile.Remove("resourceMaterialization");
+            if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(
+                    realm,
+                    out var effectRealm))
+            {
+                throw new InvalidOperationException(
+                    $"Unsupported player_soul effect realm '{realm}'.");
+            }
+            profile[AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] =
+                new JsonArray(new JsonObject
+                {
+                    ["realm"] = effectRealm,
+                    ["resourceOwnerId"] = actorId,
+                    ["state"] = "active"
+                });
+            acceptedRoot[AfterlifeEntityProfileState.ProfilesProperty] =
+                new JsonArray(profile);
+            await WriteJsonAsync(AfterlifeProfilesPath, acceptedRoot);
+            var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+                FileSystem,
+                new AfterlifeOwnerResourceAcceptedState(
+                    SoulState: new JsonObject
+                    {
+                        ["currentRealm"] = realm,
+                        [AfterlifeSpiritualConflictState.SoulStateProfileProperty] =
+                            new JsonObject
+                            {
+                                [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0
+                            }
+                    }),
+                turn: 42);
+            if (!resourcePlan.IsValid)
+            {
+                throw new InvalidOperationException(string.Join(
+                    Environment.NewLine,
+                    resourcePlan.Issues));
+            }
+            if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                    FileSystem,
+                    resourcePlan))
+            {
+                throw new InvalidOperationException(
+                    "Expected player_soul resource bootstrap to commit.");
+            }
+            await CaptureValidatedPendingSnapshotAsync(
+                turn: 42,
+                currentRealm: realm);
+            return profile.DeepClone().AsObject();
+        }
+
+        await CaptureValidatedPendingSnapshotAsync(turn: 42, currentRealm: realm);
+        acceptedRoot[AfterlifeEntityProfileState.ResponseProfilesProperty] =
+            new JsonArray(profile);
+        await WriteJsonAsync(AfterlifeProfilesPath, acceptedRoot);
+
+        var issues = await Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var errors = issues.Where(issue => issue.Severity == IssueSeverity.Error).ToArray();
+        if (errors.Length > 0)
+        {
+            throw new InvalidOperationException(string.Join(
+                Environment.NewLine,
+                errors.Select(issue =>
+                    $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}")));
+        }
+
+        await using (var writeLease = await FileSystem.AcquireCanonicalWriteLeaseAsync())
+        {
+            var plan = await Normalizer.BindTo(writeLease)
+                .NormalizeAcceptedMechanicsAsync(backups: null);
+            if (plan == null)
+                throw new InvalidOperationException("Expected afterlife actor materialization plan.");
+        }
+
+        var canonicalRoot = (await ReadJsonAsync(AfterlifeProfilesPath))?.AsObject()
+            ?? throw new InvalidOperationException("Expected canonical afterlife profile root.");
+        return canonicalRoot[AfterlifeEntityProfileState.ProfilesProperty]!
+            .AsArray()
+            .OfType<JsonObject>()
+            .Single(candidate => string.Equals(
+                candidate["actorId"]?.GetValue<string>(),
+                actorId,
+                StringComparison.Ordinal))
+            .DeepClone()
+            .AsObject();
+    }
+
+    private static ResourceDefinitionCatalog WithAfterlifeIntegrity(
+        ResourceDefinitionCatalog definitions)
+    {
+        var proposal = new JsonObject
+        {
+            ["resourceKey"] = "soul_integrity",
+            ["definitionVersion"] = 1,
+            ["displayName"] = "Целостность души",
+            ["numericKind"] = "integer",
+            ["unit"] = "point",
+            ["quantum"] = 1,
+            ["minimumPolicy"] = new JsonObject
+            {
+                ["kind"] = "definition_fixed",
+                ["value"] = 0
+            },
+            ["capacityPolicy"] = new JsonObject { ["kind"] = "instance_fixed" },
+            ["initializationPolicy"] = new JsonObject { ["kind"] = "maximum" },
+            ["allowedOwnerKinds"] = new JsonArray("afterlife_actor"),
+            ["allowedOperations"] = new JsonArray("damage", "restore"),
+            ["defaultFloorPolicy"] = "clamp_to_minimum",
+            ["defaultCapPolicy"] = "clamp_to_maximum",
+            ["visibility"] = "owner_visible"
+        };
+        using var document = JsonDocument.Parse(proposal.ToJsonString());
+        var materialized = ResourceDefinitionCatalog.MaterializeProposal(
+            document.RootElement,
+            definitions,
+            createdAtTurn: 1,
+            createdEventRef: "turn_1:resource_definition:1",
+            static () => new ResourceDefinitionIdentity(
+                "resource_definition_soul_integrity",
+                "resource_definition_seal_soul_integrity"));
+        if (!materialized.IsValid)
+        {
+            throw new InvalidOperationException(
+                string.Join(Environment.NewLine, materialized.Issues));
+        }
+
+        return definitions.With(materialized.Definition!);
+    }
 
     public ValueTask DisposeAsync()
     {

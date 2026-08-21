@@ -1078,6 +1078,7 @@ public partial class ValidationService
         var context = $"{contextPrefix}.{AfterlifeSpiritualConflictState.ResponseField}";
         if (!RequireObject(update, context, issues))
             return;
+        ValidateNoDirectCombatConditionAuthoring(update, context, issues);
 
         var mode = TryGetString(update, "mode");
         if (string.IsNullOrWhiteSpace(mode) || !AfterlifeSpiritualConflictState.Modes.Contains(mode))
@@ -1134,6 +1135,70 @@ public partial class ValidationService
                 expected: "exchange object with exchangeId, operationType, outcome, before, and after",
                 actual: "missing"));
         }
+    }
+
+    private static bool TryFindSubmittedCombatConditions(
+        JsonElement node,
+        string path,
+        out string forbiddenPath)
+    {
+        forbiddenPath = string.Empty;
+        if (node.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var property in node.EnumerateObject())
+            {
+                var propertyPath = path + "." + property.Name;
+                if (string.Equals(
+                        property.Name,
+                        "combatConditions",
+                        StringComparison.Ordinal))
+                {
+                    forbiddenPath = propertyPath;
+                    return true;
+                }
+                if (TryFindSubmittedCombatConditions(
+                        property.Value,
+                        propertyPath,
+                        out forbiddenPath))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        if (node.ValueKind != JsonValueKind.Array)
+            return false;
+        var index = 0;
+        foreach (var item in node.EnumerateArray())
+        {
+            if (TryFindSubmittedCombatConditions(
+                    item,
+                    $"{path}[{index}]",
+                    out forbiddenPath))
+            {
+                return true;
+            }
+            index++;
+        }
+        return false;
+    }
+
+    private static void ValidateNoDirectCombatConditionAuthoring(
+        JsonElement update,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!TryFindSubmittedCombatConditions(update, context, out var forbiddenPath))
+            return;
+        issues.Add(new ValidationIssue(
+            forbiddenPath,
+            IssueSeverity.Error,
+            "combatConditions materializes only through the common effect plan.",
+            code: "afterlife_combat_condition_direct_authoring_forbidden",
+            section: "AfterlifeSpiritualConflict",
+            expected: "combatConditions absent from GM-authored conflict lifecycle updates",
+            actual: "direct combatConditions field present"));
     }
 
     private void ValidateAfterlifeSpiritualConflictRoot(

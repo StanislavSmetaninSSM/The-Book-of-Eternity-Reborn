@@ -139,21 +139,21 @@ description: "Dependency-ordered TDD tasks for complete effect materialization"
 
 ### Tests for User Story 3 (RED first)
 
-- [ ] T053 [P] [US3] Add RED persistent afterlife profile tests for player soul, Guardian, resident, Shining faction head, radiant actor, exact profile binding, one logical carrier, and Shining blessing entitlement exclusion in `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Profiles.cs`
-- [ ] T054 [P] [US3] Add RED spiritual condition tests for all five kinds, legal axes, exact conflict side/source, stacking, finite uses/exchanges/scene, counterplay, direct `combatConditions[]` mutation, replay, and terminal history in `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Conditions.cs`
-- [ ] T055 [P] [US3] Add RED realm-transition and cross-realm source/target tests for suspend, expire, forbidden carry, stale conflict, and same-turn afterlife actor identity in `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Realms.cs`
-- [ ] T056 [P] [US3] Add RED afterlife mechanics snapshot tests proving only legal spiritual axes apply and hidden/GM-only conditions cannot enter player audit sources in `BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.Afterlife.cs`
+- [x] T053 [P] [US3] Add RED persistent afterlife profile tests for player soul, Guardian, resident, Shining faction head, radiant actor, exact profile binding, one logical carrier, and Shining blessing entitlement exclusion in `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Profiles.cs`
+- [x] T054 [P] [US3] Add RED spiritual condition tests for all five kinds, legal axes, exact conflict side/source, stacking, finite uses/exchanges/scene, counterplay, direct `combatConditions[]` mutation, replay, and terminal history in `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Conditions.cs`
+- [x] T055 [P] [US3] Add RED realm-transition and cross-realm source/target tests for suspend, expire, forbidden carry, stale conflict, and same-turn afterlife actor identity in `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Realms.cs`
+- [x] T056 [P] [US3] Add RED afterlife mechanics snapshot tests proving only legal spiritual axes apply and hidden/GM-only conditions cannot enter player audit sources in `BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.Afterlife.cs`
 
 ### Implementation for User Story 3
 
-- [ ] T057 [US3] Add canonical `activeEffects[]` preservation/validation to accepted profiles in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
-- [ ] T058 [US3] Add persistent afterlife profile carrier projection and exact actor/profile target/source binding in `BookOfEternityClient/Services/EffectCarrierCatalog.cs`, `EffectTargetAuthority.cs`, and `EffectSourceAuthority.cs` until T053 is GREEN
-- [ ] T059 [US3] Implement the specialized `afterlife_combat_condition` adapter between common plan instances and current condition fields in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs` and `BookOfEternityClient/Services/EffectComponentProfiles.cs`
-- [ ] T060 [US3] Replace direct condition lifecycle authoring with common effect plan input while preserving conflict-specific validation in `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeCombatConditions.cs` and `ValidationService.AfterlifeSpiritualConflict.cs` until T054 is GREEN
-- [ ] T061 [US3] Compose profile and spiritual-condition final state in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs`, preserving existing profile/conflict normalizers and one logical occurrence
-- [ ] T062 [US3] Implement afterlife realm transition and stale conflict/session guards in `BookOfEternityClient/Services/EffectLifecycleScheduler.cs` and `EffectTargetAuthority.cs` until T055 is GREEN
-- [ ] T063 [US3] Route legal condition contributions through `EffectMechanicsSnapshot` and existing spiritual-conflict audits without adding generic Mortal stat stacking in `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs` until T056 is GREEN
-- [ ] T064 [US3] Run US3 focused afterlife filters, record RED→GREEN evidence in `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`, and commit the US3 slice
+- [x] T057 [US3] Add canonical `activeEffects[]` preservation/validation to accepted profiles in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
+- [x] T058 [US3] Add persistent afterlife profile carrier projection and exact actor/profile target/source binding in `BookOfEternityClient/Services/EffectCarrierCatalog.cs`, `EffectTargetAuthority.cs`, and `EffectSourceAuthority.cs` until T053 is GREEN
+- [x] T059 [US3] Implement the specialized `afterlife_combat_condition` adapter between common plan instances and current condition fields in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs` and `BookOfEternityClient/Services/EffectComponentProfiles.cs`
+- [x] T060 [US3] Replace direct condition lifecycle authoring with common effect plan input while preserving conflict-specific validation in `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeCombatConditions.cs` and `ValidationService.AfterlifeSpiritualConflict.cs` until T054 is GREEN
+- [x] T061 [US3] Compose profile and spiritual-condition final state in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs`, preserving existing profile/conflict normalizers and one logical occurrence
+- [x] T062 [US3] Implement afterlife realm transition and stale conflict/session guards in `BookOfEternityClient/Services/EffectLifecycleScheduler.cs` and `EffectTargetAuthority.cs` until T055 is GREEN
+- [x] T063 [US3] Route legal condition contributions through `EffectMechanicsSnapshot` and existing spiritual-conflict audits without adding generic Mortal stat stacking in `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs` until T056 is GREEN
+- [x] T064 [US3] Run US3 focused afterlife filters, record RED→GREEN evidence in `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`, and commit the US3 slice
 
 **Checkpoint**: Mortal and afterlife owners share identity/lifecycle guarantees; spiritual mechanics remain specialized.
 

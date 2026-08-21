@@ -98,6 +98,11 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
     {
         await WriteAfterlifeActiveConflictStateAsync();
 
+        var mechanicsSnapshot = await EffectMechanicsSnapshot.LoadAsync(_fs);
+        Assert.True(
+            mechanicsSnapshot.IsAccepted,
+            string.Join(Environment.NewLine, mechanicsSnapshot.Issues.Select(issue => issue.ToString())));
+
         await new LiveTurnPreparationService(_fs).PrepareAsync(new LiveTurnPreparationOptions
         {
             SessionId = "live-session",
@@ -441,6 +446,7 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
             ["oppositionSideStrain"] = "strained",
             ["conflictPosition"] = "player_advantaged",
             ["resolutionState"] = "active",
+            ["combatConditions"] = new JsonArray(),
             ["exchangeLog"] = new JsonArray()
         };
         var acceptedConflictRoot = new JsonObject

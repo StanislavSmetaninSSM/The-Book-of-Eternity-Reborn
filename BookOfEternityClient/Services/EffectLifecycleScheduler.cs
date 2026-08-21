@@ -35,7 +35,9 @@ internal sealed record EffectLifecycleEvent(
     bool SceneClosed = false,
     bool? SourceSatisfied = null,
     bool? ConditionSatisfied = null,
-    string? CurrentRealm = null);
+    string? CurrentRealm = null,
+    string? CausalEventRef = null,
+    bool? TargetSatisfied = null);
 
 internal sealed record EffectLifetimeReductionInput(
     JsonObject Effect,
@@ -255,6 +257,9 @@ internal static class EffectLifecycleScheduler
         }
         if (issues.Count > 0)
             return new EffectLifetimeReductionResult("invalid", null, issues);
+
+        if (input.Event.TargetSatisfied == false)
+            return LifetimeResult("expire", null);
 
         if (TryExact(input.Event.CurrentRealm, out var currentRealm) &&
             TryExact(effect["realm"], out var effectRealm) &&

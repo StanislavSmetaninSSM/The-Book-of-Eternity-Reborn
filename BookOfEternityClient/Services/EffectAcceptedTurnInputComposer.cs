@@ -125,7 +125,8 @@ internal static class EffectAcceptedTurnInputComposer
         IReadOnlySet<EffectTargetKey>? replacedTargets = null,
         long? currentWorldTime = null,
         EffectCarrierCatalogInput? publicationCarrierBaselines = null,
-        CombatantIdentityState? preallocatedCombatantIdentities = null)
+        CombatantIdentityState? preallocatedCombatantIdentities = null,
+        string realm = "mortal_world")
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
         ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
@@ -147,10 +148,20 @@ internal static class EffectAcceptedTurnInputComposer
             preTurnSourceExports,
             planSourceExports,
             new HashSet<string>(StringComparer.Ordinal)));
+        var acceptedSpiritualTargets = new List<EffectTargetExport>();
+        CollectSpiritualConflictTargets(
+            acceptedCarriers.SpiritualConflict,
+            acceptedSpiritualTargets);
         var preTurnTargets = CollectTargets(
             preTurnCarriers,
             preTurnSourceRoots,
             includeTemporaryRefs: false)
+            .Where(static target => !string.Equals(
+                target.Kind,
+                "spiritual_conflict_side",
+                StringComparison.Ordinal))
+            .Concat(acceptedSpiritualTargets.Select(static target =>
+                target with { SameTurn = false }))
             .Where(target => replacedTargets == null ||
                 !replacedTargets.Contains(new EffectTargetKey(
                     target.Realm,
@@ -172,6 +183,9 @@ internal static class EffectAcceptedTurnInputComposer
             preallocatedCombatantIdentities);
         var targetAuthority = EffectTargetAuthority.Build(targetAuthorityInput);
 
+        var lifecycleCarriers = PreserveClosingSpiritualConflictCarrier(
+            preTurnCarriers,
+            acceptedCarriers);
         return new EffectAcceptedTurnInput(
             sessionId,
             snapshotToken,
@@ -182,13 +196,35 @@ internal static class EffectAcceptedTurnInputComposer
                 turn,
                 rawCommands,
                 currentWorldTime,
-                acceptedCarriers),
-            PreTurnCarriers: CloneCarriers(acceptedCarriers),
+                preTurnCarriers,
+                acceptedCarriers,
+                realm),
+            Realm: realm,
+            PreTurnCarriers: CloneCarriers(lifecycleCarriers),
             PreTurnIdentityIndex: preTurnIdentityIndex?.DeepClone().AsObject(),
             TargetAuthorityInput: targetAuthorityInput,
             PublicationCarrierBaselines: CloneCarriers(
                 publicationCarrierBaselines ?? acceptedCarriers),
             PreallocatedCombatantIdentities: preallocatedCombatantIdentities);
+    }
+
+    private static EffectCarrierCatalogInput PreserveClosingSpiritualConflictCarrier(
+        EffectCarrierCatalogInput preTurnCarriers,
+        EffectCarrierCatalogInput acceptedCarriers)
+    {
+        if (acceptedCarriers.SpiritualConflict is { } acceptedConflictRoot &&
+            acceptedConflictRoot["activeConflict"] == null &&
+            preTurnCarriers.SpiritualConflict?["activeConflict"] is JsonObject)
+        {
+            return acceptedCarriers with
+            {
+                SpiritualConflict = preTurnCarriers.SpiritualConflict
+                    .DeepClone()
+                    .AsObject()
+            };
+        }
+
+        return acceptedCarriers;
     }
 
     internal static JsonObject CreateEmptyCommandRoot() => new()
@@ -213,15 +249,30 @@ internal static class EffectAcceptedTurnInputComposer
         int turn,
         JsonObject rawCommands,
         long? currentWorldTime = null,
-        EffectCarrierCatalogInput? acceptedCarriers = null)
+        EffectCarrierCatalogInput? preTurnCarriers = null,
+        EffectCarrierCatalogInput? acceptedCarriers = null,
+        string commandRealm = "mortal_world")
     {
-        var operationCount = rawCommands["effectChanges"] is JsonArray changes
-            ? changes.Count
-            : 0;
+        var changes = rawCommands["effectChanges"] as JsonArray;
+        var operationCount = changes?.Count ?? 0;
+        var acceptedExchanges = CollectNewAcceptedAfterlifeExchanges(
+            preTurnCarriers?.SpiritualConflict,
+            acceptedCarriers?.SpiritualConflict);
         var events = new JsonArray();
         for (var index = 0; index < Math.Max(1, operationCount); index++)
         {
             var ordinal = index + 1;
+            if (changes != null &&
+                index < changes.Count &&
+                changes[index] is JsonObject change &&
+                TryBuildAfterlifeExchangeEvent(
+                    change,
+                    acceptedExchanges,
+                    out var exchangeEvent))
+            {
+                events.Add(exchangeEvent);
+                continue;
+            }
             events.Add(new JsonObject
             {
                 ["kind"] = "accepted_turn",
@@ -233,10 +284,22 @@ internal static class EffectAcceptedTurnInputComposer
                     : $"turn_{turn}:accepted_effect:{ordinal}"
             });
         }
-        var lifecycleTargets = new HashSet<(string Realm, string Kind, string TargetId)>
+        var currentTargetRealms = acceptedCarriers == null
+            ? new Dictionary<(string Kind, string TargetId), string>()
+            : CollectAcceptedTargetCurrentRealms(acceptedCarriers);
+        var lifecycleTargets = new HashSet<(
+            string Realm,
+            string CurrentRealm,
+            string Kind,
+            string TargetId)>();
+        if (string.Equals(commandRealm, "mortal_world", StringComparison.Ordinal))
         {
-            ("mortal_world", "player", "player_current")
-        };
+            lifecycleTargets.Add((
+                "mortal_world",
+                "mortal_world",
+                "player",
+                "player_current"));
+        }
         if (acceptedCarriers != null)
         {
             foreach (var occurrence in EffectCarrierCatalog.Build(acceptedCarriers).Occurrences)
@@ -248,7 +311,13 @@ internal static class EffectAcceptedTurnInputComposer
                 {
                     continue;
                 }
-                lifecycleTargets.Add((realm, kind, targetId));
+                lifecycleTargets.Add((
+                    realm,
+                    currentTargetRealms.TryGetValue((kind, targetId), out var currentRealm)
+                        ? currentRealm
+                        : realm,
+                    kind,
+                    targetId));
             }
         }
         if (rawCommands["effectChanges"] is JsonArray effectChanges)
@@ -259,17 +328,22 @@ internal static class EffectAcceptedTurnInputComposer
                     TryReadExact(target["kind"], out var kind) &&
                     TryReadExact(target["targetId"], out var targetId))
                 {
-                    lifecycleTargets.Add(("mortal_world", kind, targetId));
+                    lifecycleTargets.Add((commandRealm, commandRealm, kind, targetId));
                 }
             }
         }
         var lifecycleEvents = new JsonArray(lifecycleTargets
             .OrderBy(static target => target.Realm, StringComparer.Ordinal)
+            .ThenBy(static target => target.CurrentRealm, StringComparer.Ordinal)
             .ThenBy(static target => target.Kind, StringComparer.Ordinal)
             .ThenBy(static target => target.TargetId, StringComparer.Ordinal)
             .Select(target => (JsonNode)new JsonObject
             {
-                ["eventRef"] = target == ("mortal_world", "player", "player_current")
+                ["eventRef"] = target == (
+                        "mortal_world",
+                        "mortal_world",
+                        "player",
+                        "player_current")
                     ? $"turn_{turn}:lifecycle:owner_turn_end:player_current"
                     : $"turn_{turn}:lifecycle:owner_turn_end:{target.Realm}:{target.Kind}:{target.TargetId}",
                 ["turn"] = turn,
@@ -286,8 +360,93 @@ internal static class EffectAcceptedTurnInputComposer
                 ["sceneClosed"] = false,
                 ["sourceSatisfied"] = null,
                 ["conditionSatisfied"] = null,
-                ["currentRealm"] = target.Realm
+                ["targetSatisfied"] = null,
+                ["currentRealm"] = target.CurrentRealm
             }).ToArray());
+        foreach (var acceptedExchange in acceptedExchanges
+                     .OrderBy(static pair => pair.Value, StringComparer.Ordinal)
+                     .ThenBy(static pair => pair.Key, StringComparer.Ordinal))
+        {
+            if (!TryResolveAfterlifeConflictRealm(
+                    acceptedCarriers?.SpiritualConflict ??
+                    preTurnCarriers?.SpiritualConflict,
+                    acceptedExchange.Value,
+                    out var exchangeRealm))
+            {
+                continue;
+            }
+
+            foreach (var side in AfterlifeSpiritualConflictState
+                         .CombatConditionTargetSides
+                         .OrderBy(static value => value, StringComparer.Ordinal))
+            {
+                var targetId = $"{acceptedExchange.Value}:{side}";
+                var causalEventRef =
+                    $"afterlife_exchange:{acceptedExchange.Value}:{acceptedExchange.Key}";
+                lifecycleEvents.Add(new JsonObject
+                {
+                    ["eventRef"] = $"{causalEventRef}:lifecycle:{side}",
+                    ["causalEventRef"] = causalEventRef,
+                    ["turn"] = turn,
+                    ["phase"] = "afterlife_exchange_end",
+                    ["realm"] = exchangeRealm,
+                    ["target"] = new JsonObject
+                    {
+                        ["kind"] = "spiritual_conflict_side",
+                        ["targetId"] = targetId
+                    },
+                    ["triggerId"] = null,
+                    ["currentTime"] = currentWorldTime,
+                    ["currentSceneId"] = acceptedExchange.Value,
+                    ["sceneClosed"] = false,
+                    ["sourceSatisfied"] = null,
+                    ["conditionSatisfied"] = null,
+                    ["targetSatisfied"] = null,
+                    ["currentRealm"] = exchangeRealm
+                });
+            }
+        }
+        if (TryReadActiveConflictAuthority(
+                preTurnCarriers?.SpiritualConflict,
+                out var closedConflictId,
+                out var closedConflictRealm) &&
+            (!TryReadActiveConflictAuthority(
+                    acceptedCarriers?.SpiritualConflict,
+                    out var acceptedConflictId,
+                    out _) ||
+             !string.Equals(
+                 acceptedConflictId,
+                 closedConflictId,
+                 StringComparison.Ordinal)))
+        {
+            foreach (var side in AfterlifeSpiritualConflictState
+                         .CombatConditionTargetSides
+                         .OrderBy(static value => value, StringComparer.Ordinal))
+            {
+                lifecycleEvents.Add(new JsonObject
+                {
+                    ["eventRef"] =
+                        $"turn_{turn}:lifecycle:afterlife_scene_closed:{closedConflictId}:{side}",
+                    ["causalEventRef"] = null,
+                    ["turn"] = turn,
+                    ["phase"] = "scene_ended",
+                    ["realm"] = closedConflictRealm,
+                    ["target"] = new JsonObject
+                    {
+                        ["kind"] = "spiritual_conflict_side",
+                        ["targetId"] = $"{closedConflictId}:{side}"
+                    },
+                    ["triggerId"] = null,
+                    ["currentTime"] = currentWorldTime,
+                    ["currentSceneId"] = closedConflictId,
+                    ["sceneClosed"] = true,
+                    ["sourceSatisfied"] = null,
+                    ["conditionSatisfied"] = null,
+                    ["targetSatisfied"] = false,
+                    ["currentRealm"] = closedConflictRealm
+                });
+            }
+        }
         var result = new JsonObject
         {
             ["turn"] = turn,
@@ -300,7 +459,159 @@ internal static class EffectAcceptedTurnInputComposer
             result["timeAuthority"] =
                 EffectSourceDefinitionContract.CanonicalWorldTimeAuthority;
         }
+        if (TryReadCurrentAfterlifeConflictId(
+                acceptedCarriers?.SpiritualConflict ??
+                preTurnCarriers?.SpiritualConflict,
+                out var currentConflictId))
+        {
+            result["sceneId"] = currentConflictId;
+        }
         return result;
+    }
+
+    private static Dictionary<(string Kind, string TargetId), string>
+        CollectAcceptedTargetCurrentRealms(EffectCarrierCatalogInput carriers)
+    {
+        var candidates = new List<EffectTargetKey>();
+        if (carriers.AfterlifeProfiles?[AfterlifeEntityProfileState.ProfilesProperty]
+            is JsonArray profiles)
+        {
+            foreach (var profile in profiles.OfType<JsonObject>())
+            {
+                if (AfterlifeEntityProfileState.TryResolveEffectTarget(
+                        profile,
+                        out var target))
+                {
+                    candidates.Add(target);
+                }
+            }
+        }
+
+        return candidates
+            .GroupBy(static target => (target.Kind, target.TargetId))
+            .Where(static group => group.Count() == 1)
+            .ToDictionary(
+                static group => group.Key,
+                static group => group.Single().Realm);
+    }
+
+    private static bool TryReadCurrentAfterlifeConflictId(
+        JsonObject? root,
+        out string conflictId)
+    {
+        conflictId = string.Empty;
+        return root?["activeConflict"] is JsonObject conflict &&
+            TryReadExact(conflict["conflictId"], out conflictId) &&
+            TryReadExact(conflict["resolutionState"], out var resolutionState) &&
+            string.Equals(resolutionState, "active", StringComparison.Ordinal);
+    }
+
+    private static bool TryReadActiveConflictAuthority(
+        JsonObject? root,
+        out string conflictId,
+        out string realm)
+    {
+        conflictId = string.Empty;
+        realm = string.Empty;
+        return root?["activeConflict"] is JsonObject conflict &&
+            TryReadExact(conflict["conflictId"], out conflictId) &&
+            TryReadExact(conflict["realm"], out var rawRealm) &&
+            AfterlifeEntityProfileState.TryNormalizeEffectRealm(rawRealm, out realm) &&
+            TryReadExact(conflict["resolutionState"], out var resolutionState) &&
+            string.Equals(resolutionState, "active", StringComparison.Ordinal);
+    }
+
+    private static bool TryResolveAfterlifeConflictRealm(
+        JsonObject? root,
+        string conflictId,
+        out string realm)
+    {
+        realm = string.Empty;
+        return root?["activeConflict"] is JsonObject conflict &&
+            TryReadExact(conflict["conflictId"], out var candidateConflictId) &&
+            string.Equals(candidateConflictId, conflictId, StringComparison.Ordinal) &&
+            TryReadExact(conflict["realm"], out var rawRealm) &&
+            AfterlifeEntityProfileState.TryNormalizeEffectRealm(rawRealm, out realm);
+    }
+
+    private static IReadOnlyDictionary<string, string>
+        CollectNewAcceptedAfterlifeExchanges(
+            JsonObject? preTurnRoot,
+            JsonObject? acceptedRoot)
+    {
+        var preTurnAliases = EnumerateAfterlifeExchanges(preTurnRoot)
+            .Select(static exchange => MortalLocationIdentityState.BuildConfusableKey(
+                exchange.ExchangeId))
+            .ToHashSet(StringComparer.Ordinal);
+        var candidates = EnumerateAfterlifeExchanges(acceptedRoot)
+            .Where(exchange => !preTurnAliases.Contains(
+                MortalLocationIdentityState.BuildConfusableKey(exchange.ExchangeId)))
+            .ToArray();
+        var exactCounts = candidates
+            .GroupBy(static exchange => exchange.ExchangeId, StringComparer.Ordinal)
+            .ToDictionary(static group => group.Key, static group => group.Count(), StringComparer.Ordinal);
+        var aliasCounts = candidates
+            .GroupBy(
+                static exchange => MortalLocationIdentityState.BuildConfusableKey(
+                    exchange.ExchangeId),
+                StringComparer.Ordinal)
+            .ToDictionary(static group => group.Key, static group => group.Count(), StringComparer.Ordinal);
+        return candidates
+            .Where(exchange =>
+                exactCounts[exchange.ExchangeId] == 1 &&
+                aliasCounts[MortalLocationIdentityState.BuildConfusableKey(
+                    exchange.ExchangeId)] == 1)
+            .ToDictionary(
+                static exchange => exchange.ExchangeId,
+                static exchange => exchange.ConflictId,
+                StringComparer.Ordinal);
+    }
+
+    private static IEnumerable<(string ConflictId, string ExchangeId)>
+        EnumerateAfterlifeExchanges(JsonObject? root)
+    {
+        if (root?["activeConflict"] is not JsonObject conflict ||
+            !TryReadExact(conflict["conflictId"], out var conflictId) ||
+            conflict["exchangeLog"] is not JsonArray exchanges)
+        {
+            yield break;
+        }
+
+        foreach (var exchange in exchanges.OfType<JsonObject>())
+        {
+            if (TryReadExact(exchange["exchangeId"], out var exchangeId))
+                yield return (conflictId, exchangeId);
+        }
+    }
+
+    private static bool TryBuildAfterlifeExchangeEvent(
+        JsonObject change,
+        IReadOnlyDictionary<string, string> acceptedExchanges,
+        out JsonObject acceptedEvent)
+    {
+        acceptedEvent = null!;
+        if (change["eventRef"] is not JsonObject requestedEvent ||
+            !TryReadExact(requestedEvent["kind"], out var kind) ||
+            !string.Equals(kind, "afterlife_exchange", StringComparison.Ordinal) ||
+            !TryReadExact(requestedEvent["authorityId"], out var exchangeId) ||
+            !acceptedExchanges.TryGetValue(exchangeId, out var conflictId) ||
+            change["target"] is not JsonObject target ||
+            !TryReadExact(target["kind"], out var targetKind) ||
+            !string.Equals(targetKind, "spiritual_conflict_side", StringComparison.Ordinal) ||
+            !TryReadExact(target["targetId"], out var targetId) ||
+            !(string.Equals(targetId, conflictId + ":player", StringComparison.Ordinal) ||
+              string.Equals(targetId, conflictId + ":opposition", StringComparison.Ordinal)))
+        {
+            return false;
+        }
+
+        acceptedEvent = new JsonObject
+        {
+            ["kind"] = "afterlife_exchange",
+            ["authorityId"] = exchangeId,
+            ["eventRef"] = $"afterlife_exchange:{conflictId}:{exchangeId}"
+        };
+        return true;
     }
 
     internal static long? ReadCanonicalWorldTime(string? json)
@@ -892,6 +1203,64 @@ internal static class EffectAcceptedTurnInputComposer
             null));
     }
 
+    internal static IReadOnlyList<EffectTargetExport> CollectAfterlifePlanTargets(
+        ResourceOwnerAuthority? ownerAuthority,
+        JsonObject? acceptedProfilesRoot)
+    {
+        if (ownerAuthority == null ||
+            acceptedProfilesRoot?[AfterlifeEntityProfileState.ProfilesProperty]
+                is not JsonArray profiles)
+        {
+            return Array.Empty<EffectTargetExport>();
+        }
+
+        var profilesById = profiles
+            .OfType<JsonObject>()
+            .Where(static profile => TryReadExact(profile["actorId"], out _))
+            .GroupBy(
+                static profile => profile["actorId"]!.GetValue<string>(),
+                StringComparer.Ordinal)
+            .Where(static group => group.Count() == 1)
+            .ToDictionary(
+                static group => group.Key,
+                static group => group.Single(),
+                StringComparer.Ordinal);
+        var exports = new List<EffectTargetExport>();
+        foreach (var owner in ownerAuthority.ExportInput().SameTurnOwners
+                     .Where(static owner =>
+                         owner.Key.OwnerKind == ResourceOwnerKind.AfterlifeActor)
+                     .OrderBy(static owner => owner.Key.Realm, StringComparer.Ordinal)
+                     .ThenBy(
+                         static owner => owner.Key.ResourceOwnerId,
+                         StringComparer.Ordinal))
+        {
+            if (owner.OwnerRef == null ||
+                !profilesById.TryGetValue(owner.Key.ResourceOwnerId, out var profile) ||
+                !AfterlifeEntityProfileState.TryResolveEffectTarget(
+                    profile,
+                    out var target) ||
+                !string.Equals(
+                    target.Realm,
+                    owner.Key.Realm,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    target.TargetId,
+                    owner.Key.ResourceOwnerId,
+                    StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            exports.Add(new EffectTargetExport(
+                owner.Key.Realm,
+                target.Kind,
+                owner.Key.ResourceOwnerId,
+                SameTurn: true,
+                TargetRef: owner.OwnerRef));
+        }
+        return exports;
+    }
+
     internal static IReadOnlyList<EffectSourceExport> CollectLocationPlanSources(
         MortalLocationAcceptedTurnPlan? plan)
     {
@@ -1024,7 +1393,7 @@ internal static class EffectAcceptedTurnInputComposer
                 }
                 var definitions = owner["activeEffectDefinitions"] as JsonArray;
 
-                var active = IsSourceCurrentlyActive(
+                var active = candidate.ActiveOverride ?? IsSourceCurrentlyActive(
                     root.Key,
                     descriptor.Kind,
                     owner);
@@ -1207,7 +1576,30 @@ internal static class EffectAcceptedTurnInputComposer
         CollectCombatants(carriers.AllyCombatants, "alliesData", result);
         CollectNpcTargets(sourceRoots, includeTemporaryRefs, result);
         CollectAfterlifeTargets(carriers.AfterlifeProfiles, result);
+        CollectSpiritualConflictTargets(carriers.SpiritualConflict, result);
         return result;
+    }
+
+    private static void CollectSpiritualConflictTargets(
+        JsonObject? root,
+        List<EffectTargetExport> targets)
+    {
+        foreach (var side in AfterlifeSpiritualConflictState.CombatConditionTargetSides)
+        {
+            if (!AfterlifeSpiritualConflictState.TryResolveEffectTarget(
+                    root,
+                    side,
+                    out var target))
+            {
+                continue;
+            }
+
+            targets.Add(new EffectTargetExport(
+                target.Realm,
+                target.Kind,
+                target.TargetId,
+                SameTurn: false));
+        }
     }
 
     private static void CollectAfterlifeTargets(
@@ -1218,30 +1610,29 @@ internal static class EffectAcceptedTurnInputComposer
             return;
         foreach (var profile in profiles.OfType<JsonObject>())
         {
-            if (!TryReadExact(profile["actorId"], out var actorId) ||
-                !TryReadExact(profile["actorType"], out var actorType) ||
-                profile["realm"] is not JsonValue realmNode ||
-                !realmNode.TryGetValue<string>(out var declaredRealm) ||
-                !AfterlifeEntityProfileState.TryNormalizeEffectRealm(
-                    declaredRealm,
-                    out var realm))
+            if (!AfterlifeEntityProfileState.TryResolveEffectTarget(
+                    profile,
+                    out var target))
+                continue;
+            var bindings = EnumerateAfterlifeProfileRealmBindings(profile).ToArray();
+            if (bindings.Length == 0)
             {
+                targets.Add(new EffectTargetExport(
+                    target.Realm,
+                    target.Kind,
+                    target.TargetId,
+                    SameTurn: false));
                 continue;
             }
 
-            var targetKind = actorType switch
+            foreach (var binding in bindings)
             {
-                "guardian" => "guardian",
-                "resident" or "shining_resident" => "resident",
-                "radiant_actor" => "radiant_actor",
-                "player_soul" => "player",
-                _ => "afterlife_actor"
-            };
-            targets.Add(new EffectTargetExport(
-                realm,
-                targetKind,
-                actorId,
-                SameTurn: false));
+                targets.Add(new EffectTargetExport(
+                    binding.Realm,
+                    target.Kind,
+                    target.TargetId,
+                    SameTurn: false));
+            }
         }
     }
 
@@ -1431,15 +1822,81 @@ internal static class EffectAcceptedTurnInputComposer
             case EffectCarrierCatalog.AfterlifeProfilesPath:
                 foreach (var profile in EnumerateArrayOwners(root, "profiles"))
                 {
-                    var realm = ResolveObjectRealm(path, profile, inheritedRealm);
-                    foreach (var art in EnumerateArrayOwners(
-                                 profile,
-                                 "specialArts"))
-                        yield return Candidate(art, realm, SpiritualArtSourceDescriptors);
-                    foreach (var card in EnumerateArrayOwners(profile, "fateCards"))
-                        yield return Candidate(card, realm, AfterlifeFateCardSourceDescriptors);
+                    var bindings = EnumerateAfterlifeProfileRealmBindings(profile)
+                        .ToArray();
+                    if (bindings.Length == 0)
+                    {
+                        var realm = ResolveObjectRealm(path, profile, inheritedRealm);
+                        foreach (var art in EnumerateArrayOwners(
+                                     profile,
+                                     "specialArts"))
+                            yield return Candidate(
+                                art,
+                                realm,
+                                SpiritualArtSourceDescriptors);
+                        foreach (var card in EnumerateArrayOwners(profile, "fateCards"))
+                            yield return Candidate(
+                                card,
+                                realm,
+                                AfterlifeFateCardSourceDescriptors);
+                        continue;
+                    }
+
+                    foreach (var binding in bindings)
+                    {
+                        foreach (var art in EnumerateArrayOwners(
+                                     profile,
+                                     "specialArts"))
+                        {
+                            yield return Candidate(
+                                art,
+                                binding.Realm,
+                                SpiritualArtSourceDescriptors,
+                                activeOverride: binding.Active);
+                        }
+                        foreach (var card in EnumerateArrayOwners(profile, "fateCards"))
+                        {
+                            yield return Candidate(
+                                card,
+                                binding.Realm,
+                                AfterlifeFateCardSourceDescriptors,
+                                activeOverride: binding.Active);
+                        }
+                    }
                 }
                 yield break;
+        }
+    }
+
+    private static IEnumerable<AfterlifeProfileRealmBinding>
+        EnumerateAfterlifeProfileRealmBindings(JsonObject profile)
+    {
+        if (!TryReadExact(profile["actorId"], out var actorId) ||
+            profile[AfterlifeEntityProfileState.ResourceOwnerBindingsProperty]
+                is not JsonArray bindings)
+        {
+            yield break;
+        }
+
+        var seenRealms = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var binding in bindings.OfType<JsonObject>())
+        {
+            if (!TryReadExact(binding["realm"], out var declaredRealm) ||
+                !AfterlifeEntityProfileState.TryNormalizeEffectRealm(
+                    declaredRealm,
+                    out var realm) ||
+                !TryReadExact(binding["resourceOwnerId"], out var resourceOwnerId) ||
+                !string.Equals(resourceOwnerId, actorId, StringComparison.Ordinal) ||
+                !TryReadExact(binding["state"], out var state) ||
+                state is not ("active" or "suspended") ||
+                !seenRealms.Add(realm))
+            {
+                continue;
+            }
+
+            yield return new AfterlifeProfileRealmBinding(
+                realm,
+                string.Equals(state, "active", StringComparison.Ordinal));
         }
     }
 
@@ -1447,8 +1904,9 @@ internal static class EffectAcceptedTurnInputComposer
         JsonObject owner,
         string realm,
         IReadOnlyList<SourceDescriptor> descriptors,
-        string? owningLocationId = null) =>
-        new(owner, realm, descriptors, owningLocationId);
+        string? owningLocationId = null,
+        bool? activeOverride = null) =>
+        new(owner, realm, descriptors, owningLocationId, activeOverride);
 
     private static IEnumerable<JsonObject> EnumerateArrayOwners(
         JsonNode? root,
@@ -1542,7 +2000,12 @@ internal static class EffectAcceptedTurnInputComposer
         JsonObject Owner,
         string Realm,
         IReadOnlyList<SourceDescriptor> Descriptors,
-        string? OwningLocationId);
+        string? OwningLocationId,
+        bool? ActiveOverride);
+
+    private sealed record AfterlifeProfileRealmBinding(
+        string Realm,
+        bool Active);
 }
 
 internal sealed record EffectAcceptedOwnerExports(

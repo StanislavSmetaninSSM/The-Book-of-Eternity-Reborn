@@ -36,7 +36,8 @@ internal static class EffectSourceDefinitionContract
     private static readonly HashSet<string> LifetimeModes = Set(
         "turns", "uses", "until_time", "scene", "source_bound", "condition_bound", "permanent", "manual");
     private static readonly HashSet<string> AdvancePhases = Set(
-        "owner_turn_start", "owner_turn_end", "world_turn_start", "world_turn_end");
+        "owner_turn_start", "owner_turn_end", "world_turn_start", "world_turn_end",
+        "afterlife_exchange_end");
     private static readonly IReadOnlySet<string> EventTypes =
         EffectEventTypeCatalog.Registered;
     private static readonly HashSet<string> ResolutionModes = Set("deterministic", "bounded_receipt");
@@ -136,6 +137,12 @@ internal static class EffectSourceDefinitionContract
             componentValidation.Profiles,
             issues);
         var consumingEventTypes = ValidateLifetime(definition, path, issues);
+        ValidateAfterlifeConditionAdapter(
+            definition,
+            path,
+            realm,
+            componentValidation,
+            issues);
         ValidateTriggers(
             definition,
             path,
@@ -144,6 +151,88 @@ internal static class EffectSourceDefinitionContract
             issues);
         ValidateRemoval(definition, path, issues);
         ValidateLinks(definition, path, issues);
+    }
+
+    private static void ValidateAfterlifeConditionAdapter(
+        JsonElement definition,
+        string path,
+        string realm,
+        ComponentValidationResult components,
+        List<ValidationIssue> issues)
+    {
+        if (!components.Profiles.Contains("afterlife_combat_condition"))
+            return;
+
+        var isOneSpecializedComponent = components.ComponentIds.Count == 1 &&
+            components.Profiles.Count == 1;
+        var isAfterlifeRealm = realm is "chaos_sea" or "shining_abode";
+        var hasOnlyAfterlifeRealms = definition.TryGetProperty(
+                "allowedRealms",
+                out var allowedRealms) &&
+            allowedRealms.ValueKind == JsonValueKind.Array &&
+            allowedRealms.GetArrayLength() > 0 &&
+            allowedRealms.EnumerateArray().All(value =>
+                TryReadExactIdentifier(value, out var allowedRealm) &&
+                allowedRealm is "chaos_sea" or "shining_abode");
+        var hasOnlySpiritualTargets = definition.TryGetProperty(
+                "allowedTargetKinds",
+                out var allowedTargets) &&
+            allowedTargets.ValueKind == JsonValueKind.Array &&
+            allowedTargets.GetArrayLength() == 1 &&
+            TryReadExactIdentifier(
+                allowedTargets.EnumerateArray().Single(),
+                out var allowedTarget) &&
+            string.Equals(
+                allowedTarget,
+                "spiritual_conflict_side",
+                StringComparison.Ordinal);
+        var hasSupportedLifetime = false;
+        if (definition.TryGetProperty("lifetime", out var lifetime) &&
+            lifetime.ValueKind == JsonValueKind.Object &&
+            TryReadExactIdentifier(lifetime, "mode", out var mode))
+        {
+            hasSupportedLifetime = mode switch
+            {
+                "turns" => TryReadExactIdentifier(
+                        lifetime,
+                        "advancePhase",
+                        out var phase) &&
+                    string.Equals(
+                        phase,
+                        "afterlife_exchange_end",
+                        StringComparison.Ordinal),
+                "uses" => lifetime.TryGetProperty(
+                        "consumingEventTypes",
+                        out var consumingTypes) &&
+                    consumingTypes.ValueKind == JsonValueKind.Array &&
+                    consumingTypes.GetArrayLength() == 1 &&
+                    TryReadExactIdentifier(
+                        consumingTypes.EnumerateArray().Single(),
+                        out var consumingType) &&
+                    string.Equals(
+                        consumingType,
+                        "afterlife_exchange_end",
+                        StringComparison.Ordinal),
+                "scene" => true,
+                _ => false
+            };
+        }
+
+        if (isOneSpecializedComponent &&
+            isAfterlifeRealm &&
+            hasOnlyAfterlifeRealms &&
+            hasOnlySpiritualTargets &&
+            hasSupportedLifetime)
+        {
+            return;
+        }
+
+        Add(
+            issues,
+            path + ".lifetime",
+            "effect_source_definition_afterlife_condition_lifetime_invalid",
+            "one afterlife_combat_condition component targeting only spiritual_conflict_side with bounded uses, afterlife exchanges, or scene lifetime",
+            definition.GetRawText());
     }
 
     private static void ValidateDisplay(JsonElement root, string path, List<ValidationIssue> issues)

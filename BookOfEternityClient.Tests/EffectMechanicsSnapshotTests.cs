@@ -5,7 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class EffectMechanicsSnapshotTests
+public sealed partial class EffectMechanicsSnapshotTests
 {
     private static readonly string[] ExpectedRuntimeCharacteristics =
     [

@@ -76,6 +76,42 @@ Condition lifecycle is requested through `effectChanges[]`:
 
 The effect plan composes this with the same exchange update and writes the final `combatConditions[]` once.
 
+The GM does not calculate the carrier from that command. Before the next
+exchange the client publishes
+`input/turn_request.json.afterlifeSpiritualConflictPreview.conditionMechanics`
+from one accepted carrier/index mechanics snapshot:
+
+```json
+{
+  "schemaVersion": 1,
+  "source": "accepted_effect_mechanics_snapshot_v1",
+  "isAccepted": true,
+  "contributions": [
+    {
+      "conditionId": "effect_client_owned",
+      "targetSide": "opposition",
+      "targetActorId": "guardian_exact",
+      "conditionKind": "burden",
+      "affectedOperations": [ "pressure" ],
+      "mechanicalAxes": [ "actionCostAudit.opposition" ],
+      "counterplay": [ "Ответить точным guard или counter." ],
+      "payoff": {
+        "sourceType": "combat_condition",
+        "effect": "increase_action_cost"
+      },
+      "currentStacks": 1,
+      "isPlayerVisible": false
+    }
+  ]
+}
+```
+
+This is a private GM input projection, not canonical state and not a player
+DTO. The GM applies a contribution only when the current operation and audit
+axis match its exact `affectedOperations` / `mechanicalAxes`, and cites the
+supplied `conditionId` in that audit. A rejected mechanics snapshot suppresses
+the whole conflict preview rather than falling back to raw conditions.
+
 ## 5. Legal Mechanical Mapping
 
 The `afterlife_combat_condition` component may affect only the existing legal axes:
@@ -95,6 +131,9 @@ It cannot create generic passive stat stacking, arbitrary control state, undocum
 
 - `visible` conditions show name, target, source label, affected operations, remaining duration/uses, counterplay, payoff summary, and available action.
 - `hidden` and `gm_only` conditions and their identifying tokens are removed from ordinary console/browser state, audits, counts, and actions.
+- They may remain executable in the private GM `conditionMechanics` preview;
+  that projection carries no hidden display name/description and never enters
+  the player-safe mechanics audit.
 - Internal `effectId`, exact technical source/target selectors, stack key, transition history, and pending/repair data never enter player DTOs.
 - Console and browser derive the same visible condition cards/table facts through the common projection adapter.
 

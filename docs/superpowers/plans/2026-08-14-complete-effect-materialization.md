@@ -864,59 +864,141 @@ quickstarts and the #1543 implementation plan.
 
 **Files:**
 - Modify: `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs`
+- Modify: `BookOfEternityClient/Services/AfterlifeResourceOwnerComposer.cs`
 - Modify: `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs`
 - Modify: `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs`
+- Modify: `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`
+- Modify: `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeCombatConditions.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs`
 - Modify: `BookOfEternityClient/Services/EffectCarrierCatalog.cs`
 - Modify: `BookOfEternityClient/Services/EffectComponentProfiles.cs`
+- Modify: `BookOfEternityClient/Services/EffectEventTypeCatalog.cs`
+- Modify: `BookOfEternityClient/Services/EffectLifecycleScheduler.cs`
+- Modify: `BookOfEternityClient/Services/EffectMaterializationContract.cs`
+- Modify: `BookOfEternityClient/Services/EffectMechanicsSnapshot.cs`
+- Modify: `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs`
+- Modify: `BookOfEternityClient/Services/LiveTurnPreparationService.cs`
 - Create: `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Profiles.cs`
 - Create: `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Conditions.cs`
 - Create: `BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Realms.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/AfterlifeEntityProfileValidationTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/EffectMaterializationTestContext.cs`
+- Modify: `BookOfEternityClient.TestSupport/EffectMaterializationTestFixture.cs`
 - Create: `BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.Afterlife.cs`
+- Modify: `BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.cs`
+- Modify: `BookOfEternityClient.Tests/EffectSourceDefinitionContractTests.cs`
+- Modify: `BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs`
+- Modify: `BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs`
+- Modify: `BookOfEternityClient.Tests/EffectCarrierCatalogTests.cs`
+- Modify: `BookOfEternityClient/game_master_daemon.ps1`
+- Modify: `CLI_API_Specification.md`
+- Modify: `CLI_Agent_Daemon_Specification.md`
+- Modify: `Examples/E_CLI_Afterlife_Turns.txt`
+- Modify: `Examples/example_validation_manifest.json`
+- Modify: `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`
+- Modify: `OtherGuides/Afterlife_Contract_Matrix.md`
+- Modify: `TaskGuides/CLI_Step_Main.txt`
+- Modify: `specs/1535-complete-effect-materialization/contracts/effect-afterlife-adapter.md`
+- Modify: `specs/1535-complete-effect-materialization/data-model.md`
+- Modify: `specs/1535-complete-effect-materialization/quickstart.md`
 
-- [ ] **Step 1: Add profile RED tests**
+- [x] **Step 1: Add profile RED tests**
 
 Cover player soul, Guardian, resident, Shining faction head, radiant actor, exact accepted profile binding, one logical carrier, direct profile-effect mutation, and explicit exclusion of Shining blessing entitlement.
 
-- [ ] **Step 2: Add spiritual-condition RED tests**
+- [x] **Step 2: Add spiritual-condition RED tests**
 
 Cover all five existing condition kinds, legal axes, exact source/side/actor, finite use/exchange/scene semantics, counterplay/payoff, stack behavior, replay, direct `combatConditions[]` mutation, and terminal history.
 
-- [ ] **Step 3: Add realm-transition RED tests**
+- [x] **Step 3: Add realm-transition RED tests**
 
 Cover suspend, expire, forbidden cross-realm carry, stale conflict/session, and exact same-turn afterlife actor targets.
 
-- [ ] **Step 4: Run RED**
+- [x] **Step 4: Run RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectAfterlifeAdapterTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectMechanicsSnapshotTests.Afterlife"
 ```
 
-- [ ] **Step 5: Add profile carrier support**
+- [x] **Step 5: Add profile carrier support**
 
 Persist generic afterlife actor effects only in accepted profile `activeEffects[]`. Preserve every unrelated profile field and require exact actor/profile target agreement.
 
-- [ ] **Step 6: Add the spiritual adapter**
+- [x] **Step 6: Add the spiritual adapter**
 
 Map common identity/source/target/stack/lifecycle/history into the existing specialized condition object while preserving kind-specific legal axes and counterplay. Never add the same instance to generic `activeEffects[]`.
 
-- [ ] **Step 7: Route mechanics through the accepted snapshot**
+- [x] **Step 7: Route mechanics through the accepted snapshot**
 
 Only the registered `afterlife_combat_condition` profile may contribute spiritual axes. Keep generic Mortal characteristic stacking out of the conflict preview unless a registered adapter explicitly authorizes it.
 
-- [ ] **Step 8: Run GREEN and the existing afterlife control**
+- [x] **Step 8: Run GREEN and the existing afterlife control**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeSpiritualConflictValidationTests|FullyQualifiedName~AfterlifeEntityProfileValidationTests|FullyQualifiedName~EffectAfterlifeAdapterTests"
 ```
 
-- [ ] **Step 9: Commit cross-realm authority**
+RED→GREEN evidence:
+
+- persistent afterlife profile authority: `20260821-183452-...` (`4/7`) →
+  `20260821-185106-...` (`7/7`);
+- specialized condition adapter/lifetime: `20260821-194015-...` (`14/16`) →
+  `20260821-194113-...` (`16/16`);
+- realm-exit source-loss policy: `20260821-202233-...` (`0/2`) →
+  `20260821-202332-...` (`2/2`);
+- complete adapter control: `20260821-202525-...` (`44/44`);
+- legal-axis/privacy mechanics snapshot: `20260821-203514-...` (`47/47`);
+- accepted preview/fail-closed index projection: `20260821-203703-...`
+  (`2/2`);
+- combined afterlife validator/adapter control: `20260821-203807-...`
+  (`451/451`);
+- live-turn preview regression: `20260821-205728-...` (`0/1`) →
+  `20260821-205819-...` (`1/1`), followed by the combined unit control
+  `20260821-205852-...` (`102/102`).
+
+Every cited GREEN artifact exited `0`, timed out `false`, reported zero
+duplicate IDs, and completed owned-tree cleanup. The mechanics preview consumes
+one accepted snapshot under the caller's canonical lease and fails closed on a
+carrier/index mismatch; hidden and GM-only conditions do not enter the
+player-safe audit.
+
+Final Task 10 controls on the completed tree:
+
+- afterlife validators/adapters: `20260821-210230-...` (`451/451`);
+- afterlife prompt/documentation guard: `20260821-210724-...` (`116/116`);
+- `FullValidation`: `20260821-210747-...` exited `1` without timeout or
+  duplicate IDs; its four shard logs contain exactly the same 334 unique
+  deferred fixture/resource/Guardian/display failures as baseline
+  `20260816-150510-...` (`NEW_ONLY=0`, `OLD_ONLY=0`), so Task 10 introduced no
+  new FullValidation failure bucket;
+- Fast caught two stale catalog fixtures at `20260821-211412-...` (`979/981`),
+  the exact RED→GREEN repair passed at `20260821-211803-...` (`2/2`), and the
+  repeated full Fast control `20260821-211834-...` passed `3936/3936` with
+  exit `0`, timeout `false`, duplicate IDs `0`, owned-tree cleanup complete,
+  and zero build warnings/errors.
+
+No frontend source changed: `conditionMechanics` is a private GM turn-request
+projection carried by the existing generic JSON transport, while player
+projection remains Task 11. GM prompts, afterlife matrix/glossary, worked
+example, manifest, and source guards were synchronized in this slice. There is
+intentionally no runtime migration or compatibility reader; active fixture
+migration remains T101/T110, matching the user's explicit technical-version
+decision.
+
+- [x] **Step 9: Commit cross-realm authority**
 
 ```powershell
-git add -- BookOfEternityClient/Services/AfterlifeEntityProfileState.cs BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs BookOfEternityClient/Services/Validation/ValidationService.AfterlifeCombatConditions.cs BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs BookOfEternityClient/Services/EffectCarrierCatalog.cs BookOfEternityClient/Services/EffectComponentProfiles.cs BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Profiles.cs BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Conditions.cs BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Realms.cs BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.Afterlife.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
+git add -- BookOfEternityClient/Services/AfterlifeEntityProfileState.cs BookOfEternityClient/Services/AfterlifeResourceOwnerComposer.cs BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient/Services/EffectCarrierCatalog.cs BookOfEternityClient/Services/EffectComponentProfiles.cs BookOfEternityClient/Services/EffectEventTypeCatalog.cs BookOfEternityClient/Services/EffectLifecycleScheduler.cs BookOfEternityClient/Services/EffectMaterializationContract.cs BookOfEternityClient/Services/EffectMechanicsSnapshot.cs BookOfEternityClient/Services/EffectSourceDefinitionContract.cs BookOfEternityClient/Services/LiveTurnPreparationService.cs BookOfEternityClient/Services/Validation/ValidationService.AfterlifeCombatConditions.cs BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs BookOfEternityClient/game_master_daemon.ps1
+git add -- BookOfEternityClient.IntegrationTests/AfterlifeEntityProfileValidationTests.cs BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.cs BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Conditions.cs BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Profiles.cs BookOfEternityClient.IntegrationTests/EffectAfterlifeAdapterTests.Realms.cs BookOfEternityClient.IntegrationTests/EffectMaterializationTestContext.cs BookOfEternityClient.TestSupport/EffectMaterializationTestFixture.cs BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs BookOfEternityClient.Tests/EffectCarrierCatalogTests.cs BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.Afterlife.cs BookOfEternityClient.Tests/EffectMechanicsSnapshotTests.cs BookOfEternityClient.Tests/EffectSourceDefinitionContractTests.cs BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs
+git add -- CLI_API_Specification.md CLI_Agent_Daemon_Specification.md Examples/E_CLI_Afterlife_Turns.txt Examples/example_validation_manifest.json OtherGuides/Afterlife_Combat_Terminology_Glossary.md OtherGuides/Afterlife_Contract_Matrix.md TaskGuides/CLI_Step_Main.txt
+git add -- specs/1535-complete-effect-materialization/contracts/effect-afterlife-adapter.md specs/1535-complete-effect-materialization/data-model.md specs/1535-complete-effect-materialization/quickstart.md specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
 git diff --cached --check
 git commit -m "feat: unify afterlife effect identity lifecycle (#1535)"
 ```

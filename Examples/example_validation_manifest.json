@@ -498,8 +498,8 @@
       "contractId": "afterlife_spiritual_conflict_combat_conditions_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
-      "responseSurface": "activeConflict.combatConditions[] / exchange.combatConditions[] / diceAudit.rollMode sourceType=combat_condition",
-      "description": "Dedicated combatConditions[] layer for afterlife spiritual combat: mark, ward, burden, opening, vow; visible active conditions, hidden/gm_only privacy, finite duration/uses, counterplay, legal axis mapping, condition-backed rollMode, actionCostAudit and specialArtAudit.effectNote integration, plus explicit create/consume/expire/clear lifecycle."
+      "responseSurface": "effectChanges[] / afterlifeSpiritualConflictPreview.conditionMechanics / activeConflict.combatConditions[] / diceAudit.rollMode sourceType=combat_condition",
+      "description": "Client-materialized combatConditions[] layer for afterlife spiritual combat: mark, ward, burden, opening, vow; top-level effectChanges lifecycle requests, accepted mechanics snapshot contributions, hidden/gm_only privacy, finite duration/uses, counterplay, legal axis mapping, condition-backed rollMode, actionCostAudit and specialArtAudit.effectNote integration, with no direct carrier authoring."
     },
     {
       "contractId": "afterlife_spiritual_conflict_difficulty_audit_v1",

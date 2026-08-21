@@ -112,26 +112,21 @@ internal static class EffectComponentProfiles
         "periodic_damage", "characteristic_modifier", "roll_modifier", "action_control"
     };
 
-    private static readonly HashSet<string> AfterlifeConditionKinds = new(StringComparer.Ordinal)
-    {
-        "mark", "ward", "burden", "opening", "vow"
-    };
+    private static readonly HashSet<string> AfterlifeConditionKinds = new(
+        AfterlifeSpiritualConflictState.CombatConditionKinds,
+        StringComparer.Ordinal);
 
-    private static readonly HashSet<string> AfterlifeSides = new(StringComparer.Ordinal)
-    {
-        "owner", "opponent", "both"
-    };
+    private static readonly HashSet<string> AfterlifeSides = new(
+        AfterlifeSpiritualConflictState.CombatConditionTargetSides,
+        StringComparer.Ordinal);
 
-    private static readonly HashSet<string> AfterlifeOperations = new(StringComparer.Ordinal)
-    {
-        "presence_exchange", "influence_exchange", "will_exchange", "maneuver", "counter",
-        "guard", "bind", "release"
-    };
+    private static readonly HashSet<string> AfterlifeOperations = new(
+        AfterlifeSpiritualConflictState.OperationTypes,
+        StringComparer.Ordinal);
 
-    private static readonly HashSet<string> AfterlifeAxes = new(StringComparer.Ordinal)
-    {
-        "presence", "influence", "will", "position", "pressure"
-    };
+    private static readonly HashSet<string> AfterlifeAxes = new(
+        AfterlifeSpiritualConflictState.CombatConditionMechanicalAxes,
+        StringComparer.Ordinal);
 
     private static readonly Dictionary<string, EffectComponentProfileDescriptor> Descriptors =
         new(StringComparer.Ordinal)
@@ -404,7 +399,7 @@ internal static class EffectComponentProfiles
         ValidateClosedObject(
             payload,
             path,
-            Set("conditionKind", "targetSide", "actorId", "operations", "axes", "counterplay", "payoff", "exchangeLimit", "sceneLimit"),
+            Set("conditionKind", "targetSide", "actorId", "operations", "axes", "counterplay", "payoff"),
             issues);
         RequireClosedString(payload, path, "conditionKind", AfterlifeConditionKinds, issues);
         RequireClosedString(payload, path, "targetSide", AfterlifeSides, issues);
@@ -413,8 +408,6 @@ internal static class EffectComponentProfiles
         RequireClosedStringArray(payload, path, "axes", AfterlifeAxes, issues);
         RequireExactStringArray(payload, path, "counterplay", issues);
         RequireExactIdentifier(payload, path, "payoff", issues);
-        RequireBoundedInt(payload, path, "exchangeLimit", 1, 10_000, issues);
-        RequireBoundedInt(payload, path, "sceneLimit", 1, 10_000, issues);
     }
 
     private static void ValidateOptionalCap(

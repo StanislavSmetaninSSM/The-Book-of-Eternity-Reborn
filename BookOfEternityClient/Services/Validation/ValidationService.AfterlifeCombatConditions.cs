@@ -57,6 +57,7 @@ public partial class ValidationService
     private static readonly string[] AfterlifeCombatConditionFiniteDurationFields =
     [
         "remainingUses",
+        "remainingExchanges",
         "expiresAtTurn",
         "expiresAtExchangeId",
         "expiresAfterExchangeId",
@@ -403,6 +404,17 @@ public partial class ValidationService
                        AfterlifeSpiritualConflictState.GetNodeString(target["targetSide"]);
             if (!string.IsNullOrWhiteSpace(side))
                 return;
+
+            var targetKind = AfterlifeSpiritualConflictState.GetNodeString(target["kind"]);
+            var targetId = AfterlifeSpiritualConflictState.GetNodeString(target["targetId"]);
+            var rootSide = AfterlifeSpiritualConflictState.GetNodeString(condition["targetSide"]);
+            if (string.Equals(targetKind, "spiritual_conflict_side", StringComparison.Ordinal) &&
+                !string.IsNullOrWhiteSpace(targetId) &&
+                !string.IsNullOrWhiteSpace(rootSide) &&
+                targetId.EndsWith(":" + rootSide, StringComparison.Ordinal))
+            {
+                return;
+            }
 
             AddCombatConditionIssue(
                 issues,

@@ -271,31 +271,28 @@ internal sealed class EffectCarrierCatalog
                         Describe(profile["activeEffects"]));
                     continue;
                 }
-                if (!TryReadExact(profile["actorId"], out var actorId) ||
-                    !TryReadExact(profile["actorType"], out var actorType))
+                if (!AfterlifeEntityProfileState.TryResolveEffectTarget(
+                        profile,
+                        out var target))
                 {
                     Add(
                         $"{AfterlifeProfilesPath}.profiles[{index}]",
                         "effect_materialization_invalid_field",
-                        "exact actorType and actorId for an activeEffects carrier",
+                        "exact supported actorType, actorId, and afterlife realm for an activeEffects carrier",
                         profile.ToJsonString());
                     continue;
                 }
-                var targetKind = actorType switch
-                {
-                    "guardian" => "guardian",
-                    "resident" or "shining_resident" => "resident",
-                    "radiant_actor" => "radiant_actor",
-                    "player_soul" => "player",
-                    _ => "afterlife_actor"
-                };
                 ScanCanonicalArray(
                     effects,
                     AfterlifeProfilesPath,
                     $"{AfterlifeProfilesPath}.profiles[{index}].activeEffects",
-                    new EffectCarrierCoordinate("afterlife_profile", actorId, AfterlifeProfilesPath, null),
-                    targetKind,
-                    actorId);
+                    new EffectCarrierCoordinate(
+                        "afterlife_profile",
+                        target.TargetId,
+                        AfterlifeProfilesPath,
+                        null),
+                    target.Kind,
+                    target.TargetId);
             }
         }
 
@@ -350,30 +347,89 @@ internal sealed class EffectCarrierCatalog
                     Add(jsonPath + ".effectId", "effect_materialization_invalid_field", "client-owned permanent effectId", Describe(condition["effectId"]));
                     continue;
                 }
+                using (var document = JsonDocument.Parse(condition.ToJsonString()))
+                {
+                    var contractIssues = EffectMaterializationContract
+                        .ValidateAfterlifeCombatCondition(document.RootElement, jsonPath);
+                    Issues.AddRange(contractIssues);
+                    if (contractIssues.Count > 0)
+                        InvalidEffectIds.Add(effectId);
+                }
+                if (!AfterlifeSpiritualConflictState.TryProjectCombatCondition(
+                        condition,
+                        out var expectedCondition,
+                        out var adapterReason))
+                {
+                    AddInvalid(
+                        effectId,
+                        jsonPath,
+                        "one complete common-to-spiritual condition adapter projection",
+                        adapterReason);
+                }
+                else
+                {
+                    foreach (var field in AfterlifeSpiritualConflictState
+                                 .CombatConditionProjectionFields)
+                    {
+                        if (!JsonNode.DeepEquals(condition[field], expectedCondition[field]))
+                        {
+                            AddInvalid(
+                                effectId,
+                                $"{jsonPath}.{field}",
+                                "specialized condition field derived from the common effect instance",
+                                condition[field]?.ToJsonString() ?? "missing");
+                        }
+                    }
+                }
                 if (!TryReadExact(condition["targetSide"], out var side))
                 {
                     AddInvalid(effectId, jsonPath + ".targetSide", "exact spiritual conflict side", Describe(condition["targetSide"]));
                     continue;
                 }
                 var expectedTargetId = conflictId + ":" + side;
-                if (condition["target"] is not JsonObject target ||
-                    !TryReadExact(target["kind"], out var targetKind) ||
-                    !TryReadExact(target["targetId"], out var targetId) ||
-                    !string.Equals(targetKind, "spiritual_conflict_side", StringComparison.Ordinal) ||
-                    !string.Equals(targetId, expectedTargetId, StringComparison.Ordinal))
+                var targetKind = string.Empty;
+                var targetId = string.Empty;
+                var targetIsExact = condition["target"] is JsonObject target &&
+                    TryReadExact(target["kind"], out targetKind) &&
+                    TryReadExact(target["targetId"], out targetId) &&
+                    string.Equals(targetKind, "spiritual_conflict_side", StringComparison.Ordinal) &&
+                    string.Equals(targetId, expectedTargetId, StringComparison.Ordinal);
+                if (!targetIsExact)
                 {
                     AddInvalid(effectId, jsonPath + ".target", "exact current conflict-side target", condition["target"]?.ToJsonString() ?? "missing");
                 }
                 if (!TryReadExact(condition["state"], out var state) || state is not ("active" or "suspended"))
                     AddInvalid(effectId, jsonPath + ".state", "active | suspended", Describe(condition["state"]));
-                if (!TryReadExact(condition["realm"], out var realm) || realm is not ("chaos_sea" or "shining_abode"))
+                var realmIsExact = TryReadExact(condition["realm"], out var realm) &&
+                    realm is "chaos_sea" or "shining_abode";
+                if (!realmIsExact)
                     AddInvalid(effectId, jsonPath + ".realm", "chaos_sea | shining_abode", Describe(condition["realm"]));
+                if (targetIsExact &&
+                    realmIsExact &&
+                    !AfterlifeSpiritualConflictState
+                        .TryValidateCombatConditionParticipantBinding(
+                            root,
+                            new EffectTargetKey(realm, targetKind, targetId),
+                            condition,
+                            out var participantReason))
+                {
+                    InvalidEffectIds.Add(effectId);
+                    Add(
+                        jsonPath + ".components",
+                        "effect_target_spiritual_participant_unresolved",
+                        "source-owned actorId bound to one exact participant of the selected current conflict side",
+                        participantReason);
+                }
 
                 AddOccurrence(
                     effectId,
                     SpiritualConflictPath,
                     jsonPath,
-                    new EffectCarrierCoordinate("spiritual_conflict", conflictId, SpiritualConflictPath, side),
+                    new EffectCarrierCoordinate(
+                        "spiritual_conflict",
+                        expectedTargetId,
+                        SpiritualConflictPath,
+                        side),
                     condition);
             }
         }

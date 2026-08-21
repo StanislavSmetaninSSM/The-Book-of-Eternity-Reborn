@@ -25,6 +25,9 @@ internal static class EffectMaterializationContract
         "schemaVersion", "entityKind", "effectId", "state", "realm", "target", "display",
         "source", "components", "lifetime", "stacking", "triggers", "removal", "links",
         "chronology");
+    private static readonly HashSet<string> AfterlifeConditionRootFields = new(
+        RootFields.Concat(AfterlifeSpiritualConflictState.CombatConditionProjectionFields),
+        StringComparer.Ordinal);
 
     private static readonly HashSet<string> States = Set("active", "suspended");
     private static readonly HashSet<string> Realms = Set("mortal_world", "chaos_sea", "shining_abode");
@@ -41,7 +44,8 @@ internal static class EffectMaterializationContract
         "turns", "uses", "until_time", "scene", "source_bound", "condition_bound",
         "permanent", "manual");
     private static readonly HashSet<string> AdvancePhases = Set(
-        "owner_turn_start", "owner_turn_end", "world_turn_start", "world_turn_end");
+        "owner_turn_start", "owner_turn_end", "world_turn_start", "world_turn_end",
+        "afterlife_exchange_end");
     private static readonly HashSet<string> StackPolicies = Set(
         "independent", "stack", "refresh", "replace", "merge");
     private static readonly HashSet<string> RefreshModes = Set("reset", "extend");
@@ -60,7 +64,23 @@ internal static class EffectMaterializationContract
     internal static IReadOnlyList<ValidationIssue> Validate(
         JsonElement effect,
         string path,
-        EffectMaterializationPhase phase)
+        EffectMaterializationPhase phase) =>
+        Validate(effect, path, phase, RootFields);
+
+    internal static IReadOnlyList<ValidationIssue> ValidateAfterlifeCombatCondition(
+        JsonElement effect,
+        string path) =>
+        Validate(
+            effect,
+            path,
+            EffectMaterializationPhase.CanonicalActive,
+            AfterlifeConditionRootFields);
+
+    private static IReadOnlyList<ValidationIssue> Validate(
+        JsonElement effect,
+        string path,
+        EffectMaterializationPhase phase,
+        IReadOnlySet<string> allowedRootFields)
     {
         var issues = new List<ValidationIssue>();
         if (effect.ValueKind != JsonValueKind.Object)
@@ -70,7 +90,7 @@ internal static class EffectMaterializationContract
         }
 
         FindDuplicateProperties(effect, path, issues, "effect_materialization_duplicate_property");
-        ValidateClosedObject(effect, path, RootFields, issues, "effect_materialization_unknown_field");
+        ValidateClosedObject(effect, path, allowedRootFields, issues, "effect_materialization_unknown_field");
         foreach (var field in RootFields)
         {
             if (!effect.TryGetProperty(field, out _))

@@ -87,6 +87,52 @@ internal static class AfterlifeEntityProfileState
         return false;
     }
 
+    internal static bool TryResolveEffectTarget(
+        JsonObject profile,
+        out EffectTargetKey target)
+    {
+        ArgumentNullException.ThrowIfNull(profile);
+        target = null!;
+        if (!TryReadExactEffectToken(profile["actorType"], out var actorType) ||
+            !TryReadExactEffectToken(profile["actorId"], out var actorId) ||
+            !TryReadExactEffectToken(profile["realm"], out var declaredRealm) ||
+            !TryNormalizeEffectRealm(declaredRealm, out var realm))
+        {
+            return false;
+        }
+
+        var targetKind = actorType.ToLowerInvariant() switch
+        {
+            "guardian" => "guardian",
+            "resident" or "shining_resident" => "resident",
+            "radiant_actor" => "radiant_actor",
+            "player_soul" => "player",
+            "shining_faction_head" or "saref_agent" or "system_actor" or
+                "custom_afterlife_actor" => "afterlife_actor",
+            _ => null
+        };
+        if (targetKind == null)
+            return false;
+
+        target = new EffectTargetKey(realm, targetKind, actorId);
+        return true;
+    }
+
+    private static bool TryReadExactEffectToken(JsonNode? node, out string value)
+    {
+        value = string.Empty;
+        if (node is not JsonValue jsonValue ||
+            !jsonValue.TryGetValue<string>(out var text) ||
+            string.IsNullOrEmpty(text) ||
+            !string.Equals(text, text.Trim(), StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        value = text;
+        return true;
+    }
+
     internal static JsonObject ProjectPlayerSoulRealm(
         JsonObject currentRoot,
         string newRealm)
@@ -479,11 +525,24 @@ internal static class AfterlifeEntityProfileState
             PreserveProgressionSettlement(existing, replacement);
             PreserveHistoricalMaterialization(existing, replacement);
             PreserveResourceOwnerBindings(existing, replacement);
+            PreserveActiveEffects(existing, replacement);
             profiles[index] = replacement;
             return;
         }
 
-        profiles.Add(CloneObject(profile));
+        var addition = CloneObject(profile);
+        if (addition["activeEffects"] is not JsonArray)
+            addition["activeEffects"] = new JsonArray();
+        profiles.Add(addition);
+    }
+
+    private static void PreserveActiveEffects(
+        JsonObject existing,
+        JsonObject replacement)
+    {
+        replacement["activeEffects"] = existing["activeEffects"] is JsonArray effects
+            ? effects.DeepClone()
+            : new JsonArray();
     }
 
     private static void PreserveHistoricalMaterialization(JsonObject existing, JsonObject replacement)

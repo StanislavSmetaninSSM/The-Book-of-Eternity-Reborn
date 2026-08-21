@@ -7164,7 +7164,7 @@ Correct contested exchange response:
 
 Преимущество / Помеха uses `diceAudit.rollMode.<side>` with `effectiveMode`, `advantageSources[]`, and `disadvantageSources[]`; every consumed d20 is listed in `diceUsed[]` with `selection=selected|discarded`. `advantage` / Преимущество consumes exactly 2d20 and selects the highest; `great_advantage` / Великое Преимущество consumes exactly 3d20 and selects the highest; `disadvantage` / Помеха consumes exactly 2d20 and selects the lowest; `dire_disadvantage` / Тяжкая Помеха consumes exactly 3d20 and selects the lowest. Sources may be legacy strings or objects with `summary`/`source`/`sourceId`, `level`, and optional `sourceType`. Step cancellation uses the strongest positive and strongest negative source only: `great_advantage+disadvantage=>advantage`, `great_advantage+dire_disadvantage=>normal`, `advantage+dire_disadvantage=>disadvantage`, `advantage+disadvantage=>normal`; same-direction sources do not stack. Critical success/failure uses the selected die only.
 
-`afterlife_spiritual_conflict_combat_conditions_v1`: `combatConditions[]` is the dedicated short-lived condition layer for afterlife spiritual combat. Use kinds `mark`, `ward`, `burden`, `opening`, and `vow`; each active entry needs visible/private identity, source, target side/actor, affected operations, finite duration/uses, `counterplay`, and summary. A condition must map to an existing legal axis: condition-backed rollMode, `conflictPosition`, legal anti-control `controlState` softening/narrowing, `playerSideStrain`, `oppositionSideStrain`, `tempoAdvantage`, `counterPayoff`, `actionCostAudit` / ОД costs, or `specialArtAudit.effectNote`. This is no generic passive stat stacking. The GM must create, consume, expire, or clear combatConditions explicitly, and ordinary player output shows visible active combatConditions while hidden/gm_only combatConditions remain private. Hidden Saref-linked or Guardian-linked setup may exist in state, but the visible `response` must stay non-spoiler.
+`afterlife_spiritual_conflict_combat_conditions_v1`: `combatConditions[]` is the client-materialized short-lived condition layer for afterlife spiritual combat. Kinds are `mark`, `ward`, `burden`, `opening`, and `vow`; source definitions own target side/actor, affected operations, finite duration/uses, `counterplay`, payoff, visibility, and legal axes. The GM never writes this carrier or any condition/effect ID. Request apply/dispel/remove through top-level `effectChanges[]`; the accepted exchange event advances uses/exchanges/scene lifetime. Read current contributions from `afterlifeSpiritualConflictPreview.conditionMechanics` with `source = accepted_effect_mechanics_snapshot_v1`, apply each only to exact `affectedOperations` / `mechanicalAxes`, and cite its `conditionId` in `rollMode`, `conflictPosition`, legal anti-control `controlState`, side strain, `tempoAdvantage`, `counterPayoff`, `actionCostAudit`, or `specialArtAudit.effectNote`. This is no generic passive stat stacking. Ordinary player output shows only visible conditions; hidden/gm_only conditions remain private and the visible `response` stays non-spoiler.
 
 `afterlife_special_art_combat_effect_v1`: current/new teachable `specialArts[]` entries carry `specialArts[].combatEffect` beside `effectSummary`. Required fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; legal axes are afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. `spiritual_action_points` is the unified resource axis and must be proven through `actionCostAudit`; `actionEconomy` is forbidden. Worked mapping: a player-owned learned special art can map `baseOperation=guard` to a one-use `rollMode.player.advantageSources[]` / `tempoAdvantage` payoff, while a non-player Guardian special art can map its opposition operation to `actionCostAudit.opposition.specialCostMultiplierPercent` and multiplied ОД plus a concrete `specialArtAudit.effectNote`. The GM must preserve `baseOperation`, read `combatEffect`, and record the exact trigger/payoff in `specialArtAudit.effectNote` or `specialArtAudits[].effectNote`; legacy `effectSummary`-only profiles remain readable.
 
@@ -7200,7 +7200,7 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
             "mechanicalAxis": "combatConditions",
             "allowedPayoff": "Create a visible mark or burden that can supply a condition-backed rollMode source or make one listed operation harder through the next exchange.",
             "limit": "One named promise per conflict; honest refusal, self-sufficiency, or admitting 'I choose myself' blocks or clears the effect.",
-            "auditRequirement": "specialArtAudit.effectNote must name the voluntary oath trigger, the created combatConditions[] entry, and the exact payoff beyond baseOperation=binding."
+            "auditRequirement": "specialArtAudit.effectNote must name the voluntary oath trigger, the exact effectChanges definition request, and the legal payoff beyond baseOperation=binding."
           },
           "canTeachPlayer": false,
           "trainingConditions": []
@@ -7233,38 +7233,6 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
             "playerSideStrain": "clear",
             "oppositionSideStrain": "strained"
           },
-          "combatConditions": [
-            {
-              "conditionId": "condition_chosen_oath_flame_001",
-              "kind": "mark",
-              "name": "Пламя выбранной клятвы",
-              "visibility": "visible",
-              "status": "active",
-              "target": {
-                "side": "opposition",
-                "actorType": "guardian",
-                "actorId": "guardian_liora_001",
-                "displayName": "Лиора"
-              },
-              "source": {
-                "sourceType": "special_art",
-                "actorType": "player_soul",
-                "actorId": "player_soul",
-                "artId": "azalia_chosen_oath_flame"
-              },
-              "affectedOperations": [ "guard", "negotiate", "counter" ],
-              "mechanicalAxes": [ "rollMode", "specialArtAudit.effectNote" ],
-              "payoff": {
-                "sourceType": "combat_condition",
-                "effect": "disadvantage",
-                "level": "ordinary",
-                "axis": "rollMode"
-              },
-              "duration": { "remainingUses": 1, "expiresAtTurn": 44 },
-              "counterplay": [ "Лиора может честно отказаться от права выбирать за игрока или использовать break_binding против названной клятвы." ],
-              "summary": "Следующая защита, переговоры или counter Лиоры получают условную Помеху, если она продолжает действовать из добровольной клятвы выбирать за душу."
-            }
-          ],
           "specialArtAudit": {
             "artId": "azalia_chosen_oath_flame",
             "displayName": "Пламя Избранной Клятвы",
@@ -7272,7 +7240,7 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
             "ownerActorId": "player_soul",
             "baseOperation": "binding",
             "costMultiplierPercent": 150,
-            "effectNote": "Read specialArts[].combatEffect: the player-owned learned Predvechnye Guardian special art used the voluntary oath trigger ('я обязана выбрать путь за тебя') to create condition_chosen_oath_flame_001. The tactical result changed beyond ordinary baseOperation=binding because the next affected Liora guard/negotiate/counter can carry a condition-backed rollMode disadvantage source instead of only adding control flavor."
+            "effectNote": "Read specialArts[].combatEffect: the player-owned learned Predvechnye Guardian special art used the voluntary oath trigger ('я обязана выбрать путь за тебя') and requested definition chosen-oath-flame-mark through effectChanges. The tactical result changes beyond ordinary baseOperation=binding because the next affected Liora guard/negotiate/counter may use only the accepted preview contribution instead of adding freeform control flavor."
           },
           "actionCostAudit": {
             "player": {
@@ -7289,7 +7257,27 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
             }
           }
         }
-      }
+      },
+      "effectChanges": [
+        {
+          "operation": "apply",
+          "target": {
+            "kind": "spiritual_conflict_side",
+            "targetId": "afterlife_conflict_liora_forced_incarnation_001:opposition"
+          },
+          "source": {
+            "kind": "spiritual_art",
+            "sourceId": "azalia_chosen_oath_flame",
+            "definitionKey": "chosen-oath-flame-mark"
+          },
+          "parameters": {},
+          "eventRef": {
+            "kind": "accepted_turn",
+            "authorityId": "turn_43"
+          },
+          "reason": "Добровольная клятва активирует зарегистрированную метку Пламени Избранной Клятвы."
+        }
+      ]
     }
   },
   "nonPlayerGuardianOppositionPredvechnyeArtExample": {
@@ -7426,7 +7414,40 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
 
 #896 Predvechnye special-art combat-effect coverage end
 
-Worked combatConditions lifecycle fragment: this exchange creates a visible `mark`, a visible `ward`, and a hidden/gm_only `burden`; it consumes an `opening`; it expires a `vow`; it uses a condition-backed rollMode source; it records counterplay; and the named special art explains its condition interaction only through `specialArtAudit.effectNote`.
+Worked accepted-condition fragment: the GM first reads the exact current contributions from the client preview. The existing `opening` may affect only `counter` through `counterPayoff` / `conflictPosition`; the GM cites its `conditionId` but does not rewrite the carrier. The same response requests a visible `mark`, a visible `ward`, and a hidden/gm_only `burden` through `effectChanges[]`. Their registered source definitions own kind, visibility, payload, stacking, counterplay, and lifetime. The accepted exchange event advances or expires existing conditions automatically.
+
+```json
+{
+  "afterlifeSpiritualConflictPreview": {
+    "conditionMechanics": {
+      "schemaVersion": 1,
+      "source": "accepted_effect_mechanics_snapshot_v1",
+      "isAccepted": true,
+      "contributions": [
+        {
+          "conditionId": "opening_gate_rhythm_001",
+          "componentId": "component_opening_gate_rhythm",
+          "priority": 100,
+          "targetSide": "opposition",
+          "targetActorId": "guardian_liora_001",
+          "conditionKind": "opening",
+          "affectedOperations": [ "counter" ],
+          "mechanicalAxes": [ "counterPayoff", "conflictPosition" ],
+          "counterplay": [ "Лиора может ответить guard или break_binding." ],
+          "payoff": {
+            "sourceType": "combat_condition",
+            "effect": "position_shift"
+          },
+          "currentStacks": 1,
+          "isPlayerVisible": true
+        }
+      ]
+    }
+  }
+}
+```
+
+GM response (there is deliberately no authored `combatConditions[]` field):
 
 ```json
 {
@@ -7470,155 +7491,6 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
         "conditionId": "opening_gate_rhythm_001",
         "summary": "Расход прежней бреши переводит позицию в преимущество игрока."
       },
-      "combatConditions": [
-        {
-          "conditionId": "mark_oath_flare_001",
-          "kind": "mark",
-          "name": "Метка вспыхнувшего обета",
-          "visibility": "visible",
-          "status": "active",
-          "target": {
-            "side": "opposition",
-            "actorType": "guardian",
-            "actorId": "guardian_liora_001",
-            "displayName": "Лиора"
-          },
-          "source": {
-            "sourceType": "exchange",
-            "exchangeId": "afterlife_conflict_exchange_conditions_001",
-            "actorType": "player",
-            "actorId": "player_soul"
-          },
-          "affectedOperations": [ "pressure", "counter", "binding" ],
-          "mechanicalAxes": [ "rollMode", "specialArtAudit.effectNote" ],
-          "payoff": {
-            "sourceType": "combat_condition",
-            "effect": "advantage",
-            "level": "ordinary",
-            "axis": "rollMode"
-          },
-          "duration": { "remainingUses": 1, "expiresAtTurn": 43 },
-          "counterplay": [ "Лиора может потратить guard или break_binding, чтобы сбить метку до следующего обмена." ],
-          "summary": "Следующая точная атака игрока по Лиоре получает одно условное Преимущество."
-        },
-        {
-          "conditionId": "ward_choice_mirror_001",
-          "kind": "ward",
-          "name": "Оберег зеркального выбора",
-          "visibility": "visible",
-          "status": "active",
-          "target": {
-            "side": "player",
-            "actorType": "player",
-            "actorId": "player_soul",
-            "displayName": "Игрок"
-          },
-          "source": {
-            "sourceType": "special_art",
-            "actorType": "guardian",
-            "actorId": "guardian_azalia_001",
-            "displayName": "Азалия"
-          },
-          "affectedOperations": [ "guard", "incarnation_resistance" ],
-          "mechanicalAxes": [ "actionCostAudit", "specialArtAudit.effectNote" ],
-          "payoff": {
-            "sourceType": "combat_condition",
-            "effect": "action_cost_ward",
-            "level": "one_use",
-            "axis": "actionCostAudit"
-          },
-          "duration": { "remainingUses": 1, "expiresAtTurn": 43 },
-          "counterplay": [ "Противник может pressure через другого lead contestant или force_binding, чтобы сделать оберег слишком дорогим." ],
-          "summary": "Оберег делает один ответ против forced incarnation защищённым от дополнительного ОД штрафа."
-        },
-        {
-          "conditionId": "burden_unseen_oath_pressure_001",
-          "kind": "burden",
-          "name": "Скрытое бремя чужой клятвы",
-          "visibility": "gm_only",
-          "status": "active",
-          "target": {
-            "side": "player",
-            "actorType": "player",
-            "actorId": "player_soul",
-            "displayName": "Игрок"
-          },
-          "source": {
-            "sourceType": "saref_thread",
-            "sourceId": "hidden_saref_oath_shadow_001"
-          },
-          "affectedOperations": [ "negotiate", "surrender" ],
-          "mechanicalAxes": [ "counterPayoff", "actionCostAudit" ],
-          "payoff": {
-            "sourceType": "combat_condition",
-            "effect": "counterpayoff_pressure",
-            "level": "gm_only",
-            "axis": "counterPayoff"
-          },
-          "duration": { "remainingUses": 1, "expiresAtTurn": 43 },
-          "counterplay": [ "Не раскрывать игроку; может быть снято только после явной сюжетной проверки или раскрытого контр-доказательства." ],
-          "summary": "Private no-spoiler pressure; ordinary player output must not mention Saref or the hidden source."
-        },
-        {
-          "conditionId": "opening_gate_rhythm_001",
-          "kind": "opening",
-          "name": "Брешь ритма врат",
-          "visibility": "visible",
-          "status": "consumed",
-          "target": {
-            "side": "opposition",
-            "actorType": "guardian",
-            "actorId": "guardian_liora_001",
-            "displayName": "Лиора"
-          },
-          "source": {
-            "sourceType": "previous_exchange",
-            "exchangeId": "afterlife_conflict_exchange_liora_001"
-          },
-          "affectedOperations": [ "counter" ],
-          "mechanicalAxes": [ "counterPayoff", "conflictPosition" ],
-          "payoff": {
-            "sourceType": "combat_condition",
-            "effect": "position_shift",
-            "level": "consumed",
-            "axis": "conflictPosition"
-          },
-          "duration": { "remainingUses": 0, "expiresAtTurn": 42 },
-          "counterplay": [ "Уже израсходовано текущим counterPayoff." ],
-          "consumedByExchangeId": "afterlife_conflict_exchange_conditions_001",
-          "summary": "Брешь потрачена, чтобы улучшить позицию."
-        },
-        {
-          "conditionId": "vow_no_forced_gate_001",
-          "kind": "vow",
-          "name": "Обет без навязанных врат",
-          "visibility": "visible",
-          "status": "expired",
-          "target": {
-            "side": "player",
-            "actorType": "player",
-            "actorId": "player_soul",
-            "displayName": "Игрок"
-          },
-          "source": {
-            "sourceType": "guardian_scene",
-            "actorType": "guardian",
-            "actorId": "guardian_azalia_001",
-            "displayName": "Азалия"
-          },
-          "affectedOperations": [ "incarnation_resistance" ],
-          "mechanicalAxes": [ "rollMode" ],
-          "payoff": {
-            "sourceType": "combat_condition",
-            "effect": "advantage",
-            "level": "expired",
-            "axis": "rollMode"
-          },
-          "duration": { "remainingUses": 0, "expiresAtTurn": 42 },
-          "counterplay": [ "Истёк по сроку; не даёт новых источников Преимущества." ],
-          "summary": "Старый обет больше не активен и не должен оставаться пассивным бонусом."
-        }
-      ],
         "specialArtAudit": {
           "artId": "guardian_mirror_oath",
           "ownerActorType": "guardian",
@@ -7691,7 +7563,63 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
         }
       }
     }
-  }
+  },
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": {
+        "kind": "spiritual_conflict_side",
+        "targetId": "afterlife_conflict_liora_forced_incarnation_001:opposition"
+      },
+      "source": {
+        "kind": "spiritual_art",
+        "sourceId": "art_oath_flare_condition",
+        "definitionKey": "oath-flare-mark"
+      },
+      "parameters": {},
+      "eventRef": {
+        "kind": "accepted_turn",
+        "authorityId": "turn_42"
+      },
+      "reason": "Успешный контрприём активирует зарегистрированную метку на стороне Лиоры."
+    },
+    {
+      "operation": "apply",
+      "target": {
+        "kind": "spiritual_conflict_side",
+        "targetId": "afterlife_conflict_liora_forced_incarnation_001:player"
+      },
+      "source": {
+        "kind": "spiritual_art",
+        "sourceId": "guardian_mirror_oath",
+        "definitionKey": "mirror-choice-ward"
+      },
+      "parameters": {},
+      "eventRef": {
+        "kind": "accepted_turn",
+        "authorityId": "turn_42_effect_2"
+      },
+      "reason": "Оберег Азалии получает одну зарегистрированную возможность защитить выбор души."
+    },
+    {
+      "operation": "apply",
+      "target": {
+        "kind": "spiritual_conflict_side",
+        "targetId": "afterlife_conflict_liora_forced_incarnation_001:player"
+      },
+      "source": {
+        "kind": "fate_card",
+        "sourceId": "fate_card_unseen_oath_pressure",
+        "definitionKey": "unseen-oath-burden"
+      },
+      "parameters": {},
+      "eventRef": {
+        "kind": "accepted_turn",
+        "authorityId": "turn_42_effect_3"
+      },
+      "reason": "Скрытая карта судьбы активирует зарегистрированное приватное бремя без раскрытия игроку."
+    }
+  ]
 }
 ```
 
