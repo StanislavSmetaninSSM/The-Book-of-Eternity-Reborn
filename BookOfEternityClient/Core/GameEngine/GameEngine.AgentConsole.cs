@@ -506,9 +506,16 @@ public partial class GameEngine
 
     private static void AppendMortalStatus(List<string> lines, PlayerStatusState status)
     {
-        lines.Add($"Здоровье: {status.HealthPercentage}");
-        lines.Add($"Энергия: {status.EnergyPercentage}");
-        lines.Add($"Равновесие: {status.PoisePercentage}");
+        if (status.ResourceProjectionAvailable)
+        {
+            lines.Add($"Здоровье: {status.HealthPercentage}");
+            lines.Add($"Энергия: {status.EnergyPercentage}");
+            lines.Add($"Равновесие: {status.PoisePercentage}");
+        }
+        else
+        {
+            lines.Add(status.ResourceUnavailableMessage);
+        }
 
         if (!string.IsNullOrWhiteSpace(status.CurrentCondition))
             lines.Add($"Состояние: {status.CurrentCondition}");

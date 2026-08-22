@@ -233,24 +233,39 @@ private async Task ShowNPCs()
             summaryTable.AddRow(new Markup("[dim]Директива игрока[/]"), new Markup("[dim italic]не задана (используйте /директива_компаньону)[/]"));
         }
 
-        // ── Health (embedded in npc_core) ──
-        var curHp = GetStr(npc, "currentHealthPercentage", "");
-        var maxHp = GetStr(npc, "maxHealthPercentage", "");
-        if (!string.IsNullOrEmpty(curHp) || !string.IsNullOrEmpty(maxHp))
+        var resourceProjection = string.IsNullOrWhiteSpace(npcId)
+            ? new ResourceProjectionResult(
+                false,
+                ResourcePlayerFailureMessages.Unavailable,
+                Array.Empty<ResourceProjectionRow>())
+            : await ResourceProjectionService.ProjectOwnerAsync(
+                _fs,
+                "mortal_world",
+                ResourceOwnerKind.Npc,
+                npcId,
+                "этот персонаж",
+                isOwningPlayer: false,
+                debugMode
+                    ? ResourceProjectionAudience.GameMaster
+                    : ResourceProjectionAudience.Player);
+        if (resourceProjection.IsAvailable && resourceProjection.Rows.Count > 0)
         {
-            var hpCur = int.TryParse(curHp.Replace("%", "").Trim(), out var hpC) ? hpC : 100;
-            var hpMax = int.TryParse(maxHp.Replace("%", "").Trim(), out var hpM) ? hpM : 100;
-            var hpPct = hpMax > 0 ? hpCur * 100 / hpMax : 100;
-            var hpColor = hpPct > 60 ? "green" : hpPct > 30 ? "yellow" : "red";
-            var hpTable = ConsoleLayout.CreateBarMetricTable();
-            hpTable.AddRow(
-                new Markup($"[{hpColor}]Здоровье[/]"),
-                new Markup(ConsoleLayout.CreateBarFromPercent(hpPct, 16, hpColor)),
-                new Markup($"[{hpColor}]{hpCur}%/{hpMax}%[/]"),
-                new Markup("[dim]Текущее состояние тела NPC[/]"));
+            var resourceTable = ConsoleLayout.CreateInfoTable();
+            foreach (var row in resourceProjection.Rows)
+            {
+                resourceTable.AddRow(
+                    new Markup($"[cyan]{Markup.Escape(row.DisplayName)}[/]"),
+                    new Markup($"[white]{Markup.Escape(ResourceProjectionService.FormatValue(row))}[/]"));
+            }
             content.AddRow(summaryTable);
-            content.AddRow(hpTable);
+            content.AddRow(resourceTable);
             summaryTable = ConsoleLayout.CreateInfoTable();
+        }
+        else if (!resourceProjection.IsAvailable)
+        {
+            summaryTable.AddRow(
+                new Markup("[yellow]Силы и запасы[/]"),
+                new Markup($"[yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]"));
         }
 
         if (summaryTable.Rows.Count > 0)
@@ -731,22 +746,37 @@ private async Task ShowNPCs()
 
         if (npc.TryGetProperty("gachaSystem", out var gs) && gs.ValueKind == JsonValueKind.Object)
         {
-            var chargesPerReturn = gs.TryGetProperty("chargesPerReturn", out var cpr) && cpr.ValueKind == JsonValueKind.Number && cpr.TryGetInt32(out var parsedCharges)
-                ? parsedCharges
-                : GuardianGachaChargeRules.GetChargesPerReturnForGuardian(npc);
-            var chargesUsedThisReturn = gs.TryGetProperty("chargesUsedThisReturn", out var cur) && cur.ValueKind == JsonValueKind.Number && cur.TryGetInt32(out var parsedUsed)
-                ? GuardianGachaChargeRules.ClampUsedCharges(parsedUsed, chargesPerReturn)
-                : 0;
-            var remainingCharges = Math.Max(0, chargesPerReturn - chargesUsedThisReturn);
+            var guardianId = GetStr(npc, "guardianId", "");
+            var guardianResources = ResourceMaterializationContract.IsExactIdentifier(guardianId)
+                ? await ResourceProjectionService.ProjectOwnerAsync(
+                    _fs,
+                    "chaos_sea",
+                    ResourceOwnerKind.AfterlifeActor,
+                    guardianId,
+                    "хранитель",
+                    isOwningPlayer: false,
+                    debugMode
+                        ? ResourceProjectionAudience.GameMaster
+                        : ResourceProjectionAudience.Player)
+                : new ResourceProjectionResult(
+                    false,
+                    ResourcePlayerFailureMessages.Unavailable,
+                    Array.Empty<ResourceProjectionRow>());
+            var gachaAttempts = guardianResources.Rows.SingleOrDefault(static row =>
+                string.Equals(row.ResourceKey, "gacha_attempts", StringComparison.Ordinal));
 
-            if (chargesPerReturn <= 0)
+            if (!guardianResources.IsAvailable)
+            {
+                lines.Add($"  🎰 [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]");
+            }
+            else if (gachaAttempts == null || gachaAttempts.Maximum <= 0m)
             {
                 lines.Add("  🎰 Вытягивание реликвий: [red]заблокировано репутацией[/]");
             }
             else
             {
-                lines.Add($"  🎰 Попытки в этом возвращении: [yellow]{remainingCharges}[/]/[white]{chargesPerReturn}[/]");
-                if (remainingCharges <= 0)
+                lines.Add($"  🎰 Попытки в этом возвращении: [yellow]{Markup.Escape(ResourceProjectionService.FormatValue(gachaAttempts))}[/]");
+                if (gachaAttempts.Current <= 0m)
                     lines.Add("    [dim]Лимит у этого Хранителя исчерпан до следующего возвращения из смертной жизни.[/]");
             }
         }
@@ -822,7 +852,7 @@ private async Task ShowNPCs()
         RenderNpcActivities(lines, actDoc, npcId, originalName, debugMode);
 
         // ── Принятый канонический инвентарь NPC ──
-        RenderNpcInventory(lines, npc, debugMode);
+        await RenderNpcInventory(lines, npc, debugMode);
 
         // ── Эффекты (npc_effects) ──
         RenderNpcEffects(lines, effectProjection, npcId);

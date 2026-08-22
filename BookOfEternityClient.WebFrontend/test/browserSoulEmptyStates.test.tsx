@@ -37,6 +37,8 @@ function createGameScreen(overrides: {
       energyPercentage: '66%',
       poisePercentage: '33%',
       activeConditions: [],
+      resourceProjectionAvailable: true,
+      resourceUnavailableMessage: '',
       ...overrides.player
     },
     soul: {
@@ -294,5 +296,22 @@ describe('browser Soul/status empty states #789', () => {
     ]) {
       expect(html).not.toMatch(forbidden);
     }
+  });
+
+  it('fails closed when the authoritative resource projection is unavailable', () => {
+    const html = renderStatusView(createGameScreen({
+      player: {
+        healthPercentage: '100%',
+        energyPercentage: '100%',
+        poisePercentage: '100%',
+        resourceProjectionAvailable: false,
+        resourceUnavailableMessage: 'Ресурсы временно недоступны. Продолжение игры заблокировано до восстановления состояния.'
+      }
+    }));
+
+    expect(html).toContain('Ресурсы временно недоступны. Продолжение игры заблокировано до восстановления состояния.');
+    expect(html).not.toContain('class="status-bars"');
+    expect(html).not.toContain('role="meter"');
+    expect(html).not.toContain('100%');
   });
 });

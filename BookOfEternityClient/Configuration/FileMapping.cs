@@ -18,6 +18,7 @@ public static class FileMapping
         ["skillMasteryChanges"] = "game_state/player/skill_mastery.json",
         ["effectChanges"] = "game_state/effects/effect_commands.json",
         ["effectResolutionReceipts"] = "game_state/effects/effect_commands.json",
+        ["effectEventReports"] = "game_state/effects/effect_commands.json",
         ["resourceDefinitionCreations"] = "game_state/resources/resource_commands.json",
         ["resourceCapacityChanges"] = "game_state/resources/resource_commands.json",
         ["resourceChanges"] = "game_state/resources/resource_commands.json",

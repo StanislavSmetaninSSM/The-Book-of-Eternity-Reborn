@@ -7,6 +7,107 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class EffectMaterializationValidationTests
 {
     [Fact]
+    public async Task Lifecycle_FateShieldConsumesOnExactReportedCriticalFailure()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await context.CaptureValidatedPendingSnapshotAsync(
+            turn: 42,
+            playerAction: "[INK_FEATHER_ACTION: FATE_SHIELD] Купить Щит Судьбы.");
+        var purchaseBackups = await context.ReadPendingSnapshotBackupsAsync();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            EffectMaterializationTestFixture.CreateCommandRoot(
+                CreateFateShieldApplyCommand(turn: 42)));
+
+        var purchaseIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        AssertNoEffectErrors(purchaseIssues);
+        await context.NormalizeAcceptedEffectsAsync(purchaseBackups);
+        var purchased = await ReadSinglePlayerEffectAsync(context);
+        var purchasedEffectId = purchased["effectId"]!.GetValue<string>();
+
+        await context.CaptureValidatedPendingSnapshotAsync(
+            turn: 43,
+            playerAction: "Рискнуть и совершить опасное действие.",
+            preGeneratedDices1d20: new[] { 1, 17, 8 });
+        var reactionBackups = await context.ReadPendingSnapshotBackupsAsync();
+        var reactionCommands = EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot();
+        reactionCommands[EffectAcceptedEventReportCatalog.ResponseField] =
+            new JsonArray(CreateCriticalFailureReport());
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            reactionCommands);
+
+        var reactionIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        AssertNoEffectErrors(reactionIssues);
+        await context.NormalizeAcceptedEffectsAsync(reactionBackups);
+        var playerEffects = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath))!.AsObject();
+        Assert.Empty(playerEffects["activeEffects"]!.AsArray());
+        var index = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.IdentityIndexPath))!.AsObject();
+        var entry = Assert.IsType<JsonObject>(Assert.Single(index["entries"]!.AsArray()));
+        Assert.Equal(purchasedEffectId, entry["effectId"]?.GetValue<string>());
+        Assert.Equal("expired", entry["state"]?.GetValue<string>());
+        var transition = Assert.IsType<JsonObject>(entry["transitions"]!.AsArray().Last());
+        Assert.Equal("expire", transition["kind"]?.GetValue<string>());
+        Assert.Contains(
+            "owner_critical_failure",
+            transition["eventRef"]?.GetValue<string>() ?? string.Empty,
+            StringComparison.Ordinal);
+        Assert.Null(await context.ReadJsonAsync(
+            EffectMaterializationTestContext.CommandPath));
+    }
+
+    [Fact]
+    public async Task Lifecycle_FateShieldRejectsForgedCriticalFailureWithoutWrites()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await context.CaptureValidatedPendingSnapshotAsync(
+            turn: 42,
+            playerAction: "[INK_FEATHER_ACTION: FATE_SHIELD] Купить Щит Судьбы.");
+        var purchaseBackups = await context.ReadPendingSnapshotBackupsAsync();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            EffectMaterializationTestFixture.CreateCommandRoot(
+                CreateFateShieldApplyCommand(turn: 42)));
+        var purchaseIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        AssertNoEffectErrors(purchaseIssues);
+        await context.NormalizeAcceptedEffectsAsync(purchaseBackups);
+
+        await context.CaptureValidatedPendingSnapshotAsync(
+            turn: 43,
+            playerAction: "Рискнуть и совершить опасное действие.",
+            preGeneratedDices1d20: new[] { 7, 17, 8 });
+        var reactionCommands = EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot();
+        reactionCommands[EffectAcceptedEventReportCatalog.ResponseField] =
+            new JsonArray(CreateCriticalFailureReport());
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            reactionCommands);
+        var before = await context.CaptureBytesAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath,
+            EffectMaterializationTestContext.IdentityIndexPath,
+            EffectMaterializationTestContext.CommandPath);
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        Assert.Contains(
+            issues,
+            static issue => issue.Code == "effect_event_report_dice_not_authorized");
+        var after = await context.CaptureBytesAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath,
+            EffectMaterializationTestContext.IdentityIndexPath,
+            EffectMaterializationTestContext.CommandPath);
+        Assert.Equal(before, after);
+    }
+
+    [Fact]
     public async Task Lifecycle_ReapplyStacksExistingIdentityAndConsumesCommand()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
@@ -49,6 +150,50 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.Null(await context.ReadJsonAsync(
             EffectMaterializationTestContext.CommandPath));
     }
+
+    private static JsonObject CreateFateShieldApplyCommand(int turn) => new()
+    {
+        ["operation"] = "apply",
+        ["target"] = new JsonObject
+        {
+            ["kind"] = "player",
+            ["targetId"] = "player_current"
+        },
+        ["source"] = new JsonObject
+        {
+            ["kind"] = EffectBuiltInSourceCatalog.FateShieldSourceKind,
+            ["sourceId"] = EffectBuiltInSourceCatalog.FateShieldSourceId,
+            ["definitionKey"] = EffectBuiltInSourceCatalog.FateShieldDefinitionKey
+        },
+        ["parameters"] = new JsonObject(),
+        ["eventRef"] = new JsonObject
+        {
+            ["kind"] = "accepted_turn",
+            ["authorityId"] = $"turn_{turn}"
+        },
+        ["reason"] = "Игрок оплатил Щит Судьбы Чернильными Перьями."
+    };
+
+    private static JsonObject CreateCriticalFailureReport() => new()
+    {
+        ["eventType"] = "owner_critical_failure",
+        ["target"] = new JsonObject
+        {
+            ["kind"] = "player",
+            ["targetId"] = "player_current"
+        },
+        ["evidence"] = new JsonObject
+        {
+            ["kind"] = "mortal_action_roll",
+            ["rollMode"] = "normal",
+            ["diceIndexes"] = new JsonArray(0),
+            ["selectedIndex"] = 0,
+            ["selectedValue"] = 1,
+            ["originalOutcome"] = "critical_failure",
+            ["resolvedOutcome"] = "failure"
+        },
+        ["reason"] = "Щит Судьбы смягчил натуральную единицу до обычного провала."
+    };
 
     [Fact]
     public async Task Lifecycle_UntilTimeApplyDerivesDeadlineFromCanonicalWorldTime()

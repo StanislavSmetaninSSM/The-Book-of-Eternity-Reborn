@@ -15,7 +15,8 @@ internal sealed record EffectTargetExport(
     string TargetId,
     bool SameTurn,
     string? TargetRef = null,
-    string? BoundNpcId = null);
+    string? BoundNpcId = null,
+    ResourceOwnerKind? BoundResourceOwnerKind = null);
 
 internal sealed record EffectTargetAuthorityInput(
     IReadOnlyList<EffectTargetExport> PreTurnTargets,
@@ -282,7 +283,9 @@ internal sealed class EffectTargetAuthority
                     ["targetId"] = target.TargetId,
                     ["sameTurn"] = target.SameTurn,
                     ["targetRef"] = target.TargetRef,
-                    ["boundNpcId"] = target.BoundNpcId
+                    ["boundNpcId"] = target.BoundNpcId,
+                    ["boundResourceOwnerKind"] =
+                        target.BoundResourceOwnerKind?.ToString()
                 }).ToArray()),
             ["refs"] = new JsonArray(refs
                 .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
@@ -317,7 +320,9 @@ internal sealed class EffectTargetAuthority
                     ["realm"] = target.Realm,
                     ["kind"] = target.Kind,
                     ["targetId"] = target.TargetId,
-                    ["boundNpcId"] = target.BoundNpcId
+                    ["boundNpcId"] = target.BoundNpcId,
+                    ["boundResourceOwnerKind"] =
+                        target.BoundResourceOwnerKind?.ToString()
                 }).ToArray()),
             ["issues"] = new JsonArray(issues
                 .OrderBy(static issue => issue.FilePath, StringComparer.Ordinal)
@@ -398,7 +403,13 @@ internal sealed class EffectTargetAuthority
             var path = $"targets[{export.Kind}:{export.TargetId}]";
             if (!Realms.Contains(export.Realm) || !TargetKinds.Contains(export.Kind) ||
                 !TryExact(export.TargetId) || export.TargetRef != null && !TryExact(export.TargetRef) ||
-                export.BoundNpcId != null && !TryExact(export.BoundNpcId))
+                export.BoundNpcId != null && !TryExact(export.BoundNpcId) ||
+                export.BoundResourceOwnerKind != null &&
+                (export.Kind != "combatant" ||
+                 export.BoundResourceOwnerKind is not (
+                     ResourceOwnerKind.Combatant or
+                     ResourceOwnerKind.CombatGroupMember or
+                     ResourceOwnerKind.Npc)))
             {
                 Issues.Add(NewIssue(path, "effect_target_authority_invalid_export", "exact supported target export", export.ToString()));
                 return;

@@ -1433,6 +1433,12 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         var effectProjection = await LoadEffectProjectionAsync(fs);
         var read = await ReadJson(fs, AfterlifeSpiritualConflictState.StatePath);
         var active = read.Node?["activeConflict"] as JsonObject;
+        var resourceProjection = await ResourceProjectionService.ProjectAfterlifeConflictAsync(
+            fs,
+            active,
+            includeRawDiagnostics
+                ? ResourceProjectionAudience.GameMaster
+                : ResourceProjectionAudience.Player);
         var exchangeLog = GetVisibleExchangeLog(active);
         var detail = ParseDetailRequest(request.Arguments, "обмен", "exchange", "запись", "entry", "деталь", "detail");
         if (!string.IsNullOrWhiteSpace(detail.Selector))
@@ -1448,7 +1454,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         var blocks = new List<UiBlock>
         {
-            BuildSpiritualConflictDossier(active, exchangeLog, effectProjection)
+            BuildSpiritualConflictDossier(
+                active,
+                exchangeLog,
+                effectProjection,
+                resourceProjection)
         };
 
         if (active == null)
@@ -1467,7 +1477,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     private static UiEntityDossierBlock BuildSpiritualConflictDossier(
         JsonObject? active,
         IReadOnlyList<JsonObject> exchangeLog,
-        EffectPlayerProjectionResult effectProjection)
+        EffectPlayerProjectionResult effectProjection,
+        ResourceProjectionResult resourceProjection)
     {
         var sections = new List<UiEntityDossierSection>();
         if (active != null)
@@ -1499,7 +1510,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 new UiEntityFact { Label = "Напряжение души", Value = DescribeStrain(GetString(active, "playerSideStrain", "clear")) },
                 new UiEntityFact { Label = "Напряжение противника", Value = DescribeStrain(GetString(active, "oppositionSideStrain", "clear")) },
                 new UiEntityFact { Label = "Контроль / оковы", Value = DescribeControlState(active?["controlState"] as JsonObject) },
-                new UiEntityFact { Label = "Очки действий", Value = DescribeActionEconomy(active?["actionEconomy"] as JsonObject) },
+                new UiEntityFact { Label = "Очки действий", Value = DescribeActionPointProjection(resourceProjection) },
                 new UiEntityFact { Label = "Обменов", Value = exchangeLog.Count.ToString() }
             ],
             Hints =
@@ -3956,20 +3967,25 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             : $"{side}: {level}; ограничено: {restricted}; {summary}";
     }
 
-    private static string DescribeActionEconomy(JsonObject? economy)
+    private static string DescribeActionPointProjection(ResourceProjectionResult projection)
     {
-        if (economy == null)
-            return "нет данных";
+        if (!projection.IsAvailable)
+            return ResourcePlayerFailureMessages.Unavailable;
 
-        return $"игрок {DescribeActionPoints(economy["player"] as JsonObject)}; противник {DescribeActionPoints(economy["opposition"] as JsonObject)}";
-    }
+        var player = projection.Rows.SingleOrDefault(static row =>
+            string.Equals(row.SafeOwnerSelector, "душа игрока", StringComparison.Ordinal) &&
+            string.Equals(row.ResourceKey, "spiritual_action_points", StringComparison.Ordinal));
+        var opposition = projection.Rows.SingleOrDefault(static row =>
+            string.Equals(row.SafeOwnerSelector, "противник", StringComparison.Ordinal) &&
+            string.Equals(row.ResourceKey, "spiritual_action_points", StringComparison.Ordinal));
+        var playerText = player == null
+            ? "нет данных"
+            : ResourceProjectionService.FormatValue(player);
+        var oppositionText = opposition == null
+            ? "нет открытых данных"
+            : ResourceProjectionService.FormatValue(opposition);
 
-    private static string DescribeActionPoints(JsonObject? side)
-    {
-        if (side == null)
-            return "?";
-
-        return $"{GetNumberOrString(side, "current", "0")}/{GetNumberOrString(side, "max", "0")} ОД";
+        return $"игрок {playerText}; противник {oppositionText}";
     }
 
     private static string DescribeBeforeAfter(JsonObject exchange, string propertyName, Func<string, string> formatter)
@@ -4085,12 +4101,13 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     private static string DescribePlayerOutcome(string outcome) =>
         outcome.Trim().ToLowerInvariant() switch
         {
-            "victory" or "player_victory" or "success" => "победа",
+            "victory" or "player_victory" or "success" or "won" => "победа",
             "defeat" or "loss" or "player_defeat" => "поражение",
             "draw" or "stalemate" => "ничья",
             "escaped" => "отступление",
             "abandoned" => "оставлено",
             "partial_success" => "частичный успех",
+            "negotiated" => "договорённость",
             _ => string.IsNullOrWhiteSpace(outcome) ? "не указано" : outcome
         };
 

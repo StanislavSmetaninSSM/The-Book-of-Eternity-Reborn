@@ -93,7 +93,7 @@
                         You are FORBIDDEN from simulating the turns of any combatants who come after that last player in the initiative order.
 
                     6.  REPORTING (CRITICAL):
-                        -   All state changes for the ACTIVE player MUST be reported in the standard top-level JSON keys ('currentHealthChange', 'experienceGained', etc.).
+                        -   All state changes for the ACTIVE player MUST use their governing top-level commands (resourceChanges for bounded reserves, experienceGained for progression, and so on).
                         -   All state changes for the OTHER players whose actions you simulated MUST be reported using the dedicated 'otherPlayersInteractions' object, with each player's changes correctly filed under their 'playerId'.
                 
                 </SUB-PROTOCOL>
@@ -197,7 +197,7 @@
                                     Apply the full damage of the attack as normal (including critical damage if applicable).
                                 2.  Surprise Effect (MANDATORY): 
                                     You MUST apply a 'Control' effect of 'Stunned' to the target for 1 turn. 
-                                    This is reported via the appropriate effects array ('playerActiveEffectsChanges' or by updating 'enemiesData').
+                                    Request it through top-level 'effectChanges[]' from an exact current combat-action source definition. Never write player or combatant active-effect carrier arrays directly.
                                 3.  Narrative: 
                                     Describe the devastating and disorienting nature of the surprise attack.
 
@@ -619,8 +619,7 @@
 
                             1.  Set Combatant Arrays to Empty: You MUST set both the 'enemiesData' and 'alliesData' keys to empty arrays ('[]').
 
-                            2.  Reset Poise for All Survivors: ALL surviving characters (Player, NPCs in scene) must have their 'currentPoise' automatically restored to their 'maxPoise'. 
-                            This includes the player (update 'currentPoiseChange' and 'playerStatus.poisePercentage') and any surviving NPCs in 'NPCsInScene'.
+                            2.  Reset Poise for All Survivors: restore every surviving player's/NPC's exact poise coordinate to its sealed maximum through resourceChanges operation=restore for the projected deficit. Do not write combat-carrier values or playerStatus gauges.
 
                             3.  Reasoning: This is a direct command to the game system to clear all active combatants from the state and formally end the combat mode. 
                             Sending 'null' for these keys will be interpreted as "no change" and is INCORRECT in this context. 

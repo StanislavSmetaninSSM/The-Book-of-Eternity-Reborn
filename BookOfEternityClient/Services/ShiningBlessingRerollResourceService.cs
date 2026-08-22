@@ -101,10 +101,14 @@ internal static class ShiningBlessingRerollResourceService
         var afterImage = effectState.DeepClone().AsObject();
         var memory = afterImage["memorySelection"] as JsonObject;
         var relic = afterImage["relicRefinementEntitlements"] as JsonObject;
-        var memoryAmount = ReadNonNegativeInt(memory?["rerolls"]);
-        var relicAmount = ReadNonNegativeInt(relic?["rerolls"]);
-        StripNumericMirror(memory);
-        StripNumericMirror(relic);
+        if (!ShiningBlessingRerollAllocationContract.TryConsume(memory, out var memoryAmount) ||
+            !ShiningBlessingRerollAllocationContract.TryConsume(relic, out var relicAmount))
+        {
+            return Failure(
+                "shining_blessing_reroll_allocation_invalid",
+                "absent or closed {resourceKey:'blessing_rerolls',amount:non-negative integer} allocation",
+                afterImage.ToJsonString());
+        }
 
         var total = checked(memoryAmount + relicAmount);
         var preparedAtTurn = ReadNonNegativeInt(afterImage["sourcePackagePreparedAtTurn"]);
@@ -527,6 +531,32 @@ internal static class ShiningBlessingRerollResourceService
         var loaded = await LoadAllocationAuthorityAsync(
             fs,
             writeLease: null,
+            entitlement);
+        return loaded.IsValid
+            ? new ShiningBlessingRerollAllocationProjection(
+                loaded.Coordinate,
+                loaded.AllocationId,
+                loaded.Remaining,
+                Array.Empty<ValidationIssue>())
+            : new ShiningBlessingRerollAllocationProjection(
+                null,
+                null,
+                0,
+                loaded.Issues);
+    }
+
+    internal static async Task<ShiningBlessingRerollAllocationProjection>
+        ReadAllocationAsync(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease readLease,
+            JsonObject entitlement)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(readLease);
+        ArgumentNullException.ThrowIfNull(entitlement);
+        var loaded = await LoadAllocationAuthorityAsync(
+            fs,
+            readLease,
             entitlement);
         return loaded.IsValid
             ? new ShiningBlessingRerollAllocationProjection(
@@ -1043,12 +1073,6 @@ internal static class ShiningBlessingRerollResourceService
         writeLease == null
             ? fs.ReadFileAsync(path)
             : fs.ReadFileAsync(writeLease, path);
-
-    private static void StripNumericMirror(JsonObject? entitlement)
-    {
-        entitlement?.Remove("rerolls");
-        entitlement?.Remove("rerollsSpent");
-    }
 
     private static JsonObject? ParseObject(
         string? json,

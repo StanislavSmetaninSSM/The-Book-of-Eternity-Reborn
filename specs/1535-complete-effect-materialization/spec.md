@@ -177,6 +177,7 @@ As a player, I want wounds and their symptoms to remain related but independentl
 - **FR-025**: Every application, tick, trigger, receipt, stack transition, removal, dispel, suspension, resumption, and expiry MUST be idempotent for one exact accepted event.
 - **FR-026**: Triggered downstream effects MUST form a finite acyclic declared dependency graph with bounded expansion.
 - **FR-027**: Deterministic components MUST resolve without GM invention; story-facing components MAY request only a bounded result whose allowed kinds, targets, numeric bounds, and companion changes are fixed by client authority.
+- **FR-027a**: A GM-reported trigger event MUST use a closed registered report adapter bound to sealed accepted-turn evidence; the client MUST select the exact effect, trigger, ordering, use consumption, and post-state, and a report MUST NOT contain those client-owned selectors or results.
 - **FR-028**: Bounded result receipts MUST match the exact pending effect, target, source, trigger, event, and accepted session and MUST NOT change identity, definition, realm, profile, or bounds.
 
 #### Owners, realms, and derived mechanics

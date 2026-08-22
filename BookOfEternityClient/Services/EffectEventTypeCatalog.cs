@@ -22,6 +22,7 @@ internal static class EffectEventTypeCatalog
         "owner_restored",
         "owner_action_started",
         "owner_action_completed",
+        "owner_critical_failure",
         "afterlife_exchange_end",
         "scene_started",
         "scene_ended",

@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="25">
  <title>
   Player Custom State Management
@@ -125,29 +126,29 @@
                                     - 'levelName': "Hungry"
                                     - 'triggerCondition': "value_greater_than_or_equal_to"
                                     - 'triggerValue': 50
-                                    - 'associatedEffects': [{ 
-                                        "effectType": "Debuff", 
-                                        "value": "-10%", 
-                                        "targetType": "strength", 
-                                        "duration": 999, 
-                                        "sourceSkill": "Hunger", 
-                                        "description": "Hungry: Strength reduced by 10%." 
+                                    - 'associatedEffects': [{
+                                        "source": {
+                                            "kind": "world_event",
+                                            "sourceId": "<exact-current-hunger-source-id>",
+                                            "definitionKey": "hungry-threshold"
+                                        },
+                                        "parameters": {}
                                     }]
 
                                 - Threshold 2 (Health Loss):
                                     - 'levelName': "Starving"
                                     - 'triggerCondition': "value_greater_than_or_equal_to"
                                     - 'triggerValue': 90
-                                    - 'associatedEffects': [{ 
-                                        "effectType": "DamageOverTime", 
-                                        "value": "2%", 
-                                        "targetType": "dark", 
-                                        "duration": 999, 
-                                        "sourceSkill": "Starvation", 
-                                        "description": "Starving: Losing 2% health per turn." 
+                                    - 'associatedEffects': [{
+                                        "source": {
+                                            "kind": "world_event",
+                                            "sourceId": "<exact-current-hunger-source-id>",
+                                            "definitionKey": "starving-periodic-loss"
+                                        },
+                                        "parameters": {}
                                     }]
                         
-                            The 'duration: 999' signifies a persistent effect that remains active as long as the threshold condition is met.
+                            associatedEffects is reference-only custom-state metadata. The exact supported source must already own complete activeEffectDefinitions[] entries with condition_bound lifetime; this object never becomes an effect carrier or grants mechanics by prose.
 
                             ]]>
      </content>
@@ -164,9 +165,8 @@
                             2.  Apply Progression: Adjust 'currentValue' based on 'progressionRule.changePerTurn' and any other factors mentioned in its 'description' (e.g., if player ran a lot, add an extra point to Hunger).
                             3.  Check Thresholds: Compare the new 'currentValue' against all 'thresholds'.
                             4.  Apply/Remove Effects:
-                                - If a threshold is now met (and wasn't before), apply its 'associatedEffects' by adding them to 'playerActiveEffectsChanges'.
-                                - If a threshold is no longer met (e.g., player ate and Hunger dropped below 50), remove its 'associatedEffects' 
-                                (by reporting them in 'playerActiveEffectsChanges' with 'duration: 0').
+                                - If a threshold is now met (and wasn't before), request each exact associated definition through top-level 'effectChanges[]' with accepted target/source/event authority.
+                                - If a threshold is no longer met (e.g., player ate and Hunger dropped below 50), let the condition-bound lifecycle expire it or request source-authorized removal through 'effectChanges[]'. Never identify removal by description or a numeric sentinel.
                             5.  Update Description: Update the 'description' field based on the new 'currentValue' and which 'levelName' is active.
                             6.  Report Changes: Add the complete, updated Custom State Object to the 'customStateChanges' array in the JSON response.
                             

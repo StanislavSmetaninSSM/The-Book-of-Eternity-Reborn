@@ -56,15 +56,7 @@ public sealed class BrowserGameScreenService
                 InkFeathers: state.InkFeathers,
                 EnlightenmentTier: state.EnlightenmentTier,
                 ActiveGuardianName: state.ActiveGuardianName),
-            Player: new BrowserGameScreenPlayerDto(
-                Name: state.CharacterName,
-                Class: state.CharacterClass,
-                Race: state.CharacterRace,
-                CurrentCondition: state.PlayerStatus.CurrentCondition,
-                HealthPercentage: state.PlayerStatus.HealthPercentage,
-                EnergyPercentage: state.PlayerStatus.EnergyPercentage,
-                PoisePercentage: state.PlayerStatus.PoisePercentage,
-                ActiveConditions: playerVisibleEffects),
+            Player: BuildPlayerDto(state, playerVisibleEffects),
             World: new BrowserGameScreenWorldDto(
                 Location: state.CurrentLocation,
                 WorldTime: state.WorldTime,
@@ -101,6 +93,29 @@ public sealed class BrowserGameScreenService
                 ? entry.Name
                 : $"{entry.Name}: {entry.Summary}")
             .ToArray();
+    }
+
+    private static BrowserGameScreenPlayerDto BuildPlayerDto(
+        AggregatedGameState state,
+        IReadOnlyList<string> activeConditions)
+    {
+        var status = state.PlayerStatus;
+        var projectionAvailable = status.ResourceProjectionAvailable;
+        return new BrowserGameScreenPlayerDto(
+            Name: state.CharacterName,
+            Class: state.CharacterClass,
+            Race: state.CharacterRace,
+            CurrentCondition: status.CurrentCondition,
+            HealthPercentage: projectionAvailable ? status.HealthPercentage : "—",
+            EnergyPercentage: projectionAvailable ? status.EnergyPercentage : "—",
+            PoisePercentage: projectionAvailable ? status.PoisePercentage : "—",
+            ActiveConditions: activeConditions)
+        {
+            ResourceProjectionAvailable = projectionAvailable,
+            ResourceUnavailableMessage = projectionAvailable
+                ? string.Empty
+                : status.ResourceUnavailableMessage
+        };
     }
 
     private static bool HasPlayableSession(BrowserLifecycleDashboardDto lifecycle)
@@ -306,7 +321,12 @@ public sealed record BrowserGameScreenPlayerDto(
     string HealthPercentage,
     string EnergyPercentage,
     string PoisePercentage,
-    IReadOnlyList<string> ActiveConditions);
+    IReadOnlyList<string> ActiveConditions)
+{
+    public bool ResourceProjectionAvailable { get; init; }
+    public string ResourceUnavailableMessage { get; init; } =
+        ResourcePlayerFailureMessages.Unavailable;
+}
 
 public sealed record BrowserGameScreenWorldDto(
     string Location,

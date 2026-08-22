@@ -1,4 +1,7 @@
 <instructionblock id="6">
+ <effectmaterializationcontract>
+  Buff, debuff, dispel, and removal examples use only effectChanges[] and exact source authority. The complete schema is in Examples/E_CLI_Effect_Materialization.txt.
+ </effectmaterializationcontract>
  <title>
   Examples For Combat Situation Management: Enemies and Allies
  </title>
@@ -136,7 +139,7 @@
                                         EL = max(1, round(LD_calc + LevelDifference * ScalingFactor)) = max(1, round(15 + (-5) * 0.5)) = max(1, round(15 - 2.5)) = max(1, round(12.5)) = 13 \n\n
                                     \n\n
                                     Max Health Calculation (Moderate, EL=13): \n\n
-                                        maxHealth = (100 + EL * 2) = (100 + 13 * 2) = 100 + 26 = 126% \n\n
+                                        HealthMaximum = (100 + EL * 2) = (100 + 13 * 2) = 100 + 26 = 126 \n\n
                                     \n\n
                                     Actions Calculation (Moderate, EL=13): \n\n
                                         BaseDamagePotential (Moderate, EL=13) = round(5 + pow(13, 0.8) * 0.5) = round(5 + 3.95) = 9% \n\n
@@ -158,14 +161,16 @@
             
                                     Resulting object to be added to 'enemiesData': 
                                     {
-                                        "NPCId": null,
+                                        "combatantRef": "combatant_ref_turn_42_crypt_ghoul",
                                         "name": "Crypt Ghoul", 
                                         "description": "Тощее существо-нежить, от которого разит могильной землей. Его движения пугающе быстры, а когти выглядят достаточно острыми, чтобы разорвать кожу.",
                                         "type": "Moderate",
-                                        "maxHealth": "126%",
-                                        "currentHealth": "126%",
-                                        "maxPoise": "100%",
-                                        "currentPoise": "100%",
+                                        "resourceMaterialization": {
+                                            "resources": [
+                                                { "resourceKey": "health", "maximum": 126 },
+                                                { "resourceKey": "poise", "maximum": 100 }
+                                            ]
+                                        },
                                         "actions": [{
                                             "actionName": "Paralyzing Touch", 
                                             "effects": [{
@@ -404,7 +409,7 @@
                                         EL_ally = max(1, round(LD_ally_calc + LevelDifference_ally * ScalingFactor_ally)) = max(1, round(20 + 0 * 0.5)) = 20 \n\n
                                     \n\n
                                     Max Health Calculation (Moderate, EL_ally=20): \n\n
-                                        maxHealth = (100 + EL_ally * 2) = (100 + 20 * 2) = 140% \n\n
+                                        HealthMaximum = (100 + EL_ally * 2) = (100 + 20 * 2) = 140 \n\n
                                     \n\n
                                     Actions Calculation (Moderate, EL_ally=20): \n\n
                                         BaseDamagePotential_ally (Moderate, EL_ally=20) = round(5 + pow(EL_ally, 0.8) * 0.5) = round(5 + pow(20, 0.8) * 0.5) = round(5 + 10.9 * 0.5) = round(5 + 5.45) = 10% \n\n
@@ -424,14 +429,16 @@
                                     Resulting object to be added to 'alliesData':
                             
                                     {
-                                        "NPCId": null,
+                                        "combatantRef": "combatant_ref_turn_42_veteran_sellsword",
                                         "name": "Veteran Sellsword",
                                         "description": "Закаленный наемник с мрачным выражением лица. Его видавшая виды броня и уверенный взгляд говорят о том, что он прошел через множество битв.",
                                         "type": "Moderate",
-                                        "maxHealth": "140%",
-                                        "currentHealth": "140%",
-                                        "maxPoise": "120%",
-                                        "currentPoise": "120%",
+                                        "resourceMaterialization": {
+                                            "resources": [
+                                                { "resourceKey": "health", "maximum": 140 },
+                                                { "resourceKey": "poise", "maximum": 120 }
+                                            ]
+                                        },
                                         "actions": [{
                                             "actionName": "Longsword Strike", 
                                             "effects": [{
@@ -485,14 +492,13 @@
                                     - Archetype Calculation for a single 'Royal Spearman' (#6.1.5):
                                       - Ally Type: Moderate
                                       - EL_ally (Lvl 15 vs LD 15): 15
-                                      - maxHealth (Moderate, EL=15): (100 + 15 * 2)% = 130%
+                                      - HealthMaximum (Moderate, EL=15): 100 + 15 * 2 = 130
                                       - Actions: 'Coordinated Lunge' (base 12% piercing), 'Shield Wall' (self-buff, +20% all resist for 1 turn).
                                       - Resistances: 'Chainmail & Shield' (base resist 15% piercing).
                                     
                                     - Final Group Object Population (#6.1.9.2):
                                       - isGroup: true, count: 8, unitName: 'Royal Spearman'
-                                      - healthStates: ["130%", "130%", "130%", "130%", "130%", "130%", "130%", "130%"]
-                                      - currentHealth: null"
+                                      - members: 8 stable memberRef entries, each with health maximum 130 and poise maximum 110 in its own resourceMaterialization envelope."
                             
                                     Resulting object to be added to 'alliesData':
                             
@@ -504,11 +510,16 @@
                                         "isGroup": true,
                                         "count": 8,
                                         "unitName": "Royal Spearman",
-                                        "maxHealth": "130%",
-                                        "currentHealth": null,
-                                        "maxPoise": "110%", 
-                                        "currentPoise": null,
-                                        "healthStates": ["130%", "130%", "130%", "130%", "130%", "130%", "130%", "130%"],
+                                        "members": [
+                                            { "memberRef": "member_ref_spear_1", "name": "Royal Spearman 1", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 130 }, { "resourceKey": "poise", "maximum": 110 }] } },
+                                            { "memberRef": "member_ref_spear_2", "name": "Royal Spearman 2", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 130 }, { "resourceKey": "poise", "maximum": 110 }] } },
+                                            { "memberRef": "member_ref_spear_3", "name": "Royal Spearman 3", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 130 }, { "resourceKey": "poise", "maximum": 110 }] } },
+                                            { "memberRef": "member_ref_spear_4", "name": "Royal Spearman 4", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 130 }, { "resourceKey": "poise", "maximum": 110 }] } },
+                                            { "memberRef": "member_ref_spear_5", "name": "Royal Spearman 5", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 130 }, { "resourceKey": "poise", "maximum": 110 }] } },
+                                            { "memberRef": "member_ref_spear_6", "name": "Royal Spearman 6", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 130 }, { "resourceKey": "poise", "maximum": 110 }] } },
+                                            { "memberRef": "member_ref_spear_7", "name": "Royal Spearman 7", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 130 }, { "resourceKey": "poise", "maximum": 110 }] } },
+                                            { "memberRef": "member_ref_spear_8", "name": "Royal Spearman 8", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 130 }, { "resourceKey": "poise", "maximum": 110 }] } }
+                                        ],
                                         "actions": [
                                             {
                                                 "actionName": "Coordinated Lunge", 
@@ -572,9 +583,9 @@
                                         - Расчет Перманентно Модифицированных Характеристик:
                                             - Стандартная Сила: 60. Бонусы: 0. -> Перм. Мод. Сила: 60.
                                             - Стандартная Выносливость: 60. Бонусы: 0. -> Перм. Мод. Выносливость: 60.
-                                        - Формула maxHealth%: 100 + floor(Перм.Мод.Выносл * 2.0) + floor(Перм.Мод.Сила * 1.0)
+                                        - Формула HealthMaximum: 100 + floor(Перм.Мод.Выносл * 2.0) + floor(Перм.Мод.Сила * 1.0)
                                         - Расчет: 100 + floor(60 * 2.0) + floor(60 * 1.0) = 100 + 120 + 60 = 280%.
-                                        - currentHealth: "280%".
+                                        - Клиентская проекция подтверждает health 280/280; боевой объект не дублирует это состояние.
 
                                     # 3. Расчет Действий (Правило #6.1.6.3):
                                        ## Действие 1: "Удар Длинным Мечом" (из инвентаря)
@@ -611,10 +622,6 @@
                                         "name": "Сэр Каэлен", 
                                         "description": "Человек, закаленный в бесчисленных битвах... (и т.д.)",
                                         "type": "Boss", 
-                                        "maxHealth": "280%",
-                                        "currentHealth": "280%",
-                                        "maxPoise": "200%",
-                                        "currentPoise": "200%",
                                         "actions": [
                                             {
                                                 "actionName": "Удар Длинным Мечом", 
@@ -819,8 +826,8 @@
                                     -   isGroup: true
                                     -   count: 12
                                     -   unitName: "Goblin Spearman"
-                                    -   maxHealth (per unit, Weak, EL=14): (80 + 14 * 1.2)% = 97% (rounded)
-                                    -   healthStates: ["97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%"]
+                                    -   HealthMaximum per unit (Weak, EL=14): round(80 + 14 * 1.2) = 97.
+                                    -   members: 12 stable memberRef records; each declares health maximum 97 and poise maximum 80 through its own resourceMaterialization envelope.
                                     -   Actions/Resistances calculated for a single EL 14 'Weak' Goblin Spearman archetype.
 
                                     ]]>
@@ -832,6 +839,7 @@
                                         [
                                             {
                                                 "NPCId": null,
+                                                "combatantRef": "combatant_ref_turn_42_goblin_war_party",
                                                 "name": "Goblin War Party",
                                                 "image_prompt": "A snarling war party of goblins with crude spears and leather armor, in a dark cave, fantasy art.",
                                                 "description": "Хаотичная толпа гоблинов-копейщиков, рычащих и размахивающих своим оружием. Их численность делает их серьезной угрозой.",
@@ -839,11 +847,20 @@
                                                 "isGroup": true,
                                                 "count": 12,
                                                 "unitName": "Goblin Spearman",
-                                                "maxHealth": "97%",
-                                                "currentHealth": null,
-                                                "maxPoise": "80%",
-                                                "currentPoise": null,
-                                                "healthStates": ["97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%"],
+                                                "members": [
+                                                    { "memberRef": "goblin_member_ref_01", "name": "Goblin Spearman 1", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } },
+                                                    { "memberRef": "goblin_member_ref_02", "name": "Goblin Spearman 2", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } },
+                                                    { "memberRef": "goblin_member_ref_03", "name": "Goblin Spearman 3", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } },
+                                                    { "memberRef": "goblin_member_ref_04", "name": "Goblin Spearman 4", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } },
+                                                    { "memberRef": "goblin_member_ref_05", "name": "Goblin Spearman 5", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } },
+                                                    { "memberRef": "goblin_member_ref_06", "name": "Goblin Spearman 6", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } },
+                                                    { "memberRef": "goblin_member_ref_07", "name": "Goblin Spearman 7", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } },
+                                                    { "memberRef": "goblin_member_ref_08", "name": "Goblin Spearman 8", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } },
+                                                    { "memberRef": "goblin_member_ref_09", "name": "Goblin Spearman 9", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } },
+                                                    { "memberRef": "goblin_member_ref_10", "name": "Goblin Spearman 10", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } },
+                                                    { "memberRef": "goblin_member_ref_11", "name": "Goblin Spearman 11", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } },
+                                                    { "memberRef": "goblin_member_ref_12", "name": "Goblin Spearman 12", "resourceMaterialization": { "resources": [{ "resourceKey": "health", "maximum": 97 }, { "resourceKey": "poise", "maximum": 80 }] } }
+                                                ],
                                                 "actions": [
                                                     { 
                                                         "actionName": "Massed Spear Thrusts", 
@@ -884,14 +901,14 @@
                 
                                     ## Splitting Unit from Group Protocol (#6.1.8.4)
                                     -   Effect is an individual 'Control' status ('Stun'). A split is MANDATORY.
-                                    -   1. Decrement 'Goblin War Party' count from 12 to 11. Remove one "97%" from 'healthStates'.
-                                    -   2. Create a new individual enemy object: "Stunned Goblin Spearman".
-                                    -   3. Inherit archetype stats (EL 14, maxHealth 97%, actions, resistances).
-                                    -   4. Set its currentHealth to 97% and add the 'Stun' effect to its 'activeDebuffs'.
+                                    -   1. Select the exact healthiest memberId from the client projection, remove only that member record, and decrement count from 12 to 11.
+                                    -   2. Create a detached individual enemy row carrying that same permanent memberId: "Stunned Goblin Spearman".
+                                    -   3. Inherit archetype display/actions/resistances while preserving the existing combat_group_member resource coordinate; do not initialize or copy health.
+                                    -   4. Apply Stun through effectChanges against the detached member carrier; activeDebuffs remains client-owned.
                 
                                     ## Final Combat State
                                     -   "Goblin War Party": count = 11.
-                                    -   New Enemy: "Stunned Goblin Spearman", health = 97%/97%, has 'Stunned (1 turn left)' debuff.
+                                    -   New Enemy: "Stunned Goblin Spearman" keeps the selected member's projected health and receives the materialized Stun effect.
 
                                     ]]>
      </logoutput>
@@ -902,6 +919,7 @@
                                         [
                                             {
                                                 "NPCId": null,
+                                                "combatantId": "combatant_id_goblin_war_party",
                                                 "name": "Goblin War Party",
                                                 "image_prompt": "A snarling war party of goblins with crude spears and leather armor, in a dark cave, fantasy art.",
                                                 "description": "Хаотичная толпа гоблинов-копейщиков, рычащих и размахивающих своим оружием. Их численность делает их серьезной угрозой.",
@@ -909,11 +927,19 @@
                                                 "isGroup": true,
                                                 "count": 11,
                                                 "unitName": "Goblin Spearman",
-                                                "maxHealth": "97%",
-                                                "currentHealth": null,
-                                                "maxPoise": "80%",
-                                                "currentPoise": null,
-                                                "healthStates": ["97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%"],
+                                                "members": [
+                                                    { "memberId": "goblin_member_id_01", "name": "Goblin Spearman 1" },
+                                                    { "memberId": "goblin_member_id_02", "name": "Goblin Spearman 2" },
+                                                    { "memberId": "goblin_member_id_03", "name": "Goblin Spearman 3" },
+                                                    { "memberId": "goblin_member_id_04", "name": "Goblin Spearman 4" },
+                                                    { "memberId": "goblin_member_id_05", "name": "Goblin Spearman 5" },
+                                                    { "memberId": "goblin_member_id_06", "name": "Goblin Spearman 6" },
+                                                    { "memberId": "goblin_member_id_07", "name": "Goblin Spearman 7" },
+                                                    { "memberId": "goblin_member_id_08", "name": "Goblin Spearman 8" },
+                                                    { "memberId": "goblin_member_id_09", "name": "Goblin Spearman 9" },
+                                                    { "memberId": "goblin_member_id_10", "name": "Goblin Spearman 10" },
+                                                    { "memberId": "goblin_member_id_11", "name": "Goblin Spearman 11" }
+                                                ],
                                                 "actions": [
                                                     { 
                                                         "actionName": "Massed Spear Thrusts", 
@@ -936,15 +962,12 @@
                                             },
                                             {
                                                 "NPCId": null,
+                                                "memberId": "goblin_member_id_12",
                                                 "name": "Stunned Goblin Spearman",
                                                 "image_prompt": "A single goblin with a crude spear, looking dazed and confused, stars circling its head, fantasy art.",
                                                 "description": "Одинокий гоблин, отделившийся от своей стаи. Он выглядит ошеломленным и сбитым с толку, нетвердо покачиваясь на ногах.",
                                                 "type": "Weak",
                                                 "isGroup": false,
-                                                "maxHealth": "97%",
-                                                "currentHealth": "97%",
-                                                "maxPoise": "80%",
-                                                "currentPoise": "80%",
                                                 "actions": [
                                                     { 
                                                         "actionName": "Spear Thrust", 
@@ -961,21 +984,24 @@
                                                     "resistType": "piercing"
                                                 }],
                                                 "activeBuffs": [],
-                                                "activeDebuffs": [
-                                                    {
-                                                        "effectType": "Control", 
-                                                        "value": "100%", 
-                                                        "targetType": "stun", 
-                                                        "duration": 1,
-                                                        "sourceSkill": "Stun Spell",
-                                                        "description": "Stunned! Cannot act (1 turn left)."
-                                                    }
-                                                ]
+                                                "activeDebuffs": []
                                             }
                                         ]
 
                                         ]]>
       </enemiesData>
+      <effectChanges>
+       <![CDATA[
+                                        [{
+                                            "operation": "apply",
+                                            "target": { "kind": "combatant", "targetId": "goblin_member_id_12" },
+                                            "source": { "kind": "skill", "sourceId": "skill_stun_spell", "definitionKey": "stun-one-turn" },
+                                            "parameters": {},
+                                            "eventRef": { "kind": "accepted_turn", "authorityId": "turn_43" },
+                                            "reason": "The selected detached group member was stunned."
+                                        }]
+                                        ]]>
+      </effectChanges>
      </jsonresponse>
     </step>
    </actionsequence>
@@ -984,61 +1010,65 @@
  <rule id="6.2.2.0">
   <example contenttype="json_fragment" type="good">
    <title>
-    CORRECT: Creating two new effects
+    CORRECT: Requesting two source-authorized effects
    </title>
    <description>
-    The 'effectId' field is correctly omitted or set to 'null' for new effects.
+    Each apply binds an exact current source definition and ordinal accepted-turn event. The client creates identities and carriers.
    </description>
    <jsonresponse>
-    <playerActiveEffectsChanges>
+    <effectChanges>
      <![CDATA[
 
                                                 [
                                                     {
-                                                        "effectId": null,
-                                                        "effectType": "Buff",
-                                                        "value": "10%",
-                                                        "targetType": "strength",
-                                                        "duration": 3,
-                                                        "description": "Strength increased by 10%."
+                                                        "operation": "apply",
+                                                        "target": { "kind": "player", "targetId": "player_current" },
+                                                        "source": { "kind": "skill", "sourceId": "skill_battle_focus", "definitionKey": "strength-focus" },
+                                                        "parameters": {},
+                                                        "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                                        "reason": "Игрок применил изученный навык."
                                                     },
                                                     {
-                                                    
-                                                        "effectType": "DamageOverTime",
-                                                        "value": "5%",
-                                                        "targetType": "poison",
-                                                        "duration": 2,
-                                                        "description": "Poisoned for 5% damage."
+                                                        "operation": "apply",
+                                                        "target": { "kind": "player", "targetId": "player_current" },
+                                                        "source": { "kind": "item", "sourceId": "item_poisoned_needle", "definitionKey": "needle-poison" },
+                                                        "parameters": {},
+                                                        "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42_effect_2" },
+                                                        "reason": "Яд с принятого предмета попал в кровь."
                                                     }
                                                 ]
 
                                                 ]]>
-    </playerActiveEffectsChanges>
+    </effectChanges>
    </jsonresponse>
   </example>
   <example contenttype="json_fragment" type="good">
    <title>
-    CORRECT: Updating an existing effect's duration
+    CORRECT: Refreshing through the same source policy
    </title>
    <description>
-    The 'effectId' is correctly retrieved from the Context and provided to update the duration of an existing effect.
+    A second accepted apply at the same stack coordinate lets the source-owned refresh policy preserve identity and recompute remaining lifetime.
    </description>
    <scenariocontext>
-    In the Context, the player has an active "Poison" effect with 'effectId: "effect-poison-xyz789"' and 'duration: 2'.
+    The player has the accepted poison effect, and its exact item definition declares policy=refresh.
    </scenariocontext>
    <jsonresponse>
-    <playerActiveEffectsChanges>
+    <effectChanges>
      <![CDATA[
 
                                                 [
                                                     {
-                                                        "effectId": "effect-poison-xyz789",
-                                                        "duration": 1 
+                                                        "operation": "apply",
+                                                        "target": { "kind": "player", "targetId": "player_current" },
+                                                        "source": { "kind": "item", "sourceId": "item_poisoned_needle", "definitionKey": "needle-poison" },
+                                                        "parameters": {},
+                                                        "eventRef": { "kind": "accepted_turn", "authorityId": "turn_43" },
+                                                        "reason": "Повторное воздействие обновляет эффект по политике источника."
                                                     }
                                                 ]
 
                                                 ]]>
-    </playerActiveEffectsChanges>
+    </effectChanges>
    </jsonresponse>
   </example>
   <example contenttype="json_fragment" type="bad">
@@ -1049,50 +1079,49 @@
     The GM must not create fake IDs. This will cause a system error.
    </description>
    <jsonresponse>
-    <playerActiveEffectsChanges>
+    <effectChanges>
      <![CDATA[
 
                                                 [
                                                     {
+                                                        "operation": "apply",
                                                         "effectId": "new-buff-strength-1",
-                                                        "effectType": "Buff",
-                                                        "value": "10%",
-                                                        "targetType": "strength",
-                                                        "duration": 3,
-                                                        "description": "Strength increased by 10%."
+                                                        "target": { "kind": "player", "targetId": "player_current" },
+                                                        "source": { "kind": "skill", "sourceId": "skill_battle_focus", "definitionKey": "strength-focus" },
+                                                        "parameters": {},
+                                                        "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                                        "reason": "Invalid client-owned identity."
                                                     }
                                                 ]
 
                                                 ]]>
-    </playerActiveEffectsChanges>
+    </effectChanges>
    </jsonresponse>
   </example>
   <example contenttype="json_fragment" type="bad">
    <title>
-    INCORRECT AND FORBIDDEN: Updating an effect without its ID
+    INCORRECT AND FORBIDDEN: Removing by prose without exact authority
    </title>
    <description>
-    Sending an effect's description or other properties without its 'effectId' will create a duplicate effect, not update the original one. This is a critical error.
+    A display description is not identity, source, target, event, or removal authority.
    </description>
    <scenariocontext>
-    In the Context, the player has an active "Poison" effect with 'effectId: "effect-poison-xyz789"' and 'duration: 2'.
+    The player has an accepted poison effect, but the GM omits the opaque selector and removal authority supplied by technical context.
    </scenariocontext>
    <jsonresponse>
-    <playerActiveEffectsChanges>
+    <effectChanges>
      <![CDATA[
 
                                                 [
                                                     {
-                                                    
-                                                        "effectType": "DamageOverTime",
-                                                        "targetType": "poison",
-                                                        "duration": 1,
-                                                        "description": "Poisoned for 5% damage."
+                                                        "operation": "remove",
+                                                        "target": { "kind": "player", "targetId": "player_current" },
+                                                        "reason": "Poison is gone because the prose says so."
                                                     }
                                                 ]
 
                                                 ]]>
-    </playerActiveEffectsChanges>
+    </effectChanges>
    </jsonresponse>
   </example>
  </rule>
@@ -1115,21 +1144,21 @@
     Example: Mortal combat damage must use Math Assistant audit for non-trivial arithmetic
    </title>
    <description>
-    Когда урон складывается из нескольких чисел, GM не должен оставлять расчёт только в тексте. Запиши `mathAudit` с явными variables и привяжи результат к полю изменения со знаком, если число меняет состояние игрока.
+    Когда урон складывается из нескольких чисел, GM не должен оставлять расчёт только в тексте. Запиши `mathAudit` с явными variables и привяжи положительный результат к `resourceChanges[].amount`; направление задаёт operation=damage.
    </description>
    <jsonresponse>
     <![CDATA[
 {
   "response": "Разбойник пробивает защиту героя и оставляет глубокую рану.",
-  "gm_thoughts_markdown": "Математик использован для изменения здоровья со знаком: armorReduction - (baseDamage + strengthBonus).",
+  "gm_thoughts_markdown": "Математик использован для точного урона: baseDamage + strengthBonus - armorReduction.",
   "mathRequests": [
     {
       "requestId": "calc_mortal_combat_damage_example",
       "purpose": "mortal combat applied health delta",
-      "expression": "armorReduction - (baseDamage + strengthBonus)",
+      "expression": "baseDamage + strengthBonus - armorReduction",
       "variables": { "baseDamage": 12, "strengthBonus": 4, "armorReduction": 3 },
       "rounding": { "mode": "none" },
-      "expectedResult": -13,
+      "expectedResult": 13,
       "applicationState": "requested_only"
     }
   ],
@@ -1138,20 +1167,27 @@
       "auditId": "calc_mortal_combat_damage_example",
       "requestId": "calc_mortal_combat_damage_example",
       "purpose": "mortal combat applied health delta",
-      "expression": "armorReduction - (baseDamage + strengthBonus)",
-      "normalizedExpression": "armorReduction-(baseDamage+strengthBonus)",
+      "expression": "baseDamage + strengthBonus - armorReduction",
+      "normalizedExpression": "baseDamage+strengthBonus-armorReduction",
       "variables": { "baseDamage": 12, "strengthBonus": 4, "armorReduction": 3 },
-      "rawResult": -13,
-      "result": -13,
+      "rawResult": 13,
+      "result": 13,
       "rounding": { "mode": "none" },
       "formulaVersion": "math_assistant_v1",
       "applicationState": "applied_to_state",
-      "referencedBy": [ "currentHealthChange", "combat_log_markdown:mortal_damage_1" ],
+      "referencedBy": [ "resourceChanges[0].amount", "combat_log_markdown:mortal_damage_1" ],
       "warnings": []
     }
   ],
-  "currentHealthChange": -13,
-  "combat_log_markdown": "Герой получает 13 урона: 12 базового + 4 сила - 3 броня. Применено currentHealthChange = -13."
+  "resourceChanges": [{
+    "operation": "damage",
+    "target": { "kind": "player", "targetId": "player_current" },
+    "resourceKey": "health", "amount": 13,
+    "source": { "kind": "combat_outcome", "sourceId": "mortal_damage_1" },
+    "eventRef": "turn_42:resource:1",
+    "reason": "Удар разбойника после снижения бронёй."
+  }],
+  "combat_log_markdown": "Герой получает 13 урона: 12 базового + 4 сила - 3 броня."
 }
                                         ]]>
    </jsonresponse>

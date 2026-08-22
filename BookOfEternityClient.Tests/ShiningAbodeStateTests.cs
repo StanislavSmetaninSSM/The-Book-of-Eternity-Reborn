@@ -268,6 +268,8 @@ public sealed class ShiningAbodeStateTests
             null,
             null,
             null,
+            new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>()),
+            new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>()),
             null,
             0);
         Assert.NotNull(context);
@@ -904,6 +906,98 @@ public sealed class ShiningAbodeStateTests
         Assert.NotNull(result);
         Assert.Contains("preparedIncarnationPackage", result, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Theory]
+    [InlineData("{\"resourceKey\":\"wrong_resource\",\"amount\":1}")]
+    [InlineData("{\"resourceKey\":\"blessing_rerolls\",\"amount\":-1}")]
+    [InlineData("{\"resourceKey\":\"blessing_rerolls\",\"amount\":\"1\"}")]
+    [InlineData("{\"resourceKey\":\"blessing_rerolls\",\"amount\":1,\"extra\":true}")]
+    public void ValidatePreparedIncarnationPackageForBootstrap_InvalidRerollAllocation_FailsClosed(
+        string allocationJson)
+    {
+        var package = CreatePreparedRerollPackage(new JsonObject
+        {
+            ["type"] = "expand_memory_selection",
+            ["options"] = 1,
+            [ShiningBlessingRerollAllocationContract.PropertyName] = JsonNode.Parse(allocationJson)
+        });
+
+        var result = ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(package);
+
+        Assert.NotNull(result);
+        Assert.Contains("rerollAllocation", result, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ValidatePreparedIncarnationPackageForBootstrap_LegacyNumericRerolls_FailsClosed()
+    {
+        var package = CreatePreparedRerollPackage(new JsonObject
+        {
+            ["type"] = "expand_memory_selection",
+            ["options"] = 1,
+            ["rerolls"] = 1
+        });
+
+        var result = ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(package);
+
+        Assert.NotNull(result);
+        Assert.Contains("rerolls", result, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ValidatePreparedIncarnationPackageForBootstrap_RerollAllocationOnUnsupportedFamily_FailsClosed()
+    {
+        var package = CreatePreparedRerollPackage(
+            new JsonObject
+            {
+                ["type"] = "grant_social_start",
+                [ShiningBlessingRerollAllocationContract.PropertyName] =
+                    ShiningBlessingRerollAllocationContract.Create(1)
+            },
+            ShiningAbodeState.EffectFamilySocial);
+
+        var result = ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(package);
+
+        Assert.NotNull(result);
+        Assert.Contains("rerollAllocation", result, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ValidatePreparedIncarnationPackageForBootstrap_ClosedRerollAllocation_IsAccepted()
+    {
+        var package = CreatePreparedRerollPackage(new JsonObject
+        {
+            ["type"] = "expand_memory_selection",
+            ["options"] = 1,
+            [ShiningBlessingRerollAllocationContract.PropertyName] =
+                ShiningBlessingRerollAllocationContract.Create(1)
+        });
+
+        Assert.Null(ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(package));
+    }
+
+    private static JsonObject CreatePreparedRerollPackage(
+        JsonObject effectPayload,
+        string effectFamily = ShiningAbodeState.EffectFamilyMemory) => new()
+    {
+        ["selectedCardIds"] = new JsonArray("card_memory"),
+        ["selectedCards"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["cardId"] = "card_memory",
+                ["dedupeKey"] = "memory:card_memory",
+                ["sourceType"] = ShiningAbodeState.CardSourceTypeProject,
+                ["sourceFactionId"] = "faction_dawn",
+                ["sourceActorId"] = "project_memory",
+                ["effectFamily"] = effectFamily,
+                ["rarity"] = ShiningAbodeState.RarityCommon,
+                ["displayName"] = "Память рассвета",
+                ["displaySummary"] = "Даёт дополнительный выбор памяти.",
+                ["effectPayload"] = effectPayload
+            }
+        }
+    };
 
     [Fact]
     public void NormalizeStateRoot_HydratesFoundingReceiptSnapshotFromCurrentHallAndFaction()

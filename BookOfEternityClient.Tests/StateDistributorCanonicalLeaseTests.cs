@@ -170,7 +170,8 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
         {
             EffectChanges = JsonSerializer.Deserialize<JsonElement[]>(
                 "[{\"operation\":\"apply\"}]")!,
-            EffectResolutionReceipts = Array.Empty<JsonElement>()
+            EffectResolutionReceipts = Array.Empty<JsonElement>(),
+            EffectEventReports = Array.Empty<JsonElement>()
         };
 
         var modified = await distributor.DistributeAsync(response);
@@ -179,7 +180,7 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
         using var document = JsonDocument.Parse(
             await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath) ?? "{}");
         Assert.Equal(
-            new[] { "effectChanges", "effectResolutionReceipts" },
+            new[] { "effectChanges", "effectEventReports", "effectResolutionReceipts" },
             document.RootElement.EnumerateObject()
                 .Select(static property => property.Name)
                 .OrderBy(static name => name, StringComparer.Ordinal));

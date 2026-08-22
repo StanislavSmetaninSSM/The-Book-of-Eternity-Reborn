@@ -2,6 +2,9 @@
  <title>
   Examples For Player Character State Management
  </title>
+ <effectmaterializationcontract>
+  Resource changes and structured bonuses remain independent state. Lifecycle effects use effectChanges[] and the worked profiles in Examples/E_CLI_Effect_Materialization.txt.
+ </effectmaterializationcontract>
  <rule id="17.2.1.1">
   <example contenttype="log_and_json_snippet" id="EnergyRestoration_Example" type="good">
    <title>
@@ -18,18 +21,25 @@
                                             - Principle of Effort Check: The player's activity ("спокойно попивая чай с булочками") is a "Passive / Restorative State". It does not require effort.
                                             - Action Category: Restoration Action.
                                             - Calculation: Relaxing with food and drink for 30 minutes is a significant restorative act. Assigning a moderate energy GAIN.
-                                            - Final 'currentEnergyChange': +15.
+                                            - Final common resource command: gain 15 energy.
 
                                             ]]>
    </logoutput>
    <jsonresponse>
-    <currentenergychange>
+    <resourcechanges>
      <![CDATA[
-
-                                                15
-
+                                                [
+                                                  {
+                                                    "operation": "gain",
+                                                    "target": { "kind": "player", "targetId": "player_current" },
+                                                    "resourceKey": "energy",
+                                                    "amount": 15,
+                                                    "source": { "kind": "narrative_outcome", "sourceId": "turn_42" },
+                                                    "eventRef": "turn_42:resource:1"
+                                                  }
+                                                ]
                                                 ]]>
-    </currentenergychange>
+    </resourcechanges>
     <response>
      <![CDATA[
 

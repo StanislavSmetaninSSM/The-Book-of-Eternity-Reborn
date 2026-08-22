@@ -996,7 +996,10 @@ internal static partial class ShiningAbodeState
         if (factionRoles.Contains(ResidentRoleArchiveSupport) &&
             string.Equals(effectFamily, EffectFamilyMemory, StringComparison.OrdinalIgnoreCase))
         {
-            payload["rerolls"] = GetNodeInt(payload["rerolls"], 0) + 1;
+            payload[ShiningBlessingRerollAllocationContract.PropertyName] =
+                ShiningBlessingRerollAllocationContract.Create(
+                    ShiningBlessingRerollAllocationContract.ReadOrZero(
+                        payload[ShiningBlessingRerollAllocationContract.PropertyName]) + 1);
         }
 
         if (factionRoles.Contains(ResidentRoleSocialSupport))
@@ -1093,10 +1096,10 @@ internal static partial class ShiningAbodeState
             EffectFamilyLore => new JsonObject { ["type"] = "insert_lore_clues", ["clueCount"] = string.Equals(rarity, RarityRadiant, StringComparison.OrdinalIgnoreCase) ? 2 : 1, ["latestTurn"] = rarity switch { RarityCommon => 12, RarityUncommon => 10, _ => 8 } },
             EffectFamilySocial => new JsonObject { ["type"] = "modify_first_ally_relation", ["delta"] = rarity switch { RarityCommon => 10, RarityUncommon => 15, RarityRare => 20, _ => 25 } },
             EffectFamilyResource => new JsonObject { ["type"] = "grant_starting_resources", ["money"] = rarity switch { RarityCommon => 100, RarityUncommon => 150, RarityRare => 225, _ => 300 }, ["common"] = rarity switch { RarityCommon => 1, RarityUncommon => 2, RarityRare => 3, _ => 4 }, ["uncommon"] = rarity switch { RarityCommon => 0, RarityUncommon => 1, RarityRare => 1, _ => 2 } },
-            EffectFamilyMemory => new JsonObject { ["type"] = "expand_memory_selection", ["options"] = rarity is RarityCommon or RarityUncommon ? 1 : 2, ["rerolls"] = rarity switch { RarityCommon => 0, RarityUncommon => 1, RarityRare => 1, _ => 2 } },
+            EffectFamilyMemory => new JsonObject { ["type"] = "expand_memory_selection", ["options"] = rarity is RarityCommon or RarityUncommon ? 1 : 2, [ShiningBlessingRerollAllocationContract.PropertyName] = ShiningBlessingRerollAllocationContract.Create(rarity switch { RarityCommon => 0, RarityUncommon => 1, RarityRare => 1, _ => 2 }) },
             EffectFamilyDescent => new JsonObject { ["type"] = "guide_resident_descent", ["latestTurn"] = rarity switch { RarityCommon => 12, RarityUncommon => 10, RarityRare => 8, _ => 6 }, ["quality"] = rarity switch { RarityCommon => 5, RarityUncommon => 10, RarityRare => 15, _ => 20 } },
             EffectFamilySurvival => new JsonObject { ["type"] = "downgrade_ruinous_failure", ["downgrade"] = 1, ["recovery"] = rarity switch { RarityCommon => 0, RarityUncommon => 10, RarityRare => 20, _ => 30 } },
-            EffectFamilyRelic => new JsonObject { ["type"] = "grant_relic_refinement", ["rerolls"] = rarity switch { RarityCommon => 1, RarityUncommon => 2, RarityRare => 2, _ => 3 }, ["freeShape"] = rarity is RarityRare or RarityRadiant, ["freeRetune"] = string.Equals(rarity, RarityRadiant, StringComparison.OrdinalIgnoreCase) },
+            EffectFamilyRelic => new JsonObject { ["type"] = "grant_relic_refinement", [ShiningBlessingRerollAllocationContract.PropertyName] = ShiningBlessingRerollAllocationContract.Create(rarity switch { RarityCommon => 1, RarityUncommon => 2, RarityRare => 2, _ => 3 }), ["freeShape"] = rarity is RarityRare or RarityRadiant, ["freeRetune"] = string.Equals(rarity, RarityRadiant, StringComparison.OrdinalIgnoreCase) },
             EffectFamilyRoute => new JsonObject { ["type"] = "seed_early_routes", ["routeOptions"] = string.Equals(rarity, RarityRadiant, StringComparison.OrdinalIgnoreCase) ? 2 : 1, ["latestTurn"] = rarity switch { RarityCommon => 10, RarityUncommon => 8, _ => 6 } },
             _ => new JsonObject { ["type"] = "unknown" }
         };
@@ -1110,10 +1113,10 @@ internal static partial class ShiningAbodeState
             EffectFamilyLore => $"К {GetNodeInt(payload["latestTurn"], 12)} ходу явит {GetNodeInt(payload["clueCount"], 1)} lore clue.",
             EffectFamilySocial => $"Первый союзник начнёт ближе к доверию (+{GetNodeInt(payload["delta"], 0)}).",
             EffectFamilyResource => $"+{GetNodeInt(payload["money"], 0)} денег, common x{GetNodeInt(payload["common"], 0)}, uncommon x{GetNodeInt(payload["uncommon"], 0)}.",
-            EffectFamilyMemory => $"+{GetNodeInt(payload["options"], 0)} вариантов памяти, rerolls {GetNodeInt(payload["rerolls"], 0)}.",
+            EffectFamilyMemory => $"+{GetNodeInt(payload["options"], 0)} вариантов памяти, rerolls {ShiningBlessingRerollAllocationContract.ReadOrZero(payload[ShiningBlessingRerollAllocationContract.PropertyName])}.",
             EffectFamilyDescent => $"Эхо спутника придёт не позже {GetNodeInt(payload["latestTurn"], 0)} хода с quality +{GetNodeInt(payload["quality"], 0)}.",
             EffectFamilySurvival => $"Ослабит первый ruinous failure и восстановит {GetNodeInt(payload["recovery"], 0)}% потерь.",
-            EffectFamilyRelic => $"Relic rerolls {GetNodeInt(payload["rerolls"], 0)}, reshape={GetNodeBool(payload["freeShape"])}, retune={GetNodeBool(payload["freeRetune"])}.",
+            EffectFamilyRelic => $"Relic rerolls {ShiningBlessingRerollAllocationContract.ReadOrZero(payload[ShiningBlessingRerollAllocationContract.PropertyName])}, reshape={GetNodeBool(payload["freeShape"])}, retune={GetNodeBool(payload["freeRetune"])}.",
             EffectFamilyRoute => $"Откроет {GetNodeInt(payload["routeOptions"], 0)} ранних route option к {GetNodeInt(payload["latestTurn"], 0)} ходу.",
             _ => effectFamily
         };

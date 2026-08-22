@@ -1735,6 +1735,30 @@ public sealed class ShiningBlessingEffectStateTests
         Assert.Contains(lines, line => line.Contains("grant relic refinement entitlements", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public void BuildPendingWorldDirectiveLines_UsesExplicitBlessingRerollResourceAllocations()
+    {
+        var preparedPackage = CreatePreparedPackage();
+        var cards = preparedPackage["selectedCards"]!.AsArray();
+        foreach (var card in cards.OfType<JsonObject>())
+        {
+            var payload = card["effectPayload"]!.AsObject();
+            if (!payload.Remove("rerolls", out var amount) || amount == null)
+                continue;
+
+            payload["rerollAllocation"] = new JsonObject
+            {
+                ["resourceKey"] = "blessing_rerolls",
+                ["amount"] = amount
+            };
+        }
+
+        var lines = ShiningBlessingEffectState.BuildPendingWorldDirectiveLines(preparedPackage);
+
+        Assert.Contains(lines, line => line.Contains("1 memory-only rerolls", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(lines, line => line.Contains("rerolls=2", StringComparison.OrdinalIgnoreCase));
+    }
+
     private static JsonObject CreatePreparedPackage()
     {
         return new JsonObject
@@ -1747,7 +1771,8 @@ public sealed class ShiningBlessingEffectStateTests
                 {
                     ["type"] = "expand_memory_selection",
                     ["options"] = 1,
-                    ["rerolls"] = 1
+                    [ShiningBlessingRerollAllocationContract.PropertyName] =
+                        ShiningBlessingRerollAllocationContract.Create(1)
                 }),
                 CreateCard("card_resource", "resource", new JsonObject
                 {
@@ -1788,7 +1813,8 @@ public sealed class ShiningBlessingEffectStateTests
                 CreateCard("card_relic", "relic", new JsonObject
                 {
                     ["type"] = "grant_relic_refinement",
-                    ["rerolls"] = 2,
+                    [ShiningBlessingRerollAllocationContract.PropertyName] =
+                        ShiningBlessingRerollAllocationContract.Create(2),
                     ["freeShape"] = true,
                     ["freeRetune"] = false
                 })

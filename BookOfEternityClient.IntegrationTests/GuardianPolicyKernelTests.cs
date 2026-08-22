@@ -91,7 +91,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                 { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
               ],
               "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
             }
           ]
         }
@@ -175,7 +175,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                   { "fragmentId": "guardian_new_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
                 ],
                 "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                "gachaSystem": { "chargesPerReturn": 1, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
               }
             }
           ]
@@ -414,7 +414,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                 { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Ложное возвращение", "content": null, "requiredReputation": 130 }
               ],
               "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
             }
           ]
         }
@@ -459,7 +459,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                     { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
                   ],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -556,7 +556,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                     { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
                   ],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -657,7 +657,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                     { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
                   ],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -742,7 +742,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                     { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
                   ],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -891,7 +891,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
               "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
               "guardianRelationships": [],
               "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
             }
           ]
         }
@@ -926,7 +926,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                   "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
                   "guardianRelationships": [],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -1026,7 +1026,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
               "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
               "guardianRelationships": [],
               "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
             }
           ]
         }
@@ -1061,7 +1061,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                   "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
                   "guardianRelationships": [],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -1229,7 +1229,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
               "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
               "guardianRelationships": [],
               "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-              "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
             }
           ]
         }
@@ -1264,7 +1264,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                   "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
                   "guardianRelationships": [],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -1385,7 +1385,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                     ],
                     "completedQuests": []
                   },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 },
                 {
                   "guardianId": "guardian_beta",
@@ -1405,7 +1405,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                     { "targetGuardianId": "guardian_alpha", "attitudeScore": -60, "attitudeTier": "rival", "reason": "Hostility", "lastChangedAt": null }
                   ],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -1494,7 +1494,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                   "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
                   "guardianRelationships": [],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -1566,7 +1566,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                   "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
                   "guardianRelationships": [],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -1638,7 +1638,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                   "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
                   "guardianRelationships": [],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -1712,7 +1712,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                   "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
                   "guardianRelationships": [],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -1804,7 +1804,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                     { "targetGuardianId": "guardian_beta", "attitudeScore": -80, "attitudeTier": "enemy", "reason": "Open hostility", "lastChangedAt": null }
                   ],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 },
                 {
                   "guardianId": "guardian_beta",
@@ -1824,7 +1824,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                     { "targetGuardianId": "guardian_alpha", "attitudeScore": -60, "attitudeTier": "rival", "reason": "Hostility", "lastChangedAt": null }
                   ],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -1924,7 +1924,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                 { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
               ],
               "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
             }
           ],
           "guardianPowerEvents": [
@@ -1991,7 +1991,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                     { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
                   ],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -2050,7 +2050,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                 { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
               ],
               "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
             }
           ]
         }
@@ -2102,7 +2102,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
                     { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
                   ],
                   "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                  "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
                 }
               ]
             }
@@ -3176,7 +3176,6 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         pronouns ??= "она/её";
         appearanceDescription ??= $"Canonical fixture for {guardianId}.";
         var canonicalPower = AbodePowerRules.ClampCurrentPower(power);
-        var gachaChargesPerReturn = GuardianGachaChargeRules.GetChargesPerReturnForReputation(reputation, canonicalPower);
         var nameVariants = new JsonObject
         {
             ["default"] = defaultName,
@@ -3250,8 +3249,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
             },
             ["gachaSystem"] = new JsonObject
             {
-                ["chargesPerReturn"] = gachaChargesPerReturn,
-                ["chargesUsedThisReturn"] = 0,
+                ["currentReturnCycleId"] = string.Empty,
                 ["gachaHistory"] = new JsonArray()
             }
         };

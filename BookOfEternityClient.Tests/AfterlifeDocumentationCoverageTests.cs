@@ -2413,6 +2413,27 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningBlessingRerollAllocationIsDocumentedAsClientOwnedBootstrapInput()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var doc in new[] { matrix, glossary, examples, manifest })
+        {
+            Assert.Contains("rerollAllocation", doc, StringComparison.Ordinal);
+            Assert.Contains("resourceKey", doc, StringComparison.Ordinal);
+            Assert.Contains("amount", doc, StringComparison.Ordinal);
+            Assert.Contains("rerollResourceBinding", doc, StringComparison.Ordinal);
+            Assert.Contains("client-generated", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("bootstrap", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain("\"rerolls\":", examples, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void GuardianQuestOriginMetadataIsDocumentedForAfterlifeHooks()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
@@ -4480,6 +4501,56 @@ public sealed class AfterlifeDocumentationCoverageTests
             if (Directory.Exists(rootPath))
                 Directory.Delete(rootPath, recursive: true);
         }
+    }
+
+    [Fact]
+    public void CompleteEffectMaterializationAfterlifeAdapter_IsDocumentedWithoutLegacyFallback()
+    {
+        var common = ReadRepoFile("OtherGuides", "Effect_Materialization_Contract.md");
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var api = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var corpus = string.Join('\n', common, matrix, glossary, examples, api, daemonSpec, taskGuide, daemon);
+
+        foreach (var document in new[] { matrix, glossary, api, daemonSpec, taskGuide, daemon })
+        {
+            Assert.Contains("Effect Materialization v1", document, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Effect_Materialization_Contract.md", document, StringComparison.Ordinal);
+        }
+
+        foreach (var required in new[]
+                 {
+                     "activeEffects[]",
+                     "effectChanges[]",
+                     "effectResolutionReceipts[]",
+                     "effectEventReports[]",
+                     "effect_identity_index.json",
+                     "pending_effect_resolutions.json",
+                     "afterlife_effect_profile_v1",
+                     "afterlife_effect_conditions_five_kinds_v1",
+                     "mark",
+                     "ward",
+                     "burden",
+                     "opening",
+                     "vow",
+                     "hidden",
+                     "gm_only",
+                     "Shining blessing entitlement is not a generic active effect",
+                     "never author combatConditions[]"
+                 })
+        {
+            Assert.Contains(required, corpus, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain(
+            "legacy `effectSummary`-only profiles remain readable",
+            corpus,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"combatConditions\":", examples, StringComparison.Ordinal);
     }
 
     private static string[] ShiningConstantValues(params string[] prefixes) =>

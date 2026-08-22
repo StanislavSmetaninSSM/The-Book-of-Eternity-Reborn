@@ -1686,7 +1686,13 @@ internal sealed record NpcDetailProjection(
     string NpcName,
     IReadOnlyList<NpcDetailSection> Sections,
     IReadOnlyList<NpcQuestDetail> PersonalQuests,
-    NpcTradePresentation? Trade);
+    NpcTradePresentation? Trade,
+    bool ResourceProjectionAvailable = false,
+    IReadOnlyList<ResourceProjectionRow>? ProjectedResources = null)
+{
+    internal IReadOnlyList<ResourceProjectionRow> Resources { get; init; } =
+        ProjectedResources ?? Array.Empty<ResourceProjectionRow>();
+}
 
 internal sealed record NpcTradePresentation(
     bool CanTrade,

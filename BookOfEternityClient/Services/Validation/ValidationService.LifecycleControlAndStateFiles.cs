@@ -736,6 +736,11 @@ public partial class ValidationService
             {
                 "otherPlayersInteractions"
             }, issues, ValidateMetaMiscContract);
+        await ValidateStrictTopLevelObjectFileAsync("game_state/misc/player_interactions.json",
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "otherPlayersInteractions"
+            }, issues);
         await ValidateFlexibleStateFile("game_state/control/life_transitions.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {

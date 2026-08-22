@@ -266,6 +266,43 @@ Shining entry plans also carry a closed transition kind. Current-cycle synchroni
 - Special-case `blessing_rerolls` only inside the lifecycle planner: rejected because owner resolution and canonical agreement would disagree and the exception would not be sealed or fingerprinted.
 - Trust a realm/readiness check performed before prompting or before acquiring the write lease: rejected as a TOCTOU authorization gap.
 
+## Decision 21: Ordinary authored sources are client-derived from accepted command events
+
+**Decision**: Raw `action_cost`, `combat_outcome`, and `narrative_outcome` selectors contain only their registered `kind`. After exact global resource-command ordinal validation, the client derives the permanent plan-local source identity from that command's exact `eventRef`, resolves and binds the source to the command's composed target owner, and fingerprints session/request/turn, ordinal, operation, coordinate, amount, reason, accepted event, and owner authority. The accepted event is therefore the one identity of an ordinary authored occurrence. Raw input cannot submit a second arbitrary source ID. Item-local routes remain different: `local_item_cost` and `local_item_outcome` must carry the exact permanent `itemId`, because that durable source is the item rather than the one-turn occurrence.
+
+**Rationale**: The previous shape required an arbitrary GM-authored `sourceId` but exported no matching ordinary source authority. Merely accepting arbitrary IDs would let a retry evade the replay tuple by renaming the source. Binding one client-derived source to the already protected ordinal event and exact target produces usable ordinary commands without creating a second identity namespace or a self-authorizing source catalog.
+
+**Alternatives considered**:
+
+- Export every submitted `{kind,sourceId}` automatically: rejected because changing the raw source ID would create a new replay key for the same accepted occurrence.
+- Require the GM to repeat `eventRef` as `sourceId`: rejected as redundant authority that can disagree and requires repair instead of making mismatch impossible.
+- Use one global source per kind: rejected because it is neither target-bound nor occurrence-bound and cannot distinguish retries or simultaneous actions.
+
+## Decision 22: Combat-group member identity survives carrier changes
+
+**Decision**: `combat_group_member` is an owner identity, not a nested-array position. A member may be carried inside a group `members[]` array or as a top-level non-group combat row after detachment. The top-level row keeps exactly one `memberId`/`memberRef` identity family and must not also claim `NPCId`, `npcRef`, `combatantId`, or `combatantRef`. Resource authority remains `mortal_world/combat_group_member/<memberId>` across group-to-row and row-to-group movement. Effect targeting continues to use the player-facing `combatant` target kind, but exact target authority admits both individual `combatantId` and detached `memberId` and fails on cross-family ambiguity. Effect carrier ownership likewise follows the exact member ID.
+
+**Rationale**: Active combat rules already detach one member into its own actionable row. Reclassifying that row as a newly invented anonymous combatant would orphan the member's resource history and any active effects. Treating nesting as a carrier preserves one identity and supports future formation changes without transfer adapters.
+
+**Alternatives considered**:
+
+- Allocate a new `combatantId` on detachment: rejected because it splits one entity and requires lossy resource/effect transfer semantics.
+- Keep detached members invisible to effects/resources: rejected because the row is independently actionable in the active combat contract.
+- Infer identity from display name or former list position: rejected as ambiguous, mutable, and already forbidden by FR-016.
+
+## Decision 23: FullParty resource changes are recipient-scoped transport packets
+
+**Decision**: `otherPlayersInteractions` remains an outbound interaction surface, not authority over the active client's ledger. Each exact `playerId` bucket contains closed nonempty command packets. A packet may contain `resourceChanges[]` for that recipient only; each nested target is exactly `{kind:"player",targetId:"player_current"}` because it is interpreted in the recipient's local owner namespace. The originating client validates the same closed operation/resource/amount/source/reason shape and one global accepted resource-event ordinal across local and remote commands, then stages the packet without applying it locally. Remote application requires the recipient's own accepted-turn handoff; #1543 does not invent cross-client trust, signatures, or networking. Unknown packet fields, local/non-player targets, duplicate/confusable recipient IDs, reused/swapped events, or attempts to include definitions/capacity/canonical after-state fail the complete originating turn.
+
+**Rationale**: FullParty examples already route other players' changes through `otherPlayersInteractions`. Applying those commands to `player_current` on the originating client would corrupt the active player, while merely checking that each packet object is nonempty leaves an unvalidated mechanical payload. A recipient-scoped, validation-only outbound contract preserves the existing transport boundary and makes the lack of local mutation explicit.
+
+**Alternatives considered**:
+
+- Apply remote packets to the originating `player_current`: rejected as wrong-player state corruption.
+- Resolve a remote `playerId` as a local resource owner: rejected because the current canonical owner model deliberately has one local `player_current` and no shared remote ledger.
+- Accept arbitrary top-level commands in remote buckets: rejected because it recreates an unbounded nested response surface and bypasses the common resource parser.
+- Claim that this repository directly completes network delivery: rejected because no authenticated cross-client transport exists here; the accepted packet is the safe handoff boundary.
+
 ## Implementation preflight conflicts and resolutions (2026-08-15)
 
 - Issues #1543 and #1535 are open; #1535 records #1543 as the blocker for Effect Task 9. The active branch/root are `1535-effect-materialization` and `E:/Games/worktrees/boe-1535-effect-materialization`.

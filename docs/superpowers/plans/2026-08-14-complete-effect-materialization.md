@@ -4,7 +4,7 @@
 
 **Goal:** Make every durable active effect in the Mortal World and afterlife a complete, source-authorized, client-identified runtime instance with deterministic mechanics, stacking, lifetime, rollback, and one safe player projection.
 
-**Architecture:** Static `combatEffect`, `structuredBonuses`, Fate Card effects, wound consequences, skills, arts, items, quests, locations, factions, events, hazards, and combat actions remain source templates. The GM submits only transient `effectChanges[]` and bounded `effectResolutionReceipts[]`. A subordinate effect plan resolves exact source and target authority, allocates random client-owned identities once, and supplies complete carrier/index proposals to one cached `AcceptedMechanicsPlan`. The common plan alone advances resource/lifecycle/trigger work, owns pending/terminal receipts and before-images, and publishes all resource/effect/companion after-images after every source-owning normalizer. Afterlife profiles carry persistent actor effects; spiritual `combatConditions[]` keep their specialized fields through one shared identity/lifecycle adapter. No independent effect publisher, runtime migration, or compatibility reader is added.
+**Architecture:** Static `combatEffect`, `structuredBonuses`, Fate Card effects, wound consequences, skills, arts, items, quests, locations, factions, events, hazards, and combat actions remain source templates. The GM submits only transient `effectChanges[]`, bounded `effectResolutionReceipts[]`, and closed `effectEventReports[]`; a registered report binds sealed evidence while the client selects exact effect/trigger/post-state. A subordinate effect plan resolves exact source and target authority, allocates random client-owned identities once, and supplies complete carrier/index proposals to one cached `AcceptedMechanicsPlan`. The common plan alone advances resource/lifecycle/trigger work, owns pending/terminal receipts and before-images, and publishes all resource/effect/companion after-images after every source-owning normalizer. Afterlife profiles carry persistent actor effects; spiritual `combatConditions[]` keep their specialized fields through one shared identity/lifecycle adapter. No independent effect publisher, runtime migration, or compatibility reader is added.
 
 **Tech Stack:** C# 12, .NET 8, `System.Text.Json` / `JsonNode`, existing `ValidationService`, `CanonicalStateNormalizer`, `FileSystemManager.CanonicalWriteLease`, accepted-turn snapshot/repair/rollback services, Spectre.Console, browser C# DTO builders, xUnit 2.9.2, Microsoft.NET.Test.Sdk 17.11.1, PowerShell 7 bounded test lanes, and the existing React/Vite frontend only if a typed DTO boundary actually changes.
 
@@ -454,7 +454,8 @@ git commit -m "feat: bind exact effect source and target authority (#1535)"
       "reason": "Рана снова открылась"
     }
   ],
-  "effectResolutionReceipts": []
+  "effectResolutionReceipts": [],
+  "effectEventReports": []
 }
 ```
 
@@ -470,7 +471,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 
 - [x] **Step 3: Replace response fields**
 
-Add only `EffectChanges` and `EffectResolutionReceipts` common response properties. Remove positive mappings for `playerActiveEffectsChanges` and `NPCEffectChanges`; do not retain aliases.
+Add `EffectChanges`, `EffectResolutionReceipts`, and the registered sealed-evidence `EffectEventReports` common response properties. Remove positive mappings for `playerActiveEffectsChanges` and `NPCEffectChanges`; do not retain aliases.
 
 - [x] **Step 4: Map transient staging**
 

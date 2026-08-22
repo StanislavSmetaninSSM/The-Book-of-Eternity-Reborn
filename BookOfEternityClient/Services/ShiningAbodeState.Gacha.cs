@@ -32,14 +32,6 @@ internal static partial class ShiningAbodeState
         return GetTradeCycleId(currentIncarnation);
     }
 
-    public static int GetRemainingShiningGachaCharges(JsonObject root)
-    {
-        var gachaSystem = EnsureGachaSystemObject(root);
-        var chargesPerReturn = Math.Max(0, GetNodeInt(gachaSystem["chargesPerReturn"], 0));
-        var chargesUsedThisReturn = Math.Clamp(GetNodeInt(gachaSystem["chargesUsedThisReturn"], 0), 0, chargesPerReturn);
-        return Math.Max(0, chargesPerReturn - chargesUsedThisReturn);
-    }
-
     public static int GetProjectedShiningGachaBonusSteps(JsonObject root, JsonObject? residentRoot, JsonObject faction)
     {
         var bonusSteps = 0;
@@ -135,8 +127,6 @@ internal static partial class ShiningAbodeState
         }
 
         var gachaSystem = EnsureGachaSystemObject(root);
-        gachaSystem.Remove("chargesPerReturn");
-        gachaSystem.Remove("chargesUsedThisReturn");
         var current = Math.Max(0, GetGachaInkFeathersCurrent(soulRoot) - cost.Feathers);
         var inkFeathers = soulRoot["inkFeathers"] as JsonObject ?? new JsonObject();
         inkFeathers["current"] = current;
@@ -175,8 +165,6 @@ internal static partial class ShiningAbodeState
     {
         cycleChanged = false;
         var gachaSystem = EnsureGachaSystemObject(root);
-        gachaSystem.Remove("chargesPerReturn");
-        gachaSystem.Remove("chargesUsedThisReturn");
         var nextReturnCycleId = GetTradeCycleId(currentIncarnation);
         var currentReturnCycleId = GetNodeString(gachaSystem["currentReturnCycleId"]) ?? string.Empty;
         if (string.Equals(currentReturnCycleId, nextReturnCycleId, StringComparison.OrdinalIgnoreCase))
@@ -197,8 +185,6 @@ internal static partial class ShiningAbodeState
     {
         var currentReturnCycleId = GetNodeString(gachaSystem["currentReturnCycleId"]) ?? string.Empty;
         gachaSystem["currentReturnCycleId"] = currentReturnCycleId;
-        gachaSystem.Remove("chargesPerReturn");
-        gachaSystem.Remove("chargesUsedThisReturn");
 
         var history = EnsureArray(gachaSystem, "gachaHistory");
         for (var i = history.Count - 1; i >= 0; i--)

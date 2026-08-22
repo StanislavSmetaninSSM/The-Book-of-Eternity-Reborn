@@ -57,7 +57,10 @@ internal static class EffectMaterializationTestFixture
                     ["initialTurns"] = 3,
                     ["advancePhase"] = "owner_turn_end"
                 },
-            ["triggers"] = new JsonArray(CreateTurnEndTrigger()),
+            ["triggers"] = new JsonArray(
+                string.Equals(profile, "event_reaction", StringComparison.Ordinal)
+                    ? CreateEventReactionTrigger()
+                    : CreateTurnEndTrigger()),
             ["removal"] = CreateRemoval(),
             ["links"] = CreateLinks(profile)
         };
@@ -159,7 +162,10 @@ internal static class EffectMaterializationTestFixture
                 ["refreshMode"] = null,
                 ["mergeRule"] = null
             },
-            ["triggers"] = new JsonArray(CreateTurnEndTrigger()),
+            ["triggers"] = new JsonArray(
+                string.Equals(profile, "event_reaction", StringComparison.Ordinal)
+                    ? CreateEventReactionTrigger()
+                    : CreateTurnEndTrigger()),
             ["removal"] = CreateRemoval(),
             ["links"] = CreateLinks(profile),
             ["chronology"] = new JsonObject
@@ -237,7 +243,8 @@ internal static class EffectMaterializationTestFixture
         return new JsonObject
         {
             ["effectChanges"] = effectChanges,
-            ["effectResolutionReceipts"] = new JsonArray()
+            ["effectResolutionReceipts"] = new JsonArray(),
+            ["effectEventReports"] = new JsonArray()
         };
     }
 
@@ -500,9 +507,9 @@ internal static class EffectMaterializationTestFixture
             "event_reaction" => CreateProfileComponent(profile, new JsonObject
             {
                 ["eventType"] = "owner_damaged",
-                ["resultKind"] = "apply_definition",
-                ["definitionKey"] = DefinitionKey,
-                ["dependency"] = "after_current_event"
+                ["resultKind"] = "remove",
+                ["dependency"] = "before_current_event",
+                ["maxExpansion"] = 1
             }),
             "wound_consequence" => CreateProfileComponent(profile, new JsonObject
             {
@@ -562,6 +569,17 @@ internal static class EffectMaterializationTestFixture
         {
             ["triggerId"] = "on_owner_turn_end",
             ["eventType"] = "owner_turn_end",
+            ["priority"] = 100,
+            ["componentIds"] = new JsonArray("component_001"),
+            ["consumeUses"] = false,
+            ["resolutionMode"] = "deterministic"
+        };
+
+    private static JsonObject CreateEventReactionTrigger() =>
+        new()
+        {
+            ["triggerId"] = "on_owner_damaged",
+            ["eventType"] = "owner_damaged",
             ["priority"] = 100,
             ["componentIds"] = new JsonArray("component_001"),
             ["consumeUses"] = false,

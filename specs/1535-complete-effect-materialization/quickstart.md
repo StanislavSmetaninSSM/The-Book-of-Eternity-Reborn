@@ -202,7 +202,9 @@ GM response excerpt:
       "eventRef": { "kind": "accepted_turn", "authorityId": "turn_exact" },
       "reason": "Герой сосредоточился перед ударом."
     }
-  ]
+  ],
+  "effectResolutionReceipts": [],
+  "effectEventReports": []
 }
 ```
 
@@ -223,6 +225,38 @@ Expected:
 - the characteristic bonus appears only through the accepted mechanics snapshot;
 - the raw command file is absent after normalization;
 - repeating the same accepted event produces no second buff.
+
+### 3.1 Registered trigger-event report
+
+When a later Mortal action has sealed d20 pool `[1,17,8]` and uses
+`rollMode=normal`, an existing Fate Shield reaction is requested only through:
+
+```json
+{
+  "effectChanges": [],
+  "effectResolutionReceipts": [],
+  "effectEventReports": [
+    {
+      "eventType": "owner_critical_failure",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "evidence": {
+        "kind": "mortal_action_roll",
+        "rollMode": "normal",
+        "diceIndexes": [0],
+        "selectedIndex": 0,
+        "selectedValue": 1,
+        "originalOutcome": "critical_failure",
+        "resolvedOutcome": "failure"
+      },
+      "reason": "Щит Судьбы смягчает критический провал."
+    }
+  ]
+}
+```
+
+The client validates the sealed dice, selects the oldest eligible shield and
+its exact trigger, consumes one use, and publishes the terminal transition. The
+GM never sends `effectId`, `triggerId`, remaining lifetime, or carrier post-state.
 
 ## 4. Missing Authority Is Rejected
 
@@ -295,12 +329,30 @@ cleanup.
 
 Create multiple effects with due components at the same phase and declared priorities. Replay the accepted turn and reorder the physical carrier array before validation.
 
+Use `Examples/E_CLI_Effect_Materialization.txt` section
+`effect_event_reaction_graph_v1` as the executable authoring reference. It
+contains all six closed reaction results (`apply_definition`,
+`trigger_component`, `bounded_receipt`, `event_outcome`, `suspend`, `remove`)
+and all three
+dependency phases. The production source-definition validator checks that
+worked graph in `EffectReactionWorkedExample_ValidatesCompleteGraphAndAllResultKinds`.
+
 Expected:
 
 - execution remains priority → ordinal effect ID → ordinal component ID;
 - periodic resource changes occur once;
 - carrier-array order cannot change the result;
-- a downstream-effect cycle or expansion beyond the source limit fails before writes.
+- `after_component` runs only after the exact predecessor mutation actually
+  applies; a narrated no-change receipt cannot unlock its dependent mutation;
+- resource-component reaction results always use `after_component`; direct
+  trigger selection represents an unconditional resource operation;
+- `event_outcome` uses only a registered exact outcome transition and then
+  leaves ordinary lifetime/use advancement to the lifecycle scheduler;
+- resource-derived reactions preserve their producing event as causal evidence;
+  `before_current_event` means before continuation of that derived event, not
+  before the resource mutation that produced it;
+- a downstream-effect/component cycle, per-reaction `maxExpansion` overflow,
+  or whole-turn reaction count above 64 fails before writes.
 
 ## 8. NPC and Combatant Targets
 

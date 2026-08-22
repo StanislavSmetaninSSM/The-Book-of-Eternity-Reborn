@@ -90,11 +90,13 @@ Allowed operations are `damage`, `restore`, `spend`, and `gain`. `amount` is an 
 
 `target` is `{kind,targetId}` for an accepted existing owner or `{kind,targetRef}` for an accepted same-turn owner. Exactly one ID/ref is present. Display names, aliases, paths, indexes, case variants, and historical identities are not accepted.
 
-`source` is `{kind,sourceId}` using the route-specific registered source catalog. Source kind decides phase, priority, applicable floor/cap binding, and allowed operation; raw input cannot override them.
+`source` uses one of two closed route-specific shapes. `action_cost`, `combat_outcome`, and `narrative_outcome` are exactly `{kind}`. After validating the exact global command ordinal, the client derives their plan-local `sourceId` from `eventRef`, binds the source to the resolved target owner, and fingerprints the full accepted occurrence. Raw input cannot submit or rename that identity. Durable owner-bound item routes are exactly `{kind,sourceId}` as described below. Source kind decides phase, priority, applicable floor/cap binding, and allowed operation; raw input cannot override them.
 
 For item operations, `local_item_cost` and `local_item_outcome` use the exact permanent `itemId` as `sourceId` and are bound to that same item owner coordinate. They authorize ordinary use/fire/reload costs or repair/outcome changes only for their bound item. A case variant, historical item, different item target, or carrier-local alias fails with no writes; moving the item does not change this authority.
 
 `eventRef` must be the exact ordinal accepted event for that command. Swapped, reused, stale, missing, or future event refs fail closed.
+
+Nested FullParty resource packets use the same ordinary command grammar with the additional recipient restrictions in [resource-full-party-interaction.md](resource-full-party-interaction.md). They are validated and staged as outbound packets and are never applied to the originating client's ledger.
 
 ## 6. Forbidden raw data
 

@@ -28,6 +28,27 @@ public sealed class ExplorerWebCommandServiceTests :
         _seedFixture = seedFixture;
         _rootPath = seedFixture.CreateIsolatedCaseRoot();
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        var resourceBootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        if (!resourceBootstrap.IsValid)
+        {
+            throw new InvalidOperationException(
+                string.Join(Environment.NewLine, resourceBootstrap.Issues));
+        }
+        _fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.DefinitionsPath,
+                resourceBootstrap.Definitions!.ToCanonicalJson())
+            .GetAwaiter()
+            .GetResult();
+        _fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.StatePath,
+                resourceBootstrap.State!.ToCanonicalJson())
+            .GetAwaiter()
+            .GetResult();
+        _fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.HistoryPath,
+                resourceBootstrap.History!.ToCanonicalJson())
+            .GetAwaiter()
+            .GetResult();
         _stateManager = new StateManager(_fs, new GameSettings(), NullLogger<StateManager>.Instance);
         _validationService = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         _service = new ExplorerWebCommandService(_fs, _stateManager, new LocalizationManager(), _validationService);
@@ -1748,13 +1769,33 @@ public sealed class ExplorerWebCommandServiceTests :
         await _fs.WriteFileAtomicAsync("game_state/player/status_changes.json", """
         {
           "moneyChange": 25,
-          "currentHealthChange": -10,
-          "currentEnergyChange": 5,
-          "currentPoiseChange": -3,
           "statsIncreased": [ "perception" ],
           "statsDecreased": [ "strength" ]
         }
         """);
+        await ResourceProjectionFixture.SeedAsync(
+            _fs,
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "health",
+                90m,
+                100m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "energy",
+                100m,
+                100m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "poise",
+                100m,
+                100m));
         await SeedMortalEffectsDetailStateAsync();
         await _fs.WriteFileAtomicAsync("game_state/player/wounds.json", """
         {
@@ -8710,10 +8751,6 @@ public sealed class ExplorerWebCommandServiceTests :
               "name": "Теневой посыльный",
               "type": "elite",
               "status": "hostile",
-              "currentHealth": 18,
-              "maxHealth": 30,
-              "currentPoise": 4,
-              "maxPoise": 10,
               "intent": "сорвать концентрацию мага",
               "targetPriority": "caster",
               "description": "Скользит между колоннами [red]без права на разметку[/].",
@@ -8746,10 +8783,6 @@ public sealed class ExplorerWebCommandServiceTests :
               "name": "Рина из Серебряной стражи",
               "role": "щит",
               "status": "wounded",
-              "currentHealth": 22,
-              "maxHealth": 28,
-              "currentPoise": 7,
-              "maxPoise": 12,
               "intent": "защищает мага",
               "description": "Держит линию у разбитой арки.",
               "activeBuffs": [],
@@ -8792,6 +8825,37 @@ public sealed class ExplorerWebCommandServiceTests :
           ]
         }
         """);
+
+        await ResourceProjectionFixture.SeedAsync(
+            _fs,
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Combatant,
+                "combatant_shadow_messenger",
+                "health",
+                18m,
+                30m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Combatant,
+                "combatant_shadow_messenger",
+                "poise",
+                4m,
+                10m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Combatant,
+                "combatant_rina_guard",
+                "health",
+                22m,
+                28m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Combatant,
+                "combatant_rina_guard",
+                "poise",
+                7m,
+                12m));
 
         var enemyEffect = CreateUiCanonicalEffect(
             effectId: "effect_shadow_messenger_burning",

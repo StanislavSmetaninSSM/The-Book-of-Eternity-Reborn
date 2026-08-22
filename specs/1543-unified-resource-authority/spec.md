@@ -164,7 +164,7 @@ As a player, I want a failed resource/effect transition to restore the complete 
 - **FR-013**: The current Mortal player MUST use the stable owner `player_current`.
 - **FR-014**: A named Mortal NPC MUST use its permanent NPC identity inside and outside combat.
 - **FR-015**: An anonymous individual combatant MUST use a client-owned stable combatant identity.
-- **FR-016**: Every combat-group member MUST use a client-owned stable member identity; array position or display name MUST NOT be authority.
+- **FR-016**: Every combat-group member MUST use a client-owned stable member identity across nested-group and detached top-level combat carriers; array position, carrier shape, or display name MUST NOT be authority.
 - **FR-017**: An item resource MUST use the permanent item identity and remain unchanged in identity across valid carrier movement.
 - **FR-018**: Persistent afterlife actors MUST use persistent profile/actor identity, while conflict-scoped participants MUST use client-owned scoped identity retired with the conflict. A same-turn afterlife actor MUST reuse the exact canonical `actorId` sealed by Actor Materialization; the resource layer MUST NOT allocate a second actor identity or accept `actorRef`.
 - **FR-019**: A raw resource command MUST NOT invent a permanent owner and MUST resolve exact existing or validated same-turn owner authority. For a newly materialized afterlife actor, the immutable Actor Materialization `materializationId` is the one-turn resource `ownerRef`, while actor/effect selectors continue to use canonical `actorId`.
@@ -210,6 +210,9 @@ As a player, I want a failed resource/effect transition to restore the complete 
 - **FR-059**: The feature MUST include at least one worked Mortal example and one worked afterlife example covering legal resource authoring without direct canonical writes.
 - **FR-060**: Currency, treasury, faction-accounting, and market-balance systems MUST remain separate and MUST NOT be silently routed through this resource authority.
 - **FR-061**: Vehicle health and any accepted bounded vehicle reserve MUST use the permanent vehicle identity and accepted resource authority; `UpdateVehicles`, vehicle movement/activation, and removal MUST NOT retain or create a second mechanical value.
+- **FR-062**: Each raw ordinary `action_cost`, `combat_outcome`, or `narrative_outcome` source MUST contain only its registered kind; the client MUST derive its source identity from the exact accepted command event and bind it to the resolved target so a raw rename cannot evade replay. Item-local sources MUST remain bound to the exact permanent item ID.
+- **FR-063**: A detached combat-group member MUST retain its exact `combat_group_member` resource owner, effect target, carrier ownership, and history and MUST NOT be re-materialized as an anonymous combatant.
+- **FR-064**: FullParty resource changes for another player MUST be validated as a closed recipient-scoped outbound packet, MUST share exact accepted event ordering with the originating response, and MUST NOT mutate the originating client's resource/effect state; remote application requires the recipient's own accepted authority.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -226,6 +229,7 @@ As a player, I want a failed resource/effect transition to restore the complete 
 - **Pending Resource Resolution**: A client-owned bounded request for story judgment that has not yet changed mechanics.
 - **Resource Receipt**: A bounded GM result that resolves one exact pending request and becomes an ordinary mutation at most once.
 - **Resource Projection**: A safe, non-authoritative player or GM view derived from accepted definitions and state.
+- **FullParty Resource Packet**: A closed recipient-keyed outbound ordinary-command packet validated by the origin client but admitted into mechanics only through the recipient client's accepted-turn authority.
 
 ## Success Criteria *(mandatory)*
 

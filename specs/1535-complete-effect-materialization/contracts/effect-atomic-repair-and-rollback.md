@@ -7,7 +7,7 @@
 
 One accepted effect transition includes:
 
-- transient `effectChanges[]` and `effectResolutionReceipts[]`;
+- transient `effectChanges[]`, `effectResolutionReceipts[]`, and `effectEventReports[]`;
 - every touched active owner carrier;
 - `effect_identity_index.json`;
 - `pending_effect_resolutions.json`;

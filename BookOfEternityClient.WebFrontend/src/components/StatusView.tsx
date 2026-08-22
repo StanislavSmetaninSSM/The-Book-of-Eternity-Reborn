@@ -56,11 +56,18 @@ export function StatusView() {
           <StatusRow label="Раса" value={player.race} />
           <StatusRow label="Состояние" value={player.currentCondition} />
         </dl>
-        <div className="status-bars">
-          <StatusMeter label="❤️ Здоровье" value={player.healthPercentage} />
-          <StatusMeter label="⚡ Энергия" value={player.energyPercentage} />
-          <StatusMeter label="🛡️ Самообладание" value={player.poisePercentage} />
-        </div>
+        {player.resourceProjectionAvailable ? (
+          <div className="status-bars">
+            <StatusMeter label="❤️ Здоровье" value={player.healthPercentage} />
+            <StatusMeter label="⚡ Энергия" value={player.energyPercentage} />
+            <StatusMeter label="🛡️ Самообладание" value={player.poisePercentage} />
+          </div>
+        ) : (
+          <StatusEmptyState
+            title="Состояние ресурсов временно скрыто."
+            body={player.resourceUnavailableMessage}
+          />
+        )}
         {player.activeConditions.length > 0 && (
           <div className="status-conditions">
             <h4>Активные состояния</h4>

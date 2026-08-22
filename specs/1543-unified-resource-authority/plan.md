@@ -79,6 +79,7 @@ specs/1543-unified-resource-authority/
 ├── contracts/
 │   ├── accepted-mechanics-publication.md
 │   ├── resource-definition-and-command.md
+│   ├── resource-full-party-interaction.md
 │   ├── resource-owner-authority.md
 │   ├── resource-pending-resolution.md
 │   ├── resource-projection-and-cutover.md
@@ -388,6 +389,6 @@ Finish every console/browser/GM projection, delete all persisted mirrors/fallbac
 
 No constitution violation requires an exception. The common owner and accepted mechanics abstractions replace existing duplicated authorities and remain inside the existing runtime/test projects.
 
-The T058 Shining survival cutover uses one immutable registered-outcome draft and the existing common plan. Direct health/energy/poise losses run first; exact 20% recovery runs in `registered_system_outcome`; soul consumption and world-event downgrade are projected from those exact transitions and published under the same lease/before-image/rollback boundary. The old runtime percentage restorer and its resource-state/history write path are removed. This is client-owned composition over the existing GM resource command/event contract, so no new GM-authored Shining or afterlife field exists; active prompt/example migration remains deliberately centralized in T104–T108 rather than introducing an interim contract.
+The T058 Shining survival cutover uses one immutable registered-outcome draft and the existing common plan. Direct health/energy/poise losses run first; exact 20% recovery runs in `registered_system_outcome`; soul consumption and world-event downgrade are projected from those exact transitions and published under the same lease/before-image/rollback boundary. The old runtime percentage restorer and its resource-state/history write path are removed. This is client-owned composition over the existing GM resource command/event contract, so no new GM-authored Shining or afterlife field exists; active prompt/example migration remains deliberately centralized in T107–T111 rather than introducing an interim contract.
 
 T058 evidence: planner derived-loss/replay `TestResults/test-lanes/20260816-020531-411-8556-71b000b3ecd84df8b1b70c7c9c63b2cc-focused/summary.json` (`23/23`); full Shining runtime/draft control `20260816-020230-594-29016-5b5913f1c21145448b61f98940e94062-focused` (`21/21`); Mortal cutover publication, late soul/world mutation rollback, legacy-runtime no-op, and ordinary/legacy checks `20260816-020444-336-55044-fb5cc40a22514ddf8a5fb4e43e7e5f56-focused` (`7/7`). All exited `0`, timed out `false`, reported duplicate IDs `0`, and completed owned-tree cleanup.

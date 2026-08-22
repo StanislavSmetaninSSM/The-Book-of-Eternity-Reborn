@@ -20,12 +20,14 @@ internal sealed record EffectSourceExport(
     bool Active,
     bool SameTurn,
     string? SourceRef = null,
-    IReadOnlySet<string>? SatisfiedPredicates = null);
+    IReadOnlySet<string>? SatisfiedPredicates = null,
+    string? RequiredApplicationAuthority = null);
 
 internal sealed record EffectSourceAuthorityInput(
     IReadOnlyList<EffectSourceExport> PreTurnSources,
     IReadOnlyList<EffectSourceExport> SameTurnSources,
-    IReadOnlySet<string> HistoricalSourceIds);
+    IReadOnlySet<string> HistoricalSourceIds,
+    IReadOnlySet<string>? GrantedApplicationAuthorities = null);
 
 internal sealed record EffectSourceAuthorityEntry(
     EffectSourceKey Key,
@@ -34,7 +36,8 @@ internal sealed record EffectSourceAuthorityEntry(
     bool Active,
     bool SameTurn,
     string? SourceRef,
-    IReadOnlySet<string> SatisfiedPredicates);
+    IReadOnlySet<string> SatisfiedPredicates,
+    string? RequiredApplicationAuthority = null);
 
 internal sealed record EffectSourceReferenceKey(
     string Realm,
@@ -64,6 +67,7 @@ internal sealed class EffectSourceAuthority
     private readonly HashSet<EffectSourceReferenceKey> _invalidRefs;
     private readonly HashSet<string> _historicalAliases;
     private readonly HashSet<EffectSourceKey> _invalidKeys;
+    private readonly HashSet<string> _grantedApplicationAuthorities;
 
     private EffectSourceAuthority(Builder builder)
     {
@@ -80,8 +84,14 @@ internal sealed class EffectSourceAuthority
         _invalidRefs = new HashSet<EffectSourceReferenceKey>(builder.InvalidRefs);
         _historicalAliases = new HashSet<string>(builder.HistoricalAliases, StringComparer.Ordinal);
         _invalidKeys = new HashSet<EffectSourceKey>(builder.InvalidKeys);
+        _grantedApplicationAuthorities = new HashSet<string>(
+            builder.GrantedApplicationAuthorities,
+            StringComparer.Ordinal);
         Issues = builder.Issues.ToArray();
-        Fingerprint = CreateFingerprint(_entries.Values, Issues);
+        Fingerprint = CreateFingerprint(
+            _entries.Values,
+            Issues,
+            _grantedApplicationAuthorities);
         CanonicalFingerprint = CreateCanonicalFingerprint(_entries.Values, Issues);
     }
 
@@ -99,7 +109,9 @@ internal sealed class EffectSourceAuthority
     internal static EffectSourceAuthority Build(EffectSourceAuthorityInput input)
     {
         ArgumentNullException.ThrowIfNull(input);
-        var builder = new Builder(input.HistoricalSourceIds);
+        var builder = new Builder(
+            input.HistoricalSourceIds,
+            input.GrantedApplicationAuthorities ?? new HashSet<string>(StringComparer.Ordinal));
         builder.AddRange(input.PreTurnSources, sameTurn: false);
         builder.AddRange(input.SameTurnSources, sameTurn: true);
         builder.ValidateDefinitionLinks();
@@ -141,6 +153,16 @@ internal sealed class EffectSourceAuthority
         return issues;
     }
 
+    internal static IReadOnlyList<ValidationIssue> ValidateDefinitionParameters(
+        JsonObject definition,
+        JsonObject? parameters)
+    {
+        ArgumentNullException.ThrowIfNull(definition);
+        var issues = new List<ValidationIssue>();
+        ValidateParameters(definition, parameters, issues);
+        return issues;
+    }
+
     private EffectSourceResolution ResolveByKey(
         EffectSourceKey key,
         string targetKind,
@@ -165,6 +187,16 @@ internal sealed class EffectSourceAuthority
                     Add(issues, "source", "effect_source_not_materializable", "source definition explicitly materializable as an active instance", key.ToString());
                 if (!entry.Active)
                     Add(issues, "source", "effect_source_inactive", "source current state authorizes application", key.ToString());
+                if (entry.RequiredApplicationAuthority is { } requiredAuthority &&
+                    !_grantedApplicationAuthorities.Contains(requiredAuthority))
+                {
+                    Add(
+                        issues,
+                        "source",
+                        "effect_source_application_authority_missing",
+                        "exact accepted-turn application authority for this built-in source",
+                        requiredAuthority);
+                }
                 ValidateActivePredicate(entry, issues);
             }
             ValidateTargetKind(entry.Definition, targetKind, issues);
@@ -509,7 +541,8 @@ internal sealed class EffectSourceAuthority
 
     private static string CreateFingerprint(
         IEnumerable<EffectSourceAuthorityEntry> entries,
-        IReadOnlyList<ValidationIssue> issues)
+        IReadOnlyList<ValidationIssue> issues,
+        IReadOnlySet<string> grantedApplicationAuthorities)
     {
         var root = new JsonObject
         {
@@ -528,12 +561,18 @@ internal sealed class EffectSourceAuthority
                     ["active"] = entry.Active,
                     ["sameTurn"] = entry.SameTurn,
                     ["sourceRef"] = entry.SourceRef,
+                    ["requiredApplicationAuthority"] = entry.RequiredApplicationAuthority,
                     ["satisfiedPredicates"] = new JsonArray(entry.SatisfiedPredicates
                         .OrderBy(static predicate => predicate, StringComparer.Ordinal)
                         .Select(static predicate => (JsonNode)predicate)
                         .ToArray()),
                     ["definition"] = entry.Definition.DeepClone()
                 }).ToArray()),
+            ["grantedApplicationAuthorities"] = new JsonArray(
+                grantedApplicationAuthorities
+                    .OrderBy(static authority => authority, StringComparer.Ordinal)
+                    .Select(static authority => (JsonNode)authority)
+                    .ToArray()),
             ["issues"] = new JsonArray(issues.Select(issue => (JsonNode)new JsonObject
             {
                 ["code"] = issue.Code,
@@ -562,6 +601,7 @@ internal sealed class EffectSourceAuthority
                     ["definitionKey"] = entry.Key.DefinitionKey,
                     ["materializable"] = entry.Materializable,
                     ["active"] = entry.Active,
+                    ["requiredApplicationAuthority"] = entry.RequiredApplicationAuthority,
                     ["satisfiedPredicates"] = new JsonArray(entry.SatisfiedPredicates
                         .OrderBy(static predicate => predicate, StringComparer.Ordinal)
                         .Select(static predicate => (JsonNode)predicate)
@@ -639,14 +679,32 @@ internal sealed class EffectSourceAuthority
         internal Dictionary<string, List<EffectSourceReferenceKey>> RefsByAlias { get; } = new(StringComparer.Ordinal);
         internal HashSet<EffectSourceReferenceKey> InvalidRefs { get; } = new();
         internal HashSet<string> HistoricalAliases { get; }
+        internal HashSet<string> GrantedApplicationAuthorities { get; }
         internal HashSet<EffectSourceKey> InvalidKeys { get; } = new();
         internal List<ValidationIssue> Issues { get; } = new();
 
-        internal Builder(IEnumerable<string> historicalSourceIds)
+        internal Builder(
+            IEnumerable<string> historicalSourceIds,
+            IEnumerable<string> grantedApplicationAuthorities)
         {
             HistoricalAliases = historicalSourceIds
                 .Select(MortalLocationIdentityState.BuildConfusableKey)
                 .ToHashSet(StringComparer.Ordinal);
+            GrantedApplicationAuthorities = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var authority in grantedApplicationAuthorities)
+            {
+                if (!TryExact(authority) ||
+                    !EffectBuiltInSourceCatalog.IsRegisteredApplicationAuthority(authority))
+                {
+                    Issues.Add(NewIssue(
+                        "source.applicationAuthority",
+                        "effect_source_application_authority_unknown",
+                        "one registered exact built-in application authority",
+                        authority));
+                    continue;
+                }
+                GrantedApplicationAuthorities.Add(authority);
+            }
         }
 
         internal void AddRange(IEnumerable<EffectSourceExport> exports, bool sameTurn)
@@ -663,6 +721,17 @@ internal sealed class EffectSourceAuthority
                 !TryExact(export.SourceId))
             {
                 Issues.Add(NewIssue(sourcePath, "effect_source_authority_invalid_export", "exact supported source export", export.ToString()));
+                return;
+            }
+            if (export.RequiredApplicationAuthority is { } requiredAuthority &&
+                (!TryExact(requiredAuthority) ||
+                 !EffectBuiltInSourceCatalog.IsRegisteredApplicationAuthority(requiredAuthority)))
+            {
+                Issues.Add(NewIssue(
+                    sourcePath + ".requiredApplicationAuthority",
+                    "effect_source_application_authority_unknown",
+                    "one registered exact built-in application authority",
+                    requiredAuthority));
                 return;
             }
 
@@ -705,7 +774,8 @@ internal sealed class EffectSourceAuthority
                     export.Active,
                     sameTurn,
                     export.SourceRef,
-                    satisfiedPredicates);
+                    satisfiedPredicates,
+                    export.RequiredApplicationAuthority);
                 if (!Entries.TryAdd(key, entry))
                 {
                     InvalidKeys.Add(key);

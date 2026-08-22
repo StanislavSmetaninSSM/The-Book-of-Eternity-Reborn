@@ -12,13 +12,14 @@ This contract defines the only common GM route for applying, dispelling, or remo
 ```json
 {
   "effectChanges": [],
-  "effectResolutionReceipts": []
+  "effectResolutionReceipts": [],
+  "effectEventReports": []
 }
 ```
 
-- Both fields are optional arrays in one accepted response.
+- All three fields are optional arrays in one accepted response.
 - The distributor stages them under one transient command root.
-- The normalizer consumes the command root; neither field remains in canonical owner state.
+- The normalizer consumes the command root; none remains in canonical owner state.
 - `playerActiveEffectsChanges` and `NPCEffectChanges` are invalid current-schema fields.
 - Non-empty `activeBuffs`, `activeDebuffs`, `activeEffects`, or `combatConditions` in a raw creation/update are not alternate effect-application commands.
 
@@ -89,7 +90,45 @@ Rules:
 - Neither operation edits the effect or its source; the client calculates terminal state and cleanup.
 - A wound-derived effect command never grants wound-write authority.
 
-## 5. Canonical Active Effect
+## 5. Accepted Event Reports
+
+`effectEventReports[]` is the bounded route by which the GM reports audited
+story events whose exact lifecycle reaction is owned by an already-materialized
+effect. A report never names `effectId`, `triggerId`, remaining lifetime, or a
+post-state. The client validates the report against sealed accepted-turn
+evidence, selects the exact eligible effect and trigger, and derives the
+lifecycle transition.
+
+The first registered report adapter is the Mortal Fate Shield critical-failure
+reaction:
+
+```json
+{
+  "eventType": "owner_critical_failure",
+  "target": { "kind": "player", "targetId": "player_current" },
+  "evidence": {
+    "kind": "mortal_action_roll",
+    "rollMode": "normal",
+    "diceIndexes": [0],
+    "selectedIndex": 0,
+    "selectedValue": 1,
+    "originalOutcome": "critical_failure",
+    "resolvedOutcome": "failure"
+  },
+  "reason": "Щит Судьбы смягчает критический провал."
+}
+```
+
+Rules:
+
+1. The report object and nested objects are closed; every shown field is required.
+2. `rollMode` is `normal`, `advantage`, `great_advantage`, `disadvantage`, or `dire_disadvantage`.
+3. `diceIndexes` is the exact leading sealed d20 pool (`[0]`, `[0,1]`, or `[0,1,2]`), and `selectedIndex` follows the corresponding max/min rule with the lower index winning a tie.
+4. `selectedValue` must equal the sealed selected die and exactly `1`; the report proves `critical_failure -> failure` and cannot invent or improve another outcome.
+5. At most one `owner_critical_failure` report is accepted for one Mortal action. If several independent Fate Shields exist, the client consumes exactly the oldest eligible instance (creation turn, then ordinal `effectId`).
+6. Missing shield authority, stale/wrong dice, wrong realm/target/outcome, duplicate reports, or any client-owned selector fails the complete transition before publication.
+
+## 6. Canonical Active Effect
 
 Required root fields and their exact order-independent meaning:
 
@@ -98,7 +137,7 @@ schemaVersion, entityKind, effectId, state, realm, target, display, source,
 components, lifetime, stacking, triggers, removal, links, chronology
 ```
 
-### 5.1 Closed values
+### 6.1 Closed values
 
 - `entityKind`: `active_effect`
 - `state`: `active`, `suspended`
@@ -107,7 +146,7 @@ components, lifetime, stacking, triggers, removal, links, chronology
 - display category: `buff`, `debuff`, `condition`, `environmental`, `mixed`
 - visibility: `visible`, `hidden`, `gm_only`
 
-### 5.2 Required semantic sections
+### 6.2 Required semantic sections
 
 | Section | Required checks |
 | --- | --- |
@@ -121,13 +160,16 @@ components, lifetime, stacking, triggers, removal, links, chronology
 | Triggers | Unique trigger IDs, legal events/components/priorities |
 | Removal | Exact source-authorized closure/counteraction routes |
 | Links | Exact unique companion/source/context links |
-| Chronology | Positive accepted turns and matching latest client transition |
+| Chronology | Positive accepted turns and matching latest client transition; optional client-derived `causalEventRef` on reaction-created instances |
 
 Unknown root or section fields are errors. Registered component profiles own their own exact payload fields.
+`causalEventRef` is immutable client-owned lineage evidence. It may be derived
+from a sealed lifecycle/resource event but never appears in `effectChanges[]`,
+`effectResolutionReceipts[]`, or `effectEventReports[]`.
 
-## 6. Profile Examples
+## 7. Profile Examples
 
-### 6.1 Characteristic modifier
+### 7.1 Characteristic modifier
 
 ```json
 {
@@ -142,7 +184,7 @@ Unknown root or section fields are errors. Registered component profiles own the
 }
 ```
 
-### 6.2 Periodic damage
+### 7.2 Periodic damage
 
 ```json
 {
@@ -160,7 +202,7 @@ Unknown root or section fields are errors. Registered component profiles own the
 
 The matching trigger declares when this component executes. Display prose does not determine the amount, target resource, or interval.
 
-## 7. Rejection Classes
+## 8. Rejection Classes
 
 Fail before publication for:
 
@@ -173,11 +215,11 @@ Fail before publication for:
 - non-empty unsupported legacy effect carrier;
 - direct canonical instance mutation without a matching accepted operation.
 
-## 8. Positive Contract Example
+## 9. Positive Contract Example
 
 The example is valid only when `wound_torn_side` exists, owns `bleeding-consequence`, permits the player target and parameter value, and the accepted event is current. The client creates the effect ID, resolves stacking/lifetime, writes the canonical instance/index, and never changes the wound.
 
-## 9. Negative Contract Example
+## 10. Negative Contract Example
 
 ```json
 {

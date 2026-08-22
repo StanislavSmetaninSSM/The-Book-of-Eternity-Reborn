@@ -1253,7 +1253,8 @@ public sealed class AfterlifeResourceCutoverTests
                 ["sourceCardCount"] = 1,
                 ["memorySelection"] = new JsonObject
                 {
-                    ["rerolls"] = 2,
+                    [ShiningBlessingRerollAllocationContract.PropertyName] =
+                        ShiningBlessingRerollAllocationContract.Create(2),
                     ["sourceCardIds"] = new JsonArray("card_memory")
                 }
             },
@@ -2308,7 +2309,8 @@ public sealed class AfterlifeResourceCutoverTests
                     {
                         ["type"] = "expand_memory_selection",
                         ["options"] = 1,
-                        ["rerolls"] = 1
+                        [ShiningBlessingRerollAllocationContract.PropertyName] =
+                            ShiningBlessingRerollAllocationContract.Create(1)
                     }),
                 BlessingCard(
                     "card_relic",
@@ -2316,7 +2318,8 @@ public sealed class AfterlifeResourceCutoverTests
                     new JsonObject
                     {
                         ["type"] = "grant_relic_refinement",
-                        ["rerolls"] = 2,
+                        [ShiningBlessingRerollAllocationContract.PropertyName] =
+                            ShiningBlessingRerollAllocationContract.Create(2),
                         ["freeShape"] = true,
                         ["freeRetune"] = false
                     })
@@ -2337,7 +2340,8 @@ public sealed class AfterlifeResourceCutoverTests
                     new JsonObject
                     {
                         ["type"] = "grant_relic_refinement",
-                        ["rerolls"] = 1,
+                        [ShiningBlessingRerollAllocationContract.PropertyName] =
+                            ShiningBlessingRerollAllocationContract.Create(1),
                         ["freeShape"] = false,
                         ["freeRetune"] = false
                     })
@@ -3170,6 +3174,7 @@ public sealed class AfterlifeResourceCutoverTests
             ["playerSide"] = new JsonObject(),
             ["oppositionSide"] = new JsonObject(),
             ["exchangeLog"] = new JsonArray(),
+            ["combatConditions"] = new JsonArray(),
             ["resourceOwnerBindings"] = new JsonObject
             {
                 ["opposition"] = new JsonObject

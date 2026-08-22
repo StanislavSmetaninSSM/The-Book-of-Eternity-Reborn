@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <!--
 CLI COMPATIBILITY NOTICE:
 
@@ -257,32 +258,30 @@ FOR API MODE: All existing restrictions remain functional.
                     When a 'Damage' effect is to be applied to a target combatant:
                     1.  Source Damage: This is the 'FinalDamageToTarget%' calculated as per InstructionBlock '12' -> Rule '12.9.2.1' (which includes base effect value, success modifiers, context multipliers, critical hit bonuses for PC/NPCs, and target resistances).
                     2.  Update Health:
-                        - For Player: The GM narrates the damage. The system updates 'Context.playerCharacter.currentHealth'. GM updates 'playerStatus.healthPercentage'.
-                        - For Named NPC (if tracked in Context): Narrate. System updates 'Context.NPCsInScene[NPCId].currentHealth'. If the NPC is also in 'enemiesData' or 'alliesData', update 'currentHealth' there too.
-                        - For Generic Enemy/Ally: Update 'currentHealth' in their respective object in 'enemiesData' or 'alliesData'.
+                        - Resolve the target's exact accepted owner identity and health coordinate from Context.
+                        - Emit resourceChanges operation=damage with positive exact amount, registered combat source, and ordinal eventRef.
+                        - Player status, NPC state, and combat arrays are projections/carriers; never copy current or maximum health into them.
                     3.  Apply Poise Damage:
                         - Calculate 'TotalPoiseDamage%' using the same scaling rules as HP damage (as per #14.2.1.1).
                         - Apply poise damage after any resistances or damage reductions (following the same resistance calculation as HP damage).
-                        - For Player: Update 'currentPoiseChange' in the JSON response and 'playerStatus.poisePercentage'.
-                        - For Named NPC: Update 'Context.NPCsInScene[NPCId].currentPoise'. If the NPC is also in 'enemiesData' or 'alliesData', update 'currentPoise' there too.
-                        - For Generic Enemy/Ally: Update 'currentPoise' in their respective object in 'enemiesData' or 'alliesData'.
+                        - Emit a separate resourceChanges operation=damage against the same target's exact poise coordinate. Do not mutate playerStatus, NPC, enemy, or ally carrier fields.
                     4.  Check for Stagger (Poise Break):
-                        - If a combatant's 'currentPoise' drops to 0 or below, the target becomes "Staggered":
+                        - If the accepted poise transition reaches its sealed minimum, the target becomes "Staggered":
                           a) Immediately apply a 'Control: Stunned' debuff for 1 turn to the target.
                           b) Narrate the stagger/guard break in 'response' (e.g., "The orc staggers backward, guard completely broken!").
                           c) Log the stagger event in 'gm_thoughts_markdown'.
-                          d) Mark that on the target's NEXT turn (after the stun wears off), their 'currentPoise' will automatically reset to 'maxPoise'.
+                          d) On the target's NEXT turn, restore the exact poise deficit through an authorized resource transition; do not write a carrier value.
                     5.  Check for Additional Effects from Damage Severity:
                         - After updating health, the GM MUST consider if the damage taken was significant enough to cause a Wound or a temporary debilitating Debuff as per rules in InstructionBlock '5' -> Rule '5.20' (Wound System and Debuffs from Significant Damage Overview), particularly #5.20.3 (Triggering Wounds or Damage-Induced Debuffs).
                         - If such an effect is applied, report it as per #5.20.4 (Reporting and Applying Wounds/Damage-Induced Debuffs).
-                    6.  Check for Defeat: If a combatant's 'currentHealth' drops to "0%" or less:
+                    6.  Check for Defeat: If the accepted health transition reaches its sealed minimum:
                         - For Generic Enemies/Allies: Narrate their defeat (slain, destroyed, or fleeing). They are removed from active combat.
                         - **CRITICAL DIRECTIVE FOR PLAYER DEFEAT (The Defeat Adjudication Protocol):**
                           If the Player Character reaches 0 HP, you MUST immediately pause and analyze the Attacker's Intent and the Narrative Context:
                           a) **Lethal Intent:** If the attacker is a mindless beast, a deadly trap, an undead entity, or an assassin with orders to kill.
-                             *Action:* The player dies. Narrate the fatal blow. The state remains at 0 HP. (This will trigger the Life Evaluation on the next step).
+                             *Action:* The player dies. Narrate the fatal blow. The health ledger remains at its sealed minimum, which triggers Life Evaluation on the next step.
                           b) **Non-Lethal / Opportunistic Intent:** If the attacker is city guard (trying to arrest), a bandit (wanting slaves/ransom), or a brawler in a tavern.
-                             *Action:* The player does NOT die. They are knocked unconscious. You MUST set their 'currentHealth' to "1%" to stabilize them. You MUST apply an 'Unconscious' and 'Severely Wounded' debuff. Narrate the world going dark.
+                             *Action:* The player does NOT die. Cap the adjudicated damage request so the exact candidate remains one health quantum above minimum, then apply the 'Unconscious' and 'Severely Wounded' effects. Do not author the resulting health value. Narrate the world going dark.
                              *Consequence:* On the next turn, the GM will wake the player up in a new narrative context (e.g., a prison cell, a bandit camp without their gear, or waking up in the mud robbed of their gold).
                         - For Key NPCs: Apply the same logic. They might be captured instead of killed.
                     7.  Logging: Ensure the damage calculation, application, poise damage, any stagger effects, any additional debuffs/wounds, and any defeat are logged in 'gm_thoughts_markdown'.
@@ -301,13 +300,10 @@ FOR API MODE: All existing restrictions remain functional.
     <![CDATA[
 
                     When an effect like 'Buff', 'Debuff', 'Control', 'DamageOverTime', 'HealOverTime', or activatable 'DamageReduction' is successfully applied:
-                    1.  Determine Final Parameters: The effect's final 'value', 'targetType', 'duration', and 'effectDescription' are determined (after scaling for PC/NPC skills and action success modifiers as per #12.9.2).
-                    2.  Add to Active Effects List:
-                        - For Player: Add the new effect object to the 'playerActiveEffectsChanges' array (as per #12.9.3). Update 'playerStatus.activeConditions'.
-                        - For Named NPC: If tracked via 'NPCEffectChanges', use that. If the NPC is in 'enemiesData'/'alliesData', update their 'activeBuffs'/'activeDebuffs' array there.
-                        - For Generic Enemy/Ally: Add the new effect object to their 'activeBuffs' or 'activeDebuffs' array within their object in 'enemiesData'/'alliesData'.
-                    3.  Narrate: Describe the application of the effect in 'response'.
-                    4.  Logging: Record the applied effect, its parameters, and target in 'gm_thoughts_markdown'.
+                    1. Resolve Source Policy: Find exactly one validated current source and one complete activeEffectDefinitions[] entry. The definition, not prose, owns component parameters, bounds, stacking, lifetime, triggers, removal, links, visibility, and allowed targets.
+                    2. Request Lifecycle: Add one top-level effectChanges[] apply/dispel/remove command with the exact target, source selector, bounded parameters, accepted eventRef, and reason. This route is identical for player, named NPC, and anonymous combatant targets.
+                    3. Preserve Carriers: Do not add or edit activeEffects[], activeBuffs[], or activeDebuffs[] in player/NPC/combat response objects. The client computes and publishes the carrier plus identity index atomically.
+                    4. Narrate and Log: Describe only player-visible consequences in response. Record the accepted source/target intent in gm_thoughts_markdown without leaking hidden/gm_only definitions or technical IDs.
 
                     ]]>
    </content>
@@ -323,16 +319,16 @@ FOR API MODE: All existing restrictions remain functional.
     <![CDATA[                    When a player is mounted/driving an 'Active' vehicle:
                     1.  Enemy Targeting Choice: When enemies attack, they can choose to target the Player OR the Vehicle based on logic and tactics. Enemies with higher intelligence may target the vehicle to disable the mount.
                     2.  Area of Effect Attacks: AoE attacks hit both the player and the vehicle. Apply damage calculations separately to each target.
-                    3.  Vehicle Destruction: If a vehicle's 'currentHealth' reaches 0%, it is "Destroyed" or "Critically Wounded":
+                    3.  Vehicle Destruction: If the accepted vehicle health transition reaches its sealed minimum, it is "Destroyed" or "Critically Wounded":
                         - The player is immediately dismounted (set 'activeVehicleChange' to null)
                         - The player falls prone and takes collision damage (determined by GM based on vehicle type and circumstances)
                         - Apply 'Stunned' or 'Immobility' debuff to the player for 1 turn
                         - For sentient vehicles (isSentient: true), they may survive as wounded NPCs
                         - For non-sentient vehicles, they may be repairable or permanently destroyed
-                    4.  Vehicle Damage Application: 
-                        - Vehicles use 'currentHealth' and 'maxHealth' as percentage strings
-                        - Calculate damage reduction based on vehicle's 'resistances' array
-                        - Update vehicle's 'currentHealth' using 'UpdateVehicles' command
+                    4.  Vehicle Damage Application:
+                        - Read the exact current/maximum health only from the client-owned vehicle resource projection.
+                        - Calculate damage reduction based on the vehicle's 'resistances' array.
+                        - Emit `resourceChanges` operation=damage against target.kind='vehicle' and its exact accepted targetId/resourceKey='health'. `UpdateVehicles` never carries resource values.
                     5.  Logging: Record all vehicle-related combat events in 'gm_thoughts_markdown', including targeting decisions, damage calculations, and dismounting events.                    ]]>
    </content>
   </rule>

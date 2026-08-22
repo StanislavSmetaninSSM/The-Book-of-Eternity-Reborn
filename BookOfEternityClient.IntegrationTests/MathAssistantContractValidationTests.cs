@@ -159,9 +159,9 @@ public sealed class MathAssistantContractValidationTests : IDisposable
     }
 
     [Fact]
-    public void ValidateResponse_MortalCombatMathAuditMatchingHealthDelta_DoesNotReportDeltaMismatch()
+    public void ValidateResponse_MortalCombatMathAuditMatchingResourceAmount_DoesNotReportDeltaMismatch()
     {
-        using var doc = JsonDocument.Parse(BuildMortalCombatMathAuditResponseJson(currentHealthChange: -13));
+        using var doc = JsonDocument.Parse(BuildMortalCombatMathAuditResponseJson(resourceAmount: 13));
 
         var issues = _validator.ValidateResponse(doc.RootElement);
 
@@ -171,9 +171,9 @@ public sealed class MathAssistantContractValidationTests : IDisposable
     }
 
     [Fact]
-    public void ValidateResponse_MortalCombatMathAuditMismatchedHealthDelta_ReportsMismatch()
+    public void ValidateResponse_MortalCombatMathAuditMismatchedResourceAmount_ReportsMismatch()
     {
-        using var doc = JsonDocument.Parse(BuildMortalCombatMathAuditResponseJson(currentHealthChange: -12));
+        using var doc = JsonDocument.Parse(BuildMortalCombatMathAuditResponseJson(resourceAmount: 12));
 
         var issues = _validator.ValidateResponse(doc.RootElement);
 
@@ -182,9 +182,9 @@ public sealed class MathAssistantContractValidationTests : IDisposable
     }
 
     [Fact]
-    public void ValidateResponse_MortalCombatMathAuditReferencesMissingDelta_ReportsMissingDelta()
+    public void ValidateResponse_MortalCombatMathAuditReferencesMissingResourceChange_ReportsMissingDelta()
     {
-        using var doc = JsonDocument.Parse(BuildMortalCombatMathAuditResponseJson(includeHealthDelta: false));
+        using var doc = JsonDocument.Parse(BuildMortalCombatMathAuditResponseJson(includeResourceChange: false));
 
         var issues = _validator.ValidateResponse(doc.RootElement);
 
@@ -334,32 +334,42 @@ public sealed class MathAssistantContractValidationTests : IDisposable
     }
     """;
 
-    private static string BuildMortalCombatMathAuditResponseJson(int currentHealthChange = -13, bool includeHealthDelta = true)
+    private static string BuildMortalCombatMathAuditResponseJson(
+        int resourceAmount = 13,
+        bool includeResourceChange = true)
     {
-        var healthDeltaLine = includeHealthDelta
-            ? $"""
-              "currentHealthChange": {currentHealthChange},
+        var resourceChangeLine = includeResourceChange
+            ? $$"""
+              "resourceChanges": [{
+                "operation": "damage",
+                "target": { "kind": "player", "targetId": "player_current" },
+                "resourceKey": "health",
+                "amount": {{resourceAmount}},
+                "source": { "kind": "combat_outcome" },
+                "eventRef": "turn_42:resource:1",
+                "reason": "Удар пробил защиту после проверенного расчёта."
+              }],
             """
             : "";
 
         return $$"""
         {
           "response": "Удар пробил защиту после расчёта урона.",
-          "combat_log_markdown": "Расчёт: 12 базового урона + 4 сила - 3 броня = 13 урона; currentHealthChange = -13.",
-        {{healthDeltaLine}}  "mathAudit": [
+          "combat_log_markdown": "Расчёт: 12 базового урона + 4 сила - 3 броня = 13 урона; resourceChanges[0].amount = 13.",
+        {{resourceChangeLine}}  "mathAudit": [
             {
               "auditId": "calc_mortal_damage_1",
               "requestId": "calc_mortal_damage_1",
               "purpose": "mortal combat applied health delta",
-              "expression": "armorReduction - (baseDamage + strengthBonus)",
-              "normalizedExpression": "armorReduction-(baseDamage+strengthBonus)",
+              "expression": "baseDamage + strengthBonus - armorReduction",
+              "normalizedExpression": "baseDamage+strengthBonus-armorReduction",
               "variables": { "baseDamage": 12, "strengthBonus": 4, "armorReduction": 3 },
-              "rawResult": -13,
-              "result": -13,
+              "rawResult": 13,
+              "result": 13,
               "rounding": { "mode": "none" },
               "formulaVersion": "math_assistant_v1",
               "applicationState": "applied_to_state",
-              "referencedBy": [ "currentHealthChange", "combat_log_markdown:mortal_damage_1" ],
+              "referencedBy": [ "resourceChanges[0].amount", "combat_log_markdown:mortal_damage_1" ],
               "warnings": []
             }
           ]

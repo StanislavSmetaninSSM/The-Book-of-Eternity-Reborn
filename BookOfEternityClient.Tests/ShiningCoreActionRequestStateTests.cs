@@ -1506,7 +1506,8 @@ public sealed class ShiningCoreActionRequestStateTests
                     ["effectPayload"] = new JsonObject
                     {
                         ["type"] = "grant_relic_refinement",
-                        ["rerolls"] = 2,
+                        [ShiningBlessingRerollAllocationContract.PropertyName] =
+                            ShiningBlessingRerollAllocationContract.Create(2),
                         ["freeShape"] = false,
                         ["freeRetune"] = false
                     }

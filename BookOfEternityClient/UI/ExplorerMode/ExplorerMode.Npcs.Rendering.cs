@@ -293,24 +293,46 @@ public partial class ExplorerMode
     }
 
 
-    private void RenderNpcInventory(List<string> lines, JsonElement npc, bool debugMode)
+    private async Task RenderNpcInventory(List<string> lines, JsonElement npc, bool debugMode)
     {
         var display = BuildNpcInventoryDisplay(npc);
         if (display.IsEmpty) return;
+
+        var scopes = display.Items
+            .Select((item, index) => new ResourceProjectionOwnerScope(
+                new ResourceOwnerKey("mortal_world", ResourceOwnerKind.Item, item.Key),
+                $"предмет персонажа №{index + 1}",
+                IsOwningPlayer: false))
+            .ToArray();
+        var resources = scopes.Length == 0
+            ? new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>())
+            : await ResourceProjectionService.ProjectCanonicalAsync(
+                _fs,
+                scopes,
+                debugMode
+                    ? ResourceProjectionAudience.GameMaster
+                    : ResourceProjectionAudience.Player);
+        var rowsBySelector = resources.IsAvailable
+            ? resources.Rows
+                .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+                .ToDictionary(
+                    static group => group.Key,
+                    static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                    StringComparer.Ordinal)
+            : new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(StringComparer.Ordinal);
 
         if (display.Items.Count > 0)
         {
             lines.Add("");
             lines.Add($"  [bold orange3]🎒 Инвентарь:[/]");
-            foreach (var item in display.Items)
+            if (!resources.IsAvailable)
+                lines.Add($"    [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]");
+            for (var index = 0; index < display.Items.Count; index++)
             {
+                var item = display.Items[index];
                 var itemName = GetNodeStr(item.Data, "name", "?");
                 var qty = GetNodeStr(item.Data, "quantity", GetNodeStr(item.Data, "count", ""));
                 var itemType = GetNodeStr(item.Data, "type", GetNodeStr(item.Data, "category", ""));
-                var resource = GetNodeStr(item.Data, "resource", "");
-                var maxResource = GetNodeStr(item.Data, "maximumResource", "");
-                var resourceType = GetNodeStr(item.Data, "resourceType", "");
-                var durability = GetNodeStr(item.Data, "durability", "");
 
                 var line = item.IsEquipped
                     ? $"    ⚔ [green]{Markup.Escape(itemName)}[/] [green](экипировано)[/]"
@@ -319,14 +341,14 @@ public partial class ExplorerMode
                     line += $" ×{Markup.Escape(qty)}";
                 if (!string.IsNullOrEmpty(itemType))
                     line += $" [dim]({Markup.Escape(itemType)})[/]";
-                if (!string.IsNullOrEmpty(resource))
+                if (rowsBySelector.TryGetValue($"предмет персонажа №{index + 1}", out var itemRows))
                 {
-                    var resourceLabel = !string.IsNullOrEmpty(resourceType) ? $" {Markup.Escape(resourceType)}" : "";
-                    var maxLabel = !string.IsNullOrEmpty(maxResource) ? $"/{Markup.Escape(maxResource)}" : "";
-                    line += $" [cyan]{Markup.Escape(resource)}{maxLabel}{resourceLabel}[/]";
+                    foreach (var row in itemRows)
+                    {
+                        line += $" [cyan]{Markup.Escape(row.DisplayName)}: " +
+                                $"{Markup.Escape(ResourceProjectionService.FormatValue(row))}[/]";
+                    }
                 }
-                if (!string.IsNullOrEmpty(durability))
-                    line += $" [dim]прочность: {Markup.Escape(durability)}[/]";
                 lines.Add(line);
 
                 if (debugMode)
@@ -348,9 +370,11 @@ public partial class ExplorerMode
 
     private static void RenderNpcEffects(
         List<string> lines,
-        EffectPlayerProjectionResult projection,
+        EffectPlayerProjectionResult? projection,
         string npcId)
     {
+        if (projection == null)
+            return;
         if (!projection.IsAvailable)
         {
             lines.Add("");

@@ -41,18 +41,21 @@
     The player's "Iron Sword" (ID: sword-01) takes damage.
    </scenariocontext>
    <jsonresponse>
-    <UpdateInventory>
+    <resourceChanges>
      <![CDATA[
 
-                                [
-                                    {
-                                        "existedId": "sword-01",
-                                        "durability": "85%"
-                                    }
-                                ]
+                                [{
+                                    "operation": "damage",
+                                    "target": { "kind": "item", "targetId": "sword-01" },
+                                    "resourceKey": "durability",
+                                    "amount": 15,
+                                    "source": { "kind": "local_item_outcome", "sourceId": "sword-01" },
+                                    "eventRef": "turn_42:resource:1",
+                                    "reason": "The sword absorbed a heavy impact."
+                                }]
 
                                 ]]>
-    </UpdateInventory>
+    </resourceChanges>
    </jsonresponse>
   </example>
   <example contenttype="json_fragment" type="bad">
@@ -74,9 +77,8 @@
                                         "quality": "Common",
                                         "price": 50,
                                         "count": 1,
-                                        "weight": 1.5,
-                                        "durability": "85%" 
-                                        // INCORRECT: All these fields are redundant as only durability changed.
+                                        "weight": 1.5
+                                        // INCORRECT: a resource-only event must not resend the item or a GM-authored resulting reserve.
                                     }
                                 ]
 

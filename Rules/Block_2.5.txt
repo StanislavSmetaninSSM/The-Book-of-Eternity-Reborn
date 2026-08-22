@@ -34,7 +34,7 @@
                     - 'itemBondLevelChanges': ONLY for updating an item's bond level with the owner.
                     - 'skillMasteryChanges': ONLY for updating a player's skill mastery progress/level.
                     - 'NPCSkillMasteryChanges': ONLY for updating an NPC's skill mastery.
-                    - 'inventoryItemsResources': ONLY for changing an item's internal resource count (charges, ammo).
+                    - 'resourceChanges': ONLY for changing a materialized resource through its exact owner/resource coordinate (including item charges or ammo).
                     - 'moveInventoryItems': ONLY for changing an item's location (its 'contentsPath').
                     - 'removeInventoryItems': ONLY for completely removing an item stack.
                     - 'NPCFateCardUnlocks' / 'itemFateCardUnlocks': ONLY to signal that a card has been unlocked.

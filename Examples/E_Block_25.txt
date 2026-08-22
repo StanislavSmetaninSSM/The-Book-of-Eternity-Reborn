@@ -1,4 +1,7 @@
 <instructionblock id="25">
+ <effectmaterializationcontract>
+  Quest-owned effects bind exact questId plus definitionKey and are applied through effectChanges[] as demonstrated in Examples/E_CLI_Effect_Materialization.txt.
+ </effectmaterializationcontract>
  <title>
   Examples For Player Custom State Management
  </title>
@@ -67,7 +70,7 @@
                                         "triggerCondition": "value_greater_than_or_equal_to",
                                         "triggerValue": 50,
                                         "associatedEffects": [
-                                            {"effectType": "Debuff", "value": "-10%", "targetType": "constitution", "duration": 999, "sourceSkill": "Hunger", "description": "Hungry: Constitution reduced by 10%."}
+                                            {"source": {"kind": "world_event", "sourceId": "world_event_hunger_system", "definitionKey": "hungry-threshold"}, "parameters": {}}
                                         ]
                                     },
                                     {
@@ -75,7 +78,7 @@
                                         "triggerCondition": "value_greater_than_or_equal_to",
                                         "triggerValue": 90,
                                         "associatedEffects": [
-                                            {"effectType": "DamageOverTime", "value": "2%", "targetType": "dark", "duration": 999, "sourceSkill": "Starvation", "description": "Starving: Losing 2% health per turn from malnourishment."}
+                                            {"source": {"kind": "world_event", "sourceId": "world_event_hunger_system", "definitionKey": "starving-periodic-loss"}, "parameters": {}}
                                         ]
                                     }
                                 ]

@@ -46,6 +46,8 @@ A group contains stable member records. New members carry `memberRef` and omit `
 
 Reordering members preserves coordinates. Removing a member requires exact terminal owner evidence and retires only that member's resources. Group deletion retires every still-live member atomically.
 
+The group array is only a carrier. A detached member may appear as a top-level non-group combat row with the same exact `memberId`/`memberRef`; it remains the same `combat_group_member` resource owner and keeps its effects/history. The row must not also carry `NPCId`, `npcRef`, `combatantId`, or `combatantRef`. Moving the exact identity between group and top-level carriers is continuity, not retirement plus creation. For player-facing effect selection, both individual combatants and detached members use target kind `combatant`; duplicate/confusable cross-family target IDs fail closed.
+
 ## 6. Vehicles
 
 Vehicles use permanent `vehicleId` resource ownership. Activation, parking, movement, and item-carrier participation do not change the coordinate. `UpdateVehicles` cannot write current/maximum resource values. New vehicle materialization supplies capacity authority; destruction requires terminal history before the vehicle resource is removed.

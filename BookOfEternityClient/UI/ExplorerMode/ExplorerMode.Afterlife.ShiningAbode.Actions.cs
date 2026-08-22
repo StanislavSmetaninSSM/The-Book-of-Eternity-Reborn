@@ -14,10 +14,13 @@ public partial class ExplorerMode
         JsonObject? ResidentRoot,
         JsonObject? GuardiansRoot,
         JsonObject? SoulRoot,
+        ResourceProjectionResult GachaResources,
+        ResourceProjectionResult RelicRerollResources,
         IReadOnlyList<ShiningContextReadIssue>? ReadIssues = null,
         int RelicRerolls = 0);
 
-    private async Task<ShiningContext?> LoadShiningContextAsync()
+    private async Task<ShiningContext?> LoadShiningContextAsync(
+        ResourceProjectionAudience projectionAudience = ResourceProjectionAudience.Player)
     {
         var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         if (string.IsNullOrWhiteSpace(shiningJson))
@@ -89,15 +92,29 @@ public partial class ExplorerMode
 
         if (!hasMalformedLegacyPendingDiscovery && !hasMalformedTreasury)
             ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
-        var relicRerolls = await ShiningBlessingEffectState
-            .GetPendingRelicRerollsAsync(_fs, soulRoot);
+        var gachaResources = await ResourceProjectionService.ProjectShiningGachaAsync(
+            _fs,
+            projectionAudience);
+        var relicRerollResources = await ResourceProjectionService.ProjectRelicRerollsAsync(
+            _fs,
+            projectionAudience);
+        var relicRerolls = relicRerollResources.IsAvailable
+            ? relicRerollResources.Rows
+                .SingleOrDefault(static row =>
+                    string.Equals(row.ResourceKey, "blessing_rerolls", StringComparison.Ordinal))?
+                .Current ?? 0m
+            : 0m;
         return new ShiningContext(
             shiningRoot,
             residentRoot,
             guardiansRoot,
             soulRoot,
+            gachaResources,
+            relicRerollResources,
             readIssues,
-            relicRerolls);
+            decimal.Truncate(relicRerolls) == relicRerolls && relicRerolls <= int.MaxValue
+                ? (int)relicRerolls
+                : 0);
     }
 
     private async Task<bool> SaveShiningRootAsync(JsonObject root)
@@ -185,10 +202,20 @@ public partial class ExplorerMode
         return false;
     }
 
-    private Panel BuildShiningOverviewPanel(JsonObject shiningRoot, JsonObject? residentRoot, JsonObject? guardiansRoot)
+    private Panel BuildShiningOverviewPanel(ShiningContext context)
     {
+        var shiningRoot = context.Root;
+        var residentRoot = context.ResidentRoot;
+        var guardiansRoot = context.GuardiansRoot;
         var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
             .ToList();
+        var gachaAttempts = context.GachaResources.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "gacha_attempts", StringComparison.Ordinal));
+        var gachaLine = !context.GachaResources.IsAvailable
+            ? $"  • Сияющая гача: [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]"
+            : gachaAttempts == null
+                ? "  • Сияющая гача: [dim]нет активного лимита[/]"
+                : $"  • Сияющая гача: [white]{Markup.Escape(ResourceProjectionService.FormatValue(gachaAttempts))}[/] [dim]({BuildShiningReturnCycleStatusLabel(shiningRoot)})[/]";
         var lines = new List<string>
         {
             "[bold yellow]✨ Сияющая Обитель[/]",
@@ -199,7 +226,7 @@ public partial class ExplorerMode
             $"  • Сияние: [yellow]{GetNodeInt(shiningRoot["radiance"]?["experience"])} опыта[/] [dim](уровень сияния {GetNodeInt(shiningRoot["radiance"]?["tier"])})[/]",
             $"  • Искры Света: [gold1]{GetNodeInt(shiningRoot["lightSparks"])}[/]",
             BuildShiningTreasuryOverviewLine(shiningRoot),
-            $"  • Сияющая гача: [white]{ShiningAbodeState.GetRemainingShiningGachaCharges(shiningRoot)}[/]/[white]{GetNodeInt(shiningRoot["gachaSystem"]?["chargesPerReturn"])}[/] [dim]({BuildShiningReturnCycleStatusLabel(shiningRoot)})[/]",
+            gachaLine,
             $"  • Залов: [white]{(shiningRoot["halls"] as JsonArray)?.Count ?? 0}[/]",
             $"  • Раскрытых фракций: [white]{visibleFactions.Count}[/]",
             $"  • Политических акторов: [white]{(shiningRoot["shiningPoliticalActors"] as JsonArray)?.Count ?? 0}[/]"
@@ -239,6 +266,16 @@ public partial class ExplorerMode
                 lines.Add($"  • Черновик устарел: открой Врата заново [dim](версия {GetNodeInt(gates["draftVersion"])})[/]");
         }
 
+        if (context.SoulRoot?[ShiningBlessingEffectState.SoulStateProperty]?
+                ["relicRefinementEntitlements"] is JsonObject)
+        {
+            var relicRerolls = context.RelicRerollResources.Rows.SingleOrDefault(static row =>
+                string.Equals(row.ResourceKey, "blessing_rerolls", StringComparison.Ordinal));
+            lines.Add(context.RelicRerollResources.IsAvailable && relicRerolls != null
+                ? $"  • Перебросы реликвий: [white]{relicRerolls.Current}[/]"
+                : $"  • Перебросы реликвий: [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]");
+        }
+
         if (shiningRoot["preparedIncarnationPackage"] is JsonObject package)
         {
             var radianceTier = GetNodeInt(shiningRoot["radiance"]?["tier"]);
@@ -258,7 +295,13 @@ public partial class ExplorerMode
                 lines.Add($"  • Зафиксированные карты: {Markup.Escape(string.Join(", ", selectedLabels))}");
             if (selectedCards.Count > 0)
             {
-                var summaryContext = new ShiningContext(shiningRoot, residentRoot, guardiansRoot, null);
+                var summaryContext = new ShiningContext(
+                    shiningRoot,
+                    residentRoot,
+                    guardiansRoot,
+                    null,
+                    new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>()),
+                    new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>()));
                 lines.Add("  • Полный зафиксированный набор карт:");
                 foreach (var card in selectedCards)
                     lines.AddRange(BuildShiningBlessingCardInspectionLines(card, summaryContext, isSelected: true));
@@ -398,8 +441,8 @@ public partial class ExplorerMode
     {
         var currentReturnCycleId = GetNodeString(shiningRoot["gachaSystem"]?["currentReturnCycleId"]);
         return string.IsNullOrWhiteSpace(currentReturnCycleId)
-            ? "currentReturnCycleId не синхронизирован"
-            : $"currentReturnCycleId={currentReturnCycleId}";
+            ? "цикл возвращения не синхронизирован"
+            : "цикл возвращения синхронизирован";
     }
 
     private bool EnsureActiveShiningAbodeAvailable(string title)
@@ -428,7 +471,7 @@ public partial class ExplorerMode
             var feathers = await ReadInkFeathersBalance();
             var coreRequests = await ShiningCoreActionRequestState.ReadRequestsAsync(_fs);
             Clear();
-            Write(BuildShiningOverviewPanel(context.Root, context.ResidentRoot, context.GuardiansRoot));
+            Write(BuildShiningOverviewPanel(context));
             MarkupLine($"[dim]Перья: {feathers} • Искры Света: {GetNodeInt(context.Root["lightSparks"])}[/]");
 
             var choice = Prompt(new SelectionPrompt<string>()

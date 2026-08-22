@@ -5,7 +5,8 @@ namespace BookOfEternityClient.Services;
 internal enum EffectComponentResolutionMode
 {
     Deterministic,
-    BoundedReceipt
+    BoundedReceipt,
+    Declared
 }
 
 internal sealed record EffectComponentProfileDescriptor(
@@ -92,10 +93,8 @@ internal static class EffectComponentProfiles
     private static readonly IReadOnlySet<string> EventTypes =
         EffectEventTypeCatalog.Registered;
 
-    private static readonly HashSet<string> ReactionResultKinds = new(StringComparer.Ordinal)
-    {
-        "apply_definition", "trigger_component", "bounded_receipt", "suspend", "remove"
-    };
+    private static readonly IReadOnlySet<string> ReactionResultKinds =
+        EffectReactionResultCatalog.RegisteredKinds;
 
     private static readonly HashSet<string> Dependencies = new(StringComparer.Ordinal)
     {
@@ -145,9 +144,9 @@ internal static class EffectComponentProfiles
                 "action_control", "action control", "minimum", "maximum"),
             ["event_reaction"] = new(
                 "event_reaction",
-                EffectComponentResolutionMode.BoundedReceipt,
+                EffectComponentResolutionMode.Declared,
                 new HashSet<string>(StringComparer.Ordinal) { "profile_specific" },
-                "bounded event reaction"),
+                "source-declared deterministic or bounded event reaction"),
             ["wound_consequence"] = Descriptor(
                 "wound_consequence", "wound consequence", "profile_specific"),
             ["afterlife_combat_condition"] = Descriptor(
@@ -370,14 +369,100 @@ internal static class EffectComponentProfiles
         string path,
         List<ValidationIssue> issues)
     {
-        ValidateClosedObject(payload, path, Set("eventType", "resultKind", "definitionKey", "componentId", "dependency"), issues);
-        RequireClosedString(payload, path, "eventType", EventTypes, issues);
+        ValidateClosedObject(
+            payload,
+            path,
+            Set(
+                "eventType",
+                "resultKind",
+                "definitionKey",
+                "componentId",
+                "parameters",
+                "originalOutcome",
+                "resolvedOutcome",
+                "dependency",
+                "afterComponentId",
+                "maxExpansion"),
+            issues);
+        var eventType = RequireClosedString(
+            payload,
+            path,
+            "eventType",
+            EventTypes,
+            issues);
         var resultKind = RequireClosedString(payload, path, "resultKind", ReactionResultKinds, issues);
-        RequireClosedString(payload, path, "dependency", Dependencies, issues);
-        if (string.Equals(resultKind, "apply_definition", StringComparison.Ordinal))
+        var dependency = RequireClosedString(payload, path, "dependency", Dependencies, issues);
+        RequireBoundedInt(payload, path, "maxExpansion", 1, 64, issues);
+        _ = EffectReactionResultCatalog.TryResolve(resultKind, out var descriptor);
+        if (descriptor?.Behavior == EffectReactionResultBehavior.ApplyDefinition)
+        {
             RequireExactIdentifier(payload, path, "definitionKey", issues);
-        if (string.Equals(resultKind, "trigger_component", StringComparison.Ordinal))
+            RequireObject(payload, path, "parameters", issues);
+        }
+        else
+        {
+            ForbidIfPresent(payload, path, "definitionKey", resultKind, issues);
+            ForbidIfPresent(payload, path, "parameters", resultKind, issues);
+        }
+        if (descriptor?.Behavior == EffectReactionResultBehavior.PeriodicComponent)
             RequireExactIdentifier(payload, path, "componentId", issues);
+        else
+            ForbidIfPresent(payload, path, "componentId", resultKind, issues);
+        if (descriptor?.Behavior == EffectReactionResultBehavior.EventOutcome)
+        {
+            var originalOutcome = RequireExactIdentifier(
+                payload,
+                path,
+                "originalOutcome",
+                issues);
+            var resolvedOutcome = RequireExactIdentifier(
+                payload,
+                path,
+                "resolvedOutcome",
+                issues);
+            if (originalOutcome != null &&
+                resolvedOutcome != null &&
+                eventType != null &&
+                !EffectEventOutcomeCatalog.Contains(
+                    eventType,
+                    originalOutcome,
+                    resolvedOutcome))
+            {
+                Add(
+                    issues,
+                    path,
+                    "effect_materialization_invalid_event_outcome",
+                    "one registered source-owned event outcome transition",
+                    $"{originalOutcome}->{resolvedOutcome}");
+            }
+        }
+        else
+        {
+            ForbidIfPresent(payload, path, "originalOutcome", resultKind, issues);
+            ForbidIfPresent(payload, path, "resolvedOutcome", resultKind, issues);
+        }
+        if (string.Equals(dependency, "after_component", StringComparison.Ordinal))
+            RequireExactIdentifier(payload, path, "afterComponentId", issues);
+        else
+            ForbidIfPresent(payload, path, "afterComponentId", dependency, issues);
+    }
+
+    private static void ForbidIfPresent(
+        JsonElement root,
+        string path,
+        string field,
+        string? discriminator,
+        List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(field, out var value))
+        {
+            Add(
+                issues,
+                path + "." + field,
+                "effect_materialization_invalid_component",
+                $"field absent for '{discriminator ?? "unknown"}' reaction semantics",
+                value.GetRawText());
+        }
     }
 
     private static void ValidateWoundConsequence(
@@ -565,6 +650,24 @@ internal static class EffectComponentProfiles
             number < minimum || number > maximum)
         {
             Add(issues, path + "." + field, "effect_materialization_invalid_component", $"integer from {minimum} through {maximum}", Describe(root, field));
+        }
+    }
+
+    private static void RequireObject(
+        JsonElement root,
+        string path,
+        string field,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var value) ||
+            value.ValueKind != JsonValueKind.Object)
+        {
+            Add(
+                issues,
+                path + "." + field,
+                "effect_materialization_invalid_component",
+                "closed object",
+                Describe(root, field));
         }
     }
 

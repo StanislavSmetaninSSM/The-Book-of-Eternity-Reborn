@@ -10,7 +10,7 @@
 validated source entity ── activeEffectDefinitions[] / closed adapter
                                   │
                                   v
-effectChanges[] ──> subordinate EffectAcceptedTurnPlan
+effectChanges[] / effectEventReports[] ──> subordinate EffectAcceptedTurnPlan
                                   │
                                   v
                          AcceptedMechanicsPlan
@@ -32,7 +32,8 @@ Transient path: `game_state/effects/effect_commands.json`
 ```json
 {
   "effectChanges": [],
-  "effectResolutionReceipts": []
+  "effectResolutionReceipts": [],
+  "effectEventReports": []
 }
 ```
 
@@ -112,6 +113,22 @@ whose permanent ID is client-assigned. The parent entity supplies realm and
 owner authority. `definitionKey` selects one exact materializable definition
 inside that source. Canonical active instances always store the resolved
 `sourceId`, never `sourceRef`.
+
+### 1.5 Accepted Event Report
+
+`effectEventReports[]` contains closed GM-authored evidence for a registered
+story-event adapter. It is not lifecycle authority by itself. The client binds
+the evidence to sealed accepted-turn inputs, selects one exact eligible active
+effect and source-owned trigger, and creates the internal lifecycle event.
+
+The first registered report is `owner_critical_failure` in `mortal_world` for
+`player/player_current`. Its `mortal_action_roll` evidence carries exact
+`rollMode`, leading sealed `diceIndexes`, `selectedIndex`, `selectedValue=1`,
+`originalOutcome=critical_failure`, `resolvedOutcome=failure`, and a readable
+reason. Advantage modes select the maximum sealed die, disadvantage modes the
+minimum, and ties use the lower index. The GM never provides `effectId`,
+`triggerId`, remaining uses, or post-state. For multiple independent matching
+effects, selection is deterministic by creation turn then ordinal effect ID.
 
 ## 2. Static Active-Effect Definition
 
@@ -238,7 +255,7 @@ Each component has:
 | `periodic_damage` | Exact target resource, finite positive amount, damage type, declared trigger/interval, legal floor behavior |
 | `periodic_restore` | Exact target resource, finite positive amount, declared trigger/interval, legal cap behavior |
 | `action_control` | Exact registered action/operation plus `grant`, `restrict`, `forbid`, or bounded `cost_modifier` |
-| `event_reaction` | Exact event type, declared bounded result kind, referenced component/effect definition, and dependency edge |
+| `event_reaction` | Exact event type; `apply_definition`, `trigger_component`, `bounded_receipt`, `event_outcome`, `suspend`, or `remove`; exact same-source definition/component/outcome reference; dependency edge; per-component expansion budget |
 | `wound_consequence` | Exact wound link plus registered symptom/consequence semantics; no wound mutation permission |
 | `afterlife_combat_condition` | Existing condition kind, target side/actor, affected operations, legal axes, counterplay, payoff, and finite exchange/scene semantics |
 
@@ -324,8 +341,11 @@ catalog.
 
 The common Task 8 reducer supports all eight modes, but it never invents missing
 runtime context. The current Mortal adapter supplies owner-turn and exact
-world-time events. Uses await accepted trigger events, and scene/condition modes
-require an owning accepted adapter to provide exact scene or condition evidence.
+world-time events. It also converts a closed
+`effectEventReports[].owner_critical_failure` report with sealed d20 evidence
+into one exact Fate Shield use event. Other uses plus scene/condition modes
+require an owning accepted adapter to provide exact event, scene, or condition
+evidence; none is inferred from prose.
 
 For `source_bound`, `activePredicate` is an exact closed token. The registry is:
 
@@ -356,7 +376,28 @@ Unknown tokens, source-kind-incompatible tokens, and predicates not satisfied by
 - `eventType` comes from a closed accepted-event catalog.
 - `componentIds` resolve inside the same instance.
 - `resolutionMode` is `deterministic` or `bounded_receipt`.
-- Downstream effect definitions form a finite acyclic graph with an explicit expansion limit.
+- `event_reaction` binds its owning trigger mode to its result:
+  `bounded_receipt` uses bounded resolution; every other result is
+  deterministic. `apply_definition` owns closed downstream parameters;
+  component results resolve one exact periodic component in the same instance;
+  `event_outcome` resolves one exact source-owned transition from the closed
+  client registry and does not replace ordinary lifetime advancement.
+- Reaction dependency is exactly `before_current_event`, `after_component`, or
+  `after_current_event`. The middle form names one exact predecessor selected
+  by the same trigger and runs only when that predecessor mutation applied.
+- `trigger_component` and `bounded_receipt` always use `after_component`:
+  resource-component reactions are explicit causal edges, while an
+  unconditional resource component is selected directly by its trigger.
+- Direct/reaction dispatch is unique per component. Component dependencies and
+  same-source downstream effect definitions form finite acyclic graphs.
+- `maxExpansion` from 1 through 64 is enforced per reaction component across
+  the whole accepted transition, including resource-derived reactions; a
+  separate whole-transition ceiling of 64 prevents aggregate expansion.
+- A downstream definition sharing the current logical stack coordinate must
+  explicitly use `replace`; otherwise source validation rejects the graph.
+- A client-derived child effect records optional exact
+  `chronology.causalEventRef`. It is immutable causality/replay evidence and is
+  absent from every GM-authored command/report.
 
 ### 7.2 Removal
 

@@ -234,8 +234,11 @@ public partial class ExplorerMode
         lines.Add($"  • Искры Света: [white]{currentLightSparks}[/] -> [white]{nextLightSparks}[/] [dim](quotedCostLightSparks={request.QuotedCostLightSparks})[/]");
         if (relicRerollsToCommit > 0)
         {
-            var currentRelicRerolls = context.RelicRerolls;
-            lines.Add($"  • Перебросы реликвий от благословений: [white]{currentRelicRerolls}[/] -> [white]{Math.Max(0, currentRelicRerolls - relicRerollsToCommit)}[/] [dim](списываются только после подтверждения; отмена сохраняет право)[/]");
+            var relicRerolls = context.RelicRerollResources.Rows.SingleOrDefault(static row =>
+                string.Equals(row.ResourceKey, "blessing_rerolls", StringComparison.Ordinal));
+            lines.Add(!context.RelicRerollResources.IsAvailable || relicRerolls == null
+                ? $"  • Перебросы реликвий: [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]"
+                : $"  • Перебросы реликвий от благословений: [white]{relicRerolls.Current}[/] -> [white]{Math.Max(0m, relicRerolls.Current - relicRerollsToCommit)}[/] [dim](списываются только после подтверждения; отмена сохраняет право)[/]");
         }
 
         if (request.QuotedCostFeathers == 0 && request.QuotedCostLightSparks == 0)
@@ -307,10 +310,11 @@ public partial class ExplorerMode
 
             case ShiningCoreActionRequestState.ActionTypePullRelicGacha:
                 lines.Add($"  • Цикл возвращения: [dim]{Markup.Escape(request.ReturnCycleId)}[/].");
-                var gachaSystem = context.Root["gachaSystem"] as JsonObject;
-                var chargesUsed = GetNodeInt(gachaSystem?["chargesUsedThisReturn"]);
-                var chargesPerReturn = GetNodeInt(gachaSystem?["chargesPerReturn"]);
-                lines.Add($"  • chargesUsedThisReturn: {chargesUsed} -> {chargesUsed + 1} из {chargesPerReturn}; projected bonus ceiling: +{request.ProjectedGachaBonusSteps} rarity step(s).");
+                var gachaAttempts = context.GachaResources.Rows.SingleOrDefault(static row =>
+                    string.Equals(row.ResourceKey, "gacha_attempts", StringComparison.Ordinal));
+                lines.Add(!context.GachaResources.IsAvailable || gachaAttempts == null
+                    ? $"  • Попытки призыва: [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]"
+                    : $"  • Попытки призыва: {gachaAttempts.Current} -> {Math.Max(0m, gachaAttempts.Current - 1m)} из {gachaAttempts.Maximum}; projected bonus ceiling: +{request.ProjectedGachaBonusSteps} rarity step(s).");
                 if (FindCanonicalShiningFactionForPendingPreview(context.Root, request.FactionId) is JsonObject gachaFaction)
                 {
                     lines.Add($"  • Вклад в бонус: тир Сияния {GetNodeInt(context.Root["radiance"]?["tier"])}, factionStrength {GetNodeInt(gachaFaction["factionStrength"])}, поддержанные проекты/резиденты из текущего состояния Сияющей Обители.");
@@ -318,7 +322,7 @@ public partial class ExplorerMode
                 }
                 lines.Add("  • GM берёт `turn_request.gachaBaseResult.baseRarity` as rarity floor, может поднять итог не выше projected bonus ceiling.");
                 lines.Add("  • Soul state получает ровно одну новую Soul Relic с id/name из receipt; unrelated Soul fields не меняются.");
-                lines.Add("  • gachaSystem получает currentReturnCycleId, chargesUsedThisReturn и gachaHistory entry.");
+                lines.Add("  • Общий ledger тратит одну gacha_attempts; gachaSystem хранит только currentReturnCycleId и gachaHistory entry.");
                 break;
 
             case ShiningCoreActionRequestState.ActionTypeForgeRelicReshape:
@@ -619,14 +623,8 @@ public partial class ExplorerMode
                 out var returnCycleId,
                 out projectionError))
         {
-            var quotedGachaSystem = quotedShiningRoot["gachaSystem"];
-            var rawChargesPerReturn = GetNodeInt(quotedGachaSystem?["chargesPerReturn"]);
-            var chargesPerReturn = Math.Max(
-                0,
-                rawChargesPerReturn > 0
-                    ? rawChargesPerReturn
-                    : ShiningAbodeState.GetShiningGachaChargesPerReturn(GetNodeInt(quotedShiningRoot["radiance"]?["tier"])));
-            var chargesUsedBefore = Math.Clamp(GetNodeInt(quotedGachaSystem?["chargesUsedThisReturn"]), 0, chargesPerReturn);
+            var gachaAttempts = context.GachaResources.Rows.SingleOrDefault(static row =>
+                string.Equals(row.ResourceKey, "gacha_attempts", StringComparison.Ordinal));
             var inkFeathersBefore = CurrentInkFeathersForPreview(context.SoulRoot);
 
             audit["accounting"] = new JsonObject
@@ -634,9 +632,11 @@ public partial class ExplorerMode
                 ["costInFeathers"] = cost.Feathers,
                 ["costInLightSparks"] = cost.LightSparks,
                 ["projectedGachaBonusSteps"] = projectedBonusSteps,
-                ["chargesUsedThisReturnBefore"] = chargesUsedBefore,
-                ["chargesUsedThisReturnAfter"] = chargesUsedBefore + 1,
-                ["chargesPerReturn"] = chargesPerReturn,
+                ["gachaAttemptsBefore"] = gachaAttempts?.Current,
+                ["gachaAttemptsAfter"] = gachaAttempts == null
+                    ? null
+                    : Math.Max(0m, gachaAttempts.Current - 1m),
+                ["gachaAttemptsMaximum"] = gachaAttempts?.Maximum,
                 ["returnCycleIdBefore"] = GetNodeString(context.Root["gachaSystem"]?["currentReturnCycleId"]) ?? string.Empty,
                 ["returnCycleIdAfter"] = returnCycleId,
                 ["inkFeathersBefore"] = inkFeathersBefore,

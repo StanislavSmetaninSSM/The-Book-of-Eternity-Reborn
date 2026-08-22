@@ -5,7 +5,10 @@ namespace BookOfEternityClient.Services;
 
 internal static class EffectAcceptedTurnPlanner
 {
-    private static readonly HashSet<string> RootFields = Set("effectChanges", "effectResolutionReceipts");
+    private static readonly HashSet<string> RootFields = Set(
+        "effectChanges",
+        "effectResolutionReceipts",
+        EffectAcceptedEventReportCatalog.ResponseField);
     private static readonly HashSet<string> ApplyFields = Set(
         "operation", "target", "source", "parameters", "eventRef", "reason");
     private static readonly HashSet<string> TerminalFields = Set(
@@ -35,6 +38,25 @@ internal static class EffectAcceptedTurnPlanner
             get;
             init;
         } = Array.Empty<EffectBoundedResourceResolution>();
+
+        internal IReadOnlyList<string> ExecutedComponentIds
+        {
+            get;
+            init;
+        } = Array.Empty<string>();
+
+        internal IReadOnlyList<EffectReactionExecution> ReactionExecutions
+        {
+            get;
+            init;
+        } = Array.Empty<EffectReactionExecution>();
+
+        internal IReadOnlyDictionary<ResourceOperationKey, string>
+            ComponentIdsByMutation
+        {
+            get;
+            init;
+        } = new Dictionary<ResourceOperationKey, string>();
     }
 
     internal sealed record EffectBoundedResourceResolution(
@@ -46,6 +68,8 @@ internal static class EffectAcceptedTurnPlanner
         JsonObject Target,
         ResourcePendingAuthorityBinding TargetAuthority,
         string TriggerId,
+        string ComponentId,
+        string TriggerEventRef,
         string EventKind,
         ResourceCoordinate Coordinate,
         ResourcePendingAuthorityBinding ResourceAuthority,
@@ -61,7 +85,8 @@ internal static class EffectAcceptedTurnPlanner
         string SafeSourceLabel,
         string SafeTargetLabel,
         string SafeResourceLabel,
-        string SafeOperationLabel);
+        string SafeOperationLabel,
+        string? AfterComponentId = null);
 
     internal sealed record EffectResourceTriggerExecution(
         string EffectId,
@@ -69,7 +94,10 @@ internal static class EffectAcceptedTurnPlanner
         string EventKind,
         string EventRef,
         IReadOnlyList<ResourceOperationKey> MutationKeys,
-        int? RemainingUseBudget);
+        int? RemainingUseBudget,
+        IReadOnlyList<string>? ComponentIds = null,
+        string? TriggerEventRef = null,
+        IReadOnlyDictionary<ResourceOperationKey, string>? ComponentIdsByMutation = null);
 
     internal static EffectPeriodicResourceResolution ResolvePeriodicResourceMutations(
         JsonObject effect,
@@ -237,10 +265,17 @@ internal static class EffectAcceptedTurnPlanner
             return FailedPeriodicResourceResolution(issues);
 
         var components = effect["components"]!.AsArray().OfType<JsonObject>().ToArray();
-        var selected = new List<(EffectPeriodicResourceComponent Parsed, JsonObject Node)>();
-        foreach (var componentIdNode in trigger["componentIds"]!.AsArray())
+        var selected = new List<(
+            EffectPeriodicResourceComponent Parsed,
+            JsonObject Node,
+            string? AfterComponentId)>();
+        foreach (var selection in EffectReactionExecutor.ResolveExecutableComponents(
+                     effect,
+                     trigger,
+                     acceptedEvent.Phase!,
+                     issues))
         {
-            var componentId = componentIdNode!.GetValue<string>();
+            var componentId = selection.ComponentId;
             var matches = components.Where(candidate =>
                     string.Equals(
                         candidate["componentId"]?.GetValue<string>(),
@@ -268,7 +303,10 @@ internal static class EffectAcceptedTurnPlanner
                 $"effect.components[{componentId}]");
             issues.AddRange(parsed.Issues);
             if (parsed.IsValid)
-                selected.Add((parsed.Component!, matches[0]));
+                selected.Add((
+                    parsed.Component!,
+                    matches[0],
+                    selection.AfterComponentId));
         }
         if (issues.Count != 0)
             return FailedPeriodicResourceResolution(issues);
@@ -276,6 +314,8 @@ internal static class EffectAcceptedTurnPlanner
         var sourceExports = new List<ResourceMutationSourceExport>();
         var mutations = new List<ResourceMutationIntent>();
         var pendingResolutions = new List<EffectBoundedResourceResolution>();
+        var executedComponentIds = new List<string>();
+        var componentIdsByMutation = new Dictionary<ResourceOperationKey, string>();
         foreach (var candidate in selected
                      .OrderBy(static value => value.Parsed.Priority)
                      .ThenBy(
@@ -379,6 +419,8 @@ internal static class EffectAcceptedTurnPlanner
                     target.DeepClone().AsObject(),
                     targetBinding,
                     triggerId,
+                    component.ComponentId,
+                    acceptedEvent.CausalEventRef ?? acceptedEvent.EventRef,
                     acceptedEvent.Phase!,
                     new ResourceCoordinate(
                         ownerKey.Realm,
@@ -402,7 +444,8 @@ internal static class EffectAcceptedTurnPlanner
                     ReadSafeSourceLabel(effect),
                     ReadSafeTargetLabel(targetKind),
                     definition.DisplayName,
-                    ReadSafeOperationLabel(component.Operation)));
+                    ReadSafeOperationLabel(component.Operation),
+                    candidate.AfterComponentId));
                 continue;
             }
             sourceExports.Add(new ResourceMutationSourceExport(
@@ -412,7 +455,7 @@ internal static class EffectAcceptedTurnPlanner
                 ResourceMutationSourceState.Active,
                 sameTurn,
                 ownerKey));
-            mutations.Add(new ResourceMutationIntent(
+            var mutation = new ResourceMutationIntent(
                 acceptedEvent.EventRef,
                 new ResourceCoordinate(
                     ownerKey.Realm,
@@ -427,7 +470,54 @@ internal static class EffectAcceptedTurnPlanner
                 Array.Empty<ResourceOperationKey>(),
                 Array.Empty<ResourceMutationEventRequirement>(),
                 ReceiptId: null,
-                ResultConstraint: constraint));
+                ResultConstraint: constraint);
+            mutations.Add(mutation);
+            componentIdsByMutation.Add(mutation.Key, component.ComponentId);
+            executedComponentIds.Add(component.ComponentId);
+        }
+
+        var mutationByComponent = componentIdsByMutation
+            .ToDictionary(
+                static pair => pair.Value,
+                pair => mutations.Single(mutation => mutation.Key == pair.Key),
+                StringComparer.Ordinal);
+        foreach (var candidate in selected.Where(static candidate =>
+                     candidate.AfterComponentId != null))
+        {
+            if (isBoundedResolution)
+                continue;
+            if (!mutationByComponent.TryGetValue(
+                    candidate.Parsed.ComponentId,
+                    out var dependent) ||
+                !mutationByComponent.TryGetValue(
+                    candidate.AfterComponentId!,
+                    out var predecessor))
+            {
+                Add(
+                    issues,
+                    $"effect.components[{candidate.Parsed.ComponentId}]",
+                    "effect_reaction_component_dependency_unresolved",
+                    "one exact executable predecessor and dependent component",
+                    candidate.AfterComponentId!);
+                continue;
+            }
+
+            var bound = dependent with
+            {
+                Dependencies = dependent.Dependencies
+                    .Append(predecessor.Key)
+                    .Distinct()
+                    .ToArray(),
+                EventRequirements = dependent.EventRequirements
+                    .Append(new ResourceMutationEventRequirement(
+                        predecessor.Key,
+                        PrimaryResourceEvent(predecessor.Source.Operation)))
+                    .Distinct()
+                    .ToArray()
+            };
+            var index = mutations.FindIndex(mutation => mutation.Key == dependent.Key);
+            mutations[index] = bound;
+            mutationByComponent[candidate.Parsed.ComponentId] = bound;
         }
 
         return issues.Count == 0
@@ -436,7 +526,13 @@ internal static class EffectAcceptedTurnPlanner
                 mutations.ToArray(),
                 Array.Empty<ValidationIssue>())
             {
-                PendingResolutions = pendingResolutions.ToArray()
+                PendingResolutions = pendingResolutions.ToArray(),
+                ExecutedComponentIds = executedComponentIds
+                    .Distinct(StringComparer.Ordinal)
+                    .OrderBy(static value => value, StringComparer.Ordinal)
+                    .ToArray(),
+                ComponentIdsByMutation = new Dictionary<ResourceOperationKey, string>(
+                    componentIdsByMutation)
             }
             : FailedPeriodicResourceResolution(issues);
     }
@@ -494,7 +590,8 @@ internal static class EffectAcceptedTurnPlanner
                 eventRef,
                 turn,
                 Phase: exactEventKind,
-                TriggerId: triggerId),
+                TriggerId: triggerId,
+                CausalEventRef: producer.EventRef),
             targetAuthority,
             ownerAuthority,
             definitions,
@@ -519,7 +616,10 @@ internal static class EffectAcceptedTurnPlanner
                 {
                     new ResourceMutationEventRequirement(producer, exactEventKind)
                 }
-            }).ToArray()
+            }).ToArray(),
+            ExecutedComponentIds = resolved.ExecutedComponentIds.ToArray(),
+            ComponentIdsByMutation = new Dictionary<ResourceOperationKey, string>(
+                resolved.ComponentIdsByMutation)
         };
     }
 
@@ -551,6 +651,15 @@ internal static class EffectAcceptedTurnPlanner
                 continue;
             var occurrences = catalog.Occurrences
                 .Where(occurrence =>
+                    (authority.EffectId == null ||
+                     string.Equals(
+                         occurrence.EffectId,
+                         authority.EffectId,
+                         StringComparison.Ordinal)) &&
+                    string.Equals(
+                        occurrence.Effect["state"]?.GetValue<string>(),
+                        "active",
+                        StringComparison.Ordinal) &&
                     string.Equals(
                         occurrence.Effect["realm"]?.GetValue<string>(),
                         authority.Target.Realm,
@@ -639,7 +748,11 @@ internal static class EffectAcceptedTurnPlanner
                                 .ToArray(),
                             ReadRemainingUseBudget(
                                 occurrence.Effect,
-                                triggerId)));
+                                triggerId),
+                            resolved.ExecutedComponentIds.ToArray(),
+                            authority.EventRef,
+                            new Dictionary<ResourceOperationKey, string>(
+                                resolved.ComponentIdsByMutation)));
                     }
                 }
             }
@@ -735,10 +848,15 @@ internal static class EffectAcceptedTurnPlanner
         var mutations = new List<ResourceMutationIntent>();
         var pendingResolutions = new List<EffectBoundedResourceResolution>();
         var executions = new List<EffectResourceTriggerExecution>();
+        var reactionExecutions = new List<EffectReactionExecution>();
         foreach (var occurrence in catalog.Occurrences
                      .Where(occurrence => EffectTargetsResourceOwner(
-                         occurrence.Effect,
-                         producerEvent.Coordinate))
+                             occurrence.Effect,
+                             producerEvent.Coordinate) &&
+                         string.Equals(
+                             occurrence.Effect["state"]?.GetValue<string>(),
+                             "active",
+                             StringComparison.Ordinal))
                      .OrderBy(static occurrence => occurrence.EffectId, StringComparer.Ordinal))
         {
             if (occurrence.Effect["triggers"] is not JsonArray triggers)
@@ -755,6 +873,13 @@ internal static class EffectAcceptedTurnPlanner
             {
                 if (!TryReadExact(trigger["triggerId"], out var triggerId))
                     continue;
+                var plannedReactions = EffectReactionExecutor.PlanResourceEvent(
+                    occurrence,
+                    triggerId,
+                    producerEvent,
+                    plan.SourceAuthority);
+                issues.AddRange(plannedReactions.Issues);
+                reactionExecutions.AddRange(plannedReactions.Executions);
                 var resolved = ResolveResourceEventMutations(
                     occurrence.Effect,
                     triggerId,
@@ -797,7 +922,11 @@ internal static class EffectAcceptedTurnPlanner
                             .ToArray(),
                         ReadRemainingUseBudget(
                             occurrence.Effect,
-                            triggerId)));
+                            triggerId),
+                        resolved.ExecutedComponentIds.ToArray(),
+                        producerEvent.EventRef,
+                        new Dictionary<ResourceOperationKey, string>(
+                            resolved.ComponentIdsByMutation)));
                 }
             }
         }
@@ -812,7 +941,8 @@ internal static class EffectAcceptedTurnPlanner
                 Array.Empty<ValidationIssue>())
             {
                 TriggerExecutions = executions.ToArray(),
-                PendingResolutions = pendingResolutions.ToArray()
+                PendingResolutions = pendingResolutions.ToArray(),
+                ReactionExecutions = reactionExecutions.ToArray()
             }
             : FailedPeriodicResourceResolution(issues);
     }
@@ -820,11 +950,13 @@ internal static class EffectAcceptedTurnPlanner
     internal static EffectAcceptedTurnPlanningResult FinalizeAfterResourceGraph(
         EffectAcceptedTurnPlan plan,
         IReadOnlyList<EffectResourceTriggerExecution> executedTriggers,
-        EffectIdentityFactory identityFactory)
+        EffectIdentityFactory identityFactory,
+        IReadOnlyList<EffectReactionExecution>? generatedReactions = null)
     {
         ArgumentNullException.ThrowIfNull(plan);
         ArgumentNullException.ThrowIfNull(executedTriggers);
         ArgumentNullException.ThrowIfNull(identityFactory);
+        generatedReactions ??= Array.Empty<EffectReactionExecution>();
 
         var issues = new List<ValidationIssue>();
         var eventInput = plan.EventInput;
@@ -850,15 +982,120 @@ internal static class EffectAcceptedTurnPlanner
             .Select(static transition => transition.EventRef)
             .ToHashSet(StringComparer.Ordinal);
         var transitionIds = plan.AllocatedTransitionIds.ToList();
+        var effectIds = plan.AllocatedEffectIds.ToList();
         var activeEffects = plan.ActiveEffects
             .Select(static effect => effect.DeepClone().AsObject())
             .ToList();
+        var usedSources = plan.SourceBindings.ToList();
+        var usedTargets = plan.Targets.ToList();
         var executionKeys = new HashSet<string>(StringComparer.Ordinal);
+        var acceptedExecutions = new List<EffectResourceTriggerExecution>();
+        var deferredReactions = new List<EffectReactionExecution>();
+        var acceptedGeneratedReactions = new List<EffectReactionExecution>();
+        var reactionEventRefs = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var reaction in plan.DeferredReactions)
+        {
+            if (!reactionEventRefs.Add(reaction.EventRef))
+            {
+                Add(
+                    issues,
+                    "effect.reactions",
+                    "effect_reaction_event_duplicate",
+                    "one exact reaction execution per derived event identity",
+                    reaction.EventRef);
+                continue;
+            }
+            deferredReactions.Add(reaction);
+        }
+        foreach (var reaction in generatedReactions)
+        {
+            if (!reactionEventRefs.Add(reaction.EventRef))
+            {
+                Add(
+                    issues,
+                    "effect.reactions",
+                    "effect_reaction_event_duplicate",
+                    "one exact reaction execution per derived event identity",
+                    reaction.EventRef);
+                continue;
+            }
+            deferredReactions.Add(reaction);
+            acceptedGeneratedReactions.Add(reaction);
+        }
+        var totalReactionExpansion =
+            (long)plan.ReactionExpansionCount + acceptedGeneratedReactions.Count;
+        if (totalReactionExpansion > EffectReactionContract.MaximumExpansion)
+        {
+            Add(
+                issues,
+                "effect.reactions",
+                "effect_reaction_expansion_exceeded",
+                $"at most {EffectReactionContract.MaximumExpansion} reaction operations in one accepted transition",
+                totalReactionExpansion.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture));
+        }
+        var reactionExpansionUsage = plan.ReactionExpansionUsage.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value);
+        foreach (var group in acceptedGeneratedReactions.GroupBy(static reaction =>
+                     new EffectReactionExpansionKey(
+                         reaction.EffectId,
+                         reaction.ComponentId)))
+        {
+            var maxima = group
+                .Select(static reaction => reaction.MaxExpansion)
+                .Distinct()
+                .ToArray();
+            if (maxima.Length != 1)
+            {
+                Add(
+                    issues,
+                    "effect.reactions",
+                    "effect_reaction_expansion_policy_conflict",
+                    "one exact source-declared expansion maximum per effect component",
+                    group.Key.EffectId + "/" + group.Key.ComponentId);
+                continue;
+            }
+            var addedCount = group.Count();
+            if (reactionExpansionUsage.TryGetValue(group.Key, out var existing))
+            {
+                if (existing.Maximum != maxima[0])
+                {
+                    Add(
+                        issues,
+                        "effect.reactions",
+                        "effect_reaction_expansion_policy_conflict",
+                        "one unchanged source-declared expansion maximum per effect component",
+                        group.Key.EffectId + "/" + group.Key.ComponentId);
+                    continue;
+                }
+                reactionExpansionUsage[group.Key] = existing with
+                {
+                    Count = checked(existing.Count + addedCount)
+                };
+            }
+            else
+            {
+                reactionExpansionUsage.Add(
+                    group.Key,
+                    new EffectReactionExpansionUsage(addedCount, maxima[0]));
+            }
+            var usage = reactionExpansionUsage[group.Key];
+            if (usage.Count > usage.Maximum)
+            {
+                Add(
+                    issues,
+                    "effect.reactions",
+                    "effect_reaction_expansion_exceeded",
+                    $"at most {usage.Maximum} executions of this source-owned reaction component in one accepted transition",
+                    group.Key.EffectId + "/" + group.Key.ComponentId + "/" + usage.Count);
+            }
+        }
+        if (issues.Count != 0)
+            return Failed(issues);
 
         foreach (var execution in executedTriggers)
         {
-            if (!execution.RemainingUseBudget.HasValue)
-                continue;
             var executionKey = string.Join(
                 "\0",
                 execution.EffectId,
@@ -875,11 +1112,79 @@ internal static class EffectAcceptedTurnPlanner
                     executionKey.Replace('\0', '/'));
                 continue;
             }
+            acceptedExecutions.Add(execution);
+        }
+        if (issues.Count != 0)
+            return Failed(issues);
+
+        foreach (var reaction in deferredReactions.Where(static reaction =>
+                     string.Equals(
+                         reaction.Dependency,
+                         "before_current_event",
+                         StringComparison.Ordinal)))
+        {
+            ApplyReactionExecution(
+                reaction,
+                reaction.Target.Realm,
+                eventInput,
+                workspace,
+                identityRoot,
+                identityFactory,
+                effectIds,
+                transitionIds,
+                activeEffects,
+                usedSources,
+                usedTargets,
+                processedEventRefs,
+                issues);
+        }
+        if (issues.Count != 0)
+            return Failed(issues);
+
+        foreach (var reaction in deferredReactions.Where(reaction =>
+                     string.Equals(
+                         reaction.Dependency,
+                         "after_component",
+                         StringComparison.Ordinal) &&
+                     WasReactionPredecessorApplied(reaction, acceptedExecutions)))
+        {
+            ApplyReactionExecution(
+                reaction,
+                reaction.Target.Realm,
+                eventInput,
+                workspace,
+                identityRoot,
+                identityFactory,
+                effectIds,
+                transitionIds,
+                activeEffects,
+                usedSources,
+                usedTargets,
+                processedEventRefs,
+                issues);
+        }
+        if (issues.Count != 0)
+            return Failed(issues);
+
+        foreach (var execution in acceptedExecutions)
+        {
+            if (!execution.RemainingUseBudget.HasValue)
+                continue;
 
             var catalog = EffectCarrierCatalog.Build(workspace.ToInput());
             issues.AddRange(catalog.Issues);
             if (!catalog.TryResolveOne(execution.EffectId, out var occurrence))
             {
+                if (deferredReactions.Any(reaction =>
+                        string.Equals(reaction.Dependency, "after_component", StringComparison.Ordinal) &&
+                        IsReactionBehavior(
+                            reaction,
+                            EffectReactionResultBehavior.Remove) &&
+                        string.Equals(reaction.EffectId, execution.EffectId, StringComparison.Ordinal) &&
+                        WasReactionPredecessorApplied(reaction, acceptedExecutions)))
+                {
+                    continue;
+                }
                 Add(
                     issues,
                     "effect.resourceTriggerExecutions",
@@ -917,6 +1222,32 @@ internal static class EffectAcceptedTurnPlanner
             processedEventRefs,
             issues,
             boundContinuationsOnly: false);
+        if (issues.Count != 0)
+            return Failed(issues);
+
+        foreach (var reaction in deferredReactions.Where(static reaction =>
+                     string.Equals(
+                         reaction.Dependency,
+                         "after_current_event",
+                         StringComparison.Ordinal)))
+        {
+            ApplyReactionExecution(
+                reaction,
+                reaction.Target.Realm,
+                eventInput,
+                workspace,
+                identityRoot,
+                identityFactory,
+                effectIds,
+                transitionIds,
+                activeEffects,
+                usedSources,
+                usedTargets,
+                processedEventRefs,
+                issues);
+        }
+        if (issues.Count != 0)
+            return Failed(issues);
         if (plan.CarrierBeforeImages.TryGetValue(
                 EffectCarrierCatalog.SpiritualConflictPath,
                 out var acceptedSpiritualConflict))
@@ -948,13 +1279,24 @@ internal static class EffectAcceptedTurnPlanner
                 plan.SourceAuthorityFingerprint,
                 plan.TargetAuthorityFingerprint,
                 plan.AllocatedCombatantIds,
-                plan.AllocatedEffectIds,
+                effectIds,
                 transitionIds,
-                plan.Sources,
-                plan.Targets,
-                plan.SourceBindings,
+                usedSources
+                    .Select(static entry => entry.Key)
+                    .Distinct()
+                    .ToArray(),
+                usedTargets
+                    .Distinct()
+                    .ToArray(),
+                usedSources
+                    .DistinctBy(static entry => entry.Key)
+                    .ToArray(),
+                Array.Empty<EffectReactionExecution>(),
+                checked((int)totalReactionExpansion),
+                reactionExpansionUsage,
                 activeEffects,
-                plan.ResourceTriggerCarriers,
+                workspace.ToInput(),
+                plan.SourceAuthority,
                 plan.TargetAuthority,
                 eventInput,
                 plan.CarrierBeforeImages,
@@ -1094,6 +1436,37 @@ internal static class EffectAcceptedTurnPlanner
         if (issues.Count > 0)
             return Failed(issues);
 
+        var reactionPlan = EffectReactionExecutor.Plan(
+            input.EventInput,
+            input.SourceAuthority,
+            workspace.ToInput());
+        issues.AddRange(reactionPlan.Issues);
+        if (!reactionPlan.Success)
+            return Failed(issues);
+        foreach (var reaction in reactionPlan.Executions.Where(static execution =>
+                     string.Equals(
+                         execution.Dependency,
+                         "before_current_event",
+                         StringComparison.Ordinal)))
+        {
+            ApplyReactionExecution(
+                reaction,
+                input.Realm,
+                input.EventInput,
+                workspace,
+                identityRoot,
+                identityFactory,
+                effectIds,
+                transitionIds,
+                activeEffects,
+                usedSources,
+                usedTargets,
+                processedEventRefs,
+                issues);
+        }
+        if (issues.Count > 0)
+            return Failed(issues);
+
         var resourceTriggerCarriers = workspace.ToInput();
 
         ValidateAfterImages(workspace, identityRoot, activeEffects, issues);
@@ -1133,8 +1506,18 @@ internal static class EffectAcceptedTurnPlanner
                 usedSources
                     .DistinctBy(static entry => entry.Key)
                     .ToArray(),
+                reactionPlan.Executions
+                    .Where(static execution => !string.Equals(
+                        execution.Dependency,
+                        "before_current_event",
+                        StringComparison.Ordinal))
+                    .ToArray(),
+                reactionPlan.Executions.Count,
+                EffectReactionExecutor.CreateExpansionUsage(
+                    reactionPlan.Executions),
                 activeEffects,
                 resourceTriggerCarriers,
+                input.SourceAuthority,
                 targetAuthority,
                 input.EventInput,
                 carrierBeforeImages,
@@ -1145,6 +1528,25 @@ internal static class EffectAcceptedTurnPlanner
                 new[] { EffectAcceptedTurnPlan.CommandPath }),
             Array.Empty<ValidationIssue>());
     }
+
+    private static bool WasReactionPredecessorApplied(
+        EffectReactionExecution reaction,
+        IReadOnlyList<EffectResourceTriggerExecution> executions) =>
+        reaction.AfterComponentId is { } componentId &&
+        executions.Any(execution =>
+            string.Equals(execution.EffectId, reaction.EffectId, StringComparison.Ordinal) &&
+            string.Equals(execution.TriggerId, reaction.TriggerId, StringComparison.Ordinal) &&
+            string.Equals(
+                execution.TriggerEventRef,
+                reaction.TriggerEventRef,
+                StringComparison.Ordinal) &&
+            execution.ComponentIds?.Contains(componentId, StringComparer.Ordinal) == true);
+
+    private static bool IsReactionBehavior(
+        EffectReactionExecution reaction,
+        EffectReactionResultBehavior behavior) =>
+        EffectReactionResultCatalog.TryResolve(reaction.ResultKind, out var descriptor) &&
+        descriptor.Behavior == behavior;
 
     private static JsonObject? GetCarrierRoot(
         EffectCarrierCatalogInput carriers,
@@ -1476,6 +1878,7 @@ internal static class EffectAcceptedTurnPlanner
                 sourceResolution.Source!,
                 targetResolution.Target!,
                 parameters?.DeepClone().AsObject(),
+                acceptedEventRef,
                 acceptedEventRef));
         }
     }
@@ -1934,6 +2337,11 @@ internal static class EffectAcceptedTurnPlanner
                 continue;
             var occurrences = EffectCarrierCatalog.Build(workspace.ToInput()).Occurrences
                 .Where(occurrence =>
+                    (authority.EffectId == null ||
+                     string.Equals(
+                         occurrence.EffectId,
+                         authority.EffectId,
+                         StringComparison.Ordinal)) &&
                     string.Equals(
                         occurrence.Effect["realm"]?.GetValue<string>(),
                         authority.Target.Realm,
@@ -2021,6 +2429,200 @@ internal static class EffectAcceptedTurnPlanner
                     issues);
             }
         }
+    }
+
+    private static void ApplyReactionExecution(
+        EffectReactionExecution reaction,
+        string realm,
+        JsonObject eventInput,
+        CarrierWorkspace workspace,
+        JsonObject identityRoot,
+        EffectIdentityFactory identityFactory,
+        List<string> effectIds,
+        List<string> transitionIds,
+        List<JsonObject> activeEffects,
+        List<EffectSourceAuthorityEntry> usedSources,
+        List<EffectTargetKey> usedTargets,
+        HashSet<string> processedEventRefs,
+        List<ValidationIssue> issues)
+    {
+        if (processedEventRefs.Contains(reaction.EventRef))
+        {
+            Add(
+                issues,
+                "eventInput.lifecycleEvents",
+                "effect_lifecycle_event_replay",
+                "one unprocessed exact reaction event",
+                reaction.EventRef);
+            return;
+        }
+
+        if (!EffectReactionResultCatalog.TryResolve(
+                reaction.ResultKind,
+                out var descriptor))
+        {
+            Add(
+                issues,
+                "effect.reaction.resultKind",
+                "effect_reaction_result_unsupported",
+                "registered executable reaction result",
+                reaction.ResultKind);
+            return;
+        }
+
+        if (descriptor.Behavior == EffectReactionResultBehavior.ApplyDefinition)
+        {
+            if (reaction.DownstreamSource == null)
+            {
+                Add(
+                    issues,
+                    "effect.reaction.definitionKey",
+                    "effect_reaction_downstream_source_invalid",
+                    "one resolved same-source downstream definition",
+                    "missing");
+                return;
+            }
+            ApplyApplication(
+                new Application(
+                    reaction.DownstreamSource,
+                    reaction.Target,
+                    reaction.Parameters?.DeepClone().AsObject(),
+                    reaction.EventRef,
+                    reaction.CausalEventRef),
+                realm,
+                eventInput,
+                workspace,
+                identityRoot,
+                identityFactory,
+                reaction.Turn,
+                effectIds,
+                transitionIds,
+                activeEffects,
+                processedEventRefs,
+                issues);
+            if (issues.Count == 0)
+            {
+                usedSources.Add(reaction.DownstreamSource);
+                usedTargets.Add(reaction.Target);
+            }
+            return;
+        }
+
+        if (descriptor.Behavior == EffectReactionResultBehavior.PeriodicComponent)
+            return;
+
+        var catalog = EffectCarrierCatalog.Build(workspace.ToInput());
+        issues.AddRange(catalog.Issues);
+        if (!catalog.TryResolveOne(reaction.EffectId, out var occurrence))
+        {
+            Add(
+                issues,
+                "effect.reaction.effectId",
+                "effect_reaction_target_unresolved",
+                "one exact active effect selected by client event authority",
+                reaction.EffectId);
+            return;
+        }
+
+        var transitionId = identityFactory.CreateTransitionId();
+        transitionIds.Add(transitionId);
+        if (descriptor.Behavior == EffectReactionResultBehavior.EventOutcome)
+        {
+            var triggered = occurrence.Effect.DeepClone().AsObject();
+            UpdateEffectChronology(triggered, transitionId, reaction.Turn);
+            if (!workspace.TryReplaceEffect(reaction.EffectId, triggered))
+            {
+                Add(
+                    issues,
+                    "effect.reaction.effectId",
+                    "effect_reaction_target_unresolved",
+                    "one exact mutable active effect",
+                    reaction.EffectId);
+                return;
+            }
+            AppendIdentityTransition(
+                identityRoot,
+                reaction.EffectId,
+                "active",
+                CreateTransition(
+                    transitionId,
+                    "trigger",
+                    reaction.Turn,
+                    reaction.EventRef,
+                    new[] { reaction.EffectId },
+                    new[] { reaction.EffectId }),
+                issues);
+            AddOrReplaceAffected(activeEffects, triggered);
+            processedEventRefs.Add(reaction.EventRef);
+            return;
+        }
+        if (descriptor.Behavior == EffectReactionResultBehavior.Remove)
+        {
+            if (!workspace.TryRemoveEffect(reaction.EffectId, out _))
+            {
+                Add(
+                    issues,
+                    "effect.reaction.effectId",
+                    "effect_reaction_target_unresolved",
+                    "one exact mutable active effect",
+                    reaction.EffectId);
+                return;
+            }
+            AppendIdentityTransition(
+                identityRoot,
+                reaction.EffectId,
+                "removed",
+                CreateTransition(
+                    transitionId,
+                    "remove",
+                    reaction.Turn,
+                    reaction.EventRef,
+                    new[] { reaction.EffectId },
+                    Array.Empty<string>()),
+                issues);
+            RemoveAffected(activeEffects, reaction.EffectId);
+            processedEventRefs.Add(reaction.EventRef);
+            return;
+        }
+
+        if (descriptor.Behavior != EffectReactionResultBehavior.Suspend)
+        {
+            Add(
+                issues,
+                "effect.reaction.resultKind",
+                "effect_reaction_result_unsupported",
+                "registered executable reaction result",
+                reaction.ResultKind);
+            return;
+        }
+
+        var suspended = occurrence.Effect.DeepClone().AsObject();
+        suspended["state"] = "suspended";
+        UpdateEffectChronology(suspended, transitionId, reaction.Turn);
+        if (!workspace.TryReplaceEffect(reaction.EffectId, suspended))
+        {
+            Add(
+                issues,
+                "effect.reaction.effectId",
+                "effect_reaction_target_unresolved",
+                "one exact mutable active effect",
+                reaction.EffectId);
+            return;
+        }
+        AppendIdentityTransition(
+            identityRoot,
+            reaction.EffectId,
+            "suspended",
+            CreateTransition(
+                transitionId,
+                "suspend",
+                reaction.Turn,
+                reaction.EventRef,
+                new[] { reaction.EffectId },
+                new[] { reaction.EffectId }),
+            issues);
+        AddOrReplaceAffected(activeEffects, suspended);
+        processedEventRefs.Add(reaction.EventRef);
     }
 
     private static bool IsAfterlifeCombatCondition(JsonObject effect) =>
@@ -2189,6 +2791,7 @@ internal static class EffectAcceptedTurnPlanner
             turn,
             phase,
             new EffectTargetKey(realm, targetKind, targetId),
+            ReadOptionalExact(value["effectId"]),
             ReadOptionalExact(value["triggerId"]),
             TryReadNonNegativeLong(value["currentTime"], out var currentTime)
                 ? currentTime
@@ -2208,7 +2811,8 @@ internal static class EffectAcceptedTurnPlanner
         string? causalEventRef) =>
         causalEventRef != null &&
         effect["chronology"] is JsonObject chronology &&
-        TryReadExact(chronology["createdEventRef"], out var createdEventRef) &&
+        (TryReadExact(chronology["causalEventRef"], out var createdEventRef) ||
+         TryReadExact(chronology["createdEventRef"], out createdEventRef)) &&
         string.Equals(
             createdEventRef,
             causalEventRef,
@@ -2331,6 +2935,7 @@ internal static class EffectAcceptedTurnPlanner
             {
                 ["createdAtTurn"] = turn,
                 ["createdEventRef"] = eventRef,
+                ["causalEventRef"] = candidate.Application.CausalEventRef,
                 ["lastTransitionId"] = transitionId,
                 ["lastTransitionTurn"] = turn
             }
@@ -2537,12 +3142,15 @@ internal static class EffectAcceptedTurnPlanner
             if (ClientOwnedOrLegacyFields.Contains(property.Key))
                 Add(issues, property.Key, "effect_plan_client_field_forbidden", "client-owned/post-state field absent", property.Key);
             else if (!RootFields.Contains(property.Key))
-                Add(issues, property.Key, "effect_plan_unknown_field", "effectChanges or effectResolutionReceipts", property.Key);
+                Add(issues, property.Key, "effect_plan_unknown_field", "effectChanges, effectResolutionReceipts, or effectEventReports", property.Key);
         }
         if (root.ContainsKey("effectChanges") && root["effectChanges"] is not JsonArray)
             Add(issues, "effectChanges", "effect_plan_input_invalid", "effectChanges array", Describe(root["effectChanges"]));
         if (root.ContainsKey("effectResolutionReceipts") && root["effectResolutionReceipts"] is not JsonArray)
             Add(issues, "effectResolutionReceipts", "effect_plan_input_invalid", "effectResolutionReceipts array", Describe(root["effectResolutionReceipts"]));
+        if (root.ContainsKey(EffectAcceptedEventReportCatalog.ResponseField) &&
+            root[EffectAcceptedEventReportCatalog.ResponseField] is not JsonArray)
+            Add(issues, EffectAcceptedEventReportCatalog.ResponseField, "effect_plan_input_invalid", "effectEventReports array", Describe(root[EffectAcceptedEventReportCatalog.ResponseField]));
     }
 
     private static bool TryResolveEventRef(
@@ -2708,7 +3316,11 @@ internal static class EffectAcceptedTurnPlanner
         }
 
         var ownerId = target.TargetId;
-        if (string.Equals(target.Kind, "player", StringComparison.Ordinal) &&
+        if (export.BoundResourceOwnerKind is { } boundOwnerKind)
+        {
+            ownerKind = boundOwnerKind;
+        }
+        else if (string.Equals(target.Kind, "player", StringComparison.Ordinal) &&
             !string.Equals(target.Realm, "mortal_world", StringComparison.Ordinal) &&
             string.Equals(target.TargetId, "player_soul", StringComparison.Ordinal))
         {
@@ -3061,6 +3673,16 @@ internal static class EffectAcceptedTurnPlanner
             _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, null)
         };
 
+    private static string PrimaryResourceEvent(ResourceOperation operation) =>
+        operation switch
+        {
+            ResourceOperation.Damage => "resource_damaged",
+            ResourceOperation.Restore => "resource_restored",
+            ResourceOperation.Spend => "resource_spent",
+            ResourceOperation.Gain => "resource_gained",
+            _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, null)
+        };
+
     private static EffectPeriodicResourceResolution FailedPeriodicResourceResolution(
         IEnumerable<ValidationIssue> issues) =>
         new(
@@ -3101,7 +3723,8 @@ internal static class EffectAcceptedTurnPlanner
         EffectSourceAuthorityEntry Source,
         EffectTargetKey Target,
         JsonObject? Parameters,
-        string EventRef);
+        string EventRef,
+        string CausalEventRef);
 
     private sealed record TerminalOperation(
         string Operation,
@@ -3116,6 +3739,7 @@ internal static class EffectAcceptedTurnPlanner
         int Turn,
         string Phase,
         EffectTargetKey Target,
+        string? EffectId,
         string? TriggerId,
         long? CurrentTime,
         string? CurrentSceneId,
@@ -3396,7 +4020,22 @@ internal static class EffectAcceptedTurnPlanner
                 ? "activeBuffs"
                 : "activeDebuffs";
             if (match.Combatant[collectionName] is not JsonArray effects)
-                return InvalidCarrier(issues, match.Path, match.Combatant, out slot);
+            {
+                if (TryReadExact(match.Combatant["memberId"], out _) &&
+                    !match.Combatant.ContainsKey(collectionName))
+                {
+                    effects = new JsonArray();
+                    match.Combatant[collectionName] = effects;
+                }
+                else
+                {
+                    return InvalidCarrier(
+                        issues,
+                        match.Path,
+                        match.Combatant,
+                        out slot);
+                }
+            }
             _afterImages[match.Path] = match.Root;
             slot = new CarrierSlot(match.Path, collectionName, effects, match.Root);
             return true;
@@ -3581,6 +4220,20 @@ internal static class EffectAcceptedTurnPlanner
                     yield return new CarrierSlot(path, "activeBuffs", buffs, root);
                 if (combatant["activeDebuffs"] is JsonArray debuffs)
                     yield return new CarrierSlot(path, "activeDebuffs", debuffs, root);
+                if (combatant["isGroup"] is not JsonValue groupNode ||
+                    !groupNode.TryGetValue<bool>(out var isGroup) ||
+                    !isGroup ||
+                    combatant["members"] is not JsonArray members)
+                {
+                    continue;
+                }
+                foreach (var member in members.OfType<JsonObject>())
+                {
+                    if (member["activeBuffs"] is JsonArray memberBuffs)
+                        yield return new CarrierSlot(path, "activeBuffs", memberBuffs, root);
+                    if (member["activeDebuffs"] is JsonArray memberDebuffs)
+                        yield return new CarrierSlot(path, "activeDebuffs", memberDebuffs, root);
+                }
             }
         }
 
@@ -3595,13 +4248,38 @@ internal static class EffectAcceptedTurnPlanner
                 return;
             foreach (var combatant in combatants.OfType<JsonObject>())
             {
-                if (combatant["combatantId"] is JsonValue value &&
-                    value.TryGetValue<string>(out var combatantId) &&
-                    string.Equals(combatantId, targetId, StringComparison.Ordinal))
+                AddCombatOwnerMatch(
+                    combatant,
+                    path,
+                    root,
+                    targetId,
+                    matches);
+                if (combatant["isGroup"] is not JsonValue groupNode ||
+                    !groupNode.TryGetValue<bool>(out var isGroup) ||
+                    !isGroup ||
+                    combatant["members"] is not JsonArray members)
                 {
-                    matches.Add((path, root, combatant));
+                    continue;
                 }
+                foreach (var member in members.OfType<JsonObject>())
+                    AddCombatOwnerMatch(member, path, root, targetId, matches);
             }
+        }
+
+        private static void AddCombatOwnerMatch(
+            JsonObject owner,
+            string path,
+            JsonObject root,
+            string targetId,
+            List<(string Path, JsonObject Root, JsonObject Combatant)> matches)
+        {
+            var combatantIdentity = ReadOptionalExact(owner["combatantId"]);
+            var memberIdentity = ReadOptionalExact(owner["memberId"]);
+            if ((combatantIdentity == null) == (memberIdentity == null))
+                return;
+            var identity = memberIdentity ?? combatantIdentity!;
+            if (string.Equals(identity, targetId, StringComparison.Ordinal))
+                matches.Add((path, root, owner));
         }
 
         private static bool InvalidCarrier(

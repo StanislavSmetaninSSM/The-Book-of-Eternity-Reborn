@@ -99,8 +99,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         "quantity",
         "weight",
         "volume",
-        "durability",
-        "maxDurability",
         "bonuses",
         "effects",
         "specialProperties",
@@ -268,14 +266,24 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static async Task<ExplorerCommandResult> BuildStats(string command, FileSystemManager fs, StateManager stateManager)
     {
         var state = stateManager.CurrentState;
-        var blocks = new List<UiBlock>
+        var blocks = new List<UiBlock>();
+        if (state.PlayerStatus.ResourceProjectionAvailable)
         {
-            Panel("Характеристики",
+            blocks.Add(Panel("Характеристики",
                 Grid(
-                    ("Здоровье", EmptyFallback(state.PlayerStatus.HealthPercentage)),
-                    ("Энергия", EmptyFallback(state.PlayerStatus.EnergyPercentage)),
-                    ("Равновесие", EmptyFallback(state.PlayerStatus.PoisePercentage))))
-        };
+                    ("Здоровье", state.PlayerStatus.HealthPercentage),
+                    ("Энергия", state.PlayerStatus.EnergyPercentage),
+                    ("Равновесие", state.PlayerStatus.PoisePercentage))));
+        }
+        else
+        {
+            blocks.Add(new UiMessageBlock
+            {
+                Severity = UiNotificationSeverity.Warning,
+                Title = "Силы и запасы",
+                Message = state.PlayerStatus.ResourceUnavailableMessage
+            });
+        }
 
         await AddStatsBlockIfPresent(
             blocks,
@@ -1256,6 +1264,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Memory: reads["game_state/npcs/npc_memory.json"].Node,
                 FateCards: reads["game_state/npcs/npc_fate_cards.json"].Node,
                 CustomStates: reads["game_state/npcs/npc_custom_states.json"].Node));
+        projections = await AttachNpcResourceRowsAsync(fs, projections);
 
         var commandRemainder = ExtractCommandRemainder(command);
         var questRequest = ParseNpcQuestDetailRequest(commandRemainder);
@@ -1402,6 +1411,55 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return blocks;
     }
 
+    private static async Task<IReadOnlyList<NpcDetailProjection>> AttachNpcResourceRowsAsync(
+        FileSystemManager fs,
+        IReadOnlyList<NpcDetailProjection> projections)
+    {
+        var scopes = projections
+            .Select((projection, index) => new
+            {
+                Projection = projection,
+                ViewSelector = $"персонаж №{index + 1}"
+            })
+            .Where(static candidate => !string.IsNullOrWhiteSpace(candidate.Projection.NpcId))
+            .ToArray();
+        if (scopes.Length == 0)
+            return projections;
+
+        var result = await ResourceProjectionService.ProjectCanonicalAsync(
+            fs,
+            scopes.Select(static candidate => new ResourceProjectionOwnerScope(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Npc,
+                        candidate.Projection.NpcId),
+                    candidate.ViewSelector,
+                    IsOwningPlayer: false))
+                .ToArray(),
+            ResourceProjectionAudience.Player);
+        var rowsBySelector = result.IsAvailable
+            ? result.Rows
+                .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+                .ToDictionary(
+                    static group => group.Key,
+                    static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                    StringComparer.Ordinal)
+            : new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(StringComparer.Ordinal);
+
+        return projections
+            .Select((projection, index) =>
+            {
+                rowsBySelector.TryGetValue($"персонаж №{index + 1}", out var rows);
+                return projection with
+                {
+                    ResourceProjectionAvailable = result.IsAvailable &&
+                        !string.IsNullOrWhiteSpace(projection.NpcId),
+                    Resources = rows ?? Array.Empty<ResourceProjectionRow>()
+                };
+            })
+            .ToArray();
+    }
+
     private static UiEntityDossierBlock BuildNpcOverviewCard(
         string commandToken,
         NpcDetailProjection projection,
@@ -1420,6 +1478,22 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var facts = new List<UiEntityFact>();
         var hints = new List<UiEntityHint>();
         AddNpcTradePresentation(projection, facts, badges, hints);
+        if (projection.ResourceProjectionAvailable)
+        {
+            facts.AddRange(projection.Resources.Select(static row => new UiEntityFact
+            {
+                Label = row.DisplayName,
+                Value = ResourceProjectionService.FormatValue(row)
+            }));
+        }
+        else if (!string.IsNullOrWhiteSpace(projection.NpcId))
+        {
+            facts.Add(new UiEntityFact
+            {
+                Label = "Силы и запасы",
+                Value = ResourcePlayerFailureMessages.Unavailable
+            });
+        }
 
         return new UiEntityDossierBlock
         {
@@ -6188,6 +6262,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var entries = EnumerateVehicleObjects(vehiclesRead.Node)
             .Select((vehicle, index) => CreateVehicleSnapshot(index + 1, vehicle))
             .ToList();
+        entries = await AttachVehicleResourceRowsAsync(fs, entries);
         var request = ParseReferenceDetailRequest(ExtractCommandRemainder(command), definition);
         if (request.Kind != ReferenceDetailKind.Overview)
             return BuildTransportDetail(command, commandToken, definition, [vehiclesRead, mapRead, currentRead], entries, request);
@@ -6269,7 +6344,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddReferenceDetailItem(facts, "Местоположение", FirstReferenceNodeString(vehicle, "currentLocation", "currentLocationId", "locationName"));
         AddReferenceDetailItem(facts, "Маршрут", FirstReferenceNodeString(vehicle, "route", "currentRoute"));
         AddReferenceDetailItem(facts, "Вместимость", FirstReferenceNodeString(vehicle, "capacity"));
-        AddReferenceDetailItem(facts, "Прочность", FormatVehicleHealth(vehicle));
+        AddProjectedResourceFact(facts, entry.Resources, "health", "Состояние корпуса");
         AddReferenceDetailItem(facts, "Описание", FirstReferenceNodeString(vehicle, "description", "summary", "notes"));
 
         return new UiEntityDossierBlock
@@ -6303,16 +6378,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 }
             ]
         };
-    }
-
-    private static string FormatVehicleHealth(JsonObject vehicle)
-    {
-        var current = FirstReferenceNodeString(vehicle, "currentHealth", "health");
-        var max = FirstReferenceNodeString(vehicle, "maxHealth", "maxHp");
-        if (!string.IsNullOrWhiteSpace(current) && !string.IsNullOrWhiteSpace(max))
-            return $"{current}/{max}";
-
-        return current;
     }
 
     private static ExplorerCommandResult BuildTransportDetail(
@@ -6370,6 +6435,70 @@ public static class ExplorerMortalWorldCommandResultBuilder
             Node: vehicle);
     }
 
+    private static async Task<List<ReferenceEntrySnapshot>> AttachVehicleResourceRowsAsync(
+        FileSystemManager fs,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
+    {
+        var scopes = entries
+            .Select(entry => new
+            {
+                Entry = entry,
+                OwnerId = FirstReferenceNodeString(entry.Node, "vehicleId", "id", "key"),
+                ViewSelector = $"транспорт №{entry.Index}"
+            })
+            .Where(static candidate => !string.IsNullOrWhiteSpace(candidate.OwnerId))
+            .ToArray();
+        if (scopes.Length == 0)
+            return entries.ToList();
+
+        var projection = await ResourceProjectionService.ProjectCanonicalAsync(
+            fs,
+            scopes.Select(static candidate => new ResourceProjectionOwnerScope(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Vehicle,
+                        candidate.OwnerId),
+                    candidate.ViewSelector,
+                    IsOwningPlayer: true))
+                .ToArray(),
+            ResourceProjectionAudience.Player);
+        if (!projection.IsAvailable)
+            return entries.ToList();
+
+        var rowsBySelector = projection.Rows
+            .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+            .ToDictionary(
+                static group => group.Key,
+                static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                StringComparer.Ordinal);
+        return entries
+            .Select(entry => entry with
+            {
+                Resources = rowsBySelector.TryGetValue($"транспорт №{entry.Index}", out var rows)
+                    ? rows
+                    : Array.Empty<ResourceProjectionRow>()
+            })
+            .ToList();
+    }
+
+    private static void AddProjectedResourceFact(
+        List<UiKeyValueItem> facts,
+        IReadOnlyList<ResourceProjectionRow>? rows,
+        string resourceKey,
+        string label)
+    {
+        var row = rows?.SingleOrDefault(candidate =>
+            string.Equals(candidate.ResourceKey, resourceKey, StringComparison.Ordinal));
+        if (row != null)
+        {
+            facts.Add(new UiKeyValueItem
+            {
+                Key = label,
+                Value = ResourceProjectionService.FormatValue(row)
+            });
+        }
+    }
+
     private static UiEntityDossierBlock BuildVehicleDetailPanel(ReferenceEntrySnapshot entry)
     {
         var vehicle = entry.Node;
@@ -6381,6 +6510,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         AddReferenceDetailItem(items, "Где", FirstReferenceNodeString(vehicle, "currentLocation", "currentLocationId", "locationName"));
         AddReferenceDetailItem(items, "Вместимость", FirstReferenceNodeString(vehicle, "capacity"));
+        AddProjectedResourceFact(items, entry.Resources, "health", "Состояние корпуса");
         AddReferenceDetailItem(items, "Описание", FirstReferenceNodeString(vehicle, "description", "summary", "notes"));
 
         var blocks = new List<UiBlock>
@@ -6426,6 +6556,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "description",
             "summary",
             "notes",
+            "currentHealth",
+            "health",
+            "maxHealth",
+            "maxHp",
             "inventory");
 
         return new UiEntityDossierBlock
@@ -7625,6 +7759,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             await ReadJson(fs, "game_state/combat/combat_log.json"));
         var enemies = EnumerateCombatants(state.Enemies.Node, CombatantKind.Enemy).ToList();
         var allies = EnumerateCombatants(state.Allies.Node, CombatantKind.Ally).ToList();
+        (enemies, allies) = await AttachCombatantResourceRowsAsync(fs, enemies, allies);
         var logEntries = EnumerateCombatLogEntries(state.Log.Node).ToList();
         var request = ParseCombatDetailRequest(ExtractCommandRemainder(command));
 
@@ -7767,11 +7902,12 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (IsTerminalCombatStatus(status))
             return false;
 
-        var health = FirstCombatNodeString(combatant.Node, "currentHealth", "health", "hp", "healthPercentage");
-        if (IsZeroCombatResource(health))
+        if (!combatant.ResourceProjectionAvailable)
             return false;
 
-        return true;
+        var health = combatant.Resources.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "health", StringComparison.Ordinal));
+        return health is { State: ResourceLifecycleState.Active, Current: > 0m };
     }
 
     private static bool IsTerminalCombatStatus(string status)
@@ -7798,21 +7934,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "сбежала" or
             "отступил" or
             "отступила";
-    }
-
-    private static bool IsZeroCombatResource(string value)
-    {
-        var trimmed = value.Trim();
-        if (string.IsNullOrWhiteSpace(trimmed))
-            return false;
-
-        trimmed = trimmed.TrimEnd('%').Trim();
-        return double.TryParse(
-            trimmed,
-            System.Globalization.NumberStyles.Float,
-            System.Globalization.CultureInfo.InvariantCulture,
-            out var parsed) &&
-            parsed <= 0;
     }
 
     private static UiEntityDossierBlock BuildCombatantOverviewCard(
@@ -8038,8 +8159,19 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         AddCombatantFact(detailItems, "Состояние", DescribeCombatantStatus(combatant.Node));
         AddCombatantFact(detailItems, "Роль / угроза", DescribeCombatantRole(combatant.Node));
-        AddCombatantFact(detailItems, "Здоровье", DescribeCombatantHealth(combatant.Node));
-        AddCombatantFact(detailItems, "Стойкость", DescribeCombatantPoise(combatant.Node));
+        if (combatant.ResourceProjectionAvailable)
+        {
+            AddProjectedResourceFact(detailItems, combatant.Resources, "health", "Здоровье");
+            AddProjectedResourceFact(detailItems, combatant.Resources, "poise", "Стойкость");
+            AddProjectedResourceFact(detailItems, combatant.Resources, "energy", "Энергия");
+        }
+        else
+        {
+            AddCombatantFact(
+                detailItems,
+                "Силы и запасы",
+                ResourcePlayerFailureMessages.Unavailable);
+        }
         AddCombatantFact(detailItems, "Намерение", DescribeCombatantIntent(combatant.Node));
 
         var description = FirstCombatNodeString(combatant.Node, "description", "notes", "summary");
@@ -8335,6 +8467,75 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
     }
 
+    private static async Task<(List<CombatantSnapshot> Enemies, List<CombatantSnapshot> Allies)>
+        AttachCombatantResourceRowsAsync(
+            FileSystemManager fs,
+            IReadOnlyList<CombatantSnapshot> enemies,
+            IReadOnlyList<CombatantSnapshot> allies)
+    {
+        var combatants = enemies.Concat(allies).ToArray();
+        var scopes = combatants
+            .Select(combatant => new
+            {
+                Combatant = combatant,
+                OwnerId = FirstCombatNodeString(combatant.Node, "combatantId"),
+                ViewSelector = CombatantResourceViewSelector(combatant)
+            })
+            .Where(static candidate => !string.IsNullOrWhiteSpace(candidate.OwnerId))
+            .ToArray();
+        if (scopes.Length == 0)
+        {
+            return (
+                enemies.Select(static combatant => combatant with
+                {
+                    ResourceProjectionAvailable = false
+                }).ToList(),
+                allies.Select(static combatant => combatant with
+                {
+                    ResourceProjectionAvailable = false
+                }).ToList());
+        }
+
+        var projection = await ResourceProjectionService.ProjectCanonicalAsync(
+            fs,
+            scopes.Select(static candidate => new ResourceProjectionOwnerScope(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Combatant,
+                        candidate.OwnerId),
+                    candidate.ViewSelector,
+                    IsOwningPlayer: false))
+                .ToArray(),
+            ResourceProjectionAudience.Player);
+        var rowsBySelector = projection.IsAvailable
+            ? projection.Rows
+                .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+                .ToDictionary(
+                    static group => group.Key,
+                    static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                    StringComparer.Ordinal)
+            : new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(StringComparer.Ordinal);
+
+        CombatantSnapshot Attach(CombatantSnapshot combatant)
+        {
+            var hasIdentity = !string.IsNullOrWhiteSpace(
+                FirstCombatNodeString(combatant.Node, "combatantId"));
+            rowsBySelector.TryGetValue(CombatantResourceViewSelector(combatant), out var rows);
+            return combatant with
+            {
+                ResourceProjectionAvailable = projection.IsAvailable && hasIdentity,
+                Resources = rows ?? Array.Empty<ResourceProjectionRow>()
+            };
+        }
+
+        return (enemies.Select(Attach).ToList(), allies.Select(Attach).ToList());
+    }
+
+    private static string CombatantResourceViewSelector(CombatantSnapshot combatant) =>
+        combatant.Kind == CombatantKind.Enemy
+            ? $"противник №{combatant.Index}"
+            : $"союзник №{combatant.Index}";
+
     private static IEnumerable<JsonObject> EnumerateCombatantObjects(JsonNode? node, CombatantKind kind)
     {
         if (node is JsonArray array)
@@ -8560,15 +8761,25 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (!string.IsNullOrWhiteSpace(status))
             parts.Add("Состояние: " + status);
 
-        var health = DescribeCombatantHealth(combatant.Node);
-        if (!string.IsNullOrWhiteSpace(health))
-            parts.Add("Здоровье: " + health);
-
-        var poise = DescribeCombatantPoise(combatant.Node);
-        if (!string.IsNullOrWhiteSpace(poise))
-            parts.Add("Стойкость: " + poise);
+        if (combatant.ResourceProjectionAvailable)
+        {
+            AddResource("health", "Здоровье");
+            AddResource("poise", "Стойкость");
+        }
+        else
+        {
+            parts.Add(ResourcePlayerFailureMessages.Unavailable);
+        }
 
         return EmptyFallback(string.Join(". ", parts));
+
+        void AddResource(string key, string label)
+        {
+            var row = combatant.Resources.SingleOrDefault(candidate =>
+                string.Equals(candidate.ResourceKey, key, StringComparison.Ordinal));
+            if (row != null)
+                parts.Add(label + ": " + ResourceProjectionService.FormatValue(row));
+        }
     }
 
     private static string DescribeCombatantStatus(JsonObject combatant) =>
@@ -8578,29 +8789,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         FirstNonEmpty(
             DescribeCombatRole(FirstCombatNodeString(combatant, "type", "role", "threat", "rank")),
             FirstCombatNodeString(combatant, "roleDescription", "threatDescription"));
-
-    private static string DescribeCombatantHealth(JsonObject combatant)
-    {
-        if (combatant["healthStates"] is JsonArray states && states.Count > 0)
-            return "группа: " + string.Join(", ", states.Select(static state => state?.ToString()).Where(static text => !string.IsNullOrWhiteSpace(text)));
-
-        var current = FirstCombatNodeString(combatant, "currentHealth", "health", "hp", "healthPercentage");
-        var max = FirstCombatNodeString(combatant, "maxHealth", "maxHp");
-        if (!string.IsNullOrWhiteSpace(current) && !string.IsNullOrWhiteSpace(max))
-            return $"{current}/{max}";
-
-        return current;
-    }
-
-    private static string DescribeCombatantPoise(JsonObject combatant)
-    {
-        var current = FirstCombatNodeString(combatant, "currentPoise", "poise", "poisePercentage");
-        var max = FirstCombatNodeString(combatant, "maxPoise");
-        if (!string.IsNullOrWhiteSpace(current) && !string.IsNullOrWhiteSpace(max))
-            return $"{current}/{max}";
-
-        return current;
-    }
 
     private static string DescribeCombatantIntent(JsonObject combatant) =>
         FirstNonEmpty(
@@ -9082,6 +9270,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ]);
         }
         var acceptedItems = EnumerateAcceptedInventoryItems(root).ToArray();
+        var itemResourceRows = await ReadInventoryResourceRowsAsync(fs, acceptedItems);
 
         var detailRequest = ParseInventoryDetailRequest(ExtractCommandRemainder(command));
         if (detailRequest.Kind == InventoryDetailKind.Unknown)
@@ -9211,8 +9400,15 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (acceptedItems.Length > 0)
         {
             var itemCards = new List<UiBlock>();
-            foreach (var item in acceptedItems)
-                itemCards.Add(BuildInventoryOverviewItemCard(commandToken, item));
+            for (var index = 0; index < acceptedItems.Length; index++)
+            {
+                var selector = InventoryResourceViewSelector(index);
+                itemResourceRows.TryGetValue(selector, out var rows);
+                itemCards.Add(BuildInventoryOverviewItemCard(
+                    commandToken,
+                    acceptedItems[index],
+                    rows ?? Array.Empty<ResourceProjectionRow>()));
+            }
 
             if (itemCards.Count > 0)
             {
@@ -9268,7 +9464,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks, BuildInventoryActions(commandToken, inventoryContext));
     }
 
-    private static UiEntityDossierBlock BuildInventoryOverviewItemCard(string commandToken, JsonObject item)
+    private static UiEntityDossierBlock BuildInventoryOverviewItemCard(
+        string commandToken,
+        JsonObject item,
+        IReadOnlyList<ResourceProjectionRow> resourceRows)
     {
         var identity = FirstNonEmpty(GetInventoryItemIdentity(item), GetInventoryItemName(item));
         item = ProjectInventoryItemForPlayer(item);
@@ -9276,7 +9475,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var type = FormatInventoryProtocolValue(GetNodeString(item, "type") ?? string.Empty);
         var quality = FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "quality"), GetNodeString(item, "rarity")));
         var quantity = FirstNonEmpty(GetNodeString(item, "count"), GetNodeString(item, "quantity"), "1");
-        var durability = GetNodeString(item, "durability") ?? string.Empty;
+        var durabilityRow = resourceRows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "durability", StringComparison.Ordinal));
+        var durability = durabilityRow == null
+            ? string.Empty
+            : ResourceProjectionService.FormatValue(durabilityRow);
         var description = FirstNonEmpty(GetNodeString(item, "description"), GetNodeString(item, "lore"));
         var facts = new List<UiKeyValueItem>
         {
@@ -9296,12 +9499,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         var broken = item["isBroken"]?.GetValueKind() == JsonValueKind.True;
         var empty = item["isEmpty"]?.GetValueKind() == JsonValueKind.True;
-        if (!string.IsNullOrEmpty(durability))
-        {
-            var durabilityText = durability.Replace("%", string.Empty).Trim();
-            if (int.TryParse(durabilityText, out var durabilityValue) && durabilityValue == 0)
-                broken = true;
-        }
+        if (durabilityRow?.Current == 0m)
+            broken = true;
 
         var status = broken
             ? "сломано"
@@ -9521,22 +9720,76 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static async Task<InventoryItemSidecars> ReadInventoryItemSidecarsAsync(FileSystemManager fs, JsonObject item)
     {
         var identity = GetInventoryItemIdentity(item);
-        var resources = await ReadJson(fs, "game_state/inventory/item_resources.json");
         var bonds = await ReadJson(fs, "game_state/inventory/item_bonds.json");
         var texts = await ReadJson(fs, "game_state/inventory/item_text_updates.json");
         var journals = await ReadJson(fs, "game_state/npcs/item_journals.json");
+        var resources = string.IsNullOrWhiteSpace(identity)
+            ? new ResourceProjectionResult(
+                false,
+                ResourcePlayerFailureMessages.Unavailable,
+                Array.Empty<ResourceProjectionRow>())
+            : await ResourceProjectionService.ProjectOwnerAsync(
+                fs,
+                "mortal_world",
+                ResourceOwnerKind.Item,
+                identity,
+                "этот предмет",
+                isOwningPlayer: true);
 
         return new InventoryItemSidecars(
-            Resource: FindInventorySidecarEntryNode(resources.Node, identity),
+            Resources: resources,
             Bond: FindInventorySidecarEntryNode(bonds.Node, identity),
             Text: FindInventorySidecarEntryNode(texts.Node, identity),
             Journal: FindInventorySidecarEntryNode(journals.Node, identity));
     }
 
+    private static async Task<IReadOnlyDictionary<string, IReadOnlyList<ResourceProjectionRow>>>
+        ReadInventoryResourceRowsAsync(
+            FileSystemManager fs,
+            IReadOnlyList<JsonObject> items)
+    {
+        var scopes = new List<ResourceProjectionOwnerScope>();
+        for (var index = 0; index < items.Count; index++)
+        {
+            var identity = GetInventoryItemIdentity(items[index]);
+            if (string.IsNullOrWhiteSpace(identity))
+                continue;
+
+            scopes.Add(new ResourceProjectionOwnerScope(
+                new ResourceOwnerKey("mortal_world", ResourceOwnerKind.Item, identity),
+                InventoryResourceViewSelector(index),
+                IsOwningPlayer: true));
+        }
+
+        if (scopes.Count == 0)
+            return new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(StringComparer.Ordinal);
+
+        var projection = await ResourceProjectionService.ProjectCanonicalAsync(
+            fs,
+            scopes,
+            ResourceProjectionAudience.Player);
+        if (!projection.IsAvailable)
+            return new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(StringComparer.Ordinal);
+
+        return projection.Rows
+            .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+            .ToDictionary(
+                static group => group.Key,
+                static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                StringComparer.Ordinal);
+    }
+
+    private static string InventoryResourceViewSelector(int index) =>
+        $"предмет №{index + 1}";
+
     internal static IReadOnlyList<UiBlock> BuildInventoryItemDetailBlocksForPlayer(JsonObject item) =>
         BuildInventoryItemDetailBlocks(
             ProjectInventoryItemForPlayer(item),
-            new InventoryItemSidecars(null, null, null, null),
+            new InventoryItemSidecars(
+                new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>()),
+                null,
+                null,
+                null),
             includeInventoryBackHint: false);
 
     private static IReadOnlyList<UiBlock> BuildInventoryItemDetailBlocks(
@@ -9558,7 +9811,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInventoryFact(facts, "Вес", FormatInventoryMeasure(GetNodeString(item, "weight"), "кг"));
         AddInventoryFact(facts, "Объём", FormatInventoryMeasure(GetNodeString(item, "volume"), "дм³"));
         AddInventoryFact(facts, "Цена", GetNodeString(item, "price"));
-        AddInventoryFact(facts, "Прочность", FormatInventoryDurability(item));
         AddInventoryFact(facts, "Количество", FirstNonEmpty(GetNodeString(item, "count"), GetNodeString(item, "quantity")));
         AddInventoryFact(facts, "Слот", FormatInventorySlots(item["equipmentSlot"]));
         AddInventoryFact(facts, "Аксессуар для", FormatInventorySlots(item["accessoryForSlot"]));
@@ -9624,7 +9876,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInventoryCustomPropertiesBlock(detailBlocks, item["customProperties"], itemContext: true);
         AddInventoryContainerBlock(detailBlocks, item);
         AddInventoryDisassemblyBlock(detailBlocks, item["disassembleTo"] as JsonArray);
-        AddInventoryResourceBlock(detailBlocks, item, sidecars.Resource);
+        AddInventoryResourceBlock(detailBlocks, sidecars.Resources);
         AddInventoryBondBlock(detailBlocks, item, sidecars.Bond);
         AddInventoryQuestLinksBlock(detailBlocks, item["questLinks"] as JsonArray);
         AddInventoryContentBlock(detailBlocks, item["textContent"], sidecars.Text?["textContent"]);
@@ -10341,21 +10593,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
         });
     }
 
-    private static void AddInventoryResourceBlock(List<UiBlock> blocks, JsonObject item, JsonObject? resourceEntry)
+    private static void AddInventoryResourceBlock(
+        List<UiBlock> blocks,
+        ResourceProjectionResult projection)
     {
-        var resource = FirstNonEmpty(GetNodeString(resourceEntry, "resource"), GetNodeString(item, "resource"));
-        if (string.IsNullOrWhiteSpace(resource))
+        if (!projection.IsAvailable)
+        {
+            blocks.Add(Message(
+                UiNotificationSeverity.Warning,
+                "Ресурсы предмета",
+                projection.UnavailableMessage ?? ResourcePlayerFailureMessages.Unavailable));
+            return;
+        }
+
+        if (projection.Rows.Count == 0)
             return;
 
-        var max = FirstNonEmpty(GetNodeString(resourceEntry, "maximumResource"), GetNodeString(item, "maximumResource"));
-        var resourceType = FirstNonEmpty(GetNodeString(resourceEntry, "resourceType"), GetNodeString(item, "resourceType"), "заряды");
-        var value = string.IsNullOrWhiteSpace(max) ? resource : $"{resource} / {max}";
         blocks.Add(Panel("Ресурсы предмета", new UiKeyValueGridBlock
         {
-            Items =
-            [
-                new UiKeyValueItem { Key = resourceType, Value = value }
-            ]
+            Items = projection.Rows
+                .Select(static row => new UiKeyValueItem
+                {
+                    Key = row.DisplayName,
+                    Value = ResourceProjectionService.FormatValue(row)
+                })
+                .ToList()
         }));
     }
 
@@ -10826,19 +11088,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static string GetInventoryItemName(JsonNode? item) =>
         FirstNonEmpty(GetNodeString(item, "name"), GetNodeString(item, "itemName"), "Безымянный предмет");
 
-    private static string FormatInventoryDurability(JsonObject item)
-    {
-        var durability = GetNodeString(item, "durability");
-        var maxDurability = GetNodeString(item, "maxDurability");
-        if (string.IsNullOrWhiteSpace(durability))
-            return string.Empty;
-
-        if (!string.IsNullOrWhiteSpace(maxDurability))
-            return $"{durability}/{maxDurability}";
-
-        return durability;
-    }
-
     private static string FormatInventoryMeasure(string? value, string unit)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -11094,7 +11343,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         string Selector);
 
     private sealed record InventoryItemSidecars(
-        JsonObject? Resource,
+        ResourceProjectionResult Resources,
         JsonObject? Bond,
         JsonObject? Text,
         JsonObject? Journal);
@@ -11172,7 +11421,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
         int Index,
         string Selector,
         string Name,
-        JsonObject Node);
+        JsonObject Node,
+        bool ResourceProjectionAvailable = false,
+        IReadOnlyList<ResourceProjectionRow>? ProjectedResources = null)
+    {
+        internal IReadOnlyList<ResourceProjectionRow> Resources { get; init; } =
+            ProjectedResources ?? Array.Empty<ResourceProjectionRow>();
+    }
 
     private sealed record CombatLogSnapshot(
         string Selector,
@@ -11240,7 +11495,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         string Title,
         string Section,
         string Summary,
-        JsonObject Node);
+        JsonObject Node,
+        IReadOnlyList<ResourceProjectionRow>? Resources = null);
 
     private sealed record ReferenceDetailRequest(
         ReferenceDetailKind Kind,

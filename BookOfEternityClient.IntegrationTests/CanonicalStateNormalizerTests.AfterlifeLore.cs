@@ -159,7 +159,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
 
     [Fact]
 
-    public async Task NormalizeAccumulatedStateAsync_ProcessGachaWithForgeBonus_StoresAuditAndConsumesGachaUse()
+    public async Task NormalizeAccumulatedStateAsync_ProcessGachaWithForgeBonusWithoutValidatedCommonPlan_PreservesState()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
         {
@@ -178,7 +178,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
               "manifestationHistory": [],
               "relationshipData": { "currentReputation": 60, "reputationHistory": [], "lastInteraction": null },
               "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
-              "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              "gachaSystem": { "currentReturnCycleId": "chaos_return_42", "gachaHistory": [] }
             }
           ],
           "activeGuardian": {
@@ -195,7 +195,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
             "manifestationHistory": [],
             "relationshipData": { "currentReputation": 60, "reputationHistory": [], "lastInteraction": null },
             "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
-            "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            "gachaSystem": { "currentReturnCycleId": "chaos_return_42", "gachaHistory": [] }
           },
           "UpdateGuardians": [
             {
@@ -252,23 +252,21 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         }
         """);
 
+        var guardiansBefore = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var trackerBefore = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var backups = await CreateGuardianNormalizerAuthorityBackupsAsync();
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
-        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(backups));
 
-        Assert.NotNull(guardiansJson);
-        Assert.Contains("\"gachaBonusAudit\"", guardiansJson, StringComparison.Ordinal);
-        var guardiansRoot = JsonNode.Parse(guardiansJson)!.AsObject();
-        var historyEntry = guardiansRoot["guardians"]![0]!["gachaSystem"]!["gachaHistory"]![0]!.AsObject();
-        Assert.Equal("Epic", historyEntry["finalRarity"]?.GetValue<string>());
-        Assert.NotNull(trackerJson);
-        Assert.Contains("\"gachaUsesSpent\": 1", trackerJson, StringComparison.Ordinal);
+        Assert.Contains("validated common resource plan", exception.Message, StringComparison.Ordinal);
+        Assert.Equal(guardiansBefore, await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+        Assert.Equal(trackerBefore, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
     }
 
     [Fact]
-    public async Task NormalizeAccumulatedStateAsync_ProcessGachaClampsChargesUsedPerReturn()
+    public async Task NormalizeAccumulatedStateAsync_LegacyGachaCountersCannotSubstituteForValidatedCommonPlan()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
         {
@@ -329,17 +327,17 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         }
         """);
 
+        var guardiansBefore = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var trackerBefore = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var backups = await CreateGuardianNormalizerAuthorityBackupsAsync();
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
-        var guardiansRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
-        var guardian = guardiansRoot["guardians"]!.AsArray()[0]!.AsObject();
-        var activeGuardian = guardiansRoot["activeGuardian"]!.AsObject();
-        var gachaHistory = guardian["gachaSystem"]?["gachaHistory"]?.AsArray();
-        Assert.Equal(1, guardian["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
-        Assert.Equal(1, activeGuardian["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
-        Assert.NotNull(gachaHistory);
-        Assert.Single(gachaHistory!);
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(backups));
+
+        Assert.Contains("validated common resource plan", exception.Message, StringComparison.Ordinal);
+        Assert.Equal(guardiansBefore, await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+        Assert.Equal(trackerBefore, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
     }
 
     [Fact]

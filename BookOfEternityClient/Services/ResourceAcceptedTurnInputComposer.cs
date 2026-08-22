@@ -121,6 +121,13 @@ internal sealed record ResourceAcceptedEventAuthority(
     int CommandOrdinal,
     string EventRef);
 
+internal sealed record ResourceOrdinarySourceCompositionResult(
+    IReadOnlyList<ResourceMutationSourceExport> Exports,
+    IReadOnlyList<ValidationIssue> Issues)
+{
+    internal bool IsValid => Issues.Count == 0;
+}
+
 internal sealed class ResourceAcceptedEventBindingResult
 {
     private readonly JsonObject _root;
@@ -162,6 +169,11 @@ internal static class ResourceAcceptedTurnInputComposer
     private static readonly FrozenSet<string> TargetFields = Set(
         "kind", "targetId", "targetRef");
     private static readonly FrozenSet<string> SourceFields = Set("kind", "sourceId");
+    private static readonly FrozenSet<string> ClientDerivedSourceFields = Set("kind");
+    private static readonly FrozenSet<string> ClientDerivedOrdinarySourceKinds = Set(
+        "action_cost", "combat_outcome", "narrative_outcome");
+    private static readonly FrozenSet<string> ItemOrdinarySourceKinds = Set(
+        "local_item_cost", "local_item_outcome");
     private static readonly FrozenSet<string> InstanceCapacityFields = Set("kind", "maximum");
     private static readonly FrozenSet<string> FormulaCapacityFields = Set("kind", "formulaKey");
 
@@ -297,6 +309,83 @@ internal static class ResourceAcceptedTurnInputComposer
             : AcceptedEventsResult(
                 Array.Empty<ResourceAcceptedEventAuthority>(),
                 issues);
+    }
+
+    internal static ResourceOrdinarySourceCompositionResult ComposeOrdinarySources(
+        string sessionId,
+        string requestId,
+        int turn,
+        string realm,
+        ResourceCommandCompositionResult commands,
+        ResourceAcceptedEventBindingResult acceptedEvents,
+        ResourceOwnerAuthority owners)
+    {
+        ArgumentNullException.ThrowIfNull(commands);
+        ArgumentNullException.ThrowIfNull(acceptedEvents);
+        ArgumentNullException.ThrowIfNull(owners);
+        var issues = new List<ValidationIssue>();
+        var exports = new List<ResourceMutationSourceExport>();
+        var events = acceptedEvents.Events.ToDictionary(
+            static value => value.CommandOrdinal,
+            static value => value.EventRef);
+
+        for (var index = 0; index < commands.ResourceChanges.Count; index++)
+        {
+            var command = commands.ResourceChanges[index];
+            if (!ClientDerivedOrdinarySourceKinds.Contains(command.Source.Kind))
+                continue;
+
+            if (!events.TryGetValue(command.CommandOrdinal, out var acceptedEventRef) ||
+                !string.Equals(acceptedEventRef, command.EventRef, StringComparison.Ordinal) ||
+                !string.Equals(command.Source.SourceId, command.EventRef, StringComparison.Ordinal))
+            {
+                Add(
+                    issues,
+                    $"resourceChanges[{index}].source",
+                    "resource_command_source_event_mismatch",
+                    "client-derived source identity equal to the exact accepted ordinal event",
+                    command.Source.SourceId);
+                continue;
+            }
+
+            var owner = owners.Resolve(new ResourceOwnerRequest(
+                realm,
+                command.Target.OwnerKind,
+                command.ResourceKey,
+                command.Target.TargetId,
+                command.Target.TargetRef));
+            issues.AddRange(owner.Issues);
+            if (!owner.Success || owner.Entry == null)
+                continue;
+
+            using var fingerprint = new ResourceFingerprintBuilder(
+                "resource-accepted-ordinary-source-v1");
+            fingerprint.Append(sessionId);
+            fingerprint.Append(requestId);
+            fingerprint.Append(turn);
+            fingerprint.Append(command.CommandOrdinal);
+            fingerprint.Append(command.EventRef);
+            fingerprint.Append(command.Source.Kind);
+            fingerprint.Append((int)command.Operation);
+            fingerprint.Append(owner.Entry.Key.Realm);
+            fingerprint.Append((int)owner.Entry.Key.OwnerKind);
+            fingerprint.Append(owner.Entry.Key.ResourceOwnerId);
+            fingerprint.Append(command.ResourceKey);
+            fingerprint.Append(command.Amount);
+            fingerprint.Append(command.Reason);
+            fingerprint.Append(owner.Entry.AuthorityFingerprint);
+            exports.Add(new ResourceMutationSourceExport(
+                command.Source.Kind,
+                command.EventRef,
+                fingerprint.Build(),
+                ResourceMutationSourceState.Active,
+                SameTurn: true,
+                owner.Entry.Key));
+        }
+
+        return new ResourceOrdinarySourceCompositionResult(
+            Array.AsReadOnly(exports.ToArray()),
+            Array.AsReadOnly(issues.ToArray()));
     }
 
     private static void ParseDefinitions(
@@ -482,8 +571,10 @@ internal static class ResourceAcceptedTurnInputComposer
             {
                 amount = parsedAmount;
             }
-            var source = ParseSource(value, path, issues);
             var eventRef = ReadExact(value, "eventRef", path, issues);
+            var source = eventRef == null
+                ? null
+                : ParseOrdinarySource(value, path, eventRef, issues);
             var reason = ReadReason(value, path, issues);
 
             if (issues.Count == issueCount && operation != null && target != null &&
@@ -567,6 +658,61 @@ internal static class ResourceAcceptedTurnInputComposer
         return issues.Count == issueCount && kind != null && sourceId != null
             ? new ResourceCommandSource(kind, sourceId)
             : null;
+    }
+
+    private static ResourceCommandSource? ParseOrdinarySource(
+        JsonElement command,
+        string path,
+        string eventRef,
+        List<ValidationIssue> issues)
+    {
+        if (!command.TryGetProperty("source", out var source) ||
+            source.ValueKind != JsonValueKind.Object)
+        {
+            Add(issues, path + ".source", "resource_command_source_invalid",
+                "closed ordinary source selector",
+                ResourceMaterializationContract.Describe(command, "source"));
+            return null;
+        }
+
+        var issueCount = issues.Count;
+        var kind = source.TryGetProperty("kind", out var kindNode) &&
+                   kindNode.ValueKind == JsonValueKind.String
+            ? kindNode.GetString()
+            : null;
+        if (!ResourceMaterializationContract.IsExactIdentifier(kind))
+        {
+            Add(issues, path + ".source.kind", "resource_command_source_invalid",
+                "registered exact ordinary source kind",
+                ResourceMaterializationContract.Describe(source, "kind"));
+            return null;
+        }
+
+        if (ClientDerivedOrdinarySourceKinds.Contains(kind!))
+        {
+            ResourceMaterializationContract.ValidateClosedObject(
+                source, path + ".source", ClientDerivedSourceFields, issues,
+                "resource_command_unknown_field");
+            return issues.Count == issueCount
+                ? new ResourceCommandSource(kind!, eventRef)
+                : null;
+        }
+
+        if (ItemOrdinarySourceKinds.Contains(kind!))
+        {
+            ResourceMaterializationContract.ValidateClosedObject(
+                source, path + ".source", SourceFields, issues,
+                "resource_command_unknown_field");
+            var sourceId = ReadExact(source, "sourceId", path + ".source", issues);
+            return issues.Count == issueCount && sourceId != null
+                ? new ResourceCommandSource(kind!, sourceId)
+                : null;
+        }
+
+        Add(issues, path + ".source.kind", "resource_command_source_invalid",
+            "action_cost, combat_outcome, narrative_outcome, local_item_cost, or local_item_outcome",
+            kind!);
+        return null;
     }
 
     private static void ParseDefinitionSelector(

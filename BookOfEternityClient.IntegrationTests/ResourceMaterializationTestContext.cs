@@ -12,6 +12,8 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
     internal const string StatePath = "game_state/resources/resource_state.json";
     internal const string HistoryPath = "game_state/resources/resource_history.json";
     internal const string CommandsPath = "game_state/resources/resource_commands.json";
+    internal const string FullPartyInteractionsPath =
+        "game_state/misc/player_interactions.json";
 
     internal static readonly string[] AllResourcePaths =
     {
@@ -116,6 +118,7 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         var rollbackBaselineFiles = new JsonArray();
         var trackedPaths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
             .Concat(AllResourcePaths)
+            .Append(FullPartyInteractionsPath)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(static path => path, StringComparer.Ordinal);
 

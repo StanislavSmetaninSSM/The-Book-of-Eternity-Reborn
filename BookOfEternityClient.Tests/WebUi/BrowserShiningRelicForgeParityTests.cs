@@ -95,6 +95,26 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
 
     [Fact]
     [Trait("Category", "ShiningRelicForge")]
+    public async Task ExecuteAsync_ShiningRelicForge_MissingResourceProjectionFailsRerollsClosed()
+    {
+        await SeedShiningRelicForgeStateAsync();
+        _fs.DeleteFile(ResourceMaterializationContract.StatePath);
+
+        var result = await ExecuteCommandAsync("/shining_relic_forge");
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Contains(
+            ResourcePlayerFailureMessages.Unavailable,
+            CollectResultAndPromptText(result),
+            StringComparison.Ordinal);
+        var rerollPrompt = Assert.IsType<UiSelectionPrompt>(
+            Assert.Single(result.Prompts, prompt => prompt.Id == "relic_rerolls_to_commit"));
+        var onlyOption = Assert.Single(rerollPrompt.Options);
+        Assert.Equal("0", onlyOption.Value);
+    }
+
+    [Fact]
+    [Trait("Category", "ShiningRelicForge")]
     public async Task ExecuteAsync_ShiningRelicForge_WithForgeSupportQuotesDiscountedStrengthenAction()
     {
         await SeedShiningRelicForgeStateAsync(
@@ -902,7 +922,8 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
                     ["effectPayload"] = new JsonObject
                     {
                         ["type"] = "grant_relic_refinement",
-                        ["rerolls"] = 2,
+                        [ShiningBlessingRerollAllocationContract.PropertyName] =
+                            ShiningBlessingRerollAllocationContract.Create(2),
                         ["freeShape"] = false,
                         ["freeRetune"] = false
                     }

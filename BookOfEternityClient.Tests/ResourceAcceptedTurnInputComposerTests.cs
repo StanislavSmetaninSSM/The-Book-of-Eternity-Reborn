@@ -69,7 +69,78 @@ public sealed class ResourceAcceptedTurnInputComposerTests
         Assert.Equal("player_current", change.Target.TargetId);
         Assert.Null(change.Target.TargetRef);
         Assert.Equal("narrative_outcome", change.Source.Kind);
-        Assert.Equal("exchange_7", change.Source.SourceId);
+        Assert.Equal(change.EventRef, change.Source.SourceId);
+    }
+
+    [Theory]
+    [InlineData("action_cost", "spend", "energy")]
+    [InlineData("combat_outcome", "damage", "health")]
+    [InlineData("narrative_outcome", "restore", "health")]
+    public void Parse_ClientDerivesOrdinarySourceIdentityFromExactEvent(
+        string sourceKind,
+        string operation,
+        string resourceKey)
+    {
+        var root = new JsonObject
+        {
+            ["resourceChanges"] = new JsonArray(new JsonObject
+            {
+                ["operation"] = operation,
+                ["target"] = new JsonObject
+                {
+                    ["kind"] = "player",
+                    ["targetId"] = "player_current"
+                },
+                ["resourceKey"] = resourceKey,
+                ["amount"] = 1,
+                ["source"] = new JsonObject { ["kind"] = sourceKind },
+                ["eventRef"] = "turn_7:resource:1",
+                ["reason"] = "Accepted occurrence"
+            })
+        };
+        var result = ResourceAcceptedTurnInputComposer.Parse(root.ToJsonString());
+
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
+        var change = Assert.Single(result.ResourceChanges);
+        Assert.Equal(sourceKind, change.Source.Kind);
+        Assert.Equal(change.EventRef, change.Source.SourceId);
+    }
+
+    [Theory]
+    [InlineData("action_cost")]
+    [InlineData("combat_outcome")]
+    [InlineData("narrative_outcome")]
+    public void Parse_RejectsRawSourceIdForClientDerivedOrdinaryRoute(
+        string sourceKind)
+    {
+        var root = new JsonObject
+        {
+            ["resourceChanges"] = new JsonArray(new JsonObject
+            {
+                ["operation"] = "damage",
+                ["target"] = new JsonObject
+                {
+                    ["kind"] = "player",
+                    ["targetId"] = "player_current"
+                },
+                ["resourceKey"] = "health",
+                ["amount"] = 1,
+                ["source"] = new JsonObject
+                {
+                    ["kind"] = sourceKind,
+                    ["sourceId"] = "rename_to_evade_replay"
+                },
+                ["eventRef"] = "turn_7:resource:1",
+                ["reason"] = "Attempted replay rename"
+            })
+        };
+        var result = ResourceAcceptedTurnInputComposer.Parse(root.ToJsonString());
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_command_unknown_field" &&
+            issue.FilePath.Contains("source", StringComparison.Ordinal));
+        Assert.Empty(result.ResourceChanges);
     }
 
     [Fact]
@@ -342,7 +413,7 @@ public sealed class ResourceAcceptedTurnInputComposerTests
         "target": {"kind":"player","targetId":"player_current"},
         "resourceKey": "mana",
         "amount": 3,
-        "source": {"kind":"narrative_outcome","sourceId":"exchange_7"},
+        "source": {"kind":"narrative_outcome"},
         "eventRef": "turn_7:resource:3",
         "reason": "Cast spell"
       }]

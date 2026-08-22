@@ -2365,6 +2365,22 @@ public partial class ValidationService
         if (!RequireObject(gachaSystem, contextPrefix, issues))
             return;
 
+        foreach (var legacyCounter in new[] { "chargesPerReturn", "chargesUsedThisReturn" })
+        {
+            if (!gachaSystem.TryGetProperty(legacyCounter, out var legacyValue))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{legacyCounter}",
+                IssueSeverity.Error,
+                "Legacy Shining gacha counter нельзя хранить вне unified resource ledger",
+                code: "shining_gacha_legacy_counter_forbidden",
+                section: "ShiningAbode",
+                expected: "field absent; resolve gacha_attempts through the accepted resource projection",
+                actual: legacyValue.GetRawText(),
+                repairHint: "Старый технический state несовместим: не переноси счётчик и не создавай fallback."));
+        }
+
         if (!gachaSystem.TryGetProperty("currentReturnCycleId", out var returnCycleNode) ||
             returnCycleNode.ValueKind != JsonValueKind.String ||
             returnCycleNode.GetString() is not { } returnCycleId ||

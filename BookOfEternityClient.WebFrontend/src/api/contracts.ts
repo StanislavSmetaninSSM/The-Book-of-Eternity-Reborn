@@ -330,6 +330,8 @@ export interface BrowserGameScreenPlayerDto {
   energyPercentage: string;
   poisePercentage: string;
   activeConditions: string[];
+  resourceProjectionAvailable: boolean;
+  resourceUnavailableMessage: string;
 }
 
 export interface BrowserGameScreenWorldDto {

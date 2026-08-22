@@ -112,6 +112,7 @@ public sealed class EffectMaterializationTestFixtureTests
 
         Assert.Single(commandRoot["effectChanges"]!.AsArray());
         Assert.Empty(commandRoot["effectResolutionReceipts"]!.AsArray());
+        Assert.Empty(commandRoot["effectEventReports"]!.AsArray());
         Assert.False(commandRoot.ContainsKey("sessionId"));
 
         Assert.Equal(1, pendingRoot["schemaVersion"]!.GetValue<int>());

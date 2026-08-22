@@ -194,8 +194,8 @@ public sealed class EffectAcceptedTurnPlannerTests
 
         var result = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(input);
 
-        var plan = Assert.IsType<EffectAcceptedTurnPlan>(result.Plan);
         Assert.Empty(result.Issues);
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(result.Plan);
         var effect = Assert.Single(plan.ActiveEffects);
         Assert.Equal("combat", effect["lifetime"]!["linkKind"]!.GetValue<string>());
         using var document = JsonDocument.Parse(effect.ToJsonString());
@@ -383,10 +383,12 @@ public sealed class EffectAcceptedTurnPlannerTests
 
         Assert.Contains("effectChanges", responseFields);
         Assert.Contains("effectResolutionReceipts", responseFields);
+        Assert.Contains("effectEventReports", responseFields);
         Assert.DoesNotContain("playerActiveEffectsChanges", responseFields);
         Assert.DoesNotContain("NPCEffectChanges", responseFields);
         Assert.Equal(EffectAcceptedTurnPlan.CommandPath, FileMapping.FieldToFile["effectChanges"]);
         Assert.Equal(EffectAcceptedTurnPlan.CommandPath, FileMapping.FieldToFile["effectResolutionReceipts"]);
+        Assert.Equal(EffectAcceptedTurnPlan.CommandPath, FileMapping.FieldToFile["effectEventReports"]);
         Assert.False(FileMapping.FieldToFile.ContainsKey("playerActiveEffectsChanges"));
         Assert.False(FileMapping.FieldToFile.ContainsKey("NPCEffectChanges"));
     }
@@ -405,8 +407,8 @@ public sealed class EffectAcceptedTurnPlannerTests
 
         var result = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
 
-        var plan = Assert.IsType<EffectAcceptedTurnPlan>(result.Plan);
         Assert.Empty(result.Issues);
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(result.Plan);
         Assert.Empty(plan.ActiveEffects);
         Assert.Empty(plan.AllocatedEffectIds);
         Assert.Empty(plan.AllocatedTransitionIds);
@@ -636,6 +638,479 @@ public sealed class EffectAcceptedTurnPlannerTests
         Assert.Equal(effectId, Assert.Single(cached.ActiveEffects)["effectId"]!.GetValue<string>());
         Assert.Single(cached.CarrierAfterImages[EffectCarrierCatalog.PlayerPath]["activeEffects"]!.AsArray());
         Assert.Single(cached.IdentityIndexAfterImage["entries"]!.AsArray());
+    }
+
+    [Theory]
+    [InlineData("remove", "removed", 0)]
+    [InlineData("suspend", "suspended", 1)]
+    public void Build_DeterministicEventReactionAppliesClientOwnedTerminalOutcome(
+        string resultKind,
+        string expectedState,
+        int expectedCarrierCount)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        definition["components"]![0]!["payload"]!["resultKind"] = resultKind;
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        var input = CreateReactionInput(effect, definition);
+
+        var result = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(input);
+
+        Assert.Empty(result.Issues);
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(result.Plan);
+        Assert.Equal(
+            expectedCarrierCount,
+            plan.ResourceTriggerCarriers.PlayerEffects!["activeEffects"]!.AsArray().Count);
+        var identity = Assert.Single(plan.IdentityIndexAfterImage["entries"]!.AsArray())!.AsObject();
+        Assert.Equal(expectedState, identity["state"]!.GetValue<string>());
+        Assert.Contains(
+            identity["transitions"]!.AsArray(),
+            transition => transition!["kind"]!.GetValue<string>() == resultKind);
+    }
+
+    [Fact]
+    public void Build_ApplyDefinitionReactionCreatesBoundedSameSourceEffect()
+    {
+        var root = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        root["definitionKey"] = "reaction_root";
+        root["components"]![0]!["payload"]!["resultKind"] = "apply_definition";
+        root["components"]![0]!["payload"]!["definitionKey"] = "reaction_child";
+        root["components"]![0]!["payload"]!["parameters"] = new JsonObject
+        {
+            ["amount"] = 3
+        };
+        root["components"]![0]!["payload"]!["maxExpansion"] = 2;
+        var child = EffectMaterializationTestFixture.CreateDefinition();
+        child["definitionKey"] = "reaction_child";
+        child["stacking"]!["stackKey"] = "reaction-child";
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        effect["source"]!["definitionKey"] = "reaction_root";
+        effect["components"] = root["components"]!.DeepClone();
+        effect["triggers"] = root["triggers"]!.DeepClone();
+        var input = CreateReactionInput(effect, root, child);
+        var factory = new CountingFactory();
+
+        var result = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
+
+        Assert.Empty(result.Issues);
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(result.Plan);
+        var effects = plan.ResourceTriggerCarriers.PlayerEffects!["activeEffects"]!.AsArray();
+        Assert.Equal(2, effects.Count);
+        Assert.Contains(effects, candidate =>
+            candidate!["source"]!["definitionKey"]!.GetValue<string>() == "reaction_child");
+        var downstream = effects.Single(candidate =>
+            candidate!["source"]!["definitionKey"]!.GetValue<string>() == "reaction_child")!
+            .AsObject();
+        Assert.Equal(
+            "turn_42:owner_damaged:1",
+            downstream["chronology"]!["causalEventRef"]!.GetValue<string>());
+        Assert.Single(plan.AllocatedEffectIds);
+        Assert.Contains(plan.Sources, source => source.DefinitionKey == "reaction_child");
+    }
+
+    [Fact]
+    public void Finalize_EventReactionAfterCurrentEventRunsAfterLifetimePhase()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        definition["components"]![0]!["payload"]!["dependency"] = "after_current_event";
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        var built = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(
+            CreateReactionInput(effect, definition));
+        var beforeFinalize = Assert.IsType<EffectAcceptedTurnPlan>(built.Plan);
+
+        var finalized = EffectAcceptedTurnPlanner.FinalizeAfterResourceGraph(
+            beforeFinalize,
+            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
+            new CountingFactory());
+
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(finalized.Plan);
+        Assert.Empty(finalized.Issues);
+        Assert.Empty(plan.CarrierAfterImages[EffectCarrierCatalog.PlayerPath]
+            ["activeEffects"]!.AsArray());
+        Assert.Equal(
+            "removed",
+            Assert.Single(plan.IdentityIndexAfterImage["entries"]!.AsArray())!
+                ["state"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void Finalize_RejectsGeneratedReactionsBeyondWholeAcceptedTurnExpansionLimit()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        var built = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(
+            CreateReactionInput(effect, definition));
+        var beforeFinalize = Assert.IsType<EffectAcceptedTurnPlan>(built.Plan);
+        var generated = Enumerable.Range(1, EffectReactionContract.MaximumExpansion)
+            .Select(index => new EffectReactionExecution(
+                $"turn_42:generated_reaction:{index}",
+                $"turn_42:resource:{index}",
+                "turn_42:owner_damaged:1",
+                42,
+                "resource_damaged",
+                new EffectTargetKey("mortal_world", "player", "player_current"),
+                EffectMaterializationTestFixture.EffectId,
+                "on_resource_damaged",
+                $"generated_component_{index}",
+                "trigger_component",
+                "before_current_event",
+                AfterComponentId: null,
+                MaxExpansion: 1,
+                DownstreamSource: null,
+                Parameters: null))
+            .ToArray();
+
+        var finalized = EffectAcceptedTurnPlanner.FinalizeAfterResourceGraph(
+            beforeFinalize,
+            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
+            new CountingFactory(),
+            generated);
+
+        Assert.Null(finalized.Plan);
+        Assert.Contains(finalized.Issues, issue =>
+            issue.Code == "effect_reaction_expansion_exceeded");
+    }
+
+    [Fact]
+    public void ReactionExecutor_RejectsSourceDeclaredPerComponentExpansionExceeded()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        definition["components"]![0]!["payload"]!["maxExpansion"] = 1;
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        var input = CreateReactionInput(effect, definition);
+        var secondEvent = input.EventInput["lifecycleEvents"]![0]!
+            .DeepClone().AsObject();
+        secondEvent["eventRef"] = "turn_42:reaction:owner_damaged:2";
+        input.EventInput["lifecycleEvents"]!.AsArray().Add(secondEvent);
+
+        var planned = EffectReactionExecutor.Plan(
+            input.EventInput,
+            input.SourceAuthority,
+            input.PreTurnCarriers!);
+
+        Assert.False(planned.Success);
+        Assert.Contains(planned.Issues, issue =>
+            issue.Code == "effect_reaction_expansion_exceeded");
+    }
+
+    [Fact]
+    public void Finalize_RejectsGeneratedReactionBeyondPersistedSourceDeclaredBudget()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        definition["components"]![0]!["payload"]!["maxExpansion"] = 2;
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        var beforeFinalize = Assert.IsType<EffectAcceptedTurnPlan>(
+            new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(
+                CreateReactionInput(effect, definition)).Plan);
+        var generated = Enumerable.Range(1, 2)
+            .Select(index => new EffectReactionExecution(
+                $"turn_42:generated_same_reaction:{index}",
+                $"turn_42:resource:{index}",
+                "turn_42:owner_damaged:1",
+                42,
+                "resource_damaged",
+                new EffectTargetKey("mortal_world", "player", "player_current"),
+                EffectMaterializationTestFixture.EffectId,
+                "on_resource_damaged",
+                "component_001",
+                "remove",
+                "before_current_event",
+                AfterComponentId: null,
+                MaxExpansion: 2,
+                DownstreamSource: null,
+                Parameters: null))
+            .ToArray();
+
+        var finalized = EffectAcceptedTurnPlanner.FinalizeAfterResourceGraph(
+            beforeFinalize,
+            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
+            new CountingFactory(),
+            generated);
+
+        Assert.Null(finalized.Plan);
+        Assert.Contains(finalized.Issues, issue =>
+            issue.Code == "effect_reaction_expansion_exceeded");
+    }
+
+    [Fact]
+    public void Finalize_EventReactionAfterComponentRequiresExactSuccessfulComponent()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        definition["components"]![0]!["payload"]!["resultKind"] = "suspend";
+        definition["components"]![0]!["payload"]!["dependency"] = "after_component";
+        definition["components"]![0]!["payload"]!["afterComponentId"] = "reaction_periodic";
+        var periodic = EffectMaterializationTestFixture.CreateDefinition()["components"]![0]!
+            .DeepClone().AsObject();
+        periodic["componentId"] = "reaction_periodic";
+        definition["components"]!.AsArray().Add(periodic);
+        definition["triggers"]![0]!["componentIds"] = new JsonArray(
+            "component_001",
+            "reaction_periodic");
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        var built = new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(
+            CreateReactionInput(effect, definition));
+        var beforeFinalize = Assert.IsType<EffectAcceptedTurnPlan>(built.Plan);
+        var execution = new EffectAcceptedTurnPlanner.EffectResourceTriggerExecution(
+            EffectMaterializationTestFixture.EffectId,
+            "on_owner_damaged",
+            "owner_damaged",
+            "turn_42:reaction:owner_damaged:1",
+            Array.Empty<ResourceOperationKey>(),
+            RemainingUseBudget: null,
+            ComponentIds: new[] { "reaction_periodic" },
+            TriggerEventRef: "turn_42:reaction:owner_damaged:1");
+
+        var finalized = EffectAcceptedTurnPlanner.FinalizeAfterResourceGraph(
+            beforeFinalize,
+            new[] { execution },
+            new CountingFactory());
+
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(finalized.Plan);
+        Assert.Empty(finalized.Issues);
+        Assert.Equal(
+            "suspended",
+            Assert.Single(plan.IdentityIndexAfterImage["entries"]!.AsArray())!
+                ["state"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void Finalize_EventReactionAfterComponentIgnoresDifferentTriggerEvent()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        definition["components"]![0]!["payload"]!["resultKind"] = "suspend";
+        definition["components"]![0]!["payload"]!["dependency"] = "after_component";
+        definition["components"]![0]!["payload"]!["afterComponentId"] = "reaction_periodic";
+        var periodic = EffectMaterializationTestFixture.CreateDefinition()["components"]![0]!
+            .DeepClone().AsObject();
+        periodic["componentId"] = "reaction_periodic";
+        definition["components"]!.AsArray().Add(periodic);
+        definition["triggers"]![0]!["componentIds"] = new JsonArray(
+            "component_001",
+            "reaction_periodic");
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        var beforeFinalize = Assert.IsType<EffectAcceptedTurnPlan>(
+            new EffectAcceptedTurnPlanCache(new CountingFactory()).GetOrBuild(
+                CreateReactionInput(effect, definition)).Plan);
+        var wrongEventExecution = new EffectAcceptedTurnPlanner.EffectResourceTriggerExecution(
+            EffectMaterializationTestFixture.EffectId,
+            "on_owner_damaged",
+            "owner_damaged",
+            "turn_42:reaction:owner_damaged:2",
+            Array.Empty<ResourceOperationKey>(),
+            RemainingUseBudget: null,
+            ComponentIds: new[] { "reaction_periodic" },
+            TriggerEventRef: "turn_42:reaction:owner_damaged:2");
+
+        var finalized = EffectAcceptedTurnPlanner.FinalizeAfterResourceGraph(
+            beforeFinalize,
+            new[] { wrongEventExecution },
+            new CountingFactory());
+
+        Assert.Empty(finalized.Issues);
+        Assert.Equal(
+            "active",
+            Assert.Single(finalized.Plan!.IdentityIndexAfterImage["entries"]!.AsArray())!
+                ["state"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void ReactionExecutor_ResourceEventBuildsDirectReactionFromExactAppliedEvent()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        definition["components"]![0]!["payload"]!["eventType"] = "resource_depleted";
+        definition["triggers"]![0]!["eventType"] = "resource_depleted";
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        var input = CreateReactionInput(effect, definition);
+        var occurrence = Assert.Single(EffectCarrierCatalog.Build(
+            input.PreTurnCarriers!).Occurrences);
+        var producer = new ResourceAppliedEvent(
+            "resource_depleted",
+            "resource_operation_test",
+            "turn_42:resource:test",
+            new ResourceCoordinate(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "health"),
+            Before: 1m,
+            After: 0m,
+            AppliedAmount: 1m,
+            Turn: 42,
+            ExecutionSequence: 1,
+            SourceFingerprint: "source_fingerprint_test");
+
+        var planned = EffectReactionExecutor.PlanResourceEvent(
+            occurrence,
+            "on_owner_damaged",
+            producer,
+            input.SourceAuthority);
+
+        Assert.Empty(planned.Issues);
+        var execution = Assert.Single(planned.Executions);
+        Assert.Equal("remove", execution.ResultKind);
+        Assert.Equal(producer.EventRef, execution.TriggerEventRef);
+        Assert.Equal(producer.EventRef, execution.CausalEventRef);
+    }
+
+    [Fact]
+    public void ResourceEventReaction_FlowsFromAppliedResourceEventIntoFinalCarrierAndIdentity()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        definition["components"]![0]!["payload"]!["eventType"] = "resource_depleted";
+        definition["triggers"]![0]!["eventType"] = "resource_depleted";
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        var input = CreateReactionInput(effect, definition);
+        var built = EffectAcceptedTurnPlanner.Build(
+            input,
+            "resource-reaction-plan",
+            new CountingFactory());
+        var beforeResources = Assert.IsType<EffectAcceptedTurnPlan>(built.Plan);
+        var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
+        var producerKey = new ResourceOperationKey(
+            "turn_42:resource:test",
+            "combat_outcome",
+            "resource_reaction_test",
+            new ResourceCoordinate(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "health"),
+            ResourceOperation.Damage);
+        var producer = new ResourceAppliedEvent(
+            "resource_depleted",
+            "resource_operation_test",
+            producerKey.EventRef,
+            producerKey.Coordinate,
+            Before: 1m,
+            After: 0m,
+            AppliedAmount: 1m,
+            Turn: 42,
+            ExecutionSequence: 1,
+            SourceFingerprint: "source_fingerprint_test");
+
+        var resolved = EffectAcceptedTurnPlanner.ResolveResourceEventMutations(
+            beforeResources,
+            producer,
+            producerKey,
+            ResourceOwnerAuthority.CreateCurrentPlayerAuthority(definitions),
+            definitions);
+        var finalized = EffectAcceptedTurnPlanner.FinalizeAfterResourceGraph(
+            beforeResources,
+            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
+            new CountingFactory(),
+            resolved.ReactionExecutions);
+
+        Assert.Empty(resolved.Issues);
+        Assert.Empty(finalized.Issues);
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(finalized.Plan);
+        Assert.Empty(plan.CarrierAfterImages[EffectCarrierCatalog.PlayerPath]
+            ["activeEffects"]!.AsArray());
+        Assert.Equal(
+            "removed",
+            Assert.Single(plan.IdentityIndexAfterImage["entries"]!.AsArray())!
+                ["state"]!.GetValue<string>());
+    }
+
+    private static EffectAcceptedTurnInput CreateReactionInput(
+        JsonObject effect,
+        params JsonObject[] definitions)
+    {
+        var source = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+            new[]
+            {
+                new EffectSourceExport(
+                    "mortal_world",
+                    "wound",
+                    "wound_test_torn_side",
+                    new JsonArray(definitions.Select(static value =>
+                        (JsonNode)value.DeepClone()).ToArray()),
+                    Materializable: true,
+                    Active: true,
+                    SameTurn: false)
+            },
+            Array.Empty<EffectSourceExport>(),
+            new HashSet<string>(StringComparer.Ordinal)));
+        var target = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
+            new[]
+            {
+                new EffectTargetExport(
+                    "mortal_world",
+                    "player",
+                    "player_current",
+                    SameTurn: false)
+            },
+            Array.Empty<EffectTargetExport>(),
+            new HashSet<string>(StringComparer.Ordinal),
+            CombatantIdentities: null));
+        return new EffectAcceptedTurnInput(
+            "session_effect_reaction",
+            "snapshot_effect_reaction",
+            EffectMaterializationTestFixture.CreateCommandRoot(),
+            source,
+            target,
+            new JsonObject
+            {
+                ["turn"] = 42,
+                ["events"] = new JsonArray(
+                    CreateAcceptedEvent(
+                        "accepted_turn",
+                        "turn_42",
+                        "turn_42:accepted_effect")),
+                ["lifecycleEvents"] = new JsonArray(new JsonObject
+                {
+                    ["eventRef"] = "turn_42:reaction:owner_damaged:1",
+                    ["causalEventRef"] = "turn_42:owner_damaged:1",
+                    ["turn"] = 42,
+                    ["phase"] = "owner_damaged",
+                    ["realm"] = "mortal_world",
+                    ["target"] = new JsonObject
+                    {
+                        ["kind"] = "player",
+                        ["targetId"] = "player_current"
+                    },
+                    ["effectId"] = effect["effectId"]!.GetValue<string>(),
+                    ["triggerId"] = "on_owner_damaged"
+                })
+            },
+            PreTurnCarriers: new EffectCarrierCatalogInput(
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["activeEffects"] = new JsonArray(effect.DeepClone())
+                },
+                null,
+                null,
+                null,
+                null,
+                null),
+            PreTurnIdentityIndex: EffectMaterializationTestFixture.CreateIdentityIndex(effect));
     }
 
     private static EffectAcceptedTurnInput CreateInput(

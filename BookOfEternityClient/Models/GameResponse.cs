@@ -102,6 +102,9 @@ public class GameResponse
     [JsonPropertyName("effectResolutionReceipts")]
     public JsonElement[]? EffectResolutionReceipts { get; set; }
 
+    [JsonPropertyName("effectEventReports")]
+    public JsonElement[]? EffectEventReports { get; set; }
+
     [JsonPropertyName("resourceDefinitionCreations")]
     public JsonElement[]? ResourceDefinitionCreations { get; set; }
 

@@ -105,9 +105,13 @@
 
 Task 8 provides pure reducers for every lifetime mode. Production adapters in
 this slice emit the accepted Mortal owner-turn phase and exact world-time
-authority. Trigger-driven uses plus scene/condition contexts remain unavailable
-unless an owning accepted adapter supplies their exact client-validated event
-context; missing context fails closed and is never inferred from GM prose.
+authority. The first trigger-driven adapter accepts one closed
+`effectEventReports[].owner_critical_failure` with sealed Mortal d20 evidence,
+then derives one exact Fate Shield trigger/use without accepting an effect or
+trigger selector from the GM. Other trigger-driven uses plus scene/condition
+contexts remain unavailable unless an owning accepted adapter supplies their
+exact client-validated context; missing context fails closed and is never
+inferred from GM prose.
 
 ## 4. Scheduler Phase Order
 
@@ -140,7 +144,32 @@ Inside a phase: ascending source-declared priority, then ordinal `effectId`, the
 - Nodes are exact `(effect definition, component, trigger)` declarations.
 - Edges are declared downstream effect/component operations.
 - The planner rejects direct or indirect cycles before mutation.
-- A source-defined maximum expansion count is enforced per accepted transition.
+- `event_reaction` has exactly one result kind: `apply_definition`,
+  `trigger_component`, `bounded_receipt`, `event_outcome`, `suspend`, or
+  `remove`.
+- `apply_definition` resolves one same-source definition and closed parameters;
+  `trigger_component` and `bounded_receipt` resolve one periodic component in
+  the same definition; `event_outcome` resolves one exact transition from the
+  closed client-owned outcome registry. No display name or dynamically named
+  mechanic resolves.
+- The dependency is exactly `before_current_event`, `after_component`, or
+  `after_current_event`. `after_component` binds one predecessor selected by
+  the same trigger and executes only after that exact mutation applied.
+- `trigger_component` and `bounded_receipt` must use `after_component`. An
+  unconditional resource component is selected directly by its trigger, so a
+  reaction-routed resource mutation always has an explicit causal predecessor.
+- One trigger cannot dispatch the same component both directly and through a
+  reaction. Component dependencies and downstream definitions must each form
+  finite acyclic graphs.
+- `maxExpansion` is a source-owned per-reaction-component execution budget for
+  the whole accepted transition. The client preserves its usage across the
+  pre-resource and post-resource phases. A separate hard ceiling of 64 applies
+  to all reaction executions in the accepted transition.
+- For a reaction emitted by a common-resource event,
+  `before_current_event` follows the resource mutation that emitted the event
+  and precedes only the remaining continuation of that derived event.
+- A downstream application on the reacting effect's stack coordinate is legal
+  only when the downstream definition explicitly uses `replace`.
 - Unknown result kinds or dynamically named effect definitions are forbidden.
 
 ## 7. Bounded Resolution
@@ -153,6 +182,13 @@ Inside a phase: ascending source-declared priority, then ordinal `effectId`, the
 - deterministic values or numeric bounds;
 - required companions;
 - full-turn resubmission requirements.
+
+When a bounded reaction uses `dependency=after_component`, the request retains
+the exact predecessor component. A dependent `resource_delta` joins the common
+resource graph only after the predecessor receipt also resolves to an applied
+mutation. `narrated_no_state_change`, replay, skipped work, or any resolution
+that produces no predecessor transition never authorizes the dependent
+mutation.
 
 The accepted receipt must match all fields and current session/turn. It is consumed exactly once and receives terminal replay evidence even when the narrative result changes no canonical mechanic.
 

@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <!--
 CLI COMPATIBILITY NOTICE:
 
@@ -1133,8 +1134,8 @@ FOR API MODE: All existing restrictions remain functional.
                                         2.  FinalDamageToTarget% = round(DamageAfterCrit% * (1 - (TargetResistValue% / 100))). 
                                         Min 0%. This result is the final amount of "Percentage Points" of damage.
 
-                                    f)  Apply Effect to Target's State:
-                                        1.  If 'effectType' is 'Damage': Reduce target's 'currentHealth' by 'FinalDamageToTarget%' (subtracting Percentage Points).
+                                    f)  Request the Target Resource Transition:
+                                        1.  If 'effectType' is 'Damage': emit `resourceChanges` operation=damage against the exact accepted target's `health` coordinate with positive amount `FinalDamageToTarget%`. Do not author current/maximum or an after-value.
                                         2.  If 'effectType' is 'DamageOverTime': Add an Effect Object (as per #6.2.1) to the target's 'activeDebuffs' list. 
                                         This object will have 
                                         'effectType': 'DamageOverTime', 
@@ -1143,7 +1144,7 @@ FOR API MODE: All existing restrictions remain functional.
                                         'duration': (original duration, possibly scaled), 
                                         'sourceSkill', and 'description'.
                                  
-                                    g)  Check for Defeat: If target's 'currentHealth' drops to 0% or less, handle defeat (narrate, update status in 'enemiesData'/'alliesData').
+                                    g)  Check for Defeat: If the accepted health transition reaches its sealed minimum, handle defeat and narrate/update only the non-resource tactical status.
                                  
                                     h) Check for Significant Damage Consequences:
                                        After applying health loss, evaluate if the 'FinalDamageToTarget%' inflicted by this single 'Damage' effect meets a threshold 
@@ -1171,8 +1172,8 @@ FOR API MODE: All existing restrictions remain functional.
                                     c)  Apply Context Multiplier:
                                         FinalHealAmount% = AdjustedMagnitude% * ContextMultiplier.
                                  
-                                    d)  Apply Effect to Target's State:
-                                        1.  If 'effectType' is 'Heal': Increase target's 'currentHealth' by 'FinalHealAmount%', up to their 'maxHealth'.
+                                    d)  Request the Target Resource Transition:
+                                        1.  If 'effectType' is 'Heal': emit `resourceChanges` operation=restore against the exact accepted target's `health` coordinate with positive amount `FinalHealAmount%`. The sealed cap policy determines the applied amount; do not author an after-value.
                                         2.  If 'effectType' is 'HealOverTime': 
                                         Add an Effect Object to target's 'activeBuffs' with 
                                         'effectType': 'HealOverTime', 
@@ -1246,19 +1247,19 @@ FOR API MODE: All existing restrictions remain functional.
                             After processing all effects of a combat action for all targets, the GM must ensure that changes to combatant states are correctly prepared for the JSON response and logged.
 
                             1.  For Standard Enemies and Generic Allies (in 'enemiesData'/'alliesData'):
-                                - If 'currentHealth', 'activeBuffs', or 'activeDebuffs' changed: Include their complete updated combat object in the respective array.
-                                - If 'currentHealth' <= 0%: Narrate defeat. Updated object reflects 'currentHealth: "0%"'. System handles removal.
+                                - Report health/poise changes only through `resourceChanges` addressed to the exact combatant or group-member owner. Do not put current/maximum values in combat rows.
+                                - Request buff/debuff lifecycle only through top-level `effectChanges[]`; do not resend client-owned effect carriers. If the accepted health transition reaches its sealed minimum, narrate defeat and update only the non-resource tactical status.
 
                             2.  For the Player Character:
-                                - Health Changes: Narrate. System updates 'Context.playerCharacter.currentHealth'. GM updates 'playerStatus.healthPercentage'.
-                                - New Temporary Buffs/Debuffs: Report via 'playerActiveEffectsChanges' array (using #6.2.1 structure). Update 'playerStatus.activeConditions'.
+                                - Health Changes: Narrate and emit the exact `resourceChanges` command; player status remains a client projection and carries no resource authority.
+                                - New Temporary Buffs/Debuffs: Request apply/dispel/remove through top-level 'effectChanges[]' using one exact source definition and player target. Do not update a carrier directly; playerStatus is display-only.
                                 - New/Updated Wounds: Report via 'playerWoundChanges' array (using #5.20.3 structure). Update 'playerStatus.activeConditions' to reflect significant wounds.
 
                             3.  For Named NPCs (from 'NPCsInScene' in Context):
                                 - If NPC is an active combatant (in 'enemiesData'/'alliesData'): Handle as per point 1 (update their object there).
                                 - If NPC is affected but *not* an active combatant in those arrays:
-                                    - Health Changes: Narrate. System updates 'Context.NPCsInScene[NPCId].currentHealth'.
-                                    - New Temporary Buffs/Debuffs: Report via 'NPCEffectChanges' array ({ "NPCId": "guid", "effectsApplied": [array_of_effect_objects_as_per_6.2.1] }).
+                                    - Health Changes: Narrate and emit the exact `resourceChanges` command against target.kind='npc' and the accepted NPC targetId; never resend a numeric NPC health field.
+                                    - New Temporary Buffs/Debuffs: Request lifecycle through top-level 'effectChanges[]' with target.kind='npc' and the exact accepted NPC targetId. Never resend a named-NPC effect carrier.
                                     - New/Updated Wounds: Report via 'NPCWoundChanges' array ({ "NPCId": "guid", "wounds": [array_of_wound_objects_as_per_5.20.3] }).
 
                             4.  Logging: Ensure all health changes, application of new status effects, and Wounds are detailed in 'gm_thoughts_markdown'.
@@ -1685,15 +1686,15 @@ FOR API MODE: All existing restrictions remain functional.
       <![CDATA[
 
                             This step is executed ONLY IF the 'playerWounds' array was empty.
-                            You MUST now check 'Context.playerCharacter.currentHealth'.
+                            You MUST now check the client-projected player health current and maximum from the common resource projection.
 
-                            -   IF 'currentHealth' is less than 'maxHealth': 
+                            -   IF projected health current is less than projected health maximum:
                                 This means the character has lost health but has no specific, named wounds.
                                 -   CRITICAL DISTINCTION: In this context, the player's phrase "treat wounds" is a colloquialism for "restore my lost health points".
                                 -   Conclusion: The player's intent is to perform a general healing action.
                                 -   Action: 
                                     Your action becomes a "Restore Health" attempt. 
-                                    Proceed with logic that would result in a positive 'currentHealthChange' (e.g., using a healing potion's bonus, casting a healing spell).
+                                    Emit resourceChanges operation=restore against the exact player/health coordinate (e.g., from an accepted healing item or spell source).
                                 -   ABSOLUTE PROHIBITION: 
                                     You are STRICTLY AND ABSOLUTELY FORBIDDEN from generating a new Wound object in this scenario. 
                                     Doing so is a critical failure of interpretation.
@@ -1708,7 +1709,7 @@ FOR API MODE: All existing restrictions remain functional.
      <content type="rule_text">
       <![CDATA[
 
-                            This step is executed ONLY IF 'playerWounds' was empty AND 'currentHealth' is full.
+                            This step is executed ONLY IF 'playerWounds' was empty AND the read-only client health projection reports current equal to maximum.
 
                             -   Conclusion: The player is attempting an illogical action. There is nothing to heal.
                             -   Action: The action fails. Your 'response' MUST inform the player that they are unharmed and have no wounds to treat.

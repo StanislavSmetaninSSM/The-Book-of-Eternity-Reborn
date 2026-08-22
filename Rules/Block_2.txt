@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="2">
  <title>
   JSON Response Formatting Rules
@@ -82,7 +83,7 @@
                 (projected from game_state/meta/soul_state.json.currentRealm).
 
                 MORTAL WORLD ONLY:
-                currentPoiseChange, currentEnergyChange, currentHealthChange, experienceGained, moneyChange,
+                resourceDefinitionCreations, resourceCapacityChanges, resourceChanges, experienceGained, moneyChange,
                 statsIncreased, statsDecreased, activeSkillChanges, passiveSkillChanges, skillMasteryChanges,
                 UpdateInventory, UpdateNPCs, NPCsInScene, NPCCoreChanges, UpdateQuests, worldEventsLog, factionDataChanges,
                 currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
@@ -111,16 +112,21 @@
                 or world events, but they do NOT grant access to Guardians, Abodes, or Gacha.
                 Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
                  
-                "currentPoiseChange": "(integer) Change in player's poise this turn. MORTAL WORLD ONLY.",
+                "resourceDefinitionCreations": "(array or null) Complete setting/bootstrap-only resource definitions. Each entry has exactly definitionRef, definition, eventRef, reason. The client allocates permanent definition identity, seal, and chronology; the GM never writes them.",
+
+                "resourceCapacityChanges": "(array or null) Closed initialize/reconfigure/suspend/resume/retire commands. Each entry uses an exact target {kind,targetId} or accepted same-turn {kind,targetRef}, resourceKey or exact same-turn resourceDefinitionRef, the operation-specific capacity/disposition, registered source, eventRef, and reason. The GM never writes current state.",
+
+                "resourceChanges": "(array or null) Closed ordinary bounded-resource commands. Each entry has exactly operation=damage|restore|spend|gain, target, resourceKey, positive exact amount, registered source, exact ordinal eventRef, and reason. Health, energy, poise, item charges/durability, and other admitted bounded reserves change only through this array.",
                 
                 "UpdateInventory": "(array of item_objects or null)
                 This command is used for two distinct purposes, following the hierarchy in Rule '2.5':
                 1.  Creating New Items (Full State): To report a new item added to inventory, you MUST provide its complete item object as defined in InstructionBlock '10'. 
                 The 'existedId' field will be null.
                 
-                2.  Updating Existing Items (Partial State): To report changes to an existing item's properties (e.g., 'durability', 'count', 'description'), 
+                2.  Updating Existing Items (Partial State): To report changes to an existing item's non-resource properties (e.g., 'count' or 'description'),
                 you MUST provide a partial object containing only the item's 'existedId' and the specific fields that have changed. 
                 This is for changes that do not have a dedicated 'Event' array (see Rule '2.5.3').
+                Item charges, ammunition, uses, and durability are client-owned common resources: use resourceCapacityChanges/resourceChanges and never include their current or maximum values in UpdateInventory.
                 If no items were created or updated in this manner, this key must be 'null' or an empty array. MORTAL WORLD ONLY.",
                 
                 "updateItemTextContents": "(array of text_update_objects or null)
@@ -129,11 +135,6 @@
                 Each object follows the structure defined in InstructionBlock '10' -> Rule '10.2.20'.
                 If no text content was appended, this should be null or an empty array.",
 
-                "inventoryItemsResources": "(array of item_resource_objects or null) 
-                Used to report changes to the internal resources of items (charges, ammo in magazine, uses, etc.). 
-                Each object follows the structure defined in InstructionBlock '5' -> Rule '5.14.2'. 
-                If no item resources changed, this should be null or an empty array.",
-                
                 "moveInventoryItems": "(array of item_move_objects or null) 
                 Used when items are moved within the player's inventory (e.g., from a bag to main inventory, or between containers). 
                 Each object follows the structure defined in InstructionBlock '11' -> Rule '11.1.3'. 
@@ -211,16 +212,11 @@
                 Examples: «Valerius hits the Goblin for 15 slashing damage!», «The Goblin's spell misses Anya.», «Anya's 'Blessing of Might' strengthens the Town Guard.».
                 All entries MUST be translated to the user's chosen language. Refer to InstructionBlock '28' for detailed rules.",
 
-                "playerActiveEffectsChanges": "(array of effect_objects or null) 
-                Used to report new temporary effects (buffs or debuffs) applied TO THE PLAYER CHARACTER this turn, or changes in these effects. 
-                Each object follows the structure defined in InstructionBlock '6' -> Rule '6.2.1'. 
-                For new effects, 'effectId' must be null or omitted. For changes, the existing 'effectId' must be provided.
-                If no new effects on player (or changes in the existing effects), this is null or an empty array. MORTAL WORLD ONLY, but may also appear as the result of an explicit Mortal-World Ink Feather whitelist action.",
-                
-                "NPCEffectChanges": "(array of npc_effect_change_objects or null) 
-                Used to report new temporary effects (or changes in these effects) applied to NAMED NPCs (from 'NPCsInScene') who are NOT currently represented as combatants in 'enemiesData' or 'alliesData' but are affected by an action. 
-                Each object in the array would be: { 'NPCId': 'guid', 'effectsApplied': [array_of_effect_objects_as_per_6.2.1] }. 
-                If not used or no such effects, this is null or an empty array.",
+                "effectChanges": "(array of apply/dispel/remove command objects or null)
+                The only current GM route for active runtime effect lifecycle on player, NPC, combatant, or afterlife targets. Every apply binds one exact accepted target and one exact activeEffectDefinitions[] entry on a validated source. Never author effect IDs, carrier arrays, stacks, remaining lifetime, history, index, or post-state. Full contract: OtherGuides/Effect_Materialization_Contract.md.",
+
+                "effectResolutionReceipts": "(array of exact bounded receipt objects or null)
+                Present only when the client-created pending_effect_resolutions.json requests an exact bounded answer. Copy the correlated authority and allowed result exactly, return it with the complete turn, and never expose the pending or receipt DTO to the player.",
                 
                 "calculatedWeightData": "(object or null) 
                 Contains data about the player's current weight status, specifically 'additionalEnergyExpenditure' due to overload. 
@@ -280,14 +276,12 @@
                 },
                 
                 "playerStatus": { 
-                    "healthPercentage": "(string) Player's current health as a percentage (e.g., \"85%\").",
-                    "energyPercentage": "(string) Player's current energy as a percentage (e.g., \"60%\").",
-                    "poisePercentage": "(string) Player's current poise as a percentage (e.g., \"100%\").",
                     "currentCondition": "(string) A short user-readable summary of the player's current overall state (e.g., \"Здоров\", \"Усталый\", \"Ранен\").",
                     "activeConditions": "(array of strings) User-readable descriptions of currently active buffs, debuffs, 
                     or notable conditions on the player. Sourced from the player's active effects list AND their list of active wounds from 'playerWounds' in the Context.
                     Examples: «Poisoned (3 turns left)», «Strength Boosted», «Shattered Arm (Stabilized)»."
                 },
+                The legacy percentage gauges inside playerStatus are forbidden. Read projected gauges from Context, but mutate them only through resourceChanges.
                 
                 "UpdateQuests": "(array of quest_update_objects or null) 
                 This command is used to report changes in quest states (new quests, completed objectives, failed quests, completed quests). 
@@ -655,14 +649,8 @@
                 An array of English, system-keyword names of player characteristics decreased this turn. 
                 These values MUST NOT be translated. Example: ['dexterity'] . MORTAL WORLD ONLY.",
                 
-                "currentEnergyChange": "(integer) 
-                Change in player's energy this turn. MORTAL WORLD ONLY.",
-                
                 "experienceGained": "(integer) 
                 Experience points gained by player this turn. MORTAL WORLD ONLY, and may also appear as the result of the explicit Mortal-World Ink Feather action 'Absorb Feathers'.",
-                
-                "currentHealthChange": "(integer) 
-                Change in player's health this turn. MORTAL WORLD ONLY.",
                 
                 "moneyChange": "(integer) 
                 Change in player's money this turn. MORTAL WORLD ONLY.",
@@ -795,9 +783,7 @@
                 Array of objects detailing changes to a named NPC's Wounds. Structure defined in #5.20.3. 
                 Each object MUST include 'NPCId' and 'NPCName' to identify the target.",
 
-                "NPCInventoryResourcesChanges": "(array of npc_item_resource_objects or null)
-                Used to report changes to the internal resources of items in an NPC's inventory (charges, ammo, etc.).
-                Each object follows the structure defined in InstructionBlock '10' -> Rule '10.8'. If no NPC item resources changed, this should be null or an empty array.",
+                Legacy NPC item-resource change arrays are forbidden. Address the permanent item owner through resourceCapacityChanges/resourceChanges; moving the item between player, NPC, or storage carriers never changes its resource coordinate.
 
                 "NPCCustomStateChanges": "(array of npc_custom_state_change_objects or null)
                 Used to report the creation of or changes to an NPC's custom-defined status effects like Hunger, Thirst, or Morale.
@@ -836,16 +822,16 @@
                 "otherPlayersInteractions": "(object or null) 
                 A dedicated object for directing commands to OTHER players in the party (not the active player).
                 The keys of this object MUST be the 'playerId' of the target players.
-                The value for each 'playerId' is an array of command objects that would normally appear at the top level (e.g., 'UpdateInventory', 'playerActiveEffectsChanges', 'customStateChanges').
-                This is the SOLE and MANDATORY method for applying effects or giving items to other players.
+                The value for each 'playerId' is an array of supported non-effect command objects that would normally appear at the top level (e.g., 'UpdateInventory' or 'customStateChanges').
+                This is the SOLE and MANDATORY method for giving items or applying supported non-effect party commands to other players. Active runtime effects are never nested here: use top-level effectChanges[] only when its exact target exists in the accepted target catalog.
                 Structure: { 
                     'playerId_1': [ 
                         { 
                             'UpdateInventory': [...] 
                         }, 
-                        { 
-                            'playerActiveEffectsChanges': [...] 
-                        } 
+                        {
+                            'customStateChanges': [...]
+                        }
                     ], 
                     'playerId_2': [ 
                         ... 

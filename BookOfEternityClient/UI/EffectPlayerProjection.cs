@@ -615,6 +615,7 @@ internal static class EffectPlayerProjection
             "owner_restored" => "владелец восстанавливает ресурс",
             "owner_action_started" => "владелец начинает действие",
             "owner_action_completed" => "владелец завершает действие",
+            "owner_critical_failure" => "владелец получает критический провал",
             "afterlife_exchange_end" => "завершение обмена духовного конфликта",
             "scene_started" => "начало сцены",
             "scene_ended" => "завершение сцены",

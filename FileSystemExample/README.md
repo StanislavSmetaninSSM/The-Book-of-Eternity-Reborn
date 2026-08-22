@@ -35,6 +35,10 @@ game_session/
 │   ├── chaos_sea/            # Chaos Sea display-state examples
 │   │   └── guardian_politics.json (DEMO)
 │   ├── misc/                 # Vehicles & storage (2 files)
+│   ├── resources/            # Client-owned Unified Resource Authority v1 roots
+│   │   ├── resource_definitions.json (SEALED DEFINITIONS)
+│   │   ├── resource_state.json (CANONICAL LIVE LEDGER)
+│   │   └── resource_history.json (APPEND-ONLY TRANSITION HISTORY)
 │   └── control/              # Game flow control; no pending next-life setup is checked into the active fixture
 ├── lore/                     # Lore and active world dossiers
 │   ├── chaos_sea/            # Persistent meta-lore (across incarnations)
@@ -55,7 +59,8 @@ game_session/
 │   ├── lifecycle_trigger_life_end/
 │   ├── faction_full_object/
 │   ├── item_journals/
-│   └── client_owned_world_setup/
+│   ├── client_owned_world_setup/
+│   └── resource_materialization/ # Broken/fixed no-migration resource cutover
 ├── saves/                    # Save/load system
 │   ├── autosaves/            # Automatic saves
 │   ├── manual_saves/         # Player manual saves
@@ -121,6 +126,10 @@ game_session/
 - `shining_abode/faction_chronicles.json` - Shining faction chronicle and political memory examples with visible and hidden entries
 - `chaos_sea/guardian_politics.json` - Chaos Sea Guardian politics examples with known, hidden, and GM-only surfaces
 - `core/system_mods.json` - Canonical active system mods manifest for the GM
+- `resources/resource_definitions.json` - Sealed common resource definitions
+- `resources/resource_state.json` - Client-owned current resource ledger
+- `resources/resource_history.json` - Client-owned append-only resource transition history
+- `resources/resource_commands.json` is intentionally absent: it is a transient accepted-turn envelope, not canonical saved state
 - Pending pre-incarnation world setup examples live under `validator_fixtures/client_owned_world_setup/`, not in the active `game_session` fixture.
 
 ### **Lore System Examples:**
@@ -168,6 +177,7 @@ The #1097 Shining Abode save is an at-rest manual save. It includes representati
 - For client-owned pending world setup and active `world_directives.json` examples, use `validator_fixtures/client_owned_world_setup/` or create them through the in-game setup flow so pending-turn snapshots can track them.
 - `lore/current_world/world_directives_draft_example.md` is only a human drafting example, not canonical runtime state for this active fixture.
 - `validator_fixtures/` is the recommended place to study typical contract failures and their corrected versions.
+- `validator_fixtures/resource_materialization/` shows that removed persisted gauges are incompatible technical-save input; the repair removes them and does not copy their values into the common ledger.
 
 ## 📖 Integration with Existing Rules
 

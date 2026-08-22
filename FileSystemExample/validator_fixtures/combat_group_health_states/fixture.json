@@ -1,7 +1,7 @@
 {
   "id": "combat_group_health_states",
   "runner": "StateOnly",
-  "description": "group combatants must keep healthStates length and percentage-string invariants.",
+  "description": "group combatants must keep members length aligned with count after unified resource cutover.",
   "broken": [
     {
       "source": "broken/combatants.json",
@@ -17,7 +17,7 @@
     }
   ],
   "expectedBrokenCodes": [
-    "combat_group_health_states_count_mismatch"
+    "combat_group_member_count_mismatch"
   ],
   "forbiddenBrokenCodes": [],
   "forbiddenFixedCodes": [],

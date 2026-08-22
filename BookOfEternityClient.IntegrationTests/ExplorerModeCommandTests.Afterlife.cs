@@ -3377,7 +3377,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Полный зафиксированный набор карт", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("уровень сияния", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("уровень торговли", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("currentReturnCycleId=return_7", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(ResourcePlayerFailureMessages.Unavailable, renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("currentReturnCycleId", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Выбранные идентификаторы карт", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Выбранные card id", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("frozen payload", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -3940,7 +3941,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         var loadContextMethod = typeof(ExplorerMode).GetMethod("LoadShiningContextAsync", BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.NotNull(loadContextMethod);
-        var loadContextTask = loadContextMethod!.Invoke(_explorer, Array.Empty<object>()) as Task;
+        var loadContextTask = loadContextMethod!.Invoke(
+            _explorer,
+            new object[] { ResourceProjectionAudience.Player }) as Task;
         await (loadContextTask ?? throw new InvalidOperationException("Expected Shining context task."));
         var context = loadContextTask.GetType().GetProperty("Result")!.GetValue(loadContextTask);
         Assert.NotNull(context);
@@ -4709,7 +4712,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         var loadContextMethod = typeof(ExplorerMode).GetMethod("LoadShiningContextAsync", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(loadContextMethod);
-        var loadContextTask = loadContextMethod!.Invoke(_explorer, Array.Empty<object>()) as Task;
+        var loadContextTask = loadContextMethod!.Invoke(
+            _explorer,
+            new object[] { ResourceProjectionAudience.Player }) as Task;
         Assert.NotNull(loadContextTask);
         await loadContextTask!;
         var context = loadContextTask!.GetType().GetProperty("Result")?.GetValue(loadContextTask)
@@ -5707,7 +5712,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                         ["effectPayload"] = new JsonObject
                         {
                             ["type"] = "grant_relic_refinement",
-                            ["rerolls"] = 1,
+                            [ShiningBlessingRerollAllocationContract.PropertyName] =
+                                ShiningBlessingRerollAllocationContract.Create(1),
                             ["freeShape"] = false,
                             ["freeRetune"] = false
                         }
@@ -5866,6 +5872,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             currentRealm = "Shining Abode",
             currentIncarnation = 7,
             inkFeathers = new { current = 21, total = 57 },
+            afterlifeCombatProfile = new { spiritFocusTier = 0 },
             soulRelics = new
             {
                 stored = new object[]
@@ -6509,6 +6516,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             currentRealm = "Shining Abode",
             currentIncarnation = 7,
             inkFeathers = new { current = 21, total = 57 },
+            afterlifeCombatProfile = new { spiritFocusTier = 0 },
             soulRelics = new
             {
                 stored = new object[]
@@ -10749,7 +10757,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task TryProcessCommand_SpiritualCombatLog_ShowsExchangeAndRecentConflictAudit()
+    public async Task TryProcessCommand_SpiritualCombatLog_ShowsSafeExchangeAndRecentConflictSummary()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
         {
@@ -10986,29 +10994,27 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("spiritual_combat_log_audit");
         var renderedText = ExtractRenderedText();
         Assert.Contains("Журнал духовного боя", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("#1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Обмены активного конфликта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Давление", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("итог 18:14, разница 4", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("afterlife_conflict_log_active_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("afterlife_conflict_log_resolved_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("exchange_log_pressure_001", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("d20 игрока=14", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("отброшено: 5", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("позиционное преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("visible_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("visible_condition_roll_source_marker", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("guard_tempo_window_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("d20 игрока=14", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("отброшено: 5", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("visible_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("visible_condition_roll_source_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guard_tempo_window_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_summary_legacy_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_audit_legacy_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("concealed_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("spoiler_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("d20 противника=9", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("сложность: Тяжёлая", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("модификатор противника +1", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("множитель награды 125%", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("успех игрока", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("противник: защита", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("ОД 6->5", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("d20 противника=9", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("сложность: Тяжёлая", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("модификатор противника +1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("множитель награды 125%", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("ОД 6->5", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Недавние завершённые конфликты", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("договорённость", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("negotiated", renderedText, StringComparison.OrdinalIgnoreCase);

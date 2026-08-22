@@ -1,4 +1,7 @@
 <instructionblock id="25.A">
+ <effectmaterializationcontract>
+  Quest links may identify an effect source, but only activeEffectDefinitions[] plus effectChanges[] materialize mechanics; see Examples/E_CLI_Effect_Materialization.txt.
+ </effectmaterializationcontract>
  <title>
   Examples For NPC Custom State Management (Controlled Simulation)
  </title>

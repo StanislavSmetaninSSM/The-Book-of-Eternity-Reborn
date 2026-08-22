@@ -944,13 +944,22 @@ public partial class ValidationService
                 if (member.ValueKind != JsonValueKind.Object)
                     continue;
                 RejectLegacyCombatResourceFields(member, memberContext, issues);
-                ValidateTransientOwnerMaterialization(
+                ValidateCombatGroupMemberResourceAuthority(
                     member,
                     memberContext,
-                    "memberRef",
-                    "memberId",
                     issues);
             }
+            return;
+        }
+
+        var hasMemberId = HasNonNullProperty(combatant, "memberId");
+        var hasMemberRef = HasNonNullProperty(combatant, "memberRef");
+        if (hasMemberId || hasMemberRef)
+        {
+            ValidateCombatGroupMemberResourceAuthority(
+                combatant,
+                context,
+                issues);
             return;
         }
 
@@ -983,6 +992,44 @@ public partial class ValidationService
             "combatantId",
             issues);
     }
+
+    private static void ValidateCombatGroupMemberResourceAuthority(
+        JsonElement member,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        var conflictingSelectors = new[]
+            {
+                "NPCId", "npcRef", "combatantId", "combatantRef"
+            }
+            .Where(field => HasNonNullProperty(member, field))
+            .ToArray();
+        if (conflictingSelectors.Length > 0)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Combat-group member resource owner cannot also claim an NPC or anonymous-combatant identity.",
+                code: "resource_owner_identity_selector_invalid",
+                section: "ResourceMaterialization",
+                expected: "exactly one memberId or memberRef; NPCId/npcRef/combatantId/combatantRef absent or NPCId null on a detached row",
+                actual: member.GetRawText(),
+                repairHint: "Keep the exact memberId while moving a member between nested and detached carriers; never allocate a second combat identity."));
+        }
+
+        ValidateTransientOwnerMaterialization(
+            member,
+            context,
+            "memberRef",
+            "memberId",
+            issues);
+    }
+
+    private static bool HasNonNullProperty(
+        JsonElement owner,
+        string propertyName) =>
+        owner.TryGetProperty(propertyName, out var value) &&
+        value.ValueKind != JsonValueKind.Null;
 
     private static void ValidateTransientOwnerMaterialization(
         JsonElement owner,

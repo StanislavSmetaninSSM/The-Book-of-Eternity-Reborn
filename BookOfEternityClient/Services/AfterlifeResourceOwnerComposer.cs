@@ -1051,13 +1051,10 @@ internal static class AfterlifeResourceOwnerComposer
         {
             if (previous != null)
             {
-                StripLegacyShiningGachaCounters(acceptedRoot);
                 acceptedRoot.Remove(BindingsProperty);
             }
             return;
         }
-
-        StripLegacyShiningGachaCounters(acceptedRoot);
 
         if (previous != null &&
             string.Equals(previous.Value.ReturnCycleId, current.Value.ReturnCycleId,
@@ -1172,6 +1169,17 @@ internal static class AfterlifeResourceOwnerComposer
                 Describe(root["gachaSystem"]));
             return false;
         }
+        if (gacha.ContainsKey("chargesPerReturn") ||
+            gacha.ContainsKey("chargesUsedThisReturn"))
+        {
+            Add(
+                issues,
+                path + ".gachaSystem",
+                "resource_owner_shining_legacy_gacha_counters_forbidden",
+                "no legacy gacha counters; use the common gacha_attempts ledger",
+                gacha.ToJsonString());
+            return false;
+        }
         if (string.IsNullOrEmpty(rawCycle))
         {
             if (root.ContainsKey(BindingsProperty))
@@ -1240,14 +1248,6 @@ internal static class AfterlifeResourceOwnerComposer
             boundReturnCycleId,
             path);
         return true;
-    }
-
-    private static void StripLegacyShiningGachaCounters(JsonObject root)
-    {
-        if (root["gachaSystem"] is not JsonObject gacha)
-            return;
-        gacha.Remove("chargesPerReturn");
-        gacha.Remove("chargesUsedThisReturn");
     }
 
     private static bool TryCreateShiningReturnCapacityDraft(

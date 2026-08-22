@@ -7,6 +7,56 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class EffectMaterializationValidationTests
 {
     [Theory]
+    [InlineData("[INK_FEATHER_ACTION: FATE_SHIELD] Подтвердить покупку.", false)]
+    [InlineData("Обычное действие без покупки Щита Судьбы.", true)]
+    public async Task RawValidation_BuiltInFateShieldRequiresExactSealedAction(
+        string playerAction,
+        bool expectMissingAuthority)
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await context.CaptureValidatedPendingSnapshotAsync(playerAction: playerAction);
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            EffectMaterializationTestFixture.CreateCommandRoot(
+                new JsonObject
+                {
+                    ["operation"] = "apply",
+                    ["target"] = new JsonObject
+                    {
+                        ["kind"] = "player",
+                        ["targetId"] = "player_current"
+                    },
+                    ["source"] = new JsonObject
+                    {
+                        ["kind"] = EffectBuiltInSourceCatalog.FateShieldSourceKind,
+                        ["sourceId"] = EffectBuiltInSourceCatalog.FateShieldSourceId,
+                        ["definitionKey"] = EffectBuiltInSourceCatalog.FateShieldDefinitionKey
+                    },
+                    ["parameters"] = new JsonObject(),
+                    ["eventRef"] = new JsonObject
+                    {
+                        ["kind"] = "accepted_turn",
+                        ["authorityId"] = "turn_42"
+                    },
+                    ["reason"] = "Игрок оплатил Щит Судьбы Чернильными Перьями."
+                }));
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+
+        Assert.Equal(
+            expectMissingAuthority,
+            issues.Any(static issue =>
+                issue.Code == "effect_source_application_authority_missing"));
+        if (!expectMissingAuthority)
+        {
+            Assert.DoesNotContain(
+                issues,
+                static issue => issue.Severity == IssueSeverity.Error);
+        }
+    }
+
+    [Theory]
     [InlineData("activeSkillChanges")]
     [InlineData("playerWoundChanges")]
     [InlineData("UpdateNPCs")]
@@ -2273,6 +2323,227 @@ public sealed partial class EffectMaterializationValidationTests
     }
 
     [Fact]
+    public async Task RawApply_DetachedGroupMemberKeepsMemberTargetAndCarrier()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await context.SeedPlayerWoundSourceAsync();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.EnemyCombatantsPath,
+            new JsonObject { ["enemiesData"] = new JsonArray() });
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
+        var createBackups = await context.ReadPendingSnapshotBackupsAsync();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.EnemyCombatantsPath,
+            new JsonObject
+            {
+                ["enemiesData"] = new JsonArray(
+                    CreateMaterializedCombatGroup(
+                        ("member_ref_effect_scout", "Разведчик"),
+                        ("member_ref_effect_archer", "Лучник")))
+            });
+        var createIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(createIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.NotNull(await context.NormalizeAcceptedEffectsAsync(createBackups));
+
+        var canonicalRoot = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.EnemyCombatantsPath))!.AsObject();
+        var canonicalGroup = Assert.IsType<JsonObject>(
+            Assert.Single(canonicalRoot["enemiesData"]!.AsArray()));
+        var members = canonicalGroup["members"]!.AsArray()
+            .Select(node => Assert.IsType<JsonObject>(node))
+            .ToArray();
+        var detachedMember = members[0].DeepClone().AsObject();
+        var retainedMember = members[1].DeepClone().AsObject();
+        var memberId = detachedMember["memberId"]!.GetValue<string>();
+
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+        var splitBackups = await context.ReadPendingSnapshotBackupsAsync();
+        var splitGroup = canonicalGroup.DeepClone().AsObject();
+        splitGroup["count"] = 1;
+        splitGroup["members"] = new JsonArray(retainedMember);
+        var detachedRow = CreateMaterializedCombatant("unused_detached_ref");
+        detachedRow.Remove("combatantRef");
+        detachedRow.Remove("resourceMaterialization");
+        detachedRow["memberId"] = memberId;
+        detachedRow["name"] = "Оглушённый разведчик";
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.EnemyCombatantsPath,
+            new JsonObject
+            {
+                ["enemiesData"] = new JsonArray(splitGroup, detachedRow)
+            });
+        var command = EffectMaterializationTestFixture.CreateApplyCommand("combatant");
+        command["eventRef"]!["authorityId"] = "turn_43";
+        command["target"] = new JsonObject
+        {
+            ["kind"] = "combatant",
+            ["targetId"] = memberId
+        };
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            EffectMaterializationTestFixture.CreateCommandRoot(command));
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        Assert.True(
+            issues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, issues.Select(issue =>
+                $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
+        Assert.NotNull(await context.NormalizeAcceptedEffectsAsync(splitBackups));
+
+        var publishedRoot = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.EnemyCombatantsPath))!.AsObject();
+        var publishedRows = publishedRoot["enemiesData"]!.AsArray()
+            .Select(node => Assert.IsType<JsonObject>(node))
+            .ToArray();
+        var publishedDetached = Assert.Single(publishedRows, row =>
+            row["memberId"]?.GetValue<string>() == memberId);
+        Assert.False(publishedDetached.ContainsKey("combatantId"));
+        var effect = Assert.IsType<JsonObject>(
+            Assert.Single(publishedDetached["activeDebuffs"]!.AsArray()));
+        Assert.Equal("combatant", effect["target"]!["kind"]!.GetValue<string>());
+        Assert.Equal(memberId, effect["target"]!["targetId"]!.GetValue<string>());
+        var index = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.IdentityIndexPath))!.AsObject();
+        var entry = Assert.IsType<JsonObject>(Assert.Single(index["entries"]!.AsArray()));
+        Assert.Equal(memberId, entry["target"]!["targetId"]!.GetValue<string>());
+
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 44);
+        var rejoinBackups = await context.ReadPendingSnapshotBackupsAsync();
+        var publishedGroup = Assert.Single(publishedRows, row =>
+            row["isGroup"]?.GetValue<bool>() == true).DeepClone().AsObject();
+        publishedGroup["count"] = 2;
+        publishedGroup["members"] = new JsonArray(
+            retainedMember.DeepClone(),
+            publishedDetached.DeepClone());
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.EnemyCombatantsPath,
+            new JsonObject
+            {
+                ["enemiesData"] = new JsonArray(publishedGroup)
+            });
+
+        var rejoinIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        Assert.True(
+            rejoinIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, rejoinIssues.Select(issue =>
+                $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
+        Assert.NotNull(await context.NormalizeAcceptedEffectsAsync(rejoinBackups));
+        var rejoinedRoot = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.EnemyCombatantsPath))!.AsObject();
+        var rejoinedGroup = Assert.IsType<JsonObject>(
+            Assert.Single(rejoinedRoot["enemiesData"]!.AsArray()));
+        var rejoinedMember = Assert.Single(
+            rejoinedGroup["members"]!.AsArray().OfType<JsonObject>(),
+            member => member["memberId"]?.GetValue<string>() == memberId);
+        var rejoinedEffect = Assert.IsType<JsonObject>(
+            Assert.Single(rejoinedMember["activeDebuffs"]!.AsArray()));
+        Assert.Equal(memberId, rejoinedEffect["target"]!["targetId"]!.GetValue<string>());
+        var rejoinedIndex = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.IdentityIndexPath))!.AsObject();
+        var rejoinedEntry = Assert.IsType<JsonObject>(
+            Assert.Single(rejoinedIndex["entries"]!.AsArray()));
+        Assert.Equal(memberId, rejoinedEntry["target"]!["targetId"]!.GetValue<string>());
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RawApply_NewMemberRefBecomesOnePermanentMemberTargetAndCarrier(
+        bool nestedInGroup)
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await context.SeedPlayerWoundSourceAsync();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.EnemyCombatantsPath,
+            new JsonObject { ["enemiesData"] = new JsonArray() });
+        await context.CaptureValidatedPendingSnapshotAsync();
+        var backups = await context.ReadPendingSnapshotBackupsAsync();
+
+        const string memberRef = "member_ref_detached_same_turn";
+        var detached = CreateMaterializedCombatant("unused_combatant_ref");
+        detached.Remove("combatantRef");
+        detached["memberRef"] = memberRef;
+        var rawOwner = nestedInGroup
+            ? CreateMaterializedCombatGroup((memberRef, "Разведчик"))
+            : detached;
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.EnemyCombatantsPath,
+            new JsonObject { ["enemiesData"] = new JsonArray(rawOwner) });
+        var command = EffectMaterializationTestFixture.CreateApplyCommand("combatant");
+        command["target"] = new JsonObject
+        {
+            ["kind"] = "combatant",
+            ["targetRef"] = memberRef
+        };
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            EffectMaterializationTestFixture.CreateCommandRoot(command));
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        Assert.True(
+            issues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, issues.Select(issue =>
+                $"{issue.Code} {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
+        Assert.NotNull(await context.NormalizeAcceptedEffectsAsync(backups));
+
+        var root = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.EnemyCombatantsPath))!.AsObject();
+        var publishedRow = Assert.IsType<JsonObject>(
+            Assert.Single(root["enemiesData"]!.AsArray()));
+        var published = nestedInGroup
+            ? Assert.IsType<JsonObject>(
+                Assert.Single(publishedRow["members"]!.AsArray()))
+            : publishedRow;
+        var memberId = published["memberId"]!.GetValue<string>();
+        Assert.StartsWith("member_", memberId, StringComparison.Ordinal);
+        Assert.False(published.ContainsKey("memberRef"));
+        Assert.False(published.ContainsKey("combatantId"));
+        Assert.False(published.ContainsKey("combatantRef"));
+        var effect = Assert.IsType<JsonObject>(
+            Assert.Single(published["activeDebuffs"]!.AsArray()));
+        Assert.Equal(memberId, effect["target"]!["targetId"]!.GetValue<string>());
+    }
+
+    [Theory]
+    [InlineData("combat_identity_shared", "combat_identity_shared", "effect_target_authority_duplicate_target")]
+    [InlineData("combat_identity_shared", "COMBAT_IDENTITY_SHARED", "effect_target_authority_confusable_target")]
+    public void CanonicalTargets_RejectCombatantAndDetachedMemberIdentityAmbiguity(
+        string combatantId,
+        string memberId,
+        string expectedCode)
+    {
+        var combatant = CreateMaterializedCombatant("unused_combatant_ref");
+        combatant.Remove("combatantRef");
+        combatant.Remove("resourceMaterialization");
+        combatant["combatantId"] = combatantId;
+        var detachedMember = CreateMaterializedCombatant("unused_member_ref");
+        detachedMember.Remove("combatantRef");
+        detachedMember.Remove("resourceMaterialization");
+        detachedMember["memberId"] = memberId;
+        var authority = EffectAcceptedTurnInputComposer.BuildCanonicalTargetAuthority(
+            new EffectCarrierCatalogInput(
+                null,
+                null,
+                new JsonObject
+                {
+                    ["enemiesData"] = new JsonArray(combatant, detachedMember)
+                },
+                null,
+                null,
+                null),
+            new Dictionary<string, JsonNode?>());
+
+        Assert.Contains(authority.Issues, issue => issue.Code == expectedCode);
+    }
+
+    [Fact]
     public async Task RawApply_ConsumesEveryAcceptedCombatantRefWhenOneIsTargeted()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
@@ -2570,6 +2841,33 @@ public sealed partial class EffectMaterializationValidationTests
             ("poise", 100m));
         return combatant;
     }
+
+    private static JsonObject CreateMaterializedCombatGroup(
+        params (string MemberRef, string Name)[] members) =>
+        new()
+        {
+            ["NPCId"] = null,
+            ["name"] = "Дозор",
+            ["image_prompt"] = "dark fantasy road watch",
+            ["description"] = "Малый дорожный дозор.",
+            ["type"] = "group",
+            ["isGroup"] = true,
+            ["initiative"] = 12,
+            ["actions"] = new JsonArray(),
+            ["resistances"] = new JsonArray(),
+            ["activeBuffs"] = new JsonArray(),
+            ["activeDebuffs"] = new JsonArray(),
+            ["count"] = members.Length,
+            ["unitName"] = "дозорный",
+            ["members"] = new JsonArray(members.Select(member => (JsonNode)new JsonObject
+            {
+                ["memberRef"] = member.MemberRef,
+                ["name"] = member.Name,
+                ["resourceMaterialization"] = CreateResourceMaterialization(
+                    ("health", 30m),
+                    ("poise", 20m))
+            }).ToArray())
+        };
 
     private static JsonObject CreateResourceMaterialization(
         params (string Key, decimal Maximum)[] resources) =>

@@ -876,7 +876,8 @@ internal static class ShiningBlessingEffectState
             {
                 case "memory":
                     memoryOptions += Math.Max(0, GetNodeInt(payload["options"], 0));
-                    memoryRerolls += Math.Max(0, GetNodeInt(payload["rerolls"], 0));
+                    memoryRerolls += ShiningBlessingRerollAllocationContract.ReadOrZero(
+                        payload[ShiningBlessingRerollAllocationContract.PropertyName]);
                     AddUniqueString(memorySourceCardIds, sourceCardId);
                     break;
 
@@ -888,7 +889,8 @@ internal static class ShiningBlessingEffectState
                     break;
 
                 case "relic":
-                    relicRerolls += Math.Max(0, GetNodeInt(payload["rerolls"], 0));
+                    relicRerolls += ShiningBlessingRerollAllocationContract.ReadOrZero(
+                        payload[ShiningBlessingRerollAllocationContract.PropertyName]);
                     relicFreeShape |= GetNodeBool(payload["freeShape"]);
                     relicFreeRetune |= GetNodeBool(payload["freeRetune"]);
                     AddUniqueString(relicSourceCardIds, sourceCardId);
@@ -972,7 +974,8 @@ internal static class ShiningBlessingEffectState
             result["memorySelection"] = new JsonObject
             {
                 ["options"] = memoryOptions,
-                ["rerolls"] = memoryRerolls,
+                [ShiningBlessingRerollAllocationContract.PropertyName] =
+                    ShiningBlessingRerollAllocationContract.Create(memoryRerolls),
                 ["status"] = MemoryStatusPendingPreTurnOneSelection,
                 ["sourceCardIds"] = memorySourceCardIds
             };
@@ -995,7 +998,8 @@ internal static class ShiningBlessingEffectState
         {
             result["relicRefinementEntitlements"] = new JsonObject
             {
-                ["rerolls"] = relicRerolls,
+                [ShiningBlessingRerollAllocationContract.PropertyName] =
+                    ShiningBlessingRerollAllocationContract.Create(relicRerolls),
                 ["freeShape"] = relicFreeShape,
                 ["freeRetune"] = relicFreeRetune,
                 ["status"] = RelicStatusPendingEntitlement,
@@ -1129,7 +1133,7 @@ internal static class ShiningBlessingEffectState
 
         if (effectState["memorySelection"] is JsonObject memorySelection)
         {
-            lines.Add($"Память следующей жизни: +{GetNodeInt(memorySelection["options"], 0)} вариантов, rerolls {GetNodeInt(memorySelection["rerolls"], 0)}.");
+            lines.Add($"Память следующей жизни: +{GetNodeInt(memorySelection["options"], 0)} вариантов, rerolls {ShiningBlessingRerollAllocationContract.ReadOrZero(memorySelection[ShiningBlessingRerollAllocationContract.PropertyName])}.");
             AppendBootstrapActivationAuditLine(
                 lines,
                 "memorySelection",
@@ -1193,7 +1197,7 @@ internal static class ShiningBlessingEffectState
 
         if (effectState["relicRefinementEntitlements"] is JsonObject relic)
         {
-            lines.Add($"Реликтовые права: rerolls {GetNodeInt(relic["rerolls"], 0)}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])}.");
+            lines.Add($"Реликтовые права: rerolls {ShiningBlessingRerollAllocationContract.ReadOrZero(relic[ShiningBlessingRerollAllocationContract.PropertyName])}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])}.");
             AppendBootstrapActivationAuditLine(
                 lines,
                 "relicRefinementEntitlements",
@@ -1262,7 +1266,7 @@ internal static class ShiningBlessingEffectState
         if (effectState["memorySelection"] is JsonObject memorySelection)
         {
             lines.Add(
-                $"Shining blessing effect: before turn 1 offer +{GetNodeInt(memorySelection["options"], 0)} extra memory options and {GetNodeInt(memorySelection["rerolls"], 0)} memory-only rerolls.");
+                $"Shining blessing effect: before turn 1 offer +{GetNodeInt(memorySelection["options"], 0)} extra memory options and {ShiningBlessingRerollAllocationContract.ReadOrZero(memorySelection[ShiningBlessingRerollAllocationContract.PropertyName])} memory-only rerolls.");
         }
 
         AppendDirectiveLinesForArray(
@@ -1289,7 +1293,7 @@ internal static class ShiningBlessingEffectState
         if (effectState["relicRefinementEntitlements"] is JsonObject relic)
         {
             lines.Add(
-                $"Shining blessing effect: grant relic refinement entitlements rerolls={GetNodeInt(relic["rerolls"], 0)}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])} for this life.");
+                $"Shining blessing effect: grant relic refinement entitlements rerolls={ShiningBlessingRerollAllocationContract.ReadOrZero(relic[ShiningBlessingRerollAllocationContract.PropertyName])}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])} for this life.");
         }
 
         return lines;

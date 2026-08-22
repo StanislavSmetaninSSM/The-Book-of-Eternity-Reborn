@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="CLI_OPS">
  <title>
   CLI Agent File System Operations
@@ -146,7 +147,7 @@
                     - Authoritative GM-authored outputs: output/narrative_response.json ← response, output/debug_logs.json ← gm_thoughts_markdown, output/interface_updates.json ← dialogueOptions/image_prompt when this turn actually needs interface payload
                     - These output/*.json files are fresh per-turn transient artifacts, not persistent state. Rewrite them for the current request only and never reuse stale payload from a previous turn.
                     - For an ordinary accepted GM turn, output/narrative_response.json.response is mandatory and must contain non-empty player-facing narrative text.
-                    - game_state/core/player_status.json ← playerStatus, currentPoiseChange
+                    - game_state/core/player_status.json ← playerStatus narrative condition fields only; bounded gauges come from the client resource projection
                     - playerStatus is flattened into the root of player_status.json; do NOT save it there as nested { \"playerStatus\": { ... } }
                     - In Mortal World, player_status.json is a mandatory core file and cannot be omitted
                     - game_state/core/system_mods.json ← client-authored manifest of active global system mods
@@ -158,9 +159,10 @@
                     - game_state/player/skills_active.json ← activeSkillChanges, removeActiveSkills
                     - game_state/player/skills_passive.json ← passiveSkillChanges, removePassiveSkills
                     - game_state/player/skill_mastery.json ← skillMasteryChanges
-                    - game_state/player/effects.json ← playerActiveEffectsChanges
+                    - game_state/effects/effect_commands.json ← effectChanges, effectResolutionReceipts, effectEventReports (transient; client consumes it)
+                    - game_state/player/effects.json ← client-materialized canonical player activeEffects[] (never direct GM output)
                     - game_state/player/weight_calc.json ← calculatedWeightData
-                    - game_state/player/status_changes.json ← statsIncreased, statsDecreased, currentEnergyChange, currentHealthChange, moneyChange
+                    - game_state/player/status_changes.json ← statsIncreased, statsDecreased, moneyChange
                     - game_state/player/experience.json ← experienceGained, playerEffortTrackerChange
                     - game_state/player/wounds.json ← playerWoundChanges
                     - game_state/player/custom_states.json ← customStateChanges
@@ -169,8 +171,8 @@
 
                     **INVENTORY SYSTEM:**
                     - game_state/inventory/items.json ← UpdateInventory, equipmentChanges
-	                    - game_state/inventory/item_resources.json ← inventoryItemsResources
-	                    - Canonical stored shape for item_resources.json: entries[] with item identity + resource / maximumResource / resourceType
+	                    - game_state/resources/resource_commands.json ← resourceDefinitionCreations, resourceCapacityChanges, resourceChanges (transient; client consumes it)
+	                    - game_state/resources/resource_definitions.json, resource_state.json, and resource_history.json are client-owned canonical authority; GM output never writes them
 	                    - game_state/inventory/item_text_updates.json ← updateItemTextContents
 	                    - Canonical stored shape for item_text_updates.json: entries[] with item identity + textContent[]
 	                    - Readable-looking inventory documents (books, letters, scrolls, notes, documents, inscriptions, and Russian equivalents) must have textContent, a matching item_text_updates/item_journals entry by stable itemId/existedId, or an explicit player-facing unreadableReason/sealedReason/lockedReason that /книги can show.
@@ -180,7 +182,7 @@
                     - Canonical stored shape for item_bonds.json: entries[] with item identity + ownerBondLevelCurrent + unlocked fateCards
                     - game_state/inventory/recipes.json ← addOrUpdateRecipes, removeRecipes
                     - game_state/inventory/storage_operations.json ← moveToLocationStorage, retrieveFromLocationStorage
-                    - At a fresh Mortal bootstrap, the client resets the current-life ordinary-item baseline: `game_state/inventory/items.json`, `game_state/inventory/item_identity_index.json`, `game_state/inventory/item_resources.json`, `game_state/inventory/item_bonds.json`, `game_state/inventory/item_text_updates.json`, and `game_state/npcs/item_journals.json` start empty before any new-life item route is authored.
+                    - At a fresh Mortal bootstrap, the client resets the current-life ordinary-item baseline: `game_state/inventory/items.json`, `game_state/inventory/item_identity_index.json`, `game_state/inventory/item_bonds.json`, `game_state/inventory/item_text_updates.json`, and `game_state/npcs/item_journals.json` start empty before any new-life item route is authored. Item resource state exists only in the common client-owned resource ledger.
                     - Previous-life item sidecars are rollback-only and are not the current GM baseline. Previous-life bytes may be retained internally only to undo a rejected bootstrap; never restore their entries, receipts, identity records, or item references into the new life. Author every new-life item through a supported Mortal item route and let the client assign identity and receipt fields.
 
                     **WORLD STATE:**
@@ -229,10 +231,10 @@
                     **NPC SYSTEM (14 FILES):**
                     - game_state/npcs/npc_core.json ← UpdateNPCs, NPCsRenameData, NPCsInScene, Mortal NPC teacher `trainingShowcase`
                     - game_state/npcs/npc_skills.json ← NPCActiveSkillChanges, NPCPassiveSkillChanges, NPCSkillMasteryChanges, NPCPassiveSkillMasteryChanges
-                    - game_state/npcs/npc_effects.json ← NPCEffectChanges, NPCWoundChanges
+                    - game_state/npcs/npc_effects.json ← NPCWoundChanges plus client-materialized canonical NPC effect entries; active effects are requested only through effectChanges[]
                     - game_state/npcs/npc_relationships.json ← NPCRelationshipChanges, interNPCRelationshipChanges, NPCRelationshipLockUpdates
                     - game_state/npcs/npc_goals.json ← NPCGoalUpdates, NPCQuestUpdates
-                    - game_state/npcs/npc_inventory.json ← NPCInventoryAdds/Updates/Removals, NPCEquipmentChanges, NPCInventoryResourcesChanges
+                    - game_state/npcs/npc_inventory.json ← NPCInventoryAdds/Updates/Removals, NPCEquipmentChanges; item-owned reserves remain on the common resource coordinate after carrier movement
                     - game_state/npcs/npc_masks.json ← NPCMaskAdds/Updates/Removals, NPCActiveMaskChange
                     - game_state/npcs/npc_memory.json ← NPCUnlockedMemories
                     - game_state/npcs/npc_journals.json ← NPCJournals
@@ -1305,12 +1307,9 @@
        Validation requirement: this action must create a NEW skill object in the appropriate player skill file; an already existing skill cannot satisfy the action.
 
     4. [INK_FEATHER_ACTION: FATE_SHIELD]
-       Effect: Add a special buff to playerActiveEffects:
-       { "effectName": "Щит Судьбы", "description": "Следующий критический провал превращается в обычный провал",
-         "duration": -1, "type": "Buff", "effects": { "negateNextCritFail": true },
-         "source": "Ink Feathers" }
-       When a Natural 1 occurs while this effect is active, convert it to a regular failure and remove the effect.
-       Validation requirement: this action must create a NEW `Щит Судьбы` effect instance in `game_state/player/effects.json`; an already existing shield cannot satisfy the action.
+       Effect: Request one new source-authorized `Щит Судьбы` instance through top-level effectChanges[]. Use exact source `{ kind: "fate_card", sourceId: "builtin_ink_feather_fate_shield", definitionKey: "fate-shield-next-critical-failure" }` and the current accepted event authority; the client grants this built-in source only for the exact sealed `[INK_FEATHER_ACTION: FATE_SHIELD]` turn. Never author player activeEffects[], effect IDs, a permanent-duration sentinel, or description-only mechanics.
+       When a later Mortal roll is an exact critical failure, report it through top-level `effectEventReports[]` with eventType `owner_critical_failure`, target `player/player_current`, and closed `mortal_action_roll` evidence: exact rollMode, leading sealed diceIndexes, selectedIndex/value, and `critical_failure -> failure`. The selected value must be the correct sealed die and exactly 1. The client selects the oldest eligible shield, executes its source-owned outcome transition, consumes its one-use lifetime, and expires it; never submit effectId, triggerId, remaining uses, or carrier post-state.
+       Validation requirement: this action must materialize a NEW current-schema `Щит Судьбы` instance in `game_state/player/effects.json`; an existing shield cannot satisfy the action and direct carrier writes fail.
 
     5. [INK_FEATHER_ACTION: SEAL_IN_INK]
        Effect: Create a deferred pending upgrade request for one item's quality by 1 tier (Common→Uncommon, etc.).

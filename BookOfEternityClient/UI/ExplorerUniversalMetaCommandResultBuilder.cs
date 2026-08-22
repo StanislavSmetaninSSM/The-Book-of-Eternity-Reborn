@@ -189,7 +189,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         var actions = Enumerable.Empty<UiAction>();
         if (!state.IsInAfterlifeRealm)
-            actions = await AddMortalStatusDetailBlocks(blocks, fs);
+            actions = await AddMortalStatusDetailBlocks(blocks, fs, state.PlayerStatus);
 
         return Completed(command, blocks, actions);
     }
@@ -206,9 +206,19 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         AddStatusRow(rows, "Локация", EmptyFallback(state.CurrentLocation));
         AddStatusRow(rows, "Время мира", EmptyFallback(ExplorerPlayerFacingLabels.WorldTime(state.WorldTime)));
         AddStatusRow(rows, "Состояние", EmptyFallback(state.PlayerStatus.CurrentCondition));
-        AddStatusRow(rows, "Здоровье", EmptyFallback(state.PlayerStatus.HealthPercentage));
-        AddStatusRow(rows, "Энергия", EmptyFallback(state.PlayerStatus.EnergyPercentage));
-        AddStatusRow(rows, "Равновесие", EmptyFallback(state.PlayerStatus.PoisePercentage));
+        if (!state.IsInAfterlifeRealm)
+        {
+            if (state.PlayerStatus.ResourceProjectionAvailable)
+            {
+                AddStatusRow(rows, "Здоровье", state.PlayerStatus.HealthPercentage);
+                AddStatusRow(rows, "Энергия", state.PlayerStatus.EnergyPercentage);
+                AddStatusRow(rows, "Равновесие", state.PlayerStatus.PoisePercentage);
+            }
+            else
+            {
+                AddStatusRow(rows, "Силы и запасы", state.PlayerStatus.ResourceUnavailableMessage);
+            }
+        }
         AddStatusRow(rows, "Чернильные Перья", state.InkFeathers.ToString());
         AddStatusRow(rows, "Просветление", EmptyFallback(state.EnlightenmentTier));
         AddStatusRow(rows, "Активный Хранитель", EmptyFallback(state.ActiveGuardianName));
@@ -225,7 +235,8 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
     private static async Task<IReadOnlyList<UiAction>> AddMortalStatusDetailBlocks(
         List<UiBlock> blocks,
-        FileSystemManager fs)
+        FileSystemManager fs,
+        PlayerStatusState playerStatus)
     {
         var statusRead = await ReadJson(fs, "game_state/core/player_status.json");
         var experienceRead = await ReadJson(fs, "game_state/player/experience.json");
@@ -278,7 +289,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     stealthRows));
         }
 
-        var changeRows = BuildMortalStatusChangeRows(statusChanges, experience);
+        var changeRows = BuildMortalStatusChangeRows(statusChanges, experience, playerStatus);
         if (changeRows.Count > 0)
             AddStatusRowsDossier(
                 blocks,
@@ -450,15 +461,15 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         return rows;
     }
 
-    private static List<UiTableRow> BuildMortalStatusChangeRows(JsonObject? statusChanges, JsonObject? experience)
+    private static List<UiTableRow> BuildMortalStatusChangeRows(
+        JsonObject? statusChanges,
+        JsonObject? experience,
+        PlayerStatusState playerStatus)
     {
         var rows = new List<UiTableRow>();
         if (statusChanges != null)
         {
             AddSignedChangeRow(rows, "Деньги", GetIntValue(statusChanges["moneyChange"], 0));
-            AddSignedChangeRow(rows, "Здоровье", GetIntValue(statusChanges["currentHealthChange"], 0));
-            AddSignedChangeRow(rows, "Энергия", GetIntValue(statusChanges["currentEnergyChange"], 0));
-            AddSignedChangeRow(rows, "Равновесие", GetIntValue(statusChanges["currentPoiseChange"], 0));
 
             var statsIncreased = FormatCharacteristicList(statusChanges["statsIncreased"]);
             if (!IsUnknownValue(statsIncreased))
@@ -467,6 +478,13 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             var statsDecreased = FormatCharacteristicList(statusChanges["statsDecreased"]);
             if (!IsUnknownValue(statsDecreased))
                 rows.Add(Row("Понижены", statsDecreased, "характеристики"));
+        }
+
+        if (playerStatus.ResourceProjectionAvailable)
+        {
+            AddProjectedResourceChangeRow(rows, playerStatus.Resources, "health", "Здоровье");
+            AddProjectedResourceChangeRow(rows, playerStatus.Resources, "energy", "Энергия");
+            AddProjectedResourceChangeRow(rows, playerStatus.Resources, "poise", "Равновесие");
         }
 
         var gained = GetIntValue(experience?["experienceGained"], 0);
@@ -761,6 +779,20 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             return;
 
         rows.Add(Row(label, FormatSigned(value), "за последний ход"));
+    }
+
+    private static void AddProjectedResourceChangeRow(
+        List<UiTableRow> rows,
+        IReadOnlyList<ResourceProjectionRow> resources,
+        string resourceKey,
+        string label)
+    {
+        var delta = resources.SingleOrDefault(resource =>
+            string.Equals(resource.ResourceKey, resourceKey, StringComparison.Ordinal))?.RecentVisibleDelta;
+        if (delta is null or 0m)
+            return;
+
+        rows.Add(Row(label, ResourceProjectionService.FormatSignedDelta(delta.Value), "за последний ход"));
     }
 
     private static string JoinKnownParts(string separator, params string?[] values)

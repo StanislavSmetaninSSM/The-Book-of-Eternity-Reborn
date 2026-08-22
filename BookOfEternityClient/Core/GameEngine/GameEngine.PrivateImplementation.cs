@@ -115,6 +115,10 @@ public partial class GameEngine
         JsonObject ExpectedEventRef,
         string ExpectedValueJson);
 
+    private sealed record ResourceRepairRetryObligation(
+        int CommandOrdinal,
+        JsonObject ExpectedCommandRootWithoutReason);
+
     private sealed record RepairResubmissionPathObligation(
         string Path,
         bool RejectedExists);

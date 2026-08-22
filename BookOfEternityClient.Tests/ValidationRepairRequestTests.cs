@@ -265,6 +265,47 @@ public sealed class ValidationRepairRequestTests
             StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public void ResourceSemanticOmission_UsesBoundedPathFreeFullTurnPacket()
+    {
+        var issue = new ValidationIssue(
+            "resourceChanges[0].reason",
+            IssueSeverity.Error,
+            "Unified resource contract rejected the submitted semantic.",
+            code: "resource_command_invalid_field",
+            actor: "Client",
+            section: "UnifiedResourceAuthority",
+            expected: "one readable reason",
+            actual: "missing",
+            category: IssueCategory.StateConsistency);
+        var builder = typeof(GameEngine).GetMethod(
+            "BuildValidationRepairHarnessPackets",
+            BindingFlags.NonPublic | BindingFlags.Static);
+        Assert.NotNull(builder);
+
+        var packets = builder!.Invoke(null, new object?[] { new[] { issue }, null, null });
+        using var document = JsonDocument.Parse(JsonSerializer.Serialize(
+            packets,
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var packet = Assert.Single(document.RootElement.EnumerateArray());
+
+        Assert.Equal("resource_semantic_omission_repair", packet.GetProperty("kind").GetString());
+        Assert.Equal("resourceChanges", packet.GetProperty("route").GetString());
+        Assert.Equal("ordinary resource change #1", packet.GetProperty("transitionClass").GetString());
+        Assert.True(packet.GetProperty("fullTurnResubmissionRequired").GetBoolean());
+        Assert.Empty(packet.GetProperty("targetFiles").EnumerateArray());
+        Assert.Equal(
+            new[] { "narrative reason" },
+            packet.GetProperty("missingFields").EnumerateArray().Select(value => value.GetString()));
+        var json = packet.GetRawText();
+        Assert.DoesNotContain("resourceChanges[0]", json, StringComparison.Ordinal);
+        Assert.DoesNotContain("game_state", json, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("eventRef", json, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("sourceId", json, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("targetId", json, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("fingerprint", json, StringComparison.OrdinalIgnoreCase);
+    }
+
     private static ValidationIssue CreateIssue(
         string path,
         string code,

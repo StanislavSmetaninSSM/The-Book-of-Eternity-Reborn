@@ -162,7 +162,19 @@ internal sealed class ResourceDefinitionCatalog
             "owner_bond_level",
             "spiritual_power",
             "spiritual_strain",
-            "spiritual_shield"
+            "spiritual_shield",
+            "effect_stacks",
+            "effect_uses",
+            "effect_duration",
+            "turns_remaining",
+            "qte_progress",
+            "qte_mistakes",
+            "qte_noise",
+            "lock_pin_durability",
+            "item_stack_count",
+            "project_fuel",
+            "free_shape",
+            "free_retune"
         }
         .Select(ResourceMaterializationContract.BuildConfusableKey)
         .ToFrozenSet(StringComparer.Ordinal);

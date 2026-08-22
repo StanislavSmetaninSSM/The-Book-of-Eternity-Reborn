@@ -243,6 +243,8 @@ New individual combatants use `combatantRef` and omit `combatantId`; every accep
 
 Named combatants may carry `NPCId`; it must resolve exactly to composed NPC authority. They do not receive a separate health resource coordinate. Anonymous combatants must not claim `NPCId`.
 
+A group-member identity is independent of its carrier. While formed, the member record is nested in `members[]`; after detachment it may be a top-level non-group combat row carrying the same exact `memberId` (or a same-turn `memberRef` before client allocation). Such a row cannot also carry an NPC or anonymous-combatant identity. Moving between the nested and top-level contours preserves the `combat_group_member` resource coordinate, active effects, and immutable histories. The effect-facing selector remains `{kind:"combatant",targetId:<memberId>}` so combat UI does not expose resource owner kinds; target resolution must reject ambiguity between member and individual combatant identity families.
+
 ## 5. Resource state ledger
 
 ```json
@@ -412,7 +414,7 @@ All arrays are optional; an absent array means no commands of that type. A recei
     "defaultCapPolicy": "clamp_to_maximum",
     "visibility": "player_visible"
   },
-  "eventRef": "turn_1",
+  "eventRef": "turn_1:resource:1",
   "reason": "Пробуждение дара"
 }
 ```
@@ -438,7 +440,7 @@ All arrays are optional; an absent array means no commands of that type. A recei
     "kind": "setting_materialization",
     "sourceId": "mana_v1"
   },
-  "eventRef": "turn_1",
+  "eventRef": "turn_1:resource:2",
   "reason": "Начальный запас маны"
 }
 ```
@@ -465,15 +467,38 @@ The `capacity` object matches the definition policy. Same-turn targets use `targ
   "resourceKey": "health",
   "amount": 13,
   "source": {
-    "kind": "combat_outcome",
-    "sourceId": "exchange_7"
+    "kind": "combat_outcome"
   },
-  "eventRef": "turn_42",
+  "eventRef": "turn_42:resource:1",
   "reason": "Удар клинком"
 }
 ```
 
-Allowed fields are exactly `operation`, `target`, `resourceKey`, `amount`, `source`, `eventRef`, and `reason`. The source kind catalog is adapter-owned. GM input cannot set phase, priority, IDs, policies, current/maximum values, after-images, or paths.
+Allowed fields are exactly `operation`, `target`, `resourceKey`, `amount`, `source`, `eventRef`, and `reason`. The source kind catalog is adapter-owned. For `action_cost`, `combat_outcome`, and `narrative_outcome`, raw `source` is exactly `{kind}`: after validating the global command ordinal, the client uses the exact `eventRef` as the plan-local `sourceId`, binds it to the resolved target owner, and fingerprints the full accepted occurrence. For `local_item_cost` and `local_item_outcome`, raw `source` is exactly `{kind,sourceId}` and `sourceId` is the permanent target `itemId`. GM input cannot set phase, priority, client-derived ordinary source IDs, policies, current/maximum values, after-images, or paths.
+
+### 7.4 FullParty recipient packet
+
+`otherPlayersInteractions` is not part of the active client's resource command root. It is a recipient-keyed outbound transport surface:
+
+```json
+{
+  "otherPlayersInteractions": {
+    "player-anya-guid": [{
+      "resourceChanges": [{
+        "operation": "spend",
+        "target": { "kind": "player", "targetId": "player_current" },
+        "resourceKey": "energy",
+        "amount": 15,
+        "source": { "kind": "action_cost" },
+        "eventRef": "turn_42:resource:5",
+        "reason": "Anya casts Fireball."
+      }]
+    }]
+  }
+}
+```
+
+Recipient keys are exact/confusable-unique player IDs. Packet objects are closed and nonempty. A resource packet contains only `resourceChanges`; definitions, capacity changes, canonical after-state, and arbitrary sibling commands are not resource authority. Each nested target is the recipient-local `player_current`, and each event participates in the originating response's one global resource-command ordinal across local and remote commands. The originating accepted plan validates and stages the packet but never applies it to its own ledger. A receiving client must admit the packet through its own accepted-turn authority; this model deliberately does not treat an outbound file as authenticated remote canonical state.
 
 ## 8. Internal mutation and reducer result
 

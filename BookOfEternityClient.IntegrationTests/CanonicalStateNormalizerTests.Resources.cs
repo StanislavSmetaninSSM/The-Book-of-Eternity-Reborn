@@ -81,6 +81,74 @@ public sealed class CanonicalStateNormalizerResourceTests
         await context.AssertUnchangedAsync(before);
     }
 
+    [Theory]
+    [InlineData("definition", ResourceMaterializationContract.DefinitionsPath)]
+    [InlineData("state", ResourceMaterializationContract.StatePath)]
+    [InlineData("history", ResourceMaterializationContract.HistoryPath)]
+    [InlineData("source", EffectMaterializationTestContext.PlayerWoundsPath)]
+    [InlineData("owner", "game_state/npcs/npc_core.json")]
+    [InlineData("target", "game_state/npcs/npc_core.json")]
+    [InlineData("carrier", EffectMaterializationTestContext.PlayerEffectsPath)]
+    [InlineData("index", EffectMaterializationTestContext.IdentityIndexPath)]
+    [InlineData("event", "input/turn_request.json")]
+    [InlineData("command", EffectMaterializationTestContext.CommandPath)]
+    [InlineData("pending", ResourcePendingResolutionState.PendingPath)]
+    [InlineData("internal_adapter", "game_state/control/pending_turn_snapshot.json")]
+    public async Task CommonPlan_LateAuthorityMutationFailsBeforeEveryWrite(
+        string authorityKind,
+        string changedPath)
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await context.SeedPlayerWoundSourceAsync();
+        var usesNpcAuthority = authorityKind is "owner" or "target";
+        if (usesNpcAuthority)
+            await MaterializeNpcHealthAsync(context, "npc_resource_toctou_target", 60m);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        var backups = await context.ReadPendingSnapshotBackupsAsync();
+        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        if (usesNpcAuthority)
+        {
+            command["target"] = new JsonObject
+            {
+                ["kind"] = "npc",
+                ["targetId"] = "npc_resource_toctou_target"
+            };
+        }
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            EffectMaterializationTestFixture.CreateCommandRoot(command));
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.True(
+            issues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(
+                Environment.NewLine,
+                issues.Select(issue =>
+                    $"{issue.Code}: {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            out _,
+            out var planning));
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(planning.Plan);
+
+        await ApplyLateMutationAsync(context, changedPath, authorityKind);
+        var protectedPaths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
+            .Concat(plan.BeforeImages.Keys)
+            .Append(changedPath)
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        var before = await context.CaptureBytesAsync(protectedPaths);
+        await using var writeLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+
+        await Assert.ThrowsAsync<InvalidDataException>(() => context.Normalizer
+            .BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups));
+
+        Assert.Equal(before, await context.CaptureBytesAsync(protectedPaths));
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+    }
+
     [Fact]
     public async Task SameTurnDefinitionInitialization_PublishesExactStateAndHistoryAtomically()
     {
@@ -171,17 +239,6 @@ public sealed class CanonicalStateNormalizerResourceTests
     public async Task EffectOnlyTurn_PublishesThroughOneAcceptedMechanicsPlan()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        var resources = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(resources.IsValid, string.Join(Environment.NewLine, resources.Issues));
-        await context.WriteJsonAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            JsonNode.Parse(resources.Definitions!.ToCanonicalJson())!);
-        await context.WriteJsonAsync(
-            ResourceMaterializationContract.StatePath,
-            JsonNode.Parse(resources.State!.ToCanonicalJson())!);
-        await context.WriteJsonAsync(
-            ResourceMaterializationContract.HistoryPath,
-            JsonNode.Parse(resources.History!.ToCanonicalJson())!);
         await context.SeedPlayerWoundSourceAsync();
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
@@ -212,17 +269,6 @@ public sealed class CanonicalStateNormalizerResourceTests
     public async Task EffectOnlyTurn_EffectPreflightFailureInvalidatesCommonHandoff()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        var resources = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(resources.IsValid, string.Join(Environment.NewLine, resources.Issues));
-        await context.WriteJsonAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            JsonNode.Parse(resources.Definitions!.ToCanonicalJson())!);
-        await context.WriteJsonAsync(
-            ResourceMaterializationContract.StatePath,
-            JsonNode.Parse(resources.State!.ToCanonicalJson())!);
-        await context.WriteJsonAsync(
-            ResourceMaterializationContract.HistoryPath,
-            JsonNode.Parse(resources.History!.ToCanonicalJson())!);
         await context.SeedPlayerWoundSourceAsync();
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
@@ -246,5 +292,119 @@ public sealed class CanonicalStateNormalizerResourceTests
             .NormalizeAcceptedMechanicsAsync(backups));
 
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+    }
+
+    private static async Task ApplyLateMutationAsync(
+        EffectMaterializationTestContext context,
+        string path,
+        string authorityKind)
+    {
+        var root = await context.ReadJsonAsync(path);
+        if (authorityKind == "source" && root is JsonArray wounds)
+        {
+            wounds[0]!["activeEffectDefinitions"]![0]!["display"]!["name"] =
+                "Поздно изменённый источник";
+            await context.WriteJsonAsync(path, wounds);
+            return;
+        }
+        if (authorityKind is "owner" or "target" && root is JsonObject npcRoot)
+        {
+            var npc = FindFirstObjectWithProperty(npcRoot, "NPCId")
+                ?? throw new InvalidOperationException(
+                    "Materialized NPC target is missing from its canonical owner root.");
+            npc["NPCId"] = authorityKind == "owner"
+                ? "npc_resource_toctou_owner_changed"
+                : "npc_resource_toctou_target_changed";
+            await context.WriteJsonAsync(path, npcRoot);
+            return;
+        }
+        if (root is JsonObject objectRoot)
+        {
+            objectRoot["_lateMutation"] = authorityKind;
+            await context.WriteJsonAsync(path, objectRoot);
+            return;
+        }
+        if (root is JsonArray arrayRoot)
+        {
+            arrayRoot.Add(new JsonObject { ["_lateMutation"] = authorityKind });
+            await context.WriteJsonAsync(path, arrayRoot);
+            return;
+        }
+
+        await context.WriteJsonAsync(
+            path,
+            new JsonObject { ["_lateMutation"] = authorityKind });
+    }
+
+    private static JsonObject? FindFirstObjectWithProperty(JsonNode? node, string propertyName)
+    {
+        if (node is JsonObject objectNode)
+        {
+            if (objectNode.ContainsKey(propertyName))
+                return objectNode;
+            foreach (var child in objectNode)
+            {
+                var match = FindFirstObjectWithProperty(child.Value, propertyName);
+                if (match != null)
+                    return match;
+            }
+        }
+        else if (node is JsonArray arrayNode)
+        {
+            foreach (var child in arrayNode)
+            {
+                var match = FindFirstObjectWithProperty(child, propertyName);
+                if (match != null)
+                    return match;
+            }
+        }
+        return null;
+    }
+
+    private static async Task MaterializeNpcHealthAsync(
+        EffectMaterializationTestContext context,
+        string npcId,
+        decimal maximum)
+    {
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        await context.WriteJsonAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            JsonNode.Parse(bootstrap.Definitions!.ToCanonicalJson())!);
+        await context.WriteJsonAsync(
+            ResourceMaterializationContract.StatePath,
+            JsonNode.Parse(bootstrap.State!.ToCanonicalJson())!);
+        await context.WriteJsonAsync(
+            ResourceMaterializationContract.HistoryPath,
+            JsonNode.Parse(bootstrap.History!.ToCanonicalJson())!);
+        await context.WriteJsonAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["NPCsInScene"] = new JsonArray() });
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 41);
+
+        var npc = EffectMaterializationTestFixture.CreateSameTurnMortalActor(npcId);
+        npc["resourceMaterialization"] = new JsonObject
+        {
+            ["resources"] = new JsonArray(new JsonObject
+            {
+                ["resourceKey"] = "health",
+                ["maximum"] = maximum
+            })
+        };
+        await context.WriteJsonAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject { ["UpdateNPCs"] = new JsonArray(npc) });
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.True(
+            issues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(
+                Environment.NewLine,
+                issues.Select(issue =>
+                    $"{issue.Code}: {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
+        await using var writeLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        Assert.NotNull(await context.Normalizer.BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups: null));
     }
 }

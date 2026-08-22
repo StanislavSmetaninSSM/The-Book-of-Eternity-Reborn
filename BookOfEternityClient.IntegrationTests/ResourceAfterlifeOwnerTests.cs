@@ -817,9 +817,6 @@ public sealed class ResourceAfterlifeOwnerTests
         Assert.IsType<JsonObject>(root["radiance"])["tier"] = radianceTier;
         var gacha = Assert.IsType<JsonObject>(root["gachaSystem"]);
         gacha["currentReturnCycleId"] = returnCycleId ?? string.Empty;
-        gacha["chargesPerReturn"] = ShiningAbodeState
-            .GetShiningGachaChargesPerReturn(radianceTier);
-        gacha["chargesUsedThisReturn"] = 0;
         if (returnCycleId != null && resourceOwnerId != null)
         {
             root["resourceOwnerBindings"] = new JsonObject

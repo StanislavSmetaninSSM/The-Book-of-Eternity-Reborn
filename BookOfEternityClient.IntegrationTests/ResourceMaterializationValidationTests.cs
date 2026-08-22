@@ -39,6 +39,41 @@ public sealed class ResourceMaterializationValidationTests
         Assert.Contains(issues, issue => issue.Code == "resource_history_root_missing");
     }
 
+    [Theory]
+    [InlineData("player_gauges")]
+    [InlineData("player_deltas")]
+    [InlineData("npc_health")]
+    [InlineData("vehicle_health")]
+    [InlineData("combat_health_and_poise")]
+    [InlineData("item_durability")]
+    [InlineData("item_resource_sidecar")]
+    [InlineData("afterlife_action_economy")]
+    [InlineData("guardian_gacha_counters")]
+    [InlineData("shining_gacha_counters")]
+    [InlineData("blessing_reroll_mirrors")]
+    public async Task OldTechnicalSave_RemovedResourceAuthorityFailsClosedWithoutMigration(
+        string scenario)
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await SeedEmptyRootsAsync(context);
+        var testCase = await SeedOldTechnicalSaveScenarioAsync(context, scenario);
+        var before = await context.CaptureAsync(
+            ResourceMaterializationTestContext.AllResourcePaths.Concat(testCase.Paths));
+
+        IReadOnlyList<ValidationIssue> issues = testCase.UseCanonicalResourceValidation
+            ? await context.Validator
+                .ValidateAcceptedTurnCanonicalResourceMaterializationAsync()
+            : await context.Validator.ValidateGameStateAsync(testCase.Phase!.Value);
+
+        foreach (var expectation in testCase.Expectations)
+        {
+            Assert.Contains(issues, issue =>
+                issue.Code == expectation.Code &&
+                issue.FilePath.EndsWith(expectation.PathSuffix, StringComparison.Ordinal));
+        }
+        await context.AssertUnchangedAsync(before);
+    }
+
     [Fact]
     public void MortalBootstrap_UsesPermanentCharacteristicsForThreeInitialResources()
     {
@@ -269,7 +304,7 @@ public sealed class ResourceMaterializationValidationTests
     }
 
     [Fact]
-    public async Task RawValidation_OrdinaryMutationWithoutValidatedSourceFailsClosed()
+    public async Task RawValidation_OrdinaryMutationCannotSubmitClientDerivedSourceId()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
         await SeedEmptyRootsAsync(context);
@@ -301,8 +336,47 @@ public sealed class ResourceMaterializationValidationTests
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
-        Assert.Contains(issues, issue => issue.Code == "resource_source_unknown");
+        Assert.Contains(issues, issue =>
+            issue.Code == "resource_command_unknown_field" &&
+            issue.FilePath.Contains("source", StringComparison.Ordinal));
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        await context.AssertUnchangedAsync(before);
+    }
+
+    [Fact]
+    public async Task RawValidation_ClientDerivedOrdinarySourceBuildsTargetBoundValidatedPlan()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await SeedEmptyRootsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        var command = DefinitionAndInitializationCommand();
+        command["resourceChanges"] = new JsonArray(new JsonObject
+        {
+            ["operation"] = "spend",
+            ["target"] = new JsonObject
+            {
+                ["kind"] = "player",
+                ["targetId"] = "player_current"
+            },
+            ["resourceKey"] = "mana",
+            ["amount"] = 3,
+            ["source"] = new JsonObject
+            {
+                ["kind"] = "narrative_outcome"
+            },
+            ["eventRef"] = "turn_42:resource:3",
+            ["reason"] = "Accepted authored outcome"
+        });
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationTestContext.CommandsPath,
+            command.ToJsonString());
+        var before = await context.CaptureAsync(ResourceMaterializationTestContext.AllResourcePaths);
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
         await context.AssertUnchangedAsync(before);
     }
 
@@ -383,6 +457,379 @@ public sealed class ResourceMaterializationValidationTests
         Assert.Contains(issues, issue => issue.Code == "resource_owner_selector_invalid");
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
     }
+
+    private static async Task<OldTechnicalSaveScenario> SeedOldTechnicalSaveScenarioAsync(
+        ResourceMaterializationTestContext context,
+        string scenario)
+    {
+        switch (scenario)
+        {
+            case "player_gauges":
+            {
+                const string path = "game_state/core/player_status.json";
+                await context.WriteExactJsonAsync(
+                    path,
+                    new JsonObject
+                    {
+                        ["healthPercentage"] = "75%",
+                        ["energyPercentage"] = "60%",
+                        ["poisePercentage"] = "45%",
+                        ["currentCondition"] = "Устал",
+                        ["activeConditions"] = new JsonArray(),
+                        ["money"] = 0
+                    }.ToJsonString());
+                return GameStateCase(
+                    GameStateValidationPhase.PlayerStateFiles,
+                    path,
+                    Legacy("resource_legacy_player_gauge_forbidden", ".healthPercentage"),
+                    Legacy("resource_legacy_player_gauge_forbidden", ".energyPercentage"),
+                    Legacy("resource_legacy_player_gauge_forbidden", ".poisePercentage"));
+            }
+            case "player_deltas":
+            {
+                const string path = "game_state/player/status_changes.json";
+                await context.WriteExactJsonAsync(
+                    path,
+                    new JsonObject
+                    {
+                        ["currentHealthChange"] = -7,
+                        ["currentEnergyChange"] = -5,
+                        ["currentPoiseChange"] = -3
+                    }.ToJsonString());
+                return GameStateCase(
+                    GameStateValidationPhase.PlayerStateFiles,
+                    path,
+                    Legacy("resource_legacy_player_gauge_forbidden", ".currentHealthChange"),
+                    Legacy("resource_legacy_player_gauge_forbidden", ".currentEnergyChange"),
+                    Legacy("resource_legacy_player_gauge_forbidden", ".currentPoiseChange"));
+            }
+            case "npc_health":
+            {
+                const string path = "game_state/npcs/npc_core.json";
+                var root = MortalActorTestFixtures.CreateNpcCoreRoot();
+                var npc = root["NPCsInScene"]!.AsArray()[0]!.AsObject();
+                npc["currentHealthPercentage"] = "35%";
+                npc["maxHealthPercentage"] = "100%";
+                await context.WriteExactJsonAsync(path, root.ToJsonString());
+                return GameStateCase(
+                    GameStateValidationPhase.NpcStateFiles,
+                    path,
+                    Legacy("resource_owner_legacy_value_forbidden", ".currentHealthPercentage"),
+                    Legacy("resource_owner_legacy_value_forbidden", ".maxHealthPercentage"));
+            }
+            case "vehicle_health":
+            {
+                var path = StorageTransportMoveService.VehiclesPath;
+                var vehicle = CreateLegacyVehicle();
+                vehicle["currentHealth"] = "40%";
+                vehicle["maxHealth"] = "100%";
+                await context.WriteExactJsonAsync(
+                    path,
+                    new JsonObject
+                    {
+                        ["vehicles"] = new JsonArray(vehicle)
+                    }.ToJsonString());
+                return GameStateCase(
+                    GameStateValidationPhase.MetaMiscStateFiles,
+                    path,
+                    Legacy("resource_owner_legacy_value_forbidden", ".currentHealth"),
+                    Legacy("resource_owner_legacy_value_forbidden", ".maxHealth"));
+            }
+            case "combat_health_and_poise":
+            {
+                var path = EffectCarrierCatalog.EnemiesPath;
+                var combatant = CreateLegacyCombatant();
+                combatant["currentHealth"] = "50%";
+                combatant["maxHealth"] = "100%";
+                combatant["currentPoise"] = "25%";
+                combatant["maxPoise"] = "100%";
+                var group = CreateLegacyCombatGroup();
+                group["healthStates"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["name"] = "Разведчик",
+                        ["currentHealth"] = "30%"
+                    });
+                await context.WriteExactJsonAsync(
+                    path,
+                    new JsonObject
+                    {
+                        ["enemiesData"] = new JsonArray(combatant, group)
+                    }.ToJsonString());
+                return GameStateCase(
+                    GameStateValidationPhase.WorldQuestCombatFactionStateFiles,
+                    path,
+                    Legacy("resource_owner_legacy_value_forbidden", ".currentHealth"),
+                    Legacy("resource_owner_legacy_value_forbidden", ".maxHealth"),
+                    Legacy("resource_owner_legacy_value_forbidden", ".currentPoise"),
+                    Legacy("resource_owner_legacy_value_forbidden", ".maxPoise"),
+                    Legacy("resource_owner_legacy_value_forbidden", ".healthStates"));
+            }
+            case "item_durability":
+            {
+                const string path = "game_state/inventory/items.json";
+                var item = MortalItemTestFixture.CreateCanonicalRoot(
+                    "itm_legacy_resource_authority");
+                item["durability"] = 12;
+                item["maxDurability"] = 20;
+                MortalItemTestFixture.ResealCanonical(item);
+                await context.WriteExactJsonAsync(
+                    path,
+                    new JsonObject
+                    {
+                        ["items"] = new JsonArray(item)
+                    }.ToJsonString());
+                return GameStateCase(
+                    GameStateValidationPhase.PlayerStateFiles,
+                    path,
+                    Legacy("resource_owner_legacy_value_forbidden", ".durability"),
+                    Legacy("resource_owner_legacy_value_forbidden", ".maxDurability"));
+            }
+            case "item_resource_sidecar":
+            {
+                const string path = "game_state/inventory/item_resources.json";
+                await context.WriteExactJsonAsync(
+                    path,
+                    new JsonObject
+                    {
+                        ["items"] = new JsonArray(
+                            new JsonObject
+                            {
+                                ["itemId"] = "itm_legacy_sidecar",
+                                ["resourceType"] = "durability",
+                                ["current"] = 3,
+                                ["maximum"] = 10
+                            })
+                    }.ToJsonString());
+                return GameStateCase(
+                    GameStateValidationPhase.PlayerStateFiles,
+                    path,
+                    Legacy("resource_legacy_item_authority_forbidden", path));
+            }
+            case "afterlife_action_economy":
+            {
+                var path = AfterlifeSpiritualConflictState.StatePath;
+                var conflict = CreateLegacySpiritualConflict();
+                conflict["actionEconomy"] = new JsonObject
+                {
+                    ["player"] = new JsonObject
+                    {
+                        ["current"] = 2,
+                        ["max"] = 5
+                    },
+                    ["opposition"] = new JsonObject
+                    {
+                        ["current"] = 3,
+                        ["max"] = 6
+                    }
+                };
+                await context.WriteExactJsonAsync(
+                    path,
+                    new JsonObject
+                    {
+                        ["schemaVersion"] = 1,
+                        ["activeConflict"] = conflict,
+                        ["recentConflicts"] = new JsonArray()
+                    }.ToJsonString());
+                return GameStateCase(
+                    GameStateValidationPhase.AfterlifeSpiritualConflictState,
+                    path,
+                    Legacy("afterlife_conflict_legacy_action_economy_forbidden", ".actionEconomy"));
+            }
+            case "guardian_gacha_counters":
+            {
+                const string path = "game_state/meta/guardians.json";
+                await context.WriteExactJsonAsync(
+                    path,
+                    new JsonObject
+                    {
+                        ["guardians"] = new JsonArray(
+                            new JsonObject
+                            {
+                                ["guardianId"] = "guardian_legacy_gacha",
+                                ["gachaSystem"] = new JsonObject
+                                {
+                                    ["currentReturnCycleId"] = "chaos_return_legacy",
+                                    ["chargesPerReturn"] = 3,
+                                    ["chargesUsedThisReturn"] = 1,
+                                    ["gachaHistory"] = new JsonArray()
+                                }
+                            })
+                    }.ToJsonString());
+                return CanonicalResourceCase(
+                    path,
+                    Legacy(
+                        "resource_owner_guardian_legacy_gacha_counters_forbidden",
+                        ".gachaSystem"));
+            }
+            case "shining_gacha_counters":
+            {
+                var path = ShiningAbodeState.StatePath;
+                var shining = ShiningAbodeState.CreateDefaultState();
+                var gacha = shining["gachaSystem"]!.AsObject();
+                gacha["chargesPerReturn"] = 4;
+                gacha["chargesUsedThisReturn"] = 2;
+                await context.WriteExactJsonAsync(path, shining.ToJsonString());
+                return GameStateCase(
+                    GameStateValidationPhase.MetaMiscStateFiles,
+                    path,
+                    Legacy("shining_gacha_legacy_counter_forbidden", ".chargesPerReturn"),
+                    Legacy("shining_gacha_legacy_counter_forbidden", ".chargesUsedThisReturn"));
+            }
+            case "blessing_reroll_mirrors":
+            {
+                const string path = "game_state/meta/soul_state.json";
+                await context.WriteExactJsonAsync(
+                    path,
+                    CreateLegacyBlessingSoulState().ToJsonString());
+                return GameStateCase(
+                    GameStateValidationPhase.MetaMiscStateFiles,
+                    path,
+                    Legacy(
+                        "pending_shining_blessings_numeric_reroll_mirror_forbidden",
+                        ".memorySelection.rerolls"),
+                    Legacy(
+                        "pending_shining_blessings_numeric_reroll_mirror_forbidden",
+                        ".relicRefinementEntitlements.rerollsSpent"));
+            }
+            default:
+                throw new ArgumentOutOfRangeException(nameof(scenario), scenario, null);
+        }
+    }
+
+    private static OldTechnicalSaveScenario GameStateCase(
+        GameStateValidationPhase phase,
+        string path,
+        params OldTechnicalSaveExpectation[] expectations) =>
+        new(phase, false, new[] { path }, expectations);
+
+    private static OldTechnicalSaveScenario CanonicalResourceCase(
+        string path,
+        params OldTechnicalSaveExpectation[] expectations) =>
+        new(null, true, new[] { path }, expectations);
+
+    private static OldTechnicalSaveExpectation Legacy(string code, string pathSuffix) =>
+        new(code, pathSuffix);
+
+    private static JsonObject CreateLegacyVehicle() =>
+        new()
+        {
+            ["vehicleId"] = "vehicle_legacy_health",
+            ["name"] = "Старая телега",
+            ["description"] = "Технический несовместимый транспорт.",
+            ["image_prompt"] = "old wooden cart",
+            ["type"] = "Vehicle",
+            ["isSentient"] = false,
+            ["availability"] = "Parked",
+            ["currentLocationId"] = "location_legacy",
+            ["speedBonus"] = 0,
+            ["actions"] = new JsonArray(),
+            ["resistances"] = new JsonArray(),
+            ["inventory"] = new JsonArray()
+        };
+
+    private static JsonObject CreateLegacyCombatant() =>
+        new()
+        {
+            ["NPCId"] = null,
+            ["combatantId"] = "combatant_legacy_health",
+            ["name"] = "Старый противник",
+            ["image_prompt"] = "dark fantasy raider",
+            ["description"] = "Технический несовместимый противник.",
+            ["type"] = "individual",
+            ["isGroup"] = false,
+            ["initiative"] = 10,
+            ["actions"] = new JsonArray(),
+            ["resistances"] = new JsonArray(),
+            ["activeBuffs"] = new JsonArray(),
+            ["activeDebuffs"] = new JsonArray()
+        };
+
+    private static JsonObject CreateLegacyCombatGroup() =>
+        new()
+        {
+            ["NPCId"] = null,
+            ["name"] = "Старый дозор",
+            ["image_prompt"] = "dark fantasy road watch",
+            ["description"] = "Техническая несовместимая группа.",
+            ["type"] = "group",
+            ["isGroup"] = true,
+            ["initiative"] = 12,
+            ["actions"] = new JsonArray(),
+            ["resistances"] = new JsonArray(),
+            ["activeBuffs"] = new JsonArray(),
+            ["activeDebuffs"] = new JsonArray(),
+            ["count"] = 1,
+            ["unitName"] = "дозорный",
+            ["members"] = new JsonArray(
+                new JsonObject
+                {
+                    ["memberId"] = "member_legacy_scout",
+                    ["name"] = "Разведчик"
+                })
+        };
+
+    private static JsonObject CreateLegacySpiritualConflict() =>
+        new()
+        {
+            ["conflictId"] = "conflict_legacy_action_economy",
+            ["realm"] = "Chaos Sea",
+            ["status"] = "active",
+            ["resolutionState"] = "active",
+            ["playerSide"] = new JsonObject(),
+            ["oppositionSide"] = new JsonObject(),
+            ["exchangeLog"] = new JsonArray(),
+            ["combatConditions"] = new JsonArray(),
+            ["resourceOwnerBindings"] = new JsonObject
+            {
+                ["opposition"] = new JsonObject
+                {
+                    ["resourceOwnerId"] = "afterlife_conflict_side_legacy"
+                }
+            }
+        };
+
+    private static JsonObject CreateLegacyBlessingSoulState() =>
+        new()
+        {
+            ["soulName"] = "Legacy Soul",
+            ["currentRealm"] = "Mortal World",
+            ["currentIncarnation"] = 3,
+            [ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
+            {
+                ["applicationState"] = ShiningBlessingEffectState.ApplicationStateActive,
+                ["materializedAtUtc"] = "2026-08-22T00:00:00Z",
+                ["sourcePackagePreparedAtTurn"] = 2,
+                ["currentIncarnation"] = 3,
+                ["sourceCardCount"] = 1,
+                ["sourceCardIds"] = new JsonArray("card_legacy_rerolls"),
+                ["memorySelection"] = new JsonObject
+                {
+                    ["options"] = 1,
+                    ["rerolls"] = 2,
+                    ["status"] = ShiningBlessingEffectState.MemoryStatusPendingPreTurnOneSelection,
+                    ["sourceCardIds"] = new JsonArray("card_legacy_rerolls")
+                },
+                ["relicRefinementEntitlements"] = new JsonObject
+                {
+                    ["rerollsSpent"] = 1,
+                    ["freeShape"] = true,
+                    ["freeRetune"] = false,
+                    ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
+                    ["sourceCardIds"] = new JsonArray("card_legacy_rerolls")
+                }
+            }
+        };
+
+    private sealed record OldTechnicalSaveExpectation(
+        string Code,
+        string PathSuffix);
+
+    private sealed record OldTechnicalSaveScenario(
+        GameStateValidationPhase? Phase,
+        bool UseCanonicalResourceValidation,
+        IReadOnlyList<string> Paths,
+        IReadOnlyList<OldTechnicalSaveExpectation> Expectations);
 
     internal static async Task SeedEmptyRootsAsync(ResourceMaterializationTestContext context)
     {

@@ -294,7 +294,7 @@ public sealed class EffectMaterializationContractTests
     [InlineData("periodic_damage", "Deterministic")]
     [InlineData("periodic_restore", "Deterministic")]
     [InlineData("action_control", "Deterministic")]
-    [InlineData("event_reaction", "BoundedReceipt")]
+    [InlineData("event_reaction", "Declared")]
     [InlineData("wound_consequence", "Deterministic")]
     [InlineData("afterlife_combat_condition", "Deterministic")]
     public void Registry_EachProfileDeclaresExecutionMergeAndProjectionMetadata(

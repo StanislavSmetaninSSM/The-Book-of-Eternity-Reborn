@@ -1060,7 +1060,7 @@ public sealed class PromptDocumentationCoverageTests
                 "Previous-life item sidecars are rollback-only and are not the current GM baseline.",
                 bootstrapGuidance,
                 StringComparison.Ordinal);
-            Assert.Contains("game_state/inventory/item_resources.json", bootstrapGuidance, StringComparison.Ordinal);
+            Assert.DoesNotContain("game_state/inventory/item_resources.json", bootstrapGuidance, StringComparison.Ordinal);
             Assert.Contains("game_state/inventory/item_bonds.json", bootstrapGuidance, StringComparison.Ordinal);
             Assert.Contains("game_state/inventory/item_text_updates.json", bootstrapGuidance, StringComparison.Ordinal);
             Assert.Contains("game_state/npcs/item_journals.json", bootstrapGuidance, StringComparison.Ordinal);
@@ -1467,6 +1467,156 @@ public sealed class PromptDocumentationCoverageTests
             StringComparison.Ordinal);
         Assert.Contains("compact_mortal_item_materialization_template", daemon, StringComparison.Ordinal);
         Assert.Contains("$script:MortalItemMaterializationDirective", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void UnifiedResourceAuthorityGuidance_CoversMortalCommandsOwnersAndNoDirectWrites()
+    {
+        var api = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var launcher = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var workedExample = ReadRepoFile("Examples", "E_CLI_Mortal_Resources.txt");
+        var rules = string.Join('\n',
+            ReadRepoFile("Rules", "Block_2.txt"),
+            ReadRepoFile("Rules", "Block_5.txt"),
+            ReadRepoFile("Rules", "Block_6.txt"),
+            ReadRepoFile("Rules", "Block_12.txt"),
+            ReadRepoFile("Rules", "Block_15.txt"),
+            ReadRepoFile("Rules", "Block_17.txt"));
+
+        foreach (var entrypoint in new[] { api, daemonSpec, launcher, taskGuide, daemon })
+        {
+            Assert.Contains("Unified Resource Authority v1", entrypoint, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("resourceDefinitionCreations", entrypoint, StringComparison.Ordinal);
+            Assert.Contains("resourceCapacityChanges", entrypoint, StringComparison.Ordinal);
+            Assert.Contains("resourceChanges", entrypoint, StringComparison.Ordinal);
+            Assert.Contains("game_state/resources/resource_state.json", entrypoint, StringComparison.Ordinal);
+            Assert.Contains("game_state/resources/resource_history.json", entrypoint, StringComparison.Ordinal);
+            Assert.Contains("client-owned", entrypoint, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("no migration", entrypoint, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var ownerKind in new[]
+                 {
+                     "player", "npc", "combatant", "combat_group_member", "item", "vehicle"
+                 })
+        {
+            Assert.Contains(ownerKind, rules, StringComparison.Ordinal);
+        }
+
+        foreach (var operation in new[]
+                 {
+                     "initialize", "reconfigure", "suspend", "resume", "retire",
+                     "damage", "restore", "spend", "gain"
+                 })
+        {
+            Assert.Contains(operation, api + '\n' + workedExample, StringComparison.Ordinal);
+        }
+
+        foreach (var contractId in new[]
+                 {
+                     "mortal_resource_setting_definition_initialize_v1",
+                     "mortal_resource_player_npc_mutation_v1",
+                     "mortal_resource_item_combat_mutation_v1",
+                     "mortal_resource_capacity_reconfigure_v1",
+                     "mortal_resource_bounded_receipt_v1",
+                     "mortal_resource_illegal_direct_write_v1"
+                 })
+        {
+            Assert.Contains(contractId, workedExample, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("full-turn resubmission", workedExample, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("client-owned publication", workedExample, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"currentHealth\":", workedExample, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"healthPercentage\":", workedExample, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"maxDurability\":", workedExample, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void CompleteEffectMaterializationContract_IsRequiredAcrossMortalGmEntrypoints()
+    {
+        var common = ReadRepoFile("OtherGuides", "Effect_Materialization_Contract.md");
+        var gmDocuments = new[]
+        {
+            ReadRepoFile("Rules", "Block_2.txt"),
+            ReadRepoFile("Rules", "Block_5.txt"),
+            ReadRepoFile("Rules", "Block_6.txt"),
+            ReadRepoFile("Rules", "Block_7.txt"),
+            ReadRepoFile("Rules", "Block_8.txt"),
+            ReadRepoFile("Rules", "Block_10.txt"),
+            ReadRepoFile("Rules", "Block_12.txt"),
+            ReadRepoFile("Rules", "Block_14.txt"),
+            ReadRepoFile("Rules", "Block_15.txt"),
+            ReadRepoFile("Rules", "Block_17.txt"),
+            ReadRepoFile("Rules", "Block_19.C.txt"),
+            ReadRepoFile("Rules", "Block_25.txt"),
+            ReadRepoFile("Rules", "Block_25.A.txt"),
+            ReadRepoFile("Rules", "Block_CLI_Operations.txt"),
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("TaskGuides", "CLI_Step_Main.txt"),
+            ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1")
+        };
+        var corpus = string.Join('\n', gmDocuments.Prepend(common));
+
+        foreach (var document in gmDocuments)
+        {
+            Assert.Contains("Effect Materialization v1", document, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Effect_Materialization_Contract.md", document, StringComparison.Ordinal);
+        }
+
+        foreach (var required in new[]
+                 {
+                     "effectChanges[]",
+                     "effectResolutionReceipts[]",
+                     "effectEventReports[]",
+                     "owner_critical_failure",
+                     "mortal_action_roll",
+                     "activeEffectDefinitions[]",
+                     "effect_identity_index.json",
+                     "pending_effect_resolutions.json",
+                     "full-turn resubmission",
+                     "characteristic_modifier",
+                     "roll_modifier",
+                     "resistance_modifier",
+                     "periodic_damage",
+                     "periodic_restore",
+                     "action_control",
+                     "event_reaction",
+                     "wound_consequence",
+                     "afterlife_combat_condition",
+                     "independent",
+                     "stack",
+                     "refresh",
+                     "replace",
+                     "merge",
+                     "turns",
+                     "uses",
+                     "until_time",
+                     "scene",
+                     "source_bound",
+                     "condition_bound",
+                     "permanent",
+                     "manual",
+                     "effect removal never heals or deletes the wound"
+                 })
+        {
+            Assert.Contains(required, corpus, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var forbidden in new[]
+                 {
+                     "playerActiveEffectsChanges",
+                     "NPCEffectChanges",
+                     "\"duration\": 999",
+                     "\"duration\": -1"
+                 })
+        {
+            Assert.DoesNotContain(forbidden, corpus, StringComparison.Ordinal);
+        }
     }
 
     private static string ReadRepoFile(params string[] parts) =>

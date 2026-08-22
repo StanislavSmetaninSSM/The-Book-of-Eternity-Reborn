@@ -271,7 +271,7 @@
                         JSON RESPONSE GATE — FORBIDDEN IN AFTERLIFE REALMS:
                         - experienceGained
                         - statsIncreased, statsDecreased, setCharacteristics
-                        - currentPoiseChange, currentEnergyChange, currentHealthChange
+                        - direct Mortal gauge deltas outside the common resource contract
                         - activeSkillChanges, passiveSkillChanges, skillMasteryChanges
                         - UpdateInventory, moveInventoryItems, removeInventoryItems, inventoryItemsResources
                         - UpdateNPCs, NPCsInScene, NPCRelationshipChanges, NPCGoalUpdates, NPCQuestUpdates

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
@@ -12,6 +13,23 @@ namespace BookOfEternityClient.UI;
 
 public partial class ExplorerMode
 {
+    private static bool TryParseProjectedPercentage(string value, out int percentage)
+    {
+        percentage = 0;
+        if (!decimal.TryParse(
+                value.Replace("%", string.Empty, StringComparison.Ordinal).Trim(),
+                NumberStyles.Number,
+                CultureInfo.InvariantCulture,
+                out var parsed) ||
+            parsed is < 0m or > 100m)
+        {
+            return false;
+        }
+
+        percentage = (int)decimal.Round(parsed, 0, MidpointRounding.AwayFromZero);
+        return true;
+    }
+
     private async Task ShowMap()
     {
         var map = await LocalMapViewService.BuildCurrentRealmMapAsync(_fs);
@@ -934,24 +952,35 @@ public partial class ExplorerMode
                 new Markup(string.Empty));
         }
 
-        var hpPctValue = int.TryParse(state.PlayerStatus.HealthPercentage.Replace("%", "").Trim(), out var hpV) ? hpV : 100;
-        var enPctValue = int.TryParse(state.PlayerStatus.EnergyPercentage.Replace("%", "").Trim(), out var enV) ? enV : 100;
-        var poPctValue = int.TryParse(state.PlayerStatus.PoisePercentage.Replace("%", "").Trim(), out var poV) ? poV : 100;
-        summaryTable.AddRow(
-            new Markup("[red]Здоровье[/]"),
-            new Markup(ConsoleLayout.CreateBarFromPercent(hpPctValue, 18, hpPctValue > 60 ? "green" : hpPctValue > 30 ? "yellow" : "red")),
-            new Markup($"[red]{Markup.Escape(state.PlayerStatus.HealthPercentage)}[/]"),
-            new Markup(string.Empty));
-        summaryTable.AddRow(
-            new Markup("[cyan]Энергия[/]"),
-            new Markup(ConsoleLayout.CreateBarFromPercent(enPctValue, 18, enPctValue > 60 ? "deepskyblue1" : enPctValue > 30 ? "yellow" : "red")),
-            new Markup($"[cyan]{Markup.Escape(state.PlayerStatus.EnergyPercentage)}[/]"),
-            new Markup(string.Empty));
-        summaryTable.AddRow(
-            new Markup("[blue]Равновесие[/]"),
-            new Markup(ConsoleLayout.CreateBarFromPercent(poPctValue, 18, poPctValue > 60 ? "steelblue" : poPctValue > 30 ? "yellow" : "red")),
-            new Markup($"[blue]{Markup.Escape(state.PlayerStatus.PoisePercentage)}[/]"),
-            new Markup(string.Empty));
+        if (state.PlayerStatus.ResourceProjectionAvailable &&
+            TryParseProjectedPercentage(state.PlayerStatus.HealthPercentage, out var hpPctValue) &&
+            TryParseProjectedPercentage(state.PlayerStatus.EnergyPercentage, out var enPctValue) &&
+            TryParseProjectedPercentage(state.PlayerStatus.PoisePercentage, out var poPctValue))
+        {
+            summaryTable.AddRow(
+                new Markup("[red]Здоровье[/]"),
+                new Markup(ConsoleLayout.CreateBarFromPercent(hpPctValue, 18, hpPctValue > 60 ? "green" : hpPctValue > 30 ? "yellow" : "red")),
+                new Markup($"[red]{Markup.Escape(state.PlayerStatus.HealthPercentage)}[/]"),
+                new Markup(string.Empty));
+            summaryTable.AddRow(
+                new Markup("[cyan]Энергия[/]"),
+                new Markup(ConsoleLayout.CreateBarFromPercent(enPctValue, 18, enPctValue > 60 ? "deepskyblue1" : enPctValue > 30 ? "yellow" : "red")),
+                new Markup($"[cyan]{Markup.Escape(state.PlayerStatus.EnergyPercentage)}[/]"),
+                new Markup(string.Empty));
+            summaryTable.AddRow(
+                new Markup("[blue]Равновесие[/]"),
+                new Markup(ConsoleLayout.CreateBarFromPercent(poPctValue, 18, poPctValue > 60 ? "steelblue" : poPctValue > 30 ? "yellow" : "red")),
+                new Markup($"[blue]{Markup.Escape(state.PlayerStatus.PoisePercentage)}[/]"),
+                new Markup(string.Empty));
+        }
+        else
+        {
+            summaryTable.AddRow(
+                new Markup("[yellow]Силы и запасы[/]"),
+                new Markup(string.Empty),
+                new Markup($"[yellow]{Markup.Escape(state.PlayerStatus.ResourceUnavailableMessage)}[/]"),
+                new Markup(string.Empty));
+        }
         summaryTable.AddRow(
             new Markup("[yellow]Состояние[/]"),
             new Markup(""),
@@ -1170,28 +1199,41 @@ public partial class ExplorerMode
                 extraText.Add($"⚔️ Класс: [white]{Markup.Escape(classDesc)}[/]");
         }
 
-        // Status changes (deltas)
+        // Non-resource status changes. Resource deltas come only from the
+        // accepted common resource history projection below.
         if (scDoc != null)
         {
             var sc = scDoc.RootElement;
             var moneyDelta = GetInt(sc, "moneyChange", 0);
-            var hpDelta = GetInt(sc, "currentHealthChange", 0);
-            var energyDelta = GetInt(sc, "currentEnergyChange", 0);
-            var poiseDelta = GetInt(sc, "currentPoiseChange", 0);
             if (moneyDelta != 0)
                 extraText.Add($"💰 Деньги (последнее): [{(moneyDelta > 0 ? "green" : "red")}]{(moneyDelta > 0 ? "+" : "")}{moneyDelta}[/]");
-            if (hpDelta != 0)
-                extraText.Add($"❤️ Здоровье (последнее): [{(hpDelta > 0 ? "green" : "red")}]{(hpDelta > 0 ? "+" : "")}{hpDelta}[/]");
-            if (energyDelta != 0)
-                extraText.Add($"⚡ Энергия (последнее): [{(energyDelta > 0 ? "green" : "red")}]{(energyDelta > 0 ? "+" : "")}{energyDelta}[/]");
-            if (poiseDelta != 0)
-                extraText.Add($"🛡️ Равновесие (последнее): [{(poiseDelta > 0 ? "green" : "red")}]{(poiseDelta > 0 ? "+" : "")}{poiseDelta}[/]");
             var statsUp = FormatCharacteristicArray(sc, "statsIncreased");
             var statsDown = FormatCharacteristicArray(sc, "statsDecreased");
             if (!string.IsNullOrEmpty(statsUp))
                 extraText.Add($"[green]📈 Повышены: {statsUp}[/]");
             if (!string.IsNullOrEmpty(statsDown))
                 extraText.Add($"[red]📉 Понижены: {statsDown}[/]");
+        }
+
+
+        if (state.PlayerStatus.ResourceProjectionAvailable)
+        {
+            AddProjectedResourceDelta("❤️", "Здоровье", "health");
+            AddProjectedResourceDelta("⚡", "Энергия", "energy");
+            AddProjectedResourceDelta("🛡️", "Равновесие", "poise");
+        }
+
+        void AddProjectedResourceDelta(string icon, string label, string resourceKey)
+        {
+            var delta = state.PlayerStatus.Resources.SingleOrDefault(resource =>
+                string.Equals(resource.ResourceKey, resourceKey, StringComparison.Ordinal))?.RecentVisibleDelta;
+            if (delta is null or 0m)
+                return;
+
+            var color = delta.Value > 0m ? "green" : "red";
+            extraText.Add(
+                $"{icon} {label} (последнее): [{color}]" +
+                $"{ResourceProjectionService.FormatSignedDelta(delta.Value)}[/]");
         }
 
         if (expDoc != null)

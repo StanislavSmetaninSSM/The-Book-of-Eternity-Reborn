@@ -186,55 +186,111 @@ internal sealed class EffectCarrierCatalog
                         Describe(combatants[index]));
                     continue;
                 }
-                ValidateOptionalArrayField(
-                    combatant,
-                    "activeBuffs",
-                    $"{filePath}.{collection}[{index}].activeBuffs");
-                ValidateOptionalArrayField(
-                    combatant,
-                    "activeDebuffs",
-                    $"{filePath}.{collection}[{index}].activeDebuffs");
-                if (combatant.ContainsKey("combatantRef"))
+                var combatantPath = $"{filePath}.{collection}[{index}]";
+                ScanCombatantOwner(combatant, filePath, combatantPath);
+                if (combatant["isGroup"] is JsonValue groupNode &&
+                    groupNode.TryGetValue<bool>(out var isGroup) &&
+                    isGroup &&
+                    combatant["members"] is JsonArray members)
+                {
+                    for (var memberIndex = 0; memberIndex < members.Count; memberIndex++)
+                    {
+                        if (members[memberIndex] is not JsonObject member)
+                        {
+                            Add(
+                                $"{combatantPath}.members[{memberIndex}]",
+                                "effect_materialization_invalid_field",
+                                "group-member effect carrier object",
+                                Describe(members[memberIndex]));
+                            continue;
+                        }
+                        ScanCombatantOwner(
+                            member,
+                            filePath,
+                            $"{combatantPath}.members[{memberIndex}]");
+                    }
+                }
+            }
+        }
+
+        private void ScanCombatantOwner(
+            JsonObject combatant,
+            string filePath,
+            string ownerPath)
+        {
+            ValidateOptionalArrayField(
+                combatant,
+                "activeBuffs",
+                ownerPath + ".activeBuffs");
+            ValidateOptionalArrayField(
+                combatant,
+                "activeDebuffs",
+                ownerPath + ".activeDebuffs");
+            if (combatant.ContainsKey("combatantRef"))
+            {
+                Add(
+                    ownerPath + ".combatantRef",
+                    "effect_target_combatant_ref_not_consumed",
+                    "field absent after client allocation of combatantId",
+                    combatant["combatantRef"]?.ToJsonString() ?? "null");
+            }
+            if (combatant.ContainsKey("memberRef"))
+            {
+                Add(
+                    ownerPath + ".memberRef",
+                    "effect_target_member_ref_not_consumed",
+                    "field absent after client allocation of memberId",
+                    combatant["memberRef"]?.ToJsonString() ?? "null");
+            }
+
+            var hasCombatantId = TryReadExact(
+                combatant["combatantId"],
+                out var combatantId);
+            var hasMemberId = TryReadExact(
+                combatant["memberId"],
+                out var memberId);
+            if (hasCombatantId && hasMemberId)
+            {
+                Add(
+                    ownerPath,
+                    "effect_target_combat_identity_ambiguous",
+                    "exactly one combatantId or memberId",
+                    combatant.ToJsonString());
+                return;
+            }
+            if (!hasCombatantId && !hasMemberId)
+            {
+                if (HasNonEmptyArray(combatant["activeBuffs"]) ||
+                    HasNonEmptyArray(combatant["activeDebuffs"]))
                 {
                     Add(
-                        $"{filePath}.{collection}[{index}].combatantRef",
-                        "effect_target_combatant_ref_not_consumed",
-                        "field absent after client allocation of combatantId",
-                        combatant["combatantRef"]?.ToJsonString() ?? "null");
+                        ownerPath,
+                        "effect_materialization_legacy_carrier_unsupported",
+                        "client-owned combatantId/memberId before any non-empty activeBuffs/activeDebuffs carrier",
+                        combatant.ToJsonString());
                 }
-                if (!TryReadExact(combatant["combatantId"], out var combatantId))
-                {
-                    if (HasNonEmptyArray(combatant["activeBuffs"]) ||
-                        HasNonEmptyArray(combatant["activeDebuffs"]))
-                    {
-                        Add(
-                            $"{filePath}.{collection}[{index}]",
-                            "effect_materialization_legacy_carrier_unsupported",
-                            "client-owned combatantId before any non-empty activeBuffs/activeDebuffs carrier",
-                            combatant.ToJsonString());
-                    }
-                    continue;
-                }
-                if (combatant["activeBuffs"] is JsonArray buffs)
-                {
-                    ScanCanonicalArray(
-                        buffs,
-                        filePath,
-                        $"{filePath}.{collection}[{index}].activeBuffs",
-                        new EffectCarrierCoordinate("combatant", combatantId, filePath, "buff"),
-                        "combatant",
-                        combatantId);
-                }
-                if (combatant["activeDebuffs"] is JsonArray debuffs)
-                {
-                    ScanCanonicalArray(
-                        debuffs,
-                        filePath,
-                        $"{filePath}.{collection}[{index}].activeDebuffs",
-                        new EffectCarrierCoordinate("combatant", combatantId, filePath, "debuff"),
-                        "combatant",
-                        combatantId);
-                }
+                return;
+            }
+            var targetId = hasMemberId ? memberId : combatantId;
+            if (combatant["activeBuffs"] is JsonArray buffs)
+            {
+                ScanCanonicalArray(
+                    buffs,
+                    filePath,
+                    ownerPath + ".activeBuffs",
+                    new EffectCarrierCoordinate("combatant", targetId, filePath, "buff"),
+                    "combatant",
+                    targetId);
+            }
+            if (combatant["activeDebuffs"] is JsonArray debuffs)
+            {
+                ScanCanonicalArray(
+                    debuffs,
+                    filePath,
+                    ownerPath + ".activeDebuffs",
+                    new EffectCarrierCoordinate("combatant", targetId, filePath, "debuff"),
+                    "combatant",
+                    targetId);
             }
         }
 

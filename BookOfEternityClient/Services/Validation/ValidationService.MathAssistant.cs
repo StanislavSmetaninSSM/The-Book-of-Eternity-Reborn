@@ -388,6 +388,15 @@ public partial class ValidationService
 
         foreach (var candidate in BuildMathAssistantReferenceCandidates(token))
         {
+            if (TryResolveResourceChangeAmountReference(
+                    root,
+                    candidate,
+                    out appliedPath,
+                    out appliedNode))
+            {
+                return true;
+            }
+
             if (MathAssistantAppliedNumericReferencePaths.Contains(candidate))
             {
                 appliedPath = candidate;
@@ -400,6 +409,50 @@ public partial class ValidationService
         }
 
         return false;
+    }
+
+    private static bool TryResolveResourceChangeAmountReference(
+        JsonElement root,
+        string candidate,
+        out string appliedPath,
+        out JsonElement appliedNode)
+    {
+        const string prefix = "resourceChanges[";
+        const string suffix = "].amount";
+        appliedPath = "";
+        appliedNode = default;
+
+        if (!candidate.StartsWith(prefix, StringComparison.Ordinal) ||
+            !candidate.EndsWith(suffix, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var indexText = candidate[prefix.Length..^suffix.Length];
+        if (indexText.Length == 0 ||
+            (indexText.Length > 1 && indexText[0] == '0') ||
+            !int.TryParse(indexText, out var index) ||
+            index < 0)
+        {
+            return false;
+        }
+
+        appliedPath = $"resourceChanges[{index}].amount";
+        if (!root.TryGetProperty("resourceChanges", out var changes) ||
+            changes.ValueKind != JsonValueKind.Array ||
+            index >= changes.GetArrayLength())
+        {
+            return true;
+        }
+
+        var change = changes[index];
+        if (change.ValueKind != JsonValueKind.Object ||
+            !change.TryGetProperty("amount", out appliedNode))
+        {
+            appliedNode = default;
+        }
+
+        return true;
     }
 
     private static IEnumerable<string> BuildMathAssistantReferenceCandidates(string token)

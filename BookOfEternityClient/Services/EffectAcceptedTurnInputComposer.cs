@@ -126,7 +126,9 @@ internal static class EffectAcceptedTurnInputComposer
         long? currentWorldTime = null,
         EffectCarrierCatalogInput? publicationCarrierBaselines = null,
         CombatantIdentityState? preallocatedCombatantIdentities = null,
-        string realm = "mortal_world")
+        string realm = "mortal_world",
+        IReadOnlySet<string>? grantedBuiltInApplicationAuthorities = null,
+        IReadOnlyList<JsonObject>? acceptedReportedLifecycleEvents = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
         ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
@@ -138,6 +140,7 @@ internal static class EffectAcceptedTurnInputComposer
         var replacedSources = replacedSourceOwners ??
             new HashSet<EffectSourceOwnerKey>();
         var preTurnSourceExports = CollectSources(preTurnSourceRoots, sameTurn: false)
+            .Concat(EffectBuiltInSourceCatalog.CreateCanonicalExports())
             .Where(export => !replacedSources.Contains(new EffectSourceOwnerKey(
                 export.Realm,
                 export.Kind,
@@ -147,7 +150,8 @@ internal static class EffectAcceptedTurnInputComposer
         var sourceAuthority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
             preTurnSourceExports,
             planSourceExports,
-            new HashSet<string>(StringComparer.Ordinal)));
+            new HashSet<string>(StringComparer.Ordinal),
+            grantedBuiltInApplicationAuthorities));
         var acceptedSpiritualTargets = new List<EffectTargetExport>();
         CollectSpiritualConflictTargets(
             acceptedCarriers.SpiritualConflict,
@@ -171,13 +175,20 @@ internal static class EffectAcceptedTurnInputComposer
         var preTurnTargetKeys = preTurnTargets
             .Select(static target => (target.Realm, target.Kind, target.TargetId))
             .ToHashSet();
-        var sameTurnTargets = (acceptedPlanTargetExports ?? Array.Empty<EffectTargetExport>())
+        var acceptedTargets = acceptedPlanTargetExports ??
+            Array.Empty<EffectTargetExport>();
+        var acceptedStableTargets = acceptedTargets
+            .Where(static target => target.TargetRef == null)
+            .Select(static target => target with { SameTurn = false })
+            .ToArray();
+        var sameTurnTargets = acceptedTargets
+            .Where(static target => target.TargetRef != null)
             .Where(target => !preTurnTargetKeys.Contains(
                 (target.Realm, target.Kind, target.TargetId)))
             .Select(static target => target with { SameTurn = true })
             .ToArray();
         var targetAuthorityInput = new EffectTargetAuthorityInput(
-            preTurnTargets,
+            preTurnTargets.Concat(acceptedStableTargets).ToArray(),
             sameTurnTargets,
             new HashSet<string>(StringComparer.Ordinal),
             preallocatedCombatantIdentities);
@@ -198,7 +209,8 @@ internal static class EffectAcceptedTurnInputComposer
                 currentWorldTime,
                 preTurnCarriers,
                 acceptedCarriers,
-                realm),
+                realm,
+                acceptedReportedLifecycleEvents),
             Realm: realm,
             PreTurnCarriers: CloneCarriers(lifecycleCarriers),
             PreTurnIdentityIndex: preTurnIdentityIndex?.DeepClone().AsObject(),
@@ -230,7 +242,8 @@ internal static class EffectAcceptedTurnInputComposer
     internal static JsonObject CreateEmptyCommandRoot() => new()
     {
         ["effectChanges"] = new JsonArray(),
-        ["effectResolutionReceipts"] = new JsonArray()
+        ["effectResolutionReceipts"] = new JsonArray(),
+        [EffectAcceptedEventReportCatalog.ResponseField] = new JsonArray()
     };
 
     internal static bool HasPendingCombatantRefs(EffectCarrierCatalogInput carriers) =>
@@ -251,7 +264,8 @@ internal static class EffectAcceptedTurnInputComposer
         long? currentWorldTime = null,
         EffectCarrierCatalogInput? preTurnCarriers = null,
         EffectCarrierCatalogInput? acceptedCarriers = null,
-        string commandRealm = "mortal_world")
+        string commandRealm = "mortal_world",
+        IReadOnlyList<JsonObject>? acceptedReportedLifecycleEvents = null)
     {
         var changes = rawCommands["effectChanges"] as JsonArray;
         var operationCount = changes?.Count ?? 0;
@@ -447,6 +461,13 @@ internal static class EffectAcceptedTurnInputComposer
                 });
             }
         }
+        foreach (var reportedEvent in acceptedReportedLifecycleEvents ??
+                     Array.Empty<JsonObject>())
+        {
+            ArgumentNullException.ThrowIfNull(reportedEvent);
+            lifecycleEvents.Add(reportedEvent.DeepClone());
+        }
+
         var result = new JsonObject
         {
             ["turn"] = turn,
@@ -1155,7 +1176,9 @@ internal static class EffectAcceptedTurnInputComposer
     {
         ArgumentNullException.ThrowIfNull(sourceRoots);
         return EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
-            CollectSources(sourceRoots, sameTurn: false),
+            CollectSources(sourceRoots, sameTurn: false)
+                .Concat(EffectBuiltInSourceCatalog.CreateCanonicalExports())
+                .ToArray(),
             Array.Empty<EffectSourceExport>(),
             new HashSet<string>(StringComparer.Ordinal)));
     }
@@ -1259,6 +1282,102 @@ internal static class EffectAcceptedTurnInputComposer
                 TargetRef: owner.OwnerRef));
         }
         return exports;
+    }
+
+    internal static EffectAcceptedCombatMemberTargetExports CollectCombatMemberPlanTargets(
+        EffectCarrierCatalogInput preTurnCarriers,
+        EffectCarrierCatalogInput acceptedCarriers,
+        CombatantIdentityState? combatantIdentities)
+    {
+        ArgumentNullException.ThrowIfNull(preTurnCarriers);
+        ArgumentNullException.ThrowIfNull(acceptedCarriers);
+
+        var before = CollectCombatMemberTargets(preTurnCarriers, null);
+        var after = CollectCombatMemberTargets(
+            acceptedCarriers,
+            combatantIdentities);
+        var beforeIds = before
+            .Select(static target => target.TargetId)
+            .ToHashSet(StringComparer.Ordinal);
+        var afterIds = after
+            .Select(static target => target.TargetId)
+            .ToHashSet(StringComparer.Ordinal);
+        return new EffectAcceptedCombatMemberTargetExports(
+            after.Where(target => !beforeIds.Contains(target.TargetId)).ToArray(),
+            beforeIds
+                .Except(afterIds, StringComparer.Ordinal)
+                .Select(static targetId => new EffectTargetKey(
+                    "mortal_world",
+                    "combatant",
+                    targetId))
+                .ToHashSet());
+    }
+
+    private static IReadOnlyList<EffectTargetExport> CollectCombatMemberTargets(
+        EffectCarrierCatalogInput carriers,
+        CombatantIdentityState? combatantIdentities)
+    {
+        var refsById = combatantIdentities?.MemberIdsByRef
+            .ToDictionary(
+                static pair => pair.Value,
+                static pair => pair.Key,
+                StringComparer.Ordinal) ??
+            new Dictionary<string, string>(StringComparer.Ordinal);
+        var result = new List<EffectTargetExport>();
+        CollectCombatMemberTargets(
+            carriers.EnemyCombatants,
+            "enemiesData",
+            refsById,
+            result);
+        CollectCombatMemberTargets(
+            carriers.AllyCombatants,
+            "alliesData",
+            refsById,
+            result);
+        return result;
+    }
+
+    private static void CollectCombatMemberTargets(
+        JsonObject? root,
+        string collection,
+        IReadOnlyDictionary<string, string> refsById,
+        List<EffectTargetExport> result)
+    {
+        if (root?[collection] is not JsonArray combatants)
+            return;
+        foreach (var combatant in combatants.OfType<JsonObject>())
+        {
+            if (combatant["isGroup"] is JsonValue groupNode &&
+                groupNode.TryGetValue<bool>(out var isGroup) &&
+                isGroup)
+            {
+                foreach (var member in
+                         (combatant["members"] as JsonArray)?.OfType<JsonObject>() ??
+                         Enumerable.Empty<JsonObject>())
+                {
+                    AddCombatMemberTarget(member, refsById, result);
+                }
+                continue;
+            }
+            AddCombatMemberTarget(combatant, refsById, result);
+        }
+    }
+
+    private static void AddCombatMemberTarget(
+        JsonObject member,
+        IReadOnlyDictionary<string, string> refsById,
+        List<EffectTargetExport> result)
+    {
+        if (!TryReadExact(member["memberId"], out var memberId))
+            return;
+        refsById.TryGetValue(memberId, out var memberRef);
+        result.Add(new EffectTargetExport(
+            "mortal_world",
+            "combatant",
+            memberId,
+            SameTurn: memberRef != null,
+            TargetRef: memberRef,
+            BoundResourceOwnerKind: ResourceOwnerKind.CombatGroupMember));
     }
 
     internal static IReadOnlyList<EffectSourceExport> CollectLocationPlanSources(
@@ -1673,17 +1792,48 @@ internal static class EffectAcceptedTurnInputComposer
             return;
         foreach (var combatant in combatants.OfType<JsonObject>())
         {
-            if (TryReadExact(combatant["combatantId"], out var combatantId))
+            if (combatant["isGroup"] is JsonValue groupNode &&
+                groupNode.TryGetValue<bool>(out var isGroup) &&
+                isGroup)
             {
-                var boundNpcId = ReadFirstExact(combatant, "NPCId");
-                targets.Add(new EffectTargetExport(
-                    "mortal_world",
-                    "combatant",
-                    combatantId,
-                    SameTurn: false,
-                    BoundNpcId: boundNpcId));
+                foreach (var member in
+                         (combatant["members"] as JsonArray)?.OfType<JsonObject>() ??
+                         Enumerable.Empty<JsonObject>())
+                {
+                    CollectCombatTarget(member, targets);
+                }
+                continue;
             }
+            CollectCombatTarget(combatant, targets);
         }
+    }
+
+    private static void CollectCombatTarget(
+        JsonObject owner,
+        List<EffectTargetExport> targets)
+    {
+        var hasCombatantId = TryReadExact(
+            owner["combatantId"],
+            out var combatantId);
+        var hasMemberId = TryReadExact(
+            owner["memberId"],
+            out var memberId);
+        if (hasCombatantId == hasMemberId)
+            return;
+
+        var targetId = hasMemberId ? memberId : combatantId;
+        var boundNpcId = hasMemberId
+            ? null
+            : ReadFirstExact(owner, "NPCId");
+        targets.Add(new EffectTargetExport(
+            "mortal_world",
+            "combatant",
+            targetId,
+            SameTurn: false,
+            BoundNpcId: boundNpcId,
+            BoundResourceOwnerKind: hasMemberId
+                ? ResourceOwnerKind.CombatGroupMember
+                : null));
     }
 
     private static IEnumerable<SourceObjectCandidate>
@@ -2021,6 +2171,10 @@ internal sealed record EffectAcceptedOwnerExports(
             new HashSet<EffectSourceOwnerKey>(),
             new HashSet<EffectTargetKey>());
 }
+
+internal sealed record EffectAcceptedCombatMemberTargetExports(
+    IReadOnlyList<EffectTargetExport> Targets,
+    IReadOnlySet<EffectTargetKey> ReplacedTargets);
 
 internal sealed record EffectSourceOwnerKey(
     string Realm,

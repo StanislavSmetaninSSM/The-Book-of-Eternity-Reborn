@@ -153,6 +153,146 @@ public sealed class ResourcePendingResolutionIntegrationTests
     }
 
     [Fact]
+    public async Task BoundedAfterComponent_DoesNotApplyDependentReceiptWhenPredecessorMadeNoChange()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await SeedBoundedAfterComponentAsync(context);
+        await PublishPendingAsync(context);
+        var definitions = ParseDefinitions(await context.ReadJsonAsync(
+            ResourceMaterializationContract.DefinitionsPath));
+        var pending = ParsePending(
+            await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath),
+            definitions);
+        Assert.Equal(2, pending.Requests.Count);
+        var predecessor = Assert.Single(
+            pending.Requests,
+            request => request.MaximumAmount == 1m);
+        var dependent = Assert.Single(
+            pending.Requests,
+            request => request.MaximumAmount == 2m);
+
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+        var backups = await context.ReadPendingSnapshotBackupsAsync();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            new JsonObject
+            {
+                ["effectChanges"] = new JsonArray(),
+                ["effectResolutionReceipts"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["requestId"] = predecessor.RequestId,
+                        ["resultKind"] = "narrated_no_state_change",
+                        ["reason"] = "Предшествующий компонент не изменил ресурс."
+                    },
+                    new JsonObject
+                    {
+                        ["requestId"] = dependent.RequestId,
+                        ["resultKind"] = "resource_delta",
+                        ["amount"] = 2,
+                        ["reason"] = "Зависимый компонент получил числовой результат."
+                    }),
+                ["effectEventReports"] = new JsonArray()
+            });
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        AssertNoErrors(issues);
+        await using (var writeLease = await context.FileSystem
+                         .AcquireCanonicalWriteLeaseAsync())
+        {
+            var plan = await context.Normalizer.BindTo(writeLease)
+                .NormalizeAcceptedMechanicsAsync(backups);
+            Assert.NotNull(plan);
+            Assert.False(plan!.AwaitsPendingResolution);
+        }
+
+        var history = ResourceHistoryState.ParseCanonical(
+            (await context.ReadJsonAsync(ResourceMaterializationContract.HistoryPath))!
+                .ToJsonString(),
+            definitions,
+            allowMissingPristine: false);
+        Assert.NotNull(history.History);
+        Assert.Empty(history.Issues);
+        Assert.DoesNotContain(history.History!.Transitions, transition =>
+            transition.Phase == ResourceMutationPhase.EffectTrigger);
+    }
+
+    [Fact]
+    public async Task BoundedAfterComponent_AppliesDependentReceiptAfterExactPredecessor()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await SeedBoundedAfterComponentAsync(context);
+        await PublishPendingAsync(context);
+        var definitions = ParseDefinitions(await context.ReadJsonAsync(
+            ResourceMaterializationContract.DefinitionsPath));
+        var pending = ParsePending(
+            await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath),
+            definitions);
+        var predecessor = Assert.Single(
+            pending.Requests,
+            request => request.MaximumAmount == 1m);
+        var dependent = Assert.Single(
+            pending.Requests,
+            request => request.MaximumAmount == 2m);
+
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+        var backups = await context.ReadPendingSnapshotBackupsAsync();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            new JsonObject
+            {
+                ["effectChanges"] = new JsonArray(),
+                ["effectResolutionReceipts"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["requestId"] = predecessor.RequestId,
+                        ["resultKind"] = "resource_delta",
+                        ["amount"] = 1,
+                        ["reason"] = "Предшествующий компонент изменил ресурс."
+                    },
+                    new JsonObject
+                    {
+                        ["requestId"] = dependent.RequestId,
+                        ["resultKind"] = "resource_delta",
+                        ["amount"] = 2,
+                        ["reason"] = "Зависимый компонент сработал после предшественника."
+                    }),
+                ["effectEventReports"] = new JsonArray()
+            });
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        AssertNoErrors(issues);
+        await using (var writeLease = await context.FileSystem
+                         .AcquireCanonicalWriteLeaseAsync())
+        {
+            var plan = await context.Normalizer.BindTo(writeLease)
+                .NormalizeAcceptedMechanicsAsync(backups);
+            Assert.NotNull(plan);
+            Assert.False(plan!.AwaitsPendingResolution);
+        }
+
+        var history = ResourceHistoryState.ParseCanonical(
+            (await context.ReadJsonAsync(ResourceMaterializationContract.HistoryPath))!
+                .ToJsonString(),
+            definitions,
+            allowMissingPristine: false);
+        Assert.NotNull(history.History);
+        Assert.Empty(history.Issues);
+        var transitions = history.History!.Transitions
+            .Where(transition => transition.Phase == ResourceMutationPhase.EffectTrigger)
+            .OrderBy(transition => transition.ExecutionSequence)
+            .ToArray();
+        Assert.Collection(
+            transitions,
+            transition => Assert.Equal(1m, transition.AppliedAmount),
+            transition => Assert.Equal(2m, transition.AppliedAmount));
+        Assert.True(
+            transitions[0].ExecutionSequence < transitions[1].ExecutionSequence);
+    }
+
+    [Fact]
     public async Task InvalidReceipt_FailsClosedWithoutMechanicalOrPendingWrites()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
@@ -406,6 +546,66 @@ public sealed class ResourcePendingResolutionIntegrationTests
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
     }
 
+    private static async Task SeedBoundedAfterComponentAsync(
+        EffectMaterializationTestContext context)
+    {
+        await context.SeedMortalPlayerResourcesAsync(turn: 42);
+        var definition = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        var reaction = definition["components"]![0]!.AsObject();
+        reaction["componentId"] = "reaction_dispatch";
+        reaction["payload"] = new JsonObject
+        {
+            ["eventType"] = "owner_turn_end",
+            ["resultKind"] = "bounded_receipt",
+            ["componentId"] = "reaction_dependent",
+            ["dependency"] = "after_component",
+            ["afterComponentId"] = "reaction_predecessor",
+            ["maxExpansion"] = 1
+        };
+        var predecessor = EffectMaterializationTestFixture
+            .CreateDefinition("periodic_damage")["components"]![0]!
+            .DeepClone().AsObject();
+        predecessor["componentId"] = "reaction_predecessor";
+        predecessor["priority"] = 100;
+        predecessor["payload"]!["amount"] = 1;
+        var dependent = predecessor.DeepClone().AsObject();
+        dependent["componentId"] = "reaction_dependent";
+        dependent["priority"] = -100;
+        dependent["payload"]!["amount"] = 2;
+        definition["components"] = new JsonArray(
+            reaction.DeepClone(),
+            predecessor.DeepClone(),
+            dependent.DeepClone());
+        definition["triggers"] = new JsonArray(new JsonObject
+        {
+            ["triggerId"] = "on_owner_turn_end",
+            ["eventType"] = "owner_turn_end",
+            ["priority"] = 100,
+            ["componentIds"] = new JsonArray(
+                "reaction_predecessor",
+                "reaction_dispatch"),
+            ["consumeUses"] = false,
+            ["resolutionMode"] = "bounded_receipt"
+        });
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        effect["lifetime"]!["remainingTurns"] = 2;
+        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(effect.DeepClone())
+            });
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.IdentityIndexPath,
+            EffectMaterializationTestFixture.CreateIdentityIndex(effect));
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+    }
+
     private static async Task PublishPendingAsync(
         EffectMaterializationTestContext context)
     {
@@ -429,7 +629,8 @@ public sealed class ResourcePendingResolutionIntegrationTests
                 ["resultKind"] = "resource_delta",
                 ["amount"] = amount,
                 ["reason"] = "Рассказчик подтвердил итог в разрешённом диапазоне."
-            })
+            }),
+            ["effectEventReports"] = new JsonArray()
         };
 
     private static JsonObject BoundedResourceDamagedTrigger() => new()

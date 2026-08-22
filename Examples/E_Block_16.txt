@@ -23,8 +23,7 @@
                     Обычный Враг ("Гоблин-копейщик"):
                     - Сгенерирован по правилам Блока 6:
                         - Тип: 'Слабый', Эффективный Уровень (EL): 9
-                        - maxHealth: "91%"
-                        - currentHealth: "91%"
+                        - Client resource projection before the exchange: health 91/91.
                         - Действия: "Удар копьем" (базовый урон 8% колющий)
                         - Сопротивления: "Рваная Кожа" (1% к колющему урону)
 
@@ -116,32 +115,38 @@
                                 
                                 ]]>
      </responsenarrative>
-     <enemiesData>
+     <resourceChanges>
       <![CDATA[
-
                                 [
                                     {
-                                        "NPCId": null, "name": "Гоблин-копейщик", "description": "Маленький, злобный гоблин, вооруженный грубо сделанным копьем. Сам по себе он выглядит слабым, но в группе может быть опасен.",
-                                        "type": "Weak", "maxHealth": "91%", "currentHealth": "23%", "maxPoise": "100%", "currentPoise": "100%", 
-                                        "actions": [{"actionName": "Удар копьем", "isActivatedEffect": true, "effects": [{"effectType": "Damage", "value": "8%", "targetType": "piercing", "effectDescription": "Наносит 8% колющего урона"}], "targetPriority": "player_character"}],                         
-                                        "resistances": [{"resistanceName": "Рваная Кожа", "resistanceValue": "1%", "resistType": "piercing", "resistTypeDisplayName": "Колющий"}], 
-                                        "activeBuffs": [],
-                                        "activeDebuffs": [{"effectType": "Debuff", "value": "-20%", "targetType": "damage (all)", "duration": 2, "sourceSkill": "Травма от критического удара", "description": "Тяжело ранен! Весь наносимый урон снижен на 20% на 2 хода."}]
+                                        "operation": "damage",
+                                        "target": { "kind": "combatant", "targetId": "combatant_goblin_spearman_001" },
+                                        "resourceKey": "health", "amount": 68,
+                                        "source": { "kind": "combat_outcome", "sourceId": "valerius_critical_slash" },
+                                        "eventRef": "turn_42:resource:1", "reason": "Valerius lands a critical sword strike."
+                                    },
+                                    {
+                                        "operation": "spend",
+                                        "target": { "kind": "player", "targetId": "player_current" },
+                                        "resourceKey": "energy", "amount": 5,
+                                        "source": { "kind": "action_cost", "sourceId": "valerius_sword_cost" },
+                                        "eventRef": "turn_42:resource:2", "reason": "Standard sword attack cost."
                                     }
                                 ]
-
                                 ]]>
-     </enemiesData>
-     <playerstatus>
+     </resourceChanges>
+     <effectChanges>
       <![CDATA[
-
-                                { "healthPercentage": "100%", "energyPercentage": "96%", "poisePercentage": "100%", "currentCondition": "Stable", "activeConditions": [] }
-
+                                [{
+                                    "operation": "apply",
+                                    "target": { "kind": "combatant", "targetId": "combatant_goblin_spearman_001" },
+                                    "source": { "kind": "combat_action", "sourceId": "action_valerius_sword_strike", "definitionKey": "critical-trauma" },
+                                    "parameters": {},
+                                    "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                    "reason": "The exact critical-trauma definition applies the two-turn injury debuff."
+                                }]
                                 ]]>
-     </playerstatus>
-     <currentenergychange>
-      -5
-     </currentenergychange>
+     </effectChanges>
      <statsincreased>
       ["strength"]
      </statsincreased>
@@ -195,25 +200,9 @@
                                 Несмотря на свою ужасную рану, гоблин слабо тычет копьем. Вы без малейшего усилия уклоняетесь от этого предсказуемого и слабого выпада, который не представляет для вас никакой угрозы. Кажется, это существо вот-вот рухнет.
                                 ]]>
      </responsenarrative>
-     <enemiesData>
-      <![CDATA[
-                                [
-                                    {
-                                        "NPCId": null, "name": "Гоблин-копейщик", "description": "Маленький, злобный гоблин, вооруженный грубо сделанным копьем. Сам по себе он выглядит слабым, но в группе может быть опасен.",
-                                        "type": "Weak", "maxHealth": "91%", "currentHealth": "23%", "maxPoise": "100%", "currentPoise": "100%",
-                                        "actions": [{"actionName": "Удар копьем", "isActivatedEffect": true, "effects": [{"effectType": "Damage", "value": "8%", "targetType": "piercing", "effectDescription": "Наносит 8% колющего урона"}], "targetPriority": "player_character"}], 
-                                        "resistances": [{"resistanceName": "Рваная Кожа", "resistanceValue": "1%", "resistType": "piercing", "resistTypeDisplayName": "Колющий"}], 
-                                        "activeBuffs": [], 
-                                        "activeDebuffs": [{"effectType": "Debuff", "value": "-20%", "targetType": "damage (all)", "duration": 1, "sourceSkill": "Травма от критического удара", "description": "Тяжело ранен! Весь наносимый урон снижен на 20% на 1 ход."}]
-                                    }
-                                ]
-                                ]]>
-     </enemiesData>
-     <playerstatus>
-      <![CDATA[
-                                { "healthPercentage": "100%", "energyPercentage": "96%", "poisePercentage": "100%", "currentCondition": "Stable", "activeConditions": [] }
-                                ]]>
-     </playerstatus>
+     <effectmaterializationnote>
+      The client advances the accepted effect lifetime; the GM does not resend the combat carrier or remaining duration.
+     </effectmaterializationnote>
     </jsonresponse>
    </step>
   </actionsequence>
@@ -236,17 +225,17 @@
                            "effects": [{"effectType": "Damage", "value": "10%", "targetType": "piercing", "effectDescription":"Deals 10% piercing damage per bullet."}],
                            "ammoType": "7.62mm Rounds", "shotsPerTurn": 3 
                        }], 
-                       "durability": "70%"
+                       Client resource projection: durability 70/100; ammunition 50/50.
                       )
-                    - Ammunition: "7.62mm Rounds" (Item in inventory: 'count': 50, 'isConsumption':true)
+                    - Ammunition is the rifle's exact common resource coordinate, not a mutable item-count mirror.
                     - Relevant Passive Skill: "Gun Nut" (+5% damage with rifles) -> combatEffect: {effects: [{effectType:"Buff", value:"5%", targetType:"damage (piercing)", description:"Passive +5% piercing damage with rifles."}]}
-                    - Current Health: 100% (Max e.g. "160%")
-                    - Current Energy: 100% (Max e.g. "130%")
+                    - Client health projection: 100/160 points
+                    - Client energy projection: 100/130 points
 
                     Enemies: 
-                    1. "Mutant Bruiser" (Moderate, EL=14, MaxHealth=128%, Resist: Bludgeoning 10%)
-                    2. "Mutant Skulker" (Weak, EL=12, MaxHealth=94%, Resist: Piercing 5%)
-                    3. "Mutant Skulker" (Weak, EL=12, MaxHealth=94%, Resist: Piercing 5%)
+                    1. "Mutant Bruiser" (Moderate, EL=14, client health projection 128/128, Resist: Bludgeoning 10%)
+                    2. "Mutant Skulker" (Weak, EL=12, client health projection 94/94, Resist: Piercing 5%)
+                    3. "Mutant Skulker" (Weak, EL=12, client health projection 94/94, Resist: Piercing 5%)
                     (Assume their 'actions' and full stats generated as per #6.1.3)
 
                     Pre-generated Dices: [12, 16, 8, 19, 4, 11, 15, 7, 10, 13, 6, 1, 20, 2]
@@ -324,66 +313,47 @@
                                 The first bullets tear into its tough hide, making it roar and stumble. You keep the sights on it, and the follow-up shots shred through, dropping the massive mutant in a heap. One down!
                                 ]]>
      </responsenarrative>
-     <UpdateInventory>
-      <![CDATA[ [{"existedId": "ammo-762-id", "name": "7.62mm Rounds", "count": 47}] ]]>
-     </UpdateInventory>
-     <enemiesData>
+     <resourceChanges>
       <![CDATA[
-
                                 [
                                     {
-                                        "NPCId":null, 
-                                        "name":"Mutant Bruiser", 
-                                        "description": "Громадина из искаженной плоти и мускулов. Он неуклюже движется вперед, демонстрируя очевидную силу, а его шкура толстая и мозолистая.",
-                                        "type":"Moderate", 
-                                        "maxHealth":"128%", 
-                                        "currentHealth":"0%", 
-                                        "actions":[],
-                                        "resistances":[], 
-                                        "activeBuffs":[], 
-                                        "activeDebuffs":[{
-                                            "effectType":"Debuff", 
-                                            "value":"-10%", 
-                                            "targetType":"speed", 
-                                            "duration":0, 
-                                            "sourceSkill":"Rifle Trauma", 
-                                            "description":"Staggered (Effect ended as target defeated)"
-                                        }]
+                                        "operation": "damage",
+                                        "target": { "kind": "combatant", "targetId": "combatant_mutant_bruiser_001" },
+                                        "resourceKey": "health", "amount": 48,
+                                        "source": { "kind": "combat_outcome", "sourceId": "rifle_burst_shot_1" },
+                                        "eventRef": "turn_42:resource:1", "reason": "First burst hit."
                                     },
                                     {
-                                        "NPCId":null, 
-                                        "name":"Mutant Skulker", 
-                                        "description": "Жилистый, быстро передвигающийся мутант, который держится низко к земле. Его острые когти и дерганые движения указывают на то, что он полагается на скорость и внезапность.",
-                                        "type":"Weak", 
-                                        "maxHealth":"94%", 
-                                        "currentHealth":"94%", 
-                                        "actions":[/*...Skulker actions...*/], 
-                                        "resistances":[/*...*/],
-                                        "activeBuffs":[], 
-                                        "activeDebuffs":[]
+                                        "operation": "damage",
+                                        "target": { "kind": "combatant", "targetId": "combatant_mutant_bruiser_001" },
+                                        "resourceKey": "health", "amount": 48,
+                                        "source": { "kind": "combat_outcome", "sourceId": "rifle_burst_shot_2" },
+                                        "eventRef": "turn_42:resource:2", "reason": "Second burst hit."
                                     },
                                     {
-                                        "NPCId":null, 
-                                        "name":"Mutant Skulker", 
-                                        "description": "Жилистый, быстро передвигающийся мутант, который держится низко к земле. Его острые когти и дерганые движения указывают на то, что он полагается на скорость и внезапность.",
-                                        "type":"Weak", 
-                                        "maxHealth":"94%", 
-                                        "currentHealth":"94%", 
-                                        "actions":[/*...Skulker actions...*/], 
-                                        "resistances":[/*...*/], 
-                                        "activeBuffs":[], 
-                                        "activeDebuffs":[]
+                                        "operation": "damage",
+                                        "target": { "kind": "combatant", "targetId": "combatant_mutant_bruiser_001" },
+                                        "resourceKey": "health", "amount": 48,
+                                        "source": { "kind": "combat_outcome", "sourceId": "rifle_burst_shot_3" },
+                                        "eventRef": "turn_42:resource:3", "reason": "Third burst hit."
+                                    },
+                                    {
+                                        "operation": "spend",
+                                        "target": { "kind": "item", "targetId": "item_scavenged_assault_rifle_001" },
+                                        "resourceKey": "ammunition", "amount": 3,
+                                        "source": { "kind": "local_item_cost", "sourceId": "item_scavenged_assault_rifle_001" },
+                                        "eventRef": "turn_42:resource:4", "reason": "Three-round burst."
+                                    },
+                                    {
+                                        "operation": "spend",
+                                        "target": { "kind": "player", "targetId": "player_current" },
+                                        "resourceKey": "energy", "amount": 10,
+                                        "source": { "kind": "action_cost", "sourceId": "rifle_burst_cost" },
+                                        "eventRef": "turn_42:resource:5", "reason": "Burst-fire exertion."
                                     }
                                 ]
-
                                 ]]>
-     </enemiesData>
-     <playerstatus>
-      <![CDATA[ {"healthPercentage":"100%", "energyPercentage":"90%", "poisePercentage":"100%", "currentCondition":"Stable", "activeConditions":[]} ]]>
-     </playerstatus>
-     <currentenergychange>
-      -10
-     </currentenergychange>
+     </resourceChanges>
      <statsincreased>
       ["dexterity"]
      </statsincreased>
@@ -400,9 +370,9 @@
 
                     Player ("Anya", PC, Level 8, Mage)
                     - Modified Intelligence: 45. Active Skill "Frost Shard" (base 20% cold damage, scalesValue, targetPriority: current_target)
-                    Generic Ally ("Town Guard", Moderate, EL=7, MaxHealth=114%)
+                    Generic Ally ("Town Guard", Moderate, EL=7, client health projection 114/114)
                     - Actions: "Spear Jab" (CombatActionObject, base 8% piercing), "Guard Stance" (Self-buff +10% all resist)
-                    Generic Enemy ("Wild Boar", Weak, EL=6, MaxHealth=87%, Resist: slashing 5%)
+                    Generic Enemy ("Wild Boar", Weak, EL=6, client health projection 87/87, Resist: slashing 5%)
                     Dices: [10, 15, 5, 12, 18, 9]
                     Anya Crit Threshold: 20 (StdLuck assumed 10)
                     Location: "Old Road" (Difficulty Profile: { combat: 5, environment: 8, social: 2, exploration: 3 })
@@ -448,39 +418,38 @@
                                     You channel arcane energies, and a shard of pure frost materializes, launching towards the Wild Boar! It strikes with a chilling explosion, and the boar stumbles, its movements suddenly sluggish from the intense cold.
                                 ]]>
      </responsenarrative>
-     <enemiesData>
+     <resourceChanges>
       <![CDATA[ 
-
+                                [
+                                  {
+                                    "operation": "damage",
+                                    "target": { "kind": "combatant", "targetId": "combatant_wild_boar_001" },
+                                    "resourceKey": "health", "amount": 47,
+                                    "source": { "kind": "combat_outcome", "sourceId": "anya_frost_shard_hit" },
+                                    "eventRef": "turn_42:resource:1", "reason": "Critical Frost Shard hit."
+                                  },
+                                  {
+                                    "operation": "spend",
+                                    "target": { "kind": "player", "targetId": "player_current" },
+                                    "resourceKey": "energy", "amount": 7,
+                                    "source": { "kind": "action_cost", "sourceId": "anya_frost_shard_cost" },
+                                    "eventRef": "turn_42:resource:2", "reason": "Frost Shard casting cost."
+                                  }
+                                ]
+                                ]]>
+     </resourceChanges>
+     <effectChanges>
+      <![CDATA[
                                 [{
-                                    "NPCId":null, 
-                                    "name":"Wild Boar", 
-                                    "description": "Крупный, агрессивный кабан с острыми клыками и вздыбленной шерстью. Он фыркает и роет землю копытом, готовый к атаке.",
-                                    "type":"Weak", 
-                                    "maxHealth":"87%", 
-                                    "currentHealth":"40%", 
-                                    "actions":[/*Boar actions*/], 
-                                    "resistances":[/*Boar resist*/], 
-                                    "activeBuffs":[], 
-                                    "activeDebuffs":[{
-                                        "effectType":"Debuff", 
-                                        "value":"-20%", 
-                                        "targetType":"speed", 
-                                        "duration":1, 
-                                        "sourceSkill":"Frost Shard Trauma", 
-                                        "description":"Chilled! Speed reduced by 20% for 1 turn."
-                                    }]
-                                }
-
+                                  "operation": "apply",
+                                  "target": { "kind": "combatant", "targetId": "combatant_wild_boar_001" },
+                                  "source": { "kind": "skill", "sourceId": "skill_frost_shard", "definitionKey": "frost-shard-chilled" },
+                                  "parameters": {},
+                                  "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                  "reason": "The exact Frost Shard definition applies Chilled."
+                                }]
                                 ]]>
-     </enemiesData>
-     <playerstatus>
-      <![CDATA[ 
-                                    {"healthPercentage":"100%", "energyPercentage":"93%", "poisePercentage":"100%", "currentCondition":"Stable", "activeConditions":[]} 
-                                ]]>
-     </playerstatus>
-     <currentenergychange>
-      -7
-     </currentenergychange>
+     </effectChanges>
      <statsincreased>
       ["intelligence"]
      </statsincreased>
@@ -515,31 +484,18 @@
                                     The Town Guard, seeing the boar slowed by your spell, seizes the moment and thrusts his spear deep into its flank. The beast squeals in pain!
                                 ]]>
      </responsenarrative>
-     <enemiesData>
+     <resourceChanges>
       <![CDATA[ 
-
                                     [{
-                                        "NPCId":null, 
-                                        "name":"Wild Boar", 
-                                        "description": "Крупный, агрессивный кабан с острыми клыками и вздыбленной шерстью. Он фыркает и роет землю копытом, готовый к атаке.",
-                                        "type":"Weak", 
-                                        "maxHealth":"87%", 
-                                        "currentHealth":"32%", 
-                                        "actions":[/*Boar actions*/], 
-                                        "resistances":[/*Boar resist*/], 
-                                        "activeBuffs":[], 
-                                        "activeDebuffs":[{
-                                            "effectType":"Debuff", 
-                                            "value":"-20%", 
-                                            "targetType":"speed", 
-                                            "duration":1, 
-                                            "sourceSkill":"Frost Shard Trauma", 
-                                            "description":"Chilled! Speed reduced by 20% for 1 turn."
-                                        }]
-                                    } 
-
+                                      "operation": "damage",
+                                      "target": { "kind": "combatant", "targetId": "combatant_wild_boar_001" },
+                                      "resourceKey": "health", "amount": 8,
+                                      "source": { "kind": "combat_outcome", "sourceId": "guard_spear_jab" },
+                                      "eventRef": "turn_42:resource:3",
+                                      "reason": "The Guard strikes the chilled Boar."
+                                    }]
                                 ]]>
-     </enemiesData>
+     </resourceChanges>
     </jsonresponse>
    </step>
   </actionsequence>
@@ -619,40 +575,26 @@
 
                                 ]]>
      </response>
-     <enemiesData>
+     <resourceChanges>
       <![CDATA[ 
-
-                                    [{
-                                        "NPCId":"thorne-001", 
-                                        "name":"Captain Thorne", 
-                                        "description": "Закаленный капитан стражи в полных латах. Его шрамы и уверенная стойка говорят о том, что он — опасный и опытный противник.",
-                                        "type":"Strong", 
-                                        "maxHealth":"240%", 
-                                        "currentHealth":"20%", 
-                                        "actions":[], 
-                                        "resistances":[], 
-                                        "activeBuffs":[], 
-                                        "activeDebuffs":[]
-                                    }] 
-
+                                    [
+                                      {
+                                        "operation": "damage",
+                                        "target": { "kind": "npc", "targetId": "thorne-001" },
+                                        "resourceKey": "health", "amount": 220,
+                                        "source": { "kind": "combat_outcome", "sourceId": "whisper_shadow_strike" },
+                                        "eventRef": "turn_42:resource:1", "reason": "Critical Shadow Strike."
+                                      },
+                                      {
+                                        "operation": "spend",
+                                        "target": { "kind": "player", "targetId": "player_current" },
+                                        "resourceKey": "energy", "amount": 12,
+                                        "source": { "kind": "action_cost", "sourceId": "whisper_shadow_strike_cost" },
+                                        "eventRef": "turn_42:resource:2", "reason": "Shadow Strike cost."
+                                      }
+                                    ]
                                 ]]>
-     </enemiesData>
-     <playerstatus>
-      <![CDATA[ 
-
-                                    {
-                                        "healthPercentage":"100%", 
-                                        "energyPercentage":"88%", 
-                                        "poisePercentage":"100%",
-                                        "currentCondition":"Stable",
-                                        "activeConditions":[]
-                                    } 
-
-                                ]]>
-     </playerstatus>
-     <currentenergychange>
-      -12
-     </currentenergychange>
+     </resourceChanges>
      <statsincreased>
       ["dexterity"]
      </statsincreased>

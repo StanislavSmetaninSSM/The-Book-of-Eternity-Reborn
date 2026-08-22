@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="10">
  <title>
   Item Management and Properties
@@ -41,7 +42,6 @@
                 "isConsumption": "boolean",
                 "containerWeight": "double_or_null",
                 "weightReduction": "double_or_null",
-                "durability": "percentage_string",
                 "combatEffect": ["array_of_combat_action_objects_optional"],
                 "equipmentSlot": "string_or_array_of_strings_or_null",
                 "accessoryForSlot": "string_or_array_of_strings_or_null",
@@ -63,7 +63,7 @@
                             "description": "user_readable_summary_of_rewards_string",
                             "improvedBonuses": [ /* Array of strings for new/improved item bonuses */ ],
                             "newCombatEffects": [ /* Array of full Combat Action Objects */ ],
-                            "statBoostsToItemItself": [ /* e.g., "+10% durability", "+5% base_damage_value_of_primary_effect" */ ],
+                            "statBoostsToItemItself": [ /* e.g., "increase durability capacity by 10", "+5% base_damage_value_of_primary_effect" */ ],
                             "changesDescriptionTo": "new_item_description_string_optional",
                             "changesImagePromptTo": "new_item_image_prompt_string_optional",
                             "otherNarrativeChanges": "string_optional"
@@ -776,18 +776,18 @@
                             ]]>
        </content>
       </rule>
-      <rule id="10.2.7" name="DurabilityProperty">
+      <rule id="10.2.7" name="DurabilityResource">
        <title>
-        Item Property: 'durability'
+        Item durability as a common resource
        </title>
        <content type="rule_text">
         <![CDATA[
 
-                            Set 'durability' to the item's current durability as a percentage string (e.g., "100%", "0%").
-                            100% is max, 0% is broken.
-                            The general rules for durability, how it's lost, and its relation to item quality are defined in InstructionBlock '5' -> Rule '5.15' (Item Durability and Degradation Overview).
-                            New items are "100%" unless found damaged or narrative dictates otherwise.
-                            When durability changes, report the item with its new 'durability' in 'UpdateInventory'.
+                            Durability is the built-in common resource key durability owned by the permanent item identity. It is not an Item Object field.
+                            A same-turn new item that needs durability includes one entry { "resourceKey": "durability", "maximum": 100 } in its resourceMaterialization.resources array. The sealed definition initializes current durability to maximum.
+                            Loss and repair use resourceChanges with operation damage/restore, target kind item and the exact permanent itemId (or an accepted same-turn targetRef), plus a registered source. A capacity upgrade uses resourceCapacityChanges.reconfigure with an explicit permitted disposition.
+                            The general gameplay rules for wear, breakage, quality, and repair remain in InstructionBlock '5' -> Rule '5.15'; only their state authority has moved to the common ledger.
+                            Never put current/maximum durability into UpdateInventory, customProperties, prose-only effects, or a sidecar.
                         
                             ]]>
        </content>
@@ -1351,7 +1351,7 @@
 
                                     For EACH generated starting item (including those inside containers):
                                     a) Check if it requires resources (refer to InstructionBlock '5' -> Rule '5.14' (Item Resources Management Overview)).
-                                    b) If resources required, ensure item is generated with logical starting 'resource', 'maximumResource', 'resourceType'. These changes are reported via 'inventoryItemsResources'.
+                                    b) If a bounded internal reserve is required, add one exact entry to the new item's resourceMaterialization.resources array, for example { "resourceKey": "charges", "maximum": 10 }. The client initializes current state from the sealed definition; never author a current value.
                                     c) If item uses another item as resource (bow uses arrows), ensure starting quantity of ammo item is also provided (via 'UpdateInventory').
                                
                                     ]]>
@@ -1364,12 +1364,12 @@
          <content type="rule_text">
           <![CDATA[
 
-                                    -   Weapons & Ammunition: Ranged weapons need ammo (e.g., Quiver with 10-20 Arrows). Ammo containers need 'resource' fields set.
-                                    -   Liquid Containers: Waterskins, Canteens start with water (e.g., 'resource: 8, maximumResource: 10, resourceType: "sips"').
-                                    -   Powered Items: Lanterns need fuel. Devices need batteries/charge.
-                                    -   Consumable Tools: Medkits/Bandages need 'uses'. Torches need burn time.
-                                    -   Magic Items: Scrolls, wands, staves may need charges or specific resources to function.
-                                    -   Crafting Materials: Items like 'Iron Ingot' may need to be provided as resources for crafting tools or weapons.
+                                    -   Ranged equipment: loose projectiles remain ordinary item count; an internal magazine uses the sealed ammunition capability and one common resource coordinate.
+                                    -   Liquid Containers: a bounded internal supply uses an admitted sealed reserve and declares only its one-time maximum through resourceMaterialization.
+                                    -   Powered Items: lantern fuel, device batteries, and magical charges use charges or a validated setting-defined reserve.
+                                    -   Reusable tools may use charges or generic_reserve; one-use physical consumables remain item count.
+                                    -   Magic Items: scrolls, wands, and staves may use charges or a validated setting-defined reserve.
+                                    -   Crafting materials remain item/count or their established crafting authority; do not misclassify them as an internal reserve.
 
                                     ]]>
          </content>
@@ -1383,8 +1383,8 @@
 
                                     - Mentally check EACH starting item for resource dependencies.
                                     - Verify ALL required resources are included and counts/values are logical.
-                                    - Ensure resource-related fields are correctly set for items managing internal resources.
-                                    - If an item is missing required resources, generate the resources to work.
+                                    - Ensure each bounded reserve is declared exactly once in resourceMaterialization and is allowed by a sealed definition for owner kind item.
+                                    - If capacity authority is missing, fix the one-time materialization envelope before acceptance; never invent a current-value field.
 
                                     ]]>
          </content>
@@ -1593,25 +1593,21 @@
 
                                     1.  Items with Multiple Identical Uses (Stackable Consumables):
                                         -   Example: A stack of 5 individual "Throwing Knives" or 3 single-dose "Healing Potions".
-                                        -   Structure: The item has 'isConsumption: true' and 'count' > 1. It does NOT have a 'resource' field.
+                                        -   Structure: The item has 'isConsumption: true' and 'count' > 1. It has no internal resource capability.
                                         -   Upon Activation: The 'count' of this item stack decreases by 1. This change is reported via 'UpdateInventory'.
 
                                     2.  A Single Item with Internal, Re-usable Charges:
                                         -   Example: A "Wand of Magic Missiles" with 10 charges, a re-usable "Medkit" with 5 uses.
-                                        -   Structure: The item has 'count: 1' and 'isConsumption: false' (the wand itself isn't consumed). It MUST have resource fields ('resource', 'maximumResource', 'resourceType').
-                                        -   Upon Activation: The item's 'resource' decreases by 1. This change is reported via 'inventoryItemsResources'. The 'count' is unchanged.
+                                        -   Structure: The item has 'count: 1', 'isConsumption: false', and was materialized with the charges or generic_reserve capability.
+                                        -   Upon Activation: emit resourceChanges operation=spend against the exact itemId and resource key with source kind=local_item_cost bound to the same item. The count is unchanged.
 
                                     3.  A Stack of Items, where EACH has Internal Resources:
                                         -   Example: A stack of 3 two-dose "Healing Potions".
-                                        -   Structure: The item stack has 'count: 3' and 'isConsumption: true'. It ALSO has resource fields (e.g., 'resource: 2', 'maximumResource: 2', 'resourceType: "doses"').
-                                        -   Upon Activation: The 'resource' of ONE item in the stack decreases by 1. This change is reported via 'inventoryItemsResources'. The 'count' of the stack remains 3.
-                                        -   When 'resource' reaches 0: The system understands that one item from the stack is now empty and effectively "used up". 
-                                        Your responsibility is simply to report the resource change. 
-                                        The system will handle the eventual removal of the empty item from the stack if necessary.
+                                        -   A stack whose individual units have their own internal reserve must first use the item identity split contract so the selected physical unit has one permanent itemId and one resource coordinate.
+                                        -   Spend against that exact item identity through resourceChanges. Count, merge, and removal then follow the item lifecycle contract; array position or a shared stack value is never authority.
                                     
-                                    CRITICAL NOTE FOR NPCs: 
-                                    When an NPC uses an item with internal resources, the change MUST be reported via the 'NPCInventoryResourcesChanges' command as defined in Rule #10.8.
-                                    The logic of consumption (decreasing 'resource' vs. 'count') is identical to the player's.
+                                    CRITICAL NOTE FOR NPCs:
+                                    Item resource ownership does not change when the carrier is an NPC. Use the exact permanent itemId through the same resourceChanges/local_item_cost route; never address the NPC inventory slot or copy a current value.
 
                                     ]]>
          </content>
@@ -2248,7 +2244,7 @@
                                 a)  Set 'isUnlocked: true' for that specific card within the item's 'fateCards' array.
                                 b)  Apply 'rewards.improvedBonuses': Add the new bonus strings to (or modify existing ones in) the item's main 'bonuses' array.
                                 c)  Apply 'rewards.newCombatEffects': Add new 'Combat Action Objects' to (or modify existing ones in) the item's 'combatEffect' array.
-                                d)  Apply 'rewards.statBoostsToItemItself' (e.g., update 'durability', or modify the base 'value' within its primary 'combatEffect.effects[n]').
+                                d)  Apply non-resource 'rewards.statBoostsToItemItself' to the appropriate structured item authority. If a reward changes durability or another bounded maximum, emit an exact resourceCapacityChanges reconfigure command separately; never place resource state in UpdateInventory.
                                 e)  If 'rewards.changesDescriptionTo' or 'rewards.changesImagePromptTo' are present, you MUST update the item's 'description' and 'image_prompt' fields with the new values.
                                 f)  Incorporate any 'otherNarrativeChanges' into the item's description or properties as logically appropriate.
 
@@ -2312,68 +2308,24 @@
       </rule>
      </content>
     </rule>
-    <rule id="10.8" name="NPCItemResourceManagement">
+    <rule id="10.8" name="NpcCarriedItemResourceManagement">
      <title>
-      Managing NPC Item Resources ('NPCInventoryResourcesChanges')
+      NPC-carried item resource operations
      </title>
      <description>
-      This rule defines how to report changes to the internal resources (charges, uses, ammo) of items possessed by NPCs.
-                    This is crucial for tracking the depletion of consumables or limited-use items for key NPCs.
+      An item keeps one permanent resource owner while it moves between player, NPC, location, storage, or offscreen carriers.
      </description>
-     <content type="ruleset">
-      <rule id="10.8.1">
-       <title>
-        Triggering Conditions
-       </title>
-       <content type="rule_text">
-        <![CDATA[
+     <content type="rule_text">
+      <![CDATA[
 
-                            Include the 'NPCInventoryResourcesChanges' key in the JSON response if an NPC uses a charge from a wand, drinks a dose of a potion, 
-                            fires an arrow from a quiver they possess, or otherwise consumes a resource from an item in their inventory.
-                            
-                            ]]>
-       </content>
-      </rule>
-      <rule id="10.8.2">
-       <title>
-        Structure for NPC Item Resource Change Object
-       </title>
-       <instructiontext>
-        Each object in the 'NPCInventoryResourcesChanges' array reports a change for a single item stack belonging to a single NPC.
-       </instructiontext>
-       <content language="json" type="code_example">
-        <![CDATA[
-
-                            Mandatory format for each object in 'NPCInventoryResourcesChanges':
-                            {
-                                "NPCId": "guid_of_the_npc_from_Context",
-                                "NPCName": "full_name_of_the_npc_string",
-                                "itemId": "guid_of_the_item_from_NPC_inventory",
-                                "itemName": "name_of_the_item",
-                                "newResourceValue": "integer_new_value_of_the_resource"
-                            }
+                            When an NPC uses, reloads, depletes, repairs, or otherwise changes a bounded reserve of an item:
+                            1. Resolve the exact permanent itemId from accepted item identity authority; NPC name, inventory position, and display name are not selectors.
+                            2. Emit resourceChanges with operation damage/restore/spend/gain, target { kind: "item", targetId: <exact itemId> }, the sealed resourceKey, positive amount, exact ordinal eventRef, reason, and the registered item-local source bound to that same item.
+                            3. Do not write an after-value, current/maximum field, carrier-local copy, or NPC-specific item-resource array.
+                            4. Keep count changes, movement, split/merge, and terminal consumption in the item lifecycle commands; the common plan composes them atomically with resource history.
+                            5. Log the narrative reason in gm_thoughts_markdown without treating the prose as mechanical authority.
 
                             ]]>
-       </content>
-      </rule>
-      <rule id="10.8.3">
-       <title>
-        Logging and Process
-       </title>
-       <content type="rule_text">
-        <![CDATA[
-
-                            1.  Identify the NPC, the item they used, and the resource consumed.
-                            2.  Calculate the 'newResourceValue'.
-                            3.  Create the object as per the structure above, retrieving IDs and names from the NPC's data, ideally from 'NPCsInScene' if the NPC is present in the current scene.
-                            4.  Add the object to the 'NPCInventoryResourcesChanges' array.
-                            5.  Log the event in 'gm_thoughts_markdown'.
-                                Example Log: 
-                                "NPC 'Elara' used a dose of her 'Healing Salve' (ID: item-salve-002). Resource changed from 3 to 2."
-                            
-                            ]]>
-       </content>
-      </rule>
      </content>
     </rule>
    </content>
@@ -2392,7 +2344,8 @@
     <![CDATA[
                         Mandatory format for Vehicle Objects:
                         {
-                            "vehicleId": "string_id_or_null",
+                            "vehicleId": "exact_existing_vehicle_id_optional",
+                            "vehicleRef": "same_turn_vehicle_ref_optional",
                             "name": "string", // Translate to user language
                             "description": "string", // Visual and functional description
                             "image_prompt": "string", // Mandatory for new vehicles
@@ -2400,13 +2353,17 @@
                             "isSentient": "boolean", // True for horses, dragons, AI drones. False for cars, mundane boats
                             "availability": "string", // 'Active' (currently ridden), 'Parked' (left in a specific location), or 'Pocket' (summonable anywhere)
                             "currentLocationId": "string_id_or_null", // Where it is parked. Null if Active or Pocket
-                            "maxHealth": "percentage_string", // e.g., "300%" - represents durability/HP
-                            "currentHealth": "percentage_string", // e.g., "250%" - current durability/HP
+                            "resourceMaterialization": {
+                                "resources": [
+                                    { "resourceKey": "health", "maximum": 300 }
+                                ]
+                            },
                             "speedBonus": "integer", // Added to the player's initiative/speed when Active
                             "actions": ["array_of_combat_action_objects"], // The vehicle's weapons or attacks (e.g., Tank Cannon, Horse Kick) - as per Rule #5.5
                             "resistances": ["array_of_resistance_objects"], // Vehicle's damage resistances
                             "inventory": ["array_of_item_objects"] // Vehicles can have trunks/saddlebags
                         }
+                        A new vehicle uses exactly vehicleRef plus the one-time resourceMaterialization envelope; the client replaces the ref with permanent vehicleId and initializes health. An existing vehicle uses exactly vehicleId and omits the envelope. Activation, parking, movement, or inventory participation does not change the coordinate. Apply damage/restore through resourceChanges, and destroy/retire only through the accepted vehicle lifecycle with immutable terminal history.
                         ]]>
    </content>
   </rule>

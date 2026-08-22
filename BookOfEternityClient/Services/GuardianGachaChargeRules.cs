@@ -82,8 +82,6 @@ internal static class GuardianGachaChargeRules
         var gachaSystem = guardian["gachaSystem"] as JsonObject ?? new JsonObject();
         if (gachaSystem["gachaHistory"] is not JsonArray)
             gachaSystem["gachaHistory"] = new JsonArray();
-        gachaSystem.Remove("chargesPerReturn");
-        gachaSystem.Remove("chargesUsedThisReturn");
         guardian["gachaSystem"] = gachaSystem;
     }
 

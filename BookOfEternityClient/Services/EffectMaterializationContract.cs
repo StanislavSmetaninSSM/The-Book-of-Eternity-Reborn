@@ -524,9 +524,11 @@ internal static class EffectMaterializationContract
         if (!TryGetObject(root, path, "chronology", issues, out var chronology))
             return;
         var chronologyPath = path + ".chronology";
-        ValidateClosedObject(chronology, chronologyPath, Set("createdAtTurn", "createdEventRef", "lastTransitionId", "lastTransitionTurn"), issues, "effect_materialization_unknown_field");
+        ValidateClosedObject(chronology, chronologyPath, Set("createdAtTurn", "createdEventRef", "causalEventRef", "lastTransitionId", "lastTransitionTurn"), issues, "effect_materialization_unknown_field");
         var created = RequirePositiveInt(chronology, chronologyPath, "createdAtTurn", issues);
         RequireExactIdentifier(chronology, chronologyPath, "createdEventRef", issues);
+        if (chronology.TryGetProperty("causalEventRef", out _))
+            RequireExactIdentifier(chronology, chronologyPath, "causalEventRef", issues);
         RequireExactIdentifier(chronology, chronologyPath, "lastTransitionId", issues);
         var last = RequirePositiveInt(chronology, chronologyPath, "lastTransitionTurn", issues);
         if (created.HasValue && last.HasValue && last < created)

@@ -110,11 +110,13 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
 
     internal async Task CaptureValidatedPendingSnapshotAsync(
         int turn = 42,
-        string currentRealm = "Mortal World")
+        string currentRealm = "Mortal World",
+        string playerAction = "Validate complete effect materialization.",
+        IReadOnlyList<int>? preGeneratedDices1d20 = null)
     {
         const string sessionId = "session_effect_materialization";
         const string requestId = "request_effect_materialization";
-        const string playerAction = "Validate complete effect materialization.";
+        ArgumentException.ThrowIfNullOrWhiteSpace(playerAction);
 
         await WriteJsonAsync(
             "input/turn_request.json",
@@ -124,7 +126,11 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
                 ["requestId"] = requestId,
                 ["turnNumber"] = turn,
                 ["currentRealm"] = currentRealm,
-                ["playerAction"] = playerAction
+                ["playerAction"] = playerAction,
+                ["preGeneratedDices1d20"] = new JsonArray(
+                    (preGeneratedDices1d20 ?? Array.Empty<int>())
+                    .Select(static value => (JsonNode)value)
+                    .ToArray())
             });
 
         var files = new JsonObject();
@@ -154,6 +160,10 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
             ["turnNumber"] = turn,
             ["requestTimestamp"] = "2026-08-14T00:00:00Z",
             ["playerAction"] = playerAction,
+            ["preGeneratedDices1d20"] = new JsonArray(
+                (preGeneratedDices1d20 ?? Array.Empty<int>())
+                .Select(static value => (JsonNode)value)
+                .ToArray()),
             ["files"] = files,
             ["snapshotFileHashes"] = snapshotFileHashes,
             ["clientOwnedValidationHashes"] = new JsonObject(),

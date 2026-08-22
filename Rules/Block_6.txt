@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <!--
 CLI COMPATIBILITY NOTICE:
 
@@ -225,7 +226,10 @@ FOR API MODE: All existing restrictions remain functional.
                             Mandatory format for each enemy object (individual or group):
 
                             { 
-                                "NPCId": "id_if_enemy_is_NPC_or_null", // For a group of generic enemies, this MUST be null.
+                                "NPCId": "exact_existing_named_NPC_id_or_null",
+                                "npcRef": "same_turn_named_NPC_ref_optional",
+                                "combatantId": "existing_client_owned_anonymous_id_optional",
+                                "combatantRef": "same_turn_anonymous_ref_optional",
                                 "name": "enemy_name_or_group_name",
                                 "image_prompt": "detailed_image_prompt_string_english_only",
                                 "description": "user_readable_description_of_the_combatant_string",
@@ -234,12 +238,24 @@ FOR API MODE: All existing restrictions remain functional.
                                 "isGroup": "boolean_defaults_to_false", // Set 'true' if this is a group of enemies.
                                 "count": "integer_optional", // MANDATORY if isGroup: true. Current number of units in the group.
                                 "unitName": "string_optional", // MANDATORY if isGroup: true. The name of an individual unit (e.g., "Goblin Spearman").
-                                "healthStates": ["array_of_strings_optional"], // MANDATORY if isGroup: true. An array of strings tracking the health of each unit (e.g., ["91%", "85%", "91%"]).
-
-                                "maxHealth": "maximum_health_in_percent", // For a group, this is the health of ONE unit.
-                                "currentHealth": "current_health_in_percent", // For a single enemy. For a group, this field MUST be 'null'.
-                                "maxPoise": "maximum_poise_string", // For a group, this is the poise of ONE unit.
-                                "currentPoise": "current_poise_string", // For a single enemy. For a group, this field MUST be 'null'.
+                                "members": [
+                                    {
+                                        "memberId": "existing_client_owned_member_id_optional",
+                                        "memberRef": "same_turn_member_ref_optional",
+                                        "resourceMaterialization": {
+                                            "resources": [
+                                                { "resourceKey": "health", "maximum": 120 },
+                                                { "resourceKey": "poise", "maximum": 80 }
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "resourceMaterialization": {
+                                    "resources": [
+                                        { "resourceKey": "health", "maximum": 120 },
+                                        { "resourceKey": "poise", "maximum": 80 }
+                                    ]
+                                },
             
                                 "actions": [ 
                                     // For groups, actions can have additional properties:
@@ -252,6 +268,8 @@ FOR API MODE: All existing restrictions remain functional.
                                 "activeBuffs": [], // For a group, this contains effects that affect the ENTIRE group.
                                 "activeDebuffs": [] // For a group, this contains effects that affect the ENTIRE group.
                             }
+
+                            Identity/resource variants are exclusive. A named NPC uses exactly NPCId or same-turn npcRef and never receives a combat-local identity or resourceMaterialization. A same-turn anonymous individual uses combatantRef plus resourceMaterialization; an existing anonymous individual uses combatantId and omits the envelope. A group has exactly count stable members; every same-turn member uses memberRef plus its own resourceMaterialization, while every existing member uses memberId and omits it. A member detached into a top-level non-group row keeps that same memberId/memberRef family and cannot also contain NPCId, npcRef, combatantId, or combatantRef; moving it out of or back into members[] preserves its combat_group_member resources, active effects, and histories. effectChanges targets either carrier as kind combatant with the exact memberId/memberRef. Current resource values are never written in combat rows. Damage/restore/spend/gain uses resourceChanges against the exact NPC, combatant, or combat_group_member owner.
 
                             The 'enemiesData' array is crucial for the combat system to track all hostile participants.                     
 
@@ -414,21 +432,21 @@ FOR API MODE: All existing restrictions remain functional.
        </content>
       </rule>
       <rule id="6.1.3.3">
-       <title>
-        'maxHealth' &amp; 'currentHealth'
+      <title>
+        Health capacity and initialization
        </title>
        <content type="rule_text">
         <![CDATA[
 
-                                    Define the enemy's health pool as a string of "Percentage Points" (see Rule #5.0).
+                                    Define the enemy's health capacity as numeric Percentage Points (see Rule #5.0). This calculation supplies only resourceMaterialization.resources[].maximum for a same-turn anonymous owner; the client initializes current health from the sealed definition.
 
-                                    a) Calculate 'maxHealth': 
+                                    a) Calculate HealthMaximum:
                                     Determine the maximum health based on the Enemy Type and its calculated 'EL'. 
                                     Use the corresponding formula for each Enemy Type:
                        
                                         1) Frail:
                         
-                                            maxHealth = min(80, 50 + EL * 0.6),
+                                            HealthMaximum = min(80, 50 + EL * 0.6),
                         
                                         Where: 
                                             'min(80, ...)' caps the maximum health for Frail enemies at 80%.
@@ -436,40 +454,38 @@ FOR API MODE: All existing restrictions remain functional.
                        
                                         2) Weak:
                         
-                                            maxHealth = (80 + EL * 1.2),
+                                            HealthMaximum = (80 + EL * 1.2),
                     
                                         Where: 
                                             Base health is 80%, increasing by 1.2% per 'EL'.
                     
                                         3) Moderate:
 
-                                            maxHealth = (100 + EL * 2),
+                                            HealthMaximum = (100 + EL * 2),
 
                                         Where: 
                                             Base health is 100%, increasing by 2% per 'EL'.
                        
                                         4) Strong:
                     
-                                            maxHealth = (150 + EL * 3.5),
+                                            HealthMaximum = (150 + EL * 3.5),
                     
                                         Where: 
                                             Base health is 150%, increasing by 3.5% per 'EL'.
                        
                                         5) Boss:
                         
-                                            maxHealth = min(500, 200 + EL * 5),
+                                            HealthMaximum = min(500, 200 + EL * 5),
 
                                         Where: 
                                             Base health is 200%, increasing by 5% per 'EL', capped at a maximum of 500%.
 
-                                    b) Format 'maxHealth': 
-                                    Convert the calculated number to a string with a '%' sign (e.g., '146%'). This represents 146 Percentage Points of health.
-                                                    
-                                    c) Set 'currentHealth': 
-                                    Set this initially equal to the formatted 'maxHealth' string, unless the narrative states the enemy is already injured (then set appropriately, e.g., '88%').
-                
-                                    d) Record Calculation: 
-                                    Log the formula used and the calculated 'maxHealth' in 'gm_thoughts_markdown'.
+                                    b) Round once to the exact integer quantum and write the numeric result as the health entry's maximum inside the one-time materialization envelope. Do not add a percent sign and do not write a current value.
+
+                                    c) If the new enemy starts injured, initialize normally at maximum and add a same-turn resourceChanges damage command against its exact combatantRef/memberRef. Existing owners never resend materialization; mutate them only through resourceChanges.
+
+                                    d) Record Calculation:
+                                    Log the formula and calculated HealthMaximum in 'gm_thoughts_markdown'.
 
                                     ]]>
        </content>
@@ -760,7 +776,10 @@ FOR API MODE: All existing restrictions remain functional.
                             Mandatory format for each ally object (individual or group):
             
                             {
-                                "NPCId": "id_if_ally_is_NPC_or_null", 
+                                "NPCId": "exact_existing_named_NPC_id_or_null",
+                                "npcRef": "same_turn_named_NPC_ref_optional",
+                                "combatantId": "existing_client_owned_anonymous_id_optional",
+                                "combatantRef": "same_turn_anonymous_ref_optional",
                                 "name": "ally_name_string",
                                 "image_prompt": "detailed_image_prompt_string_english_only",
                                 "description": "user_readable_description_of_the_combatant_string",
@@ -770,12 +789,24 @@ FOR API MODE: All existing restrictions remain functional.
                                 "isGroup": "boolean_defaults_to_false",
                                 "count": "integer_optional",
                                 "unitName": "string_optional",
-                                "healthStates": ["array_of_strings_optional"],
-
-                                "maxHealth": "maximum_health_percent_string",
-                                "currentHealth": "current_health_percent_string", // Must be 'null' for groups
-                                "maxPoise": "maximum_poise_string",
-                                "currentPoise": "current_poise_string", // Must be 'null' for groups
+                                "members": [
+                                    {
+                                        "memberId": "existing_client_owned_member_id_optional",
+                                        "memberRef": "same_turn_member_ref_optional",
+                                        "resourceMaterialization": {
+                                            "resources": [
+                                                { "resourceKey": "health", "maximum": 120 },
+                                                { "resourceKey": "poise", "maximum": 80 }
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "resourceMaterialization": {
+                                    "resources": [
+                                        { "resourceKey": "health", "maximum": 120 },
+                                        { "resourceKey": "poise", "maximum": 80 }
+                                    ]
+                                },
                                 "actions": [ 
                                 ],
                                 "resistances": [
@@ -789,6 +820,8 @@ FOR API MODE: All existing restrictions remain functional.
                                 "activeBuffs": [], 
                                 "activeDebuffs": [] 
                             }
+
+                            Use the same exclusive identity/resource variants as enemies: named NPC authority stays on the NPC; same-turn anonymous individuals/members carry only a temporary ref plus one materialization envelope; existing anonymous owners carry only their client-owned permanent ID. Current values live only in the common resource ledger.
  
                             The 'alliesData' array is crucial for the combat system to track all friendly participants.
 
@@ -913,9 +946,9 @@ FOR API MODE: All existing restrictions remain functional.
                                     The following calculations are used to define the properties of a single, individual non-NPC ally.
                                     If you are creating a group of allies (as per Rule #6.1.9), these calculations define the "archetype" unit for that group.
 
-                                    a) 'maxHealth' & 'currentHealth':
+                                    a) Health capacity:
                                     Use formulas from #6.1.3.3.a (substituting 'EL_ally' for 'EL').
-                                    Format and set 'currentHealth' as per #6.1.3.3.b-c for an individual ally. For a group, this calculated 'maxHealth' applies to each unit in 'healthStates'.
+                                    Put the numeric HealthMaximum in a same-turn anonymous ally's resourceMaterialization. For a group, give every stable member its own materialization entry. The client initializes current health; any initial injury is a separate resourceChanges damage command.
                                     Record calculation in 'gm_thoughts_markdown'.
 
                                     b) 'actions' (Array of Combat Action Objects):
@@ -1008,8 +1041,8 @@ FOR API MODE: All existing restrictions remain functional.
        </content>
       </rule>
       <rule id="6.1.6.2">
-       <title>
-        'maxHealth' &amp; 'currentHealth'
+      <title>
+        Named NPC health authority
        </title>
        <content type="rule_text">
         <![CDATA[
@@ -1019,9 +1052,9 @@ FOR API MODE: All existing restrictions remain functional.
                                        To do this, start with their standard characteristics from Context ('NPCsInScene'). 
                                        Then, add all permanent, flat, and unconditional bonuses from their currently equipped items ('equippedItems') and passive skills ('passiveSkills').
 
-                                    b) Calculate 'maxHealth': Use the universal formula from #5.7.3 with the values from the previous step:
+                                    b) Calculate the NPC health capacity through the universal formula from #5.7.3 with the values from the previous step:
 
-                                        maxHealth% = 100 + floor(NPC.PermanentlyModifiedConstitution * 2.0) + floor(NPC.PermanentlyModifiedStrength * 1.0)
+                                        HealthMaximum = 100 + floor(NPC.PermanentlyModifiedConstitution * 2.0) + floor(NPC.PermanentlyModifiedStrength * 1.0)
                                         (
                                             Ensure the result does not exceed a reasonable cap for NPCs, e.g., 500% for extremely powerful NPC bosses, 
                                             or align with the health formulas for 'Boss' type enemies if simpler
@@ -1032,9 +1065,9 @@ FOR API MODE: All existing restrictions remain functional.
                                     the GM may opt to use the 'Boss' enemy health formula from #6.1.3.3.a using 'NPC.level' as 'EL' for a more challenging encounter.
                                     Clearly log this decision.
 
-                                    c) Format 'maxHealth' as a percentage string.
-                                    d) Set 'currentHealth' equal to 'maxHealth' unless the narrative dictates they are injured.
-                                    e) Record Calculation in 'gm_thoughts_markdown', showing how you derived the Permanently Modified values before calculating health.
+                                    c) A named NPC's owner materializer—not the combat row—seals this capacity when the NPC is first created. Existing named NPC combat rows contain only exact NPCId and never resend capacity/current values.
+                                    d) Apply injury or healing through resourceChanges against owner kind npc and the exact NPC identity.
+                                    e) Record the calculation in 'gm_thoughts_markdown', showing how you derived the Permanently Modified values before calculating health.
 
                                     ]]>
        </content>
@@ -1339,11 +1372,7 @@ FOR API MODE: All existing restrictions remain functional.
 
                                         - "unitName": Specify the name of a single unit (e.g., "Zombie", "Bandit Archer"). Translate.
 
-                                        - "maxHealth": Calculate the health for a single archetype unit as per rule #6.1.3.3.
-
-                                        - "healthStates": Create an array of strings, with each string being the 'maxHealth' value, repeated 'count' times.
-
-                                        - "currentHealth": MUST be 'null'.
+                                        - "members": Create exactly count stable member records. A new member has a unique memberRef and its own resourceMaterialization with numeric health/poise maxima calculated from the archetype. An existing member has its exact memberId and no envelope.
 
                                         - "actions", "resistances": Define these for a single archetype unit. 
 
@@ -1363,20 +1392,18 @@ FOR API MODE: All existing restrictions remain functional.
                                     When the player attacks an enemy group:
 
                                     1.  Single-Target Attacks:
-                                        - The attack targets one specific unit within the group. By default, this is the unit with the highest current health 
-                                        (to represent attacking the "freshest" enemy).
+                                        - The attack targets one exact memberId/memberRef. The client projection may identify the healthiest visible member, but array position is never authority.
 
-                                        - Apply the damage to that unit's entry in the 'healthStates' array.
+                                        - Apply damage through resourceChanges to that member's health coordinate.
 
-                                        - If a unit's health drops to 0% or less, it is defeated. 
-                                        Remove its entry from 'healthStates' and decrement the group's 'count' by 1.
+                                        - If the accepted result defeats a member, provide the exact terminal group-member evidence required by the owner lifecycle, remove that exact member record, and decrement count. Resource history is retained; no direct gauge is deleted.
 
                                         - Log the action clearly: "Player attacks 'Goblin Squad Alpha', hitting one goblin. 
                                         Its health is now 45%. Squad count remains 10."
                                     
                                     2.  Area of Effect (AoE) Attacks:
                                         - Determine how many units are affected by the AoE, up to the maximum specified by the AoE skill.
-                                        - Apply damage to that many units in the 'healthStates' array.
+                                        - Emit one exact resourceChanges damage command per affected member.
                                         - Update the 'count' for any defeated units.
 
                                     ]]>
@@ -1397,12 +1424,11 @@ FOR API MODE: All existing restrictions remain functional.
 
                                     1.  The affected unit is permanently removed from the group.
 
-                                    2.  Decrement the group's 'count' by 1 and remove one entry from its 'healthStates' array (the one that would have been targeted).
+                                    2.  Decrement count and remove the exact affected member record only through the accepted owner transition.
 
                                     3.  Create a new, separate individual enemy object in 'enemiesData' for this specific unit.
 
-                                    4.  This new object inherits the archetype's properties (actions, resistances),
-                                    but has its own current health and the applied debuff in its 'activeDebuffs' array.
+                                    4.  This new object inherits the archetype's properties and the same permanent member resource coordinate; splitting presentation must not copy or reinitialize health. The applied effect is authored through the shared effect contract.
                                     
                                     5.  Give it a unique name, e.g., "Stunned Goblin Spearman".
 
@@ -1468,11 +1494,7 @@ FOR API MODE: All existing restrictions remain functional.
 
                                     - "unitName": Specify the name of a single unit (e.g., "City Guard", "Skeleton Warrior"). Translate.
 
-                                    - "maxHealth": Calculate the health for a single archetype unit as per rule #6.1.5.
-
-                                    - "healthStates": Create an array of strings, with each string being the 'maxHealth' value, repeated 'count' times.
-
-                                    - "currentHealth": MUST be 'null'.
+                                    - "members": Create exactly count stable member records. A new member has a unique memberRef and its own resourceMaterialization with numeric health/poise maxima calculated from the archetype; an existing member has memberId and no envelope.
 
                                     - "actions", "resistances": Define these for a single archetype unit. Actions for allied groups might represent coordinated maneuvers (e.g., "Volley Fire", "Shield Wall").
 
@@ -1489,13 +1511,13 @@ FOR API MODE: All existing restrictions remain functional.
                                     When an enemy attacks an ally group:
 
                                     1.  Single-Target Attacks:
-                                        - The attack targets one specific unit within the group (by default, the healthiest).
-                                        - Apply damage to that unit's entry in the 'healthStates' array.
-                                        - If a unit's health drops to 0% or less, it is defeated. Remove its entry from 'healthStates' and decrement the group's 'count' by 1.
+                                        - The attack targets one exact memberId/memberRef (the player projection may suggest the healthiest visible member).
+                                        - Apply damage through resourceChanges to that member's health coordinate.
+                                        - If the member is defeated, use the exact terminal member transition, remove that member record, and decrement count.
 
                                     2.  Area of Effect (AoE) Attacks:
                                         - Determine how many units are affected by the AoE.
-                                        - Apply damage to that many units in the 'healthStates' array.
+                                        - Emit one exact resourceChanges damage command per affected member.
                                         - Update the 'count' for any defeated units.
 
                                     ]]>
@@ -1512,11 +1534,11 @@ FOR API MODE: All existing restrictions remain functional.
 
                                     1.  The affected unit is permanently removed from the group.
 
-                                    2.  Decrement the group's 'count' by 1 and remove one entry from its 'healthStates' array.
+                                    2.  Decrement count and remove the exact affected member record through the accepted owner transition.
 
                                     3.  Create a new, separate individual ally object in 'alliesData' for this specific unit.
 
-                                    4.  This new object inherits the archetype's properties but has its own current health and the applied debuff in its 'activeDebuffs' array.
+                                    4.  This new object inherits the archetype's properties and the same permanent member resource coordinate; do not copy or reinitialize health. Apply the debuff through the shared effect contract.
                                     
                                     5.  Give it a unique name, e.g., "Feared City Guard".
 

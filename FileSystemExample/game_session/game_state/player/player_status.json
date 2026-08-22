@@ -1,7 +1,4 @@
 {
-  "healthPercentage": "100%",
-  "energyPercentage": "80%",
-  "poisePercentage": "100%",
   "activeConditions": ["Тяжелое пробуждение", "Духовная метка Азалии"],
   "characteristics": {
     "strength": 10,

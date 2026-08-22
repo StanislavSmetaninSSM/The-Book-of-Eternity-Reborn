@@ -1766,18 +1766,6 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         facts.Add(new UiEntityFact { Label = label, Value = value.Trim() });
     }
 
-    private static string FormatInventoryDurability(JsonObject item)
-    {
-        var durability = GetString(item, "durability");
-        if (string.IsNullOrWhiteSpace(durability))
-            return string.Empty;
-
-        var maxDurability = GetString(item, "maxDurability");
-        return string.IsNullOrWhiteSpace(maxDurability)
-            ? durability
-            : $"{durability}/{maxDurability}";
-    }
-
     private static string FormatInventoryItemTypeForPlayer(string? itemType)
     {
         if (string.IsNullOrWhiteSpace(itemType))
@@ -3579,7 +3567,22 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         };
         AddInventoryFactIfKnown(facts, "Тип", FormatInventoryItemTypeForPlayer(GetString(item.Data, "type")));
         AddInventoryFactIfKnown(facts, "Качество", FormatRarityForPlayer(GetString(item.Data, "quality"), string.Empty));
-        AddInventoryFactIfKnown(facts, "Прочность", FormatInventoryDurability(item.Data));
+        if (item.ResourceProjectionAvailable)
+        {
+            facts.AddRange(item.Resources.Select(static row => new UiEntityFact
+            {
+                Label = row.DisplayName,
+                Value = ResourceProjectionService.FormatValue(row)
+            }));
+        }
+        else
+        {
+            facts.Add(new UiEntityFact
+            {
+                Label = "Силы и запасы",
+                Value = ResourcePlayerFailureMessages.Unavailable
+            });
+        }
         if (extraFacts != null)
             facts.AddRange(extraFacts);
 
@@ -4789,10 +4792,15 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
             await EffectMechanicsSnapshot.LoadAsync(fs),
             Realm: stateManager.CurrentState.IsInShiningAbode ? "shining_abode" : "chaos_sea",
             TargetKind: "spiritual_conflict_side"));
+        var resourceProjection = await ResourceProjectionService.ProjectAfterlifeConflictAsync(fs, active);
         var blocks = new List<UiBlock>
         {
             localTurn.Panel,
-            BuildSpiritualActionDossier(active, stateManager.CurrentState.CurrentRealm, effectProjection)
+            BuildSpiritualActionDossier(
+                active,
+                stateManager.CurrentState.CurrentRealm,
+                effectProjection,
+                resourceProjection)
         };
         if (includeRawDiagnostics)
         {
@@ -4845,7 +4853,8 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
     private static UiEntityDossierBlock BuildSpiritualActionDossier(
         JsonObject? active,
         string? currentRealm,
-        EffectPlayerProjectionResult effectProjection)
+        EffectPlayerProjectionResult effectProjection,
+        ResourceProjectionResult resourceProjection)
     {
         var visibleConditions = BuildVisibleSpiritualConditionCards(active, effectProjection).ToList();
         if (visibleConditions.Count == 0)
@@ -4900,7 +4909,7 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
                     Title = "Состояние конфликта",
                     Icon = "target",
                     Presentation = "cards",
-                    Cards = [BuildSpiritualConflictStateCard(active)]
+                    Cards = [BuildSpiritualConflictStateCard(active, resourceProjection)]
                 },
                 new UiEntityDossierSection
                 {
@@ -4916,7 +4925,9 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         };
     }
 
-    private static UiEntityCard BuildSpiritualConflictStateCard(JsonObject? active)
+    private static UiEntityCard BuildSpiritualConflictStateCard(
+        JsonObject? active,
+        ResourceProjectionResult resourceProjection)
     {
         if (active == null)
         {
@@ -4933,8 +4944,18 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         var opposition = GetObject(GetObject(active, "oppositionSide"), "leadContestant");
         var playerName = FirstNonEmpty(GetString(player, "displayName"), "душа игрока");
         var oppositionName = FirstNonEmpty(GetString(opposition, "displayName"), "противник");
-        var playerActionEconomy = GetObject(GetObject(active, "actionEconomy"), "player");
-        var oppositionActionEconomy = GetObject(GetObject(active, "actionEconomy"), "opposition");
+        var playerActionPoints = resourceProjection.Rows.SingleOrDefault(static row =>
+            string.Equals(row.SafeOwnerSelector, "душа игрока", StringComparison.Ordinal) &&
+            string.Equals(row.ResourceKey, "spiritual_action_points", StringComparison.Ordinal));
+        var oppositionActionPoints = resourceProjection.Rows.SingleOrDefault(static row =>
+            string.Equals(row.SafeOwnerSelector, "противник", StringComparison.Ordinal) &&
+            string.Equals(row.ResourceKey, "spiritual_action_points", StringComparison.Ordinal));
+        var playerActionPointText = resourceProjection.IsAvailable
+            ? playerActionPoints == null ? "нет данных" : ResourceProjectionService.FormatValue(playerActionPoints)
+            : ResourcePlayerFailureMessages.Unavailable;
+        var oppositionActionPointText = resourceProjection.IsAvailable
+            ? oppositionActionPoints == null ? "нет открытых данных" : ResourceProjectionService.FormatValue(oppositionActionPoints)
+            : ResourcePlayerFailureMessages.Unavailable;
 
         return new UiEntityCard
         {
@@ -4947,8 +4968,8 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
                 new UiEntityFact { Label = "Позиция", Value = FormatSpiritualConflictPosition(GetString(active, "conflictPosition")) },
                 new UiEntityFact { Label = "Состояние души", Value = FormatSpiritualStrain(GetString(active, "playerSideStrain")) },
                 new UiEntityFact { Label = "Состояние противника", Value = FormatSpiritualStrain(GetString(active, "oppositionSideStrain")) },
-                new UiEntityFact { Label = "Сила души", Value = FormatSpiritualActionEconomy(playerActionEconomy) },
-                new UiEntityFact { Label = "Сила противника", Value = FormatSpiritualActionEconomy(oppositionActionEconomy) },
+                new UiEntityFact { Label = "Сила души", Value = playerActionPointText },
+                new UiEntityFact { Label = "Сила противника", Value = oppositionActionPointText },
                 new UiEntityFact { Label = "Разрешение", Value = FormatSpiritualResolutionState(GetString(active, "resolutionState")) }
             ]
         };
@@ -5012,16 +5033,6 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
     {
         var values = ReadStringArray(operations).Select(FormatSpiritualOperationType).ToList();
         return values.Count == 0 ? "не указано" : string.Join(", ", values);
-    }
-
-    private static string FormatSpiritualActionEconomy(JsonObject? actionEconomy)
-    {
-        if (actionEconomy == null)
-            return "не указана";
-
-        var current = FirstNonEmpty(GetString(actionEconomy, "current"), "?");
-        var max = FirstNonEmpty(GetString(actionEconomy, "max"), "?");
-        return $"{current}/{max} ОД";
     }
 
     private static string FormatSpiritualPayoff(JsonObject? payoff)

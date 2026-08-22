@@ -49,7 +49,7 @@ public partial class ExplorerMode
                             : null);
             if (overviewSignalsPanel != null)
                 Write(overviewSignalsPanel);
-            Write(BuildShiningOverviewPanel(context.Root, context.ResidentRoot, context.GuardiansRoot));
+            Write(BuildShiningOverviewPanel(context));
 
             var choices = new List<string>();
             if (_stateManager.CurrentState.IsInShiningAbode)

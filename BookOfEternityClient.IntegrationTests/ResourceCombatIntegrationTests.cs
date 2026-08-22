@@ -374,6 +374,187 @@ public sealed class ResourceCombatIntegrationTests
     }
 
     [Fact]
+    public async Task AcceptedTurns_GroupMemberDetachesAndRejoinsWithoutChangingResourceOwner()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationTestContext.DefinitionsPath,
+            bootstrap.Definitions!.ToCanonicalJson());
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationTestContext.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationTestContext.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+        await context.WriteExactJsonAsync(
+            EffectCarrierCatalog.EnemiesPath,
+            new JsonObject { ["enemiesData"] = new JsonArray() }.ToJsonString());
+
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
+        await context.WriteExactJsonAsync(
+            EffectCarrierCatalog.EnemiesPath,
+            new JsonObject
+            {
+                ["enemiesData"] = new JsonArray(
+                    ValidCombatGroup(
+                        NewMember("member_ref_scout", "Разведчик", 30m, 20m),
+                        NewMember("member_ref_archer", "Лучник", 25m, 15m)))
+            }.ToJsonString());
+        var createIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(createIssues, issue => issue.Severity == IssueSeverity.Error);
+        await using (var createLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+        {
+            Assert.NotNull(await context.Normalizer.BindTo(createLease)
+                .NormalizeAcceptedMechanicsAsync(backups: null));
+        }
+
+        var createdRoot = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            EffectCarrierCatalog.EnemiesPath));
+        var createdGroup = Assert.IsType<JsonObject>(
+            Assert.Single(createdRoot["enemiesData"]!.AsArray()));
+        var createdMembers = createdGroup["members"]!.AsArray()
+            .Select(node => Assert.IsType<JsonObject>(node))
+            .ToArray();
+        var detachedMember = createdMembers[0].DeepClone().AsObject();
+        var retainedMember = createdMembers[1].DeepClone().AsObject();
+        var memberId = detachedMember["memberId"]!.GetValue<string>();
+        var historyBeforeMove = ResourceHistoryState.ParseCanonical(
+            await context.FileSystem.ReadFileAsync(ResourceMaterializationTestContext.HistoryPath),
+            bootstrap.Definitions,
+            allowMissingPristine: false).History!;
+        var memberTransitionCount = historyBeforeMove.Transitions.Count(transition =>
+            transition.Coordinate.ResourceOwnerId == memberId);
+
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+        var splitGroup = createdGroup.DeepClone().AsObject();
+        splitGroup["count"] = 1;
+        splitGroup["members"] = new JsonArray(retainedMember.DeepClone());
+        var detachedRow = ValidIndividualCombatant();
+        detachedRow.Remove("combatantRef");
+        detachedRow["memberId"] = memberId;
+        detachedRow["name"] = "Отделившийся разведчик";
+        await context.WriteExactJsonAsync(
+            EffectCarrierCatalog.EnemiesPath,
+            new JsonObject
+            {
+                ["enemiesData"] = new JsonArray(splitGroup, detachedRow)
+            }.ToJsonString());
+
+        var splitIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(splitIssues, issue => issue.Severity == IssueSeverity.Error);
+        await using (var splitLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+        {
+            Assert.NotNull(await context.Normalizer.BindTo(splitLease)
+                .NormalizeAcceptedMechanicsAsync(backups: null));
+        }
+
+        await AssertStableMemberStateAsync(memberId, memberTransitionCount);
+        var splitRoot = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            EffectCarrierCatalog.EnemiesPath));
+        var splitRows = splitRoot["enemiesData"]!.AsArray()
+            .Select(node => Assert.IsType<JsonObject>(node))
+            .ToArray();
+        var canonicalDetached = Assert.Single(splitRows, row =>
+            row["memberId"]?.GetValue<string>() == memberId);
+        Assert.False(canonicalDetached.ContainsKey("combatantId"));
+        Assert.False(canonicalDetached.ContainsKey("combatantRef"));
+        Assert.False(canonicalDetached.ContainsKey("memberRef"));
+        Assert.False(canonicalDetached.ContainsKey("resourceMaterialization"));
+
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 44);
+        var rejoinedGroup = splitRows.Single(row =>
+            row["isGroup"]?.GetValue<bool>() == true).DeepClone().AsObject();
+        rejoinedGroup["count"] = 2;
+        rejoinedGroup["members"] = new JsonArray(
+            retainedMember.DeepClone(),
+            detachedMember.DeepClone());
+        await context.WriteExactJsonAsync(
+            EffectCarrierCatalog.EnemiesPath,
+            new JsonObject
+            {
+                ["enemiesData"] = new JsonArray(rejoinedGroup)
+            }.ToJsonString());
+
+        var rejoinIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(rejoinIssues, issue => issue.Severity == IssueSeverity.Error);
+        await using (var rejoinLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+        {
+            Assert.NotNull(await context.Normalizer.BindTo(rejoinLease)
+                .NormalizeAcceptedMechanicsAsync(backups: null));
+        }
+
+        await AssertStableMemberStateAsync(memberId, memberTransitionCount);
+        var rejoinedRoot = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            EffectCarrierCatalog.EnemiesPath));
+        var canonicalGroup = Assert.IsType<JsonObject>(
+            Assert.Single(rejoinedRoot["enemiesData"]!.AsArray()));
+        Assert.Contains(canonicalGroup["members"]!.AsArray().OfType<JsonObject>(), member =>
+            member["memberId"]?.GetValue<string>() == memberId);
+
+        async Task AssertStableMemberStateAsync(
+            string expectedMemberId,
+            int expectedTransitionCount)
+        {
+            var state = ResourceStateContract.ParseCanonical(
+                await context.FileSystem.ReadFileAsync(ResourceMaterializationTestContext.StatePath),
+                bootstrap.Definitions,
+                allowMissingPristine: false);
+            Assert.True(state.IsValid, string.Join(Environment.NewLine, state.Issues));
+            var entries = state.Ledger!.Entries
+                .Where(entry => entry.Coordinate.ResourceOwnerId == expectedMemberId)
+                .OrderBy(entry => entry.Coordinate.ResourceKey, StringComparer.Ordinal)
+                .ToArray();
+            Assert.Equal(new[] { "health", "poise" }, entries.Select(entry =>
+                entry.Coordinate.ResourceKey));
+            Assert.All(entries, entry => Assert.Equal(ResourceLifecycleState.Active, entry.Snapshot.State));
+
+            var history = ResourceHistoryState.ParseCanonical(
+                await context.FileSystem.ReadFileAsync(ResourceMaterializationTestContext.HistoryPath),
+                bootstrap.Definitions,
+                allowMissingPristine: false);
+            Assert.True(history.IsValid, string.Join(Environment.NewLine, history.Issues));
+            Assert.Equal(expectedTransitionCount, history.History!.Transitions.Count(transition =>
+                transition.Coordinate.ResourceOwnerId == expectedMemberId));
+            Assert.DoesNotContain(history.History.Transitions, transition =>
+                transition.Coordinate.ResourceOwnerId == expectedMemberId &&
+                transition.Operation == ResourceTransitionOperation.Retire);
+        }
+    }
+
+    [Theory]
+    [InlineData("combatantId")]
+    [InlineData("combatantRef")]
+    [InlineData("memberRef")]
+    [InlineData("npcRef")]
+    [InlineData("NPCId")]
+    public async Task CombatStateValidation_RejectsDetachedMemberWithConflictingIdentityFamily(
+        string conflictingField)
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        var detached = ValidIndividualCombatant();
+        detached.Remove("combatantRef");
+        detached["memberId"] = "member_detached_exact";
+        detached[conflictingField] = conflictingField.EndsWith("Ref", StringComparison.Ordinal)
+            ? "conflicting_ref"
+            : "conflicting_id";
+        await context.WriteExactJsonAsync(
+            EffectCarrierCatalog.EnemiesPath,
+            new JsonObject { ["enemiesData"] = new JsonArray(detached) }.ToJsonString());
+
+        var issues = await context.Validator.ValidateGameStateAsync(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "resource_owner_identity_selector_invalid" &&
+            issue.FilePath.EndsWith(".enemiesData[0]", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void NewIndividualCombatant_MaterializesHealthAndPoiseWithoutLegacyValues()
     {
         var acceptedEnemies = new JsonObject

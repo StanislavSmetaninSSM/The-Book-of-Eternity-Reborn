@@ -30,8 +30,11 @@ lineage: эти поверхности создаёт и изменяет тол
       "count": 1,
       "weight": 0.02,
       "volume": 0.01,
-      "durability": "100%",
-      "maxDurability": "100%",
+      "resourceMaterialization": {
+        "resources": [
+          { "resourceKey": "durability", "maximum": 100 }
+        ]
+      },
       "bonuses": [],
       "effects": [],
       "structuredBonuses": [],
@@ -114,8 +117,11 @@ lineage: эти поверхности создаёт и изменяет тол
       "count": 1,
       "weight": 0.15,
       "volume": 0.04,
-      "durability": "100%",
-      "maxDurability": "100%",
+      "resourceMaterialization": {
+        "resources": [
+          { "resourceKey": "durability", "maximum": 100 }
+        ]
+      },
       "bonuses": ["Наблюдение вдаль +1"],
       "effects": [],
       "structuredBonuses": [

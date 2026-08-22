@@ -30,9 +30,9 @@ This phase resolves the implementation choices needed to plan a common runtime-e
 
 ## Decision 3: Replace legacy application routes with one transient command surface
 
-**Decision**: Add `effectChanges[]` and `effectResolutionReceipts[]` to the accepted GM response. `StateDistributor` stages them together in `game_state/effects/effect_commands.json`; the common accepted-mechanics publisher consumes and removes the transient command file in the same resource/effect transaction. `playerActiveEffectsChanges`, `NPCEffectChanges`, direct non-empty combat active arrays, and direct `combatConditions[]` mutation cease to be application routes.
+**Decision**: Add `effectChanges[]`, `effectResolutionReceipts[]`, and `effectEventReports[]` to the accepted GM response. `StateDistributor` stages them together in `game_state/effects/effect_commands.json`; the common accepted-mechanics publisher consumes and removes the transient command file in the same resource/effect transaction. `effectEventReports[]` is a registry of closed event-evidence adapters: the GM reports sealed evidence, while the client selects the exact active effect/trigger and owns the transition. The first adapter is Mortal `owner_critical_failure` bound to sealed d20 evidence for Fate Shield. `playerActiveEffectsChanges`, `NPCEffectChanges`, direct non-empty combat active arrays, and direct `combatConditions[]` mutation cease to be application routes.
 
-**Rationale**: A common command can target any supported owner and lets one planner resolve identity, stack, lifetime, and source authority. Mapping commands directly into distributed canonical carriers would recreate independent partial writers.
+**Rationale**: A common command can target any supported owner and lets one planner resolve identity, stack, lifetime, source authority, and reported-event ordering. Registered evidence adapters preserve complex event-driven mechanics without granting the GM client-owned effect/trigger selectors. Mapping commands directly into distributed canonical carriers would recreate independent partial writers.
 
 **Alternatives considered**:
 

@@ -1040,7 +1040,8 @@ The current-life ordinary-item roots are client-owned empty anchors before the G
 ```text
 game_state/inventory/items.json                    -> items=[]
 game_state/inventory/item_identity_index.json      -> entries=[]
-game_state/inventory/item_resources.json           -> entries=[]
+game_state/mechanics/resource_state.json           -> schemaVersion=1, entries=[]
+game_state/mechanics/resource_history.json         -> schemaVersion=1, entries=[]
 game_state/inventory/item_bonds.json               -> entries=[]
 game_state/inventory/item_text_updates.json        -> entries=[]
 game_state/npcs/item_journals.json                  -> entries=[]

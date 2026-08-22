@@ -1,4 +1,7 @@
 <instructionblock id="12">
+ <effectmaterializationcontract>
+  Item and soul-relic effects use an exact source definition followed by effectChanges[]; see Examples/E_CLI_Effect_Materialization.txt. Item transfer does not transfer a player-target effect carrier.
+ </effectmaterializationcontract>
  <title>
   Examples For Action Checks and Resolution
  </title>
@@ -544,7 +547,7 @@
                     - Addition to Receiver (Аня): Reporting via the 'otherPlayersInteractions' object, targeting 'player-anya-guid' with an 'UpdateInventory' command.
 
                     ## Action 2: Skill Application ('Малый оберег' on Аня)
-                    - Targeted Effect on Receiver (Аня): Reporting via the 'otherPlayersInteractions' object, targeting 'player-anya-guid' with a 'playerActiveEffectsChanges' command.
+                    - Fail closed: the current effect target catalog exposes only player_current, not remote party member player-anya-guid. Do not nest an active-effect command in otherPlayersInteractions and do not invent a carrier entry. The potion transfer remains valid; the attempted ward is narrated as failing to bind.
 
                     ]]>
   </logoutput>
@@ -573,19 +576,6 @@
                                             "count": 1
                                         }
                                     ]
-                                },
-                                {
-                                    "playerActiveEffectsChanges": [
-                                        {
-                                            "effectId": null,
-                                            "effectType": "DamageReduction",
-                                            "value": "15%",
-                                            "targetType": "all",
-                                            "duration": 2,
-                                            "sourceSkill": "Малый оберег",
-                                            "description": "Защищен! Входящий урон снижен на 15% (2 хода)."
-                                        }
-                                    ]
                                 }
                             ]
                         }
@@ -597,8 +587,7 @@
 
                         Вы бросаетесь к раненой Ане. 
                         "Держи, это мое последнее," — говорите вы, вкладывая ей в руку флакон с лечебным зельем. 
-                        Не дожидаясь ответа, вы кладете руку ей на плечо и произносите слова заклинания. 
-                        Вокруг Ани вспыхивает и гаснет полупрозрачный барьер, готовый отразить следующую атаку.
+                        Не дожидаясь ответа, вы кладете руку ей на плечо и произносите слова заклинания, но чужая нить души не принимает оберег. Барьер вспыхивает и сразу гаснет; зелье передано, а защитный эффект не был создан.
 
                         ]]>
    </response>
@@ -670,19 +659,17 @@
     {
       "response": "Кристалл Древней Мудрости пульсирует теплым светом на твоей груди, когда ты склоняешься над криптограммой. Талисман Прозрения мягко вибрирует у виска, настраивая разум на нужную частоту.\n\nСимволы, казавшиеся хаотичными, начинают выстраиваться в логические цепочки. Сила реликвий души направляет твои мысли, и ты видишь скрытые закономерности. За полчаса напряженной работы ты полностью расшифровываешь текст.\n\n«Тайна архитектора... место сокрытия... восточная башня на седьмом ярусе...»",
       "statsIncreased": ["intelligence"],
-      "playerActiveEffectsChanges": [
+      "effectChanges": [
         {
-          "effectId": null,
-          "effectName": "Ментальная Ясность",
-          "description": "Эффект от синергии Soul Relics при интеллектуальной работе",
-          "duration": 3,
-          "type": "Buff",
-          "effects": {
-            "intelligenceBonus": 2,
-            "source": "Soul Relic synergy effect"
-          }
+          "operation": "apply",
+          "target": { "kind": "player", "targetId": "player_current" },
+          "source": { "kind": "item", "sourceId": "relic_crystal_ancient_wisdom", "definitionKey": "mental-clarity" },
+          "parameters": {},
+          "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+          "reason": "Экипированная реликвия активировала своё точное определение ясности."
         }
       ],
+      "effectResolutionReceipts": [],
       "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Action Check с Soul Relic интеграцией. Base 16 Int + Soul Relics → 23 Int, +6 bonus = успех вместо провала."
     }
     ]]>

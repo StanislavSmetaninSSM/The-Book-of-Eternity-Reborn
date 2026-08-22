@@ -407,7 +407,8 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
                             ["effectPayload"] = new JsonObject
                             {
                                 ["type"] = "grant_relic_refinement",
-                                ["rerolls"] = 1,
+                                [ShiningBlessingRerollAllocationContract.PropertyName] =
+                                    ShiningBlessingRerollAllocationContract.Create(1),
                                 ["freeShape"] = false,
                                 ["freeRetune"] = false
                             }

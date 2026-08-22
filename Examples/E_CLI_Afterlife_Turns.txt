@@ -12,7 +12,7 @@ Read this file whenever `game_state/meta/soul_state.json.currentRealm` is `Chaos
 
 Before using an example, first select the matching rows in `OtherGuides/Afterlife_Contract_Matrix.md`. The matrix tells the GM which scheduler contour, pending file, direct action, canonical output surface, receipt/report, and forbidden substitution apply. These examples then show worked accepted-turn patterns. They are not a replacement for the full schemas.
 
-UNIFIED AFTERLIFE RESOURCE AUTHORITY: `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` are client-owned entries in `game_state/resources/resource_state.json`; their immutable transitions are in `game_state/resources/resource_history.json`, and afterlife state retains only exact `resourceOwnerBindings`. The GM reads current/maximum values only from the documented read-only client projection or state context for the specific action and never writes direct ledger values, `chargesPerReturn`, `chargesUsedThisReturn`, numeric blessing `rerolls`, or `rerollsSpent`; `actionEconomy` is forbidden as persisted state. Ink Feathers, Light Sparks, treasuries, faction accounting, progression, relationships, and spiritual power/strain/shield remain specialized. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; only the numeric allocation enters the ledger. Old saves are not migrated and there is no legacy fallback.
+UNIFIED AFTERLIFE RESOURCE AUTHORITY: `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` are client-owned entries in `game_state/resources/resource_state.json`; their immutable transitions are in `game_state/resources/resource_history.json`, and afterlife state retains only exact `resourceOwnerBindings`. The GM reads current/maximum values only from the documented read-only client projection or state context for the specific action and never writes direct ledger values, `chargesPerReturn`, `chargesUsedThisReturn`, numeric blessing `rerolls`, or `rerollsSpent`; `actionEconomy` is forbidden as persisted state. Ink Feathers, Light Sparks, treasuries, faction accounting, progression, relationships, and spiritual power/strain/shield remain specialized. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; only the numeric allocation enters the ledger. A selected card may show the client-generated transient `rerollAllocation` object with exactly `resourceKey = blessing_rerolls` and non-negative integer `amount`; Mortal bootstrap consumes it into the common ledger and leaves only the exact client-owned `rerollResourceBinding` in pending blessing state. The GM never authors either field. Old saves are not migrated and there is no legacy fallback.
 
 ==================================================
 EXAMPLE INDEX
@@ -1151,7 +1151,10 @@ Input fragment:
           "effectPayload": {
             "type": "expand_memory_selection",
             "options": 2,
-            "rerolls": 1
+            "rerollAllocation": {
+              "resourceKey": "blessing_rerolls",
+              "amount": 1
+            }
           }
         },
         {
@@ -7166,7 +7169,7 @@ Correct contested exchange response:
 
 `afterlife_spiritual_conflict_combat_conditions_v1`: `combatConditions[]` is the client-materialized short-lived condition layer for afterlife spiritual combat. Kinds are `mark`, `ward`, `burden`, `opening`, and `vow`; source definitions own target side/actor, affected operations, finite duration/uses, `counterplay`, payoff, visibility, and legal axes. The GM never writes this carrier or any condition/effect ID. Request apply/dispel/remove through top-level `effectChanges[]`; the accepted exchange event advances uses/exchanges/scene lifetime. Read current contributions from `afterlifeSpiritualConflictPreview.conditionMechanics` with `source = accepted_effect_mechanics_snapshot_v1`, apply each only to exact `affectedOperations` / `mechanicalAxes`, and cite its `conditionId` in `rollMode`, `conflictPosition`, legal anti-control `controlState`, side strain, `tempoAdvantage`, `counterPayoff`, `actionCostAudit`, or `specialArtAudit.effectNote`. This is no generic passive stat stacking. Ordinary player output shows only visible conditions; hidden/gm_only conditions remain private and the visible `response` stays non-spoiler.
 
-`afterlife_special_art_combat_effect_v1`: current/new teachable `specialArts[]` entries carry `specialArts[].combatEffect` beside `effectSummary`. Required fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; legal axes are afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. `spiritual_action_points` is the unified resource axis and must be proven through `actionCostAudit`; `actionEconomy` is forbidden. Worked mapping: a player-owned learned special art can map `baseOperation=guard` to a one-use `rollMode.player.advantageSources[]` / `tempoAdvantage` payoff, while a non-player Guardian special art can map its opposition operation to `actionCostAudit.opposition.specialCostMultiplierPercent` and multiplied ОД plus a concrete `specialArtAudit.effectNote`. The GM must preserve `baseOperation`, read `combatEffect`, and record the exact trigger/payoff in `specialArtAudit.effectNote` or `specialArtAudits[].effectNote`; legacy `effectSummary`-only profiles remain readable.
+`afterlife_special_art_combat_effect_v1`: teachable `specialArts[]` entries carry `specialArts[].combatEffect` beside `effectSummary`. Required fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; legal axes are afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. `spiritual_action_points` is the unified resource axis and must be proven through `actionCostAudit`; `actionEconomy` is forbidden. Worked mapping: a player-owned learned special art can map `baseOperation=guard` to a one-use `rollMode.player.advantageSources[]` / `tempoAdvantage` payoff, while a non-player Guardian special art can map its opposition operation to `actionCostAudit.opposition.specialCostMultiplierPercent` and multiplied ОД plus a concrete `specialArtAudit.effectNote`. The GM must preserve `baseOperation`, read `combatEffect`, and record the exact trigger/payoff in `specialArtAudit.effectNote` or `specialArtAudits[].effectNote`; current authored profiles require the structured field and no effect compatibility inference is allowed.
 
 #896 Predvechnye special-art combat-effect coverage start
 
@@ -7446,6 +7449,197 @@ Worked accepted-condition fragment: the GM first reads the exact current contrib
   }
 }
 ```
+
+---
+
+## afterlife_effect_profile_v1 — common profile adapter
+
+Effect Materialization v1 uses the same source/identity/lifecycle contract in both afterlife realms. A validated spiritual art owns its complete definition; the GM requests application through top-level `effectChanges[]`. The client alone publishes the resulting `activeEffects[]` on the exact afterlife profile and the matching `effect_identity_index.json` entry.
+
+```json
+{
+  "artId": "art_resonant_guard",
+  "activeEffectDefinitions": [
+    {
+      "schemaVersion": 1,
+      "definitionKey": "resonant-guard",
+      "display": {
+        "name": "Резонансный оберег",
+        "description": "Ритм души удерживает давление противника.",
+        "category": "buff",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["afterlife_actor"],
+      "components": [
+        {
+          "componentId": "resonant_guard_roll",
+          "profile": "roll_modifier",
+          "priority": 100,
+          "payload": { "operations": ["guard"], "contribution": "advantage" }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "resonant-guard",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": { "mode": "uses", "initialUses": 1, "consumingEventTypes": ["afterlife_exchange_end"] },
+      "triggers": [
+        {
+          "triggerId": "resonant_guard_exchange",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["resonant_guard_roll"],
+          "consumeUses": true,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    }
+  ]
+}
+```
+
+```json
+{
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": { "kind": "afterlife_actor", "targetId": "player_soul" },
+      "source": {
+        "kind": "spiritual_art",
+        "sourceId": "art_resonant_guard",
+        "definitionKey": "resonant-guard"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Игрок применил изученное духовное искусство."
+    }
+  ],
+  "effectResolutionReceipts": []
+}
+```
+
+`hidden` and `gm_only` definitions remain mechanically available only to the internal accepted snapshot. Ordinary narrative, player status, browser/console DTOs, action selectors, and audits must not reveal them.
+
+Shining blessing entitlement is not a generic active effect. Blessing allocation, freeShape/freeRetune, memory selection, and blessing rerolls stay on their dedicated Shining client-owned contracts.
+
+## afterlife_effect_conditions_five_kinds_v1 — all five spiritual conditions
+
+The five supported `afterlife_combat_condition` kinds are `mark`, `ward`, `burden`, `opening`, and `vow`. Each complete source definition targets only `spiritual_conflict_side`, uses only Chaos Sea/Shining Abode realm authority, and has bounded `turns`, `uses`, or `scene` lifetime. The fragments below show the profile-owned payload difference; the surrounding definition still supplies display, stacking, lifetime, triggers, removal, and links.
+
+```json
+{
+  "conditionProfileFragments": [
+    {
+      "componentId": "condition_mark",
+      "profile": "afterlife_combat_condition",
+      "priority": 100,
+      "payload": {
+        "conditionKind": "mark",
+        "targetSide": "opposition",
+        "actorId": "afterlife_actor_opponent",
+        "operations": ["pressure"],
+        "axes": ["rollMode"],
+        "counterplay": ["purification"],
+        "payoff": "tracking"
+      }
+    },
+    {
+      "componentId": "condition_ward",
+      "profile": "afterlife_combat_condition",
+      "priority": 100,
+      "payload": {
+        "conditionKind": "ward",
+        "targetSide": "player",
+        "actorId": "player_soul",
+        "operations": ["guard"],
+        "axes": ["tempoAdvantage"],
+        "counterplay": ["break_ward"],
+        "payoff": "protection"
+      }
+    },
+    {
+      "componentId": "condition_burden",
+      "profile": "afterlife_combat_condition",
+      "priority": 100,
+      "payload": {
+        "conditionKind": "burden",
+        "targetSide": "opposition",
+        "actorId": "afterlife_actor_opponent",
+        "operations": ["pressure"],
+        "axes": ["actionCostAudit"],
+        "counterplay": ["shed_burden"],
+        "payoff": "attrition"
+      }
+    },
+    {
+      "componentId": "condition_opening",
+      "profile": "afterlife_combat_condition",
+      "priority": 100,
+      "payload": {
+        "conditionKind": "opening",
+        "targetSide": "opposition",
+        "actorId": "afterlife_actor_opponent",
+        "operations": ["bind"],
+        "axes": ["counterPayoff"],
+        "counterplay": ["close_opening"],
+        "payoff": "one_follow_up"
+      }
+    },
+    {
+      "componentId": "condition_vow",
+      "profile": "afterlife_combat_condition",
+      "priority": 100,
+      "payload": {
+        "conditionKind": "vow",
+        "targetSide": "player",
+        "actorId": "player_soul",
+        "operations": ["guard"],
+        "axes": ["specialArtAudit"],
+        "counterplay": ["fulfil_or_break_vow"],
+        "payoff": "bounded_oath"
+      }
+    }
+  ]
+}
+```
+
+Apply each condition only through an exact source definition and the common command:
+
+```json
+{
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:opposition" },
+      "source": {
+        "kind": "spiritual_art",
+        "sourceId": "art_soul_mark",
+        "definitionKey": "soul-mark"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Метка закреплена принятым обменом."
+    }
+  ],
+  "effectResolutionReceipts": []
+}
+```
+
+The GM must never author combatConditions[]. Read accepted mechanics only from `afterlifeSpiritualConflictPreview.conditionMechanics`, apply each contribution to its exact `affectedOperations`/`mechanicalAxes`, cite the supplied condition selector in the matching audit, and expose only visible conditions.
 
 GM response (there is deliberately no authored `combatConditions[]` field):
 

@@ -138,28 +138,35 @@
 
                                 ]]>
      </response>
-     <enemiesData>
+     <resourceChanges>
       <![CDATA[
 
                                 [
-                                    { "name": "Orc Warrior", "currentHealth": "35%", ... },
-                                    { "name": "Goblin Archer", "currentHealth": "100%", ... }
+                                    {
+                                        "operation": "damage",
+                                        "target": { "kind": "combatant", "targetId": "combatant_orc_warrior_001" },
+                                        "resourceKey": "health", "amount": 48,
+                                        "source": { "kind": "combat_outcome", "sourceId": "round_1_firebolt" },
+                                        "eventRef": "turn_42:resource:1", "reason": "Anya's critical Firebolt."
+                                    },
+                                    {
+                                        "operation": "damage",
+                                        "target": { "kind": "combatant", "targetId": "combatant_town_guard_001" },
+                                        "resourceKey": "health", "amount": 23,
+                                        "source": { "kind": "combat_outcome", "sourceId": "round_1_orc_axe" },
+                                        "eventRef": "turn_42:resource:2", "reason": "The Orc's axe after resistance."
+                                    },
+                                    {
+                                        "operation": "damage",
+                                        "target": { "kind": "combatant", "targetId": "combatant_orc_warrior_001" },
+                                        "resourceKey": "health", "amount": 17,
+                                        "source": { "kind": "combat_outcome", "sourceId": "round_1_guard_spear" },
+                                        "eventRef": "turn_42:resource:3", "reason": "The Guard's critical spear strike."
+                                    }
                                 ]
 
                                 ]]>
-     </enemiesData>
-     <alliesData>
-      <![CDATA[
-
-                                [
-                                    { "name": "Town Guard", "currentHealth": "91%", ... }
-                                ]
-
-                                ]]>
-     </alliesData>
-     <currenthealthchange>
-      0
-     </currenthealthchange>
+     </resourceChanges>
      <combat_log_markdown>
       <![CDATA[
 
@@ -215,43 +222,22 @@
                                 
                                 ]]>
      </response>
-     <enemiesData>
+     <resourceChanges>
       <![CDATA[
 
                                 [
                                     {
-                                        "name": "Orc Warrior", 
-                                        "currentHealth": "65%",
-                                        "currentPoise": "45%",
-                                        ...
-                                    },
-                                    {
-                                        "name": "Goblin Archer",
-                                        "currentHealth": "100%",
-                                        "currentPoise": "80%",
-                                        ...
+                                        "operation": "damage",
+                                        "target": { "kind": "combatant", "targetId": "combatant_orc_warrior_001" },
+                                        "resourceKey": "health", "amount": 35,
+                                        "source": { "kind": "combat_outcome", "sourceId": "incomplete_round_firebolt" },
+                                        "eventRef": "turn_42:resource:1",
+                                        "reason": "The Firebolt damage itself is represented correctly; ending the round here is the protocol violation."
                                     }
                                 ]
 
                                 ]]>
-     </enemiesData>
-     <alliesData>
-      <![CDATA[
-
-                                [
-                                    {
-                                        "name": "Town Guard",
-                                        "currentHealth": "114%",
-                                        "currentPoise": "100%",
-                                        ...
-                                    }
-                                ]
-
-                                ]]>
-     </alliesData>
-     <currenthealthchange>
-      0
-     </currenthealthchange>
+     </resourceChanges>
      <combat_log_markdown>
       <![CDATA[
 
@@ -317,9 +303,33 @@
                         ]]>
    </response>
    <!-- Команды для активного игрока (Ронана) -->
-   <currentenergychange>
-    -5
-   </currentenergychange>
+   <resourceChanges>
+    <![CDATA[
+                        [
+                            {
+                                "operation": "spend",
+                                "target": { "kind": "player", "targetId": "player_current" },
+                                "resourceKey": "energy", "amount": 5,
+                                "source": { "kind": "action_cost", "sourceId": "ronan_sword_action" },
+                                "eventRef": "turn_42:resource:1", "reason": "Ronan's committed attack cost."
+                            },
+                            {
+                                "operation": "damage",
+                                "target": { "kind": "combatant", "targetId": "combatant_orc_berserker_001" },
+                                "resourceKey": "health", "amount": 35,
+                                "source": { "kind": "combat_outcome", "sourceId": "ronan_sword_hit" },
+                                "eventRef": "turn_42:resource:2", "reason": "Ronan's sword strike."
+                            },
+                            {
+                                "operation": "damage",
+                                "target": { "kind": "combatant", "targetId": "combatant_orc_berserker_001" },
+                                "resourceKey": "health", "amount": 40,
+                                "source": { "kind": "combat_outcome", "sourceId": "anya_fireball_hit" },
+                                "eventRef": "turn_42:resource:3", "reason": "Anya's Fireball."
+                            }
+                        ]
+                        ]]>
+   </resourceChanges>
    <experiencegained>
     120
    </experiencegained>
@@ -328,8 +338,24 @@
     <![CDATA[
                         {
                             "player-anya-guid": [
-                                { "currentHealthChange": -18 },
-                                { "currentEnergyChange": -15 },
+                                {
+                                    "resourceChanges": [
+                                        {
+                                            "operation": "damage",
+                                            "target": { "kind": "player", "targetId": "player_current" },
+                                            "resourceKey": "health", "amount": 18,
+                                            "source": { "kind": "combat_outcome", "sourceId": "orc_hits_anya" },
+                                            "eventRef": "turn_42:resource:4", "reason": "The Orc hits Anya."
+                                        },
+                                        {
+                                            "operation": "spend",
+                                            "target": { "kind": "player", "targetId": "player_current" },
+                                            "resourceKey": "energy", "amount": 15,
+                                            "source": { "kind": "action_cost", "sourceId": "anya_fireball_cost" },
+                                            "eventRef": "turn_42:resource:5", "reason": "Anya casts Fireball."
+                                        }
+                                    ]
+                                },
                                 { "experienceGained": 120 }
                             ]
                         }
@@ -493,9 +519,18 @@
                                 
                                 ]]>
      </response>
-     <currenthealthchange>
-      -19
-     </currenthealthchange>
+     <resourceChanges>
+      <![CDATA[
+      [{
+        "operation": "damage",
+        "target": { "kind": "player", "targetId": "player_current" },
+        "resourceKey": "health", "amount": 19,
+        "source": { "kind": "combat_outcome", "sourceId": "zombie_bite_exchange" },
+        "eventRef": "turn_42:resource:1",
+        "reason": "The stunned player could not defend against the bite."
+      }]
+      ]]>
+     </resourceChanges>
      <combat_log_markdown>
       <![CDATA[
 
@@ -563,26 +598,22 @@
                                 
                                 ]]>
      </response>
-     <enemiesData>
+     <resourceChanges>
       <![CDATA[
 
                                 [
-                                    { 
-                                        "name": "Orc Brute",
-                                        "currentHealth": "24%", 
-                                        "currentPoise": "0%",
-                                        "activeDebuffs": [{
-                                            "effectType": "Control",
-                                            "targetType": "stun", 
-                                            "duration": 0, 
-                                            "description": "Stun effect wears off."
-                                        }], 
-                                        ... 
+                                    {
+                                        "operation": "damage",
+                                        "target": { "kind": "combatant", "targetId": "combatant_orc_brute_001" },
+                                        "resourceKey": "health", "amount": 76,
+                                        "source": { "kind": "combat_outcome", "sourceId": "stunned_orc_critical" },
+                                        "eventRef": "turn_42:resource:1",
+                                        "reason": "Critical strike against the stunned Orc."
                                     }
                                 ]
 
                                 ]]>
-     </enemiesData>
+     </resourceChanges>
      <combat_log_markdown>
       <![CDATA[
 
@@ -639,15 +670,22 @@
                                 
                                 ]]>
      </response>
-     <enemiesData>
+     <resourceChanges>
       <![CDATA[
 
                                 [
-                                    { "name": "Orc Brute", "currentHealth": "9%", ... }
+                                    {
+                                        "operation": "damage",
+                                        "target": { "kind": "combatant", "targetId": "combatant_orc_brute_001" },
+                                        "resourceKey": "health", "amount": 16,
+                                        "source": { "kind": "combat_outcome", "sourceId": "guard_exploits_stun" },
+                                        "eventRef": "turn_42:resource:1",
+                                        "reason": "The Guard exploits the stun with a critical spear strike."
+                                    }
                                 ]
 
                                 ]]>
-     </enemiesData>
+     </resourceChanges>
      <combat_log_markdown>
       <![CDATA[
 
@@ -857,33 +895,30 @@
 
                                  ]]>
      </response>
-     <currenthealthchange>
-      0
-     </currenthealthchange>
-     <enemiesData>
+     <resourceChanges>
       <![CDATA[
-
-                                 [
-                                     {
-                                         "name": "Orc Berserker",
-                                         "currentHealth": "100%",
-                                         "currentPoise": "0%",
-                                         "activeEffects": [
-                                             {
-                                                 "effectId": null,
-                                                 "effectType": "Control",
-                                                 "value": "100%",
-                                                 "targetType": "stun",
-                                                 "duration": 1,
-                                                 "sourceSkill": "Parry Stagger",
-                                                 "description": "Ошеломлен! Потерял равновесие и не может действовать (1 ход)."
-                                             }
-                                         ]
-                                     }
-                                 ]
-
+                                 [{
+                                     "operation": "damage",
+                                     "target": { "kind": "combatant", "targetId": "combatant_orc_berserker_001" },
+                                     "resourceKey": "poise", "amount": 75,
+                                     "source": { "kind": "combat_outcome", "sourceId": "critical_buckler_parry" },
+                                     "eventRef": "turn_42:resource:1",
+                                     "reason": "The redirected impact exhausts the Orc's poise."
+                                 }]
                                  ]]>
-     </enemiesData>
+     </resourceChanges>
+     <effectChanges>
+      <![CDATA[
+                                 [{
+                                     "operation": "apply",
+                                     "target": { "kind": "combatant", "targetId": "combatant_orc_berserker_001" },
+                                     "source": { "kind": "skill", "sourceId": "skill_parry_stagger", "definitionKey": "critical-parry-stun" },
+                                     "parameters": {},
+                                     "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                     "reason": "The exact critical-parry definition applies a one-turn stun."
+                                 }]
+                                 ]]>
+     </effectChanges>
      <combat_log_markdown>
       <![CDATA[
 
@@ -943,13 +978,18 @@
                             
                             ]]>
      </response>
-     <currentHealthChange>
+     <resourceChanges>
       <![CDATA[
-                            
-                            -12%
-                            
+                            [{
+                                "operation": "damage",
+                                "target": { "kind": "player", "targetId": "player_current" },
+                                "resourceKey": "health", "amount": 12,
+                                "source": { "kind": "combat_outcome", "sourceId": "partial_fireball_dodge" },
+                                "eventRef": "turn_42:resource:1",
+                                "reason": "The emergency dodge reduces but does not negate the fireball."
+                            }]
                             ]]>
-     </currentHealthChange>
+     </resourceChanges>
      <!-- Reduced damage due to successful dodge -->
     </jsonresponse>
    </step>

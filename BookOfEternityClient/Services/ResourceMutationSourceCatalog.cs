@@ -48,16 +48,16 @@ internal sealed class ResourceMutationSourceCatalog
     private static readonly FrozenDictionary<string, SourceRouteDefinition> Routes =
         new Dictionary<string, SourceRouteDefinition>(StringComparer.Ordinal)
         {
-            ["action_cost"] = Cost(
+            ["action_cost"] = BoundCost(
                 ResourceMutationPhase.DirectCost,
                 priority: 100,
                 ResourceOperation.Spend),
-            ["combat_outcome"] = Outcome(
+            ["combat_outcome"] = BoundOutcome(
                 ResourceMutationPhase.DirectOutcome,
                 priority: 100,
                 ResourceOperation.Damage,
                 ResourceOperation.Restore),
-            ["narrative_outcome"] = Outcome(
+            ["narrative_outcome"] = BoundOutcome(
                 ResourceMutationPhase.DirectOutcome,
                 priority: 110,
                 ResourceOperation.Damage,
@@ -437,6 +437,30 @@ internal sealed class ResourceMutationSourceCatalog
             RejectBounds: false,
             BoundOwnerKind: null,
             RequiresBoundOwner: false);
+
+    private static SourceRouteDefinition BoundCost(
+        ResourceMutationPhase phase,
+        int priority,
+        params ResourceOperation[] operations) =>
+        new(
+            phase,
+            priority,
+            operations.ToFrozenSet(),
+            RejectBounds: true,
+            BoundOwnerKind: null,
+            RequiresBoundOwner: true);
+
+    private static SourceRouteDefinition BoundOutcome(
+        ResourceMutationPhase phase,
+        int priority,
+        params ResourceOperation[] operations) =>
+        new(
+            phase,
+            priority,
+            operations.ToFrozenSet(),
+            RejectBounds: false,
+            BoundOwnerKind: null,
+            RequiresBoundOwner: true);
 
     private static SourceRouteDefinition ItemCost(
         ResourceMutationPhase phase,

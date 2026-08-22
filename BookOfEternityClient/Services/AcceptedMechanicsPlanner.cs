@@ -156,7 +156,15 @@ internal sealed class AcceptedMechanicsResourceInput
     {
         ArgumentNullException.ThrowIfNull(value);
         ArgumentNullException.ThrowIfNull(value.MutationKeys);
-        return value with { MutationKeys = value.MutationKeys.ToArray() };
+        return value with
+        {
+            MutationKeys = value.MutationKeys.ToArray(),
+            ComponentIds = value.ComponentIds?.ToArray(),
+            ComponentIdsByMutation = value.ComponentIdsByMutation == null
+                ? null
+                : new Dictionary<ResourceOperationKey, string>(
+                    value.ComponentIdsByMutation)
+        };
     }
 }
 
@@ -196,7 +204,12 @@ internal sealed class AcceptedMechanicsResourcePlanningResult
             Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>())
             .Select(static execution => execution with
             {
-                MutationKeys = execution.MutationKeys.ToArray()
+                MutationKeys = execution.MutationKeys.ToArray(),
+                ComponentIds = execution.ComponentIds?.ToArray(),
+                ComponentIdsByMutation = execution.ComponentIdsByMutation == null
+                    ? null
+                    : new Dictionary<ResourceOperationKey, string>(
+                        execution.ComponentIdsByMutation)
             })
             .ToArray();
         _issues = (issues ?? throw new ArgumentNullException(nameof(issues))).ToArray();
@@ -216,7 +229,12 @@ internal sealed class AcceptedMechanicsResourcePlanningResult
         Array.AsReadOnly(_resourceTriggerExecutions
             .Select(static execution => execution with
             {
-                MutationKeys = execution.MutationKeys.ToArray()
+                MutationKeys = execution.MutationKeys.ToArray(),
+                ComponentIds = execution.ComponentIds?.ToArray(),
+                ComponentIdsByMutation = execution.ComponentIdsByMutation == null
+                    ? null
+                    : new Dictionary<ResourceOperationKey, string>(
+                        execution.ComponentIdsByMutation)
             })
             .ToArray());
     internal IReadOnlyList<ValidationIssue> Issues =>
@@ -315,6 +333,7 @@ internal static class AcceptedMechanicsPlanner
                 definitions);
         issues.AddRange(periodicResolution.Issues);
         var boundedResolutions = periodicResolution.PendingResolutions.ToList();
+        var discoveryReactionExecutions = new List<EffectReactionExecution>();
         var sources = context.Sources;
         if (periodicResolution.SourceExports.Count != 0)
         {
@@ -346,6 +365,7 @@ internal static class AcceptedMechanicsPlanner
                 context.Owners,
                 definitions);
             boundedResolutions.AddRange(expansion.PendingResolutions);
+            discoveryReactionExecutions.AddRange(expansion.ReactionExecutions);
             return expansion;
         }
 
@@ -391,6 +411,8 @@ internal static class AcceptedMechanicsPlanner
         }
 
         var resourceResult = discoveryResourceResult;
+        IReadOnlyList<EffectReactionExecution> resourceReactionExecutions =
+            discoveryReactionExecutions;
         if (pendingDecision.Mutations.Count != 0)
         {
             var receiptSources = ResourceMutationSourceCatalog.Create(
@@ -404,6 +426,7 @@ internal static class AcceptedMechanicsPlanner
             sources = receiptSources.Catalog;
             var actualBoundedResolutions = new List<
                 EffectAcceptedTurnPlanner.EffectBoundedResourceResolution>();
+            var actualReactionExecutions = new List<EffectReactionExecution>();
             EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution ResolveActual(
                 ResourceAppliedEvent resourceEvent,
                 ResourceOperationKey producer)
@@ -415,6 +438,7 @@ internal static class AcceptedMechanicsPlanner
                     context.Owners,
                     definitions);
                 actualBoundedResolutions.AddRange(expansion.PendingResolutions);
+                actualReactionExecutions.AddRange(expansion.ReactionExecutions);
                 return expansion;
             }
             resourceResult = BuildResources(
@@ -437,15 +461,28 @@ internal static class AcceptedMechanicsPlanner
             {
                 return new AcceptedMechanicsPlanningResult(null, resourceResult.Issues);
             }
+            resourceReactionExecutions = actualReactionExecutions;
         }
         if (effectPlan != null)
         {
+            var appliedResourceEvents = resourceResult.Events
+                .Select(static resourceEvent => (
+                    resourceEvent.EventRef,
+                    resourceEvent.EventKind))
+                .ToHashSet();
+            var appliedResourceReactions = resourceReactionExecutions
+                .Where(reaction => appliedResourceEvents.Contains((
+                    reaction.TriggerEventRef,
+                    reaction.EventKind)))
+                .DistinctBy(static reaction => reaction.EventRef)
+                .ToArray();
             var finalizedEffects = EffectAcceptedTurnPlanner.FinalizeAfterResourceGraph(
                 effectPlan,
                 resourceResult.ResourceTriggerExecutions
                     .Concat(pendingDecision.PostGraphTriggerExecutions)
                     .ToArray(),
-                new EffectIdentityFactory());
+                new EffectIdentityFactory(),
+                appliedResourceReactions);
             if (!finalizedEffects.Success || finalizedEffects.Plan == null)
             {
                 return new AcceptedMechanicsPlanningResult(
@@ -767,7 +804,8 @@ internal static class AcceptedMechanicsPlanner
             static value => value.Request.RequestId,
             static value => value.Candidate,
             StringComparer.Ordinal);
-        var mutations = new List<ResourceMutationIntent>();
+        var baseMutationsByRequest = new Dictionary<string, ResourceMutationIntent>(
+            StringComparer.Ordinal);
         foreach (var mutation in resolved.Mutations)
         {
             if (!bindingByRequest.TryGetValue(
@@ -780,7 +818,7 @@ internal static class AcceptedMechanicsPlanner
                     mutation.Source.SourceId));
                 continue;
             }
-            mutations.Add(mutation with
+            var bound = mutation with
             {
                 EventRef = candidate.EventRef,
                 Coordinate = candidate.Coordinate with { },
@@ -791,10 +829,124 @@ internal static class AcceptedMechanicsPlanner
                 Dependencies = candidate.Dependencies.ToArray(),
                 EventRequirements = candidate.EventRequirements.ToArray(),
                 ResultConstraint = candidate.ResultConstraint
-            });
+            };
+            if (!baseMutationsByRequest.TryAdd(mutation.Source.SourceId, bound))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_receipt_binding_duplicate",
+                    "one exact restored mutation per bounded request",
+                    mutation.Source.SourceId));
+            }
         }
         if (issues.Count != 0)
             return FailedPendingDecision(issues);
+
+        var mutationsByRequest = new Dictionary<string, ResourceMutationIntent>(
+            StringComparer.Ordinal);
+        var dependencyDecisions = new Dictionary<string, bool>(StringComparer.Ordinal);
+        foreach (var group in bindings.GroupBy(value => (
+                     value.Candidate.EffectId,
+                     value.Candidate.TriggerId,
+                     value.Candidate.EventKind,
+                     value.Candidate.EventRef)))
+        {
+            var componentBindings = group
+                .GroupBy(static value => value.Candidate.ComponentId, StringComparer.Ordinal)
+                .ToDictionary(
+                    static value => value.Key,
+                    static value => value.ToArray(),
+                    StringComparer.Ordinal);
+            if (componentBindings.Values.Any(static value => value.Length != 1))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_component_binding_ambiguous",
+                    "one exact bounded request per component in one trigger activation",
+                    group.Key.ToString()));
+                continue;
+            }
+
+            var unresolved = group.ToList();
+            while (unresolved.Count != 0)
+            {
+                var progressed = false;
+                foreach (var binding in unresolved.ToArray())
+                {
+                    var requestId = binding.Request.RequestId;
+                    var afterComponentId = binding.Candidate.AfterComponentId;
+                    if (afterComponentId == null)
+                    {
+                        var hasMutation = baseMutationsByRequest.TryGetValue(
+                            requestId,
+                            out var independent);
+                        dependencyDecisions[requestId] = hasMutation;
+                        if (hasMutation)
+                            mutationsByRequest.Add(requestId, independent!);
+                        unresolved.Remove(binding);
+                        progressed = true;
+                        continue;
+                    }
+
+                    if (!componentBindings.TryGetValue(
+                            afterComponentId,
+                            out var predecessorMatches) ||
+                        predecessorMatches.Length != 1)
+                    {
+                        issues.AddRange(Issue(
+                            "resource_pending_component_dependency_unresolved",
+                            "one exact predecessor request in the same trigger activation",
+                            afterComponentId));
+                        unresolved.Remove(binding);
+                        progressed = true;
+                        continue;
+                    }
+
+                    var predecessor = predecessorMatches[0];
+                    if (!dependencyDecisions.TryGetValue(
+                            predecessor.Request.RequestId,
+                            out var predecessorApplied))
+                    {
+                        continue;
+                    }
+
+                    var dependentApplied = baseMutationsByRequest.TryGetValue(
+                        requestId,
+                        out var dependent) && predecessorApplied;
+                    dependencyDecisions[requestId] = dependentApplied;
+                    if (dependentApplied)
+                    {
+                        var predecessorMutation =
+                            mutationsByRequest[predecessor.Request.RequestId];
+                        mutationsByRequest.Add(requestId, dependent! with
+                        {
+                            Dependencies = dependent!.Dependencies
+                                .Append(predecessorMutation.Key)
+                                .Distinct()
+                                .ToArray(),
+                            EventRequirements = dependent.EventRequirements
+                                .Append(new ResourceMutationEventRequirement(
+                                    predecessorMutation.Key,
+                                    PrimaryResourceEvent(
+                                        predecessor.Candidate.Operation)))
+                                .Distinct()
+                                .ToArray()
+                        });
+                    }
+                    unresolved.Remove(binding);
+                    progressed = true;
+                }
+
+                if (progressed)
+                    continue;
+                issues.AddRange(Issue(
+                    "resource_pending_component_dependency_cycle",
+                    "one finite acyclic bounded-component dependency graph",
+                    group.Key.ToString()));
+                break;
+            }
+        }
+        if (issues.Count != 0)
+            return FailedPendingDecision(issues);
+        var mutations = mutationsByRequest.Values.ToList();
 
         var graphExecutions = new List<
             EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>();
@@ -809,27 +961,45 @@ internal static class AcceptedMechanicsPlanner
             var budgets = group.Select(static value => value.Candidate.RemainingUseBudget)
                 .Distinct()
                 .ToArray();
-            if (budgets.Length != 1)
+            var triggerEventRefs = group
+                .Select(static value => value.Candidate.TriggerEventRef)
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
+            if (budgets.Length != 1 || triggerEventRefs.Length != 1)
             {
                 issues.AddRange(Issue(
                     "resource_pending_trigger_budget_conflict",
-                    "one exact remaining-use budget per bounded trigger activation",
+                    "one exact remaining-use budget and trigger event per bounded activation",
                     group.Key.ToString()));
                 continue;
             }
             var requestIds = group.Select(static value => value.Request.RequestId)
                 .ToHashSet(StringComparer.Ordinal);
-            var keys = mutations
+            var componentByRequest = group.ToDictionary(
+                static value => value.Request.RequestId,
+                static value => value.Candidate.ComponentId,
+                StringComparer.Ordinal);
+            var groupMutations = mutations
                 .Where(mutation => requestIds.Contains(mutation.Source.SourceId))
-                .Select(static mutation => mutation.Key)
                 .ToArray();
+            var keys = groupMutations.Select(static mutation => mutation.Key).ToArray();
             var execution = new EffectAcceptedTurnPlanner.EffectResourceTriggerExecution(
                 group.Key.EffectId,
                 group.Key.TriggerId,
                 group.Key.EventKind,
                 group.Key.EventRef,
                 keys,
-                budgets[0]);
+                budgets[0],
+                groupMutations
+                    .Select(mutation => componentByRequest[mutation.Source.SourceId])
+                    .Distinct(StringComparer.Ordinal)
+                    .OrderBy(static value => value, StringComparer.Ordinal)
+                    .ToArray(),
+                triggerEventRefs[0],
+                groupMutations
+                    .ToDictionary(
+                        static mutation => mutation.Key,
+                        mutation => componentByRequest[mutation.Source.SourceId]));
             if (keys.Length == 0)
                 postGraphExecutions.Add(execution);
             else
@@ -842,7 +1012,9 @@ internal static class AcceptedMechanicsPlanner
             AwaitingReceipt: false,
             resolved.StateAfterImage,
             SafeGmPacket: null,
-            resolved.SourceExports,
+            resolved.SourceExports
+                .Where(source => mutationsByRequest.ContainsKey(source.SourceId))
+                .ToArray(),
             mutations,
             graphExecutions,
             postGraphExecutions,
@@ -1760,15 +1932,19 @@ internal static class AcceptedMechanicsPlanner
             StringComparer.Ordinal);
         var completed = new HashSet<string>(StringComparer.Ordinal);
         var producedEvents = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
-        var resourceTriggerExecutions = new List<
-            EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>();
+        var appliedTriggerExecutionTemplates = new Dictionary<
+            string,
+            EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(
+                StringComparer.Ordinal);
+        var appliedTriggerMutationKeys = new Dictionary<
+            string,
+            HashSet<ResourceOperationKey>>(StringComparer.Ordinal);
         var triggerExecutionByMutation = new Dictionary<
             ResourceOperationKey,
             EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(
                 graphPreparation.TriggerExecutionsByMutation);
         var triggerActivationDecisions = new Dictionary<string, bool>(StringComparer.Ordinal);
         var reservedTriggerUses = new Dictionary<string, int>(StringComparer.Ordinal);
-        var recordedTriggerActivations = new HashSet<string>(StringComparer.Ordinal);
         while (pending.Count != 0)
         {
             var ready = pending.Values
@@ -1896,10 +2072,21 @@ internal static class AcceptedMechanicsPlanner
             if (result.Transition != null)
             {
                 appliedTransitions.Add(result.Transition);
-                if (triggerExecution != null &&
-                    recordedTriggerActivations.Add(triggerExecutionKey!))
+                if (triggerExecution != null)
                 {
-                    resourceTriggerExecutions.Add(triggerExecution);
+                    appliedTriggerExecutionTemplates.TryAdd(
+                        triggerExecutionKey!,
+                        triggerExecution);
+                    if (!appliedTriggerMutationKeys.TryGetValue(
+                            triggerExecutionKey!,
+                            out var appliedKeys))
+                    {
+                        appliedKeys = new HashSet<ResourceOperationKey>();
+                        appliedTriggerMutationKeys.Add(
+                            triggerExecutionKey!,
+                            appliedKeys);
+                    }
+                    appliedKeys.Add(prepared.Intent.Key);
                 }
                 events.AddRange(result.Events);
                 producedEvents[prepared.OperationId] = result.Events
@@ -1923,6 +2110,38 @@ internal static class AcceptedMechanicsPlanner
         var finalAgreement = frozen.History.ValidateStateAgreement(stateAfterImage);
         if (finalAgreement.Count != 0)
             return Failure(finalAgreement, Statistics(workingHistory));
+
+        var resourceTriggerExecutions = appliedTriggerExecutionTemplates
+            .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
+            .Select(pair =>
+            {
+                var template = pair.Value;
+                var appliedKeys = appliedTriggerMutationKeys[pair.Key];
+                var componentMap = template.ComponentIdsByMutation == null
+                    ? null
+                    : template.ComponentIdsByMutation
+                        .Where(component => appliedKeys.Contains(component.Key))
+                        .ToDictionary(
+                            static component => component.Key,
+                            static component => component.Value);
+                var componentIds = componentMap == null
+                    ? template.ComponentIds?.ToArray()
+                    : componentMap.Values
+                        .Distinct(StringComparer.Ordinal)
+                        .OrderBy(static value => value, StringComparer.Ordinal)
+                        .ToArray();
+                return template with
+                {
+                    MutationKeys = appliedKeys
+                        .OrderBy(static key => key.EventRef, StringComparer.Ordinal)
+                        .ThenBy(static key => key.OriginKind, StringComparer.Ordinal)
+                        .ThenBy(static key => key.OriginId, StringComparer.Ordinal)
+                        .ToArray(),
+                    ComponentIds = componentIds,
+                    ComponentIdsByMutation = componentMap
+                };
+            })
+            .ToArray();
 
         return new AcceptedMechanicsResourcePlanningResult(
             stateAfterImage,
@@ -2220,6 +2439,15 @@ internal static class AcceptedMechanicsPlanner
         EffectAcceptedTurnPlanner.EffectResourceTriggerExecution execution)
     {
         var lineage = new Dictionary<string, int>(parentLineage, StringComparer.Ordinal);
+        var exactActivationKey = "activation\0" + TriggerExecutionKey(execution);
+        if (lineage.ContainsKey(exactActivationKey))
+        {
+            return new TriggerLineageDecision(
+                Allowed: true,
+                lineage,
+                Array.Empty<ValidationIssue>());
+        }
+
         if (execution.RemainingUseBudget.HasValue)
         {
             var useKey = "uses\0" + execution.EffectId;
@@ -2232,6 +2460,7 @@ internal static class AcceptedMechanicsPlanner
                     Array.Empty<ValidationIssue>());
             }
             lineage[useKey] = priorUses + 1;
+            lineage[exactActivationKey] = 1;
             return new TriggerLineageDecision(
                 Allowed: true,
                 lineage,
@@ -2250,6 +2479,7 @@ internal static class AcceptedMechanicsPlanner
                     activationKey.Replace('\0', '/')));
         }
         lineage.Add(activationKey, 1);
+        lineage.Add(exactActivationKey, 1);
         return new TriggerLineageDecision(
             Allowed: true,
             lineage,
@@ -2689,6 +2919,16 @@ internal static class AcceptedMechanicsPlanner
             history?.BaselineSeedCount ?? 0,
             history?.IncrementalAppendCount ?? 0,
             history?.FreezeCount ?? 0);
+
+    private static string PrimaryResourceEvent(ResourceOperation operation) =>
+        operation switch
+        {
+            ResourceOperation.Damage => "resource_damaged",
+            ResourceOperation.Restore => "resource_restored",
+            ResourceOperation.Spend => "resource_spent",
+            ResourceOperation.Gain => "resource_gained",
+            _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, null)
+        };
 
     private static string Describe(ResourceOperationKey key) =>
         $"{key.EventRef}/{key.OriginKind}/{key.OriginId}/" +

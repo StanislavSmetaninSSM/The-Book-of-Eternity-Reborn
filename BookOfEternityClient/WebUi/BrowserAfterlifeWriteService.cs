@@ -1380,10 +1380,13 @@ public sealed class BrowserAfterlifeWriteService
 
         if (relicRerollsToCommit > 0)
         {
-            var soulRoot = await TryReadObjectSafeAsync(SoulStatePath);
-            if (await ShiningBlessingEffectState.GetPendingRelicRerollsAsync(
-                    _fs,
-                    soulRoot) < relicRerollsToCommit)
+            var soulRoot = await TryReadObjectSafeAsync(boundLease, SoulStatePath);
+            var rerollProjection = await ResourceProjectionService.ProjectRelicRerollsAsync(
+                _fs,
+                boundLease,
+                soulRoot);
+            if (!TryGetAvailableProjectedRerolls(rerollProjection, out var availableRerolls) ||
+                availableRerolls < relicRerollsToCommit)
             {
                 return BrowserPromptWriteResult.Failed(
                     CommandExecutionState.Blocked,
@@ -1423,10 +1426,12 @@ public sealed class BrowserAfterlifeWriteService
                 if (relicChoice == null)
                     throw new InvalidOperationException("Выбранная реликвия больше не доступна душе. Откройте ковку заново.");
 
-                if (relicRerollsToCommit >
-                    await ShiningBlessingEffectState.GetPendingRelicRerollsAsync(
-                        _fs,
-                        soulRoot))
+                var rerollProjection = await ResourceProjectionService.ProjectRelicRerollsAsync(
+                    _fs,
+                    writeLease,
+                    soulRoot);
+                if (!TryGetAvailableProjectedRerolls(rerollProjection, out var availableRerolls) ||
+                    relicRerollsToCommit > availableRerolls)
                     throw new InvalidOperationException("Право на переброс реликвии уже недоступно. Откройте ковку заново.");
 
                 if (!ShiningAbodeState.TryQuoteForgeAction(
@@ -3841,6 +3846,26 @@ public sealed class BrowserAfterlifeWriteService
     {
         var text = ReadAnswer(answers, key);
         return int.TryParse(text, out var value) ? value : fallback;
+    }
+
+    private static bool TryGetAvailableProjectedRerolls(
+        ResourceProjectionResult projection,
+        out int rerolls)
+    {
+        rerolls = 0;
+        var row = projection.Rows.SingleOrDefault(static candidate =>
+            string.Equals(candidate.ResourceKey, "blessing_rerolls", StringComparison.Ordinal));
+        if (!projection.IsAvailable ||
+            row is not { State: ResourceLifecycleState.Active } ||
+            row.Current < 0m ||
+            row.Current > int.MaxValue ||
+            decimal.Truncate(row.Current) != row.Current)
+        {
+            return false;
+        }
+
+        rerolls = decimal.ToInt32(row.Current);
+        return true;
     }
 
     private static bool ReadBoolAnswer(IReadOnlyDictionary<string, JsonNode?> answers, string key)

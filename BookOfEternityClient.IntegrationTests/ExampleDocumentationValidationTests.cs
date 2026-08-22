@@ -159,6 +159,154 @@ public sealed class ExampleDocumentationValidationTests
     }
 
     [Fact]
+    public void CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily()
+    {
+        var manifest = ExampleValidationManifest.Load();
+        var expected = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["effect_mortal_profiles_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_mortal_apply_stack_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_mortal_event_report_v1"] = "E_CLI_Ink_Feather_Actions.txt",
+            ["effect_event_reaction_graph_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_mortal_lifetimes_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_mortal_source_families_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_wound_independence_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_bounded_repair_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_afterlife_profile_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["effect_afterlife_conditions_five_kinds_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["effect_legacy_rejection_v1"] = "E_CLI_Effect_Materialization.txt"
+        };
+
+        Assert.Equal(expected.Count, manifest.EffectMaterializationCoverage.Count);
+        foreach (var (contractId, file) in expected)
+        {
+            var entry = Assert.Single(
+                manifest.EffectMaterializationCoverage,
+                candidate => string.Equals(candidate.ContractId, contractId, StringComparison.Ordinal));
+            Assert.Equal(file, entry.File);
+            Assert.NotEmpty(entry.StatePath);
+            Assert.NotEmpty(entry.ResponseSurface);
+            Assert.NotEmpty(entry.Description);
+            Assert.NotEmpty(entry.Realms);
+            AssertTruthfulValidationMetadata(entry);
+            Assert.NotEmpty(entry.RequiredText);
+
+            var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
+            Assert.All(entry.RequiredText, token =>
+                Assert.Contains(token, example, StringComparison.Ordinal));
+        }
+    }
+
+    [Fact]
+    public void UnifiedResourceMaterializationManifest_CoversMortalAndAfterlifeWorkedFamilies()
+    {
+        var manifest = ExampleValidationManifest.Load();
+        var requiredEntries = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["mortal_resource_setting_definition_initialize_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["mortal_resource_player_npc_mutation_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["mortal_resource_item_combat_mutation_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["mortal_resource_capacity_reconfigure_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["mortal_resource_bounded_receipt_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["mortal_resource_illegal_direct_write_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["afterlife_unified_resource_authority_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["afterlife_actor_resource_materialization_v1"] = "E_CLI_Afterlife_Turns.txt"
+        };
+
+        Assert.Equal(requiredEntries.Count, manifest.ResourceMaterializationCoverage.Count);
+        var entriesById = manifest.ResourceMaterializationCoverage.ToDictionary(
+            entry => entry.ContractId,
+            StringComparer.Ordinal);
+        foreach (var (contractId, expectedFile) in requiredEntries)
+        {
+            Assert.True(
+                entriesById.TryGetValue(contractId, out var entry),
+                $"Missing manifest coverage for {contractId}.");
+            Assert.Equal(expectedFile, entry.File);
+            Assert.False(string.IsNullOrWhiteSpace(entry.StatePath));
+            Assert.False(string.IsNullOrWhiteSpace(entry.ResponseSurface));
+            Assert.False(string.IsNullOrWhiteSpace(entry.Description));
+            Assert.NotEmpty(entry.Realms);
+            AssertTruthfulValidationMetadata(entry);
+            Assert.NotEmpty(entry.RequiredText);
+
+            var example = File.ReadAllText(Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "Examples",
+                expectedFile));
+            Assert.All(entry.RequiredText, token =>
+                Assert.Contains(token, example, StringComparison.Ordinal));
+        }
+
+        foreach (var commandContractId in new[]
+                 {
+                     "mortal_resource_setting_definition_initialize_v1",
+                     "mortal_resource_player_npc_mutation_v1",
+                     "mortal_resource_item_combat_mutation_v1",
+                     "mortal_resource_capacity_reconfigure_v1"
+                 })
+        {
+            var root = ParseNamedJsonFence("E_CLI_Mortal_Resources.txt", commandContractId);
+            var parsed = ResourceAcceptedTurnInputComposer.Parse(root.ToJsonString());
+            Assert.True(
+                parsed.IsValid,
+                $"Production resource command parser rejected {commandContractId}: " +
+                string.Join(" | ", parsed.Issues.Select(issue => issue.Message)));
+        }
+    }
+
+    [Fact]
+    public void EffectReactionWorkedExample_ValidatesCompleteGraphAndAllResultKinds()
+    {
+        var root = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Effect_Materialization.txt",
+            "effect_event_reaction_graph_v1"));
+        var definitions = Assert.IsType<JsonArray>(root["activeEffectDefinitions"]);
+        using var document = JsonDocument.Parse(definitions.ToJsonString());
+
+        var issues = EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world");
+        Assert.Empty(issues);
+
+        var payloads = definitions
+            .OfType<JsonObject>()
+            .SelectMany(definition => definition["components"]!.AsArray()
+                .OfType<JsonObject>())
+            .Where(component => string.Equals(
+                component["profile"]?.GetValue<string>(),
+                "event_reaction",
+                StringComparison.Ordinal))
+            .Select(component => component["payload"]!.AsObject())
+            .ToArray();
+        Assert.Equal(
+            new[]
+            {
+                "apply_definition",
+                "bounded_receipt",
+                "event_outcome",
+                "remove",
+                "suspend",
+                "trigger_component"
+            },
+            payloads
+                .Select(payload => payload["resultKind"]!.GetValue<string>())
+                .OrderBy(static value => value, StringComparer.Ordinal));
+        Assert.Equal(
+            new[]
+            {
+                "after_component",
+                "after_current_event",
+                "before_current_event"
+            },
+            payloads
+                .Select(payload => payload["dependency"]!.GetValue<string>())
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(static value => value, StringComparer.Ordinal));
+    }
+
+    [Fact]
     public void FactionMaterializationManifest_CoversEightWorkedExampleFamiliesWithBothRepairVariants()
     {
         var manifest = ExampleValidationManifest.Load();
@@ -1816,7 +1964,15 @@ public sealed class ExampleDocumentationValidationTests
 }
 """);
 
-        await fs.WriteFileAtomicAsync("game_state/meta/guardians.json", BuildAzaliaGuardiansJson());
+        var guardiansRoot = JsonNode.Parse(BuildAzaliaGuardiansJson())!.AsObject();
+        await fs.WriteFileAtomicAsync(
+            "game_state/meta/guardians.json",
+            guardiansRoot.ToJsonString());
+
+        var profilesRoot = BuildChaosSeaAzaliaProfilesRoot();
+        await fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            profilesRoot.ToJsonString());
         await fs.WriteFileAtomicAsync("game_state/meta/guardian_projects.json", """
 {
   "activeProjects": [
@@ -1917,6 +2073,47 @@ public sealed class ExampleDocumentationValidationTests
   "entries": []
 }
 """);
+
+        var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            fs,
+            new AfterlifeOwnerResourceAcceptedState(),
+            turn: 418);
+        Assert.True(
+            resourcePlan.IsValid,
+            string.Join(Environment.NewLine, resourcePlan.Issues));
+        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(
+            fs,
+            resourcePlan));
+    }
+
+    private static JsonObject BuildChaosSeaAzaliaProfilesRoot()
+    {
+        const string guardianId = "guard_social_azalia_001";
+        var profile = BuildShiningExampleActorProfile(
+            "guardian",
+            guardianId,
+            materializedAtTurn: 1,
+            canTrade: false);
+        profile["displayName"] = "Азалия";
+        profile["realm"] = "Chaos Sea";
+        profile["locationId"] = "abode_azalia_memory_silk_001";
+        profile["locationName"] = "Обитель Азалии";
+        profile[AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] =
+            new JsonArray
+            {
+                new JsonObject
+                {
+                    ["realm"] = "chaos_sea",
+                    ["resourceOwnerId"] = guardianId,
+                    ["state"] = "active"
+                }
+            };
+        profile["activeEffects"] = new JsonArray();
+
+        var root = AfterlifeEntityProfileState.CreateDefaultRoot();
+        Assert.IsType<JsonArray>(root[AfterlifeEntityProfileState.ProfilesProperty])
+            .Add(profile);
+        return root;
     }
 
     private static string BuildAzaliaGuardiansJson()
@@ -1978,8 +2175,7 @@ public sealed class ExampleDocumentationValidationTests
     "completedQuests": []
   },
   "gachaSystem": {
-    "chargesPerReturn": 2,
-    "chargesUsedThisReturn": 0,
+    "currentReturnCycleId": "chaos_return_2",
     "gachaHistory": []
   },
   "mood": {

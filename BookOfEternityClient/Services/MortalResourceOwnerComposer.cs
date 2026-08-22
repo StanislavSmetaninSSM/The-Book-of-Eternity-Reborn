@@ -972,10 +972,25 @@ internal static class MortalResourceOwnerComposer
 
         for (var index = 0; index < collection.Count; index++)
         {
-            if (collection[index] is not JsonObject combatant || !IsGroup(combatant))
+            if (collection[index] is not JsonObject combatant)
             {
                 combatants.Add(collection[index]?.DeepClone());
                 combatantCoordinates.Add((collection, index));
+                continue;
+            }
+
+            if (!IsGroup(combatant))
+            {
+                if (HasDetachedMemberIdentity(combatant))
+                {
+                    members.Add(combatant.DeepClone());
+                    memberCoordinates.Add((collection, index));
+                }
+                else
+                {
+                    combatants.Add(combatant.DeepClone());
+                    combatantCoordinates.Add((collection, index));
+                }
                 continue;
             }
 
@@ -1114,6 +1129,9 @@ internal static class MortalResourceOwnerComposer
         combatant["isGroup"] is JsonValue value &&
         value.TryGetValue<bool>(out var isGroup) &&
         isGroup;
+
+    private static bool HasDetachedMemberIdentity(JsonObject combatant) =>
+        combatant["memberId"] != null || combatant["memberRef"] != null;
 
     private static HashSet<string> ComposeNpcOwners(
         JsonObject preTurnRoot,

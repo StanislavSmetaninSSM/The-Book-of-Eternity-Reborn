@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -145,6 +146,8 @@ public class StateManager
             state.CharacterClass = GetString(root, "characterClass", state.CharacterClass);
             state.CharacterRace = GetString(root, "characterRace", state.CharacterRace);
         });
+
+        await LoadMortalPlayerResourceProjectionAsync(writeLease, state);
 
         // Core: Narrative
         await TryLoadJson(writeLease, "output/narrative_response.json", (doc) =>
@@ -427,6 +430,52 @@ public class StateManager
 
         return null;
     }
+
+    private async Task LoadMortalPlayerResourceProjectionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AggregatedGameState state)
+    {
+        var projection = ResourceProjectionService.ProjectCanonical(
+            await _fs.ReadFileAsync(writeLease, ResourceMaterializationContract.DefinitionsPath),
+            await _fs.ReadFileAsync(writeLease, ResourceMaterializationContract.StatePath),
+            await _fs.ReadFileAsync(writeLease, ResourceMaterializationContract.HistoryPath),
+            new[]
+            {
+                new ResourceProjectionOwnerScope(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Player,
+                        "player_current"),
+                    "герой",
+                    IsOwningPlayer: true)
+            },
+            ResourceProjectionAudience.Player);
+        if (!projection.IsAvailable)
+            return;
+
+        var health = projection.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "health", StringComparison.Ordinal));
+        var energy = projection.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "energy", StringComparison.Ordinal));
+        var poise = projection.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "poise", StringComparison.Ordinal));
+        if (health?.Percentage == null ||
+            energy?.Percentage == null ||
+            poise?.Percentage == null)
+        {
+            return;
+        }
+
+        state.PlayerStatus.HealthPercentage = FormatPercentage(health.Percentage.Value);
+        state.PlayerStatus.EnergyPercentage = FormatPercentage(energy.Percentage.Value);
+        state.PlayerStatus.PoisePercentage = FormatPercentage(poise.Percentage.Value);
+        state.PlayerStatus.ResourceProjectionAvailable = true;
+        state.PlayerStatus.ResourceUnavailableMessage = string.Empty;
+        state.PlayerStatus.Resources = projection.Rows;
+    }
+
+    private static string FormatPercentage(decimal value) =>
+        value.ToString("0.##", CultureInfo.InvariantCulture) + "%";
 
     private async Task TryLoadJson(
         FileSystemManager.CanonicalWriteLease writeLease,

@@ -73,6 +73,9 @@ internal static class EffectSourceDefinitionContract
             var definitionPath = $"{path}[{index++}]";
             ValidateDefinition(definition, definitionPath, realm, exactKeys, aliasKeys, issues);
         }
+        issues.AddRange(EffectReactionContract.ValidateDefinitionGraph(
+            definitions,
+            path));
         return issues;
     }
 

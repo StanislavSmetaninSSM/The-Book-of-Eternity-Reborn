@@ -1213,7 +1213,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                     relationshipData = new { currentReputation = 120, reputationHistory = Array.Empty<object>(), lastInteraction = (string?)null },
                     abodePower = new { currentPower = 10, tier = "Хрупкая", lastUpdatedAt = "2026-03-24T00:00:00Z", history = Array.Empty<object>() },
                     abode = new { abodeId = "abode_alpha", name = "Тестовая обитель" },
-                    gachaSystem = new { chargesPerReturn = 0, chargesUsedThisReturn = 0, gachaHistory = Array.Empty<object>() },
+                    gachaSystem = new { currentReturnCycleId = "", gachaHistory = Array.Empty<object>() },
                     buybackRelics = new object[]
                     {
                         new
@@ -4079,7 +4079,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             var abodePower = guardian["abodePower"]!.AsObject();
             abodePower["currentPower"] = 10;
             abodePower["tier"] = "Угасающая";
-            guardian["gachaSystem"]!.AsObject()["chargesPerReturn"] = 2;
+            guardian["gachaSystem"]!.AsObject()["currentReturnCycleId"] = "return_1";
             if (tradeInventory != null)
                 guardian["tradeInventory"] = tradeInventory.DeepClone();
         }
@@ -4206,8 +4206,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             questManagement = questManagement ?? EmptyGuardianQuestManagement(),
             gachaSystem = new
             {
-                chargesPerReturn = 1,
-                chargesUsedThisReturn = 0,
+                currentReturnCycleId = "",
                 gachaHistory = Array.Empty<object>()
             }
         };

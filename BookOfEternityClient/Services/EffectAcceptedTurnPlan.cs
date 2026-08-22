@@ -20,6 +20,10 @@ internal sealed record EffectAcceptedTurnInput(
 internal sealed class EffectAcceptedTurnPlan
 {
     private readonly JsonObject[] _activeEffects;
+    private readonly EffectReactionExecution[] _deferredReactions;
+    private readonly Dictionary<
+        EffectReactionExpansionKey,
+        EffectReactionExpansionUsage> _reactionExpansionUsage;
     private readonly Dictionary<string, JsonObject> _carrierAfterImages;
     private readonly Dictionary<string, JsonObject?> _carrierBeforeImages;
     private readonly JsonObject _identityIndexAfterImage;
@@ -42,8 +46,14 @@ internal sealed class EffectAcceptedTurnPlan
         IReadOnlyList<EffectSourceKey> sources,
         IReadOnlyList<EffectTargetKey> targets,
         IReadOnlyList<EffectSourceAuthorityEntry> sourceBindings,
+        IReadOnlyList<EffectReactionExecution> deferredReactions,
+        int reactionExpansionCount,
+        IReadOnlyDictionary<
+            EffectReactionExpansionKey,
+            EffectReactionExpansionUsage> reactionExpansionUsage,
         IReadOnlyList<JsonObject> activeEffects,
         EffectCarrierCatalogInput resourceTriggerCarriers,
+        EffectSourceAuthority sourceAuthority,
         EffectTargetAuthority targetAuthority,
         JsonObject eventInput,
         IReadOnlyDictionary<string, JsonObject?> carrierBeforeImages,
@@ -68,11 +78,33 @@ internal sealed class EffectAcceptedTurnPlan
                 Definition = entry.Definition.DeepClone().AsObject()
             })
             .ToArray();
+        _deferredReactions = deferredReactions
+            .Select(CloneReaction)
+            .ToArray();
+        if (reactionExpansionCount < _deferredReactions.Length)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(reactionExpansionCount),
+                reactionExpansionCount,
+                "Reaction expansion count cannot be smaller than the deferred subset.");
+        }
+        ReactionExpansionCount = reactionExpansionCount;
+        _reactionExpansionUsage = reactionExpansionUsage.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value);
+        if (_reactionExpansionUsage.Values.Sum(static usage => usage.Count) !=
+            reactionExpansionCount)
+        {
+            throw new ArgumentException(
+                "Reaction expansion usage must account for the whole accepted-turn reaction count.",
+                nameof(reactionExpansionUsage));
+        }
         _activeEffects = activeEffects
             .Select(static effect => effect.DeepClone().AsObject())
             .ToArray();
         _resourceTriggerCarriers = CloneCarriers(
             resourceTriggerCarriers ?? throw new ArgumentNullException(nameof(resourceTriggerCarriers)));
+        SourceAuthority = sourceAuthority ?? throw new ArgumentNullException(nameof(sourceAuthority));
         TargetAuthority = targetAuthority ?? throw new ArgumentNullException(nameof(targetAuthority));
         _eventInput = (eventInput ?? throw new ArgumentNullException(nameof(eventInput)))
             .DeepClone().AsObject();
@@ -115,12 +147,30 @@ internal sealed class EffectAcceptedTurnPlan
                 Definition = entry.Definition.DeepClone().AsObject()
             }).ToArray());
 
+    internal IReadOnlyList<EffectReactionExecution> DeferredReactions =>
+        new ReadOnlyCollection<EffectReactionExecution>(
+            _deferredReactions.Select(CloneReaction).ToArray());
+
+    internal int ReactionExpansionCount { get; }
+
+    internal IReadOnlyDictionary<
+        EffectReactionExpansionKey,
+        EffectReactionExpansionUsage> ReactionExpansionUsage =>
+        new ReadOnlyDictionary<
+            EffectReactionExpansionKey,
+            EffectReactionExpansionUsage>(
+                _reactionExpansionUsage.ToDictionary(
+                    static pair => pair.Key,
+                    static pair => pair.Value));
+
     internal IReadOnlyList<JsonObject> ActiveEffects =>
         new ReadOnlyCollection<JsonObject>(
             _activeEffects.Select(static effect => effect.DeepClone().AsObject()).ToArray());
 
     internal EffectCarrierCatalogInput ResourceTriggerCarriers =>
         CloneCarriers(_resourceTriggerCarriers);
+
+    internal EffectSourceAuthority SourceAuthority { get; }
 
     internal EffectTargetAuthority TargetAuthority { get; }
 
@@ -160,6 +210,18 @@ internal sealed class EffectAcceptedTurnPlan
             value.AllyCombatants?.DeepClone().AsObject(),
             value.AfterlifeProfiles?.DeepClone().AsObject(),
             value.SpiritualConflict?.DeepClone().AsObject());
+
+    private static EffectReactionExecution CloneReaction(
+        EffectReactionExecution value) => value with
+    {
+        DownstreamSource = value.DownstreamSource is null
+            ? null
+            : value.DownstreamSource with
+            {
+                Definition = value.DownstreamSource.Definition.DeepClone().AsObject()
+            },
+        Parameters = value.Parameters?.DeepClone().AsObject()
+    };
 }
 
 internal sealed record EffectAcceptedTurnPlanningResult(

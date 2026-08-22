@@ -899,6 +899,30 @@ public sealed class ShiningStateValidationTests
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_gacha_return_cycle_invalid", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Theory]
+    [InlineData("chargesPerReturn")]
+    [InlineData("chargesUsedThisReturn")]
+    public void ValidateShiningAbodeStateFile_LegacyGachaCounter_RaisesExplicitError(
+        string fieldName)
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root["gachaSystem"] = new JsonObject
+        {
+            ["currentReturnCycleId"] = "shining_return_5",
+            ["gachaHistory"] = new JsonArray(),
+            [fieldName] = 1
+        };
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue =>
+            string.Equals(
+                issue.Code,
+                "shining_gacha_legacy_counter_forbidden",
+                StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.EndsWith('.' + fieldName, StringComparison.Ordinal));
+    }
+
     [Fact]
     public void ValidateShiningAbodeStateFile_CoreReceiptWithoutResolvedMarkers_RaisesExplicitErrors()
     {

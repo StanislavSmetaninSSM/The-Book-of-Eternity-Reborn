@@ -1,5 +1,19 @@
 # 🎮 **The Book of Eternity Reborn - CLI API Specification**
 
+> **Effect Materialization v1:** every active runtime effect follows the mandatory shared contract in `OtherGuides/Effect_Materialization_Contract.md`.
+
+> **Unified Resource Authority v1:** the GM may author only transient
+> `resourceDefinitionCreations`, `resourceCapacityChanges`, and
+> `resourceChanges`. Existing owners use exact permanent `targetId`; same-turn
+> owners use the exact `targetRef` supplied by their owning materializer.
+> Capacity operations are `initialize`, `reconfigure`, `suspend`, `resume`, and
+> `retire`; ordinary operations are `damage`, `restore`, `spend`, and `gain`.
+> `game_state/resources/resource_state.json` and
+> `game_state/resources/resource_history.json`, including current/maximum,
+> identities, ordering, policies, and history, are client-owned and published
+> atomically. There is no migration, direct canonical write, dual write, or
+> legacy/raw fallback. See `Examples/E_CLI_Mortal_Resources.txt`.
+
 **Version:** 1.1
 **Date:** 2026-03-08
 **Target:** CLI Agents (Gemini, Claude, etc.)  
@@ -228,23 +242,23 @@ CLI Agent automatically loads current game state from:
   
   // PLAYER CHARACTER
   "playerStatus": {
-    "healthPercentage": "string (e.g., '85%')",
-    "energyPercentage": "string (e.g., '60%')",
-    "poisePercentage": "string (e.g., '100%')",
-    "currentCondition": "string (e.g., 'Усталый')"
+    "currentCondition": "string (e.g., 'Усталый')",
+    "activeConditions": ["array of player-facing condition strings"]
   },
-  "currentPoiseChange": "integer (change in player's poise this turn)",
   "activeSkillChanges": "array of skill_change_objects",
   "removeActiveSkills": "array of skill_ids",
   "passiveSkillChanges": "array of skill_change_objects", 
   "removePassiveSkills": "array of skill_ids",
   "skillMasteryChanges": "array of mastery_change_objects",
-  "playerActiveEffectsChanges": "array of effect_change_objects",
+  "effectChanges": "array of apply/dispel/remove commands using exact source and target authority",
+  "effectResolutionReceipts": "array of exact bounded receipts requested by client pending state",
+  "effectEventReports": "array of closed registered event reports bound to sealed accepted-turn evidence; never effect/trigger selectors",
+  "resourceDefinitionCreations": "array of complete setting/bootstrap resource proposals",
+  "resourceCapacityChanges": "array of initialize/reconfigure/suspend/resume/retire commands",
+  "resourceChanges": "array of exact damage/restore/spend/gain commands",
   "calculatedWeightData": "object with current weight calculations",
   "statsIncreased": "object with characteristic increases",
   "statsDecreased": "object with characteristic decreases",
-  "currentEnergyChange": "integer (can be negative)",
-  "currentHealthChange": "integer (can be negative)", 
   "moneyChange": "integer (can be negative)",
   "experienceGained": "integer",
   "playerEffortTrackerChange": "object with lastUsedCharacteristic + consecutivePartialSuccesses",
@@ -262,7 +276,6 @@ CLI Agent automatically loads current game state from:
   
   // INVENTORY MANAGEMENT
   "UpdateInventory": "array of inventory_command_objects",
-  "inventoryItemsResources": "array of resource_change_objects",
   "updateItemTextContents": "array of item_text_update_objects",
   "moveInventoryItems": "array of item_movement_objects",
   "removeInventoryItems": "array of item_removal_objects", 
@@ -301,7 +314,6 @@ CLI Agent automatically loads current game state from:
   "NPCPassiveSkillChanges": "array of npc_skill_change_objects",
   "NPCSkillMasteryChanges": "array of npc_mastery_change_objects",
   "NPCPassiveSkillMasteryChanges": "array of npc_mastery_change_objects",
-  "NPCEffectChanges": "array of npc_effect_change_objects",
   "NPCWoundChanges": "array of npc_wound_change_objects",
   "interNPCRelationshipChanges": "array of inter_npc_relationship_objects",
   "NPCRelationshipChanges": "array of npc_relationship_change_objects",
@@ -312,7 +324,6 @@ CLI Agent automatically loads current game state from:
   "NPCInventoryUpdates": "array of npc_inventory_update_objects", 
   "NPCInventoryRemovals": "array of npc_inventory_removal_objects",
   "NPCEquipmentChanges": "array of npc_equipment_change_objects",
-  "NPCInventoryResourcesChanges": "array of npc_resource_change_objects",
   "NPCMaskAdds": "array of npc_mask_add_objects",
   "NPCMaskUpdates": "array of npc_mask_update_objects",
   "NPCMaskRemovals": "array of npc_mask_removal_objects",
@@ -483,7 +494,7 @@ game_session/
 - These `output/*.json` files are fresh per-turn transient artifacts for the current `sessionId/requestId/turnNumber`.
 - Rewrite them for the current request only; never append cross-turn history there and never reuse stale payload from a previous turn.
 - If a surface is unused for this turn, leave the corresponding `output/*.json` file absent instead of preserving old content.
-- `game_state/core/player_status.json` ← `playerStatus`, `currentPoiseChange`
+- `game_state/core/player_status.json` ← `playerStatus` condition/condition-list fields only; health, energy, and poise live exclusively in the common resource ledger
 - `playerStatus` is flattened into the root of `game_state/core/player_status.json`; do not store it there as a nested `playerStatus` object.
 - In Mortal World, `game_state/core/player_status.json` is a mandatory core file; accepted state is invalid if it is missing.
 - `game_state/core/system_mods.json` ← client-authored manifest of global system mods
@@ -498,9 +509,13 @@ game_session/
 - `game_state/player/skills_active.json` ← `activeSkillChanges`, `removeActiveSkills`
 - `game_state/player/skills_passive.json` ← `passiveSkillChanges`, `removePassiveSkills`
 - `game_state/player/skill_mastery.json` ← `skillMasteryChanges`
-- `game_state/player/effects.json` ← `playerActiveEffectsChanges`
+- `game_state/effects/effect_commands.json` ← transient `effectChanges`, `effectResolutionReceipts`, `effectEventReports`; the client consumes it after accepted materialization
+- `game_state/player/effects.json` ← client-owned canonical player `activeEffects[]`; never direct GM output
+- `game_state/effects/effect_identity_index.json` and `game_state/control/pending_effect_resolutions.json` are client-owned identity/pending authority
+- `game_state/resources/resource_commands.json` ← transient `resourceDefinitionCreations`, `resourceCapacityChanges`, `resourceChanges`; the client consumes it only after atomic accepted materialization
+- `game_state/resources/resource_definitions.json`, `resource_state.json`, and `resource_history.json` are client-owned canonical authority. The GM never writes current/maximum values, canonical IDs, history, phase, policy, or file paths.
 - `game_state/player/weight_calc.json` ← `calculatedWeightData`
-- `game_state/player/status_changes.json` ← `statsIncreased`, `statsDecreased`, `currentEnergyChange`, `currentHealthChange`, `moneyChange`
+- `game_state/player/status_changes.json` ← `statsIncreased`, `statsDecreased`, `moneyChange`; bounded gauges use only common resource commands
 - `game_state/player/experience.json` ← `experienceGained`, `playerEffortTrackerChange`
 - `game_state/player/wounds.json` ← `playerWoundChanges`
 - `game_state/player/custom_states.json` ← `customStateChanges`
@@ -513,8 +528,7 @@ game_session/
   - new item: full Item Object with `existedId = null`
   - existing item update: partial object with `existedId` plus only the fields that changed this turn
 - Do not use `UpdateInventory` to move an existing item between containers/locations. Use `moveInventoryItems` for relocation and keep `UpdateInventory` for the item's own property changes.
-- `game_state/inventory/item_resources.json` ← `inventoryItemsResources`
-- Canonical stored shape for `item_resources.json`: `entries[]` with item identity + `resource`, `maximumResource`, `resourceType`
+- Item charges, ammunition, uses, and durability use the permanent item owner through `resourceCapacityChanges` / `resourceChanges`; no inventory resource sidecar or direct item current/maximum field exists.
 - `game_state/inventory/item_text_updates.json` ← `updateItemTextContents`
 - Canonical stored shape for `item_text_updates.json`: `entries[]` with item identity + `textContent[]`; incoming `updateItemTextContents[].textToAppend` is normalized into appended `textContent` entries after distribution
 - `game_state/inventory/item_movements.json` ← `moveInventoryItems`
@@ -630,7 +644,7 @@ Quest state contract notes:
 #### **NPC SYSTEM (14 FILES)**
 - `game_state/npcs/npc_core.json` ← `UpdateNPCs`, `NPCsRenameData`, `NPCsInScene`
 - `game_state/npcs/npc_skills.json` ← `NPCActiveSkillChanges`, `NPCPassiveSkillChanges`, etc.
-- `game_state/npcs/npc_effects.json` ← `NPCEffectChanges`, `NPCWoundChanges`
+- `game_state/npcs/npc_effects.json` ← `NPCWoundChanges` plus client-owned canonical NPC active-effect entries; lifecycle requests use only top-level `effectChanges[]`
 - `game_state/npcs/npc_relationships.json` ← `NPCRelationshipChanges`, `interNPCRelationshipChanges`, etc.
 - `game_state/npcs/npc_goals.json` ← `NPCGoalUpdates`, `NPCQuestUpdates`
 - `game_state/npcs/npc_inventory.json` ← `NPCInventoryAdds/Updates/Removals`, `NPCEquipmentChanges`, etc.
@@ -713,7 +727,7 @@ Quest state contract notes:
 - `mathAudit[].applicationState` must be one of `calculated_only`, `applied_to_state`, or `mismatch_repair_blocking`.
 - `calculated_only` means the number was calculated but not applied to state. `applied_to_state` means some other response/state surface actually used it. `mismatch_repair_blocking` means the GM saw a mismatch and intentionally leaves the turn blocked for repair; it is still a validation error, not silent acceptance.
 - Manual totals must match the local Math Assistant result. A mismatched `expectedResult`, `rawResult`, or `result` fails closed with repair hints.
-- For Mortal combat/status delta fields, if `mathAudit[].applicationState = applied_to_state` and `referencedBy[]` points to `currentHealthChange`, `currentPoiseChange`, or `currentEnergyChange`, then `mathAudit.result` must be the exact signed numeric change written to that response field. Example: a 13 damage hit to the player is `currentHealthChange: -13` and the audit result is also `-13`, not `13`.
+- For Mortal bounded resources, `mathAudit[]` may document non-trivial arithmetic, but mutation authority remains the matching `resourceChanges[]` command. If `referencedBy[]` points to a resource command, `mathAudit.result` must equal its exact positive `amount`; direction is expressed only by `operation=damage|restore|spend|gain`.
 - For afterlife combat, use Math Assistant for non-trivial GM-authored arithmetic that is copied into response state, especially `afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount` and contested `diceAudit.margin` paths. It is optional for trivial one-step sums and unnecessary for client-owned calculations the GM never authors. If `referencedBy[]` names a supported afterlife numeric path, `mathAudit.result` must exactly equal that field; built-in afterlife validators still run separately.
 
 ```json
@@ -985,11 +999,11 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - This is the canonical current runtime contract for `gm_thoughts_markdown`; older heavier all-turn templates in legacy docs do not override the current validator.
 
 ### Mortal World Only
-- `currentPoiseChange`, `currentEnergyChange`, `currentHealthChange`
+- `resourceDefinitionCreations`, `resourceCapacityChanges`, `resourceChanges` for accepted Mortal owners and registered sources
 - `experienceGained`, `moneyChange`
 - `statsIncreased`, `statsDecreased`, `setCharacteristics`
 - `activeSkillChanges`, `passiveSkillChanges`, `skillMasteryChanges`
-- `UpdateInventory`, `inventoryItemsResources`, `moveInventoryItems`, `removeInventoryItems`
+- `UpdateInventory`, `moveInventoryItems`, `removeInventoryItems`
 - `UpdateNPCs`, `NPCsInScene`, regular NPC arrays, `UpdateQuests`
 - `worldEventsLog`, `factionDataChanges`, `factionProjectUpdates`
 - `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`
@@ -1031,7 +1045,8 @@ The following spending-based Ink Feather actions are explicitly allowed in `Mort
 These exceptions do NOT unlock Guardians, Abodes, Guardian reputation changes, or Gacha.
 - `Absorb Feathers` is valid only if `experienceGained` is positive and an authoritative XP counter in `game_state/player/experience.json` really increases.
 - `Learn Skill` is valid only if it creates a NEW skill object in the appropriate player skill file for this turn.
-- `Fate Shield` is valid only if it creates a NEW `Щит Судьбы` effect instance for this turn.
+- `Fate Shield` is valid only if top-level `effectChanges[].apply` creates a NEW `Щит Судьбы` instance from exact built-in source `fate_card:builtin_ink_feather_fate_shield:fate-shield-next-critical-failure` for the sealed `[INK_FEATHER_ACTION: FATE_SHIELD]` turn. Never write `activeEffects[]` or `effectId` directly.
+- On a later Mortal critical failure, report `effectEventReports[].eventType=owner_critical_failure` with closed `mortal_action_roll` evidence bound to the exact leading sealed d20 pool and `critical_failure -> failure`. The client selects and consumes one oldest eligible shield; never submit `effectId`, `triggerId`, remaining uses, or carrier post-state.
 
 ### Afterlife Ink Feather Exceptions
 The following spending-based Ink Feather actions are explicitly allowed in afterlife realms (`Chaos Sea` and `Shining Abode`) when their specific action prerequisites are satisfied:
@@ -2300,10 +2315,12 @@ legacy promotion are not requirements.
 At a fresh Mortal bootstrap, the client establishes an empty current-life item
 baseline in `game_state/inventory/items.json`,
 `game_state/inventory/item_identity_index.json`,
-`game_state/inventory/item_resources.json`,
 `game_state/inventory/item_bonds.json`,
 `game_state/inventory/item_text_updates.json`, and
-`game_state/npcs/item_journals.json`. Previous-life item sidecars are rollback-only and are not the current GM baseline. The GM must not copy old entries,
+`game_state/npcs/item_journals.json`; common resource authority is established in
+`game_state/resources/resource_definitions.json`, `resource_state.json`, and
+`resource_history.json`. Previous-life item sidecars are rollback-only and are not the current GM baseline.
+They are not compatible with the current schema and are never copied into the new life. The GM must not copy old entries,
 receipts, IDs, or lineage into these files; it creates current-life items only
 through the supported route contracts above.
 

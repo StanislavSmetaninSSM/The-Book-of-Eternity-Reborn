@@ -1722,8 +1722,7 @@ public partial class ExplorerMode
             $"позиция {FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["conflictPosition"]))} -> {FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["conflictPosition"]))}; " +
             $"напряжение игрока {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["playerSideStrain"]))} -> {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["playerSideStrain"]))}; " +
             $"напряжение противника {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["oppositionSideStrain"]))} -> {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["oppositionSideStrain"]))}; " +
-            $"контроль/оковы {DescribeControlState(before?["controlState"] as JsonObject)} -> {DescribeControlState(after?["controlState"] as JsonObject)}; " +
-            $"ОД {DescribeActionEconomy(before?["actionEconomy"] as JsonObject)} -> {DescribeActionEconomy(after?["actionEconomy"] as JsonObject)}";
+            $"контроль/оковы {DescribeControlState(before?["controlState"] as JsonObject)} -> {DescribeControlState(after?["controlState"] as JsonObject)}";
     }
 
     private static string DescribeIncomingAction(JsonObject incomingAction)
@@ -1812,24 +1811,6 @@ public partial class ExplorerMode
         var oppositionModifier = FormatSignedIntOrUnknown(difficultyAudit["oppositionModifier"]);
         var rewardMultiplier = FormatIntOrUnknown(difficultyAudit["rewardMultiplierPercent"]);
         return $"сложность: {label}, модификатор противника {oppositionModifier}, множитель награды {rewardMultiplier}%";
-    }
-
-    private static string DescribeActionEconomy(JsonObject? actionEconomy)
-    {
-        if (actionEconomy == null)
-            return "нет данных";
-
-        return $"игрок {DescribeActionPool(actionEconomy["player"] as JsonObject)}, противник {DescribeActionPool(actionEconomy["opposition"] as JsonObject)}";
-    }
-
-    private static string DescribeActionPool(JsonObject? pool)
-    {
-        if (pool == null)
-            return "?";
-
-        var current = FormatIntOrUnknown(pool["current"]);
-        var max = FormatIntOrUnknown(pool["max"]);
-        return $"{current}/{max}";
     }
 
     private static string DescribeActionCostAudit(JsonObject actionCostAudit)

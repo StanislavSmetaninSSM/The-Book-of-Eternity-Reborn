@@ -56,10 +56,10 @@ public sealed class FileSystemExampleFixtureIntegrityTests
                         (long)Encoding.UTF8.GetByteCount(entry.Path))));
         }
 
-        Assert.Equal(100, observed.Max(item => item.EntryCount));
-        Assert.Equal(324_297, observed.Max(item => item.ExpandedBytes));
-        Assert.Equal(61_375, observed.Max(item => item.LargestEntryBytes));
-        Assert.Equal(3_552, observed.Max(item => item.NameUtf8Bytes));
+        Assert.Equal(104, observed.Max(item => item.EntryCount));
+        Assert.Equal(339_755, observed.Max(item => item.ExpandedBytes));
+        Assert.Equal(61_171, observed.Max(item => item.LargestEntryBytes));
+        Assert.Equal(3_725, observed.Max(item => item.NameUtf8Bytes));
 
         var budget = SaveLoadService.TrustedArchiveBudget;
         Assert.True(
@@ -390,6 +390,81 @@ public sealed class FileSystemExampleFixtureIntegrityTests
     }
 
     [Theory]
+    [InlineData("mortal_world_command_display_fixture.zip")]
+    [InlineData("chaos_sea_command_display_fixture.zip")]
+    [InlineData("shining_abode_command_display_fixture.zip")]
+    public void ReusableSaveFixtures_EffectsUseCurrentCarrierAndIdentityAuthority(string fixtureName)
+    {
+        var fixturePath = Path.Combine(
+            TestRepoPaths.BaseSessionRoot,
+            "saves",
+            "manual_saves",
+            fixtureName);
+        using var archive = ZipFile.OpenRead(fixturePath);
+        var input = new EffectCarrierCatalogInput(
+            ReadOptionalArchiveObject(archive, EffectCarrierCatalog.PlayerPath),
+            ReadOptionalArchiveObject(archive, EffectCarrierCatalog.NpcPath),
+            ReadOptionalArchiveObject(archive, EffectCarrierCatalog.EnemiesPath),
+            ReadOptionalArchiveObject(archive, EffectCarrierCatalog.AlliesPath),
+            ReadOptionalArchiveObject(archive, EffectCarrierCatalog.AfterlifeProfilesPath),
+            ReadOptionalArchiveObject(archive, EffectCarrierCatalog.SpiritualConflictPath));
+        var catalog = EffectCarrierCatalog.Build(input);
+        Assert.Empty(catalog.Issues);
+
+        var sourceRoots = EffectAcceptedTurnInputComposer.SourceAuthorityPaths
+            .ToDictionary(
+                static path => path,
+                path => (JsonNode?)ReadOptionalArchiveObject(archive, path),
+                StringComparer.Ordinal);
+        var sourceAuthority = EffectAcceptedTurnInputComposer
+            .BuildCanonicalSourceAuthority(sourceRoots);
+        Assert.Empty(sourceAuthority.Issues);
+        var targetAuthority = EffectAcceptedTurnInputComposer
+            .BuildCanonicalTargetAuthority(input, sourceRoots);
+        Assert.Empty(targetAuthority.Issues);
+        Assert.Empty(targetAuthority.ValidateNamedCombatantBindings(input));
+        var bindingIssues = new List<ValidationIssue>();
+        ValidationService.ValidateCanonicalEffectBindings(
+            catalog,
+            sourceAuthority,
+            targetAuthority,
+            bindingIssues);
+        Assert.Empty(bindingIssues);
+
+        var indexRoot = ReadOptionalArchiveObject(archive, EffectIdentityState.StatePath);
+        if (indexRoot == null)
+        {
+            Assert.Empty(catalog.Occurrences);
+        }
+        else
+        {
+            using var indexDocument = JsonDocument.Parse(indexRoot.ToJsonString());
+            var parsed = EffectIdentityState.Parse(indexDocument.RootElement, EffectIdentityState.StatePath);
+            Assert.Empty(parsed.Issues);
+            var index = Assert.IsType<EffectIdentityState>(parsed.State);
+            var agreementIssues = new List<ValidationIssue>();
+            ValidationService.ValidateEffectCarrierIndexAgreement(catalog, index, agreementIssues);
+            Assert.Empty(agreementIssues);
+        }
+
+        var pending = ReadOptionalArchiveObject(archive, ResourcePendingResolutionState.PendingPath);
+        if (pending != null)
+        {
+            Assert.Equal(ResourcePendingResolutionState.SchemaVersion, pending["schemaVersion"]!.GetValue<int>());
+            Assert.IsType<JsonArray>(pending["requests"]);
+            Assert.IsType<JsonArray>(pending["terminalReceipts"]);
+        }
+
+        var legacy = archive.Entries
+            .Where(entry => !string.IsNullOrEmpty(entry.Name) && entry.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            .Select(entry => ReadArchiveText(entry))
+            .FirstOrDefault(text =>
+                text.Contains("playerActiveEffectsChanges", StringComparison.Ordinal) ||
+                text.Contains("NPCEffectChanges", StringComparison.Ordinal));
+        Assert.Null(legacy);
+    }
+
+    [Theory]
     [InlineData("fixed")]
     [InlineData("broken")]
     public void ItemBondFateCardFixture_UsesCurrentMaterializationAndMatchingIdentityIndex(string variant)
@@ -527,12 +602,18 @@ public sealed class FileSystemExampleFixtureIntegrityTests
             var id = item.TryGetProperty("itemId", out var itemId) && itemId.ValueKind == JsonValueKind.String
                 ? itemId.GetString()
                 : "<missing itemId>";
-            foreach (var requiredString in new[] { "existedId", "name", "description", "image_prompt", "quality", "durability" })
+            foreach (var requiredString in new[] { "existedId", "name", "description", "image_prompt", "quality" })
             {
                 if (!item.TryGetProperty(requiredString, out var value) ||
                     value.ValueKind != JsonValueKind.String ||
                     string.IsNullOrWhiteSpace(value.GetString()))
                     invalidItems.Add($"{id}: missing string {requiredString}");
+            }
+
+            foreach (var legacyResourceField in new[] { "durability", "maxDurability" })
+            {
+                if (item.TryGetProperty(legacyResourceField, out _))
+                    invalidItems.Add($"{id}: forbidden legacy resource field {legacyResourceField}");
             }
 
             foreach (var requiredBoolean in new[] { "isContainer", "isConsumption", "requiresTwoHands" })
@@ -659,6 +740,90 @@ public sealed class FileSystemExampleFixtureIntegrityTests
     }
 
     [Fact]
+    public void GameSessionFixture_UsesCanonicalResourceRootsAndLegacyRepairFixture()
+    {
+        var resourceRoot = Path.Combine(
+            TestRepoPaths.BaseSessionRoot,
+            "game_state",
+            "resources");
+        var definitionsPath = Path.Combine(resourceRoot, "resource_definitions.json");
+        var statePath = Path.Combine(resourceRoot, "resource_state.json");
+        var historyPath = Path.Combine(resourceRoot, "resource_history.json");
+        var commandPath = Path.Combine(resourceRoot, "resource_commands.json");
+
+        var definitionsResult = ResourceDefinitionCatalog.ParseCanonical(
+            File.ReadAllText(definitionsPath),
+            allowMissingPristine: false);
+        Assert.True(
+            definitionsResult.IsValid,
+            string.Join(Environment.NewLine, definitionsResult.Issues));
+        var definitions = Assert.IsType<ResourceDefinitionCatalog>(definitionsResult.Catalog);
+
+        var stateResult = ResourceStateContract.ParseCanonical(
+            File.ReadAllText(statePath),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(
+            stateResult.IsValid,
+            string.Join(Environment.NewLine, stateResult.Issues));
+
+        var historyResult = ResourceHistoryState.ParseCanonical(
+            File.ReadAllText(historyPath),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(
+            historyResult.IsValid,
+            string.Join(Environment.NewLine, historyResult.Issues));
+        Assert.Empty(
+            Assert.IsType<ResourceHistoryState>(historyResult.History)
+                .ValidateStateAgreement(
+                    Assert.IsType<ResourceStateLedger>(stateResult.Ledger)));
+        Assert.False(
+            File.Exists(commandPath),
+            "resource_commands.json is a transient accepted-turn envelope and must not be checked into canonical game state.");
+
+        var fixtureRoot = Path.Combine(
+            TestRepoPaths.ValidatorFixturesRoot,
+            "resource_materialization");
+        var fixturePath = Path.Combine(fixtureRoot, "fixture.json");
+        var expectedErrorsPath = Path.Combine(fixtureRoot, "expected_errors.json");
+        var brokenStatusPath = Path.Combine(fixtureRoot, "broken", "player_status.json");
+        var fixedStatusPath = Path.Combine(fixtureRoot, "fixed", "player_status.json");
+
+        Assert.True(File.Exists(fixturePath));
+        Assert.True(File.Exists(expectedErrorsPath));
+        Assert.True(File.Exists(brokenStatusPath));
+        Assert.True(File.Exists(fixedStatusPath));
+
+        using var fixtureDocument = JsonDocument.Parse(File.ReadAllText(fixturePath));
+        Assert.Equal(
+            "resource_materialization",
+            fixtureDocument.RootElement.GetProperty("id").GetString());
+        Assert.Equal(
+            "StateOnly",
+            fixtureDocument.RootElement.GetProperty("runner").GetString());
+        Assert.Contains(
+            fixtureDocument.RootElement.GetProperty("expectedBrokenCodes").EnumerateArray(),
+            code => string.Equals(
+                code.GetString(),
+                "resource_legacy_player_gauge_forbidden",
+                StringComparison.Ordinal));
+
+        using var expectedErrorsDocument = JsonDocument.Parse(File.ReadAllText(expectedErrorsPath));
+        Assert.Contains(
+            expectedErrorsDocument.RootElement.GetProperty("expectedCodes").EnumerateArray(),
+            code => string.Equals(
+                code.GetString(),
+                "resource_legacy_player_gauge_forbidden",
+                StringComparison.Ordinal));
+
+        using var brokenStatusDocument = JsonDocument.Parse(File.ReadAllText(brokenStatusPath));
+        using var fixedStatusDocument = JsonDocument.Parse(File.ReadAllText(fixedStatusPath));
+        Assert.True(brokenStatusDocument.RootElement.TryGetProperty("healthPercentage", out _));
+        Assert.False(fixedStatusDocument.RootElement.TryGetProperty("healthPercentage", out _));
+    }
+
+    [Fact]
     public void GameSessionFixture_MortalLocationUsesCurrentMaterializationAndIdentityIndex()
     {
         var worldRoot = Path.Combine(
@@ -741,6 +906,21 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         using var reader = new StreamReader(entry!.Open(), Encoding.UTF8);
         return JsonNode.Parse(reader.ReadToEnd())?.AsObject() ??
                throw new InvalidDataException($"Archive entry '{entryPath}' must contain a JSON object.");
+    }
+
+    private static JsonObject? ReadOptionalArchiveObject(ZipArchive archive, string entryPath)
+    {
+        var entry = archive.GetEntry(entryPath);
+        if (entry == null)
+            return null;
+        return JsonNode.Parse(ReadArchiveText(entry))?.AsObject() ??
+               throw new InvalidDataException($"Archive entry '{entryPath}' must contain a JSON object.");
+    }
+
+    private static string ReadArchiveText(ZipArchiveEntry entry)
+    {
+        using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
+        return reader.ReadToEnd();
     }
 
     private static void CopyDirectory(string sourceDir, string destinationDir)

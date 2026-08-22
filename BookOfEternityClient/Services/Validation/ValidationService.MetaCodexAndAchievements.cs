@@ -11,6 +11,45 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
+    private const string FullPartyInteractionsPath =
+        "game_state/misc/player_interactions.json";
+
+    private sealed class FullPartyResourcePacketValidationResult
+    {
+        private readonly JsonObject[] _orderedResourceChanges;
+        private readonly ValidationIssue[] _issues;
+        private readonly JsonObject _fingerprintRoot;
+
+        internal FullPartyResourcePacketValidationResult(
+            bool hasResourcePackets,
+            IEnumerable<JsonObject> orderedResourceChanges,
+            JsonObject fingerprintRoot,
+            IEnumerable<ValidationIssue> issues)
+        {
+            HasResourcePackets = hasResourcePackets;
+            _orderedResourceChanges = orderedResourceChanges
+                .Select(static value => value.DeepClone().AsObject())
+                .ToArray();
+            _fingerprintRoot = fingerprintRoot.DeepClone().AsObject();
+            _issues = issues
+                .GroupBy(static value => (value.FilePath, value.Code))
+                .Select(static group => group.First())
+                .ToArray();
+        }
+
+        internal bool HasResourcePackets { get; }
+
+        internal IReadOnlyList<JsonObject> OrderedResourceChanges =>
+            Array.AsReadOnly(_orderedResourceChanges
+                .Select(static value => value.DeepClone().AsObject())
+                .ToArray());
+
+        internal JsonObject FingerprintRoot => _fingerprintRoot.DeepClone().AsObject();
+
+        internal IReadOnlyList<ValidationIssue> Issues =>
+            Array.AsReadOnly(_issues.ToArray());
+    }
+
     private void ValidatePlayerBehavior(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         if (root.TryGetProperty("historyManipulationCoefficient", out var coeff) &&
@@ -795,68 +834,347 @@ public partial class ValidationService
 
     private void ValidateOtherPlayersInteractions(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
-        if (!root.TryGetProperty("otherPlayersInteractions", out var interactions))
-            return;
+        issues.AddRange(ValidateFullPartyResourcePackets(root, contextPrefix).Issues);
+    }
 
-        var context = $"{contextPrefix}.otherPlayersInteractions";
-        if (interactions.ValueKind == JsonValueKind.Object)
+    private static FullPartyResourcePacketValidationResult
+        ParseFullPartyResourcePackets(string? json, string contextPrefix)
+    {
+        if (json == null)
+            return EmptyFullPartyResourcePacketResult();
+
+        if (string.IsNullOrWhiteSpace(json))
         {
-            foreach (var playerEntry in interactions.EnumerateObject())
+            return InvalidFullPartyResourcePacketRoot(
+                contextPrefix,
+                "resource_full_party_invalid_root",
+                "non-empty strict JSON object",
+                "empty or whitespace-only file");
+        }
+
+        try
+        {
+            using var document = JsonDocument.Parse(json);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
             {
-                if (string.IsNullOrWhiteSpace(playerEntry.Name))
-                {
-                    issues.Add(new ValidationIssue(
-                        context,
-                        IssueSeverity.Error,
-                        "otherPlayersInteractions object должен быть keyed by non-empty playerId"));
-                    continue;
-                }
+                return InvalidFullPartyResourcePacketRoot(
+                    contextPrefix,
+                    "resource_full_party_invalid_root",
+                    "strict JSON object",
+                    document.RootElement.ValueKind.ToString());
+            }
 
-                if (playerEntry.Value.ValueKind != JsonValueKind.Array)
-                {
-                    issues.Add(new ValidationIssue(
-                        $"{context}.{playerEntry.Name}",
-                        IssueSeverity.Error,
-                        "Значение otherPlayersInteractions[playerId] должно быть массивом command objects",
-                        code: "other_player_interactions_invalid_player_bucket",
-                        section: "OtherPlayers",
-                        expected: "array of command objects",
-                        actual: playerEntry.Value.ValueKind.ToString(),
-                        repairHint: "Для каждого target playerId передавай массив command objects, которые обычно шли бы на top-level."));
-                    continue;
-                }
+            var result = ValidateFullPartyResourcePackets(
+                document.RootElement,
+                contextPrefix);
+            return result;
+        }
+        catch (JsonException exception)
+        {
+            return InvalidFullPartyResourcePacketRoot(
+                contextPrefix,
+                "resource_full_party_invalid_json",
+                "well-formed strict JSON object",
+                exception.GetType().Name);
+        }
+    }
 
-                var index = 0;
-                foreach (var command in playerEntry.Value.EnumerateArray())
-                {
-                    var commandContext = $"{context}.{playerEntry.Name}[{index++}]";
-                    if (!RequireObject(command, commandContext, issues))
-                        continue;
+    private static FullPartyResourcePacketValidationResult
+        ValidateFullPartyResourcePackets(JsonElement root, string contextPrefix)
+    {
+        if (!root.TryGetProperty("otherPlayersInteractions", out var interactions))
+            return EmptyFullPartyResourcePacketResult();
 
-                    if (!command.EnumerateObject().Any())
-                    {
-                        issues.Add(new ValidationIssue(
-                            commandContext,
-                            IssueSeverity.Error,
-                            "Command object для otherPlayersInteractions не должен быть пустым",
-                            code: "other_player_interactions_empty_command",
-                            section: "OtherPlayers",
-                            repairHint: "Передавай в otherPlayersInteractions только непустые top-level command objects для целевого игрока."));
-                    }
+        var issues = new List<ValidationIssue>();
+        var orderedChanges = new List<JsonObject>();
+        var fingerprintRecipients = new JsonObject();
+        var context = $"{contextPrefix}.otherPlayersInteractions";
+        ResourceMaterializationContract.FindDuplicateProperties(
+            root,
+            contextPrefix,
+            issues,
+            "resource_full_party_duplicate_property");
+        if (interactions.ValueKind != JsonValueKind.Object)
+        {
+            AddFullPartyIssue(
+                issues,
+                context,
+                "resource_full_party_invalid_root",
+                "object keyed by exact recipient playerId",
+                interactions.ValueKind.ToString());
+            return new FullPartyResourcePacketValidationResult(
+                false,
+                orderedChanges,
+                FullPartyFingerprintRoot(fingerprintRecipients),
+                issues);
+        }
+
+        var exactRecipients = new HashSet<string>(StringComparer.Ordinal);
+        var recipientAliases = new HashSet<string>(StringComparer.Ordinal);
+        var packetCount = 0;
+        var resourceCommandCount = 0;
+        foreach (var playerEntry in interactions.EnumerateObject()
+                     .OrderBy(static value => value.Name, StringComparer.Ordinal))
+        {
+            var recipientContext = context + "." + playerEntry.Name;
+            var recipientId = playerEntry.Name;
+            var recipientValid = ResourceMaterializationContract.IsExactIdentifier(recipientId) &&
+                !string.Equals(recipientId, "player_current", StringComparison.Ordinal);
+            if (!recipientValid)
+            {
+                AddFullPartyIssue(
+                    issues,
+                    recipientContext,
+                    "resource_full_party_recipient_invalid",
+                    "exact non-local recipient playerId",
+                    recipientId);
+            }
+            else
+            {
+                var alias = ResourceMaterializationContract.BuildConfusableKey(recipientId);
+                if (!exactRecipients.Add(recipientId) || !recipientAliases.Add(alias))
+                {
+                    AddFullPartyIssue(
+                        issues,
+                        recipientContext,
+                        "resource_full_party_recipient_ambiguous",
+                        "exact/confusable-unique recipient playerId",
+                        recipientId);
                 }
             }
-            return;
+
+            if (playerEntry.Value.ValueKind != JsonValueKind.Array ||
+                playerEntry.Value.GetArrayLength() == 0)
+            {
+                AddFullPartyIssue(
+                    issues,
+                    recipientContext,
+                    "resource_full_party_invalid_player_bucket",
+                    "non-empty array of closed command packets",
+                    playerEntry.Value.ValueKind == JsonValueKind.Array
+                        ? "empty array"
+                        : playerEntry.Value.ValueKind.ToString());
+                continue;
+            }
+
+            var fingerprintPackets = new JsonArray();
+            var packetIndex = 0;
+            foreach (var packet in playerEntry.Value.EnumerateArray())
+            {
+                packetCount++;
+                var packetContext = $"{recipientContext}[{packetIndex}]";
+                if (packetCount > ResourceMaterializationContract.MaxMutationsBeforeTriggers)
+                {
+                    AddFullPartyIssue(
+                        issues,
+                        packetContext,
+                        "resource_full_party_limit_exceeded",
+                        $"at most {ResourceMaterializationContract.MaxMutationsBeforeTriggers} outbound packets",
+                        packetCount.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                }
+                if (packet.ValueKind != JsonValueKind.Object ||
+                    !packet.EnumerateObject().Any())
+                {
+                    AddFullPartyIssue(
+                        issues,
+                        packetContext,
+                        "resource_full_party_packet_invalid",
+                        "non-empty closed command packet",
+                        packet.ValueKind == JsonValueKind.Object
+                            ? "empty object"
+                            : packet.ValueKind.ToString());
+                    packetIndex++;
+                    continue;
+                }
+
+                if (!packet.TryGetProperty("resourceChanges", out var resourceChanges))
+                {
+                    // Non-resource packet kinds keep their own tracked contracts. They are
+                    // never interpreted here as resource authority.
+                    packetIndex++;
+                    continue;
+                }
+
+                var packetIssueCount = issues.Count;
+                ResourceMaterializationContract.ValidateClosedObject(
+                    packet,
+                    packetContext,
+                    new HashSet<string>(StringComparer.Ordinal) { "resourceChanges" },
+                    issues,
+                    "resource_full_party_packet_unknown_field");
+                if (resourceChanges.ValueKind != JsonValueKind.Array ||
+                    resourceChanges.GetArrayLength() == 0)
+                {
+                    AddFullPartyIssue(
+                        issues,
+                        packetContext + ".resourceChanges",
+                        "resource_full_party_resource_changes_invalid",
+                        "non-empty ordinary resourceChanges array",
+                        resourceChanges.ValueKind == JsonValueKind.Array
+                            ? "empty array"
+                            : resourceChanges.ValueKind.ToString());
+                    packetIndex++;
+                    continue;
+                }
+
+                resourceCommandCount += resourceChanges.GetArrayLength();
+                if (resourceCommandCount > ResourceMaterializationContract.MaxMutationsBeforeTriggers)
+                {
+                    AddFullPartyIssue(
+                        issues,
+                        packetContext + ".resourceChanges",
+                        "resource_full_party_limit_exceeded",
+                        $"at most {ResourceMaterializationContract.MaxMutationsBeforeTriggers} local and outbound ordinary mutations",
+                        resourceCommandCount.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                }
+
+                var parsed = ResourceAcceptedTurnInputComposer.Parse(packet.GetRawText());
+                issues.AddRange(parsed.Issues.Select(issue =>
+                    RemapFullPartyResourceIssue(issue, packetContext)));
+                if (parsed.IsValid)
+                {
+                    var commandIndex = 0;
+                    foreach (var command in parsed.ResourceChanges)
+                    {
+                        var commandContext = $"{packetContext}.resourceChanges[{commandIndex++}]";
+                        if (command.Target.OwnerKind != ResourceOwnerKind.Player ||
+                            !string.Equals(
+                                command.Target.TargetId,
+                                "player_current",
+                                StringComparison.Ordinal) ||
+                            command.Target.TargetRef != null)
+                        {
+                            AddFullPartyIssue(
+                                issues,
+                                commandContext + ".target",
+                                "resource_full_party_target_scope_invalid",
+                                "exact recipient-local {kind:'player',targetId:'player_current'} target",
+                                command.Target.TargetId ?? command.Target.TargetRef ??
+                                command.Target.OwnerKind.ToString());
+                        }
+                        if (command.Source.Kind is not (
+                            "action_cost" or "combat_outcome" or "narrative_outcome"))
+                        {
+                            AddFullPartyIssue(
+                                issues,
+                                commandContext + ".source",
+                                "resource_full_party_source_scope_invalid",
+                                "action_cost, combat_outcome, or narrative_outcome without raw sourceId",
+                                command.Source.Kind);
+                        }
+                    }
+                }
+
+                if (issues.Count != packetIssueCount)
+                {
+                    packetIndex++;
+                    continue;
+                }
+
+                foreach (var change in resourceChanges.EnumerateArray())
+                {
+                    if (change.ValueKind == JsonValueKind.Object)
+                        orderedChanges.Add(JsonNode.Parse(change.GetRawText())!.AsObject());
+                }
+                fingerprintPackets.Add(new JsonObject
+                {
+                    ["packetIndex"] = packetIndex,
+                    ["resourceChanges"] = CanonicalizeFullPartyNode(
+                        JsonNode.Parse(resourceChanges.GetRawText()))
+                });
+                packetIndex++;
+            }
+
+            if (fingerprintPackets.Count != 0)
+                fingerprintRecipients[recipientId] = fingerprintPackets;
         }
 
-        if (interactions.ValueKind == JsonValueKind.Array)
-        {
-            RequireArrayOfObjects(interactions, context, issues);
-            return;
-        }
-
-        issues.Add(new ValidationIssue(context, IssueSeverity.Error,
-            "otherPlayersInteractions должен быть объектом или массивом"));
+        return new FullPartyResourcePacketValidationResult(
+            orderedChanges.Count != 0,
+            orderedChanges,
+            FullPartyFingerprintRoot(fingerprintRecipients),
+            issues);
     }
+
+    private static JsonObject FullPartyFingerprintRoot(JsonObject recipients) => new()
+    {
+        ["schemaVersion"] = ResourceMaterializationContract.SchemaVersion,
+        ["recipients"] = recipients.DeepClone()
+    };
+
+    private static JsonNode? CanonicalizeFullPartyNode(JsonNode? node)
+    {
+        if (node is JsonObject valueObject)
+        {
+            var result = new JsonObject();
+            foreach (var pair in valueObject.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+                result[pair.Key] = CanonicalizeFullPartyNode(pair.Value);
+            return result;
+        }
+        if (node is JsonArray valueArray)
+            return new JsonArray(valueArray.Select(CanonicalizeFullPartyNode).ToArray());
+        return node?.DeepClone();
+    }
+
+    private static FullPartyResourcePacketValidationResult
+        EmptyFullPartyResourcePacketResult() => new(
+            false,
+            Array.Empty<JsonObject>(),
+            FullPartyFingerprintRoot(new JsonObject()),
+            Array.Empty<ValidationIssue>());
+
+    private static FullPartyResourcePacketValidationResult
+        InvalidFullPartyResourcePacketRoot(
+            string path,
+            string code,
+            string expected,
+            string actual)
+    {
+        var issues = new List<ValidationIssue>();
+        AddFullPartyIssue(issues, path, code, expected, actual);
+        return new FullPartyResourcePacketValidationResult(
+            false,
+            Array.Empty<JsonObject>(),
+            FullPartyFingerprintRoot(new JsonObject()),
+            issues);
+    }
+
+    private static ValidationIssue RemapFullPartyResourceIssue(
+        ValidationIssue issue,
+        string packetContext)
+    {
+        var suffix = issue.FilePath.StartsWith(
+            ResourceMaterializationContract.CommandPath,
+            StringComparison.Ordinal)
+                ? issue.FilePath[ResourceMaterializationContract.CommandPath.Length..]
+                : "." + issue.FilePath;
+        return new ValidationIssue(
+            packetContext + suffix,
+            issue.Severity,
+            issue.Message,
+            issue.Code,
+            issue.Actor,
+            issue.Section,
+            issue.Expected,
+            issue.Actual,
+            issue.RepairHint,
+            issue.Category,
+            issue.RepairTargetFiles);
+    }
+
+    private static void AddFullPartyIssue(
+        List<ValidationIssue> issues,
+        string path,
+        string code,
+        string expected,
+        string actual) =>
+        ResourceMaterializationContract.AddIssue(
+            issues,
+            path,
+            code,
+            expected,
+            actual,
+            IssueCategory.ProtocolViolation);
 
     private void ValidateCharacterChronicleUpdateObject(JsonElement item, string context, List<ValidationIssue> issues)
     {

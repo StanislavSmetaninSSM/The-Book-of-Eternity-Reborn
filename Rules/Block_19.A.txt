@@ -84,7 +84,7 @@
                     ]]>
    </instructiontext>
    <description>
-    Use this command for partial updates like changing durability, count, or description.
+    Use this command only for non-resource partial updates such as count or description. Durability and internal reserves use the common resource commands against the permanent item identity.
    </description>
    <content language="json" type="code_example">
     <![CDATA[
@@ -96,7 +96,6 @@
                         "itemUpdate": {
                             "existedId": "guid_of_the_item_to_update",
                             // ... ONLY include the fields that have changed ...
-                            "durability": "75%", // Example change
                             "count": 5 // Example change
                         }
                     }

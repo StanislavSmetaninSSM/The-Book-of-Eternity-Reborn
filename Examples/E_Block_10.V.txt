@@ -15,7 +15,7 @@
     // Example UpdateVehicles command granting a cultivator's flying sword
     "UpdateVehicles": [
         {
-            "vehicleId": "sword-azure-wind-001",
+            "vehicleRef": "vehicle_ref_azure_wind_blade",
             "name": "Azure Wind Blade",
             "description": "A gleaming spiritual sword wreathed in azure wind energy. Ancient runes pulse along its fuller, and it hums with contained power. When summoned, it expands to accommodate a rider, floating silently above the ground.",
             "image_prompt": "A mystical floating sword with azure wind currents swirling around it, glowing with spiritual energy, large enough for a person to ride, hovering in mid-air with ancient cultivation runes",
@@ -23,8 +23,11 @@
             "isSentient": true,
             "availability": "Pocket",
             "currentLocationId": null,
-            "maxHealth": "200%",
-            "currentHealth": "200%",
+            "resourceMaterialization": {
+                "resources": [
+                    { "resourceKey": "health", "maximum": 200 }
+                ]
+            },
             "speedBonus": 15,
             "actions": [
                 {
@@ -72,7 +75,7 @@
     // Example UpdateVehicles command for a post-apocalyptic wasteland vehicle
     "UpdateVehicles": [
         {
-            "vehicleId": "buggy-rust-runner-001",
+            "vehicleRef": "vehicle_ref_rust_runner",
             "name": "Rust Runner",
             "description": "A heavily modified dune buggy cobbled together from scavenged parts. Reinforced steel plates cover vital areas, and twin exhaust pipes belch black smoke. A mounted machine gun sits ready on a swivel mount.",
             "image_prompt": "Post-apocalyptic armored dune buggy with rusted metal plating, exposed engine, twin exhaust pipes, mounted machine gun, oversized tires with spikes, mad max style vehicle in wasteland setting",
@@ -80,8 +83,11 @@
             "isSentient": false,
             "availability": "Parked",
             "currentLocationId": "location-wasteland-garage-001",
-            "maxHealth": "350%",
-            "currentHealth": "280%",
+            "resourceMaterialization": {
+                "resources": [
+                    { "resourceKey": "health", "maximum": 350 }
+                ]
+            },
             "speedBonus": 12,
             "actions": [
                 {
@@ -144,7 +150,11 @@
                     "isConsumption": true,
                     "containerWeight": null,
                     "weightReduction": null,
-                    "durability": "100%",
+                    "resourceMaterialization": {
+                        "resources": [
+                            { "resourceKey": "durability", "maximum": 100 }
+                        ]
+                    },
                     "combatEffect": [],
                     "equipmentSlot": null,
                     "accessoryForSlot": null,
@@ -204,11 +214,15 @@
    </title>
    <content language="json" type="code_example">
     <![CDATA[
-    // Example of updating vehicle health after combat damage
-    "UpdateVehicles": [
+    // Damage is a common resource command; the vehicle object is not resent.
+    "resourceChanges": [
         {
-            "vehicleId": "buggy-rust-runner-001",
-            "currentHealth": "180%"
+            "operation": "damage",
+            "target": { "kind": "vehicle", "targetId": "buggy-rust-runner-001" },
+            "resourceKey": "health",
+            "amount": 100,
+            "source": { "kind": "combat_outcome", "sourceId": "turn_42" },
+            "eventRef": "turn_42:resource:1"
         }
     ]
     ]]>

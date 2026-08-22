@@ -26,7 +26,7 @@ Read these completely before implementation and keep them synchronized:
 - `specs/1535-complete-effect-materialization/` before Tasks 6 and 11
 - `docs/testing.md`
 
-The Spec Kit checklist `T001`–`T121` is the authoritative fine-grained completion ledger. The tasks below are reviewer-sized execution slices and name the Spec Kit ranges they discharge.
+The Spec Kit checklist `T001`–`T124` is the authoritative fine-grained completion ledger. The tasks below are reviewer-sized execution slices and name the Spec Kit ranges they discharge.
 
 ---
 
@@ -813,7 +813,7 @@ Execution evidence (2026-08-15):
 - Review RED/GREEN: owner agreement `20260815-223207-459-53544-3aeaba0c42ad4f60992a2bc5f1d18b29-focused` -> `20260815-223654-516-28368-df0feb9b041543b1bd5cbcc6f775ed59-focused`; save/load owner agreement `20260815-223938-339-44524-5b7db6d74c364b32971f35de12051589-focused` -> `20260815-224112-130-51024-75d6b928cc3b4bf4804e3d25a40e5c0f-focused`; non-destructive Mortal bootstrap `20260815-224438-370-17532-f3de509280f049ab8168a3b0b0488dd3-focused` -> `20260815-224536-351-32492-f2f5c13430ec465d9276e49719ea10c5-focused`; owner-kind capability `20260815-224857-712-22156-5d62d91aee1e43098ded8072d06ab058-focused` -> `20260815-224945-646-16828-f7e80f71d1a245a69e3e47e4e627cd3b-focused`; common-handoff invalidation `20260815-232059-304-16200-290604a94f4b4084aeea7d53f6775bdc-focused` -> `20260815-232147-107-52924-642d209c892e401ba42fc97e1270f093-focused`.
 - Final focused: `20260815-232245-586-39276-0e4d0d6a9ea24d4c9f552e35c7a7d947-focused` (`29/29` integration), `20260815-225417-704-42708-a8c79bef313c4ae18ced25392647ffb0-focused` (`27/27` effect compatibility), `20260815-225507-455-49416-4e77bc1a6b5e46838a88fb52a551488c-focused` (`254/254` unit), `20260815-225547-923-53600-0c02e0a265dd4ff1a8965045dc0aabfb-focused` (`118/118` bootstrap/snapshot guards), `20260815-225610-770-28464-e57763b494624841a7bfddc0c1282b4e-focused` (`69/69` save/load). Fixture-only Fast follow-ups are `20260815-230236-883-47956-718b65c7eb894b14bd6b7bbc59cfe293-focused` -> `20260815-230410-818-2652-67f86c17816345c0a0b5a8f5921b09d1-focused` and `20260815-230851-791-54704-72bc84b1e062415486ad5beab63a403c-focused` -> `20260815-230921-009-27312-12e8493db07f416988ddade74ef82d95-focused`.
 - Final meaningful Fast: `TestResults/test-lanes/20260815-232323-370-17256-698e67268d6b4ba8baf1663a9596743e-fast/summary.json`; exit `0`; timeout `false`; `3807/3807`; failures `0`; duplicates `0`; cleanup `complete`; wall `00:02:47.0066298`.
-- Review result: one cache/plan/lease and no independent production effect publisher; reducer/planner filesystem search is empty; `git diff --check` passes with line-ending warnings only. Snapshot production code already enumerates the canonical game-state tree, so the resource-root requirement needed an executable `LiveTurnPreparationServiceTests` guard rather than a second path list. Later T054+ owner composers and T100–T108 GM/docs/template cutovers remain explicit; no compatibility reader, migration, fallback, or interim public GM contract was introduced.
+- Review result: one cache/plan/lease and no independent production effect publisher; reducer/planner filesystem search is empty; `git diff --check` passes with line-ending warnings only. Snapshot production code already enumerates the canonical game-state tree, so the resource-root requirement needed an executable `LiveTurnPreparationServiceTests` guard rather than a second path list. Later T054+ owner composers and T100–T111 GM/docs/template cutovers remain explicit; no compatibility reader, migration, fallback, or interim public GM contract was introduced.
 
 Commit:
 
@@ -1108,7 +1108,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation
 ```
 
-Expected for Task 10: executable afterlife state and its GM-facing documentation filters pass together. Run FullValidation now and classify every failure, but do not pull the active-template/save-fixture migration or the remaining cross-domain legacy cleanup forward from T102–T110 merely to make this intermediate slice green. A RED diagnostic is acceptable only when every failure is explicitly owned by those later tracked tasks; no migration, dual reader/writer, validator weakening, or fallback may be introduced. T110 remains the mandatory complete GREEN FullValidation gate after T107 migrates the active templates and fixtures.
+Expected for Task 10: executable afterlife state and its GM-facing documentation filters pass together. Run FullValidation now and classify every failure, but do not pull the active-template/save-fixture migration or the remaining cross-domain legacy cleanup forward from T102–T113 merely to make this intermediate slice green. A RED diagnostic is acceptable only when every failure is explicitly owned by those later tracked tasks; no migration, dual reader/writer, validator weakening, or fallback may be introduced. T113 remains the mandatory complete GREEN FullValidation gate after T110 migrates the active templates and fixtures.
 
 **Execution checkpoint (2026-08-16):**
 
@@ -1121,20 +1121,20 @@ Expected for Task 10: executable afterlife state and its GM-facing documentation
 - Read-only merge-gate review found five Important gaps and all five received executable RED→GREEN fixes: Shining client-owned `resourceOwnerBindings` allowlist `20260816-123707-098-40288-d1ba6e5e53e54d6ebc6ac446335655b1-focused` (`0/1`) → `20260816-123942-884-17780-aa592bcd7864483897a1f72e1d91a388-focused` (`1/1`); forbidden `activeConflict.actionEconomy` repair packet `20260816-124203-285-15548-38b7067dd4fe42b7855bbc2ad4895dc5-focused` (`0/1`) → `20260816-124316-266-9628-83375b1d8c614d848e6eb5b2feeb82bf-focused` (`1/1`); special-art legacy axis `20260816-124521-930-54332-9a06d687f1744e1cbd894e23da02f7d1-focused` (`0/2`) → `20260816-124605-731-55976-8539e2083b6449229662fdcfefe08a6f-focused` (`2/2`); persistent/same-cycle capacity reconfiguration and realm ledger lifecycle are covered by the owner evidence above. The fresh documentation class after these fixes is `20260816-125233-972-38520-d7782a28e1984de29086122a3f322c73-focused` (`115/115`).
 - Blessing bootstrap originally omitted the authoritative `soul_state.json`, so the persistent `spiritual_action_points` formula could not resolve Spirit Focus. The exact bootstrap roots were corrected without fallback: `20260816-130126-633-48536-777c3362ca1c44dea8acb9c693a05726-focused` is GREEN (`6/6`), the combined Task-10 control `20260816-130226-717-50392-bce29fcf8d7645bbb9f83ad7bc5ddc71-focused` is GREEN (`80/80`), and the expanded afterlife control `20260816-130405-342-17960-d892b6f9fda14b54afecd14345ec5630-focused` is GREEN (`398/398`).
 - The no-migration Mortal-item fixture intersection was proven rather than hidden: new NPC item routes now carry the required health resource envelope and execute the production item→resource raw-validation order. RED `20260816-131615-271-27792-41369c4e5111460ca0b45f887c1ff487-focused` (`0/1`) is superseded by `20260816-132945-319-13104-1c9f5a6d198a4759b9770e50159c82dd-focused` (`70/70`).
-- Fresh conditional FullValidation diagnostic `20260816-133413-277-32576-a67a6581285f44c389a001af43da6013-fullvalidation` reports official terminal-shard `171/271` passed and `100` failed, timeout `false`, cleanup `complete`, duplicates `0`. Because the current runner summary retains only the terminal descriptor, the complete log was also classified: `334` expected failures = Shining display-save `100`, Chaos Sea display-save `95`, Mortal display-save `95`, Guardian policy `29`, fixture integrity `4`, foundation `4`, example docs `2`, Math Assistant `2`, Mortal location lifecycle `2`, and archive/trade `1`. These are the active-template/save-fixture and residual legacy surfaces explicitly assigned to T102–T110, principally T107 and the final T110 gate. The two prior Mortal item/NPC fixture failures are gone. No compatibility behavior was added; final complete GREEN remains T110.
+- Fresh conditional FullValidation diagnostic `20260816-133413-277-32576-a67a6581285f44c389a001af43da6013-fullvalidation` reports official terminal-shard `171/271` passed and `100` failed, timeout `false`, cleanup `complete`, duplicates `0`. Because the current runner summary retains only the terminal descriptor, the complete log was also classified: `334` expected failures = Shining display-save `100`, Chaos Sea display-save `95`, Mortal display-save `95`, Guardian policy `29`, fixture integrity `4`, foundation `4`, example docs `2`, Math Assistant `2`, Mortal location lifecycle `2`, and archive/trade `1`. These are the active-template/save-fixture and residual legacy surfaces explicitly assigned to T102–T113, principally T110 and the final T113 gate. The two prior Mortal item/NPC fixture failures are gone. No compatibility behavior was added; final complete GREEN remains T113.
 - Realm mutation now uses the reusable owner-state planner/service under one lease. `player_soul` remains a persistent identity: only exact realm-bound resources suspend/resume across Chaos Sea↔Shining Abode, while Mortal World does not blanket-suspend valid persistent resources. The deliberately overbroad RED `20260816-135639-892-36504-c23cc866145a4dd8836ca1b96cc6cf77-focused` was removed; the corrected lifecycle/source-guard control is `20260816-140420-080-41976-e77aaf37d809467eb51332d4d34b431d-focused` (`37/37`).
 - Final Fast-tail fixture reconciliation is GREEN at `20260816-141300-358-23072-44e28187e8824c0baf6567f382f84004-focused` (`4/4`). The meaningful Task-10 Fast is `20260816-141337-327-28620-c1614a23718b4e23bbd5e1be73a62ef0-fast`: exit `0`, timeout `false`, `3840/3840` passed, failures `0`, duplicate IDs `0`, cleanup `complete`, wall `00:03:50.8760071`.
 - Post-evidence afterlife documentation plus source guards are GREEN at `20260816-142754-593-45976-7e0a907decdd42dabdf888a2e978bf43-focused` (`265/265`, failures `0`, duplicate IDs `0`, timeout `false`, cleanup `complete`, build warnings/errors `0/0`).
 - Fresh T074 merge-gate controls on the reviewed 2026-08-21 tree are GREEN: definition/source guards `20260821-100910-253-34684-0b7eeaeeb28d46c5812bad46ea00fa57-focused` (`50/50`); owner/Mortal/combat/vehicle `20260821-100929-732-18728-10cd00841720464981386d6638967e9f-focused` (`42/42`); item owners/operations `20260821-101002-507-38516-c474a14dc1f54eb889d85d747be07c9f-focused` (`16/16`); afterlife owners/cutover `20260821-101148-637-26964-dab7fad4f1624574ab260df44f12fac7-focused` (`49/49`); and the mandatory afterlife documentation class `20260821-101504-212-45092-d032cace66d04cf6baec98311a887664-focused` (`115/115`). Every summary reports exit `0`, failures `0`, timeout `false`, duplicate IDs `0`, cleanup `complete`, and build warnings/errors `0/0` where reported.
 - Realm-transition hardening is evidence-backed rather than prompt-only: wrong source realm RED `20260821-094251` became GREEN at `20260821-094430`; stale ascension enlightenment RED `20260821-094556` became GREEN at `20260821-094742`; and life-transition conflict RED `20260821-094911` became GREEN at `20260821-095006`. `ShiningReturnCycleTransitionKind` now seals synchronize/reentry/ascension intent, `AfterlifeAscensionAuthority` rechecks fresh prerequisites, and the canonical lease spans authoritative reads, planning, publication, and rollback. The shared realm-independent capability policy is sealed into owner authority/agreement/fingerprints: `blessing_rerolls` stays active across realm changes while `spiritual_action_points` follows the realm binding. Guardian attempt reset is restricted to a new Mortal-life return; ordinary Shining-to-Chaos exit preserves the exact cycle and spent balance.
-- The fresh documentation-boundary diagnostic is `20260821-101640-675-36656-be86c9f78db94ed7965957545843ca96-fullvalidation`: `171/271` passed, `100` failed, exit `1`, timeout `false`, duplicate IDs `0`, cleanup `complete`, wall `00:03:50.5215232`. Its `100` unique failed test names are byte-for-byte set-equal to the classified `20260816-150510-928-19064-d9efa47a16874be5acfda0a34781bbf1-fullvalidation` baseline (`OnlyNew=0`, `OnlyOld=0`); therefore T074 introduces no new FullValidation failure family. The known fixture/template/legacy groups remain assigned to T102–T110 and must become fully GREEN at T110 without migration, fallback, or validator weakening.
-- The T074 removed-authority audit covered every phase-1 inventory contour. Completed US3 domain writers, stagers, normalizers, and validators no longer author a legacy current/max/counter mirror; surviving token hits there are explicit incompatible-save/forbidden-field rejection or named exclusions such as QTE-local pin durability, currencies, progression, relationships, faction accounting, and spiritual axes. Remaining item detail/action readers are deliberately owned by open T067 after T087–T092; Mortal status/detail readers by T091–T092; Guardian/Shining player/GM projection readers by T093; and active Mortal prompts/examples/templates plus the final zero-legacy source guard by T102–T110. These tasks remain open, so the subsequent refactor is preserved rather than silently accepted as compatibility authority.
+- The fresh documentation-boundary diagnostic is `20260821-101640-675-36656-be86c9f78db94ed7965957545843ca96-fullvalidation`: `171/271` passed, `100` failed, exit `1`, timeout `false`, duplicate IDs `0`, cleanup `complete`, wall `00:03:50.5215232`. Its `100` unique failed test names are byte-for-byte set-equal to the classified `20260816-150510-928-19064-d9efa47a16874be5acfda0a34781bbf1-fullvalidation` baseline (`OnlyNew=0`, `OnlyOld=0`); therefore T074 introduces no new FullValidation failure family. The known fixture/template/legacy groups remain assigned to T102–T113 and must become fully GREEN at T113 without migration, fallback, or validator weakening.
+- The T074 removed-authority audit covered every phase-1 inventory contour. Completed US3 domain writers, stagers, normalizers, and validators no longer author a legacy current/max/counter mirror; surviving token hits there are explicit incompatible-save/forbidden-field rejection or named exclusions such as QTE-local pin durability, currencies, progression, relationships, faction accounting, and spiritual axes. Remaining item detail/action readers are deliberately owned by open T067 after T087–T092; Mortal status/detail readers by T091–T092; Guardian/Shining player/GM projection readers by T093; and active Mortal prompts/examples/templates plus the final zero-legacy source guard by T102–T113. These tasks remain open, so the subsequent refactor is preserved rather than silently accepted as compatibility authority.
 - Prompt/example rationale for the fresh hardening: transition kind, ascension checks, lease fencing, and per-resource activity policy are client-owned authority and add no GM-authored field or command. `Rules/Block_32_Guardians.txt` was updated because Guardian reset semantics changed; existing afterlife worked examples and the `115/115` documentation guard cover the GM-facing contract, so no additional worked example is required for this client-owned sub-slice.
 - The first final-tree Fast `20260821-102219-504-47984-3a06622f97374a90b7c8c7d65d7826b1-fast` exposed `19` cascading blessing/relic fixture failures; the next run `20260821-102611-240-40588-745f1ad0876a4c05b8777bbde8823027-fast` reduced the remainder to the same two browser fixture variants. Root-cause evidence is the focused RED `20260821-102418-808-44284-44f34633a0b2408f8a2b605073d9c01b-focused` (`0/1`) followed by GREEN `20260821-102501-114-27756-7070bdf9b4cb410ba98120d90f2cd908-focused` (`1/1`), complete blessing/trade classes `20260821-102534-420-29336-e8cb808e890f437b9d4be30f08848a3a-focused` (`30/30`), browser Mortal variants `20260821-103033-705-44460-8d9f1695bb954a1b816f16b86633821f-focused` (`2/2`), and complete browser parity `20260821-103107-344-40956-2974f8007693458daa49ad670aa9d32f-focused` (`16/16`). The fixtures now model a Mortal `player_soul` with suspended afterlife binding while the sealed `blessing_rerolls` capability remains active; production authority was not weakened.
 - Final console-owner review closed the last stale-root/lease contour: concurrent Soul mutation RED `20260821-104017-847-28164-66570469c0e5454fa248c2fdefa3a776-focused` (`0/1`) became GREEN at `20260821-104246-185-3304-3d2a7520c78648169677a93bc6fabfc8-focused` (`1/1`); the expanded spiritual-art filter exposed refresh under the held lease at `20260821-104403-131-41940-cd3a21573dd54e1e83b5cf1b727da403-focused` (`9/14`) and passed `14/14` after lease disposal at `20260821-104754-151-26212-1d9c2615f540473297c999dd47b8bfa9-focused`.
 - The meaningful final T074 Fast is `20260821-104914-178-43536-0260f7b40c974fef8112ac8bd2ccfeeb-fast`: exit `0`, `3847/3847` executed and passed, failures `0`, timeout `false`, duplicate IDs `0`, cleanup `complete`, wall `00:03:53.2623518`, build warnings/errors `0/0`.
 - Generic Guardian/player/GM resource projection remains deliberately owned by T089/T093/T095. Task 10 supplies only the bounded read-only projections required by its existing consumers and does not create a partial fallback model that later projection work would have to unwind.
-- T053–T054 and T068–T074 are implemented, reviewed, evidence-backed, and closed by the Task-10 commit. GitHub Actions remain disabled and unused. T075 is the next open implementation task; T087–T110 remain explicit future projection, privacy, lifecycle, migration, and final-cutover work.
+- T053–T054 and T068–T074 are implemented, reviewed, evidence-backed, and closed by the Task-10 commit. GitHub Actions remain disabled and unused. T075 is the next open implementation task; T087–T113 remain explicit future projection, privacy, lifecycle, migration, and final-cutover work.
 
 Commit:
 
@@ -1343,6 +1343,8 @@ Player copy is fixed Russian in-world text with no technical cause. Operator log
 
 Run the two Focused commands again. Manually compare console/browser status, one NPC/combatant, one item, one spiritual-conflict resource, and one gacha/reroll resource. Inspect serialized results for nested leakage.
 
+Implementation checkpoint (2026-08-22): T087–T097 and the deferred T067 reader cutover are complete. `ResourceProjectionService` is the sole read model for status, NPC/combat/item, afterlife, shared console/browser builders, and browser game-screen values; missing or malformed accepted authority produces fixed Russian fail-closed copy with no raw-ledger or legacy fallback. Projection/privacy evidence is GREEN at `20260822-102920` (`7/7`), `20260822-103146` (`18/18`), and `20260822-103925` (`42/42`). Browser contract evidence is GREEN at `20260822-103831` (`32/32`), and the full React verification passes `139/139`, TypeScript checking, and the production build. The original combined integration selection exceeded the five-minute Focused budget and revealed four stale fixture/assertion contours; split rechecks close them at `20260822-105710` (`2/2`) and `20260822-105751` (`8/8` parity), while the other three targeted scenarios already passed in `20260822-105455`. Every cited terminal run has failures `0`, timeout `false`, duplicate IDs `0`, and cleanup complete. The UI reuses the established status empty state and tokens; this client-owned projection changes no GM-authored contract, so no prompt/example update or screenshot iteration is required.
+
 Commit:
 
 ```powershell
@@ -1355,19 +1357,29 @@ git commit -m "feat: project resource state safely to players (#1543)"
 
 ### Task 13: Prove atomic failure, remove legacy authority, and synchronize every active contract/template
 
-**Spec Kit tasks:** T098–T110
+**Spec Kit tasks:** T098–T113
 
 **Files:**
 
 - Create: `BookOfEternityClient.IntegrationTests/ResourceMaterializationLifecycleTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Resources.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/ResourceMaterializationValidationTests.cs`
+- Modify: `BookOfEternityClient.Tests/ResourceAcceptedTurnInputComposerTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/ResourceCombatIntegrationTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.Sources.cs`
+- Create: `BookOfEternityClient.IntegrationTests/ResourceFullPartyInteractionTests.cs`
 - Create: `BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs`
 - Modify: `BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/FileSystemExampleFixtureIntegrityTests.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
+- Modify: `BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs`
+- Modify: `BookOfEternityClient/Services/ResourceMutationSourceCatalog.cs`
+- Modify: `BookOfEternityClient/Services/MortalResourceOwnerComposer.cs`
+- Modify: `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`
+- Modify: `BookOfEternityClient/Services/EffectCarrierCatalog.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
 - Modify: `CLI_API_Specification.md`
 - Modify: `CLI_Agent_Daemon_Specification.md`
@@ -1401,6 +1413,7 @@ git commit -m "feat: project resource state safely to players (#1543)"
 - Modify: `Examples/example_validation_manifest.json`
 - Modify: `OtherGuides/Afterlife_Contract_Matrix.md`
 - Modify: `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`
+- Create: `specs/1543-unified-resource-authority/contracts/resource-full-party-interaction.md`
 - Create: `FileSystemExample/game_session/game_state/resources/resource_definitions.json`
 - Create: `FileSystemExample/game_session/game_state/resources/resource_state.json`
 - Create: `FileSystemExample/game_session/game_state/resources/resource_history.json`
@@ -1427,9 +1440,13 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject In
 
 Expected RED: any missing rollback/TOCTOU edge fails before production changes.
 
+Implementation checkpoint (2026-08-22): T098-T100 are GREEN. The initial lifecycle REDs are `20260822-110329` (`5/6`) and `20260822-110712` / `20260822-110859` (both `4/5`); the first corrected contours are `20260822-110525` and `20260822-111006` (both `6/6`). The strengthened after-physical-publication/post-validation resource control is `20260822-160433` (`5/5`), the full resource lifecycle plus common-plan TOCTOU selection is `20260822-161549` (`27/27`), and the outer effect/owner/pending/output rollback control is `20260822-161708` (`14/14`). The 12-case late-mutation matrix (`20260822-161336`, `12/12`) covers definition, owner, state, history, source, target, carrier, index, event, command, pending, and internal snapshot authority. Exact bytes/prior absence are restored; staged player outputs are suppressed; operator diagnostics survive; and one canonical lease spans comparison, publication, post-validation, and rollback.
+
 **Step 2: Harden rollback and repair classification**
 
 Ensure one write lease is held from final before-image comparison through writes, post-validation, rollback, and decision. Diagnostics/report cleanup is best-effort and may never prevent the caller from returning operational failure for rollback. Preserve `SessionReplaced` semantics. Suppress stale narrative/interface output. Only one unambiguous GM-owned omission may produce a bounded repair packet; identity, replay, arithmetic, capacity, cycle, owner, TOCTOU, direct mutation, and privacy failures remain protected.
+
+Implementation checkpoint (2026-08-22): T101 is GREEN. The lifecycle RED `20260822-162624` (`0/2`) proved both missing baseline restoration and protected-error dispatch; the provenance RED `20260822-163010` (`14/15`) proved that lookalike evidence was too permissive. Final unit/request control `20260822-164855` is `24/24`, and the exact lifecycle control `20260822-164952` is `4/4`. The repair loop now deduplicates only byte-equivalent validation evidence, requires exact registered producer provenance, refuses actionable repair without rollback, restores the whole turn before dispatch, retains the complete rejected command root as internal retry authority, permits only the missing readable reason to change, and requires every rejected command/output surface to be freshly resubmitted. Ready-only, altered-semantic, and command-only retries remain rejected; protected failures never reach GM dispatch.
 
 **Step 3: RED a complete no-legacy source guard**
 
@@ -1439,7 +1456,23 @@ The guard must scan active production code, response models/mappings, prompts, e
 
 Remove every active legacy reader, writer, validator, mapper, normalizer, sidecar, and UI fallback identified by the guard. Old technical saves containing any removed authority must fail as incompatible; do not add a migration, upgrader, legacy parser, or fallback branch to make them pass.
 
-**Step 5: Synchronize Mortal GM contracts and add a worked example**
+Implementation checkpoint (2026-08-22): T102-T103 are GREEN on the production contour. The previously incomplete guard was `34/34` at `20260822-165429`; the expanded inventory produced the honest T102 RED `20260822-171037` (`33/50`) across twelve out-of-scope mechanical families, silent compatibility cleanup, and active GM/docs/example authority. Production cleanup then passed `33/33` at `20260822-171843`. Shining legacy counters gained an explicit no-migration RED `20260822-171630` (`0/2`) and GREEN `20260822-171740` (`2/2`), with the adjacent owner control `20260822-172042` at `13/13`. Removed counters are rejected instead of stripped, the old item sidecar is readable only by the incompatible-save detector, and no existing health/damage mechanic is discarded: T107-T111 now own rebinding the active GM contracts/examples/templates to common resource definitions, capacity changes, commands, and projections.
+
+**Step 5: RED→GREEN accepted ordinary source authority**
+
+First prove that ordinary `action_cost`, `combat_outcome`, and `narrative_outcome` commands cannot invent or rename a source identity, cannot swap/reuse ordinals, and cannot authorize a different target. Raw source for those routes is exactly `{kind}`. After accepted-event validation the client derives `sourceId = eventRef`, resolves the exact target owner, and fingerprints the complete occurrence. Keep `local_item_cost`/`local_item_outcome` owner-bound to the exact permanent item ID. Run the focused composer and resource-validation tests and retain the expected RED/GREEN artifacts.
+
+**Step 6: RED→GREEN carrier-independent combat-group members**
+
+Prove one member keeps the same permanent identity, resource coordinate, history, target selector, and effect carrier while moving from a nested group record to a top-level detached combat row and back. The detached row uses the `memberId`/`memberRef` family exclusively; named-NPC and anonymous-combatant selectors are forbidden siblings. Add exact/confusable cross-family ambiguity and no-write cases before updating owner, target, carrier, and validator code.
+
+**Step 7: RED→GREEN recipient-scoped FullParty packets**
+
+Define and test a closed outbound `otherPlayersInteractions[playerId][]` resource packet. Validate exact/confusable-unique recipient buckets, recipient-local `player_current`, the same ordinary source grammar, and one global local+remote resource-event ordinal. Stage the packet atomically but assert the originating ledger/history/effect graph remains untouched. Do not claim or invent authenticated cross-client delivery; receiving application requires that client's own accepted-turn boundary.
+
+Implementation checkpoint (2026-08-22): T106 is GREEN. The honest RED is `20260822-150712` (`0/15`); final FullParty coverage is `20260822-152400` (`18/18`), adjacent resource validation is `20260822-151835` (`38/38`), and composer/planner coverage is `20260822-152024` (`97/97`). Exact staged packet bytes are bound into the common accepted-plan before-image, remote commands share the deterministic local-plus-remote event ordinal without entering the local planner command set, and historical packets cannot replay. The post-slice Fast `20260822-152116` is `1023/1025` only on two still-open T107-T108 source/documentation guards; no T106 test failed.
+
+**Step 8: Synchronize Mortal GM contracts and add a worked example**
 
 Document the three resource command arrays, exact temporary owner refs, closed operations, no direct current/max/IDs/phase/policy, client-owned publication, setting definition creation, capacity transition, ordinary mutation, and bounded receipt. `Examples/E_CLI_Mortal_Resources.txt` must include at least:
 
@@ -1451,21 +1484,21 @@ Document the three resource command arrays, exact temporary owner refs, closed o
 
 Register the example in `example_validation_manifest.json` and validate it through production parsers.
 
-**Step 6: Synchronize afterlife contracts and worked examples**
+**Step 9: Synchronize afterlife contracts and worked examples**
 
 Update the contract matrix, glossary, launcher/daemon guidance, relevant Rules, and `E_CLI_Afterlife_Turns.txt` for spiritual action points, per-return gacha attempts, and numeric blessing rerolls. State explicitly that currencies, faction ledgers, spiritual axes, and boolean/free entitlements are not resources. Update manifest and coverage assertions in the same change.
 
-**Step 7: Replace the active template and fixtures**
+**Step 10: Replace the active template and fixtures**
 
 Seed only the three canonical resource roots; omit `resource_commands.json` outside a staged turn. Remove player/NPC/vehicle/combat/item/afterlife mechanical mirrors. Update fixture manifests/readmes and add positive/negative validator fixtures. Never preserve an old fixture merely to demonstrate compatibility.
 
-**Step 8: GREEN documentation, rollback, source guard, and FullValidation**
+**Step 11: GREEN documentation, rollback, source guard, and FullValidation**
 
 Run:
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ResourceContractSourceGuardTests|FullyQualifiedName~AfterlifeDocumentationCoverageTests"
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourceMaterializationLifecycleTests|FullyQualifiedName~CanonicalStateNormalizerTests.Resources|FullyQualifiedName~ResourceMaterializationValidationTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourceMaterializationLifecycleTests|FullyQualifiedName~CanonicalStateNormalizerResourceTests|FullyQualifiedName~ResourceMaterializationValidationTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExampleDocumentationValidationTests|FullyQualifiedName~FileSystemExampleFixtureIntegrityTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation
 git diff --check
@@ -1473,7 +1506,9 @@ git diff --check
 
 Expected: all selected tests and FullValidation pass within their bounded lanes; every summary reports no timeout, duplicate IDs, or cleanup failure.
 
-**Step 9: Commit the breaking cutover**
+Implementation checkpoint (2026-08-22): T107-T113 are GREEN. Exact old-save rejection is `20260822-182704-144-15620-9a124004606340c78a62cc2d7e9e020a-focused` (`11/11`), complete resource validation is `20260822-182753-353-19636-39187355f4524a43b0ee400194ab38c2-focused` (`31/31`), production/docs guards are `20260822-182927-802-29708-dfb704dd46d448c9a8c3f4fefd4d3428-focused` (`168/168`), lifecycle/resource validation is `20260822-182953-305-30172-e6efd7b836054387b8740d5639be0c6e-focused` (`36/36`), and the canonical resource normalizer is `20260822-183049-838-8296-564958917fa34833b02ce5b29075d1f8-focused` (`22/22`). Active Shining/Chaos command-display archives pass `20260822-185229-018-27564-ce636013485e48a3949a402bfe70ea01-focused` (`154/154`), while examples plus fixture integrity pass `20260822-185357-884-6104-aeec9afd93ff4664a68a5669c58c3cb8-focused` (`49/49`). The final stale-fixture controls are `20260822-191313-319-31724-75ab396b63ce47dcb4c9a4333e9dacc8-focused` (`11/11`), `20260822-193154-260-25396-79f1ed06375b4c29a09570d1cae74237-focused` (`37/37`), and validator broken/fixed matrices `20260822-193833-254-27524-6b97a7be5c304df48a20fbbf5562a5c0-focused` / `20260822-194014-680-21272-a63bf25fa90a4e8ca41a43a70bdfe3f7-focused` (both `45/45`). Final FullValidation `20260822-194158-015-17568-95c447447c9c42fdb9f19719e3593caf-fullvalidation` passes `1810/1810` in `00:07:05.0804151`, exit `0`, timeout `false`, duplicates `0`, cleanup complete, warnings/errors `0/0`. Exact rollback bytes/prior absence and stale-output suppression remain proved by the T098-T100 controls; no migration, dual authority, fallback, validator weakening, GitHub Actions, or cloud dependency was introduced.
+
+**Step 12: Commit the breaking cutover**
 
 ```powershell
 git add BookOfEternityClient BookOfEternityClient.Tests BookOfEternityClient.IntegrationTests CLI_API_Specification.md CLI_Agent_Daemon_Specification.md TaskGuides Rules OtherGuides Examples FileSystemExample specs/1535-complete-effect-materialization specs/1543-unified-resource-authority docs/superpowers/plans/2026-08-15-unified-resource-authority.md
@@ -1486,7 +1521,7 @@ Before committing, inspect `git status --short` and exclude unrelated user files
 
 ### Task 14: Prove scale, reconcile specifications, review the complete range, and run final gates
 
-**Spec Kit tasks:** T111–T121
+**Spec Kit tasks:** T114–T124
 
 **Files:**
 

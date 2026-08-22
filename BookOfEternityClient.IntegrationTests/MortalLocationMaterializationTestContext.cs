@@ -51,12 +51,31 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
 
     internal string? InjectedPublishedPath { get; private set; }
 
-    internal static Task<MortalLocationMaterializationTestContext> CreateAsync()
+    internal static async Task<MortalLocationMaterializationTestContext> CreateAsync()
     {
         var rootPath = Path.Combine(
             Path.GetTempPath(),
             "boe-mortal-location-materialization-" + Guid.NewGuid().ToString("N"));
-        return Task.FromResult(new MortalLocationMaterializationTestContext(rootPath));
+        var context = new MortalLocationMaterializationTestContext(rootPath);
+        var resources = ResourceBootstrapStateBuilder.BuildPristine();
+        if (!resources.IsValid)
+        {
+            await context.DisposeAsync();
+            throw new InvalidOperationException(
+                "Mortal location test resource bootstrap failed: " +
+                string.Join(Environment.NewLine, resources.Issues));
+        }
+
+        await context.FileSystem.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            resources.Definitions!.ToCanonicalJson());
+        await context.FileSystem.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            resources.State!.ToCanonicalJson());
+        await context.FileSystem.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            resources.History!.ToCanonicalJson());
+        return context;
     }
 
     internal Task WriteJsonAsync(string relativePath, JsonNode value)

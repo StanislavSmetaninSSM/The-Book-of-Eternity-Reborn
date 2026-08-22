@@ -186,7 +186,7 @@ BookOfEternityClient/game_master_daemon.ps1
 Research decisions and rejected alternatives are recorded in [research.md](research.md). Implementation-critical outcomes are:
 
 1. Active instances are distinct from static `combatEffect`, `structuredBonuses`, Fate Card, item, skill/art, wound, quest, location, faction, event, hazard, and combat-action definitions.
-2. `effectChanges[]`/`effectResolutionReceipts[]` are the only common application/result routes and are fully consumed; old player/NPC and direct carrier routes are removed.
+2. `effectChanges[]`/`effectResolutionReceipts[]`/`effectEventReports[]` are the only common application/result/event-evidence routes and are fully consumed; registered event adapters bind sealed evidence while the client selects effect/trigger/post-state, and old player/NPC and direct carrier routes are removed.
 3. A closed optional `activeEffectDefinitions[]` or an equivalent proven adapter supplies exact materializable source policy.
 4. Random permanent identities are generated once in the subordinate effect plan retained by one cached `AcceptedMechanicsPlan`, never independently regenerated, separately published, or derived from GM input.
 5. Source/target catalogs compose pre-turn authority only with explicit exact

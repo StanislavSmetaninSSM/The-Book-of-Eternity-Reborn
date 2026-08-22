@@ -20,6 +20,14 @@ public partial class ValidationService
         var historyJson = await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath);
         var pendingResolutionJson = await _fs.ReadFileAsync(
             ResourcePendingResolutionState.PendingPath);
+        var fullPartyBytes = await _fs.ReadFileBytesAsync(FullPartyInteractionsPath);
+        var fullPartyJson = fullPartyBytes == null
+            ? null
+            : DecodeResourceUtf8(fullPartyBytes);
+        var fullParty = ParseFullPartyResourcePackets(
+            fullPartyJson,
+            FullPartyInteractionsPath);
+        issues.AddRange(fullParty.Issues);
 
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
             lookup.Manifest == null)
@@ -37,6 +45,14 @@ public partial class ValidationService
         }
 
         var manifest = lookup.Manifest;
+        var preTurnFullPartyJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+            manifest,
+            FullPartyInteractionsPath);
+        var hasStagedFullPartyResourcePackets = fullParty.HasResourcePackets &&
+            !string.Equals(
+                fullPartyJson,
+                preTurnFullPartyJson,
+                StringComparison.Ordinal);
         var definitionsResult = ResourceDefinitionCatalog.ParseCanonical(
             definitionsJson,
             allowMissingPristine: false);
@@ -72,9 +88,19 @@ public partial class ValidationService
             issues);
         var commands = ResourceAcceptedTurnInputComposer.Parse(commandJson);
         issues.AddRange(commands.Issues);
+        var acceptedCommands = commands;
+        if (commands.IsValid &&
+            hasStagedFullPartyResourcePackets &&
+            !issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+        {
+            acceptedCommands = ComposeAcceptedResourceCommands(
+                commands,
+                fullParty.OrderedResourceChanges);
+            issues.AddRange(acceptedCommands.Issues);
+        }
         var events = ResourceAcceptedTurnInputComposer.BindAcceptedEvents(
             manifest.TurnNumber,
-            commands);
+            acceptedCommands);
         issues.AddRange(events.Issues);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) ||
             definitions == null || stateResult?.Ledger == null ||
@@ -163,6 +189,7 @@ public partial class ValidationService
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
         if (commands.IsMissing && effectPlan == null &&
+            !hasStagedFullPartyResourcePackets &&
             registeredSystemOutcomes.Count == 0 &&
             ownerComposition.CapacityDrafts.Count == 0 &&
             ownerComposition.TerminalOwners.Count == 0 &&
@@ -187,10 +214,23 @@ public partial class ValidationService
             return issues;
         }
 
+        var ordinarySources = ResourceAcceptedTurnInputComposer.ComposeOrdinarySources(
+            manifest.SessionId,
+            manifest.RequestId,
+            manifest.TurnNumber,
+            realm,
+            commands,
+            events,
+            owners);
+        issues.AddRange(ordinarySources.Issues);
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+            return issues;
+
         var sourcesResult = ResourceMutationSourceCatalog.Create(
             registeredSystemOutcomes
                 .SelectMany(static outcome => outcome.SourceExports)
-                .Concat(BuildItemResourceSourceExports(owners)));
+                .Concat(BuildItemResourceSourceExports(owners))
+                .Concat(ordinarySources.Exports));
         issues.AddRange(sourcesResult.Issues);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) ||
             sourcesResult.Catalog == null)
@@ -236,7 +276,16 @@ public partial class ValidationService
                 ownerComposition.TerminalOwners),
             ["ownerTransitions"] = new JsonArray(ownerComposition.OwnerTransitions
                 .Select(static value => (JsonNode)value.ToFingerprintNode())
-                .ToArray())
+                .ToArray()),
+            ["fullPartyResourcePackets"] = hasStagedFullPartyResourcePackets
+                ? new JsonObject
+                {
+                    ["sessionId"] = manifest.SessionId,
+                    ["requestId"] = manifest.RequestId,
+                    ["turn"] = manifest.TurnNumber,
+                    ["packets"] = fullParty.FingerprintRoot
+                }
+                : new JsonObject()
         };
         var beforePaths = new HashSet<string>(StringComparer.Ordinal)
         {
@@ -261,8 +310,16 @@ public partial class ValidationService
         beforePaths.UnionWith(acceptedItemOwners.Select(static owner => owner.FilePath));
         foreach (var outcome in registeredSystemOutcomes)
             beforePaths.UnionWith(outcome.ExpectedBeforeImages.Keys);
+        if (hasStagedFullPartyResourcePackets)
+            beforePaths.Add(FullPartyInteractionsPath);
         var beforeImages = (await CaptureResourceBeforeImagesAsync(beforePaths))
             .ToDictionary(static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
+        if (hasStagedFullPartyResourcePackets)
+        {
+            beforeImages[FullPartyInteractionsPath] = new CanonicalBeforeImage(
+                existed: true,
+                fullPartyBytes!);
+        }
         foreach (var outcome in registeredSystemOutcomes)
         {
             foreach (var pair in outcome.ExpectedBeforeImages)
@@ -288,7 +345,7 @@ public partial class ValidationService
             AcceptedEvents: HashNode("resource-events-v1", events.Root),
             Commands: HashText(
                 "accepted-mechanics-commands-v1",
-                (commandJson ?? "<missing>") + "\n" +
+                acceptedCommands.Root.ToJsonString() + "\n" +
                 (effectCommandJson ?? "<missing>")),
             Pending: HashNode("accepted-mechanics-pending-v1", pendingInput),
             InternalInputs: HashNode("accepted-mechanics-internal-v1", internalInputs));
@@ -318,7 +375,7 @@ public partial class ValidationService
             realm,
             manifest.TurnNumber,
             events.Root,
-            commands.Root,
+            acceptedCommands.Root,
             effectCommands,
             pendingInput,
             internalInputs,
@@ -331,6 +388,20 @@ public partial class ValidationService
         if (result.Success)
             EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs);
         return issues;
+    }
+
+    private static ResourceCommandCompositionResult ComposeAcceptedResourceCommands(
+        ResourceCommandCompositionResult localCommands,
+        IReadOnlyList<JsonObject> remoteResourceChanges)
+    {
+        ArgumentNullException.ThrowIfNull(localCommands);
+        ArgumentNullException.ThrowIfNull(remoteResourceChanges);
+        var root = localCommands.Root;
+        var changes = root["resourceChanges"] as JsonArray ?? new JsonArray();
+        root["resourceChanges"] = changes;
+        foreach (var remoteChange in remoteResourceChanges)
+            changes.Add(remoteChange.DeepClone());
+        return ResourceAcceptedTurnInputComposer.Parse(root.ToJsonString());
     }
 
     private static bool IsTerminalEffectReceiptReplay(
@@ -349,6 +420,9 @@ public partial class ValidationService
             if (JsonNode.Parse(effectCommandJson) is not JsonObject root ||
                 (root.ContainsKey("effectChanges") &&
                  root["effectChanges"] is not JsonArray) ||
+                (root.ContainsKey(EffectAcceptedEventReportCatalog.ResponseField) &&
+                 (root[EffectAcceptedEventReportCatalog.ResponseField] is not JsonArray reports ||
+                  reports.Count != 0)) ||
                 root["effectResolutionReceipts"] is not JsonArray receipts ||
                 receipts.Count == 0)
             {

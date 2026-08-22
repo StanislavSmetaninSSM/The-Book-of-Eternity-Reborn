@@ -51,6 +51,7 @@ These fixtures are not a full playable session. They are focused contract exampl
 38. `completeThreatActivities` must target a threat with canonical active `currentActivity`
 39. canonical guardian identity must include `canonicalName`, `nameVariants`, `manifestation`, and `manifestationHistory`
 40. rival soul arcs must obey the `1 major + 1 minor` cap and hostile direct-target arcs need at least two visible clues before collision
+41. Unified Resource Authority v1 rejects persisted legacy Mortal gauges instead of migrating or mirroring them beside the client-owned resource ledger
 
 The goal is to make validator behavior explainable and reproducible for both developers and GM-side debugging.
 
@@ -59,3 +60,11 @@ For automated tests, the harness now:
 - overlays `shared/`, then `broken/` or `fixed/` files according to `fixture.json`
 - runs the fixture through the declared runner (`state_only`, `accepted_turn`, or `critical_state`)
 - asserts expected error codes on `broken` and their disappearance on `fixed`
+
+`resource_materialization/` demonstrates the no-migration cutover. Its broken
+`player_status.json` persists `healthPercentage` and must produce
+`resource_legacy_player_gauge_forbidden`; the fixed version removes that field.
+Canonical resource values live only in
+`game_state/resources/resource_definitions.json`, `resource_state.json`, and
+`resource_history.json`. The accepted-turn `resource_commands.json` envelope is
+transient and must not be stored in this fixture tree outside a staged turn.

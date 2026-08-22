@@ -231,7 +231,7 @@
                                     It is strictly FORBIDDEN to use 'removeInventoryItems' for items that are CONSUMED as part of a game mechanic (crafting, using a single-use potion, firing an arrow).
 
                                     -   If a gameplay action consumes the last item of a stack, you MUST instead update its 'count' to 0 via 'UpdateInventory' (as per Rule #5.13.3).
-                                    -   If a gameplay action depletes an item's 'resource' to 0, you MUST instead update its 'resource' via 'inventoryItemsResources'.
+                                    -   If a gameplay action spends an item-owned reserve to 0, emit resourceChanges operation=spend against the exact item/resource coordinate; do not author the resulting current value.
 
                                     'removeInventoryItems' is SOLELY for actions where the player's primary goal is to discard the entire stack itself.
                                     

@@ -122,12 +122,21 @@ public partial class ValidationService
                 "missing or mismatched request"));
             return;
         }
+        var builtInApplicationAuthorities = EffectBuiltInSourceCatalog
+            .ResolveAcceptedTurnApplicationAuthorities(
+                manifest.PlayerAction,
+                acceptedRealm);
         var preTurnCarriers = await ReadSnapshotEffectCarriersAsync(manifest, issues);
         var plannedCarriers = ProjectAcceptedSpiritualConflictCarrier(
             ApplyResourceOwnerAfterImages(
                 currentCarriers,
                 resourceOwners),
             preTurnCarriers.SpiritualConflict);
+        var acceptedCombatTargets = EffectAcceptedTurnInputComposer
+            .CollectCombatMemberPlanTargets(
+                preTurnCarriers,
+                plannedCarriers,
+                resourceOwners?.CombatantIdentities);
         var preTurnIndexJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             manifest,
             EffectAcceptedTurnPlan.IdentityIndexPath);
@@ -192,6 +201,7 @@ public partial class ValidationService
                 .Concat(EffectAcceptedTurnInputComposer.CollectAfterlifePlanTargets(
                     resourceOwners?.Authority,
                     plannedCarriers.AfterlifeProfiles))
+                .Concat(acceptedCombatTargets.Targets)
                 .ToArray();
             var identityReplacedSourceOwners = identityOwnerExports.ReplacedSourceOwners
                 .Concat(MortalItemAcceptedTurnAuthority.GetReplacedEffectSourceOwners(
@@ -213,11 +223,14 @@ public partial class ValidationService
                 identityAcceptedPlanSources,
                 identityAcceptedPlanTargets,
                 identityReplacedSourceOwners,
-                identityOwnerExports.ReplacedTargets,
+                identityOwnerExports.ReplacedTargets
+                    .Concat(acceptedCombatTargets.ReplacedTargets)
+                    .ToHashSet(),
                 currentWorldTime,
                 publicationCarrierBaselines: currentCarriers,
                 preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities,
-                realm: acceptedRealm);
+                realm: acceptedRealm,
+                grantedBuiltInApplicationAuthorities: builtInApplicationAuthorities);
             var identityResult = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
                 _fs,
                 identityInput);
@@ -226,6 +239,16 @@ public partial class ValidationService
         }
 
         if (!TryParseEffectCommands(commandJson!, issues, out var commands))
+            return;
+
+        var reportedEvents = EffectAcceptedEventReportCatalog.Compose(
+            commands[EffectAcceptedEventReportCatalog.ResponseField],
+            manifest.TurnNumber,
+            acceptedRealm,
+            manifest.PreGeneratedDices1d20 ?? Array.Empty<int>(),
+            plannedCarriers);
+        issues.AddRange(reportedEvents.Issues);
+        if (!reportedEvents.IsValid)
             return;
 
         ValidateEffectSourceDefinitions(acceptedSources, issues);
@@ -258,6 +281,7 @@ public partial class ValidationService
             .Concat(EffectAcceptedTurnInputComposer.CollectAfterlifePlanTargets(
                 resourceOwners?.Authority,
                 plannedCarriers.AfterlifeProfiles))
+            .Concat(acceptedCombatTargets.Targets)
             .ToArray();
         var replacedSourceOwners = ownerExports.ReplacedSourceOwners
             .Concat(MortalItemAcceptedTurnAuthority.GetReplacedEffectSourceOwners(
@@ -277,11 +301,15 @@ public partial class ValidationService
             acceptedPlanSources,
             acceptedPlanTargets,
             replacedSourceOwners,
-            ownerExports.ReplacedTargets,
+            ownerExports.ReplacedTargets
+                .Concat(acceptedCombatTargets.ReplacedTargets)
+                .ToHashSet(),
             currentWorldTime,
             publicationCarrierBaselines: currentCarriers,
             preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities,
-            realm: acceptedRealm);
+            realm: acceptedRealm,
+            grantedBuiltInApplicationAuthorities: builtInApplicationAuthorities,
+            acceptedReportedLifecycleEvents: reportedEvents.LifecycleEvents);
         if (suppressEffectExecutionForTerminalReceiptReplay)
         {
             var replayEventInput = input.EventInput;
@@ -733,9 +761,16 @@ public partial class ValidationService
                 foreach (var entry in (root[collection] as JsonArray)?.OfType<JsonObject>() ??
                          Enumerable.Empty<JsonObject>())
                 {
-                    var ownerId = ReadExact(entry["combatantId"]) ?? "invalid";
-                    AddProjectedCollection(projected, ownerId, "activeBuffs", entry["activeBuffs"] as JsonArray);
-                    AddProjectedCollection(projected, ownerId, "activeDebuffs", entry["activeDebuffs"] as JsonArray);
+                    AddProjectedCombatOwner(projected, entry);
+                    if (entry["isGroup"] is not JsonValue groupNode ||
+                        !groupNode.TryGetValue<bool>(out var isGroup) ||
+                        !isGroup ||
+                        entry["members"] is not JsonArray members)
+                    {
+                        continue;
+                    }
+                    foreach (var member in members.OfType<JsonObject>())
+                        AddProjectedCombatOwner(projected, member);
                 }
                 return SortProjectedCollections(projected);
             case EffectCarrierKind.AfterlifeProfile:
@@ -762,6 +797,25 @@ public partial class ValidationService
             default:
                 return SortProjectedCollections(projected);
         }
+    }
+
+    private static void AddProjectedCombatOwner(
+        JsonArray projected,
+        JsonObject owner)
+    {
+        var ownerId = ReadExact(owner["memberId"]) ??
+                      ReadExact(owner["combatantId"]) ??
+                      "invalid";
+        AddProjectedCollection(
+            projected,
+            ownerId,
+            "activeBuffs",
+            owner["activeBuffs"] as JsonArray);
+        AddProjectedCollection(
+            projected,
+            ownerId,
+            "activeDebuffs",
+            owner["activeDebuffs"] as JsonArray);
     }
 
     private static JsonArray SortProjectedCollections(JsonArray projected) =>

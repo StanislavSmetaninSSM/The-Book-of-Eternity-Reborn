@@ -71,7 +71,24 @@ public partial class ExplorerMode
         var guardiansRoot = guardiansStateRead.Root;
         var residentsRoot = residentsStateRead.Root;
         var returnGuardRaw = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
-        var shiningContext = await LoadShiningContextAsync();
+        var projectionAudience = includeAuditPayloads
+            ? ResourceProjectionAudience.GameMaster
+            : ResourceProjectionAudience.Player;
+        var shiningContext = await LoadShiningContextAsync(projectionAudience);
+        var activeGuardianId = GetNodeString(guardiansRoot?["activeGuardian"]?["guardianId"]);
+        var guardianResources = ResourceMaterializationContract.IsExactIdentifier(activeGuardianId)
+            ? await ResourceProjectionService.ProjectOwnerAsync(
+                _fs,
+                "chaos_sea",
+                ResourceOwnerKind.AfterlifeActor,
+                activeGuardianId!,
+                "активный хранитель",
+                isOwningPlayer: false,
+                projectionAudience)
+            : new ResourceProjectionResult(
+                false,
+                ResourcePlayerFailureMessages.Unavailable,
+                Array.Empty<ResourceProjectionRow>());
         var pendingLines = await BuildAfterlifePendingContractAuditLinesAsync(includeShining: true, includeFullPayload: includeAuditPayloads);
         var effectProjection = includeAuditPayloads
             ? EffectPlayerProjection.Build(new EffectPlayerProjectionInput(
@@ -101,7 +118,12 @@ public partial class ExplorerMode
         };
 
         AppendNextLifePayloadStatusLines(lines, soulRoot, includeAuditPayloads);
-        AppendChaosSeaStatusLines(lines, guardiansRoot, residentsRoot, returnGuardRaw);
+        AppendChaosSeaStatusLines(
+            lines,
+            guardiansRoot,
+            residentsRoot,
+            returnGuardRaw,
+            guardianResources);
         AppendShiningStatusLines(lines, shiningContext);
         AppendAfterlifeSpiritualConflictStatusLines(lines, spiritualConflictRead.Root);
         AppendAfterlifeGlobalFlagStatusLines(lines, globalFlagsRead.Root);
@@ -303,7 +325,12 @@ public partial class ExplorerMode
         });
     }
 
-    private static void AppendChaosSeaStatusLines(List<string> lines, JsonObject? guardiansRoot, JsonObject? residentsRoot, string? returnGuardRaw)
+    private static void AppendChaosSeaStatusLines(
+        List<string> lines,
+        JsonObject? guardiansRoot,
+        JsonObject? residentsRoot,
+        string? returnGuardRaw,
+        ResourceProjectionResult guardianResources)
     {
         lines.Add("");
         lines.Add("[bold]Море Хаоса:[/]");
@@ -323,8 +350,14 @@ public partial class ExplorerMode
         lines.Add($"  • Текущая Обитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(currentAbodeName) ? "не выбрана" : currentAbodeName)}[/]");
         lines.Add($"  • Известных Хранителей: [white]{(guardiansRoot["guardians"] as JsonArray)?.Count ?? 0}[/]");
         lines.Add($"  • Резидентов Обителей: [white]{(residentsRoot?["entries"] as JsonArray)?.Count ?? 0}[/]");
-        if (activeGuardian?["gachaSystem"] is JsonObject gacha)
-            lines.Add($"  • Гача активного Хранителя: [white]{Math.Max(0, GetNodeInt(gacha["chargesPerReturn"]) - GetNodeInt(gacha["chargesUsedThisReturn"]))}[/]/[white]{GetNodeInt(gacha["chargesPerReturn"])}[/] попыток за возвращение.");
+        if (activeGuardian?["gachaSystem"] is JsonObject)
+        {
+            var attempts = guardianResources.Rows.SingleOrDefault(static row =>
+                string.Equals(row.ResourceKey, "gacha_attempts", StringComparison.Ordinal));
+            lines.Add(!guardianResources.IsAvailable
+                ? $"  • Гача активного Хранителя: [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]"
+                : $"  • Гача активного Хранителя: [white]{(attempts == null ? "нет данных" : Markup.Escape(ResourceProjectionService.FormatValue(attempts)))}[/]");
+        }
         if (activeGuardian?["abodePower"] is JsonObject power)
             lines.Add($"  • Сила текущей Обители: [white]{GetNodeInt(power["currentPower"])}[/] [dim]({Markup.Escape(GetNodeString(power["tier"]) ?? "tier не указан")})[/]");
 
@@ -626,7 +659,11 @@ public partial class ExplorerMode
         {
             lines.Add($"  • Сокровищница (treasury): вклад [white]{GetNodeInt(treasury["depositedInkFeathers"])} 🪶[/], доступный процент [white]{GetNodeInt(treasury["claimableInkFeatherInterest"])} 🪶[/], обменено в цикле [white]{GetNodeInt(treasury["exchangeThisCycleLightSparks"])}[/]/[white]{ShiningAbodeState.TreasuryMaxLightSparksExchangePerCycle}[/] ✨.");
         }
-        lines.Add($"  • Заряды гачи Сияющей Обители (gachaSystem): [white]{ShiningAbodeState.GetRemainingShiningGachaCharges(root)}[/]/[white]{GetNodeInt(root["gachaSystem"]?["chargesPerReturn"])}[/] [dim]({BuildShiningReturnCycleStatusLabel(root)})[/]");
+        var gachaAttempts = context.GachaResources.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "gacha_attempts", StringComparison.Ordinal));
+        lines.Add(!context.GachaResources.IsAvailable
+            ? $"  • Попытки гачи Сияющей Обители: [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]"
+            : $"  • Попытки гачи Сияющей Обители: [white]{(gachaAttempts == null ? "нет данных" : Markup.Escape(ResourceProjectionService.FormatValue(gachaAttempts)))}[/] [dim]({BuildShiningReturnCycleStatusLabel(root)})[/]");
         lines.Add($"  • Фракций: [white]{(root["factions"] as JsonArray)?.Count ?? 0}[/], залов: [white]{(root["halls"] as JsonArray)?.Count ?? 0}[/], вознесённых резидентов: [white]{CountAscendedShiningResidents(context.ResidentRoot)}[/]");
         lines.Add($"  • Журналы квитанций: coreAction={(root["coreActionReceipts"] as JsonArray)?.Count ?? 0}, founding={CountNestedReceipts(root, "factionFoundingReceipts")}, realignment={CountNestedReceipts(root, "factionRealignmentReceipts")}, leadership={CountNestedReceipts(root, "leadershipReceipts")}, trade={CountNestedReceipts(root, ShiningTradeRequestState.ReceiptsProperty)}.");
         var legacyPendingDiscoveryIssue = ShiningAbodeState.ValidateLegacyPendingNativeFactionDiscoveryShape(root);

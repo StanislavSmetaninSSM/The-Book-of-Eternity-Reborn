@@ -453,8 +453,7 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
             },
             ["gachaSystem"] = new JsonObject
             {
-                ["chargesPerReturn"] = 0,
-                ["chargesUsedThisReturn"] = 0,
+                ["currentReturnCycleId"] = "",
                 ["gachaHistory"] = new JsonArray()
             },
             ["mood"] = new JsonObject
