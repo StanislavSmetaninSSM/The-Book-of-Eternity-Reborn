@@ -162,7 +162,7 @@ public partial class ExplorerMode
                 return;
 
             Clear();
-            Write(BuildShiningOverviewPanel(context.Root, context.ResidentRoot, context.GuardiansRoot));
+            Write(BuildShiningOverviewPanel(context));
 
             var gates = context.Root["gates"] as JsonObject;
             var draftOpen = gates != null && GetNodeBool(gates["hasOpenDraft"]);
@@ -631,7 +631,13 @@ public partial class ExplorerMode
             lines.Add("[bold]Выбранная карта:[/]");
             lines.AddRange(BuildShiningBlessingCardInspectionLines(
                 card,
-                new ShiningContext(beforeRoot, null, null, null),
+                new ShiningContext(
+                    beforeRoot,
+                    null,
+                    null,
+                    null,
+                    new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>()),
+                    new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>())),
                 !toggledOff).Select(line => $"  {line}"));
             lines.Add($"  sourceType: [dim]{Markup.Escape(GetNodeString(card["sourceType"]) ?? string.Empty)}[/]");
             if (TryResolvePlayerVisibleShiningFactionLabel(
@@ -718,7 +724,13 @@ public partial class ExplorerMode
             return;
         }
 
-        var context = new ShiningContext(root, null, null, null);
+        var context = new ShiningContext(
+            root,
+            null,
+            null,
+            null,
+            new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>()),
+            new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>()));
         foreach (var cardId in cardIds)
         {
             var card = FindBlessingCardInGates(gates, cardId);
@@ -853,8 +865,10 @@ public partial class ExplorerMode
             case "memory":
                 if (GetNodeInt(payload["options"]) > 0)
                     lines.Add($"Дополнительных вариантов памяти: {GetNodeInt(payload["options"])}");
-                if (GetNodeInt(payload["rerolls"]) > 0)
-                    lines.Add($"Перебросов памяти: {GetNodeInt(payload["rerolls"])}");
+                var memoryRerolls = ShiningBlessingRerollAllocationContract.ReadOrZero(
+                    payload[ShiningBlessingRerollAllocationContract.PropertyName]);
+                if (memoryRerolls > 0)
+                    lines.Add($"Перебросов памяти: {memoryRerolls}");
                 break;
             case "descent":
                 if (GetNodeInt(payload["latestTurn"]) > 0)
@@ -869,8 +883,10 @@ public partial class ExplorerMode
                     lines.Add($"Восстановление потерь: {GetNodeInt(payload["recovery"])}%");
                 break;
             case "relic":
-                if (GetNodeInt(payload["rerolls"]) > 0)
-                    lines.Add($"Перебросов реликвии: {GetNodeInt(payload["rerolls"])}");
+                var relicRerolls = ShiningBlessingRerollAllocationContract.ReadOrZero(
+                    payload[ShiningBlessingRerollAllocationContract.PropertyName]);
+                if (relicRerolls > 0)
+                    lines.Add($"Перебросов реликвии: {relicRerolls}");
                 lines.Add($"Бесплатная смена формы: {(GetNodeBool(payload["freeShape"]) ? "да" : "нет")}");
                 lines.Add($"Бесплатная перенастройка: {(GetNodeBool(payload["freeRetune"]) ? "да" : "нет")}");
                 break;

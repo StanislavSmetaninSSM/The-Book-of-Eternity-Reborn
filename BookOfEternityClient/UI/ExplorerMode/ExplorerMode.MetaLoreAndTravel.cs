@@ -608,19 +608,25 @@ public partial class ExplorerMode
         var doc = await _stateManager.LoadGameStateFileAsync("game_state/misc/vehicles.json");
         if (doc == null) { ShowEmptyPanel(_loc.T("transport"), "Транспорта нет"); return; }
 
-        var vehicles = new List<(string name, string type, bool active, JsonElement el)>();
+        var vehicles = new List<(string name, string type, bool active, string id, JsonElement el)>();
         EnumerateArray(doc.RootElement, "vehicles", item =>
         {
             var name = GetStr(item, "name", "???");
             var vtype = GetStr(item, "type", "");
             var active = item.TryGetProperty("isActive", out var ia) && ia.ValueKind == JsonValueKind.True;
-            vehicles.Add((name, vtype, active, item));
+            var id = GetStr(item, "vehicleId", GetStr(item, "id", ""));
+            vehicles.Add((name, vtype, active, id, item));
         });
         // Also try root-level array
         if (vehicles.Count == 0)
             EnumerateJsonItems(doc.RootElement, item =>
             {
-                vehicles.Add((GetStr(item, "name", "???"), GetStr(item, "type", ""), false, item));
+                vehicles.Add((
+                    GetStr(item, "name", "???"),
+                    GetStr(item, "type", ""),
+                    false,
+                    GetStr(item, "vehicleId", GetStr(item, "id", "")),
+                    item));
             });
 
         if (vehicles.Count == 0)
@@ -628,6 +634,23 @@ public partial class ExplorerMode
             ShowEmptyPanel(_loc.T("transport"), "Транспорта нет");
             return;
         }
+
+        var vehicleSelectors = vehicles
+            .Select((vehicle, index) => new
+            {
+                vehicle.id,
+                SafeSelector = $"транспорт №{index + 1}"
+            })
+            .Where(static selector => ResourceMaterializationContract.IsExactIdentifier(selector.id))
+            .ToArray();
+        var vehicleResources = await ResourceProjectionService.ProjectCanonicalAsync(
+            _fs,
+            vehicleSelectors.Select(static selector => new ResourceProjectionOwnerScope(
+                    new ResourceOwnerKey("mortal_world", ResourceOwnerKind.Vehicle, selector.id),
+                    selector.SafeSelector,
+                    IsOwningPlayer: true))
+                .ToArray(),
+            ResourceProjectionAudience.Player);
 
         while (true)
         {
@@ -651,6 +674,13 @@ public partial class ExplorerMode
             if (idx < 0 || idx >= vehicles.Count) break;
 
             var v = vehicles[idx];
+            var safeVehicleSelector = $"транспорт №{idx + 1}";
+            var projectedVehicleResources = vehicleResources.Rows
+                .Where(row => string.Equals(
+                    row.SafeOwnerSelector,
+                    safeVehicleSelector,
+                    StringComparison.Ordinal))
+                .ToArray();
             var lines = new List<string>();
             lines.Add($"[bold]{Markup.Escape(v.name)}[/]");
             if (!string.IsNullOrEmpty(v.type))
@@ -690,20 +720,30 @@ public partial class ExplorerMode
                 lines.Add($"  [white]{Markup.Escape(desc)}[/]");
             }
 
-            // Health with visual bar
-            var health = GetStr(v.el, "currentHealth", GetStr(v.el, "health", ""));
-            var maxHealth = GetStr(v.el, "maxHealth", "");
-            if (!string.IsNullOrEmpty(health))
+            if (!vehicleResources.IsAvailable)
             {
-                var hpNum = int.TryParse(health.Replace("%", "").Trim(), out var hv) ? hv : 0;
-                var maxHpNum = int.TryParse(maxHealth.Replace("%", "").Trim(), out var mv) ? mv : hpNum;
-                var hpPct = maxHpNum > 0 ? Math.Clamp(hpNum * 100 / maxHpNum, 0, 100) : 100;
-                var hpColor = hpPct > 60 ? "green" : hpPct > 30 ? "yellow" : "red";
-                var barW = 15;
-                var filled = Math.Clamp(hpPct * barW / 100, 0, barW);
-                var hpBar = $"[{hpColor}]{new string('━', filled)}[/][dim grey]{new string('┄', barW - filled)}[/]";
-                var hpLabel = !string.IsNullOrEmpty(maxHealth) ? $"{Markup.Escape(health)}/{Markup.Escape(maxHealth)}" : Markup.Escape(health);
-                lines.Add($"  ❤️ Здоровье: {hpBar}  [{hpColor}]{hpLabel}[/]");
+                lines.Add($"  [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]");
+            }
+            else
+            {
+                foreach (var resource in projectedVehicleResources)
+                {
+                    var formatted = ResourceProjectionService.FormatValue(resource);
+                    if (string.Equals(resource.ResourceKey, "health", StringComparison.Ordinal) &&
+                        resource.Percentage is decimal percentage)
+                    {
+                        var hpPct = Math.Clamp((int)Math.Floor(percentage), 0, 100);
+                        var hpColor = hpPct > 60 ? "green" : hpPct > 30 ? "yellow" : "red";
+                        const int barW = 15;
+                        var filled = Math.Clamp(hpPct * barW / 100, 0, barW);
+                        var hpBar = $"[{hpColor}]{new string('━', filled)}[/][dim grey]{new string('┄', barW - filled)}[/]";
+                        lines.Add($"  ❤️ {Markup.Escape(resource.DisplayName)}: {hpBar}  [{hpColor}]{Markup.Escape(formatted)}[/]");
+                    }
+                    else
+                    {
+                        lines.Add($"  ◆ {Markup.Escape(resource.DisplayName)}: [white]{Markup.Escape(formatted)}[/]");
+                    }
+                }
             }
 
             var speed = GetStr(v.el, "speed", "");
@@ -844,7 +884,7 @@ public partial class ExplorerMode
                 Expand = true
             });
 
-            var vehicleId = GetStr(v.el, "vehicleId", GetStr(v.el, "id", ""));
+            var vehicleId = v.id;
             var hasInventory = v.el.TryGetProperty("inventory", out var vehicleInventory) &&
                                vehicleInventory.ValueKind == JsonValueKind.Array;
 

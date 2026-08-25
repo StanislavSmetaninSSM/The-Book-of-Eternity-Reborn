@@ -1516,25 +1516,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
           "enemiesData": [
             {
               "enemyId": "shadow_messenger",
+              "combatantId": "combatant_shadow_messenger",
               "name": "Теневой посыльный",
               "type": "elite",
               "status": "hostile",
-              "currentHealth": 18,
-              "maxHealth": 30,
-              "currentPoise": 4,
-              "maxPoise": 10,
               "intent": "сорвать концентрацию мага",
               "targetPriority": "caster",
               "description": "Скользит между колоннами [red]без права на разметку[/].",
-              "activeDebuffs": [
-                {
-                  "effectType": "burn",
-                  "value": "-2 HP/ход",
-                  "duration": 2,
-                  "sourceSkill": "серебряная стрела",
-                  "effectDescription": "Горит после серебряной стрелы."
-                }
-              ],
+              "activeDebuffs": [],
               "actions": [
                 {
                   "actionName": "Теневой выпад",
@@ -1559,24 +1548,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
           "alliesData": [
             {
               "allyId": "rina_guard",
+              "combatantId": "combatant_rina_guard",
               "name": "Рина из Серебряной стражи",
               "role": "щит",
               "status": "wounded",
-              "currentHealth": 22,
-              "maxHealth": 28,
-              "currentPoise": 7,
-              "maxPoise": 12,
               "intent": "защищает мага",
               "description": "Держит линию у разбитой арки.",
-              "activeBuffs": [
-                {
-                  "effectType": "inspire",
-                  "value": "+1 стойкость",
-                  "duration": 1,
-                  "sourceSkill": "Боевой клич",
-                  "effectDescription": "Боевой клич держит строй."
-                }
-              ],
+              "activeBuffs": [],
               "actions": [
                 {
                   "actionName": "Прикрыть щитом",
@@ -1616,6 +1594,107 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
           ]
         }
         """);
+
+        await ResourceProjectionFixture.SeedAsync(
+            _fs,
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Combatant,
+                "combatant_shadow_messenger",
+                "health",
+                18m,
+                30m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Combatant,
+                "combatant_shadow_messenger",
+                "poise",
+                4m,
+                10m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Combatant,
+                "combatant_rina_guard",
+                "health",
+                22m,
+                28m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Combatant,
+                "combatant_rina_guard",
+                "poise",
+                7m,
+                12m));
+
+        var enemyEffect = CreateExplorerUiCanonicalEffect(
+            effectId: "effect_shadow_messenger_burning",
+            transitionId: "effect_transition_shadow_messenger_burning",
+            targetId: "combatant_shadow_messenger",
+            name: "Серебряное пламя",
+            description: "Горит после серебряной стрелы.",
+            category: "debuff",
+            profile: "periodic_damage");
+        var allyEffect = CreateExplorerUiCanonicalEffect(
+            effectId: "effect_rina_guard_battle_cry",
+            transitionId: "effect_transition_rina_guard_battle_cry",
+            targetId: "combatant_rina_guard",
+            name: "Боевой клич",
+            description: "Боевой клич держит строй.",
+            category: "buff",
+            profile: "characteristic_modifier");
+
+        var enemies = JsonNode.Parse((await _fs.ReadFileAsync("game_state/combat/enemies.json"))!)!.AsObject();
+        enemies["enemiesData"]![0]!["activeDebuffs"] = new JsonArray(enemyEffect.DeepClone());
+        await _fs.WriteFileAtomicAsync("game_state/combat/enemies.json", enemies.ToJsonString());
+
+        var allies = JsonNode.Parse((await _fs.ReadFileAsync("game_state/combat/allies.json"))!)!.AsObject();
+        allies["alliesData"]![0]!["activeBuffs"] = new JsonArray(allyEffect.DeepClone());
+        await _fs.WriteFileAtomicAsync("game_state/combat/allies.json", allies.ToJsonString());
+
+        var index = CreateExplorerUiEffectIdentityIndex(enemyEffect, allyEffect);
+        var allyOwner = index["entries"]![1]!["owner"]!.AsObject();
+        allyOwner["carrierPath"] = EffectCarrierCatalog.AlliesPath;
+        allyOwner["collection"] = "activeBuffs";
+        await _fs.WriteFileAtomicAsync(EffectIdentityState.StatePath, index.ToJsonString());
+    }
+
+    private static JsonObject CreateExplorerUiCanonicalEffect(
+        string effectId,
+        string transitionId,
+        string targetId,
+        string name,
+        string description,
+        string category,
+        string profile)
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("combatant", profile);
+        effect["effectId"] = effectId;
+        effect["target"]!["targetId"] = targetId;
+        effect["display"]!["name"] = name;
+        effect["display"]!["description"] = description;
+        effect["display"]!["category"] = category;
+        effect["display"]!["sourceLabel"] = name;
+        effect["source"]!["sourceId"] = "source_" + effectId;
+        effect["source"]!["definitionKey"] = "definition_" + effectId;
+        effect["stacking"]!["stackKey"] = "stack_" + effectId;
+        effect["chronology"]!["lastTransitionId"] = transitionId;
+        effect["chronology"]!["createdEventRef"] = "turn_42:" + effectId;
+        return effect;
+    }
+
+    private static JsonObject CreateExplorerUiEffectIdentityIndex(params JsonObject[] effects)
+    {
+        var index = EffectMaterializationTestFixture.CreateIdentityIndex(effects);
+        var entries = index["entries"]!.AsArray();
+        for (var i = 0; i < effects.Length; i++)
+        {
+            var chronology = effects[i]["chronology"]!.AsObject();
+            var transition = entries[i]!["transitions"]![0]!.AsObject();
+            transition["transitionId"] = chronology["lastTransitionId"]!.GetValue<string>();
+            transition["eventRef"] = chronology["createdEventRef"]!.GetValue<string>();
+        }
+
+        return index;
     }
 
     private async Task SeedRichMortalPlayerInteractionsFilesAsync()

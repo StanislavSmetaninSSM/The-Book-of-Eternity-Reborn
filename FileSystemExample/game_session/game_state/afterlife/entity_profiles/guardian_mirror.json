@@ -47,6 +47,7 @@
           "effectSummary": "При успехе отражает часть давления в сторону противника."
         }
       ],
+      "activeEffects": [],
       "customStates": [
         {
           "stateId": "oath_resonance",

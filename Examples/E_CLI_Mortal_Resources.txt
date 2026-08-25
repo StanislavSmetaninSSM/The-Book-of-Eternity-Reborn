@@ -1,0 +1,314 @@
+# Mortal World — Unified Resource Authority v1
+
+This is the worked GM contract for bounded Mortal resources. The GM may author
+only the transient `resourceDefinitionCreations`, `resourceCapacityChanges`,
+and `resourceChanges` arrays. Existing owners use an exact permanent
+`targetId`; a same-turn owner uses only the exact `targetRef` supplied by its
+owning materializer. The client alone owns canonical definitions, current and
+maximum values, identities, seals, ordering, history, publication, and
+rollback in `game_state/resources/resource_state.json` and
+`game_state/resources/resource_history.json`.
+
+Capacity operations are `initialize`, `reconfigure`, `suspend`, `resume`, and
+`retire`. Ordinary operations are `damage`, `restore`, `spend`, and `gain`.
+Client-owned publication is atomic. There is no migration, legacy promotion,
+dual write, direct canonical write, or raw fallback.
+
+### mortal_resource_setting_definition_initialize_v1
+
+A setting-expansion turn may propose one complete bounded definition and
+initialize it for an already accepted owner. `definitionRef` is a one-turn
+selector; the client creates and seals the permanent definition identity.
+
+```json
+{
+  "resourceDefinitionCreations": [
+    {
+      "definitionRef": "mana_v1",
+      "definition": {
+        "resourceKey": "mana",
+        "definitionVersion": 1,
+        "displayName": "Мана",
+        "numericKind": "integer",
+        "unit": "point",
+        "quantum": 1,
+        "minimumPolicy": {
+          "kind": "definition_fixed",
+          "value": 0
+        },
+        "capacityPolicy": {
+          "kind": "instance_fixed"
+        },
+        "initializationPolicy": {
+          "kind": "maximum"
+        },
+        "allowedOwnerKinds": [
+          "player"
+        ],
+        "allowedOperations": [
+          "spend",
+          "gain"
+        ],
+        "defaultFloorPolicy": "reject_below_minimum",
+        "defaultCapPolicy": "clamp_to_maximum",
+        "visibility": "player_visible"
+      },
+      "eventRef": "turn_42:resource:1",
+      "reason": "В мире пробудилась школа маны."
+    }
+  ],
+  "resourceCapacityChanges": [
+    {
+      "operation": "initialize",
+      "target": {
+        "kind": "player",
+        "targetId": "player_current"
+      },
+      "resourceDefinitionRef": "mana_v1",
+      "capacity": {
+        "kind": "instance_fixed",
+        "maximum": 40
+      },
+      "currentDisposition": "initialize_from_definition",
+      "source": {
+        "kind": "setting_materialization",
+        "sourceId": "mana_v1"
+      },
+      "eventRef": "turn_42:resource:2",
+      "reason": "Начальный запас маны героя."
+    }
+  ],
+  "resourceChanges": []
+}
+```
+
+### mortal_resource_player_npc_mutation_v1
+
+One response may apply independent ordinary outcomes to exact player and NPC
+owners. The client derives each generic source identity from its exact ordinal
+`eventRef`; the GM must not submit another source ID.
+
+```json
+{
+  "resourceDefinitionCreations": [],
+  "resourceCapacityChanges": [],
+  "resourceChanges": [
+    {
+      "operation": "damage",
+      "target": {
+        "kind": "player",
+        "targetId": "player_current"
+      },
+      "resourceKey": "health",
+      "amount": 13,
+      "source": {
+        "kind": "combat_outcome"
+      },
+      "eventRef": "turn_43:resource:1",
+      "reason": "Клинок рассёк наплечник героя."
+    },
+    {
+      "operation": "restore",
+      "target": {
+        "kind": "npc",
+        "targetId": "npc_guard_001"
+      },
+      "resourceKey": "health",
+      "amount": 5,
+      "source": {
+        "kind": "narrative_outcome"
+      },
+      "eventRef": "turn_43:resource:2",
+      "reason": "Полевой лекарь перевязал стража."
+    }
+  ]
+}
+```
+
+### mortal_resource_item_combat_mutation_v1
+
+Item costs stay bound to the same permanent item identity across carriers.
+Anonymous combatants and detached group members use their client-owned stable
+identities; names and array positions are never selectors.
+
+```json
+{
+  "resourceDefinitionCreations": [],
+  "resourceCapacityChanges": [],
+  "resourceChanges": [
+    {
+      "operation": "spend",
+      "target": {
+        "kind": "item",
+        "targetId": "item_rifle_001"
+      },
+      "resourceKey": "ammunition",
+      "amount": 3,
+      "source": {
+        "kind": "local_item_cost",
+        "sourceId": "item_rifle_001"
+      },
+      "eventRef": "turn_44:resource:1",
+      "reason": "Короткая очередь из винтовки."
+    },
+    {
+      "operation": "damage",
+      "target": {
+        "kind": "combatant",
+        "targetId": "combatant_mutant_001"
+      },
+      "resourceKey": "health",
+      "amount": 27,
+      "source": {
+        "kind": "combat_outcome"
+      },
+      "eventRef": "turn_44:resource:2",
+      "reason": "Пули настигли мутанта."
+    }
+  ]
+}
+```
+
+### mortal_resource_capacity_reconfigure_v1
+
+A changed validated owner formula uses a capacity command and an explicit
+current-value disposition. It never carries the resulting current, maximum,
+fingerprint, phase, or history row.
+
+```json
+{
+  "resourceDefinitionCreations": [],
+  "resourceCapacityChanges": [
+    {
+      "operation": "reconfigure",
+      "target": {
+        "kind": "player",
+        "targetId": "player_current"
+      },
+      "resourceKey": "health",
+      "capacity": {
+        "kind": "registered_formula",
+        "formulaKey": "mortal_health_capacity_v1"
+      },
+      "currentDisposition": "preserve",
+      "source": {
+        "kind": "owner_lifecycle",
+        "sourceId": "player_current"
+      },
+      "eventRef": "turn_45:resource:1",
+      "reason": "Новая постоянная выносливость изменила предел здоровья."
+    }
+  ],
+  "resourceChanges": []
+}
+```
+
+The same lifecycle surface uses `suspend`, `resume`, and `retire` only when the
+owning materializer supplies the exact lifecycle authority. Those operations
+omit both `capacity` and `currentDisposition`.
+
+### mortal_resource_bounded_receipt_v1
+
+A story-facing effect may create one client-owned bounded pending request only
+after deterministic prerequisites pass. The GM receipt chooses an allowed
+result and bounded amount; the request—not the receipt—owns the coordinate and
+operation. Mechanics remain unchanged until coherent full-turn resubmission.
+
+```json
+{
+  "effectResolutionReceipts": [
+    {
+      "requestId": "resource_resolution_example_001",
+      "resultKind": "resource_delta",
+      "amount": 3,
+      "reason": "Яд усилился после описанного исхода."
+    }
+  ]
+}
+```
+
+Successful full-turn resubmission consumes the request and receipt exactly
+once through client-owned publication. A stale, partial, cross-target,
+wrong-operation, extra-field, or out-of-bound receipt fails closed.
+
+If that resolved output causally reaches another bounded component, the client
+returns a new safe packet and still publishes no mechanics or lifetime change.
+Answer the current safe packet only. Resubmit the same complete semantic turn
+with `effectResolutionReceipts[]` containing only that packet's unresolved
+requests; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned;
+do not copy an earlier wave back into the array or alter protected origin data.
+The client replays prior bindings at their original graph positions. Only the terminal wave
+publishes the whole resource/effect result atomically. Reusing an exact terminal
+receipt with the unchanged command envelope is a no-op; changing the original
+resource/effect commands makes it a conflicting replay.
+
+### mortal_resource_bounded_repair_v1
+
+If one exact ordinary resource command omitted only its required narrative
+reason, the client restores the validated baseline and issues a full-turn
+repair. In this worked attempt, only the resource command and two player-facing
+outputs were changed by the rejected response:
+
+```json
+{
+  "fullTurnResubmissionRequired": true,
+  "requiredResubmissionPaths": [
+    "game_state/resources/resource_commands.json",
+    "output/narrative_response.json",
+    "output/interface_updates.json"
+  ],
+  "harnessRepairPackets": [
+    {
+      "kind": "resource_semantic_omission_repair",
+      "actor": "ordinary resource change #1",
+      "route": "resourceChanges",
+      "transitionClass": "ordinary resource change #1",
+      "missingFields": ["narrative reason"],
+      "targetFiles": [],
+      "fullTurnResubmissionRequired": true
+    }
+  ]
+}
+```
+
+Regenerate all three listed GM-authored surfaces as one coherent response for
+the same turn. A command-only, ready-only, stale-output, formatting-only, or
+changed-amount retry is rejected. Client-owned `system_mods.json`,
+`progression_schedule.json`, `resource_definitions.json`, `resource_state.json`,
+`resource_history.json`, `resource_owner_authority.json`,
+`pending_effect_resolutions.json`, and `effect_identity_index.json` never appear
+in `requiredResubmissionPaths`; the client restores or republishes them and the
+GM must not write them.
+
+### mortal_resource_illegal_direct_write_v1
+
+Forbidden legacy names such as currentHealth, healthPercentage, and maxDurability are never a legal resource authority. Do not patch canonical
+definition, state, history, IDs, fingerprints, capacity results, or file paths.
+Express the intended mechanic through the transient command instead:
+
+```json
+{
+  "resourceDefinitionCreations": [],
+  "resourceCapacityChanges": [],
+  "resourceChanges": [
+    {
+      "operation": "restore",
+      "target": {
+        "kind": "vehicle",
+        "targetId": "vehicle_wagon_001"
+      },
+      "resourceKey": "health",
+      "amount": 8,
+      "source": {
+        "kind": "narrative_outcome"
+      },
+      "eventRef": "turn_46:resource:1",
+      "reason": "Кузнец укрепил повреждённую раму."
+    }
+  ]
+}
+```
+
+Money, currencies, progression, relationships, faction accounting, spiritual
+axes, effect lifetime counters, QTE-local values, and boolean entitlements stay
+in their own authorities; they are not silently admitted as generic resources.

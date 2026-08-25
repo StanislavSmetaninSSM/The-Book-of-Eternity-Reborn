@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="25.A">
  <title>
   NPC Custom State Management (Controlled Simulation)
@@ -81,7 +82,7 @@
                     On each subsequent turn for relevant NPCs who have existing custom states:
                     1.  Get Current State: Read the NPC's 'customStates' from their data in the Context.
                     2.  Apply Progression: Adjust each state's 'currentValue' based on its 'progressionRule' and the turn's events.
-                    3.  Check Thresholds & Apply Effects: If a threshold is crossed, apply/remove its 'associatedEffects' via the 'NPCEffectChanges' array.
+                    3.  Check Thresholds & Apply Effects: A threshold may reference an exact definition on a supported current source. Request apply/remove through top-level 'effectChanges[]'; associatedEffects prose or custom-state data is never a direct carrier payload or mechanical authority.
                     4.  Update Description: Update the state's 'description' to reflect the new reality.
                     5.  Report Changes: Add an object to the 'NPCCustomStateChanges' array for the NPC, containing the complete, updated Custom State Object(s).
 

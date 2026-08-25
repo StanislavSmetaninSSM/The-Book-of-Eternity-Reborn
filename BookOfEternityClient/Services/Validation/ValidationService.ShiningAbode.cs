@@ -153,7 +153,7 @@ public partial class ValidationService
                 section: "ShiningAbode",
                 expected: "gachaSystem object",
                 actual: "missing_or_invalid",
-                repairHint: "Сохраняй в Shining owner-state gachaSystem с chargesPerReturn, chargesUsedThisReturn, currentReturnCycleId и gachaHistory[]."));
+                repairHint: "Сохраняй companion-only gachaSystem с currentReturnCycleId и gachaHistory[]; попытки принадлежат common resource ledger."));
         }
 
         if (root.TryGetProperty(ShiningAbodeState.TreasuryProperty, out var treasury))
@@ -2365,41 +2365,41 @@ public partial class ValidationService
         if (!RequireObject(gachaSystem, contextPrefix, issues))
             return;
 
-        ValidateNonNegativeIntegerField(gachaSystem, contextPrefix, issues, "chargesPerReturn", "ShiningAbode");
-        ValidateNonNegativeIntegerField(gachaSystem, contextPrefix, issues, "chargesUsedThisReturn", "ShiningAbode");
-        RequireString(gachaSystem, contextPrefix, issues, "currentReturnCycleId");
+        foreach (var legacyCounter in new[] { "chargesPerReturn", "chargesUsedThisReturn" })
+        {
+            if (!gachaSystem.TryGetProperty(legacyCounter, out var legacyValue))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{legacyCounter}",
+                IssueSeverity.Error,
+                "Legacy Shining gacha counter нельзя хранить вне unified resource ledger",
+                code: "shining_gacha_legacy_counter_forbidden",
+                section: "ShiningAbode",
+                expected: "field absent; resolve gacha_attempts through the accepted resource projection",
+                actual: legacyValue.GetRawText(),
+                repairHint: "Старый технический state несовместим: не переноси счётчик и не создавай fallback."));
+        }
+
+        if (!gachaSystem.TryGetProperty("currentReturnCycleId", out var returnCycleNode) ||
+            returnCycleNode.ValueKind != JsonValueKind.String ||
+            returnCycleNode.GetString() is not { } returnCycleId ||
+            (!string.IsNullOrEmpty(returnCycleId) &&
+             !ResourceMaterializationContract.IsExactIdentifier(returnCycleId)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.currentReturnCycleId",
+                IssueSeverity.Error,
+                "Shining gachaSystem.currentReturnCycleId должен быть пустым bootstrap marker или exact resource cycle ID",
+                code: "shining_gacha_return_cycle_invalid",
+                section: "ShiningAbode",
+                expected: "empty string or exact identifier",
+                actual: returnCycleNode.ValueKind == JsonValueKind.Undefined
+                    ? "missing"
+                    : returnCycleNode.GetRawText(),
+                repairHint: "Сохраняй только client-authorized currentReturnCycleId; количество попыток читай из common resource projection."));
+        }
         ValidateArrayItems(gachaSystem, $"{contextPrefix}.gachaHistory", issues, "gachaHistory", ValidateShiningGachaHistoryEntryObject);
-
-        if (TryReadInt(gachaSystem, "chargesPerReturn", out var chargesPerReturn) &&
-            TryReadInt(gachaSystem, "chargesUsedThisReturn", out var chargesUsed) &&
-            chargesUsed > chargesPerReturn)
-        {
-            issues.Add(new ValidationIssue(
-                $"{contextPrefix}.chargesUsedThisReturn",
-                IssueSeverity.Error,
-                "chargesUsedThisReturn не может превышать chargesPerReturn",
-                code: "shining_gacha_used_charges_exceed_limit",
-                section: "ShiningAbode",
-                expected: $"<= {chargesPerReturn}",
-                actual: chargesUsed.ToString(),
-                repairHint: "Синхронизируй used charges с canonical chargesPerReturn текущего return-cycle."));
-        }
-
-        var returnCycleId = GetFirstNonEmptyString(gachaSystem, "currentReturnCycleId");
-        if (string.IsNullOrWhiteSpace(returnCycleId) &&
-            TryReadInt(gachaSystem, "chargesUsedThisReturn", out var chargesUsedWithoutCycle) &&
-            chargesUsedWithoutCycle > 0)
-        {
-            issues.Add(new ValidationIssue(
-                $"{contextPrefix}.chargesUsedThisReturn",
-                IssueSeverity.Error,
-                "chargesUsedThisReturn не может быть положительным без currentReturnCycleId",
-                code: "shining_gacha_used_charges_without_cycle",
-                section: "ShiningAbode",
-                expected: "chargesUsedThisReturn = 0 when currentReturnCycleId is empty",
-                actual: chargesUsedWithoutCycle.ToString(),
-                repairHint: "Если currentReturnCycleId пустой legacy/state bootstrap marker, сбрось chargesUsedThisReturn в 0 до первого resolved Shining gacha pull."));
-        }
     }
 
     private void ValidateShiningTreasuryObject(JsonElement treasury, string contextPrefix, List<ValidationIssue> issues)

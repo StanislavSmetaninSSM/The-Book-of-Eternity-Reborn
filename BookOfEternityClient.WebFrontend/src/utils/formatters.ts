@@ -192,6 +192,8 @@ export function formatQteStateLabel(qte: BrowserGameScreenDto['qte']): string {
       return 'Доступна быстрая сцена.';
     case 'active':
       return 'Быстрая сцена активна.';
+    case 'awaitingeffectresolution':
+      return 'Выбор принят. Книга сводит последствия эффектов.';
     case 'resolution':
     case 'resolved':
       return 'Быстрая сцена завершилась.';

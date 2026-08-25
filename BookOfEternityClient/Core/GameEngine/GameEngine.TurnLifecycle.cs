@@ -39,8 +39,8 @@ public partial class GameEngine
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
         PublishAgentConsoleGmWaitingSnapshot(
-            "Ожидание мастера",
-            "GM обрабатывает ход. Агент-консоль ждёт готовый ответ или запрос на ремонт данных.");
+            PlayerSafeWaitingTitle,
+            PlayerSafeWaitingText);
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
@@ -52,11 +52,11 @@ public partial class GameEngine
             {
                 await RestorePreTurnBackup(rollbackSnapshot!);
                 CleanupBackup(rollbackSnapshot!);
-                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён, состояние восстановлено из rollback backup. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
+                AnsiConsole.MarkupLine("[dim]Переходный ход отменён. Мир вернулся к состоянию до этого действия; позднее завершение событий останется отложенным.[/]");
             }
             else
             {
-                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён. Rollback backup для этого режима недоступен; если GM завершит уже отправленный ход позже, он всё равно придёт как отложенный ответ.[/]");
+                AnsiConsole.MarkupLine("[dim]Переходный ход отменён. В этом режиме прежнее состояние нельзя вернуть автоматически; позднее завершение событий останется отложенным.[/]");
             }
             return false;
         }
@@ -122,9 +122,9 @@ public partial class GameEngine
 
             _gameLoop.IncrementTurn();
 
-            // Debug: log narrative length to help diagnose rendering issues
+            // Debug: log narrative length to help diagnose rendering issues.
             if (string.IsNullOrEmpty(response?.Response))
-                AnsiConsole.MarkupLine("[yellow dim]⚠ Нарратив пуст в ответе GM[/]");
+                _logger.LogWarning("Accepted turn narrative is empty.");
 
             _lastResponse = response;
             _pendingImagePrompt = null;
@@ -195,7 +195,7 @@ public partial class GameEngine
         {
             await RestorePreTurnBackup(rollbackSnapshot!);
             CleanupBackup(rollbackSnapshot!);
-            AnsiConsole.MarkupLine("[yellow]↩ Переходный ход завершился ошибкой GM. Состояние откатилось к последней стабильной версии.[/]");
+            AnsiConsole.MarkupLine("[yellow]↩ Переходный ход не был принят. Мир вернулся к последнему устойчивому состоянию.[/]");
         }
 
         await CleanupPendingTurnSnapshotAsync();
@@ -217,8 +217,8 @@ public partial class GameEngine
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
         PublishAgentConsoleGmWaitingSnapshot(
-            "Ожидание мастера",
-            "GM обрабатывает переход. Агент-консоль ждёт готовый ответ или запрос на ремонт данных.");
+            PlayerSafeWaitingTitle,
+            PlayerSafeWaitingText);
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
@@ -229,11 +229,11 @@ public partial class GameEngine
             {
                 await RestorePreTurnBackup(rollbackSnapshot!);
                 CleanupBackup(rollbackSnapshot!);
-                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён, состояние восстановлено из rollback backup. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
+                AnsiConsole.MarkupLine("[dim]Переходный ход отменён. Мир вернулся к состоянию до этого действия; позднее завершение событий останется отложенным.[/]");
             }
             else
             {
-                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён. Rollback backup для этого режима недоступен; если GM завершит уже отправленный ход позже, он всё равно придёт как отложенный ответ.[/]");
+                AnsiConsole.MarkupLine("[dim]Переходный ход отменён. В этом режиме прежнее состояние нельзя вернуть автоматически; позднее завершение событий останется отложенным.[/]");
             }
             return false;
         }
@@ -258,7 +258,7 @@ public partial class GameEngine
             {
                 await RestorePreTurnBackup(rollbackSnapshot!);
                 CleanupBackup(rollbackSnapshot!);
-                AnsiConsole.MarkupLine("[yellow]↩ Переходный ход завершился ошибкой GM. Состояние откатилось к последней стабильной версии.[/]");
+                AnsiConsole.MarkupLine("[yellow]↩ Переходный ход не был принят. Мир вернулся к последнему устойчивому состоянию.[/]");
             }
 
             await CleanupPendingTurnSnapshotAsync();
@@ -276,10 +276,44 @@ public partial class GameEngine
         if (!HasRollbackCapability(rollbackSnapshot))
             return;
 
-        await RestorePreTurnBackup(rollbackSnapshot!);
-        CleanupBackup(rollbackSnapshot!);
-        if (!string.IsNullOrWhiteSpace(playerMessage))
-            AnsiConsole.MarkupLine(playerMessage);
+        try
+        {
+            await RestorePreTurnBackup(rollbackSnapshot!);
+            CleanupBackup(rollbackSnapshot!);
+            if (!string.IsNullOrWhiteSpace(playerMessage))
+                AnsiConsole.MarkupLine(playerMessage);
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            _inGame = false;
+            _logger.LogError(
+                exception,
+                "Rejected accepted-turn rollback failed; evidence is retained and the session remains stopped.");
+            await RunBestEffortFailClosedBookkeepingAsync(
+                "write the rejected accepted-turn rollback failure diagnostic",
+                async () =>
+                {
+                    var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                    var report = new
+                    {
+                        detectedAtUtc = DateTime.UtcNow.ToString("o"),
+                        reason = "Rejected accepted-turn rollback failed; evidence was retained.",
+                        exceptionType = exception.GetType().FullName,
+                        message = exception.Message,
+                        details = exception.ToString()
+                    };
+                    await WriteValidationRepairFileForSessionAsync(
+                        ValidationDiagnosticFailureReportPath,
+                        JsonSerializer.Serialize(report, JsonOpts),
+                        sessionGeneration);
+                });
+            AnsiConsole.MarkupLine(
+                "[yellow]⚠ Изменения мира не были приняты. Мир не удалось вернуть к устойчивой точке; продолжение остановлено.[/]");
+        }
     }
 
     private async Task ApplyPendingShiningBlessingRuntimeEffectsAsync(ValidatedPendingTurnSnapshotContext? snapshotContext)
@@ -296,7 +330,6 @@ public partial class GameEngine
                 ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/npcs/npc_core.json"),
                 ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/world/world_events.json"),
                 ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/npcs/npc_relationships.json"),
-                ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/core/player_status.json"),
                 ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/factions/faction_core.json"));
             if (!result.Success)
             {
@@ -422,9 +455,9 @@ public partial class GameEngine
                         if (elapsed < 15)
                             ctx.Status($"[cyan]{_loc.T("thinking")}[/]");
                         else if (elapsed < 120)
-                            ctx.Status($"[yellow]⏳ Ожидание GM-демона... ({elapsed}с) (Escape = отменить)[/]");
+                            ctx.Status($"[yellow]⏳ Мир продолжает складывать последствия... ({elapsed}с) (Escape = отменить)[/]");
                         else
-                            ctx.Status($"[yellow]⏳ GM обрабатывает ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
+                            ctx.Status($"[yellow]⏳ Мир ещё не завершил ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
 
                         await Task.Delay(1000);
                     }
@@ -797,7 +830,7 @@ public partial class GameEngine
                 {
                     var lateResponse = await BuildGameResponseFromFiles();
                     if (lateResponse == null || string.IsNullOrEmpty(lateResponse.Response))
-                        AnsiConsole.MarkupLine("[yellow dim]⚠ Нарратив пуст в late response GM[/]");
+                        _logger.LogWarning("Accepted late-turn narrative is empty.");
                     _pendingImagePrompt = null;
                     CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction);
                     var lateAction = snapshotContext?.PlayerAction ?? string.Empty;
@@ -880,6 +913,23 @@ public partial class GameEngine
                 }
             }
 
+            var resumedDeferredQte = await _qteSceneService
+                .ResumeDeferredEffectResolutionAsync(_gameLoop.TurnNumber);
+            if (resumedDeferredQte != null)
+            {
+                if (resumedDeferredQte.AwaitingEffectResolution)
+                {
+                    await Task.Delay(250);
+                    return true;
+                }
+                _lastResponse = resumedDeferredQte.Response;
+                _pendingImagePrompt = resumedDeferredQte.Response?.ImagePrompt;
+                await ProcessMortalProgressionAfterAcceptedTurnAsync();
+                await CheckLifeTransitions();
+                await CheckAscensionTrigger();
+                return true;
+            }
+
             // Check for GM-initiated incarnation (GM sends player to Mortal World).
             await CheckAscensionTrigger();
             await CheckGmIncarnationTrigger();
@@ -887,6 +937,11 @@ public partial class GameEngine
             var resumedQte = await _qteSceneService.ResumeActiveSceneIfAnyAsync(_gameLoop.TurnNumber);
             if (resumedQte != null)
             {
+                if (resumedQte.AwaitingEffectResolution)
+                {
+                    await Task.Delay(250);
+                    return true;
+                }
                 _lastResponse = resumedQte.Response;
                 _pendingImagePrompt = resumedQte.Response?.ImagePrompt;
                 await ProcessMortalProgressionAfterAcceptedTurnAsync();
@@ -1098,13 +1153,13 @@ public partial class GameEngine
         var repeatedInPlaceRequest = _explorer.ConsumePendingInPlaceGmRequest();
         if (repeatedInPlaceRequest != null)
         {
-            AnsiConsole.MarkupLine("[yellow]⚠️ Витрина всё ещё не готова после ответа ГМ. Повторный автозапрос не отправлен, чтобы не зациклить ожидание.[/]");
+            AnsiConsole.MarkupLine("[yellow]⚠️ Витрина всё ещё не готова. Мир не будет повторять это ожидание автоматически.[/]");
             return;
         }
 
         if (!string.IsNullOrWhiteSpace(refreshResult))
         {
-            AnsiConsole.MarkupLine("[yellow]⚠️ Команда после обновления всё ещё требует действия ГМ. Повторный автозапрос не отправлен.[/]");
+            AnsiConsole.MarkupLine("[yellow]⚠️ После обновления действие всё ещё недоступно. Мир не будет повторять запрос автоматически.[/]");
         }
     }
 
@@ -1244,8 +1299,8 @@ public partial class GameEngine
             throw new InvalidOperationException("Turn staging failed before rollback snapshot and request were created.");
 
         PublishAgentConsoleGmWaitingSnapshot(
-            waitingTitle ?? "Ожидание мастера",
-            waitingText ?? "GM обрабатывает ход. Агент-консоль ждёт готовый ответ или запрос на ремонт данных.");
+            waitingTitle ?? PlayerSafeWaitingTitle,
+            waitingText ?? PlayerSafeWaitingText);
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
@@ -1257,7 +1312,7 @@ public partial class GameEngine
             _qteSceneService.ClearOfferFile();
             await RestorePreTurnBackup(backedUpFiles);
             CleanupAfterCancelledChaosSeaMarkerTurn(action);
-            AnsiConsole.MarkupLine("[dim]Изменения локально отменены, состояние восстановлено. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
+            AnsiConsole.MarkupLine("[dim]Изменения отменены, прежнее состояние восстановлено. Позднее завершение событий останется отложенным.[/]");
             CleanupBackup(backedUpFiles);
             return;
         }
@@ -1777,6 +1832,8 @@ public partial class GameEngine
         var completion = await _qteSceneService.StartAcceptedSceneAsync(
             offer,
             sourceTurnNumber);
+        if (completion.AwaitingEffectResolution)
+            return (true, completion.Response);
         await ProcessMortalProgressionAfterAcceptedTurnAsync();
         await CheckLifeTransitions(snapshotContext);
         await CheckAscensionTrigger();
@@ -2076,8 +2133,13 @@ public partial class GameEngine
                 lifecycleMarker, $"Конец смертной жизни. Причина: {reason}. {summary}");
 
             // === PHASE 3: Update realm and send life evaluation to GM ===
-            if (!await UpdateSoulStateRealm("Chaos Sea", lifeSummary))
+            var soulRealmTransition = await UpdateSoulStateRealmWithPublicationAsync(
+                SoulRealmTransitionCause.MortalDeathToChaosSea,
+                lifeSummary);
+            if (!soulRealmTransition.IsCommitted)
                 throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для перехода в Море Хаоса после завершения смертной жизни.");
+            foreach (var publishedPath in soulRealmTransition.PublishedCanonicalPaths)
+                rollbackBackups.ValidationSnapshotFiles.Add(publishedPath);
             await RefreshRuntimeStateAsync();
             _fs.ClearCurrentWorldLore();
 
@@ -2580,37 +2642,23 @@ public partial class GameEngine
             // Update soul state: switch realm to Mortal World and increment incarnation
             localStateMutated = true;
             var newIncarnationNumber = _stateManager.CurrentState.Incarnation + 1;
+            var mortalBootstrapTurnNumber = checked(_gameLoop.TurnNumber + 1);
 
-            if (!await UpdateSoulStateRealm("Mortal World", incrementIncarnation: true))
+            if (!await UpdateSoulStateRealm(
+                    SoulRealmTransitionCause.IncarnationToMortalWorld))
                 throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для начала новой смертной жизни.");
             await RefreshRuntimeStateAsync();
             await _rivalSoulArcService.ResetForNewLifeAsync();
-            await _guardianCorrectionService.ApplyForNewLifeAsync(newIncarnationNumber);
+            await _guardianCorrectionService.ApplyForNewLifeAsync(
+                newIncarnationNumber,
+                mortalBootstrapTurnNumber);
             await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
 
-            // Initialize fresh mortal status
-            var status = new
-            {
-                healthPercentage = "100%",
-                energyPercentage = "100%",
-                poisePercentage = "100%",
-                currentCondition = "Здоров",
-                activeConditions = Array.Empty<string>(),
-                money = 0
-            };
+            // Narrative/economic player status is separate from the canonical
+            // health/energy/poise resource ledger initialized below.
+            var status = MortalBootstrapStateBuilder.BuildFreshPlayerStatus();
             await _fs.WriteFileAtomicAsync("game_state/core/player_status.json",
-                JsonSerializer.Serialize(status, JsonOpts));
-
-            // Initialize empty mortal inventory
-            var inventory = new
-            {
-                items = Array.Empty<object>(),
-                equippedItems = new Dictionary<string, object?>(),
-                totalWeight = 0,
-                maxWeight = (double?)null
-            };
-            await _fs.WriteFileAtomicAsync("game_state/inventory/items.json",
-                JsonSerializer.Serialize(inventory, JsonOpts));
+                status.ToJsonString(JsonOpts));
 
             if (preparedShiningPackage != null)
             {
@@ -2653,9 +2701,24 @@ public partial class GameEngine
                 AnsiConsole.WriteLine();
                 parts.Add($"Активировано Наследие Памяти: {memoryLegacySummary}.");
             }
-            var shiningMemorySelectionSummary = await ConsumePendingShiningMemorySelectionAsync();
-            if (!string.IsNullOrWhiteSpace(shiningMemorySelectionSummary))
-                parts.Add($"Выбрана эхо-память Сияющей Обители: {shiningMemorySelectionSummary}.");
+            var shiningMemorySelection = await ConsumePendingShiningMemorySelectionAsync();
+            if (!shiningMemorySelection.Success)
+            {
+                _logger.LogWarning(
+                    "Mortal bootstrap stopped because pending Shining memory selection could not be committed atomically.");
+                await CleanupUndispatchedTransitionPrepAsync(
+                    rollbackBackups,
+                    localStateMutated,
+                    manifestCreated);
+                AnsiConsole.MarkupLine("[red]⚠ Mortal bootstrap остановлен: выбор эхо-памяти не удалось безопасно зафиксировать.[/]");
+                AnsiConsole.MarkupLine("[yellow]Состояние восстановлено; pending выбор сохранён для repair/retry.[/]");
+                return false;
+            }
+            if (!string.IsNullOrWhiteSpace(shiningMemorySelection.Summary))
+            {
+                parts.Add(
+                    $"Выбрана эхо-память Сияющей Обители: {shiningMemorySelection.Summary}.");
+            }
             await ShowStatDistribution("Новая инкарнация — распределите начальные очки характеристик");
             await CapturePendingMemoryLegacyApplicationAuditAsync();
 
@@ -2663,7 +2726,7 @@ public partial class GameEngine
             var request = new TurnRequest
             {
                 SessionId = _gameLoop.SessionId,
-                TurnNumber = _gameLoop.TurnNumber + 1,
+                TurnNumber = mortalBootstrapTurnNumber,
                 PlayerAction = string.Join(" ", parts),
                 Timestamp = DateTime.UtcNow.ToString("o"),
                 GameMode = "normal",
@@ -2775,6 +2838,89 @@ public partial class GameEngine
         string? worldDescription,
         string? startingCircumstances)
     {
+        var existingResourceBeforeImages = new Dictionary<string, string?>(StringComparer.Ordinal)
+        {
+            [ResourceMaterializationContract.DefinitionsPath] =
+                await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            [ResourceMaterializationContract.StatePath] =
+                await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            [ResourceMaterializationContract.HistoryPath] =
+                await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath)
+        };
+        var definitionsResult = ResourceDefinitionCatalog.ParseCanonical(
+            existingResourceBeforeImages[ResourceMaterializationContract.DefinitionsPath],
+            allowMissingPristine: false);
+        if (definitionsResult.Catalog == null || definitionsResult.Issues.Count != 0)
+        {
+            throw new InvalidDataException(
+                "Mortal resource bootstrap requires the existing sealed resource catalog.");
+        }
+        var existingStateResult = ResourceStateContract.ParseCanonical(
+            existingResourceBeforeImages[ResourceMaterializationContract.StatePath],
+            definitionsResult.Catalog,
+            allowMissingPristine: false);
+        var existingHistoryResult = ResourceHistoryState.ParseCanonical(
+            existingResourceBeforeImages[ResourceMaterializationContract.HistoryPath],
+            definitionsResult.Catalog,
+            allowMissingPristine: false);
+        if (existingStateResult.Ledger == null || existingHistoryResult.History == null ||
+            existingStateResult.Issues.Count != 0 || existingHistoryResult.Issues.Count != 0 ||
+            existingHistoryResult.History.ValidateStateAgreement(
+                existingStateResult.Ledger).Count != 0)
+        {
+            throw new InvalidDataException(
+                "Mortal resource bootstrap requires one valid existing state/history authority.");
+        }
+        var existingQuartet = await CanonicalResourceQuartetTransaction
+            .ComposeExistingSessionAsync(
+                definitionsResult.Catalog,
+                existingStateResult.Ledger,
+                existingHistoryResult.History,
+                existingStateResult.Ledger,
+                existingHistoryResult.History,
+                _fs.ReadFileAsync,
+                existingResourceBeforeImages,
+                new Dictionary<string, string>(StringComparer.Ordinal));
+        if (existingQuartet.Projection == null)
+        {
+            throw new InvalidDataException(
+                "Mortal resource bootstrap requires exact existing owner authority: " +
+                string.Join(
+                    "; ",
+                    existingQuartet.Issues.Select(static issue =>
+                        issue.Code ?? issue.Message)));
+        }
+
+        var computedCharacteristics = await _charService.ComputeAsync();
+        int Permanent(string characteristic) =>
+            computedCharacteristics.Stats.TryGetValue(characteristic, out var value)
+                ? value.PermanentlyModified
+                : throw new InvalidDataException(
+                    $"Mortal resource bootstrap requires permanent characteristic '{characteristic}'.");
+        var resourceBootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+            definitionsResult.Catalog,
+            existingStateResult.Ledger,
+            existingHistoryResult.History,
+            incarnationNumber,
+            turnNumber,
+            Permanent(Characteristics.Strength),
+            Permanent(Characteristics.Constitution),
+            Permanent(Characteristics.Intelligence),
+            Permanent(Characteristics.Wisdom),
+            Permanent(Characteristics.Faith));
+        if (!resourceBootstrap.IsValid ||
+            resourceBootstrap.Definitions == null ||
+            resourceBootstrap.State == null ||
+            resourceBootstrap.History == null)
+        {
+            throw new InvalidDataException(
+                "Mortal resource bootstrap failed: " +
+                string.Join(
+                    "; ",
+                    resourceBootstrap.Issues.Select(static issue =>
+                        issue.Code ?? issue.Message)));
+        }
+
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber,
             turnNumber,
@@ -2782,14 +2928,102 @@ public partial class GameEngine
             worldDescription,
             startingCircumstances,
             DateTimeOffset.UtcNow);
+        var projectedDocuments = files.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.ToJsonString(JsonOpts),
+            StringComparer.Ordinal);
 
         foreach (var (path, json) in files)
         {
+            if (string.Equals(
+                    path,
+                    ResourceMaterializationContract.DefinitionsPath,
+                    StringComparison.Ordinal) ||
+                string.Equals(
+                    path,
+                    ResourceMaterializationContract.StatePath,
+                    StringComparison.Ordinal) ||
+                string.Equals(
+                    path,
+                    ResourceMaterializationContract.HistoryPath,
+                    StringComparison.Ordinal))
+            {
+                continue;
+            }
+            if (existingQuartet.Projection.BeforeImages.ContainsKey(path))
+                continue;
             if (string.Equals(path, "lore/codex_entries.json", StringComparison.OrdinalIgnoreCase))
                 await MergeMortalBootstrapCodexEntriesAsync(json);
             else
                 await _fs.WriteFileAtomicAsync(path, json.ToJsonString(JsonOpts));
 
+            RegisterMortalBootstrapSnapshotFile(rollbackSnapshot, path);
+        }
+
+        var resourceFiles = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            [ResourceMaterializationContract.DefinitionsPath] =
+                resourceBootstrap.Definitions.ToCanonicalJson(),
+            [ResourceMaterializationContract.StatePath] =
+                resourceBootstrap.State.ToCanonicalJson(),
+            [ResourceMaterializationContract.HistoryPath] =
+                resourceBootstrap.History.ToCanonicalJson()
+        };
+        var finalQuartet = await CanonicalResourceQuartetTransaction
+            .ComposeExistingSessionAsync(
+                resourceBootstrap.Definitions,
+                existingStateResult.Ledger,
+                existingHistoryResult.History,
+                resourceBootstrap.State,
+                resourceBootstrap.History,
+                _fs.ReadFileAsync,
+                existingQuartet.Projection.BeforeImages,
+                projectedDocuments);
+        if (finalQuartet.Projection == null)
+        {
+            throw new InvalidDataException(
+                "Mortal resource owner-authority bootstrap failed: " +
+                string.Join(
+                    "; ",
+                    finalQuartet.Issues.Select(static issue =>
+                        issue.Code ?? issue.Message)));
+        }
+        var resourceWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>();
+        foreach (var (path, json) in resourceFiles)
+        {
+            resourceWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                path,
+                finalQuartet.Projection.BeforeImages[path],
+                json,
+                RequireCurrentBaseline: true));
+        }
+        foreach (var (path, json) in projectedDocuments)
+        {
+            if (!finalQuartet.Projection.BeforeImages.TryGetValue(path, out var previous) ||
+                resourceFiles.ContainsKey(path))
+            {
+                continue;
+            }
+            resourceWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                path,
+                previous,
+                json,
+                RequireCurrentBaseline: true));
+        }
+        CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(
+            resourceWrites,
+            finalQuartet.Projection);
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                resourceWrites.ToArray()))
+        {
+            throw new IOException(
+                "Mortal resource quartet changed during atomic bootstrap publication.");
+        }
+        foreach (var path in resourceWrites
+                     .Where(static write => !write.GuardOnly)
+                     .Select(static write => write.Path))
+        {
             RegisterMortalBootstrapSnapshotFile(rollbackSnapshot, path);
         }
 
@@ -3411,8 +3645,13 @@ public partial class GameEngine
                 return;
             }
 
+            var localResourceTurn = Math.Max(1, _gameLoop.TurnNumber + 1);
+            {
+            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
             JsonObject? existingShiningRoot = null;
-            var existingShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            var existingShiningJson = await _fs.ReadFileAsync(
+                writeLease,
+                ShiningAbodeState.StatePath);
             if (!string.IsNullOrWhiteSpace(existingShiningJson))
             {
                 try
@@ -3426,7 +3665,9 @@ public partial class GameEngine
             }
 
             JsonObject? residentRoot = null;
-            var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+            var residentJson = await _fs.ReadFileAsync(
+                writeLease,
+                GuardianAbodeResidentState.StatePath);
             if (!string.IsNullOrWhiteSpace(residentJson))
             {
                 try
@@ -3440,7 +3681,9 @@ public partial class GameEngine
             }
 
             JsonObject? guardiansRoot = null;
-            var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+            var guardiansJson = await _fs.ReadFileAsync(
+                writeLease,
+                "game_state/meta/guardians.json");
             if (!string.IsNullOrWhiteSpace(guardiansJson))
             {
                 try
@@ -3453,8 +3696,9 @@ public partial class GameEngine
                 }
             }
 
-            var previousShiningJson = existingShiningJson;
-            var previousSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+            var previousSoulJson = await _fs.ReadFileAsync(
+                writeLease,
+                "game_state/meta/soul_state.json");
             if (string.IsNullOrWhiteSpace(previousSoulJson))
                 throw new InvalidOperationException("Не удалось прочитать soul_state.json для безопасного вознесения в Сияющую Обитель.");
 
@@ -3471,15 +3715,34 @@ public partial class GameEngine
 
             var activatedShiningRoot = ShiningAbodeState.ActivateForAscension(existingShiningRoot, residentRoot, guardiansRoot);
             soulRoot["currentRealm"] = "Shining Abode";
-            var nextSoulJson = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts);
-            if (!await TryCommitCoordinatedGameStateWritesAsync(
-                    new CoordinatedGameStateWrite(ShiningAbodeState.StatePath, previousShiningJson, activatedShiningRoot.ToJsonString(JsonOpts)),
-                    new CoordinatedGameStateWrite("game_state/meta/soul_state.json", previousSoulJson, nextSoulJson)))
+            var returnCyclePlan = await ShiningReturnCycleResourceService.BuildAsync(
+                _fs,
+                writeLease,
+                activatedShiningRoot,
+                soulRoot,
+                ShiningReturnCycleTransitionKind.AscensionFromChaosSea,
+                localResourceTurn);
+            if (!returnCyclePlan.IsValid)
             {
-                throw new InvalidOperationException("Не удалось безопасно зафиксировать ascension handoff между shining_abode_state.json и soul_state.json.");
+                var issueSummary = string.Join(
+                    "; ",
+                    returnCyclePlan.Issues.Select(issue =>
+                        $"{issue.Code ?? "shining_return_cycle_invalid"}: {issue.Actual ?? issue.Message}"));
+                throw new InvalidOperationException(
+                    $"Не удалось построить единый Shining/resource plan для ascension flow: {issueSummary}");
+            }
+            if (!await ShiningReturnCycleResourceService.TryCommitAsync(
+                    _fs,
+                    writeLease,
+                    returnCyclePlan))
+            {
+                throw new InvalidOperationException("Не удалось безопасно зафиксировать единый ascension handoff для Shining, soul и common resource ledger/history.");
+            }
             }
 
-            await SyncShiningReturnCycleLocalStateAsync();
+            await ShiningTradeService.SyncAutoRefreshRequestsForCurrentCycleAsync(
+                _fs,
+                localResourceTurn);
             await _storyService.AppendMarkerAsync(
                 "Shining Abode",
                 _stateManager.CurrentState.Incarnation,
@@ -3545,104 +3808,7 @@ public partial class GameEngine
     private async Task<bool> HasMaximumEnlightenmentAsync()
     {
         var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
-            return false;
-
-        try
-        {
-            using var doc = JsonDocument.Parse(soulJson);
-            var root = doc.RootElement;
-
-            if (root.TryGetProperty("soulProgression", out var progression) &&
-                progression.ValueKind == JsonValueKind.Object)
-            {
-                if (progression.TryGetProperty("progressPercent", out var progressPercent) &&
-                    progressPercent.ValueKind == JsonValueKind.Number &&
-                    progressPercent.TryGetDouble(out var parsedPercent) &&
-                    parsedPercent >= 100)
-                {
-                    return true;
-                }
-
-                if (progression.TryGetProperty("totalExperience", out var totalExperience) &&
-                    totalExperience.ValueKind == JsonValueKind.Number &&
-                    totalExperience.TryGetInt32(out var parsedTotalExperience) &&
-                    AfterlifeProgressionTuning.IsAscensionReadyEnlightenmentExperience(parsedTotalExperience))
-                {
-                    return true;
-                }
-
-                if (progression.TryGetProperty("tier", out var tier) &&
-                    tier.ValueKind == JsonValueKind.Number &&
-                    tier.TryGetInt32(out var parsedTier) &&
-                    parsedTier >= 4)
-                {
-                    return true;
-                }
-
-                if (progression.TryGetProperty("tierName", out var tierNameProp) &&
-                    tierNameProp.ValueKind == JsonValueKind.String &&
-                    IsTranscendenceTierName(tierNameProp.GetString()))
-                {
-                    return true;
-                }
-            }
-
-            if (root.TryGetProperty("enlightenment", out var enlightenment))
-            {
-                if (enlightenment.ValueKind == JsonValueKind.Object)
-                {
-                    if (enlightenment.TryGetProperty("currentTier", out var currentTierProp) &&
-                        currentTierProp.ValueKind == JsonValueKind.String &&
-                        IsTranscendenceTierName(currentTierProp.GetString()))
-                    {
-                        return true;
-                    }
-
-                    if (enlightenment.TryGetProperty("level", out var levelProp) &&
-                        levelProp.ValueKind == JsonValueKind.Number &&
-                        levelProp.TryGetInt32(out var parsedLevel) &&
-                        parsedLevel >= 4)
-                    {
-                        return true;
-                    }
-
-                    if (enlightenment.TryGetProperty("progressPercent", out var progressPercent) &&
-                        progressPercent.ValueKind == JsonValueKind.Number &&
-                        progressPercent.TryGetDouble(out var parsedPercent) &&
-                        parsedPercent >= 100)
-                    {
-                        return true;
-                    }
-
-                    if (enlightenment.TryGetProperty("experience", out var experienceProp) &&
-                        experienceProp.ValueKind == JsonValueKind.Number &&
-                        experienceProp.TryGetInt32(out var parsedExperience) &&
-                        AfterlifeProgressionTuning.IsAscensionReadyEnlightenmentExperience(parsedExperience))
-                    {
-                        return true;
-                    }
-                }
-                else if (enlightenment.ValueKind == JsonValueKind.Number &&
-                         enlightenment.TryGetDouble(out var numericEnlightenment) &&
-                         numericEnlightenment >= AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience)
-                {
-                    return true;
-                }
-            }
-        }
-        catch
-        {
-            return false;
-        }
-
-        return false;
-    }
-
-    private static bool IsTranscendenceTierName(string? tierName)
-    {
-        return string.Equals(tierName, "Transcendence", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(tierName, "Трансценденция", StringComparison.OrdinalIgnoreCase);
+        return AfterlifeAscensionAuthority.IsReady(soulJson);
     }
 
     private async Task<string> GetPlayerInput()
@@ -3927,7 +4093,7 @@ If a forbidden key appears in your draft response for the active realm, REMOVE i
 
 MATH ASSISTANT / МАТЕМАТИК:
 Use `mathRequests[]` / `mathAudit[]` for non-trivial mechanical arithmetic instead of relying only on prose. These fields write `game_state/meta/math_audit.json`. `mathRequests[]` is only a calculation request; `mathAudit[]` records the checked result with `formulaVersion = math_assistant_v1`, numeric variables, rounding, and `applicationState` (`calculated_only`, `applied_to_state`, or `mismatch_repair_blocking`). If the number changed game state, still write the actual target state/receipt surface and reference it through `mathAudit[].referencedBy[]`.
-For Mortal combat delta fields, references to `currentHealthChange`, `currentPoiseChange`, or `currentEnergyChange` require `mathAudit.result` to equal the exact signed numeric response change. A 13 damage hit to the player is `currentHealthChange: -13` and `result: -13`.
+For Mortal player health, energy, and poise, use `resourceChanges[]` against exact targetId `player_current`; never emit legacy percentage or current*Change fields. The common resource authority validates the operation, source, amount, chronology, bounds, and atomic state/history publication.
 For afterlife spiritual combat formulas, references to supported numeric paths such as `afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount` or a `diceAudit.margin` path require `mathAudit.result` to exactly equal that field. The afterlife validator still checks the full conflict/reward contract separately.
 
 NPC AGENCY — HARD REQUIREMENT:
@@ -4155,14 +4321,14 @@ If playerAction contains [CHAOS_SEA_DIRECT_GACHA], this is a DIRECT pull from th
 If the pull is Guardian-mediated, the 'baseRarity' from gachaBaseResult is the MINIMUM rarity. You may ONLY upgrade it using documented modifiers:
   - Abode Power rarity ceiling bonus: abodePower.currentPower >= 60 gives +1 allowed rarity step.
   - Completed relic_forging Guardian project bonus: spend the documented one-use project bonus and record sourceProjectId.
-  - Guardian reputation affects chargesPerReturn and trade pricing, not rarity odds.
+  - Guardian reputation affects the canonical gacha_attempts resource maximum and trade pricing, not rarity odds.
   - Hard/Impossible mortal-world difficulty modifiers do not change afterlife Guardian gacha rarity unless validator/audit support is explicitly added.
 Guardian-mediated pulls are LIMITED per Guardian per return from mortal life:
   - Hostile(-100..-51): blocked
   - Wary/Neutral(-50..49): 1 attempt
   - Friendly(50..129): 2 attempts
   - Devoted/Legendary(130..300): 3 attempts
-  - If chargesUsedThisReturn already equals chargesPerReturn for that Guardian, DO NOT emit processGacha for them.
+  - If that Guardian's exact canonical gacha_attempts resource current value is 0, DO NOT emit processGacha for them.
 If a Guardian-mediated pull finishes above baseRarity, include gachaBonusAudit with:
   - baseRarity
   - abodePowerBonusSteps
@@ -4183,9 +4349,10 @@ Shining banner modifiers may only increase or preserve that base rarity; they mu
 The client-authored request includes projectedGachaBonusSteps and returnCycleId. Do NOT exceed that projected bonus ceiling.
 Resolve the pull by:
   - adding exactly one Soul Relic result to soul state,
-  - updating shining_abode_state.json.gachaSystem.chargesUsedThisReturn and gachaHistory[],
+  - appending exactly one matching shining_abode_state.json.gachaSystem.gachaHistory[] entry; the client consumes one canonical gacha_attempts resource unit,
   - writing a matching coreActionReceipts[] entry with requestId, actionType=pull_relic_gacha, factionId, returnCycleId, relicId, relicName, baseRarity, finalRarity, resolvedAtTurn and resolvedAtUtc.
 Shining relic gacha consumes the quoted Ink Feather cost from the request and does NOT use Light Sparks.
+The client owns the guarded quartet game_state/resources/resource_definitions.json, resource_state.json, resource_history.json, and resource_owner_authority.json. GM MUST NOT write any quartet root; missing/stale owner authority fails closed outside Fresh New Game bootstrap, and Mortal-incarnation bootstrap requires the exact existing quartet. Author only the documented Guardian/Shining outcome and audit fields.
 
 " + _storyService.BuildStoryContext();
     }

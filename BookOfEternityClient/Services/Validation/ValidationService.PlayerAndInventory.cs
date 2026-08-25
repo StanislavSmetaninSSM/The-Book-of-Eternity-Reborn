@@ -86,16 +86,19 @@ public partial class ValidationService
                 "UpdateInventory", "items", "equipmentChanges", "equipment", "equippedItems", "money", "resources",
                 "totalWeight", "maxWeight", "isOverloaded"
             }, issues);
-        await ValidateFlexibleStateFile("game_state/inventory/item_resources.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "inventoryItemsResources", "entries"
-            }, issues, ValidateInventoryItemResourcesStateFile);
-        await ValidateStrictTopLevelObjectFileAsync("game_state/inventory/item_resources.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "entries"
-            }, issues);
+        const string legacyItemResourcePath = "game_state/inventory/item_resources.json";
+        if (_fs.FileExists(legacyItemResourcePath))
+        {
+            issues.Add(new ValidationIssue(
+                legacyItemResourcePath,
+                IssueSeverity.Error,
+                "Legacy item resource sidecar запрещён; все ресурсы предметов принадлежат единому resource ledger.",
+                code: "resource_legacy_item_authority_forbidden",
+                section: "ResourceMaterialization",
+                expected: $"{ResourceMaterializationContract.DefinitionsPath} + {ResourceMaterializationContract.StatePath} + {ResourceMaterializationContract.HistoryPath}",
+                actual: legacyItemResourcePath,
+                repairHint: "Удаление или миграция старого sidecar автоматически не выполняется. Начни новую техническую сессию с unified resource roots."));
+        }
         await ValidateFlexibleStateFile("game_state/inventory/item_text_updates.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -135,6 +138,9 @@ public partial class ValidationService
 
     private async Task ValidatePlayerContractFile(string filePath, HashSet<string> allowedKeys, List<ValidationIssue> issues)
     {
+        if (!ShouldValidateStateFile(filePath))
+            return;
+
         var json = await _fs.ReadFileAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
@@ -694,7 +700,8 @@ public partial class ValidationService
             var outcomeIndex = 0;
             foreach (var outcome in terminalOutcomes.EnumerateArray())
             {
-                var outcomeContext = $"{QteSceneService.QteOfferPath}.terminalOutcomes[{outcomeIndex++}]";
+                var currentOutcomeIndex = outcomeIndex++;
+                var outcomeContext = $"{QteSceneService.QteOfferPath}.terminalOutcomes[{currentOutcomeIndex}]";
                 if (!RequireObject(outcome, outcomeContext, issues))
                     continue;
 
@@ -753,6 +760,13 @@ public partial class ValidationService
                             fragmentIssue.Actual,
                             fragmentIssue.RepairHint));
                     }
+
+                    ValidateQteTerminalResourceChanges(
+                        responseFragment,
+                        outcomeContext,
+                        manifest?.TurnNumber,
+                        currentOutcomeIndex + 1,
+                        issues);
 
                     if (responseFragment.TryGetProperty("image_prompt", out _))
                     {
@@ -909,6 +923,154 @@ public partial class ValidationService
         }
 
         return issues;
+    }
+
+    private static void ValidateQteTerminalResourceChanges(
+        JsonElement responseFragment,
+        string outcomeContext,
+        int? sourceTurnNumber,
+        int outcomeOrdinal,
+        List<ValidationIssue> issues)
+    {
+        foreach (var forbiddenSurface in new[]
+                 {
+                     "resourceDefinitionCreations",
+                     "resourceCapacityChanges"
+                 })
+        {
+            if (!responseFragment.TryGetProperty(forbiddenSurface, out var forbiddenValue))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{outcomeContext}.responseFragment.{forbiddenSurface}",
+                IssueSeverity.Error,
+                "QTE terminal resource outcome supports ordinary damage commands only.",
+                code: "qte_terminal_resource_surface_forbidden",
+                section: "QTE",
+                expected: "field omitted",
+                actual: forbiddenValue.ValueKind.ToString(),
+                repairHint: "Remove resource definition/capacity authority from the QTE response fragment."));
+        }
+
+        if (!responseFragment.TryGetProperty("resourceChanges", out var resourceChanges))
+            return;
+
+        var commandRoot = "{\"resourceChanges\":" + resourceChanges.GetRawText() + "}";
+        var parsed = ResourceAcceptedTurnInputComposer.Parse(commandRoot);
+        foreach (var issue in parsed.Issues)
+        {
+            issues.Add(new ValidationIssue(
+                $"{outcomeContext}.responseFragment.{issue.FilePath}",
+                issue.Severity,
+                issue.Message,
+                issue.Code,
+                issue.Actor,
+                "QTE",
+                issue.Expected,
+                issue.Actual,
+                issue.RepairHint));
+        }
+
+        if (resourceChanges.ValueKind != JsonValueKind.Array)
+            return;
+
+        var commandIndex = 0;
+        foreach (var command in resourceChanges.EnumerateArray())
+        {
+            var commandPath =
+                $"{outcomeContext}.responseFragment.resourceChanges[{commandIndex}]";
+            var commandOrdinal = commandIndex + 1;
+            commandIndex++;
+            if (command.ValueKind != JsonValueKind.Object)
+                continue;
+
+            if (!command.TryGetProperty("operation", out var operation) ||
+                operation.ValueKind != JsonValueKind.String ||
+                !string.Equals(operation.GetString(), "damage", StringComparison.Ordinal))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{commandPath}.operation",
+                    IssueSeverity.Error,
+                    "QTE terminal resource outcome may only damage an existing player resource.",
+                    code: "qte_terminal_resource_operation_forbidden",
+                    section: "QTE",
+                    expected: "damage",
+                    actual: operation.ValueKind == JsonValueKind.String
+                        ? operation.GetString()
+                        : operation.ValueKind.ToString(),
+                    repairHint: "Use exact lowercase operation 'damage'."));
+            }
+
+            var targetValid = command.TryGetProperty("target", out var target) &&
+                              target.ValueKind == JsonValueKind.Object &&
+                              target.EnumerateObject().Count() == 2 &&
+                              target.TryGetProperty("kind", out var targetKind) &&
+                              targetKind.ValueKind == JsonValueKind.String &&
+                              string.Equals(targetKind.GetString(), "player", StringComparison.Ordinal) &&
+                              target.TryGetProperty("targetId", out var targetId) &&
+                              targetId.ValueKind == JsonValueKind.String &&
+                              string.Equals(targetId.GetString(), "player_current", StringComparison.Ordinal);
+            if (!targetValid)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{commandPath}.target",
+                    IssueSeverity.Error,
+                    "QTE terminal resource outcome is bound to the current player owner only.",
+                    code: "qte_terminal_resource_target_forbidden",
+                    section: "QTE",
+                    expected: "closed { kind: 'player', targetId: 'player_current' }",
+                    actual: command.TryGetProperty("target", out var actualTarget)
+                        ? actualTarget.GetRawText()
+                        : "missing",
+                    repairHint: "Use the exact current-player target and omit targetRef/extra fields."));
+            }
+
+            var sourceValid = command.TryGetProperty("source", out var source) &&
+                              source.ValueKind == JsonValueKind.Object &&
+                              source.EnumerateObject().Count() == 1 &&
+                              source.TryGetProperty("kind", out var sourceKind) &&
+                              sourceKind.ValueKind == JsonValueKind.String &&
+                              string.Equals(
+                                  sourceKind.GetString(),
+                                  "narrative_outcome",
+                                  StringComparison.Ordinal);
+            if (!sourceValid)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{commandPath}.source",
+                    IssueSeverity.Error,
+                    "QTE terminal resource damage requires client-derived narrative_outcome authority.",
+                    code: "qte_terminal_resource_source_forbidden",
+                    section: "QTE",
+                    expected: "closed { kind: 'narrative_outcome' } with no sourceId",
+                    actual: command.TryGetProperty("source", out var actualSource)
+                        ? actualSource.GetRawText()
+                        : "missing",
+                    repairHint: "Use narrative_outcome and let the client derive source identity from eventRef."));
+            }
+
+            var expectedEventRef = sourceTurnNumber is > 0
+                ? FormattableString.Invariant(
+                    $"turn_{sourceTurnNumber.Value}:qte_terminal:{outcomeOrdinal}:resource:{commandOrdinal}")
+                : null;
+            var submittedEventRef = command.TryGetProperty("eventRef", out var eventRef) &&
+                                    eventRef.ValueKind == JsonValueKind.String
+                ? eventRef.GetString()
+                : null;
+            if (expectedEventRef == null ||
+                !string.Equals(submittedEventRef, expectedEventRef, StringComparison.Ordinal))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{commandPath}.eventRef",
+                    IssueSeverity.Error,
+                    "QTE terminal resource eventRef does not match accepted causal authority.",
+                    code: "qte_terminal_resource_event_ref_mismatch",
+                    section: "QTE",
+                    expected: expectedEventRef ?? "current validated pending turn authority",
+                    actual: submittedEventRef ?? "missing",
+                    repairHint: "Bind eventRef to the exact source turn, terminal outcome ordinal, and resource command ordinal."));
+            }
+        }
     }
 
     private sealed record QteScoreMetricValidation(string Id, double Min, double Max);
@@ -3390,19 +3552,47 @@ public partial class ValidationService
 
     private async Task ValidatePlayerFile(string filePath, List<ValidationIssue> issues)
     {
+        if (!ShouldValidateStateFile(filePath))
+            return;
+
         var json = await _fs.ReadFileAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
         try
         {
             using var doc = JsonDocument.Parse(json);
+            if (filePath.EndsWith(
+                    "game_state/player/wounds.json",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                ValidateWoundsContainer(doc.RootElement, filePath, issues);
+                return;
+            }
+
             if (filePath.EndsWith("game_state/core/player_status.json", StringComparison.OrdinalIgnoreCase))
             {
+                RejectLegacyPlayerResourceFields(
+                    doc.RootElement,
+                    filePath,
+                    issues,
+                    "healthPercentage",
+                    "energyPercentage",
+                    "poisePercentage");
                 await ValidateFileFields(filePath,
-                    new[] { "healthPercentage", "energyPercentage", "poisePercentage", "currentCondition", "money" }, issues);
-                ValidatePercentageField(doc.RootElement, "healthPercentage", issues);
-                ValidatePercentageField(doc.RootElement, "energyPercentage", issues);
-                ValidatePercentageField(doc.RootElement, "poisePercentage", issues);
+                    new[] { "currentCondition", "money" }, issues);
+                RequireString(doc.RootElement, filePath, issues, "currentCondition");
+                ValidateOptionalString(
+                    doc.RootElement,
+                    filePath,
+                    issues,
+                    "currentConditionDescription");
+                if (doc.RootElement.TryGetProperty("activeConditions", out var activeConditions))
+                {
+                    RequireArrayOfStrings(
+                        activeConditions,
+                        $"{filePath}.activeConditions",
+                        issues);
+                }
                 if (doc.RootElement.TryGetProperty("money", out _))
                     ValidateNonNegativeNumberField(doc.RootElement, filePath, issues, "money");
                 return;
@@ -3416,8 +3606,6 @@ public partial class ValidationService
                 ValidateExperienceFile(doc.RootElement, filePath, issues);
             else if (filePath.EndsWith("game_state/player/effects.json", StringComparison.OrdinalIgnoreCase))
                 ValidateEffectsContainer(doc.RootElement, filePath, issues);
-            else if (filePath.EndsWith("game_state/player/wounds.json", StringComparison.OrdinalIgnoreCase))
-                ValidateWoundsContainer(doc.RootElement, filePath, issues);
             else if (filePath.EndsWith("game_state/player/custom_states.json", StringComparison.OrdinalIgnoreCase))
                 ValidateCustomStatesContainer(doc.RootElement, filePath, issues);
             else if (filePath.EndsWith("game_state/player/stealth.json", StringComparison.OrdinalIgnoreCase))
@@ -3435,10 +3623,14 @@ public partial class ValidationService
 
     private void ValidatePlayerContract(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        RejectLegacyPlayerResourceFields(
+            root,
+            contextPrefix,
+            issues,
+            "currentPoiseChange",
+            "currentEnergyChange",
+            "currentHealthChange");
         ValidatePlayerStatus(root, contextPrefix, issues);
-        ValidatePlayerChangeNumber(root, contextPrefix, issues, "currentPoiseChange");
-        ValidatePlayerChangeNumber(root, contextPrefix, issues, "currentEnergyChange");
-        ValidatePlayerChangeNumber(root, contextPrefix, issues, "currentHealthChange");
         ValidatePlayerChangeNumber(root, contextPrefix, issues, "experienceGained");
         ValidatePlayerChangeNumber(root, contextPrefix, issues, "moneyChange");
         ValidatePlayerStatArray(root, contextPrefix, issues, "statsIncreased");
@@ -3451,7 +3643,11 @@ public partial class ValidationService
         ValidatePlayerSkillMastery(root, contextPrefix, issues);
         ValidatePlayerInventoryCommands(root, contextPrefix, issues, "UpdateInventory");
         ValidatePlayerInventoryCommands(root, contextPrefix, issues, "items");
-        ValidatePlayerInventoryArray(root, contextPrefix, issues, "inventoryItemsResources");
+        RejectLegacyItemResourceAuthorityFields(
+            root,
+            contextPrefix,
+            issues,
+            "inventoryItemsResources");
         ValidateItemTextUpdateCommands(root, contextPrefix, issues);
         ValidateMoveInventoryItems(root, contextPrefix, issues);
         ValidateRemoveInventoryItems(root, contextPrefix, issues);
@@ -3464,7 +3660,11 @@ public partial class ValidationService
         ValidatePlayerInventoryArray(root, contextPrefix, issues, "removeRecipes");
         ValidatePlayerInventoryArray(root, contextPrefix, issues, "moveToLocationStorage");
         ValidatePlayerInventoryArray(root, contextPrefix, issues, "retrieveFromLocationStorage");
-        ValidateEffectsProperty(root, contextPrefix, issues, "playerActiveEffectsChanges");
+        RejectLegacyEffectRouteIfPresent(
+            root,
+            contextPrefix,
+            issues,
+            "playerActiveEffectsChanges");
         ValidateWoundsProperty(root, contextPrefix, issues, "playerWoundChanges");
         ValidateCustomStatesProperty(root, contextPrefix, issues, "customStateChanges");
         ValidateStealthProperty(root, contextPrefix, issues, "playerStealthStateChange");
@@ -3488,14 +3688,70 @@ public partial class ValidationService
         if (!RequireObject(status, context, issues))
             return;
 
-        RequireString(status, context, issues, "healthPercentage");
-        RequireString(status, context, issues, "energyPercentage");
-        RequireString(status, context, issues, "poisePercentage");
+        RejectLegacyPlayerResourceFields(
+            status,
+            context,
+            issues,
+            "healthPercentage",
+            "energyPercentage",
+            "poisePercentage");
         RequireString(status, context, issues, "currentCondition");
         ValidateOptionalString(status, context, issues, "currentConditionDescription");
 
         if (status.TryGetProperty("activeConditions", out var activeConditions))
             RequireArrayOfStrings(activeConditions, $"{context}.activeConditions", issues);
+    }
+
+    private static void RejectLegacyPlayerResourceFields(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        params string[] fieldNames)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+            return;
+
+        foreach (var fieldName in fieldNames)
+        {
+            if (!root.TryGetProperty(fieldName, out _))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{fieldName}",
+                IssueSeverity.Error,
+                $"Legacy player resource field '{fieldName}' запрещён; здоровье, энергия и стойкость изменяются только через resourceChanges.",
+                code: "resource_legacy_player_gauge_forbidden",
+                section: "ResourceMaterialization",
+                expected: "resourceChanges[] against player_current",
+                actual: fieldName,
+                repairHint: "Удали legacy поле и вырази изменение через точную resourceChanges[] команду для player_current."));
+        }
+    }
+
+    private static void RejectLegacyItemResourceAuthorityFields(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        params string[] fieldNames)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+            return;
+
+        foreach (var fieldName in fieldNames)
+        {
+            if (!root.TryGetProperty(fieldName, out _))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{fieldName}",
+                IssueSeverity.Error,
+                $"Legacy item resource authority '{fieldName}' запрещён; используй только resourceChanges[].",
+                code: "resource_legacy_item_authority_forbidden",
+                section: "ResourceMaterialization",
+                expected: "resourceChanges[] with ownerKind=item and permanent itemId",
+                actual: fieldName,
+                repairHint: "Удали legacy поле и вырази изменение ресурса предмета через точную resourceChanges[] команду."));
+        }
     }
 
     private void ValidatePlayerChangeNumber(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
@@ -3906,6 +4162,11 @@ public partial class ValidationService
 
     private static void ValidateActiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
+        ValidateActiveEffectDefinitionsIfPresent(
+            item,
+            itemContext,
+            "mortal_world",
+            issues);
         RequireString(item, itemContext, issues, "skillName");
         RequireString(item, itemContext, issues, "skillDescription");
         RequireString(item, itemContext, issues, "rarity");
@@ -4004,6 +4265,11 @@ public partial class ValidationService
 
     private static void ValidatePassiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
+        ValidateActiveEffectDefinitionsIfPresent(
+            item,
+            itemContext,
+            "mortal_world",
+            issues);
         RequireString(item, itemContext, issues, "skillName");
         RequireString(item, itemContext, issues, "skillDescription");
         RequireString(item, itemContext, issues, "rarity");
@@ -4475,7 +4741,6 @@ public partial class ValidationService
         RequireBooleanField(item, itemContext, issues, "isContainer");
         RequireBooleanField(item, itemContext, issues, "isConsumption");
         RequireBooleanField(item, itemContext, issues, "requiresTwoHands");
-        ValidateRequiredItemDurabilityField(item, itemContext, issues, "durability");
         ValidateOptionalString(item, itemContext, issues, "type");
         ValidateOptionalString(item, itemContext, issues, "group");
         ValidateOptionalNullableIntegerField(item, itemContext, issues, "capacity");
@@ -4601,23 +4866,6 @@ public partial class ValidationService
                 actual: quality,
                 repairHint: "Используй для quality только canonical item quality values из Block 10."));
         }
-    }
-
-    private void ValidateRequiredItemDurabilityField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
-    {
-        if (!root.TryGetProperty(propName, out _))
-        {
-            issues.Add(new ValidationIssue(
-                $"{contextPrefix}.{propName}",
-                IssueSeverity.Error,
-                $"Отсутствует обязательное поле: {propName}",
-                code: "item_missing_durability",
-                section: "Inventory",
-                repairHint: "Передай durability как percentage string, например 100%, по item contract."));
-            return;
-        }
-
-        ValidatePercentageStringField(root, contextPrefix, issues, propName, requirePositive: false);
     }
 
     private void ValidateNonNegativeNumericField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
@@ -5215,7 +5463,16 @@ public partial class ValidationService
                     ValidateRequiredItemQualityField(item, itemContext, issues, "quality");
                     break;
                 case "durability":
-                    ValidateRequiredItemDurabilityField(item, itemContext, issues, "durability");
+                case "maxDurability":
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.{prop.Name}",
+                        IssueSeverity.Error,
+                        "Item resource values belong only to the unified resource ledger.",
+                        code: "resource_owner_legacy_value_forbidden",
+                        section: section,
+                        expected: "field absent; use resourceChanges/resourceCapacityChanges",
+                        actual: prop.Value.ToString(),
+                        repairHint: "Удали durability/maxDurability; ресурс предмета изменяется только через общий resource command."));
                     break;
                 case "price":
                     ValidateNonNegativeIntegerField(item, itemContext, issues, "price", section);
@@ -5964,7 +6221,7 @@ public partial class ValidationService
 
     private static bool IsLikelyFullInventoryItemObject(JsonElement item)
     {
-        return HasRequiredNonEmptyStrings(item, "name", "description", "image_prompt", "quality", "durability") &&
+        return HasRequiredNonEmptyStrings(item, "name", "description", "image_prompt", "quality") &&
                item.TryGetProperty("contentsPath", out _) &&
                HasRequiredProperties(item, "price", "count", "weight", "volume", "isContainer", "isConsumption", "requiresTwoHands");
     }
@@ -6048,7 +6305,7 @@ public partial class ValidationService
                     section: "Inventory",
                     expected: "removedItemId + itemName + currentContentsPath only",
                     actual: string.Join(", ", unexpectedFields),
-                    repairHint: "Для частичного расхода или gameplay consumption меняй count/resource через UpdateInventory или inventoryItemsResources. removeInventoryItems используй только для discard полной стопки."));
+                    repairHint: "Для частичного расхода меняй count через UpdateInventory, а bounded resource — через resourceChanges. removeInventoryItems используй только для discard полной стопки."));
             }
         }
     }
@@ -6900,6 +7157,16 @@ public partial class ValidationService
             return;
         }
 
+        if (root.TryGetProperty("schemaVersion", out _) ||
+            root.TryGetProperty("activeEffects", out _))
+        {
+            issues.AddRange(EffectMaterializationContract.ValidateCarrier(
+                root,
+                contextPrefix,
+                EffectCarrierKind.Player));
+            return;
+        }
+
         if (LooksLikeEffectObject(root))
         {
             ValidateEffectObject(root, contextPrefix, issues);
@@ -7073,6 +7340,37 @@ public partial class ValidationService
     {
         if (!RequireObject(action, context, issues))
             return;
+
+        ValidateActiveEffectDefinitionsIfPresent(
+            action,
+            context,
+            "mortal_world",
+            issues);
+        if (action.TryGetProperty("activeEffectDefinitions", out _))
+        {
+            var identityFields = new[] { "combatActionId", "actionId" };
+            var presentIdentityFields = identityFields
+                .Where(field => action.TryGetProperty(field, out _))
+                .ToArray();
+            var exactIdentityFields = presentIdentityFields
+                .Where(field =>
+                    action.GetProperty(field).ValueKind == JsonValueKind.String &&
+                    action.GetProperty(field).GetString() is { Length: > 0 } value &&
+                    string.Equals(value, value.Trim(), StringComparison.Ordinal))
+                .ToArray();
+            if (presentIdentityFields.Length != 1 || exactIdentityFields.Length != 1)
+            {
+                issues.Add(new ValidationIssue(
+                    context,
+                    IssueSeverity.Error,
+                    "Materializable Combat Action должен иметь ровно один точный combatActionId или actionId.",
+                    code: "combat_action_effect_source_identity_invalid",
+                    section: section,
+                    expected: "exactly one exact non-empty combatActionId or actionId",
+                    actual: string.Join(",", presentIdentityFields),
+                    repairHint: "Для Combat Action с activeEffectDefinitions укажи один точный стабильный идентификатор действия без второго alias-поля."));
+            }
+        }
 
         if (action.TryGetProperty("isActivatedEffect", out _))
             ValidateOptionalBool(action, context, issues, "isActivatedEffect");
@@ -7296,6 +7594,20 @@ public partial class ValidationService
             if (!RequireObject(effect, effectContext, issues))
                 continue;
 
+            if (effect.TryGetProperty("entityKind", out var entityKind) &&
+                entityKind.ValueKind == JsonValueKind.String &&
+                string.Equals(
+                    entityKind.GetString(),
+                    "active_effect",
+                    StringComparison.Ordinal))
+            {
+                issues.AddRange(EffectMaterializationContract.Validate(
+                    effect,
+                    effectContext,
+                    EffectMaterializationPhase.CanonicalActive));
+                continue;
+            }
+
             ValidateCombatantActiveEffectObject(effect, effectContext, issues);
         }
     }
@@ -7409,6 +7721,12 @@ public partial class ValidationService
     {
         if (!RequireObject(item, context, issues))
             return;
+
+        ValidateActiveEffectDefinitionsIfPresent(
+            item,
+            context,
+            "mortal_world",
+            issues);
 
         RequireAnyString(item, context, issues, "woundName", "name");
         ValidateOptionalString(item, context, issues, "severity");

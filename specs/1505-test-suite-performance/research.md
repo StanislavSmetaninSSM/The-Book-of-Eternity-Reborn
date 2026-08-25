@@ -1,6 +1,6 @@
 # Research: Test Suite Performance and Verification Lanes
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
 
 ## Baseline Findings
 
@@ -329,6 +329,38 @@ results in `14:18.302`, including ProcessIntegration `490/490` and E2E
 `15/15`. It reported exit `0`, no timeout, no duplicate IDs, and complete
 owned-tree cleanup. Its result directory is
 `20260813-044749-940-43368-f64c53dc7a7e48f5a30055b05c1b7e95-premerge`.
+
+## Decision 10: Raise Only the PreMerge Budget to 30 Minutes
+
+**Evidence**: The #1547 exact 20-minute control completed all `6,608/6,608`
+available core results green with zero duplicates and complete owned-tree
+cleanup, but timed out before the exclusive process/E2E tail could complete.
+The core phase consumed approximately 17 minutes. The isolated
+ProcessIntegration lane then passed `523/523` in `3:32` wall time, and the
+retained isolated E2E timing adds further unavoidable work. The measured green
+lower bound therefore exceeds 20 minutes without indicating a correctness or
+cleanup defect.
+
+**Decision**: Change only the PreMerge/Complete lane-wide hard deadline from 20
+to 30 minutes. Preserve every other lane timeout, the four-host and two-Fast
+ceilings, filters, cases, assertions, retained costs, startup waves,
+parallel/exclusive phase boundaries, and phase order. Thirty minutes remains a
+protective bound while avoiding repeated contract amendments that merely chase
+seconds after legitimate suite growth.
+
+**Alternatives rejected**: Removing coverage or assertions violates the suite
+contract. Micro-optimizing individual tests to recover a few seconds would not
+restore durable headroom. Increasing process concurrency would change resource
+and cleanup risk. Re-running the known-impossible 20-minute gate would consume
+development time without new evidence.
+
+**Accepted control**: The exact 30-minute PreMerge run at
+`TestResults/test-lanes/20260826-004148-035-3528-42f32409a6b34cf4bbb7950b7e8a10d7-premerge/summary.json`
+completed in `00:21:59.6684306` with exit `0`, timeout `false`, zero duplicate
+IDs, and complete owned-tree cleanup. All `26` official TRX files completed:
+Fast `4,339/4,339`, core integration `2,269/2,269`, ProcessIntegration
+`508/508`, and E2E `15/15`, totaling `7,131/7,131`. Frontend verification also
+passed `141/141`, and both C# builds reported zero warnings/errors.
 
 The documented runner interface is:
 

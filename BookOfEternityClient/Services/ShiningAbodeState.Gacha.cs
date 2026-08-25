@@ -32,14 +32,6 @@ internal static partial class ShiningAbodeState
         return GetTradeCycleId(currentIncarnation);
     }
 
-    public static int GetRemainingShiningGachaCharges(JsonObject root)
-    {
-        var gachaSystem = EnsureGachaSystemObject(root);
-        var chargesPerReturn = Math.Max(0, GetNodeInt(gachaSystem["chargesPerReturn"], 0));
-        var chargesUsedThisReturn = Math.Clamp(GetNodeInt(gachaSystem["chargesUsedThisReturn"], 0), 0, chargesPerReturn);
-        return Math.Max(0, chargesPerReturn - chargesUsedThisReturn);
-    }
-
     public static int GetProjectedShiningGachaBonusSteps(JsonObject root, JsonObject? residentRoot, JsonObject faction)
     {
         var bonusSteps = 0;
@@ -95,14 +87,6 @@ internal static partial class ShiningAbodeState
         cost = GetShiningGachaPullCost();
         projectedBonusSteps = GetProjectedShiningGachaBonusSteps(root, residentRoot, faction);
 
-        var chargesPerReturn = Math.Max(0, GetNodeInt(gachaSystem["chargesPerReturn"], GetShiningGachaChargesPerReturn(GetNodeInt(root["radiance"]?["tier"], 0))));
-        var chargesUsedThisReturn = Math.Clamp(GetNodeInt(gachaSystem["chargesUsedThisReturn"], 0), 0, chargesPerReturn);
-        if (chargesUsedThisReturn >= chargesPerReturn)
-        {
-            error = "В этом возвращении больше нет попыток сияющей гачи.";
-            return false;
-        }
-
         if (GetGachaInkFeathersCurrent(soulRoot) < cost.Feathers)
         {
             error = $"Недостаточно Перьев. Нужно {cost.Feathers}.";
@@ -149,7 +133,6 @@ internal static partial class ShiningAbodeState
         soulRoot["inkFeathers"] = inkFeathers;
 
         gachaSystem["currentReturnCycleId"] = returnCycleId;
-        gachaSystem["chargesUsedThisReturn"] = GetNodeInt(gachaSystem["chargesUsedThisReturn"], 0) + 1;
         var history = EnsureArray(gachaSystem, "gachaHistory");
         history.Add(new JsonObject
         {
@@ -190,25 +173,18 @@ internal static partial class ShiningAbodeState
         if (string.IsNullOrWhiteSpace(currentReturnCycleId))
         {
             gachaSystem["currentReturnCycleId"] = nextReturnCycleId;
-            gachaSystem["chargesUsedThisReturn"] = 0;
             return true;
         }
 
         gachaSystem["currentReturnCycleId"] = nextReturnCycleId;
-        gachaSystem["chargesUsedThisReturn"] = 0;
         cycleChanged = true;
         return true;
     }
 
     private static void NormalizeGachaSystemObject(JsonObject gachaSystem, int radianceTier)
     {
-        var chargesPerReturn = GetShiningGachaChargesPerReturn(radianceTier);
-        gachaSystem["chargesPerReturn"] = chargesPerReturn;
         var currentReturnCycleId = GetNodeString(gachaSystem["currentReturnCycleId"]) ?? string.Empty;
         gachaSystem["currentReturnCycleId"] = currentReturnCycleId;
-        gachaSystem["chargesUsedThisReturn"] = string.IsNullOrWhiteSpace(currentReturnCycleId)
-            ? 0
-            : Math.Clamp(GetNodeInt(gachaSystem["chargesUsedThisReturn"], 0), 0, chargesPerReturn);
 
         var history = EnsureArray(gachaSystem, "gachaHistory");
         for (var i = history.Count - 1; i >= 0; i--)

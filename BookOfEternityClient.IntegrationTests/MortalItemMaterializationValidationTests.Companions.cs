@@ -40,9 +40,10 @@ public sealed partial class MortalItemMaterializationValidationTests
                 companion,
                 arrangement.CreationRef);
 
-            await context.NormalizeAcceptedTurnAsync();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
-            var itemId = await context.ReadSingleActiveMortalItemIdAsync();
+            var itemId = await context.ReadSingleActiveMortalItemIdAsync(
+                arrangement.CreationRef);
             var surface = await context.ReadSameTurnCompanionSurfaceAsync(companion);
             Assert.True(
                 MortalItemMaterializationTestContext.ContainsExactString(surface, itemId),
@@ -67,7 +68,7 @@ public sealed partial class MortalItemMaterializationValidationTests
             await context.WriteExistingNpcSameTurnEquipmentCommandAsync(
                 arrangement.CreationRef);
 
-            await context.NormalizeAcceptedTurnAsync();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
             var itemId = await context.ReadSingleActiveMortalItemIdAsync();
             Assert.Equal(
@@ -84,14 +85,21 @@ public sealed partial class MortalItemMaterializationValidationTests
                 "npc_inventory_add",
                 MortalItemTestFixture.CreateRawRoot(
                     "npc_acquisition",
-                    "npc_inventory_add"));
+                    "npc_inventory_add"),
+                existingNpcItem: MortalItemTestFixture.CreateCanonicalRootAtTurn(
+                    "itm_unrelated_existing_command",
+                    acceptedAtTurn: 41,
+                    route: "npc_acquisition",
+                    authorityKind: "npc_inventory_add",
+                    authorityId: "npc_inventory_add:41:0:npc_route_existing"));
             await context.WriteExistingNpcSameTurnEquipmentCommandAsync(
                 arrangement.CreationRef);
             await context.AppendUnrelatedNpcEquipmentCommandAsync();
 
-            await context.NormalizeAcceptedTurnAsync();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
-            var itemId = await context.ReadSingleActiveMortalItemIdAsync();
+            var itemId = await context.ReadSingleActiveMortalItemIdAsync(
+                arrangement.CreationRef);
             Assert.Equal(
                 itemId,
                 await context.ReadExistingNpcEquippedItemAsync("mainHand"));
@@ -117,6 +125,11 @@ public sealed partial class MortalItemMaterializationValidationTests
             await context.WriteNewNpcSameTurnEquipmentReferenceAsync(
                 arrangement.CreationRef);
 
+            var rawIssues = await context.ValidateAcceptedTurnRawMaterializationAsync();
+            Assert.DoesNotContain(
+                rawIssues,
+                issue => issue.Severity == IssueSeverity.Error);
+
             await context.NormalizeAcceptedTurnAsync();
 
             var itemId = await context.ReadSingleActiveMortalItemIdAsync();
@@ -131,7 +144,7 @@ public sealed partial class MortalItemMaterializationValidationTests
             await using var context = await MortalItemMaterializationTestContext.CreateAsync();
             var references = await context.ArrangeSameTurnPlayerContainerAsync();
 
-            await context.NormalizeAcceptedTurnAsync();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
             var root = (await context.ReadJsonAsync(
                 InventoryEquipmentService.ItemsPath))!.AsObject();

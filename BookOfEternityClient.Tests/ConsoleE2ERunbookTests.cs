@@ -130,6 +130,24 @@ public sealed class ConsoleE2ERunbookTests
     }
 
     [Fact]
+    public void AgentConsoleReadOnlySweepWaitsForConsumedLocalReturnSnapshot()
+    {
+        var script = ReadRepoFile("scripts", "agent-console-readonly-sweep.ps1");
+
+        foreach (var requiredText in new[]
+        {
+            "$returnStepInFlightScreenId",
+            "$returnStepInFlightScreenId -eq $screenId",
+            "Local command return is already in flight",
+            "Start-Sleep -Milliseconds $PollMilliseconds",
+            "continue"
+        })
+        {
+            Assert.Contains(requiredText, script, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void AgentConsoleRunbookDocumentsGoldenRouteDriver()
     {
         var runbook = ReadRepoFile("docs", "e2e", "agent-console-runbook.md");

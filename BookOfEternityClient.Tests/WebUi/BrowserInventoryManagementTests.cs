@@ -1227,6 +1227,19 @@ public sealed class BrowserInventoryManagementTests : IDisposable
         IReadOnlyList<JsonObject> items,
         JsonObject equippedItems)
     {
+        var resourceBootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(
+            resourceBootstrap.IsValid,
+            string.Join(Environment.NewLine, resourceBootstrap.Issues));
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            resourceBootstrap.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            resourceBootstrap.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            resourceBootstrap.History!.ToCanonicalJson());
         await _fs.WriteFileAtomicAsync(
             InventoryEquipmentService.ItemsPath,
             new JsonObject
@@ -1238,6 +1251,18 @@ public sealed class BrowserInventoryManagementTests : IDisposable
             MortalItemIdentityState.StatePath,
             MortalItemTestFixture.CreateIndex(items.ToArray())
                 .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            resourceBootstrap.Definitions,
+            _fs.ReadFileAsync,
+            resourceBootstrap.State,
+            resourceBootstrap.History,
+            CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(
+            authority.IsValid,
+            string.Join(Environment.NewLine, authority.Issues));
+        await _fs.WriteFileAtomicAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            authority.CanonicalAuthorityJson!);
     }
 
     private static JsonObject CreateCanonicalInventoryItem(

@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -124,9 +125,6 @@ public partial class GameEngine
         var st = _stateManager.CurrentState.PlayerStatus;
         response.PlayerStatus = new PlayerStatus
         {
-            HealthPercentage = st.HealthPercentage,
-            EnergyPercentage = st.EnergyPercentage,
-            PoisePercentage = st.PoisePercentage,
             CurrentCondition = st.CurrentCondition
         };
 
@@ -188,17 +186,17 @@ public partial class GameEngine
         });
     }
 
-    private async Task<IReadOnlyList<ValidationIssue>> RefreshCanonicalStateAsync(
+    private async Task<AcceptedTurnCanonicalStateRefresh.Result> RefreshCanonicalStateAsync(
         IReadOnlyDictionary<string, string> backups)
     {
-        var postSealIssues = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
             _fs,
             _normalizer,
             _validator,
             backups);
-        if (!postSealIssues.Any(issue => issue.Severity == IssueSeverity.Error))
+        if (!result.Issues.Any(issue => issue.Severity == IssueSeverity.Error))
             await RefreshRuntimeStateAsync();
-        return postSealIssues;
+        return result;
     }
 
     private async Task EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync(
@@ -1569,7 +1567,7 @@ public partial class GameEngine
             if (!preservePendingSnapshot && snapshotContext != null)
                 await CleanupPendingTurnSnapshotAsync();
 
-            AnsiConsole.MarkupLine("[yellow]⚠ Клиент отклонил повреждённый ответ GM и запросил корректную повторную обработку.[/]");
+            AnsiConsole.MarkupLine("[yellow]⚠ Ход завершился неустойчиво. Мир ожидает нового согласованного продолжения.[/]");
             return true;
         }
 
@@ -1587,7 +1585,7 @@ public partial class GameEngine
             if (!preservePendingSnapshot)
                 await CleanupPendingTurnSnapshotAsync();
 
-            AnsiConsole.MarkupLine("[yellow]⚠ Клиент отклонил несогласованный ответ GM и восстановил безопасное ожидание.[/]");
+            AnsiConsole.MarkupLine("[yellow]⚠ Ход не удалось связать с текущим течением событий. Мир вернулся к безопасному ожиданию.[/]");
             return true;
         }
 
@@ -1609,7 +1607,7 @@ public partial class GameEngine
         if (!preservePendingSnapshot)
             await CleanupPendingTurnSnapshotAsync();
 
-        AnsiConsole.MarkupLine("[yellow]⚠ Клиент проигнорировал устаревший или несвязанный ответ GM.[/]");
+        AnsiConsole.MarkupLine("[yellow]⚠ Пришедшее продолжение больше не относится к текущему ходу и было оставлено позади.[/]");
         return true;
     }
 
@@ -1651,6 +1649,15 @@ public partial class GameEngine
                 if (string.Equals(relative, ValidationRepairReadyPath, StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, ValidationRepairRequestPath, StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, ValidationDiagnosticFailureReportPath, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, ValidationRepairArtifactStallReportPath, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, RealmSegregationAutoRollbackService.ReportPath, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, GmWorkerAuditLog.AuditLogPath, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, "game_state/control/gm_trajectory_ledger.jsonl", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, "game_state/control/gm_artifact_write_stall_report.json", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, "game_state/control/gm_output_without_terminal_report.json", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, "game_state/control/gm_daemon_fatal_error.json", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, "game_state/control/gm_timeout_bridge_cleanup.json", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, "game_state/control/gm_live_test_notes.jsonl", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, "game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
@@ -1783,7 +1790,7 @@ public partial class GameEngine
     {
         await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
             await RestorePreTurnBackupAsync(writeLease, snapshot);
-        await RefreshRuntimeStateAsync();
+        await RefreshRuntimeStateAfterExactRollbackAsync();
     }
 
     private async Task RestorePreTurnBackupForSessionAsync(
@@ -1797,23 +1804,34 @@ public partial class GameEngine
             CleanupBackup(writeLease, snapshot);
         }
 
-        await RefreshRuntimeStateAsync();
+        await RefreshRuntimeStateAfterExactRollbackAsync();
     }
 
     private async Task RestorePreTurnBaselineForRepairSessionAsync(
         RollbackSnapshot snapshot,
-        string expectedSessionGeneration)
+        string expectedSessionGeneration,
+        byte[]? pendingResolutionRepairCheckpoint = null)
     {
         await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
             ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
             await RestorePreTurnBackupAsync(writeLease, snapshot);
+            if (pendingResolutionRepairCheckpoint != null)
+            {
+                await _fs.WriteFileAtomicBytesAsync(
+                    writeLease,
+                    ResourcePendingResolutionState.PendingPath,
+                    pendingResolutionRepairCheckpoint);
+            }
         }
 
-        await RefreshRuntimeStateAsync();
+        await RefreshRuntimeStateAfterExactRollbackAsync();
     }
 
-    private async Task<IReadOnlyList<string>> CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
+    private Task RefreshRuntimeStateAfterExactRollbackAsync() =>
+        _stateManager.RefreshGameStateAfterExactRollbackAsync();
+
+    private async Task<IReadOnlyList<RepairResubmissionPathObligation>> CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
         RollbackSnapshot snapshot,
         string expectedSessionGeneration)
     {
@@ -1825,24 +1843,65 @@ public partial class GameEngine
             .Concat(snapshot.BaselineFiles)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(path => path, StringComparer.OrdinalIgnoreCase);
-        var changed = new List<string>();
+        var changed = new List<RepairResubmissionPathObligation>();
         foreach (var path in candidates)
         {
+            if (IsClientOwnedRepairResubmissionPath(path))
+                continue;
+
             var comparison = await CompareRollbackTrackedPathToBaselineAsync(
                 writeLease,
                 snapshot,
                 currentPaths,
                 path);
             if (comparison != RollbackTrackedPathComparison.Unchanged)
-                changed.Add(path);
+            {
+                changed.Add(new RepairResubmissionPathObligation(
+                    path,
+                    currentPaths.Contains(path) && _fs.FileExists(writeLease, path)));
+            }
         }
 
         return changed;
     }
 
+    private static bool IsClientOwnedRepairResubmissionPath(string path) =>
+        string.Equals(
+            path,
+            SystemModService.ManifestPath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            ProgressionScheduleService.SchedulePath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            ResourceMaterializationContract.DefinitionsPath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            ResourceMaterializationContract.StatePath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            ResourceMaterializationContract.HistoryPath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            ResourcePendingResolutionState.PendingPath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            EffectAcceptedTurnPlan.IdentityIndexPath,
+            StringComparison.OrdinalIgnoreCase);
+
     private async Task<bool> AreRollbackTrackedPathsResubmittedForRepairSessionAsync(
         RollbackSnapshot snapshot,
-        IReadOnlyList<string> requiredPaths,
+        IReadOnlyList<RepairResubmissionPathObligation> requiredPaths,
         string expectedSessionGeneration)
     {
         if (requiredPaths.Count == 0)
@@ -1854,11 +1913,15 @@ public partial class GameEngine
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
         foreach (var requiredPath in requiredPaths)
         {
+            var currentlyExists = currentPaths.Contains(requiredPath.Path) &&
+                                  _fs.FileExists(writeLease, requiredPath.Path);
+            if (currentlyExists != requiredPath.RejectedExists)
+                return false;
             if (await CompareRollbackTrackedPathToBaselineAsync(
                     writeLease,
                     snapshot,
                     currentPaths,
-                    requiredPath) != RollbackTrackedPathComparison.Changed)
+                    requiredPath.Path) != RollbackTrackedPathComparison.Changed)
             {
                 return false;
             }
@@ -1904,10 +1967,18 @@ public partial class GameEngine
         if (currentContent.AsSpan().SequenceEqual(baselineContent))
             return RollbackTrackedPathComparison.Unchanged;
         if (TryParseSemanticJson(currentContent, out var currentJson) &&
-            TryParseSemanticJson(baselineContent, out var baselineJson) &&
-            JsonNode.DeepEquals(currentJson, baselineJson))
+            TryParseSemanticJson(baselineContent, out var baselineJson))
         {
-            return RollbackTrackedPathComparison.Unchanged;
+            try
+            {
+                if (JsonNode.DeepEquals(currentJson, baselineJson))
+                    return RollbackTrackedPathComparison.Unchanged;
+            }
+            catch (Exception exception) when (
+                exception is ArgumentException or InvalidOperationException)
+            {
+                return RollbackTrackedPathComparison.Unobservable;
+            }
         }
 
         return RollbackTrackedPathComparison.Changed;

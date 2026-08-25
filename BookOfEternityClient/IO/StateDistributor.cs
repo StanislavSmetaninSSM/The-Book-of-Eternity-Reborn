@@ -239,8 +239,7 @@ public class StateDistributor
                 var updateRoot = AfterlifeSpiritualConflictState.CloneJsonElement(value) as JsonObject ?? new JsonObject();
                 var projected = AfterlifeSpiritualConflictState.ApplyUpdate(
                     existingRoot,
-                    updateRoot,
-                    await ResolveCurrentSpiritFocusTierAsync(writeLease));
+                    updateRoot);
                 projected.Remove(AfterlifeSpiritualConflictState.ResponseField);
                 existingData.Clear();
                 foreach (var prop in projected)
@@ -276,8 +275,11 @@ public class StateDistributor
             existingData[key] = value;
         }
 
-        // Add metadata
-        existingData["_lastUpdated"] = JsonSerializer.SerializeToElement(DateTime.UtcNow.ToString("o"));
+        // Transient mechanics commands are closed accepted-turn input contracts,
+        // not canonical state documents with distribution metadata.
+        if (!relativePath.Equals(EffectAcceptedTurnPlan.CommandPath, StringComparison.OrdinalIgnoreCase) &&
+            !relativePath.Equals(ResourceMaterializationContract.CommandPath, StringComparison.OrdinalIgnoreCase))
+            existingData["_lastUpdated"] = JsonSerializer.SerializeToElement(DateTime.UtcNow.ToString("o"));
 
         // Serialize and write
         var merged = JsonSerializer.Serialize(existingData, JsonOpts);
@@ -290,25 +292,6 @@ public class StateDistributor
         foreach (var (key, value) in data)
             root[key] = AfterlifeSpiritualConflictState.CloneJsonElement(value);
         return root;
-    }
-
-    private async Task<int> ResolveCurrentSpiritFocusTierAsync(
-        FileSystemManager.CanonicalWriteLease writeLease)
-    {
-        try
-        {
-            var soulJson = await _fs.ReadFileAsync(writeLease, "game_state/meta/soul_state.json");
-            if (string.IsNullOrWhiteSpace(soulJson))
-                return 0;
-
-            return JsonNode.Parse(soulJson) is JsonObject soulRoot
-                ? AfterlifeSpiritualConflictState.ResolveSpiritFocusTier(soulRoot)
-                : 0;
-        }
-        catch
-        {
-            return 0;
-        }
     }
 
     private static JsonElement JsonNodeToElement(JsonNode? node)

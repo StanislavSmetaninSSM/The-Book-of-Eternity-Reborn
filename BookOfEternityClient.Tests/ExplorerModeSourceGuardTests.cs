@@ -265,6 +265,44 @@ public sealed class ExplorerModeSourceGuardTests
     }
 
     [Fact]
+    public void ExplorerMode_MortalPoolCapacityDisplays_MustUseActiveResourceProjection()
+    {
+        var source = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.WorldAndStatus.cs"));
+        var statusSource = ExtractMethodSource(source, "private async Task ShowDetailedStatus()");
+        var statsSource = ExtractMethodSource(source, "private async Task ShowPlayerStats()");
+        var projectionSource = ExtractMethodSource(
+            source,
+            "private static bool TryGetActiveMortalCoreResources");
+        var formatSource = ExtractMethodSource(
+            source,
+            "private static string FormatProjectedResourceQuantity");
+
+        Assert.Contains("TryGetActiveMortalCoreResources", statusSource, StringComparison.Ordinal);
+        Assert.Contains("TryGetActiveMortalCoreResources", statsSource, StringComparison.Ordinal);
+        Assert.Contains("await _stateManager.RefreshGameStateAsync();", statsSource, StringComparison.Ordinal);
+        Assert.Contains("ResourceLifecycleState.Active", projectionSource, StringComparison.Ordinal);
+        Assert.Contains("row.Maximum", formatSource, StringComparison.Ordinal);
+        Assert.Contains("row.Unit", formatSource, StringComparison.Ordinal);
+
+        foreach (var forbidden in new[]
+                 {
+                     "var dMaxHp =",
+                     "var dMaxEn =",
+                     "var dMaxPoise =",
+                     "var maxHp =",
+                     "var maxEnergy =",
+                     "var maxPoise =",
+                     "100 + Выносливость×2 + Сила×1",
+                     "100 + Выносливость×0.75",
+                     "100 + Сила×1.5"
+                 })
+        {
+            Assert.DoesNotContain(forbidden, statusSource, StringComparison.Ordinal);
+            Assert.DoesNotContain(forbidden, statsSource, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void ExplorerMode_FactionDetail_MustUseSharedMetricTablesForAlignedColumns()
     {
         var source = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.FactionsAndWorldNews.cs"));
@@ -327,7 +365,10 @@ public sealed class ExplorerModeSourceGuardTests
         Assert.Contains("GameInterface.SafePromptChoice(parts)", consoleLayout, StringComparison.Ordinal);
         Assert.Contains(".AddChoices(choices));", inventorySource, StringComparison.Ordinal);
         Assert.Contains("choices.Add(GameInterface.SafePromptChoice($\"⚔ {slotLabel}: {itemName}\"));", inventorySource, StringComparison.Ordinal);
-        Assert.Contains("choices.Insert(infoPrefixCount, GameInterface.SafePromptChoice($\"💎 {rp.Name}: {rv}\"));", inventorySource, StringComparison.Ordinal);
+        Assert.Contains(
+            "GameInterface.SafePromptChoice($\"💎 {commodity.Name}: {value}\")",
+            inventorySource,
+            StringComparison.Ordinal);
         Assert.Contains("choices.Add(GameInterface.SafePromptChoice($\"📦 {storageName} ({contentsCount} пр.) → управление\"));", inventorySource, StringComparison.Ordinal);
         Assert.Contains("choices.Add(GameInterface.SafePromptChoice($\"📦 🔒 {storageName} ({contentsCount} пр.)\"));", inventorySource, StringComparison.Ordinal);
         Assert.Contains("choices.AddRange(MakeUniqueChoiceLabels(inventoryChoiceEntries));", inventorySource, StringComparison.Ordinal);

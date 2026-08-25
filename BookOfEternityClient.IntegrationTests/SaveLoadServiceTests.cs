@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -40,6 +41,27 @@ public sealed class SaveLoadServiceTests : IDisposable
         _fs.WriteFileAtomicAsync(
                 "game_state/world/test_fixture_state.json",
                 """{ "state": "test-fixture" }""")
+            .GetAwaiter()
+            .GetResult();
+        var resourceBootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        _fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.DefinitionsPath,
+                resourceBootstrap.Definitions!.ToCanonicalJson())
+            .GetAwaiter()
+            .GetResult();
+        _fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.StatePath,
+                resourceBootstrap.State!.ToCanonicalJson())
+            .GetAwaiter()
+            .GetResult();
+        _fs.WriteFileAtomicAsync(
+                ResourceMaterializationContract.HistoryPath,
+                resourceBootstrap.History!.ToCanonicalJson())
+            .GetAwaiter()
+            .GetResult();
+        _fs.WriteFileAtomicAsync(
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                "{\"schemaVersion\":1,\"historicalOwners\":[],\"capacityDrafts\":[]}")
             .GetAwaiter()
             .GetResult();
 
@@ -323,6 +345,124 @@ public sealed class SaveLoadServiceTests : IDisposable
 
         Assert.True(await _service.LoadGameAsync(savePath));
         Assert.False(_fs.FileExists(ProgressionScheduleService.ReportPath));
+    }
+
+    [Fact]
+    public async Task SaveAndLoad_PreservesUnifiedResourceRootsAndExcludesTransientCommand()
+    {
+        var definitions = await _fs.ReadFileAsync(
+            ResourceMaterializationContract.DefinitionsPath);
+        var state = await _fs.ReadFileAsync(
+            ResourceMaterializationContract.StatePath);
+        var history = await _fs.ReadFileAsync(
+            ResourceMaterializationContract.HistoryPath);
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.CommandPath,
+            """{ "resourceChanges": [] }""");
+
+        Assert.True(await _service.SaveGameAsync(
+            "unified_resources",
+            "resource authority round-trip"));
+
+        var savePath = Directory
+            .GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip")
+            .Single();
+        using (var archive = ZipFile.OpenRead(savePath))
+        {
+            Assert.NotNull(archive.GetEntry(
+                ResourceMaterializationContract.DefinitionsPath));
+            Assert.NotNull(archive.GetEntry(
+                ResourceMaterializationContract.StatePath));
+            Assert.NotNull(archive.GetEntry(
+                ResourceMaterializationContract.HistoryPath));
+            Assert.Null(archive.GetEntry(
+                ResourceMaterializationContract.CommandPath));
+        }
+
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            """{ "invalid": true }""");
+
+        Assert.True(await _service.LoadGameAsync(savePath));
+        Assert.Equal(definitions, await _fs.ReadFileAsync(
+            ResourceMaterializationContract.DefinitionsPath));
+        Assert.Equal(state, await _fs.ReadFileAsync(
+            ResourceMaterializationContract.StatePath));
+        Assert.Equal(history, await _fs.ReadFileAsync(
+            ResourceMaterializationContract.HistoryPath));
+        Assert.False(_fs.FileExists(ResourceMaterializationContract.CommandPath));
+    }
+
+    [Fact]
+    public async Task SaveGameAsync_SelfConsistentUnknownResourceOwnerIsRejected()
+    {
+        var roots = CreateUnknownOwnerResourceRoots();
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            roots.Definitions);
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            roots.State);
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            roots.History);
+
+        Assert.False(await _service.SaveGameAsync(
+            "forged_resource_owner",
+            "must not archive an unknown resource owner"));
+        Assert.Empty(Directory.GetFiles(
+            _fs.ResolvePath("saves/manual_saves"),
+            "*.zip"));
+    }
+
+    [Fact]
+    public async Task SaveGameAsync_InvalidUtf8CanonicalResourceInputFailsClosed()
+    {
+        await File.WriteAllBytesAsync(
+            _fs.ResolvePath(InventoryEquipmentService.ItemsPath),
+            Encoding.ASCII.GetBytes("{\"items\":[],\"note\":\"")
+                .Concat(new byte[] { 0xC3, 0x28 })
+                .Concat(Encoding.ASCII.GetBytes("\"}"))
+                .ToArray());
+
+        Assert.False(await _service.SaveGameAsync(
+            "invalid_utf8_resource",
+            "must reject replacement decoding"));
+        Assert.Empty(Directory.GetFiles(
+            _fs.ResolvePath("saves/manual_saves"),
+            "*.zip"));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_SelfConsistentUnknownResourceOwnerIsRejected()
+    {
+        var roots = CreateUnknownOwnerResourceRoots();
+        var archivePath = Path.Combine(_rootPath, "forged-resource-owner.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            await WriteArchiveEntryAsync(
+                archive,
+                "game_state/meta/soul_state.json",
+                """{ "soulName": "Поддельный владелец", "currentRealm": "Mortal World" }""");
+            await WriteArchiveEntryAsync(
+                archive,
+                ResourceMaterializationContract.DefinitionsPath,
+                roots.Definitions);
+            await WriteArchiveEntryAsync(
+                archive,
+                ResourceMaterializationContract.StatePath,
+                roots.State);
+            await WriteArchiveEntryAsync(
+                archive,
+                ResourceMaterializationContract.HistoryPath,
+                roots.History);
+        }
+        var liveState = await _fs.ReadFileAsync(
+            ResourceMaterializationContract.StatePath);
+
+        Assert.False(await _service.LoadGameAsync(archivePath));
+        Assert.Equal(liveState, await _fs.ReadFileAsync(
+            ResourceMaterializationContract.StatePath));
     }
 
     [Fact]
@@ -1237,18 +1377,11 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Theory]
-    [InlineData(
-        "mortal_world_command_display_fixture.zip",
-        "Mortal World")]
-    [InlineData(
-        "chaos_sea_command_display_fixture.zip",
-        "Chaos Sea")]
-    [InlineData(
-        "shining_abode_command_display_fixture.zip",
-        "Shining Abode")]
-    public async Task LoadGameAsync_LegacyRealmFixturesRemainCompatible(
-        string fixtureName,
-        string expectedRealm)
+    [InlineData("mortal_world_command_display_fixture.zip")]
+    [InlineData("chaos_sea_command_display_fixture.zip")]
+    [InlineData("shining_abode_command_display_fixture.zip")]
+    public async Task LoadGameAsync_ReusableRealmFixturesPreserveExactCanonicalOwnerAuthority(
+        string fixtureName)
     {
         var fixturePath = Path.Combine(
             TestRepoPaths.BaseSessionRoot,
@@ -1256,11 +1389,22 @@ public sealed class SaveLoadServiceTests : IDisposable
             "manual_saves",
             fixtureName);
 
+        string expectedAuthority;
+        using (var archive = ZipFile.OpenRead(fixturePath))
+        {
+            var entry = Assert.Single(
+                archive.Entries,
+                candidate => candidate.FullName ==
+                             CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
+            using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
+            expectedAuthority = await reader.ReadToEndAsync();
+        }
+
         Assert.True(await _service.LoadGameAsync(fixturePath));
-        var soulState = await _fs.ReadFileAsync(
-            "game_state/meta/soul_state.json");
-        Assert.NotNull(soulState);
-        Assert.Contains(expectedRealm, soulState);
+        Assert.Equal(
+            expectedAuthority,
+            await _fs.ReadFileAsync(
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath));
     }
 
     [Theory]
@@ -1868,7 +2012,7 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task LoadGameAsync_LegacyArchiveWithSoulStateRemainsAccepted()
+    public async Task LoadGameAsync_LegacyArchiveWithoutUnifiedResourceRootsIsRejected()
     {
         const string legacyStatePath = "game_state/meta/soul_state.json";
         const string legacyState =
@@ -1890,10 +2034,10 @@ public sealed class SaveLoadServiceTests : IDisposable
                 legacyState);
         }
 
-        Assert.True(await _service.LoadGameAsync(archivePath));
-        Assert.Equal(
-            legacyState,
-            await _fs.ReadFileAsync(legacyStatePath));
+        var liveState = await _fs.ReadFileAsync(legacyStatePath);
+
+        Assert.False(await _service.LoadGameAsync(archivePath));
+        Assert.Equal(liveState, await _fs.ReadFileAsync(legacyStatePath));
     }
 
     [Fact]
@@ -2520,6 +2664,8 @@ public sealed class SaveLoadServiceTests : IDisposable
             {
                 await writer.WriteAsync("""{ "triggeredAtTurn": 43 }""");
             }
+
+            await WriteRequiredResourceRootsAsync(archive);
         }
 
         Assert.True(await _service.LoadGameAsync(legacyZip));
@@ -2741,8 +2887,9 @@ public sealed class SaveLoadServiceTests : IDisposable
         await writer.WriteAsync(content);
     }
 
-    private static Task WriteLegacySoulStateAsync(ZipArchive archive) =>
-        WriteArchiveEntryAsync(
+    private static async Task WriteLegacySoulStateAsync(ZipArchive archive)
+    {
+        await WriteArchiveEntryAsync(
             archive,
             "game_state/meta/soul_state.json",
             """
@@ -2752,13 +2899,58 @@ public sealed class SaveLoadServiceTests : IDisposable
               "currentIncarnation": 1
             }
             """);
+        await WriteRequiredResourceRootsAsync(archive);
+    }
+
+    private static async Task WriteRequiredResourceRootsAsync(ZipArchive archive)
+    {
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        await WriteArchiveEntryAsync(
+            archive,
+            ResourceMaterializationContract.DefinitionsPath,
+            bootstrap.Definitions!.ToCanonicalJson());
+        await WriteArchiveEntryAsync(
+            archive,
+            ResourceMaterializationContract.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await WriteArchiveEntryAsync(
+            archive,
+            ResourceMaterializationContract.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+        await WriteArchiveEntryAsync(
+            archive,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            "{\"schemaVersion\":1,\"historicalOwners\":[],\"capacityDrafts\":[]}");
+    }
+
+    private static (string Definitions, string State, string History)
+        CreateUnknownOwnerResourceRoots()
+    {
+        var bootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+            incarnationNumber: 3,
+            turn: 42,
+            permanentStrength: 10,
+            permanentConstitution: 20,
+            permanentIntelligence: 30,
+            permanentWisdom: 40,
+            permanentFaith: 50);
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        var state = JsonNode.Parse(bootstrap.State!.ToCanonicalJson())!.AsObject();
+        var history = JsonNode.Parse(bootstrap.History!.ToCanonicalJson())!.AsObject();
+        foreach (var entry in state["entries"]!.AsArray())
+            entry!["resourceOwnerId"] = "player_forged";
+        foreach (var transition in history["entries"]!.AsArray())
+            transition!["coordinate"]!["resourceOwnerId"] = "player_forged";
+        return (
+            bootstrap.Definitions!.ToCanonicalJson(),
+            state.ToJsonString(),
+            history.ToJsonString());
+    }
 
     private static async Task WriteStalePlayerSoulProfileArchiveAsync(
         ZipArchive archive)
     {
-        await WriteArchiveEntryAsync(
-            archive,
-            "game_state/meta/soul_state.json",
+        var soulState = JsonNode.Parse(
             """
             {
               "soulName": "Пепельная Искра",
@@ -2771,10 +2963,8 @@ public sealed class SaveLoadServiceTests : IDisposable
                 "artTiers": { "guard": 0, "recover_spiritual_power": 0 }
               }
             }
-            """);
-        await WriteArchiveEntryAsync(
-            archive,
-            AfterlifeEntityProfileState.StatePath,
+            """)!.AsObject();
+        var profiles = JsonNode.Parse(
             """
             {
               "schemaVersion": 1,
@@ -2802,7 +2992,45 @@ public sealed class SaveLoadServiceTests : IDisposable
                 }
               ]
             }
-            """);
+            """)!.AsObject();
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(
+            bootstrap.IsValid,
+            string.Join(Environment.NewLine, bootstrap.Issues));
+        var plan = await CanonicalResourceQuartetTransaction.ComposeExplicitBootstrapAsync(
+            bootstrap.Definitions!,
+            bootstrap.State!,
+            bootstrap.History!,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: profiles,
+                SoulState: soulState),
+            static _ => Task.FromResult<string?>(null));
+        Assert.True(plan.IsValid, string.Join(Environment.NewLine, plan.Issues));
+
+        await WriteArchiveEntryAsync(
+            archive,
+            "game_state/meta/soul_state.json",
+            plan.OwnerAfterImages["game_state/meta/soul_state.json"].ToJsonString());
+        await WriteArchiveEntryAsync(
+            archive,
+            AfterlifeEntityProfileState.StatePath,
+            plan.OwnerAfterImages[AfterlifeEntityProfileState.StatePath].ToJsonString());
+        await WriteArchiveEntryAsync(
+            archive,
+            ResourceMaterializationContract.DefinitionsPath,
+            plan.Definitions.ToCanonicalJson());
+        await WriteArchiveEntryAsync(
+            archive,
+            ResourceMaterializationContract.StatePath,
+            plan.StateAfterImage!.ToCanonicalJson());
+        await WriteArchiveEntryAsync(
+            archive,
+            ResourceMaterializationContract.HistoryPath,
+            plan.HistoryAfterImage!.ToCanonicalJson());
+        await WriteArchiveEntryAsync(
+            archive,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            plan.CanonicalAuthorityJson!);
     }
 
     private static async Task WriteManifestedArchiveAsync(

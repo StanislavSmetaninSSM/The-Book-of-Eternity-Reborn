@@ -19,12 +19,31 @@ internal sealed partial class MortalItemMaterializationTestContext
     internal async Task<MortalItemRouteArrangement> ArrangeRouteAsync(
         string route,
         string authorityKind,
-        JsonObject rawItem)
+        JsonObject rawItem,
+        bool includeMortalPlayerResources = false,
+        JsonObject? existingNpcItem = null)
     {
         ArgumentNullException.ThrowIfNull(rawItem);
 
         await BuildMortalBootstrapAsync();
-        await ArrangeRouteBaselineAsync(route);
+        if (includeMortalPlayerResources)
+            await SeedMortalPlayerResourcesAsync();
+        await ArrangeRouteBaselineAsync(route, existingNpcItem);
+        if (existingNpcItem != null)
+        {
+            if (!string.Equals(route, "npc_acquisition", StringComparison.Ordinal))
+            {
+                throw new ArgumentException(
+                    "A pre-turn NPC item is supported only for npc_acquisition fixtures.",
+                    nameof(route));
+            }
+            await WriteJsonAsync(
+                MortalItemIdentityState.StatePath,
+                MortalItemTestFixture.CreateIndexForCarrier(
+                    existingNpcItem,
+                    "npc_inventory",
+                    ExistingNpcId));
+        }
         await CaptureValidatedPendingSnapshotAsync(RouteTurn);
         var item = rawItem.DeepClone().AsObject();
         var authorityId = ResolveRouteAuthorityId(route, item);
@@ -153,7 +172,7 @@ internal sealed partial class MortalItemMaterializationTestContext
 
     internal async Task<MortalItemRouteOutcome> ValidateNormalizeAndValidateAsync()
     {
-        var rawIssues = await Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        var rawIssues = await ValidateAcceptedTurnRawMaterializationAsync();
         if (rawIssues.Any(issue => issue.Severity == IssueSeverity.Error))
         {
             return new MortalItemRouteOutcome(
@@ -601,6 +620,15 @@ internal sealed partial class MortalItemMaterializationTestContext
                             ["actorId"] = NewNpcInitialId,
                             ["materializedAtTurn"] = RouteTurn,
                             ["state"] = "complete"
+                        },
+                        ["resourceMaterialization"] = new JsonObject
+                        {
+                            ["resources"] = new JsonArray(
+                                new JsonObject
+                                {
+                                    ["resourceKey"] = "health",
+                                    ["maximum"] = 60m
+                                })
                         }
                     }),
                 ["NPCsInScene"] = new JsonArray()
@@ -709,12 +737,16 @@ internal sealed partial class MortalItemMaterializationTestContext
         await WriteJsonAsync(StorageTransportMoveService.CurrentLocationPath, root);
     }
 
-    private async Task ArrangeRouteBaselineAsync(string route)
+    private async Task ArrangeRouteBaselineAsync(
+        string route,
+        JsonObject? existingNpcItem)
     {
         switch (route)
         {
             case "npc_acquisition":
-                await WriteExistingNpcBaselineAsync("Маршрутный NPC");
+                await WriteExistingNpcBaselineAsync(
+                    "Маршрутный NPC",
+                    existingNpcItem);
                 break;
             case "trade_output":
                 await WriteExistingNpcBaselineAsync("Маршрутный торговец");
@@ -740,7 +772,9 @@ internal sealed partial class MortalItemMaterializationTestContext
         }
     }
 
-    private Task WriteExistingNpcBaselineAsync(string name) =>
+    private Task WriteExistingNpcBaselineAsync(
+        string name,
+        JsonObject? existingItem = null) =>
         WriteJsonAsync(
             NpcCoreChangesContract.NpcCorePath,
             new JsonObject
@@ -751,7 +785,9 @@ internal sealed partial class MortalItemMaterializationTestContext
                     {
                         ["NPCId"] = ExistingNpcId,
                         ["name"] = name,
-                        ["inventory"] = new JsonArray(),
+                        ["inventory"] = existingItem == null
+                            ? new JsonArray()
+                            : new JsonArray(existingItem.DeepClone()),
                         ["equippedItems"] = new JsonObject()
                     })
             });

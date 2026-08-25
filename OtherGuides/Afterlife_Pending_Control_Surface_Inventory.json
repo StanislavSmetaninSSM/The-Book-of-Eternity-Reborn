@@ -667,6 +667,10 @@
       "reason": "Legacy/private ink action validation surface outside current afterlife pending contract matrix."
     },
     {
+      "path": "game_state/control/pending_effect_resolutions.json",
+      "reason": "Reserved by issue #1535 Tasks T043/T049-T050 for a later bounded effect-resolution lifecycle slice; Task 7 has no runtime writer, validator, receipt consumer, or GM-facing pending contract yet."
+    },
+    {
       "path": "game_state/control/gm_cli_window_binding.json",
       "reason": "Local GM bridge/window infrastructure."
     },

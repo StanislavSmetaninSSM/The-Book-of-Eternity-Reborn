@@ -5,6 +5,26 @@ namespace BookOfEternityClient.Tests;
 
 internal sealed partial class MortalItemMaterializationTestContext
 {
+    internal async Task NormalizeAcceptedTurnWithValidatedCommonPlanAsync()
+    {
+        var rawIssues = await ValidateAcceptedTurnRawMaterializationAsync();
+        var errors = rawIssues
+            .Where(issue => issue.Severity == IssueSeverity.Error)
+            .ToArray();
+        if (errors.Length > 0)
+        {
+            throw new InvalidOperationException(
+                "Pre-seal validation failed:" + Environment.NewLine +
+                string.Join(
+                    Environment.NewLine,
+                    errors.Select(issue =>
+                        $"{issue.Code}; path={issue.FilePath}; " +
+                        $"actor={issue.Actor}; actual={issue.Actual}.")));
+        }
+
+        await NormalizeAcceptedTurnAsync();
+    }
+
     internal async Task<(string ParentCreationRef, string ChildCreationRef)>
         ArrangeSameTurnPlayerContainerAsync()
     {
@@ -196,15 +216,21 @@ internal sealed partial class MortalItemMaterializationTestContext
         };
     }
 
-    internal async Task<string> ReadSingleActiveMortalItemIdAsync()
+    internal async Task<string> ReadSingleActiveMortalItemIdAsync(
+        string? originCreationRef = null)
     {
         var index = (await ReadJsonAsync(MortalItemIdentityState.StatePath))!.AsObject();
         return index["entries"]!.AsArray()
             .OfType<JsonObject>()
-            .Single(entry => string.Equals(
-                entry["state"]!.GetValue<string>(),
-                "active",
-                StringComparison.Ordinal))["itemId"]!
+            .Single(entry =>
+                string.Equals(
+                    entry["state"]!.GetValue<string>(),
+                    "active",
+                    StringComparison.Ordinal) &&
+                (originCreationRef == null ||
+                 ContainsExactString(
+                     entry["originCreationRefs"],
+                     originCreationRef)))["itemId"]!
             .GetValue<string>();
     }
 

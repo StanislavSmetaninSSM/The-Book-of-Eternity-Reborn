@@ -55,6 +55,9 @@ public sealed class GmWorkerAuditLog
         WorkerAuditEvent auditEvent,
         CancellationToken cancellationToken)
     {
+        await using var admission = await _fs
+            .CanonicalRootAuthorityIdentity
+            .EnterGmWorkerAuditAppendAdmissionAsync(cancellationToken);
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
             cancellationToken: cancellationToken);
         if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
@@ -71,6 +74,9 @@ public sealed class GmWorkerAuditLog
             CancellationToken cancellationToken = default)
     {
         ValidateAuditEvent(auditEvent);
+        await using var admission = await _fs
+            .CanonicalRootAuthorityIdentity
+            .EnterGmWorkerAuditAppendAdmissionAsync(cancellationToken);
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
             cancellationToken: cancellationToken);
         if (!_fs.IsCurrentSessionGeneration(
@@ -107,13 +113,22 @@ public sealed class GmWorkerAuditLog
         try
         {
             if (writeLease == null)
-                await _fs.AppendFileAtomicAsync(AuditLogPath, line + Environment.NewLine);
+            {
+                await using var admission = await _fs
+                    .CanonicalRootAuthorityIdentity
+                    .EnterGmWorkerAuditAppendAdmissionAsync(cancellationToken);
+                await _fs.AppendFileAtomicAsync(
+                    AuditLogPath,
+                    line + Environment.NewLine);
+            }
             else
+            {
                 await _fs.AppendFileAtomicAsync(
                     writeLease,
                     AuditLogPath,
                     line + Environment.NewLine,
                     cancellationToken);
+            }
         }
         catch (Exception) when (suppressFailure)
         {

@@ -42,8 +42,7 @@
         "completedQuests": []
       },
       "gachaSystem": {
-        "chargesPerReturn": 1,
-        "chargesUsedThisReturn": 0,
+        "currentReturnCycleId": "",
         "gachaHistory": []
       }
     }
@@ -90,8 +89,7 @@
       "completedQuests": []
     },
     "gachaSystem": {
-      "chargesPerReturn": 1,
-      "chargesUsedThisReturn": 0,
+      "currentReturnCycleId": "",
       "gachaHistory": []
     }
   },

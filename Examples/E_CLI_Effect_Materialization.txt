@@ -1,0 +1,1017 @@
+# Effect Materialization v1 — worked GM examples
+
+Read `OtherGuides/Effect_Materialization_Contract.md` first. These examples show GM-authored source policy and transient lifecycle commands. Canonical carriers, IDs, index, pending state, transitions, stacks, deadlines, and receipts are client-owned and therefore are not fabricated here.
+
+## effect_mortal_profiles_v1
+
+The registered component library is closed. These are complete component fragments; each belongs inside a complete `activeEffectDefinitions[]` entry and cannot act as a standalone effect:
+
+```json
+{
+  "registeredProfileFragments": [
+    {
+      "componentId": "component_characteristic",
+      "profile": "characteristic_modifier",
+      "priority": 100,
+      "payload": { "characteristic": "dexterity", "operation": "flat", "value": -2 }
+    },
+    {
+      "componentId": "component_roll",
+      "profile": "roll_modifier",
+      "priority": 100,
+      "payload": { "operations": ["attack_roll"], "contribution": "disadvantage" }
+    },
+    {
+      "componentId": "component_resistance",
+      "profile": "resistance_modifier",
+      "priority": 100,
+      "payload": {
+        "resistance": "bleeding",
+        "operation": "flat",
+        "value": -1,
+        "cap": { "minimum": -100, "maximum": 100 }
+      }
+    },
+    {
+      "componentId": "component_damage",
+      "profile": "periodic_damage",
+      "priority": 100,
+      "payload": {
+        "resource": "health",
+        "amount": 3,
+        "damageType": "bleeding",
+        "floorPolicy": "registered_resource_floor"
+      }
+    },
+    {
+      "componentId": "component_restore",
+      "profile": "periodic_restore",
+      "priority": 100,
+      "payload": { "resource": "health", "amount": 3, "capPolicy": "registered_resource_cap" }
+    },
+    {
+      "componentId": "component_control",
+      "profile": "action_control",
+      "priority": 100,
+      "payload": { "action": "movement", "operation": "restrict" }
+    },
+    {
+      "componentId": "component_reaction",
+      "profile": "event_reaction",
+      "priority": 100,
+      "payload": {
+        "eventType": "owner_damaged",
+        "resultKind": "remove",
+        "dependency": "before_current_event",
+        "maxExpansion": 1
+      }
+    },
+    {
+      "componentId": "component_wound",
+      "profile": "wound_consequence",
+      "priority": 100,
+      "payload": {
+        "woundId": "wound_torn_side",
+        "symptom": "bleeding",
+        "consequence": "periodic_damage"
+      }
+    },
+    {
+      "componentId": "component_afterlife",
+      "profile": "afterlife_combat_condition",
+      "priority": 100,
+      "payload": {
+        "conditionKind": "burden",
+        "targetSide": "opposition",
+        "actorId": "afterlife_actor_warden",
+        "operations": ["pressure"],
+        "axes": ["rollMode"],
+        "counterplay": ["purification"],
+        "payoff": "attrition"
+      }
+    }
+  ]
+}
+```
+
+## effect_event_reaction_graph_v1
+
+`event_reaction` is a closed dispatcher, not arbitrary scripting. This complete
+same-source graph demonstrates all six result kinds and all three dependency
+phases. Every reaction component belongs to exactly one trigger. A referenced
+component belongs to the same definition; an applied definition belongs to the
+same source owner. Resource-component reactions are explicit `after_component`
+edges; an unconditional resource component is selected directly by its trigger.
+`maxExpansion` limits executions of that reaction component inside one accepted
+transition, while the client also enforces the global 64-operation ceiling.
+After acceptance, a skipped/no-change/replayed predecessor suppresses only its
+dependent `after_component` output. Unconditional `before_current_event` and
+`after_current_event` reactions remain released, and a consuming trigger keeps
+its one-use projection. A final use or unconditional deferred suspend/remove
+blocks only later event boundaries: siblings already accepted in the frozen
+batch still finish, and any created/replacement effect becomes eligible on the
+next accepted mechanics transition. For `apply_definition(policy=replace)`, the
+client derives the exact old target from the frozen realm/target/source/stack
+coordinate, excluding `definitionKey`; release blocks that target from later or
+nested boundaries, and `after_current_event` reserves it at acceptance. If two
+accepted consuming activations carry budgets `2,1` before that target is folded,
+the old identity records `consume,consume,replace` in activation order. Every
+intermediate/final replacement keeps its complete initial lifetime. A
+resource-event child also preserves both the outer producer requirement and its
+exact `after_component` predecessor.
+
+```json
+{
+  "activeEffectDefinitions": [
+    {
+      "schemaVersion": 1,
+      "definitionKey": "reactive-aegis",
+      "display": {
+        "name": "Отзывчивый эгид",
+        "description": "Эгид отвечает на точные события в закрытом порядке.",
+        "category": "mixed",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["mortal_world"],
+      "allowedTargetKinds": ["player"],
+      "components": [
+        {
+          "componentId": "reaction_apply",
+          "profile": "event_reaction",
+          "priority": 10,
+          "payload": {
+            "eventType": "owner_damaged",
+            "resultKind": "apply_definition",
+            "definitionKey": "counter-pulse",
+            "parameters": { "amount": 3 },
+            "dependency": "before_current_event",
+            "maxExpansion": 2
+          }
+        },
+        {
+          "componentId": "reaction_trigger",
+          "profile": "event_reaction",
+          "priority": 20,
+          "payload": {
+            "eventType": "owner_turn_start",
+            "resultKind": "trigger_component",
+            "componentId": "triggered_restore",
+            "dependency": "after_component",
+            "afterComponentId": "direct_restore",
+            "maxExpansion": 1
+          }
+        },
+        {
+          "componentId": "reaction_bounded",
+          "profile": "event_reaction",
+          "priority": 30,
+          "payload": {
+            "eventType": "owner_turn_end",
+            "resultKind": "bounded_receipt",
+            "componentId": "narrated_damage",
+            "dependency": "after_component",
+            "afterComponentId": "direct_damage",
+            "maxExpansion": 1
+          }
+        },
+        {
+          "componentId": "reaction_suspend",
+          "profile": "event_reaction",
+          "priority": 40,
+          "payload": {
+            "eventType": "source_state_changed",
+            "resultKind": "suspend",
+            "dependency": "before_current_event",
+            "maxExpansion": 1
+          }
+        },
+        {
+          "componentId": "reaction_remove",
+          "profile": "event_reaction",
+          "priority": 50,
+          "payload": {
+            "eventType": "scene_ended",
+            "resultKind": "remove",
+            "dependency": "after_current_event",
+            "maxExpansion": 1
+          }
+        },
+        {
+          "componentId": "reaction_event_outcome",
+          "profile": "event_reaction",
+          "priority": 60,
+          "payload": {
+            "eventType": "owner_critical_failure",
+            "resultKind": "event_outcome",
+            "originalOutcome": "critical_failure",
+            "resolvedOutcome": "failure",
+            "dependency": "before_current_event",
+            "maxExpansion": 1
+          }
+        },
+        {
+          "componentId": "direct_restore",
+          "profile": "periodic_restore",
+          "priority": 70,
+          "payload": {
+            "resource": "health",
+            "amount": 1,
+            "capPolicy": "registered_resource_cap"
+          }
+        },
+        {
+          "componentId": "triggered_restore",
+          "profile": "periodic_restore",
+          "priority": 70,
+          "payload": {
+            "resource": "health",
+            "amount": 1,
+            "capPolicy": "registered_resource_cap"
+          }
+        },
+        {
+          "componentId": "direct_damage",
+          "profile": "periodic_damage",
+          "priority": 80,
+          "payload": {
+            "resource": "health",
+            "amount": 1,
+            "damageType": "magical",
+            "floorPolicy": "registered_resource_floor"
+          }
+        },
+        {
+          "componentId": "narrated_damage",
+          "profile": "periodic_damage",
+          "priority": 90,
+          "payload": {
+            "resource": "health",
+            "amount": 2,
+            "damageType": "magical",
+            "floorPolicy": "registered_resource_floor"
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "reactive-aegis",
+        "policy": "independent",
+        "maxStacks": 1,
+        "atMaximum": "no_change",
+        "refreshMode": null,
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 3,
+        "advancePhase": "owner_turn_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "aegis_apply",
+          "eventType": "owner_damaged",
+          "priority": 10,
+          "componentIds": ["reaction_apply"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        },
+        {
+          "triggerId": "aegis_trigger",
+          "eventType": "owner_turn_start",
+          "priority": 20,
+          "componentIds": ["direct_restore", "reaction_trigger"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        },
+        {
+          "triggerId": "aegis_bounded",
+          "eventType": "owner_turn_end",
+          "priority": 30,
+          "componentIds": ["direct_damage", "reaction_bounded"],
+          "consumeUses": false,
+          "resolutionMode": "bounded_receipt"
+        },
+        {
+          "triggerId": "aegis_suspend",
+          "eventType": "source_state_changed",
+          "priority": 40,
+          "componentIds": ["reaction_suspend"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        },
+        {
+          "triggerId": "aegis_remove",
+          "eventType": "scene_ended",
+          "priority": 50,
+          "componentIds": ["reaction_remove"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        },
+        {
+          "triggerId": "aegis_event_outcome",
+          "eventType": "owner_critical_failure",
+          "priority": 60,
+          "componentIds": ["reaction_event_outcome"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["magical_dispel"],
+        "cureKinds": ["ritual_cleansing"],
+        "onSourceLoss": "suspend",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    },
+    {
+      "schemaVersion": 1,
+      "definitionKey": "counter-pulse",
+      "display": {
+        "name": "Ответный импульс",
+        "description": "Эгид возвращает часть утраченной силы.",
+        "category": "buff",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["mortal_world"],
+      "allowedTargetKinds": ["player"],
+      "components": [
+        {
+          "componentId": "counter_restore",
+          "profile": "periodic_restore",
+          "priority": 100,
+          "payload": {
+            "resource": "health",
+            "amount": 1,
+            "capPolicy": "registered_resource_cap"
+          }
+        }
+      ],
+      "parameterBounds": {
+        "amount": {
+          "kind": "number",
+          "minimum": 1,
+          "maximum": 3,
+          "required": false
+        }
+      },
+      "stacking": {
+        "stackKey": "reactive-aegis",
+        "policy": "replace",
+        "maxStacks": 1,
+        "atMaximum": "no_change",
+        "refreshMode": null,
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 1,
+        "advancePhase": "owner_turn_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "counter_turn_end",
+          "eventType": "owner_turn_end",
+          "priority": 100,
+          "componentIds": ["counter_restore"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["magical_dispel"],
+        "cureKinds": ["ritual_cleansing"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    }
+  ]
+}
+```
+
+`before_current_event` executes before the current accepted lifecycle reduction.
+For a reaction discovered from a resource event, the producing resource mutation
+necessarily happens first; “before” means before continuation of that derived
+event, never before its producer. `after_component` runs only if the exact
+`afterComponentId` mutation applied. A `narrated_no_state_change` predecessor
+does not authorize the dependent result. `after_current_event` runs when the
+inner-first causal boundary closes and before the one final lifetime/use
+projection. Direct selection and reaction dispatch of the same
+component, ambiguous references, same-stack downstream application without an
+explicit `replace`, cycles, and either source/global expansion overflow fail
+before publication. Here `counter-pulse` is the worked same-stack exception:
+its exact incoming `replace` retires the one active `reactive-aegis` identity
+even though that prior definition used `independent`; a second prior identity
+would make the coordinate ambiguous and fail closed.
+
+## effect_mortal_apply_stack_v1
+
+The exact learned skill owns the complete policy. This example uses `refresh`; the client preserves the identity and resets the three-turn lifetime on a second accepted application.
+
+```json
+{
+  "skillId": "skill_battle_focus",
+  "skillName": "Боевое сосредоточение",
+  "status": "active",
+  "activeEffectDefinitions": [
+    {
+      "schemaVersion": 1,
+      "definitionKey": "battle-focus",
+      "display": {
+        "name": "Боевое сосредоточение",
+        "description": "Движения героя становятся точнее.",
+        "category": "buff",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["mortal_world"],
+      "allowedTargetKinds": ["player"],
+      "components": [
+        {
+          "componentId": "focus_dexterity",
+          "profile": "characteristic_modifier",
+          "priority": 100,
+          "payload": { "characteristic": "dexterity", "operation": "flat", "value": 2 }
+        }
+      ],
+      "parameterBounds": {
+        "value": { "kind": "number", "minimum": 1, "maximum": 2, "required": false }
+      },
+      "stacking": {
+        "stackKey": "battle-focus",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": { "mode": "turns", "initialTurns": 3, "advancePhase": "owner_turn_end" },
+      "triggers": [
+        {
+          "triggerId": "focus_owner_turn_end",
+          "eventType": "owner_turn_end",
+          "priority": 100,
+          "componentIds": ["focus_dexterity"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["mental_disruption"],
+        "cureKinds": ["rest"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    }
+  ]
+}
+```
+
+GM response for the first application:
+
+```json
+{
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "source": {
+        "kind": "skill",
+        "sourceId": "skill_battle_focus",
+        "definitionKey": "battle-focus"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+      "reason": "Игрок применил изученное боевое сосредоточение."
+    }
+  ],
+  "effectResolutionReceipts": []
+}
+```
+
+The five source-owned stack policies and their required fields are:
+
+```json
+{
+  "stackingPolicyMatrix": [
+    { "stackKey": "independent-example", "policy": "independent", "maxStacks": 3, "atMaximum": "no_change", "refreshMode": null, "mergeRule": null },
+    { "stackKey": "stack-example", "policy": "stack", "maxStacks": 3, "atMaximum": "no_change", "refreshMode": null, "mergeRule": null },
+    { "stackKey": "refresh-example", "policy": "refresh", "maxStacks": 1, "atMaximum": "refresh", "refreshMode": "reset", "mergeRule": null },
+    { "stackKey": "replace-example", "policy": "replace", "maxStacks": 1, "atMaximum": "no_change", "refreshMode": null, "mergeRule": null },
+    { "stackKey": "merge-example", "policy": "merge", "maxStacks": 3, "atMaximum": "no_change", "refreshMode": null, "mergeRule": "sum" }
+  ]
+}
+```
+
+## effect_mortal_dispel_v1
+
+An accepted turn may request a dispel only for the exact opaque effect identity
+shown by the current technical context. The authority kind must be one of that
+effect definition's `removal.dispelCategories[]`; here it matches the
+`mental_disruption` category declared by `battle-focus` above. The command does
+not repeat a source definition, parameters, remaining lifetime, or post-state.
+
+```json
+{
+  "effectChanges": [
+    {
+      "operation": "dispel",
+      "effectId": "effect_battle_focus_7f9c2a",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "authority": {
+        "kind": "mental_disruption",
+        "authorityId": "countermeasure_turn_43"
+      },
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_43" },
+      "reason": "Принятый контрприём рассеял боевое сосредоточение."
+    }
+  ]
+}
+```
+
+The client resolves the exact active identity, verifies target and authority,
+and publishes the terminal transition. The GM never deletes or rewrites
+`activeEffects[]` directly.
+
+## effect_mortal_lifetimes_v1
+
+All eight lifetime modes are explicit; there is no numeric sentinel:
+
+```json
+{
+  "lifetimeMatrix": [
+    { "mode": "turns", "initialTurns": 3, "advancePhase": "owner_turn_end" },
+    { "mode": "uses", "initialUses": 2, "consumingEventTypes": ["owner_damaged"] },
+    { "mode": "until_time", "duration": 60, "timeAuthority": "world_time.currentTimeInMinutes" },
+    { "mode": "scene", "onSceneExit": "expire" },
+    { "mode": "source_bound", "activePredicate": "equipped", "onSourceLoss": "suspend" },
+    { "mode": "condition_bound", "conditionKey": "hunger_threshold", "operandBounds": { "minimum": 50, "maximum": 100 }, "onConditionLoss": "expire" },
+    { "mode": "permanent" },
+    { "mode": "manual", "authorities": ["ritual_cleansing"] }
+  ]
+}
+```
+
+For `uses`, every consuming event must have exactly one trigger with `consumeUses=true`. `until_time` stores source duration only; the client computes the deadline. `scene`, source/condition loss, expiry, and manual closure are client lifecycle transitions, not carrier edits.
+
+## effect_mortal_source_families_v1
+
+Supported exact source kinds are `skill`, `spiritual_art`, `item`, `wound`, `quest`, `location`, `hazard`, `faction`, `world_event`, `fate_card`, and `combat_action`. Representative selectors:
+
+```json
+{
+  "sourceSelectors": [
+    { "kind": "skill", "sourceId": "skill_battle_focus", "definitionKey": "battle-focus" },
+    { "kind": "spiritual_art", "sourceId": "art_resonant_guard", "definitionKey": "resonant-guard" },
+    { "kind": "item", "sourceId": "item_runic_glove", "definitionKey": "runic-guard" },
+    { "kind": "wound", "sourceId": "wound_torn_side", "definitionKey": "torn-side-consequence" },
+    { "kind": "quest", "sourceId": "quest_oath_of_ashes", "definitionKey": "oath-burden" },
+    { "kind": "location", "sourceId": "location_whispering_marsh", "definitionKey": "marsh-miasma" },
+    { "kind": "hazard", "sourceId": "hazard_black_spores", "definitionKey": "spore-fever" },
+    { "kind": "faction", "sourceId": "faction_ashen_watch", "definitionKey": "watch-ward" },
+    { "kind": "world_event", "sourceId": "event_blood_moon", "definitionKey": "blood-moon-pressure" },
+    { "kind": "fate_card", "sourceId": "card_turning_blade", "definitionKey": "turning-blade" },
+    { "kind": "combat_action", "sourceId": "action_stunning_ambush", "definitionKey": "ambush-stun" }
+  ]
+}
+```
+
+The source must exist, be current/active/unlocked/equipped as required, allow the exact realm/target, and own the definition key. Never infer one from display prose.
+
+## effect_mortal_source_worked_v1
+
+These four source records show complete owner definitions for the source
+families whose mechanics are easiest to confuse with direct carrier edits.
+Each definition remains on its exact quest, location, hazard, or wound owner;
+none of these records applies itself merely by existing.
+
+```json
+{
+  "sourceOwners": [
+    {
+      "kind": "quest",
+      "sourceId": "quest_oath_of_ashes",
+      "owner": {
+        "questId": "quest_oath_of_ashes",
+        "status": "active",
+        "activeEffectDefinitions": [
+          {
+            "schemaVersion": 1,
+            "definitionKey": "oath-burden",
+            "display": {
+              "name": "Бремя пепельной клятвы",
+              "description": "Незавершённая клятва сковывает движения героя.",
+              "category": "debuff",
+              "visibility": "visible"
+            },
+            "allowedRealms": ["mortal_world"],
+            "allowedTargetKinds": ["player"],
+            "components": [
+              {
+                "componentId": "oath_dexterity",
+                "profile": "characteristic_modifier",
+                "priority": 100,
+                "payload": {
+                  "characteristic": "dexterity",
+                  "operation": "flat",
+                  "value": -1
+                }
+              }
+            ],
+            "parameterBounds": {
+              "value": { "kind": "number", "minimum": -2, "maximum": -1 }
+            },
+            "stacking": {
+              "stackKey": "oath-burden",
+              "policy": "refresh",
+              "maxStacks": 1,
+              "atMaximum": "refresh",
+              "refreshMode": "reset",
+              "mergeRule": null
+            },
+            "lifetime": {
+              "mode": "turns",
+              "initialTurns": 3,
+              "advancePhase": "owner_turn_end"
+            },
+            "triggers": [
+              {
+                "triggerId": "oath_owner_turn_end",
+                "eventType": "owner_turn_end",
+                "priority": 100,
+                "componentIds": ["oath_dexterity"],
+                "consumeUses": false,
+                "resolutionMode": "deterministic"
+              }
+            ],
+            "removal": {
+              "dispelCategories": ["oath_breaking"],
+              "cureKinds": ["quest_resolution"],
+              "onSourceLoss": "expire",
+              "onConditionLoss": null,
+              "manualAuthorities": []
+            },
+            "links": []
+          }
+        ]
+      }
+    },
+    {
+      "kind": "location",
+      "sourceId": "location_whispering_marsh",
+      "owner": {
+        "locationId": "location_whispering_marsh",
+        "status": "active",
+        "activeEffectDefinitions": [
+          {
+            "schemaVersion": 1,
+            "definitionKey": "marsh-miasma",
+            "display": {
+              "name": "Миазмы Шепчущей топи",
+              "description": "Тяжёлый воздух ослабляет сопротивление яду.",
+              "category": "debuff",
+              "visibility": "visible"
+            },
+            "allowedRealms": ["mortal_world"],
+            "allowedTargetKinds": ["player"],
+            "components": [
+              {
+                "componentId": "miasma_poison_resistance",
+                "profile": "resistance_modifier",
+                "priority": 100,
+                "payload": {
+                  "resistance": "poison",
+                  "operation": "flat",
+                  "value": -10,
+                  "cap": { "minimum": -100, "maximum": 100 }
+                }
+              }
+            ],
+            "parameterBounds": {
+              "value": { "kind": "number", "minimum": -20, "maximum": -5 }
+            },
+            "stacking": {
+              "stackKey": "marsh-miasma",
+              "policy": "refresh",
+              "maxStacks": 1,
+              "atMaximum": "refresh",
+              "refreshMode": "reset",
+              "mergeRule": null
+            },
+            "lifetime": {
+              "mode": "turns",
+              "initialTurns": 2,
+              "advancePhase": "owner_turn_end"
+            },
+            "triggers": [
+              {
+                "triggerId": "miasma_owner_turn_end",
+                "eventType": "owner_turn_end",
+                "priority": 100,
+                "componentIds": ["miasma_poison_resistance"],
+                "consumeUses": false,
+                "resolutionMode": "deterministic"
+              }
+            ],
+            "removal": {
+              "dispelCategories": ["wind_cleansing"],
+              "cureKinds": ["leave_location"],
+              "onSourceLoss": "expire",
+              "onConditionLoss": null,
+              "manualAuthorities": []
+            },
+            "links": []
+          }
+        ]
+      }
+    },
+    {
+      "kind": "hazard",
+      "sourceId": "hazard_black_spores",
+      "owner": {
+        "hazardId": "hazard_black_spores",
+        "status": "active",
+        "activeEffectDefinitions": [
+          {
+            "schemaVersion": 1,
+            "definitionKey": "spore-fever",
+            "display": {
+              "name": "Споровая лихорадка",
+              "description": "Чёрные споры сковывают движение.",
+              "category": "debuff",
+              "visibility": "visible"
+            },
+            "allowedRealms": ["mortal_world"],
+            "allowedTargetKinds": ["player"],
+            "components": [
+              {
+                "componentId": "spore_movement_control",
+                "profile": "action_control",
+                "priority": 100,
+                "payload": { "action": "movement", "operation": "restrict" }
+              }
+            ],
+            "parameterBounds": {},
+            "stacking": {
+              "stackKey": "spore-fever",
+              "policy": "refresh",
+              "maxStacks": 1,
+              "atMaximum": "refresh",
+              "refreshMode": "reset",
+              "mergeRule": null
+            },
+            "lifetime": {
+              "mode": "turns",
+              "initialTurns": 2,
+              "advancePhase": "owner_turn_end"
+            },
+            "triggers": [
+              {
+                "triggerId": "spore_owner_turn_end",
+                "eventType": "owner_turn_end",
+                "priority": 100,
+                "componentIds": ["spore_movement_control"],
+                "consumeUses": false,
+                "resolutionMode": "deterministic"
+              }
+            ],
+            "removal": {
+              "dispelCategories": ["air_purification"],
+              "cureKinds": ["antitoxin"],
+              "onSourceLoss": "expire",
+              "onConditionLoss": null,
+              "manualAuthorities": []
+            },
+            "links": []
+          }
+        ]
+      }
+    },
+    {
+      "kind": "wound",
+      "sourceId": "wound_torn_side",
+      "owner": {
+        "woundId": "wound_torn_side",
+        "status": "active",
+        "severity": "severe",
+        "activeEffectDefinitions": [
+          {
+            "schemaVersion": 1,
+            "definitionKey": "torn-side-consequence",
+            "display": {
+              "name": "Последствие рваной раны",
+              "description": "Рана мешает двигаться, пока остаётся активной.",
+              "category": "debuff",
+              "visibility": "visible"
+            },
+            "allowedRealms": ["mortal_world"],
+            "allowedTargetKinds": ["player"],
+            "components": [
+              {
+                "componentId": "torn_side_consequence",
+                "profile": "wound_consequence",
+                "priority": 100,
+                "payload": {
+                  "woundId": "wound_torn_side",
+                  "symptom": "bleeding",
+                  "consequence": "action_control"
+                }
+              }
+            ],
+            "parameterBounds": {},
+            "stacking": {
+              "stackKey": "torn-side-consequence",
+              "policy": "stack",
+              "maxStacks": 3,
+              "atMaximum": "no_change",
+              "refreshMode": null,
+              "mergeRule": null
+            },
+            "lifetime": {
+              "mode": "source_bound",
+              "activePredicate": "active",
+              "onSourceLoss": "expire"
+            },
+            "triggers": [
+              {
+                "triggerId": "torn_side_owner_turn_end",
+                "eventType": "owner_turn_end",
+                "priority": 100,
+                "componentIds": ["torn_side_consequence"],
+                "consumeUses": false,
+                "resolutionMode": "deterministic"
+              }
+            ],
+            "removal": {
+              "dispelCategories": ["physical_treatment"],
+              "cureKinds": ["stop_bleeding"],
+              "onSourceLoss": "expire",
+              "onConditionLoss": null,
+              "manualAuthorities": []
+            },
+            "links": [
+              { "kind": "wound", "targetId": "wound_torn_side", "role": "source" }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+The accepted response applies those policies only through top-level commands:
+
+```json
+{
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "source": {
+        "kind": "quest",
+        "sourceId": "quest_oath_of_ashes",
+        "definitionKey": "oath-burden"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_45" },
+      "reason": "Принятая сцена активировала бремя незавершённой клятвы."
+    },
+    {
+      "operation": "apply",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "source": {
+        "kind": "location",
+        "sourceId": "location_whispering_marsh",
+        "definitionKey": "marsh-miasma"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_45" },
+      "reason": "Герой вошёл в насыщенный миазмами участок топи."
+    },
+    {
+      "operation": "apply",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "source": {
+        "kind": "hazard",
+        "sourceId": "hazard_black_spores",
+        "definitionKey": "spore-fever"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_45" },
+      "reason": "Герой пересёк облако активных чёрных спор."
+    },
+    {
+      "operation": "apply",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "source": {
+        "kind": "wound",
+        "sourceId": "wound_torn_side",
+        "definitionKey": "torn-side-consequence"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_45" },
+      "reason": "Принятая рана стала активным источником отдельного последствия."
+    }
+  ]
+}
+```
+
+The client validates each exact identity and definition key before it creates
+any `activeEffects[]` carrier. Healing remains a separate accepted wound
+transition even when the same turn also removes the wound-derived effect.
+
+## effect_wound_independence_v1
+
+A wound-consequence definition contains one exact wound component and one exact wound source link. The effect planner can observe the wound but cannot write it.
+
+```json
+{
+  "component": {
+    "componentId": "torn_side_consequence",
+    "profile": "wound_consequence",
+    "priority": 100,
+    "payload": {
+      "woundId": "wound_torn_side",
+      "symptom": "bleeding",
+      "consequence": "periodic_damage"
+    }
+  },
+  "lifetime": { "mode": "source_bound", "activePredicate": "active", "onSourceLoss": "expire" },
+  "links": [
+    { "kind": "wound", "targetId": "wound_torn_side", "role": "source" }
+  ]
+}
+```
+
+Effect removal never heals or deletes the wound. A treatment turn submits the accepted wound transition and, if authorized, a separate effect removal request. An effect-only removal must leave the wound carrier byte-semantically unchanged.
+
+## effect_bounded_repair_v1
+
+Only one exact missing source parameter may produce an actionable packet after baseline restoration:
+
+```json
+{
+  "fullTurnResubmissionRequired": true,
+  "requiredResubmissionPaths": [
+    "game_state/effects/effect_commands.json",
+    "output/narrative_response.json",
+    "output/interface_updates.json"
+  ],
+  "harnessRepairPackets": [
+    {
+      "kind": "effect_materialization_repair",
+      "actor": "effect-apply:effectChanges[0]",
+      "route": "effectChanges",
+      "rawCoordinate": "effectChanges[0].parameters.intensity",
+      "expectedSource": { "kind": "wound", "sourceId": "wound_torn_side" },
+      "expectedTarget": { "kind": "player", "targetId": "player_current" },
+      "expectedDefinitionKey": "bleeding-consequence",
+      "expectedEventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+      "exactFieldCorrections": [
+        {
+          "path": "effectChanges[0].parameters.intensity",
+          "expectedValue": "severe",
+          "code": "effect_source_parameter_required",
+          "repairHint": "Restore the full accepted response and add only the exact missing bounded parameter."
+        }
+      ],
+      "targetFiles": ["game_state/effects/effect_commands.json"],
+      "fullTurnResubmissionRequired": true,
+      "resubmissionObligations": ["effectChanges[0]", "complete accepted turn response"]
+    }
+  ]
+}
+```
+
+This request-level list is GM-authored only: the rejected attempt changed the
+effect command, narrative, and interface, so all three are regenerated from the
+restored baseline. Client-owned `system_mods.json`, `progression_schedule.json`,
+the resource definitions/state/history/owner-authority quartet,
+`pending_effect_resolutions.json`, and `effect_identity_index.json` are absent
+from `requiredResubmissionPaths`; the client restores or republishes them.
+
+The GM rereads the current repair request, restores no protected file manually, resubmits the complete turn, and finishes through the repair terminal protocol. Identity/source/target/realm/stack/history/receipt/direct-mutation failures never receive this packet.
+
+## effect_legacy_rejection_v1
+
+INVALID — explicitly rejected pre-v1 input, retained only as a negative test:
+
+```json
+{
+  "playerActiveEffectsChanges": [
+    {
+      "effectType": "Buff",
+      "description": "Permanent because prose says so",
+      "duration": 999
+    }
+  ],
+  "NPCEffectChanges": []
+}
+```
+
+This must fail before publication. There is no runtime migration. The client does not translate aliases, prose mechanics, magic duration values, direct non-empty carriers, or GM-authored identities into Effect Materialization v1.

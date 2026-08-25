@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -120,6 +121,12 @@ public class StateManager
         await RefreshGameStateCoreAsync(writeLease);
     }
 
+    internal async Task RefreshGameStateAfterExactRollbackAsync()
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        await RefreshGameStateCoreAsync(writeLease);
+    }
+
     private async Task RefreshGameStateCoreAsync(
         FileSystemManager.CanonicalWriteLease writeLease)
     {
@@ -131,9 +138,6 @@ public class StateManager
             var root = doc.RootElement;
             state.PlayerStatus = new PlayerStatusState
             {
-                HealthPercentage = GetString(root, "healthPercentage", "100%"),
-                EnergyPercentage = GetString(root, "energyPercentage", "100%"),
-                PoisePercentage = GetString(root, "poisePercentage", "100%"),
                 CurrentCondition = GetString(root, "currentCondition", "Здоров"),
                 CurrentConditionDescription = GetString(root, "currentConditionDescription", ""),
                 ActiveConditions = GetStringArray(root, "activeConditions")
@@ -142,6 +146,8 @@ public class StateManager
             state.CharacterClass = GetString(root, "characterClass", state.CharacterClass);
             state.CharacterRace = GetString(root, "characterRace", state.CharacterRace);
         });
+
+        await LoadMortalPlayerResourceProjectionAsync(writeLease, state);
 
         // Core: Narrative
         await TryLoadJson(writeLease, "output/narrative_response.json", (doc) =>
@@ -424,6 +430,52 @@ public class StateManager
 
         return null;
     }
+
+    private async Task LoadMortalPlayerResourceProjectionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AggregatedGameState state)
+    {
+        var projection = ResourceProjectionService.ProjectCanonical(
+            await _fs.ReadFileAsync(writeLease, ResourceMaterializationContract.DefinitionsPath),
+            await _fs.ReadFileAsync(writeLease, ResourceMaterializationContract.StatePath),
+            await _fs.ReadFileAsync(writeLease, ResourceMaterializationContract.HistoryPath),
+            new[]
+            {
+                new ResourceProjectionOwnerScope(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Player,
+                        "player_current"),
+                    "герой",
+                    IsOwningPlayer: true)
+            },
+            ResourceProjectionAudience.Player);
+        if (!projection.IsAvailable)
+            return;
+
+        var health = projection.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "health", StringComparison.Ordinal));
+        var energy = projection.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "energy", StringComparison.Ordinal));
+        var poise = projection.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "poise", StringComparison.Ordinal));
+        if (health is not { Percentage: not null, State: ResourceLifecycleState.Active } ||
+            energy is not { Percentage: not null, State: ResourceLifecycleState.Active } ||
+            poise is not { Percentage: not null, State: ResourceLifecycleState.Active })
+        {
+            return;
+        }
+
+        state.PlayerStatus.HealthPercentage = FormatPercentage(health.Percentage.Value);
+        state.PlayerStatus.EnergyPercentage = FormatPercentage(energy.Percentage.Value);
+        state.PlayerStatus.PoisePercentage = FormatPercentage(poise.Percentage.Value);
+        state.PlayerStatus.ResourceProjectionAvailable = true;
+        state.PlayerStatus.ResourceUnavailableMessage = string.Empty;
+        state.PlayerStatus.Resources = projection.Rows;
+    }
+
+    private static string FormatPercentage(decimal value) =>
+        value.ToString("0.##", CultureInfo.InvariantCulture) + "%";
 
     private async Task TryLoadJson(
         FileSystemManager.CanonicalWriteLease writeLease,

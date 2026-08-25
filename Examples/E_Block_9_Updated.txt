@@ -231,24 +231,28 @@
 
                                     # Tool Durability Loss (Full Success = 1%-3% loss):
                                     - "Blacksmith's Hammer" (ID: hammer-001):
-                                      * Previous durability: 85%
-                                      * Durability loss: 2% (normal wear and tear)
-                                      * New durability: 83%
+                                      * Client projection before crafting: 85/100
+                                      * Requested durability damage: 2 (normal wear and tear)
 
                                     - "Tongs" (ID: tongs-001):
-                                      * Previous durability: 70%
-                                      * Durability loss: 1% (minimal wear)
-                                      * New durability: 69%
+                                      * Client projection before crafting: 70/100
+                                      * Requested durability damage: 1 (minimal wear)
 
                                     # JSON Update Required:
-                                    "UpdateInventory": [
+                                    "resourceChanges": [
                                         {
-                                            "existedId": "hammer-001",
-                                            "durability": "83%"
+                                            "operation": "damage",
+                                            "target": { "kind": "item", "targetId": "hammer-001" },
+                                            "resourceKey": "durability", "amount": 2,
+                                            "source": { "kind": "local_item_outcome", "sourceId": "hammer-001" },
+                                            "eventRef": "turn_42:resource:1", "reason": "Normal crafting wear."
                                         },
                                         {
-                                            "existedId": "tongs-001",
-                                            "durability": "69%"
+                                            "operation": "damage",
+                                            "target": { "kind": "item", "targetId": "tongs-001" },
+                                            "resourceKey": "durability", "amount": 1,
+                                            "source": { "kind": "local_item_outcome", "sourceId": "tongs-001" },
+                                            "eventRef": "turn_42:resource:2", "reason": "Minimal crafting wear."
                                         }
                                     ]
 

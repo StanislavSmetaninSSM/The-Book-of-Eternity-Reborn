@@ -227,7 +227,7 @@ public partial class CanonicalStateNormalizer
                         if (createdGuardian != null)
                         {
                             AbodePowerRules.EnsureCanonicalState(createdGuardian);
-                            GuardianGachaChargeRules.NormalizeGuardianGachaState(createdGuardian);
+                            GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(createdGuardian);
                             if (TryAddGuardian(guardians, createdGuardian) && root["activeGuardian"] == null)
                                 root["activeGuardian"] = createdGuardian.DeepClone();
                         }
@@ -257,7 +257,7 @@ public partial class CanonicalStateNormalizer
                             ["reason"] = GetNodeString(commandNode["reason"]) ?? "",
                             ["timestamp"] = DateTime.UtcNow.ToString("o")
                         });
-                        GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+                        GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardian);
                         SyncActiveGuardian(root, guardianId!, guardian);
                     }
                     break;
@@ -300,32 +300,9 @@ public partial class CanonicalStateNormalizer
                     break;
 
                 case "processGacha":
-                    {
-                        var guardianId = GetNodeString(commandNode["guardianId"]);
-                        if (string.IsNullOrWhiteSpace(guardianId))
-                            break;
-                        var guardian = FindGuardian(guardians, guardianId!);
-                        if (guardian == null)
-                            break;
-                        var (chargesPerReturn, normalizedUsedCharges) = GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
-                        var gacha = guardian["gachaSystem"] as JsonObject ?? new JsonObject();
-                        var history = EnsureArray(gacha, "gachaHistory");
-                        var resultNode = commandNode["result"] as JsonObject;
-                        var eventId = $"guardian_gacha_{guardianId}_{currentTurn}_{Guid.NewGuid():N}";
-                        history.Add(new JsonObject
-                        {
-                            ["eventId"] = eventId,
-                            ["relicId"] = resultNode != null ? GetNodeString(resultNode["relicId"]) ?? GetNodeString(resultNode["name"]) ?? "" : "",
-                            ["costInFeathers"] = GetNodeInt(commandNode["inkFeathersSpent"]),
-                            ["finalRarity"] = resultNode != null ? GetNodeString(resultNode["rarity"]) ?? GetNodeString(resultNode["quality"]) ?? "" : "",
-                            ["timestamp"] = DateTime.UtcNow.ToString("o"),
-                            ["gachaBonusAudit"] = commandNode["gachaBonusAudit"]?.DeepClone()
-                        });
-                        gacha["chargesPerReturn"] = chargesPerReturn;
-                        gacha["chargesUsedThisReturn"] = Math.Clamp(normalizedUsedCharges + 1, 0, chargesPerReturn);
-                        guardian["gachaSystem"] = gacha;
-                        SyncActiveGuardian(root, guardianId!, guardian);
-                    }
+                    // The common accepted-mechanics plan owns both the spend and
+                    // the history append. Publication consumes this command only
+                    // after its immutable resource transition is proven.
                     break;
 
                 case "addMusings":
@@ -880,7 +857,7 @@ public partial class CanonicalStateNormalizer
 
         if (guardian != null)
         {
-            GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+            GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardian);
             return guardian;
         }
 
@@ -889,7 +866,7 @@ public partial class CanonicalStateNormalizer
 
     private static bool TryAddGuardian(JsonArray guardians, JsonObject guardian)
     {
-        GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardian);
         var guardianId = GetNodeString(guardian["guardianId"]);
         var existing = guardians
             .OfType<JsonObject>()
@@ -1283,7 +1260,7 @@ public partial class CanonicalStateNormalizer
     {
         var existing = quests
             .OfType<JsonObject>()
-            .FirstOrDefault(item => MatchesByAnyIdentity(item, candidate, "questId", "initialId", "questName", "title", "name"));
+            .FirstOrDefault(item => MatchesQuestIdentity(item, candidate));
 
         var appendEntry = GetNodeString(candidate["__appendDetailsLogEntry"]);
         candidate.Remove("__appendDetailsLogEntry");
@@ -1306,6 +1283,31 @@ public partial class CanonicalStateNormalizer
             detailsLog.Add(appendEntry);
         }
         quests.Add(clone);
+    }
+
+    private static bool MatchesQuestIdentity(JsonObject left, JsonObject right)
+    {
+        var leftQuestId = GetNodeString(left["questId"]);
+        var rightQuestId = GetNodeString(right["questId"]);
+        if (!string.IsNullOrWhiteSpace(leftQuestId) ||
+            !string.IsNullOrWhiteSpace(rightQuestId))
+        {
+            return !string.IsNullOrWhiteSpace(leftQuestId) &&
+                   !string.IsNullOrWhiteSpace(rightQuestId) &&
+                   string.Equals(leftQuestId, rightQuestId, StringComparison.Ordinal);
+        }
+
+        var leftInitialId = GetNodeString(left["initialId"]);
+        var rightInitialId = GetNodeString(right["initialId"]);
+        if (!string.IsNullOrWhiteSpace(leftInitialId) ||
+            !string.IsNullOrWhiteSpace(rightInitialId))
+        {
+            return !string.IsNullOrWhiteSpace(leftInitialId) &&
+                   !string.IsNullOrWhiteSpace(rightInitialId) &&
+                   string.Equals(leftInitialId, rightInitialId, StringComparison.Ordinal);
+        }
+
+        return MatchesByAnyIdentity(left, right, "questName", "title", "name");
     }
 
     private static bool MatchesByAnyIdentity(JsonObject left, JsonObject right, params string[] keys)

@@ -6,8 +6,8 @@
       "nameVariants": {
         "default": "Азалия",
         "feminine": "Азалия",
-        "masculine": null,
-        "neutral": null
+        "masculine": "Азалия",
+        "neutral": "Азалия"
       },
       "manifestation": {
         "currentDisplayName": "Азалия",
@@ -35,8 +35,7 @@
         "completedQuests": []
       },
       "gachaSystem": {
-        "chargesPerReturn": 2,
-        "chargesUsedThisReturn": 0,
+        "currentReturnCycleId": "",
         "gachaHistory": []
       }
     }
@@ -47,8 +46,8 @@
     "nameVariants": {
       "default": "Азалия",
       "feminine": "Азалия",
-      "masculine": null,
-      "neutral": null
+      "masculine": "Азалия",
+      "neutral": "Азалия"
     },
     "manifestation": {
       "currentDisplayName": "Азалия",
@@ -76,8 +75,7 @@
       "completedQuests": []
     },
     "gachaSystem": {
-      "chargesPerReturn": 2,
-      "chargesUsedThisReturn": 0,
+      "currentReturnCycleId": "",
       "gachaHistory": []
     }
   },

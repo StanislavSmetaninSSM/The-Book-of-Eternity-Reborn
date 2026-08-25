@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "resource_legacy_player_gauge_forbidden"
+  ],
+  "expectedMessages": [
+    "healthPercentage is a removed persisted resource authority; read health from the client-owned resource ledger"
+  ]
+}

@@ -56,6 +56,14 @@ internal sealed partial class MortalItemTransitionWriter
                 state,
                 beforeCatalog,
                 beforeIndex),
+            MortalItemTransitionKind.Consume => await ExecuteTerminalAsync(
+                writeLease,
+                intent,
+                state,
+                beforeCatalog,
+                beforeIndex,
+                terminalState: "consumed",
+                transitionKind: "consume"),
             MortalItemTransitionKind.Destroy => await ExecuteDestroyAsync(
                 writeLease,
                 intent,
@@ -95,6 +103,15 @@ internal sealed partial class MortalItemTransitionWriter
         }
 
         var childId = NewUniqueItemId(beforeCatalog, beforeIndex);
+        var resourcePreparation = await PrepareSplitItemResourcesAsync(
+            writeLease,
+            intent,
+            sourceId,
+            childId,
+            source.Quantity,
+            intent.Quantity);
+        if (!resourcePreparation.Success)
+            return MortalItemTransitionResult.Failed(resourcePreparation.Error!);
         var parentReceiptBefore = source.Item[MortalItemMaterializationContract.ReceiptProperty]!.DeepClone();
         source.Item["count"] = source.Quantity - intent.Quantity;
 
@@ -183,7 +200,8 @@ internal sealed partial class MortalItemTransitionWriter
             writeLease,
             state,
             carrier,
-            normalizedIndex.Root);
+            normalizedIndex.Root,
+            resourcePreparation.Writes);
         return committed
             ? new MortalItemTransitionResult(
                 true,
@@ -254,6 +272,13 @@ internal sealed partial class MortalItemTransitionWriter
                 "Итоговое количество объединения устарело или выходит за допустимый диапазон.");
         }
         var totalQuantity = (int)totalQuantityLong;
+        var resourcePreparation = await PrepareMergeItemResourcesAsync(
+            writeLease,
+            intent,
+            sourceIds,
+            survivorId);
+        if (!resourcePreparation.Success)
+            return MortalItemTransitionResult.Failed(resourcePreparation.Error!);
         var survivorReceiptBefore = survivor.Item[MortalItemMaterializationContract.ReceiptProperty]!.DeepClone();
         survivor.Item["count"] = totalQuantity;
 
@@ -360,7 +385,8 @@ internal sealed partial class MortalItemTransitionWriter
             writeLease,
             state,
             carrier,
-            normalizedIndex.Root);
+            normalizedIndex.Root,
+            resourcePreparation.Writes);
         return committed
             ? MortalItemTransitionResult.Completed(
                 survivorId,
@@ -374,7 +400,24 @@ internal sealed partial class MortalItemTransitionWriter
         MortalItemTransitionIntent intent,
         LoadedState state,
         MortalItemCarrierCatalog beforeCatalog,
-        MortalItemIdentityParseResult beforeIndex)
+        MortalItemIdentityParseResult beforeIndex) =>
+        await ExecuteTerminalAsync(
+            writeLease,
+            intent,
+            state,
+            beforeCatalog,
+            beforeIndex,
+            terminalState: "destroyed",
+            transitionKind: "destroy");
+
+    private async Task<MortalItemTransitionResult> ExecuteTerminalAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalItemTransitionIntent intent,
+        LoadedState state,
+        MortalItemCarrierCatalog beforeCatalog,
+        MortalItemIdentityParseResult beforeIndex,
+        string terminalState,
+        string transitionKind)
     {
         var carrier = intent.SourceCarrier!;
         var items = ResolveCarrierArray(state, carrier, createIfMissing: false, out var carrierError);
@@ -399,6 +442,13 @@ internal sealed partial class MortalItemTransitionWriter
                 "Предмет связан с container, quest, bond или другим companion и не может быть уничтожен локально.");
         }
 
+        var resourcePreparation = await PrepareTerminalItemResourcesAsync(
+            writeLease,
+            intent,
+            itemId);
+        if (!resourcePreparation.Success)
+            return MortalItemTransitionResult.Failed(resourcePreparation.Error!);
+
         ClearInlineEquipmentReference(state, carrier, itemId);
         var itemIndex = items.IndexOf(source.Item);
         if (itemIndex < 0)
@@ -407,13 +457,13 @@ internal sealed partial class MortalItemTransitionWriter
 
         var currentIndex = MortalItemIdentityState.Parse(beforeIndex.Root.DeepClone());
         var currentEntry = currentIndex.EntriesByItemId[itemId];
-        currentEntry["state"] = "destroyed";
+        currentEntry["state"] = terminalState;
         currentEntry["currentCarrier"] = null;
         currentEntry["mergedIntoItemId"] = null;
         MortalItemIdentityState.AppendTransition(
             currentEntry,
             MortalItemIdentityState.CreateTransition(
-                "destroy",
+                transitionKind,
                 intent.Turn,
                 new[] { itemId },
                 CreateCarrierNode(carrier),
@@ -444,11 +494,16 @@ internal sealed partial class MortalItemTransitionWriter
             writeLease,
             state,
             carrier,
-            normalizedIndex.Root);
+            normalizedIndex.Root,
+            resourcePreparation.Writes);
         return committed
-            ? MortalItemTransitionResult.Completed(itemId, "Предмет уничтожен без создания ground loot.")
+            ? MortalItemTransitionResult.Completed(
+                itemId,
+                terminalState == "consumed"
+                    ? "Предмет терминально израсходован вместе со всеми ресурсами."
+                    : "Предмет уничтожен без создания ground loot.")
             : MortalItemTransitionResult.Failed(
-                "Игровое состояние изменилось во время уничтожения; исходные данные сохранены.");
+                "Игровое состояние изменилось во время терминального item transition; исходные данные сохранены.");
     }
 
     private static ActiveItem? ResolveActiveItem(
@@ -529,13 +584,20 @@ internal sealed partial class MortalItemTransitionWriter
         FileSystemManager.CanonicalWriteLease writeLease,
         LoadedState state,
         MortalItemCarrierCoordinate carrier,
-        JsonObject indexRoot)
+        JsonObject indexRoot,
+        IReadOnlyList<CoordinatedStateWriteHelper.PlannedWrite>? resourceWrites = null)
     {
         state.IdentityIndexRoot = indexRoot;
+        var writes = BuildWrites(
+                state,
+                new[] { PathForCarrier(carrier) },
+                mutation: null)
+            .Concat(resourceWrites ?? Array.Empty<CoordinatedStateWriteHelper.PlannedWrite>())
+            .ToArray();
         return await CoordinatedStateWriteHelper.TryCommitAsync(
             _fs,
             writeLease,
-            BuildWrites(state, new[] { PathForCarrier(carrier) }, mutation: null));
+            writes);
     }
 
     private static JsonObject CreateStackSemanticProjection(JsonObject item)
@@ -599,6 +661,7 @@ internal sealed partial class MortalItemTransitionWriter
     {
         if (intent.Kind is not (MortalItemTransitionKind.Split or
             MortalItemTransitionKind.Merge or
+            MortalItemTransitionKind.Consume or
             MortalItemTransitionKind.Destroy))
         {
             return "Неподдерживаемый стековый переход.";
@@ -616,12 +679,12 @@ internal sealed partial class MortalItemTransitionWriter
             return "Стековый переход содержит неверную identity, carrier, quantity, turn или authority.";
         }
 
-        if (intent.Kind == MortalItemTransitionKind.Destroy)
+        if (intent.Kind is MortalItemTransitionKind.Consume or MortalItemTransitionKind.Destroy)
         {
             return intent.SourceItemIds.Count == 1 && intent.DestinationCarrier == null &&
-                   intent.SurvivorItemId == null
+                   intent.SurvivorItemId == null && intent.ResourceDisposition == null
                 ? null
-                : "Destroy требует один source item и не допускает destination или survivor.";
+                : "Terminal item transition требует один source item и не допускает destination, survivor или stack disposition.";
         }
         if (intent.DestinationCarrier == null ||
             !SameCarrier(intent.SourceCarrier, intent.DestinationCarrier))

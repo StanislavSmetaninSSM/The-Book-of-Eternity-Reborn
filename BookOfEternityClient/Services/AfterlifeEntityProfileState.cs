@@ -13,6 +13,7 @@ internal static class AfterlifeEntityProfileState
     public const string CustomStateChangesProperty = "afterlifeEntityCustomStateChanges";
     public const string CustomStatesProperty = "customStates";
     public const string ProgressionOverridesProperty = "afterlifeEntityProgressionOverrides";
+    internal const string ResourceOwnerBindingsProperty = "resourceOwnerBindings";
     public const string SpecialArtLearningReceiptsProperty = "afterlifeSpecialArtLearningReceipts";
     public const string FateCardUnlocksProperty = "afterlifeFateCardUnlocks";
     public const string GoalUpdatesProperty = "afterlifeActorGoalUpdates";
@@ -61,6 +62,119 @@ internal static class AfterlifeEntityProfileState
         "Shining Abode",
         "Сияющая Обитель"
     };
+
+    internal static bool TryNormalizeEffectRealm(
+        string? realm,
+        out string normalizedRealm)
+    {
+        var value = realm?.Trim();
+        if (string.Equals(value, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "chaos_sea", StringComparison.Ordinal))
+        {
+            normalizedRealm = "chaos_sea";
+            return true;
+        }
+        if (string.Equals(value, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "shining_abode", StringComparison.Ordinal))
+        {
+            normalizedRealm = "shining_abode";
+            return true;
+        }
+
+        normalizedRealm = string.Empty;
+        return false;
+    }
+
+    internal static bool TryResolveEffectTarget(
+        JsonObject profile,
+        out EffectTargetKey target)
+    {
+        ArgumentNullException.ThrowIfNull(profile);
+        target = null!;
+        if (!TryReadExactEffectToken(profile["actorType"], out var actorType) ||
+            !TryReadExactEffectToken(profile["actorId"], out var actorId) ||
+            !TryReadExactEffectToken(profile["realm"], out var declaredRealm) ||
+            !TryNormalizeEffectRealm(declaredRealm, out var realm))
+        {
+            return false;
+        }
+
+        var targetKind = actorType.ToLowerInvariant() switch
+        {
+            "guardian" => "guardian",
+            "resident" or "shining_resident" => "resident",
+            "radiant_actor" => "radiant_actor",
+            "player_soul" => "player",
+            "shining_faction_head" or "saref_agent" or "system_actor" or
+                "custom_afterlife_actor" => "afterlife_actor",
+            _ => null
+        };
+        if (targetKind == null)
+            return false;
+
+        target = new EffectTargetKey(realm, targetKind, actorId);
+        return true;
+    }
+
+    private static bool TryReadExactEffectToken(JsonNode? node, out string value)
+    {
+        value = string.Empty;
+        if (node is not JsonValue jsonValue ||
+            !jsonValue.TryGetValue<string>(out var text) ||
+            string.IsNullOrEmpty(text) ||
+            !string.Equals(text, text.Trim(), StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        value = text;
+        return true;
+    }
+
+    internal static JsonObject ProjectPlayerSoulRealm(
+        JsonObject currentRoot,
+        string newRealm)
+    {
+        ArgumentNullException.ThrowIfNull(currentRoot);
+        if (!RealmSemantics.IsMortalRealm(newRealm) &&
+            !TryNormalizeEffectRealm(newRealm, out _))
+        {
+            throw new InvalidOperationException(
+                $"Unsupported player_soul lifecycle realm '{newRealm}'.");
+        }
+
+        var projected = currentRoot.DeepClone().AsObject();
+        if (projected[ProfilesProperty] is not JsonArray profiles)
+        {
+            throw new InvalidOperationException(
+                $"{StatePath}.{ProfilesProperty} должен быть array.");
+        }
+
+        var playerProfiles = profiles
+            .OfType<JsonObject>()
+            .Where(IsPlayerSoulProfile)
+            .ToArray();
+        if (playerProfiles.Length != 1)
+        {
+            throw new InvalidOperationException(
+                $"{StatePath} должен содержать ровно один exact player_soul profile для realm transition.");
+        }
+
+        // Mortal World is not an afterlife profile display realm. The common
+        // owner composer uses soul_state.currentRealm to suspend every
+        // realm-bound binding while preserving sealed realm-independent
+        // capabilities on the persistent player_soul identity.
+        if (RealmSemantics.IsMortalRealm(newRealm))
+            return projected;
+
+        TryNormalizeEffectRealm(newRealm, out var normalizedRealm);
+        playerProfiles[0]["realm"] = normalizedRealm == "chaos_sea"
+            ? "Chaos Sea"
+            : "Shining Abode";
+        return projected;
+    }
 
     public static readonly HashSet<string> StandardArtIds = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -410,11 +524,25 @@ internal static class AfterlifeEntityProfileState
             var replacement = CloneObject(profile);
             PreserveProgressionSettlement(existing, replacement);
             PreserveHistoricalMaterialization(existing, replacement);
+            PreserveResourceOwnerBindings(existing, replacement);
+            PreserveActiveEffects(existing, replacement);
             profiles[index] = replacement;
             return;
         }
 
-        profiles.Add(CloneObject(profile));
+        var addition = CloneObject(profile);
+        if (addition["activeEffects"] is not JsonArray)
+            addition["activeEffects"] = new JsonArray();
+        profiles.Add(addition);
+    }
+
+    private static void PreserveActiveEffects(
+        JsonObject existing,
+        JsonObject replacement)
+    {
+        replacement["activeEffects"] = existing["activeEffects"] is JsonArray effects
+            ? effects.DeepClone()
+            : new JsonArray();
     }
 
     private static void PreserveHistoricalMaterialization(JsonObject existing, JsonObject replacement)
@@ -427,6 +555,20 @@ internal static class AfterlifeEntityProfileState
         }
 
         replacement[ActorMaterializationContract.PropertyName] = historicalEnvelope.DeepClone();
+    }
+
+    private static void PreserveResourceOwnerBindings(
+        JsonObject existing,
+        JsonObject replacement)
+    {
+        if (replacement.ContainsKey(ResourceOwnerBindingsProperty) ||
+            existing[ResourceOwnerBindingsProperty] is not JsonArray bindings ||
+            !HasExactActorIdentity(existing, replacement))
+        {
+            return;
+        }
+
+        replacement[ResourceOwnerBindingsProperty] = bindings.DeepClone();
     }
 
     private static bool HasExactActorIdentity(JsonObject existing, JsonObject replacement)

@@ -189,7 +189,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
         var actions = Enumerable.Empty<UiAction>();
         if (!state.IsInAfterlifeRealm)
-            actions = await AddMortalStatusDetailBlocks(blocks, fs, state.PlayerStatus.ActiveConditions);
+            actions = await AddMortalStatusDetailBlocks(blocks, fs, state.PlayerStatus);
 
         return Completed(command, blocks, actions);
     }
@@ -206,9 +206,19 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         AddStatusRow(rows, "Локация", EmptyFallback(state.CurrentLocation));
         AddStatusRow(rows, "Время мира", EmptyFallback(ExplorerPlayerFacingLabels.WorldTime(state.WorldTime)));
         AddStatusRow(rows, "Состояние", EmptyFallback(state.PlayerStatus.CurrentCondition));
-        AddStatusRow(rows, "Здоровье", EmptyFallback(state.PlayerStatus.HealthPercentage));
-        AddStatusRow(rows, "Энергия", EmptyFallback(state.PlayerStatus.EnergyPercentage));
-        AddStatusRow(rows, "Равновесие", EmptyFallback(state.PlayerStatus.PoisePercentage));
+        if (!state.IsInAfterlifeRealm)
+        {
+            if (state.PlayerStatus.ResourceProjectionAvailable)
+            {
+                AddStatusRow(rows, "Здоровье", state.PlayerStatus.HealthPercentage);
+                AddStatusRow(rows, "Энергия", state.PlayerStatus.EnergyPercentage);
+                AddStatusRow(rows, "Равновесие", state.PlayerStatus.PoisePercentage);
+            }
+            else
+            {
+                AddStatusRow(rows, "Силы и запасы", state.PlayerStatus.ResourceUnavailableMessage);
+            }
+        }
         AddStatusRow(rows, "Чернильные Перья", state.InkFeathers.ToString());
         AddStatusRow(rows, "Просветление", EmptyFallback(state.EnlightenmentTier));
         AddStatusRow(rows, "Активный Хранитель", EmptyFallback(state.ActiveGuardianName));
@@ -226,7 +236,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
     private static async Task<IReadOnlyList<UiAction>> AddMortalStatusDetailBlocks(
         List<UiBlock> blocks,
         FileSystemManager fs,
-        IReadOnlyList<string> activeConditions)
+        PlayerStatusState playerStatus)
     {
         var statusRead = await ReadJson(fs, "game_state/core/player_status.json");
         var experienceRead = await ReadJson(fs, "game_state/player/experience.json");
@@ -234,7 +244,11 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         var inventoryRead = await ReadJson(fs, "game_state/inventory/items.json");
         var stealthRead = await ReadJson(fs, "game_state/player/stealth.json");
         var statusChangesRead = await ReadJson(fs, "game_state/player/status_changes.json");
-        var effectsRead = await ReadJson(fs, "game_state/player/effects.json");
+        var effectProjection = EffectPlayerProjection.Build(new EffectPlayerProjectionInput(
+            await EffectMechanicsSnapshot.LoadAsync(fs),
+            Realm: "mortal_world",
+            TargetKind: "player",
+            TargetId: "player_current"));
         var woundsRead = await ReadJson(fs, "game_state/player/wounds.json");
         var customStatesRead = await ReadJson(fs, "game_state/player/custom_states.json");
 
@@ -275,12 +289,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     stealthRows));
         }
 
-        if (activeConditions.Count > 0)
-        {
-            blocks.Add(BuildActiveConditionsDossier(activeConditions));
-        }
-
-        var changeRows = BuildMortalStatusChangeRows(statusChanges, experience);
+        var changeRows = BuildMortalStatusChangeRows(statusChanges, experience, playerStatus);
         if (changeRows.Count > 0)
             AddStatusRowsDossier(
                 blocks,
@@ -292,46 +301,11 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 ["Параметр", "Изменение", "Комментарий"],
                 changeRows);
 
-        AddMortalStatusEffectBlocks(blocks, effectsRead.Node);
+        AddMortalStatusEffectBlocks(blocks, effectProjection);
         AddMortalStatusWoundBlocks(blocks, woundsRead.Node);
         AddMortalStatusCustomStateBlocks(blocks, customStatesRead.Node);
 
-        return ExplorerMortalEffectDetailActions.Build("/эффекты", effectsRead.Node);
-    }
-
-    private static UiEntityDossierBlock BuildActiveConditionsDossier(IReadOnlyList<string> activeConditions)
-    {
-        var conditions = activeConditions
-            .Where(static condition => !string.IsNullOrWhiteSpace(condition))
-            .Select(static condition => condition.Trim())
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        return new UiEntityDossierBlock
-        {
-            EntityType = "status-active-conditions",
-            Title = "Активные состояния",
-            Subtitle = "Статус персонажа",
-            Summary = conditions.Count == 1
-                ? "Сейчас активно одно состояние."
-                : $"Сейчас активно {conditions.Count} состояний.",
-            Badges =
-            [
-                new UiEntityBadge { Label = FormatStatusEntryCount(conditions.Count), Icon = "activity", Tone = UiTone.Accent }
-            ],
-            Sections =
-            [
-                new UiEntityDossierSection
-                {
-                    Id = "active-conditions",
-                    Title = "Состояния",
-                    Icon = "activity",
-                    Presentation = "list",
-                    CollectionLabel = FormatStatusEntryCount(conditions.Count),
-                    List = conditions
-                }
-            ]
-        };
+        return ExplorerMortalEffectDetailActions.Build("/эффекты", effectProjection);
     }
 
     private static UiEntityDossierBlock BuildStatusFactDossier(
@@ -487,15 +461,15 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         return rows;
     }
 
-    private static List<UiTableRow> BuildMortalStatusChangeRows(JsonObject? statusChanges, JsonObject? experience)
+    private static List<UiTableRow> BuildMortalStatusChangeRows(
+        JsonObject? statusChanges,
+        JsonObject? experience,
+        PlayerStatusState playerStatus)
     {
         var rows = new List<UiTableRow>();
         if (statusChanges != null)
         {
             AddSignedChangeRow(rows, "Деньги", GetIntValue(statusChanges["moneyChange"], 0));
-            AddSignedChangeRow(rows, "Здоровье", GetIntValue(statusChanges["currentHealthChange"], 0));
-            AddSignedChangeRow(rows, "Энергия", GetIntValue(statusChanges["currentEnergyChange"], 0));
-            AddSignedChangeRow(rows, "Равновесие", GetIntValue(statusChanges["currentPoiseChange"], 0));
 
             var statsIncreased = FormatCharacteristicList(statusChanges["statsIncreased"]);
             if (!IsUnknownValue(statsIncreased))
@@ -506,6 +480,13 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 rows.Add(Row("Понижены", statsDecreased, "характеристики"));
         }
 
+        if (playerStatus.ResourceProjectionAvailable)
+        {
+            AddProjectedResourceChangeRow(rows, playerStatus.Resources, "health", "Здоровье");
+            AddProjectedResourceChangeRow(rows, playerStatus.Resources, "energy", "Энергия");
+            AddProjectedResourceChangeRow(rows, playerStatus.Resources, "poise", "Равновесие");
+        }
+
         var gained = GetIntValue(experience?["experienceGained"], 0);
         if (gained != 0)
             rows.Add(Row("Опыт", FormatSigned(gained), "за последний ход"));
@@ -513,48 +494,58 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         return rows;
     }
 
-    private static void AddMortalStatusEffectBlocks(List<UiBlock> blocks, JsonNode? effectsRoot)
+    private static void AddMortalStatusEffectBlocks(
+        List<UiBlock> blocks,
+        EffectPlayerProjectionResult projection)
     {
-        var rows = EnumerateStatusObjects(effectsRoot)
-            .Select(effect =>
+        if (!projection.IsAvailable)
+        {
+            blocks.Add(new UiMessageBlock
             {
-                var name = FirstKnown(
-                    GetString(effect, "effectName", string.Empty),
-                    GetString(effect, "name", string.Empty),
-                    TranslateEffectType(GetString(effect, "effectType", string.Empty)));
-                var type = TranslateEffectType(GetString(effect, "effectType", string.Empty));
-                var value = GetOptionalString(effect, "value");
-                var target = FirstNonEmpty(
-                    GetOptionalString(effect, "targetTypeDisplayName"),
-                    TranslateCharacteristic(GetOptionalString(effect, "targetType")));
-                var duration = GetOptionalString(effect, "duration");
-                var source = FirstNonEmpty(GetOptionalString(effect, "sourceSkill"), GetOptionalString(effect, "source"));
-                var description = FirstNonEmpty(
-                    GetOptionalString(effect, "effectDescription"),
-                    GetOptionalString(effect, "description"));
-                return Row(
-                    name,
-                    JoinKnownParts(" ", type, value),
-                    JoinKnownParts(" / ",
-                        target,
-                        string.IsNullOrWhiteSpace(duration) || duration == "0" ? string.Empty : $"{duration} ход."),
-                    JoinKnownParts(" — ", source, description));
-            })
-            .Where(static row => row.Cells.Any(static cell => !IsUnknownValue(cell)))
+                Severity = UiNotificationSeverity.Warning,
+                Title = "Эффекты",
+                Message = projection.StatusMessage
+            });
+            return;
+        }
+
+        var cardBlocks = projection.Entries
+            .Select(static effect =>
+                (UiBlock)ExplorerEffectPlayerCardBuilder.BuildOverview(effect, "status-effect"))
             .ToList();
 
-        if (rows.Count == 0)
+        if (cardBlocks.Count == 0)
             return;
 
-        AddStatusRowsDossier(
-            blocks,
-            "Активные эффекты",
-            "status-effects",
-            "status-effect",
-            "Эффекты, которые сейчас влияют на персонажа.",
-            "effect",
-            ["Эффект", "Что делает", "Цель / срок", "Источник и описание"],
-            rows);
+        blocks.Add(new UiEntityDossierBlock
+        {
+            EntityType = "status-effects",
+            Title = "Активные эффекты",
+            Subtitle = "Статус персонажа",
+            Summary = "Эффекты, которые сейчас влияют на персонажа.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = FormatStatusEntryCount(cardBlocks.Count),
+                    Tone = UiTone.Accent,
+                    Icon = "effect"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "active-effects",
+                    Title = "Активные эффекты",
+                    Icon = "effect",
+                    Presentation = "cards",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = cardBlocks
+                }
+            ]
+        });
     }
 
     private static void AddMortalStatusWoundBlocks(List<UiBlock> blocks, JsonNode? woundsRoot)
@@ -796,6 +787,20 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         rows.Add(Row(label, FormatSigned(value), "за последний ход"));
     }
 
+    private static void AddProjectedResourceChangeRow(
+        List<UiTableRow> rows,
+        IReadOnlyList<ResourceProjectionRow> resources,
+        string resourceKey,
+        string label)
+    {
+        var delta = resources.SingleOrDefault(resource =>
+            string.Equals(resource.ResourceKey, resourceKey, StringComparison.Ordinal))?.RecentVisibleDelta;
+        if (delta is null or 0m)
+            return;
+
+        rows.Add(Row(label, ResourceProjectionService.FormatSignedDelta(delta.Value), "за последний ход"));
+    }
+
     private static string JoinKnownParts(string separator, params string?[] values)
     {
         var parts = values
@@ -867,20 +872,6 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             ? translated
             : normalized;
     }
-
-    private static string TranslateEffectType(string? effectType) =>
-        (effectType ?? string.Empty).Trim().ToLowerInvariant() switch
-        {
-            "buff" => "усиление",
-            "debuff" => "ослабление",
-            "heal" => "лечение",
-            "healovertime" => "лечение со временем",
-            "damage" => "урон",
-            "damageovertime" => "урон со временем",
-            "control" => "контроль",
-            "damagereduction" => "снижение урона",
-            _ => EmptyFallback(effectType)
-        };
 
     private static string TranslateWoundSeverity(string? severity) =>
         (severity ?? string.Empty).Trim().ToLowerInvariant() switch

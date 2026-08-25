@@ -160,9 +160,6 @@ If `canTrade = false`, the client blocks the local trade panel and shows `tradeB
 
 ```json
 {
-  "healthPercentage": "100%",
-  "energyPercentage": "100%",
-  "poisePercentage": "100%",
   "currentCondition": "Здоров",
   "money": 500
 }

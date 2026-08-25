@@ -111,6 +111,31 @@ Rules:
 4. VALID — FATE_SHIELD
 ==================================================
 
+GM response excerpt. The source definition is client-owned and registered; the GM requests one instance and does not write the carrier:
+
+```json
+{
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "source": {
+        "kind": "fate_card",
+        "sourceId": "builtin_ink_feather_fate_shield",
+        "definitionKey": "fate-shield-next-critical-failure"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_103" },
+      "reason": "Игрок оплатил Щит Судьбы Чернильными Перьями."
+    }
+  ],
+  "effectResolutionReceipts": [],
+  "effectEventReports": []
+}
+```
+
+The client validates the sealed `[INK_FEATHER_ACTION: FATE_SHIELD]` authority, allocates `effectId`, publishes the canonical one-use instance and index atomically, and later consumes it on `owner_critical_failure`. The GM also writes this ordinary Ink Feather receipt:
+
 ```json
 {
   "sessionId": "game-session-123",
@@ -129,6 +154,45 @@ Rules:
   }
 }
 ```
+
+--------------------------------------------------
+effect_mortal_event_report_v1 — LATER ACCEPTED MORTAL TURN
+--------------------------------------------------
+
+On a later turn the sealed `input/turn_request.json.preGeneratedDices1d20`
+starts with `[1, 17, 8]`, and the ordinary Mortal action uses `rollMode=normal`.
+The GM reports the audited event but does not choose the effect or trigger:
+
+```json
+{
+  "effectChanges": [],
+  "effectResolutionReceipts": [],
+  "effectEventReports": [
+    {
+      "eventType": "owner_critical_failure",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "evidence": {
+        "kind": "mortal_action_roll",
+        "rollMode": "normal",
+        "diceIndexes": [0],
+        "selectedIndex": 0,
+        "selectedValue": 1,
+        "originalOutcome": "critical_failure",
+        "resolvedOutcome": "failure"
+      },
+      "reason": "Щит Судьбы смягчает критический провал до обычного."
+    }
+  ]
+}
+```
+
+The client validates the selected die against the sealed pool, selects exactly
+the oldest eligible Fate Shield, runs its source-owned deterministic outcome
+transition, consumes its only use, and expires it
+atomically. For advantage/great advantage use the exact leading two/three dice
+and select the maximum; for disadvantage/dire disadvantage select the minimum;
+ties select the lower index. A wrong die, wrong outcome, duplicate report, or
+GM-authored `effectId`/`triggerId` rejects the whole transition with zero writes.
 
 ==================================================
 5. VALID — SEAL_IN_INK (DEFERRED)

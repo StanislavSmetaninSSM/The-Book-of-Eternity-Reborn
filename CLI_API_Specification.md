@@ -1,5 +1,19 @@
 # 🎮 **The Book of Eternity Reborn - CLI API Specification**
 
+> **Effect Materialization v1:** every active runtime effect follows the mandatory shared contract in `OtherGuides/Effect_Materialization_Contract.md`.
+
+> **Unified Resource Authority v1:** the GM may author only transient
+> `resourceDefinitionCreations`, `resourceCapacityChanges`, and
+> `resourceChanges`. Existing owners use exact permanent `targetId`; same-turn
+> owners use the exact `targetRef` supplied by their owning materializer.
+> Capacity operations are `initialize`, `reconfigure`, `suspend`, `resume`, and
+> `retire`; ordinary operations are `damage`, `restore`, `spend`, and `gain`.
+> `game_state/resources/resource_state.json` and
+> `game_state/resources/resource_history.json`, including current/maximum,
+> identities, ordering, policies, and history, are client-owned and published
+> atomically. There is no migration, direct canonical write, dual write, or
+> legacy/raw fallback. See `Examples/E_CLI_Mortal_Resources.txt`.
+
 **Version:** 1.1
 **Date:** 2026-03-08
 **Target:** CLI Agents (Gemini, Claude, etc.)  
@@ -33,6 +47,8 @@
 ```
 
 ### Key Principles
+
+**Unified afterlife resource authority:** `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` are client-owned entries in `game_state/resources/resource_state.json`, with immutable transitions in `game_state/resources/resource_history.json`, exact `resourceOwnerBindings`, and client-owned `game_state/resources/resource_owner_authority.json`. Definitions/state/history/owner-authority are one guarded quartet and are never GM-authored. Missing/stale authority outside Fresh New Game bootstrap fails closed without migration or self-heal; Mortal-incarnation bootstrap requires the exact existing quartet. The GM reads projected values and must not author `actionEconomy`, per-return numeric gacha counters, or numeric blessing mirrors; `actionEconomy` is forbidden as persisted state. Ink Feathers, Light Sparks, progression, relationships, faction accounting, and spiritual power/strain/shield stay specialized. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; the booleans remain typed entitlements. No migration or fallback exists.
 - **Unified Processing**: Single-step complete turn handling
 - **Atomic Operations**: All-or-nothing file updates with rollback
 - **State Consistency**: Cross-file reference validation
@@ -226,23 +242,23 @@ CLI Agent automatically loads current game state from:
   
   // PLAYER CHARACTER
   "playerStatus": {
-    "healthPercentage": "string (e.g., '85%')",
-    "energyPercentage": "string (e.g., '60%')",
-    "poisePercentage": "string (e.g., '100%')",
-    "currentCondition": "string (e.g., 'Усталый')"
+    "currentCondition": "string (e.g., 'Усталый')",
+    "activeConditions": ["array of player-facing condition strings"]
   },
-  "currentPoiseChange": "integer (change in player's poise this turn)",
   "activeSkillChanges": "array of skill_change_objects",
   "removeActiveSkills": "array of skill_ids",
   "passiveSkillChanges": "array of skill_change_objects", 
   "removePassiveSkills": "array of skill_ids",
   "skillMasteryChanges": "array of mastery_change_objects",
-  "playerActiveEffectsChanges": "array of effect_change_objects",
+  "effectChanges": "array of apply/dispel/remove commands using exact source and target authority",
+  "effectResolutionReceipts": "array of exact bounded receipts for the current client safe packet; reuse the same complete semantic turn and never retarget or reconstruct protected authority",
+  "effectEventReports": "array of closed registered event reports bound to sealed accepted-turn evidence; never effect/trigger selectors",
+  "resourceDefinitionCreations": "array of complete setting/bootstrap resource proposals",
+  "resourceCapacityChanges": "array of initialize/reconfigure/suspend/resume/retire commands",
+  "resourceChanges": "array of exact damage/restore/spend/gain commands",
   "calculatedWeightData": "object with current weight calculations",
   "statsIncreased": "object with characteristic increases",
   "statsDecreased": "object with characteristic decreases",
-  "currentEnergyChange": "integer (can be negative)",
-  "currentHealthChange": "integer (can be negative)", 
   "moneyChange": "integer (can be negative)",
   "experienceGained": "integer",
   "playerEffortTrackerChange": "object with lastUsedCharacteristic + consecutivePartialSuccesses",
@@ -260,7 +276,6 @@ CLI Agent automatically loads current game state from:
   
   // INVENTORY MANAGEMENT
   "UpdateInventory": "array of inventory_command_objects",
-  "inventoryItemsResources": "array of resource_change_objects",
   "updateItemTextContents": "array of item_text_update_objects",
   "moveInventoryItems": "array of item_movement_objects",
   "removeInventoryItems": "array of item_removal_objects", 
@@ -299,7 +314,6 @@ CLI Agent automatically loads current game state from:
   "NPCPassiveSkillChanges": "array of npc_skill_change_objects",
   "NPCSkillMasteryChanges": "array of npc_mastery_change_objects",
   "NPCPassiveSkillMasteryChanges": "array of npc_mastery_change_objects",
-  "NPCEffectChanges": "array of npc_effect_change_objects",
   "NPCWoundChanges": "array of npc_wound_change_objects",
   "interNPCRelationshipChanges": "array of inter_npc_relationship_objects",
   "NPCRelationshipChanges": "array of npc_relationship_change_objects",
@@ -310,7 +324,6 @@ CLI Agent automatically loads current game state from:
   "NPCInventoryUpdates": "array of npc_inventory_update_objects", 
   "NPCInventoryRemovals": "array of npc_inventory_removal_objects",
   "NPCEquipmentChanges": "array of npc_equipment_change_objects",
-  "NPCInventoryResourcesChanges": "array of npc_resource_change_objects",
   "NPCMaskAdds": "array of npc_mask_add_objects",
   "NPCMaskUpdates": "array of npc_mask_update_objects",
   "NPCMaskRemovals": "array of npc_mask_removal_objects",
@@ -481,7 +494,7 @@ game_session/
 - These `output/*.json` files are fresh per-turn transient artifacts for the current `sessionId/requestId/turnNumber`.
 - Rewrite them for the current request only; never append cross-turn history there and never reuse stale payload from a previous turn.
 - If a surface is unused for this turn, leave the corresponding `output/*.json` file absent instead of preserving old content.
-- `game_state/core/player_status.json` ← `playerStatus`, `currentPoiseChange`
+- `game_state/core/player_status.json` ← `playerStatus` condition/condition-list fields only; health, energy, and poise live exclusively in the common resource ledger
 - `playerStatus` is flattened into the root of `game_state/core/player_status.json`; do not store it there as a nested `playerStatus` object.
 - In Mortal World, `game_state/core/player_status.json` is a mandatory core file; accepted state is invalid if it is missing.
 - `game_state/core/system_mods.json` ← client-authored manifest of global system mods
@@ -496,9 +509,14 @@ game_session/
 - `game_state/player/skills_active.json` ← `activeSkillChanges`, `removeActiveSkills`
 - `game_state/player/skills_passive.json` ← `passiveSkillChanges`, `removePassiveSkills`
 - `game_state/player/skill_mastery.json` ← `skillMasteryChanges`
-- `game_state/player/effects.json` ← `playerActiveEffectsChanges`
+- `game_state/effects/effect_commands.json` ← transient `effectChanges`, `effectResolutionReceipts`, `effectEventReports`; the client consumes it after accepted materialization
+- `game_state/player/effects.json` ← client-owned canonical player `activeEffects[]`; never direct GM output
+- `game_state/effects/effect_identity_index.json` and `game_state/control/pending_effect_resolutions.json` are client-owned identity/pending authority
+- A safe bounded-effect packet may require more than one sequential receipt wave. Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned. Return only the current exact `requestId`, one allowed result shape, and reason; no resource/effect/lifetime after-image publishes until replay reaches a terminal wave. Do not repeat protected pending fields, retarget a receipt, reuse it under changed commands, or expose pending/receipt internals to the player.
+- `game_state/resources/resource_commands.json` ← transient `resourceDefinitionCreations`, `resourceCapacityChanges`, `resourceChanges`; the client consumes it only after atomic accepted materialization
+- `game_state/resources/resource_definitions.json`, `resource_state.json`, `resource_history.json`, and `resource_owner_authority.json` are one client-owned guarded quartet. The GM never writes current/maximum values, canonical IDs, history, owner authority, phase, policy, or file paths; only Fresh New Game may create a missing authority root, while every existing session (including Mortal-incarnation bootstrap) fails closed on missing/stale authority without migration.
 - `game_state/player/weight_calc.json` ← `calculatedWeightData`
-- `game_state/player/status_changes.json` ← `statsIncreased`, `statsDecreased`, `currentEnergyChange`, `currentHealthChange`, `moneyChange`
+- `game_state/player/status_changes.json` ← `statsIncreased`, `statsDecreased`, `moneyChange`; bounded gauges use only common resource commands
 - `game_state/player/experience.json` ← `experienceGained`, `playerEffortTrackerChange`
 - `game_state/player/wounds.json` ← `playerWoundChanges`
 - `game_state/player/custom_states.json` ← `customStateChanges`
@@ -511,8 +529,7 @@ game_session/
   - new item: full Item Object with `existedId = null`
   - existing item update: partial object with `existedId` plus only the fields that changed this turn
 - Do not use `UpdateInventory` to move an existing item between containers/locations. Use `moveInventoryItems` for relocation and keep `UpdateInventory` for the item's own property changes.
-- `game_state/inventory/item_resources.json` ← `inventoryItemsResources`
-- Canonical stored shape for `item_resources.json`: `entries[]` with item identity + `resource`, `maximumResource`, `resourceType`
+- Item charges, ammunition, uses, and durability use the permanent item owner through `resourceCapacityChanges` / `resourceChanges`; no inventory resource sidecar or direct item current/maximum field exists.
 - `game_state/inventory/item_text_updates.json` ← `updateItemTextContents`
 - Canonical stored shape for `item_text_updates.json`: `entries[]` with item identity + `textContent[]`; incoming `updateItemTextContents[].textToAppend` is normalized into appended `textContent` entries after distribution
 - `game_state/inventory/item_movements.json` ← `moveInventoryItems`
@@ -628,7 +645,7 @@ Quest state contract notes:
 #### **NPC SYSTEM (14 FILES)**
 - `game_state/npcs/npc_core.json` ← `UpdateNPCs`, `NPCsRenameData`, `NPCsInScene`
 - `game_state/npcs/npc_skills.json` ← `NPCActiveSkillChanges`, `NPCPassiveSkillChanges`, etc.
-- `game_state/npcs/npc_effects.json` ← `NPCEffectChanges`, `NPCWoundChanges`
+- `game_state/npcs/npc_effects.json` ← `NPCWoundChanges` plus client-owned canonical NPC active-effect entries; lifecycle requests use only top-level `effectChanges[]`
 - `game_state/npcs/npc_relationships.json` ← `NPCRelationshipChanges`, `interNPCRelationshipChanges`, etc.
 - `game_state/npcs/npc_goals.json` ← `NPCGoalUpdates`, `NPCQuestUpdates`
 - `game_state/npcs/npc_inventory.json` ← `NPCInventoryAdds/Updates/Removals`, `NPCEquipmentChanges`, etc.
@@ -711,7 +728,7 @@ Quest state contract notes:
 - `mathAudit[].applicationState` must be one of `calculated_only`, `applied_to_state`, or `mismatch_repair_blocking`.
 - `calculated_only` means the number was calculated but not applied to state. `applied_to_state` means some other response/state surface actually used it. `mismatch_repair_blocking` means the GM saw a mismatch and intentionally leaves the turn blocked for repair; it is still a validation error, not silent acceptance.
 - Manual totals must match the local Math Assistant result. A mismatched `expectedResult`, `rawResult`, or `result` fails closed with repair hints.
-- For Mortal combat/status delta fields, if `mathAudit[].applicationState = applied_to_state` and `referencedBy[]` points to `currentHealthChange`, `currentPoiseChange`, or `currentEnergyChange`, then `mathAudit.result` must be the exact signed numeric change written to that response field. Example: a 13 damage hit to the player is `currentHealthChange: -13` and the audit result is also `-13`, not `13`.
+- For Mortal bounded resources, `mathAudit[]` may document non-trivial arithmetic, but mutation authority remains the matching `resourceChanges[]` command. If `referencedBy[]` points to a resource command, `mathAudit.result` must equal its exact positive `amount`; direction is expressed only by `operation=damage|restore|spend|gain`.
 - For afterlife combat, use Math Assistant for non-trivial GM-authored arithmetic that is copied into response state, especially `afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount` and contested `diceAudit.margin` paths. It is optional for trivial one-step sums and unnecessary for client-owned calculations the GM never authors. If `referencedBy[]` names a supported afterlife numeric path, `mathAudit.result` must exactly equal that field; built-in afterlife validators still run separately.
 
 ```json
@@ -777,6 +794,7 @@ Quest state contract notes:
 
 #### **AFTERLIFE SPIRITUAL CONFLICT**
 - `afterlifeSpiritualConflictUpdate` is the only GM-authored response surface for afterlife duels/conflicts in ordinary `Chaos Sea` or ordinary active `Shining Abode`.
+- Exception for active condition lifecycle: `combatConditions[]` itself is client-owned and must never be authored under `afterlifeSpiritualConflictUpdate`. Request condition apply/dispel/remove through top-level `effectChanges[]`. Read current accepted contributions only from `input/turn_request.json.afterlifeSpiritualConflictPreview.conditionMechanics` with `source=accepted_effect_mechanics_snapshot_v1`, apply them to their exact `affectedOperations` / `mechanicalAxes`, and cite the supplied `conditionId` in the matching conflict audit. The client owns carrier identity, stacking, lifetime, and history.
 - Russian player/GM labels are fixed in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`; keep canonical JSON keys and enum values in English.
 - It writes `game_state/meta/afterlife_spiritual_conflict_state.json`, whose canonical root is `{ "schemaVersion": 1, "activeConflict": object|null, "recentConflicts": [] }`.
 - Supported update modes are `start`, `exchange`, `resolve`, and `repair_cancel`.
@@ -787,7 +805,7 @@ Quest state contract notes:
 - Supported operation types are `pressure`, `counter`, `guard`, `maneuver`, `binding`, `break_binding`, `force_binding`, `force_incarnation`, `incarnation_resistance`, `champion_coordination`, `recover_spiritual_power` / Собрать Средоточие, `withdraw`, `surrender`, and `negotiate`; supported outcomes are `success`, `partial_success`, `blocked`, `countered`, `setback`, and `no_effect`.
 - A `blocked` exchange may leave before/after identical only when `incomingAction` states what was prevented. Otherwise exchanges should have a meaningful state delta or explicit `outcome=no_effect`.
 - `controlState` is the canonical control / оковы axis, separate from strain and position. Missing or `null` means no active control for legacy entries. Active control must use `level=hindered|bound|locked`, `controllerSide=player|opposition`, non-empty `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; `sourceOperation` is not a free operation id.
-- `actionEconomy` is the afterlife-only ОД pool, not Mortal HP/energy/stamina. Active conflicts with current exchanges carry `actionEconomy.player` and `actionEconomy.opposition` (`current`, `max`, `source`). On `mode=start`, `actionEconomy.player.current/max` comes from client-owned `soul_state.afterlifeCombatProfile.spiritFocusTier` / `Средоточие Души`: tier `0/1/2/3/4/5` gives max ОД `6/7/8/10/12/15`, with source `Средоточие Души tier N`. Every new/current exchange that spends or restores ОД must carry `actionCostAudit.player` (`operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, `after`) with `effectiveCost = max(minCost, baseCost - artTier)`. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; they cannot mutate player ОД through fake audit. Every new/current exchange that resolves an active costed opposition operation must also carry `actionCostAudit.opposition` in the same shape, even if the player's own operation is terminal/free (`withdraw`, `surrender`, `negotiate`); the opposition operation is taken from `incomingAction.finalOperationType` when present; otherwise use `incomingAction.operationType` or the matching `matchupAudit.oppositionOperation`. `finalOperationType` is authoritative: do not fall back to an earlier/stale `incomingAction.operationType` for `matchupAudit`, `actionCostAudit.opposition`, or non-player special-art costs. `actionCostAudit.player.artTier` is checked against validated pre-turn authority, not trusted from GM output: standard actions use `soul_state.afterlifeCombatProfile.artTiers`, and player-owned named special arts use the learned special arts in `afterlife_entity_profiles.json`. `actionCostAudit.opposition.artTier` is checked against the validated pre-turn `afterlife_entity_profiles.json` profile for the opposition lead actor, with the pre-turn `oppositionSide.leadContestant.actorArtTierSnapshot` used only as compatibility fallback. The final `activeConflict.actionEconomy.player.current` and `.opposition.current` must equal the last current `actionCostAudit.player.after` and `.opposition.after`; if a side has no current `actionCostAudit.<side>`, its final `current` must remain equal to the validated pre-turn active conflict. Base/min costs: `pressure 3/1`, `guard 2/1`, `counter 4/2`, `maneuver 3/1`, `binding 4/2`, `force_binding 5/2`, `break_binding 3/1`, `incarnation_resistance 3/1`, `champion_coordination 2/1`, `recover_spiritual_power 0/0`. If the exchange uses a special art, use either `specialArtAudit` for one used art or `specialArtAudits[]` when player and opposition both use named special arts in one exchange; never write both fields on one exchange. Each audit object must match the validated pre-turn profile of `ownerActorType/ownerActorId`. Only player-owned special arts that power the player's exchange operation multiply the player's action cost: `actionCostAudit.player.specialCostMultiplierPercent`, `specialArtId`, and `standardEffectiveCost` must prove the higher `effectiveCost`. Non-player or incoming-action special arts keep the player's ordinary ОД cost, but when they power the opposition operation they must belong to the resolved opposition actor from `incomingAction` or `oppositionSide.leadContestant`; `actionCostAudit.opposition.artTier` is the matching `specialArts[].tier`, and `actionCostAudit.opposition` requires `specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and the multiplied `effectiveCost`. A non-player `specialArtAudit` is invalid unless its `baseOperation` matches the single resolved opposition operation used for `actionCostAudit.opposition`; do not bind it to the player's `exchange.operationType` or an earlier `incomingAction.operationType` when `matchupAudit.oppositionOperation` / `finalOperationType` selected another costed action.
+- `spiritual_action_points` is the afterlife-only ОД reserve, not Mortal HP/energy/stamina. `actionEconomy` is forbidden as persisted conflict state; the GM reads exact player/opposition projections from `input/turn_request.json.afterlifeSpiritualConflictPreview`. On `mode=start`, the player's registered maximum comes from client-owned `soul_state.afterlifeCombatProfile.spiritFocusTier` / `Средоточие Души`: tier `0/1/2/3/4/5` gives max ОД `6/7/8/10/12/15`; a new opposition declares only `oppositionSide.resourceMaterialization.resources[]`, after which the client creates the exact `resourceOwnerBindings.opposition` identity. Every new/current exchange that spends or restores ОД must carry `actionCostAudit.player` (`operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, `after`) with `effectiveCost = max(minCost, baseCost - artTier)`. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; they cannot mutate player ОД through fake audit. Every new/current exchange that resolves an active costed opposition operation must also carry `actionCostAudit.opposition` in the same shape, even if the player's own operation is terminal/free (`withdraw`, `surrender`, `negotiate`); the opposition operation is taken from `incomingAction.finalOperationType` when present; otherwise use `incomingAction.operationType` or the matching `matchupAudit.oppositionOperation`. `finalOperationType` is authoritative: do not fall back to an earlier/stale `incomingAction.operationType` for `matchupAudit`, `actionCostAudit.opposition`, or non-player special-art costs. `actionCostAudit.player.artTier` is checked against validated pre-turn authority, not trusted from GM output: standard actions use `soul_state.afterlifeCombatProfile.artTiers`, and player-owned named special arts use the learned special arts in `afterlife_entity_profiles.json`. `actionCostAudit.opposition.artTier` is checked against the validated pre-turn `afterlife_entity_profiles.json` profile for the opposition lead actor, with the pre-turn `oppositionSide.leadContestant.actorArtTierSnapshot` used only as compatibility fallback. The GM never writes resource current/maximum or client-owned bindings. The client validates each audit against the exact pre-turn projection and atomically publishes the common resource transition; if a side has no current `actionCostAudit.<side>`, no resource mutation is emitted for that side. Base/min costs: `pressure 3/1`, `guard 2/1`, `counter 4/2`, `maneuver 3/1`, `binding 4/2`, `force_binding 5/2`, `break_binding 3/1`, `incarnation_resistance 3/1`, `champion_coordination 2/1`, `recover_spiritual_power 0/0`. If the exchange uses a special art, use either `specialArtAudit` for one used art or `specialArtAudits[]` when player and opposition both use named special arts in one exchange; never write both fields on one exchange. Each audit object must match the validated pre-turn profile of `ownerActorType/ownerActorId`. Only player-owned special arts that power the player's exchange operation multiply the player's action cost: `actionCostAudit.player.specialCostMultiplierPercent`, `specialArtId`, and `standardEffectiveCost` must prove the higher `effectiveCost`. Non-player or incoming-action special arts keep the player's ordinary ОД cost, but when they power the opposition operation they must belong to the resolved opposition actor from `incomingAction` or `oppositionSide.leadContestant`; `actionCostAudit.opposition.artTier` is the matching `specialArts[].tier`, and `actionCostAudit.opposition` requires `specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and the multiplied `effectiveCost`. A non-player `specialArtAudit` is invalid unless its `baseOperation` matches the single resolved opposition operation used for `actionCostAudit.opposition`; do not bind it to the player's `exchange.operationType` or an earlier `incomingAction.operationType` when `matchupAudit.oppositionOperation` / `finalOperationType` selected another costed action.
 - Spiritual Arts operation rules are part of the contract: `pressure` primarily changes `oppositionSideStrain` and must not create control; `guard` protects `playerSideStrain` / consequence, may block new control, does not remove existing control, and even on setback against direct `pressure` limits `playerSideStrain` worsening to at most one rank; `counter` requires `incomingAction` and a measured payoff on `success`/`partial_success`/`countered` (non-empty `counterPayoff`, improved `conflictPosition`, worsened `oppositionSideStrain`, or weakened/reversed existing opposition `controlState`; it cannot create fresh player control from none); `maneuver` changes `conflictPosition` and must not directly change side strain or bypass active opposition `controlState`; if opposition `controlState.restrictedOperations` lists the attempted operation, that operation cannot succeed until the control is answered; `binding` / `force_binding` requires advantage, setup, or `decisive_player_success` and must create/strengthen player `controlState` only when no active opposition control remains; failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas; `force_binding` requires strong leverage and must restrict at least two distinct operations; `break_binding` requires a binding/coercive context and must weaken/remove/reverse opposition `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`, while equal/reordered sets do not count; `incarnation_resistance` is limited to `force_incarnation` / `guardian_forced` control and must not clear ordinary binding control; failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged; `champion_coordination` is limited to `champion_duel`; `recover_spiritual_power` restores ОД up to max (+3 success, +2 partial_success, +0..1 when punished).
 - New/current contested exchanges with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`). If `incomingAction.finalOperationType` is present, `oppositionOperation` must match that final operation, not stale `incomingAction.operationType`; otherwise it must match `incomingAction.operationType`. If an active conflict already has active `controlState`, or the current exchange creates/changes active `controlState`, the exchange must explicitly include both `before.controlState` and `after.controlState`; use `null` or `{ "level": "none" }` to record no active control instead of omitting the field. The tactical matrix is mechanical: pressure beats maneuver/passive repositioning by worsening opposition strain; guard beats pressure by safely reducing or preventing player-side strain and by capping setback harm against pressure; counter beats a named incoming direct action but is risky and must record a downside on setback; maneuver beats passive guard by improving position but is stopped by pressure, opposing maneuver, or control; binding needs leverage and cannot answer active opposition control; force_binding needs stronger leverage and broader restrictedOperations than binding; break_binding answers binding/coercion; incarnation_resistance answers forced incarnation only; champion_coordination is only for champion duels; recover_spiritual_power is strong against guard/counter/passive timing and weak against pressure, maneuver, binding, force_binding, and force_incarnation.
 - Contested afterlife conflict results are not GM-fiat. Every contested `mode=exchange` must write `exchange.diceAudit`; every contested `mode=resolve` that decides victory/loss, surrender under pressure, concession under pressure, or Guardian-forced incarnation proof must write `resolution.diceAudit`.
@@ -814,7 +832,7 @@ Quest state contract notes:
 - `afterlifeEntityProgressionOverrides[].currencyDeltas` supports only `inkFeathers` and `lightSparks`; `progressionExperienceDeltas` supports only `enlightenment` and `radiance`. Delta objects must be non-empty; unsupported keys or non-integer values are repair-blocking instead of being ignored.
 - Required profile fields: `actorType`, `actorId` or `actorRef`, `displayName`, `realm`, optional location fields, `currencies.inkFeathers`, `currencies.lightSparks`, `progression.enlightenment`, `progression.radiance`, `standardArts`, `specialArts`, `customStates`, `fateCards`, `soulDissipationTier`, `progressionStrategy`, warnings, and `ledger`.
 - `standardArts` are the normal spiritual actions (`pressure`, `guard`, `counter`, `maneuver`, `binding`, `force_binding`, `break_binding`, `incarnation_resistance`, `champion_coordination`, `recover_spiritual_power`) with tier `0..5`. The player soul profile identity is reserved as `actorType=player_soul` plus `actorId/actorRef=player_soul`; no non-player profile may use `actorId=player_soul`. `specialArts[]` are named variants with `artId`, Russian `displayName`, `ownerActorType`, `ownerActorId`, `baseOperation`, `tier`, `costMultiplierPercent`, `upgradeCost`, `effectSummary`, `canTeachPlayer`, and `trainingConditions`; `ownerActorType/ownerActorId` must match the enclosing profile's `actorType/actorId`; `baseOperation` must name one of those actions. `upgradeCost` may contain only `inkFeathers` and `lightSparks`, must not be empty, and must have at least one positive amount; `upgradeCost.inkFeathers` may be `0` only when `upgradeCost.lightSparks` is positive; the client blocks that Spark-only learned-art upgrade outside ordinary active Shining Abode. If a special art effect is used in a conflict, the GM must include `specialArtAudit.effectNote` or, when multiple sides use special arts in one exchange, `specialArtAudits[].effectNote`; every audit must match the pre-turn owner profile. Player-owned special arts that power the player's exchange operation require `actionCostAudit.player.specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and multiplied `effectiveCost`; non-player/incoming special arts that power the opposition operation require the same fields under `actionCostAudit.opposition`, must be owned by the current opposition actor, and use the special art `tier` for `actionCostAudit.opposition.artTier`. Do not attach a non-player special art to the player's own `exchange.operationType`, to an earlier `incomingAction.operationType`, or to any other stale candidate; its `baseOperation` must match the resolved opposition operation used for `actionCostAudit.opposition`.
-- Current/new teachable `specialArts[]` also use `specialArts[].combatEffect` as the first-class afterlife-only combat contract beside `effectSummary`. Required string fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`. `mechanicalAxis` is limited to legal afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `actionEconomy`, `actionCostAudit`, and `combatConditions`; it must preserve `baseOperation` and must not describe Mortal HP/status, passive unlimited stacking, or tactical-matrix bypasses. When the GM uses the art, `specialArtAudit.effectNote` / `specialArtAudits[].effectNote` must cite the trigger and applied legal payoff. Legacy persisted profiles with only `effectSummary` remain loadable/readable.
+- Current/new teachable `specialArts[]` also use `specialArts[].combatEffect` as the first-class afterlife-only combat contract beside `effectSummary`. Required string fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`. `mechanicalAxis` is limited to legal afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, and `combatConditions`; `spiritual_action_points` is the unified resource axis and must be evidenced by `actionCostAudit`, while `actionEconomy` is forbidden. The effect must preserve `baseOperation` and must not describe Mortal HP/status, passive unlimited stacking, or tactical-matrix bypasses. When the GM uses the art, `specialArtAudit.effectNote` / `specialArtAudits[].effectNote` must cite the trigger and applied legal payoff. Legacy persisted profiles with only `effectSummary` remain loadable/readable.
 - `afterlifeSpecialArtLearningReceipts[]` is the GM recognition surface for teaching the player: `receiptId`, `teacherActorType`, `teacherActorId`, `playerActorId`, `artId`, `learnedAtTurn`, `trainingConditionSatisfied=true`, `roleplayEvidence`, and `summary`. The teacher profile, player profile, and teacher `specialArts[].artId` must exist in profile authority, and the source art must have `canTeachPlayer=true`; otherwise the receipt is repair-blocking instead of being ignored. Learned special arts always start at tier 0; `initialTier` must be omitted or exactly `0` and never grants progression.
 - `afterlifeRelationshipChanges[]`, `afterlifeRelationshipLockUpdates[]`, and `afterlifeBreakthroughQuestUpdates[]` are the afterlife-only relationship gate surfaces. Canonical `relationships[]` entries use `relationshipId`, `axis=trust|romance|rivalry|oath|fear|reverence|debt`, target actor identity, `value`, `relationshipTier`, optional `relationshipLock`, and `relationshipGateQuests[]`. Important thresholds are `value >= 50` for positive breakthrough and `value <= -50` for redemption/point-of-no-return. A positive lock needs `relationshipLock.lockState=positive_locked`, `breakthroughQuestId`, `reason`, `evidence`, and `gmThoughtsSummary`; a negative lock needs `redemptionQuestId`; `pointOfNoReturn` is valid only with explicit proof. Completing a breakthrough/redemption quest clears the linked quest id only by writing `breakthroughQuestId="_clear_"` or `redemptionQuestId="_clear_"`. These scenes must be meaningful narrative tests, not routine fetch chores, and must not use Mortal `NPCRelationshipChanges`.
 - `soulDissipationTier` is informational and dangerous: if it is above zero, the profile should clearly warn that the entity can potentially kill/disperse souls after victory when its motives allow it. Whether the entity chooses to do so remains roleplay/contract context, not automatic execution. The target resistance value is `targetStabilityCoefficient = max(enlightenment.tier, radiance.tier)` clamped to `0..4`; final soul death requires `soulDissipationTier > targetStabilityCoefficient`.
@@ -948,11 +966,18 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 
 ### Contract Repair Handshake
 - `validation_repair_request.json` is authoritative when the client rejects an already written GM turn after validation.
-- Ordinary bounded repair packets may require an in-place correction followed
-  by `validation_repair_ready.json`, as specified by that packet.
-- A `mortal_location_materialization_repair` is different: before dispatch the
-  client restores the validated pre-turn baseline. The request sets the
-  full-turn resubmission obligation and lists every required changed path. The
+- When root `fullTurnResubmissionRequired=false`, an ordinary bounded packet may
+  request an in-place correction followed by `validation_repair_ready.json`.
+- When root `fullTurnResubmissionRequired=true`, including
+  `mortal_location_materialization_repair`, `effect_materialization_repair`, and
+  `resource_semantic_omission_repair`, the client restores the validated
+  pre-turn baseline. `requiredResubmissionPaths` lists exactly the changed
+  GM-authored command/output surfaces that must be freshly recreated. The
+  client restores or republishes client-owned preparation/publication roots;
+  they are never GM obligations and never belong in that array. This includes
+  `system_mods.json`, `progression_schedule.json`, the resource
+  definitions/state/history/owner-authority quartet,
+  `pending_effect_resolutions.json`, and `effect_identity_index.json`. The
   GM/worker must regenerate one complete coherent raw response, including all
   intended location, actor, faction, item, narrative, interface, and other turn
   effects. A ready-only response, an in-place canonical patch, a named-leaf-only
@@ -982,11 +1007,11 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - This is the canonical current runtime contract for `gm_thoughts_markdown`; older heavier all-turn templates in legacy docs do not override the current validator.
 
 ### Mortal World Only
-- `currentPoiseChange`, `currentEnergyChange`, `currentHealthChange`
+- `resourceDefinitionCreations`, `resourceCapacityChanges`, `resourceChanges` for accepted Mortal owners and registered sources
 - `experienceGained`, `moneyChange`
 - `statsIncreased`, `statsDecreased`, `setCharacteristics`
 - `activeSkillChanges`, `passiveSkillChanges`, `skillMasteryChanges`
-- `UpdateInventory`, `inventoryItemsResources`, `moveInventoryItems`, `removeInventoryItems`
+- `UpdateInventory`, `moveInventoryItems`, `removeInventoryItems`
 - `UpdateNPCs`, `NPCsInScene`, regular NPC arrays, `UpdateQuests`
 - `worldEventsLog`, `factionDataChanges`, `factionProjectUpdates`
 - `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`
@@ -1028,7 +1053,8 @@ The following spending-based Ink Feather actions are explicitly allowed in `Mort
 These exceptions do NOT unlock Guardians, Abodes, Guardian reputation changes, or Gacha.
 - `Absorb Feathers` is valid only if `experienceGained` is positive and an authoritative XP counter in `game_state/player/experience.json` really increases.
 - `Learn Skill` is valid only if it creates a NEW skill object in the appropriate player skill file for this turn.
-- `Fate Shield` is valid only if it creates a NEW `Щит Судьбы` effect instance for this turn.
+- `Fate Shield` is valid only if top-level `effectChanges[].apply` creates a NEW `Щит Судьбы` instance from exact built-in source `fate_card:builtin_ink_feather_fate_shield:fate-shield-next-critical-failure` for the sealed `[INK_FEATHER_ACTION: FATE_SHIELD]` turn. Never write `activeEffects[]` or `effectId` directly.
+- On a later Mortal critical failure, report `effectEventReports[].eventType=owner_critical_failure` with closed `mortal_action_roll` evidence bound to the exact leading sealed d20 pool and `critical_failure -> failure`. The client selects and consumes one oldest eligible shield; never submit `effectId`, `triggerId`, remaining uses, or carrier post-state.
 
 ### Afterlife Ink Feather Exceptions
 The following spending-based Ink Feather actions are explicitly allowed in afterlife realms (`Chaos Sea` and `Shining Abode`) when their specific action prerequisites are satisfied:
@@ -1212,6 +1238,35 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
 - The client shows a native `Accept / Decline` prompt.
 - If the player declines, the client sends a new ordinary `turn_request.json` asking for standard mechanical resolution and forbidding the same `qteId` from being re-offered.
 - If the player accepts, the full QTE scene resolves locally on the client.
+- If the selected terminal outcome reaches a bounded effect/resource component,
+  local resolution enters `awaiting_receipt` and publishes the dedicated closed
+  request `input/qte_effect_resolution_request.json` with
+  `requestKind=qte_deferred_effect_resolution`. This is a receipt-only task and
+  not an ordinary turn.
+- For that task the GM reads only the current request's `safePacket` and answers
+  only the current wave with closed `effectResolutionReceipts[]`. It must not
+  read or reuse `input/turn_request.json`, create a pending-turn snapshot, run
+  story or progression work, advance lifecycle, or increment the turn counter.
+- The GM constructs receipts in memory and calls
+  `Complete-BoeQteEffectResolution -Receipts $receipts` as the last action. The
+  helper copies exact correlation, writes
+  `output/qte_effect_resolution_receipts.json`, and writes
+  `ready/qte_effect_resolution_complete.json` last. The GM never writes those
+  two files or canonical/narrative/interface state directly.
+- Do not call `Complete-BoeValidationRepair`: the dedicated QTE receipt task
+  does not reuse the ordinary validation-repair request, helper, ready marker,
+  or full-turn resubmission loop.
+- On restart, the same sealed continuation and current wave remain authoritative.
+  Earlier-wave bindings and the same preallocated identities stay client-owned;
+  a next wave gets new request/wave identity without changing its session,
+  continuation, selected-terminal, full-turn, or semantic-turn authority.
+  Until the final wave there is no mechanics, QTE-history, story, progression,
+  or turn counter publication. The final wave publishes the complete selected
+  QTE outcome atomically; stale, tampered, mismatched, or extra-field transport
+  fails closed.
+- See `OtherGuides/Effect_Materialization_Contract.md` and
+  `mortal_qte_deferred_effect_receipt_waves_v1` in
+  `Examples/E_CLI_QTE_Offer.txt`.
 - QTE Practice Mode is client-owned practice for learning implemented QTE mechanics before or outside a normal campaign.
 - Practice has no rewards: no XP, achievements, Ink Feathers, inventory, quest progress, Daren rewards, or other permanent benefits.
 - Practice has no GM-authored practice scenes; the GM must not author practice offers, action types, response fields, or follow-up turns.
@@ -1341,6 +1396,10 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
 - Every terminal outcome must contain a local `responseFragment` using normal `GameResponse` field names.
 - Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
 - `responseFragment` is the authoritative final mechanical outcome for an accepted QTE branch; the GM must not rely on a follow-up GM turn to add the real reward later.
+- A Mortal QTE terminal branch may request a bounded penalty only through `responseFragment.resourceChanges[]`. QTE resource contract v1 is closed: `operation` must be `damage`, target must be `{ "kind": "player", "targetId": "player_current" }`, `resourceKey` must name an existing active resource, `amount` must be a positive exact decimal, and `source` must be exactly `{ "kind": "narrative_outcome" }` with no GM-authored `sourceId`.
+- Every QTE resource command is bound to its array positions: `eventRef` must be exactly `turn_{sourceTurn}:qte_terminal:{one-based terminal outcome ordinal}:resource:{one-based command ordinal}`. `sourceTurn` is the accepted Mortal turn to which the client binds the offer; do not reuse a resource eventRef between outcomes or commands.
+- The client validates resource commands in every terminal outcome, including branches that are not selected, then applies only the selected branch through the common resource reducer and guarded quartet transaction. Retry accepts only the exact replay transition and never damages twice.
+- `resourceDefinitionCreations` and `resourceCapacityChanges` are forbidden inside QTE `responseFragment`; QTE cannot create a reserve or alter its capacity. Direct gauge aliases such as legacy `current*Change` fields are forbidden and are not converted.
 - Successful terminal outcomes must include positive `experienceGained` at minimum.
 - For validation purposes, a "successful terminal outcome" is any terminal outcome reachable by following one or more `success` branches from `startChapterId`.
 - After a successful accepted QTE, the client locally applies that `experienceGained` to an authoritative XP counter in `game_state/player/experience.json`.
@@ -2297,10 +2356,13 @@ legacy promotion are not requirements.
 At a fresh Mortal bootstrap, the client establishes an empty current-life item
 baseline in `game_state/inventory/items.json`,
 `game_state/inventory/item_identity_index.json`,
-`game_state/inventory/item_resources.json`,
 `game_state/inventory/item_bonds.json`,
 `game_state/inventory/item_text_updates.json`, and
-`game_state/npcs/item_journals.json`. Previous-life item sidecars are rollback-only and are not the current GM baseline. The GM must not copy old entries,
+`game_state/npcs/item_journals.json`; common resource authority is established in
+`game_state/resources/resource_definitions.json`, `resource_state.json`,
+`resource_history.json`, and `resource_owner_authority.json`.
+Previous-life item sidecars are rollback-only and are not the current GM baseline.
+They are not compatible with the current schema and are never copied into the new life. The GM must not copy old entries,
 receipts, IDs, or lineage into these files; it creates current-life items only
 through the supported route contracts above.
 

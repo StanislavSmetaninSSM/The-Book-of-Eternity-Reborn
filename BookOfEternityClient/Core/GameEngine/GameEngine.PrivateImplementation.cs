@@ -106,6 +106,23 @@ public partial class GameEngine
         string Route,
         string? MaterializationId);
 
+    private sealed record EffectRepairRetryObligation(
+        string Actor,
+        string RawCoordinate,
+        JsonObject ExpectedSource,
+        JsonObject ExpectedTarget,
+        string ExpectedDefinitionKey,
+        JsonObject ExpectedEventRef,
+        string ExpectedValueJson);
+
+    private sealed record ResourceRepairRetryObligation(
+        int CommandOrdinal,
+        JsonObject ExpectedCommandRootWithoutReason);
+
+    private sealed record RepairResubmissionPathObligation(
+        string Path,
+        bool RejectedExists);
+
     private sealed class ValidationRepairHarnessPacket
     {
         public string Kind { get; set; } = "";
@@ -114,12 +131,19 @@ public partial class GameEngine
         public List<string> TargetFiles { get; set; } = new();
         public List<string> TemplateRefs { get; set; } = new();
         public List<string> CanonicalActorNames { get; set; } = new();
+        public string? Actor { get; set; }
         public string? TransitionClass { get; set; }
         public string? Route { get; set; }
         public JsonElement? SourceCarrier { get; set; }
         public JsonElement? DestinationCarrier { get; set; }
         public string? RawCarrier { get; set; }
         public string? RawCoordinate { get; set; }
+        public JsonObject? ExpectedSource { get; set; }
+        public JsonObject? ExpectedTarget { get; set; }
+        public string? ExpectedDefinitionKey { get; set; }
+        public JsonObject? ExpectedEventRef { get; set; }
+        public bool? FullTurnResubmissionRequired { get; set; }
+        public List<string>? ResubmissionObligations { get; set; }
         public List<string>? MissingFields { get; set; }
         public List<string>? InvalidFields { get; set; }
         public List<string>? Conflicts { get; set; }

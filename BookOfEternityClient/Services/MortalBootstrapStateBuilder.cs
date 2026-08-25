@@ -18,6 +18,14 @@ public static class MortalBootstrapStateBuilder
         "other"
     ];
 
+    internal static JsonObject BuildFreshPlayerStatus() =>
+        new()
+        {
+            ["currentCondition"] = "Здоров",
+            ["activeConditions"] = new JsonArray(),
+            ["money"] = 0
+        };
+
     public static IReadOnlyDictionary<string, JsonObject> BuildFreshMortalBootstrapFiles(
         int incarnationNumber,
         int turnNumber,
@@ -34,6 +42,13 @@ public static class MortalBootstrapStateBuilder
         var world = FirstNonEmpty(worldDescription, "новый смертный мир");
         var circumstances = FirstNonEmpty(startingCircumstances, "первая сцена смертной жизни ещё не уточнена");
         var shortCircumstances = TrimSentence(circumstances, 180);
+        var resources = ResourceBootstrapStateBuilder.BuildPristine();
+        if (!resources.IsValid)
+        {
+            throw new InvalidOperationException(
+                "Fresh Mortal bootstrap could not build the unified resource roots: " +
+                string.Join("; ", resources.Issues.Select(static issue => issue.Code)));
+        }
 
         var files = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
         {
@@ -96,7 +111,12 @@ public static class MortalBootstrapStateBuilder
             [MortalLocationIdentityState.StatePath] = MortalLocationIdentityState.CreateEmptyRoot(),
             ["game_state/inventory/items.json"] = BuildInventory(),
             [MortalItemIdentityState.StatePath] = MortalItemIdentityState.CreateEmptyRoot(),
-            ["game_state/inventory/item_resources.json"] = BuildEmptyEntries(),
+            [ResourceMaterializationContract.DefinitionsPath] =
+                JsonNode.Parse(resources.Definitions!.ToCanonicalJson())!.AsObject(),
+            [ResourceMaterializationContract.StatePath] =
+                JsonNode.Parse(resources.State!.ToCanonicalJson())!.AsObject(),
+            [ResourceMaterializationContract.HistoryPath] =
+                JsonNode.Parse(resources.History!.ToCanonicalJson())!.AsObject(),
             ["game_state/inventory/item_bonds.json"] = BuildEmptyEntries(),
             ["game_state/inventory/item_text_updates.json"] = BuildEmptyEntries(),
             ["game_state/npcs/item_journals.json"] = BuildEmptyEntries(),

@@ -307,7 +307,7 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
         ["abodePower"] = new JsonObject
         {
             ["currentPower"] = 10,
-            ["tier"] = "Стабильная",
+            ["tier"] = AbodePowerRules.GetTierLabel(10),
             ["lastUpdatedAt"] = "2026-04-24T00:00:00Z",
             ["history"] = new JsonArray()
         },
@@ -320,8 +320,7 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
         },
         ["gachaSystem"] = new JsonObject
         {
-            ["chargesPerReturn"] = 0,
-            ["chargesUsedThisReturn"] = 0,
+            ["currentReturnCycleId"] = "return_cycle_test_001",
             ["gachaHistory"] = new JsonArray()
         }
     };

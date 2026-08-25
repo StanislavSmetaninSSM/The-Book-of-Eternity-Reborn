@@ -371,6 +371,27 @@ public class GameInterface
 
     public void RenderStatusBar(PlayerStatusState status)
     {
+        if (!status.ResourceProjectionAvailable)
+        {
+            var unavailableContent = new Grid().AddColumn(new GridColumn());
+            unavailableContent.AddRow(new Markup(
+                $"[yellow]{EscapeMarkup(status.ResourceUnavailableMessage)}[/]"));
+            if (!string.IsNullOrWhiteSpace(status.CurrentCondition))
+            {
+                unavailableContent.AddRow(new Markup(
+                    $"[white]🎭 Состояние: {EscapeMarkup(status.CurrentCondition)}[/]"));
+            }
+
+            AnsiConsole.Write(new Panel(unavailableContent)
+            {
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Grey),
+                Padding = new Padding(1, 0)
+            });
+            AnsiConsole.WriteLine();
+            return;
+        }
+
         var healthPct = ParsePercentage(status.HealthPercentage);
         var energyPct = ParsePercentage(status.EnergyPercentage);
         var poisePct = ParsePercentage(status.PoisePercentage);
@@ -413,12 +434,6 @@ public class GameInterface
         var content = new Grid().AddColumn(new GridColumn());
         content.AddRow(table);
         content.AddRow(new Markup($"[white]{conditionEmoji} Состояние: {EscapeMarkup(status.CurrentCondition ?? "—")}[/]"));
-
-        if (status.ActiveConditions.Length > 0)
-        {
-            foreach (var condition in status.ActiveConditions)
-                content.AddRow(new Markup($"[yellow]⚠ {EscapeMarkup(condition)}[/]"));
-        }
 
         var panel = new Panel(content)
         {

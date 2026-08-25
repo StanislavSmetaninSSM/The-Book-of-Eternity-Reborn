@@ -17,7 +17,7 @@
     "weight_range": "0.5 - 5.0 kg",
     "volume_range": "0.1 - 1.0 L", 
     "price_range": "20 - 200 credits",
-    "durability": "100%",
+    "resourceMaterialization": { "resources": [{ "resourceKey": "durability", "maximum": 100 }] },
     "craftingBonus": "+1 to +3",
     "requiredFor": ["material forming", "cutting", "bending", "drilling"],
     "settingExamples": {
@@ -39,7 +39,7 @@
     "weight_range": "0.1 - 2.0 kg",
     "volume_range": "0.02 - 0.5 L",
     "price_range": "15 - 150 credits", 
-    "durability": "100%",
+    "resourceMaterialization": { "resources": [{ "resourceKey": "durability", "maximum": 100 }] },
     "craftingBonus": "+1 to +2",
     "requiredFor": ["fine detail work", "surface finishing", "calibration"],
     "settingExamples": {
@@ -61,7 +61,7 @@
     "weight_range": "0.1 - 3.0 kg",
     "volume_range": "0.05 - 0.8 L",
     "price_range": "25 - 300 credits",
-    "durability": "100%",
+    "resourceMaterialization": { "resources": [{ "resourceKey": "durability", "maximum": 100 }] },
     "craftingBonus": "+1 to +2 (optional)",
     "requiredFor": ["quality control", "specification verification", "analysis"],
     "isOptional": true,
@@ -84,7 +84,7 @@
     "weight_range": "0.5 - 8.0 kg",
     "volume_range": "0.2 - 4.0 L",
     "price_range": "40 - 400 credits",
-    "durability": "100%",
+    "resourceMaterialization": { "resources": [{ "resourceKey": "durability", "maximum": 100 }] },
     "craftingBonus": "+2 to +4",
     "requiredFor": ["mixing", "chemical reactions", "purification", "synthesis"],
     "settingExamples": {

@@ -3,6 +3,7 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.IO.Compression;
 using System.Text.Json;
@@ -1198,6 +1199,32 @@ public sealed class QteSceneServiceTests : IDisposable
         }
         """);
 
+        const string originalPowerJournal = """
+        {
+          "entries": [
+            {
+              "entryId": "journal_qte_preserve",
+              "eventId": "event_qte_preserve",
+              "turn": 59,
+              "guardianId": "guardian_alpha",
+              "guardianName": "Азалия",
+              "delta": 1,
+              "reasonType": "project_assist",
+              "sourceSurface": "guardianProjectUpdates",
+              "sourceId": "proj_existing",
+              "title": "Existing QTE-adjacent journal entry",
+              "summary": "QTE normalization must not run turn-level journal repair.",
+              "visibility": "player_known",
+              "appliedAt": "2026-03-24T00:00:00Z",
+              "audit": {}
+            }
+          ]
+        }
+        """;
+        await _fs.WriteFileAtomicAsync(
+            GuardianPowerEventState.JournalPath,
+            originalPowerJournal);
+
         var service = CreateRuntimeCapableService();
 
         var outcome = new QteSceneService.QteTerminalOutcome
@@ -1234,6 +1261,10 @@ public sealed class QteSceneServiceTests : IDisposable
         Assert.Equal(5, activeProjects[0].GetProperty("project").GetProperty("workDone").GetInt32());
         Assert.Equal("Advancing", activeProjects[0].GetProperty("project").GetProperty("activeState").GetString());
         Assert.False(trackerDoc.RootElement.TryGetProperty("guardianProjectUpdates", out _));
+        Assert.Equal(
+            originalPowerJournal.Replace("\r\n", "\n"),
+            (await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath))?
+                .Replace("\r\n", "\n"));
     }
 
     [Fact]
@@ -1368,6 +1399,7 @@ public sealed class QteSceneServiceTests : IDisposable
     [Fact]
     public async Task ResolveActiveActionAsync_AppliesScoreDeltasComputesRankAndWritesHistory()
     {
+        await SeedPristineResourceStateAsync();
         var service = CreateRuntimeCapableService();
         var offer = BuildScoredBranchChoiceOffer();
 
@@ -1483,6 +1515,7 @@ public sealed class QteSceneServiceTests : IDisposable
     [Fact]
     public async Task ResolveActiveActionAsync_LeavesUnscoredQteHistoryUnchanged()
     {
+        await SeedPristineResourceStateAsync();
         var service = CreateRuntimeCapableService();
         var offer = BuildUnscoredBranchChoiceOffer();
 
@@ -1497,6 +1530,702 @@ public sealed class QteSceneServiceTests : IDisposable
         var entry = Assert.Single(history.RootElement.EnumerateArray());
         Assert.False(entry.TryGetProperty("finalScore", out _));
         Assert.False(entry.TryGetProperty("scoreAudit", out _));
+    }
+
+    [Theory]
+    [InlineData("success", 5)]
+    [InlineData("fail", 20)]
+    public async Task ResolveActiveActionAsync_AppliesOnlySelectedTerminalResourceDamageThroughCanonicalQuartet(
+        string selectedGrade,
+        int expectedDamage)
+    {
+        var before = await SeedMortalPlayerResourceQuartetAsync();
+        var service = CreateRuntimeCapableService();
+        var offer = BuildResourceTerminalOffer(selectedGrade);
+        await service.BeginAcceptedSceneAsync(offer, currentTurnNumber: 12);
+
+        var result = await service.ResolveActiveActionAsync(
+            "brace",
+            selectedGrade,
+            currentTurnNumber: 12,
+            allowPreexistingStateIssues: true);
+
+        Assert.Equal("Completed", result.State);
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            allowMissingPristine: false);
+        Assert.True(definitions.IsValid, string.Join("; ", definitions.Issues.Select(issue => issue.Code)));
+        var state = ResourceStateContract.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            definitions.Catalog!,
+            allowMissingPristine: false);
+        Assert.True(state.IsValid, string.Join("; ", state.Issues.Select(issue => issue.Code)));
+        Assert.True(state.Ledger!.TryResolveExact(before.Coordinate, out var after));
+        Assert.Equal(before.Current - expectedDamage, after!.Current);
+
+        var history = ResourceHistoryState.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+            definitions.Catalog!,
+            allowMissingPristine: false);
+        Assert.True(history.IsValid, string.Join("; ", history.Issues.Select(issue => issue.Code)));
+        var transition = Assert.Single(
+            history.History!.Transitions,
+            candidate => candidate.EventRef.Contains(
+                ":qte_terminal:",
+                StringComparison.Ordinal));
+        var expectedOutcomeOrdinal = selectedGrade == "success" ? 1 : 2;
+        Assert.Equal(
+            $"turn_12:qte_terminal:{expectedOutcomeOrdinal}:resource:1",
+            transition.EventRef);
+        Assert.Equal("narrative_outcome", transition.OriginKind);
+        Assert.Equal((decimal)expectedDamage, transition.RequestedAmount);
+        Assert.False(_fs.FileExists(ResourceMaterializationContract.CommandPath));
+    }
+
+    [Fact]
+    public async Task ResolveActiveActionAsync_ResurrectedRuntimeAgainstTerminalContinuationFailsWithoutDuplicateDamage()
+    {
+        var before = await SeedMortalPlayerResourceQuartetAsync();
+        var service = CreateRuntimeCapableService();
+        var offer = BuildResourceTerminalOffer("fail");
+        await service.BeginAcceptedSceneAsync(offer, currentTurnNumber: 12);
+        var activeRuntime = await _fs.ReadFileBytesAsync(QteSceneService.QteRuntimePath);
+
+        var first = await service.ResolveActiveActionAsync(
+            "brace",
+            "fail",
+            currentTurnNumber: 12,
+            allowPreexistingStateIssues: true);
+        Assert.Equal("Completed", first.State);
+        Assert.NotNull(activeRuntime);
+        await _fs.WriteFileAtomicBytesAsync(QteSceneService.QteRuntimePath, activeRuntime!);
+        var beforeReplayAttempt = await CaptureTrackedBytesAsync(
+            QteSceneService.BrowserTransactionRollbackPaths);
+
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            service.ResolveActiveActionAsync(
+                "brace",
+                "fail",
+                currentTurnNumber: 12,
+                allowPreexistingStateIssues: true));
+
+        Assert.Contains(
+            "qte_deferred_continuation_runtime_mismatch",
+            error.Message,
+            StringComparison.Ordinal);
+        await AssertTrackedBytesAsync(beforeReplayAttempt);
+        var quartet = await ReadResourceQuartetAsync();
+        Assert.True(quartet.State.TryResolveExact(before.Coordinate, out var after));
+        Assert.Equal(before.Current - 20m, after!.Current);
+        Assert.Single(
+            quartet.History.Transitions,
+            transition => transition.EventRef.Contains(
+                ":qte_terminal:",
+                StringComparison.Ordinal));
+        Assert.False(_fs.FileExists(ResourceMaterializationContract.CommandPath));
+    }
+
+    [Fact]
+    public async Task ResolveActiveActionAsync_DirectLatePersistenceFailureRollsBackResourceQuartetAndPreservesSelectedBoundary()
+    {
+        await SeedMortalPlayerResourceQuartetAsync();
+        var failure = new IOException("Injected direct terminal history failure.");
+        var service = CreateRuntimeCapableService(
+            hooks: new QteSceneServiceHooks
+            {
+                AfterHistoryWrittenAsync = () => Task.FromException(failure)
+            });
+        var offer = BuildResourceTerminalOffer("fail");
+        await service.BeginAcceptedSceneAsync(offer, currentTurnNumber: 12);
+        var before = await CaptureResourceQuartetBytesAsync();
+
+        var error = await Assert.ThrowsAsync<IOException>(() =>
+            service.ResolveActiveActionAsync(
+                "brace",
+                "fail",
+                currentTurnNumber: 12,
+                allowPreexistingStateIssues: true));
+
+        Assert.Same(failure, error);
+        await AssertResourceQuartetBytesAsync(before);
+        await AssertTerminalSelectedContinuationAndRuntimeAsync();
+        Assert.False(_fs.FileExists(QteSceneService.QteHistoryPath));
+        Assert.False(_fs.FileExists(ResourceMaterializationContract.CommandPath));
+    }
+
+    [Fact]
+    public async Task ResolveActiveActionAsync_LateFailureRestoresBomAndNonTextBytesExactly()
+    {
+        const string targetPath = "output/narrative_response.json";
+        var originalBytes = new byte[]
+        {
+            0xEF, 0xBB, 0xBF,
+            (byte)'b', (byte)'e', (byte)'f', (byte)'o', (byte)'r', (byte)'e',
+            0x00, 0xFF, 0x80
+        };
+        await SeedMortalPlayerResourceQuartetAsync();
+        var failure = new IOException("Injected byte-exact terminal history failure.");
+        var service = CreateRuntimeCapableService(
+            hooks: new QteSceneServiceHooks
+            {
+                AfterHistoryWrittenAsync = () => Task.FromException(failure)
+            });
+        var offer = BuildResourceTerminalOffer("fail");
+        await service.BeginAcceptedSceneAsync(offer, currentTurnNumber: 12);
+        await _fs.WriteFileAtomicBytesAsync(targetPath, originalBytes);
+
+        var error = await Assert.ThrowsAsync<IOException>(() =>
+            service.ResolveActiveActionAsync(
+                "brace",
+                "fail",
+                currentTurnNumber: 12,
+                allowPreexistingStateIssues: true));
+
+        Assert.Same(failure, error);
+        Assert.Equal(originalBytes, await _fs.ReadFileBytesAsync(targetPath));
+        AssertNoQteBackupArtifacts();
+    }
+
+    [Fact]
+    public async Task ResolveActiveActionAsync_MissingPresentFileBackupFailsClosedAndRetainsRecoveryEvidence()
+    {
+        const string targetPath = "output/narrative_response.json";
+        var originalBytes = new byte[] { 0xEF, 0xBB, 0xBF, (byte)'o', (byte)'l', (byte)'d' };
+        await SeedMortalPlayerResourceQuartetAsync();
+        var injectedFailure = new IOException("Injected failure after backup removal.");
+        var removedBackup = false;
+        var service = CreateRuntimeCapableService(
+            hooks: new QteSceneServiceHooks
+            {
+                AfterHistoryWrittenAsync = () =>
+                {
+                    var backupRoot = _fs.ResolvePath(QteNormalizerBackupDirectory);
+                    var targetBackup = Directory
+                        .GetFiles(backupRoot, "*", SearchOption.AllDirectories)
+                        .Single(path => Path.GetFileName(path).Contains(
+                            "output_narrative_response.json",
+                            StringComparison.OrdinalIgnoreCase));
+                    File.Delete(targetBackup);
+                    removedBackup = true;
+                    return Task.FromException(injectedFailure);
+                }
+            });
+        var offer = BuildResourceTerminalOffer("fail");
+        await service.BeginAcceptedSceneAsync(offer, currentTurnNumber: 12);
+        await _fs.WriteFileAtomicBytesAsync(targetPath, originalBytes);
+
+        var error = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.ResolveActiveActionAsync(
+                "brace",
+                "fail",
+                currentTurnNumber: 12,
+                allowPreexistingStateIssues: true));
+
+        Assert.True(removedBackup);
+        Assert.Contains("QTE rollback", error.Message, StringComparison.Ordinal);
+        Assert.Contains(targetPath, error.Message, StringComparison.Ordinal);
+        var combinedFailure = Assert.IsType<AggregateException>(error.InnerException);
+        Assert.Contains(injectedFailure, combinedFailure.InnerExceptions);
+        Assert.True(_fs.FileExists(targetPath));
+        var backupRootAfterFailure = _fs.ResolvePath(QteNormalizerBackupDirectory);
+        Assert.True(Directory.Exists(backupRootAfterFailure));
+        Assert.NotEmpty(Directory.GetFiles(
+            backupRootAfterFailure,
+            "*",
+            SearchOption.AllDirectories));
+    }
+
+    [Fact]
+    public async Task ResolveActiveActionAsync_RollbackRefreshFailureAggregatesOriginalAndRetainsBackups()
+    {
+        const string targetPath = "output/narrative_response.json";
+        var originalBytes = new byte[] { 0xEF, 0xBB, 0xBF, (byte)'o', (byte)'l', (byte)'d' };
+        await SeedMortalPlayerResourceQuartetAsync();
+        var originalFailure = new IOException("Injected terminal history failure.");
+        var refreshFailure = new IOException("Injected post-rollback refresh failure.");
+        var failRefresh = false;
+        var hookedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalReadOpenAsync = path =>
+                    failRefresh && string.Equals(
+                        path,
+                        ResourceMaterializationContract.StatePath,
+                        StringComparison.OrdinalIgnoreCase)
+                        ? Task.FromException(refreshFailure)
+                        : Task.CompletedTask
+            });
+        var service = CreateRuntimeCapableService(
+            hookedFs,
+            hooks: new QteSceneServiceHooks
+            {
+                AfterHistoryWrittenAsync = () =>
+                {
+                    failRefresh = true;
+                    return Task.FromException(originalFailure);
+                }
+            });
+        var offer = BuildResourceTerminalOffer("fail");
+        await service.BeginAcceptedSceneAsync(offer, currentTurnNumber: 12);
+        await _fs.WriteFileAtomicBytesAsync(targetPath, originalBytes);
+
+        var error = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.ResolveActiveActionAsync(
+                "brace",
+                "fail",
+                currentTurnNumber: 12,
+                allowPreexistingStateIssues: true));
+
+        var combined = Assert.IsType<AggregateException>(error.InnerException).Flatten();
+        Assert.Contains(originalFailure, combined.InnerExceptions);
+        Assert.Contains(refreshFailure, combined.InnerExceptions);
+        Assert.Equal(originalBytes, await _fs.ReadFileBytesAsync(targetPath));
+        var backupRoot = _fs.ResolvePath(QteNormalizerBackupDirectory);
+        Assert.True(Directory.Exists(backupRoot));
+        Assert.NotEmpty(Directory.GetFiles(backupRoot, "*", SearchOption.AllDirectories));
+    }
+
+    [Fact]
+    public async Task ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult()
+    {
+        await SeedMortalPlayerResourceQuartetAsync();
+        var cleanupFailure = new IOException("Injected QTE backup cleanup failure.");
+        var cleanupArmed = false;
+        var hookedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalMutationAsync = path =>
+                    cleanupArmed && path.StartsWith(
+                        QteNormalizerBackupDirectory,
+                        StringComparison.OrdinalIgnoreCase)
+                        ? Task.FromException(cleanupFailure)
+                        : Task.CompletedTask
+            });
+        var logger = new RecordingLogger<QteSceneService>();
+        var service = CreateRuntimeCapableService(
+            hookedFs,
+            hooks: new QteSceneServiceHooks
+            {
+                AfterRuntimeWrittenAsync = state =>
+                {
+                    if (state.ActiveScene == null)
+                        cleanupArmed = true;
+                    return Task.CompletedTask;
+                }
+            },
+            logger: logger);
+        var offer = BuildResourceTerminalOffer("fail");
+        await service.BeginAcceptedSceneAsync(offer, currentTurnNumber: 12);
+
+        var resolution = await service.ResolveActiveActionAsync(
+            "brace",
+            "fail",
+            currentTurnNumber: 12,
+            allowPreexistingStateIssues: true);
+
+        Assert.Equal("Completed", resolution.State);
+        var runtime = JsonNode.Parse(Assert.IsType<string>(
+            await _fs.ReadFileAsync(QteSceneService.QteRuntimePath)))!.AsObject();
+        Assert.Null(runtime["activeScene"]);
+        var backupRoot = _fs.ResolvePath(QteNormalizerBackupDirectory);
+        Assert.True(Directory.Exists(backupRoot));
+        Assert.NotEmpty(Directory.GetFiles(backupRoot, "*", SearchOption.AllDirectories));
+        Assert.Contains(logger.Messages, message =>
+            message.Contains("retained", StringComparison.OrdinalIgnoreCase) &&
+            message.Contains(QteNormalizerBackupDirectory, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ResolveActiveActionAsync_RejectsMalformedResourceOwnerAuthorityBeforeAnyOutcomeMutation()
+    {
+        await SeedMortalPlayerResourceQuartetAsync();
+        var service = CreateRuntimeCapableService();
+        var offer = BuildResourceTerminalOffer("fail");
+        await service.BeginAcceptedSceneAsync(offer, currentTurnNumber: 12);
+        await _fs.WriteFileAtomicAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            """{ "schemaVersion": 1, "historicalOwners": [], "capacityDrafts": [] }""");
+        var before = await CaptureTrackedBytesAsync(
+            QteSceneService.BrowserTransactionRollbackPaths);
+
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            service.ResolveActiveActionAsync(
+                "brace",
+                "fail",
+                currentTurnNumber: 12,
+                allowPreexistingStateIssues: true));
+
+        Assert.Contains(
+            "qte_deferred_continuation_sealed_root_mismatch",
+            error.Message,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            error.Message,
+            StringComparison.Ordinal);
+        await AssertTrackedBytesAsync(before);
+        Assert.False(_fs.FileExists(QteSceneService.QteHistoryPath));
+        Assert.False(_fs.FileExists(ResourceMaterializationContract.CommandPath));
+    }
+
+    [Fact]
+    public async Task ResolveActiveActionAsync_RawEffectWithoutImmutableContinuation_PersistsSelectedBoundaryAndPreservesFinalPublicationState()
+    {
+        await SeedMortalPlayerResourceQuartetAsync();
+        var service = CreateRuntimeCapableService();
+        var offer = BuildUnscoredBranchChoiceOffer();
+        var outcome = Assert.Single(offer.TerminalOutcomes);
+        outcome.ResponseFragment!["effectChanges"] = new JsonArray(new JsonObject
+        {
+            ["operation"] = "apply"
+        });
+        await service.BeginAcceptedSceneAsync(offer, currentTurnNumber: 20);
+        var before = await CaptureTrackedBytesAsync(QteSceneService.BrowserTransactionRollbackPaths);
+        Assert.NotNull(before[QteSceneService.QteRuntimePath]);
+        Assert.Null(before[QteSceneService.QteHistoryPath]);
+
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            service.ResolveActiveActionAsync(
+                "open_gate",
+                submittedGrade: null,
+                currentTurnNumber: 21,
+                allowPreexistingStateIssues: true));
+
+        Assert.Contains(
+            "validated common-plan binding",
+            exception.Message,
+            StringComparison.Ordinal);
+        await AssertTrackedBytesAsync(
+            before,
+            QteSceneService.QteRuntimePath,
+            QteDeferredEffectContinuation.StatePath);
+        await AssertTerminalSelectedContinuationAndRuntimeAsync();
+        Assert.False(_fs.FileExists(QteSceneService.QteHistoryPath));
+        AssertNoQteBackupArtifacts();
+    }
+
+    [Fact]
+    public async Task QteTerminalResourceOutcome_WorkCountersRemainLinearForMultiCommandSelection()
+    {
+        await SeedMortalPlayerResourceQuartetAsync();
+        var quartet = await ReadResourceQuartetAsync();
+        var baselineHistoryCount = quartet.History.Transitions.Count;
+
+        var sixteen = await BuildQteTerminalResourcePlanAsync(commandCount: 16);
+        var thirtyTwo = await BuildQteTerminalResourcePlanAsync(commandCount: 32);
+
+        Assert.True(sixteen.IsValid, string.Join("; ", sixteen.Issues.Select(issue => issue.Code)));
+        Assert.True(thirtyTwo.IsValid, string.Join("; ", thirtyTwo.Issues.Select(issue => issue.Code)));
+        AssertQteResourceWork(sixteen, 16, baselineHistoryCount);
+        AssertQteResourceWork(thirtyTwo, 32, baselineHistoryCount);
+    }
+
+    [Fact]
+    public async Task ApplyTerminalOutcomeValidatedStateChangesAsync_ExistedIdNullOnlyWithoutImmutableContinuation_FailsClosedAndRollsBack()
+    {
+        await SeedMinimalValidatedMortalStateAsync();
+        await _fs.WriteFileAtomicAsync(
+            "input/turn_request.json",
+            new JsonObject
+            {
+                ["sessionId"] = "session_qte_null_existed_id",
+                ["requestId"] = "request_qte_null_existed_id",
+                ["turnNumber"] = 42,
+                ["playerAction"] = "Resolve a deferred QTE outcome."
+            }.ToJsonString());
+        var trackedPaths = new[]
+        {
+            InventoryEquipmentService.ItemsPath,
+            MortalItemIdentityState.StatePath,
+            "game_state/player/experience.json",
+            "output/narrative_response.json"
+        };
+        var before = new Dictionary<string, byte[]?>(StringComparer.OrdinalIgnoreCase);
+        foreach (var path in trackedPaths)
+            before[path] = await _fs.ReadFileBytesAsync(path);
+        var service = CreateRuntimeCapableService();
+        var outcome = new QteSceneService.QteTerminalOutcome
+        {
+            OutcomeId = "qte_null_existed_id_without_continuation",
+            Title = "Deferred item outcome",
+            FinalNarrative = "Исход пытается выдать предмет.",
+            GmSummary = "Raw item must wait for immutable accepted continuation authority.",
+            ResponseFragment = new JsonObject
+            {
+                ["response"] = "Исход пытается выдать предмет.",
+                ["UpdateInventory"] = new JsonArray(new JsonObject
+                {
+                    ["existedId"] = null,
+                    ["name"] = "Отложенный предмет без identity allocation"
+                })
+            }
+        };
+
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            service.ApplyTerminalOutcomeValidatedStateChangesAsync(
+                outcome,
+                allowPreexistingStateIssues: true));
+
+        Assert.Contains(
+            "validated common-plan binding",
+            exception.Message,
+            StringComparison.Ordinal);
+        foreach (var (path, expected) in before)
+            Assert.Equal(expected, await _fs.ReadFileBytesAsync(path));
+        AssertNoQteBackupArtifacts();
+    }
+
+    [Fact]
+    public async Task ApplyTerminalOutcomeStateChangesAsync_CreationRefOnlyWithoutImmutableContinuation_FailsBeforeWriteLeaseOrMutation()
+    {
+        await SeedMinimalValidatedMortalStateAsync();
+        var before = await CaptureTrackedBytesAsync(QteSceneService.BrowserTransactionRollbackPaths);
+        var writeLeaseOpenAttempts = 0;
+        var mutationAttempts = 0;
+        var hookedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalWriteLockOpenAsync = () =>
+                {
+                    writeLeaseOpenAttempts++;
+                    return Task.CompletedTask;
+                },
+                BeforeCanonicalMutationAsync = _ =>
+                {
+                    mutationAttempts++;
+                    return Task.CompletedTask;
+                }
+            });
+        var service = CreateRuntimeCapableService(hookedFs);
+        var outcome = new QteSceneService.QteTerminalOutcome
+        {
+            OutcomeId = "qte_creation_ref_without_continuation",
+            Title = "Deferred item outcome",
+            FinalNarrative = "Исход пытается выдать предмет.",
+            GmSummary = "A creationRef must wait for immutable accepted continuation authority.",
+            ResponseFragment = new JsonObject
+            {
+                ["response"] = "Исход пытается выдать предмет.",
+                ["UpdateInventory"] = new JsonArray(new JsonObject
+                {
+                    ["creationRef"] = "new_item_qte_creation_ref_only",
+                    ["name"] = "Отложенный предмет с creationRef"
+                })
+            }
+        };
+
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            service.ApplyTerminalOutcomeStateChangesAsync(outcome));
+
+        Assert.Contains(
+            "validated common-plan binding",
+            exception.Message,
+            StringComparison.Ordinal);
+        Assert.Equal(0, writeLeaseOpenAttempts);
+        Assert.Equal(0, mutationAttempts);
+        await AssertTrackedBytesAsync(before);
+        AssertNoQteBackupArtifacts();
+    }
+
+    [Fact]
+    public async Task ApplyTerminalOutcomeStateChangesAsync_PermanentExistedIdUpdate_DoesNotRequireContinuation()
+    {
+        await SeedMinimalValidatedMortalStateAsync();
+        var existingItem = MortalItemTestFixture.CreateCanonicalRoot("itm_qte_permanent");
+        await _fs.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            MortalItemTestFixture.CreateCarrier(
+                    existingItem,
+                    "player_inventory",
+                    "player")
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemTestFixture.CreateIndex(existingItem)
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var service = CreateRuntimeCapableService();
+        var outcome = new QteSceneService.QteTerminalOutcome
+        {
+            OutcomeId = "qte_existing_item_update",
+            Title = "Existing item outcome",
+            FinalNarrative = "Существующий предмет остаётся тем же экземпляром.",
+            GmSummary = "A permanent existedId is an update, not raw materialization.",
+            ResponseFragment = new JsonObject
+            {
+                ["response"] = "Существующий предмет остаётся тем же экземпляром.",
+                ["UpdateInventory"] = new JsonArray(new JsonObject
+                {
+                    ["existedId"] = "itm_qte_permanent",
+                    ["count"] = 1
+                })
+            }
+        };
+
+        var response = await service.ApplyTerminalOutcomeStateChangesAsync(outcome);
+
+        var update = Assert.Single(response.UpdateInventory!);
+        Assert.Equal("itm_qte_permanent", update.GetProperty("existedId").GetString());
+        AssertNoQteBackupArtifacts();
+    }
+
+    [Fact]
+    public async Task ApplyTerminalOutcomeValidatedStateChangesAsync_RawEffectWithoutImmutableContinuation_FailsClosedAndRollsBack()
+    {
+        await SeedMinimalValidatedMortalStateAsync();
+        await _fs.WriteFileAtomicAsync(
+            "input/turn_request.json",
+            new JsonObject
+            {
+                ["sessionId"] = "session_qte_raw_effect",
+                ["requestId"] = "request_qte_raw_effect",
+                ["turnNumber"] = 42,
+                ["playerAction"] = "Resolve a deferred QTE outcome."
+            }.ToJsonString());
+        var trackedPaths = new[]
+        {
+            EffectAcceptedTurnPlan.CommandPath,
+            EffectAcceptedTurnPlan.IdentityIndexPath,
+            "game_state/player/experience.json",
+            "output/narrative_response.json"
+        };
+        var before = new Dictionary<string, byte[]?>(StringComparer.OrdinalIgnoreCase);
+        foreach (var path in trackedPaths)
+            before[path] = await _fs.ReadFileBytesAsync(path);
+        var service = CreateRuntimeCapableService();
+        var outcome = new QteSceneService.QteTerminalOutcome
+        {
+            OutcomeId = "qte_raw_effect_without_continuation",
+            Title = "Deferred effect outcome",
+            FinalNarrative = "Исход пытается наложить эффект.",
+            GmSummary = "Raw effect must wait for immutable accepted continuation authority.",
+            ResponseFragment = new JsonObject
+            {
+                ["response"] = "Исход пытается наложить эффект.",
+                ["effectChanges"] = new JsonArray(new JsonObject
+                {
+                    ["operation"] = "apply"
+                })
+            }
+        };
+
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            service.ApplyTerminalOutcomeValidatedStateChangesAsync(
+                outcome,
+                allowPreexistingStateIssues: true));
+
+        Assert.Contains(
+            "validated common-plan binding",
+            exception.Message,
+            StringComparison.Ordinal);
+        foreach (var (path, expected) in before)
+            Assert.Equal(expected, await _fs.ReadFileBytesAsync(path));
+        AssertNoQteBackupArtifacts();
+    }
+
+    [Fact]
+    public async Task ApplyTerminalOutcomeValidatedStateChangesAsync_MalformedEffectSurface_FailsClosedBeforeTypedDeserialization()
+    {
+        var before = await CaptureTrackedBytesAsync(QteSceneService.BrowserTransactionRollbackPaths);
+        var service = CreateRuntimeCapableService();
+        var outcome = new QteSceneService.QteTerminalOutcome
+        {
+            OutcomeId = "qte_malformed_effect_without_continuation",
+            Title = "Malformed deferred effect outcome",
+            FinalNarrative = "Исход содержит malformed effect authority.",
+            GmSummary = "Malformed effect authority must fail closed before typed deserialization.",
+            ResponseFragment = new JsonObject
+            {
+                ["response"] = "Исход содержит malformed effect authority.",
+                ["effectChanges"] = new JsonObject
+                {
+                    ["operation"] = "apply"
+                }
+            }
+        };
+
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            service.ApplyTerminalOutcomeValidatedStateChangesAsync(
+                outcome,
+                allowPreexistingStateIssues: true));
+
+        Assert.Contains(
+            "validated common-plan binding",
+            exception.Message,
+            StringComparison.Ordinal);
+        await AssertTrackedBytesAsync(before);
+        AssertNoQteBackupArtifacts();
+    }
+
+    [Fact]
+    public async Task ApplyTerminalOutcomeValidatedStateChangesAsync_RawOwnerWithoutImmutableContinuation_FailsClosedAndRollsBack()
+    {
+        await SeedMinimalValidatedMortalStateAsync();
+        await _fs.WriteFileAtomicAsync(
+            "input/turn_request.json",
+            new JsonObject
+            {
+                ["sessionId"] = "session_qte_raw_owner",
+                ["requestId"] = "request_qte_raw_owner",
+                ["turnNumber"] = 42,
+                ["playerAction"] = "Resolve a deferred QTE outcome."
+            }.ToJsonString());
+        var trackedPaths = new[]
+        {
+            NpcCoreChangesContract.NpcCorePath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            ResourceMaterializationContract.StatePath,
+            "game_state/player/experience.json",
+            "output/narrative_response.json"
+        };
+        var before = new Dictionary<string, byte[]?>(StringComparer.OrdinalIgnoreCase);
+        foreach (var path in trackedPaths)
+            before[path] = await _fs.ReadFileBytesAsync(path);
+        var service = CreateRuntimeCapableService();
+        var outcome = new QteSceneService.QteTerminalOutcome
+        {
+            OutcomeId = "qte_raw_owner_without_continuation",
+            Title = "Deferred owner outcome",
+            FinalNarrative = "Исход пытается создать нового владельца ресурса.",
+            GmSummary = "Raw owner must wait for immutable accepted continuation authority.",
+            ResponseFragment = new JsonObject
+            {
+                ["response"] = "Исход пытается создать нового владельца ресурса.",
+                ["UpdateNPCs"] = new JsonArray(new JsonObject
+                {
+                    ["initialId"] = "npcref_qte_raw_owner",
+                    ["resourceMaterialization"] = new JsonObject
+                    {
+                        ["resources"] = new JsonArray(new JsonObject
+                        {
+                            ["resourceKey"] = "health",
+                            ["maximum"] = 10
+                        })
+                    }
+                })
+            }
+        };
+
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            service.ApplyTerminalOutcomeValidatedStateChangesAsync(
+                outcome,
+                allowPreexistingStateIssues: true));
+
+        Assert.Contains(
+            "validated common-plan binding",
+            exception.Message,
+            StringComparison.Ordinal);
+        foreach (var (path, expected) in before)
+            Assert.Equal(expected, await _fs.ReadFileBytesAsync(path));
+        AssertNoQteBackupArtifacts();
     }
 
     [Fact]
@@ -1842,26 +2571,79 @@ public sealed class QteSceneServiceTests : IDisposable
         Assert.Equal("sibling_run", Path.GetFileName(runDirectories[0]));
     }
 
-    private QteSceneService CreateRuntimeCapableService(IConsoleInputSource? inputSource = null)
+    private QteSceneService CreateRuntimeCapableService(
+        IConsoleInputSource? inputSource = null,
+        QteSceneServiceHooks? hooks = null,
+        StateManagerHooks? stateManagerHooks = null,
+        ILogger<QteSceneService>? logger = null)
+        => CreateRuntimeCapableService(
+            _fs,
+            inputSource,
+            hooks,
+            stateManagerHooks,
+            logger);
+
+    private static QteSceneService CreateRuntimeCapableService(
+        FileSystemManager fs,
+        IConsoleInputSource? inputSource = null,
+        QteSceneServiceHooks? hooks = null,
+        StateManagerHooks? stateManagerHooks = null,
+        ILogger<QteSceneService>? logger = null)
     {
         var settings = new GameSettings();
-        var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
+        var stateManager = new StateManager(
+            fs,
+            settings,
+            NullLogger<StateManager>.Instance,
+            stateManagerHooks);
         return new QteSceneService(
-            _fs,
+            fs,
             settings,
             null!,
-            new ImageService(_fs, settings, new LocalizationManager { CurrentLanguage = "ru" }, NullLogger<ImageService>.Instance),
-            new AudioService(_fs, settings, NullLogger<AudioService>.Instance),
-            new StateDistributor(_fs, NullLogger<StateDistributor>.Instance),
-            new ValidationService(_fs, NullLogger<ValidationService>.Instance),
-            new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance),
+            new ImageService(fs, settings, new LocalizationManager { CurrentLanguage = "ru" }, NullLogger<ImageService>.Instance),
+            new AudioService(fs, settings, NullLogger<AudioService>.Instance),
+            new StateDistributor(fs, NullLogger<StateDistributor>.Instance),
+            new ValidationService(fs, NullLogger<ValidationService>.Instance),
+            new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance),
             stateManager,
-            NullLogger<QteSceneService>.Instance,
-            inputSource);
+            logger ?? NullLogger<QteSceneService>.Instance,
+            inputSource,
+            hooks);
+    }
+
+    private sealed class RecordingLogger<T> : ILogger<T>
+    {
+        private readonly List<string> _messages = new();
+
+        internal IReadOnlyList<string> Messages
+        {
+            get
+            {
+                lock (_messages)
+                    return _messages.ToArray();
+            }
+        }
+
+        public IDisposable? BeginScope<TState>(TState state)
+            where TState : notnull => null;
+
+        public bool IsEnabled(LogLevel logLevel) => true;
+
+        public void Log<TState>(
+            LogLevel logLevel,
+            EventId eventId,
+            TState state,
+            Exception? exception,
+            Func<TState, Exception?, string> formatter)
+        {
+            lock (_messages)
+                _messages.Add(formatter(state, exception));
+        }
     }
 
     private async Task<SaveLoadService> CreateSaveLoadServiceAsync()
     {
+        await SeedPristineResourceStateAsync();
         var settings = new GameSettings();
         var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
         await stateManager.RefreshGameStateAsync();
@@ -1883,6 +2665,8 @@ public sealed class QteSceneServiceTests : IDisposable
 
     private async Task SeedMinimalValidatedMortalStateAsync()
     {
+        await SeedPristineResourceStateAsync();
+
         await _fs.WriteFileAtomicAsync(
             MortalItemIdentityState.StatePath,
             MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
@@ -1897,9 +2681,6 @@ public sealed class QteSceneServiceTests : IDisposable
 
         await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", """
         {
-          "healthPercentage": "100%",
-          "energyPercentage": "100%",
-          "poisePercentage": "100%",
           "currentCondition": "Собран",
           "money": 0
         }
@@ -1910,6 +2691,242 @@ public sealed class QteSceneServiceTests : IDisposable
           "entries": []
         }
         """);
+    }
+
+    private async Task SeedPristineResourceStateAsync()
+    {
+        var resources = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(resources.IsValid, string.Join("; ", resources.Issues.Select(issue => issue.Code)));
+
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            resources.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            resources.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            resources.History!.ToCanonicalJson());
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            resources.Definitions,
+            _fs.ReadFileAsync,
+            resources.State,
+            resources.History,
+            CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(authority.IsValid, string.Join("; ", authority.Issues.Select(issue => issue.Code)));
+        await _fs.WriteFileAtomicAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            authority.CanonicalAuthorityJson!);
+    }
+
+    private async Task<ResourceStateEntry> SeedMortalPlayerResourceQuartetAsync()
+    {
+        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+            incarnationNumber: 1,
+            turn: 1,
+            permanentStrength: 20,
+            permanentConstitution: 20,
+            permanentIntelligence: 20,
+            permanentWisdom: 20,
+            permanentFaith: 20);
+        Assert.True(resources.IsValid, string.Join("; ", resources.Issues.Select(issue => issue.Code)));
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            resources.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            resources.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            resources.History!.ToCanonicalJson());
+
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            resources.Definitions,
+            path => _fs.ReadFileAsync(path),
+            resources.State,
+            resources.History,
+            CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(authority.IsValid, string.Join("; ", authority.Issues.Select(issue => issue.Code)));
+        await _fs.WriteFileAtomicAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            authority.CanonicalAuthorityJson!);
+
+        return resources.State.Entries.Single(entry =>
+            entry.Coordinate.OwnerKind == ResourceOwnerKind.Player &&
+            string.Equals(entry.Coordinate.ResourceOwnerId, "player_current", StringComparison.Ordinal) &&
+            string.Equals(entry.Coordinate.ResourceKey, "poise", StringComparison.Ordinal));
+    }
+
+    private async Task<(ResourceStateLedger State, ResourceHistoryState History)>
+        ReadResourceQuartetAsync()
+    {
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            allowMissingPristine: false);
+        Assert.True(definitions.IsValid, string.Join("; ", definitions.Issues.Select(issue => issue.Code)));
+        var state = ResourceStateContract.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            definitions.Catalog!,
+            allowMissingPristine: false);
+        Assert.True(state.IsValid, string.Join("; ", state.Issues.Select(issue => issue.Code)));
+        var history = ResourceHistoryState.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+            definitions.Catalog!,
+            allowMissingPristine: false);
+        Assert.True(history.IsValid, string.Join("; ", history.Issues.Select(issue => issue.Code)));
+        return (state.Ledger!, history.History!);
+    }
+
+    private async Task<QteTerminalResourceFilePlan> BuildQteTerminalResourcePlanAsync(
+        int commandCount)
+    {
+        var resourceChanges = new JsonArray();
+        for (var index = 0; index < commandCount; index++)
+        {
+            resourceChanges.Add(new JsonObject
+            {
+                ["operation"] = "damage",
+                ["target"] = new JsonObject
+                {
+                    ["kind"] = "player",
+                    ["targetId"] = "player_current"
+                },
+                ["resourceKey"] = "poise",
+                ["amount"] = 1,
+                ["source"] = new JsonObject
+                {
+                    ["kind"] = "narrative_outcome"
+                },
+                ["eventRef"] = $"turn_12:qte_terminal:1:resource:{index + 1}",
+                ["reason"] = "Linear QTE resource adapter work regression."
+            });
+        }
+
+        var selection = new QteTerminalResourceSelection(
+            sourceTurn: 12,
+            qteId: "qte_resource_linear_work",
+            chapterId: "impact",
+            actionId: "brace",
+            grade: "fail",
+            outcomeOrdinal: 1,
+            outcomeId: "crushing",
+            responseFragment: new JsonObject
+            {
+                ["response"] = "Каменная волна сбивает равновесие.",
+                ["resourceChanges"] = resourceChanges
+            });
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await QteTerminalResourceOutcome.BuildAsync(
+            _fs,
+            writeLease,
+            selection);
+    }
+
+    private static void AssertQteResourceWork(
+        QteTerminalResourceFilePlan plan,
+        int commandCount,
+        int baselineHistoryCount)
+    {
+        var work = plan.Work;
+
+        Assert.Equal(1, work.DefinitionAuthorityLookupCount);
+        Assert.Equal(commandCount, work.DefinitionBindingLookupCount);
+        Assert.Equal(
+            baselineHistoryCount,
+            work.ExistingReplayTransitionVisitCount);
+        Assert.Equal(
+            commandCount,
+            work.ExistingReplayIdentityLookupCount);
+        Assert.Equal(
+            commandCount,
+            work.ProjectionTransitionVisitCount);
+        Assert.Equal(
+            commandCount,
+            work.ProjectionIdentityLookupCount);
+        Assert.Equal(
+            commandCount,
+            work.ProjectionCardinalityLookupCount);
+        Assert.Equal(
+            baselineHistoryCount + 5L * commandCount + 1L,
+            work.TotalWorkUnits);
+    }
+
+    private async Task<Dictionary<string, byte[]?>> CaptureResourceQuartetBytesAsync()
+    {
+        var paths = new[]
+        {
+            ResourceMaterializationContract.DefinitionsPath,
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+        };
+        var result = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        foreach (var path in paths)
+            result[path] = await _fs.ReadFileBytesAsync(path);
+        return result;
+    }
+
+    private async Task AssertResourceQuartetBytesAsync(
+        IReadOnlyDictionary<string, byte[]?> expected)
+    {
+        foreach (var path in new[]
+                 {
+                     ResourceMaterializationContract.DefinitionsPath,
+                     ResourceMaterializationContract.StatePath,
+                     ResourceMaterializationContract.HistoryPath,
+                     CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+                 })
+        {
+            Assert.Equal(expected[path], await _fs.ReadFileBytesAsync(path));
+        }
+    }
+
+    private async Task<Dictionary<string, byte[]?>> CaptureTrackedBytesAsync(
+        IEnumerable<string> paths)
+    {
+        var result = new Dictionary<string, byte[]?>(StringComparer.OrdinalIgnoreCase);
+        foreach (var path in paths.Distinct(StringComparer.OrdinalIgnoreCase))
+            result[path] = await _fs.ReadFileBytesAsync(path);
+        return result;
+    }
+
+    private async Task AssertTrackedBytesAsync(
+        IReadOnlyDictionary<string, byte[]?> expected,
+        params string[] excludedPaths)
+    {
+        var exclusions = excludedPaths.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var (path, bytes) in expected)
+        {
+            if (exclusions.Contains(path))
+                continue;
+            Assert.Equal(bytes, await _fs.ReadFileBytesAsync(path));
+        }
+    }
+
+    private async Task AssertTerminalSelectedContinuationAndRuntimeAsync()
+    {
+        using var continuation = await ReadJsonDocumentAsync(
+            QteDeferredEffectContinuation.StatePath);
+        var continuationRoot = continuation.RootElement;
+        Assert.Equal(
+            "terminal_selected",
+            continuationRoot.GetProperty("state").GetString());
+        Assert.Equal(
+            JsonValueKind.Object,
+            continuationRoot.GetProperty("selectedTerminalBinding").ValueKind);
+
+        using var runtime = await ReadJsonDocumentAsync(QteSceneService.QteRuntimePath);
+        var activeScene = runtime.RootElement.GetProperty("activeScene");
+        Assert.Equal(JsonValueKind.Object, activeScene.ValueKind);
+        Assert.Equal(
+            "terminal_selected",
+            activeScene.GetProperty("effectResolutionState").GetString());
+        Assert.Equal(
+            continuationRoot.GetProperty("continuationId").GetString(),
+            activeScene.GetProperty("deferredEffectContinuationId").GetString());
+        Assert.Equal(
+            continuationRoot.GetProperty("authorityFingerprint").GetString(),
+            activeScene.GetProperty("deferredEffectContinuationFingerprint").GetString());
     }
 
     private static void AssertMetricValue(JsonElement scoreContainer, string metricId, double expectedValue)
@@ -2137,6 +3154,102 @@ public sealed class QteSceneServiceTests : IDisposable
                       "experienceGained": 5
                     }
                     """)!.AsObject()
+                }
+            ]
+        };
+    }
+
+    private static QteSceneService.QteOffer BuildResourceTerminalOffer(string selectedGrade)
+    {
+        JsonObject Fragment(int outcomeOrdinal, int amount) => new()
+        {
+            ["response"] = "Каменная волна сбивает равновесие.",
+            ["experienceGained"] = outcomeOrdinal == 1 ? 1 : 0,
+            ["resourceChanges"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["operation"] = "damage",
+                    ["target"] = new JsonObject
+                    {
+                        ["kind"] = "player",
+                        ["targetId"] = "player_current"
+                    },
+                    ["resourceKey"] = "poise",
+                    ["amount"] = amount,
+                    ["source"] = new JsonObject
+                    {
+                        ["kind"] = "narrative_outcome"
+                    },
+                    ["eventRef"] = $"turn_12:qte_terminal:{outcomeOrdinal}:resource:1",
+                    ["reason"] = "Цена выбранного исхода QTE."
+                }
+            }
+        };
+
+        return new QteSceneService.QteOffer
+        {
+            QteId = "qte_resource_selection",
+            Title = "Каменная волна",
+            OfferText = "Удержаться на ногах.",
+            IntroNarrative = "Пол содрогается.",
+            StartChapterId = "impact",
+            SourceTurnNumber = 12,
+            Chapters =
+            [
+                new QteSceneService.QteChapter
+                {
+                    ChapterId = "impact",
+                    Title = "Удар",
+                    Narrative = "Волна достигает героя.",
+                    Actions =
+                    [
+                        new QteSceneService.QteAction
+                        {
+                            ActionId = "brace",
+                            Label = "Упереться",
+                            Check = new QteSceneService.QteCheck
+                            {
+                                Type = "BranchChoice",
+                                BaseDifficulty = 1,
+                                Config = new JsonObject { ["choiceGrade"] = selectedGrade }
+                            },
+                            Routing = new QteSceneService.QteRouting
+                            {
+                                Success = new QteSceneService.QteBranchTarget
+                                {
+                                    TerminalOutcomeId = "glancing"
+                                },
+                                Partial = new QteSceneService.QteBranchTarget
+                                {
+                                    TerminalOutcomeId = "glancing"
+                                },
+                                Fail = new QteSceneService.QteBranchTarget
+                                {
+                                    TerminalOutcomeId = "crushing"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            TerminalOutcomes =
+            [
+                new QteSceneService.QteTerminalOutcome
+                {
+                    OutcomeId = "glancing",
+                    Title = "Скользящий удар",
+                    FinalNarrative = "Герой удержался.",
+                    GmSummary = "Успешная ветка наносит 5 poise damage.",
+                    ResponseFragment = Fragment(outcomeOrdinal: 1, amount: 5)
+                },
+                new QteSceneService.QteTerminalOutcome
+                {
+                    OutcomeId = "crushing",
+                    Title = "Сокрушительный удар",
+                    FinalNarrative = "Герой падает.",
+                    GmSummary = "Провальная ветка наносит 20 poise damage.",
+                    ResponseFragment = Fragment(outcomeOrdinal: 2, amount: 20)
                 }
             ]
         };

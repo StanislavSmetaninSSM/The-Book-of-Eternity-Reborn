@@ -170,6 +170,7 @@ public sealed class SessionOperationContextTests : IDisposable
         await _fs.WriteFileAtomicAsync(
             "game_state/meta/soul_state.json",
             """{"currentRealm":"Mortal World"}""");
+        await SeedPristineResourceStateAsync(_fs);
         await _fs.WriteFileAtomicAsync(targetPath, "{\"owner\":\"saved\"}");
         var stateManager = new StateManager(
             _fs,
@@ -298,6 +299,34 @@ public sealed class SessionOperationContextTests : IDisposable
     {
         await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
         return fs.GetOrCreateSessionGeneration(writeLease);
+    }
+
+    private static async Task SeedPristineResourceStateAsync(FileSystemManager fs)
+    {
+        var resources = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(resources.IsValid, string.Join("; ", resources.Issues.Select(issue => issue.Code)));
+
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            resources.Definitions!.ToCanonicalJson());
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            resources.State!.ToCanonicalJson());
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            resources.History!.ToCanonicalJson());
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            resources.Definitions,
+            fs.ReadFileAsync,
+            resources.State,
+            resources.History,
+            CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(
+            authority.IsValid,
+            string.Join("; ", authority.Issues.Select(issue => issue.Code)));
+        await fs.WriteFileAtomicAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            authority.CanonicalAuthorityJson!);
     }
 
     public void Dispose()

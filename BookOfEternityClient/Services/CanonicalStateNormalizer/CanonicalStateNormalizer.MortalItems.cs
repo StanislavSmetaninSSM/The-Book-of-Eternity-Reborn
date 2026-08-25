@@ -7,11 +7,55 @@ namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
+    private abstract record MortalItemAcceptedTurnNormalizationMode
+    {
+        internal sealed record Validated(
+            MortalItemAcceptedTurnNormalizationSnapshot Snapshot)
+            : MortalItemAcceptedTurnNormalizationMode;
+
+        internal sealed record NoAcceptedBinding
+            : MortalItemAcceptedTurnNormalizationMode;
+
+        internal sealed record ClientOwnedBootstrap
+            : MortalItemAcceptedTurnNormalizationMode;
+    }
+
+    private MortalItemAcceptedTurnNormalizationMode
+        CaptureMortalItemAcceptedTurnNormalizationMode(
+            AcceptedMechanicsNormalizationPreflight acceptedMechanicsPreflight)
+    {
+        ArgumentNullException.ThrowIfNull(acceptedMechanicsPreflight);
+        if (acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.NoPlan)
+            return new MortalItemAcceptedTurnNormalizationMode.NoAcceptedBinding();
+
+        var validated = (AcceptedMechanicsNormalizationPreflight.Validated)
+            acceptedMechanicsPreflight;
+        var writeLease = _writeLease ?? throw new InvalidOperationException(
+            "Mortal item accepted-turn authority requires the owning canonical write lease.");
+        if (!MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+                _fs,
+                writeLease,
+                validated.Binding.SessionId,
+                validated.Binding.SnapshotToken,
+                validated.Binding.Turn,
+                out var snapshot) ||
+            !snapshot.MatchesAcceptedOwnerAuthority(validated.Plan.OwnerAuthority))
+        {
+            throw new InvalidDataException(
+                "Mortal item accepted-turn authority cache is missing or its immutable allocation map does not match the exact validated common-plan session and snapshot binding.");
+        }
+
+        return new MortalItemAcceptedTurnNormalizationMode.Validated(snapshot);
+    }
+
     private async Task NormalizeMortalItemsAsync(
         IReadOnlyDictionary<string, string>? backups,
-        IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates = null)
+        IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates,
+        MortalItemAcceptedTurnNormalizationMode mode)
     {
-        await NormalizeMortalItemTransfersAsync(backups);
+        ArgumentNullException.ThrowIfNull(mode);
+        if (mode is not MortalItemAcceptedTurnNormalizationMode.ClientOwnedBootstrap)
+            await NormalizeMortalItemTransfersAsync(backups);
 
         var playerRoot = await ReadMortalItemObjectRootAsync(
             InventoryEquipmentService.ItemsPath);
@@ -34,7 +78,9 @@ public partial class CanonicalStateNormalizer
                 $"Mortal item route authority failed: {routeCatalog.Issues[0].Code}.");
         }
 
-        var acceptedTurn = await TryReadCurrentTurnNumberAsync();
+        var acceptedTurn = mode is MortalItemAcceptedTurnNormalizationMode.Validated validatedMode
+            ? validatedMode.Snapshot.Turn
+            : await TryReadCurrentTurnNumberAsync();
         var indexJson = await ReadCanonicalFileAsync(MortalItemIdentityState.StatePath);
         var parsedIndex = MortalItemIdentityState.Parse(indexJson);
         var acceptedCreationEvidence =
@@ -101,7 +147,44 @@ public partial class CanonicalStateNormalizer
                     $"Mortal item creationRef '{creationRef}' has no exact route authority.");
             }
 
-            var itemId = CreateUniqueMortalItemId(knownItemIds);
+            string itemId;
+            if (mode is MortalItemAcceptedTurnNormalizationMode.Validated validated)
+            {
+                if (!validated.Snapshot.TryGetAllocatedItemId(
+                        creationRef,
+                        out var allocatedItemId))
+                {
+                    throw new InvalidDataException(
+                        $"Mortal item accepted-turn authority cache is missing or does not match the validated common-plan binding for creationRef '{creationRef}'.");
+                }
+                if (!knownItemIds.Add(allocatedItemId))
+                {
+                    throw new InvalidDataException(
+                        $"Reserved Mortal item identity '{allocatedItemId}' collides with current identity authority.");
+                }
+                itemId = allocatedItemId;
+            }
+            else if (mode is MortalItemAcceptedTurnNormalizationMode.ClientOwnedBootstrap)
+            {
+                if (!itemPath.StartsWith(
+                        InventoryEquipmentService.ItemsPath + ".UpdateInventory[",
+                        StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException(
+                        $"Client-owned bootstrap normalization rejects GM-authored raw Mortal item surface '{itemPath}'.");
+                }
+                if (rawItem.ContainsKey("resourceMaterialization"))
+                {
+                    throw new InvalidOperationException(
+                        $"Client-owned bootstrap normalization rejects GM-authored resource materialization at '{itemPath}'.");
+                }
+                itemId = CreateUniqueMortalItemId(knownItemIds);
+            }
+            else
+            {
+                throw new InvalidDataException(
+                    $"Mortal item accepted-turn authority requires a validated common-plan binding before sealing raw creationRef '{creationRef}'.");
+            }
             creationMap.Add(creationRef, itemId);
             pending.Add(new PendingMortalItemCreation(
                 rawItem,
@@ -151,6 +234,7 @@ public partial class CanonicalStateNormalizer
                 RewriteMortalItemCarrierCoordinate(
                     pendingCreation.Authority.Destination,
                     creationMap));
+            canonicalItem.Remove("resourceMaterialization");
 
             var receipt = MortalItemIdentityState.CreateRootReceipt(
                 canonicalItem,
@@ -243,6 +327,178 @@ public partial class CanonicalStateNormalizer
             MortalItemIdentityState.StatePath,
             normalizedIndex.Root.ToJsonString(JsonOpts));
     }
+
+    private async Task PreflightNoAcceptedBindingMortalItemsAsync()
+    {
+        foreach (var path in new[]
+                 {
+                     InventoryEquipmentService.ItemsPath,
+                     NpcCoreChangesContract.NpcCorePath,
+                     "game_state/npcs/npc_inventory.json",
+                     StorageTransportMoveService.CurrentLocationPath,
+                     MortalLocationStorageContentsState.StatePath,
+                     StorageTransportMoveService.VehiclesPath
+                 })
+        {
+            var json = await ReadCanonicalFileAsync(path);
+            if (json == null)
+                continue;
+
+            JsonNode? root;
+            try
+            {
+                root = JsonNode.Parse(json);
+            }
+            catch (JsonException)
+            {
+                continue;
+            }
+
+            if (ContainsRawMortalItemCreation(root))
+            {
+                throw new InvalidDataException(
+                    "Mortal item accepted-turn authority requires a validated common-plan binding before sealing raw creation authority.");
+            }
+        }
+    }
+
+    private static bool ContainsRawMortalItemCreation(JsonNode? node)
+    {
+        if (node is JsonObject obj)
+        {
+            if (IsRawMortalItemCreation(obj))
+                return true;
+            return obj.Any(static pair =>
+                !IsMortalItemIdentityEvidenceProperty(pair.Key) &&
+                ContainsRawMortalItemCreation(pair.Value));
+        }
+        return node is JsonArray array &&
+               array.Any(ContainsRawMortalItemCreation);
+    }
+
+    private static bool ContainsForbiddenBootstrapMaterializationSurface(
+        JsonNode? node,
+        bool allowPlayerBootstrapItem)
+    {
+        if (allowPlayerBootstrapItem &&
+            node is JsonObject playerRoot &&
+            playerRoot["UpdateInventory"] is JsonArray updates)
+        {
+            foreach (var pair in playerRoot)
+            {
+                if (string.Equals(pair.Key, "UpdateInventory", StringComparison.Ordinal))
+                    continue;
+                if (ContainsGmMaterializationSurface(pair.Value))
+                    return true;
+            }
+
+            foreach (var update in updates)
+            {
+                if (update is JsonObject item && IsRawMortalItemCreation(item))
+                {
+                    if (ContainsForbiddenPlayerBootstrapItemEnvelope(item))
+                        return true;
+                    continue;
+                }
+
+                if (ContainsGmMaterializationSurface(update))
+                    return true;
+            }
+            return false;
+        }
+
+        return ContainsGmMaterializationSurface(node);
+    }
+
+    private static bool ContainsForbiddenPlayerBootstrapItemEnvelope(JsonObject item)
+    {
+        if (item.ContainsKey("resourceMaterialization") ||
+            item.ContainsKey("activeEffectDefinitions") ||
+            item.ContainsKey("effectChanges") ||
+            item.ContainsKey("ownerMaterialization"))
+        {
+            return true;
+        }
+
+        foreach (var pair in item)
+        {
+            if (string.Equals(
+                    pair.Key,
+                    MortalItemMaterializationContract.EnvelopeProperty,
+                    StringComparison.Ordinal))
+            {
+                if (ContainsForbiddenNestedBootstrapEnvelope(
+                        pair.Value,
+                        allowCurrentItemEnvelopeCreationRef: true))
+                    return true;
+                continue;
+            }
+            if (ContainsGmMaterializationSurface(pair.Value))
+                return true;
+        }
+        return false;
+    }
+
+    private static bool ContainsForbiddenNestedBootstrapEnvelope(
+        JsonNode? node,
+        bool allowCurrentItemEnvelopeCreationRef = false)
+    {
+        if (node is JsonArray array)
+            return array.Any(static child =>
+                ContainsForbiddenNestedBootstrapEnvelope(child));
+        if (node is not JsonObject obj)
+            return false;
+        if (obj.ContainsKey("resourceMaterialization") ||
+            obj.ContainsKey("activeEffectDefinitions") ||
+            obj.ContainsKey("effectChanges") ||
+            obj.ContainsKey("ownerMaterialization") ||
+            (!allowCurrentItemEnvelopeCreationRef &&
+             (IsRawMortalItemCreation(obj) ||
+              (obj.ContainsKey(MortalItemMaterializationContract.EnvelopeProperty) &&
+               !obj.ContainsKey(MortalItemMaterializationContract.ReceiptProperty)))))
+        {
+            return true;
+        }
+        return obj.Any(static pair =>
+            ContainsForbiddenNestedBootstrapEnvelope(pair.Value));
+    }
+
+    private static bool ContainsGmMaterializationSurface(JsonNode? node)
+    {
+        if (node is JsonArray array)
+            return array.Any(ContainsGmMaterializationSurface);
+        if (node is not JsonObject obj)
+            return false;
+
+        if (obj.ContainsKey("resourceMaterialization") ||
+            obj.ContainsKey("activeEffectDefinitions") ||
+            obj.ContainsKey("effectChanges") ||
+            obj.ContainsKey("ownerMaterialization") ||
+            IsRawMortalItemCreation(obj))
+        {
+            return true;
+        }
+
+        if (obj[MortalItemMaterializationContract.EnvelopeProperty] is JsonObject &&
+            !obj.ContainsKey(MortalItemMaterializationContract.ReceiptProperty))
+        {
+            return true;
+        }
+
+        return obj.Any(static pair =>
+            !IsMortalItemIdentityEvidenceProperty(pair.Key) &&
+            ContainsGmMaterializationSurface(pair.Value));
+    }
+
+    private static bool IsMortalItemIdentityEvidenceProperty(string propertyName) =>
+        string.Equals(
+            propertyName,
+            MortalItemMaterializationContract.EnvelopeProperty,
+            StringComparison.Ordinal) ||
+        string.Equals(
+            propertyName,
+            MortalItemMaterializationContract.ReceiptProperty,
+            StringComparison.Ordinal);
 
     private async Task NormalizeMortalItemTransfersAsync(
         IReadOnlyDictionary<string, string>? backups)
@@ -507,7 +763,6 @@ public partial class CanonicalStateNormalizer
         var result = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         foreach (var path in new[]
                  {
-                     "game_state/inventory/item_resources.json",
                      "game_state/inventory/item_bonds.json",
                      "game_state/inventory/item_text_updates.json",
                      "game_state/inventory/recipes.json",
@@ -1269,7 +1524,25 @@ public partial class CanonicalStateNormalizer
 
 internal static class AcceptedTurnCanonicalStateRefresh
 {
+    internal sealed record Result(
+        IReadOnlyList<ValidationIssue> Issues,
+        AcceptedMechanicsPlan? MechanicsPlan);
+
     internal static async Task<IReadOnlyList<ValidationIssue>> NormalizeAndValidateAsync(
+        FileSystemManager fs,
+        CanonicalStateNormalizer normalizer,
+        ValidationService validator,
+        IReadOnlyDictionary<string, string> backups)
+    {
+        var result = await NormalizeAndValidateWithPlanAsync(
+            fs,
+            normalizer,
+            validator,
+            backups);
+        return result.Issues;
+    }
+
+    internal static async Task<Result> NormalizeAndValidateWithPlanAsync(
         FileSystemManager fs,
         CanonicalStateNormalizer normalizer,
         ValidationService validator,
@@ -1284,15 +1557,23 @@ internal static class AcceptedTurnCanonicalStateRefresh
         var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
         try
         {
-            await normalizer.BindTo(writeLease).NormalizeAccumulatedStateAsync(backups);
+            var mechanicsPlan = await normalizer.BindTo(writeLease)
+                .NormalizeAccumulatedStateWithPlanAsync(backups);
             var issues = new List<ValidationIssue>();
             issues.AddRange(await validator
                 .ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(writeLease));
             issues.AddRange(await validator
                 .ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(writeLease));
+            issues.AddRange(await validator
+                .ValidateAcceptedTurnCanonicalResourceMaterializationAsync(writeLease));
+            issues.AddRange(await validator
+                .ValidateAcceptedTurnCanonicalEffectMaterializationAsync(writeLease));
             if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
+            {
                 await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
-            return issues;
+                mechanicsPlan = null;
+            }
+            return new Result(issues, mechanicsPlan);
         }
         catch (Exception exception)
         {

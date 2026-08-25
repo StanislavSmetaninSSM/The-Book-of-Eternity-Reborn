@@ -4153,10 +4153,19 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             canTeach: true,
             includeEnvelope: true,
             includeInventory: true))!.AsObject();
+        var newActor = currentRoot["UpdateNPCs"]![0]!.AsObject();
         ConfigureSameTurnMortalActor(
-            currentRoot["UpdateNPCs"]![0]!.AsObject(),
+            newActor,
             initialId,
             "mat_genuinely_new_same_turn_actor_turn_8");
+        newActor["resourceMaterialization"] = new JsonObject
+        {
+            ["resources"] = new JsonArray(new JsonObject
+            {
+                ["resourceKey"] = "health",
+                ["maximum"] = 60
+            })
+        };
         const string worldMapPath = "game_state/world/world_map.json";
         var canonicalLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
             MortalActorTestFixtures.DefaultLocationId,

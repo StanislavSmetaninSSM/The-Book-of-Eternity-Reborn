@@ -99,8 +99,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         "quantity",
         "weight",
         "volume",
-        "durability",
-        "maxDurability",
         "bonuses",
         "effects",
         "specialProperties",
@@ -268,14 +266,24 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static async Task<ExplorerCommandResult> BuildStats(string command, FileSystemManager fs, StateManager stateManager)
     {
         var state = stateManager.CurrentState;
-        var blocks = new List<UiBlock>
+        var blocks = new List<UiBlock>();
+        if (state.PlayerStatus.ResourceProjectionAvailable)
         {
-            Panel("Характеристики",
+            blocks.Add(Panel("Характеристики",
                 Grid(
-                    ("Здоровье", EmptyFallback(state.PlayerStatus.HealthPercentage)),
-                    ("Энергия", EmptyFallback(state.PlayerStatus.EnergyPercentage)),
-                    ("Равновесие", EmptyFallback(state.PlayerStatus.PoisePercentage))))
-        };
+                    ("Здоровье", state.PlayerStatus.HealthPercentage),
+                    ("Энергия", state.PlayerStatus.EnergyPercentage),
+                    ("Равновесие", state.PlayerStatus.PoisePercentage))));
+        }
+        else
+        {
+            blocks.Add(new UiMessageBlock
+            {
+                Severity = UiNotificationSeverity.Warning,
+                Title = "Силы и запасы",
+                Message = state.PlayerStatus.ResourceUnavailableMessage
+            });
+        }
 
         await AddStatsBlockIfPresent(
             blocks,
@@ -309,12 +317,36 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return;
         }
 
-        var structuredBlock = BuildStructuredStatsDossier(obj, title, translateKey);
+        var playerRoot = string.Equals(
+            path,
+            "game_state/player/computed_characteristics.json",
+            StringComparison.OrdinalIgnoreCase)
+            ? ProjectPlayerVisibleComputedStats(obj)
+            : obj;
+        var structuredBlock = BuildStructuredStatsDossier(playerRoot, title, translateKey);
         if (structuredBlock != null)
         {
             blocks.Add(structuredBlock);
             return;
         }
+    }
+
+    private static JsonObject ProjectPlayerVisibleComputedStats(JsonObject root)
+    {
+        if (root["playerVisibleModifiedCharacteristics"] is not JsonObject playerVisibleFinal)
+            return new JsonObject();
+
+        var projected = new JsonObject();
+        if (root["playerLevel"] is JsonValue playerLevel)
+            projected["playerLevel"] = playerLevel.DeepClone();
+        if (root["unspentStatPoints"] is JsonValue unspentStatPoints)
+            projected["unspentStatPoints"] = unspentStatPoints.DeepClone();
+        if (root["characteristics"] is JsonObject baseline)
+            projected["base"] = baseline.DeepClone();
+        if (root["permanentlyModifiedCharacteristics"] is JsonObject permanent)
+            projected["permanentlyModified"] = permanent.DeepClone();
+        projected["final"] = playerVisibleFinal.DeepClone();
+        return projected;
     }
 
     private static UiEntityDossierBlock? BuildStructuredStatsDossier(
@@ -536,10 +568,25 @@ public static class ExplorerMortalWorldCommandResultBuilder
         propertyName.Equals("stats", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsTechnicalStatsProperty(string propertyName) =>
+        IsLegacyMortalResourceMirrorProperty(propertyName) ||
         propertyName.Equals("schemaVersion", StringComparison.OrdinalIgnoreCase) ||
         propertyName.Equals("updatedAt", StringComparison.OrdinalIgnoreCase) ||
         propertyName.Equals("lastUpdatedAt", StringComparison.OrdinalIgnoreCase) ||
         propertyName.StartsWith("_", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsLegacyMortalResourceMirrorProperty(string propertyName) =>
+        propertyName.Equals("health", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("healthCurrent", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("healthMax", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("maxHealth", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("energy", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("energyCurrent", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("energyMax", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("maxEnergy", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("poise", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("poiseCurrent", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("poiseMax", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("maxPoise", StringComparison.OrdinalIgnoreCase);
 
     private static string FormatStatsValue(JsonNode? node, string? fieldName = null)
     {
@@ -594,12 +641,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static string TranslateComputedCharacteristicKey(string key) =>
         key switch
         {
-            "health" or "healthCurrent" => "Здоровье",
-            "healthMax" or "maxHealth" => "Максимум здоровья",
-            "energy" or "energyCurrent" => "Энергия",
-            "energyMax" or "maxEnergy" => "Максимум энергии",
-            "poise" or "poiseCurrent" => "Равновесие",
-            "poiseMax" or "maxPoise" => "Максимум равновесия",
             "carryWeight" or "maxCarryWeight" => "Грузоподъёмность",
             "inventoryWeight" or "currentWeight" => "Вес снаряжения",
             "arcaneFocus" => "Магический фокус",
@@ -823,19 +864,24 @@ public static class ExplorerMortalWorldCommandResultBuilder
         FileSystemManager fs,
         StateManager stateManager)
     {
+        _ = stateManager;
         var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command.Trim());
         const string title = "Эффекты";
-        const string effectsPath = "game_state/player/effects.json";
-        SummarySpec[] specs =
-        [
-            new(effectsPath, "activeEffects", "Активных эффектов"),
-            new(effectsPath, "wounds", "Ран"),
-            new(effectsPath, "temporaryConditions", "Временных состояний")
-        ];
+        var projection = EffectPlayerProjection.Build(new EffectPlayerProjectionInput(
+            await EffectMechanicsSnapshot.LoadAsync(fs),
+            Realm: "mortal_world",
+            TargetKind: "player",
+            TargetId: "player_current"));
 
-        var read = await ReadJson(fs, effectsPath);
+        if (!projection.IsAvailable)
+        {
+            return Completed(command,
+            [
+                Message(UiNotificationSeverity.Warning, title, projection.StatusMessage)
+            ]);
+        }
+
         var blocks = new List<UiBlock>();
-        var effectEntries = ExplorerMortalEffectDetailActions.BuildEffectSnapshots(read.Node);
         var detailRequest = ParseEffectDetailRequest(ExtractCommandRemainder(command));
         if (detailRequest.Kind == EffectDetailKind.Unknown)
         {
@@ -846,7 +892,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (detailRequest.Kind == EffectDetailKind.Effect)
         {
-            var selected = FindEffectSnapshot(effectEntries, detailRequest.Selector);
+            var selected = ExplorerMortalEffectDetailActions.FindExact(projection, detailRequest.Selector);
             if (selected == null)
             {
                 return Completed(command, [
@@ -854,268 +900,60 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 ], BuildEffectsBackActions(commandToken));
             }
 
-            return Completed(command, BuildEffectDetailBlocks(selected), BuildEffectsBackActions(commandToken));
+            return Completed(
+                command,
+                BuildEffectDetailBlocks(selected),
+                ExplorerMortalEffectDetailActions.BuildForEntry(commandToken, selected)
+                    .Concat(BuildEffectsBackActions(commandToken)));
         }
 
-        var sections = new List<UiEntityDossierSection>();
-        var rows = BuildEffectsSummaryRows(read, specs);
-        if (rows.Count > 0)
+        if (detailRequest.Kind == EffectDetailKind.Action)
         {
-            sections.Add(new UiEntityDossierSection
+            if (!ExplorerMortalEffectDetailActions.TryFindAction(
+                    projection,
+                    detailRequest.Selector,
+                    out var selected,
+                    out var selectedAction))
             {
-                Id = "summary",
-                Title = "Сводка",
-                Summary = "Сколько эффектов, ран и временных состояний сейчас видно игроку.",
-                Icon = "effect",
-                Collapsible = true,
-                InitiallyExpanded = true,
-                Blocks =
+                return Completed(command,
                 [
-                    new UiKeyValueGridBlock
+                    Message(UiNotificationSeverity.Warning, title, "Выбранное действие эффекта больше недоступно.")
+                ], BuildEffectsBackActions(commandToken));
+            }
+
+            return new ExplorerCommandResult
+            {
+                Command = command,
+                State = CommandExecutionState.RequiresInput,
+                Blocks = BuildEffectActionPromptBlocks(selected, selectedAction).ToList(),
+                Actions = BuildEffectsBackActions(commandToken).ToList(),
+                Prompts =
+                [
+                    new UiConfirmationPrompt
                     {
-                        Items = rows
-                            .Where(static row => row.Cells.Count >= 2)
-                            .Select(static row => new UiKeyValueItem { Key = row.Cells[0], Value = row.Cells[1] })
-                            .ToList()
+                        Id = "confirm_effect_action",
+                        Prompt = "Подтвердить выбранное противодействие эффекту",
+                        Required = true,
+                        DefaultValue = false
                     }
                 ]
-            });
+            };
         }
 
-        if (effectEntries.Count > 0)
-        {
-            sections.Add(new UiEntityDossierSection
-            {
-                Id = "active-effects",
-                Title = "Активные записи",
-                Summary = "Видимые состояния, временные помехи и магические отклики, которые сейчас влияют на персонажа.",
-                Icon = "effect",
-                Collapsible = true,
-                InitiallyExpanded = true,
-                Blocks = effectEntries.Select(static effect => (UiBlock)BuildEffectOverviewCard(effect)).ToList()
-            });
-        }
-
-        if (sections.Count > 0)
+        if (projection.Entries.Count > 0)
         {
             blocks.Add(new UiEntityDossierBlock
             {
                 EntityType = "effects",
                 Title = title,
                 Subtitle = "Состояния персонажа",
-                Summary = "Список видимых эффектов, ран и временных состояний.",
+                Summary = "Принятые видимые эффекты, которые сейчас влияют на персонажа.",
                 Badges =
                 [
                     new UiEntityBadge
                     {
-                        Label = DescribeInventoryCount(effectEntries.Count, "запись", "записи", "записей"),
-                        Tone = effectEntries.Count > 0 ? UiTone.Accent : UiTone.Muted,
-                        Icon = "effect"
-                    }
-                ],
-                Sections = sections
-            });
-        }
-
-        if (!HasVisibleStructuredEffectDetails(read.Node))
-            blocks.AddRange(BuildMortalStatusFallbackBlocks(stateManager.CurrentState.PlayerStatus));
-
-        if (blocks.Count == 0)
-            blocks.Add(Message(UiNotificationSeverity.Info, title, "Данные ещё не созданы."));
-
-        if (read.FileExists && read.Node == null && !string.IsNullOrWhiteSpace(read.Error))
-            blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Запись эффектов найдена, но не разобрана как JSON. {read.Error}"));
-
-        return Completed(command, blocks, ExplorerMortalEffectDetailActions.Build(commandToken, read.Node));
-    }
-
-    private static UiEntityDossierBlock BuildEffectOverviewCard(ExplorerMortalEffectDetailActions.EffectSnapshot effect)
-    {
-        var description = FirstNonEmpty(
-            GetNodeString(effect.Node, "effectDescription"),
-            GetNodeString(effect.Node, "description"),
-            GetNodeString(effect.Node, "summary"),
-            GetNodeString(effect.Node, "source"));
-        var duration = FirstNonEmpty(
-            GetNodeString(effect.Node, "duration"),
-            GetNodeString(effect.Node, "expiresAt"));
-        var facts = new List<UiKeyValueItem>
-        {
-            new() { Key = "Раздел", Value = effect.Section }
-        };
-        AddInventoryFact(facts, "Длительность", duration);
-        AddInventoryFact(facts, "Источник", GetNodeString(effect.Node, "source"));
-
-        return new UiEntityDossierBlock
-        {
-            EntityType = "effect-summary",
-            Title = effect.Name,
-            Subtitle = effect.Section,
-            Summary = FirstNonEmpty(description, duration, "Подробности доступны в карточке эффекта."),
-            Badges =
-            [
-                new UiEntityBadge
-                {
-                    Label = effect.Section,
-                    Tone = UiTone.Accent,
-                    Icon = "effect"
-                }
-            ],
-            Sections =
-            [
-                new UiEntityDossierSection
-                {
-                    Id = "facts",
-                    Title = "Кратко",
-                    Icon = "effect",
-                    Collapsible = true,
-                    InitiallyExpanded = false,
-                    Blocks = [new UiKeyValueGridBlock { Items = facts }]
-                }
-            ]
-        };
-    }
-
-    private static List<UiTableRow> BuildEffectsSummaryRows(JsonReadResult read, IReadOnlyList<SummarySpec> specs)
-    {
-        var rows = new List<UiTableRow>();
-        if (read.Node == null)
-            return rows;
-
-        if (read.Node is JsonArray array)
-        {
-            rows.Add(new UiTableRow
-            {
-                Cells = ["Активных эффектов", array.Count.ToString()]
-            });
-            return rows;
-        }
-
-        if (read.Node is not JsonObject root)
-            return rows;
-
-        foreach (var spec in specs)
-        {
-            if (!root.TryGetPropertyValue(spec.PropertyName, out var value))
-                continue;
-
-            rows.Add(new UiTableRow
-            {
-                Cells =
-                [
-                    spec.Label,
-                    DescribeEffectsNode(value)
-                ]
-            });
-        }
-
-        return rows;
-    }
-
-    private static List<UiTableRow> BuildEffectDetailRows(JsonNode? node)
-    {
-        var rows = new List<UiTableRow>();
-        if (node is JsonArray array)
-        {
-            AddEffectDetailRows(rows, "Активный эффект", array);
-            return rows;
-        }
-
-        if (node is not JsonObject root)
-            return rows;
-
-        AddEffectDetailRows(rows, "Активный эффект", root["activeEffects"] as JsonArray);
-        AddEffectDetailRows(rows, "Рана", root["wounds"] as JsonArray);
-        AddEffectDetailRows(rows, "Временное состояние", root["temporaryConditions"] as JsonArray);
-        return rows;
-    }
-
-    private static void AddEffectDetailRows(List<UiTableRow> rows, string section, JsonArray? effects)
-    {
-        if (effects == null)
-            return;
-
-        foreach (var effect in effects.OfType<JsonObject>())
-        {
-            var name = FirstNonEmpty(
-                GetNodeString(effect, "name"),
-                GetNodeString(effect, "effectName"),
-                GetNodeString(effect, "title"),
-                "Безымянный эффект");
-            var description = FirstNonEmpty(
-                GetNodeString(effect, "effectDescription"),
-                GetNodeString(effect, "description"),
-                GetNodeString(effect, "source"),
-                "не указано");
-            var duration = FirstNonEmpty(
-                GetNodeString(effect, "duration"),
-                GetNodeString(effect, "expiresAt"),
-                "не указано");
-
-            rows.Add(new UiTableRow
-            {
-                Cells = [section, name, description, duration]
-            });
-        }
-    }
-
-    private static string DescribeEffectsNode(JsonNode? node) => node switch
-    {
-        JsonArray array => array.Count.ToString(),
-        JsonObject obj => $"{obj.Count} полей",
-        JsonValue value when TryGetScalarString(value, out var text) => EmptyFallback(text),
-        _ => "не указано"
-    };
-
-    private static bool HasVisibleStructuredEffectDetails(JsonNode? node)
-    {
-        if (node is JsonArray array)
-            return array.Count > 0;
-
-        if (node is not JsonObject root)
-            return false;
-
-        foreach (var propertyName in new[] { "activeEffects", "wounds", "temporaryConditions" })
-        {
-            if (root.TryGetPropertyValue(propertyName, out var value) && HasVisibleEffectValue(value))
-                return true;
-        }
-
-        return false;
-    }
-
-    private static bool HasVisibleEffectValue(JsonNode? node) => node switch
-    {
-        JsonArray array => array.Count > 0,
-        JsonObject obj => obj.Count > 0,
-        JsonValue value when TryGetScalarString(value, out var text) => !string.IsNullOrWhiteSpace(text),
-        _ => false
-    };
-
-    private static IReadOnlyList<UiBlock> BuildMortalStatusFallbackBlocks(PlayerStatusState status)
-    {
-        var rows = MortalStatusEffectFallback.BuildRows(status);
-        if (rows.Count == 0)
-            return [];
-
-        return
-        [
-            Message(
-                UiNotificationSeverity.Info,
-                "Эффекты",
-                MortalStatusEffectFallback.Message),
-            new UiEntityDossierBlock
-            {
-                EntityType = "visible-status-effects",
-                Title = "Видимые состояния",
-                Subtitle = "Самочувствие персонажа",
-                Summary = "Эти состояния уже видны в статусе персонажа, но для них ещё нет отдельной полной записи эффекта.",
-                Badges =
-                [
-                    new UiEntityBadge
-                    {
-                        Label = DescribeInventoryCount(rows.Count, "запись", "записи", "записей"),
-                        Tone = UiTone.Warning,
+                        Label = DescribeInventoryCount(projection.VisibleCount, "эффект", "эффекта", "эффектов"),
+                        Tone = UiTone.Accent,
                         Icon = "effect"
                     }
                 ],
@@ -1123,25 +961,25 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 [
                     new UiEntityDossierSection
                     {
-                        Id = "visible-status",
-                        Title = "Что чувствует персонаж",
-                        Summary = "Краткая расшифровка состояний без технического файла эффектов.",
+                        Id = "active-effects",
+                        Title = "Активные эффекты",
+                        Summary = "Полные игровые свойства из единого принятого набора.",
                         Icon = "effect",
                         Collapsible = true,
                         InitiallyExpanded = true,
-                        Blocks =
-                        [
-                            new UiKeyValueGridBlock
-                            {
-                                Items = rows
-                                    .Select(static row => new UiKeyValueItem { Key = row.Label, Value = row.Details })
-                                    .ToList()
-                            }
-                        ]
+                        Blocks = projection.Entries
+                            .Select(static entry => (UiBlock)ExplorerEffectPlayerCardBuilder.BuildOverview(entry))
+                            .ToList()
                     }
                 ]
-            }
-        ];
+            });
+        }
+        else
+        {
+            blocks.Add(Message(UiNotificationSeverity.Info, title, projection.StatusMessage));
+        }
+
+        return Completed(command, blocks, ExplorerMortalEffectDetailActions.Build(commandToken, projection));
     }
 
     private static EffectDetailRequest ParseEffectDetailRequest(string remainder)
@@ -1150,10 +988,14 @@ public static class ExplorerMortalWorldCommandResultBuilder
             return new EffectDetailRequest(EffectDetailKind.Overview, string.Empty);
 
         var (kindToken, selector) = SplitFirstCombatArgument(remainder);
-        if (string.IsNullOrWhiteSpace(selector) || !IsEffectDetailToken(kindToken))
+        if (string.IsNullOrWhiteSpace(selector))
             return new EffectDetailRequest(EffectDetailKind.Unknown, string.Empty);
 
-        return new EffectDetailRequest(EffectDetailKind.Effect, NormalizeCombatSelector(selector));
+        if (IsEffectDetailToken(kindToken))
+            return new EffectDetailRequest(EffectDetailKind.Effect, NormalizeCombatSelector(selector));
+        if (IsEffectActionToken(kindToken))
+            return new EffectDetailRequest(EffectDetailKind.Action, NormalizeCombatSelector(selector));
+        return new EffectDetailRequest(EffectDetailKind.Unknown, string.Empty);
     }
 
     private static bool IsEffectDetailToken(string token)
@@ -1162,114 +1004,99 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return normalized is "effect" or "эффект" or "condition" or "состояние" or "рана" or "wound" or "detail" or "подробнее";
     }
 
-    private static ExplorerMortalEffectDetailActions.EffectSnapshot? FindEffectSnapshot(
-        IReadOnlyList<ExplorerMortalEffectDetailActions.EffectSnapshot> entries,
-        string selector)
+    private static bool IsEffectActionToken(string token)
     {
-        var normalized = NormalizeInventoryLookup(selector);
-        return entries.FirstOrDefault(entry =>
-            string.Equals(entry.Selector, normalized, StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(entry.Index.ToString(), normalized, StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(NormalizeInventoryLookup(entry.Name), normalized, StringComparison.OrdinalIgnoreCase));
+        var normalized = token.Trim().ToLowerInvariant();
+        return normalized is "action" or "действие";
     }
 
-    private static IReadOnlyList<UiBlock> BuildEffectDetailBlocks(ExplorerMortalEffectDetailActions.EffectSnapshot effect)
+    private static IReadOnlyList<UiBlock> BuildEffectActionPromptBlocks(
+        EffectPlayerEntry effect,
+        EffectPlayerAction action) =>
+    [
+        new UiEntityDossierBlock
+        {
+            EntityType = "effect-action",
+            Title = effect.Name,
+            Subtitle = "Противодействие эффекту",
+            Summary = action.Label,
+            Hints = string.IsNullOrWhiteSpace(action.Description)
+                ? []
+                :
+                [
+                    new UiEntityHint
+                    {
+                        Title = "Важно",
+                        Text = action.Description,
+                        Tone = UiTone.Warning
+                    }
+                ]
+        },
+        new UiTextBlock
+        {
+            Text = "Перед отправкой действие будет заново проверено по текущему принятому состоянию.",
+            Tone = UiTone.Muted
+        }
+    ];
+
+    private static IReadOnlyList<UiBlock> BuildEffectDetailBlocks(EffectPlayerEntry effect)
     {
         var blocks = new List<UiBlock>();
-        var sections = new List<UiEntityDossierSection>();
-        var overviewBlocks = new List<UiBlock>();
-        var description = FirstNonEmpty(
-            GetNodeString(effect.Node, "effectDescription"),
-            GetNodeString(effect.Node, "description"),
-            GetNodeString(effect.Node, "summary"));
-        if (!string.IsNullOrWhiteSpace(description))
-            overviewBlocks.Add(new UiTextBlock { Text = description, Tone = UiTone.Default });
-
-        var facts = new List<UiKeyValueItem>
+        var sections = new List<UiEntityDossierSection>
         {
-            new() { Key = "Раздел", Value = effect.Section }
+            new()
+            {
+                Id = "facts",
+                Title = "Сведения и механика",
+                Summary = "Полные видимые игровые свойства принятого эффекта.",
+                Icon = "effect",
+                Collapsible = true,
+                InitiallyExpanded = true,
+                Blocks =
+                [
+                    new UiKeyValueGridBlock
+                    {
+                        Items = effect.Facts
+                            .Select(static fact => new UiKeyValueItem { Key = fact.Label, Value = fact.Value })
+                            .ToList()
+                    }
+                ]
+            }
         };
-        AddInventoryFact(facts, "Длительность", FirstNonEmpty(GetNodeString(effect.Node, "duration"), GetNodeString(effect.Node, "expiresAt")));
-        AddInventoryFact(facts, "Осталось ходов", GetNodeString(effect.Node, "remainingTurns"));
-        AddInventoryFact(facts, "Источник", GetNodeString(effect.Node, "source"));
-        AddInventoryFact(facts, "Серьёзность", TranslateEffectSeverity(GetNodeString(effect.Node, "severity")));
-        AddInventoryFact(facts, "Состояние", FirstNonEmpty(GetNodeString(effect.Node, "status"), GetNodeString(effect.Node, "state")));
-        if (facts.Count > 0)
-            overviewBlocks.Add(new UiKeyValueGridBlock { Items = facts });
 
-        if (overviewBlocks.Count > 0)
+        if (effect.Actions.Count > 0)
         {
             sections.Add(new UiEntityDossierSection
             {
-                Id = "overview",
-                Title = "Сведения",
-                Summary = "Основные игровые свойства эффекта.",
-                Icon = "effect",
+                Id = "counterplay",
+                Title = "Снятие и противодействие",
+                Summary = "Перед действием доступность будет проверена заново по текущему состоянию.",
+                Icon = "shield",
                 Collapsible = true,
                 InitiallyExpanded = true,
-                Blocks = overviewBlocks
-            });
-        }
-
-        AddStructuredBonusSection(sections, effect.Node["structuredBonuses"] as JsonArray);
-
-        var detailBlocks = new List<UiBlock>();
-        AddInventoryCombatEffectBlock(detailBlocks, effect.Node["combatEffect"]);
-        AddInventoryCustomPropertiesBlock(detailBlocks, effect.Node["customProperties"]);
-        if (detailBlocks.Count > 0)
-        {
-            sections.Add(new UiEntityDossierSection
-            {
-                Id = "details",
-                Title = "Дополнительно",
-                Summary = "Боевые и особые свойства эффекта.",
-                Icon = "effect",
-                Collapsible = true,
-                InitiallyExpanded = true,
-                Blocks = detailBlocks
-            });
-        }
-
-        var hiddenNotes = CollectEffectNarrativeEntries(effect.Node["notes"])
-            .Concat(CollectEffectNarrativeEntries(effect.Node["journalEntries"]))
-            .ToList();
-        if (hiddenNotes.Count > 0)
-        {
-            sections.Add(new UiEntityDossierSection
-            {
-                Id = "notes",
-                Title = "Заметки",
-                Icon = "effect",
-                Collapsible = true,
-                InitiallyExpanded = true,
-                Blocks = hiddenNotes.Select(static note => (UiBlock)new UiTextBlock { Text = note, Tone = UiTone.Muted }).ToList()
-            });
-        }
-
-        if (sections.Count == 0)
-        {
-            sections.Add(new UiEntityDossierSection
-            {
-                Id = "empty",
-                Title = "Сведения",
-                Icon = "effect",
-                Collapsible = true,
-                InitiallyExpanded = true,
-                Blocks = [new UiTextBlock { Text = "Подробности эффекта пока не заполнены.", Tone = UiTone.Muted }]
+                Blocks = effect.Actions
+                    .Select(static action => (UiBlock)new UiTextBlock
+                    {
+                        Text = action.Description == null
+                            ? action.Label
+                            : action.Label + ". " + action.Description,
+                        Tone = UiTone.Muted
+                    })
+                    .ToList()
             });
         }
 
         blocks.Add(new UiEntityDossierBlock
         {
             EntityType = "effect",
-            Title = $"{effect.Section}: {effect.Name}",
-            Subtitle = effect.Section,
-            Summary = description,
+            Title = effect.Name,
+            Subtitle = DescribeProjectedEffectState(effect.State),
+            Summary = effect.Summary ?? string.Empty,
             Badges =
             [
                 new UiEntityBadge
                 {
-                    Label = effect.Section,
+                    Label = DescribeProjectedEffectState(effect.State),
                     Tone = UiTone.Accent,
                     Icon = "effect"
                 }
@@ -1279,6 +1106,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
         blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /эффекты.", Tone = UiTone.Muted });
         return blocks;
     }
+
+    private static string DescribeProjectedEffectState(string state) => state switch
+    {
+        "active" => "Действует",
+        "suspended" => "Приостановлен",
+        _ => "Недоступен"
+    };
 
     private static IReadOnlyList<UiAction> BuildEffectsBackActions(string commandToken) =>
     [
@@ -1291,19 +1125,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
             RequiresConfirmation = false
         }
     ];
-
-    private static IEnumerable<string> CollectEffectNarrativeEntries(JsonNode? node)
-    {
-        if (node is not JsonArray array)
-            yield break;
-
-        foreach (var entry in array)
-        {
-            var text = FormatInventoryNodeValue(entry);
-            if (!string.IsNullOrWhiteSpace(text))
-                yield return text;
-        }
-    }
 
     private static string TranslateEffectSeverity(string? severity) =>
         (severity ?? string.Empty).Trim().ToLowerInvariant() switch
@@ -1367,7 +1188,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         reads["game_state/npcs/npc_goals.json"] = await ReadJson(fs, "game_state/npcs/npc_goals.json");
         reads["game_state/npcs/npc_inventory.json"] = await ReadJson(fs, "game_state/npcs/npc_inventory.json");
-        reads["game_state/npcs/npc_effects.json"] = await ReadJson(fs, "game_state/npcs/npc_effects.json");
+        var npcEffectProjection = EffectPlayerProjection.Build(new EffectPlayerProjectionInput(
+            await EffectMechanicsSnapshot.LoadAsync(fs),
+            Realm: "mortal_world",
+            TargetKind: "npc"));
         reads["game_state/npcs/npc_skills.json"] = await ReadJson(fs, "game_state/npcs/npc_skills.json");
         reads["game_state/npcs/npc_personality.json"] = await ReadJson(fs, "game_state/npcs/npc_personality.json");
         reads["game_state/npcs/npc_journals.json"] = await ReadJson(fs, "game_state/npcs/npc_journals.json");
@@ -1400,7 +1224,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Goals: reads["game_state/npcs/npc_goals.json"].Node,
                 Activities: reads["game_state/npcs/npc_activities.json"].Node,
                 Inventory: reads["game_state/npcs/npc_inventory.json"].Node,
-                Effects: reads["game_state/npcs/npc_effects.json"].Node,
+                Effects: npcEffectProjection,
                 Skills: reads["game_state/npcs/npc_skills.json"].Node,
                 Personality: reads["game_state/npcs/npc_personality.json"].Node,
                 Journals: reads["game_state/npcs/npc_journals.json"].Node,
@@ -1409,6 +1233,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Memory: reads["game_state/npcs/npc_memory.json"].Node,
                 FateCards: reads["game_state/npcs/npc_fate_cards.json"].Node,
                 CustomStates: reads["game_state/npcs/npc_custom_states.json"].Node));
+        projections = await AttachNpcResourceRowsAsync(fs, projections);
 
         var commandRemainder = ExtractCommandRemainder(command);
         var questRequest = ParseNpcQuestDetailRequest(commandRemainder);
@@ -1488,6 +1313,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 blocks.Add(Message(UiNotificationSeverity.Warning, "Персонажи", "Одна из записей НПС найдена, но не разобрана как JSON."));
         }
 
+        if (!npcEffectProjection.IsAvailable)
+            blocks.Add(Message(UiNotificationSeverity.Warning, "Эффекты персонажей", npcEffectProjection.StatusMessage));
+
         if (blocks.Count == 0)
             blocks.Add(Message(UiNotificationSeverity.Info, "Персонажи", "Данные ещё не созданы."));
 
@@ -1552,6 +1380,55 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return blocks;
     }
 
+    private static async Task<IReadOnlyList<NpcDetailProjection>> AttachNpcResourceRowsAsync(
+        FileSystemManager fs,
+        IReadOnlyList<NpcDetailProjection> projections)
+    {
+        var scopes = projections
+            .Select((projection, index) => new
+            {
+                Projection = projection,
+                ViewSelector = $"персонаж №{index + 1}"
+            })
+            .Where(static candidate => !string.IsNullOrWhiteSpace(candidate.Projection.NpcId))
+            .ToArray();
+        if (scopes.Length == 0)
+            return projections;
+
+        var result = await ResourceProjectionService.ProjectCanonicalAsync(
+            fs,
+            scopes.Select(static candidate => new ResourceProjectionOwnerScope(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Npc,
+                        candidate.Projection.NpcId),
+                    candidate.ViewSelector,
+                    IsOwningPlayer: false))
+                .ToArray(),
+            ResourceProjectionAudience.Player);
+        var rowsBySelector = result.IsAvailable
+            ? result.Rows
+                .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+                .ToDictionary(
+                    static group => group.Key,
+                    static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                    StringComparer.Ordinal)
+            : new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(StringComparer.Ordinal);
+
+        return projections
+            .Select((projection, index) =>
+            {
+                rowsBySelector.TryGetValue($"персонаж №{index + 1}", out var rows);
+                return projection with
+                {
+                    ResourceProjectionAvailable = result.IsAvailable &&
+                        !string.IsNullOrWhiteSpace(projection.NpcId),
+                    Resources = rows ?? Array.Empty<ResourceProjectionRow>()
+                };
+            })
+            .ToArray();
+    }
+
     private static UiEntityDossierBlock BuildNpcOverviewCard(
         string commandToken,
         NpcDetailProjection projection,
@@ -1570,6 +1447,22 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var facts = new List<UiEntityFact>();
         var hints = new List<UiEntityHint>();
         AddNpcTradePresentation(projection, facts, badges, hints);
+        if (projection.ResourceProjectionAvailable)
+        {
+            facts.AddRange(projection.Resources.Select(static row => new UiEntityFact
+            {
+                Label = row.DisplayName,
+                Value = ResourceProjectionService.FormatValue(row)
+            }));
+        }
+        else if (!string.IsNullOrWhiteSpace(projection.NpcId))
+        {
+            facts.Add(new UiEntityFact
+            {
+                Label = "Силы и запасы",
+                Value = ResourcePlayerFailureMessages.Unavailable
+            });
+        }
 
         return new UiEntityDossierBlock
         {
@@ -6338,6 +6231,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var entries = EnumerateVehicleObjects(vehiclesRead.Node)
             .Select((vehicle, index) => CreateVehicleSnapshot(index + 1, vehicle))
             .ToList();
+        entries = await AttachVehicleResourceRowsAsync(fs, entries);
         var request = ParseReferenceDetailRequest(ExtractCommandRemainder(command), definition);
         if (request.Kind != ReferenceDetailKind.Overview)
             return BuildTransportDetail(command, commandToken, definition, [vehiclesRead, mapRead, currentRead], entries, request);
@@ -6419,7 +6313,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddReferenceDetailItem(facts, "Местоположение", FirstReferenceNodeString(vehicle, "currentLocation", "currentLocationId", "locationName"));
         AddReferenceDetailItem(facts, "Маршрут", FirstReferenceNodeString(vehicle, "route", "currentRoute"));
         AddReferenceDetailItem(facts, "Вместимость", FirstReferenceNodeString(vehicle, "capacity"));
-        AddReferenceDetailItem(facts, "Прочность", FormatVehicleHealth(vehicle));
+        AddProjectedResourceFact(facts, entry.Resources, "health", "Состояние корпуса");
         AddReferenceDetailItem(facts, "Описание", FirstReferenceNodeString(vehicle, "description", "summary", "notes"));
 
         return new UiEntityDossierBlock
@@ -6453,16 +6347,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 }
             ]
         };
-    }
-
-    private static string FormatVehicleHealth(JsonObject vehicle)
-    {
-        var current = FirstReferenceNodeString(vehicle, "currentHealth", "health");
-        var max = FirstReferenceNodeString(vehicle, "maxHealth", "maxHp");
-        if (!string.IsNullOrWhiteSpace(current) && !string.IsNullOrWhiteSpace(max))
-            return $"{current}/{max}";
-
-        return current;
     }
 
     private static ExplorerCommandResult BuildTransportDetail(
@@ -6520,6 +6404,70 @@ public static class ExplorerMortalWorldCommandResultBuilder
             Node: vehicle);
     }
 
+    private static async Task<List<ReferenceEntrySnapshot>> AttachVehicleResourceRowsAsync(
+        FileSystemManager fs,
+        IReadOnlyList<ReferenceEntrySnapshot> entries)
+    {
+        var scopes = entries
+            .Select(entry => new
+            {
+                Entry = entry,
+                OwnerId = FirstReferenceNodeString(entry.Node, "vehicleId", "id", "key"),
+                ViewSelector = $"транспорт №{entry.Index}"
+            })
+            .Where(static candidate => !string.IsNullOrWhiteSpace(candidate.OwnerId))
+            .ToArray();
+        if (scopes.Length == 0)
+            return entries.ToList();
+
+        var projection = await ResourceProjectionService.ProjectCanonicalAsync(
+            fs,
+            scopes.Select(static candidate => new ResourceProjectionOwnerScope(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Vehicle,
+                        candidate.OwnerId),
+                    candidate.ViewSelector,
+                    IsOwningPlayer: true))
+                .ToArray(),
+            ResourceProjectionAudience.Player);
+        if (!projection.IsAvailable)
+            return entries.ToList();
+
+        var rowsBySelector = projection.Rows
+            .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+            .ToDictionary(
+                static group => group.Key,
+                static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                StringComparer.Ordinal);
+        return entries
+            .Select(entry => entry with
+            {
+                Resources = rowsBySelector.TryGetValue($"транспорт №{entry.Index}", out var rows)
+                    ? rows
+                    : Array.Empty<ResourceProjectionRow>()
+            })
+            .ToList();
+    }
+
+    private static void AddProjectedResourceFact(
+        List<UiKeyValueItem> facts,
+        IReadOnlyList<ResourceProjectionRow>? rows,
+        string resourceKey,
+        string label)
+    {
+        var row = rows?.SingleOrDefault(candidate =>
+            string.Equals(candidate.ResourceKey, resourceKey, StringComparison.Ordinal));
+        if (row != null)
+        {
+            facts.Add(new UiKeyValueItem
+            {
+                Key = label,
+                Value = ResourceProjectionService.FormatValue(row)
+            });
+        }
+    }
+
     private static UiEntityDossierBlock BuildVehicleDetailPanel(ReferenceEntrySnapshot entry)
     {
         var vehicle = entry.Node;
@@ -6531,6 +6479,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         AddReferenceDetailItem(items, "Где", FirstReferenceNodeString(vehicle, "currentLocation", "currentLocationId", "locationName"));
         AddReferenceDetailItem(items, "Вместимость", FirstReferenceNodeString(vehicle, "capacity"));
+        AddProjectedResourceFact(items, entry.Resources, "health", "Состояние корпуса");
         AddReferenceDetailItem(items, "Описание", FirstReferenceNodeString(vehicle, "description", "summary", "notes"));
 
         var blocks = new List<UiBlock>
@@ -6576,6 +6525,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "description",
             "summary",
             "notes",
+            "currentHealth",
+            "health",
+            "maxHealth",
+            "maxHp",
             "inventory");
 
         return new UiEntityDossierBlock
@@ -7765,24 +7718,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static async Task<ExplorerCommandResult> BuildCombat(string command, FileSystemManager fs)
     {
+        var effectProjection = EffectPlayerProjection.Build(new EffectPlayerProjectionInput(
+            await EffectMechanicsSnapshot.LoadAsync(fs),
+            Realm: "mortal_world",
+            TargetKind: "combatant"));
         var state = new CombatState(
             await ReadJson(fs, "game_state/combat/enemies.json"),
             await ReadJson(fs, "game_state/combat/allies.json"),
             await ReadJson(fs, "game_state/combat/combat_log.json"));
         var enemies = EnumerateCombatants(state.Enemies.Node, CombatantKind.Enemy).ToList();
         var allies = EnumerateCombatants(state.Allies.Node, CombatantKind.Ally).ToList();
+        (enemies, allies) = await AttachCombatantResourceRowsAsync(fs, enemies, allies);
         var logEntries = EnumerateCombatLogEntries(state.Log.Node).ToList();
         var request = ParseCombatDetailRequest(ExtractCommandRemainder(command));
 
         if (request.Kind != CombatDetailKind.Overview)
-            return BuildCombatDetail(command, state, enemies, allies, logEntries, request);
+            return BuildCombatDetail(command, state, enemies, allies, logEntries, request, effectProjection);
 
         var blocks = new List<UiBlock>
         {
-            BuildCombatOverviewDossier(enemies, allies, logEntries)
+            BuildCombatOverviewDossier(enemies, allies, logEntries, effectProjection)
         };
 
         AddCombatReadWarnings(blocks, state);
+        if (!effectProjection.IsAvailable)
+            blocks.Add(Message(UiNotificationSeverity.Warning, "Эффекты участников боя", effectProjection.StatusMessage));
 
         if (blocks.Count == 1 && enemies.Count == 0 && allies.Count == 0 && logEntries.Count == 0)
             blocks.Add(Message(UiNotificationSeverity.Info, "Бой", "Нет данных о бое. Вы не в сражении."));
@@ -7793,7 +7753,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static UiEntityDossierBlock BuildCombatOverviewDossier(
         IReadOnlyList<CombatantSnapshot> enemies,
         IReadOnlyList<CombatantSnapshot> allies,
-        IReadOnlyList<CombatLogSnapshot> logEntries)
+        IReadOnlyList<CombatLogSnapshot> logEntries,
+        EffectPlayerProjectionResult effectProjection)
     {
         var activeEnemyCount = enemies.Count(IsActiveCombatant);
         var activeAllyCount = allies.Count(IsActiveCombatant);
@@ -7839,7 +7800,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Icon = "combat",
                 Collapsible = true,
                 InitiallyExpanded = true,
-                Blocks = enemies.Select(static combatant => (UiBlock)BuildCombatantOverviewCard(combatant, "Враг")).ToList()
+                Blocks = enemies.Select(combatant => (UiBlock)BuildCombatantOverviewCard(combatant, "Враг", effectProjection)).ToList()
             });
         }
 
@@ -7853,7 +7814,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Icon = "character",
                 Collapsible = true,
                 InitiallyExpanded = true,
-                Blocks = allies.Select(static combatant => (UiBlock)BuildCombatantOverviewCard(combatant, "Союзник")).ToList()
+                Blocks = allies.Select(combatant => (UiBlock)BuildCombatantOverviewCard(combatant, "Союзник", effectProjection)).ToList()
             });
         }
 
@@ -7910,11 +7871,12 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (IsTerminalCombatStatus(status))
             return false;
 
-        var health = FirstCombatNodeString(combatant.Node, "currentHealth", "health", "hp", "healthPercentage");
-        if (IsZeroCombatResource(health))
+        if (!combatant.ResourceProjectionAvailable)
             return false;
 
-        return true;
+        var health = combatant.Resources.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "health", StringComparison.Ordinal));
+        return health is { State: ResourceLifecycleState.Active, Current: > 0m };
     }
 
     private static bool IsTerminalCombatStatus(string status)
@@ -7943,24 +7905,21 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "отступила";
     }
 
-    private static bool IsZeroCombatResource(string value)
-    {
-        var trimmed = value.Trim();
-        if (string.IsNullOrWhiteSpace(trimmed))
-            return false;
-
-        trimmed = trimmed.TrimEnd('%').Trim();
-        return double.TryParse(
-            trimmed,
-            System.Globalization.NumberStyles.Float,
-            System.Globalization.CultureInfo.InvariantCulture,
-            out var parsed) &&
-            parsed <= 0;
-    }
-
-    private static UiEntityDossierBlock BuildCombatantOverviewCard(CombatantSnapshot combatant, string role)
+    private static UiEntityDossierBlock BuildCombatantOverviewCard(
+        CombatantSnapshot combatant,
+        string role,
+        EffectPlayerProjectionResult effectProjection)
     {
         var facts = BuildCombatantFacts(combatant);
+        var visibleEffects = FindCombatantEffects(combatant, effectProjection);
+        if (visibleEffects.Count > 0)
+        {
+            facts.Add(new UiKeyValueItem
+            {
+                Key = "Эффекты",
+                Value = string.Join(", ", visibleEffects.Select(static effect => effect.Name))
+            });
+        }
         return new UiEntityDossierBlock
         {
             EntityType = "combatant-summary",
@@ -8038,7 +7997,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         IReadOnlyList<CombatantSnapshot> enemies,
         IReadOnlyList<CombatantSnapshot> allies,
         IReadOnlyList<CombatLogSnapshot> logEntries,
-        CombatDetailRequest request)
+        CombatDetailRequest request,
+        EffectPlayerProjectionResult effectProjection)
     {
         var blocks = new List<UiBlock>();
         switch (request.Kind)
@@ -8049,7 +8009,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 if (enemy == null)
                     blocks.Add(Message(UiNotificationSeverity.Warning, "Враг не найден", "Такой враг не отмечен в текущей боевой обстановке."));
                 else
-                    blocks.Add(BuildCombatantDetailDossier(enemy, "Враг"));
+                    blocks.Add(BuildCombatantDetailDossier(enemy, "Враг", effectProjection));
                 break;
             }
             case CombatDetailKind.Ally:
@@ -8058,7 +8018,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 if (ally == null)
                     blocks.Add(Message(UiNotificationSeverity.Warning, "Союзник не найден", "Такой союзник не отмечен в текущей боевой обстановке."));
                 else
-                    blocks.Add(BuildCombatantDetailDossier(ally, "Союзник"));
+                    blocks.Add(BuildCombatantDetailDossier(ally, "Союзник", effectProjection));
                 break;
             }
             case CombatDetailKind.Log:
@@ -8079,6 +8039,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
 
         AddCombatReadWarnings(blocks, state);
+        if (!effectProjection.IsAvailable)
+            blocks.Add(Message(UiNotificationSeverity.Warning, "Эффекты участников боя", effectProjection.StatusMessage));
         blocks.Add(new UiTextBlock { Text = "Вернуться к обзору можно командой /бой.", Tone = UiTone.Muted });
         return Completed(command, blocks, [
             new UiAction
@@ -8092,7 +8054,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
         ]);
     }
 
-    private static UiEntityDossierBlock BuildCombatantDetailDossier(CombatantSnapshot combatant, string titlePrefix)
+    private static UiEntityDossierBlock BuildCombatantDetailDossier(
+        CombatantSnapshot combatant,
+        string titlePrefix,
+        EffectPlayerProjectionResult effectProjection)
     {
         var sections = new List<UiEntityDossierSection>
         {
@@ -8108,7 +8073,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
         };
 
-        var effectCards = BuildCombatEffectCards(combatant.Node);
+        var effectCards = BuildCombatEffectCards(combatant, effectProjection);
         if (effectCards.Count > 0)
         {
             sections.Add(new UiEntityDossierSection
@@ -8163,8 +8128,19 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         AddCombatantFact(detailItems, "Состояние", DescribeCombatantStatus(combatant.Node));
         AddCombatantFact(detailItems, "Роль / угроза", DescribeCombatantRole(combatant.Node));
-        AddCombatantFact(detailItems, "Здоровье", DescribeCombatantHealth(combatant.Node));
-        AddCombatantFact(detailItems, "Стойкость", DescribeCombatantPoise(combatant.Node));
+        if (combatant.ResourceProjectionAvailable)
+        {
+            AddProjectedResourceFact(detailItems, combatant.Resources, "health", "Здоровье");
+            AddProjectedResourceFact(detailItems, combatant.Resources, "poise", "Стойкость");
+            AddProjectedResourceFact(detailItems, combatant.Resources, "energy", "Энергия");
+        }
+        else
+        {
+            AddCombatantFact(
+                detailItems,
+                "Силы и запасы",
+                ResourcePlayerFailureMessages.Unavailable);
+        }
         AddCombatantFact(detailItems, "Намерение", DescribeCombatantIntent(combatant.Node));
 
         var description = FirstCombatNodeString(combatant.Node, "description", "notes", "summary");
@@ -8253,14 +8229,16 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
     }
 
-    private static List<UiBlock> BuildCombatEffectCards(JsonObject combatant) =>
-        BuildCombatEffectRows(combatant)
-            .Select(static row => (UiBlock)new UiEntityDossierBlock
+    private static List<UiBlock> BuildCombatEffectCards(
+        CombatantSnapshot combatant,
+        EffectPlayerProjectionResult effectProjection) =>
+        FindCombatantEffects(combatant, effectProjection)
+            .Select(static effect => (UiBlock)new UiEntityDossierBlock
             {
                 EntityType = "combat-effect",
-                Title = row.Cells.ElementAtOrDefault(1) ?? "Эффект",
-                Subtitle = row.Cells.ElementAtOrDefault(0) ?? "Эффект",
-                Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(4), row.Cells.ElementAtOrDefault(2), row.Cells.ElementAtOrDefault(3)),
+                Title = effect.Name,
+                Subtitle = DescribeProjectedEffectState(effect.State),
+                Summary = effect.Summary ?? string.Empty,
                 Sections =
                 [
                     new UiEntityDossierSection
@@ -8275,18 +8253,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
                             new UiKeyValueGridBlock
                             {
                                 Items =
-                                [
-                                    new UiKeyValueItem { Key = "Раздел", Value = EmptyFallback(row.Cells.ElementAtOrDefault(0) ?? string.Empty) },
-                                    new UiKeyValueItem { Key = "Сила", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) },
-                                    new UiKeyValueItem { Key = "Длительность", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) },
-                                    new UiKeyValueItem { Key = "Источник", Value = EmptyFallback(row.Cells.ElementAtOrDefault(4) ?? string.Empty) }
-                                ]
+                                effect.Facts
+                                    .Select(static fact => new UiKeyValueItem { Key = fact.Label, Value = fact.Value })
+                                    .ToList()
                             }
                         ]
                     }
                 ]
             })
             .ToList();
+
+    private static IReadOnlyList<EffectPlayerEntry> FindCombatantEffects(
+        CombatantSnapshot combatant,
+        EffectPlayerProjectionResult projection)
+    {
+        if (!projection.IsAvailable)
+            return Array.Empty<EffectPlayerEntry>();
+
+        var combatantId = FirstCombatNodeString(combatant.Node, "combatantId");
+        if (string.IsNullOrWhiteSpace(combatantId))
+            return Array.Empty<EffectPlayerEntry>();
+
+        return projection.Entries
+            .Where(effect =>
+                string.Equals(effect.TargetKind, "combatant", StringComparison.Ordinal) &&
+                string.Equals(effect.TargetId, combatantId, StringComparison.Ordinal))
+            .ToArray();
+    }
 
     private static List<UiBlock> BuildCombatActionCards(JsonObject combatant) =>
         BuildCombatActionRows(combatant)
@@ -8320,39 +8313,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 ]
             })
             .ToList();
-
-    private static List<UiTableRow> BuildCombatEffectRows(JsonObject combatant)
-    {
-        var rows = new List<UiTableRow>();
-        AddCombatEffectRows(rows, combatant["activeBuffs"] as JsonArray, "Усиление");
-        AddCombatEffectRows(rows, combatant["activeDebuffs"] as JsonArray, "Помеха");
-        AddCombatEffectRows(rows, combatant["effects"] as JsonArray, "Эффект");
-        AddCombatEffectRows(rows, combatant["statusEffects"] as JsonArray, "Состояние");
-        return rows;
-    }
-
-    private static void AddCombatEffectRows(List<UiTableRow> rows, JsonArray? effects, string section)
-    {
-        if (effects == null)
-            return;
-
-        foreach (var effect in effects.OfType<JsonObject>())
-        {
-            var source = FirstCombatNodeString(effect, "sourceSkill", "source");
-            var note = FirstCombatNodeString(effect, "effectDescription", "description");
-            rows.Add(new UiTableRow
-            {
-                Cells =
-                [
-                    section,
-                    DescribeCombatEffectType(FirstCombatNodeString(effect, "effectType", "type", "name", "effectName", "description")),
-                    EmptyFallback(FirstCombatNodeString(effect, "value", "amount", "effectValue")),
-                    EmptyFallback(FirstCombatNodeString(effect, "duration", "expiresIn", "remainingTurns")),
-                    EmptyFallback(JoinCombatDetails(source, note))
-                ]
-            });
-        }
-    }
 
     private static List<UiTableRow> BuildCombatActionRows(JsonObject combatant)
     {
@@ -8475,6 +8435,75 @@ public static class ExplorerMortalWorldCommandResultBuilder
             yield return new CombatantSnapshot(kind, index, NormalizeCombatSelector(identity), name, combatant);
         }
     }
+
+    private static async Task<(List<CombatantSnapshot> Enemies, List<CombatantSnapshot> Allies)>
+        AttachCombatantResourceRowsAsync(
+            FileSystemManager fs,
+            IReadOnlyList<CombatantSnapshot> enemies,
+            IReadOnlyList<CombatantSnapshot> allies)
+    {
+        var combatants = enemies.Concat(allies).ToArray();
+        var scopes = combatants
+            .Select(combatant => new
+            {
+                Combatant = combatant,
+                OwnerId = FirstCombatNodeString(combatant.Node, "combatantId"),
+                ViewSelector = CombatantResourceViewSelector(combatant)
+            })
+            .Where(static candidate => !string.IsNullOrWhiteSpace(candidate.OwnerId))
+            .ToArray();
+        if (scopes.Length == 0)
+        {
+            return (
+                enemies.Select(static combatant => combatant with
+                {
+                    ResourceProjectionAvailable = false
+                }).ToList(),
+                allies.Select(static combatant => combatant with
+                {
+                    ResourceProjectionAvailable = false
+                }).ToList());
+        }
+
+        var projection = await ResourceProjectionService.ProjectCanonicalAsync(
+            fs,
+            scopes.Select(static candidate => new ResourceProjectionOwnerScope(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Combatant,
+                        candidate.OwnerId),
+                    candidate.ViewSelector,
+                    IsOwningPlayer: false))
+                .ToArray(),
+            ResourceProjectionAudience.Player);
+        var rowsBySelector = projection.IsAvailable
+            ? projection.Rows
+                .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+                .ToDictionary(
+                    static group => group.Key,
+                    static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                    StringComparer.Ordinal)
+            : new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(StringComparer.Ordinal);
+
+        CombatantSnapshot Attach(CombatantSnapshot combatant)
+        {
+            var hasIdentity = !string.IsNullOrWhiteSpace(
+                FirstCombatNodeString(combatant.Node, "combatantId"));
+            rowsBySelector.TryGetValue(CombatantResourceViewSelector(combatant), out var rows);
+            return combatant with
+            {
+                ResourceProjectionAvailable = projection.IsAvailable && hasIdentity,
+                Resources = rows ?? Array.Empty<ResourceProjectionRow>()
+            };
+        }
+
+        return (enemies.Select(Attach).ToList(), allies.Select(Attach).ToList());
+    }
+
+    private static string CombatantResourceViewSelector(CombatantSnapshot combatant) =>
+        combatant.Kind == CombatantKind.Enemy
+            ? $"противник №{combatant.Index}"
+            : $"союзник №{combatant.Index}";
 
     private static IEnumerable<JsonObject> EnumerateCombatantObjects(JsonNode? node, CombatantKind kind)
     {
@@ -8701,15 +8730,25 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (!string.IsNullOrWhiteSpace(status))
             parts.Add("Состояние: " + status);
 
-        var health = DescribeCombatantHealth(combatant.Node);
-        if (!string.IsNullOrWhiteSpace(health))
-            parts.Add("Здоровье: " + health);
-
-        var poise = DescribeCombatantPoise(combatant.Node);
-        if (!string.IsNullOrWhiteSpace(poise))
-            parts.Add("Стойкость: " + poise);
+        if (combatant.ResourceProjectionAvailable)
+        {
+            AddResource("health", "Здоровье");
+            AddResource("poise", "Стойкость");
+        }
+        else
+        {
+            parts.Add(ResourcePlayerFailureMessages.Unavailable);
+        }
 
         return EmptyFallback(string.Join(". ", parts));
+
+        void AddResource(string key, string label)
+        {
+            var row = combatant.Resources.SingleOrDefault(candidate =>
+                string.Equals(candidate.ResourceKey, key, StringComparison.Ordinal));
+            if (row != null)
+                parts.Add(label + ": " + ResourceProjectionService.FormatValue(row));
+        }
     }
 
     private static string DescribeCombatantStatus(JsonObject combatant) =>
@@ -8719,29 +8758,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         FirstNonEmpty(
             DescribeCombatRole(FirstCombatNodeString(combatant, "type", "role", "threat", "rank")),
             FirstCombatNodeString(combatant, "roleDescription", "threatDescription"));
-
-    private static string DescribeCombatantHealth(JsonObject combatant)
-    {
-        if (combatant["healthStates"] is JsonArray states && states.Count > 0)
-            return "группа: " + string.Join(", ", states.Select(static state => state?.ToString()).Where(static text => !string.IsNullOrWhiteSpace(text)));
-
-        var current = FirstCombatNodeString(combatant, "currentHealth", "health", "hp", "healthPercentage");
-        var max = FirstCombatNodeString(combatant, "maxHealth", "maxHp");
-        if (!string.IsNullOrWhiteSpace(current) && !string.IsNullOrWhiteSpace(max))
-            return $"{current}/{max}";
-
-        return current;
-    }
-
-    private static string DescribeCombatantPoise(JsonObject combatant)
-    {
-        var current = FirstCombatNodeString(combatant, "currentPoise", "poise", "poisePercentage");
-        var max = FirstCombatNodeString(combatant, "maxPoise");
-        if (!string.IsNullOrWhiteSpace(current) && !string.IsNullOrWhiteSpace(max))
-            return $"{current}/{max}";
-
-        return current;
-    }
 
     private static string DescribeCombatantIntent(JsonObject combatant) =>
         FirstNonEmpty(
@@ -9223,6 +9239,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ]);
         }
         var acceptedItems = EnumerateAcceptedInventoryItems(root).ToArray();
+        var itemResourceRows = await ReadInventoryResourceRowsAsync(fs, acceptedItems);
 
         var detailRequest = ParseInventoryDetailRequest(ExtractCommandRemainder(command));
         if (detailRequest.Kind == InventoryDetailKind.Unknown)
@@ -9352,8 +9369,15 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (acceptedItems.Length > 0)
         {
             var itemCards = new List<UiBlock>();
-            foreach (var item in acceptedItems)
-                itemCards.Add(BuildInventoryOverviewItemCard(commandToken, item));
+            for (var index = 0; index < acceptedItems.Length; index++)
+            {
+                var selector = InventoryResourceViewSelector(index);
+                itemResourceRows.TryGetValue(selector, out var rows);
+                itemCards.Add(BuildInventoryOverviewItemCard(
+                    commandToken,
+                    acceptedItems[index],
+                    rows ?? Array.Empty<ResourceProjectionRow>()));
+            }
 
             if (itemCards.Count > 0)
             {
@@ -9409,7 +9433,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return Completed(command, blocks, BuildInventoryActions(commandToken, inventoryContext));
     }
 
-    private static UiEntityDossierBlock BuildInventoryOverviewItemCard(string commandToken, JsonObject item)
+    private static UiEntityDossierBlock BuildInventoryOverviewItemCard(
+        string commandToken,
+        JsonObject item,
+        IReadOnlyList<ResourceProjectionRow> resourceRows)
     {
         var identity = FirstNonEmpty(GetInventoryItemIdentity(item), GetInventoryItemName(item));
         item = ProjectInventoryItemForPlayer(item);
@@ -9417,7 +9444,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var type = FormatInventoryProtocolValue(GetNodeString(item, "type") ?? string.Empty);
         var quality = FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "quality"), GetNodeString(item, "rarity")));
         var quantity = FirstNonEmpty(GetNodeString(item, "count"), GetNodeString(item, "quantity"), "1");
-        var durability = GetNodeString(item, "durability") ?? string.Empty;
+        var durabilityRow = resourceRows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "durability", StringComparison.Ordinal));
+        var durability = durabilityRow == null
+            ? string.Empty
+            : ResourceProjectionService.FormatValue(durabilityRow);
         var description = FirstNonEmpty(GetNodeString(item, "description"), GetNodeString(item, "lore"));
         var facts = new List<UiKeyValueItem>
         {
@@ -9437,12 +9468,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         var broken = item["isBroken"]?.GetValueKind() == JsonValueKind.True;
         var empty = item["isEmpty"]?.GetValueKind() == JsonValueKind.True;
-        if (!string.IsNullOrEmpty(durability))
-        {
-            var durabilityText = durability.Replace("%", string.Empty).Trim();
-            if (int.TryParse(durabilityText, out var durabilityValue) && durabilityValue == 0)
-                broken = true;
-        }
+        if (durabilityRow?.Current == 0m)
+            broken = true;
 
         var status = broken
             ? "сломано"
@@ -9662,22 +9689,76 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static async Task<InventoryItemSidecars> ReadInventoryItemSidecarsAsync(FileSystemManager fs, JsonObject item)
     {
         var identity = GetInventoryItemIdentity(item);
-        var resources = await ReadJson(fs, "game_state/inventory/item_resources.json");
         var bonds = await ReadJson(fs, "game_state/inventory/item_bonds.json");
         var texts = await ReadJson(fs, "game_state/inventory/item_text_updates.json");
         var journals = await ReadJson(fs, "game_state/npcs/item_journals.json");
+        var resources = string.IsNullOrWhiteSpace(identity)
+            ? new ResourceProjectionResult(
+                false,
+                ResourcePlayerFailureMessages.Unavailable,
+                Array.Empty<ResourceProjectionRow>())
+            : await ResourceProjectionService.ProjectOwnerAsync(
+                fs,
+                "mortal_world",
+                ResourceOwnerKind.Item,
+                identity,
+                "этот предмет",
+                isOwningPlayer: true);
 
         return new InventoryItemSidecars(
-            Resource: FindInventorySidecarEntryNode(resources.Node, identity),
+            Resources: resources,
             Bond: FindInventorySidecarEntryNode(bonds.Node, identity),
             Text: FindInventorySidecarEntryNode(texts.Node, identity),
             Journal: FindInventorySidecarEntryNode(journals.Node, identity));
     }
 
+    private static async Task<IReadOnlyDictionary<string, IReadOnlyList<ResourceProjectionRow>>>
+        ReadInventoryResourceRowsAsync(
+            FileSystemManager fs,
+            IReadOnlyList<JsonObject> items)
+    {
+        var scopes = new List<ResourceProjectionOwnerScope>();
+        for (var index = 0; index < items.Count; index++)
+        {
+            var identity = GetInventoryItemIdentity(items[index]);
+            if (string.IsNullOrWhiteSpace(identity))
+                continue;
+
+            scopes.Add(new ResourceProjectionOwnerScope(
+                new ResourceOwnerKey("mortal_world", ResourceOwnerKind.Item, identity),
+                InventoryResourceViewSelector(index),
+                IsOwningPlayer: true));
+        }
+
+        if (scopes.Count == 0)
+            return new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(StringComparer.Ordinal);
+
+        var projection = await ResourceProjectionService.ProjectCanonicalAsync(
+            fs,
+            scopes,
+            ResourceProjectionAudience.Player);
+        if (!projection.IsAvailable)
+            return new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(StringComparer.Ordinal);
+
+        return projection.Rows
+            .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+            .ToDictionary(
+                static group => group.Key,
+                static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                StringComparer.Ordinal);
+    }
+
+    private static string InventoryResourceViewSelector(int index) =>
+        $"предмет №{index + 1}";
+
     internal static IReadOnlyList<UiBlock> BuildInventoryItemDetailBlocksForPlayer(JsonObject item) =>
         BuildInventoryItemDetailBlocks(
             ProjectInventoryItemForPlayer(item),
-            new InventoryItemSidecars(null, null, null, null),
+            new InventoryItemSidecars(
+                new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>()),
+                null,
+                null,
+                null),
             includeInventoryBackHint: false);
 
     private static IReadOnlyList<UiBlock> BuildInventoryItemDetailBlocks(
@@ -9699,7 +9780,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInventoryFact(facts, "Вес", FormatInventoryMeasure(GetNodeString(item, "weight"), "кг"));
         AddInventoryFact(facts, "Объём", FormatInventoryMeasure(GetNodeString(item, "volume"), "дм³"));
         AddInventoryFact(facts, "Цена", GetNodeString(item, "price"));
-        AddInventoryFact(facts, "Прочность", FormatInventoryDurability(item));
         AddInventoryFact(facts, "Количество", FirstNonEmpty(GetNodeString(item, "count"), GetNodeString(item, "quantity")));
         AddInventoryFact(facts, "Слот", FormatInventorySlots(item["equipmentSlot"]));
         AddInventoryFact(facts, "Аксессуар для", FormatInventorySlots(item["accessoryForSlot"]));
@@ -9765,7 +9845,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInventoryCustomPropertiesBlock(detailBlocks, item["customProperties"], itemContext: true);
         AddInventoryContainerBlock(detailBlocks, item);
         AddInventoryDisassemblyBlock(detailBlocks, item["disassembleTo"] as JsonArray);
-        AddInventoryResourceBlock(detailBlocks, item, sidecars.Resource);
+        AddInventoryResourceBlock(detailBlocks, sidecars.Resources);
         AddInventoryBondBlock(detailBlocks, item, sidecars.Bond);
         AddInventoryQuestLinksBlock(detailBlocks, item["questLinks"] as JsonArray);
         AddInventoryContentBlock(detailBlocks, item["textContent"], sidecars.Text?["textContent"]);
@@ -10482,21 +10562,31 @@ public static class ExplorerMortalWorldCommandResultBuilder
         });
     }
 
-    private static void AddInventoryResourceBlock(List<UiBlock> blocks, JsonObject item, JsonObject? resourceEntry)
+    private static void AddInventoryResourceBlock(
+        List<UiBlock> blocks,
+        ResourceProjectionResult projection)
     {
-        var resource = FirstNonEmpty(GetNodeString(resourceEntry, "resource"), GetNodeString(item, "resource"));
-        if (string.IsNullOrWhiteSpace(resource))
+        if (!projection.IsAvailable)
+        {
+            blocks.Add(Message(
+                UiNotificationSeverity.Warning,
+                "Ресурсы предмета",
+                projection.UnavailableMessage ?? ResourcePlayerFailureMessages.Unavailable));
+            return;
+        }
+
+        if (projection.Rows.Count == 0)
             return;
 
-        var max = FirstNonEmpty(GetNodeString(resourceEntry, "maximumResource"), GetNodeString(item, "maximumResource"));
-        var resourceType = FirstNonEmpty(GetNodeString(resourceEntry, "resourceType"), GetNodeString(item, "resourceType"), "заряды");
-        var value = string.IsNullOrWhiteSpace(max) ? resource : $"{resource} / {max}";
         blocks.Add(Panel("Ресурсы предмета", new UiKeyValueGridBlock
         {
-            Items =
-            [
-                new UiKeyValueItem { Key = resourceType, Value = value }
-            ]
+            Items = projection.Rows
+                .Select(static row => new UiKeyValueItem
+                {
+                    Key = row.DisplayName,
+                    Value = ResourceProjectionService.FormatValue(row)
+                })
+                .ToList()
         }));
     }
 
@@ -10967,19 +11057,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static string GetInventoryItemName(JsonNode? item) =>
         FirstNonEmpty(GetNodeString(item, "name"), GetNodeString(item, "itemName"), "Безымянный предмет");
 
-    private static string FormatInventoryDurability(JsonObject item)
-    {
-        var durability = GetNodeString(item, "durability");
-        var maxDurability = GetNodeString(item, "maxDurability");
-        if (string.IsNullOrWhiteSpace(durability))
-            return string.Empty;
-
-        if (!string.IsNullOrWhiteSpace(maxDurability))
-            return $"{durability}/{maxDurability}";
-
-        return durability;
-    }
-
     private static string FormatInventoryMeasure(string? value, string unit)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -11235,7 +11312,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         string Selector);
 
     private sealed record InventoryItemSidecars(
-        JsonObject? Resource,
+        ResourceProjectionResult Resources,
         JsonObject? Bond,
         JsonObject? Text,
         JsonObject? Journal);
@@ -11244,6 +11321,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     {
         Overview,
         Effect,
+        Action,
         Unknown
     }
 
@@ -11312,7 +11390,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
         int Index,
         string Selector,
         string Name,
-        JsonObject Node);
+        JsonObject Node,
+        bool ResourceProjectionAvailable = false,
+        IReadOnlyList<ResourceProjectionRow>? ProjectedResources = null)
+    {
+        internal IReadOnlyList<ResourceProjectionRow> Resources { get; init; } =
+            ProjectedResources ?? Array.Empty<ResourceProjectionRow>();
+    }
 
     private sealed record CombatLogSnapshot(
         string Selector,
@@ -11380,7 +11464,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         string Title,
         string Section,
         string Summary,
-        JsonObject Node);
+        JsonObject Node,
+        IReadOnlyList<ResourceProjectionRow>? Resources = null);
 
     private sealed record ReferenceDetailRequest(
         ReferenceDetailKind Kind,

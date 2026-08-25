@@ -129,7 +129,7 @@
                             Do not list individual contents of a moved container.
                             -   The order of objects in 'moveInventoryItems' array can be important if multiple moves depend on each other (e.g., moving item A out of pouch, then moving pouch into backpack). 
                             List them in logical sequence.
-                            -   No 'UpdateInventory' entry is typically needed for an item that is only moved, unless other properties like 'durability' also changed in the same turn.
+                            -   No 'UpdateInventory' entry is needed for an item that is only moved. If a non-resource item property also changes, report that property separately; durability and other bounded reserves always use common resource commands against the same permanent item owner.
                             
                             ]]>
      </content>
@@ -231,7 +231,7 @@
                                     It is strictly FORBIDDEN to use 'removeInventoryItems' for items that are CONSUMED as part of a game mechanic (crafting, using a single-use potion, firing an arrow).
 
                                     -   If a gameplay action consumes the last item of a stack, you MUST instead update its 'count' to 0 via 'UpdateInventory' (as per Rule #5.13.3).
-                                    -   If a gameplay action depletes an item's 'resource' to 0, you MUST instead update its 'resource' via 'inventoryItemsResources'.
+                                    -   If a gameplay action spends an item-owned reserve to 0, emit resourceChanges operation=spend against the exact item/resource coordinate; do not author the resulting current value.
 
                                     'removeInventoryItems' is SOLELY for actions where the player's primary goal is to discard the entire stack itself.
                                     

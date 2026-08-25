@@ -23,7 +23,7 @@
                     
                     - Final Damage to Player: 0.
                     - Durability Cost: The armor absorbs the full blow. Durability loss is equal to DamagePostReduction: -10.
-                    - Reporting: 'currentHealthChange' = 0. Preparing update for "Rare Steel Plate" (ID: item-plate-01) durability from 95% to 85%.
+                    - Reporting: no health command; emit durability damage 10 against item-plate-01.
 
                     ]]>
   </logoutput>
@@ -37,21 +37,23 @@
                         
                         ]]>
    </response>
-   <currenthealthchange>
-    0
-   </currenthealthchange>
-   <UpdateInventory>
+   <resourceChanges>
     <![CDATA[
 
                         [
                             {
-                                "existedId": "item-plate-01",
-                                "durability": "85%"
+                                "operation": "damage",
+                                "target": { "kind": "item", "targetId": "item-plate-01" },
+                                "resourceKey": "durability",
+                                "amount": 10,
+                                "source": { "kind": "local_item_outcome", "sourceId": "item-plate-01" },
+                                "eventRef": "turn_42:resource:1",
+                                "reason": "The armor absorbed the full impact."
                             }
                         ]
 
                                                         ]]>
-                           </UpdateInventory>  </jsonresponse>
+                           </resourceChanges>  </jsonresponse>
  </example>
  <example contenttype="log_and_json_snippet" type="good">
   <title>
@@ -74,7 +76,7 @@
                     
                     - Final Damage to Player: 21.
                     - Durability Cost: Armor was overwhelmed. Applying minor durability loss: -2%.
-                    - Reporting: 'currentHealthChange' = -21. Preparing update for "Rare Steel Plate" (ID: item-plate-01) durability from 95% to 93%.
+                    - Reporting: emit health damage 21 and durability damage 2 as two ordered resource commands.
 
                     ]]>
   </logoutput>
@@ -87,21 +89,32 @@
                         
                         ]]>
    </response>
-   <currenthealthchange>
-    -21
-   </currenthealthchange>
-   <UpdateInventory>
+   <resourceChanges>
     <![CDATA[
 
                         [
                             {
-                                "existedId": "item-plate-01",
-                                "durability": "93%"
+                                "operation": "damage",
+                                "target": { "kind": "player", "targetId": "player_current" },
+                                "resourceKey": "health",
+                                "amount": 21,
+                                "source": { "kind": "combat_outcome", "sourceId": "armor_exchange_2" },
+                                "eventRef": "turn_42:resource:1",
+                                "reason": "The arrow penetrated after armor reduction."
+                            },
+                            {
+                                "operation": "damage",
+                                "target": { "kind": "item", "targetId": "item-plate-01" },
+                                "resourceKey": "durability",
+                                "amount": 2,
+                                "source": { "kind": "local_item_outcome", "sourceId": "item-plate-01" },
+                                "eventRef": "turn_42:resource:2",
+                                "reason": "The overwhelmed armor suffered minor wear."
                             }
                         ]
 
                                                         ]]>
-                           </UpdateInventory>  </jsonresponse>
+                           </resourceChanges>  </jsonresponse>
  </example>
  <example contenttype="log_and_json_snippet" type="good">
   <title>
@@ -124,7 +137,7 @@
                     
                     - Final Damage to Player: 30.
                     - Durability Cost: The holy energy damages the cursed metal. Minor durability loss: -5%.
-                    - Reporting: 'currentHealthChange' = -30. Preparing update for "Cursed Plate" (ID: item-cursed-plate-01) durability from 80% to 75%.
+                    - Reporting: emit health damage 30 and durability damage 5 as two ordered resource commands.
 
                     ]]>
   </logoutput>
@@ -138,21 +151,32 @@
                         
                         ]]>
    </response>
-   <currenthealthchange>
-    -30
-   </currenthealthchange>
-   <UpdateInventory>
+   <resourceChanges>
     <![CDATA[
 
                         [
                             {
-                                "existedId": "item-cursed-plate-01",
-                                "durability": "75%"
+                                "operation": "damage",
+                                "target": { "kind": "player", "targetId": "player_current" },
+                                "resourceKey": "health",
+                                "amount": 30,
+                                "source": { "kind": "combat_outcome", "sourceId": "armor_exchange_3" },
+                                "eventRef": "turn_42:resource:1",
+                                "reason": "Holy vulnerability amplified the strike."
+                            },
+                            {
+                                "operation": "damage",
+                                "target": { "kind": "item", "targetId": "item-cursed-plate-01" },
+                                "resourceKey": "durability",
+                                "amount": 5,
+                                "source": { "kind": "local_item_outcome", "sourceId": "item-cursed-plate-01" },
+                                "eventRef": "turn_42:resource:2",
+                                "reason": "Holy energy scarred the cursed metal."
                             }
                         ]
 
                                                         ]]>
-                           </UpdateInventory>  </jsonresponse>
+                           </resourceChanges>  </jsonresponse>
  </example>
  <example contenttype="log_and_json_snippet" id="ShieldSynergyExample" type="good">
   <title>
@@ -181,7 +205,7 @@
                     
                     - Final Damage to Player: 0.
                     - Durability Cost: The shield, as the primary synergizing item, takes the full 35 durability damage.
-                    - Reporting: 'currentHealthChange' = 0. Preparing update for "Legendary Bulwark of Ages".
+                    - Reporting: no health command; emit durability damage 35 against the shield.
 
                     ]]>
   </logoutput>
@@ -195,20 +219,22 @@
                         
                         ]]>
    </response>
-   <currenthealthchange>
-    0
-   </currenthealthchange>
-   <UpdateInventory>
+   <resourceChanges>
     <![CDATA[
 
                         [
                             {
-                                "existedId": "item-legendary-shield-01",
-                                "durability": "65%" 
+                                "operation": "damage",
+                                "target": { "kind": "item", "targetId": "item-legendary-shield-01" },
+                                "resourceKey": "durability",
+                                "amount": 35,
+                                "source": { "kind": "local_item_outcome", "sourceId": "item-legendary-shield-01" },
+                                "eventRef": "turn_42:resource:1",
+                                "reason": "The shield absorbed the synergized impact."
                             }
                         ]
 
                                                         ]]>
-                           </UpdateInventory>  </jsonresponse>
+                           </resourceChanges>  </jsonresponse>
  </example>
 </instructionblock>

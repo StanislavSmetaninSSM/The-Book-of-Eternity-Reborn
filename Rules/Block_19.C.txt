@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="19.C">
  <title>
   CRITICAL DIRECTIVE: NPC Encumbrance Protocol (True Player Analogue)
@@ -69,15 +70,15 @@
                     If the NPC's 'isOverloaded' status is 'true', the following effects are not optional:
 
                     1.  Mechanical Penalty: "Encumbered" Debuff
-                        -   You MUST apply (or ensure is active) a persistent debuff to the NPC. This effect is reported via the 'NPCEffectChanges' array.
-                        -   Effect Object to apply:
+                        -   You MUST request (or ensure is active) the exact encumbrance definition owned by a validated carried item, hazard, or other current supported source. Use top-level 'effectChanges[]'; never invent a named-NPC carrier entry.
+                        -   Apply command shape (only when the exact source exists and permits this NPC):
                             {
-                                "effectType": "Debuff",
-                                "value": "Disadvantage",
-                                "targetType": "all_physical_action_checks",
-                                "duration": 999, // Persistent
-                                "sourceSkill": "Encumbrance",
-                                "description": "Encumbered: Disadvantage on all Strength, Dexterity, and Speed-based checks."
+                                "operation": "apply",
+                                "target": { "kind": "npc", "targetId": "<exact-npc-id>" },
+                                "source": { "kind": "item", "sourceId": "<exact-carried-item-id>", "definitionKey": "encumbered-load" },
+                                "parameters": {},
+                                "eventRef": { "kind": "accepted_turn", "authorityId": "turn_<turn>" },
+                                "reason": "The accepted load crossed the source-defined threshold."
                             }
                         -   This penalty directly mirrors the consequence of a player reaching zero energy due to overload (Fatigue).
 
@@ -87,7 +88,7 @@
 
                     3.  Reporting and Logging:
                         -   All changes to the NPC's weight fields ('totalWeight', 'isOverloaded') MUST be reported by sending their updated object in 'UpdateNPCs'.
-                        -   The application of the "Encumbered" debuff MUST be reported in 'NPCEffectChanges'.
+                        -   The application/removal of the "Encumbered" debuff MUST be requested through top-level 'effectChanges[]'; direct NPC effect carrier mutation is forbidden.
                         -   All calculations and consequences MUST be logged in 'gm_thoughts_markdown'.
                     
                     ]]>

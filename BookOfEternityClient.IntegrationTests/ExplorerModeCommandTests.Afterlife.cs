@@ -750,9 +750,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Хранитель Зеркал", text, StringComparison.Ordinal);
         Assert.Contains("Хранитель", text, StringComparison.Ordinal);
         Assert.Contains("Зеркальная Обитель", text, StringComparison.Ordinal);
-        Assert.Contains("Чернильные Перья: 120", text, StringComparison.Ordinal);
-        Assert.Contains("Просветление: тир 4, опыт 48", text, StringComparison.Ordinal);
-        Assert.Contains("Давление: 2", text, StringComparison.Ordinal);
+        Assert.Contains("Чернильные Перья", text, StringComparison.Ordinal);
+        Assert.Contains("120", text, StringComparison.Ordinal);
+        Assert.Contains("Просветление", text, StringComparison.Ordinal);
+        Assert.Contains("4 ступень, опыт 48", text, StringComparison.Ordinal);
+        Assert.Contains("Давление - уровень 2", text, StringComparison.Ordinal);
         Assert.Contains("Зеркальная Защита", text, StringComparison.Ordinal);
         Assert.Contains("Отражённая грань превращает успешную защиту в темповое окно", text, StringComparison.Ordinal);
         Assert.Contains("полностью блокирует прямое давление", text, StringComparison.Ordinal);
@@ -760,7 +762,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Один раз за конфликт", text, StringComparison.Ordinal);
         Assert.DoesNotContain("combatEffect", text, StringComparison.Ordinal);
         Assert.DoesNotContain("auditRequirement", text, StringComparison.Ordinal);
-        Assert.Contains("может обучать игрока", text, StringComparison.Ordinal);
+        Assert.Contains("Можно обучить душу", text, StringComparison.Ordinal);
         Assert.Contains("Провести сцену обучения", text, StringComparison.Ordinal);
         Assert.Contains("Кастомные состояния", text, StringComparison.Ordinal);
         Assert.Contains("Голод эха", text, StringComparison.Ordinal);
@@ -768,7 +770,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Отношения", text, StringComparison.Ordinal);
         Assert.Contains("Доверие", text, StringComparison.Ordinal);
         Assert.Contains("заблокировано", text, StringComparison.Ordinal);
-        Assert.Contains("quest_mirror_oath_trial", text, StringComparison.Ordinal);
+        Assert.Contains("Суд зеркальной клятвы", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("quest_mirror_oath_trial", text, StringComparison.Ordinal);
         Assert.Contains("Активная маска", text, StringComparison.Ordinal);
         Assert.Contains("Посланник Белых Перьев", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Маска скрывает агента Крыльев Ангелов", text, StringComparison.Ordinal);
@@ -778,6 +781,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("chaos:5", text, StringComparison.Ordinal);
         Assert.Contains("ОПАСНО", text, StringComparison.Ordinal);
         Assert.Contains("Сначала укрепляет защиту", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("guardian_mirror", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("player_soul", text, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -917,7 +922,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var text = ExtractRenderedText();
         Assert.Contains("Хранитель [debug]", text, StringComparison.Ordinal);
         Assert.Contains("Обитель [card_alpha, card_beta]", text, StringComparison.Ordinal);
-        Assert.Contains("Зеркальная защита [debug]", text, StringComparison.Ordinal);
+        Assert.Contains("Зеркальная защита [[debug]]", text, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1281,21 +1286,25 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Резидент Клятв", text, StringComparison.Ordinal);
         Assert.Contains("Резидент", text, StringComparison.Ordinal);
         Assert.Contains("Зал Невозвратных Обетов", text, StringComparison.Ordinal);
-        Assert.Contains("Искры Света: 4", text, StringComparison.Ordinal);
-        Assert.Contains("Сияние: тир 2, опыт 85", text, StringComparison.Ordinal);
+        Assert.Contains("Искры Света", text, StringComparison.Ordinal);
+        Assert.Contains("4", text, StringComparison.Ordinal);
+        Assert.Contains("Сияние", text, StringComparison.Ordinal);
+        Assert.Contains("2 ступень, опыт 85", text, StringComparison.Ordinal);
         Assert.Contains("Оберег Клятвы", text, StringComparison.Ordinal);
         Assert.Contains("Эхо клятвы", text, StringComparison.Ordinal);
         Assert.Contains("Копит Искры Света", text, StringComparison.Ordinal);
         Assert.Contains("Глава Пепельной Хартии", text, StringComparison.Ordinal);
         Assert.Contains("Глава фракции", text, StringComparison.Ordinal);
         Assert.Contains("Палата Пепельной Хартии", text, StringComparison.Ordinal);
-        Assert.Contains("Силовые оковы: 1", text, StringComparison.Ordinal);
+        Assert.Contains("Силовые оковы - уровень 1", text, StringComparison.Ordinal);
         Assert.Contains("Пепельный Эдикт", text, StringComparison.Ordinal);
-        Assert.Contains("может обучать игрока", text, StringComparison.Ordinal);
+        Assert.Contains("Можно обучить душу", text, StringComparison.Ordinal);
         Assert.Contains("Брожение хартии", text, StringComparison.Ordinal);
         Assert.Contains("Развеивание души: тир 5", text, StringComparison.Ordinal);
         Assert.Contains("ОПАСНО", text, StringComparison.Ordinal);
         Assert.Contains("shining:8", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("resident_oath_001", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("head_ember_001", text, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -3377,7 +3386,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Полный зафиксированный набор карт", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("уровень сияния", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("уровень торговли", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("currentReturnCycleId=return_7", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(ResourcePlayerFailureMessages.Unavailable, renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("currentReturnCycleId", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Выбранные идентификаторы карт", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Выбранные card id", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("frozen payload", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -3940,7 +3950,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         var loadContextMethod = typeof(ExplorerMode).GetMethod("LoadShiningContextAsync", BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.NotNull(loadContextMethod);
-        var loadContextTask = loadContextMethod!.Invoke(_explorer, Array.Empty<object>()) as Task;
+        var loadContextTask = loadContextMethod!.Invoke(
+            _explorer,
+            new object[] { ResourceProjectionAudience.Player }) as Task;
         await (loadContextTask ?? throw new InvalidOperationException("Expected Shining context task."));
         var context = loadContextTask.GetType().GetProperty("Result")!.GetValue(loadContextTask);
         Assert.NotNull(context);
@@ -4709,7 +4721,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         var loadContextMethod = typeof(ExplorerMode).GetMethod("LoadShiningContextAsync", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(loadContextMethod);
-        var loadContextTask = loadContextMethod!.Invoke(_explorer, Array.Empty<object>()) as Task;
+        var loadContextTask = loadContextMethod!.Invoke(
+            _explorer,
+            new object[] { ResourceProjectionAudience.Player }) as Task;
         Assert.NotNull(loadContextTask);
         await loadContextTask!;
         var context = loadContextTask!.GetType().GetProperty("Result")?.GetValue(loadContextTask)
@@ -5648,25 +5662,42 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
         var soulPath = _fs.ResolvePath("game_state/meta/soul_state.json");
-        var soulRoot = JsonNode.Parse((await File.ReadAllTextAsync(soulPath))!)!.AsObject();
-        soulRoot[ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
-        {
-            ["applicationState"] = "active",
-            ["materializedAtUtc"] = "2026-04-19T10:00:00Z",
-            ["currentIncarnation"] = 7,
-            ["sourcePackagePreparedAtTurn"] = 155,
-            ["sourceCardIds"] = new JsonArray("card_relic_reroll"),
-            ["sourceCardCount"] = 1,
-            ["relicRefinementEntitlements"] = new JsonObject
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            _fs,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: CreatePlayerSoulProfileRoot("Shining Abode")));
+        var materialized = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
+            _fs,
+            new JsonObject
             {
-                ["rerolls"] = 1,
-                ["freeShape"] = false,
-                ["freeRetune"] = false,
-                ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
-                ["sourceCardIds"] = new JsonArray("card_relic_reroll")
-            }
-        };
-        await File.WriteAllTextAsync(soulPath, soulRoot.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+                ["preparedAtTurn"] = 155,
+                ["selectedCardIds"] = new JsonArray("card_relic_reroll"),
+                ["selectedCards"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["cardId"] = "card_relic_reroll",
+                        ["dedupeKey"] = "relic:card_relic_reroll",
+                        ["sourceType"] = ShiningAbodeState.CardSourceTypeProject,
+                        ["sourceFactionId"] = "faction_dawn",
+                        ["sourceActorId"] = "project_refinement",
+                        ["effectFamily"] = ShiningAbodeState.EffectFamilyRelic,
+                        ["rarity"] = ShiningAbodeState.RarityCommon,
+                        ["displayName"] = "Переброс реликвии",
+                        ["displaySummary"] = "Один переброс реликвии.",
+                        ["effectPayload"] = new JsonObject
+                        {
+                            ["type"] = "grant_relic_refinement",
+                            [ShiningBlessingRerollAllocationContract.PropertyName] =
+                                ShiningBlessingRerollAllocationContract.Create(1),
+                            ["freeShape"] = false,
+                            ["freeRetune"] = false
+                        }
+                    }
+                }
+            },
+            currentIncarnation: 7);
+        Assert.True(materialized.Success, materialized.ErrorMessage);
 
         _console.QueueSelection("[bold yellow]Сияющая Обитель[/]", "⚒ Торговля и кузня", "← Назад");
         _console.QueueSelection("Торговля и кузня Сияющей Обители", "⚒ Создать запрос на перековку", "← Назад");
@@ -5684,7 +5715,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.False(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
         var afterRoot = JsonNode.Parse((await File.ReadAllTextAsync(soulPath))!)!.AsObject();
         var entitlements = afterRoot[ShiningBlessingEffectState.SoulStateProperty]!["relicRefinementEntitlements"]!.AsObject();
-        Assert.Equal(1, entitlements["rerolls"]!.GetValue<int>());
+        Assert.False(entitlements.ContainsKey("rerolls"));
+        Assert.False(entitlements.ContainsKey("rerollsSpent"));
+        Assert.Equal(1, await ShiningBlessingEffectState.GetPendingRelicRerollsAsync(_fs));
         Assert.Equal(ShiningBlessingEffectState.RelicStatusPendingEntitlement, entitlements["status"]!.GetValue<string>());
 
         var renderedText = ExtractRenderedText();
@@ -5815,6 +5848,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             currentRealm = "Shining Abode",
             currentIncarnation = 7,
             inkFeathers = new { current = 21, total = 57 },
+            afterlifeCombatProfile = new { spiritFocusTier = 0 },
             soulRelics = new
             {
                 stored = new object[]
@@ -6449,6 +6483,21 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         }
     }
 
+    private static JsonObject CreatePlayerSoulProfileRoot(string realm) =>
+        new()
+        {
+            [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["actorType"] = "player_soul",
+                    ["actorId"] = "player_soul",
+                    ["displayName"] = "Тестовая Душа",
+                    ["realm"] = realm
+                }
+            }
+        };
+
     private async Task SeedShiningInspectionStateAsync(bool includePreparedPackage = true)
     {
         await SeedAfterlifeStateAsync();
@@ -6458,6 +6507,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             currentRealm = "Shining Abode",
             currentIncarnation = 7,
             inkFeathers = new { current = 21, total = 57 },
+            afterlifeCombatProfile = new { spiritFocusTier = 0 },
             soulRelics = new
             {
                 stored = new object[]
@@ -6591,8 +6641,6 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             lightSparks = 94,
             gachaSystem = new
             {
-                chargesPerReturn = 3,
-                chargesUsedThisReturn = 1,
                 currentReturnCycleId = "return_7",
                 gachaHistory = Array.Empty<object>()
             },
@@ -10251,15 +10299,32 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     [Fact]
     public async Task TryProcessCommand_SpiritualArts_UpgradesSpiritFocusAndSpendsInkFeathers()
     {
-        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        var initialSoul = new JsonObject
         {
-            soulName = "Тестовая Душа",
-            currentRealm = "Chaos Sea",
-            currentIncarnation = 1,
-            inkFeathers = new { current = 700, total = 700 },
-            enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
-            soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 }
-        });
+            ["soulName"] = "Тестовая Душа",
+            ["currentRealm"] = "Chaos Sea",
+            ["currentIncarnation"] = 1,
+            ["inkFeathers"] = new JsonObject { ["current"] = 700, ["total"] = 700 },
+            ["enlightenment"] = new JsonObject
+            {
+                ["currentTier"] = "Illuminated",
+                ["experience"] = 100,
+                ["level"] = 5
+            },
+            ["soulProgression"] = new JsonObject
+            {
+                ["totalExperience"] = 100,
+                ["tier"] = 5,
+                ["progressPercent"] = 100
+            },
+            [AfterlifeSpiritualConflictState.SoulStateProfileProperty] =
+                AfterlifeSpiritualConflictState.CreateDefaultCombatProfile()
+        };
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            _fs,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: CreatePlayerSoulProfileRoot("Chaos Sea"),
+                SoulState: initialSoul));
         await _stateManager.RefreshGameStateAsync();
         _console.QueueAnySelection("⬆ Прокачать духовное искусство");
         _console.QueueSelection("Выберите духовное искусство", "Средоточие Души — уровень 0->1, макс ОД 6->7, 600 🪶");
@@ -10277,6 +10342,108 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
         Assert.Equal(100, inkFeathers["current"]?.GetValue<int>());
         Assert.Equal(700, inkFeathers["total"]?.GetValue<int>());
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            allowMissingPristine: false).Catalog!;
+        var resourceState = ResourceStateContract.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(
+            resourceState.IsValid,
+            string.Join(Environment.NewLine, resourceState.Issues));
+        var actionPoints = Assert.Single(
+            resourceState.Ledger!.Entries,
+            entry => entry.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeActor &&
+                     entry.Coordinate.ResourceOwnerId == "player_soul" &&
+                     entry.Coordinate.ResourceKey == "spiritual_action_points");
+        Assert.Equal(6m, actionPoints.Current);
+        Assert.Equal(7m, actionPoints.Maximum);
+        var resourceHistory = ResourceHistoryState.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(
+            resourceHistory.IsValid,
+            string.Join(Environment.NewLine, resourceHistory.Issues));
+        Assert.Contains(
+            resourceHistory.History!.Transitions,
+            transition => transition.Coordinate.Equals(actionPoints.Coordinate) &&
+                          transition.Operation == ResourceTransitionOperation.Reconfigure);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SpiritualArts_SpiritFocusConcurrentSoulMutationFailsClosed()
+    {
+        var initialSoul = new JsonObject
+        {
+            ["soulName"] = "Тестовая Душа",
+            ["currentRealm"] = "Chaos Sea",
+            ["currentIncarnation"] = 1,
+            ["inkFeathers"] = new JsonObject { ["current"] = 700, ["total"] = 700 },
+            ["enlightenment"] = new JsonObject
+            {
+                ["currentTier"] = "Illuminated",
+                ["experience"] = 100,
+                ["level"] = 5
+            },
+            ["soulProgression"] = new JsonObject
+            {
+                ["totalExperience"] = 100,
+                ["tier"] = 5,
+                ["progressPercent"] = 100
+            },
+            [AfterlifeSpiritualConflictState.SoulStateProfileProperty] =
+                AfterlifeSpiritualConflictState.CreateDefaultCombatProfile()
+        };
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            _fs,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: CreatePlayerSoulProfileRoot("Chaos Sea"),
+                SoulState: initialSoul));
+        var stateBefore = await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath);
+        var historyBefore = await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath);
+        var authorityBefore = await _fs.ReadFileAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
+
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+        _console.QueueSelection(
+            "Выберите духовное искусство",
+            "Средоточие Души — уровень 0->1, макс ОД 6->7, 600 🪶");
+        _console.QueueAnyConfirmResponse(true);
+        _console.ConfirmCallback = () =>
+        {
+            var current = JsonNode.Parse(
+                _fs.ReadFileAsync("game_state/meta/soul_state.json")
+                    .GetAwaiter()
+                    .GetResult()!)!.AsObject();
+            current["concurrentMarker"] = "preserve_me";
+            _fs.WriteFileAtomicAsync(
+                    "game_state/meta/soul_state.json",
+                    current.ToJsonString())
+                .GetAwaiter()
+                .GetResult();
+            _console.ConfirmCallback = null;
+        };
+
+        var ex = await Record.ExceptionAsync(() =>
+            _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        var soulRoot = JsonNode.Parse(
+            (await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal("preserve_me", soulRoot["concurrentMarker"]!.GetValue<string>());
+        Assert.Equal(
+            0,
+            soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]!
+                [AfterlifeSpiritualConflictState.SpiritFocusTierProperty]!.GetValue<int>());
+        Assert.Equal(700, soulRoot["inkFeathers"]!["current"]!.GetValue<int>());
+        Assert.Equal(stateBefore, await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath));
+        Assert.Equal(historyBefore, await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath));
+        Assert.Equal(
+            authorityBefore,
+            await _fs.ReadFileAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath));
     }
 
     [Fact]
@@ -10492,7 +10659,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task TryProcessCommand_SpiritualCombatLog_ShowsExchangeAndRecentConflictAudit()
+    public async Task TryProcessCommand_SpiritualCombatLog_ShowsSafeExchangeAndRecentConflictSummary()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
         {
@@ -10729,29 +10896,27 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("spiritual_combat_log_audit");
         var renderedText = ExtractRenderedText();
         Assert.Contains("Журнал духовного боя", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("#1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Обмены активного конфликта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Давление", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("итог 18:14, разница 4", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("afterlife_conflict_log_active_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("afterlife_conflict_log_resolved_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("exchange_log_pressure_001", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("d20 игрока=14", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("отброшено: 5", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("позиционное преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("visible_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("visible_condition_roll_source_marker", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("guard_tempo_window_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("d20 игрока=14", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("отброшено: 5", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("visible_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("visible_condition_roll_source_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("guard_tempo_window_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_summary_legacy_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_audit_legacy_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("concealed_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("spoiler_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("d20 противника=9", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("сложность: Тяжёлая", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("модификатор противника +1", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("множитель награды 125%", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("успех игрока", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("противник: защита", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("ОД 6->5", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("d20 противника=9", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("сложность: Тяжёлая", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("модификатор противника +1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("множитель награды 125%", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("ОД 6->5", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Недавние завершённые конфликты", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("договорённость", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("negotiated", renderedText, StringComparison.OrdinalIgnoreCase);

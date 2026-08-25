@@ -9,63 +9,27 @@ public partial class ExplorerMode
 {
     private async Task ShowAfterlifeEntityProfilesAsync()
     {
-        var includeGmDiagnostics = _stateManager.Settings.ShowGmThoughts;
         if (!_stateManager.CurrentState.IsInAfterlifeRealm)
         {
             ShowEmptyPanel("Профили сущностей посмертия", "Профили сущностей посмертия доступны только в Море Хаоса и Сияющей Обители.");
             return;
         }
 
-        await _stateManager.RefreshGameStateAsync();
-        var read = await ReadJsonObjectForAfterlifeStatusResultAsync(AfterlifeEntityProfileState.StatePath);
-        if (read.Error != null)
+        var result = await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(
+            _currentCommandInput,
+            _stateManager,
+            _fs,
+            includeAdvancedDiagnostics: _stateManager.Settings.ShowGmThoughts);
+        if (result == null)
         {
             ShowEmptyPanel(
                 "Профили сущностей посмертия",
-                $"{AfterlifeEntityProfileState.StatePath} повреждён ({read.Error}). Сначала выполните repair состояния.");
-            if (includeGmDiagnostics && !string.IsNullOrWhiteSpace(read.RawPayload))
-                WriteJsonAuditPanel($"Raw {AfterlifeEntityProfileState.StatePath}", JsonValue.Create(read.RawPayload), Color.Red);
+                "Безопасная проекция профилей сущностей посмертия недоступна.");
             return;
-        }
-
-        var profiles = read.Root?[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray;
-        if (profiles == null || profiles.Count == 0)
-        {
-            ShowEmptyPanel(
-                "Профили сущностей посмертия",
-                "Профили сущностей посмертия пока не созданы. ГМ создаёт их через afterlifeEntityProfileUpdates для значимых Хранителей, резидентов, глав фракций и особых акторов.");
-            return;
-        }
-
-        var lines = new List<string>
-        {
-            "[bold cyan]Профили сущностей посмертия[/]",
-            "",
-            "Это полные игровые профили значимых сущностей загробья: ресурсы, прогрессия, духовные искусства, цели, личные квесты, текущая активность, стратегия прокачки и опасность развеивания души.",
-            ""
-        };
-
-        foreach (var profile in profiles.OfType<JsonObject>()
-                     .Where(profile => includeGmDiagnostics || AfterlifeProfileVisibility.IsVisibleToPlayer(profile))
-                     .OrderBy(profile => AfterlifeEntityProfileState.GetNodeString(profile["displayName"]) ?? string.Empty, StringComparer.OrdinalIgnoreCase))
-        {
-            AppendAfterlifeEntityProfile(lines, profile, includeGmDiagnostics);
-            lines.Add("");
         }
 
         Clear();
-        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
-        {
-            Header = new PanelHeader(" Профили сущностей посмертия ", Justify.Center),
-            Border = BoxBorder.Double,
-            BorderStyle = new Style(_stateManager.CurrentState.IsInShiningAbode ? Color.Gold1 : Color.Cyan1),
-            Padding = new Padding(2, 1),
-            Expand = true
-        });
-
-        if (includeGmDiagnostics && read.Root != null)
-            WriteJsonAuditPanel($"Полный JSON {AfterlifeEntityProfileState.StatePath}", read.Root, Color.Cyan1);
-
+        ExplorerCommandResultConsoleRenderer.Render(_console, result);
         WaitForKey();
     }
 

@@ -45,6 +45,7 @@
           "effectSummary": "Связывает цель условиями публичной клятвы и усиливает политические последствия."
         }
       ],
+      "activeEffects": [],
       "customStates": [
         {
           "stateId": "foreign_oath_pressure",

@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="7">
  <title>
   Active Skills Management (Player &amp; NPC)
@@ -45,6 +46,7 @@
                             ],
                             "targetPriority": "system_target_priority_string_optional"
                         },
+                        "activeEffectDefinitions": [ /* complete Effect Materialization v1 definitions or [] */ ],
                         "scalingCharacteristic": "relevant_characteristic_name_string_or_null", 
                         "scalesValue": "boolean_optional_default_true_for_damage_heal",
                         "scalesDuration": "boolean_optional_default_true_for_timed_effects",
@@ -86,6 +88,12 @@
                     The 'isActivatedEffect' field within this 'combatEffect' object should always be 'true' for active skills, as their use implies activation.
                     The 'actionName' field within this 'combatEffect' object is often omitted for skills, as 'skillName' usually serves this purpose. 
                     If 'combatEffect.actionName' is included, it can specify a particular variant or mode of the skill.
+
+                    Effect Materialization v1 source-owner boundary:
+                    - `combatEffect` remains the immediate action template used to resolve the skill activation. It is not an active-effect definition and is never promoted into a carrier by implication.
+                    - If the skill can create a persistent, periodic, triggered, stacked, or removable runtime effect, the skill object owns complete `activeEffectDefinitions[]` entries following `OtherGuides/Effect_Materialization_Contract.md`.
+                    - A definition does not apply itself. Request an instance only through top-level `effectChanges[]`, using the exact accepted selector `{ "kind": "skill", "sourceId": "<exact-skill-id>", "definitionKey": "<exact-definition-key>" }` (or the exact same-turn sourceRef supplied by the skill materializer), exact target, parameters, accepted eventRef, and reason.
+                    - Never copy a definition or a `combatEffect.effects[]` object into `activeEffects[]`, `activeBuffs[]`, or `activeDebuffs[]`; those carriers and their identities are client-owned.
         
                     6) 'scalingCharacteristic': (string or null) The name of the characteristic (from 'characteristicsList' as defined in InstructionBlock '5' -> #5.1.2) that primarily influences this skill's power (e.g., 'intelligence' for a spell, 'strength' for a physical attack skill). 
                     If null or omitted, the skill does not scale with characteristics (only potentially with level if 'scalesValue'/'scalesDuration' are true).
@@ -103,7 +111,7 @@
                     
                     - For Player Characters: 
                     This is a strict mechanical cost. 
-                    The specified amount (e.g., "5%" of MaxEnergy or a flat value of 10) is deducted from the player's 'currentEnergy'.
+                    The specified cost is paid only by an authorized `resourceChanges` command with `operation=spend`, exact target `player/player_current`, and `resourceKey=energy`. For a percentage cost, read the exact projected energy maximum, calculate a positive exact amount with the required math audit, and never author the resulting current value.
                     
                     - For NPCs: 
                     This value serves as a narrative and pacing guideline for the GM. 

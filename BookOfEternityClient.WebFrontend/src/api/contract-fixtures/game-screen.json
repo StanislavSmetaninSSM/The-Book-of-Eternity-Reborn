@@ -25,7 +25,9 @@
     "poisePercentage": "60%",
     "activeConditions": [
       "\u0421\u043E\u0441\u0440\u0435\u0434\u043E\u0442\u043E\u0447\u0435\u043D\u043D\u043E\u0441\u0442\u044C"
-    ]
+    ],
+    "resourceProjectionAvailable": true,
+    "resourceUnavailableMessage": ""
   },
   "world": {
     "location": "\u041F\u0435\u043F\u0435\u043B\u044C\u043D\u0430\u044F \u0434\u043E\u0440\u043E\u0433\u0430",

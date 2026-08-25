@@ -74,7 +74,6 @@ public partial class ValidationService
         "NPCQuestUpdates",
         "NPCRelationshipChanges",
         "NPCRelationshipLockUpdates",
-        "NPCEffectChanges",
         "NPCWoundChanges",
         "NPCPersonalityTraitChanges",
         "NPCActivityUpdates",
@@ -94,8 +93,7 @@ public partial class ValidationService
         "NPCInventoryAdds",
         "NPCInventoryUpdates",
         "NPCInventoryRemovals",
-        "NPCEquipmentChanges",
-        "NPCInventoryResourcesChanges"
+        "NPCEquipmentChanges"
     };
 
     private static readonly HashSet<string> NpcStructuredSpecialSections = new(StringComparer.OrdinalIgnoreCase)
@@ -4524,6 +4522,9 @@ public partial class ValidationService
 
     private async Task ValidateNpcFile(string filePath, HashSet<string> allowedKeys, List<ValidationIssue> issues)
     {
+        if (!ShouldValidateStateFile(filePath))
+            return;
+
         var json = await _fs.ReadFileAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
@@ -4543,6 +4544,12 @@ public partial class ValidationService
                     repairHint: $"Сохрани {filePath} как JSON object с допустимыми NPC top-level ключами: {string.Join(", ", allowedKeys.OrderBy(x => x))}."));
                 return;
             }
+
+            RejectLegacyEffectRouteIfPresent(
+                doc.RootElement,
+                filePath,
+                issues,
+                "NPCEffectChanges");
 
             var visibleProps = doc.RootElement.EnumerateObject()
                 .Where(prop => !prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
@@ -4585,6 +4592,16 @@ public partial class ValidationService
                 skipManifestedCompanionSourceValidation:
                     filePath.Equals("game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase) &&
                     hasUnsupportedVisibleTopLevelKeys);
+
+            if (filePath.Equals(
+                    EffectCarrierCatalog.NpcPath,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                issues.AddRange(EffectMaterializationContract.ValidateCarrier(
+                    doc.RootElement,
+                    filePath,
+                    EffectCarrierKind.Npc));
+            }
         }
         catch (JsonException ex)
         {
@@ -4597,58 +4614,6 @@ public partial class ValidationService
                 expected: "valid JSON object",
                 actual: "invalid JSON",
                 repairHint: $"Исправь {filePath} до валидного JSON-объекта, не меняя NPC contract."));
-        }
-    }
-
-    private void ValidateInventoryItemResourcesStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
-    {
-        if (root.TryGetProperty("inventoryItemsResources", out var resourceChanges))
-        {
-            RequireArrayOfObjects(resourceChanges, $"{contextPrefix}.inventoryItemsResources", issues);
-            if (resourceChanges.ValueKind == JsonValueKind.Array)
-            {
-                var index = 0;
-                foreach (var item in resourceChanges.EnumerateArray())
-                {
-                    var itemContext = $"{contextPrefix}.inventoryItemsResources[{index++}]";
-                    RequireString(item, itemContext, issues, "name");
-                    RequireString(item, itemContext, issues, "existedId");
-                    if (!item.TryGetProperty("contentsPath", out var contentsPath))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{itemContext}.contentsPath",
-                            IssueSeverity.Error,
-                            "inventoryItemsResources item должен содержать contentsPath (массив строк или null)"));
-                    }
-                    else if (contentsPath.ValueKind != JsonValueKind.Null)
-                    {
-                        RequireArrayOfStrings(contentsPath, $"{itemContext}.contentsPath", issues);
-                    }
-
-                    ValidateNonNegativeNumericLikeField(item, itemContext, issues, "resource");
-                    ValidateNonNegativeNumericLikeField(item, itemContext, issues, "maximumResource");
-                    RequireString(item, itemContext, issues, "resourceType");
-                    ValidateNumericUpperBound(item, itemContext, issues, "resource", "maximumResource", "inventory_item_resource_exceeds_maximum");
-                }
-            }
-        }
-
-        if (root.TryGetProperty("entries", out var entries))
-        {
-            RequireArrayOfObjects(entries, $"{contextPrefix}.entries", issues);
-            if (entries.ValueKind == JsonValueKind.Array)
-            {
-                var index = 0;
-                foreach (var entry in entries.EnumerateArray())
-                {
-                    var itemContext = $"{contextPrefix}.entries[{index++}]";
-                    ValidateInventoryItemReference(entry, itemContext, issues);
-                    ValidateNonNegativeNumericLikeField(entry, itemContext, issues, "resource");
-                    ValidateNonNegativeNumericLikeField(entry, itemContext, issues, "maximumResource");
-                    RequireString(entry, itemContext, issues, "resourceType");
-                    ValidateNumericUpperBound(entry, itemContext, issues, "resource", "maximumResource", "inventory_item_resource_exceeds_maximum");
-                }
-            }
         }
     }
 
@@ -5026,13 +4991,21 @@ public partial class ValidationService
         ValidateNpcInventoryUpdates(root, contextPrefix, issues);
         ValidateNpcInventoryRemovals(root, contextPrefix, issues);
         ValidateNpcEquipmentChanges(root, contextPrefix, issues);
-        ValidateNpcInventoryResources(root, contextPrefix, issues);
+        RejectLegacyItemResourceAuthorityFields(
+            root,
+            contextPrefix,
+            issues,
+            "NPCInventoryResourcesChanges");
         ValidateNpcGoalUpdates(root, contextPrefix, issues);
         ValidateNpcQuestUpdates(root, contextPrefix, issues);
         ValidateNpcRelationshipChanges(root, contextPrefix, issues);
         ValidateInterNpcRelationshipChanges(root, contextPrefix, issues);
         ValidateNpcRelationshipLockUpdates(root, contextPrefix, issues);
-        ValidateNpcIdentityArray(root, contextPrefix, issues, "NPCEffectChanges", "effectsApplied");
+        RejectLegacyEffectRouteIfPresent(
+            root,
+            contextPrefix,
+            issues,
+            "NPCEffectChanges");
         ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCWoundChanges");
         ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCPersonalityTraitChanges");
         ValidateNpcActivityUpdates(root, contextPrefix, issues);
@@ -5419,6 +5392,11 @@ public partial class ValidationService
         string sectionName,
         bool requiresCompletePersonality)
     {
+        ValidateActiveEffectDefinitionsIfPresent(
+            item,
+            itemContext,
+            "mortal_world",
+            issues);
         var missingFields = new List<string>();
         foreach (var requiredStringField in new[] { "image_prompt", "rarity", "worldview", "personalityArchetype", "culturalStance", "race", "class", "appearanceDescription", "history", "progressionType" })
         {
@@ -5670,6 +5648,24 @@ public partial class ValidationService
             ValidateNpcEquippedItemsObject(equippedItems, $"{itemContext}.equippedItems", issues);
         if (item.TryGetProperty("fateCards", out var fateCards))
             ValidateNpcFateCardArray(fateCards, $"{itemContext}.fateCards", issues);
+        if (item.TryGetProperty("actions", out var actions) &&
+            actions.ValueKind != JsonValueKind.Null)
+        {
+            ValidateCombatActionArray(
+                actions,
+                $"{itemContext}.actions",
+                issues,
+                section: "NPC");
+        }
+        if (item.TryGetProperty("combatActions", out var combatActions) &&
+            combatActions.ValueKind != JsonValueKind.Null)
+        {
+            ValidateCombatActionArray(
+                combatActions,
+                $"{itemContext}.combatActions",
+                issues,
+                section: "NPC");
+        }
         if (item.TryGetProperty("inventory", out var inventory) && inventory.ValueKind != JsonValueKind.Null)
         {
             ValidateArrayItems(
@@ -5694,10 +5690,54 @@ public partial class ValidationService
             RequireString(goals, $"{itemContext}.goals", issues, "shortTerm");
         }
 
-        if (item.TryGetProperty("currentHealthPercentage", out _))
-            ValidatePercentageStringField(item, itemContext, issues, "currentHealthPercentage", requirePositive: false);
-        if (item.TryGetProperty("maxHealthPercentage", out _))
-            ValidatePercentageStringField(item, itemContext, issues, "maxHealthPercentage", requirePositive: true);
+        foreach (var legacyField in new[] { "currentHealthPercentage", "maxHealthPercentage" })
+        {
+            if (!item.TryGetProperty(legacyField, out var legacyValue))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.{legacyField}",
+                IssueSeverity.Error,
+                "NPC resource value нельзя хранить вне unified resource ledger",
+                code: "resource_owner_legacy_value_forbidden",
+                section: "NPC",
+                expected: "field absent; use resourceMaterialization for creation or resource commands for changes",
+                actual: legacyValue.GetRawText(),
+                repairHint: "Удали currentHealthPercentage/maxHealthPercentage. Новый NPC передаёт только maximum через resourceMaterialization; текущим значением владеет клиентский resource ledger."));
+        }
+
+        var isSameTurnNpc = item.TryGetProperty("NPCId", out var npcIdNode) &&
+                            npcIdNode.ValueKind == JsonValueKind.Null &&
+                            HasNonEmptyString(item, "initialId");
+        if (isSameTurnNpc &&
+            (!item.TryGetProperty("resourceMaterialization", out var materialization) ||
+             materialization.ValueKind != JsonValueKind.Object))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.resourceMaterialization",
+                IssueSeverity.Error,
+                "Новый NPC должен объявить ресурсную materialization authority",
+                code: "resource_owner_materialization_required",
+                section: "NPC",
+                expected: "closed resourceMaterialization object validated by the common resource planner",
+                actual: item.TryGetProperty("resourceMaterialization", out var existingMaterialization)
+                    ? existingMaterialization.GetRawText()
+                    : "missing",
+                repairHint: "Передай maximum ресурсов нового NPC в resourceMaterialization.resources; не передавай current/max поля."));
+        }
+        else if (!isSameTurnNpc &&
+                 item.TryGetProperty("resourceMaterialization", out var forbiddenMaterialization))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.resourceMaterialization",
+                IssueSeverity.Error,
+                "Resource materialization envelope допустим только при создании NPC",
+                code: "resource_owner_materialization_existing_forbidden",
+                section: "NPC",
+                expected: "field absent for canonical/existing NPC",
+                actual: forbiddenMaterialization.GetRawText(),
+                repairHint: "Меняй capacity существующего NPC только через resourceCapacityChanges."));
+        }
 
         if (item.TryGetProperty("factionAffiliations", out var factionAffiliations) &&
             factionAffiliations.ValueKind != JsonValueKind.Null)
@@ -5925,6 +5965,12 @@ public partial class ValidationService
             var cardContext = $"{context}[{index++}]";
             if (!RequireObject(card, cardContext, issues))
                 continue;
+
+            ValidateActiveEffectDefinitionsIfPresent(
+                card,
+                cardContext,
+                "mortal_world",
+                issues);
 
             RequireString(card, cardContext, issues, "cardId");
             RequireString(card, cardContext, issues, "name");
@@ -7537,24 +7583,6 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateNpcInventoryResources(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
-    {
-        if (!TryGetArray(root, "NPCInventoryResourcesChanges", $"{contextPrefix}.NPCInventoryResourcesChanges", issues, out var arr))
-            return;
-
-        var index = 0;
-        foreach (var item in arr.EnumerateArray())
-        {
-            var itemContext = $"{contextPrefix}.NPCInventoryResourcesChanges[{index++}]";
-            if (!RequireObject(item, itemContext, issues)) continue;
-            RequireNpcIdentity(item, itemContext, issues);
-            RequireAnyString(item, itemContext, issues, "NPCName", "npcName", "name");
-            RequireString(item, itemContext, issues, "itemId");
-            RequireString(item, itemContext, issues, "itemName");
-            ValidateIntegerField(item, itemContext, issues, "newResourceValue");
-        }
-    }
-
     private void ValidateNpcGoalUpdates(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         if (!TryGetArray(root, "NPCGoalUpdates", $"{contextPrefix}.NPCGoalUpdates", issues, out var arr))
@@ -8090,6 +8118,19 @@ public partial class ValidationService
 
         ValidateWorldMapUpdates(root, contextPrefix, issues);
         ValidateArrayOfObjectsField(root, contextPrefix, issues, "worldEventsLog");
+        if (root.TryGetProperty("worldEventsLog", out var worldEvents) &&
+            worldEvents.ValueKind == JsonValueKind.Array)
+        {
+            var eventIndex = 0;
+            foreach (var worldEvent in worldEvents.EnumerateArray())
+            {
+                ValidateActiveEffectDefinitionsIfPresent(
+                    worldEvent,
+                    $"{contextPrefix}.worldEventsLog[{eventIndex++}]",
+                    "mortal_world",
+                    issues);
+            }
+        }
         ValidateRivalSoulArcArray(root, contextPrefix, issues, "UpdateRivalSoulArcs");
         ValidateRivalSoulArcArray(root, contextPrefix, issues, "arcs");
         ValidateWorldStateFlagsArray(root, contextPrefix, issues, "worldStateFlags");

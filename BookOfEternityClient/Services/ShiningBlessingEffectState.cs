@@ -43,6 +43,162 @@ internal static class ShiningBlessingEffectState
         IReadOnlyList<string> SummaryLines,
         string? ErrorMessage = null);
 
+    internal sealed record SurvivalResourceOutcomeDraftBuildResult(
+        IResourceRegisteredSystemOutcomeDraft? Draft,
+        IReadOnlyList<ValidationIssue> Issues)
+    {
+        internal bool IsValid => Issues.Count == 0;
+    }
+
+    private sealed class ShiningSurvivalResourceOutcomeDraft
+        : IResourceRegisteredSystemOutcomeDraft
+    {
+        private const string SoulPath = "game_state/meta/soul_state.json";
+        private const string WorldEventsPath = "game_state/world/world_events.json";
+        private readonly JsonObject _soulAfterImageBase;
+        private readonly JsonObject _worldAfterImageBase;
+        private readonly ResourceMutationSourceExport[] _sourceExports;
+        private readonly ResourceMutationIntent[] _mutations;
+        private readonly Dictionary<string, CanonicalBeforeImage> _expectedBeforeImages;
+        private readonly string _sourceCardId;
+        private readonly string _eventId;
+        private readonly string _severityFieldName;
+        private readonly int _downgradeBands;
+        private readonly int _turn;
+        private readonly string _consumedAtUtc;
+        private readonly string _registeredSourceId;
+
+        internal ShiningSurvivalResourceOutcomeDraft(
+            string fingerprint,
+            JsonObject soulAfterImageBase,
+            JsonObject worldAfterImageBase,
+            IReadOnlyList<ResourceMutationSourceExport> sourceExports,
+            IReadOnlyList<ResourceMutationIntent> mutations,
+            IReadOnlyDictionary<string, CanonicalBeforeImage> expectedBeforeImages,
+            string sourceCardId,
+            string eventId,
+            string severityFieldName,
+            int downgradeBands,
+            int turn,
+            string consumedAtUtc,
+            string registeredSourceId)
+        {
+            Fingerprint = fingerprint;
+            _soulAfterImageBase = soulAfterImageBase.DeepClone().AsObject();
+            _worldAfterImageBase = worldAfterImageBase.DeepClone().AsObject();
+            _sourceExports = sourceExports.ToArray();
+            _mutations = mutations.ToArray();
+            _expectedBeforeImages = expectedBeforeImages.ToDictionary(
+                static pair => pair.Key,
+                static pair => new CanonicalBeforeImage(pair.Value.Existed, pair.Value.Bytes),
+                StringComparer.Ordinal);
+            _sourceCardId = sourceCardId;
+            _eventId = eventId;
+            _severityFieldName = severityFieldName;
+            _downgradeBands = downgradeBands;
+            _turn = turn;
+            _consumedAtUtc = consumedAtUtc;
+            _registeredSourceId = registeredSourceId;
+        }
+
+        public string Fingerprint { get; }
+
+        public IReadOnlyList<ResourceMutationSourceExport> SourceExports =>
+            Array.AsReadOnly(_sourceExports.ToArray());
+
+        public IReadOnlyList<ResourceMutationIntent> Mutations =>
+            Array.AsReadOnly(_mutations.ToArray());
+
+        public IReadOnlyDictionary<string, CanonicalBeforeImage> ExpectedBeforeImages =>
+            _expectedBeforeImages.ToDictionary(
+                static pair => pair.Key,
+                static pair => new CanonicalBeforeImage(pair.Value.Existed, pair.Value.Bytes),
+                StringComparer.Ordinal);
+
+        public ResourceRegisteredSystemOutcomeProjectionResult Project(
+            AcceptedMechanicsResourcePlanningResult resourceResult)
+        {
+            ArgumentNullException.ThrowIfNull(resourceResult);
+            var issues = new List<ValidationIssue>();
+            var soul = _soulAfterImageBase.DeepClone().AsObject();
+            var world = _worldAfterImageBase.DeepClone().AsObject();
+            var effect = (soul[SoulStateProperty]?["pendingSurvivalEffects"] as JsonArray)?
+                .OfType<JsonObject>()
+                .SingleOrDefault(candidate =>
+                    string.Equals(
+                        GetNodeString(candidate["sourceCardId"]),
+                        _sourceCardId,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        GetNodeString(candidate["status"]),
+                        SurvivalStatusPendingFirstRuinousFailure,
+                        StringComparison.Ordinal));
+            var signal = EnumerateVisibleWorldEventSignals(world)
+                .SingleOrDefault(candidate =>
+                    string.Equals(candidate.EventId, _eventId, StringComparison.Ordinal));
+            if (effect == null || signal?.Entry == null)
+            {
+                issues.Add(SurvivalDraftIssue(
+                    "shining_survival_projection_authority_missing",
+                    "one exact pending survival effect and accepted ruinous event",
+                    $"card={_sourceCardId};event={_eventId}"));
+                return new ResourceRegisteredSystemOutcomeProjectionResult(
+                    new Dictionary<string, JsonObject>(StringComparer.Ordinal),
+                    Array.Empty<AcceptedMechanicsOwnerTransition>(),
+                    issues);
+            }
+
+            var severity = signal.Severity;
+            for (var index = 0; index < _downgradeBands; index++)
+                severity = DowngradeSeverityValue(severity);
+            signal.Entry[_severityFieldName] = severity;
+            MarkConsumed(effect, _turn, _consumedAtUtc);
+            effect["consumedEventId"] = _eventId;
+            effect["consumedSeverityField"] = _severityFieldName;
+
+            var transitions = resourceResult.AppliedTransitions
+                .Concat(resourceResult.ReplayTransitions)
+                .Where(transition =>
+                    string.Equals(
+                        transition.OriginKind,
+                        "registered_system_outcome",
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        transition.OriginId,
+                        _registeredSourceId,
+                        StringComparison.Ordinal))
+                .OrderBy(static transition => transition.ExecutionSequence)
+                .ToArray();
+            var restoredAmounts = new JsonObject();
+            foreach (var group in transitions
+                         .GroupBy(
+                             static transition => transition.Coordinate.ResourceKey,
+                             StringComparer.Ordinal)
+                         .OrderBy(static group => group.Key, StringComparer.Ordinal))
+            {
+                var amount = group.Sum(static transition => transition.AppliedAmount);
+                if (amount > 0m)
+                    restoredAmounts[group.Key] = amount;
+            }
+            effect["restoredResourceAmounts"] = restoredAmounts;
+            effect["resourceMutationEventRefs"] = new JsonArray(
+                transitions
+                    .Select(static transition => (JsonNode)JsonValue.Create(transition.EventRef)!)
+                    .ToArray());
+            if (soul[SoulStateProperty] is JsonObject effectState)
+                NormalizeBlessingState(effectState);
+
+            return new ResourceRegisteredSystemOutcomeProjectionResult(
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal)
+                {
+                    [SoulPath] = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soul),
+                    [WorldEventsPath] = world
+                },
+                Array.Empty<AcceptedMechanicsOwnerTransition>(),
+                Array.Empty<ValidationIssue>());
+        }
+    }
+
     public sealed record MemoryEchoCandidate(
         int Incarnation,
         string LifeHint,
@@ -79,7 +235,10 @@ internal static class ShiningBlessingEffectState
                 Array.Empty<string>());
         }
 
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
+        const string soulPath = "game_state/meta/soul_state.json";
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        var soulStateJson = await fs.ReadFileAsync(writeLease, soulPath);
+        var soulRoot = ParseJsonNode(soulStateJson) as JsonObject;
         if (soulRoot == null)
         {
             return new BootstrapMaterializationResult(
@@ -90,21 +249,57 @@ internal static class ShiningBlessingEffectState
                 "Не удалось прочитать soul_state.json для materialization сияющих благословений.");
         }
 
+        var existingEffectState = soulRoot[SoulStateProperty] as JsonObject;
         var effectState = BuildPendingEffectsFromPreparedPackage(preparedPackage, currentIncarnation);
         var summaryLines = new List<string>();
         TryPrimeDescentEffects(soulRoot, effectState, 0, summaryLines);
         summaryLines.InsertRange(0, BuildActivationSummaryLines(effectState));
 
+        var rerollPlan = await ShiningBlessingRerollResourceService.BuildBootstrapAsync(
+            fs,
+            writeLease,
+            effectState,
+            currentIncarnation,
+            existingEffectState);
+        if (!rerollPlan.IsValid || rerollPlan.EffectStateAfterImage == null)
+        {
+            return new BootstrapMaterializationResult(
+                false,
+                false,
+                null,
+                Array.Empty<string>(),
+                "Не удалось materialize blessing_rerolls: " +
+                string.Join(
+                    "; ",
+                    rerollPlan.Issues.Select(static issue =>
+                        $"{issue.Code ?? "resource_issue"}: {issue.Actual ?? issue.Message}")));
+        }
+        effectState = rerollPlan.EffectStateAfterImage;
+        if (rerollPlan.IsReplay)
+        {
+            return new BootstrapMaterializationResult(
+                true,
+                false,
+                effectState,
+                Array.Empty<string>());
+        }
+
         soulRoot[SoulStateProperty] = effectState;
-        var soulStateJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
-        var writes = await BuildImmediateBootstrapEffectWritesAsync(fs, effectState);
+        var writes = await BuildImmediateBootstrapEffectWritesAsync(
+            fs,
+            writeLease,
+            effectState);
+        writes.AddRange(rerollPlan.Writes);
         writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
-            "game_state/meta/soul_state.json",
+            soulPath,
             soulStateJson,
             GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts),
             RequireCurrentBaseline: true));
 
-        if (!await CoordinatedStateWriteHelper.TryCommitAsync(fs, writes.ToArray()))
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                fs,
+                writeLease,
+                writes.ToArray()))
         {
             return new BootstrapMaterializationResult(
                 false,
@@ -128,7 +323,6 @@ internal static class ShiningBlessingEffectState
         string? preTurnNpcCoreJson,
         string? preTurnWorldEventsJson,
         string? preTurnNpcRelationshipsJson = null,
-        string? preTurnPlayerStatusJson = null,
         string? preTurnFactionCoreJson = null)
     {
         var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
@@ -143,16 +337,22 @@ internal static class ShiningBlessingEffectState
         var soulChanged = false;
         var npcChanged = false;
         var npcRelationshipsChanged = false;
-        var playerStatusChanged = false;
         var worldEventsChanged = false;
         var factionChanged = false;
         var currentShiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
         var currentWorldEventsJson = await fs.ReadFileAsync("game_state/world/world_events.json");
         var currentWorldEventsRoot = ParseJsonNode(currentWorldEventsJson);
-        var currentPlayerStatusJson = await fs.ReadFileAsync("game_state/core/player_status.json");
-        var currentPlayerStatusRoot = ParseJsonNode(currentPlayerStatusJson) as JsonObject;
         var currentFactionCoreJson = await fs.ReadFileAsync("game_state/factions/faction_core.json");
         var currentFactionCoreRoot = ParseJsonNode(currentFactionCoreJson) as JsonObject;
+        int? relicRerollsRemaining = null;
+        if (effectState["relicRefinementEntitlements"] is JsonObject relicEntitlements &&
+            relicEntitlements["rerollResourceBinding"] is JsonObject)
+        {
+            var allocation = await ShiningBlessingRerollResourceService
+                .ReadAllocationAsync(fs, relicEntitlements);
+            if (allocation.IsValid)
+                relicRerollsRemaining = allocation.Remaining;
+        }
 
         if (ConsumeForgeEntitlementsFromAcceptedReceipts(
                 soulRoot,
@@ -160,6 +360,7 @@ internal static class ShiningBlessingEffectState
                 currentShiningRoot,
                 preTurnShiningJson,
                 currentTurnNumber,
+                relicRerollsRemaining,
                 summaryLines))
         {
             soulChanged = true;
@@ -194,20 +395,6 @@ internal static class ShiningBlessingEffectState
             npcChanged = true;
         }
 
-        if (TryConsumeSurvivalEffectsFromWorldState(
-                effectState,
-                currentWorldEventsRoot,
-                preTurnWorldEventsJson,
-                currentPlayerStatusRoot,
-                preTurnPlayerStatusJson,
-                currentTurnNumber,
-                summaryLines))
-        {
-            soulChanged = true;
-            worldEventsChanged = true;
-            playerStatusChanged = true;
-        }
-
         if (TryConsumeRouteEffectsFromWorldEvents(
                 effectState,
                 currentWorldEventsRoot,
@@ -235,7 +422,7 @@ internal static class ShiningBlessingEffectState
         if (ExpireDeadlineEffects(effectState, currentTurnNumber, summaryLines))
             soulChanged = true;
 
-        if (!soulChanged && !npcChanged && !playerStatusChanged && !worldEventsChanged && !factionChanged)
+        if (!soulChanged && !npcChanged && !worldEventsChanged && !factionChanged)
             return new RuntimeProcessingResult(true, false, Array.Empty<string>());
 
         NormalizeBlessingState(effectState);
@@ -262,14 +449,6 @@ internal static class ShiningBlessingEffectState
                 "game_state/npcs/npc_relationships.json",
                 currentNpcRelationshipsJson,
                 currentNpcRelationshipsRoot.ToJsonString(JsonOpts)));
-        }
-
-        if (playerStatusChanged && currentPlayerStatusRoot != null)
-        {
-            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
-                "game_state/core/player_status.json",
-                currentPlayerStatusJson,
-                currentPlayerStatusRoot.ToJsonString(JsonOpts)));
         }
 
         if (worldEventsChanged && currentWorldEventsRoot is JsonNode worldEventsNode)
@@ -312,7 +491,9 @@ internal static class ShiningBlessingEffectState
 
         return new PendingMemorySelectionState(
             Math.Max(0, GetNodeInt(memorySelection["options"], 0)),
-            Math.Max(0, GetNodeInt(memorySelection["rerolls"], 0)),
+            (await ShiningBlessingRerollResourceService.ReadAllocationAsync(
+                fs,
+                memorySelection)).Remaining,
             BuildMemoryEchoCandidates(soulRoot));
     }
 
@@ -322,12 +503,28 @@ internal static class ShiningBlessingEffectState
         MemoryEchoCandidate? selectedCandidate,
         int rerollsSpent)
     {
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
+        const string soulPath = "game_state/meta/soul_state.json";
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        var soulJson = await fs.ReadFileAsync(writeLease, soulPath);
+        var soulRoot = ParseJsonNode(soulJson) as JsonObject;
         if (soulRoot?[SoulStateProperty] is not JsonObject effectState ||
             effectState["memorySelection"] is not JsonObject memorySelection ||
             !string.Equals(GetNodeString(memorySelection["status"]), MemoryStatusPendingPreTurnOneSelection, StringComparison.OrdinalIgnoreCase))
         {
             return false;
+        }
+
+        ShiningBlessingRerollSpendFilePlan? spendPlan = null;
+        if (rerollsSpent > 0)
+        {
+            spendPlan = await ShiningBlessingRerollResourceService.BuildSpendAsync(
+                fs,
+                writeLease,
+                memorySelection,
+                currentTurnNumber,
+                rerollsSpent);
+            if (!spendPlan.IsValid)
+                return false;
         }
 
         MarkConsumed(memorySelection, currentTurnNumber);
@@ -338,16 +535,26 @@ internal static class ShiningBlessingEffectState
             memorySelection["selectedLifeSummary"] = selectedCandidate.Summary;
         }
 
-        memorySelection["rerollsSpent"] = Math.Max(0, rerollsSpent);
         soulRoot[SoulStateProperty] = effectState;
-        await fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts));
-        return true;
+        var writes = spendPlan?.Writes.ToList() ??
+                     new List<CoordinatedStateWriteHelper.PlannedWrite>();
+        writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+            soulPath,
+            soulJson,
+            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot)
+                .ToJsonString(JsonOpts),
+            RequireCurrentBaseline: true));
+        return await CoordinatedStateWriteHelper.TryCommitAsync(
+            fs,
+            writeLease,
+            writes.ToArray());
     }
 
-    public static int GetPendingRelicRerolls(JsonObject? soulRoot)
+    public static async Task<int> GetPendingRelicRerollsAsync(
+        FileSystemManager fs,
+        JsonObject? soulRoot = null)
     {
+        soulRoot ??= await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
         if (soulRoot?[SoulStateProperty] is not JsonObject effectState ||
             effectState["relicRefinementEntitlements"] is not JsonObject entitlements ||
             !IsPendingRelicEntitlement(entitlements))
@@ -355,7 +562,9 @@ internal static class ShiningBlessingEffectState
             return 0;
         }
 
-        return Math.Max(0, GetNodeInt(entitlements["rerolls"], 0));
+        var projection = await ShiningBlessingRerollResourceService
+            .ReadAllocationAsync(fs, entitlements);
+        return projection.IsValid ? projection.Remaining : 0;
     }
 
     public static async Task<bool> ConsumeRelicRerollAsync(
@@ -368,35 +577,16 @@ internal static class ShiningBlessingEffectState
         int currentTurnNumber,
         int rerollsToConsume)
     {
-        if (rerollsToConsume <= 0)
-            return true;
-
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
-        if (soulRoot?[SoulStateProperty] is not JsonObject effectState ||
-            effectState["relicRefinementEntitlements"] is not JsonObject entitlements ||
-            !IsPendingRelicEntitlement(entitlements))
-        {
+        var plan = await BuildRelicRerollConsumptionPlanAsync(
+            fs,
+            writeLease: null,
+            currentTurnNumber,
+            rerollsToConsume);
+        if (!plan.IsValid)
             return false;
-        }
-
-        var rerollsRemaining = Math.Max(0, GetNodeInt(entitlements["rerolls"], 0));
-        if (rerollsRemaining < rerollsToConsume)
-            return false;
-
-        entitlements["rerolls"] = rerollsRemaining - rerollsToConsume;
-        entitlements["rerollsSpent"] = GetNodeInt(entitlements["rerollsSpent"], 0) + rerollsToConsume;
-        if (GetNodeInt(entitlements["rerolls"], 0) <= 0 &&
-            !GetNodeBool(entitlements["freeShape"]) &&
-            !GetNodeBool(entitlements["freeRetune"]))
-        {
-            MarkConsumed(entitlements, currentTurnNumber);
-        }
-
-        soulRoot[SoulStateProperty] = effectState;
-        await fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts));
-        return true;
+        return await CoordinatedStateWriteHelper.TryCommitAsync(
+            fs,
+            plan.Writes.ToArray());
     }
 
     internal static async Task<bool> ConsumeRelicRerollsAsync(
@@ -405,16 +595,42 @@ internal static class ShiningBlessingEffectState
         int currentTurnNumber,
         int rerollsToConsume)
     {
-        if (rerollsToConsume <= 0)
-            return true;
+        var plan = await BuildRelicRerollConsumptionPlanAsync(
+            fs,
+            writeLease,
+            currentTurnNumber,
+            rerollsToConsume);
+        if (!plan.IsValid)
+            return false;
+        return await CoordinatedStateWriteHelper.TryCommitAsync(
+            fs,
+            writeLease,
+            plan.Writes.ToArray());
+    }
 
-        var raw = await fs.ReadFileAsync(writeLease, "game_state/meta/soul_state.json");
+    internal static async Task<ShiningBlessingRerollSpendFilePlan>
+        BuildRelicRerollConsumptionPlanAsync(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease? writeLease,
+            int currentTurnNumber,
+            int rerollsToConsume)
+    {
+        if (rerollsToConsume <= 0)
+        {
+            return new ShiningBlessingRerollSpendFilePlan(
+                0,
+                Array.Empty<CoordinatedStateWriteHelper.PlannedWrite>(),
+                Array.Empty<ValidationIssue>());
+        }
+
+        const string soulPath = "game_state/meta/soul_state.json";
+        var raw = writeLease == null
+            ? await fs.ReadFileAsync(soulPath)
+            : await fs.ReadFileAsync(writeLease, soulPath);
         JsonObject? soulRoot;
         try
         {
-            soulRoot = string.IsNullOrWhiteSpace(raw)
-                ? null
-                : JsonNode.Parse(raw) as JsonObject;
+            soulRoot = raw == null ? null : JsonNode.Parse(raw) as JsonObject;
         }
         catch
         {
@@ -425,16 +641,36 @@ internal static class ShiningBlessingEffectState
             effectState["relicRefinementEntitlements"] is not JsonObject entitlements ||
             !IsPendingRelicEntitlement(entitlements))
         {
-            return false;
+            return new ShiningBlessingRerollSpendFilePlan(
+                0,
+                Array.Empty<CoordinatedStateWriteHelper.PlannedWrite>(),
+                new[]
+                {
+                    new ValidationIssue(
+                        soulPath,
+                        IssueSeverity.Error,
+                        "Relic reroll entitlement отсутствует или уже закрыт.",
+                        code: "shining_blessing_relic_reroll_entitlement_unavailable",
+                        section: "ShiningBlessings")
+                });
         }
 
-        var rerollsRemaining = Math.Max(0, GetNodeInt(entitlements["rerolls"], 0));
-        if (rerollsRemaining < rerollsToConsume)
-            return false;
+        var spendPlan = writeLease == null
+            ? await ShiningBlessingRerollResourceService.BuildSpendAsync(
+                fs,
+                entitlements,
+                currentTurnNumber,
+                rerollsToConsume)
+            : await ShiningBlessingRerollResourceService.BuildSpendAsync(
+                fs,
+                writeLease,
+                entitlements,
+                currentTurnNumber,
+                rerollsToConsume);
+        if (!spendPlan.IsValid)
+            return spendPlan;
 
-        entitlements["rerolls"] = rerollsRemaining - rerollsToConsume;
-        entitlements["rerollsSpent"] = GetNodeInt(entitlements["rerollsSpent"], 0) + rerollsToConsume;
-        if (GetNodeInt(entitlements["rerolls"], 0) <= 0 &&
+        if (spendPlan.RemainingAfter <= 0 &&
             !GetNodeBool(entitlements["freeShape"]) &&
             !GetNodeBool(entitlements["freeRetune"]))
         {
@@ -442,11 +678,17 @@ internal static class ShiningBlessingEffectState
         }
 
         soulRoot[SoulStateProperty] = effectState;
-        await fs.WriteFileAtomicAsync(
-            writeLease,
-            "game_state/meta/soul_state.json",
-            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts));
-        return true;
+        var writes = spendPlan.Writes.ToList();
+        writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+            soulPath,
+            raw,
+            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot)
+                .ToJsonString(JsonOpts),
+            RequireCurrentBaseline: true));
+        return new ShiningBlessingRerollSpendFilePlan(
+            spendPlan.RemainingAfter,
+            writes,
+            Array.Empty<ValidationIssue>());
     }
 
     public static ShiningAbodeState.ResourceCost AdjustForgeCostForBlessingEntitlements(
@@ -481,7 +723,8 @@ internal static class ShiningBlessingEffectState
         JsonObject? soulRoot,
         string? actionType,
         int currentTurnNumber,
-        string? consumedAtUtc = null)
+        string? consumedAtUtc = null,
+        int? remainingRerolls = null)
     {
         if (soulRoot?[SoulStateProperty] is not JsonObject effectState ||
             effectState["relicRefinementEntitlements"] is not JsonObject entitlements ||
@@ -509,7 +752,8 @@ internal static class ShiningBlessingEffectState
         if (!changed)
             return false;
 
-        if (GetNodeInt(entitlements["rerolls"], 0) <= 0 &&
+        var hasRerollBinding = entitlements["rerollResourceBinding"] is JsonObject;
+        if ((!hasRerollBinding || remainingRerolls is <= 0) &&
             !GetNodeBool(entitlements["freeShape"]) &&
             !GetNodeBool(entitlements["freeRetune"]))
         {
@@ -537,7 +781,17 @@ internal static class ShiningBlessingEffectState
         if (soulRoot?[SoulStateProperty] is not JsonObject effectState)
             return null;
 
-        var lines = BuildReminderLines(effectState, currentTurnNumber);
+        var memoryRerolls = await ReadRemainingRerollsAsync(
+            fs,
+            effectState["memorySelection"] as JsonObject);
+        var relicRerolls = await ReadRemainingRerollsAsync(
+            fs,
+            effectState["relicRefinementEntitlements"] as JsonObject);
+        var lines = BuildReminderLines(
+            effectState,
+            currentTurnNumber,
+            memoryRerolls,
+            relicRerolls);
         if (lines.Count == 0)
             return null;
 
@@ -550,7 +804,17 @@ internal static class ShiningBlessingEffectState
         if (soulRoot?[SoulStateProperty] is not JsonObject effectState)
             return Array.Empty<string>();
 
-        var lines = BuildPlayerFacingStatusLines(effectState, currentTurnNumber);
+        var memoryRerolls = await ReadRemainingRerollsAsync(
+            fs,
+            effectState["memorySelection"] as JsonObject);
+        var relicRerolls = await ReadRemainingRerollsAsync(
+            fs,
+            effectState["relicRefinementEntitlements"] as JsonObject);
+        var lines = BuildPlayerFacingStatusLines(
+            effectState,
+            currentTurnNumber,
+            memoryRerolls,
+            relicRerolls);
         AppendStatusLifecycleSummary(lines, effectState, currentTurnNumber);
         AppendStatusStableAuditLines(lines, effectState);
         return lines;
@@ -612,7 +876,8 @@ internal static class ShiningBlessingEffectState
             {
                 case "memory":
                     memoryOptions += Math.Max(0, GetNodeInt(payload["options"], 0));
-                    memoryRerolls += Math.Max(0, GetNodeInt(payload["rerolls"], 0));
+                    memoryRerolls += ShiningBlessingRerollAllocationContract.ReadOrZero(
+                        payload[ShiningBlessingRerollAllocationContract.PropertyName]);
                     AddUniqueString(memorySourceCardIds, sourceCardId);
                     break;
 
@@ -624,7 +889,8 @@ internal static class ShiningBlessingEffectState
                     break;
 
                 case "relic":
-                    relicRerolls += Math.Max(0, GetNodeInt(payload["rerolls"], 0));
+                    relicRerolls += ShiningBlessingRerollAllocationContract.ReadOrZero(
+                        payload[ShiningBlessingRerollAllocationContract.PropertyName]);
                     relicFreeShape |= GetNodeBool(payload["freeShape"]);
                     relicFreeRetune |= GetNodeBool(payload["freeRetune"]);
                     AddUniqueString(relicSourceCardIds, sourceCardId);
@@ -708,7 +974,8 @@ internal static class ShiningBlessingEffectState
             result["memorySelection"] = new JsonObject
             {
                 ["options"] = memoryOptions,
-                ["rerolls"] = memoryRerolls,
+                [ShiningBlessingRerollAllocationContract.PropertyName] =
+                    ShiningBlessingRerollAllocationContract.Create(memoryRerolls),
                 ["status"] = MemoryStatusPendingPreTurnOneSelection,
                 ["sourceCardIds"] = memorySourceCardIds
             };
@@ -731,7 +998,8 @@ internal static class ShiningBlessingEffectState
         {
             result["relicRefinementEntitlements"] = new JsonObject
             {
-                ["rerolls"] = relicRerolls,
+                [ShiningBlessingRerollAllocationContract.PropertyName] =
+                    ShiningBlessingRerollAllocationContract.Create(relicRerolls),
                 ["freeShape"] = relicFreeShape,
                 ["freeRetune"] = relicFreeRetune,
                 ["status"] = RelicStatusPendingEntitlement,
@@ -755,6 +1023,7 @@ internal static class ShiningBlessingEffectState
 
     private static async Task<List<CoordinatedStateWriteHelper.PlannedWrite>> BuildImmediateBootstrapEffectWritesAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         JsonObject effectState)
     {
         var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>();
@@ -770,8 +1039,10 @@ internal static class ShiningBlessingEffectState
         var grantId = BuildBootstrapResourceGrantId(effectState, resourceGrant);
         resourceGrant["grantId"] = grantId;
 
-        var statusJson = await fs.ReadFileAsync("game_state/core/player_status.json");
-        var statusRoot = await ReadJsonObjectAsync(fs, "game_state/core/player_status.json") ?? new JsonObject();
+        var statusJson = await fs.ReadFileAsync(
+            writeLease,
+            "game_state/core/player_status.json");
+        var statusRoot = ParseJsonNode(statusJson) as JsonObject ?? new JsonObject();
         if (!HasBootstrapResourceGrantMarker(statusRoot, grantId))
         {
             statusRoot["money"] = GetNodeInt(statusRoot["money"], 0) + money;
@@ -783,8 +1054,10 @@ internal static class ShiningBlessingEffectState
                 RequireCurrentBaseline: true));
         }
 
-        var itemsJson = await fs.ReadFileAsync("game_state/inventory/items.json");
-        var itemsRoot = await ReadJsonObjectAsync(fs, "game_state/inventory/items.json") ?? BuildDefaultInventoryRoot();
+        var itemsJson = await fs.ReadFileAsync(
+            writeLease,
+            "game_state/inventory/items.json");
+        var itemsRoot = ParseJsonNode(itemsJson) as JsonObject ?? BuildDefaultInventoryRoot();
         if (!HasBootstrapResourceGrantMarker(itemsRoot, grantId))
         {
             var resources = itemsRoot["resources"] as JsonObject ?? new JsonObject();
@@ -860,7 +1133,7 @@ internal static class ShiningBlessingEffectState
 
         if (effectState["memorySelection"] is JsonObject memorySelection)
         {
-            lines.Add($"Память следующей жизни: +{GetNodeInt(memorySelection["options"], 0)} вариантов, rerolls {GetNodeInt(memorySelection["rerolls"], 0)}.");
+            lines.Add($"Память следующей жизни: +{GetNodeInt(memorySelection["options"], 0)} вариантов, rerolls {ShiningBlessingRerollAllocationContract.ReadOrZero(memorySelection[ShiningBlessingRerollAllocationContract.PropertyName])}.");
             AppendBootstrapActivationAuditLine(
                 lines,
                 "memorySelection",
@@ -924,7 +1197,7 @@ internal static class ShiningBlessingEffectState
 
         if (effectState["relicRefinementEntitlements"] is JsonObject relic)
         {
-            lines.Add($"Реликтовые права: rerolls {GetNodeInt(relic["rerolls"], 0)}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])}.");
+            lines.Add($"Реликтовые права: rerolls {ShiningBlessingRerollAllocationContract.ReadOrZero(relic[ShiningBlessingRerollAllocationContract.PropertyName])}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])}.");
             AppendBootstrapActivationAuditLine(
                 lines,
                 "relicRefinementEntitlements",
@@ -993,7 +1266,7 @@ internal static class ShiningBlessingEffectState
         if (effectState["memorySelection"] is JsonObject memorySelection)
         {
             lines.Add(
-                $"Shining blessing effect: before turn 1 offer +{GetNodeInt(memorySelection["options"], 0)} extra memory options and {GetNodeInt(memorySelection["rerolls"], 0)} memory-only rerolls.");
+                $"Shining blessing effect: before turn 1 offer +{GetNodeInt(memorySelection["options"], 0)} extra memory options and {ShiningBlessingRerollAllocationContract.ReadOrZero(memorySelection[ShiningBlessingRerollAllocationContract.PropertyName])} memory-only rerolls.");
         }
 
         AppendDirectiveLinesForArray(
@@ -1020,13 +1293,17 @@ internal static class ShiningBlessingEffectState
         if (effectState["relicRefinementEntitlements"] is JsonObject relic)
         {
             lines.Add(
-                $"Shining blessing effect: grant relic refinement entitlements rerolls={GetNodeInt(relic["rerolls"], 0)}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])} for this life.");
+                $"Shining blessing effect: grant relic refinement entitlements rerolls={ShiningBlessingRerollAllocationContract.ReadOrZero(relic[ShiningBlessingRerollAllocationContract.PropertyName])}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])} for this life.");
         }
 
         return lines;
     }
 
-    private static List<string> BuildReminderLines(JsonObject effectState, int currentTurnNumber)
+    private static List<string> BuildReminderLines(
+        JsonObject effectState,
+        int currentTurnNumber,
+        int memoryRerolls,
+        int relicRerolls)
     {
         var lines = new List<string>();
 
@@ -1038,7 +1315,7 @@ internal static class ShiningBlessingEffectState
         if (effectState["memorySelection"] is JsonObject memorySelection &&
             string.Equals(GetNodeString(memorySelection["status"]), MemoryStatusPendingPreTurnOneSelection, StringComparison.OrdinalIgnoreCase))
         {
-            lines.Add($"memory selection pending: +{GetNodeInt(memorySelection["options"], 0)} options, rerolls {GetNodeInt(memorySelection["rerolls"], 0)} before turn 1");
+            lines.Add($"memory selection pending: +{GetNodeInt(memorySelection["options"], 0)} options, rerolls {memoryRerolls} before turn 1");
         }
 
         AppendReminderLinesForDeadlineArray(
@@ -1081,13 +1358,17 @@ internal static class ShiningBlessingEffectState
         if (effectState["relicRefinementEntitlements"] is JsonObject relic &&
             IsPendingRelicEntitlement(relic))
         {
-            lines.Add($"relic entitlements pending: rerolls {GetNodeInt(relic["rerolls"], 0)}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])}");
+            lines.Add($"relic entitlements pending: rerolls {relicRerolls}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])}");
         }
 
         return lines;
     }
 
-    private static List<string> BuildPlayerFacingStatusLines(JsonObject effectState, int currentTurnNumber)
+    private static List<string> BuildPlayerFacingStatusLines(
+        JsonObject effectState,
+        int currentTurnNumber,
+        int memoryRerolls,
+        int relicRerolls)
     {
         var lines = new List<string>();
 
@@ -1099,7 +1380,7 @@ internal static class ShiningBlessingEffectState
         if (effectState["memorySelection"] is JsonObject memorySelection &&
             string.Equals(GetNodeString(memorySelection["status"]), MemoryStatusPendingPreTurnOneSelection, StringComparison.OrdinalIgnoreCase))
         {
-            lines.Add($"Ожидает: выбор эха памяти до первого хода (+{GetNodeInt(memorySelection["options"], 0)} вариант(ов), перебросы {GetNodeInt(memorySelection["rerolls"], 0)}).");
+            lines.Add($"Ожидает: выбор эха памяти до первого хода (+{GetNodeInt(memorySelection["options"], 0)} вариант(ов), перебросы {memoryRerolls}).");
         }
 
         AppendPlayerFacingReminderLinesForDeadlineArray(
@@ -1142,7 +1423,7 @@ internal static class ShiningBlessingEffectState
         if (effectState["relicRefinementEntitlements"] is JsonObject relic &&
             IsPendingRelicEntitlement(relic))
         {
-            lines.Add($"Ожидает: кузнечные привилегии этой жизни — перебросы {GetNodeInt(relic["rerolls"], 0)}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])}.");
+            lines.Add($"Ожидает: кузнечные привилегии этой жизни — перебросы {relicRerolls}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])}.");
         }
 
         return lines;
@@ -1216,26 +1497,36 @@ internal static class ShiningBlessingEffectState
             string.Equals(GetNodeString(memorySelection["status"]), GenericStatusConsumed, StringComparison.OrdinalIgnoreCase))
         {
             var selectedSummary = GetNodeString(memorySelection["selectedLifeSummary"]);
-            var rerollsSpent = GetNodeInt(memorySelection["rerollsSpent"], 0);
             if (!string.IsNullOrWhiteSpace(selectedSummary))
             {
-                var suffix = rerollsSpent > 0 ? $" Перебросов потрачено: {rerollsSpent}." : string.Empty;
-                lines.Add($"Израсходовано: выбор эха памяти завершён — {selectedSummary}.{suffix}");
+                lines.Add($"Израсходовано: выбор эха памяти завершён — {selectedSummary}.");
             }
             else
             {
-                var suffix = rerollsSpent > 0 ? $" Перебросов потрачено: {rerollsSpent}." : string.Empty;
-                lines.Add($"Израсходовано: выбор эха памяти завершён в этой жизни.{suffix}");
+                lines.Add("Израсходовано: выбор эха памяти завершён в этой жизни.");
             }
         }
 
         if (effectState["relicRefinementEntitlements"] is JsonObject entitlements &&
             string.Equals(GetNodeString(entitlements["status"]), GenericStatusConsumed, StringComparison.OrdinalIgnoreCase))
         {
-            var rerollsSpent = GetNodeInt(entitlements["rerollsSpent"], 0);
-            var suffix = rerollsSpent > 0 ? $" Перебросов потрачено: {rerollsSpent}." : string.Empty;
-            lines.Add($"Израсходовано: кузнечные привилегии этой жизни исчерпаны.{suffix}");
+            lines.Add("Израсходовано: кузнечные привилегии этой жизни исчерпаны.");
         }
+    }
+
+    private static async Task<int> ReadRemainingRerollsAsync(
+        FileSystemManager fs,
+        JsonObject? entitlement)
+    {
+        if (entitlement == null ||
+            entitlement["rerollResourceBinding"] is not JsonObject)
+        {
+            return 0;
+        }
+
+        var projection = await ShiningBlessingRerollResourceService
+            .ReadAllocationAsync(fs, entitlement);
+        return projection.IsValid ? projection.Remaining : 0;
     }
 
     private static void AppendStatusStableAuditLines(List<string> lines, JsonObject effectState)
@@ -1379,12 +1670,20 @@ internal static class ShiningBlessingEffectState
                     if (!string.IsNullOrWhiteSpace(survivalEventId))
                     {
                         var restoredDetails = new List<string>();
-                        if (GetNodeInt(effect["restoredHealthPercentagePoints"], 0) > 0)
-                            restoredDetails.Add($"health+{GetNodeInt(effect["restoredHealthPercentagePoints"], 0)}");
-                        if (GetNodeInt(effect["restoredEnergyPercentagePoints"], 0) > 0)
-                            restoredDetails.Add($"energy+{GetNodeInt(effect["restoredEnergyPercentagePoints"], 0)}");
-                        if (GetNodeInt(effect["restoredPoisePercentagePoints"], 0) > 0)
-                            restoredDetails.Add($"poise+{GetNodeInt(effect["restoredPoisePercentagePoints"], 0)}");
+                        if (effect["restoredResourceAmounts"] is JsonObject restoredAmounts)
+                        {
+                            foreach (var pair in restoredAmounts
+                                         .OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+                            {
+                                if (pair.Value is JsonValue value &&
+                                    value.TryGetValue<decimal>(out var amount) &&
+                                    amount > 0m)
+                                {
+                                    restoredDetails.Add(
+                                        $"{pair.Key}+{amount.ToString("G29", System.Globalization.CultureInfo.InvariantCulture)}");
+                                }
+                            }
+                        }
                         var suffix = restoredDetails.Count > 0 ? $" Восстановлено: {string.Join(", ", restoredDetails)}." : string.Empty;
                         lines.Add($"Израсходовано: спасающее благословение сработало через {survivalEventId}.{suffix}");
                     }
@@ -1683,6 +1982,7 @@ internal static class ShiningBlessingEffectState
         JsonObject? currentShiningRoot,
         string? preTurnShiningJson,
         int currentTurnNumber,
+        int? remainingRerolls,
         List<string> summaryLines)
     {
         if (currentShiningRoot?["coreActionReceipts"] is not JsonArray currentReceipts ||
@@ -1725,7 +2025,8 @@ internal static class ShiningBlessingEffectState
                     soulRoot,
                     actionType,
                     resolvedAtTurn > 0 ? resolvedAtTurn : currentTurnNumber,
-                    resolvedAtUtc))
+                    resolvedAtUtc,
+                    remainingRerolls))
                 continue;
 
             summaryLines.Add($"forge blessing entitlement spent on accepted {actionType}");
@@ -1735,65 +2036,210 @@ internal static class ShiningBlessingEffectState
         return changed;
     }
 
-    private static bool TryConsumeSurvivalEffectsFromWorldState(
-        JsonObject effectState,
-        JsonNode? currentWorldEventsRoot,
-        string? preTurnWorldEventsJson,
-        JsonObject? currentPlayerStatusRoot,
-        string? preTurnPlayerStatusJson,
+    internal static SurvivalResourceOutcomeDraftBuildResult TryCreateSurvivalResourceOutcomeDraft(
         int currentTurnNumber,
-        List<string> summaryLines)
+        JsonObject normalizedSoulRoot,
+        JsonObject currentWorldEventsRoot,
+        JsonNode? preTurnWorldEventsRoot,
+        CanonicalBeforeImage expectedSoulBeforeImage,
+        CanonicalBeforeImage expectedWorldEventsBeforeImage,
+        string consumedAtUtc)
     {
-        if (currentPlayerStatusRoot == null || effectState["pendingSurvivalEffects"] is not JsonArray survivalEffects)
-            return false;
+        ArgumentNullException.ThrowIfNull(normalizedSoulRoot);
+        ArgumentNullException.ThrowIfNull(currentWorldEventsRoot);
+        ArgumentNullException.ThrowIfNull(expectedSoulBeforeImage);
+        ArgumentNullException.ThrowIfNull(expectedWorldEventsBeforeImage);
+        if (currentTurnNumber <= 0 || string.IsNullOrWhiteSpace(consumedAtUtc))
+        {
+            return new SurvivalResourceOutcomeDraftBuildResult(
+                null,
+                new[]
+                {
+                    SurvivalDraftIssue(
+                        "shining_survival_turn_authority_invalid",
+                        "positive accepted turn and frozen client timestamp",
+                        $"turn={currentTurnNumber};timestamp={consumedAtUtc}")
+                });
+        }
+        if (normalizedSoulRoot[SoulStateProperty] is not JsonObject effectState ||
+            effectState["pendingSurvivalEffects"] is not JsonArray survivalEffects)
+        {
+            return new SurvivalResourceOutcomeDraftBuildResult(
+                null,
+                Array.Empty<ValidationIssue>());
+        }
 
         var activeEffects = survivalEffects.OfType<JsonObject>()
-            .Where(effect => string.Equals(GetNodeString(effect["status"]), SurvivalStatusPendingFirstRuinousFailure, StringComparison.OrdinalIgnoreCase))
-            .OrderBy(effect => GetNodeString(effect["sourceCardId"]), StringComparer.OrdinalIgnoreCase)
-            .ToList();
-        if (activeEffects.Count == 0)
-            return false;
+            .Where(effect => string.Equals(
+                GetNodeString(effect["status"]),
+                SurvivalStatusPendingFirstRuinousFailure,
+                StringComparison.Ordinal))
+            .OrderBy(effect => GetNodeString(effect["sourceCardId"]), StringComparer.Ordinal)
+            .ToArray();
+        if (activeEffects.Length == 0)
+        {
+            return new SurvivalResourceOutcomeDraftBuildResult(
+                null,
+                Array.Empty<ValidationIssue>());
+        }
 
-        var preTurnWorldEventsRoot = ParseJsonNode(preTurnWorldEventsJson);
         var preTurnVisibleEventIds = EnumerateVisibleWorldEventSignals(preTurnWorldEventsRoot)
-            .Select(signal => signal.EventId)
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var ruinousSignal = EnumerateVisibleWorldEventSignals(currentWorldEventsRoot)
+            .Select(static signal => signal.EventId)
+            .ToHashSet(StringComparer.Ordinal);
+        var ruinousSignals = EnumerateVisibleWorldEventSignals(currentWorldEventsRoot)
             .Where(signal =>
                 !preTurnVisibleEventIds.Contains(signal.EventId) &&
                 IsRuinousWorldEventSignal(signal))
-            .OrderBy(signal => signal.EventId, StringComparer.OrdinalIgnoreCase)
-            .FirstOrDefault();
-        if (ruinousSignal == null)
-            return false;
-
-        var preTurnStatusRoot = ParseJsonNode(preTurnPlayerStatusJson) as JsonObject;
-        var restoredHealth = TryRestorePrimaryGaugePercentage(preTurnStatusRoot, currentPlayerStatusRoot, "healthPercentage", activeEffects[0]);
-        var restoredEnergy = TryRestorePrimaryGaugePercentage(preTurnStatusRoot, currentPlayerStatusRoot, "energyPercentage", activeEffects[0]);
-        var restoredPoise = TryRestorePrimaryGaugePercentage(preTurnStatusRoot, currentPlayerStatusRoot, "poisePercentage", activeEffects[0]);
-
-        if (!string.IsNullOrWhiteSpace(ruinousSignal.SeverityFieldName) &&
-            ruinousSignal.Entry != null)
+            .OrderBy(static signal => signal.EventId, StringComparer.Ordinal)
+            .ToArray();
+        if (ruinousSignals.Length == 0)
         {
-            ruinousSignal.Entry[ruinousSignal.SeverityFieldName] = DowngradeSeverityValue(ruinousSignal.Severity);
+            return new SurvivalResourceOutcomeDraftBuildResult(
+                null,
+                Array.Empty<ValidationIssue>());
         }
 
         var chosenEffect = activeEffects[0];
-        MarkConsumed(chosenEffect, currentTurnNumber);
-        chosenEffect["consumedEventId"] = ruinousSignal.EventId;
-        if (!string.IsNullOrWhiteSpace(ruinousSignal.SeverityFieldName))
-            chosenEffect["consumedSeverityField"] = ruinousSignal.SeverityFieldName;
-        if (restoredHealth > 0)
-            chosenEffect["restoredHealthPercentagePoints"] = restoredHealth;
-        if (restoredEnergy > 0)
-            chosenEffect["restoredEnergyPercentagePoints"] = restoredEnergy;
-        if (restoredPoise > 0)
-            chosenEffect["restoredPoisePercentagePoints"] = restoredPoise;
+        var ruinousSignal = ruinousSignals[0];
+        var sourceCardId = GetNodeString(chosenEffect["sourceCardId"]);
+        var recoveryPercent = GetNodeInt(chosenEffect["recovery"], 0);
+        var downgradeBands = GetNodeInt(chosenEffect["downgrade"], 0);
+        if (!ResourceMaterializationContract.IsExactIdentifier(sourceCardId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(ruinousSignal.EventId) ||
+            recoveryPercent is <= 0 or > 100 ||
+            downgradeBands is <= 0 or > 4 ||
+            string.IsNullOrWhiteSpace(ruinousSignal.SeverityFieldName) ||
+            ruinousSignal.Entry == null)
+        {
+            return new SurvivalResourceOutcomeDraftBuildResult(
+                null,
+                new[]
+                {
+                    SurvivalDraftIssue(
+                        "shining_survival_authority_invalid",
+                        "exact source card/event, recovery 1..100, downgrade 1..4, and explicit severity field",
+                        $"card={sourceCardId};event={ruinousSignal.EventId};recovery={recoveryPercent};downgrade={downgradeBands};severityField={ruinousSignal.SeverityFieldName}")
+                });
+        }
 
-        summaryLines.Add(
-            $"survival blessing applied to ruinous failure: {ruinousSignal.EventId} (restored health +{restoredHealth}, energy +{restoredEnergy}, poise +{restoredPoise})");
-        return true;
+        using var narrativeBuilder = new ResourceFingerprintBuilder(
+            "shining-survival-narrative-outcome-v1");
+        narrativeBuilder.Append(currentTurnNumber);
+        narrativeBuilder.Append(ruinousSignal.EventId);
+        narrativeBuilder.Append(ruinousSignal.Entry.ToJsonString());
+        var narrativeFingerprint = narrativeBuilder.Build();
+
+        using var sourceBuilder = new ResourceFingerprintBuilder(
+            "shining-survival-resource-outcome-v2");
+        sourceBuilder.Append(currentTurnNumber);
+        sourceBuilder.Append(ruinousSignal.EventId);
+        sourceBuilder.Append(sourceCardId!);
+        sourceBuilder.Append(recoveryPercent);
+        sourceBuilder.Append(downgradeBands);
+        sourceBuilder.Append(narrativeFingerprint);
+        var sourceFingerprint = sourceBuilder.Build();
+        var sourceHash = sourceFingerprint["sha256:".Length..];
+        var registeredSourceId = $"shining_survival_{sourceHash[..32]}";
+        var eventRefPrefix = $"turn_{currentTurnNumber}:shining_survival:{sourceHash[..24]}";
+        var sourceExports = new[]
+        {
+            new ResourceMutationSourceExport(
+                "narrative_outcome",
+                ruinousSignal.EventId,
+                narrativeFingerprint,
+                ResourceMutationSourceState.Active,
+                SameTurn: true,
+                BoundOwner: new ResourceOwnerKey(
+                    "mortal_world",
+                    ResourceOwnerKind.Player,
+                    "player_current")),
+            new ResourceMutationSourceExport(
+                "registered_system_outcome",
+                registeredSourceId,
+                sourceFingerprint,
+                ResourceMutationSourceState.Active,
+                SameTurn: true)
+        };
+        var targets = new[]
+        {
+            new ResourceLossRecoveryTarget(
+                new ResourceCoordinate(
+                    "mortal_world",
+                    ResourceOwnerKind.Player,
+                    "player_current",
+                    "health"),
+                ResourceOperation.Restore),
+            new ResourceLossRecoveryTarget(
+                new ResourceCoordinate(
+                    "mortal_world",
+                    ResourceOwnerKind.Player,
+                    "player_current",
+                    "energy"),
+                ResourceOperation.Gain),
+            new ResourceLossRecoveryTarget(
+                new ResourceCoordinate(
+                    "mortal_world",
+                    ResourceOwnerKind.Player,
+                    "player_current",
+                    "poise"),
+                ResourceOperation.Restore)
+        };
+        var mutations = targets.Select((target, index) =>
+                new ResourceMutationIntent(
+                    $"{eventRefPrefix}:{index + 1}",
+                    target.Coordinate,
+                    Amount: 0m,
+                    new ResourceMutationSourceRequest(
+                        "registered_system_outcome",
+                        registeredSourceId,
+                        target.Operation),
+                    Array.Empty<ResourceOperationKey>(),
+                    Array.Empty<ResourceMutationEventRequirement>(),
+                    ReceiptId: null,
+                    DerivedAmount: new ResourceLossRecoveryPolicy(recoveryPercent)))
+            .ToArray();
+
+        using var draftBuilder = new ResourceFingerprintBuilder(
+            "resource-registered-system-outcome-draft-v1");
+        draftBuilder.Append(sourceFingerprint);
+        draftBuilder.Append(expectedSoulBeforeImage.Fingerprint);
+        draftBuilder.Append(expectedWorldEventsBeforeImage.Fingerprint);
+        var draft = new ShiningSurvivalResourceOutcomeDraft(
+            draftBuilder.Build(),
+            normalizedSoulRoot,
+            currentWorldEventsRoot,
+            sourceExports,
+            mutations,
+            new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal)
+            {
+                ["game_state/meta/soul_state.json"] = expectedSoulBeforeImage,
+                ["game_state/world/world_events.json"] = expectedWorldEventsBeforeImage
+            },
+            sourceCardId!,
+            ruinousSignal.EventId,
+            ruinousSignal.SeverityFieldName!,
+            downgradeBands,
+            currentTurnNumber,
+            consumedAtUtc.Trim(),
+            registeredSourceId);
+        return new SurvivalResourceOutcomeDraftBuildResult(
+            draft,
+            Array.Empty<ValidationIssue>());
     }
+
+    private static ValidationIssue SurvivalDraftIssue(
+        string code,
+        string expected,
+        string actual) =>
+        new(
+            "game_state/meta/soul_state.json",
+            IssueSeverity.Error,
+            "Shining survival resource outcome could not be composed into the accepted mechanics plan.",
+            code: code,
+            section: "shining_survival_resource_outcome",
+            expected: expected,
+            actual: actual,
+            repairHint: "Restore the validated soul/world/resource baseline and retry the accepted turn.");
 
     private static bool TryConsumeLoreEffectsFromWorldEvents(
         JsonObject effectState,
@@ -2183,42 +2629,6 @@ internal static class ShiningBlessingEffectState
             .OrderByDescending(candidate => candidate.Incarnation)
             .ThenByDescending(candidate => candidate.LifeHint, StringComparer.OrdinalIgnoreCase)
             .ToList();
-    }
-
-    private static int TryRestorePrimaryGaugePercentage(
-        JsonObject? preTurnStatusRoot,
-        JsonObject currentStatusRoot,
-        string propertyName,
-        JsonObject effect)
-    {
-        var preTurnPercent = ReadPercentageValue(preTurnStatusRoot, propertyName);
-        var currentPercent = ReadPercentageValue(currentStatusRoot, propertyName);
-        if (!preTurnPercent.HasValue || !currentPercent.HasValue || currentPercent.Value >= preTurnPercent.Value)
-            return 0;
-
-        var recoveryPercent = Math.Max(0, GetNodeInt(effect["recovery"], 0));
-        if (recoveryPercent <= 0)
-            return 0;
-
-        var lostAmount = preTurnPercent.Value - currentPercent.Value;
-        var restoredAmount = (int)Math.Floor(lostAmount * (recoveryPercent / 100.0));
-        if (restoredAmount <= 0)
-            return 0;
-
-        currentStatusRoot[propertyName] = $"{Math.Min(preTurnPercent.Value, currentPercent.Value + restoredAmount)}%";
-        return restoredAmount;
-    }
-
-    private static int? ReadPercentageValue(JsonObject? statusRoot, string propertyName)
-    {
-        var rawValue = GetNodeString(statusRoot?[propertyName]);
-        if (string.IsNullOrWhiteSpace(rawValue))
-            return null;
-
-        var normalized = rawValue.Replace("%", string.Empty, StringComparison.OrdinalIgnoreCase).Trim();
-        return int.TryParse(normalized, out var parsed)
-            ? Math.Clamp(parsed, 0, 100)
-            : null;
     }
 
     private static bool IsRuinousWorldEventSignal(VisibleWorldEventSignal signal)

@@ -119,6 +119,294 @@ public sealed class ValidationServiceQteTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnQteOfferAsync_RejectsNegativeTerminalResourceDamage()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
+        {
+          "qteEventsEnabled": true
+        }
+        """);
+        using var pendingTurnScope = await UseValidatedMortalPendingTurnSnapshotAsync(turnNumber: 21);
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, """
+        {
+          "qteId": "qte_resource_penalty",
+          "title": "Falling gate",
+          "offerText": "The gate is falling.",
+          "introNarrative": "Stone fills the passage.",
+          "startChapterId": "gate",
+          "chapters": [
+            {
+              "chapterId": "gate",
+              "narrative": "There is one chance to roll clear.",
+              "actions": [
+                {
+                  "actionId": "roll",
+                  "label": "Roll clear",
+                  "check": {
+                    "type": "TimingBar",
+                    "baseDifficulty": 2,
+                    "primaryCharacteristic": "dexterity"
+                  },
+                  "routing": {
+                    "success": { "terminalOutcomeId": "bruised" },
+                    "partial": { "terminalOutcomeId": "bruised" },
+                    "fail": { "terminalOutcomeId": "bruised" }
+                  }
+                }
+              ]
+            }
+          ],
+          "terminalOutcomes": [
+            {
+              "outcomeId": "bruised",
+              "title": "Bruised",
+              "finalNarrative": "The gate clips your shoulder.",
+              "gmSummary": "The accepted QTE applies one poise penalty.",
+              "responseFragment": {
+                "response": "The impact knocks you sideways.",
+                "experienceGained": 1,
+                "resourceChanges": [
+                  {
+                    "operation": "damage",
+                    "target": {
+                      "kind": "player",
+                      "targetId": "player_current"
+                    },
+                    "resourceKey": "poise",
+                    "amount": -10,
+                    "source": {
+                      "kind": "narrative_outcome"
+                    },
+                    "eventRef": "turn_21:qte_terminal:1:resource:1",
+                    "reason": "The falling gate breaks the hero's balance."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "resource_command_amount_invalid", StringComparison.Ordinal) &&
+            issue.FilePath.EndsWith(
+                "terminalOutcomes[0].responseFragment.resourceChanges[0].amount",
+                StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("restore", "qte_terminal_resource_operation_forbidden", "terminalOutcomes[0].responseFragment.resourceChanges[0].operation")]
+    [InlineData("npcTarget", "qte_terminal_resource_target_forbidden", "terminalOutcomes[0].responseFragment.resourceChanges[0].target")]
+    [InlineData("targetRef", "qte_terminal_resource_target_forbidden", "terminalOutcomes[0].responseFragment.resourceChanges[0].target")]
+    [InlineData("actionCost", "qte_terminal_resource_source_forbidden", "terminalOutcomes[0].responseFragment.resourceChanges[0].source")]
+    [InlineData("sourceId", "qte_terminal_resource_source_forbidden", "terminalOutcomes[0].responseFragment.resourceChanges[0].source")]
+    [InlineData("wrongEventRef", "qte_terminal_resource_event_ref_mismatch", "terminalOutcomes[0].responseFragment.resourceChanges[0].eventRef")]
+    [InlineData("definitionSurface", "qte_terminal_resource_surface_forbidden", "terminalOutcomes[0].responseFragment.resourceDefinitionCreations")]
+    [InlineData("capacitySurface", "qte_terminal_resource_surface_forbidden", "terminalOutcomes[0].responseFragment.resourceCapacityChanges")]
+    [InlineData("invalidSecondOutcome", "qte_terminal_resource_operation_forbidden", "terminalOutcomes[1].responseFragment.resourceChanges[0].operation")]
+    public async Task ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract(
+        string mutation,
+        string expectedCode,
+        string expectedPathSuffix)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
+        {
+          "qteEventsEnabled": true
+        }
+        """);
+        using var pendingTurnScope = await UseValidatedMortalPendingTurnSnapshotAsync(turnNumber: 21);
+        await WriteResourcePenaltyOfferAsync(mutation);
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, expectedCode, StringComparison.Ordinal) &&
+            issue.FilePath.EndsWith(expectedPathSuffix, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnQteOfferAsync_AcceptsClosedQteV1ResourceDamage()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
+        {
+          "qteEventsEnabled": true
+        }
+        """);
+        using var pendingTurnScope = await UseValidatedMortalPendingTurnSnapshotAsync(turnNumber: 21);
+        await WriteResourcePenaltyOfferAsync();
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.FilePath.Contains("resource", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private async Task<IDisposable> UseValidatedMortalPendingTurnSnapshotAsync(int turnNumber)
+    {
+        const string soulPath = "game_state/meta/soul_state.json";
+        const string settingsPath = "game_state/core/game_settings.json";
+        const string soulSnapshotPath =
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
+        const string settingsSnapshotPath =
+            "game_state/control/pending_turn_snapshot/game_state/core/game_settings.json";
+        const string soulJson = "{\"currentRealm\":\"Mortal World\"}";
+
+        var settingsJson = await _fs.ReadFileAsync(settingsPath);
+        Assert.False(string.IsNullOrWhiteSpace(settingsJson));
+        await _fs.WriteFileAtomicAsync(soulPath, soulJson);
+        await _fs.WriteFileAtomicAsync(soulSnapshotPath, soulJson);
+        await _fs.WriteFileAtomicAsync(settingsSnapshotPath, settingsJson!);
+
+        return _validator.UsePrevalidatedPendingTurnSnapshotScope(new
+        {
+            SessionId = "session_qte_resource_validation",
+            RequestId = "request_qte_resource_validation",
+            TurnNumber = turnNumber,
+            RequestTimestamp = "2026-08-23T00:00:00.0000000Z",
+            PlayerAction = "Roll clear",
+            Files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [soulPath] = soulSnapshotPath,
+                [settingsPath] = settingsSnapshotPath
+            },
+            SnapshotFileHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [soulPath] = PendingTurnSnapshotAuthority.ComputeSha256(soulJson),
+                [settingsPath] = PendingTurnSnapshotAuthority.ComputeSha256(settingsJson!)
+            },
+            ClientOwnedValidationHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
+            RollbackBackups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
+            RollbackBaselineFiles = new List<string> { soulPath, settingsPath },
+            SourceLabel = QteSceneService.OrdinaryPlayerTurnSourceLabel,
+            ManifestPayloadHash = "test-prevalidated"
+        });
+    }
+
+    private async Task WriteResourcePenaltyOfferAsync(string? mutation = null)
+    {
+        var offer = JsonNode.Parse("""
+        {
+          "qteId": "qte_resource_penalty",
+          "title": "Falling gate",
+          "offerText": "The gate is falling.",
+          "introNarrative": "Stone fills the passage.",
+          "startChapterId": "gate",
+          "chapters": [
+            {
+              "chapterId": "gate",
+              "narrative": "There is one chance to roll clear.",
+              "actions": [
+                {
+                  "actionId": "roll",
+                  "label": "Roll clear",
+                  "check": {
+                    "type": "TimingBar",
+                    "baseDifficulty": 2,
+                    "primaryCharacteristic": "dexterity"
+                  },
+                  "routing": {
+                    "success": { "terminalOutcomeId": "bruised" },
+                    "partial": { "terminalOutcomeId": "bruised" },
+                    "fail": { "terminalOutcomeId": "bruised" }
+                  }
+                }
+              ]
+            }
+          ],
+          "terminalOutcomes": [
+            {
+              "outcomeId": "bruised",
+              "title": "Bruised",
+              "finalNarrative": "The gate clips your shoulder.",
+              "gmSummary": "The accepted QTE applies one poise penalty.",
+              "responseFragment": {
+                "response": "The impact knocks you sideways.",
+                "experienceGained": 1,
+                "resourceChanges": [
+                  {
+                    "operation": "damage",
+                    "target": {
+                      "kind": "player",
+                      "targetId": "player_current"
+                    },
+                    "resourceKey": "poise",
+                    "amount": 10,
+                    "source": {
+                      "kind": "narrative_outcome"
+                    },
+                    "eventRef": "turn_21:qte_terminal:1:resource:1",
+                    "reason": "The falling gate breaks the hero's balance."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var outcomes = offer["terminalOutcomes"]!.AsArray();
+        var firstOutcome = outcomes[0]!.AsObject();
+        var firstFragment = firstOutcome["responseFragment"]!.AsObject();
+        var firstCommand = firstFragment["resourceChanges"]![0]!.AsObject();
+        switch (mutation)
+        {
+            case null:
+                break;
+            case "restore":
+                firstCommand["operation"] = "restore";
+                break;
+            case "npcTarget":
+                firstCommand["target"] = new JsonObject
+                {
+                    ["kind"] = "npc",
+                    ["targetId"] = "npc_gatekeeper"
+                };
+                break;
+            case "targetRef":
+                firstCommand["target"] = new JsonObject
+                {
+                    ["kind"] = "player",
+                    ["targetRef"] = "player_current"
+                };
+                break;
+            case "actionCost":
+                firstCommand["source"] = new JsonObject
+                {
+                    ["kind"] = "action_cost"
+                };
+                break;
+            case "sourceId":
+                firstCommand["source"]!["sourceId"] =
+                    "turn_21:qte_terminal:1:resource:1";
+                break;
+            case "wrongEventRef":
+                firstCommand["eventRef"] = "turn_21:qte_terminal:1:resource:2";
+                break;
+            case "definitionSurface":
+                firstFragment["resourceDefinitionCreations"] = new JsonArray();
+                break;
+            case "capacitySurface":
+                firstFragment["resourceCapacityChanges"] = new JsonArray();
+                break;
+            case "invalidSecondOutcome":
+                var secondOutcome = firstOutcome.DeepClone().AsObject();
+                secondOutcome["outcomeId"] = "crushed";
+                secondOutcome["title"] = "Crushed";
+                secondOutcome["responseFragment"]!["resourceChanges"]![0]!["operation"] = "restore";
+                secondOutcome["responseFragment"]!["resourceChanges"]![0]!["eventRef"] =
+                    "turn_21:qte_terminal:2:resource:1";
+                outcomes.Add(secondOutcome);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, offer.ToJsonString());
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnQteOfferAsync_AcceptsValidMashInputConfig()
     {
         await WriteMashInputOfferAsync();

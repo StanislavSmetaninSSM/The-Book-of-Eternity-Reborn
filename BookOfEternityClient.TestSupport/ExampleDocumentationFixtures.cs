@@ -150,6 +150,8 @@ internal sealed class ExampleValidationManifest
     public List<ActorMaterializationExampleCoverage> FactionMaterializationCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> MortalItemMaterializationCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> MortalLocationMaterializationCoverage { get; set; } = new();
+    public List<ActorMaterializationExampleCoverage> EffectMaterializationCoverage { get; set; } = new();
+    public List<ActorMaterializationExampleCoverage> ResourceMaterializationCoverage { get; set; } = new();
     public List<ExampleContractCoverage> TrainingShowcaseCoverage { get; set; } = new();
     public List<ExampleContractCoverage> GmWorkerBridgeCoverage { get; set; } = new();
 

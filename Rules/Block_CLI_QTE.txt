@@ -27,6 +27,17 @@
                     - If the player declines the QTE offer, the client will request a new ordinary GM turn and the same `qteId` MUST NOT be re-offered immediately.
                     - If the player accepts, the full QTE scene resolves LOCALLY on the client; there is no extra GM turn after acceptance.
 
+                    Deferred terminal effect receipts:
+                    - If a selected terminal outcome reaches a bounded effect/resource component, the client enters `awaiting_receipt` and creates `input/qte_effect_resolution_request.json` with `requestKind=qte_deferred_effect_resolution`.
+                    - This is a receipt-only task and not an ordinary turn. Read only that request's `safePacket`; do not read or reuse `input/turn_request.json`, create a pending-turn snapshot, run story or progression work, advance lifecycle, or increment the turn counter.
+                    - Answer the current wave only through closed `effectResolutionReceipts[]`. Do not write game state, narrative/interface output, `output/qte_effect_resolution_receipts.json`, or `ready/qte_effect_resolution_complete.json` directly.
+                    - Construct the receipt objects in memory and call `Complete-BoeQteEffectResolution -Receipts $receipts` as the last action. The helper copies exact correlation, validates the response, writes `output/qte_effect_resolution_receipts.json`, and writes `ready/qte_effect_resolution_complete.json` last.
+                    - Do not call `Complete-BoeValidationRepair`: this dedicated receipt task does not reuse the ordinary validation-repair request, helper, ready marker, or full-turn resubmission loop.
+                    - On restart, resume the same sealed continuation and current wave. Earlier-wave bindings and the same preallocated identities remain client-owned; never resend prior receipts or reconstruct hidden mechanics.
+                    - A next wave receives a new request/wave identity while preserving session, continuation, selected terminal, and semantic authority. Until the final wave, there is no resource/effect after-image, QTE history, story, progression, or turn counter publication.
+                    - Only the final successful wave publishes the complete selected QTE outcome atomically. Missing, stale, tampered, cross-session, cross-generation, or mis-correlated files fail closed before mechanics write.
+                    - The full shared rules are in `OtherGuides/Effect_Materialization_Contract.md`; the worked two-wave restart example is `mortal_qte_deferred_effect_receipt_waves_v1` in `Examples/E_CLI_QTE_Offer.txt`.
+
                     QTE Practice Mode:
                     - QTE Practice Mode is client-owned practice for learning implemented QTE mechanics.
                     - It has no rewards: no XP, achievements, Ink Feathers, inventory, quest progress, Daren rewards, or other permanent benefits.
@@ -116,6 +127,15 @@
                       - `responseFragment`
                     - Every terminal outcome MUST contain a complete `responseFragment` with the final local mechanical outcome for that branch.
                     - `responseFragment` uses ordinary `GameResponse` field names and is applied locally by the client.
+                    - A bounded Mortal penalty may be authored only as `responseFragment.resourceChanges[]` under closed QTE resource contract v1:
+                      - `operation` MUST be `damage`.
+                      - `target` MUST be exactly `{ "kind": "player", "targetId": "player_current" }`.
+                      - `resourceKey` MUST name an existing active resource and `amount` MUST be a positive exact decimal.
+                      - `source` MUST be exactly `{ "kind": "narrative_outcome" }`; never author `sourceId`.
+                      - `eventRef` MUST be exactly `turn_{sourceTurn}:qte_terminal:{one-based terminal outcome ordinal}:resource:{one-based command ordinal}`.
+                      - `reason` MUST be non-empty and describe the selected narrative consequence.
+                    - The client validates resource commands in EVERY terminal outcome, including unselected branches, and applies only the selected branch through the common resource reducer and guarded quartet transaction. Exact retry is replay, not a second penalty.
+                    - `resourceDefinitionCreations` and `resourceCapacityChanges` are forbidden inside QTE `responseFragment`. Direct gauge aliases and legacy `current*Change` fields are forbidden and are never converted.
                     - Therefore the GM must not rely on a follow-up GM turn to add the "real" reward after an accepted QTE.
                     - `declineHint` and `cinematicJustification`, if provided, are shown to the player in the QTE offer prompt, so keep them short and readable.
 

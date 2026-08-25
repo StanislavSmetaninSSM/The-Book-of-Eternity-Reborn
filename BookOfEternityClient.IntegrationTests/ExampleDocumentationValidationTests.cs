@@ -159,6 +159,752 @@ public sealed class ExampleDocumentationValidationTests
     }
 
     [Fact]
+    public void CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily()
+    {
+        var manifest = ExampleValidationManifest.Load();
+        var expected = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["effect_mortal_profiles_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_mortal_apply_stack_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_mortal_event_report_v1"] = "E_CLI_Ink_Feather_Actions.txt",
+            ["effect_event_reaction_graph_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_mortal_lifetimes_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_mortal_source_families_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_mortal_source_worked_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_mortal_dispel_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_wound_independence_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_bounded_repair_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["effect_afterlife_profile_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["afterlife_resource_bounded_receipt_waves_v1"] =
+                "E_CLI_Afterlife_Turns.txt",
+            ["mortal_qte_deferred_effect_receipt_waves_v1"] =
+                "E_CLI_QTE_Offer.txt",
+            ["effect_afterlife_conditions_five_kinds_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["afterlife_effect_conditions_executable_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["effect_legacy_rejection_v1"] = "E_CLI_Effect_Materialization.txt"
+        };
+
+        Assert.Equal(expected.Count, manifest.EffectMaterializationCoverage.Count);
+        foreach (var (contractId, file) in expected)
+        {
+            var entry = Assert.Single(
+                manifest.EffectMaterializationCoverage,
+                candidate => string.Equals(candidate.ContractId, contractId, StringComparison.Ordinal));
+            Assert.Equal(file, entry.File);
+            Assert.NotEmpty(entry.StatePath);
+            Assert.NotEmpty(entry.ResponseSurface);
+            Assert.NotEmpty(entry.Description);
+            Assert.NotEmpty(entry.Realms);
+            AssertTruthfulValidationMetadata(entry);
+            Assert.NotEmpty(entry.RequiredText);
+
+            var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
+            Assert.All(entry.RequiredText, token =>
+                Assert.Contains(token, example, StringComparison.Ordinal));
+        }
+    }
+
+    [Fact]
+    public void QteDeferredEffectReceiptWorkedExample_UsesDedicatedClosedWaveEnvelopes()
+    {
+        var fences = ParseNamedJsonFences(
+            "E_CLI_QTE_Offer.txt",
+            "mortal_qte_deferred_effect_receipt_waves_v1");
+        Assert.Equal(4, fences.Count);
+
+        var requestFields = new[]
+        {
+            "schemaVersion", "requestKind", "sessionId", "sessionGeneration",
+            "continuationId", "requestId", "waveId", "waveOrdinal",
+            "acceptedSourceTurn", "qteId", "selectedTerminalFingerprint",
+            "pendingStateFingerprint", "fullTurnFingerprint",
+            "semanticTurnFingerprint", "safePacket"
+        };
+        var receiptFields = new[]
+        {
+            "schemaVersion", "requestKind", "sessionId", "sessionGeneration",
+            "continuationId", "requestId", "waveId", "waveOrdinal",
+            "acceptedSourceTurn", "qteId", "selectedTerminalFingerprint",
+            "pendingStateFingerprint", "fullTurnFingerprint",
+            "semanticTurnFingerprint", "effectResolutionReceipts"
+        };
+        var correlationFields = new[]
+        {
+            "schemaVersion", "requestKind", "sessionId", "sessionGeneration",
+            "continuationId", "requestId", "waveId", "waveOrdinal",
+            "acceptedSourceTurn", "qteId", "selectedTerminalFingerprint",
+            "pendingStateFingerprint", "fullTurnFingerprint",
+            "semanticTurnFingerprint"
+        };
+        var safePacketFields = new[] { "schemaVersion", "kind", "requests" };
+        var safeRequestFields = new[]
+        {
+            "requestId", "sourceLabel", "targetLabel", "resourceLabel",
+            "operationLabel", "allowedResults", "requiredCompanions",
+            "fullTurnResubmissionRequired", "instruction"
+        };
+        var requests = new[] { fences[0], fences[2] };
+        var receipts = new[] { fences[1], fences[3] };
+
+        for (var index = 0; index < requests.Length; index++)
+        {
+            var request = requests[index];
+            var receipt = receipts[index];
+            Assert.Equal(
+                requestFields.OrderBy(static field => field, StringComparer.Ordinal).ToArray(),
+                request.Select(static property => property.Key)
+                    .OrderBy(static field => field, StringComparer.Ordinal)
+                    .ToArray());
+            Assert.Equal(
+                receiptFields.OrderBy(static field => field, StringComparer.Ordinal).ToArray(),
+                receipt.Select(static property => property.Key)
+                    .OrderBy(static field => field, StringComparer.Ordinal)
+                    .ToArray());
+            Assert.Equal(1, request["schemaVersion"]!.GetValue<int>());
+            Assert.Equal(
+                "qte_deferred_effect_resolution",
+                request["requestKind"]!.GetValue<string>());
+            Assert.Equal(index, request["waveOrdinal"]!.GetValue<int>());
+            var safePacket = Assert.IsType<JsonObject>(request["safePacket"]);
+            Assert.Equal(
+                safePacketFields.OrderBy(static field => field, StringComparer.Ordinal).ToArray(),
+                safePacket.Select(static property => property.Key)
+                    .OrderBy(static field => field, StringComparer.Ordinal)
+                    .ToArray());
+            Assert.Equal(2, safePacket["schemaVersion"]!.GetValue<int>());
+            Assert.Equal(
+                "bounded_resource_resolution",
+                safePacket["kind"]!.GetValue<string>());
+            Assert.IsType<JsonArray>(receipt["effectResolutionReceipts"]);
+            Assert.False(request.ContainsKey("effectResolutionReceipts"));
+            Assert.False(receipt.ContainsKey("safePacket"));
+
+            foreach (var field in correlationFields)
+            {
+                Assert.True(
+                    JsonNode.DeepEquals(request[field], receipt[field]),
+                    $"Wave {index} receipt must echo request correlation field '{field}'.");
+            }
+
+            foreach (var fingerprintField in new[]
+                     {
+                         "selectedTerminalFingerprint",
+                         "pendingStateFingerprint",
+                         "fullTurnFingerprint",
+                         "semanticTurnFingerprint"
+                     })
+            {
+                var value = request[fingerprintField]!.GetValue<string>();
+                Assert.StartsWith("sha256:", value, StringComparison.Ordinal);
+                Assert.Equal(71, value.Length);
+            }
+
+            var safeRequest = Assert.Single(
+                safePacket["requests"]!.AsArray().OfType<JsonObject>());
+            Assert.Equal(
+                safeRequestFields.OrderBy(static field => field, StringComparer.Ordinal).ToArray(),
+                safeRequest.Select(static property => property.Key)
+                    .OrderBy(static field => field, StringComparer.Ordinal)
+                    .ToArray());
+            var returnedReceipt = Assert.Single(
+                receipt["effectResolutionReceipts"]!.AsArray().OfType<JsonObject>());
+            Assert.Equal(
+                safeRequest["requestId"]!.GetValue<string>(),
+                returnedReceipt["requestId"]!.GetValue<string>());
+        }
+
+        foreach (var stableField in new[]
+                 {
+                     "sessionId", "sessionGeneration", "continuationId",
+                     "acceptedSourceTurn", "qteId", "selectedTerminalFingerprint",
+                     "fullTurnFingerprint", "semanticTurnFingerprint"
+                 })
+        {
+            Assert.True(
+                JsonNode.DeepEquals(requests[0][stableField], requests[1][stableField]),
+                $"Sequential waves must preserve '{stableField}'.");
+        }
+        Assert.NotEqual(
+            requests[0]["requestId"]!.GetValue<string>(),
+            requests[1]["requestId"]!.GetValue<string>());
+        Assert.NotEqual(
+            requests[0]["waveId"]!.GetValue<string>(),
+            requests[1]["waveId"]!.GetValue<string>());
+        Assert.NotEqual(
+            requests[0]["pendingStateFingerprint"]!.GetValue<string>(),
+            requests[1]["pendingStateFingerprint"]!.GetValue<string>());
+
+        var serialized = string.Join('\n', fences.Select(static fence => fence.ToJsonString()));
+        foreach (var forbidden in new[]
+                 {
+                     "narrative", "interface_updates", "resourceChanges",
+                     "effectChanges", "turn_request", "pending_turn_snapshot"
+                 })
+        {
+            Assert.DoesNotContain(forbidden, serialized, StringComparison.OrdinalIgnoreCase);
+        }
+
+        var prose = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "Examples",
+            "E_CLI_QTE_Offer.txt"));
+        foreach (var required in new[]
+                 {
+                     "receipt-only task",
+                     "not an ordinary turn",
+                     "current safe packet only",
+                     "restart",
+                     "current wave",
+                     "earlier-wave bindings",
+                     "same preallocated identities",
+                     "no pending-turn snapshot",
+                     "no story",
+                     "no progression",
+                     "does not increment the turn counter",
+                     "Complete-BoeQteEffectResolution -Receipts $receipts",
+                     "publishes the complete selected QTE outcome atomically"
+                 })
+        {
+            Assert.Contains(required, prose, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void UnifiedResourceMaterializationManifest_CoversMortalAndAfterlifeWorkedFamilies()
+    {
+        var manifest = ExampleValidationManifest.Load();
+        var requiredEntries = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["mortal_resource_setting_definition_initialize_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["mortal_resource_player_npc_mutation_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["mortal_qte_terminal_resource_penalty_v1"] = "E_CLI_QTE_Offer.txt",
+            ["mortal_resource_item_combat_mutation_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["mortal_resource_capacity_reconfigure_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["mortal_resource_bounded_receipt_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["mortal_resource_bounded_repair_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["mortal_resource_illegal_direct_write_v1"] = "E_CLI_Mortal_Resources.txt",
+            ["afterlife_unified_resource_authority_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["afterlife_actor_resource_materialization_v1"] = "E_CLI_Afterlife_Turns.txt"
+        };
+
+        Assert.Equal(requiredEntries.Count, manifest.ResourceMaterializationCoverage.Count);
+        var entriesById = manifest.ResourceMaterializationCoverage.ToDictionary(
+            entry => entry.ContractId,
+            StringComparer.Ordinal);
+        foreach (var (contractId, expectedFile) in requiredEntries)
+        {
+            Assert.True(
+                entriesById.TryGetValue(contractId, out var entry),
+                $"Missing manifest coverage for {contractId}.");
+            Assert.Equal(expectedFile, entry.File);
+            Assert.False(string.IsNullOrWhiteSpace(entry.StatePath));
+            Assert.False(string.IsNullOrWhiteSpace(entry.ResponseSurface));
+            Assert.False(string.IsNullOrWhiteSpace(entry.Description));
+            Assert.NotEmpty(entry.Realms);
+            AssertTruthfulValidationMetadata(entry);
+            Assert.NotEmpty(entry.RequiredText);
+
+            var example = File.ReadAllText(Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "Examples",
+                expectedFile));
+            Assert.All(entry.RequiredText, token =>
+                Assert.Contains(token, example, StringComparison.Ordinal));
+        }
+
+        foreach (var commandContractId in new[]
+                 {
+                     "mortal_resource_setting_definition_initialize_v1",
+                     "mortal_resource_player_npc_mutation_v1",
+                     "mortal_resource_item_combat_mutation_v1",
+                     "mortal_resource_capacity_reconfigure_v1"
+                 })
+        {
+            var root = ParseNamedJsonFence("E_CLI_Mortal_Resources.txt", commandContractId);
+            var parsed = ResourceAcceptedTurnInputComposer.Parse(root.ToJsonString());
+            Assert.True(
+                parsed.IsValid,
+                $"Production resource command parser rejected {commandContractId}: " +
+                string.Join(" | ", parsed.Issues.Select(issue => issue.Message)));
+        }
+
+        var qteRoot = ParseNamedJsonFence(
+            "E_CLI_QTE_Offer.txt",
+            "mortal_qte_terminal_resource_penalty_v1");
+        var qteOffer = JsonSerializer.Deserialize<QteSceneService.QteOffer>(
+            qteRoot.ToJsonString(),
+            SerializerOptions);
+        var penaltyOutcome = Assert.Single(
+            Assert.IsType<QteSceneService.QteOffer>(qteOffer).TerminalOutcomes,
+            outcome => string.Equals(
+                outcome.OutcomeId,
+                "door_stuck",
+                StringComparison.Ordinal));
+        var resourceRoot = new JsonObject
+        {
+            ["resourceDefinitionCreations"] = new JsonArray(),
+            ["resourceCapacityChanges"] = new JsonArray(),
+            ["resourceChanges"] = penaltyOutcome.ResponseFragment!["resourceChanges"]!.DeepClone()
+        };
+        var qteResources = ResourceAcceptedTurnInputComposer.Parse(
+            resourceRoot.ToJsonString());
+        Assert.True(
+            qteResources.IsValid,
+            "Production resource command parser rejected the documented QTE penalty: " +
+            string.Join(" | ", qteResources.Issues.Select(issue => issue.Message)));
+        var qteCommand = Assert.Single(qteResources.ResourceChanges);
+        Assert.Equal(ResourceOperation.Damage, qteCommand.Operation);
+        Assert.Equal(ResourceOwnerKind.Player, qteCommand.Target.OwnerKind);
+        Assert.Equal("player_current", qteCommand.Target.TargetId);
+        Assert.Equal("poise", qteCommand.ResourceKey);
+        Assert.Equal(10m, qteCommand.Amount);
+        Assert.Equal("narrative_outcome", qteCommand.Source.Kind);
+        Assert.Equal("turn_42:qte_terminal:2:resource:1", qteCommand.EventRef);
+    }
+
+    [Theory]
+    [InlineData(
+        "E_CLI_Effect_Materialization.txt",
+        "effect_bounded_repair_v1",
+        "effect_materialization_repair",
+        "game_state/effects/effect_commands.json")]
+    [InlineData(
+        "E_CLI_Mortal_Resources.txt",
+        "mortal_resource_bounded_repair_v1",
+        "resource_semantic_omission_repair",
+        "game_state/resources/resource_commands.json")]
+    public void EffectAndResourceRepairWorkedExamples_UseExactGmAuthoredReplayAllowlist(
+        string file,
+        string contractId,
+        string packetKind,
+        string commandPath)
+    {
+        var request = ParseNamedJsonFence(file, contractId);
+        Assert.True(request["fullTurnResubmissionRequired"]!.GetValue<bool>());
+        Assert.Equal(
+            new[]
+            {
+                commandPath,
+                "output/narrative_response.json",
+                "output/interface_updates.json"
+            },
+            request["requiredResubmissionPaths"]!.AsArray()
+                .Select(path => path!.GetValue<string>())
+                .ToArray());
+
+        var packet = Assert.Single(
+            request["harnessRepairPackets"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(packetKind, packet["kind"]!.GetValue<string>());
+        Assert.True(packet["fullTurnResubmissionRequired"]!.GetValue<bool>());
+
+        var serializedPaths = request["requiredResubmissionPaths"]!.ToJsonString();
+        foreach (var clientOwnedPath in new[]
+                 {
+                     "game_state/core/system_mods.json",
+                     "game_state/control/progression_schedule.json",
+                     "game_state/resources/resource_definitions.json",
+                     "game_state/resources/resource_state.json",
+                     "game_state/resources/resource_history.json",
+                     "game_state/resources/resource_owner_authority.json",
+                     "game_state/control/pending_effect_resolutions.json",
+                     "game_state/effects/effect_identity_index.json"
+                 })
+        {
+            Assert.DoesNotContain(clientOwnedPath, serializedPaths, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void PendingEffectResourceWaveExamples_RequireCompleteOriginGuidanceInManifest()
+    {
+        var manifest = ExampleValidationManifest.Load();
+        var entries = new[]
+        {
+            Assert.Single(
+                manifest.ResourceMaterializationCoverage,
+                entry => string.Equals(
+                    entry.ContractId,
+                    "mortal_resource_bounded_receipt_v1",
+                    StringComparison.Ordinal)),
+            Assert.Single(
+                manifest.EffectMaterializationCoverage,
+                entry => string.Equals(
+                    entry.ContractId,
+                    "afterlife_resource_bounded_receipt_waves_v1",
+                    StringComparison.Ordinal))
+        };
+
+        foreach (var entry in entries)
+        {
+            foreach (var stablePhrase in new[]
+                     {
+                         "current safe packet only",
+                         "same complete semantic turn",
+                         "client carries earlier-wave terminal bindings",
+                         "original candidate, mutation authority, and source authority remain immutable/client-owned"
+                     })
+            {
+                Assert.True(
+                    entry.RequiredText.Any(token => string.Equals(
+                        token,
+                        stablePhrase,
+                        StringComparison.OrdinalIgnoreCase)),
+                    $"{entry.ContractId}.requiredText must require '{stablePhrase}'.");
+            }
+        }
+    }
+
+    [Fact]
+    public void EffectReactionWorkedExample_ValidatesCompleteGraphAndAllResultKinds()
+    {
+        var root = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Effect_Materialization.txt",
+            "effect_event_reaction_graph_v1"));
+        var definitions = Assert.IsType<JsonArray>(root["activeEffectDefinitions"]);
+        using var document = JsonDocument.Parse(definitions.ToJsonString());
+
+        var issues = EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world");
+        Assert.Empty(issues);
+
+        var payloads = definitions
+            .OfType<JsonObject>()
+            .SelectMany(definition => definition["components"]!.AsArray()
+                .OfType<JsonObject>())
+            .Where(component => string.Equals(
+                component["profile"]?.GetValue<string>(),
+                "event_reaction",
+                StringComparison.Ordinal))
+            .Select(component => component["payload"]!.AsObject())
+            .ToArray();
+        Assert.Equal(
+            new[]
+            {
+                "apply_definition",
+                "bounded_receipt",
+                "event_outcome",
+                "remove",
+                "suspend",
+                "trigger_component"
+            },
+            payloads
+                .Select(payload => payload["resultKind"]!.GetValue<string>())
+                .OrderBy(static value => value, StringComparer.Ordinal));
+        Assert.Equal(
+            new[]
+            {
+                "after_component",
+                "after_current_event",
+                "before_current_event"
+            },
+            payloads
+                .Select(payload => payload["dependency"]!.GetValue<string>())
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(static value => value, StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public void EffectProfileLifetimeAndStackMatrices_StayInsideClosedProductionCatalogs()
+    {
+        var profileRoot = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Effect_Materialization.txt",
+            "effect_mortal_profiles_v1"));
+        var profileFragments = Assert.IsType<JsonArray>(
+                profileRoot["registeredProfileFragments"])
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(
+            new[]
+            {
+                "action_control", "afterlife_combat_condition", "characteristic_modifier",
+                "event_reaction", "periodic_damage", "periodic_restore", "resistance_modifier",
+                "roll_modifier", "wound_consequence"
+            },
+            profileFragments
+                .Select(fragment => fragment["profile"]!.GetValue<string>())
+                .OrderBy(static value => value, StringComparer.Ordinal));
+
+        foreach (var fragment in profileFragments)
+        {
+            var profile = fragment["profile"]!.GetValue<string>();
+            var componentId = fragment["componentId"]!.GetValue<string>();
+            var definition = EffectMaterializationTestFixture.CreateDefinition(profile);
+            definition["components"] = new JsonArray(fragment.DeepClone());
+            definition["triggers"]![0]!["componentIds"] = new JsonArray(componentId);
+            if (string.Equals(profile, "wound_consequence", StringComparison.Ordinal))
+            {
+                var woundId = fragment["payload"]!["woundId"]!.GetValue<string>();
+                definition["links"]![0]!["targetId"] = woundId;
+            }
+
+            var realm = string.Equals(
+                profile,
+                "afterlife_combat_condition",
+                StringComparison.Ordinal)
+                ? "chaos_sea"
+                : "mortal_world";
+            using var document = JsonDocument.Parse(
+                new JsonArray(definition).ToJsonString());
+            Assert.Empty(EffectSourceDefinitionContract.ValidateArray(
+                document.RootElement,
+                $"profileMatrix.{profile}",
+                realm));
+        }
+
+        var lifetimeRoot = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Effect_Materialization.txt",
+            "effect_mortal_lifetimes_v1"));
+        var lifetimes = Assert.IsType<JsonArray>(lifetimeRoot["lifetimeMatrix"])
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(
+            new[]
+            {
+                "condition_bound", "manual", "permanent", "scene", "source_bound",
+                "turns", "until_time", "uses"
+            },
+            lifetimes.Select(lifetime => lifetime["mode"]!.GetValue<string>())
+                .OrderBy(static value => value, StringComparer.Ordinal));
+        foreach (var lifetime in lifetimes)
+        {
+            var definition = EffectMaterializationTestFixture.CreateDefinition();
+            definition["lifetime"] = lifetime.DeepClone();
+            var trigger = definition["triggers"]![0]!;
+            if (string.Equals(
+                    lifetime["mode"]!.GetValue<string>(),
+                    "uses",
+                    StringComparison.Ordinal))
+            {
+                trigger["eventType"] = "owner_damaged";
+                trigger["consumeUses"] = true;
+            }
+
+            using var document = JsonDocument.Parse(
+                new JsonArray(definition).ToJsonString());
+            Assert.Empty(EffectSourceDefinitionContract.ValidateArray(
+                document.RootElement,
+                $"lifetimeMatrix.{lifetime["mode"]!.GetValue<string>()}",
+                "mortal_world"));
+        }
+
+        var applyStackFences = ParseNamedJsonFences(
+            "E_CLI_Effect_Materialization.txt",
+            "effect_mortal_apply_stack_v1");
+        var stackMatrix = Assert.IsType<JsonArray>(
+                applyStackFences[2]["stackingPolicyMatrix"])
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(
+            new[] { "independent", "merge", "refresh", "replace", "stack" },
+            stackMatrix.Select(stack => stack["policy"]!.GetValue<string>())
+                .OrderBy(static value => value, StringComparer.Ordinal));
+        foreach (var stack in stackMatrix)
+        {
+            var definition = EffectMaterializationTestFixture.CreateDefinition();
+            definition["stacking"] = stack.DeepClone();
+            using var document = JsonDocument.Parse(
+                new JsonArray(definition).ToJsonString());
+            Assert.Empty(EffectSourceDefinitionContract.ValidateArray(
+                document.RootElement,
+                $"stackingPolicyMatrix.{stack["policy"]!.GetValue<string>()}",
+                "mortal_world"));
+        }
+    }
+
+    [Fact]
+    public void EffectMortalDispelAndSourceWorkedExamples_UseCurrentContracts()
+    {
+        var dispelRoot = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Effect_Materialization.txt",
+            "effect_mortal_dispel_v1"));
+        var dispel = Assert.Single(
+            Assert.IsType<JsonArray>(dispelRoot["effectChanges"])
+                .OfType<JsonObject>());
+        Assert.Equal(
+            new[]
+            {
+                "authority", "effectId", "eventRef", "operation", "reason", "target"
+            },
+            dispel.Select(static property => property.Key)
+                .OrderBy(static value => value, StringComparer.Ordinal));
+        Assert.Equal("dispel", dispel["operation"]!.GetValue<string>());
+        Assert.StartsWith(
+            "effect_",
+            dispel["effectId"]!.GetValue<string>(),
+            StringComparison.Ordinal);
+        Assert.Equal(
+            "mental_disruption",
+            dispel["authority"]!["kind"]!.GetValue<string>());
+        Assert.Equal(
+            "player_current",
+            dispel["target"]!["targetId"]!.GetValue<string>());
+        Assert.Equal(
+            "accepted_turn",
+            dispel["eventRef"]!["kind"]!.GetValue<string>());
+        Assert.False(dispel.ContainsKey("source"));
+        Assert.False(dispel.ContainsKey("parameters"));
+        var applyStackFences = ParseNamedJsonFences(
+            "E_CLI_Effect_Materialization.txt",
+            "effect_mortal_apply_stack_v1");
+        var skillDefinition = Assert.Single(
+            applyStackFences[0]["activeEffectDefinitions"]!.AsArray()
+                .OfType<JsonObject>());
+        Assert.Contains(
+            dispel["authority"]!["kind"]!.GetValue<string>(),
+            skillDefinition["removal"]!["dispelCategories"]!.AsArray()
+                .Select(static category => category!.GetValue<string>()));
+
+        var selectorRoot = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Effect_Materialization.txt",
+            "effect_mortal_source_families_v1"));
+        Assert.Equal(
+            new[]
+            {
+                "combat_action", "faction", "fate_card", "hazard", "item", "location",
+                "quest", "skill", "spiritual_art", "world_event", "wound"
+            },
+            selectorRoot["sourceSelectors"]!.AsArray()
+                .OfType<JsonObject>()
+                .Select(selector => selector["kind"]!.GetValue<string>())
+                .OrderBy(static value => value, StringComparer.Ordinal));
+
+        var sourceFences = ParseNamedJsonFences(
+            "E_CLI_Effect_Materialization.txt",
+            "effect_mortal_source_worked_v1");
+        Assert.Equal(2, sourceFences.Count);
+        var expectedIdentityFields = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["quest"] = "questId",
+            ["location"] = "locationId",
+            ["hazard"] = "hazardId",
+            ["wound"] = "woundId"
+        };
+        var definitionKeysBySource = new Dictionary<string, string>(StringComparer.Ordinal);
+        var sourceOwners = Assert.IsType<JsonArray>(sourceFences[0]["sourceOwners"])
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(expectedIdentityFields.Keys.OrderBy(static value => value, StringComparer.Ordinal),
+            sourceOwners.Select(owner => owner["kind"]!.GetValue<string>())
+                .OrderBy(static value => value, StringComparer.Ordinal));
+
+        foreach (var sourceOwner in sourceOwners)
+        {
+            var kind = sourceOwner["kind"]!.GetValue<string>();
+            var sourceId = sourceOwner["sourceId"]!.GetValue<string>();
+            var owner = Assert.IsType<JsonObject>(sourceOwner["owner"]);
+            Assert.Equal(sourceId, owner[expectedIdentityFields[kind]]!.GetValue<string>());
+            var definitions = Assert.IsType<JsonArray>(owner["activeEffectDefinitions"]);
+            var definition = Assert.Single(definitions.OfType<JsonObject>());
+            definitionKeysBySource.Add(
+                kind,
+                definition["definitionKey"]!.GetValue<string>());
+
+            using var document = JsonDocument.Parse(definitions.ToJsonString());
+            Assert.Empty(EffectSourceDefinitionContract.ValidateArray(
+                document.RootElement,
+                $"{kind}.activeEffectDefinitions",
+                "mortal_world"));
+
+            if (!string.Equals(kind, "wound", StringComparison.Ordinal))
+                continue;
+
+            var component = Assert.Single(
+                definition["components"]!.AsArray().OfType<JsonObject>());
+            Assert.Equal(
+                "wound_consequence",
+                component["profile"]!.GetValue<string>());
+            var link = Assert.Single(
+                definition["links"]!.AsArray().OfType<JsonObject>());
+            Assert.Equal("wound", link["kind"]!.GetValue<string>());
+            Assert.Equal(sourceId, link["targetId"]!.GetValue<string>());
+        }
+
+        var commands = Assert.IsType<JsonArray>(sourceFences[1]["effectChanges"])
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(expectedIdentityFields.Count, commands.Length);
+        foreach (var command in commands)
+        {
+            Assert.Equal(
+                new[] { "eventRef", "operation", "parameters", "reason", "source", "target" },
+                command.Select(static property => property.Key)
+                    .OrderBy(static value => value, StringComparer.Ordinal));
+            Assert.Equal("apply", command["operation"]!.GetValue<string>());
+            var source = Assert.IsType<JsonObject>(command["source"]);
+            var kind = source["kind"]!.GetValue<string>();
+            Assert.Equal(
+                definitionKeysBySource[kind],
+                source["definitionKey"]!.GetValue<string>());
+            Assert.Contains(
+                sourceOwners,
+                owner => string.Equals(
+                    owner["sourceId"]!.GetValue<string>(),
+                    source["sourceId"]!.GetValue<string>(),
+                    StringComparison.Ordinal));
+        }
+    }
+
+    [Fact]
+    public void AfterlifeConditionWorkedExample_ExecutesAllFiveDefinitionsAndApplications()
+    {
+        var fences = ParseNamedJsonFences(
+            "E_CLI_Afterlife_Turns.txt",
+            "afterlife_effect_conditions_executable_v1");
+        Assert.Equal(2, fences.Count);
+
+        var art = fences[0];
+        var artId = art["artId"]!.GetValue<string>();
+        var definitions = Assert.IsType<JsonArray>(art["activeEffectDefinitions"]);
+        Assert.Equal(5, definitions.Count);
+        foreach (var realm in new[] { "chaos_sea", "shining_abode" })
+        {
+            using var document = JsonDocument.Parse(definitions.ToJsonString());
+            Assert.Empty(EffectSourceDefinitionContract.ValidateArray(
+                document.RootElement,
+                "spiritualArt.activeEffectDefinitions",
+                realm));
+        }
+
+        var definitionKeys = definitions
+            .OfType<JsonObject>()
+            .ToDictionary(
+                definition => definition["definitionKey"]!.GetValue<string>(),
+                definition => Assert.Single(
+                    definition["components"]!.AsArray().OfType<JsonObject>())
+                    ["payload"]!["conditionKind"]!.GetValue<string>(),
+                StringComparer.Ordinal);
+        Assert.Equal(
+            new[] { "burden", "mark", "opening", "vow", "ward" },
+            definitionKeys.Values.OrderBy(static value => value, StringComparer.Ordinal));
+
+        var commands = Assert.IsType<JsonArray>(fences[1]["effectChanges"])
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(5, commands.Length);
+        Assert.Equal(
+            definitionKeys.Keys.OrderBy(static value => value, StringComparer.Ordinal),
+            commands.Select(command =>
+                    command["source"]!["definitionKey"]!.GetValue<string>())
+                .OrderBy(static value => value, StringComparer.Ordinal));
+        Assert.All(commands, command =>
+        {
+            Assert.Equal("apply", command["operation"]!.GetValue<string>());
+            Assert.Equal(
+                "spiritual_conflict_side",
+                command["target"]!["kind"]!.GetValue<string>());
+            Assert.Equal(
+                "spiritual_art",
+                command["source"]!["kind"]!.GetValue<string>());
+            Assert.Equal(
+                artId,
+                command["source"]!["sourceId"]!.GetValue<string>());
+            Assert.False(command.ContainsKey("combatConditions"));
+        });
+    }
+
+    [Fact]
     public void FactionMaterializationManifest_CoversEightWorkedExampleFamiliesWithBothRepairVariants()
     {
         var manifest = ExampleValidationManifest.Load();
@@ -1211,7 +1957,7 @@ public sealed class ExampleDocumentationValidationTests
                 CopyDirectory(TestRepoPaths.BaseSessionRoot, Path.Combine(tempRoot, "game_session"));
                 var fs = new FileSystemManager(tempRoot, NullLogger<FileSystemManager>.Instance);
                 await ApplyScenarioBaselineAsync(fs, scenario.BaselineKind);
-                await ApplyScenarioPreStateFilesAsync(fs, scenario.PreStateFiles);
+                await ApplyScenarioPreStateFilesAsync(fs, scenario);
                 if (string.Equals(scenario.Runner, "acceptedTurnDistribution", StringComparison.Ordinal))
                     await ApplyScenarioAcceptedTurnValidationBaselineAsync(fs, scenario);
                 failures.AddRange(await BuildScenarioPendingTurnSnapshotAsync(fs, scenario));
@@ -1785,7 +2531,7 @@ public sealed class ExampleDocumentationValidationTests
 
     private static async Task WriteChaosSeaAzaliaLivingWorldBaselineAsync(FileSystemManager fs)
     {
-        await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        var soulRoot = JsonNode.Parse("""
 {
   "soulName": "Пепельная Искра",
   "currentRealm": "Chaos Sea",
@@ -1814,9 +2560,10 @@ public sealed class ExampleDocumentationValidationTests
   ],
   "pendingMemoryLegacy": null
 }
-""");
+""")!.AsObject();
 
-        await fs.WriteFileAtomicAsync("game_state/meta/guardians.json", BuildAzaliaGuardiansJson());
+        var guardiansRoot = JsonNode.Parse(BuildAzaliaGuardiansJson())!.AsObject();
+        var profilesRoot = BuildChaosSeaAzaliaProfilesRoot();
         await fs.WriteFileAtomicAsync("game_state/meta/guardian_projects.json", """
 {
   "activeProjects": [
@@ -1917,6 +2664,40 @@ public sealed class ExampleDocumentationValidationTests
   "entries": []
 }
 """);
+
+        var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            fs,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: profilesRoot,
+                SoulState: soulRoot,
+                Guardians: guardiansRoot),
+            turn: 418);
+        Assert.True(
+            resourcePlan.IsValid,
+            string.Join(Environment.NewLine, resourcePlan.Issues));
+        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(
+            fs,
+            resourcePlan));
+    }
+
+    private static JsonObject BuildChaosSeaAzaliaProfilesRoot()
+    {
+        const string guardianId = "guard_social_azalia_001";
+        var profile = BuildShiningExampleActorProfile(
+            "guardian",
+            guardianId,
+            materializedAtTurn: 1,
+            canTrade: false);
+        profile["displayName"] = "Азалия";
+        profile["realm"] = "Chaos Sea";
+        profile["locationId"] = "abode_azalia_memory_silk_001";
+        profile["locationName"] = "Обитель Азалии";
+        profile["activeEffects"] = new JsonArray();
+
+        var root = AfterlifeEntityProfileState.CreateDefaultRoot();
+        Assert.IsType<JsonArray>(root[AfterlifeEntityProfileState.ProfilesProperty])
+            .Add(profile);
+        return root;
     }
 
     private static string BuildAzaliaGuardiansJson()
@@ -1978,8 +2759,7 @@ public sealed class ExampleDocumentationValidationTests
     "completedQuests": []
   },
   "gachaSystem": {
-    "chargesPerReturn": 2,
-    "chargesUsedThisReturn": 0,
+    "currentReturnCycleId": "chaos_return_2",
     "gachaHistory": []
   },
   "mood": {
@@ -2061,13 +2841,77 @@ public sealed class ExampleDocumentationValidationTests
 
     private static async Task ApplyScenarioPreStateFilesAsync(
         FileSystemManager fs,
-        IReadOnlyList<ExampleRuntimePreStateFile> preStateFiles)
+        ExampleRuntimeScenario scenario)
     {
-        foreach (var file in preStateFiles)
+        const string shiningPendingBootstrapScenario =
+            "afterlife_shining_pending_bootstrap_trigger_response";
+        const string soulStatePath = "game_state/meta/soul_state.json";
+
+        if (!string.Equals(
+                scenario.Id,
+                shiningPendingBootstrapScenario,
+                StringComparison.Ordinal))
         {
-            var content = JsonSerializer.Serialize(file.Content, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+            foreach (var file in scenario.PreStateFiles)
+            {
+                var content = JsonSerializer.Serialize(
+                    file.Content,
+                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+                await fs.WriteFileAtomicAsync(file.Path, content);
+            }
+
+            return;
+        }
+
+        JsonObject? soulRoot = null;
+        JsonObject? shiningRoot = null;
+        var turn = 0;
+        foreach (var file in scenario.PreStateFiles)
+        {
+            var path = NormalizeSeparators(file.Path);
+            if (string.Equals(path, soulStatePath, StringComparison.OrdinalIgnoreCase))
+            {
+                soulRoot = JsonNode.Parse(file.Content.GetRawText())?.AsObject();
+                continue;
+            }
+
+            if (string.Equals(
+                    path,
+                    ShiningAbodeState.StatePath,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                shiningRoot = JsonNode.Parse(file.Content.GetRawText())?.AsObject();
+                continue;
+            }
+
+            if (string.Equals(path, "input/turn_request.json", StringComparison.OrdinalIgnoreCase) &&
+                file.Content.TryGetProperty("turnNumber", out var turnNode))
+            {
+                turnNode.TryGetInt32(out turn);
+            }
+
+            var content = JsonSerializer.Serialize(
+                file.Content,
+                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
             await fs.WriteFileAtomicAsync(file.Path, content);
         }
+
+        Assert.NotNull(soulRoot);
+        Assert.NotNull(shiningRoot);
+        Assert.True(turn > 0, $"{scenario.Id}: pre-state turnNumber must be positive.");
+
+        var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            fs,
+            new AfterlifeOwnerResourceAcceptedState(
+                SoulState: soulRoot,
+                ShiningAbode: shiningRoot),
+            turn);
+        Assert.True(
+            resourcePlan.IsValid,
+            string.Join(Environment.NewLine, resourcePlan.Issues));
+        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(
+            fs,
+            resourcePlan));
     }
 
     private static async Task<Dictionary<string, string?>> SnapshotScenarioFilesAsync(
@@ -3293,9 +4137,14 @@ public sealed class ExampleDocumentationValidationTests
         var source = File.ReadAllText(path);
         var heading = $"### {contractId}";
         var headingIndex = source.IndexOf(heading, StringComparison.Ordinal);
+        if (headingIndex < 0)
+        {
+            heading = $"## {contractId}";
+            headingIndex = source.IndexOf(heading, StringComparison.Ordinal);
+        }
         Assert.True(
             headingIndex >= 0,
-            $"Named example heading '{heading}' was not found in Examples/{file}.");
+            $"Named example heading '##/### {contractId}' was not found in Examples/{file}.");
         var fenceIndex = source.IndexOf("```json", headingIndex, StringComparison.Ordinal);
         Assert.True(
             fenceIndex >= 0,

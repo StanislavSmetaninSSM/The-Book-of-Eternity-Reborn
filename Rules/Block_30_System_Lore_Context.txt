@@ -7,6 +7,33 @@
    Provides complete narrative and conceptual framework for the roguelike system to ensure AI comprehension of the universe, mechanics, and player experience.
   </description>
   <content type="lore_and_context">
+   <rule id="30.effect-source">
+    <title>Effect Materialization v1 world-event source boundary</title>
+    <instructiontext>
+     <![CDATA[
+
+                     Mortal `worldEventsLog[]` entries that can create a runtime
+                     effect require one exact stable `eventId` and complete
+                     `activeEffectDefinitions[]` entries following
+                     `OtherGuides/Effect_Materialization_Contract.md`. Event
+                     summary, visibility, involved actors, consequences, and
+                     other prose never grant mechanics by themselves.
+
+                     A definition does not apply itself. Request an instance
+                     only through top-level `effectChanges[]` with the exact
+                     accepted selector `{ "kind": "world_event", "sourceId":
+                     "<exact-eventId>", "definitionKey":
+                     "<exact-definition-key>" }`, exact target, parameters,
+                     accepted eventRef, and reason. An event that is inactive,
+                     resolved, historical-only, hidden from the current source
+                     predicate, or missing exact identity cannot authorize a new
+                     application. Never copy event payload/prose into
+                     `activeEffects[]`; the client owns identity, stacking,
+                     lifetime, and publication.
+
+                     ]]>
+    </instructiontext>
+   </rule>
   
    <rule id="30.1">
     <title>

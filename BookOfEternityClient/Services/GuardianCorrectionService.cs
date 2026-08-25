@@ -1,6 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using System.Globalization;
+using System.Text;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging;
@@ -10,6 +12,83 @@ namespace BookOfEternityClient.Services;
 public sealed class GuardianCorrectionService
 {
     public const string StatePath = "game_state/world/guardian_corrections.json";
+    private const string GuardiansPath = "game_state/meta/guardians.json";
+    private const int CurrentReceiptSchemaVersion = 1;
+
+    private static readonly string[] ReceiptRootScalarProperties =
+    [
+        "schemaVersion",
+        "receiptFingerprint",
+        "transactionAfterImageFingerprint",
+        "lifeIncarnation",
+        "appliedAt",
+        "guardianId",
+        "guardianName",
+        "intent",
+        "reputationAtApplication",
+        "powerBefore",
+        "powerAfter",
+        "baseBudgetPoints",
+        "remainingBudgetPoints",
+        "totalAbodePowerSpent",
+        "summary"
+    ];
+
+    private static readonly string[] ReceiptRootNestedProperties =
+    [
+        "transactionAfterImagePaths",
+        "scenarioCoreSnapshot",
+        "claimants",
+        "contestedSlots",
+        "resolutionOrder",
+        "corrections"
+    ];
+
+    private static readonly string[] ReceiptScenarioProperties =
+        ["scenarioCoreAssertions", "openCorrectionSlots"];
+    private static readonly string[] ReceiptScenarioAssertionProperties =
+        ["assertionId", "category", "value", "explicit", "source"];
+    private static readonly string[] ReceiptScenarioSlotProperties =
+        ["slotId", "slotType", "maxSeverity", "allowsFriendly", "allowsHostile", "sourceAssertionId"];
+    private static readonly string[] ReceiptClaimantProperties =
+    [
+        "guardianId", "guardianName", "intent", "isActivePatron", "currentPower",
+        "powerAfter", "baseBudgetPoints", "preparationBudgetPoints", "remainingBudgetPoints",
+        "claimStrengthBase", "eligible", "sourceSummary"
+    ];
+    private static readonly string[] ReceiptContestProperties =
+        ["slotId", "slotType", "winnerGuardianId", "winnerGuardianName", "winnerCorrectionId", "candidates"];
+    private static readonly string[] ReceiptCandidateProperties =
+    [
+        "candidateCorrectionId", "sourceGuardianId", "sourceGuardianName", "intent", "severity",
+        "budgetCostPoints", "abodePowerCost", "claimStrength", "title"
+    ];
+    private static readonly string[] ReceiptCorrectionProperties =
+    [
+        "correctionId", "sourceGuardianId", "sourceGuardianName", "intent", "slotId", "slotType",
+        "severity", "budgetCostPoints", "abodePowerCost", "claimStrength", "title", "summary",
+        "reason", "affectsStartAs"
+    ];
+
+    private static readonly string[] RequiredReceiptTransactionPaths =
+    [
+        GuardianProjectState.TrackerPath,
+        GuardianPowerEventState.JournalPath,
+        GuardiansPath,
+        ResourceMaterializationContract.StatePath,
+        ResourceMaterializationContract.HistoryPath,
+        CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+    ];
+
+    private static readonly HashSet<string> AllowedReceiptTransactionPaths = new(
+        RequiredReceiptTransactionPaths.Concat(
+        [
+            AfterlifeEntityProfileState.StatePath,
+            AfterlifeSpiritualConflictState.StatePath,
+            "game_state/meta/soul_state.json",
+            ShiningAbodeState.StatePath
+        ]),
+        StringComparer.Ordinal);
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
@@ -29,6 +108,18 @@ public sealed class GuardianCorrectionService
 
     public sealed class GuardianCorrectionsState
     {
+        [JsonPropertyName("schemaVersion")]
+        public int SchemaVersion { get; set; } = CurrentReceiptSchemaVersion;
+
+        [JsonPropertyName("receiptFingerprint")]
+        public string ReceiptFingerprint { get; set; } = "";
+
+        [JsonPropertyName("transactionAfterImageFingerprint")]
+        public string TransactionAfterImageFingerprint { get; set; } = "";
+
+        [JsonPropertyName("transactionAfterImagePaths")]
+        public List<string> TransactionAfterImagePaths { get; set; } = new();
+
         [JsonPropertyName("lifeIncarnation")]
         public int LifeIncarnation { get; set; }
 
@@ -248,19 +339,92 @@ public sealed class GuardianCorrectionService
         await Task.CompletedTask;
     }
 
-    public async Task ApplyForNewLifeAsync(int lifeIncarnation)
+    public async Task ApplyForNewLifeAsync(int lifeIncarnation, int turnNumber)
     {
-        var scenario = await _scenarioCoreService.ReadAsync();
-        if (scenario == null)
+        if (turnNumber <= 0)
+            throw new ArgumentOutOfRangeException(nameof(turnNumber));
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        await ApplyForNewLifeAsync(lifeIncarnation, turnNumber, writeLease);
+    }
+
+    private async Task ApplyForNewLifeAsync(
+        int lifeIncarnation,
+        int turnNumber,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        var correctionBefore = await _fs.ReadFileAsync(writeLease, StatePath);
+        var replay = ResolveCorrectionReplayStatus(
+            correctionBefore,
+            lifeIncarnation);
+        if (replay.Status == CorrectionReplayStatus.Malformed)
         {
-            _fs.DeleteFile(StatePath);
+            throw new InvalidDataException(
+                $"{replay.FailureCode}: {StatePath} cannot authorize Guardian correction replay.");
+        }
+
+        var guardiansRaw = await _fs.ReadFileAsync(
+            writeLease,
+            GuardiansPath);
+        if (replay.Status == CorrectionReplayStatus.SameLife)
+        {
+            var replayReceipt = replay.Receipt ?? throw new InvalidDataException(
+                "guardian_correction_receipt_root_invalid: same-life replay requires a parsed receipt.");
+            if (string.IsNullOrWhiteSpace(guardiansRaw) ||
+                JsonNode.Parse(guardiansRaw) is not JsonObject replayGuardians ||
+                replayGuardians["activeGuardian"] is not JsonObject replayActiveGuardian)
+            {
+                throw new InvalidDataException(
+                    "Previously applied Guardian correction requires its exact Guardian owner state.");
+            }
+            var replayGuardianId = GetString(replayActiveGuardian["guardianId"]);
+            if (!string.Equals(
+                    replayReceipt.GuardianId,
+                    replayGuardianId,
+                    StringComparison.Ordinal))
+            {
+                throw new InvalidDataException(
+                    "guardian_correction_receipt_guardian_mismatch: receipt guardianId does not match activeGuardian.guardianId.");
+            }
+            var replayPlan = await BuildExistingGuardianQuartetPlanAsync(
+                writeLease,
+                replayGuardians,
+                turnNumber);
+            var sealedPaths = replayReceipt.TransactionAfterImagePaths
+                .ToHashSet(StringComparer.Ordinal);
+            if (replayPlan.OwnerAfterImages.Keys.Any(path =>
+                    !sealedPaths.Contains(path)))
+            {
+                throw new InvalidDataException(
+                    "guardian_correction_receipt_after_image_mismatch: the current Guardian resource plan publishes an owner companion outside the sealed transaction manifest.");
+            }
+            var currentAfterImageFingerprint =
+                await ComputeCurrentTransactionAfterImageFingerprintAsync(
+                    writeLease,
+                    replayReceipt.TransactionAfterImagePaths);
+            if (!string.Equals(
+                    replayReceipt.TransactionAfterImageFingerprint,
+                    currentAfterImageFingerprint,
+                    StringComparison.Ordinal))
+            {
+                throw new InvalidDataException(
+                    "guardian_correction_receipt_after_image_mismatch: receipt does not authorize the current Guardian correction transaction after-image.");
+            }
+
             return;
         }
 
-        var guardiansRaw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var scenario = await _scenarioCoreService.ReadAsync(writeLease);
+        if (scenario == null)
+        {
+            _fs.DeleteFile(writeLease, StatePath);
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(guardiansRaw))
         {
-            _fs.DeleteFile(StatePath);
+            _fs.DeleteFile(writeLease, StatePath);
             return;
         }
 
@@ -268,20 +432,26 @@ public sealed class GuardianCorrectionService
         var activeGuardian = guardiansRoot?["activeGuardian"] as JsonObject;
         if (guardiansRoot == null || activeGuardian == null)
         {
-            _fs.DeleteFile(StatePath);
+            _fs.DeleteFile(writeLease, StatePath);
             return;
         }
 
         var guardianId = GetString(activeGuardian["guardianId"]);
         if (string.IsNullOrWhiteSpace(guardianId))
         {
-            _fs.DeleteFile(StatePath);
+            _fs.DeleteFile(writeLease, StatePath);
             return;
         }
 
         var guardianName = GuardianManifestation.GetDisplayName(ToJsonElement(activeGuardian));
         var reputation = GuardianGachaChargeRules.ResolveGuardianReputation(activeGuardian);
-        var trackerRoot = await ReadTrackerRootAsync();
+        var trackerBefore = await _fs.ReadFileAsync(
+            writeLease,
+            GuardianProjectState.TrackerPath);
+        var journalBefore = await _fs.ReadFileAsync(
+            writeLease,
+            GuardianPowerEventState.JournalPath);
+        var trackerRoot = ParseTrackerRoot(trackerBefore);
         var activeGuardianDerivedState = GuardianProjectState.ResolveGuardianDerivedState(activeGuardian, trackerRoot);
         var currentPower = activeGuardianDerivedState.CurrentPower;
         var budgetPoints = activeGuardianDerivedState.BaseNextLifeCorrectionBudgetPoints;
@@ -323,7 +493,16 @@ public sealed class GuardianCorrectionService
             state.Summary = budgetPoints <= 0
                 ? "Сила Обители активного Хранителя недостаточна для явных корректив этой жизни."
                 : "Ни один Хранитель не получил достаточно сильного claim на совместимую коррективу этой жизни.";
-            await _fs.WriteFileAtomicAsync(StatePath, JsonSerializer.Serialize(state, JsonOpts));
+            await CommitCorrectionAsync(
+                writeLease,
+                turnNumber,
+                guardiansRoot,
+                correctionBefore,
+                state,
+                trackerBefore,
+                trackerAfter: null,
+                journalBefore,
+                journalAfter: null);
             return;
         }
 
@@ -340,30 +519,43 @@ public sealed class GuardianCorrectionService
             ? "Подходящих совместимых слотов для явных корректив в этом сценарии не нашлось."
             : string.Join(" ", corrections.Select(c => c.Summary));
         trackerChanged = GuardianProjectState.ConsumeSoulPreparationForLife(trackerRoot, lifeIncarnation) || trackerChanged;
-        var relationshipChanged = ApplyCorrectionRelationshipEffects(guardiansRoot, claimants, corrections, contestedSlots);
+        ApplyCorrectionRelationshipEffects(
+            guardiansRoot,
+            claimants,
+            corrections,
+            contestedSlots);
 
+        var powerJournalEntries = new List<JsonObject>();
         if (state.TotalAbodePowerSpent > 0)
         {
-            var powerJournalEntries = new List<JsonObject>();
-            var changed = GuardianPowerEventState.ApplyEvents(
+            GuardianPowerEventState.ApplyEvents(
                 guardiansRoot,
-                corrections.Select(BuildPowerSpendEvent),
-                0,
+                corrections.Select(correction =>
+                    BuildPowerSpendEvent(correction, lifeIncarnation)),
+                turnNumber,
                 powerJournalEntries);
-            if (changed || relationshipChanged)
-                await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansRoot.ToJsonString(JsonOpts));
-            if (powerJournalEntries.Count > 0)
-                await GuardianPowerEventState.AppendJournalEntriesAsync(_fs, powerJournalEntries);
-        }
-        else if (relationshipChanged)
-        {
-            await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansRoot.ToJsonString(JsonOpts));
         }
 
-        if (trackerChanged && trackerRoot != null)
-            await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerRoot.ToJsonString(JsonOpts));
+        var journalAfter = powerJournalEntries.Count == 0
+            ? null
+            : await GuardianPowerEventState.BuildJournalUpdateAsync(
+                _fs,
+                writeLease,
+                powerJournalEntries,
+                GuardianPowerJournalMutationMode.RepairAndAppend);
 
-        await _fs.WriteFileAtomicAsync(StatePath, JsonSerializer.Serialize(state, JsonOpts));
+        await CommitCorrectionAsync(
+            writeLease,
+            turnNumber,
+            guardiansRoot,
+            correctionBefore,
+            state,
+            trackerBefore,
+            trackerChanged && trackerRoot != null
+                ? trackerRoot.ToJsonString(JsonOpts)
+                : null,
+            journalBefore,
+            journalAfter);
     }
 
     public async Task<string?> BuildSystemReminderFragmentAsync(string? currentRealm)
@@ -408,9 +600,8 @@ public sealed class GuardianCorrectionService
         return "none";
     }
 
-    private async Task<JsonObject?> ReadTrackerRootAsync()
+    private JsonObject? ParseTrackerRoot(string? trackerRaw)
     {
-        var trackerRaw = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         if (string.IsNullOrWhiteSpace(trackerRaw))
             return null;
 
@@ -424,6 +615,1035 @@ public sealed class GuardianCorrectionService
         }
 
         return null;
+    }
+
+    private async Task CommitCorrectionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        int turnNumber,
+        JsonObject guardiansAfter,
+        string? correctionBefore,
+        GuardianCorrectionsState correctionAfter,
+        string? trackerBefore,
+        string? trackerAfter,
+        string? journalBefore,
+        string? journalAfter)
+    {
+        correctionAfter.SchemaVersion = CurrentReceiptSchemaVersion;
+        var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            _fs,
+            writeLease,
+            new AfterlifeOwnerResourceAcceptedState(Guardians: guardiansAfter),
+            turnNumber);
+        if (!resourcePlan.IsValid)
+        {
+            throw new InvalidDataException(
+                "Guardian correction cannot publish against the canonical resource quartet: " +
+                string.Join(
+                    "; ",
+                    resourcePlan.Issues.Select(static issue =>
+                        issue.Code ?? issue.Message)));
+        }
+
+        var transactionAuthority =
+            await BuildExpectedTransactionAfterImageAuthorityAsync(
+                writeLease,
+                resourcePlan,
+                trackerBefore,
+                trackerAfter,
+                journalBefore,
+                journalAfter);
+        correctionAfter.TransactionAfterImagePaths =
+            transactionAuthority.Paths.ToList();
+        correctionAfter.TransactionAfterImageFingerprint =
+            ComputeTransactionAfterImageFingerprint(
+                transactionAuthority.Paths,
+                transactionAuthority.AfterImages);
+        correctionAfter.ReceiptFingerprint =
+            ComputeCorrectionReceiptFingerprint(correctionAfter);
+        if (!IsSemanticallyValidCorrectionReceipt(correctionAfter))
+        {
+            throw new InvalidDataException(
+                "guardian_correction_receipt_semantic_invalid: generated Guardian correction receipt is not internally coherent.");
+        }
+
+        var additionalWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>
+        {
+            new(
+                StatePath,
+                correctionBefore,
+                JsonSerializer.Serialize(correctionAfter, JsonOpts),
+                RequireCurrentBaseline: true)
+        };
+        additionalWrites.AddRange(transactionAuthority.CoordinatedWrites);
+
+        if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                _fs,
+                writeLease,
+                resourcePlan,
+                additionalWrites.ToArray()))
+        {
+            throw new IOException(
+                "Guardian correction owner state or canonical resource quartet changed before atomic publication.");
+        }
+    }
+
+    private async Task<AfterlifeOwnerResourceStateFilePlan>
+        BuildExistingGuardianQuartetPlanAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        JsonObject guardians,
+        int turnNumber)
+    {
+        var plan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            _fs,
+            writeLease,
+            new AfterlifeOwnerResourceAcceptedState(Guardians: guardians),
+            turnNumber);
+        if (plan.IsValid)
+            return plan;
+
+        throw new InvalidDataException(
+            "Previously applied Guardian correction has invalid canonical resource authority: " +
+            string.Join(
+                "; ",
+                plan.Issues.Select(static issue => issue.Code ?? issue.Message)));
+    }
+
+    private async Task<CorrectionTransactionAfterImageAuthority>
+        BuildExpectedTransactionAfterImageAuthorityAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AfterlifeOwnerResourceStateFilePlan resourcePlan,
+        string? trackerBefore,
+        string? trackerAfter,
+        string? journalBefore,
+        string? journalAfter)
+    {
+        if (resourcePlan.StateAfterImage == null ||
+            resourcePlan.HistoryAfterImage == null ||
+            resourcePlan.QuartetProjection == null ||
+            !resourcePlan.OwnerAfterImages.ContainsKey(GuardiansPath))
+        {
+            throw new InvalidDataException(
+                "Guardian correction cannot fingerprint an incomplete transaction after-image.");
+        }
+
+        var afterImages = new Dictionary<string, byte[]?>(StringComparer.Ordinal)
+        {
+            [GuardianProjectState.TrackerPath] = trackerAfter == null
+                ? await _fs.ReadFileBytesAsync(
+                    writeLease,
+                    GuardianProjectState.TrackerPath)
+                : EncodeUtf8WithPreamble(trackerAfter),
+            [GuardianPowerEventState.JournalPath] = journalAfter == null
+                ? await _fs.ReadFileBytesAsync(
+                    writeLease,
+                    GuardianPowerEventState.JournalPath)
+                : EncodeUtf8WithPreamble(journalAfter)
+        };
+        var coordinatedWrites = new[]
+        {
+            trackerAfter == null
+                ? CoordinatedStateWriteHelper.CreateGuardWrite(
+                    GuardianProjectState.TrackerPath,
+                    trackerBefore)
+                : new CoordinatedStateWriteHelper.PlannedWrite(
+                    GuardianProjectState.TrackerPath,
+                    trackerBefore,
+                    trackerAfter,
+                    RequireCurrentBaseline: true),
+            journalAfter == null
+                ? CoordinatedStateWriteHelper.CreateGuardWrite(
+                    GuardianPowerEventState.JournalPath,
+                    journalBefore)
+                : new CoordinatedStateWriteHelper.PlannedWrite(
+                    GuardianPowerEventState.JournalPath,
+                    journalBefore,
+                    journalAfter,
+                    RequireCurrentBaseline: true)
+        };
+
+        foreach (var (path, ownerAfterImage) in resourcePlan.OwnerAfterImages)
+        {
+            if (!AllowedReceiptTransactionPaths.Contains(path) ||
+                !afterImages.TryAdd(
+                    path,
+                    EncodeUtf8WithPreamble(
+                        ownerAfterImage.ToJsonString(JsonOpts))))
+            {
+                throw new InvalidDataException(
+                    $"Guardian correction cannot seal invalid or duplicate owner transaction path '{path}'.");
+            }
+        }
+
+        afterImages[ResourceMaterializationContract.StatePath] =
+            EncodeUtf8WithPreamble(
+                resourcePlan.StateAfterImage.ToCanonicalJson());
+        afterImages[ResourceMaterializationContract.HistoryPath] =
+            EncodeUtf8WithPreamble(
+                resourcePlan.HistoryAfterImage.ToCanonicalJson());
+
+        var authorityAfter = resourcePlan.QuartetProjection.AuthorityAfterImage;
+        var authorityBefore = resourcePlan.BeforeImages[
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath];
+        afterImages[CanonicalResourceOwnerAuthorityComposer.AuthorityPath] =
+            JsonEquivalent(authorityBefore, authorityAfter)
+                ? await _fs.ReadFileBytesAsync(
+                    writeLease,
+                    CanonicalResourceOwnerAuthorityComposer.AuthorityPath)
+                : EncodeUtf8WithPreamble(authorityAfter);
+
+        var paths = afterImages.Keys
+            .OrderBy(static path => path, StringComparer.Ordinal)
+            .ToArray();
+        if (!IsValidTransactionAfterImageManifest(paths))
+        {
+            throw new InvalidDataException(
+                "Guardian correction generated an invalid transaction after-image manifest.");
+        }
+
+        return new CorrectionTransactionAfterImageAuthority(
+            paths,
+            afterImages,
+            coordinatedWrites);
+    }
+
+    private async Task<string> ComputeCurrentTransactionAfterImageFingerprintAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IReadOnlyList<string> paths)
+    {
+        var afterImages = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        foreach (var path in paths)
+            afterImages[path] = await _fs.ReadFileBytesAsync(writeLease, path);
+        return ComputeTransactionAfterImageFingerprint(paths, afterImages);
+    }
+
+    private static string ComputeTransactionAfterImageFingerprint(
+        IReadOnlyList<string> paths,
+        IReadOnlyDictionary<string, byte[]?> afterImages)
+    {
+        using var fingerprint = new ResourceFingerprintBuilder(
+            "guardian-correction-transaction-after-images-v1");
+        foreach (var path in paths)
+        {
+            fingerprint.Append(path);
+            var bytes = afterImages[path];
+            fingerprint.Append(bytes != null);
+            if (bytes != null)
+                fingerprint.Append(Convert.ToBase64String(bytes));
+        }
+        return fingerprint.Build();
+    }
+
+    private static byte[] EncodeUtf8WithPreamble(string content)
+    {
+        var preamble = Encoding.UTF8.GetPreamble();
+        var body = Encoding.UTF8.GetBytes(content);
+        var result = new byte[preamble.Length + body.Length];
+        Buffer.BlockCopy(preamble, 0, result, 0, preamble.Length);
+        Buffer.BlockCopy(body, 0, result, preamble.Length, body.Length);
+        return result;
+    }
+
+    private static bool JsonEquivalent(string? left, string right)
+    {
+        if (left == null)
+            return false;
+        try
+        {
+            return JsonNode.DeepEquals(JsonNode.Parse(left), JsonNode.Parse(right));
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private static CorrectionReplayResolution ResolveCorrectionReplayStatus(
+        string? correctionJson,
+        int lifeIncarnation)
+    {
+        if (string.IsNullOrWhiteSpace(correctionJson))
+        {
+            return new CorrectionReplayResolution(
+                CorrectionReplayStatus.NotApplied,
+                Receipt: null,
+                FailureCode: null);
+        }
+        if (!TryParseStrictCorrectionReceipt(
+                correctionJson,
+                out var existing,
+                out var failureCode))
+        {
+            return new CorrectionReplayResolution(
+                CorrectionReplayStatus.Malformed,
+                Receipt: null,
+                failureCode);
+        }
+
+        return new CorrectionReplayResolution(
+            existing!.LifeIncarnation == lifeIncarnation
+                ? CorrectionReplayStatus.SameLife
+                : CorrectionReplayStatus.NotApplied,
+            existing,
+            FailureCode: null);
+    }
+
+    private static bool TryParseStrictCorrectionReceipt(
+        string correctionJson,
+        out GuardianCorrectionsState? receipt,
+        out string failureCode)
+    {
+        receipt = null;
+        failureCode = "guardian_correction_receipt_root_invalid";
+        try
+        {
+            using var document = JsonDocument.Parse(correctionJson);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+                return false;
+            var duplicateIssues = new List<ValidationIssue>();
+            ResourceMaterializationContract.FindDuplicateProperties(
+                document.RootElement,
+                StatePath,
+                duplicateIssues,
+                "guardian_correction_receipt_duplicate_property");
+            if (duplicateIssues.Count != 0)
+            {
+                failureCode = "guardian_correction_receipt_duplicate_property";
+                return false;
+            }
+
+            var root = JsonNode.Parse(document.RootElement.GetRawText())!.AsObject();
+            if (!HasEveryProperty(root, ReceiptRootScalarProperties))
+            {
+                failureCode = "guardian_correction_receipt_root_incomplete";
+                return false;
+            }
+            if (!HasEveryProperty(root, ReceiptRootNestedProperties))
+            {
+                failureCode = "guardian_correction_receipt_nested_incomplete";
+                return false;
+            }
+            if (root.Count != ReceiptRootScalarProperties.Length +
+                              ReceiptRootNestedProperties.Length)
+            {
+                failureCode = "guardian_correction_receipt_root_incomplete";
+                return false;
+            }
+
+            failureCode = ValidateCorrectionReceiptNestedShape(root);
+            if (!string.IsNullOrEmpty(failureCode))
+                return false;
+
+            receipt = JsonSerializer.Deserialize<GuardianCorrectionsState>(
+                document.RootElement.GetRawText(),
+                JsonOpts);
+            if (receipt == null)
+            {
+                failureCode = "guardian_correction_receipt_nested_invalid";
+                return false;
+            }
+            if (!IsValidTransactionAfterImageManifest(
+                    receipt.TransactionAfterImagePaths))
+            {
+                receipt = null;
+                failureCode = "guardian_correction_receipt_manifest_invalid";
+                return false;
+            }
+            if (!IsSemanticallyValidCorrectionReceipt(receipt))
+            {
+                receipt = null;
+                failureCode = "guardian_correction_receipt_semantic_invalid";
+                return false;
+            }
+            if (receipt.SchemaVersion != CurrentReceiptSchemaVersion)
+            {
+                receipt = null;
+                failureCode = "guardian_correction_receipt_schema_unsupported";
+                return false;
+            }
+            if (!ResourceMaterializationContract.IsAuthorityFingerprint(
+                    receipt.ReceiptFingerprint) ||
+                !string.Equals(
+                    receipt.ReceiptFingerprint,
+                    ComputeCorrectionReceiptFingerprint(receipt),
+                    StringComparison.Ordinal))
+            {
+                receipt = null;
+                failureCode = "guardian_correction_receipt_fingerprint_invalid";
+                return false;
+            }
+            failureCode = string.Empty;
+            return true;
+        }
+        catch (Exception exception) when (
+            exception is JsonException or NotSupportedException or InvalidOperationException)
+        {
+            receipt = null;
+            if (failureCode == "guardian_correction_receipt_root_invalid")
+                return false;
+            failureCode = "guardian_correction_receipt_nested_invalid";
+            return false;
+        }
+    }
+
+    private static string ValidateCorrectionReceiptNestedShape(JsonObject root)
+    {
+        var issue = ValidateStringArray(root["transactionAfterImagePaths"]);
+        if (issue != null)
+            return issue;
+        if (root["scenarioCoreSnapshot"] is not JsonObject scenario)
+            return "guardian_correction_receipt_nested_invalid";
+        if (!HasExactProperties(scenario, ReceiptScenarioProperties))
+            return "guardian_correction_receipt_nested_incomplete";
+        issue = ValidateObjectArray(
+            scenario["scenarioCoreAssertions"],
+            ReceiptScenarioAssertionProperties,
+            optionalProperty: "candidateId");
+        if (issue != null)
+            return issue;
+        issue = ValidateObjectArray(
+            scenario["openCorrectionSlots"],
+            ReceiptScenarioSlotProperties);
+        if (issue != null)
+            return issue;
+        issue = ValidateObjectArray(root["claimants"], ReceiptClaimantProperties);
+        if (issue != null)
+            return issue;
+        issue = ValidateObjectArray(
+            root["contestedSlots"],
+            ReceiptContestProperties,
+            nestedArrayProperty: "candidates",
+            nestedElementProperties: ReceiptCandidateProperties);
+        if (issue != null)
+            return issue;
+        issue = ValidateStringArray(root["resolutionOrder"]);
+        if (issue != null)
+            return issue;
+        return ValidateObjectArray(root["corrections"], ReceiptCorrectionProperties)
+               ?? string.Empty;
+    }
+
+    private static string? ValidateObjectArray(
+        JsonNode? node,
+        IReadOnlyCollection<string> requiredProperties,
+        string? optionalProperty = null,
+        string? nestedArrayProperty = null,
+        IReadOnlyCollection<string>? nestedElementProperties = null)
+    {
+        if (node is not JsonArray array)
+            return "guardian_correction_receipt_nested_invalid";
+        foreach (var item in array)
+        {
+            if (item is not JsonObject itemObject)
+                return "guardian_correction_receipt_nested_invalid";
+            if (!HasExactProperties(
+                    itemObject,
+                    requiredProperties,
+                    optionalProperty))
+            {
+                return "guardian_correction_receipt_nested_incomplete";
+            }
+            if (nestedArrayProperty != null)
+            {
+                var nestedIssue = ValidateObjectArray(
+                    itemObject[nestedArrayProperty],
+                    nestedElementProperties!);
+                if (nestedIssue != null)
+                    return nestedIssue;
+            }
+        }
+        return null;
+    }
+
+    private static string? ValidateStringArray(JsonNode? node)
+    {
+        if (node is not JsonArray array ||
+            array.Any(item =>
+                item is not JsonValue value ||
+                !value.TryGetValue<string>(out var text) ||
+                string.IsNullOrWhiteSpace(text)))
+        {
+            return "guardian_correction_receipt_nested_invalid";
+        }
+        return null;
+    }
+
+    private static bool HasEveryProperty(
+        JsonObject root,
+        IEnumerable<string> properties) =>
+        properties.All(root.ContainsKey);
+
+    private static bool HasExactProperties(
+        JsonObject root,
+        IReadOnlyCollection<string> requiredProperties,
+        string? optionalProperty = null)
+    {
+        if (!requiredProperties.All(root.ContainsKey))
+            return false;
+        var expectedCount = requiredProperties.Count +
+                            (optionalProperty != null && root.ContainsKey(optionalProperty)
+                                ? 1
+                                : 0);
+        return root.Count == expectedCount;
+    }
+
+    private static bool IsSemanticallyValidCorrectionReceipt(
+        GuardianCorrectionsState receipt)
+    {
+        if (!ResourceMaterializationContract.IsAuthorityFingerprint(
+                receipt.TransactionAfterImageFingerprint) ||
+            !IsValidTransactionAfterImageManifest(
+                receipt.TransactionAfterImagePaths) ||
+            receipt.LifeIncarnation <= 0 ||
+            !DateTimeOffset.TryParseExact(
+                receipt.AppliedAt,
+                "O",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.RoundtripKind,
+                out _) ||
+            !ResourceMaterializationContract.IsExactIdentifier(receipt.GuardianId) ||
+            string.IsNullOrWhiteSpace(receipt.GuardianName) ||
+            receipt.Intent is not ("friendly" or "hostile" or "none") ||
+            receipt.ReputationAtApplication is < -100 or > 300 ||
+            !string.Equals(
+                receipt.Intent,
+                ResolveIntent(receipt.ReputationAtApplication),
+                StringComparison.Ordinal) ||
+            receipt.PowerBefore is < AbodePowerRules.MinPower or > AbodePowerRules.MaxPower ||
+            receipt.PowerAfter is < AbodePowerRules.MinPower or > AbodePowerRules.MaxPower ||
+            receipt.BaseBudgetPoints < 0 ||
+            receipt.RemainingBudgetPoints < 0 ||
+            receipt.TotalAbodePowerSpent < 0 ||
+            string.IsNullOrWhiteSpace(receipt.Summary) ||
+            receipt.ScenarioCoreSnapshot == null ||
+            receipt.Claimants == null ||
+            receipt.ContestedSlots == null ||
+            receipt.ResolutionOrder == null ||
+            receipt.Corrections == null)
+        {
+            return false;
+        }
+
+        var assertions = receipt.ScenarioCoreSnapshot.ScenarioCoreAssertions;
+        var slots = receipt.ScenarioCoreSnapshot.OpenCorrectionSlots;
+        if (assertions == null ||
+            slots == null ||
+            assertions.Any(static assertion => !IsValidScenarioAssertion(assertion)) ||
+            slots.Any(static slot => !IsValidScenarioSlot(slot)) ||
+            HasDuplicateValues(
+                assertions.Select(static assertion => assertion.AssertionId)) ||
+            HasDuplicateValues(slots.Select(static slot => slot.SlotId)))
+        {
+            return false;
+        }
+
+        var assertionIds = assertions
+            .Select(static assertion => assertion.AssertionId)
+            .ToHashSet(StringComparer.Ordinal);
+        if (slots.Any(slot => !assertionIds.Contains(slot.SourceAssertionId)) ||
+            receipt.Claimants.Any(static claimant => !IsValidClaimant(claimant)) ||
+            receipt.ContestedSlots.Any(static contest => !IsValidContest(contest)) ||
+            receipt.Corrections.Any(static correction => !IsValidCorrection(correction)) ||
+            HasDuplicateValues(
+                receipt.Claimants.Select(static claimant => claimant.GuardianId)) ||
+            HasDuplicateValues(
+                receipt.ContestedSlots.Select(static contest => contest.SlotId)) ||
+            HasDuplicateValues(
+                receipt.Corrections.Select(static correction => correction.CorrectionId)) ||
+            receipt.ResolutionOrder.Any(static step => !IsCanonicalText(step)))
+        {
+            return false;
+        }
+
+        var slotById = slots.ToDictionary(
+            static slot => slot.SlotId,
+            StringComparer.Ordinal);
+        var claimantById = receipt.Claimants.ToDictionary(
+            static claimant => claimant.GuardianId,
+            StringComparer.Ordinal);
+        var allCandidates = receipt.ContestedSlots
+            .SelectMany(static contest => contest.Candidates)
+            .ToList();
+        if (HasDuplicateValues(allCandidates.Select(
+                static candidate => candidate.CandidateCorrectionId)))
+        {
+            return false;
+        }
+
+        var selectionCandidates = new List<CorrectionSelectionCandidate>();
+        foreach (var contest in receipt.ContestedSlots)
+        {
+            if (!slotById.TryGetValue(contest.SlotId, out var slot) ||
+                !string.Equals(
+                    contest.SlotType,
+                    slot.SlotType,
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            foreach (var candidate in contest.Candidates)
+            {
+                if (!claimantById.TryGetValue(
+                        candidate.SourceGuardianId,
+                        out var claimant) ||
+                    !string.Equals(
+                        candidate.SourceGuardianName,
+                        claimant.GuardianName,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        candidate.Intent,
+                        claimant.Intent,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        candidate.CandidateCorrectionId,
+                        BuildCorrectionId(
+                            candidate.SourceGuardianId,
+                            contest.SlotId,
+                            candidate.Intent,
+                            candidate.Severity),
+                        StringComparison.Ordinal) ||
+                    !SlotAllowsIntent(slot, candidate.Intent) ||
+                    !SeverityFitsSlot(
+                        candidate.Severity,
+                        slot.MaxSeverity) ||
+                    (long)candidate.ClaimStrength !=
+                        (long)claimant.ClaimStrengthBase +
+                        candidate.BudgetCostPoints ||
+                    !TryBuildCanonicalSelectionCandidate(
+                        contest,
+                        candidate,
+                        out var selectionCandidate))
+                {
+                    return false;
+                }
+
+                selectionCandidates.Add(selectionCandidate);
+            }
+        }
+
+        var selection = SelectDeterministicCorrections(
+            receipt.Claimants.Select(static claimant =>
+                new CorrectionSelectionClaimant(
+                    claimant.GuardianId,
+                    claimant.IsActivePatron,
+                    claimant.CurrentPower,
+                    claimant.BaseBudgetPoints +
+                        claimant.PreparationBudgetPoints))
+                .ToArray(),
+            selectionCandidates);
+        if (selection.Contests.Count != receipt.ContestedSlots.Count ||
+            !selection.ResolutionOrder.SequenceEqual(
+                receipt.ResolutionOrder,
+                StringComparer.Ordinal) ||
+            selection.Winners.Count != receipt.Corrections.Count ||
+            receipt.TotalAbodePowerSpent !=
+                selection.Winners.Sum(static winner =>
+                    (long)winner.AbodePowerCost))
+        {
+            return false;
+        }
+
+        for (var index = 0; index < selection.Contests.Count; index++)
+        {
+            if (!SelectionContestMatchesReceipt(
+                    selection.Contests[index],
+                    receipt.ContestedSlots[index]))
+            {
+                return false;
+            }
+        }
+
+        for (var index = 0; index < selection.Winners.Count; index++)
+        {
+            if (!SelectionCandidateMatchesCorrection(
+                    selection.Winners[index],
+                    receipt.Corrections[index]))
+            {
+                return false;
+            }
+        }
+
+        foreach (var claimant in receipt.Claimants)
+        {
+            var finalBalance = selection.FinalBalances[claimant.GuardianId];
+            if (claimant.RemainingBudgetPoints !=
+                    finalBalance.RemainingBudget ||
+                claimant.PowerAfter != finalBalance.RemainingPower)
+            {
+                return false;
+            }
+        }
+
+        var activeClaimants = receipt.Claimants
+            .Where(static claimant => claimant.IsActivePatron)
+            .ToList();
+        return activeClaimants.Count <= 1 &&
+               (activeClaimants.Count == 0
+                   ? receipt.PowerAfter == receipt.PowerBefore &&
+                     receipt.RemainingBudgetPoints == receipt.BaseBudgetPoints
+                   :
+                (string.Equals(
+                     activeClaimants[0].GuardianId,
+                     receipt.GuardianId,
+                     StringComparison.Ordinal) &&
+                 string.Equals(
+                     activeClaimants[0].GuardianName,
+                     receipt.GuardianName,
+                     StringComparison.Ordinal) &&
+                 string.Equals(
+                     activeClaimants[0].Intent,
+                     receipt.Intent,
+                     StringComparison.Ordinal) &&
+                 activeClaimants[0].CurrentPower == receipt.PowerBefore &&
+                 activeClaimants[0].PowerAfter == receipt.PowerAfter &&
+                 activeClaimants[0].BaseBudgetPoints == receipt.BaseBudgetPoints &&
+                 activeClaimants[0].RemainingBudgetPoints == receipt.RemainingBudgetPoints));
+    }
+
+    private static bool IsValidScenarioAssertion(
+        ScenarioCoreService.ScenarioCoreAssertion assertion) =>
+        assertion != null &&
+        ResourceMaterializationContract.IsExactIdentifier(assertion.AssertionId) &&
+        ResourceMaterializationContract.IsExactIdentifier(assertion.Category) &&
+        IsCanonicalText(assertion.Value) &&
+        assertion.Explicit &&
+        ResourceMaterializationContract.IsExactIdentifier(assertion.Source) &&
+        (assertion.CandidateId == null ||
+         ResourceMaterializationContract.IsExactIdentifier(assertion.CandidateId));
+
+    private static bool IsValidScenarioSlot(
+        ScenarioCoreService.ScenarioCorrectionSlot slot) =>
+        slot != null &&
+        ResourceMaterializationContract.IsExactIdentifier(slot.SlotId) &&
+        ResourceMaterializationContract.IsExactIdentifier(slot.SlotType) &&
+        IsAllowedSeverity(slot.MaxSeverity) &&
+        (slot.AllowsFriendly || slot.AllowsHostile) &&
+        ResourceMaterializationContract.IsExactIdentifier(slot.SourceAssertionId);
+
+    private static bool IsValidClaimant(GuardianCorrectionClaimant claimant) =>
+        claimant != null &&
+        ResourceMaterializationContract.IsExactIdentifier(claimant.GuardianId) &&
+        IsCanonicalText(claimant.GuardianName) &&
+        IsCorrectionIntent(claimant.Intent) &&
+        claimant.CurrentPower is >= AbodePowerRules.MinPower and <= AbodePowerRules.MaxPower &&
+        claimant.PowerAfter is >= AbodePowerRules.MinPower and <= AbodePowerRules.MaxPower &&
+        claimant.PowerAfter <= claimant.CurrentPower &&
+        claimant.BaseBudgetPoints >= 0 &&
+        claimant.PreparationBudgetPoints >= 0 &&
+        (long)claimant.BaseBudgetPoints + claimant.PreparationBudgetPoints <=
+            int.MaxValue &&
+        claimant.RemainingBudgetPoints >= 0 &&
+        claimant.RemainingBudgetPoints <=
+            claimant.BaseBudgetPoints + claimant.PreparationBudgetPoints &&
+        claimant.ClaimStrengthBase >= 0 &&
+        claimant.Eligible &&
+        IsCanonicalText(claimant.SourceSummary);
+
+    private static bool IsValidContest(GuardianCorrectionContest contest)
+    {
+        if (contest == null ||
+            !ResourceMaterializationContract.IsExactIdentifier(contest.SlotId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(contest.SlotType) ||
+            contest.WinnerGuardianId == null ||
+            contest.WinnerGuardianName == null ||
+            contest.WinnerCorrectionId == null ||
+            contest.Candidates == null ||
+            contest.Candidates.Count == 0 ||
+            contest.Candidates.Any(static candidate => !IsValidCandidate(candidate)) ||
+            HasDuplicateValues(contest.Candidates.Select(
+                static candidate => candidate.CandidateCorrectionId)))
+        {
+            return false;
+        }
+
+        var hasWinner = contest.WinnerCorrectionId.Length != 0;
+        if (!hasWinner)
+        {
+            return contest.WinnerGuardianId.Length == 0 &&
+                   contest.WinnerGuardianName.Length == 0;
+        }
+
+        if (!ResourceMaterializationContract.IsExactIdentifier(
+                contest.WinnerCorrectionId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(
+                contest.WinnerGuardianId) ||
+            !IsCanonicalText(contest.WinnerGuardianName))
+        {
+            return false;
+        }
+
+        return contest.Candidates.Any(candidate =>
+            string.Equals(
+                candidate.CandidateCorrectionId,
+                contest.WinnerCorrectionId,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                candidate.SourceGuardianId,
+                contest.WinnerGuardianId,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                candidate.SourceGuardianName,
+                contest.WinnerGuardianName,
+                StringComparison.Ordinal));
+    }
+
+    private static bool IsValidCandidate(GuardianCorrectionCandidate candidate) =>
+        candidate != null &&
+        ResourceMaterializationContract.IsExactIdentifier(
+            candidate.CandidateCorrectionId) &&
+        ResourceMaterializationContract.IsExactIdentifier(candidate.SourceGuardianId) &&
+        IsCanonicalText(candidate.SourceGuardianName) &&
+        IsCorrectionIntent(candidate.Intent) &&
+        IsAllowedSeverity(candidate.Severity) &&
+        HasCanonicalCorrectionCosts(
+            candidate.Severity,
+            candidate.BudgetCostPoints,
+            candidate.AbodePowerCost) &&
+        candidate.ClaimStrength >= 0 &&
+        IsCanonicalText(candidate.Title);
+
+    private static bool IsValidCorrection(GuardianCorrectionEntry correction) =>
+        correction != null &&
+        ResourceMaterializationContract.IsExactIdentifier(correction.CorrectionId) &&
+        ResourceMaterializationContract.IsExactIdentifier(correction.SourceGuardianId) &&
+        IsCanonicalText(correction.SourceGuardianName) &&
+        IsCorrectionIntent(correction.Intent) &&
+        ResourceMaterializationContract.IsExactIdentifier(correction.SlotId) &&
+        ResourceMaterializationContract.IsExactIdentifier(correction.SlotType) &&
+        IsAllowedSeverity(correction.Severity) &&
+        HasCanonicalCorrectionCosts(
+            correction.Severity,
+            correction.BudgetCostPoints,
+            correction.AbodePowerCost) &&
+        correction.ClaimStrength >= 0 &&
+        IsCanonicalText(correction.Title) &&
+        IsCanonicalText(correction.Summary) &&
+        IsCanonicalText(correction.Reason) &&
+        ResourceMaterializationContract.IsExactIdentifier(correction.AffectsStartAs);
+
+    private static bool TryBuildCanonicalSelectionCandidate(
+        GuardianCorrectionContest contest,
+        GuardianCorrectionCandidate candidate,
+        out CorrectionSelectionCandidate selectionCandidate)
+    {
+        selectionCandidate = null!;
+        var matchingTemplates = GetTemplates(candidate.Intent)
+            .Where(template => string.Equals(
+                template.SlotType,
+                contest.SlotType,
+                StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        if (matchingTemplates.Count != 1)
+            return false;
+        var template = matchingTemplates[0];
+        if (!string.Equals(
+                candidate.Title,
+                template.GetTitle(candidate.Severity),
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        selectionCandidate = new CorrectionSelectionCandidate(
+            candidate.CandidateCorrectionId,
+            candidate.SourceGuardianId,
+            candidate.SourceGuardianName,
+            candidate.Intent,
+            contest.SlotId,
+            contest.SlotType,
+            candidate.Severity,
+            candidate.BudgetCostPoints,
+            candidate.AbodePowerCost,
+            candidate.ClaimStrength,
+            candidate.Title,
+            template.GetSummary(
+                candidate.Severity,
+                candidate.SourceGuardianName),
+            template.GetReason(
+                candidate.Intent,
+                candidate.SourceGuardianName),
+            template.AffectsStartAs);
+        return true;
+    }
+
+    private static bool SelectionContestMatchesReceipt(
+        CorrectionSelectionContest expected,
+        GuardianCorrectionContest actual)
+    {
+        if (!string.Equals(expected.SlotId, actual.SlotId, StringComparison.Ordinal) ||
+            !string.Equals(expected.SlotType, actual.SlotType, StringComparison.Ordinal) ||
+            !string.Equals(
+                expected.WinnerGuardianId,
+                actual.WinnerGuardianId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                expected.WinnerGuardianName,
+                actual.WinnerGuardianName,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                expected.WinnerCorrectionId,
+                actual.WinnerCorrectionId,
+                StringComparison.Ordinal) ||
+            expected.Candidates.Count != actual.Candidates.Count)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < expected.Candidates.Count; index++)
+        {
+            if (!SelectionCandidateMatchesReceiptCandidate(
+                    expected.Candidates[index],
+                    actual.Candidates[index]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool SelectionCandidateMatchesReceiptCandidate(
+        CorrectionSelectionCandidate expected,
+        GuardianCorrectionCandidate actual) =>
+        string.Equals(
+            expected.CorrectionId,
+            actual.CandidateCorrectionId,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            expected.SourceGuardianId,
+            actual.SourceGuardianId,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            expected.SourceGuardianName,
+            actual.SourceGuardianName,
+            StringComparison.Ordinal) &&
+        string.Equals(expected.Intent, actual.Intent, StringComparison.Ordinal) &&
+        string.Equals(
+            expected.Severity,
+            actual.Severity,
+            StringComparison.Ordinal) &&
+        expected.BudgetCostPoints == actual.BudgetCostPoints &&
+        expected.AbodePowerCost == actual.AbodePowerCost &&
+        expected.ClaimStrength == actual.ClaimStrength &&
+        string.Equals(expected.Title, actual.Title, StringComparison.Ordinal);
+
+    private static bool SelectionCandidateMatchesCorrection(
+        CorrectionSelectionCandidate expected,
+        GuardianCorrectionEntry actual) =>
+        string.Equals(expected.CorrectionId, actual.CorrectionId, StringComparison.Ordinal) &&
+        string.Equals(expected.SourceGuardianId, actual.SourceGuardianId, StringComparison.Ordinal) &&
+        string.Equals(expected.SourceGuardianName, actual.SourceGuardianName, StringComparison.Ordinal) &&
+        string.Equals(expected.Intent, actual.Intent, StringComparison.Ordinal) &&
+        string.Equals(expected.SlotId, actual.SlotId, StringComparison.Ordinal) &&
+        string.Equals(expected.SlotType, actual.SlotType, StringComparison.Ordinal) &&
+        string.Equals(expected.Severity, actual.Severity, StringComparison.Ordinal) &&
+        expected.BudgetCostPoints == actual.BudgetCostPoints &&
+        expected.AbodePowerCost == actual.AbodePowerCost &&
+        expected.ClaimStrength == actual.ClaimStrength &&
+        string.Equals(expected.Title, actual.Title, StringComparison.Ordinal) &&
+        string.Equals(expected.Summary, actual.Summary, StringComparison.Ordinal) &&
+        string.Equals(expected.Reason, actual.Reason, StringComparison.Ordinal) &&
+        string.Equals(
+            expected.AffectsStartAs,
+            actual.AffectsStartAs,
+            StringComparison.Ordinal);
+
+    private static bool SlotAllowsIntent(
+        ScenarioCoreService.ScenarioCorrectionSlot slot,
+        string intent) =>
+        intent switch
+        {
+            "friendly" => slot.AllowsFriendly,
+            "hostile" => slot.AllowsHostile,
+            _ => false
+        };
+
+    private static bool SeverityFitsSlot(string severity, string maxSeverity) =>
+        GetSeverityRank(severity) <= GetSeverityRank(maxSeverity);
+
+    private static int GetSeverityRank(string severity) => severity switch
+    {
+        "minor" => 1,
+        "medium" => 2,
+        "strong" => 3,
+        _ => int.MaxValue
+    };
+
+    private static bool IsCorrectionIntent(string? intent) =>
+        intent is "friendly" or "hostile";
+
+    private static bool IsAllowedSeverity(string? severity) =>
+        severity is "minor" or "medium" or "strong";
+
+    private static bool HasCanonicalCorrectionCosts(
+        string severity,
+        int budgetCostPoints,
+        int abodePowerCost) =>
+        budgetCostPoints == AbodePowerRules.GetCorrectionSeverityBudgetCost(severity) &&
+        abodePowerCost == AbodePowerRules.GetCorrectionSeverityAbodePowerCost(severity);
+
+    private static bool IsCanonicalText(string? value) =>
+        ResourceMaterializationContract.IsExactIdentifier(value);
+
+    private static bool IsValidTransactionAfterImageManifest(
+        IReadOnlyList<string>? paths)
+    {
+        if (paths == null || paths.Count == 0)
+            return false;
+        if (!paths.SequenceEqual(
+                paths.OrderBy(static path => path, StringComparer.Ordinal),
+                StringComparer.Ordinal) ||
+            paths.Distinct(StringComparer.Ordinal).Count() != paths.Count ||
+            paths.Any(path =>
+                string.IsNullOrWhiteSpace(path) ||
+                !string.Equals(path, path.Trim(), StringComparison.Ordinal) ||
+                path.Contains('\\') ||
+                !AllowedReceiptTransactionPaths.Contains(path)))
+        {
+            return false;
+        }
+
+        var sealedPaths = paths.ToHashSet(StringComparer.Ordinal);
+        return RequiredReceiptTransactionPaths.All(sealedPaths.Contains);
+    }
+
+    private static bool HasDuplicateValues(IEnumerable<string> values)
+    {
+        var unique = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var value in values)
+        {
+            if (!unique.Add(value))
+                return true;
+        }
+        return false;
+    }
+
+    private static string ComputeCorrectionReceiptFingerprint(
+        GuardianCorrectionsState receipt)
+    {
+        var canonicalRoot = JsonSerializer.SerializeToNode(receipt, JsonOpts)!.AsObject();
+        canonicalRoot.Remove("receiptFingerprint");
+        using var fingerprint = new ResourceFingerprintBuilder(
+            "guardian-correction-receipt-v1");
+        fingerprint.Append(canonicalRoot.ToJsonString(JsonOpts));
+        return fingerprint.Build();
+    }
+
+    private sealed record CorrectionReplayResolution(
+        CorrectionReplayStatus Status,
+        GuardianCorrectionsState? Receipt,
+        string? FailureCode);
+
+    private sealed record CorrectionTransactionAfterImageAuthority(
+        IReadOnlyList<string> Paths,
+        IReadOnlyDictionary<string, byte[]?> AfterImages,
+        IReadOnlyList<CoordinatedStateWriteHelper.PlannedWrite> CoordinatedWrites);
+
+    private enum CorrectionReplayStatus
+    {
+        NotApplied,
+        SameLife,
+        Malformed
     }
 
     private List<ClaimantRuntime> BuildClaimants(
@@ -600,7 +1820,7 @@ public sealed class GuardianCorrectionService
             List<ClaimantRuntime> claimants,
             IReadOnlyList<ScenarioCoreService.ScenarioCorrectionSlot> slots)
     {
-        var allCandidates = new List<(ClaimantRuntime Claimant, GuardianCorrectionEntry Correction)>();
+        var allCandidates = new List<CorrectionSelectionCandidate>();
         foreach (var claimant in claimants)
         {
             var usedSlots = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -623,101 +1843,238 @@ public sealed class GuardianCorrectionService
                 if (budgetCost > claimant.RemainingBudget || abodePowerCost > claimant.RemainingPower)
                     continue;
 
-                var correction = new GuardianCorrectionEntry
-                {
-                    CorrectionId = $"{claimant.GuardianId}_{slot.SlotId}_{severity}",
-                    SourceGuardianId = claimant.GuardianId,
-                    SourceGuardianName = claimant.GuardianName,
-                    Intent = claimant.Intent,
-                    SlotId = slot.SlotId,
-                    SlotType = slot.SlotType,
-                    Severity = severity,
-                    BudgetCostPoints = budgetCost,
-                    AbodePowerCost = abodePowerCost,
-                    ClaimStrength = claimant.ClaimStrengthBase + AbodePowerRules.GetCorrectionSeverityBudgetCost(severity),
-                    Title = template.GetTitle(severity),
-                    Summary = template.GetSummary(severity, claimant.GuardianName),
-                    Reason = template.GetReason(claimant.Intent, claimant.GuardianName),
-                    AffectsStartAs = template.AffectsStartAs
-                };
-
-                allCandidates.Add((claimant, correction));
+                allCandidates.Add(new CorrectionSelectionCandidate(
+                    CorrectionId: BuildCorrectionId(
+                        claimant.GuardianId,
+                        slot.SlotId,
+                        claimant.Intent,
+                        severity),
+                    SourceGuardianId: claimant.GuardianId,
+                    SourceGuardianName: claimant.GuardianName,
+                    Intent: claimant.Intent,
+                    SlotId: slot.SlotId,
+                    SlotType: slot.SlotType,
+                    Severity: severity,
+                    BudgetCostPoints: budgetCost,
+                    AbodePowerCost: abodePowerCost,
+                    ClaimStrength: claimant.ClaimStrengthBase +
+                        AbodePowerRules.GetCorrectionSeverityBudgetCost(severity),
+                    Title: template.GetTitle(severity),
+                    Summary: template.GetSummary(
+                        severity,
+                        claimant.GuardianName),
+                    Reason: template.GetReason(
+                        claimant.Intent,
+                        claimant.GuardianName),
+                    AffectsStartAs: template.AffectsStartAs));
                 usedSlots.Add(slot.SlotId);
             }
         }
 
-        var results = new List<GuardianCorrectionEntry>();
-        var contests = new List<GuardianCorrectionContest>();
+        var transcript = SelectDeterministicCorrections(
+            claimants.Select(static claimant =>
+                new CorrectionSelectionClaimant(
+                    claimant.GuardianId,
+                    claimant.IsActivePatron,
+                    claimant.CurrentPower,
+                    claimant.BaseBudget + claimant.PreparationBudget))
+                .ToArray(),
+            allCandidates);
+        foreach (var claimant in claimants)
+        {
+            var balance = transcript.FinalBalances[claimant.GuardianId];
+            claimant.RemainingBudget = balance.RemainingBudget;
+            claimant.RemainingPower = balance.RemainingPower;
+            claimant.PowerAfter = balance.RemainingPower;
+        }
+
+        return (
+            transcript.Winners
+                .Select(ToGuardianCorrectionEntry)
+                .ToList(),
+            transcript.Contests
+                .Select(ToGuardianCorrectionContest)
+                .ToList(),
+            transcript.ResolutionOrder.ToList());
+    }
+
+    private static CorrectionSelectionTranscript SelectDeterministicCorrections(
+        IReadOnlyList<CorrectionSelectionClaimant> claimants,
+        IReadOnlyList<CorrectionSelectionCandidate> candidates)
+    {
+        var claimantById = claimants.ToDictionary(
+            static claimant => claimant.GuardianId,
+            StringComparer.Ordinal);
+        var balances = claimants.ToDictionary(
+            static claimant => claimant.GuardianId,
+            static claimant => new CorrectionSelectionBalance(
+                claimant.InitialBudget,
+                claimant.CurrentPower),
+            StringComparer.Ordinal);
+        var winners = new List<CorrectionSelectionCandidate>();
+        var contests = new List<CorrectionSelectionContest>();
         var resolutionOrder = new List<string>();
         var hostileStrongUsed = false;
 
-        foreach (var slotGroup in allCandidates
-                     .GroupBy(item => item.Correction.SlotId, StringComparer.OrdinalIgnoreCase)
-                     .OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase))
+        foreach (var slotGroup in candidates
+                     .GroupBy(
+                         static candidate => candidate.SlotId,
+                         StringComparer.OrdinalIgnoreCase)
+                     .OrderBy(
+                         static group => group.Key,
+                         StringComparer.OrdinalIgnoreCase)
+                     .ThenBy(
+                         static group => group.Key,
+                         StringComparer.Ordinal))
         {
             var orderedCandidates = slotGroup
-                .OrderByDescending(item => item.Correction.ClaimStrength)
-                .ThenByDescending(item => item.Claimant.IsActivePatron)
-                .ThenByDescending(item => item.Claimant.CurrentPower)
-                .ThenBy(item => item.Claimant.GuardianId, StringComparer.OrdinalIgnoreCase)
+                .OrderByDescending(static candidate => candidate.ClaimStrength)
+                .ThenByDescending(candidate =>
+                    claimantById[candidate.SourceGuardianId].IsActivePatron)
+                .ThenByDescending(candidate =>
+                    claimantById[candidate.SourceGuardianId].CurrentPower)
+                .ThenBy(
+                    static candidate => candidate.SourceGuardianId,
+                    StringComparer.OrdinalIgnoreCase)
+                .ThenBy(
+                    static candidate => candidate.SourceGuardianId,
+                    StringComparer.Ordinal)
+                .ThenBy(
+                    static candidate => candidate.CorrectionId,
+                    StringComparer.Ordinal)
                 .ToList();
 
-            var contest = new GuardianCorrectionContest
-            {
-                SlotId = slotGroup.Key,
-                SlotType = orderedCandidates[0].Correction.SlotType,
-                Candidates = orderedCandidates.Select(item => new GuardianCorrectionCandidate
-                {
-                    CandidateCorrectionId = item.Correction.CorrectionId,
-                    SourceGuardianId = item.Correction.SourceGuardianId,
-                    SourceGuardianName = item.Correction.SourceGuardianName,
-                    Intent = item.Correction.Intent,
-                    Severity = item.Correction.Severity,
-                    BudgetCostPoints = item.Correction.BudgetCostPoints,
-                    AbodePowerCost = item.Correction.AbodePowerCost,
-                    ClaimStrength = item.Correction.ClaimStrength,
-                    Title = item.Correction.Title
-                }).ToList()
-            };
-
-            var winner = orderedCandidates.FirstOrDefault(item =>
-                item.Claimant.RemainingBudget >= item.Correction.BudgetCostPoints &&
-                item.Claimant.RemainingPower >= item.Correction.AbodePowerCost &&
+            var winner = orderedCandidates.FirstOrDefault(candidate =>
+                balances[candidate.SourceGuardianId].RemainingBudget >=
+                    candidate.BudgetCostPoints &&
+                balances[candidate.SourceGuardianId].RemainingPower >=
+                    candidate.AbodePowerCost &&
                 !(hostileStrongUsed &&
-                  string.Equals(item.Correction.Intent, "hostile", StringComparison.OrdinalIgnoreCase) &&
-                  string.Equals(item.Correction.Severity, "strong", StringComparison.OrdinalIgnoreCase)));
+                  string.Equals(
+                      candidate.Intent,
+                      "hostile",
+                      StringComparison.OrdinalIgnoreCase) &&
+                  string.Equals(
+                      candidate.Severity,
+                      "strong",
+                      StringComparison.OrdinalIgnoreCase)));
 
-            if (winner.Correction == null)
+            if (winner == null)
             {
-                contests.Add(contest);
+                contests.Add(new CorrectionSelectionContest(
+                    slotGroup.Key,
+                    orderedCandidates[0].SlotType,
+                    WinnerGuardianId: "",
+                    WinnerGuardianName: "",
+                    WinnerCorrectionId: "",
+                    Candidates: orderedCandidates.ToArray()));
                 resolutionOrder.Add($"{slotGroup.Key}: no winner");
                 continue;
             }
 
-            winner.Claimant.RemainingBudget -= winner.Correction.BudgetCostPoints;
-            winner.Claimant.RemainingPower -= winner.Correction.AbodePowerCost;
-            winner.Claimant.PowerAfter = winner.Claimant.RemainingPower;
-            if (string.Equals(winner.Correction.Intent, "hostile", StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(winner.Correction.Severity, "strong", StringComparison.OrdinalIgnoreCase))
+            var winnerBalance = balances[winner.SourceGuardianId];
+            balances[winner.SourceGuardianId] = new CorrectionSelectionBalance(
+                winnerBalance.RemainingBudget - winner.BudgetCostPoints,
+                winnerBalance.RemainingPower - winner.AbodePowerCost);
+            if (string.Equals(
+                    winner.Intent,
+                    "hostile",
+                    StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(
+                    winner.Severity,
+                    "strong",
+                    StringComparison.OrdinalIgnoreCase))
             {
                 hostileStrongUsed = true;
             }
 
-            contest.WinnerGuardianId = winner.Correction.SourceGuardianId;
-            contest.WinnerGuardianName = winner.Correction.SourceGuardianName;
-            contest.WinnerCorrectionId = winner.Correction.CorrectionId;
-            contests.Add(contest);
-            resolutionOrder.Add($"{slotGroup.Key}: {winner.Correction.SourceGuardianName} [{winner.Correction.Severity}]");
-            results.Add(winner.Correction);
+            contests.Add(new CorrectionSelectionContest(
+                slotGroup.Key,
+                winner.SlotType,
+                winner.SourceGuardianId,
+                winner.SourceGuardianName,
+                winner.CorrectionId,
+                orderedCandidates.ToArray()));
+            resolutionOrder.Add(
+                $"{slotGroup.Key}: {winner.SourceGuardianName} [{winner.Severity}]");
+            winners.Add(winner);
         }
 
-        return (results, contests, resolutionOrder);
+        return new CorrectionSelectionTranscript(
+            winners.ToArray(),
+            contests.ToArray(),
+            resolutionOrder.ToArray(),
+            balances);
     }
 
-    private static JsonObject BuildPowerSpendEvent(GuardianCorrectionEntry correction)
+    private static GuardianCorrectionEntry ToGuardianCorrectionEntry(
+        CorrectionSelectionCandidate candidate) =>
+        new()
+        {
+            CorrectionId = candidate.CorrectionId,
+            SourceGuardianId = candidate.SourceGuardianId,
+            SourceGuardianName = candidate.SourceGuardianName,
+            Intent = candidate.Intent,
+            SlotId = candidate.SlotId,
+            SlotType = candidate.SlotType,
+            Severity = candidate.Severity,
+            BudgetCostPoints = candidate.BudgetCostPoints,
+            AbodePowerCost = candidate.AbodePowerCost,
+            ClaimStrength = candidate.ClaimStrength,
+            Title = candidate.Title,
+            Summary = candidate.Summary,
+            Reason = candidate.Reason,
+            AffectsStartAs = candidate.AffectsStartAs
+        };
+
+    private static GuardianCorrectionContest ToGuardianCorrectionContest(
+        CorrectionSelectionContest contest) =>
+        new()
+        {
+            SlotId = contest.SlotId,
+            SlotType = contest.SlotType,
+            WinnerGuardianId = contest.WinnerGuardianId,
+            WinnerGuardianName = contest.WinnerGuardianName,
+            WinnerCorrectionId = contest.WinnerCorrectionId,
+            Candidates = contest.Candidates
+                .Select(static candidate => new GuardianCorrectionCandidate
+                {
+                    CandidateCorrectionId = candidate.CorrectionId,
+                    SourceGuardianId = candidate.SourceGuardianId,
+                    SourceGuardianName = candidate.SourceGuardianName,
+                    Intent = candidate.Intent,
+                    Severity = candidate.Severity,
+                    BudgetCostPoints = candidate.BudgetCostPoints,
+                    AbodePowerCost = candidate.AbodePowerCost,
+                    ClaimStrength = candidate.ClaimStrength,
+                    Title = candidate.Title
+                })
+                .ToList()
+        };
+
+    private static string BuildCorrectionId(
+        string guardianId,
+        string slotId,
+        string intent,
+        string severity)
+    {
+        using var fingerprint = new ResourceFingerprintBuilder(
+            "guardian-correction-identity-v1");
+        fingerprint.Append(guardianId);
+        fingerprint.Append(slotId);
+        fingerprint.Append(intent);
+        fingerprint.Append(severity);
+        var authorityFingerprint = fingerprint.Build();
+        return "gcor_" + authorityFingerprint["sha256:".Length..];
+    }
+
+    private static JsonObject BuildPowerSpendEvent(
+        GuardianCorrectionEntry correction,
+        int lifeIncarnation)
     {
         var audit = new JsonObject
         {
+            ["lifeIncarnation"] = lifeIncarnation,
             ["correctionId"] = correction.CorrectionId,
             ["slotId"] = correction.SlotId,
             ["slotType"] = correction.SlotType,
@@ -727,7 +2084,7 @@ public sealed class GuardianCorrectionService
         };
 
         return GuardianPowerEventState.BuildEvent(
-            $"gce_{correction.CorrectionId}",
+            $"gce_life_{lifeIncarnation}_{correction.CorrectionId}",
             correction.SourceGuardianId,
             -correction.AbodePowerCost,
             "correction_spend",
@@ -907,6 +2264,46 @@ public sealed class GuardianCorrectionService
             return $"{prefix}, {ReasonTail}.";
         }
     }
+
+    private sealed record CorrectionSelectionClaimant(
+        string GuardianId,
+        bool IsActivePatron,
+        int CurrentPower,
+        int InitialBudget);
+
+    private sealed record CorrectionSelectionCandidate(
+        string CorrectionId,
+        string SourceGuardianId,
+        string SourceGuardianName,
+        string Intent,
+        string SlotId,
+        string SlotType,
+        string Severity,
+        int BudgetCostPoints,
+        int AbodePowerCost,
+        int ClaimStrength,
+        string Title,
+        string Summary,
+        string Reason,
+        string AffectsStartAs);
+
+    private sealed record CorrectionSelectionBalance(
+        int RemainingBudget,
+        int RemainingPower);
+
+    private sealed record CorrectionSelectionContest(
+        string SlotId,
+        string SlotType,
+        string WinnerGuardianId,
+        string WinnerGuardianName,
+        string WinnerCorrectionId,
+        IReadOnlyList<CorrectionSelectionCandidate> Candidates);
+
+    private sealed record CorrectionSelectionTranscript(
+        IReadOnlyList<CorrectionSelectionCandidate> Winners,
+        IReadOnlyList<CorrectionSelectionContest> Contests,
+        IReadOnlyList<string> ResolutionOrder,
+        IReadOnlyDictionary<string, CorrectionSelectionBalance> FinalBalances);
 
     private sealed class ClaimantRuntime
     {

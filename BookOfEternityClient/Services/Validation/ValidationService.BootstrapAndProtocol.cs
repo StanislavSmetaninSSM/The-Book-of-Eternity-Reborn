@@ -80,6 +80,8 @@ public partial class ValidationService
 
     private async Task ValidateRequiredFields(List<ValidationIssue> issues)
     {
+        issues.AddRange(await ValidateAcceptedTurnCanonicalResourceMaterializationAsync());
+
         // Soul state must have soulName and currentRealm
         await ValidateFileFields("game_state/meta/soul_state.json",
             new[] { "soulName", "currentRealm" }, issues);
@@ -111,12 +113,12 @@ public partial class ValidationService
                             section: "RequiredFields",
                             expected: "game_state/core/player_status.json exists in Mortal World",
                             actual: "missing",
-                            repairHint: "В Mortal World сохраняй canonical game_state/core/player_status.json с healthPercentage, energyPercentage, poisePercentage и money."));
+                            repairHint: "В Mortal World сохраняй canonical game_state/core/player_status.json с currentCondition и money; здоровье, энергия и стойкость принадлежат единому resource ledger."));
                         return;
                     }
 
                     await ValidateFileFields("game_state/core/player_status.json",
-                        new[] { "healthPercentage", "energyPercentage", "poisePercentage", "money" }, issues);
+                        new[] { "currentCondition", "money" }, issues);
                 }
             }
             catch (Exception ex)

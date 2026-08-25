@@ -1,4 +1,7 @@
 <instructionblock id="19.C">
+ <effectmaterializationcontract>
+  Faction and encumbrance effect sources use exact activeEffectDefinitions[] and top-level effectChanges[] under Examples/E_CLI_Effect_Materialization.txt; prose does not materialize mechanics.
+ </effectmaterializationcontract>
  <title>
   Examples For CRITICAL DIRECTIVE: NPC Encumbrance Protocol (True Player Analogue)
  </title>
@@ -24,7 +27,7 @@
                             Applying item and checking for overload (Rule 19.C.2):
                             - New totalWeight for Kaelen is 55kg.
                             - Overload Check: 55kg > maxWeight (50kg). RESULT: TRUE. Kaelen is now overloaded.
-                            - Consequence: Applying "Encumbered" debuff via NPCEffectChanges.
+                            - Consequence: Requesting the exact source-owned "Encumbered" definition through top-level effectChanges[] for Kaelen's accepted NPCId; no NPC effect carrier is authored.
                             - Reporting updated Kaelen object in UpdateNPCs with totalWeight=55 and isOverloaded=true.
 
                             ]]>

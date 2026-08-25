@@ -1494,7 +1494,7 @@ public sealed partial class GuardianSystemRegressionTests : IDisposable
         mood["reason"] ??= "Тестовый guardian baseline.";
         mood["since"] ??= 12;
 
-        GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardian);
     }
 
     private static GuardianFixtureSnapshot CreateFixtureSnapshot()

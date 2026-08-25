@@ -350,7 +350,7 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
             Assert.Equal("textPrompt", commandSnapshot["mode"]!.GetValue<string>());
             Assert.True(commandSnapshot["awaitingInput"]!.GetValue<bool>());
             Assert.Contains("Статус персонажа", commandSnapshot["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("Здоровье", commandSnapshot["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Силы и запасы", commandSnapshot["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
             Assert.Contains("Нажмите любую клавишу", commandSnapshot["plainText"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
 
             using var keyResponse = await client.PostAsJsonAsync("/api/agent-console/key", new { key = "Enter" });

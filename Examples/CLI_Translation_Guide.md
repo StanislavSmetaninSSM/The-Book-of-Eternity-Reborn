@@ -90,11 +90,8 @@ Create exactly one terminal signal:
   "response": "Вы чувствуете магию перчаток...",
   "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: none\n- Why relevant: This turn changes only player-side state.\n- Actors outside scope: scene NPCs, Guardians\n- Why outside scope: No structured actor updates are emitted.\n\n## Reasoning\n- Проверка силы: 6 (1+5).\n- Ход меняет только playerStatus.",
   "playerStatus": {
-    "healthPercentage": "100%",
-    "poisePercentage": "85%",
-    "energyPercentage": "100%",
     "currentCondition": "Stable",
-    "money": 0
+    "activeConditions": []
   }
 }
 ```
@@ -104,7 +101,7 @@ Create exactly one terminal signal:
 # Write output files:
 echo '{"response": "Вы чувствуете магию перчаток...", "timestamp": "2026-03-01T12:00:00Z"}' > output/narrative_response.json
 echo '{"gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: none\n- Why relevant: This turn changes only player-side state.\n- Actors outside scope: scene NPCs, Guardians\n- Why outside scope: No structured actor updates are emitted.\n\n## Reasoning\n- Проверка силы: 6 (1+5).\n- Ход меняет только playerStatus.", "timestamp": "2026-03-01T12:00:00Z"}' > output/debug_logs.json
-echo '{"healthPercentage": "100%", "poisePercentage": "85%", "energyPercentage": "100%", "currentCondition": "Stable", "money": 0}' > game_state/core/player_status.json
+echo '{"currentCondition": "Stable", "activeConditions": []}' > game_state/core/player_status.json
 
 # Signal terminal success:
 echo '{"sessionId": "...", "requestId": "...", "turnNumber": 42, "timestamp": "2026-03-01T12:00:00Z", "status": "success", "filesModified": ["output/narrative_response.json", "output/debug_logs.json", "game_state/core/player_status.json"]}' > ready/turn_complete.json

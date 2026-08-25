@@ -8,6 +8,12 @@ using BookOfEternityClient.Models;
 
 namespace BookOfEternityClient.Services;
 
+internal enum GuardianPowerJournalMutationMode
+{
+    RepairAndAppend,
+    AppendOnly
+}
+
 internal static class GuardianPowerEventState
 {
     private static readonly JsonSerializerOptions PendingSnapshotManifestHashJsonOpts = new()
@@ -106,87 +112,144 @@ internal static class GuardianPowerEventState
 
     public static async Task AppendJournalEntriesAsync(FileSystemManager fs, IEnumerable<JsonObject> entries)
     {
-        var buffered = entries.Where(item => item != null).ToList();
-        if (buffered.Count == 0)
-            return;
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(entries);
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        await AppendJournalEntriesAsync(
+            fs,
+            writeLease,
+            entries,
+            GuardianPowerJournalMutationMode.RepairAndAppend);
+    }
 
-        JsonObject root;
-        var existing = await fs.ReadFileAsync(JournalPath);
-        if (string.IsNullOrWhiteSpace(existing))
-        {
-            root = new JsonObject();
-        }
-        else
-        {
-            try
-            {
-                root = JsonNode.Parse(existing) as JsonObject ?? new JsonObject();
-            }
-            catch
-            {
-                root = new JsonObject();
-            }
-        }
-
-        var entriesArray = root["entries"] as JsonArray ?? new JsonArray();
-        root["entries"] = entriesArray;
-        var trackerJson = await fs.ReadFileAsync(GuardianProjectState.TrackerPath);
-        var preTurnTrackerJson = await ReadPreTurnTrackedFileAsync(fs, GuardianProjectState.TrackerPath);
-        var politicalBackfillIndex = BuildPoliticalProjectAuditBackfillIndex(preTurnTrackerJson, trackerJson);
-
-        foreach (var existingEntry in entriesArray.OfType<JsonObject>())
-            BackfillLegacyPoliticalJournalEntry(existingEntry, politicalBackfillIndex);
-
-        foreach (var entry in buffered)
-            BackfillLegacyPoliticalJournalEntry(entry, politicalBackfillIndex);
-
-        foreach (var entry in buffered)
-        {
-            var eventId = GetNodeString(entry["eventId"]);
-            var duplicate = entriesArray
-                .OfType<JsonObject>()
-                .Any(existingEntry =>
-                    string.Equals(GetNodeString(existingEntry["eventId"]), eventId, StringComparison.OrdinalIgnoreCase));
-            if (duplicate)
-                continue;
-
-            entriesArray.Add(entry.DeepClone());
-        }
-
-        await fs.WriteFileAtomicAsync(JournalPath, root.ToJsonString(new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        }));
+    internal static async Task AppendJournalEntriesAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IEnumerable<JsonObject> entries,
+        GuardianPowerJournalMutationMode mode)
+    {
+        var content = await BuildJournalUpdateAsync(
+            fs,
+            writeLease,
+            entries,
+            mode);
+        if (content != null)
+            await fs.WriteFileAtomicAsync(writeLease, JournalPath, content);
     }
 
     public static async Task RepairJournalAsync(FileSystemManager fs)
     {
-        var existing = await fs.ReadFileAsync(JournalPath);
-        if (string.IsNullOrWhiteSpace(existing))
-            return;
+        ArgumentNullException.ThrowIfNull(fs);
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        var content = await BuildRepairedJournalAsync(fs, writeLease);
+        if (content != null)
+            await fs.WriteFileAtomicAsync(writeLease, JournalPath, content);
+    }
+
+    internal static async Task<string?> BuildRepairedJournalAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        return await BuildJournalUpdateAsync(
+            fs,
+            writeLease,
+            Array.Empty<JsonObject>(),
+            GuardianPowerJournalMutationMode.RepairAndAppend);
+    }
+
+    internal static async Task<string?> BuildJournalUpdateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IEnumerable<JsonObject> entries,
+        GuardianPowerJournalMutationMode mode)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(entries);
+        fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        if (!Enum.IsDefined(mode))
+            throw new ArgumentOutOfRangeException(nameof(mode));
+
+        var buffered = entries.Where(static item => item != null).ToList();
+        var existing = await ReadCanonicalFileAsync(fs, writeLease, JournalPath);
+        if (string.IsNullOrWhiteSpace(existing) && buffered.Count == 0)
+            return null;
 
         JsonObject root;
         try
         {
-            root = JsonNode.Parse(existing) as JsonObject ?? new JsonObject();
+            root = string.IsNullOrWhiteSpace(existing)
+                ? new JsonObject()
+                : JsonNode.Parse(existing) as JsonObject ?? new JsonObject();
         }
         catch
         {
-            return;
+            if (buffered.Count == 0)
+                return null;
+            root = new JsonObject();
         }
 
-        var trackerJson = await fs.ReadFileAsync(GuardianProjectState.TrackerPath);
-        var preTurnTrackerJson = await ReadPreTurnTrackedFileAsync(fs, GuardianProjectState.TrackerPath);
-        var politicalBackfillIndex = BuildPoliticalProjectAuditBackfillIndex(preTurnTrackerJson, trackerJson);
-        if (!BackfillLegacyPoliticalJournalEntries(root, politicalBackfillIndex))
-            return;
+        var changed = false;
+        var entriesArray = root["entries"] as JsonArray;
+        if (entriesArray == null)
+        {
+            if (buffered.Count == 0)
+                return null;
+            entriesArray = new JsonArray();
+            root["entries"] = entriesArray;
+            changed = true;
+        }
 
-        await fs.WriteFileAtomicAsync(JournalPath, root.ToJsonString(new JsonSerializerOptions
+        if (mode == GuardianPowerJournalMutationMode.RepairAndAppend)
+        {
+            var trackerJson = await ReadCanonicalFileAsync(
+                fs,
+                writeLease,
+                GuardianProjectState.TrackerPath);
+            var preTurnTrackerJson = await ReadPreTurnTrackedFileAsync(
+                fs,
+                GuardianProjectState.TrackerPath,
+                writeLease);
+            var politicalBackfillIndex = BuildPoliticalProjectAuditBackfillIndex(
+                preTurnTrackerJson,
+                trackerJson);
+            changed = BackfillLegacyPoliticalJournalEntries(
+                root,
+                politicalBackfillIndex) || changed;
+            foreach (var entry in buffered)
+            {
+                changed = BackfillLegacyPoliticalJournalEntry(
+                    entry,
+                    politicalBackfillIndex) || changed;
+            }
+        }
+
+        foreach (var entry in buffered)
+        {
+            var eventId = GetNodeString(entry["eventId"]);
+            var duplicate = entriesArray.OfType<JsonObject>().Any(existingEntry =>
+                string.Equals(
+                    GetNodeString(existingEntry["eventId"]),
+                    eventId,
+                    StringComparison.OrdinalIgnoreCase));
+            if (duplicate)
+                continue;
+
+            entriesArray.Add(entry.DeepClone());
+            changed = true;
+        }
+
+        if (!changed)
+            return null;
+
+        return root.ToJsonString(new JsonSerializerOptions
         {
             WriteIndented = true,
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        }));
+        });
     }
 
     public static JsonObject BuildEvent(
@@ -275,13 +338,13 @@ internal static class GuardianPowerEventState
         });
         abodePower["history"] = history;
         guardian["abodePower"] = abodePower;
-        GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardian);
 
         if (guardiansRoot["activeGuardian"] is JsonObject activeGuardian &&
             string.Equals(GetNodeString(activeGuardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase))
         {
             activeGuardian["abodePower"] = abodePower.DeepClone();
-            GuardianGachaChargeRules.NormalizeGuardianGachaState(activeGuardian);
+            GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(activeGuardian);
         }
 
         journalEntries.Add(new JsonObject
@@ -340,9 +403,15 @@ internal static class GuardianPowerEventState
         return defaultValue;
     }
 
-    private static async Task<string?> ReadPreTurnTrackedFileAsync(FileSystemManager fs, string relativePath)
+    private static async Task<string?> ReadPreTurnTrackedFileAsync(
+        FileSystemManager fs,
+        string relativePath,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var manifestJson = await fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        var manifestJson = await ReadCanonicalFileAsync(
+            fs,
+            writeLease,
+            "game_state/control/pending_turn_snapshot.json");
         if (string.IsNullOrWhiteSpace(manifestJson))
             return null;
 
@@ -361,7 +430,10 @@ internal static class GuardianPowerEventState
         if (manifest == null ||
             !PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(
                 manifest,
-                await fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath),
+                await ReadCanonicalFileAsync(
+                    fs,
+                    writeLease,
+                    PendingTurnSnapshotAuthority.AuthorityPath),
                 PendingSnapshotManifestHashJsonOpts,
                 static snapshotManifest => snapshotManifest.ManifestPayloadHash,
                 static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
@@ -381,7 +453,7 @@ internal static class GuardianPowerEventState
             return null;
         }
 
-        if (!await IsCurrentPendingTurnSnapshotAsync(fs, manifest))
+        if (!await IsCurrentPendingTurnSnapshotAsync(fs, manifest, writeLease))
             return null;
 
         if (manifest.Files == null ||
@@ -398,7 +470,10 @@ internal static class GuardianPowerEventState
             return null;
         }
 
-        var snapshotContent = await fs.ReadFileBytesAsync(snapshotPath);
+        var snapshotContent = await ReadCanonicalFileBytesAsync(
+            fs,
+            writeLease,
+            snapshotPath);
         if (snapshotContent == null || authorityPayload == null)
             return null;
 
@@ -437,14 +512,23 @@ internal static class GuardianPowerEventState
         }
     }
 
-    private static async Task<bool> IsCurrentPendingTurnSnapshotAsync(FileSystemManager fs, PendingTurnSnapshotManifest manifest)
+    private static async Task<bool> IsCurrentPendingTurnSnapshotAsync(
+        FileSystemManager fs,
+        PendingTurnSnapshotManifest manifest,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
         const string repairRequestPath = "game_state/control/validation_repair_request.json";
-        var repairContext = await ReadPendingTurnRequestContextFromFileAsync(fs, repairRequestPath);
+        var repairContext = await ReadPendingTurnRequestContextFromFileAsync(
+            fs,
+            repairRequestPath,
+            writeLease);
         if (DoesPendingTurnRequestContextMatchManifest(manifest, repairContext))
             return true;
 
-        var turnContext = await ReadPendingTurnRequestContextFromFileAsync(fs, "input/turn_request.json");
+        var turnContext = await ReadPendingTurnRequestContextFromFileAsync(
+            fs,
+            "input/turn_request.json",
+            writeLease);
         return DoesPendingTurnRequestContextMatchManifest(manifest, turnContext);
     }
 
@@ -472,9 +556,13 @@ internal static class GuardianPowerEventState
         return PendingTurnSnapshotAuthority.DoesPendingTurnContextIdMatch(manifestId, contextId);
     }
 
-    private static async Task<PendingTurnRequestContext?> ReadPendingTurnRequestContextFromFileAsync(FileSystemManager fs, string path)
+    private static async Task<PendingTurnRequestContext?>
+        ReadPendingTurnRequestContextFromFileAsync(
+            FileSystemManager fs,
+            string path,
+            FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var requestJson = await fs.ReadFileAsync(path);
+        var requestJson = await ReadCanonicalFileAsync(fs, writeLease, path);
         if (string.IsNullOrWhiteSpace(requestJson))
             return null;
 
@@ -498,6 +586,22 @@ internal static class GuardianPowerEventState
             return null;
         }
     }
+
+    private static Task<string?> ReadCanonicalFileAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path) =>
+        writeLease == null
+            ? fs.ReadFileAsync(path)
+            : fs.ReadFileAsync(writeLease, path);
+
+    private static Task<byte[]?> ReadCanonicalFileBytesAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path) =>
+        writeLease == null
+            ? fs.ReadFileBytesAsync(path)
+            : fs.ReadFileBytesAsync(writeLease, path);
 
     private static string GetNodeStringFromElement(JsonElement root, string propertyName)
     {

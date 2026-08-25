@@ -95,6 +95,26 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
 
     [Fact]
     [Trait("Category", "ShiningRelicForge")]
+    public async Task ExecuteAsync_ShiningRelicForge_MissingResourceProjectionFailsRerollsClosed()
+    {
+        await SeedShiningRelicForgeStateAsync();
+        _fs.DeleteFile(ResourceMaterializationContract.StatePath);
+
+        var result = await ExecuteCommandAsync("/shining_relic_forge");
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Contains(
+            ResourcePlayerFailureMessages.Unavailable,
+            CollectResultAndPromptText(result),
+            StringComparison.Ordinal);
+        var rerollPrompt = Assert.IsType<UiSelectionPrompt>(
+            Assert.Single(result.Prompts, prompt => prompt.Id == "relic_rerolls_to_commit"));
+        var onlyOption = Assert.Single(rerollPrompt.Options);
+        Assert.Equal("0", onlyOption.Value);
+    }
+
+    [Fact]
+    [Trait("Category", "ShiningRelicForge")]
     public async Task ExecuteAsync_ShiningRelicForge_WithForgeSupportQuotesDiscountedStrengthenAction()
     {
         await SeedShiningRelicForgeStateAsync(
@@ -483,39 +503,38 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
     {
         await SeedStoryTurnAsync(88);
         await SeedSoulRealmAsync(realm, inkFeathers);
+        await SeedPlayerSoulProfileAsync(realm);
         await SeedGuardiansAsync();
 
-        var root = new JsonObject
+        var root = ShiningAbodeState.CreateDefaultState();
+        root["availability"] = ShiningAbodeState.AvailabilityActive;
+        root["radiance"] = new JsonObject
         {
-            ["availability"] = ShiningAbodeState.AvailabilityActive,
-            ["radiance"] = new JsonObject
-            {
-                ["experience"] = 700,
-                ["tier"] = 4
-            },
-            ["lightSparks"] = lightSparks,
-            ["treasury"] = ShiningAbodeState.BuildDefaultTreasuryObject(),
-            ["gates"] = new JsonObject
-            {
-                ["hasOpenDraft"] = false,
-                ["draftVersion"] = 0,
-                ["allCandidateBlessingCards"] = new JsonArray(),
-                ["availableBlessingCards"] = new JsonArray(),
-                ["shownBlessingCardIds"] = new JsonArray(),
-                ["selectedBlessingCardIds"] = new JsonArray()
-            },
-            ["halls"] = new JsonArray
-            {
-                CreateHall("hall_lanterns", "Зал Фонарей"),
-                CreateHall("hall_hidden", "Скрытый зал")
-            },
-            ["factions"] = new JsonArray
-            {
-                CreateFaction("faction_lanterns", "Дом Фонарей", "hall_lanterns", visible: true),
-                CreateFaction("faction_hidden", "Скрытый Дом", "hall_hidden", visible: false)
-            },
-            ["shiningPoliticalActors"] = new JsonArray()
+            ["experience"] = 700,
+            ["tier"] = 4
         };
+        root["lightSparks"] = lightSparks;
+        root["treasury"] = ShiningAbodeState.BuildDefaultTreasuryObject();
+        root["gates"] = new JsonObject
+        {
+            ["hasOpenDraft"] = false,
+            ["draftVersion"] = 0,
+            ["allCandidateBlessingCards"] = new JsonArray(),
+            ["availableBlessingCards"] = new JsonArray(),
+            ["shownBlessingCardIds"] = new JsonArray(),
+            ["selectedBlessingCardIds"] = new JsonArray()
+        };
+        root["halls"] = new JsonArray
+        {
+            CreateHall("hall_lanterns", "Зал Фонарей"),
+            CreateHall("hall_hidden", "Скрытый зал")
+        };
+        root["factions"] = new JsonArray
+        {
+            CreateFaction("faction_lanterns", "Дом Фонарей", "hall_lanterns", visible: true),
+            CreateFaction("faction_hidden", "Скрытый Дом", "hall_hidden", visible: false)
+        };
+        root["shiningPoliticalActors"] = new JsonArray();
         await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         var residents = new JsonObject
@@ -527,6 +546,13 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
             }
         };
         await _fs.WriteFileAtomicAsync(GuardianAbodeResidentState.StatePath, residents.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(_fs);
+        var blessing = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
+            _fs,
+            CreateRelicRerollPackage(),
+            currentIncarnation: 3);
+        Assert.True(blessing.Success, blessing.ErrorMessage);
     }
 
     private async Task SeedSoulRealmAsync(string realm, int inkFeathers = 120)
@@ -536,21 +562,14 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
             ["soulName"] = "Тестовая Душа",
             ["currentRealm"] = realm,
             ["currentIncarnation"] = 3,
+            [AfterlifeSpiritualConflictState.SoulStateProfileProperty] = new JsonObject
+            {
+                [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0
+            },
             ["inkFeathers"] = new JsonObject
             {
                 ["current"] = inkFeathers,
                 ["total"] = inkFeathers
-            },
-            [ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
-            {
-                ["relicRefinementEntitlements"] = new JsonObject
-                {
-                    ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
-                    ["rerolls"] = 2,
-                    ["rerollsSpent"] = 0,
-                    ["freeShape"] = false,
-                    ["freeRetune"] = false
-                }
             },
             ["soulRelics"] = new JsonObject
             {
@@ -637,9 +656,16 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
 
     private async Task SetRelicRerollsAsync(int rerolls)
     {
-        var root = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
-        root[ShiningBlessingEffectState.SoulStateProperty]!["relicRefinementEntitlements"]!["rerolls"] = Math.Max(0, rerolls);
-        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var current = await ShiningBlessingEffectState.GetPendingRelicRerollsAsync(_fs);
+        if (rerolls < 0 || rerolls > current)
+            throw new InvalidOperationException("Test fixture can only exhaust the current exact relic allocation.");
+        if (current > rerolls)
+        {
+            Assert.True(await ShiningBlessingEffectState.ConsumeRelicRerollsAsync(
+                _fs,
+                currentTurnNumber: 89,
+                rerollsToConsume: current - rerolls));
+        }
     }
 
     private async Task WriteBlockingPendingCoreActionRequestAsync()
@@ -804,16 +830,84 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
     }
 
     private int ReadPendingRelicRerolls()
-    {
-        var root = JsonNode.Parse((_fs.ReadFileAsync("game_state/meta/soul_state.json").GetAwaiter().GetResult())!)!.AsObject();
-        return root[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"]?["rerolls"]?.GetValue<int>() ?? 0;
-    }
+        => ShiningBlessingEffectState.GetPendingRelicRerollsAsync(_fs)
+            .GetAwaiter()
+            .GetResult();
 
     private int ReadSpentRelicRerolls()
     {
-        var root = JsonNode.Parse((_fs.ReadFileAsync("game_state/meta/soul_state.json").GetAwaiter().GetResult())!)!.AsObject();
-        return root[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"]?["rerollsSpent"]?.GetValue<int>() ?? 0;
+        var soul = JsonNode.Parse(
+            _fs.ReadFileAsync("game_state/meta/soul_state.json").GetAwaiter().GetResult()!)!
+            .AsObject();
+        var allocationId = soul[ShiningBlessingEffectState.SoulStateProperty]?
+            ["relicRefinementEntitlements"]?["rerollResourceBinding"]?
+            ["allocationId"]?.GetValue<string>();
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath)
+                .GetAwaiter().GetResult(),
+            allowMissingPristine: false);
+        Assert.True(definitions.IsValid, string.Join(Environment.NewLine, definitions.Issues));
+        var history = ResourceHistoryState.ParseCanonical(
+            _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath)
+                .GetAwaiter().GetResult(),
+            definitions.Catalog!,
+            allowMissingPristine: false);
+        Assert.True(history.IsValid, string.Join(Environment.NewLine, history.Issues));
+        return checked((int)history.History!.Transitions
+            .Where(transition =>
+                transition.Operation == ResourceTransitionOperation.Spend &&
+                string.Equals(transition.OriginId, allocationId, StringComparison.Ordinal))
+            .Sum(static transition => transition.AppliedAmount));
     }
+
+    private Task SeedPlayerSoulProfileAsync(string realm)
+    {
+        return _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Тестовая Душа",
+                        ["realm"] = "Shining Abode"
+                    }
+                }
+            }.ToJsonString());
+    }
+
+    private static JsonObject CreateRelicRerollPackage() =>
+        new()
+        {
+            ["preparedAtTurn"] = 80,
+            ["selectedCardIds"] = new JsonArray("card_relic_forge"),
+            ["selectedCards"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["cardId"] = "card_relic_forge",
+                    ["dedupeKey"] = "relic:card_relic_forge",
+                    ["sourceType"] = ShiningAbodeState.CardSourceTypeProject,
+                    ["sourceFactionId"] = "faction_lanterns",
+                    ["sourceActorId"] = "project_refinement_faction_lanterns",
+                    ["effectFamily"] = ShiningAbodeState.EffectFamilyRelic,
+                    ["rarity"] = ShiningAbodeState.RarityCommon,
+                    ["displayName"] = "Кузнечные перебросы",
+                    ["displaySummary"] = "Два переброса реликвии.",
+                    ["effectPayload"] = new JsonObject
+                    {
+                        ["type"] = "grant_relic_refinement",
+                        [ShiningBlessingRerollAllocationContract.PropertyName] =
+                            ShiningBlessingRerollAllocationContract.Create(2),
+                        ["freeShape"] = false,
+                        ["freeRetune"] = false
+                    }
+                }
+            }
+        };
 
     private static string SelectPromptOptionValue(ExplorerCommandResult result, string promptId, string labelFragment)
     {

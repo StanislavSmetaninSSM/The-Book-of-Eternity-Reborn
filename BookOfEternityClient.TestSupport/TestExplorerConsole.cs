@@ -27,6 +27,7 @@ internal sealed class TestExplorerConsole : IExplorerConsole
     public int ClearCalls { get; private set; }
     public int ReadKeyCalls { get; private set; }
     public Action? ReadKeyCallback { get; set; }
+    public Action? ConfirmCallback { get; set; }
 
     public void Clear() => ClearCalls++;
 
@@ -53,6 +54,7 @@ internal sealed class TestExplorerConsole : IExplorerConsole
     public bool Confirm(string prompt, bool defaultValue = false)
     {
         ConfirmPrompts.Add(prompt);
+        ConfirmCallback?.Invoke();
         if (_anyConfirmResponses.Count > 0)
             return _anyConfirmResponses.Dequeue();
 
