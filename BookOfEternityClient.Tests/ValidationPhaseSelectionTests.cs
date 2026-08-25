@@ -41,7 +41,7 @@ public sealed class ValidationPhaseSelectionTests : IDisposable
     [Fact]
     public async Task ValidateGameStateAsync_UnknownPhaseSelection_FailsClosed()
     {
-        var unknownPhase = (GameStateValidationPhase)(1u << 31);
+        var unknownPhase = (GameStateValidationPhase)(1UL << 63);
 
         var exception = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
             () => _validator.ValidateGameStateAsync(unknownPhase));

@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="14">
  <title>
   Player Character and Named NPC Combat Profile Calculation
@@ -20,72 +21,63 @@
  <content type="ruleset">
   <rule id="14.1">
    <title>
-    Health and Energy Parameters
+    Authoritative Health, Energy, and Poise Resources
    </title>
    <content type="ruleset">
     <rule id="14.1.1">
      <title>
-      Maximum Health ('maxHealth%')
+      Sealed Resource Projection
      </title>
      <content type="rule_text">
-      <![CDATA[    
-                            
-                            - For Player Character (PC):
-                            Derived from the character's Permanently Modified Constitution and Strength. 
-                            The game system calculates this value based on the formula in #5.7.3 and typically provides it in 'Context.playerCharacter.maxHealth'. 
-                            The GM must be aware that this value now includes permanent bonuses from gear and skills.
+      <![CDATA[
 
-                            - For Named NPCs:
-                            Calculated by the GM using the NPC's Permanently Modified Constitution and Strength with the same formula, as detailed in rule #6.1.6.2.
+                            `health`, `energy`, and `poise` are bounded resources. Their only authority is the client-owned resource quartet in `game_state/resources/`; combat/player/NPC objects are not numeric mirrors.
+
+                            Read the exact current value, sealed maximum, unit, and lifecycle state from the resource projection supplied for the accepted owner. If an expected projection is missing, duplicated, malformed, or not active, treat it as unavailable and request repair; never reconstruct a value from characteristics or prose.
+
+                            The GM never writes current/maximum resource values, canonical resource identities, sequence numbers, history, or owner bindings.
 
                             ]]>
      </content>
     </rule>
     <rule id="14.1.2">
      <title>
-      Current Health ('currentHealth%')
+      Ordinary Resource Transitions
      </title>
      <content type="rule_text">
-      <![CDATA[    
-                            
-                            -   For PC: Tracked by the system, provided in 'Context.playerCharacter.currentHealth'.
+      <![CDATA[
 
-                            -   For Named NPCs: Initialized to 'maxHealth%' and updated based on damage/healing. 
-                                If the NPC is part of 'enemiesData' or 'alliesData', their 'currentHealth' is updated there.
+                            Request combat loss/restoration only through top-level `resourceChanges[]` with an exact `operation` (`damage`, `restore`, `spend`, or `gain`), accepted target, `resourceKey`, positive `amount`, registered `source`, exact `eventRef`, and non-empty `reason`.
+
+                            Use target kind `player` with `targetId=player_current` for the current player, `npc` with the accepted permanent NPC id for a named NPC, or `combatant` with the accepted combatant identity for a combat member. Do not duplicate the transition in player status, NPC, enemy, or ally rows, and do not author an after-value.
 
                             ]]>
      </content>
     </rule>
     <rule id="14.1.3">
      <title>
-      Maximum Energy ('maxEnergy%') (Player and applicable NPCs)
+      Capacity Changes
      </title>
      <content type="rule_text">
       <![CDATA[
 
-                            - This parameter is calculated using the character's Permanently Modified characteristics.
-                            - The formula is identical to the one defined in #5.7.3:
+                            When an accepted permanent characteristic/equipment/skill/effect change alters a registered capacity, request `resourceCapacityChanges[]` against the same exact owner/resource coordinate. Use only an admitted operation and registered capacity policy/formula; the client calculates and seals the maximum and applies the requested current disposition atomically.
 
-                                'MaxEnergy% = 100 + floor(PermanentlyModifiedConstitution * 0.75) + floor(PermanentlyModifiedIntelligence * 0.75) + floor(PermanentlyModifiedWisdom * 0.75) + floor(PermanentlyModifiedFaith * 0.75)'
-
-                            - For PC: 
-                            This value is typically provided by the system in 'Context.playerCharacter.maxEnergy', calculated based on the full rule in #5.7.3.
-
-                            - For NPCs who use abilities with energy costs (if any are designed this way): 
-                            Calculated by the GM using their Permanently Modified Characteristics. 
-                            (Note: As per #6.1.6.7, energy for NPCs is generally assumed unlimited for their abilities, but their MaxEnergy might be relevant for other effects).
+                            Never calculate or publish a replacement maximum in a combat profile. A capability that has no admitted resource definition and owner binding does not acquire a reserve by inference.
 
                             ]]>
      </content>
     </rule>
     <rule id="14.1.4">
      <title>
-      Current Energy ('currentEnergy%') (Player)
+      Defeat and Availability
      </title>
      <content type="rule_text">
-      <![CDATA[    
-                            
-                            - Tracked by the system, provided in 'Context.playerCharacter.currentEnergy'.
+      <![CDATA[
+
+                            Defeat or exhaustion checks use the result of the accepted resource transition: reaching the sealed minimum may trigger the corresponding tactical consequence. Narrative or tactical status may describe that consequence, but it never becomes a second numeric authority.
+
+                            Suspended or retired resources are unavailable for ordinary commands until their lifecycle is validly resumed or initialized through the common capacity contract.
 
                             ]]>
      </content>
@@ -189,7 +181,7 @@
 
                             Step 4: Calculate Bonus from Temporary Effects
                             a)  'BonusFromTemporaryEffects': 
-                            Sum ALL percentage 'value's from effects currently in the character's 'activeBuffs' list that have an 'effectType' of 'Buff' and a 'targetType' matching or including the damage type of the current attack.
+                            Consume only the applicable temporary-effect contribution from the client-published accepted mechanics snapshot. Do not scan raw carrier fields or recompute effect arithmetic from prose.
 
                             Step 5: Final Summation and Logging
                             a)  Calculate 'TotalAddedDamageBonus%' by summing the totals from each step.
@@ -316,7 +308,7 @@
                             - Secondary Source: The 'structuredBonuses' array.
                             - Legacy Fallback: If a skill has no relevant bonuses in either of the primary sources, you MUST then check the legacy 'playerStatBonus' string for any applicable resistance bonuses.
                             
-                            c) 'TemporaryEffectsBonuses%': Sum the 'value' percentages from 'activeBuffs' and 'activeDebuffs' that modify resistance to the 'IncomingDamageType' or 'all' types. (Note: Debuffs provide negative values).
+                            c) 'TemporaryEffectsBonuses%': Use the exact resistance contribution published by the accepted mechanics snapshot for the incoming damage type. Its signed contribution already accounts for buffs and debuffs; do not reconstruct it from carrier data.
                             d) 'AdditionalBonuses% = AdditionalEquipmentBonuses% + PassiveSkillBonuses% + TemporaryEffectsBonuses%'.
 
                             Step 4: Final Calculation and Capping
@@ -359,23 +351,23 @@
   </rule>
   <rule id="14.5">
    <title>
-    Processing Wound Reference Effects (WoundReference)
+    Consuming Client-Published Wound Consequences
    </title>
    <description>
-    This rule describes how the GM must process "WoundReference" type effects during calculations to apply the mechanical consequences associated with the wound.
-                    Reference effects are added by the system to 'activeBuffs'/'activeDebuffs' only when the wound ID is known (i.e., in the turn following the wound's infliction).
+    Wounds are independent entities and may own complete Effect Materialization v1 source definitions. Their runtime consequences use an exact wound source binding; the client alone materializes, advances, projects, and retires the canonical active effect.
    </description>
    <content type="rule_text">
     <![CDATA[
 
-                    When calculating total bonuses, penalties, or resistances (as per Rule 14.2.1 and 14.3.1), the GM MUST scan the combatant's 'activeEffects' array ('activeBuffs' / 'activeDebuffs').
-                    1.  If an object in the array is a standard effect (e.g., 'effectType: "Buff"' or 'effectType: "DamageOverTime"'), it is processed as usual, using its own 'value', 'targetType', and 'duration' fields.
-                    2.  If an object has 'effectType: "WoundReference"', the GM MUST:
-                        a)  Use the 'sourceWoundId' from the 'WoundReference' object to locate the corresponding Wound object in the 'playerWounds' array (for the player) or 'NPCWounds' array (for NPCs) within the 'Context'.
-                        b)  Extract the 'generatedEffects' array from the found Wound object.
-                        c)  Process each individual effect object from this Wound's 'generatedEffects' array (e.g., a "Disarmed" effect or a "Strength reduced by X%" effect) as if it were directly present in the main 'activeEffects' list.
+                    1.  The exact current wound owns activeEffectDefinitions[]. A wound-consequence definition uses profile=wound_consequence, names the same woundId in its payload, carries one exact links[] entry with kind=wound and role=source, and normally uses source_bound lifetime with activePredicate=active.
 
-                    Thus, 'WoundReference' serves as a pointer to the actual mechanical penalties, which are fully defined within the corresponding Wound object.
+                    2.  The existence of a wound or definition does not apply anything by itself. The accepted response requests application through top-level effectChanges[] with source.kind=wound, the exact sourceId/definitionKey, exact target, eventRef, and reason.
+
+                    3.  For Rule 14 calculations, consume only the client-published accepted mechanics contribution for the exact combatant and operation. Do not rescan the wound definition, raw activeEffects[] values, display prose, or a static combat-action effects[] object to reconstruct a modifier.
+
+                    4.  activeEffects[] and effect_identity_index.json are read-only client carriers. The GM never creates an effectId, decrements lifetime, changes stacks, copies a definition into a carrier, or writes a terminal post-state.
+
+                    5.  Wound treatment remains a separate accepted wound transition. When treatment makes the exact wound source inactive, the client applies the declared source-loss policy. An explicit dispel/remove request may retire the linked effect when its declared authority permits it, but that effect operation never heals, changes, or deletes the wound.
 
                     ]]>
    </content>

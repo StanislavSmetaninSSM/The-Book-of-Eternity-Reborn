@@ -268,7 +268,10 @@ public sealed class ShiningAbodeStateTests
             null,
             null,
             null,
-            null);
+            new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>()),
+            new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>()),
+            null,
+            0);
         Assert.NotNull(context);
         var choices = Assert.IsAssignableFrom<IReadOnlyList<string>>(
             method!.Invoke(
@@ -903,6 +906,98 @@ public sealed class ShiningAbodeStateTests
         Assert.NotNull(result);
         Assert.Contains("preparedIncarnationPackage", result, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Theory]
+    [InlineData("{\"resourceKey\":\"wrong_resource\",\"amount\":1}")]
+    [InlineData("{\"resourceKey\":\"blessing_rerolls\",\"amount\":-1}")]
+    [InlineData("{\"resourceKey\":\"blessing_rerolls\",\"amount\":\"1\"}")]
+    [InlineData("{\"resourceKey\":\"blessing_rerolls\",\"amount\":1,\"extra\":true}")]
+    public void ValidatePreparedIncarnationPackageForBootstrap_InvalidRerollAllocation_FailsClosed(
+        string allocationJson)
+    {
+        var package = CreatePreparedRerollPackage(new JsonObject
+        {
+            ["type"] = "expand_memory_selection",
+            ["options"] = 1,
+            [ShiningBlessingRerollAllocationContract.PropertyName] = JsonNode.Parse(allocationJson)
+        });
+
+        var result = ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(package);
+
+        Assert.NotNull(result);
+        Assert.Contains("rerollAllocation", result, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ValidatePreparedIncarnationPackageForBootstrap_LegacyNumericRerolls_FailsClosed()
+    {
+        var package = CreatePreparedRerollPackage(new JsonObject
+        {
+            ["type"] = "expand_memory_selection",
+            ["options"] = 1,
+            ["rerolls"] = 1
+        });
+
+        var result = ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(package);
+
+        Assert.NotNull(result);
+        Assert.Contains("rerolls", result, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ValidatePreparedIncarnationPackageForBootstrap_RerollAllocationOnUnsupportedFamily_FailsClosed()
+    {
+        var package = CreatePreparedRerollPackage(
+            new JsonObject
+            {
+                ["type"] = "grant_social_start",
+                [ShiningBlessingRerollAllocationContract.PropertyName] =
+                    ShiningBlessingRerollAllocationContract.Create(1)
+            },
+            ShiningAbodeState.EffectFamilySocial);
+
+        var result = ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(package);
+
+        Assert.NotNull(result);
+        Assert.Contains("rerollAllocation", result, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ValidatePreparedIncarnationPackageForBootstrap_ClosedRerollAllocation_IsAccepted()
+    {
+        var package = CreatePreparedRerollPackage(new JsonObject
+        {
+            ["type"] = "expand_memory_selection",
+            ["options"] = 1,
+            [ShiningBlessingRerollAllocationContract.PropertyName] =
+                ShiningBlessingRerollAllocationContract.Create(1)
+        });
+
+        Assert.Null(ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(package));
+    }
+
+    private static JsonObject CreatePreparedRerollPackage(
+        JsonObject effectPayload,
+        string effectFamily = ShiningAbodeState.EffectFamilyMemory) => new()
+    {
+        ["selectedCardIds"] = new JsonArray("card_memory"),
+        ["selectedCards"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["cardId"] = "card_memory",
+                ["dedupeKey"] = "memory:card_memory",
+                ["sourceType"] = ShiningAbodeState.CardSourceTypeProject,
+                ["sourceFactionId"] = "faction_dawn",
+                ["sourceActorId"] = "project_memory",
+                ["effectFamily"] = effectFamily,
+                ["rarity"] = ShiningAbodeState.RarityCommon,
+                ["displayName"] = "Память рассвета",
+                ["displaySummary"] = "Даёт дополнительный выбор памяти.",
+                ["effectPayload"] = effectPayload
+            }
+        }
+    };
 
     [Fact]
     public void NormalizeStateRoot_HydratesFoundingReceiptSnapshotFromCurrentHallAndFaction()
@@ -1962,7 +2057,19 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
-    public void SyncShiningReturnCycle_ResetsUsedGachaChargesOnNewCycle()
+    public void CreateDefaultState_UsesCompanionOnlyGachaState()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+
+        var gachaSystem = Assert.IsType<JsonObject>(root["gachaSystem"]);
+        Assert.False(gachaSystem.ContainsKey("chargesPerReturn"));
+        Assert.False(gachaSystem.ContainsKey("chargesUsedThisReturn"));
+        Assert.Equal(string.Empty, gachaSystem["currentReturnCycleId"]?.GetValue<string>());
+        Assert.Empty(Assert.IsType<JsonArray>(gachaSystem["gachaHistory"]));
+    }
+
+    [Fact]
+    public void SyncShiningReturnCycle_UpdatesCompanionCycleWithoutLegacyCounters()
     {
         var root = ShiningAbodeState.CreateDefaultState();
         root["radiance"] = new JsonObject
@@ -1972,8 +2079,6 @@ public sealed class ShiningAbodeStateTests
         };
         root["gachaSystem"] = new JsonObject
         {
-            ["chargesPerReturn"] = 4,
-            ["chargesUsedThisReturn"] = 3,
             ["currentReturnCycleId"] = "shining_return_2",
             ["gachaHistory"] = new JsonArray()
         };
@@ -1983,17 +2088,16 @@ public sealed class ShiningAbodeStateTests
         Assert.True(changed);
         Assert.True(cycleChanged);
         Assert.Equal("shining_return_5", root["gachaSystem"]?["currentReturnCycleId"]?.GetValue<string>());
-        Assert.Equal(0, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesPerReturn"));
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesUsedThisReturn"));
     }
 
     [Fact]
-    public void SyncShiningReturnCycle_EmptyLegacyCycleIdResetsUsedGachaCharges()
+    public void SyncShiningReturnCycle_EmptyBootstrapCyclePersistsResolvedCycle()
     {
         var root = ShiningAbodeState.CreateDefaultState();
         root["gachaSystem"] = new JsonObject
         {
-            ["chargesPerReturn"] = 3,
-            ["chargesUsedThisReturn"] = 2,
             ["currentReturnCycleId"] = "",
             ["gachaHistory"] = new JsonArray()
         };
@@ -2003,7 +2107,8 @@ public sealed class ShiningAbodeStateTests
         Assert.True(changed);
         Assert.False(cycleChanged);
         Assert.Equal("shining_return_5", root["gachaSystem"]?["currentReturnCycleId"]?.GetValue<string>());
-        Assert.Equal(0, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesPerReturn"));
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesUsedThisReturn"));
     }
 
     [Fact]
@@ -2018,8 +2123,6 @@ public sealed class ShiningAbodeStateTests
         };
         root["gachaSystem"] = new JsonObject
         {
-            ["chargesPerReturn"] = 1,
-            ["chargesUsedThisReturn"] = 0,
             ["currentReturnCycleId"] = "",
             ["gachaHistory"] = new JsonArray()
         };
@@ -2079,7 +2182,8 @@ public sealed class ShiningAbodeStateTests
 
         Assert.True(applied, error);
         Assert.Equal("shining_return_5", root["gachaSystem"]?["currentReturnCycleId"]?.GetValue<string>());
-        Assert.Equal(1, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesPerReturn"));
+        Assert.False(root["gachaSystem"]!.AsObject().ContainsKey("chargesUsedThisReturn"));
         var history = Assert.IsType<JsonArray>(root["gachaSystem"]?["gachaHistory"]);
         Assert.Equal("shining_return_5", history[0]?["returnCycleId"]?.GetValue<string>());
     }

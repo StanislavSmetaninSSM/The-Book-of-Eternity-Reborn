@@ -249,7 +249,10 @@ public sealed partial class MortalLocationMaterializationValidationTests
             .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
         Assert.DoesNotContain(rawIssues, issue => issue.Severity == IssueSeverity.Error);
 
-        await context.Normalizer.NormalizeMortalLocationsAsync(arrangement.Backups);
+        await using var writeLease = await context.FileSystem
+            .AcquireCanonicalWriteLeaseAsync();
+        await context.Normalizer.BindTo(writeLease)
+            .NormalizeMortalLocationsAsync(arrangement.Backups);
 
         var canonicalIssues = await context.Validator
             .ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync();

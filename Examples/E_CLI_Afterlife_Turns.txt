@@ -12,6 +12,8 @@ Read this file whenever `game_state/meta/soul_state.json.currentRealm` is `Chaos
 
 Before using an example, first select the matching rows in `OtherGuides/Afterlife_Contract_Matrix.md`. The matrix tells the GM which scheduler contour, pending file, direct action, canonical output surface, receipt/report, and forbidden substitution apply. These examples then show worked accepted-turn patterns. They are not a replacement for the full schemas.
 
+UNIFIED AFTERLIFE RESOURCE AUTHORITY: `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` are client-owned entries in `game_state/resources/resource_state.json`; their immutable transitions are in `game_state/resources/resource_history.json`, and exact owner/capacity authority is in client-owned `game_state/resources/resource_owner_authority.json`. Definitions, state, history, and owner authority are one guarded quartet; the GM never authors any quartet root. A missing or stale owner-authority root in an existing session fails closed and is not migrated or self-healed; only Fresh New Game creates the first root. Fresh New Game publishes preset/freeform Guardian and player owner after-images with the quartet in one deterministic coordinated resource write set; Mortal-incarnation bootstrap requires the exact existing quartet before-image. Afterlife state retains only exact `resourceOwnerBindings`. Actor-realm refs are derived from actor ID + realm, conflict-side owner IDs/refs from realm + conflictId, and Shining scope IDs/refs from `shining_abode` + returnCycleId. These identities are client-owned, deterministic for the same accepted input, and never GM-authored. The GM reads current/maximum values only from the documented read-only client projection or state context for the specific action and never writes direct ledger values, `chargesPerReturn`, `chargesUsedThisReturn`, numeric blessing `rerolls`, or `rerollsSpent`; `actionEconomy` is forbidden as persisted state. Ink Feathers, Light Sparks, treasuries, faction accounting, progression, relationships, and spiritual power/strain/shield remain specialized. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; only the numeric allocation enters the ledger. A selected card may show the client-generated transient `rerollAllocation` object with exactly `resourceKey = blessing_rerolls` and non-negative integer `amount`; Mortal bootstrap consumes it into the common ledger and leaves only the exact client-owned `rerollResourceBinding` in pending blessing state. The GM never authors either field. Old saves are not migrated and there is no legacy fallback.
+
 ==================================================
 EXAMPLE INDEX
 ==================================================
@@ -1149,7 +1151,10 @@ Input fragment:
           "effectPayload": {
             "type": "expand_memory_selection",
             "options": 2,
-            "rerolls": 1
+            "rerollAllocation": {
+              "resourceKey": "blessing_rerolls",
+              "amount": 1
+            }
           }
         },
         {
@@ -1892,7 +1897,7 @@ Guardian-mediated gacha:
 - Guardian reputation affects charges/trade pricing only; it does not add rarity upgrade chance.
 - Hard/Impossible mortal-world difficulty does not add afterlife Guardian gacha rarity steps.
 - If rarity is upgraded above the client base, include `gachaBonusAudit`. It is safe to include the audit with zero bonus steps even when rarity is unchanged.
-- The accepted Guardian state must increment `gachaSystem.chargesUsedThisReturn` and append a `gachaHistory[]` entry.
+- The accepted Guardian result must consume one exact `gacha_attempts` unit in the common resource ledger and append a `gachaHistory[]` entry. The GM never writes the remaining-attempt counter.
 
 Correct guardian-mediated response fragment:
 
@@ -1940,8 +1945,7 @@ Canonical Guardian state impact, shown as a patch fragment:
 {
   "guardianId": "guard_social_azalia_001",
   "gachaSystem": {
-    "chargesPerReturn": 2,
-    "chargesUsedThisReturn": 1,
+    "currentReturnCycleId": "chaos_return_24",
     "gachaHistory": [
       {
         "timestamp": "2026-04-24T09:40:00Z",
@@ -3578,8 +3582,7 @@ Correct response/state fragment:
         "completedQuests": []
       },
       "gachaSystem": {
-        "chargesPerReturn": 4,
-        "chargesUsedThisReturn": 0,
+        "currentReturnCycleId": "chaos_return_317",
         "gachaHistory": []
       },
       "mood": {
@@ -3704,8 +3707,7 @@ Correct response/state fragment:
           "completedQuests": []
         },
         "gachaSystem": {
-          "chargesPerReturn": 5,
-          "chargesUsedThisReturn": 0,
+          "currentReturnCycleId": "chaos_return_317",
           "gachaHistory": []
         },
         "founderBonuses": {
@@ -3853,7 +3855,7 @@ Shining resident normalizer side effects:
 Canonical Shining owner-state invariants:
 - `halls[].hallId`, `factions[].factionId`, `shiningPoliticalActors[].actorId`, and every `projects[].projectId` across all factions must be unique. Duplicate ids make runtime helpers choose the first match and are invalid.
 - Supported completed projects are globally capped by Radiance tier: tier `0..1` allows `1`, tier `2..3` allows `2`, tier `4` allows `3`. If more completed projects have `isSupported = true`, preserve for repair or close an explicit `unsupport_project`; do not keep the over-cap state.
-- `gachaSystem.currentReturnCycleId` may be empty only before the first Shining return-cycle sync. While it is empty, `gachaSystem.chargesUsedThisReturn` must be `0`; positive used charges without a cycle id are stale state.
+- `gachaSystem.currentReturnCycleId` may be empty only before the first Shining return-cycle sync. Once synchronized, the exact `resourceOwnerBindings.gachaReturn` entry selects the client-owned `gacha_attempts` allocation; current/maximum counters never belong in `gachaSystem`.
 - Every current-schema Shining faction requires explicit `factionLifecycle.state`: `active`, `weakened`, `leaderless`, `broken`, or `dissolved`. Missing, blank, or unsupported lifecycle fails raw owner-state validation before normalization and never defaults to `active`.
 - Do not delete defeated factions from `factions[]`. `broken` and `dissolved` keep history/remnants through `factionLifecycle.defeatedAtTurn`, `defeatedAtUtc`, `defeatReason`, and `remnantsSummary`, while `factionStrength=0`, `leadership.leadershipState=vacant`, `tradeInventory=null`, and all projects have `isSupported=false`.
 - `leaderless` also requires vacant leadership and does not behave like a normally headed active faction until a later explicit leadership restoration. `active` and `weakened` are the operational lifecycle states.
@@ -4361,7 +4363,7 @@ Accepted `pull_relic_gacha` must:
 - never exceed `request.projectedGachaBonusSteps`;
 - add exactly one new Soul Relic to `soul_state.json`;
 - spend exact `quotedCostFeathers` and no Light Sparks unless the request says otherwise;
-- update `shining_abode_state.json.gachaSystem.chargesUsedThisReturn`, `currentReturnCycleId`, and `gachaHistory[]`;
+- consume one exact `gacha_attempts` unit through the client-owned common ledger, keep `currentReturnCycleId`, and append `shining_abode_state.json.gachaSystem.gachaHistory[]`;
 - write a receipt with `returnCycleId`, `relicId`, `relicName`, `baseRarity`, and `finalRarity`.
 
 Correct receipt fragment:
@@ -5651,7 +5653,7 @@ Why this is valid:
 20. VALID — SYSTEM ETERNAL GUARDIAN ATTRACTION
 ==================================================
 
-Fresh New Game system Guardian seed is not this contract, and freeform New Game Guardian seed is no longer a pending materialization contract either. If the player selected a named system Guardian or described a freeform Guardian during New Game, the client has already written a complete canonical `game_state/meta/guardians.json` root with `guardians[]`, `activeGuardian`, and `chaosSeaNavigation`; system seeds also carry `sourcePreset`, while freeform seeds carry `originType=freeform` and `freeformSourceDescription`. There is no `pendingGuardianCreation`. In that startup scene the GM narrates the first meeting instead of materializing or repairing the Guardian: do not emit `UpdateGuardians.create`, do not add `pendingGuardianCreation`, and do not treat the scene as `system_guardian_attraction.json`.
+Fresh New Game system Guardian seed is not this contract, and freeform New Game Guardian seed is no longer a pending materialization contract either. If the player selected a named system Guardian or described a freeform Guardian during New Game, the client has already published the Guardian/profile/Soul owner after-images and the exact definitions/state/history/owner-authority quartet through one deterministic plan and one coordinated resource write set. The resulting canonical `game_state/meta/guardians.json` root contains `guardians[]`, `activeGuardian`, and `chaosSeaNavigation`; system seeds also carry `sourcePreset`, while freeform seeds carry `originType=freeform` and `freeformSourceDescription`. There is no `pendingGuardianCreation`. In that startup scene the GM narrates the first meeting instead of materializing or repairing the Guardian: do not emit `UpdateGuardians.create`, do not add `pendingGuardianCreation`, and do not treat the scene as `system_guardian_attraction.json`.
 
 This example is for a deterministic Eternal Guardian attraction from ordinary Chaos Sea. The player-facing fiction is "I seek this Eternal Guardian." The technical contract is `game_state/control/system_guardian_attraction.json`, often paired with `guardians.json.pendingGuardianCreation.mode = system_preset`; do not create or resolve it from Shining Abode.
 
@@ -5798,8 +5800,7 @@ Correct accepted response fragment:
           "completedQuests": []
         },
         "gachaSystem": {
-          "chargesPerReturn": 0,
-          "chargesUsedThisReturn": 0,
+          "currentReturnCycleId": "chaos_return_420",
           "gachaHistory": []
         },
         "mood": {
@@ -5930,8 +5931,7 @@ Correct accepted response fragment:
         "completedQuests": []
       },
       "gachaSystem": {
-        "chargesPerReturn": 0,
-        "chargesUsedThisReturn": 0,
+        "currentReturnCycleId": "chaos_return_420",
         "gachaHistory": []
       },
       "mood": {
@@ -6921,9 +6921,9 @@ Reference `guardianPowerEvents.reasonType = correction_spend` shape:
 {
   "guardianPowerEvents": [
     {
-      "eventId": "gce_corr_protective_omen_002",
+      "eventId": "gce_life_9_corr_protective_omen_002",
       "guardianId": "guard_social_azalia_001",
-      "delta": -4,
+      "delta": -5,
       "reasonType": "correction_spend",
       "sourceSurface": "guardian_corrections",
       "sourceId": "corr_protective_omen_002",
@@ -6933,6 +6933,7 @@ Reference `guardianPowerEvents.reasonType = correction_spend` shape:
       "appliedAt": "2026-04-24T18:10:00Z",
       "relatedGuardianId": null,
       "audit": {
+        "lifeIncarnation": 9,
         "correctionId": "corr_protective_omen_002",
         "slotId": "slot_protection_or_omen",
         "slotType": "protection_or_omen",
@@ -6968,6 +6969,7 @@ Scenario:
 - The GM starts an afterlife spiritual conflict instead of writing Mortal combat state.
 - Conflict realm/mode is authorized from the validated pre-turn afterlife snapshot. Do not make the start legal by changing `soul_state.currentRealm` or Shining `availability`/`preparedIncarnationPackage` in the same accepted response.
 - Russian labels for this system are fixed in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`: "духовный конфликт посмертия" = `afterlife spiritual conflict`, "обмен действиями" = `exchange`, "аудит кубиков" = `diceAudit`. JSON keys and enum values remain English.
+- Read `input/turn_request.json.afterlifeSpiritualConflictPreview` for exact player/opposition `spiritual_action_points`. On a new opposition, author only `oppositionSide.resourceMaterialization.resources[]`; the client allocates `resourceOwnerBindings.opposition` and writes the common state/history. `actionEconomy` is forbidden as persisted conflict state.
 
 Correct accepted response:
 
@@ -7011,11 +7013,15 @@ Correct accepted response:
           },
           "artAuthoritySource": "guardian_state.relationshipData + abodePower + narrative authority"
         },
-        "supporters": []
-      },
-      "actionEconomy": {
-        "player": { "current": 6, "max": 6, "source": "Средоточие Души tier 0" },
-        "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
+        "supporters": [],
+        "resourceMaterialization": {
+          "resources": [
+            {
+              "resourceKey": "spiritual_action_points",
+              "maximum": 6
+            }
+          ]
+        }
       },
       "exchangeLog": []
     }
@@ -7050,11 +7056,11 @@ or ordinary roleplay prose while this conflict is still active:
 Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
 ```
 
-the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, read it before writing the exchange: it is the client-owned shortcut for authoritative `actionCostAudit` tiers/costs and the first dice outcome preview, while the contract below remains canonical. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. Active conflicts with current exchanges carry afterlife-only ОД in `actionEconomy.player` and `actionEconomy.opposition`; on `mode=start`, player `current/max` comes from client-owned `soul_state.afterlifeCombatProfile.spiritFocusTier` / `Средоточие Души` (`0/1/2/3/4/5` => max ОД `6/7/8/10/12/15`, source `Средоточие Души tier N`). The GM reads `spiritFocusTier` but must not author or mutate it; `/spiritual_arts` upgrades it locally. Every new/current exchange that spends or restores ОД must include `actionCostAudit.player` with `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`, using `effectiveCost = max(minCost, baseCost - artTier)`. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; they cannot mutate player ОД through fake audit. Every exchange that resolves an active costed opposition operation must also include `actionCostAudit.opposition` in the same shape; take that operation from `incomingAction.finalOperationType` when present, otherwise from `incomingAction.operationType` or the matching `matchupAudit.oppositionOperation`; never fall back to stale `incomingAction.operationType` when `finalOperationType` exists. Take `artTier` from the validated pre-turn afterlife entity profile for the opposition lead actor, and keep final `actionEconomy.opposition.current` equal to the last current `actionCostAudit.opposition.after`. `recover_spiritual_power` / Собрать Средоточие restores +3 ОД on success, +2 on partial_success, and only +0..1 when punished by pressure, maneuver, binding, force_binding, or force_incarnation; use `riskProfile=recovery_timing` when rolled. If an active conflict already has active `controlState`, or the current exchange creates/changes active `controlState`, explicitly write both `before.controlState` and `after.controlState`; use `null` or `{ "level": "none" }` for no active control instead of omitting the field. Successful `guard` against direct pressure writes `after.tempoAdvantage` with `ownerSide=player`, `sourceOperation=guard`, `status=available`, `level=advantage|great_advantage`, id, source exchange, and summary; the next eligible non-terminal combat action must consume it in `rollMode.player.advantageSources[]` with `sourceType=guard_tempo_window` or explicitly expire/clear it. Every exchange with `diceAudit` must include `before.conflictPosition`. If `before.conflictPosition` is not `contested`, record it as exactly one `conflict_position` modifier in `modifierBreakdown` with exact matching `position` (+2 for advantaged, +4 for dominant, on the side that holds the position); do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and must not create `controlState`, `guard` safely protects player strain and may block new control but does not remove existing control; even on setback against direct pressure, player strain may worsen by at most one rank, and on full success against direct pressure it creates `tempoAdvantage`, `counter` needs incomingAction and a measured payoff on success/partial_success/countered but cannot create fresh player control from none, `maneuver` changes position and is stopped by pressure/opposing maneuver/active opposition `controlState`; if opposition `controlState.restrictedOperations` lists the attempted operation, that operation cannot succeed until control is answered, `binding` needs advantage/setup and must create or strengthen player `controlState` only after active opposition control is gone, `force_binding` needs strong leverage and at least two distinct `restrictedOperations`, failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas, `break_binding` needs binding/coercive context and must weaken/remove/reverse opposition `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`, while equal/reordered sets do not count, `incarnation_resistance` is only for force_incarnation control and does not clear ordinary binding control, failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged, `champion_coordination` is only for champion_duel, and `recover_spiritual_power` is timing-based recovery rather than attack/defense. Active `controlState` uses `level=hindered|bound|locked`, `controllerSide`, `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; missing/null means no active control for legacy entries, and `sourceOperation` is not a free operation id. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
+the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, read it before writing the exchange: it is the client-owned shortcut for authoritative `actionCostAudit` tiers/costs and the first dice outcome preview, while the contract below remains canonical. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. `spiritual_action_points` is the client-owned afterlife ОД reserve and `actionEconomy` is forbidden as persisted state. Read player/opposition current/maximum from `afterlifeSpiritualConflictPreview`; on `mode=start`, `spiritFocusTier` supplies the registered player maximum (`0/1/2/3/4/5` => `6/7/8/10/12/15`, source `Средоточие Души tier N`), while a new opposition declares only `resourceMaterialization`. Every new/current exchange that spends or restores ОД must include `actionCostAudit.player` with `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`, using `effectiveCost = max(minCost, baseCost - artTier)`. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; they cannot mutate player ОД through fake audit. Every exchange that resolves an active costed opposition operation must also include `actionCostAudit.opposition` in the same shape; take that operation from `incomingAction.finalOperationType` when present, otherwise from `incomingAction.operationType` or the matching `matchupAudit.oppositionOperation`; never fall back to stale `incomingAction.operationType` when `finalOperationType` exists. Take `artTier` from the validated pre-turn afterlife entity profile for the opposition lead actor. The client validates both audits against the exact pre-turn resource projection, publishes common resource state/history atomically, and creates or preserves exact `resourceOwnerBindings`; the GM never writes those values or identities. `recover_spiritual_power` / Собрать Средоточие restores +3 ОД on success, +2 on partial_success, and only +0..1 when punished by pressure, maneuver, binding, force_binding, or force_incarnation; use `riskProfile=recovery_timing` when rolled. If an active conflict already has active `controlState`, or the current exchange creates/changes active `controlState`, explicitly write both `before.controlState` and `after.controlState`; use `null` or `{ "level": "none" }` for no active control instead of omitting the field. Successful `guard` against direct pressure writes `after.tempoAdvantage` with `ownerSide=player`, `sourceOperation=guard`, `status=available`, `level=advantage|great_advantage`, id, source exchange, and summary; the next eligible non-terminal combat action must consume it in `rollMode.player.advantageSources[]` with `sourceType=guard_tempo_window` or explicitly expire/clear it. Every exchange with `diceAudit` must include `before.conflictPosition`. If `before.conflictPosition` is not `contested`, record it as exactly one `conflict_position` modifier in `modifierBreakdown` with exact matching `position` (+2 for advantaged, +4 for dominant, on the side that holds the position); do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and must not create `controlState`, `guard` safely protects player strain and may block new control but does not remove existing control; even on setback against direct pressure, player strain may worsen by at most one rank, and on full success against direct pressure it creates `tempoAdvantage`, `counter` needs incomingAction and a measured payoff on success/partial_success/countered but cannot create fresh player control from none, `maneuver` changes position and is stopped by pressure/opposing maneuver/active opposition `controlState`; if opposition `controlState.restrictedOperations` lists the attempted operation, that operation cannot succeed until control is answered, `binding` needs advantage/setup and must create or strengthen player `controlState` only after active opposition control is gone, `force_binding` needs strong leverage and at least two distinct `restrictedOperations`, failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas, `break_binding` needs binding/coercive context and must weaken/remove/reverse opposition `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`, while equal/reordered sets do not count, `incarnation_resistance` is only for force_incarnation control and does not clear ordinary binding control, failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged, `champion_coordination` is only for champion_duel, and `recover_spiritual_power` is timing-based recovery rather than attack/defense. Active `controlState` uses `level=hindered|bound|locked`, `controllerSide`, `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; missing/null means no active control for legacy entries, and `sourceOperation` is not a free operation id. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
 
-Action economy audit rule: if a side has no current `actionCostAudit.<side>`, keep that side's final `activeConflict.actionEconomy.<side>.current` unchanged from the validated pre-turn active conflict; do not change root ОД directly. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; fake terminal/free audits are invalid.
+Resource audit rule: if a side has no current `actionCostAudit.<side>`, emit no `spiritual_action_points` transition for that side and preserve the validated pre-turn active conflict resource projection. Do not change the common ledger, history, or `resourceOwnerBindings` directly. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; fake terminal/free audits are invalid.
 
-Validation repair note: if `game_state/control/validation_repair_request.json.harnessRepairPackets[]` contains `kind = "afterlife_spiritual_conflict_action_cost_repair"`, treat it as the executable checklist for the already written conflict file. Patch the named `exchangeLog[n].actionCostAudit.<side>.<field>` values to the packet's expected sequence, recompute dependent `after` and final `activeConflict.actionEconomy.<side>.current`, then finish with `Complete-BoeValidationRepair`. Do not create a new turn, add a new exchange, reroll dice, or edit `game_state/control/pending_turn_snapshot*`; those files are read-only authority for repair.
+Validation repair note: if `game_state/control/validation_repair_request.json.harnessRepairPackets[]` contains `kind = "afterlife_spiritual_conflict_action_cost_repair"`, treat it as the executable checklist only for the already written `exchangeLog[n].actionCostAudit.<side>.<field>` operands, then finish with `Complete-BoeValidationRepair`. Never author `actionEconomy`, `resourceOwnerBindings`, `game_state/resources/resource_state.json`, `game_state/resources/resource_history.json`, or `game_state/resources/resource_owner_authority.json`; do not create a new turn, add an exchange, reroll dice, or edit `game_state/control/pending_turn_snapshot*`.
 
 Correct contested exchange response:
 
@@ -7085,20 +7091,12 @@ Correct contested exchange response:
       "before": {
         "conflictPosition": "contested",
         "playerSideStrain": "clear",
-        "oppositionSideStrain": "clear",
-        "actionEconomy": {
-          "player": { "current": 6, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        }
+        "oppositionSideStrain": "clear"
       },
       "after": {
         "conflictPosition": "player_advantaged",
         "playerSideStrain": "clear",
-        "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 4, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        }
+        "oppositionSideStrain": "strained"
       },
       "actionCostAudit": {
         "player": {
@@ -7170,9 +7168,9 @@ Correct contested exchange response:
 
 Преимущество / Помеха uses `diceAudit.rollMode.<side>` with `effectiveMode`, `advantageSources[]`, and `disadvantageSources[]`; every consumed d20 is listed in `diceUsed[]` with `selection=selected|discarded`. `advantage` / Преимущество consumes exactly 2d20 and selects the highest; `great_advantage` / Великое Преимущество consumes exactly 3d20 and selects the highest; `disadvantage` / Помеха consumes exactly 2d20 and selects the lowest; `dire_disadvantage` / Тяжкая Помеха consumes exactly 3d20 and selects the lowest. Sources may be legacy strings or objects with `summary`/`source`/`sourceId`, `level`, and optional `sourceType`. Step cancellation uses the strongest positive and strongest negative source only: `great_advantage+disadvantage=>advantage`, `great_advantage+dire_disadvantage=>normal`, `advantage+dire_disadvantage=>disadvantage`, `advantage+disadvantage=>normal`; same-direction sources do not stack. Critical success/failure uses the selected die only.
 
-`afterlife_spiritual_conflict_combat_conditions_v1`: `combatConditions[]` is the dedicated short-lived condition layer for afterlife spiritual combat. Use kinds `mark`, `ward`, `burden`, `opening`, and `vow`; each active entry needs visible/private identity, source, target side/actor, affected operations, finite duration/uses, `counterplay`, and summary. A condition must map to an existing legal axis: condition-backed rollMode, `conflictPosition`, legal anti-control `controlState` softening/narrowing, `playerSideStrain`, `oppositionSideStrain`, `tempoAdvantage`, `counterPayoff`, `actionCostAudit` / ОД costs, or `specialArtAudit.effectNote`. This is no generic passive stat stacking. The GM must create, consume, expire, or clear combatConditions explicitly, and ordinary player output shows visible active combatConditions while hidden/gm_only combatConditions remain private. Hidden Saref-linked or Guardian-linked setup may exist in state, but the visible `response` must stay non-spoiler.
+`afterlife_spiritual_conflict_combat_conditions_v1`: `combatConditions[]` is the client-materialized short-lived condition layer for afterlife spiritual combat. Kinds are `mark`, `ward`, `burden`, `opening`, and `vow`; source definitions own target side/actor, affected operations, finite duration/uses, `counterplay`, payoff, visibility, and legal axes. The GM never writes this carrier or any condition/effect ID. Request apply/dispel/remove through top-level `effectChanges[]`; the accepted exchange event advances uses/exchanges/scene lifetime. Read current contributions from `afterlifeSpiritualConflictPreview.conditionMechanics` with `source = accepted_effect_mechanics_snapshot_v1`, apply each only to exact `affectedOperations` / `mechanicalAxes`, and cite its `conditionId` in `rollMode`, `conflictPosition`, legal anti-control `controlState`, side strain, `tempoAdvantage`, `counterPayoff`, `actionCostAudit`, or `specialArtAudit.effectNote`. This is no generic passive stat stacking. Ordinary player output shows only visible conditions; hidden/gm_only conditions remain private and the visible `response` stays non-spoiler.
 
-`afterlife_special_art_combat_effect_v1`: current/new teachable `specialArts[]` entries carry `specialArts[].combatEffect` beside `effectSummary`. Required fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; legal axes are afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `actionEconomy`, `actionCostAudit`, or `combatConditions`. Worked mapping: a player-owned learned special art can map `baseOperation=guard` to a one-use `rollMode.player.advantageSources[]` / `tempoAdvantage` payoff, while a non-player Guardian special art can map its opposition operation to `actionCostAudit.opposition.specialCostMultiplierPercent` and multiplied ОД plus a concrete `specialArtAudit.effectNote`. The GM must preserve `baseOperation`, read `combatEffect`, and record the exact trigger/payoff in `specialArtAudit.effectNote` or `specialArtAudits[].effectNote`; legacy `effectSummary`-only profiles remain readable.
+`afterlife_special_art_combat_effect_v1`: teachable `specialArts[]` entries carry `specialArts[].combatEffect` beside `effectSummary`. Required fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; legal axes are afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. `spiritual_action_points` is the unified resource axis and must be proven through `actionCostAudit`; `actionEconomy` is forbidden. Worked mapping: a player-owned learned special art can map `baseOperation=guard` to a one-use `rollMode.player.advantageSources[]` / `tempoAdvantage` payoff, while a non-player Guardian special art can map its opposition operation to `actionCostAudit.opposition.specialCostMultiplierPercent` and multiplied ОД plus a concrete `specialArtAudit.effectNote`. The GM must preserve `baseOperation`, read `combatEffect`, and record the exact trigger/payoff in `specialArtAudit.effectNote` or `specialArtAudits[].effectNote`; current authored profiles require the structured field and no effect compatibility inference is allowed.
 
 #896 Predvechnye special-art combat-effect coverage start
 
@@ -7206,7 +7204,7 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
             "mechanicalAxis": "combatConditions",
             "allowedPayoff": "Create a visible mark or burden that can supply a condition-backed rollMode source or make one listed operation harder through the next exchange.",
             "limit": "One named promise per conflict; honest refusal, self-sufficiency, or admitting 'I choose myself' blocks or clears the effect.",
-            "auditRequirement": "specialArtAudit.effectNote must name the voluntary oath trigger, the created combatConditions[] entry, and the exact payoff beyond baseOperation=binding."
+            "auditRequirement": "specialArtAudit.effectNote must name the voluntary oath trigger, the exact effectChanges definition request, and the legal payoff beyond baseOperation=binding."
           },
           "canTeachPlayer": false,
           "trainingConditions": []
@@ -7232,53 +7230,13 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
           "before": {
             "conflictPosition": "player_advantaged",
             "playerSideStrain": "clear",
-            "oppositionSideStrain": "strained",
-            "actionEconomy": {
-              "player": { "current": 8, "max": 8, "source": "Средоточие Души tier 2" },
-              "opposition": { "current": 5, "max": 6, "source": "guardian spiritual authority" }
-            }
+            "oppositionSideStrain": "strained"
           },
           "after": {
             "conflictPosition": "player_advantaged",
             "playerSideStrain": "clear",
-            "oppositionSideStrain": "strained",
-            "actionEconomy": {
-              "player": { "current": 2, "max": 8, "source": "Средоточие Души tier 2" },
-              "opposition": { "current": 5, "max": 6, "source": "guardian spiritual authority" }
-            }
+            "oppositionSideStrain": "strained"
           },
-          "combatConditions": [
-            {
-              "conditionId": "condition_chosen_oath_flame_001",
-              "kind": "mark",
-              "name": "Пламя выбранной клятвы",
-              "visibility": "visible",
-              "status": "active",
-              "target": {
-                "side": "opposition",
-                "actorType": "guardian",
-                "actorId": "guardian_liora_001",
-                "displayName": "Лиора"
-              },
-              "source": {
-                "sourceType": "special_art",
-                "actorType": "player_soul",
-                "actorId": "player_soul",
-                "artId": "azalia_chosen_oath_flame"
-              },
-              "affectedOperations": [ "guard", "negotiate", "counter" ],
-              "mechanicalAxes": [ "rollMode", "specialArtAudit.effectNote" ],
-              "payoff": {
-                "sourceType": "combat_condition",
-                "effect": "disadvantage",
-                "level": "ordinary",
-                "axis": "rollMode"
-              },
-              "duration": { "remainingUses": 1, "expiresAtTurn": 44 },
-              "counterplay": [ "Лиора может честно отказаться от права выбирать за игрока или использовать break_binding против названной клятвы." ],
-              "summary": "Следующая защита, переговоры или counter Лиоры получают условную Помеху, если она продолжает действовать из добровольной клятвы выбирать за душу."
-            }
-          ],
           "specialArtAudit": {
             "artId": "azalia_chosen_oath_flame",
             "displayName": "Пламя Избранной Клятвы",
@@ -7286,7 +7244,7 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
             "ownerActorId": "player_soul",
             "baseOperation": "binding",
             "costMultiplierPercent": 150,
-            "effectNote": "Read specialArts[].combatEffect: the player-owned learned Predvechnye Guardian special art used the voluntary oath trigger ('я обязана выбрать путь за тебя') to create condition_chosen_oath_flame_001. The tactical result changed beyond ordinary baseOperation=binding because the next affected Liora guard/negotiate/counter can carry a condition-backed rollMode disadvantage source instead of only adding control flavor."
+            "effectNote": "Read specialArts[].combatEffect: the player-owned learned Predvechnye Guardian special art used the voluntary oath trigger ('я обязана выбрать путь за тебя') and requested definition chosen-oath-flame-mark through effectChanges. The tactical result changes beyond ordinary baseOperation=binding because the next affected Liora guard/negotiate/counter may use only the accepted preview contribution instead of adding freeform control flavor."
           },
           "actionCostAudit": {
             "player": {
@@ -7303,7 +7261,27 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
             }
           }
         }
-      }
+      },
+      "effectChanges": [
+        {
+          "operation": "apply",
+          "target": {
+            "kind": "spiritual_conflict_side",
+            "targetId": "afterlife_conflict_liora_forced_incarnation_001:opposition"
+          },
+          "source": {
+            "kind": "spiritual_art",
+            "sourceId": "azalia_chosen_oath_flame",
+            "definitionKey": "chosen-oath-flame-mark"
+          },
+          "parameters": {},
+          "eventRef": {
+            "kind": "accepted_turn",
+            "authorityId": "turn_43"
+          },
+          "reason": "Добровольная клятва активирует зарегистрированную метку Пламени Избранной Клятвы."
+        }
+      ]
     }
   },
   "nonPlayerGuardianOppositionPredvechnyeArtExample": {
@@ -7377,10 +7355,6 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
               "sourceOperation": "binding",
               "restrictedOperations": [ "maneuver", "force_binding" ],
               "summary": "Договор держит проход закрытым, но условие выхода ещё не раскрыто."
-            },
-            "actionEconomy": {
-              "player": { "current": 4, "max": 8, "source": "Средоточие Души tier 2" },
-              "opposition": { "current": 7, "max": 9, "source": "Seret guardian authority" }
             }
           },
           "after": {
@@ -7394,10 +7368,6 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
               "sourceOperation": "break_binding",
               "restrictedOperations": [ "force_binding" ],
               "summary": "Скрытое условие стало видимым: связь ещё мешает силовому принуждению, но манёвр выхода теперь спорен."
-            },
-            "actionEconomy": {
-              "player": { "current": 3, "max": 8, "source": "Средоточие Души tier 2" },
-              "opposition": { "current": 3, "max": 9, "source": "Seret guardian authority" }
             }
           },
           "counterPayoff": {
@@ -7448,7 +7418,644 @@ Combat-useful Predvechnye special-art examples must prove that Guardian arts are
 
 #896 Predvechnye special-art combat-effect coverage end
 
-Worked combatConditions lifecycle fragment: this exchange creates a visible `mark`, a visible `ward`, and a hidden/gm_only `burden`; it consumes an `opening`; it expires a `vow`; it uses a condition-backed rollMode source; it records counterplay; and the named special art explains its condition interaction only through `specialArtAudit.effectNote`.
+Worked accepted-condition fragment: the GM first reads the exact current contributions from the client preview. The existing `opening` may affect only `counter` through `counterPayoff` / `conflictPosition`; the GM cites its `conditionId` but does not rewrite the carrier. The same response requests a visible `mark`, a visible `ward`, and a hidden/gm_only `burden` through `effectChanges[]`. Their registered source definitions own kind, visibility, payload, stacking, counterplay, and lifetime. The accepted exchange event advances or expires existing conditions automatically.
+
+```json
+{
+  "afterlifeSpiritualConflictPreview": {
+    "conditionMechanics": {
+      "schemaVersion": 1,
+      "source": "accepted_effect_mechanics_snapshot_v1",
+      "isAccepted": true,
+      "contributions": [
+        {
+          "conditionId": "opening_gate_rhythm_001",
+          "componentId": "component_opening_gate_rhythm",
+          "priority": 100,
+          "targetSide": "opposition",
+          "targetActorId": "guardian_liora_001",
+          "conditionKind": "opening",
+          "affectedOperations": [ "counter" ],
+          "mechanicalAxes": [ "counterPayoff", "conflictPosition" ],
+          "counterplay": [ "Лиора может ответить guard или break_binding." ],
+          "payoff": {
+            "sourceType": "combat_condition",
+            "effect": "position_shift"
+          },
+          "currentStacks": 1,
+          "isPlayerVisible": true
+        }
+      ]
+    }
+  }
+}
+```
+
+---
+
+## afterlife_effect_profile_v1 — common profile adapter
+
+Effect Materialization v1 uses the same source/identity/lifecycle contract in both afterlife realms. A validated spiritual art owns its complete definition; the GM requests application through top-level `effectChanges[]`. The client alone publishes the resulting `activeEffects[]` on the exact afterlife profile and the matching `effect_identity_index.json` entry. The runtime carrier and accepted mechanical contribution are client-owned; remaining lifetime is client-owned too. The GM does not rescan raw effect values, decrement duration, or resend post-state.
+
+```json
+{
+  "artId": "art_resonant_guard",
+  "activeEffectDefinitions": [
+    {
+      "schemaVersion": 1,
+      "definitionKey": "resonant-guard",
+      "display": {
+        "name": "Резонансный оберег",
+        "description": "Ритм души удерживает давление противника.",
+        "category": "buff",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["afterlife_actor"],
+      "components": [
+        {
+          "componentId": "resonant_guard_roll",
+          "profile": "roll_modifier",
+          "priority": 100,
+          "payload": { "operations": ["guard"], "contribution": "advantage" }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "resonant-guard",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": { "mode": "uses", "initialUses": 1, "consumingEventTypes": ["afterlife_exchange_end"] },
+      "triggers": [
+        {
+          "triggerId": "resonant_guard_exchange",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["resonant_guard_roll"],
+          "consumeUses": true,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    }
+  ]
+}
+```
+
+```json
+{
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": { "kind": "afterlife_actor", "targetId": "player_soul" },
+      "source": {
+        "kind": "spiritual_art",
+        "sourceId": "art_resonant_guard",
+        "definitionKey": "resonant-guard"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Игрок применил изученное духовное искусство."
+    }
+  ],
+  "effectResolutionReceipts": []
+}
+```
+
+`hidden` and `gm_only` definitions remain mechanically available only to the internal accepted snapshot. Ordinary narrative, player status, browser/console DTOs, action selectors, and audits must not reveal them.
+
+Shining blessing entitlement is not a generic active effect. Blessing allocation, freeShape/freeRetune, memory selection, and blessing rerolls stay on their dedicated Shining client-owned contracts.
+
+## afterlife_resource_bounded_receipt_waves_v1 — sequential safe packets
+
+A story-facing spiritual effect can ask the GM to choose a bounded common
+resource result. The client owns the afterlife resource coordinate, operation,
+effect identity, graph position, and every fingerprint. The GM receives only a
+safe packet and returns the current request ID, one allowed result, and a
+reason. For example, the first safe packet can be answered as:
+
+```json
+{
+  "effectResolutionReceipts": [
+    {
+      "requestId": "resource_resolution_afterlife_wave_001",
+      "resultKind": "resource_delta",
+      "amount": 2,
+      "reason": "Давление клятвы отняло часть запаса духовного действия."
+    }
+  ]
+}
+```
+
+Answer the current safe packet only. Resubmit the same complete semantic turn
+with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned. If replay of the resolved result reaches another
+bounded component, the client returns a second safe packet and still publishes
+no resource, active-effect, use, or lifetime after-image. The first receipt is
+retained as client-owned terminal evidence:
+
+```json
+{
+  "effectResolutionReceipts": [
+    {
+      "requestId": "resource_resolution_afterlife_wave_002",
+      "resultKind": "narrated_no_state_change",
+      "reason": "Оберег удержал вторичный резонанс без новой потери."
+    }
+  ]
+}
+```
+
+The client replays wave 1 at its original causal position, resolves wave 2, and
+publishes the complete accepted mechanics atomically only when no further safe
+packet appears. Do not combine old and current packet IDs, add a target,
+resource, operation, path, authority, or fingerprint, or change the original
+resource/effect commands between waves. An exact terminal retry with the same
+semantic command envelope is a no-op; a changed envelope fails closed.
+
+## afterlife_effect_conditions_five_kinds_v1 — all five spiritual conditions
+
+The five supported `afterlife_combat_condition` kinds are `mark`, `ward`, `burden`, `opening`, and `vow`. Each complete source definition targets only `spiritual_conflict_side`, uses only Chaos Sea/Shining Abode realm authority, and has bounded `turns`, `uses`, or `scene` lifetime. The fragments below show the profile-owned payload difference; the surrounding definition still supplies display, stacking, lifetime, triggers, removal, and links.
+
+```json
+{
+  "conditionProfileFragments": [
+    {
+      "componentId": "condition_mark",
+      "profile": "afterlife_combat_condition",
+      "priority": 100,
+      "payload": {
+        "conditionKind": "mark",
+        "targetSide": "opposition",
+        "actorId": "afterlife_actor_opponent",
+        "operations": ["pressure"],
+        "axes": ["rollMode"],
+        "counterplay": ["purification"],
+        "payoff": "tracking"
+      }
+    },
+    {
+      "componentId": "condition_ward",
+      "profile": "afterlife_combat_condition",
+      "priority": 100,
+      "payload": {
+        "conditionKind": "ward",
+        "targetSide": "player",
+        "actorId": "player_soul",
+        "operations": ["guard"],
+        "axes": ["tempoAdvantage"],
+        "counterplay": ["break_ward"],
+        "payoff": "protection"
+      }
+    },
+    {
+      "componentId": "condition_burden",
+      "profile": "afterlife_combat_condition",
+      "priority": 100,
+      "payload": {
+        "conditionKind": "burden",
+        "targetSide": "opposition",
+        "actorId": "afterlife_actor_opponent",
+        "operations": ["pressure"],
+        "axes": ["actionCostAudit"],
+        "counterplay": ["shed_burden"],
+        "payoff": "attrition"
+      }
+    },
+    {
+      "componentId": "condition_opening",
+      "profile": "afterlife_combat_condition",
+      "priority": 100,
+      "payload": {
+        "conditionKind": "opening",
+        "targetSide": "opposition",
+        "actorId": "afterlife_actor_opponent",
+        "operations": ["binding"],
+        "axes": ["counterPayoff"],
+        "counterplay": ["close_opening"],
+        "payoff": "one_follow_up"
+      }
+    },
+    {
+      "componentId": "condition_vow",
+      "profile": "afterlife_combat_condition",
+      "priority": 100,
+      "payload": {
+        "conditionKind": "vow",
+        "targetSide": "player",
+        "actorId": "player_soul",
+        "operations": ["guard"],
+        "axes": ["specialArtAudit.effectNote"],
+        "counterplay": ["fulfil_or_break_vow"],
+        "payoff": "bounded_oath"
+      }
+    }
+  ]
+}
+```
+
+Apply each condition only through an exact source definition and the common command:
+
+```json
+{
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:opposition" },
+      "source": {
+        "kind": "spiritual_art",
+        "sourceId": "art_soul_mark",
+        "definitionKey": "soul-mark"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Метка закреплена принятым обменом."
+    }
+  ],
+  "effectResolutionReceipts": []
+}
+```
+
+### afterlife_effect_conditions_executable_v1 — complete five-kind source and apply set
+
+This executable set expands every profile fragment into a complete spiritual
+art definition. All five definitions are valid in both afterlife realms and
+target only an exact spiritual-conflict side.
+
+```json
+{
+  "artId": "art_fivefold_condition_liturgy",
+  "activeEffectDefinitions": [
+    {
+      "schemaVersion": 1,
+      "definitionKey": "soul-mark",
+      "display": {
+        "name": "Метка души",
+        "description": "Принятый ритм делает траекторию противника явной.",
+        "category": "condition",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["spiritual_conflict_side"],
+      "components": [
+        {
+          "componentId": "condition_mark",
+          "profile": "afterlife_combat_condition",
+          "priority": 100,
+          "payload": {
+            "conditionKind": "mark",
+            "targetSide": "opposition",
+            "actorId": "afterlife_actor_opponent",
+            "operations": ["pressure"],
+            "axes": ["rollMode"],
+            "counterplay": ["purification"],
+            "payoff": "tracking"
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "soul-mark",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 3,
+        "advancePhase": "afterlife_exchange_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "mark_exchange_end",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["condition_mark"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    },
+    {
+      "schemaVersion": 1,
+      "definitionKey": "radiant-ward",
+      "display": {
+        "name": "Сияющий оберег",
+        "description": "Оберег удерживает выбранную линию защиты.",
+        "category": "condition",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["spiritual_conflict_side"],
+      "components": [
+        {
+          "componentId": "condition_ward",
+          "profile": "afterlife_combat_condition",
+          "priority": 100,
+          "payload": {
+            "conditionKind": "ward",
+            "targetSide": "player",
+            "actorId": "player_soul",
+            "operations": ["guard"],
+            "axes": ["tempoAdvantage"],
+            "counterplay": ["break_ward"],
+            "payoff": "protection"
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "radiant-ward",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 3,
+        "advancePhase": "afterlife_exchange_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "ward_exchange_end",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["condition_ward"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    },
+    {
+      "schemaVersion": 1,
+      "definitionKey": "oath-burden",
+      "display": {
+        "name": "Скрытое бремя",
+        "description": "Невысказанное обязательство повышает цену давления.",
+        "category": "condition",
+        "visibility": "gm_only"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["spiritual_conflict_side"],
+      "components": [
+        {
+          "componentId": "condition_burden",
+          "profile": "afterlife_combat_condition",
+          "priority": 100,
+          "payload": {
+            "conditionKind": "burden",
+            "targetSide": "opposition",
+            "actorId": "afterlife_actor_opponent",
+            "operations": ["pressure"],
+            "axes": ["actionCostAudit"],
+            "counterplay": ["shed_burden"],
+            "payoff": "attrition"
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "oath-burden",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 3,
+        "advancePhase": "afterlife_exchange_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "burden_exchange_end",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["condition_burden"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    },
+    {
+      "schemaVersion": 1,
+      "definitionKey": "gate-opening",
+      "display": {
+        "name": "Брешь в ритме врат",
+        "description": "Короткая брешь открывает один точный ответ.",
+        "category": "condition",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["spiritual_conflict_side"],
+      "components": [
+        {
+          "componentId": "condition_opening",
+          "profile": "afterlife_combat_condition",
+          "priority": 100,
+          "payload": {
+            "conditionKind": "opening",
+            "targetSide": "opposition",
+            "actorId": "afterlife_actor_opponent",
+            "operations": ["binding"],
+            "axes": ["counterPayoff"],
+            "counterplay": ["close_opening"],
+            "payoff": "one_follow_up"
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "gate-opening",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 1,
+        "advancePhase": "afterlife_exchange_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "opening_exchange_end",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["condition_opening"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    },
+    {
+      "schemaVersion": 1,
+      "definitionKey": "binding-vow",
+      "display": {
+        "name": "Связующая клятва",
+        "description": "Принятая клятва ограничивает выбранную линию защиты.",
+        "category": "condition",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["spiritual_conflict_side"],
+      "components": [
+        {
+          "componentId": "condition_vow",
+          "profile": "afterlife_combat_condition",
+          "priority": 100,
+          "payload": {
+            "conditionKind": "vow",
+            "targetSide": "player",
+            "actorId": "player_soul",
+            "operations": ["guard"],
+            "axes": ["specialArtAudit.effectNote"],
+            "counterplay": ["fulfil_or_break_vow"],
+            "payoff": "bounded_oath"
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "binding-vow",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 3,
+        "advancePhase": "afterlife_exchange_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "vow_exchange_end",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["condition_vow"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    }
+  ]
+}
+```
+
+The accepted response requests all five applications through the same closed
+top-level route; it still contains no GM-authored `combatConditions[]` carrier.
+
+```json
+{
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:opposition" },
+      "source": { "kind": "spiritual_art", "sourceId": "art_fivefold_condition_liturgy", "definitionKey": "soul-mark" },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Принятый обмен закрепил метку на стороне противника."
+    },
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:player" },
+      "source": { "kind": "spiritual_art", "sourceId": "art_fivefold_condition_liturgy", "definitionKey": "radiant-ward" },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Принятый обмен поднял оберег на стороне игрока."
+    },
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:opposition" },
+      "source": { "kind": "spiritual_art", "sourceId": "art_fivefold_condition_liturgy", "definitionKey": "oath-burden" },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Принятый обмен возложил скрытое бремя на сторону противника."
+    },
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:opposition" },
+      "source": { "kind": "spiritual_art", "sourceId": "art_fivefold_condition_liturgy", "definitionKey": "gate-opening" },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Принятый обмен открыл краткую брешь на стороне противника."
+    },
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:player" },
+      "source": { "kind": "spiritual_art", "sourceId": "art_fivefold_condition_liturgy", "definitionKey": "binding-vow" },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Принятый обмен закрепил клятву на стороне игрока."
+    }
+  ],
+  "effectResolutionReceipts": []
+}
+```
+
+### afterlife_effect_conditions_projection_v1 — accepted projection, privacy, and audit
+
+The GM must never author combatConditions[]. Read accepted mechanics only from `afterlifeSpiritualConflictPreview.conditionMechanics`, apply each contribution to its exact `affectedOperations`/`mechanicalAxes`, cite the supplied condition selector in the matching audit, and expose only visible conditions.
+
+GM response (there is deliberately no authored `combatConditions[]` field):
 
 ```json
 {
@@ -7478,20 +8085,12 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
       "before": {
         "conflictPosition": "contested",
         "playerSideStrain": "clear",
-        "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 5, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        }
+        "oppositionSideStrain": "strained"
       },
       "after": {
         "conflictPosition": "player_advantaged",
         "playerSideStrain": "clear",
-        "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 2, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 4, "max": 6, "source": "guardian spiritual authority" }
-        }
+        "oppositionSideStrain": "strained"
       },
       "counterPayoff": {
         "axis": "conflictPosition",
@@ -7500,155 +8099,6 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
         "conditionId": "opening_gate_rhythm_001",
         "summary": "Расход прежней бреши переводит позицию в преимущество игрока."
       },
-      "combatConditions": [
-        {
-          "conditionId": "mark_oath_flare_001",
-          "kind": "mark",
-          "name": "Метка вспыхнувшего обета",
-          "visibility": "visible",
-          "status": "active",
-          "target": {
-            "side": "opposition",
-            "actorType": "guardian",
-            "actorId": "guardian_liora_001",
-            "displayName": "Лиора"
-          },
-          "source": {
-            "sourceType": "exchange",
-            "exchangeId": "afterlife_conflict_exchange_conditions_001",
-            "actorType": "player",
-            "actorId": "player_soul"
-          },
-          "affectedOperations": [ "pressure", "counter", "binding" ],
-          "mechanicalAxes": [ "rollMode", "specialArtAudit.effectNote" ],
-          "payoff": {
-            "sourceType": "combat_condition",
-            "effect": "advantage",
-            "level": "ordinary",
-            "axis": "rollMode"
-          },
-          "duration": { "remainingUses": 1, "expiresAtTurn": 43 },
-          "counterplay": [ "Лиора может потратить guard или break_binding, чтобы сбить метку до следующего обмена." ],
-          "summary": "Следующая точная атака игрока по Лиоре получает одно условное Преимущество."
-        },
-        {
-          "conditionId": "ward_choice_mirror_001",
-          "kind": "ward",
-          "name": "Оберег зеркального выбора",
-          "visibility": "visible",
-          "status": "active",
-          "target": {
-            "side": "player",
-            "actorType": "player",
-            "actorId": "player_soul",
-            "displayName": "Игрок"
-          },
-          "source": {
-            "sourceType": "special_art",
-            "actorType": "guardian",
-            "actorId": "guardian_azalia_001",
-            "displayName": "Азалия"
-          },
-          "affectedOperations": [ "guard", "incarnation_resistance" ],
-          "mechanicalAxes": [ "actionCostAudit", "specialArtAudit.effectNote" ],
-          "payoff": {
-            "sourceType": "combat_condition",
-            "effect": "action_cost_ward",
-            "level": "one_use",
-            "axis": "actionCostAudit"
-          },
-          "duration": { "remainingUses": 1, "expiresAtTurn": 43 },
-          "counterplay": [ "Противник может pressure через другого lead contestant или force_binding, чтобы сделать оберег слишком дорогим." ],
-          "summary": "Оберег делает один ответ против forced incarnation защищённым от дополнительного ОД штрафа."
-        },
-        {
-          "conditionId": "burden_unseen_oath_pressure_001",
-          "kind": "burden",
-          "name": "Скрытое бремя чужой клятвы",
-          "visibility": "gm_only",
-          "status": "active",
-          "target": {
-            "side": "player",
-            "actorType": "player",
-            "actorId": "player_soul",
-            "displayName": "Игрок"
-          },
-          "source": {
-            "sourceType": "saref_thread",
-            "sourceId": "hidden_saref_oath_shadow_001"
-          },
-          "affectedOperations": [ "negotiate", "surrender" ],
-          "mechanicalAxes": [ "counterPayoff", "actionCostAudit" ],
-          "payoff": {
-            "sourceType": "combat_condition",
-            "effect": "counterpayoff_pressure",
-            "level": "gm_only",
-            "axis": "counterPayoff"
-          },
-          "duration": { "remainingUses": 1, "expiresAtTurn": 43 },
-          "counterplay": [ "Не раскрывать игроку; может быть снято только после явной сюжетной проверки или раскрытого контр-доказательства." ],
-          "summary": "Private no-spoiler pressure; ordinary player output must not mention Saref or the hidden source."
-        },
-        {
-          "conditionId": "opening_gate_rhythm_001",
-          "kind": "opening",
-          "name": "Брешь ритма врат",
-          "visibility": "visible",
-          "status": "consumed",
-          "target": {
-            "side": "opposition",
-            "actorType": "guardian",
-            "actorId": "guardian_liora_001",
-            "displayName": "Лиора"
-          },
-          "source": {
-            "sourceType": "previous_exchange",
-            "exchangeId": "afterlife_conflict_exchange_liora_001"
-          },
-          "affectedOperations": [ "counter" ],
-          "mechanicalAxes": [ "counterPayoff", "conflictPosition" ],
-          "payoff": {
-            "sourceType": "combat_condition",
-            "effect": "position_shift",
-            "level": "consumed",
-            "axis": "conflictPosition"
-          },
-          "duration": { "remainingUses": 0, "expiresAtTurn": 42 },
-          "counterplay": [ "Уже израсходовано текущим counterPayoff." ],
-          "consumedByExchangeId": "afterlife_conflict_exchange_conditions_001",
-          "summary": "Брешь потрачена, чтобы улучшить позицию."
-        },
-        {
-          "conditionId": "vow_no_forced_gate_001",
-          "kind": "vow",
-          "name": "Обет без навязанных врат",
-          "visibility": "visible",
-          "status": "expired",
-          "target": {
-            "side": "player",
-            "actorType": "player",
-            "actorId": "player_soul",
-            "displayName": "Игрок"
-          },
-          "source": {
-            "sourceType": "guardian_scene",
-            "actorType": "guardian",
-            "actorId": "guardian_azalia_001",
-            "displayName": "Азалия"
-          },
-          "affectedOperations": [ "incarnation_resistance" ],
-          "mechanicalAxes": [ "rollMode" ],
-          "payoff": {
-            "sourceType": "combat_condition",
-            "effect": "advantage",
-            "level": "expired",
-            "axis": "rollMode"
-          },
-          "duration": { "remainingUses": 0, "expiresAtTurn": 42 },
-          "counterplay": [ "Истёк по сроку; не даёт новых источников Преимущества." ],
-          "summary": "Старый обет больше не активен и не должен оставаться пассивным бонусом."
-        }
-      ],
         "specialArtAudit": {
           "artId": "guardian_mirror_oath",
           "ownerActorType": "guardian",
@@ -7721,7 +8171,63 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
         }
       }
     }
-  }
+  },
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": {
+        "kind": "spiritual_conflict_side",
+        "targetId": "afterlife_conflict_liora_forced_incarnation_001:opposition"
+      },
+      "source": {
+        "kind": "spiritual_art",
+        "sourceId": "art_oath_flare_condition",
+        "definitionKey": "oath-flare-mark"
+      },
+      "parameters": {},
+      "eventRef": {
+        "kind": "accepted_turn",
+        "authorityId": "turn_42"
+      },
+      "reason": "Успешный контрприём активирует зарегистрированную метку на стороне Лиоры."
+    },
+    {
+      "operation": "apply",
+      "target": {
+        "kind": "spiritual_conflict_side",
+        "targetId": "afterlife_conflict_liora_forced_incarnation_001:player"
+      },
+      "source": {
+        "kind": "spiritual_art",
+        "sourceId": "guardian_mirror_oath",
+        "definitionKey": "mirror-choice-ward"
+      },
+      "parameters": {},
+      "eventRef": {
+        "kind": "accepted_turn",
+        "authorityId": "turn_42_effect_2"
+      },
+      "reason": "Оберег Азалии получает одну зарегистрированную возможность защитить выбор души."
+    },
+    {
+      "operation": "apply",
+      "target": {
+        "kind": "spiritual_conflict_side",
+        "targetId": "afterlife_conflict_liora_forced_incarnation_001:player"
+      },
+      "source": {
+        "kind": "fate_card",
+        "sourceId": "fate_card_unseen_oath_pressure",
+        "definitionKey": "unseen-oath-burden"
+      },
+      "parameters": {},
+      "eventRef": {
+        "kind": "accepted_turn",
+        "authorityId": "turn_42_effect_3"
+      },
+      "reason": "Скрытая карта судьбы активирует зарегистрированное приватное бремя без раскрытия игроку."
+    }
+  ]
 }
 ```
 
@@ -7750,10 +8256,6 @@ Correct control exchange: after the soul already has `player_advantaged`, `bindi
         "conflictPosition": "player_advantaged",
         "playerSideStrain": "clear",
         "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 6, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        },
         "controlState": {
           "level": "none",
           "controllerSide": null
@@ -7763,10 +8265,6 @@ Correct control exchange: after the soul already has `player_advantaged`, `bindi
         "conflictPosition": "player_advantaged",
         "playerSideStrain": "clear",
         "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 4, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        },
         "controlState": {
           "level": "hindered",
           "controllerSide": "player",
@@ -7841,10 +8339,6 @@ Correct break-binding exchange: `break_binding` is not a generic attack; it must
         "conflictPosition": "contested",
         "playerSideStrain": "strained",
         "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 4, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
-        },
         "controlState": {
           "level": "bound",
           "controllerSide": "opposition",
@@ -7858,10 +8352,6 @@ Correct break-binding exchange: `break_binding` is not a generic attack; it must
         "conflictPosition": "contested",
         "playerSideStrain": "strained",
         "oppositionSideStrain": "strained",
-        "actionEconomy": {
-          "player": { "current": 2, "max": 6, "source": "Средоточие Души tier 0" },
-          "opposition": { "current": 4, "max": 6, "source": "guardian spiritual authority" }
-        },
         "controlState": {
           "level": "hindered",
           "controllerSide": "opposition",
@@ -8355,7 +8845,7 @@ Scenario:
 - Actor agency uses `afterlifeActorGoalUpdates[]`, `afterlifeActorQuestUpdates[]`, `afterlifeActorActivityUpdates[]`, and `completeAfterlifeActorActivities[]`. Canonical profiles store `goals`, `personalQuests[]`, `currentActivity`, and `completedActivities[]`; every goal/current activity needs `gmThoughtsSummary`; `currentActivity` must link to current `goals.goalId` and an active `personalQuests[].questId`. Complete activities through `completeAfterlifeActorActivities[]`; do not erase `currentActivity` directly.
 - Relationship gates use `relationships[]` plus `afterlifeRelationshipChanges[]`, `afterlifeRelationshipLockUpdates[]`, and `afterlifeBreakthroughQuestUpdates[]`. Supported axes are `trust`, `romance`, `rivalry`, `oath`, `fear`, `reverence`, and `debt`; `value >= 50` requires a positive `breakthroughQuestId` lock/proof, `value <= -50` requires `redemptionQuestId` or `pointOfNoReturn` proof. Completed breakthrough/redemption quests clear linked ids only with `_clear_`; these are afterlife-only and must not use Mortal `NPCRelationshipChanges`.
 - Actor masks use profile `masks[]` and `activeMaskId` plus `afterlifeActorMaskAdds[]`, `afterlifeActorMaskUpdates[]`, `afterlifeActorMaskRemovals[]`, and `afterlifeActorActiveMaskChanges[]`. `activeMaskId` is either an existing `masks[].maskId` or `_true_self_`; use `_true_self_`, not `null`, to remove the active mask. Each mask includes `maskId`, `displayName`, `publicArchetype`, `visiblePersonality`, hidden `concealedTruth`, `directives[]`, `revealConditions[]`, `deceptionRisk=low|medium|high|critical`, and optional `linkedThreatId` / `linkedSarefAgentId`. Ordinary player-facing UI may show only the visible mask until `isRevealed=true`; do not leak hidden truth fields before reveal, and do not use Mortal `NPCMaskAdds`.
-- Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, `effectSummary`, `specialArts[].combatEffect`, and `trainingConditions` when teachable; `combatEffect` carries `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement` for legal afterlife surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `actionEconomy`, `actionCostAudit`, or `combatConditions`. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, include at least one positive value, and may be Ink-only, Spark-only, or mixed. Spark-only learned-art upgrades are client-local to ordinary active Shining Abode.
+- Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, `effectSummary`, `specialArts[].combatEffect`, and `trainingConditions` when teachable; `combatEffect` carries `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement` for legal afterlife surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. Resource effects use `spiritual_action_points` plus `actionCostAudit`; never author `actionEconomy`. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, include at least one positive value, and may be Ink-only, Spark-only, or mixed. Spark-only learned-art upgrades are client-local to ordinary active Shining Abode.
 - Roleplay training that teaches the player a special art is recorded through `afterlifeSpecialArtLearningReceipts[]`; the teacher profile, player profile, source `specialArts[].artId`, and `canTeachPlayer=true` must resolve in profile authority. Learned special arts start at tier 0; do not use `initialTier` to grant progression.
 - Learned special arts / изученные особые духовные искусства are upgraded by the client through `/spiritual_arts`; GM conflict output may use them only from validated pre-turn authority.
 - If the GM does not write `afterlifeEntityProgressionOverrides[]`, the client uses only the current-turn `progression_report.json` whose `sessionId/requestId/turnNumber` match the current request to apply deterministic income, one affordable `progressionStrategy.priorityOrder` upgrade, `lastAutoProgressionCycleKey`, and `progressionLedger[]`; stale or missing-context reports are ignored for profile auto-progression. This is per profile realm: Chaos Sea profiles consume Chaos/Guardian/Resident contours and receive Ink Feather income only; Shining Abode profiles consume Shining contours and receive Ink Feather + Light Spark income. Priority entries may be standard art ids, `specialArts[].artId`, `enlightenment`, `radiance`, or `soul_dissipation`. Strategy constraints are executable: `resourceReserve` is a hard minimum remaining balance, `allowedSpends` is an allow-list of spend categories, and `forbiddenSpends` is a deny-list; valid categories are `standardArts`, `specialArts`, `enlightenment`, `radiance`, and `soulDissipationTier`. If both lists are present, the allow-list is applied first and the deny-list can still block the spend. Forced `specialArtTierDeltas` must target an existing `specialArts[].artId` on the same profile; unknown ids are repair-blocking, not no-op.
@@ -8371,6 +8861,12 @@ Before writing the first durable profile, bind the source actor and profile by e
 Validation derives actor newness only from the client-owned validated pre-turn baseline. A malformed current source authority, malformed `profiles[]` root, duplicate source ID, or source actor without its exact ID is a repair-blocking error; do not omit that record, guess from its name, or reconstruct the baseline.
 
 A new afterlife actor explicitly carries `appearanceDescription`, `profileSummary`, `personalityProfile.archetype`, `motivation`, `personalityProfile.worldview`, canonical `realm` and `locationId`, goals with a non-empty plan, and exact actor-owned memory. An existing materialized afterlife profile must never be resent through the full afterlifeEntityProfileUpdates carrier; use the exact dedicated delta for every later change. A legacy first-envelope migration may use a full carrier only when usable validated pre-turn authority proves all historical fields unchanged.
+
+If the first non-player profile initializes a pre-sealed setting-defined resource allowed for `afterlife_actor`, include one closed `resourceMaterialization.resources[]` envelope on that same full profile. The client preserves the exact actorId, creates no second actor ID, uses the Actor Materialization `materializationId` as the same-turn ownerRef for common resource authority, removes `resourceMaterialization`, and publishes `resourceOwnerBindings` plus the complete resource quartet atomically. Actor/effect selectors still use the exact canonical actorId; never write actorRef. An existing materialized profile must not resend resourceMaterialization. Do not invent a resource from prose: the definition, owner kind, capacity policy, exact key, and maximum must already be valid and sealed.
+
+CLIENT-OWNED RESERVED PLAYER_SOUL CONTRAST (not GM response): the reserved first exact `player_soul` may be seeded without a generic Actor Materialization envelope. It may still carry one closed `resourceMaterialization.resources[]`; for example `{ "resourceKey": "soul_integrity", "maximum": 9 }`. The client derives the deterministic ownerRef for that same turn from exact `player_soul` + canonical realm, consumes `resourceMaterialization`, and writes the `resourceOwnerBindings` after-image with the quartet. The canonical after-image has no generic `materialization` envelope and no residual `resourceMaterialization`. This exception never applies to a resident, Guardian, radiant actor, or other non-player profile: a first non-player without Actor Materialization is invalid.
+
+DETERMINISTIC AFTERLIFE OWNER EXAMPLE: the same accepted `actorId` + realm always yields the same new-realm ref; the same realm + `conflictId` always yields the same conflict-side owner ID/ref; and the same `shining_abode` + `returnCycleId` always yields the same Shining scope ID/ref. A changed stable seed changes the derived identity. Turn number, capacity, array order, process randomness, and GM-authored IDs are never inputs.
 
 Positive trade authority is exact and realm-local. In the Chaos Sea, `canTrade=true` is valid only for the one active Guardian whose abode is the exact current abode. In the Shining Abode, it is valid only for a non-player faction head whose leadership is secure or contested, whose faction is operational, and whose trade tier is at least 1. If that structured authority is absent or ambiguous, use `canTrade=false`. A legacy actor that first gains trade authority is promoted into significant structured play and needs the complete envelope in the same accepted turn. A full response may carry that profile before canonical state is written, but accepted-turn validation still proves the claim from exact current or validated pre-turn authority.
 
@@ -8411,6 +8907,14 @@ This compact envelope fragment shows a legitimate partly empty resident. The com
   "gmThoughtsSummary": "Я ещё не доверяю душе, но хочу дать ей шанс говорить правду.",
   "ledger": [],
   "progressionLedger": [],
+  "resourceMaterialization": {
+    "resources": [
+      {
+        "resourceKey": "soul_integrity",
+        "maximum": 10
+      }
+    ]
+  },
   "materialization": {
     "schemaVersion": 1,
     "materializationId": "mat_resident_quiet_witness_turn_23",
@@ -9166,7 +9670,7 @@ Correct reasoning checklist:
 - `actorType + actorId` is the identity key; do not create duplicate profiles for the same entity.
 - `player_soul` is a reserved identity: the player profile uses `actorType=player_soul` and `actorId=player_soul`, and no non-player profile may use that actor id.
 - `standardArts` and `specialArts[].baseOperation` use the canonical spiritual action ids, while player-facing prose may show Russian labels.
-- `specialArts[]` is more expensive than the base action: `ownerActorType/ownerActorId` must match the enclosing profile, `costMultiplierPercent` must be above 100, `upgradeCost` records higher progression cost, teachable arts must list `trainingConditions`, and current/new teachable arts must include `specialArts[].combatEffect` beside `effectSummary`. `combatEffect` uses `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; it preserves `baseOperation` and maps only to legal afterlife axes such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `actionEconomy`, `actionCostAudit`, or `combatConditions`. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, and include at least one positive value. Spark-only `upgradeCost` is valid only as a learned-art upgrade path in ordinary active Shining Abode.
+- `specialArts[]` is more expensive than the base action: `ownerActorType/ownerActorId` must match the enclosing profile, `costMultiplierPercent` must be above 100, `upgradeCost` records higher progression cost, teachable arts must list `trainingConditions`, and current/new teachable arts must include `specialArts[].combatEffect` beside `effectSummary`. `combatEffect` uses `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; it preserves `baseOperation` and maps only to legal afterlife axes such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. Resource effects must be expressed through `spiritual_action_points` plus `actionCostAudit`; `actionEconomy` is forbidden. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, and include at least one positive value. Spark-only `upgradeCost` is valid only as a learned-art upgrade path in ordinary active Shining Abode.
 - If a learned art is recognized, write `afterlifeSpecialArtLearningReceipts[]`; do not silently add it to the player without a receipt, do not grant learned-art tiers through `initialTier`, and do not reference a missing or non-teachable source art.
 - If a conflict exchange uses a special art, first read `specialArts[].combatEffect`, then include either `specialArtAudit` with `effectNote`, owner identity, `baseOperation`, and `costMultiplierPercent`, or `specialArtAudits[]` with one object per art when both player and opposition use named special arts in the same exchange; never write both fields on one exchange. Every audit must match the validated pre-turn profile of that owner, and `effectNote` must cite the combatEffect trigger/payoff actually used. Player-owned learned special arts that power the player's exchange operation require `actionCostAudit.player.specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and multiplied `effectiveCost`; non-player/incoming special arts keep the player's ordinary ОД cost, but when they power the opposition operation they must be owned by the resolved opposition actor, use the matching `specialArts[].tier` as `actionCostAudit.opposition.artTier`, and require the same special-art cost fields and multiplied `effectiveCost` under `actionCostAudit.opposition`. Do not attach a non-player special art to the player's own `exchange.operationType`, to an earlier `incomingAction.operationType`, or to any other stale candidate; if `incomingAction.finalOperationType` exists, that final operation is authoritative. Its `baseOperation` must match the resolved opposition operation used for `actionCostAudit.opposition`.
 - `customStates[]` is visible in `/afterlife_profiles`; remove ended states through `afterlifeEntityCustomStateChanges[].statesToRemove[]` instead of leaving stale states forever.

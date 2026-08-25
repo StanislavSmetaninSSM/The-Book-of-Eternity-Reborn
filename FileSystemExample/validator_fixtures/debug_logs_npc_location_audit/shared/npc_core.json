@@ -10,8 +10,6 @@
       "race": "Human",
       "class": "Merchant",
       "role": "Trader",
-      "currentHealth": 100,
-      "maxHealth": 100,
       "level": 4,
       "goals": {
         "longTerm": "Сохранить лавку и удержать постоянных покупателей.",

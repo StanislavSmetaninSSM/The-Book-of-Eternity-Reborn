@@ -1882,7 +1882,7 @@ public sealed partial class NpcTradeService
         foreach (var property in new[]
                  {
                      "itemId", "name", "description", "type", "tradeItemClass", "quality", "rarity",
-                     "price", "baseSellPrice", "count", "weight", "volume", "group", "durability",
+                     "price", "baseSellPrice", "count", "weight", "volume", "group",
                      "isContainer", "isConsumption"
                  })
         {

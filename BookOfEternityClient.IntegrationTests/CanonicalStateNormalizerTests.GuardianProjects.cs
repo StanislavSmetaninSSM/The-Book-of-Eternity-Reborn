@@ -927,6 +927,29 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         }
         """);
 
+        await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, """
+        {
+          "entries": [
+            {
+              "entryId": "journal_legacy_active_project",
+              "eventId": "evt_legacy_active_project",
+              "turn": 43,
+              "guardianId": "guardian_alpha",
+              "guardianName": "Азалия",
+              "delta": 1,
+              "reasonType": "project_assist",
+              "sourceSurface": "guardianProjectUpdates",
+              "sourceId": "proj_active",
+              "title": "Legacy assist",
+              "summary": "Legacy audit must be repaired even when this turn appends events.",
+              "visibility": "player_known",
+              "appliedAt": "2026-03-24T00:00:00Z",
+              "audit": {}
+            }
+          ]
+        }
+        """);
+
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
         await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
@@ -938,6 +961,18 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.NotNull(powerJournalJson);
         Assert.Contains("project_assist", powerJournalJson, StringComparison.Ordinal);
         Assert.Contains("rival_strike", powerJournalJson, StringComparison.Ordinal);
+        var powerJournal = JsonNode.Parse(powerJournalJson!)!.AsObject();
+        var legacyEntry = powerJournal["entries"]!.AsArray().OfType<JsonObject>().Single(
+            entry => string.Equals(
+                entry["eventId"]?.GetValue<string>(),
+                "evt_legacy_active_project",
+                StringComparison.Ordinal));
+        Assert.Equal(
+            "guardian_alpha",
+            legacyEntry["audit"]?["projectGuardianId"]?.GetValue<string>());
+        Assert.Equal(
+            "Расширение Обители",
+            legacyEntry["audit"]?["projectName"]?.GetValue<string>());
     }
 
     [Fact]

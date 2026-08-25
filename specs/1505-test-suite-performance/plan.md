@@ -24,6 +24,10 @@ The #1526 suite-growth correction keeps the same plan and caps, retains measured
 PreMerge costs for underestimated integration classes, and removes repeated
 save loading from the browser-presentation audit through prepared templates
 with isolated per-row clones.
+The #1547 measured deadline correction preserves that complete schedule and
+raises only the globally bounded PreMerge deadline from 20 to 30 minutes after
+the green core plus isolated process/E2E lower bound stopped fitting the former
+cap.
 
 ## Technical Context
 
@@ -46,15 +50,17 @@ project, a non-test TestSupport library, and physically separate fast and
 integration test projects.
 
 **Performance Goals**: At least 5x on the fixed two-test guardian benchmark;
-Fast at most 5 minutes; LifecycleIntegration at most 10 minutes;
-DeepValidation at most 15 minutes; PreMerge at most 20 minutes;
-PreMerge preferably below 10 minutes on the baseline machine.
+Fast at most 5 minutes; Focused defaults to 5 minutes and permits an explicitly
+justified bounded override up to 15 minutes for a measured coherent selection;
+LifecycleIntegration defaults to 10 minutes and permits the same explicitly
+justified 30-minute ceiling when the complete measured class has grown;
+DeepValidation at most 15 minutes; PreMerge at most 30 minutes.
 
 **Constraints**: Public validation still runs all 26 phases in canonical order; no gameplay, state schema, issue-code, prompt, documentation-example, console, browser, or frontend behavior changes; no unbounded full-suite run.
 
 **Scale/Scope**: 6,560 discovered cases, 965 broad validation calls, 460 guardian cases, and 295 broad guardian calls across eight partial source files.
 
-**Source Issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
+**Source Issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
 
 **Contract Scope**: Internal validation orchestration and test infrastructure only.
 
@@ -87,8 +93,9 @@ branch ran each once because their category boundaries changed.
 
 *GATE before research: PASS. Re-check after design: PASS.*
 
-- **GitHub traceability**: #1505 is complete; the Phase 45 capacity amendment
-  is tracked by open issue #1502 and linked from the active Spec Kit artifacts.
+- **GitHub traceability**: #1505/#1526 retain the accepted historical evidence;
+  the current deadline correction is tracked by open issue #1547 and linked
+  from the active Spec Kit artifacts.
 - **Spec Kit fit**: The implementation spans production validation orchestration, many guardian test files, traits/source guards, scripts, documentation, and multiple sessions.
 - **Player-facing integrity**: No console, browser, copy, or player interaction changes.
 - **Contract/state authority**: Validation rule bodies, issue codes, canonical schemas, state normalization, and GM-authored contracts remain unchanged. Mortal/afterlife prompts, examples, manifests, and contract matrices therefore need no update.
@@ -203,7 +210,7 @@ guide as the stable local interface.
    direct/fixture-mediated full validation, file-backed regression integration,
    and known process/E2E entry points.
 5. Implement `scripts/test-csharp.ps1` with explicit project routing,
-   lane-specific hard caps including the amended 20-minute PreMerge deadline,
+   lane-specific hard caps including the amended bounded PreMerge deadline,
    timestamp/PID/GUID result
    directories, JSON/TRX/log output, cross-descriptor duplicate detection,
    a gated Windows launcher assigned to kill-on-close Job Object containment
@@ -225,7 +232,7 @@ guide as the stable local interface.
 6. Retain the accepted DeepValidation result because PlanOnly proves the
    23-descriptor/1,950-case selection is unchanged and excludes lifecycle
    tests; require at least 1,950 results below 15 minutes.
-7. Run exactly one PreMerge control below its single 20-minute deadline,
+7. Run exactly one PreMerge control below its single 30-minute deadline,
    retaining JSON/TRX/log evidence and at least 4,240 results, including
    completed ProcessIntegration and E2E phases, the exact ten lifecycle
    sentinels, and the exact ten spiritual-conflict sentinels. The full
@@ -238,6 +245,9 @@ bounded control is narrowed with only the smallest relevant focused or
 diagnostic selection.
 
 ## Phase 5: Suite-Growth PreMerge Capacity Correction
+
+This section records the accepted historical #1526 decision. Phase 6 changes
+only its now-obsolete final-gate deadline after new measured suite growth.
 
 1. Retain the #1526 capacity-red PreMerge and compare its descriptor TRX
    timings with isolated and browser-only concurrent focused controls.
@@ -260,8 +270,29 @@ diagnostic selection.
    distinct writable root for every row.
 7. Verify the focused guards, one PlanOnly contract, one meaningful Fast
    checkpoint, and one exact PreMerge control under the explicitly approved
-   20-minute deadline. No other lane timeout, concurrency cap, filter, phase,
-   case, or assertion changes.
+   20-minute deadline. No other default lane timeout, concurrency cap, filter,
+   phase, case, or assertion changes. A later measured coherent Focused
+   selection or complete LifecycleIntegration run may opt into its separately
+   bounded override (15 minutes for Focused, 30 minutes for LifecycleIntegration)
+   without changing the five- or ten-minute default or any final-gate deadline.
+
+## Phase 6: Measured PreMerge Deadline Correction
+
+1. Retain the #1547 capacity-red run: `6,608/6,608` available core results
+   green with zero duplicates and complete cleanup, followed by a global
+   timeout before the exclusive process/E2E tail completed.
+2. Retain the isolated ProcessIntegration result (`523/523` in `3:32`) and the
+   prior isolated E2E timing to prove that the approximately 17-minute core plus
+   exclusive tail cannot fit the 20-minute deadline.
+3. Add a RED/GREEN executable runner guard for a 30-minute PreMerge default.
+4. Change only the PreMerge/Complete lane-wide deadline to 30 minutes. Preserve
+   every other lane timeout, concurrency ceiling, filter, case, assertion,
+   phase boundary, phase order, retained cost, and scheduling wave.
+5. Synchronize `docs/testing.md`, the #1505 data model/research/quickstart, and
+   active implementation-plan final-gate expectations.
+6. Run one updated PlanOnly contract and one exact PreMerge control. Require
+   completed ProcessIntegration and E2E, all official results green, zero
+   duplicate IDs, timeout false, and complete owned-tree cleanup.
 
 ## Complexity Tracking
 

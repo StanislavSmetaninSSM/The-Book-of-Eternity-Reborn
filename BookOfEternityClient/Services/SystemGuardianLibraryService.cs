@@ -469,8 +469,7 @@ public sealed class SystemGuardianLibraryService
             },
             ["gachaSystem"] = new JsonObject
             {
-                ["chargesPerReturn"] = GuardianGachaChargeRules.GetChargesPerReturnForReputation(0, currentPower),
-                ["chargesUsedThisReturn"] = 0,
+                ["currentReturnCycleId"] = string.Empty,
                 ["gachaHistory"] = new JsonArray()
             },
             ["loreFragments"] = BuildInitialFreeformLoreFragments(guardianId, displayName, domain, abodeName, normalizedDescription),
@@ -577,8 +576,7 @@ public sealed class SystemGuardianLibraryService
             },
             ["gachaSystem"] = new JsonObject
             {
-                ["chargesPerReturn"] = GuardianGachaChargeRules.GetChargesPerReturnForReputation(0, currentPower),
-                ["chargesUsedThisReturn"] = 0,
+                ["currentReturnCycleId"] = string.Empty,
                 ["gachaHistory"] = new JsonArray()
             },
             ["loreFragments"] = BuildInitialLoreFragments(preset),

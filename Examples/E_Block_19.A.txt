@@ -166,7 +166,7 @@
                                         { 
                                             "existedId": "item-mortar-01", 
                                             "name": "Mortar", 
-                                            "durability": "85%", ... 
+                                    "durability": "85%", ... // LEGACY VIOLATION: removed direct resource mirror
                                         } 
                                     ] 
                                 } 
@@ -185,16 +185,16 @@
    <content type="json_fragment">
     <![CDATA[
 
-                            // CORRECT: Only the specific change is sent. The other 4 items in her inventory are untouched and safe.
-                            "NPCInventoryUpdates": [ 
-                                { 
-                                    "NPCId": "npc-elara-01", 
-                                    "NPCName": "Elara",
-                                    "itemUpdate": { 
-                                        "existedId": "item-mortar-01", 
-                                        "durability": "85%" 
-                                    } 
-                                } 
+                            // CORRECT: mutate only the Mortar's exact durability coordinate.
+                            "resourceChanges": [
+                                {
+                                    "operation": "damage",
+                                    "target": { "kind": "item", "targetId": "item-mortar-01" },
+                                    "resourceKey": "durability",
+                                    "amount": 15,
+                                    "source": { "kind": "local_item_outcome", "sourceId": "item-mortar-01" },
+                                    "eventRef": "turn_42:resource:1"
+                                }
                             ]
                             
                             ]]>
@@ -328,22 +328,22 @@
    Example Scenario: Kaelen's sword takes damage in a fight.
   </title>
   <jsonresponse>
-   <npcinventoryupdates>
+   <resourcechanges>
     <![CDATA[
 
                         [
                             {
-                                "NPCId": "npc-kaelen-001",
-                                "NPCName": "Kaelen, the Mercenary Captain",
-                                "itemUpdate": {
-                                    "existedId": "item-kaelen-sword-01",
-                                    "durability": "65%"
-                                }
+                                "operation": "damage",
+                                "target": { "kind": "item", "targetId": "item-kaelen-sword-01" },
+                                "resourceKey": "durability",
+                                "amount": 35,
+                                "source": { "kind": "local_item_outcome", "sourceId": "item-kaelen-sword-01" },
+                                "eventRef": "turn_42:resource:1"
                             }
                         ]
 
                         ]]>
-   </npcinventoryupdates>
+   </resourcechanges>
   </jsonresponse>
  </example>
  <example contenttype="json_fragment" type="good">

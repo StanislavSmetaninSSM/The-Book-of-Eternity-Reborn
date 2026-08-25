@@ -43,16 +43,16 @@
 
                     A. For Generic Enemies (non-NPC):
 
-                    1.  Health Enhancement: After calculating the enemy's 'maxHealth' (as per Rule #6.1.3.3), multiply the final result by 1.75. 
-                    This is their new 'maxHealth'.
+                    1.  Health Enhancement: After calculating the enemy's HealthMaximum (as per Rule #6.1.3.3), multiply the final result by 1.75.
+                    Round once to the sealed health quantum and use that result only as the new anonymous combatant's one-time resourceMaterialization.resources[].maximum.
 
                     2.  Damage Enhancement: For every 'Damage' or 'DamageOverTime' effect within the enemy's 'actions' array, multiply its base 'value' by 1.4. 
                     Round the result to the nearest integer. This is their new damage value for that action.
 
                     B. For Named NPCs entering combat as Enemies:
 
-                    1.  Health Enhancement: After calculating the NPC's 'maxHealth' from their characteristics (as per Rule #6.1.6.2), multiply the final result by 1.5. 
-                    This is their new 'maxHealth' for the combat encounter. 
+                    1.  Health Enhancement: After calculating the NPC's health resource capacity from their characteristics (as per Rule #6.1.6.2), multiply the final result by 1.5.
+                    This multiplier is sealed by the named NPC's owner materializer when that NPC is first created; an existing NPC never resends or rewrites capacity on combat entry.
                     (Note: The multiplier is slightly lower to account for their potentially higher base health from stats).
 
                     2.  Damage Enhancement: After calculating the final scaled damage of any of their attacks or offensive skills 

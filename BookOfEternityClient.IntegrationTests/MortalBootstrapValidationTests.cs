@@ -42,7 +42,10 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.Contains("game_state/quests/regular_quests.json", files.Keys);
         Assert.Contains("game_state/inventory/items.json", files.Keys);
         Assert.Contains(MortalItemIdentityState.StatePath, files.Keys);
-        Assert.Contains("game_state/inventory/item_resources.json", files.Keys);
+        Assert.DoesNotContain("game_state/inventory/item_resources.json", files.Keys);
+        Assert.Contains(ResourceMaterializationContract.DefinitionsPath, files.Keys);
+        Assert.Contains(ResourceMaterializationContract.StatePath, files.Keys);
+        Assert.Contains(ResourceMaterializationContract.HistoryPath, files.Keys);
         Assert.Contains("game_state/inventory/item_bonds.json", files.Keys);
         Assert.Contains("game_state/inventory/item_text_updates.json", files.Keys);
         Assert.Contains("game_state/npcs/item_journals.json", files.Keys);
@@ -102,7 +105,6 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.True(JsonNode.DeepEquals(
             MortalItemIdentityState.CreateEmptyRoot(),
             files[MortalItemIdentityState.StatePath]));
-        Assert.Empty(files["game_state/inventory/item_resources.json"]["entries"]!.AsArray());
         Assert.Empty(files["game_state/inventory/item_bonds.json"]["entries"]!.AsArray());
         Assert.Empty(files["game_state/inventory/item_text_updates.json"]["entries"]!.AsArray());
         Assert.Empty(files["game_state/npcs/item_journals.json"]["entries"]!.AsArray());
@@ -362,7 +364,11 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         var normalizer = new CanonicalStateNormalizer(
             _fs,
             NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeMortalLocationsAsync(backups);
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            await normalizer.BindTo(writeLease)
+                .NormalizeMortalLocationsAsync(backups);
+        }
 
         var settledScaffold = JsonNode.Parse(
             (await _fs.ReadFileAsync(MortalBootstrapLocationScaffold.StatePath))!)!.AsObject();
@@ -542,10 +548,14 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         var normalizer = new CanonicalStateNormalizer(
             _fs,
             NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeMortalLocationsAsync(baselineFiles.ToDictionary(
-            static path => path,
-            static path => $"game_state/control/pending_turn_snapshot/{path}",
-            StringComparer.OrdinalIgnoreCase));
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            await normalizer.BindTo(writeLease).NormalizeMortalLocationsAsync(
+                baselineFiles.ToDictionary(
+                    static path => path,
+                    static path => $"game_state/control/pending_turn_snapshot/{path}",
+                    StringComparer.OrdinalIgnoreCase));
+        }
         var map = JsonNode.Parse((await _fs.ReadFileAsync(
             MortalLocationMaterializationContract.WorldMapPath))!)!.AsObject();
         var locations = map["locations"]!.AsArray();

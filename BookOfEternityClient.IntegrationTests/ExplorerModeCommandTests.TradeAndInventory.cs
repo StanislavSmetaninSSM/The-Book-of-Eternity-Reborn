@@ -228,6 +228,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 ["items"] = new JsonArray(glove),
                 ["equippedItems"] = new JsonObject()
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(_fs);
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
@@ -274,6 +275,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 ["items"] = new JsonArray(glove),
                 ["equippedItems"] = new JsonObject()
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(_fs);
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
@@ -301,6 +303,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_InventoryDetail_HidesMortalItemAuthorityAndPreservesSemanticCatchAll()
     {
         await SeedMortalStateAsync();
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(_fs);
         var item = MortalItemTestFixture.CreateCanonicalRoot("itm_projection_console");
         item["name"] = "Кузнечный молот северной артели";
         item["description"] = "На бойке осталась узнаваемая насечка мастера.";
@@ -756,6 +759,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_Inventory_DoesNotProjectUnacceptedSameFileCandidate()
     {
         await SeedMortalStateAsync();
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(_fs);
         var acceptedItem = MortalItemTestFixture.CreateCanonicalRoot("itm_accepted_projection_console");
         acceptedItem["name"] = "Принятый клинок дозорного";
         MortalItemTestFixture.ResealCanonical(acceptedItem);
@@ -1053,7 +1057,6 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
               "count":1,
               "value":0,
               "weight":0.1,
-              "durability":"100%",
               "equipmentSlot":"Accessory1",
               "group":"Стартовые зацепки",
               "textContent":["Чёрная печать похожа на знак запрещённого братства."],
@@ -1073,6 +1076,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 ["items"] = new JsonArray(bandage),
                 ["equippedItems"] = new JsonObject()
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(_fs);
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
@@ -1083,9 +1087,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("сюжетный предмет", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("обычное", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("аксессуар", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Прочность", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("100%/", renderedText, StringComparison.Ordinal);
-        Assert.DoesNotContain("100/", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Прочность", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("QuestItem", renderedText, StringComparison.Ordinal);
         Assert.DoesNotContain("Common", renderedText, StringComparison.Ordinal);
         Assert.DoesNotContain("Accessory1", renderedText, StringComparison.Ordinal);
@@ -1131,6 +1133,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 ["items"] = new JsonArray(glove),
                 ["equippedItems"] = new JsonObject()
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(_fs);
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
@@ -1717,6 +1720,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             MortalItemIdentityState.StatePath,
             MortalItemTestFixture.CreateIndex(items.ToArray())
                 .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(_fs);
     }
 
     private static JsonObject CreateCanonicalManagementItem(

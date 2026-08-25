@@ -1,3 +1,5 @@
+using BookOfEternityClient.Services;
+
 namespace BookOfEternityClient.Models.GameState;
 
 /// <summary>
@@ -82,9 +84,14 @@ public class AggregatedGameState
 
 public class PlayerStatusState
 {
-    public string HealthPercentage { get; set; } = "100%";
-    public string EnergyPercentage { get; set; } = "100%";
-    public string PoisePercentage { get; set; } = "100%";
+    public string HealthPercentage { get; set; } = "—";
+    public string EnergyPercentage { get; set; } = "—";
+    public string PoisePercentage { get; set; } = "—";
+    public bool ResourceProjectionAvailable { get; set; }
+    public string ResourceUnavailableMessage { get; set; } =
+        ResourcePlayerFailureMessages.Unavailable;
+    internal IReadOnlyList<ResourceProjectionRow> Resources { get; set; } =
+        Array.Empty<ResourceProjectionRow>();
     public string CurrentCondition { get; set; } = "Здоров";
     public string CurrentConditionDescription { get; set; } = string.Empty;
     public string[] ActiveConditions { get; set; } = Array.Empty<string>();

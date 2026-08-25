@@ -26,11 +26,11 @@
                     This is a ONE-TIME state modification.
 
                     A. For Generic Enemies (non-NPC):
-                    1.  Health Enhancement: Multiply 'maxHealth' by 3.5.
+                    1.  Health Enhancement: Multiply the newly calculated HealthMaximum by 3.5, round once to the sealed quantum, and use it only as the anonymous combatant's one-time health materialization maximum.
                     2.  Damage Enhancement: Multiply base 'value' of all 'Damage' effects by 2.8.
 
                     B. For Named NPCs entering combat as Enemies:
-                    1.  Health Enhancement: Multiply 'maxHealth' by 3.0.
+                    1.  Health Enhancement: Multiply the newly calculated named-NPC health capacity by 3.0 before the NPC owner materializer seals it. Existing NPCs never reapply this modifier on combat entry.
                     2.  Damage Enhancement: Apply a final multiplier of 2.5 to the total damage value.
 
                     ]]>

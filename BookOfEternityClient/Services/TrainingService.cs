@@ -36,6 +36,7 @@ public sealed class TrainingService
     private readonly ILocalInteractionScopeResolver _localScopeService;
     private readonly Func<CoordinatedStateWriteHelper.PlannedWrite[], Task<bool>> _tryRefreshCommit;
     private readonly Func<CoordinatedStateWriteHelper.PlannedWrite[], Task<bool>> _tryVisibilityGuard;
+    private readonly Func<Task> _beforeSpiritFocusLease;
 
     public TrainingService(FileSystemManager fs, ILogger<TrainingService> logger)
         : this(fs, logger, new LocalInteractionScopeService(fs))
@@ -47,7 +48,8 @@ public sealed class TrainingService
         ILogger<TrainingService> logger,
         ILocalInteractionScopeResolver localScopeService,
         Func<CoordinatedStateWriteHelper.PlannedWrite[], Task<bool>>? tryRefreshCommit = null,
-        Func<CoordinatedStateWriteHelper.PlannedWrite[], Task<bool>>? tryVisibilityGuard = null)
+        Func<CoordinatedStateWriteHelper.PlannedWrite[], Task<bool>>? tryVisibilityGuard = null,
+        Func<Task>? beforeSpiritFocusLease = null)
     {
         _fs = fs;
         _logger = logger;
@@ -56,6 +58,7 @@ public sealed class TrainingService
             (writes => CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes));
         _tryVisibilityGuard = tryVisibilityGuard ??
             (writes => CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes));
+        _beforeSpiritFocusLease = beforeSpiritFocusLease ?? (() => Task.CompletedTask);
     }
 
     public sealed record TrainingView(
@@ -405,18 +408,36 @@ public sealed class TrainingService
         ApplyAfterlifeTraining(profile, offer);
         AppendAfterlifeTrainingReceipt(soulRoot, offer, currentTurn);
 
+        JsonObject? acceptedShiningRoot = null;
+        if (offer.Cost.LightSparks > 0)
+        {
+            acceptedShiningRoot = shiningRoot ?? new JsonObject();
+            acceptedShiningRoot["lightSparks"] = currentSparks - offer.Cost.LightSparks;
+        }
+
+        var spiritFocusResult = await TryCommitSpiritFocusTrainingAsync(
+            offer,
+            soulRoot,
+            soulRootBaseline,
+            acceptedShiningRoot,
+            shiningRootBaseline,
+            currentTurn,
+            "Самостоятельная прокачка Средоточия Души отклонена: единый ресурсный план не прошёл проверку.",
+            "Owner-state или ресурсный ledger изменились во время самостоятельной прокачки Средоточия Души.",
+            "Самостоятельная прокачка завершена.");
+        if (spiritFocusResult != null)
+            return spiritFocusResult;
+
         var selfTrainingWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>
         {
             new(SoulStatePath, soulRootBaseline, GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts), true)
         };
-        if (offer.Cost.LightSparks > 0)
+        if (acceptedShiningRoot != null)
         {
-            var shiningState = shiningRoot ?? new JsonObject();
-            shiningState["lightSparks"] = currentSparks - offer.Cost.LightSparks;
             selfTrainingWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
                 ShiningAbodeStatePath,
                 shiningRootBaseline,
-                shiningState.ToJsonString(JsonOpts),
+                acceptedShiningRoot.ToJsonString(JsonOpts),
                 true));
         }
 
@@ -494,18 +515,41 @@ public sealed class TrainingService
             "afterlife_mentor",
             ComputeSourceSnapshotHash(mentor));
 
+        JsonObject? acceptedShiningRoot = null;
+        if (evaluatedOffer.Cost.LightSparks > 0)
+        {
+            acceptedShiningRoot = shiningRoot ?? new JsonObject();
+            acceptedShiningRoot["lightSparks"] = currentSparks - evaluatedOffer.Cost.LightSparks;
+        }
+
+        var spiritFocusResult = await TryCommitSpiritFocusTrainingAsync(
+            evaluatedOffer,
+            soulRoot,
+            soulRootBaseline,
+            acceptedShiningRoot,
+            shiningRootBaseline,
+            currentTurn,
+            "Обучение Средоточию Души отклонено: единый ресурсный план не прошёл проверку.",
+            "Owner-state, наставник или ресурсный ledger изменились во время обучения Средоточию Души.",
+            "Обучение у наставника завершено.",
+            CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(purchaseScope)
+                .Append(CoordinatedStateWriteHelper.CreateGuardWrite(
+                    AfterlifeEntityProfilesPath,
+                    afterlifeProfilesBaseline))
+                .ToArray());
+        if (spiritFocusResult != null)
+            return spiritFocusResult;
+
         var mentorTrainingWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>
         {
             new(SoulStatePath, soulRootBaseline, GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts), true)
         };
-        if (evaluatedOffer.Cost.LightSparks > 0)
+        if (acceptedShiningRoot != null)
         {
-            var shiningState = shiningRoot ?? new JsonObject();
-            shiningState["lightSparks"] = currentSparks - evaluatedOffer.Cost.LightSparks;
             mentorTrainingWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
                 ShiningAbodeStatePath,
                 shiningRootBaseline,
-                shiningState.ToJsonString(JsonOpts),
+                acceptedShiningRoot.ToJsonString(JsonOpts),
                 true));
         }
 
@@ -522,6 +566,112 @@ public sealed class TrainingService
         }
 
         return new TrainingOperationResult(true, true, "Обучение у наставника завершено.");
+    }
+
+    private async Task<TrainingOperationResult?> TryCommitSpiritFocusTrainingAsync(
+        TrainingOffer offer,
+        JsonObject soulRoot,
+        string soulRootBaseline,
+        JsonObject? acceptedShiningRoot,
+        string? shiningRootBaseline,
+        int currentTurn,
+        string invalidPlanMessage,
+        string concurrentChangeMessage,
+        string successMessage,
+        params CoordinatedStateWriteHelper.PlannedWrite[] additionalGuardWrites)
+    {
+        if (!IsAfterlifeSpiritFocusTarget(offer.TargetKind))
+            return null;
+
+        await _beforeSpiritFocusLease();
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        if (!await MatchesSemanticBaselineAsync(
+                writeLease,
+                SoulStatePath,
+                soulRootBaseline) ||
+            (acceptedShiningRoot != null &&
+             !await MatchesSemanticBaselineAsync(
+                 writeLease,
+                 ShiningAbodeStatePath,
+                 shiningRootBaseline)))
+        {
+            return new TrainingOperationResult(false, false, concurrentChangeMessage);
+        }
+
+        var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            _fs,
+            writeLease,
+            new AfterlifeOwnerResourceAcceptedState(
+                SoulState: soulRoot,
+                ShiningAbode: acceptedShiningRoot),
+            Math.Max(1, currentTurn));
+        if (!resourcePlan.IsValid)
+            return new TrainingOperationResult(false, false, invalidPlanMessage);
+
+        var canonicalPathComparer = OperatingSystem.IsWindows()
+            ? StringComparer.OrdinalIgnoreCase
+            : StringComparer.Ordinal;
+        var resourcePlanOwnedPaths = resourcePlan.BeforeImages.Keys
+            .Select(_fs.ResolvePath)
+            .ToHashSet(canonicalPathComparer);
+        var retainedAdditionalGuardWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>(
+            additionalGuardWrites.Length);
+        foreach (var additionalGuardWrite in additionalGuardWrites)
+        {
+            var isRedundantPlanGuard = additionalGuardWrite.GuardOnly &&
+                                       additionalGuardWrite.RequireCurrentBaseline &&
+                                       resourcePlanOwnedPaths.Contains(_fs.ResolvePath(additionalGuardWrite.Path));
+            if (!isRedundantPlanGuard)
+            {
+                retainedAdditionalGuardWrites.Add(additionalGuardWrite);
+                continue;
+            }
+
+            if (!await MatchesSemanticBaselineAsync(
+                    writeLease,
+                    additionalGuardWrite.Path,
+                    additionalGuardWrite.PreviousJson))
+            {
+                return new TrainingOperationResult(false, false, concurrentChangeMessage);
+            }
+        }
+
+        if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                _fs,
+                writeLease,
+                resourcePlan,
+                retainedAdditionalGuardWrites.ToArray()))
+        {
+            return new TrainingOperationResult(false, false, concurrentChangeMessage);
+        }
+
+        return new TrainingOperationResult(true, true, successMessage);
+    }
+
+    private async Task<bool> MatchesSemanticBaselineAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        string? expectedJson)
+    {
+        var currentJson = await _fs.ReadFileAsync(writeLease, path);
+        if (expectedJson == null || currentJson == null)
+            return expectedJson == null && currentJson == null;
+        if (string.IsNullOrWhiteSpace(expectedJson) ||
+            string.IsNullOrWhiteSpace(currentJson))
+        {
+            return false;
+        }
+
+        try
+        {
+            return JsonNode.DeepEquals(
+                JsonNode.Parse(expectedJson),
+                JsonNode.Parse(currentJson));
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
     }
 
     public static string ComputeSourceSnapshotHash(JsonObject sourceActor)

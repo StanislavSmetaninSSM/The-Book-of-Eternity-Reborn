@@ -293,24 +293,46 @@ public partial class ExplorerMode
     }
 
 
-    private void RenderNpcInventory(List<string> lines, JsonElement npc, bool debugMode)
+    private async Task RenderNpcInventory(List<string> lines, JsonElement npc, bool debugMode)
     {
         var display = BuildNpcInventoryDisplay(npc);
         if (display.IsEmpty) return;
+
+        var scopes = display.Items
+            .Select((item, index) => new ResourceProjectionOwnerScope(
+                new ResourceOwnerKey("mortal_world", ResourceOwnerKind.Item, item.Key),
+                $"предмет персонажа №{index + 1}",
+                IsOwningPlayer: false))
+            .ToArray();
+        var resources = scopes.Length == 0
+            ? new ResourceProjectionResult(true, null, Array.Empty<ResourceProjectionRow>())
+            : await ResourceProjectionService.ProjectCanonicalAsync(
+                _fs,
+                scopes,
+                debugMode
+                    ? ResourceProjectionAudience.GameMaster
+                    : ResourceProjectionAudience.Player);
+        var rowsBySelector = resources.IsAvailable
+            ? resources.Rows
+                .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+                .ToDictionary(
+                    static group => group.Key,
+                    static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                    StringComparer.Ordinal)
+            : new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(StringComparer.Ordinal);
 
         if (display.Items.Count > 0)
         {
             lines.Add("");
             lines.Add($"  [bold orange3]🎒 Инвентарь:[/]");
-            foreach (var item in display.Items)
+            if (!resources.IsAvailable)
+                lines.Add($"    [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]");
+            for (var index = 0; index < display.Items.Count; index++)
             {
+                var item = display.Items[index];
                 var itemName = GetNodeStr(item.Data, "name", "?");
                 var qty = GetNodeStr(item.Data, "quantity", GetNodeStr(item.Data, "count", ""));
                 var itemType = GetNodeStr(item.Data, "type", GetNodeStr(item.Data, "category", ""));
-                var resource = GetNodeStr(item.Data, "resource", "");
-                var maxResource = GetNodeStr(item.Data, "maximumResource", "");
-                var resourceType = GetNodeStr(item.Data, "resourceType", "");
-                var durability = GetNodeStr(item.Data, "durability", "");
 
                 var line = item.IsEquipped
                     ? $"    ⚔ [green]{Markup.Escape(itemName)}[/] [green](экипировано)[/]"
@@ -319,14 +341,14 @@ public partial class ExplorerMode
                     line += $" ×{Markup.Escape(qty)}";
                 if (!string.IsNullOrEmpty(itemType))
                     line += $" [dim]({Markup.Escape(itemType)})[/]";
-                if (!string.IsNullOrEmpty(resource))
+                if (rowsBySelector.TryGetValue($"предмет персонажа №{index + 1}", out var itemRows))
                 {
-                    var resourceLabel = !string.IsNullOrEmpty(resourceType) ? $" {Markup.Escape(resourceType)}" : "";
-                    var maxLabel = !string.IsNullOrEmpty(maxResource) ? $"/{Markup.Escape(maxResource)}" : "";
-                    line += $" [cyan]{Markup.Escape(resource)}{maxLabel}{resourceLabel}[/]";
+                    foreach (var row in itemRows)
+                    {
+                        line += $" [cyan]{Markup.Escape(row.DisplayName)}: " +
+                                $"{Markup.Escape(ResourceProjectionService.FormatValue(row))}[/]";
+                    }
                 }
-                if (!string.IsNullOrEmpty(durability))
-                    line += $" [dim]прочность: {Markup.Escape(durability)}[/]";
                 lines.Add(line);
 
                 if (debugMode)
@@ -346,34 +368,37 @@ public partial class ExplorerMode
     }
 
 
-    private void RenderNpcEffects(List<string> lines, JsonDocument? doc, string npcId, string npcName, bool debugMode)
+    private static void RenderNpcEffects(
+        List<string> lines,
+        EffectPlayerProjectionResult? projection,
+        string npcId)
     {
-        if (doc == null) return;
-        var entries = CollectNpcEntries(doc, npcId, npcName);
-        if (entries.Count == 0) return;
+        if (projection == null)
+            return;
+        if (!projection.IsAvailable)
+        {
+            lines.Add("");
+            lines.Add($"  [yellow]{Markup.Escape(projection.StatusMessage)}[/]");
+            return;
+        }
+
+        var entries = projection.Entries
+            .Where(effect =>
+                string.Equals(effect.TargetKind, "npc", StringComparison.Ordinal) &&
+                string.Equals(effect.TargetId, npcId, StringComparison.Ordinal))
+            .ToArray();
+        if (entries.Length == 0)
+            return;
 
         lines.Add("");
         lines.Add($"  [bold]✨ Эффекты:[/]");
-        foreach (var entry in entries)
+        foreach (var effect in entries)
         {
-            var effType = GetStr(entry, "effectType", GetStr(entry, "type", ""));
-            var effDesc = GetStr(entry, "description", GetStr(entry, "effect", ""));
-            var duration = GetStr(entry, "duration", GetStr(entry, "turnsRemaining", ""));
-            var isWound = effType.ToLower().Contains("wound") || effType.ToLower().Contains("ран")
-                       || effDesc.ToLower().Contains("wound") || effDesc.ToLower().Contains("ран");
-            var isDebuff = effType.ToLower().Contains("debuff") || effType.ToLower().Contains("негатив");
-            var color = isWound ? "red" : isDebuff ? "orange3" : "green";
-            var icon = isWound ? "🩸" : isDebuff ? "⚠️" : "✨";
-
-            var displayText = !string.IsNullOrEmpty(effDesc) ? effDesc : effType;
-            var line = $"    {icon} [{color}]{Markup.Escape(displayText)}[/]";
-            if (!string.IsNullOrEmpty(duration))
-                line += $" [dim](длительность: {Markup.Escape(duration)})[/]";
-            lines.Add(line);
-
-            if (debugMode)
-                RenderExtraFields(lines, entry, new[] { "NPCName", "npcName", "name",
-                    "effectType", "type", "description", "effect", "duration", "turnsRemaining" }, "      ");
+            lines.Add($"    ✨ [yellow]{Markup.Escape(effect.Name)}[/]");
+            if (!string.IsNullOrWhiteSpace(effect.Summary))
+                lines.Add($"      [dim]{Markup.Escape(effect.Summary)}[/]");
+            foreach (var fact in effect.Facts)
+                lines.Add($"      [dim]{Markup.Escape(fact.Label)}:[/] {Markup.Escape(fact.Value)}");
         }
     }
 

@@ -34,13 +34,13 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "NPCInventoryAdds", "NPCInventoryUpdates", "NPCInventoryRemovals",
-                "NPCEquipmentChanges", "NPCInventoryResourcesChanges"
+                "NPCEquipmentChanges"
             }, issues);
 
         await ValidateNpcFile("game_state/npcs/npc_effects.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "NPCEffectChanges", "NPCWoundChanges"
+                "NPCWoundChanges", "schemaVersion", "entries"
             }, issues);
 
         await ValidateNpcFile("game_state/npcs/npc_personality.json",
@@ -551,7 +551,7 @@ public partial class ValidationService
             {
                 "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
-                SourceOfLightCapstoneState.ShiningStateProperty, "coreActionReceipts",
+                SourceOfLightCapstoneState.ShiningStateProperty, AfterlifeEntityProfileState.ResourceOwnerBindingsProperty, "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts",
                 ShiningAbodeState.FactionChronicleUpdatesProperty,
                 ShiningAbodeState.FactionInfluenceUpdatesProperty,
@@ -565,7 +565,7 @@ public partial class ValidationService
             {
                 "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
-                SourceOfLightCapstoneState.ShiningStateProperty, "coreActionReceipts",
+                SourceOfLightCapstoneState.ShiningStateProperty, AfterlifeEntityProfileState.ResourceOwnerBindingsProperty, "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts",
                 ShiningAbodeState.FactionChronicleUpdatesProperty,
                 ShiningAbodeState.FactionInfluenceUpdatesProperty,
@@ -736,6 +736,11 @@ public partial class ValidationService
             {
                 "otherPlayersInteractions"
             }, issues, ValidateMetaMiscContract);
+        await ValidateStrictTopLevelObjectFileAsync("game_state/misc/player_interactions.json",
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "otherPlayersInteractions"
+            }, issues);
         await ValidateFlexibleStateFile("game_state/control/life_transitions.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -5233,7 +5238,7 @@ public partial class ValidationService
         }
 
         AbodePowerRules.EnsureCanonicalState(parsedMaterializedGuardian);
-        GuardianGachaChargeRules.NormalizeGuardianGachaState(parsedMaterializedGuardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(parsedMaterializedGuardian);
         GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(parsedMaterializedGuardian);
         materializedGuardian = parsedMaterializedGuardian;
         if (TryBuildAuthorizedFoundationCreateGuardian(context, guardianId, out var authorizedCreateGuardian) &&
@@ -5267,7 +5272,7 @@ public partial class ValidationService
         }
 
         AbodePowerRules.EnsureCanonicalState(parsedGuardian);
-        GuardianGachaChargeRules.NormalizeGuardianGachaState(parsedGuardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(parsedGuardian);
         GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(parsedGuardian);
         guardian = parsedGuardian;
         return true;
@@ -9370,10 +9375,9 @@ public partial class ValidationService
         return string.Join(", ", new[]
         {
             $"status={GetNodeString(entitlements["status"]) ?? "missing"}",
-            $"rerolls={GetNodeInt(entitlements["rerolls"])}",
+            $"rerollAllocationId={GetNodeString(entitlements["rerollResourceBinding"]?["allocationId"]) ?? "none"}",
             $"freeShape={entitlements["freeShape"] is JsonValue freeShapeValue && freeShapeValue.TryGetValue<bool>(out var freeShape) && freeShape}",
             $"freeRetune={entitlements["freeRetune"] is JsonValue freeRetuneValue && freeRetuneValue.TryGetValue<bool>(out var freeRetune) && freeRetune}",
-            $"rerollsSpent={GetNodeInt(entitlements["rerollsSpent"])}",
             $"consumedAtTurn={GetNodeInt(entitlements["consumedAtTurn"])}",
             $"consumedAtUtc={GetNodeString(entitlements["consumedAtUtc"]) ?? "missing"}"
         });
@@ -9653,7 +9657,7 @@ public partial class ValidationService
                 "Accepted Shining gacha не materialize-ила exact canonical Shining state outcome.",
                 code: "shining_gacha_system_mismatch",
                 section: "ShiningAbode",
-                repairHint: "Обновляй только gachaSystem chargesUsedThisReturn/currentReturnCycleId/gachaHistory and coreActionReceipts exactly по accepted pull receipt; не меняй unrelated Shining state."));
+                repairHint: "Обновляй только companion-поля gachaSystem.currentReturnCycleId/gachaHistory и coreActionReceipts точно по accepted pull receipt; расход попытки публикует common resource plan."));
         }
 
         if (!JsonNode.DeepEquals(preTurnResidentsRoot, currentResidentsRoot))

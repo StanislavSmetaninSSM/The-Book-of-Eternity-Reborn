@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="20">
  <title>Mortal Location Materialization v1</title>
  <description>
@@ -95,6 +96,8 @@ future visit. The exact raw object is:
   "activeThreats": [],
   "loreBindings": [],
   "customStates": [],
+  "activeEffectDefinitions": [],
+  "hazards": [],
   "materialization": {
     "schemaVersion": 1,
     "materializationId": "mlocmat_turn_unique",
@@ -126,6 +129,24 @@ future visit. The exact raw object is:
   }
 }
 ```
+
+Effect Materialization v1 location/hazard source-owner boundary:
+
+- A location-level lifecycle effect is a complete entry in that location's
+  `activeEffectDefinitions[]`. A hazard-level lifecycle effect is a complete
+  entry in one `hazards[]` or `activeHazards[]` object with one exact
+  `hazardId`. Both follow `OtherGuides/Effect_Materialization_Contract.md`.
+- A definition does not apply itself. Request application only through top-level
+  `effectChanges[]`. Use `{ "kind": "location", "sourceId":
+  "<exact-current-locationId>", "definitionKey": "<exact-definition-key>" }`
+  (or the exact accepted same-turn location sourceRef), or `{ "kind": "hazard",
+  "sourceId": "<exact-hazardId>", "definitionKey":
+  "<exact-definition-key>" }` for a currently active hazard at the selected
+  location.
+- Names, coordinates, descriptions, `activeThreats[]`, custom-state prose, and
+  merely entering a location do not authorize an effect. Never write a location
+  or hazard result directly into `activeEffects[]`; the client resolves exact
+  source activity, target authority, stacking, lifetime, and publication.
 
 For `worldMapUpdates.newLocations[]`, use the same complete shape but route
 `world_map_creation`. A remote location may be hidden, rumored, discovered, or

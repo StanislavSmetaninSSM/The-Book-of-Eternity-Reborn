@@ -5,75 +5,100 @@ namespace BookOfEternityClient.UI;
 
 internal static class ExplorerMortalEffectDetailActions
 {
-    public static IReadOnlyList<UiAction> Build(string commandToken, JsonNode? effectsRoot)
+    internal static IReadOnlyList<UiAction> Build(
+        string commandToken,
+        EffectPlayerProjectionResult projection)
     {
-        var entries = BuildEffectSnapshots(effectsRoot);
-        var actions = new List<UiAction>();
-        foreach (var entry in entries)
+        if (!projection.IsAvailable)
+            return Array.Empty<UiAction>();
+
+        return projection.Entries.Select(entry => new UiAction
         {
-            actions.Add(new UiAction
+            Id = "effects-detail-" + ToActionIdPart(entry.Selector),
+            Label = $"Подробнее: «{entry.Name}»",
+            Command = BuildEffectDetailCommand(commandToken, entry.Selector),
+            Style = UiActionStyle.Secondary,
+            RequiresConfirmation = false,
+            Payload = new JsonObject
             {
-                Id = "effects-detail-" + ToActionIdPart(entry.Selector),
-                Label = $"Подробнее: «{entry.Name}»",
-                Command = BuildEffectDetailCommand(commandToken, entry.Selector),
-                Style = UiActionStyle.Secondary,
-                RequiresConfirmation = false,
-                Payload = new JsonObject
-                {
-                    ["selector"] = entry.Selector,
-                    ["name"] = entry.Name,
-                    ["section"] = entry.Section
-                }
-            });
-        }
-
-        return actions;
+                ["selector"] = entry.Selector,
+                ["name"] = entry.Name
+            }
+        }).ToArray();
     }
 
-    public static IReadOnlyList<EffectSnapshot> BuildEffectSnapshots(JsonNode? node)
-    {
-        var entries = new List<EffectSnapshot>();
-        var usedSelectors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        if (node is JsonArray array)
+    internal static IReadOnlyList<UiAction> BuildForEntry(
+        string commandToken,
+        EffectPlayerEntry entry) =>
+        entry.Actions.Select(action => new UiAction
         {
-            AddEffectSnapshots(entries, usedSelectors, "Активный эффект", array);
-            return entries;
+            Id = "effects-action-" + ToActionIdPart(action.Selector),
+            Label = action.Label,
+            Command = BuildEffectActionCommand(commandToken, action.Selector),
+            Style = UiActionStyle.Primary,
+            RequiresConfirmation = false,
+            Payload = new JsonObject
+            {
+                ["selector"] = action.Selector,
+                ["label"] = action.Label,
+                ["description"] = action.Description,
+                ["actionScope"] = "effect_only",
+                ["woundTreatment"] = false
+            }
+        }).ToArray();
+
+    internal static EffectPlayerEntry? FindExact(
+        EffectPlayerProjectionResult projection,
+        string? selector)
+    {
+        if (!projection.IsAvailable || string.IsNullOrWhiteSpace(selector))
+            return null;
+
+        EffectPlayerEntry? match = null;
+        foreach (var entry in projection.Entries)
+        {
+            if (!string.Equals(entry.Selector, selector, StringComparison.Ordinal))
+                continue;
+            if (match != null)
+                return null;
+            match = entry;
         }
 
-        if (node is not JsonObject root)
-            return entries;
-
-        AddEffectSnapshots(entries, usedSelectors, "Активный эффект", root["activeEffects"] as JsonArray);
-        AddEffectSnapshots(entries, usedSelectors, "Рана", root["wounds"] as JsonArray);
-        AddEffectSnapshots(entries, usedSelectors, "Временное состояние", root["temporaryConditions"] as JsonArray);
-        return entries;
+        return match;
     }
 
-    private static void AddEffectSnapshots(
-        List<EffectSnapshot> entries,
-        HashSet<string> usedSelectors,
-        string section,
-        JsonArray? effects)
+    internal static bool TryFindAction(
+        EffectPlayerProjectionResult projection,
+        string? selector,
+        out EffectPlayerEntry entry,
+        out EffectPlayerAction action)
     {
-        if (effects == null)
-            return;
+        entry = null!;
+        action = null!;
+        if (!projection.IsAvailable || string.IsNullOrWhiteSpace(selector))
+            return false;
 
-        foreach (var effect in effects.OfType<JsonObject>())
+        EffectPlayerEntry? matchedEntry = null;
+        EffectPlayerAction? matchedAction = null;
+        foreach (var candidateEntry in projection.Entries)
         {
-            var name = FirstNonEmpty(
-                GetNodeString(effect, "name"),
-                GetNodeString(effect, "effectName"),
-                GetNodeString(effect, "title"),
-                "Безымянный эффект");
-            var identity = FirstNonEmpty(
-                GetNodeString(effect, "effectId"),
-                GetNodeString(effect, "conditionId"),
-                GetNodeString(effect, "woundId"),
-                GetNodeString(effect, "id"),
-                name);
-            var selector = BuildUniqueEffectSelector(identity, entries.Count, usedSelectors);
-            entries.Add(new EffectSnapshot(entries.Count + 1, selector, section, name, effect));
+            foreach (var candidateAction in candidateEntry.Actions)
+            {
+                if (!string.Equals(candidateAction.Selector, selector, StringComparison.Ordinal))
+                    continue;
+                if (matchedAction != null)
+                    return false;
+                matchedEntry = candidateEntry;
+                matchedAction = candidateAction;
+            }
         }
+
+        if (matchedEntry == null || matchedAction == null)
+            return false;
+
+        entry = matchedEntry;
+        action = matchedAction;
+        return true;
     }
 
     private static string BuildEffectDetailCommand(string commandToken, string selector)
@@ -81,41 +106,15 @@ internal static class ExplorerMortalEffectDetailActions
         var detailToken = string.Equals(commandToken, "/effects", StringComparison.OrdinalIgnoreCase)
             ? "effect"
             : "эффект";
-        return commandToken + " " + detailToken + " " + FormatCommandArgument(selector);
+        return commandToken + " " + detailToken + " " + selector;
     }
 
-    private static string BuildUniqueEffectSelector(string value, int index, HashSet<string> usedSelectors)
+    private static string BuildEffectActionCommand(string commandToken, string selector)
     {
-        var baseSelector = NormalizeReferenceSelector(value);
-        if (string.IsNullOrWhiteSpace(baseSelector))
-            baseSelector = $"effect-{index + 1}";
-
-        var selector = baseSelector;
-        var suffix = 2;
-        while (!usedSelectors.Add(selector))
-        {
-            selector = $"{baseSelector}-{suffix}";
-            suffix++;
-        }
-
-        return selector;
-    }
-
-    private static string NormalizeReferenceSelector(string value)
-    {
-        var chars = value.Trim().ToLowerInvariant()
-            .Select(static ch => char.IsLetterOrDigit(ch) ? ch : '_')
-            .ToArray();
-        var result = new string(chars).Trim('_');
-        return string.IsNullOrWhiteSpace(result) ? "item" : result;
-    }
-
-    private static string FormatCommandArgument(string selector)
-    {
-        if (selector.All(static ch => char.IsLetterOrDigit(ch) || ch is '_' or '-' or '.'))
-            return selector;
-
-        return "\"" + selector.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal) + "\"";
+        var actionToken = string.Equals(commandToken, "/effects", StringComparison.OrdinalIgnoreCase)
+            ? "action"
+            : "действие";
+        return commandToken + " " + actionToken + " " + selector;
     }
 
     private static string ToActionIdPart(string value)
@@ -124,25 +123,6 @@ internal static class ExplorerMortalEffectDetailActions
             .Select(static ch => char.IsLetterOrDigit(ch) || ch is '-' or '_' ? ch : '-')
             .ToArray();
         var result = new string(chars).Trim('-');
-        return string.IsNullOrWhiteSpace(result) ? "item" : result;
+        return string.IsNullOrWhiteSpace(result) ? "effect" : result;
     }
-
-    private static string GetNodeString(JsonNode? node, string propertyName) =>
-        node?[propertyName] switch
-        {
-            JsonValue value when value.TryGetValue<string>(out var text) => text,
-            JsonValue value when value.TryGetValue<int>(out var number) => number.ToString(),
-            JsonValue value when value.TryGetValue<long>(out var number) => number.ToString(),
-            _ => string.Empty
-        };
-
-    private static string FirstNonEmpty(params string[] values) =>
-        values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value))?.Trim() ?? string.Empty;
-
-    internal sealed record EffectSnapshot(
-        int Index,
-        string Selector,
-        string Section,
-        string Name,
-        JsonObject Node);
 }

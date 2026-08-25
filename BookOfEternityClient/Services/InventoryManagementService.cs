@@ -7,13 +7,59 @@ namespace BookOfEternityClient.Services;
 
 public static class InventoryManagementService
 {
-    public static async Task<InventoryManagementContext?> ReadContextAsync(FileSystemManager fs) =>
-        await ReadContextCoreAsync(fs, writeLease: null);
+    public static async Task<InventoryManagementContext?> ReadContextAsync(FileSystemManager fs)
+    {
+        await using var readLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        return await ReadProjectedContextAsync(fs, readLease);
+    }
 
     internal static async Task<InventoryManagementContext?> ReadContextAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease) =>
-        await ReadContextCoreAsync(fs, writeLease);
+        await ReadProjectedContextAsync(fs, writeLease);
+
+    private static async Task<InventoryManagementContext?> ReadProjectedContextAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease readLease)
+    {
+        var context = await ReadContextCoreAsync(fs, readLease);
+        if (context == null)
+            return null;
+
+        var selectors = context.Items
+            .Select((item, index) => new
+            {
+                Item = item,
+                SafeSelector = $"предмет №{index + 1}"
+            })
+            .ToArray();
+        var projection = await ResourceProjectionService.ProjectCanonicalAsync(
+            fs,
+            readLease,
+            selectors.Select(static selector => new ResourceProjectionOwnerScope(
+                    new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Item,
+                        selector.Item.Identity),
+                    selector.SafeSelector,
+                    IsOwningPlayer: true))
+                .ToArray(),
+            ResourceProjectionAudience.Player);
+        var projectedItems = selectors
+            .Select(selector => selector.Item with
+            {
+                ResourceProjectionAvailable = projection.IsAvailable,
+                Resources = projection.Rows
+                    .Where(row => string.Equals(
+                        row.SafeOwnerSelector,
+                        selector.SafeSelector,
+                        StringComparison.Ordinal))
+                    .ToArray()
+            })
+            .ToArray();
+
+        return context with { Items = projectedItems };
+    }
 
     private static async Task<InventoryManagementContext?> ReadContextCoreAsync(
         FileSystemManager fs,
@@ -261,7 +307,8 @@ public static class InventoryManagementService
                 Quantity: splitQuantity,
                 Turn: turn,
                 AuthorityKind: "inventory_split",
-                AuthorityId: $"inventory_split:{turn}:{item.Identity}:{Guid.NewGuid():N}"));
+                AuthorityId: $"inventory_split:{turn}:{item.Identity}:{Guid.NewGuid():N}",
+                ResourceDisposition: MortalItemResourceStackDisposition.ProportionalExact));
         if (!transition.Success)
             return InventoryManagementWriteOutcome.Failed(MortalItemPlayerFailureMessages.TransitionRejected());
 
@@ -353,7 +400,8 @@ public static class InventoryManagementService
                 Turn: turn,
                 AuthorityKind: "inventory_merge",
                 AuthorityId: $"inventory_merge:{turn}:{item.Identity}:{Guid.NewGuid():N}",
-                SurvivorItemId: item.Identity));
+                SurvivorItemId: item.Identity,
+                ResourceDisposition: MortalItemResourceStackDisposition.ProportionalExact));
         if (!transition.Success)
             return InventoryManagementWriteOutcome.Failed(MortalItemPlayerFailureMessages.TransitionRejected());
 
@@ -600,7 +648,13 @@ public sealed record InventoryManagementItem(
     int Count,
     string CountField,
     string EquippedSlot,
-    JsonObject Data);
+    JsonObject Data)
+{
+    internal bool ResourceProjectionAvailable { get; init; }
+
+    internal IReadOnlyList<ResourceProjectionRow> Resources { get; init; } =
+        Array.Empty<ResourceProjectionRow>();
+}
 
 public sealed record InventoryManagementWriteOutcome(
     bool Success,

@@ -1119,7 +1119,17 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         var propertyOptions = BuildForgePropertyChoiceOptions(relics).ToList();
         var replacementOptions = BuildForgeReplacementPropertyOptions(context.SoulRoot).ToList();
         var addedPropertyOptions = BuildForgeAddedPropertyOptions(context.SoulRoot).ToList();
-        var rerolls = ShiningBlessingEffectState.GetPendingRelicRerolls(context.SoulRoot);
+        var rerollProjection = await ResourceProjectionService.ProjectRelicRerollsAsync(fs);
+        var rerollRow = rerollProjection.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "blessing_rerolls", StringComparison.Ordinal));
+        var hasRerollProjection = rerollProjection.IsAvailable &&
+                                  rerollRow is { State: ResourceLifecycleState.Active } &&
+                                  rerollRow.Current >= 0m &&
+                                  rerollRow.Current <= int.MaxValue &&
+                                  decimal.Truncate(rerollRow.Current) == rerollRow.Current;
+        var rerolls = hasRerollProjection
+            ? decimal.ToInt32(rerollRow!.Current)
+            : 0;
 
         var blocks = new List<UiBlock>
         {
@@ -1129,7 +1139,9 @@ public static class ExplorerShiningAbodeCommandResultBuilder
                     ("Сияние", $"тир {radianceTier}"),
                     ("Чернильные Перья", currentFeathers.ToString()),
                     ("Искры Света", currentSparks.ToString()),
-                    ("Перебросы благословения", rerolls.ToString())),
+                    ("Перебросы благословения", hasRerollProjection
+                        ? rerolls.ToString()
+                        : ResourcePlayerFailureMessages.Unavailable)),
                 new UiTextBlock { Text = "Фракции-кузницы:\n- " + string.Join("\n- ", factions.Select(BuildForgeFactionLabel)) },
                 new UiTextBlock { Text = "Реликвии души:\n- " + string.Join("\n- ", relics.Select(BuildSoulRelicForgeLabel)) }),
             Message(

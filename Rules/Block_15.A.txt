@@ -99,7 +99,7 @@
 
                         2.  Durability Cost: The item that provided the 'BestThreshold' loses durability equal to the 'DamagePostReduction'.
 
-                        3.  Reporting: 'currentHealthChange' is 0. Report the durability loss in 'UpdateInventory'.
+                        3.  Reporting: emit no health mutation. Emit resourceChanges operation=damage against the exact armor/durability coordinate for the absorbed amount.
 
                         4.  Narration: Narrate the attack being harmlessly absorbed by the armor.
 
@@ -111,7 +111,7 @@
                         2.  Durability Cost: The armor was battered. 
                         ALL items that contributed to the 'TotalReduction%' in Step 2 take a standard, minor amount of durability damage (e.g., 1 - 5 %).
 
-                        3.  Reporting: Report the 'currentHealthChange' and all durability losses.
+                        3.  Reporting: emit resourceChanges damage commands for the target's exact health coordinate and for every affected item's exact durability coordinate.
 
                         4.  Narration: Narrate how the armor lessened the blow but couldn't stop it entirely.
 

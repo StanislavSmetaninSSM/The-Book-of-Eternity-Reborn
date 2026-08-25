@@ -17,19 +17,8 @@ public partial class CanonicalStateNormalizer
         var baseline = await ResolveAfterlifeSpiritualConflictProjectionBaselineAsync(currentRoot, backups);
         var projected = AfterlifeSpiritualConflictState.ApplyUpdate(
             baseline,
-            updateRoot,
-            await ResolveAfterlifeSpiritualConflictSpiritFocusTierAsync(backups));
+            updateRoot);
         await WriteIfChangedAsync(path, currentNode, projected);
-    }
-
-    private async Task<int> ResolveAfterlifeSpiritualConflictSpiritFocusTierAsync(
-        IReadOnlyDictionary<string, string>? backups)
-    {
-        const string soulStatePath = "game_state/meta/soul_state.json";
-        var soulRoot = await ReadBackupObjectAsync(soulStatePath, backups)
-                       ?? await ReadNodeAsync(soulStatePath) as JsonObject;
-
-        return AfterlifeSpiritualConflictState.ResolveSpiritFocusTier(soulRoot);
     }
 
     private async Task<JsonObject> ResolveAfterlifeSpiritualConflictProjectionBaselineAsync(

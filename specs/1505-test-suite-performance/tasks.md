@@ -2,7 +2,7 @@
 
 **Input**: Design documents from `specs/1505-test-suite-performance/`
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
 
 **Prerequisites**: [spec.md](spec.md), [plan.md](plan.md), [research.md](research.md), [data-model.md](data-model.md), [quickstart.md](quickstart.md)
 
@@ -157,10 +157,10 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
 - [x] T041 Keep all 358 `AfterlifeSpiritualConflictValidationTests` cases in
   RegressionIntegration, admit only the exact ten reviewed sentinels to
   routine PreMerge, and verify discovery plus the ten-case executable sample.
-- [ ] T042 Synchronize the runner contract and agent guidance, then run one
+- [x] T042 Synchronize the runner contract and agent guidance, then run one
   final exact clean-checkout PreMerge below 20 minutes with at least 4,240
   non-duplicate results, completed ProcessIntegration/E2E, and complete owned
-  cleanup.
+  cleanup. Satisfied by the accepted #1526/T047 evidence.
 - [ ] T043 Record final evidence in #1502/T253, complete exact-diff review, and
   integrate the issue-linked Phase 45 PR only after the bounded gate is green.
 
@@ -190,6 +190,27 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
   `20260813-044749-940-43368-f64c53dc7a7e48f5a30055b05c1b7e95-premerge`.
 - [ ] T048 Record #1526 evidence and integrate only after review.
 
+---
+
+## Phase 10: Issue #1547 Measured PreMerge Deadline Correction
+
+- [x] T049 [US3] Retain the exact 20-minute capacity-red run plus isolated
+  ProcessIntegration/E2E lower-bound evidence in
+  `specs/1505-test-suite-performance/research.md`.
+- [x] T050 [US3] Add a RED executable guard for the 30-minute PreMerge default
+  in `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`.
+- [x] T051 [US3] Raise only the PreMerge/Complete lane-wide deadline to 30
+  minutes in `scripts/test-csharp.ps1` and synchronize `docs/testing.md`,
+  `specs/1505-test-suite-performance/data-model.md`,
+  `specs/1505-test-suite-performance/quickstart.md`, and active implementation
+  plans without changing coverage, filters, phases, ordering, or concurrency.
+- [x] T052 [US3] Run the focused runner-contract guard and updated PreMerge
+  PlanOnly contract through `scripts/test-csharp.ps1`, retaining green evidence.
+- [x] T053 [US3] Run one exact 30-minute PreMerge through
+  `scripts/test-csharp.ps1`, require completed ProcessIntegration/E2E, zero
+  failures/duplicates, timeout false, and complete cleanup, then record the
+  result in `docs/testing.md` and `specs/1505-test-suite-performance/quickstart.md`.
+
 ## Dependencies and Execution Order
 
 - T005 completes setup.
@@ -206,6 +227,9 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
 - T044–T048 are the #1526 capacity correction. They retain the same selected
   coverage and depend on measured contention/setup evidence plus a green exact
   gate.
+- T049–T053 are the #1547 deadline correction. T049 supplies the measured
+  lower bound; T050 must be RED before T051; T052 verifies the executable
+  contract before T053 runs the exact final gate.
 
 ## Notes
 

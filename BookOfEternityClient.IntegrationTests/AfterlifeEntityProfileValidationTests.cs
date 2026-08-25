@@ -55,6 +55,59 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_MalformedOwnedEffectDefinitionFailsAtProfileBoundary()
+    {
+        var root = JsonNode.Parse(BuildValidProfileJson())!.AsObject();
+        var profile = root[AfterlifeEntityProfileState.ProfilesProperty]![0]!.AsObject();
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition["allowedRealms"] = new JsonArray("chaos_sea");
+        definition.Remove("removal");
+        profile["activeEffectDefinitions"] = new JsonArray(definition);
+        await WriteProfileStateAsync(root.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_definition_missing_field" &&
+            issue.FilePath.Contains("profiles[0].activeEffectDefinitions", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CanonicalActiveEffectsPassAtProfileBoundary()
+    {
+        var root = JsonNode.Parse(BuildValidProfileJson())!.AsObject();
+        var profile = root[AfterlifeEntityProfileState.ProfilesProperty]![0]!.AsObject();
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("guardian");
+        effect["realm"] = "chaos_sea";
+        effect["target"]!["targetId"] = "guardian_mirror";
+        profile["activeEffects"] = new JsonArray(effect);
+        await WriteProfileStateAsync(root.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "afterlife_entity_profile_invalid_active_effects");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MalformedActiveEffectsFailAtProfileBoundary()
+    {
+        var root = JsonNode.Parse(BuildValidProfileJson())!.AsObject();
+        var profile = root[AfterlifeEntityProfileState.ProfilesProperty]![0]!.AsObject();
+        profile["activeEffects"] = new JsonObject();
+        await WriteProfileStateAsync(root.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_entity_profile_invalid_active_effects" &&
+            issue.FilePath.EndsWith("profiles[0].activeEffects", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ValidAfterlifeRelationshipGate_PassesProfileValidation()
     {
         await WriteProfileStateAsync(BuildValidProfileJson().Replace(
@@ -140,6 +193,36 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             issue.Code?.StartsWith("afterlife_entity_profile_special_art_", StringComparison.OrdinalIgnoreCase) == true);
         Assert.DoesNotContain(issues, issue =>
             issue.FilePath.StartsWith(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("spiritual_action_points", false)]
+    [InlineData("actionEconomy", true)]
+    public async Task ValidateGameStateAsync_SpecialArtUsesUnifiedResourceAxisInsteadOfLegacyMirror(
+        string mechanicalAxis,
+        bool shouldReject)
+    {
+        var artPayload =
+            """
+                  "effectSummary": "При успехе меняет стоимость духовного действия через общий ресурсный контракт.",
+                  "combatEffect": {
+                    "summary": "Особое искусство меняет только проверяемую стоимость духовного действия.",
+                    "trigger": "Когда искусство применяется к платному духовному действию.",
+                    "mechanicalAxis": "__AXIS__",
+                    "allowedPayoff": "Можно изменить только подтверждённый actionCostAudit и клиентскую resource transition.",
+                    "limit": "Один раз для текущего обмена.",
+                    "auditRequirement": "specialArtAudit.effectNote и actionCostAudit должны доказать изменение стоимости."
+                  }
+            """.Replace("__AXIS__", mechanicalAxis, StringComparison.Ordinal);
+
+        await WriteCurrentProfileUpdateStateAsync(BuildCurrentProfileUpdateWithSpecialArt(artPayload));
+
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
+        var hasAxisIssue = issues.Any(issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_invalid_combat_effect_axis", StringComparison.OrdinalIgnoreCase));
+
+        Assert.Equal(shouldReject, hasAxisIssue);
     }
 
     [Theory]
@@ -1799,7 +1882,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """;
 
-    private static string BuildValidProfileJson() =>
+    internal static string BuildValidProfileJson() =>
         """
         {
           "schemaVersion": 1,

@@ -51,12 +51,15 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
 
     internal string? InjectedPublishedPath { get; private set; }
 
-    internal static Task<MortalLocationMaterializationTestContext> CreateAsync()
+    internal static async Task<MortalLocationMaterializationTestContext> CreateAsync()
     {
         var rootPath = Path.Combine(
             Path.GetTempPath(),
             "boe-mortal-location-materialization-" + Guid.NewGuid().ToString("N"));
-        return Task.FromResult(new MortalLocationMaterializationTestContext(rootPath));
+        var context = new MortalLocationMaterializationTestContext(rootPath);
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            context.FileSystem);
+        return context;
     }
 
     internal Task WriteJsonAsync(string relativePath, JsonNode value)

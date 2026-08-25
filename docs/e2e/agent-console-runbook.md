@@ -239,6 +239,12 @@ $Commands = @(
 
 The helper waits for `screenId: game-loop` with `inputKind: text`, submits each command through `/api/agent-console/text`, tolerates the short `command-processing` loading snapshot used for local slash commands, records the resulting command snapshot, scans for forbidden markers, and returns through `/api/agent-console/return-to-game-loop-step`. It fails closed if a read-only command reaches `turn-preparing`, if the screen is not awaiting input, or if returning from a command screen would require typing into another text prompt.
 
+After a successful `return-to-game-loop-step`, input consumption can briefly
+republish the same local command `screenId` with `awaitingInput: false` before
+`game-loop` appears. The helper treats only that same already-consumed screen as
+an in-flight local return and keeps polling within `ReturnStepLimit`. A different
+non-awaiting screen, a text prompt, or an exhausted limit still fails closed.
+
 For read-only command sweeps, do not use `/default-action`. That endpoint is useful only when the explicit test intent is to accept the current player-visible default action. It is not a safe unwind primitive for command-output audits because a stale or unexpected screen can turn a data inspection into a player turn.
 
 ## State-Aware Golden Route Driver

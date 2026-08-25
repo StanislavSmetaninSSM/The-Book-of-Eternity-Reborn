@@ -20,13 +20,14 @@ public sealed class MathAssistantPromptGuidanceTests
     }
 
     [Fact]
-    public void MortalCombatExample_UsesSignedDeltaReference()
+    public void MortalCombatExample_ReferencesCanonicalResourceDamageAmount()
     {
         var text = ReadRepoFile("Examples", "E_Block_6.txt");
 
-        Assert.Contains("\"currentHealthChange\": -13", text, StringComparison.Ordinal);
-        Assert.Contains("\"result\": -13", text, StringComparison.Ordinal);
-        Assert.Contains("\"referencedBy\": [ \"currentHealthChange\"", text, StringComparison.Ordinal);
+        Assert.Contains("\"operation\": \"damage\"", text, StringComparison.Ordinal);
+        Assert.Contains("\"resourceKey\": \"health\", \"amount\": 13", text, StringComparison.Ordinal);
+        Assert.Contains("\"result\": 13", text, StringComparison.Ordinal);
+        Assert.Contains("\"referencedBy\": [ \"resourceChanges[0].amount\"", text, StringComparison.Ordinal);
     }
 
     [Fact]

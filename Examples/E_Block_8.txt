@@ -2,6 +2,9 @@
  <title>
   Examples For Passive Skills Management (Player &amp; NPC)
  </title>
+ <effectmaterializationcontract>
+  Passive structured bonuses remain their own mechanic. A passive skill that creates a lifecycle effect instead owns activeEffectDefinitions[] and uses effectChanges[] as demonstrated in Examples/E_CLI_Effect_Materialization.txt.
+ </effectmaterializationcontract>
  <rule id="8.2">
   <example contenttype="json_fragment" type="good">
    <title>

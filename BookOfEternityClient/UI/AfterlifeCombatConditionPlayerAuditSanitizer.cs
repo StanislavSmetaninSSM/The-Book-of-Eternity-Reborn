@@ -32,6 +32,20 @@ internal static class AfterlifeCombatConditionPlayerAuditSanitizer
         return clone;
     }
 
+    public static JsonNode? Sanitize(
+        JsonNode? root,
+        EffectPlayerProjectionResult projection)
+    {
+        ArgumentNullException.ThrowIfNull(projection);
+        var clone = Sanitize(root);
+        if (clone == null)
+            return null;
+
+        ReplaceCombatConditionsWithAcceptedProjection(clone, projection);
+        ScrubTechnicalConditionReferences(clone);
+        return clone;
+    }
+
     public static bool IsVisibleToPlayer(JsonObject condition)
     {
         if (condition["visibleToPlayer"] is JsonValue visibleValue &&
@@ -108,6 +122,96 @@ internal static class AfterlifeCombatConditionPlayerAuditSanitizer
         foreach (var condition in combatConditions.OfType<JsonObject>().Where(IsVisibleToPlayer))
             visible.Add(condition.DeepClone());
         return visible;
+    }
+
+    private static void ReplaceCombatConditionsWithAcceptedProjection(
+        JsonNode? node,
+        EffectPlayerProjectionResult projection)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+                if (obj.ContainsKey("combatConditions"))
+                {
+                    var visible = new JsonArray();
+                    var conflictId = ReadString(obj["conflictId"])?.Trim();
+                    var targetPrefix = string.IsNullOrWhiteSpace(conflictId)
+                        ? null
+                        : conflictId + ":";
+                    if (projection.IsAvailable && targetPrefix != null)
+                    {
+                        foreach (var entry in projection.Entries.Where(entry =>
+                                     string.Equals(entry.TargetKind, "spiritual_conflict_side", StringComparison.Ordinal) &&
+                                     entry.TargetId.StartsWith(targetPrefix, StringComparison.Ordinal)))
+                        {
+                            var facts = new JsonArray();
+                            foreach (var fact in entry.Facts)
+                            {
+                                facts.Add(new JsonObject
+                                {
+                                    ["label"] = fact.Label,
+                                    ["value"] = fact.Value
+                                });
+                            }
+
+                            var actions = new JsonArray();
+                            foreach (var action in entry.Actions)
+                            {
+                                actions.Add(new JsonObject
+                                {
+                                    ["label"] = action.Label,
+                                    ["description"] = action.Description
+                                });
+                            }
+
+                            visible.Add(new JsonObject
+                            {
+                                ["name"] = entry.Name,
+                                ["summary"] = entry.Summary,
+                                ["state"] = entry.State,
+                                ["facts"] = facts,
+                                ["actions"] = actions
+                            });
+                        }
+                    }
+
+                    obj["combatConditions"] = visible;
+                    obj["combatConditionsStatus"] = projection.IsAvailable
+                        ? "accepted_player_projection"
+                        : "unavailable";
+                }
+
+                foreach (var child in obj.Select(static property => property.Value).ToArray())
+                    ReplaceCombatConditionsWithAcceptedProjection(child, projection);
+                break;
+            case JsonArray array:
+                foreach (var child in array.ToArray())
+                    ReplaceCombatConditionsWithAcceptedProjection(child, projection);
+                break;
+        }
+    }
+
+    private static void ScrubTechnicalConditionReferences(JsonNode? node)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+                var sourceType = NormalizeKey(
+                    ReadString(obj["sourceType"]) ?? ReadString(obj["type"]));
+                if (sourceType == "combat_condition" || obj.ContainsKey("conditionId"))
+                {
+                    foreach (var field in RollModeConditionReferenceFields)
+                        obj.Remove(field);
+                }
+
+                foreach (var child in obj.Select(static property => property.Value).ToArray())
+                    ScrubTechnicalConditionReferences(child);
+                break;
+            case JsonArray array:
+                foreach (var child in array.ToArray())
+                    ScrubTechnicalConditionReferences(child);
+                break;
+        }
     }
 
     private static void SanitizeRollModeSources(

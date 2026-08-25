@@ -41,9 +41,7 @@ public partial class ValidationService
         var clone = new GuardianSequentialState
         {
             CurrentReputation = source.CurrentReputation,
-            CurrentAbodePower = source.CurrentAbodePower,
-            FounderExtraGachaCharges = source.FounderExtraGachaCharges,
-            ChargesUsedThisReturn = source.ChargesUsedThisReturn
+            CurrentAbodePower = source.CurrentAbodePower
         };
         clone.AvailableQuestIds.UnionWith(source.AvailableQuestIds);
         clone.ActiveQuestIds.UnionWith(source.ActiveQuestIds);
@@ -79,22 +77,10 @@ public partial class ValidationService
             CollectQuestIdsFromGuardianQuestArray(questManagement, "activeQuests", activeQuestIds, questDifficultyById, activeQuestStatusById);
         }
 
-        var chargesUsedThisReturn = 0;
-        if (guardian.TryGetProperty("gachaSystem", out var gachaSystem) &&
-            gachaSystem.ValueKind == JsonValueKind.Object &&
-            gachaSystem.TryGetProperty("chargesUsedThisReturn", out var chargesUsedNode) &&
-            chargesUsedNode.ValueKind == JsonValueKind.Number &&
-            chargesUsedNode.TryGetInt32(out var parsedChargesUsed))
-        {
-            chargesUsedThisReturn = Math.Max(0, parsedChargesUsed);
-        }
-
         var state = new GuardianSequentialState
         {
             CurrentReputation = currentReputation,
-            CurrentAbodePower = AbodePowerRules.GetCurrentPower(guardian),
-            FounderExtraGachaCharges = PlayerGuardianFoundationState.GetFounderExtraGachaCharges(guardian),
-            ChargesUsedThisReturn = chargesUsedThisReturn
+            CurrentAbodePower = AbodePowerRules.GetCurrentPower(guardian)
         };
         state.AvailableQuestIds.UnionWith(availableQuestIds);
         state.ActiveQuestIds.UnionWith(activeQuestIds);
@@ -5294,7 +5280,7 @@ public partial class ValidationService
                 "Canonical guardian state должен содержать gachaSystem",
                 code: "guardian_state_missing_gacha_system",
                 section: "Guardians",
-                repairHint: "Сохраняй в guardian state gachaSystem с chargesPerReturn, chargesUsedThisReturn и gachaHistory."));
+                repairHint: "Сохраняй companion-only gachaSystem с currentReturnCycleId и gachaHistory; попытки принадлежат common resource ledger."));
             return;
         }
 
@@ -5302,8 +5288,24 @@ public partial class ValidationService
             return;
 
         var gachaContext = $"{guardianContext}.gachaSystem";
-        ValidateNonNegativeNumberField(gachaSystem, gachaContext, issues, "chargesPerReturn");
-        ValidateNonNegativeNumberField(gachaSystem, gachaContext, issues, "chargesUsedThisReturn");
+        if (!gachaSystem.TryGetProperty("currentReturnCycleId", out var returnCycleId) ||
+            returnCycleId.ValueKind != JsonValueKind.String ||
+            returnCycleId.GetString() is not { } returnCycleText ||
+            (!string.IsNullOrEmpty(returnCycleText) &&
+             !ResourceMaterializationContract.IsExactIdentifier(returnCycleText)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{gachaContext}.currentReturnCycleId",
+                IssueSeverity.Error,
+                "Canonical guardian gachaSystem должен содержать пустой bootstrap marker или exact currentReturnCycleId",
+                code: "guardian_gacha_return_cycle_invalid",
+                section: "Guardians",
+                expected: "empty string or exact resource return-cycle identifier",
+                actual: returnCycleId.ValueKind == JsonValueKind.Undefined
+                    ? "missing"
+                    : returnCycleId.GetRawText(),
+                repairHint: "Сохраняй currentReturnCycleId как пустую строку до первого цикла или exact client-authorized ID текущего возвращения."));
+        }
 
         if (!gachaSystem.TryGetProperty("gachaHistory", out var gachaHistory) || gachaHistory.ValueKind == JsonValueKind.Null)
         {
@@ -5361,49 +5363,7 @@ public partial class ValidationService
             }
         }
 
-        if (guardian.TryGetProperty("relationshipData", out var relationshipData) &&
-            relationshipData.ValueKind == JsonValueKind.Object &&
-            relationshipData.TryGetProperty("currentReputation", out var currentReputation) &&
-            currentReputation.ValueKind == JsonValueKind.Number &&
-            currentReputation.TryGetInt32(out var parsedReputation) &&
-            gachaSystem.TryGetProperty("chargesPerReturn", out var chargesPerReturnNode) &&
-            chargesPerReturnNode.ValueKind == JsonValueKind.Number &&
-            chargesPerReturnNode.TryGetInt32(out var chargesPerReturn))
-        {
-            var expectedCharges = GetExpectedGuardianGachaCharges(guardian, parsedReputation);
-            if (chargesPerReturn != expectedCharges)
-            {
-                issues.Add(new ValidationIssue(
-                    $"{gachaContext}.chargesPerReturn",
-                    IssueSeverity.Error,
-                    "Guardian gachaSystem.chargesPerReturn должен совпадать с reputation tier + abode power bonus + optional founder bonus",
-                    code: "guardian_gacha_charges_tier_mismatch",
-                    section: "Guardians",
-                    expected: expectedCharges.ToString(),
-                    actual: chargesPerReturn.ToString(),
-                    repairHint: "Синхронизируй chargesPerReturn с guardian reputation tier, bonusGachaCharges от текущей силы Обители и founder-origin bonus, если guardian основан из вознесённой души."));
-            }
-        }
-
-        if (gachaSystem.TryGetProperty("chargesPerReturn", out var chargesPerReturnNodeForUsage) &&
-            gachaSystem.TryGetProperty("chargesUsedThisReturn", out var chargesUsedNode) &&
-            chargesPerReturnNodeForUsage.ValueKind == JsonValueKind.Number &&
-            chargesUsedNode.ValueKind == JsonValueKind.Number &&
-            chargesPerReturnNodeForUsage.TryGetInt32(out var chargesPerReturnForUsage) &&
-            chargesUsedNode.TryGetInt32(out var chargesUsedThisReturn) &&
-            chargesUsedThisReturn > chargesPerReturnForUsage)
-        {
-            issues.Add(new ValidationIssue(
-                $"{gachaContext}.chargesUsedThisReturn",
-                IssueSeverity.Error,
-                "chargesUsedThisReturn не может превышать chargesPerReturn"));
-        }
     }
-
-
-    private static int GetExpectedGuardianGachaCharges(JsonElement guardian, int currentReputation)
-        => GuardianGachaChargeRules.GetChargesPerReturnForReputation(currentReputation, AbodePowerRules.GetCurrentPower(guardian)) +
-           PlayerGuardianFoundationState.GetFounderExtraGachaCharges(guardian);
 
 
     private void CompareGuardianGachaState(JsonElement activeGuardian, string activeGuardianContext,
@@ -5414,24 +5374,24 @@ public partial class ValidationService
         if (!guardianFromArray.TryGetProperty("gachaSystem", out var arrayGachaSystem) || arrayGachaSystem.ValueKind != JsonValueKind.Object)
             return;
 
-        if (TryReadIntField(activeGachaSystem, "chargesPerReturn", out var activeChargesPerReturn) &&
-            TryReadIntField(arrayGachaSystem, "chargesPerReturn", out var arrayChargesPerReturn) &&
-            activeChargesPerReturn != arrayChargesPerReturn)
+        if (activeGachaSystem.TryGetProperty("currentReturnCycleId", out var activeCycle) &&
+            arrayGachaSystem.TryGetProperty("currentReturnCycleId", out var arrayCycle) &&
+            !JsonElementsSemanticallyEqual(activeCycle, arrayCycle))
         {
             issues.Add(new ValidationIssue(
-                $"{activeGuardianContext}.gachaSystem.chargesPerReturn",
+                $"{activeGuardianContext}.gachaSystem.currentReturnCycleId",
                 IssueSeverity.Error,
-                $"activeGuardian расходится с {guardianArrayContext}.gachaSystem.chargesPerReturn"));
+                $"activeGuardian расходится с {guardianArrayContext}.gachaSystem.currentReturnCycleId"));
         }
 
-        if (TryReadIntField(activeGachaSystem, "chargesUsedThisReturn", out var activeChargesUsed) &&
-            TryReadIntField(arrayGachaSystem, "chargesUsedThisReturn", out var arrayChargesUsed) &&
-            activeChargesUsed != arrayChargesUsed)
+        if (activeGachaSystem.TryGetProperty("gachaHistory", out var activeHistory) &&
+            arrayGachaSystem.TryGetProperty("gachaHistory", out var arrayHistory) &&
+            !JsonElementsSemanticallyEqual(activeHistory, arrayHistory))
         {
             issues.Add(new ValidationIssue(
-                $"{activeGuardianContext}.gachaSystem.chargesUsedThisReturn",
+                $"{activeGuardianContext}.gachaSystem.gachaHistory",
                 IssueSeverity.Error,
-                $"activeGuardian расходится с {guardianArrayContext}.gachaSystem.chargesUsedThisReturn"));
+                $"activeGuardian расходится с {guardianArrayContext}.gachaSystem.gachaHistory"));
         }
     }
 }

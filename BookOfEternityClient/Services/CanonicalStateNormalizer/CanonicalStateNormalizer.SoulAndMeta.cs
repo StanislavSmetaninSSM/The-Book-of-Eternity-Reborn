@@ -25,7 +25,9 @@ public partial class CanonicalStateNormalizer
         string Code,
         string Description,
         string? PreTriggerRealm,
-        string? CurrentRealm);
+        string? CurrentRealm,
+        string? SnapshotToken = null,
+        string? SessionId = null);
 
     private sealed class PendingTurnSnapshotAuthorityManifest
     {
@@ -53,7 +55,7 @@ public partial class CanonicalStateNormalizer
         public int TurnNumber { get; set; }
     }
 
-    private static JsonObject BuildNormalizedSoulStateRoot(
+    internal static JsonObject BuildNormalizedSoulStateRoot(
         JsonObject current,
         JsonObject? previous,
         int currentTurn,
@@ -108,6 +110,27 @@ public partial class CanonicalStateNormalizer
         result.Remove("archiveActionResolutions");
         GuardianPolicyContracts.SanitizeSoulStateForCanonicalWrite(result);
         return result;
+    }
+
+    internal static CanonicalBeforeImage CreateExpectedSoulNormalizationBeforeImage(
+        byte[] currentBytes,
+        JsonObject current,
+        JsonObject normalized)
+    {
+        ArgumentNullException.ThrowIfNull(currentBytes);
+        ArgumentNullException.ThrowIfNull(current);
+        ArgumentNullException.ThrowIfNull(normalized);
+        var currentSemanticJson = current.ToJsonString(JsonOpts);
+        var normalizedJson = normalized.ToJsonString(JsonOpts);
+        if (string.Equals(currentSemanticJson, normalizedJson, StringComparison.Ordinal))
+            return new CanonicalBeforeImage(true, currentBytes);
+
+        var body = Encoding.UTF8.GetBytes(normalizedJson);
+        var preamble = Encoding.UTF8.GetPreamble();
+        var expected = new byte[preamble.Length + body.Length];
+        Buffer.BlockCopy(preamble, 0, expected, 0, preamble.Length);
+        Buffer.BlockCopy(body, 0, expected, preamble.Length, body.Length);
+        return new CanonicalBeforeImage(true, expected);
     }
 
     private static bool TryReadGuardianProjectAuthoritySoulStateRoot(
@@ -754,7 +777,9 @@ public partial class CanonicalStateNormalizer
             "authorized",
             string.Empty,
             null,
-            null);
+            null,
+            manifest.ManifestPayloadHash,
+            manifest.SessionId);
     }
 
     private static async Task<string?> TryReadValidatedActivePendingSnapshotFileAsync(

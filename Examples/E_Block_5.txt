@@ -1,4 +1,7 @@
 <instructionblock id="5">
+ <effectmaterializationcontract>
+  Wounds are independent entities. A wound-created lifecycle effect requires activeEffectDefinitions[] plus a separate effectChanges[] apply; see Examples/E_CLI_Effect_Materialization.txt.
+ </effectmaterializationcontract>
  <title>
   Examples For Various Necessary Overviews
  </title>
@@ -123,11 +126,9 @@
    <content type="text">
     <![CDATA[
 
-                                    A stack of Bandages ('name: 'Bandage', id: bnd-1') has 'count: 3' and each bandage in the stack has an internal resource of 'resource: 20' ('resourceType: 'uses'). 
-                                    This means there are 3 separate bandage items, each providing 20 uses. 
-                                    When using a bandage to heal, you would decrease the 'resource' of one of these bandage items (this change reported via 'inventoryItemsResources' as per #5.14). 
-                                    You would never touch the 'count: 3' for this action. 
-                                    Only if the player explicitly drops/gives away one of the whole bandage items, or if a bandage item's 'resource' reaches 0 and its 'count' was 1, would the 'count' of the stack potentially change (handled by system or reported via 'UpdateInventory' for drops).
+                                    A stack of Bandages (ID: bnd-1, count: 3) cannot share one mutable per-unit reserve. If each physical bandage provides 20 uses, first use the accepted item split/identity route so the selected unit has its own permanent itemId and materialized uses coordinate with maximum 20.
+                                    Using that bandage emits resourceChanges operation=spend against the selected itemId/uses coordinate. The split preserves the total quantity; depletion does not itself authorize a count change.
+                                    Dropping a unit, consuming it terminally, or merging it back remains a separate accepted item lifecycle operation.
                                     
                                     ]]>
    </content>
@@ -140,10 +141,9 @@
     <![CDATA[
 
                                     Player has a stack of Bullets ('name: 'Bullet', id: bul-2') with 'count: 50'. 
-                                    Player also has a Pistol Magazine ('name: 'Pistol Magazine', id: mag-3') with 'resource: 4', 'maximumResource: 10', 'resourceType: 'bullets'.            
-                                    - Firing 3 shots: Only the Magazine's 'resource' decreases to 1 (reported via 'inventoryItemsResources'). The Bullets stack 'count' remains 50.
-                                    - Reloading 9 bullets from the stack into the magazine: The Magazine's 'resource' increases to 10 (reported via 'inventoryItemsResources'). 
-                                    The Bullets stack 'count' decreases by 9 to 41 (this change to 'count' is reported via 'UpdateInventory').
+                                    Player also has a Pistol Magazine (permanent itemId mag-3) whose projected ammunition ledger is 4/10.
+                                    - Firing 3 shots: emit resourceChanges operation=spend amount=3 against mag-3/ammunition. The loose Bullets stack remains 50.
+                                    - Reloading the 6 bullets that fit: atomically update the loose Bullets count to 44 and emit resourceChanges operation=gain amount=6 against mag-3/ammunition. Never discard excess units through cap clamping, and do not author the resulting magazine value.
                                     
                                     ]]>
    </content>
@@ -170,18 +170,19 @@
   </example>
   <example contenttype="text" type="good">
    <title>
-    Correct: Player drinks the last dose of a multi-dose 'Healing Salve' (resource becomes 0).
+    Correct: Player drinks the last dose of a multi-dose 'Healing Salve' (ledger reaches 0).
    </title>
    <content>
     <![CDATA[
 
-                                    This is resource depletion. You MUST ONLY report the resource change.
-                                    
-                                    In 'inventoryItemsResources': 
+                                    This is ledger depletion. Report only the exact spend command:
                                     { 
-                                        "existedId": "salve-002", 
-                                        "resource": 0, 
-                                        ... 
+                                        "operation": "spend",
+                                        "target": { "kind": "item", "targetId": "salve-002" },
+                                        "resourceKey": "doses", "amount": 1,
+                                        "source": { "kind": "local_item_cost", "sourceId": "salve-002" },
+                                        "eventRef": "turn_42:resource:1",
+                                        "reason": "Last salve dose used."
                                     }
                                     
                                     DO NOT touch 'count'.
@@ -261,18 +262,13 @@
    <content type="text_and_json">
     <![CDATA[
 
-                            "inventoryItemsResources": [
-                                {
-                                    "name": "Torch", 
-                                    "resource": 60,
-                                    "maximumResource": 60,
-                                    "resourceType": "minutes",
-                                    "contentsPath": null, 
-                                    "existedId": "item-guid-torch-001" 
-                                }
-                            ]
+                            Context already contains the sealed setting definition burn_minutes.
+                            The new Torch item includes only:
+                            "resourceMaterialization": {
+                                "resources": [{ "resourceKey": "burn_minutes", "maximum": 60 }]
+                            }
 
-                            Log in 'gm_thoughts_markdown': "Added new Torch (ID: item-guid-torch-001) with 60 minutes of burn time."
+                            Log in 'gm_thoughts_markdown': "Added a new Torch with a 60-minute sealed fuel capacity; the client initializes its current ledger."
 
                             ]]>
    </content>
@@ -284,18 +280,16 @@
    <content type="text_and_json">
     <![CDATA[
 
-                            "inventoryItemsResources": [
-                                {
-                                    "name": "Healing Salve",
-                                    "resource": 1,
-                                    "maximumResource": 3,
-                                    "resourceType": "doses",
-                                    "contentsPath": ["Backpack"],
-                                    "existedId": "item-guid-salve-002"
-                                }
-                            ]
+                            "resourceChanges": [{
+                                "operation": "spend",
+                                "target": { "kind": "item", "targetId": "item-guid-salve-002" },
+                                "resourceKey": "charges", "amount": 1,
+                                "source": { "kind": "local_item_cost", "sourceId": "item-guid-salve-002" },
+                                "eventRef": "turn_42:resource:1",
+                                "reason": "One salve dose used."
+                            }]
                             
-                            Log in 'gm_thoughts_markdown': "Used 1 dose of Healing Salve (ID: item-guid-salve-002). Remaining: 1/3 doses."
+                            Log in 'gm_thoughts_markdown': "Used 1 dose of Healing Salve (ID: item-guid-salve-002); current state remains client-owned."
                             
                             ]]>
    </content>
@@ -309,20 +303,21 @@
    <content type="text_and_json">
     <![CDATA[
 
-                                    Context: Player's "Common Iron Sword" (durability: "85%") is hit by a powerful blow.
+                                    Context: the client projection reports 85/100 for item-sword-001/durability before a powerful blow.
                                     GM Decision: Common sword takes 15% durability damage.
 
                                     Log in 'gm_thoughts_markdown':
-                                    "Item 'Common Iron Sword' durability decreased by 15% due to parrying a heavy attack. New durability: 70%."
+                                    "Item 'Common Iron Sword' takes 15 durability damage due to parrying a heavy attack."
 
                                     Part of JSON Response:
-                                    "UpdateInventory": [
-                                        {
-                                            "existedId": "item-sword-001", 
-                                            "name": "Common Iron Sword",
-                                            "durability": "70%" 
-                                        }
-                                    ]
+                                    "resourceChanges": [{
+                                        "operation": "damage",
+                                        "target": { "kind": "item", "targetId": "item-sword-001" },
+                                        "resourceKey": "durability", "amount": 15,
+                                        "source": { "kind": "local_item_outcome", "sourceId": "item-sword-001" },
+                                        "eventRef": "turn_42:resource:1",
+                                        "reason": "Parried a heavy attack."
+                                    }]
 
                                     ]]>
    </content>
@@ -2325,9 +2320,8 @@
 
                                     Log in 'gm_thoughts_markdown':
                                     "Player hit by Ogre's club for 60% of max health. Inflicted 'Serious' Wound: 'Shattered Arm'.
-                                    Generated Effects defined within the Wound object:
-                                    1. Control: Disarmed (duration 999).
-                                    2. Debuff: -30% to Strength (duration 999).
+                                    The wound is created as its own entity. This focused creation example declares activeEffectDefinitions=[] and therefore creates no runtime effect from prose.
+                                    A later wound consequence requires a complete exact source definition and a separate effectChanges[] apply as shown in Examples/E_CLI_Effect_Materialization.txt.
                                     Healing State initialized: 'Untreated', 0/40 progress towards 'Stabilized'. Requires First Aid, Splint, etc."
 
                                     JSON Response Snippets:
@@ -2337,24 +2331,7 @@
                                         "woundName": "Shattered Arm",
                                         "severity": "Serious",
                                         "descriptionOfEffects": "A gruesome compound fracture in the forearm renders the arm useless. The character is in shock from the pain and cannot effectively hold anything in that hand.",
-                                        "generatedEffects": [
-                                            {
-                                                "effectType": "Control",
-                                                "value": "100%",
-                                                "targetType": "disarm",
-                                                "duration": 999,
-                                                "sourceSkill": "Shattered Arm Wound",
-                                                "description": "Disarmed (Broken Arm)"
-                                            },
-                                            {
-                                                "effectType": "Debuff",
-                                                "value": "-30%",
-                                                "targetType": "strength",
-                                                "duration": 999,
-                                                "sourceSkill": "Shattered Arm Wound",
-                                                "description": "Strength reduced by 30% (Pain & Shock)"
-                                            }
-                                        ],
+                                        "activeEffectDefinitions": [],
                                         "healingState": {
                                             "currentState": "Untreated",
                                             "description": "A compound fracture is visible, with bone piercing the skin. The arm is bleeding and unnaturally bent. Immediate medical attention is required.",
@@ -2363,12 +2340,10 @@
                                             "nextState": "Stabilized",
                                             "canBeImprovedBy": ["First Aid check", "Application of Splint", "Use of Bandages", "Minor Healing Spell"]
                                         }
-                                    }],
+                                    }]
 
-                                    // NOTE: 'playerActiveEffectsChanges' IS INTENTIONALLY LEFT EMPTY regarding this wound.
-                                    // The game system is responsible for reading the 'generatedEffects' from the wound object above
-                                    // and applying them. The GM's job is only to report the wound itself.
-                                    "playerActiveEffectsChanges": []
+                                    // NOTE: no effectChanges[] command is present because this example supplied no active effect definition.
+                                    // The wound remains independently treatable; an effect removal never heals or deletes it.
 
                                     ]]>
    </content>

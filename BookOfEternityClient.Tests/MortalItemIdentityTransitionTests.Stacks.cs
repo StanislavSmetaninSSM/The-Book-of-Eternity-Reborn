@@ -394,6 +394,7 @@ public sealed partial class MortalItemIdentityTransitionTests
         await context.WriteAsync(
             MortalItemIdentityState.StatePath,
             MortalItemTestFixture.CreateIndex(canonical));
+        await context.RefreshResourceOwnerAuthorityAsync();
         return canonical;
     }
 

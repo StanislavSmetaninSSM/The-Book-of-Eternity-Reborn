@@ -10,7 +10,7 @@
 
 ## Source Issues & Scope
 
-- **Source GitHub issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
+- **Source GitHub issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
 - **Issue type**: Test-infrastructure performance, reliability, and developer experience.
 - **Spec Kit justification**: The implementation spans the production validation orchestrator, a large multi-file guardian regression suite, test classification and source guards, verification scripts or documentation, and performance evidence across multiple sessions.
 - **Contract scope**: Internal validation orchestration and test infrastructure. There is no player-facing, GM-facing, gameplay, canonical-state schema, console, browser, frontend, prompt, documentation-example, or afterlife contract change.
@@ -64,6 +64,17 @@ finish, #1526 explicitly changes only the PreMerge hard limit to 20 minutes.
 The accepted exact control then passed `4,836/4,836` results in `14:18.302`,
 including ProcessIntegration `490/490` and E2E `15/15`, with zero duplicate
 IDs and complete owned-tree cleanup.
+
+Further legitimate suite growth under #1535/#1543/#1546 exhausted that
+headroom. The exact 20-minute PreMerge attempt completed every available core
+result green (`6,608/6,608`) with zero duplicates and complete cleanup, but the
+deadline terminated the exclusive process tail before it could publish a TRX.
+The isolated ProcessIntegration lane then passed `523/523` in `3:32` wall time;
+combined with the approximately 17-minute green core phase and the retained E2E
+tail, the measured lower bound no longer fits 20 minutes. Issue #1547 therefore
+raises only the globally bounded PreMerge deadline to 30 minutes. It does not
+remove coverage or change filters, cases, assertions, scheduling phases,
+ordering, or concurrency ceilings.
 
 ## User Scenarios & Testing
 
@@ -134,7 +145,7 @@ changed boundary, and one final PreMerge control.
    **when** DeepValidation runs explicitly, **then** the Integration-only union
    completes below 15 minutes with at least 1,950 non-duplicate results.
 7. **Given** the PreMerge command, **when** it runs under the final bounded
-   control, **then** one 20-minute deadline covers frontend verification,
+   control, **then** one 30-minute deadline covers frontend verification,
    builds, tests, and cleanup; at least 4,240 non-duplicate results complete,
    including ProcessIntegration, E2E, and exactly ten reviewed GameEngine
    lifecycle sentinels rather than the complete lifecycle class, plus exactly
@@ -223,7 +234,7 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   that drains before any remaining parallel descriptor starts. The remaining
   descriptors MUST then use the ordinary scheduler, and ProcessIntegration/E2E
   phase membership and ordering MUST remain unchanged.
-  PreMerge's lane-wide hard limit MUST be 20 minutes. Every other lane timeout,
+  PreMerge's lane-wide hard limit MUST be 30 minutes. Every other lane timeout,
   external-process ceiling, filter, case, assertion, and phase boundary MUST
   remain unchanged.
 - **FR-015**: Performance comparisons and final controls MUST use bounded
@@ -277,9 +288,8 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
 - **SC-005**: One explicit LifecycleIntegration control completes within ten
   minutes with all 186 reviewed cases, zero failures, and complete owned-tree
   cleanup.
-- **SC-006**: One PreMerge control completes within one 20-minute deadline on
-  the baseline Windows machine, preferably below ten minutes, and retains
-  JSON/TRX/log evidence.
+- **SC-006**: One PreMerge control completes within one 30-minute deadline on
+  the baseline Windows machine and retains JSON/TRX/log evidence.
 - **SC-007**: PreMerge produces at least 4,240 results, completes
   ProcessIntegration and E2E, executes exactly ten reviewed lifecycle
   sentinels and ten reviewed spiritual-conflict sentinels, and reports zero
@@ -309,6 +319,11 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
     shard timings, the rejected Fast-drain exact run, executable scheduling and
     fixture guards, a full 166-row audit benchmark, updated PlanOnly contract,
     one meaningful Fast checkpoint, and one exact final PreMerge control.
+  - For #1547, retain the exact 20-minute capacity-red summary, the green
+    `6,608/6,608` core evidence, the isolated green `523/523`
+    ProcessIntegration control, a RED/GREEN runner-contract guard, one updated
+    PlanOnly contract, and one exact final PreMerge control under the new
+    30-minute bound.
 - **Documentation/contract verification**: Run the new test-lane/source-guard coverage. GM prompts, Mortal/afterlife docs, worked examples, manifests, and contract matrices are N/A because FR-016 prohibits gameplay or GM-authored contract changes.
 - **Frontend verification**: N/A; no frontend files or browser behavior are in scope.
 - **Manual/player-facing verification**: N/A; compare process inventory before and after bounded integration runs to verify owned child cleanup.

@@ -17,13 +17,6 @@ public partial class ValidationService
         "mismatch_repair_blocking"
     };
 
-    private static readonly HashSet<string> MathAssistantAppliedDeltaReferenceFields = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "currentHealthChange",
-        "currentPoiseChange",
-        "currentEnergyChange"
-    };
-
     private static readonly HashSet<string> MathAssistantAppliedNumericReferencePaths = new(StringComparer.OrdinalIgnoreCase)
     {
         "afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount",
@@ -395,6 +388,15 @@ public partial class ValidationService
 
         foreach (var candidate in BuildMathAssistantReferenceCandidates(token))
         {
+            if (TryResolveResourceChangeAmountReference(
+                    root,
+                    candidate,
+                    out appliedPath,
+                    out appliedNode))
+            {
+                return true;
+            }
+
             if (MathAssistantAppliedNumericReferencePaths.Contains(candidate))
             {
                 appliedPath = candidate;
@@ -404,27 +406,51 @@ public partial class ValidationService
                 return true;
             }
 
-            if (MathAssistantAppliedDeltaReferenceFields.Contains(candidate))
-            {
-                appliedPath = candidate;
-                if (!root.TryGetProperty(candidate, out appliedNode))
-                    appliedNode = default;
-
-                return true;
-            }
         }
 
-        var lastSeparator = token.LastIndexOfAny(new[] { ':', '/', '\\', '.' });
-        var directCandidate = lastSeparator >= 0 && lastSeparator + 1 < token.Length
-            ? token[(lastSeparator + 1)..].Trim()
-            : token;
+        return false;
+    }
 
-        if (!MathAssistantAppliedDeltaReferenceFields.Contains(directCandidate))
+    private static bool TryResolveResourceChangeAmountReference(
+        JsonElement root,
+        string candidate,
+        out string appliedPath,
+        out JsonElement appliedNode)
+    {
+        const string prefix = "resourceChanges[";
+        const string suffix = "].amount";
+        appliedPath = "";
+        appliedNode = default;
+
+        if (!candidate.StartsWith(prefix, StringComparison.Ordinal) ||
+            !candidate.EndsWith(suffix, StringComparison.Ordinal))
+        {
             return false;
+        }
 
-        appliedPath = directCandidate;
-        if (!root.TryGetProperty(directCandidate, out appliedNode))
+        var indexText = candidate[prefix.Length..^suffix.Length];
+        if (indexText.Length == 0 ||
+            (indexText.Length > 1 && indexText[0] == '0') ||
+            !int.TryParse(indexText, out var index) ||
+            index < 0)
+        {
+            return false;
+        }
+
+        appliedPath = $"resourceChanges[{index}].amount";
+        if (!root.TryGetProperty("resourceChanges", out var changes) ||
+            changes.ValueKind != JsonValueKind.Array ||
+            index >= changes.GetArrayLength())
+        {
+            return true;
+        }
+
+        var change = changes[index];
+        if (change.ValueKind != JsonValueKind.Object ||
+            !change.TryGetProperty("amount", out appliedNode))
+        {
             appliedNode = default;
+        }
 
         return true;
     }

@@ -508,6 +508,7 @@ public class FileSystemManager
     };
 
     public string BasePath => _basePath;
+    internal CanonicalRootIdentity CanonicalRootAuthorityIdentity { get; }
     public string GameSessionPath => Path.Combine(_basePath, "game_session");
     internal string RuntimeRootPath => Path.Combine(_basePath, ".boe_runtime");
     internal string CanonicalWriteLockPath =>
@@ -543,6 +544,7 @@ public class FileSystemManager
         FileSystemManagerHooks? hooks)
     {
         _basePath = ResolvePhysicalBasePath(basePath);
+        CanonicalRootAuthorityIdentity = CanonicalRootIdentityInterner.Get(_basePath);
         _logger = logger;
         _loadTransactionOperations = loadTransactionOperations ??
             throw new ArgumentNullException(nameof(loadTransactionOperations));
@@ -4439,7 +4441,10 @@ public class FileSystemManager
         if (string.IsNullOrWhiteSpace(previousGenerationId))
         {
             if (RuntimeFileExists(SessionGenerationPath))
+            {
                 DeleteRuntimeFile(SessionGenerationPath);
+                CanonicalRootAuthorityIdentity.AdvanceSessionGenerationRevision();
+            }
             return;
         }
 
@@ -5544,6 +5549,7 @@ public class FileSystemManager
     {
         var json = JsonSerializer.Serialize(new SessionGenerationDocument(1, generationId));
         WriteRuntimeTextAtomic(SessionGenerationPath, json);
+        CanonicalRootAuthorityIdentity.AdvanceSessionGenerationRevision();
     }
 
     private void DeleteWorkerSessionArtifactsCore()

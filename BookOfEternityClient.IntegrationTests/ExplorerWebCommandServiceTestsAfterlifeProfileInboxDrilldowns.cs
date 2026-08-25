@@ -35,10 +35,9 @@ public sealed class ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldown
     }
 
     [Theory]
-    [InlineData("/afterlife_profiles", "afterlife-profile-detail-guardian_mirror", "/afterlife_profiles профиль guardian_mirror", "Хранитель Зеркал", "Сущности")]
     [InlineData("/afterlife_threats", "afterlife-threat-detail-threat_moth", "/afterlife_threats угроза threat_moth", "Моль Сомнений", "Видимые угрозы")]
     [InlineData("/afterlife_chronicles", "afterlife-chronicle-detail-chronicle_mirror", "/хроники_посмертия хроника \"Зал зеркальной клятвы\"", "Зал зеркальной клятвы", "Видимые хроники")]
-    public async Task ExecuteAsync_AfterlifeProfileThreatChronicleOverviews_ExposeIssue1066ReadOnlyDetailActions(
+    public async Task ExecuteAsync_AfterlifeThreatChronicleOverviews_ExposeIssue1066ReadOnlyDetailActions(
         string command,
         string expectedActionId,
         string expectedCommand,
@@ -53,6 +52,393 @@ public sealed class ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldown
         AssertNoIssue1066TechnicalLeak(result);
         Assert.Contains(expectedOverviewText, CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
         AssertIssue1066Action(result, expectedActionId, expectedCommand, expectedLabelText);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfileOverview_UsesOpaqueActionThatSurvivesProfileReordering()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        const string actorId = "guardian_mirror";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+
+        Assert.Equal(CommandExecutionState.Completed, overview.State);
+        var action = Assert.Single(overview.Actions, candidate =>
+            candidate.Label.Contains("Хранитель Зеркал", StringComparison.Ordinal));
+        Assert.Matches(
+            "^afterlife-profile-detail-afterlife_profile_[0-9a-f]{24}$",
+            action.Id);
+        Assert.Matches(
+            "^/afterlife_profiles действие afterlife_profile_[0-9a-f]{24}$",
+            action.Command);
+        Assert.DoesNotContain(actorId, SerializePlayerFacingResult(overview), StringComparison.Ordinal);
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        root["profiles"]!.AsArray().Insert(0, new JsonObject
+        {
+            ["actorType"] = "resident",
+            ["actorId"] = "resident_ember",
+            ["displayName"] = "Резидент Угля",
+            ["realm"] = "Chaos Sea"
+        });
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+
+        var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest(action.Command));
+
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        var detailText = CollectBlockText(detail.Blocks);
+        Assert.Contains("Профиль посмертия: Хранитель Зеркал", detailText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Профиль посмертия: Резидент Угля", detailText, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfileOpaqueAction_DuplicateAuthorityFailsClosed()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+        var action = Assert.Single(overview.Actions, candidate =>
+            candidate.Label.Contains("Хранитель Зеркал", StringComparison.Ordinal));
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        var profiles = root["profiles"]!.AsArray();
+        var duplicate = profiles[0]!.DeepClone().AsObject();
+        duplicate["displayName"] = "Двойник Зеркала";
+        profiles.Insert(1, duplicate);
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+
+        var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest(action.Command));
+
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        Assert.Contains("Профиль недоступен", CollectBlockText(detail.Blocks), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfileActions_UseTypedCanonicalAuthority()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        root["profiles"]!.AsArray().Insert(1, new JsonObject
+        {
+            ["actorType"] = "resident",
+            ["actorId"] = "guardian_mirror",
+            ["displayName"] = "Резидент Зеркал",
+            ["realm"] = "Chaos Sea"
+        });
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+
+        var guardianAction = Assert.Single(overview.Actions, candidate =>
+            candidate.Label.Contains("Хранитель Зеркал", StringComparison.Ordinal));
+        var residentAction = Assert.Single(overview.Actions, candidate =>
+            candidate.Label.Contains("Резидент Зеркал", StringComparison.Ordinal));
+        Assert.NotEqual(guardianAction.Id, residentAction.Id);
+        Assert.NotEqual(guardianAction.Command, residentAction.Command);
+
+        var guardianDetail = await _service.ExecuteAsync(new ExplorerWebCommandRequest(guardianAction.Command));
+        var residentDetail = await _service.ExecuteAsync(new ExplorerWebCommandRequest(residentAction.Command));
+        Assert.Contains(
+            "Профиль посмертия: Хранитель Зеркал",
+            CollectBlockText(guardianDetail.Blocks),
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Профиль посмертия: Резидент Зеркал",
+            CollectBlockText(residentDetail.Blocks),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfileOpaqueAction_DoesNotRetargetAfterActorTypeChanges()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+        var action = Assert.Single(overview.Actions, candidate =>
+            candidate.Label.Contains("Хранитель Зеркал", StringComparison.Ordinal));
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        var profile = root["profiles"]![0]!.AsObject();
+        profile["actorType"] = "resident";
+        profile["displayName"] = "Резидент Зеркал";
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+
+        var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest(action.Command));
+
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        Assert.Contains("Профиль недоступен", CollectBlockText(detail.Blocks), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeInboxProfileAction_UsesTypedLegacyActorRefAuthority()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        var profiles = root["profiles"]!.AsArray();
+        var guardian = profiles[0]!.AsObject();
+        guardian.Remove("actorId");
+        guardian["actorRef"] = "guardian_mirror";
+        profiles.Insert(1, new JsonObject
+        {
+            ["actorType"] = "resident",
+            ["actorRef"] = "guardian_mirror",
+            ["displayName"] = "Резидент Зеркал",
+            ["realm"] = "Chaos Sea"
+        });
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+
+        var inbox = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_inbox"));
+        var action = Assert.Single(inbox.Actions, static candidate =>
+            candidate.Id.StartsWith(
+                "afterlife-inbox-profile-notif_guardian_profile-",
+                StringComparison.Ordinal));
+        var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest(action.Command));
+
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        Assert.Contains(
+            "Профиль посмертия: Хранитель Зеркал",
+            CollectBlockText(detail.Blocks),
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Профиль посмертия: Резидент Зеркал",
+            CollectBlockText(detail.Blocks),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfileWithoutCanonicalIdentity_HasNoGeneratedAction()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        var profile = root["profiles"]![0]!.AsObject();
+        profile.Remove("actorId");
+        profile["profileId"] = "legacy_profile_mirror";
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+        var payload = SerializePlayerFacingResult(overview);
+
+        Assert.Contains("Хранитель Зеркал", CollectBlockText(overview.Blocks), StringComparison.Ordinal);
+        Assert.DoesNotContain("afterlife-profile-detail-", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("/afterlife_profiles действие", payload, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("7")]
+    [InlineData("true")]
+    public async Task ExecuteAsync_AfterlifeProfileWithNonStringActorId_HasNoGeneratedAction(
+        string actorIdJson)
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        var profile = root["profiles"]![0]!.AsObject();
+        profile["actorId"] = JsonNode.Parse(actorIdJson);
+        profile.Remove("actorRef");
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+
+        Assert.Contains("Хранитель Зеркал", CollectBlockText(overview.Blocks), StringComparison.Ordinal);
+        Assert.DoesNotContain(overview.Actions, candidate =>
+            candidate.Label.Contains("Хранитель Зеркал", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfileWithNonStringActorId_UsesStringActorRefAuthority()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        var profile = root["profiles"]![0]!.AsObject();
+        profile["actorId"] = 7;
+        profile["actorRef"] = "guardian_mirror";
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+        var action = Assert.Single(overview.Actions, candidate =>
+            candidate.Label.Contains("Хранитель Зеркал", StringComparison.Ordinal));
+
+        profile["actorId"] = 8;
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+
+        var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest(action.Command));
+
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        Assert.Contains(
+            "Профиль посмертия: Хранитель Зеркал",
+            CollectBlockText(detail.Blocks),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeInboxProfileAction_RejectsNonStringExplicitActorId()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        const string notificationsPath = "game_state/control/afterlife_notifications.json";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var profilesRoot = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        profilesRoot["profiles"]![0]!["actorId"] = "7";
+        await _fs.WriteFileAtomicAsync(profilesPath, profilesRoot.ToJsonString(JsonOptions));
+        var notificationsRoot = JsonNode.Parse((await _fs.ReadFileAsync(notificationsPath))!)!.AsObject();
+        var notification = notificationsRoot["notifications"]!
+            .AsArray()
+            .OfType<JsonObject>()
+            .Single(candidate =>
+                candidate["notificationId"]?.GetValue<string>() == "notif_guardian_profile");
+        notification["profileActorId"] = 7;
+        notification["profileActorType"] = "guardian";
+        notification.Remove("guardianId");
+        notification.Remove("residentId");
+        await _fs.WriteFileAtomicAsync(notificationsPath, notificationsRoot.ToJsonString(JsonOptions));
+
+        var inbox = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_inbox"));
+
+        Assert.DoesNotContain(inbox.Actions, static candidate =>
+            candidate.Id.StartsWith(
+                "afterlife-inbox-profile-notif_guardian_profile-",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeInboxProfileAction_DoesNotGuessBetweenGuardianAndResidentCoordinates()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        const string notificationsPath = "game_state/control/afterlife_notifications.json";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var profilesRoot = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        profilesRoot["profiles"]!.AsArray().Insert(1, new JsonObject
+        {
+            ["actorType"] = "resident",
+            ["actorId"] = "resident_ember",
+            ["displayName"] = "Резидент Угля",
+            ["realm"] = "Chaos Sea"
+        });
+        await _fs.WriteFileAtomicAsync(profilesPath, profilesRoot.ToJsonString(JsonOptions));
+        var notificationsRoot = JsonNode.Parse((await _fs.ReadFileAsync(notificationsPath))!)!.AsObject();
+        var notification = notificationsRoot["notifications"]!
+            .AsArray()
+            .OfType<JsonObject>()
+            .Single(candidate =>
+                candidate["notificationId"]?.GetValue<string>() == "notif_guardian_profile");
+        notification.Remove("profileActorId");
+        notification.Remove("profileActorType");
+        notification["guardianId"] = "guardian_mirror";
+        notification["residentId"] = "resident_ember";
+        await _fs.WriteFileAtomicAsync(notificationsPath, notificationsRoot.ToJsonString(JsonOptions));
+
+        var inbox = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_inbox"));
+
+        Assert.DoesNotContain(inbox.Actions, static candidate =>
+            candidate.Id.StartsWith(
+                "afterlife-inbox-profile-notif_guardian_profile-",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeInboxProfileAction_UntypedDuplicateActorIdFailsClosed()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        const string notificationsPath = "game_state/control/afterlife_notifications.json";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var profilesRoot = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        profilesRoot["profiles"]!.AsArray().Insert(1, new JsonObject
+        {
+            ["actorType"] = "resident",
+            ["actorId"] = "guardian_mirror",
+            ["displayName"] = "Резидент Зеркал",
+            ["realm"] = "Chaos Sea"
+        });
+        await _fs.WriteFileAtomicAsync(profilesPath, profilesRoot.ToJsonString(JsonOptions));
+        var notificationsRoot = JsonNode.Parse((await _fs.ReadFileAsync(notificationsPath))!)!.AsObject();
+        var notification = notificationsRoot["notifications"]!
+            .AsArray()
+            .OfType<JsonObject>()
+            .Single(candidate =>
+                candidate["notificationId"]?.GetValue<string>() == "notif_guardian_profile");
+        notification.Remove("profileActorId");
+        notification.Remove("profileActorType");
+        await _fs.WriteFileAtomicAsync(notificationsPath, notificationsRoot.ToJsonString(JsonOptions));
+
+        var inbox = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_inbox"));
+
+        Assert.DoesNotContain(inbox.Actions, static candidate =>
+            candidate.Id.StartsWith(
+                "afterlife-inbox-profile-notif_guardian_profile-",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfileDirectSelector_WithOpaquePrefixRemainsReadable()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        const string actorId = "afterlife_profile_named_guardian";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        root["profiles"]![0]!["actorId"] = actorId;
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+
+        var detail = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest($"/afterlife_profiles профиль {actorId}"));
+
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        Assert.Contains(
+            "Профиль посмертия: Хранитель Зеркал",
+            CollectBlockText(detail.Blocks),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfileDirectSelector_WithExactOpaqueShapeRemainsReadable()
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        const string actorId = "afterlife_profile_0123456789abcdef01234567";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        root["profiles"]![0]!["actorId"] = actorId;
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+
+        var direct = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest($"/afterlife_profiles профиль {actorId}"));
+        var generated = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest($"/afterlife_profiles действие {actorId}"));
+
+        Assert.Contains(
+            "Профиль посмертия: Хранитель Зеркал",
+            CollectBlockText(direct.Blocks),
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Профиль недоступен",
+            CollectBlockText(generated.Blocks),
+            StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("afterlife_profile_0123456789ABCDEF01234567")]
+    [InlineData("afterlife_profile_0123456789abcdef0123456")]
+    public async Task ExecuteAsync_AfterlifeProfileActionSelector_WithMalformedShapeDoesNotUseDirectLookup(
+        string actorId)
+    {
+        const string profilesPath = "game_state/meta/afterlife_entity_profiles.json";
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(profilesPath))!)!.AsObject();
+        root["profiles"]![0]!["actorId"] = actorId;
+        await _fs.WriteFileAtomicAsync(profilesPath, root.ToJsonString(JsonOptions));
+
+        var direct = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest($"/afterlife_profiles профиль {actorId}"));
+        var generated = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest($"/afterlife_profiles действие {actorId}"));
+
+        Assert.Contains(
+            "Профиль посмертия: Хранитель Зеркал",
+            CollectBlockText(direct.Blocks),
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Профиль недоступен",
+            CollectBlockText(generated.Blocks),
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -130,11 +516,19 @@ public sealed class ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldown
             "afterlife-inbox-guardian-notif_guardian_profile-guardian_mirror",
             "/guardians хранитель guardian_mirror",
             "Хранитель Зеркал");
-        AssertIssue1066Action(
-            result,
-            "afterlife-inbox-profile-notif_guardian_profile-guardian_mirror",
-            "/afterlife_profiles профиль guardian_mirror",
-            "Хранитель Зеркал");
+        var profileAction = Assert.Single(result.Actions, static candidate =>
+            candidate.Id.StartsWith(
+                "afterlife-inbox-profile-notif_guardian_profile-",
+                StringComparison.Ordinal));
+        Assert.Matches(
+            "^afterlife-inbox-profile-notif_guardian_profile-afterlife_profile_[0-9a-f]{24}$",
+            profileAction.Id);
+        Assert.Matches(
+            "^/afterlife_profiles действие afterlife_profile_[0-9a-f]{24}$",
+            profileAction.Command);
+        Assert.Contains("Хранитель Зеркал", profileAction.Label, StringComparison.Ordinal);
+        Assert.DoesNotContain("guardian_mirror", profileAction.Id, StringComparison.Ordinal);
+        Assert.DoesNotContain("guardian_mirror", profileAction.Command, StringComparison.Ordinal);
         AssertIssue1066Action(
             result,
             "afterlife-inbox-threat-notif_guardian_profile-threat_moth",
@@ -160,6 +554,13 @@ public sealed class ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldown
             "afterlife-inbox-shining-politics-notif_shining_foundation",
             "/shining_politics",
             "Сияющую Обитель");
+
+        var profileDetail = await _service.ExecuteAsync(new ExplorerWebCommandRequest(profileAction.Command));
+        Assert.Equal(CommandExecutionState.Completed, profileDetail.State);
+        Assert.Contains(
+            "Профиль посмертия: Хранитель Зеркал",
+            CollectBlockText(profileDetail.Blocks),
+            StringComparison.Ordinal);
 
         var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_inbox уведомление notif_guardian_profile"));
 

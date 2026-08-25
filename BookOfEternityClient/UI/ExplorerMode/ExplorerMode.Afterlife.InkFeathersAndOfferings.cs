@@ -753,7 +753,9 @@ public partial class ExplorerMode
                         "🛡️ Щит Судьбы",
                         cost => $"[INK_FEATHER_ACTION: FATE_SHIELD] Игрок активирует Щит Судьбы за {cost} Чернильных Перьев. " +
                             "При следующем критическом провале (Natural 1) — превратить его в обычный провал. " +
-                            "Добавь этот эффект в playerActiveEffects с маркером 'Щит Судьбы'.");
+                            $"Верни top-level effectChanges[].apply с exact source kind={EffectBuiltInSourceCatalog.FateShieldSourceKind}, " +
+                            $"sourceId={EffectBuiltInSourceCatalog.FateShieldSourceId}, definitionKey={EffectBuiltInSourceCatalog.FateShieldDefinitionKey} " +
+                            "и exact eventRef текущего accepted turn. Не записывай activeEffects[], effectId или lifetime напрямую.");
                 else if (choice.Contains("Запечатать в Чернила"))
                     await HandleGmFeatherAction(feathers,
                         Math.Max(50, (int)(feathers * 0.40)),

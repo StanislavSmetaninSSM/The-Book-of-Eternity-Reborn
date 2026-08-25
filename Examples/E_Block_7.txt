@@ -2,6 +2,9 @@
  <title>
   Examples For Active Skills Management (Player &amp; NPC)
  </title>
+ <effectmaterializationcontract>
+  A skill that can create an effect owns activeEffectDefinitions[]; application is authored only through effectChanges[] as demonstrated in Examples/E_CLI_Effect_Materialization.txt.
+ </effectmaterializationcontract>
  <rule id="7.3.5">
   <example contenttype="log" type="good">
    <title>

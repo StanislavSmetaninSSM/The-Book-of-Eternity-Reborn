@@ -165,12 +165,21 @@ public partial class CanonicalStateNormalizer
 
     private async Task WriteCanonicalFileAtomicAsync(string path, string content)
     {
+        if (_normalizationWriteAuthority is CanonicalNormalizationWriteAuthority.NoPlan noPlan)
+        {
+            _ = noPlan;
+            EnsureNoPlanWriteAuthorityActive();
+            EnsureNoPlanAcceptedMechanicsAuthorityStillAbsent();
+        }
+        if (_writeLease == null)
+        {
+            throw new InvalidOperationException(
+                "Canonical normalization writes require one owning canonical write lease for the complete operation.");
+        }
+
         try
         {
-            if (_writeLease == null)
-                await _fs.WriteFileAtomicAsync(path, content);
-            else
-                await _fs.WriteFileAtomicAsync(_writeLease, path, content);
+            await _fs.WriteFileAtomicAsync(_writeLease, path, content);
         }
         catch (SessionReplacedException)
         {

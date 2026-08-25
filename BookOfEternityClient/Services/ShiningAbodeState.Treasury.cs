@@ -152,10 +152,7 @@ internal static partial class ShiningAbodeState
         {
             cycleId = expectedReturnCycleId;
             if (synchronizeCurrentCycle)
-            {
                 gachaSystem["currentReturnCycleId"] = expectedReturnCycleId;
-                gachaSystem["chargesUsedThisReturn"] = 0;
-            }
 
             return true;
         }
@@ -373,7 +370,6 @@ internal static partial class ShiningAbodeState
             string.IsNullOrWhiteSpace(GetNodeString(gachaSystem["currentReturnCycleId"])))
         {
             gachaSystem["currentReturnCycleId"] = cycleId;
-            gachaSystem["chargesUsedThisReturn"] = 0;
         }
     }
 }

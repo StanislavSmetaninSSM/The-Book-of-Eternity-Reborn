@@ -57,7 +57,6 @@ internal static class MortalItemRepairPacketBuilder
     private static readonly string[] GmAuthorableTargetRoots =
     {
         "game_state/inventory/items.json",
-        "game_state/inventory/item_resources.json",
         "game_state/inventory/item_bonds.json",
         "game_state/inventory/item_text_updates.json",
         "game_state/inventory/recipes.json",
@@ -76,7 +75,6 @@ internal static class MortalItemRepairPacketBuilder
     private static readonly HashSet<string> CompanionTargetRoots =
         new(StringComparer.Ordinal)
         {
-            "game_state/inventory/item_resources.json",
             "game_state/inventory/item_bonds.json",
             "game_state/inventory/item_text_updates.json",
             "game_state/inventory/recipes.json",

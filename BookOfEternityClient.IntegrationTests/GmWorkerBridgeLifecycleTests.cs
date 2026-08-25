@@ -1421,6 +1421,7 @@ public sealed class GmWorkerBridgeLifecycleTests
             await fs.WriteFileAtomicAsync(
                 "game_state/meta/soul_state.json",
                 """{"currentRealm":"Mortal World"}""");
+            await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(fs);
             var stateManager = new StateManager(
                 fs,
                 new GameSettings(),

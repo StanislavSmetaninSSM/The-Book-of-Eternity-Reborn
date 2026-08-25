@@ -386,6 +386,38 @@ public sealed class AgentConsoleObservationTests
         Assert.Contains("RecordGameLoopErrorObservation(ex);", turnLifecycle, StringComparison.Ordinal);
         Assert.Contains("private void RecordGameLoopErrorObservation(Exception ex)", agentConsole, StringComparison.Ordinal);
         Assert.Contains("ConsoleE2EInputMode.Error", agentConsole, StringComparison.Ordinal);
+        Assert.Contains("world-turn-paused", agentConsole, StringComparison.Ordinal);
+        Assert.DoesNotContain("{ex.Message}", agentConsole, StringComparison.Ordinal);
+        Assert.DoesNotContain("game_session/error_log.txt", agentConsole, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AcceptedTurnWaitingAndCancellationCopyDoesNotExposeHarnessVocabulary()
+    {
+        var turnLifecycle = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
+        var agentConsole = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.AgentConsole.cs");
+        var validationRepair = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.ValidationAndRepair.cs");
+        var sessionSnapshots = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.SessionAndSnapshots.cs");
+
+        Assert.DoesNotContain("Агент-консоль ждёт", turnLifecycle, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("состояние восстановлено из rollback backup", turnLifecycle, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Ожидание GM-демона", turnLifecycle, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("GM обрабатывает ход", turnLifecycle, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Переходный ход завершился ошибкой GM", turnLifecycle, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("после ответа ГМ", turnLifecycle, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("требует действия ГМ", turnLifecycle, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "Validation repair is active. Agent Console input is blocked until GM finishes data repair.",
+            validationRepair,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("Текущий ответ GM отклонён клиентом", validationRepair, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("потери корректного ответа GM", validationRepair, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("конфликтующих ответов GM", validationRepair, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("повреждённый ответ GM", sessionSnapshots, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("несогласованный ответ GM", sessionSnapshots, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("несвязанный ответ GM", sessionSnapshots, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Мир ещё не готов принять новое действие", agentConsole, StringComparison.Ordinal);
+        Assert.Contains("PlayerSafeInputBlockedText", validationRepair, StringComparison.Ordinal);
     }
 
     private static AgentConsoleSnapshot BuildMenuSnapshot(string screenId, int selectedIndex)

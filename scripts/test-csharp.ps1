@@ -58,6 +58,8 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 $FastParallelismLimit = 2
+$FocusedMaximumTimeoutMinutes = 15
+$LifecycleIntegrationMaximumTimeoutMinutes = 30
 $PreMergeParallelism = 4
 $PreMergeFastParallelismLimit = 2
 $ComposedSmallClassBinCount = 4
@@ -191,7 +193,7 @@ $laneDefinitions = @{
     PreMerge = @{
         Project = "Both"
         Filter = $null
-        TimeoutMinutes = 20
+        TimeoutMinutes = 30
     }
 }
 
@@ -2523,8 +2525,13 @@ try {
             $Lane -ne "Focused") {
             throw "-FocusedProject is supported only with -Lane Focused."
         }
-        if ($TimeoutMinutes -gt [int]$laneDefinition.TimeoutMinutes) {
-            throw "Lane '$Lane' has a hard limit of $($laneDefinition.TimeoutMinutes) minute(s)."
+        $maximumTimeoutMinutes = switch ($effectiveLane) {
+            "Focused" { $FocusedMaximumTimeoutMinutes }
+            "LifecycleIntegration" { $LifecycleIntegrationMaximumTimeoutMinutes }
+            default { [int]$laneDefinition.TimeoutMinutes }
+        }
+        if ($TimeoutMinutes -gt $maximumTimeoutMinutes) {
+            throw "Lane '$Lane' has a hard limit of $maximumTimeoutMinutes minute(s)."
         }
 
         $laneFilter = if ($Lane -eq "Focused") { $Filter } else { $laneDefinition.Filter }

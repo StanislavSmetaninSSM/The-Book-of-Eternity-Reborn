@@ -2065,12 +2065,13 @@ public partial class ValidationService
 
         var currentEffectsJson = await _fs.ReadFileAsync("game_state/player/effects.json");
         var previousEffectsJson = await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/player/effects.json");
-        var effectExistsNow = !string.IsNullOrWhiteSpace(effectName) &&
-                              JsonContainsNamedObject(currentEffectsJson, effectName, "effectName", "name");
-        var effectExistedBefore = !string.IsNullOrWhiteSpace(effectName) &&
-                                  JsonContainsNamedObject(previousEffectsJson, effectName, "effectName", "name");
+        var currentShieldIds = EffectBuiltInSourceCatalog.FindFateShieldEffectIds(
+            currentEffectsJson);
+        var newShieldIds = EffectBuiltInSourceCatalog.FindNewFateShieldEffectIds(
+            currentEffectsJson,
+            previousEffectsJson);
 
-        if (!effectExistsNow)
+        if (currentShieldIds.Count == 0)
         {
             issues.Add(new ValidationIssue(
                 "game_state/player/effects.json",
@@ -2078,11 +2079,13 @@ public partial class ValidationService
                 "После FATE_SHIELD эффект не найден в player effects",
                 code: "ink_feather_fate_shield_missing_effect",
                 section: context.ActionTag,
-                expected: effectName,
-                actual: "missing effect",
-                repairHint: "После FATE_SHIELD добавь эффект 'Щит Судьбы' в game_state/player/effects.json."));
+                expected: $"new exact source {EffectBuiltInSourceCatalog.FateShieldSourceKind}:" +
+                          $"{EffectBuiltInSourceCatalog.FateShieldSourceId}:" +
+                          EffectBuiltInSourceCatalog.FateShieldDefinitionKey,
+                actual: "missing canonical effect instance",
+                repairHint: "Повтори accepted FATE_SHIELD-ход и верни top-level effectChanges[].apply с exact built-in source selector; не записывай game_state/player/effects.json или effectId вручную."));
         }
-        else if (effectExistedBefore)
+        else if (newShieldIds.Count == 0)
         {
             issues.Add(new ValidationIssue(
                 "game_state/player/effects.json",
@@ -2092,7 +2095,7 @@ public partial class ValidationService
                 section: context.ActionTag,
                 expected: "newly added Fate Shield effect",
                 actual: "effect already existed before the turn",
-                repairHint: "Новая трата на FATE_SHIELD должна создавать новый effect instance, а не ссылаться на уже существующий щит."));
+                repairHint: "Новая трата на FATE_SHIELD должна вернуть новый effectChanges[].apply с exact built-in source selector; существующий shield instance нельзя переиспользовать и carrier нельзя редактировать напрямую."));
         }
     }
 

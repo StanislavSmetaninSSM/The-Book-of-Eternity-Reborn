@@ -541,6 +541,7 @@ public sealed class LocalWebUiHostTests : IDisposable
           "turnNumber": 7
         }
         """);
+        await InitializeCanonicalResourceAuthorityAsync();
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
         await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
@@ -1527,6 +1528,7 @@ public sealed class LocalWebUiHostTests : IDisposable
           "entries": []
         }
         """);
+        await InitializeCanonicalResourceAuthorityAsync();
 
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
         await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
@@ -1581,11 +1583,21 @@ public sealed class LocalWebUiHostTests : IDisposable
     {
         var fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         fs.EnsureDirectoryStructure();
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(fs);
         var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
         await stateManager.RefreshGameStateAsync();
         var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
         var saved = await saveLoad.SaveGameAsync(saveName, "Browser main menu save/load test");
         Assert.True(saved, "The test fixture must be able to create a manual save before exercising the browser load endpoint.");
+    }
+
+    private async Task InitializeCanonicalResourceAuthorityAsync()
+    {
+        var fs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        fs.EnsureDirectoryStructure();
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(fs);
     }
 
     private async Task<string> GetOrCreateSessionGenerationAsync()

@@ -2,6 +2,9 @@
  <title>
   Examples For Item Management and Properties
  </title>
+ <effectmaterializationcontract>
+  Item structuredBonuses remain separate. An item-created lifecycle effect requires an exact item source definition and effectChanges[]; see Examples/E_CLI_Effect_Materialization.txt.
+ </effectmaterializationcontract>
  <rule id="10.1">
   <example contenttype="log_and_json_snippet" id="SentientItemJournal_Example" type="good">
    <title>
@@ -517,7 +520,7 @@
                                     --- Item 3: "Waterskin" (Item with Resource) ---
                                     An item that holds a resource (sips of water).
                                     - Item in 'inventoryItemsData': { "name": "Бурдюк с водой", "weight": 1.0, ... }
-                                    - Resource in 'inventoryItemsResources': { "name": "Бурдюк с водой", "existedId": "[id-бурдюка]", "contentsPath": null, "resource": 8, "maximumResource": 10, "resourceType": "глотков" }
+                                    - The new item carries resourceMaterialization { resources: [{ resourceKey: "charges", maximum: 10 }] }. To represent finding it at 8/10, compose a same-turn spend amount=2 against its exact targetRef with the accepted narrative event source; never author current state.
 
                                     --- Item 4: "Simple Dagger" (Weapon with Combat Effect) ---
                                     A weapon defined by its 'combatEffect'.
@@ -587,10 +590,12 @@
    <content type="json">
     <![CDATA[
 
-                                            [
                                                 {
                                                     "name": "Wand of Minor Healing",
                                                     "isConsumption": false,
+                                                    "resourceMaterialization": {
+                                                        "resources": [{ "resourceKey": "charges", "maximum": 3 }]
+                                                    },
                                                     "combatEffect": {
                                                         "actionName": "Channel Minor Heal",
                                                         "isActivatedEffect": true,
@@ -604,15 +609,7 @@
                                                         ],
                                                         "targetPriority": "lowest_health_ally"
                                                     }
-                                                },
-                                                {
-                                                    "name": "Wand of Minor Healing",
-                                                    "resource": 3,
-                                                    "maximumResource": 3,
-                                                    "resourceType": "charges",
-                                                    "existedId": "wand-heal-001"
                                                 }
-                                            ]
 
                                             ]]>
    </content>
@@ -1210,21 +1207,20 @@
     Example: NPC Kaelen uses a charge from a magic amulet.
    </title>
    <jsonresponse>
-    <npcinventoryresourceschanges>
+    <resourceChanges>
      <![CDATA[
 
-                                [
-                                    {
-                                        "NPCId": "npc-kaelen-001",
-                                        "NPCName": "Kaelen, the Mercenary Captain",
-                                        "itemId": "item-amulet-ward-01",
-                                        "itemName": "Amulet of Warding",
-                                        "newResourceValue": 2
-                                    }
-                                ]
+                                [{
+                                    "operation": "spend",
+                                    "target": { "kind": "item", "targetId": "item-amulet-ward-01" },
+                                    "resourceKey": "charges", "amount": 1,
+                                    "source": { "kind": "local_item_cost", "sourceId": "item-amulet-ward-01" },
+                                    "eventRef": "turn_42:resource:1",
+                                    "reason": "Kaelen activated the Amulet of Warding."
+                                }]
 
                                 ]]>
-    </npcinventoryresourceschanges>
+    </resourceChanges>
    </jsonresponse>
   </example>
  </rule>
@@ -1323,7 +1319,7 @@
       "isConsumption": false,
       "containerWeight": null,
       "weightReduction": null,
-      "durability": "100%",
+      "resourceMaterialization": { "resources": [{ "resourceKey": "durability", "maximum": 100 }] },
       "combatEffect": [],
       "equipmentSlot": null,
       "accessoryForSlot": null,
@@ -1357,7 +1353,7 @@
       "isConsumption": false,
       "containerWeight": null,
       "weightReduction": null,
-      "durability": "100%",
+      "resourceMaterialization": { "resources": [{ "resourceKey": "durability", "maximum": 100 }] },
       "combatEffect": [],
       "equipmentSlot": null,
       "accessoryForSlot": null,
@@ -1392,7 +1388,7 @@
       "isConsumption": false,
       "containerWeight": null,
       "weightReduction": null,
-      "durability": "100%",
+      "resourceMaterialization": { "resources": [{ "resourceKey": "durability", "maximum": 100 }] },
       "combatEffect": [],
       "equipmentSlot": "hands",
       "accessoryForSlot": null,

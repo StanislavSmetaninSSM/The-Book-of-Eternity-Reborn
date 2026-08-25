@@ -367,7 +367,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
             "BuildValidationRepairHarnessPackets",
             BindingFlags.NonPublic | BindingFlags.Static);
         Assert.NotNull(builder);
-        var packets = builder!.Invoke(null, new object?[] { new[] { mismatch }, null });
+        var packets = builder!.Invoke(null, new object?[] { new[] { mismatch }, null, null });
         using var document = JsonDocument.Parse(JsonSerializer.Serialize(
             packets,
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));

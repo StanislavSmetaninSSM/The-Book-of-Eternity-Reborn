@@ -1567,44 +1567,27 @@ public partial class ExplorerMode
                int.TryParse(field.GetString(), out value);
     }
 
-    private static void AppendStatusEffectPreview(List<string> lines, JsonElement root)
+    private static void AppendStatusEffectPreview(
+        List<string> lines,
+        EffectPlayerProjectionResult projection)
     {
-        lines.Add("[bold yellow]⚡ Активные эффекты:[/]");
-        var hasEffects = false;
-        EnumerateJsonItems(root, item =>
+        if (!projection.IsAvailable)
         {
-            if (item.ValueKind != JsonValueKind.Object) return;
-            hasEffects = true;
-            var effectType = GetStr(item, "effectType", "?");
-            var value = GetStr(item, "value", "");
-            var duration = GetStr(item, "duration", "");
-            var source = GetStr(item, "sourceSkill", GetStr(item, "source", ""));
-            var target = GetStr(item, "targetTypeDisplayName", GetStr(item, "targetType", ""));
-            var description = GetStr(item, "effectDescription", GetStr(item, "description", ""));
-            var color = effectType.ToLowerInvariant() switch
-            {
-                "buff" or "heal" or "healovertime" => "green",
-                "debuff" or "damage" or "damageovertime" or "control" => "red",
-                "damagereduction" => "cyan",
-                _ => "yellow"
-            };
+            lines.Add($"[yellow]{Markup.Escape(projection.StatusMessage)}[/]");
+            return;
+        }
 
-            var line = $"  [{color}]• {Markup.Escape(effectType)}[/]";
-            if (!string.IsNullOrEmpty(value))
-                line += $" [white]{Markup.Escape(value)}[/]";
-            if (!string.IsNullOrEmpty(target))
-                line += $" → {Markup.Escape(target)}";
-            if (!string.IsNullOrEmpty(duration) && duration != "0")
-                line += $" [dim]({Markup.Escape(duration)} ход.)[/]";
-            lines.Add(line);
+        lines.Add("[bold yellow]⚡ Активные эффекты:[/]");
+        foreach (var effect in projection.Entries)
+        {
+            lines.Add($"  [yellow]• {Markup.Escape(effect.Name)}[/]");
+            if (!string.IsNullOrWhiteSpace(effect.Summary))
+                lines.Add($"    [dim]{Markup.Escape(effect.Summary)}[/]");
+            foreach (var fact in effect.Facts)
+                lines.Add($"    [dim]{Markup.Escape(fact.Label)}:[/] {Markup.Escape(fact.Value)}");
+        }
 
-            if (!string.IsNullOrEmpty(source))
-                lines.Add($"    [dim]Источник: {Markup.Escape(source)}[/]");
-            if (!string.IsNullOrEmpty(description))
-                lines.Add($"    [dim]{Markup.Escape(description)}[/]");
-        });
-
-        if (!hasEffects)
+        if (projection.Entries.Count == 0)
             lines.Add("  [dim]Нет активных эффектов[/]");
     }
 

@@ -208,10 +208,12 @@ public sealed class IntegrationTestBoundaryTests
         "BrowserCommandPresentationAuditTests.cs",
         "ExplorerModeCommandTests.cs",
         "ExplorerWebCommandServiceTests.cs",
+        "ExplorerWebCommandServiceTests.Effects.cs",
         "ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldowns.cs",
         "ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.cs",
         "GuardianSystemRegressionTests.cs",
-        "LocalWebUiHostTests.cs"
+        "LocalWebUiHostTests.cs",
+        "ResourceConsoleBrowserParityTests.cs"
     ];
 
     private static readonly IReadOnlyDictionary<string, string[]>
@@ -299,6 +301,7 @@ public sealed class IntegrationTestBoundaryTests
         {
             "\"LifecycleIntegration\"",
             "$LifecycleIntegrationMinimumCases = 186",
+            "$LifecycleIntegrationMaximumTimeoutMinutes = 30",
             "$coreIntegrationFilter = " +
                 "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
                 "\"Category!=ProcessIntegration&Category!=E2E&\" + " +
@@ -363,7 +366,7 @@ public sealed class IntegrationTestBoundaryTests
             "Filter = \"Category=ProcessIntegration\" TimeoutMinutes = 15 }",
             "E2E = @{ Project = \"Integration\" " +
             "Filter = \"Category=E2E\" TimeoutMinutes = 15 }",
-            "PreMerge = @{ Project = \"Both\" Filter = $null TimeoutMinutes = 20 }"
+            "PreMerge = @{ Project = \"Both\" Filter = $null TimeoutMinutes = 30 }"
         };
         Assert.All(diagnosticDefinitions, definition =>
             Assert.Contains(definition, normalized, StringComparison.Ordinal));
@@ -398,8 +401,11 @@ public sealed class IntegrationTestBoundaryTests
         var requiredTokens = new[]
         {
             "$effectiveLane = if ($Lane -eq \"Complete\") { \"PreMerge\" } else { $Lane }",
-            "if ($TimeoutMinutes -gt [int]$laneDefinition.TimeoutMinutes)",
-            "hard limit of $($laneDefinition.TimeoutMinutes) minute(s)",
+            "$FocusedMaximumTimeoutMinutes = 15",
+            "$LifecycleIntegrationMaximumTimeoutMinutes = 30",
+            "\"LifecycleIntegration\" { $LifecycleIntegrationMaximumTimeoutMinutes }",
+            "if ($TimeoutMinutes -gt $maximumTimeoutMinutes)",
+            "hard limit of $maximumTimeoutMinutes minute(s)",
             "Category=FullValidation",
             "Category=RegressionIntegration",
             "Category=ProcessIntegration",

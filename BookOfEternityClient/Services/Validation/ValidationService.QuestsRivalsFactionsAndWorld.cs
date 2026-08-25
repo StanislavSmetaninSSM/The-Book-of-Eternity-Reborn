@@ -860,6 +860,12 @@ public partial class ValidationService
             var itemContext = $"{contextPrefix}.{propName}[{index++}]";
             if (!RequireObject(item, itemContext, issues)) continue;
 
+            ValidateActiveEffectDefinitionsIfPresent(
+                item,
+                itemContext,
+                "mortal_world",
+                issues);
+
             if (!HasAnyNonEmptyString(item, "name", "enemyName", "allyName"))
             {
                 issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
@@ -871,14 +877,11 @@ public partial class ValidationService
             RequireString(item, itemContext, issues, "description");
             RequireString(item, itemContext, issues, "type");
             RequireBooleanField(item, itemContext, issues, "isGroup");
-            ValidatePercentageStringField(item, itemContext, issues, "maxHealth", requirePositive: true);
-            RequireString(item, itemContext, issues, "maxPoise");
-            ValidateRequiredNullableStringField(item, itemContext, issues, "currentHealth");
-            ValidateRequiredNullableStringField(item, itemContext, issues, "currentPoise");
             RequireObjectArrayField(item, itemContext, issues, "actions");
             RequireObjectArrayField(item, itemContext, issues, "resistances");
             RequireObjectArrayField(item, itemContext, issues, "activeBuffs");
             RequireObjectArrayField(item, itemContext, issues, "activeDebuffs");
+            ValidateCombatResourceAuthority(item, itemContext, issues);
 
             if (item.TryGetProperty("actions", out var actions))
                 ValidateCombatActionArray(actions, $"{itemContext}.actions", issues, section: "Combat");
@@ -889,104 +892,233 @@ public partial class ValidationService
             if (item.TryGetProperty("activeDebuffs", out var activeDebuffs))
                 ValidateCombatantActiveEffectArray(activeDebuffs, $"{itemContext}.activeDebuffs", issues);
 
-            if (item.TryGetProperty("currentHealth", out var currentHealthNode) &&
-                currentHealthNode.ValueKind == JsonValueKind.String)
-            {
-                ValidatePercentageStringField(item, itemContext, issues, "currentHealth", requirePositive: false);
-            }
-
-            if (item.TryGetProperty("maxPoise", out var maxPoiseNode) &&
-                maxPoiseNode.ValueKind == JsonValueKind.String)
-            {
-                ValidatePercentageStringField(item, itemContext, issues, "maxPoise", requirePositive: true);
-            }
-
-            if (item.TryGetProperty("currentPoise", out var currentPoiseNode) &&
-                currentPoiseNode.ValueKind == JsonValueKind.String)
-            {
-                ValidatePercentageStringField(item, itemContext, issues, "currentPoise", requirePositive: false);
-            }
-
             if (item.TryGetProperty("isGroup", out var isGroup) &&
                 isGroup.ValueKind is JsonValueKind.True)
             {
                 ValidatePositiveIntegerField(item, itemContext, issues, "count");
                 RequireString(item, itemContext, issues, "unitName");
-                ValidateRequiredNullableStringArrayField(item, itemContext, issues, "healthStates");
-                if (!item.TryGetProperty("healthStates", out var healthStates) || healthStates.ValueKind == JsonValueKind.Null)
+                RequireObjectArrayField(item, itemContext, issues, "members");
+                if (item.TryGetProperty("members", out var members) &&
+                    members.ValueKind == JsonValueKind.Array &&
+                    item.TryGetProperty("count", out var countNode) &&
+                    countNode.ValueKind == JsonValueKind.Number &&
+                    countNode.TryGetInt32(out var count) &&
+                    count > 0 &&
+                    members.GetArrayLength() != count)
                 {
                     issues.Add(new ValidationIssue(
-                        $"{itemContext}.healthStates",
+                        $"{itemContext}.members",
                         IssueSeverity.Error,
-                        "Group combatant обязан содержать массив healthStates",
-                        code: "combat_group_missing_health_states",
+                        "Group combatant.members must contain exactly count stable member records.",
+                        code: "combat_group_member_count_mismatch",
                         section: "Combat",
-                        repairHint: "Для isGroup=true передай healthStates[] с состоянием каждого юнита; null недопустим."));
+                        expected: count.ToString(),
+                        actual: members.GetArrayLength().ToString(),
+                        repairHint: "Provide one memberId/memberRef object per exact group member."));
                 }
-                else if (healthStates.ValueKind == JsonValueKind.Array)
-                {
-                    ValidatePercentageStringArrayValues(healthStates, $"{itemContext}.healthStates", issues);
-                    if (item.TryGetProperty("count", out var countNode) &&
-                        countNode.ValueKind == JsonValueKind.Number &&
-                        countNode.TryGetInt32(out var count) &&
-                        count > 0 &&
-                        healthStates.GetArrayLength() != count)
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{itemContext}.healthStates",
-                            IssueSeverity.Error,
-                            "Group combatant.healthStates должен содержать ровно count percentage entries",
-                            code: "combat_group_health_states_count_mismatch",
-                            section: "Combat",
-                            expected: count.ToString(),
-                            actual: healthStates.GetArrayLength().ToString(),
-                            repairHint: "Для isGroup=true заполни healthStates[] состоянием каждого юнита; длина массива должна совпадать с count."));
-                    }
-                }
-                if (item.TryGetProperty("currentHealth", out var currentHealth) && currentHealth.ValueKind != JsonValueKind.Null)
-                {
-                    issues.Add(new ValidationIssue(
-                        $"{itemContext}.currentHealth",
-                        IssueSeverity.Error,
-                        "Group combatant должен передавать currentHealth = null",
-                        code: "combat_group_current_health_must_be_null",
-                        section: "Combat",
-                        repairHint: "Для isGroup=true используй healthStates[] и оставляй currentHealth = null."));
-                }
-
-                if (item.TryGetProperty("currentPoise", out var currentPoise) && currentPoise.ValueKind != JsonValueKind.Null)
-                {
-                    issues.Add(new ValidationIssue(
-                        $"{itemContext}.currentPoise",
-                        IssueSeverity.Error,
-                        "Group combatant должен передавать currentPoise = null",
-                        code: "combat_group_current_poise_must_be_null",
-                        section: "Combat",
-                        repairHint: "Для isGroup=true оставляй currentPoise = null и описывай состояние группы через unitName/healthStates/actions."));
-                }
-            }
-            else if (item.TryGetProperty("currentHealth", out var currentHealth) && currentHealth.ValueKind == JsonValueKind.Null)
-            {
-                issues.Add(new ValidationIssue(
-                    $"{itemContext}.currentHealth",
-                    IssueSeverity.Error,
-                    "Individual combatant не должен передавать currentHealth = null",
-                    code: "combat_individual_current_health_null",
-                    section: "Combat",
-                    repairHint: "Для одиночного combatant передай currentHealth как percentage string; null допустим только для групп."));
-            }
-            else if (item.TryGetProperty("currentPoise", out var currentPoise) && currentPoise.ValueKind == JsonValueKind.Null)
-            {
-                issues.Add(new ValidationIssue(
-                    $"{itemContext}.currentPoise",
-                    IssueSeverity.Error,
-                    "Individual combatant не должен передавать currentPoise = null",
-                    code: "combat_individual_current_poise_null",
-                    section: "Combat",
-                    repairHint: "Для одиночного combatant передай currentPoise как строку текущей стойкости; null допустим только для групп."));
             }
         }
     }
+
+    private static void ValidateCombatResourceAuthority(
+        JsonElement combatant,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        RejectLegacyCombatResourceFields(combatant, context, issues);
+        var isGroup = combatant.TryGetProperty("isGroup", out var groupNode) &&
+                      groupNode.ValueKind == JsonValueKind.True;
+        if (isGroup)
+        {
+            RejectUnexpectedResourceMaterialization(combatant, context, issues);
+            if (!combatant.TryGetProperty("members", out var members) ||
+                members.ValueKind != JsonValueKind.Array)
+            {
+                return;
+            }
+
+            var memberIndex = 0;
+            foreach (var member in members.EnumerateArray())
+            {
+                var memberContext = $"{context}.members[{memberIndex++}]";
+                if (member.ValueKind != JsonValueKind.Object)
+                    continue;
+                RejectLegacyCombatResourceFields(member, memberContext, issues);
+                ValidateCombatGroupMemberResourceAuthority(
+                    member,
+                    memberContext,
+                    issues);
+            }
+            return;
+        }
+
+        var hasMemberId = HasNonNullProperty(combatant, "memberId");
+        var hasMemberRef = HasNonNullProperty(combatant, "memberRef");
+        if (hasMemberId || hasMemberRef)
+        {
+            ValidateCombatGroupMemberResourceAuthority(
+                combatant,
+                context,
+                issues);
+            return;
+        }
+
+        var hasNpcId = HasExactString(combatant, "NPCId");
+        var hasNpcRef = HasExactString(combatant, "npcRef");
+        var hasCombatantId = HasExactString(combatant, "combatantId");
+        var hasCombatantRef = HasExactString(combatant, "combatantRef");
+        var hasNamedNpcAuthority = hasNpcId || hasNpcRef;
+        if (hasNamedNpcAuthority)
+        {
+            if (hasNpcId == hasNpcRef || hasCombatantId || hasCombatantRef)
+            {
+                issues.Add(new ValidationIssue(
+                    context,
+                    IssueSeverity.Error,
+                    "Named NPC combat resource owner requires exactly one NPC selector and no combat-local identity.",
+                    code: "resource_owner_identity_selector_invalid",
+                    section: "ResourceMaterialization",
+                    expected: "exactly one NPCId or npcRef; combatantId/combatantRef absent",
+                    actual: combatant.GetRawText(),
+                    repairHint: "Use npcRef only while the NPC is created in the same accepted turn; canonical combat rows keep only the exact permanent NPCId."));
+            }
+            RejectUnexpectedResourceMaterialization(combatant, context, issues);
+            return;
+        }
+        ValidateTransientOwnerMaterialization(
+            combatant,
+            context,
+            "combatantRef",
+            "combatantId",
+            issues);
+    }
+
+    private static void ValidateCombatGroupMemberResourceAuthority(
+        JsonElement member,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        var conflictingSelectors = new[]
+            {
+                "NPCId", "npcRef", "combatantId", "combatantRef"
+            }
+            .Where(field => HasNonNullProperty(member, field))
+            .ToArray();
+        if (conflictingSelectors.Length > 0)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Combat-group member resource owner cannot also claim an NPC or anonymous-combatant identity.",
+                code: "resource_owner_identity_selector_invalid",
+                section: "ResourceMaterialization",
+                expected: "exactly one memberId or memberRef; NPCId/npcRef/combatantId/combatantRef absent or NPCId null on a detached row",
+                actual: member.GetRawText(),
+                repairHint: "Keep the exact memberId while moving a member between nested and detached carriers; never allocate a second combat identity."));
+        }
+
+        ValidateTransientOwnerMaterialization(
+            member,
+            context,
+            "memberRef",
+            "memberId",
+            issues);
+    }
+
+    private static bool HasNonNullProperty(
+        JsonElement owner,
+        string propertyName) =>
+        owner.TryGetProperty(propertyName, out var value) &&
+        value.ValueKind != JsonValueKind.Null;
+
+    private static void ValidateTransientOwnerMaterialization(
+        JsonElement owner,
+        string context,
+        string refField,
+        string idField,
+        List<ValidationIssue> issues)
+    {
+        var hasRef = HasExactString(owner, refField);
+        var hasId = HasExactString(owner, idField);
+        if (hasRef == hasId)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Combat resource owner requires exactly one temporary ref or permanent ID.",
+                code: "resource_owner_identity_selector_invalid",
+                section: "ResourceMaterialization",
+                expected: $"exactly one {refField} or {idField}",
+                actual: owner.GetRawText(),
+                repairHint: "Use the temporary ref only for same-turn creation; canonical owners keep only the client-owned permanent ID."));
+            return;
+        }
+
+        var hasEnvelope = owner.TryGetProperty("resourceMaterialization", out var envelope);
+        if (hasRef && (!hasEnvelope || envelope.ValueKind != JsonValueKind.Object))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.resourceMaterialization",
+                IssueSeverity.Error,
+                "New combat resource owner requires one typed materialization envelope.",
+                code: "resource_owner_materialization_required",
+                section: "ResourceMaterialization",
+                expected: "closed resourceMaterialization object",
+                actual: hasEnvelope ? envelope.ValueKind.ToString() : "missing",
+                repairHint: "Provide health/poise maxima in resourceMaterialization.resources; do not author current values."));
+        }
+        else if (hasId && hasEnvelope)
+        {
+            RejectUnexpectedResourceMaterialization(owner, context, issues);
+        }
+    }
+
+    private static void RejectUnexpectedResourceMaterialization(
+        JsonElement owner,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!owner.TryGetProperty("resourceMaterialization", out var envelope))
+            return;
+        issues.Add(new ValidationIssue(
+            $"{context}.resourceMaterialization",
+            IssueSeverity.Error,
+            "Only a same-turn anonymous combat owner may submit resourceMaterialization.",
+            code: "resource_owner_materialization_existing_forbidden",
+            section: "ResourceMaterialization",
+            expected: "field absent",
+            actual: envelope.GetRawText(),
+            repairHint: "Use resourceCapacityChanges for an existing owner; never resend initialization authority."));
+    }
+
+    private static void RejectLegacyCombatResourceFields(
+        JsonElement owner,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        foreach (var field in new[]
+                 {
+                     "currentHealth", "maxHealth", "currentPoise", "maxPoise", "healthStates"
+                 })
+        {
+            if (!owner.TryGetProperty(field, out var value))
+                continue;
+            issues.Add(new ValidationIssue(
+                $"{context}.{field}",
+                IssueSeverity.Error,
+                "Legacy combat resource values are forbidden after the unified-ledger cutover.",
+                code: "resource_owner_legacy_value_forbidden",
+                section: "ResourceMaterialization",
+                expected: "field absent; unified resource ledger is authoritative",
+                actual: value.GetRawText(),
+                repairHint: "For a new owner provide only resourceMaterialization maxima; mutate existing resources through resourceChanges/resourceCapacityChanges."));
+        }
+    }
+
+    private static bool HasExactString(JsonElement value, string propertyName) =>
+        value.TryGetProperty(propertyName, out var property) &&
+        property.ValueKind == JsonValueKind.String &&
+        ResourceMaterializationContract.IsExactIdentifier(property.GetString());
 
 
     private void ValidateCombatLog(JsonElement root, string contextPrefix, List<ValidationIssue> issues)

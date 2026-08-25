@@ -9,7 +9,6 @@ public static class FileMapping
     {
         // CORE
         ["playerStatus"] = "game_state/core/player_status.json",
-        ["currentPoiseChange"] = "game_state/core/player_status.json",
 
         // PLAYER CHARACTER
         ["activeSkillChanges"] = "game_state/player/skills_active.json",
@@ -17,12 +16,15 @@ public static class FileMapping
         ["passiveSkillChanges"] = "game_state/player/skills_passive.json",
         ["removePassiveSkills"] = "game_state/player/skills_passive.json",
         ["skillMasteryChanges"] = "game_state/player/skill_mastery.json",
-        ["playerActiveEffectsChanges"] = "game_state/player/effects.json",
+        ["effectChanges"] = "game_state/effects/effect_commands.json",
+        ["effectResolutionReceipts"] = "game_state/effects/effect_commands.json",
+        ["effectEventReports"] = "game_state/effects/effect_commands.json",
+        ["resourceDefinitionCreations"] = "game_state/resources/resource_commands.json",
+        ["resourceCapacityChanges"] = "game_state/resources/resource_commands.json",
+        ["resourceChanges"] = "game_state/resources/resource_commands.json",
         ["calculatedWeightData"] = "game_state/player/weight_calc.json",
         ["statsIncreased"] = "game_state/player/status_changes.json",
         ["statsDecreased"] = "game_state/player/status_changes.json",
-        ["currentEnergyChange"] = "game_state/player/status_changes.json",
-        ["currentHealthChange"] = "game_state/player/status_changes.json",
         ["moneyChange"] = "game_state/player/status_changes.json",
         ["experienceGained"] = "game_state/player/experience.json",
         ["playerEffortTrackerChange"] = "game_state/player/experience.json",
@@ -41,7 +43,6 @@ public static class FileMapping
 
         // INVENTORY SYSTEM
         ["UpdateInventory"] = "game_state/inventory/items.json",
-        ["inventoryItemsResources"] = "game_state/inventory/item_resources.json",
         ["updateItemTextContents"] = "game_state/inventory/item_text_updates.json",
         ["moveInventoryItems"] = "game_state/inventory/item_movements.json",
         ["removeInventoryItems"] = "game_state/inventory/item_removals.json",
@@ -81,7 +82,6 @@ public static class FileMapping
         ["NPCPassiveSkillChanges"] = "game_state/npcs/npc_skills.json",
         ["NPCSkillMasteryChanges"] = "game_state/npcs/npc_skills.json",
         ["NPCPassiveSkillMasteryChanges"] = "game_state/npcs/npc_skills.json",
-        ["NPCEffectChanges"] = "game_state/npcs/npc_effects.json",
         ["NPCWoundChanges"] = "game_state/npcs/npc_effects.json",
         ["NPCRelationshipChanges"] = "game_state/npcs/npc_relationships.json",
         ["interNPCRelationshipChanges"] = "game_state/npcs/npc_relationships.json",
@@ -92,7 +92,6 @@ public static class FileMapping
         ["NPCInventoryUpdates"] = "game_state/npcs/npc_inventory.json",
         ["NPCInventoryRemovals"] = "game_state/npcs/npc_inventory.json",
         ["NPCEquipmentChanges"] = "game_state/npcs/npc_inventory.json",
-        ["NPCInventoryResourcesChanges"] = "game_state/npcs/npc_inventory.json",
         ["NPCMaskAdds"] = "game_state/npcs/npc_masks.json",
         ["NPCMaskUpdates"] = "game_state/npcs/npc_masks.json",
         ["NPCMaskRemovals"] = "game_state/npcs/npc_masks.json",

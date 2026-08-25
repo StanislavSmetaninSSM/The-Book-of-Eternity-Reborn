@@ -7,6 +7,31 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class MortalLocationMaterializationContractTests
 {
+    [Fact]
+    public void ValidateRawLocation_MalformedHazardDefinitionFailsAtOwnerBoundary()
+    {
+        var location = MortalLocationTestFixture.CreateRawLocation();
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition.Remove("removal");
+        location["hazards"] = new JsonArray(new JsonObject
+        {
+            ["hazardId"] = "hazard_test_blood_mist",
+            ["name"] = "Кровавый туман",
+            ["status"] = "active",
+            ["activeEffectDefinitions"] = new JsonArray(definition)
+        });
+        using var document = JsonDocument.Parse(location.ToJsonString());
+
+        var issues = MortalLocationMaterializationContract.ValidateRawLocation(
+            document.RootElement,
+            "worldMapUpdates.newLocations[0]",
+            "world_map_creation");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_definition_missing_field" &&
+            issue.FilePath.Contains("hazards[0]", StringComparison.Ordinal));
+    }
+
     private const string Context = "worldMapUpdates.newLocations[0]";
     private const string TargetLocationId = "loc_test_watchtower";
 

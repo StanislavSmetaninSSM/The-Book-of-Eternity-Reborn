@@ -582,7 +582,10 @@ public sealed partial class MortalLocationMaterializationValidationTests
 
         var modified = await distributor.DistributeAsync(response);
         Assert.Contains(MortalLocationMaterializationContract.WorldMapPath, modified);
-        await context.Normalizer.NormalizeMortalLocationsAsync(backups);
+        await using var writeLease = await context.FileSystem
+            .AcquireCanonicalWriteLeaseAsync();
+        await context.Normalizer.BindTo(writeLease)
+            .NormalizeMortalLocationsAsync(backups);
 
         var finalMap = (await context.ReadJsonAsync(
             MortalLocationMaterializationContract.WorldMapPath))!.AsObject();

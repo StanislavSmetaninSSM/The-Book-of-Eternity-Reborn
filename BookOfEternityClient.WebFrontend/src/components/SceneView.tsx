@@ -9,6 +9,7 @@ import { formatWorldTimeForPlayer } from '../utils/formatters';
 import { browserUiAssets } from '../browserUiAssets';
 import { RuneFrame } from './decorative';
 import { staggerContainer, fadeUp } from '../lib/motion';
+import { QteScenePanel } from './QteScenePanel';
 
 type ScenePostId = 'scene-narrative';
 
@@ -18,7 +19,7 @@ const minPostScale = 0.7;
 const maxPostScale = 2.4;
 
 export function SceneView() {
-  const { readyState, isCommandView, executeCommand } = useShell();
+  const { readyState, isCommandView, executeCommand, loadBrowserState } = useShell();
 
   if (isCommandView) {
     return <CommandResultView />;
@@ -33,12 +34,13 @@ export function SceneView() {
     );
   }
 
-  return <SceneContent game={game} onCommand={executeCommand} />;
+  return <SceneContent game={game} onCommand={executeCommand} onAuthoritativeQteStateChanged={loadBrowserState} />;
 }
 
-function SceneContent({ game, onCommand }: {
+function SceneContent({ game, onCommand, onAuthoritativeQteStateChanged }: {
   game: NonNullable<ReturnType<typeof useShell>['gameScreen']>;
   onCommand: (cmd: string) => Promise<void>;
+  onAuthoritativeQteStateChanged: () => Promise<void>;
 }) {
   const { clientSettings } = useShell();
   const reducedMotion = Boolean(clientSettings?.accessibility.reducedMotion);
@@ -71,6 +73,12 @@ function SceneContent({ game, onCommand }: {
         loading={sceneImage.loading}
         reducedMotion={reducedMotion}
       />
+
+      {shouldShowQteScenePanel(game.qte) && (
+        <motion.div className="scene-qte-surface" variants={fadeUp}>
+          <QteScenePanel qte={game.qte} onAuthoritativeStateChanged={onAuthoritativeQteStateChanged} />
+        </motion.div>
+      )}
 
       <motion.article
         className="scene-narrative scene-post"
@@ -175,4 +183,10 @@ function ScenePostTextScaleControls({ scale, onDecrease, onReset, onIncrease }: 
 
 function clampPostScale(scale: number): number {
   return Math.min(maxPostScale, Math.max(minPostScale, Number(scale.toFixed(2))));
+}
+
+function shouldShowQteScenePanel(qte: NonNullable<ReturnType<typeof useShell>['gameScreen']>['qte']): boolean {
+  const state = qte.state.trim().toLowerCase();
+  return Boolean(qte.offer || qte.activeScene || qte.resolution || qte.completion || qte.error)
+    || !['', 'noscene', 'none', 'idle'].includes(state);
 }

@@ -432,8 +432,6 @@ internal static partial class ShiningAbodeState
     {
         return new JsonObject
         {
-            ["chargesPerReturn"] = 1,
-            ["chargesUsedThisReturn"] = 0,
             ["currentReturnCycleId"] = string.Empty,
             ["gachaHistory"] = new JsonArray()
         };
@@ -1265,17 +1263,51 @@ internal static partial class ShiningAbodeState
             if (card is not JsonObject cardObject)
                 return $"{path} содержит повреждённую blessing-card запись и не может authorise actionable Shining mode.";
 
+            var effectFamily = GetNodeString(cardObject["effectFamily"]);
             if (string.IsNullOrWhiteSpace(GetNodeString(cardObject["cardId"])) ||
                 !IsSupportedCardSourceType(GetNodeString(cardObject["sourceType"])) ||
-                !IsSupportedEffectFamily(GetNodeString(cardObject["effectFamily"])) ||
+                !IsSupportedEffectFamily(effectFamily) ||
                 !IsSupportedRarity(GetNodeString(cardObject["rarity"])) ||
-                cardObject["effectPayload"] is not JsonObject)
+                cardObject["effectPayload"] is not JsonObject effectPayload)
             {
                 return $"{path} содержит повреждённую blessing-card запись и не может authorise actionable Shining mode.";
             }
+
+            var allocationIssue = ValidateBlessingRerollAllocation(
+                effectPayload,
+                effectFamily,
+                $"{path}.{GetNodeString(cardObject["cardId"])}.effectPayload");
+            if (!string.IsNullOrWhiteSpace(allocationIssue))
+                return allocationIssue;
         }
 
         return null;
+    }
+
+    private static string? ValidateBlessingRerollAllocation(
+        JsonObject effectPayload,
+        string? effectFamily,
+        string path)
+    {
+        if (effectPayload.ContainsKey("rerolls") || effectPayload.ContainsKey("rerollsSpent"))
+            return $"{path} содержит запрещённый numeric rerolls mirror; используй только client-generated rerollAllocation.";
+
+        if (!effectPayload.TryGetPropertyValue(
+                ShiningBlessingRerollAllocationContract.PropertyName,
+                out var allocation))
+        {
+            return null;
+        }
+
+        if (!string.Equals(effectFamily, EffectFamilyMemory, StringComparison.Ordinal) &&
+            !string.Equals(effectFamily, EffectFamilyRelic, StringComparison.Ordinal))
+        {
+            return $"{path}.rerollAllocation допустим только для memory или relic blessing card.";
+        }
+
+        return ShiningBlessingRerollAllocationContract.TryRead(allocation, out _)
+            ? null
+            : $"{path}.rerollAllocation должен быть exact object {{ resourceKey: blessing_rerolls, amount: non-negative integer }}.";
     }
 
     private static string? ValidateRawBlessingIdArray(JsonNode? node, string path)

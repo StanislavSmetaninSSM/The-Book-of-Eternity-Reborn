@@ -108,7 +108,11 @@ internal sealed class LiveTurnPreparationService
             SystemReminder = "Prepared by the live-test prepare-turn helper. Use this request as an ordinary player turn and keep all writes inside the game session contract."
         };
         request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
-            .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, currentRealm);
+            .BuildAsync(
+                writeLease,
+                request.TurnNumber,
+                request.PreGeneratedDices1d20,
+                currentRealm);
 
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

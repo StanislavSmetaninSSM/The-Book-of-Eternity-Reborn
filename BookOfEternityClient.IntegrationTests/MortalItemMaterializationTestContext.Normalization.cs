@@ -18,6 +18,15 @@ internal sealed partial class MortalItemMaterializationTestContext
         }
     }
 
+    internal async Task<IReadOnlyList<ValidationIssue>>
+        ValidateAcceptedTurnRawMaterializationAsync()
+    {
+        var issues = new List<ValidationIssue>();
+        issues.AddRange(await Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync());
+        issues.AddRange(await Validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
+        return issues;
+    }
+
     internal async Task<IReadOnlyList<ValidationIssue>> NormalizeAcceptedTurnWithIssuesAsync()
     {
         var manifest = await ReadJsonAsync(

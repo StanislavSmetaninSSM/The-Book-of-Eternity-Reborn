@@ -26,7 +26,7 @@ public sealed partial class MortalItemMaterializationValidationTests
         await context.ArrangeEmptyMortalTurnAsync();
         await context.WritePlayerUpdateAsync(MortalItemTestFixture.CreateRawRoot());
 
-        await context.NormalizeAcceptedTurnAsync();
+        await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
         var itemsRoot = (await context.ReadJsonAsync(
             InventoryEquipmentService.ItemsPath))!.AsObject();

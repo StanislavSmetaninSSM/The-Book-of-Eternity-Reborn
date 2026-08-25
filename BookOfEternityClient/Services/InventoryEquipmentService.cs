@@ -69,6 +69,30 @@ public static class InventoryEquipmentService
             return null;
 
         var items = ReadItems(root);
+        var itemScopes = items
+            .Select((item, index) => new ResourceProjectionOwnerScope(
+                new ResourceOwnerKey("mortal_world", ResourceOwnerKind.Item, item.Identity),
+                $"предмет экипировки №{index + 1}",
+                IsOwningPlayer: item.IsCarriedByPlayer))
+            .ToArray();
+        var resourceProjection = writeLease == null
+            ? await ResourceProjectionService.ProjectCanonicalAsync(
+                fs,
+                itemScopes,
+                ResourceProjectionAudience.Player)
+            : await ResourceProjectionService.ProjectCanonicalAsync(
+                fs,
+                writeLease,
+                itemScopes,
+                ResourceProjectionAudience.Player);
+        if (!resourceProjection.IsAvailable)
+            return null;
+        var resourcesByView = resourceProjection.Rows
+            .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+            .ToDictionary(
+                static group => group.Key,
+                static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                StringComparer.Ordinal);
         if (!MortalItemEquipmentAuthority.TryRead(
                 root,
                 root["items"] as JsonArray,
@@ -86,8 +110,12 @@ public static class InventoryEquipmentService
         var occupiedSlots = ReadOccupiedSlots(equipmentState);
 
         var enrichedItems = items
-            .Select(item =>
+            .Select((item, index) =>
             {
+                resourcesByView.TryGetValue($"предмет экипировки №{index + 1}", out var resources);
+                var isBroken = resources?.Any(static row =>
+                    string.Equals(row.ResourceKey, "durability", StringComparison.Ordinal) &&
+                    row.Current == 0m) == true;
                 var equippedSlot = string.Empty;
                 if (!string.IsNullOrWhiteSpace(item.Identity))
                     equippedSlotsByItem.TryGetValue(item.Identity, out equippedSlot);
@@ -97,7 +125,7 @@ public static class InventoryEquipmentService
                         .ToArray()
                     : item.ResolvedSlots;
                 var isEquippable = !item.IsSoulRelic &&
-                                    !item.IsBroken &&
+                                    !isBroken &&
                                     item.IsCarriedByPlayer &&
                                     resolvedSlots.Count > 0 &&
                                     (!item.RequiresTwoHands ||
@@ -108,6 +136,7 @@ public static class InventoryEquipmentService
                 {
                     ResolvedSlot = resolvedSlots.FirstOrDefault() ?? string.Empty,
                     ResolvedSlots = resolvedSlots,
+                    IsBroken = isBroken,
                     IsEquippable = isEquippable,
                     EquippedSlot = equippedSlot ?? string.Empty
                 };
@@ -506,7 +535,7 @@ public static class InventoryEquipmentService
                                      equipmentSlots.Count == 2 &&
                                      equipmentSlots.Contains("MainHand", StringComparer.Ordinal) &&
                                      equipmentSlots.Contains("OffHand", StringComparer.Ordinal);
-        var isBroken = ReadBool(item, "isBroken") || IsZeroPercent(GetString(item, "durability"));
+        const bool isBroken = false;
         var isSoulRelic = IsSoulRelic(item);
         var isCarriedByPlayer = MortalItemLocalActionPolicy.IsCarriedByPlayer(item);
         var isEquippable = !isSoulRelic &&
@@ -621,15 +650,6 @@ public static class InventoryEquipmentService
         obj[propertyName] is JsonValue value &&
         value.TryGetValue<bool>(out var parsed) &&
         parsed;
-
-    private static bool IsZeroPercent(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return false;
-
-        return int.TryParse(value.Replace("%", string.Empty, StringComparison.Ordinal).Trim(), out var parsed) &&
-               parsed == 0;
-    }
 
     private static bool IsSoulRelic(JsonObject item)
         => !string.IsNullOrWhiteSpace(GetString(item, "relicId"));

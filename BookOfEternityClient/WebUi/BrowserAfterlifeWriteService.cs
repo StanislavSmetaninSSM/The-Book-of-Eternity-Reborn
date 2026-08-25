@@ -997,7 +997,14 @@ public sealed class BrowserAfterlifeWriteService
             writeLease,
             owner,
             "Инвестиция в сияющую фракцию",
-            [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath, SoulStatePath],
+            [
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                ShiningAbodeState.StatePath,
+                GuardianAbodeResidentState.StatePath,
+                SoulStatePath,
+                ResourceMaterializationContract.StatePath,
+                ResourceMaterializationContract.HistoryPath
+            ],
             async transactionLease =>
             {
                 var shiningRoot = await ReadRequiredObjectAsync(transactionLease, ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
@@ -1373,8 +1380,13 @@ public sealed class BrowserAfterlifeWriteService
 
         if (relicRerollsToCommit > 0)
         {
-            var soulRoot = await TryReadObjectSafeAsync(SoulStatePath);
-            if (ShiningBlessingEffectState.GetPendingRelicRerolls(soulRoot) < relicRerollsToCommit)
+            var soulRoot = await TryReadObjectSafeAsync(boundLease, SoulStatePath);
+            var rerollProjection = await ResourceProjectionService.ProjectRelicRerollsAsync(
+                _fs,
+                boundLease,
+                soulRoot);
+            if (!TryGetAvailableProjectedRerolls(rerollProjection, out var availableRerolls) ||
+                availableRerolls < relicRerollsToCommit)
             {
                 return BrowserPromptWriteResult.Failed(
                     CommandExecutionState.Blocked,
@@ -1414,7 +1426,12 @@ public sealed class BrowserAfterlifeWriteService
                 if (relicChoice == null)
                     throw new InvalidOperationException("Выбранная реликвия больше не доступна душе. Откройте ковку заново.");
 
-                if (relicRerollsToCommit > ShiningBlessingEffectState.GetPendingRelicRerolls(soulRoot))
+                var rerollProjection = await ResourceProjectionService.ProjectRelicRerollsAsync(
+                    _fs,
+                    writeLease,
+                    soulRoot);
+                if (!TryGetAvailableProjectedRerolls(rerollProjection, out var availableRerolls) ||
+                    relicRerollsToCommit > availableRerolls)
                     throw new InvalidOperationException("Право на переброс реликвии уже недоступно. Откройте ковку заново.");
 
                 if (!ShiningAbodeState.TryQuoteForgeAction(
@@ -1798,7 +1815,13 @@ public sealed class BrowserAfterlifeWriteService
             boundLease,
             owner,
             "Browser spiritual art upgrade",
-            [SoulStatePath, ShiningAbodeState.StatePath, AfterlifeEntityProfileState.StatePath],
+            [
+                SoulStatePath,
+                ShiningAbodeState.StatePath,
+                AfterlifeEntityProfileState.StatePath,
+                ResourceMaterializationContract.StatePath,
+                ResourceMaterializationContract.HistoryPath
+            ],
             async writeLease =>
             {
                 var blocker = await TryDescribeSpiritualArtUpgradeBlockerAsync(writeLease);
@@ -1818,11 +1841,44 @@ public sealed class BrowserAfterlifeWriteService
                 if (!result.Success)
                     throw new InvalidOperationException(result.Message);
 
-                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);
-                if (currency == "light_sparks" && shiningRoot != null)
-                    await WriteObjectAsync(writeLease, ShiningAbodeState.StatePath, shiningRoot);
-                if (targetIsSpecialArt && entityProfilesRoot != null)
-                    await WriteObjectAsync(writeLease, AfterlifeEntityProfileState.StatePath, entityProfilesRoot);
+                if (targetIsSpiritFocus)
+                {
+                    var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+                        _fs,
+                        writeLease,
+                        new AfterlifeOwnerResourceAcceptedState(
+                            SoulState: soulRoot,
+                            ShiningAbode: currency == "light_sparks"
+                                ? shiningRoot
+                                : null),
+                        Math.Max(1, _stateManager.CurrentState.TurnNumber + 1));
+                    if (!resourcePlan.IsValid)
+                    {
+                        throw new InvalidOperationException(
+                            "Единый ресурсный план Средоточия Души не прошёл проверку.");
+                    }
+                    if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                            _fs,
+                            writeLease,
+                            resourcePlan))
+                    {
+                        throw new InvalidOperationException(
+                            "Owner-state или ресурсный ledger изменились во время прокачки Средоточия Души.");
+                    }
+                }
+                else
+                {
+                    await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);
+                    if (currency == "light_sparks" && shiningRoot != null)
+                        await WriteObjectAsync(writeLease, ShiningAbodeState.StatePath, shiningRoot);
+                    if (targetIsSpecialArt && entityProfilesRoot != null)
+                    {
+                        await WriteObjectAsync(
+                            writeLease,
+                            AfterlifeEntityProfileState.StatePath,
+                            entityProfilesRoot);
+                    }
+                }
                 await _stateManager.RefreshGameStateAsync(writeLease);
             },
             "Духовное искусство прокачано",
@@ -3790,6 +3846,26 @@ public sealed class BrowserAfterlifeWriteService
     {
         var text = ReadAnswer(answers, key);
         return int.TryParse(text, out var value) ? value : fallback;
+    }
+
+    private static bool TryGetAvailableProjectedRerolls(
+        ResourceProjectionResult projection,
+        out int rerolls)
+    {
+        rerolls = 0;
+        var row = projection.Rows.SingleOrDefault(static candidate =>
+            string.Equals(candidate.ResourceKey, "blessing_rerolls", StringComparison.Ordinal));
+        if (!projection.IsAvailable ||
+            row is not { State: ResourceLifecycleState.Active } ||
+            row.Current < 0m ||
+            row.Current > int.MaxValue ||
+            decimal.Truncate(row.Current) != row.Current)
+        {
+            return false;
+        }
+
+        rerolls = decimal.ToInt32(row.Current);
+        return true;
     }
 
     private static bool ReadBoolAnswer(IReadOnlyDictionary<string, JsonNode?> answers, string key)

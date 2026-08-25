@@ -27,7 +27,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ActualEvidence: "sourceAuthority.authorityId=missing",
             RequiredCompanionTargets: new[]
             {
-                "game_state/inventory/item_resources.json"
+                "game_state/inventory/item_bonds.json"
             });
         var materializationIssue = new ValidationIssue(
             "game_state/inventory/items.json.UpdateInventory[0].materialization.sections.mechanics",
@@ -42,7 +42,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             repairTargetFiles: new[]
             {
                 "game_state/inventory/items.json",
-                "game_state/inventory/item_resources.json"
+                "game_state/inventory/item_bonds.json"
             });
         materializationIssue.MortalItemRepairContext = context;
         var protectedIssue = new ValidationIssue(
@@ -97,7 +97,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(
             new[]
             {
-                "game_state/inventory/item_resources.json",
+                "game_state/inventory/item_bonds.json",
                 "game_state/inventory/items.json"
             },
             packet.GetProperty("targetFiles")
@@ -109,7 +109,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 .EnumerateArray()
                 .Select(value => value.GetString()));
         Assert.Equal(
-            new[] { "game_state/inventory/item_resources.json" },
+            new[] { "game_state/inventory/item_bonds.json" },
             packet.GetProperty("requiredCompanionTargets")
                 .EnumerateArray()
                 .Select(value => value.GetString()));

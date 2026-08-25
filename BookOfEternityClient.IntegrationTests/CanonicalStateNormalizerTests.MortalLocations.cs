@@ -72,7 +72,10 @@ public sealed partial class CanonicalStateNormalizerTests
             MortalLocationMaterializationContract.CurrentLocationPath,
             new JsonObject { ["currentLocationData"] = raw });
 
-        await context.Normalizer.NormalizeMortalLocationsAsync(backups);
+        await using var writeLease = await context.FileSystem
+            .AcquireCanonicalWriteLeaseAsync();
+        await context.Normalizer.BindTo(writeLease)
+            .NormalizeMortalLocationsAsync(backups);
 
         var map = (await context.ReadJsonAsync(
             MortalLocationMaterializationContract.WorldMapPath))!.AsObject();
@@ -151,7 +154,10 @@ public sealed partial class CanonicalStateNormalizerTests
                 }
             });
 
-        await context.Normalizer.NormalizeMortalLocationsAsync(backups);
+        await using var writeLease = await context.FileSystem
+            .AcquireCanonicalWriteLeaseAsync();
+        await context.Normalizer.BindTo(writeLease)
+            .NormalizeMortalLocationsAsync(backups);
 
         var map = (await context.ReadJsonAsync(
             MortalLocationMaterializationContract.WorldMapPath))!.AsObject();
@@ -214,7 +220,10 @@ public sealed partial class CanonicalStateNormalizerTests
         };
         await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, map);
 
-        await context.Normalizer.NormalizeMortalLocationsAsync(backups);
+        await using var writeLease = await context.FileSystem
+            .AcquireCanonicalWriteLeaseAsync();
+        await context.Normalizer.BindTo(writeLease)
+            .NormalizeMortalLocationsAsync(backups);
 
         var acceptedCurrent = (await context.ReadJsonAsync(
             MortalLocationMaterializationContract.CurrentLocationPath))!.AsObject();

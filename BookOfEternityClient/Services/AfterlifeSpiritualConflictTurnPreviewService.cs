@@ -20,13 +20,49 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
         if (!IsAfterlifeRealm(currentRealm))
             return null;
 
-        var conflictRoot = await ReadJsonObjectAsync(AfterlifeSpiritualConflictState.StatePath);
+        await using var readLease = await _fs.AcquireCanonicalWriteLeaseAsync(
+            CanonicalWritePurpose.PublicationReadQuiescence);
+        return await BuildAsync(
+            readLease,
+            turnNumber,
+            preGeneratedDices1d20,
+            currentRealm);
+    }
+
+    internal async Task<JsonObject?> BuildAsync(
+        FileSystemManager.CanonicalWriteLease readLease,
+        int turnNumber,
+        int[]? preGeneratedDices1d20,
+        string? currentRealm)
+    {
+        ArgumentNullException.ThrowIfNull(readLease);
+        _fs.EnsureCanonicalWriteLeaseActive(readLease);
+        if (!IsAfterlifeRealm(currentRealm))
+            return null;
+
+        var conflictRoot = await ReadJsonObjectAsync(
+            readLease,
+            AfterlifeSpiritualConflictState.StatePath);
         if (conflictRoot?["activeConflict"] is not JsonObject activeConflict)
             return null;
 
-        var soulRoot = await ReadJsonObjectAsync("game_state/meta/soul_state.json");
-        var profilesRoot = await ReadJsonObjectAsync(AfterlifeEntityProfileState.StatePath);
-        var settingsRoot = await ReadJsonObjectAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath);
+        var soulRoot = await ReadJsonObjectAsync(
+            readLease,
+            "game_state/meta/soul_state.json");
+        var profilesRoot = await ReadJsonObjectAsync(
+            readLease,
+            AfterlifeEntityProfileState.StatePath);
+        var settingsRoot = await ReadJsonObjectAsync(
+            readLease,
+            AfterlifeSpiritualConflictState.DifficultySettingsPath);
+        var actionPoints = await ResolveActionPointProjectionAsync(
+            readLease,
+            activeConflict);
+        if (actionPoints == null)
+            return null;
+        var mechanics = await EffectMechanicsSnapshot.LoadAsync(_fs, readLease);
+        if (!mechanics.IsAccepted)
+            return null;
 
         var playerTiers = ReadTierMap(soulRoot?[AfterlifeSpiritualConflictState.SoulStateProfileProperty]?["artTiers"] as JsonObject);
         var oppositionLead = activeConflict["oppositionSide"]?["leadContestant"] as JsonObject;
@@ -52,8 +88,8 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
             ["sideModel"] = AfterlifeSpiritualConflictState.GetNodeString(activeConflict["sideModel"]) ?? "unknown",
             ["conflictPosition"] = conflictPosition,
             ["resolutionState"] = AfterlifeSpiritualConflictState.GetNodeString(activeConflict["resolutionState"]) ?? "active",
-            ["playerActionEconomy"] = CloneObject(activeConflict["actionEconomy"]?["player"] as JsonObject),
-            ["oppositionActionEconomy"] = CloneObject(activeConflict["actionEconomy"]?["opposition"] as JsonObject),
+            ["playerActionPoints"] = actionPoints.Value.Player,
+            ["oppositionActionPoints"] = actionPoints.Value.Opposition,
             ["playerActionCosts"] = BuildActionCosts(playerTiers, null, "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers"),
             ["opposition"] = new JsonObject
             {
@@ -70,10 +106,14 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
                     oppositionSnapshotTiers,
                     "game_state/meta/afterlife_entity_profiles.json.standardArts")
             },
+            ["conditionMechanics"] = BuildConditionMechanics(
+                mechanics,
+                activeConflict),
             ["dicePreview"] = BuildDicePreview(preGeneratedDices1d20, conflictPosition, difficultyDefinition),
             ["authoringReminders"] = new JsonArray
             {
                 "Copy actionCostAudit artTier/baseCost/minCost/effectiveCost from this preview for current/new exchanges; do not guess spiritual art tiers.",
+                "Read conditionMechanics.contributions from the accepted effect snapshot; apply each condition only through its exact affectedOperations/mechanicalAxes and cite conditionId in the matching conflict audit. Never rewrite combatConditions directly.",
                 "Use dicePreview.withMandatoryModifiers.outcomeBand as the expected outcomeBand when the first opposed dice pair and listed mandatory modifiers are used.",
                 "If you choose different valid modifiers, recompute playerTotal/oppositionTotal/margin before writing outcomeBand; validators recompute this deterministically.",
                 "Do not rewrite historical exchangeLog entries from earlier turns to fit the current preGeneratedDices1d20 pool."
@@ -83,9 +123,114 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
         return preview;
     }
 
-    private async Task<JsonObject?> ReadJsonObjectAsync(string relativePath)
+    internal static JsonObject BuildConditionMechanics(
+        EffectMechanicsSnapshot snapshot,
+        JsonObject activeConflict)
     {
-        var json = await _fs.ReadFileAsync(relativePath);
+        ArgumentNullException.ThrowIfNull(snapshot);
+        ArgumentNullException.ThrowIfNull(activeConflict);
+        if (!snapshot.IsAccepted)
+            throw new InvalidOperationException(
+                "Spiritual conflict mechanics require one accepted effect mechanics snapshot.");
+
+        var conflictId = AfterlifeSpiritualConflictState.GetNodeString(
+            activeConflict["conflictId"]);
+        var rawRealm = AfterlifeSpiritualConflictState.GetNodeString(
+            activeConflict["realm"]);
+        var hasRealm = AfterlifeEntityProfileState.TryNormalizeEffectRealm(
+            rawRealm,
+            out var realm);
+        var contributions = new JsonArray();
+        if (!string.IsNullOrWhiteSpace(conflictId) && hasRealm)
+        {
+            foreach (var component in snapshot.Components
+                         .Where(static component => string.Equals(
+                             component.Profile,
+                             "afterlife_combat_condition",
+                             StringComparison.Ordinal))
+                         .Where(component => string.Equals(
+                             component.Realm,
+                             realm,
+                             StringComparison.Ordinal))
+                         .OrderBy(static component => component.Priority)
+                         .ThenBy(static component => component.EffectId, StringComparer.Ordinal)
+                         .ThenBy(static component => component.ComponentId, StringComparer.Ordinal))
+            {
+                var payload = component.Payload;
+                if (!TryReadExact(payload, "targetSide", out var targetSide) ||
+                    !string.Equals(
+                        component.TargetKind,
+                        "spiritual_conflict_side",
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        component.TargetId,
+                        conflictId + ":" + targetSide,
+                        StringComparison.Ordinal) ||
+                    !TryReadExact(payload, "actorId", out var actorId) ||
+                    !TryReadExact(payload, "conditionKind", out var conditionKind) ||
+                    !TryReadExact(payload, "payoff", out var payoff))
+                {
+                    continue;
+                }
+
+                contributions.Add(new JsonObject
+                {
+                    ["conditionId"] = component.EffectId,
+                    ["componentId"] = component.ComponentId,
+                    ["priority"] = component.Priority,
+                    ["targetSide"] = targetSide,
+                    ["targetActorId"] = actorId,
+                    ["conditionKind"] = conditionKind,
+                    ["affectedOperations"] = ClonePayloadNode(payload, "operations"),
+                    ["mechanicalAxes"] = ClonePayloadNode(payload, "axes"),
+                    ["counterplay"] = ClonePayloadNode(payload, "counterplay"),
+                    ["payoff"] = new JsonObject
+                    {
+                        ["sourceType"] = "combat_condition",
+                        ["effect"] = payoff
+                    },
+                    ["currentStacks"] = component.CurrentStacks,
+                    ["isPlayerVisible"] = component.IsPlayerVisible
+                });
+            }
+        }
+
+        return new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["source"] = EffectMechanicsSnapshot.Source,
+            ["isAccepted"] = true,
+            ["contributions"] = contributions
+        };
+    }
+
+    private async Task<(JsonObject Player, JsonObject Opposition)?>
+        ResolveActionPointProjectionAsync(
+            FileSystemManager.CanonicalWriteLease readLease,
+            JsonObject activeConflict)
+    {
+        var result = AfterlifeConflictActionPointProjectionService.Resolve(
+            await _fs.ReadFileAsync(
+                readLease,
+                ResourceMaterializationContract.DefinitionsPath),
+            await _fs.ReadFileAsync(
+                readLease,
+                ResourceMaterializationContract.StatePath),
+            activeConflict);
+        return result.IsValid && result.Projection != null
+            ? (
+                AfterlifeConflictActionPointProjectionService.ToPreviewJson(
+                    result.Projection.Player),
+                AfterlifeConflictActionPointProjectionService.ToPreviewJson(
+                    result.Projection.Opposition))
+            : null;
+    }
+
+    private async Task<JsonObject?> ReadJsonObjectAsync(
+        FileSystemManager.CanonicalWriteLease readLease,
+        string relativePath)
+    {
+        var json = await _fs.ReadFileAsync(readLease, relativePath);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -98,6 +243,32 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
             return null;
         }
     }
+
+    private static bool TryReadExact(
+        JsonElement root,
+        string field,
+        out string value)
+    {
+        value = string.Empty;
+        if (!root.TryGetProperty(field, out var property) ||
+            property.ValueKind != JsonValueKind.String ||
+            property.GetString() is not string text ||
+            text.Length == 0 ||
+            !string.Equals(text, text.Trim(), StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        value = text;
+        return true;
+    }
+
+    private static JsonNode? ClonePayloadNode(
+        JsonElement payload,
+        string field) =>
+        payload.TryGetProperty(field, out var value)
+            ? JsonNode.Parse(value.GetRawText())
+            : null;
 
     private static bool IsAfterlifeRealm(string? currentRealm) =>
         string.Equals(currentRealm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
@@ -340,9 +511,6 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
             ? null
             : $"{actorType.Trim()}:{actorId.Trim()}";
     }
-
-    private static JsonObject? CloneObject(JsonObject? source) =>
-        source?.DeepClone() as JsonObject;
 
     private static bool TryGetInt(JsonNode? node, out int value)
     {

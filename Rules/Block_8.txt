@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="8">
  <title>
   Passive Skills Management (Player &amp; NPC)
@@ -43,6 +44,7 @@
                         },
                         "playerStatBonus": "string_or_null_DEPRECATED_for_display_only",
                         "structuredBonuses": [ /* array_of_structured_bonus_objects_or_null_NEW_PRIMARY_SOURCE */ ],
+                        "activeEffectDefinitions": [ /* complete Effect Materialization v1 definitions or [] */ ],
                         "effectDetails": "detailed_non_combat_effect_description_string_optional",
                         "masteryLevel": "current_mastery_level_integer",
                         "maxMasteryLevel": "maximum_mastery_level_integer",
@@ -94,6 +96,12 @@
                     The 'effects' array MUST contain specific 'effectType', 'value', and 'targetType' to define a measurable combat bonus.
                     The 'actionName' and 'targetPriority' fields are typically not needed. 
                     'duration' is also usually omitted.
+
+                    Effect Materialization v1 source-owner boundary:
+                    - `structuredBonuses` and passive `combatEffect` data remain static, always-on calculation authority. They do not become lifecycle effect instances merely because their prose sounds like a buff or debuff.
+                    - A passive skill that can create a conditional, periodic, triggered, stacked, or removable runtime effect owns complete `activeEffectDefinitions[]` entries following `OtherGuides/Effect_Materialization_Contract.md`.
+                    - A definition does not apply itself. Request an instance only through top-level `effectChanges[]` with `{ "kind": "skill", "sourceId": "<exact-skill-id>", "definitionKey": "<exact-definition-key>" }` (or the exact same-turn sourceRef supplied by the skill materializer), exact target, parameters, accepted eventRef, and reason.
+                    - Never duplicate `structuredBonuses`, `combatEffect`, or a definition into an active-effect carrier; the client materializes and owns `activeEffects[]` plus identity/lifecycle state.
                     
                     Example: 
                     

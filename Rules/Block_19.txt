@@ -361,8 +361,12 @@
                                         "isUnlocked": "boolean_default_false"
                                     }
                                 ],
-                                "currentHealthPercentage": "percentage_string_optional",
-                                "maxHealthPercentage": "percentage_string_optional",
+                                "resourceMaterialization": {
+                                    "resources": [
+                                        { "resourceKey": "health", "maximum": 100 },
+                                        { "resourceKey": "poise", "maximum": 100 }
+                                    ]
+                                },
                                 "factionAffiliations": [
                                     {
                                         "factionId": "guid_of_the_affiliated_faction",
@@ -657,7 +661,7 @@
                                     - "otherNarrativeRewards": (string, optional) Translate.
                                 - "isUnlocked": (boolean) True if conditions are met.
 
-                            19. "currentHealthPercentage", "maxHealthPercentage": (string, optional) If health is tracked outside combat.
+                            19. "resourceMaterialization": one-time new-NPC envelope for exact health/poise resource keys and maxima. The client initializes and strips it; existing NPCs never resend it, and no NPC object stores current/maximum resource values.
 
                             20. "factionAffiliations": (array of objects or null) 
                                 This is a CRITICAL field for tracking an NPC's social and political ties. 
@@ -2436,7 +2440,7 @@
                             When this happens, you MUST:
                             1.  Calculate the effect of the consumption on their custom state (e.g., reduce 'Hunger' value).
                             2.  Report the change to the custom state via 'NPCCustomStateChanges'.
-                            3.  Report the consumption of the item by updating its 'count' or its 'resource' (via 'NPCInventoryResourcesChanges').
+                            3.  If a physical unit is consumed, use the accepted item count/lifecycle command. If an internal reserve is spent, emit resourceChanges against the exact permanent item/resource coordinate; NPC inventory position is not authority.
                             4.  Narrate the action in the 'response' (e.g., "Elara pauses, pulls a piece of dried meat from her pack, and quickly eats it.").
 
                             ]]>

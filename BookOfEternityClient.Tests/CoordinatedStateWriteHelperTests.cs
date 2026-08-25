@@ -67,6 +67,51 @@ public sealed class CoordinatedStateWriteHelperTests : IDisposable
         Assert.Equal(concurrentJson, await _fs.ReadFileAsync(firstPath));
     }
 
+    [Fact]
+    public async Task TryCommitAsync_HoldsCanonicalLeaseAcrossBaselineChecksAndEveryWrite()
+    {
+        const string firstPath = "game_state/meta/coordinated_linear_first.json";
+        const string secondPath = "game_state/meta/coordinated_linear_second.json";
+        const string previousJson = "{\"value\":\"before\"}";
+        const string nextJson = "{\"value\":\"client-next\"}";
+        const string concurrentJson = "{\"value\":\"concurrent-after\"}";
+        await _fs.WriteFileAtomicAsync(firstPath, previousJson);
+        await _fs.WriteFileAtomicAsync(secondPath, previousJson);
+
+        Task? concurrentWrite = null;
+        var concurrentWriteCompletedInsideTransaction = false;
+        var committed = await CoordinatedStateWriteHelper.TryCommitWithHookAsync(
+            _fs,
+            async write =>
+            {
+                if (!string.Equals(write.Path, firstPath, StringComparison.Ordinal))
+                    return;
+
+                concurrentWrite = _fs.WriteFileAtomicAsync(firstPath, concurrentJson);
+                var completed = await Task.WhenAny(
+                    concurrentWrite,
+                    Task.Delay(TimeSpan.FromMilliseconds(150)));
+                concurrentWriteCompletedInsideTransaction = completed == concurrentWrite;
+            },
+            new CoordinatedStateWriteHelper.PlannedWrite(
+                firstPath,
+                previousJson,
+                nextJson,
+                true),
+            new CoordinatedStateWriteHelper.PlannedWrite(
+                secondPath,
+                previousJson,
+                nextJson,
+                true));
+
+        Assert.True(committed);
+        Assert.False(concurrentWriteCompletedInsideTransaction);
+        Assert.NotNull(concurrentWrite);
+        await concurrentWrite!;
+        Assert.Equal(concurrentJson, await _fs.ReadFileAsync(firstPath));
+        Assert.Equal(nextJson, await _fs.ReadFileAsync(secondPath));
+    }
+
     public void Dispose()
     {
         try

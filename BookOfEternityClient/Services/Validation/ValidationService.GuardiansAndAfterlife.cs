@@ -308,33 +308,6 @@ public partial class ValidationService
 
                 case "processGacha":
                     ValidatePositiveNumberField(item, itemContext, issueSink, "inkFeathersSpent");
-                    if (!string.IsNullOrWhiteSpace(guardianId) &&
-                        proposedGuardianState != null &&
-                        proposedGuardianState.CurrentReputation.HasValue)
-                    {
-                        var chargesPerReturn =
-                            GuardianGachaChargeRules.GetChargesPerReturnForReputation(
-                                proposedGuardianState.CurrentReputation.Value,
-                                proposedGuardianState.CurrentAbodePower) +
-                            proposedGuardianState.FounderExtraGachaCharges;
-                        if (proposedGuardianState.ChargesUsedThisReturn >= chargesPerReturn)
-                        {
-                            issueSink.Add(new ValidationIssue(
-                                $"{itemContext}.guardianId",
-                                IssueSeverity.Error,
-                                "processGacha нельзя вызывать для Хранителя без оставшихся charges в текущем return cycle",
-                                code: "guardian_process_gacha_no_remaining_charges",
-                                section: "UpdateGuardians.processGacha",
-                                expected: $"chargesUsedThisReturn < chargesPerReturn ({proposedGuardianState.ChargesUsedThisReturn} < {chargesPerReturn})",
-                                actual: $"chargesUsedThisReturn={proposedGuardianState.ChargesUsedThisReturn}, chargesPerReturn={chargesPerReturn}, currentReputation={proposedGuardianState.CurrentReputation.Value}",
-                                repairHint: "Не эмить processGacha, если у этого Хранителя уже нет оставшихся попыток в текущем возвращении. Используй другого Хранителя или direct /gacha без guardian-mediated command."));
-                        }
-                        else
-                        {
-                            proposedGuardianState.ChargesUsedThisReturn++;
-                        }
-                    }
-
                     if (!item.TryGetProperty("result", out var resultNode) || !RequireObject(resultNode, $"{itemContext}.result", issueSink))
                     {
                         issueSink.Add(new ValidationIssue(
@@ -1318,7 +1291,7 @@ public partial class ValidationService
             return guardian.Clone();
 
         AbodePowerRules.EnsureCanonicalState(guardianObject);
-        GuardianGachaChargeRules.NormalizeGuardianGachaState(guardianObject);
+        GuardianGachaChargeRules.NormalizeGuardianGachaCompanionState(guardianObject);
         GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardianObject);
 
         return CloneJsonObjectToElement(guardianObject);

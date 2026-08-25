@@ -179,6 +179,7 @@ public sealed class BrowserQteMiniGameContractTests : IDisposable
     [Fact]
     public async Task BuildReadOnlyStateAsync_ProjectsReadOnlyScoreStateWithVisibility()
     {
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(_fs);
         await _qte.BeginAcceptedSceneAsync(BuildScoredBrowserOffer(), currentTurnNumber: 12);
 
         var state = await _web.BuildReadOnlyStateAsync();

@@ -18,6 +18,25 @@ public sealed class MortalItemMaterializationContractTests
             MortalItemMaterializationPhase.RawPreSeal));
     }
 
+    [Fact]
+    public void Validate_RawItemRejectsMalformedOwnedEffectDefinition()
+    {
+        var item = MortalItemTestFixture.CreateRawRoot();
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        definition.Remove("removal");
+        item["activeEffectDefinitions"] = new JsonArray(definition);
+        using var document = Parse(item);
+
+        var issues = MortalItemMaterializationContract.Validate(
+            document.RootElement,
+            "items.UpdateInventory[0]",
+            MortalItemMaterializationPhase.RawPreSeal);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_definition_missing_field" &&
+            issue.FilePath == "items.UpdateInventory[0].activeEffectDefinitions[0].removal");
+    }
+
     [Theory]
     [InlineData("materialization.realm", "Shining", "mortal_item_materialization_wrong_realm")]
     [InlineData("materialization.state", "partial", "mortal_item_materialization_invalid_envelope")]

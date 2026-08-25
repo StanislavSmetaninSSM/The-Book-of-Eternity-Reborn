@@ -983,7 +983,9 @@ public sealed class BrowserGenerationFencingSourceTests
             "ApplySpiritualArtsAsync",
             "WriteObjectAsync(writeLease, SoulStatePath, soulRoot)",
             "WriteObjectAsync(writeLease, ShiningAbodeState.StatePath, shiningRoot)",
-            "WriteObjectAsync(writeLease, AfterlifeEntityProfileState.StatePath, entityProfilesRoot)");
+            "AfterlifeOwnerResourceStateService.BuildAsync(",
+            "AfterlifeOwnerResourceStateService.TryCommitAsync(",
+            "AfterlifeEntityProfileState.StatePath");
         AssertAtomicMethod(
             source,
             "ApplyInkFeatherRevealFateAsync",

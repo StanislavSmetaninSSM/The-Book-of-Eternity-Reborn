@@ -27,8 +27,8 @@ public partial class ExplorerMode
             var tradeRequests = await ShiningTradeRequestState.ReadRequestsAsync(_fs);
 
             Clear();
-            Write(BuildShiningOverviewPanel(context.Root, context.ResidentRoot, context.GuardiansRoot));
-            Write(BuildShiningTradeAndForgePanel(context.Root, context.SoulRoot, context.ResidentRoot, tradeRequests));
+            Write(BuildShiningOverviewPanel(context));
+            Write(BuildShiningTradeAndForgePanel(context, tradeRequests));
 
             var choice = Prompt(new SelectionPrompt<string>()
                 .Title("[bold yellow]Торговля и кузня Сияющей Обители[/]")
@@ -356,14 +356,15 @@ public partial class ExplorerMode
     private static string DescribeReturnCycleStatus(string? returnCycleId) =>
         string.IsNullOrWhiteSpace(returnCycleId)
             ? "цикл возвращения не синхронизирован"
-            : $"цикл возвращения «{returnCycleId}»";
+            : "цикл возвращения синхронизирован";
 
     private Panel BuildShiningTradeAndForgePanel(
-        JsonObject shiningRoot,
-        JsonObject? soulRoot,
-        JsonObject? residentRoot,
+        ShiningContext context,
         IReadOnlyList<ShiningTradeRequestState.PendingShiningTradeInventoryRequest> tradeRequests)
     {
+        var shiningRoot = context.Root;
+        var soulRoot = context.SoulRoot;
+        var residentRoot = context.ResidentRoot;
         var lines = new List<string>
         {
             "[bold yellow]⚒ Торговля и кузня[/]",
@@ -371,11 +372,13 @@ public partial class ExplorerMode
         };
 
         var gachaSystem = ShiningAbodeState.EnsureGachaSystemObject(shiningRoot);
-        var chargesPerReturn = GetNodeInt(gachaSystem["chargesPerReturn"]);
-        var remainingCharges = ShiningAbodeState.GetRemainingShiningGachaCharges(shiningRoot);
         var currentReturnCycleId = GetNodeString(gachaSystem["currentReturnCycleId"]) ?? "не синхронизирован";
         var gachaCost = ShiningAbodeState.GetShiningGachaPullCost();
-        lines.Add($"[bold]Сияющая гача:[/] призыв реликвии за {gachaCost.Feathers} 🪶, попыток {remainingCharges}/{chargesPerReturn}, состояние цикла: [dim]{Markup.Escape(DescribeReturnCycleStatus(currentReturnCycleId))}[/]");
+        var gachaAttempts = context.GachaResources.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "gacha_attempts", StringComparison.Ordinal));
+        lines.Add(!context.GachaResources.IsAvailable
+            ? $"[bold]Сияющая гача:[/] [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]"
+            : $"[bold]Сияющая гача:[/] призыв реликвии за {gachaCost.Feathers} 🪶, попыток {(gachaAttempts == null ? "нет данных" : Markup.Escape(ResourceProjectionService.FormatValue(gachaAttempts)))}, состояние цикла: [dim]{Markup.Escape(DescribeReturnCycleStatus(currentReturnCycleId))}[/]");
 
         var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
             .ToList();
@@ -908,6 +911,16 @@ public partial class ExplorerMode
                 "сияющая гача реликвий",
                 ShiningCoreActionRequestState.PendingActionsRequestPath))
             return;
+
+        var gachaAttempts = context.GachaResources.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "gacha_attempts", StringComparison.Ordinal));
+        if (!context.GachaResources.IsAvailable ||
+            gachaAttempts is not { State: ResourceLifecycleState.Active, Current: >= 1m })
+        {
+            MarkupLine($"[yellow]{Markup.Escape(ResourcePlayerFailureMessages.ActionUnavailable)}[/]");
+            WaitForKey();
+            return;
+        }
 
         if (context.SoulRoot == null)
         {
@@ -1485,7 +1498,7 @@ public partial class ExplorerMode
         WaitForKey();
     }
 
-    private Task<(string? TargetFormTag, int RerollsSpent)> PromptForForgeReshapeTargetFormTagAsync(JsonObject soulRoot, JsonObject relic)
+    private async Task<(string? TargetFormTag, int RerollsSpent)> PromptForForgeReshapeTargetFormTagAsync(JsonObject soulRoot, JsonObject relic)
     {
         var currentFormTag = GetNodeString(relic["formTag"]) ?? string.Empty;
         var currentFormLabel = DescribeForgeFormTag(currentFormTag);
@@ -1498,13 +1511,18 @@ public partial class ExplorerMode
             .OrderBy(formTag => formTag, StringComparer.OrdinalIgnoreCase)
             .ToList();
         if (suggestions.Count == 0)
-            return Task.FromResult<(string? TargetFormTag, int RerollsSpent)>((NormalizeForgeFormTagInput(
+            return (NormalizeForgeFormTagInput(
                 Ask("[cyan]Новая форма реликвии:[/]", currentFormLabel).Trim(),
                 currentFormTag,
-                new[] { currentFormTag }), 0));
+                new[] { currentFormTag }), 0);
 
         var suggestionIndex = 0;
-        var initialRerolls = ShiningBlessingEffectState.GetPendingRelicRerolls(soulRoot);
+        var relicRerollProjection = await ResourceProjectionService.ProjectRelicRerollsAsync(_fs);
+        var initialRerolls = relicRerollProjection.IsAvailable
+            ? (int)(relicRerollProjection.Rows.SingleOrDefault(static row =>
+                    string.Equals(row.ResourceKey, "blessing_rerolls", StringComparison.Ordinal))?
+                .Current ?? 0m)
+            : 0;
         var rerollsReserved = 0;
         while (true)
         {
@@ -1525,12 +1543,12 @@ public partial class ExplorerMode
                 .AddChoices(actions));
 
             if (choice.Contains("Использовать предложенную форму", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(string? TargetFormTag, int RerollsSpent)>((suggestion, rerollsReserved));
+                return (suggestion, rerollsReserved);
             if (choice.Contains("Ввести форму вручную", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(string? TargetFormTag, int RerollsSpent)>((NormalizeForgeFormTagInput(
+                return (NormalizeForgeFormTagInput(
                     Ask("[cyan]Новая форма реликвии:[/]", DescribeForgeFormTag(suggestion)).Trim(),
                     suggestion,
-                    suggestions.Append(currentFormTag)), rerollsReserved));
+                    suggestions.Append(currentFormTag)), rerollsReserved);
             if (choice.Contains("Перебросить", StringComparison.OrdinalIgnoreCase))
             {
                 if (rerollsRemaining > 0)
@@ -1545,7 +1563,7 @@ public partial class ExplorerMode
                 continue;
             }
 
-            return Task.FromResult<(string? TargetFormTag, int RerollsSpent)>((null, 0));
+            return (null, 0);
         }
     }
 
@@ -1578,10 +1596,10 @@ public partial class ExplorerMode
         return trimmed;
     }
 
-    private Task<(JsonObject? ReplacementProperty, int RerollsSpent)> PromptForForgeReplacementPropertyAsync(JsonObject soulRoot, JsonObject relic, int propertyIndex)
+    private async Task<(JsonObject? ReplacementProperty, int RerollsSpent)> PromptForForgeReplacementPropertyAsync(JsonObject soulRoot, JsonObject relic, int propertyIndex)
     {
         if (!TryGetForgeProperty(relic, propertyIndex, out var currentProperty))
-            return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((null, 0));
+            return (null, 0);
 
         var suggestions = BuildForgeReplacementPropertySuggestions(soulRoot, relic, propertyIndex);
         if (suggestions.Count == 0)
@@ -1597,16 +1615,21 @@ public partial class ExplorerMode
                     "← Отмена"));
 
             if (choice.Contains("Использовать базовый шаблон", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((template, 0));
+                return (template, 0);
 
             if (choice.Contains("Отмена", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((null, 0));
+                return (null, 0);
 
-            return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((PromptForStructuredForgePropertyAsync(template, "Новое свойство"), 0));
+            return (PromptForStructuredForgePropertyAsync(template, "Новое свойство"), 0);
         }
 
         var suggestionIndex = 0;
-        var initialRerolls = ShiningBlessingEffectState.GetPendingRelicRerolls(soulRoot);
+        var relicRerollProjection = await ResourceProjectionService.ProjectRelicRerollsAsync(_fs);
+        var initialRerolls = relicRerollProjection.IsAvailable
+            ? (int)(relicRerollProjection.Rows.SingleOrDefault(static row =>
+                    string.Equals(row.ResourceKey, "blessing_rerolls", StringComparison.Ordinal))?
+                .Current ?? 0m)
+            : 0;
         var rerollsReserved = 0;
         while (true)
         {
@@ -1628,9 +1651,9 @@ public partial class ExplorerMode
                 .AddChoices(actions));
 
             if (choice.Contains("Использовать предложенный вариант", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((suggestion.DeepClone().AsObject(), rerollsReserved));
+                return (suggestion.DeepClone().AsObject(), rerollsReserved);
             if (choice.Contains("Настроить вручную", StringComparison.OrdinalIgnoreCase))
-                return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((PromptForStructuredForgePropertyAsync(suggestion, "Новое свойство"), rerollsReserved));
+                return (PromptForStructuredForgePropertyAsync(suggestion, "Новое свойство"), rerollsReserved);
 
             if (choice.Contains("Перебросить", StringComparison.OrdinalIgnoreCase))
             {
@@ -1646,7 +1669,7 @@ public partial class ExplorerMode
                 continue;
             }
 
-            return Task.FromResult<(JsonObject? ReplacementProperty, int RerollsSpent)>((null, 0));
+            return (null, 0);
         }
     }
 

@@ -74,22 +74,20 @@
      Твои артефакты души сработали в идеальной гармонии: обаяние привлекло внимание, серебряный язык убедил разум, а удача нашла нужные слова.
      ]]>
     </response>
-    <playerActiveEffectsChanges>
+    <effectChanges>
      <![CDATA[
      [
          {
-             "effectId": null,
-             "effectName": "Остаточное Обаяние",
-             "description": "Эффект от кольца сохраняется еще некоторое время",
-             "duration": 2,
-             "type": "Buff",
-             "effects": {
-                 "socialBonus": 5
-             }
+             "operation": "apply",
+             "target": { "kind": "player", "targetId": "player_current" },
+             "source": { "kind": "item", "sourceId": "relic_charm_ring", "definitionKey": "residual-charm" },
+             "parameters": {},
+             "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+             "reason": "Экипированное кольцо активировало своё точное определение остаточного обаяния."
          }
      ]
      ]]>
-    </playerActiveEffectsChanges>
+    </effectChanges>
     <NPCRelationshipChanges>
      <![CDATA[
      [
@@ -180,50 +178,39 @@
      Орк отлетает назад с хрипом боли, кровь брызгает из глубокой раны. Твои артефакты работают в идеальной синхронизации — браслеты дают силу удара, кольцо пробуждает боевые инстинкты, амулет позволяет не бояться ответной атаки.
      ]]>
     </response>
-    <enemiesData>
+    <resourceChanges>
      <![CDATA[
      [
          {
-             "enemyId": "enemy-orc-berserker-01",
-             "name": "Orc Berserker",
-             "currentHealth": "36%",
-             "maxHealth": "100%",
-             "healthPercentage": "36%",
-             "lastDamageTaken": 44,
-             "statusEffects": [
-                 {
-                     "name": "Deep Wound",
-                     "description": "Кровотечение от мощного удара",
-                     "duration": 3,
-                     "effect": "-5% HP per turn"
-                 }
-             ]
+             "operation": "damage",
+             "target": { "kind": "combatant", "targetId": "enemy-orc-berserker-01" },
+             "resourceKey": "health",
+             "amount": 44,
+             "source": { "kind": "combat_outcome", "sourceId": "turn_43" },
+             "eventRef": "turn_43:resource:1"
          }
      ]
      ]]>
-    </enemiesData>
+    </resourceChanges>
     <combat_log_markdown>
      <![CDATA[
      **Варгус** наносит мощнейший удар **Орку-берсерку** за **44% урона**! Браслеты Силы Гиганта усиливают атаку!
      ]]>
     </combat_log_markdown>
-    <playerActiveEffectsChanges>
+    <effectChanges>
      <![CDATA[
      [
          {
-             "effectId": null,
-             "effectName": "Боевой Транс",  
-             "description": "Кольцо Воинской Ярости пробуждает древние боевые инстинкты",
-             "duration": 3,
-             "type": "Buff",
-             "effects": {
-                 "damageBonus": 15,
-                 "source": "Soul Relic: Кольцо Воинской Ярости"
-             }
+             "operation": "apply",
+             "target": { "kind": "player", "targetId": "player_current" },
+             "source": { "kind": "item", "sourceId": "relic_warrior_rage_ring", "definitionKey": "battle-trance" },
+             "parameters": {},
+             "eventRef": { "kind": "accepted_turn", "authorityId": "turn_43" },
+             "reason": "Экипированное кольцо активировало своё точное определение боевого транса."
          }
      ]
      ]]>
-    </playerActiveEffectsChanges>
+    </effectChanges>
    </jsonresponse>
   </example>
  </rule>

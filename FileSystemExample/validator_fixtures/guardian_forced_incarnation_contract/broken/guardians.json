@@ -33,7 +33,7 @@
         { "fragmentId": "guard_social_azalia_001_lore_7", "category": "personal_history", "title": "Возвращение искры", "content": null, "requiredReputation": 130 }
       ],
       "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-      "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+      "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
     }
   ],
   "activeGuardian": {
@@ -69,7 +69,7 @@
       { "fragmentId": "guard_social_azalia_001_lore_7", "category": "personal_history", "title": "Возвращение искры", "content": null, "requiredReputation": 130 }
     ],
     "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-    "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+    "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] }
   },
   "chaosSeaNavigation": {
     "currentAbodeId": "abode_unquenchable_flame_001",

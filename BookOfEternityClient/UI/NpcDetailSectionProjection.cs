@@ -323,9 +323,26 @@ internal static class NpcDetailSectionProjection
             rows.Add(new UiTableRow { Cells = ["Навык", DescribeNodeValue(entry)] });
             AddCategory(categories, "Навыки");
         }
-        foreach (var entry in CollectMatchingObjects(documents.Effects, npcId, npcName))
+        if (documents.Effects is { IsAvailable: false } unavailableEffects)
         {
-            rows.Add(new UiTableRow { Cells = ["Эффект", DescribeNodeValue(entry)] });
+            rows.Add(new UiTableRow { Cells = ["Эффекты", unavailableEffects.StatusMessage] });
+            AddCategory(categories, "эффекты");
+        }
+        foreach (var effect in documents.Effects?.Entries.Where(effect =>
+                     string.Equals(effect.TargetKind, "npc", StringComparison.Ordinal) &&
+                     string.Equals(effect.TargetId, npcId, StringComparison.Ordinal)) ?? [])
+        {
+            rows.Add(new UiTableRow
+            {
+                Cells =
+                [
+                    "Эффект",
+                    JoinDetails(
+                        effect.Name,
+                        effect.Summary ?? string.Empty,
+                        string.Join("; ", effect.Facts.Select(static fact => $"{fact.Label}: {fact.Value}")))
+                ]
+            });
             AddCategory(categories, "эффекты");
         }
         if (rows.Count == 0)
@@ -1669,7 +1686,13 @@ internal sealed record NpcDetailProjection(
     string NpcName,
     IReadOnlyList<NpcDetailSection> Sections,
     IReadOnlyList<NpcQuestDetail> PersonalQuests,
-    NpcTradePresentation? Trade);
+    NpcTradePresentation? Trade,
+    bool ResourceProjectionAvailable = false,
+    IReadOnlyList<ResourceProjectionRow>? ProjectedResources = null)
+{
+    internal IReadOnlyList<ResourceProjectionRow> Resources { get; init; } =
+        ProjectedResources ?? Array.Empty<ResourceProjectionRow>();
+}
 
 internal sealed record NpcTradePresentation(
     bool CanTrade,
@@ -1696,7 +1719,7 @@ internal sealed record NpcDetailSectionDocuments(
     JsonNode? Goals = null,
     JsonNode? Activities = null,
     JsonNode? Inventory = null,
-    JsonNode? Effects = null,
+    EffectPlayerProjectionResult? Effects = null,
     JsonNode? Skills = null,
     JsonNode? Personality = null,
     JsonNode? Journals = null,

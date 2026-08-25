@@ -1,0 +1,25 @@
+{
+  "id": "resource_materialization",
+  "runner": "StateOnly",
+  "description": "legacy persisted Mortal gauges are incompatible with Unified Resource Authority v1 and must be removed rather than mirrored beside the canonical ledger.",
+  "broken": [
+    {
+      "source": "broken/player_status.json",
+      "target": "game_state/core/player_status.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/player_status.json",
+      "target": "game_state/core/player_status.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "resource_legacy_player_gauge_forbidden"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

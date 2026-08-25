@@ -31,7 +31,7 @@ evidence.
 ```
 
 `Complete` is a temporary alias for `PreMerge`; it has the same schedule and
-the same 20-minute hard limit. New automation and documentation should use
+the same 30-minute hard limit. New automation and documentation should use
 `PreMerge`.
 
 ## Project and Lane Boundaries
@@ -39,14 +39,14 @@ the same 20-minute hard limit. New automation and documentation should use
 | Lane | Project/selection | Hard limit | Intended use |
 |---|---|---:|---|
 | `Fast` (default) | Entire `BookOfEternityClient.Tests` project, with no category filter | 5 min | Ordinary post-edit feedback |
-| `Focused` | Caller-supplied VSTest filter in the selected fast or integration project | 5 min | One class, method, or domain during implementation |
+| `Focused` | Caller-supplied VSTest filter in the selected fast or integration project | 5 min by default; explicit override up to 15 min | One class, method, or domain during implementation |
 | `FullValidation` | Integration project, `Category=FullValidation` | 15 min | Diagnostic full-pipeline checks |
 | `RegressionIntegration` | Integration project, `Category=RegressionIntegration` | 15 min | Diagnostic file-backed workflow checks |
 | `ProcessIntegration` | Integration project, `Category=ProcessIntegration` | 15 min | Diagnostic real-process checks |
 | `E2E` | Integration project, `Category=E2E` | 15 min | Diagnostic end-to-end checks |
-| `LifecycleIntegration` | Integration project, `Category=LifecycleIntegration`, one external test process | 10 min | Conditional complete GameEngine lifecycle control |
+| `LifecycleIntegration` | Integration project, `Category=LifecycleIntegration`, one external test process | 10 min by default; explicit override up to 30 min | Conditional complete GameEngine lifecycle control |
 | `DeepValidation` | Integration project, union of `FullValidation` and `DeepValidation`, excluding lifecycle/process/E2E | 15 min | Conditional exhaustive validation control |
-| `PreMerge` | Both projects in a non-overlapping schedule | 20 min total | One final integration control |
+| `PreMerge` | Both projects in a non-overlapping schedule | 30 min total | One final integration control |
 
 Fast selects `BookOfEternityClient.Tests.csproj` directly. It does not rely on
 category exclusions to hide slow tests; source/project-boundary guards keep
@@ -63,12 +63,23 @@ Focused defaults to `BookOfEternityClient.Tests`. Pass
 `BookOfEternityClient.IntegrationTests`. The selector accepts only `Fast` or
 `Integration` and is valid only with `-Lane Focused`. Never combine fast and
 integration class names in one filter; run one focused command per selected
-project. Both variants retain the five-minute hard limit and require `-Filter`:
+project. Both variants require `-Filter` and use a five-minute default:
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~IntegrationTestBoundaryTests.CSharpLaneRunner_SeparatesLifecycleIntegrationFromRoutinePreMerge"
 ```
+
+Lane durations are protective defaults, not a reason to discard relevant
+coverage or micro-optimize a legitimately grown test group merely to beat an
+obsolete number. When a measured, coherent Focused selection cannot reliably
+finish in five minutes, pass an explicit `-TimeoutMinutes` value with reasonable
+headroom, up to the 15-minute Focused ceiling. The complete
+`LifecycleIntegration` lane similarly keeps its 10-minute default but accepts an
+explicit override up to 30 minutes when a measured run proves the class has
+legitimately grown. Record the measured duration and rationale in the active
+task evidence. Keep the selection coherent and the run bounded; do not use an
+override to launch an unreviewed broad suite or to hide a hang.
 
 PreMerge uses one deadline across frontend verification, both test-project
 builds, discovery, all tests, and owned-tree cleanup. It runs the full fast
@@ -138,15 +149,17 @@ capacity for two ordinary descriptors; this is a capacity weight, not
 additional parallelism. The weight is bounded by a caller's lower
 `-Parallelism`, so a serial diagnostic run still makes progress. Both lanes
 keep the same four-process ceiling. DeepValidation retains its 15-minute
-deadline; PreMerge has the explicitly approved 20-minute deadline.
+deadline; PreMerge has the explicitly approved 30-minute deadline.
 
 When either lane approaches its deadline, inspect one plan and the completed
 TRX durations before changing it. Preserve every discovered case and
 assertion; adjust retained costs, binning, or resource weights only from
 measured evidence. Do not change a lane timeout or concurrency ceiling without
-an explicit tracked contract decision. Issue #1526 is the tracked decision
-that changes only PreMerge from 15 to 20 minutes; all process ceilings,
-filters, phase boundaries, cases, and assertions remain unchanged.
+an explicit tracked contract decision. Issue #1526 records the historical
+change from 15 to 20 minutes. Issue #1547 changes only PreMerge from 20 to 30
+minutes after the measured green core plus exclusive-tail lower bound exceeded
+20 minutes; all process ceilings, filters, phase boundaries, cases, and
+assertions remain unchanged.
 
 ## Working Rhythm
 
@@ -288,6 +301,29 @@ The accepted exact 20-minute PreMerge control passed `4,836/4,836` results in
 reported exit `0`, no timeout, no duplicate IDs, complete owned-tree cleanup,
 and result directory
 `20260813-044749-940-43368-f64c53dc7a7e48f5a30055b05c1b7e95-premerge`.
+
+Issue #1547 records the next measured capacity correction. The exact
+20-minute run in
+`20260825-233810-273-42016-1ec3e4acc4034939962b77b5b28d1eb2-premerge`
+completed all `6,608/6,608` available core results green with zero duplicates
+and complete cleanup, but timed out before the exclusive process/E2E tail
+finished. The isolated ProcessIntegration control then passed `523/523` in
+`3:32.148` under
+`20260826-002204-545-33256-d46277f36dd4471eaaae5ecb8a221b2b-processintegration`.
+Together with the approximately 17-minute core and retained E2E tail, this
+exceeds the old cap. The 30-minute deadline restores bounded headroom without
+changing any selected test, assertion, phase, ordering, or concurrency limit.
+
+The accepted #1547 exact 30-minute PreMerge control is
+`20260826-004148-035-3528-42f32409a6b34cf4bbb7950b7e8a10d7-premerge`.
+It completed in `00:21:59.6684306`: frontend verification passed `141/141`,
+both C# builds reported zero warnings/errors, and all `26` official TRX files
+completed. The C# phases passed Fast `4,339/4,339`, core integration
+`2,269/2,269`, ProcessIntegration `508/508`, and E2E `15/15`, for
+`7,131/7,131` total. Exit was `0`, timeout was `false`, duplicate test IDs were
+zero, and owned-tree cleanup completed. This is the current accepted PreMerge
+capacity evidence; no coverage, assertion, phase, ordering, or concurrency
+rule was removed to obtain it.
 
 ## Rejected All-Inclusive Evidence
 

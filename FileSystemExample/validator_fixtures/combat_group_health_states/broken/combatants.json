@@ -9,14 +9,10 @@
       "isGroup": true,
       "count": 3,
       "unitName": "Goblin Raider",
-      "healthStates": [
-        "91%",
-        "77%"
+      "members": [
+        { "memberId": "member_goblin_raider_1" },
+        { "memberId": "member_goblin_raider_2" }
       ],
-      "maxHealth": "100%",
-      "maxPoise": "40",
-      "currentHealth": null,
-      "currentPoise": null,
       "actions": [],
       "resistances": [],
       "activeBuffs": [],

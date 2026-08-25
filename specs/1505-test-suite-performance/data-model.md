@@ -1,6 +1,6 @@
 # Data Model: Validation Selection and Test Lanes
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
 
 This feature adds no persisted gameplay data. The model consists of internal
 runtime/test values and lane-result artifacts.
@@ -93,8 +93,8 @@ domain.
 | `E2E` | Integration project; `Category=E2E` | 15 min | Diagnostic end-to-end workflows |
 | `LifecycleIntegration` | Integration project; `Category=LifecycleIntegration&Category!=ProcessIntegration&Category!=E2E` | 10 min | Conditional complete GameEngine lifecycle control |
 | `DeepValidation` | Integration project; `(Category=FullValidation|Category=DeepValidation)&Category!=LifecycleIntegration&Category!=ProcessIntegration&Category!=E2E` | 15 min | Conditional exhaustive validation control |
-| `PreMerge` | Both projects; non-overlapping parallel and exclusive phases | 20 min total | Final integration control |
-| `Complete` | Temporary alias for `PreMerge` | 20 min total | Compatibility only |
+| `PreMerge` | Both projects; non-overlapping parallel and exclusive phases | 30 min total | Final integration control |
+| `Complete` | Temporary alias for `PreMerge` | 30 min total | Compatibility only |
 
 The fast and integration assemblies are the classification boundary. Fast does
 not use negative category filters: it discovers

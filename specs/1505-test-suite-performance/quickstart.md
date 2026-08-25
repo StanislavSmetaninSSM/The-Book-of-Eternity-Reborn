@@ -1,6 +1,6 @@
 # Quickstart: C# Verification Lanes
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
 
 Run commands from the repository root with PowerShell 7.
 
@@ -39,7 +39,7 @@ the complete 186-case GameEngine lifecycle class in one external test process
 under a ten-minute cap.
 
 `Complete` is a temporary alias for `PreMerge`. PreMerge verifies both test
-projects with non-overlapping filters and one 20-minute deadline covering
+projects with non-overlapping filters and one 30-minute deadline covering
 frontend verification, builds, discovery, tests, and cleanup. It excludes the
 complete lifecycle class while retaining exactly ten reviewed
 `PreMergeSentinel` lifecycle methods. It also excludes the exhaustive
@@ -141,6 +141,22 @@ The accepted #1526 exact PreMerge control passed `4,836/4,836` results in
 E2E passed `15/15`, duplicate IDs were zero, and owned-tree cleanup completed.
 The result directory is
 `20260813-044749-940-43368-f64c53dc7a7e48f5a30055b05c1b7e95-premerge`.
+
+The #1547 capacity-red control later completed `6,608/6,608` available core
+results green but reached the 20-minute deadline before the exclusive tail
+completed. Isolated ProcessIntegration passed `523/523` in `3:32`; together
+with the approximately 17-minute core and retained E2E tail, this proves the
+old cap is obsolete. The current 30-minute bound changes no selection,
+assertion, phase, ordering, or concurrency rule.
+
+The accepted #1547 30-minute control is
+`TestResults/test-lanes/20260826-004148-035-3528-42f32409a6b34cf4bbb7950b7e8a10d7-premerge/summary.json`.
+It passed all `7,131/7,131` C# results in `00:21:59.6684306`: Fast
+`4,339/4,339`, core integration `2,269/2,269`, ProcessIntegration `508/508`,
+and E2E `15/15`. All `26` TRX files completed; frontend verification separately
+passed `141/141`, both C# builds had zero warnings/errors, exit was `0`, timeout
+was `false`, duplicate IDs were zero, and owned-tree cleanup completed. No
+selection, assertion, phase, ordering, or concurrency contract changed.
 
 The rejected historical all-inclusive attempt ended at `15:00.393` with exit
 `124`: all `4,738/4,738` completed tests passed, failures and duplicates were

@@ -21,38 +21,6 @@ public partial class CanonicalStateNormalizer
         await WriteCanonicalFileAtomicAsync(path, result.ToJsonString(JsonOpts));
     }
 
-    private async Task NormalizeInventoryItemResourcesAsync(IReadOnlyDictionary<string, string>? backups)
-    {
-        const string path = "game_state/inventory/item_resources.json";
-        var currentNode = await ReadNodeAsync(path);
-        if (currentNode == null) return;
-
-        var previous = await ReadBackupObjectAsync(path, backups);
-        var result = CloneObject(previous ?? new JsonObject());
-        var entries = new JsonArray();
-
-        foreach (var entry in CollectInventorySidecarEntries(previous, "entries"))
-            UpsertByIdentity(entries, entry, "existedId", "itemId", "id", "itemName", "name");
-
-        if (currentNode is JsonObject currentObj)
-        {
-            foreach (var entry in CollectInventorySidecarEntries(currentObj, "entries"))
-                UpsertByIdentity(entries, entry, "existedId", "itemId", "id", "itemName", "name");
-
-            if (currentObj["inventoryItemsResources"] is JsonArray resourceChanges)
-                ApplyInventoryResourceCommands(entries, resourceChanges);
-        }
-        else
-        {
-            foreach (var entry in CollectInventorySidecarEntries(currentNode, "entries"))
-                UpsertByIdentity(entries, entry, "existedId", "itemId", "id", "itemName", "name");
-        }
-
-        result["entries"] = entries;
-        result.Remove("inventoryItemsResources");
-        await WriteIfChangedAsync(path, currentNode, result);
-    }
-
     private async Task NormalizeInventoryItemBondsAsync(IReadOnlyDictionary<string, string>? backups)
     {
         const string path = "game_state/inventory/item_bonds.json";

@@ -1163,6 +1163,19 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(name))
             name = "Неизвестный";
         var guardianId = GetStr(g, "guardianId", "");
+        var guardianResources = ResourceMaterializationContract.IsExactIdentifier(guardianId)
+            ? await ResourceProjectionService.ProjectOwnerAsync(
+                _fs,
+                "chaos_sea",
+                ResourceOwnerKind.AfterlifeActor,
+                guardianId,
+                "хранитель",
+                isOwningPlayer: false,
+                ResourceProjectionAudience.Player)
+            : new ResourceProjectionResult(
+                false,
+                ResourcePlayerFailureMessages.Unavailable,
+                Array.Empty<ResourceProjectionRow>());
         var isActiveGuardian = string.Equals(guardianId, activeGuardianId, StringComparison.OrdinalIgnoreCase);
         var guardianThoughtDoc = await _stateManager.LoadGameStateFileAsync(GuardianThoughtJournalState.StatePath);
         var guardianSocialDoc = await _stateManager.LoadGameStateFileAsync(GuardianSocialJournalState.StatePath);
@@ -1550,25 +1563,24 @@ public partial class ExplorerMode
         var hasGachaSystem = g.TryGetProperty("gachaSystem", out var gs) && gs.ValueKind == JsonValueKind.Object;
         lines.Add("");
         lines.Add("  [bold]🎰 Система гача:[/]");
-        var chargesPerReturn = hasGachaSystem && gs.TryGetProperty("chargesPerReturn", out var cpr) && cpr.ValueKind == JsonValueKind.Number && cpr.TryGetInt32(out var parsedCharges)
-            ? parsedCharges
-            : GuardianGachaChargeRules.GetChargesPerReturnForGuardian(g);
-        var chargesUsedThisReturn = hasGachaSystem && gs.TryGetProperty("chargesUsedThisReturn", out var cur) && cur.ValueKind == JsonValueKind.Number && cur.TryGetInt32(out var parsedUsed)
-            ? GuardianGachaChargeRules.ClampUsedCharges(parsedUsed, chargesPerReturn)
-            : 0;
-        var remainingCharges = Math.Max(0, chargesPerReturn - chargesUsedThisReturn);
+        var gachaAttempts = guardianResources.Rows.SingleOrDefault(static row =>
+            string.Equals(row.ResourceKey, "gacha_attempts", StringComparison.Ordinal));
         var founderExtraGachaChargesForReturn = PlayerGuardianFoundationState.GetFounderExtraGachaCharges(g);
 
-        if (chargesPerReturn <= 0)
+        if (!guardianResources.IsAvailable)
+        {
+            lines.Add($"    [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]");
+        }
+        else if (gachaAttempts == null || gachaAttempts.Maximum <= 0m)
         {
             lines.Add("    [red]Гача через этого Хранителя сейчас заблокирована вашей репутацией.[/]");
         }
         else
         {
-            lines.Add($"    Осталось попыток в этом возвращении: [yellow]{remainingCharges}[/]/[white]{chargesPerReturn}[/]");
+            lines.Add($"    Осталось попыток в этом возвращении: [yellow]{Markup.Escape(ResourceProjectionService.FormatValue(gachaAttempts))}[/]");
             if (founderExtraGachaChargesForReturn > 0)
                 lines.Add($"    [dim]Бонус основания: +{founderExtraGachaChargesForReturn} доп. попытка за возвращение.[/]");
-            if (remainingCharges <= 0)
+            if (gachaAttempts.Current <= 0m)
                 lines.Add("    [yellow]Лимит гачи у этого Хранителя исчерпан до следующего возвращения из смертной жизни.[/]");
         }
 

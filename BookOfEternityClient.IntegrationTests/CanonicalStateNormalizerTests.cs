@@ -111,6 +111,44 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         await normalizer.NormalizeAccumulatedStateAsync(effectiveBackups);
     }
 
+    private async Task<IReadOnlyDictionary<string, string>> CreateGuardianNormalizerAuthorityBackupsAsync()
+    {
+        const string guardiansPath = "game_state/meta/guardians.json";
+        const string trackerBaselineBackupPath = "test_backups/normalizer_tracker_authority_baseline.json";
+        const string guardiansBaselineBackupPath = "test_backups/normalizer_guardians_authority_baseline.json";
+
+        var currentTrackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var currentGuardiansJson = await _fs.ReadFileAsync(guardiansPath);
+        if (string.IsNullOrWhiteSpace(currentTrackerJson) ||
+            JsonNode.Parse(currentTrackerJson) is not JsonObject currentTrackerRoot)
+        {
+            throw new InvalidOperationException("Guardian normalizer test setup requires a readable tracker root.");
+        }
+
+        if (string.IsNullOrWhiteSpace(currentGuardiansJson) ||
+            JsonNode.Parse(currentGuardiansJson) is not JsonObject currentGuardiansRoot)
+        {
+            throw new InvalidOperationException("Guardian normalizer test setup requires a readable Guardians root.");
+        }
+
+        var trackerBaselineRoot = new JsonObject
+        {
+            ["activeProjects"] = currentTrackerRoot["activeProjects"]?.DeepClone() ?? new JsonArray(),
+            ["completedProjects"] = currentTrackerRoot["completedProjects"]?.DeepClone() ?? new JsonArray(),
+            ["temporaryProjectModifiers"] = currentTrackerRoot["temporaryProjectModifiers"]?.DeepClone() ?? new JsonArray()
+        };
+        var guardiansBaselineRoot = BuildGuardianNormalizerBaselineRoot(currentGuardiansRoot, currentTrackerRoot);
+
+        await _fs.WriteFileAtomicAsync(trackerBaselineBackupPath, trackerBaselineRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(guardiansBaselineBackupPath, guardiansBaselineRoot.ToJsonString());
+
+        return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianProjectState.TrackerPath] = trackerBaselineBackupPath,
+            [guardiansPath] = guardiansBaselineBackupPath
+        };
+    }
+
     private static JsonObject BuildGuardianNormalizerBaselineRoot(JsonObject currentGuardiansRoot, JsonObject currentTrackerRoot)
     {
         var baselineRoot = currentGuardiansRoot.DeepClone()!.AsObject();

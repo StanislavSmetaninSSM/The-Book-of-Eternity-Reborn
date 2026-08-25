@@ -2,6 +2,9 @@
  <title>
   Examples For JSON Response Formatting Rules
  </title>
+ <effectmaterializationcontract>
+  Current effect source definitions, effectChanges[], stacking, lifetimes, and bounded repair are demonstrated in Examples/E_CLI_Effect_Materialization.txt. Legacy effect aliases are invalid even when they are otherwise valid JSON.
+ </effectmaterializationcontract>
  <rule id="2.2">
   <example contenttype="json" type="good">
    <![CDATA[

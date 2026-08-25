@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="17">
  <title>
   Player Character State Management
@@ -90,7 +91,7 @@
                             If 'CurrentTurnItemsWeight' <= 'MaxWeight', the player is not overloaded.
                             Set 'additionalEnergyExpenditure' to 'null'. Do not log this calculation as it's not an active penalty.
 
-                            GM Note: The server will automatically use 'additionalEnergyExpenditure' to adjust the player's energy. The GM should not manually change 'currentEnergyChange' due to overload.
+                            GM Note: the client automatically turns accepted additionalEnergyExpenditure into its governed energy transition. The GM must not emit a duplicate resourceChanges entry for overload.
                             
                             FAIRNESS NOTE: This new time-based system ensures that overweight penalties are proportional to actual time spent.
                             - A player taking 3 quick actions (15 minutes total) with 5kg overload will lose 30 energy
@@ -112,15 +113,15 @@
    <instructiontext>
     <![CDATA[
 
-                    These changes are reported via 'currentHealthChange', 'currentEnergyChange', 'experienceGained', and 'moneyChange' keys in the JSON response.
-                    For the first turn of the game (current turn is 1), these values MUST all be 0.
+                    Health and energy change only through resourceChanges against exact player coordinates. Progression and currency remain in experienceGained and moneyChange.
+                    On the first game turn, ordinary resourceChanges must be empty and the progression/currency deltas must be 0; bootstrap initialization is client-owned.
 
                     ]]>
    </instructiontext>
    <content type="ruleset">
     <rule id="17.2.1">
      <title>
-      Energy Change ('currentEnergyChange') and Fatigue
+      Energy Resource Changes and Fatigue
      </title>
      <content type="ruleset">
       <rule id="17.2.1.1">
@@ -203,16 +204,15 @@
                                         -   This specific 'energyCost' MUST be used as the energy expenditure for that action.
                                         -   It OVERRIDES the general "Base Action Cost" from rule 'a)' above. Do NOT apply both.
                                         -   If the 'energyCost' is a percentage string (e.g., "12%"), convert it to an integer by calculating: 
-                                        'round(ParsedPercentageValue / 100 * Context.playerCharacter.maxEnergy)'.
+                                        'round(ParsedPercentageValue / 100 * the client-projected sealed energy maximum supplied in Context)'.
                                         -   If the skill/item has no defined 'energyCost' but is clearly "Strenuous", use the range from "Strenuous Actions" above.
                                         -   Log the calculation of the energy cost, especially if a percentage conversion was performed.
 
-                                    b) Sum all energy changes from actions performed this turn. 
-                                    This includes the specific costs from skills/items (if applicable) and any general action costs for other, minor, or secondary actions performed in the same turn.
+                                    b) Calculate every energy cost/restoration from actions performed this turn, but retain its exact registered source and ordinal event authority instead of collapsing unrelated causes.
 
                                     c) Consumption: If player consumes an item (food, potion) with an energy restoration 'bonus' (from item's 'bonuses' array), add that restoration amount.
 
-                                    d) Record the net change in 'currentEnergyChange' (integer, can be positive or negative).
+                                    d) Emit resourceChanges operation=spend for each cost and operation=gain for each restoration, with positive exact amounts against the player/energy coordinate. Never author a net or after-value.
 
                                     e) GM Note: Do NOT include 'additionalEnergyExpenditure' from overload here; 
                                     the system handles that separately by applying it to the final energy total for the turn.
@@ -227,7 +227,7 @@
        <instructiontext>
         <![CDATA[
 
-                                    When a player character's 'currentEnergy' drops to 0 or below, they become Fatigued. 
+                                    When the accepted player/energy transition reaches its sealed minimum, the character becomes Fatigued.
                                     This is a persistent debuff that represents physical and mental exhaustion.
                                     
                                     ]]>
@@ -237,31 +237,34 @@
 
                                     1.  Triggering Fatigue:
                                         - If, after all energy calculations for the turn (including action costs and overload expenditure), the player's energy is 0 or less, the "Fatigued" status is applied.
-                                        - This status persists until the character's 'currentEnergy' becomes greater than 0.
+                                        - This status persists until an accepted energy transition raises the ledger above its sealed minimum.
 
                                     2.  Mechanical Effect of "Fatigued":
                                         - The "Fatigued" status is a Debuff that imposes Normal Disadvantage on ALL d20-based action checks (physical, mental, and social). 
                                         Refer to InstructionBlock '5' -> Rule '5.16' for Disadvantage mechanics.
-                                        - This Debuff MUST be created and reported via the 'playerActiveEffectsChanges' array.
+                                        - This Debuff may be materialized only from an exact current source definition that declares the fatigue mechanics and condition-bound/source-loss policy. The energy rule alone is not permission to invent an effect payload.
 
                                     3.  Reporting the "Fatigued" Debuff:
-                                        - When the state is applied, add the following Effect Object to 'playerActiveEffectsChanges':
+                                        - When an exact accepted fatigue source definition exists, request it through top-level 'effectChanges[]':
                                         {
-                                            "effectType": "Debuff",
-                                            "value": "Disadvantage", 
-                                            "targetType": "all_action_checks",
-                                            "duration": 999, // Represents a persistent state
-                                            "sourceSkill": "Exhaustion",
-                                            "description": "Fatigued! You have Disadvantage on all action checks until you rest."
+                                            "operation": "apply",
+                                            "target": { "kind": "player", "targetId": "player_current" },
+                                            "source": { "kind": "world_event", "sourceId": "<exact-current-fatigue-source-id>", "definitionKey": "fatigued-zero-energy" },
+                                            "parameters": {},
+                                            "eventRef": { "kind": "accepted_turn", "authorityId": "turn_<turn>" },
+                                            "reason": "Energy reached zero."
                                         }
 
                                     4.  Removing Fatigue:
-                                        - When the character's 'currentEnergy' is restored to a value greater than 0 (e.g., through rest, potions), the "Fatigued" debuff is automatically removed.
-                                        - To report this, add an object to 'playerActiveEffectsChanges' that signals the removal of the effect. This can be done by providing the effect's 'description' and a new 'duration' of 0.
+                                        - When an accepted restore/gain raises energy above its sealed minimum (e.g., through rest or a valid item source), the "Fatigued" debuff is removed through its lifecycle authority.
+                                        - Request removal through effectChanges[] using the opaque existing effectId supplied by technical context, the exact player target, accepted eventRef, and the definition's condition-loss/removal authority. Never remove by description or numeric sentinel.
                                         {
-                                            "effectType": "Debuff",
-                                            "description": "Fatigued! You have Disadvantage on all action checks until you rest.",
-                                            "duration": 0 // Setting duration to 0 signals removal
+                                            "operation": "remove",
+                                            "effectId": "<opaque-existing-effect-id>",
+                                            "target": { "kind": "player", "targetId": "player_current" },
+                                            "authority": { "kind": "condition_loss", "authorityId": "energy-restored" },
+                                            "eventRef": { "kind": "accepted_turn", "authorityId": "turn_<turn>" },
+                                            "reason": "Energy is again above zero."
                                         }
 
                                     5.  Narrative: 
@@ -475,7 +478,7 @@
     </rule>
     <rule id="17.2.3">
      <title>
-      Health Change ('currentHealthChange')
+      Health Resource Changes
      </title>
      <content type="ruleset">
       <rule id="17.2.3.1">
@@ -491,7 +494,7 @@
                                     - Environmental Damage: Extreme temperatures, acid, drowning.
                                     - Creature Interactions: Bites, stings, special abilities.
                                     - Accidents/Mishaps: Failed dangerous actions, traps.
-                                    - Zero Energy Penalty: If 'currentEnergy' from Context is 0, an additional 1-10 health is lost.
+                                    - Zero Energy Penalty: If the client-projected energy ledger is at its sealed minimum, request an additional 1-10 health damage through the registered fatigue/environment source.
 
                                     ]]>
        </content>
@@ -519,9 +522,9 @@
        <content type="rule_text">
         <![CDATA[
 
-                                    a) Sum all health damage and restoration from the current turn.
-                                    b) Record the net change in 'currentHealthChange' (integer, negative for damage, positive for healing).
-                                    c) Record detailed breakdown in 'gm_thoughts_markdown'.
+                                    a) Calculate each health damage and restoration cause from the current turn without collapsing different source/event authorities.
+                                    b) Emit resourceChanges operation=damage or restore with a positive exact amount against the player/health coordinate.
+                                    c) Record the detailed narrative breakdown in 'gm_thoughts_markdown'; never author the resulting current value.
 
                                     ]]>
        </content>

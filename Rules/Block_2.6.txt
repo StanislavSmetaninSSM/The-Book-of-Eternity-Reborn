@@ -30,16 +30,16 @@
             Question 3: Is the player using a CHARGE, DOSE, or internal resource of an item?
             (e.g., "I take a sip from my waterskin", "I fire one shot from my wand", "I use one dose of the healing salve")
 
-            -   If YES: You MUST use the 'inventoryItemsResources' array.
-                -   This command ONLY changes the item's internal 'resource' value.
+            -   If YES: You MUST use the common 'resourceChanges' array with the item's exact permanent ownerId and resourceKey.
+                -   This command changes only the sealed item-resource ledger through an allowed operation such as 'spend' or 'gain'.
                 -   You MUST NOT change the item's 'count' in this case.
-                -   CRITICAL DIRECTIVE: Even if the 'resource' becomes 0, you MUST NOT change the 'count' or use 'removeInventoryItems'. 
+                -   CRITICAL DIRECTIVE: Even if the sealed resource ledger reaches 0, you MUST NOT change the item's 'count' or use 'removeInventoryItems'.
                 The game system will handle the consequences of a depleted resource. Your only job is to report the new resource value.
 
             Golden Rule Summary:
             -   'removeInventoryItems' -> Player INTENDS to remove the WHOLE STACK.
             -   'UpdateInventory' (with new 'count') -> Player INTENDS to remove PART of a stack.
-            -   'inventoryItemsResources' -> Player USES A CHARGE from an item.
+            -   'resourceChanges' with the exact item coordinate -> Player USES A CHARGE from an item.
 
             Any other interpretation is a violation of your core instructions.
 

@@ -160,6 +160,14 @@ public sealed class ScenarioCoreService
         return DeserializeManifest(raw);
     }
 
+    internal async Task<ScenarioCoreManifest?> ReadAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        var raw = await _fs.ReadFileAsync(writeLease, ManifestPath);
+        return DeserializeManifest(raw);
+    }
+
     private ScenarioCoreManifest? DeserializeManifest(string? raw)
     {
         if (string.IsNullOrWhiteSpace(raw))

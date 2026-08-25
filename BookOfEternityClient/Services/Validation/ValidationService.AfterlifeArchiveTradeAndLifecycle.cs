@@ -1338,7 +1338,11 @@ public partial class ValidationService
             return;
 
         ValidateNonNegativeIntegerField(value, context, issues, "options", "ShiningBlessings");
-        ValidateNonNegativeIntegerField(value, context, issues, "rerolls", "ShiningBlessings");
+        RejectShiningBlessingNumericRerollMirrors(value, context, issues);
+        var hasRerollBinding = ValidateShiningBlessingRerollBinding(
+            value,
+            context,
+            issues);
         RequireString(value, context, issues, "status");
         if (TryGetArray(value, "sourceCardIds", $"{context}.sourceCardIds", issues, out var sourceCardIds))
         {
@@ -1364,21 +1368,6 @@ public partial class ValidationService
         {
             ValidateNonNegativeIntegerField(value, context, issues, "consumedAtTurn", "ShiningBlessings");
             RequireString(value, context, issues, "consumedAtUtc");
-            ValidateNonNegativeIntegerField(value, context, issues, "rerollsSpent", "ShiningBlessings");
-
-            var rerollsSpent = GetIntOrDefault(value, "rerollsSpent");
-            var rerollsGranted = GetIntOrDefault(value, "rerolls");
-            if (rerollsSpent > rerollsGranted)
-            {
-                issues.Add(new ValidationIssue(
-                    $"{context}.rerollsSpent",
-                    IssueSeverity.Error,
-                    "memorySelection.rerollsSpent не может превышать выданные rerolls",
-                    code: "pending_shining_blessings_memory_rerolls_spent_exceeds_grant",
-                    section: "ShiningBlessings",
-                    expected: $"<= {rerollsGranted}",
-                    actual: rerollsSpent.ToString()));
-            }
 
             var hasSelectedIncarnation = TryReadInt(value, "selectedLifeIncarnation", out _);
             var hasSelectedHint = !string.IsNullOrWhiteSpace(GetFirstNonEmptyString(value, "selectedLifeHint"));
@@ -1396,16 +1385,16 @@ public partial class ValidationService
             }
         }
 
-        if (GetIntOrDefault(value, "options") <= 0 && GetIntOrDefault(value, "rerolls") <= 0)
+        if (GetIntOrDefault(value, "options") <= 0 && !hasRerollBinding)
         {
             issues.Add(new ValidationIssue(
                 context,
                 IssueSeverity.Error,
-                "memorySelection должен давать хотя бы один дополнительный выбор или reroll",
+                "memorySelection должен давать хотя бы один дополнительный выбор или resource-backed reroll allocation",
                 code: "pending_shining_blessings_empty_memory_selection",
                 section: "ShiningBlessings",
-                expected: "options > 0 or rerolls > 0",
-                actual: $"options={GetIntOrDefault(value, "options")}, rerolls={GetIntOrDefault(value, "rerolls")}"));
+                expected: "options > 0 or valid rerollResourceBinding",
+                actual: $"options={GetIntOrDefault(value, "options")}, rerollResourceBinding={(value.TryGetProperty("rerollResourceBinding", out _) ? "invalid" : "missing")}"));
         }
     }
 
@@ -1470,7 +1459,11 @@ public partial class ValidationService
         if (!RequireObject(value, context, issues))
             return;
 
-        ValidateNonNegativeIntegerField(value, context, issues, "rerolls", "ShiningBlessings");
+        RejectShiningBlessingNumericRerollMirrors(value, context, issues);
+        var hasRerollBinding = ValidateShiningBlessingRerollBinding(
+            value,
+            context,
+            issues);
         RequireBooleanField(value, context, issues, "freeShape");
         RequireBooleanField(value, context, issues, "freeRetune");
         RequireString(value, context, issues, "status");
@@ -1479,9 +1472,6 @@ public partial class ValidationService
             RequireArrayOfStrings(sourceCardIds, $"{context}.sourceCardIds", issues);
             ValidateSourceCardSubset(sourceCardIds, $"{context}.sourceCardIds", issues, allowedSourceCardIds);
         }
-        if (value.TryGetProperty("rerollsSpent", out _))
-            ValidateNonNegativeIntegerField(value, context, issues, "rerollsSpent", "ShiningBlessings");
-
         var status = GetFirstNonEmptyString(value, "status") ?? string.Empty;
         if (!string.Equals(status, ShiningBlessingEffectState.RelicStatusPendingEntitlement, StringComparison.OrdinalIgnoreCase) &&
             !string.Equals(status, ShiningBlessingEffectState.GenericStatusConsumed, StringComparison.OrdinalIgnoreCase))
@@ -1502,11 +1492,10 @@ public partial class ValidationService
             RequireString(value, context, issues, "consumedAtUtc");
         }
 
-        var rerolls = GetIntOrDefault(value, "rerolls");
         var freeShape = value.TryGetProperty("freeShape", out var freeShapeValue) && freeShapeValue.ValueKind == JsonValueKind.True;
         var freeRetune = value.TryGetProperty("freeRetune", out var freeRetuneValue) && freeRetuneValue.ValueKind == JsonValueKind.True;
         if (string.Equals(status, ShiningBlessingEffectState.RelicStatusPendingEntitlement, StringComparison.OrdinalIgnoreCase) &&
-            rerolls <= 0 && !freeShape && !freeRetune)
+            !hasRerollBinding && !freeShape && !freeRetune)
         {
             issues.Add(new ValidationIssue(
                 context,
@@ -1514,12 +1503,12 @@ public partial class ValidationService
                 "pending relic entitlements должны содержать хотя бы один неистраченный allowance",
                 code: "pending_shining_blessings_empty_relic_entitlement",
                 section: "ShiningBlessings",
-                expected: "rerolls > 0 or freeShape=true or freeRetune=true",
-                actual: $"rerolls={rerolls}, freeShape={freeShape}, freeRetune={freeRetune}"));
+                expected: "valid rerollResourceBinding or freeShape=true or freeRetune=true",
+                actual: $"rerollResourceBinding={(value.TryGetProperty("rerollResourceBinding", out _) ? "invalid" : "missing")}, freeShape={freeShape}, freeRetune={freeRetune}"));
         }
 
         if (string.Equals(status, ShiningBlessingEffectState.GenericStatusConsumed, StringComparison.OrdinalIgnoreCase) &&
-            (rerolls > 0 || freeShape || freeRetune))
+            (freeShape || freeRetune))
         {
             issues.Add(new ValidationIssue(
                 context,
@@ -1527,10 +1516,93 @@ public partial class ValidationService
                 "consumed relic entitlements не должны сохранять неистраченные allowance",
                 code: "pending_shining_blessings_relic_entitlement_not_fully_consumed",
                 section: "ShiningBlessings",
-                expected: "rerolls = 0 and freeShape = false and freeRetune = false",
-                actual: $"rerolls={rerolls}, freeShape={freeShape}, freeRetune={freeRetune}"));
+                expected: "freeShape = false and freeRetune = false; reroll spending is proven by resource history",
+                actual: $"freeShape={freeShape}, freeRetune={freeRetune}"));
         }
     }
+
+    private static void RejectShiningBlessingNumericRerollMirrors(
+        JsonElement value,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        foreach (var propertyName in new[] { "rerolls", "rerollsSpent" })
+        {
+            if (!value.TryGetProperty(propertyName, out _))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{context}.{propertyName}",
+                IssueSeverity.Error,
+                $"{propertyName} является запрещённым числовым зеркалом unified resource ledger",
+                code: "pending_shining_blessings_numeric_reroll_mirror_forbidden",
+                section: "ShiningBlessings",
+                expected: "field absent; value and spending live only in resource_state/resource_history",
+                actual: "field present",
+                repairHint: "Удаляй numeric mirror и сохраняй только rerollResourceBinding плюс nonnumeric entitlement flags."));
+        }
+    }
+
+    private static bool ValidateShiningBlessingRerollBinding(
+        JsonElement value,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!value.TryGetProperty("rerollResourceBinding", out var binding) ||
+            binding.ValueKind == JsonValueKind.Null)
+        {
+            return false;
+        }
+
+        var valid = binding.ValueKind == JsonValueKind.Object;
+        var fields = valid
+            ? binding.EnumerateObject().ToArray()
+            : Array.Empty<JsonProperty>();
+        var expectedNames = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "realm",
+            "ownerKind",
+            "resourceOwnerId",
+            "resourceKey",
+            "allocationId"
+        };
+        valid &= fields.Length == expectedNames.Count &&
+                 fields.Select(static property => property.Name)
+                     .Distinct(StringComparer.Ordinal)
+                     .Count() == expectedNames.Count &&
+                 fields.All(property => expectedNames.Contains(property.Name));
+        valid &= HasExactBindingValue(binding, "realm", "shining_abode");
+        valid &= HasExactBindingValue(binding, "ownerKind", "afterlife_actor");
+        valid &= HasExactBindingValue(binding, "resourceOwnerId", "player_soul");
+        valid &= HasExactBindingValue(binding, "resourceKey", "blessing_rerolls");
+        valid &= binding.ValueKind == JsonValueKind.Object &&
+                 binding.TryGetProperty("allocationId", out var allocationId) &&
+                 allocationId.ValueKind == JsonValueKind.String &&
+                 ResourceMaterializationContract.IsExactIdentifier(
+                     allocationId.GetString());
+        if (valid)
+            return true;
+
+        issues.Add(new ValidationIssue(
+            $"{context}.rerollResourceBinding",
+            IssueSeverity.Error,
+            "rerollResourceBinding должен быть закрытой exact-ссылкой на actor blessing_rerolls allocation",
+            code: "pending_shining_blessings_reroll_binding_invalid",
+            section: "ShiningBlessings",
+            expected: "{realm:shining_abode, ownerKind:afterlife_actor, resourceOwnerId:player_soul, resourceKey:blessing_rerolls, allocationId:<exact id>}",
+            actual: binding.GetRawText(),
+            repairHint: "Не храни числовой баланс в soul_state; восстанови exact client-owned resource allocation binding."));
+        return false;
+    }
+
+    private static bool HasExactBindingValue(
+        JsonElement binding,
+        string propertyName,
+        string expected) =>
+        binding.ValueKind == JsonValueKind.Object &&
+        binding.TryGetProperty(propertyName, out var value) &&
+        value.ValueKind == JsonValueKind.String &&
+        string.Equals(value.GetString(), expected, StringComparison.Ordinal);
 
     private void ValidateShiningBlessingEffectArray(
         JsonElement root,

@@ -139,7 +139,11 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.IsType<JsonObject>(guardian["abodePower"]);
         Assert.IsType<JsonArray>(guardian["guardianRelationships"]);
         Assert.IsType<JsonObject>(guardian["questManagement"]);
-        Assert.IsType<JsonObject>(guardian["gachaSystem"]);
+        var gachaSystem = Assert.IsType<JsonObject>(guardian["gachaSystem"]);
+        Assert.False(gachaSystem.ContainsKey("chargesPerReturn"));
+        Assert.False(gachaSystem.ContainsKey("chargesUsedThisReturn"));
+        Assert.Equal(string.Empty, gachaSystem["currentReturnCycleId"]?.GetValue<string>());
+        Assert.Empty(Assert.IsType<JsonArray>(gachaSystem["gachaHistory"]));
 
         var initialMusing = Assert.IsType<JsonObject>(Assert.Single(Assert.IsType<JsonArray>(guardian["musings"])));
         Assert.Equal(1, initialMusing["turn"]?.GetValue<int>());
@@ -433,6 +437,148 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) == true);
         Assert.DoesNotContain(issues, IsActorMaterializationIssue);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ComposeExplicitBootstrapAsync_WithActualFreshGuardianRoots_MaterializesExactQuartet(
+        bool useSystemPreset)
+    {
+        const string description =
+            "Хранительница Селена Теневая: покровительница забытых библиотек, тайных сделок и осторожной мудрости.";
+        var createdAtUtc = DateTimeOffset.Parse("2026-06-29T00:00:00Z");
+        SystemGuardianLibraryService.SystemGuardianPresetDescriptor? preset = null;
+        if (useSystemPreset)
+        {
+            await SeedPresetAsync(
+                _service.GetBuiltInDirectoryPath(),
+                "fresh_resource_bootstrap",
+                "Азалия",
+                "Knowledge",
+                "built_in");
+            preset = await _service.FindPresetAsync("fresh_resource_bootstrap");
+            Assert.NotNull(preset);
+        }
+        var guardians = preset == null
+            ? _service.BuildCanonicalGuardianRootForFreshNewGame(
+                description,
+                "Искра Перед Рассветом",
+                turnNumber: 1,
+                createdAtUtc)
+            : _service.BuildCanonicalGuardianRootForFreshNewGame(
+                preset,
+                "Искра Перед Рассветом",
+                turnNumber: 1,
+                createdAtUtc);
+        var profiles = preset == null
+            ? _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+                description,
+                "Искра Перед Рассветом",
+                turnNumber: 1,
+                createdAtUtc)
+            : _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+                preset,
+                "Искра Перед Рассветом",
+                turnNumber: 1,
+                createdAtUtc);
+        var soulState = new JsonObject
+        {
+            ["soulName"] = "Искра Перед Рассветом",
+            ["soulFormDescription"] = "серебристая человеческая фигура",
+            ["currentRealm"] = "Chaos Sea",
+            ["currentIncarnation"] = 0
+        };
+        var documents = new Dictionary<string, string>(StringComparer.Ordinal);
+        var pristine = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(pristine.IsValid, string.Join(Environment.NewLine, pristine.Issues));
+
+        var result = await CanonicalResourceQuartetTransaction.ComposeExplicitBootstrapAsync(
+            pristine.Definitions!,
+            pristine.State!,
+            pristine.History!,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: profiles,
+                SoulState: soulState,
+                Guardians: guardians),
+            path => Task.FromResult(documents.TryGetValue(path, out var json)
+                ? json
+                : null));
+
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
+        Assert.NotNull(result.CanonicalAuthorityJson);
+        var guardianSeed = Assert.IsType<JsonObject>(Assert.Single(
+            profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray()));
+        var guardianId = guardianSeed["actorId"]!.GetValue<string>();
+        var guardianOwner = Assert.Single(
+            result.Authority!.Entries.Values,
+            entry => entry.Key.OwnerKind == ResourceOwnerKind.AfterlifeActor &&
+                     entry.Key.ResourceOwnerId == guardianId);
+        Assert.Equal("chaos_sea", guardianOwner.Key.Realm);
+        Assert.Equal(new[] { "gacha_attempts" }, guardianOwner.ResourceCapabilities);
+        var profileAfterImage = result.OwnerAfterImages[
+            AfterlifeEntityProfileState.StatePath];
+        var canonicalProfile = Assert.IsType<JsonObject>(Assert.Single(
+            profileAfterImage[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray()));
+        Assert.True(canonicalProfile.ContainsKey(ActorMaterializationContract.PropertyName));
+        Assert.False(canonicalProfile.ContainsKey("resourceMaterialization"));
+        var binding = Assert.IsType<JsonObject>(Assert.Single(
+            canonicalProfile[AfterlifeEntityProfileState.ResourceOwnerBindingsProperty]!
+                .AsArray()));
+        Assert.Equal("chaos_sea", binding["realm"]!.GetValue<string>());
+        Assert.Equal(guardianId, binding["resourceOwnerId"]!.GetValue<string>());
+        Assert.Empty(result.Authority.ValidateCanonicalAgreement(
+            result.StateAfterImage!,
+            result.HistoryAfterImage!));
+        var committed = result.OwnerAfterImages.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.ToJsonString(),
+            StringComparer.Ordinal);
+        committed[CanonicalResourceOwnerAuthorityComposer.AuthorityPath] =
+            result.CanonicalAuthorityJson!;
+        var existingSession = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            result.Definitions,
+            path => Task.FromResult(committed.TryGetValue(path, out var json)
+                ? json
+                : null),
+            result.StateAfterImage,
+            result.HistoryAfterImage,
+            CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
+        Assert.True(
+            existingSession.IsValid,
+            string.Join(Environment.NewLine, existingSession.Issues));
+
+        var repeated = await CanonicalResourceQuartetTransaction.ComposeExplicitBootstrapAsync(
+            pristine.Definitions!,
+            pristine.State!,
+            pristine.History!,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: profiles,
+                SoulState: soulState,
+                Guardians: guardians),
+            path => Task.FromResult(documents.TryGetValue(path, out var json)
+                ? json
+                : null));
+        Assert.True(repeated.IsValid, string.Join(Environment.NewLine, repeated.Issues));
+        Assert.Equal(
+            result.Definitions.ToCanonicalJson(),
+            repeated.Definitions.ToCanonicalJson());
+        Assert.Equal(
+            result.StateAfterImage!.ToCanonicalJson(),
+            repeated.StateAfterImage!.ToCanonicalJson());
+        Assert.Equal(
+            result.HistoryAfterImage!.ToCanonicalJson(),
+            repeated.HistoryAfterImage!.ToCanonicalJson());
+        Assert.Equal(result.CanonicalAuthorityJson, repeated.CanonicalAuthorityJson);
+        Assert.Equal(
+            result.OwnerAfterImages
+                .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
+                .Select(static pair => pair.Key + "|" + pair.Value.ToJsonString())
+                .ToArray(),
+            repeated.OwnerAfterImages
+                .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
+                .Select(static pair => pair.Key + "|" + pair.Value.ToJsonString())
+                .ToArray());
     }
 
     [Fact]
@@ -919,7 +1065,7 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
             "sideStrain",
             "tempoAdvantage",
             "counterPayoff",
-            "actionEconomy",
+            "spiritual_action_points",
             "actionCostAudit",
             "DTO",
             "JSON",

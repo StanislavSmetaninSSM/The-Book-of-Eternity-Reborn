@@ -117,6 +117,50 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces()
+    {
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");
+        var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var qteExample = ReadRepoFile("Examples", "E_CLI_QTE_Offer.txt");
+
+        foreach (var document in new[] { apiSpec, daemonSpec, qteRules, stepGuide, qteExample })
+        {
+            foreach (var requiredText in new[]
+            {
+                "resourceChanges",
+                "damage",
+                "player_current",
+                "narrative_outcome",
+                "qte_terminal",
+                "sourceId",
+                "current*Change"
+            })
+            {
+                Assert.Contains(requiredText, document, StringComparison.Ordinal);
+            }
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "positive exact decimal",
+            "EVERY terminal outcome",
+            "only the selected branch",
+            "Exact retry is replay",
+            "resourceDefinitionCreations",
+            "resourceCapacityChanges"
+        })
+        {
+            Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("mortal_qte_terminal_resource_penalty_v1", qteExample, StringComparison.Ordinal);
+        Assert.Contains("turn_42:qte_terminal:2:resource:1", qteExample, StringComparison.Ordinal);
+        Assert.Contains("turn_42:qte_terminal:3:resource:1", qteExample, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void QteLayoutIndependentKeyboardContract_IsDocumentedForGmAndPlayers()
     {
         var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");
@@ -1014,6 +1058,7 @@ public sealed class PromptDocumentationCoverageTests
         var block11 = ReadRepoFile("Rules", "Block_11.txt");
         var block19A = ReadRepoFile("Rules", "Block_19.A.txt");
         var block20 = ReadRepoFile("Rules", "Block_20.txt");
+        var block9Example = ReadRepoFile("Examples", "E_Block_9.txt");
         var block10Example = ReadRepoFile("Examples", "E_Block_10.txt");
         var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
         var api = ReadRepoFile("CLI_API_Specification.md");
@@ -1060,7 +1105,7 @@ public sealed class PromptDocumentationCoverageTests
                 "Previous-life item sidecars are rollback-only and are not the current GM baseline.",
                 bootstrapGuidance,
                 StringComparison.Ordinal);
-            Assert.Contains("game_state/inventory/item_resources.json", bootstrapGuidance, StringComparison.Ordinal);
+            Assert.DoesNotContain("game_state/inventory/item_resources.json", bootstrapGuidance, StringComparison.Ordinal);
             Assert.Contains("game_state/inventory/item_bonds.json", bootstrapGuidance, StringComparison.Ordinal);
             Assert.Contains("game_state/inventory/item_text_updates.json", bootstrapGuidance, StringComparison.Ordinal);
             Assert.Contains("game_state/npcs/item_journals.json", bootstrapGuidance, StringComparison.Ordinal);
@@ -1082,6 +1127,18 @@ public sealed class PromptDocumentationCoverageTests
         }
 
         Assert.Contains("craft_output", block9, StringComparison.Ordinal);
+        Assert.Contains("resourceChanges operation=damage", block9, StringComparison.Ordinal);
+        Assert.Contains("resourceChanges operation=restore", block9, StringComparison.Ordinal);
+        Assert.Contains("client resource projection", block9, StringComparison.Ordinal);
+        Assert.DoesNotContain("new 'durability' value", block9, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"operation\": \"restore\"", block9Example, StringComparison.Ordinal);
+        Assert.Contains("\"resourceKey\": \"durability\"", block9Example, StringComparison.Ordinal);
+        Assert.DoesNotContain("durability becomes", block9Example, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("resourceMaterialization.resources[]", stepExample, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "write durability as a percentage string",
+            stepExample,
+            StringComparison.OrdinalIgnoreCase);
         Assert.Contains("exact itemId", block11, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("permanent parent item IDs", block10, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("container names, exact from Context", block10, StringComparison.OrdinalIgnoreCase);
@@ -1467,6 +1524,379 @@ public sealed class PromptDocumentationCoverageTests
             StringComparison.Ordinal);
         Assert.Contains("compact_mortal_item_materialization_template", daemon, StringComparison.Ordinal);
         Assert.Contains("$script:MortalItemMaterializationDirective", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void UnifiedResourceAuthorityGuidance_CoversMortalCommandsOwnersAndNoDirectWrites()
+    {
+        var api = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var launcher = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var workedExample = ReadRepoFile("Examples", "E_CLI_Mortal_Resources.txt");
+        var rules = string.Join('\n',
+            ReadRepoFile("Rules", "Block_2.txt"),
+            ReadRepoFile("Rules", "Block_5.txt"),
+            ReadRepoFile("Rules", "Block_6.txt"),
+            ReadRepoFile("Rules", "Block_12.txt"),
+            ReadRepoFile("Rules", "Block_15.txt"),
+            ReadRepoFile("Rules", "Block_17.txt"));
+
+        foreach (var entrypoint in new[] { api, daemonSpec, launcher, taskGuide, daemon })
+        {
+            Assert.Contains("Unified Resource Authority v1", entrypoint, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("resourceDefinitionCreations", entrypoint, StringComparison.Ordinal);
+            Assert.Contains("resourceCapacityChanges", entrypoint, StringComparison.Ordinal);
+            Assert.Contains("resourceChanges", entrypoint, StringComparison.Ordinal);
+            Assert.Contains("game_state/resources/resource_state.json", entrypoint, StringComparison.Ordinal);
+            Assert.Contains("game_state/resources/resource_history.json", entrypoint, StringComparison.Ordinal);
+            Assert.Contains("client-owned", entrypoint, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("no migration", entrypoint, StringComparison.OrdinalIgnoreCase);
+        }
+
+        var daemonDirectives = daemon
+            .Split('\n')
+            .Where(static line => line.TrimStart().StartsWith(
+                "$script:UnifiedResourceAuthorityDirective =",
+                StringComparison.Ordinal))
+            .ToArray();
+        Assert.Equal(2, daemonDirectives.Length);
+        foreach (var directive in daemonDirectives)
+        {
+            Assert.Contains(
+                "game_state/resources/resource_owner_authority.json",
+                directive,
+                StringComparison.Ordinal);
+            Assert.Contains("guarded client-owned quartet", directive, StringComparison.Ordinal);
+            Assert.Contains("Only Fresh New Game", directive, StringComparison.Ordinal);
+            Assert.Contains("Mortal-incarnation bootstrap", directive, StringComparison.Ordinal);
+            Assert.Contains("missing or stale authority", directive, StringComparison.Ordinal);
+            Assert.Contains("without migration or self-heal", directive, StringComparison.Ordinal);
+            Assert.Contains("preset/freeform Guardian", directive, StringComparison.Ordinal);
+            Assert.Contains("one deterministic coordinated resource write set", directive, StringComparison.Ordinal);
+            Assert.Contains("identical accepted input yields identical authority", directive, StringComparison.Ordinal);
+        }
+
+        foreach (var ownerKind in new[]
+                 {
+                     "player", "npc", "combatant", "combat_group_member", "item", "vehicle"
+                 })
+        {
+            Assert.Contains(ownerKind, rules, StringComparison.Ordinal);
+        }
+
+        foreach (var operation in new[]
+                 {
+                     "initialize", "reconfigure", "suspend", "resume", "retire",
+                     "damage", "restore", "spend", "gain"
+                 })
+        {
+            Assert.Contains(operation, api + '\n' + workedExample, StringComparison.Ordinal);
+        }
+
+        foreach (var contractId in new[]
+                 {
+                     "mortal_resource_setting_definition_initialize_v1",
+                     "mortal_resource_player_npc_mutation_v1",
+                     "mortal_resource_item_combat_mutation_v1",
+                     "mortal_resource_capacity_reconfigure_v1",
+                     "mortal_resource_bounded_receipt_v1",
+                     "mortal_resource_illegal_direct_write_v1"
+                 })
+        {
+            Assert.Contains(contractId, workedExample, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("full-turn resubmission", workedExample, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("client-owned publication", workedExample, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"currentHealth\":", workedExample, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"healthPercentage\":", workedExample, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"maxDurability\":", workedExample, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void CompleteEffectMaterializationContract_IsRequiredAcrossMortalGmEntrypoints()
+    {
+        var common = ReadRepoFile("OtherGuides", "Effect_Materialization_Contract.md");
+        var gmDocuments = new[]
+        {
+            ReadRepoFile("Rules", "Block_2.txt"),
+            ReadRepoFile("Rules", "Block_5.txt"),
+            ReadRepoFile("Rules", "Block_6.txt"),
+            ReadRepoFile("Rules", "Block_7.txt"),
+            ReadRepoFile("Rules", "Block_8.txt"),
+            ReadRepoFile("Rules", "Block_10.txt"),
+            ReadRepoFile("Rules", "Block_12.txt"),
+            ReadRepoFile("Rules", "Block_14.txt"),
+            ReadRepoFile("Rules", "Block_15.txt"),
+            ReadRepoFile("Rules", "Block_17.txt"),
+            ReadRepoFile("Rules", "Block_19.C.txt"),
+            ReadRepoFile("Rules", "Block_25.txt"),
+            ReadRepoFile("Rules", "Block_25.A.txt"),
+            ReadRepoFile("Rules", "Block_CLI_Operations.txt"),
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("TaskGuides", "CLI_Step_Main.txt"),
+            ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1")
+        };
+        var corpus = string.Join('\n', gmDocuments.Prepend(common));
+
+        foreach (var document in gmDocuments)
+        {
+            Assert.Contains("Effect Materialization v1", document, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Effect_Materialization_Contract.md", document, StringComparison.Ordinal);
+        }
+
+        foreach (var required in new[]
+                 {
+                     "effectChanges[]",
+                     "effectResolutionReceipts[]",
+                     "effectEventReports[]",
+                     "owner_critical_failure",
+                     "mortal_action_roll",
+                     "activeEffectDefinitions[]",
+                     "effect_identity_index.json",
+                     "pending_effect_resolutions.json",
+                     "full-turn resubmission",
+                     "same complete semantic turn",
+                     "current packet",
+                     "characteristic_modifier",
+                     "roll_modifier",
+                     "resistance_modifier",
+                     "periodic_damage",
+                     "periodic_restore",
+                     "action_control",
+                     "event_reaction",
+                     "wound_consequence",
+                     "afterlife_combat_condition",
+                     "independent",
+                     "stack",
+                     "refresh",
+                     "replace",
+                     "merge",
+                     "turns",
+                     "uses",
+                     "until_time",
+                     "scene",
+                     "source_bound",
+                     "condition_bound",
+                     "permanent",
+                     "manual",
+                     "effect removal never heals or deletes the wound"
+                 })
+        {
+            Assert.Contains(required, corpus, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var reactionBoundaryRule in new[]
+                 {
+                     "before_current_event",
+                     "after_component",
+                     "after_current_event",
+                     "only dependent",
+                     "`after_component` output is withheld",
+                     "cannot cancel siblings",
+                     "accepted in the frozen batch",
+                     "next accepted mechanics transition",
+                     "may replace one prior valid policy",
+                     "pre-reaction authority",
+                     "retired identity immediately",
+                     "`definitionKey` is excluded",
+                     "later or nested",
+                     "`N, N-1, ...`",
+                     "preserves both the outer producer"
+                 })
+        {
+            Assert.Contains(
+                reactionBoundaryRule,
+                common,
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var forbidden in new[]
+                 {
+                     "playerActiveEffectsChanges",
+                     "NPCEffectChanges",
+                     "\"duration\": 999",
+                     "\"duration\": -1"
+                 })
+        {
+            Assert.DoesNotContain(forbidden, corpus, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void CompleteEffectMaterialization_ActiveRulesAndExamplesContainNoPositiveLegacyRoutes()
+    {
+        var roots = new[]
+        {
+            Path.Combine(TestRepoPaths.RepoRoot, "Rules"),
+            Path.Combine(TestRepoPaths.RepoRoot, "Examples")
+        };
+        var forbidden = new[]
+        {
+            "playerActiveEffectsChanges",
+            "playeractiveeffectschanges",
+            "NPCEffectChanges",
+            "WoundReference",
+            "sourceWoundId",
+            "generatedEffects"
+        };
+        var failures = new List<string>();
+
+        foreach (var path in roots.SelectMany(root =>
+                     Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)))
+        {
+            var extension = Path.GetExtension(path);
+            if (extension is not (".txt" or ".md" or ".json"))
+                continue;
+
+            var text = File.ReadAllText(path);
+            if (string.Equals(
+                    Path.GetFileName(path),
+                    "E_CLI_Effect_Materialization.txt",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                var negativeHeading = text.IndexOf(
+                    "## effect_legacy_rejection_v1",
+                    StringComparison.Ordinal);
+                Assert.True(negativeHeading >= 0);
+                text = text[..negativeHeading];
+            }
+
+            foreach (var token in forbidden)
+            {
+                if (text.Contains(token, StringComparison.Ordinal))
+                {
+                    failures.Add(
+                        $"{Path.GetRelativePath(TestRepoPaths.RepoRoot, path)}: {token}");
+                }
+            }
+        }
+
+        Assert.True(
+            failures.Count == 0,
+            "Current positive rules/examples must use Effect Materialization v1; " +
+            "legacy spellings are permitted only in the explicitly labeled negative example." +
+            Environment.NewLine +
+            string.Join(Environment.NewLine, failures));
+    }
+
+    [Fact]
+    public void CompleteEffectMaterializationSourceOwners_DeclareDefinitionsAndTopLevelApplication()
+    {
+        var ownerDocuments = new Dictionary<string, string[]>(StringComparer.Ordinal)
+        {
+            ["Block_7.txt"] = new[] { "\"kind\": \"skill\"", "combatEffect" },
+            ["Block_8.txt"] = new[] { "\"kind\": \"skill\"", "structuredBonuses" },
+            ["Block_10.txt"] = new[] { "\"kind\": \"item\"", "combatEffect", "structuredBonuses" },
+            ["Block_18.txt"] = new[] { "\"kind\": \"quest\"", "questId", "initialId" },
+            ["Block_20.txt"] = new[]
+            {
+                "\"kind\": \"location\"", "\"kind\": \"hazard\"", "locationId", "hazardId"
+            },
+            ["Block_21.txt"] = new[] { "\"kind\": \"faction\"", "structuredBonuses" },
+            ["Block_30_System_Lore_Context.txt"] = new[]
+            {
+                "\"kind\": \"world_event\"", "worldEventsLog", "eventId"
+            }
+        };
+
+        foreach (var (file, sourceSpecificTokens) in ownerDocuments)
+        {
+            var document = ReadRepoFile("Rules", file);
+            foreach (var sharedToken in new[]
+                     {
+                         "Effect Materialization v1",
+                         "Effect_Materialization_Contract.md",
+                         "activeEffectDefinitions[]",
+                         "effectChanges[]",
+                         "does not apply itself"
+                     })
+            {
+                Assert.Contains(sharedToken, document, StringComparison.OrdinalIgnoreCase);
+            }
+            foreach (var token in sourceSpecificTokens)
+                Assert.Contains(token, document, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void DeferredQteEffectReceiptContract_IsRequiredAcrossGmEntrypoints()
+    {
+        var detailedDocuments = new[]
+        {
+            ReadRepoFile("OtherGuides", "Effect_Materialization_Contract.md"),
+            ReadRepoFile("Rules", "Block_CLI_QTE.txt"),
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md")
+        };
+
+        foreach (var document in detailedDocuments)
+        {
+            foreach (var required in new[]
+                     {
+                         "qte_deferred_effect_resolution",
+                         "input/qte_effect_resolution_request.json",
+                         "output/qte_effect_resolution_receipts.json",
+                         "ready/qte_effect_resolution_complete.json",
+                         "Complete-BoeQteEffectResolution",
+                         "safePacket",
+                         "effectResolutionReceipts[]",
+                         "awaiting_receipt",
+                        "receipt-only",
+                        "not an ordinary turn",
+                        "Do not call",
+                        "Complete-BoeValidationRepair",
+                        "ordinary validation-repair",
+                        "current wave",
+                         "restart",
+                         "story",
+                         "progression",
+                         "turn counter",
+                         "atomically"
+                     })
+            {
+                Assert.Contains(required, document, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        foreach (var pointerDocument in new[]
+                 {
+                     ReadRepoFile("Rules", "Block_CLI_Operations.txt"),
+                     ReadRepoFile("TaskGuides", "CLI_Step_Main.txt")
+                 })
+        {
+            Assert.Contains(
+                "Effect_Materialization_Contract.md",
+                pointerDocument,
+                StringComparison.Ordinal);
+            Assert.Contains(
+                "input/qte_effect_resolution_request.json",
+                pointerDocument,
+                StringComparison.Ordinal);
+            Assert.Contains(
+                "Complete-BoeQteEffectResolution",
+                pointerDocument,
+                StringComparison.Ordinal);
+            Assert.Contains(
+                "not an ordinary turn",
+                pointerDocument,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(
+                "Do not call",
+                pointerDocument,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(
+                "Complete-BoeValidationRepair",
+                pointerDocument,
+                StringComparison.Ordinal);
+            Assert.Contains(
+                "ordinary validation-repair",
+                pointerDocument,
+                StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     private static string ReadRepoFile(params string[] parts) =>

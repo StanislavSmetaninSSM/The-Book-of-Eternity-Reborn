@@ -23,6 +23,7 @@ internal sealed class QteSceneServiceHooks
     internal Func<Task>? BeforeDarenProfileWriteAsync { get; init; }
     internal Func<Task>? AfterDarenProfileWrittenAsync { get; init; }
     internal Func<Task>? BeforeQteCharacteristicReadAsync { get; init; }
+    internal Func<string, Task>? AfterDeferredEffectMutationAsync { get; init; }
 }
 
 public sealed partial class QteSceneService
@@ -80,6 +81,10 @@ public sealed partial class QteSceneService
                 QteOfferPath,
                 QteRuntimePath,
                 QteHistoryPath,
+                QteDeferredEffectContinuation.StatePath,
+                QteDeferredEffectContinuation.RequestPath,
+                QteDeferredEffectContinuation.ReceiptPath,
+                QteDeferredEffectContinuation.ReadyPath,
                 "game_state/player/experience.json",
                 "ready/turn_complete.json",
                 "ready/turn_error.json"
@@ -113,9 +118,17 @@ public sealed partial class QteSceneService
 
     private sealed class QteNormalizationBaseline
     {
-        public Dictionary<string, string?> RestoreBackupsByPath { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, QteNormalizationBaselineEntry> RestoreEntriesByPath { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> NormalizerBackupsByPath { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public bool CleanupAllowed { get; private set; }
+
+        public void AllowCleanup() => CleanupAllowed = true;
     }
+
+    private sealed record QteNormalizationBaselineEntry(
+        bool OriginallyExisted,
+        string? BackupPath);
 
     internal interface IQteMiniGameLiveRenderer
     {
@@ -508,10 +521,111 @@ public sealed partial class QteSceneService
         var state = await LoadRuntimeStateAsync();
         if (state.ActiveScene?.Offer == null || string.IsNullOrWhiteSpace(state.ActiveScene.CurrentChapterId))
             return null;
+        if (string.Equals(
+                state.ActiveScene.EffectResolutionState,
+                "awaiting_receipt",
+                StringComparison.Ordinal))
+        {
+            return new QteSceneCompletion
+            {
+                QteId = state.ActiveScene.Offer.QteId,
+                AwaitingEffectResolution = true,
+                Response = new GameResponse
+                {
+                    Response = "Разрешение эффектов QTE ожидает квитанции ведущего."
+                }
+            };
+        }
 
         AnsiConsole.MarkupLine("[yellow]⚠ Обнаружена незавершённая QTE-сцена. Продолжение...[/]");
         await Task.Delay(800);
         return await ExecuteActiveSceneAsync(state, currentTurnNumber);
+    }
+
+    public async Task<QteSceneCompletion?> ResumeDeferredEffectResolutionAsync(
+        int currentTurnNumber,
+        bool allowPreexistingStateIssues = false)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await ResumeDeferredEffectResolutionAsync(
+            writeLease,
+            currentTurnNumber,
+            allowPreexistingStateIssues);
+    }
+
+    internal async Task<QteSceneCompletion?> ResumeDeferredEffectResolutionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        int currentTurnNumber,
+        bool allowPreexistingStateIssues = false)
+    {
+        EnsureCanonicalWriteLease(writeLease);
+        var readyExists = _fs.FileExists(
+            QteDeferredEffectContinuation.ReadyPath);
+        var state = await LoadRuntimeStateAsync(writeLease);
+        var active = state.ActiveScene;
+        var offer = active?.Offer;
+        if (active == null || offer == null ||
+            !string.Equals(
+                active.EffectResolutionState,
+                "awaiting_receipt",
+                StringComparison.Ordinal))
+        {
+            if (!readyExists)
+                return null;
+            throw new InvalidDataException(
+                "qte_deferred_receipt_runtime_missing: ready receipt authority has no matching awaiting QTE runtime.");
+        }
+        if (!readyExists)
+        {
+            return new QteSceneCompletion
+            {
+                QteId = offer.QteId,
+                AwaitingEffectResolution = true,
+                Response = new GameResponse
+                {
+                    Response = "Разрешение эффектов QTE ожидает квитанции ведущего."
+                }
+            };
+        }
+        EnsureBoundTurnAuthority(
+            offer,
+            active.AcceptedAtTurn,
+            "QTE deferred receipt resume");
+
+        var continuationJson = await ReadCanonicalFileAsync(
+            writeLease,
+            QteDeferredEffectContinuation.StatePath) ??
+            throw new InvalidDataException(
+                "qte_deferred_continuation_missing: receipt resume requires continuation authority.");
+        JsonObject continuation;
+        try
+        {
+            continuation = JsonNode.Parse(continuationJson) as JsonObject ??
+                throw new InvalidDataException(
+                    "qte_deferred_continuation_invalid: receipt resume continuation must be an object.");
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidDataException(
+                "qte_deferred_continuation_invalid: receipt resume continuation is malformed.",
+                ex);
+        }
+        var terminal = ResolvePersistedTerminalSelection(
+            continuation,
+            offer);
+        return await CompleteTerminalSceneAsync(
+            writeLease,
+            state,
+            active,
+            offer,
+            terminal.Chapter,
+            terminal.Action,
+            terminal.Outcome,
+            terminal.Grade,
+            currentTurnNumber,
+            allowPreexistingStateIssues,
+            appendScoreToResponse: true,
+            showTerminalScreen: false);
     }
 
     public async Task<QteSceneCompletion> StartAcceptedSceneAsync(QteOffer offer, int currentTurnNumber)
@@ -545,11 +659,32 @@ public sealed partial class QteSceneService
         QteOffer offer,
         int currentTurnNumber)
     {
+        if (writeLease == null)
+        {
+            await using var ownedLease =
+                await _fs.AcquireCanonicalWriteLeaseAsync();
+            return await BeginAcceptedSceneCoreAsync(
+                ownedLease,
+                offer,
+                currentTurnNumber);
+        }
+
+        EnsureCanonicalWriteLease(writeLease);
         EnsureBoundTurnAuthority(
             offer,
             currentTurnNumber,
             "QTE acceptance");
         var state = await LoadRuntimeStateAsync(writeLease);
+        if (state.ActiveScene != null)
+        {
+            throw new InvalidOperationException(
+                "qte_deferred_continuation_active_scene_conflict: another QTE scene is already active.");
+        }
+        var capture = await QteDeferredEffectContinuation.CaptureAsync(
+            _fs,
+            writeLease,
+            offer,
+            currentTurnNumber);
         state.PendingOffer = offer;
         state.ActiveScene = new ActiveQteSceneState
         {
@@ -558,24 +693,80 @@ public sealed partial class QteSceneService
                 ? offer.StartChapterId
                 : offer.Chapters.FirstOrDefault()?.ChapterId ?? "",
             AcceptedAtTurn = currentTurnNumber,
-            ScoreState = BuildInitialScoreState(offer.ScoreModel)
+            ScoreState = BuildInitialScoreState(offer.ScoreModel),
+            DeferredEffectContinuationId = capture.ContinuationId,
+            DeferredEffectContinuationFingerprint =
+                capture.AuthorityFingerprint,
+            EffectResolutionState = "armed"
         };
-        await SaveRuntimeStateAsync(writeLease, state);
-        ClearOfferFileCore(writeLease);
+        var runtimeJson = JsonSerializer.Serialize(state, JsonOpts);
+        if (_hooks?.BeforeRuntimeWriteAsync != null)
+            await _hooks.BeforeRuntimeWriteAsync();
+
+        var writes = capture.SealedRoots
+            .Select(static pair =>
+                CoordinatedStateWriteHelper.CreateExactGuardWrite(
+                    pair.Key,
+                    pair.Value))
+            .Concat(
+            [
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    QteDeferredEffectContinuation.StatePath,
+                    PreviousJson: null,
+                    NextJson: capture.ContinuationJson,
+                    RequireCurrentBaseline: true,
+                    ExactPrevious: capture.ContinuationBeforeImage),
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    QteRuntimePath,
+                    PreviousJson: null,
+                    NextJson: runtimeJson,
+                    RequireCurrentBaseline: true,
+                    ExactPrevious: capture.RuntimeBeforeImage),
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    QteOfferPath,
+                    PreviousJson: null,
+                    NextJson: null,
+                    RequireCurrentBaseline: true,
+                    ExactPrevious: capture.OfferBeforeImage)
+            ])
+            .ToArray();
+        var committed = await CoordinatedStateWriteHelper.TryCommitWithHookAsync(
+            _fs,
+            writeLease,
+            async applied =>
+            {
+                if (string.Equals(
+                        applied.Path,
+                        QteRuntimePath,
+                        StringComparison.Ordinal) &&
+                    _hooks?.AfterRuntimeWrittenAsync != null)
+                {
+                    await _hooks.AfterRuntimeWrittenAsync(state);
+                }
+            },
+            writes);
+        if (!committed)
+        {
+            throw new InvalidOperationException(
+                "qte_deferred_continuation_accept_conflict: sealed authority changed before QTE acceptance could publish.");
+        }
         return state;
     }
 
-    public Task<QteActionResolution> ResolveActiveActionAsync(
+    public async Task<QteActionResolution> ResolveActiveActionAsync(
         string actionId,
         string? submittedGrade,
         int currentTurnNumber,
-        bool allowPreexistingStateIssues = false) =>
-        ResolveActiveActionCoreAsync(
-            writeLease: null,
+        bool allowPreexistingStateIssues = false)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await ResolveActiveActionCoreAsync(
+            writeLease,
             actionId,
             submittedGrade,
             currentTurnNumber,
             allowPreexistingStateIssues);
+    }
 
     internal Task<QteActionResolution> ResolveActiveActionAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -632,27 +823,32 @@ public sealed partial class QteSceneService
             if (outcome == null)
                 throw new InvalidOperationException($"QTE outcome '{target.TerminalOutcomeId}' not found.");
 
-            var finalResponse = await ApplyTerminalOutcomeValidatedStateChangesAsync(
+            var completion = await CompleteTerminalSceneAsync(
                 writeLease,
-                outcome,
-                allowPreexistingStateIssues);
-            var scoreSummary = BuildFinalScoreSummary(offer.ScoreModel, active.ScoreState);
-            var summary = BuildCompletionSummary(offer, outcome, grade, scoreSummary);
-            await AppendHistoryAsync(
-                writeLease,
+                state,
+                active,
                 offer,
+                chapter,
+                action,
                 outcome,
                 grade,
-                active.AcceptedAtTurn,
                 currentTurnNumber,
-                summary,
-                scoreSummary,
-                active.ScoreState?.Audit);
+                allowPreexistingStateIssues,
+                appendScoreToResponse: false,
+                showTerminalScreen: false);
 
-            state.PendingOffer = null;
-            state.ActiveScene = null;
-            state.LastResolvedQteSummaryPendingReminder = $"{summary}. GM summary: {outcome.GmSummary}";
-            await SaveRuntimeStateAsync(writeLease, state);
+            if (completion.AwaitingEffectResolution)
+            {
+                return new QteActionResolution
+                {
+                    State = "AwaitingEffectResolution",
+                    QteId = offer.QteId,
+                    ChapterId = chapter.ChapterId,
+                    ActionId = action.ActionId,
+                    Grade = grade.ToString().ToLowerInvariant(),
+                    ResultText = resultText
+                };
+            }
 
             return new QteActionResolution
             {
@@ -662,14 +858,7 @@ public sealed partial class QteSceneService
                 ActionId = action.ActionId,
                 Grade = grade.ToString().ToLowerInvariant(),
                 ResultText = resultText,
-                Completion = new QteSceneCompletion
-                {
-                    QteId = offer.QteId,
-                    OutcomeId = outcome.OutcomeId,
-                    Summary = summary,
-                    Response = finalResponse,
-                    ScoreSummary = scoreSummary
-                }
+                Completion = completion
             };
         }
 
@@ -1087,24 +1276,19 @@ public sealed partial class QteSceneService
                 if (outcome == null)
                     throw new InvalidOperationException($"QTE outcome '{target.TerminalOutcomeId}' not found.");
 
-                var scoreSummary = BuildFinalScoreSummary(offer.ScoreModel, active.ScoreState);
-                var finalResponse = await ApplyTerminalOutcomeAsync(outcome, scoreSummary);
-                var summary = BuildCompletionSummary(offer, outcome, grade, scoreSummary);
-                await AppendHistoryAsync(offer, outcome, grade, active.AcceptedAtTurn, currentTurnNumber, summary, scoreSummary, active.ScoreState?.Audit);
-
-                state.PendingOffer = null;
-                state.ActiveScene = null;
-                state.LastResolvedQteSummaryPendingReminder = $"{summary}. GM summary: {outcome.GmSummary}";
-                await SaveRuntimeStateAsync(state);
-
-                return new QteSceneCompletion
-                {
-                    QteId = offer.QteId,
-                    OutcomeId = outcome.OutcomeId,
-                    Summary = summary,
-                    Response = finalResponse,
-                    ScoreSummary = scoreSummary
-                };
+                return await CompleteTerminalSceneAsync(
+                    writeLease: null,
+                    state,
+                    active,
+                    offer,
+                    chapter,
+                    action,
+                    outcome,
+                    grade,
+                    currentTurnNumber,
+                    allowPreexistingStateIssues: false,
+                    appendScoreToResponse: true,
+                    showTerminalScreen: true);
             }
 
             if (string.IsNullOrWhiteSpace(target.NextChapterId))
@@ -1427,17 +1611,327 @@ public sealed partial class QteSceneService
         }
     }
 
-    private async Task<GameResponse> ApplyTerminalOutcomeAsync(
-        QteTerminalOutcome outcome,
-        QteScoreSummary? scoreSummary)
+    private static (
+        QteChapter Chapter,
+        QteAction Action,
+        QteTerminalOutcome Outcome,
+        QteGrade Grade) ResolvePersistedTerminalSelection(
+            JsonObject continuation,
+            QteOffer offer)
     {
-        var response = BuildTerminalOutcomeResponse(outcome);
-        AppendFinalScoreToResponse(response, scoreSummary);
-        response = await ApplyTerminalOutcomeValidatedStateChangesAsync(
-            writeLease: null,
-            response);
-        await ShowTerminalOutcomeScreenAsync(outcome, scoreSummary);
-        return response;
+        if (continuation["selectedTerminalBinding"] is not JsonObject selected)
+        {
+            throw new InvalidDataException(
+                "qte_deferred_receipt_selection_missing: awaiting continuation has no terminal selection.");
+        }
+        static string Text(JsonObject root, string field)
+        {
+            var value = root[field]?.GetValue<string>();
+            return ResourceMaterializationContract.IsExactIdentifier(value)
+                ? value!
+                : throw new InvalidDataException(
+                    $"qte_deferred_receipt_selection_invalid: '{field}' must be an exact identifier.");
+        }
+
+        var chapterId = Text(selected, "chapterId");
+        var actionId = Text(selected, "actionId");
+        var outcomeId = Text(selected, "outcomeId");
+        var chapter = offer.Chapters.SingleOrDefault(candidate =>
+            string.Equals(
+                candidate.ChapterId,
+                chapterId,
+                StringComparison.Ordinal)) ??
+            throw new InvalidDataException(
+                "qte_deferred_receipt_selection_invalid: selected chapter is absent from the sealed offer.");
+        var action = chapter.Actions.SingleOrDefault(candidate =>
+            string.Equals(
+                candidate.ActionId,
+                actionId,
+                StringComparison.Ordinal)) ??
+            throw new InvalidDataException(
+                "qte_deferred_receipt_selection_invalid: selected action is absent from the sealed offer.");
+        var outcome = offer.TerminalOutcomes.SingleOrDefault(candidate =>
+            string.Equals(
+                candidate.OutcomeId,
+                outcomeId,
+                StringComparison.Ordinal)) ??
+            throw new InvalidDataException(
+                "qte_deferred_receipt_selection_invalid: selected outcome is absent from the sealed offer.");
+        if (selected["outcomeOrdinal"] is not JsonValue ordinalNode ||
+            !ordinalNode.TryGetValue<int>(out var ordinal) ||
+            ordinal <= 0 ||
+            ordinal > offer.TerminalOutcomes.Count ||
+            !ReferenceEquals(offer.TerminalOutcomes[ordinal - 1], outcome))
+        {
+            throw new InvalidDataException(
+                "qte_deferred_receipt_selection_invalid: selected outcome ordinal differs from the sealed offer.");
+        }
+        var grade = Text(selected, "grade") switch
+        {
+            "success" => QteGrade.Success,
+            "partial" => QteGrade.Partial,
+            "fail" => QteGrade.Fail,
+            _ => throw new InvalidDataException(
+                "qte_deferred_receipt_selection_invalid: selected grade is unsupported.")
+        };
+        return (chapter, action, outcome, grade);
+    }
+
+    private async Task<QteSceneCompletion> CompleteTerminalSceneAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        QteRuntimeState state,
+        ActiveQteSceneState active,
+        QteOffer offer,
+        QteChapter chapter,
+        QteAction action,
+        QteTerminalOutcome outcome,
+        QteGrade grade,
+        int currentTurnNumber,
+        bool allowPreexistingStateIssues,
+        bool appendScoreToResponse,
+        bool showTerminalScreen)
+    {
+        if (writeLease == null)
+        {
+            QteSceneCompletion completion;
+            await using (var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                completion = await CompleteTerminalSceneAsync(
+                    ownedLease,
+                    state,
+                    active,
+                    offer,
+                    chapter,
+                    action,
+                    outcome,
+                    grade,
+                    currentTurnNumber,
+                    allowPreexistingStateIssues,
+                    appendScoreToResponse,
+                    showTerminalScreen: false);
+            }
+            if (showTerminalScreen && !completion.AwaitingEffectResolution)
+                await ShowTerminalOutcomeScreenAsync(outcome, completion.ScoreSummary);
+            return completion;
+        }
+        if (showTerminalScreen)
+        {
+            throw new InvalidOperationException(
+                "QTE terminal display must run outside the canonical write transaction.");
+        }
+
+        EnsureCanonicalWriteLease(writeLease);
+        EnsureBoundTurnAuthority(
+            offer,
+            active.AcceptedAtTurn,
+            "QTE terminal resource resolution");
+        var outcomeOrdinal = offer.TerminalOutcomes.FindIndex(candidate =>
+            ReferenceEquals(candidate, outcome)) + 1;
+        if (outcomeOrdinal <= 0)
+        {
+            throw new InvalidOperationException(
+                "Selected QTE terminal outcome is not part of the active offer authority.");
+        }
+
+        var selection = new QteTerminalResourceSelection(
+            active.AcceptedAtTurn,
+            offer.QteId,
+            chapter.ChapterId,
+            action.ActionId,
+            grade.ToString().ToLowerInvariant(),
+            outcomeOrdinal,
+            outcome.OutcomeId,
+            outcome.ResponseFragment);
+        QteDeferredAcceptedMechanicsPreparation? deferredPreparation = null;
+        QteDeferredEffectReceiptResume? receiptResume = null;
+        if (!string.IsNullOrWhiteSpace(
+                active.DeferredEffectContinuationId))
+        {
+            if (string.Equals(
+                    active.EffectResolutionState,
+                    "awaiting_receipt",
+                    StringComparison.Ordinal))
+            {
+                receiptResume = await QteDeferredEffectResolutionTransport
+                    .PrepareResumeAsync(
+                        _fs,
+                        writeLease,
+                        active,
+                        offer,
+                        selection);
+                deferredPreparation = receiptResume.Preparation;
+            }
+            else
+            {
+                deferredPreparation = await QteDeferredAcceptedMechanicsPlanner
+                    .PrepareAndSealTerminalSelectionAsync(
+                        _fs,
+                        writeLease,
+                        state,
+                        active,
+                        offer,
+                        selection);
+            }
+            if (deferredPreparation.Plan.AwaitsPendingResolution)
+            {
+                if (receiptResume != null)
+                {
+                    await QteDeferredEffectResolutionTransport
+                        .PublishNextWaveAsync(
+                            _fs,
+                            writeLease,
+                            active,
+                            receiptResume,
+                            _hooks?.AfterDeferredEffectMutationAsync);
+                    return new QteSceneCompletion
+                    {
+                        QteId = offer.QteId,
+                        OutcomeId = outcome.OutcomeId,
+                        AwaitingEffectResolution = true,
+                        Response = new GameResponse
+                        {
+                            Response =
+                                "Разрешение эффектов QTE ожидает следующую квитанцию ведущего."
+                        },
+                        ScoreSummary = BuildFinalScoreSummary(
+                            offer.ScoreModel,
+                            active.ScoreState)
+                    };
+                }
+                await QteDeferredEffectResolutionTransport
+                    .PublishAwaitingReceiptAsync(
+                        _fs,
+                        writeLease,
+                        active,
+                        deferredPreparation,
+                        _hooks?.AfterDeferredEffectMutationAsync);
+                return new QteSceneCompletion
+                {
+                    QteId = offer.QteId,
+                    OutcomeId = outcome.OutcomeId,
+                    AwaitingEffectResolution = true,
+                    Response = new GameResponse
+                    {
+                        Response = "Разрешение эффектов QTE ожидает квитанции ведущего."
+                    },
+                    ScoreSummary = BuildFinalScoreSummary(
+                        offer.ScoreModel,
+                        active.ScoreState)
+                };
+            }
+        }
+        var response = BuildTerminalOutcomeResponse(
+            selection.ResponseFragment,
+            outcome.FinalNarrative);
+        var scoreSummary = BuildFinalScoreSummary(offer.ScoreModel, active.ScoreState);
+        if (appendScoreToResponse)
+            AppendFinalScoreToResponse(response, scoreSummary);
+        var terminalPaths = new HashSet<string>(StringComparer.Ordinal)
+        {
+            QteHistoryPath,
+            QteRuntimePath
+        };
+        if (deferredPreparation != null)
+        {
+            terminalPaths.Add(QteDeferredEffectContinuation.StatePath);
+            terminalPaths.UnionWith(
+                deferredPreparation.Plan.TouchedPaths);
+        }
+        if (receiptResume != null)
+        {
+            terminalPaths.Add(QteDeferredEffectContinuation.RequestPath);
+            terminalPaths.Add(QteDeferredEffectContinuation.ReceiptPath);
+            terminalPaths.Add(QteDeferredEffectContinuation.ReadyPath);
+        }
+        var baseline = await CaptureQteNormalizationBaselineAsync(
+            writeLease,
+            response,
+            terminalPaths);
+        try
+        {
+            response = await ApplyTerminalOutcomeValidatedStateChangesAsync(
+                writeLease,
+                response,
+                allowPreexistingStateIssues,
+                selection,
+                deferredPreparation);
+            if (receiptResume != null)
+                await InvokeDeferredEffectMutationHookAsync("final:mechanics");
+            var summary = BuildCompletionSummary(offer, outcome, grade, scoreSummary);
+            await AppendHistoryAsync(
+                writeLease,
+                offer,
+                outcome,
+                grade,
+                active.AcceptedAtTurn,
+                currentTurnNumber,
+                summary,
+                scoreSummary,
+                active.ScoreState?.Audit);
+            if (receiptResume != null)
+                await InvokeDeferredEffectMutationHookAsync("final:history");
+
+            state.PendingOffer = null;
+            state.ActiveScene = null;
+            state.LastResolvedQteSummaryPendingReminder =
+                $"{summary}. GM summary: {outcome.GmSummary}";
+            await SaveRuntimeStateAsync(writeLease, state);
+            if (receiptResume != null)
+                await InvokeDeferredEffectMutationHookAsync("final:runtime");
+            if (receiptResume != null)
+            {
+                DeleteCanonicalFile(
+                    writeLease,
+                    QteDeferredEffectContinuation.RequestPath);
+                await InvokeDeferredEffectMutationHookAsync(
+                    $"final:{QteDeferredEffectContinuation.RequestPath}");
+                DeleteCanonicalFile(
+                    writeLease,
+                    QteDeferredEffectContinuation.ReceiptPath);
+                await InvokeDeferredEffectMutationHookAsync(
+                    $"final:{QteDeferredEffectContinuation.ReceiptPath}");
+                DeleteCanonicalFile(
+                    writeLease,
+                    QteDeferredEffectContinuation.ReadyPath);
+                await InvokeDeferredEffectMutationHookAsync(
+                    $"final:{QteDeferredEffectContinuation.ReadyPath}");
+            }
+            if (deferredPreparation != null)
+            {
+                await QteDeferredAcceptedMechanicsPlanner.MarkTerminalAsync(
+                    _fs,
+                    writeLease,
+                    deferredPreparation.SelectedTerminalBinding,
+                    deferredPreparation.Plan.InputFingerprint,
+                    receiptResume?.ResolvedWaveBinding);
+                if (receiptResume != null)
+                    await InvokeDeferredEffectMutationHookAsync(
+                        "final:continuation");
+            }
+            baseline.AllowCleanup();
+
+            return new QteSceneCompletion
+            {
+                QteId = offer.QteId,
+                OutcomeId = outcome.OutcomeId,
+                Summary = summary,
+                Response = response,
+                ScoreSummary = scoreSummary
+            };
+        }
+        catch (Exception originalFailure)
+        {
+            await RestoreQteNormalizationBaselineAfterFailureAsync(
+                writeLease,
+                baseline,
+                originalFailure,
+                refreshRequired: true);
+            throw;
+        }
+        finally
+        {
+            CleanupQteNormalizationBaseline(writeLease, baseline);
+        }
     }
 
     internal async Task<GameResponse> ApplyTerminalOutcomeValidatedStateChangesAsync(
@@ -1445,30 +1939,24 @@ public sealed partial class QteSceneService
         bool allowPreexistingStateIssues = false)
     {
         var response = BuildTerminalOutcomeResponse(outcome);
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         return await ApplyTerminalOutcomeValidatedStateChangesAsync(
-            writeLease: null,
-            response,
-            allowPreexistingStateIssues);
-    }
-
-    private Task<GameResponse> ApplyTerminalOutcomeValidatedStateChangesAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease,
-        QteTerminalOutcome outcome,
-        bool allowPreexistingStateIssues)
-    {
-        var response = BuildTerminalOutcomeResponse(outcome);
-        return ApplyTerminalOutcomeValidatedStateChangesAsync(
             writeLease,
             response,
             allowPreexistingStateIssues);
     }
 
     private async Task<GameResponse> ApplyTerminalOutcomeValidatedStateChangesAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease,
+        FileSystemManager.CanonicalWriteLease writeLease,
         GameResponse response,
-        bool allowPreexistingStateIssues = false)
+        bool allowPreexistingStateIssues = false,
+        QteTerminalResourceSelection? resourceSelection = null,
+        QteDeferredAcceptedMechanicsPreparation? deferredPreparation = null)
     {
-        var baseline = await CaptureQteNormalizationBaselineAsync(writeLease, response);
+        var baseline = await CaptureQteNormalizationBaselineAsync(
+            writeLease,
+            response,
+            deferredPreparation?.Plan.TouchedPaths);
         HashSet<string>? preexistingErrorFingerprints = null;
         if (allowPreexistingStateIssues)
         {
@@ -1481,6 +1969,11 @@ public sealed partial class QteSceneService
 
         try
         {
+            await ApplyTerminalResourceOutcomeAsync(
+                writeLease,
+                response,
+                resourceSelection,
+                deferredPreparation);
             await ApplyTerminalOutcomeStateChangesCoreAsync(
                 writeLease,
                 response,
@@ -1505,12 +1998,16 @@ public sealed partial class QteSceneService
                 throw new InvalidOperationException($"Локальный QTE outcome нарушил контракт состояния: {summary}");
             }
 
+            baseline.AllowCleanup();
             return response;
         }
-        catch
+        catch (Exception originalFailure)
         {
-            await RestoreQteNormalizationBaselineAsync(writeLease, baseline);
-            await RefreshGameStateAsync(writeLease);
+            await RestoreQteNormalizationBaselineAfterFailureAsync(
+                writeLease,
+                baseline,
+                originalFailure,
+                refreshRequired: true);
             throw;
         }
         finally
@@ -1529,79 +2026,219 @@ public sealed partial class QteSceneService
     internal async Task<GameResponse> ApplyTerminalOutcomeStateChangesAsync(QteTerminalOutcome outcome)
     {
         var response = BuildTerminalOutcomeResponse(outcome);
-        var baseline = await CaptureQteNormalizationBaselineAsync(writeLease: null, response);
+        RejectUnboundResourceSurfaces(response);
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var baseline = await CaptureQteNormalizationBaselineAsync(writeLease, response);
         try
         {
             await ApplyTerminalOutcomeStateChangesCoreAsync(
-                writeLease: null,
+                writeLease,
                 response,
                 baseline.NormalizerBackupsByPath);
+            baseline.AllowCleanup();
             return response;
         }
-        catch
+        catch (Exception originalFailure)
         {
-            await RestoreQteNormalizationBaselineAsync(writeLease: null, baseline);
+            await RestoreQteNormalizationBaselineAfterFailureAsync(
+                writeLease,
+                baseline,
+                originalFailure,
+                refreshRequired: false);
             throw;
         }
         finally
         {
-            CleanupQteNormalizationBaseline(writeLease: null, baseline);
+            CleanupQteNormalizationBaseline(writeLease, baseline);
         }
     }
 
     private GameResponse BuildTerminalOutcomeResponse(QteTerminalOutcome outcome)
+        => BuildTerminalOutcomeResponse(
+            outcome.ResponseFragment,
+            outcome.FinalNarrative);
+
+    private GameResponse BuildTerminalOutcomeResponse(
+        JsonObject? responseFragment,
+        string finalNarrative)
     {
-        var response = outcome.ResponseFragment != null
-            ? JsonSerializer.Deserialize<GameResponse>(outcome.ResponseFragment.ToJsonString(), JsonOpts)
+        if (responseFragment != null)
+            RejectMaterializationWithoutAcceptedContinuation(responseFragment);
+
+        var response = responseFragment != null
+            ? JsonSerializer.Deserialize<GameResponse>(responseFragment.ToJsonString(), JsonOpts)
             : new GameResponse();
 
         response ??= new GameResponse();
         if (string.IsNullOrWhiteSpace(response.Response))
-            response.Response = outcome.FinalNarrative;
+            response.Response = finalNarrative;
         response.ImagePrompt = null;
+        RejectMaterializationWithoutAcceptedContinuation(response);
         return response;
     }
 
+    private static void RejectMaterializationWithoutAcceptedContinuation(
+        JsonObject responseFragment)
+    {
+        var root = JsonSerializer.SerializeToElement(responseFragment, JsonOpts);
+        if (!ContainsRawAcceptedMechanicsMaterialization(root))
+            return;
+
+        throw new InvalidDataException(
+            "qte_terminal_accepted_mechanics_continuation_required: QTE raw item, effect, or owner materialization requires an immutable validated common-plan binding.");
+    }
+
+    private static void RejectMaterializationWithoutAcceptedContinuation(
+        GameResponse response)
+    {
+        var root = JsonSerializer.SerializeToElement(response, JsonOpts);
+        if (response.EffectChanges == null &&
+            !ContainsRawAcceptedMechanicsMaterialization(root))
+        {
+            return;
+        }
+
+        throw new InvalidDataException(
+            "qte_terminal_accepted_mechanics_continuation_required: QTE raw item, effect, or owner materialization requires an immutable validated common-plan binding.");
+    }
+
+    private static bool ContainsRawAcceptedMechanicsMaterialization(JsonElement node)
+    {
+        if (node.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in node.EnumerateArray())
+            {
+                if (ContainsRawAcceptedMechanicsMaterialization(item))
+                    return true;
+            }
+            return false;
+        }
+        if (node.ValueKind != JsonValueKind.Object)
+            return false;
+
+        foreach (var property in node.EnumerateObject())
+        {
+            if ((property.NameEquals("effectChanges") &&
+                 property.Value.ValueKind is not (JsonValueKind.Null or JsonValueKind.Undefined)) ||
+                property.NameEquals("resourceMaterialization") ||
+                property.NameEquals("creationRef") ||
+                (property.NameEquals("existedId") &&
+                 property.Value.ValueKind == JsonValueKind.Null) ||
+                ContainsRawAcceptedMechanicsMaterialization(property.Value))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private async Task ApplyTerminalResourceOutcomeAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        GameResponse response,
+        QteTerminalResourceSelection? selection,
+        QteDeferredAcceptedMechanicsPreparation? deferredPreparation = null)
+    {
+        if (selection == null)
+        {
+            RejectUnboundResourceSurfaces(response);
+            return;
+        }
+        if (deferredPreparation != null)
+        {
+            await QteDeferredAcceptedMechanicsPlanner.PublishAsync(
+                _fs,
+                writeLease,
+                deferredPreparation.Plan);
+            response.ResourceDefinitionCreations = null;
+            response.ResourceCapacityChanges = null;
+            response.ResourceChanges = null;
+            return;
+        }
+        var plan = await QteTerminalResourceOutcome.BuildAsync(
+            _fs,
+            writeLease,
+            selection);
+        if (!plan.IsValid)
+        {
+            var summary = string.Join("; ", plan.Issues.Take(8).Select(issue =>
+                string.IsNullOrWhiteSpace(issue.Code)
+                    ? $"{issue.FilePath}: {issue.Message}"
+                    : $"{issue.Code} at {issue.FilePath}"));
+            throw new InvalidOperationException(
+                "QTE terminal resource authority is invalid: " + summary);
+        }
+        if (plan.Writes.Count > 0 &&
+            !await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                writeLease,
+                plan.Writes.ToArray()))
+        {
+            throw new InvalidOperationException(
+                "qte_terminal_resource_commit_conflict: canonical resource quartet changed before commit.");
+        }
+
+        response.ResourceDefinitionCreations = null;
+        response.ResourceCapacityChanges = null;
+        response.ResourceChanges = null;
+    }
+
+    private static void RejectUnboundResourceSurfaces(GameResponse response)
+    {
+        if (response.ResourceDefinitionCreations == null &&
+            response.ResourceCapacityChanges == null &&
+            response.ResourceChanges == null)
+        {
+            return;
+        }
+        throw new InvalidOperationException(
+            "qte_terminal_resource_selection_required: resource arrays require the exact active QTE terminal selection authority.");
+    }
+
     private async Task ApplyTerminalOutcomeStateChangesCoreAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease,
+        FileSystemManager.CanonicalWriteLease writeLease,
         GameResponse response,
         IReadOnlyDictionary<string, string> normalizerBackups)
     {
-        if (writeLease == null)
-        {
-            await _stateDistributor.DistributeAsync(response);
-        }
-        else
-        {
-            await _stateDistributor.DistributeAsync(writeLease, response);
-        }
+        RejectUnboundResourceSurfaces(response);
+        await _stateDistributor.DistributeAsync(writeLease, response);
 
         await ApplyAuthoritativeExperienceAsync(writeLease, response.ExperienceGained);
-        var normalizer = writeLease == null ? _normalizer : _normalizer.BindTo(writeLease);
-        await normalizer.NormalizeAccumulatedStateAsync(normalizerBackups);
+        var qteNormalizer = _normalizer.ForQteNormalization();
+        await qteNormalizer.BindTo(writeLease)
+            .NormalizeAccumulatedStateAsync(normalizerBackups);
     }
 
     private async Task<QteNormalizationBaseline> CaptureQteNormalizationBaselineAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease,
-        GameResponse response)
+        FileSystemManager.CanonicalWriteLease writeLease,
+        GameResponse response,
+        IEnumerable<string>? additionalPaths = null)
     {
         var baseline = new QteNormalizationBaseline();
         var runId = Guid.NewGuid().ToString("N");
         var fileIndex = 0;
+        var trackedPaths = CollectQteTrackedPaths(response);
+        if (additionalPaths != null)
+            trackedPaths.UnionWith(additionalPaths);
 
-        foreach (var relativePath in CollectQteTrackedPaths(response))
+        foreach (var relativePath in trackedPaths)
         {
-            var content = await ReadCanonicalFileAsync(writeLease, relativePath);
+            var content = await ReadCanonicalFileBytesAsync(writeLease, relativePath);
             if (content == null)
             {
-                baseline.RestoreBackupsByPath[relativePath] = null;
+                baseline.RestoreEntriesByPath[relativePath] =
+                    new QteNormalizationBaselineEntry(
+                        OriginallyExisted: false,
+                        BackupPath: null);
                 continue;
             }
 
             var sanitizedPath = relativePath.Replace('/', '_').Replace('\\', '_').Replace(':', '_');
             var backupPath = $"{QteNormalizerBackupDirectory}/{runId}/{fileIndex:D2}_{sanitizedPath}";
-            await WriteCanonicalFileAtomicAsync(writeLease, backupPath, content);
-            baseline.RestoreBackupsByPath[relativePath] = backupPath;
+            await WriteCanonicalFileAtomicBytesAsync(writeLease, backupPath, content);
+            baseline.RestoreEntriesByPath[relativePath] =
+                new QteNormalizationBaselineEntry(
+                    OriginallyExisted: true,
+                    BackupPath: backupPath);
             if (CanonicalStateNormalizer.NormalizerBackupInputFiles.Contains(relativePath, StringComparer.OrdinalIgnoreCase))
                 baseline.NormalizerBackupsByPath[relativePath] = backupPath;
             fileIndex++;
@@ -1648,38 +2285,121 @@ public sealed partial class QteSceneService
     }
 
     private async Task RestoreQteNormalizationBaselineAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease,
+        FileSystemManager.CanonicalWriteLease writeLease,
         QteNormalizationBaseline baseline)
     {
-        foreach (var (relativePath, backupPath) in baseline.RestoreBackupsByPath)
+        var failures = new List<string>();
+        foreach (var (relativePath, entry) in baseline.RestoreEntriesByPath)
         {
-            if (string.IsNullOrWhiteSpace(backupPath))
+            if (!entry.OriginallyExisted)
             {
-                DeleteCanonicalFile(writeLease, relativePath);
+                try
+                {
+                    DeleteCanonicalFile(writeLease, relativePath);
+                }
+                catch (Exception exception) when (
+                    exception is IOException or
+                    UnauthorizedAccessException or
+                    InvalidDataException)
+                {
+                    failures.Add($"{relativePath}: absent baseline could not be restored ({exception.GetType().Name})");
+                }
                 continue;
             }
 
-            var content = await ReadCanonicalFileAsync(writeLease, backupPath);
-            if (content == null)
+            if (string.IsNullOrWhiteSpace(entry.BackupPath))
             {
-                DeleteCanonicalFile(writeLease, relativePath);
+                failures.Add($"{relativePath}: present baseline has no recovery backup path");
                 continue;
             }
 
-            await WriteCanonicalFileAtomicAsync(writeLease, relativePath, content);
+            try
+            {
+                var content = await ReadCanonicalFileBytesAsync(
+                    writeLease,
+                    entry.BackupPath);
+                if (content == null)
+                {
+                    failures.Add($"{relativePath}: recovery backup is missing at {entry.BackupPath}");
+                    continue;
+                }
+
+                await WriteCanonicalFileAtomicBytesAsync(
+                    writeLease,
+                    relativePath,
+                    content);
+            }
+            catch (Exception exception) when (
+                exception is IOException or
+                UnauthorizedAccessException or
+                InvalidDataException)
+            {
+                failures.Add($"{relativePath}: recovery backup is unreadable ({exception.GetType().Name})");
+            }
         }
+
+        if (failures.Count != 0)
+        {
+            throw new InvalidOperationException(
+                "QTE rollback could not restore every present canonical file; " +
+                $"recovery backups were retained under {QteNormalizerBackupDirectory}. " +
+                string.Join("; ", failures));
+        }
+
+    }
+
+    private async Task RestoreQteNormalizationBaselineAfterFailureAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        QteNormalizationBaseline baseline,
+        Exception originalFailure,
+        bool refreshRequired)
+    {
+        var recoveryFailures = new List<Exception>();
+        try
+        {
+            await RestoreQteNormalizationBaselineAsync(writeLease, baseline);
+        }
+        catch (Exception restorationFailure)
+        {
+            recoveryFailures.Add(restorationFailure);
+        }
+        if (refreshRequired)
+        {
+            try
+            {
+                await RefreshGameStateAsync(writeLease);
+            }
+            catch (Exception refreshFailure)
+            {
+                recoveryFailures.Add(refreshFailure);
+            }
+        }
+        if (recoveryFailures.Count == 0)
+        {
+            baseline.AllowCleanup();
+            return;
+        }
+
+        throw new InvalidOperationException(
+            "QTE rollback recovery failed; recovery backups were retained under " +
+            $"{QteNormalizerBackupDirectory}. " +
+            string.Join("; ", recoveryFailures.Select(static failure => failure.Message)),
+            new AggregateException(
+                "The QTE operation and its rollback recovery both failed.",
+                new[] { originalFailure }.Concat(recoveryFailures)));
     }
 
     private void CleanupQteNormalizationBaseline(
-        FileSystemManager.CanonicalWriteLease? writeLease,
-        QteNormalizationBaseline? baseline)
+        FileSystemManager.CanonicalWriteLease writeLease,
+        QteNormalizationBaseline baseline)
     {
-        if (baseline == null)
+        if (!baseline.CleanupAllowed)
             return;
 
         var runDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var backupPath in baseline.RestoreBackupsByPath.Values)
+        foreach (var entry in baseline.RestoreEntriesByPath.Values)
         {
+            var backupPath = entry.BackupPath;
             if (string.IsNullOrWhiteSpace(backupPath))
                 continue;
 
@@ -1688,7 +2408,18 @@ public sealed partial class QteSceneService
             if (!string.IsNullOrWhiteSpace(runDirectory))
                 runDirectories.Add(runDirectory);
 
-            DeleteCanonicalFile(writeLease, backupPath);
+            try
+            {
+                DeleteCanonicalFile(writeLease, backupPath);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogWarning(
+                    exception,
+                    "QTE backup cleanup failed; retained recovery evidence at {BackupPath} under {BackupDirectory}.",
+                    backupPath,
+                    QteNormalizerBackupDirectory);
+            }
         }
 
         foreach (var runDirectory in runDirectories.OrderByDescending(path => path.Length))
@@ -1709,13 +2440,12 @@ public sealed partial class QteSceneService
 
             Directory.Delete(absolutePath, recursive: false);
         }
-        catch (IOException ex)
+        catch (Exception ex)
         {
-            _logger.LogDebug(ex, "Не удалось удалить пустой каталог временных backup-артефактов QTE: {Path}", absolutePath);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            _logger.LogDebug(ex, "Нет доступа к удалению пустого каталога временных backup-артефактов QTE: {Path}", absolutePath);
+            _logger.LogWarning(
+                ex,
+                "QTE backup directory cleanup failed; retained recovery evidence under {Path}.",
+                absolutePath);
         }
     }
 
@@ -4596,12 +5326,23 @@ public sealed partial class QteSceneService
             await _hooks.AfterRuntimeWrittenAsync(state);
     }
 
+    private Task InvokeDeferredEffectMutationHookAsync(string checkpoint) =>
+        _hooks?.AfterDeferredEffectMutationAsync?.Invoke(checkpoint) ??
+        Task.CompletedTask;
+
     private Task<string?> ReadCanonicalFileAsync(
         FileSystemManager.CanonicalWriteLease? writeLease,
         string relativePath) =>
         writeLease == null
             ? _fs.ReadFileAsync(relativePath)
             : _fs.ReadFileAsync(writeLease, relativePath);
+
+    private Task<byte[]?> ReadCanonicalFileBytesAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string relativePath) =>
+        writeLease == null
+            ? _fs.ReadFileBytesAsync(relativePath)
+            : _fs.ReadFileBytesAsync(writeLease, relativePath);
 
     private Task WriteCanonicalFileAtomicAsync(
         FileSystemManager.CanonicalWriteLease? writeLease,
@@ -4610,6 +5351,14 @@ public sealed partial class QteSceneService
         writeLease == null
             ? _fs.WriteFileAtomicAsync(relativePath, content)
             : _fs.WriteFileAtomicAsync(writeLease, relativePath, content);
+
+    private Task WriteCanonicalFileAtomicBytesAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string relativePath,
+        byte[] content) =>
+        writeLease == null
+            ? _fs.WriteFileAtomicBytesAsync(relativePath, content)
+            : _fs.WriteFileAtomicBytesAsync(writeLease, relativePath, content);
 
     private bool CanonicalFileExists(
         FileSystemManager.CanonicalWriteLease? writeLease,
@@ -5863,6 +6612,15 @@ public sealed partial class QteSceneService
 
         [JsonPropertyName("scoreState")]
         public QteScoreState? ScoreState { get; set; }
+
+        [JsonPropertyName("deferredEffectContinuationId")]
+        public string DeferredEffectContinuationId { get; set; } = "";
+
+        [JsonPropertyName("deferredEffectContinuationFingerprint")]
+        public string DeferredEffectContinuationFingerprint { get; set; } = "";
+
+        [JsonPropertyName("effectResolutionState")]
+        public string EffectResolutionState { get; set; } = "armed";
     }
 
     public sealed class QteHistoryEntry
@@ -5902,6 +6660,7 @@ public sealed partial class QteSceneService
         public string Summary { get; set; } = "";
         public GameResponse Response { get; set; } = new();
         public QteScoreSummary? ScoreSummary { get; set; }
+        public bool AwaitingEffectResolution { get; set; }
     }
 
     public sealed class QteActionResolution

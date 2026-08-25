@@ -155,6 +155,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("GM does not spend player currency", example, StringComparison.Ordinal);
         Assert.Contains("GM does not raise player tiers directly", example, StringComparison.Ordinal);
         Assert.Contains("Fresh New Game system Guardian", matrix + example + manifest, StringComparison.Ordinal);
+        Assert.Contains("one coordinated resource write set", matrix + example + manifest, StringComparison.Ordinal);
         Assert.Contains("guard_system_*", matrix + example + manifest, StringComparison.Ordinal);
         Assert.Contains("mentorProfile.canTeach=true", matrix + example, StringComparison.Ordinal);
         Assert.Contains("starter mentor profiles", example + manifest, StringComparison.Ordinal);
@@ -2161,6 +2162,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             "resolutionOrder[]",
             "corrections[]",
             "sourceSurface=guardian_corrections",
+            "gce_life_",
+            "lifeIncarnation",
             "afterlife_guardian_correction_spend_reference"
         })
         {
@@ -2323,9 +2326,114 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("relicRefinementEntitlements", doc, StringComparison.Ordinal);
             Assert.Contains("exception", doc, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("Shining forge", doc, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("rerolls/freeShape/freeRetune", doc, StringComparison.Ordinal);
+            Assert.Contains("blessing_rerolls + freeShape/freeRetune", doc, StringComparison.Ordinal);
             Assert.Contains("pending_shining_abode_actions.json", doc, StringComparison.Ordinal);
         }
+    }
+
+    [Fact]
+    public void AfterlifeResourceCutoverIsDocumentedWithoutLegacyMechanicalMirrors()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var guardianRules = ReadRepoFile("Rules", "Block_32_Guardians.txt");
+        var afterlifeRules = ReadRepoFile("Rules", "Block_21.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var mainExample = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+        var guardianExample = ReadRepoFile("Examples", "E_Block_32.txt");
+
+        foreach (var doc in new[]
+                 {
+                     matrix,
+                     glossary,
+                     guardianRules,
+                     afterlifeRules,
+                     examples,
+                     apiSpec,
+                     daemonSpec,
+                     taskGuide
+                 })
+        {
+            Assert.Contains("spiritual_action_points", doc, StringComparison.Ordinal);
+            Assert.Contains("gacha_attempts", doc, StringComparison.Ordinal);
+            Assert.Contains("blessing_rerolls", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/resources/resource_state.json", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/resources/resource_history.json", doc, StringComparison.Ordinal);
+            Assert.Contains("resourceOwnerBindings", doc, StringComparison.Ordinal);
+            Assert.Contains("blessing_rerolls + freeShape/freeRetune", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[]
+                 {
+                     guardianRules,
+                     afterlifeRules,
+                     examples,
+                     mainExample,
+                     guardianExample
+                 })
+        {
+            Assert.DoesNotContain("\"chargesPerReturn\":", doc, StringComparison.Ordinal);
+            Assert.DoesNotContain("\"chargesUsedThisReturn\":", doc, StringComparison.Ordinal);
+            Assert.DoesNotContain("\"rerollsSpent\":", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { mainExample, guardianExample })
+        {
+            Assert.Contains("gacha_attempts", doc, StringComparison.Ordinal);
+            Assert.Contains("currentReturnCycleId", doc, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("resourceOwnerBindings", mainExample, StringComparison.Ordinal);
+        Assert.Contains(
+            "reconfigures its cycle-bound capacity",
+            guardianRules,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ordinary Shining Abode -> Chaos Sea travel does not reset it",
+            guardianRules,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "retires the prior `gacha_attempts` allocation",
+            guardianRules,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "when an exact client-owned state context/projection is supplied",
+            mainExample,
+            StringComparison.Ordinal);
+        Assert.Contains("do not read the raw resource ledger", mainExample, StringComparison.Ordinal);
+        foreach (var doc in new[] { daemonSpec, taskGuide })
+        {
+            Assert.Contains("`actionEconomy` is forbidden", doc, StringComparison.Ordinal);
+            Assert.DoesNotContain(
+                "`counterPayoff`, `actionEconomy`, `actionCostAudit`",
+                doc,
+                StringComparison.Ordinal);
+        }
+        Assert.DoesNotContain("\"actionEconomy\": {", examples, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ShiningBlessingRerollAllocationIsDocumentedAsClientOwnedBootstrapInput()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var doc in new[] { matrix, glossary, examples, manifest })
+        {
+            Assert.Contains("rerollAllocation", doc, StringComparison.Ordinal);
+            Assert.Contains("resourceKey", doc, StringComparison.Ordinal);
+            Assert.Contains("amount", doc, StringComparison.Ordinal);
+            Assert.Contains("rerollResourceBinding", doc, StringComparison.Ordinal);
+            Assert.Contains("client-generated", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("bootstrap", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain("\"rerolls\":", examples, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -2728,7 +2836,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("guardian_forced", text, StringComparison.Ordinal);
             Assert.Contains("diceAudit", text, StringComparison.Ordinal);
             Assert.Contains("preGeneratedDices1d20", text, StringComparison.Ordinal);
-            Assert.Contains("actionEconomy", text, StringComparison.Ordinal);
+            Assert.Contains("spiritual_action_points", text, StringComparison.Ordinal);
+            Assert.Contains("`actionEconomy` is forbidden", text, StringComparison.Ordinal);
             Assert.Contains("actionCostAudit", text, StringComparison.Ordinal);
             Assert.Contains("actionCostAudit.opposition", text, StringComparison.Ordinal);
             Assert.Contains("recover_spiritual_power", text, StringComparison.Ordinal);
@@ -3171,9 +3280,11 @@ public sealed class AfterlifeDocumentationCoverageTests
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
         var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
         var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
-        var combinedGuidance = matrix + examples + daemonSpec + daemonScript + glossary;
+        var combinedGuidance = matrix + examples + apiSpec + daemonSpec + daemonScript + taskGuide + glossary;
 
         foreach (var text in new[] { matrix, examples, daemonSpec, daemonScript, glossary })
         {
@@ -3188,11 +3299,16 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("actionCostAudit", text, StringComparison.Ordinal);
         }
 
-        Assert.Contains("visible active combatConditions", combinedGuidance, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("hidden/gm_only combatConditions", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("visible", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden/gm_only", combinedGuidance, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("specialArtAudit.effectNote", combinedGuidance, StringComparison.Ordinal);
         Assert.Contains("no generic passive stat stacking", combinedGuidance, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("create, consume, expire, or clear combatConditions", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("client-materialized", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("effectChanges[]", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("afterlifeSpiritualConflictPreview.conditionMechanics", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("accepted_effect_mechanics_snapshot_v1", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("never author", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"combatConditions\":", examples, StringComparison.Ordinal);
         Assert.Contains("condition-backed rollMode", combinedGuidance, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("afterlife_spiritual_conflict_combat_conditions_v1", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_spiritual_conflict_combat_conditions_v1", manifest, StringComparison.Ordinal);
@@ -3230,6 +3346,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("tempoAdvantage", combinedGuidance, StringComparison.Ordinal);
         Assert.Contains("sideStrain", combinedGuidance, StringComparison.Ordinal);
         Assert.Contains("counterPayoff", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("spiritual_action_points", combinedGuidance, StringComparison.Ordinal);
         Assert.Contains("actionCostAudit", combinedGuidance, StringComparison.Ordinal);
         Assert.Contains("player-owned learned special art", examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("non-player Guardian special art", examples, StringComparison.OrdinalIgnoreCase);
@@ -4045,6 +4162,50 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var matrixSection = ExtractRequiredSection(
+            matrix,
+            "## Actor Materialization v1",
+            "## GM Decision Loop");
+        var exampleSection = ExtractRequiredSection(
+            examples,
+            "AFTERLIFE ACTOR MATERIALIZATION V1",
+            "Shared Block 5 Combat Action effect reminder");
+
+        foreach (var text in new[] { matrixSection, exampleSection, daemon })
+        {
+            Assert.Contains("resourceMaterialization", text, StringComparison.Ordinal);
+            Assert.Contains("setting-defined resource", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("materializationId", text, StringComparison.Ordinal);
+            Assert.Contains("same-turn ownerRef", text, StringComparison.Ordinal);
+            Assert.Contains("no second actor ID", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("existing materialized profile", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("reserved first", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("generic Actor Materialization envelope", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("deterministic ownerRef", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("first non-player", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("conflictId", text, StringComparison.Ordinal);
+            Assert.Contains("returnCycleId", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains(
+            "afterlife_actor_resource_materialization_v1",
+            manifest,
+            StringComparison.Ordinal);
+        Assert.Contains("\"resourceMaterialization\"", exampleSection, StringComparison.Ordinal);
+        Assert.Contains("\"resourceKey\": \"soul_integrity\"", exampleSection, StringComparison.Ordinal);
+        Assert.Contains("\"maximum\": 10", exampleSection, StringComparison.Ordinal);
+        Assert.Contains("CLIENT-OWNED RESERVED PLAYER_SOUL CONTRAST", exampleSection, StringComparison.Ordinal);
+        Assert.Contains("DETERMINISTIC AFTERLIFE OWNER EXAMPLE", exampleSection, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"actorRef\"", exampleSection, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void T155_AfterlifeActorLifecycleTeachingVisibilityAndAcceptedTypes_AreDocumented()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
@@ -4351,6 +4512,59 @@ public sealed class AfterlifeDocumentationCoverageTests
             if (Directory.Exists(rootPath))
                 Directory.Delete(rootPath, recursive: true);
         }
+    }
+
+    [Fact]
+    public void CompleteEffectMaterializationAfterlifeAdapter_IsDocumentedWithoutLegacyFallback()
+    {
+        var common = ReadRepoFile("OtherGuides", "Effect_Materialization_Contract.md");
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var api = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var corpus = string.Join('\n', common, matrix, glossary, examples, api, daemonSpec, taskGuide, daemon);
+
+        foreach (var document in new[] { matrix, glossary, api, daemonSpec, taskGuide, daemon })
+        {
+            Assert.Contains("Effect Materialization v1", document, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Effect_Materialization_Contract.md", document, StringComparison.Ordinal);
+        }
+
+        foreach (var required in new[]
+                 {
+                     "activeEffects[]",
+                     "effectChanges[]",
+                     "effectResolutionReceipts[]",
+                     "effectEventReports[]",
+                     "effect_identity_index.json",
+                     "pending_effect_resolutions.json",
+                     "afterlife_effect_profile_v1",
+                     "afterlife_resource_bounded_receipt_waves_v1",
+                     "afterlife_effect_conditions_five_kinds_v1",
+                     "same complete semantic turn",
+                     "current packet",
+                     "mark",
+                     "ward",
+                     "burden",
+                     "opening",
+                     "vow",
+                     "hidden",
+                     "gm_only",
+                     "Shining blessing entitlement is not a generic active effect",
+                     "never author combatConditions[]"
+                 })
+        {
+            Assert.Contains(required, corpus, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain(
+            "legacy `effectSummary`-only profiles remain readable",
+            corpus,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"combatConditions\":", examples, StringComparison.Ordinal);
     }
 
     private static string[] ShiningConstantValues(params string[] prefixes) =>

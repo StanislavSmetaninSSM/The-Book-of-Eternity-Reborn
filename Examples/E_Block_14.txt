@@ -2,6 +2,9 @@
  <title>
   Examples For Player Character and Named NPC Combat Profile Calculation
  </title>
+ <effectmaterializationcontract>
+  Combat calculations consume the client-published canonical active effect snapshot. New effects are requested through effectChanges[] under Examples/E_CLI_Effect_Materialization.txt, never by directly editing activeBuffs[] or activeDebuffs[].
+ </effectmaterializationcontract>
  <rule id="14.2">
   <example contenttype="log" type="good">
    <title>

@@ -143,11 +143,11 @@ public partial class ValidationService
         IReadOnlyList<JsonObject>? PreTurnConflictPayloads = null,
         string? PreTurnActiveConflictId = null,
         JsonNode? PreTurnActiveControlState = null,
-        int? PreTurnPlayerActionCurrent = null,
-        int? PreTurnOppositionActionCurrent = null,
+        int? PreTurnPlayerResourceCurrent = null,
+        int? PreTurnPlayerResourceMaximum = null,
+        int? PreTurnOppositionResourceCurrent = null,
+        int? PreTurnOppositionResourceMaximum = null,
         bool HasValidatedTurnBaseline = false,
-        int SpiritFocusTier = 0,
-        int SpiritFocusMaxActionPoints = 6,
         AfterlifeDifficultyDefinition? Difficulty = null,
         int? CurrentTurn = null)
     {
@@ -161,8 +161,10 @@ public partial class ValidationService
     private sealed record PreTurnActiveConflictControlContext(
         string? ConflictId,
         JsonNode? ControlState,
-        int? PlayerActionCurrent,
-        int? OppositionActionCurrent);
+        int? PlayerResourceCurrent,
+        int? PlayerResourceMaximum,
+        int? OppositionResourceCurrent,
+        int? OppositionResourceMaximum);
 
     private sealed record AfterlifeActionCostAuthorityContext(
         IReadOnlyDictionary<string, int> StandardArtTiers,
@@ -254,8 +256,6 @@ public partial class ValidationService
         var preTurnConflictPayloads = await ResolvePreTurnConflictPayloadsAsync(manifest);
         var preTurnActiveControl = await ResolvePreTurnActiveConflictControlContextAsync(manifest);
         var preTurnNoTurnDicePayloads = await ResolvePreTurnNoTurnConflictDicePayloadsAsync(manifest);
-        var spiritFocusTier = await ResolveAfterlifeConflictSpiritFocusTierAsync(manifest);
-        var spiritFocusMaxActionPoints = AfterlifeSpiritualConflictState.GetSpiritFocusMaxActionPoints(spiritFocusTier);
         var difficulty = await ResolveAfterlifeConflictDifficultyDefinitionAsync();
 
         if (manifest?.PreGeneratedDices1d20 is { Length: > 0 } manifestDice)
@@ -267,11 +267,11 @@ public partial class ValidationService
                 preTurnConflictPayloads,
                 preTurnActiveControl.ConflictId,
                 preTurnActiveControl.ControlState,
-                preTurnActiveControl.PlayerActionCurrent,
-                preTurnActiveControl.OppositionActionCurrent,
+                preTurnActiveControl.PlayerResourceCurrent,
+                preTurnActiveControl.PlayerResourceMaximum,
+                preTurnActiveControl.OppositionResourceCurrent,
+                preTurnActiveControl.OppositionResourceMaximum,
                 HasValidatedTurnBaseline: true,
-                SpiritFocusTier: spiritFocusTier,
-                SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
                 Difficulty: difficulty,
                 CurrentTurn: manifest.TurnNumber);
         }
@@ -286,11 +286,11 @@ public partial class ValidationService
                 preTurnConflictPayloads,
                 preTurnActiveControl.ConflictId,
                 preTurnActiveControl.ControlState,
-                preTurnActiveControl.PlayerActionCurrent,
-                preTurnActiveControl.OppositionActionCurrent,
+                preTurnActiveControl.PlayerResourceCurrent,
+                preTurnActiveControl.PlayerResourceMaximum,
+                preTurnActiveControl.OppositionResourceCurrent,
+                preTurnActiveControl.OppositionResourceMaximum,
                 HasValidatedTurnBaseline: manifest != null,
-                SpiritFocusTier: spiritFocusTier,
-                SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
                 Difficulty: difficulty,
                 CurrentTurn: manifest?.TurnNumber);
         }
@@ -316,11 +316,11 @@ public partial class ValidationService
                         preTurnConflictPayloads,
                         preTurnActiveControl.ConflictId,
                         preTurnActiveControl.ControlState,
-                        preTurnActiveControl.PlayerActionCurrent,
-                        preTurnActiveControl.OppositionActionCurrent,
+                        preTurnActiveControl.PlayerResourceCurrent,
+                        preTurnActiveControl.PlayerResourceMaximum,
+                        preTurnActiveControl.OppositionResourceCurrent,
+                        preTurnActiveControl.OppositionResourceMaximum,
                         HasValidatedTurnBaseline: manifest != null,
-                        SpiritFocusTier: spiritFocusTier,
-                        SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
                         Difficulty: difficulty,
                         CurrentTurn: manifest?.TurnNumber ?? AfterlifeSpiritualConflictState.GetNodeInt(root["turnNumber"]));
                 }
@@ -338,35 +338,13 @@ public partial class ValidationService
             preTurnConflictPayloads,
             preTurnActiveControl.ConflictId,
             preTurnActiveControl.ControlState,
-            preTurnActiveControl.PlayerActionCurrent,
-            preTurnActiveControl.OppositionActionCurrent,
+            preTurnActiveControl.PlayerResourceCurrent,
+            preTurnActiveControl.PlayerResourceMaximum,
+            preTurnActiveControl.OppositionResourceCurrent,
+            preTurnActiveControl.OppositionResourceMaximum,
             HasValidatedTurnBaseline: manifest != null,
-            SpiritFocusTier: spiritFocusTier,
-            SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
             Difficulty: difficulty,
             CurrentTurn: manifest?.TurnNumber);
-    }
-
-    private async Task<int> ResolveAfterlifeConflictSpiritFocusTierAsync(ValidationPendingTurnSnapshotManifest? manifest)
-    {
-        const string soulStatePath = "game_state/meta/soul_state.json";
-        var json = manifest == null
-            ? await _fs.ReadFileAsync(soulStatePath)
-            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, soulStatePath);
-
-        if (string.IsNullOrWhiteSpace(json))
-            return 0;
-
-        try
-        {
-            return JsonNode.Parse(json) is JsonObject soulRoot
-                ? AfterlifeSpiritualConflictState.ResolveSpiritFocusTier(soulRoot)
-                : 0;
-        }
-        catch
-        {
-            return 0;
-        }
     }
 
     private async Task<AfterlifeActionCostAuthorityContext> ResolveAfterlifeActionCostAuthorityContextAsync(
@@ -752,11 +730,11 @@ public partial class ValidationService
         ValidationPendingTurnSnapshotManifest? manifest)
     {
         if (manifest == null)
-            return new PreTurnActiveConflictControlContext(null, null, null, null);
+            return new PreTurnActiveConflictControlContext(null, null, null, null, null, null);
 
         var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeSpiritualConflictState.StatePath);
         if (string.IsNullOrWhiteSpace(preTurnJson))
-            return new PreTurnActiveConflictControlContext(null, null, null, null);
+            return new PreTurnActiveConflictControlContext(null, null, null, null, null, null);
 
         try
         {
@@ -767,11 +745,21 @@ public partial class ValidationService
                 var controlState = activeConflict.ContainsKey("controlState")
                     ? activeConflict["controlState"]?.DeepClone()
                     : null;
+                var projection = AfterlifeConflictActionPointProjectionService.Resolve(
+                    await ReadValidatedPendingTurnSnapshotFileAsync(
+                        manifest,
+                        ResourceMaterializationContract.DefinitionsPath),
+                    await ReadValidatedPendingTurnSnapshotFileAsync(
+                        manifest,
+                        ResourceMaterializationContract.StatePath),
+                    activeConflict);
                 return new PreTurnActiveConflictControlContext(
                     conflictId,
                     controlState,
-                    ReadActionEconomyCurrent(activeConflict["actionEconomy"] as JsonObject, "player"),
-                    ReadActionEconomyCurrent(activeConflict["actionEconomy"] as JsonObject, "opposition"));
+                    TryReadIntegralResourceValue(projection.Projection?.Player.Current),
+                    TryReadIntegralResourceValue(projection.Projection?.Player.Maximum),
+                    TryReadIntegralResourceValue(projection.Projection?.Opposition.Current),
+                    TryReadIntegralResourceValue(projection.Projection?.Opposition.Maximum));
             }
         }
         catch
@@ -779,18 +767,17 @@ public partial class ValidationService
             // Malformed conflict state is reported by the normal state validator.
         }
 
-        return new PreTurnActiveConflictControlContext(null, null, null, null);
+        return new PreTurnActiveConflictControlContext(null, null, null, null, null, null);
     }
 
-    private static int? ReadActionEconomyCurrent(JsonObject? actionEconomy, string side)
+    private static int? TryReadIntegralResourceValue(decimal? value)
     {
-        if (actionEconomy?[side] is JsonObject pool &&
-            TryGetJsonNodeInt(pool["current"], out var current))
-        {
-            return current;
-        }
-
-        return null;
+        if (value is not { } exact ||
+            decimal.Truncate(exact) != exact ||
+            exact < int.MinValue ||
+            exact > int.MaxValue)
+            return null;
+        return decimal.ToInt32(exact);
     }
 
     private async Task<int?> ResolveLightIncarnateGrantTurnAsync()
@@ -1091,6 +1078,7 @@ public partial class ValidationService
         var context = $"{contextPrefix}.{AfterlifeSpiritualConflictState.ResponseField}";
         if (!RequireObject(update, context, issues))
             return;
+        ValidateNoDirectCombatConditionAuthoring(update, context, issues);
 
         var mode = TryGetString(update, "mode");
         if (string.IsNullOrWhiteSpace(mode) || !AfterlifeSpiritualConflictState.Modes.Contains(mode))
@@ -1147,6 +1135,70 @@ public partial class ValidationService
                 expected: "exchange object with exchangeId, operationType, outcome, before, and after",
                 actual: "missing"));
         }
+    }
+
+    private static bool TryFindSubmittedCombatConditions(
+        JsonElement node,
+        string path,
+        out string forbiddenPath)
+    {
+        forbiddenPath = string.Empty;
+        if (node.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var property in node.EnumerateObject())
+            {
+                var propertyPath = path + "." + property.Name;
+                if (string.Equals(
+                        property.Name,
+                        "combatConditions",
+                        StringComparison.Ordinal))
+                {
+                    forbiddenPath = propertyPath;
+                    return true;
+                }
+                if (TryFindSubmittedCombatConditions(
+                        property.Value,
+                        propertyPath,
+                        out forbiddenPath))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        if (node.ValueKind != JsonValueKind.Array)
+            return false;
+        var index = 0;
+        foreach (var item in node.EnumerateArray())
+        {
+            if (TryFindSubmittedCombatConditions(
+                    item,
+                    $"{path}[{index}]",
+                    out forbiddenPath))
+            {
+                return true;
+            }
+            index++;
+        }
+        return false;
+    }
+
+    private static void ValidateNoDirectCombatConditionAuthoring(
+        JsonElement update,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!TryFindSubmittedCombatConditions(update, context, out var forbiddenPath))
+            return;
+        issues.Add(new ValidationIssue(
+            forbiddenPath,
+            IssueSeverity.Error,
+            "combatConditions materializes only through the common effect plan.",
+            code: "afterlife_combat_condition_direct_authoring_forbidden",
+            section: "AfterlifeSpiritualConflict",
+            expected: "combatConditions absent from GM-authored conflict lifecycle updates",
+            actual: "direct combatConditions field present"));
     }
 
     private void ValidateAfterlifeSpiritualConflictRoot(
@@ -1304,13 +1356,22 @@ public partial class ValidationService
                     actual: legacy));
             }
         }
+        if (conflict.ContainsKey("actionEconomy"))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.actionEconomy",
+                IssueSeverity.Error,
+                "Legacy actionEconomy запрещён: духовные ОД принадлежат общему resource ledger.",
+                code: "afterlife_conflict_legacy_action_economy_forbidden",
+                section: "AfterlifeSpiritualConflict",
+                expected: "no actionEconomy; exact resourceOwnerBindings plus resources_state/history",
+                actual: conflict["actionEconomy"]?.ToJsonString() ?? "null"));
+        }
 
         var priorControlState = ResolveScopedPreTurnActiveControlState(conflict, diceContext);
         var hasCurrentExchange = false;
-        int? expectedNextPlayerActionCostBefore = ResolveScopedPreTurnActionEconomyCurrent(conflict, diceContext, "player");
-        int? lastCurrentPlayerActionCostAfter = null;
-        int? expectedNextOppositionActionCostBefore = ResolveScopedPreTurnActionEconomyCurrent(conflict, diceContext, "opposition");
-        int? lastCurrentOppositionActionCostAfter = null;
+        int? expectedNextPlayerActionCostBefore = ResolveScopedPreTurnResourceCurrent(conflict, diceContext, "player");
+        int? expectedNextOppositionActionCostBefore = ResolveScopedPreTurnResourceCurrent(conflict, diceContext, "opposition");
         if (conflict["exchangeLog"] is JsonArray exchangeLog)
         {
             var preTurnExchangePayloads = new PreTurnConflictPayloadTracker(diceContext.PreTurnConflictPayloads);
@@ -1327,7 +1388,6 @@ public partial class ValidationService
                         exchange,
                         priorControlState,
                         conflict,
-                        conflict["actionEconomy"] as JsonObject,
                         $"{context}.exchangeLog[{index}]",
                         issues,
                         diceContext,
@@ -1348,7 +1408,6 @@ public partial class ValidationService
                             if (currentExchangeActionAfter.HasValue)
                             {
                                 expectedNextPlayerActionCostBefore = currentExchangeActionAfter.Value;
-                                lastCurrentPlayerActionCostAfter = currentExchangeActionAfter.Value;
                             }
                         }
 
@@ -1364,7 +1423,6 @@ public partial class ValidationService
                             if (currentOppositionActionAfter.HasValue)
                             {
                                 expectedNextOppositionActionCostBefore = currentOppositionActionAfter.Value;
-                                lastCurrentOppositionActionCostAfter = currentOppositionActionAfter.Value;
                             }
                         }
                     }
@@ -1394,42 +1452,21 @@ public partial class ValidationService
                 section: "AfterlifeSpiritualConflict"));
         }
 
-        ValidateActionEconomyShape(
-            conflict["actionEconomy"],
-            $"{context}.actionEconomy",
-            issues,
-            required: hasCurrentExchange);
-        ValidateActionEconomyMatchesSpiritFocus(
-            conflict["actionEconomy"] as JsonObject,
-            diceContext,
-            $"{context}.actionEconomy.player",
-            issues);
-        ValidateActionEconomyMatchesLastCurrentExchange(
-            conflict["actionEconomy"] as JsonObject,
-            "player",
-            lastCurrentPlayerActionCostAfter,
-            $"{context}.actionEconomy.player.current",
-            issues);
-        ValidateActionEconomyUnchangedWhenUnaudited(
-            conflict["actionEconomy"] as JsonObject,
-            "player",
-            lastCurrentPlayerActionCostAfter,
-            ResolveScopedPreTurnActionEconomyCurrent(conflict, diceContext, "player"),
-            $"{context}.actionEconomy.player.current",
-            issues);
-        ValidateActionEconomyMatchesLastCurrentExchange(
-            conflict["actionEconomy"] as JsonObject,
-            "opposition",
-            lastCurrentOppositionActionCostAfter,
-            $"{context}.actionEconomy.opposition.current",
-            issues);
-        ValidateActionEconomyUnchangedWhenUnaudited(
-            conflict["actionEconomy"] as JsonObject,
-            "opposition",
-            lastCurrentOppositionActionCostAfter,
-            ResolveScopedPreTurnActionEconomyCurrent(conflict, diceContext, "opposition"),
-            $"{context}.actionEconomy.opposition.current",
-            issues);
+        if (hasCurrentExchange &&
+            (diceContext.PreTurnPlayerResourceCurrent == null ||
+             diceContext.PreTurnPlayerResourceMaximum == null ||
+             diceContext.PreTurnOppositionResourceCurrent == null ||
+             diceContext.PreTurnOppositionResourceMaximum == null))
+        {
+            issues.Add(new ValidationIssue(
+                ResourceMaterializationContract.StatePath,
+                IssueSeverity.Error,
+                "Новый духовный обмен требует точную pre-turn ledger-проекцию обеих сторон.",
+                code: "afterlife_conflict_resource_projection_missing",
+                section: "AfterlifeSpiritualConflict",
+                expected: "active player/opposition spiritual_action_points coordinates in validated pre-turn resource state",
+                actual: "one or more coordinates are missing"));
+        }
 
         ValidateFinalActiveControlStateMatchesExchangeSnapshots(
             conflict,
@@ -2703,7 +2740,6 @@ public partial class ValidationService
         JsonObject exchange,
         JsonNode? priorControlState,
         JsonObject activeConflict,
-        JsonObject? activeActionEconomy,
         string context,
         List<ValidationIssue> issues,
         AfterlifeConflictDiceContext diceContext,
@@ -2806,7 +2842,17 @@ public partial class ValidationService
             exchange["diceAudit"] is JsonObject &&
             isCurrentExchange;
         ValidateSpecialArtAudit(exchange, operationType, actionCostAuthority, context, issues);
-        ValidateActionCostAudit(exchange, activeConflict, activeActionEconomy, operationType, outcome, context, issues, isCurrentExchange, actionCostAuthority);
+        ValidateActionCostAudit(
+            exchange,
+            activeConflict,
+            operationType,
+            outcome,
+            context,
+            issues,
+            isCurrentExchange,
+            actionCostAuthority,
+            diceContext.PreTurnPlayerResourceMaximum,
+            diceContext.PreTurnOppositionResourceMaximum);
 
         if (before != null && after != null)
         {
@@ -2874,76 +2920,6 @@ public partial class ValidationService
             ? diceContext with { AuthoritativeDice = null }
             : diceContext;
 
-    private static void ValidateActionEconomyShape(
-        JsonNode? actionEconomy,
-        string context,
-        List<ValidationIssue> issues,
-        bool required)
-    {
-        if (actionEconomy == null)
-        {
-            if (required)
-            {
-                issues.Add(new ValidationIssue(
-                    context,
-                    IssueSeverity.Error,
-                    "Активный духовный конфликт с новым обменом должен содержать actionEconomy для ОД обеих сторон.",
-                    code: "afterlife_conflict_action_economy_missing",
-                    section: "AfterlifeSpiritualConflict",
-                    expected: "actionEconomy object with player/opposition current/max",
-                    actual: "missing/null"));
-            }
-
-            return;
-        }
-
-        if (actionEconomy is not JsonObject actionEconomyObject)
-        {
-            issues.Add(new ValidationIssue(
-                context,
-                IssueSeverity.Error,
-                "actionEconomy должен быть object.",
-                code: "afterlife_conflict_action_economy_invalid",
-                section: "AfterlifeSpiritualConflict",
-                expected: "object",
-                actual: actionEconomy.GetType().Name));
-            return;
-        }
-
-        ValidateActionPoolShape(actionEconomyObject["player"], $"{context}.player", issues);
-        ValidateActionPoolShape(actionEconomyObject["opposition"], $"{context}.opposition", issues);
-    }
-
-    private static void ValidateActionPoolShape(JsonNode? pool, string context, List<ValidationIssue> issues)
-    {
-        if (pool is not JsonObject poolObject)
-        {
-            issues.Add(new ValidationIssue(
-                context,
-                IssueSeverity.Error,
-                "Пул ОД должен быть object с current/max.",
-                code: "afterlife_conflict_action_pool_invalid",
-                section: "AfterlifeSpiritualConflict",
-                expected: "object with current/max/source",
-                actual: pool?.GetType().Name ?? "missing"));
-            return;
-        }
-
-        var hasCurrent = TryGetJsonNodeInt(poolObject["current"], out var current);
-        var hasMax = TryGetJsonNodeInt(poolObject["max"], out var max);
-        if (!hasCurrent || !hasMax || current < 0 || max < 0 || current > max)
-        {
-            issues.Add(new ValidationIssue(
-                context,
-                IssueSeverity.Error,
-                "Пул ОД должен иметь 0 <= current <= max.",
-                code: "afterlife_conflict_action_pool_bounds_invalid",
-                section: "AfterlifeSpiritualConflict",
-                expected: "0 <= current <= max",
-                actual: $"current={poolObject["current"]?.ToJsonString() ?? "missing"}, max={poolObject["max"]?.ToJsonString() ?? "missing"}"));
-        }
-    }
-
     private static bool ExchangeExpectsPlayerActionCostAudit(JsonObject exchange) =>
         OperationHasActionCost(AfterlifeSpiritualConflictState.GetNodeString(exchange["operationType"]));
 
@@ -2957,20 +2933,27 @@ public partial class ValidationService
     private static void ValidateActionCostAudit(
         JsonObject exchange,
         JsonObject activeConflict,
-        JsonObject? activeActionEconomy,
         string? operationType,
         string? outcome,
         string context,
         List<ValidationIssue> issues,
         bool isCurrentExchange,
-        AfterlifeActionCostAuthorityContext actionCostAuthority)
+        AfterlifeActionCostAuthorityContext actionCostAuthority,
+        int? playerMaximum,
+        int? oppositionMaximum)
     {
         if (!isCurrentExchange)
         {
             return;
         }
 
-        ValidateOppositionActionCostAudit(exchange, activeConflict, activeActionEconomy, context, issues, actionCostAuthority);
+        ValidateOppositionActionCostAudit(
+            exchange,
+            activeConflict,
+            context,
+            issues,
+            actionCostAuthority,
+            oppositionMaximum);
 
         if (!OperationHasActionCost(operationType))
         {
@@ -3112,15 +3095,14 @@ public partial class ValidationService
         {
             ValidateRecoveryActionCost(
                 exchange,
-                activeActionEconomy,
-                playerAudit,
                 outcome,
                 context,
                 issues,
                 before,
                 after,
                 "player",
-                ResolveMatchupOppositionOperation(exchange));
+                ResolveMatchupOppositionOperation(exchange),
+                playerMaximum);
         }
         else
         {
@@ -3151,10 +3133,10 @@ public partial class ValidationService
     private static void ValidateOppositionActionCostAudit(
         JsonObject exchange,
         JsonObject activeConflict,
-        JsonObject? activeActionEconomy,
         string context,
         List<ValidationIssue> issues,
-        AfterlifeActionCostAuthorityContext actionCostAuthority)
+        AfterlifeActionCostAuthorityContext actionCostAuthority,
+        int? oppositionMaximum)
     {
         var oppositionOperation = ResolveOppositionOperationForActionCost(exchange);
         if (!OperationHasActionCost(oppositionOperation))
@@ -3301,15 +3283,14 @@ public partial class ValidationService
         {
             ValidateRecoveryActionCost(
                 exchange,
-                activeActionEconomy,
-                oppositionAudit,
                 "success",
                 context,
                 issues,
                 before,
                 after,
                 "opposition",
-                AfterlifeSpiritualConflictState.GetNodeString(exchange["operationType"]));
+                AfterlifeSpiritualConflictState.GetNodeString(exchange["operationType"]),
+                oppositionMaximum);
             return;
         }
 
@@ -3953,91 +3934,6 @@ public partial class ValidationService
         currentExchangeActionAfter = after;
     }
 
-    private static void ValidateActionEconomyMatchesLastCurrentExchange(
-        JsonObject? actionEconomy,
-        string side,
-        int? expectedCurrent,
-        string context,
-        List<ValidationIssue> issues)
-    {
-        if (!expectedCurrent.HasValue)
-            return;
-
-        if (actionEconomy?[side] is not JsonObject pool ||
-            !TryGetJsonNodeInt(pool["current"], out var actualCurrent))
-        {
-            return;
-        }
-
-        if (actualCurrent != expectedCurrent.Value)
-        {
-            AddActionCostIssue(
-                issues,
-                context,
-                $"Итоговый activeConflict.actionEconomy.{side}.current должен совпадать с последним текущим actionCostAudit.{side}.after.",
-                string.Equals(side, "opposition", StringComparison.OrdinalIgnoreCase)
-                    ? "afterlife_conflict_action_economy_opposition_delta_mismatch"
-                    : "afterlife_conflict_action_economy_delta_mismatch",
-                expectedCurrent.Value.ToString(),
-                actualCurrent.ToString());
-        }
-    }
-
-    private static void ValidateActionEconomyUnchangedWhenUnaudited(
-        JsonObject? actionEconomy,
-        string side,
-        int? auditedExpectedCurrent,
-        int? preTurnExpectedCurrent,
-        string context,
-        List<ValidationIssue> issues)
-    {
-        if (auditedExpectedCurrent.HasValue || !preTurnExpectedCurrent.HasValue)
-            return;
-
-        if (actionEconomy?[side] is not JsonObject pool ||
-            !TryGetJsonNodeInt(pool["current"], out var actualCurrent))
-        {
-            return;
-        }
-
-        if (actualCurrent == preTurnExpectedCurrent.Value)
-            return;
-
-        AddActionCostIssue(
-            issues,
-            context,
-            $"activeConflict.actionEconomy.{side}.current нельзя менять без текущего actionCostAudit.{side}; сторона без audit должна сохранить pre-turn ОД.",
-            string.Equals(side, "opposition", StringComparison.OrdinalIgnoreCase)
-                ? "afterlife_conflict_action_economy_opposition_unaudited_delta"
-                : "afterlife_conflict_action_economy_unaudited_delta",
-            preTurnExpectedCurrent.Value.ToString(),
-            actualCurrent.ToString());
-    }
-
-    private static void ValidateActionEconomyMatchesSpiritFocus(
-        JsonObject? actionEconomy,
-        AfterlifeConflictDiceContext diceContext,
-        string context,
-        List<ValidationIssue> issues)
-    {
-        if (actionEconomy?["player"] is not JsonObject playerPool ||
-            !TryGetJsonNodeInt(playerPool["max"], out var actualMax))
-        {
-            return;
-        }
-
-        if (actualMax == diceContext.SpiritFocusMaxActionPoints)
-            return;
-
-        AddActionCostIssue(
-            issues,
-            $"{context}.max",
-            "Максимум ОД игрока в activeConflict должен соответствовать Средоточию Души из authority soul_state.",
-            "afterlife_conflict_action_economy_spirit_focus_mismatch",
-            $"{diceContext.SpiritFocusMaxActionPoints} ОД from spiritFocusTier={diceContext.SpiritFocusTier}",
-            actualMax.ToString());
-    }
-
     private static bool TryGetActionCostBeforeAfter(JsonObject exchange, string side, out int before, out int after)
     {
         before = 0;
@@ -4050,30 +3946,25 @@ public partial class ValidationService
 
     private static void ValidateRecoveryActionCost(
         JsonObject exchange,
-        JsonObject? activeActionEconomy,
-        JsonObject playerAudit,
         string? outcome,
         string context,
         List<ValidationIssue> issues,
         int before,
         int after,
         string side,
-        string? punishingOperation)
+        string? punishingOperation,
+        int? resourceMaximum)
     {
-        var maxActionPoints = TryGetActionPoolMax(activeActionEconomy, side, out var activeMax)
-            ? activeMax
-            : TryGetJsonNodeInt(playerAudit["max"], out var auditMax)
-                ? auditMax
-                : 0;
+        var maxActionPoints = resourceMaximum ?? 0;
 
         if (maxActionPoints <= 0)
         {
             AddActionCostIssue(
                 issues,
                 $"{context}.actionCostAudit.{side}.max",
-                $"Для восстановления ОД нужен max из activeConflict.actionEconomy.{side}.max или actionCostAudit.{side}.max.",
+                $"Для восстановления ОД нужен maximum канонического spiritual_action_points владельца {side}.",
                 "afterlife_conflict_action_recovery_missing_max",
-                "positive max action points",
+                "positive maximum from validated pre-turn resource ledger",
                 "missing");
             return;
         }
@@ -4130,13 +4021,6 @@ public partial class ValidationService
                 expectedAfter.ToString(),
                 after.ToString());
         }
-    }
-
-    private static bool TryGetActionPoolMax(JsonObject? actionEconomy, string side, out int max)
-    {
-        max = 0;
-        return actionEconomy?[side] is JsonObject pool &&
-               TryGetJsonNodeInt(pool["max"], out max);
     }
 
     private static string? ResolveMatchupOppositionOperation(JsonObject exchange)
@@ -4250,7 +4134,7 @@ public partial class ValidationService
             : null;
     }
 
-    private static int? ResolveScopedPreTurnActionEconomyCurrent(
+    private static int? ResolveScopedPreTurnResourceCurrent(
         JsonObject conflict,
         AfterlifeConflictDiceContext diceContext,
         string side)
@@ -4266,8 +4150,8 @@ public partial class ValidationService
             return null;
 
         return string.Equals(side, "opposition", StringComparison.OrdinalIgnoreCase)
-            ? diceContext.PreTurnOppositionActionCurrent
-            : diceContext.PreTurnPlayerActionCurrent;
+            ? diceContext.PreTurnOppositionResourceCurrent
+            : diceContext.PreTurnPlayerResourceCurrent;
     }
 
     private static JsonNode? ResolveNextPriorControlState(JsonNode? priorControlState, JsonObject exchange)

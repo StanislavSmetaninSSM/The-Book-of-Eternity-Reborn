@@ -974,7 +974,11 @@ public sealed class BrowserApiContractTests
                 HealthPercentage: "90%",
                 EnergyPercentage: "75%",
                 PoisePercentage: "60%",
-                ActiveConditions: ["Сосредоточенность"]),
+                ActiveConditions: ["Сосредоточенность"])
+            {
+                ResourceProjectionAvailable = true,
+                ResourceUnavailableMessage = string.Empty
+            },
             World: new BrowserGameScreenWorldDto(
                 Location: "Пепельная дорога",
                 WorldTime: "Сумерки",

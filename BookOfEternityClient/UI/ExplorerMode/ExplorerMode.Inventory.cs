@@ -40,6 +40,7 @@ public partial class ExplorerMode
                     inventoryItems.Add((identity, name, type, item));
                 }
             }
+            var inventoryResourceProjection = await ProjectInventoryItemResourcesAsync(inventoryItems);
 
             var equippedEntries = new List<(string SlotKey, string ItemIdentity, string ItemName, JsonElement? Data)>();
             var equipmentRoot = JsonNode.Parse(doc.RootElement.GetRawText()) as JsonObject;
@@ -69,14 +70,15 @@ public partial class ExplorerMode
             // Auto-discard broken items if setting enabled
             if (_stateManager.Settings.AutoDiscardBrokenItems && inventoryItems.Count > 0)
             {
-                var brokenItems = inventoryItems
-                    .Where(i =>
-                    {
-                        if (i.Data.TryGetProperty("isBroken", out var b) && b.ValueKind == JsonValueKind.True) return true;
-                        var dur = GetStr(i.Data, "durability", "");
-                        return !string.IsNullOrEmpty(dur) && int.TryParse(dur.Replace("%", "").Trim(), out var dv) && dv == 0;
-                    })
-                    .Select(i => (i.Identity, i.Name)).ToList();
+                var brokenItems = inventoryResourceProjection.IsAvailable
+                    ? inventoryItems
+                    .Where(item => inventoryResourceProjection.RowsByIdentity
+                        .GetValueOrDefault(item.Identity, Array.Empty<ResourceProjectionRow>())
+                        .Any(static row =>
+                            string.Equals(row.ResourceKey, "durability", StringComparison.Ordinal) &&
+                            row.Current == 0m))
+                    .Select(i => (i.Identity, i.Name)).ToList()
+                    : [];
                 if (brokenItems.Count > 0)
                 {
                     var discardedCount = 0;
@@ -94,7 +96,6 @@ public partial class ExplorerMode
                 }
             }
 
-            var itemResourcesDoc = await _stateManager.LoadGameStateFileAsync("game_state/inventory/item_resources.json");
             var choices = new List<string>();
             if (equippedEntries.Count > 0)
             {
@@ -115,19 +116,15 @@ public partial class ExplorerMode
 
                 // Status flags
                 var flags = "";
-                var durStr = GetStr(data, "durability", "");
-                if (!string.IsNullOrEmpty(durStr) && int.TryParse(durStr.Replace("%", "").Trim(), out var durVal) && durVal == 0)
+                var projectedRows = inventoryResourceProjection.RowsByIdentity
+                    .GetValueOrDefault(identity, Array.Empty<ResourceProjectionRow>());
+                if (projectedRows.Any(static row =>
+                        string.Equals(row.ResourceKey, "durability", StringComparison.Ordinal) &&
+                        row.Current == 0m))
                     flags += " ⚠ СЛОМАН";
-                var resourceEntry = FindInventorySidecarEntry(itemResourcesDoc, identity);
-                var resStr = GetPreferredStr(resourceEntry, data, "resource");
-                var isSidecarEmpty = !string.IsNullOrEmpty(resStr) &&
-                                     int.TryParse(resStr.Replace("%", "").Trim(), out var sidecarResVal) &&
-                                     sidecarResVal == 0;
-                if (isSidecarEmpty)
-                    flags += " ⚠ ПУСТО";
-                if (data.TryGetProperty("isBroken", out var brk2) && brk2.ValueKind == JsonValueKind.True)
-                    flags += " ⚠ СЛОМАН";
-                if ((data.TryGetProperty("isEmpty", out var emp2) && emp2.ValueKind == JsonValueKind.True) && !isSidecarEmpty)
+                if (projectedRows.Any(static row =>
+                        !string.Equals(row.ResourceKey, "durability", StringComparison.Ordinal) &&
+                        row.Current == 0m))
                     flags += " ⚠ ПУСТО";
 
                 inventoryChoiceEntries.Add(($"📦 {Markup.Escape(name)}{qtyStr}{typeStr}{Markup.Escape(flags)}", identity));
@@ -155,20 +152,36 @@ public partial class ExplorerMode
                 infoPrefixCount++;
             }
 
-            if (doc.RootElement.TryGetProperty("resources", out var resList) && resList.ValueKind == JsonValueKind.Object)
+            // Stackable inventory commodities are holdings, not item-owned
+            // current/max resource authority. Keep them visible without using
+            // them as durability, charge, or action-eligibility fallback.
+            if (doc.RootElement.TryGetProperty("resources", out var inventoryCommodities) &&
+                inventoryCommodities.ValueKind == JsonValueKind.Object)
             {
-                foreach (var rp in resList.EnumerateObject())
+                foreach (var commodity in inventoryCommodities.EnumerateObject())
                 {
-                    if (rp.Name is "money" or "gold" or "coins") continue;
-                    var rv = rp.Value.ValueKind == JsonValueKind.Number
-                        ? rp.Value.GetRawText()
-                        : (rp.Value.ValueKind == JsonValueKind.String ? rp.Value.GetString() ?? "" : "");
-                    if (!string.IsNullOrEmpty(rv) && rv != "0")
+                    if (commodity.Name is "money" or "gold" or "coins")
+                        continue;
+                    var value = commodity.Value.ValueKind switch
                     {
-                        choices.Insert(infoPrefixCount, GameInterface.SafePromptChoice($"💎 {rp.Name}: {rv}"));
-                        infoPrefixCount++;
-                    }
+                        JsonValueKind.Number => commodity.Value.GetRawText(),
+                        JsonValueKind.String => commodity.Value.GetString() ?? string.Empty,
+                        _ => string.Empty
+                    };
+                    if (string.IsNullOrWhiteSpace(value) || value == "0")
+                        continue;
+                    choices.Insert(
+                        infoPrefixCount,
+                        GameInterface.SafePromptChoice($"💎 {commodity.Name}: {value}"));
+                    infoPrefixCount++;
                 }
+            }
+            if (!inventoryResourceProjection.IsAvailable)
+            {
+                choices.Insert(
+                    infoPrefixCount,
+                    GameInterface.SafePromptChoice(ResourcePlayerFailureMessages.Unavailable));
+                infoPrefixCount++;
             }
 
             // Location storages link — interactive
@@ -286,7 +299,19 @@ public partial class ExplorerMode
 
         IReadOnlyList<string> itemSlots = [];
         string itemType = "";
-        JsonElement? resourceEntry = null;
+        var isCarriedByPlayer = !itemData.HasValue || IsInventoryItemCarriedByPlayer(itemData.Value);
+        var resourceProjection = string.IsNullOrWhiteSpace(itemIdentity)
+            ? new ResourceProjectionResult(
+                false,
+                ResourcePlayerFailureMessages.Unavailable,
+                Array.Empty<ResourceProjectionRow>())
+            : await ResourceProjectionService.ProjectOwnerAsync(
+                _fs,
+                "mortal_world",
+                ResourceOwnerKind.Item,
+                itemIdentity,
+                "этот предмет",
+                isCarriedByPlayer);
 
         using var projectedItemDocument = itemData.HasValue
             ? CreateInventoryItemDisplayDocument(itemData.Value)
@@ -295,9 +320,6 @@ public partial class ExplorerMode
 	        if (projectedItemDocument != null)
 	        {
 	            var item = projectedItemDocument.RootElement;
-	            var itemResourcesDoc = allowInventorySidecars
-                    ? await _stateManager.LoadGameStateFileAsync("game_state/inventory/item_resources.json")
-                    : null;
 	            var itemBondsDoc = allowInventorySidecars
                     ? await _stateManager.LoadGameStateFileAsync("game_state/inventory/item_bonds.json")
                     : null;
@@ -307,7 +329,6 @@ public partial class ExplorerMode
 	            var itemJournalsDoc = allowInventorySidecars
                     ? await _stateManager.LoadGameStateFileAsync("game_state/npcs/item_journals.json")
                     : null;
-	            resourceEntry = FindInventorySidecarEntry(itemResourcesDoc, itemIdentity);
 	            var bondEntry = FindInventorySidecarEntry(itemBondsDoc, itemIdentity);
 	            var textEntry = FindInventorySidecarEntry(itemTextDoc, itemIdentity);
 	            var journalEntry = FindInventorySidecarEntry(itemJournalsDoc, itemIdentity);
@@ -353,39 +374,22 @@ public partial class ExplorerMode
                     lines.Add($"  🔒 {label}: [white]{Markup.Escape(reason)}[/]");
             }
 
-            var durability = GetStr(item, "durability", "");
-            var maxDurability = GetStr(item, "maxDurability", "");
-            if (!string.IsNullOrEmpty(durability))
+            if (resourceProjection.IsAvailable)
             {
-                var hasMaxDurability = !string.IsNullOrWhiteSpace(maxDurability);
-                var durNum = int.TryParse(durability.Replace("%", "").Trim(), out var dv) ? dv : -1;
-                var maxDurNum = hasMaxDurability && int.TryParse(maxDurability.Replace("%", "").Trim(), out var mdv) ? mdv : -1;
-                if (durNum == 0)
+                foreach (var row in resourceProjection.Rows)
                 {
-                    var brokenValue = hasMaxDurability
-                        ? $"0/{Markup.Escape(maxDurability)}"
-                        : FormatInventoryDurabilitySingleValue(durability);
-                    lines.Add($"  🔧 Прочность: [bold red]СЛОМАН ({brokenValue})[/]");
+                    var icon = string.Equals(row.ResourceKey, "durability", StringComparison.Ordinal)
+                        ? "🔧"
+                        : "🔋";
+                    var color = row.Current == 0m ? "red" : "yellow";
+                    lines.Add(
+                        $"  {icon} {Markup.Escape(row.DisplayName)}: " +
+                        $"[{color}]{Markup.Escape(ResourceProjectionService.FormatValue(row))}[/]");
                 }
-                else if (durNum > 0 && hasMaxDurability && maxDurNum > 0)
-                {
-                    var durPct = Math.Clamp(durNum * 100 / maxDurNum, 0, 100);
-                    var durColor = durPct > 60 ? "green" : durPct > 25 ? "yellow" : "red";
-                    var durabilityLabel = durNum == maxDurNum
-                        ? FormatInventoryDurabilitySingleValue(durability)
-                        : $"{durability}/{maxDurability}";
-                    lines.Add($"  🔧 Прочность: {ConsoleLayout.CreateBarFromPercent(durPct, 10, durColor)}  [{durColor}]{Markup.Escape(durabilityLabel)}[/]");
-                }
-                else if (durNum > 0)
-                {
-                    var durPct = Math.Clamp(durNum, 0, 100);
-                    var durColor = durPct > 60 ? "green" : durPct > 25 ? "yellow" : "red";
-                    lines.Add($"  🔧 Прочность: {ConsoleLayout.CreateBarFromPercent(durPct, 10, durColor)}  [{durColor}]{Markup.Escape(FormatInventoryDurabilitySingleValue(durability))}[/]");
-                }
-                else
-                {
-                    lines.Add($"  🔧 Прочность: [white]{Markup.Escape(durability)}[/]");
-                }
+            }
+            else
+            {
+                lines.Add($"  [yellow]{Markup.Escape(ResourcePlayerFailureMessages.Unavailable)}[/]");
             }
 
             var count = GetStr(item, "count", GetStr(item, "quantity", "1"));
@@ -684,28 +688,6 @@ public partial class ExplorerMode
 	                if (hasSidecarText)
 	                    RenderTextEntries(sidecarTextEntries);
 	            }
-
-            // Resource/charges (potions, wands, etc.)
-            var resource = GetPreferredStr(resourceEntry, item, "resource");
-            var maxResource = GetPreferredStr(resourceEntry, item, "maximumResource");
-            var resourceType = GetPreferredStr(resourceEntry, item, "resourceType");
-            if (string.IsNullOrWhiteSpace(resourceType))
-                resourceType = "заряды";
-            if (!string.IsNullOrEmpty(resource))
-            {
-                var resNum = int.TryParse(resource.Replace("%", "").Trim(), out var rv) ? rv : -1;
-                if (resNum == 0)
-                {
-                    lines.Add($"  🔋 {Markup.Escape(resourceType)}: [bold red]ПУСТО (0/{Markup.Escape(maxResource)})[/]");
-                }
-                else
-                {
-                    var resLine = $"  🔋 {Markup.Escape(resourceType)}: [yellow]{Markup.Escape(resource)}[/]";
-                    if (!string.IsNullOrEmpty(maxResource))
-                        resLine += $" / [white]{Markup.Escape(maxResource)}[/]";
-                    lines.Add(resLine);
-                }
-            }
 
             // Owner bond level (Rare+ items)
             var bondLevel = GetPreferredStr(bondEntry, item, "ownerBondLevelCurrent");
@@ -1035,14 +1017,12 @@ public partial class ExplorerMode
         }
 
         // Status line with broken/empty flags
-        var isBroken = itemData.HasValue && (
-            (itemData.Value.TryGetProperty("isBroken", out var brk) && brk.ValueKind == JsonValueKind.True) ||
-            (int.TryParse(GetStr(itemData.Value, "durability", "1").Replace("%", "").Trim(), out var durCheck) && durCheck == 0));
-        var preferredResource = itemData.HasValue ? GetPreferredStr(resourceEntry, itemData.Value, "resource") : "";
-        var isEmpty = itemData.HasValue && (
-            (itemData.Value.TryGetProperty("isEmpty", out var emp) && emp.ValueKind == JsonValueKind.True) ||
-            (int.TryParse(preferredResource.Replace("%", "").Trim(), out var resCheck) && resCheck == 0));
-        var isCarriedByPlayer = !itemData.HasValue || IsInventoryItemCarriedByPlayer(itemData.Value);
+        var isBroken = !resourceProjection.IsAvailable || resourceProjection.Rows.Any(static row =>
+            string.Equals(row.ResourceKey, "durability", StringComparison.Ordinal) &&
+            row.Current == 0m);
+        var isEmpty = resourceProjection.IsAvailable && resourceProjection.Rows.Any(static row =>
+            !string.Equals(row.ResourceKey, "durability", StringComparison.Ordinal) &&
+            row.Current == 0m);
 
         lines.Add("");
         if (isBroken)
@@ -1247,17 +1227,6 @@ public partial class ExplorerMode
 
     private static string FormatInventoryProtocolValueForPlayer(string value) =>
         StructuredBonusDisplay.FormatScalar(value);
-
-    private static string FormatInventoryDurabilitySingleValue(string durability)
-    {
-        var clean = durability.Trim();
-        if (clean.EndsWith("%", StringComparison.Ordinal))
-            return clean;
-
-        return int.TryParse(clean, out var value) && value is >= 0 and <= 100
-            ? $"{value}%"
-            : clean;
-    }
 
     private static bool IsInventoryItemCarriedByPlayer(JsonElement item) =>
         MortalItemLocalActionPolicy.IsCarriedByPlayer(item);
@@ -1574,6 +1543,52 @@ public partial class ExplorerMode
         return MortalItemPlayerProjection.FindUniqueExactSidecarEntry(doc.RootElement, itemIdentity);
     }
 
+    private async Task<InventoryResourceProjectionSet> ProjectInventoryItemResourcesAsync(
+        IReadOnlyList<(string Identity, string Name, string Type, JsonElement Data)> items)
+    {
+        if (items.Count == 0)
+        {
+            return new InventoryResourceProjectionSet(
+                IsAvailable: true,
+                RowsByIdentity: new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(
+                    StringComparer.Ordinal));
+        }
+
+        var scopes = items
+            .Select((item, index) => new ResourceProjectionOwnerScope(
+                new ResourceOwnerKey("mortal_world", ResourceOwnerKind.Item, item.Identity),
+                $"предмет игрока №{index + 1}",
+                IsOwningPlayer: true))
+            .ToArray();
+        var projection = await ResourceProjectionService.ProjectCanonicalAsync(
+            _fs,
+            scopes,
+            ResourceProjectionAudience.Player);
+        if (!projection.IsAvailable)
+        {
+            return new InventoryResourceProjectionSet(
+                IsAvailable: false,
+                RowsByIdentity: new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(
+                    StringComparer.Ordinal));
+        }
+
+        var rowsByView = projection.Rows
+            .GroupBy(static row => row.SafeOwnerSelector, StringComparer.Ordinal)
+            .ToDictionary(
+                static group => group.Key,
+                static group => (IReadOnlyList<ResourceProjectionRow>)group.ToArray(),
+                StringComparer.Ordinal);
+        var rowsByIdentity = new Dictionary<string, IReadOnlyList<ResourceProjectionRow>>(
+            StringComparer.Ordinal);
+        for (var index = 0; index < items.Count; index++)
+        {
+            rowsByView.TryGetValue($"предмет игрока №{index + 1}", out var rows);
+            rowsByIdentity[items[index].Identity] = rows ?? Array.Empty<ResourceProjectionRow>();
+        }
+
+        return new InventoryResourceProjectionSet(true, rowsByIdentity);
+    }
+
     private static string GetPreferredStr(JsonElement? primary, JsonElement fallback, params string[] propertyNames)
     {
         if (primary.HasValue)
@@ -1619,6 +1634,10 @@ public partial class ExplorerMode
 
         return result;
     }
+
+    private sealed record InventoryResourceProjectionSet(
+        bool IsAvailable,
+        IReadOnlyDictionary<string, IReadOnlyList<ResourceProjectionRow>> RowsByIdentity);
 
     /// <summary>Equips an accepted item through the current-schema equippedItems authority.</summary>
     private async Task EquipItemLocal(string itemIdentity, string itemName, string slotKey)

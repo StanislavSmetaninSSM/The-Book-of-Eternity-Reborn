@@ -88,7 +88,10 @@ public sealed class AfterlifeRussianTerminologyScannerTests
     [Fact]
     public void AfterlifeSpiritualCombatScreensMustUseRussianGameplayWording()
     {
-        var source = ReadExplorerSource("ExplorerMode.Afterlife.SpiritualConflict.cs");
+        var source = string.Join(
+            Environment.NewLine,
+            ReadExplorerSource("ExplorerMode.Afterlife.SpiritualConflict.cs"),
+            ReadUiSource("ExplorerAfterlifeCombatCommandResultBuilder.cs"));
 
         foreach (var forbidden in new[]
         {
@@ -110,8 +113,8 @@ public sealed class AfterlifeRussianTerminologyScannerTests
             Assert.DoesNotContain(forbidden, source, StringComparison.OrdinalIgnoreCase);
         }
 
-        Assert.Contains("Когда в сцене появится проверяемое духовное противостояние", source, StringComparison.Ordinal);
-        Assert.Contains("здесь показаны обмены действиями", source, StringComparison.Ordinal);
+        Assert.Contains("Сейчас нет открытого духовного противостояния", source, StringComparison.Ordinal);
+        Assert.Contains("Открытые записи обменов с исходом, позицией, бросками и наградами", source, StringComparison.Ordinal);
         Assert.Contains("проверяемом спорном конфликте", source, StringComparison.Ordinal);
         Assert.Contains("итоги бросков", source, StringComparison.Ordinal);
         Assert.Contains("актор=", source, StringComparison.Ordinal);
@@ -206,5 +209,12 @@ public sealed class AfterlifeRussianTerminologyScannerTests
             "BookOfEternityClient",
             "UI",
             "ExplorerMode",
+            fileName));
+
+    private static string ReadUiSource(string fileName) =>
+        File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
             fileName));
 }

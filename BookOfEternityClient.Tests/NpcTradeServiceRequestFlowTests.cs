@@ -470,7 +470,8 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
         Assert.Equal(JsonValueKind.Object, item.GetProperty("materialization").ValueKind);
         Assert.Equal(JsonValueKind.Object, item.GetProperty("materializationReceipt").ValueKind);
         Assert.False(string.IsNullOrWhiteSpace(item.GetProperty("image_prompt").GetString()));
-        Assert.Equal("100%", item.GetProperty("durability").GetString());
+        Assert.False(item.TryGetProperty("durability", out _));
+        Assert.False(item.TryGetProperty("maxDurability", out _));
         Assert.Equal(JsonValueKind.Null, item.GetProperty("contentsPath").ValueKind);
         Assert.Equal(JsonValueKind.Null, item.GetProperty("equipmentSlot").ValueKind);
         Assert.Equal(JsonValueKind.Null, item.GetProperty("accessoryForSlot").ValueKind);
