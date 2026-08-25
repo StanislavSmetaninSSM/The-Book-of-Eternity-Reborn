@@ -49,6 +49,9 @@ public sealed class ResourceMaterializationLifecycleTests
         await using var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
         resolvedFailurePath = context.FileSystem.ResolvePath(failurePath);
         await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
+        await context.WriteExactJsonAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
         await SeedPlayerOutputsAsync(context);
         await context.CaptureValidatedPendingSnapshotAsync();
         await context.WriteExactJsonAsync(
@@ -56,6 +59,11 @@ public sealed class ResourceMaterializationLifecycleTests
             ResourceMaterializationValidationTests.DefinitionAndInitializationCommand()
                 .ToJsonString());
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
@@ -81,26 +89,38 @@ public sealed class ResourceMaterializationLifecycleTests
     }
 
     [Fact]
-    public async Task CanonicalPostValidationFailure_RestoresResourcesCommandAndPlayerOutputs()
+    public async Task PublicationAfterImageFailure_RestoresResourcesCommandAndPlayerOutputs()
     {
         var armed = false;
         var commandConsumptionReached = false;
+        FileSystemManager? fileSystem = null;
         var hooks = new FileSystemManagerHooks
         {
             BeforeCanonicalMutationBoundaryAsync = path =>
             {
-                if (armed && string.Equals(
+                if (armed &&
+                    !commandConsumptionReached &&
+                    string.Equals(
                         path,
                         ResourceMaterializationContract.CommandPath,
                         StringComparison.Ordinal))
                 {
                     commandConsumptionReached = true;
+                    var statePath = fileSystem!.ResolvePath(
+                        ResourceMaterializationContract.StatePath);
+                    var state = JsonNode.Parse(File.ReadAllText(statePath))!.AsObject();
+                    state["schemaVersion"] = 999;
+                    File.WriteAllText(statePath, state.ToJsonString());
                 }
                 return Task.CompletedTask;
             }
         };
         await using var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
+        fileSystem = context.FileSystem;
         await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
+        await context.WriteExactJsonAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
         await SeedPlayerOutputsAsync(context);
         await context.CaptureValidatedPendingSnapshotAsync();
         await context.WriteExactJsonAsync(
@@ -108,19 +128,19 @@ public sealed class ResourceMaterializationLifecycleTests
             ResourceMaterializationValidationTests.DefinitionAndInitializationCommand()
                 .ToJsonString());
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
 
-        var state = Assert.IsType<JsonObject>(
-            AcceptedMechanicsPlanAuthority.TryPeekValidated(
-                context.FileSystem,
-                out _,
-                out var planning) &&
-            planning.Plan != null
-                ? planning.Plan.StateAfterImage
-                : null);
-        state["schemaVersion"] = 999;
+        var validatedHandoff = await AcceptedMechanicsAuthorityTestProbe
+            .PeekCommonAsync(context.FileSystem);
+        Assert.NotNull(validatedHandoff);
+        Assert.NotNull(validatedHandoff.Result.Plan);
         var trackedPaths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
             .Concat(PlayerOutputPaths)
             .Distinct(StringComparer.Ordinal)
@@ -128,13 +148,14 @@ public sealed class ResourceMaterializationLifecycleTests
         var before = await context.CaptureAsync(trackedPaths);
 
         armed = true;
-        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
-            context.FileSystem,
-            context.Normalizer,
-            context.Validator,
-            new Dictionary<string, string>(StringComparer.Ordinal));
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                context.FileSystem,
+                context.Normalizer,
+                context.Validator,
+                new Dictionary<string, string>(StringComparer.Ordinal)));
 
-        Assert.Contains(result.Issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.Contains("validated after-image", exception.Message, StringComparison.Ordinal);
         Assert.True(commandConsumptionReached);
         await context.AssertUnchangedAsync(before);
     }
@@ -163,7 +184,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         _fs.DeleteFile("output/narrative_response.json");
         _fs.DeleteFile("output/interface_updates.json");
 
-        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var input = new QueuedConsoleInputSource([]);
+        var engine = CreateGameEngine(input);
         var rollbackSnapshot = await InvokePrivateTaskResultAsync(
             engine,
             "CreatePreTurnBackup",
@@ -231,10 +253,30 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 var firstRequest = await WaitForValidationRepairRequestContainingAsync(
                     "resource_command_invalid_field",
-                    TimeSpan.FromSeconds(8));
+                    RepairLifecycleObservationTimeout);
                 Assert.False(_fs.FileExists(ResourceMaterializationContract.CommandPath));
                 Assert.False(_fs.FileExists("output/narrative_response.json"));
                 Assert.False(_fs.FileExists("output/interface_updates.json"));
+                using (var firstRequestDocument = JsonDocument.Parse(firstRequest))
+                {
+                    var requiredPaths = firstRequestDocument.RootElement
+                        .GetProperty("requiredResubmissionPaths")
+                        .EnumerateArray()
+                        .Select(static path => path.GetString() ?? string.Empty)
+                        .ToArray();
+                    var expectedPaths = new HashSet<string>(
+                        new[]
+                        {
+                            ResourceMaterializationContract.CommandPath,
+                            "output/narrative_response.json",
+                            "output/interface_updates.json"
+                        },
+                        StringComparer.OrdinalIgnoreCase);
+                    Assert.True(
+                        expectedPaths.SetEquals(requiredPaths),
+                        "Resource repair must require exactly the rejected GM-authored " +
+                        "command/output surfaces. Actual: " + string.Join(", ", requiredPaths));
+                }
 
                 await WriteResourceRepairReadyAsync(
                     request,
@@ -242,7 +284,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var secondRequest = await WaitForNewRepairAttemptAsync(
                     firstRequest,
                     minimumAttempt: 2,
-                    TimeSpan.FromSeconds(8));
+                    RepairLifecycleObservationTimeout);
                 Assert.Contains(
                     "resource_command_invalid_field",
                     secondRequest,
@@ -259,7 +301,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var thirdRequest = await WaitForNewRepairAttemptAsync(
                     secondRequest,
                     minimumAttempt: 3,
-                    TimeSpan.FromSeconds(8));
+                    RepairLifecycleObservationTimeout);
                 Assert.Contains(
                     "resource_command_invalid_field",
                     thirdRequest,
@@ -273,7 +315,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var fourthRequest = await WaitForNewRepairAttemptAsync(
                     thirdRequest,
                     minimumAttempt: 4,
-                    TimeSpan.FromSeconds(8));
+                    RepairLifecycleObservationTimeout);
                 Assert.Contains(
                     "resource_command_invalid_field",
                     fourthRequest,
@@ -288,28 +330,25 @@ public sealed partial class GameEngineTurnLifecycleTests
                     request,
                     "Complete coherent resource turn resubmitted.");
 
-                var laterRequest = await TryWaitForNewRepairAttemptAsync(
+                var laterRequest = await WaitForUpdatedValidationRepairRequestContainingAsync(
+                    "accepted_turn_stale_player_facing_output_after_canonical_repair",
                     fourthRequest,
-                    minimumAttempt: 5,
-                    TimeSpan.FromSeconds(4));
-                if (laterRequest != null)
-                {
-                    Assert.Contains(
-                        "accepted_turn_stale_player_facing_output_after_canonical_repair",
-                        laterRequest,
-                        StringComparison.Ordinal);
-                    await WriteAcceptedResourceOutputsAsync(
-                        "Знак закрепился; расход маны подтверждён миром.",
-                        "Продолжить путь");
-                    await WriteResourceRepairReadyAsync(
-                        request,
-                        "Player-facing output regenerated after canonical repair.");
-                }
+                    RepairLifecycleObservationTimeout);
+                Assert.Contains(
+                    "accepted_turn_stale_player_facing_output_after_canonical_repair",
+                    laterRequest,
+                    StringComparison.Ordinal);
+                await WriteAcceptedResourceOutputsAsync(
+                    "Знак закрепился; расход маны подтверждён миром.",
+                    "Продолжить путь");
+                await WriteResourceRepairReadyAsync(
+                    request,
+                    "Player-facing output regenerated after canonical repair.");
             }
             catch (Exception exception)
             {
                 gmFailure = exception;
-                await WriteResourceRepairReadyAsync(request, "Abort test worker wait.");
+                input.Enqueue(Key(ConsoleKey.Escape));
             }
         });
 
@@ -454,6 +493,519 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     [Fact]
+    public async Task BoundedPendingRepairLifecycle_PreservesPendingAndDispatchesSafeFullTurnRequest()
+    {
+        const string sessionId = "session_bounded_pending_dispatch";
+        const string requestId = "request_bounded_pending_dispatch";
+        const int turnNumber = 42;
+        const string trackedPath = "game_state/world/weather.json";
+        const string baselineJson = "{\"description\":\"До хода\"}";
+        const string acceptedJson = "{\"description\":\"Принятая часть хода\"}";
+        var pendingJson = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["sessionId"] = sessionId,
+            ["acceptedRequestId"] = requestId,
+            ["turnNumber"] = turnNumber,
+            ["requests"] = new JsonArray(new JsonObject
+            {
+                ["requestId"] = "pending-safe-request",
+                ["resultKinds"] = new JsonArray("narrated_no_state_change", "resource_delta"),
+                ["amountRange"] = new JsonObject
+                {
+                    ["minimum"] = 1,
+                    ["maximum"] = 3
+                }
+            })
+        }.ToJsonString();
+        var safePacket = new JsonObject
+        {
+            ["kind"] = "effect_resource_resolution",
+            ["requests"] = new JsonArray(new JsonObject
+            {
+                ["requestId"] = "pending-safe-request",
+                ["resultKinds"] = new JsonArray("narrated_no_state_change", "resource_delta"),
+                ["minimumAmount"] = 1,
+                ["maximumAmount"] = 3
+            })
+        }.ToJsonString();
+
+        await _fs.WriteFileAtomicAsync(trackedPath, baselineJson);
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "bounded_pending_dispatch");
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{trackedPath}",
+            baselineJson);
+        await WritePendingTurnSnapshotManifestAsync(
+            sessionId,
+            requestId,
+            turnNumber,
+            trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await _fs.WriteFileAtomicAsync(trackedPath, acceptedJson);
+        await _fs.WriteFileAtomicAsync(ResourcePendingResolutionState.PendingPath, pendingJson);
+
+        var issue = new ValidationIssue(
+            EffectAcceptedTurnPlan.CommandPath,
+            IssueSeverity.Error,
+            "A bounded result requires one complete same-turn resubmission.",
+            code: "resource_pending_full_turn_resubmission_required",
+            section: "AcceptedMechanicsPendingResolution",
+            expected: "one complete same-turn response with a closed receipt",
+            actual: safePacket);
+        var repairSessionGeneration = await GetOrCreateSessionGenerationAsync();
+        string? observedPendingAtDispatch = null;
+        string? observedAcceptedStateAtDispatch = null;
+        Exception? gmAssertionFailure = null;
+        var gmRepair = Task.Run(async () =>
+        {
+            try
+            {
+                var requestJson = await WaitForValidationRepairRequestContainingAsync(
+                    issue.Code!,
+                    TimeSpan.FromSeconds(5));
+                observedPendingAtDispatch = await _fs.ReadFileAsync(
+                    ResourcePendingResolutionState.PendingPath);
+                observedAcceptedStateAtDispatch = await _fs.ReadFileAsync(trackedPath);
+                using var document = JsonDocument.Parse(requestJson);
+                Assert.True(document.RootElement
+                    .GetProperty("fullTurnResubmissionRequired")
+                    .GetBoolean());
+                var instructions = document.RootElement
+                    .GetProperty("gmInstructions")
+                    .GetString();
+                Assert.Contains("pending", instructions, StringComparison.OrdinalIgnoreCase);
+                Assert.DoesNotContain("полностью удалена", instructions, StringComparison.OrdinalIgnoreCase);
+                Assert.Contains(
+                    "pending-safe-request",
+                    document.RootElement.GetProperty("errors")[0]
+                        .GetProperty("actual")
+                        .GetString(),
+                    StringComparison.Ordinal);
+            }
+            catch (Exception exception)
+            {
+                gmAssertionFailure = exception;
+            }
+            finally
+            {
+                await WriteJsonAsync(
+                    "game_state/control/validation_repair_ready.json",
+                    new
+                    {
+                        sessionId,
+                        requestId,
+                        turnNumber,
+                        updatedAtUtc = "2026-08-23T00:00:00Z",
+                        note = "Bounded pending request observed."
+                    });
+            }
+        });
+
+        var accepted = await InvokePrivateAsync<bool>(
+            engine,
+            "WaitForBoundedPendingResolutionResubmissionAsync",
+            "bounded pending resolution",
+            new List<ValidationIssue> { issue },
+            1,
+            rollbackSnapshot,
+            repairSessionGeneration);
+        await gmRepair;
+
+        Assert.Null(gmAssertionFailure);
+        Assert.True(accepted);
+        Assert.Equal(pendingJson, observedPendingAtDispatch);
+        Assert.Equal(pendingJson, await _fs.ReadFileAsync(
+            ResourcePendingResolutionState.PendingPath));
+        Assert.Equal(acceptedJson, observedAcceptedStateAtDispatch);
+        Assert.Equal(acceptedJson, await _fs.ReadFileAsync(trackedPath));
+    }
+
+    [Fact]
+    public async Task BoundedPendingLifecycle_ActualValidationLoopPreservesPendingAndAcceptsSafeFullTurnReceipt()
+    {
+        const string initialNarrative = "Кровотечение пока не получило разрешённого исхода.";
+        const string initialOption = "Сдержать боль";
+        const string acceptedNarrative = "Кровотечение отозвалось болью, но не изменило состояние.";
+        const string acceptedOption = "Продолжить путь";
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        _fs.DeleteFile("output/narrative_response.json");
+        _fs.DeleteFile("output/interface_updates.json");
+        _fs.DeleteFile(EffectAcceptedTurnPlan.CommandPath);
+        _fs.DeleteFile(ResourceMaterializationContract.CommandPath);
+        _fs.DeleteFile(ResourcePendingResolutionState.PendingPath);
+        await SeedBoundedPendingLifecycleAuthorityAsync(turn: 43);
+
+        var input = new QueuedConsoleInputSource([]);
+        var engine = CreateGameEngine(input);
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "bounded_pending_actual_lifecycle");
+        var request = new TurnRequest
+        {
+            SessionId = "session_bounded_pending_actual_lifecycle",
+            RequestId = "request_bounded_pending_actual_lifecycle",
+            TurnNumber = 43,
+            PlayerAction = "Переждать новый приступ кровотечения.",
+            Timestamp = "2026-08-23T01:00:00Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Mortal World" }
+        };
+        await WriteJsonAsync("input/turn_request.json", request);
+        await InvokePrivateTaskResultAsync(
+            engine,
+            "CreateCanonicalBaselineSnapshotAsync",
+            request,
+            rollbackSnapshot,
+            "bounded pending actual lifecycle test");
+        var manifest = await InvokePrivateTaskResultAsync(
+            engine,
+            "LoadPendingTurnSnapshotManifestAsync");
+        var snapshotContext = await InvokePrivateTaskResultAsync(
+            engine,
+            "LoadValidatedPendingTurnSnapshotContextAsync",
+            manifest,
+            true);
+
+        await WriteAcceptedEffectOutputsAsync(initialNarrative, initialOption);
+        var definitionsBefore = await _fs.ReadFileAsync(
+            ResourceMaterializationContract.DefinitionsPath);
+        var stateBefore = await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath);
+        var historyBefore = await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath);
+        var effectsBefore = await _fs.ReadFileAsync(EffectCarrierCatalog.PlayerPath);
+        var identityBefore = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.IdentityIndexPath);
+        var narrativeBefore = await _fs.ReadFileAsync("output/narrative_response.json");
+        var interfaceBefore = await _fs.ReadFileAsync("output/interface_updates.json");
+        Assert.NotNull(definitionsBefore);
+        Assert.NotNull(stateBefore);
+        Assert.NotNull(historyBefore);
+        Assert.NotNull(effectsBefore);
+        Assert.NotNull(identityBefore);
+        Assert.NotNull(narrativeBefore);
+        Assert.NotNull(interfaceBefore);
+
+        string? repairRequestJson = null;
+        string? pendingAtDispatch = null;
+        string? definitionsAtDispatch = null;
+        string? stateAtDispatch = null;
+        string? historyAtDispatch = null;
+        string? effectsAtDispatch = null;
+        string? identityAtDispatch = null;
+        string? commandAtDispatch = null;
+        string? narrativeAtDispatch = null;
+        string? interfaceAtDispatch = null;
+        string? pendingRequestId = null;
+        string? staleOutputRepairRequestJson = null;
+        Exception? gmFailure = null;
+        var gmRepair = Task.Run(async () =>
+        {
+            try
+            {
+                repairRequestJson = await WaitForValidationRepairRequestContainingAsync(
+                    "resource_pending_full_turn_resubmission_required",
+                    RepairLifecycleObservationTimeout);
+                pendingAtDispatch = await _fs.ReadFileAsync(
+                    ResourcePendingResolutionState.PendingPath);
+                definitionsAtDispatch = await _fs.ReadFileAsync(
+                    ResourceMaterializationContract.DefinitionsPath);
+                stateAtDispatch = await _fs.ReadFileAsync(
+                    ResourceMaterializationContract.StatePath);
+                historyAtDispatch = await _fs.ReadFileAsync(
+                    ResourceMaterializationContract.HistoryPath);
+                effectsAtDispatch = await _fs.ReadFileAsync(EffectCarrierCatalog.PlayerPath);
+                identityAtDispatch = await _fs.ReadFileAsync(
+                    EffectAcceptedTurnPlan.IdentityIndexPath);
+                commandAtDispatch = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
+                narrativeAtDispatch = await _fs.ReadFileAsync("output/narrative_response.json");
+                interfaceAtDispatch = await _fs.ReadFileAsync("output/interface_updates.json");
+
+                var pendingRoot = JsonNode.Parse(pendingAtDispatch!)!.AsObject();
+                pendingRequestId = Assert.Single(pendingRoot["requests"]!.AsArray())!
+                    ["requestId"]!.GetValue<string>();
+                var receiptCommand = EffectMaterializationTestFixture.CreateCommandRoot();
+                receiptCommand["effectResolutionReceipts"] = new JsonArray(new JsonObject
+                {
+                    ["requestId"] = pendingRequestId,
+                    ["resultKind"] = "narrated_no_state_change",
+                    ["reason"] = acceptedNarrative
+                });
+                await _fs.WriteFileAtomicAsync(
+                    EffectAcceptedTurnPlan.CommandPath,
+                    receiptCommand.ToJsonString());
+                await WriteAcceptedEffectOutputsAsync(acceptedNarrative, acceptedOption);
+                await WriteEffectRepairReadyAsync(
+                    request,
+                    "Complete bounded pending turn resubmitted with one safe receipt.");
+
+                staleOutputRepairRequestJson =
+                    await WaitForUpdatedValidationRepairRequestContainingAsync(
+                    "accepted_turn_stale_player_facing_output_after_canonical_repair",
+                    repairRequestJson!,
+                    RepairLifecycleObservationTimeout);
+                await WriteAcceptedEffectOutputsAsync(acceptedNarrative, acceptedOption);
+                await WriteEffectRepairReadyAsync(
+                    request,
+                    "Player-facing outputs rewritten after bounded receipt publication.");
+            }
+            catch (Exception exception)
+            {
+                gmFailure = exception;
+                input.Enqueue(Key(ConsoleKey.Escape));
+            }
+        });
+
+        var accepted = await InvokePrivateAsync<bool>(
+            engine,
+            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+            "bounded pending actual lifecycle",
+            snapshotContext,
+            rollbackSnapshot,
+            request.TurnNumber,
+            request.ProgressionControl);
+        await gmRepair;
+
+        Assert.Null(gmFailure);
+        Assert.True(accepted);
+        Assert.NotNull(repairRequestJson);
+        Assert.NotNull(staleOutputRepairRequestJson);
+        Assert.NotNull(pendingAtDispatch);
+        Assert.NotNull(pendingRequestId);
+        Assert.Equal(definitionsBefore, definitionsAtDispatch);
+        Assert.Equal(stateBefore, stateAtDispatch);
+        Assert.Equal(historyBefore, historyAtDispatch);
+        Assert.Equal(effectsBefore, effectsAtDispatch);
+        Assert.Equal(identityBefore, identityAtDispatch);
+        Assert.Null(commandAtDispatch);
+        Assert.Equal(narrativeBefore, narrativeAtDispatch);
+        Assert.Equal(interfaceBefore, interfaceAtDispatch);
+
+        var pendingDispatchRoot = JsonNode.Parse(pendingAtDispatch!)!.AsObject();
+        var pendingDispatchRequest = Assert.Single(
+            pendingDispatchRoot["requests"]!.AsArray())!.AsObject();
+        Assert.Equal("pending", pendingDispatchRequest["state"]!.GetValue<string>());
+        Assert.Equal(pendingRequestId, pendingDispatchRequest["requestId"]!.GetValue<string>());
+
+        using (var repairDocument = JsonDocument.Parse(repairRequestJson!))
+        {
+            var repairRoot = repairDocument.RootElement;
+            Assert.True(repairRoot.GetProperty("fullTurnResubmissionRequired").GetBoolean());
+            Assert.Empty(repairRoot.GetProperty("harnessRepairPackets").EnumerateArray());
+            var repairError = Assert.Single(
+                repairRoot.GetProperty("errors").EnumerateArray().ToArray());
+            Assert.Equal(
+                "resource_pending_full_turn_resubmission_required",
+                repairError.GetProperty("code").GetString());
+            var instructions = repairRoot.GetProperty("gmInstructions").GetString();
+            Assert.Contains("pending", instructions, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(
+                "полностью удалена",
+                instructions,
+                StringComparison.OrdinalIgnoreCase);
+
+            var safePacketJson = repairError.GetProperty("actual").GetString();
+            Assert.False(string.IsNullOrWhiteSpace(safePacketJson));
+            using var packetDocument = JsonDocument.Parse(safePacketJson!);
+            var packetRoot = packetDocument.RootElement;
+            Assert.Equal(2, packetRoot.GetProperty("schemaVersion").GetInt32());
+            Assert.Equal(
+                "bounded_resource_resolution",
+                packetRoot.GetProperty("kind").GetString());
+            var safeRequest = Assert.Single(
+                packetRoot.GetProperty("requests").EnumerateArray().ToArray());
+            Assert.Equal(pendingRequestId, safeRequest.GetProperty("requestId").GetString());
+            Assert.True(safeRequest.GetProperty("fullTurnResubmissionRequired").GetBoolean());
+            var allowedResults = safeRequest.GetProperty("allowedResults")
+                .EnumerateArray()
+                .Select(result => result.GetProperty("resultKind").GetString())
+                .ToArray();
+            Assert.Contains("narrated_no_state_change", allowedResults);
+            Assert.Contains("resource_delta", allowedResults);
+            Assert.DoesNotContain("player_current", safePacketJson, StringComparison.Ordinal);
+            Assert.DoesNotContain(
+                EffectMaterializationTestFixture.EffectId,
+                safePacketJson,
+                StringComparison.Ordinal);
+            Assert.DoesNotContain("sha256:", safePacketJson, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(
+                "resourceOwnerId",
+                safePacketJson,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("sourceId", safePacketJson, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("targetId", safePacketJson, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(
+                "fullTurnFingerprint",
+                safePacketJson,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(
+                "requestReplayFingerprint",
+                safePacketJson,
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.False(_fs.FileExists(EffectAcceptedTurnPlan.CommandPath));
+        var terminalPendingJson = await _fs.ReadFileAsync(
+            ResourcePendingResolutionState.PendingPath);
+        Assert.NotNull(terminalPendingJson);
+        var terminalPendingRoot = JsonNode.Parse(terminalPendingJson!)!.AsObject();
+        Assert.Empty(terminalPendingRoot["requests"]!.AsArray());
+        var terminalReceipt = Assert.Single(
+            terminalPendingRoot["terminalReceipts"]!.AsArray())!.AsObject();
+        Assert.Equal(pendingRequestId, terminalReceipt["requestId"]!.GetValue<string>());
+        Assert.Equal(
+            "narrated_no_state_change",
+            terminalReceipt["resultKind"]!.GetValue<string>());
+        Assert.False(terminalReceipt.ContainsKey("amount"));
+
+        var finalState = await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath);
+        Assert.NotNull(finalState);
+        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(stateBefore!), JsonNode.Parse(finalState!)));
+        var finalEffectsJson = await _fs.ReadFileAsync(EffectCarrierCatalog.PlayerPath);
+        Assert.NotNull(finalEffectsJson);
+        var finalEffect = Assert.Single(
+            JsonNode.Parse(finalEffectsJson!)!["activeEffects"]!.AsArray())!.AsObject();
+        var remainingTurns = finalEffect["lifetime"]!["remainingTurns"]!.GetValue<int>();
+        var finalIdentityJson = await _fs.ReadFileAsync(
+            EffectAcceptedTurnPlan.IdentityIndexPath);
+        Assert.True(
+            remainingTurns == 1,
+            $"Expected the final bounded receipt wave to advance lifetime exactly once. " +
+            $"Carrier: {finalEffectsJson}; identity: {finalIdentityJson ?? "<missing>"}");
+        var finalNarrativeJson = await _fs.ReadFileAsync("output/narrative_response.json");
+        var finalInterfaceJson = await _fs.ReadFileAsync("output/interface_updates.json");
+        Assert.Equal(
+            acceptedNarrative,
+            JsonNode.Parse(finalNarrativeJson!)!["response"]!.GetValue<string>());
+        Assert.Equal(
+            acceptedOption,
+            JsonNode.Parse(finalInterfaceJson!)!["dialogueOptions"]![0]!["text"]!
+                .GetValue<string>());
+    }
+
+    [Fact]
+    public async Task ResourceRepairLifecycle_AfterBoundedPendingRestoresBaselineAndOverlaysPendingCheckpoint()
+    {
+        const string sessionId = "session_pending_then_omission";
+        const string requestId = "request_pending_then_omission";
+        const int turnNumber = 42;
+        const string trackedPath = "game_state/world/weather.json";
+        const string baselineJson = "{\"description\":\"До хода\"}";
+        const string rejectedJson = "{\"description\":\"Непринятая пересдача\"}";
+        var pendingCheckpoint = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["sessionId"] = sessionId,
+            ["requests"] = new JsonArray(new JsonObject
+            {
+                ["requestId"] = "pending-preserved-request",
+                ["sessionId"] = sessionId,
+                ["acceptedRequestId"] = requestId,
+                ["requestTurn"] = turnNumber
+            }),
+            ["terminalReceipts"] = new JsonArray()
+        };
+        var pendingJson = pendingCheckpoint.ToJsonString();
+
+        await _fs.WriteFileAtomicAsync(trackedPath, baselineJson);
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "pending_then_actionable_omission");
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{trackedPath}",
+            baselineJson);
+        await WritePendingTurnSnapshotManifestAsync(
+            sessionId,
+            requestId,
+            turnNumber,
+            trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await _fs.WriteFileAtomicAsync(trackedPath, rejectedJson);
+        await _fs.WriteFileAtomicAsync(ResourcePendingResolutionState.PendingPath, pendingJson);
+        var pendingCheckpointBytes = await _fs.ReadFileBytesAsync(
+            ResourcePendingResolutionState.PendingPath);
+        Assert.NotNull(pendingCheckpointBytes);
+
+        var issue = CreateResourceRepairIssue(
+            "resourceChanges[0].reason",
+            "resource_command_invalid_field",
+            expected: "non-empty trimmed readable reason",
+            actual: "missing");
+        var repairSessionGeneration = await GetOrCreateSessionGenerationAsync();
+        string? observedStateAtDispatch = null;
+        string? observedPendingAtDispatch = null;
+        Exception? gmAssertionFailure = null;
+        var gmRepair = Task.Run(async () =>
+        {
+            try
+            {
+                await WaitForValidationRepairRequestContainingAsync(
+                    issue.Code!,
+                    TimeSpan.FromSeconds(5));
+                observedStateAtDispatch = await _fs.ReadFileAsync(trackedPath);
+                observedPendingAtDispatch = await _fs.ReadFileAsync(
+                    ResourcePendingResolutionState.PendingPath);
+            }
+            catch (Exception exception)
+            {
+                gmAssertionFailure = exception;
+            }
+            finally
+            {
+                await WriteJsonAsync(
+                    "game_state/control/validation_repair_ready.json",
+                    new
+                    {
+                        sessionId,
+                        requestId,
+                        turnNumber,
+                        updatedAtUtc = "2026-08-23T00:00:00Z",
+                        note = "Intermediate pending checkpoint observed."
+                    });
+            }
+        });
+
+        var accepted = await InvokePrivateAsync<bool>(
+            engine,
+            "WaitForContractRepairAsync",
+            "actionable omission after bounded pending",
+            new List<ValidationIssue> { issue },
+            2,
+            rollbackSnapshot,
+            repairSessionGeneration,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            pendingCheckpointBytes);
+        await gmRepair;
+
+        Assert.Null(gmAssertionFailure);
+        Assert.True(accepted);
+        Assert.Equal(baselineJson, observedStateAtDispatch);
+        Assert.Equal(pendingJson, observedPendingAtDispatch);
+        Assert.Equal(baselineJson, await _fs.ReadFileAsync(trackedPath));
+        Assert.Equal(pendingJson, await _fs.ReadFileAsync(
+            ResourcePendingResolutionState.PendingPath));
+    }
+
+    [Fact]
     public async Task ResourceRepairLifecycle_ProtectedAuthorityFailsClosedBeforeGmDispatch()
     {
         const string sessionId = "session_resource_repair_protected";
@@ -552,6 +1104,38 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         Assert.False(accepted);
         Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
+    }
+
+    private async Task SeedBoundedPendingLifecycleAuthorityAsync(int turn)
+    {
+        await SeedSingletonEffectRepairAuthorityAsync(turn);
+        var definition = EffectMaterializationTestFixture.CreateDefinition("periodic_damage");
+        definition["triggers"]![0]!["resolutionMode"] = "bounded_receipt";
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            ownerKind: "player",
+            profile: "periodic_damage");
+        effect["triggers"]![0]!["resolutionMode"] = "bounded_receipt";
+        effect["lifetime"]!["remainingTurns"] = 2;
+        await WriteJsonAsync(
+            EffectMaterializationTestContext.PlayerWoundsPath,
+            new JsonArray(new JsonObject
+            {
+                ["woundId"] = "wound_test_torn_side",
+                ["woundName"] = "Рваная рана в боку",
+                ["severity"] = "severe",
+                ["description"] = "Края раны снова разошлись.",
+                ["activeEffectDefinitions"] = new JsonArray(definition)
+            }));
+        await WriteJsonAsync(
+            EffectCarrierCatalog.PlayerPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(effect.DeepClone())
+            });
+        await WriteJsonAsync(
+            EffectAcceptedTurnPlan.IdentityIndexPath,
+            EffectMaterializationTestFixture.CreateIdentityIndex(effect));
     }
 
     private static ValidationIssue CreateResourceRepairIssue(

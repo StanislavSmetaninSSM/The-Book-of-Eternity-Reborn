@@ -36,14 +36,37 @@ internal sealed class ResourceHistoryWorkingSet
     }
 
     internal int BaselineSeedCount { get; }
+    internal int BaselineTransitionVisitCount { get; private set; }
     internal int PendingCount => _pending.Count;
     internal int IncrementalAppendCount { get; private set; }
     internal int FreezeCount { get; private set; }
+    internal int WholeHistoryRebuildCount { get; private set; }
+    internal int FullHistoryValidationTransitionVisitCount { get; private set; }
+    internal int ReplayIdentityLookupCount { get; private set; }
+    internal long TotalWorkUnits =>
+        (long)BaselineTransitionVisitCount +
+        IncrementalAppendCount +
+        FullHistoryValidationTransitionVisitCount +
+        ReplayIdentityLookupCount;
     internal IReadOnlyList<ResourceTransition> PendingTransitions =>
         new ReadOnlyCollection<ResourceTransition>(_pending.ToArray());
 
     internal bool IsTerminal(ResourceCoordinate coordinate) =>
         _terminalCoordinates.Contains(coordinate);
+
+    internal bool TryResolveReplayIdentity(
+        string eventRef,
+        string originKind,
+        string originId,
+        ResourceCoordinate coordinate,
+        ResourceTransitionOperation operation,
+        out ResourceTransition? transition)
+    {
+        ReplayIdentityLookupCount++;
+        return _replays.TryGetValue(
+            new ReplayKey(eventRef, originKind, originId, coordinate, operation),
+            out transition);
+    }
 
     internal ResourceReplayResult ResolveReplay(ResourceReplayProbe probe)
     {
@@ -171,6 +194,9 @@ internal sealed class ResourceHistoryWorkingSet
         EnsureMutable();
         _frozen = true;
         FreezeCount++;
+        WholeHistoryRebuildCount++;
+        FullHistoryValidationTransitionVisitCount +=
+            _baseline.Transitions.Count + _pending.Count;
         return ResourceHistoryState.CreateValidated(
             _baseline.Transitions.Concat(_pending),
             definitions);
@@ -178,6 +204,7 @@ internal sealed class ResourceHistoryWorkingSet
 
     private void Seed(ResourceTransition transition)
     {
+        BaselineTransitionVisitCount++;
         _transitionIds.Add(transition.TransitionId);
         _transitionAliases.Add(Alias(transition.TransitionId));
         _operationIds.Add(transition.OperationId);

@@ -21,24 +21,28 @@ internal sealed class ShiningReturnCycleResourceFilePlan
         ShiningReturnCycleResourcePlanningResult? resourcePlan,
         JsonObject? soulAfterImage,
         IReadOnlyDictionary<string, string?> beforeImages,
-        IReadOnlyList<ValidationIssue> issues)
+        IReadOnlyList<ValidationIssue> issues,
+        CanonicalResourceQuartetProjection? quartetProjection = null)
     {
         ResourcePlan = resourcePlan;
         SoulAfterImage = soulAfterImage?.DeepClone().AsObject();
         _beforeImages = new ReadOnlyDictionary<string, string?>(
             new Dictionary<string, string?>(beforeImages, StringComparer.Ordinal));
         _issues = (issues ?? throw new ArgumentNullException(nameof(issues))).ToArray();
+        QuartetProjection = quartetProjection;
     }
 
     internal ShiningReturnCycleResourcePlanningResult? ResourcePlan { get; }
     internal JsonObject? SoulAfterImage { get; }
     internal IReadOnlyDictionary<string, string?> BeforeImages => _beforeImages;
     internal IReadOnlyList<ValidationIssue> Issues => Array.AsReadOnly(_issues.ToArray());
+    internal CanonicalResourceQuartetProjection? QuartetProjection { get; }
     internal decimal GachaAttemptsCurrent => ResolveGachaAttempts()?.Current ?? 0m;
     internal decimal GachaAttemptsMaximum => ResolveGachaAttempts()?.Maximum ?? 0m;
     internal bool IsValid =>
         ResourcePlan is { IsValid: true } &&
         SoulAfterImage != null &&
+        QuartetProjection != null &&
         ResolveGachaAttempts() != null &&
         _issues.Length == 0;
 
@@ -278,12 +282,34 @@ internal static class ShiningReturnCycleResourceService
         if (!resourcePlan.IsValid)
             return Failure(beforeImages, resourcePlan.Issues);
 
+        var soulAfterImage = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(
+            acceptedSoulState);
+        var projectedDocuments = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            [AfterlifeEntityProfileState.StatePath] =
+                resourcePlan.ProfilesAfterImage!.ToJsonString(),
+            [ShiningAbodeState.StatePath] =
+                resourcePlan.ShiningAfterImage!.ToJsonString(),
+            [SoulPath] = soulAfterImage.ToJsonString()
+        };
+        var quartet = await CanonicalResourceQuartetTransaction.ComposeExistingSessionAsync(
+            definitions.Catalog,
+            state.Ledger,
+            history.History,
+            resourcePlan.StateAfterImage!,
+            resourcePlan.HistoryAfterImage!,
+            path => fs.ReadFileAsync(writeLease, path),
+            beforeImages,
+            projectedDocuments);
+        if (quartet.Projection == null)
+            return Failure(beforeImages, quartet.Issues);
+
         return new ShiningReturnCycleResourceFilePlan(
             resourcePlan,
-            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(
-                acceptedSoulState),
-            beforeImages,
-            Array.Empty<ValidationIssue>());
+            soulAfterImage,
+            quartet.Projection.BeforeImages,
+            Array.Empty<ValidationIssue>(),
+            quartet.Projection);
     }
 
     internal static async Task<bool> TryCommitAsync(
@@ -308,7 +334,8 @@ internal static class ShiningReturnCycleResourceService
             plan.ResourcePlan.ProfilesAfterImage == null ||
             plan.ResourcePlan.StateAfterImage == null ||
             plan.ResourcePlan.HistoryAfterImage == null ||
-            plan.SoulAfterImage == null)
+            plan.SoulAfterImage == null ||
+            plan.QuartetProjection == null)
         {
             return false;
         }
@@ -349,11 +376,14 @@ internal static class ShiningReturnCycleResourceService
                     plan.BeforeImages[ResourceMaterializationContract.HistoryPath],
                     plan.ResourcePlan.HistoryAfterImage.ToCanonicalJson())
             })
-            .ToArray();
+            .ToList();
+        CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(
+            writes,
+            plan.QuartetProjection);
         return await CoordinatedStateWriteHelper.TryCommitAsync(
             fs,
             writeLease,
-            writes);
+            writes.ToArray());
     }
 
     private static CoordinatedStateWriteHelper.PlannedWrite Write(

@@ -46,7 +46,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var store = new AgentConsoleStateStore();
         using var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromSeconds(5));
         var engine = CreateGameEngine(input);
-        AnsiConsole.Record();
+        using var consoleCapture = new IsolatedAnsiConsoleCapture();
 
         var projectionTask = Task.Run(() => InvokePrivate(
             engine,
@@ -66,7 +66,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         input.EnqueueKey(Key(ConsoleKey.Enter));
         await projectionTask.WaitAsync(TimeSpan.FromSeconds(2));
 
-        var playerOutput = AnsiConsole.ExportText();
+        var playerOutput = consoleCapture.Output;
         AssertPlayerEffectFailureIsPrivate(playerOutput, secret, issue.Code!, issue.FilePath);
         Assert.Equal("world-turn-paused", snapshot!.ScreenId);
         Assert.Equal(AgentConsoleMode.Error, snapshot.Mode);
@@ -95,7 +95,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await _fs.WriteFileAtomicAsync(trackedPath, rejected);
         var generation = await GetOrCreateSessionGenerationAsync();
         var issue = CreateProtectedEffectPrivacyIssue(secret);
-        AnsiConsole.Record();
+        using var consoleCapture = new IsolatedAnsiConsoleCapture();
 
         var accepted = await InvokePrivateAsync<bool>(
             engine,
@@ -105,7 +105,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             1,
             rollbackSnapshot,
             generation);
-        var playerOutput = AnsiConsole.ExportText();
+        var playerOutput = consoleCapture.Output;
 
         Assert.False(accepted);
         AssertPlayerEffectFailureIsPrivate(playerOutput, secret, issue.Code!, issue.FilePath);
@@ -153,7 +153,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             ArmCanonicalWriteFailure(EffectFailureDiagnosticPath);
         }
-        AnsiConsole.Record();
+        using var consoleCapture = new IsolatedAnsiConsoleCapture();
 
         var accepted = await InvokePrivateAsync<bool>(
             engine,
@@ -163,7 +163,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             1,
             rollbackSnapshot,
             generation);
-        var playerOutput = AnsiConsole.ExportText();
+        var playerOutput = consoleCapture.Output;
 
         Assert.False(accepted);
         AssertPlayerEffectFailureIsPrivate(playerOutput, secret, issue.Code!, issue.FilePath);
@@ -191,14 +191,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         var backupPath = ReadRollbackBackupPath(rollbackSnapshot, trackedPath);
         await _fs.WriteFileAtomicAsync(trackedPath, rejected);
         await _fs.WriteFileAtomicAsync(backupPath, corruptEvidence);
-        AnsiConsole.Record();
+        using var consoleCapture = new IsolatedAnsiConsoleCapture();
 
         await InvokePrivateTaskAsync(
             engine,
             "RollbackRejectedAcceptedTurnAsync",
             rollbackSnapshot,
             "[yellow]↩ Изменения мира не были приняты.[/]");
-        var playerOutput = AnsiConsole.ExportText();
+        var playerOutput = consoleCapture.Output;
 
         AssertPlayerEffectFailureIsPrivate(
             playerOutput,
@@ -229,14 +229,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         await _fs.WriteFileAtomicAsync(trackedPath, rejected);
         ArmCanonicalWriteFailure(trackedPath);
         SetPrivateField(engine, "_inGame", true);
-        AnsiConsole.Record();
+        using var consoleCapture = new IsolatedAnsiConsoleCapture();
 
         await InvokePrivateTaskAsync(
             engine,
             "RollbackRejectedAcceptedTurnAsync",
             rollbackSnapshot,
             "[yellow]↩ Изменения мира не были приняты.[/]");
-        var playerOutput = AnsiConsole.ExportText();
+        var playerOutput = consoleCapture.Output;
 
         AssertPlayerEffectFailureIsPrivate(
             playerOutput,
@@ -316,5 +316,26 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             Assert.DoesNotContain(forbidden, playerProjection, StringComparison.OrdinalIgnoreCase);
         }
+    }
+
+    private sealed class IsolatedAnsiConsoleCapture : IDisposable
+    {
+        private readonly IAnsiConsole _originalConsole = AnsiConsole.Console;
+        private readonly StringWriter _writer = new();
+
+        public IsolatedAnsiConsoleCapture()
+        {
+            AnsiConsole.Console = AnsiConsole.Create(new AnsiConsoleSettings
+            {
+                Ansi = AnsiSupport.No,
+                ColorSystem = ColorSystemSupport.NoColors,
+                Interactive = InteractionSupport.No,
+                Out = new AnsiConsoleOutput(_writer)
+            });
+        }
+
+        public string Output => _writer.ToString();
+
+        public void Dispose() => AnsiConsole.Console = _originalConsole;
     }
 }

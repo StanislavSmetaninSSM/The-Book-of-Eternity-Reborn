@@ -38,7 +38,8 @@ game_session/
 │   ├── resources/            # Client-owned Unified Resource Authority v1 roots
 │   │   ├── resource_definitions.json (SEALED DEFINITIONS)
 │   │   ├── resource_state.json (CANONICAL LIVE LEDGER)
-│   │   └── resource_history.json (APPEND-ONLY TRANSITION HISTORY)
+│   │   ├── resource_history.json (APPEND-ONLY TRANSITION HISTORY)
+│   │   └── resource_owner_authority.json (CANONICAL OWNER/CAPACITY AUTHORITY)
 │   └── control/              # Game flow control; no pending next-life setup is checked into the active fixture
 ├── lore/                     # Lore and active world dossiers
 │   ├── chaos_sea/            # Persistent meta-lore (across incarnations)
@@ -129,6 +130,7 @@ game_session/
 - `resources/resource_definitions.json` - Sealed common resource definitions
 - `resources/resource_state.json` - Client-owned current resource ledger
 - `resources/resource_history.json` - Client-owned append-only resource transition history
+- `resources/resource_owner_authority.json` - Client-owned owner/capacity authority; required with the other three canonical resource roots and never GM-authored
 - `resources/resource_commands.json` is intentionally absent: it is a transient accepted-turn envelope, not canonical saved state
 - Pending pre-incarnation world setup examples live under `validator_fixtures/client_owned_world_setup/`, not in the active `game_session` fixture.
 

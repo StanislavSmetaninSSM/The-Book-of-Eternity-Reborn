@@ -315,6 +315,18 @@ public sealed class SessionOperationContextTests : IDisposable
         await fs.WriteFileAtomicAsync(
             ResourceMaterializationContract.HistoryPath,
             resources.History!.ToCanonicalJson());
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            resources.Definitions,
+            fs.ReadFileAsync,
+            resources.State,
+            resources.History,
+            CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(
+            authority.IsValid,
+            string.Join("; ", authority.Issues.Select(issue => issue.Code)));
+        await fs.WriteFileAtomicAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            authority.CanonicalAuthorityJson!);
     }
 
     public void Dispose()

@@ -75,6 +75,27 @@ describe('QteScenePanel browser mini-games #918', () => {
     }
   });
 
+  it('renders effect materialization as a non-interactive waiting state', () => {
+    const html = renderToStaticMarkup(<QteScenePanel qte={awaitingEffectResolutionQte()} />);
+
+    expect(html).toContain('Книга сводит последствия');
+    expect(html).toContain('Повторять выбор не нужно');
+    expect(html).not.toContain('data-qte-mini-game=');
+    expect(html).not.toContain('Действие TimingBar');
+    expect(html).not.toContain('Обновите экран и повторите выбор');
+  });
+
+  it('keeps the live QTE surface mounted and refreshes deferred effect completion', () => {
+    const sceneSource = readFileSync(join(cwd, 'src', 'components', 'SceneView.tsx'), 'utf-8');
+    const panelSource = readFileSync(join(cwd, 'src', 'components', 'QteScenePanel.tsx'), 'utf-8');
+
+    expect(sceneSource).toContain("import { QteScenePanel } from './QteScenePanel';");
+    expect(sceneSource).toContain('<QteScenePanel qte={game.qte}');
+    expect(panelSource).toContain('browserApi.getQteState()');
+    expect(panelSource).toContain('window.setTimeout');
+    expect(panelSource).toContain('onAuthoritativeStateChanged');
+  });
+
   it('keeps BranchChoice as a direct static choice without mini-game grading', () => {
     const html = renderToStaticMarkup(
       <QteScenePanel qte={activeQte([
@@ -260,6 +281,17 @@ function activeQte(actions: QteWebActionDto[]): BrowserGameScreenDto['qte'] {
     notification: null,
     errorCode: null,
     error: null
+  } satisfies QteWebStateDto;
+}
+
+function awaitingEffectResolutionQte(): BrowserGameScreenDto['qte'] {
+  return {
+    ...activeQte([
+      action('TimingBar', { kind: 'TimingBar', supported: true, width: 32, successStart: 12, successWidth: 8, partialStart: 9, partialWidth: 14, tickMs: 80 })
+    ]),
+    state: 'AwaitingEffectResolution',
+    availableOperations: [],
+    interactionToken: null
   } satisfies QteWebStateDto;
 }
 

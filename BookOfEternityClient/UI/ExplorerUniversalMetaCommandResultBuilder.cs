@@ -509,37 +509,43 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             return;
         }
 
-        var rows = projection.Entries
-            .Select(static effect => Row(
-                effect.Name,
-                JoinKnownParts(
-                    "; ",
-                    effect.Facts
-                        .Where(static fact => fact.Kind is not ("source" or "lifetime" or "stacks"))
-                        .Select(static fact => fact.Value)
-                        .ToArray()),
-                JoinKnownParts(
-                    " / ",
-                    effect.Facts.FirstOrDefault(static fact => fact.Kind == "lifetime")?.Value,
-                    effect.Facts.FirstOrDefault(static fact => fact.Kind == "stacks")?.Value),
-                JoinKnownParts(
-                    " — ",
-                    effect.Facts.FirstOrDefault(static fact => fact.Kind == "source")?.Value,
-                    effect.Summary)))
+        var cardBlocks = projection.Entries
+            .Select(static effect =>
+                (UiBlock)ExplorerEffectPlayerCardBuilder.BuildOverview(effect, "status-effect"))
             .ToList();
 
-        if (rows.Count == 0)
+        if (cardBlocks.Count == 0)
             return;
 
-        AddStatusRowsDossier(
-            blocks,
-            "Активные эффекты",
-            "status-effects",
-            "status-effect",
-            "Эффекты, которые сейчас влияют на персонажа.",
-            "effect",
-            ["Эффект", "Что делает", "Цель / срок", "Источник и описание"],
-            rows);
+        blocks.Add(new UiEntityDossierBlock
+        {
+            EntityType = "status-effects",
+            Title = "Активные эффекты",
+            Subtitle = "Статус персонажа",
+            Summary = "Эффекты, которые сейчас влияют на персонажа.",
+            Badges =
+            [
+                new UiEntityBadge
+                {
+                    Label = FormatStatusEntryCount(cardBlocks.Count),
+                    Tone = UiTone.Accent,
+                    Icon = "effect"
+                }
+            ],
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "active-effects",
+                    Title = "Активные эффекты",
+                    Icon = "effect",
+                    Presentation = "cards",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = cardBlocks
+                }
+            ]
+        });
     }
 
     private static void AddMortalStatusWoundBlocks(List<UiBlock> blocks, JsonNode? woundsRoot)

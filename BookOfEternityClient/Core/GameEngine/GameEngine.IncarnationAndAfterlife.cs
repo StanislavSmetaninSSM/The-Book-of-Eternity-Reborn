@@ -17,6 +17,14 @@ public partial class GameEngine
 {
     private sealed record CoordinatedGameStateWrite(string RelativePath, string? PreviousJson, string NextJson);
 
+    private sealed record SoulRealmTransitionResult(
+        bool IsCommitted,
+        IReadOnlyList<string> PublishedCanonicalPaths)
+    {
+        internal static SoulRealmTransitionResult Rejected { get; } =
+            new(false, Array.Empty<string>());
+    }
+
     private enum SoulRealmTransitionCause
     {
         MortalDeathToChaosSea,
@@ -63,16 +71,22 @@ public partial class GameEngine
     /// </summary>
     private async Task<bool> UpdateSoulStateRealm(
         SoulRealmTransitionCause cause,
+        string? lifeSummaryToAppend = null) =>
+        (await UpdateSoulStateRealmWithPublicationAsync(
+            cause,
+            lifeSummaryToAppend)).IsCommitted;
+
+    private async Task<SoulRealmTransitionResult> UpdateSoulStateRealmWithPublicationAsync(
+        SoulRealmTransitionCause cause,
         string? lifeSummaryToAppend = null)
     {
         try
         {
-            if (!await TryCommitSoulRealmTransitionStateAsync(
-                    cause,
-                    lifeSummaryToAppend))
-            {
-                return false;
-            }
+            var transition = await TryCommitSoulRealmTransitionStateAsync(
+                cause,
+                lifeSummaryToAppend);
+            if (transition == null)
+                return SoulRealmTransitionResult.Rejected;
 
             if (cause == SoulRealmTransitionCause.MortalDeathToChaosSea)
             {
@@ -83,16 +97,16 @@ public partial class GameEngine
                 _afterlifeArchiveCandidateService.Clear();
             }
 
-            return true;
+            return transition;
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Ошибка обновления soul_state.json");
-            return false;
+            return SoulRealmTransitionResult.Rejected;
         }
     }
 
-    private async Task<bool> TryCommitSoulRealmTransitionStateAsync(
+    private async Task<SoulRealmTransitionResult?> TryCommitSoulRealmTransitionStateAsync(
         SoulRealmTransitionCause cause,
         string? lifeSummaryToAppend)
     {
@@ -121,7 +135,7 @@ public partial class GameEngine
             _logger.LogWarning(
                 "Не удалось обновить soul_state.currentRealm до {NewRealm}: soul_state.json отсутствует или unreadable.",
                 newRealm);
-            return false;
+            return null;
         }
 
         using var doc = JsonDocument.Parse(soulJson);
@@ -217,20 +231,30 @@ public partial class GameEngine
                 newRealm,
                 string.Join("; ", resourcePlan.Issues.Select(issue =>
                     $"{issue.Code}: {issue.Actual ?? issue.Message}")));
-            return false;
+            return null;
         }
         if (await AfterlifeOwnerResourceStateService.TryCommitAsync(
                 _fs,
                 writeLease,
                 resourcePlan))
         {
-            return true;
+            var publishedPaths = resourcePlan.OwnerAfterImages.Keys
+                .Concat(new[]
+                {
+                    ResourceMaterializationContract.StatePath,
+                    ResourceMaterializationContract.HistoryPath,
+                    CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+                })
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(static path => path, StringComparer.Ordinal)
+                .ToArray();
+            return new SoulRealmTransitionResult(true, publishedPaths);
         }
 
         _logger.LogWarning(
             "Realm transition {NewRealm} lost its exact owner/resource baseline before publication.",
             newRealm);
-        return false;
+        return null;
     }
 
     private Task<JsonObject?> BuildPlayerSoulRealmAfterImageAsync(string newRealm) =>

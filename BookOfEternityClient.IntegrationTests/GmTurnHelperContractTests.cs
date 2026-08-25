@@ -12,6 +12,331 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmTurnHelperContractTests
 {
     [Fact]
+    public void Helper_CompleteBoeQteEffectResolutionWritesClosedReceiptsThenReadyWithoutOrdinaryTurnAuthority()
+    {
+        var root = Path.Combine(
+            Path.GetTempPath(),
+            "boe-gm-qte-effect-helper-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "output"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(session, "input", "qte_effect_resolution_request.json"),
+                """
+                {
+                  "schemaVersion": 1,
+                  "requestKind": "qte_deferred_effect_resolution",
+                  "sessionId": "test-session",
+                  "sessionGeneration": "generation_test_7",
+                  "continuationId": "qte_continuation_001",
+                  "requestId": "qte_effect_request_001",
+                  "waveId": "qte_effect_wave_001",
+                  "waveOrdinal": 0,
+                  "acceptedSourceTurn": 42,
+                  "qteId": "qte_offer_001",
+                  "selectedTerminalFingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "pendingStateFingerprint": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "fullTurnFingerprint": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                  "semanticTurnFingerprint": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                  "safePacket": {
+                    "schemaVersion": 2,
+                    "kind": "bounded_resource_resolution",
+                    "requests": [
+                      {
+                        "requestId": "resource_resolution_001",
+                        "sourceLabel": "Кровоточащая рана",
+                        "targetLabel": "герой",
+                        "resourceLabel": "Здоровье",
+                        "operationLabel": "урон",
+                        "allowedResults": [
+                          { "resultKind": "narrated_no_state_change" },
+                          {
+                            "resultKind": "resource_delta",
+                            "amountInstruction": "от 0 до 5"
+                          }
+                        ],
+                        "requiredCompanions": [],
+                        "fullTurnResubmissionRequired": true,
+                        "instruction": "Верните один разрешённый результат и краткую внутриигровую причину."
+                      }
+                    ]
+                  }
+                }
+                """,
+                Encoding.UTF8);
+
+            var helperPath = Path.Combine(
+                LocateRepoRoot(),
+                "BookOfEternityClient",
+                "Launcher",
+                "GM_Turn_Helper.ps1");
+            var writeOrderPath = Path.Combine(root, "write-order.txt");
+            var command = string.Join(Environment.NewLine, new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$script:BoeQteWriteOrder = [System.Collections.Generic.List[string]]::new()",
+                "$script:BoeQteOriginalWriteJson = ${function:Write-BoeJson}",
+                """
+                function Write-BoeJson {
+                    param(
+                        [Parameter(Mandatory = $true)] [string]$RelativePath,
+                        [Parameter(Mandatory = $true)] [object]$Data,
+                        [int]$Depth = 100,
+                        [switch]$AllowClientOwnedRuntimeWrite
+                    )
+                    $script:BoeQteWriteOrder.Add($RelativePath)
+                    & $script:BoeQteOriginalWriteJson @PSBoundParameters
+                }
+                """,
+                "$receipts = @([pscustomobject]@{ requestId = 'resource_resolution_001'; resultKind = 'resource_delta'; amount = 3; reason = 'Кровотечение усиливается.' })",
+                "Complete-BoeQteEffectResolution -Receipts $receipts",
+                "[System.IO.File]::WriteAllLines(" + QuotePowerShell(writeOrderPath) + ", $script:BoeQteWriteOrder, [System.Text.UTF8Encoding]::new($false))"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            var receiptPath = Path.Combine(
+                session,
+                "output",
+                "qte_effect_resolution_receipts.json");
+            var readyPath = Path.Combine(
+                session,
+                "ready",
+                "qte_effect_resolution_complete.json");
+            Assert.True(File.Exists(receiptPath), result.StdErr + result.StdOut);
+            Assert.True(File.Exists(readyPath), result.StdErr + result.StdOut);
+            Assert.Equal(
+                new[]
+                {
+                    "output/qte_effect_resolution_receipts.json",
+                    "ready/qte_effect_resolution_complete.json"
+                },
+                File.ReadAllLines(writeOrderPath, Encoding.UTF8));
+
+            using var receiptDocument = JsonDocument.Parse(
+                File.ReadAllText(receiptPath, Encoding.UTF8));
+            var receiptRoot = receiptDocument.RootElement;
+            Assert.Equal(
+                new[]
+                {
+                    "acceptedSourceTurn",
+                    "continuationId",
+                    "effectResolutionReceipts",
+                    "fullTurnFingerprint",
+                    "pendingStateFingerprint",
+                    "qteId",
+                    "requestId",
+                    "requestKind",
+                    "schemaVersion",
+                    "selectedTerminalFingerprint",
+                    "semanticTurnFingerprint",
+                    "sessionGeneration",
+                    "sessionId",
+                    "waveId",
+                    "waveOrdinal"
+                },
+                receiptRoot.EnumerateObject()
+                    .Select(static property => property.Name)
+                    .OrderBy(static name => name, StringComparer.Ordinal)
+                    .ToArray());
+            Assert.Equal(1, receiptRoot.GetProperty("schemaVersion").GetInt32());
+            Assert.Equal(
+                "qte_deferred_effect_resolution",
+                receiptRoot.GetProperty("requestKind").GetString());
+            Assert.Equal("test-session", receiptRoot.GetProperty("sessionId").GetString());
+            Assert.Equal(
+                "generation_test_7",
+                receiptRoot.GetProperty("sessionGeneration").GetString());
+            Assert.Equal(
+                "qte_continuation_001",
+                receiptRoot.GetProperty("continuationId").GetString());
+            Assert.Equal(
+                "qte_effect_request_001",
+                receiptRoot.GetProperty("requestId").GetString());
+            Assert.Equal(
+                "qte_effect_wave_001",
+                receiptRoot.GetProperty("waveId").GetString());
+            Assert.Equal(0, receiptRoot.GetProperty("waveOrdinal").GetInt32());
+            Assert.Equal(42, receiptRoot.GetProperty("acceptedSourceTurn").GetInt32());
+            Assert.Equal("qte_offer_001", receiptRoot.GetProperty("qteId").GetString());
+
+            var receipt = Assert.Single(
+                receiptRoot.GetProperty("effectResolutionReceipts").EnumerateArray());
+            Assert.Equal(
+                new[] { "amount", "reason", "requestId", "resultKind" },
+                receipt.EnumerateObject()
+                    .Select(static property => property.Name)
+                    .OrderBy(static name => name, StringComparer.Ordinal)
+                    .ToArray());
+            Assert.Equal("resource_resolution_001", receipt.GetProperty("requestId").GetString());
+            Assert.Equal("resource_delta", receipt.GetProperty("resultKind").GetString());
+            Assert.Equal(3m, receipt.GetProperty("amount").GetDecimal());
+            Assert.Equal("Кровотечение усиливается.", receipt.GetProperty("reason").GetString());
+
+            using var readyDocument = JsonDocument.Parse(
+                File.ReadAllText(readyPath, Encoding.UTF8));
+            var readyRoot = readyDocument.RootElement;
+            Assert.Equal(
+                new[]
+                {
+                    "acceptedSourceTurn",
+                    "continuationId",
+                    "pendingStateFingerprint",
+                    "qteId",
+                    "receiptsFingerprint",
+                    "requestId",
+                    "requestKind",
+                    "schemaVersion",
+                    "sessionGeneration",
+                    "sessionId",
+                    "status",
+                    "timestamp",
+                    "waveId",
+                    "waveOrdinal"
+                },
+                readyRoot.EnumerateObject()
+                    .Select(static property => property.Name)
+                    .OrderBy(static name => name, StringComparer.Ordinal)
+                    .ToArray());
+            Assert.Equal("success", readyRoot.GetProperty("status").GetString());
+            Assert.Equal(
+                "sha256:" + Convert.ToHexString(
+                        System.Security.Cryptography.SHA256.HashData(
+                            File.ReadAllBytes(receiptPath)))
+                    .ToLowerInvariant(),
+                readyRoot.GetProperty("receiptsFingerprint").GetString());
+
+            Assert.False(File.Exists(Path.Combine(session, "input", "turn_request.json")));
+            Assert.False(File.Exists(Path.Combine(
+                session,
+                "game_state",
+                "control",
+                "pending_turn_snapshot.json")));
+            Assert.False(File.Exists(Path.Combine(session, "ready", "turn_complete.json")));
+            Assert.False(File.Exists(Path.Combine(session, "ready", "turn_error.json")));
+            Assert.False(File.Exists(Path.Combine(
+                session,
+                "game_state",
+                "control",
+                "validation_repair_ready.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void Helper_CompleteBoeQteEffectResolutionRejectsStringAmountBeforeAnyWrite()
+    {
+        var root = Path.Combine(
+            Path.GetTempPath(),
+            "boe-gm-qte-effect-helper-string-amount-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "output"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+
+        try
+        {
+            WriteQteEffectResolutionRequest(session);
+            var helperPath = Path.Combine(
+                LocateRepoRoot(),
+                "BookOfEternityClient",
+                "Launcher",
+                "GM_Turn_Helper.ps1");
+            var command = string.Join(Environment.NewLine, new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$receipts = @([pscustomobject]@{ requestId = 'resource_resolution_001'; resultKind = 'resource_delta'; amount = '3'; reason = 'Кровотечение усиливается.' })",
+                "Complete-BoeQteEffectResolution -Receipts $receipts"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains(
+                "amount must be a finite decimal number",
+                result.StdErr + result.StdOut,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(Path.Combine(
+                session,
+                "output",
+                "qte_effect_resolution_receipts.json")));
+            Assert.False(File.Exists(Path.Combine(
+                session,
+                "ready",
+                "qte_effect_resolution_complete.json")));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
+    public void Daemon_QteEffectResolutionDispatchesWithoutOrdinaryTurnAuthority()
+    {
+        var root = Path.Combine(
+            Path.GetTempPath(),
+            "boe-gm-qte-effect-daemon-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var logPath = Path.Combine(root, "daemon.log");
+        Directory.CreateDirectory(Path.Combine(session, "input"));
+        Directory.CreateDirectory(Path.Combine(session, "output"));
+        Directory.CreateDirectory(Path.Combine(session, "ready"));
+        Directory.CreateDirectory(Path.Combine(session, "game_state", "control"));
+
+        Process? process = null;
+        try
+        {
+            WriteDaemonConfig(session);
+            WriteQteEffectResolutionRequest(session);
+
+            process = StartDaemon(session, logPath);
+
+            Assert.True(
+                WaitForFileContaining(
+                    logPath,
+                    "QTE effect receipt wait reached the configured timeout",
+                    process,
+                    TimeSpan.FromSeconds(20)),
+                ReadProcessOutput(process));
+
+            var log = File.ReadAllText(logPath, Encoding.UTF8);
+            Assert.Contains(
+                "QTE effect receipt wave 0 for source turn #42",
+                log,
+                StringComparison.Ordinal);
+            Assert.Contains("Clipboard: command copied", log, StringComparison.Ordinal);
+            Assert.True(File.Exists(Path.Combine(
+                session,
+                "input",
+                "qte_effect_resolution_request.json")));
+            Assert.False(File.Exists(Path.Combine(session, "input", "turn_request.json")));
+            Assert.False(File.Exists(Path.Combine(
+                session,
+                "game_state",
+                "control",
+                "pending_turn_snapshot.json")));
+            Assert.False(File.Exists(Path.Combine(session, "ready", "turn_complete.json")));
+            Assert.False(File.Exists(Path.Combine(session, "ready", "turn_error.json")));
+        }
+        finally
+        {
+            StopProcess(process);
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void Helper_CompleteBoeTurnWritesCorrelatedTerminalSignal()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-" + Guid.NewGuid().ToString("N"));
@@ -579,6 +904,55 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("client-owned", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
             Assert.Contains(clientOwnedPath, result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
             Assert.False(File.Exists(Path.Combine(session, clientOwnedPath.Replace('/', Path.DirectorySeparatorChar))));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Theory]
+    [InlineData("game_state/core/system_mods.json")]
+    [InlineData("game_state/control/progression_schedule.json")]
+    [InlineData("game_state/resources/resource_definitions.json")]
+    [InlineData("game_state/resources/resource_state.json")]
+    [InlineData("game_state/resources/resource_history.json")]
+    [InlineData("game_state/resources/resource_owner_authority.json")]
+    [InlineData("game_state/control/pending_effect_resolutions.json")]
+    [InlineData("game_state/effects/effect_identity_index.json")]
+    public void Helper_WriteBoeJsonRejectsAcceptedMechanicsClientOwnedAuthorityFiles(
+        string clientOwnedPath)
+    {
+        var root = Path.Combine(
+            Path.GetTempPath(),
+            "boe-gm-turn-helper-accepted-mechanics-client-owned-write-" +
+            Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(session);
+
+        try
+        {
+            var helperPath = Path.Combine(
+                LocateRepoRoot(),
+                "BookOfEternityClient",
+                "Launcher",
+                "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$data = [ordered]@{ changed = $true }",
+                "Write-BoeJson -RelativePath " + QuotePowerShell(clientOwnedPath) + " -Data $data"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("client-owned", result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(clientOwnedPath, result.StdErr + result.StdOut, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(Path.Combine(
+                session,
+                clientOwnedPath.Replace('/', Path.DirectorySeparatorChar))));
         }
         finally
         {
@@ -5146,6 +5520,54 @@ public sealed class GmTurnHelperContractTests
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         WriteIndented = true
     };
+
+    private static void WriteQteEffectResolutionRequest(string session)
+    {
+        File.WriteAllText(
+            Path.Combine(session, "input", "qte_effect_resolution_request.json"),
+            """
+            {
+              "schemaVersion": 1,
+              "requestKind": "qte_deferred_effect_resolution",
+              "sessionId": "test-session",
+              "sessionGeneration": "generation_test_7",
+              "continuationId": "qte_continuation_001",
+              "requestId": "qte_effect_request_001",
+              "waveId": "qte_effect_wave_001",
+              "waveOrdinal": 0,
+              "acceptedSourceTurn": 42,
+              "qteId": "qte_offer_001",
+              "selectedTerminalFingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "pendingStateFingerprint": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "fullTurnFingerprint": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "semanticTurnFingerprint": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+              "safePacket": {
+                "schemaVersion": 2,
+                "kind": "bounded_resource_resolution",
+                "requests": [
+                  {
+                    "requestId": "resource_resolution_001",
+                    "sourceLabel": "Кровоточащая рана",
+                    "targetLabel": "герой",
+                    "resourceLabel": "Здоровье",
+                    "operationLabel": "урон",
+                    "allowedResults": [
+                      { "resultKind": "narrated_no_state_change" },
+                      {
+                        "resultKind": "resource_delta",
+                        "amountInstruction": "от 0 до 5"
+                      }
+                    ],
+                    "requiredCompanions": [],
+                    "fullTurnResubmissionRequired": true,
+                    "instruction": "Верните один разрешённый результат и краткую внутриигровую причину."
+                  }
+                ]
+              }
+            }
+            """,
+            Encoding.UTF8);
+    }
 
     private sealed class DaemonPendingTurnSnapshotManifest
     {

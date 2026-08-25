@@ -8,6 +8,104 @@ namespace BookOfEternityClient.Tests;
 public sealed class ResourceAfterlifeOwnerTests
 {
     [Fact]
+    public void Compose_FirstPlayerSoulWithoutGenericActorEnvelope_GetsDeterministicClientBinding()
+    {
+        var definitions = WithAfterlifeIntegrity(RequireDefinitions());
+        var profile = PlayerSoulProfileWithoutBinding("Chaos Sea");
+        profile["resourceMaterialization"] = new JsonObject
+        {
+            ["resources"] = new JsonArray(new JsonObject
+            {
+                ["resourceKey"] = "soul_integrity",
+                ["maximum"] = 9
+            })
+        };
+
+        var first = AfterlifeResourceOwnerComposer.Compose(
+            new AfterlifeResourceOwnerCompositionInput(
+                definitions,
+                new AfterlifeResourceOwnerRoots(
+                    Profiles(),
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(2)),
+                new AfterlifeResourceOwnerRoots(
+                    Profiles(profile.DeepClone().AsObject()),
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(2))));
+        var second = AfterlifeResourceOwnerComposer.Compose(
+            new AfterlifeResourceOwnerCompositionInput(
+                definitions,
+                new AfterlifeResourceOwnerRoots(
+                    Profiles(),
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(2)),
+                new AfterlifeResourceOwnerRoots(
+                    Profiles(profile.DeepClone().AsObject()),
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(2))));
+
+        Assert.True(first.IsValid, string.Join(Environment.NewLine, first.Issues));
+        Assert.True(second.IsValid, string.Join(Environment.NewLine, second.Issues));
+        AssertDeterministicComposition(first, second);
+        var owner = Assert.Single(first.Authority!.Entries.Values);
+        Assert.Equal("player_soul", owner.Key.ResourceOwnerId);
+        Assert.True(owner.SameTurn);
+        Assert.StartsWith("afterlife_actor_realm_ref_", owner.SameTurnRef);
+        Assert.Equal(2, first.CapacityDrafts.Count);
+        Assert.All(first.CapacityDrafts, capacity =>
+        {
+            Assert.Equal(owner.SameTurnRef, capacity.SourceEvidence.SourceId);
+            Assert.Equal("owner_materialization", capacity.SourceEvidence.SourceKind);
+        });
+        Assert.Contains(
+            first.CapacityDrafts,
+            capacity => capacity.Coordinate.ResourceKey == "soul_integrity" &&
+                        capacity.AcceptedMaximum == 9m);
+
+        var afterImage = first.OwnerCompanionAfterImages[
+            AfterlifeEntityProfileState.StatePath];
+        var acceptedProfile = Assert.IsType<JsonObject>(Assert.Single(
+            afterImage[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray()));
+        Assert.False(acceptedProfile.ContainsKey(ActorMaterializationContract.PropertyName));
+        Assert.False(acceptedProfile.ContainsKey("resourceMaterialization"));
+        var binding = Assert.IsType<JsonObject>(Assert.Single(
+            acceptedProfile["resourceOwnerBindings"]!.AsArray()));
+        Assert.Equal("chaos_sea", binding["realm"]!.GetValue<string>());
+        Assert.Equal("player_soul", binding["resourceOwnerId"]!.GetValue<string>());
+        Assert.Equal("active", binding["state"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void Compose_NewNonPlayerWithoutGenericActorEnvelope_RemainsInvalid()
+    {
+        var profile = new JsonObject
+        {
+            ["actorType"] = "resident",
+            ["actorId"] = "resident_without_materialization",
+            ["displayName"] = "Нематериализованный житель",
+            ["realm"] = "Chaos Sea"
+        };
+
+        var result = AfterlifeResourceOwnerComposer.Compose(
+            new AfterlifeResourceOwnerCompositionInput(
+                RequireDefinitions(),
+                new AfterlifeResourceOwnerRoots(
+                    Profiles(),
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(2)),
+                new AfterlifeResourceOwnerRoots(
+                    Profiles(profile),
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(2))));
+
+        Assert.False(result.IsValid);
+        Assert.Contains(
+            result.Issues,
+            issue => issue.Code == "actor_materialization_missing");
+        Assert.Null(result.Authority);
+    }
+
+    [Fact]
     public void Compose_NewAfterlifeActorMaterializesSettingDefinedResource()
     {
         var definitions = WithAfterlifeIntegrity(RequireDefinitions());
@@ -70,25 +168,8 @@ public sealed class ResourceAfterlifeOwnerTests
     public async Task AcceptedTurn_ConflictStartUsesTheCommonOwnerPlanAndPublication()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            AfterlifeEntityProfileState.StatePath,
-            Profiles(PlayerSoulProfile("Chaos Sea")).ToJsonString());
-        await context.WriteExactJsonAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
-        await context.WriteExactJsonAsync(
-            "game_state/meta/soul_state.json",
+        var definitions = await SeedPersistentAfterlifePlayerAsync(
+            context,
             new JsonObject
             {
                 ["currentRealm"] = "Chaos Sea",
@@ -96,7 +177,8 @@ public sealed class ResourceAfterlifeOwnerTests
                 {
                     [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 2
                 }
-            }.ToJsonString());
+            },
+            turn: 41);
         await context.CaptureValidatedPendingSnapshotAsync(
             turn: 42,
             currentRealm: "Chaos Sea");
@@ -117,11 +199,10 @@ public sealed class ResourceAfterlifeOwnerTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out var planning));
-        var plan = Assert.IsType<AcceptedMechanicsPlan>(planning.Plan);
+        var handoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem);
+        Assert.NotNull(handoff);
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(handoff!.Result.Plan);
         Assert.Contains(
             plan.OwnerAuthority.Entries.Values,
             entry => entry.Key.OwnerKind == ResourceOwnerKind.AfterlifeActor &&
@@ -132,7 +213,7 @@ public sealed class ResourceAfterlifeOwnerTests
         Assert.True(opposition.SameTurn);
         var state = ResourceStateContract.ParseCanonical(
             plan.StateAfterImage.ToJsonString(),
-            bootstrap.Definitions,
+            definitions,
             allowMissingPristine: false);
         Assert.True(state.IsValid, string.Join(Environment.NewLine, state.Issues));
         var playerActionPoints = Assert.Single(
@@ -180,26 +261,10 @@ public sealed class ResourceAfterlifeOwnerTests
     public async Task AcceptedTurns_SpiritFocusChangeReconfiguresPersistentActionPoints()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            AfterlifeEntityProfileState.StatePath,
-            Profiles(PlayerSoulProfile("Chaos Sea")).ToJsonString());
-        await context.WriteExactJsonAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
-        await context.WriteExactJsonAsync(
-            "game_state/meta/soul_state.json",
-            SoulState(spiritFocusTier: 2).ToJsonString());
+        var definitions = await SeedPersistentAfterlifePlayerAsync(
+            context,
+            SoulState(spiritFocusTier: 2),
+            turn: 41);
         await context.CaptureValidatedPendingSnapshotAsync(
             turn: 42,
             currentRealm: "Chaos Sea");
@@ -224,14 +289,13 @@ public sealed class ResourceAfterlifeOwnerTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(reconfigureIssues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out var planning));
-        var plan = Assert.IsType<AcceptedMechanicsPlan>(planning.Plan);
+        var handoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem);
+        Assert.NotNull(handoff);
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(handoff!.Result.Plan);
         var state = ResourceStateContract.ParseCanonical(
             plan.StateAfterImage.ToJsonString(),
-            bootstrap.Definitions,
+            definitions,
             allowMissingPristine: false);
         Assert.True(state.IsValid, string.Join(Environment.NewLine, state.Issues));
         var actionPoints = Assert.Single(state.Ledger!.Entries);
@@ -239,7 +303,7 @@ public sealed class ResourceAfterlifeOwnerTests
         Assert.Equal(12m, actionPoints.Maximum);
         var history = ResourceHistoryState.ParseCanonical(
             plan.HistoryAfterImage.ToJsonString(),
-            bootstrap.Definitions,
+            definitions,
             allowMissingPristine: false);
         Assert.True(history.IsValid, string.Join(Environment.NewLine, history.Issues));
         var reconfigure = Assert.Single(
@@ -537,6 +601,160 @@ public sealed class ResourceAfterlifeOwnerTests
     }
 
     [Fact]
+    public void Compose_RealmChange_IsExactlyDeterministicAcrossRepeatedBuilds()
+    {
+        var definitions = RequireDefinitions();
+        var preTurnProfile = PlayerSoulProfile("Chaos Sea");
+        var acceptedProfile = preTurnProfile.DeepClone().AsObject();
+        acceptedProfile["realm"] = "Shining Abode";
+
+        ResourceOwnerCompositionResult Compose() =>
+            AfterlifeResourceOwnerComposer.Compose(
+                new AfterlifeResourceOwnerCompositionInput(
+                    definitions,
+                    new AfterlifeResourceOwnerRoots(
+                        Profiles(preTurnProfile.DeepClone().AsObject()),
+                        AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                        SoulState(3)),
+                    new AfterlifeResourceOwnerRoots(
+                        Profiles(acceptedProfile.DeepClone().AsObject()),
+                        AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                        SoulState(3))));
+
+        var first = Compose();
+        AssertDeterministicComposition(first, Compose());
+
+        var alternatePreTurn = AfterlifeProfile(
+            actorType: "guardian",
+            actorId: "guardian_realm_seed",
+            realm: "Chaos Sea");
+        var alternateAccepted = alternatePreTurn.DeepClone().AsObject();
+        alternateAccepted["realm"] = "Shining Abode";
+        var alternate = AfterlifeResourceOwnerComposer.Compose(
+            new AfterlifeResourceOwnerCompositionInput(
+                definitions,
+                new AfterlifeResourceOwnerRoots(
+                    Profiles(alternatePreTurn),
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(3)),
+                new AfterlifeResourceOwnerRoots(
+                    Profiles(alternateAccepted),
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(3))));
+        Assert.True(alternate.IsValid, string.Join(Environment.NewLine, alternate.Issues));
+        Assert.NotEqual(
+            Assert.Single(first.Authority!.Entries.Values, static entry => entry.SameTurn)
+                .SameTurnRef,
+            Assert.Single(alternate.Authority!.Entries.Values, static entry => entry.SameTurn)
+                .SameTurnRef);
+    }
+
+    [Fact]
+    public void Compose_ConflictStart_IsExactlyDeterministicAcrossRepeatedBuilds()
+    {
+        var definitions = RequireDefinitions();
+        var profiles = Profiles(PlayerSoulProfile("Chaos Sea"));
+        var acceptedConflict = AfterlifeSpiritualConflictState.CreateDefaultRoot();
+        acceptedConflict["activeConflict"] = ActiveConflict(
+            "conflict_deterministic_owner",
+            "Chaos Sea");
+
+        ResourceOwnerCompositionResult Compose() =>
+            AfterlifeResourceOwnerComposer.Compose(
+                new AfterlifeResourceOwnerCompositionInput(
+                    definitions,
+                    new AfterlifeResourceOwnerRoots(
+                        profiles,
+                        AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                        SoulState(2)),
+                    new AfterlifeResourceOwnerRoots(
+                        profiles,
+                        acceptedConflict,
+                        SoulState(2))));
+
+        var first = Compose();
+        AssertDeterministicComposition(first, Compose());
+
+        var alternateConflict = AfterlifeSpiritualConflictState.CreateDefaultRoot();
+        alternateConflict["activeConflict"] = ActiveConflict(
+            "conflict_deterministic_owner_alternate",
+            "Chaos Sea");
+        var alternate = AfterlifeResourceOwnerComposer.Compose(
+            new AfterlifeResourceOwnerCompositionInput(
+                definitions,
+                new AfterlifeResourceOwnerRoots(
+                    profiles,
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(2)),
+                new AfterlifeResourceOwnerRoots(
+                    profiles,
+                    alternateConflict,
+                    SoulState(2))));
+        Assert.True(alternate.IsValid, string.Join(Environment.NewLine, alternate.Issues));
+        var firstOwner = Assert.Single(
+            first.Authority!.Entries.Values,
+            static entry => entry.Key.OwnerKind == ResourceOwnerKind.AfterlifeConflictSide);
+        var alternateOwner = Assert.Single(
+            alternate.Authority!.Entries.Values,
+            static entry => entry.Key.OwnerKind == ResourceOwnerKind.AfterlifeConflictSide);
+        Assert.NotEqual(firstOwner.Key.ResourceOwnerId, alternateOwner.Key.ResourceOwnerId);
+        Assert.NotEqual(firstOwner.SameTurnRef, alternateOwner.SameTurnRef);
+    }
+
+    [Fact]
+    public void Compose_ShiningReturnStart_IsExactlyDeterministicAcrossRepeatedBuilds()
+    {
+        var definitions = RequireDefinitions();
+        var profiles = Profiles(PlayerSoulProfile("Shining Abode"));
+        var acceptedShining = ShiningReturnState(
+            "shining_return_deterministic_owner",
+            radianceTier: 2);
+
+        ResourceOwnerCompositionResult Compose() =>
+            AfterlifeResourceOwnerComposer.Compose(
+                new AfterlifeResourceOwnerCompositionInput(
+                    definitions,
+                    new AfterlifeResourceOwnerRoots(
+                        profiles,
+                        AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                        SoulState(2),
+                        ShiningReturnState(returnCycleId: null, radianceTier: 2)),
+                    new AfterlifeResourceOwnerRoots(
+                        profiles,
+                        AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                        SoulState(2),
+                        acceptedShining)));
+
+        var first = Compose();
+        AssertDeterministicComposition(first, Compose());
+
+        var alternate = AfterlifeResourceOwnerComposer.Compose(
+            new AfterlifeResourceOwnerCompositionInput(
+                definitions,
+                new AfterlifeResourceOwnerRoots(
+                    profiles,
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(2),
+                    ShiningReturnState(returnCycleId: null, radianceTier: 2)),
+                new AfterlifeResourceOwnerRoots(
+                    profiles,
+                    AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                    SoulState(2),
+                    ShiningReturnState(
+                        "shining_return_deterministic_owner_alternate",
+                        radianceTier: 2))));
+        Assert.True(alternate.IsValid, string.Join(Environment.NewLine, alternate.Issues));
+        var firstOwner = Assert.Single(
+            first.Authority!.Entries.Values,
+            static entry => entry.Key.OwnerKind == ResourceOwnerKind.AfterlifeScope);
+        var alternateOwner = Assert.Single(
+            alternate.Authority!.Entries.Values,
+            static entry => entry.Key.OwnerKind == ResourceOwnerKind.AfterlifeScope);
+        Assert.NotEqual(firstOwner.Key.ResourceOwnerId, alternateOwner.Key.ResourceOwnerId);
+        Assert.NotEqual(firstOwner.SameTurnRef, alternateOwner.SameTurnRef);
+    }
+
+    [Fact]
     public void Compose_ExistingPlayerSoulEmitsCurrentFormulaCapacityDraft()
     {
         var definitions = RequireDefinitions();
@@ -708,6 +926,64 @@ public sealed class ResourceAfterlifeOwnerTests
         return Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);
     }
 
+    private static async Task<ResourceDefinitionCatalog>
+        SeedPersistentAfterlifePlayerAsync(
+            ResourceMaterializationTestContext context,
+            JsonObject soulState,
+            int turn)
+    {
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        var definitions = Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationTestContext.DefinitionsPath,
+            definitions.ToCanonicalJson());
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationTestContext.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationTestContext.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+        await context.WriteExactJsonAsync(
+            AfterlifeEntityProfileState.StatePath,
+            AfterlifeEntityProfileState.CreateDefaultRoot().ToJsonString());
+        await context.WriteExactJsonAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
+        await context.WriteExactJsonAsync(
+            "game_state/meta/soul_state.json",
+            new JsonObject().ToJsonString());
+        await context.WriteExactJsonAsync(
+            ShiningAbodeState.StatePath,
+            ShiningAbodeState.CreateDefaultState().ToJsonString());
+        await context.WriteExactJsonAsync(
+            "game_state/meta/guardians.json",
+            new JsonObject().ToJsonString());
+        await context.WriteExactJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["historicalOwners"] = new JsonArray(),
+                ["capacityDrafts"] = new JsonArray()
+            }.ToJsonString());
+
+        var profiles = AfterlifeEntityProfileState.CreateDefaultRoot();
+        profiles[AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray(
+            PlayerSoulProfileWithoutBinding("Chaos Sea"));
+        var plan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            context.FileSystem,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: profiles,
+                SoulState: soulState),
+            turn);
+        Assert.True(plan.IsValid, string.Join(Environment.NewLine, plan.Issues));
+        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(
+            context.FileSystem,
+            plan));
+        return definitions;
+    }
+
     private static ResourceDefinitionCatalog WithAfterlifeIntegrity(
         ResourceDefinitionCatalog definitions)
     {
@@ -777,6 +1053,94 @@ public sealed class ResourceAfterlifeOwnerTests
                 }
             }
         };
+
+    private static JsonObject PlayerSoulProfileWithoutBinding(string realm) =>
+        new()
+        {
+            ["actorType"] = "player_soul",
+            ["actorId"] = "player_soul",
+            ["displayName"] = "Душа игрока",
+            ["realm"] = realm
+        };
+
+    private static void AssertDeterministicComposition(
+        ResourceOwnerCompositionResult first,
+        ResourceOwnerCompositionResult second)
+    {
+        Assert.True(first.IsValid, string.Join(Environment.NewLine, first.Issues));
+        Assert.True(second.IsValid, string.Join(Environment.NewLine, second.Issues));
+        Assert.Equal(first.Authority!.Fingerprint, second.Authority!.Fingerprint);
+        Assert.Equal(
+            DescribeAuthority(first.Authority),
+            DescribeAuthority(second.Authority));
+        Assert.Equal(
+            DescribeAfterImages(first),
+            DescribeAfterImages(second));
+        Assert.Equal(
+            DescribeCapacityDrafts(first),
+            DescribeCapacityDrafts(second));
+        Assert.Equal(
+            first.TerminalOwners
+                .OrderBy(static owner => owner.Realm, StringComparer.Ordinal)
+                .ThenBy(static owner => owner.OwnerKind)
+                .ThenBy(static owner => owner.ResourceOwnerId, StringComparer.Ordinal)
+                .Select(static owner =>
+                    $"{owner.Realm}|{owner.OwnerKind}|{owner.ResourceOwnerId}")
+                .ToArray(),
+            second.TerminalOwners
+                .OrderBy(static owner => owner.Realm, StringComparer.Ordinal)
+                .ThenBy(static owner => owner.OwnerKind)
+                .ThenBy(static owner => owner.ResourceOwnerId, StringComparer.Ordinal)
+                .Select(static owner =>
+                    $"{owner.Realm}|{owner.OwnerKind}|{owner.ResourceOwnerId}")
+                .ToArray());
+    }
+
+    private static string[] DescribeAuthority(ResourceOwnerAuthority authority) =>
+        authority.Entries.Values
+            .OrderBy(static entry => entry.Key.Realm, StringComparer.Ordinal)
+            .ThenBy(static entry => entry.Key.OwnerKind)
+            .ThenBy(static entry => entry.Key.ResourceOwnerId, StringComparer.Ordinal)
+            .Select(static entry => string.Join(
+                "|",
+                entry.Key.Realm,
+                entry.Key.OwnerKind,
+                entry.Key.ResourceOwnerId,
+                entry.Lifecycle,
+                entry.SameTurn,
+                entry.SameTurnRef,
+                entry.AuthorityFingerprint,
+                string.Join(",", entry.ResourceCapabilities.OrderBy(
+                    static capability => capability,
+                    StringComparer.Ordinal))))
+            .ToArray();
+
+    private static string[] DescribeAfterImages(ResourceOwnerCompositionResult result) =>
+        result.OwnerCompanionAfterImages
+            .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
+            .Select(static pair => pair.Key + "|" + pair.Value.ToJsonString())
+            .ToArray();
+
+    private static string[] DescribeCapacityDrafts(ResourceOwnerCompositionResult result) =>
+        result.CapacityDrafts
+            .OrderBy(static draft => draft.Coordinate.Realm, StringComparer.Ordinal)
+            .ThenBy(static draft => draft.Coordinate.OwnerKind)
+            .ThenBy(static draft => draft.Coordinate.ResourceOwnerId, StringComparer.Ordinal)
+            .ThenBy(static draft => draft.Coordinate.ResourceKey, StringComparer.Ordinal)
+            .Select(static draft => string.Join(
+                "|",
+                draft.Coordinate.Realm,
+                draft.Coordinate.OwnerKind,
+                draft.Coordinate.ResourceOwnerId,
+                draft.Coordinate.ResourceKey,
+                draft.AcceptedMaximum,
+                draft.SourceEvidence.SourceKind,
+                draft.SourceEvidence.SourceId,
+                draft.SourceEvidence.AuthorityFingerprint,
+                draft.ResolvedCapacity.Capacity?.Binding.Kind,
+                draft.ResolvedCapacity.Capacity?.Binding.AuthorityKey,
+                draft.ResolvedCapacity.Capacity?.Binding.AuthorityFingerprint))
+            .ToArray();
 
     private static JsonObject AfterlifeProfile(
         string actorType,

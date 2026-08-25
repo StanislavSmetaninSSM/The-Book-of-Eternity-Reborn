@@ -397,7 +397,7 @@
                             When a crafting action check (as per #9.3.1, step 4) is completed, 
                             the primary tool(s) used for the craft (identified in #9.3.1, step 3.c) are subject to durability loss based on the outcome.
 
-                            1.  'Critical Success': The crafter's exceptional skill minimizes wear. The tool loses 0% to 1% durability.
+                            1.  'Critical Success': The crafter's exceptional skill minimizes wear. The tool loses 0% to 1% of its projected durability maximum.
                             
                             2.  'Full Success': Represents normal wear and tear. The tool loses 1% to 3% durability.
                             
@@ -409,11 +409,11 @@
                             
                             6.  'Critical Failure': 
                             A disastrous mistake. The GM should make a secondary Luck check for the player (e.g., a 50/50 chance using a pre-generated d20, even/odd). 
-                            On a failed Luck check, the primary tool breaks (its durability becomes '0%'). 
+                            On a failed Luck check, request damage equal to the tool's exact projected current durability so the accepted transition reaches the sealed minimum.
                             On a successful Luck check, it survives but still takes a massive 25% to 50% durability loss.
 
-                            Any change in durability MUST be reported by including the tool's updated Item Object (with its 'existedId' and new 'durability' value) in the 'UpdateInventory' array.
-                            The durability loss, the reason (crafting outcome), and the new durability value MUST be logged in 'gm_thoughts_markdown'.
+                            Convert every percentage loss to a positive exact amount from the pre-turn projection, document non-trivial arithmetic in mathAudit, and emit resourceChanges operation=damage against the tool's exact itemId/durability coordinate. Never include a resulting durability value in UpdateInventory.
+                            Log the requested durability loss, calculation, and crafting reason in 'gm_thoughts_markdown'; the client owns the resulting current value and immutable history.
 
                             ]]>
      </content>
@@ -425,7 +425,7 @@
     Repairing Items
    </title>
    <description>
-    This section details the process for repairing damaged items (those with durability less than 100%).
+    This section details the process for repairing items whose client resource projection shows current durability below its registered maximum.
    </description>
    <content type="ruleset">
     <rule id="9.4.1">
@@ -438,7 +438,7 @@
                             When the player declares an intent to repair a specific damaged item:
 
                             1.  Identify Target and Requirements:
-                                a.  Identify the damaged item in the player's inventory.
+                                a.  Identify the damaged item by its exact permanent itemId and read its durability current/maximum only from the client resource projection.
                                 
                                 b.  Skill Check: The player MUST possess a relevant 'KnowledgeBased' passive skill 
                                 (e.g., "Blacksmithing" for metal items, "Leatherworking" for leather, "Tinkering" for complex devices). 
@@ -459,15 +459,14 @@
 
                             3.  Determine Outcome based on Action Check Result:
                                 a.  'Critical Success': 
-                                The item is masterfully restored. Its 'durability' is set to "100%". 
-                                As a bonus, the item might gain a temporary +5% durability buffer that absorbs the next instance of durability loss.
+                                Request an exact restore equal to the projected deficit so the common reducer reaches the registered maximum.
+                                A temporary protective buffer is legal only through a separately valid effectChanges contract; never encode it as durability above maximum or as an item property.
 
                                 b.  'Full Success': 
                                 A successful repair. 
-                                The item's 'durability' is restored by a significant amount (e.g., +30% to +50%), up to a maximum of 90-95% 
-                                (a perfect factory-new state is hard to achieve in the field).
+                                Request a significant positive exact restore (for example 30%-50% of projected maximum), bounded so the projected result does not exceed 90%-95% of maximum when field repair cannot reach factory-new condition.
 
-                                c.  'Partial Success': A clumsy but functional repair. The item's 'durability' is restored by a minor amount (e.g., +10% to +20%).
+                                c.  'Partial Success': A clumsy but functional repair. Request a minor positive exact restore (for example 10%-20% of projected maximum).
 
                                 d.  'Minor Failure': The repair attempt fails. No durability is restored, and the repair materials are consumed.
 
@@ -475,7 +474,7 @@
                                 The repair materials are consumed, and the item being repaired takes an additional 1d10% durability damage from the botched attempt.
 
                             4.  Update Game State and Report:
-                                a.  Report the item's new 'durability' value in the 'UpdateInventory' array.
+                                a.  Emit resourceChanges operation=restore or operation=damage against the exact itemId/durability coordinate for the positive exact outcome amount. Never report a resulting durability value in UpdateInventory.
 
                                 b.  Report the consumption of repair materials by updating their 'count' in 'UpdateInventory' or removing them via 'removeInventoryItems'.
 

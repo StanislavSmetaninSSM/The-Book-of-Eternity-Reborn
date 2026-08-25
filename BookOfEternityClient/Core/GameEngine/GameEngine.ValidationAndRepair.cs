@@ -75,7 +75,8 @@ public partial class GameEngine
         bool allowRepairLoop = false,
         DateTime? initialCanonicalRepairBoundaryUtc = null,
         IReadOnlyCollection<ValidationIssue>? initialCanonicalRepairErrors = null,
-        DateTime? initialCanonicalRepairStartedAtUtc = null)
+        DateTime? initialCanonicalRepairStartedAtUtc = null,
+        byte[]? pendingResolutionRepairCheckpoint = null)
     {
         var repairAttempt = 0;
         List<ValidationIssue>? lastRepairErrors = null;
@@ -182,7 +183,8 @@ public partial class GameEngine
                     errors,
                     repairAttempt,
                     rollbackSnapshot,
-                    lastRepairSessionGeneration))
+                    lastRepairSessionGeneration,
+                    pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
                 return false;
             var canonicalRepairErrors = errors
                 .Where(issue => IsCanonicalStateRepairIssue(issue) &&
@@ -232,6 +234,7 @@ public partial class GameEngine
         IReadOnlyList<ResourceRepairRetryObligation>? resourceRetryObligations = null;
         List<ValidationIssue>? resourceRetryErrors = null;
         IReadOnlyList<RepairResubmissionPathObligation>? resourceRequiredResubmissionPaths = null;
+        byte[]? pendingResolutionRepairCheckpoint = null;
         using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
 
         while (true)
@@ -398,7 +401,8 @@ public partial class GameEngine
                         effectRetryObligations,
                         effectRequiredResubmissionPaths,
                         resourceRetryObligations,
-                        resourceRequiredResubmissionPaths))
+                        resourceRequiredResubmissionPaths,
+                        pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
                     return false;
                 lastCriticalRepairStartedAtUtc = rawRepairStartedAtUtc;
                 lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
@@ -461,40 +465,14 @@ public partial class GameEngine
                         baselineErrors,
                         criticalRepairAttempt,
                         rollbackSnapshot,
-                        lastCriticalRepairSessionGeneration))
+                        lastCriticalRepairSessionGeneration,
+                        pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
                     return false;
                 lastCriticalRepairStartedAtUtc = baselineRepairStartedAtUtc;
                 lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
                     baselineErrors,
                     baselineRepairStartedAtUtc);
 
-                continue;
-            }
-
-            if (canonicalRefresh.MechanicsPlan is { AwaitsPendingResolution: true } pendingPlan)
-            {
-                criticalRepairAttempt++;
-                var pendingErrors = new List<ValidationIssue>
-                {
-                    BuildBoundedResourceResolutionResubmissionIssue(pendingPlan)
-                };
-                lastCriticalRepairErrors = pendingErrors;
-                lastCriticalRepairAttempt = criticalRepairAttempt;
-                lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
-                var pendingStartedAtUtc = DateTime.UtcNow;
-                if (!await WaitForContractRepairAsync(
-                        source,
-                        pendingErrors,
-                        criticalRepairAttempt,
-                        rollbackSnapshot,
-                        lastCriticalRepairSessionGeneration))
-                {
-                    return false;
-                }
-                lastCriticalRepairStartedAtUtc = pendingStartedAtUtc;
-                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
-                    pendingErrors,
-                    pendingStartedAtUtc);
                 continue;
             }
 
@@ -518,7 +496,8 @@ public partial class GameEngine
                         postSealErrors,
                         criticalRepairAttempt,
                         rollbackSnapshot,
-                        lastCriticalRepairSessionGeneration))
+                        lastCriticalRepairSessionGeneration,
+                        pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
                 {
                     return false;
                 }
@@ -528,6 +507,59 @@ public partial class GameEngine
                     postSealErrors,
                     postSealRepairStartedAtUtc);
                 continue;
+            }
+
+            if (canonicalRefresh.MechanicsPlan is { AwaitsPendingResolution: true } pendingPlan)
+            {
+                if (!pendingPlan.PendingAfterImages.TryGetValue(
+                        ResourcePendingResolutionState.PendingPath,
+                        out var pendingAfterImage) ||
+                    pendingAfterImage == null)
+                {
+                    throw new InvalidDataException(
+                        "Pending accepted mechanics plan has no technical pending checkpoint.");
+                }
+                pendingResolutionRepairCheckpoint =
+                    await _fs.ReadFileBytesAsync(ResourcePendingResolutionState.PendingPath) ??
+                    throw new InvalidDataException(
+                        "Published pending accepted mechanics checkpoint is missing.");
+                criticalRepairAttempt++;
+                var pendingErrors = new List<ValidationIssue>
+                {
+                    BuildBoundedResourceResolutionResubmissionIssue(pendingPlan)
+                };
+                lastCriticalRepairErrors = pendingErrors;
+                lastCriticalRepairAttempt = criticalRepairAttempt;
+                lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                var pendingStartedAtUtc = DateTime.UtcNow;
+                if (!await WaitForBoundedPendingResolutionResubmissionAsync(
+                        source,
+                        pendingErrors,
+                        criticalRepairAttempt,
+                        rollbackSnapshot,
+                        lastCriticalRepairSessionGeneration,
+                        pendingResolutionRepairCheckpoint))
+                {
+                    return false;
+                }
+                lastCriticalRepairStartedAtUtc = pendingStartedAtUtc;
+                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    pendingErrors,
+                    pendingStartedAtUtc);
+                continue;
+            }
+
+            if (canonicalRefresh.MechanicsPlan is { } acceptedPlan &&
+                acceptedPlan.PendingAfterImages.TryGetValue(
+                    ResourcePendingResolutionState.PendingPath,
+                    out var acceptedPendingAfterImage))
+            {
+                pendingResolutionRepairCheckpoint = acceptedPendingAfterImage == null
+                    ? null
+                    : await _fs.ReadFileBytesAsync(
+                        ResourcePendingResolutionState.PendingPath) ??
+                      throw new InvalidDataException(
+                          "Published accepted mechanics pending checkpoint is missing.");
             }
 
             await EnsureClientOwnedSystemFilesHealthyAsync();
@@ -550,7 +582,8 @@ public partial class GameEngine
                         canonicalErrors,
                         criticalRepairAttempt,
                         rollbackSnapshot,
-                        lastCriticalRepairSessionGeneration))
+                        lastCriticalRepairSessionGeneration,
+                        pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
                     return false;
                 lastCriticalRepairStartedAtUtc = canonicalRepairStartedAtUtc;
                 lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
@@ -575,7 +608,8 @@ public partial class GameEngine
                     allowRepairLoop: true,
                     initialCanonicalRepairBoundaryUtc: lastCriticalRepairBoundaryUtc,
                     initialCanonicalRepairErrors: lastCriticalRepairErrors,
-                    initialCanonicalRepairStartedAtUtc: lastCriticalRepairStartedAtUtc))
+                    initialCanonicalRepairStartedAtUtc: lastCriticalRepairStartedAtUtc,
+                    pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
                 return false;
 
             if (lastCriticalRepairErrors is { Count: > 0 })
@@ -1007,6 +1041,7 @@ public partial class GameEngine
                 "Не читай и не изменяй технический pending-файл. Сохрани тот же sessionId/requestId/turn и все уже авторизованные изменения хода. " +
                 "В game_state/effects/effect_commands.json верни полный корень с прежними effectChanges[], effectEventReports[] и effectResolutionReceipts[]. " +
                 "Для каждого requestId из safe packet выбери ровно один resultKind: narrated_no_state_change без amount либо resource_delta с amount в указанном диапазоне; всегда добавь краткую внутриигровую reason. " +
+                "Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned. " +
                 "Не указывай target/resource/operation/realm/координаты и не пытайся писать resource_state, resource_history или active effect carriers. " +
                 "Обнови narrative/interface/debug output под выбранный исход, затем заверши текущий validation-repair без нового хода.",
             repairTargetFiles: new[]
@@ -1271,7 +1306,18 @@ public partial class GameEngine
     {
         var path = NormalizeRepairTargetPath(issue.FilePath);
         return path.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase) ||
-               path.StartsWith("lore/", StringComparison.OrdinalIgnoreCase);
+               path.StartsWith("lore/", StringComparison.OrdinalIgnoreCase) ||
+               IsAcceptedTurnMaterializationRepairIssue(issue);
+    }
+
+    private static bool IsAcceptedTurnMaterializationRepairIssue(ValidationIssue issue)
+    {
+        // Effect/resource validators report the exact raw command coordinate rather
+        // than a canonical output path. A successful bounded repair still publishes
+        // canonical after-images, so dependent player-facing output must be newer
+        // than that repair just as it is for a direct game_state/* correction.
+        return EffectRepairPacketBuilder.Build([issue], rollbackAvailable: true).Count > 0 ||
+               ResourceRepairPacketBuilder.Build([issue]).Count > 0;
     }
 
     private static bool IsPlayerFacingNeutralActorMemoryRepairIssue(ValidationIssue issue)
@@ -1631,9 +1677,20 @@ public partial class GameEngine
         IReadOnlyList<EffectRepairRetryObligation>? effectRetryObligations = null,
         IReadOnlyList<RepairResubmissionPathObligation>? effectRequiredResubmissionPaths = null,
         IReadOnlyList<ResourceRepairRetryObligation>? resourceRetryObligations = null,
-        IReadOnlyList<RepairResubmissionPathObligation>? resourceRequiredResubmissionPaths = null)
+        IReadOnlyList<RepairResubmissionPathObligation>? resourceRequiredResubmissionPaths = null,
+        bool boundedPendingResolutionResubmission = false,
+        byte[]? pendingResolutionRepairCheckpoint = null)
     {
         await EnsureRepairSessionCurrentAsync(repairSessionGeneration);
+        var isBoundedPendingResolutionResubmission =
+            boundedPendingResolutionResubmission &&
+            IsExactBoundedPendingResolutionResubmission(errors);
+        if (boundedPendingResolutionResubmission &&
+            !isBoundedPendingResolutionResubmission)
+        {
+            throw new InvalidOperationException(
+                "The bounded pending repair route accepts only the exact client-authored pending resubmission issue.");
+        }
         var rollbackAvailable = HasRollbackCapability(rollbackSnapshot);
         var requiresMortalItemFailClosed =
             MortalItemRepairPacketBuilder.RequiresFailClosedRollback(errors);
@@ -1653,7 +1710,8 @@ public partial class GameEngine
         var resourceRepairPackets = ResourceRepairPacketBuilder.Build(errors);
         var hasActionableResourceRepair = resourceRepairPackets.Count > 0;
         var requiresResourceFailClosed =
-            ResourceRepairPacketBuilder.RequiresFailClosedRollback(errors) ||
+            (!isBoundedPendingResolutionResubmission &&
+             ResourceRepairPacketBuilder.RequiresFailClosedRollback(errors)) ||
             (hasActionableResourceRepair && !rollbackAvailable);
         if (requiresMortalItemFailClosed ||
             requiresMortalLocationFailClosed ||
@@ -1713,7 +1771,8 @@ public partial class GameEngine
         {
             await RestorePreTurnBaselineForRepairSessionAsync(
                 rollbackSnapshot!,
-                repairSessionGeneration);
+                repairSessionGeneration,
+                pendingResolutionRepairCheckpoint);
         }
 
         var dispatch = await WriteValidationRepairRequestForSessionAsync(
@@ -1727,7 +1786,8 @@ public partial class GameEngine
             effectRequiredResubmissionPaths,
             resourceRetryObligations,
             resourceRequiredResubmissionPaths,
-            effectRepairPackets);
+            effectRepairPackets,
+            isBoundedPendingResolutionResubmission);
         ThrowIfValidationRepairDispatchSessionReplaced(dispatch);
         if (dispatch.MetadataDiagnosticOnly)
             return await FailClosedDiagnosticOnlyValidationRepairAsync(
@@ -1951,6 +2011,50 @@ public partial class GameEngine
             await DeleteValidationRepairReadyForSessionAsync(repairSessionGeneration);
             return true;
         }
+    }
+
+    private Task<bool> WaitForBoundedPendingResolutionResubmissionAsync(
+        string source,
+        List<ValidationIssue> errors,
+        int attempt,
+        RollbackSnapshot? rollbackSnapshot,
+        string repairSessionGeneration,
+        byte[]? pendingResolutionRepairCheckpoint = null)
+    {
+        if (!IsExactBoundedPendingResolutionResubmission(errors))
+        {
+            throw new InvalidOperationException(
+                "The bounded pending repair route requires exactly one trusted pending resubmission issue.");
+        }
+
+        return WaitForContractRepairAsync(
+            source,
+            errors,
+            attempt,
+            rollbackSnapshot,
+            repairSessionGeneration,
+            boundedPendingResolutionResubmission: true,
+            pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint);
+    }
+
+    private static bool IsExactBoundedPendingResolutionResubmission(
+        IReadOnlyList<ValidationIssue> errors)
+    {
+        return errors.Count == 1 &&
+               errors[0].Severity == IssueSeverity.Error &&
+               string.Equals(
+                   errors[0].FilePath,
+                   EffectAcceptedTurnPlan.CommandPath,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   errors[0].Code,
+                   "resource_pending_full_turn_resubmission_required",
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   errors[0].Section,
+                   "AcceptedMechanicsPendingResolution",
+                   StringComparison.Ordinal) &&
+               !string.IsNullOrWhiteSpace(errors[0].Actual);
     }
 
     private static void ThrowIfValidationRepairDispatchSessionReplaced(
@@ -2370,7 +2474,8 @@ public partial class GameEngine
         IReadOnlyList<RepairResubmissionPathObligation>? effectRequiredResubmissionPaths = null,
         IReadOnlyList<ResourceRepairRetryObligation>? resourceRetryObligations = null,
         IReadOnlyList<RepairResubmissionPathObligation>? resourceRequiredResubmissionPaths = null,
-        IReadOnlyList<EffectRepairPacket>? effectRepairPackets = null)
+        IReadOnlyList<EffectRepairPacket>? effectRepairPackets = null,
+        bool boundedPendingResolutionResubmission = false)
     {
         await DeleteValidationRepairFilesForSessionAsync(expectedSessionGeneration);
         var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
@@ -2379,13 +2484,15 @@ public partial class GameEngine
         var metadataDiagnosticOnly = BuildProtocolRequestMetadataDiagnosticOnly(pendingSnapshot);
         var resourceRepairPackets = ResourceRepairPacketBuilder.Build(prioritizedErrors);
         var fullTurnResubmissionRequired =
+            boundedPendingResolutionResubmission ||
             mortalLocationRetryObligations is { Count: > 0 } ||
             effectRetryObligations is { Count: > 0 } ||
             effectRepairPackets is { Count: > 0 } ||
             resourceRepairPackets.Count > 0;
         var gmInstructions = BuildValidationRepairRequestInstructions(
             pendingSnapshot,
-            fullTurnResubmissionRequired);
+            fullTurnResubmissionRequired,
+            boundedPendingResolutionResubmission);
 
         var request = new ValidationRepairRequest
         {
@@ -5355,7 +5462,7 @@ public partial class GameEngine
                 "Do not create a new turn or write ready/turn_complete.json during validation repair.",
                 "Do not edit game_state/control/pending_turn_snapshot or other authority snapshot files; use pending_turn_snapshot only as a read-only baseline.",
                 "Do not author activeConflict.actionEconomy or resourceOwnerBindings; both are forbidden GM mirrors of client-owned resource authority.",
-                "Do not edit game_state/resources/resource_state.json or game_state/resources/resource_history.json during GM validation repair.",
+                "Do not edit game_state/resources/resource_definitions.json, resource_state.json, resource_history.json, or resource_owner_authority.json during GM validation repair; they are one client-owned guarded quartet.",
                 "Do not change player prose, operation choices, dice rolls, special art ids, or exchange outcomes just to silence arithmetic validation.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer repair rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session control files."
             }
@@ -6202,12 +6309,20 @@ public partial class GameEngine
 
     private static string BuildValidationRepairRequestInstructions(
         PendingTurnSnapshotResolution pendingSnapshot,
-        bool fullTurnResubmissionRequired = false)
+        bool fullTurnResubmissionRequired = false,
+        bool boundedPendingResolutionResubmission = false)
     {
-        var commonPrefix = fullTurnResubmissionRequired
+        var commonPrefix = boundedPendingResolutionResubmission
+            ? "Клиент сохранил принятый client-owned pending-запрос и ещё не публиковал механику или ответ игроку. Не изменяй pending-файл и canonical state напрямую. " +
+              "Полностью повтори ответ на исходный input/turn_request.json для того же sessionId/requestId/turnNumber, сохрани все ранее авторизованные изменения и добавь закрывающие effectResolutionReceipts[] по безопасному packet из errors[].actual. " +
+              "Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned. " +
+              "Пересоздай согласованные command/output surfaces и только затем отправь validation_repair_ready.json. "
+            : fullTurnResubmissionRequired
             ? "Отклонённая попытка полностью удалена и восстановлено состояние до хода. Не исправляй baseline-файлы in place. " +
+              "Для effect_materialization_repair и resource_semantic_omission_repair значение fullTurnResubmissionRequired=true означает полный повтор того же связного ответа, а не точечный patch. " +
               "Заново обработай исходный input/turn_request.json как один полный ответ на тот же ход: пересоздай все изменённые в отклонённой попытке command/output surfaces, обязательно повтори каждую exact actor+route из resubmissionObligations и исправь перечисленные поля. " +
-              "RequiredResubmissionPaths перечисляет поверхности отклонённой попытки, которые должны быть заново записаны до сигнала готовности. " +
+              "requiredResubmissionPaths перечисляет только фактически изменённые GM-authored command/output surfaces, которые должны быть заново записаны до сигнала готовности. " +
+              "Client-owned preparation/publication roots клиент восстанавливает или пересоздаёт сам: не пиши и не ожидай в requiredResubmissionPaths system_mods.json, progression_schedule.json, resource_definitions.json, resource_state.json, resource_history.json, resource_owner_authority.json, pending_effect_resolutions.json или effect_identity_index.json. " +
               "Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. "
             : "Текущий ответ/состояние отклонены клиентом. Исправь уже записанные файлы in place, ориентируясь на список ошибок ниже. " +
               "Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. ";

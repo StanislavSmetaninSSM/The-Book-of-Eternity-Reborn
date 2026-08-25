@@ -1142,7 +1142,6 @@ public sealed class ShiningCoreActionRequestStateTests
             var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fs.EnsureDirectoryStructure();
             await WriteMinimalActiveShiningStateAsync(fs);
-            await WriteBlessingRerollAuthorityAsync(fs);
             var materialized = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
                 fs,
                 CreateRelicRerollPackage(),
@@ -1253,17 +1252,6 @@ public sealed class ShiningCoreActionRequestStateTests
     private static async Task InitializeShiningGachaAttemptLedgerAsync(
         FileSystemManager fs)
     {
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
         var shining = JsonNode.Parse((await fs.ReadFileAsync(
             ShiningAbodeState.StatePath))!)!.AsObject();
         var soul = JsonNode.Parse((await fs.ReadFileAsync(
@@ -1291,16 +1279,7 @@ public sealed class ShiningCoreActionRequestStateTests
                         ["actorType"] = "player_soul",
                         ["actorId"] = "player_soul",
                         ["displayName"] = "Душа игрока",
-                        ["realm"] = "Shining Abode",
-                        ["resourceOwnerBindings"] = new JsonArray
-                        {
-                            new JsonObject
-                            {
-                                ["realm"] = "shining_abode",
-                                ["resourceOwnerId"] = "player_soul",
-                                ["state"] = "active"
-                            }
-                        }
+                        ["realm"] = "Shining Abode"
                     }
                 }
             }.ToJsonString());
@@ -1444,45 +1423,8 @@ public sealed class ShiningCoreActionRequestStateTests
                 }
             }
         }.ToJsonString());
-    }
 
-    private static async Task WriteBlessingRerollAuthorityAsync(FileSystemManager fs)
-    {
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-        await fs.WriteFileAtomicAsync(
-            AfterlifeEntityProfileState.StatePath,
-            new JsonObject
-            {
-                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
-                {
-                    new JsonObject
-                    {
-                        ["actorType"] = "player_soul",
-                        ["actorId"] = "player_soul",
-                        ["displayName"] = "Душа игрока",
-                        ["realm"] = "Shining Abode",
-                        ["resourceOwnerBindings"] = new JsonArray
-                        {
-                            new JsonObject
-                            {
-                                ["realm"] = "shining_abode",
-                                ["resourceOwnerId"] = "player_soul",
-                                ["state"] = "active"
-                            }
-                        }
-                    }
-                }
-            }.ToJsonString());
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(fs);
     }
 
     private static JsonObject CreateRelicRerollPackage() =>

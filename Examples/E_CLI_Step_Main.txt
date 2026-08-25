@@ -128,7 +128,7 @@ Worked location repair flow:
 validation_repair_request.json:
   harnessRepairPackets[].kind = mortal_location_materialization_repair
   fullTurnResubmissionRequired = true
-  requiredResubmissionPaths = [all paths changed by the rejected response]
+  requiredResubmissionPaths = [all GM-authored command/output paths actually changed by the rejected response]
 
 The client has restored the validated pre-turn baseline before dispatch.
 Correct: regenerate one complete coherent raw response for the same request,
@@ -138,6 +138,15 @@ Wrong: write only validation_repair_ready.json, patch world_map/current_location
 in place, submit only the named leaf, or rewrite stale output with formatting
 changes. Full-turn resubmission requires fresh semantic content.
 ```
+
+The same root ownership rule applies to `effect_materialization_repair` and
+`resource_semantic_omission_repair`; see `effect_bounded_repair_v1` in
+`E_CLI_Effect_Materialization.txt` and `mortal_resource_bounded_repair_v1` in
+`E_CLI_Mortal_Resources.txt`. Client-owned `system_mods.json`,
+`progression_schedule.json`, the resource definitions/state/history/owner-
+authority quartet, `pending_effect_resolutions.json`, and
+`effect_identity_index.json` never belong to `requiredResubmissionPaths` and
+must not be written by the GM.
 
 Faction Materialization worked-example coverage:
 mortal_faction_materialization_populated_creation_v1
@@ -993,7 +1002,7 @@ Mortal bootstrap materialization repair packet:
   "expectedShape": [
     "bootstrap_codex_missing_current_world_entries: lore/codex_entries.json must contain current-world entries created for this life.",
     "readable_document_missing_detail_authority: every readable document item must have a readable detail authority that the player can open.",
-    "item durability: starting inventory items must write durability as a percentage string such as 100%, never a bare number such as 100.",
+    "item resource materialization: every durable starting item must declare resourceKey=durability with a positive maximum in its one-time resourceMaterialization.resources[] envelope; never write a durability property or current value on the item.",
     "item journalEntries: journalEntries[] entries must be non-empty strings, not objects.",
     "mortal_location_materialization_bootstrap_authority_mismatch: the complete current_scene_creation start, world_map_creation neighbor, and world_map_link_creation directed link must copy the exact open scaffold initialIds, coordinates, sourceTurn, and sourceAuthority.",
     "mortal_location_materialization_missing_required_fields: each starting location is a complete current-schema candidate with full presentation, physical shape, placement, discovery, difficulty, collections, and materialization.sections.",
@@ -1018,7 +1027,7 @@ Mortal bootstrap materialization repair packet:
     "Restore every structuredGmAuthority.playerSkills entry in skills_active.json or skills_passive.json; active skills also keep their skill_mastery.json entry.",
     "Restore every worldEventRequirements.requiredEventIds entry in world_events.json.worldEventsLog with a useful title and description grounded in playerAuthoredStart.startingCircumstances.",
     "Fix readable document items by adding an actual player-openable document/detail authority, not by changing the item type to avoid validation.",
-    "Fix inventory item durability by writing percentage strings such as 100%, not bare numbers.",
+    "Fix durable starting items by declaring the durability maximum in resourceMaterialization.resources[]; never add a durability property or resulting current value to the item.",
     "Fix inventory item journalEntries by flattening malformed objects into one player-facing note string per array entry.",
     "Call Complete-BoeValidationRepair as the last action."
   ]
@@ -1040,8 +1049,8 @@ The current-life ordinary-item roots are client-owned empty anchors before the G
 ```text
 game_state/inventory/items.json                    -> items=[]
 game_state/inventory/item_identity_index.json      -> entries=[]
-game_state/mechanics/resource_state.json           -> schemaVersion=1, entries=[]
-game_state/mechanics/resource_history.json         -> schemaVersion=1, entries=[]
+game_state/resources/resource_state.json           -> schemaVersion=1, entries=[]
+game_state/resources/resource_history.json         -> schemaVersion=1, entries=[]
 game_state/inventory/item_bonds.json               -> entries=[]
 game_state/inventory/item_text_updates.json        -> entries=[]
 game_state/npcs/item_journals.json                  -> entries=[]

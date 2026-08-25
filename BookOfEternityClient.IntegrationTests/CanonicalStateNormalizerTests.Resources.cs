@@ -1,6 +1,8 @@
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
+using System.Runtime.CompilerServices;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -99,6 +101,7 @@ public sealed class CanonicalStateNormalizerResourceTests
         string changedPath)
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await SeedEmptyMortalItemIdentityAsync(context.FileSystem);
         await context.SeedPlayerWoundSourceAsync();
         var usesNpcAuthority = authorityKind is "owner" or "target";
         if (usesNpcAuthority)
@@ -118,6 +121,11 @@ public sealed class CanonicalStateNormalizerResourceTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.True(
@@ -126,10 +134,10 @@ public sealed class CanonicalStateNormalizerResourceTests
                 Environment.NewLine,
                 issues.Select(issue =>
                     $"{issue.Code}: {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out var planning));
+        var validatedHandoff = await AcceptedMechanicsAuthorityTestProbe
+            .PeekCommonAsync(context.FileSystem);
+        Assert.NotNull(validatedHandoff);
+        var planning = validatedHandoff.Result;
         var plan = Assert.IsType<AcceptedMechanicsPlan>(planning.Plan);
 
         await ApplyLateMutationAsync(context, changedPath, authorityKind);
@@ -146,7 +154,683 @@ public sealed class CanonicalStateNormalizerResourceTests
             .NormalizeAcceptedMechanicsAsync(backups));
 
         Assert.Equal(before, await context.CaptureBytesAsync(protectedPaths));
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            context.FileSystem,
+            writeLease));
+    }
+
+    [Fact]
+    public async Task CommonPlan_SnapshotAuthoritySwapAfterPreflight_FailsBeforeEveryPublicationWrite()
+    {
+        const string snapshotManifestPath =
+            "game_state/control/pending_turn_snapshot.json";
+        FileSystemManager? fileSystem = null;
+        byte[]? replacementManifestBytes = null;
+        byte[]? replacementAuthorityBytes = null;
+        var armed = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalReadOpenAsync = path =>
+            {
+                if (!armed ||
+                    swapped ||
+                    !string.Equals(
+                        path,
+                        "input/turn_request.json",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                File.WriteAllBytes(
+                    fileSystem!.ResolvePath(snapshotManifestPath),
+                    replacementManifestBytes!);
+                File.WriteAllBytes(
+                    fileSystem.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath),
+                    replacementAuthorityBytes!);
+                swapped = true;
+                return Task.CompletedTask;
+            }
+        };
+        await using var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
+        fileSystem = context.FileSystem;
+        await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync();
+
+        var manifestA = Assert.IsType<JsonObject>(
+            await context.ReadJsonAsync(snapshotManifestPath));
+        var manifestABytes = (await fileSystem.ReadFileBytesAsync(snapshotManifestPath))!;
+        var authorityABytes = (await fileSystem.ReadFileBytesAsync(
+            PendingTurnSnapshotAuthority.AuthorityPath))!;
+        var manifestB = manifestA.DeepClone().AsObject();
+        manifestB["sourceLabel"] = "Accepted publisher swapped snapshot B";
+        manifestB["manifestPayloadHash"] = string.Empty;
+        manifestB["manifestPayloadHash"] =
+            PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifestB);
+        await context.WriteExactJsonAsync(snapshotManifestPath, manifestB.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(fileSystem);
+        replacementManifestBytes = (await fileSystem.ReadFileBytesAsync(snapshotManifestPath))!;
+        replacementAuthorityBytes = (await fileSystem.ReadFileBytesAsync(
+            PendingTurnSnapshotAuthority.AuthorityPath))!;
+        await fileSystem.WriteFileAtomicBytesAsync(snapshotManifestPath, manifestABytes);
+        await fileSystem.WriteFileAtomicBytesAsync(
+            PendingTurnSnapshotAuthority.AuthorityPath,
+            authorityABytes);
+
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationTestContext.CommandsPath,
+            ResourceMaterializationValidationTests.DefinitionCreationCommand().ToJsonString());
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        var before = await context.CaptureAsync(
+            ResourceMaterializationTestContext.AllResourcePaths);
+        armed = true;
+        await using var writeLease = await fileSystem.AcquireCanonicalWriteLeaseAsync();
+
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() => context.Normalizer
+            .BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups: null));
+
+        Assert.True(swapped);
+        Assert.Contains("snapshot", exception.Message, StringComparison.OrdinalIgnoreCase);
+        await context.AssertUnchangedAsync(before);
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fileSystem,
+            writeLease));
+    }
+
+    [Fact]
+    public async Task CommonPlan_IndependentEffectCacheWithoutCommonPlan_FailsPreflight()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await using (var publicationLease =
+                     await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+        {
+            SeedIndependentValidatedEffectCache(
+                context.FileSystem,
+                publicationLease,
+                CreateIndependentEffectInput());
+        }
+        var before = await context.CaptureBytesAsync(
+            CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
+
+        await using var writeLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(() => context.Normalizer
+            .BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups: null));
+
+        Assert.Equal(
+            before,
+            await context.CaptureBytesAsync(
+                CanonicalStateNormalizer.NormalizerRollbackTrackedFiles));
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            context.FileSystem,
+            writeLease));
+        Assert.False(EffectAcceptedTurnPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            writeLease,
+            out _));
+    }
+
+    [Fact]
+    public async Task CommonPlan_EffectCacheAppearsAfterNoPlanPreflight_FailsBeforeEveryWrite()
+    {
+        EffectMaterializationTestContext? hookedContext = null;
+        var effectInput = CreateIndependentEffectInput();
+        FileSystemManager.CanonicalWriteLease? activeWriteLease = null;
+        var armed = false;
+        var appeared = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalReadOpenAsync = path =>
+            {
+                if (!armed ||
+                    appeared ||
+                    !string.Equals(
+                        path,
+                        "input/turn_request.json",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                appeared = true;
+                SeedIndependentValidatedEffectCache(
+                    hookedContext!.FileSystem,
+                    activeWriteLease!,
+                    effectInput);
+                return Task.CompletedTask;
+            }
+        };
+        await using var context = await EffectMaterializationTestContext.CreateAsync(hooks);
+        hookedContext = context;
+        await context.WriteJsonAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap());
+        await context.WriteJsonAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationIdentityState.CreateEmptyRoot());
+        await context.CaptureValidatedPendingSnapshotAsync();
+        var backups = await context.ReadPendingSnapshotBackupsAsync();
+        await context.WriteJsonAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            new JsonObject
+            {
+                ["currentLocationData"] = MortalLocationTestFixture.CreateRawLocation(
+                    "current_scene_creation")
+            });
+        var before = await context.CaptureBytesAsync(
+            CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+            context.FileSystem));
+        armed = true;
+
+        await using var writeLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        activeWriteLease = writeLease;
+        await Assert.ThrowsAsync<InvalidDataException>(() => context.Normalizer
+            .BindTo(writeLease)
+            .NormalizeAccumulatedStateWithPlanAsync(backups));
+
+        Assert.True(appeared);
+        Assert.Equal(
+            before,
+            await context.CaptureBytesAsync(
+                CanonicalStateNormalizer.NormalizerRollbackTrackedFiles));
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            context.FileSystem,
+            writeLease));
+        Assert.False(EffectAcceptedTurnPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            writeLease,
+            out _));
+    }
+
+    [Fact]
+    public async Task CommonPlan_EffectCachePublicationAtCanonicalMutationBoundary_WaitsForCanonicalContour()
+    {
+        var effectInput = CreateIndependentEffectInput();
+        var armed = false;
+        var paused = 0;
+        var boundaryReached = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseBoundary = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var publicationContended = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationAsync = async _ =>
+            {
+                if (!armed || Interlocked.Exchange(ref paused, 1) != 0)
+                    return;
+
+                boundaryReached.TrySetResult(true);
+                await releaseBoundary.Task;
+            },
+            CanonicalWriteLockContendedAsync = () =>
+            {
+                publicationContended.TrySetResult(true);
+                return Task.CompletedTask;
+            }
+        };
+        await using var context = await EffectMaterializationTestContext.CreateAsync(hooks);
+        await context.WriteJsonAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap());
+        await context.WriteJsonAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationIdentityState.CreateEmptyRoot());
+        await context.CaptureValidatedPendingSnapshotAsync();
+        var backups = await context.ReadPendingSnapshotBackupsAsync();
+        await context.WriteJsonAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            new JsonObject
+            {
+                ["currentLocationData"] = MortalLocationTestFixture.CreateRawLocation(
+                    "current_scene_creation")
+            });
+        armed = true;
+
+        var normalizationTask = Task.Run(async () =>
+        {
+            await using var normalizationLease =
+                await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+            return await context.Normalizer
+                .BindTo(normalizationLease)
+                .NormalizeAccumulatedStateWithPlanAsync(backups);
+        });
+        await boundaryReached.Task.WaitAsync(TimeSpan.FromSeconds(30));
+
+        var publicationLeaseTask = Task.Run(
+            () => context.FileSystem.AcquireCanonicalWriteLeaseAsync());
+        await publicationContended.Task.WaitAsync(TimeSpan.FromSeconds(30));
+        Assert.False(publicationLeaseTask.IsCompleted);
+
+        releaseBoundary.TrySetResult(true);
+        Assert.Null(await normalizationTask.WaitAsync(TimeSpan.FromSeconds(30)));
+        await using var publicationLease = await publicationLeaseTask
+            .WaitAsync(TimeSpan.FromSeconds(30));
+        SeedIndependentValidatedEffectCache(
+            context.FileSystem,
+            publicationLease,
+            effectInput);
+        Assert.True(EffectAcceptedTurnPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            publicationLease,
+            out _));
+        EffectAcceptedTurnPlanAuthority.InvalidateValidated(
+            context.FileSystem,
+            publicationLease);
+    }
+
+    [Fact]
+    public async Task CommonPlan_PublicValidationPublishesBeforeWaitingNormalizerContinues()
+    {
+        var armed = false;
+        var paused = 0;
+        var validationReadEntered = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseValidation = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var normalizationContended = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalReadOpenAsync = async path =>
+            {
+                if (!armed ||
+                    !string.Equals(
+                        path,
+                        ResourceMaterializationContract.CommandPath,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    Interlocked.Exchange(ref paused, 1) != 0)
+                {
+                    return;
+                }
+
+                validationReadEntered.TrySetResult(true);
+                await releaseValidation.Task;
+            },
+            CanonicalWriteLockContendedAsync = () =>
+            {
+                normalizationContended.TrySetResult(true);
+                return Task.CompletedTask;
+            }
+        };
+        await using var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
+        await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.CommandPath,
+            ResourceMaterializationValidationTests.DefinitionCreationCommand().ToJsonString());
+        armed = true;
+
+        var validationTask = context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Task<AcceptedMechanicsPlan?>? normalizationTask = null;
+        try
+        {
+            await validationReadEntered.Task.WaitAsync(TimeSpan.FromSeconds(30));
+            normalizationTask = context.Normalizer
+                .NormalizeAcceptedMechanicsAsync(backups: null);
+            await normalizationContended.Task.WaitAsync(TimeSpan.FromSeconds(30));
+            Assert.False(normalizationTask.IsCompleted);
+        }
+        finally
+        {
+            releaseValidation.TrySetResult(true);
+        }
+
+        var issues = await validationTask.WaitAsync(TimeSpan.FromSeconds(30));
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.NotNull(normalizationTask);
+        var plan = await normalizationTask.WaitAsync(TimeSpan.FromSeconds(30));
+
+        Assert.NotNull(plan);
+        Assert.Null(await context.ReadJsonAsync(ResourceMaterializationContract.CommandPath));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+            context.FileSystem));
+    }
+
+    [Fact]
+    public async Task CommonPlan_PublicValidationPublishesForNormalizerUsingSameCanonicalRoot()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.CommandPath,
+            ResourceMaterializationValidationTests.DefinitionCreationCommand().ToJsonString());
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+
+        var secondFileSystem = new FileSystemManager(
+            context.RootPath,
+            NullLogger<FileSystemManager>.Instance);
+        var secondNormalizer = new CanonicalStateNormalizer(
+            secondFileSystem,
+            NullLogger<CanonicalStateNormalizer>.Instance);
+        await using var writeLease =
+            await secondFileSystem.AcquireCanonicalWriteLeaseAsync();
+        var plan = await secondNormalizer.BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups: null);
+
+        Assert.NotNull(plan);
+        Assert.False(secondFileSystem.FileExists(ResourceMaterializationContract.CommandPath));
+    }
+
+    [Fact]
+    public async Task CommonPlan_PublicationSurvivesPublisherCollectionWhileConsumerRootLives()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.CommandPath,
+            ResourceMaterializationValidationTests.DefinitionCreationCommand().ToJsonString());
+
+        var (publisherReference, expectedPlan) = PublishCommonPlanFromEphemeralManager(
+            context.RootPath);
+        ForceFullCollection(publisherReference);
+        Assert.False(publisherReference.TryGetTarget(out _));
+
+        var published = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem);
+        Assert.NotNull(published);
+        Assert.Same(expectedPlan, published!.Result.Plan);
+
+        await using var writeLease =
+            await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var normalizedPlan = await context.Normalizer.BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups: null);
+
+        Assert.Same(expectedPlan, normalizedPlan);
+        Assert.False(context.FileSystem.FileExists(
+            ResourceMaterializationContract.CommandPath));
+        GC.KeepAlive(context.FileSystem);
+    }
+
+    [Fact]
+    public async Task CommonPlan_SessionGenerationRotationDropsAllRootScopedHandoffs()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.CommandPath,
+            ResourceMaterializationValidationTests.DefinitionCreationCommand().ToJsonString());
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
+
+        await using (var effectLease =
+                     await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+        {
+            SeedIndependentValidatedEffectCache(
+                context.FileSystem,
+                effectLease,
+                CreateIndependentEffectInput());
+        }
+        var emptyItemCatalog = MortalItemCarrierCatalog.Build(
+            new MortalItemCarrierCatalogInput(
+                PlayerInventory: null,
+                NpcCore: null,
+                NpcInventoryCommands: null,
+                CurrentLocation: null,
+                Vehicles: null,
+                CompanionRoots:
+                    new Dictionary<string, JsonObject>(StringComparer.Ordinal)));
+        Assert.Empty(emptyItemCatalog.Issues);
+        await AcceptedMechanicsAuthorityTestProbe.RegisterItemsAsync(
+            context.FileSystem,
+            "session_root_authority_rotation",
+            "snapshot_root_authority_rotation",
+            emptyItemCatalog,
+            Array.Empty<string>());
+        Assert.NotNull(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+            context.FileSystem));
+        Assert.True(await AcceptedMechanicsAuthorityTestProbe.HasItemsAsync(
+            context.FileSystem));
+
+        _ = await SessionReplacementTestHarness.RotateGenerationAsync(
+            context.FileSystem);
+        var secondFileSystem = new FileSystemManager(
+            context.RootPath,
+            NullLogger<FileSystemManager>.Instance);
+
+        Assert.Same(
+            context.FileSystem.CanonicalRootAuthorityIdentity,
+            secondFileSystem.CanonicalRootAuthorityIdentity);
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            secondFileSystem));
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+            secondFileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasItemsAsync(
+            secondFileSystem));
+    }
+
+    [Fact]
+    public async Task CommonPlan_FailedLoadGenerationAbaDropsPublishedHandoffs()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.CommandPath,
+            ResourceMaterializationValidationTests.DefinitionCreationCommand().ToJsonString());
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
+
+        string initialGeneration;
+        await using (var readLease =
+                     await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+        {
+            initialGeneration = context.FileSystem.GetOrCreateSessionGeneration(
+                readLease);
+        }
+
+        await using (var lifecycleLease =
+                     await context.FileSystem.AcquireSessionLifecycleLeaseAsync())
+        await using (var replacementLease =
+                     await context.FileSystem.AcquireSessionReplacementWriteLeaseAsync(
+                         lifecycleLease))
+        {
+            var transactionId = Guid.NewGuid().ToString("N");
+            var replacementGeneration = context.FileSystem.BeginLoadTransaction(
+                replacementLease,
+                transactionId);
+            context.FileSystem.ActivateLoadTransactionSession(
+                replacementLease,
+                transactionId);
+            Assert.True(context.FileSystem.IsCurrentSessionGeneration(
+                replacementLease,
+                replacementGeneration));
+
+            context.FileSystem.RecoverInterruptedLoadTransaction(replacementLease);
+            Assert.True(context.FileSystem.IsCurrentSessionGeneration(
+                replacementLease,
+                initialGeneration));
+        }
+
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
+    }
+
+    [Fact]
+    public async Task CommonPlan_DifferentCanonicalRootCannotObservePublishedHandoff()
+    {
+        await using var publisher = await ResourceMaterializationTestContext.CreateAsync();
+        await using var isolatedConsumer = await ResourceMaterializationTestContext.CreateAsync();
+        await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(publisher);
+        await publisher.CaptureValidatedPendingSnapshotAsync();
+        await publisher.WriteExactJsonAsync(
+            ResourceMaterializationContract.CommandPath,
+            ResourceMaterializationValidationTests.DefinitionCreationCommand().ToJsonString());
+
+        var issues = await publisher.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.NotSame(
+            publisher.FileSystem.CanonicalRootAuthorityIdentity,
+            isolatedConsumer.FileSystem.CanonicalRootAuthorityIdentity);
+        Assert.True(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            publisher.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            isolatedConsumer.FileSystem));
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+            isolatedConsumer.FileSystem));
+    }
+
+    [Fact]
+    public async Task AcceptedTurnAuthority_CaseVariantRootsRemainIsolatedOnCaseSensitiveFileSystem()
+    {
+        if (OperatingSystem.IsWindows())
+            return;
+
+        var parentRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-authority-root-case-" + Guid.NewGuid().ToString("N"));
+        var firstRoot = Path.Combine(parentRoot, "AuthorityRoot");
+        var secondRoot = Path.Combine(parentRoot, "authorityroot");
+        Directory.CreateDirectory(firstRoot);
+        try
+        {
+            if (Directory.Exists(secondRoot))
+                return;
+
+            Directory.CreateDirectory(secondRoot);
+            var firstFileSystem = new FileSystemManager(
+                firstRoot,
+                NullLogger<FileSystemManager>.Instance);
+            var secondFileSystem = new FileSystemManager(
+                secondRoot,
+                NullLogger<FileSystemManager>.Instance);
+            firstFileSystem.EnsureDirectoryStructure();
+            secondFileSystem.EnsureDirectoryStructure();
+
+            string sharedGeneration;
+            await using (var generationLease =
+                         await firstFileSystem.AcquireCanonicalWriteLeaseAsync())
+            {
+                sharedGeneration = firstFileSystem.GetOrCreateSessionGeneration(
+                    generationLease);
+            }
+            Directory.CreateDirectory(
+                Path.GetDirectoryName(secondFileSystem.SessionGenerationPath)!);
+            await File.WriteAllTextAsync(
+                secondFileSystem.SessionGenerationPath,
+                $$"""{"SchemaVersion":1,"GenerationId":"{{sharedGeneration}}"}""");
+
+            await using (var publicationLease =
+                         await firstFileSystem.AcquireCanonicalWriteLeaseAsync())
+            {
+                SeedIndependentValidatedEffectCache(
+                    firstFileSystem,
+                    publicationLease,
+                    CreateIndependentEffectInput());
+            }
+
+            Assert.NotSame(
+                firstFileSystem.CanonicalRootAuthorityIdentity,
+                secondFileSystem.CanonicalRootAuthorityIdentity);
+            Assert.NotNull(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+                firstFileSystem));
+            Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+                secondFileSystem));
+        }
+        finally
+        {
+            if (Directory.Exists(parentRoot))
+                Directory.Delete(parentRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task CommonPlan_PublicValidationWaitsForNormalizerAndRevalidatesFreshState()
+    {
+        var armed = false;
+        var paused = 0;
+        var normalizationMutationEntered = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseNormalization = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var validationContended = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationAsync = async _ =>
+            {
+                if (!armed || Interlocked.Exchange(ref paused, 1) != 0)
+                    return;
+
+                normalizationMutationEntered.TrySetResult(true);
+                await releaseNormalization.Task;
+            },
+            CanonicalWriteLockContendedAsync = () =>
+            {
+                validationContended.TrySetResult(true);
+                return Task.CompletedTask;
+            }
+        };
+        await using var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
+        await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.CommandPath,
+            ResourceMaterializationValidationTests.DefinitionCreationCommand().ToJsonString());
+        var initialIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(
+            initialIssues,
+            issue => issue.Severity == IssueSeverity.Error);
+        armed = true;
+
+        var normalizationTask = context.Normalizer
+            .NormalizeAcceptedMechanicsAsync(backups: null);
+        Task<IReadOnlyList<ValidationIssue>>? validationTask = null;
+        try
+        {
+            await normalizationMutationEntered.Task.WaitAsync(TimeSpan.FromSeconds(30));
+            validationTask = context.Validator
+                .ValidateAcceptedTurnRawResourceMaterializationAsync();
+            await validationContended.Task.WaitAsync(TimeSpan.FromSeconds(30));
+            Assert.False(validationTask.IsCompleted);
+        }
+        finally
+        {
+            releaseNormalization.TrySetResult(true);
+        }
+
+        var plan = await normalizationTask.WaitAsync(TimeSpan.FromSeconds(30));
+        Assert.NotNull(validationTask);
+        _ = await validationTask.WaitAsync(TimeSpan.FromSeconds(30));
+
+        Assert.NotNull(plan);
+        Assert.Null(await context.ReadJsonAsync(ResourceMaterializationContract.CommandPath));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+            context.FileSystem));
     }
 
     [Fact]
@@ -212,11 +896,17 @@ public sealed class CanonicalStateNormalizerResourceTests
         };
         await using var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
         await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
+        await SeedEmptyMortalItemIdentityAsync(context.FileSystem);
         await context.CaptureValidatedPendingSnapshotAsync();
         await context.WriteExactJsonAsync(
             ResourceMaterializationTestContext.CommandsPath,
             ResourceMaterializationValidationTests.DefinitionAndInitializationCommand()
                 .ToJsonString());
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
@@ -239,6 +929,7 @@ public sealed class CanonicalStateNormalizerResourceTests
     public async Task EffectOnlyTurn_PublishesThroughOneAcceptedMechanicsPlan()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await SeedEmptyMortalItemIdentityAsync(context.FileSystem);
         await context.SeedPlayerWoundSourceAsync();
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
@@ -247,6 +938,11 @@ public sealed class CanonicalStateNormalizerResourceTests
             EffectMaterializationTestFixture.CreateCommandRoot(
                 EffectMaterializationTestFixture.CreateApplyCommand()));
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
@@ -262,13 +958,16 @@ public sealed class CanonicalStateNormalizerResourceTests
         Assert.Single(player["activeEffects"]!.AsArray());
         Assert.Null(await context.ReadJsonAsync(
             EffectMaterializationTestContext.CommandPath));
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            context.FileSystem,
+            writeLease));
     }
 
     [Fact]
     public async Task EffectOnlyTurn_EffectPreflightFailureInvalidatesCommonHandoff()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await SeedEmptyMortalItemIdentityAsync(context.FileSystem);
         await context.SeedPlayerWoundSourceAsync();
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
@@ -277,10 +976,16 @@ public sealed class CanonicalStateNormalizerResourceTests
             EffectMaterializationTestFixture.CreateCommandRoot(
                 EffectMaterializationTestFixture.CreateApplyCommand()));
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.True(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
 
         var changedDefinition = EffectMaterializationTestFixture.CreateDefinition();
         changedDefinition["display"]!["name"] = "Подменённый источник";
@@ -291,7 +996,9 @@ public sealed class CanonicalStateNormalizerResourceTests
             .BindTo(writeLease)
             .NormalizeAcceptedMechanicsAsync(backups));
 
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            context.FileSystem,
+            writeLease));
     }
 
     private static async Task ApplyLateMutationAsync(
@@ -334,6 +1041,111 @@ public sealed class CanonicalStateNormalizerResourceTests
         await context.WriteJsonAsync(
             path,
             new JsonObject { ["_lateMutation"] = authorityKind });
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static (WeakReference<FileSystemManager> Publisher, AcceptedMechanicsPlan Plan)
+        PublishCommonPlanFromEphemeralManager(string rootPath)
+    {
+        var publisher = new FileSystemManager(
+            rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        var validator = new ValidationService(
+            publisher,
+            NullLogger<ValidationService>.Instance);
+
+        var issues = validator.ValidateAcceptedTurnRawResourceMaterializationAsync()
+            .GetAwaiter()
+            .GetResult();
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        var handoff = AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(publisher)
+            .GetAwaiter()
+            .GetResult();
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(
+            Assert.IsType<AcceptedMechanicsAuthorityTestProbe.CommonHandoff>(handoff)
+                .Result.Plan);
+        return (new WeakReference<FileSystemManager>(publisher), plan);
+    }
+
+    private static void ForceFullCollection(WeakReference<FileSystemManager> reference)
+    {
+        for (var attempt = 0; attempt < 10; attempt++)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            if (!reference.TryGetTarget(out _))
+                return;
+        }
+    }
+
+    private static EffectAcceptedTurnInput CreateIndependentEffectInput()
+    {
+        var source = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+            new[]
+            {
+                new EffectSourceExport(
+                    "mortal_world",
+                    "wound",
+                    "wound_test_torn_side",
+                    new JsonArray(EffectMaterializationTestFixture.CreateDefinition()),
+                    Materializable: true,
+                    Active: true,
+                    SameTurn: false)
+            },
+            Array.Empty<EffectSourceExport>(),
+            new HashSet<string>(StringComparer.Ordinal)));
+        var target = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
+            new[]
+            {
+                new EffectTargetExport(
+                    "mortal_world",
+                    "player",
+                    "player_current",
+                    SameTurn: false)
+            },
+            Array.Empty<EffectTargetExport>(),
+            new HashSet<string>(StringComparer.Ordinal),
+            null));
+        return new EffectAcceptedTurnInput(
+            "session_independent_effect_cache",
+            "snapshot_independent_effect_cache",
+            EffectMaterializationTestFixture.CreateCommandRoot(
+                EffectMaterializationTestFixture.CreateApplyCommand()),
+            source,
+            target,
+            new JsonObject
+            {
+                ["turn"] = 42,
+                ["events"] = new JsonArray(new JsonObject
+                {
+                    ["kind"] = "accepted_turn",
+                    ["authorityId"] = "turn_42",
+                    ["eventRef"] = "turn_42:wound_opened"
+                })
+            });
+    }
+
+    private static void SeedIndependentValidatedEffectCache(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        EffectAcceptedTurnInput input)
+    {
+        var validated = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
+            fileSystem,
+            writeLease,
+            input);
+        Assert.True(
+            validated.Success,
+            string.Join(
+                Environment.NewLine,
+                validated.Issues.Select(issue =>
+                    $"{issue.Code}: {issue.FilePath} expected={issue.Expected} actual={issue.Actual}")));
+        Assert.IsType<EffectAcceptedTurnPlan>(validated.Plan);
+        Assert.True(EffectAcceptedTurnPlanAuthority.TryPeekValidated(
+            fileSystem,
+            writeLease,
+            out _));
     }
 
     private static JsonObject? FindFirstObjectWithProperty(JsonNode? node, string propertyName)
@@ -380,6 +1192,20 @@ public sealed class CanonicalStateNormalizerResourceTests
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject { ["NPCsInScene"] = new JsonArray() });
+
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            bootstrap.Definitions,
+            context.FileSystem.ReadFileAsync,
+            bootstrap.State,
+            bootstrap.History,
+            CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap);
+        Assert.True(
+            authority.IsValid &&
+            !string.IsNullOrWhiteSpace(authority.CanonicalAuthorityJson),
+            string.Join(Environment.NewLine, authority.Issues));
+        await context.WriteJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            JsonNode.Parse(authority.CanonicalAuthorityJson!)!);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 41);
 
         var npc = EffectMaterializationTestFixture.CreateSameTurnMortalActor(npcId);
@@ -406,5 +1232,13 @@ public sealed class CanonicalStateNormalizerResourceTests
         await using var writeLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
         Assert.NotNull(await context.Normalizer.BindTo(writeLease)
             .NormalizeAcceptedMechanicsAsync(backups: null));
+    }
+
+    private static Task SeedEmptyMortalItemIdentityAsync(FileSystemManager fileSystem)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        return fileSystem.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
     }
 }

@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
@@ -15,18 +14,93 @@ internal sealed record MortalItemAcceptedTurnOwner(
     JsonObject Item,
     bool SameTurn);
 
+internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
+{
+    private readonly Dictionary<string, string> _itemIdsByCreationRef;
+
+    internal MortalItemAcceptedTurnNormalizationSnapshot(
+        string sessionId,
+        string snapshotToken,
+        int turn,
+        IReadOnlyDictionary<string, string> itemIdsByCreationRef)
+    {
+        if (!ResourceMaterializationContract.IsExactIdentifier(sessionId))
+            throw new ArgumentException("Expected an exact accepted-turn session ID.", nameof(sessionId));
+        if (!ResourceMaterializationContract.IsExactIdentifier(snapshotToken))
+            throw new ArgumentException("Expected an exact accepted-turn snapshot token.", nameof(snapshotToken));
+        if (turn <= 0)
+            throw new ArgumentOutOfRangeException(nameof(turn));
+        ArgumentNullException.ThrowIfNull(itemIdsByCreationRef);
+
+        SessionId = sessionId;
+        SnapshotToken = snapshotToken;
+        Turn = turn;
+        _itemIdsByCreationRef = itemIdsByCreationRef.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value,
+            StringComparer.Ordinal);
+    }
+
+    internal string SessionId { get; }
+
+    internal string SnapshotToken { get; }
+
+    internal int Turn { get; }
+
+    internal bool TryGetAllocatedItemId(string creationRef, out string itemId) =>
+        _itemIdsByCreationRef.TryGetValue(creationRef, out itemId!);
+
+    internal bool MatchesAcceptedOwnerAuthority(ResourceOwnerAuthority ownerAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(ownerAuthority);
+        var planned = ownerAuthority.Entries.Values
+            .Where(static entry =>
+                entry.Key.OwnerKind == ResourceOwnerKind.Item &&
+                string.Equals(entry.Key.Realm, "mortal_world", StringComparison.Ordinal) &&
+                entry.SameTurn &&
+                entry.SameTurnRef != null)
+            .ToArray();
+        if (planned.Length != _itemIdsByCreationRef.Count)
+            return false;
+
+        foreach (var entry in planned)
+        {
+            if (!_itemIdsByCreationRef.TryGetValue(entry.SameTurnRef!, out var itemId) ||
+                !string.Equals(
+                    itemId,
+                    entry.Key.ResourceOwnerId,
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
 internal static class MortalItemAcceptedTurnAuthority
 {
-    private static readonly ConditionalWeakTable<FileSystemManager, Cache> Caches = new();
+    internal static bool HasValidatedItems(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        return AcceptedTurnAuthorityRegistry.HasMortalItemsValidated(
+            fs,
+            writeLease);
+    }
 
     internal static void RegisterValidatedItems(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
         string snapshotToken,
         MortalItemCarrierCatalog catalog,
         IEnumerable<string> knownItemIds)
     {
         ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
         ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
         ArgumentNullException.ThrowIfNull(catalog);
@@ -65,7 +139,9 @@ internal static class MortalItemAcceptedTurnAuthority
             newCandidates,
             stableCandidates,
             governedItemIds);
-        Caches.GetValue(fs, static _ => new Cache()).Register(
+        AcceptedTurnAuthorityRegistry.RegisterMortalItemsValidated(
+            fs,
+            writeLease,
             sessionId,
             snapshotToken,
             fingerprint,
@@ -76,53 +152,98 @@ internal static class MortalItemAcceptedTurnAuthority
 
     internal static IReadOnlyList<EffectSourceExport> GetValidatedEffectSources(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
         string snapshotToken) =>
-        Caches.TryGetValue(fs, out var cache)
-            ? cache.GetSources(sessionId, snapshotToken)
-            : Array.Empty<EffectSourceExport>();
+        AcceptedTurnAuthorityRegistry.GetMortalItemEffectSources(
+            fs,
+            writeLease,
+            sessionId,
+            snapshotToken);
 
-    internal static void InvalidateValidatedItems(FileSystemManager fs)
+    internal static void InvalidateValidatedItems(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         ArgumentNullException.ThrowIfNull(fs);
-        Caches.GetValue(fs, static _ => new Cache()).InvalidateValidated();
+        ArgumentNullException.ThrowIfNull(writeLease);
+        AcceptedTurnAuthorityRegistry.InvalidateMortalItemsValidated(
+            fs,
+            writeLease);
     }
 
     internal static IReadOnlySet<EffectSourceOwnerKey> GetReplacedEffectSourceOwners(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
         string snapshotToken) =>
-        Caches.TryGetValue(fs, out var cache)
-            ? cache.GetReplacedSourceOwners(sessionId, snapshotToken)
-            : new HashSet<EffectSourceOwnerKey>();
+        AcceptedTurnAuthorityRegistry.GetMortalItemReplacedSourceOwners(
+            fs,
+            writeLease,
+            sessionId,
+            snapshotToken);
 
     internal static bool TryGetAllocatedItemId(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
         string snapshotToken,
         string creationRef,
         out string itemId)
     {
         itemId = string.Empty;
-        return Caches.TryGetValue(fs, out var cache) &&
-               cache.TryGetItemId(sessionId, snapshotToken, creationRef, out itemId);
+        return AcceptedTurnAuthorityRegistry.TryGetMortalItemId(
+            fs,
+            writeLease,
+            sessionId,
+            snapshotToken,
+            creationRef,
+            out itemId);
+    }
+
+    internal static bool TryCaptureNormalizationSnapshot(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string sessionId,
+        string snapshotToken,
+        int turn,
+        out MortalItemAcceptedTurnNormalizationSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
+        snapshot = null!;
+        return AcceptedTurnAuthorityRegistry.TryCaptureMortalItemNormalizationSnapshot(
+            fs,
+            writeLease,
+            sessionId,
+            snapshotToken,
+            turn,
+            out snapshot);
     }
 
     internal static IReadOnlyList<MortalItemAcceptedTurnOwner> GetValidatedOwners(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
         string snapshotToken) =>
-        Caches.TryGetValue(fs, out var cache)
-            ? cache.GetOwners(sessionId, snapshotToken)
-            : Array.Empty<MortalItemAcceptedTurnOwner>();
+        AcceptedTurnAuthorityRegistry.GetMortalItemOwners(
+            fs,
+            writeLease,
+            sessionId,
+            snapshotToken);
 
     internal static IReadOnlySet<string> GetMissingGovernedItemIds(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
         string snapshotToken) =>
-        Caches.TryGetValue(fs, out var cache)
-            ? cache.GetMissingGovernedItemIds(sessionId, snapshotToken)
-            : new HashSet<string>(StringComparer.Ordinal);
+        AcceptedTurnAuthorityRegistry.GetMissingGovernedMortalItemIds(
+            fs,
+            writeLease,
+            sessionId,
+            snapshotToken);
 
     private static string CreateFingerprint(
         IEnumerable<NewCandidate> newCandidates,
@@ -207,7 +328,7 @@ internal static class MortalItemAcceptedTurnAuthority
         return predicates;
     }
 
-    private sealed class Cache
+    internal sealed class Cache
     {
         private readonly object _gate = new();
         private string? _sessionId;
@@ -219,6 +340,15 @@ internal static class MortalItemAcceptedTurnAuthority
         private HashSet<EffectSourceOwnerKey> _replacedSourceOwners = new();
         private MortalItemAcceptedTurnOwner[] _owners = Array.Empty<MortalItemAcceptedTurnOwner>();
         private HashSet<string> _missingGovernedItemIds = new(StringComparer.Ordinal);
+
+        internal bool HasValidated
+        {
+            get
+            {
+                lock (_gate)
+                    return _validated;
+            }
+        }
 
         internal void Register(
             string sessionId,
@@ -366,6 +496,29 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
+        internal bool TryCaptureNormalizationSnapshot(
+            string sessionId,
+            string snapshotToken,
+            int turn,
+            out MortalItemAcceptedTurnNormalizationSnapshot snapshot)
+        {
+            lock (_gate)
+            {
+                if (Matches(sessionId, snapshotToken))
+                {
+                    snapshot = new MortalItemAcceptedTurnNormalizationSnapshot(
+                        sessionId,
+                        snapshotToken,
+                        turn,
+                        _itemIdsByCreationRef);
+                    return true;
+                }
+
+                snapshot = null!;
+                return false;
+            }
+        }
+
         internal IReadOnlySet<EffectSourceOwnerKey> GetReplacedSourceOwners(
             string sessionId,
             string snapshotToken)
@@ -412,7 +565,7 @@ internal static class MortalItemAcceptedTurnAuthority
             string.Equals(_snapshotToken, snapshotToken, StringComparison.Ordinal);
     }
 
-    private sealed record NewCandidate(
+    internal sealed record NewCandidate(
         string CreationRef,
         JsonObject Item,
         string FilePath,
@@ -421,7 +574,7 @@ internal static class MortalItemAcceptedTurnAuthority
         bool EffectEligible,
         bool Equipped);
 
-    private sealed record StableCandidate(
+    internal sealed record StableCandidate(
         string ItemId,
         JsonObject Item,
         string FilePath,

@@ -33,6 +33,13 @@ result artifacts, and failure diagnosis.
 - Never mix fast-project and integration-project test classes in one
   `Focused` filter. Run one bounded command per selected project so a
   successful result proves that every requested test was discoverable.
+- Lane durations are protective defaults, not immutable targets. If a measured,
+  coherent Focused selection or supported diagnostic lane has legitimately
+  grown beyond its default, use an explicit bounded `-TimeoutMinutes` override
+  within the runner's allowed ceiling and record the reason/evidence. Do not
+  narrow relevant coverage or spend time on cosmetic micro-optimizations solely
+  to beat an obsolete limit; do not use an override to excuse an unreviewed
+  broad run or suspected hang.
 - Immediately before merge, run one `PreMerge` control. Do not add duplicate
   Fast runs immediately before it because PreMerge already includes the full
   fast project.

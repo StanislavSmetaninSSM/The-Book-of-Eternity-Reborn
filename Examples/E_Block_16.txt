@@ -97,7 +97,7 @@
                             - Максимальное здоровье Гоблина: 91%.
                             - Процент нанесенного урона: (68 / 91) * 100 ≈ 74.7%.
                             - Проверка: 74.7% > Порог 2 (45%). Применяется значительный дебафф.
-                            - Дебафф: {effectType: "Debuff", value: "-20%", targetType: "damage (all)", duration: 2, sourceSkill: "Critical Hit Trauma", description: "Тяжело ранен! Весь наносимый урон снижен на 20% на 2 хода."}
+                            - Эффект: request effectChanges[].apply from combat_action/action_critical_hit_trauma/critical-hit-trauma against the exact goblin target and accepted eventRef. Its complete source definition owns the characteristic_modifier magnitude and turns lifetime; the client publishes the carrier and accepted contribution.
 
                             Итоговая интерпретация: Критический успех атаки игрока наносит 68% урона и накладывает на гоблина дебафф "Тяжело ранен". Здоровье гоблина: 91% - 68% = 23%.
                             Энергия игрока: -5 (стандартная атака).
@@ -156,7 +156,7 @@
     <logoutput target="gm_thoughts_markdown">
      <![CDATA[
                             Действие врага: Гоблин-копейщик использует "Удар копьем" против Валериуса.
-                            - Дебафф Гоблина: {effectType: "Debuff", value: "-20%", targetType: "damage (all)", duration: 2}
+                            - Принятый эффект Гоблина: use the client-published accepted mechanics contribution from critical-hit-trauma for this attack; do not rescan or resend raw effect fields or remaining lifetime.
 
                             # Раздел 15.2: Разрешение действия Обычного Врага
                             #15.2.1: Выбор действия и цели
@@ -228,7 +228,7 @@
                        Client resource projection: durability 70/100; ammunition 50/50.
                       )
                     - Ammunition is the rifle's exact common resource coordinate, not a mutable item-count mirror.
-                    - Relevant Passive Skill: "Gun Nut" (+5% damage with rifles) -> combatEffect: {effects: [{effectType:"Buff", value:"5%", targetType:"damage (piercing)", description:"Passive +5% piercing damage with rifles."}]}
+                    - Relevant Passive Skill: "Gun Nut" contributes its validated +5% rifle-damage structured bonus. It is not a runtime active effect and does not publish a second effect carrier.
                     - Client health projection: 100/160 points
                     - Client energy projection: 100/130 points
 
@@ -286,13 +286,13 @@
                             - DamageAfterCrit (FinalCritMultiplier ModLuck15=1.51) = 32% * 1.51 = 48.32% -> 48%
                             - TargetResist (Bruiser, piercing): 0% (has bludgeoning resist)
                             - FinalDamageToTarget = 48%. Bruiser health: 128% - 48% = 80%.
-                            - Massive Dmg Check: (48/128)*100~=37.5% > Threshold 1 (25%). GM applies Minor Debuff: "Staggered (-10% speed for 1 turn)".
+                            - Massive Dmg Check: (48/128)*100~=37.5% > Threshold 1 (25%). Request the exact registered critical-trauma Staggered definition through effectChanges[]; its source policy owns magnitude and lifetime.
 
                             Shot 2 (vs Mutant Bruiser): (Roll to hit again - assume for burst, subsequent shots hit if first does, or make separate checks with penalty)
                             GM Decision: For multi-shot weapons, if the initial attack roll is a success, subsequent shots in the same burst automatically hit the same target unless specific rules for spread/recoil apply. Critical success on attack roll makes all shots in burst critical.
                             - DamageAfterCrit = 48%. FinalDamageToTarget = 48%.
                             - Bruiser health: 80% - 48% = 32%.
-                            - Massive Dmg Check: (48/128)*100~=37.5% > Threshold 1. Debuff is already active.
+                            - Massive Dmg Check: (48/128)*100~=37.5% > Threshold 1. Do not author another carrier entry; the source-owned stacking policy resolves any repeated accepted application.
 
                             Shot 3 (vs Mutant Bruiser):
                             - DamageAfterCrit = 48%. FinalDamageToTarget = 48%.
@@ -354,6 +354,18 @@
                                 ]
                                 ]]>
      </resourceChanges>
+     <effectChanges>
+      <![CDATA[
+                                [{
+                                  "operation": "apply",
+                                  "target": { "kind": "combatant", "targetId": "combatant_mutant_bruiser_001" },
+                                  "source": { "kind": "combat_action", "sourceId": "action_critical_hit_trauma", "definitionKey": "critical-hit-trauma" },
+                                  "parameters": {},
+                                  "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                  "reason": "The exact critical-trauma definition applies Staggered after the threshold crossing."
+                                }]
+                                ]]>
+     </effectChanges>
      <statsincreased>
       ["dexterity"]
      </statsincreased>
@@ -371,7 +383,7 @@
                     Player ("Anya", PC, Level 8, Mage)
                     - Modified Intelligence: 45. Active Skill "Frost Shard" (base 20% cold damage, scalesValue, targetPriority: current_target)
                     Generic Ally ("Town Guard", Moderate, EL=7, client health projection 114/114)
-                    - Actions: "Spear Jab" (CombatActionObject, base 8% piercing), "Guard Stance" (Self-buff +10% all resist)
+                    - Actions: "Spear Jab" (CombatActionObject, base 8% piercing), "Guard Stance" (source-owned resistance_modifier definition requested through effectChanges[] when used)
                     Generic Enemy ("Wild Boar", Weak, EL=6, client health projection 87/87, Resist: slashing 5%)
                     Dices: [10, 15, 5, 12, 18, 9]
                     Anya Crit Threshold: 20 (StdLuck assumed 10)
@@ -464,7 +476,7 @@
                             #15.2.1: Action: "Spear Jab" (base 8% piercing), Target: Wild Boar.
                             #15.2.2.1.a: EAV_Attacker (Guard Moderate EL7, Jab 8%):
                                 EL_attacker=7, PrimaryDamage%=8, TypeMod(Moderate)=4. EAV=round((7/2)+(8/2)+4)=round(3.5+4+4)=12.
-                            #15.2.2.1.b: Target's Defensive Check (Boar, Weak, has 'Chilled' debuff -> Disadvantage on Dex checks if dodge).
+                            #15.2.2.1.b: Target's Defensive Check. The client-published accepted mechanics snapshot contributes Disadvantage to the exact dodge operation from the Chilled source; the GM does not infer it from the condition name.
                             GM assumes Boar attempts to endure (no active dodge). Thus, for simplicity, we can compare EAV vs Boar's base defense or resolve as Full Success for Guard.
                             GM Decision: Guard's attack is considered 'Full Success' against the chilled boar.
                             #15.2.2.1.c: Guard's ActionSuccessLevel = 'Full Success'.

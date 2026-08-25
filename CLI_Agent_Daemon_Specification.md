@@ -32,7 +32,7 @@
 
 ## Архитектура
 
-**Unified afterlife resource authority:** `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` are client-owned entries in `game_state/resources/resource_state.json`, with immutable transitions in `game_state/resources/resource_history.json` and exact `resourceOwnerBindings`. Read projected values from the request; do not author `actionEconomy`, per-return numeric gacha counters, or numeric blessing mirrors. `actionEconomy` is forbidden as persisted state. Ink Feathers, Light Sparks, progression, relationships, faction accounting, and spiritual power/strain/shield remain specialized. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; boolean entitlements stay typed fields. No migration or fallback exists.
+**Unified afterlife resource authority:** `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` are client-owned entries in `game_state/resources/resource_state.json`, with immutable transitions in `game_state/resources/resource_history.json`, exact `resourceOwnerBindings`, and client-owned `game_state/resources/resource_owner_authority.json`. Definitions/state/history/owner-authority are one guarded quartet and are never GM-authored. Missing/stale authority outside Fresh New Game bootstrap fails closed without migration or self-heal; Mortal-incarnation bootstrap requires the exact existing quartet. Read projected values from the request; do not author `actionEconomy`, per-return numeric gacha counters, or numeric blessing mirrors. `actionEconomy` is forbidden as persisted state. Ink Feathers, Light Sparks, progression, relationships, faction accounting, and spiritual power/strain/shield remain specialized. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; boolean entitlements stay typed fields. No migration or fallback exists.
 
 ```
 C# Клиент → записывает turn_request.json → Скрипт-активатор обнаруживает файл →
@@ -94,12 +94,13 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 Если клиент отклонил уже записанный ход:
 - прочитай текущий `game_state/control/validation_repair_request.json`
-- для обычного bounded packet исправь только разрешённые packet-ом цели
-- для `mortal_location_materialization_repair` учти, что validated pre-turn
-  baseline уже восстановлен: выполни full-turn resubmission всего связного
-  response package, а не in-place patch canonical-файла
+- если root `fullTurnResubmissionRequired=false`, исправь in place только разрешённые packet-ом GM-owned цели
+- если root `fullTurnResubmissionRequired=true`, включая `mortal_location_materialization_repair`, `effect_materialization_repair` и `resource_semantic_omission_repair`, validated pre-turn baseline уже восстановлен: выполни full-turn resubmission всего связного response package, а не in-place patch
+- `requiredResubmissionPaths` содержит точный список изменённых GM-authored command/output surfaces. Client-owned `system_mods.json`, `progression_schedule.json`, ресурсный definitions/state/history/owner-authority quartet, `pending_effect_resolutions.json` и `effect_identity_index.json` клиент восстанавливает/публикует сам; GM не пишет их и не добавляет в список
 - не создавай новый `turn_request.json`
 - создай новый `game_state/control/validation_repair_ready.json` с точными metadata из текущего repair request
+
+Для bounded effect/resource pending waves действует один последовательный протокол: Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned; receipt может сообщить только разрешённый result/reason и не может реконструировать, переназначать, объединять или менять authority.
 
 ---
 
@@ -263,6 +264,15 @@ in-place canonical patch, stale output и formatting-only rewrite недопус
   - QTE-offer turn не должен одновременно закрывать ту же ситуацию обычными state changes: не меняй `game_state/`, `lore/` или `stories/` для этой сцены
   - можно писать narrative/interface/debug outputs, но `qte_offer.json` обязан содержать `qteId`, `title`, `offerText`, `introNarrative`, `startChapterId`, `chapters[]` и `terminalOutcomes[]`
   - если игрок примет QTE, сцену и её `responseFragment` применит клиент локально; не планируй отдельный follow-up GM turn для механической награды QTE
+  - bounded penalty разрешён только в `terminalOutcomes[].responseFragment.resourceChanges[]`: `damage`, exact `player/player_current`, существующий active resource, positive exact amount, `source.kind=narrative_outcome`, non-empty reason и `eventRef=turn_{sourceTurn}:qte_terminal:{one-based outcome ordinal}:resource:{one-based command ordinal}`; клиент валидирует все branches и применяет только выбранную через общий reducer/quartet с exact replay; definition/capacity commands, GM-authored `sourceId` и legacy `current*Change` aliases запрещены
+  - если выбранный terminal outcome доходит до bounded effect/resource component, клиент входит в `awaiting_receipt` и создаёт отдельный `input/qte_effect_resolution_request.json` с `requestKind=qte_deferred_effect_resolution`; это receipt-only task and not an ordinary turn
+  - daemon обрабатывает этот файл раньше обычного `input/turn_request.json`; читай только `safePacket` текущего request и отвечай только на current wave через закрытый `effectResolutionReceipts[]`
+  - не читай и не переиспользуй `input/turn_request.json`, не создавай pending-turn snapshot, не запускай story/progression/lifecycle, не увеличивай turn counter и не пиши game state, narrative или interface output
+  - собери receipts только в памяти и последним действием вызови `Complete-BoeQteEffectResolution -Receipts $receipts`; helper копирует exact correlation, пишет `output/qte_effect_resolution_receipts.json`, затем пишет `ready/qte_effect_resolution_complete.json` last; вручную эти transport-файлы не пиши
+  - Do not call `Complete-BoeValidationRepair`: dedicated QTE receipt task не переиспользует ordinary validation-repair request, helper, ready marker или full-turn resubmission loop
+  - после restart продолжай ту же sealed continuation и current wave; earlier-wave bindings и same preallocated identities остаются client-owned, а новая волна меняет только request/wave identity и pending fingerprint
+  - до финальной волны нет resource/effect after-image, QTE history, story, progression или turn counter publication; final wave publishes the complete selected QTE outcome atomically; stale/tampered/cross-session/cross-generation/mis-correlated transport fails closed
+  - полный контракт: `OtherGuides/Effect_Materialization_Contract.md`; two-wave restart example: `mortal_qte_deferred_effect_receipt_waves_v1` в `Examples/E_CLI_QTE_Offer.txt`
 
 Если forbidden key появился в промежуточном черновике ответа, он ДОЛЖЕН быть удалён до финальной записи файлов.
 
@@ -622,15 +632,14 @@ MATH ASSISTANT / МАТЕМАТИК:
 **При отклонении клиентом как contract violation после `turn_complete.json`:**
 - клиент создаёт `game_state/control/validation_repair_request.json`
 - daemon должен повторно пинговать GM, чтобы тот прочитал этот файл
-- для обычного bounded repair GM исправляет только перечисленные packet-ом
-  GM-owned цели; для `mortal_location_materialization_repair` client сначала
-  восстанавливает validated pre-turn baseline, а GM выполняет full-turn
-  resubmission всего coherent raw response package
+- при `fullTurnResubmissionRequired=false` GM исправляет in place только перечисленные packet-ом GM-owned цели
+- при `fullTurnResubmissionRequired=true`, включая `mortal_location_materialization_repair`, `effect_materialization_repair` и `resource_semantic_omission_repair`, client сначала восстанавливает validated pre-turn baseline, а GM выполняет full-turn resubmission всего coherent raw response package
+- `requiredResubmissionPaths` является точным replay-списком только изменённых GM-authored command/output surfaces; client-owned `system_mods.json`, `progression_schedule.json`, definitions/state/history/owner-authority resource quartet, `pending_effect_resolutions.json` и `effect_identity_index.json` туда не входят и GM их не пишет
 - после исправлений GM создаёт `game_state/control/validation_repair_ready.json`
 - клиент повторно валидирует состояние и либо принимает ход, либо обновляет repair request новым списком ошибок
 - если `validation_repair_ready.json` невалиден как JSON или содержит неправильные `sessionId/requestId/turnNumber`, клиент отклоняет ready-сигнал, переписывает `validation_repair_request.json`, и daemon должен пинговать GM повторно
 - repair loop использует те же metadata и не создаёт новый `turn_request.json`;
-  location full-turn resubmission повторно создаёт response package именно для
+  любой full-turn resubmission повторно создаёт response package именно для
   этого отклонённого хода
 - если `validation_repair_request.json.harnessRepairPackets[].kind` равен `accepted_turn_output_artifact_repair`, это узкий output-only repair уже принятого хода: GM должен читать compact template `game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md`, переписать только перечисленные player-facing output artifacts (`output/narrative_response.json`, `output/interface_updates.json`, `output/debug_logs.json`) и завершить через `Complete-BoeValidationRepair`; canonical `game_state/*` файлы нельзя трогать, если текущий repair request не перечисляет отдельные canonical errors
 - если один repair request перечисляет и canonical, и player-facing цели, GM сначала завершает все canonical-записи и только затем переписывает зависящие от них narrative/interface artifacts; клиент сохраняет original canonical target set на всех следующих output-only попытках, требует чтобы output был strictly newer каждой последней фактической записи retained target, считает equal timestamps stale, не использует request/dispatch/start как границу и при ненаблюдаемой записи блокирует принятие

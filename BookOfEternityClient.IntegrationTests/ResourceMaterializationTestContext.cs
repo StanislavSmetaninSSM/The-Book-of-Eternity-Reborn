@@ -11,6 +11,8 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
     internal const string DefinitionsPath = "game_state/resources/resource_definitions.json";
     internal const string StatePath = "game_state/resources/resource_state.json";
     internal const string HistoryPath = "game_state/resources/resource_history.json";
+    internal const string AuthorityPath =
+        "game_state/resources/resource_owner_authority.json";
     internal const string CommandsPath = "game_state/resources/resource_commands.json";
     internal const string FullPartyInteractionsPath =
         "game_state/misc/player_interactions.json";
@@ -20,6 +22,7 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         DefinitionsPath,
         StatePath,
         HistoryPath,
+        AuthorityPath,
         CommandsPath
     };
 

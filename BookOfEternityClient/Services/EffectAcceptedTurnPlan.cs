@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Collections.ObjectModel;
 using System.Text.Json.Nodes;
 
@@ -15,7 +16,8 @@ internal sealed record EffectAcceptedTurnInput(
     JsonObject? PreTurnIdentityIndex = null,
     EffectTargetAuthorityInput? TargetAuthorityInput = null,
     EffectCarrierCatalogInput? PublicationCarrierBaselines = null,
-    CombatantIdentityState? PreallocatedCombatantIdentities = null);
+    CombatantIdentityState? PreallocatedCombatantIdentities = null,
+    EffectCarrierCatalogInput? AcceptedCarrierBaselines = null);
 
 internal sealed class EffectAcceptedTurnPlan
 {
@@ -29,7 +31,14 @@ internal sealed class EffectAcceptedTurnPlan
     private readonly JsonObject _identityIndexAfterImage;
     private readonly JsonObject? _identityIndexBeforeImage;
     private readonly EffectSourceAuthorityEntry[] _sourceBindings;
+    private readonly Dictionary<EffectSourceKey, EffectSourceAuthorityEntry>
+        _sourceBindingsByKey;
+    private readonly FrozenDictionary<EffectSourceKey, EffectSourceRoutingBinding>
+        _routingSourceBindingsByKey;
     private readonly EffectCarrierCatalogInput _resourceTriggerCarriers;
+    private readonly EffectCarrierCatalogInput _acceptedCarrierBaselines;
+    private readonly Lazy<EffectAcceptedTurnPlanner.EffectResourceTriggerIndex>
+        _resourceTriggerIndex;
     private readonly JsonObject _eventInput;
 
     internal const string CommandPath = "game_state/effects/effect_commands.json";
@@ -61,7 +70,8 @@ internal sealed class EffectAcceptedTurnPlan
         JsonObject? identityIndexBeforeImage,
         JsonObject identityIndexAfterImage,
         IReadOnlyList<string> touchedPaths,
-        IReadOnlyList<string> deletedPaths)
+        IReadOnlyList<string> deletedPaths,
+        EffectCarrierCatalogInput? acceptedCarrierBaselines = null)
     {
         InputFingerprint = inputFingerprint;
         CarrierAuthorityFingerprint = carrierAuthorityFingerprint;
@@ -73,21 +83,18 @@ internal sealed class EffectAcceptedTurnPlan
         Sources = ReadOnly(sources);
         Targets = ReadOnly(targets);
         _sourceBindings = sourceBindings
-            .Select(static entry => entry with
-            {
-                Definition = entry.Definition.DeepClone().AsObject()
-            })
+            .Select(FreezeSourceBinding)
             .ToArray();
+        _sourceBindingsByKey = _sourceBindings.ToDictionary(
+            static entry => entry.Key);
+        _routingSourceBindingsByKey = _sourceBindings.ToFrozenDictionary(
+            static entry => entry.Key,
+            static entry => EffectSourceRoutingBinding.FromEntry(entry));
         _deferredReactions = deferredReactions
             .Select(CloneReaction)
             .ToArray();
-        if (reactionExpansionCount < _deferredReactions.Length)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(reactionExpansionCount),
-                reactionExpansionCount,
-                "Reaction expansion count cannot be smaller than the deferred subset.");
-        }
+        if (reactionExpansionCount < 0)
+            throw new ArgumentOutOfRangeException(nameof(reactionExpansionCount));
         ReactionExpansionCount = reactionExpansionCount;
         _reactionExpansionUsage = reactionExpansionUsage.ToDictionary(
             static pair => pair.Key,
@@ -104,8 +111,16 @@ internal sealed class EffectAcceptedTurnPlan
             .ToArray();
         _resourceTriggerCarriers = CloneCarriers(
             resourceTriggerCarriers ?? throw new ArgumentNullException(nameof(resourceTriggerCarriers)));
+        _acceptedCarrierBaselines = CloneCarriers(
+            acceptedCarrierBaselines ?? CreateCarriers(carrierBeforeImages));
         SourceAuthority = sourceAuthority ?? throw new ArgumentNullException(nameof(sourceAuthority));
         TargetAuthority = targetAuthority ?? throw new ArgumentNullException(nameof(targetAuthority));
+        _resourceTriggerIndex = new Lazy<
+            EffectAcceptedTurnPlanner.EffectResourceTriggerIndex>(
+                () => EffectAcceptedTurnPlanner.CreateResourceTriggerIndex(
+                    _resourceTriggerCarriers,
+                    TargetAuthority),
+                LazyThreadSafetyMode.ExecutionAndPublication);
         _eventInput = (eventInput ?? throw new ArgumentNullException(nameof(eventInput)))
             .DeepClone().AsObject();
         _carrierAfterImages = carrierAfterImages.ToDictionary(
@@ -142,14 +157,41 @@ internal sealed class EffectAcceptedTurnPlan
 
     internal IReadOnlyList<EffectSourceAuthorityEntry> SourceBindings =>
         new ReadOnlyCollection<EffectSourceAuthorityEntry>(
-            _sourceBindings.Select(static entry => entry with
-            {
-                Definition = entry.Definition.DeepClone().AsObject()
-            }).ToArray());
+            _sourceBindings.Select(CopySourceBinding).ToArray());
+
+    internal bool TryResolveSourceBinding(
+        EffectSourceKey key,
+        out EffectSourceAuthorityEntry? binding)
+    {
+        if (!_sourceBindingsByKey.TryGetValue(key, out var stored))
+        {
+            binding = null;
+            return false;
+        }
+
+        binding = CopySourceBinding(stored);
+        return true;
+    }
+
+    internal bool TryResolveRoutingSourceBinding(
+        EffectSourceKey key,
+        EffectAcceptedTurnPlanner.EffectResourceRoutingWorkMeter workMeter,
+        out EffectSourceRoutingBinding binding)
+    {
+        ArgumentNullException.ThrowIfNull(workMeter);
+        if (!_routingSourceBindingsByKey.TryGetValue(key, out binding))
+            return false;
+        workMeter.RecordSourceBindingBorrow();
+        return true;
+    }
 
     internal IReadOnlyList<EffectReactionExecution> DeferredReactions =>
         new ReadOnlyCollection<EffectReactionExecution>(
             _deferredReactions.Select(CloneReaction).ToArray());
+
+    internal IReadOnlyList<EffectReactionExecution> DeferredRoutingReactions =>
+        new ReadOnlyCollection<EffectReactionExecution>(
+            _deferredReactions.Select(CloneRoutingReaction).ToArray());
 
     internal int ReactionExpansionCount { get; }
 
@@ -169,6 +211,12 @@ internal sealed class EffectAcceptedTurnPlan
 
     internal EffectCarrierCatalogInput ResourceTriggerCarriers =>
         CloneCarriers(_resourceTriggerCarriers);
+
+    internal EffectCarrierCatalogInput AcceptedCarrierBaselines =>
+        CloneCarriers(_acceptedCarrierBaselines);
+
+    internal EffectAcceptedTurnPlanner.EffectResourceTriggerIndex ResourceTriggerIndex =>
+        _resourceTriggerIndex.Value;
 
     internal EffectSourceAuthority SourceAuthority { get; }
 
@@ -202,6 +250,47 @@ internal sealed class EffectAcceptedTurnPlan
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>
         new(values.ToArray());
 
+    private static EffectCarrierCatalogInput CreateCarriers(
+        IReadOnlyDictionary<string, JsonObject?> roots)
+    {
+        JsonObject? Read(string path) =>
+            roots.TryGetValue(path, out var root)
+                ? root?.DeepClone().AsObject()
+                : null;
+
+        return new EffectCarrierCatalogInput(
+            Read(EffectCarrierCatalog.PlayerPath),
+            Read(EffectCarrierCatalog.NpcPath),
+            Read(EffectCarrierCatalog.EnemiesPath),
+            Read(EffectCarrierCatalog.AlliesPath),
+            Read(EffectCarrierCatalog.AfterlifeProfilesPath),
+            Read(EffectCarrierCatalog.SpiritualConflictPath));
+    }
+
+    private static EffectSourceAuthorityEntry FreezeSourceBinding(
+        EffectSourceAuthorityEntry entry)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+        ArgumentNullException.ThrowIfNull(entry.Definition);
+        ArgumentNullException.ThrowIfNull(entry.SatisfiedPredicates);
+        return entry with
+        {
+            Definition = entry.Definition.DeepClone().AsObject(),
+            SatisfiedPredicates = entry.SatisfiedPredicates.ToFrozenSet(
+                StringComparer.Ordinal)
+        };
+    }
+
+    private static EffectSourceAuthorityEntry CopySourceBinding(
+        EffectSourceAuthorityEntry entry) =>
+        entry with
+        {
+            Definition = entry.Definition.DeepClone().AsObject(),
+            SatisfiedPredicates = new HashSet<string>(
+                entry.SatisfiedPredicates,
+                StringComparer.Ordinal)
+        };
+
     private static EffectCarrierCatalogInput CloneCarriers(EffectCarrierCatalogInput value) =>
         new(
             value.PlayerEffects?.DeepClone().AsObject(),
@@ -219,7 +308,16 @@ internal sealed class EffectAcceptedTurnPlan
             : value.DownstreamSource with
             {
                 Definition = value.DownstreamSource.Definition.DeepClone().AsObject()
-            },
+        },
+        Parameters = value.Parameters?.DeepClone().AsObject()
+    };
+
+    private static EffectReactionExecution CloneRoutingReaction(
+        EffectReactionExecution value) => value with
+    {
+        DownstreamSource = null,
+        DownstreamSourceKey = value.DownstreamSourceKey ??
+            value.DownstreamSource?.Key,
         Parameters = value.Parameters?.DeepClone().AsObject()
     };
 }

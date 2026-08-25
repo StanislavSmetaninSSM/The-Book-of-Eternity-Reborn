@@ -297,7 +297,7 @@ Rules by policy:
 - `independent`: each accepted application gets a new identity; source-definition `maxStacks` bounds simultaneous identities at the logical coordinate, while every canonical instance stores `currentStacks=1` and `maxStacks=1`.
 - `stack`: preserve identity and increase `currentStacks` to the source-owned maximum.
 - `refresh`: preserve identity/count and use exact `reset` or bounded `extend` lifetime behavior.
-- `replace`: terminate the old instance as `replaced` and create a new identity in one transition.
+- `replace`: terminate the old instance as `replaced` and create a new identity in one transition. The explicit incoming replacement policy may supersede one prior valid policy at the same coordinate; it does not require the retired instance to have been created by a `replace` definition.
 - `merge`: preserve identity and combine only profile-declared fields through a deterministic reducer registered by every component profile in the source definition; a globally named reducer does not authorize an incompatible profile.
 
 Logical stack coordinate:
@@ -394,10 +394,307 @@ Unknown tokens, source-kind-incompatible tokens, and predicates not satisfied by
   the whole accepted transition, including resource-derived reactions; a
   separate whole-transition ceiling of 64 prevents aggregate expansion.
 - A downstream definition sharing the current logical stack coordinate must
-  explicitly use `replace`; otherwise source validation rejects the graph.
+  explicitly use `replace`; otherwise source validation rejects the graph. That
+  incoming policy may supersede exactly one prior valid identity even when the
+  retired definition used another policy; multiple prior identities remain
+  ambiguous and fail closed.
 - A client-derived child effect records optional exact
   `chronology.causalEventRef`. It is immutable causality/replay evidence and is
   absent from every GM-authored command/report.
+
+### 7.1.1 Accepted Effect Boundary Transcript
+
+Resource-event reactions use one immutable transcript owned by the common
+accepted-mechanics planner. Pure candidate discovery remains separate from
+accepted activation, exact applied-component evidence, and released reaction.
+
+```text
+EffectEventBoundaryStamp {
+  boundaryOrdinal,
+  parentBoundaryOrdinal?,
+  producerOperationKey,
+  eventKind,
+  producerEventRef,
+  producerTransitionId,
+  producerExecutionSequence,
+  producerMechanicsOrdinal,
+  openMechanicsOrdinal,
+  candidateBatchFingerprint
+}
+
+EffectEventBoundaryCloseStamp {
+  boundary,
+  mechanicsOrdinal
+}
+
+EffectBoundaryCausalClosureStamp {
+  boundary,
+  runtimeOperationIds[],
+  replayStableOperationKeys[],
+  replayStableFingerprint
+}
+
+AcceptedEffectBoundaryActivation {
+  boundary,
+  acceptedActivation,
+  immutableCandidate,
+  candidateFingerprint,
+  mechanicsOrdinal
+}
+
+RejectedEffectBoundaryActivation {
+  boundary,
+  immutableCandidate,
+  candidateFingerprint,
+  reason
+}
+
+AppliedEffectComponentEvidence {
+  boundary,
+  activationCandidateIdentity,
+  mutationOperationKey,
+  componentId,
+  transitionId,
+  appliedAmount,
+  mechanicsOrdinal
+}
+
+ReleasedEffectReaction {
+  boundary,
+  acceptedActivationTranscriptStamp,
+  reactionExecution,
+  releaseStage,
+  mechanicsOrdinal
+}
+
+AcceptedResourceMutationEvidence {
+  mutationOperationKey,
+  transition,
+  executionKind: applied | replay,
+  mechanicsOrdinal
+}
+
+EffectTerminalAvailabilityReservation {
+  boundary,
+  acceptedActivationTranscriptStamp,
+  kind: LastUse | AfterCurrentReaction,
+  reactionFingerprint?,
+  mechanicsOrdinal
+}
+
+AcceptedEffectBoundaryTranscript {
+  acceptedPlanAuthority,
+  boundaries[],
+  boundaryCloses[],
+  causalClosures[],
+  acceptedActivations[],
+  rejectedActivations[],
+  appliedComponentEvidence[],
+  resourceMutationEvidence[],
+  releasedReactions[],
+  terminalAvailabilityReservations[],
+  expansionUsage,
+  useProjectionOrdinal,
+  pendingFrontierBoundaryOrdinal?,
+  fingerprint
+}
+```
+
+`mechanicsOrdinal` is a planner-owned monotonic causal order and is not the
+resource scheduler's execution sequence. An actual event freezes its candidate
+batch before release. Boundaries form a forest rather than a global stack:
+unrelated actual events are roots, while a resource event produced inside a
+selected causal lane names that exact open boundary as its parent. A boundary
+closes only after its full causal closure is complete, it owns no unresolved
+pending output, and every child has closed; eligible leaves close inner-first.
+The immutable full closure remains sealed even when some prerequisites completed
+before a nested boundary opened, while its runtime remaining set begins as
+`fullClosure - alreadyCompletedOperations`.
+
+The arbiter freezes and accepts a whole candidate batch before any output is
+opened. A last-use activation, or an accepted unconditional
+`after_current_event` reaction that will suspend/remove an effect or apply a
+`replace` definition to one exact pre-reaction stack target, records an exact
+target-effect terminal-availability reservation after that frozen acceptance
+batch and before later boundaries are considered. For `replace`, the target is
+derived from `(realm,target kind/id,source kind/id,stackKey)` and deliberately
+excludes `definitionKey`; it may therefore differ from the reaction-owning
+effect. The reservation makes that exact effect unavailable to later boundaries
+without revoking already accepted siblings.
+Same-batch rejection after a final use is valid only when the rejected candidate
+sorts after that exact accepted activation; terminal reaction precedence remains
+`remove > suspend > active` during the final fold.
+
+One unresolved causally complete leaf may become the pending frontier. Its exact
+ancestor chain remains open and suspended, unrelated branches must drain and
+close, `after_current_event` is withheld for the whole open chain, and no use or
+lifetime projection is emitted. Multiple unrelated ready pending leaves reject
+as ambiguous. A complete transcript has every boundary explicitly closed and
+exactly one terminal use/lifetime projection. The builder is permanently sealed
+by its first freeze.
+
+Runtime operation IDs remain exact evidence in the full transcript fingerprint,
+but the rolling prefix used by pending discovery/replay hashes canonical resource
+operation keys for a closed causal batch. Allocator-owned transition and operation
+IDs therefore cannot change a legitimate continuation fingerprint. A terminal
+reaction changes eligibility only for later boundaries, while already accepted
+sibling outputs complete. A reaction-created or replacement effect first becomes
+eligible in the next accepted mechanics transition. Discovery and actual replay
+must reproduce the same transcript prefix; carrier materialization and
+use/lifetime projection occur once after the terminal actual pass. If an accepted
+candidate's child mutation is skipped, clamped to no change, or replayed, only
+`after_component` outputs that require exact state-changing predecessor evidence
+are suppressed. Unconditional `before_current_event` and `after_current_event`
+reactions still release, and an accepted consuming activation still spends its
+single use.
+
+Every replacement execution carries a client-derived frozen target identity;
+the GM never authors it. Actual release immediately makes that target
+unavailable to later or nested boundaries, and final folding must prove that
+one released reaction event produced the target's exact `replace` transition.
+Before any reaction-owned ID or transition allocation, one indexed linear
+preflight resolves the canonical downstream definition, groups every released
+`apply_definition` by the full stack coordinate, and simulates each coordinate
+in `MechanicsOrdinal` order. It rejects a preceding non-replace application
+that would occupy frozen absence, create ambiguous occupancy, or carry a known
+incompatible stack policy into a later replacement; a compatible
+identity-preserving sibling remains legal. Each replace then has exactly one
+runtime occupancy state:
+`FrozenExact(EffectReplayIdentity)`, `FrozenAbsent`, or
+`PriorSelfReplacementResult(eventRef)`. Multiple releases against frozen
+absence fail closed. Multiple releases against one frozen typed target also
+fail closed unless all are consuming activations from that same typed target in
+one accepted boundary; that sole self-replacement fold binds every later member
+to the exact typed result created by its predecessor. Runtime application
+rechecks the selected occupant before scheduler mutation, and final validation
+proves every create/replace pair rather than grouping by raw effect ID and
+checking only the earliest event.
+When accepted consuming activations belong to the retired target, projection
+validates their immutable `N, N-1, ...` budgets and inserts all `consume`
+transitions in activation order immediately before that single authoritative
+`replace`. The old identity remains `replaced` even on final use. Intermediate
+and final replacement identities retain their source-created lifetimes
+untouched. This ordering is accepted-use evidence, not retroactive eligibility
+for any replacement.
+
+Resource-event routing is additive: the outer producer/event requirement is
+appended to every already selected component requirement. In particular, an
+`after_component` child retains both its exact predecessor requirement and the
+outer resource-event requirement; the wrapper never replaces either edge.
+
+### 7.1.2 Deferred QTE Resource-Event Continuation
+
+Accepting a Mortal QTE offer captures a client-owned immutable continuation for
+the exact future terminal resource event. It binds the session and session
+generation, accepted source turn, canonical offer fingerprint, byte/existence-
+exact pre-terminal roots, source and target authority, trigger candidate index,
+pending causal state, and the complete semantic turn authority needed by the
+common planner. The runtime stores only a continuation reference/fingerprint
+and receipt-wait status in addition to ordinary active-scene progress; it never
+duplicates or replaces this sealed authority. The GM authors none of it.
+
+```text
+QteDeferredEffectContinuation {
+  schemaVersion,
+  continuationId,
+  sessionId,
+  sessionGeneration,
+  acceptedSourceTurn,
+  qteId,
+  offerFingerprint,
+  runtimeBeforeFingerprint,
+  sealedRootBindings[]: { path, existed, payloadBase64?, sha256 },
+  sourceAuthorityBinding,
+  targetAuthorityBinding,
+  triggerCandidateBinding,
+  pendingCausalBinding,
+  semanticTurnFingerprint,
+  acceptedMechanicsAuthority: { kind: qte_continuation, continuationId, sourceFingerprint },
+  identityLedger[]: { semanticKey, identity },
+  state: armed | terminal_selected | awaiting_receipt | terminal,
+  selectedTerminalBinding?,
+  currentWave?: { requestId, waveId, ordinal, safePacketFingerprint },
+  resolvedWaveBindings[]: {
+    requestId,
+    waveId,
+    ordinal,
+    pendingStateFingerprint,
+    receiptsFingerprint,
+    fingerprint
+  },
+  terminalFingerprint?,
+  authorityFingerprint
+}
+```
+
+The continuation uses the current schema only. Every identity reachable from
+any sealed terminal branch is allocated once by semantic key at acceptance and
+persists in `identityLedger`; a process restart or complete-graph replay cannot
+allocate a replacement. Terminal selection and every bounded replay consume
+that acceptance-time ledger read-only; they never replace it with a
+selection-time ledger. `sealedRootBindings` retain exact existence, bytes, and
+hash evidence required both to rehydrate typed planning input and to prove the
+final transaction still starts from the accepted authority.
+
+`selectedTerminalBinding` is client-written once and fixes chapter/action/grade,
+terminal outcome ordinal/id, positional resource commands, and their exact
+producer event identities. A browser retry, console resume, or process restart
+reuses that binding and never asks the mini-game to choose a second result.
+
+When the selected terminal branch emits `resource_damaged` or
+`resource_depleted`, the client revalidates its positional QTE command and
+consumes that exact continuation. It supplies the preserved candidates,
+resolver, and work evidence to `AcceptedMechanicsPlanner`; it never scans live
+post-turn carriers to invent a new plan. Deterministic reactions, bounded pending
+waves, use consumption, downstream effects, and terminal cleanup therefore keep
+the same causal transcript and replay rules as an ordinary accepted turn.
+
+The terminal publication is one transaction over the resource quartet, effect
+carriers/index/history, pending and reaction outputs, QTE history, and runtime
+closure. Exact retry reuses terminal evidence and applies neither damage nor a
+trigger twice. Missing, stale, cross-session, reordered, tampered, or
+fingerprint-mismatched continuation authority fails before any write. There is
+no migration, live rebuild, or random/bootstrap fallback for this GM-authored
+deferred path.
+
+If the graph reaches a bounded receipt, the client publishes only the standard
+safe pending packet plus `terminal_selected -> awaiting_receipt` continuation
+state; it publishes no resource/effect after-image and does not append terminal
+QTE history or close the runtime. Each receipt wave replays the same complete
+semantic terminal candidate with immutable earlier-wave bindings. The final
+wave atomically publishes all resource/effect after-images, terminal QTE history,
+runtime closure, `continuation.state=terminal`, and deletion of the active
+request/response/ready transport. A conflicting receipt or terminal replay
+produces no partial publication.
+
+Bounded QTE receipt transport is separate from an ordinary player turn:
+
+```text
+game_state/control/qte_deferred_effect_continuation.json
+input/qte_effect_resolution_request.json
+output/qte_effect_resolution_receipts.json
+ready/qte_effect_resolution_complete.json
+```
+
+The request is written from `currentWave` and contains only
+`requestKind=qte_deferred_effect_resolution`, exact session/generation/
+continuation/request/wave/ordinal/source-turn/QTE correlation, and the standard
+safe pending packet. The response is a closed object containing the same
+correlation and `effectResolutionReceipts[]` only; mechanics commands,
+narrative, post-state, and extra fields are forbidden. The daemon/helper writes
+the ready marker last without requiring an ordinary pending-turn snapshot. The
+resume handler validates current session generation, every correlation field,
+the pending fingerprint, the exact receipt set, all prior wave bindings, and
+the sealed before-images. Stale transport is quarantined or removed without
+changing continuation/mechanics state. Resume performs no ordinary turn
+increment, story/progression replay, or validation-repair cycle.
+
+Every `resolvedWaveBindings` entry is a closed six-field object with a
+contiguous ordinal, globally unique request/wave identifiers inside the
+continuation, and an exact recomputed binding fingerprint. If `currentWave` is
+present, its ordinal equals the resolved binding count and its identifiers do
+not reuse any prior wave. Any extra field, gap, duplicate, or fingerprint
+mismatch fails before a write.
 
 ### 7.2 Removal
 
@@ -556,7 +853,7 @@ Client-owned path: `game_state/control/pending_effect_resolutions.json`
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "sessionId": "opaque-session",
   "requests": [
     {
@@ -565,7 +862,7 @@ Client-owned path: `game_state/control/pending_effect_resolutions.json`
       "requestTurn": 42,
       "eventRef": "turn_42:end",
       "effectAuthority": {
-        "bindingKind": "permanent|same_turn_ref|accepted_application",
+        "bindingKind": "permanent|accepted_application",
         "authorityId": "..."
       },
       "source": {},
@@ -573,6 +870,22 @@ Client-owned path: `game_state/control/pending_effect_resolutions.json`
       "target": {},
       "targetAuthority": {},
       "triggerId": "on_owner_turn_end",
+      "causalAuthority": {
+        "effectId": "effect_<opaque>",
+        "triggerId": "on_owner_turn_end",
+        "activationEventRef": "effect_event_<opaque>",
+        "triggerEventRef": "turn_42:end",
+        "priority": 10,
+        "activationOrdinal": 0,
+        "consumesUse": true,
+        "usesBefore": 1,
+        "resourceProducerOperationKey": null,
+        "componentId": "periodic_damage_001",
+        "afterComponentId": null,
+        "candidateFingerprint": "<sha256>",
+        "transcriptPrefixFingerprint": "<sha256>",
+        "waveOrdinal": 0
+      },
       "coordinate": {},
       "resourceAuthority": {},
       "operation": "damage|restore",
@@ -595,10 +908,16 @@ Client-owned path: `game_state/control/pending_effect_resolutions.json`
 }
 ```
 
+For `effectAuthority`, `permanent` requires `authorityId == effectId`, while a
+same-turn effect uses the exact `accepted_application` event. The broader
+`same_turn_ref` binding remains available to source, target, and resource
+authorities only; it is rejected for the effect field.
+
 This is the common `ResourcePendingResolutionState`, not a second effect-owned
 mechanics authority. The protected record additionally seals exact
 session/request, source/target/resource binding, policy/full-turn/replay
-fingerprints, and chronology. A same-turn unpublished effect binds through its
+fingerprints, causal activation/producer/component evidence, wave, and
+chronology. A same-turn unpublished effect binds through its
 accepted application event rather than through a predictable or durable raw ID.
 
 The GM sees only the bounded safe projection and returns a corresponding
@@ -611,6 +930,14 @@ publication moves the receipt to immutable terminal evidence and consumes both
 pending request and transient commands exactly once. The authoritative closed
 shape and privacy rules live in
 [`resource-pending-resolution.md`](../1543-unified-resource-authority/contracts/resource-pending-resolution.md).
+
+Receipt output is replayed only when the original activation is reached; a
+graph-origin activation is never pre-seeded. Terminal evidence retains the full
+closed request authority as a typed resolved binding. If that output creates a
+new bounded candidate, the next wave carries every prior binding and again
+publishes no mechanics until a full causal replay reaches a terminal wave with
+no new pending output. Version 1 technical pending state is rejected without
+migration.
 
 ## 13. Accepted Mechanics Snapshot
 

@@ -206,7 +206,7 @@
 
                             # Medical Triage Protocol
                             - Step 1 (Check Specific Wounds): 'playerWounds' is empty. Proceed to Step 2.
-                            - Step 2 (Check General Damage): 'currentHealth' (85) is less than 'maxHealth' (100).
+                            - Step 2 (Check General Damage): the client health resource projection is 85/100, so current is below the registered maximum.
                             - Conclusion: The player's intent is to restore HP. This is a "Restore Health" action.
                             - Forbidden Action: Generating a new Wound object is prohibited.
                             - Next Action: Initiate a healing action, for example, by suggesting the player uses a potion or finds a healer.

@@ -45,6 +45,12 @@ internal sealed partial class ResourceMaterializationTestContext
                 ["schemaVersion"] = 1,
                 ["entries"] = new JsonArray()
             },
+            [AuthorityPath] = new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["historicalOwners"] = new JsonArray(),
+                ["capacityDrafts"] = new JsonArray()
+            },
             [CommandsPath] = new JsonObject
             {
                 ["resourceDefinitionCreations"] = new JsonArray(),

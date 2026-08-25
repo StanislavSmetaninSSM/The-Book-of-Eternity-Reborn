@@ -64,7 +64,9 @@ For automated tests, the harness now:
 `resource_materialization/` demonstrates the no-migration cutover. Its broken
 `player_status.json` persists `healthPercentage` and must produce
 `resource_legacy_player_gauge_forbidden`; the fixed version removes that field.
-Canonical resource values live only in
-`game_state/resources/resource_definitions.json`, `resource_state.json`, and
-`resource_history.json`. The accepted-turn `resource_commands.json` envelope is
+Canonical resource values live only in the guarded quartet
+`game_state/resources/resource_definitions.json`, `resource_state.json`,
+`resource_history.json`, and `resource_owner_authority.json`. Missing/stale
+owner authority outside Fresh New Game bootstrap is incompatible and is never
+migrated or self-healed. The accepted-turn `resource_commands.json` envelope is
 transient and must not be stored in this fixture tree outside a staged turn.

@@ -202,16 +202,14 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),
             DescribeIssues(issues));
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out var planning));
-        var planned = Assert.IsType<AcceptedMechanicsPlan>(planning.Plan);
+        var handoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem);
+        Assert.NotNull(handoff);
+        var planned = Assert.IsType<AcceptedMechanicsPlan>(handoff!.Result.Plan);
         var plannedConflict = Assert.IsType<JsonObject>(
             planned.EffectCarrierAfterImages[
                 EffectMaterializationTestContext.SpiritualConflictPath]);
@@ -303,8 +301,7 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.SpiritualConflictPath,
             raw);
 
-        var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
 
         Assert.Contains(
             issues,
@@ -363,8 +360,7 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),
             DescribeIssues(issues));
@@ -450,8 +446,7 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
 
         Assert.Contains(
             issues,
@@ -485,8 +480,7 @@ public sealed partial class EffectAfterlifeAdapterTests
                     "accepted_turn",
                     "turn_43")));
 
-        var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
 
         Assert.Contains(
             issues,
@@ -531,8 +525,7 @@ public sealed partial class EffectAfterlifeAdapterTests
                     sourceArtId,
                     "accepted_turn",
                     "turn_43")));
-        var applyIssues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var applyIssues = await context.ValidateAcceptedTurnRawMechanicsAsync();
         Assert.True(
             applyIssues.All(issue => issue.Severity != IssueSeverity.Error),
             DescribeIssues(applyIssues));
@@ -569,8 +562,7 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.CommandPath,
             EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot());
 
-        var exchangeIssues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var exchangeIssues = await context.ValidateAcceptedTurnRawMechanicsAsync();
         Assert.True(
             exchangeIssues.All(issue => issue.Severity != IssueSeverity.Error),
             DescribeIssues(exchangeIssues));
@@ -613,8 +605,7 @@ public sealed partial class EffectAfterlifeAdapterTests
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot());
-        var terminalIssues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var terminalIssues = await context.ValidateAcceptedTurnRawMechanicsAsync();
         Assert.True(
             terminalIssues.All(issue => issue.Severity != IssueSeverity.Error),
             DescribeIssues(terminalIssues));
@@ -660,8 +651,7 @@ public sealed partial class EffectAfterlifeAdapterTests
                     "accepted_turn",
                     "turn_43")));
 
-        var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),
             DescribeIssues(issues));
@@ -693,8 +683,7 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.CommandPath,
             EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot());
 
-        var closeIssues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var closeIssues = await context.ValidateAcceptedTurnRawMechanicsAsync();
         Assert.True(
             closeIssues.All(issue => issue.Severity != IssueSeverity.Error),
             DescribeIssues(closeIssues));

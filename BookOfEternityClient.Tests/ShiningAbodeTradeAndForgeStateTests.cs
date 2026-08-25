@@ -326,40 +326,20 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
             fs.EnsureDirectoryStructure();
             var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
             Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-            await fs.WriteFileAtomicAsync(
-                ResourceMaterializationContract.DefinitionsPath,
-                bootstrap.Definitions!.ToCanonicalJson());
-            await fs.WriteFileAtomicAsync(
-                ResourceMaterializationContract.StatePath,
-                bootstrap.State!.ToCanonicalJson());
-            await fs.WriteFileAtomicAsync(
-                ResourceMaterializationContract.HistoryPath,
-                bootstrap.History!.ToCanonicalJson());
-            await fs.WriteFileAtomicAsync(
-                AfterlifeEntityProfileState.StatePath,
-                new JsonObject
+            var profilesRoot = new JsonObject
+            {
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
                 {
-                    [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                    new JsonObject
                     {
-                        new JsonObject
-                        {
-                            ["actorType"] = "player_soul",
-                            ["actorId"] = "player_soul",
-                            ["displayName"] = "Душа игрока",
-                            ["realm"] = "Shining Abode",
-                            ["resourceOwnerBindings"] = new JsonArray
-                            {
-                                new JsonObject
-                                {
-                                    ["realm"] = "shining_abode",
-                                    ["resourceOwnerId"] = "player_soul",
-                                    ["state"] = "suspended"
-                                }
-                            }
-                        }
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Душа игрока",
+                        ["realm"] = "Shining Abode"
                     }
-                }.ToJsonString());
-            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", new JsonObject
+                }
+            };
+            var bootstrapSoulRoot = new JsonObject
             {
                 ["soulName"] = "Soul",
                 ["currentRealm"] = "Mortal World",
@@ -373,7 +353,7 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
                     ["equipped"] = new JsonArray(),
                     ["stored"] = new JsonArray()
                 }
-            }.ToJsonString());
+            };
             await fs.WriteFileAtomicAsync(
                 "game_state/core/player_status.json",
                 new JsonObject { ["money"] = 0 }.ToJsonString());
@@ -385,6 +365,16 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
                     ["equipment"] = new JsonObject(),
                     ["resources"] = new JsonObject()
                 }.ToJsonString());
+            var initialPlan = await CanonicalResourceQuartetTransaction
+                .ComposeExplicitBootstrapAsync(
+                    bootstrap.Definitions!,
+                    bootstrap.State!,
+                    bootstrap.History!,
+                    new AfterlifeOwnerResourceAcceptedState(
+                        Profiles: profilesRoot,
+                        SoulState: bootstrapSoulRoot),
+                    fs.ReadFileAsync);
+            await CommitFreshResourceBootstrapAsync(fs, initialPlan);
             var materialized = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
                 fs,
                 new JsonObject
@@ -775,6 +765,55 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
             materializedAtTurn: 1,
             hasResidentAffiliations,
             canTrade: false);
+    }
+
+    private static async Task CommitFreshResourceBootstrapAsync(
+        FileSystemManager fs,
+        CanonicalResourceFreshBootstrapPlan plan)
+    {
+        Assert.True(plan.IsValid, string.Join(Environment.NewLine, plan.Issues));
+        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
+        {
+            new(
+                ResourceMaterializationContract.DefinitionsPath,
+                plan.BeforeImages[ResourceMaterializationContract.DefinitionsPath],
+                plan.Definitions.ToCanonicalJson(),
+                RequireCurrentBaseline: true),
+            new(
+                ResourceMaterializationContract.StatePath,
+                plan.BeforeImages[ResourceMaterializationContract.StatePath],
+                plan.StateAfterImage!.ToCanonicalJson(),
+                RequireCurrentBaseline: true),
+            new(
+                ResourceMaterializationContract.HistoryPath,
+                plan.BeforeImages[ResourceMaterializationContract.HistoryPath],
+                plan.HistoryAfterImage!.ToCanonicalJson(),
+                RequireCurrentBaseline: true)
+        };
+        foreach (var (path, afterImage) in plan.OwnerAfterImages)
+        {
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                path,
+                plan.BeforeImages[path],
+                afterImage.ToJsonString(),
+                RequireCurrentBaseline: true));
+        }
+
+        CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(
+            writes,
+            plan.QuartetProjection!);
+        Assert.True(await CoordinatedStateWriteHelper.TryCommitAsync(
+            fs,
+            writes.ToArray()));
+        var exactAuthority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            plan.Definitions,
+            fs.ReadFileAsync,
+            plan.StateAfterImage!,
+            plan.HistoryAfterImage!,
+            CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
+        Assert.True(
+            exactAuthority.IsValid,
+            string.Join(Environment.NewLine, exactAuthority.Issues));
     }
 
     private static JsonObject CreateForgeSoulRoot(JsonObject relic) => new()

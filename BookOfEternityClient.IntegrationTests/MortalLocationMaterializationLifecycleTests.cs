@@ -308,7 +308,12 @@ public sealed partial class MortalLocationMaterializationLifecycleTests
                 static path => $"game_state/control/pending_turn_snapshot/{path}",
                 StringComparer.Ordinal);
 
-        await context.Normalizer.NormalizeMortalLocationsAsync(backups);
+        await using (var writeLease = await context.FileSystem
+                         .AcquireCanonicalWriteLeaseAsync())
+        {
+            await context.Normalizer.BindTo(writeLease)
+                .NormalizeMortalLocationsAsync(backups);
+        }
 
         var worldMap = (await context.ReadJsonAsync(
             MortalLocationMaterializationContract.WorldMapPath))!.AsObject();
@@ -413,15 +418,7 @@ public sealed partial class MortalLocationMaterializationLifecycleTests
         };
         var factions = new JsonObject
         {
-            ["factions"] = new JsonArray(
-                new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["name"] = "Смотрители атомарного брода",
-                    ["description"] = "Свидетели тестового перехода.",
-                    ["image_prompt"] = "dark fantasy river wardens, realistic illustration",
-                    ["factionColor"] = "#315A88"
-                })
+            ["factions"] = new JsonArray()
         };
         var startReservation = request["startReservation"]!.AsObject();
         var npcRoot = MortalActorTestFixtures.CreateNpcCoreRoot(
@@ -495,13 +492,12 @@ public sealed partial class MortalLocationMaterializationLifecycleTests
         items["UpdateInventory"] = new JsonArray(rawItem);
         await context.WriteJsonAsync(InventoryEquipmentService.ItemsPath, items);
 
-        factions = factions.DeepClone().AsObject();
-        factions["factionDataChanges"] = new JsonArray(
-            new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["currentAgenda"] = "Засвидетельствовать безопасный атомарный переход."
-            });
+        factions = new JsonObject
+        {
+            ["factionDataChanges"] = new JsonArray(
+                EffectMaterializationTestFixture.CreateSameTurnMortalFaction(
+                    factionId))
+        };
         await context.WriteJsonAsync(FactionCoreChangesContract.FactionCorePath, factions);
 
         npcRoot = npcRoot.DeepClone().AsObject();
@@ -516,6 +512,15 @@ public sealed partial class MortalLocationMaterializationLifecycleTests
                 }
             });
         await context.WriteJsonAsync(NpcCoreChangesContract.NpcCorePath, npcRoot);
+
+        var rawIssues = new List<ValidationIssue>();
+        rawIssues.AddRange(await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync());
+        rawIssues.AddRange(await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync());
+        Assert.DoesNotContain(
+            rawIssues,
+            issue => issue.Severity == IssueSeverity.Error);
 
         return baseline.Keys.ToDictionary(
             static path => path,

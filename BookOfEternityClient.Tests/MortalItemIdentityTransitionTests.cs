@@ -451,12 +451,24 @@ public sealed partial class MortalItemIdentityTransitionTests
     private sealed class TransitionContext : IAsyncDisposable
     {
         private readonly string _rootPath;
+        private readonly ResourceDefinitionCatalog _resourceDefinitions;
+        private readonly ResourceStateLedger _resourceState;
+        private readonly ResourceHistoryState _resourceHistory;
 
-        private TransitionContext(string rootPath, FileSystemManager fs, JsonObject item)
+        private TransitionContext(
+            string rootPath,
+            FileSystemManager fs,
+            JsonObject item,
+            ResourceDefinitionCatalog resourceDefinitions,
+            ResourceStateLedger resourceState,
+            ResourceHistoryState resourceHistory)
         {
             _rootPath = rootPath;
             FileSystem = fs;
             Item = item;
+            _resourceDefinitions = resourceDefinitions;
+            _resourceState = resourceState;
+            _resourceHistory = resourceHistory;
         }
 
         internal FileSystemManager FileSystem { get; }
@@ -474,11 +486,17 @@ public sealed partial class MortalItemIdentityTransitionTests
             fs.EnsureDirectoryStructure();
             var item = MortalItemTestFixture.CreateCanonicalRoot("itm_move");
             var allItems = new[] { item }.Concat(additionalItems).ToArray();
-            var context = new TransitionContext(rootPath, fs, item);
             var resourceBootstrap = ResourceBootstrapStateBuilder.BuildPristine();
             Assert.True(
                 resourceBootstrap.IsValid,
                 string.Join(Environment.NewLine, resourceBootstrap.Issues));
+            var context = new TransitionContext(
+                rootPath,
+                fs,
+                item,
+                resourceBootstrap.Definitions!,
+                resourceBootstrap.State!,
+                resourceBootstrap.History!);
             await context.WriteRawAsync(
                 ResourceMaterializationContract.DefinitionsPath,
                 resourceBootstrap.Definitions!.ToCanonicalJson());
@@ -530,6 +548,7 @@ public sealed partial class MortalItemIdentityTransitionTests
             await context.WriteAsync(
                 MortalItemIdentityState.StatePath,
                 MortalItemTestFixture.CreateIndex(allItems));
+            await context.RefreshResourceOwnerAuthorityAsync();
             return context;
         }
 
@@ -573,6 +592,23 @@ public sealed partial class MortalItemIdentityTransitionTests
                 MortalItemTestFixture.CreateIndexForCarriers(
                     (Item, "player_inventory", "player", null),
                     (item, "location_storage", locationId, storageId)));
+            await RefreshResourceOwnerAuthorityAsync();
+        }
+
+        internal async Task RefreshResourceOwnerAuthorityAsync()
+        {
+            var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+                _resourceDefinitions,
+                FileSystem.ReadFileAsync,
+                _resourceState,
+                _resourceHistory,
+                CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+            Assert.True(
+                authority.IsValid,
+                string.Join(Environment.NewLine, authority.Issues));
+            await WriteRawAsync(
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                authority.CanonicalAuthorityJson!);
         }
 
         internal async Task<MortalItemTransitionResult> CreateItemAsync(

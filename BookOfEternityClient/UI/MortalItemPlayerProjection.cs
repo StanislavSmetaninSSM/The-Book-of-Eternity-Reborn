@@ -298,6 +298,84 @@ internal static class MortalItemPlayerProjection
             "fullTurnResubmissionRequired"
         };
 
+    private static readonly HashSet<string> ResourcePendingResolutionRootFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "schemaVersion",
+            "sessionId",
+            "requests",
+            "terminalReceipts"
+        };
+
+    private static readonly HashSet<string> ResourcePendingResolutionRequestFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "requestId",
+            "sessionId",
+            "acceptedRequestId",
+            "requestTurn",
+            "eventRef",
+            "effectId",
+            "effectAuthority",
+            "source",
+            "sourceAuthority",
+            "target",
+            "targetAuthority",
+            "triggerId",
+            "coordinate",
+            "resourceAuthority",
+            "operation",
+            "allowedResults",
+            "sourceAuthorityFingerprint",
+            "policyFingerprint",
+            "fullTurnFingerprint",
+            "requiredCompanions",
+            "fullTurnResubmissionRequired",
+            "state",
+            "createdAtUtc",
+            "replayFingerprint",
+            "projection"
+        };
+
+    private static readonly HashSet<string> ResourcePendingTerminalReceiptFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "requestId",
+            "sessionId",
+            "acceptedRequestId",
+            "requestTurn",
+            "eventRef",
+            "fullTurnFingerprint",
+            "requestReplayFingerprint",
+            "resultKind",
+            "reason",
+            "receiptFingerprint",
+            "resolvedAtTurn",
+            "state"
+        };
+
+    private static readonly HashSet<string> ResourcePendingSafeGmRequestFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "requestId",
+            "sourceLabel",
+            "targetLabel",
+            "resourceLabel",
+            "operationLabel",
+            "allowedResults",
+            "requiredCompanions",
+            "fullTurnResubmissionRequired",
+            "instruction"
+        };
+
+    private static readonly HashSet<string> ResourcePendingSafeGmRootFieldNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "schemaVersion",
+            "kind",
+            "requests"
+        };
+
     internal static bool IsInternalField(string? fieldName) =>
         !string.IsNullOrWhiteSpace(fieldName) && InternalAuthorityFieldNames.Contains(fieldName);
 
@@ -551,6 +629,19 @@ internal static class MortalItemPlayerProjection
         if (fields.IsSupersetOf(EffectStackCoordinateFieldNames))
             return true;
         if (fields.IsSupersetOf(PendingEffectResolutionFieldNames))
+            return true;
+        if (fields.IsSupersetOf(ResourcePendingResolutionRootFieldNames))
+            return true;
+        if (fields.IsSupersetOf(ResourcePendingResolutionRequestFieldNames))
+            return true;
+        if (fields.IsSupersetOf(ResourcePendingTerminalReceiptFieldNames))
+            return true;
+        if (string.Equals(kind, "bounded_resource_resolution", StringComparison.Ordinal) &&
+            fields.IsSupersetOf(ResourcePendingSafeGmRootFieldNames))
+        {
+            return true;
+        }
+        if (fields.IsSupersetOf(ResourcePendingSafeGmRequestFieldNames))
             return true;
 
         return fields.IsSupersetOf(CarrierCoordinateFieldNames);

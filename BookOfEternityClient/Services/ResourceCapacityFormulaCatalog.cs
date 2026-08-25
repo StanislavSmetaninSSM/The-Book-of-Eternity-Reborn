@@ -640,6 +640,7 @@ internal static class ResourceCapacityFormulaCatalog
             : base(
                 MortalPoiseCapacityV1,
                 ResourceOwnerKind.Player,
+                ResourceOwnerKind.Npc,
                 ResourceOwnerKind.Combatant,
                 ResourceOwnerKind.CombatGroupMember)
         {
@@ -660,6 +661,7 @@ internal static class ResourceCapacityFormulaCatalog
                 player.PermanentWisdom.ToString(CultureInfo.InvariantCulture)),
             MaterializedOwnerCapacityFormulaInput materialized => ResolveMaterializedMaximum(
                 materialized,
+                ResourceOwnerKind.Npc,
                 ResourceOwnerKind.Combatant,
                 ResourceOwnerKind.CombatGroupMember),
             _ => Invalid(input)

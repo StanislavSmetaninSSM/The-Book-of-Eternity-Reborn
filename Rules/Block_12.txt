@@ -506,8 +506,8 @@ FOR API MODE: All existing restrictions remain functional.
                                        Crucially, if a passive skill's 'knowledgeDomain' or 'skillDescription' directly relates to the action being performed (e.g., 'Blacksmithing' skill for a crafting check), and implies a direct enhancement, you MUST add a bonus based on its 'masteryLevel'. 
                                        A good rule of thumb is '+ 2 * masteryLevel' to the flat bonuses.
 
-                                - Temporary Effects: 
-                                Examine the player's 'activeBuffs' and 'activeDebuffs' arrays for flat numerical buffs/debuffs.
+                                - Temporary Effects:
+                                Consume the exact flat contribution published by the client-owned accepted mechanics snapshot for this operation. Never scan a runtime carrier or derive effect arithmetic from prose.
 
                             2) CRITICAL STEP - Conditional Verification:
                                 For EACH identified bonus from ANY source, you MUST verify if its condition is met in the current context (time of day, environment, specific target, player state).
@@ -550,8 +550,8 @@ FOR API MODE: All existing restrictions remain functional.
                                        If this string contains a parseable percentage bonus that applies to the current action (e.g., "+10% to persuasion checks"), you MUST extract and apply that percentage. 
                                        You MUST log when you are using this fallback method.
 
-                                - Temporary Effects: 
-                                Examine the player's 'activeBuffs' and 'activeDebuffs' arrays.
+                                - Temporary Effects:
+                                Consume the exact percentage contribution published by the client-owned accepted mechanics snapshot for this operation. Never scan raw effect values or remaining lifetime.
 
                             2) CRITICAL STEP - Conditional Verification:
                                 For EACH identified percentage bonus, you MUST verify if its condition is met in the current context (time of day, environment, specific target, player state).
@@ -1136,13 +1136,7 @@ FOR API MODE: All existing restrictions remain functional.
 
                                     f)  Request the Target Resource Transition:
                                         1.  If 'effectType' is 'Damage': emit `resourceChanges` operation=damage against the exact accepted target's `health` coordinate with positive amount `FinalDamageToTarget%`. Do not author current/maximum or an after-value.
-                                        2.  If 'effectType' is 'DamageOverTime': Add an Effect Object (as per #6.2.1) to the target's 'activeDebuffs' list. 
-                                        This object will have 
-                                        'effectType': 'DamageOverTime', 
-                                        'value': 'FinalDamageToTarget%' (this is per turn), 
-                                        'targetType': (original damage type), 
-                                        'duration': (original duration, possibly scaled), 
-                                        'sourceSkill', and 'description'.
+                                        2.  If the accepted source applies periodic damage, emit one top-level effectChanges[] apply command with the exact source selector, target, accepted eventRef, and only definition-bounded parameters. The source definition owns magnitude and lifetime; the client materializes the periodic component and future resource transitions.
                                  
                                     g)  Check for Defeat: If the accepted health transition reaches its sealed minimum, handle defeat and narrate/update only the non-resource tactical status.
                                  
@@ -1174,14 +1168,7 @@ FOR API MODE: All existing restrictions remain functional.
                                  
                                     d)  Request the Target Resource Transition:
                                         1.  If 'effectType' is 'Heal': emit `resourceChanges` operation=restore against the exact accepted target's `health` coordinate with positive amount `FinalHealAmount%`. The sealed cap policy determines the applied amount; do not author an after-value.
-                                        2.  If 'effectType' is 'HealOverTime': 
-                                        Add an Effect Object to target's 'activeBuffs' with 
-                                        'effectType': 'HealOverTime', 
-                                        'value': 'FinalHealAmount%' (per turn), 
-                                        'targetType': 'health', 
-                                        'duration', 
-                                        'sourceSkill', 
-                                        'description'.
+                                        2.  If the accepted source applies periodic restoration, emit one top-level effectChanges[] apply command with the exact source selector, target, accepted eventRef, and only definition-bounded parameters. The source definition owns magnitude and lifetime; the client materializes the periodic component and future resource transitions.
                                  
                                     e)  Logging: Record calculation.
 
@@ -1195,16 +1182,9 @@ FOR API MODE: All existing restrictions remain functional.
        <content type="rule_text">
         <![CDATA[
 
-                                    a)  EffectBaseMagnitude%: The 'value' from the effect object. If from PC/NPC skill/item, this should be scaled.
-                                    b)  EffectBaseDuration: The 'duration' from the effect object. If from PC/NPC skill/item, this should be scaled.
-                                 
-                                    c)  Adjust for Success Level:
-                                        -   'Critical Success' / 'Full Success': Effect applies with full 'EffectBaseMagnitude%' and 'EffectBaseDuration'.
-                                        -   'Partial Success': Effect applies with 0.5 * 'EffectBaseMagnitude%' and 0.5 * 'EffectBaseDuration' (rounded, min 1 turn if duration > 0).
-                                        -   'Minor Failure' or worse: Effect does not apply.
-                                 
-                                    d)  Apply Effect: If successful, create an Effect Object (as per #6.2.1) using the (potentially adjusted) magnitude and duration, and add it to the target's 'activeBuffs' or 'activeDebuffs' list.
-                                        - For 'DamageReduction', it's usually added to 'activeBuffs'.
+                                    a)  Resolve the action outcome using the ordinary accepted roll rules. A failed application emits no effect command.
+                                    b)  Resolve exactly one current activeEffectDefinitions[] source entry. Its components, parameter bounds, stacking, and lifetime are authoritative; do not translate legacy effectType/value/duration fields.
+                                    c)  If the outcome applies the effect, emit effectChanges[] apply with the exact source selector, target, accepted eventRef, reason, and only bounded parameters explicitly allowed by that definition. The client owns the carrier and accepted mechanics contribution.
                                  
                                     e)  Logging: Record application and final parameters.
 
@@ -1218,17 +1198,8 @@ FOR API MODE: All existing restrictions remain functional.
        <content type="rule_text">
         <![CDATA[
 
-                                    a)  BaseSuccessChance%: The 'value' from the effect object (e.g., "75%"). If from PC/NPC skill/item, this chance itself might be scaled ('scalesChance').
-                                    b)  EffectBaseDuration: The 'duration' from the effect object. If from PC/NPC skill/item, this should be scaled ('scalesDuration').
-                                 
-                                    c)  Determine Application Success:
-                                        -   'Critical Success' (on the action check): Control effect applies automatically with full 'EffectBaseDuration'.
-                                        -   'Full Success': Control effect applies automatically with full 'EffectBaseDuration'.
-                                        -   'Partial Success': Make a secondary check: Roll 1d100. If roll <= (0.5 * BaseSuccessChance%), effect applies with 0.5 * 'EffectBaseDuration' (rounded, min 1). Otherwise, no control.
-                                        -   'Minor Failure' or worse: Effect does not apply.
-                                        (GM Note: For simplicity, GM can decide for 'Partial Success' that control applies with reduced duration without a secondary roll, if BaseSuccessChance was high).
-                                 
-                                    d)  Apply Effect: If control is applied, create an Effect Object and add to target's 'activeDebuffs'.
+                                    a)  Resolve the control attempt using the accepted roll and the exact source definition. Never invent a success chance or remaining lifetime from prose.
+                                    b)  If control applies, emit effectChanges[] apply with the exact source selector, target, accepted eventRef, reason, and only definition-bounded parameters. The client materializes action_control, lifetime, stacking, and carrier state.
                                  
                                     e)  Logging: Record the application attempt, any secondary roll, and final parameters.
 

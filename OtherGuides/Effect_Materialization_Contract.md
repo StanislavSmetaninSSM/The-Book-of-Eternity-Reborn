@@ -56,6 +56,8 @@ Each component has an exact unique `componentId`, registered `profile`, integer 
 
 Triggers name exact registered events and exact component IDs. `resolutionMode=deterministic` is resolved entirely by the client. `resolutionMode=bounded_receipt` may create `pending_effect_resolutions.json`; the GM must return the exact allowed result in a full-turn resubmission and must not copy the pending DTO into player-visible output.
 
+Bounded receipt waves use one sequential rule: Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned. A receipt supplies only an allowed result and reason; it never reconstructs, retargets, merges, or changes the protected causal origin.
+
 ### 3.1 Closed event reactions
 
 `event_reaction.payload` has one exact `eventType`, `resultKind`, `dependency`,
@@ -84,6 +86,15 @@ skipped work, and `narrated_no_state_change` do not satisfy it. For a terminal,
 downstream, or outcome reaction discovered from a resource event,
 `before_current_event` still follows the resource transition that emitted the
 event—it precedes continuation of the derived event, not its producer.
+Once a trigger is accepted, its unconditional `before_current_event` and
+`after_current_event` reactions still run even if a child mutation is skipped,
+clamped to no change, or recognized as an exact replay; only dependent
+`after_component` output is withheld, and an accepted consuming trigger still
+spends exactly one use.
+Resource-event routing preserves both the outer producer/event requirement and
+every component-local dependency. An `after_component` child therefore needs
+its exact predecessor as well as the outer producer; the client never replaces
+one requirement with the other.
 
 Each reaction component has its own source-declared execution budget for the
 whole accepted transition, and all reactions together have a hard ceiling of
@@ -93,6 +104,63 @@ application without explicit `replace`, and either budget overflow fail before
 publication. Canonical child effects may contain client-owned
 `chronology.causalEventRef`; this is derived replay/causality evidence and is
 never a GM-authored field.
+
+The client freezes every actual-event candidate batch before output. A final
+use or accepted unconditional deferred suspend/remove immediately reserves its
+exact effect against later event boundaries, but cannot cancel siblings already
+accepted in the frozen batch. Reaction-created and replacement effects become
+eligible only on the next accepted mechanics transition.
+
+For `apply_definition(policy=replace)`, the client—not the GM—derives the exact
+pre-reaction target from realm, target, source, and `stackKey`. The
+`definitionKey` is excluded, so the reaction may replace another effect at that
+coordinate.
+That exact target identity is immutable pre-reaction authority.
+Actual release immediately blocks that old target from later or nested event
+boundaries. An `after_current_event` replacement reserves it as soon as the
+frozen batch is accepted. Already accepted siblings still finish.
+
+If accepted consuming activations belong to that retired target, the client
+validates their immutable `N, N-1, ...` budgets and records every use in
+activation order. Those uses remain on the retired identity immediately before
+the target's single authoritative `replace`. Intermediate and final replacement identities keep their complete
+source-created lifetimes. Even on the old effect's final use, its terminal state
+is `replaced`.
+
+### 3.2 Dedicated Mortal QTE receipt transport
+
+If a selected Mortal QTE terminal outcome reaches `bounded_receipt`, the client
+enters `awaiting_receipt` and publishes a closed request with
+`requestKind=qte_deferred_effect_resolution` at
+`input/qte_effect_resolution_request.json`. The GM returns the closed
+correlated envelope at `output/qte_effect_resolution_receipts.json`; the helper
+then writes `ready/qte_effect_resolution_complete.json` last.
+
+This is a receipt-only task and not an ordinary turn. Read only the current
+request's `safePacket`, answer its current wave through
+`effectResolutionReceipts[]`, and do not read or reuse `input/turn_request.json`.
+Do not create a pending-turn snapshot, run story or progression work, write
+narrative/interface/canonical state, advance lifecycle, or increment the turn
+counter. Construct only the receipt objects in memory and call
+`Complete-BoeQteEffectResolution -Receipts $receipts` as the last action. The
+helper copies exact correlation, rejects extra fields or disallowed results,
+writes the receipt envelope, and publishes the ready marker last; the GM never
+writes either transport file directly.
+Do not call `Complete-BoeValidationRepair`: the dedicated QTE receipt transport
+does not reuse the ordinary validation-repair request, helper, ready marker, or
+full-turn resubmission loop.
+
+On restart, the client resumes the same sealed continuation and current wave.
+Its `resolvedWaveBindings` and the same preallocated identities preserve all
+earlier-wave bindings as client-owned evidence. A later wave has a new
+`requestId`, `waveId`, `waveOrdinal`, and pending fingerprint but keeps the same
+session, continuation, selected terminal, full-turn, and semantic-turn
+authority. Answer the current safe packet only; never resend earlier receipts
+or reconstruct hidden mechanics. Until the terminal wave succeeds, no resource
+or effect after-image, QTE history, story, progression, or turn counter is
+published. The final wave publishes the complete selected QTE outcome
+atomically. Missing, stale, tampered, cross-session, cross-generation, or
+mis-correlated transport fails closed before any mechanics write.
 
 ## 4. Stacking
 
@@ -105,6 +173,9 @@ The five policies are:
 - `merge`: preserve one identity and use only a reducer registered by every component profile.
 
 The source owns `stackKey`, `maxStacks`, `atMaximum`, `refreshMode`, and `mergeRule`. The GM never submits current stack count or computes the post-stack payload.
+An explicit incoming `replace` may replace one prior valid policy at the same
+coordinate; the retired effect does not need to already use `replace`. Multiple
+prior identities at that coordinate are ambiguous and fail before publication.
 
 ## 5. Lifetime
 
@@ -179,7 +250,7 @@ Shining blessing entitlement is not a generic active effect. Blessing allocation
 
 Unknown/missing/duplicate fields, wrong types, pseudo-mechanics, unauthorized source/target/realm/link, client-owned identity, direct carrier/index edits, stale events, and malformed receipts fail before publication with zero canonical writes.
 
-Only one exact semantic omission may receive a bounded repair packet. Identity/source/target/realm/stack/history/receipt/direct-mutation failures are protected and never retargeted. Before any actionable repair, the client restores the validated baseline. The GM must return a coherent full-turn resubmission; an effect-only patch, empty retry, or stale replay is rejected. Technical paths, IDs, pending DTOs, repair diagnostics, and exception text stay operator-only.
+Only one exact semantic omission may receive a bounded repair packet. Identity/source/target/realm/stack/history/receipt/direct-mutation failures are protected and never retargeted. Before any actionable repair, the client restores the validated baseline. For `effect_materialization_repair`, root `fullTurnResubmissionRequired=true` requires a coherent full-turn resubmission; an effect-only patch, empty retry, or stale replay is rejected. Root `requiredResubmissionPaths` is the exact list of changed GM-authored command/output surfaces, never client-owned preparation/publication state. The client restores or republishes `system_mods.json`, `progression_schedule.json`, the resource definitions/state/history/owner-authority quartet, `pending_effect_resolutions.json`, and `effect_identity_index.json`; the GM never writes them or adds them to the replay list. Technical paths, IDs, pending DTOs, repair diagnostics, and exception text stay operator-only.
 
 ## 10. Worked examples
 

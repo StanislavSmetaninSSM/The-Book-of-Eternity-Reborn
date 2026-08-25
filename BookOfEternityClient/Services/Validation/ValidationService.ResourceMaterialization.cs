@@ -11,7 +11,42 @@ public partial class ValidationService
     public async Task<IReadOnlyList<ValidationIssue>>
         ValidateAcceptedTurnRawResourceMaterializationAsync()
     {
-        AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs);
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await ValidateAcceptedTurnRawResourceMaterializationAsync(writeLease);
+    }
+
+    internal async Task<IReadOnlyList<ValidationIssue>>
+        ValidateAcceptedTurnRawResourceMaterializationAsync(
+            FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
+        EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
+        var keepCommonHandoff = false;
+        try
+        {
+            var issues = await ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
+                writeLease);
+            keepCommonHandoff = AcceptedMechanicsPlanAuthority.HasValidated(
+                _fs,
+                writeLease);
+            return issues;
+        }
+        finally
+        {
+            if (!keepCommonHandoff)
+                AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
+            EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
+        }
+    }
+
+    private async Task<IReadOnlyList<ValidationIssue>>
+        ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
+            FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
         var issues = new List<ValidationIssue>();
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
         var commandJson = await _fs.ReadFileAsync(ResourceMaterializationContract.CommandPath);
@@ -109,15 +144,33 @@ public partial class ValidationService
             return issues;
         }
 
+        var persistedOwnerAuthority = await
+            CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+                definitions,
+                path => string.Equals(
+                        path,
+                        CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                        StringComparison.Ordinal)
+                    ? _fs.ReadFileAsync(path)
+                    : ReadValidatedPendingTurnSnapshotFileAsync(manifest, path),
+                stateResult.Ledger,
+                historyResult.History,
+                CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
+        issues.AddRange(persistedOwnerAuthority.Issues);
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+            return issues;
+
         var acceptedItemOwners = MortalItemAcceptedTurnAuthority.GetValidatedOwners(
             _fs,
+            writeLease,
             manifest.SessionId,
-            manifest.RequestId);
+            manifest.ManifestPayloadHash);
         var missingGovernedItemIds =
             MortalItemAcceptedTurnAuthority.GetMissingGovernedItemIds(
                 _fs,
+                writeLease,
                 manifest.SessionId,
-                manifest.RequestId);
+                manifest.ManifestPayloadHash);
         var mortalOwnerComposition = MortalResourceOwnerComposer.Compose(
             new MortalResourceOwnerCompositionInput(
                 definitions,
@@ -164,14 +217,39 @@ public partial class ValidationService
         await ValidateAcceptedTurnRawEffectMaterializationAsync(
             effectIssues,
             ownerComposition,
-            isTerminalReceiptReplay);
+            isTerminalReceiptReplay,
+            manifest,
+            writeLease);
         issues.AddRange(effectIssues);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
 
         EffectAcceptedTurnPlan? effectPlan = null;
-        if (EffectAcceptedTurnPlanAuthority.TryPeekValidated(_fs, out var effectResult))
+        if (EffectAcceptedTurnPlanAuthority.TryPeekValidated(
+                _fs,
+                writeLease,
+                out var effectBinding,
+                out var effectResult))
         {
+            if (!string.Equals(
+                    effectBinding.SessionId,
+                    manifest.SessionId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    effectBinding.SnapshotToken,
+                    manifest.ManifestPayloadHash,
+                    StringComparison.Ordinal))
+            {
+                EffectAcceptedTurnPlanAuthority.InvalidateValidated(
+                    _fs,
+                    writeLease);
+                issues.Add(ResourceIssue(
+                    EffectAcceptedTurnPlan.CommandPath,
+                    "effect_materialization_snapshot_binding_mismatch",
+                    "effect subplan bound to the exact validated resource session and snapshot",
+                    $"{effectBinding.SessionId}/{effectBinding.SnapshotToken}"));
+                return issues;
+            }
             if (!effectResult.Success || effectResult.Plan == null)
             {
                 issues.AddRange(effectResult.Issues);
@@ -194,7 +272,8 @@ public partial class ValidationService
             ownerComposition.CapacityDrafts.Count == 0 &&
             ownerComposition.TerminalOwners.Count == 0 &&
             ownerComposition.OwnerCompanionAfterImages.Count == 0 &&
-            ownerComposition.OwnerTransitions.Count == 0)
+            ownerComposition.OwnerTransitions.Count == 0 &&
+            !acceptedItemOwners.Any(static owner => owner.SameTurn))
             return issues;
 
         var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
@@ -277,6 +356,11 @@ public partial class ValidationService
             ["ownerTransitions"] = new JsonArray(ownerComposition.OwnerTransitions
                 .Select(static value => (JsonNode)value.ToFingerprintNode())
                 .ToArray()),
+            ["registeredSystemOutcomes"] = new JsonArray(registeredSystemOutcomes
+                .OrderBy(static value => value.Fingerprint, StringComparer.Ordinal)
+                .Select(static value =>
+                    (JsonNode)JsonValue.Create(value.Fingerprint)!)
+                .ToArray()),
             ["fullPartyResourcePackets"] = hasStagedFullPartyResourcePackets
                 ? new JsonObject
                 {
@@ -292,6 +376,7 @@ public partial class ValidationService
             ResourceMaterializationContract.DefinitionsPath,
             ResourceMaterializationContract.StatePath,
             ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
             ResourceMaterializationContract.CommandPath,
             EffectAcceptedTurnPlan.IdentityIndexPath,
             "input/turn_request.json",
@@ -371,7 +456,7 @@ public partial class ValidationService
         var input = new AcceptedMechanicsInput(
             manifest.SessionId,
             manifest.RequestId,
-            manifest.RequestId,
+            manifest.ManifestPayloadHash,
             realm,
             manifest.TurnNumber,
             events.Root,
@@ -383,10 +468,11 @@ public partial class ValidationService
             beforeImages,
             issues,
             context);
-        var result = AcceptedMechanicsPlanAuthority.GetOrBuildValidated(_fs, input);
+        var result = AcceptedMechanicsPlanAuthority.GetOrBuildValidated(
+            _fs,
+            writeLease,
+            input);
         issues.AddRange(result.Issues);
-        if (result.Success)
-            EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs);
         return issues;
     }
 
@@ -697,31 +783,15 @@ public partial class ValidationService
         if (state.Ledger != null && history.History != null)
         {
             issues.AddRange(history.History.ValidateStateAgreement(state.Ledger));
-            var itemCatalog = await LoadMortalItemCatalogAsync(
-                writeLease,
-                includeNpcInventoryCommands: false,
-                issues);
-            AddCatalogIssues(itemCatalog.Catalog, issues);
-            var ownerRoots = await ReadMortalResourceOwnerRootsAsync(
-                manifest: null,
-                issues,
-                writeLease);
-            var mortalOwnerComposition = MortalResourceOwnerComposer.ComposeCanonical(
-                definitions.Catalog,
-                ownerRoots,
-                itemCatalog.Catalog);
-            var afterlifeRoots = await ReadAfterlifeResourceOwnerRootsAsync(
-                manifest: null,
-                issues,
-                writeLease);
-            var afterlifeOwnerComposition = AfterlifeResourceOwnerComposer.Compose(
-                new AfterlifeResourceOwnerCompositionInput(
+            var ownerComposition = await
+                CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
                     definitions.Catalog,
-                    afterlifeRoots,
-                    afterlifeRoots));
-            var ownerComposition = ResourceOwnerComposition.Combine(
-                mortalOwnerComposition,
-                afterlifeOwnerComposition);
+                    path => writeLease == null
+                        ? _fs.ReadFileAsync(path)
+                        : _fs.ReadFileAsync(writeLease, path),
+                    state.Ledger,
+                    history.History,
+                    CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
             issues.AddRange(ownerComposition.Issues);
             if (ownerComposition.Authority != null)
             {
@@ -753,6 +823,8 @@ public partial class ValidationService
             "resource_materialization_direct_state_mutation");
         await Compare(ResourceMaterializationContract.HistoryPath,
             "resource_materialization_direct_history_mutation");
+        await Compare(CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            "resource_materialization_direct_owner_authority_mutation");
         return;
 
         async Task Compare(string path, string code)

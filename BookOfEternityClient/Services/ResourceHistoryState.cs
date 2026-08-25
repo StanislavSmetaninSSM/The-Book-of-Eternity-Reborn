@@ -146,12 +146,22 @@ internal sealed class ResourceHistoryState
     private readonly FrozenDictionary<ResourceReplayKey, ResourceTransition> _byReplayKey;
     private readonly FrozenSet<ResourceCoordinate> _terminalCoordinates;
 
-    private ResourceHistoryState(IEnumerable<ResourceTransition> transitions)
+    private ResourceHistoryState(
+        IEnumerable<ResourceTransition> transitions,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
+        IComparer<ResourceTransition> comparer = ResourceTransitionComparer.Instance;
+        if (workMeter != null)
+        {
+            comparer = new ResourceAuthorityCountingComparer<ResourceTransition>(
+                comparer,
+                workMeter.CompareInitialHistory);
+        }
         var ordered = transitions
-            .OrderBy(static transition => transition, ResourceTransitionComparer.Instance)
+            .OrderBy(static transition => transition, comparer)
             .ToArray();
         Transitions = new ReadOnlyCollection<ResourceTransition>(ordered);
+        workMeter?.VisitInitialHistoryIndex(ordered.Length * 3L);
         _byTransitionId = ordered.ToFrozenDictionary(
             static transition => transition.TransitionId,
             StringComparer.Ordinal);
@@ -160,7 +170,7 @@ internal sealed class ResourceHistoryState
             .Where(static transition => transition.Operation == ResourceTransitionOperation.Retire)
             .Select(static transition => transition.Coordinate)
             .ToFrozenSet(ResourceCoordinateComparer.Instance);
-        Fingerprint = ComputeFingerprint(ordered);
+        Fingerprint = ComputeFingerprint(ordered, workMeter);
     }
 
     internal IReadOnlyList<ResourceTransition> Transitions { get; }
@@ -170,7 +180,8 @@ internal sealed class ResourceHistoryState
     internal static ResourceHistoryStateResult ParseCanonical(
         string? json,
         ResourceDefinitionCatalog definitions,
-        bool allowMissingPristine)
+        bool allowMissingPristine,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
         ArgumentNullException.ThrowIfNull(definitions);
         if (json == null)
@@ -178,7 +189,9 @@ internal sealed class ResourceHistoryState
             if (allowMissingPristine)
             {
                 return new ResourceHistoryStateResult(
-                    new ResourceHistoryState(Array.Empty<ResourceTransition>()),
+                    new ResourceHistoryState(
+                        Array.Empty<ResourceTransition>(),
+                        workMeter),
                     Array.Empty<ValidationIssue>(),
                     IsMissing: true);
             }
@@ -262,31 +275,36 @@ internal sealed class ResourceHistoryState
             var index = 0;
             foreach (var value in entries.EnumerateArray())
             {
+                workMeter?.VisitInitialHistoryInput();
                 var path = $"{ResourceMaterializationContract.HistoryPath}.entries[{index++}]";
                 var transition = ParseTransition(value, path, definitions, issues);
                 if (transition != null)
                     parsed.Add(transition);
             }
 
-            ValidateTransitions(parsed, definitions, issues);
+            ValidateTransitions(parsed, definitions, issues, workMeter);
             return issues.Count == 0
-                ? new ResourceHistoryStateResult(new ResourceHistoryState(parsed), issues)
+                ? new ResourceHistoryStateResult(
+                    new ResourceHistoryState(parsed, workMeter),
+                    issues)
                 : new ResourceHistoryStateResult(null, issues.ToArray());
         }
     }
 
     internal static ResourceHistoryStateResult CreateValidated(
         IEnumerable<ResourceTransition> transitions,
-        ResourceDefinitionCatalog definitions)
+        ResourceDefinitionCatalog definitions,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
         ArgumentNullException.ThrowIfNull(transitions);
         ArgumentNullException.ThrowIfNull(definitions);
         var candidates = transitions.ToArray();
+        workMeter?.VisitInitialHistoryInput(candidates.Length);
         var issues = new List<ValidationIssue>();
-        ValidateTransitions(candidates, definitions, issues);
+        ValidateTransitions(candidates, definitions, issues, workMeter);
         return issues.Count == 0
             ? new ResourceHistoryStateResult(
-                new ResourceHistoryState(candidates),
+                new ResourceHistoryState(candidates, workMeter),
                 Array.Empty<ValidationIssue>())
             : new ResourceHistoryStateResult(null, issues.ToArray());
     }
@@ -307,19 +325,29 @@ internal sealed class ResourceHistoryState
     internal bool IsTerminal(ResourceCoordinate coordinate) =>
         _terminalCoordinates.Contains(coordinate);
 
-    internal IReadOnlyList<ValidationIssue> ValidateStateAgreement(ResourceStateLedger ledger)
+    internal IReadOnlyList<ValidationIssue> ValidateStateAgreement(
+        ResourceStateLedger ledger,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
         ArgumentNullException.ThrowIfNull(ledger);
         var issues = new List<ValidationIssue>();
         var historyCoordinates = new HashSet<ResourceCoordinate>(
             ResourceCoordinateComparer.Instance);
+        workMeter?.VisitStateAgreementHistory(Transitions.Count);
         foreach (var group in Transitions.GroupBy(
                      static transition => transition.Coordinate,
                      ResourceCoordinateComparer.Instance))
         {
             historyCoordinates.Add(group.Key);
+            IComparer<ResourceTransition> comparer = ResourceTransitionComparer.Instance;
+            if (workMeter != null)
+            {
+                comparer = new ResourceAuthorityCountingComparer<ResourceTransition>(
+                    comparer,
+                    workMeter.CompareStateAgreementHistory);
+            }
             var ordered = group
-                .OrderBy(static transition => transition, ResourceTransitionComparer.Instance)
+                .OrderBy(static transition => transition, comparer)
                 .ToArray();
             var first = ordered[0];
             var latest = ordered[^1];
@@ -386,6 +414,7 @@ internal sealed class ResourceHistoryState
 
         foreach (var entry in ledger.Entries)
         {
+            workMeter?.VisitStateAgreementState();
             if (!historyCoordinates.Contains(entry.Coordinate))
             {
                 Add(
@@ -625,7 +654,8 @@ internal sealed class ResourceHistoryState
     private static void ValidateTransitions(
         IReadOnlyList<ResourceTransition> transitions,
         ResourceDefinitionCatalog definitions,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
         var exactTransitionIds = new HashSet<string>(StringComparer.Ordinal);
         var confusableTransitionIds = new HashSet<string>(StringComparer.Ordinal);
@@ -642,6 +672,7 @@ internal sealed class ResourceHistoryState
         var replayEntries = new Dictionary<ResourceReplayKey, ResourceTransition>();
         foreach (var transition in transitions)
         {
+            workMeter?.VisitInitialHistoryValidation();
             var path = ResourceMaterializationContract.HistoryPath + ".entries";
             ValidateTypedIdentity(
                 transition.TransitionId,
@@ -722,7 +753,7 @@ internal sealed class ResourceHistoryState
             }
         }
 
-        ValidateCoordinateChains(transitions, issues);
+        ValidateCoordinateChains(transitions, issues, workMeter);
     }
 
     private static void ValidateTypedIdentity(
@@ -1180,14 +1211,22 @@ internal sealed class ResourceHistoryState
 
     private static void ValidateCoordinateChains(
         IEnumerable<ResourceTransition> transitions,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        ResourceAuthorityWorkMeter? workMeter)
     {
         foreach (var group in transitions.GroupBy(
                      static transition => transition.Coordinate,
                      ResourceCoordinateComparer.Instance))
         {
+            IComparer<ResourceTransition> comparer = ResourceTransitionComparer.Instance;
+            if (workMeter != null)
+            {
+                comparer = new ResourceAuthorityCountingComparer<ResourceTransition>(
+                    comparer,
+                    workMeter.CompareInitialHistory);
+            }
             var ordered = group
-                .OrderBy(static transition => transition, ResourceTransitionComparer.Instance)
+                .OrderBy(static transition => transition, comparer)
                 .ToArray();
             if (ordered.Length == 0)
                 continue;
@@ -1206,6 +1245,7 @@ internal sealed class ResourceHistoryState
             var terminal = false;
             for (var index = 0; index < ordered.Length; index++)
             {
+                workMeter?.VisitInitialHistoryChain();
                 var transition = ordered[index];
                 if (terminal)
                 {
@@ -1615,11 +1655,14 @@ internal sealed class ResourceHistoryState
         string.Equals(existing.PolicyFingerprint, probe.PolicyFingerprint, StringComparison.Ordinal) &&
         string.Equals(existing.ReceiptId, probe.ReceiptId, StringComparison.Ordinal);
 
-    private static string ComputeFingerprint(IEnumerable<ResourceTransition> transitions)
+    private static string ComputeFingerprint(
+        IEnumerable<ResourceTransition> transitions,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
         using var builder = new ResourceFingerprintBuilder("resource-history-v1");
         foreach (var transition in transitions)
         {
+            workMeter?.VisitInitialHistoryFingerprint();
             builder.Append(transition.TransitionId);
             builder.Append(transition.OperationId);
             builder.Append(transition.EventRef);

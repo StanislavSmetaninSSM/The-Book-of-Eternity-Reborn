@@ -14,7 +14,14 @@ import { toPlayerFacingText } from '../utils/playerCopy';
 import { qteLayoutSupportNote } from '../utils/qteKeyInput';
 import { QteMiniGame } from './qte/QteMiniGame';
 
-export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
+const effectResolutionPollIntervalMs = 1_500;
+
+type QteScenePanelProps = {
+  qte: BrowserGameScreenDto['qte'];
+  onAuthoritativeStateChanged?: () => void | Promise<void>;
+};
+
+export function QteScenePanel({ qte, onAuthoritativeStateChanged }: QteScenePanelProps) {
   const [qteState, setQteState] = useState(qte);
   const [result, setResult] = useState<BrowserApiResult<BrowserGameScreenDto['qte']> | null>(null);
   const [notice, setNotice] = useState('');
@@ -23,6 +30,55 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
   useEffect(() => {
     setQteState(qte);
   }, [qte]);
+
+  const isAwaitingEffectResolution = isAwaitingEffectResolutionState(qteState);
+
+  useEffect(() => {
+    if (!isAwaitingEffectResolution) {
+      return;
+    }
+
+    let disposed = false;
+    let refreshTimer: number | null = null;
+
+    const scheduleRefresh = () => {
+      refreshTimer = window.setTimeout(() => void refreshAuthoritativeState(), effectResolutionPollIntervalMs);
+    };
+
+    const refreshAuthoritativeState = async () => {
+      try {
+        const response = await browserApi.getQteState();
+        if (disposed) {
+          return;
+        }
+
+        if (isSuccess(response)) {
+          setQteState(response.data);
+          if (!isAwaitingEffectResolutionState(response.data)) {
+            setNotice(formatQteStateLabel(response.data));
+            void onAuthoritativeStateChanged?.();
+            return;
+          }
+        }
+      } catch {
+        // A transient local-host failure must not restore stale QTE controls.
+        // Keep the accepted choice sealed and try the read-only refresh again.
+      }
+
+      if (!disposed) {
+        scheduleRefresh();
+      }
+    };
+
+    scheduleRefresh();
+
+    return () => {
+      disposed = true;
+      if (refreshTimer !== null) {
+        window.clearTimeout(refreshTimer);
+      }
+    };
+  }, [isAwaitingEffectResolution, onAuthoritativeStateChanged]);
 
   async function resolveOffer(decision: 'accept' | 'decline') {
     if (!qteState.interactionToken) {
@@ -114,7 +170,20 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
         </article>
       )}
 
-      {qteState.activeScene && (
+      {isAwaitingEffectResolution && (
+        <article
+          className="summary-card turn-state-card turn-state-card--waiting qte-effect-resolution-wait"
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+        >
+          <h3>Книга сводит последствия</h3>
+          <p>Исход уже выбран. Книга уточняет действие эффектов. Повторять выбор не нужно.</p>
+          <p className="muted">Продолжение сцены появится здесь, когда последствия будут записаны.</p>
+        </article>
+      )}
+
+      {qteState.activeScene && !isAwaitingEffectResolution && (
         <article className="summary-card">
           <h3>{toPlayerFacingText(qteState.activeScene.title, 'Быстрая сцена активна')}</h3>
           {activeChapter ? (
@@ -234,4 +303,8 @@ function formatScoreValue(value: number): string {
   }
 
   return Number.isInteger(value) ? value.toString() : value.toFixed(2).replace(/\.?0+$/, '');
+}
+
+function isAwaitingEffectResolutionState(qte: BrowserGameScreenDto['qte']): boolean {
+  return qte.state.trim().toLowerCase() === 'awaitingeffectresolution';
 }

@@ -1,4 +1,5 @@
 using System.Text;
+using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -24,6 +25,7 @@ public sealed class ResourceMaterializationTestContextTests
                 "game_state/resources/resource_definitions.json",
                 "game_state/resources/resource_state.json",
                 "game_state/resources/resource_history.json",
+                "game_state/resources/resource_owner_authority.json",
                 "game_state/resources/resource_commands.json"
             },
             ResourceMaterializationTestContext.AllResourcePaths);
@@ -49,6 +51,135 @@ public sealed class ResourceMaterializationTestContextTests
         Assert.NotNull(context.FileSystem);
         Assert.NotNull(context.Validator);
         Assert.NotNull(context.Normalizer);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task CoordinatedQuartetFailure_RestoresExactBytesAndPriorAbsence(
+        int failAfterWriteIndex)
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        var initial = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            [ResourceMaterializationTestContext.DefinitionsPath] =
+                "{ \"schemaVersion\": 1, \"definitions\": [] }\r\n",
+            [ResourceMaterializationTestContext.StatePath] =
+                "{ \"schemaVersion\": 1, \"entries\": [] }\n",
+            [ResourceMaterializationTestContext.HistoryPath] =
+                "{\"schemaVersion\":1,\"entries\":[]}"
+        };
+        foreach (var pair in initial)
+        {
+            await context.WriteExactBytesAsync(
+                pair.Key,
+                new UTF8Encoding(false).GetBytes(pair.Value));
+        }
+        await context.DeleteAsync(ResourceMaterializationTestContext.AuthorityPath);
+        var quartet = new[]
+        {
+            ResourceMaterializationTestContext.DefinitionsPath,
+            ResourceMaterializationTestContext.StatePath,
+            ResourceMaterializationTestContext.HistoryPath,
+            ResourceMaterializationTestContext.AuthorityPath
+        };
+        var before = await context.CaptureAsync(quartet);
+        var writes = quartet.Select(path =>
+            new CoordinatedStateWriteHelper.PlannedWrite(
+                path,
+                initial.TryGetValue(path, out var previous) ? previous : null,
+                path == ResourceMaterializationTestContext.AuthorityPath
+                    ? "{\"schemaVersion\":1,\"historicalOwners\":[],\"capacityDrafts\":[]}"
+                    : initial[path].Replace("1", "2", StringComparison.Ordinal),
+                RequireCurrentBaseline: true)).ToArray();
+        var applied = -1;
+
+        var committed = await CoordinatedStateWriteHelper.TryCommitWithHookAsync(
+            context.FileSystem,
+            _ => ++applied == failAfterWriteIndex
+                ? Task.FromException(new IOException("injected quartet failure"))
+                : Task.CompletedTask,
+            writes);
+
+        Assert.False(committed);
+        Assert.Equal(failAfterWriteIndex, applied);
+        await context.AssertUnchangedAsync(before);
+    }
+
+    [Fact]
+    public async Task CoordinatedQuartet_RejectsTriadMutationAfterAuthorityPreflight()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        var definitions = Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);
+        var state = Assert.IsType<ResourceStateLedger>(bootstrap.State);
+        var history = Assert.IsType<ResourceHistoryState>(bootstrap.History);
+        var beforeImages = new Dictionary<string, string?>(StringComparer.Ordinal)
+        {
+            [ResourceMaterializationTestContext.DefinitionsPath] =
+                definitions.ToCanonicalJson(),
+            [ResourceMaterializationTestContext.StatePath] =
+                state.ToCanonicalJson(),
+            [ResourceMaterializationTestContext.HistoryPath] =
+                history.ToCanonicalJson()
+        };
+        foreach (var (path, json) in beforeImages)
+            await context.WriteExactBytesAsync(path, Encoding.UTF8.GetBytes(json!));
+        await context.WriteExactBytesAsync(
+            ResourceMaterializationTestContext.AuthorityPath,
+            Encoding.UTF8.GetBytes(
+                "{\"schemaVersion\":1,\"historicalOwners\":[],\"capacityDrafts\":[]}"));
+
+        var quartet = await CanonicalResourceQuartetTransaction.ComposeExistingSessionAsync(
+            definitions,
+            state,
+            history,
+            state,
+            history,
+            context.FileSystem.ReadFileAsync,
+            beforeImages,
+            new Dictionary<string, string>(StringComparer.Ordinal));
+        var projection = Assert.IsType<CanonicalResourceQuartetProjection>(
+            quartet.Projection);
+        var concurrentState =
+            "{\"schemaVersion\":1,\"entries\":[{\"concurrent\":true}]}";
+        await context.WriteExactBytesAsync(
+            ResourceMaterializationTestContext.StatePath,
+            Encoding.UTF8.GetBytes(concurrentState));
+        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
+        {
+            new(
+                ResourceMaterializationTestContext.DefinitionsPath,
+                projection.BeforeImages[ResourceMaterializationTestContext.DefinitionsPath],
+                definitions.ToCanonicalJson(),
+                RequireCurrentBaseline: true),
+            new(
+                ResourceMaterializationTestContext.StatePath,
+                projection.BeforeImages[ResourceMaterializationTestContext.StatePath],
+                state.ToCanonicalJson(),
+                RequireCurrentBaseline: true),
+            new(
+                ResourceMaterializationTestContext.HistoryPath,
+                projection.BeforeImages[ResourceMaterializationTestContext.HistoryPath],
+                history.ToCanonicalJson(),
+                RequireCurrentBaseline: true)
+        };
+        CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(
+            writes,
+            projection);
+
+        var committed = await CoordinatedStateWriteHelper.TryCommitAsync(
+            context.FileSystem,
+            writes.ToArray());
+
+        Assert.False(committed);
+        Assert.Equal(
+            concurrentState,
+            await context.FileSystem.ReadFileAsync(
+                ResourceMaterializationTestContext.StatePath));
     }
 
     [Fact]
@@ -159,6 +290,8 @@ public sealed class ResourceMaterializationTestContextTests
         Assert.Empty(first[ResourceMaterializationTestContext.DefinitionsPath]["definitions"]!.AsArray());
         Assert.Empty(first[ResourceMaterializationTestContext.StatePath]["entries"]!.AsArray());
         Assert.Empty(first[ResourceMaterializationTestContext.HistoryPath]["entries"]!.AsArray());
+        Assert.Empty(first[ResourceMaterializationTestContext.AuthorityPath]["historicalOwners"]!.AsArray());
+        Assert.Empty(first[ResourceMaterializationTestContext.AuthorityPath]["capacityDrafts"]!.AsArray());
         Assert.Empty(first[ResourceMaterializationTestContext.CommandsPath]["resourceDefinitionCreations"]!.AsArray());
         Assert.Empty(first[ResourceMaterializationTestContext.CommandsPath]["resourceCapacityChanges"]!.AsArray());
         Assert.Empty(first[ResourceMaterializationTestContext.CommandsPath]["resourceChanges"]!.AsArray());

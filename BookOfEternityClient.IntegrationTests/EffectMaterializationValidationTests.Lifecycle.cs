@@ -54,10 +54,15 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.Equal("expired", entry["state"]?.GetValue<string>());
         var transition = Assert.IsType<JsonObject>(entry["transitions"]!.AsArray().Last());
         Assert.Equal("expire", transition["kind"]?.GetValue<string>());
-        Assert.Contains(
-            "owner_critical_failure",
-            transition["eventRef"]?.GetValue<string>() ?? string.Empty,
-            StringComparison.Ordinal);
+        Assert.Equal(
+            EffectAcceptedTurnPlanner.CreateLifecycleResourceTriggerEventRef(
+                "turn_43:reported:owner_critical_failure:1",
+                purchasedEffectId,
+                new ResourcePendingAuthorityBinding(
+                    "permanent",
+                    purchasedEffectId),
+                "fate_shield_on_critical_failure"),
+            transition["eventRef"]?.GetValue<string>());
         Assert.Null(await context.ReadJsonAsync(
             EffectMaterializationTestContext.CommandPath));
     }
@@ -141,12 +146,13 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestContext.IdentityIndexPath))!.AsObject();
         var entry = Assert.IsType<JsonObject>(Assert.Single(index["entries"]!.AsArray()));
         var transitions = entry["transitions"]!.AsArray();
-        Assert.Equal(3, transitions.Count);
-        Assert.Equal("stack", transitions[1]!["kind"]!.GetValue<string>());
+        Assert.Equal(
+            new[] { "create", "stack", "trigger", "consume" },
+            transitions.Select(static transition =>
+                transition!["kind"]!.GetValue<string>()).ToArray());
         Assert.Equal(
             EffectMaterializationTestFixture.EffectId,
             Assert.Single(transitions[1]!["resultEffectIds"]!.AsArray())!.GetValue<string>());
-        Assert.Equal("consume", transitions[2]!["kind"]!.GetValue<string>());
         Assert.Null(await context.ReadJsonAsync(
             EffectMaterializationTestContext.CommandPath));
     }
@@ -579,7 +585,7 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestContext.IdentityIndexPath))!.AsObject();
         var transitions = index["entries"]![0]!["transitions"]!.AsArray();
         Assert.Equal(
-            new[] { "create", "refresh", "consume" },
+            new[] { "create", "refresh", "trigger", "consume" },
             transitions.Select(static transition =>
                 transition!["kind"]!.GetValue<string>()).ToArray());
     }
@@ -842,8 +848,12 @@ public sealed partial class EffectMaterializationValidationTests
         var transition = entry["transitions"]!.AsArray()[^1]!.AsObject();
         Assert.Equal("expire", transition["kind"]!.GetValue<string>());
         Assert.Equal(
-            "turn_43:lifecycle:owner_turn_end:player_current:" +
-            EffectMaterializationTestFixture.EffectId,
+            EffectAcceptedTurnPlanner.CreateLifecycleTransitionEventRef(
+                "turn_43:lifecycle:owner_turn_end:player_current",
+                EffectMaterializationTestFixture.EffectId,
+                new ResourcePendingAuthorityBinding(
+                    "permanent",
+                    EffectMaterializationTestFixture.EffectId)),
             transition["eventRef"]!.GetValue<string>());
     }
 
@@ -861,17 +871,24 @@ public sealed partial class EffectMaterializationValidationTests
         var backups = await context.ReadPendingSnapshotBackupsAsync();
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
         AssertNoEffectErrors(issues);
+        var validatedHandoff = await AcceptedMechanicsAuthorityTestProbe
+            .PeekCommonAsync(context.FileSystem);
+        Assert.NotNull(validatedHandoff);
+        Assert.NotNull(validatedHandoff.Result.Plan?.EffectPlan);
 
-        var request = (await context.ReadJsonAsync(
-            "input/turn_request.json"))!.AsObject();
-        request["sessionId"] = "session_effect_materialization_replaced";
-        await context.WriteJsonAsync("input/turn_request.json", request);
         var before = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.IdentityIndexPath,
             EffectMaterializationTestContext.CommandPath);
+        _ = await SessionReplacementTestHarness.RotateGenerationAsync(
+            context.FileSystem);
+
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+            context.FileSystem));
 
         var plan = await context.NormalizeAcceptedEffectsAsync(backups);
 

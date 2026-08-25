@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Tests;
@@ -16,6 +17,8 @@ internal sealed partial class MortalItemMaterializationTestContext
 
         foreach (var (path, root) in files)
             await WriteJsonAsync(path, root);
+
+        await SeedPristineResourceQuartetAsync();
     }
 
     internal async Task SeedMortalPlayerResourcesAsync(int turn = 41)
@@ -43,5 +46,57 @@ internal sealed partial class MortalItemMaterializationTestContext
         await WriteJsonAsync(
             ResourceMaterializationContract.HistoryPath,
             System.Text.Json.Nodes.JsonNode.Parse(resources.History!.ToCanonicalJson())!);
+
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            resources.Definitions,
+            FileSystem.ReadFileAsync,
+            resources.State,
+            resources.History,
+            CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap);
+        if (!authority.IsValid || string.IsNullOrWhiteSpace(authority.CanonicalAuthorityJson))
+        {
+            throw new InvalidOperationException(
+                string.Join(Environment.NewLine, authority.Issues));
+        }
+
+        await WriteJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            JsonNode.Parse(authority.CanonicalAuthorityJson)!);
+    }
+
+    internal async Task SeedPristineResourceQuartetAsync()
+    {
+        var resources = ResourceBootstrapStateBuilder.BuildPristine();
+        if (!resources.IsValid)
+        {
+            throw new InvalidOperationException(
+                string.Join(Environment.NewLine, resources.Issues));
+        }
+
+        await WriteJsonAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            JsonNode.Parse(resources.Definitions!.ToCanonicalJson())!);
+        await WriteJsonAsync(
+            ResourceMaterializationContract.StatePath,
+            JsonNode.Parse(resources.State!.ToCanonicalJson())!);
+        await WriteJsonAsync(
+            ResourceMaterializationContract.HistoryPath,
+            JsonNode.Parse(resources.History!.ToCanonicalJson())!);
+
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            resources.Definitions,
+            FileSystem.ReadFileAsync,
+            resources.State,
+            resources.History,
+            CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap);
+        if (!authority.IsValid || string.IsNullOrWhiteSpace(authority.CanonicalAuthorityJson))
+        {
+            throw new InvalidOperationException(
+                string.Join(Environment.NewLine, authority.Issues));
+        }
+
+        await WriteJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            JsonNode.Parse(authority.CanonicalAuthorityJson)!);
     }
 }

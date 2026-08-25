@@ -39,6 +39,7 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                 replacementContended.TrySetResult();
                 return Task.CompletedTask;
             });
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(fs);
         var hooks = new QteSceneServiceHooks
         {
             BeforeRuntimeWriteAsync = async () =>
@@ -77,6 +78,8 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         string expectedState)
     {
         var fs = CreateFileSystem();
+        if (string.Equals(decision, "accept", StringComparison.Ordinal))
+            await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(fs);
         var web = CreateWebService(fs, new QteSceneServiceHooks());
         await WriteOfferAsync(fs, BuildTerminalOffer());
         Assert.False(fs.FileExists("input/turn_request.json"));
@@ -164,6 +167,74 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         var entry = Assert.Single(history.RootElement.EnumerateArray());
         Assert.Equal(12, entry.GetProperty("acceptedAtTurn").GetInt32());
         Assert.Equal(12, entry.GetProperty("finishedAtTurn").GetInt32());
+    }
+
+    [Fact]
+    public async Task CompleteAction_BoundedEffectReturnsAwaitingStateWithoutFalseCompletionOrRetryAuthority()
+    {
+        var fs = CreateFileSystem();
+        await SeedBoundedDeferredEffectAuthorityAsync(fs);
+        var web = CreateWebService(fs, new QteSceneServiceHooks());
+        var offer = BuildTerminalOffer();
+        offer.SourceTurnNumber = 42;
+        offer.TerminalOutcomes[0].ResponseFragment = new JsonObject
+        {
+            ["response"] = "Удар запускает отложенное разрешение раны.",
+            ["resourceChanges"] = new JsonArray(new JsonObject
+            {
+                ["operation"] = "damage",
+                ["target"] = new JsonObject
+                {
+                    ["kind"] = "player",
+                    ["targetId"] = "player_current"
+                },
+                ["resourceKey"] = "poise",
+                ["amount"] = 5,
+                ["source"] = new JsonObject
+                {
+                    ["kind"] = "narrative_outcome"
+                },
+                ["eventRef"] = "turn_42:qte_terminal:1:resource:1",
+                ["reason"] = "Цена браузерного исхода QTE."
+            })
+        };
+        await WriteOfferAsync(fs, offer);
+        var offered = await web.BuildReadOnlyStateAsync();
+        var active = await web.ResolveOfferDecisionAsync(
+            new QteWebOfferDecisionRequest(
+                "accept",
+                RequiredInteractionToken(offered)));
+
+        var result = await web.ResolveActionAsync(
+            new QteWebActionRequest(
+                "finish",
+                "success",
+                RequiredInteractionToken(active)));
+
+        Assert.True(
+            string.Equals(
+                "AwaitingEffectResolution",
+                result.State,
+                StringComparison.Ordinal),
+            result.Error);
+        Assert.NotNull(result.ActiveScene);
+        Assert.NotNull(result.Resolution);
+        Assert.Equal(
+            "AwaitingEffectResolution",
+            result.Resolution!.State);
+        Assert.Null(result.Completion);
+        Assert.Empty(result.AvailableOperations);
+        Assert.Null(result.InteractionToken);
+        Assert.True(fs.FileExists(
+            QteDeferredEffectContinuation.RequestPath));
+        Assert.False(fs.FileExists(QteSceneService.QteHistoryPath));
+
+        var refreshed = await web.BuildReadOnlyStateAsync();
+        Assert.Equal("AwaitingEffectResolution", refreshed.State);
+        Assert.NotNull(refreshed.ActiveScene);
+        Assert.Null(refreshed.Completion);
+        Assert.Empty(refreshed.AvailableOperations);
+        Assert.Null(refreshed.InteractionToken);
     }
 
     [Fact]
@@ -710,12 +781,19 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         string decision)
     {
         var failure = new IOException($"Injected late {decision} failure.");
+        var runtimeWriteObserved = false;
         var fs = CreateFileSystem();
+        if (string.Equals(decision, "accept", StringComparison.Ordinal))
+            await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(fs);
         var web = CreateWebService(
             fs,
             new QteSceneServiceHooks
             {
-                AfterRuntimeWrittenAsync = _ => Task.FromException(failure)
+                AfterRuntimeWrittenAsync = _ =>
+                {
+                    runtimeWriteObserved = true;
+                    return Task.FromException(failure);
+                }
             });
         await WriteOfferAsync(fs, BuildTerminalOffer());
         var interactionToken = RequiredInteractionToken(
@@ -727,9 +805,16 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                 interactionToken));
 
         Assert.Equal("Failed", result.State);
-        Assert.Contains(failure.Message, result.Error, StringComparison.Ordinal);
+        Assert.True(runtimeWriteObserved);
+        Assert.Contains(
+            string.Equals(decision, "accept", StringComparison.Ordinal)
+                ? "qte_deferred_continuation_accept_conflict"
+                : failure.Message,
+            result.Error,
+            StringComparison.Ordinal);
         Assert.True(fs.FileExists(QteSceneService.QteOfferPath));
         Assert.False(fs.FileExists(QteSceneService.QteRuntimePath));
+        Assert.False(fs.FileExists(QteDeferredEffectContinuation.StatePath));
     }
 
     [Theory]
@@ -789,6 +874,69 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
             (await fs.ReadFileAsync("game_state/player/experience.json"))!)!.AsObject();
         Assert.Equal(10, experience["totalExperience"]!.GetValue<int>());
         Assert.Same(stateBefore, stateManager.CurrentState);
+    }
+
+    [Theory]
+    [InlineData("history")]
+    [InlineData("runtime")]
+    public async Task CompleteAction_ResourcePenaltyLateFailureRollsBackCanonicalQuartet(
+        string failurePhase)
+    {
+        var fs = CreateFileSystem();
+        await SeedMortalPlayerResourceQuartetAsync(fs);
+        var failure = new IOException($"Injected resource terminal {failurePhase} failure.");
+        var web = CreateWebService(
+            fs,
+            new QteSceneServiceHooks
+            {
+                AfterHistoryWrittenAsync = failurePhase == "history"
+                    ? () => Task.FromException(failure)
+                    : null,
+                AfterRuntimeWrittenAsync = failurePhase == "runtime"
+                    ? state => state.ActiveScene == null
+                        ? Task.FromException(failure)
+                        : Task.CompletedTask
+                    : null
+            },
+            out var stateManager);
+        var offer = BuildTerminalOffer();
+        offer.TerminalOutcomes[0].ResponseFragment!["resourceChanges"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["operation"] = "damage",
+                ["target"] = new JsonObject
+                {
+                    ["kind"] = "player",
+                    ["targetId"] = "player_current"
+                },
+                ["resourceKey"] = "poise",
+                ["amount"] = 15,
+                ["source"] = new JsonObject
+                {
+                    ["kind"] = "narrative_outcome"
+                },
+                ["eventRef"] = "turn_12:qte_terminal:1:resource:1",
+                ["reason"] = "Browser rollback must restore the selected QTE penalty."
+            }
+        };
+        await WriteActiveRuntimeAsync(fs, offer);
+        await stateManager.RefreshGameStateAsync();
+        var before = await CaptureResourceAndRuntimeBytesAsync(fs);
+        var interactionToken = RequiredInteractionToken(
+            await web.BuildReadOnlyStateAsync());
+
+        var result = await web.ResolveActionAsync(
+            new QteWebActionRequest(
+                "finish",
+                "success",
+                interactionToken));
+
+        Assert.Equal("Failed", result.State);
+        Assert.Contains(failure.Message, result.Error, StringComparison.Ordinal);
+        await AssertResourceAndRuntimeBytesAsync(fs, before);
+        Assert.False(fs.FileExists(QteSceneService.QteHistoryPath));
+        Assert.False(fs.FileExists(ResourceMaterializationContract.CommandPath));
     }
 
     [Fact]
@@ -1471,6 +1619,141 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
             JsonSerializer.Serialize(
                 state,
                 SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private static async Task SeedMortalPlayerResourceQuartetAsync(FileSystemManager fs)
+    {
+        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+            incarnationNumber: 1,
+            turn: 1,
+            permanentStrength: 20,
+            permanentConstitution: 20,
+            permanentIntelligence: 20,
+            permanentWisdom: 20,
+            permanentFaith: 20);
+        Assert.True(resources.IsValid, string.Join("; ", resources.Issues.Select(issue => issue.Code)));
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            resources.Definitions!.ToCanonicalJson());
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            resources.State!.ToCanonicalJson());
+        await fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            resources.History!.ToCanonicalJson());
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            resources.Definitions,
+            path => fs.ReadFileAsync(path),
+            resources.State,
+            resources.History,
+            CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(authority.IsValid, string.Join("; ", authority.Issues.Select(issue => issue.Code)));
+        await fs.WriteFileAtomicAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            authority.CanonicalAuthorityJson!);
+    }
+
+    private static async Task SeedBoundedDeferredEffectAuthorityAsync(
+        FileSystemManager fs)
+    {
+        await SeedMortalPlayerResourceQuartetAsync(fs);
+        await fs.WriteFileAtomicAsync(
+            "game_state/history/chat_log.json",
+            new JsonObject
+            {
+                ["sessionId"] = "session_browser_qte_deferred",
+                ["entries"] = new JsonArray()
+            }.ToJsonString());
+
+        var definition = CreateBoundedResourceDamagedDefinition();
+        var effect = CreateBoundedResourceDamagedEffect();
+        await fs.WriteFileAtomicAsync(
+            EffectMaterializationTestContext.PlayerWoundsPath,
+            new JsonArray(new JsonObject
+            {
+                ["woundId"] = "wound_test_torn_side",
+                ["woundName"] = "Рваная рана в боку",
+                ["severity"] = "severe",
+                ["description"] = "Края раны снова разошлись.",
+                ["activeEffectDefinitions"] = new JsonArray(definition)
+            }).ToJsonString());
+        await fs.WriteFileAtomicAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(effect.DeepClone())
+            }.ToJsonString());
+        await fs.WriteFileAtomicAsync(
+            EffectMaterializationTestContext.IdentityIndexPath,
+            EffectMaterializationTestFixture.CreateIdentityIndex(effect)
+                .ToJsonString());
+    }
+
+    private static JsonObject CreateBoundedResourceDamagedDefinition()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition(
+            "periodic_damage");
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "uses",
+            ["initialUses"] = 1,
+            ["consumingEventTypes"] = new JsonArray("resource_damaged")
+        };
+        definition["triggers"] = new JsonArray(
+            CreateBoundedResourceDamagedTrigger());
+        return definition;
+    }
+
+    private static JsonObject CreateBoundedResourceDamagedEffect()
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "periodic_damage");
+        effect["lifetime"] = new JsonObject
+        {
+            ["mode"] = "uses",
+            ["remainingUses"] = 1,
+            ["consumingTriggerIds"] = new JsonArray("on_resource_damaged")
+        };
+        effect["triggers"] = new JsonArray(
+            CreateBoundedResourceDamagedTrigger());
+        return effect;
+    }
+
+    private static JsonObject CreateBoundedResourceDamagedTrigger() => new()
+    {
+        ["triggerId"] = "on_resource_damaged",
+        ["eventType"] = "resource_damaged",
+        ["priority"] = 100,
+        ["componentIds"] = new JsonArray("component_001"),
+        ["consumeUses"] = true,
+        ["resolutionMode"] = "bounded_receipt"
+    };
+
+    private static async Task<Dictionary<string, byte[]?>>
+        CaptureResourceAndRuntimeBytesAsync(FileSystemManager fs)
+    {
+        var result = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        foreach (var path in new[]
+                 {
+                     ResourceMaterializationContract.DefinitionsPath,
+                     ResourceMaterializationContract.StatePath,
+                     ResourceMaterializationContract.HistoryPath,
+                     CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                     QteSceneService.QteRuntimePath
+                 })
+        {
+            result[path] = await fs.ReadFileBytesAsync(path);
+        }
+        return result;
+    }
+
+    private static async Task AssertResourceAndRuntimeBytesAsync(
+        FileSystemManager fs,
+        IReadOnlyDictionary<string, byte[]?> expected)
+    {
+        foreach (var (path, bytes) in expected)
+            Assert.Equal(bytes, await fs.ReadFileBytesAsync(path));
     }
 
     private static async Task<QtePracticeWebStateDto> StartPracticeAsync(

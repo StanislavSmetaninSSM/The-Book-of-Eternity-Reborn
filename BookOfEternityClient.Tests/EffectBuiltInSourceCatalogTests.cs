@@ -229,9 +229,63 @@ public sealed class EffectBuiltInSourceCatalogTests
             planned.Success,
             string.Join(Environment.NewLine, planned.Issues.Select(static issue => issue.ToString())));
 
-        var finalized = EffectAcceptedTurnPlanner.FinalizeAfterResourceGraph(
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(
+            bootstrap.IsValid,
+            string.Join(
+                Environment.NewLine,
+                bootstrap.Issues.Select(static issue => issue.ToString())));
+        var due = EffectAcceptedTurnPlanner.ResolveDuePeriodicResourceMutations(
             planned.Plan!,
-            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
+            ResourceOwnerAuthority.CreateCurrentPlayerAuthority(
+                bootstrap.Definitions!),
+            bootstrap.Definitions!);
+        Assert.Empty(due.Issues);
+        var candidate = Assert.Single(due.TriggerCandidates);
+        Assert.Equal(
+            "effect_fate_shield_first",
+            candidate.Activation.Identity.EffectId);
+        Assert.Equal(1, candidate.UseSeed?.RemainingUses);
+
+        var sourceResult = ResourceMutationSourceCatalog.Create(
+            due.SourceExports);
+        Assert.True(
+            sourceResult.IsValid,
+            string.Join(
+                Environment.NewLine,
+                sourceResult.Issues.Select(static issue => issue.ToString())));
+        var resources = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 42,
+                Definitions: bootstrap.Definitions!,
+                State: bootstrap.State!,
+                History: bootstrap.History!,
+                Sources: Assert.IsType<ResourceMutationSourceCatalog>(
+                    sourceResult.Catalog),
+                Mutations: due.Mutations,
+                InitialTriggerCandidates: due.TriggerCandidates,
+                InitialEffectResolutionWork: due.Work,
+                EffectPlanAuthority:
+                    AcceptedMechanicsPlanner.CreateEffectPlanAuthority(
+                        planned.Plan!)),
+            new AcceptedMechanicsIdentityFactory());
+        Assert.True(
+            resources.IsValid,
+            string.Join(
+                Environment.NewLine,
+                resources.Issues.Select(static issue => issue.ToString())));
+        var transcript = Assert.IsType<AcceptedEffectBoundaryTranscript>(
+            resources.EffectBoundaryTranscript);
+        var acceptedActivation = Assert.Single(
+            transcript.AcceptedActivations);
+        Assert.Equal(
+            "effect_fate_shield_first",
+            acceptedActivation.Activation.Stamp.Identity.EffectId);
+        Assert.Equal(1, acceptedActivation.Activation.Stamp.UsesBefore);
+
+        var finalized = EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
+            planned.Plan!,
+            transcript,
             new EffectIdentityFactory());
 
         Assert.True(
@@ -243,6 +297,9 @@ public sealed class EffectBuiltInSourceCatalogTests
         Assert.Equal(
             "effect_fate_shield_second",
             survivor["effectId"]?.GetValue<string>());
+        Assert.Equal(
+            1,
+            survivor["lifetime"]?["remainingUses"]?.GetValue<int>());
     }
 
     private static EffectAcceptedTurnPlanningResult BuildFateShieldPlan(

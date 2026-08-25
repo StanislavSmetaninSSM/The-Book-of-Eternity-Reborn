@@ -57,9 +57,9 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         }
 
         Assert.Equal(104, observed.Max(item => item.EntryCount));
-        Assert.Equal(339_755, observed.Max(item => item.ExpandedBytes));
-        Assert.Equal(61_171, observed.Max(item => item.LargestEntryBytes));
-        Assert.Equal(3_725, observed.Max(item => item.NameUtf8Bytes));
+        Assert.Equal(372_978, observed.Max(item => item.ExpandedBytes));
+        Assert.Equal(60_825, observed.Max(item => item.LargestEntryBytes));
+        Assert.Equal(3_735, observed.Max(item => item.NameUtf8Bytes));
 
         var budget = SaveLoadService.TrustedArchiveBudget;
         Assert.True(
@@ -110,6 +110,64 @@ public sealed class FileSystemExampleFixtureIntegrityTests
             invalidFiles.Count == 0,
             "FileSystemExample/game_session must not contain empty or malformed JSON files. Invalid files:" +
             Environment.NewLine + string.Join(Environment.NewLine, invalidFiles));
+    }
+
+    [Fact]
+    public async Task SplitAfterlifeEntityProfileExamples_PassCurrentProductionValidation()
+    {
+        var profileDirectory = Path.Combine(
+            TestRepoPaths.BaseSessionRoot,
+            "game_state",
+            "afterlife",
+            "entity_profiles");
+        var profileFiles = Directory
+            .EnumerateFiles(profileDirectory, "*.json", SearchOption.TopDirectoryOnly)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+        Assert.NotEmpty(profileFiles);
+
+        foreach (var profileFile in profileFiles)
+        {
+            var exampleRoot = JsonNode.Parse(await File.ReadAllTextAsync(profileFile))?.AsObject();
+            Assert.NotNull(exampleRoot);
+            var profiles = Assert.IsType<JsonArray>(
+                exampleRoot![AfterlifeEntityProfileState.ProfilesProperty]);
+            Assert.NotEmpty(profiles);
+            Assert.All(
+                profiles.OfType<JsonObject>(),
+                profile => Assert.IsType<JsonArray>(profile["activeEffects"]));
+
+            var validationRoot = Path.Combine(
+                Path.GetTempPath(),
+                "boe-filesystem-example-afterlife-profile-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                var fs = new FileSystemManager(
+                    validationRoot,
+                    NullLogger<FileSystemManager>.Instance);
+                fs.EnsureDirectoryStructure();
+                await fs.WriteFileAtomicAsync(
+                    AfterlifeEntityProfileState.StatePath,
+                    exampleRoot.ToJsonString());
+                var validator = new ValidationService(
+                    fs,
+                    NullLogger<ValidationService>.Instance);
+
+                var issues = await validator.ValidateGameStateAsync(
+                    IntegrationValidationProfiles.AfterlifeEntityProfile);
+
+                Assert.DoesNotContain(
+                    issues,
+                    issue => issue.Code?.StartsWith(
+                        "afterlife_entity_profile_",
+                        StringComparison.OrdinalIgnoreCase) == true);
+            }
+            finally
+            {
+                if (Directory.Exists(validationRoot))
+                    Directory.Delete(validationRoot, recursive: true);
+            }
+        }
     }
 
     [Fact]
@@ -393,6 +451,256 @@ public sealed class FileSystemExampleFixtureIntegrityTests
     [InlineData("mortal_world_command_display_fixture.zip")]
     [InlineData("chaos_sea_command_display_fixture.zip")]
     [InlineData("shining_abode_command_display_fixture.zip")]
+    public async Task ReusableSaveFixtures_ContainExactCanonicalResourceQuartet(
+        string fixtureName)
+    {
+        var fixturePath = Path.Combine(
+            TestRepoPaths.BaseSessionRoot,
+            "saves",
+            "manual_saves",
+            fixtureName);
+        using var archive = ZipFile.OpenRead(fixturePath);
+        var definitionsEntry = Assert.Single(
+            archive.Entries,
+            entry => entry.FullName == ResourceMaterializationContract.DefinitionsPath);
+        var stateEntry = Assert.Single(
+            archive.Entries,
+            entry => entry.FullName == ResourceMaterializationContract.StatePath);
+        var historyEntry = Assert.Single(
+            archive.Entries,
+            entry => entry.FullName == ResourceMaterializationContract.HistoryPath);
+        var authorityEntry = Assert.Single(
+            archive.Entries,
+            entry => entry.FullName ==
+                     CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
+
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            ReadArchiveText(definitionsEntry),
+            allowMissingPristine: false);
+        Assert.True(
+            definitions.IsValid,
+            string.Join(Environment.NewLine, definitions.Issues));
+        var catalog = Assert.IsType<ResourceDefinitionCatalog>(definitions.Catalog);
+        var state = ResourceStateContract.ParseCanonical(
+            ReadArchiveText(stateEntry),
+            catalog,
+            allowMissingPristine: false);
+        var history = ResourceHistoryState.ParseCanonical(
+            ReadArchiveText(historyEntry),
+            catalog,
+            allowMissingPristine: false);
+        Assert.True(state.IsValid, string.Join(Environment.NewLine, state.Issues));
+        Assert.True(history.IsValid, string.Join(Environment.NewLine, history.Issues));
+        var ledger = Assert.IsType<ResourceStateLedger>(state.Ledger);
+        var canonicalHistory = Assert.IsType<ResourceHistoryState>(history.History);
+        Assert.Empty(canonicalHistory.ValidateStateAgreement(ledger));
+        var documents = archive.Entries
+            .Where(static entry => !string.IsNullOrEmpty(entry.Name))
+            .ToDictionary(
+                static entry => entry.FullName,
+                ReadArchiveText,
+                StringComparer.Ordinal);
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            catalog,
+            path => Task.FromResult(documents.GetValueOrDefault(path)),
+            ledger,
+            canonicalHistory,
+            CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
+        Assert.True(
+            authority.IsValid,
+            string.Join(Environment.NewLine, authority.Issues));
+        Assert.Equal(
+            authority.CanonicalAuthorityJson,
+            ReadArchiveText(authorityEntry));
+    }
+
+    [Fact]
+    public void ReusableSaveFixtures_PreserveResourceSemanticsWithoutLegacyMirrors()
+    {
+        using var mortal = OpenReusableSave("mortal_world_command_display_fixture.zip");
+        var mortalState = ReadArchiveResourceState(mortal);
+        var mortalNpcCore = Assert.IsType<JsonObject>(ReadOptionalArchiveObject(
+            mortal,
+            "game_state/npcs/npc_core.json"));
+        var selene = Assert.Single(
+            Assert.IsType<JsonArray>(mortalNpcCore["UpdateNPCs"]).OfType<JsonObject>());
+        Assert.Equal("npc_magistra_selene", selene["NPCId"]?.GetValue<string>());
+        Assert.False(selene.ContainsKey("initialId"));
+        AssertSingleOwnerIdentity(
+            mortal,
+            EffectCarrierCatalog.EnemiesPath,
+            "enemiesData",
+            "combatantId",
+            "combatant_fixture_enemies_0");
+        AssertSingleOwnerIdentity(
+            mortal,
+            EffectCarrierCatalog.AlliesPath,
+            "alliesData",
+            "NPCId",
+            "npc_valmont_steward_marius");
+        AssertResource(mortalState, "mortal_world", ResourceOwnerKind.Player,
+            "player_current", "health", 99m, 117m, ResourceLifecycleState.Active);
+        AssertResource(mortalState, "mortal_world", ResourceOwnerKind.Player,
+            "player_current", "energy", 73m, 122m, ResourceLifecycleState.Active);
+        AssertResource(mortalState, "mortal_world", ResourceOwnerKind.Player,
+            "player_current", "poise", 142m, 150m, ResourceLifecycleState.Active);
+        AssertResource(mortalState, "mortal_world", ResourceOwnerKind.Npc,
+            "npc_magistra_selene", "health", 100m, 100m, ResourceLifecycleState.Active);
+        AssertResource(mortalState, "mortal_world", ResourceOwnerKind.Npc,
+            "npc_valmont_steward_marius", "health", 92m, 100m, ResourceLifecycleState.Active);
+        AssertResource(mortalState, "mortal_world", ResourceOwnerKind.Npc,
+            "npc_valmont_steward_marius", "poise", 80m, 100m, ResourceLifecycleState.Active);
+        AssertResource(mortalState, "mortal_world", ResourceOwnerKind.Npc,
+            "npc_artifact_trader_voron", "health", 100m, 100m, ResourceLifecycleState.Active);
+        AssertResource(mortalState, "mortal_world", ResourceOwnerKind.Npc,
+            "npc_house_spy_iren", "health", 88m, 100m, ResourceLifecycleState.Active);
+        AssertResource(mortalState, "mortal_world", ResourceOwnerKind.Combatant,
+            "combatant_fixture_enemies_0", "health", 85m, 100m, ResourceLifecycleState.Active);
+        AssertResource(mortalState, "mortal_world", ResourceOwnerKind.Combatant,
+            "combatant_fixture_enemies_0", "poise", 70m, 100m, ResourceLifecycleState.Active);
+        AssertResource(mortalState, "mortal_world", ResourceOwnerKind.Vehicle,
+            "transport_valmont_carriage", "health", 100m, 100m, ResourceLifecycleState.Active);
+        Assert.Equal(11, mortalState.Entries.Count);
+        AssertNoLegacyResourceMirrors(mortal);
+
+        using var chaos = OpenReusableSave("chaos_sea_command_display_fixture.zip");
+        var chaosState = ReadArchiveResourceState(chaos);
+        AssertSingleOwnerIdentity(
+            chaos,
+            EffectCarrierCatalog.EnemiesPath,
+            "enemiesData",
+            "combatantId",
+            "combatant_fixture_enemies_0");
+        AssertSingleOwnerIdentity(
+            chaos,
+            EffectCarrierCatalog.AlliesPath,
+            "alliesData",
+            "combatantId",
+            "combatant_fixture_allies_0");
+        AssertResource(chaosState, "mortal_world", ResourceOwnerKind.Player,
+            "player_current", "health", 99m, 117m, ResourceLifecycleState.Active);
+        AssertResource(chaosState, "mortal_world", ResourceOwnerKind.Player,
+            "player_current", "energy", 73m, 122m, ResourceLifecycleState.Active);
+        AssertResource(chaosState, "mortal_world", ResourceOwnerKind.Player,
+            "player_current", "poise", 142m, 150m, ResourceLifecycleState.Active);
+        AssertResource(chaosState, "mortal_world", ResourceOwnerKind.Combatant,
+            "combatant_fixture_enemies_0", "health", 85m, 100m, ResourceLifecycleState.Active);
+        AssertResource(chaosState, "mortal_world", ResourceOwnerKind.Combatant,
+            "combatant_fixture_enemies_0", "poise", 70m, 100m, ResourceLifecycleState.Active);
+        AssertResource(chaosState, "mortal_world", ResourceOwnerKind.Combatant,
+            "combatant_fixture_allies_0", "health", 100m, 100m, ResourceLifecycleState.Active);
+        AssertResource(chaosState, "mortal_world", ResourceOwnerKind.Combatant,
+            "combatant_fixture_allies_0", "poise", 80m, 100m, ResourceLifecycleState.Active);
+        AssertResource(chaosState, "mortal_world", ResourceOwnerKind.Vehicle,
+            "transport_valmont_carriage", "health", 100m, 100m, ResourceLifecycleState.Active);
+        foreach (var (itemId, current) in new (string ItemId, decimal Current)[]
+                 {
+                     ("a1b2c3d4-e5f6-7890-abcd-111111111111", 95m),
+                     ("a1b2c3d4-e5f6-7890-abcd-222222222222", 100m),
+                     ("a1b2c3d4-e5f6-7890-abcd-333333333333", 100m),
+                     ("a1b2c3d4-e5f6-7890-abcd-444444444444", 90m),
+                     ("a1b2c3d4-e5f6-7890-abcd-555555555555", 100m),
+                     ("item_silver_chalk_stack_a", 100m),
+                     ("item_silver_chalk_stack_b", 100m),
+                     ("item_dark_travel_cloak", 100m),
+                     ("item_gold_ring", 100m),
+                     ("item_merchant_seal", 100m)
+                 })
+        {
+            AssertResource(
+                chaosState,
+                "mortal_world",
+                ResourceOwnerKind.Item,
+                itemId,
+                "durability",
+                current,
+                100m,
+                ResourceLifecycleState.Active);
+        }
+        AssertResource(chaosState, "chaos_sea", ResourceOwnerKind.AfterlifeActor,
+            "player_soul", "spiritual_action_points", 6m, 6m, ResourceLifecycleState.Active);
+        var chaosConflict = Assert.IsType<JsonObject>(ReadOptionalArchiveObject(
+            chaos,
+            AfterlifeSpiritualConflictState.StatePath)?["activeConflict"]);
+        Assert.Equal("conflict_chaos_hunter_001", chaosConflict["conflictId"]?.GetValue<string>());
+        var chaosOppositionBinding = Assert.IsType<JsonObject>(
+            chaosConflict["resourceOwnerBindings"]?["opposition"]);
+        var chaosOppositionOwnerId = Assert.IsAssignableFrom<JsonValue>(
+            chaosOppositionBinding["resourceOwnerId"]).GetValue<string>();
+        Assert.True(ResourceMaterializationContract.IsExactIdentifier(chaosOppositionOwnerId));
+        AssertResource(
+            chaosState,
+            "chaos_sea",
+            ResourceOwnerKind.AfterlifeConflictSide,
+            chaosOppositionOwnerId,
+            "spiritual_action_points",
+            6m,
+            6m,
+            ResourceLifecycleState.Active);
+        AssertResource(chaosState, "chaos_sea", ResourceOwnerKind.AfterlifeActor,
+            "guardian_azalia", "gacha_attempts", 3m, 3m, ResourceLifecycleState.Active);
+        Assert.Equal(21, chaosState.Entries.Count);
+        AssertNoLegacyResourceMirrors(chaos);
+
+        using var shining = OpenReusableSave("shining_abode_command_display_fixture.zip");
+        var shiningState = ReadArchiveResourceState(shining);
+        AssertResource(shiningState, "mortal_world", ResourceOwnerKind.Player,
+            "player_current", "health", 100m, 100m, ResourceLifecycleState.Active);
+        AssertResource(shiningState, "mortal_world", ResourceOwnerKind.Player,
+            "player_current", "energy", 100m, 100m, ResourceLifecycleState.Active);
+        AssertResource(shiningState, "mortal_world", ResourceOwnerKind.Player,
+            "player_current", "poise", 100m, 100m, ResourceLifecycleState.Active);
+        AssertResource(shiningState, "shining_abode", ResourceOwnerKind.AfterlifeActor,
+            "player_soul", "spiritual_action_points", 7m, 8m, ResourceLifecycleState.Active);
+        var shiningConflict = Assert.IsType<JsonObject>(ReadOptionalArchiveObject(
+            shining,
+            AfterlifeSpiritualConflictState.StatePath)?["activeConflict"]);
+        Assert.Equal("conflict_shining_oath_001", shiningConflict["conflictId"]?.GetValue<string>());
+        var shiningOppositionBinding = Assert.IsType<JsonObject>(
+            shiningConflict["resourceOwnerBindings"]?["opposition"]);
+        var shiningOppositionOwnerId = Assert.IsAssignableFrom<JsonValue>(
+            shiningOppositionBinding["resourceOwnerId"]).GetValue<string>();
+        Assert.True(ResourceMaterializationContract.IsExactIdentifier(shiningOppositionOwnerId));
+        AssertResource(
+            shiningState,
+            "shining_abode",
+            ResourceOwnerKind.AfterlifeConflictSide,
+            shiningOppositionOwnerId,
+            "spiritual_action_points",
+            6m,
+            6m,
+            ResourceLifecycleState.Active);
+        var shiningRoot = Assert.IsType<JsonObject>(ReadOptionalArchiveObject(
+            shining,
+            ShiningAbodeState.StatePath));
+        var shiningGacha = Assert.IsType<JsonObject>(shiningRoot["gachaSystem"]);
+        var shiningGachaBinding = Assert.IsType<JsonObject>(
+            shiningRoot["resourceOwnerBindings"]?["gachaReturn"]);
+        Assert.Equal(
+            shiningGacha["currentReturnCycleId"]?.GetValue<string>(),
+            shiningGachaBinding["returnCycleId"]?.GetValue<string>());
+        var shiningGachaOwnerId = Assert.IsAssignableFrom<JsonValue>(
+            shiningGachaBinding["resourceOwnerId"]).GetValue<string>();
+        Assert.True(ResourceMaterializationContract.IsExactIdentifier(shiningGachaOwnerId));
+        // Preserve the one used attempt while the typed radiance formula replaces
+        // the stale legacy cap of three with the canonical maximum of five.
+        AssertResource(
+            shiningState,
+            "shining_abode",
+            ResourceOwnerKind.AfterlifeScope,
+            shiningGachaOwnerId,
+            "gacha_attempts",
+            4m,
+            5m,
+            ResourceLifecycleState.Active);
+        Assert.Equal(6, shiningState.Entries.Count);
+        AssertNoLegacyResourceMirrors(shining);
+    }
+
+    [Theory]
+    [InlineData("mortal_world_command_display_fixture.zip")]
+    [InlineData("chaos_sea_command_display_fixture.zip")]
+    [InlineData("shining_abode_command_display_fixture.zip")]
     public void ReusableSaveFixtures_EffectsUseCurrentCarrierAndIdentityAuthority(string fixtureName)
     {
         var fixturePath = Path.Combine(
@@ -462,6 +770,97 @@ public sealed class FileSystemExampleFixtureIntegrityTests
                 text.Contains("playerActiveEffectsChanges", StringComparison.Ordinal) ||
                 text.Contains("NPCEffectChanges", StringComparison.Ordinal));
         Assert.Null(legacy);
+    }
+
+    [Fact]
+    public void CurrentNonEmptyPendingFixture_RoundTripsProductionContract()
+    {
+        const string fingerprintA =
+            "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        const string fingerprintB =
+            "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+        var effectId = "effect_fixture_bleeding";
+        var triggerId = "trigger_fixture_periodic_damage";
+        var eventRef = "turn_42_effect_fixture";
+        var draft = new ResourcePendingResolutionDraft(
+            "bounded_receipt",
+            "session_fixture_pending",
+            "request_fixture_turn_42",
+            42,
+            eventRef,
+            effectId,
+            new ResourcePendingAuthorityBinding("permanent", effectId),
+            new JsonObject
+            {
+                ["kind"] = "wound",
+                ["sourceId"] = "wound_fixture_torn_side",
+                ["definitionKey"] = "bleeding_consequence"
+            },
+            new ResourcePendingAuthorityBinding("permanent", "wound_fixture_torn_side"),
+            new JsonObject
+            {
+                ["kind"] = "player",
+                ["targetId"] = "player_current"
+            },
+            new ResourcePendingAuthorityBinding("permanent", "player_current"),
+            triggerId,
+            new ResourceCoordinate(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "health"),
+            new ResourcePendingAuthorityBinding("permanent", "player_current"),
+            ResourceOperation.Damage,
+            0m,
+            5m,
+            fingerprintA,
+            fingerprintB,
+            fingerprintA,
+            fingerprintA,
+            "Рваная рана",
+            "герой",
+            "Здоровье",
+            "урон",
+            new ResourcePendingCausalAuthority(
+                effectId,
+                triggerId,
+                eventRef,
+                "turn_42_damage_fixture",
+                "resource_operation_fixture_damage",
+                7,
+                3,
+                true,
+                2,
+                "component_fixture_periodic_damage",
+                null,
+                fingerprintA,
+                fingerprintB,
+                0));
+        var created = ResourcePendingResolutionState.CreatePending(
+            canonicalJson: null,
+            new[] { draft },
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            () => "resource_resolution_fixture_pending",
+            new DateTimeOffset(2026, 8, 25, 10, 0, 0, TimeSpan.Zero));
+
+        Assert.True(
+            created.IsValid,
+            string.Join(Environment.NewLine, created.Issues.Select(issue => issue.Code)));
+        var state = Assert.IsType<ResourcePendingResolutionState>(created.State);
+        var canonical = state.ToCanonicalJson();
+        var root = JsonNode.Parse(canonical)!.AsObject();
+        Assert.Equal(ResourcePendingResolutionState.SchemaVersion, root["schemaVersion"]!.GetValue<int>());
+        Assert.Single(root["requests"]!.AsArray());
+        Assert.Empty(root["terminalReceipts"]!.AsArray());
+
+        var parsed = ResourcePendingResolutionState.ParseCanonical(
+            canonical,
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            allowMissingPristine: false);
+        Assert.True(
+            parsed.IsValid,
+            string.Join(Environment.NewLine, parsed.Issues.Select(issue => issue.Code)));
+        Assert.Equal(canonical, parsed.State!.ToCanonicalJson());
     }
 
     [Theory]
@@ -749,7 +1148,12 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         var definitionsPath = Path.Combine(resourceRoot, "resource_definitions.json");
         var statePath = Path.Combine(resourceRoot, "resource_state.json");
         var historyPath = Path.Combine(resourceRoot, "resource_history.json");
+        var authorityPath = Path.Combine(resourceRoot, "resource_owner_authority.json");
         var commandPath = Path.Combine(resourceRoot, "resource_commands.json");
+
+        Assert.True(
+            File.Exists(authorityPath),
+            "The active session fixture must contain the complete canonical resource quartet.");
 
         var definitionsResult = ResourceDefinitionCatalog.ParseCanonical(
             File.ReadAllText(definitionsPath),
@@ -915,6 +1319,198 @@ public sealed class FileSystemExampleFixtureIntegrityTests
             return null;
         return JsonNode.Parse(ReadArchiveText(entry))?.AsObject() ??
                throw new InvalidDataException($"Archive entry '{entryPath}' must contain a JSON object.");
+    }
+
+    private static ZipArchive OpenReusableSave(string fixtureName)
+    {
+        var fixturePath = Path.Combine(
+            TestRepoPaths.BaseSessionRoot,
+            "saves",
+            "manual_saves",
+            fixtureName);
+        Assert.True(File.Exists(fixturePath), $"Missing reusable save fixture: {fixturePath}");
+        return ZipFile.OpenRead(fixturePath);
+    }
+
+    private static ResourceStateLedger ReadArchiveResourceState(ZipArchive archive)
+    {
+        var definitionsEntry = archive.GetEntry(ResourceMaterializationContract.DefinitionsPath);
+        var stateEntry = archive.GetEntry(ResourceMaterializationContract.StatePath);
+        Assert.NotNull(definitionsEntry);
+        Assert.NotNull(stateEntry);
+
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            ReadArchiveText(definitionsEntry!),
+            allowMissingPristine: false);
+        Assert.True(
+            definitions.IsValid,
+            string.Join(Environment.NewLine, definitions.Issues));
+        var catalog = Assert.IsType<ResourceDefinitionCatalog>(definitions.Catalog);
+        var state = ResourceStateContract.ParseCanonical(
+            ReadArchiveText(stateEntry!),
+            catalog,
+            allowMissingPristine: false);
+        Assert.True(state.IsValid, string.Join(Environment.NewLine, state.Issues));
+        return Assert.IsType<ResourceStateLedger>(state.Ledger);
+    }
+
+    private static void AssertSingleOwnerIdentity(
+        ZipArchive archive,
+        string path,
+        string collectionProperty,
+        string identityProperty,
+        string expectedIdentity)
+    {
+        var root = Assert.IsType<JsonObject>(ReadOptionalArchiveObject(archive, path));
+        var owner = Assert.Single(
+            Assert.IsType<JsonArray>(root[collectionProperty]).OfType<JsonObject>());
+        Assert.Equal(expectedIdentity, owner[identityProperty]?.GetValue<string>());
+        Assert.False(owner.ContainsKey("combatantRef"));
+        if (!string.Equals(identityProperty, "combatantId", StringComparison.Ordinal))
+            Assert.False(owner.ContainsKey("combatantId"));
+    }
+
+    private static void AssertResource(
+        ResourceStateLedger state,
+        string realm,
+        ResourceOwnerKind ownerKind,
+        string ownerId,
+        string resourceKey,
+        decimal current,
+        decimal maximum,
+        ResourceLifecycleState lifecycle)
+    {
+        var entry = Assert.Single(state.Entries, candidate =>
+            string.Equals(candidate.Coordinate.Realm, realm, StringComparison.Ordinal) &&
+            candidate.Coordinate.OwnerKind == ownerKind &&
+            string.Equals(
+                candidate.Coordinate.ResourceOwnerId,
+                ownerId,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                candidate.Coordinate.ResourceKey,
+                resourceKey,
+                StringComparison.Ordinal));
+        Assert.Equal(current, entry.Current);
+        Assert.Equal(maximum, entry.Maximum);
+        Assert.Equal(lifecycle, entry.State);
+    }
+
+    private static void AssertNoLegacyResourceMirrors(ZipArchive archive)
+    {
+        Assert.Null(archive.GetEntry("game_state/inventory/item_resources.json"));
+
+        AssertPropertiesAbsent(
+            archive,
+            new[]
+            {
+                "game_state/core/player_status.json",
+                "game_state/player/player_status.json"
+            },
+            "healthPercentage",
+            "energyPercentage",
+            "poisePercentage",
+            "currentHealthChange",
+            "currentEnergyChange",
+            "currentPoiseChange",
+            "inventoryItemsResources");
+        AssertPropertiesAbsent(
+            archive,
+            new[] { "game_state/npcs/npc_inventory.json" },
+            "NPCInventoryResourcesChanges");
+        AssertPropertiesAbsent(
+            archive,
+            new[] { "game_state/npcs/npc_core.json" },
+            "currentHealthPercentage",
+            "maxHealthPercentage");
+        AssertPropertiesAbsent(
+            archive,
+            new[]
+            {
+                EffectCarrierCatalog.EnemiesPath,
+                EffectCarrierCatalog.AlliesPath,
+                StorageTransportMoveService.VehiclesPath
+            },
+            "currentHealth",
+            "maxHealth",
+            "currentPoise",
+            "maxPoise",
+            "healthStates");
+        AssertPropertiesAbsent(
+            archive,
+            new[] { InventoryEquipmentService.ItemsPath },
+            "durability",
+            "maxDurability");
+        AssertPropertiesAbsent(
+            archive,
+            new[] { AfterlifeEntityProfileState.StatePath },
+            "actorRef");
+        AssertPropertiesAbsent(
+            archive,
+            new[] { AfterlifeSpiritualConflictState.StatePath },
+            "actionEconomy");
+        AssertPropertiesAbsent(
+            archive,
+            new[]
+            {
+                "game_state/meta/guardians.json",
+                ShiningAbodeState.StatePath
+            },
+            "chargesPerReturn",
+            "chargesUsedThisReturn");
+        AssertPropertiesAbsent(
+            archive,
+            new[]
+            {
+                "game_state/npcs/npc_core.json",
+                InventoryEquipmentService.ItemsPath,
+                EffectCarrierCatalog.EnemiesPath,
+                EffectCarrierCatalog.AlliesPath,
+                StorageTransportMoveService.VehiclesPath,
+                AfterlifeEntityProfileState.StatePath,
+                AfterlifeSpiritualConflictState.StatePath,
+                ShiningAbodeState.StatePath
+            },
+            "resourceMaterialization");
+    }
+
+    private static void AssertPropertiesAbsent(
+        ZipArchive archive,
+        IEnumerable<string> paths,
+        params string[] propertyNames)
+    {
+        foreach (var path in paths)
+        {
+            var root = ReadOptionalArchiveObject(archive, path);
+            if (root == null)
+                continue;
+            AssertPropertiesAbsent(root, path, propertyNames);
+        }
+    }
+
+    private static void AssertPropertiesAbsent(
+        JsonNode node,
+        string path,
+        IReadOnlyCollection<string> propertyNames)
+    {
+        if (node is JsonObject objectNode)
+        {
+            foreach (var (propertyName, value) in objectNode)
+            {
+                Assert.DoesNotContain(propertyName, propertyNames);
+                if (value != null)
+                    AssertPropertiesAbsent(value, path + "." + propertyName, propertyNames);
+            }
+            return;
+        }
+
+        if (node is not JsonArray array)
+            return;
+        for (var index = 0; index < array.Count; index++)
+        {
+            if (array[index] != null)
+                AssertPropertiesAbsent(array[index]!, $"{path}[{index}]", propertyNames);
+        }
     }
 
     private static string ReadArchiveText(ZipArchiveEntry entry)

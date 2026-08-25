@@ -568,10 +568,25 @@ public static class ExplorerMortalWorldCommandResultBuilder
         propertyName.Equals("stats", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsTechnicalStatsProperty(string propertyName) =>
+        IsLegacyMortalResourceMirrorProperty(propertyName) ||
         propertyName.Equals("schemaVersion", StringComparison.OrdinalIgnoreCase) ||
         propertyName.Equals("updatedAt", StringComparison.OrdinalIgnoreCase) ||
         propertyName.Equals("lastUpdatedAt", StringComparison.OrdinalIgnoreCase) ||
         propertyName.StartsWith("_", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsLegacyMortalResourceMirrorProperty(string propertyName) =>
+        propertyName.Equals("health", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("healthCurrent", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("healthMax", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("maxHealth", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("energy", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("energyCurrent", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("energyMax", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("maxEnergy", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("poise", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("poiseCurrent", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("poiseMax", StringComparison.OrdinalIgnoreCase) ||
+        propertyName.Equals("maxPoise", StringComparison.OrdinalIgnoreCase);
 
     private static string FormatStatsValue(JsonNode? node, string? fieldName = null)
     {
@@ -626,12 +641,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static string TranslateComputedCharacteristicKey(string key) =>
         key switch
         {
-            "health" or "healthCurrent" => "Здоровье",
-            "healthMax" or "maxHealth" => "Максимум здоровья",
-            "energy" or "energyCurrent" => "Энергия",
-            "energyMax" or "maxEnergy" => "Максимум энергии",
-            "poise" or "poiseCurrent" => "Равновесие",
-            "poiseMax" or "maxPoise" => "Максимум равновесия",
             "carryWeight" or "maxCarryWeight" => "Грузоподъёмность",
             "inventoryWeight" or "currentWeight" => "Вес снаряжения",
             "arcaneFocus" => "Магический фокус",
@@ -959,7 +968,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                         Collapsible = true,
                         InitiallyExpanded = true,
                         Blocks = projection.Entries
-                            .Select(static entry => (UiBlock)BuildEffectOverviewCard(entry))
+                            .Select(static entry => (UiBlock)ExplorerEffectPlayerCardBuilder.BuildOverview(entry))
                             .ToList()
                     }
                 ]
@@ -971,46 +980,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
 
         return Completed(command, blocks, ExplorerMortalEffectDetailActions.Build(commandToken, projection));
-    }
-
-    private static UiEntityDossierBlock BuildEffectOverviewCard(EffectPlayerEntry effect)
-    {
-        return new UiEntityDossierBlock
-        {
-            EntityType = "effect-summary",
-            Title = effect.Name,
-            Subtitle = DescribeProjectedEffectState(effect.State),
-            Summary = FirstNonEmpty(effect.Summary ?? string.Empty, "Подробности доступны в карточке эффекта."),
-            Badges =
-            [
-                new UiEntityBadge
-                {
-                    Label = DescribeProjectedEffectState(effect.State),
-                    Tone = UiTone.Accent,
-                    Icon = "effect"
-                }
-            ],
-            Sections =
-            [
-                new UiEntityDossierSection
-                {
-                    Id = "facts",
-                    Title = "Кратко",
-                    Icon = "effect",
-                    Collapsible = true,
-                    InitiallyExpanded = false,
-                    Blocks =
-                    [
-                        new UiKeyValueGridBlock
-                        {
-                            Items = effect.Facts
-                                .Select(static fact => new UiKeyValueItem { Key = fact.Label, Value = fact.Value })
-                                .ToList()
-                        }
-                    ]
-                }
-            ]
-        };
     }
 
     private static EffectDetailRequest ParseEffectDetailRequest(string remainder)

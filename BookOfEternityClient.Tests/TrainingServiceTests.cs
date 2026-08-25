@@ -1791,7 +1791,7 @@ public sealed class TrainingServiceTests : IDisposable
     public async Task BuyTrainingAsync_AfterlifeSelfSpiritFocus_ReconfiguresUnifiedActionPointsAtomically()
     {
         await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
-        var definitions = await SeedPlayerActionPointResourcesAsync(turn: 21);
+        var definitions = await SeedPlayerActionPointResourcesAsync();
 
         var result = await CreateService().BuyTrainingAsync(
             "self",
@@ -1847,7 +1847,7 @@ public sealed class TrainingServiceTests : IDisposable
     public async Task BuyTrainingAsync_AfterlifeSelfSpiritFocus_RejectsStaleAcceptedSoulBeforeCommonPlan()
     {
         await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
-        await SeedPlayerActionPointResourcesAsync(turn: 21);
+        await SeedPlayerActionPointResourcesAsync();
         var stateBefore = await _fs.ReadFileBytesAsync(
             ResourceMaterializationContract.StatePath);
         var historyBefore = await _fs.ReadFileBytesAsync(
@@ -2419,7 +2419,7 @@ public sealed class TrainingServiceTests : IDisposable
             includeShowcase: true,
             offerInkFeathers: 180,
             offerSpiritFocus: true);
-        var definitions = await SeedPlayerActionPointResourcesAsync(turn: 31);
+        var definitions = await SeedPlayerActionPointResourcesAsync();
 
         var result = await CreateService().BuyTrainingAsync(
             "guardian_liora",
@@ -2458,6 +2458,74 @@ public sealed class TrainingServiceTests : IDisposable
             transition => transition.Coordinate == actionPoints.Coordinate &&
                           transition.Operation == ResourceTransitionOperation.Reconfigure &&
                           transition.Turn == 32);
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_AfterlifeMentorSpiritFocus_RejectsMentorOfferChangedBeforeWriteLease()
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        await SeedAfterlifeMentorAsync(
+            includeShowcase: true,
+            offerInkFeathers: 180,
+            offerSpiritFocus: true);
+        await SeedPlayerActionPointResourcesAsync();
+        var soulBefore = await _fs.ReadFileBytesAsync(
+            "game_state/meta/soul_state.json");
+        var stateBefore = await _fs.ReadFileBytesAsync(
+            ResourceMaterializationContract.StatePath);
+        var historyBefore = await _fs.ReadFileBytesAsync(
+            ResourceMaterializationContract.HistoryPath);
+        var service = new TrainingService(
+            _fs,
+            NullLogger<TrainingService>.Instance,
+            new LocalInteractionScopeService(_fs),
+            beforeSpiritFocusLease: async () =>
+            {
+                var profiles = JsonNode.Parse((await _fs.ReadFileAsync(
+                    "game_state/meta/afterlife_entity_profiles.json"))!)!
+                    .AsObject();
+                var mentor = Assert.Single(
+                    profiles["profiles"]!.AsArray().OfType<JsonObject>(),
+                    static profile => string.Equals(
+                        profile["actorId"]?.GetValue<string>(),
+                        "guardian_liora",
+                        StringComparison.Ordinal));
+                mentor.Remove("mentorTrainingShowcase");
+                mentor["concurrentGmMarker"] = "offer_revoked";
+                await _fs.WriteFileAtomicAsync(
+                    "game_state/meta/afterlife_entity_profiles.json",
+                    profiles.ToJsonString());
+            });
+
+        var result = await service.BuyTrainingAsync(
+            "guardian_liora",
+            "mentor_liora_spirit_focus_2",
+            currentTurn: 32);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("измен", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(
+            soulBefore,
+            await _fs.ReadFileBytesAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(
+            stateBefore,
+            await _fs.ReadFileBytesAsync(ResourceMaterializationContract.StatePath));
+        Assert.Equal(
+            historyBefore,
+            await _fs.ReadFileBytesAsync(ResourceMaterializationContract.HistoryPath));
+        var profilesAfter = JsonNode.Parse((await _fs.ReadFileAsync(
+            "game_state/meta/afterlife_entity_profiles.json"))!)!.AsObject();
+        var mentorAfter = Assert.Single(
+            profilesAfter["profiles"]!.AsArray().OfType<JsonObject>(),
+            static profile => string.Equals(
+                profile["actorId"]?.GetValue<string>(),
+                "guardian_liora",
+                StringComparison.Ordinal));
+        Assert.Equal(
+            "offer_revoked",
+            mentorAfter["concurrentGmMarker"]!.GetValue<string>());
+        Assert.False(mentorAfter.ContainsKey("mentorTrainingShowcase"));
     }
 
     private TrainingService CreateService() =>
@@ -2748,20 +2816,11 @@ public sealed class TrainingServiceTests : IDisposable
         """);
     }
 
-    private async Task<ResourceDefinitionCatalog> SeedPlayerActionPointResourcesAsync(int turn)
+    private async Task<ResourceDefinitionCatalog> SeedPlayerActionPointResourcesAsync()
     {
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
         var definitions = Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            definitions.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
         var profilesRoot = _fs.FileExists(AfterlifeEntityProfileState.StatePath)
             ? JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject()
             : new JsonObject();
@@ -2770,24 +2829,30 @@ public sealed class TrainingServiceTests : IDisposable
         profilesRoot[AfterlifeEntityProfileState.ProfilesProperty] = profiles;
         foreach (var existingProfile in profiles.OfType<JsonObject>())
         {
-            if (existingProfile.ContainsKey(AfterlifeEntityProfileState.ResourceOwnerBindingsProperty))
-                continue;
+            existingProfile.Remove(AfterlifeEntityProfileState.ResourceOwnerBindingsProperty);
             var actorId = existingProfile["actorId"]?.GetValue<string>();
             if (string.IsNullOrWhiteSpace(actorId))
                 continue;
-            existingProfile[AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] = new JsonArray
+
+            var actorType = existingProfile["actorType"]?.GetValue<string>();
+            if (!string.Equals(actorType, "player_soul", StringComparison.Ordinal))
             {
-                new JsonObject
+                var completeProfile = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile(
+                    actorType ?? "guardian",
+                    actorId,
+                    existingProfile["realm"]?.GetValue<string>() ?? "Chaos Sea",
+                    materializedAtTurn: 1);
+                foreach (var (property, value) in completeProfile)
                 {
-                    ["realm"] = "chaos_sea",
-                    ["resourceOwnerId"] = actorId,
-                    ["state"] = "active"
+                    if (!existingProfile.ContainsKey(property))
+                        existingProfile[property] = value?.DeepClone();
                 }
-            };
-            if (existingProfile["mentorTrainingShowcase"] is JsonObject showcase)
-            {
-                showcase["sourceActorSnapshotHash"] =
-                    TrainingService.ComputeSourceSnapshotHash(existingProfile);
+
+                if (existingProfile["mentorProfile"]?["canTeach"]?.GetValue<bool>() == true)
+                {
+                    existingProfile[ActorMaterializationContract.PropertyName]!
+                        ["capabilities"]!["canTeach"] = true;
+                }
             }
         }
         profiles.Add(new JsonObject
@@ -2795,16 +2860,7 @@ public sealed class TrainingServiceTests : IDisposable
             ["actorType"] = "player_soul",
             ["actorId"] = "player_soul",
             ["displayName"] = "Тестовая душа",
-            ["realm"] = "Chaos Sea",
-            [AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] = new JsonArray
-            {
-                new JsonObject
-                {
-                    ["realm"] = "chaos_sea",
-                    ["resourceOwnerId"] = "player_soul",
-                    ["state"] = "active"
-                }
-            }
+            ["realm"] = "Chaos Sea"
         });
         await _fs.WriteFileAtomicAsync(
             AfterlifeEntityProfileState.StatePath,
@@ -2825,12 +2881,77 @@ public sealed class TrainingServiceTests : IDisposable
             await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", "{}");
         var soul = JsonNode.Parse(
             (await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
-        var initialPlan = await AfterlifeOwnerResourceStateService.BuildAsync(
-            _fs,
-            new AfterlifeOwnerResourceAcceptedState(SoulState: soul),
-            turn);
+        var initialPlan = await CanonicalResourceQuartetTransaction
+            .ComposeExplicitBootstrapAsync(
+                definitions,
+                bootstrap.State!,
+                bootstrap.History!,
+                new AfterlifeOwnerResourceAcceptedState(
+                    Profiles: profilesRoot,
+                    SoulState: soul),
+                _fs.ReadFileAsync);
         Assert.True(initialPlan.IsValid, string.Join(Environment.NewLine, initialPlan.Issues));
-        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(_fs, initialPlan));
+        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
+        {
+            new(
+                ResourceMaterializationContract.DefinitionsPath,
+                initialPlan.BeforeImages[ResourceMaterializationContract.DefinitionsPath],
+                initialPlan.Definitions.ToCanonicalJson(),
+                RequireCurrentBaseline: true),
+            new(
+                ResourceMaterializationContract.StatePath,
+                initialPlan.BeforeImages[ResourceMaterializationContract.StatePath],
+                initialPlan.StateAfterImage!.ToCanonicalJson(),
+                RequireCurrentBaseline: true),
+            new(
+                ResourceMaterializationContract.HistoryPath,
+                initialPlan.BeforeImages[ResourceMaterializationContract.HistoryPath],
+                initialPlan.HistoryAfterImage!.ToCanonicalJson(),
+                RequireCurrentBaseline: true)
+        };
+        foreach (var (path, afterImage) in initialPlan.OwnerAfterImages)
+        {
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                path,
+                initialPlan.BeforeImages[path],
+                afterImage.ToJsonString(),
+                RequireCurrentBaseline: true));
+        }
+        CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(
+            writes,
+            initialPlan.QuartetProjection!);
+        Assert.True(await CoordinatedStateWriteHelper.TryCommitAsync(
+            _fs,
+            writes.ToArray()));
+        var committedProfiles = JsonNode.Parse(
+            (await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var refreshedShowcase = false;
+        foreach (var profile in committedProfiles[AfterlifeEntityProfileState.ProfilesProperty]!
+                     .AsArray()
+                     .OfType<JsonObject>())
+        {
+            if (profile["mentorTrainingShowcase"] is not JsonObject showcase)
+                continue;
+
+            showcase["sourceActorSnapshotHash"] =
+                TrainingService.ComputeSourceSnapshotHash(profile);
+            refreshedShowcase = true;
+        }
+        if (refreshedShowcase)
+        {
+            await _fs.WriteFileAtomicAsync(
+                AfterlifeEntityProfileState.StatePath,
+                committedProfiles.ToJsonString());
+        }
+        var exactAuthority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            definitions,
+            _fs.ReadFileAsync,
+            initialPlan.StateAfterImage!,
+            initialPlan.HistoryAfterImage!,
+            CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
+        Assert.True(
+            exactAuthority.IsValid,
+            string.Join(Environment.NewLine, exactAuthority.Issues));
         return definitions;
     }
 

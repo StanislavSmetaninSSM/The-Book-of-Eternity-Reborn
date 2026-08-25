@@ -859,6 +859,81 @@ duplicate IDs `0`, completed owned-tree cleanup, and built with zero
 warnings/errors. The exact artifact paths are recorded in both feature
 quickstarts and the #1543 implementation plan.
 
+#### T047a closed reaction-executor completion — 2026-08-24
+
+T047a now owns one immutable `AcceptedEffectBoundaryTranscript`: exact plan
+authority, frozen candidate batches, accepted-use and applied-component
+evidence, staged reaction release, bounded expansion, terminal availability,
+pending causal prefixes, and the final carrier/identity fold travel together.
+Denied candidates publish nothing. A skipped, no-op, or replayed predecessor
+suppresses only its causally dependent `after_component` outputs; unconditional
+before/after reactions and the one accepted-use projection remain.
+
+The closing replacement audit hardened the model beyond self-replacement. Every
+`apply_definition(policy=replace)` execution carries a client-derived exact
+pre-reaction target at `(realm,target kind/id,source kind/id,stackKey)`, with
+`definitionKey` excluded. The transcript seals the exact blocked availability
+subject in rejected evidence and its v6 fingerprint. Release blocks that target
+from later or nested boundaries; unconditional `after_current_event` reserves
+it after the whole sibling batch is frozen. Same-boundary siblings still finish.
+Multiple consuming siblings retain immutable `N, N-1, ...` budgets and insert
+their use transitions immediately before the target's earliest authoritative
+replace; all releases for that frozen target must belong to one boundary.
+Replacement identities are absent from the current transcript and first become
+eligible on the next accepted mechanics transition.
+
+The replacement-target index now uses an O(1) unique/ambiguous bucket state,
+never sorts a shared coordinate, and meters every additional occurrence visit.
+An adversarial 32-to-64 same-coordinate contour proves exact 2x work. The
+afterlife mentor Spirit Focus purchase path also gained a same-lease semantic
+profile guard, so a concurrently revoked showcase cannot authorize a stale
+purchase while unrelated concurrent state is preserved.
+
+Closing RED evidence:
+
+- nested old-target eligibility failed before the release-time availability
+  fix at `20260824-205419-877-27444-006b6a8de82d477798fd00e6fd91c6a5-focused`;
+- exact blocked-subject authority failed to compile before the sealed rejection
+  model at `20260824-214728-806-39016-6d59c50c46eb4a9192ebd0cea2cc9728-focused`;
+- metered replacement-index work failed to compile before the statistics
+  contract at `20260824-215501-167-38316-dd37ff7868c740ff90970c3a1d152aed-focused`;
+- stale mentor authority wrongly purchased before the profile guard at
+  `20260824-211715-780-13728-e53086ce7ddc44fda25abc281b691c13-focused`.
+
+Final GREEN evidence after the independent audit fixes:
+
+- scheduler/source-definition/planner/transcript/use-arbiter unit control:
+  `20260824-220050-366-24084-3f7144d1efaa47f4838f968c3d654420-focused`
+  (`278/278`);
+- full resource-event routing, replacement, and adversarial scale control:
+  `20260824-220014-970-41656-23e781ac29d94f94a5393cb0f76e48f1-focused`
+  (`64/64`);
+- full pending-wave control:
+  `20260824-220112-619-43576-fa7fc504956640319977dac54a763c4d-focused`
+  (`5/5`);
+- prompt/documentation guards:
+  `20260824-220301-559-37260-48b994fa29d74f90b86407988c2e800d-focused`
+  (`27/27`);
+- effect manifest plus executable reaction graph:
+  `20260824-220407-567-42048-4e5f3ca5573f4563a2e5f186dbafe20d-focused`
+  (`2/2`);
+- final T047a Fast control:
+  `20260824-220429-027-21316-9f143a2315064800adeae39f0ffa1ca9-fast`
+  (`4300/4300`).
+
+All final runs exited `0`, timed out `false`, reported duplicate IDs `0`, built
+with zero warnings/errors, and completed owned-tree cleanup. A second read-only
+review reported no blocking or non-blocking findings after the fixes. The common
+Mortal GM guide and executable example cover frozen-boundary suppression,
+replacement targeting, sibling completion, and next-transition eligibility.
+This slice changes no afterlife pending/control or action contract; shared
+afterlife effect guidance remains applicable. Per the approved breaking
+development decision, no runtime migration or compatibility adapter was added.
+T042a/T047b subsequently completed the deferred QTE continuation and transport
+work. Their criterion-by-criterion implementation and RED→GREEN evidence are
+recorded in Task 15 below. Final project PreMerge remains intentionally deferred
+until the review and artifact-reconciliation gates are complete.
+
 ---
 
 ### Task 10: Adapt Persistent Afterlife Effects and Spiritual Conditions (T053–T064)
@@ -1363,44 +1438,65 @@ worked examples, manifests, and active fixture migration.
 - Modify: `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/FileSystemExampleFixtureIntegrityTests.cs`
 
-- [ ] **Step 1: Add documentation/source-guard RED tests**
+- [x] **Step 1: Add documentation/source-guard RED tests**
 
 Require the common command fields, nine profiles, five stacks, eight lifetimes, wound independence, no legacy positive routes/sentinels, afterlife adapter, hidden privacy, Shining entitlement exclusion, and at least one worked example for every required operation/source family.
 
-- [ ] **Step 2: Add fixture-integrity RED tests**
+- [x] **Step 2: Add fixture-integrity RED tests**
 
 Require current empty or complete player/NPC/combat/profile/condition carriers, valid identity index and pending root, no receipt-less positive active instances, and no non-empty legacy state.
 
-- [ ] **Step 3: Run RED source guards**
+- [x] **Step 3: Run RED source guards**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~PromptDocumentationCoverageTests|FullyQualifiedName~AfterlifeDocumentationCoverageTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExampleDocumentationValidationTests|FullyQualifiedName~FileSystemExampleFixtureIntegrityTests"
 ```
 
-- [ ] **Step 4: Migrate active fixtures without runtime migration**
+- [x] **Step 4: Migrate active fixtures without runtime migration**
 
 Rewrite active new-game/template player, NPC, combat, afterlife profile/conflict, effect index, and pending roots to the current schema. Retain legacy shapes only in explicitly named negative tests.
 
-- [ ] **Step 5: Update Mortal GM rules and CLI contract**
+- [x] **Step 5: Update Mortal GM rules and CLI contract**
 
 Update Rules Blocks 2, 5, 6, 7, 8, 10, 12, 14, 15, 17, 19.C, 25, 25.A, and CLI Operations. Explain definitions versus active instances, exact source/target selectors, all stack/lifetime policies, triggers, bounded receipts, removal, wound boundary, and forbidden direct post-state.
 
-- [ ] **Step 6: Update afterlife guides and daemon reminders**
+- [x] **Step 6: Update afterlife guides and daemon reminders**
 
 Update `OtherGuides/Afterlife_Contract_Matrix.md`, the combat terminology glossary, applicable task guides, CLI/daemon specs, and `game_master_daemon.ps1`. Force the GM to read the common effect contract before authoring profile effects or spiritual conditions.
 
-- [ ] **Step 7: Add worked examples and manifest entries**
+- [x] **Step 7: Add worked examples and manifest entries**
 
 Include Mortal buff/debuff, periodic, event reaction, environmental, skill/art/item/Fate Card, quest, wound, stack, refresh, replace, merge, expiry, dispel, bounded repair, persistent afterlife profile effect, and all five spiritual-condition kinds. Every example must be executable against the current validator.
 
-- [ ] **Step 8: Run GREEN and FullValidation**
+- [x] **Step 8: Run GREEN and FullValidation**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation
 ```
 
 Record exact evidence. FullValidation is required here because shared examples/manifests and validation-documentation boundaries changed.
+
+Final Task-14 GREEN evidence (2026-08-25), all with exit `0`, zero failed
+tests and duplicate IDs, no timeout, and complete owned-tree cleanup:
+
+| Selection | Result `summary.json` | Passed | Wall |
+|---|---|---:|---:|
+| Mortal prompt/documentation guards | `TestResults/test-lanes/20260825-105215-416-17672-047096a9e8a14cdd8f7b75bc3c9ae0b5-focused/summary.json` | 30/30 | `00:00:13.8722431` |
+| Afterlife documentation guards | `TestResults/test-lanes/20260825-105238-120-32876-0168681852c64a42842f6effadc6b192-focused/summary.json` | 118/118 | `00:00:13.4293265` |
+| Worked-example/manifest validation | `TestResults/test-lanes/20260825-105300-914-50712-7f2b7f2a02784dcb9424e29ae76da2ac-focused/summary.json` | 30/30 | `00:01:32.3474457` |
+| Filesystem fixture integrity | `TestResults/test-lanes/20260825-105441-215-32728-025301236bed49f7bb4e38722d36373c-focused/summary.json` | 32/32 | `00:00:19.5780224` |
+| FullValidation after final docs/examples | `TestResults/test-lanes/20260825-105625-471-21976-056e8c89f059462d96539d4041f08889-fullvalidation/summary.json` | 1845/1845 | `00:08:40.5823622` |
+
+Representative RED evidence includes the missing QTE isolation/example
+contracts (`20260825-100957-...`, `20260825-101109-...`), missing explicit
+afterlife profile carriers (`20260825-101624-...`), incomplete source-owner
+guidance (`20260825-102329-...`), absent dispel/source/condition worked sections
+(`20260825-103432-...`), incomplete manifest coverage
+(`20260825-104015-...`), and the three remaining positive legacy routes
+(`20260825-104821-...`). The final source guard permits old spellings only
+inside `effect_legacy_rejection_v1`; no runtime migration or compatibility
+reader was added.
 
 - [ ] **Step 9: Commit synchronized contracts**
 
@@ -1410,50 +1506,256 @@ git diff --cached --check
 git commit -m "docs: teach complete effect materialization (#1535)"
 ```
 
+The synchronized contract slice is complete and included in the explicitly
+authorized staged candidate. The commit portion remains open until the final
+verification and integration choice.
+
 ---
 
 ### Task 15: Prove Scaling and Complete Local Verification (T111–T115)
 
 **Files:**
-- Create: `BookOfEternityClient.Tests/EffectMaterializationPerformanceTests.cs`
+- Verify: `BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.cs`
+- Verify: `BookOfEternityClient.IntegrationTests/AcceptedMechanicsPlannerScaleTests.cs`
+- Verify: `BookOfEternityClient.IntegrationTests/PendingCausalAuthorityScaleTests.cs`
 - Modify: one-pass catalog/scheduler files only if the RED scan counters prove a missing bound
 - Modify: `docs/superpowers/plans/2026-08-14-complete-effect-materialization.md`
 - Modify: `specs/1535-complete-effect-materialization/tasks.md`
 
-- [ ] **Step 1: Add scaling RED test**
+- [x] **Step 1: Maintain the scaling RED→GREEN coverage**
 
-Construct representative N and 2N effects with components and triggers. Assert the source, target, owner, stack, event, and identity catalogs scan each collection once and measured work remains at or below 2.5x. Prefer explicit scan counters over flaky stopwatch-only thresholds.
+Use the existing representative N and 2N effect/component/trigger, accepted-planner, and deferred-causal fixtures. Assert exact catalog/index/visit counters and measured work at or below 2.5x; prefer these deterministic counters over flaky stopwatch-only thresholds.
 
-- [ ] **Step 2: Run RED then GREEN**
+- [x] **Step 2: Run RED then GREEN**
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectMaterializationPerformanceTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectResourceTriggerRoutingScaleTests|FullyQualifiedName~AcceptedMechanicsPlannerScaleTests|FullyQualifiedName~PendingCausalAuthorityScaleTests"
 ```
 
 RED must fail on a missing counter/one-pass guarantee before the production fix; GREEN must assert exact scan counts and the ratio bound.
 
-- [ ] **Step 3: Run every focused unit filter from `plan.md`**
+GREEN evidence (2026-08-25): `TestResults/test-lanes/20260825-012617-859-42196-e4c2e3cedc5b4ea599f435fafa7d074d-focused/summary.json` — Focused Integration, total/executed/passed `82/82/82`, failed `0`, duplicate IDs `0`, timed out `false`, owned-tree cleanup complete, wall `00:00:19.3417173`.
+
+- [x] **Step 3: Run every focused unit filter from `plan.md`**
 
 Run unit and integration filters separately because Focused selects one project at a time. Inspect every `summary.json`; do not infer success from console silence.
 
-- [ ] **Step 4: Run conditional broad controls once**
+Focused GREEN evidence (2026-08-25): every row exited `0`, had zero failed
+tests and duplicate IDs, did not time out, and completed owned-tree cleanup.
 
-Run the required effect-filtered LifecycleIntegration if Task 13 evidence is not already fresh after its final changes. Run FullValidation if Task 14 evidence predates its final documentation edits. Run the frontend verifier only if Task 11 changed frontend source or typed contracts.
+| Selection | Result `summary.json` | Passed | Wall |
+|---|---|---:|---:|
+| Effect contracts/source/identity/target | `TestResults/test-lanes/20260825-032038-574-36908-214d945e813a4851833a3d2bcec5ffa8-focused/summary.json` | 211/211 | `00:00:33.1600875` |
+| Planner/lifecycle/mechanics/projection/repair | `TestResults/test-lanes/20260825-032121-008-46584-53c0f9abcd254dd592dd9afad195b892-focused/summary.json` | 224/224 | `00:00:18.7537784` |
+| Effect materialization validation | `TestResults/test-lanes/20260825-023715-585-49192-7e760958f53f45aeb06776ce7d020c23-focused/summary.json` | 167/167 | `00:04:02.0278074` |
+| Canonical effect normalizer | `TestResults/test-lanes/20260825-022755-667-36516-e4a6ab69eb9248ed88834e7edce700af-focused/summary.json` | 27/27 | `00:01:05.5857357` |
+| Effect lifecycle integration | `TestResults/test-lanes/20260825-022630-958-15752-b7b076923a684c2a86ec01d7cdcd8922-focused/summary.json` | 14/14 | `00:01:04.6132786` |
+| Scaling/counter regressions | `TestResults/test-lanes/20260825-022911-520-29188-4084af6d069245af89d1507347a749b9-focused/summary.json` | 82/82 | `00:00:20.8151782` |
+| Afterlife spiritual conflict | `TestResults/test-lanes/20260825-032148-568-43064-ab52717ab7284a6cb4773b33caa212c5-focused/summary.json` | 356/356 | `00:04:11.1944231` |
+| Afterlife entity profiles | `TestResults/test-lanes/20260825-032608-497-16200-7d9f089fab514f5cbd1ac56cc52610fa-focused/summary.json` | 49/49 | `00:00:50.4113304` |
+| Effect afterlife adapter | `TestResults/test-lanes/20260825-032705-553-39292-f71f2267141c44588c991913c46cf548-focused/summary.json` | 46/46 | `00:02:00.1235605` |
+| Explorer console | `TestResults/test-lanes/20260825-030917-803-34760-daaf17b0173647ac9f5e76929fc379a3-focused/summary.json` | 390/390 | `00:04:19.3404880` |
+| Explorer browser | `TestResults/test-lanes/20260825-031400-884-22728-36eadfca533f42a4832e6f1bf37a76d8-focused/summary.json` | 479/479 | `00:05:53.1889322` |
+| Effect repair lifecycle | `TestResults/test-lanes/20260825-032914-410-7776-3b9aa3a3f96344f9b767993f18ba95e9-focused/summary.json` | 19/19 | `00:01:03.7558852` |
+| QTE scene service | `TestResults/test-lanes/20260825-034542-268-49812-96530d2b9de7456a85518ca2ca9216e6-focused/summary.json` | 117/117 | `00:01:18.2315706` |
+| Deferred-QTE continuation | `TestResults/test-lanes/20260825-034726-586-43740-db907448e1e04d0583b8283a436a73db-focused/summary.json` | 28/28 | `00:01:55.1947917` |
+| Browser QTE generation fencing | `TestResults/test-lanes/20260825-035644-049-2724-23516c00fa7a4aff9206d6394db75aa8-focused/summary.json` | 42/42 | `00:01:41.9954603` |
+| GM turn helper contract | `TestResults/test-lanes/20260825-035838-623-47644-bc890c67d96d4af99d3c05b3aede0701-focused/summary.json` | 120/120 | `00:03:07.8537106` |
+| Prompt and afterlife documentation guards | `TestResults/test-lanes/20260825-040156-093-11700-257413a45f6644ad801f0236ffff2633-focused/summary.json` | 146/146 | `00:00:17.6128810` |
+| Worked-example validation | `TestResults/test-lanes/20260825-040522-362-24804-05b46090b1a24065a0c19573aa9c6748-focused/summary.json` | 27/27 | `00:01:37.1277375` |
+| Filesystem fixture integrity | `TestResults/test-lanes/20260825-040709-164-49512-4f45382985ee4ae4ab72353b505b85e9-focused/summary.json` | 30/30 | `00:00:21.3798201` |
 
-- [ ] **Step 5: Perform manual Mortal checks**
+Deferred-QTE completion crosswalk for T042a/T047b (2026-08-25):
+
+- `QteDeferredEffectContinuation` captures the accepted session generation,
+  source turn, offer and authority fingerprints, byte/existence-exact sealed
+  roots, and all reachable semantic identities before a terminal branch runs.
+  `AcceptOffer_SealsGenerationOfferTurnAndExactEffectRootWithoutLiveRebuild`
+  and the byte-different/invalid-shape cases prove the capture and fail-closed
+  boundary.
+- `QteDeferredAcceptedMechanicsPlanner` seals the selected chapter/action/grade,
+  terminal outcome, resource producer, candidates, resolver, and bounded work,
+  then re-enters the common `AcceptedMechanicsPlanner`; the restart damage,
+  persistent-identity, and selected resource-trigger cases prove that no live or
+  post-image rebuild and no random fallback occurs.
+- `QteDeferredEffectResolutionTransport` and the helper/daemon entrypoints own
+  the dedicated closed `qte_effect_resolution` request, receipts, and ready-last
+  signal. One- and two-wave restart cases prove `awaiting_receipt` preservation
+  and final publication without an ordinary turn snapshot, story/progression
+  replay, or turn increment.
+- Tampered ready hashes/request correlation, non-closed prior bindings,
+  missing receipt/ready state, and replaced generations all reject before
+  mutation. The final- and next-wave failure theories exercise every write
+  position and prove byte/existence-exact rollback across resource, effect,
+  pending, QTE, and transport state; retry reuses the preallocated identities.
+- Browser generation fencing (`42/42`), QTE scene service (`117/117`), and GM
+  helper contracts (`120/120`) cover the console/browser and ready-last control
+  surfaces around the same continuation.
+
+Representative RED artifacts include
+`20260824-222139-242-27888-aebed752530d4f95b7e9b4fde6227a1e-focused`
+(acceptance authority absent, `0/1`),
+`20260824-225918-199-17752-5bf9f150855c441db5a07f44afbba9d9-focused`
+(restart terminal continuation absent, `0/1`), and
+`20260825-011802-114-14276-838c629b91ba47028ed560d64d5cd01b-focused`
+(non-closed continuation shape accepted, `1/2`). The complete GREEN control is
+`TestResults/test-lanes/20260825-034726-586-43740-db907448e1e04d0583b8283a436a73db-focused/summary.json`
+(`28/28`, failed `0`, duplicate IDs `0`, timed out `false`, cleanup complete).
+
+Candidate-composition guard: the new continuation/planner/transport production
+files and `QteDeferredEffectContinuationIntegrationTests.cs` are included in
+the explicitly authorized staged candidate. The staged index contains all `26`
+new task-owned files; local `.serena/` remains the sole untracked path and is
+outside the #1535 candidate. HEAD alone remains pre-candidate until a later
+authorized commit.
+
+The explicit bounded Focused overrides in `plan.md` were retained for the
+coherent validation, afterlife, and Explorer groups. In particular, the full
+Explorer browser selection measured `00:05:53`, beyond the five-minute default;
+the 15-minute override preserved all 479 cases instead of trimming coverage.
+
+Meaningful Fast checkpoint (2026-08-25):
+`TestResults/test-lanes/20260825-041303-899-50708-e8ddfb431d5b47eba7e37453d300b0d5-fast/summary.json`
+— total/executed/passed `4306/4306/4306`, failed `0`, duplicate IDs `0`,
+timed out `false`, owned-tree cleanup complete, wall `00:04:16.0891136`.
+The preceding RED Fast artifact
+`TestResults/test-lanes/20260825-040921-485-47200-2385ed125fd641fb9b0055d9d217e45c-fast/summary.json`
+identified one stale browser-QTE fixture (`1072/1073` in the first shard);
+the exact focused regression then passed at
+`TestResults/test-lanes/20260825-041219-543-47932-43497415477547c4a9dba3401b5ae633-focused/summary.json`
+before the successful complete rerun.
+
+- [x] **Step 4: Run conditional broad controls once**
+
+Run the required complete LifecycleIntegration if Task 13 evidence is not already fresh after its final changes. Run FullValidation if Task 14 evidence predates its final documentation edits. Run the frontend verifier only if Task 11 changed frontend source or typed contracts.
+
+Broad GREEN evidence (2026-08-25):
+
+- `npm run verify --prefix BookOfEternityClient.WebFrontend` completed typecheck,
+  all `16` Vitest files / `141` tests, and the production build successfully.
+  The only diagnostic was the known Vite warning for the `527.26 kB` main JS
+  chunk exceeding the advisory `500 kB` threshold.
+- `TestResults/test-lanes/20260825-041859-570-27900-65d52ef9e3e842bb861a882d63739fff-fullvalidation/summary.json`
+  — FullValidation total/executed/passed `1840/1840/1840`, failed `0`, duplicate
+  IDs `0`, timed out `false`, owned-tree cleanup complete, wall
+  `00:09:51.748`.
+- `TestResults/test-lanes/20260825-050053-582-33600-69823e36179745459f300ed05b5daf21-lifecycleintegration/summary.json`
+  — complete LifecycleIntegration total/executed/passed `286/286/286`, failed
+  `0`, duplicate IDs `0`, timed out `false`, owned-tree cleanup complete, wall
+  `00:09:55.6098861` under an explicitly bounded 30-minute override.
+
+The lifecycle override was evidence-driven rather than a coverage reduction.
+The unchanged complete selection first reached the old 10-minute watchdog at
+`TestResults/test-lanes/20260825-042902-083-40864-8ea11d7f6f864b528f7cc3003a12d29b-lifecycleintegration/summary.json`
+and then a 15-minute override under transient machine variance at
+`TestResults/test-lanes/20260825-044345-435-14276-87e0a45f6c1e43f3ae6cb4448af45ac3-lifecycleintegration/summary.json`;
+both exited `124`, timed out `true`, and completed cleanup before TRX publication.
+The runner now retains the 10-minute default but permits an explicit 30-minute
+LifecycleIntegration ceiling. Its source-guard RED was
+`TestResults/test-lanes/20260825-045935-780-40256-baa40c7f47e64375aa4374fb31febb6d-focused/summary.json` (`0/2`), followed by GREEN
+`TestResults/test-lanes/20260825-050033-639-37328-5d91680781384a24bb2ce1a20cc50a76-focused/summary.json` (`2/2`). No test, filter,
+assertion, serialization rule, or final-gate deadline was weakened.
+
+- [x] **Step 5: Perform manual Mortal checks**
 
 Exercise visible/hidden player, NPC, and combatant effects; stack/lifetime facts; cure/dispel eligibility; stale action failure; malformed all-or-nothing state; wound unchanged after effect-only removal; and recursive DTO privacy in console and browser.
 
-- [ ] **Step 6: Perform manual afterlife checks**
+Manual Mortal evidence (2026-08-25) is rooted at
+`TestResults/manual-1535-20260824-191553-571/`:
+
+- Browser `/эффекты` and the detailed effect view rendered the accepted
+  `Лёгкое недомогание` and `Магический резонанс` entries with mechanics,
+  stacks, three-turn lifetime, source, counterplay, and action guidance.
+  `mortal-effect-detail.png` records the detailed view. DOM privacy checks were
+  false for permanent effect IDs, state paths, identity fields, and wound-heal
+  claims.
+- The real agent console rendered the same overview and detail in
+  `console-mortal-effects-green.json` and
+  `console-mortal-effect-detail-green.json`; both scans reported zero forbidden
+  matches for permanent IDs, state paths, pending/repair/transition/receipt,
+  identity, and wound-treatment wording. A valid opaque action token opened the
+  revalidation/confirmation preview; a truncated token failed closed.
+- Read-only previews did not submit a GM turn. SHA-256 remained byte-identical
+  for `npc_effects.json`
+  (`312E3D4DDB57A4DA6213A0D40AB26B520BECC2AFB8BFDB804EACCB05B76E2F0F`)
+  and `player/effects.json`
+  (`AB91ED69202B4B7E2963826629E2382D8145615BB6128D885D9E236DEBF9187E`).
+  The copied state still contained two player effects and one independent
+  wound.
+- Destructive malformed/stale/removal mutations were kept in disposable exact
+  integration fixtures rather than hand-editing a live canonical quartet:
+  `TryProcessCommand_EffectsMalformedAuthorityFailsClosedWithoutStatusFallback`,
+  `TryProcessCommand_EffectActionRejectsForgedSelector`,
+  `Lifecycle_StaleTerminalEffectIdFailsWithoutCarrierOrIndexMutation`, and the
+  `WoundConsequence_*` byte-preservation cases. These were included in the
+  recorded Explorer/effect focused selections above.
+
+- [x] **Step 6: Perform manual afterlife checks**
 
 Exercise one persistent profile effect and all five spiritual condition kinds, including hidden state, lifecycle advancement, terminal removal, stale conflict, and parity. Confirm Shining blessing entitlement remains separate.
+
+Manual afterlife/parity evidence (2026-08-25):
+
+- `chaos-spiritual-conflict.png` records the browser Chaos Sea conflict view;
+  `console-chaos-readonly-green.json` records `/душа`,
+  `/духовный_конфликт`, `/журнал_духовного_боя`, and the realm guard for
+  `/эффекты`. All four commands passed with zero matches across thirteen
+  permanent actor/conflict/exchange/materialization IDs and private
+  path/control markers.
+- The first real `/профили_загробья` console audit correctly exposed a missed
+  legacy route: `console-chaos-profiles-green.json` contained
+  `guardian_azalia` and `player_soul`. The focused RED
+  `TestResults/test-lanes/20260825-055949-708-42692-e9b87e07b98e496a889463c83bded565-focused/summary.json`
+  failed `0/1` because the console did not use accepted effect projection. The
+  route now shares `ExplorerAfterlifeCombatCommandResultBuilder` and preserves
+  the full profile mechanics. The initial privacy repair used visible ordinal
+  selectors; the final opaque-selector correction below supersedes that
+  intermediate design. Exact GREEN was
+  `TestResults/test-lanes/20260825-060431-239-39688-70f2c60d333f482ba844d8a08857034f-focused/summary.json`
+  (`1/1`); the complete profile/projection control is
+  `TestResults/test-lanes/20260825-062219-768-29452-07ab60e122144fb8a3586e7e2d80922b-focused/summary.json`
+  (`8/8`).
+- Fresh real-console artifacts
+  `console-chaos-profiles-green-v3.json` and
+  `console-chaos-profile-detail-green-v3.json` both passed with zero forbidden
+  matches. They show `Азалия` and `Пепельная Искра`, localized arts and combat
+  limits, and the then-current `/afterlife_profiles профиль №1` detail
+  navigation without permanent actor IDs, raw special-art IDs, state paths, or
+  lifecycle/control internals. This historical artifact predates the final
+  reorder-safe opaque selector.
+- `shining-gate-blessing-detail.png` records the separate Shining entitlement
+  projection for `Песнь Рассвета`; the blessing remained outside generic
+  active-effect ownership. Browser privacy checks were false for permanent IDs,
+  paths, pending/repair/transition/receipt fields.
+- Persistent afterlife profile effect projection and the five condition kinds
+  were exercised through accepted disposable integration state rather than
+  unsafe hand-authored live carrier/index pairs:
+  `AfterlifeProfileProjection_UsesAcceptedVisibleEffectInBrowserAndConsole`,
+  `TryProcessCommand_AfterlifeProfilesUsesAcceptedEffectProjectionWithoutPermanentActorIds`,
+  `SpiritualConditionAdapter_ProjectsEveryKindAndLegalAxis`, and the finite
+  exchange/scene lifecycle tests. The recorded adapter selection passed `46/46`;
+  malformed authority fails closed without a raw fallback.
+
+The live sweep also found a harness publication race after a consumed local
+return step. RED
+`TestResults/test-lanes/20260825-054243-144-42400-3f880cc9e1b846b1b31011f976922edf-focused/summary.json`
+failed `0/1`; GREEN
+`TestResults/test-lanes/20260825-054343-603-51648-06041ca3d1e54eec9dc4824277a0bc83-focused/summary.json`
+passed `1/1`. The final `ConsoleE2ERunbookTests` control is
+`TestResults/test-lanes/20260825-062521-968-29608-28c0144ce9e14124885b5617d64e07de-focused/summary.json`
+(`19/19`). The helper tolerates only the same consumed local screen while the
+return is in flight; unrelated non-awaiting screens still fail closed.
 
 - [ ] **Step 7: Record evidence and commit the verification slice**
 
 Record command, result directory, total/passed/failed, duplicates, timeout, cleanup, wall, and manual rationale in this plan. Commit only after inspecting all artifacts.
 
+Evidence and rationale are recorded above, and the verification slice is now
+included in the explicitly authorized staged candidate. The commit portion
+remains open until the final verification and integration choice.
+
 ```powershell
-git add -- BookOfEternityClient.Tests/EffectMaterializationPerformanceTests.cs BookOfEternityClient/Services/EffectCarrierCatalog.cs BookOfEternityClient/Services/EffectSourceAuthority.cs BookOfEternityClient/Services/EffectTargetAuthority.cs BookOfEternityClient/Services/EffectIdentityState.cs BookOfEternityClient/Services/EffectLifecycleScheduler.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
+git add -- BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.cs BookOfEternityClient.IntegrationTests/AcceptedMechanicsPlannerScaleTests.cs BookOfEternityClient.IntegrationTests/PendingCausalAuthorityScaleTests.cs BookOfEternityClient/Services/EffectCarrierCatalog.cs BookOfEternityClient/Services/EffectSourceAuthority.cs BookOfEternityClient/Services/EffectTargetAuthority.cs BookOfEternityClient/Services/EffectIdentityState.cs BookOfEternityClient/Services/EffectLifecycleScheduler.cs specs/1535-complete-effect-materialization/tasks.md docs/superpowers/plans/2026-08-14-complete-effect-materialization.md
 git diff --cached --check
 git commit -m "test: verify complete effect materialization (#1535)"
 ```
@@ -1465,19 +1767,42 @@ git commit -m "test: verify complete effect materialization (#1535)"
 **Files:**
 - Modify only as findings require: feature production/tests/docs, `specs/1535-complete-effect-materialization/`, and this plan
 
-- [ ] **Step 1: Request a fresh merge-gate review**
+- [x] **Step 1: Request a fresh merge-gate review**
 
 Use `requesting-code-review` against issue #1535, the approved design, spec, plan, tasks, contracts, full production/test/docs diff, dirty/untracked state, and exact verification artifacts. Reviewers report only evidence-backed Critical/Important/Minor findings.
 
-- [ ] **Step 2: Resolve findings through TDD**
+- [x] **Step 2: Resolve findings with evidence appropriate to their category**
 
-For each accepted Critical or Important, add the smallest failing regression, observe RED, implement the narrow fix, observe GREEN, and rerun the affected broad control only when its boundary changed. Do not patch around an authority failure with prompt-only wording.
+For each accepted behavioral Critical or Important, add the smallest failing regression, observe RED, implement the narrow fix, observe GREEN, and rerun the affected broad control only when its boundary changed. Resolve candidate-composition and artifact-consistency findings with exact status/diff/evidence inspection rather than inventing a behavioral test. Do not patch around an authority failure with prompt-only wording.
 
-- [ ] **Step 3: Re-run read-only Spec Kit analysis**
+- [x] **Step 3: Re-run read-only Spec Kit analysis**
 
 Use `speckit-analyze`; require no Critical/High/Medium inconsistency, every implemented FR mapped to evidence, no unchecked completed behavior, no placeholders, and explicit Mortal/afterlife documentation synchronization or no-update rationale.
 
-- [ ] **Step 4: Inspect the clean candidate before PreMerge**
+Merge-gate review and reconciliation evidence (2026-08-25):
+
+- the fresh reviewer found no Critical implementation issue and two Important
+  candidate/artifact findings: unchecked T042a/T047b with stale plan text, and
+  required deferred-QTE files outside the tracked candidate;
+- T042a/T047b now have the exact criterion crosswalk plus representative RED
+  and final `28/28` GREEN evidence above;
+- all tracked changes and exactly `27` new task-owned files are staged;
+  `.serena/` is the sole untracked path, staged workflow/Serena counts are zero,
+  and `git diff --cached --check` exits `0`;
+- reviewer follow-up confirmed the QTE tracking drift resolved and the required
+  continuation/planner/transport/integration-test files present in the index;
+  its final stale authorization-wording observation was corrected and verified
+  by exact text search plus another clean cached diff check.
+
+The explicit #1535 Spec Kit re-analysis was read-only. The prerequisite helper
+auto-selected the intertwined #1543 foundation, so the analysis used the
+unambiguous `specs/1535-complete-effect-materialization/` paths directly. It
+found `55` FR plus `12` SC, `122` unique tasks, `100%` requirement coverage,
+zero duplicate task IDs, zero placeholders, and no remaining
+Critical/High/Medium inconsistency after the approved wording remediation.
+Optional before/after `speckit.git.commit` hooks were not executed.
+
+- [x] **Step 4: Inspect the clean candidate before PreMerge**
 
 ```powershell
 git status --short
@@ -1486,23 +1811,266 @@ git diff --stat origin/main...HEAD
 git log --oneline origin/main..HEAD
 ```
 
-Expected: only #1535-owned tracked changes plus known unrelated generated artifacts; no production secret, no GitHub Actions workflow, no migration code, and no Arena AI mention.
+Expected: only #1535-owned changes plus its explicitly linked #1543 canonical-resource foundation; unrelated local tooling such as `.serena/` stays outside the staged candidate. No production secret, GitHub Actions workflow, migration code, or Arena AI mention is allowed.
 
-- [ ] **Step 5: Run exactly one final PreMerge**
+First PreMerge attempt and focused correction (2026-08-25):
+
+- `TestResults/test-lanes/20260825-124430-804-34948-47ee4e1f66bb4f34a748e0128a9afd39-premerge/summary.json`
+  exited `1` after `220/221`: the afterlife-profile overview action test still
+  expected internal selector `player_soul`, while the intermediate
+  player-facing builder deliberately emitted ordinal selector `№1` so internal
+  actor identity did not leak into the ordinary DTO. The lane timed out `false`, reported zero duplicate
+  IDs, and completed cleanup.
+- Exact RED reproduction:
+  `TestResults/test-lanes/20260825-124755-170-50496-f18be9d8a8774b3d864ecec6d7d5588a-focused/summary.json`
+  (`6/7`, failed `1`). The production privacy path and neighboring no-leak
+  assertions confirmed that the old test expectation, not the then-current
+  ordinal selector, was stale. The later final correction below supersedes this
+  intermediate conclusion after a broader PreMerge privacy failure exposed the
+  ordinal model's fragility.
+- After changing only that expected action ID/command, the exact theory passed at
+  `TestResults/test-lanes/20260825-124951-100-43740-79ea55b2db234e219445cc8a0ba4a0c2-focused/summary.json`
+  (`7/7`, failed `0`, duplicate IDs `0`, timed out `false`, cleanup complete).
+  A new final PreMerge is therefore required on the changed candidate; no green
+  PreMerge is being repeated.
+
+Post-attempt replay-identity hardening (2026-08-25):
+
+- typed foreign replacement targets and terminal reservations replace raw-only
+  cross-turn identity; reaction/replay/order/terminal/transcript domains were
+  versioned with their serialized semantics;
+- accepted-use duplicate detection now uses effect authority plus the exact
+  trigger/event tuple, persisted `effectAuthority` rejects `same_turn_ref`, and
+  lifecycle transition references derive from typed accepted authority rather
+  than a random same-turn ID;
+- detailed RED/GREEN paths are in quickstart §19. The reviewed post-fix controls
+  pass `244/244`, `87/87`, `34/34`, `54/54`, and `45/45` at
+  `20260825-150437-619-40940-a36225d9b8134f749ceef03a251c6096-focused`,
+  `20260825-150841-018-31064-6b860b6ccc514918912c05753072f9f3-focused`,
+  `20260825-151208-348-27912-61573703a83d4f678a6865fbc96878bc-focused`,
+  `20260825-151253-174-10404-e6ab8316b0ec4659b618e1dd2a126175-focused`,
+  and `20260825-151438-474-46296-5074c88233f749f499b03c554f1f7244-focused`.
+  Each exited `0`, timed out `false`, had zero duplicate IDs, and completed
+  cleanup.
+- this is a client-owned opaque causal/replay change. It adds no GM-authored or
+  player-visible Mortal/afterlife surface, so the synchronized prompts, guides,
+  examples, manifests, and source guards need no additional edit. The explicit
+  pre-alpha no-migration decision remains: no compatibility reader, dual write,
+  or raw-ID fallback.
+
+Replacement-occupancy follow-up (2026-08-25): the final review found that two
+accepted owners could freeze one typed target while runtime silently retargeted
+the second release to the first result. RED `2/2` is
+`20260825-160407-453-18732-4f29694f2c67497986b80570c8969947-focused`.
+The completion path now builds one coordinate index and linearly simulates the
+whole pre-allocation `apply_definition` batch, rejects competing owners,
+repeated frozen absence, preceding non-replace occupancy, and known policy
+conflicts, preserves compatible identity-retaining siblings and the required
+consuming self-replacement cascade, and runtime-checks every typed predecessor,
+result, create, and replace transition. The initial conflict plus
+retained-cascade control passes `3/3` at
+`20260825-161843-314-40008-75893dc946434e639c4ea72ab051d52a-focused`;
+the later non-replace/policy cases are RED `2/2` at
+`20260825-165020-559-43824-c1cfc93acad84900b5f52b3a91cbb236-focused` and the
+complete conflict/self-cascade/compatible-sibling control is GREEN `6/6` at
+`20260825-170547-269-41648-bdffef1715704765890f462b7c61dd60-focused`.
+The full routing/scale class passes `69/69` at
+`20260825-170746-336-15784-79af0d7101ce490886823dfe7b4f3f06-focused`, and
+adjacent planner/arbiter/transcript unit controls pass `197/197` at
+`20260825-170812-692-26108-395f249d17874c28a1cb0b66ac46116d-focused`.
+All GREEN runs exited `0`, timed out `false`, reported zero duplicate IDs and
+complete cleanup; the broad builds had zero warnings/errors. Independent
+re-review after the coordinate index reports zero Critical/Important findings
+and confirms `O(A + sum(bucket-sort))` preflight work without repeated global
+application scans.
+Fresh final-tree `LifecycleIntegration` passes `286/286` at
+`20260825-171156-552-48632-5c3ba7811b7c444f81bd31d4040e0953-lifecycleintegration`
+in `00:09:43`; exit `0`, timeout `false`, duplicate IDs `0`, and owned-process
+cleanup complete under the justified 15-minute budget.
+
+Final candidate-composition inspection after this hardening is clean: `265`
+expected #1535/#1543 paths are staged, including `27` reviewed new task-owned
+files; there are zero unstaged tracked paths. `.serena/` is the sole untracked
+path and remains excluded. `git diff --cached --check` exits `0`; expected-path
+allowlisting has zero outliers; workflow/settings/Serena paths, credential-token
+patterns, and Arena AI diff matches are all zero. The branch contains the `29`
+previously reviewed feature commits above `origin/main`; no new commit, push, or
+merge was made.
+
+Audit-append admission prerequisite and rejected PreMerge (2026-08-25):
+
+- tracked follow-up [#1546](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1546)
+  now serializes every self-acquiring GM-worker audit append ahead of the
+  canonical write lease, while the overload already holding that lease skips
+  admission to preserve lock order. Cancellation remains prompt and no retry,
+  migration, scheduler, gameplay, GM prompt, or example contract changed;
+- deterministic contention RED was `5/5` at
+  `20260825-194526-361-35360-38d5825e5c2f4229ba9d88221e9338af-focused`;
+  exact GREEN was `5/5` at
+  `20260825-194930-871-37716-e99fce403a544d818e176b04748b7066-focused`;
+  the retained audit, cancellation, and adjacent lock-order controls passed
+  `13/13` and `116/116` at
+  `20260825-195646-445-49788-590bfcaba6d74b2a8ffc011f948c2d90-focused`
+  and `20260825-195709-639-26616-d87dbbe07e524285a88f31f166bfe993-focused`;
+- standalone Fast completed `2166/2166` without failures or duplicates but hit
+  its non-overridable five-minute capacity limit at
+  `20260825-195759-318-51996-92e3ca51cd7e4550a7c3338bfb24c312-fast`;
+  that exit `124` is not accepted as green. The subsequent PreMerge did accept
+  the complete Fast selection (`2166/2166`) inside its 20-minute envelope;
+- PreMerge
+  `20260825-201108-890-20020-495ad1c7eead4e7aaed13f40a3a36b96-premerge`
+  was nevertheless non-green: exit `1`, `5986/5987` passed, timeout false,
+  duplicates `0`, cleanup complete. Its sole official failure showed raw
+  `resident_oath_001` in the rendered `/профили_загробья` action command.
+
+Final afterlife-profile selector correction (2026-08-25):
+
+- exact reproduction
+  `20260825-203254-987-36268-d791f9f064bf4b26a80e1ee08d19b447-focused`
+  failed `0/1` at the expected console privacy assertion. A four-entrypoint RED
+  then failed `0/4` at
+  `20260825-203811-050-18464-b92ecbb3503f46c9a87748ca3f84e7b2-focused`,
+  proving raw actor IDs in card/overview/inbox metadata and first-match
+  retargeting under duplicate authority;
+- the initial opaque v1 implementation passed the original PreMerge case,
+  reorder survival, inbox parity, and duplicate-authority rejection `5/5` at
+  `20260825-204001-786-34820-71f0cdd5588c45f2af30997bfbb13b03-focused`.
+  One stale issue-1124 expectation then failed exactly `1/7` at
+  `20260825-204135-650-4036-7664711abfd34a03b7b619125ecd1695-focused`;
+  after replacing that raw-ID expectation with the public opaque contract, the
+  same control passed `7/7` at
+  `20260825-204242-829-35564-e1559a6ff1134ead8ad13497c0adc712-focused`;
+- the complete adjacent profile/effect projection selection passed `76/76` at
+  `20260825-204420-412-43520-11254003ef24430182cdd85470d02184-focused`
+  in `00:01:56`. Independent review then found that v1 omitted canonical
+  `actorType` from its authority, allowed mutable/fallback profile selectors,
+  ignored typed inbox identity, and let the opaque prefix shadow a legitimate
+  direct raw selector;
+- v2 RED
+  `20260825-210159-521-37824-ad27716795e4485bb8a001b84927c71f-focused`
+  executed `11` focused cases: `2` passed and `9` failed for those exact missing
+  semantics. Generated actions now use the distinct
+  `/afterlife_profiles действие afterlife_profile_<digest>` route and derive
+  authority only from canonical `actorType + actorId` or
+  `actorType + actorRef`. Direct `/afterlife_profiles профиль <raw-selector>`
+  lookup remains separate and readable; profiles without canonical authority
+  emit no action, typed/untyped inbox ambiguity and duplicate/collision matches
+  fail closed, and a token cannot retarget across actor types;
+- the exact v2 selection passed `11/11` at
+  `20260825-210636-376-33712-3543c56b9be2457c8f08167f1d435ff4-focused`.
+  The expanded adjacent profile/effect projection selection then passed
+  `81/81` at
+  `20260825-210944-141-34224-25e917fce7594360ab6fcd328e93e78e-focused`
+  in `00:01:53`; both exited `0`, timed out false, reported zero duplicate IDs,
+  and completed owned-tree cleanup;
+- v2 re-review confirmed both original Important findings closed, then found
+  that the generic UI string reader still coerced numeric/boolean
+  `actorId`/`actorRef` and raw inbox hints into authority. It also requested
+  explicit tests for dual guardian/resident fallback ambiguity, untyped
+  cross-type duplicate IDs, and exact action/direct route shapes. Focused RED
+  `20260825-213323-670-48896-1bbb700d2b64460bbc2a3a018755a02d-focused`
+  executed `29` cases: `24` passed and `5` failed at exactly the coercion,
+  actorRef fallback, and dual-coordinate assertions;
+- generated authority now reads only canonical non-empty JSON strings. A
+  malformed explicit inbox hint fails closed; absent explicit identity may use
+  exactly one guardian/resident coordinate but never guess between both. The
+  exact corrected class passed `29/29` at
+  `20260825-213518-435-39076-1b9402cf15c84c57bcaadbd6636f18b5-focused`,
+  and the expanded adjacent selection passed `90/90` at
+  `20260825-213714-623-49096-b6baad71313f4da0b8b0c59227aac33d-focused`
+  in `00:01:58`. Both exited `0`, timed out false, reported zero duplicate IDs,
+  built with zero warnings/errors, and completed owned-tree cleanup;
+- final independent read-only re-review returned `Ready` with zero
+  Critical/Important/Minor findings and explicitly confirmed every prior
+  selector finding closed. Fresh read-only Spec Kit reconciliation, with
+  `SPECIFY_FEATURE_DIRECTORY` overridden only for the command because
+  `.specify/feature.json` remains pinned to linked feature #1543, accounted for
+  `55` functional requirements, `12` success criteria, and `122` unique task
+  IDs. Coverage remains mapped through the existing requirement table; only
+  T118/T119 are open, with zero placeholders or constitution/Critical/High
+  findings. Optional before/after git hooks were not run because this handoff
+  has no user authorization to commit;
+- `effect-player-projection.md` now records the executable v2 selector
+  contract. This remains client-owned read-only action metadata: no
+  GM-authored mechanic, state schema, afterlife pending/control surface,
+  prompt, worked example, manifest, or source guard changed. The direct command
+  remains available, and the explicit no-migration decision remains valid.
+
+T118 is complete on the corrected tree through the accepted final PreMerge
+recorded below.
+
+- [x] **Step 5: Run exactly one final PreMerge**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge
 ```
 
-Require exit `0`, all discovered tests passed, zero duplicates, timeout false under the approved 20-minute lane, and cleanup complete. Do not run a duplicate Fast immediately beforehand or rerun a green PreMerge without a new candidate-changing fix.
+Require exit `0`, all discovered tests passed, zero duplicates, timeout false under the approved 30-minute lane tracked by #1547, and cleanup complete. Do not run a duplicate Fast immediately beforehand or rerun a green PreMerge without a new candidate-changing fix.
 
-- [ ] **Step 6: Verify completion before claiming it**
+Accepted final evidence (2026-08-26):
+
+- `TestResults/test-lanes/20260826-004148-035-3528-42f32409a6b34cf4bbb7950b7e8a10d7-premerge/summary.json`
+  records exit `0`, timeout `false`, wall `00:21:59.6684306`, zero duplicate
+  IDs, and complete owned-tree cleanup under the #1547 30-minute deadline;
+- all `26` official TRX files completed: Fast `4,339/4,339`, core integration
+  `2,269/2,269`, ProcessIntegration `508/508`, and E2E `15/15`, totaling
+  `7,131/7,131` with zero failures;
+- frontend verification passed `141/141`, frontend typecheck/build succeeded,
+  and both C# builds had zero warnings/errors;
+- the prerequisite isolated ProcessIntegration control is `523/523` at
+  `20260826-002204-545-33256-d46277f36dd4471eaaae5ecb8a221b2b-processintegration`.
+  Its stale technical bootstraps were repaired with the production resource
+  quartet and without migration, a fallback, or weaker validation;
+- #1546 contributes only same-process audit admission before the existing
+  canonical lease. It adds no GM-authored/player-visible Mortal or afterlife
+  contract, so it needs no prompt, worked-example, matrix, manifest, or source-
+  guard change. The already synchronized feature documentation remains covered
+  by the recorded `1,810/1,810` FullValidation and the final PreMerge.
+
+No duplicate Fast was run immediately before this control, and it must not be
+rerun unless a candidate-changing fix becomes necessary.
+
+- [x] **Step 6: Verify completion before claiming it**
 
 Use `verification-before-completion`. Re-open the final `summary.json`, inspect the full diff and commit list, confirm issue #1535 is still open until integration, and ensure every checked T001–T119 item has actual code/test/docs evidence.
 
-- [ ] **Step 7: Prepare the PR/merge summary**
+- [x] **Step 7: Prepare the PR/merge summary**
 
 Include source issue, architecture, no-migration rationale, active/static boundary, Mortal and afterlife coverage, wound independence, GM prompt/docs/examples synchronization, focused/Fast/FullValidation/LifecycleIntegration/PreMerge evidence, manual parity/privacy evidence, and residual risks. State explicitly that GitHub Actions remained disabled and unused.
+
+Prepared PR/merge summary:
+
+- Source work is #1535, with the single canonical resource/execution authority
+  from #1543, audit-admission prerequisite #1546, and bounded runner correction
+  #1547.
+- Static combat effects, structured bonuses, Fate Card effects, wounds, skills,
+  arts, items, quests, locations, factions, events, hazards, and actions remain
+  definitions. Only accepted `effectChanges[]` create durable runtime instances;
+  client-owned identity, stacking, lifetime, triggers, pending receipts,
+  rollback, and projections flow through one accepted-mechanics plan.
+- Mortal owners and persistent afterlife profiles are covered. Spiritual combat
+  conditions retain their specialized adapter, Shining blessing entitlement is
+  not duplicated as a generic effect, and removing a wound-derived effect never
+  heals or mutates the wound.
+- Player projections are structured, recursively private, fail closed on
+  malformed authority, and use opaque revalidated afterlife actions. Recorded
+  manual console/browser checks cover Mortal and afterlife visibility, actions,
+  malformed state, and hidden-token absence.
+- Mortal/afterlife prompts, guides, worked examples, manifests, daemon reminders,
+  and source guards were synchronized for GM-authored contracts. Later selector,
+  replay, audit, fixture, and runner changes were client/harness-owned and need
+  no additional GM example or afterlife-matrix change.
+- Verification includes the recorded focused RED/GREEN controls, Fast,
+  FullValidation `1,810/1,810`, LifecycleIntegration `286/286`, isolated
+  ProcessIntegration `523/523`, and final PreMerge `7,131/7,131` in
+  `00:21:59.6684306`, with zero failures/duplicates, no timeout, and complete
+  cleanup.
+- The explicit pre-alpha decision remains no migration, compatibility reader,
+  dual write/authority, or raw fallback. GitHub Actions remained disabled and
+  unused.
+- Residual work is procedural only: review/stage the later task-owned paths,
+  create the final commit/PR if authorized, and let the repository owner approve
+  integration. `.serena/` is unrelated and remains excluded.
 
 - [ ] **Step 8: Integrate only after user approval**
 

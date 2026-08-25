@@ -228,11 +228,26 @@ internal sealed class ResourceDefinitionCatalog
 
     private readonly FrozenDictionary<string, ResourceDefinition> _byKey;
 
-    private ResourceDefinitionCatalog(IEnumerable<ResourceDefinition> definitions)
+    private ResourceDefinitionCatalog(
+        IEnumerable<ResourceDefinition> definitions,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
-        Definitions = definitions
-            .OrderBy(static definition => definition.ResourceKey, StringComparer.Ordinal)
+        workMeter?.BuildDefinitionCatalog();
+        var candidates = definitions.ToArray();
+        foreach (var _ in candidates)
+            workMeter?.VisitDefinitionConstruction();
+        IComparer<ResourceDefinition> comparer = ResourceDefinitionComparer.Instance;
+        if (workMeter != null)
+        {
+            comparer = new ResourceAuthorityCountingComparer<ResourceDefinition>(
+                comparer,
+                workMeter.CompareDefinitions);
+        }
+        Definitions = candidates
+            .OrderBy(static definition => definition, comparer)
             .ToArray();
+        foreach (var _ in Definitions)
+            workMeter?.VisitDefinitionIndex();
         _byKey = Definitions.ToFrozenDictionary(
             static definition => definition.ResourceKey,
             StringComparer.Ordinal);
@@ -247,6 +262,14 @@ internal sealed class ResourceDefinitionCatalog
     {
         ArgumentNullException.ThrowIfNull(definition);
         return new ResourceDefinitionCatalog(Definitions.Append(definition));
+    }
+
+    internal ResourceDefinitionCatalog WithRange(
+        IEnumerable<ResourceDefinition> definitions,
+        ResourceAuthorityWorkMeter? workMeter = null)
+    {
+        ArgumentNullException.ThrowIfNull(definitions);
+        return new ResourceDefinitionCatalog(Definitions.Concat(definitions), workMeter);
     }
 
     internal JsonObject ToCanonicalRoot() => new()
@@ -264,7 +287,8 @@ internal sealed class ResourceDefinitionCatalog
 
     internal static ResourceDefinitionCatalogResult ParseCanonical(
         string? json,
-        bool allowMissingPristine)
+        bool allowMissingPristine,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
         var rootResult = ResourceMaterializationContract.ParseDefinitions(
             json,
@@ -273,7 +297,9 @@ internal sealed class ResourceDefinitionCatalog
         {
             return rootResult.IsMissing && rootResult.IsValid
                 ? new ResourceDefinitionCatalogResult(
-                    new ResourceDefinitionCatalog(Array.Empty<ResourceDefinition>()),
+                    new ResourceDefinitionCatalog(
+                        Array.Empty<ResourceDefinition>(),
+                        workMeter),
                     Array.Empty<ValidationIssue>(),
                     IsMissing: true)
                 : new ResourceDefinitionCatalogResult(null, rootResult.Issues, rootResult.IsMissing);
@@ -292,6 +318,7 @@ internal sealed class ResourceDefinitionCatalog
                      .GetProperty("definitions")
                      .EnumerateArray())
         {
+            workMeter?.VisitDefinitionDescriptor();
             var path = $"{ResourceMaterializationContract.DefinitionsPath}.definitions[{index++}]";
             var definition = ParseDefinition(
                 element,
@@ -344,7 +371,7 @@ internal sealed class ResourceDefinitionCatalog
 
         return issues.Count == 0
             ? new ResourceDefinitionCatalogResult(
-                new ResourceDefinitionCatalog(definitions),
+                new ResourceDefinitionCatalog(definitions, workMeter),
                 Array.Empty<ValidationIssue>())
             : new ResourceDefinitionCatalogResult(null, issues.ToArray());
     }
@@ -379,130 +406,174 @@ internal sealed class ResourceDefinitionCatalog
         Func<ResourceDefinitionIdentity> allocateIdentity)
     {
         ArgumentNullException.ThrowIfNull(existingCatalog);
-        ArgumentNullException.ThrowIfNull(allocateIdentity);
-        var issues = new List<ValidationIssue>();
-        var path = "resourceDefinitionCreation.definition";
+        return BeginMaterializationBatch(existingCatalog)
+            .MaterializeProposal(
+                proposal,
+                createdAtTurn,
+                createdEventRef,
+                allocateIdentity);
+    }
 
-        if (existingCatalog.Definitions.Count >= ResourceMaterializationContract.MaxDefinitions)
+    internal static MaterializationBatch BeginMaterializationBatch(
+        ResourceDefinitionCatalog existingCatalog,
+        ResourceAuthorityWorkMeter? workMeter = null) =>
+        new(existingCatalog, workMeter);
+
+    internal sealed class MaterializationBatch
+    {
+        private const string Path = "resourceDefinitionCreation.definition";
+
+        private readonly ResourceDefinitionCatalog _existingCatalog;
+        private readonly ResourceAuthorityWorkMeter? _workMeter;
+        private readonly List<ResourceDefinition> _accepted = new();
+        private readonly HashSet<string> _exactKeys = new(StringComparer.Ordinal);
+        private readonly HashSet<string> _confusableKeys = new(StringComparer.Ordinal);
+        private readonly HashSet<string> _exactDefinitionIds = new(StringComparer.Ordinal);
+        private readonly HashSet<string> _confusableDefinitionIds = new(StringComparer.Ordinal);
+        private readonly HashSet<string> _exactSeals = new(StringComparer.Ordinal);
+        private readonly HashSet<string> _confusableSeals = new(StringComparer.Ordinal);
+        private bool _frozen;
+
+        internal MaterializationBatch(
+            ResourceDefinitionCatalog existingCatalog,
+            ResourceAuthorityWorkMeter? workMeter)
         {
-            Add(
-                issues,
-                "resourceDefinitionCreation",
-                "resource_definition_limit_exceeded",
-                $"fewer than {ResourceMaterializationContract.MaxDefinitions} existing definitions before creation",
-                existingCatalog.Definitions.Count.ToString(CultureInfo.InvariantCulture));
+            _existingCatalog = existingCatalog ??
+                throw new ArgumentNullException(nameof(existingCatalog));
+            _workMeter = workMeter;
+            foreach (var definition in existingCatalog.Definitions)
+            {
+                _workMeter?.VisitDefinitionMaterialization();
+                AddIdentity(
+                    definition.ResourceKey,
+                    _exactKeys,
+                    _confusableKeys);
+                AddIdentity(
+                    definition.Materialization.DefinitionId,
+                    _exactDefinitionIds,
+                    _confusableDefinitionIds);
+                AddIdentity(
+                    definition.Materialization.Seal,
+                    _exactSeals,
+                    _confusableSeals);
+            }
         }
 
-        ResourceMaterializationContract.FindDuplicateProperties(
-            proposal,
-            path,
-            issues,
-            "resource_materialization_duplicate_property");
-        issues.AddRange(ResourceMaterializationContract.ValidateRawDefinitionFields(
-            proposal,
-            path));
+        internal ResourceDefinitionMaterializationResult MaterializeProposal(
+            JsonElement proposal,
+            int createdAtTurn,
+            string? createdEventRef,
+            Func<ResourceDefinitionIdentity> allocateIdentity)
+        {
+            EnsureMutable();
+            ArgumentNullException.ThrowIfNull(allocateIdentity);
+            _workMeter?.VisitDefinitionMaterialization();
+            var issues = new List<ValidationIssue>();
 
-        var parsed = ParseDefinition(
-            proposal,
-            path,
-            requireMaterialization: false,
-            issues);
-        if (createdAtTurn < 0)
-        {
-            Add(
-                issues,
-                path + ".materialization.createdAtTurn",
-                "resource_definition_invalid_materialization",
-                "non-negative accepted turn",
-                createdAtTurn.ToString(CultureInfo.InvariantCulture));
-        }
-        var validatedCreatedEventRef =
-            ResourceMaterializationContract.IsExactIdentifier(createdEventRef)
-                ? createdEventRef
-                : null;
-        if (validatedCreatedEventRef == null)
-        {
-            Add(
-                issues,
-                path + ".materialization.createdEventRef",
-                "resource_definition_invalid_materialization",
-                "exact accepted event reference",
-                createdEventRef ?? "null");
-        }
-
-        if (parsed != null)
-        {
-            if (existingCatalog.TryResolveExact(parsed.ResourceKey, out _))
+            var definitionCount = _existingCatalog.Definitions.Count + _accepted.Count;
+            if (definitionCount >= ResourceMaterializationContract.MaxDefinitions)
             {
                 Add(
                     issues,
-                    path + ".resourceKey",
-                    "resource_definition_rewrite_forbidden",
-                    "new exact resourceKey",
-                    parsed.ResourceKey);
+                    "resourceDefinitionCreation",
+                    "resource_definition_limit_exceeded",
+                    $"fewer than {ResourceMaterializationContract.MaxDefinitions} existing definitions before creation",
+                    definitionCount.ToString(CultureInfo.InvariantCulture));
             }
-            else
-            {
-                var confusable = ResourceMaterializationContract.BuildConfusableKey(
-                    parsed.ResourceKey);
-                if (existingCatalog.Definitions.Any(definition =>
-                        string.Equals(
-                            ResourceMaterializationContract.BuildConfusableKey(
-                                definition.ResourceKey),
-                            confusable,
-                            StringComparison.Ordinal)))
-                {
-                    Add(
-                        issues,
-                        path + ".resourceKey",
-                        "resource_definition_confusable_key",
-                        "new exact/confusable resourceKey",
-                        parsed.ResourceKey);
-                }
-            }
-        }
 
-        if (parsed == null || validatedCreatedEventRef == null || issues.Count != 0)
-            return new ResourceDefinitionMaterializationResult(null, issues.ToArray());
-
-        var identity = allocateIdentity();
-        if (identity == null ||
-            !ResourceMaterializationContract.IsExactIdentifier(identity.DefinitionId) ||
-            !ResourceMaterializationContract.IsExactIdentifier(identity.Seal))
-        {
-            Add(
+            ResourceMaterializationContract.FindDuplicateProperties(
+                proposal,
+                Path,
                 issues,
-                path + ".materialization",
-                "resource_definition_invalid_materialization",
-                "client-generated exact definition identity and seal",
-                identity == null
-                    ? "null"
-                    : $"definitionId={identity.DefinitionId}; seal={identity.Seal}");
-            return new ResourceDefinitionMaterializationResult(null, issues.ToArray());
-        }
+                "resource_materialization_duplicate_property");
+            issues.AddRange(ResourceMaterializationContract.ValidateRawDefinitionFields(
+                proposal,
+                Path));
+            var parsed = ParseDefinition(
+                proposal,
+                Path,
+                requireMaterialization: false,
+                issues);
+            if (createdAtTurn < 0)
+            {
+                Add(
+                    issues,
+                    Path + ".materialization.createdAtTurn",
+                    "resource_definition_invalid_materialization",
+                    "non-negative accepted turn",
+                    createdAtTurn.ToString(CultureInfo.InvariantCulture));
+            }
+            var validatedCreatedEventRef =
+                ResourceMaterializationContract.IsExactIdentifier(createdEventRef)
+                    ? createdEventRef
+                    : null;
+            if (validatedCreatedEventRef == null)
+            {
+                Add(
+                    issues,
+                    Path + ".materialization.createdEventRef",
+                    "resource_definition_invalid_materialization",
+                    "exact accepted event reference",
+                    createdEventRef ?? "null");
+            }
 
+            if (parsed != null)
+            {
+                ValidateIndexedIdentity(
+                    parsed.ResourceKey,
+                    Path + ".resourceKey",
+                    _exactKeys,
+                    _confusableKeys,
+                    "resource_definition_rewrite_forbidden",
+                    "resource_definition_confusable_key",
+                    "new exact resourceKey",
+                    "new exact/confusable resourceKey",
+                    issues);
+            }
 
-        ValidateNewMaterializationValue(
-            identity.DefinitionId,
-            path + ".materialization.definitionId",
-            existingCatalog.Definitions.Select(
-                static definition => definition.Materialization.DefinitionId),
-            "resource_definition_duplicate_materialization_id",
-            "resource_definition_confusable_materialization_id",
-            issues);
-        ValidateNewMaterializationValue(
-            identity.Seal,
-            path + ".materialization.seal",
-            existingCatalog.Definitions.Select(
-                static definition => definition.Materialization.Seal),
-            "resource_definition_duplicate_seal",
-            "resource_definition_confusable_seal",
-            issues);
-        if (issues.Count != 0)
-            return new ResourceDefinitionMaterializationResult(null, issues.ToArray());
+            if (parsed == null || validatedCreatedEventRef == null || issues.Count != 0)
+                return new ResourceDefinitionMaterializationResult(null, issues.ToArray());
 
-        return new ResourceDefinitionMaterializationResult(
-            parsed with
+            var identity = allocateIdentity();
+            if (identity == null ||
+                !ResourceMaterializationContract.IsExactIdentifier(identity.DefinitionId) ||
+                !ResourceMaterializationContract.IsExactIdentifier(identity.Seal))
+            {
+                Add(
+                    issues,
+                    Path + ".materialization",
+                    "resource_definition_invalid_materialization",
+                    "client-generated exact definition identity and seal",
+                    identity == null
+                        ? "null"
+                        : $"definitionId={identity.DefinitionId}; seal={identity.Seal}");
+                return new ResourceDefinitionMaterializationResult(null, issues.ToArray());
+            }
+
+            ValidateIndexedIdentity(
+                identity.DefinitionId,
+                Path + ".materialization.definitionId",
+                _exactDefinitionIds,
+                _confusableDefinitionIds,
+                "resource_definition_duplicate_materialization_id",
+                "resource_definition_confusable_materialization_id",
+                "new exact client-owned materialization identity",
+                "new exact/confusable client-owned materialization identity",
+                issues);
+            ValidateIndexedIdentity(
+                identity.Seal,
+                Path + ".materialization.seal",
+                _exactSeals,
+                _confusableSeals,
+                "resource_definition_duplicate_seal",
+                "resource_definition_confusable_seal",
+                "new exact client-owned materialization identity",
+                "new exact/confusable client-owned materialization identity",
+                issues);
+            if (issues.Count != 0)
+                return new ResourceDefinitionMaterializationResult(null, issues.ToArray());
+
+            var materialized = parsed with
             {
                 Materialization = new ResourceDefinitionMaterialization(
                     ResourceMaterializationContract.SchemaVersion,
@@ -510,8 +581,81 @@ internal sealed class ResourceDefinitionCatalog
                     identity.Seal,
                     createdAtTurn,
                     validatedCreatedEventRef)
-            },
-            Array.Empty<ValidationIssue>());
+            };
+            AddIdentity(materialized.ResourceKey, _exactKeys, _confusableKeys);
+            AddIdentity(
+                materialized.Materialization.DefinitionId,
+                _exactDefinitionIds,
+                _confusableDefinitionIds);
+            AddIdentity(
+                materialized.Materialization.Seal,
+                _exactSeals,
+                _confusableSeals);
+            _accepted.Add(materialized);
+            return new ResourceDefinitionMaterializationResult(
+                materialized,
+                Array.Empty<ValidationIssue>());
+        }
+
+        internal ResourceDefinitionCatalog Freeze()
+        {
+            EnsureMutable();
+            _frozen = true;
+            return _existingCatalog.WithRange(_accepted, _workMeter);
+        }
+
+        private static void ValidateIndexedIdentity(
+            string value,
+            string path,
+            IReadOnlySet<string> exactValues,
+            IReadOnlySet<string> confusableValues,
+            string duplicateCode,
+            string confusableCode,
+            string exactExpectation,
+            string confusableExpectation,
+            List<ValidationIssue> issues)
+        {
+            if (exactValues.Contains(value))
+            {
+                Add(
+                    issues,
+                    path,
+                    duplicateCode,
+                    exactExpectation,
+                    value);
+                return;
+            }
+
+            if (confusableValues.Contains(
+                    ResourceMaterializationContract.BuildConfusableKey(value)))
+            {
+                Add(
+                    issues,
+                    path,
+                    confusableCode,
+                    confusableExpectation,
+                    value);
+            }
+        }
+
+        private static void AddIdentity(
+            string value,
+            HashSet<string> exactValues,
+            HashSet<string> confusableValues)
+        {
+            exactValues.Add(value);
+            confusableValues.Add(
+                ResourceMaterializationContract.BuildConfusableKey(value));
+        }
+
+        private void EnsureMutable()
+        {
+            if (_frozen)
+            {
+                throw new InvalidOperationException(
+                    "A frozen resource definition materialization batch cannot be reused.");
+            }
+        }
     }
 
     internal static bool TryParseOwnerKind(string token, out ResourceOwnerKind kind) =>
@@ -1059,7 +1203,8 @@ internal sealed class ResourceDefinitionCatalog
         if (initialization.Kind == ResourceInitializationKind.Fixed &&
             initialization.Value.HasValue)
         {
-            invalid |= !ResourceMaterializationContract.IsQuantumAligned(
+            invalid |= initialization.Value.Value < minimum.Value ||
+                       !ResourceMaterializationContract.IsQuantumAligned(
                 initialization.Value.Value,
                 minimum.Value,
                 quantum);
@@ -1460,7 +1605,7 @@ internal sealed class ResourceDefinitionCatalog
                     null,
                     ResourceCapacityFormulaCatalog.MortalPoiseCapacityV1),
                 initializeMaximum,
-                Owners(ResourceOwnerKind.Player, ResourceOwnerKind.Combatant, ResourceOwnerKind.CombatGroupMember),
+                Owners(ResourceOwnerKind.Player, ResourceOwnerKind.Npc, ResourceOwnerKind.Combatant, ResourceOwnerKind.CombatGroupMember),
                 OperationsSet(ResourceOperation.Damage, ResourceOperation.Restore),
                 ResourceBoundPolicy.ClampToMinimum,
                 ResourceBoundPolicy.ClampToMaximum),
@@ -1566,6 +1711,14 @@ internal sealed class ResourceDefinitionCatalog
     private static FrozenDictionary<string, T> Map<T>(params (string Key, T Value)[] values)
         where T : struct, Enum =>
         values.ToFrozenDictionary(static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
+
+    private sealed class ResourceDefinitionComparer : IComparer<ResourceDefinition>
+    {
+        internal static ResourceDefinitionComparer Instance { get; } = new();
+
+        public int Compare(ResourceDefinition? left, ResourceDefinition? right) =>
+            StringComparer.Ordinal.Compare(left?.ResourceKey, right?.ResourceKey);
+    }
 
     private static void Add(
         List<ValidationIssue> issues,

@@ -345,7 +345,11 @@ internal static class AfterlifeResourceOwnerComposer
                             binding.Realm,
                             StringComparison.Ordinal));
                     var ownerRef = isNewRealm
-                        ? "afterlife_actor_realm_ref_" + Guid.NewGuid().ToString("N")
+                        ? BuildDeterministicIdentifier(
+                            "afterlife_actor_realm_ref_",
+                            "afterlife-actor-realm-reference-v1",
+                            actorId,
+                            binding.Realm)
                         : null;
                     var export = CreateExport(
                         definitions,
@@ -444,8 +448,21 @@ internal static class AfterlifeResourceOwnerComposer
         if (issues.Count != issueCount)
             return false;
 
-        if (profile[ActorMaterializationContract.PropertyName] is not JsonObject actorEnvelope ||
-            !TryReadExact(actorEnvelope["materializationId"], out var materializationId))
+        string ownerRef;
+        if (profile[ActorMaterializationContract.PropertyName] is JsonObject actorEnvelope &&
+            TryReadExact(actorEnvelope["materializationId"], out var materializationId))
+        {
+            ownerRef = materializationId;
+        }
+        else if (IsPersistentPlayerSoulIdentity(profile, actorId))
+        {
+            ownerRef = BuildDeterministicIdentifier(
+                "afterlife_actor_realm_ref_",
+                "afterlife-actor-realm-reference-v1",
+                actorId,
+                realm);
+        }
+        else
         {
             Add(
                 issues,
@@ -470,10 +487,18 @@ internal static class AfterlifeResourceOwnerComposer
             return false;
         }
 
+        var playerSoulInMortalWorld =
+            IsPersistentPlayerSoulIdentity(profile, actorId) &&
+            acceptedSoulState["currentRealm"] is JsonValue soulRealmNode &&
+            soulRealmNode.TryGetValue<string>(out var soulRealm) &&
+            RealmSemantics.IsMortalRealm(soulRealm);
+        var lifecycle = playerSoulInMortalWorld
+            ? ResourceOwnerLifecycle.Suspended
+            : ResourceOwnerLifecycle.Active;
         var binding = new ActorRealmBinding(
             realm,
             actorId,
-            ResourceOwnerLifecycle.Active,
+            lifecycle,
             path + "." + BindingsProperty);
         profile[BindingsProperty] = BuildActorBindings(new[] { binding });
         if (profile.TryGetPropertyValue("resourceMaterialization", out var materialization))
@@ -494,7 +519,7 @@ internal static class AfterlifeResourceOwnerComposer
                     realm,
                     ResourceOwnerKind.AfterlifeActor,
                     actorId),
-                materializationId,
+                ownerRef,
                 envelope.DeepClone().AsObject(),
                 Array.Empty<string>()));
             profile.Remove("resourceMaterialization");
@@ -507,8 +532,8 @@ internal static class AfterlifeResourceOwnerComposer
             actorId,
             profile,
             sameTurn: true,
-            ownerRef: materializationId,
-            lifecycle: ResourceOwnerLifecycle.Active);
+            ownerRef,
+            lifecycle);
         sameTurnExports.Add(sameTurnExport);
         if (!IsPlayerSoul(profile))
             return true;
@@ -516,7 +541,7 @@ internal static class AfterlifeResourceOwnerComposer
         if (!TryCreateActorActionPointCapacityDraft(
                 definitions,
                 sameTurnExport,
-                materializationId,
+                ownerRef,
                 acceptedSoulState,
                 out var draft,
                 issues))
@@ -678,8 +703,16 @@ internal static class AfterlifeResourceOwnerComposer
                     Describe(current.Value.Conflict[BindingsProperty]));
                 return;
             }
-            var ownerId = "afterlife_conflict_side_" + Guid.NewGuid().ToString("N");
-            var ownerRef = "afterlife_conflict_side_ref_" + Guid.NewGuid().ToString("N");
+            var ownerId = BuildDeterministicIdentifier(
+                "afterlife_conflict_side_",
+                "afterlife-conflict-side-owner-id-v1",
+                current.Value.Realm,
+                current.Value.ConflictId);
+            var ownerRef = BuildDeterministicIdentifier(
+                "afterlife_conflict_side_ref_",
+                "afterlife-conflict-side-owner-reference-v1",
+                current.Value.Realm,
+                current.Value.ConflictId);
             if (!TryConsumeConflictSideMaterialization(
                     current.Value,
                     out var acceptedMaximum,
@@ -1116,8 +1149,16 @@ internal static class AfterlifeResourceOwnerComposer
             return;
         }
 
-        var ownerId = "afterlife_scope_" + Guid.NewGuid().ToString("N");
-        var ownerRef = "afterlife_scope_ref_" + Guid.NewGuid().ToString("N");
+        var ownerId = BuildDeterministicIdentifier(
+            "afterlife_scope_",
+            "afterlife-shining-return-owner-id-v1",
+            "shining_abode",
+            current.Value.ReturnCycleId);
+        var ownerRef = BuildDeterministicIdentifier(
+            "afterlife_scope_ref_",
+            "afterlife-shining-return-owner-reference-v1",
+            "shining_abode",
+            current.Value.ReturnCycleId);
         acceptedRoot[BindingsProperty] = new JsonObject
         {
             ["gachaReturn"] = new JsonObject
@@ -1730,6 +1771,24 @@ internal static class AfterlifeResourceOwnerComposer
     private static bool IsPlayerSoul(JsonObject owner) =>
         TryReadExact(owner["actorType"], out var actorType) &&
         string.Equals(actorType, "player_soul", StringComparison.Ordinal);
+
+    private static bool IsPersistentPlayerSoulIdentity(
+        JsonObject owner,
+        string actorId) =>
+        IsPlayerSoul(owner) &&
+        string.Equals(actorId, "player_soul", StringComparison.Ordinal);
+
+    private static string BuildDeterministicIdentifier(
+        string prefix,
+        string domain,
+        params string[] seeds)
+    {
+        using var fingerprint = new ResourceFingerprintBuilder(domain);
+        foreach (var seed in seeds)
+            fingerprint.Append(seed);
+        const string fingerprintPrefix = "sha256:";
+        return prefix + fingerprint.Build()[fingerprintPrefix.Length..];
+    }
 
     private static bool TryReadExact(JsonNode? node, out string value)
     {

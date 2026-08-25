@@ -364,7 +364,11 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         var normalizer = new CanonicalStateNormalizer(
             _fs,
             NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeMortalLocationsAsync(backups);
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            await normalizer.BindTo(writeLease)
+                .NormalizeMortalLocationsAsync(backups);
+        }
 
         var settledScaffold = JsonNode.Parse(
             (await _fs.ReadFileAsync(MortalBootstrapLocationScaffold.StatePath))!)!.AsObject();
@@ -544,10 +548,14 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         var normalizer = new CanonicalStateNormalizer(
             _fs,
             NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeMortalLocationsAsync(baselineFiles.ToDictionary(
-            static path => path,
-            static path => $"game_state/control/pending_turn_snapshot/{path}",
-            StringComparer.OrdinalIgnoreCase));
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            await normalizer.BindTo(writeLease).NormalizeMortalLocationsAsync(
+                baselineFiles.ToDictionary(
+                    static path => path,
+                    static path => $"game_state/control/pending_turn_snapshot/{path}",
+                    StringComparer.OrdinalIgnoreCase));
+        }
         var map = JsonNode.Parse((await _fs.ReadFileAsync(
             MortalLocationMaterializationContract.WorldMapPath))!)!.AsObject();
         var locations = map["locations"]!.AsArray();

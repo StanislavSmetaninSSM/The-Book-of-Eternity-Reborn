@@ -62,19 +62,30 @@ internal sealed class ResourceStateLedger
 {
     private readonly FrozenDictionary<ResourceCoordinate, ResourceStateEntry> _byCoordinate;
 
-    internal ResourceStateLedger(IEnumerable<ResourceStateEntry> entries)
+    internal ResourceStateLedger(
+        IEnumerable<ResourceStateEntry> entries,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
-        var ordered = entries
-            .OrderBy(static entry => entry.Coordinate.Realm, StringComparer.Ordinal)
-            .ThenBy(static entry => entry.Coordinate.OwnerKind)
-            .ThenBy(static entry => entry.Coordinate.ResourceOwnerId, StringComparer.Ordinal)
-            .ThenBy(static entry => entry.Coordinate.ResourceKey, StringComparer.Ordinal)
+        var candidates = entries.ToArray();
+        foreach (var _ in candidates)
+            workMeter?.VisitStateConstruction();
+        IComparer<ResourceStateEntry> comparer = ResourceStateEntryComparer.Instance;
+        if (workMeter != null)
+        {
+            comparer = new ResourceAuthorityCountingComparer<ResourceStateEntry>(
+                comparer,
+                workMeter.CompareStateEntries);
+        }
+        var ordered = candidates
+            .OrderBy(static entry => entry, comparer)
             .ToArray();
         Entries = new ReadOnlyCollection<ResourceStateEntry>(ordered);
+        foreach (var _ in ordered)
+            workMeter?.VisitStateIndex();
         _byCoordinate = ordered.ToFrozenDictionary(
             static entry => entry.Coordinate,
             ResourceCoordinateComparer.Instance);
-        Fingerprint = ResourceStateContract.ComputeFingerprint(ordered);
+        Fingerprint = ResourceStateContract.ComputeFingerprint(ordered, workMeter);
     }
 
     internal IReadOnlyList<ResourceStateEntry> Entries { get; }
@@ -101,6 +112,37 @@ internal sealed class ResourceStateLedger
         }
 
         return Encoding.UTF8.GetString(stream.ToArray());
+    }
+
+    private sealed class ResourceStateEntryComparer : IComparer<ResourceStateEntry>
+    {
+        internal static ResourceStateEntryComparer Instance { get; } = new();
+
+        public int Compare(ResourceStateEntry? left, ResourceStateEntry? right)
+        {
+            if (ReferenceEquals(left, right))
+                return 0;
+            if (left == null)
+                return -1;
+            if (right == null)
+                return 1;
+            var result = StringComparer.Ordinal.Compare(
+                left.Coordinate.Realm,
+                right.Coordinate.Realm);
+            if (result != 0)
+                return result;
+            result = left.Coordinate.OwnerKind.CompareTo(right.Coordinate.OwnerKind);
+            if (result != 0)
+                return result;
+            result = StringComparer.Ordinal.Compare(
+                left.Coordinate.ResourceOwnerId,
+                right.Coordinate.ResourceOwnerId);
+            return result != 0
+                ? result
+                : StringComparer.Ordinal.Compare(
+                    left.Coordinate.ResourceKey,
+                    right.Coordinate.ResourceKey);
+        }
     }
 }
 
@@ -153,7 +195,8 @@ internal static class ResourceStateContract
     internal static ResourceStateContractResult ParseCanonical(
         string? json,
         ResourceDefinitionCatalog definitions,
-        bool allowMissingPristine)
+        bool allowMissingPristine,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
         ArgumentNullException.ThrowIfNull(definitions);
         if (json == null)
@@ -161,7 +204,9 @@ internal static class ResourceStateContract
             if (allowMissingPristine)
             {
                 return new ResourceStateContractResult(
-                    new ResourceStateLedger(Array.Empty<ResourceStateEntry>()),
+                    new ResourceStateLedger(
+                        Array.Empty<ResourceStateEntry>(),
+                        workMeter),
                     Array.Empty<ValidationIssue>(),
                     IsMissing: true);
             }
@@ -253,9 +298,11 @@ internal static class ResourceStateContract
                 return new ResourceStateContractResult(null, issues.ToArray());
             }
 
-            var parsed = ParseEntries(entries, definitions, issues);
+            var parsed = ParseEntries(entries, definitions, issues, workMeter);
             return issues.Count == 0
-                ? new ResourceStateContractResult(new ResourceStateLedger(parsed), issues)
+                ? new ResourceStateContractResult(
+                    new ResourceStateLedger(parsed, workMeter),
+                    issues)
                 : new ResourceStateContractResult(null, issues.ToArray());
         }
     }
@@ -379,11 +426,14 @@ internal static class ResourceStateContract
         return snapshot;
     }
 
-    internal static string ComputeFingerprint(IEnumerable<ResourceStateEntry> entries)
+    internal static string ComputeFingerprint(
+        IEnumerable<ResourceStateEntry> entries,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
         using var builder = new ResourceFingerprintBuilder("resource-state-v1");
         foreach (var entry in entries)
         {
+            workMeter?.VisitStateFingerprint();
             AppendCoordinate(builder, entry.Coordinate);
             AppendSnapshot(builder, entry.Snapshot);
             builder.Append(entry.Chronology.CreatedAtTurn);
@@ -494,7 +544,8 @@ internal static class ResourceStateContract
     private static IReadOnlyList<ResourceStateEntry> ParseEntries(
         JsonElement entries,
         ResourceDefinitionCatalog definitions,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        ResourceAuthorityWorkMeter? workMeter)
     {
         var parsed = new List<ResourceStateEntry>();
         var exactCoordinates = new HashSet<ResourceCoordinate>(ResourceCoordinateComparer.Instance);
@@ -504,6 +555,7 @@ internal static class ResourceStateContract
         var index = 0;
         foreach (var value in entries.EnumerateArray())
         {
+            workMeter?.VisitStateDescriptor();
             var path = $"{ResourceMaterializationContract.StatePath}.entries[{index++}]";
             var entry = ParseEntry(value, path, definitions, issues);
             if (entry == null)

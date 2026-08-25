@@ -9,6 +9,16 @@ It returns either:
 - one updated working ledger, one exact applied event, one immutable transition entry (or one prior replay entry), and zero issues; or
 - issues with no after-state.
 
+Every production publisher treats `resource_definitions.json`, `resource_state.json`,
+`resource_history.json`, and `resource_owner_authority.json` as one guarded quartet.
+Before planning an existing-session transition it validates the exact persisted authority
+against the captured global owner roots. It then recomposes the authority after-image from
+the projected final owner roots, final state, and final history and commits every changed
+quartet/owner root under the same lease and rollback boundary. An unchanged authority is
+still a guarded before-image (for example, an ordinary blessing-reroll spend). Only the
+named Fresh New Game bootstrap API may create the first authority root; Mortal
+incarnation is an existing-session transition and there is no missing-root migration.
+
 ## 2. Arithmetic
 
 For each operation:
@@ -35,7 +45,7 @@ Closed phases execute in this order:
 3. `registered_system_outcome`
 4. `effect_trigger`
 
-The planner first constructs the complete finite dependency graph, executes the closed phase order, and assigns each stored transition one non-negative client-owned `executionSequence` unique within its turn. Canonical history orders by `turn`, then `executionSequence`; phase, priority, origin, operation, event, and transition identities are deterministic consistency tie-breakers only. Within a ready set: ascending registered priority, then exact `originId`, then client-owned `operationId`. Dependencies must already be satisfied. The sequence is protected replay semantics and must be identical on retry.
+The planner first constructs the complete finite dependency graph, executes the closed phase order, and assigns each stored transition one non-negative client-owned `executionSequence` unique within its turn. Canonical history orders by `turn`, then `executionSequence`; phase, priority, origin, operation, event, and transition identities are deterministic consistency tie-breakers only. Within a ready set: ascending registered priority, then exact `originId`, then the full stable semantic operation key. A freshly allocated `operationId` is identity and only a final consistency tie-breaker; it cannot change `executionSequence` on retry. Dependencies must already be satisfied. The sequence is protected replay semantics and must be identical on retry.
 
 Registered-system derived amounts are resolved only after the direct phases have completed. Version 1 permits a closed loss-recovery percentage: for one coordinate, sum the exact direct-phase loss, multiply by an integer percent from 1 through 100, divide by 100, and floor exactly once. It requires an integral quantum of `1`; a zero result creates no transition. The derived mutation still uses the ordinary reducer, source catalog, ordering, clamp/reject policy, history, and replay contract. Exact replay binds the originally stored requested amount rather than recalculating it from the retry's already-accepted state.
 

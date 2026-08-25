@@ -216,7 +216,7 @@
                 The only current GM route for active runtime effect lifecycle on player, NPC, combatant, or afterlife targets. Every apply binds one exact accepted target and one exact activeEffectDefinitions[] entry on a validated source. Never author effect IDs, carrier arrays, stacks, remaining lifetime, history, index, or post-state. Full contract: OtherGuides/Effect_Materialization_Contract.md.",
 
                 "effectResolutionReceipts": "(array of exact bounded receipt objects or null)
-                Present only when the client-created pending_effect_resolutions.json requests an exact bounded answer. Copy the correlated authority and allowed result exactly, return it with the complete turn, and never expose the pending or receipt DTO to the player.",
+                Present only when the client-created pending_effect_resolutions.json safe packet requests an exact bounded answer. Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned. Return only requestId, one allowed result shape, and the required reason; never copy protected authority, target, coordinate, operation, fingerprints, paths, or pending DTO fields into the response or player text. Never invent, merge, retarget, or replay an old receipt under changed resource/effect commands.",
                 
                 "calculatedWeightData": "(object or null) 
                 Contains data about the player's current weight status, specifically 'additionalEnergyExpenditure' due to overload. 
@@ -596,7 +596,7 @@
                 The structure for each object is defined in the new InstructionBlock '19.A'.",
 
                 "NPCInventoryUpdates": "(array of npc_inventory_update_objects or null)
-                Used to report PARTIAL changes to an EXISTING item in an NPC's inventory (e.g., durability change, count update).
+                Used to report only non-resource PARTIAL changes to an EXISTING item in an NPC's inventory (for example count or description). Durability and other bounded reserves use resourceChanges/resourceCapacityChanges against the item's exact permanent owner.
                 This follows the Law of Partial Updates (ID + only changed fields).
                 The structure for each object is defined in the new InstructionBlock '19.A'.",
 

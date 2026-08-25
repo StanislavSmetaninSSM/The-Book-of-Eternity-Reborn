@@ -344,6 +344,43 @@ public sealed class ResourceMutationReducerTests
     }
 
     [Fact]
+    public void ApplyCapacityTransition_RegisteredCapacityMayEqualDefinitionMinimum()
+    {
+        var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
+        var coordinate = new ResourceCoordinate(
+            "chaos_sea",
+            ResourceOwnerKind.AfterlifeActor,
+            "guardian_zero_attempts",
+            "gacha_attempts");
+        var formulaInput = new GuardianReturnGachaFormulaInput(
+            new ResourceFormulaOwner(
+                coordinate.Realm,
+                coordinate.OwnerKind,
+                coordinate.ResourceOwnerId),
+            FingerprintA,
+            Reputation: -51,
+            AbodePower: 0,
+            FounderExtraCharges: 0,
+            ReturnCycleId: "return_cycle_zero_attempts");
+        var harness = CreateEmptyHarness(definitions, coordinate);
+
+        var result = harness.ApplyCapacity(Capacity(
+            ResourceCapacityOperation.Initialize,
+            sequence: 0,
+            resourceKey: "gacha_attempts",
+            maximum: 0m,
+            disposition: ResourceCurrentDisposition.InitializeFromDefinition,
+            coordinate: coordinate,
+            definitions: definitions,
+            capacityFormulaInput: formulaInput));
+
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
+        var entry = result.WorkingLedger!.Resolve(coordinate);
+        Assert.Equal(0m, entry.Current);
+        Assert.Equal(0m, entry.Maximum);
+    }
+
+    [Fact]
     public void ResolveCapacity_RejectsStaleRegisteredCapacityAndInitializationBindings()
     {
         var definitions = ResourceDefinitionCatalog.CreateBuiltIn();

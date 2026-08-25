@@ -1,7 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
-using System.Runtime.CompilerServices;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -211,7 +210,7 @@ internal sealed class AcceptedMechanicsPlanCache
     {
         var root = new JsonObject
         {
-            ["schemaVersion"] = 1,
+            ["schemaVersion"] = 2,
             ["sessionId"] = binding.SessionId,
             ["requestId"] = binding.RequestId,
             ["snapshotToken"] = binding.SnapshotToken,
@@ -260,52 +259,75 @@ internal sealed class AcceptedMechanicsPlanCache
 
 internal static class AcceptedMechanicsPlanAuthority
 {
-    private static readonly ConditionalWeakTable<FileSystemManager, AcceptedMechanicsPlanCache>
-        Caches = new();
-
     internal static AcceptedMechanicsPlanningResult GetOrBuildValidated(
         FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
         AcceptedMechanicsInput input)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(input);
-        return Cache(fileSystem).GetOrBuildValidated(input);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry.GetOrBuildCommonValidated(
+            fileSystem,
+            writeLease,
+            input);
     }
 
     internal static bool TryTakeValidated(
         FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
         AcceptedMechanicsPlanBinding liveBinding,
         out AcceptedMechanicsPlanningResult result)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(liveBinding);
-        return Cache(fileSystem).TryTakeValidated(liveBinding, out result);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry.TryTakeCommonValidated(
+            fileSystem,
+            writeLease,
+            liveBinding,
+            out result);
     }
 
-    internal static void InvalidateValidated(FileSystemManager fileSystem)
+    internal static void InvalidateValidated(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
-        Cache(fileSystem).InvalidateValidated();
+        ArgumentNullException.ThrowIfNull(writeLease);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        AcceptedTurnAuthorityRegistry.InvalidateCommonValidated(
+            fileSystem,
+            writeLease);
     }
 
-    internal static bool HasValidated(FileSystemManager fileSystem)
+    internal static bool HasValidated(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
-        return Cache(fileSystem).HasValidated;
+        ArgumentNullException.ThrowIfNull(writeLease);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry.HasCommonValidated(
+            fileSystem,
+            writeLease);
     }
 
     internal static bool TryPeekValidated(
         FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
         out AcceptedMechanicsPlanBinding binding,
         out AcceptedMechanicsPlanningResult result)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
-        return Cache(fileSystem).TryPeekValidated(out binding, out result);
-    }
-
-    private static AcceptedMechanicsPlanCache Cache(FileSystemManager fileSystem) =>
-        Caches.GetValue(
+        ArgumentNullException.ThrowIfNull(writeLease);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry.TryPeekCommonValidated(
             fileSystem,
-            static _ => new AcceptedMechanicsPlanCache(
-                AcceptedMechanicsPlanner.BuildAcceptedPlan));
+            writeLease,
+            out binding,
+            out result);
+    }
 }

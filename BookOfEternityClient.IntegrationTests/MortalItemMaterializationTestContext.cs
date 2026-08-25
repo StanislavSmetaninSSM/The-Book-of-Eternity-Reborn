@@ -9,7 +9,9 @@ internal sealed partial class MortalItemMaterializationTestContext : IAsyncDispo
 {
     private readonly string _expectedTempRoot;
 
-    private MortalItemMaterializationTestContext(string rootPath)
+    private MortalItemMaterializationTestContext(
+        string rootPath,
+        FileSystemManagerHooks? hooks = null)
     {
         RootPath = Path.GetFullPath(rootPath);
         _expectedTempRoot = Path.GetFullPath(Path.GetTempPath()).TrimEnd(
@@ -19,7 +21,9 @@ internal sealed partial class MortalItemMaterializationTestContext : IAsyncDispo
         Directory.CreateDirectory(RootPath);
         FileSystem = new FileSystemManager(
             RootPath,
-            NullLogger<FileSystemManager>.Instance);
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
         FileSystem.EnsureDirectoryStructure();
         Validator = new ValidationService(
             FileSystem,
@@ -37,12 +41,13 @@ internal sealed partial class MortalItemMaterializationTestContext : IAsyncDispo
 
     internal string RootPath { get; }
 
-    internal static Task<MortalItemMaterializationTestContext> CreateAsync()
+    internal static Task<MortalItemMaterializationTestContext> CreateAsync(
+        FileSystemManagerHooks? hooks = null)
     {
         var rootPath = Path.Combine(
             Path.GetTempPath(),
             "boe-mortal-item-materialization-" + Guid.NewGuid().ToString("N"));
-        return Task.FromResult(new MortalItemMaterializationTestContext(rootPath));
+        return Task.FromResult(new MortalItemMaterializationTestContext(rootPath, hooks));
     }
 
     internal Task WriteJsonAsync(string relativePath, JsonNode root)

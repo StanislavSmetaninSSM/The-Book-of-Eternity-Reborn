@@ -385,6 +385,10 @@
 
                     Initiative Order: Zombie Lord (22), Ronan (18).
                     Player's Declared Action: "I charge and attack the Zombie Lord with my Greatsword."
+                    Accepted source context: skill_paralyzing_gaze owns the complete
+                    paralyzing-gaze-stun action_control definition with a one-turn
+                    owner_turn_end lifetime. The runtime carrier and remaining lifetime
+                    are client-owned.
 
                     ]]>
   </scenariocontext>
@@ -417,7 +421,7 @@
                             - **Проверка Валидности Действия (Правило 13, Шаг 2a):**
                                 - **Проверка Статуса:** Ронан находится под действием эффекта 'Stunned'.
                                 - **Последствие:** Изначально заявленное действие ("атаковать Мечом") **АННУЛИРУЕТСЯ**.
-                                - Ход Ронана пропускается. Эффект 'Stunned' в конце его хода уменьшает свою длительность до 0.
+                            - Ход Ронана пропускается. В конце его хода клиент продвигает одноходовую lifetime-политику и публикует истечение эффекта.
 
                             # Конец симуляции раунда.
 
@@ -434,23 +438,26 @@
                                 
                                 ]]>
      </response>
-     <playeractiveeffectschanges>
+     <effectChanges>
       <![CDATA[
 
                                 [
                                     {
-                                        "effectId": null,
-                                        "effectType": "Control",
-                                        "value": "100%",
-                                        "targetType": "stun",
-                                        "duration": 1,
-                                        "sourceSkill": "Paralyzing Gaze",
-                                        "description": "Ошеломлен! Не может действовать (1 ход)."
+                                        "operation": "apply",
+                                        "target": { "kind": "player", "targetId": "player_current" },
+                                        "source": {
+                                            "kind": "skill",
+                                            "sourceId": "skill_paralyzing_gaze",
+                                            "definitionKey": "paralyzing-gaze-stun"
+                                        },
+                                        "parameters": {},
+                                        "eventRef": { "kind": "accepted_turn", "authorityId": "turn_43" },
+                                        "reason": "Принятый взгляд Повелителя Зомби активировал точное определение оглушения."
                                     }
                                 ]
 
                                 ]]>
-     </playeractiveeffectschanges>
+     </effectChanges>
      <combat_log_markdown>
       <![CDATA[
 

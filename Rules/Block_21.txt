@@ -14,7 +14,7 @@
             The GM is responsible for tracking these changes and reflecting them in NPC reactions and available opportunities.
             This block defines the structure for reporting new factions or changes to the player's status within them.
 
-            UNIFIED RESOURCE BOUNDARY: faction reputation, rank, treasury values, and faction accounting remain authoritative in this block and MUST NOT be materialized as common resources. The afterlife reserves `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` instead live in client-owned `game_state/resources/resource_state.json` with immutable `game_state/resources/resource_history.json` and exact `resourceOwnerBindings`. Persisted legacy pools/counters are forbidden. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; boolean entitlements remain outside the ledger. Ink Feathers, Light Sparks, progression, relationships, faction accounting, and spiritual power/strain/shield stay specialized. No migration or fallback is allowed.
+            UNIFIED RESOURCE BOUNDARY: faction reputation, rank, treasury values, and faction accounting remain authoritative in this block and MUST NOT be materialized as common resources. The afterlife reserves `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` instead live in client-owned `game_state/resources/resource_state.json` with immutable `game_state/resources/resource_history.json`, client-owned `game_state/resources/resource_owner_authority.json`, and exact `resourceOwnerBindings`. Definitions/state/history/owner-authority are one guarded quartet; GM output never authors them, and missing/stale authority outside explicit bootstrap fails closed without migration. Persisted legacy pools/counters are forbidden. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; boolean entitlements remain outside the ledger. Ink Feathers, Light Sparks, progression, relationships, faction accounting, and spiritual power/strain/shield stay specialized. No migration or fallback is allowed.
             
             ]]>
  </instructiontext>
@@ -105,6 +105,7 @@
                                     }
                                 ], // optional; use [] when none
                                 "structuredBonuses": [ /* Array of structured bonus objects */ ], // optional; use [] when none
+                                "activeEffectDefinitions": [ /* complete Effect Materialization v1 definitions or [] */ ],
                                 "customStates": [ /* Array of Custom State Objects */ ], // optional; use [] when none
                                 "activeProjects": [
                                     {
@@ -277,6 +278,12 @@
                             13. "structuredBonuses": (array of objects or null) 
                                 An array containing all persistent or conditional mechanical bonuses the faction possesses.
                                 The structure is defined in Rule '21.B'.
+
+                            13.A. Effect Materialization v1 faction source-owner boundary:
+                                - `structuredBonuses`, powerProfile, reputation, rank, resources, projects, and customStates remain their existing static/specialized faction mechanics. They are not active-effect instances and are never promoted from prose.
+                                - A faction that can create a persistent, periodic, triggered, stacked, or removable runtime effect owns complete `activeEffectDefinitions[]` entries following `OtherGuides/Effect_Materialization_Contract.md`.
+                                - A definition does not apply itself. Request an instance only through top-level `effectChanges[]` with `{ "kind": "faction", "sourceId": "<exact-factionId>", "definitionKey": "<exact-definition-key>" }`, or the exact same-turn sourceRef equal to the accepted new faction `initialId`.
+                                - Gaining or losing territory, a project, rank, bonus, or reputation may supply an accepted event/predicate only when the definition declares it. Never write faction consequences directly into any `activeEffects[]` carrier.
 
                             14. "customStates": (array of Custom State Objects or null) 
                                 Tracks persistent, narratively significant conditions affecting the faction (e.g., 'Army Morale'). 

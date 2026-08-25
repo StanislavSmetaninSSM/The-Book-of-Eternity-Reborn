@@ -20,6 +20,71 @@ public sealed class ResourceMaterializationValidationTests
     }
 
     [Fact]
+    public async Task CanonicalValidation_RejectsExistingQuartetWithMissingOwnerAuthorityRoot()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            bootstrap.Definitions!.ToCanonicalJson());
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.StatePath,
+            bootstrap.State!.ToCanonicalJson());
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.HistoryPath,
+            bootstrap.History!.ToCanonicalJson());
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnCanonicalResourceMaterializationAsync();
+
+        Assert.Contains(
+            issues,
+            issue => issue.Code == "resource_owner_authority_root_stale");
+        Assert.False(context.FileSystem.FileExists(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RawValidation_MissingOrStaleAuthorityCachesNoPlanAndCannotSelfHeal(
+        bool staleInsteadOfMissing)
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await SeedEmptyRootsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        if (staleInsteadOfMissing)
+        {
+            await context.WriteExactJsonAsync(
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                "{\"schemaVersion\":1,\"historicalOwners\":[{\"realm\":\"mortal_world\",\"ownerKind\":\"player\",\"resourceOwnerId\":\"forged\"}],\"capacityDrafts\":[]}");
+        }
+        else
+        {
+            await context.DeleteAsync(
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
+        }
+        var before = await context.CaptureAsync(
+            ResourceMaterializationTestContext.AllResourcePaths);
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        Assert.Contains(
+            issues,
+            issue => issue.Code ==
+                     "resource_materialization_direct_owner_authority_mutation");
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem));
+        await using var writeLease = await context.FileSystem
+            .AcquireCanonicalWriteLeaseAsync();
+        Assert.Null(await context.Normalizer.BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups: null));
+        await context.AssertUnchangedAsync(before);
+    }
+
+    [Fact]
     public async Task RequiredStateValidation_MissingUnifiedResourceRootsIsIncompatible()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
@@ -169,6 +234,28 @@ public sealed class ResourceMaterializationValidationTests
         foreach (var transition in history["entries"]!.AsArray())
             transition!["coordinate"]!["resourceOwnerId"] = "player_forged";
 
+        var forgedState = ResourceStateContract.ParseCanonical(
+            state.ToJsonString(),
+            result.Definitions,
+            allowMissingPristine: false);
+        var forgedHistory = ResourceHistoryState.ParseCanonical(
+            history.ToJsonString(),
+            result.Definitions,
+            allowMissingPristine: false);
+        Assert.NotNull(forgedState.Ledger);
+        Assert.NotNull(forgedHistory.History);
+        var ownerAuthority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            result.Definitions,
+            context.FileSystem.ReadFileAsync,
+            forgedState.Ledger,
+            forgedHistory.History,
+            CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap);
+        Assert.True(
+            ownerAuthority.IsValid &&
+            !string.IsNullOrWhiteSpace(ownerAuthority.CanonicalAuthorityJson),
+            string.Join(Environment.NewLine, ownerAuthority.Issues.Select(issue =>
+                $"{issue.Code}: {issue.FilePath}; expected={issue.Expected}; actual={issue.Actual}")));
+
         await context.WriteExactJsonAsync(
             ResourceMaterializationTestContext.DefinitionsPath,
             definitions.ToJsonString());
@@ -178,6 +265,9 @@ public sealed class ResourceMaterializationValidationTests
         await context.WriteExactJsonAsync(
             ResourceMaterializationTestContext.HistoryPath,
             history.ToJsonString());
+        await context.WriteExactJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            ownerAuthority.CanonicalAuthorityJson!);
         await context.CaptureValidatedPendingSnapshotAsync();
 
         var rawIssues = await context.Validator
@@ -280,7 +370,16 @@ public sealed class ResourceMaterializationValidationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.True(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
+        var manifest = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            "game_state/control/pending_turn_snapshot.json"));
+        var snapshotToken = manifest["manifestPayloadHash"]!.GetValue<string>();
+        var validatedHandoff = await AcceptedMechanicsAuthorityTestProbe
+            .PeekCommonAsync(context.FileSystem);
+        Assert.NotNull(validatedHandoff);
+        var binding = validatedHandoff.Binding;
+        Assert.Equal(snapshotToken, binding.SnapshotToken);
         await context.AssertUnchangedAsync(before);
     }
 
@@ -299,7 +398,8 @@ public sealed class ResourceMaterializationValidationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.True(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
         await context.AssertUnchangedAsync(before);
     }
 
@@ -339,7 +439,8 @@ public sealed class ResourceMaterializationValidationTests
         Assert.Contains(issues, issue =>
             issue.Code == "resource_command_unknown_field" &&
             issue.FilePath.Contains("source", StringComparison.Ordinal));
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
         await context.AssertUnchangedAsync(before);
     }
 
@@ -376,7 +477,8 @@ public sealed class ResourceMaterializationValidationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.True(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
         await context.AssertUnchangedAsync(before);
     }
 
@@ -396,7 +498,8 @@ public sealed class ResourceMaterializationValidationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.Contains(issues, issue => issue.Code == "resource_command_unknown_field");
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
     }
 
     [Fact]
@@ -417,7 +520,8 @@ public sealed class ResourceMaterializationValidationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.Contains(issues, issue => issue.Code == "resource_owner_unresolved");
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
     }
 
     [Fact]
@@ -437,7 +541,8 @@ public sealed class ResourceMaterializationValidationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.Contains(issues, issue => issue.Code == "resource_owner_capability_missing");
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
     }
 
     [Fact]
@@ -455,7 +560,8 @@ public sealed class ResourceMaterializationValidationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.Contains(issues, issue => issue.Code == "resource_owner_selector_invalid");
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
     }
 
     private static async Task<OldTechnicalSaveScenario> SeedOldTechnicalSaveScenarioAsync(

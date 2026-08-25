@@ -10,7 +10,8 @@ internal sealed record ProjectedResourceSeed(
     string OwnerId,
     string ResourceKey,
     decimal Current,
-    decimal Maximum);
+    decimal Maximum,
+    ResourceLifecycleState State = ResourceLifecycleState.Active);
 
 internal static class ResourceProjectionFixture
 {
@@ -44,6 +45,12 @@ internal static class ResourceProjectionFixture
             {
                 throw new InvalidOperationException(
                     $"Invalid current/maximum for '{resource.ResourceKey}'.");
+            }
+            if (resource.State is not ResourceLifecycleState.Active and
+                not ResourceLifecycleState.Suspended)
+            {
+                throw new InvalidOperationException(
+                    $"Unsupported lifecycle state for '{resource.ResourceKey}'.");
             }
 
             var coordinate = new ResourceCoordinate(
@@ -120,6 +127,37 @@ internal static class ResourceProjectionFixture
                     Fingerprint,
                     null,
                     2);
+                transitions.Add(latest);
+            }
+
+            if (resource.State == ResourceLifecycleState.Suspended)
+            {
+                var beforeSuspend = after;
+                after = beforeSuspend with { State = ResourceLifecycleState.Suspended };
+                latest = new ResourceTransition(
+                    $"transition_fixture_suspend_{sequence + 1}",
+                    $"operation_fixture_suspend_{sequence + 1}",
+                    $"turn_3:resource:{sequence + 1}",
+                    "owner_lifecycle",
+                    $"owner_lifecycle_{sequence + 1}",
+                    ResourceMutationPhase.RegisteredSystemOutcome,
+                    50,
+                    sequence++,
+                    coordinate,
+                    ResourceTransitionOperation.Suspend,
+                    0m,
+                    0m,
+                    ResourceTransitionOutcome.Applied,
+                    null,
+                    beforeSuspend,
+                    after,
+                    new ResourceSourceEvidence(
+                        "owner_lifecycle",
+                        $"owner_lifecycle_{sequence}",
+                        Fingerprint),
+                    Fingerprint,
+                    null,
+                    3);
                 transitions.Add(latest);
             }
 

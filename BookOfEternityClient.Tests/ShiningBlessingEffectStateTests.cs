@@ -968,7 +968,11 @@ public sealed class ShiningBlessingEffectStateTests
                         "evt_ruinous",
                         damageFingerprint,
                         ResourceMutationSourceState.Active,
-                        SameTurn: true)
+                        SameTurn: true,
+                        BoundOwner: new ResourceOwnerKey(
+                            "mortal_world",
+                            ResourceOwnerKind.Player,
+                            "player_current"))
                 });
             Assert.True(damageSources.IsValid, string.Join(Environment.NewLine, damageSources.Issues));
             ResourceMutationIntent Damage(
@@ -1828,17 +1832,6 @@ public sealed class ShiningBlessingEffectStateTests
             JsonObject preparedPackage,
             int currentIncarnation)
     {
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
         var soulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
         Assert.False(string.IsNullOrWhiteSpace(soulJson));
         var soulRoot = JsonNode.Parse(soulJson!)!.AsObject();
@@ -1846,33 +1839,24 @@ public sealed class ShiningBlessingEffectStateTests
         {
             [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0
         };
-        await fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            soulRoot.ToJsonString());
-        await fs.WriteFileAtomicAsync(
-            AfterlifeEntityProfileState.StatePath,
-            new JsonObject
+        var profilesRoot = new JsonObject
+        {
+            [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
             {
-                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                new JsonObject
                 {
-                    new JsonObject
-                    {
-                        ["actorType"] = "player_soul",
-                        ["actorId"] = "player_soul",
-                        ["displayName"] = "Душа игрока",
-                        ["realm"] = "Shining Abode",
-                        ["resourceOwnerBindings"] = new JsonArray
-                        {
-                            new JsonObject
-                            {
-                                ["realm"] = "shining_abode",
-                                ["resourceOwnerId"] = "player_soul",
-                                ["state"] = "suspended"
-                            }
-                        }
-                    }
+                    ["actorType"] = "player_soul",
+                    ["actorId"] = "player_soul",
+                    ["displayName"] = "Душа игрока",
+                    ["realm"] = "Shining Abode"
                 }
-            }.ToJsonString());
+            }
+        };
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            fs,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: profilesRoot,
+                SoulState: soulRoot));
         return await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
             fs,
             preparedPackage,

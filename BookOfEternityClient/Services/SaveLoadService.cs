@@ -161,7 +161,8 @@ public class SaveLoadService
                     "The mandatory canonical game_state root is missing.");
             }
 
-            await ValidateCanonicalResourceStateForSaveAsync(
+            var canonicalOwnerAuthorityJson =
+                await ValidateCanonicalResourceStateForSaveAsync(
                 canonicalSnapshotLease);
 
             var state = _stateManager.CurrentState;
@@ -193,6 +194,16 @@ public class SaveLoadService
                 {
                     throw new InvalidDataException(
                         "The mandatory canonical game_state root contains no durable state.");
+                }
+                if (!manifestEntries.Any(entry => entry.Path.Equals(
+                        CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                        StringComparison.OrdinalIgnoreCase)))
+                {
+                    await AddManifestedBytesToArchiveAsync(
+                        archive,
+                        CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                        Encoding.UTF8.GetBytes(canonicalOwnerAuthorityJson),
+                        manifestEntries);
                 }
                 ValidateArchivedSoulState(manifestEntries);
 
@@ -705,7 +716,10 @@ public class SaveLoadService
         {
             var relativePath = Path.GetRelativePath(sourceDir, file);
             var entryPath = Path.Combine(entryPrefix, relativePath).Replace('\\', '/');
-            if (IsEphemeralArchivePath(entryPath))
+            if (IsEphemeralArchivePath(entryPath) ||
+                entryPath.Equals(
+                    CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                    StringComparison.OrdinalIgnoreCase))
                 continue;
 
             var canonicalRelativePath = Path.GetRelativePath(_fs.GameSessionPath, file)
@@ -1333,23 +1347,25 @@ public class SaveLoadService
         ValidateSoulStateBytes(content);
     }
 
-    private async Task ValidateCanonicalResourceStateForSaveAsync(
+    private async Task<string> ValidateCanonicalResourceStateForSaveAsync(
         FileSystemManager.CanonicalWriteLease canonicalSnapshotLease)
     {
-        var definitionsJson = await _fs.ReadFileAsync(
+        var definitionsJson = await ReadCanonicalResourceFileAsync(
             canonicalSnapshotLease,
             ResourceMaterializationContract.DefinitionsPath);
-        var stateJson = await _fs.ReadFileAsync(
+        var stateJson = await ReadCanonicalResourceFileAsync(
             canonicalSnapshotLease,
             ResourceMaterializationContract.StatePath);
-        var historyJson = await _fs.ReadFileAsync(
+        var historyJson = await ReadCanonicalResourceFileAsync(
             canonicalSnapshotLease,
             ResourceMaterializationContract.HistoryPath);
-        ValidateResourceDocuments(
+        return await ValidateResourceDocumentsAsync(
             definitionsJson,
             stateJson,
             historyJson,
-            "Canonical save resource authority");
+            "Canonical save resource authority",
+            path => ReadCanonicalResourceFileAsync(canonicalSnapshotLease, path),
+            requirePersistedAuthorityRoot: true);
     }
 
     private static async Task ValidateArchivedResourceStateAsync(
@@ -1364,11 +1380,13 @@ public class SaveLoadService
         var historyJson = await ReadRequiredResourceEntryAsync(
             payloadEntries,
             ResourceMaterializationContract.HistoryPath);
-        ValidateResourceDocuments(
+        _ = await ValidateResourceDocumentsAsync(
             definitionsJson,
             stateJson,
             historyJson,
-            "Save archive resource authority");
+            "Save archive resource authority",
+            path => ReadOptionalArchiveEntryAsync(payloadEntries, path),
+            requirePersistedAuthorityRoot: true);
     }
 
     private static async Task<string> ReadRequiredResourceEntryAsync(
@@ -1381,10 +1399,22 @@ public class SaveLoadService
                 $"Save archive is missing mandatory canonical state '{path}'.");
         }
 
+        var json = await ReadOptionalArchiveEntryAsync(payloadEntries, path);
+        return json ?? throw new InvalidDataException(
+            $"Save archive is missing mandatory canonical state '{path}'.");
+    }
+
+    private static async Task<string?> ReadOptionalArchiveEntryAsync(
+        IReadOnlyDictionary<string, ZipArchiveEntry> payloadEntries,
+        string path)
+    {
+        if (!payloadEntries.TryGetValue(path, out var entry))
+            return null;
+
         var bytes = await ReadArchiveEntryBytesAsync(
             entry,
             TrustedArchiveBudget.MaxEntryExpandedBytes,
-            $"Canonical resource state '{path}'");
+            $"Canonical state '{path}'");
         try
         {
             return new UTF8Encoding(
@@ -1400,11 +1430,13 @@ public class SaveLoadService
         }
     }
 
-    private static void ValidateResourceDocuments(
+    private static async Task<string> ValidateResourceDocumentsAsync(
         string? definitionsJson,
         string? stateJson,
         string? historyJson,
-        string authorityName)
+        string authorityName,
+        Func<string, Task<string?>> readOwnerDocumentAsync,
+        bool requirePersistedAuthorityRoot = false)
     {
         var definitions = ResourceDefinitionCatalog.ParseCanonical(
             definitionsJson,
@@ -1423,18 +1455,49 @@ public class SaveLoadService
         var issues = state.Issues
             .Concat(history.Issues)
             .ToList();
+        var owners = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            definitions.Catalog!,
+            readOwnerDocumentAsync,
+            state.Ledger,
+            history.History,
+            requirePersistedAuthorityRoot
+                ? CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation
+                : CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        issues.AddRange(owners.Issues);
         if (state.Ledger != null && history.History != null)
         {
             issues.AddRange(history.History.ValidateStateAgreement(state.Ledger));
-            var owners = ResourceOwnerAuthority.CreateCurrentPlayerAuthority(
-                definitions.Catalog!);
-            issues.AddRange(owners.Issues);
-            issues.AddRange(owners.ValidateCanonicalAgreement(
+            if (owners.Authority != null)
+                issues.AddRange(owners.Authority.ValidateCanonicalAgreement(
                 state.Ledger,
                 history.History));
         }
         if (state.Ledger == null || history.History == null || issues.Count != 0)
             ThrowInvalidResourceAuthority(authorityName, issues);
+        return owners.CanonicalAuthorityJson ?? throw new InvalidDataException(
+            $"{authorityName} did not produce canonical owner authority.");
+    }
+
+    private async Task<string?> ReadCanonicalResourceFileAsync(
+        FileSystemManager.CanonicalWriteLease canonicalSnapshotLease,
+        string path)
+    {
+        var bytes = await _fs.ReadFileBytesAsync(canonicalSnapshotLease, path);
+        if (bytes == null)
+            return null;
+        try
+        {
+            return new UTF8Encoding(
+                    encoderShouldEmitUTF8Identifier: false,
+                    throwOnInvalidBytes: true)
+                .GetString(StripUtf8Bom(bytes).Span);
+        }
+        catch (DecoderFallbackException exception)
+        {
+            throw new InvalidDataException(
+                $"Canonical resource state '{path}' is not valid UTF-8.",
+                exception);
+        }
     }
 
     private static void ThrowInvalidResourceAuthority(

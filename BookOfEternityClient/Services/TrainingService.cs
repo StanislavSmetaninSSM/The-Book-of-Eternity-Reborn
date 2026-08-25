@@ -532,7 +532,11 @@ public sealed class TrainingService
             "Обучение Средоточию Души отклонено: единый ресурсный план не прошёл проверку.",
             "Owner-state, наставник или ресурсный ledger изменились во время обучения Средоточию Души.",
             "Обучение у наставника завершено.",
-            CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(purchaseScope));
+            CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(purchaseScope)
+                .Append(CoordinatedStateWriteHelper.CreateGuardWrite(
+                    AfterlifeEntityProfilesPath,
+                    afterlifeProfilesBaseline))
+                .ToArray());
         if (spiritFocusResult != null)
             return spiritFocusResult;
 
@@ -603,11 +607,40 @@ public sealed class TrainingService
             Math.Max(1, currentTurn));
         if (!resourcePlan.IsValid)
             return new TrainingOperationResult(false, false, invalidPlanMessage);
+
+        var canonicalPathComparer = OperatingSystem.IsWindows()
+            ? StringComparer.OrdinalIgnoreCase
+            : StringComparer.Ordinal;
+        var resourcePlanOwnedPaths = resourcePlan.BeforeImages.Keys
+            .Select(_fs.ResolvePath)
+            .ToHashSet(canonicalPathComparer);
+        var retainedAdditionalGuardWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>(
+            additionalGuardWrites.Length);
+        foreach (var additionalGuardWrite in additionalGuardWrites)
+        {
+            var isRedundantPlanGuard = additionalGuardWrite.GuardOnly &&
+                                       additionalGuardWrite.RequireCurrentBaseline &&
+                                       resourcePlanOwnedPaths.Contains(_fs.ResolvePath(additionalGuardWrite.Path));
+            if (!isRedundantPlanGuard)
+            {
+                retainedAdditionalGuardWrites.Add(additionalGuardWrite);
+                continue;
+            }
+
+            if (!await MatchesSemanticBaselineAsync(
+                    writeLease,
+                    additionalGuardWrite.Path,
+                    additionalGuardWrite.PreviousJson))
+            {
+                return new TrainingOperationResult(false, false, concurrentChangeMessage);
+            }
+        }
+
         if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
                 _fs,
                 writeLease,
                 resourcePlan,
-                additionalGuardWrites))
+                retainedAdditionalGuardWrites.ToArray()))
         {
             return new TrainingOperationResult(false, false, concurrentChangeMessage);
         }

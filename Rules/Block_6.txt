@@ -264,9 +264,7 @@ FOR API MODE: All existing restrictions remain functional.
                                 ],                         
                                 "resistances": [ 
                                     // For a group, this defines the resistances of one archetype unit.
-                                ], 
-                                "activeBuffs": [], // For a group, this contains effects that affect the ENTIRE group.
-                                "activeDebuffs": [] // For a group, this contains effects that affect the ENTIRE group.
+                                ]
                             }
 
                             Identity/resource variants are exclusive. A named NPC uses exactly NPCId or same-turn npcRef and never receives a combat-local identity or resourceMaterialization. A same-turn anonymous individual uses combatantRef plus resourceMaterialization; an existing anonymous individual uses combatantId and omits the envelope. A group has exactly count stable members; every same-turn member uses memberRef plus its own resourceMaterialization, while every existing member uses memberId and omits it. A member detached into a top-level non-group row keeps that same memberId/memberRef family and cannot also contain NPCId, npcRef, combatantId, or combatantRef; moving it out of or back into members[] preserves its combat_group_member resources, active effects, and histories. effectChanges targets either carrier as kind combatant with the exact memberId/memberRef. Current resource values are never written in combat rows. Damage/restore/spend/gain uses resourceChanges against the exact NPC, combatant, or combat_group_member owner.
@@ -747,14 +745,12 @@ FOR API MODE: All existing restrictions remain functional.
       </rule>
       <rule id="6.1.3.6">
        <title>
-        'activeBuffs' and 'activeDebuffs'
+        Initial active effects
        </title>
        <content type="rule_text">
         <![CDATA[
                                                 
-                                    Initialize both as empty arrays '[]'. 
-                                    If the narrative explicitly states the enemy starts the battle with specific effects (e.g., "Enraged Ogre", "Poisoned Bandit"), create the corresponding buff/debuff objects and add them to the array.
-                                    To understand how to do it, refer to #6.2. Applying Active Effects (Buffs/Debuffs) to Combatants.
+                                    Do not add a runtime effect carrier to the combat object. If the narrative establishes an initial condition, resolve one complete current source definition and request it through top-level effectChanges[] as described by Effect Materialization v1. The client publishes canonical activeEffects[] after acceptance.
 
                                     ]]>
        </content>
@@ -816,9 +812,7 @@ FOR API MODE: All existing restrictions remain functional.
                                         "resistType": "system_resistance_type_string",
                                         "resistTypeDisplayName": "display_resistance_type_string"
                                     }
-                                ],
-                                "activeBuffs": [], 
-                                "activeDebuffs": [] 
+                                ]
                             }
 
                             Use the same exclusive identity/resource variants as enemies: named NPC authority stays on the NPC; same-turn anonymous individuals/members carry only a temporary ref plus one materialization envelope; existing anonymous owners carry only their client-owned permanent ID. Current values live only in the common resource ledger.
@@ -987,8 +981,8 @@ FOR API MODE: All existing restrictions remain functional.
                                     Optionally add specific resistances/vulnerabilities (#6.1.3.5.4).
                                     Record calculations to 'gm_thoughts_markdown'.
                          
-                                    d) 'activeBuffs' & 'activeDebuffs':
-                                    Initialize as '[]', or based on narrative for pre-existing conditions (refer to #6.2. Applying Active Effects (Buffs/Debuffs) to Combatants).
+                                    d) Initial active effects:
+                                    Do not initialize or populate a runtime carrier. Request every pre-existing narrative condition through effectChanges[] using a complete validated source definition; the client publishes activeEffects[].
 
                                     ]]>
        </content>
@@ -1198,13 +1192,12 @@ FOR API MODE: All existing restrictions remain functional.
       </rule>
       <rule id="6.1.6.5">
        <title>
-        'activeBuffs' &amp; 'activeDebuffs'
+        Initial active effects
        </title>
        <content type="rule_text">
         <![CDATA[
 
-                                    Initialize as empty arrays '[]'.
-                            If the narrative or NPC's pre-battle state (e.g., from 'NPCsInScene' in Context if it tracks long-term conditions) indicates pre-existing effects, create the corresponding buff/debuff objects as per #6.2. 'Applying Active Effects (Buffs/Debuffs) to Combatants' and add them.
+                                    Do not initialize or populate a runtime effect carrier. If the narrative or NPC pre-battle state establishes a condition, request it through effectChanges[] with the exact validated source and target; the client publishes canonical activeEffects[].
                     
                                     ]]>
        </content>
@@ -1238,7 +1231,7 @@ FOR API MODE: All existing restrictions remain functional.
 
                                     1.  Mechanical Simplification: 
                                     For the purpose of JSON generation, assume NPCs have an unlimited pool of energy. 
-                                    You do NOT need to calculate or track 'currentEnergy' for NPCs in combat. 
+                                    Do not create or track an NPC energy resource merely because its active skills contain energyCost.
                                     The 'energyCost' defined in an NPC's active skills will NOT be mechanically deducted.
 
                                     2.  Narrative Limitation & Pacing (GM Discretion):
@@ -1435,7 +1428,7 @@ FOR API MODE: All existing restrictions remain functional.
                                     6.  Log this event: "A goblin from 'Squad Alpha' is stunned by the player's spell. It is now a separate combatant."
 
                                     This ensures the player can tactically "pick off" or disable individual members of a larger threat. 
-                                    Group-wide effects (e.g., an AoE debuff) are applied to the group's main 'activeDebuffs' array and do not cause a split.
+                                    Group-wide effects (e.g., an AoE debuff) target the exact group carrier through effectChanges[] and do not cause a split. The client owns carrier publication.
                                     
                                     ]]>
        </content>
@@ -1558,146 +1551,117 @@ FOR API MODE: All existing restrictions remain functional.
     Applying Active Effects (Buffs/Debuffs) to Combatants
    </title>
    <description>
-    When an enemy or ally is created for combat, or when an effect is applied during combat (via skills or items), 
-                    temporary effects that modify their state are recorded in the combatant's 'activeBuffs' (positive/helpful effects) or 'activeDebuffs' (negative/harmful effects) arrays within their respective data objects.
+    Every combat effect uses Effect Materialization v1. The GM authors a complete source definition when the owning capability is created and requests runtime lifecycle changes only through top-level effectChanges[]. Canonical activeEffects[], identity, stacking, lifetime, history, and accepted mechanics contributions are client-owned.
    </description>
    <content type="ruleset">
     <rule id="6.2.1">
      <title>
-      Structure of Active Effect Object
+      Structure of an Effect Lifecycle Request
      </title>
      <content type="rule_text">
       <![CDATA[
 
-                            Each object placed in the 'activeBuffs' or 'activeDebuffs' array must follow this specific format:                
                             {
-                                "effectId": "system_assigned_guid_or_null_for_new",
-                                "effectType": "system_effect_type_string",
-                                "value": "magnitude_percentage_string",
-                                "targetType": "system_target_type_string",
-                                "duration": "remaining_turns_integer", 
-                                "sourceSkill": "source_name_string_optional",
-                                "sourceWoundId": "guid_of_the_wound_optional_for_WoundReference_effects", // MANDATORY if effectType is 'WoundReference'
-                                "description": "user_readable_description_string"
-                            }                 
+                                "effectChanges": [{
+                                    "operation": "apply",
+                                    "target": { "kind": "combatant", "targetId": "exact_accepted_target_id" },
+                                    "source": { "kind": "skill", "sourceId": "exact_source_id", "definitionKey": "exact-definition-key" },
+                                    "parameters": {},
+                                    "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                    "reason": "Краткая внутриигровая причина применения."
+                                }]
+                            }
+
+                            Use apply, dispel, or remove exactly as allowed by the shared contract. Never add effectId, carrier post-state, stacks, or remaining lifetime.
 
                             ]]>
      </content>
     </rule>
     <rule id="6.2.2">
      <title>
-      Field Definitions and Values for Active Effect Objects
+      Field Definitions for Effect Lifecycle Requests
      </title>
      <content type="ruleset">
       <rule id="6.2.2.0">
        <title>
-        "effectId": (String GUID or null, Optional for New Effects)
+        "source" and client-owned identity
        </title>
        <content type="rule_text">
         <![CDATA[
 
-                                    The unique identifier for this specific instance of an effect.
-
-                                    -   When applying a NEW effect: This field MUST be 'null' OR the field can be omitted entirely. Both methods signal to the system that a new effect should be created.
-                                    
-                                    -   When reporting a CHANGE to an EXISTING effect (e.g., updating its duration): You MUST find and provide its existing 'effectId'. To find the ID, you must search for the effect in the 'Context' based on the target:
-                                      1.  If the target is the Player Character: Search for the effect in 'Context.playerCharacter.activePlayerEffects'.
-                                      2.  If the target is an NPC, Enemy, or Ally currently in combat: Search for the effect within the target's specific object in the 'Context.enemiesDataForCurrentTurn' or 'Context.alliesDataForCurrentTurn' arrays, inside their 'activeBuffs' or 'activeDebuffs' lists.
-                                      3.  If the target is a named NPC NOT currently in combat: Search for any persistent effects within that NPC's object in the 'NPCsInScene' array. For off-screen NPCs, rely on data dynamically injected by the backend if relevant..
-                                    
-                                    -   This field is critical for preventing duplicate effects. You MUST adhere to the "Law of ID Generation" (Rule #5.8.A) and never invent an ID.
+                                    For apply, provide exactly one accepted source selector: kind, sourceId, and definitionKey. The client allocates effect identity and publishes the matching activeEffects[] and effect_identity_index.json entries atomically. The GM never invents or recovers an effectId by scanning a carrier. Dispel/remove may use an opaque effectId only when the client supplied it in technical GM context, together with the exact target, accepted event, and source-authorized removal authority.
 
                                     ]]>
        </content>
       </rule>
       <rule id="6.2.2.1">
        <title>
-        "effectType": (String, Mandatory)
+        "operation": (String, Mandatory)
        </title>
        <content type="rule_text">
         <![CDATA[
 
-                                    Defines the fundamental action of this specific effect.
-                                    Must be one of the exact English terms defined in #5.3.1. 'effectType' - What the effect DOES (e.g., 'Damage', 'DamageOverTime', 'Heal', 'HealOverTime', 'Buff', 'Debuff', 'Control', 'DamageReduction').
+                                    Use exactly apply, dispel, or remove. Mechanical behavior comes from the selected complete activeEffectDefinitions[] entry and its registered components; never translate prose into a legacy runtime effect type.
                   
                                     ]]>
        </content>
       </rule>
       <rule id="6.2.2.2">
        <title>
-        "value": (String, Mandatory)
+        "parameters": (Object, Mandatory)
        </title>
        <content type="rule_text">
         <![CDATA[
 
-                                    Represents the magnitude or intensity of the effect, formatted as a percentage string (e.g., "15%", "100%", "-20%").
-                                    Interpretation depends on 'effectType':
-                                        For 'Damage' and 'Heal': The direct amount of damage/healing.
-                                        For 'DamageOverTime' and 'HealOverTime': The amount of damage/healing per turn.
-                                        For 'Buff', 'Debuff', 'DamageReduction': The percentage change or reduction applied to the 'targetType'.
-                                        For 'Control': Often represents the chance of application (e.g., "75%", if not guaranteed) or can be "100%" if application is guaranteed and the primary factor is 'duration' and 'targetType'.
+                                    Supply only parameters declared by the selected definition and inside its exact bounds. The definition owns component values and accepted arithmetic. Empty parameters are written as {}. Do not copy a raw value from prose or calculate carrier post-state.
                         
                                     ]]>
        </content>
       </rule>
       <rule id="6.2.2.3">
        <title>
-        "targetType": (String, Mandatory)
+        "target": (Object, Mandatory)
        </title>
        <content type="rule_text">
         <![CDATA[
 
-                                    Specifies the exact attribute, characteristic, or condition modified by this effect.
-                                    Must use one of the exact English terms and formats defined in #5.3.2. 'targetType' - WHAT the effect MODIFIES.
-                                    Examples (refer to #5.3.2 for full list and details): 'damage (all)', 'resist (fire)', 'strength', 'stun', 'health', 'fire' (for DoT/Reduction), '[characteristic_name]'.
+                                    Provide the exact accepted target kind and targetId/ref allowed by the source definition. Player, NPC, anonymous combatant, group member, and afterlife actor bindings stay distinct; never infer a target from display text.
                     
                                     ]]>
        </content>
       </rule>
       <rule id="6.2.2.4">
        <title>
-        "duration": (Integer, Mandatory for time-limited effects)
+        Source-owned lifetime (Read-only at Runtime)
        </title>
        <content type="rule_text">
         <![CDATA[
 
-                                    Specifies the number of remaining combat turns the effect will last. Must be a whole number (e.g., '1', '2', '3').
-                                    Required for: 'DamageOverTime', 'HealOverTime', 'Buff', 'Debuff', 'Control', and temporary 'DamageReduction' effects.
-                                    Omit or set to 'null' for instantaneous effects like 'Damage' and 'Heal'.
-                                    This value is decremented by 1 at the end of each of the affected combatant's turns. When duration reaches 0, the effect expires.
-                                    For 'effectType: "WoundReference"', 'duration' MUST always be '999' to signify a persistent effect that lasts as long as the linked wound is active.
+                                    The complete source definition declares one canonical lifetime mode such as turns, uses, scene, source_bound, condition_bound, permanent, or manual. The client materializes and advances remaining lifetime. The GM never writes a raw remaining-duration field, decrements it, or uses a numeric persistence sentinel.
 
                                     ]]>
        </content>
       </rule>
       <rule id="6.2.2.5">
        <title>
-        "sourceSkill": (String, Optional)
+        "eventRef": (Object, Mandatory)
        </title>
        <content type="rule_text">
         <![CDATA[
 
-                                    The name of the skill, item, or ability that caused this effect (e.g., "Blessing of Strength", "Poisoned Dart", "Ogre Rage"). 
-                                    Helps track origins.
-                                    
-                                    If 'effectType' is "WoundReference", this field is not used; refer to 'sourceWoundId' instead.
+                                    Bind the command to the exact accepted event authority documented by Effect Materialization v1. A display name is never source authority. Wound consequences use the exact wound sourceId and a source_bound lifetime in the definition.
 
                                     ]]>
        </content>
       </rule>
       <rule id="6.2.2.6">
        <title>
-        "description": (String, Mandatory)
+        "reason": (String, Mandatory)
        </title>
        <content type="rule_text">
         <![CDATA[
 
-                                    A clear, user-readable summary of the effect, including its impact and remaining duration if applicable.
-                                    This must be translated into the player's chosen language.
-
-                                    For 'effectType: "WoundReference"', this description should be a brief, user-facing summary of the wound's impact, 
-                                    as the full details are in the wound object itself. 
-                                    Example: "Effects from Gashed Leg wound."
+                                    Give a brief in-world reason for this lifecycle request in the player's language. Player-facing effect name, summary, and mechanics come from the definition display and safe projection; do not include hidden/gm_only data or technical identity.
 
                                     ]]>
        </content>
@@ -1711,9 +1675,7 @@ FOR API MODE: All existing restrictions remain functional.
      <content type="rule_text">
       <![CDATA[
 
-                            When creating enemy/ally combat objects, only add effects to 'activeBuffs' or 'activeDebuffs' if the narrative explicitly states a pre-existing condition (e.g., "The Orc is enraged", "The Guard is bleeding heavily").
-                            Determine the appropriate 'effectType', 'value', 'targetType', 'duration', 'sourceSkill', and 'description' based on the narrative description of the condition.
-                            If no pre-existing conditions are mentioned, initialize 'activeBuffs' and 'activeDebuffs' as empty arrays '[]'.
+                            Combat objects never initialize a runtime effect carrier. If the narrative establishes a pre-existing condition, it must already have a complete authoritative source definition; emit one effectChanges[] apply command against the exact accepted combatant target. If no such condition exists, emit no effect command. The client publishes activeEffects[] after acceptance.
                                     
                             ]]>
      </content>
@@ -1725,8 +1687,7 @@ FOR API MODE: All existing restrictions remain functional.
      <content type="rule_text">
       <![CDATA[
 
-                            When a skill or item successfully applies a temporary effect during combat (based on action check results), generate a new effect object following the structure in #6.2.1 and add it to the target's 'activeBuffs' or 'activeDebuffs' array.
-                            (Detailed rules for how skills/items apply effects will be covered in InstructionBlock '15' - Detailed Combat Resolution).            
+                            When an accepted skill or item applies a temporary effect, emit the effectChanges[] lifecycle request from #6.2.1. Use the exact source definition and target binding; do not calculate or publish carrier post-state. Detailed action resolution remains in InstructionBlock 15.
                                     
                             ]]>
      </content>
@@ -1738,9 +1699,7 @@ FOR API MODE: All existing restrictions remain functional.
      <content type="rule_text">
       <![CDATA[
 
-                            The 'activeBuffs' and 'activeDebuffs' lists are critical for tracking the dynamic state of combatants.
-                            The system (and the GM interpreting the system) uses these lists to modify calculations for damage, resistance, healing, determine available actions (for 'Control' effects), and apply DoT/HoT effects each turn.
-                            The 'description' field is vital for informing the player of the current statuses affecting them, their allies, and their enemies.
+                            Read canonical activeEffects[] only as the supplied state/projection. For calculations, consume the exact client-published accepted mechanics contributions; never rescan component values or perform a second effect arithmetic pass. The client owns periodic resource transitions, action control, event reactions, stacking, lifetime advancement, expiry, history, and recursive privacy. Narrate only safe visible consequences.
                                                     
                             ]]>
      </content>

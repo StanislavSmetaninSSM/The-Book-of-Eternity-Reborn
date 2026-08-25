@@ -59,6 +59,7 @@ public sealed class ResourceCapacityFormulaCatalogTests
     [InlineData("health", "combatant", "30")]
     [InlineData("health", "vehicle", "28")]
     [InlineData("poise", "combat_group_member", "40")]
+    [InlineData("poise", "npc", "80")]
     [InlineData("energy", "npc", "75")]
     public void ResolveCapacity_MaterializedOwnerMaximumPreservesExistingPerOwnerMechanics(
         string resourceKey,

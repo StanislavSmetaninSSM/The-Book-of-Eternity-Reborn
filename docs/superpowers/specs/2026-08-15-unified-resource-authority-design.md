@@ -77,10 +77,11 @@ game_state/resources/
   resource_definitions.json
   resource_state.json
   resource_history.json
+  resource_owner_authority.json
   resource_commands.json
 ```
 
-`resource_definitions.json`, `resource_state.json`, and `resource_history.json` are protected canonical state. `resource_commands.json` is transient accepted-turn input and must be consumed after successful publication.
+`resource_definitions.json`, `resource_state.json`, `resource_history.json`, and `resource_owner_authority.json` are one protected canonical quartet. Only Fresh New Game may create a missing owner-authority root; every existing session, including Mortal-incarnation bootstrap, validates the exact quartet and fails closed without migration or self-heal. `resource_commands.json` is transient accepted-turn input and must be consumed after successful publication.
 
 The resource paths must participate in validated pending-turn snapshots, canonical write leases, rollback tracking, post-publication validation, save/load copying, and session replacement cleanup.
 
@@ -298,9 +299,9 @@ The composed accepted turn follows this order:
 4. emit closed resource events from the exact applied results;
 5. reconcile effect bound continuation, removals, and applications;
 6. select due scheduled and resource-event triggers and build the finite dependency graph;
-7. execute graph nodes in stable `phase`, `priority`, `originId`, and `operationId` order, applying each resource node to the same working ledger before its downstream dependents;
+7. execute graph nodes in stable `phase`, `priority`, `originId`, and full semantic operation-key order, using freshly allocated `operationId` only as a final consistency tie-breaker, and apply each resource node to the same working ledger before its downstream dependents;
 8. advance effect uses/time/scene lifetime and terminal cleanup;
-9. build complete resource definitions/state/history, effect carriers/index, pending state, and derived projections;
+9. build the complete resource definitions/state/history/owner-authority quartet, effect carriers/index, pending state, and derived projections;
 10. validate the complete after-state;
 11. reacquire and compare every protected before-image/fingerprint under the canonical write lease;
 12. publish all paths atomically and consume transient commands;

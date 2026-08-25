@@ -70,7 +70,8 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.DoesNotContain("foreach (var request in leadershipRequests.Take(5))", politicsSource, StringComparison.Ordinal);
         Assert.DoesNotContain(".Take(6)", tradeSource, StringComparison.Ordinal);
         Assert.Contains("показаны все без сокращения", overviewSource, StringComparison.Ordinal);
-        Assert.Contains("currentReturnCycleId=", overviewSource, StringComparison.Ordinal);
+        Assert.Contains("BuildShiningReturnCycleStatusLabel(shiningRoot)", overviewSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("currentReturnCycleId={Markup.Escape", overviewSource, StringComparison.Ordinal);
         Assert.Contains("hallId=", overviewSource, StringComparison.Ordinal);
         Assert.Contains("actorId=", overviewSource, StringComparison.Ordinal);
         Assert.Contains("currentFactionId=", overviewSource, StringComparison.Ordinal);

@@ -46,6 +46,134 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("⏳", rendered, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData("/статус", false)]
+    [InlineData("/статы", true)]
+    public async Task TryProcessCommand_MortalPoolCapacitiesUseAcceptedProjection(
+        string command,
+        bool showsPoiseRegeneration)
+    {
+        await SeedMortalPoolDisplayStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand(command));
+
+        Assert.Null(ex);
+        var rendered = ExtractRenderedText();
+        Assert.Contains("137 %", rendered, StringComparison.Ordinal);
+        Assert.Contains("149 ед.", rendered, StringComparison.Ordinal);
+        Assert.Contains("173 ед.", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("130%", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("128%", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("160%", rendered, StringComparison.Ordinal);
+        if (showsPoiseRegeneration)
+            Assert.Contains("27 ед./ход", rendered, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("/статус")]
+    [InlineData("/статы")]
+    public async Task TryProcessCommand_MortalPoolCapacitiesFailClosedWithoutProjection(
+        string command)
+    {
+        await SeedMortalStateAsync();
+        await SeedMortalPoolCharacteristicsAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand(command));
+
+        Assert.Null(ex);
+        AssertMortalPoolProjectionUnavailable(ExtractRenderedText());
+    }
+
+    [Theory]
+    [InlineData("/статус")]
+    [InlineData("/статы")]
+    public async Task TryProcessCommand_MortalPoolCapacitiesFailClosedWhenCorePoolIsSuspended(
+        string command)
+    {
+        await SeedMortalPoolDisplayStateAsync(ResourceLifecycleState.Suspended);
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand(command));
+
+        Assert.Null(ex);
+        AssertMortalPoolProjectionUnavailable(ExtractRenderedText());
+    }
+
+    [Theory]
+    [InlineData("/статус")]
+    [InlineData("/статы")]
+    public async Task TryProcessCommand_MortalPoolCapacitiesFailClosedForMalformedProjection(
+        string command)
+    {
+        await SeedMortalPoolDisplayStateAsync();
+        await _fs.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            "{ malformed resource projection");
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand(command));
+
+        Assert.Null(ex);
+        AssertMortalPoolProjectionUnavailable(ExtractRenderedText());
+    }
+
+    private async Task SeedMortalPoolDisplayStateAsync(
+        ResourceLifecycleState poiseState = ResourceLifecycleState.Active)
+    {
+        await SeedMortalStateAsync();
+        await SeedMortalPoolCharacteristicsAsync();
+        await ResourceProjectionFixture.SeedAsync(
+            _fs,
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "health",
+                137m,
+                137m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "energy",
+                149m,
+                149m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "poise",
+                173m,
+                173m,
+                poiseState));
+        await _stateManager.RefreshGameStateAsync();
+    }
+
+    private Task SeedMortalPoolCharacteristicsAsync() => WriteJsonAsync(
+        "game_state/misc/characteristics.json",
+        new JsonObject
+        {
+            [Characteristics.Strength] = 10,
+            [Characteristics.Constitution] = 10,
+            [Characteristics.Intelligence] = 10,
+            [Characteristics.Wisdom] = 10,
+            [Characteristics.Faith] = 10,
+            [Characteristics.Luck] = 10,
+            [Characteristics.Dexterity] = 10,
+            [Characteristics.Speed] = 10
+        });
+
+    private static void AssertMortalPoolProjectionUnavailable(string rendered)
+    {
+        Assert.Contains(ResourcePlayerFailureMessages.Unavailable, rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("137 %", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("149 ед.", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("173 ед.", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("130%", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("128%", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("160%", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("27 ед./ход", rendered, StringComparison.Ordinal);
+    }
+
     [Fact]
     public async Task TryProcessCommand_StatusDoesNotFallbackToInternalComputedValuesWithoutSafeProjection()
     {

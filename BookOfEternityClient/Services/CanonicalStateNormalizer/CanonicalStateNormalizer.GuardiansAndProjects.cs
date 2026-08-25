@@ -914,59 +914,44 @@ public partial class CanonicalStateNormalizer
         if (buffered.Count == 0)
             return;
 
-        if (_writeLease == null)
+        var writeLease = _writeLease ?? throw new InvalidOperationException(
+            "Guardian power journal append requires the owning canonical write lease.");
+        var mode = _guardianPowerJournalMode ==
+            GuardianPowerJournalNormalizationMode.PreserveDuringQte
+            ? GuardianPowerJournalMutationMode.AppendOnly
+            : GuardianPowerJournalMutationMode.RepairAndAppend;
+        var content = await GuardianPowerEventState.BuildJournalUpdateAsync(
+            _fs,
+            writeLease,
+            buffered,
+            mode);
+        if (content != null)
         {
-            await GuardianPowerEventState.AppendJournalEntriesAsync(_fs, buffered);
-            return;
+            await WriteCanonicalFileAtomicAsync(
+                GuardianPowerEventState.JournalPath,
+                content);
         }
-
-        JsonObject root;
-        var existing = await ReadCanonicalFileAsync(GuardianPowerEventState.JournalPath);
-        try
-        {
-            root = string.IsNullOrWhiteSpace(existing)
-                ? new JsonObject()
-                : JsonNode.Parse(existing) as JsonObject ?? new JsonObject();
-        }
-        catch
-        {
-            root = new JsonObject();
-        }
-
-        var journal = root["entries"] as JsonArray ?? new JsonArray();
-        root["entries"] = journal;
-        foreach (var entry in buffered)
-        {
-            var eventId = GetNodeString(entry["eventId"]);
-            if (journal.OfType<JsonObject>().Any(existingEntry =>
-                    string.Equals(
-                        GetNodeString(existingEntry["eventId"]),
-                        eventId,
-                        StringComparison.OrdinalIgnoreCase)))
-            {
-                continue;
-            }
-
-            journal.Add(entry.DeepClone());
-        }
-
-        await WriteCanonicalFileAtomicAsync(
-            GuardianPowerEventState.JournalPath,
-            root.ToJsonString(JsonOpts));
     }
 
     private async Task RepairGuardianPowerJournalAsync()
     {
-        if (_writeLease == null)
+        if (_guardianPowerJournalMode ==
+            GuardianPowerJournalNormalizationMode.PreserveDuringQte)
         {
-            await GuardianPowerEventState.RepairJournalAsync(_fs);
+            _ = await ReadCanonicalFileAsync(GuardianPowerEventState.JournalPath);
             return;
         }
 
-        // Browser QTE normalization preserves existing journal entries under the
-        // same canonical lease. Political legacy backfill remains a turn-level
-        // repair concern and must not reacquire canonical authority here.
-        _ = await ReadCanonicalFileAsync(GuardianPowerEventState.JournalPath);
+        var writeLease = _writeLease ?? throw new InvalidOperationException(
+            "Guardian power journal normalization requires the owning canonical write lease.");
+        var repairedJournal = await GuardianPowerEventState
+            .BuildRepairedJournalAsync(_fs, writeLease);
+        if (repairedJournal != null)
+        {
+            await WriteCanonicalFileAtomicAsync(
+                GuardianPowerEventState.JournalPath,
+                repairedJournal);
+        }
     }
 
     private static bool HasGuardianProjectCommandPayload(JsonObject? trackerRoot)

@@ -18,8 +18,9 @@ public partial class ValidationService
     public async Task<IReadOnlyList<ValidationIssue>>
         ValidateAcceptedTurnRawMortalItemMaterializationAsync()
     {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         var issues = new List<ValidationIssue>();
-        await ValidateAcceptedTurnRawMortalItemMaterializationAsync(issues);
+        await ValidateAcceptedTurnRawMortalItemMaterializationAsync(issues, writeLease);
         return issues;
     }
 
@@ -44,9 +45,12 @@ public partial class ValidationService
     }
 
     private async Task ValidateAcceptedTurnRawMortalItemMaterializationAsync(
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(_fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(_fs, writeLease);
         var locationPlanningIssues = new List<ValidationIssue>();
         var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
             locationPlanningIssues);
@@ -59,6 +63,7 @@ public partial class ValidationService
                 : locationPlan);
         MortalItemRouteAuthorityCatalog? routeAuthorities = null;
         MortalItemIdentityParseResult? currentIndex = null;
+        ValidationPendingTurnSnapshotManifest? validatedManifest = null;
         try
         {
         AddCatalogIssues(current.Catalog, issues);
@@ -108,6 +113,7 @@ public partial class ValidationService
                 issues.Add(MissingItemSnapshotBaselineIssue("raw item creation"));
             return;
         }
+        validatedManifest = snapshotLookup.Manifest;
 
         await ValidateRawOffscreenLocationStorageAuthorityAsync(
             snapshotLookup.Manifest,
@@ -182,14 +188,13 @@ public partial class ValidationService
 
         if (issues.All(issue => issue.Severity != IssueSeverity.Error))
         {
-            var acceptedSnapshot = await LoadValidatedPendingTurnSnapshotLookupAsync();
-            if (acceptedSnapshot.Status == ValidatedPendingTurnSnapshotStatus.Usable &&
-                acceptedSnapshot.Manifest != null)
+            if (validatedManifest != null)
             {
                 MortalItemAcceptedTurnAuthority.RegisterValidatedItems(
                     _fs,
-                    acceptedSnapshot.Manifest.SessionId,
-                    acceptedSnapshot.Manifest.RequestId,
+                    writeLease,
+                    validatedManifest.SessionId,
+                    validatedManifest.ManifestPayloadHash,
                     current.Catalog,
                     currentIndex?.EntriesByItemId.Keys ?? Array.Empty<string>());
             }

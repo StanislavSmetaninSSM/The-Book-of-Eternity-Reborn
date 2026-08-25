@@ -155,6 +155,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("GM does not spend player currency", example, StringComparison.Ordinal);
         Assert.Contains("GM does not raise player tiers directly", example, StringComparison.Ordinal);
         Assert.Contains("Fresh New Game system Guardian", matrix + example + manifest, StringComparison.Ordinal);
+        Assert.Contains("one coordinated resource write set", matrix + example + manifest, StringComparison.Ordinal);
         Assert.Contains("guard_system_*", matrix + example + manifest, StringComparison.Ordinal);
         Assert.Contains("mentorProfile.canTeach=true", matrix + example, StringComparison.Ordinal);
         Assert.Contains("starter mentor profiles", example + manifest, StringComparison.Ordinal);
@@ -2161,6 +2162,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             "resolutionOrder[]",
             "corrections[]",
             "sourceSurface=guardian_corrections",
+            "gce_life_",
+            "lifeIncarnation",
             "afterlife_guardian_correction_spend_reference"
         })
         {
@@ -4182,6 +4185,12 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("same-turn ownerRef", text, StringComparison.Ordinal);
             Assert.Contains("no second actor ID", text, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("existing materialized profile", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("reserved first", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("generic Actor Materialization envelope", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("deterministic ownerRef", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("first non-player", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("conflictId", text, StringComparison.Ordinal);
+            Assert.Contains("returnCycleId", text, StringComparison.Ordinal);
         }
 
         Assert.Contains(
@@ -4191,6 +4200,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("\"resourceMaterialization\"", exampleSection, StringComparison.Ordinal);
         Assert.Contains("\"resourceKey\": \"soul_integrity\"", exampleSection, StringComparison.Ordinal);
         Assert.Contains("\"maximum\": 10", exampleSection, StringComparison.Ordinal);
+        Assert.Contains("CLIENT-OWNED RESERVED PLAYER_SOUL CONTRAST", exampleSection, StringComparison.Ordinal);
+        Assert.Contains("DETERMINISTIC AFTERLIFE OWNER EXAMPLE", exampleSection, StringComparison.Ordinal);
         Assert.DoesNotContain("\"actorRef\"", exampleSection, StringComparison.Ordinal);
     }
 
@@ -4531,7 +4542,10 @@ public sealed class AfterlifeDocumentationCoverageTests
                      "effect_identity_index.json",
                      "pending_effect_resolutions.json",
                      "afterlife_effect_profile_v1",
+                     "afterlife_resource_bounded_receipt_waves_v1",
                      "afterlife_effect_conditions_five_kinds_v1",
+                     "same complete semantic turn",
+                     "current packet",
                      "mark",
                      "ward",
                      "burden",

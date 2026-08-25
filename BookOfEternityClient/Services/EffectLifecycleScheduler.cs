@@ -870,15 +870,29 @@ internal static class EffectLifecycleScheduler
             ? maximum
             : 0;
         var expectedMaximum = policy == "independent" ? 1 : sourceMaximum;
-        if (!string.Equals(actualPolicy, policy, StringComparison.Ordinal) ||
+        var replacesPriorPolicy = string.Equals(
+            policy,
+            "replace",
+            StringComparison.Ordinal);
+        var actualPolicyIsClosed = actualPolicy is
+            "independent" or "stack" or "refresh" or "replace" or "merge";
+        var policyMatches = replacesPriorPolicy
+            ? actualPolicyIsClosed
+            : string.Equals(actualPolicy, policy, StringComparison.Ordinal);
+        var maximumMatches = replacesPriorPolicy
+            ? actualMaximum > 0
+            : actualMaximum == expectedMaximum;
+        var reducerDetailsMatch = replacesPriorPolicy ||
+            (JsonNode.DeepEquals(
+                 existing?["refreshMode"],
+                 sourceStacking["refreshMode"]) &&
+             JsonNode.DeepEquals(
+                 existing?["mergeRule"],
+                 sourceStacking["mergeRule"]));
+        if (!policyMatches ||
             !string.Equals(actualKey, stackKey, StringComparison.Ordinal) ||
-            actualMaximum != expectedMaximum ||
-            !JsonNode.DeepEquals(
-                existing?["refreshMode"],
-                sourceStacking["refreshMode"]) ||
-            !JsonNode.DeepEquals(
-                existing?["mergeRule"],
-                sourceStacking["mergeRule"]))
+            !maximumMatches ||
+            !reducerDetailsMatch)
         {
             Add(
                 issues,

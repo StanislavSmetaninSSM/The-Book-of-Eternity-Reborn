@@ -246,7 +246,7 @@ public sealed partial class GuardianSystemRegressionTests
         }
         """);
 
-        await WriteRawAsync("game_state/meta/guardians.json", """
+        var guardians = JsonNode.Parse("""
         {
           "guardians": [
             {
@@ -263,7 +263,7 @@ public sealed partial class GuardianSystemRegressionTests
               "manifestationHistory": [],
               "relationshipData": { "currentReputation": -80, "reputationHistory": [], "lastInteraction": null },
               "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
-              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+              "gachaSystem": { "currentReturnCycleId": "chaos_return_guard_test_varak", "gachaHistory": [] }
             }
           ],
           "activeGuardian": {
@@ -280,15 +280,30 @@ public sealed partial class GuardianSystemRegressionTests
             "manifestationHistory": [],
             "relationshipData": { "currentReputation": -80, "reputationHistory": [], "lastInteraction": null },
             "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
-            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            "gachaSystem": { "currentReturnCycleId": "chaos_return_guard_test_varak", "gachaHistory": [] }
           }
         }
-        """);
+        """)!.AsObject();
 
         var scenarioCore = new ScenarioCoreService(_fs, NullLogger<ScenarioCoreService>.Instance);
         var correctionService = new GuardianCorrectionService(_fs, scenarioCore, NullLogger<GuardianCorrectionService>.Instance);
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            _fs,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: new JsonObject
+                {
+                    [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+                    {
+                        AfterlifeActorMaterializationTestFixture.CreateCompleteProfile(
+                            actorType: "guardian",
+                            actorId: "guard_test_varak",
+                            realm: "Chaos Sea",
+                            materializedAtTurn: 1)
+                    }
+                },
+                Guardians: guardians));
 
-        await correctionService.ApplyForNewLifeAsync(3);
+        await correctionService.ApplyForNewLifeAsync(3, turnNumber: 23);
         var state = await correctionService.ReadAsync();
 
         Assert.NotNull(state);

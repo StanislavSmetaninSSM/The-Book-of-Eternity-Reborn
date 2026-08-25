@@ -336,6 +336,9 @@ internal sealed partial class MortalItemTransitionWriter
         var historyJson = await _fs.ReadFileAsync(
             writeLease,
             ResourceMaterializationContract.HistoryPath);
+        var authorityJson = await _fs.ReadFileAsync(
+            writeLease,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
         var definitions = ResourceDefinitionCatalog.ParseCanonical(
             definitionsJson,
             allowMissingPristine: false);
@@ -356,6 +359,17 @@ internal sealed partial class MortalItemTransitionWriter
         var agreement = history.History.ValidateStateAgreement(state.Ledger);
         if (agreement.Count != 0)
             return ItemResourceLoadResult.Failed(DescribeResourceIssues(agreement));
+        var ownerAuthority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            definitions.Catalog,
+            path => _fs.ReadFileAsync(writeLease, path),
+            state.Ledger,
+            history.History,
+            CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
+        if (!ownerAuthority.IsValid || ownerAuthority.Authority == null)
+        {
+            return ItemResourceLoadResult.Failed(
+                DescribeResourceIssues(ownerAuthority.Issues));
+        }
         var currentTurnSequences = history.History.Transitions
             .Where(transition => transition.Turn == turn)
             .Select(transition => transition.ExecutionSequence)
@@ -370,9 +384,11 @@ internal sealed partial class MortalItemTransitionWriter
             definitions.Catalog,
             state.Ledger,
             history.History,
+            ownerAuthority.Authority,
             definitionsJson!,
             stateJson!,
             historyJson!,
+            authorityJson,
             offset,
             null);
     }
@@ -435,6 +451,15 @@ internal sealed partial class MortalItemTransitionWriter
                     ResourceMaterializationContract.HistoryPath,
                     loaded.HistoryJson,
                     PrettyCanonical(planned.HistoryAfterImage.ToCanonicalJson()),
+                    RequireCurrentBaseline: true),
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                    loaded.AuthorityJson,
+                    PrettyCanonical(
+                        CanonicalResourceOwnerAuthorityComposer.CreateCanonicalAuthorityJson(
+                            loaded.OwnerAuthority!,
+                            planned.StateAfterImage,
+                            planned.HistoryAfterImage)),
                     RequireCurrentBaseline: true)
             },
             null);
@@ -679,13 +704,15 @@ internal sealed partial class MortalItemTransitionWriter
         ResourceDefinitionCatalog? Definitions,
         ResourceStateLedger? State,
         ResourceHistoryState? History,
+        ResourceOwnerAuthority? OwnerAuthority,
         string? DefinitionsJson,
         string? StateJson,
         string? HistoryJson,
+        string? AuthorityJson,
         int ExecutionSequenceOffset,
         string? Error)
     {
         internal static ItemResourceLoadResult Failed(string error) =>
-            new(false, null, null, null, null, null, null, 0, error);
+            new(false, null, null, null, null, null, null, null, null, 0, error);
     }
 }

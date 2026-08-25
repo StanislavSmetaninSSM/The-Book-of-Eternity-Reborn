@@ -77,6 +77,9 @@
 - Clean all-pins-open resolves success; slow/noisy open resolves partial; broken pick, timeout, too many mistakes, or Escape/cancel resolves fail.
 - Browser clients support LockPinSet through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver.
 - `responseFragment` is the final local mechanical outcome for an accepted QTE branch.
+- A bounded terminal penalty uses only `responseFragment.resourceChanges[]` with `operation=damage`, exact target `player/player_current`, an existing active `resourceKey`, positive exact `amount`, `source.kind=narrative_outcome`, non-empty `reason`, and no GM-authored `sourceId`.
+- Its exact event identity is `turn_{sourceTurn}:qte_terminal:{one-based terminal outcome ordinal}:resource:{one-based command ordinal}`. The worked payloads below assume accepted source turn 42.
+- Every terminal branch is validated, but only the selected branch is applied through the common resource reducer/quartet. Exact retry is replay; definition/capacity commands and legacy `current*Change` aliases are forbidden in QTE.
 - Successful terminal outcomes must include positive `experienceGained`.
 - For validation purposes, a successful terminal outcome is any outcome reachable by following `success` branches from `startChapterId`.
 - The client will convert a successful QTE `experienceGained` into a real increase of the authoritative XP counter in `game_state/player/experience.json`.
@@ -87,6 +90,8 @@
 - GM-authored QTE configs do not encode player keyboard layout; normal text input, dialogue, names, and narrative prose remain ordinary text.
 
 ## Example `output/qte_offer.json`
+
+### mortal_qte_terminal_resource_penalty_v1
 
 ```json
 {
@@ -213,7 +218,17 @@
         "response": "Вы протискиваетесь через дверь, но теряете равновесие и время.",
         "experienceGained": 10,
         "timeChange": 15,
-        "currentPoiseChange": -10
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": { "kind": "player", "targetId": "player_current" },
+            "resourceKey": "poise",
+            "amount": 10,
+            "source": { "kind": "narrative_outcome" },
+            "eventRef": "turn_42:qte_terminal:2:resource:1",
+            "reason": "Створка сбила героя с равновесия."
+          }
+        ]
       }
     },
     {
@@ -223,7 +238,17 @@
       "gmSummary": "Игрок провалил MashInput или отменил его через Escape/cancel; сцену нужно продолжать с закрытым проходом.",
       "responseFragment": {
         "response": "Дверь захлопывается, и вам приходится искать другой путь.",
-        "currentPoiseChange": -15
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": { "kind": "player", "targetId": "player_current" },
+            "resourceKey": "poise",
+            "amount": 15,
+            "source": { "kind": "narrative_outcome" },
+            "eventRef": "turn_42:qte_terminal:3:resource:1",
+            "reason": "Захлопнувшийся проход выбил героя из равновесия."
+          }
+        ]
       }
     }
   ]
@@ -307,7 +332,17 @@
       "gmSummary": "Игрок провалил PatternMemory или отменил его через Escape/cancel; сцену нужно продолжать с активной защитой.",
       "responseFragment": {
         "response": "Рунная печать отталкивает вас вспышкой защитного света.",
-        "currentPoiseChange": -10
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": { "kind": "player", "targetId": "player_current" },
+            "resourceKey": "poise",
+            "amount": 10,
+            "source": { "kind": "narrative_outcome" },
+            "eventRef": "turn_42:qte_terminal:3:resource:1",
+            "reason": "Защитная вспышка нарушила равновесие героя."
+          }
+        ]
       }
     }
   ]
@@ -381,7 +416,17 @@
       "responseFragment": {
         "response": "Вы проходите через дрожащую волну, но теряете часть темпа.",
         "experienceGained": 10,
-        "currentPoiseChange": -5
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": { "kind": "player", "targetId": "player_current" },
+            "resourceKey": "poise",
+            "amount": 5,
+            "source": { "kind": "narrative_outcome" },
+            "eventRef": "turn_42:qte_terminal:2:resource:1",
+            "reason": "Нестабильный резонанс ослабил равновесие героя."
+          }
+        ]
       }
     },
     {
@@ -391,7 +436,17 @@
       "gmSummary": "Игрок провалил RhythmPulse или отменил его через Escape/cancel; сцену нужно продолжать с сорванным резонансом.",
       "responseFragment": {
         "response": "Печать отталкивает вас вспышкой, и ритуальный ритм распадается.",
-        "currentPoiseChange": -10
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": { "kind": "player", "targetId": "player_current" },
+            "resourceKey": "poise",
+            "amount": 10,
+            "source": { "kind": "narrative_outcome" },
+            "eventRef": "turn_42:qte_terminal:3:resource:1",
+            "reason": "Сорванный ритм отбросил героя от печати."
+          }
+        ]
       }
     }
   ]
@@ -496,7 +551,17 @@
         "response": "Вы перелезаете через стену и уходите, но теряете несколько секунд.",
         "experienceGained": 10,
         "timeChange": 12,
-        "currentPoiseChange": -5
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": { "kind": "player", "targetId": "player_current" },
+            "resourceKey": "poise",
+            "amount": 5,
+            "source": { "kind": "narrative_outcome" },
+            "eventRef": "turn_42:qte_terminal:2:resource:1",
+            "reason": "Поспешный рывок через двор нарушил равновесие героя."
+          }
+        ]
       }
     },
     {
@@ -506,7 +571,17 @@
       "gmSummary": "Игрок провалил PrecisionChoice, выбрал fail вариант, не успел до timeout или отменил через Escape/cancel.",
       "responseFragment": {
         "response": "Вы попадаете в тупик между складами.",
-        "currentPoiseChange": -15
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": { "kind": "player", "targetId": "player_current" },
+            "resourceKey": "poise",
+            "amount": 15,
+            "source": { "kind": "narrative_outcome" },
+            "eventRef": "turn_42:qte_terminal:3:resource:1",
+            "reason": "Столкновение с погоней выбило героя из равновесия."
+          }
+        ]
       }
     }
   ]
@@ -600,7 +675,17 @@
       "gmSummary": "Игрок провалил StealthNoise или отменил его через Escape/cancel; сцену нужно продолжать с поднятой тревогой.",
       "responseFragment": {
         "response": "Стража просыпается и перекрывает коридор.",
-        "currentPoiseChange": -15
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": { "kind": "player", "targetId": "player_current" },
+            "resourceKey": "poise",
+            "amount": 15,
+            "source": { "kind": "narrative_outcome" },
+            "eventRef": "turn_42:qte_terminal:3:resource:1",
+            "reason": "Поднятая тревога сорвала скрытное движение героя."
+          }
+        ]
       }
     }
   ]
@@ -698,12 +783,188 @@
       "gmSummary": "Игрок провалил LockPinSet или отменил его через Escape/cancel; сцену нужно продолжать с шумом или тревогой.",
       "responseFragment": {
         "response": "Замок клинит, а коридор отвечает тревожным звоном.",
-        "currentPoiseChange": -10
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": { "kind": "player", "targetId": "player_current" },
+            "resourceKey": "poise",
+            "amount": 10,
+            "source": { "kind": "narrative_outcome" },
+            "eventRef": "turn_42:qte_terminal:3:resource:1",
+            "reason": "Сломанная отмычка и тревога нарушили равновесие героя."
+          }
+        ]
       }
     }
   ]
 }
 ```
+
+## mortal_qte_deferred_effect_receipt_waves_v1
+
+This is a receipt-only task and not an ordinary turn. It begins only after the
+player has already selected a terminal QTE outcome and the common effect graph
+has produced a bounded request. The daemon reads
+`input/qte_effect_resolution_request.json`; the GM answers the current safe packet only.
+The `safePacket.fullTurnResubmissionRequired` flag belongs to the
+common effect planner and does not authorize an ordinary QTE follow-up turn.
+
+#### Wave 0 — client request
+
+```json
+{
+  "schemaVersion": 1,
+  "requestKind": "qte_deferred_effect_resolution",
+  "sessionId": "session_qte_effect_example_001",
+  "sessionGeneration": "generation_qte_effect_example_001",
+  "continuationId": "qte_effect_continuation_001",
+  "requestId": "qte_effect_transport_request_001",
+  "waveId": "qte_effect_wave_001",
+  "waveOrdinal": 0,
+  "acceptedSourceTurn": 42,
+  "qteId": "qte_closing_door_mash_001",
+  "selectedTerminalFingerprint": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "pendingStateFingerprint": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "fullTurnFingerprint": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "semanticTurnFingerprint": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+  "safePacket": {
+    "schemaVersion": 2,
+    "kind": "bounded_resource_resolution",
+    "requests": [
+      {
+        "requestId": "resource_resolution_qte_wave_001",
+        "sourceLabel": "Отзвук каменной печати",
+        "targetLabel": "Герой",
+        "resourceLabel": "Самообладание",
+        "operationLabel": "Потеря",
+        "allowedResults": [
+          { "resultKind": "narrated_no_state_change" },
+          { "resultKind": "resource_delta", "amountInstruction": "от 1 до 5" }
+        ],
+        "requiredCompanions": [],
+        "fullTurnResubmissionRequired": true,
+        "instruction": "Верните один разрешённый результат и краткую внутриигровую причину; не указывайте техническую цель, ресурс, операцию или состояние."
+      }
+    ]
+  }
+}
+```
+
+#### Wave 0 — helper-produced correlated receipt envelope
+
+```json
+{
+  "schemaVersion": 1,
+  "requestKind": "qte_deferred_effect_resolution",
+  "sessionId": "session_qte_effect_example_001",
+  "sessionGeneration": "generation_qte_effect_example_001",
+  "continuationId": "qte_effect_continuation_001",
+  "requestId": "qte_effect_transport_request_001",
+  "waveId": "qte_effect_wave_001",
+  "waveOrdinal": 0,
+  "acceptedSourceTurn": 42,
+  "qteId": "qte_closing_door_mash_001",
+  "selectedTerminalFingerprint": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "pendingStateFingerprint": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "fullTurnFingerprint": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "semanticTurnFingerprint": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+  "effectResolutionReceipts": [
+    {
+      "requestId": "resource_resolution_qte_wave_001",
+      "resultKind": "resource_delta",
+      "amount": 4,
+      "reason": "Удар печати заставил героя на миг потерять самообладание."
+    }
+  ]
+}
+```
+
+After the GM calls `Complete-BoeQteEffectResolution -Receipts $receipts` as the
+last action, the helper validates exact correlation, writes the receipt
+envelope, and writes `ready/qte_effect_resolution_complete.json` last. The GM
+does not author either transport envelope directly.
+
+Assume the client resolves wave 0 into another bounded component and then the
+process restarts. Restart preserves the sealed continuation, current wave,
+earlier-wave bindings, and the same preallocated identities. It does not replay
+the QTE input or ask the GM to resend wave 0.
+
+#### Wave 1 after restart — new client request
+
+```json
+{
+  "schemaVersion": 1,
+  "requestKind": "qte_deferred_effect_resolution",
+  "sessionId": "session_qte_effect_example_001",
+  "sessionGeneration": "generation_qte_effect_example_001",
+  "continuationId": "qte_effect_continuation_001",
+  "requestId": "qte_effect_transport_request_002",
+  "waveId": "qte_effect_wave_002",
+  "waveOrdinal": 1,
+  "acceptedSourceTurn": 42,
+  "qteId": "qte_closing_door_mash_001",
+  "selectedTerminalFingerprint": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "pendingStateFingerprint": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "fullTurnFingerprint": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "semanticTurnFingerprint": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+  "safePacket": {
+    "schemaVersion": 2,
+    "kind": "bounded_resource_resolution",
+    "requests": [
+      {
+        "requestId": "resource_resolution_qte_wave_002",
+        "sourceLabel": "Ответный отзвук печати",
+        "targetLabel": "Герой",
+        "resourceLabel": "Самообладание",
+        "operationLabel": "Потеря",
+        "allowedResults": [
+          { "resultKind": "narrated_no_state_change" },
+          { "resultKind": "resource_delta", "amountInstruction": "от 1 до 2" }
+        ],
+        "requiredCompanions": [],
+        "fullTurnResubmissionRequired": true,
+        "instruction": "Верните один разрешённый результат и краткую внутриигровую причину; не указывайте техническую цель, ресурс, операцию или состояние."
+      }
+    ]
+  }
+}
+```
+
+#### Wave 1 — helper-produced correlated receipt envelope
+
+```json
+{
+  "schemaVersion": 1,
+  "requestKind": "qte_deferred_effect_resolution",
+  "sessionId": "session_qte_effect_example_001",
+  "sessionGeneration": "generation_qte_effect_example_001",
+  "continuationId": "qte_effect_continuation_001",
+  "requestId": "qte_effect_transport_request_002",
+  "waveId": "qte_effect_wave_002",
+  "waveOrdinal": 1,
+  "acceptedSourceTurn": 42,
+  "qteId": "qte_closing_door_mash_001",
+  "selectedTerminalFingerprint": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "pendingStateFingerprint": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "fullTurnFingerprint": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "semanticTurnFingerprint": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+  "effectResolutionReceipts": [
+    {
+      "requestId": "resource_resolution_qte_wave_002",
+      "resultKind": "narrated_no_state_change",
+      "reason": "Герой удержал второй отзвук печати без новой потери."
+    }
+  ]
+}
+```
+
+This dedicated route creates no pending-turn snapshot, performs no story work,
+runs no progression work, and does not increment the turn counter. Until no new
+safe packet appears, all resource/effect after-images, QTE history, and terminal
+publication remain provisional and client-owned. The final successful helper
+cycle publishes the complete selected QTE outcome atomically. Stale, tampered,
+cross-session, cross-generation, replayed-old-wave, extra-field, or manually
+written transport fails closed before any mechanics write.
 
 ## Invalid Patterns
 

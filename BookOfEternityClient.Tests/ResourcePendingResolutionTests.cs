@@ -148,8 +148,8 @@ public sealed class ResourcePendingResolutionTests
         var unknown = JsonNode.Parse(valid)!.AsObject();
         unknown["unexpected"] = true;
         var duplicateProperty = valid.Replace(
-            "\"schemaVersion\":1",
-            "\"schemaVersion\":1,\"schemaVersion\":1",
+            "\"schemaVersion\":2",
+            "\"schemaVersion\":2,\"schemaVersion\":2",
             StringComparison.Ordinal);
         var confusable = JsonNode.Parse(valid)!.AsObject();
         confusable["requests"]!.AsArray().Add(
@@ -202,6 +202,74 @@ public sealed class ResourcePendingResolutionTests
         Assert.Contains(result.Issues, issue =>
             issue.Code == "resource_pending_authority_binding_invalid");
         Assert.Null(result.State);
+    }
+
+    [Theory]
+    [InlineData("same_turn_ref", "turn_42:effect_ref")]
+    [InlineData("permanent", "effect_other")]
+    public void CreatePending_RejectsInvalidEffectAuthorityBindings(
+        string bindingKind,
+        string authorityId)
+    {
+        var result = CreatePending(Draft() with
+        {
+            EffectAuthority = new ResourcePendingAuthorityBinding(
+                bindingKind,
+                authorityId)
+        });
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_pending_effect_authority_invalid");
+        Assert.Null(result.State);
+    }
+
+    [Theory]
+    [InlineData("same_turn_ref", "turn_42:effect_ref")]
+    [InlineData("permanent", "effect_other")]
+    public void ParseCanonical_RejectsInvalidEffectAuthorityBindings(
+        string bindingKind,
+        string authorityId)
+    {
+        var root = JsonNode.Parse(CreatePending(Draft()).State!.ToCanonicalJson())!
+            .AsObject();
+        root["requests"]![0]!["effectAuthority"]!["bindingKind"] = bindingKind;
+        root["requests"]![0]!["effectAuthority"]!["authorityId"] = authorityId;
+
+        var result = ResourcePendingResolutionState.ParseCanonical(
+            root.ToJsonString(),
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            allowMissingPristine: false);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_pending_effect_authority_invalid");
+        Assert.Null(result.State);
+    }
+
+    [Fact]
+    public void CreatePending_AllowsAcceptedEffectAuthorityAndOtherSameTurnBindings()
+    {
+        var result = CreatePending(Draft() with
+        {
+            EffectAuthority = new ResourcePendingAuthorityBinding(
+                "accepted_application",
+                "turn_42:effect_application"),
+            SourceAuthority = new ResourcePendingAuthorityBinding(
+                "same_turn_ref",
+                "turn_42:source_application"),
+            TargetAuthority = new ResourcePendingAuthorityBinding(
+                "same_turn_ref",
+                "turn_42:target_application"),
+            ResourceAuthority = new ResourcePendingAuthorityBinding(
+                "same_turn_ref",
+                "turn_42:resource_application")
+        });
+
+        Assert.True(result.IsValid, Format(result.Issues));
+        var request = Assert.Single(result.State!.Requests);
+        Assert.Equal("accepted_application", request.EffectAuthority.BindingKind);
+        Assert.Equal("same_turn_ref", request.SourceAuthority.BindingKind);
+        Assert.Equal("same_turn_ref", request.TargetAuthority.BindingKind);
+        Assert.Equal("same_turn_ref", request.ResourceAuthority.BindingKind);
     }
 
     [Fact]
@@ -455,6 +523,487 @@ public sealed class ResourcePendingResolutionTests
         Assert.Empty(conflict.Mutations);
     }
 
+    [Fact]
+    public void ParseCanonical_V1RootIsRejectedWithoutMigration()
+    {
+        var root = JsonNode.Parse(CreatePending(Draft()).State!.ToCanonicalJson())!
+            .AsObject();
+        root["schemaVersion"] = 1;
+
+        var result = ResourcePendingResolutionState.ParseCanonical(
+            root.ToJsonString(),
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            allowMissingPristine: false);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_pending_schema_invalid" &&
+            string.Equals(issue.Expected, "2", StringComparison.Ordinal));
+        Assert.Null(result.State);
+    }
+
+    [Fact]
+    public void CreatePending_V2CausalAuthorityRoundTripsExactlyAndStaysPrivate()
+    {
+        var created = CreatePending(Draft());
+
+        Assert.True(created.IsValid, Format(created.Issues));
+        var canonical = created.State!.ToCanonicalJson();
+        var root = JsonNode.Parse(canonical)!.AsObject();
+        Assert.Equal(2, root["schemaVersion"]!.GetValue<int>());
+        var request = Assert.IsType<JsonObject>(Assert.Single(
+            Assert.IsType<JsonArray>(root["requests"])));
+        var causal = Assert.IsType<JsonObject>(request["causalAuthority"]);
+        Assert.Equal("effect_test_bleeding", causal["effectId"]!.GetValue<string>());
+        Assert.Equal("trigger_periodic_damage", causal["triggerId"]!.GetValue<string>());
+        Assert.Equal("turn_42_effect_2", causal["activationEventRef"]!.GetValue<string>());
+        Assert.Equal("turn_42_damage_applied", causal["triggerEventRef"]!.GetValue<string>());
+        Assert.Equal(
+            "resource_operation_damage_1",
+            causal["resourceProducerOperationKey"]!.GetValue<string>());
+        Assert.Equal(7, causal["priority"]!.GetValue<int>());
+        Assert.Equal(3L, causal["activationOrdinal"]!.GetValue<long>());
+        Assert.True(causal["consumesUse"]!.GetValue<bool>());
+        Assert.Equal(2, causal["usesBefore"]!.GetValue<int>());
+        Assert.Equal("component_story_resolution", causal["componentId"]!.GetValue<string>());
+        Assert.Equal("component_followup", causal["afterComponentId"]!.GetValue<string>());
+        Assert.Equal(FingerprintA, causal["candidateFingerprint"]!.GetValue<string>());
+        Assert.Equal(
+            FingerprintB,
+            causal["transcriptPrefixFingerprint"]!.GetValue<string>());
+        Assert.Equal(0, causal["waveOrdinal"]!.GetValue<int>());
+
+        var parsed = ResourcePendingResolutionState.ParseCanonical(
+            canonical,
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            allowMissingPristine: false);
+
+        Assert.True(parsed.IsValid, Format(parsed.Issues));
+        Assert.Equal(canonical, parsed.State!.ToCanonicalJson());
+        var safePacket = created.SafeGmPacket!.ToJsonString();
+        Assert.DoesNotContain("causalAuthority", safePacket, StringComparison.Ordinal);
+        Assert.DoesNotContain("component_story_resolution", safePacket, StringComparison.Ordinal);
+        Assert.DoesNotContain("resource_operation_damage_1", safePacket, StringComparison.Ordinal);
+        Assert.DoesNotContain(FingerprintA, safePacket, StringComparison.Ordinal);
+        Assert.DoesNotContain(FingerprintB, safePacket, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("priority")]
+    [InlineData("activationOrdinal")]
+    [InlineData("usesBefore")]
+    [InlineData("resourceProducerOperationKey")]
+    [InlineData("candidateFingerprint")]
+    [InlineData("transcriptPrefixFingerprint")]
+    public void ParseCanonical_RejectsStaleCausalAuthority(string field)
+    {
+        var root = JsonNode.Parse(CreatePending(Draft()).State!.ToCanonicalJson())!
+            .AsObject();
+        var request = Assert.IsType<JsonObject>(root["requests"]![0]);
+        var causal = Assert.IsType<JsonObject>(request["causalAuthority"]);
+        causal[field] = field switch
+        {
+            "priority" => JsonValue.Create(8),
+            "activationOrdinal" => JsonValue.Create(4L),
+            "usesBefore" => JsonValue.Create(1),
+            "resourceProducerOperationKey" =>
+                JsonValue.Create("resource_operation_damage_other"),
+            "candidateFingerprint" => JsonValue.Create(FingerprintB),
+            "transcriptPrefixFingerprint" => JsonValue.Create(FingerprintA),
+            _ => throw new ArgumentOutOfRangeException(nameof(field))
+        };
+
+        var result = ResourcePendingResolutionState.ParseCanonical(
+            root.ToJsonString(),
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            allowMissingPristine: false);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_pending_replay_fingerprint_mismatch");
+        Assert.Null(result.State);
+    }
+
+    [Fact]
+    public void Resolve_TerminalRetainsFullRequestAuthorityAndReplayableTypedBinding()
+    {
+        var created = CreatePending(Draft());
+        var createdState = Assert.IsType<ResourcePendingResolutionState>(created.State);
+        var requestRoot = JsonNode.Parse(createdState.ToCanonicalJson())!["requests"]![0]!
+            .DeepClone();
+        var receipt = Receipt("resource_delta", amount: 3);
+        var first = createdState.Resolve(
+            new JsonArray(receipt.DeepClone()),
+            Context(),
+            ResourceDefinitionCatalog.CreateBuiltIn());
+
+        Assert.True(first.IsValid, Format(first.Issues));
+        var firstState = Assert.IsType<ResourcePendingResolutionState>(
+            first.StateAfterImage);
+        var terminalRoot = JsonNode.Parse(firstState.ToCanonicalJson())!
+            ["terminalReceipts"]![0]!.AsObject();
+        Assert.Equal(
+            requestRoot.ToJsonString(),
+            terminalRoot["requestAuthority"]!.ToJsonString());
+        Assert.Equal(
+            requestRoot["replayFingerprint"]!.GetValue<string>(),
+            terminalRoot["requestAuthorityFingerprint"]!.GetValue<string>());
+        var firstBindings = ReadResolvedBindings(first);
+        Assert.Single(firstBindings);
+        AssertResolvedBinding(
+            firstBindings[0],
+            requestId: "resource_resolution_test",
+            waveOrdinal: 0,
+            activationOrdinal: 3L,
+            resultKind: "resource_delta",
+            amount: 3m);
+
+        var parsedTerminal = ResourcePendingResolutionState.ParseCanonical(
+            firstState.ToCanonicalJson(),
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            allowMissingPristine: false);
+        Assert.True(parsedTerminal.IsValid, Format(parsedTerminal.Issues));
+
+        var replay = parsedTerminal.State!.Resolve(
+            new JsonArray(receipt.DeepClone()),
+            Context(),
+            ResourceDefinitionCatalog.CreateBuiltIn());
+
+        Assert.True(replay.IsValid, Format(replay.Issues));
+        Assert.Empty(replay.Mutations);
+        Assert.Empty(replay.SourceExports);
+        var replayState = Assert.IsType<ResourcePendingResolutionState>(
+            replay.StateAfterImage);
+        Assert.Single(replayState.TerminalReceipts);
+        var replayBinding = Assert.Single(ReadResolvedBindings(replay));
+        AssertResolvedBinding(
+            replayBinding,
+            requestId: "resource_resolution_test",
+            waveOrdinal: 0,
+            activationOrdinal: 3L,
+            resultKind: "resource_delta",
+            amount: 3m);
+        Assert.Equal(
+            firstState.ToCanonicalJson(),
+            replayState.ToCanonicalJson());
+    }
+
+    [Fact]
+    public void ProjectMutationSourceExport_DeltaMatchesFirstParsedAndReplayedBinding()
+    {
+        var created = CreatePending(Draft());
+        var createdState = Assert.IsType<ResourcePendingResolutionState>(created.State);
+        var receipt = Receipt("resource_delta", amount: 3);
+        var first = createdState.Resolve(
+            new JsonArray(receipt.DeepClone()),
+            Context(),
+            ResourceDefinitionCatalog.CreateBuiltIn());
+
+        Assert.True(first.IsValid, Format(first.Issues));
+        var expected = Assert.Single(first.SourceExports);
+        var firstBinding = Assert.Single(first.ResolvedPendingBindings);
+        Assert.True(ResourcePendingResolutionState.TryProjectMutationSourceExport(
+            firstBinding,
+            out var projectedFirst));
+        Assert.Equal(expected, projectedFirst);
+
+        var firstState = Assert.IsType<ResourcePendingResolutionState>(
+            first.StateAfterImage);
+        var parsed = ResourcePendingResolutionState.ParseCanonical(
+            firstState.ToCanonicalJson(),
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            allowMissingPristine: false);
+        Assert.True(parsed.IsValid, Format(parsed.Issues));
+        var parsedState = Assert.IsType<ResourcePendingResolutionState>(parsed.State);
+        var parsedBinding = Assert.Single(parsedState.ResolvedPendingBindings);
+        Assert.True(ResourcePendingResolutionState.TryProjectMutationSourceExport(
+            parsedBinding,
+            out var projectedParsed));
+        Assert.Equal(expected, projectedParsed);
+
+        var replay = parsedState.Resolve(
+            new JsonArray(receipt.DeepClone()),
+            Context(),
+            ResourceDefinitionCatalog.CreateBuiltIn());
+        Assert.True(replay.IsValid, Format(replay.Issues));
+        Assert.Empty(replay.SourceExports);
+        var replayBinding = Assert.Single(replay.ResolvedPendingBindings);
+        Assert.True(ResourcePendingResolutionState.TryProjectMutationSourceExport(
+            replayBinding,
+            out var projectedReplay));
+        Assert.Equal(expected, projectedReplay);
+    }
+
+    [Fact]
+    public void ProjectMutationSourceExport_NarratedBindingReturnsFalseAndNull()
+    {
+        var created = CreatePending(Draft());
+        var createdState = Assert.IsType<ResourcePendingResolutionState>(created.State);
+        var resolved = createdState.Resolve(
+            new JsonArray(Receipt("narrated_no_state_change")),
+            Context(),
+            ResourceDefinitionCatalog.CreateBuiltIn());
+
+        Assert.True(resolved.IsValid, Format(resolved.Issues));
+        var binding = Assert.Single(resolved.ResolvedPendingBindings);
+        Assert.False(ResourcePendingResolutionState.TryProjectMutationSourceExport(
+            binding,
+            out var projected));
+        Assert.Null(projected);
+    }
+
+    [Fact]
+    public void CreateAndResolve_WaveTwoPreservesPriorBindingAndReturnsCausalOrder()
+    {
+        var waveOne = CreatePending(Draft());
+        var waveOneState = Assert.IsType<ResourcePendingResolutionState>(waveOne.State);
+        var resolvedOne = waveOneState.Resolve(
+            new JsonArray(Receipt("resource_delta", amount: 3)),
+            Context(),
+            ResourceDefinitionCatalog.CreateBuiltIn());
+        Assert.True(resolvedOne.IsValid, Format(resolvedOne.Issues));
+        var resolvedOneState = Assert.IsType<ResourcePendingResolutionState>(
+            resolvedOne.StateAfterImage);
+        var retainedWithoutReceipt = Assert.Single(
+            ReadResolvedBindings(resolvedOneState));
+        AssertResolvedBinding(
+            retainedWithoutReceipt,
+            requestId: "resource_resolution_test",
+            waveOrdinal: 0,
+            activationOrdinal: 3L,
+            resultKind: "resource_delta",
+            amount: 3m);
+        var waveTwo = ResourcePendingResolutionState.CreatePending(
+            resolvedOneState.ToCanonicalJson(),
+            new[]
+            {
+                Draft(
+                    effectId: "effect_wave_two",
+                    triggerId: "trigger_wave_two",
+                    eventRef: "turn_42_effect_wave_two",
+                    triggerEventRef: "turn_42_wave_one_result",
+                    resourceProducerOperationKey: null,
+                    priority: 100,
+                    activationOrdinal: 4,
+                    componentId: "component_wave_two",
+                    afterComponentId: null,
+                    waveOrdinal: 1),
+                Draft(
+                    effectId: "effect_wave_two_late",
+                    triggerId: "trigger_wave_two_late",
+                    eventRef: "turn_42_effect_wave_two_late",
+                    triggerEventRef: "turn_42_wave_one_result",
+                    resourceProducerOperationKey: null,
+                    priority: -100,
+                    activationOrdinal: 5,
+                    componentId: "component_wave_two_late",
+                    afterComponentId: null,
+                    waveOrdinal: 1)
+            },
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            AllocateIds(
+                "resource_resolution_wave_two",
+                "resource_resolution_wave_two_late"),
+            new DateTimeOffset(2026, 8, 21, 15, 31, 0, TimeSpan.Zero));
+        Assert.True(waveTwo.IsValid, Format(waveTwo.Issues));
+        var waveTwoState = Assert.IsType<ResourcePendingResolutionState>(waveTwo.State);
+        Assert.Single(ReadResolvedBindings(waveTwoState));
+
+        var parsedWaveTwo = ResourcePendingResolutionState.ParseCanonical(
+            waveTwoState.ToCanonicalJson(),
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            allowMissingPristine: false);
+        Assert.True(parsedWaveTwo.IsValid, Format(parsedWaveTwo.Issues));
+        var parsedWaveTwoState = Assert.IsType<ResourcePendingResolutionState>(
+            parsedWaveTwo.State);
+        Assert.Single(ReadResolvedBindings(parsedWaveTwoState));
+
+        var resolvedTwo = parsedWaveTwoState.Resolve(
+            new JsonArray(
+                Receipt(
+                    "narrated_no_state_change",
+                    requestId: "resource_resolution_wave_two"),
+                Receipt(
+                    "narrated_no_state_change",
+                    requestId: "resource_resolution_wave_two_late")),
+            Context(),
+            ResourceDefinitionCatalog.CreateBuiltIn());
+
+        Assert.True(resolvedTwo.IsValid, Format(resolvedTwo.Issues));
+        var resolvedTwoState = Assert.IsType<ResourcePendingResolutionState>(
+            resolvedTwo.StateAfterImage);
+        var bindings = ReadResolvedBindings(resolvedTwo);
+        Assert.Equal(3, bindings.Count);
+        AssertResolvedBinding(
+            bindings[0],
+            requestId: "resource_resolution_test",
+            waveOrdinal: 0,
+            activationOrdinal: 3L,
+            resultKind: "resource_delta",
+            amount: 3m);
+        AssertResolvedBinding(
+            bindings[1],
+            requestId: "resource_resolution_wave_two",
+            waveOrdinal: 1,
+            activationOrdinal: 4L,
+            resultKind: "narrated_no_state_change",
+            amount: null);
+        Assert.Null(
+            bindings[1].RequestAuthority.CausalAuthority.ResourceProducerOperationKey);
+        Assert.Null(bindings[1].RequestAuthority.CausalAuthority.AfterComponentId);
+        Assert.Equal(100, bindings[1].RequestAuthority.CausalAuthority.Priority);
+        AssertResolvedBinding(
+            bindings[2],
+            requestId: "resource_resolution_wave_two_late",
+            waveOrdinal: 1,
+            activationOrdinal: 5L,
+            resultKind: "narrated_no_state_change",
+            amount: null);
+        Assert.Equal(-100, bindings[2].RequestAuthority.CausalAuthority.Priority);
+        Assert.Equal(3, resolvedTwoState.TerminalReceipts.Count);
+
+        var reparsedTerminalHistory = ResourcePendingResolutionState.ParseCanonical(
+            resolvedTwoState.ToCanonicalJson(),
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            allowMissingPristine: false);
+        Assert.True(
+            reparsedTerminalHistory.IsValid,
+            Format(reparsedTerminalHistory.Issues));
+        Assert.Equal(
+            resolvedTwoState.ToCanonicalJson(),
+            reparsedTerminalHistory.State!.ToCanonicalJson());
+    }
+
+    [Fact]
+    public void PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState()
+    {
+        var baseline = PendingFingerprintInput(
+            new JsonObject { ["ownerTransitions"] = new JsonArray("owner-a") });
+        var changedInternal = PendingFingerprintInput(
+            new JsonObject { ["ownerTransitions"] = new JsonArray("owner-b") },
+            internalInputsFingerprint: FingerprintB);
+        var changedOwnerAuthority = PendingFingerprintInput(
+            new JsonObject { ["ownerTransitions"] = new JsonArray("owner-a") },
+            ownersFingerprint: FingerprintB);
+        var changedPendingSelf = PendingFingerprintInput(
+            new JsonObject { ["ownerTransitions"] = new JsonArray("owner-a") },
+            pendingInput: new JsonObject { ["requests"] = new JsonArray("self") },
+            pendingFingerprint: FingerprintB);
+        var changedReceipt = PendingFingerprintInput(
+            new JsonObject { ["ownerTransitions"] = new JsonArray("owner-a") },
+            receipt: new JsonObject
+            {
+                ["requestId"] = "resolution-a",
+                ["resultKind"] = "narrated_no_state_change",
+                ["reason"] = "Результат описан без изменения состояния."
+            },
+            commandsFingerprint: FingerprintB);
+        var changedCommandEnvelope = PendingFingerprintInput(
+            new JsonObject { ["ownerTransitions"] = new JsonArray("owner-a") },
+            resourceCommandMarker: 2);
+        var changedSnapshot = PendingFingerprintInput(
+            new JsonObject { ["ownerTransitions"] = new JsonArray("owner-a") },
+            snapshotToken: "snapshot-pending-fingerprint-changed");
+
+        var baselineFingerprint =
+            AcceptedMechanicsPlanner.CreatePendingFullTurnFingerprint(baseline);
+        var baselineSemanticFingerprint =
+            AcceptedMechanicsPlanner.CreatePendingSemanticTurnFingerprint(baseline);
+
+        Assert.NotEqual(
+            baselineFingerprint,
+            AcceptedMechanicsPlanner.CreatePendingFullTurnFingerprint(changedInternal));
+        Assert.NotEqual(
+            baselineFingerprint,
+            AcceptedMechanicsPlanner.CreatePendingFullTurnFingerprint(changedOwnerAuthority));
+        Assert.Equal(
+            baselineFingerprint,
+            AcceptedMechanicsPlanner.CreatePendingFullTurnFingerprint(changedPendingSelf));
+        Assert.Equal(
+            baselineFingerprint,
+            AcceptedMechanicsPlanner.CreatePendingFullTurnFingerprint(changedReceipt));
+        Assert.Equal(
+            baselineSemanticFingerprint,
+            AcceptedMechanicsPlanner.CreatePendingSemanticTurnFingerprint(
+                changedInternal));
+        Assert.Equal(
+            baselineSemanticFingerprint,
+            AcceptedMechanicsPlanner.CreatePendingSemanticTurnFingerprint(
+                changedOwnerAuthority));
+        Assert.Equal(
+            baselineSemanticFingerprint,
+            AcceptedMechanicsPlanner.CreatePendingSemanticTurnFingerprint(
+                changedReceipt));
+        Assert.NotEqual(
+            baselineSemanticFingerprint,
+            AcceptedMechanicsPlanner.CreatePendingSemanticTurnFingerprint(
+                changedCommandEnvelope));
+        Assert.Equal(
+            baselineFingerprint,
+            AcceptedMechanicsPlanner.CreatePendingFullTurnFingerprint(
+                changedSnapshot));
+        Assert.Equal(
+            baselineSemanticFingerprint,
+            AcceptedMechanicsPlanner.CreatePendingSemanticTurnFingerprint(
+                changedSnapshot));
+    }
+
+    private static AcceptedMechanicsInput PendingFingerprintInput(
+        JsonObject internalInputs,
+        string internalInputsFingerprint = FingerprintA,
+        string ownersFingerprint = FingerprintA,
+        JsonObject? pendingInput = null,
+        string pendingFingerprint = FingerprintA,
+        JsonObject? receipt = null,
+        string commandsFingerprint = FingerprintA,
+        int? resourceCommandMarker = null,
+        string snapshotToken = "snapshot-pending-fingerprint")
+    {
+        var effectCommands = new JsonObject
+        {
+            ["effectChanges"] = new JsonArray(),
+            ["effectEventReports"] = new JsonArray(),
+            ["effectResolutionReceipts"] = receipt == null
+                ? new JsonArray()
+                : new JsonArray(receipt.DeepClone())
+        };
+        var fingerprints = new AcceptedMechanicsAuthorityFingerprints(
+            Definitions: FingerprintA,
+            Owners: ownersFingerprint,
+            ResourceState: FingerprintA,
+            ResourceHistory: FingerprintA,
+            EffectSources: FingerprintA,
+            EffectTargets: FingerprintA,
+            EffectCarriers: FingerprintA,
+            EffectIdentityIndex: FingerprintA,
+            AcceptedEvents: FingerprintA,
+            Commands: commandsFingerprint,
+            Pending: pendingFingerprint,
+            InternalInputs: internalInputsFingerprint);
+        return new AcceptedMechanicsInput(
+            "session-pending-fingerprint",
+            "request-pending-fingerprint",
+            snapshotToken,
+            "mortal_world",
+            42,
+            new JsonObject { ["acceptedEvents"] = new JsonArray() },
+            new JsonObject
+            {
+                ["resourceDefinitionCreations"] = new JsonArray(),
+                ["resourceCapacityChanges"] = new JsonArray(),
+                ["resourceChanges"] = resourceCommandMarker.HasValue
+                    ? new JsonArray(new JsonObject
+                    {
+                        ["marker"] = resourceCommandMarker.Value
+                    })
+                    : new JsonArray()
+            },
+            effectCommands,
+            pendingInput ?? new JsonObject(),
+            internalInputs,
+            fingerprints,
+            new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal),
+            Array.Empty<ValidationIssue>());
+    }
+
     private static ResourcePendingResolutionCreationResult CreatePending(
         ResourcePendingResolutionDraft draft) =>
         ResourcePendingResolutionState.CreatePending(
@@ -467,13 +1016,23 @@ public sealed class ResourcePendingResolutionTests
     private static ResourcePendingResolutionDraft Draft(
         string resolutionMode = "bounded_receipt",
         string effectId = "effect_test_bleeding",
-        string triggerId = "trigger_periodic_damage") =>
+        string triggerId = "trigger_periodic_damage",
+        string eventRef = "turn_42_effect_2",
+        string triggerEventRef = "turn_42_damage_applied",
+        string? resourceProducerOperationKey = "resource_operation_damage_1",
+        int priority = 7,
+        int? usesBefore = 2,
+        long activationOrdinal = 3,
+        bool consumesUse = true,
+        string componentId = "component_story_resolution",
+        string? afterComponentId = "component_followup",
+        int waveOrdinal = 0) =>
         new(
             resolutionMode,
             "session_test",
             "request_turn_42",
             42,
-            "turn_42_effect_2",
+            eventRef,
             effectId,
             new ResourcePendingAuthorityBinding("permanent", effectId),
             new JsonObject
@@ -504,10 +1063,49 @@ public sealed class ResourcePendingResolutionTests
             FingerprintA,
             FingerprintB,
             FingerprintA,
+            FingerprintA,
             "Рваная рана",
             "герой",
             "Здоровье",
-            "урон");
+            "урон",
+            new ResourcePendingCausalAuthority(
+                effectId,
+                triggerId,
+                eventRef,
+                triggerEventRef,
+                resourceProducerOperationKey,
+                priority,
+                activationOrdinal,
+                consumesUse,
+                usesBefore,
+                componentId,
+                afterComponentId,
+                FingerprintA,
+                FingerprintB,
+                waveOrdinal));
+
+    private static IReadOnlyList<ResourcePendingResolvedBinding> ReadResolvedBindings(
+        ResourcePendingResolutionState state) => state.ResolvedPendingBindings;
+
+    private static IReadOnlyList<ResourcePendingResolvedBinding> ReadResolvedBindings(
+        ResourcePendingResolutionResult result) => result.ResolvedPendingBindings;
+
+    private static void AssertResolvedBinding(
+        ResourcePendingResolvedBinding binding,
+        string requestId,
+        int waveOrdinal,
+        long activationOrdinal,
+        string resultKind,
+        decimal? amount)
+    {
+        Assert.Equal(requestId, binding.RequestId);
+        Assert.Equal(resultKind, binding.ResultKind);
+        Assert.Equal(amount, binding.Amount);
+        Assert.Equal(waveOrdinal, binding.RequestAuthority.CausalAuthority.WaveOrdinal);
+        Assert.Equal(
+            activationOrdinal,
+            binding.RequestAuthority.CausalAuthority.ActivationOrdinal);
+    }
 
     private static ResourcePendingResolutionContext Context() =>
         new("session_test", "request_turn_42", 42, FingerprintA);

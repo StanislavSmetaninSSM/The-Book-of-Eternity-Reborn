@@ -312,7 +312,10 @@ internal sealed class AcceptedMechanicsPlanningContext
         IReadOnlyDictionary<string, JsonObject>? ownerCompanionAfterImages = null,
         IReadOnlyList<AcceptedMechanicsOwnerTransition>? ownerTransitions = null,
         IReadOnlyList<IResourceRegisteredSystemOutcomeDraft>? registeredSystemOutcomes = null,
-        ResourcePendingResolutionState? pendingResolutionState = null)
+        ResourcePendingResolutionState? pendingResolutionState = null,
+        AcceptedMechanicsIdentityFactory? resourceIdentityFactory = null,
+        EffectIdentityFactory? effectIdentityFactory = null,
+        int executionSequenceOffset = 0)
     {
         _definitionRoot = (definitionRoot ?? throw new ArgumentNullException(nameof(definitionRoot)))
             .DeepClone().AsObject();
@@ -382,6 +385,11 @@ internal sealed class AcceptedMechanicsPlanningContext
             value ?? throw new ArgumentNullException(nameof(registeredSystemOutcomes))).ToArray() ??
             Array.Empty<IResourceRegisteredSystemOutcomeDraft>();
         PendingResolutionState = pendingResolutionState;
+        ResourceIdentityFactory = resourceIdentityFactory;
+        EffectIdentityFactory = effectIdentityFactory;
+        if (executionSequenceOffset < 0)
+            throw new ArgumentOutOfRangeException(nameof(executionSequenceOffset));
+        ExecutionSequenceOffset = executionSequenceOffset;
     }
 
     internal JsonObject DefinitionRoot => _definitionRoot.DeepClone().AsObject();
@@ -410,6 +418,9 @@ internal sealed class AcceptedMechanicsPlanningContext
     internal IReadOnlyList<IResourceRegisteredSystemOutcomeDraft> RegisteredSystemOutcomes =>
         Array.AsReadOnly(_registeredSystemOutcomes.ToArray());
     internal ResourcePendingResolutionState? PendingResolutionState { get; }
+    internal AcceptedMechanicsIdentityFactory? ResourceIdentityFactory { get; }
+    internal EffectIdentityFactory? EffectIdentityFactory { get; }
+    internal int ExecutionSequenceOffset { get; }
 }
 
 internal sealed record ResourceAppliedEvent(

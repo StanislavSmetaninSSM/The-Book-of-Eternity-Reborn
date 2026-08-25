@@ -43,6 +43,7 @@
                 "containerWeight": "double_or_null",
                 "weightReduction": "double_or_null",
                 "combatEffect": ["array_of_combat_action_objects_optional"],
+                "activeEffectDefinitions": ["array_of_complete_Effect_Materialization_v1_definitions_optional"],
                 "equipmentSlot": "string_or_array_of_strings_or_null",
                 "accessoryForSlot": "string_or_array_of_strings_or_null",
                 "requiresTwoHands": "boolean",
@@ -74,6 +75,12 @@
                 "ownerBondLevelCurrent": "integer_optional_current_bond_level_0_100", // For Rare+ items
                 "isSentient": "boolean_default_false"
             }
+
+            Effect Materialization v1 item source-owner boundary:
+            - `structuredBonuses` remain static item calculation authority and `combatEffect` remains the immediate/passive Combat Action template. Neither is an active-effect carrier or an implicit lifecycle definition.
+            - If an item can create a persistent, periodic, triggered, stacked, or removable runtime effect, the item owns complete `activeEffectDefinitions[]` entries following `OtherGuides/Effect_Materialization_Contract.md`.
+            - A definition does not apply itself. Request an instance only through top-level `effectChanges[]` with `{ "kind": "item", "sourceId": "<exact-item-id>", "definitionKey": "<exact-definition-key>" }` (or the exact same-turn sourceRef supplied by item materialization), exact target, parameters, accepted eventRef, and reason.
+            - Equipping, carrying, reading, using, or describing the item does not authorize direct writes to `activeEffects[]`, `activeBuffs[]`, or `activeDebuffs[]`; the client owns instance identity, stacking, lifetime, and publication.
 
             Follow the rules below to populate the fields of these Item Objects.
 
@@ -361,7 +368,7 @@
                                                         
                                                     3)   'combatEffect': If it's a weapon/armor, its base damage/reduction must align with the quality tier.
                                                         
-                                                    4)   'durability', 'weight', 'description', etc., should all be logical for the item's name and quality.
+                                                    4)   'weight', 'description', and other non-resource item fields should all be logical for the item's name and quality. If the item is durable, declare its logical durability maximum only through resourceMaterialization.resources[].
 
                                                     Step 4: Logging.
                                                     You MUST log this entire dynamic generation process in 'gm_thoughts_markdown'.
@@ -404,7 +411,7 @@
 
                                             3.  Determine Loot Condition: 
                                                 As the GM, you have discretion over the condition of the looted items. 
-                                                A fierce battle might result in a "Damaged" or "Broken" version of the NPC's armor, or reduce its 'durability'. You must narrate this logically.
+                                                A fierce battle might result in a "Damaged" or "Broken" version of the NPC's armor. Narrate this logically and emit the matching durability resourceChanges command against the exact item owner; never write a durability property on the item.
 
                                             4.  Supplement with 'lootForCurrentTurn' (Optional): 
                                                 You may add items from the 'lootForCurrentTurn' list as supplementary loot (e.g., coins, consumables), but these items CANNOT replace the NPC's primary, defining gear.

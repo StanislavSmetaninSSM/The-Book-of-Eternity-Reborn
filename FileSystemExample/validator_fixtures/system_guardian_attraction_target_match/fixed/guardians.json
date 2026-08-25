@@ -35,7 +35,7 @@
           { "fragmentId": "guard_social_azalia_001_lore_7", "category": "personal_history", "title": "Возвращение искры", "content": null, "requiredReputation": 130 }
         ],
         "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
-        "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] },
+        "gachaSystem": { "currentReturnCycleId": "", "gachaHistory": [] },
         "sourcePreset": {
           "presetId": "azalia",
           "displayName": "Азалия",

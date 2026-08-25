@@ -217,7 +217,8 @@ internal static class EffectAcceptedTurnInputComposer
             TargetAuthorityInput: targetAuthorityInput,
             PublicationCarrierBaselines: CloneCarriers(
                 publicationCarrierBaselines ?? acceptedCarriers),
-            PreallocatedCombatantIdentities: preallocatedCombatantIdentities);
+            PreallocatedCombatantIdentities: preallocatedCombatantIdentities,
+            AcceptedCarrierBaselines: CloneCarriers(acceptedCarriers));
     }
 
     private static EffectCarrierCatalogInput PreserveClosingSpiritualConflictCarrier(

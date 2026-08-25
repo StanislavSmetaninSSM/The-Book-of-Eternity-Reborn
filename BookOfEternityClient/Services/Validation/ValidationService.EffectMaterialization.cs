@@ -37,9 +37,42 @@ public partial class ValidationService
     public async Task<IReadOnlyList<ValidationIssue>>
         ValidateAcceptedTurnRawEffectMaterializationAsync()
     {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await ValidateAcceptedTurnRawEffectMaterializationAsync(writeLease);
+    }
+
+    internal async Task<IReadOnlyList<ValidationIssue>>
+        ValidateAcceptedTurnRawEffectMaterializationAsync(
+            FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
+        EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
         var issues = new List<ValidationIssue>();
-        await ValidateAcceptedTurnRawEffectMaterializationAsync(issues, null, false);
-        return issues;
+        var keepEffectHandoff = false;
+        try
+        {
+            await ValidateAcceptedTurnRawEffectMaterializationAsync(
+                issues,
+                null,
+                false,
+                validatedManifest: null,
+                writeLease);
+            keepEffectHandoff =
+                issues.All(static issue => issue.Severity != IssueSeverity.Error) &&
+                EffectAcceptedTurnPlanAuthority.TryPeekValidated(
+                    _fs,
+                    writeLease,
+                    out _);
+            return issues;
+        }
+        finally
+        {
+            AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
+            if (!keepEffectHandoff)
+                EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
+        }
     }
 
     public async Task<IReadOnlyList<ValidationIssue>>
@@ -65,9 +98,13 @@ public partial class ValidationService
     private async Task ValidateAcceptedTurnRawEffectMaterializationAsync(
         List<ValidationIssue> issues,
         ResourceOwnerCompositionResult? resourceOwners,
-        bool suppressEffectExecutionForTerminalReceiptReplay)
+        bool suppressEffectExecutionForTerminalReceiptReplay,
+        ValidationPendingTurnSnapshotManifest? validatedManifest,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
         var commandJson = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
         var currentCarriers = await ReadEffectCarriersAsync(null, issues);
         if (currentCarriers.SpiritualConflict?[AfterlifeSpiritualConflictState.ResponseField]
@@ -87,12 +124,15 @@ public partial class ValidationService
             EffectAcceptedTurnPlan.IdentityIndexPath,
             "effect_identity_invalid_root",
             issues);
-        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var lookup = validatedManifest == null
+            ? await LoadValidatedPendingTurnSnapshotLookupAsync()
+            : null;
         var hasCommand = commandJson != null;
         var hasCurrentEffectAuthority = HasAnyEffectAuthority(currentCarriers, currentIndexJson);
 
-        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
-            lookup.Manifest == null)
+        if (validatedManifest == null &&
+            (lookup?.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+             lookup?.Manifest == null))
         {
             if (hasCommand || hasCurrentEffectAuthority)
             {
@@ -100,12 +140,12 @@ public partial class ValidationService
                     EffectAcceptedTurnPlan.CommandPath,
                     "effect_materialization_snapshot_required",
                     "usable validated pending-turn snapshot before effect validation",
-                    lookup.Status.ToString()));
+                    lookup?.Status.ToString() ?? "Missing"));
             }
             return;
         }
 
-        var manifest = lookup.Manifest;
+        var manifest = validatedManifest ?? lookup!.Manifest!;
         var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
         if (!TryParseResourceTurnRequest(
                 requestJson,
@@ -190,8 +230,9 @@ public partial class ValidationService
 
             var identityItemSources = MortalItemAcceptedTurnAuthority.GetValidatedEffectSources(
                 _fs,
+                writeLease,
                 manifest.SessionId,
-                manifest.RequestId);
+                manifest.ManifestPayloadHash);
             var identityAcceptedPlanSources =
                 EffectAcceptedTurnInputComposer.CollectLocationPlanSources(identityLocationPlan)
                     .Concat(identityItemSources)
@@ -206,14 +247,15 @@ public partial class ValidationService
             var identityReplacedSourceOwners = identityOwnerExports.ReplacedSourceOwners
                 .Concat(MortalItemAcceptedTurnAuthority.GetReplacedEffectSourceOwners(
                     _fs,
+                    writeLease,
                     manifest.SessionId,
-                    manifest.RequestId))
+                    manifest.ManifestPayloadHash))
                 .ToHashSet();
 
             var emptyCommands = EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot();
             var identityInput = EffectAcceptedTurnInputComposer.Compose(
                 manifest.SessionId,
-                manifest.RequestId,
+                manifest.ManifestPayloadHash,
                 manifest.TurnNumber,
                 emptyCommands,
                 preTurnCarriers,
@@ -233,6 +275,7 @@ public partial class ValidationService
                 grantedBuiltInApplicationAuthorities: builtInApplicationAuthorities);
             var identityResult = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
                 _fs,
+                writeLease,
                 identityInput);
             issues.AddRange(identityResult.Issues);
             return;
@@ -270,8 +313,9 @@ public partial class ValidationService
 
         var itemSources = MortalItemAcceptedTurnAuthority.GetValidatedEffectSources(
             _fs,
+            writeLease,
             manifest.SessionId,
-            manifest.RequestId);
+            manifest.ManifestPayloadHash);
         var acceptedPlanSources =
             EffectAcceptedTurnInputComposer.CollectLocationPlanSources(locationPlan)
                 .Concat(itemSources)
@@ -286,12 +330,13 @@ public partial class ValidationService
         var replacedSourceOwners = ownerExports.ReplacedSourceOwners
             .Concat(MortalItemAcceptedTurnAuthority.GetReplacedEffectSourceOwners(
                 _fs,
+                writeLease,
                 manifest.SessionId,
-                manifest.RequestId))
+                manifest.ManifestPayloadHash))
             .ToHashSet();
         var input = EffectAcceptedTurnInputComposer.Compose(
             manifest.SessionId,
-            manifest.RequestId,
+            manifest.ManifestPayloadHash,
             manifest.TurnNumber,
             commands,
             preTurnCarriers,
@@ -322,7 +367,10 @@ public partial class ValidationService
                 EventInput = replayEventInput
             };
         }
-        var result = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(_fs, input);
+        var result = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
+            _fs,
+            writeLease,
+            input);
         issues.AddRange(result.Issues);
     }
 

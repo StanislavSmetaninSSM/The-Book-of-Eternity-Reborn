@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -73,8 +74,8 @@ internal sealed class AcceptedMechanicsResourceInput
 {
     private readonly ResourceMutationIntent[] _mutations;
     private readonly ResourceCapacityIntent[] _capacityTransitions;
-    private readonly EffectAcceptedTurnPlanner.EffectResourceTriggerExecution[]
-        _initialTriggerExecutions;
+    private readonly EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate[]
+        _initialTriggerCandidates;
 
     internal AcceptedMechanicsResourceInput(
         int Turn,
@@ -86,8 +87,11 @@ internal sealed class AcceptedMechanicsResourceInput
         IReadOnlyList<ResourceCapacityIntent>? CapacityTransitions = null,
         int ExecutionSequenceOffset = 0,
         ResourceEventMutationResolver? EventMutationResolver = null,
-        IReadOnlyList<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>?
-            InitialTriggerExecutions = null)
+        IReadOnlyList<EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>?
+            InitialTriggerCandidates = null,
+        EffectAcceptedTurnPlanner.EffectResourceResolutionWork?
+            InitialEffectResolutionWork = null,
+        EffectAcceptedPlanAuthorityStamp? EffectPlanAuthority = null)
     {
         if (Turn <= 0)
             throw new ArgumentOutOfRangeException(nameof(Turn));
@@ -100,6 +104,11 @@ internal sealed class AcceptedMechanicsResourceInput
         this.History = History ?? throw new ArgumentNullException(nameof(History));
         this.Sources = Sources ?? throw new ArgumentNullException(nameof(Sources));
         this.EventMutationResolver = EventMutationResolver;
+        this.InitialEffectResolutionWork = InitialEffectResolutionWork ??
+            EffectAcceptedTurnPlanner.EffectResourceResolutionWork.Empty;
+        this.EffectPlanAuthority = EffectPlanAuthority is null
+            ? null
+            : EffectPlanAuthority with { };
         ArgumentNullException.ThrowIfNull(Mutations);
         _mutations = Mutations.Select(Clone).ToArray();
         _capacityTransitions = CapacityTransitions?.Select(value =>
@@ -109,9 +118,8 @@ internal sealed class AcceptedMechanicsResourceInput
             ArgumentNullException.ThrowIfNull(value.SourceEvidence);
             return value;
         }).ToArray() ?? Array.Empty<ResourceCapacityIntent>();
-        _initialTriggerExecutions = (InitialTriggerExecutions ??
-            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>())
-            .Select(Clone)
+        _initialTriggerCandidates = (InitialTriggerCandidates ??
+            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>())
             .ToArray();
     }
 
@@ -122,9 +130,12 @@ internal sealed class AcceptedMechanicsResourceInput
     internal ResourceHistoryState History { get; }
     internal ResourceMutationSourceCatalog Sources { get; }
     internal ResourceEventMutationResolver? EventMutationResolver { get; }
-    internal IReadOnlyList<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>
-        InitialTriggerExecutions =>
-        Array.AsReadOnly(_initialTriggerExecutions.Select(Clone).ToArray());
+    internal EffectAcceptedPlanAuthorityStamp? EffectPlanAuthority { get; }
+    internal EffectAcceptedTurnPlanner.EffectResourceResolutionWork
+        InitialEffectResolutionWork { get; }
+    internal IReadOnlyList<EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>
+        InitialTriggerCandidates =>
+        Array.AsReadOnly(_initialTriggerCandidates.ToArray());
     internal IReadOnlyList<ResourceMutationIntent> Mutations =>
         Array.AsReadOnly(_mutations.Select(Clone).ToArray());
     internal IReadOnlyList<ResourceCapacityIntent> CapacityTransitions =>
@@ -151,27 +162,65 @@ internal sealed class AcceptedMechanicsResourceInput
         };
     }
 
-    private static EffectAcceptedTurnPlanner.EffectResourceTriggerExecution Clone(
-        EffectAcceptedTurnPlanner.EffectResourceTriggerExecution value)
-    {
-        ArgumentNullException.ThrowIfNull(value);
-        ArgumentNullException.ThrowIfNull(value.MutationKeys);
-        return value with
-        {
-            MutationKeys = value.MutationKeys.ToArray(),
-            ComponentIds = value.ComponentIds?.ToArray(),
-            ComponentIdsByMutation = value.ComponentIdsByMutation == null
-                ? null
-                : new Dictionary<ResourceOperationKey, string>(
-                    value.ComponentIdsByMutation)
-        };
-    }
 }
 
 internal sealed record AcceptedMechanicsPlannerStatistics(
     int HistorySeedCount,
     int HistoryAppendCount,
-    int HistoryFreezeCount);
+    int HistoryFreezeCount,
+    int CapacityDescriptorCount,
+    int MutationDescriptorCount,
+    int GraphNodeDescriptorCount,
+    int MaximumTriggerDepth,
+    long SchedulingDescriptorVisitCount,
+    int HistoryReplayIdentityLookupCount,
+    long HistoryWorkUnits,
+    int EffectTriggerIndexLookupCount,
+    long EffectTriggerCandidateVisitCount,
+    int EffectSourceBindingIndexLookupCount,
+    long EffectSourceBindingCandidateVisitCount,
+    long EffectRoutingDescriptorAccessCount,
+    long EffectOccurrenceCloneCount,
+    long EffectFullValidationPassCount,
+    long EffectTriggerArrayVisitCount,
+    long EffectComponentIndexLookupCount,
+    long EffectSelectedComponentVisitCount,
+    long PendingCandidateFingerprintOutputVisitCount,
+    long PendingProjectionDependencyVisitCount,
+    long PendingTranscriptPrefixStampVisitCount,
+    int SourceAuthoritySeedCount,
+    int SourceAuthorityAddVisitCount,
+    int SourceAuthorityResolveLookupCount,
+    int SourceAuthorityFreezeCount)
+{
+    internal long TotalWorkUnits =>
+        (long)CapacityDescriptorCount +
+        MutationDescriptorCount +
+        GraphNodeDescriptorCount +
+        SchedulingDescriptorVisitCount +
+        HistoryWorkUnits +
+        EffectTriggerIndexLookupCount +
+        EffectTriggerCandidateVisitCount +
+        EffectSourceBindingIndexLookupCount +
+        EffectSourceBindingCandidateVisitCount +
+        EffectRoutingDescriptorAccessCount +
+        EffectOccurrenceCloneCount +
+        EffectFullValidationPassCount +
+        EffectTriggerArrayVisitCount +
+        EffectComponentIndexLookupCount +
+        EffectSelectedComponentVisitCount +
+        PendingCandidateFingerprintOutputVisitCount +
+        PendingProjectionDependencyVisitCount +
+        PendingTranscriptPrefixStampVisitCount +
+        SourceAuthoritySeedCount +
+        SourceAuthorityAddVisitCount +
+        SourceAuthorityResolveLookupCount +
+        SourceAuthorityFreezeCount;
+}
+
+internal sealed record AcceptedEffectBoundedResourceResolution(
+    EffectAcceptedTurnPlanner.EffectBoundedResourceResolution Resolution,
+    ResourcePendingCausalAuthority CausalAuthority);
 
 internal sealed class AcceptedMechanicsResourcePlanningResult
 {
@@ -180,6 +229,10 @@ internal sealed class AcceptedMechanicsResourcePlanningResult
     private readonly ResourceTransition[] _replayTransitions;
     private readonly EffectAcceptedTurnPlanner.EffectResourceTriggerExecution[]
         _resourceTriggerExecutions;
+    private readonly AcceptedEffectBoundedResourceResolution[]
+        _acceptedPendingResolutions;
+    private readonly EffectReactionExecution[] _acceptedReactionExecutions;
+    private readonly string[] _acceptedResolvedPendingRequestIds;
     private readonly ValidationIssue[] _issues;
 
     internal AcceptedMechanicsResourcePlanningResult(
@@ -191,7 +244,12 @@ internal sealed class AcceptedMechanicsResourcePlanningResult
         IReadOnlyList<ValidationIssue> issues,
         AcceptedMechanicsPlannerStatistics statistics,
         IReadOnlyList<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>?
-            resourceTriggerExecutions = null)
+            resourceTriggerExecutions = null,
+        IReadOnlyList<AcceptedEffectBoundedResourceResolution>?
+            acceptedPendingResolutions = null,
+        IReadOnlyList<EffectReactionExecution>? acceptedReactionExecutions = null,
+        IReadOnlyList<string>? acceptedResolvedPendingRequestIds = null,
+        AcceptedEffectBoundaryTranscript? effectBoundaryTranscript = null)
     {
         StateAfterImage = stateAfterImage;
         HistoryAfterImage = historyAfterImage;
@@ -212,6 +270,18 @@ internal sealed class AcceptedMechanicsResourcePlanningResult
                         execution.ComponentIdsByMutation)
             })
             .ToArray();
+        _acceptedPendingResolutions = (acceptedPendingResolutions ??
+            Array.Empty<AcceptedEffectBoundedResourceResolution>())
+            .Select(Clone)
+            .ToArray();
+        _acceptedReactionExecutions = (acceptedReactionExecutions ??
+            Array.Empty<EffectReactionExecution>())
+            .Select(Clone)
+            .ToArray();
+        _acceptedResolvedPendingRequestIds =
+            (acceptedResolvedPendingRequestIds ?? Array.Empty<string>())
+            .ToArray();
+        EffectBoundaryTranscript = effectBoundaryTranscript;
         _issues = (issues ?? throw new ArgumentNullException(nameof(issues))).ToArray();
         Statistics = statistics ?? throw new ArgumentNullException(nameof(statistics));
     }
@@ -237,24 +307,66 @@ internal sealed class AcceptedMechanicsResourcePlanningResult
                         execution.ComponentIdsByMutation)
             })
             .ToArray());
+    internal IReadOnlyList<AcceptedEffectBoundedResourceResolution>
+        AcceptedPendingResolutions =>
+        Array.AsReadOnly(_acceptedPendingResolutions.Select(Clone).ToArray());
+    internal IReadOnlyList<EffectReactionExecution> AcceptedReactionExecutions =>
+        Array.AsReadOnly(_acceptedReactionExecutions.Select(Clone).ToArray());
+    internal IReadOnlyList<string> AcceptedResolvedPendingRequestIds =>
+        Array.AsReadOnly(_acceptedResolvedPendingRequestIds.ToArray());
+    internal AcceptedEffectBoundaryTranscript? EffectBoundaryTranscript { get; }
     internal IReadOnlyList<ValidationIssue> Issues =>
         Array.AsReadOnly(_issues.ToArray());
     internal AcceptedMechanicsPlannerStatistics Statistics { get; }
+    [MemberNotNullWhen(
+        true,
+        nameof(StateAfterImage),
+        nameof(HistoryAfterImage),
+        nameof(EffectBoundaryTranscript))]
     internal bool IsValid =>
-        StateAfterImage != null && HistoryAfterImage != null && Issues.Count == 0;
+        StateAfterImage != null &&
+        HistoryAfterImage != null &&
+        EffectBoundaryTranscript != null &&
+        Issues.Count == 0;
+
+    private static AcceptedEffectBoundedResourceResolution Clone(
+        AcceptedEffectBoundedResourceResolution value) =>
+        value with
+        {
+            Resolution = value.Resolution with
+            {
+                Source = value.Resolution.Source.DeepClone().AsObject(),
+                Target = value.Resolution.Target.DeepClone().AsObject(),
+                Dependencies = value.Resolution.Dependencies.ToArray(),
+                EventRequirements = value.Resolution.EventRequirements.ToArray()
+            },
+            CausalAuthority = value.CausalAuthority with { }
+        };
+
+    private static EffectReactionExecution Clone(EffectReactionExecution value) =>
+        value with
+        {
+            DownstreamSource = value.DownstreamSource == null
+                ? null
+                : value.DownstreamSource with
+                {
+                    Definition = value.DownstreamSource.Definition.DeepClone().AsObject()
+                },
+            Parameters = value.Parameters?.DeepClone().AsObject()
+        };
 }
 
-internal sealed class AcceptedMechanicsIdentityFactory
+internal class AcceptedMechanicsIdentityFactory
 {
     private readonly Func<Guid> _guidFactory;
 
     internal AcceptedMechanicsIdentityFactory(Func<Guid>? guidFactory = null) =>
         _guidFactory = guidFactory ?? Guid.NewGuid;
 
-    internal string CreateOperationId() =>
+    internal virtual string CreateOperationId() =>
         "resource_operation_" + _guidFactory().ToString("N");
 
-    internal string CreateTransitionId() =>
+    internal virtual string CreateTransitionId() =>
         "resource_transition_" + _guidFactory().ToString("N");
 }
 
@@ -264,16 +376,352 @@ internal static class AcceptedMechanicsPlanner
         bool AwaitingReceipt,
         ResourcePendingResolutionState? StateAfterImage,
         JsonObject? SafeGmPacket,
-        IReadOnlyList<ResourceMutationSourceExport> SourceExports,
-        IReadOnlyList<ResourceMutationIntent> Mutations,
-        IReadOnlyList<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>
-            GraphTriggerExecutions,
-        IReadOnlyList<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>
-            PostGraphTriggerExecutions,
-        IReadOnlyList<ValidationIssue> Issues)
+        IReadOnlyList<ValidationIssue> Issues,
+        IReadOnlyList<ResourcePendingResolvedBinding>? ResolvedBindings = null,
+        bool IsTerminalSemanticReplay = false)
     {
         internal bool IsValid => Issues.Count == 0;
     }
+
+    private sealed class ResolvedPendingReplaySession
+    {
+        private readonly Dictionary<string, ResourcePendingResolvedBinding>
+            _bindingsByStaticAuthority = new(StringComparer.Ordinal);
+        private readonly HashSet<string> _staticallyBoundRequestIds = new(
+            StringComparer.Ordinal);
+        private readonly List<ValidationIssue> _issues = new();
+
+        internal ResolvedPendingReplaySession(
+            IReadOnlyList<ResourcePendingResolvedBinding> bindings)
+        {
+            ArgumentNullException.ThrowIfNull(bindings);
+            var maximumWave = -1;
+            foreach (var binding in bindings)
+            {
+                ArgumentNullException.ThrowIfNull(binding);
+                var clone = binding.DeepClone();
+                var key = PendingReplayStaticKey(
+                    clone.RequestAuthority.CausalAuthority,
+                    clone.RequestAuthority.EffectAuthority);
+                if (!_bindingsByStaticAuthority.TryAdd(key, clone))
+                {
+                    _issues.AddRange(Issue(
+                        "resource_pending_causal_replay_ambiguous",
+                        "one exact terminal binding per causal candidate output",
+                        clone.RequestId));
+                }
+                maximumWave = Math.Max(
+                    maximumWave,
+                    clone.RequestAuthority.CausalAuthority.WaveOrdinal);
+            }
+            if (maximumWave == int.MaxValue)
+            {
+                _issues.AddRange(Issue(
+                    "resource_pending_causal_wave_exhausted",
+                    "pending wave ordinal smaller than Int32.MaxValue",
+                    maximumWave.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture)));
+                NextWaveOrdinal = int.MaxValue;
+            }
+            else
+            {
+                NextWaveOrdinal = maximumWave + 1;
+            }
+        }
+
+        internal int NextWaveOrdinal { get; }
+
+        internal EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution Bind(
+            EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution resolution)
+        {
+            ArgumentNullException.ThrowIfNull(resolution);
+            var fingerprintMetrics = new PlannerWorkMetrics();
+            EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution WithWork(
+                EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution value) =>
+                value with
+                {
+                    Work = value.Work with
+                    {
+                        PendingCandidateFingerprintOutputVisitCount =
+                            value.Work
+                                .PendingCandidateFingerprintOutputVisitCount +
+                            fingerprintMetrics
+                                .PendingCandidateFingerprintOutputVisitCount,
+                        PendingProjectionDependencyVisitCount =
+                            value.Work
+                                .PendingProjectionDependencyVisitCount +
+                            fingerprintMetrics
+                                .PendingProjectionDependencyVisitCount
+                    }
+                };
+            if (!resolution.IsValid || _issues.Count != 0)
+            {
+                return WithWork(resolution with
+                {
+                    Issues = resolution.Issues.Concat(_issues).ToArray()
+                });
+            }
+
+            var mutations = resolution.Mutations.ToList();
+            var originMutationsByKey = new Dictionary<
+                ResourceOperationKey,
+                ResourceMutationIntent>();
+            foreach (var mutation in resolution.Mutations)
+            {
+                if (!originMutationsByKey.TryAdd(mutation.Key, mutation))
+                {
+                    _issues.AddRange(Issue(
+                        "resource_planner_duplicate_operation",
+                        "one mutation per exact replay key",
+                        Describe(mutation.Key)));
+                }
+            }
+            var mutationKeys = originMutationsByKey.Keys.ToHashSet();
+            var sources = new Dictionary<
+                (string SourceKind, string SourceId),
+                ResourceMutationSourceExport>();
+            foreach (var source in resolution.SourceExports)
+            {
+                var sourceKey = (source.SourceKind, source.SourceId);
+                if (!sources.TryAdd(sourceKey, source))
+                {
+                    _issues.AddRange(Issue(
+                        "resource_source_duplicate_exact",
+                        "one exact source export per source kind and identity",
+                        source.SourceKind + "/" + source.SourceId));
+                }
+            }
+            if (_issues.Count != 0)
+            {
+                return WithWork(resolution with
+                {
+                    Issues = resolution.Issues.Concat(_issues).ToArray()
+                });
+            }
+            var componentIdsByMutation = resolution.ComponentIdsByMutation
+                .ToDictionary(static pair => pair.Key, static pair => pair.Value);
+            var candidates = new List<
+                EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>();
+            foreach (var candidate in resolution.TriggerCandidates)
+            {
+                var pendingOutputs = candidate.PendingOutputs;
+                var reactionOutputs = candidate.ReactionOutputs;
+                var material = ResolveCandidateMaterialFingerprint(
+                    candidate,
+                    originMutationsByKey,
+                    sources,
+                    fingerprintMetrics);
+                if (!material.IsValid ||
+                    candidate.CausalMaterialFingerprint != null &&
+                    !string.Equals(
+                        candidate.CausalMaterialFingerprint,
+                        material.Fingerprint,
+                        StringComparison.Ordinal))
+                {
+                    _issues.AddRange(material.Issues);
+                    if (material.IsValid)
+                    {
+                        _issues.AddRange(Issue(
+                            "resource_pending_candidate_origin_mismatch",
+                            "the cached causal material fingerprint",
+                            DescribeActivation(candidate.Activation.Identity)));
+                    }
+                    return WithWork(resolution with
+                    {
+                        Issues = resolution.Issues.Concat(_issues).ToArray()
+                    });
+                }
+                var fingerprint = CreateCandidateFingerprint(
+                    candidate,
+                    material.Fingerprint!,
+                    pendingOutputs,
+                    reactionOutputs,
+                    fingerprintMetrics);
+                if (candidate.CandidateFingerprint != null &&
+                    !string.Equals(
+                        candidate.CandidateFingerprint,
+                        fingerprint,
+                        StringComparison.Ordinal))
+                {
+                    _issues.AddRange(Issue(
+                        "resource_pending_candidate_origin_mismatch",
+                        "the cached complete candidate fingerprint",
+                        DescribeActivation(candidate.Activation.Identity)));
+                    return WithWork(resolution with
+                    {
+                        Issues = resolution.Issues.Concat(_issues).ToArray()
+                    });
+                }
+                var resolvedByComponent = new Dictionary<
+                    string,
+                    ResourcePendingResolvedBinding>(StringComparer.Ordinal);
+                foreach (var output in pendingOutputs)
+                {
+                    var staticKey = PendingReplayStaticKey(
+                        candidate,
+                        output,
+                        fingerprint);
+                    if (!_bindingsByStaticAuthority.TryGetValue(
+                            staticKey,
+                            out var binding))
+                    {
+                        continue;
+                    }
+                    if (!PendingCandidateMatches(
+                            binding.RequestAuthority,
+                            output) ||
+                        !PendingEffectIdentityMatches(
+                            binding.RequestAuthority.EffectId,
+                            output.EffectId,
+                            output.EffectAuthority) ||
+                        !_staticallyBoundRequestIds.Add(binding.RequestId) ||
+                        !resolvedByComponent.TryAdd(
+                            output.ComponentId,
+                            binding.DeepClone()))
+                    {
+                        _issues.AddRange(Issue(
+                            "resource_pending_causal_replay_mismatch",
+                            "one exact terminal binding for the immutable candidate output",
+                            binding.RequestId));
+                    }
+                }
+
+                var projected = ProjectResolvedPendingMutations(
+                    candidate,
+                    pendingOutputs,
+                    resolvedByComponent,
+                    _issues,
+                    fingerprintMetrics);
+                foreach (var projection in projected)
+                {
+                    if (!mutationKeys.Add(projection.Mutation.Key))
+                    {
+                        _issues.AddRange(Issue(
+                            "resource_planner_duplicate_operation",
+                            "one mutation per exact replay key",
+                            Describe(projection.Mutation.Key)));
+                        continue;
+                    }
+                    mutations.Add(projection.Mutation);
+                    componentIdsByMutation[projection.Mutation.Key] =
+                        projection.ComponentId;
+                    var sourceKey = (
+                        projection.Source.SourceKind,
+                        projection.Source.SourceId);
+                    if (sources.TryGetValue(sourceKey, out var existingSource))
+                    {
+                        if (existingSource != projection.Source)
+                        {
+                            _issues.AddRange(Issue(
+                                "effect_resource_source_conflict",
+                                "one exact source policy per pending receipt",
+                                projection.Source.SourceKind + "/" +
+                                projection.Source.SourceId));
+                        }
+                    }
+                    else
+                    {
+                        sources.Add(sourceKey, projection.Source);
+                    }
+                }
+
+                if (_issues.Count != 0)
+                {
+                    return WithWork(resolution with
+                    {
+                        Issues = resolution.Issues.Concat(_issues).ToArray()
+                    });
+                }
+
+                var projectedKeys = projected
+                    .Select(static projection => projection.Mutation.Key)
+                    .ToArray();
+                var projectedComponents = projected
+                    .Select(static projection => projection.ComponentId)
+                    .ToArray();
+                var candidateComponentMap = candidate.PlannedComponentIdsByMutation
+                    .ToDictionary(static pair => pair.Key, static pair => pair.Value);
+                foreach (var projection in projected)
+                {
+                    if (!candidateComponentMap.TryAdd(
+                            projection.Mutation.Key,
+                            projection.ComponentId))
+                    {
+                        _issues.AddRange(Issue(
+                            "resource_planner_duplicate_operation",
+                            "one component binding per exact replay key",
+                            Describe(projection.Mutation.Key)));
+                    }
+                }
+                if (_issues.Count != 0)
+                {
+                    return WithWork(resolution with
+                    {
+                        Issues = resolution.Issues.Concat(_issues).ToArray()
+                    });
+                }
+                candidates.Add(
+                    new EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate(
+                        candidate.Activation,
+                        candidate.UseSeed,
+                        candidate.Producer,
+                        candidate.PlannedMutationKeys
+                            .Concat(projectedKeys)
+                            .ToArray(),
+                        candidate.PlannedComponentIds
+                            .Concat(projectedComponents)
+                            .Distinct(StringComparer.Ordinal)
+                            .ToArray(),
+                        candidateComponentMap,
+                        pendingOutputs,
+                        reactionOutputs,
+                        candidate.Origin,
+                        candidateFingerprint: fingerprint,
+                        resolvedPendingBindings: resolvedByComponent,
+                        pendingWaveOrdinal: NextWaveOrdinal,
+                        causalMaterialFingerprint: material.Fingerprint,
+                        effectAuthority: candidate.EffectAuthority));
+            }
+
+            return WithWork(resolution with
+            {
+                SourceExports = sources.Values.ToArray(),
+                Mutations = mutations,
+                Issues = resolution.Issues.Concat(_issues).ToArray(),
+                TriggerCandidates = candidates,
+                ComponentIdsByMutation = componentIdsByMutation
+            });
+        }
+
+        internal IReadOnlyList<ValidationIssue> ValidateComplete(
+            IReadOnlyList<string> causallyAcceptedRequestIds)
+        {
+            ArgumentNullException.ThrowIfNull(causallyAcceptedRequestIds);
+            var accepted = causallyAcceptedRequestIds.ToHashSet(
+                StringComparer.Ordinal);
+            var known = _bindingsByStaticAuthority.Values
+                .Select(static binding => binding.RequestId)
+                .ToHashSet(StringComparer.Ordinal);
+            var unexpected = accepted
+                .Where(requestId => !known.Contains(requestId))
+                .SelectMany(requestId => Issue(
+                    "resource_pending_causal_replay_unexpected",
+                    "only a statically bound terminal request may be acknowledged",
+                    requestId));
+            var missing = _bindingsByStaticAuthority.Values
+                .Where(binding => !accepted.Contains(binding.RequestId))
+                .SelectMany(binding => Issue(
+                    "resource_pending_causal_replay_unresolved",
+                    "the exact terminal binding reached during immutable graph replay",
+                    binding.RequestId));
+            return _issues.Concat(unexpected).Concat(missing).ToArray();
+        }
+    }
+
+    private sealed record ResolvedPendingMutationProjection(
+        string ComponentId,
+        ResourceMutationIntent Mutation,
+        ResourceMutationSourceExport Source);
 
     internal static AcceptedMechanicsPlanningResult BuildAcceptedPlan(
         AcceptedMechanicsInput input,
@@ -296,23 +744,31 @@ internal static class AcceptedMechanicsPlanner
         var definitions = context.Definitions;
         var sameTurnDefinitions = new Dictionary<string, ResourceDefinition>(
             StringComparer.Ordinal);
-        foreach (var creation in context.Commands.DefinitionCreations
-                     .OrderBy(static value => value.CommandOrdinal))
+        if (context.Commands.DefinitionCreations.Count != 0)
         {
-            using var proposal = JsonDocument.Parse(creation.Definition.ToJsonString());
-            var materialized = ResourceDefinitionCatalog.MaterializeProposal(
-                proposal.RootElement,
-                definitions,
-                input.Turn,
-                creation.EventRef,
-                static () => new ResourceDefinitionIdentity(
-                    "resource_definition_" + Guid.NewGuid().ToString("N"),
-                    "resource_definition_seal_" + Guid.NewGuid().ToString("N")));
-            issues.AddRange(materialized.Issues);
-            if (!materialized.IsValid || materialized.Definition == null)
-                continue;
-            definitions = definitions.With(materialized.Definition);
-            sameTurnDefinitions.Add(creation.DefinitionRef, materialized.Definition);
+            var definitionBatch =
+                ResourceDefinitionCatalog.BeginMaterializationBatch(
+                    definitions);
+            foreach (var creation in context.Commands.DefinitionCreations
+                         .OrderBy(static value => value.CommandOrdinal))
+            {
+                using var proposal = JsonDocument.Parse(
+                    creation.Definition.ToJsonString());
+                var materialized = definitionBatch.MaterializeProposal(
+                    proposal.RootElement,
+                    input.Turn,
+                    creation.EventRef,
+                    static () => new ResourceDefinitionIdentity(
+                        "resource_definition_" + Guid.NewGuid().ToString("N"),
+                        "resource_definition_seal_" + Guid.NewGuid().ToString("N")));
+                issues.AddRange(materialized.Issues);
+                if (!materialized.IsValid || materialized.Definition == null)
+                    continue;
+                sameTurnDefinitions.Add(
+                    creation.DefinitionRef,
+                    materialized.Definition);
+            }
+            definitions = definitionBatch.Freeze();
         }
 
         var capacityTransitions = ComposeCapacityTransitions(
@@ -322,7 +778,7 @@ internal static class AcceptedMechanicsPlanner
             sameTurnDefinitions,
             issues);
         var effectPlan = context.EffectPlan;
-        var periodicResolution = effectPlan == null
+        var basePeriodicResolution = effectPlan == null
             ? new EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution(
                 Array.Empty<ResourceMutationSourceExport>(),
                 Array.Empty<ResourceMutationIntent>(),
@@ -331,9 +787,14 @@ internal static class AcceptedMechanicsPlanner
                 effectPlan,
                 context.Owners,
                 definitions);
+        var priorResolvedBindings = context.PendingResolutionState is
+            { Requests.Count: > 0 } activePendingState
+            ? SelectPendingReplayBindings(activePendingState)
+            : Array.Empty<ResourcePendingResolvedBinding>();
+        var discoveryReplay = new ResolvedPendingReplaySession(
+            priorResolvedBindings);
+        var periodicResolution = discoveryReplay.Bind(basePeriodicResolution);
         issues.AddRange(periodicResolution.Issues);
-        var boundedResolutions = periodicResolution.PendingResolutions.ToList();
-        var discoveryReactionExecutions = new List<EffectReactionExecution>();
         var sources = context.Sources;
         if (periodicResolution.SourceExports.Count != 0)
         {
@@ -343,12 +804,14 @@ internal static class AcceptedMechanicsPlanner
             if (sourceResult.Catalog != null)
                 sources = sourceResult.Catalog;
         }
-        var mutations = ComposeOrdinaryMutations(
+        var ordinaryMutations = ComposeOrdinaryMutations(
             input,
             context,
             definitions,
             issues)
             .Concat(context.RegisteredSystemOutcomes.SelectMany(static outcome => outcome.Mutations))
+            .ToArray();
+        var mutations = ordinaryMutations
             .Concat(periodicResolution.Mutations)
             .ToArray();
         if (issues.Count != 0)
@@ -364,9 +827,7 @@ internal static class AcceptedMechanicsPlanner
                 producer,
                 context.Owners,
                 definitions);
-            boundedResolutions.AddRange(expansion.PendingResolutions);
-            discoveryReactionExecutions.AddRange(expansion.ReactionExecutions);
-            return expansion;
+            return discoveryReplay.Bind(expansion);
         }
 
         var discoveryResourceResult = BuildResources(
@@ -378,10 +839,16 @@ internal static class AcceptedMechanicsPlanner
                 sources,
                 mutations,
                 capacityTransitions,
+                ExecutionSequenceOffset: context.ExecutionSequenceOffset,
                 EventMutationResolver: effectPlan == null
                     ? null
                     : ResolveAndCollect,
-                InitialTriggerExecutions: periodicResolution.TriggerExecutions),
+                InitialTriggerCandidates: periodicResolution.TriggerCandidates,
+                InitialEffectResolutionWork: periodicResolution.Work,
+                EffectPlanAuthority: effectPlan == null
+                    ? null
+                    : CreateEffectPlanAuthority(effectPlan)),
+            context.ResourceIdentityFactory ??
             new AcceptedMechanicsIdentityFactory());
         if (!discoveryResourceResult.IsValid ||
             discoveryResourceResult.StateAfterImage == null ||
@@ -391,15 +858,37 @@ internal static class AcceptedMechanicsPlanner
                 null,
                 discoveryResourceResult.Issues);
         }
+        var discoveryReplayIssues = discoveryReplay.ValidateComplete(
+            discoveryResourceResult.AcceptedResolvedPendingRequestIds);
+        if (discoveryReplayIssues.Count != 0)
+        {
+            return new AcceptedMechanicsPlanningResult(
+                null,
+                discoveryReplayIssues);
+        }
 
         var pendingDecision = ResolvePendingBoundary(
             input,
             context,
             definitions,
-            boundedResolutions,
+            discoveryResourceResult.AcceptedPendingResolutions,
             issues);
         if (!pendingDecision.IsValid)
             return new AcceptedMechanicsPlanningResult(null, pendingDecision.Issues);
+        if (pendingDecision.IsTerminalSemanticReplay &&
+            (discoveryResourceResult.AppliedTransitions.Count != 0 ||
+             discoveryResourceResult.Events.Count != 0 ||
+             discoveryResourceResult.ResourceTriggerExecutions.Count != 0 ||
+             discoveryResourceResult.AcceptedPendingResolutions.Count != 0 ||
+             discoveryResourceResult.AcceptedReactionExecutions.Count != 0))
+        {
+            return new AcceptedMechanicsPlanningResult(
+                null,
+                Issue(
+                    "resource_pending_terminal_replay_conflict",
+                    "an exact semantic replay with no newly applied mechanics",
+                    "new mechanics were accepted"));
+        }
         if (pendingDecision.AwaitingReceipt)
         {
             return BuildAwaitingReceiptPlan(
@@ -411,22 +900,29 @@ internal static class AcceptedMechanicsPlanner
         }
 
         var resourceResult = discoveryResourceResult;
-        IReadOnlyList<EffectReactionExecution> resourceReactionExecutions =
-            discoveryReactionExecutions;
-        if (pendingDecision.Mutations.Count != 0)
+        if (pendingDecision.ResolvedBindings is { } resolvedBindings)
         {
-            var receiptSources = ResourceMutationSourceCatalog.Create(
-                sources.Exports.Concat(pendingDecision.SourceExports));
-            if (receiptSources.Catalog == null || receiptSources.Issues.Count != 0)
+            var actualReplay = new ResolvedPendingReplaySession(
+                resolvedBindings);
+            var actualPeriodicResolution = actualReplay.Bind(
+                basePeriodicResolution);
+            if (!actualPeriodicResolution.IsValid)
             {
                 return new AcceptedMechanicsPlanningResult(
                     null,
-                    receiptSources.Issues);
+                    actualPeriodicResolution.Issues);
             }
-            sources = receiptSources.Catalog;
-            var actualBoundedResolutions = new List<
-                EffectAcceptedTurnPlanner.EffectBoundedResourceResolution>();
-            var actualReactionExecutions = new List<EffectReactionExecution>();
+            var actualSourcesResult = ResourceMutationSourceCatalog.Create(
+                context.Sources.Exports.Concat(
+                    actualPeriodicResolution.SourceExports));
+            if (actualSourcesResult.Catalog == null ||
+                actualSourcesResult.Issues.Count != 0)
+            {
+                return new AcceptedMechanicsPlanningResult(
+                    null,
+                    actualSourcesResult.Issues);
+            }
+            sources = actualSourcesResult.Catalog;
             EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution ResolveActual(
                 ResourceAppliedEvent resourceEvent,
                 ResourceOperationKey producer)
@@ -437,9 +933,7 @@ internal static class AcceptedMechanicsPlanner
                     producer,
                     context.Owners,
                     definitions);
-                actualBoundedResolutions.AddRange(expansion.PendingResolutions);
-                actualReactionExecutions.AddRange(expansion.ReactionExecutions);
-                return expansion;
+                return actualReplay.Bind(expansion);
             }
             resourceResult = BuildResources(
                 new AcceptedMechanicsResourceInput(
@@ -448,12 +942,20 @@ internal static class AcceptedMechanicsPlanner
                     context.State,
                     context.History,
                     sources,
-                    mutations.Concat(pendingDecision.Mutations).ToArray(),
+                    ordinaryMutations
+                        .Concat(actualPeriodicResolution.Mutations)
+                        .ToArray(),
                     capacityTransitions,
+                    ExecutionSequenceOffset: context.ExecutionSequenceOffset,
                     EventMutationResolver: effectPlan == null ? null : ResolveActual,
-                    InitialTriggerExecutions: periodicResolution.TriggerExecutions
-                        .Concat(pendingDecision.GraphTriggerExecutions)
-                        .ToArray()),
+                    InitialTriggerCandidates:
+                        actualPeriodicResolution.TriggerCandidates,
+                    InitialEffectResolutionWork:
+                        actualPeriodicResolution.Work,
+                    EffectPlanAuthority: effectPlan == null
+                        ? null
+                        : CreateEffectPlanAuthority(effectPlan)),
+                context.ResourceIdentityFactory ??
                 new AcceptedMechanicsIdentityFactory());
             if (!resourceResult.IsValid ||
                 resourceResult.StateAfterImage == null ||
@@ -461,28 +963,54 @@ internal static class AcceptedMechanicsPlanner
             {
                 return new AcceptedMechanicsPlanningResult(null, resourceResult.Issues);
             }
-            resourceReactionExecutions = actualReactionExecutions;
+            var actualReplayIssues = actualReplay.ValidateComplete(
+                resourceResult.AcceptedResolvedPendingRequestIds);
+            if (actualReplayIssues.Count != 0)
+            {
+                return new AcceptedMechanicsPlanningResult(
+                    null,
+                    actualReplayIssues);
+            }
+            if (resourceResult.AcceptedPendingResolutions.Count != 0)
+            {
+                var nextPendingDecision = ResolvePendingBoundary(
+                    input,
+                    context,
+                    definitions,
+                    resourceResult.AcceptedPendingResolutions,
+                    issues,
+                    pendingStateOverride: pendingDecision.StateAfterImage,
+                    receiptsOverride: new JsonArray());
+                if (!nextPendingDecision.IsValid)
+                {
+                    return new AcceptedMechanicsPlanningResult(
+                        null,
+                        nextPendingDecision.Issues);
+                }
+                if (!nextPendingDecision.AwaitingReceipt)
+                {
+                    return new AcceptedMechanicsPlanningResult(
+                        null,
+                        Issue(
+                            "resource_pending_next_wave_missing",
+                            "one exact next pending wave for newly accepted bounded outputs",
+                            "not-created"));
+                }
+                return BuildAwaitingReceiptPlan(
+                    input,
+                    inputFingerprint,
+                    context,
+                    nextPendingDecision,
+                    effectPlan);
+            }
         }
         if (effectPlan != null)
         {
-            var appliedResourceEvents = resourceResult.Events
-                .Select(static resourceEvent => (
-                    resourceEvent.EventRef,
-                    resourceEvent.EventKind))
-                .ToHashSet();
-            var appliedResourceReactions = resourceReactionExecutions
-                .Where(reaction => appliedResourceEvents.Contains((
-                    reaction.TriggerEventRef,
-                    reaction.EventKind)))
-                .DistinctBy(static reaction => reaction.EventRef)
-                .ToArray();
-            var finalizedEffects = EffectAcceptedTurnPlanner.FinalizeAfterResourceGraph(
+            var finalizedEffects =
+                EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
                 effectPlan,
-                resourceResult.ResourceTriggerExecutions
-                    .Concat(pendingDecision.PostGraphTriggerExecutions)
-                    .ToArray(),
-                new EffectIdentityFactory(),
-                appliedResourceReactions);
+                resourceResult.EffectBoundaryTranscript!,
+                context.EffectIdentityFactory ?? new EffectIdentityFactory());
             if (!finalizedEffects.Success || finalizedEffects.Plan == null)
             {
                 return new AcceptedMechanicsPlanningResult(
@@ -557,6 +1085,7 @@ internal static class AcceptedMechanicsPlanner
             ResourceMaterializationContract.DefinitionsPath,
             ResourceMaterializationContract.StatePath,
             ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
             EffectAcceptedTurnPlan.IdentityIndexPath
         };
         if (!context.Commands.IsMissing)
@@ -612,26 +1141,50 @@ internal static class AcceptedMechanicsPlanner
         AcceptedMechanicsInput input,
         AcceptedMechanicsPlanningContext context,
         ResourceDefinitionCatalog definitions,
-        IReadOnlyList<EffectAcceptedTurnPlanner.EffectBoundedResourceResolution>
+        IReadOnlyList<AcceptedEffectBoundedResourceResolution>
             rawCandidates,
-        List<ValidationIssue> planningIssues)
+        List<ValidationIssue> planningIssues,
+        ResourcePendingResolutionState? pendingStateOverride = null,
+        JsonArray? receiptsOverride = null)
     {
         var issues = new List<ValidationIssue>();
         var fullTurnFingerprint = CreatePendingFullTurnFingerprint(input);
-        var candidates = NormalizePendingCandidates(rawCandidates, issues);
-        var receipts = input.EffectCommands["effectResolutionReceipts"] as JsonArray;
-        if (input.EffectCommands.ContainsKey("effectResolutionReceipts") && receipts == null)
+        var semanticTurnFingerprint =
+            CreatePendingSemanticTurnFingerprint(input);
+        var acceptedCandidatesByKey = new Dictionary<
+            string,
+            AcceptedEffectBoundedResourceResolution>(StringComparer.Ordinal);
+        foreach (var candidate in rawCandidates)
+        {
+            var key = PendingCandidateKey(candidate.Resolution);
+            if (!acceptedCandidatesByKey.TryAdd(key, candidate))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_candidate_duplicate",
+                    "one exact accepted bounded candidate per causal component",
+                    key.Replace('\0', '/')));
+            }
+        }
+        var candidates = NormalizePendingCandidates(
+            rawCandidates.Select(static candidate => candidate.Resolution).ToArray(),
+            issues);
+        var effectCommands = input.EffectCommands;
+        var receipts = receiptsOverride?.DeepClone().AsArray() ??
+            effectCommands["effectResolutionReceipts"] as JsonArray;
+        if (receiptsOverride == null &&
+            effectCommands.ContainsKey("effectResolutionReceipts") &&
+            receipts == null)
         {
             issues.AddRange(Issue(
                 "resource_pending_receipts_invalid",
                 "effectResolutionReceipts array",
-                input.EffectCommands["effectResolutionReceipts"]?.ToJsonString() ?? "null"));
+                effectCommands["effectResolutionReceipts"]?.ToJsonString() ?? "null"));
         }
         receipts ??= new JsonArray();
         if (issues.Count != 0)
             return FailedPendingDecision(issues);
 
-        var pendingState = context.PendingResolutionState;
+        var pendingState = pendingStateOverride ?? context.PendingResolutionState;
         if (pendingState == null && receipts.Count != 0)
         {
             issues.AddRange(Issue(
@@ -650,14 +1203,35 @@ internal static class AcceptedMechanicsPlanner
             foreach (var request in pendingState.Requests)
             {
                 var matches = unused
-                    .Where(candidate => PendingCandidateMatches(request, candidate))
+                    .Where(candidate =>
+                        PendingCandidateMatches(request, candidate) &&
+                        acceptedCandidatesByKey.TryGetValue(
+                            PendingCandidateKey(candidate),
+                            out var acceptedCandidate) &&
+                        PendingCausalAuthorityMatches(
+                            request.CausalAuthority,
+                            acceptedCandidate.CausalAuthority,
+                            request.EffectAuthority))
                     .ToArray();
                 if (matches.Length != 1)
                 {
+                    var semanticMatches = unused
+                        .Where(candidate =>
+                            PendingCandidateMatches(request, candidate))
+                        .ToArray();
+                    var changedAuthorityFields = semanticMatches.Length == 1 &&
+                        acceptedCandidatesByKey.TryGetValue(
+                            PendingCandidateKey(semanticMatches[0]),
+                            out var recomputedCandidate)
+                            ? DescribePendingCausalAuthorityDifference(
+                                request.CausalAuthority,
+                                recomputedCandidate.CausalAuthority)
+                            : "candidate-set";
                     issues.AddRange(Issue(
                         "resource_pending_authority_changed",
                         "one exact recomputed bounded effect authority for pending request",
-                        request.RequestId));
+                        request.RequestId + ";changed=" +
+                        changedAuthorityFields));
                     continue;
                 }
                 activeBindings.Add((request, matches[0]));
@@ -692,46 +1266,85 @@ internal static class AcceptedMechanicsPlanner
 
         if (pendingState != null && receipts.Count != 0)
         {
+            var matchingTerminals = pendingState.TerminalReceipts
+                .Where(terminal =>
+                    string.Equals(
+                        terminal.SessionId,
+                        input.SessionId,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        terminal.AcceptedRequestId,
+                        input.RequestId,
+                        StringComparison.Ordinal) &&
+                    terminal.RequestTurn == input.Turn)
+                .ToArray();
+            var terminalFingerprints = matchingTerminals
+                .Select(static terminal => terminal.FullTurnFingerprint)
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
+            var terminalSemanticFingerprints = matchingTerminals
+                .Select(static terminal =>
+                    terminal.RequestAuthority.SemanticTurnFingerprint)
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
+            if (matchingTerminals.Length == 0 ||
+                terminalFingerprints.Length != 1 ||
+                terminalSemanticFingerprints.Length != 1 ||
+                !string.Equals(
+                    terminalSemanticFingerprints[0],
+                    semanticTurnFingerprint,
+                    StringComparison.Ordinal) ||
+                candidates.Count != 0)
+            {
+                return FailedPendingDecision(Issue(
+                    "resource_pending_terminal_replay_conflict",
+                    "the exact terminal command envelope with no newly accepted bounded candidates",
+                    $"terminals={matchingTerminals.Length};fingerprints={terminalFingerprints.Length};semanticFingerprints={terminalSemanticFingerprints.Length};stored={terminalSemanticFingerprints.FirstOrDefault() ?? "missing"};current={semanticTurnFingerprint};candidates={candidates.Count}"));
+            }
+
             var replay = pendingState.Resolve(
                 receipts,
                 new ResourcePendingResolutionContext(
                     input.SessionId,
                     input.RequestId,
                     input.Turn,
-                    fullTurnFingerprint),
+                    terminalFingerprints[0]),
                 definitions);
             if (!replay.IsValid || replay.StateAfterImage == null)
                 return FailedPendingDecision(replay.Issues);
+            if (replay.ReplayedTerminalReceipts.Count == 0 ||
+                replay.ReplayedTerminalReceipts.Count != receipts.Count)
+            {
+                return FailedPendingDecision(Issue(
+                    "resource_pending_terminal_replay_incomplete",
+                    "a non-empty exact terminal receipt subset for the original accepted turn",
+                    $"submitted={receipts.Count};replayed={replay.ReplayedTerminalReceipts.Count}"));
+            }
             return new PendingBoundaryDecision(
                 AwaitingReceipt: false,
                 replay.StateAfterImage,
                 SafeGmPacket: null,
-                replay.SourceExports,
-                replay.Mutations,
-                Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
-                Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
-                Array.Empty<ValidationIssue>());
+                Issues: Array.Empty<ValidationIssue>(),
+                IsTerminalSemanticReplay: true);
         }
 
-        if (pendingState != null)
+        if (pendingState != null && pendingStateOverride == null)
         {
-            var terminalEventRefs = pendingState.TerminalReceipts
-                .Where(terminal =>
+            var hasTerminalReplayAuthority = pendingState.TerminalReceipts.Any(
+                terminal =>
                     string.Equals(terminal.SessionId, input.SessionId, StringComparison.Ordinal) &&
                     string.Equals(
                         terminal.AcceptedRequestId,
                         input.RequestId,
                         StringComparison.Ordinal) &&
-                    terminal.RequestTurn == input.Turn &&
-                    string.Equals(
-                        terminal.FullTurnFingerprint,
-                        fullTurnFingerprint,
-                        StringComparison.Ordinal))
-                .Select(static terminal => terminal.EventRef)
-                .ToHashSet(StringComparer.Ordinal);
-            candidates = candidates
-                .Where(candidate => !terminalEventRefs.Contains(candidate.EventRef))
-                .ToArray();
+                    terminal.RequestTurn == input.Turn);
+            if (hasTerminalReplayAuthority)
+            {
+                return FailedPendingDecision(Issue(
+                    "resource_pending_terminal_replay_incomplete",
+                    "the complete terminal receipt set for semantic replay",
+                    "effectResolutionReceipts missing"));
+            }
         }
 
         if (candidates.Count == 0)
@@ -740,11 +1353,7 @@ internal static class AcceptedMechanicsPlanner
                 AwaitingReceipt: false,
                 StateAfterImage: null,
                 SafeGmPacket: null,
-                Array.Empty<ResourceMutationSourceExport>(),
-                Array.Empty<ResourceMutationIntent>(),
-                Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
-                Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
-                Array.Empty<ValidationIssue>());
+                Issues: Array.Empty<ValidationIssue>());
         }
 
         var drafts = candidates.Select(candidate =>
@@ -769,10 +1378,13 @@ internal static class AcceptedMechanicsPlanner
                 candidate.SourceAuthorityFingerprint,
                 candidate.PolicyFingerprint,
                 fullTurnFingerprint,
+                semanticTurnFingerprint,
                 candidate.SafeSourceLabel,
                 candidate.SafeTargetLabel,
                 candidate.SafeResourceLabel,
-                candidate.SafeOperationLabel)).ToArray();
+                candidate.SafeOperationLabel,
+                acceptedCandidatesByKey[PendingCandidateKey(candidate)]
+                    .CausalAuthority)).ToArray();
         var created = ResourcePendingResolutionState.CreatePending(
             pendingState?.ToCanonicalJson(),
             drafts,
@@ -786,11 +1398,7 @@ internal static class AcceptedMechanicsPlanner
             AwaitingReceipt: true,
             created.State,
             created.SafeGmPacket,
-            Array.Empty<ResourceMutationSourceExport>(),
-            Array.Empty<ResourceMutationIntent>(),
-            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
-            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
-            Array.Empty<ValidationIssue>());
+            Issues: Array.Empty<ValidationIssue>());
     }
 
     private static PendingBoundaryDecision BuildResolvedPendingDecision(
@@ -800,210 +1408,58 @@ internal static class AcceptedMechanicsPlanner
             EffectAcceptedTurnPlanner.EffectBoundedResourceResolution Candidate)> bindings,
         List<ValidationIssue> issues)
     {
-        var bindingByRequest = bindings.ToDictionary(
-            static value => value.Request.RequestId,
-            static value => value.Candidate,
-            StringComparer.Ordinal);
-        var baseMutationsByRequest = new Dictionary<string, ResourceMutationIntent>(
-            StringComparer.Ordinal);
-        foreach (var mutation in resolved.Mutations)
+        if (bindings.Count == 0)
         {
-            if (!bindingByRequest.TryGetValue(
-                    mutation.Source.SourceId,
-                    out var candidate))
-            {
-                issues.AddRange(Issue(
-                    "resource_pending_receipt_binding_missing",
-                    "one recomputed bounded candidate for every restored mutation",
-                    mutation.Source.SourceId));
-                continue;
-            }
-            var bound = mutation with
-            {
-                EventRef = candidate.EventRef,
-                Coordinate = candidate.Coordinate with { },
-                Source = mutation.Source with
-                {
-                    Operation = candidate.Operation
-                },
-                Dependencies = candidate.Dependencies.ToArray(),
-                EventRequirements = candidate.EventRequirements.ToArray(),
-                ResultConstraint = candidate.ResultConstraint
-            };
-            if (!baseMutationsByRequest.TryAdd(mutation.Source.SourceId, bound))
+            return FailedPendingDecision(Issue(
+                "resource_pending_receipt_binding_missing",
+                "at least one resolved active pending request",
+                "none"));
+        }
+        var activeScope = bindings[0].Request;
+        var replayBindings = resolved.ResolvedPendingBindings
+            .Where(binding =>
+                string.Equals(
+                    binding.RequestAuthority.SessionId,
+                    activeScope.SessionId,
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    binding.RequestAuthority.AcceptedRequestId,
+                    activeScope.AcceptedRequestId,
+                    StringComparison.Ordinal) &&
+                binding.RequestAuthority.RequestTurn == activeScope.RequestTurn &&
+                string.Equals(
+                    binding.RequestAuthority.FullTurnFingerprint,
+                    activeScope.FullTurnFingerprint,
+                    StringComparison.Ordinal))
+            .ToArray();
+        var resolvedByRequest = new Dictionary<
+            string,
+            ResourcePendingResolvedBinding>(StringComparer.Ordinal);
+        foreach (var binding in replayBindings)
+        {
+            if (!resolvedByRequest.TryAdd(binding.RequestId, binding))
             {
                 issues.AddRange(Issue(
                     "resource_pending_receipt_binding_duplicate",
-                    "one exact restored mutation per bounded request",
-                    mutation.Source.SourceId));
+                    "one exact typed terminal binding per bounded request",
+                    binding.RequestId));
             }
         }
-        if (issues.Count != 0)
-            return FailedPendingDecision(issues);
 
-        var mutationsByRequest = new Dictionary<string, ResourceMutationIntent>(
-            StringComparer.Ordinal);
-        var dependencyDecisions = new Dictionary<string, bool>(StringComparer.Ordinal);
-        foreach (var group in bindings.GroupBy(value => (
-                     value.Candidate.EffectId,
-                     value.Candidate.TriggerId,
-                     value.Candidate.EventKind,
-                     value.Candidate.EventRef)))
+        foreach (var (request, _) in bindings)
         {
-            var componentBindings = group
-                .GroupBy(static value => value.Candidate.ComponentId, StringComparer.Ordinal)
-                .ToDictionary(
-                    static value => value.Key,
-                    static value => value.ToArray(),
-                    StringComparer.Ordinal);
-            if (componentBindings.Values.Any(static value => value.Length != 1))
+            if (!resolvedByRequest.TryGetValue(request.RequestId, out var binding) ||
+                !string.Equals(
+                    binding.RequestAuthority.ReplayFingerprint,
+                    request.ReplayFingerprint,
+                    StringComparison.Ordinal) ||
+                binding.RequestAuthority.CausalAuthority != request.CausalAuthority)
             {
                 issues.AddRange(Issue(
-                    "resource_pending_component_binding_ambiguous",
-                    "one exact bounded request per component in one trigger activation",
-                    group.Key.ToString()));
-                continue;
+                    "resource_pending_receipt_binding_missing",
+                    "the exact typed terminal binding for every resolved active request",
+                    request.RequestId));
             }
-
-            var unresolved = group.ToList();
-            while (unresolved.Count != 0)
-            {
-                var progressed = false;
-                foreach (var binding in unresolved.ToArray())
-                {
-                    var requestId = binding.Request.RequestId;
-                    var afterComponentId = binding.Candidate.AfterComponentId;
-                    if (afterComponentId == null)
-                    {
-                        var hasMutation = baseMutationsByRequest.TryGetValue(
-                            requestId,
-                            out var independent);
-                        dependencyDecisions[requestId] = hasMutation;
-                        if (hasMutation)
-                            mutationsByRequest.Add(requestId, independent!);
-                        unresolved.Remove(binding);
-                        progressed = true;
-                        continue;
-                    }
-
-                    if (!componentBindings.TryGetValue(
-                            afterComponentId,
-                            out var predecessorMatches) ||
-                        predecessorMatches.Length != 1)
-                    {
-                        issues.AddRange(Issue(
-                            "resource_pending_component_dependency_unresolved",
-                            "one exact predecessor request in the same trigger activation",
-                            afterComponentId));
-                        unresolved.Remove(binding);
-                        progressed = true;
-                        continue;
-                    }
-
-                    var predecessor = predecessorMatches[0];
-                    if (!dependencyDecisions.TryGetValue(
-                            predecessor.Request.RequestId,
-                            out var predecessorApplied))
-                    {
-                        continue;
-                    }
-
-                    var dependentApplied = baseMutationsByRequest.TryGetValue(
-                        requestId,
-                        out var dependent) && predecessorApplied;
-                    dependencyDecisions[requestId] = dependentApplied;
-                    if (dependentApplied)
-                    {
-                        var predecessorMutation =
-                            mutationsByRequest[predecessor.Request.RequestId];
-                        mutationsByRequest.Add(requestId, dependent! with
-                        {
-                            Dependencies = dependent!.Dependencies
-                                .Append(predecessorMutation.Key)
-                                .Distinct()
-                                .ToArray(),
-                            EventRequirements = dependent.EventRequirements
-                                .Append(new ResourceMutationEventRequirement(
-                                    predecessorMutation.Key,
-                                    PrimaryResourceEvent(
-                                        predecessor.Candidate.Operation)))
-                                .Distinct()
-                                .ToArray()
-                        });
-                    }
-                    unresolved.Remove(binding);
-                    progressed = true;
-                }
-
-                if (progressed)
-                    continue;
-                issues.AddRange(Issue(
-                    "resource_pending_component_dependency_cycle",
-                    "one finite acyclic bounded-component dependency graph",
-                    group.Key.ToString()));
-                break;
-            }
-        }
-        if (issues.Count != 0)
-            return FailedPendingDecision(issues);
-        var mutations = mutationsByRequest.Values.ToList();
-
-        var graphExecutions = new List<
-            EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>();
-        var postGraphExecutions = new List<
-            EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>();
-        foreach (var group in bindings.GroupBy(value => (
-                     value.Candidate.EffectId,
-                     value.Candidate.TriggerId,
-                     value.Candidate.EventKind,
-                     value.Candidate.EventRef)))
-        {
-            var budgets = group.Select(static value => value.Candidate.RemainingUseBudget)
-                .Distinct()
-                .ToArray();
-            var triggerEventRefs = group
-                .Select(static value => value.Candidate.TriggerEventRef)
-                .Distinct(StringComparer.Ordinal)
-                .ToArray();
-            if (budgets.Length != 1 || triggerEventRefs.Length != 1)
-            {
-                issues.AddRange(Issue(
-                    "resource_pending_trigger_budget_conflict",
-                    "one exact remaining-use budget and trigger event per bounded activation",
-                    group.Key.ToString()));
-                continue;
-            }
-            var requestIds = group.Select(static value => value.Request.RequestId)
-                .ToHashSet(StringComparer.Ordinal);
-            var componentByRequest = group.ToDictionary(
-                static value => value.Request.RequestId,
-                static value => value.Candidate.ComponentId,
-                StringComparer.Ordinal);
-            var groupMutations = mutations
-                .Where(mutation => requestIds.Contains(mutation.Source.SourceId))
-                .ToArray();
-            var keys = groupMutations.Select(static mutation => mutation.Key).ToArray();
-            var execution = new EffectAcceptedTurnPlanner.EffectResourceTriggerExecution(
-                group.Key.EffectId,
-                group.Key.TriggerId,
-                group.Key.EventKind,
-                group.Key.EventRef,
-                keys,
-                budgets[0],
-                groupMutations
-                    .Select(mutation => componentByRequest[mutation.Source.SourceId])
-                    .Distinct(StringComparer.Ordinal)
-                    .OrderBy(static value => value, StringComparer.Ordinal)
-                    .ToArray(),
-                triggerEventRefs[0],
-                groupMutations
-                    .ToDictionary(
-                        static mutation => mutation.Key,
-                        mutation => componentByRequest[mutation.Source.SourceId]));
-            if (keys.Length == 0)
-                postGraphExecutions.Add(execution);
-            else
-                graphExecutions.Add(execution);
         }
         if (issues.Count != 0)
             return FailedPendingDecision(issues);
@@ -1012,13 +1468,8 @@ internal static class AcceptedMechanicsPlanner
             AwaitingReceipt: false,
             resolved.StateAfterImage,
             SafeGmPacket: null,
-            resolved.SourceExports
-                .Where(source => mutationsByRequest.ContainsKey(source.SourceId))
-                .ToArray(),
-            mutations,
-            graphExecutions,
-            postGraphExecutions,
-            Array.Empty<ValidationIssue>());
+            Issues: Array.Empty<ValidationIssue>(),
+            ResolvedBindings: replayBindings);
     }
 
     private static IReadOnlyList<
@@ -1039,20 +1490,7 @@ internal static class AcceptedMechanicsPlanner
                      .ThenBy(static value => value.Coordinate.ResourceKey, StringComparer.Ordinal)
                      .ThenBy(static value => value.SourceAuthorityFingerprint, StringComparer.Ordinal))
         {
-            var key = string.Join(
-                "\0",
-                candidate.EventRef,
-                candidate.EffectId,
-                candidate.TriggerId,
-                candidate.Coordinate.Realm,
-                ((int)candidate.Coordinate.OwnerKind).ToString(
-                    System.Globalization.CultureInfo.InvariantCulture),
-                candidate.Coordinate.ResourceOwnerId,
-                candidate.Coordinate.ResourceKey,
-                ((int)candidate.Operation).ToString(
-                    System.Globalization.CultureInfo.InvariantCulture),
-                candidate.SourceAuthorityFingerprint,
-                candidate.PolicyFingerprint);
+            var key = PendingCandidateKey(candidate);
             if (!keys.Add(key))
             {
                 issues.AddRange(Issue(
@@ -1065,6 +1503,25 @@ internal static class AcceptedMechanicsPlanner
         }
         return result;
     }
+
+    private static string PendingCandidateKey(
+        EffectAcceptedTurnPlanner.EffectBoundedResourceResolution candidate) =>
+        string.Join(
+            "\0",
+            candidate.EventRef,
+            candidate.EffectId,
+            candidate.TriggerId,
+            candidate.ComponentId,
+            candidate.AfterComponentId ?? "null",
+            candidate.Coordinate.Realm,
+            ((int)candidate.Coordinate.OwnerKind).ToString(
+                System.Globalization.CultureInfo.InvariantCulture),
+            candidate.Coordinate.ResourceOwnerId,
+            candidate.Coordinate.ResourceKey,
+            ((int)candidate.Operation).ToString(
+                System.Globalization.CultureInfo.InvariantCulture),
+            candidate.SourceAuthorityFingerprint,
+            candidate.PolicyFingerprint);
 
     private static bool PendingCandidateMatches(
         ResourcePendingRequest request,
@@ -1098,6 +1555,432 @@ internal static class AcceptedMechanicsPlanner
             request.PolicyFingerprint,
             candidate.PolicyFingerprint,
             StringComparison.Ordinal);
+
+    private static bool PendingCausalAuthorityMatches(
+        ResourcePendingCausalAuthority expected,
+        ResourcePendingCausalAuthority actual,
+        ResourcePendingAuthorityBinding effectAuthority)
+    {
+        if (expected == actual)
+            return true;
+        if (!string.Equals(
+                effectAuthority.BindingKind,
+                "accepted_application",
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+        return expected == actual with { EffectId = expected.EffectId };
+    }
+
+    private static bool PendingEffectIdentityMatches(
+        string expectedEffectId,
+        string actualEffectId,
+        ResourcePendingAuthorityBinding effectAuthority) =>
+        string.Equals(
+            effectAuthority.BindingKind,
+            "accepted_application",
+            StringComparison.Ordinal) ||
+        string.Equals(
+            expectedEffectId,
+            actualEffectId,
+            StringComparison.Ordinal);
+
+    private static string PendingReplayEffectKey(
+        string effectId,
+        ResourcePendingAuthorityBinding effectAuthority) =>
+        EffectAcceptedTurnPlanner.CreatePendingEffectReplayIdentity(
+            effectId,
+            effectAuthority);
+
+    private static string DescribePendingCausalAuthorityDifference(
+        ResourcePendingCausalAuthority expected,
+        ResourcePendingCausalAuthority actual)
+    {
+        var changed = new List<string>();
+        if (!string.Equals(expected.EffectId, actual.EffectId, StringComparison.Ordinal))
+            changed.Add(nameof(expected.EffectId));
+        if (!string.Equals(expected.TriggerId, actual.TriggerId, StringComparison.Ordinal))
+            changed.Add(nameof(expected.TriggerId));
+        if (!string.Equals(
+                expected.ActivationEventRef,
+                actual.ActivationEventRef,
+                StringComparison.Ordinal))
+        {
+            changed.Add(nameof(expected.ActivationEventRef));
+        }
+        if (!string.Equals(
+                expected.TriggerEventRef,
+                actual.TriggerEventRef,
+                StringComparison.Ordinal))
+        {
+            changed.Add(nameof(expected.TriggerEventRef));
+        }
+        if (!string.Equals(
+                expected.ResourceProducerOperationKey,
+                actual.ResourceProducerOperationKey,
+                StringComparison.Ordinal))
+        {
+            changed.Add(nameof(expected.ResourceProducerOperationKey));
+        }
+        if (expected.Priority != actual.Priority)
+            changed.Add(nameof(expected.Priority));
+        if (expected.ActivationOrdinal != actual.ActivationOrdinal)
+            changed.Add(nameof(expected.ActivationOrdinal));
+        if (expected.ConsumesUse != actual.ConsumesUse)
+            changed.Add(nameof(expected.ConsumesUse));
+        if (expected.UsesBefore != actual.UsesBefore)
+            changed.Add(nameof(expected.UsesBefore));
+        if (!string.Equals(
+                expected.ComponentId,
+                actual.ComponentId,
+                StringComparison.Ordinal))
+        {
+            changed.Add(nameof(expected.ComponentId));
+        }
+        if (!string.Equals(
+                expected.AfterComponentId,
+                actual.AfterComponentId,
+                StringComparison.Ordinal))
+        {
+            changed.Add(nameof(expected.AfterComponentId));
+        }
+        if (!string.Equals(
+                expected.CandidateFingerprint,
+                actual.CandidateFingerprint,
+                StringComparison.Ordinal))
+        {
+            changed.Add(nameof(expected.CandidateFingerprint));
+        }
+        if (!string.Equals(
+                expected.TranscriptPrefixFingerprint,
+                actual.TranscriptPrefixFingerprint,
+                StringComparison.Ordinal))
+        {
+            changed.Add(nameof(expected.TranscriptPrefixFingerprint));
+        }
+        if (expected.WaveOrdinal != actual.WaveOrdinal)
+            changed.Add(nameof(expected.WaveOrdinal));
+        return changed.Count == 0 ? "none" : string.Join(",", changed);
+    }
+
+    private static string PendingReplayStaticKey(
+        ResourcePendingCausalAuthority authority,
+        ResourcePendingAuthorityBinding effectAuthority) =>
+        string.Join(
+            "\0",
+            PendingReplayEffectKey(authority.EffectId, effectAuthority),
+            authority.TriggerId,
+            authority.ActivationEventRef,
+            authority.TriggerEventRef,
+            authority.ResourceProducerOperationKey ?? "null",
+            authority.Priority.ToString(
+                System.Globalization.CultureInfo.InvariantCulture),
+            authority.ConsumesUse ? "true" : "false",
+            authority.ComponentId,
+            authority.AfterComponentId ?? "null",
+            authority.CandidateFingerprint);
+
+    private static IReadOnlyList<ResourcePendingResolvedBinding>
+        SelectPendingReplayBindings(ResourcePendingResolutionState state)
+    {
+        var active = state.Requests[0];
+        return state.ResolvedPendingBindings
+            .Where(binding =>
+                string.Equals(
+                    binding.RequestAuthority.SessionId,
+                    active.SessionId,
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    binding.RequestAuthority.AcceptedRequestId,
+                    active.AcceptedRequestId,
+                    StringComparison.Ordinal) &&
+                binding.RequestAuthority.RequestTurn == active.RequestTurn &&
+                string.Equals(
+                    binding.RequestAuthority.FullTurnFingerprint,
+                    active.FullTurnFingerprint,
+                    StringComparison.Ordinal))
+            .ToArray();
+    }
+
+    private static string PendingReplayStaticKey(
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate,
+        EffectAcceptedTurnPlanner.EffectBoundedResourceResolution output,
+        string candidateFingerprint) =>
+        string.Join(
+            "\0",
+            PendingReplayEffectKey(
+                candidate.Activation.Identity.EffectId,
+                output.EffectAuthority),
+            candidate.Activation.Identity.TriggerId,
+            candidate.Activation.Identity.EventRef,
+            candidate.Activation.Identity.TriggerEventRef,
+            candidate.Producer == null
+                ? "null"
+                : CreateStableProducerOperationKey(candidate.Producer),
+            candidate.Activation.Priority.ToString(
+                System.Globalization.CultureInfo.InvariantCulture),
+            candidate.Activation.ConsumesUse ? "true" : "false",
+            output.ComponentId,
+            output.AfterComponentId ?? "null",
+            candidateFingerprint);
+
+    private static IReadOnlyList<ResolvedPendingMutationProjection>
+        ProjectResolvedPendingMutations(
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate,
+        IReadOnlyList<EffectAcceptedTurnPlanner.EffectBoundedResourceResolution>
+            outputs,
+        IReadOnlyDictionary<string, ResourcePendingResolvedBinding>
+            resolvedByComponent,
+        List<ValidationIssue> issues,
+        PlannerWorkMetrics? metrics = null)
+    {
+        if (resolvedByComponent.Count == 0)
+            return Array.Empty<ResolvedPendingMutationProjection>();
+
+        var outputByComponent = new Dictionary<
+            string,
+            EffectAcceptedTurnPlanner.EffectBoundedResourceResolution>(
+                StringComparer.Ordinal);
+        foreach (var output in outputs)
+        {
+            if (!outputByComponent.TryAdd(output.ComponentId, output))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_component_binding_ambiguous",
+                    "one exact bounded output per component in one activation",
+                    output.ComponentId));
+            }
+        }
+        if (issues.Count != 0)
+            return Array.Empty<ResolvedPendingMutationProjection>();
+
+        var plannedKeysByComponent = new Dictionary<
+            string,
+            List<ResourceOperationKey>>(StringComparer.Ordinal);
+        foreach (var pair in candidate.PlannedComponentIdsByMutation)
+        {
+            if (!plannedKeysByComponent.TryGetValue(
+                    pair.Value,
+                    out var plannedKeys))
+            {
+                plannedKeys = new List<ResourceOperationKey>();
+                plannedKeysByComponent.Add(pair.Value, plannedKeys);
+            }
+            plannedKeys.Add(pair.Key);
+        }
+
+        var orderedComponentIds = resolvedByComponent.Keys.ToArray();
+        var resolvedComponentIds = orderedComponentIds.ToHashSet(
+            StringComparer.Ordinal);
+        var completed = new Dictionary<
+            string,
+            ResolvedPendingMutationProjection?>(StringComparer.Ordinal);
+        var terminalWithoutProjection = new HashSet<string>(
+            StringComparer.Ordinal);
+        var projectedSources = new Dictionary<
+            string,
+            ResourceMutationSourceExport>(StringComparer.Ordinal);
+        var internalPredecessors = new Dictionary<string, string>(
+            StringComparer.Ordinal);
+        var externalPredecessors = new Dictionary<
+            string,
+            ResourceOperationKey>(StringComparer.Ordinal);
+        var dependents = orderedComponentIds.ToDictionary(
+            static componentId => componentId,
+            static _ => new List<string>(),
+            StringComparer.Ordinal);
+        var indegrees = orderedComponentIds.ToDictionary(
+            static componentId => componentId,
+            static _ => 0,
+            StringComparer.Ordinal);
+
+        foreach (var componentId in orderedComponentIds)
+        {
+            if (metrics != null)
+                metrics.PendingProjectionDependencyVisitCount++;
+            if (!outputByComponent.TryGetValue(componentId, out var output))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_causal_replay_mismatch",
+                    "one exact bounded output for every terminal binding",
+                    componentId));
+                terminalWithoutProjection.Add(componentId);
+                continue;
+            }
+
+            var binding = resolvedByComponent[componentId];
+            if (string.Equals(
+                    binding.ResultKind,
+                    "narrated_no_state_change",
+                    StringComparison.Ordinal))
+            {
+                terminalWithoutProjection.Add(componentId);
+                continue;
+            }
+            if (!string.Equals(
+                    binding.ResultKind,
+                    "resource_delta",
+                    StringComparison.Ordinal) ||
+                !binding.Amount.HasValue ||
+                !ResourcePendingResolutionState.TryProjectMutationSourceExport(
+                    binding,
+                    out var source) ||
+                source == null)
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_causal_replay_mismatch",
+                    "one typed narrated-no-change or resource-delta terminal binding",
+                    binding.RequestId));
+                terminalWithoutProjection.Add(componentId);
+                continue;
+            }
+            projectedSources.Add(componentId, source);
+
+            if (output.AfterComponentId is not { } predecessorId)
+                continue;
+            if (metrics != null)
+                metrics.PendingProjectionDependencyVisitCount++;
+            if (outputByComponent.ContainsKey(predecessorId))
+            {
+                if (!resolvedComponentIds.Contains(predecessorId))
+                {
+                    issues.AddRange(Issue(
+                        "resource_pending_component_dependency_unresolved",
+                        "the exact resolved predecessor binding in the same activation",
+                        predecessorId));
+                    terminalWithoutProjection.Add(componentId);
+                    continue;
+                }
+                internalPredecessors.Add(componentId, predecessorId);
+                indegrees[componentId] = 1;
+                dependents[predecessorId].Add(componentId);
+                continue;
+            }
+
+            if (!plannedKeysByComponent.TryGetValue(
+                    predecessorId,
+                    out var predecessorKeys) ||
+                predecessorKeys.Count != 1)
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_component_dependency_unresolved",
+                    "one exact deterministic predecessor in the same activation",
+                    predecessorId));
+                terminalWithoutProjection.Add(componentId);
+                continue;
+            }
+            externalPredecessors.Add(componentId, predecessorKeys[0]);
+        }
+
+        var ready = new Queue<string>(orderedComponentIds.Where(componentId =>
+            indegrees[componentId] == 0));
+        while (ready.TryDequeue(out var componentId))
+        {
+            ResolvedPendingMutationProjection? projection = null;
+            if (!terminalWithoutProjection.Contains(componentId) &&
+                outputByComponent.TryGetValue(componentId, out var output))
+            {
+                ResourceOperationKey? predecessorKey = null;
+                if (internalPredecessors.TryGetValue(
+                        componentId,
+                        out var predecessorId))
+                {
+                    if (!completed.TryGetValue(
+                            predecessorId,
+                            out var predecessorProjection))
+                    {
+                        issues.AddRange(Issue(
+                            "resource_pending_component_dependency_unresolved",
+                            "the completed predecessor projection in the indexed dependency graph",
+                            predecessorId));
+                        terminalWithoutProjection.Add(componentId);
+                    }
+                    else if (predecessorProjection != null)
+                    {
+                        predecessorKey = predecessorProjection.Mutation.Key;
+                    }
+                    else
+                    {
+                        terminalWithoutProjection.Add(componentId);
+                    }
+                }
+                else if (externalPredecessors.TryGetValue(
+                             componentId,
+                             out var externalPredecessor))
+                {
+                    predecessorKey = externalPredecessor;
+                }
+
+                if (!terminalWithoutProjection.Contains(componentId))
+                {
+                    var binding = resolvedByComponent[componentId];
+                    var source = projectedSources[componentId];
+                    var dependencies = output.Dependencies.ToList();
+                    var eventRequirements = output.EventRequirements.ToList();
+                    if (candidate.Producer is { } producer)
+                    {
+                        dependencies.Add(producer);
+                        eventRequirements.Add(
+                            new ResourceMutationEventRequirement(
+                                producer,
+                                candidate.Activation.Identity.EventKind));
+                    }
+                    if (predecessorKey != null)
+                    {
+                        dependencies.Add(predecessorKey);
+                        eventRequirements.Add(
+                            new ResourceMutationEventRequirement(
+                                predecessorKey,
+                                PrimaryResourceEvent(
+                                    predecessorKey.Operation)));
+                    }
+                    var mutation = new ResourceMutationIntent(
+                        output.EventRef,
+                        output.Coordinate with { },
+                        binding.Amount!.Value,
+                        new ResourceMutationSourceRequest(
+                            source.SourceKind,
+                            source.SourceId,
+                            output.Operation),
+                        dependencies.Distinct().ToArray(),
+                        eventRequirements.Distinct().ToArray(),
+                        binding.RequestId,
+                        ResultConstraint: output.ResultConstraint);
+                    projection = new ResolvedPendingMutationProjection(
+                        componentId,
+                        mutation,
+                        source);
+                }
+            }
+            completed.Add(componentId, projection);
+
+            foreach (var dependent in dependents[componentId])
+            {
+                indegrees[dependent]--;
+                if (indegrees[dependent] == 0)
+                    ready.Enqueue(dependent);
+            }
+        }
+
+        var remaining = orderedComponentIds
+            .Where(componentId => !completed.ContainsKey(componentId))
+            .ToArray();
+        if (remaining.Length != 0)
+        {
+            issues.AddRange(Issue(
+                "resource_pending_component_dependency_cycle",
+                "one finite acyclic bounded-component dependency graph",
+                string.Join(",", remaining.OrderBy(
+                    static value => value,
+                    StringComparer.Ordinal))));
+        }
+
+        return completed.Values
+            .Where(static projection => projection != null)
+            .Select(static projection => projection!)
+            .ToArray();
+    }
 
     private static bool PendingSourceMatches(
         JsonObject expected,
@@ -1142,13 +2025,42 @@ internal static class AcceptedMechanicsPlanner
              actual.ResourceOwnerId,
              StringComparison.Ordinal));
 
-    private static string CreatePendingFullTurnFingerprint(
+    internal static string CreatePendingFullTurnFingerprint(
         AcceptedMechanicsInput input)
     {
         var effectCommands = input.EffectCommands;
         effectCommands["effectResolutionReceipts"] = new JsonArray();
         using var builder = new ResourceFingerprintBuilder(
-            "accepted-mechanics-pending-full-turn-v1");
+            "accepted-mechanics-pending-full-turn-v4");
+        builder.Append(input.SessionId);
+        builder.Append(input.RequestId);
+        builder.Append(input.Realm);
+        builder.Append(input.Turn);
+        builder.Append(input.AcceptedEvents.ToJsonString());
+        builder.Append(input.ResourceCommands.ToJsonString());
+        builder.Append(effectCommands.ToJsonString());
+        builder.Append(input.InternalInputs.ToJsonString());
+        builder.Append(input.AuthorityFingerprints.Definitions);
+        builder.Append(input.AuthorityFingerprints.Owners);
+        builder.Append(input.AuthorityFingerprints.ResourceState);
+        builder.Append(input.AuthorityFingerprints.ResourceHistory);
+        builder.Append(input.AuthorityFingerprints.EffectSources);
+        builder.Append(input.AuthorityFingerprints.EffectTargets);
+        builder.Append(input.AuthorityFingerprints.EffectCarriers);
+        builder.Append(input.AuthorityFingerprints.EffectIdentityIndex);
+        builder.Append(input.AuthorityFingerprints.AcceptedEvents);
+        builder.Append(input.AuthorityFingerprints.InternalInputs);
+        return builder.Build();
+    }
+
+    internal static string CreatePendingSemanticTurnFingerprint(
+        AcceptedMechanicsInput input)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        var effectCommands = input.EffectCommands;
+        effectCommands["effectResolutionReceipts"] = new JsonArray();
+        using var builder = new ResourceFingerprintBuilder(
+            "accepted-mechanics-pending-semantic-turn-v3");
         builder.Append(input.SessionId);
         builder.Append(input.RequestId);
         builder.Append(input.Realm);
@@ -1173,6 +2085,7 @@ internal static class AcceptedMechanicsPlanner
             ResourceMaterializationContract.DefinitionsPath,
             ResourceMaterializationContract.StatePath,
             ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
             EffectAcceptedTurnPlan.IdentityIndexPath,
             ResourcePendingResolutionState.PendingPath
         };
@@ -1214,11 +2127,7 @@ internal static class AcceptedMechanicsPlanner
             AwaitingReceipt: false,
             StateAfterImage: null,
             SafeGmPacket: null,
-            Array.Empty<ResourceMutationSourceExport>(),
-            Array.Empty<ResourceMutationIntent>(),
-            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
-            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
-            issues.ToArray());
+            Issues: issues.ToArray());
 
     private static IReadOnlyList<ResourceCapacityIntent> ComposeCapacityTransitions(
         AcceptedMechanicsInput input,
@@ -1331,7 +2240,8 @@ internal static class AcceptedMechanicsPlanner
         ResourceStateLedger state,
         IReadOnlyList<ResourceOwnerCapacityDraft> ownerCapacityDrafts,
         IReadOnlyList<ResourceOwnerKey> terminalOwners,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
         if (turn <= 0)
             throw new ArgumentOutOfRangeException(nameof(turn));
@@ -1434,16 +2344,28 @@ internal static class AcceptedMechanicsPlanner
             }
         }
 
-        foreach (var entry in state.Entries
-                     .OrderBy(static value => value.Coordinate.Realm, StringComparer.Ordinal)
-                     .ThenBy(static value => value.Coordinate.OwnerKind)
-                     .ThenBy(static value => value.Coordinate.ResourceOwnerId, StringComparer.Ordinal)
-                     .ThenBy(static value => value.Coordinate.ResourceKey, StringComparer.Ordinal))
+        Dictionary<ResourceOwnerKey, List<ResourceStateEntry>>? entriesByTerminalOwner =
+            terminalOwners.Count == 0
+                ? null
+                : new Dictionary<ResourceOwnerKey, List<ResourceStateEntry>>();
+        // The ledger is already in canonical coordinate order, so each indexed owner list
+        // inherits deterministic resource-key order without another sort.
+        foreach (var entry in state.Entries)
         {
             var ownerKey = new ResourceOwnerKey(
                 entry.Coordinate.Realm,
                 entry.Coordinate.OwnerKind,
                 entry.Coordinate.ResourceOwnerId);
+            if (entriesByTerminalOwner != null)
+            {
+                workMeter?.VisitOwnerTerminalStateIndex();
+                if (!entriesByTerminalOwner.TryGetValue(ownerKey, out var ownerEntries))
+                {
+                    ownerEntries = new List<ResourceStateEntry>();
+                    entriesByTerminalOwner.Add(ownerKey, ownerEntries);
+                }
+                ownerEntries.Add(entry);
+            }
             if (!owners.Entries.TryGetValue(ownerKey, out var owner) ||
                 owner.Lifecycle == ResourceOwnerLifecycle.Terminal)
             {
@@ -1492,19 +2414,15 @@ internal static class AcceptedMechanicsPlanner
                      .ThenBy(static value => value.OwnerKind)
                      .ThenBy(static value => value.ResourceOwnerId, StringComparer.Ordinal))
         {
-            foreach (var entry in state.Entries
-                         .Where(entry =>
-                             string.Equals(
-                                 entry.Coordinate.Realm,
-                                 terminal.Realm,
-                                 StringComparison.Ordinal) &&
-                             entry.Coordinate.OwnerKind == terminal.OwnerKind &&
-                             string.Equals(
-                                 entry.Coordinate.ResourceOwnerId,
-                                 terminal.ResourceOwnerId,
-                                 StringComparison.Ordinal))
-                         .OrderBy(static entry => entry.Coordinate.ResourceKey, StringComparer.Ordinal))
+            workMeter?.LookupOwnerTerminal();
+            if (entriesByTerminalOwner == null ||
+                !entriesByTerminalOwner.TryGetValue(terminal, out var terminalEntries))
             {
+                continue;
+            }
+            foreach (var entry in terminalEntries)
+            {
+                workMeter?.VisitOwnerTerminalEntry();
                 ordinal++;
                 using var fingerprint = new ResourceFingerprintBuilder(
                     "mortal-resource-owner-terminal-v1");
@@ -1829,9 +2747,40 @@ internal static class AcceptedMechanicsPlanner
     {
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(identityFactory);
+        var metrics = new PlannerWorkMetrics
+        {
+            CapacityDescriptorCount = input.CapacityTransitions.Count,
+            MutationDescriptorCount = input.Mutations.Count,
+            EffectTriggerIndexLookupCount =
+                input.InitialEffectResolutionWork.IndexLookupCount,
+            EffectTriggerCandidateVisitCount =
+                input.InitialEffectResolutionWork.CandidateVisitCount,
+            EffectSourceBindingIndexLookupCount =
+                input.InitialEffectResolutionWork.SourceBindingIndexLookupCount,
+            EffectSourceBindingCandidateVisitCount =
+                input.InitialEffectResolutionWork.SourceBindingCandidateVisitCount,
+            EffectRoutingDescriptorAccessCount =
+                input.InitialEffectResolutionWork.RoutingDescriptorAccessCount,
+            EffectOccurrenceCloneCount =
+                input.InitialEffectResolutionWork.OccurrenceCloneCount,
+            EffectFullValidationPassCount =
+                input.InitialEffectResolutionWork.FullEffectValidationPassCount,
+            EffectTriggerArrayVisitCount =
+                input.InitialEffectResolutionWork.TriggerArrayVisitCount,
+            EffectComponentIndexLookupCount =
+                input.InitialEffectResolutionWork.ComponentIndexLookupCount,
+            EffectSelectedComponentVisitCount =
+                input.InitialEffectResolutionWork.SelectedComponentVisitCount,
+            PendingCandidateFingerprintOutputVisitCount =
+                input.InitialEffectResolutionWork
+                    .PendingCandidateFingerprintOutputVisitCount,
+            PendingProjectionDependencyVisitCount =
+                input.InitialEffectResolutionWork
+                    .PendingProjectionDependencyVisitCount
+        };
         var agreementIssues = input.History.ValidateStateAgreement(input.State);
         if (agreementIssues.Count != 0)
-            return Failure(agreementIssues, Statistics());
+            return Failure(agreementIssues, Statistics(metrics: metrics));
         if (input.CapacityTransitions.Count >
             ResourceMaterializationContract.MaxCapacityTransitionsPerTurn)
         {
@@ -1841,7 +2790,7 @@ internal static class AcceptedMechanicsPlanner
                     $"at most {ResourceMaterializationContract.MaxCapacityTransitionsPerTurn} capacity transitions",
                     input.CapacityTransitions.Count.ToString(
                         System.Globalization.CultureInfo.InvariantCulture)),
-                Statistics());
+                Statistics(metrics: metrics));
         }
 
         var identityRegistry = new AllocatedIdentityRegistry();
@@ -1850,13 +2799,15 @@ internal static class AcceptedMechanicsPlanner
             identityFactory,
             identityRegistry);
         if (capacityPreparation.Issues.Count != 0)
-            return Failure(capacityPreparation.Issues, Statistics());
+            return Failure(
+                capacityPreparation.Issues,
+                Statistics(metrics: metrics));
         var preparation = PrepareMutations(
             input,
             identityFactory,
             identityRegistry);
         if (preparation.Issues.Count != 0)
-            return Failure(preparation.Issues, Statistics());
+            return Failure(preparation.Issues, Statistics(metrics: metrics));
         var preparedMutations = preparation.Mutations;
         if (preparedMutations.Count(static value =>
                 value.Route.Phase != ResourceMutationPhase.EffectTrigger) >
@@ -1869,7 +2820,7 @@ internal static class AcceptedMechanicsPlanner
                     preparedMutations.Count(static value =>
                         value.Route.Phase != ResourceMutationPhase.EffectTrigger).ToString(
                             System.Globalization.CultureInfo.InvariantCulture)),
-                Statistics());
+                Statistics(metrics: metrics));
         }
 
         var graphPreparation = PrepareCompleteResourceGraph(
@@ -1877,9 +2828,57 @@ internal static class AcceptedMechanicsPlanner
             preparedMutations,
             identityFactory,
             identityRegistry);
+        metrics.EffectTriggerIndexLookupCount +=
+            graphPreparation.Work.EffectTriggerIndexLookupCount;
+        metrics.EffectTriggerCandidateVisitCount +=
+            graphPreparation.Work.EffectTriggerCandidateVisitCount;
+        metrics.EffectSourceBindingIndexLookupCount +=
+            graphPreparation.Work.EffectSourceBindingIndexLookupCount;
+        metrics.EffectSourceBindingCandidateVisitCount +=
+            graphPreparation.Work.EffectSourceBindingCandidateVisitCount;
+        metrics.EffectRoutingDescriptorAccessCount +=
+            graphPreparation.Work.EffectRoutingDescriptorAccessCount;
+        metrics.EffectOccurrenceCloneCount +=
+            graphPreparation.Work.EffectOccurrenceCloneCount;
+        metrics.EffectFullValidationPassCount +=
+            graphPreparation.Work.EffectFullValidationPassCount;
+        metrics.EffectTriggerArrayVisitCount +=
+            graphPreparation.Work.EffectTriggerArrayVisitCount;
+        metrics.EffectComponentIndexLookupCount +=
+            graphPreparation.Work.EffectComponentIndexLookupCount;
+        metrics.EffectSelectedComponentVisitCount +=
+            graphPreparation.Work.EffectSelectedComponentVisitCount;
+        metrics.PendingCandidateFingerprintOutputVisitCount +=
+            graphPreparation.Work.PendingCandidateFingerprintOutputVisitCount;
+        metrics.PendingProjectionDependencyVisitCount +=
+            graphPreparation.Work.PendingProjectionDependencyVisitCount;
+        metrics.SourceAuthoritySeedCount =
+            graphPreparation.Work.SourceAuthoritySeedCount;
+        metrics.SourceAuthorityAddVisitCount =
+            graphPreparation.Work.SourceAuthorityAddVisitCount;
+        metrics.SourceAuthorityResolveLookupCount =
+            graphPreparation.Work.SourceAuthorityResolveLookupCount;
+        metrics.SourceAuthorityFreezeCount =
+            graphPreparation.Work.SourceAuthorityFreezeCount;
         if (!graphPreparation.IsValid)
-            return Failure(graphPreparation.Issues, Statistics());
+            return Failure(
+                graphPreparation.Issues,
+                Statistics(metrics: metrics));
         preparedMutations = graphPreparation.Mutations;
+        metrics.MutationDescriptorCount = preparedMutations.Count;
+        metrics.GraphNodeDescriptorCount = graphPreparation.Graph!.OrderedNodes.Count;
+        metrics.MaximumTriggerDepth = graphPreparation.Graph.MaximumDepth;
+        var candidateAuthorities = ValidatePendingCandidateAuthorities(
+            graphPreparation.TriggerCandidates,
+            preparedMutations,
+            graphPreparation.SourceExports,
+            metrics);
+        if (!candidateAuthorities.IsValid)
+        {
+            return Failure(
+                candidateAuthorities.Issues,
+                Statistics(metrics: metrics));
+        }
         var workingLedger = new ResourceWorkingLedger(input.State.Entries);
         var workingHistory = new ResourceHistoryWorkingSet(input.History);
         var events = new List<ResourceAppliedEvent>();
@@ -1911,7 +2910,9 @@ internal static class AcceptedMechanicsPlanner
                     input.Turn),
                 input.Definitions);
             if (!result.IsValid)
-                return Failure(result.Issues, Statistics(workingHistory));
+                return Failure(
+                    result.Issues,
+                    Statistics(workingHistory, metrics));
             workingLedger = result.WorkingLedger!;
             if (result.Transition != null)
                 appliedTransitions.Add(result.Transition);
@@ -1919,106 +2920,634 @@ internal static class AcceptedMechanicsPlanner
                 replayTransitions.Add(result.ReplayTransition!);
         }
 
+        if (workingLedger.Count > ResourceMaterializationContract.MaxLiveEntries)
+        {
+            return Failure(
+                Issue(
+                    "resource_state_limit_exceeded",
+                    $"at most {ResourceMaterializationContract.MaxLiveEntries} live entries",
+                    workingLedger.Count.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture)),
+                Statistics(workingHistory, metrics));
+        }
+
         var directBaselineState = workingLedger.Freeze();
         ResourceStateLedger? postDirectState = null;
 
-        var preparedByKey = preparedMutations.ToDictionary(
-            static value => value.Intent.Key);
         var byOperationId = preparedMutations.ToDictionary(
             static value => value.OperationId,
             StringComparer.Ordinal);
-        var pending = preparedMutations.ToDictionary(
-            static value => value.OperationId,
-            StringComparer.Ordinal);
-        var completed = new HashSet<string>(StringComparer.Ordinal);
+        var operationIdByKey = preparedMutations.ToDictionary(
+            static value => value.Intent.Key,
+            static value => value.OperationId);
+        var effectTranscriptBuilder =
+            new AcceptedEffectBoundaryTranscript.Builder(
+                input.EffectPlanAuthority);
         var producedEvents = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
-        var appliedTriggerExecutionTemplates = new Dictionary<
-            string,
-            EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(
-                StringComparer.Ordinal);
         var appliedTriggerMutationKeys = new Dictionary<
-            string,
-            HashSet<ResourceOperationKey>>(StringComparer.Ordinal);
-        var triggerExecutionByMutation = new Dictionary<
-            ResourceOperationKey,
-            EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(
-                graphPreparation.TriggerExecutionsByMutation);
-        var triggerActivationDecisions = new Dictionary<string, bool>(StringComparer.Ordinal);
-        var reservedTriggerUses = new Dictionary<string, int>(StringComparer.Ordinal);
-        while (pending.Count != 0)
+            EffectActivationCandidateIdentity,
+            HashSet<ResourceOperationKey>>();
+        var acceptedCandidates = new List<(
+            EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate Candidate,
+            AcceptedEffectActivation Activation)>();
+        var acceptedCandidateIdentities = new HashSet<
+            EffectActivationCandidateIdentity>();
+        var acceptedBoundaryByIdentity = new Dictionary<
+            EffectActivationCandidateIdentity,
+            EffectEventBoundaryStamp>();
+        var acceptedActivationByIdentity = new Dictionary<
+            EffectActivationCandidateIdentity,
+            AcceptedEffectActivation>();
+        var acceptedByBoundary = new Dictionary<
+            long,
+            List<(
+                EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate Candidate,
+                AcceptedEffectActivation Activation,
+                EffectEventBoundaryStamp Boundary)>>();
+        var remainingOperationsByBoundary = new Dictionary<
+            long,
+            HashSet<string>>();
+        var completedOperationIds = new HashSet<string>(StringComparer.Ordinal);
+        var parentBoundaryByOrdinal = new Dictionary<long, long?>();
+        var closedBoundaries = new HashSet<long>();
+        var unresolvedPendingBoundaries = new HashSet<long>();
+        var useSeeds = new Dictionary<string, CanonicalEffectUseSeed>(StringComparer.Ordinal);
+        foreach (var candidate in graphPreparation.TriggerCandidates)
         {
-            var ready = pending.Values
-                .Where(candidate => candidate.DependencyOperationIds.Values
-                    .All(completed.Contains))
-                .OrderBy(static candidate => candidate.Route.Phase)
-                .ThenBy(static candidate => candidate.Route.Priority)
-                .ThenBy(
-                    static candidate => candidate.Intent.Source.SourceId,
-                    StringComparer.Ordinal)
-                .ThenBy(static candidate => candidate.OperationId, StringComparer.Ordinal)
-                .ToArray();
-            if (ready.Length == 0)
+            if (candidate.UseSeed == null)
+                continue;
+            if (!string.Equals(
+                    candidate.UseSeed.EffectId,
+                    candidate.Activation.Identity.EffectId,
+                    StringComparison.Ordinal) ||
+                useSeeds.TryGetValue(candidate.UseSeed.EffectId, out var existingSeed) &&
+                existingSeed.RemainingUses != candidate.UseSeed.RemainingUses)
             {
                 return Failure(
                     Issue(
-                        "resource_graph_cycle",
-                        "one acyclic resource dependency graph",
-                        $"{pending.Count} unresolved node(s)"),
-                    Statistics(workingHistory));
+                        "effect_use_seed_conflict",
+                        "one exact canonical remaining-use seed per effect",
+                        DescribeActivation(candidate.Activation.Identity)),
+                    Statistics(workingHistory, metrics));
+            }
+            useSeeds.TryAdd(candidate.UseSeed.EffectId, candidate.UseSeed);
+        }
+        var initializedArbiter = AcceptedEffectUseArbiter.Initialize(
+            useSeeds.Values
+                .OrderBy(static seed => seed.EffectId, StringComparer.Ordinal)
+                .ToArray());
+        if (!initializedArbiter.IsValid || initializedArbiter.Arbiter == null)
+        {
+            return Failure(
+                ArbiterIssues(initializedArbiter.Issues),
+                Statistics(workingHistory, metrics));
+        }
+        var arbiter = initializedArbiter.Arbiter;
+        var candidatesByProducerEvent = graphPreparation.TriggerCandidates
+            .Where(static candidate => candidate.Producer != null)
+            .GroupBy(candidate => (
+                Producer: candidate.Producer!,
+                candidate.Activation.Identity.EventKind))
+            .ToDictionary(
+                static group => group.Key,
+                static group => (IReadOnlyList<
+                    EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>)
+                    group.ToArray());
+
+        bool HasOpenChildBoundary(long boundaryOrdinal) =>
+            parentBoundaryByOrdinal.Any(pair =>
+                pair.Value == boundaryOrdinal &&
+                !closedBoundaries.Contains(pair.Key));
+
+        IReadOnlyList<ValidationIssue> CloseReadyBoundaries()
+        {
+            var issues = new List<ValidationIssue>();
+            while (true)
+            {
+                var boundaryOrdinal = remainingOperationsByBoundary
+                    .Where(pair => pair.Value.Count == 0 &&
+                                   !closedBoundaries.Contains(pair.Key) &&
+                                   !unresolvedPendingBoundaries.Contains(
+                                       pair.Key) &&
+                                   !HasOpenChildBoundary(pair.Key))
+                    .Select(static pair => pair.Key)
+                    .OrderByDescending(static value => value)
+                    .Cast<long?>()
+                    .FirstOrDefault();
+                if (!boundaryOrdinal.HasValue)
+                    break;
+                var boundaryToClose = effectTranscriptBuilder
+                    .FindBoundary(boundaryOrdinal.Value);
+                if (boundaryToClose == null)
+                {
+                    issues.AddRange(Issue(
+                        "effect_boundary_close_invalid",
+                        "one exact open boundary",
+                        boundaryOrdinal.Value.ToString(
+                            System.Globalization.CultureInfo.InvariantCulture)));
+                    break;
+                }
+                if (!acceptedByBoundary.TryGetValue(
+                        boundaryOrdinal.Value,
+                        out var acceptedForBoundary))
+                {
+                    var emptyCloseIssue =
+                        effectTranscriptBuilder.CloseBoundary(boundaryToClose);
+                    if (emptyCloseIssue != null)
+                    {
+                        issues.AddRange(Issue(
+                            emptyCloseIssue.Code,
+                            emptyCloseIssue.Expected,
+                            emptyCloseIssue.Actual));
+                        break;
+                    }
+                    closedBoundaries.Add(boundaryOrdinal.Value);
+                    continue;
+                }
+                foreach (var accepted in acceptedForBoundary
+                             .OrderBy(static value =>
+                                  value.Activation.Stamp.ActivationOrdinal))
+                {
+                    foreach (var reaction in accepted.Candidate.ReactionOutputs
+                                 .Where(static reaction => string.Equals(
+                                     reaction.Dependency,
+                                     "after_current_event",
+                                     StringComparison.Ordinal))
+                                 .OrderBy(static reaction =>
+                                     reaction.ComponentPriority)
+                                 .ThenBy(
+                                     static reaction => reaction.ComponentId,
+                                     StringComparer.Ordinal)
+                                 .ThenBy(
+                                     static reaction => reaction.EventRef,
+                                     StringComparer.Ordinal))
+                    {
+                        var releaseIssue = effectTranscriptBuilder.TryRelease(
+                            accepted.Boundary,
+                            accepted.Activation,
+                            reaction,
+                            EffectReactionReleaseStage.AfterCurrentEvent);
+                        if (releaseIssue != null)
+                        {
+                            issues.AddRange(Issue(
+                                releaseIssue.Code,
+                                releaseIssue.Expected,
+                                releaseIssue.Actual));
+                        }
+                    }
+                }
+                var closeIssue =
+                    effectTranscriptBuilder.CloseBoundary(boundaryToClose);
+                if (closeIssue != null)
+                {
+                    issues.AddRange(Issue(
+                        closeIssue.Code,
+                        closeIssue.Expected,
+                        closeIssue.Actual));
+                    break;
+                }
+                closedBoundaries.Add(boundaryOrdinal.Value);
+            }
+            return issues;
+        }
+
+        IReadOnlyList<ValidationIssue> CompleteCausalOperation(string operationId)
+        {
+            if (!completedOperationIds.Add(operationId))
+            {
+                return Issue(
+                    "effect_boundary_causal_operation_invalid",
+                    "each causal operation completes exactly once",
+                    operationId);
+            }
+            effectTranscriptBuilder.CompleteCausalOperation(operationId);
+            foreach (var remaining in remainingOperationsByBoundary.Values)
+                remaining.Remove(operationId);
+            return CloseReadyBoundaries();
+        }
+
+        long[] ReadyPendingFrontiers() =>
+            unresolvedPendingBoundaries
+                .Where(boundaryOrdinal =>
+                    !closedBoundaries.Contains(boundaryOrdinal) &&
+                    remainingOperationsByBoundary.TryGetValue(
+                        boundaryOrdinal,
+                        out var remaining) &&
+                    remaining.Count == 0 &&
+                    !HasOpenChildBoundary(boundaryOrdinal))
+                .OrderByDescending(BoundaryDepth)
+                .ThenByDescending(static value => value)
+                .ToArray();
+
+        IReadOnlyList<ValidationIssue> ArbitrateBoundary(
+            IReadOnlyList<EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>
+                candidates,
+            long? parentBoundaryOrdinal,
+            ResourceOperationKey? producer,
+            string eventKind,
+            string producerEventRef,
+            string? producerTransitionId,
+            int? producerExecutionSequence,
+            long producerMechanicsOrdinal)
+        {
+            if (parentBoundaryOrdinal is { } parentOrdinal &&
+                (producer == null ||
+                 !operationIdByKey.TryGetValue(
+                     producer,
+                     out var producerOperationId) ||
+                 !remainingOperationsByBoundary.TryGetValue(
+                     parentOrdinal,
+                     out var parentRemaining) ||
+                 closedBoundaries.Contains(parentOrdinal) ||
+                 !parentRemaining.Contains(producerOperationId)))
+            {
+                return Issue(
+                    "effect_boundary_parent_causality_invalid",
+                    "the selected open causal lane contains the exact producer operation",
+                    parentOrdinal.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture));
+            }
+            var boundary = effectTranscriptBuilder.OpenBoundary(
+                parentBoundaryOrdinal,
+                producer,
+                eventKind,
+                producerEventRef,
+                producerTransitionId,
+                producerExecutionSequence,
+                producerMechanicsOrdinal,
+                candidates);
+            parentBoundaryByOrdinal.Add(
+                boundary.BoundaryOrdinal,
+                parentBoundaryOrdinal);
+            var partitionIssues = new List<ValidationIssue>();
+            var eligibleCandidates = new List<
+                EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>();
+            foreach (var candidate in candidates)
+            {
+                if (!effectTranscriptBuilder.TryResolveUnavailableEffectId(
+                        candidate,
+                        out var blockedAvailabilityEffectId))
+                {
+                    eligibleCandidates.Add(candidate);
+                    continue;
+                }
+                var rejectedIssue = effectTranscriptBuilder.RecordRejected(
+                    boundary,
+                    candidate,
+                    EffectActivationRejectionReason.EffectTerminal,
+                    blockedAvailabilityEffectId);
+                if (rejectedIssue != null)
+                {
+                    partitionIssues.AddRange(Issue(
+                        rejectedIssue.Code,
+                        rejectedIssue.Expected,
+                        rejectedIssue.Actual));
+                }
+            }
+            var eligible = eligibleCandidates.ToArray();
+            if (eligible.Length == 0)
+            {
+                var bindIssue = effectTranscriptBuilder.BindCausalClosure(
+                    boundary,
+                    Array.Empty<string>(),
+                    new Dictionary<string, string>(StringComparer.Ordinal));
+                if (bindIssue != null)
+                {
+                    partitionIssues.AddRange(Issue(
+                        bindIssue.Code,
+                        bindIssue.Expected,
+                        bindIssue.Actual));
+                }
+                var closeIssue = effectTranscriptBuilder.CloseBoundary(boundary);
+                if (closeIssue != null)
+                {
+                    partitionIssues.AddRange(Issue(
+                        closeIssue.Code,
+                        closeIssue.Expected,
+                        closeIssue.Actual));
+                }
+                else
+                {
+                    closedBoundaries.Add(boundary.BoundaryOrdinal);
+                }
+                return partitionIssues;
+            }
+            var byIdentity = eligible.ToDictionary(
+                static candidate => candidate.Activation.Identity);
+            var result = arbiter.Arbitrate(
+                eligible.Select(static candidate => candidate.Activation).ToArray());
+            if (!result.IsValid)
+                return ArbiterIssues(result.Issues);
+            foreach (var rejected in result.RejectedEvidence)
+            {
+                var rejectedIssue = effectTranscriptBuilder.RecordRejected(
+                    boundary,
+                    byIdentity[rejected.Identity],
+                    rejected.Reason,
+                    rejected.Reason ==
+                        EffectActivationRejectionReason.EffectTerminal
+                        ? rejected.Identity.EffectId
+                        : null);
+                if (rejectedIssue != null)
+                {
+                    partitionIssues.AddRange(Issue(
+                        rejectedIssue.Code,
+                        rejectedIssue.Expected,
+                        rejectedIssue.Actual));
+                }
+            }
+            var acceptedForBoundary = new List<(
+                EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate Candidate,
+                AcceptedEffectActivation Activation,
+                EffectEventBoundaryStamp Boundary)>();
+            foreach (var activation in result.AcceptedActivations)
+            {
+                var candidate = byIdentity[activation.Stamp.Identity];
+                acceptedCandidateIdentities.Add(activation.Stamp.Identity);
+                acceptedCandidates.Add((candidate, activation));
+                acceptedBoundaryByIdentity.Add(activation.Stamp.Identity, boundary);
+                acceptedActivationByIdentity.Add(activation.Stamp.Identity, activation);
+                effectTranscriptBuilder.RecordAccepted(
+                    boundary,
+                    activation,
+                    candidate);
+                acceptedForBoundary.Add((candidate, activation, boundary));
+            }
+            acceptedByBoundary.Add(boundary.BoundaryOrdinal, acceptedForBoundary);
+            var causalRootOperationIds = new List<string>();
+            foreach (var accepted in acceptedForBoundary)
+            {
+                if (accepted.Candidate.PendingOutputs.Any(output =>
+                        output.AfterComponentId == null &&
+                        !accepted.Candidate.TryResolvePendingBinding(
+                            output.ComponentId,
+                            out _)))
+                {
+                    unresolvedPendingBoundaries.Add(
+                        boundary.BoundaryOrdinal);
+                }
+                foreach (var mutationKey in accepted.Candidate.PlannedMutationKeys)
+                {
+                    if (!operationIdByKey.TryGetValue(
+                            mutationKey,
+                            out var operationId))
+                    {
+                        return Issue(
+                            "effect_boundary_causal_operation_unresolved",
+                            "every accepted candidate mutation in the prepared graph",
+                            Describe(mutationKey));
+                    }
+                    causalRootOperationIds.Add(operationId);
+                }
+            }
+            var causalClosure = graphPreparation.Graph!
+                .ExpandCausalOperationClosure(causalRootOperationIds)
+                .ToHashSet(StringComparer.Ordinal);
+            var replayStableCausalOperationKeys = causalClosure.ToDictionary(
+                static operationId => operationId,
+                operationId => CreateStableProducerOperationKey(
+                    byOperationId[operationId].Intent.Key),
+                StringComparer.Ordinal);
+            remainingOperationsByBoundary.Add(
+                boundary.BoundaryOrdinal,
+                causalClosure
+                    .Where(operationId =>
+                        !completedOperationIds.Contains(operationId))
+                    .ToHashSet(StringComparer.Ordinal));
+            var causalBindIssue = effectTranscriptBuilder.BindCausalClosure(
+                boundary,
+                causalClosure,
+                replayStableCausalOperationKeys);
+            if (causalBindIssue != null)
+            {
+                partitionIssues.AddRange(Issue(
+                    causalBindIssue.Code,
+                    causalBindIssue.Expected,
+                    causalBindIssue.Actual));
             }
 
-            var skipped = ready
-                .Where(candidate => !RequirementsSatisfied(candidate, producedEvents))
-                .ToArray();
-            if (skipped.Length != 0)
+            var releaseIssues = new List<ValidationIssue>(partitionIssues);
+            foreach (var activation in result.AcceptedActivations
+                         .OrderBy(static value => value.Stamp.ActivationOrdinal))
             {
-                foreach (var candidate in skipped)
+                var candidate = byIdentity[activation.Stamp.Identity];
+                foreach (var reaction in candidate.ReactionOutputs
+                             .Where(static reaction => string.Equals(
+                                 reaction.Dependency,
+                                 "before_current_event",
+                                 StringComparison.Ordinal))
+                             .OrderBy(static reaction => reaction.ComponentPriority)
+                             .ThenBy(
+                                 static reaction => reaction.ComponentId,
+                                 StringComparer.Ordinal)
+                             .ThenBy(
+                                 static reaction => reaction.EventRef,
+                                 StringComparer.Ordinal))
                 {
-                    pending.Remove(candidate.OperationId);
-                    completed.Add(candidate.OperationId);
-                    producedEvents[candidate.OperationId] = new HashSet<string>(
-                        StringComparer.Ordinal);
+                    var releaseIssue = effectTranscriptBuilder.TryRelease(
+                        boundary,
+                        activation,
+                        reaction,
+                        EffectReactionReleaseStage.BeforeCurrentEvent);
+                    if (releaseIssue != null)
+                    {
+                        releaseIssues.AddRange(Issue(
+                            releaseIssue.Code,
+                            releaseIssue.Expected,
+                            releaseIssue.Actual));
+                    }
                 }
+            }
+            foreach (var accepted in acceptedForBoundary.Where(static value =>
+                         value.Activation.EffectTerminal ||
+                         value.Candidate.ReactionOutputs.Any(
+                             ReservesTerminalAvailabilityAtAcceptance)))
+            {
+                var reservationIssue =
+                    effectTranscriptBuilder.ReserveTerminalAvailability(
+                        accepted.Boundary,
+                        accepted.Activation,
+                        accepted.Candidate);
+                if (reservationIssue != null)
+                {
+                    releaseIssues.AddRange(Issue(
+                        reservationIssue.Code,
+                        reservationIssue.Expected,
+                        reservationIssue.Actual));
+                }
+            }
+            releaseIssues.AddRange(CloseReadyBoundaries());
+            return releaseIssues;
+        }
+
+        foreach (var boundary in graphPreparation.TriggerCandidates
+                     .Where(static candidate => candidate.Producer == null)
+                     .GroupBy(candidate => (
+                         candidate.Activation.Identity.TriggerEventRef,
+                         candidate.Activation.Identity.EventKind))
+                     .OrderBy(
+                         static group => group.Key.TriggerEventRef,
+                         StringComparer.Ordinal)
+                     .ThenBy(
+                         static group => group.Key.EventKind,
+                         StringComparer.Ordinal))
+        {
+            var pendingBoundaryCount = unresolvedPendingBoundaries.Count;
+            var initialIssues = ArbitrateBoundary(
+                boundary.ToArray(),
+                parentBoundaryOrdinal: null,
+                producer: null,
+                boundary.Key.EventKind,
+                boundary.Key.TriggerEventRef,
+                producerTransitionId: null,
+                producerExecutionSequence: null,
+                producerMechanicsOrdinal: -1);
+            if (initialIssues.Count != 0)
+                return Failure(initialIssues, Statistics(workingHistory, metrics));
+            if (unresolvedPendingBoundaries.Count != pendingBoundaryCount)
+                break;
+        }
+
+        int BoundaryDepth(long boundaryOrdinal)
+        {
+            var depth = 0;
+            var cursor = boundaryOrdinal;
+            while (parentBoundaryByOrdinal.TryGetValue(cursor, out var parent) &&
+                   parent is { } parentOrdinal)
+            {
+                depth++;
+                cursor = parentOrdinal;
+            }
+            return depth;
+        }
+
+        HashSet<long> BoundaryAncestorChain(long boundaryOrdinal)
+        {
+            var chain = new HashSet<long>();
+            var cursor = (long?)boundaryOrdinal;
+            while (cursor is { } current && chain.Add(current))
+            {
+                cursor = parentBoundaryByOrdinal.TryGetValue(
+                    current,
+                    out var parent)
+                    ? parent
+                    : null;
+            }
+            return chain;
+        }
+
+        IReadOnlyList<(long BoundaryOrdinal, IReadOnlySet<string> OperationIds)>
+            CurrentCausalLanes(IReadOnlySet<long>? suspendedBoundaries = null) =>
+            remainingOperationsByBoundary
+                .Where(pair => pair.Value.Count != 0 &&
+                               !closedBoundaries.Contains(pair.Key) &&
+                               (suspendedBoundaries == null ||
+                                !suspendedBoundaries.Contains(pair.Key)) &&
+                               !HasOpenChildBoundary(pair.Key))
+                .OrderByDescending(pair => BoundaryDepth(pair.Key))
+                .ThenByDescending(static pair => pair.Key)
+                .Select(static pair =>
+                    (pair.Key, (IReadOnlySet<string>)pair.Value))
+                .ToArray();
+
+        var scheduler = graphPreparation.Graph!.CreateExecutionScheduler(node =>
+            RequirementsSatisfied(byOperationId[node.OperationId], producedEvents));
+
+        bool TryTakeNextCausal(
+            IReadOnlySet<long>? suspendedBoundaries,
+            out ResourceTriggerGraphNode node,
+            out bool shouldExecute,
+            out long? boundaryOrdinal)
+        {
+            var lanes = CurrentCausalLanes(suspendedBoundaries);
+            if (lanes.Count == 0)
+            {
+                if (suspendedBoundaries is { Count: > 0 })
+                {
+                    node = null!;
+                    shouldExecute = false;
+                    boundaryOrdinal = null;
+                    return false;
+                }
+                boundaryOrdinal = null;
+                return scheduler.TryTakeNext(out node, out shouldExecute);
+            }
+            foreach (var lane in lanes)
+            {
+                if (!scheduler.TryTakeNext(
+                        lane.OperationIds,
+                        out node,
+                        out shouldExecute))
+                {
+                    continue;
+                }
+                boundaryOrdinal = lane.BoundaryOrdinal;
+                return true;
+            }
+            node = null!;
+            shouldExecute = false;
+            boundaryOrdinal = null;
+            return false;
+        }
+
+        long? pendingFrontier;
+        while (true)
+        {
+            var readyPendingFrontiers = ReadyPendingFrontiers();
+            if (readyPendingFrontiers.Length > 1)
+            {
+                return Failure(
+                    Issue(
+                        "effect_boundary_pending_frontier_ambiguous",
+                        "one exact ready pending leaf",
+                        string.Join(",", readyPendingFrontiers)),
+                    Statistics(workingHistory, metrics));
+            }
+            pendingFrontier = readyPendingFrontiers
+                .Select(static value => (long?)value)
+                .SingleOrDefault();
+            var suspendedBoundaries = pendingFrontier is { } frontierOrdinal
+                ? BoundaryAncestorChain(frontierOrdinal)
+                : null;
+            if (!TryTakeNextCausal(
+                    suspendedBoundaries,
+                   out var node,
+                   out var shouldExecute,
+                   out var selectedBoundaryOrdinal))
+            {
+                break;
+            }
+            metrics.SchedulingDescriptorVisitCount++;
+            var prepared = byOperationId[node.OperationId];
+            if (!shouldExecute)
+            {
+                producedEvents[prepared.OperationId] = new HashSet<string>(
+                    StringComparer.Ordinal);
+                var closeIssues = CompleteCausalOperation(prepared.OperationId);
+                if (closeIssues.Count != 0)
+                    return Failure(
+                        closeIssues,
+                        Statistics(workingHistory, metrics));
+                scheduler.Complete(node);
                 continue;
             }
 
-            var prepared = ready[0];
-
-            EffectAcceptedTurnPlanner.EffectResourceTriggerExecution? triggerExecution = null;
-            string? triggerExecutionKey = null;
-            if (triggerExecutionByMutation.TryGetValue(
+            EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate? triggerCandidate = null;
+            if (graphPreparation.TriggerCandidatesByMutation.TryGetValue(
                     prepared.Intent.Key,
-                    out triggerExecution))
+                    out triggerCandidate) &&
+                !acceptedCandidateIdentities.Contains(
+                    triggerCandidate.Activation.Identity))
             {
-                triggerExecutionKey = TriggerExecutionKey(triggerExecution);
-                if (!triggerActivationDecisions.TryGetValue(
-                        triggerExecutionKey,
-                        out var activationAllowed))
-                {
-                    activationAllowed = true;
-                    if (triggerExecution.RemainingUseBudget.HasValue)
-                    {
-                        var reserved = reservedTriggerUses.GetValueOrDefault(
-                            triggerExecution.EffectId);
-                        activationAllowed = reserved <
-                            triggerExecution.RemainingUseBudget.Value;
-                        if (activationAllowed)
-                        {
-                            reservedTriggerUses[triggerExecution.EffectId] = reserved + 1;
-                        }
-                    }
-                    triggerActivationDecisions.Add(
-                        triggerExecutionKey,
-                        activationAllowed);
-                }
-                if (!activationAllowed)
-                {
-                    pending.Remove(prepared.OperationId);
-                    completed.Add(prepared.OperationId);
-                    producedEvents[prepared.OperationId] = new HashSet<string>(
-                        StringComparer.Ordinal);
-                    continue;
-                }
+                producedEvents[prepared.OperationId] = new HashSet<string>(
+                    StringComparer.Ordinal);
+                var closeIssues = CompleteCausalOperation(prepared.OperationId);
+                if (closeIssues.Count != 0)
+                    return Failure(
+                        closeIssues,
+                        Statistics(workingHistory, metrics));
+                scheduler.Complete(node);
+                continue;
             }
 
             var mutation = prepared.Intent;
@@ -2028,19 +3557,25 @@ internal static class AcceptedMechanicsPlanner
                 postDirectState = workingLedger.Freeze();
             }
             var amountResult = ResolveMutationAmount(
-                input.History,
+                workingHistory,
                 input.Definitions,
                 directBaselineState,
                 postDirectState,
                 prepared);
             if (amountResult.Issues.Count != 0)
-                return Failure(amountResult.Issues, Statistics(workingHistory));
+                return Failure(
+                    amountResult.Issues,
+                    Statistics(workingHistory, metrics));
             if (!amountResult.ShouldApply)
             {
-                pending.Remove(prepared.OperationId);
-                completed.Add(prepared.OperationId);
                 producedEvents[prepared.OperationId] = new HashSet<string>(
                     StringComparer.Ordinal);
+                var closeIssues = CompleteCausalOperation(prepared.OperationId);
+                if (closeIssues.Count != 0)
+                    return Failure(
+                        closeIssues,
+                        Statistics(workingHistory, metrics));
+                scheduler.Complete(node);
                 continue;
             }
 
@@ -2067,81 +3602,374 @@ internal static class AcceptedMechanicsPlanner
                     mutation.ResultConstraint),
                 input.Definitions);
             if (!result.IsValid)
-                return Failure(result.Issues, Statistics(workingHistory));
+                return Failure(
+                    result.Issues,
+                    Statistics(workingHistory, metrics));
             workingLedger = result.WorkingLedger!;
             if (result.Transition != null)
             {
-                appliedTransitions.Add(result.Transition);
-                if (triggerExecution != null)
+                EffectEventBoundaryStamp? acceptedBoundary = null;
+                AcceptedEffectActivation? acceptedActivation = null;
+                string? appliedComponentId = null;
+                var hasAppliedTriggerOutput = triggerCandidate != null &&
+                    result.Transition.AppliedAmount != 0m;
+                if (hasAppliedTriggerOutput)
                 {
-                    appliedTriggerExecutionTemplates.TryAdd(
-                        triggerExecutionKey!,
-                        triggerExecution);
+                    if (!acceptedBoundaryByIdentity.TryGetValue(
+                            triggerCandidate!.Activation.Identity,
+                            out acceptedBoundary) ||
+                        !acceptedActivationByIdentity.TryGetValue(
+                            triggerCandidate.Activation.Identity,
+                            out acceptedActivation) ||
+                        !triggerCandidate.PlannedComponentIdsByMutation.TryGetValue(
+                            prepared.Intent.Key,
+                            out appliedComponentId))
+                    {
+                        return Failure(
+                            Issue(
+                                "effect_boundary_component_evidence_invalid",
+                                "one accepted boundary and component for every nonzero trigger mutation",
+                                DescribeActivation(
+                                    triggerCandidate.Activation.Identity)),
+                            Statistics(workingHistory, metrics));
+                    }
+                }
+                var mutationMechanicsOrdinal =
+                    effectTranscriptBuilder.RecordMutationExecution();
+                appliedTransitions.Add(result.Transition);
+                effectTranscriptBuilder.RecordResourceMutation(
+                    prepared.Intent.Key,
+                    result.Transition,
+                    ResourceMutationExecutionKind.Applied,
+                    mutationMechanicsOrdinal);
+                if (hasAppliedTriggerOutput)
+                {
                     if (!appliedTriggerMutationKeys.TryGetValue(
-                            triggerExecutionKey!,
+                            triggerCandidate!.Activation.Identity,
                             out var appliedKeys))
                     {
                         appliedKeys = new HashSet<ResourceOperationKey>();
                         appliedTriggerMutationKeys.Add(
-                            triggerExecutionKey!,
+                            triggerCandidate.Activation.Identity,
                             appliedKeys);
                     }
                     appliedKeys.Add(prepared.Intent.Key);
+                    effectTranscriptBuilder.RecordAppliedComponent(
+                        acceptedBoundary!,
+                        acceptedActivation!,
+                        prepared.Intent.Key,
+                        appliedComponentId!,
+                        result.Transition,
+                        mutationMechanicsOrdinal);
+                    if (triggerCandidate.PendingOutputs.Any(output =>
+                            string.Equals(
+                                output.AfterComponentId,
+                                appliedComponentId,
+                                StringComparison.Ordinal) &&
+                            !triggerCandidate.TryResolvePendingBinding(
+                                output.ComponentId,
+                                out _)))
+                    {
+                        unresolvedPendingBoundaries.Add(
+                            acceptedBoundary!.BoundaryOrdinal);
+                    }
+                    foreach (var reaction in triggerCandidate.ReactionOutputs
+                                 .Where(reaction => string.Equals(
+                                     reaction.Dependency,
+                                     "after_component",
+                                     StringComparison.Ordinal) &&
+                                     string.Equals(
+                                         reaction.AfterComponentId,
+                                         appliedComponentId,
+                                         StringComparison.Ordinal))
+                                 .OrderBy(static reaction =>
+                                     reaction.ComponentPriority)
+                                 .ThenBy(
+                                     static reaction => reaction.ComponentId,
+                                     StringComparer.Ordinal)
+                                 .ThenBy(
+                                     static reaction => reaction.EventRef,
+                                     StringComparer.Ordinal))
+                    {
+                        var releaseIssue = effectTranscriptBuilder.TryRelease(
+                            acceptedBoundary!,
+                            acceptedActivation!,
+                            reaction,
+                            EffectReactionReleaseStage.AfterComponent);
+                        if (releaseIssue != null)
+                        {
+                            return Failure(
+                                Issue(
+                                    releaseIssue.Code,
+                                    releaseIssue.Expected,
+                                    releaseIssue.Actual),
+                                Statistics(workingHistory, metrics));
+                        }
+                    }
                 }
                 events.AddRange(result.Events);
                 producedEvents[prepared.OperationId] = result.Events
                     .Select(static value => value.EventKind)
                     .ToHashSet(StringComparer.Ordinal);
+                foreach (var resourceEvent in result.Events)
+                {
+                    if (!candidatesByProducerEvent.TryGetValue(
+                            (prepared.Intent.Key, resourceEvent.EventKind),
+                            out var boundaryCandidates))
+                    {
+                        continue;
+                    }
+                    var boundaryIssues = ArbitrateBoundary(
+                        boundaryCandidates,
+                        selectedBoundaryOrdinal,
+                        prepared.Intent.Key,
+                        resourceEvent.EventKind,
+                        resourceEvent.EventRef,
+                        result.Transition.TransitionId,
+                        result.Transition.ExecutionSequence,
+                        mutationMechanicsOrdinal);
+                    if (boundaryIssues.Count != 0)
+                    {
+                        return Failure(
+                            boundaryIssues,
+                            Statistics(workingHistory, metrics));
+                    }
+                }
             }
             else
             {
-                replayTransitions.Add(result.ReplayTransition!);
+                var replayMechanicsOrdinal =
+                    effectTranscriptBuilder.RecordMutationExecution();
+                var replayTransition = result.ReplayTransition!;
+                replayTransitions.Add(replayTransition);
+                effectTranscriptBuilder.RecordResourceMutation(
+                    prepared.Intent.Key,
+                    replayTransition,
+                    ResourceMutationExecutionKind.Replay,
+                    replayMechanicsOrdinal);
                 producedEvents[prepared.OperationId] = new HashSet<string>(StringComparer.Ordinal);
             }
-
-            pending.Remove(prepared.OperationId);
-            completed.Add(prepared.OperationId);
+            var completionIssues = CompleteCausalOperation(prepared.OperationId);
+            if (completionIssues.Count != 0)
+                return Failure(
+                    completionIssues,
+                    Statistics(workingHistory, metrics));
+            scheduler.Complete(node);
         }
+        if (scheduler.HasPendingNodes && pendingFrontier == null)
+        {
+            return Failure(
+                Issue(
+                    "effect_boundary_causal_scheduler_blocked",
+                    "one ready operation inside the innermost open causal boundary",
+                    string.Join(
+                        ",",
+                        CurrentCausalLanes()
+                            .SelectMany(static lane => lane.OperationIds)
+                            .Distinct(StringComparer.Ordinal)
+                            .OrderBy(static operationId =>
+                                operationId,
+                                StringComparer.Ordinal))),
+                Statistics(workingHistory, metrics));
+        }
+        if (pendingFrontier is { } pendingBoundaryOrdinal)
+        {
+            var pendingBoundary = effectTranscriptBuilder.FindBoundary(
+                pendingBoundaryOrdinal);
+            var frontierIssue = pendingBoundary == null
+                ? new EffectBoundaryTranscriptIssue(
+                    "effect_boundary_pending_frontier_invalid",
+                    "one exact open pending boundary",
+                    pendingBoundaryOrdinal.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture))
+                : effectTranscriptBuilder.SealPendingFrontier(pendingBoundary);
+            if (frontierIssue != null)
+            {
+                return Failure(
+                    Issue(
+                        frontierIssue.Code,
+                        frontierIssue.Expected,
+                        frontierIssue.Actual),
+                    Statistics(workingHistory, metrics));
+            }
+        }
+        else
+        {
+            effectTranscriptBuilder.SealUseProjection();
+        }
+        var effectBoundaryTranscriptResult = effectTranscriptBuilder.Freeze();
+        if (!effectBoundaryTranscriptResult.IsValid ||
+            effectBoundaryTranscriptResult.Transcript == null)
+        {
+            return Failure(
+                effectBoundaryTranscriptResult.Issues.SelectMany(issue => Issue(
+                    issue.Code,
+                    issue.Expected,
+                    issue.Actual)),
+                Statistics(workingHistory, metrics));
+        }
+        var effectBoundaryTranscript =
+            effectBoundaryTranscriptResult.Transcript;
 
         var stateAfterImage = workingLedger.Freeze();
         var frozen = workingHistory.Freeze(input.Definitions);
         if (!frozen.IsValid || frozen.History == null)
-            return Failure(frozen.Issues, Statistics(workingHistory));
+            return Failure(
+                frozen.Issues,
+                Statistics(workingHistory, metrics));
         var finalAgreement = frozen.History.ValidateStateAgreement(stateAfterImage);
         if (finalAgreement.Count != 0)
-            return Failure(finalAgreement, Statistics(workingHistory));
+            return Failure(
+                finalAgreement,
+                Statistics(workingHistory, metrics));
 
-        var resourceTriggerExecutions = appliedTriggerExecutionTemplates
-            .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
-            .Select(pair =>
+        var resourceTriggerExecutions = acceptedCandidates
+            .OrderBy(static accepted =>
+                accepted.Activation.Stamp.ActivationOrdinal)
+            .Select(accepted =>
             {
-                var template = pair.Value;
-                var appliedKeys = appliedTriggerMutationKeys[pair.Key];
-                var componentMap = template.ComponentIdsByMutation == null
-                    ? null
-                    : template.ComponentIdsByMutation
-                        .Where(component => appliedKeys.Contains(component.Key))
-                        .ToDictionary(
-                            static component => component.Key,
-                            static component => component.Value);
-                var componentIds = componentMap == null
-                    ? template.ComponentIds?.ToArray()
-                    : componentMap.Values
-                        .Distinct(StringComparer.Ordinal)
-                        .OrderBy(static value => value, StringComparer.Ordinal)
-                        .ToArray();
-                return template with
-                {
-                    MutationKeys = appliedKeys
+                var candidate = accepted.Candidate;
+                var stamp = accepted.Activation.Stamp;
+                var appliedKeys = appliedTriggerMutationKeys.TryGetValue(
+                    stamp.Identity,
+                    out var storedKeys)
+                    ? storedKeys
+                    : new HashSet<ResourceOperationKey>();
+                var componentMap = candidate.PlannedComponentIdsByMutation
+                    .Where(component => appliedKeys.Contains(component.Key))
+                    .ToDictionary(
+                        static component => component.Key,
+                        static component => component.Value);
+                var componentIds = componentMap.Values
+                    .Distinct(StringComparer.Ordinal)
+                    .OrderBy(static value => value, StringComparer.Ordinal)
+                    .ToArray();
+                return new EffectAcceptedTurnPlanner.EffectResourceTriggerExecution(
+                    stamp.Identity.EffectId,
+                    stamp.Identity.TriggerId,
+                    stamp.Identity.EventKind,
+                    stamp.Identity.EventRef,
+                    appliedKeys
                         .OrderBy(static key => key.EventRef, StringComparer.Ordinal)
                         .ThenBy(static key => key.OriginKind, StringComparer.Ordinal)
                         .ThenBy(static key => key.OriginId, StringComparer.Ordinal)
                         .ToArray(),
-                    ComponentIds = componentIds,
-                    ComponentIdsByMutation = componentMap
-                };
+                    stamp.UsesBefore,
+                    componentIds,
+                    stamp.Identity.TriggerEventRef,
+                    componentMap);
             })
             .ToArray();
+        var appliedComponentsByIdentity = resourceTriggerExecutions.ToDictionary(
+            static execution => new EffectActivationCandidateIdentity(
+                execution.EffectId,
+                execution.TriggerId,
+                execution.EventKind,
+                execution.EventRef,
+                execution.TriggerEventRef!),
+            static execution => (execution.ComponentIds ?? Array.Empty<string>())
+                .ToHashSet(StringComparer.Ordinal));
+        var acceptedPendingResolutions = new List<
+            AcceptedEffectBoundedResourceResolution>();
+        var acceptedReactionExecutions = effectBoundaryTranscript
+            .ReleasedReactions
+            .OrderBy(static released => released.MechanicsOrdinal)
+            .Select(static released => released.Reaction)
+            .ToList();
+        var acceptedResolvedPendingRequestIds = new HashSet<string>(
+            StringComparer.Ordinal);
+        var orderedAcceptedCandidates = acceptedCandidates
+            .OrderBy(static accepted =>
+                accepted.Activation.Stamp.ActivationOrdinal)
+            .ToArray();
+        var transcriptPrefixFingerprints =
+            effectBoundaryTranscript.CreateActivationPrefixFingerprints();
+        metrics.PendingTranscriptPrefixStampVisitCount +=
+            transcriptPrefixFingerprints.Count;
+        foreach (var accepted in orderedAcceptedCandidates)
+        {
+            var stamp = accepted.Activation.Stamp;
+            var candidate = accepted.Candidate;
+            var appliedComponents = appliedComponentsByIdentity[stamp.Identity];
+            var pendingOutputs = candidate.PendingOutputs;
+            var publishesUnresolvedPending = effectBoundaryTranscript
+                    .PendingFrontierBoundaryOrdinal is not { } frontierOrdinal ||
+                acceptedBoundaryByIdentity[stamp.Identity].BoundaryOrdinal ==
+                    frontierOrdinal;
+            string? candidateFingerprint = null;
+            if (pendingOutputs.Count != 0)
+            {
+                if (!candidateAuthorities.Authorities.TryGetValue(
+                        stamp.Identity,
+                        out var candidateAuthority))
+                {
+                    return Failure(
+                        Issue(
+                            "resource_pending_candidate_authority_missing",
+                            "one prevalidated immutable authority for every pending candidate",
+                            DescribeActivation(candidate.Activation.Identity)),
+                        Statistics(workingHistory, metrics));
+                }
+                candidateFingerprint = candidateAuthority.CandidateFingerprint;
+            }
+            var transcriptPrefixFingerprint =
+                transcriptPrefixFingerprints[stamp.ActivationOrdinal];
+            foreach (var pending in pendingOutputs)
+            {
+                var hasResolvedBinding =
+                    candidate.TryResolvePendingBinding(
+                        pending.ComponentId,
+                        out var resolvedBinding);
+                var causalAuthority = CreatePendingCausalAuthority(
+                    candidate,
+                    stamp,
+                    pending,
+                    candidateFingerprint!,
+                    transcriptPrefixFingerprint,
+                    hasResolvedBinding
+                        ? resolvedBinding.RequestAuthority.CausalAuthority
+                            .WaveOrdinal
+                        : candidate.PendingWaveOrdinal);
+                if (hasResolvedBinding)
+                {
+                    if (!PendingCausalAuthorityMatches(
+                            resolvedBinding.RequestAuthority.CausalAuthority,
+                            causalAuthority,
+                            pending.EffectAuthority))
+                    {
+                        return Failure(
+                            Issue(
+                                "resource_pending_causal_replay_mismatch",
+                                "the exact accepted activation transcript stamp for the terminal binding",
+                                resolvedBinding.RequestId),
+                            Statistics(workingHistory, metrics));
+                    }
+                    if (!acceptedResolvedPendingRequestIds.Add(
+                            resolvedBinding.RequestId))
+                    {
+                        return Failure(
+                            Issue(
+                                "resource_pending_causal_replay_duplicate",
+                                "one causal acceptance per terminal binding",
+                                resolvedBinding.RequestId),
+                            Statistics(workingHistory, metrics));
+                    }
+                }
+                if (pending.AfterComponentId is { } predecessorId &&
+                    !appliedComponents.Contains(predecessorId))
+                {
+                    continue;
+                }
+                if (hasResolvedBinding)
+                    continue;
+                if (!publishesUnresolvedPending)
+                    continue;
+                acceptedPendingResolutions.Add(
+                    new AcceptedEffectBoundedResourceResolution(
+                        pending,
+                        causalAuthority));
+            }
+        }
 
         return new AcceptedMechanicsResourcePlanningResult(
             stateAfterImage,
@@ -2150,8 +3978,12 @@ internal static class AcceptedMechanicsPlanner
             appliedTransitions,
             replayTransitions,
             Array.Empty<ValidationIssue>(),
-            Statistics(workingHistory),
-            resourceTriggerExecutions);
+            Statistics(workingHistory, metrics),
+            resourceTriggerExecutions,
+            acceptedPendingResolutions,
+            acceptedReactionExecutions,
+            acceptedResolvedPendingRequestIds.ToArray(),
+            effectBoundaryTranscript);
     }
 
     private static CompleteResourceGraphPreparation PrepareCompleteResourceGraph(
@@ -2169,34 +4001,33 @@ internal static class AcceptedMechanicsPlanner
         var preparedByOperationId = prepared.ToDictionary(
             static value => value.OperationId,
             StringComparer.Ordinal);
-        var triggerExecutionsByMutation = new Dictionary<
+        var triggerCandidates = input.InitialTriggerCandidates.ToList();
+        var triggerCandidatesByIdentity = new Dictionary<
+            EffectActivationCandidateIdentity,
+            EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>();
+        var triggerCandidatesByMutation = new Dictionary<
             ResourceOperationKey,
-            EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>();
-        var triggerUseBudgets = new Dictionary<string, int>(StringComparer.Ordinal);
-        foreach (var execution in input.InitialTriggerExecutions)
+            EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>();
+        foreach (var candidate in input.InitialTriggerCandidates)
         {
-            if (execution.MutationKeys.Count == 0)
+            if (candidate.Producer != null ||
+                !triggerCandidatesByIdentity.TryAdd(
+                    candidate.Activation.Identity,
+                    candidate))
             {
                 return CompleteGraphFailure(Issue(
                     "effect_resource_trigger_execution_invalid",
-                    "one or more exact mutation keys per trigger activation",
-                    TriggerExecutionKey(execution)));
+                    "one unique lifecycle candidate without a resource producer",
+                    DescribeActivation(candidate.Activation.Identity)));
             }
-            if (!TryRegisterTriggerUseBudget(execution, triggerUseBudgets))
-            {
-                return CompleteGraphFailure(Issue(
-                    "effect_resource_trigger_budget_conflict",
-                    "one exact positive remaining-use budget per effect",
-                    TriggerExecutionKey(execution)));
-            }
-            foreach (var key in execution.MutationKeys)
+            foreach (var key in candidate.PlannedMutationKeys)
             {
                 if (!preparedByKey.ContainsKey(key) ||
-                    !triggerExecutionsByMutation.TryAdd(key, execution))
+                    !triggerCandidatesByMutation.TryAdd(key, candidate))
                 {
                     return CompleteGraphFailure(Issue(
                         "effect_resource_trigger_execution_invalid",
-                        "one exact trigger activation for every initial trigger mutation",
+                        "one exact lifecycle candidate for every planned mutation",
                         Describe(key)));
                 }
             }
@@ -2209,15 +4040,14 @@ internal static class AcceptedMechanicsPlanner
         {
             var mutation = preparedByOperationId[node.OperationId];
             var lineage = MergeParentLineages(mutation, operationLineages);
-            if (triggerExecutionsByMutation.TryGetValue(
+            if (triggerCandidatesByMutation.TryGetValue(
                     mutation.Intent.Key,
-                    out var execution))
+                    out var candidate))
             {
-                var lineageDecision = AdvanceTriggerLineage(lineage, execution);
+                var lineageDecision = AdvanceTriggerLineage(lineage, candidate);
                 if (lineageDecision.Issues.Count != 0)
                     return CompleteGraphFailure(lineageDecision.Issues);
-                if (lineageDecision.Allowed)
-                    lineage = lineageDecision.Lineage;
+                lineage = lineageDecision.Lineage;
             }
             operationLineages.Add(mutation.OperationId, lineage);
         }
@@ -2227,21 +4057,88 @@ internal static class AcceptedMechanicsPlanner
             return new CompleteResourceGraphPreparation(
                 prepared,
                 initialGraph.Graph,
-                triggerExecutionsByMutation,
-                Array.Empty<ValidationIssue>());
+                triggerCandidates,
+                triggerCandidatesByMutation,
+                input.Sources.Exports,
+                Array.Empty<ValidationIssue>(),
+                ResourceGraphExpansionWork.Empty);
         }
 
-        var sourceExports = input.Sources.Exports.ToDictionary(
+        var sourceSnapshot = input.Sources.Exports;
+        var sourceExports = sourceSnapshot.ToDictionary(
             static source => (source.SourceKind, source.SourceId));
-        var workingSources = input.Sources;
+        var sourceAliases = sourceSnapshot
+            .Select(static source =>
+                source.SourceKind + "\0" +
+                ResourceMaterializationContract.BuildConfusableKey(source.SourceId))
+            .ToHashSet(StringComparer.Ordinal);
+        var effectTriggerIndexLookupCount = 0;
+        long effectTriggerCandidateVisitCount = 0;
+        var effectSourceBindingIndexLookupCount = 0;
+        long effectSourceBindingCandidateVisitCount = 0;
+        long effectRoutingDescriptorAccessCount = 0;
+        long effectOccurrenceCloneCount = 0;
+        long effectFullValidationPassCount = 0;
+        long effectTriggerArrayVisitCount = 0;
+        long effectComponentIndexLookupCount = 0;
+        long effectSelectedComponentVisitCount = 0;
+        long pendingCandidateFingerprintOutputVisitCount = 0;
+        long pendingProjectionDependencyVisitCount = 0;
+        var sourceAuthorityAddVisitCount = 0;
+        var sourceAuthorityResolveLookupCount = 0;
+        var sourceAuthorityFreezeCount = 0;
+
+        ResourceGraphExpansionWork SnapshotWork() =>
+            new(
+                effectTriggerIndexLookupCount,
+                effectTriggerCandidateVisitCount,
+                effectSourceBindingIndexLookupCount,
+                effectSourceBindingCandidateVisitCount,
+                effectRoutingDescriptorAccessCount,
+                effectOccurrenceCloneCount,
+                effectFullValidationPassCount,
+                effectTriggerArrayVisitCount,
+                effectComponentIndexLookupCount,
+                effectSelectedComponentVisitCount,
+                pendingCandidateFingerprintOutputVisitCount,
+                pendingProjectionDependencyVisitCount,
+                sourceSnapshot.Count,
+                sourceAuthorityAddVisitCount,
+                sourceAuthorityResolveLookupCount,
+                sourceAuthorityFreezeCount);
+
+        CompleteResourceGraphPreparation FailureWithWork(
+            IEnumerable<ValidationIssue> failureIssues) =>
+            CompleteGraphFailure(failureIssues, SnapshotWork());
+
+        ResourceMutationSourceResolution ResolveWorkingSource(
+            ResourceMutationSourceRequest request,
+            ResourceDefinition definition,
+            ResourceCoordinate? target)
+        {
+            sourceAuthorityResolveLookupCount++;
+            sourceExports.TryGetValue(
+                (request.SourceKind, request.SourceId),
+                out var source);
+            return ResourceMutationSourceCatalog.ResolveExport(
+                request,
+                definition,
+                target,
+                source);
+        }
+
         var frontier = new Queue<PreparedMutation>(
             initialGraph.Graph.OrderedNodes.Select(node =>
                 preparedByOperationId[node.OperationId]));
         while (frontier.Count != 0)
         {
             var producer = frontier.Dequeue();
+            triggerCandidatesByMutation.TryGetValue(
+                producer.Intent.Key,
+                out var producerCandidate);
             foreach (var eventKind in PotentialResourceEventKinds(
-                         producer.Intent.Source.Operation))
+                         producer.Intent,
+                         producerCandidate))
             {
                 var potentialEvent = new ResourceAppliedEvent(
                     eventKind,
@@ -2257,10 +4154,30 @@ internal static class AcceptedMechanicsPlanner
                 var expansion = input.EventMutationResolver(
                     potentialEvent,
                     producer.Intent.Key);
+                effectTriggerIndexLookupCount += expansion.Work.IndexLookupCount;
+                effectTriggerCandidateVisitCount += expansion.Work.CandidateVisitCount;
+                effectSourceBindingIndexLookupCount +=
+                    expansion.Work.SourceBindingIndexLookupCount;
+                effectSourceBindingCandidateVisitCount +=
+                    expansion.Work.SourceBindingCandidateVisitCount;
+                effectRoutingDescriptorAccessCount +=
+                    expansion.Work.RoutingDescriptorAccessCount;
+                effectOccurrenceCloneCount += expansion.Work.OccurrenceCloneCount;
+                effectFullValidationPassCount +=
+                    expansion.Work.FullEffectValidationPassCount;
+                effectTriggerArrayVisitCount +=
+                    expansion.Work.TriggerArrayVisitCount;
+                effectComponentIndexLookupCount +=
+                    expansion.Work.ComponentIndexLookupCount;
+                effectSelectedComponentVisitCount +=
+                    expansion.Work.SelectedComponentVisitCount;
+                pendingCandidateFingerprintOutputVisitCount +=
+                    expansion.Work
+                        .PendingCandidateFingerprintOutputVisitCount;
+                pendingProjectionDependencyVisitCount +=
+                    expansion.Work.PendingProjectionDependencyVisitCount;
                 if (!expansion.IsValid)
-                    return CompleteGraphFailure(expansion.Issues);
-                if (expansion.Mutations.Count == 0)
-                    continue;
+                    return FailureWithWork(expansion.Issues);
 
                 var expansionKeys = new HashSet<ResourceOperationKey>();
                 foreach (var mutation in expansion.Mutations)
@@ -2268,7 +4185,7 @@ internal static class AcceptedMechanicsPlanner
                     if (!expansionKeys.Add(mutation.Key) ||
                         preparedByKey.ContainsKey(mutation.Key))
                     {
-                        return CompleteGraphFailure(Issue(
+                        return FailureWithWork(Issue(
                             "resource_planner_duplicate_operation",
                             "one mutation per exact replay key",
                             Describe(mutation.Key)));
@@ -2280,105 +4197,121 @@ internal static class AcceptedMechanicsPlanner
                                 eventKind,
                                 StringComparison.Ordinal)))
                     {
-                        return CompleteGraphFailure(Issue(
+                        return FailureWithWork(Issue(
                             "effect_resource_trigger_execution_invalid",
                             "every expanded mutation bound to its exact producer event",
                             Describe(mutation.Key)));
                     }
                 }
 
-                var activationByMutation = new Dictionary<
+                var candidateByMutation = new Dictionary<
                     ResourceOperationKey,
-                    EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>();
-                var activationDecisions = new Dictionary<
-                    string,
-                    TriggerLineageDecision>(StringComparer.Ordinal);
-                foreach (var execution in expansion.TriggerExecutions)
+                    EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>();
+                var lineageByCandidate = new Dictionary<
+                    EffectActivationCandidateIdentity,
+                    TriggerLineageDecision>();
+                foreach (var candidate in expansion.TriggerCandidates)
                 {
-                    if (execution.MutationKeys.Count == 0)
+                    if (candidate.Producer != producer.Intent.Key ||
+                        !string.Equals(
+                            candidate.Activation.Identity.EventKind,
+                            eventKind,
+                            StringComparison.Ordinal) ||
+                        !string.Equals(
+                            candidate.Activation.Identity.TriggerEventRef,
+                            producer.Intent.EventRef,
+                            StringComparison.Ordinal) ||
+                        !triggerCandidatesByIdentity.TryAdd(
+                            candidate.Activation.Identity,
+                            candidate))
                     {
-                        return CompleteGraphFailure(Issue(
+                        return FailureWithWork(Issue(
                             "effect_resource_trigger_execution_invalid",
-                            "one or more exact mutation keys per trigger activation",
-                            TriggerExecutionKey(execution)));
-                    }
-                    if (!TryRegisterTriggerUseBudget(execution, triggerUseBudgets))
-                    {
-                        return CompleteGraphFailure(Issue(
-                            "effect_resource_trigger_budget_conflict",
-                            "one exact positive remaining-use budget per effect",
-                            TriggerExecutionKey(execution)));
+                            "one unique candidate bound to its exact producer event",
+                            DescribeActivation(candidate.Activation.Identity)));
                     }
 
-                    var executionKey = TriggerExecutionKey(execution);
-                    if (!activationDecisions.TryGetValue(executionKey, out var decision))
-                    {
-                        decision = AdvanceTriggerLineage(
-                            operationLineages[producer.OperationId],
-                            execution);
-                        if (decision.Issues.Count != 0)
-                            return CompleteGraphFailure(decision.Issues);
-                        activationDecisions.Add(executionKey, decision);
-                    }
-                    foreach (var key in execution.MutationKeys)
+                    var decision = AdvanceTriggerLineage(
+                        operationLineages[producer.OperationId],
+                        candidate);
+                    if (decision.Issues.Count != 0)
+                        return FailureWithWork(decision.Issues);
+                    lineageByCandidate.Add(candidate.Activation.Identity, decision);
+                    triggerCandidates.Add(candidate);
+                    foreach (var key in candidate.PlannedMutationKeys)
                     {
                         if (!expansionKeys.Contains(key) ||
-                            !activationByMutation.TryAdd(key, execution))
+                            !candidateByMutation.TryAdd(key, candidate))
                         {
-                            return CompleteGraphFailure(Issue(
+                            return FailureWithWork(Issue(
                                 "effect_resource_trigger_execution_invalid",
-                                "one exact trigger activation per expanded mutation",
+                                "one exact candidate per expanded mutation",
                                 Describe(key)));
                         }
                     }
                 }
 
                 var missingActivation = expansion.Mutations.FirstOrDefault(mutation =>
-                    !activationByMutation.ContainsKey(mutation.Key));
+                    !candidateByMutation.ContainsKey(mutation.Key));
                 if (missingActivation != null)
                 {
-                    return CompleteGraphFailure(Issue(
+                    return FailureWithWork(Issue(
                         "effect_resource_trigger_execution_missing",
-                        "one exact trigger activation for every expanded mutation",
+                        "one exact candidate for every expanded mutation",
                         Describe(missingActivation.Key)));
                 }
-                var includedMutations = expansion.Mutations
-                    .Where(mutation =>
-                        activationByMutation.TryGetValue(mutation.Key, out var execution) &&
-                        activationDecisions[TriggerExecutionKey(execution)].Allowed)
-                    .ToArray();
-                if (includedMutations.Length == 0)
-                    continue;
-                if (preparedByKey.Count + includedMutations.Length >
+                if (preparedByKey.Count + expansion.Mutations.Count >
                     ResourceMaterializationContract.MaxTriggerNodes)
                 {
-                    return CompleteGraphFailure(Issue(
+                    return FailureWithWork(Issue(
                         "resource_graph_node_limit_exceeded",
                         $"at most {ResourceMaterializationContract.MaxTriggerNodes} graph nodes",
-                        (preparedByKey.Count + includedMutations.Length)
+                        (preparedByKey.Count + expansion.Mutations.Count)
                             .ToString(System.Globalization.CultureInfo.InvariantCulture)));
                 }
 
                 foreach (var source in expansion.SourceExports)
                 {
+                    sourceAuthorityAddVisitCount++;
                     var sourceKey = (source.SourceKind, source.SourceId);
                     if (sourceExports.TryGetValue(sourceKey, out var existing))
                     {
                         if (existing != source)
                         {
-                            return CompleteGraphFailure(Issue(
+                            return FailureWithWork(Issue(
                                 "effect_resource_source_conflict",
                                 "one exact source policy per effect/trigger/component",
                                 source.SourceKind + "/" + source.SourceId));
                         }
                         continue;
                     }
+                    var sourceIssues = ResourceMutationSourceCatalog.ValidateExport(source);
+                    if (sourceIssues.Count != 0)
+                        return FailureWithWork(sourceIssues);
+                    var sourceAlias = source.SourceKind + "\0" +
+                        ResourceMaterializationContract.BuildConfusableKey(
+                            source.SourceId);
+                    if (!sourceAliases.Add(sourceAlias))
+                    {
+                        return FailureWithWork(Issue(
+                            "resource_source_duplicate_confusable",
+                            "case/confusable-unique source authority per kind",
+                            source.SourceKind + "/" + source.SourceId));
+                    }
+                    if (sourceExports.Count >=
+                        ResourceMaterializationContract.MaxLiveEntries)
+                    {
+                        return FailureWithWork(Issue(
+                            "resource_source_limit_exceeded",
+                            $"at most {ResourceMaterializationContract.MaxLiveEntries} source exports",
+                            (sourceExports.Count + 1).ToString(
+                                System.Globalization.CultureInfo.InvariantCulture)));
+                    }
                     sourceExports.Add(sourceKey, source);
                 }
-                var sourceResult = ResourceMutationSourceCatalog.Create(sourceExports.Values);
-                if (!sourceResult.IsValid || sourceResult.Catalog == null)
-                    return CompleteGraphFailure(sourceResult.Issues);
-                workingSources = sourceResult.Catalog;
+
+                if (expansion.Mutations.Count == 0)
+                    continue;
 
                 var additional = PrepareMutations(
                     new AcceptedMechanicsResourceInput(
@@ -2386,36 +4319,47 @@ internal static class AcceptedMechanicsPlanner
                         input.Definitions,
                         input.State,
                         input.History,
-                        workingSources,
-                        includedMutations),
+                        input.Sources,
+                        expansion.Mutations),
                     identityFactory,
-                    identityRegistry);
+                    identityRegistry,
+                    ResolveWorkingSource);
                 if (additional.Issues.Count != 0)
-                    return CompleteGraphFailure(additional.Issues);
+                    return FailureWithWork(additional.Issues);
                 foreach (var extra in additional.Mutations)
                 {
-                    var activation = activationByMutation[extra.Intent.Key];
-                    var decision = activationDecisions[TriggerExecutionKey(activation)];
+                    var candidate = candidateByMutation[extra.Intent.Key];
+                    var decision = lineageByCandidate[candidate.Activation.Identity];
                     prepared.Add(extra);
                     preparedByKey.Add(extra.Intent.Key, extra);
                     preparedByOperationId.Add(extra.OperationId, extra);
                     operationLineages.Add(
                         extra.OperationId,
                         new Dictionary<string, int>(decision.Lineage, StringComparer.Ordinal));
-                    triggerExecutionsByMutation.Add(extra.Intent.Key, activation);
-                    frontier.Enqueue(extra);
+                    triggerCandidatesByMutation.Add(extra.Intent.Key, candidate);
+                    if (decision.Allowed)
+                        frontier.Enqueue(extra);
                 }
             }
         }
 
+        sourceAuthorityFreezeCount++;
+        var frozenSources = ResourceMutationSourceCatalog.Create(sourceExports.Values);
+        if (!frozenSources.IsValid || frozenSources.Catalog == null)
+            return FailureWithWork(frozenSources.Issues);
+
         var graph = BuildGraph(prepared);
+        var work = SnapshotWork();
         return graph.IsValid
             ? new CompleteResourceGraphPreparation(
                 prepared,
                 graph.Graph,
-                triggerExecutionsByMutation,
-                Array.Empty<ValidationIssue>())
-            : CompleteGraphFailure(graph.Issues);
+                triggerCandidates,
+                triggerCandidatesByMutation,
+                frozenSources.Catalog.Exports,
+                Array.Empty<ValidationIssue>(),
+                work)
+            : FailureWithWork(graph.Issues);
     }
 
     private static Dictionary<string, int> MergeParentLineages(
@@ -2436,10 +4380,11 @@ internal static class AcceptedMechanicsPlanner
 
     private static TriggerLineageDecision AdvanceTriggerLineage(
         IReadOnlyDictionary<string, int> parentLineage,
-        EffectAcceptedTurnPlanner.EffectResourceTriggerExecution execution)
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate)
     {
         var lineage = new Dictionary<string, int>(parentLineage, StringComparer.Ordinal);
-        var exactActivationKey = "activation\0" + TriggerExecutionKey(execution);
+        var exactActivationKey = "activation\0" +
+            DescribeActivation(candidate.Activation.Identity, separator: "\0");
         if (lineage.ContainsKey(exactActivationKey))
         {
             return new TriggerLineageDecision(
@@ -2448,28 +4393,26 @@ internal static class AcceptedMechanicsPlanner
                 Array.Empty<ValidationIssue>());
         }
 
-        if (execution.RemainingUseBudget.HasValue)
+        var activationKey = TriggerSemanticKey(candidate);
+        if (lineage.TryGetValue(activationKey, out var priorActivations))
         {
-            var useKey = "uses\0" + execution.EffectId;
-            var priorUses = lineage.GetValueOrDefault(useKey);
-            if (priorUses >= execution.RemainingUseBudget.Value)
+            if (candidate.Activation.ConsumesUse &&
+                candidate.UseSeed is { RemainingUses: > 0 } useSeed)
             {
+                if (priorActivations >= useSeed.RemainingUses)
+                {
+                    return new TriggerLineageDecision(
+                        Allowed: false,
+                        lineage,
+                        Array.Empty<ValidationIssue>());
+                }
+                lineage[activationKey] = priorActivations + 1;
+                lineage.Add(exactActivationKey, 1);
                 return new TriggerLineageDecision(
-                    Allowed: false,
+                    Allowed: true,
                     lineage,
                     Array.Empty<ValidationIssue>());
             }
-            lineage[useKey] = priorUses + 1;
-            lineage[exactActivationKey] = 1;
-            return new TriggerLineageDecision(
-                Allowed: true,
-                lineage,
-                Array.Empty<ValidationIssue>());
-        }
-
-        var activationKey = TriggerSemanticKey(execution);
-        if (lineage.ContainsKey(activationKey))
-        {
             return new TriggerLineageDecision(
                 Allowed: false,
                 lineage,
@@ -2487,59 +4430,1089 @@ internal static class AcceptedMechanicsPlanner
     }
 
     private static IReadOnlyList<string> PotentialResourceEventKinds(
-        ResourceOperation operation) => operation switch
+        ResourceMutationIntent mutation,
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate?
+            producerCandidate)
     {
-        ResourceOperation.Damage => new[] { "resource_damaged", "resource_depleted" },
-        ResourceOperation.Restore => new[] { "resource_restored", "resource_filled" },
-        ResourceOperation.Spend => new[] { "resource_spent", "resource_depleted" },
-        ResourceOperation.Gain => new[] { "resource_gained", "resource_filled" },
-        _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, null)
-    };
+        if (producerCandidate?.Producer is { } parent &&
+            parent.Coordinate == mutation.Coordinate &&
+            ((string.Equals(
+                  producerCandidate.Activation.Identity.EventKind,
+                  "resource_filled",
+                  StringComparison.Ordinal) &&
+              mutation.Source.Operation is
+                  ResourceOperation.Restore or ResourceOperation.Gain) ||
+             (string.Equals(
+                  producerCandidate.Activation.Identity.EventKind,
+                  "resource_depleted",
+                  StringComparison.Ordinal) &&
+              mutation.Source.Operation is
+                  ResourceOperation.Damage or ResourceOperation.Spend)))
+        {
+            return Array.Empty<string>();
+        }
+
+        return mutation.Source.Operation switch
+        {
+            ResourceOperation.Damage =>
+                new[] { "resource_damaged", "resource_depleted" },
+            ResourceOperation.Restore =>
+                new[] { "resource_restored", "resource_filled" },
+            ResourceOperation.Spend =>
+                new[] { "resource_spent", "resource_depleted" },
+            ResourceOperation.Gain =>
+                new[] { "resource_gained", "resource_filled" },
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(mutation),
+                mutation.Source.Operation,
+                null)
+        };
+    }
 
     private static string TriggerSemanticKey(
-        EffectAcceptedTurnPlanner.EffectResourceTriggerExecution execution) =>
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate) =>
         string.Join(
             "\0",
-            execution.EffectId,
-            execution.TriggerId,
-            execution.EventKind);
+            candidate.Activation.Identity.EffectId,
+            candidate.Activation.Identity.TriggerId,
+            candidate.Activation.Identity.EventKind);
 
     private static CompleteResourceGraphPreparation CompleteGraphFailure(
-        IEnumerable<ValidationIssue> issues) =>
+        IEnumerable<ValidationIssue> issues,
+        ResourceGraphExpansionWork? work = null) =>
         new(
             Array.Empty<PreparedMutation>(),
             null,
+            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>(),
             new Dictionary<
                 ResourceOperationKey,
-                EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
-            issues.ToArray());
+                EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>(),
+            Array.Empty<ResourceMutationSourceExport>(),
+            issues.ToArray(),
+            work ?? ResourceGraphExpansionWork.Empty);
 
-    private static string TriggerExecutionKey(
-        EffectAcceptedTurnPlanner.EffectResourceTriggerExecution execution) =>
-        string.Join(
-            "\0",
-            execution.EffectId,
-            execution.TriggerId,
-            execution.EventKind,
-            execution.EventRef);
-
-    private static bool TryRegisterTriggerUseBudget(
-        EffectAcceptedTurnPlanner.EffectResourceTriggerExecution execution,
-        Dictionary<string, int> budgets)
+    internal static EffectAcceptedPlanAuthorityStamp CreateEffectPlanAuthority(
+        EffectAcceptedTurnPlan plan)
     {
-        if (!execution.RemainingUseBudget.HasValue)
-            return true;
-        var budget = execution.RemainingUseBudget.Value;
-        if (budget <= 0)
-            return false;
-        if (budgets.TryGetValue(execution.EffectId, out var existing))
-            return existing == budget;
-        budgets.Add(execution.EffectId, budget);
-        return true;
+        ArgumentNullException.ThrowIfNull(plan);
+        return new EffectAcceptedPlanAuthorityStamp(
+            plan.InputFingerprint,
+            plan.CarrierAuthorityFingerprint,
+            plan.SourceAuthorityFingerprint,
+            plan.TargetAuthorityFingerprint);
     }
 
+    private static string DescribeActivation(
+        EffectActivationCandidateIdentity identity,
+        string separator = "/") =>
+        string.Join(
+            separator,
+            identity.EffectId,
+            identity.TriggerId,
+            identity.EventKind,
+            identity.EventRef,
+            identity.TriggerEventRef);
+
+    private static ResourcePendingCausalAuthority CreatePendingCausalAuthority(
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate,
+        AcceptedEffectActivationTranscriptStamp stamp,
+        EffectAcceptedTurnPlanner.EffectBoundedResourceResolution resolution,
+        string candidateFingerprint,
+        string transcriptPrefixFingerprint,
+        int waveOrdinal) =>
+        new(
+            stamp.Identity.EffectId,
+            stamp.Identity.TriggerId,
+            stamp.Identity.EventRef,
+            stamp.Identity.TriggerEventRef,
+            candidate.Producer == null
+                ? null
+                : CreateStableProducerOperationKey(candidate.Producer),
+            stamp.Priority,
+            stamp.ActivationOrdinal,
+            stamp.ConsumesUse,
+            stamp.UsesBefore,
+            resolution.ComponentId,
+            resolution.AfterComponentId,
+            candidateFingerprint,
+            transcriptPrefixFingerprint,
+            waveOrdinal);
+
+    internal static string CreateStableProducerOperationKey(
+        ResourceOperationKey producer)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "resource-producer-operation-key-v3");
+        AppendResourceOperationKey(builder, producer);
+        var fingerprint = builder.Build();
+        return "resource_operation_key_" + fingerprint["sha256:".Length..];
+    }
+
+    private static PendingCandidateAuthorityValidationResult
+        ValidatePendingCandidateAuthorities(
+            IReadOnlyList<
+                EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>
+                candidates,
+            IReadOnlyList<PreparedMutation> mutations,
+            IReadOnlyList<ResourceMutationSourceExport> sources,
+            PlannerWorkMetrics metrics)
+    {
+        var issues = new List<ValidationIssue>();
+        var mutationsByKey = new Dictionary<
+            ResourceOperationKey,
+            ResourceMutationIntent>();
+        foreach (var prepared in mutations)
+        {
+            if (!mutationsByKey.TryAdd(prepared.Intent.Key, prepared.Intent))
+            {
+                issues.AddRange(Issue(
+                    "resource_planner_duplicate_operation",
+                    "one mutation per exact replay key",
+                    Describe(prepared.Intent.Key)));
+            }
+        }
+
+        var sourcesByKey = new Dictionary<
+            (string SourceKind, string SourceId),
+            ResourceMutationSourceExport>();
+        foreach (var source in sources)
+        {
+            if (!sourcesByKey.TryAdd(
+                    (source.SourceKind, source.SourceId),
+                    source))
+            {
+                issues.AddRange(Issue(
+                    "resource_source_duplicate_exact",
+                    "one exact source export per source kind and identity",
+                    source.SourceKind + "/" + source.SourceId));
+            }
+        }
+
+        var authorities = new Dictionary<
+            EffectActivationCandidateIdentity,
+            ValidatedPendingCandidateAuthority>();
+        if (issues.Count != 0)
+        {
+            return new PendingCandidateAuthorityValidationResult(
+                authorities,
+                issues);
+        }
+
+        foreach (var candidate in candidates)
+        {
+            var pendingOutputs = candidate.PendingOutputs;
+            if (pendingOutputs.Count == 0)
+                continue;
+
+            var material = ResolveCandidateMaterialFingerprint(
+                candidate,
+                mutationsByKey,
+                sourcesByKey,
+                metrics);
+            if (!material.IsValid)
+            {
+                issues.AddRange(material.Issues);
+                continue;
+            }
+            if (candidate.CausalMaterialFingerprint != null &&
+                !string.Equals(
+                    candidate.CausalMaterialFingerprint,
+                    material.Fingerprint,
+                    StringComparison.Ordinal))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_candidate_origin_mismatch",
+                    "the cached causal material fingerprint",
+                    DescribeActivation(candidate.Activation.Identity)));
+                continue;
+            }
+
+            var candidateFingerprint = CreateCandidateFingerprint(
+                candidate,
+                material.Fingerprint!,
+                pendingOutputs,
+                candidate.ReactionOutputs,
+                metrics);
+            if (candidate.CandidateFingerprint != null &&
+                !string.Equals(
+                    candidate.CandidateFingerprint,
+                    candidateFingerprint,
+                    StringComparison.Ordinal))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_candidate_origin_mismatch",
+                    "the cached complete candidate fingerprint",
+                    DescribeActivation(candidate.Activation.Identity)));
+                continue;
+            }
+            if (!authorities.TryAdd(
+                    candidate.Activation.Identity,
+                    new ValidatedPendingCandidateAuthority(
+                        material.Fingerprint!,
+                        candidateFingerprint)))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_candidate_authority_duplicate",
+                    "one prevalidated immutable authority per pending candidate",
+                    DescribeActivation(candidate.Activation.Identity)));
+            }
+        }
+
+        return new PendingCandidateAuthorityValidationResult(
+            authorities,
+            issues);
+    }
+
+    internal static string CreateCandidateFingerprint(
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate)
+    {
+        ArgumentNullException.ThrowIfNull(candidate);
+        var material = ResolveCandidateMaterialFingerprint(candidate);
+        if (!material.IsValid)
+        {
+            throw new InvalidOperationException(string.Join(
+                Environment.NewLine,
+                material.Issues.Select(static issue =>
+                    issue.Code + ": expected=" + issue.Expected +
+                    ";actual=" + issue.Actual)));
+        }
+        return CreateCandidateFingerprint(
+            candidate,
+            material.Fingerprint!,
+            candidate.PendingOutputs,
+            candidate.ReactionOutputs,
+            metrics: null);
+    }
+
+    private static string CreateCandidateFingerprint(
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate,
+        string causalMaterialFingerprint,
+        IReadOnlyList<
+            EffectAcceptedTurnPlanner.EffectBoundedResourceResolution>
+            pendingOutputs,
+        IReadOnlyList<EffectReactionExecution> reactionOutputs,
+        PlannerWorkMetrics? metrics)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-activation-candidate-v6");
+        AppendReplayStableActivationIdentity(
+            builder,
+            candidate.Activation.Identity,
+            candidate.EffectAuthority);
+        builder.Append(candidate.Activation.Priority);
+        builder.Append(candidate.Activation.ConsumesUse);
+        builder.Append(candidate.UseSeed != null);
+        if (candidate.UseSeed != null)
+        {
+            AppendReplayStableEffectIdentity(
+                builder,
+                candidate.UseSeed.EffectId,
+                candidate.EffectAuthority);
+            builder.Append(candidate.UseSeed.RemainingUses);
+        }
+        builder.Append(candidate.Producer != null);
+        if (candidate.Producer != null)
+            AppendResourceOperationKey(builder, candidate.Producer);
+        builder.Append(causalMaterialFingerprint);
+
+        var pendingFingerprints = new string[pendingOutputs.Count];
+        for (var index = 0; index < pendingOutputs.Count; index++)
+        {
+            pendingFingerprints[index] =
+                CreatePendingCandidateOutputFingerprint(pendingOutputs[index]);
+            if (metrics != null)
+                metrics.PendingCandidateFingerprintOutputVisitCount++;
+        }
+        AppendOrderedFingerprints(
+            builder,
+            "pending-outputs",
+            pendingFingerprints);
+        AppendOrderedFingerprints(
+            builder,
+            "reaction-outputs",
+            reactionOutputs.Select(output =>
+                CreateReplayStableReactionCandidateOutputFingerprint(
+                    output,
+                    candidate.Activation.Identity.EffectId,
+                    candidate.EffectAuthority)));
+        return builder.Build();
+    }
+
+    private static CandidateMaterialFingerprintResult
+        ResolveCandidateMaterialFingerprint(
+            EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate,
+            IReadOnlyDictionary<ResourceOperationKey, ResourceMutationIntent>?
+                actualMutationsByKey = null,
+        IReadOnlyDictionary<
+                (string SourceKind, string SourceId),
+                ResourceMutationSourceExport>? actualSourcesByKey = null,
+            PlannerWorkMetrics? metrics = null)
+    {
+        var issues = new List<ValidationIssue>();
+        var origin = candidate.Origin;
+        var originMutations = new Dictionary<
+            ResourceOperationKey,
+            ResourceMutationIntent>();
+        foreach (var mutation in origin.Mutations)
+        {
+            if (!originMutations.TryAdd(mutation.Key, mutation))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_candidate_origin_duplicate",
+                    "one exact origin mutation per operation key",
+                    Describe(mutation.Key)));
+            }
+        }
+
+        var originSources = new Dictionary<
+            (string SourceKind, string SourceId),
+            ResourceMutationSourceExport>();
+        foreach (var source in origin.SourceExports)
+        {
+            var sourceKey = (source.SourceKind, source.SourceId);
+            if (!originSources.TryAdd(sourceKey, source))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_candidate_origin_duplicate",
+                    "one exact referenced source export per source identity",
+                    source.SourceKind + "/" + source.SourceId));
+            }
+        }
+
+        var originMutationKeys = originMutations.Keys.ToHashSet();
+        var originMapKeys = origin.ComponentIdsByMutation.Keys.ToHashSet();
+        if (!originMutationKeys.SetEquals(originMapKeys))
+        {
+            issues.AddRange(Issue(
+                "resource_pending_candidate_origin_mismatch",
+                "origin mutation keys equal origin component-map keys",
+                DescribeActivation(candidate.Activation.Identity)));
+        }
+        var mappedComponentIds = origin.ComponentIdsByMutation.Values
+            .ToHashSet(StringComparer.Ordinal);
+        if (!mappedComponentIds.SetEquals(origin.ComponentIds) ||
+            origin.ComponentIds.Count != mappedComponentIds.Count)
+        {
+            issues.AddRange(Issue(
+                "resource_pending_candidate_origin_mismatch",
+                "origin component ids equal the distinct origin component-map values",
+                DescribeActivation(candidate.Activation.Identity)));
+        }
+
+        var referencedSources = originMutations.Values
+            .Select(static mutation => (
+                mutation.Source.SourceKind,
+                mutation.Source.SourceId))
+            .ToHashSet();
+        if (!referencedSources.SetEquals(originSources.Keys))
+        {
+            issues.AddRange(Issue(
+                "resource_pending_candidate_origin_mismatch",
+                "exactly the source exports referenced by origin mutations",
+                DescribeActivation(candidate.Activation.Identity)));
+        }
+
+        var runtimeMutationKeys = candidate.PlannedMutationKeys.ToHashSet();
+        var runtimeMapKeys = candidate.PlannedComponentIdsByMutation.Keys
+            .ToHashSet();
+        var runtimeMappedComponentIds = candidate
+            .PlannedComponentIdsByMutation.Values
+            .ToHashSet(StringComparer.Ordinal);
+        if (!runtimeMutationKeys.SetEquals(runtimeMapKeys) ||
+            !runtimeMappedComponentIds.SetEquals(
+                candidate.PlannedComponentIds) ||
+            candidate.PlannedComponentIds.Count !=
+                runtimeMappedComponentIds.Count)
+        {
+            issues.AddRange(Issue(
+                "resource_pending_candidate_origin_mismatch",
+                "one exact runtime component binding per planned mutation",
+                DescribeActivation(candidate.Activation.Identity)));
+        }
+        if (!originMutationKeys.IsSubsetOf(runtimeMutationKeys) ||
+            candidate.CandidateFingerprint == null &&
+            !originMutationKeys.SetEquals(runtimeMutationKeys))
+        {
+            issues.AddRange(Issue(
+                "resource_pending_candidate_origin_mismatch",
+                "an unbound exact origin plan or a bound receipt-only extension",
+                DescribeActivation(candidate.Activation.Identity)));
+        }
+        if (candidate.CandidateFingerprint != null)
+        {
+            var resolvedByComponent = new Dictionary<
+                string,
+                ResourcePendingResolvedBinding>(StringComparer.Ordinal);
+            var pendingOutputs = candidate.PendingOutputs;
+            foreach (var output in pendingOutputs)
+            {
+                if (candidate.TryResolvePendingBinding(
+                        output.ComponentId,
+                        out var binding))
+                {
+                    resolvedByComponent.TryAdd(output.ComponentId, binding);
+                }
+            }
+            var projectionIssues = new List<ValidationIssue>();
+            var expectedProjections = ProjectResolvedPendingMutations(
+                candidate,
+                pendingOutputs,
+                resolvedByComponent,
+                projectionIssues,
+                metrics);
+            issues.AddRange(projectionIssues);
+            var expectedByKey = expectedProjections.ToDictionary(
+                static projection => projection.Mutation.Key);
+            var extraKeys = runtimeMutationKeys
+                .Except(originMutationKeys)
+                .ToHashSet();
+            if (!extraKeys.SetEquals(expectedByKey.Keys))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_candidate_origin_mismatch",
+                    "exactly the terminal-receipt projections extend a bound origin plan",
+                    DescribeActivation(candidate.Activation.Identity)));
+            }
+            foreach (var expected in expectedProjections)
+            {
+                var changedProjectionFields = new List<string>();
+                if (!candidate.PlannedComponentIdsByMutation.TryGetValue(
+                        expected.Mutation.Key,
+                        out var runtimeComponentId) ||
+                    !string.Equals(
+                        runtimeComponentId,
+                        expected.ComponentId,
+                        StringComparison.Ordinal))
+                {
+                    changedProjectionFields.Add("ComponentBinding");
+                }
+                if (actualMutationsByKey != null || actualSourcesByKey != null)
+                {
+                    ResourceMutationIntent? actualMutation = null;
+                    if (actualMutationsByKey == null ||
+                        !actualMutationsByKey.TryGetValue(
+                            expected.Mutation.Key,
+                            out actualMutation))
+                    {
+                        changedProjectionFields.Add("RuntimeMutation");
+                    }
+                    ResourceMutationSourceExport? actualSource = null;
+                    if (actualMutation != null &&
+                        (actualSourcesByKey == null ||
+                         !actualSourcesByKey.TryGetValue(
+                             (
+                                 actualMutation.Source.SourceKind,
+                                 actualMutation.Source.SourceId),
+                             out actualSource)))
+                    {
+                        changedProjectionFields.Add("RuntimeSource");
+                    }
+                    if (actualMutation != null && actualSource != null &&
+                        !string.Equals(
+                            CreateMutationIntentFingerprint(
+                                actualMutation,
+                                actualSource),
+                            CreateMutationIntentFingerprint(
+                                expected.Mutation,
+                                expected.Source),
+                            StringComparison.Ordinal))
+                    {
+                        changedProjectionFields.AddRange(
+                            DescribeMutationIntentDifference(
+                                expected.Mutation,
+                                expected.Source,
+                                actualMutation,
+                                actualSource));
+                    }
+                }
+                if (changedProjectionFields.Count != 0)
+                {
+                    issues.AddRange(Issue(
+                        "resource_pending_candidate_origin_mismatch",
+                        "only an exact terminal-receipt projection may extend a bound origin plan",
+                        Describe(expected.Mutation.Key) + ";changed=" +
+                        string.Join(",", changedProjectionFields.Distinct(
+                            StringComparer.Ordinal))));
+                }
+            }
+        }
+        foreach (var originComponent in origin.ComponentIdsByMutation)
+        {
+            if (!candidate.PlannedComponentIdsByMutation.TryGetValue(
+                    originComponent.Key,
+                    out var runtimeComponentId) ||
+                !string.Equals(
+                    runtimeComponentId,
+                    originComponent.Value,
+                    StringComparison.Ordinal))
+            {
+                issues.AddRange(Issue(
+                    "resource_pending_candidate_origin_mismatch",
+                    "the immutable origin mutation-to-component binding",
+                    Describe(originComponent.Key)));
+            }
+        }
+        if (candidate.CandidateFingerprint == null &&
+            (candidate.PlannedComponentIdsByMutation.Count !=
+                 origin.ComponentIdsByMutation.Count ||
+             !candidate.PlannedComponentIds.ToHashSet(StringComparer.Ordinal)
+                 .SetEquals(origin.ComponentIds)))
+        {
+            issues.AddRange(Issue(
+                "resource_pending_candidate_origin_mismatch",
+                "the exact unbound origin component plan",
+                DescribeActivation(candidate.Activation.Identity)));
+        }
+
+        if (issues.Count != 0)
+            return new CandidateMaterialFingerprintResult(null, issues);
+
+        var originFingerprint = CreateCandidateMaterialFingerprint(
+            originMutations.Values,
+            origin.ComponentIds,
+            origin.ComponentIdsByMutation,
+            originSources);
+        if (actualMutationsByKey != null && actualSourcesByKey != null)
+        {
+            var actualMutations = new List<ResourceMutationIntent>();
+            var actualSources = new Dictionary<
+                (string SourceKind, string SourceId),
+                ResourceMutationSourceExport>();
+            foreach (var originMutation in originMutations.Values)
+            {
+                if (!actualMutationsByKey.TryGetValue(
+                        originMutation.Key,
+                        out var actualMutation) ||
+                    !actualSourcesByKey.TryGetValue(
+                        (
+                            originMutation.Source.SourceKind,
+                            originMutation.Source.SourceId),
+                        out var actualSource))
+                {
+                    issues.AddRange(Issue(
+                        "resource_pending_candidate_origin_mismatch",
+                        "the exact origin mutation and source in the runtime graph",
+                        Describe(originMutation.Key)));
+                    continue;
+                }
+                actualMutations.Add(actualMutation);
+                actualSources.TryAdd(
+                    (actualSource.SourceKind, actualSource.SourceId),
+                    actualSource);
+            }
+            if (issues.Count == 0)
+            {
+                var actualFingerprint = CreateCandidateMaterialFingerprint(
+                    actualMutations,
+                    origin.ComponentIds,
+                    origin.ComponentIdsByMutation,
+                    actualSources);
+                if (!string.Equals(
+                        actualFingerprint,
+                        originFingerprint,
+                        StringComparison.Ordinal))
+                {
+                    issues.AddRange(Issue(
+                        "resource_pending_candidate_origin_mismatch",
+                        "runtime mutation and source semantics equal the immutable origin payload",
+                        DescribeActivation(candidate.Activation.Identity)));
+                }
+            }
+        }
+
+        return issues.Count == 0
+            ? new CandidateMaterialFingerprintResult(
+                originFingerprint,
+                Array.Empty<ValidationIssue>())
+            : new CandidateMaterialFingerprintResult(null, issues);
+    }
+
+    private static string CreateCandidateMaterialFingerprint(
+        IEnumerable<ResourceMutationIntent> mutations,
+        IEnumerable<string> componentIds,
+        IReadOnlyDictionary<ResourceOperationKey, string> componentMap,
+        IReadOnlyDictionary<
+            (string SourceKind, string SourceId),
+            ResourceMutationSourceExport> sources)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-activation-candidate-origin-v1");
+        AppendOrderedFingerprints(
+            builder,
+            "mutation-semantics",
+            mutations.Select(mutation => CreateMutationIntentFingerprint(
+                mutation,
+                sources[(
+                    mutation.Source.SourceKind,
+                    mutation.Source.SourceId)])));
+        AppendOrderedStrings(builder, "component-ids", componentIds);
+        AppendOrderedFingerprints(
+            builder,
+            "component-map",
+            componentMap.Select(static pair =>
+                CreateComponentMapFingerprint(pair.Key, pair.Value)));
+        return builder.Build();
+    }
+
+    private static string CreateMutationIntentFingerprint(
+        ResourceMutationIntent mutation,
+        ResourceMutationSourceExport source)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-activation-origin-mutation-v1");
+        AppendResourceOperationKey(builder, mutation.Key);
+        builder.Append(mutation.Amount);
+        AppendOrderedFingerprints(
+            builder,
+            "dependencies",
+            mutation.Dependencies.Select(CreateResourceOperationKeyFingerprint));
+        AppendOrderedFingerprints(
+            builder,
+            "event-requirements",
+            mutation.EventRequirements.Select(
+                CreateEventRequirementFingerprint));
+        AppendNullableString(builder, mutation.ReceiptId);
+        builder.Append(mutation.DerivedAmount != null);
+        if (mutation.DerivedAmount != null)
+            builder.Append(mutation.DerivedAmount.RecoveryPercent);
+        builder.Append(mutation.ResultConstraint != null);
+        if (mutation.ResultConstraint != null)
+        {
+            AppendNullableDecimal(builder, mutation.ResultConstraint.RejectBelow);
+            AppendNullableDecimal(builder, mutation.ResultConstraint.RejectAbove);
+        }
+        builder.Append(source.SourceKind);
+        builder.Append(source.SourceId);
+        builder.Append(source.AuthorityFingerprint);
+        builder.Append(source.State.ToString());
+        builder.Append(source.SameTurn);
+        builder.Append(source.BoundOwner != null);
+        if (source.BoundOwner != null)
+        {
+            builder.Append(source.BoundOwner.Realm);
+            builder.Append(ResourceDefinitionCatalog.GetOwnerKindToken(
+                source.BoundOwner.OwnerKind));
+            builder.Append(source.BoundOwner.ResourceOwnerId);
+        }
+        return builder.Build();
+    }
+
+    private static IReadOnlyList<string> DescribeMutationIntentDifference(
+        ResourceMutationIntent expectedMutation,
+        ResourceMutationSourceExport expectedSource,
+        ResourceMutationIntent actualMutation,
+        ResourceMutationSourceExport actualSource)
+    {
+        var changed = new List<string>();
+        if (expectedMutation.Key != actualMutation.Key)
+            changed.Add(nameof(ResourceMutationIntent.Key));
+        if (expectedMutation.Amount != actualMutation.Amount)
+            changed.Add(nameof(ResourceMutationIntent.Amount));
+        if (!OrderedFingerprintsEqual(
+                expectedMutation.Dependencies.Select(
+                    CreateResourceOperationKeyFingerprint),
+                actualMutation.Dependencies.Select(
+                    CreateResourceOperationKeyFingerprint)))
+        {
+            changed.Add(nameof(ResourceMutationIntent.Dependencies));
+        }
+        if (!OrderedFingerprintsEqual(
+                expectedMutation.EventRequirements.Select(
+                    CreateEventRequirementFingerprint),
+                actualMutation.EventRequirements.Select(
+                    CreateEventRequirementFingerprint)))
+        {
+            changed.Add(nameof(ResourceMutationIntent.EventRequirements));
+        }
+        if (!string.Equals(
+                expectedMutation.ReceiptId,
+                actualMutation.ReceiptId,
+                StringComparison.Ordinal))
+        {
+            changed.Add(nameof(ResourceMutationIntent.ReceiptId));
+        }
+        if (expectedMutation.DerivedAmount != actualMutation.DerivedAmount)
+            changed.Add(nameof(ResourceMutationIntent.DerivedAmount));
+        if (expectedMutation.ResultConstraint != actualMutation.ResultConstraint)
+            changed.Add(nameof(ResourceMutationIntent.ResultConstraint));
+        if (!string.Equals(
+                expectedSource.SourceKind,
+                actualSource.SourceKind,
+                StringComparison.Ordinal))
+        {
+            changed.Add(nameof(ResourceMutationSourceExport.SourceKind));
+        }
+        if (!string.Equals(
+                expectedSource.SourceId,
+                actualSource.SourceId,
+                StringComparison.Ordinal))
+        {
+            changed.Add(nameof(ResourceMutationSourceExport.SourceId));
+        }
+        if (!string.Equals(
+                expectedSource.AuthorityFingerprint,
+                actualSource.AuthorityFingerprint,
+                StringComparison.Ordinal))
+        {
+            changed.Add(nameof(ResourceMutationSourceExport.AuthorityFingerprint));
+        }
+        if (expectedSource.State != actualSource.State)
+            changed.Add(nameof(ResourceMutationSourceExport.State));
+        if (expectedSource.SameTurn != actualSource.SameTurn)
+            changed.Add(nameof(ResourceMutationSourceExport.SameTurn));
+        if (expectedSource.BoundOwner != actualSource.BoundOwner)
+            changed.Add(nameof(ResourceMutationSourceExport.BoundOwner));
+        return changed.Count == 0
+            ? new[] { "FingerprintDomain" }
+            : changed;
+    }
+
+    private static bool OrderedFingerprintsEqual(
+        IEnumerable<string> expected,
+        IEnumerable<string> actual) =>
+        expected.OrderBy(static value => value, StringComparer.Ordinal)
+            .SequenceEqual(
+                actual.OrderBy(static value => value, StringComparer.Ordinal),
+                StringComparer.Ordinal);
+
+    private static string CreatePendingCandidateOutputFingerprint(
+        EffectAcceptedTurnPlanner.EffectBoundedResourceResolution output)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-activation-pending-output-v2");
+        builder.Append(output.EventRef);
+        AppendReplayStableEffectIdentity(
+            builder,
+            output.EffectId,
+            output.EffectAuthority);
+        AppendAuthorityBinding(builder, output.EffectAuthority);
+        builder.Append(CanonicalFingerprintJson(output.Source));
+        AppendAuthorityBinding(builder, output.SourceAuthority);
+        builder.Append(CanonicalFingerprintJson(output.Target));
+        AppendAuthorityBinding(builder, output.TargetAuthority);
+        builder.Append(output.TriggerId);
+        builder.Append(output.ComponentId);
+        builder.Append(output.TriggerEventRef);
+        builder.Append(output.EventKind);
+        AppendResourceCoordinate(builder, output.Coordinate);
+        AppendAuthorityBinding(builder, output.ResourceAuthority);
+        builder.Append(output.Operation.ToString());
+        builder.Append(output.MinimumAmount);
+        builder.Append(output.MaximumAmount);
+        builder.Append(output.SourceAuthorityFingerprint);
+        builder.Append(output.PolicyFingerprint);
+        AppendOrderedFingerprints(
+            builder,
+            "dependencies",
+            output.Dependencies.Select(CreateResourceOperationKeyFingerprint));
+        AppendOrderedFingerprints(
+            builder,
+            "event-requirements",
+            output.EventRequirements.Select(
+                CreateEventRequirementFingerprint));
+        builder.Append(output.ResultConstraint != null);
+        if (output.ResultConstraint != null)
+        {
+            AppendNullableDecimal(
+                builder,
+                output.ResultConstraint.RejectBelow);
+            AppendNullableDecimal(
+                builder,
+                output.ResultConstraint.RejectAbove);
+        }
+        AppendNullableInt(builder, output.RemainingUseBudget);
+        builder.Append(output.SafeSourceLabel);
+        builder.Append(output.SafeTargetLabel);
+        builder.Append(output.SafeResourceLabel);
+        builder.Append(output.SafeOperationLabel);
+        AppendNullableString(builder, output.AfterComponentId);
+        return builder.Build();
+    }
+
+    internal static string CreateReactionCandidateOutputFingerprint(
+        EffectReactionExecution output) =>
+        CreateReactionCandidateOutputFingerprintCore(
+            output,
+            currentEffectId: null,
+            effectAuthority: null);
+
+    internal static string CreateReplayStableReactionCandidateOutputFingerprint(
+        EffectReactionExecution output,
+        string currentEffectId,
+        ResourcePendingAuthorityBinding effectAuthority) =>
+        CreateReactionCandidateOutputFingerprintCore(
+            output,
+            currentEffectId,
+            effectAuthority);
+
+    private static string CreateReactionCandidateOutputFingerprintCore(
+        EffectReactionExecution output,
+        string? currentEffectId,
+        ResourcePendingAuthorityBinding? effectAuthority)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            effectAuthority == null
+                ? "effect-activation-reaction-output-v4"
+                : "effect-activation-reaction-output-rebind-v2");
+        builder.Append(output.EventRef);
+        builder.Append(output.TriggerEventRef);
+        builder.Append(output.CausalEventRef);
+        builder.Append(output.Turn);
+        builder.Append(output.EventKind);
+        builder.Append(output.Target.Realm);
+        builder.Append(output.Target.Kind);
+        builder.Append(output.Target.TargetId);
+        if (effectAuthority == null || currentEffectId == null)
+        {
+            builder.Append(output.EffectId);
+        }
+        else
+        {
+            AppendReplayStableEffectIdentity(
+                builder,
+                output.EffectId,
+                effectAuthority);
+        }
+        builder.Append(output.TriggerId);
+        builder.Append(output.ComponentId);
+        builder.Append(output.ComponentPriority);
+        builder.Append(output.ResultKind);
+        builder.Append(output.Dependency);
+        AppendNullableString(builder, output.AfterComponentId);
+        builder.Append(output.MaxExpansion);
+        AppendEffectSourceAuthority(builder, output.DownstreamSource);
+        builder.Append(CanonicalFingerprintJson(output.Parameters));
+        AppendEffectSourceKey(builder, output.DownstreamSourceKey);
+        if (output.ReplacementTarget == null)
+        {
+            AppendNullableString(builder, null);
+        }
+        else
+        {
+            builder.Append(true);
+            if (effectAuthority == null)
+            {
+                builder.Append(output.ReplacementTarget.EffectId);
+                AppendAuthorityBinding(
+                    builder,
+                    output.ReplacementTarget.Authority);
+            }
+            else
+            {
+                AppendReplayStableEffectIdentity(
+                    builder,
+                    output.ReplacementTarget.EffectId,
+                    output.ReplacementTarget.Authority);
+            }
+        }
+        return builder.Build();
+    }
+
+    private static string CreateComponentMapFingerprint(
+        ResourceOperationKey key,
+        string componentId)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-activation-component-map-v1");
+        AppendResourceOperationKey(builder, key);
+        builder.Append(componentId);
+        return builder.Build();
+    }
+
+    private static string CreateEventRequirementFingerprint(
+        ResourceMutationEventRequirement requirement)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-activation-event-requirement-v1");
+        AppendResourceOperationKey(builder, requirement.Producer);
+        builder.Append(requirement.EventKind);
+        return builder.Build();
+    }
+
+    private static string CreateResourceOperationKeyFingerprint(
+        ResourceOperationKey key)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "resource-operation-key-v1");
+        AppendResourceOperationKey(builder, key);
+        return builder.Build();
+    }
+
+    private static void AppendResourceOperationKey(
+        ResourceFingerprintBuilder builder,
+        ResourceOperationKey key)
+    {
+        builder.Append(key.EventRef);
+        builder.Append(key.OriginKind);
+        builder.Append(key.OriginId);
+        AppendResourceCoordinate(builder, key.Coordinate);
+        builder.Append(key.Operation.ToString());
+    }
+
+    private static void AppendResourceCoordinate(
+        ResourceFingerprintBuilder builder,
+        ResourceCoordinate coordinate)
+    {
+        builder.Append(coordinate.Realm);
+        builder.Append(ResourceDefinitionCatalog.GetOwnerKindToken(
+            coordinate.OwnerKind));
+        builder.Append(coordinate.ResourceOwnerId);
+        builder.Append(coordinate.ResourceKey);
+    }
+
+    private static void AppendActivationIdentity(
+        ResourceFingerprintBuilder builder,
+        EffectActivationCandidateIdentity identity)
+    {
+        builder.Append(identity.EffectId);
+        builder.Append(identity.TriggerId);
+        builder.Append(identity.EventKind);
+        builder.Append(identity.EventRef);
+        builder.Append(identity.TriggerEventRef);
+    }
+
+    internal static void AppendReplayStableActivationIdentity(
+        ResourceFingerprintBuilder builder,
+        EffectActivationCandidateIdentity identity,
+        ResourcePendingAuthorityBinding effectAuthority)
+    {
+        AppendReplayStableEffectIdentity(
+            builder,
+            identity.EffectId,
+            effectAuthority);
+        builder.Append(identity.TriggerId);
+        builder.Append(identity.EventKind);
+        builder.Append(identity.EventRef);
+        builder.Append(identity.TriggerEventRef);
+    }
+
+    internal static void AppendReplayStableEffectIdentity(
+        ResourceFingerprintBuilder builder,
+        string effectId,
+        ResourcePendingAuthorityBinding effectAuthority)
+    {
+        EffectAcceptedTurnPlanner.AppendPendingEffectReplayIdentity(
+            builder,
+            effectId,
+            effectAuthority);
+    }
+
+    private static void AppendAuthorityBinding(
+        ResourceFingerprintBuilder builder,
+        ResourcePendingAuthorityBinding binding)
+    {
+        builder.Append(binding.BindingKind);
+        builder.Append(binding.AuthorityId);
+    }
+
+    private static void AppendEffectSourceKey(
+        ResourceFingerprintBuilder builder,
+        EffectSourceKey? key)
+    {
+        builder.Append(key != null);
+        if (key == null)
+            return;
+        builder.Append(key.Realm);
+        builder.Append(key.Kind);
+        builder.Append(key.SourceId);
+        builder.Append(key.DefinitionKey);
+    }
+
+    private static void AppendEffectSourceAuthority(
+        ResourceFingerprintBuilder builder,
+        EffectSourceAuthorityEntry? source)
+    {
+        builder.Append(source != null);
+        if (source == null)
+            return;
+        AppendEffectSourceKey(builder, source.Key);
+        builder.Append(CanonicalFingerprintJson(source.Definition));
+        builder.Append(source.Materializable);
+        builder.Append(source.Active);
+        builder.Append(source.SameTurn);
+        AppendNullableString(builder, source.SourceRef);
+        AppendOrderedStrings(
+            builder,
+            "satisfied-predicates",
+            source.SatisfiedPredicates);
+        AppendNullableString(
+            builder,
+            source.RequiredApplicationAuthority);
+    }
+
+    private static void AppendOrderedFingerprints(
+        ResourceFingerprintBuilder builder,
+        string section,
+        IEnumerable<string> fingerprints)
+    {
+        var ordered = fingerprints
+            .OrderBy(static value => value, StringComparer.Ordinal)
+            .ToArray();
+        builder.Append(section);
+        builder.Append(ordered.Length);
+        foreach (var fingerprint in ordered)
+            builder.Append(fingerprint);
+    }
+
+    private static void AppendOrderedStrings(
+        ResourceFingerprintBuilder builder,
+        string section,
+        IEnumerable<string> values)
+    {
+        var ordered = values
+            .OrderBy(static value => value, StringComparer.Ordinal)
+            .ToArray();
+        builder.Append(section);
+        builder.Append(ordered.Length);
+        foreach (var value in ordered)
+            builder.Append(value);
+    }
+
+    private static void AppendNullableString(
+        ResourceFingerprintBuilder builder,
+        string? value)
+    {
+        builder.Append(value != null);
+        if (value != null)
+            builder.Append(value);
+    }
+
+    private static void AppendNullableInt(
+        ResourceFingerprintBuilder builder,
+        int? value)
+    {
+        builder.Append(value.HasValue);
+        if (value.HasValue)
+            builder.Append(value.Value);
+    }
+
+    private static void AppendNullableDecimal(
+        ResourceFingerprintBuilder builder,
+        decimal? value)
+    {
+        builder.Append(value.HasValue);
+        if (value.HasValue)
+            builder.Append(value.Value);
+    }
+
+    private static string CanonicalFingerprintJson(JsonNode? node) =>
+        node switch
+        {
+            null => "null",
+            JsonObject value => "{" + string.Join(
+                ",",
+                value.OrderBy(static pair => pair.Key, StringComparer.Ordinal)
+                    .Select(pair =>
+                        JsonSerializer.Serialize(pair.Key) + ":" +
+                        CanonicalFingerprintJson(pair.Value))) + "}",
+            JsonArray value => "[" + string.Join(
+                ",",
+                value.Select(CanonicalFingerprintJson)) + "]",
+            _ => node.ToJsonString()
+        };
+
     private static DerivedMutationAmountResult ResolveMutationAmount(
-        ResourceHistoryState baselineHistory,
+        ResourceHistoryWorkingSet history,
         ResourceDefinitionCatalog definitions,
         ResourceStateLedger directBaselineState,
         ResourceStateLedger? postDirectState,
@@ -2549,14 +5522,17 @@ internal static class AcceptedMechanicsPlanner
         if (mutation.DerivedAmount == null)
             return new DerivedMutationAmountResult(mutation.Amount, ShouldApply: true, Array.Empty<ValidationIssue>());
 
-        var prior = baselineHistory.Transitions.SingleOrDefault(transition =>
-            string.Equals(transition.EventRef, mutation.EventRef, StringComparison.Ordinal) &&
-            string.Equals(transition.OriginKind, mutation.Source.SourceKind, StringComparison.Ordinal) &&
-            string.Equals(transition.OriginId, mutation.Source.SourceId, StringComparison.Ordinal) &&
-            ResourceCoordinateComparer.Instance.Equals(transition.Coordinate, mutation.Coordinate) &&
-            transition.Operation == ToTransitionOperation(mutation.Source.Operation));
-        if (prior != null)
+        if (history.TryResolveReplayIdentity(
+                mutation.EventRef,
+                mutation.Source.SourceKind,
+                mutation.Source.SourceId,
+                mutation.Coordinate,
+                ToTransitionOperation(mutation.Source.Operation),
+                out var prior) &&
+            prior != null)
+        {
             return new DerivedMutationAmountResult(prior.RequestedAmount, ShouldApply: true, Array.Empty<ValidationIssue>());
+        }
 
         if (postDirectState == null ||
             !definitions.TryResolveExact(mutation.Coordinate.ResourceKey, out var definition) ||
@@ -2652,7 +5628,12 @@ internal static class AcceptedMechanicsPlanner
     private static PreparationResult PrepareMutations(
         AcceptedMechanicsResourceInput input,
         AcceptedMechanicsIdentityFactory identityFactory,
-        AllocatedIdentityRegistry identityRegistry)
+        AllocatedIdentityRegistry identityRegistry,
+        Func<
+            ResourceMutationSourceRequest,
+            ResourceDefinition,
+            ResourceCoordinate?,
+            ResourceMutationSourceResolution>? sourceResolver = null)
     {
         var issues = new List<ValidationIssue>();
         var unresolved = new List<UnresolvedMutation>();
@@ -2681,10 +5662,15 @@ internal static class AcceptedMechanicsPlanner
                 continue;
             }
 
-            var source = input.Sources.Resolve(
-                mutation.Source,
-                definition,
-                mutation.Coordinate);
+            var source = sourceResolver == null
+                ? input.Sources.Resolve(
+                    mutation.Source,
+                    definition,
+                    mutation.Coordinate)
+                : sourceResolver(
+                    mutation.Source,
+                    definition,
+                    mutation.Coordinate);
             if (!source.IsValid || source.Route == null)
             {
                 issues.AddRange(source.Issues);
@@ -2799,6 +5785,7 @@ internal static class AcceptedMechanicsPlanner
                 mutation.Route.Phase,
                 mutation.Route.Priority,
                 mutation.Intent.Source.SourceId,
+                CreateStableMutationOrderKey(mutation.Intent.Key),
                 mutation.OperationId,
                 dependencies,
                 eventRequirements));
@@ -2913,12 +5900,52 @@ internal static class AcceptedMechanicsPlanner
         return issues;
     }
 
+    private static IReadOnlyList<ValidationIssue> ArbiterIssues(
+        IReadOnlyList<AcceptedEffectUseArbiterIssue> arbiterIssues)
+    {
+        var issues = new List<ValidationIssue>(arbiterIssues.Count);
+        foreach (var arbiterIssue in arbiterIssues)
+        {
+            AddIssue(
+                issues,
+                arbiterIssue.Code,
+                "one coherent accepted-effect activation transcript",
+                arbiterIssue.Message);
+        }
+        return issues;
+    }
+
     private static AcceptedMechanicsPlannerStatistics Statistics(
-        ResourceHistoryWorkingSet? history = null) =>
+        ResourceHistoryWorkingSet? history = null,
+        PlannerWorkMetrics? metrics = null) =>
         new(
             history?.BaselineSeedCount ?? 0,
             history?.IncrementalAppendCount ?? 0,
-            history?.FreezeCount ?? 0);
+            history?.FreezeCount ?? 0,
+            metrics?.CapacityDescriptorCount ?? 0,
+            metrics?.MutationDescriptorCount ?? 0,
+            metrics?.GraphNodeDescriptorCount ?? 0,
+            metrics?.MaximumTriggerDepth ?? 0,
+            metrics?.SchedulingDescriptorVisitCount ?? 0,
+            history?.ReplayIdentityLookupCount ?? 0,
+            history?.TotalWorkUnits ?? 0,
+            metrics?.EffectTriggerIndexLookupCount ?? 0,
+            metrics?.EffectTriggerCandidateVisitCount ?? 0,
+            metrics?.EffectSourceBindingIndexLookupCount ?? 0,
+            metrics?.EffectSourceBindingCandidateVisitCount ?? 0,
+            metrics?.EffectRoutingDescriptorAccessCount ?? 0,
+            metrics?.EffectOccurrenceCloneCount ?? 0,
+            metrics?.EffectFullValidationPassCount ?? 0,
+            metrics?.EffectTriggerArrayVisitCount ?? 0,
+            metrics?.EffectComponentIndexLookupCount ?? 0,
+            metrics?.EffectSelectedComponentVisitCount ?? 0,
+            metrics?.PendingCandidateFingerprintOutputVisitCount ?? 0,
+            metrics?.PendingProjectionDependencyVisitCount ?? 0,
+            metrics?.PendingTranscriptPrefixStampVisitCount ?? 0,
+            metrics?.SourceAuthoritySeedCount ?? 0,
+            metrics?.SourceAuthorityAddVisitCount ?? 0,
+            metrics?.SourceAuthorityResolveLookupCount ?? 0,
+            metrics?.SourceAuthorityFreezeCount ?? 0);
 
     private static string PrimaryResourceEvent(ResourceOperation operation) =>
         operation switch
@@ -2930,14 +5957,39 @@ internal static class AcceptedMechanicsPlanner
             _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, null)
         };
 
+    private static bool ReservesTerminalAvailabilityAtAcceptance(
+        EffectReactionExecution reaction) =>
+        string.Equals(
+            reaction.Dependency,
+            "after_current_event",
+            StringComparison.Ordinal) &&
+        AcceptedEffectBoundaryTranscript.ResolveTerminalAvailabilityEffectId(
+            reaction) != null;
+
     private static string Describe(ResourceOperationKey key) =>
         $"{key.EventRef}/{key.OriginKind}/{key.OriginId}/" +
-        $"{key.Coordinate.Realm}/{key.Coordinate.ResourceOwnerId}/" +
+        $"{key.Coordinate.Realm}/" +
+        $"{ResourceDefinitionCatalog.GetOwnerKindToken(key.Coordinate.OwnerKind)}/" +
+        $"{key.Coordinate.ResourceOwnerId}/" +
         $"{key.Coordinate.ResourceKey}/{key.Operation}";
+
+    private static string CreateStableMutationOrderKey(ResourceOperationKey key) =>
+        string.Join(
+            "\0",
+            key.EventRef,
+            key.OriginKind,
+            key.OriginId,
+            key.Coordinate.Realm,
+            key.Coordinate.OwnerKind.ToString(),
+            key.Coordinate.ResourceOwnerId,
+            key.Coordinate.ResourceKey,
+            key.Operation.ToString());
 
     private static string Describe(ResourceCapacityOperationKey key) =>
         $"{key.EventRef}/{key.OriginKind}/{key.OriginId}/" +
-        $"{key.Coordinate.Realm}/{key.Coordinate.ResourceOwnerId}/" +
+        $"{key.Coordinate.Realm}/" +
+        $"{ResourceDefinitionCatalog.GetOwnerKindToken(key.Coordinate.OwnerKind)}/" +
+        $"{key.Coordinate.ResourceOwnerId}/" +
         $"{key.Coordinate.ResourceKey}/{key.Operation}";
 
     private static string Describe(ResourceCoordinate coordinate) =>
@@ -3034,16 +6086,88 @@ internal static class AcceptedMechanicsPlanner
         Dictionary<string, int> Lineage,
         IReadOnlyList<ValidationIssue> Issues);
 
+    private sealed record CandidateMaterialFingerprintResult(
+        string? Fingerprint,
+        IReadOnlyList<ValidationIssue> Issues)
+    {
+        internal bool IsValid => Fingerprint != null && Issues.Count == 0;
+    }
+
+    private sealed record ValidatedPendingCandidateAuthority(
+        string CausalMaterialFingerprint,
+        string CandidateFingerprint);
+
+    private sealed record PendingCandidateAuthorityValidationResult(
+        IReadOnlyDictionary<
+            EffectActivationCandidateIdentity,
+            ValidatedPendingCandidateAuthority> Authorities,
+        IReadOnlyList<ValidationIssue> Issues)
+    {
+        internal bool IsValid => Issues.Count == 0;
+    }
+
+    private sealed record ResourceGraphExpansionWork(
+        int EffectTriggerIndexLookupCount,
+        long EffectTriggerCandidateVisitCount,
+        int EffectSourceBindingIndexLookupCount,
+        long EffectSourceBindingCandidateVisitCount,
+        long EffectRoutingDescriptorAccessCount,
+        long EffectOccurrenceCloneCount,
+        long EffectFullValidationPassCount,
+        long EffectTriggerArrayVisitCount,
+        long EffectComponentIndexLookupCount,
+        long EffectSelectedComponentVisitCount,
+        long PendingCandidateFingerprintOutputVisitCount,
+        long PendingProjectionDependencyVisitCount,
+        int SourceAuthoritySeedCount,
+        int SourceAuthorityAddVisitCount,
+        int SourceAuthorityResolveLookupCount,
+        int SourceAuthorityFreezeCount)
+    {
+        internal static ResourceGraphExpansionWork Empty { get; } =
+            new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+
     private sealed record CompleteResourceGraphPreparation(
         IReadOnlyList<PreparedMutation> Mutations,
         ResourceTriggerGraph? Graph,
+        IReadOnlyList<EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>
+            TriggerCandidates,
         IReadOnlyDictionary<
             ResourceOperationKey,
-            EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>
-            TriggerExecutionsByMutation,
-        IReadOnlyList<ValidationIssue> Issues)
+            EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>
+            TriggerCandidatesByMutation,
+        IReadOnlyList<ResourceMutationSourceExport> SourceExports,
+        IReadOnlyList<ValidationIssue> Issues,
+        ResourceGraphExpansionWork Work)
     {
         internal bool IsValid => Graph != null && Issues.Count == 0;
+    }
+
+    private sealed class PlannerWorkMetrics
+    {
+        internal int CapacityDescriptorCount { get; set; }
+        internal int MutationDescriptorCount { get; set; }
+        internal int GraphNodeDescriptorCount { get; set; }
+        internal int MaximumTriggerDepth { get; set; }
+        internal long SchedulingDescriptorVisitCount { get; set; }
+        internal int EffectTriggerIndexLookupCount { get; set; }
+        internal long EffectTriggerCandidateVisitCount { get; set; }
+        internal int EffectSourceBindingIndexLookupCount { get; set; }
+        internal long EffectSourceBindingCandidateVisitCount { get; set; }
+        internal long EffectRoutingDescriptorAccessCount { get; set; }
+        internal long EffectOccurrenceCloneCount { get; set; }
+        internal long EffectFullValidationPassCount { get; set; }
+        internal long EffectTriggerArrayVisitCount { get; set; }
+        internal long EffectComponentIndexLookupCount { get; set; }
+        internal long EffectSelectedComponentVisitCount { get; set; }
+        internal long PendingCandidateFingerprintOutputVisitCount { get; set; }
+        internal long PendingProjectionDependencyVisitCount { get; set; }
+        internal long PendingTranscriptPrefixStampVisitCount { get; set; }
+        internal int SourceAuthoritySeedCount { get; set; }
+        internal int SourceAuthorityAddVisitCount { get; set; }
+        internal int SourceAuthorityResolveLookupCount { get; set; }
+        internal int SourceAuthorityFreezeCount { get; set; }
     }
 }
 
@@ -3056,6 +6180,7 @@ internal sealed record ResourceTriggerGraphNode(
     ResourceMutationPhase Phase,
     int Priority,
     string OriginId,
+    string SemanticOrderKey,
     string OperationId,
     IReadOnlyList<string> Dependencies,
     IReadOnlyList<ResourceEventRequirement> EventRequirements);
@@ -3084,22 +6209,94 @@ internal sealed class ResourceTriggerGraph
             if (comparison != 0)
                 return comparison;
 
+            comparison = string.CompareOrdinal(
+                left.SemanticOrderKey,
+                right.SemanticOrderKey);
+            if (comparison != 0)
+                return comparison;
+
             comparison = string.CompareOrdinal(left.OperationId, right.OperationId);
             return comparison != 0
                 ? comparison
                 : string.CompareOrdinal(left.NodeId, right.NodeId);
         });
 
+    private readonly IReadOnlyDictionary<string, ResourceTriggerGraphNode> _byId;
+    private readonly IReadOnlyDictionary<string, HashSet<string>> _children;
+    private readonly IReadOnlyDictionary<string, HashSet<string>> _parents;
+    private readonly IReadOnlyDictionary<string, int> _initialIndegrees;
+
     private ResourceTriggerGraph(
         IReadOnlyList<ResourceTriggerGraphNode> orderedNodes,
-        int maximumDepth)
+        int maximumDepth,
+        IReadOnlyDictionary<string, ResourceTriggerGraphNode> byId,
+        IReadOnlyDictionary<string, HashSet<string>> children,
+        IReadOnlyDictionary<string, HashSet<string>> parents,
+        IReadOnlyDictionary<string, int> initialIndegrees)
     {
         OrderedNodes = orderedNodes;
         MaximumDepth = maximumDepth;
+        _byId = byId;
+        _children = children;
+        _parents = parents;
+        _initialIndegrees = initialIndegrees;
     }
 
     internal IReadOnlyList<ResourceTriggerGraphNode> OrderedNodes { get; }
     internal int MaximumDepth { get; }
+
+    internal ResourceTriggerGraphExecutionScheduler CreateExecutionScheduler(
+        Func<ResourceTriggerGraphNode, bool> requirementsSatisfied) =>
+        new(
+            _byId,
+            _children,
+            _initialIndegrees,
+            ReadyComparer,
+            requirementsSatisfied);
+
+    internal IReadOnlySet<string> ExpandCausalOperationClosure(
+        IEnumerable<string> rootOperationIds)
+    {
+        ArgumentNullException.ThrowIfNull(rootOperationIds);
+        var nodeIdByOperationId = _byId.Values.ToDictionary(
+            static node => node.OperationId,
+            static node => node.NodeId,
+            StringComparer.Ordinal);
+        var closure = new HashSet<string>(StringComparer.Ordinal);
+        var frontier = new Queue<string>();
+        foreach (var operationId in rootOperationIds
+                     .Distinct(StringComparer.Ordinal))
+        {
+            if (!nodeIdByOperationId.TryGetValue(operationId, out var nodeId))
+                continue;
+            if (closure.Add(operationId))
+                frontier.Enqueue(nodeId);
+        }
+
+        var prerequisiteFrontier = new Queue<string>(frontier);
+        while (prerequisiteFrontier.Count != 0)
+        {
+            var nodeId = prerequisiteFrontier.Dequeue();
+            foreach (var parentId in _parents[nodeId])
+            {
+                var parent = _byId[parentId];
+                if (closure.Add(parent.OperationId))
+                    prerequisiteFrontier.Enqueue(parentId);
+            }
+        }
+
+        while (frontier.Count != 0)
+        {
+            var nodeId = frontier.Dequeue();
+            foreach (var childId in _children[nodeId])
+            {
+                var child = _byId[childId];
+                if (closure.Add(child.OperationId))
+                    frontier.Enqueue(childId);
+            }
+        }
+        return closure;
+    }
 
     internal static ResourceTriggerGraphResult Build(
         IEnumerable<ResourceTriggerGraphNode> nodes)
@@ -3240,7 +6437,14 @@ internal sealed class ResourceTriggerGraph
         return new ResourceTriggerGraphResult(
             new ResourceTriggerGraph(
                 new ReadOnlyCollection<ResourceTriggerGraphNode>(ordered),
-                maximumDepth),
+                maximumDepth,
+                new ReadOnlyDictionary<string, ResourceTriggerGraphNode>(byId),
+                new ReadOnlyDictionary<string, HashSet<string>>(children),
+                new ReadOnlyDictionary<string, HashSet<string>>(parents),
+                new ReadOnlyDictionary<string, int>(parents.ToDictionary(
+                    static pair => pair.Key,
+                    static pair => pair.Value.Count,
+                    StringComparer.Ordinal))),
             Array.Empty<ValidationIssue>());
     }
 
@@ -3370,4 +6574,153 @@ internal sealed class ResourceTriggerGraph
             code,
             expected,
             actual);
+}
+
+internal sealed class ResourceTriggerGraphExecutionScheduler
+{
+    private readonly IReadOnlyDictionary<string, ResourceTriggerGraphNode> _byId;
+    private readonly IReadOnlyDictionary<string, HashSet<string>> _children;
+    private readonly Dictionary<string, int> _indegrees;
+    private readonly SortedSet<ResourceTriggerGraphNode> _skipped;
+    private readonly SortedSet<ResourceTriggerGraphNode> _runnable;
+    private readonly Func<ResourceTriggerGraphNode, bool> _requirementsSatisfied;
+    private ResourceTriggerGraphNode? _inFlight;
+
+    internal ResourceTriggerGraphExecutionScheduler(
+        IReadOnlyDictionary<string, ResourceTriggerGraphNode> byId,
+        IReadOnlyDictionary<string, HashSet<string>> children,
+        IReadOnlyDictionary<string, int> initialIndegrees,
+        IComparer<ResourceTriggerGraphNode> readyComparer,
+        Func<ResourceTriggerGraphNode, bool> requirementsSatisfied)
+    {
+        _byId = byId ?? throw new ArgumentNullException(nameof(byId));
+        _children = children ?? throw new ArgumentNullException(nameof(children));
+        ArgumentNullException.ThrowIfNull(initialIndegrees);
+        ArgumentNullException.ThrowIfNull(readyComparer);
+        _requirementsSatisfied = requirementsSatisfied ??
+            throw new ArgumentNullException(nameof(requirementsSatisfied));
+        _indegrees = initialIndegrees.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value,
+            StringComparer.Ordinal);
+        _skipped = new SortedSet<ResourceTriggerGraphNode>(readyComparer);
+        _runnable = new SortedSet<ResourceTriggerGraphNode>(readyComparer);
+        foreach (var pair in _indegrees)
+        {
+            if (pair.Value == 0)
+                AddReady(_byId[pair.Key]);
+        }
+    }
+
+    internal bool TryTakeNext(
+        out ResourceTriggerGraphNode node,
+        out bool shouldExecute) =>
+        TryTakeNext(
+            preferredOperationIds: null,
+            out node,
+            out shouldExecute);
+
+    internal bool TryTakeNext(
+        IReadOnlySet<string>? preferredOperationIds,
+        out ResourceTriggerGraphNode node,
+        out bool shouldExecute)
+    {
+        if (_inFlight != null)
+        {
+            throw new InvalidOperationException(
+                "The current resource graph node must be completed before taking another.");
+        }
+
+        if (preferredOperationIds is { Count: > 0 })
+        {
+            if (TryTakePreferred(
+                    _skipped,
+                    preferredOperationIds,
+                    out node))
+            {
+                shouldExecute = false;
+            }
+            else if (TryTakePreferred(
+                         _runnable,
+                         preferredOperationIds,
+                         out node))
+            {
+                shouldExecute = true;
+            }
+            else
+            {
+                node = null!;
+                shouldExecute = false;
+                return false;
+            }
+        }
+        else if (_skipped.Count != 0)
+        {
+            node = _skipped.Min!;
+            _skipped.Remove(node);
+            shouldExecute = false;
+        }
+        else if (_runnable.Count != 0)
+        {
+            node = _runnable.Min!;
+            _runnable.Remove(node);
+            shouldExecute = true;
+        }
+        else
+        {
+            node = null!;
+            shouldExecute = false;
+            return false;
+        }
+
+        _inFlight = node;
+        return true;
+    }
+
+    internal bool HasPendingNodes =>
+        _inFlight != null || _skipped.Count != 0 || _runnable.Count != 0;
+
+    internal void Complete(ResourceTriggerGraphNode node)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+        if (_inFlight == null ||
+            !string.Equals(_inFlight.NodeId, node.NodeId, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                "Only the current resource graph node can be completed.");
+        }
+
+        _inFlight = null;
+        foreach (var childId in _children[node.NodeId])
+        {
+            var remaining = --_indegrees[childId];
+            if (remaining == 0)
+                AddReady(_byId[childId]);
+        }
+    }
+
+    private void AddReady(ResourceTriggerGraphNode node)
+    {
+        if (_requirementsSatisfied(node))
+            _runnable.Add(node);
+        else
+            _skipped.Add(node);
+    }
+
+    private static bool TryTakePreferred(
+        SortedSet<ResourceTriggerGraphNode> ready,
+        IReadOnlySet<string> preferredOperationIds,
+        out ResourceTriggerGraphNode node)
+    {
+        var candidate = ready.FirstOrDefault(value =>
+            preferredOperationIds.Contains(value.OperationId));
+        if (candidate == null)
+        {
+            node = null!;
+            return false;
+        }
+        ready.Remove(candidate);
+        node = candidate;
+        return true;
+    }
 }

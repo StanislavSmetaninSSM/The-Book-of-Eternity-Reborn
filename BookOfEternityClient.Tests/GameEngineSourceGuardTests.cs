@@ -60,6 +60,43 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void DeferredQteReceiptResume_MustPrecedeInteractiveResumeAndSkipPostTurnProgressionWhileAwaiting()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var idle = ExtractMethodSource(
+            source,
+            "private async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()");
+        var dedicatedResume = idle.IndexOf(
+            "ResumeDeferredEffectResolutionAsync(",
+            StringComparison.Ordinal);
+        var interactiveResume = idle.IndexOf(
+            "ResumeActiveSceneIfAnyAsync(",
+            StringComparison.Ordinal);
+        Assert.True(dedicatedResume >= 0);
+        Assert.True(interactiveResume > dedicatedResume);
+        Assert.Contains(
+            "if (resumedDeferredQte.AwaitingEffectResolution)",
+            idle,
+            StringComparison.Ordinal);
+
+        var accepted = ExtractMethodSource(
+            source,
+            "private async Task<(bool EarlyExit, GameResponse Response)> HandleAcceptedQteOfferAsync(");
+        var awaitingGuard = accepted.IndexOf(
+            "if (completion.AwaitingEffectResolution)",
+            StringComparison.Ordinal);
+        var progression = accepted.IndexOf(
+            "await ProcessMortalProgressionAfterAcceptedTurnAsync();",
+            StringComparison.Ordinal);
+        Assert.True(awaitingGuard >= 0);
+        Assert.True(progression > awaitingGuard);
+        Assert.Contains(
+            "return (true, completion.Response);",
+            accepted,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void TransitionWaitForGmResponse_RejectedValidationMustClearActiveRequestArtifacts()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
@@ -134,7 +171,7 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("ChaosSeaBootstrapStateBuilder.BuildFreshNewGameFiles", method, StringComparison.Ordinal);
         Assert.Contains("\"lore/chaos_sea/player_chronicle.json\"", method, StringComparison.Ordinal);
         Assert.Contains("BuildAfterlifeEntityProfileRootForFreshNewGame", method, StringComparison.Ordinal);
-        Assert.Contains("AfterlifeEntityProfileState.StatePath", method, StringComparison.Ordinal);
+        Assert.Contains("Profiles: guardianProfileRoot", method, StringComparison.Ordinal);
         Assert.Contains("WriteInitialGuardianProjectTrackerStateAsync", method, StringComparison.Ordinal);
         Assert.Contains("var rollbackBackups = await CreatePreTurnBackup(request.RequestId);", method, StringComparison.Ordinal);
         Assert.Contains("await CreateCanonicalBaselineSnapshotAsync(request, rollbackBackups, sourceLabel: \"первого описания Моря Хаоса\");", method, StringComparison.Ordinal);
@@ -164,6 +201,39 @@ public sealed class GameEngineSourceGuardTests
             "ResourceMaterializationContract.HistoryPath",
             newGame,
             StringComparison.Ordinal);
+        Assert.Contains(
+            "ComposeExplicitBootstrapAsync(",
+            newGame,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "new AfterlifeOwnerResourceAcceptedState(",
+            newGame,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ownerAuthority.OwnerAfterImages",
+            newGame,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(",
+            newGame,
+            StringComparison.Ordinal);
+        Assert.Equal(
+            1,
+            newGame.Split(
+                "CoordinatedStateWriteHelper.TryCommitAsync(",
+                StringSplitOptions.None).Length - 1);
+        Assert.DoesNotContain(
+            "WriteCanonicalSoulStateAsync(soulState)",
+            newGame,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "_fs.WriteFileAtomicAsync(\"game_state/meta/guardians.json\"",
+            newGame,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "_fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath",
+            newGame,
+            StringComparison.Ordinal);
 
         var lifecycle = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
         var mortalBootstrap = ExtractMethodSource(
@@ -191,6 +261,26 @@ public sealed class GameEngineSourceGuardTests
             StringComparison.Ordinal);
         Assert.Contains(
             "RegisterMortalBootstrapSnapshotFile(rollbackSnapshot, path)",
+            mortalBootstrap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ComposeExistingSessionAsync(",
+            mortalBootstrap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "AddAuthorityWriteAndGlobalGuards(",
+            mortalBootstrap,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "finalQuartet.Projection.BeforeImages[path]",
+            mortalBootstrap,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "await _fs.ReadFileAsync(path)",
+            mortalBootstrap,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "ComposeExplicitBootstrapAsync(",
             mortalBootstrap,
             StringComparison.Ordinal);
     }
@@ -1054,11 +1144,11 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("FailClosedAcceptedTurnCanonicalRefreshAsync(", acceptedTurnValidation, StringComparison.Ordinal);
         Assert.Contains("canonicalRefresh.MechanicsPlan is { AwaitsPendingResolution: true }", acceptedTurnValidation, StringComparison.Ordinal);
         Assert.Contains("BuildBoundedResourceResolutionResubmissionIssue(pendingPlan)", acceptedTurnValidation, StringComparison.Ordinal);
-        Assert.Contains("WaitForContractRepairAsync(", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("WaitForBoundedPendingResolutionResubmissionAsync(", acceptedTurnValidation, StringComparison.Ordinal);
         Assert.True(
-            acceptedTurnValidation.IndexOf("AwaitsPendingResolution: true", StringComparison.Ordinal) <
-            acceptedTurnValidation.IndexOf("canonicalRefresh.PostSealIssues", StringComparison.Ordinal),
-            "A bounded receipt obligation must stop ordinary acceptance before post-seal/output completion.");
+            acceptedTurnValidation.IndexOf("canonicalRefresh.PostSealIssues", StringComparison.Ordinal) <
+            acceptedTurnValidation.IndexOf("AwaitsPendingResolution: true", StringComparison.Ordinal),
+            "Post-seal errors must invalidate the rolled-back plan before any bounded pending request is dispatched.");
         Assert.DoesNotContain("var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);", validationSource, StringComparison.Ordinal);
     }
 
@@ -1281,13 +1371,15 @@ public sealed class GameEngineSourceGuardTests
     public void ValidationRepairFlow_MustUseValidatedPendingSnapshotContext_ForRepairCorrelationAndMetadata()
     {
         var source = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
+        var compactSource = string.Concat(source.Where(static c => !char.IsWhiteSpace(c)));
 
         Assert.Contains("ResolveActivePendingTurnSnapshotContextAsync()", source, StringComparison.Ordinal);
         Assert.Contains("IsMatchingRepairReady(ready, pendingSnapshot.Context)", source, StringComparison.Ordinal);
         Assert.Contains("BuildProtocolRequestMetadata(pendingSnapshot)", source, StringComparison.Ordinal);
-        Assert.Contains("BuildValidationRepairRequestInstructions(", source, StringComparison.Ordinal);
-        Assert.Contains("pendingSnapshot,", source, StringComparison.Ordinal);
-        Assert.Contains("fullTurnResubmissionRequired);", source, StringComparison.Ordinal);
+        Assert.Contains(
+            "BuildValidationRepairRequestInstructions(pendingSnapshot,fullTurnResubmissionRequired,boundedPendingResolutionResubmission);",
+            compactSource,
+            StringComparison.Ordinal);
         Assert.Contains("BuildProtocolRequestMetadataWarning(pendingSnapshot)", source, StringComparison.Ordinal);
         Assert.Contains("BuildInvalidRepairReadyRepairHint(pendingSnapshot)", source, StringComparison.Ordinal);
         Assert.Contains("BuildMismatchedRepairReadyRepairHint(pendingSnapshot)", source, StringComparison.Ordinal);
@@ -1547,8 +1639,11 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
 
         Assert.Contains("canonical gacha_attempts resource", source, StringComparison.Ordinal);
-        Assert.Contains("game_state/resources/resource_state.json", source, StringComparison.Ordinal);
-        Assert.Contains("GM MUST NOT write resource_state.json or resource_history.json", source, StringComparison.Ordinal);
+        Assert.Contains(
+            "game_state/resources/resource_definitions.json, resource_state.json, resource_history.json, and resource_owner_authority.json",
+            source,
+            StringComparison.Ordinal);
+        Assert.Contains("GM MUST NOT write any quartet root", source, StringComparison.Ordinal);
         Assert.DoesNotContain("chargesUsedThisReturn already equals chargesPerReturn", source, StringComparison.Ordinal);
         Assert.DoesNotContain("updating shining_abode_state.json.gachaSystem.chargesUsedThisReturn", source, StringComparison.Ordinal);
     }

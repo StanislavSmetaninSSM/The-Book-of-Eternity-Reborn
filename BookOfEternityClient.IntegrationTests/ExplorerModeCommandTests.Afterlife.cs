@@ -750,9 +750,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Хранитель Зеркал", text, StringComparison.Ordinal);
         Assert.Contains("Хранитель", text, StringComparison.Ordinal);
         Assert.Contains("Зеркальная Обитель", text, StringComparison.Ordinal);
-        Assert.Contains("Чернильные Перья: 120", text, StringComparison.Ordinal);
-        Assert.Contains("Просветление: тир 4, опыт 48", text, StringComparison.Ordinal);
-        Assert.Contains("Давление: 2", text, StringComparison.Ordinal);
+        Assert.Contains("Чернильные Перья", text, StringComparison.Ordinal);
+        Assert.Contains("120", text, StringComparison.Ordinal);
+        Assert.Contains("Просветление", text, StringComparison.Ordinal);
+        Assert.Contains("4 ступень, опыт 48", text, StringComparison.Ordinal);
+        Assert.Contains("Давление - уровень 2", text, StringComparison.Ordinal);
         Assert.Contains("Зеркальная Защита", text, StringComparison.Ordinal);
         Assert.Contains("Отражённая грань превращает успешную защиту в темповое окно", text, StringComparison.Ordinal);
         Assert.Contains("полностью блокирует прямое давление", text, StringComparison.Ordinal);
@@ -760,7 +762,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Один раз за конфликт", text, StringComparison.Ordinal);
         Assert.DoesNotContain("combatEffect", text, StringComparison.Ordinal);
         Assert.DoesNotContain("auditRequirement", text, StringComparison.Ordinal);
-        Assert.Contains("может обучать игрока", text, StringComparison.Ordinal);
+        Assert.Contains("Можно обучить душу", text, StringComparison.Ordinal);
         Assert.Contains("Провести сцену обучения", text, StringComparison.Ordinal);
         Assert.Contains("Кастомные состояния", text, StringComparison.Ordinal);
         Assert.Contains("Голод эха", text, StringComparison.Ordinal);
@@ -768,7 +770,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Отношения", text, StringComparison.Ordinal);
         Assert.Contains("Доверие", text, StringComparison.Ordinal);
         Assert.Contains("заблокировано", text, StringComparison.Ordinal);
-        Assert.Contains("quest_mirror_oath_trial", text, StringComparison.Ordinal);
+        Assert.Contains("Суд зеркальной клятвы", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("quest_mirror_oath_trial", text, StringComparison.Ordinal);
         Assert.Contains("Активная маска", text, StringComparison.Ordinal);
         Assert.Contains("Посланник Белых Перьев", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Маска скрывает агента Крыльев Ангелов", text, StringComparison.Ordinal);
@@ -778,6 +781,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("chaos:5", text, StringComparison.Ordinal);
         Assert.Contains("ОПАСНО", text, StringComparison.Ordinal);
         Assert.Contains("Сначала укрепляет защиту", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("guardian_mirror", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("player_soul", text, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -917,7 +922,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var text = ExtractRenderedText();
         Assert.Contains("Хранитель [debug]", text, StringComparison.Ordinal);
         Assert.Contains("Обитель [card_alpha, card_beta]", text, StringComparison.Ordinal);
-        Assert.Contains("Зеркальная защита [debug]", text, StringComparison.Ordinal);
+        Assert.Contains("Зеркальная защита [[debug]]", text, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1281,21 +1286,25 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Резидент Клятв", text, StringComparison.Ordinal);
         Assert.Contains("Резидент", text, StringComparison.Ordinal);
         Assert.Contains("Зал Невозвратных Обетов", text, StringComparison.Ordinal);
-        Assert.Contains("Искры Света: 4", text, StringComparison.Ordinal);
-        Assert.Contains("Сияние: тир 2, опыт 85", text, StringComparison.Ordinal);
+        Assert.Contains("Искры Света", text, StringComparison.Ordinal);
+        Assert.Contains("4", text, StringComparison.Ordinal);
+        Assert.Contains("Сияние", text, StringComparison.Ordinal);
+        Assert.Contains("2 ступень, опыт 85", text, StringComparison.Ordinal);
         Assert.Contains("Оберег Клятвы", text, StringComparison.Ordinal);
         Assert.Contains("Эхо клятвы", text, StringComparison.Ordinal);
         Assert.Contains("Копит Искры Света", text, StringComparison.Ordinal);
         Assert.Contains("Глава Пепельной Хартии", text, StringComparison.Ordinal);
         Assert.Contains("Глава фракции", text, StringComparison.Ordinal);
         Assert.Contains("Палата Пепельной Хартии", text, StringComparison.Ordinal);
-        Assert.Contains("Силовые оковы: 1", text, StringComparison.Ordinal);
+        Assert.Contains("Силовые оковы - уровень 1", text, StringComparison.Ordinal);
         Assert.Contains("Пепельный Эдикт", text, StringComparison.Ordinal);
-        Assert.Contains("может обучать игрока", text, StringComparison.Ordinal);
+        Assert.Contains("Можно обучить душу", text, StringComparison.Ordinal);
         Assert.Contains("Брожение хартии", text, StringComparison.Ordinal);
         Assert.Contains("Развеивание души: тир 5", text, StringComparison.Ordinal);
         Assert.Contains("ОПАСНО", text, StringComparison.Ordinal);
         Assert.Contains("shining:8", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("resident_oath_001", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("head_ember_001", text, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -5653,43 +5662,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
         var soulPath = _fs.ResolvePath("game_state/meta/soul_state.json");
-        var resourceBootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(
-            resourceBootstrap.IsValid,
-            string.Join(Environment.NewLine, resourceBootstrap.Issues));
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            resourceBootstrap.Definitions!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.StatePath,
-            resourceBootstrap.State!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.HistoryPath,
-            resourceBootstrap.History!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            AfterlifeEntityProfileState.StatePath,
-            new JsonObject
-            {
-                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
-                {
-                    new JsonObject
-                    {
-                        ["actorType"] = "player_soul",
-                        ["actorId"] = "player_soul",
-                        ["displayName"] = "Тестовая Душа",
-                        ["realm"] = "Shining Abode",
-                        ["resourceOwnerBindings"] = new JsonArray
-                        {
-                            new JsonObject
-                            {
-                                ["realm"] = "shining_abode",
-                                ["resourceOwnerId"] = "player_soul",
-                                ["state"] = "active"
-                            }
-                        }
-                    }
-                }
-            }.ToJsonString());
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            _fs,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: CreatePlayerSoulProfileRoot("Shining Abode")));
         var materialized = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
             _fs,
             new JsonObject
@@ -6507,6 +6483,21 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         }
     }
 
+    private static JsonObject CreatePlayerSoulProfileRoot(string realm) =>
+        new()
+        {
+            [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["actorType"] = "player_soul",
+                    ["actorId"] = "player_soul",
+                    ["displayName"] = "Тестовая Душа",
+                    ["realm"] = realm
+                }
+            }
+        };
+
     private async Task SeedShiningInspectionStateAsync(bool includePreparedPackage = true)
     {
         await SeedAfterlifeStateAsync();
@@ -6650,8 +6641,6 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             lightSparks = 94,
             gachaSystem = new
             {
-                chargesPerReturn = 3,
-                chargesUsedThisReturn = 1,
                 currentReturnCycleId = "return_7",
                 gachaHistory = Array.Empty<object>()
             },
@@ -10331,57 +10320,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             [AfterlifeSpiritualConflictState.SoulStateProfileProperty] =
                 AfterlifeSpiritualConflictState.CreateDefaultCombatProfile()
         };
-        await _fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            initialSoul.ToJsonString());
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            AfterlifeEntityProfileState.StatePath,
-            new JsonObject
-            {
-                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
-                {
-                    new JsonObject
-                    {
-                        ["actorType"] = "player_soul",
-                        ["actorId"] = "player_soul",
-                        ["displayName"] = "Тестовая Душа",
-                        ["realm"] = "Chaos Sea",
-                        [AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] = new JsonArray
-                        {
-                            new JsonObject
-                            {
-                                ["realm"] = "chaos_sea",
-                                ["resourceOwnerId"] = "player_soul",
-                                ["state"] = "active"
-                            }
-                        }
-                    }
-                }
-            }.ToJsonString());
-        await _fs.WriteFileAtomicAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
-        await _fs.WriteFileAtomicAsync(
-            ShiningAbodeState.StatePath,
-            ShiningAbodeState.CreateDefaultState().ToJsonString());
-        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", "{}");
-        var initialPlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
             _fs,
-            new AfterlifeOwnerResourceAcceptedState(SoulState: initialSoul),
-            turn: 1);
-        Assert.True(initialPlan.IsValid, string.Join(Environment.NewLine, initialPlan.Issues));
-        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(_fs, initialPlan));
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: CreatePlayerSoulProfileRoot("Chaos Sea"),
+                SoulState: initialSoul));
         await _stateManager.RefreshGameStateAsync();
         _console.QueueAnySelection("⬆ Прокачать духовное искусство");
         _console.QueueSelection("Выберите духовное искусство", "Средоточие Души — уровень 0->1, макс ОД 6->7, 600 🪶");
@@ -10453,59 +10396,15 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             [AfterlifeSpiritualConflictState.SoulStateProfileProperty] =
                 AfterlifeSpiritualConflictState.CreateDefaultCombatProfile()
         };
-        await _fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            initialSoul.ToJsonString());
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            AfterlifeEntityProfileState.StatePath,
-            new JsonObject
-            {
-                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray
-                {
-                    new JsonObject
-                    {
-                        ["actorType"] = "player_soul",
-                        ["actorId"] = "player_soul",
-                        ["displayName"] = "Тестовая Душа",
-                        ["realm"] = "Chaos Sea",
-                        [AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] = new JsonArray
-                        {
-                            new JsonObject
-                            {
-                                ["realm"] = "chaos_sea",
-                                ["resourceOwnerId"] = "player_soul",
-                                ["state"] = "active"
-                            }
-                        }
-                    }
-                }
-            }.ToJsonString());
-        await _fs.WriteFileAtomicAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
-        await _fs.WriteFileAtomicAsync(
-            ShiningAbodeState.StatePath,
-            ShiningAbodeState.CreateDefaultState().ToJsonString());
-        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", "{}");
-        var initialPlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
             _fs,
-            new AfterlifeOwnerResourceAcceptedState(SoulState: initialSoul),
-            turn: 1);
-        Assert.True(initialPlan.IsValid, string.Join(Environment.NewLine, initialPlan.Issues));
-        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(_fs, initialPlan));
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: CreatePlayerSoulProfileRoot("Chaos Sea"),
+                SoulState: initialSoul));
         var stateBefore = await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath);
         var historyBefore = await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath);
+        var authorityBefore = await _fs.ReadFileAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
 
         await _stateManager.RefreshGameStateAsync();
         _console.QueueAnySelection("⬆ Прокачать духовное искусство");
@@ -10542,6 +10441,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Equal(700, soulRoot["inkFeathers"]!["current"]!.GetValue<int>());
         Assert.Equal(stateBefore, await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath));
         Assert.Equal(historyBefore, await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath));
+        Assert.Equal(
+            authorityBefore,
+            await _fs.ReadFileAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath));
     }
 
     [Fact]

@@ -1,5 +1,8 @@
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -101,15 +104,9 @@ public sealed class ResourceCombatIntegrationTests
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
+        Assert.NotNull(bootstrap.Definitions);
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            context.FileSystem);
         await context.WriteExactJsonAsync(
             EffectCarrierCatalog.EnemiesPath,
             new JsonObject { ["enemiesData"] = new JsonArray() }.ToJsonString());
@@ -143,11 +140,10 @@ public sealed class ResourceCombatIntegrationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out var planning));
-        var plan = Assert.IsType<AcceptedMechanicsPlan>(planning.Plan);
+        var handoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem);
+        Assert.NotNull(handoff);
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(handoff!.Result.Plan);
         var owner = Assert.Single(
             plan.OwnerAuthority.Entries.Values,
             entry => entry.Key.OwnerKind == ResourceOwnerKind.Combatant);
@@ -187,15 +183,9 @@ public sealed class ResourceCombatIntegrationTests
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
+        Assert.NotNull(bootstrap.Definitions);
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            context.FileSystem);
         await context.WriteExactJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject { ["NPCsInScene"] = new JsonArray() }.ToJsonString());
@@ -221,11 +211,10 @@ public sealed class ResourceCombatIntegrationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out var planning));
-        var plan = Assert.IsType<AcceptedMechanicsPlan>(planning.Plan);
+        var handoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem);
+        Assert.NotNull(handoff);
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(handoff!.Result.Plan);
         var npcOwner = Assert.Single(
             plan.OwnerAuthority.Entries.Values,
             entry => entry.Key.OwnerKind == ResourceOwnerKind.Npc);
@@ -267,6 +256,44 @@ public sealed class ResourceCombatIntegrationTests
         Assert.False(canonicalCombatant.ContainsKey("npcRef"));
         Assert.False(canonicalCombatant.ContainsKey("combatantId"));
         Assert.False(canonicalCombatant.ContainsKey("resourceMaterialization"));
+
+        var expectedState = await context.FileSystem.ReadFileAsync(
+            ResourceMaterializationContract.StatePath);
+        await context.WriteExactJsonAsync(
+            "game_state/meta/soul_state.json",
+            """{ "soulName": "Полевой лекарь", "currentRealm": "Mortal World", "currentIncarnation": 1 }""");
+        var stateManager = new StateManager(
+            context.FileSystem,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var saveLoad = new SaveLoadService(
+            context.FileSystem,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance);
+
+        Assert.True(await saveLoad.SaveGameAsync(
+            "npc_resource_owner",
+            "canonical NPC resource owner round-trip"));
+        var savePath = Assert.Single(Directory.GetFiles(
+            context.FileSystem.ResolvePath("saves/manual_saves"),
+            "*.zip"));
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.StatePath,
+            """{ "invalid": true }""");
+
+        Assert.True(await saveLoad.LoadGameAsync(savePath));
+        Assert.Equal(expectedState, await context.FileSystem.ReadFileAsync(
+            ResourceMaterializationContract.StatePath));
+        var restoredState = ResourceStateContract.ParseCanonical(
+            expectedState,
+            bootstrap.Definitions,
+            allowMissingPristine: false);
+        Assert.True(restoredState.IsValid, string.Join(Environment.NewLine, restoredState.Issues));
+        Assert.Single(restoredState.Ledger!.Entries, entry =>
+            entry.Coordinate.OwnerKind == ResourceOwnerKind.Npc &&
+            entry.Coordinate.ResourceOwnerId == npcRef &&
+            entry.Coordinate.ResourceKey == "health");
     }
 
     [Fact]
@@ -275,15 +302,9 @@ public sealed class ResourceCombatIntegrationTests
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
+        Assert.NotNull(bootstrap.Definitions);
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            context.FileSystem);
         await context.WriteExactJsonAsync(
             EffectCarrierCatalog.EnemiesPath,
             new JsonObject { ["enemiesData"] = new JsonArray() }.ToJsonString());
@@ -333,11 +354,10 @@ public sealed class ResourceCombatIntegrationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(secondIssues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out var secondPlanning));
-        var secondPlan = Assert.IsType<AcceptedMechanicsPlan>(secondPlanning.Plan);
+        var secondHandoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem);
+        Assert.NotNull(secondHandoff);
+        var secondPlan = Assert.IsType<AcceptedMechanicsPlan>(secondHandoff!.Result.Plan);
 
         await using (var secondLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
         {
@@ -379,15 +399,9 @@ public sealed class ResourceCombatIntegrationTests
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
+        Assert.NotNull(bootstrap.Definitions);
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            context.FileSystem);
         await context.WriteExactJsonAsync(
             EffectCarrierCatalog.EnemiesPath,
             new JsonObject { ["enemiesData"] = new JsonArray() }.ToJsonString());

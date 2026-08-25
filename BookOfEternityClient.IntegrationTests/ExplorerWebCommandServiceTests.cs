@@ -1887,6 +1887,28 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains("Активные эффекты", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Кровотечение", text, StringComparison.OrdinalIgnoreCase);
+        var effectsDossier = Assert.Single(
+            result.Blocks.OfType<UiEntityDossierBlock>(),
+            static dossier => dossier.EntityType == "status-effects");
+        var effectsSection = Assert.Single(effectsDossier.Sections);
+        var effectCard = Assert.Single(
+            effectsSection.Cards,
+            static card => card.Title == "Кровотечение");
+        Assert.Equal("Рана продолжает отнимать силы.", effectCard.Summary);
+        var effectDetails = Assert.Single(
+            effectCard.Nested,
+            static card => card.Title == "Кратко");
+        Assert.Contains(effectDetails.Facts, static fact =>
+            fact.Label == "Категория" && fact.Value == "Ослабление");
+        Assert.Contains(effectDetails.Facts, static fact =>
+            fact.Label == "Источник" && fact.Value == "Рваная рана");
+        var lifetime = Assert.Single(
+            effectDetails.Cards,
+            static card => card.Title == "Срок действия");
+        Assert.Contains(lifetime.Facts, static fact =>
+            fact.Label == "Осталось ходов" && fact.Value == "3");
+        Assert.Contains(lifetime.Facts, static fact =>
+            fact.Label == "обновление" && fact.Value.Contains("Ещё три хода", StringComparison.Ordinal));
         Assert.Contains(result.Actions, action =>
             action.Label.Contains("Кровотечение", StringComparison.OrdinalIgnoreCase) &&
             action.Command.StartsWith("/эффекты эффект effect_view_", StringComparison.Ordinal) &&
@@ -2026,6 +2048,70 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.DoesNotContain("dexterity:", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("source:", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("target:", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Stats_ComputedProjectionSuppressesLegacyResourceMirrors()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(
+            "game_state/misc/characteristics.json",
+            "{ \"dexterity\": 10 }");
+        await _fs.WriteFileAtomicAsync("game_state/player/computed_characteristics.json", """
+        {
+          "playerLevel": 2,
+          "unspentStatPoints": 0,
+          "characteristics": {
+            "dexterity": 10,
+            "health": 910001,
+            "healthCurrent": 910002,
+            "healthMax": 910003,
+            "maxHealth": 910004
+          },
+          "permanentlyModifiedCharacteristics": {
+            "dexterity": 10,
+            "energy": 920001,
+            "energyCurrent": 920002,
+            "energyMax": 920003,
+            "maxEnergy": 920004
+          },
+          "playerVisibleModifiedCharacteristics": {
+            "dexterity": 10,
+            "poise": 930001,
+            "poiseCurrent": 930002,
+            "poiseMax": 930003,
+            "maxPoise": 930004
+          }
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/stats", AdvancedEnabled: false));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Ловкость", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("10", text, StringComparison.Ordinal);
+        foreach (var marker in new[]
+                 {
+                     "910001", "910002", "910003", "910004",
+                     "920001", "920002", "920003", "920004",
+                     "930001", "930002", "930003", "930004"
+                 })
+        {
+            Assert.DoesNotContain(marker, payload, StringComparison.Ordinal);
+        }
+
+        foreach (var legacyKey in new[]
+                 {
+                     "health", "healthCurrent", "healthMax", "maxHealth",
+                     "energy", "energyCurrent", "energyMax", "maxEnergy",
+                     "poise", "poiseCurrent", "poiseMax", "maxPoise"
+                 })
+        {
+            Assert.DoesNotContain(legacyKey, payload, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     [Fact]
@@ -7495,7 +7581,6 @@ public sealed class ExplorerWebCommandServiceTests :
     }
 
     [Theory]
-    [InlineData("/afterlife_profiles", "afterlife-profile-detail-player_soul", "/afterlife_profiles профиль player_soul", "Test Soul")]
     [InlineData("/afterlife_threats", "afterlife-threat-detail-threat_mirror_hunter", "/afterlife_threats угроза threat_mirror_hunter", "Охотник зеркального долга")]
     [InlineData("/afterlife_chronicles", "afterlife-chronicle-detail-guardian_scene_mirror", "/хроники_посмертия хроника \"Зал зеркальной клятвы\"", "Зал зеркальной клятвы")]
     [InlineData("/spiritual_conflict", "spiritual-conflict-exchange-detail-1", "/spiritual_conflict обмен 1", "Давление")]
@@ -7523,6 +7608,33 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.False(action.RequiresConfirmation);
         Assert.DoesNotContain("DTO", action.Label, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("API", action.Label, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ChaosSeaAfterlifeProfileOverview_ExposesOpaqueIssue1124ReadOnlyDetailAction()
+    {
+        const string actorId = "player_soul";
+        await PrepareIssue1124AfterlifeFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var action = Assert.Single(result.Actions, candidate =>
+            candidate.Label.Contains("Test Soul", StringComparison.OrdinalIgnoreCase));
+        Assert.Matches(
+            "^afterlife-profile-detail-afterlife_profile_[0-9a-f]{24}$",
+            action.Id);
+        Assert.Matches(
+            "^/afterlife_profiles действие afterlife_profile_[0-9a-f]{24}$",
+            action.Command);
+        Assert.DoesNotContain(actorId, SerializeResult(result), StringComparison.Ordinal);
+
+        var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest(action.Command));
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        Assert.Contains(
+            "Профиль посмертия: Test Soul",
+            CollectBlockText(detail.Blocks),
+            StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

@@ -1490,6 +1490,25 @@ function Test-BoeClientOwnedRuntimePath {
         return $true
     }
 
+    foreach ($clientOwnedPath in @(
+        "input/qte_effect_resolution_request.json",
+        "output/qte_effect_resolution_receipts.json",
+        "ready/qte_effect_resolution_complete.json",
+        "game_state/core/system_mods.json",
+        "game_state/control/progression_schedule.json",
+        "game_state/control/qte_deferred_effect_continuation.json",
+        "game_state/resources/resource_definitions.json",
+        "game_state/resources/resource_state.json",
+        "game_state/resources/resource_history.json",
+        "game_state/resources/resource_owner_authority.json",
+        "game_state/control/pending_effect_resolutions.json",
+        "game_state/effects/effect_identity_index.json"
+    )) {
+        if ([string]::Equals($path, $clientOwnedPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $true
+        }
+    }
+
     if ([string]::Equals($path, "game_state/control/pending_turn_snapshot.json", [System.StringComparison]::OrdinalIgnoreCase) -or
         [string]::Equals($path, "game_state/control/pending_turn_snapshot.authority.json", [System.StringComparison]::OrdinalIgnoreCase) -or
         [string]::Equals($path, "game_state/control/pending_turn_snapshot_manifest.json", [System.StringComparison]::OrdinalIgnoreCase) -or
@@ -2352,6 +2371,414 @@ function Get-BoeCurrentTurnRequest {
     }
 
     return Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+}
+
+function Get-BoeExactJsonPropertyNames {
+    param(
+        [AllowNull()]
+        [object]$Object
+    )
+
+    if ($null -eq $Object) {
+        return @()
+    }
+
+    if ($Object -is [System.Collections.IDictionary]) {
+        return @($Object.Keys | ForEach-Object { [string]$_ })
+    }
+
+    return @($Object.PSObject.Properties |
+        Where-Object { $_.MemberType -eq [System.Management.Automation.PSMemberTypes]::NoteProperty } |
+        ForEach-Object { [string]$_.Name })
+}
+
+function Get-BoeExactJsonValue {
+    param(
+        [AllowNull()]
+        [object]$Object,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Name
+    )
+
+    if ($null -eq $Object) {
+        return $null
+    }
+
+    if ($Object -is [System.Collections.IDictionary]) {
+        foreach ($key in $Object.Keys) {
+            if ([string]::Equals([string]$key, $Name, [System.StringComparison]::Ordinal)) {
+                return $Object[$key]
+            }
+        }
+        return $null
+    }
+
+    $property = $Object.PSObject.Properties |
+        Where-Object {
+            $_.MemberType -eq [System.Management.Automation.PSMemberTypes]::NoteProperty -and
+            [string]::Equals($_.Name, $Name, [System.StringComparison]::Ordinal)
+        } |
+        Select-Object -First 1
+    if ($null -eq $property) {
+        return $null
+    }
+
+    return $property.Value
+}
+
+function Test-BoeExactJsonNameInSet {
+    param(
+        [AllowNull()]
+        [string]$Name,
+
+        [Parameter(Mandatory = $true)]
+        [string[]]$Candidates
+    )
+
+    foreach ($candidate in @($Candidates)) {
+        if ([string]::Equals($Name, $candidate, [System.StringComparison]::Ordinal)) {
+            return $true
+        }
+    }
+
+    return $false
+}
+
+function Assert-BoeClosedJsonObject {
+    param(
+        [AllowNull()]
+        [object]$Object,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Context,
+
+        [Parameter(Mandatory = $true)]
+        [string[]]$RequiredNames,
+
+        [string[]]$OptionalNames = @()
+    )
+
+    if ($null -eq $Object -or
+        ($Object -isnot [System.Collections.IDictionary] -and
+         $Object.GetType().FullName -ne "System.Management.Automation.PSCustomObject")) {
+        throw "$Context must be one JSON object."
+    }
+
+    $actualNames = @(Get-BoeExactJsonPropertyNames -Object $Object)
+    foreach ($actualName in $actualNames) {
+        if (!(Test-BoeExactJsonNameInSet -Name $actualName -Candidates @($RequiredNames + $OptionalNames))) {
+            throw "$Context contains forbidden field '$actualName'."
+        }
+    }
+
+    foreach ($requiredName in @($RequiredNames)) {
+        if (!(Test-BoeExactJsonNameInSet -Name $requiredName -Candidates $actualNames)) {
+            throw "$Context is missing required field '$requiredName'."
+        }
+    }
+}
+
+function Get-BoeRequiredQteText {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Object,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Name,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Context
+    )
+
+    $value = Get-BoeExactJsonValue -Object $Object -Name $Name
+    if ($value -isnot [string] -or [string]::IsNullOrWhiteSpace($value)) {
+        throw "$Context.$Name must be one non-empty string."
+    }
+
+    return [string]$value
+}
+
+function Test-BoeFiniteJsonNumber {
+    param(
+        [AllowNull()]
+        [object]$Value
+    )
+
+    if ($Value -is [single]) {
+        return ![single]::IsNaN($Value) -and ![single]::IsInfinity($Value)
+    }
+    if ($Value -is [double]) {
+        return ![double]::IsNaN($Value) -and ![double]::IsInfinity($Value)
+    }
+
+    return $Value -is [byte] -or
+        $Value -is [sbyte] -or
+        $Value -is [int16] -or
+        $Value -is [uint16] -or
+        $Value -is [int32] -or
+        $Value -is [uint32] -or
+        $Value -is [int64] -or
+        $Value -is [uint64] -or
+        $Value -is [decimal]
+}
+
+function Complete-BoeQteEffectResolution {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [object[]]$Receipts
+    )
+
+    $requestPath = "input/qte_effect_resolution_request.json"
+    $request = Read-BoeJson -RelativePath $requestPath
+    $requestFields = @(
+        "schemaVersion",
+        "requestKind",
+        "sessionId",
+        "sessionGeneration",
+        "continuationId",
+        "requestId",
+        "waveId",
+        "waveOrdinal",
+        "acceptedSourceTurn",
+        "qteId",
+        "selectedTerminalFingerprint",
+        "pendingStateFingerprint",
+        "fullTurnFingerprint",
+        "semanticTurnFingerprint",
+        "safePacket"
+    )
+    Assert-BoeClosedJsonObject `
+        -Object $request `
+        -Context $requestPath `
+        -RequiredNames $requestFields
+
+    if ([int](Get-BoeExactJsonValue -Object $request -Name "schemaVersion") -ne 1) {
+        throw "$requestPath.schemaVersion must be 1."
+    }
+    $requestKind = Get-BoeRequiredQteText -Object $request -Name "requestKind" -Context $requestPath
+    if (![string]::Equals(
+            $requestKind,
+            "qte_deferred_effect_resolution",
+            [System.StringComparison]::Ordinal)) {
+        throw "$requestPath.requestKind must be qte_deferred_effect_resolution."
+    }
+
+    $textCorrelationNames = @(
+        "sessionId",
+        "sessionGeneration",
+        "continuationId",
+        "requestId",
+        "waveId",
+        "qteId",
+        "selectedTerminalFingerprint",
+        "pendingStateFingerprint",
+        "fullTurnFingerprint",
+        "semanticTurnFingerprint"
+    )
+    $correlation = [ordered]@{}
+    foreach ($name in $textCorrelationNames) {
+        $correlation[$name] = Get-BoeRequiredQteText -Object $request -Name $name -Context $requestPath
+    }
+    foreach ($fingerprintName in @(
+        "selectedTerminalFingerprint",
+        "pendingStateFingerprint",
+        "fullTurnFingerprint",
+        "semanticTurnFingerprint"
+    )) {
+        if ($correlation[$fingerprintName] -notmatch '^sha256:[0-9a-f]{64}$') {
+            throw "$requestPath.$fingerprintName must be one lowercase SHA-256 fingerprint."
+        }
+    }
+
+    $sessionGeneration = $correlation.sessionGeneration
+    $waveOrdinal = [int](Get-BoeExactJsonValue -Object $request -Name "waveOrdinal")
+    $acceptedSourceTurn = [int](Get-BoeExactJsonValue -Object $request -Name "acceptedSourceTurn")
+    if ($waveOrdinal -lt 0 -or $acceptedSourceTurn -lt 0) {
+        throw "$requestPath contains an invalid wave ordinal or accepted source turn."
+    }
+
+    $safePacket = Get-BoeExactJsonValue -Object $request -Name "safePacket"
+    Assert-BoeClosedJsonObject `
+        -Object $safePacket `
+        -Context "$requestPath.safePacket" `
+        -RequiredNames @("schemaVersion", "kind", "requests")
+    if ([int](Get-BoeExactJsonValue -Object $safePacket -Name "schemaVersion") -ne 2 -or
+        ![string]::Equals(
+            [string](Get-BoeExactJsonValue -Object $safePacket -Name "kind"),
+            "bounded_resource_resolution",
+            [System.StringComparison]::Ordinal)) {
+        throw "$requestPath.safePacket must use the current bounded_resource_resolution schema."
+    }
+
+    $safeRequests = @(Get-BoeJsonArrayItems -Value (
+        Get-BoeExactJsonValue -Object $safePacket -Name "requests"))
+    if ($safeRequests.Count -lt 1 -or $safeRequests.Count -gt 64) {
+        throw "$requestPath.safePacket.requests must contain between 1 and 64 requests."
+    }
+
+    $allowedByRequest = [System.Collections.Generic.Dictionary[string, object]]::new(
+        [System.StringComparer]::Ordinal)
+    foreach ($safeRequest in $safeRequests) {
+        Assert-BoeClosedJsonObject `
+            -Object $safeRequest `
+            -Context "$requestPath.safePacket.requests[]" `
+            -RequiredNames @(
+                "requestId",
+                "sourceLabel",
+                "targetLabel",
+                "resourceLabel",
+                "operationLabel",
+                "allowedResults",
+                "requiredCompanions",
+                "fullTurnResubmissionRequired",
+                "instruction"
+            )
+        $safeRequestId = Get-BoeRequiredQteText `
+            -Object $safeRequest `
+            -Name "requestId" `
+            -Context "$requestPath.safePacket.requests[]"
+        if ($allowedByRequest.ContainsKey($safeRequestId)) {
+            throw "$requestPath.safePacket.requests contains duplicate requestId '$safeRequestId'."
+        }
+
+        $allowedKinds = New-Object System.Collections.Generic.List[string]
+        foreach ($allowedResult in @(Get-BoeJsonArrayItems -Value (
+            Get-BoeExactJsonValue -Object $safeRequest -Name "allowedResults"))) {
+            Assert-BoeClosedJsonObject `
+                -Object $allowedResult `
+                -Context "$requestPath.safePacket.requests[$safeRequestId].allowedResults[]" `
+                -RequiredNames @("resultKind") `
+                -OptionalNames @("amountInstruction")
+            $allowedKind = Get-BoeRequiredQteText `
+                -Object $allowedResult `
+                -Name "resultKind" `
+                -Context "$requestPath.safePacket.requests[$safeRequestId].allowedResults[]"
+            if ($allowedKind -notin @("narrated_no_state_change", "resource_delta")) {
+                throw "$requestPath safe packet contains unsupported result kind '$allowedKind'."
+            }
+            $allowedKinds.Add($allowedKind)
+        }
+        if ($allowedKinds.Count -lt 1) {
+            throw "$requestPath safe request '$safeRequestId' has no allowed result."
+        }
+        $allowedByRequest.Add($safeRequestId, [string[]]$allowedKinds.ToArray())
+    }
+
+    $receiptArray = @($Receipts)
+    if ($receiptArray.Count -ne $allowedByRequest.Count) {
+        throw "Receipts must contain exactly one result for every published QTE effect request."
+    }
+    $seenReceiptIds = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::Ordinal)
+    $closedReceipts = New-Object System.Collections.Generic.List[object]
+    foreach ($rawReceipt in $receiptArray) {
+        $receipt = ConvertTo-BoeMutableJsonValue -Value $rawReceipt
+        Assert-BoeClosedJsonObject `
+            -Object $receipt `
+            -Context "Receipts[]" `
+            -RequiredNames @("requestId", "resultKind", "reason") `
+            -OptionalNames @("amount")
+        $receiptRequestId = Get-BoeRequiredQteText -Object $receipt -Name "requestId" -Context "Receipts[]"
+        $resultKind = Get-BoeRequiredQteText -Object $receipt -Name "resultKind" -Context "Receipts[]"
+        $reason = Get-BoeRequiredQteText -Object $receipt -Name "reason" -Context "Receipts[]"
+        if (!$seenReceiptIds.Add($receiptRequestId)) {
+            throw "Receipts contains duplicate requestId '$receiptRequestId'."
+        }
+        if (!$allowedByRequest.ContainsKey($receiptRequestId)) {
+            throw "Receipts contains stale or unknown requestId '$receiptRequestId'."
+        }
+        if (!(Test-BoeExactJsonNameInSet `
+                -Name $resultKind `
+                -Candidates ([string[]]$allowedByRequest[$receiptRequestId]))) {
+            throw "Receipt '$receiptRequestId' uses resultKind '$resultKind' outside the published safe packet."
+        }
+
+        $amountNames = @(Get-BoeExactJsonPropertyNames -Object $receipt)
+        $hasAmount = Test-BoeExactJsonNameInSet -Name "amount" -Candidates $amountNames
+        if ([string]::Equals($resultKind, "resource_delta", [System.StringComparison]::Ordinal)) {
+            if (!$hasAmount) {
+                throw "Receipt '$receiptRequestId' with resource_delta must contain amount."
+            }
+            $rawAmount = Get-BoeExactJsonValue -Object $receipt -Name "amount"
+            if (!(Test-BoeFiniteJsonNumber -Value $rawAmount)) {
+                throw "Receipt '$receiptRequestId'.amount must be a finite decimal number."
+            }
+            try {
+                $amount = [decimal]$rawAmount
+            }
+            catch {
+                throw "Receipt '$receiptRequestId'.amount must be a finite decimal number."
+            }
+        }
+        elseif ($hasAmount) {
+            throw "Receipt '$receiptRequestId' must omit amount for narrated_no_state_change."
+        }
+
+        $closedReceipt = [ordered]@{
+            requestId = $receiptRequestId
+            resultKind = $resultKind
+        }
+        if ($hasAmount) {
+            $closedReceipt.amount = $amount
+        }
+        $closedReceipt.reason = $reason
+        $closedReceipts.Add($closedReceipt)
+    }
+
+    foreach ($safeRequestId in $allowedByRequest.Keys) {
+        if (!$seenReceiptIds.Contains($safeRequestId)) {
+            throw "Receipts is missing requestId '$safeRequestId'."
+        }
+    }
+
+    $response = [ordered]@{
+        schemaVersion = 1
+        requestKind = "qte_deferred_effect_resolution"
+        sessionId = $correlation.sessionId
+        sessionGeneration = $sessionGeneration
+        continuationId = $correlation.continuationId
+        requestId = $correlation.requestId
+        waveId = $correlation.waveId
+        waveOrdinal = $waveOrdinal
+        acceptedSourceTurn = $acceptedSourceTurn
+        qteId = $correlation.qteId
+        selectedTerminalFingerprint = $correlation.selectedTerminalFingerprint
+        pendingStateFingerprint = $correlation.pendingStateFingerprint
+        fullTurnFingerprint = $correlation.fullTurnFingerprint
+        semanticTurnFingerprint = $correlation.semanticTurnFingerprint
+        effectResolutionReceipts = [object[]]$closedReceipts.ToArray()
+    }
+    $responsePath = "output/qte_effect_resolution_receipts.json"
+    Write-BoeJson `
+        -RelativePath $responsePath `
+        -Data $response `
+        -Depth 30 `
+        -AllowClientOwnedRuntimeWrite
+
+    $responseFullPath = Resolve-BoeSessionPath -RelativePath $responsePath
+    $ready = [ordered]@{
+        schemaVersion = 1
+        requestKind = "qte_deferred_effect_resolution"
+        sessionId = $correlation.sessionId
+        sessionGeneration = $sessionGeneration
+        continuationId = $correlation.continuationId
+        requestId = $correlation.requestId
+        waveId = $correlation.waveId
+        waveOrdinal = $waveOrdinal
+        acceptedSourceTurn = $acceptedSourceTurn
+        qteId = $correlation.qteId
+        pendingStateFingerprint = $correlation.pendingStateFingerprint
+        receiptsFingerprint = "sha256:" + (Get-BoeSha256Hex -Bytes ([System.IO.File]::ReadAllBytes($responseFullPath)))
+        timestamp = [DateTimeOffset]::UtcNow.ToString("O")
+        status = "success"
+    }
+    Write-BoeJson `
+        -RelativePath "ready/qte_effect_resolution_complete.json" `
+        -Data $ready `
+        -Depth 20 `
+        -AllowClientOwnedRuntimeWrite
 }
 
 function Assert-BoeCurrentPendingSnapshotContext {

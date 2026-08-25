@@ -148,10 +148,27 @@ public sealed partial class EffectAfterlifeAdapterTests
             realm: "chaos_sea");
         var initial = new EffectAcceptedTurnPlanCache().GetOrBuild(input);
         Assert.True(initial.Success, DescribeIssues(initial.Issues));
-
-        var result = EffectAcceptedTurnPlanner.FinalizeAfterResourceGraph(
-            initial.Plan!,
-            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
+        var effectPlan = Assert.IsType<EffectAcceptedTurnPlan>(initial.Plan);
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, DescribeIssues(bootstrap.Issues));
+        var sources = ResourceMutationSourceCatalog.Create(
+            Array.Empty<ResourceMutationSourceExport>());
+        Assert.True(sources.IsValid, DescribeIssues(sources.Issues));
+        var resources = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 44,
+                Definitions: bootstrap.Definitions!,
+                State: bootstrap.State!,
+                History: bootstrap.History!,
+                Sources: sources.Catalog!,
+                Mutations: Array.Empty<ResourceMutationIntent>(),
+                EffectPlanAuthority:
+                    AcceptedMechanicsPlanner.CreateEffectPlanAuthority(effectPlan)),
+            new AcceptedMechanicsIdentityFactory());
+        Assert.True(resources.IsValid, DescribeIssues(resources.Issues));
+        var result = EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
+            effectPlan,
+            resources.EffectBoundaryTranscript!,
             new EffectIdentityFactory());
 
         Assert.False(result.Success);
@@ -234,9 +251,27 @@ public sealed partial class EffectAfterlifeAdapterTests
 
         var initial = new EffectAcceptedTurnPlanCache().GetOrBuild(input);
         Assert.True(initial.Success, DescribeIssues(initial.Issues));
-        var result = EffectAcceptedTurnPlanner.FinalizeAfterResourceGraph(
-            initial.Plan!,
-            Array.Empty<EffectAcceptedTurnPlanner.EffectResourceTriggerExecution>(),
+        var effectPlan = Assert.IsType<EffectAcceptedTurnPlan>(initial.Plan);
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(bootstrap.IsValid, DescribeIssues(bootstrap.Issues));
+        var sources = ResourceMutationSourceCatalog.Create(
+            Array.Empty<ResourceMutationSourceExport>());
+        Assert.True(sources.IsValid, DescribeIssues(sources.Issues));
+        var resources = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 44,
+                Definitions: bootstrap.Definitions!,
+                State: bootstrap.State!,
+                History: bootstrap.History!,
+                Sources: sources.Catalog!,
+                Mutations: Array.Empty<ResourceMutationIntent>(),
+                EffectPlanAuthority:
+                    AcceptedMechanicsPlanner.CreateEffectPlanAuthority(effectPlan)),
+            new AcceptedMechanicsIdentityFactory());
+        Assert.True(resources.IsValid, DescribeIssues(resources.Issues));
+        var result = EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
+            effectPlan,
+            resources.EffectBoundaryTranscript!,
             new EffectIdentityFactory());
 
         Assert.True(result.Success, DescribeIssues(result.Issues));
@@ -466,8 +501,7 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
 
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),

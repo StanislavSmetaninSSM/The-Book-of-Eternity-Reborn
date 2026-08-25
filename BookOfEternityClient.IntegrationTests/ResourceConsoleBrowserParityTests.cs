@@ -114,6 +114,68 @@ public sealed class ResourceConsoleBrowserParityTests : IDisposable
     }
 
     [Fact]
+    public async Task SuspendedMortalCoreProjection_SharedStatusSurfacesFailClosed()
+    {
+        await ResourceProjectionFixture.SeedAsync(
+            _fs,
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "health",
+                137m,
+                137m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "energy",
+                149m,
+                149m),
+            new ProjectedResourceSeed(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "player_current",
+                "poise",
+                173m,
+                173m,
+                ResourceLifecycleState.Suspended));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            """
+            {
+              "soulName": "Пепельная Искра",
+              "currentRealm": "Mortal Realm",
+              "currentIncarnation": 2
+            }
+            """);
+
+        var stats = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(
+            "/статы",
+            _stateManager,
+            _fs);
+        var status = await ExplorerUniversalMetaCommandResultBuilder.TryBuildAsync(
+            "/статус",
+            _stateManager,
+            _fs,
+            new LocalizationManager { CurrentLanguage = "ru" });
+
+        Assert.False(_stateManager.CurrentState.PlayerStatus.ResourceProjectionAvailable);
+        var options = new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+        foreach (var payload in new[]
+                 {
+                     JsonSerializer.Serialize(stats, options),
+                     JsonSerializer.Serialize(status, options)
+                 })
+        {
+            Assert.Contains(ResourcePlayerFailureMessages.Unavailable, payload, StringComparison.Ordinal);
+            Assert.DoesNotContain("100%", payload, StringComparison.Ordinal);
+            Assert.DoesNotContain("resource_", payload, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("game_state", payload, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public async Task MissingProjection_CombatDetailDoesNotFallBackToRawHealthOrPoise()
     {
         await _fs.WriteFileAtomicAsync(

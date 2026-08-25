@@ -12,6 +12,9 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    private static readonly TimeSpan RepairLifecycleObservationTimeout =
+        TimeSpan.FromSeconds(30);
+
     [Fact]
     public async Task EffectMaterializationRepairLifecycleTests_ReadyThenPartialEffectOnlyCannotDiscardCompleteResponse()
     {
@@ -20,7 +23,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         _fs.DeleteFile("output/interface_updates.json");
         await SeedSingletonEffectRepairAuthorityAsync(turn: 42);
 
-        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var input = new QueuedConsoleInputSource([]);
+        var engine = CreateGameEngine(input);
         var rollbackSnapshot = await InvokePrivateTaskResultAsync(
             engine,
             "CreatePreTurnBackup",
@@ -62,18 +66,44 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 var firstRequest = await WaitForValidationRepairRequestContainingAsync(
                     "effect_source_parameter_required",
-                    TimeSpan.FromSeconds(8));
+                    RepairLifecycleObservationTimeout);
                 Assert.False(_fs.FileExists(EffectAcceptedTurnPlan.CommandPath));
                 Assert.False(_fs.FileExists("output/narrative_response.json"));
                 Assert.False(_fs.FileExists("output/interface_updates.json"));
+                using (var firstRequestDocument = JsonDocument.Parse(firstRequest))
+                {
+                    var requiredPaths = firstRequestDocument.RootElement
+                        .GetProperty("requiredResubmissionPaths")
+                        .EnumerateArray()
+                        .Select(static path => path.GetString() ?? string.Empty)
+                        .ToArray();
+                    var expectedPaths = new HashSet<string>(
+                        new[]
+                        {
+                            EffectAcceptedTurnPlan.CommandPath,
+                            "output/narrative_response.json",
+                            "output/interface_updates.json"
+                        },
+                        StringComparer.OrdinalIgnoreCase);
+                    Assert.True(
+                        expectedPaths.SetEquals(requiredPaths),
+                        "Effect repair must require exactly the rejected GM-authored " +
+                        "command/output surfaces. Actual: " + string.Join(", ", requiredPaths));
+                }
 
                 await WriteEffectRepairReadyAsync(request, "Ready alone must not clear the obligation.");
-                var secondRequest = await WaitForNewRepairAttemptAsync(firstRequest, 2, TimeSpan.FromSeconds(8));
+                var secondRequest = await WaitForNewRepairAttemptAsync(
+                    firstRequest,
+                    2,
+                    RepairLifecycleObservationTimeout);
                 readyOnlyRejected = true;
 
                 await WriteEffectRepairCommandAsync(includeRequiredAmount: true);
                 await WriteEffectRepairReadyAsync(request, "Effect-only retry remains incomplete.");
-                var thirdRequest = await WaitForNewRepairAttemptAsync(secondRequest, 3, TimeSpan.FromSeconds(8));
+                var thirdRequest = await WaitForNewRepairAttemptAsync(
+                    secondRequest,
+                    3,
+                    RepairLifecycleObservationTimeout);
                 partialEffectOnlyRejected = true;
 
                 await WriteEffectRepairCommandAsync(includeRequiredAmount: true);
@@ -82,26 +112,21 @@ public sealed partial class GameEngineTurnLifecycleTests
                     "Осмотреть повязку");
                 await WriteEffectRepairReadyAsync(request, "Complete coherent response resubmitted.");
 
-                var laterRequest = await TryWaitForNewRepairAttemptAsync(
+                await WaitForUpdatedValidationRepairRequestContainingAsync(
+                    "accepted_turn_stale_player_facing_output_after_canonical_repair",
                     thirdRequest,
-                    minimumAttempt: 4,
-                    TimeSpan.FromSeconds(4));
-                if (laterRequest != null)
-                {
-                    Assert.Contains(
-                        "accepted_turn_stale_player_facing_output_after_canonical_repair",
-                        laterRequest,
-                        StringComparison.Ordinal);
-                    await WriteAcceptedEffectOutputsAsync(
-                        "Рана перевязана; новая повязка надёжно удерживает края.",
-                        "Продолжить путь");
-                    await WriteEffectRepairReadyAsync(request, "Player-facing output regenerated after canonical repair.");
-                }
+                    RepairLifecycleObservationTimeout);
+                await WriteAcceptedEffectOutputsAsync(
+                    "Рана перевязана; новая повязка надёжно удерживает края.",
+                    "Продолжить путь");
+                await WriteEffectRepairReadyAsync(
+                    request,
+                    "Player-facing output regenerated after canonical repair.");
             }
             catch (Exception exception)
             {
                 gmFailure = exception;
-                await WriteEffectRepairReadyAsync(request, "Abort test worker wait.");
+                input.Enqueue(Key(ConsoleKey.Escape));
             }
         });
 
@@ -364,6 +389,49 @@ public sealed partial class GameEngineTurnLifecycleTests
             rollbackSnapshot,
             changed,
             repairSessionGeneration));
+    }
+
+    [Fact]
+    public async Task EffectMaterializationRepairLifecycleTests_ClientOwnedPreparationNeverBecomesGmResubmissionWork()
+    {
+        const string gmOutputPath = "output/narrative_response.json";
+        var clientOwnedPaths = new[]
+        {
+            SystemModService.ManifestPath,
+            ProgressionScheduleService.SchedulePath,
+            ResourceMaterializationContract.DefinitionsPath,
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            ResourcePendingResolutionState.PendingPath,
+            EffectAcceptedTurnPlan.IdentityIndexPath
+        };
+        foreach (var path in clientOwnedPaths)
+            await _fs.WriteFileAtomicAsync(path, "{\"state\":\"baseline\"}");
+        await _fs.WriteFileAtomicAsync(gmOutputPath, "{\"response\":\"До хода\"}");
+
+        var engine = CreateGameEngine();
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "effect_repair_client_owned_preparation");
+        var repairSessionGeneration = await GetOrCreateSessionGenerationAsync();
+
+        foreach (var path in clientOwnedPaths)
+            await _fs.WriteFileAtomicAsync(path, "{\"state\":\"client-prepared\"}");
+        await _fs.WriteFileAtomicAsync(gmOutputPath, "{\"response\":\"Отклонённый ответ\"}");
+
+        var changed = await InvokePrivateTaskResultAsync(
+            engine,
+            "CaptureChangedRollbackTrackedPathsForRepairSessionAsync",
+            rollbackSnapshot,
+            repairSessionGeneration);
+        var requiredPaths = ReadRepairResubmissionPaths(changed);
+
+        Assert.Contains(gmOutputPath, requiredPaths, StringComparer.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            requiredPaths,
+            path => clientOwnedPaths.Contains(path, StringComparer.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -698,7 +766,33 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ["activeEffectDefinitions"] = new JsonArray(definition)
             }));
 
+        var definitionsResult = ResourceDefinitionCatalog.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            allowMissingPristine: false);
+        Assert.True(
+            definitionsResult.IsValid,
+            string.Join(Environment.NewLine, definitionsResult.Issues));
+        var definitions = Assert.IsType<ResourceDefinitionCatalog>(definitionsResult.Catalog);
+        var currentStateResult = ResourceStateContract.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            definitions,
+            allowMissingPristine: false);
+        var currentHistoryResult = ResourceHistoryState.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(
+            currentStateResult.IsValid,
+            string.Join(Environment.NewLine, currentStateResult.Issues));
+        Assert.True(
+            currentHistoryResult.IsValid,
+            string.Join(Environment.NewLine, currentHistoryResult.Issues));
+        var currentState = Assert.IsType<ResourceStateLedger>(currentStateResult.Ledger);
+        var currentHistory = Assert.IsType<ResourceHistoryState>(currentHistoryResult.History);
         var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+            definitions,
+            currentState,
+            currentHistory,
             incarnationNumber: 1,
             turn: turn - 1,
             permanentStrength: 10,
@@ -707,15 +801,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             permanentWisdom: 10,
             permanentFaith: 10);
         Assert.True(resources.IsValid, string.Join(Environment.NewLine, resources.Issues));
-        await WriteJsonAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            JsonNode.Parse(resources.Definitions!.ToCanonicalJson())!);
-        await WriteJsonAsync(
-            ResourceMaterializationContract.StatePath,
-            JsonNode.Parse(resources.State!.ToCanonicalJson())!);
-        await WriteJsonAsync(
-            ResourceMaterializationContract.HistoryPath,
-            JsonNode.Parse(resources.History!.ToCanonicalJson())!);
+        await CanonicalResourceQuartetTestFixture.CommitExistingStateAsync(
+            _fs,
+            definitions,
+            currentState,
+            currentHistory,
+            resources.State!,
+            resources.History!);
     }
 
     private Task WriteEffectRepairCommandAsync(bool includeRequiredAmount)

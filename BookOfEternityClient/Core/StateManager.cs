@@ -459,9 +459,9 @@ public class StateManager
             string.Equals(row.ResourceKey, "energy", StringComparison.Ordinal));
         var poise = projection.Rows.SingleOrDefault(static row =>
             string.Equals(row.ResourceKey, "poise", StringComparison.Ordinal));
-        if (health?.Percentage == null ||
-            energy?.Percentage == null ||
-            poise?.Percentage == null)
+        if (health is not { Percentage: not null, State: ResourceLifecycleState.Active } ||
+            energy is not { Percentage: not null, State: ResourceLifecycleState.Active } ||
+            poise is not { Percentage: not null, State: ResourceLifecycleState.Active })
         {
             return;
         }

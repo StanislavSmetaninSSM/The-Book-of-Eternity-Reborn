@@ -167,7 +167,11 @@ public sealed class MortalResourceCutoverTests
                     "mortal_cutover_outcome",
                     SourceFingerprint,
                     ResourceMutationSourceState.Active,
-                    SameTurn: true)
+                    SameTurn: true,
+                    BoundOwner: new ResourceOwnerKey(
+                        "mortal_world",
+                        ResourceOwnerKind.Player,
+                        "player_current"))
             });
         Assert.True(sources.IsValid, string.Join(Environment.NewLine, sources.Issues));
 
@@ -204,8 +208,7 @@ public sealed class MortalResourceCutoverTests
         var scenario = await PrepareShiningSurvivalScenarioAsync(context);
         var bootstrap = scenario.Bootstrap;
 
-        var rawIssues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var rawIssues = await ValidateAcceptedTurnRawMechanicsAsync(context);
         Assert.False(
             rawIssues.Any(issue => issue.Severity == IssueSeverity.Error),
             string.Join(Environment.NewLine, rawIssues.Select(static issue =>
@@ -311,8 +314,7 @@ public sealed class MortalResourceCutoverTests
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
         var scenario = await PrepareShiningSurvivalScenarioAsync(context);
-        var rawIssues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var rawIssues = await ValidateAcceptedTurnRawMechanicsAsync(context);
         Assert.False(
             rawIssues.Any(issue => issue.Severity == IssueSeverity.Error),
             string.Join(Environment.NewLine, rawIssues.Select(static issue =>
@@ -335,13 +337,15 @@ public sealed class MortalResourceCutoverTests
         var beforePublication = await context.CaptureAsync(
             CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
 
-        await Assert.ThrowsAsync<InvalidDataException>(() =>
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
             AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(
                 context.FileSystem,
                 context.Normalizer,
                 context.Validator,
                 scenario.Backups));
 
+        Assert.Contains(changedPath, exception.Message, StringComparison.Ordinal);
+        Assert.Contains("changed after validation", exception.Message, StringComparison.Ordinal);
         await context.AssertUnchangedAsync(beforePublication);
     }
 
@@ -399,6 +403,19 @@ public sealed class MortalResourceCutoverTests
         await context.WriteExactJsonAsync(
             "game_state/world/world_events.json",
             preTurnEvents.ToJsonString());
+        var ownerAuthority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            bootstrap.Definitions!,
+            context.FileSystem.ReadFileAsync,
+            bootstrap.State!,
+            bootstrap.History!,
+            CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap);
+        Assert.True(
+            ownerAuthority.IsValid &&
+            !string.IsNullOrWhiteSpace(ownerAuthority.CanonicalAuthorityJson),
+            string.Join(Environment.NewLine, ownerAuthority.Issues));
+        await context.WriteExactJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            ownerAuthority.CanonicalAuthorityJson!);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 5);
         var manifest = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
             "game_state/control/pending_turn_snapshot.json"));
@@ -426,9 +443,9 @@ public sealed class MortalResourceCutoverTests
                 ["resourceDefinitionCreations"] = new JsonArray(),
                 ["resourceCapacityChanges"] = new JsonArray(),
                 ["resourceChanges"] = new JsonArray(
-                    ResourceChange("damage", "health", "evt_ruinous", 40m, 1),
-                    ResourceChange("spend", "energy", "evt_ruinous", 40m, 2),
-                    ResourceChange("damage", "poise", "evt_ruinous", 40m, 3))
+                    ResourceChange("damage", "health", 40m, 1),
+                    ResourceChange("spend", "energy", 40m, 2),
+                    ResourceChange("damage", "poise", 40m, 3))
             }.ToJsonString());
 
         return new ShiningSurvivalScenario(
@@ -442,10 +459,21 @@ public sealed class MortalResourceCutoverTests
         IReadOnlyDictionary<string, string> Backups,
         string PreTurnWorldEventsJson);
 
+    private static async Task<IReadOnlyList<ValidationIssue>>
+        ValidateAcceptedTurnRawMechanicsAsync(
+            ResourceMaterializationTestContext context)
+    {
+        var issues = new List<ValidationIssue>();
+        issues.AddRange(await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync());
+        issues.AddRange(await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync());
+        return issues;
+    }
+
     private static JsonObject ResourceChange(
         string operation,
         string resourceKey,
-        string sourceId,
         decimal amount,
         int ordinal) =>
         new()
@@ -460,8 +488,7 @@ public sealed class MortalResourceCutoverTests
             ["amount"] = amount,
             ["source"] = new JsonObject
             {
-                ["kind"] = "narrative_outcome",
-                ["sourceId"] = sourceId
+                ["kind"] = "narrative_outcome"
             },
             ["eventRef"] = $"turn_5:resource:{ordinal}",
             ["reason"] = "Ruinous outcome resolved through unified resource authority"

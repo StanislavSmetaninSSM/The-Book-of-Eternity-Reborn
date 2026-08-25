@@ -65,6 +65,38 @@ At submit time, re-resolve the selector against the latest accepted snapshot and
 
 Failure produces generic in-world text and no state change.
 
+Read-only afterlife profile drill-down actions follow the same public DTO
+boundary. Generated card, overview, and inbox actions MUST use the dedicated
+`/afterlife_profiles действие afterlife_profile_<digest>` route and one
+domain-separated, versioned opaque selector. Its authority is exactly the
+canonical `actorType` plus the first non-empty JSON string from `actorId` and
+then legacy `actorRef`. Numeric, boolean, object, or array values never become
+identity by UI coercion. `profileId`, generic `id`, and `displayName` are never
+generated-action authority.
+
+The token is stable across list reordering and is re-resolved against the
+current visible profile collection when invoked. Resolution MUST yield exactly
+one matching canonical authority. Stale or forged tokens, a changed actor type,
+a hidden profile, missing/noncanonical authority, duplicate authority, or a
+digest collision fail closed with the ordinary in-world unavailable response.
+Inbox actions first resolve their identity to one current visible profile and
+then use the same selector builder. A valid explicit string
+`profileActorId`/`profileActorType` hint has priority. A present malformed
+explicit hint fails closed instead of falling back. Without explicit
+`profileActorId`, exactly one of the notification's string `guardianId` or
+`residentId` may supply the candidate; both or neither emit no profile action.
+Untyped duplicate matches likewise emit no action.
+
+Direct read-only lookup remains a separate
+`/afterlife_profiles профиль <raw-selector>` route. It may uniquely match the
+existing readable actor/profile IDs, references, or display name, including a
+raw value that begins with `afterlife_profile_`. Ambiguous direct selectors fail
+closed. The `действие` route recognizes only the exact lowercase
+`afterlife_profile_` plus 24-hex form and never falls back to direct lookup;
+the `профиль` route may still read a raw ID having that exact shape. Generated
+player-facing DTOs never publish the internal authority values used by either
+lookup mode.
+
 ## 6. Surface Coverage
 
 The shared projection must drive or sanitize:

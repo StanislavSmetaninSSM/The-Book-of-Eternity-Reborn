@@ -247,15 +247,18 @@ internal static class ShiningBlessingRerollResourceService
         {
             if (existing == null || existing.Current == 0m)
             {
-                return samePackageIdentity
-                    ? new ShiningBlessingRerollResourceFilePlan(
-                        existingEffectState,
-                        Array.Empty<CoordinatedStateWriteHelper.PlannedWrite>(),
-                        Array.Empty<ValidationIssue>(),
-                        isReplay: true)
-                    : Success(
-                        afterImage,
-                        Array.Empty<CoordinatedStateWriteHelper.PlannedWrite>());
+                return await CompleteAsync(
+                    fs,
+                    writeLease,
+                    samePackageIdentity ? existingEffectState! : afterImage,
+                    Array.Empty<CoordinatedStateWriteHelper.PlannedWrite>(),
+                    definitionsResult.Catalog,
+                    stateResult.Ledger,
+                    historyResult.History,
+                    stateResult.Ledger,
+                    historyResult.History,
+                    beforeImages,
+                    isReplay: samePackageIdentity);
             }
 
             var expireFingerprint = SourceFingerprint(
@@ -303,7 +306,9 @@ internal static class ShiningBlessingRerollResourceService
             if (expireAgreement.Count != 0)
                 return Failure(expireAgreement);
 
-            return Success(
+            return await CompleteAsync(
+                fs,
+                writeLease,
                 afterImage,
                 new[]
                 {
@@ -321,7 +326,13 @@ internal static class ShiningBlessingRerollResourceService
                         ResourceMaterializationContract.HistoryPath,
                         beforeImages[ResourceMaterializationContract.HistoryPath],
                         expirePlan.HistoryAfterImage.ToCanonicalJson())
-                });
+                },
+                definitionsResult.Catalog,
+                stateResult.Ledger,
+                historyResult.History,
+                expirePlan.StateAfterImage,
+                expirePlan.HistoryAfterImage,
+                beforeImages);
         }
         var resolved = ResolvedResourceCapacity.Resolve(
             definition,
@@ -365,10 +376,17 @@ internal static class ShiningBlessingRerollResourceService
                           relicBindingMatches;
         if (exactReplay)
         {
-            return new ShiningBlessingRerollResourceFilePlan(
-                existingEffectState,
+            return await CompleteAsync(
+                fs,
+                writeLease,
+                existingEffectState!,
                 Array.Empty<CoordinatedStateWriteHelper.PlannedWrite>(),
-                Array.Empty<ValidationIssue>(),
+                definitionsResult.Catalog,
+                stateResult.Ledger,
+                historyResult.History,
+                stateResult.Ledger,
+                historyResult.History,
+                beforeImages,
                 isReplay: true);
         }
 
@@ -501,7 +519,7 @@ internal static class ShiningBlessingRerollResourceService
         if (agreement.Count != 0)
             return Failure(agreement);
 
-        var writes = new[]
+        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
         {
             CoordinatedStateWriteHelper.CreateGuardWrite(
                 ResourceMaterializationContract.DefinitionsPath,
@@ -518,7 +536,17 @@ internal static class ShiningBlessingRerollResourceService
                 beforeImages[ResourceMaterializationContract.HistoryPath],
                 planned.HistoryAfterImage.ToCanonicalJson())
         };
-        return Success(afterImage, writes);
+        return await CompleteAsync(
+            fs,
+            writeLease,
+            afterImage,
+            writes,
+            definitionsResult.Catalog,
+            stateResult.Ledger,
+            historyResult.History,
+            planned.StateAfterImage,
+            planned.HistoryAfterImage,
+            beforeImages);
     }
 
     internal static async Task<ShiningBlessingRerollAllocationProjection>
@@ -697,7 +725,7 @@ internal static class ShiningBlessingRerollResourceService
                 planned.Issues);
         }
 
-        var writes = new[]
+        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
         {
             CoordinatedStateWriteHelper.CreateGuardWrite(
                 ResourceMaterializationContract.DefinitionsPath,
@@ -711,6 +739,25 @@ internal static class ShiningBlessingRerollResourceService
                 loaded.BeforeImages[ResourceMaterializationContract.HistoryPath],
                 planned.HistoryAfterImage.ToCanonicalJson())
         };
+        var quartet = await CanonicalResourceQuartetTransaction.ComposeExistingSessionAsync(
+            loaded.Definitions,
+            loaded.State,
+            loaded.History,
+            planned.StateAfterImage,
+            planned.HistoryAfterImage,
+            path => ReadAsync(fs, writeLease, path),
+            loaded.BeforeImages,
+            new Dictionary<string, string>(StringComparer.Ordinal));
+        if (quartet.Projection == null)
+        {
+            return new ShiningBlessingRerollSpendFilePlan(
+                0,
+                Array.Empty<CoordinatedStateWriteHelper.PlannedWrite>(),
+                quartet.Issues);
+        }
+        CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(
+            writes,
+            quartet.Projection);
         return new ShiningBlessingRerollSpendFilePlan(
             loaded.Remaining - amount,
             writes,
@@ -775,6 +822,22 @@ internal static class ShiningBlessingRerollResourceService
         var agreement = history.History.ValidateStateAgreement(state.Ledger);
         if (agreement.Count != 0)
             return AllocationAuthority.Failure(agreement);
+        var existingAuthority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            definitions.Catalog,
+            async path =>
+            {
+                if (!beforeImages.TryGetValue(path, out var json))
+                {
+                    json = await ReadAsync(fs, writeLease, path);
+                    beforeImages[path] = json;
+                }
+                return json;
+            },
+            state.Ledger,
+            history.History,
+            CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
+        if (!existingAuthority.IsValid)
+            return AllocationAuthority.Failure(existingAuthority.Issues);
         if (!state.Ledger.TryResolveExact(coordinate!, out var entry) || entry == null)
         {
             return AllocationAuthority.Failure(Issue(
@@ -1126,10 +1189,54 @@ internal static class ShiningBlessingRerollResourceService
         string nextJson) =>
         new(path, previousJson, nextJson, RequireCurrentBaseline: true);
 
-    private static ShiningBlessingRerollResourceFilePlan Success(
+    private static async Task<ShiningBlessingRerollResourceFilePlan> CompleteAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         JsonObject afterImage,
-        IReadOnlyList<CoordinatedStateWriteHelper.PlannedWrite> writes) =>
-        new(afterImage, writes, Array.Empty<ValidationIssue>());
+        IReadOnlyList<CoordinatedStateWriteHelper.PlannedWrite> writes,
+        ResourceDefinitionCatalog definitions,
+        ResourceStateLedger currentState,
+        ResourceHistoryState currentHistory,
+        ResourceStateLedger finalState,
+        ResourceHistoryState finalHistory,
+        IReadOnlyDictionary<string, string?> beforeImages,
+        bool isReplay = false)
+    {
+        var quartet = await CanonicalResourceQuartetTransaction.ComposeExistingSessionAsync(
+            definitions,
+            currentState,
+            currentHistory,
+            finalState,
+            finalHistory,
+            path => fs.ReadFileAsync(writeLease, path),
+            beforeImages,
+            new Dictionary<string, string>(StringComparer.Ordinal));
+        if (quartet.Projection == null)
+        {
+            return new ShiningBlessingRerollResourceFilePlan(
+                null,
+                Array.Empty<CoordinatedStateWriteHelper.PlannedWrite>(),
+                quartet.Issues);
+        }
+
+        if (isReplay)
+        {
+            return new ShiningBlessingRerollResourceFilePlan(
+                afterImage,
+                Array.Empty<CoordinatedStateWriteHelper.PlannedWrite>(),
+                Array.Empty<ValidationIssue>(),
+                isReplay: true);
+        }
+
+        var completed = writes.ToList();
+        CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(
+            completed,
+            quartet.Projection);
+        return new ShiningBlessingRerollResourceFilePlan(
+            afterImage,
+            completed,
+            Array.Empty<ValidationIssue>());
+    }
 
     private static ShiningBlessingRerollResourceFilePlan Failure(
         IReadOnlyList<ValidationIssue> issues) =>

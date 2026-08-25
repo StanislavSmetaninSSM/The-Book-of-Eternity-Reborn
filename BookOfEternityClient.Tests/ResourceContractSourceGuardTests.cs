@@ -25,6 +25,8 @@ public sealed class ResourceContractSourceGuardTests
         "poisePercentage",
         "currentHealth",
         "maxHealth",
+        "currentEnergy",
+        "maxEnergy",
         "currentPoise",
         "maxPoise",
         "healthStates",
@@ -42,7 +44,8 @@ public sealed class ResourceContractSourceGuardTests
     private static readonly Regex RemovedBareAuthorityPattern = new(
         "(?<![A-Za-z0-9_])(?:currentHealthChange|currentEnergyChange|currentPoiseChange|" +
         "inventoryItemsResources|NPCInventoryResourcesChanges|healthPercentage|" +
-        "energyPercentage|poisePercentage|currentHealth|maxHealth|currentPoise|maxPoise|" +
+        "energyPercentage|poisePercentage|currentHealth|maxHealth|currentEnergy|maxEnergy|" +
+        "currentPoise|maxPoise|" +
         "healthStates|currentHealthPercentage|maxHealthPercentage|maxHp|maxDurability|" +
         "maximumResource|newResourceValue|chargesPerReturn|chargesUsedThisReturn|" +
         "actionEconomy|game_state/inventory/item_resources\\.json)(?![A-Za-z0-9_])",
@@ -74,13 +77,19 @@ public sealed class ResourceContractSourceGuardTests
 
     private static readonly Regex RemovedPersistedPropertyPattern = new(
         "(?:(?:[\\\"'`])(?:healthPercentage|energyPercentage|poisePercentage|" +
-        "currentHealth|maxHealth|currentPoise|maxPoise|healthStates|" +
+        "currentHealth|maxHealth|currentEnergy|maxEnergy|currentPoise|maxPoise|healthStates|" +
         "currentHealthPercentage|maxHealthPercentage|durability|maxDurability|" +
         "chargesPerReturn|chargesUsedThisReturn|rerolls|rerollsSpent|actionEconomy)" +
         "(?:[\\\"'`])|^\\s*(?:[-*]\\s*)?(?:healthPercentage|energyPercentage|" +
-        "poisePercentage|currentHealth|maxHealth|currentPoise|maxPoise|healthStates|" +
+        "poisePercentage|currentHealth|maxHealth|currentEnergy|maxEnergy|currentPoise|maxPoise|healthStates|" +
         "currentHealthPercentage|maxHealthPercentage|durability|maxDurability|" +
         "chargesPerReturn|chargesUsedThisReturn|rerolls|rerollsSpent|actionEconomy))\\s*:",
+        RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+
+    private static readonly Regex RemovedItemMirrorInstructionPattern = new(
+        "(?:write\\s+durability\\s+as\\s+a\\s+percentage\\s+string|" +
+        "new\\s+[\\\"']?durability[\\\"']?\\s+value|" +
+        "durability\\s+(?:becomes|is\\s+set\\s+to))",
         RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
     private static readonly Regex RemovedItemPropertyPattern = new(
@@ -97,16 +106,21 @@ public sealed class ResourceContractSourceGuardTests
         "TaskGuides/CLI_Step_Main.txt",
         "BookOfEternityClient/game_master_daemon.ps1",
         "Rules/Block_0.txt",
+        "Rules/Block_0.5.txt",
+        "Rules/Block_0.6.txt",
         "Rules/Block_2.txt",
         "Rules/Block_2.5.txt",
         "Rules/Block_2.6.txt",
         "Rules/Block_5.txt",
         "Rules/Block_6.txt",
+        "Rules/Block_7.txt",
+        "Rules/Block_9.txt",
         "Rules/Block_9_Universal_Tool_Functions.txt",
         "Rules/Block_10.txt",
         "Rules/Block_11.txt",
         "Rules/Block_12.txt",
         "Rules/Block_13.txt",
+        "Rules/Block_14.txt",
         "Rules/Block_15.txt",
         "Rules/Block_15.A.txt",
         "Rules/Block_17.txt",
@@ -114,6 +128,7 @@ public sealed class ResourceContractSourceGuardTests
         "Rules/Block_19.A.txt",
         "Rules/Block_21.txt",
         "Rules/Block_32_Guardians.txt",
+        "Rules/Block_CLI_QTE.txt",
         "Rules/Block_CLI_Operations.txt",
         "Rules/Block_FINAL.txt",
         "OtherGuides/Afterlife_Contract_Matrix.md",
@@ -122,9 +137,11 @@ public sealed class ResourceContractSourceGuardTests
         "Examples/E_Block_2.5.txt",
         "Examples/E_Block_5.txt",
         "Examples/E_Block_6.txt",
+        "Examples/E_Block_9.txt",
         "Examples/E_Block_9_Updated.txt",
         "Examples/E_Block_10.txt",
         "Examples/E_Block_10.V.txt",
+        "Examples/E_Block_12.txt",
         "Examples/E_Block_13.txt",
         "Examples/E_Block_15.A.txt",
         "Examples/E_Block_16.txt",
@@ -137,6 +154,7 @@ public sealed class ResourceContractSourceGuardTests
         "Examples/E_CLI_Mortal_Resources.txt",
         "Examples/E_CLI_Mortal_Item_Materialization.txt",
         "Examples/E_CLI_NPC_Trade.txt",
+        "Examples/E_CLI_QTE_Offer.txt",
         "Examples/E_CLI_Step_Main.txt",
         "Examples/E_Soul_Relic_Integration.txt"
     };
@@ -401,16 +419,22 @@ public sealed class ResourceContractSourceGuardTests
     [InlineData("CLI_API_Specification.md")]
     [InlineData("CLI_Agent_Daemon_Specification.md")]
     [InlineData("TaskGuides/CLI_Step_Main.txt")]
+    [InlineData("Rules/Block_0.5.txt")]
+    [InlineData("Rules/Block_0.6.txt")]
     [InlineData("Rules/Block_2.txt")]
     [InlineData("Rules/Block_5.txt")]
     [InlineData("Rules/Block_6.txt")]
+    [InlineData("Rules/Block_7.txt")]
+    [InlineData("Rules/Block_9.txt")]
     [InlineData("Rules/Block_10.txt")]
     [InlineData("Rules/Block_12.txt")]
     [InlineData("Rules/Block_13.txt")]
+    [InlineData("Rules/Block_14.txt")]
     [InlineData("Rules/Block_15.txt")]
     [InlineData("Rules/Block_15.A.txt")]
     [InlineData("Rules/Block_17.txt")]
     [InlineData("Rules/Block_32_Guardians.txt")]
+    [InlineData("Rules/Block_CLI_QTE.txt")]
     [InlineData("Rules/Block_CLI_Operations.txt")]
     [InlineData("Rules/Block_FINAL.txt")]
     public void ActiveGmContracts_DoNotAuthorizeRemovedResourceFields(string relativePath)
@@ -437,9 +461,29 @@ public sealed class ResourceContractSourceGuardTests
     {
         var paths = ActiveContractAndExamplePaths
             .Concat(Directory.EnumerateFiles(
+                    Path.Combine(TestRepoPaths.RepoRoot, "Rules"),
+                    "Block_*.txt",
+                    SearchOption.TopDirectoryOnly)
+                .Select(path => Path.GetRelativePath(TestRepoPaths.RepoRoot, path)))
+            .Concat(Directory.EnumerateFiles(
+                    Path.Combine(TestRepoPaths.RepoRoot, "Examples"),
+                    "E_*.txt",
+                    SearchOption.TopDirectoryOnly)
+                .Select(path => Path.GetRelativePath(TestRepoPaths.RepoRoot, path)))
+            .Concat(Directory.EnumerateFiles(
                     Path.Combine(TestRepoPaths.RepoRoot, "FileSystemExample", "game_session", "game_state"),
                     "*.json",
                     SearchOption.AllDirectories)
+                .Select(path => Path.GetRelativePath(TestRepoPaths.RepoRoot, path)))
+            .Concat(Directory.EnumerateFiles(
+                    Path.Combine(TestRepoPaths.RepoRoot, "FileSystemExample", "validator_fixtures"),
+                    "*.json",
+                    SearchOption.AllDirectories)
+                .Where(path => path
+                    .Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                    .Any(segment =>
+                        string.Equals(segment, "fixed", StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(segment, "shared", StringComparison.OrdinalIgnoreCase)))
                 .Select(path => Path.GetRelativePath(TestRepoPaths.RepoRoot, path)))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
@@ -541,7 +585,9 @@ public sealed class ResourceContractSourceGuardTests
     private static bool IsExplicitRejectionLine(string line) =>
         line.Contains("forbidden", StringComparison.OrdinalIgnoreCase) ||
         line.Contains("legacy", StringComparison.OrdinalIgnoreCase) ||
-        line.Contains("removed", StringComparison.OrdinalIgnoreCase) ||
+        line.Contains("removed resource authority", StringComparison.OrdinalIgnoreCase) ||
+        line.Contains("removed resource field", StringComparison.OrdinalIgnoreCase) ||
+        line.Contains("removed command field", StringComparison.OrdinalIgnoreCase) ||
         line.Contains("incompatible", StringComparison.OrdinalIgnoreCase) ||
         line.Contains("illegal", StringComparison.OrdinalIgnoreCase) ||
         line.Contains("never author", StringComparison.OrdinalIgnoreCase) ||
@@ -553,7 +599,6 @@ public sealed class ResourceContractSourceGuardTests
         line.Contains("не пиши", StringComparison.OrdinalIgnoreCase) ||
         line.Contains("не автор", StringComparison.OrdinalIgnoreCase) ||
         line.Contains("удали", StringComparison.OrdinalIgnoreCase) ||
-        line.Contains("remove", StringComparison.OrdinalIgnoreCase) ||
         line.Contains("✗", StringComparison.Ordinal);
 
     private static IEnumerable<string> FindRemovedAuthorityViolations(string relativePath)
@@ -569,6 +614,7 @@ public sealed class ResourceContractSourceGuardTests
                     entry.Line.Contains(token, StringComparison.Ordinal)) ||
                 RemovedBareAuthorityPattern.IsMatch(entry.Line) ||
                 RemovedPersistedPropertyPattern.IsMatch(entry.Line) ||
+                RemovedItemMirrorInstructionPattern.IsMatch(entry.Line) ||
                 IsItemAuthorityPath(relativePath) &&
                 RemovedItemPropertyPattern.IsMatch(entry.Line))
             .Where(entry => !IsExplicitRejectionLine(entry.Line))
@@ -576,19 +622,27 @@ public sealed class ResourceContractSourceGuardTests
                 $"{relativePath}:{entry.Number}: {entry.Line.Trim()}");
     }
 
-    private static bool IsItemAuthorityPath(string relativePath) =>
-        relativePath.Contains("Block_5", StringComparison.OrdinalIgnoreCase) ||
-        relativePath.Contains("Block_9", StringComparison.OrdinalIgnoreCase) ||
-        relativePath.Contains("Block_10", StringComparison.OrdinalIgnoreCase) ||
-        relativePath.Contains("Block_11", StringComparison.OrdinalIgnoreCase) ||
-        relativePath.Contains("Block_19.A", StringComparison.OrdinalIgnoreCase) ||
-        relativePath.Contains("Mortal_Item", StringComparison.OrdinalIgnoreCase) ||
-        relativePath.EndsWith(
-            "game_state\\inventory\\items.json",
-            StringComparison.OrdinalIgnoreCase) ||
-        relativePath.EndsWith(
-            "game_state/inventory/items.json",
-            StringComparison.OrdinalIgnoreCase);
+    private static bool IsItemAuthorityPath(string relativePath)
+    {
+        var normalized = relativePath.Replace('\\', '/');
+        var fileName = normalized[(normalized.LastIndexOf('/') + 1)..];
+        return fileName.Equals("Block_2.txt", StringComparison.OrdinalIgnoreCase) ||
+               fileName.Equals("Block_2.5.txt", StringComparison.OrdinalIgnoreCase) ||
+               fileName.Equals("Block_5.txt", StringComparison.OrdinalIgnoreCase) ||
+               fileName.StartsWith("Block_9", StringComparison.OrdinalIgnoreCase) ||
+               fileName.Equals("Block_10.txt", StringComparison.OrdinalIgnoreCase) ||
+               fileName.Equals("Block_11.txt", StringComparison.OrdinalIgnoreCase) ||
+               fileName.Equals("Block_19.A.txt", StringComparison.OrdinalIgnoreCase) ||
+               fileName.Equals("E_Block_2.5.txt", StringComparison.OrdinalIgnoreCase) ||
+               fileName.Equals("E_Block_5.txt", StringComparison.OrdinalIgnoreCase) ||
+               fileName.StartsWith("E_Block_9", StringComparison.OrdinalIgnoreCase) ||
+               fileName.StartsWith("E_Block_10", StringComparison.OrdinalIgnoreCase) ||
+               fileName.Equals("E_Block_19.A.txt", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Contains("Mortal_Item", StringComparison.OrdinalIgnoreCase) ||
+               normalized.EndsWith(
+                   "game_state/inventory/items.json",
+                   StringComparison.OrdinalIgnoreCase);
+    }
 
     private static string ExtractMethodSource(string source, string signature)
     {

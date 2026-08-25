@@ -797,6 +797,9 @@ public sealed class CanonicalStateNormalizerEffectTests
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject { ["NPCsInScene"] = new JsonArray() });
+        await context.WriteJsonAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot());
         var canonicalLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
             MortalActorTestFixtures.DefaultLocationId,
             "Validated effect actor fixture location");
@@ -835,6 +838,11 @@ public sealed class CanonicalStateNormalizerEffectTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.True(
+            itemIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, itemIssues.Select(issue => issue.Code)));
         var rawIssues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.True(

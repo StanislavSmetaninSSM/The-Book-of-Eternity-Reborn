@@ -364,6 +364,7 @@ public sealed class ResourceTriggerGraphTests
             phase,
             priority,
             originId,
+            nodeId,
             operationId,
             dependencies ?? Array.Empty<string>(),
             eventRequirements ?? Array.Empty<ResourceEventRequirement>());

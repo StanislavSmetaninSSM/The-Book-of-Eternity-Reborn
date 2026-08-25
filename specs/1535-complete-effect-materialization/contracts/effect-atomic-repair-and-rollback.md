@@ -128,6 +128,8 @@ The packet never contains permission to change `effectId`, source/target identit
 
 - Restore the pre-turn baseline before GM/worker dispatch.
 - Retain an in-memory obligation describing the complete rejected response paths and exact effect operation actor/source/target/route.
+- Publish root `fullTurnResubmissionRequired=true` for `effect_materialization_repair`.
+- Publish root `requiredResubmissionPaths` as the exact set of changed GM-authored command/output surfaces only. Client-owned preparation/publication roots are unrepresentable as GM replay obligations: `system_mods.json`, `progression_schedule.json`, resource definitions/state/history/owner authority, `pending_effect_resolutions.json`, and `effect_identity_index.json` are restored or republished by the client.
 - A ready marker alone cannot pass.
 - A partial effect-only response cannot silently discard unrelated NPC, faction, item, quest, afterlife, narrative, or interface changes from the rejected response.
 - Compare canonical JSON semantics, not only mtime or byte formatting, when proving resubmission freshness.

@@ -1,6 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -28,6 +30,74 @@ public sealed partial class EffectMaterializationValidationTests
                 issue.FilePath,
                 $"response.{legacyField}",
                 StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RawValidation_EffectPlanBindsValidatedSnapshotManifestHash(
+        bool withCommand)
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        if (withCommand)
+        {
+            await context.SeedPlayerWoundSourceAsync();
+            await context.CaptureValidatedPendingSnapshotAsync();
+            await context.WriteJsonAsync(
+                EffectMaterializationTestContext.CommandPath,
+                EffectMaterializationTestFixture.CreateCommandRoot(
+                    EffectMaterializationTestFixture.CreateApplyCommand()));
+        }
+        else
+        {
+            var definition = EffectMaterializationTestFixture.CreateDefinition();
+            var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+            await SeedLifecycleStateAsync(context, definition, effect);
+            await context.CaptureValidatedPendingSnapshotAsync();
+        }
+
+        var firstIssues = await context.Validator
+            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+
+        Assert.DoesNotContain(firstIssues, issue => issue.Severity == IssueSeverity.Error);
+        var firstHandoff = await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+            context.FileSystem);
+        Assert.NotNull(firstHandoff);
+        var firstResult = firstHandoff!.Result;
+        Assert.True(firstResult.Success);
+        var firstFingerprint = Assert.IsType<EffectAcceptedTurnPlan>(
+            firstResult.Plan).InputFingerprint;
+        var secondFileSystem = new FileSystemManager(
+            context.RootPath,
+            NullLogger<FileSystemManager>.Instance);
+        var crossManagerHandoff = await AcceptedMechanicsAuthorityTestProbe
+            .PeekEffectAsync(secondFileSystem);
+        Assert.NotNull(crossManagerHandoff);
+        Assert.Same(firstResult.Plan, crossManagerHandoff!.Result.Plan);
+
+        var manifest = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            "game_state/control/pending_turn_snapshot.json"));
+        manifest["sourceLabel"] = "Effect materialization changed snapshot identity";
+        manifest["manifestPayloadHash"] = string.Empty;
+        manifest["manifestPayloadHash"] =
+            PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await context.WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            manifest);
+        await context.SyncPendingSnapshotAuthorityAsync();
+
+        var secondIssues = await context.Validator
+            .ValidateAcceptedTurnRawEffectMaterializationAsync();
+
+        Assert.DoesNotContain(secondIssues, issue => issue.Severity == IssueSeverity.Error);
+        var secondHandoff = await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+            context.FileSystem);
+        Assert.NotNull(secondHandoff);
+        var secondResult = secondHandoff!.Result;
+        Assert.True(secondResult.Success);
+        Assert.NotEqual(
+            firstFingerprint,
+            Assert.IsType<EffectAcceptedTurnPlan>(secondResult.Plan).InputFingerprint);
     }
 
     [Fact]

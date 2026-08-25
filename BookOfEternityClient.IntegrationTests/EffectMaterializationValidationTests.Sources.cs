@@ -879,6 +879,9 @@ public sealed partial class EffectMaterializationValidationTests
                     updatedSkill.DeepClone()),
                 ["removeActiveSkills"] = new JsonArray()
             });
+        await context.WriteJsonAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot());
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
         var changedSkill = updatedSkill.DeepClone().AsObject();
@@ -901,6 +904,11 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var rawIssues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.DoesNotContain(rawIssues, issue => issue.Severity == IssueSeverity.Error);
@@ -1010,6 +1018,9 @@ public sealed partial class EffectMaterializationValidationTests
                     firstQuest.DeepClone(),
                     secondQuest.DeepClone())
             });
+        await context.WriteJsonAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot());
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
         await context.WriteJsonAsync(
@@ -1032,6 +1043,11 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
@@ -1865,10 +1881,13 @@ public sealed partial class EffectMaterializationValidationTests
 
         var locationIssues =
             await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+        var itemIssues =
+            await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
         var effectIssues =
             await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(locationIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.DoesNotContain(itemIssues, issue => issue.Severity == IssueSeverity.Error);
         Assert.True(
             effectIssues.All(issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, effectIssues.Select(issue =>
@@ -1938,10 +1957,13 @@ public sealed partial class EffectMaterializationValidationTests
 
         var locationIssues =
             await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+        var itemIssues =
+            await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
         var effectIssues =
             await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(locationIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.DoesNotContain(itemIssues, issue => issue.Severity == IssueSeverity.Error);
         Assert.True(
             effectIssues.All(issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, effectIssues.Select(issue =>
@@ -2203,6 +2225,9 @@ public sealed partial class EffectMaterializationValidationTests
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath,
             new JsonObject { ["enemiesData"] = new JsonArray() });
+        await context.WriteJsonAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot());
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
         var sameTurnNpc = EffectMaterializationTestFixture.CreateSameTurnMortalActor(
@@ -2236,6 +2261,11 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var rawIssues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 

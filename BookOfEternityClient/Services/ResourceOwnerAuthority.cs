@@ -84,8 +84,17 @@ internal sealed class ResourceOwnerAuthority
     private readonly ReadOnlyDictionary<ResourceOwnerKey, ResourceOwnerAuthorityEntry>
         _readOnlyEntries;
 
-    private ResourceOwnerAuthority(Builder builder)
+    private ResourceOwnerAuthority(
+        Builder builder,
+        ResourceAuthorityWorkMeter? workMeter)
     {
+        workMeter?.VisitOwnerConstruction(
+            builder.Entries.Count +
+            builder.SameTurnRefs.Count +
+            builder.OwnerAliases.Count +
+            builder.RefAliases.Count +
+            builder.HistoricalOwners.Count +
+            builder.HistoricalAliases.Count);
         _entries = builder.Entries.ToDictionary(
             static pair => pair.Key,
             static pair => CopyEntry(pair.Value));
@@ -112,7 +121,8 @@ internal sealed class ResourceOwnerAuthority
             _entries.Values,
             _sameTurnRefs,
             builder.HistoricalOwners,
-            Issues);
+            Issues,
+            workMeter);
     }
 
     internal IReadOnlyDictionary<ResourceOwnerKey, ResourceOwnerAuthorityEntry> Entries =>
@@ -184,13 +194,15 @@ internal sealed class ResourceOwnerAuthority
             historical));
     }
 
-    internal static ResourceOwnerAuthority Build(ResourceOwnerAuthorityInput input)
+    internal static ResourceOwnerAuthority Build(
+        ResourceOwnerAuthorityInput input,
+        ResourceAuthorityWorkMeter? workMeter = null)
     {
         ArgumentNullException.ThrowIfNull(input);
-        var builder = new Builder(input.HistoricalOwners);
+        var builder = new Builder(input.HistoricalOwners, workMeter);
         builder.AddRange(input.PreTurnOwners, sameTurn: false, "preTurnOwners");
         builder.AddRange(input.SameTurnOwners, sameTurn: true, "sameTurnOwners");
-        return new ResourceOwnerAuthority(builder);
+        return new ResourceOwnerAuthority(builder, workMeter);
     }
 
     internal static ResourceOwnerAuthority CreateCurrentPlayerAuthority(
@@ -644,34 +656,24 @@ internal sealed class ResourceOwnerAuthority
         IEnumerable<ResourceOwnerAuthorityEntry> entries,
         IReadOnlyDictionary<string, ResourceOwnerAuthorityEntry> refs,
         IEnumerable<ResourceOwnerKey> historical,
-        IReadOnlyList<ValidationIssue> issues)
+        IReadOnlyList<ValidationIssue> issues,
+        ResourceAuthorityWorkMeter? workMeter)
     {
+        IComparer<ResourceOwnerAuthorityEntry> ownerComparer =
+            ResourceOwnerAuthorityEntryComparer.Instance;
+        if (workMeter != null)
+        {
+            ownerComparer =
+                new ResourceAuthorityCountingComparer<ResourceOwnerAuthorityEntry>(
+                    ownerComparer,
+                    workMeter.CompareOwners);
+        }
         var root = new JsonObject
         {
             ["owners"] = new JsonArray(entries
-                .OrderBy(static entry => entry.Key.Realm, StringComparer.Ordinal)
-                .ThenBy(static entry => OwnerKindToken(entry.Key.OwnerKind), StringComparer.Ordinal)
-                .ThenBy(static entry => entry.Key.ResourceOwnerId, StringComparer.Ordinal)
-                .Select(entry => (JsonNode)new JsonObject
-                {
-                    ["realm"] = entry.Key.Realm,
-                    ["ownerKind"] = OwnerKindToken(entry.Key.OwnerKind),
-                    ["resourceOwnerId"] = entry.Key.ResourceOwnerId,
-                    ["lifecycle"] = LifecycleToken(entry.Lifecycle),
-                    ["sameTurn"] = entry.SameTurn,
-                    ["ownerRef"] = entry.SameTurnRef,
-                    ["boundNpcId"] = entry.BoundNpcId,
-                    ["capabilities"] = new JsonArray(entry.ResourceCapabilities
-                        .OrderBy(static capability => capability, StringComparer.Ordinal)
-                        .Select(static capability => (JsonNode)capability)
-                        .ToArray()),
-                    ["realmIndependentCapabilities"] = new JsonArray(
-                        entry.RealmIndependentResourceCapabilities
-                            .OrderBy(static capability => capability, StringComparer.Ordinal)
-                            .Select(static capability => (JsonNode)capability)
-                            .ToArray()),
-                    ["authorityFingerprint"] = entry.AuthorityFingerprint
-                }).ToArray()),
+                .OrderBy(static entry => entry, ownerComparer)
+                .Select(entry => ToFingerprintNode(entry, workMeter))
+                .ToArray()),
             ["refs"] = new JsonArray(refs
                 .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
                 .Select(pair => (JsonNode)new JsonObject
@@ -705,6 +707,33 @@ internal sealed class ResourceOwnerAuthority
             .ToLowerInvariant();
     }
 
+    private static JsonNode ToFingerprintNode(
+        ResourceOwnerAuthorityEntry entry,
+        ResourceAuthorityWorkMeter? workMeter)
+    {
+        workMeter?.VisitOwnerFingerprint();
+        return new JsonObject
+        {
+            ["realm"] = entry.Key.Realm,
+            ["ownerKind"] = OwnerKindToken(entry.Key.OwnerKind),
+            ["resourceOwnerId"] = entry.Key.ResourceOwnerId,
+            ["lifecycle"] = LifecycleToken(entry.Lifecycle),
+            ["sameTurn"] = entry.SameTurn,
+            ["ownerRef"] = entry.SameTurnRef,
+            ["boundNpcId"] = entry.BoundNpcId,
+            ["capabilities"] = new JsonArray(entry.ResourceCapabilities
+                .OrderBy(static capability => capability, StringComparer.Ordinal)
+                .Select(static capability => (JsonNode)capability)
+                .ToArray()),
+            ["realmIndependentCapabilities"] = new JsonArray(
+                entry.RealmIndependentResourceCapabilities
+                    .OrderBy(static capability => capability, StringComparer.Ordinal)
+                    .Select(static capability => (JsonNode)capability)
+                    .ToArray()),
+            ["authorityFingerprint"] = entry.AuthorityFingerprint
+        };
+    }
+
     private static string DescribeRequest(ResourceOwnerRequest request) =>
         $"{request.Realm}/{OwnerKindToken(request.OwnerKind)}/" +
         $"{request.ResourceOwnerId ?? request.OwnerRef ?? "<missing>"}/{request.ResourceKey}";
@@ -712,6 +741,35 @@ internal sealed class ResourceOwnerAuthority
     private static string DescribeCoordinate(ResourceCoordinate coordinate) =>
         $"{coordinate.Realm}/{OwnerKindToken(coordinate.OwnerKind)}/" +
         $"{coordinate.ResourceOwnerId}/{coordinate.ResourceKey}";
+
+    private sealed class ResourceOwnerAuthorityEntryComparer :
+        IComparer<ResourceOwnerAuthorityEntry>
+    {
+        internal static ResourceOwnerAuthorityEntryComparer Instance { get; } = new();
+
+        public int Compare(
+            ResourceOwnerAuthorityEntry? left,
+            ResourceOwnerAuthorityEntry? right)
+        {
+            if (ReferenceEquals(left, right))
+                return 0;
+            if (left == null)
+                return -1;
+            if (right == null)
+                return 1;
+            var result = StringComparer.Ordinal.Compare(left.Key.Realm, right.Key.Realm);
+            if (result != 0)
+                return result;
+            result = StringComparer.Ordinal.Compare(
+                OwnerKindToken(left.Key.OwnerKind),
+                OwnerKindToken(right.Key.OwnerKind));
+            return result != 0
+                ? result
+                : StringComparer.Ordinal.Compare(
+                    left.Key.ResourceOwnerId,
+                    right.Key.ResourceOwnerId);
+        }
+    }
 
     private static bool IsRealmAllowed(string realm, ResourceOwnerKind kind)
     {
@@ -774,6 +832,8 @@ internal sealed class ResourceOwnerAuthority
 
     private sealed class Builder
     {
+        private readonly ResourceAuthorityWorkMeter? _workMeter;
+
         internal Dictionary<ResourceOwnerKey, ResourceOwnerAuthorityEntry> Entries { get; } = new();
         internal Dictionary<string, ResourceOwnerAuthorityEntry> SameTurnRefs { get; } =
             new(StringComparer.Ordinal);
@@ -781,20 +841,48 @@ internal sealed class ResourceOwnerAuthority
             new(StringComparer.Ordinal);
         internal Dictionary<string, List<string>> RefAliases { get; } =
             new(StringComparer.Ordinal);
+        private HashSet<ResourceOwnerKey> HistoricalOwnerKeys { get; } =
+            new(ResourceOwnerKeyComparer.Instance);
         internal HashSet<string> HistoricalAliases { get; } = new(StringComparer.Ordinal);
         internal List<ResourceOwnerKey> HistoricalOwners { get; } = new();
         internal List<ValidationIssue> Issues { get; } = new();
 
-        internal Builder(IEnumerable<ResourceOwnerKey> historicalOwners)
+        internal Builder(
+            IEnumerable<ResourceOwnerKey> historicalOwners,
+            ResourceAuthorityWorkMeter? workMeter)
         {
+            _workMeter = workMeter;
             var index = 0;
             foreach (var key in historicalOwners)
             {
+                _workMeter?.VisitOwnerDescriptor();
                 var path = $"historicalOwners[{index++}]";
                 if (!ValidateKey(key, path, Issues))
                     continue;
+                var alias = HistoricalAlias(key);
+                if (HistoricalOwnerKeys.Contains(key))
+                {
+                    Add(
+                        Issues,
+                        path,
+                        "resource_owner_identity_duplicate",
+                        "one exact historical owner key",
+                        key.ToString());
+                    continue;
+                }
+                if (HistoricalAliases.Contains(alias))
+                {
+                    Add(
+                        Issues,
+                        path,
+                        "resource_owner_identity_confusable",
+                        "one exact/confusable historical owner key",
+                        key.ToString());
+                    continue;
+                }
+                HistoricalOwnerKeys.Add(key);
                 HistoricalOwners.Add(key);
-                HistoricalAliases.Add(HistoricalAlias(key));
+                HistoricalAliases.Add(alias);
             }
         }
 
@@ -805,7 +893,10 @@ internal sealed class ResourceOwnerAuthority
         {
             var index = 0;
             foreach (var export in exports)
+            {
+                _workMeter?.VisitOwnerDescriptor();
                 AddExport(export, sameTurn, $"{path}[{index++}]");
+            }
         }
 
         private void AddExport(ResourceOwnerExport export, bool sameTurn, string path)
@@ -853,6 +944,7 @@ internal sealed class ResourceOwnerAuthority
             var capabilityAliases = new HashSet<string>(StringComparer.Ordinal);
             foreach (var capability in export.ResourceCapabilities)
             {
+                _workMeter?.VisitOwnerCapability();
                 if (!ResourceMaterializationContract.IsExactIdentifier(capability))
                 {
                     Add(Issues, path + ".capabilities", "resource_owner_capability_invalid", "exact resource key", capability ?? "null");
@@ -871,6 +963,7 @@ internal sealed class ResourceOwnerAuthority
             var realmIndependentAliases = new HashSet<string>(StringComparer.Ordinal);
             foreach (var capability in export.RealmIndependentResourceCapabilities)
             {
+                _workMeter?.VisitOwnerCapability();
                 if (!ResourceMaterializationContract.IsExactIdentifier(capability))
                 {
                     Add(

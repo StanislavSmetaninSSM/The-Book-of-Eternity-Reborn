@@ -345,6 +345,7 @@ Task-12 evidence (2026-08-22):
 - Web fail-closed status rendering is RED/GREEN at `20260822-103255` / `20260822-103330`; `npm run verify` passes all `139/139` frontend tests, TypeScript checking, and the production build. The React change reuses the existing `StatusEmptyState` and design tokens, so it introduces no new visual layout or asset requiring screenshot approval.
 - The monolithic console/browser diagnostic `20260822-103925` exceeded the bounded five-minute Focused lane and exposed four stale fixture/assertion contours before timeout. Those contours were repaired without a legacy fallback: canonical combat effects, exact afterlife owner input, safe structured conflict copy, and opaque Shining cycle status. Targeted recheck `20260822-105455` passed three of five and isolated the last two fixture/assertion mismatches; final recheck `20260822-105710` is GREEN (`2/2`), and the complete parity class `20260822-105751` is GREEN (`8/8`), all with timeout `false`, duplicate IDs `0`, and cleanup complete.
 - Serialized C#/TypeScript DTOs expose only the player projection availability flag, safe values, and fixed Russian unavailable message. The projection is client-owned and read-only; no GM-authored response field or afterlife action contract changed, so no GM prompt/example addition is required for this slice.
+- Fresh T120 privacy/docs review found that the generic semantic sanitizer recognized an obsolete pending-effect shape but not the current bounded resource-pending root, request, terminal receipt, or safe GM packet. The actual DTO-based recursive guard and the active GM effect-authority source guard are GREEN together at `TestResults/test-lanes/20260823-024115-706-30100-4a245db584294873ad8faddfbb669120-focused/summary.json` (`2/2`, warnings/errors `0/0`). Mortal and afterlife guidance now consistently assigns source definitions and transient `effectChanges[]` to the GM while keeping carrier state, contribution, lifetime, arithmetic, IDs, pending, publication, and rollback client-owned.
 
 ## 11. Atomic publication and rollback
 
@@ -420,14 +421,16 @@ Expected:
 
 - Exact no-migration rejection is GREEN at `TestResults/test-lanes/20260822-182704-144-15620-9a124004606340c78a62cc2d7e9e020a-focused/summary.json` (`11/11`), covering every removed player, NPC, vehicle, combat, item, and afterlife authority family. The complete resource materialization validation class is `20260822-182753-353-19636-39187355f4524a43b0ee400194ab38c2-focused` (`31/31`). Old technical saves fail closed; no upgrader, legacy parser, dual read/write, or fallback was added.
 - Active production/docs guards are GREEN at `TestResults/test-lanes/20260822-182927-802-29708-dfb704dd46d448c9a8c3f4fefd4d3428-focused/summary.json` (`168/168`). Lifecycle/resource validation is `20260822-182953-305-30172-e6efd7b836054387b8740d5639be0c6e-focused` (`36/36`), and the exact canonical resource normalizer class is `20260822-183049-838-8296-564958917fa34833b02ce5b29075d1f8-focused` (`22/22`). Together with the T098-T100 evidence above, these controls preserve exact rollback bytes and prior absence, suppress stale player output, and keep one lease-bound accepted plan through post-validation.
-- All three active realm save archives contain the mandatory pristine definition/state/history roots and no removed resource mirrors. Shining/Chaos command-display saves pass `TestResults/test-lanes/20260822-185229-018-27564-ce636013485e48a3949a402bfe70ea01-focused/summary.json` (`154/154`); documentation/example and fixture integrity pass `20260822-185357-884-6104-aeec9afd93ff4664a68a5669c58c3cb8-focused` (`49/49`). The Mortal archive contains `93` entries, Chaos `104`, and Shining `33`; the guarded archive budgets are `104` entries, `339755` expanded bytes, `61171` largest-entry bytes, and `3725` UTF-8 name bytes.
+- All three active realm save archives contain the mandatory exact populated quartet and no removed resource mirrors. The Mortal archive contains `94` entries, Chaos `104`, and Shining `34`; the guarded archive maxima are `104` entries, `372978` expanded bytes, `60825` largest-entry bytes, and `3735` UTF-8 name bytes. `FileSystemExampleFixtureIntegrityTests.ReusableSaveFixtures_ContainExactCanonicalResourceQuartet` parses state/history, proves their full agreement, recomposes exact owner authority, and compares its canonical JSON to the persisted root. `ReusableSaveFixtures_PreserveResourceSemanticsWithoutLegacyMirrors` pins the complete `11`/`21`/`6` resource-coordinate manifests: literal damage/durability/action-point values survive, while return-cycle gacha preserves used attempts against the typed formula maximum (Chaos `3/3`; Shining one used attempt becomes `4/5`).
 - The final stale-fixture repair controls are `TestResults/test-lanes/20260822-191313-319-31724-75ab396b63ce47dcb4c9a4333e9dacc8-focused/summary.json` (`11/11`), `20260822-193154-260-25396-79f1ed06375b4c29a09570d1cae74237-focused` (`37/37` Guardian policy), and `20260822-193833-254-27524-6b97a7be5c304df48a20fbbf5562a5c0-focused` plus `20260822-194014-680-21272-a63bf25fa90a4e8ca41a43a70bdfe3f7-focused` (broken/fixed validator matrices, both `45/45`). Combat groups now prove stable `members[]` cardinality; Guardian fixtures use only `currentReturnCycleId` and `gachaHistory`.
 - Final conditional FullValidation is `TestResults/test-lanes/20260822-194158-015-17568-95c447447c9c42fdb9f19719e3593caf-fullvalidation/summary.json`: `1810/1810`, exit `0`, wall `00:07:05.0804151`, timeout `false`, duplicate IDs `0`, owned-tree cleanup complete, build warnings/errors `0/0`. This replaces the earlier classified RED diagnostics and closes T113 without weakening any validator or preserving compatibility authority.
 
 ## 13. Performance and meaningful control
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ResourceAuthorityScaleTests|FullyQualifiedName~AcceptedMechanicsPlannerScaleTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ResourceAuthorityScaleTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AcceptedMechanicsPlannerScaleTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectResourceTriggerRoutingScaleTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
 ```
 
@@ -436,7 +439,120 @@ Expected:
 - doubling representative definitions/owners/state/history/mutations/triggers remains at or below 2.5x measured work;
 - Fast passes with zero failures, duplicates, timeout, or leaked processes.
 
-Record summary paths and elapsed times in the Superpowers implementation plan. Do not run another Fast immediately before PreMerge.
+T114-T117 evidence (2026-08-22 through 2026-08-23):
+
+- Authority-scale GREEN is `TestResults/test-lanes/20260822-234626-071-8704-794053b5c80d455683578cf76b2d7e2d-focused/summary.json`: `3/3`, exit `0`, wall `00:01:10.3161664`, timeout `false`, duplicate IDs `0`, cleanup complete. The 128-entry population records `512` work units and the 256-entry population records `1,024`, an exact `2.0x` ratio. At the closed 256-entry boundary the history working set records one seed, `256` baseline visits, `256` incremental appends, one freeze, one final whole-history rebuild, and `512` final-validation visits; it never rebuilds canonical history per mutation.
+- Planner-scale RED `TestResults/test-lanes/20260822-235931-466-9188-cdf0224eb4ca4c588f3f552e35db9619-focused/summary.json` was `2/4`: the 512-mutation case made `262,656` scheduling visits because every iteration rescanned the remaining descriptors. Canonical DAG traversal now visits each descriptor once. GREEN `TestResults/test-lanes/20260823-000048-247-25500-5caefbe81ec547dc92431771cb74c88f-focused/summary.json` is `4/4`, exit `0`, wall `00:01:06.3932679`, timeout `false`, duplicate IDs `0`, cleanup complete. Exact accepted-plan work is `3,074` units for 512 trigger nodes and `6,146` for 1,024 (`<2.0x`), with scheduling visits exactly `512` and `1,024`; 257 capacity changes, 513 pre-trigger mutations, 1,025 graph nodes, depth 33, and 65 pending requests fail closed while 256/512/1,024/32/64 pass.
+- Real Effect routing GREEN `TestResults/test-lanes/20260823-025018-887-32208-0d61f80697a348f6be6de31c6789b61d-focused/summary.json` is `2/2`: doubling 32 to 64 owner-bound active effects builds the carrier/trigger catalog once per immutable plan, visits each occurrence/trigger descriptor once, uses exact resource-event and source-binding indexes, seeds source authority once, adds generated effect sources incrementally, and freezes once. The adjacent NPC-alias, detached group-member, player-soul, actual-boundary, and cycle control `TestResults/test-lanes/20260823-025144-249-29600-3becfb06e7e74115af05dfbdb8c39560-focused/summary.json` passes `6/6`.
+- Adjacent planner/history/graph/pending regression control `TestResults/test-lanes/20260823-000210-191-16652-be47d9bdf1b24dec8dd1ff9a6dc94172-focused/summary.json` passes `99/99`. The first post-scale Fast diagnostic exposed stale cutover assertions and one missing player binding in the Shining survival source; the corrected owning-class control `TestResults/test-lanes/20260823-001147-528-2388-b1e338a96a6e4a06a95bac6bcc737d28-focused/summary.json` passes `117/117`, and Math Assistant guidance control `20260823-001511-300-25508-666e2dc76ac44af09332ed87a003e0f4-focused` passes `8/8`.
+- The meaningful T117 Fast checkpoint is `TestResults/test-lanes/20260823-001542-330-14700-ea08639bc46a4df69f7a94be668ac183-fast/summary.json`: `4143/4143`, exit `0`, wall `00:02:24.1675138`, timeout `false`, duplicate IDs `0`, owned-tree cleanup complete, build warnings/errors `0/0`. Do not run another Fast immediately before PreMerge.
+
+### T118 durable-artifact reconciliation (2026-08-23)
+
+This matrix accounts for every numbered FR-001–FR-064 plus the explicit FR-062a QTE boundary, SC-001–SC-010, every contract file, and every top-level data-model section. Detailed RED/GREEN paths live in the named quickstart sections; the matching task-side rows are in `tasks.md`. SC-009 intentionally remains pending until T122-T123 produce the one final PreMerge result.
+
+| Durable item | Tasks | Evidence in this quickstart | State |
+|---|---|---|---|
+| FR-001–FR-007 | T008–T013, T026–T038, T107–T113 | §§2–4, 12: definitions/formulas, canonical contract/publication, active artifacts | Complete |
+| FR-008–FR-012 | T014–T017, T036, T039–T050, T114–T116 | §§3–5, 13: state/history, reducer, exact scale work | Complete |
+| FR-013–FR-019, FR-061, FR-063 | T018–T021, T051–T074, T105 | §§6–8, 11: every owner family, vehicle and detached-member continuity | Complete |
+| FR-020–FR-022 | T016–T017, T039–T050, T075, T081–T086 | §§3, 5, 9: immutable history and exact/conflicting replay | Complete |
+| FR-023–FR-028 | T026–T050, T104 | §§4–5, 11: closed command/capacity/source surfaces | Complete |
+| FR-029–FR-033 | T042–T050, T075–T080, T114–T116 | §§5, 9, 13: stable phases, events, graph, one-pass scheduling | Complete |
+| FR-034–FR-038 | T022–T024, T028–T038, T048–T050, T075–T086, T098–T100 | §§5, 9, 11: one cache/plan, TOCTOU, atomic publication | Complete |
+| FR-039–FR-044 | T081–T084, T098–T101 | §§9, 11: bounded pending/receipt and repair boundary | Complete |
+| FR-045–FR-049 | T056–T086, T102–T113 | §§7–9, 11–12: domain/effect cutover and source guards | Complete |
+| FR-050–FR-052 | T087–T097 | §10: projection parity, privacy, fail-closed display | Complete |
+| FR-053–FR-055 | T096, T098–T101 | §§10–11: protected repair, exact rollback, output suppression | Complete |
+| FR-056–FR-060 | T073, T102–T103, T107–T113 | §§11–12: no migration/legacy authority; docs/examples; accounting exclusion | Complete |
+| FR-062 | T104, T107–T113 | §§11–12: accepted-event identity and exact target binding | Complete |
+| FR-062a | T120–T124 plus completed #1535 T042a/T047b | §13 and #1535 durable artifacts: canonical direct QTE producer and immutable effect continuation, no permanent effect bypass | Implementation complete; final T122–T124 gates remain open |
+| FR-064 | T106–T113 | §§11–12: recipient-scoped outbound packet and documentation | Complete |
+| SC-001–SC-005 | T008–T086, T102–T116 as mapped in `tasks.md` | §§2–9, 11–13: authority, equivalence, owners, replay, boundaries | Complete |
+| SC-006–SC-008 | T087–T113 | §§10–12: privacy/parity, rollback, validated active artifacts | Complete |
+| SC-009 | Completed controls through T117; T122–T123 open | §§1–13 GREEN; §14 final gate not yet run | Pending final PreMerge |
+| SC-010 | T075–T086 | §9: Effect Task 9 common-plan evidence | Complete |
+| Seven files in `contracts/` | T008–T113 as mapped in `tasks.md` | §§2–12, including dedicated pending, projection, and FullParty rows | Complete |
+| Data model §§1–6 | T008–T021, T026–T074, T114–T116 | §§2–8, 13: roots, scalars, definitions, owners, state, history | Complete |
+| Data model §§7–10 | T022–T050, T075–T086, T104, T106 | §§4–5, 9, 11: commands, mutations, plan, pending | Complete |
+| Data model §§11–14 | T008–T024, T056–T116 | §§2–13: projections, cutover, invariants, transitions | Complete |
+
+### T119 Spec Kit analysis (2026-08-23)
+
+The first read-only `speckit-analyze` reconciliation found no constitution conflict, Critical/High inconsistency, uncovered requirement, or unmapped task for the then-current `64/64` FR and `10/10` SC; all `124/124` tasks mapped to a requirement/story or the final integration gate. One implementation-relevant Medium finding was corrected: the summary verification commands in `plan.md` and this quickstart now route `AcceptedMechanicsPlannerScaleTests` to `-FocusedProject Integration` instead of silently filtering the unit project. Two Low observations required no contract change: the Phase-B historical `Effect Task 6/8` shorthand and the intentional FR-016/FR-063 detached-member overlap. FR-062a was subsequently added during T120 to record the direct-QTE/deferred-effect boundary and is mapped above; a fresh analysis remains part of T123. SC-009 and T120–T124 remain explicitly open.
+
+At the fresh post-T120 checkpoint, read-only analysis covered `65/65` FR (including FR-062a), `10/10` SC, and `124/124` unique sequential tasks. Coverage was `100%`; there were no constitution, Critical, High, Medium, uncovered-requirement, unmapped-task, placeholder, or ordering findings. The same two intentional Low observations remained non-blocking. At that checkpoint SC-009 and T121–T124 were open, and #1535 T042a/T047b were the sole still-deferred QTE effect-continuation route; their completed state is recorded in the T121 checkpoint below.
+
+### T120 direct QTE resource-producer review evidence (2026-08-23)
+
+- Closed-QTE validation first failed all nine forbidden-authority mutations at `TestResults/test-lanes/20260823-100917-453-5584-b55f6bd063e04fd2b62f03e9edc06d23-focused/summary.json`; the corrected validator accepts only positive `damage` against `player/player_current`, the active resource definition, `{kind:narrative_outcome}`, and the exact positional event reference in every terminal branch. The focused GREEN is `TestResults/test-lanes/20260823-102237-589-24056-095f57f4b7d14101978e20b63d6cc38c-focused/summary.json` (`9/9`).
+- The runtime adapter now binds the selected source turn, QTE/chapter/action/grade/outcome ordinal, current-player owner, definition, source route, and replay identity; it publishes the canonical quartet under the same lease and restores it byte-for-byte with QTE history/runtime on late failure. The current unit behavior control is `TestResults/test-lanes/20260823-111449-035-33480-962cd0d1b5e14efeb0c5888ce66b0076-focused/summary.json` (`5/5`), and validation plus browser rollback is `TestResults/test-lanes/20260823-111522-327-34672-f8b1b527c1c84e3abc65780572aed9f1-focused/summary.json` (`13/13`). Both runs have exit `0`, timeout `false`, duplicate IDs `0`, cleanup complete, and build warnings/errors `0/0`.
+- The valid scale RED `TestResults/test-lanes/20260823-110811-761-30936-f28acf44bbe54785951569838a9d81f0-focused/summary.json` reached the adapter and failed because no work snapshot existed. The one-pass definition/replay/projection indexes are GREEN at `TestResults/test-lanes/20260823-111310-632-22308-7336ecd7d60a4afc944cdaf639f581f3-focused/summary.json` (`1/1`): for `N` selected commands and `H` baseline transitions the asserted work is exactly `H + 5N + 1`, checked at valid depth points 16 and 32.
+- This is the canonical direct resource-producer foundation only. It deliberately does not live-scan effect carriers or claim effect completeness: the immutable acceptance-time continuation, matching `resource_damaged`/`resource_depleted` triggers, bounded receipts, and joint resource/effect/QTE publication remain mandatory #1535 T042a/T047b work.
+- The complete-range review then found three process-local handoff risks: an unconditional case-insensitive root interner, registry methods that could expose a cache reference beyond the lease gate, and generation-string-only fencing that allowed `G1 -> G2 -> G1` ABA resurrection. `CanonicalRootIdentity` now uses OS path semantics and a weak lifetime, every root registry method is a lease-bound typed operation, and the common/effect/Mortal-item handoffs rotate together by `(generation, revision)`. The real failed-load ABA, publisher-GC, generation-rotation, and same-root sharing control is GREEN at `TestResults/test-lanes/20260823-150041-399-14608-a013813e1eaf425ca5c23f4fe3a35065-focused/summary.json` (`5/5`); exact all-three-cache rotation is `20260823-150517-004-39856-68b73e896cc14bc69bcca91f757b96f1-focused`, and the no-cache-exposure source guard is `20260823-150314-682-32308-7fcf846ed6b24bf1b3fe5fb6065314d1-focused`.
+- The same review repaired Guardian power-journal append/repair lease ownership and a concurrent append race. Friendly correction/concurrency is GREEN `2/2` at `TestResults/test-lanes/20260823-150803-668-31128-676c4dbeb8c04bed8e9836916bda6d1c-focused/summary.json`; audit/legacy political repair is GREEN `2/2` at `20260823-150844-402-34828-e29fb91cc47b4218b51f6ab5e8049e6d-focused`. Seventeen exact-authority, direct-normalizer, transcript, replacement-generation, and rollback fixtures are GREEN `17/17` at `20260823-150702-614-37528-4106586d81f64a32b2d02c9ac0d94703-focused`. A final narrow re-review reports zero Blocker and zero Important findings; lock order remains canonical lease, generation/revision capture, short root-slot lock, then cache lock.
+- The first two post-review Fast diagnostics, `20260823-150933-798-29736-53f08678fe9949919437241030fdb3bc-fast` (`1052/1057`) and `20260823-152726-906-39460-2d53878f49c74a86b2e86ffe244c30c3-fast` (`3169/3176` in completed TRX shards), exposed only stale technical test bootstraps that still wrote an incomplete resource triad or preassigned client-owned afterlife bindings. No production fallback, compatibility reader, migration, validator weakening, or timeout change was added. The first five fixture corrections pass `5/5` at `20260823-152638-001-35728-1d9850272eda45d49cdcdddbfbd34391-focused`.
+- The remaining accepted-effect/session-generation cases pass `6/6` at `TestResults/test-lanes/20260823-154519-389-28924-12ac83d0263d4dd2817c0bee980cb187-focused/summary.json`. The shared exact Fresh New Game quartet fixture and all affected Shining/blessing/forge/browser-afterlife classes pass `108/108` at `20260823-155030-011-38932-3d42512dbc644809b9eb559be59b126d-focused`; Mortal item/browser inventory/QTE rollback fixtures pass `10/10` at `20260823-155141-910-9364-324d9c1dd8404df3b9e28ec821ff4d66-focused`. These tests now publish definitions, state, history, owner authority, and accepted owner after-images atomically, with client-owned bindings derived by the production composer.
+- The fresh post-review Fast is GREEN at `TestResults/test-lanes/20260823-155212-462-30948-5ab02a2e53004ef88e5a5e43f8b0bc8a-fast/summary.json`: `4230/4230`, exit `0`, wall `00:03:28.4305036`, timeout `false`, duplicate IDs `0`, owned-tree cleanup complete, build warnings/errors `0/0`. All four shards produced TRX and completed. This is the meaningful final-tree Fast checkpoint; do not repeat it immediately before PreMerge.
+
+### T121 replay-authority hardening evidence (2026-08-25)
+
+The completed #1535 continuation now carries typed replacement and terminal
+subjects, logical accepted-use duplicate keys, field-specific persisted effect
+authority, and lifecycle transition references derived from accepted authority
+instead of random same-turn IDs. Exact contract and RED/GREEN paths are recorded
+in #1535 quickstart §19. Current focused controls pass `244/244`, `87/87`,
+`34/34`, `54/54`, and `45/45` at
+`20260825-150437-619-40940-a36225d9b8134f749ceef03a251c6096-focused`,
+`20260825-150841-018-31064-6b860b6ccc514918912c05753072f9f3-focused`,
+`20260825-151208-348-27912-61573703a83d4f678a6865fbc96878bc-focused`,
+`20260825-151253-174-10404-e6ab8316b0ec4659b618e1dd2a126175-focused`,
+and `20260825-151438-474-46296-5074c88233f749f499b03c554f1f7244-focused`.
+All have exit `0`, timeout `false`, zero duplicate IDs, and complete cleanup.
+
+The subsequent replacement-occupancy review is also closed. #1535 now
+indexes and linearly simulates the complete released `apply_definition` batch
+before reaction identity or transition allocation, rejects competing typed
+owners, repeated frozen absence, a preceding non-replace occupant, and known
+stack-policy conflicts, preserves compatible identity-preserving siblings and
+only the consuming same-boundary self-replacement fold, and rechecks every exact
+typed predecessor/result at runtime. Initial RED is
+`20260825-160407-453-18732-4f29694f2c67497986b80570c8969947-focused`;
+the focused conflict/self-cascade control is GREEN `3/3` at
+`20260825-161843-314-40008-75893dc946434e639c4ea72ab051d52a-focused`,
+while the later non-replace/policy regression is RED `2/2` at
+`20260825-165020-559-43824-c1cfc93acad84900b5f52b3a91cbb236-focused`.
+The final conflict, self-cascade, and compatible-sibling contour is GREEN `6/6`
+at `20260825-170547-269-41648-bdffef1715704765890f462b7c61dd60-focused`;
+the full routing/scale class is GREEN `69/69` at
+`20260825-170746-336-15784-79af0d7101ce490886823dfe7b4f3f06-focused`.
+Adjacent planner/arbiter/transcript unit controls are GREEN `197/197` at
+`20260825-170812-692-26108-395f249d17874c28a1cb0b66ac46116d-focused`.
+All GREEN runs have exit `0`, timeout `false`, zero duplicate IDs, complete
+cleanup, and zero build warnings/errors.
+Fresh final-tree `LifecycleIntegration` is GREEN `286/286` at
+`20260825-171156-552-48632-5c3ba7811b7c444f81bd31d4040e0953-lifecycleintegration`
+in `00:09:43`, with exit `0`, timeout `false`, zero duplicate IDs, and complete
+cleanup under the justified 15-minute lane budget.
+
+This hardening changes only client-owned causal/replay identity. It does not
+change a GM-authored or player-visible Mortal/afterlife surface, so no additional
+prompt, guide, example, manifest, or source-guard edit is required. No migration,
+compatibility reader, dual authority, raw fallback, or GitHub Actions change was
+introduced.
+
+T121 scope inspection is complete: `265` expected #1535/#1543 paths are staged,
+including `27` reviewed additions; unstaged tracked paths are zero. `.serena/`
+is the sole untracked path and is excluded. `git diff --cached --check` exits
+`0`; expected-path allowlisting has zero outliers; workflow/settings/Serena
+paths, credential-token patterns, and Arena AI diff matches are all zero. No
+commit, push, or merge was performed.
+
+The post-hardening read-only Spec Kit analysis confirms `65/65` FR, `10/10`
+SC, and `124/124` unique task IDs with complete ledger coverage, zero duplicate
+IDs/placeholders, and source-issue links in spec/plan/tasks. It reports zero
+Critical/High/Medium inconsistency; only T122–T124 and their intentional SC-009
+final-gate dependency remain open. Optional before/after git hooks were not run.
 
 ## 14. Final merge gate
 
@@ -453,3 +569,38 @@ Expected:
 - PreMerge exits `0`, times out `false`, all completed tests pass, duplicate count is `0`, and cleanup is complete;
 - no GitHub Actions are enabled or invoked;
 - no compatibility reader, migration, dual-write, raw fallback, or second persisted resource authority remains.
+
+### T122-T123 accepted final evidence (2026-08-26)
+
+The exact final command was
+`pwsh -NoLogo -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge`.
+Its summary is
+`TestResults/test-lanes/20260826-004148-035-3528-42f32409a6b34cf4bbb7950b7e8a10d7-premerge/summary.json`:
+exit `0`, timeout `false`, wall `00:21:59.6684306`, duplicate IDs `0`, and
+owned-tree cleanup complete under the #1547 30-minute deadline. All `26`
+official TRX files completed. Fast passed `4,339/4,339`, core integration
+`2,269/2,269`, ProcessIntegration `508/508`, and E2E `15/15`, totaling
+`7,131/7,131` with zero failures. Frontend verification separately passed
+`141/141`; frontend typecheck/build and both C# builds succeeded with zero C#
+warnings/errors. No duplicate Fast was run immediately beforehand.
+
+The final reviewed lifecycle boundary remains GREEN `286/286` at
+`20260825-171156-552-48632-5c3ba7811b7c444f81bd31d4040e0953-lifecycleintegration`.
+The applicable documentation-boundary control remains GREEN `1,810/1,810` at
+`20260822-194158-015-17568-95c447447c9c42fdb9f19719e3593caf-fullvalidation`.
+Later changes were client-owned opaque selector/replay hardening, #1546
+same-process audit admission, technical fixture completion, and the #1547
+bounded runner deadline; none changed a GM-authored Mortal/afterlife contract,
+so those conditional lanes were not repeated.
+
+The process-tail prerequisite is independently GREEN `523/523` at
+`20260826-002204-545-33256-d46277f36dd4471eaaae5ecb8a221b2b-processintegration`.
+Its preceding failures were stale/incomplete technical resource fixtures, not a
+resource-authority defect, and were repaired without a compatibility reader or
+production fallback. Issue #1546 remains a narrow audit-starvation repair and
+adds no prompt/example/manifest or player-facing surface.
+
+T122 and T123 are complete, including SC-009. The only remaining task is T124:
+owner-approved commit/PR/integration handoff. No migration, dual authority,
+raw fallback, GitHub Actions invocation, commit, push, PR, merge, or issue
+closure occurred.

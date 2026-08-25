@@ -1044,7 +1044,6 @@ public partial class GameEngine
                     .ApplyBestRewardToNewSoulStateAsync(soulState)
                     .GetAwaiter()
                     .GetResult();
-                WriteCanonicalSoulStateAsync(soulState).Wait();
 
                 // Initialize guardian. New Game guardian seeds are client-owned so the first GM turn can
                 // focus on the scene instead of repairing technical materialization contracts.
@@ -1059,8 +1058,6 @@ public partial class GameEngine
                         soulName,
                         turnNumber: 1,
                         createdAtUtc: DateTimeOffset.UtcNow);
-                _fs.WriteFileAtomicAsync("game_state/meta/guardians.json",
-                    JsonSerializer.Serialize(guardian, JsonOpts)).Wait();
                 var guardianProfileRoot = selectedSystemGuardianPreset != null
                     ? _systemGuardianLibraryService.BuildAfterlifeEntityProfileRootForFreshNewGame(
                         selectedSystemGuardianPreset,
@@ -1072,7 +1069,6 @@ public partial class GameEngine
                         soulName,
                         turnNumber: 1,
                         createdAtUtc: DateTimeOffset.UtcNow);
-                _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, guardianProfileRoot.ToJsonString(JsonOpts)).Wait();
 
                 WriteInitialGuardianProjectTrackerStateAsync().Wait();
 
@@ -1140,15 +1136,69 @@ public partial class GameEngine
                             resourceBootstrap.Issues.Select(static issue =>
                                 issue.Code ?? issue.Message)));
                 }
-                _fs.WriteFileAtomicAsync(
-                    ResourceMaterializationContract.DefinitionsPath,
-                    resourceBootstrap.Definitions.ToCanonicalJson()).Wait();
-                _fs.WriteFileAtomicAsync(
-                    ResourceMaterializationContract.StatePath,
-                    resourceBootstrap.State.ToCanonicalJson()).Wait();
-                _fs.WriteFileAtomicAsync(
-                    ResourceMaterializationContract.HistoryPath,
-                    resourceBootstrap.History.ToCanonicalJson()).Wait();
+                var ownerAuthority = CanonicalResourceQuartetTransaction
+                    .ComposeExplicitBootstrapAsync(
+                        resourceBootstrap.Definitions,
+                        resourceBootstrap.State,
+                        resourceBootstrap.History,
+                        new AfterlifeOwnerResourceAcceptedState(
+                            Profiles: guardianProfileRoot,
+                            SoulState: soulState,
+                            Guardians: guardian),
+                        _fs.ReadFileAsync)
+                    .GetAwaiter()
+                    .GetResult();
+                if (!ownerAuthority.IsValid ||
+                    ownerAuthority.CanonicalAuthorityJson == null)
+                {
+                    throw new InvalidDataException(
+                        "Fresh game resource owner-authority bootstrap failed: " +
+                        string.Join(
+                            "; ",
+                            ownerAuthority.Issues.Select(static issue =>
+                                issue.Code ?? issue.Message)));
+                }
+                var resourceWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>
+                {
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        ResourceMaterializationContract.DefinitionsPath,
+                        ownerAuthority.BeforeImages[
+                            ResourceMaterializationContract.DefinitionsPath],
+                        ownerAuthority.Definitions.ToCanonicalJson(),
+                        RequireCurrentBaseline: true),
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        ResourceMaterializationContract.StatePath,
+                        ownerAuthority.BeforeImages[
+                            ResourceMaterializationContract.StatePath],
+                        ownerAuthority.StateAfterImage!.ToCanonicalJson(),
+                        RequireCurrentBaseline: true),
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        ResourceMaterializationContract.HistoryPath,
+                        ownerAuthority.BeforeImages[
+                            ResourceMaterializationContract.HistoryPath],
+                        ownerAuthority.HistoryAfterImage!.ToCanonicalJson(),
+                        RequireCurrentBaseline: true)
+                };
+                foreach (var (path, afterImage) in ownerAuthority.OwnerAfterImages)
+                {
+                    resourceWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                        path,
+                        ownerAuthority.BeforeImages[path],
+                        afterImage.ToJsonString(JsonOpts),
+                        RequireCurrentBaseline: true));
+                }
+                CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(
+                    resourceWrites,
+                    ownerAuthority.QuartetProjection!);
+                if (!CoordinatedStateWriteHelper.TryCommitAsync(
+                        _fs,
+                        resourceWrites.ToArray())
+                        .GetAwaiter()
+                        .GetResult())
+                {
+                    throw new IOException(
+                        "Fresh game resource quartet changed during atomic bootstrap publication.");
+                }
 
                 var playerChronicle = new
                 {

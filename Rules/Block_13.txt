@@ -339,7 +339,7 @@
                             1.  A combat round consists of each combatant taking one turn in the established initiative order.
                             2.  When a combatant's turn begins, they can typically perform one Main Action (see #13.2) and often a Minor Movement (see #13.2.2).
                             3.  After the last combatant in initiative has acted, the round ends, and a new round begins with the same initiative order (unless modified by effects).
-                            4.  Effects with a 'duration' (from 'activeBuffs'/'activeDebuffs') typically decrease their duration by 1 at the end of the affected combatant's turn.
+                            4.  The client advances canonical active effect lifetime at the source-defined phase. The GM reads the published activeEffects[] projection and never decrements or resends remaining lifetime.
                             
                             ]]>
      </content>
@@ -597,7 +597,7 @@
       <![CDATA[
 
                             Combat ends when one of the following occurs:
-                            1.  All Combatants on One Side Defeated: All members of one side are slain, incapacitated ('currentHealth' <= 0%), or otherwise removed from combat.
+                            1.  All Combatants on One Side Defeated: all members of one side are slain, incapacitated because their accepted `health` resource transition reached the sealed minimum, or otherwise unable to continue combat.
                             2.  Surrender: One side formally surrenders. The other side may choose to accept or reject the surrender.
                             3.  Retreat: One side successfully disengages and flees the combat area beyond the reach of their opponents.
                             4.  Negotiation/Truce: Combatants cease hostilities due to successful negotiation, a truce, or a plot development that changes their intent. (Player may initiate this via Persuasion or similar checks, even mid-combat, at GM discretion based on situation).

@@ -81,7 +81,7 @@
     <![CDATA[
 
                     This applies to surfaces whose own contract accepts partial objects:
-                    -   'UpdateInventory': For changing item properties like 'durability', 'description', 'bonuses', or 'count'.
+                    -   'UpdateInventory': For changing non-resource item properties such as 'description', structured bonuses, or 'count'. Durability and every other bounded reserve use the common resource commands against the exact permanent item owner.
                     -   'NPCCoreChanges': For its closed, grouped ordinary-existing NPC core schema only. It is not arbitrary JSON patch and cannot change 'class' or 'appearanceDescription'.
                     -   'UpdateQuests': For changing a quest's 'description', 'questBackground', or adding to its 'detailsLog'.
                     -   'currentLocationData': For updating the 'lastEventsDescription' of a known location.

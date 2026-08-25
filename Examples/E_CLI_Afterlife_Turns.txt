@@ -12,7 +12,7 @@ Read this file whenever `game_state/meta/soul_state.json.currentRealm` is `Chaos
 
 Before using an example, first select the matching rows in `OtherGuides/Afterlife_Contract_Matrix.md`. The matrix tells the GM which scheduler contour, pending file, direct action, canonical output surface, receipt/report, and forbidden substitution apply. These examples then show worked accepted-turn patterns. They are not a replacement for the full schemas.
 
-UNIFIED AFTERLIFE RESOURCE AUTHORITY: `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` are client-owned entries in `game_state/resources/resource_state.json`; their immutable transitions are in `game_state/resources/resource_history.json`, and afterlife state retains only exact `resourceOwnerBindings`. The GM reads current/maximum values only from the documented read-only client projection or state context for the specific action and never writes direct ledger values, `chargesPerReturn`, `chargesUsedThisReturn`, numeric blessing `rerolls`, or `rerollsSpent`; `actionEconomy` is forbidden as persisted state. Ink Feathers, Light Sparks, treasuries, faction accounting, progression, relationships, and spiritual power/strain/shield remain specialized. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; only the numeric allocation enters the ledger. A selected card may show the client-generated transient `rerollAllocation` object with exactly `resourceKey = blessing_rerolls` and non-negative integer `amount`; Mortal bootstrap consumes it into the common ledger and leaves only the exact client-owned `rerollResourceBinding` in pending blessing state. The GM never authors either field. Old saves are not migrated and there is no legacy fallback.
+UNIFIED AFTERLIFE RESOURCE AUTHORITY: `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` are client-owned entries in `game_state/resources/resource_state.json`; their immutable transitions are in `game_state/resources/resource_history.json`, and exact owner/capacity authority is in client-owned `game_state/resources/resource_owner_authority.json`. Definitions, state, history, and owner authority are one guarded quartet; the GM never authors any quartet root. A missing or stale owner-authority root in an existing session fails closed and is not migrated or self-healed; only Fresh New Game creates the first root. Fresh New Game publishes preset/freeform Guardian and player owner after-images with the quartet in one deterministic coordinated resource write set; Mortal-incarnation bootstrap requires the exact existing quartet before-image. Afterlife state retains only exact `resourceOwnerBindings`. Actor-realm refs are derived from actor ID + realm, conflict-side owner IDs/refs from realm + conflictId, and Shining scope IDs/refs from `shining_abode` + returnCycleId. These identities are client-owned, deterministic for the same accepted input, and never GM-authored. The GM reads current/maximum values only from the documented read-only client projection or state context for the specific action and never writes direct ledger values, `chargesPerReturn`, `chargesUsedThisReturn`, numeric blessing `rerolls`, or `rerollsSpent`; `actionEconomy` is forbidden as persisted state. Ink Feathers, Light Sparks, treasuries, faction accounting, progression, relationships, and spiritual power/strain/shield remain specialized. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; only the numeric allocation enters the ledger. A selected card may show the client-generated transient `rerollAllocation` object with exactly `resourceKey = blessing_rerolls` and non-negative integer `amount`; Mortal bootstrap consumes it into the common ledger and leaves only the exact client-owned `rerollResourceBinding` in pending blessing state. The GM never authors either field. Old saves are not migrated and there is no legacy fallback.
 
 ==================================================
 EXAMPLE INDEX
@@ -5653,7 +5653,7 @@ Why this is valid:
 20. VALID — SYSTEM ETERNAL GUARDIAN ATTRACTION
 ==================================================
 
-Fresh New Game system Guardian seed is not this contract, and freeform New Game Guardian seed is no longer a pending materialization contract either. If the player selected a named system Guardian or described a freeform Guardian during New Game, the client has already written a complete canonical `game_state/meta/guardians.json` root with `guardians[]`, `activeGuardian`, and `chaosSeaNavigation`; system seeds also carry `sourcePreset`, while freeform seeds carry `originType=freeform` and `freeformSourceDescription`. There is no `pendingGuardianCreation`. In that startup scene the GM narrates the first meeting instead of materializing or repairing the Guardian: do not emit `UpdateGuardians.create`, do not add `pendingGuardianCreation`, and do not treat the scene as `system_guardian_attraction.json`.
+Fresh New Game system Guardian seed is not this contract, and freeform New Game Guardian seed is no longer a pending materialization contract either. If the player selected a named system Guardian or described a freeform Guardian during New Game, the client has already published the Guardian/profile/Soul owner after-images and the exact definitions/state/history/owner-authority quartet through one deterministic plan and one coordinated resource write set. The resulting canonical `game_state/meta/guardians.json` root contains `guardians[]`, `activeGuardian`, and `chaosSeaNavigation`; system seeds also carry `sourcePreset`, while freeform seeds carry `originType=freeform` and `freeformSourceDescription`. There is no `pendingGuardianCreation`. In that startup scene the GM narrates the first meeting instead of materializing or repairing the Guardian: do not emit `UpdateGuardians.create`, do not add `pendingGuardianCreation`, and do not treat the scene as `system_guardian_attraction.json`.
 
 This example is for a deterministic Eternal Guardian attraction from ordinary Chaos Sea. The player-facing fiction is "I seek this Eternal Guardian." The technical contract is `game_state/control/system_guardian_attraction.json`, often paired with `guardians.json.pendingGuardianCreation.mode = system_preset`; do not create or resolve it from Shining Abode.
 
@@ -6921,9 +6921,9 @@ Reference `guardianPowerEvents.reasonType = correction_spend` shape:
 {
   "guardianPowerEvents": [
     {
-      "eventId": "gce_corr_protective_omen_002",
+      "eventId": "gce_life_9_corr_protective_omen_002",
       "guardianId": "guard_social_azalia_001",
-      "delta": -4,
+      "delta": -5,
       "reasonType": "correction_spend",
       "sourceSurface": "guardian_corrections",
       "sourceId": "corr_protective_omen_002",
@@ -6933,6 +6933,7 @@ Reference `guardianPowerEvents.reasonType = correction_spend` shape:
       "appliedAt": "2026-04-24T18:10:00Z",
       "relatedGuardianId": null,
       "audit": {
+        "lifeIncarnation": 9,
         "correctionId": "corr_protective_omen_002",
         "slotId": "slot_protection_or_omen",
         "slotType": "protection_or_omen",
@@ -7059,7 +7060,7 @@ the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"re
 
 Resource audit rule: if a side has no current `actionCostAudit.<side>`, emit no `spiritual_action_points` transition for that side and preserve the validated pre-turn active conflict resource projection. Do not change the common ledger, history, or `resourceOwnerBindings` directly. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; fake terminal/free audits are invalid.
 
-Validation repair note: if `game_state/control/validation_repair_request.json.harnessRepairPackets[]` contains `kind = "afterlife_spiritual_conflict_action_cost_repair"`, treat it as the executable checklist only for the already written `exchangeLog[n].actionCostAudit.<side>.<field>` operands, then finish with `Complete-BoeValidationRepair`. Never author `actionEconomy`, `resourceOwnerBindings`, `game_state/resources/resource_state.json`, or `game_state/resources/resource_history.json`; do not create a new turn, add an exchange, reroll dice, or edit `game_state/control/pending_turn_snapshot*`.
+Validation repair note: if `game_state/control/validation_repair_request.json.harnessRepairPackets[]` contains `kind = "afterlife_spiritual_conflict_action_cost_repair"`, treat it as the executable checklist only for the already written `exchangeLog[n].actionCostAudit.<side>.<field>` operands, then finish with `Complete-BoeValidationRepair`. Never author `actionEconomy`, `resourceOwnerBindings`, `game_state/resources/resource_state.json`, `game_state/resources/resource_history.json`, or `game_state/resources/resource_owner_authority.json`; do not create a new turn, add an exchange, reroll dice, or edit `game_state/control/pending_turn_snapshot*`.
 
 Correct contested exchange response:
 
@@ -7454,7 +7455,7 @@ Worked accepted-condition fragment: the GM first reads the exact current contrib
 
 ## afterlife_effect_profile_v1 — common profile adapter
 
-Effect Materialization v1 uses the same source/identity/lifecycle contract in both afterlife realms. A validated spiritual art owns its complete definition; the GM requests application through top-level `effectChanges[]`. The client alone publishes the resulting `activeEffects[]` on the exact afterlife profile and the matching `effect_identity_index.json` entry.
+Effect Materialization v1 uses the same source/identity/lifecycle contract in both afterlife realms. A validated spiritual art owns its complete definition; the GM requests application through top-level `effectChanges[]`. The client alone publishes the resulting `activeEffects[]` on the exact afterlife profile and the matching `effect_identity_index.json` entry. The runtime carrier and accepted mechanical contribution are client-owned; remaining lifetime is client-owned too. The GM does not rescan raw effect values, decrement duration, or resend post-state.
 
 ```json
 {
@@ -7536,6 +7537,52 @@ Effect Materialization v1 uses the same source/identity/lifecycle contract in bo
 
 Shining blessing entitlement is not a generic active effect. Blessing allocation, freeShape/freeRetune, memory selection, and blessing rerolls stay on their dedicated Shining client-owned contracts.
 
+## afterlife_resource_bounded_receipt_waves_v1 — sequential safe packets
+
+A story-facing spiritual effect can ask the GM to choose a bounded common
+resource result. The client owns the afterlife resource coordinate, operation,
+effect identity, graph position, and every fingerprint. The GM receives only a
+safe packet and returns the current request ID, one allowed result, and a
+reason. For example, the first safe packet can be answered as:
+
+```json
+{
+  "effectResolutionReceipts": [
+    {
+      "requestId": "resource_resolution_afterlife_wave_001",
+      "resultKind": "resource_delta",
+      "amount": 2,
+      "reason": "Давление клятвы отняло часть запаса духовного действия."
+    }
+  ]
+}
+```
+
+Answer the current safe packet only. Resubmit the same complete semantic turn
+with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned. If replay of the resolved result reaches another
+bounded component, the client returns a second safe packet and still publishes
+no resource, active-effect, use, or lifetime after-image. The first receipt is
+retained as client-owned terminal evidence:
+
+```json
+{
+  "effectResolutionReceipts": [
+    {
+      "requestId": "resource_resolution_afterlife_wave_002",
+      "resultKind": "narrated_no_state_change",
+      "reason": "Оберег удержал вторичный резонанс без новой потери."
+    }
+  ]
+}
+```
+
+The client replays wave 1 at its original causal position, resolves wave 2, and
+publishes the complete accepted mechanics atomically only when no further safe
+packet appears. Do not combine old and current packet IDs, add a target,
+resource, operation, path, authority, or fingerprint, or change the original
+resource/effect commands between waves. An exact terminal retry with the same
+semantic command envelope is a no-op; a changed envelope fails closed.
+
 ## afterlife_effect_conditions_five_kinds_v1 — all five spiritual conditions
 
 The five supported `afterlife_combat_condition` kinds are `mark`, `ward`, `burden`, `opening`, and `vow`. Each complete source definition targets only `spiritual_conflict_side`, uses only Chaos Sea/Shining Abode realm authority, and has bounded `turns`, `uses`, or `scene` lifetime. The fragments below show the profile-owned payload difference; the surrounding definition still supplies display, stacking, lifetime, triggers, removal, and links.
@@ -7593,7 +7640,7 @@ The five supported `afterlife_combat_condition` kinds are `mark`, `ward`, `burde
         "conditionKind": "opening",
         "targetSide": "opposition",
         "actorId": "afterlife_actor_opponent",
-        "operations": ["bind"],
+        "operations": ["binding"],
         "axes": ["counterPayoff"],
         "counterplay": ["close_opening"],
         "payoff": "one_follow_up"
@@ -7608,7 +7655,7 @@ The five supported `afterlife_combat_condition` kinds are `mark`, `ward`, `burde
         "targetSide": "player",
         "actorId": "player_soul",
         "operations": ["guard"],
-        "axes": ["specialArtAudit"],
+        "axes": ["specialArtAudit.effectNote"],
         "counterplay": ["fulfil_or_break_vow"],
         "payoff": "bounded_oath"
       }
@@ -7638,6 +7685,373 @@ Apply each condition only through an exact source definition and the common comm
   "effectResolutionReceipts": []
 }
 ```
+
+### afterlife_effect_conditions_executable_v1 — complete five-kind source and apply set
+
+This executable set expands every profile fragment into a complete spiritual
+art definition. All five definitions are valid in both afterlife realms and
+target only an exact spiritual-conflict side.
+
+```json
+{
+  "artId": "art_fivefold_condition_liturgy",
+  "activeEffectDefinitions": [
+    {
+      "schemaVersion": 1,
+      "definitionKey": "soul-mark",
+      "display": {
+        "name": "Метка души",
+        "description": "Принятый ритм делает траекторию противника явной.",
+        "category": "condition",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["spiritual_conflict_side"],
+      "components": [
+        {
+          "componentId": "condition_mark",
+          "profile": "afterlife_combat_condition",
+          "priority": 100,
+          "payload": {
+            "conditionKind": "mark",
+            "targetSide": "opposition",
+            "actorId": "afterlife_actor_opponent",
+            "operations": ["pressure"],
+            "axes": ["rollMode"],
+            "counterplay": ["purification"],
+            "payoff": "tracking"
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "soul-mark",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 3,
+        "advancePhase": "afterlife_exchange_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "mark_exchange_end",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["condition_mark"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    },
+    {
+      "schemaVersion": 1,
+      "definitionKey": "radiant-ward",
+      "display": {
+        "name": "Сияющий оберег",
+        "description": "Оберег удерживает выбранную линию защиты.",
+        "category": "condition",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["spiritual_conflict_side"],
+      "components": [
+        {
+          "componentId": "condition_ward",
+          "profile": "afterlife_combat_condition",
+          "priority": 100,
+          "payload": {
+            "conditionKind": "ward",
+            "targetSide": "player",
+            "actorId": "player_soul",
+            "operations": ["guard"],
+            "axes": ["tempoAdvantage"],
+            "counterplay": ["break_ward"],
+            "payoff": "protection"
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "radiant-ward",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 3,
+        "advancePhase": "afterlife_exchange_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "ward_exchange_end",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["condition_ward"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    },
+    {
+      "schemaVersion": 1,
+      "definitionKey": "oath-burden",
+      "display": {
+        "name": "Скрытое бремя",
+        "description": "Невысказанное обязательство повышает цену давления.",
+        "category": "condition",
+        "visibility": "gm_only"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["spiritual_conflict_side"],
+      "components": [
+        {
+          "componentId": "condition_burden",
+          "profile": "afterlife_combat_condition",
+          "priority": 100,
+          "payload": {
+            "conditionKind": "burden",
+            "targetSide": "opposition",
+            "actorId": "afterlife_actor_opponent",
+            "operations": ["pressure"],
+            "axes": ["actionCostAudit"],
+            "counterplay": ["shed_burden"],
+            "payoff": "attrition"
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "oath-burden",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 3,
+        "advancePhase": "afterlife_exchange_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "burden_exchange_end",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["condition_burden"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    },
+    {
+      "schemaVersion": 1,
+      "definitionKey": "gate-opening",
+      "display": {
+        "name": "Брешь в ритме врат",
+        "description": "Короткая брешь открывает один точный ответ.",
+        "category": "condition",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["spiritual_conflict_side"],
+      "components": [
+        {
+          "componentId": "condition_opening",
+          "profile": "afterlife_combat_condition",
+          "priority": 100,
+          "payload": {
+            "conditionKind": "opening",
+            "targetSide": "opposition",
+            "actorId": "afterlife_actor_opponent",
+            "operations": ["binding"],
+            "axes": ["counterPayoff"],
+            "counterplay": ["close_opening"],
+            "payoff": "one_follow_up"
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "gate-opening",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 1,
+        "advancePhase": "afterlife_exchange_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "opening_exchange_end",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["condition_opening"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    },
+    {
+      "schemaVersion": 1,
+      "definitionKey": "binding-vow",
+      "display": {
+        "name": "Связующая клятва",
+        "description": "Принятая клятва ограничивает выбранную линию защиты.",
+        "category": "condition",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["chaos_sea", "shining_abode"],
+      "allowedTargetKinds": ["spiritual_conflict_side"],
+      "components": [
+        {
+          "componentId": "condition_vow",
+          "profile": "afterlife_combat_condition",
+          "priority": 100,
+          "payload": {
+            "conditionKind": "vow",
+            "targetSide": "player",
+            "actorId": "player_soul",
+            "operations": ["guard"],
+            "axes": ["specialArtAudit.effectNote"],
+            "counterplay": ["fulfil_or_break_vow"],
+            "payoff": "bounded_oath"
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "binding-vow",
+        "policy": "refresh",
+        "maxStacks": 1,
+        "atMaximum": "refresh",
+        "refreshMode": "reset",
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 3,
+        "advancePhase": "afterlife_exchange_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "vow_exchange_end",
+          "eventType": "afterlife_exchange_end",
+          "priority": 100,
+          "componentIds": ["condition_vow"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["spiritual_disruption"],
+        "cureKinds": ["purification"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    }
+  ]
+}
+```
+
+The accepted response requests all five applications through the same closed
+top-level route; it still contains no GM-authored `combatConditions[]` carrier.
+
+```json
+{
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:opposition" },
+      "source": { "kind": "spiritual_art", "sourceId": "art_fivefold_condition_liturgy", "definitionKey": "soul-mark" },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Принятый обмен закрепил метку на стороне противника."
+    },
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:player" },
+      "source": { "kind": "spiritual_art", "sourceId": "art_fivefold_condition_liturgy", "definitionKey": "radiant-ward" },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Принятый обмен поднял оберег на стороне игрока."
+    },
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:opposition" },
+      "source": { "kind": "spiritual_art", "sourceId": "art_fivefold_condition_liturgy", "definitionKey": "oath-burden" },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Принятый обмен возложил скрытое бремя на сторону противника."
+    },
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:opposition" },
+      "source": { "kind": "spiritual_art", "sourceId": "art_fivefold_condition_liturgy", "definitionKey": "gate-opening" },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Принятый обмен открыл краткую брешь на стороне противника."
+    },
+    {
+      "operation": "apply",
+      "target": { "kind": "spiritual_conflict_side", "targetId": "conflict_84:player" },
+      "source": { "kind": "spiritual_art", "sourceId": "art_fivefold_condition_liturgy", "definitionKey": "binding-vow" },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_84" },
+      "reason": "Принятый обмен закрепил клятву на стороне игрока."
+    }
+  ],
+  "effectResolutionReceipts": []
+}
+```
+
+### afterlife_effect_conditions_projection_v1 — accepted projection, privacy, and audit
 
 The GM must never author combatConditions[]. Read accepted mechanics only from `afterlifeSpiritualConflictPreview.conditionMechanics`, apply each contribution to its exact `affectedOperations`/`mechanicalAxes`, cite the supplied condition selector in the matching audit, and expose only visible conditions.
 
@@ -8448,7 +8862,11 @@ Validation derives actor newness only from the client-owned validated pre-turn b
 
 A new afterlife actor explicitly carries `appearanceDescription`, `profileSummary`, `personalityProfile.archetype`, `motivation`, `personalityProfile.worldview`, canonical `realm` and `locationId`, goals with a non-empty plan, and exact actor-owned memory. An existing materialized afterlife profile must never be resent through the full afterlifeEntityProfileUpdates carrier; use the exact dedicated delta for every later change. A legacy first-envelope migration may use a full carrier only when usable validated pre-turn authority proves all historical fields unchanged.
 
-If the first profile initializes a pre-sealed setting-defined resource allowed for `afterlife_actor`, include one closed `resourceMaterialization.resources[]` envelope on that same full profile. The client preserves the exact actorId, creates no second actor ID, uses the Actor Materialization `materializationId` as the same-turn ownerRef for common resource authority, removes `resourceMaterialization`, and publishes `resourceOwnerBindings` plus common state/history atomically. Actor/effect selectors still use the exact canonical actorId; never write actorRef. An existing materialized profile must not resend resourceMaterialization. Do not invent a resource from prose: the definition, owner kind, capacity policy, exact key, and maximum must already be valid and sealed.
+If the first non-player profile initializes a pre-sealed setting-defined resource allowed for `afterlife_actor`, include one closed `resourceMaterialization.resources[]` envelope on that same full profile. The client preserves the exact actorId, creates no second actor ID, uses the Actor Materialization `materializationId` as the same-turn ownerRef for common resource authority, removes `resourceMaterialization`, and publishes `resourceOwnerBindings` plus the complete resource quartet atomically. Actor/effect selectors still use the exact canonical actorId; never write actorRef. An existing materialized profile must not resend resourceMaterialization. Do not invent a resource from prose: the definition, owner kind, capacity policy, exact key, and maximum must already be valid and sealed.
+
+CLIENT-OWNED RESERVED PLAYER_SOUL CONTRAST (not GM response): the reserved first exact `player_soul` may be seeded without a generic Actor Materialization envelope. It may still carry one closed `resourceMaterialization.resources[]`; for example `{ "resourceKey": "soul_integrity", "maximum": 9 }`. The client derives the deterministic ownerRef for that same turn from exact `player_soul` + canonical realm, consumes `resourceMaterialization`, and writes the `resourceOwnerBindings` after-image with the quartet. The canonical after-image has no generic `materialization` envelope and no residual `resourceMaterialization`. This exception never applies to a resident, Guardian, radiant actor, or other non-player profile: a first non-player without Actor Materialization is invalid.
+
+DETERMINISTIC AFTERLIFE OWNER EXAMPLE: the same accepted `actorId` + realm always yields the same new-realm ref; the same realm + `conflictId` always yields the same conflict-side owner ID/ref; and the same `shining_abode` + `returnCycleId` always yields the same Shining scope ID/ref. A changed stable seed changes the derived identity. Turn number, capacity, array order, process randomness, and GM-authored IDs are never inputs.
 
 Positive trade authority is exact and realm-local. In the Chaos Sea, `canTrade=true` is valid only for the one active Guardian whose abode is the exact current abode. In the Shining Abode, it is valid only for a non-player faction head whose leadership is secure or contested, whose faction is operational, and whose trade tier is at least 1. If that structured authority is absent or ambiguous, use `canTrade=false`. A legacy actor that first gains trade authority is promoted into significant structured play and needs the complete envelope in the same accepted turn. A full response may carry that profile before canonical state is written, but accepted-turn validation still proves the claim from exact current or validated pre-turn authority.
 

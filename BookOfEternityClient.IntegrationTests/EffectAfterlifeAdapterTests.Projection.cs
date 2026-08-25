@@ -21,6 +21,7 @@ public sealed partial class EffectAfterlifeAdapterTests
     [Fact]
     public async Task AfterlifeProfileProjection_UsesAcceptedVisibleEffectInBrowserAndConsole()
     {
+        const string actorId = "afterlife_actor_test";
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("guardian");
         effect["realm"] = "shining_abode";
@@ -32,7 +33,7 @@ public sealed partial class EffectAfterlifeAdapterTests
                 ["profiles"] = new JsonArray(new JsonObject
                 {
                     ["actorType"] = "guardian",
-                    ["actorId"] = "afterlife_actor_test",
+                    ["actorId"] = actorId,
                     ["displayName"] = "Хранитель Пепельной Печати",
                     ["realm"] = "Shining Abode",
                     ["activeEffects"] = new JsonArray(effect.DeepClone())
@@ -70,12 +71,37 @@ public sealed partial class EffectAfterlifeAdapterTests
                 .Cards);
         Assert.Contains(profileCard.Cards, static card =>
             string.Equals(card.Title, "Кровотечение", StringComparison.Ordinal));
+        var cardAction = Assert.IsType<UiAction>(profileCard.PrimaryAction);
+        Assert.Matches(
+            "^afterlife-profile-detail-afterlife_profile_[0-9a-f]{24}$",
+            cardAction.Id);
+        Assert.Matches(
+            "^/afterlife_profiles действие afterlife_profile_[0-9a-f]{24}$",
+            cardAction.Command);
+        Assert.DoesNotContain(actorId, cardAction.Id, StringComparison.Ordinal);
+        Assert.DoesNotContain(actorId, cardAction.Command, StringComparison.Ordinal);
+        Assert.DoesNotContain(actorId, cardAction.Label, StringComparison.Ordinal);
+        var overviewAction = Assert.Single(completed.Actions);
+        Assert.Equal(cardAction.Id, overviewAction.Id);
+        Assert.Equal(cardAction.Command, overviewAction.Command);
+        Assert.DoesNotContain(actorId, overviewAction.Label, StringComparison.Ordinal);
         var payload = JsonSerializer.Serialize(completed, ProjectionJsonOptions);
         Assert.Contains("Кровотечение", payload, StringComparison.Ordinal);
         Assert.Contains("Периодический урон", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"actorId\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(actorId, payload, StringComparison.Ordinal);
         Assert.DoesNotContain(EffectMaterializationTestFixture.EffectId, payload, StringComparison.Ordinal);
         Assert.DoesNotContain("activeEffects", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("wound_test_torn_side", payload, StringComparison.Ordinal);
+
+        var detailResult = await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(
+            cardAction.Command,
+            stateManager,
+            context.FileSystem);
+        var detail = Assert.IsType<ExplorerCommandResult>(detailResult);
+        var detailDossier = Assert.Single(detail.Blocks.OfType<UiEntityDossierBlock>());
+        Assert.Equal("Профиль посмертия: Хранитель Пепельной Печати", detailDossier.Title);
 
         var console = new TestExplorerConsole();
         ExplorerCommandResultConsoleRenderer.Render(console, completed);
@@ -156,7 +182,7 @@ public sealed partial class EffectAfterlifeAdapterTests
 
         Assert.Contains("Печать тяжести", acceptedPayload, StringComparison.Ordinal);
         Assert.Contains("Условие духовного конфликта", acceptedPayload, StringComparison.Ordinal);
-        Assert.Contains("rollMode", acceptedPayload, StringComparison.Ordinal);
+        Assert.Contains("режим броска", acceptedPayload, StringComparison.Ordinal);
         Assert.DoesNotContain(EffectMaterializationTestFixture.EffectId, acceptedPayload, StringComparison.Ordinal);
         Assert.DoesNotContain("conditionId", acceptedPayload, StringComparison.Ordinal);
         Assert.DoesNotContain("activeEffect", acceptedPayload, StringComparison.OrdinalIgnoreCase);
@@ -213,6 +239,45 @@ public sealed partial class EffectAfterlifeAdapterTests
 
 public sealed partial class ExplorerModeCommandTests
 {
+    [Fact]
+    public async Task TryProcessCommand_AfterlifeProfilesUsesAcceptedEffectProjectionWithoutPermanentActorIds()
+    {
+        await SeedAfterlifeStateAsync();
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("guardian");
+        effect["realm"] = "chaos_sea";
+        await WriteRawJsonAsync(
+            EffectMaterializationTestContext.AfterlifeProfilesPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["profiles"] = new JsonArray(new JsonObject
+                {
+                    ["actorType"] = "guardian",
+                    ["actorId"] = "afterlife_actor_test",
+                    ["displayName"] = "Хранитель Пепельной Печати",
+                    ["realm"] = "Chaos Sea",
+                    ["activeEffects"] = new JsonArray(effect.DeepClone())
+                })
+            }.ToJsonString());
+        await WriteRawJsonAsync(
+            EffectMaterializationTestContext.IdentityIndexPath,
+            CreateDistinctIdentityIndex([effect]).ToJsonString());
+        await _stateManager.RefreshGameStateAsync();
+
+        var exception = await Record.ExceptionAsync(() =>
+            _explorer.TryProcessCommand("/afterlife_profiles"));
+        var rendered = ExtractRenderedText() + "\n" + ExtractRenderedLiteralText();
+
+        Assert.Null(exception);
+        Assert.Contains("Хранитель Пепельной Печати", rendered, StringComparison.Ordinal);
+        Assert.Contains("Кровотечение", rendered, StringComparison.Ordinal);
+        Assert.Contains("Периодический урон", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("afterlife_actor_test", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain(EffectMaterializationTestFixture.EffectId, rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("activeEffects", rendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("game_state/", rendered, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async Task TryProcessCommand_SpiritualConflictUsesAcceptedEffectProjection()
     {

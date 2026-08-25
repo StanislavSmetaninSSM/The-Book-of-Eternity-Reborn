@@ -7,24 +7,21 @@ public partial class CanonicalStateNormalizer
 {
     private async Task ValidateEffectPlanPublicationBindingAsync(
         EffectAcceptedTurnPlan plan,
-        IReadOnlyDictionary<string, JsonObject> ownerCompanionAfterImages,
-        bool validateExactCarrierBeforeImages)
+        bool normalizedAcceptedCarrierBaselines)
     {
         var liveCarriers = await ReadEffectPublicationCarriersAsync();
-        if (validateExactCarrierBeforeImages)
-        {
-            liveCarriers = ApplyExpectedOwnerCompanionAfterImages(
-                liveCarriers,
-                ownerCompanionAfterImages);
-        }
+        var expectedCarrierFingerprint = normalizedAcceptedCarrierBaselines
+            ? EffectCarrierCatalog.CreateAuthorityFingerprint(
+                plan.AcceptedCarrierBaselines)
+            : plan.CarrierAuthorityFingerprint;
         if (!string.Equals(
-                plan.CarrierAuthorityFingerprint,
+                expectedCarrierFingerprint,
                 EffectCarrierCatalog.CreateAuthorityFingerprint(liveCarriers),
                 StringComparison.Ordinal))
         {
             throw StaleEffectPlan("effect carrier catalog");
         }
-        if (validateExactCarrierBeforeImages)
+        if (!normalizedAcceptedCarrierBaselines)
         {
             foreach (var (path, beforeImage) in plan.CarrierBeforeImages)
             {
@@ -57,12 +54,7 @@ public partial class CanonicalStateNormalizer
         var sourceRoots = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
         foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
         {
-            sourceRoots[path] = validateExactCarrierBeforeImages &&
-                                ownerCompanionAfterImages.TryGetValue(
-                                    path,
-                                    out var ownerAfterImage)
-                ? ownerAfterImage.DeepClone()
-                : await ReadEffectPublicationNodeAsync(path);
+            sourceRoots[path] = await ReadEffectPublicationNodeAsync(path);
         }
 
         var catalog = EffectCarrierCatalog.Build(effectiveCarriers);
@@ -166,28 +158,6 @@ public partial class CanonicalStateNormalizer
             afterImages.TryGetValue(path, out var afterImage)
                 ? afterImage.DeepClone().AsObject()
                 : live;
-    }
-
-    private static EffectCarrierCatalogInput ApplyExpectedOwnerCompanionAfterImages(
-        EffectCarrierCatalogInput live,
-        IReadOnlyDictionary<string, JsonObject> ownerCompanionAfterImages)
-    {
-        JsonObject? OwnerAfterImageOrLive(string path, JsonObject? liveRoot) =>
-            ownerCompanionAfterImages.TryGetValue(path, out var afterImage)
-                ? afterImage.DeepClone().AsObject()
-                : liveRoot;
-
-        return new EffectCarrierCatalogInput(
-            OwnerAfterImageOrLive(EffectCarrierCatalog.PlayerPath, live.PlayerEffects),
-            OwnerAfterImageOrLive(EffectCarrierCatalog.NpcPath, live.NpcEffects),
-            OwnerAfterImageOrLive(EffectCarrierCatalog.EnemiesPath, live.EnemyCombatants),
-            OwnerAfterImageOrLive(EffectCarrierCatalog.AlliesPath, live.AllyCombatants),
-            OwnerAfterImageOrLive(
-                EffectCarrierCatalog.AfterlifeProfilesPath,
-                live.AfterlifeProfiles),
-            OwnerAfterImageOrLive(
-                EffectCarrierCatalog.SpiritualConflictPath,
-                live.SpiritualConflict));
     }
 
     private async Task<EffectCarrierCatalogInput> ReadEffectPublicationCarriersAsync() =>

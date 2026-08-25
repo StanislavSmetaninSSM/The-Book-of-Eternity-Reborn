@@ -1,11 +1,276 @@
+using System.IO.Compression;
+using System.Text;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed class ResourceItemIntegrationTests
 {
+    private const string CanonicalOwnerAuthorityPath =
+        "game_state/resources/resource_owner_authority.json";
+
+    [Fact]
+    public async Task SaveLoad_RoundTripsCanonicalItemResourceOwnerAuthority()
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        var itemId = Assert.Single(await MaterializePlayerItemsAsync(
+            context,
+            ResourceItem(
+                MortalItemTestFixture.CreateRawRoot(),
+                ("charges", 3m))));
+        var expectedState = await context.FileSystem.ReadFileAsync(
+            ResourceMaterializationContract.StatePath);
+        var definitions = await ReadDefinitionsAsync(context);
+        var ownerAuthority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            definitions,
+            context.FileSystem.ReadFileAsync,
+            state: null,
+            history: null,
+            purpose: CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(
+            ownerAuthority.IsValid,
+            string.Join(Environment.NewLine, ownerAuthority.Issues.Select(issue =>
+                $"{issue.Code}: {issue.FilePath}; expected={issue.Expected}; actual={issue.Actual}")));
+        await context.FileSystem.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            "{ \"soulName\": \"Item Keeper\", \"currentRealm\": \"Mortal World\", \"currentIncarnation\": 1 }");
+        var settings = new GameSettings();
+        var stateManager = new StateManager(
+            context.FileSystem,
+            settings,
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var saveLogger = new CapturingLogger<SaveLoadService>();
+        var saveLoad = new SaveLoadService(
+            context.FileSystem,
+            stateManager,
+            saveLogger);
+
+        var saved = await saveLoad.SaveGameAsync(
+            "item_resource_owner",
+            "canonical item resource owner round-trip");
+        Assert.True(saved, saveLogger.LastException?.ToString());
+        var savePath = Assert.Single(Directory.GetFiles(
+            context.FileSystem.ResolvePath("saves/manual_saves"),
+            "*.zip"));
+        var expectedOwnerAuthority = await ReadArchiveEntryAsync(
+            savePath,
+            CanonicalOwnerAuthorityPath);
+        await context.FileSystem.WriteFileAtomicAsync(
+            ResourceMaterializationContract.StatePath,
+            "{ \"invalid\": true }");
+        await context.FileSystem.WriteFileAtomicAsync(
+            CanonicalOwnerAuthorityPath,
+            "{ \"forged\": true }");
+
+        Assert.True(await saveLoad.LoadGameAsync(savePath));
+        Assert.Equal(expectedState, await context.FileSystem.ReadFileAsync(
+            ResourceMaterializationContract.StatePath));
+        var restored = await ReadStateAsync(context);
+        Assert.Single(restored.Entries, entry =>
+            entry.Coordinate.OwnerKind == ResourceOwnerKind.Item &&
+            entry.Coordinate.ResourceOwnerId == itemId &&
+            entry.Coordinate.ResourceKey == "charges");
+        Assert.Equal(
+            expectedOwnerAuthority,
+            await context.FileSystem.ReadFileAsync(CanonicalOwnerAuthorityPath));
+    }
+
+    [Fact]
+    public async Task SaveLoad_RoundTripsDestroyedItemHistoricalOwnerAuthority()
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        var itemId = Assert.Single(await MaterializePlayerItemsAsync(
+            context,
+            ResourceItem(
+                MortalItemTestFixture.CreateRawRoot(),
+                ("charges", 3m))));
+        var destroyed = await ExecuteAsync(
+            context,
+            new MortalItemTransitionIntent(
+                MortalItemTransitionKind.Destroy,
+                new[] { itemId },
+                PlayerCarrier,
+                DestinationCarrier: null,
+                Quantity: 1,
+                Turn: 43,
+                AuthorityKind: "inventory_discard",
+                AuthorityId: "destroy_resource_item_save_load_43"));
+        Assert.True(destroyed.Success, destroyed.Message);
+        var expectedHistory = await context.FileSystem.ReadFileAsync(
+            ResourceMaterializationContract.HistoryPath);
+        var liveAuthority = JsonNode.Parse((await context.FileSystem.ReadFileAsync(
+            CanonicalOwnerAuthorityPath))!)!.AsObject();
+        var liveHistoricalOwner = Assert.Single(
+            liveAuthority["historicalOwners"]!.AsArray())!.AsObject();
+        Assert.Equal(
+            itemId,
+            liveHistoricalOwner["resourceOwnerId"]!.GetValue<string>());
+        await context.FileSystem.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            "{ \"soulName\": \"Tombstone Keeper\", \"currentRealm\": \"Mortal World\", \"currentIncarnation\": 1 }");
+        var stateManager = new StateManager(
+            context.FileSystem,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var logger = new CapturingLogger<SaveLoadService>();
+        var saveLoad = new SaveLoadService(context.FileSystem, stateManager, logger);
+
+        Assert.True(
+            await saveLoad.SaveGameAsync(
+                "destroyed_item_owner",
+                "terminal owner authority round-trip"),
+            logger.LastException?.ToString());
+        var savePath = Assert.Single(Directory.GetFiles(
+            context.FileSystem.ResolvePath("saves/manual_saves"),
+            "*.zip"));
+        var archivedAuthority = await ReadArchiveEntryAsync(
+            savePath,
+            CanonicalOwnerAuthorityPath);
+        var historicalOwner = Assert.Single(
+            JsonNode.Parse(archivedAuthority)!["historicalOwners"]!.AsArray())!
+            .AsObject();
+        Assert.Equal(itemId, historicalOwner["resourceOwnerId"]!.GetValue<string>());
+        await context.FileSystem.WriteFileAtomicAsync(
+            ResourceMaterializationContract.HistoryPath,
+            "{ \"invalid\": true }");
+        context.FileSystem.DeleteFile(CanonicalOwnerAuthorityPath);
+
+        Assert.True(await saveLoad.LoadGameAsync(savePath));
+        Assert.Equal(expectedHistory, await context.FileSystem.ReadFileAsync(
+            ResourceMaterializationContract.HistoryPath));
+        Assert.Equal(archivedAuthority, await context.FileSystem.ReadFileAsync(
+            CanonicalOwnerAuthorityPath));
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task LoadGameAsync_RejectsNonExactArchivedHistoricalOwnerAuthority(
+        bool removeAuthorityRoot)
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        var itemId = Assert.Single(await MaterializePlayerItemsAsync(
+            context,
+            ResourceItem(
+                MortalItemTestFixture.CreateRawRoot(),
+                ("charges", 3m))));
+        var destroyed = await ExecuteAsync(
+            context,
+            new MortalItemTransitionIntent(
+                MortalItemTransitionKind.Destroy,
+                new[] { itemId },
+                PlayerCarrier,
+                DestinationCarrier: null,
+                Quantity: 1,
+                Turn: 43,
+                AuthorityKind: "inventory_discard",
+                AuthorityId: "destroy_resource_item_archive_tamper_43"));
+        Assert.True(destroyed.Success, destroyed.Message);
+        await context.FileSystem.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            "{ \"soulName\": \"Archive Guard\", \"currentRealm\": \"Mortal World\", \"currentIncarnation\": 1 }");
+        var stateManager = new StateManager(
+            context.FileSystem,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var saveLoad = new SaveLoadService(
+            context.FileSystem,
+            stateManager,
+            new CapturingLogger<SaveLoadService>());
+
+        Assert.True(await saveLoad.SaveGameAsync(
+            "destroyed_item_archive_authority",
+            "exact archived historical owner authority"));
+        var savePath = Assert.Single(Directory.GetFiles(
+            context.FileSystem.ResolvePath("saves/manual_saves"),
+            "*.zip"));
+        await TamperArchivedOwnerAuthorityAsync(savePath, removeAuthorityRoot);
+
+        Assert.False(await saveLoad.LoadGameAsync(savePath));
+    }
+
+    [Theory]
+    [InlineData("acceptedMaximum")]
+    [InlineData("authorityFingerprint")]
+    public async Task SaveGameAsync_RejectsStalePersistedCapacityDraft(
+        string tamperedField)
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        _ = Assert.Single(await MaterializePlayerItemsAsync(
+            context,
+            ResourceItem(
+                MortalItemTestFixture.CreateRawRoot(),
+                ("charges", 3m))));
+        await context.FileSystem.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            "{ \"soulName\": \"Capacity Keeper\", \"currentRealm\": \"Mortal World\", \"currentIncarnation\": 1 }");
+        var stateManager = new StateManager(
+            context.FileSystem,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var logger = new CapturingLogger<SaveLoadService>();
+        var saveLoad = new SaveLoadService(context.FileSystem, stateManager, logger);
+        Assert.True(await saveLoad.SaveGameAsync(
+            "capacity_authority_seed",
+            "seed exact capacity authority"));
+        var savePath = Assert.Single(Directory.GetFiles(
+            context.FileSystem.ResolvePath("saves/manual_saves"),
+            "*.zip"));
+        Assert.True(await saveLoad.LoadGameAsync(savePath));
+        var authority = JsonNode.Parse((await context.FileSystem.ReadFileAsync(
+            CanonicalOwnerAuthorityPath))!)!.AsObject();
+        var draft = Assert.Single(authority["capacityDrafts"]!.AsArray())!.AsObject();
+        if (tamperedField == "acceptedMaximum")
+            draft["acceptedMaximum"] = 4;
+        else
+            draft["capacityBinding"]!["authorityFingerprint"] = "sha256:forged";
+        await context.FileSystem.WriteFileAtomicAsync(
+            CanonicalOwnerAuthorityPath,
+            authority.ToJsonString());
+
+        Assert.False(await saveLoad.SaveGameAsync(
+            "stale_capacity_authority",
+            "must reject forged capacity authority"));
+    }
+
+    [Fact]
+    public async Task SaveGameAsync_RejectsMissingPersistedOwnerAuthority()
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        _ = Assert.Single(await MaterializePlayerItemsAsync(
+            context,
+            ResourceItem(
+                MortalItemTestFixture.CreateRawRoot(),
+                ("charges", 3m))));
+        await context.FileSystem.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            "{ \"soulName\": \"Missing Authority\", \"currentRealm\": \"Mortal World\", \"currentIncarnation\": 1 }");
+        var stateManager = new StateManager(
+            context.FileSystem,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var saveLoad = new SaveLoadService(
+            context.FileSystem,
+            stateManager,
+            new CapturingLogger<SaveLoadService>());
+        context.FileSystem.DeleteFile(CanonicalOwnerAuthorityPath);
+
+        Assert.False(await saveLoad.SaveGameAsync(
+            "missing_owner_authority",
+            "must reject missing canonical owner authority"));
+    }
+
     [Fact]
     public async Task Transfer_PreservesExactItemResourceCoordinateStateAndHistory()
     {
@@ -155,6 +420,7 @@ public sealed class ResourceItemIntegrationTests
             Assert.Equal(43, transition.Turn);
         });
         Assert.Empty(history.ValidateStateAgreement(state));
+        AssertHistoricalOwner(await ReadOwnerAuthorityAsync(context), itemId);
     }
 
     [Theory]
@@ -262,6 +528,18 @@ public sealed class ResourceItemIntegrationTests
             transition.Operation == ResourceTransitionOperation.Initialize &&
             transition.Coordinate.ResourceOwnerId == childId &&
             transition.Turn == 43));
+        var capacityDrafts = (await ReadOwnerAuthorityAsync(context))["capacityDrafts"]!
+            .AsArray()
+            .Select(static node => node!.AsObject())
+            .ToDictionary(
+                static draft => (
+                    draft["resourceOwnerId"]!.GetValue<string>(),
+                    draft["resourceKey"]!.GetValue<string>()),
+                static draft => draft["acceptedMaximum"]!.GetValue<decimal>());
+        Assert.Equal(75m, capacityDrafts[(parentId, "durability")]);
+        Assert.Equal(6m, capacityDrafts[(parentId, "charges")]);
+        Assert.Equal(25m, capacityDrafts[(childId, "durability")]);
+        Assert.Equal(2m, capacityDrafts[(childId, "charges")]);
     }
 
     [Fact]
@@ -316,6 +594,9 @@ public sealed class ResourceItemIntegrationTests
             transition.Operation == ResourceTransitionOperation.Retire &&
             transition.Coordinate.ResourceOwnerId == contributorId &&
             transition.Turn == 43));
+        AssertHistoricalOwner(
+            await ReadOwnerAuthorityAsync(context),
+            contributorId);
     }
 
     [Fact]
@@ -348,6 +629,56 @@ public sealed class ResourceItemIntegrationTests
             await context.FileSystem.ReadFileAsync(MortalItemIdentityState.StatePath));
         Assert.Empty(identity.Issues);
         Assert.Equal("consumed", identity.EntriesByItemId[itemId]["state"]!.GetValue<string>());
+        AssertHistoricalOwner(await ReadOwnerAuthorityAsync(context), itemId);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task TerminalTransition_WithMissingOrStaleCurrentOwnerAuthority_FailsWithoutWrites(
+        bool removeAuthorityRoot)
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        var itemId = Assert.Single(await MaterializePlayerItemsAsync(
+            context,
+            ResourceItem(
+                MortalItemTestFixture.CreateRawRoot(),
+                ("charges", 1m))));
+        if (removeAuthorityRoot)
+        {
+            context.FileSystem.DeleteFile(CanonicalOwnerAuthorityPath);
+        }
+        else
+        {
+            var authority = await ReadOwnerAuthorityAsync(context);
+            Assert.Single(authority["capacityDrafts"]!.AsArray())!
+                .AsObject()["acceptedMaximum"] = 2;
+            await context.FileSystem.WriteFileAtomicAsync(
+                CanonicalOwnerAuthorityPath,
+                authority.ToJsonString());
+        }
+        var before = await context.CaptureExactBytesAsync(
+            ResourcePaths.Concat(new[]
+            {
+                InventoryEquipmentService.ItemsPath,
+                MortalItemIdentityState.StatePath
+            }));
+
+        var result = await ExecuteAsync(
+            context,
+            new MortalItemTransitionIntent(
+                MortalItemTransitionKind.Destroy,
+                new[] { itemId },
+                PlayerCarrier,
+                DestinationCarrier: null,
+                Quantity: 1,
+                Turn: 43,
+                AuthorityKind: "inventory_discard",
+                AuthorityId: "reject_invalid_owner_authority_43"));
+
+        Assert.False(result.Success);
+        Assert.Contains("authority", result.Message, StringComparison.OrdinalIgnoreCase);
+        await context.AssertExactBytesAsync(before);
     }
 
     [Fact]
@@ -441,7 +772,8 @@ public sealed class ResourceItemIntegrationTests
             issues.Any(issue => issue.Code == "resource_source_target_mismatch"),
             string.Join(Environment.NewLine, issues.Select(issue =>
                 $"{issue.Code}: {issue.Message} expected={issue.Expected} actual={issue.Actual}")));
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
         await context.AssertExactBytesAsync(before);
     }
 
@@ -515,7 +847,8 @@ public sealed class ResourceItemIntegrationTests
     {
         ResourceMaterializationContract.DefinitionsPath,
         ResourceMaterializationContract.StatePath,
-        ResourceMaterializationContract.HistoryPath
+        ResourceMaterializationContract.HistoryPath,
+        CanonicalOwnerAuthorityPath
     };
 
     private static readonly MortalItemCarrierCoordinate PlayerCarrier = new(
@@ -524,22 +857,67 @@ public sealed class ResourceItemIntegrationTests
         null,
         Array.Empty<string>());
 
+    private static async Task<string> ReadArchiveEntryAsync(
+        string archivePath,
+        string entryPath)
+    {
+        using var archive = ZipFile.OpenRead(archivePath);
+        var entry = archive.GetEntry(entryPath);
+        Assert.NotNull(entry);
+        await using var stream = entry.Open();
+        using var reader = new StreamReader(stream, Encoding.UTF8);
+        return await reader.ReadToEndAsync();
+    }
+
+    private static async Task<JsonObject> ReadOwnerAuthorityAsync(
+        MortalItemMaterializationTestContext context) =>
+        JsonNode.Parse((await context.FileSystem.ReadFileAsync(
+            CanonicalOwnerAuthorityPath))!)!.AsObject();
+
+    private static void AssertHistoricalOwner(
+        JsonObject authority,
+        string itemId)
+    {
+        Assert.Contains(
+            authority["historicalOwners"]!.AsArray(),
+            node => string.Equals(
+                node!["resourceOwnerId"]!.GetValue<string>(),
+                itemId,
+                StringComparison.Ordinal));
+    }
+
+    private static async Task TamperArchivedOwnerAuthorityAsync(
+        string archivePath,
+        bool removeAuthorityRoot)
+    {
+        using var archive = ZipFile.Open(archivePath, ZipArchiveMode.Update);
+        archive.GetEntry("save_manifest.json")?.Delete();
+        var authorityEntry = archive.GetEntry(CanonicalOwnerAuthorityPath);
+        Assert.NotNull(authorityEntry);
+        if (removeAuthorityRoot)
+        {
+            authorityEntry.Delete();
+            return;
+        }
+
+        JsonObject authority;
+        await using (var stream = authorityEntry.Open())
+        using (var reader = new StreamReader(stream, Encoding.UTF8))
+            authority = JsonNode.Parse(await reader.ReadToEndAsync())!.AsObject();
+        authorityEntry.Delete();
+        authority["historicalOwners"] = new JsonArray();
+        var replacement = archive.CreateEntry(CanonicalOwnerAuthorityPath);
+        await using var replacementStream = replacement.Open();
+        await replacementStream.WriteAsync(
+            Encoding.UTF8.GetBytes(authority.ToJsonString()));
+    }
+
     private static async Task<IReadOnlyList<string>> MaterializePlayerItemsAsync(
         MortalItemMaterializationTestContext context,
         params JsonObject[] items)
     {
         await context.BuildMortalBootstrapAsync();
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteJsonAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            JsonNode.Parse(bootstrap.Definitions!.ToCanonicalJson())!);
-        await context.WriteJsonAsync(
-            ResourceMaterializationContract.StatePath,
-            JsonNode.Parse(bootstrap.State!.ToCanonicalJson())!);
-        await context.WriteJsonAsync(
-            ResourceMaterializationContract.HistoryPath,
-            JsonNode.Parse(bootstrap.History!.ToCanonicalJson())!);
+        await context.SeedPristineResourceQuartetAsync();
         await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
         await context.WritePlayerUpdateAsync(items);
         var itemIssues = await context.Validator
@@ -741,5 +1119,26 @@ public sealed class ResourceItemIntegrationTests
             candidate.Coordinate.ResourceKey == resourceKey);
         Assert.Equal(current, entry.Current);
         Assert.Equal(maximum, entry.Maximum);
+    }
+
+    private sealed class CapturingLogger<T> : ILogger<T>
+    {
+        internal Exception? LastException { get; private set; }
+
+        public IDisposable? BeginScope<TState>(TState state)
+            where TState : notnull => null;
+
+        public bool IsEnabled(LogLevel logLevel) => true;
+
+        public void Log<TState>(
+            LogLevel logLevel,
+            EventId eventId,
+            TState state,
+            Exception? exception,
+            Func<TState, Exception?, string> formatter)
+        {
+            if (exception != null)
+                LastException = exception;
+        }
     }
 }

@@ -29,11 +29,11 @@ public sealed class ResourceFullPartyInteractionTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out var binding,
-            out var planning));
-        var plan = Assert.IsType<AcceptedMechanicsPlan>(planning.Plan);
+        var handoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem);
+        Assert.NotNull(handoff);
+        var binding = handoff!.Binding;
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(handoff.Result.Plan);
         Assert.Empty(plan.ResourceEvents);
         Assert.Single(binding.AcceptedEvents["events"]!.AsArray());
         Assert.True(JsonNode.DeepEquals(stateBefore, plan.StateAfterImage));
@@ -83,10 +83,10 @@ public sealed class ResourceFullPartyInteractionTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out var binding,
-            out _));
+        var handoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem);
+        Assert.NotNull(handoff);
+        var binding = handoff!.Binding;
         Assert.Equal(
             new[]
             {
@@ -113,7 +113,8 @@ public sealed class ResourceFullPartyInteractionTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
         Assert.True(JsonNode.DeepEquals(
             historical,
             await context.ReadJsonAsync(
@@ -192,7 +193,8 @@ public sealed class ResourceFullPartyInteractionTests
         Assert.Contains(issues, issue =>
             issue.Code is "resource_full_party_target_scope_invalid" or
                 "resource_full_party_source_scope_invalid");
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
         await context.AssertUnchangedAsync(before);
     }
 
@@ -241,7 +243,8 @@ public sealed class ResourceFullPartyInteractionTests
         Assert.Contains(issues, issue =>
             issue.Severity == IssueSeverity.Error &&
             issue.FilePath.Contains("otherPlayersInteractions", StringComparison.Ordinal));
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
     }
 
     [Theory]
@@ -268,7 +271,8 @@ public sealed class ResourceFullPartyInteractionTests
 
         Assert.Contains(issues, issue =>
             issue.Code == "resource_command_event_authority_mismatch");
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
     }
 
     [Fact]

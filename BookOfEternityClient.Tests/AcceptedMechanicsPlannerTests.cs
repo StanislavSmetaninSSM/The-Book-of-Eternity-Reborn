@@ -396,7 +396,12 @@ public sealed class AcceptedMechanicsPlannerTests
             Input(baseline, intents),
             IdentityFactory());
 
-        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
+        Assert.True(
+            result.IsValid,
+            string.Join(
+                Environment.NewLine,
+                result.Issues.Select(static issue =>
+                    $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}; {issue.Message}")));
         Assert.Equal(8m, result.StateAfterImage!.Entries.Single().Current);
         Assert.Equal(
             new[]
@@ -550,6 +555,56 @@ public sealed class AcceptedMechanicsPlannerTests
     }
 
     [Fact]
+    public void Planner_SameOriginSiblingsReplayIndependentlyOfAllocatedOperationIds()
+    {
+        var baseline = BaselineCharges();
+        var intents = new[]
+        {
+            Intent(
+                "turn_2:registered_sibling:a",
+                "registered_system_outcome",
+                "system_alpha",
+                ResourceOperation.Spend,
+                1m),
+            Intent(
+                "turn_2:registered_sibling:b",
+                "registered_system_outcome",
+                "system_alpha",
+                ResourceOperation.Spend,
+                1m),
+            Intent(
+                "turn_2:registered_sibling:c",
+                "registered_system_outcome",
+                "system_alpha",
+                ResourceOperation.Spend,
+                1m)
+        };
+        var first = AcceptedMechanicsPlanner.BuildResources(
+            Input(baseline, intents),
+            OperationOrderedIdentityFactory(1, 2, 3));
+        Assert.True(first.IsValid, string.Join(Environment.NewLine, first.Issues));
+        Assert.Equal(
+            intents.Select(static intent => intent.EventRef),
+            first.AppliedTransitions.Select(static transition => transition.EventRef));
+
+        var replay = AcceptedMechanicsPlanner.BuildResources(
+            Input(
+                new Baseline(
+                    baseline.Definitions,
+                    first.StateAfterImage!,
+                    first.HistoryAfterImage!,
+                    baseline.Sources),
+                intents),
+            OperationOrderedIdentityFactory(3, 2, 1));
+
+        Assert.True(replay.IsValid, string.Join(Environment.NewLine, replay.Issues));
+        Assert.Empty(replay.AppliedTransitions);
+        Assert.Equal(3, replay.ReplayTransitions.Count);
+        Assert.Equal(first.StateAfterImage!.Fingerprint, replay.StateAfterImage!.Fingerprint);
+        Assert.Equal(first.HistoryAfterImage!.Fingerprint, replay.HistoryAfterImage!.Fingerprint);
+    }
+
+    [Fact]
     public void Planner_InvalidSiblingDiscardsEveryAfterImageAndEvent()
     {
         var baseline = BaselineCharges(
@@ -673,6 +728,77 @@ public sealed class AcceptedMechanicsPlannerTests
             result.Events.Select(static value => value.EventKind));
         Assert.DoesNotContain(result.AppliedTransitions, transition =>
             transition.OriginId == "effect_unmet");
+    }
+
+    [Fact]
+    public void Planner_SkipsTheWholeUnmetReadyFrontierBeforeExecutingItsRunnableSibling()
+    {
+        var baseline = BaselineChargesForEffects(
+            "effect_a0",
+            "effect_a1",
+            "effect_a2",
+            "effect_b",
+            "effect_c");
+        var producer = Intent(
+            "turn_2:frontier:producer",
+            "effect_component",
+            "effect_a0",
+            ResourceOperation.Spend,
+            1m);
+        var unmetA = Intent(
+            "turn_2:frontier:unmet_a",
+            "effect_component",
+            "effect_a1",
+            ResourceOperation.Spend,
+            1m,
+            eventRequirements: new[]
+            {
+                new ResourceMutationEventRequirement(
+                    producer.Key,
+                    "resource_depleted")
+            });
+        var runnableB = Intent(
+            "turn_2:frontier:runnable_b",
+            "effect_component",
+            "effect_b",
+            ResourceOperation.Spend,
+            4m);
+        var unmetC = Intent(
+            "turn_2:frontier:unmet_c",
+            "effect_component",
+            "effect_c",
+            ResourceOperation.Spend,
+            1m,
+            eventRequirements: new[]
+            {
+                new ResourceMutationEventRequirement(
+                    producer.Key,
+                    "resource_depleted")
+            });
+        var unlockedD = Intent(
+            "turn_2:frontier:unlocked_d",
+            "effect_component",
+            "effect_a2",
+            ResourceOperation.Gain,
+            10m,
+            dependencies: new[] { unmetC.Key });
+
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            Input(
+                baseline,
+                new[] { runnableB, unlockedD, unmetC, unmetA, producer }),
+            IdentityFactory());
+
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
+        Assert.Equal(6m, result.StateAfterImage!.Entries.Single().Current);
+        Assert.Equal(
+            new[] { "effect_a0", "effect_a2", "effect_b" },
+            result.AppliedTransitions.Select(static transition => transition.OriginId));
+        Assert.Equal(
+            new[] { 0, 1, 2 },
+            result.AppliedTransitions.Select(static transition =>
+                transition.ExecutionSequence));
+        Assert.Equal(5, result.Statistics.SchedulingDescriptorVisitCount);
     }
 
     [Fact]
@@ -995,6 +1121,794 @@ public sealed class AcceptedMechanicsPlannerTests
     }
 
     [Fact]
+    public void BuildResources_ResourceBoundaryPlacesBeforeCurrentBetweenProducerAndContinuation()
+    {
+        var baseline = BaselineHealth(current: 5m);
+        var producerSource = new ResourceMutationSourceExport(
+            "combat_outcome",
+            "boundary_damage_source",
+            FingerprintA,
+            ResourceMutationSourceState.Active,
+            SameTurn: false,
+            PlayerOwner);
+        var continuationSource = new ResourceMutationSourceExport(
+            "effect_component",
+            "boundary_restore_source",
+            FingerprintB,
+            ResourceMutationSourceState.Active,
+            SameTurn: false,
+            PlayerOwner);
+        var producer = new ResourceMutationIntent(
+            "turn_43:boundary:damage",
+            HealthCoordinate,
+            Amount: 1m,
+            new ResourceMutationSourceRequest(
+                producerSource.SourceKind,
+                producerSource.SourceId,
+                ResourceOperation.Damage),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: null);
+        var continuation = new ResourceMutationIntent(
+            "turn_43:boundary:restore",
+            HealthCoordinate,
+            Amount: 1m,
+            new ResourceMutationSourceRequest(
+                continuationSource.SourceKind,
+                continuationSource.SourceId,
+                ResourceOperation.Restore),
+            new[] { producer.Key },
+            new[]
+            {
+                new ResourceMutationEventRequirement(
+                    producer.Key,
+                    "resource_damaged")
+            },
+            ReceiptId: null);
+        var activationIdentity = new EffectActivationCandidateIdentity(
+            "effect_boundary_order",
+            "trigger_boundary_order",
+            "resource_damaged",
+            "turn_43:boundary:activation",
+            producer.EventRef);
+        var reaction = new EffectReactionExecution(
+            EventRef: "turn_43:boundary:reaction",
+            TriggerEventRef: producer.EventRef,
+            CausalEventRef: producer.EventRef,
+            Turn: 43,
+            EventKind: "resource_damaged",
+            Target: new EffectTargetKey(
+                "mortal_world",
+                "player",
+                "player_current"),
+            EffectId: activationIdentity.EffectId,
+            TriggerId: activationIdentity.TriggerId,
+            ComponentId: "component_boundary_reaction",
+            ResultKind: "event_outcome",
+            Dependency: "before_current_event",
+            AfterComponentId: null,
+            MaxExpansion: 1,
+            DownstreamSource: null,
+            Parameters: null);
+        var componentMap = new Dictionary<ResourceOperationKey, string>
+        {
+            [continuation.Key] = "component_boundary_restore"
+        };
+        var candidate = new EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate(
+            new EffectActivationCandidate(
+                activationIdentity,
+                Priority: 50,
+                ConsumesUse: false,
+                EffectAuthority: PermanentEffectAuthority(
+                    activationIdentity.EffectId)),
+            useSeed: null,
+            producer.Key,
+            new[] { continuation.Key },
+            new[] { "component_boundary_restore" },
+            componentMap,
+            Array.Empty<EffectAcceptedTurnPlanner.EffectBoundedResourceResolution>(),
+            new[] { reaction },
+            CandidateOrigin(
+                new[] { continuation },
+                componentMap,
+                continuationSource));
+
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 43,
+                Definitions: baseline.Definitions,
+                State: baseline.State,
+                History: baseline.History,
+                Sources: CreateCatalog(producerSource),
+                Mutations: new[] { producer },
+                EventMutationResolver: (resourceEvent, actualProducer) =>
+                {
+                    if (actualProducer != producer.Key ||
+                        !string.Equals(
+                            resourceEvent.EventKind,
+                            "resource_damaged",
+                            StringComparison.Ordinal))
+                    {
+                        return new EffectAcceptedTurnPlanner
+                            .EffectPeriodicResourceResolution(
+                                Array.Empty<ResourceMutationSourceExport>(),
+                                Array.Empty<ResourceMutationIntent>(),
+                                Array.Empty<ValidationIssue>());
+                    }
+                    return new EffectAcceptedTurnPlanner
+                        .EffectPeriodicResourceResolution(
+                            new[] { continuationSource },
+                            new[] { continuation },
+                            Array.Empty<ValidationIssue>())
+                    {
+                        TriggerCandidates = new[] { candidate }
+                    };
+                }),
+            IdentityFactory());
+
+        Assert.True(
+            result.IsValid,
+            string.Join(
+                Environment.NewLine,
+                result.Issues.Select(static issue =>
+                    $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}; {issue.Message}")));
+        var transcript = result.EffectBoundaryTranscript;
+        var boundary = Assert.Single(transcript.Boundaries);
+        var close = Assert.Single(transcript.BoundaryCloses);
+        var release = Assert.Single(transcript.ReleasedReactions);
+        var evidence = Assert.Single(transcript.AppliedComponentEvidence);
+        Assert.Equal(continuation.Key, evidence.Mutation);
+        Assert.True(boundary.ProducerMechanicsOrdinal < boundary.OpenMechanicsOrdinal);
+        Assert.True(boundary.OpenMechanicsOrdinal < release.MechanicsOrdinal);
+        Assert.True(release.MechanicsOrdinal < evidence.MechanicsOrdinal);
+        Assert.True(evidence.MechanicsOrdinal < close.MechanicsOrdinal);
+        Assert.Equal(boundary, close.Boundary);
+        Assert.True(close.MechanicsOrdinal < transcript.UseProjectionOrdinal);
+        Assert.Equal(
+            EffectReactionReleaseStage.BeforeCurrentEvent,
+            release.Stage);
+    }
+
+    [Fact]
+    public void BuildResources_AfterCurrentReleasesAtCausalCloseBeforeIndependentReadyNode()
+    {
+        var baseline = BaselineHealth(current: 10m);
+        var producerSource = new ResourceMutationSourceExport(
+            "combat_outcome",
+            "boundary_close_root",
+            FingerprintA,
+            ResourceMutationSourceState.Active,
+            SameTurn: false,
+            PlayerOwner);
+        var continuationSource = new ResourceMutationSourceExport(
+            "effect_component",
+            "zz_boundary_close_continuation",
+            FingerprintB,
+            ResourceMutationSourceState.Active,
+            SameTurn: false,
+            PlayerOwner);
+        var independentSource = new ResourceMutationSourceExport(
+            "effect_component",
+            "aa_boundary_close_independent",
+            FingerprintA,
+            ResourceMutationSourceState.Active,
+            SameTurn: false,
+            PlayerOwner);
+        var producer = new ResourceMutationIntent(
+            "turn_43:boundary_close:damage",
+            HealthCoordinate,
+            Amount: 1m,
+            new ResourceMutationSourceRequest(
+                producerSource.SourceKind,
+                producerSource.SourceId,
+                ResourceOperation.Damage),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: null);
+        var continuation = new ResourceMutationIntent(
+            "turn_43:boundary_close:restore",
+            HealthCoordinate,
+            Amount: 1m,
+            new ResourceMutationSourceRequest(
+                continuationSource.SourceKind,
+                continuationSource.SourceId,
+                ResourceOperation.Restore),
+            new[] { producer.Key },
+            new[]
+            {
+                new ResourceMutationEventRequirement(
+                    producer.Key,
+                    "resource_damaged")
+            },
+            ReceiptId: null);
+        var independent = new ResourceMutationIntent(
+            "turn_43:boundary_close:independent",
+            HealthCoordinate,
+            Amount: 1m,
+            new ResourceMutationSourceRequest(
+                independentSource.SourceKind,
+                independentSource.SourceId,
+                ResourceOperation.Damage),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: null);
+        var activationIdentity = new EffectActivationCandidateIdentity(
+            "effect_boundary_close",
+            "trigger_boundary_close",
+            "resource_damaged",
+            "turn_43:boundary_close:activation",
+            producer.EventRef);
+        var reaction = new EffectReactionExecution(
+            EventRef: "turn_43:boundary_close:reaction",
+            TriggerEventRef: producer.EventRef,
+            CausalEventRef: producer.EventRef,
+            Turn: 43,
+            EventKind: "resource_damaged",
+            Target: new EffectTargetKey(
+                "mortal_world",
+                "player",
+                "player_current"),
+            EffectId: activationIdentity.EffectId,
+            TriggerId: activationIdentity.TriggerId,
+            ComponentId: "component_boundary_close_reaction",
+            ResultKind: "event_outcome",
+            Dependency: "after_current_event",
+            AfterComponentId: null,
+            MaxExpansion: 1,
+            DownstreamSource: null,
+            Parameters: null);
+        var componentMap = new Dictionary<ResourceOperationKey, string>
+        {
+            [continuation.Key] = "component_boundary_close_restore"
+        };
+        var candidate = new EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate(
+            new EffectActivationCandidate(
+                activationIdentity,
+                Priority: 50,
+                ConsumesUse: false,
+                EffectAuthority: PermanentEffectAuthority(
+                    activationIdentity.EffectId)),
+            useSeed: null,
+            producer.Key,
+            new[] { continuation.Key },
+            new[] { "component_boundary_close_restore" },
+            componentMap,
+            Array.Empty<EffectAcceptedTurnPlanner.EffectBoundedResourceResolution>(),
+            new[] { reaction },
+            CandidateOrigin(
+                new[] { continuation },
+                componentMap,
+                continuationSource));
+
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 43,
+                Definitions: baseline.Definitions,
+                State: baseline.State,
+                History: baseline.History,
+                Sources: CreateCatalog(producerSource, independentSource),
+                Mutations: new[] { producer, independent },
+                EventMutationResolver: (resourceEvent, actualProducer) =>
+                {
+                    if (actualProducer != producer.Key ||
+                        !string.Equals(
+                            resourceEvent.EventKind,
+                            "resource_damaged",
+                            StringComparison.Ordinal))
+                    {
+                        return new EffectAcceptedTurnPlanner
+                            .EffectPeriodicResourceResolution(
+                                Array.Empty<ResourceMutationSourceExport>(),
+                                Array.Empty<ResourceMutationIntent>(),
+                                Array.Empty<ValidationIssue>());
+                    }
+                    return new EffectAcceptedTurnPlanner
+                        .EffectPeriodicResourceResolution(
+                            new[] { continuationSource },
+                            new[] { continuation },
+                            Array.Empty<ValidationIssue>())
+                    {
+                        TriggerCandidates = new[] { candidate }
+                    };
+                }),
+            IdentityFactory());
+
+        Assert.True(
+            result.IsValid,
+            string.Join(
+                Environment.NewLine,
+                result.Issues.Select(static issue =>
+                    $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}; {issue.Message}")));
+        var transcript = result.EffectBoundaryTranscript;
+        var close = Assert.Single(transcript.BoundaryCloses);
+        var release = Assert.Single(transcript.ReleasedReactions);
+        var applied = Assert.Single(transcript.AppliedComponentEvidence);
+        var independentMutation = Assert.Single(
+            transcript.ResourceMutations,
+            evidence => evidence.Mutation == independent.Key);
+        Assert.True(applied.MechanicsOrdinal < release.MechanicsOrdinal);
+        Assert.True(release.MechanicsOrdinal < close.MechanicsOrdinal);
+        Assert.True(close.MechanicsOrdinal < independentMutation.MechanicsOrdinal);
+        Assert.True(
+            independentMutation.MechanicsOrdinal < transcript.UseProjectionOrdinal);
+        Assert.Equal(
+            EffectReactionReleaseStage.AfterCurrentEvent,
+            release.Stage);
+    }
+
+    [Fact]
+    public void BuildResources_AfterCurrentTerminalReservesEffectBeforeLaterRootBoundary()
+    {
+        var baseline = BaselineChargesForEffects("terminal_reservation_source");
+        var mutation = Intent(
+            "turn_2:terminal_reservation:spend",
+            "effect_component",
+            "terminal_reservation_source",
+            ResourceOperation.Spend,
+            amount: 1m);
+        var firstIdentity = new EffectActivationCandidateIdentity(
+            "effect_terminal_reservation",
+            "trigger_terminal_reservation_first",
+            "owner_turn_end",
+            "turn_2:terminal_reservation:a:activation",
+            "turn_2:terminal_reservation:a:boundary");
+        var firstMap = new Dictionary<ResourceOperationKey, string>
+        {
+            [mutation.Key] = "component_terminal_reservation_spend"
+        };
+        var terminalReaction = new EffectReactionExecution(
+            EventRef: "turn_2:terminal_reservation:remove",
+            TriggerEventRef: firstIdentity.TriggerEventRef,
+            CausalEventRef: firstIdentity.TriggerEventRef,
+            Turn: 2,
+            EventKind: firstIdentity.EventKind,
+            Target: new EffectTargetKey(
+                "mortal_world",
+                "player",
+                "player_current"),
+            EffectId: firstIdentity.EffectId,
+            TriggerId: firstIdentity.TriggerId,
+            ComponentId: "component_terminal_reservation_remove",
+            ResultKind: "remove",
+            Dependency: "after_current_event",
+            AfterComponentId: null,
+            MaxExpansion: 1,
+            DownstreamSource: null,
+            Parameters: null);
+        var firstCandidate = new EffectAcceptedTurnPlanner
+            .EffectResourceTriggerCandidate(
+                new EffectActivationCandidate(
+                    firstIdentity,
+                    Priority: 100,
+                    ConsumesUse: false,
+                    EffectAuthority: PermanentEffectAuthority(
+                        firstIdentity.EffectId)),
+                useSeed: null,
+                producer: null,
+                plannedMutationKeys: new[] { mutation.Key },
+                plannedComponentIds: new[]
+                {
+                    "component_terminal_reservation_spend"
+                },
+                plannedComponentIdsByMutation: firstMap,
+                pendingOutputs: Array.Empty<EffectAcceptedTurnPlanner
+                    .EffectBoundedResourceResolution>(),
+                reactionOutputs: new[] { terminalReaction },
+                origin: CandidateOrigin(
+                    new[] { mutation },
+                    firstMap,
+                    baseline.Sources.Exports.Single()));
+        var laterIdentity = new EffectActivationCandidateIdentity(
+            firstIdentity.EffectId,
+            "trigger_terminal_reservation_later",
+            "owner_turn_end",
+            "turn_2:terminal_reservation:b:activation",
+            "turn_2:terminal_reservation:b:boundary");
+        var laterCandidate = new EffectAcceptedTurnPlanner
+            .EffectResourceTriggerCandidate(
+                new EffectActivationCandidate(
+                    laterIdentity,
+                    Priority: 100,
+                    ConsumesUse: false,
+                    EffectAuthority: PermanentEffectAuthority(
+                        laterIdentity.EffectId)),
+                useSeed: null,
+                producer: null,
+                plannedMutationKeys: Array.Empty<ResourceOperationKey>(),
+                plannedComponentIds: Array.Empty<string>(),
+                plannedComponentIdsByMutation:
+                    new Dictionary<ResourceOperationKey, string>(),
+                pendingOutputs: Array.Empty<EffectAcceptedTurnPlanner
+                    .EffectBoundedResourceResolution>(),
+                reactionOutputs: Array.Empty<EffectReactionExecution>(),
+                origin: EffectAcceptedTurnPlanner
+                    .EffectResourceCandidateOrigin.Empty);
+
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 2,
+                Definitions: baseline.Definitions,
+                State: baseline.State,
+                History: baseline.History,
+                Sources: baseline.Sources,
+                Mutations: new[] { mutation },
+                InitialTriggerCandidates: new[]
+                {
+                    firstCandidate,
+                    laterCandidate
+                }),
+            IdentityFactory());
+
+        Assert.True(
+            result.IsValid,
+            string.Join(
+                Environment.NewLine,
+                result.Issues.Select(static issue =>
+                    $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}")));
+        var transcript = result.EffectBoundaryTranscript;
+        var accepted = Assert.Single(transcript.AcceptedActivations);
+        Assert.Equal(firstIdentity, accepted.Activation.Stamp.Identity);
+        var rejected = Assert.Single(transcript.RejectedActivations);
+        Assert.Equal(laterIdentity, rejected.Candidate.Activation.Identity);
+        Assert.Equal(
+            EffectActivationRejectionReason.EffectTerminal,
+            rejected.Reason);
+        var reservation = Assert.Single(
+            transcript.TerminalAvailabilityReservations);
+        Assert.Equal(
+            EffectTerminalAvailabilityReservationKind.AfterCurrentReaction,
+            reservation.Kind);
+        Assert.Equal(firstIdentity, reservation.Activation.Identity);
+        var released = Assert.Single(transcript.ReleasedReactions);
+        Assert.Equal(
+            EffectReactionReleaseStage.AfterCurrentEvent,
+            released.Stage);
+        Assert.Equal(terminalReaction, released.Reaction);
+    }
+
+    [Fact]
+    public void BuildResources_IndependentRootClosesBeforePendingSiblingWithReplayStablePrefix()
+    {
+        var baseline = BaselineChargesForEffects("forest_root_source");
+        var rootMutation = Intent(
+            "turn_2:forest:a:spend",
+            "effect_component",
+            "forest_root_source",
+            ResourceOperation.Spend,
+            amount: 1m);
+        var rootIdentity = new EffectActivationCandidateIdentity(
+            "effect_forest_root",
+            "trigger_forest_root",
+            "owner_turn_end",
+            "turn_2:forest:a:activation",
+            "turn_2:forest:a:boundary");
+        var rootComponentMap = new Dictionary<ResourceOperationKey, string>
+        {
+            [rootMutation.Key] = "component_forest_root"
+        };
+        var rootCandidate = new EffectAcceptedTurnPlanner
+            .EffectResourceTriggerCandidate(
+                new EffectActivationCandidate(
+                    rootIdentity,
+                    Priority: 100,
+                    ConsumesUse: false,
+                    EffectAuthority: PermanentEffectAuthority(
+                        rootIdentity.EffectId)),
+                useSeed: null,
+                producer: null,
+                plannedMutationKeys: new[] { rootMutation.Key },
+                plannedComponentIds: new[] { "component_forest_root" },
+                plannedComponentIdsByMutation: rootComponentMap,
+                pendingOutputs: Array.Empty<EffectAcceptedTurnPlanner
+                    .EffectBoundedResourceResolution>(),
+                reactionOutputs: Array.Empty<EffectReactionExecution>(),
+                origin: CandidateOrigin(
+                    new[] { rootMutation },
+                    rootComponentMap,
+                    baseline.Sources.Exports.Single()));
+        var pendingIdentity = new EffectActivationCandidateIdentity(
+            "effect_forest_pending",
+            "trigger_forest_pending",
+            "owner_turn_end",
+            "turn_2:forest:b:activation",
+            "turn_2:forest:b:boundary");
+        var pendingCandidate = new EffectAcceptedTurnPlanner
+            .EffectResourceTriggerCandidate(
+                new EffectActivationCandidate(
+                    pendingIdentity,
+                    Priority: 100,
+                    ConsumesUse: false,
+                    EffectAuthority: PermanentEffectAuthority(
+                        pendingIdentity.EffectId)),
+                useSeed: null,
+                producer: null,
+                plannedMutationKeys: Array.Empty<ResourceOperationKey>(),
+                plannedComponentIds: Array.Empty<string>(),
+                plannedComponentIdsByMutation:
+                    new Dictionary<ResourceOperationKey, string>(),
+                pendingOutputs: new[]
+                {
+                    CreateFingerprintPendingOutput(
+                        pendingIdentity,
+                        ChargesCoordinate)
+                },
+                reactionOutputs: Array.Empty<EffectReactionExecution>(),
+                origin: EffectAcceptedTurnPlanner
+                    .EffectResourceCandidateOrigin.Empty);
+        var input = new AcceptedMechanicsResourceInput(
+            Turn: 2,
+            Definitions: baseline.Definitions,
+            State: baseline.State,
+            History: baseline.History,
+            Sources: baseline.Sources,
+            Mutations: new[] { rootMutation },
+            InitialTriggerCandidates: new[]
+            {
+                rootCandidate,
+                pendingCandidate
+            });
+
+        var first = AcceptedMechanicsPlanner.BuildResources(
+            input,
+            IdentityFactory(seed: 1));
+        var replay = AcceptedMechanicsPlanner.BuildResources(
+            input,
+            IdentityFactory(seed: 101));
+
+        Assert.True(
+            first.IsValid,
+            string.Join(
+                Environment.NewLine,
+                first.Issues.Select(static issue =>
+                    $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}")));
+        Assert.True(
+            replay.IsValid,
+            string.Join(
+                Environment.NewLine,
+                replay.Issues.Select(static issue =>
+                    $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}")));
+        Assert.All(
+            first.EffectBoundaryTranscript.Boundaries,
+            static boundary => Assert.Null(boundary.ParentBoundaryOrdinal));
+        Assert.Equal(
+            new long[] { 0 },
+            first.EffectBoundaryTranscript.BoundaryCloses
+                .Select(static close => close.Boundary.BoundaryOrdinal));
+        Assert.Equal(
+            1,
+            first.EffectBoundaryTranscript.PendingFrontierBoundaryOrdinal);
+        Assert.Equal(
+            Assert.Single(first.AcceptedPendingResolutions)
+                .CausalAuthority.TranscriptPrefixFingerprint,
+            Assert.Single(replay.AcceptedPendingResolutions)
+                .CausalAuthority.TranscriptPrefixFingerprint);
+    }
+
+    [Fact]
+    public void BuildResources_ClosedRootBeforePendingRootHasReplayStablePrefix()
+    {
+        var baseline = BaselineHealth(current: 10m);
+        var firstProducerSource = new ResourceMutationSourceExport(
+            "combat_outcome",
+            "aa_forest_first_producer",
+            FingerprintA,
+            ResourceMutationSourceState.Active,
+            SameTurn: false,
+            PlayerOwner);
+        var continuationSource = new ResourceMutationSourceExport(
+            "effect_component",
+            "forest_first_continuation",
+            FingerprintB,
+            ResourceMutationSourceState.Active,
+            SameTurn: false,
+            PlayerOwner);
+        var pendingProducerSource = new ResourceMutationSourceExport(
+            "combat_outcome",
+            "zz_forest_pending_producer",
+            FingerprintA,
+            ResourceMutationSourceState.Active,
+            SameTurn: false,
+            PlayerOwner);
+        var firstProducer = new ResourceMutationIntent(
+            "turn_43:forest:first:damage",
+            HealthCoordinate,
+            Amount: 1m,
+            new ResourceMutationSourceRequest(
+                firstProducerSource.SourceKind,
+                firstProducerSource.SourceId,
+                ResourceOperation.Damage),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: null);
+        var continuation = new ResourceMutationIntent(
+            "turn_43:forest:first:restore",
+            HealthCoordinate,
+            Amount: 1m,
+            new ResourceMutationSourceRequest(
+                continuationSource.SourceKind,
+                continuationSource.SourceId,
+                ResourceOperation.Restore),
+            new[] { firstProducer.Key },
+            new[]
+            {
+                new ResourceMutationEventRequirement(
+                    firstProducer.Key,
+                    "resource_damaged")
+            },
+            ReceiptId: null);
+        var pendingProducer = new ResourceMutationIntent(
+            "turn_43:forest:pending:damage",
+            HealthCoordinate,
+            Amount: 1m,
+            new ResourceMutationSourceRequest(
+                pendingProducerSource.SourceKind,
+                pendingProducerSource.SourceId,
+                ResourceOperation.Damage),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: null);
+        var firstIdentity = new EffectActivationCandidateIdentity(
+            "effect_forest_first",
+            "trigger_forest_first",
+            "resource_damaged",
+            "turn_43:forest:first:activation",
+            firstProducer.EventRef);
+        var firstComponentMap = new Dictionary<ResourceOperationKey, string>
+        {
+            [continuation.Key] = "component_forest_first"
+        };
+        var firstCandidate = new EffectAcceptedTurnPlanner
+            .EffectResourceTriggerCandidate(
+                new EffectActivationCandidate(
+                    firstIdentity,
+                    Priority: 100,
+                    ConsumesUse: false,
+                    EffectAuthority: PermanentEffectAuthority(
+                        firstIdentity.EffectId)),
+                useSeed: null,
+                firstProducer.Key,
+                new[] { continuation.Key },
+                new[] { "component_forest_first" },
+                firstComponentMap,
+                Array.Empty<EffectAcceptedTurnPlanner
+                    .EffectBoundedResourceResolution>(),
+                Array.Empty<EffectReactionExecution>(),
+                CandidateOrigin(
+                    new[] { continuation },
+                    firstComponentMap,
+                    continuationSource));
+        var pendingIdentity = new EffectActivationCandidateIdentity(
+            "effect_forest_late_pending",
+            "trigger_forest_late_pending",
+            "resource_damaged",
+            "turn_43:forest:pending:activation",
+            pendingProducer.EventRef);
+        var pendingCandidate = new EffectAcceptedTurnPlanner
+            .EffectResourceTriggerCandidate(
+                new EffectActivationCandidate(
+                    pendingIdentity,
+                    Priority: 100,
+                    ConsumesUse: false,
+                    EffectAuthority: PermanentEffectAuthority(
+                        pendingIdentity.EffectId)),
+                useSeed: null,
+                pendingProducer.Key,
+                Array.Empty<ResourceOperationKey>(),
+                Array.Empty<string>(),
+                new Dictionary<ResourceOperationKey, string>(),
+                new[]
+                {
+                    CreateFingerprintPendingOutput(
+                        pendingIdentity,
+                        HealthCoordinate) with
+                    {
+                        Operation = ResourceOperation.Damage
+                    }
+                },
+                Array.Empty<EffectReactionExecution>(),
+                EffectAcceptedTurnPlanner.EffectResourceCandidateOrigin.Empty);
+        var input = new AcceptedMechanicsResourceInput(
+            Turn: 43,
+            Definitions: baseline.Definitions,
+            State: baseline.State,
+            History: baseline.History,
+            Sources: CreateCatalog(
+                firstProducerSource,
+                pendingProducerSource),
+            Mutations: new[] { firstProducer, pendingProducer },
+            EventMutationResolver: (resourceEvent, actualProducer) =>
+            {
+                if (!string.Equals(
+                        resourceEvent.EventKind,
+                        "resource_damaged",
+                        StringComparison.Ordinal))
+                {
+                    return new EffectAcceptedTurnPlanner
+                        .EffectPeriodicResourceResolution(
+                            Array.Empty<ResourceMutationSourceExport>(),
+                            Array.Empty<ResourceMutationIntent>(),
+                            Array.Empty<ValidationIssue>());
+                }
+                if (actualProducer == firstProducer.Key)
+                {
+                    return new EffectAcceptedTurnPlanner
+                        .EffectPeriodicResourceResolution(
+                            new[] { continuationSource },
+                            new[] { continuation },
+                            Array.Empty<ValidationIssue>())
+                    {
+                        TriggerCandidates = new[] { firstCandidate }
+                    };
+                }
+                return new EffectAcceptedTurnPlanner
+                    .EffectPeriodicResourceResolution(
+                        Array.Empty<ResourceMutationSourceExport>(),
+                        Array.Empty<ResourceMutationIntent>(),
+                        Array.Empty<ValidationIssue>())
+                {
+                    TriggerCandidates = actualProducer == pendingProducer.Key
+                        ? new[] { pendingCandidate }
+                        : Array.Empty<EffectAcceptedTurnPlanner
+                            .EffectResourceTriggerCandidate>()
+                };
+            });
+
+        var first = AcceptedMechanicsPlanner.BuildResources(
+            input,
+            IdentityFactory(seed: 1));
+        var replay = AcceptedMechanicsPlanner.BuildResources(
+            input,
+            IdentityFactory(seed: 101));
+
+        Assert.True(
+            first.IsValid,
+            string.Join(
+                Environment.NewLine,
+                first.Issues.Select(static issue =>
+                    $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}")));
+        Assert.True(
+            replay.IsValid,
+            string.Join(
+                Environment.NewLine,
+                replay.Issues.Select(static issue =>
+                    $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}")));
+        Assert.Equal(
+            new long[] { 0 },
+            first.EffectBoundaryTranscript.BoundaryCloses
+                .Select(static close => close.Boundary.BoundaryOrdinal));
+        Assert.Equal(
+            1,
+            first.EffectBoundaryTranscript.PendingFrontierBoundaryOrdinal);
+        Assert.All(
+            first.EffectBoundaryTranscript.Boundaries,
+            static boundary => Assert.Null(boundary.ParentBoundaryOrdinal));
+        Assert.Equal(
+            Assert.Single(first.AcceptedPendingResolutions)
+                .CausalAuthority.TranscriptPrefixFingerprint,
+            Assert.Single(replay.AcceptedPendingResolutions)
+                .CausalAuthority.TranscriptPrefixFingerprint);
+    }
+
+    [Fact]
+    public void BuildResources_FailureDoesNotInventAnEmptyBoundaryTranscript()
+    {
+        var baseline = BaselineCharges();
+        var duplicate = Intent(
+            "turn_2:boundary:duplicate",
+            "action_cost",
+            "action_alpha",
+            ResourceOperation.Spend,
+            amount: 1m);
+
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            Input(baseline, new[] { duplicate, duplicate }),
+            IdentityFactory());
+
+        Assert.False(result.IsValid);
+        Assert.Null(result.EffectBoundaryTranscript);
+    }
+
+    [Fact]
     public void ResourceTriggerExecution_ReportsOnlyComponentsWhoseMutationActuallyApplied()
     {
         var baseline = BaselineHealth(current: 10m);
@@ -1066,20 +1980,35 @@ public sealed class AcceptedMechanicsPlannerTests
                     "resource_depleted")
             },
             ReceiptId: null);
-        var execution = new EffectAcceptedTurnPlanner.EffectResourceTriggerExecution(
-            EffectMaterializationTestFixture.EffectId,
-            "on_owner_turn_end",
-            "owner_turn_end",
-            "turn_43:effect:trigger",
+        var candidateComponentMap = new Dictionary<ResourceOperationKey, string>
+        {
+            [applied.Key] = "component_applied",
+            [skipped.Key] = "component_skipped"
+        };
+        var candidate = new EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate(
+            new EffectActivationCandidate(
+                new EffectActivationCandidateIdentity(
+                    EffectMaterializationTestFixture.EffectId,
+                    "on_owner_turn_end",
+                    "owner_turn_end",
+                    "turn_43:effect:trigger",
+                    "turn_43:lifecycle:owner_turn_end"),
+                Priority: 0,
+                ConsumesUse: false,
+                EffectAuthority: PermanentEffectAuthority(
+                    EffectMaterializationTestFixture.EffectId)),
+            useSeed: null,
+            producer: null,
             new[] { applied.Key, skipped.Key },
-            RemainingUseBudget: null,
-            ComponentIds: new[] { "component_applied", "component_skipped" },
-            TriggerEventRef: "turn_43:lifecycle:owner_turn_end",
-            ComponentIdsByMutation: new Dictionary<ResourceOperationKey, string>
-            {
-                [applied.Key] = "component_applied",
-                [skipped.Key] = "component_skipped"
-            });
+            new[] { "component_applied", "component_skipped" },
+            candidateComponentMap,
+            Array.Empty<EffectAcceptedTurnPlanner.EffectBoundedResourceResolution>(),
+            Array.Empty<EffectReactionExecution>(),
+            CandidateOrigin(
+                new[] { applied, skipped },
+                candidateComponentMap,
+                appliedSource,
+                skippedSource));
 
         var result = AcceptedMechanicsPlanner.BuildResources(
             new AcceptedMechanicsResourceInput(
@@ -1089,7 +2018,7 @@ public sealed class AcceptedMechanicsPlannerTests
                 History: baseline.History,
                 Sources: CreateCatalog(appliedSource, skippedSource, producerSource),
                 Mutations: new[] { skipped, applied, producer },
-                InitialTriggerExecutions: new[] { execution }),
+                InitialTriggerCandidates: new[] { candidate }),
             IdentityFactory());
 
         Assert.True(
@@ -2025,24 +2954,1312 @@ public sealed class AcceptedMechanicsPlannerTests
                         resourceEvent.EventKind)
                 },
                 ReceiptId: null);
+            var componentMap = new Dictionary<ResourceOperationKey, string>
+            {
+                [mutation.Key] = "component_cycle"
+            };
             return new EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution(
                 new[] { source },
                 new[] { mutation },
                 Array.Empty<ValidationIssue>())
             {
-                TriggerExecutions = new[]
+                TriggerCandidates = new[]
                 {
-                    new EffectAcceptedTurnPlanner.EffectResourceTriggerExecution(
-                        effectId,
-                        triggerId,
-                        resourceEvent.EventKind,
-                        eventRef,
+                    new EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate(
+                        new EffectActivationCandidate(
+                            new EffectActivationCandidateIdentity(
+                                effectId,
+                                triggerId,
+                                resourceEvent.EventKind,
+                                eventRef,
+                                resourceEvent.EventRef),
+                            Priority: 0,
+                            ConsumesUse: false,
+                            EffectAuthority: PermanentEffectAuthority(effectId)),
+                        useSeed: null,
+                        producer,
                         new[] { mutation.Key },
-                        RemainingUseBudget: null)
+                        new[] { "component_cycle" },
+                        componentMap,
+                        Array.Empty<EffectAcceptedTurnPlanner.EffectBoundedResourceResolution>(),
+                        Array.Empty<EffectReactionExecution>(),
+                        CandidateOrigin(
+                            new[] { mutation },
+                            componentMap,
+                            source))
                 }
             };
         }
     }
+
+    [Fact]
+    public void BuildResources_RejectsSixtyFifthReleasedPureReactionAcrossAcceptedTurn()
+    {
+        var baseline = BaselineCharges();
+        var candidates = Enumerable.Range(
+                1,
+                EffectReactionContract.MaximumExpansion + 1)
+            .Select(index => CreatePureReactionCandidate(
+                ordinal: index,
+                effectId: $"effect_global_expansion_{index}",
+                triggerId: $"trigger_global_expansion_{index}",
+                componentId: $"component_global_expansion_{index}",
+                maxExpansion: 1,
+                producer: null,
+                eventKind: "owner_turn_end",
+                triggerEventRef: "turn_2:global_expansion:lifecycle"))
+            .ToArray();
+
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 2,
+                Definitions: baseline.Definitions,
+                State: baseline.State,
+                History: baseline.History,
+                Sources: baseline.Sources,
+                Mutations: Array.Empty<ResourceMutationIntent>(),
+                InitialTriggerCandidates: candidates),
+            IdentityFactory());
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "effect_reaction_expansion_exceeded");
+        Assert.Null(result.StateAfterImage);
+        Assert.Null(result.HistoryAfterImage);
+    }
+
+    [Fact]
+    public void BuildResources_AccumulatesPerComponentExpansionAcrossLifecycleAndResourceBoundaries()
+    {
+        var rootSource = new ResourceMutationSourceExport(
+            "narrative_outcome",
+            "component_expansion_root",
+            FingerprintA,
+            ResourceMutationSourceState.Active,
+            SameTurn: false,
+            ChargesOwner);
+        var baseline = BaselineCharges(rootSource);
+        var root = new ResourceMutationIntent(
+            "turn_2:component_expansion:root",
+            ChargesCoordinate,
+            Amount: 1m,
+            new ResourceMutationSourceRequest(
+                rootSource.SourceKind,
+                rootSource.SourceId,
+                ResourceOperation.Spend),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: null);
+        const string effectId = "effect_component_expansion";
+        const string triggerId = "trigger_component_expansion";
+        const string componentId = "component_expansion_shared";
+        var lifecycleCandidate = CreatePureReactionCandidate(
+            ordinal: 1,
+            effectId,
+            triggerId,
+            componentId,
+            maxExpansion: 1,
+            producer: null,
+            eventKind: "owner_turn_end",
+            triggerEventRef: "turn_2:component_expansion:lifecycle");
+
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 2,
+                Definitions: baseline.Definitions,
+                State: baseline.State,
+                History: baseline.History,
+                Sources: baseline.Sources,
+                Mutations: new[] { root },
+                EventMutationResolver: ResolveResourceEvent,
+                InitialTriggerCandidates: new[] { lifecycleCandidate }),
+            IdentityFactory());
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "effect_reaction_expansion_exceeded");
+        Assert.Null(result.StateAfterImage);
+        Assert.Null(result.HistoryAfterImage);
+
+        EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution
+            ResolveResourceEvent(
+                ResourceAppliedEvent resourceEvent,
+                ResourceOperationKey producer)
+        {
+            if (!string.Equals(
+                    resourceEvent.EventKind,
+                    "resource_spent",
+                    StringComparison.Ordinal))
+            {
+                return new EffectAcceptedTurnPlanner
+                    .EffectPeriodicResourceResolution(
+                        Array.Empty<ResourceMutationSourceExport>(),
+                        Array.Empty<ResourceMutationIntent>(),
+                        Array.Empty<ValidationIssue>());
+            }
+
+            return new EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution(
+                Array.Empty<ResourceMutationSourceExport>(),
+                Array.Empty<ResourceMutationIntent>(),
+                Array.Empty<ValidationIssue>())
+            {
+                TriggerCandidates = new[]
+                {
+                    CreatePureReactionCandidate(
+                        ordinal: 2,
+                        effectId,
+                        triggerId,
+                        componentId,
+                        maxExpansion: 1,
+                        producer,
+                        resourceEvent.EventKind,
+                        resourceEvent.EventRef)
+                }
+            };
+        }
+    }
+
+    [Fact]
+    public void PendingCausalProducerAuthority_DistinguishesCoordinateOwnerKind()
+    {
+        var player = ResolveProducerFingerprints(ResourceOwnerKind.Player);
+        var npc = ResolveProducerFingerprints(ResourceOwnerKind.Npc);
+
+        Assert.False(string.IsNullOrWhiteSpace(player.ProducerOperationKey));
+        Assert.False(string.IsNullOrWhiteSpace(npc.ProducerOperationKey));
+        Assert.NotEqual(player.ProducerOperationKey, npc.ProducerOperationKey);
+        Assert.NotEqual(player.CandidateFingerprint, npc.CandidateFingerprint);
+    }
+
+    [Fact]
+    public void StableProducerOperationKey_DistinguishesDelimiterCollisionInCoordinateIds()
+    {
+        var (ownerDelimited, resourceDelimited) =
+            CreateDelimiterCollisionOperationKeys();
+
+        var ownerDelimitedFingerprint =
+            AcceptedMechanicsPlanner.CreateStableProducerOperationKey(
+                ownerDelimited);
+        var resourceDelimitedFingerprint =
+            AcceptedMechanicsPlanner.CreateStableProducerOperationKey(
+                resourceDelimited);
+
+        Assert.NotEqual(
+            ownerDelimitedFingerprint,
+            resourceDelimitedFingerprint);
+    }
+
+    [Fact]
+    public void PendingEffectReplayIdentity_IsStableAcrossAcceptedApplicationIds()
+    {
+        var authority = new ResourcePendingAuthorityBinding(
+            "accepted_application",
+            "turn_2:effect_application:stable");
+
+        var first = EffectAcceptedTurnPlanner.CreatePendingEffectReplayIdentity(
+            "effect_random_a",
+            authority);
+        var second = EffectAcceptedTurnPlanner.CreatePendingEffectReplayIdentity(
+            "effect_random_b",
+            authority);
+
+        Assert.Equal(first, second);
+    }
+
+    [Fact]
+    public void PendingEffectReplayIdentity_DistinguishesTypedAuthorityFromPermanentLookalike()
+    {
+        const string lookalike =
+            "accepted_application:turn_2:effect_application:stable";
+        var accepted = EffectAcceptedTurnPlanner.CreatePendingEffectReplayIdentity(
+            "effect_random",
+            new ResourcePendingAuthorityBinding(
+                "accepted_application",
+                "turn_2:effect_application:stable"));
+        var permanent = EffectAcceptedTurnPlanner.CreatePendingEffectReplayIdentity(
+            lookalike,
+            new ResourcePendingAuthorityBinding("permanent", lookalike));
+
+        Assert.NotEqual(accepted, permanent);
+    }
+
+    [Theory]
+    [InlineData("same_turn_ref", "turn_2:effect_application:stable")]
+    [InlineData("permanent", "effect_other")]
+    public void PendingEffectReplayIdentity_RejectsInvalidEffectAuthority(
+        string bindingKind,
+        string authorityId)
+    {
+        var exception = Assert.Throws<ArgumentException>(() =>
+            EffectAcceptedTurnPlanner.CreatePendingEffectReplayIdentity(
+                "effect_current",
+                new ResourcePendingAuthorityBinding(bindingKind, authorityId)));
+
+        Assert.Contains(
+            "effect authority",
+            exception.Message,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void CandidateFingerprint_RebindsForeignAcceptedReplacementTarget()
+    {
+        var targetAuthority = new ResourcePendingAuthorityBinding(
+            "accepted_application",
+            "turn_2:foreign_target_application");
+        var firstReaction = CreateFingerprintReaction() with
+        {
+            ReplacementTarget = new EffectReplayIdentity(
+                "effect_foreign_target_random_a",
+                targetAuthority)
+        };
+        var resubmittedReaction = firstReaction with
+        {
+            ReplacementTarget = new EffectReplayIdentity(
+                "effect_foreign_target_random_b",
+                targetAuthority)
+        };
+
+        var first = CreateFingerprintCandidate(
+            Array.Empty<ResourceMutationIntent>(),
+            new Dictionary<ResourceOperationKey, string>(),
+            Array.Empty<ResourceMutationSourceExport>(),
+            firstReaction);
+        var resubmitted = CreateFingerprintCandidate(
+            Array.Empty<ResourceMutationIntent>(),
+            new Dictionary<ResourceOperationKey, string>(),
+            Array.Empty<ResourceMutationSourceExport>(),
+            resubmittedReaction);
+
+        Assert.Equal(
+            AcceptedMechanicsPlanner.CreateCandidateFingerprint(first),
+            AcceptedMechanicsPlanner.CreateCandidateFingerprint(resubmitted));
+    }
+
+    [Fact]
+    public void ReactionFingerprint_RebindsOnlyExactAcceptedReplacementAuthority()
+    {
+        var ownerAuthority = new ResourcePendingAuthorityBinding(
+            "permanent",
+            "effect_fingerprint_owner");
+        var targetAuthority = new ResourcePendingAuthorityBinding(
+            "accepted_application",
+            "turn_2:foreign_target_application");
+        var first = CreateFingerprintReaction() with
+        {
+            EffectId = ownerAuthority.AuthorityId,
+            ReplacementTarget = new EffectReplayIdentity(
+                "effect_foreign_target_random_a",
+                targetAuthority)
+        };
+        var rebound = first with
+        {
+            ReplacementTarget = new EffectReplayIdentity(
+                "effect_foreign_target_random_b",
+                targetAuthority)
+        };
+        var drifted = rebound with
+        {
+            ReplacementTarget = new EffectReplayIdentity(
+                "effect_foreign_target_random_b",
+                new ResourcePendingAuthorityBinding(
+                    "accepted_application",
+                    "turn_2:foreign_target_application_drifted"))
+        };
+
+        Assert.NotEqual(
+            AcceptedMechanicsPlanner
+                .CreateReactionCandidateOutputFingerprint(first),
+            AcceptedMechanicsPlanner
+                .CreateReactionCandidateOutputFingerprint(rebound));
+        Assert.Equal(
+            AcceptedMechanicsPlanner
+                .CreateReplayStableReactionCandidateOutputFingerprint(
+                    first,
+                    first.EffectId,
+                    ownerAuthority),
+            AcceptedMechanicsPlanner
+                .CreateReplayStableReactionCandidateOutputFingerprint(
+                    rebound,
+                    rebound.EffectId,
+                    ownerAuthority));
+        Assert.NotEqual(
+            AcceptedMechanicsPlanner
+                .CreateReplayStableReactionCandidateOutputFingerprint(
+                    rebound,
+                    rebound.EffectId,
+                    ownerAuthority),
+            AcceptedMechanicsPlanner
+                .CreateReplayStableReactionCandidateOutputFingerprint(
+                    drifted,
+                    drifted.EffectId,
+                    ownerAuthority));
+    }
+
+    [Fact]
+    public void EffectReplayIdentity_RejectsPermanentAuthorityMismatch()
+    {
+        Assert.Throws<ArgumentException>(() => new EffectReplayIdentity(
+            "effect_foreign_target_a",
+            new ResourcePendingAuthorityBinding(
+                "permanent",
+                "effect_foreign_target_b")));
+    }
+
+    [Fact]
+    public void CandidateFingerprint_DistinguishesMutationKeyToComponentAssociation()
+    {
+        var baseline = BaselineChargesForEffects(
+            "fingerprint_effect_alpha",
+            "fingerprint_effect_beta");
+        var alpha = Intent(
+            "turn_2:fingerprint:alpha",
+            "effect_component",
+            "fingerprint_effect_alpha",
+            ResourceOperation.Spend,
+            1m);
+        var beta = Intent(
+            "turn_2:fingerprint:beta",
+            "effect_component",
+            "fingerprint_effect_beta",
+            ResourceOperation.Spend,
+            1m);
+        var fingerprintMutations = new[] { alpha, beta };
+        var referencedSources = ReferencedCandidateSources(
+            baseline.Sources,
+            fingerprintMutations);
+        var direct = CreateFingerprintCandidate(
+            fingerprintMutations,
+            new Dictionary<ResourceOperationKey, string>
+            {
+                [alpha.Key] = "component_alpha",
+                [beta.Key] = "component_beta"
+            },
+            referencedSources);
+        var swapped = CreateFingerprintCandidate(
+            fingerprintMutations,
+            new Dictionary<ResourceOperationKey, string>
+            {
+                [alpha.Key] = "component_beta",
+                [beta.Key] = "component_alpha"
+            },
+            referencedSources);
+
+        var directFingerprint = ResolveCandidateFingerprint(
+            baseline,
+            new[] { alpha, beta },
+            direct);
+        var swappedFingerprint = ResolveCandidateFingerprint(
+            baseline,
+            new[] { alpha, beta },
+            swapped);
+
+        Assert.NotEqual(directFingerprint, swappedFingerprint);
+    }
+
+    [Fact]
+    public void CandidateFingerprint_DistinguishesDelimiterCollisionInPlannedKeyAndComponentMap()
+    {
+        var (ownerDelimited, resourceDelimited) =
+            CreateDelimiterCollisionOperationKeys();
+        var ownerDelimitedCandidate =
+            CreateDelimiterFingerprintCandidate(ownerDelimited);
+        var resourceDelimitedCandidate =
+            CreateDelimiterFingerprintCandidate(resourceDelimited);
+
+        var ownerDelimitedFingerprint =
+            AcceptedMechanicsPlanner.CreateCandidateFingerprint(
+                ownerDelimitedCandidate);
+        var resourceDelimitedFingerprint =
+            AcceptedMechanicsPlanner.CreateCandidateFingerprint(
+                resourceDelimitedCandidate);
+
+        Assert.NotEqual(
+            ownerDelimitedFingerprint,
+            resourceDelimitedFingerprint);
+    }
+
+    [Theory]
+    [InlineData("dependency")]
+    [InlineData("trigger_ref")]
+    [InlineData("causal_ref")]
+    [InlineData("turn")]
+    [InlineData("event_kind")]
+    [InlineData("trigger_id")]
+    [InlineData("component_priority")]
+    [InlineData("target")]
+    [InlineData("after_component")]
+    [InlineData("downstream_source")]
+    [InlineData("parameters")]
+    [InlineData("max_expansion")]
+    [InlineData("replacement_target")]
+    public void CandidateFingerprint_DistinguishesFullReactionOutputSemantics(
+        string changedField)
+    {
+        var canonical = CreateFingerprintReaction();
+        var changed = ChangeFingerprintReaction(canonical, changedField);
+        var canonicalCandidate = CreateFingerprintCandidate(
+            Array.Empty<ResourceMutationIntent>(),
+            new Dictionary<ResourceOperationKey, string>(),
+            Array.Empty<ResourceMutationSourceExport>(),
+            canonical);
+        var changedCandidate = CreateFingerprintCandidate(
+            Array.Empty<ResourceMutationIntent>(),
+            new Dictionary<ResourceOperationKey, string>(),
+            Array.Empty<ResourceMutationSourceExport>(),
+            changed);
+
+        var canonicalFingerprint =
+            AcceptedMechanicsPlanner.CreateCandidateFingerprint(
+                canonicalCandidate);
+        var changedFingerprint =
+            AcceptedMechanicsPlanner.CreateCandidateFingerprint(
+                changedCandidate);
+
+        Assert.NotEqual(canonicalFingerprint, changedFingerprint);
+    }
+
+    [Fact]
+    public void CandidateAuthority_RejectsReactionOwnedByDifferentEffect()
+    {
+        var changed = ChangeFingerprintReaction(
+            CreateFingerprintReaction(),
+            "effect_id");
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            CreateFingerprintCandidate(
+                Array.Empty<ResourceMutationIntent>(),
+                new Dictionary<ResourceOperationKey, string>(),
+                Array.Empty<ResourceMutationSourceExport>(),
+                changed));
+
+        Assert.Contains(
+            "reaction effect ids",
+            exception.Message,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BoundCandidate_PureFingerprintMatchesCachedAuthorityWithoutRuntimeCatalog()
+    {
+        var baseline = BaselineCharges();
+        var candidate = CreateFingerprintCandidate(
+            Array.Empty<ResourceMutationIntent>(),
+            new Dictionary<ResourceOperationKey, string>(),
+            Array.Empty<ResourceMutationSourceExport>());
+        var bound = BindCandidateFromAcceptedPendingResolutions(
+            baseline,
+            candidate);
+        var boundCandidate = Assert.Single(bound.TriggerCandidates);
+
+        var fingerprint = AcceptedMechanicsPlanner.CreateCandidateFingerprint(
+            boundCandidate);
+
+        Assert.Equal(boundCandidate.CandidateFingerprint, fingerprint);
+    }
+
+    [Theory]
+    [InlineData("pending")]
+    [InlineData("reaction")]
+    public void BoundCandidate_RejectsCachedFingerprintWhenOutputsChange(
+        string changedOutput)
+    {
+        var baseline = BaselineCharges();
+        var candidate = CreateFingerprintCandidate(
+            Array.Empty<ResourceMutationIntent>(),
+            new Dictionary<ResourceOperationKey, string>(),
+            Array.Empty<ResourceMutationSourceExport>(),
+            CreateFingerprintReaction());
+        var bound = BindCandidateFromAcceptedPendingResolutions(
+            baseline,
+            candidate);
+        var boundCandidate = Assert.Single(bound.TriggerCandidates);
+        var pendingOutputs = boundCandidate.PendingOutputs.ToArray();
+        var reactionOutputs = boundCandidate.ReactionOutputs.ToArray();
+        if (string.Equals(changedOutput, "pending", StringComparison.Ordinal))
+        {
+            pendingOutputs[0] = pendingOutputs[0] with
+            {
+                SafeResourceLabel = "changed resource label"
+            };
+        }
+        else
+        {
+            reactionOutputs[0] = ChangeFingerprintReaction(
+                reactionOutputs[0],
+                "parameters");
+        }
+        var tampered = CloneBoundCandidate(
+            boundCandidate,
+            pendingOutputs,
+            reactionOutputs,
+            boundCandidate.PlannedComponentIdsByMutation);
+
+        var result = BuildBoundCandidate(baseline, bound, tampered);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_pending_candidate_origin_mismatch");
+    }
+
+    [Fact]
+    public void BoundCandidate_RejectsSwappedReceiptMutationComponentBindings()
+    {
+        var baseline = BaselineCharges();
+        var identity = new EffectActivationCandidateIdentity(
+            "effect_fingerprint_candidate",
+            "trigger_fingerprint_candidate",
+            "owner_turn_end",
+            "turn_2:fingerprint:activation",
+            "turn_2:fingerprint:lifecycle");
+        var firstOutput = CreateFingerprintPendingOutput(
+            identity,
+            ChargesCoordinate);
+        var secondOutput = firstOutput with
+        {
+            ComponentId = "component_fingerprint_pending_second",
+            SafeResourceLabel = "second resource"
+        };
+        var candidate = new EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate(
+            new EffectActivationCandidate(
+                identity,
+                Priority: 100,
+                ConsumesUse: false,
+                EffectAuthority: PermanentEffectAuthority(identity.EffectId)),
+            useSeed: null,
+            producer: null,
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<string>(),
+            new Dictionary<ResourceOperationKey, string>(),
+            new[] { firstOutput, secondOutput },
+            Array.Empty<EffectReactionExecution>(),
+            EffectAcceptedTurnPlanner.EffectResourceCandidateOrigin.Empty);
+        var bound = BindCandidateFromAcceptedPendingResolutions(
+            baseline,
+            candidate);
+        var boundCandidate = Assert.Single(bound.TriggerCandidates);
+        var componentMap = boundCandidate.PlannedComponentIdsByMutation
+            .ToDictionary(static pair => pair.Key, static pair => pair.Value);
+        var mappedKeys = componentMap.Keys.ToArray();
+        Assert.Equal(2, mappedKeys.Length);
+        (componentMap[mappedKeys[0]], componentMap[mappedKeys[1]]) =
+            (componentMap[mappedKeys[1]], componentMap[mappedKeys[0]]);
+        var tampered = CloneBoundCandidate(
+            boundCandidate,
+            boundCandidate.PendingOutputs,
+            boundCandidate.ReactionOutputs,
+            componentMap);
+
+        var result = BuildBoundCandidate(baseline, bound, tampered);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_pending_candidate_origin_mismatch");
+    }
+
+    [Fact]
+    public void ResolvedPendingReplayBind_DuplicateSourceExportsFailsClosed()
+    {
+        var duplicate = new ResourceMutationSourceExport(
+            "bounded_receipt",
+            "resource_resolution_duplicate_source",
+            FingerprintA,
+            ResourceMutationSourceState.Active,
+            SameTurn: true);
+        var input = new EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution(
+            new[] { duplicate, duplicate with { } },
+            Array.Empty<ResourceMutationIntent>(),
+            Array.Empty<ValidationIssue>());
+
+        var result = BindResolvedPendingReplay(
+            Array.Empty<ResourcePendingResolvedBinding>(),
+            input);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_source_duplicate_exact");
+    }
+
+    [Fact]
+    public void ResolvedPendingReplayBind_ProjectedMutationCollidingWithPlannedMutationFailsClosed()
+    {
+        const string requestId = "resource_resolution_projected_collision";
+        var identity = new EffectActivationCandidateIdentity(
+            "effect_fingerprint_candidate",
+            "trigger_fingerprint_candidate",
+            "owner_turn_end",
+            "turn_2:fingerprint:activation",
+            "turn_2:fingerprint:lifecycle");
+        var output = CreateFingerprintPendingOutput(identity, ChargesCoordinate);
+        var planned = new ResourceMutationIntent(
+            output.EventRef,
+            output.Coordinate,
+            Amount: 1m,
+            new ResourceMutationSourceRequest(
+                "bounded_receipt",
+                requestId,
+                output.Operation),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: requestId);
+        var plannedSource = new ResourceMutationSourceExport(
+            planned.Source.SourceKind,
+            planned.Source.SourceId,
+            FingerprintA,
+            ResourceMutationSourceState.Active,
+            SameTurn: true);
+        var componentMap = new Dictionary<ResourceOperationKey, string>
+        {
+            [planned.Key] = "component_already_planned"
+        };
+        var candidate = new EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate(
+            new EffectActivationCandidate(
+                identity,
+                Priority: 100,
+                ConsumesUse: false,
+                EffectAuthority: PermanentEffectAuthority(identity.EffectId)),
+            useSeed: null,
+            producer: null,
+            new[] { planned.Key },
+            new[] { "component_already_planned" },
+            componentMap,
+            new[] { output },
+            Array.Empty<EffectReactionExecution>(),
+            CandidateOrigin(
+                new[] { planned },
+                componentMap,
+                plannedSource));
+        var binding = CreateResolvedPendingBinding(
+            candidate,
+            output,
+            requestId);
+        var input = new EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution(
+            new[] { plannedSource },
+            new[] { planned },
+            Array.Empty<ValidationIssue>())
+        {
+            TriggerCandidates = new[] { candidate },
+            ComponentIdsByMutation =
+                new Dictionary<ResourceOperationKey, string>
+                {
+                    [planned.Key] = "component_already_planned"
+                }
+        };
+
+        var result = BindResolvedPendingReplay(new[] { binding }, input);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_planner_duplicate_operation");
+    }
+
+    private static (ResourceOperationKey OwnerDelimited,
+        ResourceOperationKey ResourceDelimited)
+        CreateDelimiterCollisionOperationKeys()
+    {
+        var ownerDelimited = new ResourceOperationKey(
+            "turn_2:fingerprint:delimiter_collision",
+            "effect_component",
+            "effect_fingerprint_candidate",
+            new ResourceCoordinate(
+                "mortal_world",
+                ResourceOwnerKind.Player,
+                "a/b",
+                "c"),
+            ResourceOperation.Spend);
+        var resourceDelimited = ownerDelimited with
+        {
+            Coordinate = ownerDelimited.Coordinate with
+            {
+                ResourceOwnerId = "a",
+                ResourceKey = "b/c"
+            }
+        };
+        return (ownerDelimited, resourceDelimited);
+    }
+
+    private static EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution
+        BindResolvedPendingReplay(
+            IReadOnlyList<ResourcePendingResolvedBinding> bindings,
+            EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution resolution)
+    {
+        var replayType = typeof(AcceptedMechanicsPlanner).GetNestedType(
+            "ResolvedPendingReplaySession",
+            System.Reflection.BindingFlags.NonPublic);
+        Assert.NotNull(replayType);
+        var constructor = replayType!.GetConstructor(
+            System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.NonPublic,
+            binder: null,
+            new[] { typeof(IReadOnlyList<ResourcePendingResolvedBinding>) },
+            modifiers: null);
+        Assert.NotNull(constructor);
+        var replay = constructor!.Invoke(new object[] { bindings });
+        var bind = replayType.GetMethod(
+            "Bind",
+            System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.NonPublic);
+        Assert.NotNull(bind);
+
+        try
+        {
+            return Assert.IsType<
+                EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution>(
+                    bind!.Invoke(replay, new object[] { resolution }));
+        }
+        catch (System.Reflection.TargetInvocationException exception)
+            when (exception.InnerException != null)
+        {
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo
+                .Capture(exception.InnerException)
+                .Throw();
+            throw;
+        }
+    }
+
+    private static EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution
+        BindCandidateFromAcceptedPendingResolutions(
+        Baseline baseline,
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate)
+    {
+        var discovery = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 2,
+                Definitions: baseline.Definitions,
+                State: baseline.State,
+                History: baseline.History,
+                Sources: baseline.Sources,
+                Mutations: Array.Empty<ResourceMutationIntent>(),
+                InitialTriggerCandidates: new[] { candidate }),
+            IdentityFactory());
+        Assert.True(
+            discovery.IsValid,
+            string.Join(
+                Environment.NewLine,
+                discovery.Issues.Select(static issue =>
+                    $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}")));
+        var accepted = discovery.AcceptedPendingResolutions;
+        Assert.Equal(candidate.PendingOutputs.Count, accepted.Count);
+        var bindings = accepted.Select((resolution, index) =>
+            CreateResolvedPendingBinding(
+                candidate,
+                resolution.Resolution,
+                $"resource_resolution_cached_candidate_{index}",
+                resolution.CausalAuthority)).ToArray();
+        var unbound = new EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution(
+            Array.Empty<ResourceMutationSourceExport>(),
+            Array.Empty<ResourceMutationIntent>(),
+            Array.Empty<ValidationIssue>())
+        {
+            TriggerCandidates = new[] { candidate },
+            ComponentIdsByMutation =
+                new Dictionary<ResourceOperationKey, string>()
+        };
+
+        var bound = BindResolvedPendingReplay(bindings, unbound);
+        Assert.True(bound.IsValid, string.Join(Environment.NewLine, bound.Issues));
+        return bound;
+    }
+
+    private static EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate
+        CloneBoundCandidate(
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate,
+        IReadOnlyList<EffectAcceptedTurnPlanner.EffectBoundedResourceResolution>
+            pendingOutputs,
+        IReadOnlyList<EffectReactionExecution> reactionOutputs,
+        IReadOnlyDictionary<ResourceOperationKey, string> componentMap)
+    {
+        var resolvedBindings = new Dictionary<
+            string,
+            ResourcePendingResolvedBinding>(StringComparer.Ordinal);
+        foreach (var output in candidate.PendingOutputs)
+        {
+            if (candidate.TryResolvePendingBinding(
+                    output.ComponentId,
+                    out var binding))
+            {
+                resolvedBindings.Add(output.ComponentId, binding);
+            }
+        }
+
+        return new EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate(
+            candidate.Activation,
+            candidate.UseSeed,
+            candidate.Producer,
+            candidate.PlannedMutationKeys,
+            candidate.PlannedComponentIds,
+            componentMap,
+            pendingOutputs,
+            reactionOutputs,
+            candidate.Origin,
+            candidate.CandidateFingerprint,
+            resolvedBindings,
+            candidate.PendingWaveOrdinal,
+            candidate.CausalMaterialFingerprint);
+    }
+
+    private static AcceptedMechanicsResourcePlanningResult BuildBoundCandidate(
+        Baseline baseline,
+        EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution bound,
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate) =>
+        AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 2,
+                Definitions: baseline.Definitions,
+                State: baseline.State,
+                History: baseline.History,
+                Sources: CreateCatalog(bound.SourceExports.ToArray()),
+                Mutations: bound.Mutations,
+                InitialTriggerCandidates: new[] { candidate }),
+            IdentityFactory());
+
+    private static ResourcePendingResolvedBinding CreateResolvedPendingBinding(
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate,
+        EffectAcceptedTurnPlanner.EffectBoundedResourceResolution output,
+        string requestId,
+        ResourcePendingCausalAuthority? acceptedCausalAuthority = null)
+    {
+        var candidateFingerprint =
+            AcceptedMechanicsPlanner.CreateCandidateFingerprint(candidate);
+        var causalAuthority = acceptedCausalAuthority ?? new ResourcePendingCausalAuthority(
+            candidate.Activation.Identity.EffectId,
+            candidate.Activation.Identity.TriggerId,
+            candidate.Activation.Identity.EventRef,
+            candidate.Activation.Identity.TriggerEventRef,
+            candidate.Producer == null
+                ? null
+                : AcceptedMechanicsPlanner.CreateStableProducerOperationKey(
+                    candidate.Producer),
+            candidate.Activation.Priority,
+            0,
+            candidate.Activation.ConsumesUse,
+            null,
+            output.ComponentId,
+            output.AfterComponentId,
+            candidateFingerprint,
+            FingerprintA,
+            0);
+        var request = new ResourcePendingRequest(
+            requestId,
+            "session_fingerprint_replay",
+            "accepted_request_fingerprint_replay",
+            2,
+            output.EventRef,
+            output.EffectId,
+            output.EffectAuthority,
+            output.Source,
+            output.SourceAuthority,
+            output.Target,
+            output.TargetAuthority,
+            output.TriggerId,
+            output.Coordinate,
+            output.ResourceAuthority,
+            output.Operation,
+            output.MinimumAmount,
+            output.MaximumAmount,
+            output.SourceAuthorityFingerprint,
+            output.PolicyFingerprint,
+            FingerprintA,
+            FingerprintA,
+            Array.Empty<string>(),
+            "2026-08-23T00:00:00.0000000+00:00",
+            FingerprintA,
+            output.SafeSourceLabel,
+            output.SafeTargetLabel,
+            output.SafeResourceLabel,
+            output.SafeOperationLabel,
+            causalAuthority);
+        return new ResourcePendingResolvedBinding(
+            request,
+            "resource_delta",
+            1m,
+            "resolved",
+            FingerprintB,
+            2);
+    }
+
+    private static (string? ProducerOperationKey, string CandidateFingerprint)
+        ResolveProducerFingerprints(ResourceOwnerKind ownerKind)
+    {
+        var producer = new ResourceOperationKey(
+            "turn_43:fingerprint:producer",
+            "registered_system_outcome",
+            "fingerprint_producer",
+            new ResourceCoordinate(
+                "mortal_world",
+                ownerKind,
+                "fingerprint_owner",
+                "health"),
+            ResourceOperation.Damage);
+        var identity = new EffectActivationCandidateIdentity(
+            "effect_fingerprint_producer",
+            "trigger_fingerprint_producer",
+            "resource_damaged",
+            "turn_43:fingerprint:activation",
+            producer.EventRef);
+        var candidate = new EffectAcceptedTurnPlanner
+            .EffectResourceTriggerCandidate(
+                new EffectActivationCandidate(
+                    identity,
+                    Priority: 100,
+                    ConsumesUse: false,
+                    EffectAuthority: PermanentEffectAuthority(identity.EffectId)),
+                useSeed: null,
+                producer,
+                Array.Empty<ResourceOperationKey>(),
+                Array.Empty<string>(),
+                new Dictionary<ResourceOperationKey, string>(),
+                Array.Empty<EffectAcceptedTurnPlanner
+                    .EffectBoundedResourceResolution>(),
+                Array.Empty<EffectReactionExecution>(),
+                EffectAcceptedTurnPlanner.EffectResourceCandidateOrigin.Empty);
+        return (
+            AcceptedMechanicsPlanner.CreateStableProducerOperationKey(producer),
+            AcceptedMechanicsPlanner.CreateCandidateFingerprint(candidate));
+    }
+
+    private static string ResolveCandidateFingerprint(
+        Baseline baseline,
+        IReadOnlyList<ResourceMutationIntent> mutations,
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate)
+    {
+        var result = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 2,
+                Definitions: baseline.Definitions,
+                State: baseline.State,
+                History: baseline.History,
+                Sources: baseline.Sources,
+                Mutations: mutations,
+                InitialTriggerCandidates: new[] { candidate }),
+            IdentityFactory());
+
+        Assert.True(
+            result.IsValid,
+            string.Join(
+                Environment.NewLine,
+                result.Issues.Select(static issue =>
+                    $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}")));
+        return Assert.Single(result.AcceptedPendingResolutions)
+            .CausalAuthority.CandidateFingerprint;
+    }
+
+    private static EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate
+        CreateFingerprintCandidate(
+            IReadOnlyList<ResourceMutationIntent> mutations,
+            IReadOnlyDictionary<ResourceOperationKey, string> componentMap,
+            IReadOnlyList<ResourceMutationSourceExport> sourceExports,
+            EffectReactionExecution? reaction = null)
+    {
+        var identity = new EffectActivationCandidateIdentity(
+            "effect_fingerprint_candidate",
+            "trigger_fingerprint_candidate",
+            "owner_turn_end",
+            "turn_2:fingerprint:activation",
+            "turn_2:fingerprint:lifecycle");
+        return new EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate(
+            new EffectActivationCandidate(
+                identity,
+                Priority: 100,
+                ConsumesUse: false,
+                EffectAuthority: PermanentEffectAuthority(identity.EffectId)),
+            useSeed: null,
+            producer: null,
+            mutations.Select(static mutation => mutation.Key).ToArray(),
+            componentMap.Values
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(static value => value, StringComparer.Ordinal)
+                .ToArray(),
+            componentMap,
+            new[] { CreateFingerprintPendingOutput(identity, ChargesCoordinate) },
+            reaction == null
+                ? Array.Empty<EffectReactionExecution>()
+                : new[] { reaction },
+            mutations.Count == 0 &&
+            componentMap.Count == 0 &&
+            sourceExports.Count == 0
+                ? EffectAcceptedTurnPlanner.EffectResourceCandidateOrigin.Empty
+                : CandidateOrigin(
+                    mutations,
+                    componentMap,
+                    sourceExports.ToArray()));
+    }
+
+    private static EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate
+        CreatePureReactionCandidate(
+            int ordinal,
+            string effectId,
+            string triggerId,
+            string componentId,
+            int maxExpansion,
+            ResourceOperationKey? producer,
+            string eventKind,
+            string triggerEventRef)
+    {
+        var activation = new EffectActivationCandidateIdentity(
+            effectId,
+            triggerId,
+            eventKind,
+            $"turn_2:pure_reaction:activation:{ordinal}",
+            triggerEventRef);
+        var reaction = new EffectReactionExecution(
+            EventRef: $"turn_2:pure_reaction:output:{ordinal}",
+            TriggerEventRef: triggerEventRef,
+            CausalEventRef: triggerEventRef,
+            Turn: 2,
+            EventKind: eventKind,
+            Target: new EffectTargetKey(
+                "mortal_world",
+                "player",
+                "player_current"),
+            EffectId: effectId,
+            TriggerId: triggerId,
+            ComponentId: componentId,
+            ResultKind: "event_outcome",
+            Dependency: "before_current_event",
+            AfterComponentId: null,
+            MaxExpansion: maxExpansion,
+            DownstreamSource: null,
+            Parameters: null);
+        return new EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate(
+            new EffectActivationCandidate(
+                activation,
+                Priority: 100,
+                ConsumesUse: false,
+                EffectAuthority: PermanentEffectAuthority(activation.EffectId)),
+            useSeed: null,
+            producer,
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<string>(),
+            new Dictionary<ResourceOperationKey, string>(),
+            Array.Empty<EffectAcceptedTurnPlanner
+                .EffectBoundedResourceResolution>(),
+            new[] { reaction },
+            EffectAcceptedTurnPlanner.EffectResourceCandidateOrigin.Empty);
+    }
+
+    private static ResourcePendingAuthorityBinding PermanentEffectAuthority(
+        string effectId) =>
+        new("permanent", effectId);
+
+    private static EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate
+        CreateDelimiterFingerprintCandidate(ResourceOperationKey key)
+    {
+        var mutation = new ResourceMutationIntent(
+            key.EventRef,
+            key.Coordinate,
+            Amount: 1m,
+            new ResourceMutationSourceRequest(
+                key.OriginKind,
+                key.OriginId,
+                key.Operation),
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ReceiptId: null);
+        var source = new ResourceMutationSourceExport(
+            key.OriginKind,
+            key.OriginId,
+            FingerprintA,
+            ResourceMutationSourceState.Active,
+            SameTurn: false,
+            BoundOwner: new ResourceOwnerKey(
+                key.Coordinate.Realm,
+                key.Coordinate.OwnerKind,
+                key.Coordinate.ResourceOwnerId));
+        return CreateFingerprintCandidate(
+            new[] { mutation },
+            new Dictionary<ResourceOperationKey, string>
+            {
+                [key] = "component_delimiter_collision"
+            },
+            new[] { source });
+    }
+
+    private static EffectAcceptedTurnPlanner.EffectResourceCandidateOrigin
+        CandidateOrigin(
+            IReadOnlyList<ResourceMutationIntent> mutations,
+            IReadOnlyDictionary<ResourceOperationKey, string> componentMap,
+            params ResourceMutationSourceExport[] sourceExports) =>
+        new(
+            mutations,
+            componentMap.Values
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(static value => value, StringComparer.Ordinal)
+                .ToArray(),
+            componentMap,
+            sourceExports);
+
+    private static IReadOnlyList<ResourceMutationSourceExport>
+        ReferencedCandidateSources(
+            ResourceMutationSourceCatalog sources,
+            IReadOnlyList<ResourceMutationIntent> mutations)
+    {
+        var referenced = mutations
+            .Select(static mutation => (
+                mutation.Source.SourceKind,
+                mutation.Source.SourceId))
+            .ToHashSet();
+        return sources.Exports
+            .Where(source => referenced.Contains((
+                source.SourceKind,
+                source.SourceId)))
+            .ToArray();
+    }
+
+    private static EffectAcceptedTurnPlanner.EffectBoundedResourceResolution
+        CreateFingerprintPendingOutput(
+            EffectActivationCandidateIdentity identity,
+            ResourceCoordinate coordinate) =>
+        new(
+            identity.EventRef,
+            identity.EffectId,
+            new ResourcePendingAuthorityBinding("permanent", identity.EffectId),
+            new JsonObject
+            {
+                ["kind"] = "wound",
+                ["sourceId"] = "fingerprint_source",
+                ["definitionKey"] = "fingerprint_definition"
+            },
+            new ResourcePendingAuthorityBinding(
+                "permanent",
+                "fingerprint_source"),
+            new JsonObject
+            {
+                ["kind"] = coordinate.OwnerKind == ResourceOwnerKind.Npc
+                    ? "npc"
+                    : coordinate.OwnerKind == ResourceOwnerKind.Player
+                        ? "player"
+                        : "item",
+                ["targetId"] = coordinate.ResourceOwnerId
+            },
+            new ResourcePendingAuthorityBinding(
+                "permanent",
+                coordinate.ResourceOwnerId),
+            identity.TriggerId,
+            "component_fingerprint_pending",
+            identity.TriggerEventRef,
+            identity.EventKind,
+            coordinate,
+            new ResourcePendingAuthorityBinding(
+                "permanent",
+                coordinate.ResourceOwnerId),
+            ResourceOperation.Gain,
+            MinimumAmount: 0m,
+            MaximumAmount: 1m,
+            FingerprintA,
+            FingerprintB,
+            Array.Empty<ResourceOperationKey>(),
+            Array.Empty<ResourceMutationEventRequirement>(),
+            ResultConstraint: null,
+            RemainingUseBudget: null,
+            SafeSourceLabel: "source",
+            SafeTargetLabel: "target",
+            SafeResourceLabel: "resource",
+            SafeOperationLabel: "gain");
+
+    private static EffectReactionExecution CreateFingerprintReaction() =>
+        new(
+            EventRef: "turn_2:fingerprint:reaction",
+            TriggerEventRef: "turn_2:fingerprint:lifecycle",
+            CausalEventRef: "turn_2:fingerprint:reaction_cause",
+            Turn: 2,
+            EventKind: "owner_turn_end",
+            Target: new EffectTargetKey(
+                "mortal_world",
+                "player",
+                "player_current"),
+            EffectId: "effect_fingerprint_candidate",
+            TriggerId: "trigger_fingerprint_candidate",
+            ComponentId: "component_fingerprint_reaction",
+            ResultKind: "apply_definition",
+            Dependency: "before_current_event",
+            AfterComponentId: null,
+            MaxExpansion: 1,
+            DownstreamSource: null,
+            Parameters: new JsonObject { ["amount"] = 1 },
+            DownstreamSourceKey: new EffectSourceKey(
+                "mortal_world",
+                "wound",
+                "fingerprint_downstream_alpha",
+                "fingerprint_definition"),
+            ReplacementTarget: new EffectReplayIdentity(
+                "effect_fingerprint_candidate",
+                new ResourcePendingAuthorityBinding(
+                    "permanent",
+                    "effect_fingerprint_candidate")));
+
+    private static EffectReactionExecution ChangeFingerprintReaction(
+        EffectReactionExecution canonical,
+        string changedField) => changedField switch
+        {
+            "dependency" => canonical with
+            {
+                Dependency = "after_current_event"
+            },
+            "trigger_ref" => canonical with
+            {
+                TriggerEventRef = "turn_2:fingerprint:reaction_trigger_changed"
+            },
+            "causal_ref" => canonical with
+            {
+                CausalEventRef = "turn_2:fingerprint:reaction_cause_changed"
+            },
+            "turn" => canonical with
+            {
+                Turn = 3
+            },
+            "event_kind" => canonical with
+            {
+                EventKind = "scene_end"
+            },
+            "effect_id" => canonical with
+            {
+                EffectId = "effect_fingerprint_changed"
+            },
+            "trigger_id" => canonical with
+            {
+                TriggerId = "trigger_fingerprint_changed"
+            },
+            "component_priority" => canonical with
+            {
+                ComponentPriority = canonical.ComponentPriority + 1
+            },
+            "target" => canonical with
+            {
+                Target = canonical.Target with { TargetId = "player_changed" }
+            },
+            "after_component" => canonical with
+            {
+                AfterComponentId = "component_fingerprint_predecessor"
+            },
+            "downstream_source" => canonical with
+            {
+                DownstreamSourceKey = canonical.DownstreamSourceKey! with
+                {
+                    SourceId = "fingerprint_downstream_beta"
+                }
+            },
+            "parameters" => canonical with
+            {
+                Parameters = new JsonObject { ["amount"] = 2 }
+            },
+            "max_expansion" => canonical with
+            {
+                MaxExpansion = 2
+            },
+            "replacement_target" => canonical with
+            {
+                ReplacementTarget = new EffectReplayIdentity(
+                    "effect_fingerprint_replaced",
+                    new ResourcePendingAuthorityBinding(
+                        "permanent",
+                        "effect_fingerprint_replaced"))
+            },
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(changedField),
+                changedField,
+                "Unsupported reaction fingerprint variant.")
+        };
 
     private static AcceptedMechanicsResourceInput Input(
         Baseline baseline,
@@ -2320,6 +4537,15 @@ public sealed class AcceptedMechanicsPlannerTests
             CreateCatalog(sources));
     }
 
+    private static Baseline BaselineChargesForEffects(params string[] effectSourceIds) =>
+        BaselineCharges(effectSourceIds.Select(sourceId =>
+            new ResourceMutationSourceExport(
+                "effect_component",
+                sourceId,
+                FingerprintA,
+                ResourceMutationSourceState.Active,
+                SameTurn: false)).ToArray());
+
     private static PeriodicBaseline BaselineHealth(
         decimal current,
         ResourceOwnerKind ownerKind = ResourceOwnerKind.Player,
@@ -2550,6 +4776,19 @@ public sealed class AcceptedMechanicsPlannerTests
         var next = seed;
         return new AcceptedMechanicsIdentityFactory(() =>
             new Guid(next++, 0, 0, new byte[8]));
+    }
+
+    private static AcceptedMechanicsIdentityFactory OperationOrderedIdentityFactory(
+        params int[] operationOrder)
+    {
+        var allocated = operationOrder
+            .SelectMany(static value => new[] { value, value + 1000 })
+            .GetEnumerator();
+        return new AcceptedMechanicsIdentityFactory(() =>
+        {
+            Assert.True(allocated.MoveNext());
+            return new Guid(allocated.Current, 0, 0, new byte[8]);
+        });
     }
 
     private static ResourceCoordinate ChargesCoordinate { get; } = new(

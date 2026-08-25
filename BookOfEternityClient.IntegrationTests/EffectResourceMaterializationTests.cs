@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -8,6 +9,8 @@ namespace BookOfEternityClient.Tests;
 public sealed class EffectResourceMaterializationTests
 {
     private const string NpcCorePath = "game_state/npcs/npc_core.json";
+    private const string SnapshotManifestPath =
+        "game_state/control/pending_turn_snapshot.json";
 
     [Fact]
     public async Task PlayerTurnEndPeriodicDamage_PublishesResourceHistoryAndLifetimeTogether()
@@ -101,6 +104,113 @@ public sealed class EffectResourceMaterializationTests
         var remainingEffect = Assert.IsType<JsonObject>(
             Assert.Single(playerEffects["activeEffects"]!.AsArray()));
         Assert.Equal(1, remainingEffect["lifetime"]!["remainingTurns"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task ResourceValidation_NestedEffectPlanUsesTheAlreadyValidatedSnapshot()
+    {
+        FileSystemManager? fileSystem = null;
+        byte[]? replacementManifestBytes = null;
+        byte[]? replacementAuthorityBytes = null;
+        var armed = false;
+        var effectCommandReads = 0;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalReadOpenAsync = path =>
+            {
+                if (!armed ||
+                    !string.Equals(
+                        path,
+                        EffectAcceptedTurnPlan.CommandPath,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    Interlocked.Increment(ref effectCommandReads) != 2)
+                {
+                    return Task.CompletedTask;
+                }
+
+                File.WriteAllBytes(
+                    fileSystem!.ResolvePath(SnapshotManifestPath),
+                    replacementManifestBytes!);
+                File.WriteAllBytes(
+                    fileSystem.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath),
+                    replacementAuthorityBytes!);
+                swapped = true;
+                return Task.CompletedTask;
+            }
+        };
+        await using var context = await EffectMaterializationTestContext.CreateAsync(hooks);
+        fileSystem = context.FileSystem;
+        await context.SeedPlayerWoundSourceAsync();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray()
+            });
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.IdentityIndexPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["entries"] = new JsonArray()
+            });
+        await SeedCurrentResourceOwnerAuthorityAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
+        await context.WriteJsonAsync(
+            EffectAcceptedTurnPlan.CommandPath,
+            EffectMaterializationTestFixture.CreateCommandRoot(
+                EffectMaterializationTestFixture.CreateApplyCommand()));
+
+        var baselineIssues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(baselineIssues, issue => issue.Severity == IssueSeverity.Error);
+        var baselineHandoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            fileSystem);
+        Assert.NotNull(baselineHandoff);
+        var baselineResult = baselineHandoff!.Result;
+        var baselineCommonPlan = Assert.IsType<AcceptedMechanicsPlan>(baselineResult.Plan);
+        var baselinePlan = Assert.IsType<EffectAcceptedTurnPlan>(
+            baselineCommonPlan.EffectPlan);
+
+        var manifestA = Assert.IsType<JsonObject>(
+            await context.ReadJsonAsync(SnapshotManifestPath));
+        var manifestABytes = (await fileSystem.ReadFileBytesAsync(SnapshotManifestPath))!;
+        var authorityABytes = (await fileSystem.ReadFileBytesAsync(
+            PendingTurnSnapshotAuthority.AuthorityPath))!;
+        var manifestB = manifestA.DeepClone().AsObject();
+        manifestB["sourceLabel"] = "Nested effect swapped snapshot B";
+        manifestB["manifestPayloadHash"] = string.Empty;
+        manifestB["manifestPayloadHash"] =
+            PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifestB);
+        await context.WriteJsonAsync(SnapshotManifestPath, manifestB);
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(fileSystem);
+        replacementManifestBytes = (await fileSystem.ReadFileBytesAsync(SnapshotManifestPath))!;
+        replacementAuthorityBytes = (await fileSystem.ReadFileBytesAsync(
+            PendingTurnSnapshotAuthority.AuthorityPath))!;
+        await fileSystem.WriteFileAtomicBytesAsync(SnapshotManifestPath, manifestABytes);
+        await fileSystem.WriteFileAtomicBytesAsync(
+            PendingTurnSnapshotAuthority.AuthorityPath,
+            authorityABytes);
+        armed = true;
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(swapped);
+        var commonHandoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            fileSystem);
+        Assert.NotNull(commonHandoff);
+        var commonBinding = commonHandoff!.Binding;
+        var commonResult = commonHandoff.Result;
+        Assert.Equal(
+            manifestA["manifestPayloadHash"]!.GetValue<string>(),
+            commonBinding.SnapshotToken);
+        var commonPlan = Assert.IsType<AcceptedMechanicsPlan>(commonResult.Plan);
+        var nestedPlan = Assert.IsType<EffectAcceptedTurnPlan>(commonPlan.EffectPlan);
+        Assert.Equal(baselinePlan.InputFingerprint, nestedPlan.InputFingerprint);
     }
 
     [Fact]
@@ -513,8 +623,7 @@ public sealed class EffectResourceMaterializationTests
                     ["amount"] = initialHealth,
                     ["source"] = new JsonObject
                     {
-                        ["kind"] = "narrative_outcome",
-                        ["sourceId"] = "event_health_depleted"
+                        ["kind"] = "narrative_outcome"
                     },
                     ["eventRef"] = "turn_43:resource:1",
                     ["reason"] = "Accepted damage depletes health."
@@ -565,10 +674,10 @@ public sealed class EffectResourceMaterializationTests
             .ToArray();
         Assert.Equal(3, turnTransitions.Length);
         Assert.Equal(ResourceMutationPhase.DirectOutcome, turnTransitions[0].Phase);
-        Assert.Equal(ResourceMutationPhase.RegisteredSystemOutcome, turnTransitions[1].Phase);
-        Assert.Equal(ResourceMutationPhase.EffectTrigger, turnTransitions[2].Phase);
-        Assert.Equal("effect_component", turnTransitions[2].OriginKind);
-        Assert.Equal(3m, turnTransitions[2].AppliedAmount);
+        Assert.Equal(ResourceMutationPhase.EffectTrigger, turnTransitions[1].Phase);
+        Assert.Equal("effect_component", turnTransitions[1].OriginKind);
+        Assert.Equal(3m, turnTransitions[1].AppliedAmount);
+        Assert.Equal(ResourceMutationPhase.RegisteredSystemOutcome, turnTransitions[2].Phase);
 
         var playerEffects = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath))!.AsObject();
@@ -580,6 +689,141 @@ public sealed class EffectResourceMaterializationTests
         Assert.Equal(
             "expire",
             entry["transitions"]!.AsArray()[^1]!["kind"]!.GetValue<string>());
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task BoundedResourceDepletedTrigger_PendsOnlyForActualBoundaryCrossing(
+        bool crossesBoundary)
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+            incarnationNumber: 1,
+            turn: 42,
+            permanentStrength: 10,
+            permanentConstitution: 10,
+            permanentIntelligence: 10,
+            permanentWisdom: 10,
+            permanentFaith: 10);
+        Assert.True(resources.IsValid, string.Join(Environment.NewLine, resources.Issues));
+        await context.WriteJsonAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            JsonNode.Parse(resources.Definitions!.ToCanonicalJson())!);
+        await context.WriteJsonAsync(
+            ResourceMaterializationContract.StatePath,
+            JsonNode.Parse(resources.State!.ToCanonicalJson())!);
+        await context.WriteJsonAsync(
+            ResourceMaterializationContract.HistoryPath,
+            JsonNode.Parse(resources.History!.ToCanonicalJson())!);
+
+        var definition = CreateResourceEventDefinition();
+        definition["triggers"]![0]!["resolutionMode"] = "bounded_receipt";
+        var effect = CreateResourceEventEffect();
+        effect["triggers"]![0]!["resolutionMode"] = "bounded_receipt";
+        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(effect.DeepClone())
+            });
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.IdentityIndexPath,
+            EffectMaterializationTestFixture.CreateIdentityIndex(effect));
+        await context.WriteJsonAsync(
+            "game_state/world/world_events.json",
+            new JsonObject { ["worldEventsLog"] = new JsonArray() });
+        await context.WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new JsonObject
+            {
+                ["soulName"] = "Soul",
+                ["currentRealm"] = "Mortal World",
+                [ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
+                {
+                    ["applicationState"] = "active",
+                    ["pendingSurvivalEffects"] = new JsonArray()
+                }
+            });
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+        var backups = await context.ReadPendingSnapshotBackupsAsync();
+
+        await context.WriteJsonAsync(
+            "game_state/world/world_events.json",
+            new JsonObject
+            {
+                ["worldEventsLog"] = new JsonArray(new JsonObject
+                {
+                    ["eventId"] = "event_boundary_damage",
+                    ["summary"] = "Accepted damage tests an exact depletion boundary.",
+                    ["isActive"] = true,
+                    ["visibility"] = "player_known",
+                    ["severity"] = "minor"
+                })
+            });
+        var initialHealth = Assert.Single(
+            resources.State!.Entries,
+            entry => entry.Coordinate.ResourceKey == "health").Current;
+        await context.WriteJsonAsync(
+            ResourceMaterializationContract.CommandPath,
+            new JsonObject
+            {
+                ["resourceDefinitionCreations"] = new JsonArray(),
+                ["resourceCapacityChanges"] = new JsonArray(),
+                ["resourceChanges"] = new JsonArray(new JsonObject
+                {
+                    ["operation"] = "damage",
+                    ["target"] = new JsonObject
+                    {
+                        ["kind"] = "player",
+                        ["targetId"] = "player_current"
+                    },
+                    ["resourceKey"] = "health",
+                    ["amount"] = crossesBoundary ? initialHealth : 1m,
+                    ["source"] = new JsonObject
+                    {
+                        ["kind"] = "narrative_outcome"
+                    },
+                    ["eventRef"] = "turn_43:resource:1",
+                    ["reason"] = "Accepted damage may or may not cross the minimum."
+                })
+            });
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.True(
+            issues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, issues.Select(issue =>
+                $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}")));
+        await using var writeLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var plan = await context.Normalizer.BindTo(writeLease)
+            .NormalizeAcceptedMechanicsAsync(backups);
+
+        Assert.NotNull(plan);
+        Assert.Equal(crossesBoundary, plan!.AwaitsPendingResolution);
+        Assert.Equal(
+            crossesBoundary,
+            context.FileSystem.FileExists(ResourcePendingResolutionState.PendingPath));
+        var state = ResourceStateContract.ParseCanonical(
+            (await context.ReadJsonAsync(ResourceMaterializationContract.StatePath))!
+                .ToJsonString(),
+            resources.Definitions!,
+            allowMissingPristine: false);
+        Assert.NotNull(state.Ledger);
+        Assert.Empty(state.Issues);
+        var health = Assert.Single(
+            state.Ledger!.Entries,
+            entry => entry.Coordinate.ResourceKey == "health");
+        Assert.Equal(
+            crossesBoundary ? initialHealth : initialHealth - 1m,
+            health.Current);
+        var playerEffects = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath))!.AsObject();
+        var activeEffect = Assert.IsType<JsonObject>(
+            Assert.Single(playerEffects["activeEffects"]!.AsArray()));
+        Assert.Equal(1, activeEffect["lifetime"]!["remainingUses"]!.GetValue<int>());
     }
 
     [Fact]
@@ -739,8 +983,7 @@ public sealed class EffectResourceMaterializationTests
             ["amount"] = 1,
             ["source"] = new JsonObject
             {
-                ["kind"] = "narrative_outcome",
-                ["sourceId"] = "event_two_hits"
+                ["kind"] = "narrative_outcome"
             },
             ["eventRef"] = eventRef,
             ["reason"] = "Accepted hit."
@@ -890,6 +1133,36 @@ public sealed class EffectResourceMaterializationTests
         Assert.Equal(before, after);
     }
 
+    private static async Task SeedCurrentResourceOwnerAuthorityAsync(
+        EffectMaterializationTestContext context)
+    {
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            await context.FileSystem.ReadFileAsync(
+                ResourceMaterializationContract.DefinitionsPath),
+            allowMissingPristine: false);
+        Assert.True(definitions.IsValid, DescribeIssues(definitions.Issues));
+        var state = ResourceStateContract.ParseCanonical(
+            await context.FileSystem.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            definitions.Catalog!,
+            allowMissingPristine: false);
+        Assert.True(state.IsValid, DescribeIssues(state.Issues));
+        var history = ResourceHistoryState.ParseCanonical(
+            await context.FileSystem.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+            definitions.Catalog!,
+            allowMissingPristine: false);
+        Assert.True(history.IsValid, DescribeIssues(history.Issues));
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            definitions.Catalog!,
+            context.FileSystem.ReadFileAsync,
+            state.Ledger,
+            history.History,
+            CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap);
+        Assert.True(authority.IsValid, DescribeIssues(authority.Issues));
+        await context.WriteJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            JsonNode.Parse(authority.CanonicalAuthorityJson!)!);
+    }
+
     private static JsonObject CreateResourceEventDefinition(
         string eventType = "resource_depleted",
         string triggerId = "on_resource_depleted")
@@ -954,6 +1227,7 @@ public sealed class EffectResourceMaterializationTests
         await context.WriteJsonAsync(
             NpcCorePath,
             new JsonObject { ["NPCsInScene"] = new JsonArray() });
+        await SeedCurrentResourceOwnerAuthorityAsync(context);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
 
         var npc = EffectMaterializationTestFixture.CreateSameTurnMortalActor(npcId);
@@ -998,6 +1272,7 @@ public sealed class EffectResourceMaterializationTests
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath,
             new JsonObject { ["enemiesData"] = new JsonArray() });
+        await SeedCurrentResourceOwnerAuthorityAsync(context);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
 
         var combatant = EffectMaterializationTestFixture.CreateSameTurnCombatant(
@@ -1074,6 +1349,7 @@ public sealed class EffectResourceMaterializationTests
                     [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0
                 }
             });
+        await SeedCurrentResourceOwnerAuthorityAsync(context);
         await context.CaptureValidatedPendingSnapshotAsync(
             turn: 42,
             currentRealm: "Shining Abode");

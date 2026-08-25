@@ -48,7 +48,7 @@
 
 ### Key Principles
 
-**Unified afterlife resource authority:** `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` are client-owned entries in `game_state/resources/resource_state.json`, with immutable transitions in `game_state/resources/resource_history.json` and exact `resourceOwnerBindings`. The GM reads projected values and must not author `actionEconomy`, per-return numeric gacha counters, or numeric blessing mirrors; `actionEconomy` is forbidden as persisted state. Ink Feathers, Light Sparks, progression, relationships, faction accounting, and spiritual power/strain/shield stay specialized. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; the booleans remain typed entitlements. No migration or fallback exists.
+**Unified afterlife resource authority:** `spiritual_action_points`, `gacha_attempts`, and `blessing_rerolls` are client-owned entries in `game_state/resources/resource_state.json`, with immutable transitions in `game_state/resources/resource_history.json`, exact `resourceOwnerBindings`, and client-owned `game_state/resources/resource_owner_authority.json`. Definitions/state/history/owner-authority are one guarded quartet and are never GM-authored. Missing/stale authority outside Fresh New Game bootstrap fails closed without migration or self-heal; Mortal-incarnation bootstrap requires the exact existing quartet. The GM reads projected values and must not author `actionEconomy`, per-return numeric gacha counters, or numeric blessing mirrors; `actionEconomy` is forbidden as persisted state. Ink Feathers, Light Sparks, progression, relationships, faction accounting, and spiritual power/strain/shield stay specialized. The blessing contract is `blessing_rerolls + freeShape/freeRetune`; the booleans remain typed entitlements. No migration or fallback exists.
 - **Unified Processing**: Single-step complete turn handling
 - **Atomic Operations**: All-or-nothing file updates with rollback
 - **State Consistency**: Cross-file reference validation
@@ -251,7 +251,7 @@ CLI Agent automatically loads current game state from:
   "removePassiveSkills": "array of skill_ids",
   "skillMasteryChanges": "array of mastery_change_objects",
   "effectChanges": "array of apply/dispel/remove commands using exact source and target authority",
-  "effectResolutionReceipts": "array of exact bounded receipts requested by client pending state",
+  "effectResolutionReceipts": "array of exact bounded receipts for the current client safe packet; reuse the same complete semantic turn and never retarget or reconstruct protected authority",
   "effectEventReports": "array of closed registered event reports bound to sealed accepted-turn evidence; never effect/trigger selectors",
   "resourceDefinitionCreations": "array of complete setting/bootstrap resource proposals",
   "resourceCapacityChanges": "array of initialize/reconfigure/suspend/resume/retire commands",
@@ -512,8 +512,9 @@ game_session/
 - `game_state/effects/effect_commands.json` ← transient `effectChanges`, `effectResolutionReceipts`, `effectEventReports`; the client consumes it after accepted materialization
 - `game_state/player/effects.json` ← client-owned canonical player `activeEffects[]`; never direct GM output
 - `game_state/effects/effect_identity_index.json` and `game_state/control/pending_effect_resolutions.json` are client-owned identity/pending authority
+- A safe bounded-effect packet may require more than one sequential receipt wave. Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned. Return only the current exact `requestId`, one allowed result shape, and reason; no resource/effect/lifetime after-image publishes until replay reaches a terminal wave. Do not repeat protected pending fields, retarget a receipt, reuse it under changed commands, or expose pending/receipt internals to the player.
 - `game_state/resources/resource_commands.json` ← transient `resourceDefinitionCreations`, `resourceCapacityChanges`, `resourceChanges`; the client consumes it only after atomic accepted materialization
-- `game_state/resources/resource_definitions.json`, `resource_state.json`, and `resource_history.json` are client-owned canonical authority. The GM never writes current/maximum values, canonical IDs, history, phase, policy, or file paths.
+- `game_state/resources/resource_definitions.json`, `resource_state.json`, `resource_history.json`, and `resource_owner_authority.json` are one client-owned guarded quartet. The GM never writes current/maximum values, canonical IDs, history, owner authority, phase, policy, or file paths; only Fresh New Game may create a missing authority root, while every existing session (including Mortal-incarnation bootstrap) fails closed on missing/stale authority without migration.
 - `game_state/player/weight_calc.json` ← `calculatedWeightData`
 - `game_state/player/status_changes.json` ← `statsIncreased`, `statsDecreased`, `moneyChange`; bounded gauges use only common resource commands
 - `game_state/player/experience.json` ← `experienceGained`, `playerEffortTrackerChange`
@@ -965,11 +966,18 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 
 ### Contract Repair Handshake
 - `validation_repair_request.json` is authoritative when the client rejects an already written GM turn after validation.
-- Ordinary bounded repair packets may require an in-place correction followed
-  by `validation_repair_ready.json`, as specified by that packet.
-- A `mortal_location_materialization_repair` is different: before dispatch the
-  client restores the validated pre-turn baseline. The request sets the
-  full-turn resubmission obligation and lists every required changed path. The
+- When root `fullTurnResubmissionRequired=false`, an ordinary bounded packet may
+  request an in-place correction followed by `validation_repair_ready.json`.
+- When root `fullTurnResubmissionRequired=true`, including
+  `mortal_location_materialization_repair`, `effect_materialization_repair`, and
+  `resource_semantic_omission_repair`, the client restores the validated
+  pre-turn baseline. `requiredResubmissionPaths` lists exactly the changed
+  GM-authored command/output surfaces that must be freshly recreated. The
+  client restores or republishes client-owned preparation/publication roots;
+  they are never GM obligations and never belong in that array. This includes
+  `system_mods.json`, `progression_schedule.json`, the resource
+  definitions/state/history/owner-authority quartet,
+  `pending_effect_resolutions.json`, and `effect_identity_index.json`. The
   GM/worker must regenerate one complete coherent raw response, including all
   intended location, actor, faction, item, narrative, interface, and other turn
   effects. A ready-only response, an in-place canonical patch, a named-leaf-only
@@ -1230,6 +1238,35 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
 - The client shows a native `Accept / Decline` prompt.
 - If the player declines, the client sends a new ordinary `turn_request.json` asking for standard mechanical resolution and forbidding the same `qteId` from being re-offered.
 - If the player accepts, the full QTE scene resolves locally on the client.
+- If the selected terminal outcome reaches a bounded effect/resource component,
+  local resolution enters `awaiting_receipt` and publishes the dedicated closed
+  request `input/qte_effect_resolution_request.json` with
+  `requestKind=qte_deferred_effect_resolution`. This is a receipt-only task and
+  not an ordinary turn.
+- For that task the GM reads only the current request's `safePacket` and answers
+  only the current wave with closed `effectResolutionReceipts[]`. It must not
+  read or reuse `input/turn_request.json`, create a pending-turn snapshot, run
+  story or progression work, advance lifecycle, or increment the turn counter.
+- The GM constructs receipts in memory and calls
+  `Complete-BoeQteEffectResolution -Receipts $receipts` as the last action. The
+  helper copies exact correlation, writes
+  `output/qte_effect_resolution_receipts.json`, and writes
+  `ready/qte_effect_resolution_complete.json` last. The GM never writes those
+  two files or canonical/narrative/interface state directly.
+- Do not call `Complete-BoeValidationRepair`: the dedicated QTE receipt task
+  does not reuse the ordinary validation-repair request, helper, ready marker,
+  or full-turn resubmission loop.
+- On restart, the same sealed continuation and current wave remain authoritative.
+  Earlier-wave bindings and the same preallocated identities stay client-owned;
+  a next wave gets new request/wave identity without changing its session,
+  continuation, selected-terminal, full-turn, or semantic-turn authority.
+  Until the final wave there is no mechanics, QTE-history, story, progression,
+  or turn counter publication. The final wave publishes the complete selected
+  QTE outcome atomically; stale, tampered, mismatched, or extra-field transport
+  fails closed.
+- See `OtherGuides/Effect_Materialization_Contract.md` and
+  `mortal_qte_deferred_effect_receipt_waves_v1` in
+  `Examples/E_CLI_QTE_Offer.txt`.
 - QTE Practice Mode is client-owned practice for learning implemented QTE mechanics before or outside a normal campaign.
 - Practice has no rewards: no XP, achievements, Ink Feathers, inventory, quest progress, Daren rewards, or other permanent benefits.
 - Practice has no GM-authored practice scenes; the GM must not author practice offers, action types, response fields, or follow-up turns.
@@ -1359,6 +1396,10 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
 - Every terminal outcome must contain a local `responseFragment` using normal `GameResponse` field names.
 - Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
 - `responseFragment` is the authoritative final mechanical outcome for an accepted QTE branch; the GM must not rely on a follow-up GM turn to add the real reward later.
+- A Mortal QTE terminal branch may request a bounded penalty only through `responseFragment.resourceChanges[]`. QTE resource contract v1 is closed: `operation` must be `damage`, target must be `{ "kind": "player", "targetId": "player_current" }`, `resourceKey` must name an existing active resource, `amount` must be a positive exact decimal, and `source` must be exactly `{ "kind": "narrative_outcome" }` with no GM-authored `sourceId`.
+- Every QTE resource command is bound to its array positions: `eventRef` must be exactly `turn_{sourceTurn}:qte_terminal:{one-based terminal outcome ordinal}:resource:{one-based command ordinal}`. `sourceTurn` is the accepted Mortal turn to which the client binds the offer; do not reuse a resource eventRef between outcomes or commands.
+- The client validates resource commands in every terminal outcome, including branches that are not selected, then applies only the selected branch through the common resource reducer and guarded quartet transaction. Retry accepts only the exact replay transition and never damages twice.
+- `resourceDefinitionCreations` and `resourceCapacityChanges` are forbidden inside QTE `responseFragment`; QTE cannot create a reserve or alter its capacity. Direct gauge aliases such as legacy `current*Change` fields are forbidden and are not converted.
 - Successful terminal outcomes must include positive `experienceGained` at minimum.
 - For validation purposes, a "successful terminal outcome" is any terminal outcome reachable by following one or more `success` branches from `startChapterId`.
 - After a successful accepted QTE, the client locally applies that `experienceGained` to an authoritative XP counter in `game_state/player/experience.json`.
@@ -2318,8 +2359,9 @@ baseline in `game_state/inventory/items.json`,
 `game_state/inventory/item_bonds.json`,
 `game_state/inventory/item_text_updates.json`, and
 `game_state/npcs/item_journals.json`; common resource authority is established in
-`game_state/resources/resource_definitions.json`, `resource_state.json`, and
-`resource_history.json`. Previous-life item sidecars are rollback-only and are not the current GM baseline.
+`game_state/resources/resource_definitions.json`, `resource_state.json`,
+`resource_history.json`, and `resource_owner_authority.json`.
+Previous-life item sidecars are rollback-only and are not the current GM baseline.
 They are not compatible with the current schema and are never copied into the new life. The GM must not copy old entries,
 receipts, IDs, or lineage into these files; it creates current-life items only
 through the supported route contracts above.

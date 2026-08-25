@@ -208,15 +208,26 @@
                                         - (Assume the check resolves to 'Full Success').
 
                                     3.  Outcome Determination ('Full Success'):
-                                        - Durability restored by +40%.
-                                        - New Durability = 40% + 40% = 80%.
+                                        - The projected shield durability is 40/100.
+                                        - Requested restore amount = 40 points; projected result = 80/100.
 
                                     4.  State Changes:
-                                        - "Steel Shield" (ID: shield-01) durability becomes "80%".
+                                        - Emit resourceChanges operation=restore for item shield-01 / durability, amount 40. The client owns the resulting 80/100 projection.
                                         - "Steel Ingot" count decreases by 1.
                                         - "Coal" count decreases by 2.
 
-                                    5.  Final Log Summary: Player successfully repaired the Steel Shield to 80% durability, consuming 1 Steel Ingot and 2 Coal.
+                                    Part of JSON Response:
+                                    "resourceChanges": [{
+                                      "operation": "restore",
+                                      "target": { "kind": "item", "targetId": "shield-01" },
+                                      "resourceKey": "durability",
+                                      "amount": 40,
+                                      "source": { "kind": "local_item_outcome", "sourceId": "shield-01" },
+                                      "eventRef": "turn_42:resource:1",
+                                      "reason": "Successful field repair at the smithy."
+                                    }]
+
+                                    5.  Final Log Summary: Player successfully restored 40 durability points to the Steel Shield; the client projects 80/100 after consuming 1 Steel Ingot and 2 Coal.
 
                                     ]]>
    </content>

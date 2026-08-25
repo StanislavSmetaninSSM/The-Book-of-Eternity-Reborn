@@ -126,9 +126,7 @@ public sealed class ShiningStateValidationTests
                 NullLogger<ValidationService>.Instance);
 
             var issues = await validator.ValidateGameStateAsync(
-                new GameStateValidationSelection(
-                    GameStateValidationPhase.MetaMiscStateFiles,
-                    new[] { ShiningAbodeState.StatePath }));
+                IntegrationValidationProfiles.ShiningState);
 
             Assert.DoesNotContain(
                 issues,

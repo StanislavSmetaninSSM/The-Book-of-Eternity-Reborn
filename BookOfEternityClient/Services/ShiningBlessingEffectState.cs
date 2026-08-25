@@ -2148,7 +2148,11 @@ internal static class ShiningBlessingEffectState
                 ruinousSignal.EventId,
                 narrativeFingerprint,
                 ResourceMutationSourceState.Active,
-                SameTurn: true),
+                SameTurn: true,
+                BoundOwner: new ResourceOwnerKey(
+                    "mortal_world",
+                    ResourceOwnerKind.Player,
+                    "player_current")),
             new ResourceMutationSourceExport(
                 "registered_system_outcome",
                 registeredSourceId,

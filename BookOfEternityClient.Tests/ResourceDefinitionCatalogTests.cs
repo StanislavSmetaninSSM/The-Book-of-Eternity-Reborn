@@ -67,6 +67,7 @@ public sealed class ResourceDefinitionCatalogTests
         Assert.Equal(
             ResourceCapacityFormulaCatalog.MortalPoiseCapacityV1,
             poise!.CapacityPolicy.FormulaKey);
+        Assert.Contains(ResourceOwnerKind.Npc, poise.AllowedOwnerKinds);
 
         Assert.True(catalog.TryResolveExact("durability", out var durability));
         Assert.Equal(ResourceCapacityKind.InstanceFixed, durability!.CapacityPolicy.Kind);
@@ -340,6 +341,44 @@ public sealed class ResourceDefinitionCatalogTests
             ["kind"] = "definition_fixed",
             ["value"] = decimal.Parse(maximum, System.Globalization.CultureInfo.InvariantCulture)
         };
+        using var document = JsonDocument.Parse(proposal.ToJsonString());
+
+        var result = Materialize(document.RootElement);
+
+        Assert.Null(result.Definition);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_definition_invalid_numeric_policy");
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void MaterializeProposal_RejectsFixedInitializationBelowMinimumForDynamicCapacity(
+        bool registeredFormulaCapacity)
+    {
+        var proposal = CreateProposal();
+        proposal["minimumPolicy"] = new JsonObject
+        {
+            ["kind"] = "definition_fixed",
+            ["value"] = 5
+        };
+        proposal["initializationPolicy"] = new JsonObject
+        {
+            ["kind"] = "fixed",
+            ["value"] = 4
+        };
+        if (registeredFormulaCapacity)
+        {
+            proposal["capacityPolicy"] = new JsonObject
+            {
+                ["kind"] = "registered_formula",
+                ["formulaKey"] =
+                    ResourceCapacityFormulaCatalog.AfterlifeReturnGachaAttemptsV1
+            };
+            proposal["allowedOwnerKinds"] = new JsonArray(
+                "afterlife_actor",
+                "afterlife_scope");
+        }
         using var document = JsonDocument.Parse(proposal.ToJsonString());
 
         var result = Materialize(document.RootElement);

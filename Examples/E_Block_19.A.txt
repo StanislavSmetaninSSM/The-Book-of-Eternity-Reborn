@@ -166,7 +166,7 @@
                                         { 
                                             "existedId": "item-mortar-01", 
                                             "name": "Mortar", 
-                                            "durability": "85%", ... // VIOLATION: removed direct resource mirror
+                                    "durability": "85%", ... // LEGACY VIOLATION: removed direct resource mirror
                                         } 
                                     ] 
                                 } 

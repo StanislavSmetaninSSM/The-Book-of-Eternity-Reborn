@@ -150,7 +150,7 @@
                                 - Formulating multi-step tactical plans or complex strategies.
                                 - Crafting intricate items, potions, or devices based on learned schematics or principles.
                                 - Casting magic that relies on structured knowledge, precise formulae, and understanding of arcane laws (e.g., traditional wizardry, alchemy if magical, runic magic, technomancy).
-                            Influences MaxEnergy.
+                            Influences the registered energy resource capacity.
         
                             'wisdom': 
                             Represents a character's intuition, willpower, common sense, situational awareness, empathy, and practical judgment. 
@@ -164,7 +164,7 @@
                                 - Providing sage advice or guidance to others.
                                 - Applying practical skills like herbalism (identifying and using medicinal plants), first aid, or survival techniques based on experience and observation.
                                 - Casting magic that relies on an intuitive connection to natural forces, spirits, divine will (if not Faith-based), or innate life energies (e.g., druidic spells, shamanistic rituals, some forms of psionics or instinctual magic).
-                            Influences MaxEnergy.
+                            Influences the registered energy resource capacity.
 
                             'faith': 
                             Represents the strength and depth of a character's belief system, their conviction in a higher power, cause, or personal philosophy, and their spiritual resolve or connection to the divine/supernatural.
@@ -176,7 +176,7 @@
                                 - Interacting with religious figures, orders, or celestial/infernal beings where piety or strength of belief is paramount.
                                 - Attempting actions that require an extraordinary leap of faith or defy conventional logic, fueled by sheer belief (GM discretion).
                                 - Drawing upon inner spiritual strength to endure hardship or overcome personal doubt in critical moments.
-                            Influences MaxEnergy.
+                            Influences the registered energy resource capacity.
 
                             'attractiveness':
                             Represents a combination of physical beauty, demeanor, grooming, and innate charm that makes an immediate visual and emotional impression on others. 
@@ -453,10 +453,7 @@
                             'duration' IS used. 
                             'value' is per turn.
 
-                            'WoundReference': Represents a persistent effect sourced directly from an active Wound. This is a special linking effect.
-                            Purpose: To indicate that the character is suffering consequences from a specific named Wound.
-                            Typical 'targetType': NOT used. This effect is a pointer.
-                            'duration': Always 999 (persistent until the linked Wound is removed or healed).
+                            Persistent wound consequences are not entries in this static Combat Action effectType list. A Wound owns complete activeEffectDefinitions[] with profile=wound_consequence and one exact wound source link; application is requested separately through top-level effectChanges[]. The client owns the runtime carrier, source-bound lifetime, and expiration.
 
                             'Heal': Represents direct, instantaneous restoration of health.
                             Purpose: Standard healing spells, potions, or abilities that provide immediate recovery.
@@ -987,10 +984,10 @@
                                 Base capacity is 30 kg, significantly increased by Strength, and moderately by Constitution. 
                                 Reaches approximately 250 kg with 100 in both relevant characteristics.
                                
-                                2) Maximum Energy Pool ('MaxEnergy'):
+                                2) Maximum Energy Resource Capacity:
                                 Formula: 
 
-                                    MaxEnergy% = 100 + floor(PermanentlyModifiedConstitution * 0.75) + floor(PermanentlyModifiedIntelligence * 0.75) + floor(PermanentlyModifiedWisdom * 0.75) + floor(PermanentlyModifiedFaith * 0.75)
+                                    EnergyCapacityPoints = 100 + floor(PermanentlyModifiedConstitution * 0.75) + floor(PermanentlyModifiedIntelligence * 0.75) + floor(PermanentlyModifiedWisdom * 0.75) + floor(PermanentlyModifiedFaith * 0.75)
 
                                 Description: Determines the character's maximum energy pool, starting at a base of 100%. 
                                 It is equally and significantly increased by all four core vitality and mental characteristics. 
@@ -1627,7 +1624,7 @@
                                           (As this is a permanent, flat bonus, it contributes to Permanently Modified Strength and WILL increase health resource capacity and MaxWeight.)
 
                                         - "+8 intelligence" (from 'Circlet of Intellect')
-                                          (This permanent, flat bonus contributes to Permanently Modified Intelligence and WILL increase MaxEnergy.)
+                                          (This permanent, flat bonus contributes to Permanently Modified Intelligence and WILL increase the registered energy resource capacity.)
 
                                         - "+4 luck" (from 'Lucky Charm')
                                           (This permanent, flat bonus contributes to Permanently Modified Luck and WILL lower the CritChanceThreshold.)
@@ -3543,12 +3540,13 @@
       <![CDATA[
 
                             {
-                                "woundId": "system_assigned_guid_or_null_for_new", 
+                                "woundId": "exact_stable_id_or_null_for_new_without_same_turn_effect_application",
                                 "woundName": "user_readable_name_of_wound", 
                                 "severity": "'Light', 'Moderate', 'Serious', 'Critical'", 
                                 "descriptionOfEffects": "user_readable_summary_of_how_it_affects_character", 
-                                "generatedEffects": [ 
-                                    /* Array of full Effect Objects (as per #6.2.1) this wound creates */
+                                "activeEffectDefinitions": [
+                                    /* Zero or more complete Effect Materialization v1 source definitions.
+                                       A wound_consequence payload and its one wound/source link use this same woundId. */
                                 ],
                                 "healingState": {
                                     "currentState": "'Untreated' | 'Stabilized' | 'Recovering' | 'Healed'",
@@ -3570,8 +3568,7 @@
      <instructiontext>
       <![CDATA[
 
-                            This is a strict protocol. When a Wound is triggered, your responsibility is ONLY to describe the new Wound object. 
-                            The game system handles the application of its effects automatically.
+                            This is a strict protocol. When a Wound is triggered, describe the independent Wound owner and, only when a consequence must begin now, request that consequence separately through top-level effectChanges[]. The client validates source authority and handles runtime publication.
 
                             ]]>
      </instructiontext>
@@ -3589,8 +3586,10 @@
                             Step 2: Define the Complete Wound Object
                             1) Create the full Wound Object according to the structure defined in #5.20.3.
 
-                            2) Define 'generatedEffects': 
-                            You MUST define one or more specific, mechanical Debuff objects here that represent the immediate consequences of the Wound.
+                            2) Define 'activeEffectDefinitions':
+                            - Use [] when the wound has no lifecycle consequence beyond its own healing/narrative state.
+                            - Otherwise provide one or more complete current-schema definitions. Each wound_consequence component names this exact woundId, and links[] contains exactly one matching { kind: "wound", targetId: <same woundId>, role: "source" } entry.
+                            - A definition is source policy only. It does not apply itself and contains no effectId, current stacks, remaining lifetime, chronology, transition, or receipt.
 
                             3) Initialize 'healingState': 
                             When a wound is first created, you MUST initialize its 'healingState' object logically:
@@ -3601,19 +3600,20 @@
                                 - Set 'nextState' to "Stabilized".
                                 - Populate the 'canBeImprovedBy' array with a list of logical first actions or items (e.g., "First Aid", "Bandages", "Minor Healing Spell").
                            
-                            Step 3: Report ONLY the Wound Object
-                            1) Your sole mechanical output for inflicting the Wound is to add the complete Wound Object (created in Step 2) to the appropriate array:
+                            Step 3: Report the Wound and Any Separate Application Request
+                            1) Add the complete Wound Object (created in Step 2) to the appropriate array:
                                 - For the Player Character, add it to 'playerWoundChanges'.
                                 - For a named NPC, add it to 'NPCWoundChanges'.
 
-                            2) It is forbidden to report the effects from the Wound's 'generatedEffects' array anywhere else. 
-                            The system will read them from the Wound Object you provide.
+                            2) If an immediate consequence must begin in the same accepted turn, the new wound must already carry the exact stable woundId selected by the command. Add a separate top-level effectChanges[] apply with source.kind=wound, sourceId=<that exact woundId>, definitionKey owned by the wound, exact target/eventRef, bounded parameters, and reason.
+
+                            3) Never copy a definition into activeEffects[] or invent effectId/currentStacks/remaining lifetime. If no apply command is present, the definition remains dormant policy.
 
                             Step 4: Log Everything
                             1) In 'gm_thoughts_markdown', you must log:
                                 - The event that triggered the Wound (e.g., "Player hit by Ogre's club for 60% of max health.").
                                 - The name and severity of the inflicted Wound (e.g., "Inflicted 'Serious' Wound: 'Shattered Arm'.").
-                                - A detailed list of the 'generatedEffects' that you defined within the Wound object. This serves as your "worksheet" and justification.
+                                - The definitionKey/profile of each source policy and every separate effectChanges[] request. This is the worksheet and justification; do not predict runtime identities or post-state.
 
                             ]]>
      </content>
@@ -3627,18 +3627,16 @@
 
                             Healing Wounds is a multi-step process tracked via the 'healingState' object.
 
-                            1.  Initial State: When a wound is first inflicted, its 'healingState.currentState' is 'Untreated'. 
-                            All its 'generatedEffects' are active.
+                            1.  Initial State: When a wound is first inflicted, its 'healingState.currentState' is 'Untreated'. Its activeEffectDefinitions[] are source policies, not active instances; only an accepted effectChanges[] application can create a runtime consequence.
 
                             2.  Treatment (Stabilization): Actions like First Aid or applying basic bandages can stabilize a wound.
                                 -   This action changes the wound's 'healingState.currentState' to 'Stabilized'.
                                 
-                                -   Upon stabilization, some of the wound's 'generatedEffects' may be removed or reduced. 
-                                For example, a "Bleeding" (DamageOverTime) effect is typically removed, but a "Weakened Limb" (Debuff) might remain, perhaps with a reduced penalty.
-                                
                                 -   The GM must report the updated Wound object (with the new 'healingState') in 'playerWoundChanges' or 'NPCWoundChanges'.
                                 
-                                -   Any linked active-effect change MUST be requested separately through top-level 'effectChanges[]' with exact wound/source/target/event authority. Effect removal never heals or deletes the wound, and the wound transition never authorizes a direct carrier edit.
+                                -   Any linked active-effect benefit MUST use the declared lifecycle: the client automatically applies source-loss expiry when the wound no longer satisfies its source-bound predicate; otherwise request an authorized remove/dispel and, when needed, a separate application of another complete definition. Use exact wound/source/target/event authority. Never edit the runtime carrier or remaining lifetime.
+
+                                -   Effect removal never heals or deletes the wound, and the wound transition never grants direct effect-carrier authority.
 
                             3.  Recovery: More advanced healing (magic, potent potions, long-term rest) is required for full recovery.
                                 -   This action changes the wound's 'healingState.currentState' to 'Recovering' or directly to 'Healed', depending on the potency of the healing method.
@@ -3646,7 +3644,7 @@
 
                             4.  Healing (Full Recovery): When the 'healingState.currentState' becomes 'Healed':
                                 -   The wound is considered fully closed and no longer has any mechanical or narrative impact.                                
-                                -   The game system will remove the Wound object entirely from the character's 'playerWounds' or 'NPCWounds' list in the next turn's Context once it is reported as 'Healed'.
+                                -   The game system will remove the Wound object entirely from the character's 'playerWounds' or 'NPCWounds' list in the next turn's Context once it is reported as 'Healed'. Source-bound effect retirement is client-owned and cannot be used as wound-write authority.
         
                             ]]>
      </content>
@@ -3724,11 +3722,11 @@
                                        - Update 'healingState.description' to reflect the new condition (e.g., "The bone is set, but the arm is still weak.").
                                        - Update the 'canBeImprovedBy' list with actions/items suitable for the new state.
 
-                                    d) Modify 'generatedEffects': This is critical. A state change MUST have a mechanical benefit.
-                                       - Review the wound's 'generatedEffects'.
-
-                                       - Remove or reduce the severity of one or more of these effects. For example, upon reaching 'Stabilized', 
-                                       a "Bleeding" (DamageOverTime) effect should be removed. A "-30% Strength" debuff might be reduced to "-10% Strength".                                       
+                                    d) Resolve the Mechanical Benefit Through Current Contracts:
+                                       - Keep the wound transition complete and authoritative in its own wound-change array.
+                                       - If a linked consequence should end while the wound remains active, add a separate exact remove/dispel command whose authority is declared by that effect definition.
+                                       - If a different reduced consequence should begin, select a complete definition owned by the accepted wound and add a separate apply command. Do not mutate an existing instance or its remaining lifetime.
+                                       - Change activeEffectDefinitions[] only when the wound's future source policy itself changes; each resulting definition set must remain complete and valid.
 
                                     ]]>
        </content>

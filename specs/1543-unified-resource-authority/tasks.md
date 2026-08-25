@@ -217,17 +217,65 @@ description: "Dependency-ordered TDD tasks for the unified resource authority"
 
 **Purpose**: Prove near-linear behavior, full requirement coverage, clean diff, local gate health, and merge readiness without weakening tests.
 
-- [ ] T114 [P] Add RED/guard cases for definition/owner/state/history catalog scaling, one history working-set seed/freeze per plan, no whole-history rebuild per mutation, and exact 2.5x doubling threshold in `BookOfEternityClient.Tests/ResourceAuthorityScaleTests.cs`
-- [ ] T115 [P] Add RED/guard cases for mutation/trigger/plan scaling, 512/1,024/32 boundaries, and exact descriptor counts in `BookOfEternityClient.IntegrationTests/AcceptedMechanicsPlannerScaleTests.cs`
-- [ ] T116 Optimize only measured repeated parsing/index construction in `BookOfEternityClient/Services/ResourceHistoryWorkingSet.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs` until T114–T115 are GREEN without changing coverage, limits, caps, filters, or timeout
-- [ ] T117 Run one meaningful Fast checkpoint, record exact summary/count/time/duplicates/cleanup in `specs/1543-unified-resource-authority/quickstart.md` and `docs/superpowers/plans/2026-08-15-unified-resource-authority.md`, and do not rerun it immediately before PreMerge
-- [ ] T118 Reconcile every FR/SC/contract/data-model item to an implemented task and evidence row in `specs/1543-unified-resource-authority/tasks.md` and `quickstart.md`; leave incomplete boxes unchecked
-- [ ] T119 Run `speckit-analyze` on `specs/1543-unified-resource-authority/spec.md`, `plan.md`, and `tasks.md`; resolve every Critical/Important inconsistency in the owned artifacts
-- [ ] T120 Perform a fresh read-only code review of the complete #1543/#1535 resource range against owner, arithmetic, replay, graph, pending, TOCTOU, rollback, privacy, GM docs, examples, and no-legacy contracts; record findings/fixes/evidence in `docs/superpowers/plans/2026-08-15-unified-resource-authority.md`
-- [ ] T121 Run `git diff --check`, confirm only #1543/#1535 expected paths are changed, confirm no GitHub Actions/settings changes, and inspect all new/untracked files before staging
-- [ ] T122 Run the required LifecycleIntegration/FullValidation controls only if not already fresh for the final reviewed tree, then start exactly one final `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge`
-- [ ] T123 Record final PreMerge path, exit, timeout, counts, duplicates, cleanup, Fast/conditional-lane evidence, changed files, prompt/docs/example rationale, residual risks, and no-migration/no-Actions status in `quickstart.md`, the Superpowers plan, and the eventual PR summary
+- [X] T114 [P] Add RED/guard cases for definition/owner/state/history catalog scaling, one history working-set seed/freeze per plan, no whole-history rebuild per mutation, and exact 2.5x doubling threshold in `BookOfEternityClient.Tests/ResourceAuthorityScaleTests.cs`
+- [X] T115 [P] Add RED/guard cases for mutation/trigger/plan scaling, 512/1,024/32 boundaries, exact descriptor counts, and real Effect plan trigger/source-binding routing in `BookOfEternityClient.IntegrationTests/AcceptedMechanicsPlannerScaleTests.cs` and `EffectResourceTriggerRoutingScaleTests.cs`
+- [X] T116 Optimize only measured repeated parsing/index construction in `ResourceHistoryWorkingSet.cs`, `AcceptedMechanicsPlanner.cs`, `EffectAcceptedTurnPlan.cs`, `EffectAcceptedTurnPlanner.cs`, and `ResourceMutationSourceCatalog.cs` until T114–T115 are GREEN without changing coverage, limits, caps, filters, or timeout
+- [X] T117 Run one meaningful Fast checkpoint, record exact summary/count/time/duplicates/cleanup in `specs/1543-unified-resource-authority/quickstart.md` and `docs/superpowers/plans/2026-08-15-unified-resource-authority.md`, and do not rerun it immediately before PreMerge
+- [X] T118 Reconcile every FR/SC/contract/data-model item to an implemented task and evidence row in `specs/1543-unified-resource-authority/tasks.md` and `quickstart.md`; leave incomplete boxes unchecked
+- [X] T119 Run `speckit-analyze` on `specs/1543-unified-resource-authority/spec.md`, `plan.md`, and `tasks.md`; resolve every Critical/Important inconsistency in the owned artifacts
+- [X] T120 Perform a fresh read-only code review of the complete #1543/#1535 resource range against owner, arithmetic, replay, graph, pending, snapshot binding/TOCTOU, QTE terminal application, rollback, console/browser privacy, GM docs, examples, and no-legacy contracts; fix every finding through focused RED/GREEN evidence and record it in `docs/superpowers/plans/2026-08-15-unified-resource-authority.md`
+- [X] T121 Run `git diff --check`, confirm only #1543/#1535 expected paths are changed, confirm no GitHub Actions/settings changes, and inspect all new/untracked files before staging
+- [X] T122 Run the required LifecycleIntegration/FullValidation controls only if not already fresh for the final reviewed tree, then start exactly one final `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge`
+- [X] T123 Record final PreMerge path, exit, timeout, counts, duplicates, cleanup, Fast/conditional-lane evidence, changed files, prompt/docs/example rationale, residual risks, and no-migration/no-Actions status in `quickstart.md`, the Superpowers plan, and the eventual PR summary
 - [ ] T124 Commit only reviewed #1543/#1535 paths, record the final clean branch/merge handoff in `specs/1543-unified-resource-authority/quickstart.md`, and present PR options under the repository's owner-approval rules without changing repository visibility/settings or merging without the user's direction
+
+### T118 durable-artifact traceability ledger
+
+Every requirement and durable design surface is covered below. “Complete” means
+its implementation tasks and cited focused/domain evidence are complete. SC-009
+is now achieved through T122–T123 and the final `7,131/7,131` PreMerge; only the
+owner-controlled T124 integration handoff remains open.
+
+| Durable item | Implemented / remaining tasks | Quickstart evidence | Reconciliation |
+|---|---|---|---|
+| FR-001–FR-007 definitions, closed catalogs, formulas, sealing, no revision | T008–T013, T026–T038, T107–T113 | §§2–4, 12 | Complete |
+| FR-008–FR-012 state, exact arithmetic, quantum, lifecycle | T014–T017, T036, T039–T050, T114–T116 | §§3–5, 13 | Complete |
+| FR-013–FR-019 plus FR-061 and FR-063 stable owner families, vehicles, detached members | T018–T021, T051–T074, T105 | §§6–8, 11 | Complete |
+| FR-020–FR-022 immutable history, identities, semantic replay | T016–T017, T039–T050, T075, T081–T086 | §§3, 5, 9 | Complete |
+| FR-023–FR-028 closed commands, ordinary/capacity operations, exact scaling | T026–T050, T104 | §§4–5, 11 | Complete |
+| FR-029–FR-033 phase order, sequential reduction, events, finite graph | T042–T050, T075–T080, T114–T116 | §§5, 9, 13 | Complete |
+| FR-034–FR-038 one immutable plan, invalidation, lease, all-or-nothing result | T022–T024, T028–T038, T048–T050, T075–T086, T098–T100 | §§5, 9, 11 | Complete |
+| FR-039–FR-044 bounded pending/receipt protocol | T081–T084, T098–T101 | §§9, 11 | Complete |
+| FR-045–FR-049 Mortal/item/afterlife/effect authority cutover | T056–T086, T102–T113 | §§7–9, 11–12 | Complete |
+| FR-050–FR-052 projection parity, privacy, fail-closed copy | T087–T097 | §10 | Complete |
+| FR-053–FR-055 protected repair and exact rollback/output suppression | T096, T098–T101 | §§10–11 | Complete |
+| FR-056–FR-060 no migration, active artifacts, examples, out-of-scope accounting | T073, T102–T103, T107–T113 | §§11–12 | Complete |
+| FR-062 accepted-event ordinary-source identity and target binding | T104, T107–T113 | §§11–12 | Complete |
+| FR-062a canonical direct QTE resource producer without an effect-complete bypass | T120–T124; effect continuation completed by #1535 T042a/T047b | §§13–14; #1535 durable artifacts | Complete; only owner-controlled T124 integration remains open |
+| FR-064 recipient-scoped FullParty packet | T106–T113 | §§11–12 | Complete |
+| SC-001 one authority/no mirrors | T036, T056–T074, T102–T113 | §§4, 7–8, 11–12 | Complete |
+| SC-002 100-run ordinary/effect equivalence | T075, T086 | §9 | Complete |
+| SC-003 all owner lifecycles | T051–T074, T105 | §§6–8, 11 | Complete |
+| SC-004 replay/conflicting replay | T016–T017, T039–T050, T075, T081–T086 | §§3, 5, 9 | Complete |
+| SC-005 numeric/capacity/order boundaries | T008–T017, T039–T046, T114–T116 | §§2–5, 13 | Complete |
+| SC-006 byte/existence rollback and stale-output suppression | T098–T101 | §11 | Complete |
+| SC-007 console/browser parity and privacy | T087–T097 | §10 | Complete |
+| SC-008 active examples/templates validate without legacy authority | T107–T113 | §12 | Complete |
+| SC-009 complete bounded local verification gate | T003, T025, T038, T050, T074, T086, T097, T113, T117, T122–T123 | §§1–14, including final `7,131/7,131` PreMerge | Complete |
+| SC-010 Effect Task 9 uses only the common resource plan | T075–T086 | §9 | Complete |
+| `contracts/resource-definition-and-command.md` | T008–T013, T026–T050, T107–T113 | §§2–5, 12 | Complete |
+| `contracts/resource-owner-authority.md` | T018–T021, T051–T074, T104–T105 | §§6–8, 11 | Complete |
+| `contracts/resource-transition-and-history.md` | T016–T017, T039–T050, T075–T080, T114–T116 | §§3, 5, 9, 13 | Complete |
+| `contracts/accepted-mechanics-publication.md` | T022–T024, T028–T050, T075–T086, T098–T101 | §§5, 9, 11 | Complete |
+| `contracts/resource-pending-resolution.md` | T081–T084, T101 | §§9, 11 | Complete |
+| `contracts/resource-projection-and-cutover.md` | T056–T074, T087–T113 | §§7–12 | Complete |
+| `contracts/resource-full-party-interaction.md` | T106–T113 | §§11–12 | Complete |
+| Data model §§1–3 canonical roots/scalars/definitions | T008–T017, T026–T038 | §§2–4 | Complete |
+| Data model §4 owner authority/common combat identity | T018–T021, T051–T074, T104–T106 | §§6–8, 11 | Complete |
+| Data model §§5–6 state/history/working set | T014–T017, T039–T050, T114–T116 | §§3, 5, 13 | Complete |
+| Data model §§7–10 commands, mutations, accepted plan, pending | T022–T050, T075–T086, T104, T106 | §§4–5, 9, 11 | Complete |
+| Data model §§11–12 projections and domain cutover | T056–T074, T087–T113 | §§7–12 | Complete |
+| Data model §§13–14 invariants and state transitions | T008–T024, T027–T050, T075–T086, T098–T116 | §§2–5, 9, 11–13 | Complete |
 
 ---
 

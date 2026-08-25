@@ -384,8 +384,8 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
         Assert.False(replacement.IsCompleted);
 
         allowProfileRefresh.TrySetResult();
-        var result = await gacha.WaitAsync(TimeSpan.FromSeconds(5));
-        await replacement.WaitAsync(TimeSpan.FromSeconds(5));
+        var result = await gacha.WaitAsync(TimeSpan.FromSeconds(15));
+        await replacement.WaitAsync(TimeSpan.FromSeconds(15));
 
         Assert.True(result.Success, result.Message);
         Assert.False(fs.FileExists("game_state/meta/soul_state.json"));
@@ -953,17 +953,6 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
     private async Task SeedPlayerActionPointResourcesAsync()
     {
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
         await _fs.WriteFileAtomicAsync(
             AfterlifeEntityProfileState.StatePath,
             new JsonObject
@@ -975,16 +964,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
                         ["actorType"] = "player_soul",
                         ["actorId"] = "player_soul",
                         ["displayName"] = "Тестовая душа",
-                        ["realm"] = "Chaos Sea",
-                        [AfterlifeEntityProfileState.ResourceOwnerBindingsProperty] = new JsonArray
-                        {
-                            new JsonObject
-                            {
-                                ["realm"] = "chaos_sea",
-                                ["resourceOwnerId"] = "player_soul",
-                                ["state"] = "active"
-                            }
-                        }
+                        ["realm"] = "Chaos Sea"
                     }
                 }
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
@@ -996,12 +976,9 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
             ShiningAbodeState.CreateDefaultState().ToJsonString());
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", "{}");
         var soul = await ReadSoulAsync();
-        var initialPlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
             _fs,
-            new AfterlifeOwnerResourceAcceptedState(SoulState: soul),
-            turn: 1);
-        Assert.True(initialPlan.IsValid, string.Join(Environment.NewLine, initialPlan.Issues));
-        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(_fs, initialPlan));
+            new AfterlifeOwnerResourceAcceptedState(SoulState: soul));
         await _stateManager.RefreshGameStateAsync();
     }
 

@@ -88,15 +88,9 @@ public sealed class ResourceVehicleIntegrationTests
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
+        Assert.NotNull(bootstrap.Definitions);
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            context.FileSystem);
         await context.WriteExactJsonAsync(
             StorageTransportMoveService.VehiclesPath,
             new JsonObject { ["vehicles"] = new JsonArray() }.ToJsonString());
@@ -118,10 +112,10 @@ public sealed class ResourceVehicleIntegrationTests
         Assert.DoesNotContain(
             creationIssues,
             issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out var creationPlanning));
+        var creationHandoff = await AcceptedMechanicsAuthorityTestProbe
+            .PeekCommonAsync(context.FileSystem);
+        Assert.NotNull(creationHandoff);
+        var creationPlanning = creationHandoff.Result;
         var creationPlan = Assert.IsType<AcceptedMechanicsPlan>(creationPlanning.Plan);
         var vehicleOwner = Assert.Single(
             creationPlan.OwnerAuthority.Entries.Values,
@@ -163,10 +157,10 @@ public sealed class ResourceVehicleIntegrationTests
         Assert.DoesNotContain(
             destructionIssues,
             issue => issue.Severity == IssueSeverity.Error);
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out var destructionPlanning));
+        var destructionHandoff = await AcceptedMechanicsAuthorityTestProbe
+            .PeekCommonAsync(context.FileSystem);
+        Assert.NotNull(destructionHandoff);
+        var destructionPlanning = destructionHandoff.Result;
         var destructionPlan = Assert.IsType<AcceptedMechanicsPlan>(destructionPlanning.Plan);
         var retiredState = ResourceStateContract.ParseCanonical(
             destructionPlan.StateAfterImage.ToJsonString(),

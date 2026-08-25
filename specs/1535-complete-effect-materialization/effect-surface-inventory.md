@@ -85,19 +85,22 @@ map-viewer JavaScript are excluded.
 | `Rules/Block_6.txt` | `static-source` | Item definition/application boundary | T102 |
 | `Rules/Block_7.txt` | mixed | Replace direct active-array authoring | T102 |
 | `Rules/Block_8.txt` | mixed | Combat refs, triggers, stacks, lifetime | T102 |
-| `Rules/Block_9.txt` | `static-source` | Wound/effect independence | T102–T103 |
+| `Rules/Block_9.txt` | reviewed item/crafting consumer | Preserve item definition/application boundary | T102 |
 | `Rules/Block_10.txt` | `static-source` | Fate Card template versus active instance | T102 |
 | `Rules/Block_12.txt` | `legacy-command` | Remove NPC legacy command | T102 |
 | `Rules/Block_13.txt` | reviewed source | Synchronize related terminology | T102–T103 |
-| `Rules/Block_14.txt` | `static-source` | Quest definition/application | T103 |
-| `Rules/Block_15.txt` | `static-source` | Location/hazard definition/application | T103 |
-| `Rules/Block_17.txt` | `static-source` | World-event definition/application | T103 |
-| `Rules/Block_19.C.txt` | `static-source` | Same-turn faction source | T103 |
-| `Rules/Block_19.txt` | `static-source` | Preserve passive faction bonuses | T103 |
-| `Rules/Block_21.txt` | `afterlife-adapter` | Align profile/condition routes | T105 |
+| `Rules/Block_14.txt` | combat-profile consumer | Consume accepted snapshot; never rescan raw wound/effect payloads | T102, T110 |
+| `Rules/Block_15.txt` | combat-resolution consumer | Apply/remove through the shared lifecycle route | T102, T110 |
+| `Rules/Block_17.txt` | player-state consumer | Keep fatigue and related conditions source-bound | T102, T110 |
+| `Rules/Block_18.txt` | `static-source` | Quest definition/application boundary | T103 |
+| `Rules/Block_19.C.txt` | NPC-encumbrance consumer | Use an exact supported source and top-level command | T102, T110 |
+| `Rules/Block_19.txt` | NPC source/consumer | Preserve skill, Fate Card, and combat-action source boundaries | T102–T103 |
+| `Rules/Block_20.txt` | `static-source` | Location and hazard definition/application boundary | T103 |
+| `Rules/Block_21.txt` | mixed faction source / afterlife boundary | Faction definition/application and afterlife specialization | T103, T105 |
 | `Rules/Block_24.txt` | `afterlife-adapter` | Synchronize identity/lifecycle | T105 |
-| `Rules/Block_25.txt` | `static-source` | Hazard periodic/triggered lifecycle | T103 |
-| `Rules/Block_25.A.txt` | `static-source` | Trigger/bounded resolution | T103 |
+| `Rules/Block_25.txt` | custom-state consumer | Reference exact definitions; never promote custom-state prose | T102, T110 |
+| `Rules/Block_25.A.txt` | custom-state consumer | Reference exact definitions; never promote threshold prose | T102, T110 |
+| `Rules/Block_30_System_Lore_Context.txt` | `static-source` | World-event definition/application boundary | T103 |
 | `Rules/Block_CLI_Operations.txt` | mixed | Commands, pending, repair privacy, no aliases | T104 |
 | `OtherGuides/Afterlife_Combat_Terminology_Glossary.md` | `afterlife-adapter` | Common identity/lifecycle terms | T105 |
 | `OtherGuides/Afterlife_Contract_Matrix.md` | `afterlife-adapter` | Register all new paths/contracts | T105 |

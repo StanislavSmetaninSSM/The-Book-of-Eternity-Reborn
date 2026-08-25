@@ -151,83 +151,10 @@ internal sealed class ResourceMutationSourceCatalog
         var aliases = new HashSet<string>(StringComparer.Ordinal);
         foreach (var export in candidates)
         {
-            if (!Routes.TryGetValue(export.SourceKind, out var routeDefinition))
-            {
-                Add(
-                    issues,
-                    "resource_source_route_unknown",
-                    "registered closed resource source route",
-                    export.SourceKind);
+            var issueCount = issues.Count;
+            ValidateExport(export, issues);
+            if (issues.Count != issueCount)
                 continue;
-            }
-            if (routeDefinition.BoundOwnerKind is { } boundOwnerKind)
-            {
-                if (export.BoundOwner == null ||
-                    export.BoundOwner.OwnerKind != boundOwnerKind ||
-                    !string.Equals(
-                        export.BoundOwner.ResourceOwnerId,
-                        export.SourceId,
-                        StringComparison.Ordinal))
-                {
-                    Add(
-                        issues,
-                        "resource_source_owner_binding_invalid",
-                        $"exact {boundOwnerKind} owner bound to the same sourceId",
-                        export.BoundOwner == null
-                            ? "missing"
-                            : $"{export.BoundOwner.Realm}/{export.BoundOwner.OwnerKind}/{export.BoundOwner.ResourceOwnerId}");
-                    continue;
-                }
-            }
-            else if (routeDefinition.RequiresBoundOwner)
-            {
-                if (export.BoundOwner == null)
-                {
-                    Add(
-                        issues,
-                        "resource_source_owner_binding_required",
-                        "one exact target owner binding for this source route",
-                        export.SourceKind);
-                    continue;
-                }
-            }
-            else if (export.BoundOwner != null)
-            {
-                Add(
-                    issues,
-                    "resource_source_owner_binding_forbidden",
-                    "no owner binding for this source route",
-                    export.SourceKind);
-                continue;
-            }
-            if (!ResourceMaterializationContract.IsExactIdentifier(export.SourceId))
-            {
-                Add(
-                    issues,
-                    "resource_source_id_invalid",
-                    "exact source identity",
-                    export.SourceId);
-                continue;
-            }
-            if (!ResourceMaterializationContract.IsAuthorityFingerprint(
-                    export.AuthorityFingerprint))
-            {
-                Add(
-                    issues,
-                    "resource_source_fingerprint_invalid",
-                    "exact source authority fingerprint",
-                    export.AuthorityFingerprint);
-                continue;
-            }
-            if (export.SameTurn && export.State != ResourceMutationSourceState.Active)
-            {
-                Add(
-                    issues,
-                    "resource_source_same_turn_state_invalid",
-                    "active same-turn source authority",
-                    export.State.ToString());
-                continue;
-            }
 
             var key = new SourceKey(export.SourceKind, export.SourceId);
             if (!exact.TryAdd(key, export))
@@ -258,10 +185,110 @@ internal sealed class ResourceMutationSourceCatalog
             : new ResourceMutationSourceCatalogResult(null, issues.ToArray());
     }
 
+    internal static IReadOnlyList<ValidationIssue> ValidateExport(
+        ResourceMutationSourceExport export)
+    {
+        ArgumentNullException.ThrowIfNull(export);
+        var issues = new List<ValidationIssue>();
+        ValidateExport(export, issues);
+        return issues.ToArray();
+    }
+
+    private static void ValidateExport(
+        ResourceMutationSourceExport export,
+        List<ValidationIssue> issues)
+    {
+        if (!Routes.TryGetValue(export.SourceKind, out var routeDefinition))
+        {
+            Add(
+                issues,
+                "resource_source_route_unknown",
+                "registered closed resource source route",
+                export.SourceKind);
+            return;
+        }
+        if (routeDefinition.BoundOwnerKind is { } boundOwnerKind)
+        {
+            if (export.BoundOwner == null ||
+                export.BoundOwner.OwnerKind != boundOwnerKind ||
+                !string.Equals(
+                    export.BoundOwner.ResourceOwnerId,
+                    export.SourceId,
+                    StringComparison.Ordinal))
+            {
+                Add(
+                    issues,
+                    "resource_source_owner_binding_invalid",
+                    $"exact {boundOwnerKind} owner bound to the same sourceId",
+                    export.BoundOwner == null
+                        ? "missing"
+                        : $"{export.BoundOwner.Realm}/{export.BoundOwner.OwnerKind}/{export.BoundOwner.ResourceOwnerId}");
+            }
+        }
+        else if (routeDefinition.RequiresBoundOwner)
+        {
+            if (export.BoundOwner == null)
+            {
+                Add(
+                    issues,
+                    "resource_source_owner_binding_required",
+                    "one exact target owner binding for this source route",
+                    export.SourceKind);
+            }
+        }
+        else if (export.BoundOwner != null)
+        {
+            Add(
+                issues,
+                "resource_source_owner_binding_forbidden",
+                "no owner binding for this source route",
+                export.SourceKind);
+        }
+        if (!ResourceMaterializationContract.IsExactIdentifier(export.SourceId))
+        {
+            Add(
+                issues,
+                "resource_source_id_invalid",
+                "exact source identity",
+                export.SourceId);
+        }
+        if (!ResourceMaterializationContract.IsAuthorityFingerprint(
+                export.AuthorityFingerprint))
+        {
+            Add(
+                issues,
+                "resource_source_fingerprint_invalid",
+                "exact source authority fingerprint",
+                export.AuthorityFingerprint);
+        }
+        if (export.SameTurn && export.State != ResourceMutationSourceState.Active)
+        {
+            Add(
+                issues,
+                "resource_source_same_turn_state_invalid",
+                "active same-turn source authority",
+                export.State.ToString());
+        }
+    }
+
     internal ResourceMutationSourceResolution Resolve(
         ResourceMutationSourceRequest request,
         ResourceDefinition definition,
         ResourceCoordinate? target = null)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(definition);
+        _sources.TryGetValue(
+            new SourceKey(request.SourceKind, request.SourceId),
+            out var source);
+        return ResolveExport(request, definition, target, source);
+    }
+
+    internal static ResourceMutationSourceResolution ResolveExport(
+        ResourceMutationSourceRequest request,
+        ResourceDefinition definition,
+        ResourceCoordinate? target,
+        ResourceMutationSourceExport? source)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(definition);
@@ -276,9 +303,15 @@ internal sealed class ResourceMutationSourceCatalog
             return Failure(issues);
         }
         if (!ResourceMaterializationContract.IsExactIdentifier(request.SourceId) ||
-            !_sources.TryGetValue(
-                new SourceKey(request.SourceKind, request.SourceId),
-                out var source))
+            source == null ||
+            !string.Equals(
+                source.SourceKind,
+                request.SourceKind,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                source.SourceId,
+                request.SourceId,
+                StringComparison.Ordinal))
         {
             Add(
                 issues,

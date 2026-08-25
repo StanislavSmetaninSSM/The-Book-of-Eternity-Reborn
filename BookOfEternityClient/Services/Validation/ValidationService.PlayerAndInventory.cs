@@ -700,7 +700,8 @@ public partial class ValidationService
             var outcomeIndex = 0;
             foreach (var outcome in terminalOutcomes.EnumerateArray())
             {
-                var outcomeContext = $"{QteSceneService.QteOfferPath}.terminalOutcomes[{outcomeIndex++}]";
+                var currentOutcomeIndex = outcomeIndex++;
+                var outcomeContext = $"{QteSceneService.QteOfferPath}.terminalOutcomes[{currentOutcomeIndex}]";
                 if (!RequireObject(outcome, outcomeContext, issues))
                     continue;
 
@@ -759,6 +760,13 @@ public partial class ValidationService
                             fragmentIssue.Actual,
                             fragmentIssue.RepairHint));
                     }
+
+                    ValidateQteTerminalResourceChanges(
+                        responseFragment,
+                        outcomeContext,
+                        manifest?.TurnNumber,
+                        currentOutcomeIndex + 1,
+                        issues);
 
                     if (responseFragment.TryGetProperty("image_prompt", out _))
                     {
@@ -915,6 +923,154 @@ public partial class ValidationService
         }
 
         return issues;
+    }
+
+    private static void ValidateQteTerminalResourceChanges(
+        JsonElement responseFragment,
+        string outcomeContext,
+        int? sourceTurnNumber,
+        int outcomeOrdinal,
+        List<ValidationIssue> issues)
+    {
+        foreach (var forbiddenSurface in new[]
+                 {
+                     "resourceDefinitionCreations",
+                     "resourceCapacityChanges"
+                 })
+        {
+            if (!responseFragment.TryGetProperty(forbiddenSurface, out var forbiddenValue))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{outcomeContext}.responseFragment.{forbiddenSurface}",
+                IssueSeverity.Error,
+                "QTE terminal resource outcome supports ordinary damage commands only.",
+                code: "qte_terminal_resource_surface_forbidden",
+                section: "QTE",
+                expected: "field omitted",
+                actual: forbiddenValue.ValueKind.ToString(),
+                repairHint: "Remove resource definition/capacity authority from the QTE response fragment."));
+        }
+
+        if (!responseFragment.TryGetProperty("resourceChanges", out var resourceChanges))
+            return;
+
+        var commandRoot = "{\"resourceChanges\":" + resourceChanges.GetRawText() + "}";
+        var parsed = ResourceAcceptedTurnInputComposer.Parse(commandRoot);
+        foreach (var issue in parsed.Issues)
+        {
+            issues.Add(new ValidationIssue(
+                $"{outcomeContext}.responseFragment.{issue.FilePath}",
+                issue.Severity,
+                issue.Message,
+                issue.Code,
+                issue.Actor,
+                "QTE",
+                issue.Expected,
+                issue.Actual,
+                issue.RepairHint));
+        }
+
+        if (resourceChanges.ValueKind != JsonValueKind.Array)
+            return;
+
+        var commandIndex = 0;
+        foreach (var command in resourceChanges.EnumerateArray())
+        {
+            var commandPath =
+                $"{outcomeContext}.responseFragment.resourceChanges[{commandIndex}]";
+            var commandOrdinal = commandIndex + 1;
+            commandIndex++;
+            if (command.ValueKind != JsonValueKind.Object)
+                continue;
+
+            if (!command.TryGetProperty("operation", out var operation) ||
+                operation.ValueKind != JsonValueKind.String ||
+                !string.Equals(operation.GetString(), "damage", StringComparison.Ordinal))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{commandPath}.operation",
+                    IssueSeverity.Error,
+                    "QTE terminal resource outcome may only damage an existing player resource.",
+                    code: "qte_terminal_resource_operation_forbidden",
+                    section: "QTE",
+                    expected: "damage",
+                    actual: operation.ValueKind == JsonValueKind.String
+                        ? operation.GetString()
+                        : operation.ValueKind.ToString(),
+                    repairHint: "Use exact lowercase operation 'damage'."));
+            }
+
+            var targetValid = command.TryGetProperty("target", out var target) &&
+                              target.ValueKind == JsonValueKind.Object &&
+                              target.EnumerateObject().Count() == 2 &&
+                              target.TryGetProperty("kind", out var targetKind) &&
+                              targetKind.ValueKind == JsonValueKind.String &&
+                              string.Equals(targetKind.GetString(), "player", StringComparison.Ordinal) &&
+                              target.TryGetProperty("targetId", out var targetId) &&
+                              targetId.ValueKind == JsonValueKind.String &&
+                              string.Equals(targetId.GetString(), "player_current", StringComparison.Ordinal);
+            if (!targetValid)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{commandPath}.target",
+                    IssueSeverity.Error,
+                    "QTE terminal resource outcome is bound to the current player owner only.",
+                    code: "qte_terminal_resource_target_forbidden",
+                    section: "QTE",
+                    expected: "closed { kind: 'player', targetId: 'player_current' }",
+                    actual: command.TryGetProperty("target", out var actualTarget)
+                        ? actualTarget.GetRawText()
+                        : "missing",
+                    repairHint: "Use the exact current-player target and omit targetRef/extra fields."));
+            }
+
+            var sourceValid = command.TryGetProperty("source", out var source) &&
+                              source.ValueKind == JsonValueKind.Object &&
+                              source.EnumerateObject().Count() == 1 &&
+                              source.TryGetProperty("kind", out var sourceKind) &&
+                              sourceKind.ValueKind == JsonValueKind.String &&
+                              string.Equals(
+                                  sourceKind.GetString(),
+                                  "narrative_outcome",
+                                  StringComparison.Ordinal);
+            if (!sourceValid)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{commandPath}.source",
+                    IssueSeverity.Error,
+                    "QTE terminal resource damage requires client-derived narrative_outcome authority.",
+                    code: "qte_terminal_resource_source_forbidden",
+                    section: "QTE",
+                    expected: "closed { kind: 'narrative_outcome' } with no sourceId",
+                    actual: command.TryGetProperty("source", out var actualSource)
+                        ? actualSource.GetRawText()
+                        : "missing",
+                    repairHint: "Use narrative_outcome and let the client derive source identity from eventRef."));
+            }
+
+            var expectedEventRef = sourceTurnNumber is > 0
+                ? FormattableString.Invariant(
+                    $"turn_{sourceTurnNumber.Value}:qte_terminal:{outcomeOrdinal}:resource:{commandOrdinal}")
+                : null;
+            var submittedEventRef = command.TryGetProperty("eventRef", out var eventRef) &&
+                                    eventRef.ValueKind == JsonValueKind.String
+                ? eventRef.GetString()
+                : null;
+            if (expectedEventRef == null ||
+                !string.Equals(submittedEventRef, expectedEventRef, StringComparison.Ordinal))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{commandPath}.eventRef",
+                    IssueSeverity.Error,
+                    "QTE terminal resource eventRef does not match accepted causal authority.",
+                    code: "qte_terminal_resource_event_ref_mismatch",
+                    section: "QTE",
+                    expected: expectedEventRef ?? "current validated pending turn authority",
+                    actual: submittedEventRef ?? "missing",
+                    repairHint: "Bind eventRef to the exact source turn, terminal outcome ordinal, and resource command ordinal."));
+            }
+        }
     }
 
     private sealed record QteScoreMetricValidation(string Id, double Min, double Max);

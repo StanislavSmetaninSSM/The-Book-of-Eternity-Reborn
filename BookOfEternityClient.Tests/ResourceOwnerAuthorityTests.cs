@@ -103,6 +103,32 @@ public sealed class ResourceOwnerAuthorityTests
             issue.Code == "resource_owner_ref_confusable");
     }
 
+    [Theory]
+    [InlineData("npc_retired", "npc_retired", "resource_owner_identity_duplicate")]
+    [InlineData("npc_retired", "NPC_RETIRED", "resource_owner_identity_confusable")]
+    [InlineData("npc_healer", "npc_heаler", "resource_owner_identity_confusable")]
+    public void Build_RejectsDuplicateAndConfusableHistoricalOwnerIdentities(
+        string firstOwnerId,
+        string secondOwnerId,
+        string expectedCode)
+    {
+        var authority = Build(
+            Array.Empty<ResourceOwnerExport>(),
+            historical: new[]
+            {
+                new ResourceOwnerKey(
+                    "mortal_world",
+                    ResourceOwnerKind.Npc,
+                    firstOwnerId),
+                new ResourceOwnerKey(
+                    "mortal_world",
+                    ResourceOwnerKind.Npc,
+                    secondOwnerId)
+            });
+
+        Assert.Contains(authority.Issues, issue => issue.Code == expectedCode);
+    }
+
     [Fact]
     public void Resolve_RejectsCapabilityLifecycleRealmHistoricalNameAndIndexInference()
     {

@@ -25,7 +25,9 @@ public partial class CanonicalStateNormalizer
         string Code,
         string Description,
         string? PreTriggerRealm,
-        string? CurrentRealm);
+        string? CurrentRealm,
+        string? SnapshotToken = null,
+        string? SessionId = null);
 
     private sealed class PendingTurnSnapshotAuthorityManifest
     {
@@ -775,7 +777,9 @@ public partial class CanonicalStateNormalizer
             "authorized",
             string.Empty,
             null,
-            null);
+            null,
+            manifest.ManifestPayloadHash,
+            manifest.SessionId);
     }
 
     private static async Task<string?> TryReadValidatedActivePendingSnapshotFileAsync(

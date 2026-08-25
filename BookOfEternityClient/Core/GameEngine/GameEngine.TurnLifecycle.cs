@@ -913,6 +913,23 @@ public partial class GameEngine
                 }
             }
 
+            var resumedDeferredQte = await _qteSceneService
+                .ResumeDeferredEffectResolutionAsync(_gameLoop.TurnNumber);
+            if (resumedDeferredQte != null)
+            {
+                if (resumedDeferredQte.AwaitingEffectResolution)
+                {
+                    await Task.Delay(250);
+                    return true;
+                }
+                _lastResponse = resumedDeferredQte.Response;
+                _pendingImagePrompt = resumedDeferredQte.Response?.ImagePrompt;
+                await ProcessMortalProgressionAfterAcceptedTurnAsync();
+                await CheckLifeTransitions();
+                await CheckAscensionTrigger();
+                return true;
+            }
+
             // Check for GM-initiated incarnation (GM sends player to Mortal World).
             await CheckAscensionTrigger();
             await CheckGmIncarnationTrigger();
@@ -920,6 +937,11 @@ public partial class GameEngine
             var resumedQte = await _qteSceneService.ResumeActiveSceneIfAnyAsync(_gameLoop.TurnNumber);
             if (resumedQte != null)
             {
+                if (resumedQte.AwaitingEffectResolution)
+                {
+                    await Task.Delay(250);
+                    return true;
+                }
                 _lastResponse = resumedQte.Response;
                 _pendingImagePrompt = resumedQte.Response?.ImagePrompt;
                 await ProcessMortalProgressionAfterAcceptedTurnAsync();
@@ -1810,6 +1832,8 @@ public partial class GameEngine
         var completion = await _qteSceneService.StartAcceptedSceneAsync(
             offer,
             sourceTurnNumber);
+        if (completion.AwaitingEffectResolution)
+            return (true, completion.Response);
         await ProcessMortalProgressionAfterAcceptedTurnAsync();
         await CheckLifeTransitions(snapshotContext);
         await CheckAscensionTrigger();
@@ -2109,10 +2133,13 @@ public partial class GameEngine
                 lifecycleMarker, $"Конец смертной жизни. Причина: {reason}. {summary}");
 
             // === PHASE 3: Update realm and send life evaluation to GM ===
-            if (!await UpdateSoulStateRealm(
-                    SoulRealmTransitionCause.MortalDeathToChaosSea,
-                    lifeSummary))
+            var soulRealmTransition = await UpdateSoulStateRealmWithPublicationAsync(
+                SoulRealmTransitionCause.MortalDeathToChaosSea,
+                lifeSummary);
+            if (!soulRealmTransition.IsCommitted)
                 throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для перехода в Море Хаоса после завершения смертной жизни.");
+            foreach (var publishedPath in soulRealmTransition.PublishedCanonicalPaths)
+                rollbackBackups.ValidationSnapshotFiles.Add(publishedPath);
             await RefreshRuntimeStateAsync();
             _fs.ClearCurrentWorldLore();
 
@@ -2615,13 +2642,16 @@ public partial class GameEngine
             // Update soul state: switch realm to Mortal World and increment incarnation
             localStateMutated = true;
             var newIncarnationNumber = _stateManager.CurrentState.Incarnation + 1;
+            var mortalBootstrapTurnNumber = checked(_gameLoop.TurnNumber + 1);
 
             if (!await UpdateSoulStateRealm(
                     SoulRealmTransitionCause.IncarnationToMortalWorld))
                 throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для начала новой смертной жизни.");
             await RefreshRuntimeStateAsync();
             await _rivalSoulArcService.ResetForNewLifeAsync();
-            await _guardianCorrectionService.ApplyForNewLifeAsync(newIncarnationNumber);
+            await _guardianCorrectionService.ApplyForNewLifeAsync(
+                newIncarnationNumber,
+                mortalBootstrapTurnNumber);
             await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
 
             // Narrative/economic player status is separate from the canonical
@@ -2629,17 +2659,6 @@ public partial class GameEngine
             var status = MortalBootstrapStateBuilder.BuildFreshPlayerStatus();
             await _fs.WriteFileAtomicAsync("game_state/core/player_status.json",
                 status.ToJsonString(JsonOpts));
-
-            // Initialize empty mortal inventory
-            var inventory = new
-            {
-                items = Array.Empty<object>(),
-                equippedItems = new Dictionary<string, object?>(),
-                totalWeight = 0,
-                maxWeight = (double?)null
-            };
-            await _fs.WriteFileAtomicAsync("game_state/inventory/items.json",
-                JsonSerializer.Serialize(inventory, JsonOpts));
 
             if (preparedShiningPackage != null)
             {
@@ -2707,7 +2726,7 @@ public partial class GameEngine
             var request = new TurnRequest
             {
                 SessionId = _gameLoop.SessionId,
-                TurnNumber = _gameLoop.TurnNumber + 1,
+                TurnNumber = mortalBootstrapTurnNumber,
                 PlayerAction = string.Join(" ", parts),
                 Timestamp = DateTime.UtcNow.ToString("o"),
                 GameMode = "normal",
@@ -2819,8 +2838,17 @@ public partial class GameEngine
         string? worldDescription,
         string? startingCircumstances)
     {
+        var existingResourceBeforeImages = new Dictionary<string, string?>(StringComparer.Ordinal)
+        {
+            [ResourceMaterializationContract.DefinitionsPath] =
+                await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            [ResourceMaterializationContract.StatePath] =
+                await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            [ResourceMaterializationContract.HistoryPath] =
+                await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath)
+        };
         var definitionsResult = ResourceDefinitionCatalog.ParseCanonical(
-            await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            existingResourceBeforeImages[ResourceMaterializationContract.DefinitionsPath],
             allowMissingPristine: false);
         if (definitionsResult.Catalog == null || definitionsResult.Issues.Count != 0)
         {
@@ -2828,11 +2856,11 @@ public partial class GameEngine
                 "Mortal resource bootstrap requires the existing sealed resource catalog.");
         }
         var existingStateResult = ResourceStateContract.ParseCanonical(
-            await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            existingResourceBeforeImages[ResourceMaterializationContract.StatePath],
             definitionsResult.Catalog,
             allowMissingPristine: false);
         var existingHistoryResult = ResourceHistoryState.ParseCanonical(
-            await _fs.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+            existingResourceBeforeImages[ResourceMaterializationContract.HistoryPath],
             definitionsResult.Catalog,
             allowMissingPristine: false);
         if (existingStateResult.Ledger == null || existingHistoryResult.History == null ||
@@ -2842,6 +2870,25 @@ public partial class GameEngine
         {
             throw new InvalidDataException(
                 "Mortal resource bootstrap requires one valid existing state/history authority.");
+        }
+        var existingQuartet = await CanonicalResourceQuartetTransaction
+            .ComposeExistingSessionAsync(
+                definitionsResult.Catalog,
+                existingStateResult.Ledger,
+                existingHistoryResult.History,
+                existingStateResult.Ledger,
+                existingHistoryResult.History,
+                _fs.ReadFileAsync,
+                existingResourceBeforeImages,
+                new Dictionary<string, string>(StringComparer.Ordinal));
+        if (existingQuartet.Projection == null)
+        {
+            throw new InvalidDataException(
+                "Mortal resource bootstrap requires exact existing owner authority: " +
+                string.Join(
+                    "; ",
+                    existingQuartet.Issues.Select(static issue =>
+                        issue.Code ?? issue.Message)));
         }
 
         var computedCharacteristics = await _charService.ComputeAsync();
@@ -2881,9 +2928,30 @@ public partial class GameEngine
             worldDescription,
             startingCircumstances,
             DateTimeOffset.UtcNow);
+        var projectedDocuments = files.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.ToJsonString(JsonOpts),
+            StringComparer.Ordinal);
 
         foreach (var (path, json) in files)
         {
+            if (string.Equals(
+                    path,
+                    ResourceMaterializationContract.DefinitionsPath,
+                    StringComparison.Ordinal) ||
+                string.Equals(
+                    path,
+                    ResourceMaterializationContract.StatePath,
+                    StringComparison.Ordinal) ||
+                string.Equals(
+                    path,
+                    ResourceMaterializationContract.HistoryPath,
+                    StringComparison.Ordinal))
+            {
+                continue;
+            }
+            if (existingQuartet.Projection.BeforeImages.ContainsKey(path))
+                continue;
             if (string.Equals(path, "lore/codex_entries.json", StringComparison.OrdinalIgnoreCase))
                 await MergeMortalBootstrapCodexEntriesAsync(json);
             else
@@ -2901,9 +2969,61 @@ public partial class GameEngine
             [ResourceMaterializationContract.HistoryPath] =
                 resourceBootstrap.History.ToCanonicalJson()
         };
+        var finalQuartet = await CanonicalResourceQuartetTransaction
+            .ComposeExistingSessionAsync(
+                resourceBootstrap.Definitions,
+                existingStateResult.Ledger,
+                existingHistoryResult.History,
+                resourceBootstrap.State,
+                resourceBootstrap.History,
+                _fs.ReadFileAsync,
+                existingQuartet.Projection.BeforeImages,
+                projectedDocuments);
+        if (finalQuartet.Projection == null)
+        {
+            throw new InvalidDataException(
+                "Mortal resource owner-authority bootstrap failed: " +
+                string.Join(
+                    "; ",
+                    finalQuartet.Issues.Select(static issue =>
+                        issue.Code ?? issue.Message)));
+        }
+        var resourceWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>();
         foreach (var (path, json) in resourceFiles)
         {
-            await _fs.WriteFileAtomicAsync(path, json);
+            resourceWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                path,
+                finalQuartet.Projection.BeforeImages[path],
+                json,
+                RequireCurrentBaseline: true));
+        }
+        foreach (var (path, json) in projectedDocuments)
+        {
+            if (!finalQuartet.Projection.BeforeImages.TryGetValue(path, out var previous) ||
+                resourceFiles.ContainsKey(path))
+            {
+                continue;
+            }
+            resourceWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                path,
+                previous,
+                json,
+                RequireCurrentBaseline: true));
+        }
+        CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(
+            resourceWrites,
+            finalQuartet.Projection);
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                resourceWrites.ToArray()))
+        {
+            throw new IOException(
+                "Mortal resource quartet changed during atomic bootstrap publication.");
+        }
+        foreach (var path in resourceWrites
+                     .Where(static write => !write.GuardOnly)
+                     .Select(static write => write.Path))
+        {
             RegisterMortalBootstrapSnapshotFile(rollbackSnapshot, path);
         }
 
@@ -4232,7 +4352,7 @@ Resolve the pull by:
   - appending exactly one matching shining_abode_state.json.gachaSystem.gachaHistory[] entry; the client consumes one canonical gacha_attempts resource unit,
   - writing a matching coreActionReceipts[] entry with requestId, actionType=pull_relic_gacha, factionId, returnCycleId, relicId, relicName, baseRarity, finalRarity, resolvedAtTurn and resolvedAtUtc.
 Shining relic gacha consumes the quoted Ink Feather cost from the request and does NOT use Light Sparks.
-The client owns game_state/resources/resource_state.json and game_state/resources/resource_history.json. GM MUST NOT write resource_state.json or resource_history.json; author only the documented Guardian/Shining outcome and audit fields.
+The client owns the guarded quartet game_state/resources/resource_definitions.json, resource_state.json, resource_history.json, and resource_owner_authority.json. GM MUST NOT write any quartet root; missing/stale owner authority fails closed outside Fresh New Game bootstrap, and Mortal-incarnation bootstrap requires the exact existing quartet. Author only the documented Guardian/Shining outcome and audit fields.
 
 " + _storyService.BuildStoryContext();
     }

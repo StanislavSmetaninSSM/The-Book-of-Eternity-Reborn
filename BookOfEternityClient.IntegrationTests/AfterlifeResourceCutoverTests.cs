@@ -46,7 +46,7 @@ public sealed class AfterlifeResourceCutoverTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        var plan = PeekPlan(context);
+        var plan = await PeekPlanAsync(context);
         var playerActionPoints = ResolvePlannedActionPoints(
             plan,
             ResourceOwnerKind.AfterlifeActor);
@@ -172,7 +172,7 @@ public sealed class AfterlifeResourceCutoverTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        var plan = PeekPlan(context);
+        var plan = await PeekPlanAsync(context);
         var player = ResolvePlannedActionPoints(
             plan,
             ResourceOwnerKind.AfterlifeActor);
@@ -205,7 +205,7 @@ public sealed class AfterlifeResourceCutoverTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        var plan = PeekPlan(context);
+        var plan = await PeekPlanAsync(context);
         Assert.Equal(
             1m,
             ResolvePlannedActionPoints(plan, ResourceOwnerKind.AfterlifeActor).Current);
@@ -245,10 +245,8 @@ public sealed class AfterlifeResourceCutoverTests
         Assert.Contains(
             issues,
             issue => issue.Code == "afterlife_conflict_resource_audit_state_mismatch");
-        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out _));
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem));
     }
 
     [Fact]
@@ -421,35 +419,24 @@ public sealed class AfterlifeResourceCutoverTests
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            AfterlifeEntityProfileState.StatePath,
-            AfterlifeEntityProfileState.CreateDefaultRoot().ToJsonString());
-        await context.WriteExactJsonAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
-        await context.WriteExactJsonAsync(
-            "game_state/meta/soul_state.json",
-            new JsonObject
-            {
-                ["currentRealm"] = "Shining Abode",
-                ["currentIncarnation"] = 7
-            }.ToJsonString());
-
+        var initialSoul = new JsonObject
+        {
+            ["currentRealm"] = "Shining Abode",
+            ["currentIncarnation"] = 7
+        };
         var initialShining = ShiningAbodeState.CreateDefaultState();
         initialShining["availability"] = ShiningAbodeState.AvailabilityActive;
         Assert.IsType<JsonObject>(initialShining["radiance"])["tier"] = 2;
-        await context.WriteExactJsonAsync(
-            ShiningAbodeState.StatePath,
-            initialShining.ToJsonString());
+        await CanonicalResourceQuartetTestFixture.CommitExplicitBootstrapAsync(
+            context.FileSystem,
+            bootstrap.Definitions!,
+            bootstrap.State!,
+            bootstrap.History!,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: AfterlifeEntityProfileState.CreateDefaultRoot(),
+                SpiritualConflict: AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                SoulState: initialSoul,
+                ShiningAbode: initialShining));
         await context.CaptureValidatedPendingSnapshotAsync(
             turn: 41,
             currentRealm: "Shining Abode");
@@ -466,7 +453,7 @@ public sealed class AfterlifeResourceCutoverTests
         Assert.DoesNotContain(
             startIssues,
             issue => issue.Severity == IssueSeverity.Error);
-        var startPlan = PeekPlan(context);
+        var startPlan = await PeekPlanAsync(context);
         var initialized = ResolvePlannedResource(
             startPlan,
             ResourceOwnerKind.AfterlifeScope,
@@ -504,7 +491,7 @@ public sealed class AfterlifeResourceCutoverTests
         Assert.DoesNotContain(
             pullIssues,
             issue => issue.Severity == IssueSeverity.Error);
-        var pullPlan = PeekPlan(context);
+        var pullPlan = await PeekPlanAsync(context);
         var remaining = ResolvePlannedResource(
             pullPlan,
             ResourceOwnerKind.AfterlifeScope,
@@ -821,6 +808,42 @@ public sealed class AfterlifeResourceCutoverTests
     }
 
     [Fact]
+    public async Task LocalShiningReturnCycleService_RejectsMissingPersistedOwnerAuthority()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        var profiles = Profiles(PlayerSoulProfile());
+        var soul = SoulState(spiritFocusTier: 0);
+        var preTurnShining = ShiningAbodeState.CreateDefaultState();
+        preTurnShining["availability"] = ShiningAbodeState.AvailabilityActive;
+        await SeedLocalAfterlifeOwnerStateAsync(
+            context,
+            profiles,
+            soul,
+            preTurnShining,
+            bootstrapAuthority: false);
+
+        var acceptedShining = preTurnShining.DeepClone().AsObject();
+        Assert.IsType<JsonObject>(acceptedShining["gachaSystem"])[
+            "currentReturnCycleId"] = "shining_return_64";
+        var projectedSoul = soul.DeepClone().AsObject();
+        projectedSoul["currentRealm"] = "Shining Abode";
+        projectedSoul["currentIncarnation"] = 8;
+        var plan = await ShiningReturnCycleResourceService.BuildAsync(
+            context.FileSystem,
+            acceptedShining,
+            projectedSoul,
+            ShiningReturnCycleTransitionKind.OrdinaryReentryFromChaosSea,
+            turn: 64);
+
+        Assert.False(plan.IsValid);
+        Assert.Contains(
+            plan.Issues,
+            issue => issue.Code == "resource_owner_authority_root_stale");
+        Assert.False(context.FileSystem.FileExists(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath));
+    }
+
+    [Fact]
     public async Task LocalShiningReturnCycleService_RejectsAscensionWithoutFreshMaximumEnlightenment()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
@@ -914,24 +937,34 @@ public sealed class AfterlifeResourceCutoverTests
             bootstrap.History!.ToCanonicalJson());
         await context.WriteExactJsonAsync(
             AfterlifeEntityProfileState.StatePath,
-            Profiles(PlayerSoulProfile()).ToJsonString());
+            AfterlifeEntityProfileState.CreateDefaultRoot().ToJsonString());
         await context.WriteExactJsonAsync(
             AfterlifeSpiritualConflictState.StatePath,
             AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
         var initialSoul = SoulState(spiritFocusTier: 0);
         await context.WriteExactJsonAsync(
             "game_state/meta/soul_state.json",
-            initialSoul.ToJsonString());
+            new JsonObject().ToJsonString());
         await context.WriteExactJsonAsync(
             ShiningAbodeState.StatePath,
             ShiningAbodeState.CreateDefaultState().ToJsonString());
         await context.WriteExactJsonAsync(
             "game_state/meta/guardians.json",
             new JsonObject().ToJsonString());
+        await context.WriteExactJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            "{\"schemaVersion\":1,\"historicalOwners\":[],\"capacityDrafts\":[]}");
 
+        var acceptedProfiles = Profiles(PlayerSoulProfile());
+        Assert.IsType<JsonObject>(Assert.Single(
+                Assert.IsType<JsonArray>(acceptedProfiles[
+                    AfterlifeEntityProfileState.ProfilesProperty])))
+            .Remove(AfterlifeEntityProfileState.ResourceOwnerBindingsProperty);
         var initialPlan = await AfterlifeOwnerResourceStateService.BuildAsync(
             context.FileSystem,
-            new AfterlifeOwnerResourceAcceptedState(SoulState: initialSoul),
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: acceptedProfiles,
+                SoulState: initialSoul),
             turn: 41);
         Assert.True(initialPlan.IsValid, string.Join(Environment.NewLine, initialPlan.Issues));
         Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(
@@ -994,37 +1027,121 @@ public sealed class AfterlifeResourceCutoverTests
     }
 
     [Fact]
+    public async Task LocalAfterlifeOwnerResourceService_RejectsMissingPersistedOwnerAuthority()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        var profiles = Profiles(PlayerSoulProfile());
+        var soul = SoulState(spiritFocusTier: 0);
+        await SeedLocalAfterlifeOwnerStateAsync(
+            context,
+            profiles,
+            soul,
+            ShiningAbodeState.CreateDefaultState(),
+            bootstrapAuthority: false);
+
+        var before = await context.CaptureAsync(
+            new[]
+            {
+                ResourceMaterializationContract.StatePath,
+                ResourceMaterializationContract.HistoryPath,
+                AfterlifeEntityProfileState.StatePath,
+                "game_state/meta/soul_state.json"
+            });
+        var plan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            context.FileSystem,
+            new AfterlifeOwnerResourceAcceptedState(SoulState: soul),
+            turn: 41);
+
+        Assert.False(plan.IsValid);
+        Assert.Contains(
+            plan.Issues,
+            issue => issue.Code == "resource_owner_authority_root_stale");
+        await context.AssertUnchangedAsync(before);
+        Assert.False(context.FileSystem.FileExists(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath));
+    }
+
+    [Fact]
+    public async Task LocalAfterlifeOwnerResourceService_RejectsStalePersistedOwnerAuthority()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        var profiles = Profiles(PlayerSoulProfile());
+        var soul = SoulState(spiritFocusTier: 0);
+        await SeedLocalAfterlifeOwnerStateAsync(
+            context,
+            profiles,
+            soul,
+            ShiningAbodeState.CreateDefaultState());
+        await context.WriteExactJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            "{\"schemaVersion\":1,\"historicalOwners\":[{\"realm\":\"chaos_sea\",\"ownerKind\":\"afterlife_actor\",\"resourceOwnerId\":\"forged\"}],\"capacityDrafts\":[]}");
+        var before = await context.CaptureAsync(
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
+
+        var plan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            context.FileSystem,
+            new AfterlifeOwnerResourceAcceptedState(SoulState: soul),
+            turn: 41);
+
+        Assert.False(plan.IsValid);
+        Assert.Contains(
+            plan.Issues,
+            issue => issue.Code == "resource_owner_authority_root_stale");
+        await context.AssertUnchangedAsync(before);
+    }
+
+    [Fact]
+    public async Task ShiningBlessingSpend_RejectsStaleAuthorityWithoutSelfHealing()
+    {
+        var fixture = await CreateBlessingRerollContextAsync();
+        await using var context = fixture.Context;
+        var soul = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            "game_state/meta/soul_state.json"));
+        var entitlement = Assert.IsType<JsonObject>(
+            Assert.IsType<JsonObject>(
+                soul[ShiningBlessingEffectState.SoulStateProperty])[
+                    "memorySelection"]);
+        await context.WriteExactJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            "{\"schemaVersion\":1,\"historicalOwners\":[],\"capacityDrafts\":[]}");
+        var before = await context.CaptureAsync(
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
+
+        var plan = await ShiningBlessingRerollResourceService.BuildSpendAsync(
+            context.FileSystem,
+            entitlement,
+            turn: 43,
+            amount: 1);
+
+        Assert.False(plan.IsValid);
+        Assert.Contains(
+            plan.Issues,
+            issue => issue.Code == "resource_owner_authority_root_stale");
+        await context.AssertUnchangedAsync(before);
+    }
+
+    [Fact]
     public async Task LocalAfterlifeOwnerResourceService_SuspendsAndResumesActorResourcesAcrossRealms()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationContract.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationContract.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
         var initialProfiles = Profiles(PlayerSoulProfile());
         var initialSoul = SoulState(spiritFocusTier: 0);
-        await context.WriteExactJsonAsync(
-            AfterlifeEntityProfileState.StatePath,
-            initialProfiles.ToJsonString());
-        await context.WriteExactJsonAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
-        await context.WriteExactJsonAsync(
-            "game_state/meta/soul_state.json",
-            initialSoul.ToJsonString());
-        await context.WriteExactJsonAsync(
-            ShiningAbodeState.StatePath,
-            ShiningAbodeState.CreateDefaultState().ToJsonString());
-        await context.WriteExactJsonAsync(
-            "game_state/meta/guardians.json",
-            new JsonObject().ToJsonString());
+        var bootstrapProfiles = initialProfiles.DeepClone().AsObject();
+        Assert.IsType<JsonObject>(Assert.Single(
+                Assert.IsType<JsonArray>(bootstrapProfiles[
+                    AfterlifeEntityProfileState.ProfilesProperty])))
+            .Remove(AfterlifeEntityProfileState.ResourceOwnerBindingsProperty);
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            context.FileSystem,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: bootstrapProfiles,
+                SoulState: initialSoul));
+        initialProfiles = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            AfterlifeEntityProfileState.StatePath));
 
         var initialize = await AfterlifeOwnerResourceStateService.BuildAsync(
             context.FileSystem,
@@ -1343,11 +1460,16 @@ public sealed class AfterlifeResourceCutoverTests
             ShiningAbodeState.StatePath,
             accepted.ToJsonString());
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        var plan = PeekPlan(context);
+        var plan = await PeekPlanAsync(context);
         var remaining = ResolvePlannedResource(
             plan,
             ResourceOwnerKind.AfterlifeScope,
@@ -1396,7 +1518,7 @@ public sealed class AfterlifeResourceCutoverTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        var plan = PeekPlan(context);
+        var plan = await PeekPlanAsync(context);
         var remaining = ResolvePlannedResource(
             plan,
             ResourceOwnerKind.AfterlifeScope,
@@ -1449,10 +1571,8 @@ public sealed class AfterlifeResourceCutoverTests
         Assert.Contains(
             issues,
             issue => issue.Code == "afterlife_shining_gacha_resource_exhausted");
-        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out _));
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem));
         Assert.Equal(
             stateBefore,
             await context.FileSystem.ReadFileBytesAsync(
@@ -1467,31 +1587,10 @@ public sealed class AfterlifeResourceCutoverTests
     public async Task AcceptedTurn_GuardianReturnInitializesPersistentAttemptLedger()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            AfterlifeEntityProfileState.StatePath,
-            Profiles(
-                PlayerSoulProfile(),
-                GuardianProfile("guardian_vesna")).ToJsonString());
-        await context.WriteExactJsonAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
-        await context.WriteExactJsonAsync(
-            "game_state/meta/soul_state.json",
-            SoulState(spiritFocusTier: 0).ToJsonString());
-        await context.WriteExactJsonAsync(
-            ShiningAbodeState.StatePath,
-            ShiningAbodeState.CreateDefaultState().ToJsonString());
+        await SeedGuardianGachaPreTurnAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync(
+            turn: 81,
+            currentRealm: "Chaos Sea");
         await context.WriteExactJsonAsync(
             "game_state/meta/guardians.json",
             GuardianReturnState(
@@ -1499,15 +1598,12 @@ public sealed class AfterlifeResourceCutoverTests
                 "chaos_return_81",
                 reputation: 50,
                 abodePower: 0).ToJsonString());
-        await context.CaptureValidatedPendingSnapshotAsync(
-            turn: 81,
-            currentRealm: "Chaos Sea");
 
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        var plan = PeekPlan(context);
+        var plan = await PeekPlanAsync(context);
         var attempts = ResolvePlannedResource(
             plan,
             ResourceOwnerKind.AfterlifeActor,
@@ -1521,32 +1617,14 @@ public sealed class AfterlifeResourceCutoverTests
     public async Task AcceptedTurn_GuardianNewReturnReconfiguresAndRefillsPersistentAttemptLedger()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        var definitions = Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            definitions.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            AfterlifeEntityProfileState.StatePath,
-            Profiles(
-                PlayerSoulProfile(),
-                GuardianProfile("guardian_vesna")).ToJsonString());
-        await context.WriteExactJsonAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
-        await context.WriteExactJsonAsync(
-            "game_state/meta/soul_state.json",
-            SoulState(spiritFocusTier: 0).ToJsonString());
-        await context.WriteExactJsonAsync(
-            ShiningAbodeState.StatePath,
-            ShiningAbodeState.CreateDefaultState().ToJsonString());
+        await SeedGuardianGachaPreTurnAsync(context);
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            await context.FileSystem.ReadFileAsync(
+                ResourceMaterializationContract.DefinitionsPath),
+            allowMissingPristine: false).Catalog!;
+        await context.CaptureValidatedPendingSnapshotAsync(
+            turn: 81,
+            currentRealm: "Chaos Sea");
         await context.WriteExactJsonAsync(
             "game_state/meta/guardians.json",
             GuardianReturnState(
@@ -1554,9 +1632,6 @@ public sealed class AfterlifeResourceCutoverTests
                 "chaos_return_81",
                 reputation: 50,
                 abodePower: 0).ToJsonString());
-        await context.CaptureValidatedPendingSnapshotAsync(
-            turn: 81,
-            currentRealm: "Chaos Sea");
 
         var initializeIssues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
@@ -1586,7 +1661,7 @@ public sealed class AfterlifeResourceCutoverTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        var plan = PeekPlan(context);
+        var plan = await PeekPlanAsync(context);
         var attempts = ResolvePlannedResource(
             plan,
             ResourceOwnerKind.AfterlifeActor,
@@ -1656,11 +1731,16 @@ public sealed class AfterlifeResourceCutoverTests
             "game_state/meta/guardians.json",
             accepted.ToJsonString());
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        var plan = PeekPlan(context);
+        var plan = await PeekPlanAsync(context);
         var attempts = ResolvePlannedResource(
             plan,
             ResourceOwnerKind.AfterlifeActor,
@@ -1722,11 +1802,16 @@ public sealed class AfterlifeResourceCutoverTests
             "game_state/meta/guardians.json",
             accepted.ToJsonString());
 
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        var plan = PeekPlan(context);
+        var plan = await PeekPlanAsync(context);
         Assert.Equal(
             0m,
             ResolvePlannedResource(
@@ -1801,10 +1886,8 @@ public sealed class AfterlifeResourceCutoverTests
         Assert.Contains(
             issues,
             issue => issue.Code == "afterlife_guardian_gacha_resource_exhausted");
-        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out _));
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem));
         Assert.Equal(
             stateBefore,
             await context.FileSystem.ReadFileBytesAsync(
@@ -1835,9 +1918,7 @@ public sealed class AfterlifeResourceCutoverTests
         await context.WriteExactJsonAsync(
             ResourceMaterializationContract.HistoryPath,
             bootstrap.History!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            AfterlifeEntityProfileState.StatePath,
-            Profiles(new JsonObject
+        var profiles = Profiles(new JsonObject
             {
                 ["actorType"] = "player_soul",
                 ["actorId"] = "player_soul",
@@ -1852,10 +1933,14 @@ public sealed class AfterlifeResourceCutoverTests
                         ["state"] = "suspended"
                     }
                 }
-            }).ToJsonString());
+            });
+        var bootstrapSoul = BlessingSoulState();
+        await context.WriteExactJsonAsync(
+            AfterlifeEntityProfileState.StatePath,
+            profiles.ToJsonString());
         await context.WriteExactJsonAsync(
             "game_state/meta/soul_state.json",
-            BlessingSoulState().ToJsonString());
+            bootstrapSoul.ToJsonString());
         await context.WriteExactJsonAsync(
             "game_state/core/player_status.json",
             new JsonObject { ["money"] = 0 }.ToJsonString());
@@ -1867,6 +1952,12 @@ public sealed class AfterlifeResourceCutoverTests
                 ["equipment"] = new JsonObject(),
                 ["resources"] = new JsonObject()
             }.ToJsonString());
+
+        await SeedLocalAfterlifeOwnerStateAsync(
+            context,
+            profiles,
+            bootstrapSoul,
+            ShiningAbodeState.CreateDefaultState());
 
         var result = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
             context.FileSystem,
@@ -2078,6 +2169,44 @@ public sealed class AfterlifeResourceCutoverTests
             await context.FileSystem.ReadFileAsync(ResourceMaterializationContract.HistoryPath));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task BlessingBootstrap_ExactReplayRejectsMissingOrStaleAuthority(
+        bool staleInsteadOfMissing)
+    {
+        var fixture = await CreateBlessingRerollContextAsync();
+        await using var context = fixture.Context;
+        if (staleInsteadOfMissing)
+        {
+            await context.WriteExactJsonAsync(
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                "{\"schemaVersion\":1,\"historicalOwners\":[],\"capacityDrafts\":[]}");
+        }
+        else
+        {
+            await context.DeleteAsync(
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
+        }
+        var before = await context.CaptureAsync(
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
+
+        var replay = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
+            context.FileSystem,
+            BlessingRerollPackage(),
+            currentIncarnation: 3);
+
+        Assert.False(replay.Success);
+        Assert.False(replay.StateChanged);
+        Assert.Contains(
+            "resource_owner_authority_root_stale",
+            replay.ErrorMessage,
+            StringComparison.Ordinal);
+        await context.AssertUnchangedAsync(before);
+    }
+
     [Fact]
     public async Task BlessingRerolls_CannotSpendAnotherAllocationThroughSharedActorBalance()
     {
@@ -2254,20 +2383,48 @@ public sealed class AfterlifeResourceCutoverTests
         await context.WriteExactJsonAsync(
             "game_state/meta/soul_state.json",
             soulState.ToJsonString());
+        await WriteComposedAuthorityAsync(context, definitions, state, history);
         await context.CaptureValidatedPendingSnapshotAsync(
             turn: 42,
             currentRealm: "Chaos Sea");
         return context;
     }
 
+    private static async Task WriteComposedAuthorityAsync(
+        ResourceMaterializationTestContext context,
+        ResourceDefinitionCatalog definitions,
+        ResourceStateLedger state,
+        ResourceHistoryState history)
+    {
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            definitions,
+            context.FileSystem.ReadFileAsync,
+            state,
+            history,
+            CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(authority.IsValid, string.Join(Environment.NewLine, authority.Issues));
+        Assert.NotNull(authority.CanonicalAuthorityJson);
+        await context.WriteExactJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            authority.CanonicalAuthorityJson!);
+    }
+
     private static async Task SeedLocalAfterlifeOwnerStateAsync(
         ResourceMaterializationTestContext context,
         JsonObject profiles,
         JsonObject soul,
-        JsonObject shining)
+        JsonObject shining,
+        bool bootstrapAuthority = true)
     {
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
+        var preTurnProfiles = bootstrapAuthority
+            ? AfterlifeEntityProfileState.CreateDefaultRoot()
+            : profiles;
+        var preTurnSoul = bootstrapAuthority ? new JsonObject() : soul;
+        var preTurnShining = bootstrapAuthority
+            ? ShiningAbodeState.CreateDefaultState()
+            : shining;
         await context.WriteExactJsonAsync(
             ResourceMaterializationContract.DefinitionsPath,
             bootstrap.Definitions!.ToCanonicalJson());
@@ -2279,19 +2436,56 @@ public sealed class AfterlifeResourceCutoverTests
             bootstrap.History!.ToCanonicalJson());
         await context.WriteExactJsonAsync(
             AfterlifeEntityProfileState.StatePath,
-            profiles.ToJsonString());
+            preTurnProfiles.ToJsonString());
         await context.WriteExactJsonAsync(
             AfterlifeSpiritualConflictState.StatePath,
             AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
         await context.WriteExactJsonAsync(
             "game_state/meta/soul_state.json",
-            soul.ToJsonString());
+            preTurnSoul.ToJsonString());
         await context.WriteExactJsonAsync(
             ShiningAbodeState.StatePath,
-            shining.ToJsonString());
+            preTurnShining.ToJsonString());
         await context.WriteExactJsonAsync(
             "game_state/meta/guardians.json",
             new JsonObject().ToJsonString());
+        if (bootstrapAuthority)
+        {
+            await context.WriteExactJsonAsync(
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                "{\"schemaVersion\":1,\"historicalOwners\":[],\"capacityDrafts\":[]}");
+            var acceptedProfiles = profiles.DeepClone().AsObject();
+            if (acceptedProfiles[AfterlifeEntityProfileState.ProfilesProperty]
+                is JsonArray acceptedProfileNodes)
+            {
+                foreach (var playerProfile in acceptedProfileNodes
+                             .OfType<JsonObject>()
+                             .Where(static profile =>
+                                 string.Equals(
+                                     profile["actorType"]?.GetValue<string>(),
+                                     "player_soul",
+                                     StringComparison.Ordinal) &&
+                                 string.Equals(
+                                     profile["actorId"]?.GetValue<string>(),
+                                     "player_soul",
+                                     StringComparison.Ordinal)))
+                {
+                    playerProfile.Remove(
+                        AfterlifeEntityProfileState.ResourceOwnerBindingsProperty);
+                }
+            }
+            var plan = await AfterlifeOwnerResourceStateService.BuildAsync(
+                context.FileSystem,
+                new AfterlifeOwnerResourceAcceptedState(
+                    Profiles: acceptedProfiles,
+                    SoulState: soul,
+                    ShiningAbode: shining),
+                turn: 1);
+            Assert.True(plan.IsValid, string.Join(Environment.NewLine, plan.Issues));
+            Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                context.FileSystem,
+                plan));
+        }
     }
 
     private static JsonObject BlessingRerollPackage()
@@ -2385,9 +2579,7 @@ public sealed class AfterlifeResourceCutoverTests
         await context.WriteExactJsonAsync(
             ResourceMaterializationContract.HistoryPath,
             bootstrap.History!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            AfterlifeEntityProfileState.StatePath,
-            Profiles(new JsonObject
+        var profiles = Profiles(new JsonObject
             {
                 ["actorType"] = "player_soul",
                 ["actorId"] = "player_soul",
@@ -2402,10 +2594,14 @@ public sealed class AfterlifeResourceCutoverTests
                         ["state"] = "suspended"
                     }
                 }
-            }).ToJsonString());
+            });
+        var soul = BlessingSoulState();
+        await context.WriteExactJsonAsync(
+            AfterlifeEntityProfileState.StatePath,
+            profiles.ToJsonString());
         await context.WriteExactJsonAsync(
             "game_state/meta/soul_state.json",
-            BlessingSoulState().ToJsonString());
+            soul.ToJsonString());
         await context.WriteExactJsonAsync(
             "game_state/core/player_status.json",
             new JsonObject { ["money"] = 0 }.ToJsonString());
@@ -2417,6 +2613,11 @@ public sealed class AfterlifeResourceCutoverTests
                 ["equipment"] = new JsonObject(),
                 ["resources"] = new JsonObject()
             }.ToJsonString());
+        await SeedLocalAfterlifeOwnerStateAsync(
+            context,
+            profiles,
+            soul,
+            ShiningAbodeState.CreateDefaultState());
         var result = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
             context.FileSystem,
             BlessingRerollPackage(),
@@ -2449,56 +2650,39 @@ public sealed class AfterlifeResourceCutoverTests
         CreateShiningGachaContextAsync(int radianceTier, int turn)
     {
         var context = await ResourceMaterializationTestContext.CreateAsync();
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            AfterlifeEntityProfileState.StatePath,
-            Profiles(new JsonObject
+        var profiles = Profiles(new JsonObject
+        {
+            ["actorType"] = "player_soul",
+            ["actorId"] = "player_soul",
+            ["displayName"] = "Душа игрока",
+            ["realm"] = "Shining Abode",
+            ["resourceOwnerBindings"] = new JsonArray
             {
-                ["actorType"] = "player_soul",
-                ["actorId"] = "player_soul",
-                ["displayName"] = "Душа игрока",
-                ["realm"] = "Shining Abode",
-                ["resourceOwnerBindings"] = new JsonArray
+                new JsonObject
                 {
-                    new JsonObject
-                    {
-                        ["realm"] = "shining_abode",
-                        ["resourceOwnerId"] = "player_soul",
-                        ["state"] = "active"
-                    }
+                    ["realm"] = "shining_abode",
+                    ["resourceOwnerId"] = "player_soul",
+                    ["state"] = "active"
                 }
-            }).ToJsonString());
-        await context.WriteExactJsonAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
-        await context.WriteExactJsonAsync(
-            "game_state/meta/soul_state.json",
-            new JsonObject
-            {
-                ["currentRealm"] = "Shining Abode",
-                ["currentIncarnation"] = turn,
-                [AfterlifeSpiritualConflictState.SoulStateProfileProperty] =
-                    new JsonObject
-                    {
-                        [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0
-                    }
-            }.ToJsonString());
+            }
+        });
+        var soul = new JsonObject
+        {
+            ["currentRealm"] = "Shining Abode",
+            ["currentIncarnation"] = turn,
+            [AfterlifeSpiritualConflictState.SoulStateProfileProperty] =
+                new JsonObject
+                {
+                    [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0
+                }
+        };
         var shining = ShiningAbodeState.CreateDefaultState();
         shining["availability"] = ShiningAbodeState.AvailabilityActive;
         Assert.IsType<JsonObject>(shining["radiance"])["tier"] = radianceTier;
+        await SeedLocalAfterlifeOwnerStateAsync(context, profiles, soul, shining);
         await context.WriteExactJsonAsync(
-            ShiningAbodeState.StatePath,
-            shining.ToJsonString());
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
         await context.CaptureValidatedPendingSnapshotAsync(
             turn,
             currentRealm: "Shining Abode");
@@ -2511,31 +2695,10 @@ public sealed class AfterlifeResourceCutoverTests
             string returnCycleId)
     {
         var context = await ResourceMaterializationTestContext.CreateAsync();
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            ResourceMaterializationTestContext.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-        await context.WriteExactJsonAsync(
-            AfterlifeEntityProfileState.StatePath,
-            Profiles(
-                PlayerSoulProfile(),
-                GuardianProfile("guardian_vesna")).ToJsonString());
-        await context.WriteExactJsonAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
-        await context.WriteExactJsonAsync(
-            "game_state/meta/soul_state.json",
-            SoulState(spiritFocusTier: 0).ToJsonString());
-        await context.WriteExactJsonAsync(
-            ShiningAbodeState.StatePath,
-            ShiningAbodeState.CreateDefaultState().ToJsonString());
+        await SeedGuardianGachaPreTurnAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync(
+            initialTurn,
+            currentRealm: "Chaos Sea");
         await context.WriteExactJsonAsync(
             "game_state/meta/guardians.json",
             GuardianReturnState(
@@ -2543,14 +2706,51 @@ public sealed class AfterlifeResourceCutoverTests
                 returnCycleId,
                 reputation: 50,
                 abodePower: 0).ToJsonString());
-        await context.CaptureValidatedPendingSnapshotAsync(
-            initialTurn,
-            currentRealm: "Chaos Sea");
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
         await PublishAsync(context);
         return context;
+    }
+
+    private static async Task SeedGuardianGachaPreTurnAsync(
+        ResourceMaterializationTestContext context)
+    {
+        var bootstrapProfiles = Profiles(PlayerSoulProfile());
+        Assert.IsType<JsonObject>(Assert.Single(
+                Assert.IsType<JsonArray>(bootstrapProfiles[
+                    AfterlifeEntityProfileState.ProfilesProperty])))
+            .Remove(AfterlifeEntityProfileState.ResourceOwnerBindingsProperty);
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
+            context.FileSystem,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: bootstrapProfiles,
+                SoulState: SoulState(spiritFocusTier: 0)));
+        await context.WriteExactJsonAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
+
+        var profiles = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            AfterlifeEntityProfileState.StatePath));
+        Assert.IsType<JsonArray>(profiles[
+                AfterlifeEntityProfileState.ProfilesProperty])
+            .Add(GuardianProfile("guardian_vesna"));
+        await context.WriteExactJsonAsync(
+            AfterlifeEntityProfileState.StatePath,
+            profiles.ToJsonString());
+        await context.WriteExactJsonAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
+        await context.WriteExactJsonAsync(
+            ShiningAbodeState.StatePath,
+            ShiningAbodeState.CreateDefaultState().ToJsonString());
+        await context.WriteExactJsonAsync(
+            "game_state/meta/guardians.json",
+            GuardianReturnState(
+                "guardian_vesna",
+                returnCycleId: null,
+                reputation: 50,
+                abodePower: 0).ToJsonString());
     }
 
     private static JsonObject ShiningGachaHistoryEntry(
@@ -2618,11 +2818,15 @@ public sealed class AfterlifeResourceCutoverTests
         }
         var log = Assert.IsType<JsonArray>(
             Assert.IsType<JsonObject>(raw["activeConflict"])["exchangeLog"]);
+        var activeConflictAfter = Assert.IsType<JsonObject>(raw["activeConflict"])
+            .DeepClone()
+            .AsObject();
+        activeConflictAfter.Remove("combatConditions");
         raw[AfterlifeSpiritualConflictState.ResponseField] = new JsonObject
         {
             ["mode"] = AfterlifeSpiritualConflictState.ModeExchange,
             ["exchange"] = log[0]!.DeepClone(),
-            ["activeConflictAfter"] = raw["activeConflict"]!.DeepClone()
+            ["activeConflictAfter"] = activeConflictAfter
         };
         raw["activeConflict"] = ActiveConflict("conflict_resource_cost");
         await context.WriteExactJsonAsync(
@@ -2702,14 +2906,13 @@ public sealed class AfterlifeResourceCutoverTests
             ["max"] = 6m
         };
 
-    private static AcceptedMechanicsPlan PeekPlan(
+    private static async Task<AcceptedMechanicsPlan> PeekPlanAsync(
         ResourceMaterializationTestContext context)
     {
-        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            out _,
-            out var planning));
-        return Assert.IsType<AcceptedMechanicsPlan>(planning.Plan);
+        var handoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
+            context.FileSystem);
+        Assert.NotNull(handoff);
+        return Assert.IsType<AcceptedMechanicsPlan>(handoff!.Result.Plan);
     }
 
     private static ResourceStateEntry ResolvePlannedActionPoints(
@@ -2756,7 +2959,7 @@ public sealed class AfterlifeResourceCutoverTests
         await using var writeLease = await context.FileSystem
             .AcquireCanonicalWriteLeaseAsync();
         await context.Normalizer.BindTo(writeLease)
-            .NormalizeAccumulatedStateAsync(backups);
+            .NormalizeAccumulatedStateWithPlanAsync(backups);
     }
 
     private static async Task PublishShiningWithFullNormalizerAsync(
@@ -2771,7 +2974,7 @@ public sealed class AfterlifeResourceCutoverTests
         await using var writeLease = await context.FileSystem
             .AcquireCanonicalWriteLeaseAsync();
         await context.Normalizer.BindTo(writeLease)
-            .NormalizeAccumulatedStateAsync(backups);
+            .NormalizeAccumulatedStateWithPlanAsync(backups);
     }
 
     private static async Task SpendOneGuardianAttemptFixtureAsync(
@@ -3108,7 +3311,7 @@ public sealed class AfterlifeResourceCutoverTests
 
     private static JsonObject GuardianReturnState(
         string guardianId,
-        string returnCycleId,
+        string? returnCycleId,
         int reputation,
         int abodePower)
     {
@@ -3122,13 +3325,16 @@ public sealed class AfterlifeResourceCutoverTests
             ["abodePower"] = new JsonObject
             {
                 ["currentPower"] = abodePower
-            },
-            ["gachaSystem"] = new JsonObject
+            }
+        };
+        if (returnCycleId != null)
+        {
+            guardian["gachaSystem"] = new JsonObject
             {
                 ["currentReturnCycleId"] = returnCycleId,
                 ["gachaHistory"] = new JsonArray()
-            }
-        };
+            };
+        }
         return new JsonObject
         {
             ["guardians"] = new JsonArray(guardian),

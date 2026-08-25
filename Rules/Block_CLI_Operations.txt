@@ -14,6 +14,8 @@
             the CLI Agent monitors file system changes, reads distributed game state, processes turns using existing rule blocks, 
             and writes results back to distributed JSON files.
 
+            Dedicated QTE effect receipt pointer: `input/qte_effect_resolution_request.json` is a receipt-only task and not an ordinary turn. Read its current `safePacket`, construct only the closed receipt objects in memory, and call `Complete-BoeQteEffectResolution -Receipts $receipts` last. Do not call `Complete-BoeValidationRepair`; do not use ordinary turn/story/progression/snapshot writes or ordinary validation-repair state. The helper alone writes `output/qte_effect_resolution_receipts.json` and then `ready/qte_effect_resolution_complete.json`. Follow `OtherGuides/Effect_Materialization_Contract.md` and the `mortal_qte_deferred_effect_receipt_waves_v1` example.
+
             ALL EXISTING RULE BLOCKS (1-32) REMAIN FULLY APPLICABLE. The CLI Agent simply adapts the input/output mechanism 
             while preserving all game logic, calculations, formulas, and narrative rules.
 
@@ -172,7 +174,7 @@
                     **INVENTORY SYSTEM:**
                     - game_state/inventory/items.json ← UpdateInventory, equipmentChanges
 	                    - game_state/resources/resource_commands.json ← resourceDefinitionCreations, resourceCapacityChanges, resourceChanges (transient; client consumes it)
-	                    - game_state/resources/resource_definitions.json, resource_state.json, and resource_history.json are client-owned canonical authority; GM output never writes them
+	                    - game_state/resources/resource_definitions.json, resource_state.json, resource_history.json, and resource_owner_authority.json are one guarded client-owned quartet; GM output never writes them; only Fresh New Game may create a missing owner-authority root, and every existing session (including Mortal-incarnation bootstrap) fails closed on missing/stale authority without migration
 	                    - game_state/inventory/item_text_updates.json ← updateItemTextContents
 	                    - Canonical stored shape for item_text_updates.json: entries[] with item identity + textContent[]
 	                    - Readable-looking inventory documents (books, letters, scrolls, notes, documents, inscriptions, and Russian equivalents) must have textContent, a matching item_text_updates/item_journals entry by stable itemId/existedId, or an explicit player-facing unreadableReason/sealedReason/lockedReason that /книги can show.

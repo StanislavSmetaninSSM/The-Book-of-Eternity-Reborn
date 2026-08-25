@@ -70,6 +70,43 @@ public sealed class FastTestBoundaryTests
     }
 
     [Fact]
+    public async Task CSharpLaneRunner_FocusedKeepsFiveMinuteDefaultAndAllowsBoundedExplicitOverride()
+    {
+        var accepted = await RunCSharpRunnerAsync(
+            "-Lane",
+            "Focused",
+            "-FocusedProject",
+            "Integration",
+            "-Filter",
+            "FullyQualifiedName~EffectAfterlifeAdapterTests",
+            "-TimeoutMinutes",
+            "10",
+            "-PlanOnly");
+        var rejected = await RunCSharpRunnerAsync(
+            "-Lane",
+            "Focused",
+            "-FocusedProject",
+            "Integration",
+            "-Filter",
+            "FullyQualifiedName~EffectAfterlifeAdapterTests",
+            "-TimeoutMinutes",
+            "16",
+            "-PlanOnly");
+
+        Assert.True(
+            accepted.ExitCode == 0,
+            $"stdout:{Environment.NewLine}{accepted.StandardOutput}{Environment.NewLine}" +
+            $"stderr:{Environment.NewLine}{accepted.StandardError}");
+        Assert.Contains("Timeout: 10 minute(s)", accepted.StandardOutput, StringComparison.Ordinal);
+        Assert.NotEqual(0, rejected.ExitCode);
+        Assert.Contains(
+            "hard limit of 15 minute(s)",
+            rejected.StandardOutput + rejected.StandardError,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("PLAN-BEGIN", rejected.StandardOutput, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void CSharpLaneRunner_RoutesFastWorkToFastProjectWithBoundedOwnedProcesses()
     {
         var runnerPath = Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1");

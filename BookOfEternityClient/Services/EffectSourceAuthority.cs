@@ -52,6 +52,36 @@ internal sealed record EffectSourceResolution(
     internal bool Success => Source != null && Issues.Count == 0;
 }
 
+internal readonly record struct EffectSourceRoutingBinding(
+    EffectSourceKey Key,
+    bool Materializable,
+    bool Active,
+    bool SameTurn,
+    string? SourceRef,
+    string? RequiredApplicationAuthority,
+    string? StackKey,
+    string? StackPolicy)
+{
+    internal static EffectSourceRoutingBinding FromEntry(
+        EffectSourceAuthorityEntry entry) =>
+        new(
+            entry.Key,
+            entry.Materializable,
+            entry.Active,
+            entry.SameTurn,
+            entry.SourceRef,
+            entry.RequiredApplicationAuthority,
+            entry.Definition["stacking"]?["stackKey"]?.GetValue<string>(),
+            entry.Definition["stacking"]?["policy"]?.GetValue<string>());
+}
+
+internal sealed record EffectSourceRoutingResolution(
+    EffectSourceRoutingBinding? Source,
+    IReadOnlyList<ValidationIssue> Issues)
+{
+    internal bool Success => Source.HasValue && Issues.Count == 0;
+}
+
 internal sealed class EffectSourceAuthority
 {
     private static readonly HashSet<string> SourceKinds = new(StringComparer.Ordinal)
@@ -142,6 +172,33 @@ internal sealed class EffectSourceAuthority
             validateParameters: false,
             validateApplicationAuthority: false);
 
+    internal EffectSourceRoutingResolution ResolveCanonicalRoutingBinding(
+        EffectSourceKey key,
+        string targetKind,
+        EffectAcceptedTurnPlanner.EffectResourceRoutingWorkMeter workMeter)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+        ArgumentException.ThrowIfNullOrWhiteSpace(targetKind);
+        ArgumentNullException.ThrowIfNull(workMeter);
+        var issues = new List<ValidationIssue>();
+        if (_entries.TryGetValue(key, out var entry) &&
+            !_invalidKeys.Contains(key))
+        {
+            ValidateTargetKind(entry.Definition, targetKind, issues);
+            if (issues.Count == 0)
+            {
+                workMeter.RecordSourceBindingBorrow();
+                return new EffectSourceRoutingResolution(
+                    EffectSourceRoutingBinding.FromEntry(entry),
+                    Array.Empty<ValidationIssue>());
+            }
+            return new EffectSourceRoutingResolution(null, issues);
+        }
+
+        AddUnresolvedKeyIssues(key, issues);
+        return new EffectSourceRoutingResolution(null, issues);
+    }
+
     internal IReadOnlyList<ValidationIssue> ValidateCanonicalParameters(
         EffectSourceAuthorityEntry source,
         JsonObject parameters)
@@ -150,6 +207,22 @@ internal sealed class EffectSourceAuthority
         ArgumentNullException.ThrowIfNull(parameters);
         var issues = new List<ValidationIssue>();
         ValidateParameters(source.Definition, parameters, issues);
+        return issues;
+    }
+
+    internal IReadOnlyList<ValidationIssue> ValidateCanonicalRoutingParameters(
+        EffectSourceRoutingBinding source,
+        JsonObject parameters)
+    {
+        ArgumentNullException.ThrowIfNull(parameters);
+        var issues = new List<ValidationIssue>();
+        if (!_entries.TryGetValue(source.Key, out var entry) ||
+            _invalidKeys.Contains(source.Key))
+        {
+            AddUnresolvedKeyIssues(source.Key, issues);
+            return issues;
+        }
+        ValidateParameters(entry.Definition, parameters, issues);
         return issues;
     }
 
@@ -209,7 +282,19 @@ internal sealed class EffectSourceAuthority
                 : new EffectSourceResolution(null, issues);
         }
 
-        var selectorAlias = Alias(key.Realm, key.Kind, key.SourceId, key.DefinitionKey);
+        AddUnresolvedKeyIssues(key, issues);
+        return new EffectSourceResolution(null, issues);
+    }
+
+    private void AddUnresolvedKeyIssues(
+        EffectSourceKey key,
+        List<ValidationIssue> issues)
+    {
+        var selectorAlias = Alias(
+            key.Realm,
+            key.Kind,
+            key.SourceId,
+            key.DefinitionKey);
         if (_byAlias.TryGetValue(selectorAlias, out var aliases) && aliases.Count > 0)
         {
             Add(issues, "source", "effect_source_selector_confusable", "one exact ordinal source selector", key.ToString());
@@ -230,7 +315,6 @@ internal sealed class EffectSourceAuthority
         {
             Add(issues, "source", "effect_source_selector_unresolved", "one exact current source definition", key.ToString());
         }
-        return new EffectSourceResolution(null, issues);
     }
 
     internal EffectSourceResolution Resolve(

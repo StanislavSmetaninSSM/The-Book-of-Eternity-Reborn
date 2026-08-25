@@ -215,9 +215,7 @@
                                             "resistanceValue": "-30%",
                                             "resistType": "holy",
                                             "resistTypeDisplayName": "Holy" 
-                                        }],
-                                        "activeBuffs": [],
-                                        "activeDebuffs": []
+                                        }]
                                     }
 
                                     ]]>
@@ -465,9 +463,7 @@
                                             "resistanceValue": "10%",
                                             "resistType": "slashing",
                                             "resistTypeDisplayName": "Slashing"                         
-                                        }],
-                                        "activeBuffs": [],
-                                        "activeDebuffs": []
+                                        }]
                                     }             
 
                                     ]]>
@@ -533,9 +529,7 @@
                                                 "targetPriority": "self"
                                             }
                                         ],
-                                        "resistances": [{"resistanceName": "Chainmail & Shield", "resistanceValue": "15%", "resistType": "piercing"}],
-                                        "activeBuffs": [],
-                                        "activeDebuffs": []
+                                        "resistances": [{"resistanceName": "Chainmail & Shield", "resistanceValue": "15%", "resistType": "piercing"}]
                                     }             
 
                                     ]]>
@@ -674,9 +668,7 @@
                                                 "resistType": "all", 
                                                 "resistTypeDisplayName": "Все" 
                                             }
-                                        ],
-                                        "activeBuffs": [],
-                                        "activeDebuffs": []
+                                        ]
                                     }
 
                                     ]]>
@@ -691,13 +683,13 @@
    <content type="json">
     <![CDATA[
                             
-                            "activeBuffs": [{
-                                "effectType": "Buff",
-                                "value": "15%",
-                                "targetType": "damage (all)", 
-                                "duration": 3,
-                                "sourceSkill": "Battle Rage",
-                                "description": "Enraged! Deals 15% more damage with all attacks (3 turns left)." 
+                            "effectChanges": [{
+                                "operation": "apply",
+                                "target": { "kind": "combatant", "targetId": "combatant_orc_berserker" },
+                                "source": { "kind": "combat_action", "sourceId": "action_battle_rage", "definitionKey": "battle-rage" },
+                                "parameters": {},
+                                "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                "reason": "Орк вступает в бой в боевой ярости."
                             }]
 
                             ]]>
@@ -710,13 +702,13 @@
    <content type="json">
     <![CDATA[
 
-                            "activeDebuffs": [{
-                                "effectType": "DamageOverTime",
-                                "value": "5%", 
-                                "targetType": "poison", 
-                                "duration": 4,
-                                "sourceSkill": "Giant Spider Bite",
-                                "description": "Poisoned! Takes 5% poison damage per turn (4 turns left)." 
+                            "effectChanges": [{
+                                "operation": "apply",
+                                "target": { "kind": "combatant", "targetId": "combatant_poisoned_scout" },
+                                "source": { "kind": "combat_action", "sourceId": "action_giant_spider_bite", "definitionKey": "spider-poison" },
+                                "parameters": {},
+                                "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                "reason": "Яд гигантского паука уже действует."
                             }]
 
                             ]]>
@@ -729,13 +721,13 @@
    <content type="json">
     <![CDATA[
                             
-                            "activeBuffs": [{
-                                "effectType": "DamageReduction",
-                                "value": "20%",
-                                "targetType": "all", 
-                                "duration": 1, 
-                                "sourceSkill": "Magical Ward",
-                                "description": "Protected! Incoming damage reduced by 20% (1 turn left)." 
+                            "effectChanges": [{
+                                "operation": "apply",
+                                "target": { "kind": "combatant", "targetId": "combatant_warded_mage" },
+                                "source": { "kind": "skill", "sourceId": "skill_magical_ward", "definitionKey": "magical-ward" },
+                                "parameters": {},
+                                "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                "reason": "Магический оберег был поднят до начала обмена ударами."
                             }]
 
                             ]]>
@@ -748,13 +740,13 @@
    <content type="json">
     <![CDATA[
 
-                            "activeBuffs": [{
-                                "effectType": "HealOverTime",
-                                "value": "10%", 
-                                "targetType": "health",
-                                "duration": 3,
-                                "sourceSkill": "Troll Blood",
-                                "description": "Regenerating! Restores 10% health per turn (3 turns left)." 
+                            "effectChanges": [{
+                                "operation": "apply",
+                                "target": { "kind": "combatant", "targetId": "combatant_troll" },
+                                "source": { "kind": "combat_action", "sourceId": "action_troll_blood", "definitionKey": "troll-regeneration" },
+                                "parameters": {},
+                                "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                "reason": "Кровь тролля начинает стягивать раны."
                             }]
 
                             ]]>
@@ -767,13 +759,13 @@
    <content type="json">
     <![CDATA[
 
-                            "activeDebuffs": [{
-                                "effectType": "Debuff",
-                                "value": "-10%", 
-                                "targetType": "strength", 
-                                "duration": 2,
-                                "sourceSkill": "Enfeebling Curse",
-                                "description": "Weakened! Strength reduced by 10% (2 turns left)." 
+                            "effectChanges": [{
+                                "operation": "apply",
+                                "target": { "kind": "combatant", "targetId": "combatant_cursed_guard" },
+                                "source": { "kind": "skill", "sourceId": "skill_enfeebling_curse", "definitionKey": "enfeebling-curse" },
+                                "parameters": {},
+                                "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                "reason": "Ослабляющее проклятие сковывает стражника."
                             }]
 
                             ]]>
@@ -786,13 +778,13 @@
    <content type="json">
     <![CDATA[
 
-                            "activeDebuffs": [{
-                                "effectType": "Control",
-                                "value": "100%", 
-                                "targetType": "stun",
-                                "duration": 1,
-                                "sourceSkill": "Shield Bash Stunning Blow",
-                                "description": "Stunned! Cannot act (1 turn left)." 
+                            "effectChanges": [{
+                                "operation": "apply",
+                                "target": { "kind": "combatant", "targetId": "combatant_stunned_raider" },
+                                "source": { "kind": "combat_action", "sourceId": "action_shield_bash", "definitionKey": "shield-bash-stun" },
+                                "parameters": {},
+                                "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+                                "reason": "Удар щитом оглушил налётчика."
                             }]
 
                             ]]>
@@ -877,9 +869,7 @@
                                                     "resistanceName": "Tattered Hide", 
                                                     "resistanceValue": "2%", 
                                                     "resistType": "piercing"
-                                                }],
-                                                "activeBuffs": [],
-                                                "activeDebuffs": []
+                                                }]
                                             }
                                         ]
 
@@ -904,7 +894,7 @@
                                     -   1. Select the exact healthiest memberId from the client projection, remove only that member record, and decrement count from 12 to 11.
                                     -   2. Create a detached individual enemy row carrying that same permanent memberId: "Stunned Goblin Spearman".
                                     -   3. Inherit archetype display/actions/resistances while preserving the existing combat_group_member resource coordinate; do not initialize or copy health.
-                                    -   4. Apply Stun through effectChanges against the detached member carrier; activeDebuffs remains client-owned.
+                                    -   4. Apply Stun through effectChanges against the detached member carrier; runtime effect state remains client-owned.
                 
                                     ## Final Combat State
                                     -   "Goblin War Party": count = 11.
@@ -956,9 +946,7 @@
                                                     "resistanceName": "Tattered Hide", 
                                                     "resistanceValue": "2%", 
                                                     "resistType": "piercing"
-                                                }],
-                                                "activeBuffs": [],
-                                                "activeDebuffs": []
+                                                }]
                                             },
                                             {
                                                 "NPCId": null,
@@ -982,9 +970,7 @@
                                                     "resistanceName": "Tattered Hide", 
                                                     "resistanceValue": "2%", 
                                                     "resistType": "piercing"
-                                                }],
-                                                "activeBuffs": [],
-                                                "activeDebuffs": []
+                                                }]
                                             }
                                         ]
 

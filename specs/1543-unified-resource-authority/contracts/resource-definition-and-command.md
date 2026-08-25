@@ -98,6 +98,25 @@ For item operations, `local_item_cost` and `local_item_outcome` use the exact pe
 
 Nested FullParty resource packets use the same ordinary command grammar with the additional recipient restrictions in [resource-full-party-interaction.md](resource-full-party-interaction.md). They are validated and staged as outbound packets and are never applied to the originating client's ledger.
 
+A Mortal QTE terminal penalty uses only the closed subset inside
+`terminalOutcomes[].responseFragment.resourceChanges[]`: `damage`, exact
+`player/player_current`, an existing active resource, positive exact `amount`,
+source exactly `{kind:narrative_outcome}`, non-empty reason, and exact
+`turn_{acceptedSourceTurn}:qte_terminal:{outcomeOrdinal}:resource:{commandOrdinal}`
+event identity. Every branch is validated; only the selected branch is converted
+to a typed common mutation. Definitions, capacity commands, `sourceId`, target
+refs, and legacy gauge aliases are forbidden. Exact replay is a no-op, and the
+resource quartet commits or rolls back atomically with QTE history/runtime
+closure; the nested resource array is never distributed as a legacy response
+field or persisted as a transient command root.
+
+This resource contract supplies the direct deferred producer foundation. It
+does not authorize treating QTE damage as effect-free: completed #1535
+T042a/T047b bind the producer at offer acceptance to an immutable effect
+continuation and publish any accepted trigger graph in the same terminal
+transaction. No live effect scan or random/bootstrap fallback may fill a
+missing continuation.
+
 ## 6. Forbidden raw data
 
 At every depth, reject:

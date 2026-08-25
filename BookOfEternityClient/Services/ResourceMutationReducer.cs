@@ -276,6 +276,8 @@ internal sealed class ResourceWorkingLedger
             .ThenBy(static entry => entry.Coordinate.ResourceKey, StringComparer.Ordinal)
             .ToArray());
 
+    internal int Count => _entries.Count;
+
     internal string Fingerprint => Freeze().Fingerprint;
 
     internal bool TryResolve(
@@ -896,7 +898,11 @@ internal static class ResourceMutationReducer
         ResourceDefinition definition,
         List<ValidationIssue> issues)
     {
-        var valid = capacity.Maximum > definition.MinimumPolicy.Value &&
+        var maximumMayEqualMinimum =
+            definition.CapacityPolicy.Kind == ResourceCapacityKind.RegisteredFormula;
+        var valid = capacity.Maximum >= definition.MinimumPolicy.Value &&
+            (maximumMayEqualMinimum ||
+             capacity.Maximum > definition.MinimumPolicy.Value) &&
             IsDefinitionNumberValid(capacity.Maximum, definition, alignToMinimum: true) &&
             ResourceMaterializationContract.IsExactIdentifier(capacity.Binding.AuthorityKey) &&
             ResourceMaterializationContract.IsAuthorityFingerprint(

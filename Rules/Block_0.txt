@@ -273,7 +273,7 @@
                         - statsIncreased, statsDecreased, setCharacteristics
                         - direct Mortal gauge deltas outside the common resource contract
                         - activeSkillChanges, passiveSkillChanges, skillMasteryChanges
-                        - UpdateInventory, moveInventoryItems, removeInventoryItems, inventoryItemsResources
+                        - UpdateInventory, moveInventoryItems, removeInventoryItems
                         - UpdateNPCs, NPCsInScene, NPCRelationshipChanges, NPCGoalUpdates, NPCQuestUpdates
                         - UpdateQuests, factionDataChanges, factionProjectUpdates
                         - currentLocationData, worldEventsLog, worldMapUpdates, worldStateFlags

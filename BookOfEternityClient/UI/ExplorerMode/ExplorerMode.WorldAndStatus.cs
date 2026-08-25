@@ -30,6 +30,56 @@ public partial class ExplorerMode
         return true;
     }
 
+    private static bool TryGetActiveMortalCoreResources(
+        bool projectionAvailable,
+        IReadOnlyList<ResourceProjectionRow> resources,
+        out ResourceProjectionRow health,
+        out ResourceProjectionRow energy,
+        out ResourceProjectionRow poise)
+    {
+        health = null!;
+        energy = null!;
+        poise = null!;
+        return projectionAvailable &&
+               TryGetExactActiveResource(resources, "health", out health) &&
+               TryGetExactActiveResource(resources, "energy", out energy) &&
+               TryGetExactActiveResource(resources, "poise", out poise);
+
+        static bool TryGetExactActiveResource(
+            IReadOnlyList<ResourceProjectionRow> rows,
+            string resourceKey,
+            out ResourceProjectionRow resource)
+        {
+            resource = null!;
+            var matches = rows
+                .Where(row => string.Equals(
+                    row.ResourceKey,
+                    resourceKey,
+                    StringComparison.Ordinal))
+                .Take(2)
+                .ToArray();
+            if (matches.Length != 1 ||
+                matches[0].State != ResourceLifecycleState.Active)
+            {
+                return false;
+            }
+
+            resource = matches[0];
+            return true;
+        }
+    }
+
+    private static string FormatProjectedResourceQuantity(
+        ResourceProjectionRow row,
+        decimal? quantity = null)
+    {
+        var formatted = (quantity ?? row.Maximum).ToString(
+            "0.############################",
+            CultureInfo.InvariantCulture);
+        var suffix = string.IsNullOrWhiteSpace(row.Unit) ? string.Empty : " " + row.Unit;
+        return formatted + suffix;
+    }
+
     private async Task ShowMap()
     {
         var map = await LocalMapViewService.BuildCurrentRealmMapAsync(_fs);
@@ -839,6 +889,13 @@ public partial class ExplorerMode
             return;
         }
 
+        var hasActiveMortalCoreResources = TryGetActiveMortalCoreResources(
+            state.PlayerStatus.ResourceProjectionAvailable,
+            state.PlayerStatus.Resources,
+            out var healthResource,
+            out var energyResource,
+            out var poiseResource);
+
         // ── Load supplementary data ──
         var expDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/experience.json");
         var itemsDoc = await _stateManager.LoadGameStateFileAsync("game_state/inventory/items.json");
@@ -952,7 +1009,7 @@ public partial class ExplorerMode
                 new Markup(string.Empty));
         }
 
-        if (state.PlayerStatus.ResourceProjectionAvailable &&
+        if (hasActiveMortalCoreResources &&
             TryParseProjectedPercentage(state.PlayerStatus.HealthPercentage, out var hpPctValue) &&
             TryParseProjectedPercentage(state.PlayerStatus.EnergyPercentage, out var enPctValue) &&
             TryParseProjectedPercentage(state.PlayerStatus.PoisePercentage, out var poPctValue))
@@ -1078,7 +1135,7 @@ public partial class ExplorerMode
             unspentStatPoints = GetInt(cr, "unspentStatPoints", 0);
         }
         var charSource = modChars ?? permChars ?? baseChars ?? (charDoc != null ? charDoc.RootElement : (JsonElement?)null);
-        int statPermCon = 0, statPermStr = 0, statPermInt = 0, statPermWis = 0, statPermFai = 0, statPermLuck = 0;
+        int statPermCon = 0, statPermStr = 0, statPermLuck = 0;
         if (charSource.HasValue)
         {
             var charTable = new Table()
@@ -1108,18 +1165,12 @@ public partial class ExplorerMode
                 // Cache for derived stats
                 if (charName == Characteristics.Constitution) statPermCon = modVal;
                 else if (charName == Characteristics.Strength) statPermStr = modVal;
-                else if (charName == Characteristics.Intelligence) statPermInt = modVal;
-                else if (charName == Characteristics.Wisdom) statPermWis = modVal;
-                else if (charName == Characteristics.Faith) statPermFai = modVal;
                 else if (charName == Characteristics.Luck) statPermLuck = modVal;
             }
             rightContent.AddRow(charTable);
 
             // ── Derived stats summary (compact) ──
             rightContent.AddRow(new Markup("[bold]Производные параметры:[/]"));
-            var dMaxHp = 100 + statPermCon * 2 + statPermStr;
-            var dMaxEn = 100 + (int)(statPermCon * 0.75) + (int)(statPermInt * 0.75) + (int)(statPermWis * 0.75) + (int)(statPermFai * 0.75);
-            var dMaxPoise = 100 + (int)(statPermStr * 1.5) + (int)(statPermCon * 1.5) + (int)(statPermInt * 1.5) + (int)(statPermWis * 1.5);
             var dMaxWeight = 30 + (int)(statPermStr * 1.8 + statPermCon * 0.4);
             var dCritThr = 20 - statPermLuck / 20;
             var derivedTable = new Table()
@@ -1130,8 +1181,27 @@ public partial class ExplorerMode
                 .AddColumn(new TableColumn("").RightAligned().NoWrap().Width(16))
                 .AddColumn(new TableColumn("").NoWrap().Width(18))
                 .AddColumn(new TableColumn("").RightAligned().NoWrap().Width(16));
-            derivedTable.AddRow(new Markup("[dim]Макс. здоровье[/]"), new Markup($"[red]{dMaxHp}%[/]"), new Markup("[dim]Энергия[/]"), new Markup($"[cyan]{dMaxEn}%[/]"));
-            derivedTable.AddRow(new Markup("[dim]Равновесие[/]"), new Markup($"[blue]{dMaxPoise}%[/]"), new Markup("[dim]Вес[/]"), new Markup($"[white]{dMaxWeight} кг[/]"));
+            if (hasActiveMortalCoreResources)
+            {
+                derivedTable.AddRow(
+                    new Markup("[dim]Макс. здоровье[/]"),
+                    new Markup($"[red]{Markup.Escape(FormatProjectedResourceQuantity(healthResource))}[/]"),
+                    new Markup("[dim]Энергия[/]"),
+                    new Markup($"[cyan]{Markup.Escape(FormatProjectedResourceQuantity(energyResource))}[/]"));
+                derivedTable.AddRow(
+                    new Markup("[dim]Равновесие[/]"),
+                    new Markup($"[blue]{Markup.Escape(FormatProjectedResourceQuantity(poiseResource))}[/]"),
+                    new Markup("[dim]Вес[/]"),
+                    new Markup($"[white]{dMaxWeight} кг[/]"));
+            }
+            else
+            {
+                derivedTable.AddRow(
+                    new Markup("[dim]Силы и запасы[/]"),
+                    new Markup($"[yellow]{Markup.Escape(state.PlayerStatus.ResourceUnavailableMessage)}[/]"),
+                    new Markup("[dim]Вес[/]"),
+                    new Markup($"[white]{dMaxWeight} кг[/]"));
+            }
             derivedTable.AddRow(new Markup("[dim]Критический диапазон[/]"), new Markup($"[gold1]{dCritThr}-20[/]"), new Markup(""), new Markup(""));
             rightContent.AddRow(derivedTable);
             if (unspentStatPoints > 0)
@@ -1866,6 +1936,15 @@ public partial class ExplorerMode
             return;
         }
 
+        await _stateManager.RefreshGameStateAsync();
+        var playerStatus = _stateManager.CurrentState.PlayerStatus;
+        var hasActiveMortalCoreResources = TryGetActiveMortalCoreResources(
+            playerStatus.ResourceProjectionAvailable,
+            playerStatus.Resources,
+            out var healthResource,
+            out var energyResource,
+            out var poiseResource);
+
         var result = await _charService.ComputeAsync();
         if (result.Stats.Count == 0)
         {
@@ -2004,29 +2083,15 @@ public partial class ExplorerMode
             var lvl = result.PlayerLevel;
 
             var permStr = GetPerm(Characteristics.Strength);
-            var permDex = GetPerm(Characteristics.Dexterity);
             var permCon = GetPerm(Characteristics.Constitution);
-            var permInt = GetPerm(Characteristics.Intelligence);
-            var permWis = GetPerm(Characteristics.Wisdom);
-            var permFai = GetPerm(Characteristics.Faith);
             var permLuck = GetPerm(Characteristics.Luck);
-            var permSpd = GetPerm(Characteristics.Speed);
 
             var modStr = GetMod(Characteristics.Strength);
             var modDex = GetMod(Characteristics.Dexterity);
             var modCon = GetMod(Characteristics.Constitution);
-            var modInt = GetMod(Characteristics.Intelligence);
             var modLuck = GetMod(Characteristics.Luck);
             var modSpd = GetMod(Characteristics.Speed);
 
-            // MaxHealth% = 100 + floor(PermanentlyModifiedConstitution * 2.0) + floor(PermanentlyModifiedStrength * 1.0)
-            var maxHp = 100 + (int)(permCon * 2.0) + permStr;
-            // MaxEnergy% = 100 + floor(Con*0.75) + floor(Int*0.75) + floor(Wis*0.75) + floor(Faith*0.75)
-            var maxEnergy = 100 + (int)(permCon * 0.75) + (int)(permInt * 0.75) + (int)(permWis * 0.75) + (int)(permFai * 0.75);
-            // MaxPoise% = 100 + floor(Str*1.5) + floor(Con*1.5) + floor(Int*1.5) + floor(Wis*1.5)
-            var maxPoise = 100 + (int)(permStr * 1.5) + (int)(permCon * 1.5) + (int)(permInt * 1.5) + (int)(permWis * 1.5);
-            // Poise regen per turn
-            var poiseRegen = 10 + maxPoise / 10;
             // MaxWeight = 30 + floor(Str*1.8 + Con*0.4)
             var maxWeightKg = 30 + (int)(permStr * 1.8 + permCon * 0.4);
 
@@ -2054,10 +2119,18 @@ public partial class ExplorerMode
 
             var dLines = new List<string>();
             dLines.Add("[bold white]❤️ Пулы:[/]");
-            dLines.Add($"  Максимальное здоровье:   [red]{maxHp}%[/]  [dim](100 + Выносливость×2 + Сила×1)[/]");
-            dLines.Add($"  Максимальная энергия:    [cyan]{maxEnergy}%[/]  [dim](100 + Выносливость×0.75 + Интеллект×0.75 + Мудрость×0.75 + Вера×0.75)[/]");
-            dLines.Add($"  Максимальное равновесие: [blue]{maxPoise}%[/]  [dim](100 + Сила×1.5 + Выносливость×1.5 + Интеллект×1.5 + Мудрость×1.5)[/]");
-            dLines.Add($"  Восстановление равновесия: [blue]{poiseRegen}%/ход[/]  [dim](10 + Максимальное равновесие/10)[/]");
+            if (hasActiveMortalCoreResources)
+            {
+                var poiseRegeneration = 10m + decimal.Floor(poiseResource.Maximum / 10m);
+                dLines.Add($"  Максимальное здоровье:   [red]{Markup.Escape(FormatProjectedResourceQuantity(healthResource))}[/]");
+                dLines.Add($"  Максимальная энергия:    [cyan]{Markup.Escape(FormatProjectedResourceQuantity(energyResource))}[/]");
+                dLines.Add($"  Максимальное равновесие: [blue]{Markup.Escape(FormatProjectedResourceQuantity(poiseResource))}[/]");
+                dLines.Add($"  Восстановление равновесия: [blue]{Markup.Escape(FormatProjectedResourceQuantity(poiseResource, poiseRegeneration))}/ход[/]  [dim](10 + Максимальное равновесие/10)[/]");
+            }
+            else
+            {
+                dLines.Add($"  [yellow]{Markup.Escape(playerStatus.ResourceUnavailableMessage)}[/]");
+            }
             dLines.Add($"  Грузоподъёмность: [white]{maxWeightKg} кг[/]  [dim](30 + Сила×1.8 + Выносливость×0.4)[/]");
 
             dLines.Add("");

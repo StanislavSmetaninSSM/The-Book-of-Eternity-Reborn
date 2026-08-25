@@ -127,6 +127,7 @@ function Return-ToGameLoop {
         [System.Collections.IList]$Trace
     )
 
+    $returnStepInFlightScreenId = $null
     for ($step = 0; $step -lt $ReturnStepLimit; $step++) {
         $snapshot = Wait-AgentSnapshot
         Assert-NotTurnPreparing $snapshot
@@ -151,6 +152,14 @@ function Return-ToGameLoop {
         }
 
         if (-not $awaitingInput) {
+            if (-not [string]::IsNullOrWhiteSpace($returnStepInFlightScreenId) -and
+                $returnStepInFlightScreenId -eq $screenId) {
+                # Local command return is already in flight. Input consumption
+                # briefly republishes the same screen before game-loop appears.
+                Start-Sleep -Milliseconds $PollMilliseconds
+                continue
+            }
+
             throw "Screen '$screenId' is not awaiting input; refusing to continue a read-only command sweep."
         }
 
@@ -159,6 +168,7 @@ function Return-ToGameLoop {
         }
 
         if ($inputKind -eq "key" -or $inputKind -eq "menuSelection") {
+            $returnStepInFlightScreenId = $screenId
             Invoke-AgentPost -Path "/api/agent-console/return-to-game-loop-step" -Body $null | Out-Null
             Start-Sleep -Milliseconds $PollMilliseconds
             continue

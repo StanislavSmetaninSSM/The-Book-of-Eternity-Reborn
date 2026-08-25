@@ -275,7 +275,7 @@ Run source fixtures for each policy:
 1. `independent`: with source `maxStacks=2`, three distinct accepted events create exactly two IDs; each canonical instance remains `currentStacks=1,maxStacks=1`, and replay creates none.
 2. `stack`: count rises to `maxStacks`; boundary application follows source max behavior.
 3. `refresh`: same ID and count; exact lifetime reset/extend behavior.
-4. `replace`: old index entry becomes terminal `replaced`; one new active ID.
+4. `replace`: old index entry becomes terminal `replaced`; one new active ID. An explicit incoming replacement may supersede one prior valid policy at the same coordinate, but never chooses among multiple prior identities.
 5. `merge`: only registered bounded component fields combine deterministically, and every component profile must authorize the selected reducer.
 
 Expected: the GM never submits post-count, remaining lifetime, replacement ID, or merged payload.
@@ -339,7 +339,12 @@ worked graph in `EffectReactionWorkedExample_ValidatesCompleteGraphAndAllResultK
 
 Expected:
 
-- execution remains priority → ordinal effect ID → ordinal component ID;
+- candidate discovery changes no carrier/index and spends no reaction expansion;
+- each actual event is arbitrated by trigger priority and stable trigger/effect
+  identity, then released outputs follow accepted activation ordinal,
+  source-declared component priority, and ordinal component ID;
+- a denied candidate emits no mutation, reaction, pending work, identity
+  transition, or expansion usage;
 - periodic resource changes occur once;
 - carrier-array order cannot change the result;
 - `after_component` runs only after the exact predecessor mutation actually
@@ -351,13 +356,79 @@ Expected:
 - resource-derived reactions preserve their producing event as causal evidence;
   `before_current_event` means before continuation of that derived event, not
   before the resource mutation that produced it;
+- each actual event freezes one candidate batch and records a monotonic causal
+  transcript: producer, boundary open, `before_current_event`, descendants and
+  nested boundaries, `after_current_event`, then one use/lifetime projection;
+- `suspend` or `remove` cannot revoke accepted sibling outputs in its frozen
+  boundary, but blocks that effect from later boundaries; a reaction-created or
+  replacement effect first reacts in the next accepted mechanics transition;
+- a released `apply_definition(policy=replace)` derives its exact old target
+  from the frozen realm/target/source/stack coordinate (not `definitionKey`) and
+  blocks that target from every later or nested boundary; an
+  `after_current_event` replacement reserves the target at acceptance;
+- when accepted consuming activations belong to that retired target, the client
+  records their immutable `N, N-1, ...` uses in activation order immediately
+  before its single `replace`; every intermediate/final replacement keeps its
+  full new lifetime, including when the old effect spent its final use;
+- accepted last-use and unconditional deferred-terminal authority is reserved
+  in the immutable transcript immediately after the frozen batch, so a later
+  boundary cannot reuse the effect and finalization cannot invent eligibility;
+- expansion is charged only when an accepted reaction is released; exact
+  zero-applied, skipped, and replayed predecessors suppress only their dependent
+  `after_component` outputs, while accepted unconditional
+  `before_current_event`/`after_current_event` reactions and one accepted-use
+  projection remain;
+- a resource-event child preserves both its outer producer requirement and its
+  exact `after_component` predecessor requirement, so either missing edge
+  suppresses the child without fabricating output;
 - a downstream-effect/component cycle, per-reaction `maxExpansion` overflow,
   or whole-turn reaction count above 64 fails before writes.
+
+### 7.1 Deferred QTE resource-event continuation
+
+Accept a Mortal QTE offer whose sealed terminal branch damages a resource and
+whose resulting `resource_damaged` or `resource_depleted` event reaches both a
+deterministic reaction and a bounded reaction. Restart the client once while
+the QTE is active and once while it is waiting for the first receipt.
+
+Expected:
+
+- acceptance creates one current-schema client continuation in
+  `game_state/control/qte_deferred_effect_continuation.json`, bound to exact
+  session generation, source turn, offer, byte/existence snapshots, source,
+  target, trigger candidates, pending authority, semantic plan, and persistent
+  semantic identities;
+- terminal selection is write-once; console/browser retry and process restart
+  reuse the same chapter/action/grade/outcome/resource producer binding;
+- deterministic terminal work runs through the same
+  `AcceptedMechanicsPlanner` as an ordinary accepted event, not through a
+  resource-only or effect-only adapter and never from live rebuilt authority;
+- bounded work writes only standard safe pending authority plus
+  `input/qte_effect_resolution_request.json`; the GM writes the closed
+  correlation-and-receipts-only response, and
+  `ready/qte_effect_resolution_complete.json` is written last;
+- no ordinary `turn_request`, synthetic pending-turn snapshot,
+  validation-repair cycle, story/progression replay, or turn increment occurs
+  while receipts are resumed;
+- every next wave retains prior exact bindings and the same semantic identity
+  ledger; stale session/generation/request/wave, extra fields, altered receipt,
+  or changed live definition produces no mechanics write;
+- no resource/effect after-image, terminal QTE history, or runtime closure is
+  published before the final complete replay produces no pending work;
+- the final transaction publishes the resource quartet, effect
+  carriers/index/history, reactions, QTE history/runtime closure, terminal
+  continuation evidence, and transport cleanup together; injected failure at
+  every planned path restores exact bytes and prior existence.
+
+This transport is Mortal-QTE-only. It changes no Chaos Sea/Shining Abode
+pending/action/response contract; shared afterlife effect documentation remains
+covered separately by the afterlife adapter checks below.
 
 ## 8. NPC and Combatant Targets
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectMaterializationValidationTests|FullyQualifiedName~CanonicalStateNormalizerEffectTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -TimeoutMinutes 10 -Filter "FullyQualifiedName~EffectMaterializationValidationTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~CanonicalStateNormalizerEffectTests"
 ```
 
 Expected:
@@ -374,7 +445,9 @@ Expected:
 ## 9. Afterlife Actor and Spiritual Condition
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeSpiritualConflictValidationTests|FullyQualifiedName~AfterlifeEntityProfileValidationTests|FullyQualifiedName~EffectAfterlifeAdapterTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -TimeoutMinutes 10 -Filter "FullyQualifiedName~AfterlifeSpiritualConflictValidationTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeEntityProfileValidationTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectAfterlifeAdapterTests"
 ```
 
 Expected:
@@ -473,7 +546,7 @@ Expected:
 ## 13. Failure-Injection Rollback
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane LifecycleIntegration -Filter "FullyQualifiedName~EffectMaterializationLifecycleTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests"
 ```
 
 Expected for every planned path and post-check injection:
@@ -488,7 +561,9 @@ Expected for every planned path and post-check injection:
 ## 14. Console/Browser Projection Parity
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExplorerModeCommandTests|FullyQualifiedName~ExplorerWebCommandServiceTests|FullyQualifiedName~EffectPlayerProjectionTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectPlayerProjectionTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -TimeoutMinutes 8 -Filter "FullyQualifiedName~ExplorerModeCommandTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -TimeoutMinutes 15 -Filter "FullyQualifiedName~ExplorerWebCommandServiceTests"
 ```
 
 Expected:
@@ -498,6 +573,12 @@ Expected:
 - full identity/index/pending/repair/diagnostic wrappers are suppressed recursively;
 - adjacent legitimate `{kind,title,steps,turn,source,route}` semantics remain visible;
 - stale/forged cure/dispel selector cannot mutate state;
+- generated afterlife-profile actions use typed opaque authority from string
+  `actorType + actorId/actorRef`, while malformed/non-string identity, duplicate
+  authority, and ambiguous inbox coordinates emit no action;
+- `/afterlife_profiles действие` accepts only the exact opaque token shape and
+  never falls back to direct lookup; `/afterlife_profiles профиль` remains
+  readable even when a raw ID has the opaque prefix or exact opaque shape;
 - effect-only removal never claims wound healing.
 
 Task 11 RED→GREEN evidence:
@@ -508,6 +589,7 @@ Task 11 RED→GREEN evidence:
 | Complete registered facts, Russian labels, all lifetime modes, and wide finite numbers | `TestResults/test-lanes/20260821-234325-641-44100-3d8ffba4b8eb48b8a2e20b188f7c9f78-focused` (`15/25`); `TestResults/test-lanes/20260821-235527-033-41712-d0bf25b0170e48e5912359825bb6a0a1-focused` (`31/35`) | `TestResults/test-lanes/20260821-235626-310-38900-a6323641695a4c428b627fa973acc1bc-focused` | 35 |
 | Mortal browser and console parity | `TestResults/test-lanes/20260821-213957-225-13384-1d9d4444465d4dbe9f347587b3c3814a-focused` (`4/10`) | `TestResults/test-lanes/20260821-230455-890-39192-fa338167fd0242539bf376957a6d0ae0-focused`; `TestResults/test-lanes/20260821-231922-743-41292-57ea75aa8a5447aeb63ae647196c385a-focused` | 10; 11 |
 | Opaque revalidated actions | `TestResults/test-lanes/20260821-223209-978-37652-034c3725e0f84ce1923511c061d9bfa3-focused`; `TestResults/test-lanes/20260821-224016-931-35500-7be3b33b69bc4bc8961b07e5aa5fd5cb-focused` | `TestResults/test-lanes/20260821-223811-654-24992-831eaffe99b6440fa9ee08ae5cfc3202-focused`; `TestResults/test-lanes/20260821-224112-554-43156-9276c231b5db4ec98afe35441a09d560-focused` | 2; 2 |
+| Afterlife profile opaque v2, strict identity, inbox ambiguity, and route namespace | `TestResults/test-lanes/20260825-210159-521-37824-ad27716795e4485bb8a001b84927c71f-focused` (`2/11`); `TestResults/test-lanes/20260825-213323-670-48896-1bbb700d2b64460bbc2a3a018755a02d-focused` (`24/29`) | `TestResults/test-lanes/20260825-213518-435-39076-1b9402cf15c84c57bcaadbd6636f18b5-focused`; expanded `TestResults/test-lanes/20260825-213714-623-49096-b6baad71313f4da0b8b0c59227aac33d-focused` | 29; 90 |
 | Afterlife parity and hidden-token audit | `TestResults/test-lanes/20260821-221009-777-46648-3e32fe9fb9c94fe2bf35587a21406e81-focused`; `TestResults/test-lanes/20260821-222102-653-40164-c75af733d8134a819e88d0d05cfca016-focused` | `TestResults/test-lanes/20260821-232215-813-29044-36721d0bee244783b08aba0aeb1fe294-focused` | 46 |
 | Game-screen unavailable-state parity | `TestResults/test-lanes/20260821-235124-799-44560-8d22ddeca6a743fbbe43f172fbd77727-focused` (`10/11`) | `TestResults/test-lanes/20260821-235228-896-4060-be0ee5c252134882b4ca539ec552e5e3-focused` | 11 |
 | Canonical Mortal combat and afterlife-condition fixture reconciliation | `TestResults/test-lanes/20260822-001033-462-24656-edd64be0450c4d639966ccb9922eb51e-focused` (`2/6`) | `TestResults/test-lanes/20260822-001624-913-21220-1ddd923c22404d28b221965a901f6e21-focused` | 6 |
@@ -552,6 +634,10 @@ Expected:
 
 Run the focused scaling fixture with representative owners, effects, components, and triggers at size N and 2N.
 
+```powershell
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectResourceTriggerRoutingScaleTests|FullyQualifiedName~AcceptedMechanicsPlannerScaleTests|FullyQualifiedName~PendingCausalAuthorityScaleTests"
+```
+
 Expected:
 
 - 2N validation/lifecycle work is at most 2.5 × N;
@@ -583,3 +669,161 @@ In one generated Mortal session and one afterlife conflict:
 3. Reject a malformed effect and confirm no stale narrative.
 4. Remove a wound consequence and confirm the wound remains.
 5. Search serialized browser state and console output for internal IDs, paths, validation/repair words, pending packets, and hidden effect tokens; expect zero matches.
+
+## 19. Merge-gate replay-identity hardening (2026-08-25)
+
+The final review hardened the hidden causal/replay boundary without changing a
+GM-authored command or a player-visible response:
+
+- foreign replacement targets and terminal reservations now carry a typed
+  `EffectReplayIdentity` (raw effect ID plus validated permanent or accepted-
+  application authority); exact reaction, stable-order, terminal-prefix, and
+  boundary-transcript domains were versioned for the new serialized meaning;
+- accepted-use duplicate detection now keys on logical effect authority plus the
+  trigger/event tuple, so a retry with a regenerated raw same-turn ID cannot
+  consume the same activation twice;
+- persisted `effectAuthority` accepts only an exact permanent binding or the
+  exact accepted-application event. Broad `same_turn_ref` remains valid for
+  source, target, and resource bindings, but fails closed in the effect field;
+- lifecycle transition event references derive from the typed authority rather
+  than a random same-turn effect ID. The resource source ID/authority domains
+  were versioned because their serialized identity semantics changed.
+
+Representative RED to GREEN evidence is:
+
+- typed replacement/reservation/fingerprint behavior:
+  `20260825-142713-365-30868-e247ce23727b460080a1be87686ad621-focused`,
+  `20260825-143017-884-45200-24a797eff0d44b718f13d6111fa6954a-focused`,
+  and `20260825-143754-488-31132-17cac87fba974a27a025e0b9c24e2047-focused`
+  to `20260825-144233-751-30684-353431d453ff47aeb9329c7171b62ad8-focused`
+  (`29/29`);
+- logical accepted-use replay identity:
+  `20260825-144756-874-43296-7c97505a95c94ffa960dae0c607e9223-focused`
+  and `20260825-145013-579-13124-af1ae9fc37b34d8abfdeb22279cdedfc-focused`
+  to `20260825-145245-018-50196-f4804af98dec4080ada35dc61c469c8a-focused`
+  (`19/19`);
+- field-specific persisted authority:
+  `20260825-145543-218-49044-dc04897ec1fb4ae5a0bede4f473950c5-focused`
+  to `20260825-145643-355-37092-b21b3936545a4110ab17e578e070a62d-focused`
+  (`5/5`);
+- stable lifecycle transition reference:
+  `20260825-150158-065-37964-7866d3e555e64447bf40c4e27aada6ba-focused`
+  to `20260825-150305-876-49292-bcfd3ad3ae0046579282da18c31bf882-focused`
+  (`2/2`).
+
+Post-fix controls pass `244/244`, `87/87`, `34/34`, `54/54`, and `45/45`
+at, respectively, `20260825-150437-619-40940-a36225d9b8134f749ceef03a251c6096-focused`,
+`20260825-150841-018-31064-6b860b6ccc514918912c05753072f9f3-focused`,
+`20260825-151208-348-27912-61573703a83d4f678a6865fbc96878bc-focused`,
+`20260825-151253-174-10404-e6ab8316b0ec4659b618e1dd2a126175-focused`,
+and `20260825-151438-474-46296-5074c88233f749f499b03c554f1f7244-focused`.
+Every run exited `0`, timed out `false`, reported zero duplicate IDs, and
+completed owned-process cleanup.
+
+A final replacement-occupancy review then exposed the remaining raw-ID gap:
+two accepted owners could freeze one target `X`, after which the second release
+implicitly replaced the first result `Y`. The corrected completion path now
+indexes and linearly simulates the whole released `apply_definition` batch
+before any reaction allocation, rejects competing owners, repeated frozen
+absence, a preceding non-replace occupant, or a known stack-policy conflict,
+preserves compatible identity-preserving siblings and only the specified
+consuming self-replacement cascade, and runtime-checks every typed
+predecessor/result plus every create/replace transition. The first two
+regression tests failed on the old successful completion at
+`20260825-160407-453-18732-4f29694f2c67497986b80570c8969947-focused`.
+They pass after preflight at
+`20260825-160955-421-51928-e093e6c0fceb47c6b3f82b76a34bd3a2-focused`;
+the full runtime-checked model, both conflicts, and the retained
+`old -> intermediate -> final` self-cascade pass `3/3` at
+`20260825-161843-314-40008-75893dc946434e639c4ea72ab051d52a-focused`.
+A follow-up `2/2` RED proved that non-replace occupancy and a known policy
+conflict still failed too late at
+`20260825-165020-559-43824-c1cfc93acad84900b5f52b3a91cbb236-focused`.
+After the coordinate index and linear occupancy simulation, both conflicts,
+the earlier cases, the retained self-cascade, and compatible `stack -> replace`
+pass `6/6` at
+`20260825-170547-269-41648-bdffef1715704765890f462b7c61dd60-focused`.
+The complete routing/scale class passes `69/69` at
+`20260825-170746-336-15784-79af0d7101ce490886823dfe7b4f3f06-focused`.
+Adjacent planner/arbiter/transcript unit controls pass `197/197` at
+`20260825-170812-692-26108-395f249d17874c28a1cb0b66ac46116d-focused`.
+All cited GREEN runs timed out `false`, reported zero duplicate IDs, and
+completed owned-process cleanup; the broad builds had zero warnings and errors.
+The final reviewed tree also passes fresh `LifecycleIntegration` `286/286` at
+`20260825-171156-552-48632-5c3ba7811b7c444f81bd31d4040e0953-lifecycleintegration`
+in `00:09:43`; exit is `0`, timeout is `false`, duplicate IDs are zero, and
+owned-process cleanup is complete under the explicitly justified 15-minute
+lane budget.
+
+These are client-owned opaque identity and replay rules. They add no GM-authored
+field, command, receipt, action, afterlife contract, or player-visible behavior,
+so the already synchronized Mortal/afterlife prompts, guides, examples,
+manifests, and source guards require no further change. Per the explicit
+pre-alpha decision, no migration, compatibility reader, dual write, or raw-ID
+fallback is added.
+
+Candidate inspection after staging reports `265` expected #1535/#1543 paths,
+`27` reviewed added files, zero unstaged tracked paths, and only the excluded
+untracked `.serena/` directory. Cached diff checking exits `0`; expected-path
+allowlisting has zero outliers, and workflow/settings/Serena paths,
+credential-token patterns, and Arena AI diff matches are all zero. No commit,
+push, or merge was performed.
+
+## 20. Final bounded PreMerge evidence (2026-08-26)
+
+The one final command was:
+
+```powershell
+pwsh -NoLogo -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge
+```
+
+Its accepted summary is
+`TestResults/test-lanes/20260826-004148-035-3528-42f32409a6b34cf4bbb7950b7e8a10d7-premerge/summary.json`.
+The lane completed under the #1547 30-minute contract in
+`00:21:59.6684306`, exited `0`, timed out `false`, reported zero duplicate test
+IDs, and completed owned-tree cleanup. All `26` official TRX files had outcome
+`Completed`:
+
+- Fast: `4,339/4,339` across four shards;
+- core integration: `2,269/2,269` across twenty shards;
+- ProcessIntegration: `508/508`;
+- E2E: `15/15`;
+- total C#: `7,131/7,131`, failures `0`.
+
+The same lane also passed frontend verification `141/141`, frontend typecheck
+and production build, and both C# builds with zero warnings/errors. No duplicate
+Fast was run immediately before it.
+
+The final process-fixture diagnostic had first failed `12/523` tests at
+`20260826-000045-751-19716-40cc019dd0ec4bd3af1a1bc21c655fcb-processintegration`.
+The fixes completed technical test bootstraps with the already-required
+resource quartet, used the production quartet transaction for accepted
+afterlife archive fixtures, and updated one stale safe console label; no
+production fallback or migration was added. Exact focused closure is `3/3` at
+`20260826-002100-739-37372-fbc0566ec7db46a8a457b5d967748c9c-focused`,
+and the isolated complete ProcessIntegration lane is `523/523` at
+`20260826-002204-545-33256-d46277f36dd4471eaaae5ecb8a221b2b-processintegration`.
+
+Issue #1546 is the narrow audit-admission prerequisite included in this final
+tree. Its deterministic entry-point/cancellation regression passed `5/5`, the
+complete audit control passed `13/13`, and adjacent lock-order controls passed
+`116/116`; final PreMerge confirms the entire Fast project after the standalone
+five-minute Fast attempt became capacity-invalid. #1546 changes only
+same-process audit admission before the existing canonical lease. It adds no
+GM-authored capability, Mortal/afterlife state or pending contract, response,
+receipt, command, or player-visible copy, so no prompt, worked example,
+afterlife matrix, manifest, or source-guard update is required for that repair.
+
+The already recorded final-tree `LifecycleIntegration` remains `286/286` at
+`20260825-171156-552-48632-5c3ba7811b7c444f81bd31d4040e0953-lifecycleintegration`;
+the documentation-sensitive `FullValidation` remains `1,810/1,810` at
+`20260822-194158-015-17568-95c447447c9c42fdb9f19719e3593caf-fullvalidation`.
+Changes after those conditional controls were client-owned selector/audit
+hardening, technical fixtures, and the bounded runner contract, not a new
+GM-authored or afterlife documentation surface. Mortal and afterlife prompts,
+guides, examples, manifests, and source guards therefore remain synchronized.
+
+No migration, compatibility reader, dual authority/write, raw fallback, GitHub
+Actions enablement, commit, push, PR, merge, or issue closure occurred. T118 is
+complete. T119 remains the owner-controlled final workspace/summary and
+integration boundary.

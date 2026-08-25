@@ -503,45 +503,38 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
     {
         await SeedStoryTurnAsync(88);
         await SeedSoulRealmAsync(realm, inkFeathers);
-        await SeedBlessingRerollAuthorityAsync(realm);
-        var blessing = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
-            _fs,
-            CreateRelicRerollPackage(),
-            currentIncarnation: 3);
-        Assert.True(blessing.Success, blessing.ErrorMessage);
+        await SeedPlayerSoulProfileAsync(realm);
         await SeedGuardiansAsync();
 
-        var root = new JsonObject
+        var root = ShiningAbodeState.CreateDefaultState();
+        root["availability"] = ShiningAbodeState.AvailabilityActive;
+        root["radiance"] = new JsonObject
         {
-            ["availability"] = ShiningAbodeState.AvailabilityActive,
-            ["radiance"] = new JsonObject
-            {
-                ["experience"] = 700,
-                ["tier"] = 4
-            },
-            ["lightSparks"] = lightSparks,
-            ["treasury"] = ShiningAbodeState.BuildDefaultTreasuryObject(),
-            ["gates"] = new JsonObject
-            {
-                ["hasOpenDraft"] = false,
-                ["draftVersion"] = 0,
-                ["allCandidateBlessingCards"] = new JsonArray(),
-                ["availableBlessingCards"] = new JsonArray(),
-                ["shownBlessingCardIds"] = new JsonArray(),
-                ["selectedBlessingCardIds"] = new JsonArray()
-            },
-            ["halls"] = new JsonArray
-            {
-                CreateHall("hall_lanterns", "Зал Фонарей"),
-                CreateHall("hall_hidden", "Скрытый зал")
-            },
-            ["factions"] = new JsonArray
-            {
-                CreateFaction("faction_lanterns", "Дом Фонарей", "hall_lanterns", visible: true),
-                CreateFaction("faction_hidden", "Скрытый Дом", "hall_hidden", visible: false)
-            },
-            ["shiningPoliticalActors"] = new JsonArray()
+            ["experience"] = 700,
+            ["tier"] = 4
         };
+        root["lightSparks"] = lightSparks;
+        root["treasury"] = ShiningAbodeState.BuildDefaultTreasuryObject();
+        root["gates"] = new JsonObject
+        {
+            ["hasOpenDraft"] = false,
+            ["draftVersion"] = 0,
+            ["allCandidateBlessingCards"] = new JsonArray(),
+            ["availableBlessingCards"] = new JsonArray(),
+            ["shownBlessingCardIds"] = new JsonArray(),
+            ["selectedBlessingCardIds"] = new JsonArray()
+        };
+        root["halls"] = new JsonArray
+        {
+            CreateHall("hall_lanterns", "Зал Фонарей"),
+            CreateHall("hall_hidden", "Скрытый зал")
+        };
+        root["factions"] = new JsonArray
+        {
+            CreateFaction("faction_lanterns", "Дом Фонарей", "hall_lanterns", visible: true),
+            CreateFaction("faction_hidden", "Скрытый Дом", "hall_hidden", visible: false)
+        };
+        root["shiningPoliticalActors"] = new JsonArray();
         await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         var residents = new JsonObject
@@ -553,6 +546,13 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
             }
         };
         await _fs.WriteFileAtomicAsync(GuardianAbodeResidentState.StatePath, residents.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(_fs);
+        var blessing = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
+            _fs,
+            CreateRelicRerollPackage(),
+            currentIncarnation: 3);
+        Assert.True(blessing.Success, blessing.ErrorMessage);
     }
 
     private async Task SeedSoulRealmAsync(string realm, int inkFeathers = 120)
@@ -860,20 +860,9 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
             .Sum(static transition => transition.AppliedAmount));
     }
 
-    private async Task SeedBlessingRerollAuthorityAsync(string realm)
+    private Task SeedPlayerSoulProfileAsync(string realm)
     {
-        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
+        return _fs.WriteFileAtomicAsync(
             AfterlifeEntityProfileState.StatePath,
             new JsonObject
             {
@@ -884,18 +873,7 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
                         ["actorType"] = "player_soul",
                         ["actorId"] = "player_soul",
                         ["displayName"] = "Тестовая Душа",
-                        ["realm"] = "Shining Abode",
-                        ["resourceOwnerBindings"] = new JsonArray
-                        {
-                            new JsonObject
-                            {
-                                ["realm"] = "shining_abode",
-                                ["resourceOwnerId"] = "player_soul",
-                                ["state"] = RealmSemantics.IsMortalRealm(realm)
-                                    ? "suspended"
-                                    : "active"
-                            }
-                        }
+                        ["realm"] = "Shining Abode"
                     }
                 }
             }.ToJsonString());

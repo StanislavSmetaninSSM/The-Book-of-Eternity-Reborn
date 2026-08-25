@@ -46,27 +46,6 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         _fs.EnsureDirectoryStructure();
-        var resourceBootstrap = ResourceBootstrapStateBuilder.BuildPristine();
-        if (!resourceBootstrap.IsValid)
-        {
-            throw new InvalidOperationException(
-                string.Join(Environment.NewLine, resourceBootstrap.Issues));
-        }
-        _fs.WriteFileAtomicAsync(
-                ResourceMaterializationContract.DefinitionsPath,
-                resourceBootstrap.Definitions!.ToCanonicalJson())
-            .GetAwaiter()
-            .GetResult();
-        _fs.WriteFileAtomicAsync(
-                ResourceMaterializationContract.StatePath,
-                resourceBootstrap.State!.ToCanonicalJson())
-            .GetAwaiter()
-            .GetResult();
-        _fs.WriteFileAtomicAsync(
-                ResourceMaterializationContract.HistoryPath,
-                resourceBootstrap.History!.ToCanonicalJson())
-            .GetAwaiter()
-            .GetResult();
         _settings = new GameSettings();
         _stateManager = new StateManager(_fs, _settings, NullLogger<StateManager>.Instance);
         _loc = new LocalizationManager { CurrentLanguage = "ru" };

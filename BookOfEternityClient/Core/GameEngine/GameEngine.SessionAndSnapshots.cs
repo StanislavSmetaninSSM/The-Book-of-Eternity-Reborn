@@ -1809,12 +1809,20 @@ public partial class GameEngine
 
     private async Task RestorePreTurnBaselineForRepairSessionAsync(
         RollbackSnapshot snapshot,
-        string expectedSessionGeneration)
+        string expectedSessionGeneration,
+        byte[]? pendingResolutionRepairCheckpoint = null)
     {
         await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
             ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
             await RestorePreTurnBackupAsync(writeLease, snapshot);
+            if (pendingResolutionRepairCheckpoint != null)
+            {
+                await _fs.WriteFileAtomicBytesAsync(
+                    writeLease,
+                    ResourcePendingResolutionState.PendingPath,
+                    pendingResolutionRepairCheckpoint);
+            }
         }
 
         await RefreshRuntimeStateAfterExactRollbackAsync();
@@ -1838,6 +1846,9 @@ public partial class GameEngine
         var changed = new List<RepairResubmissionPathObligation>();
         foreach (var path in candidates)
         {
+            if (IsClientOwnedRepairResubmissionPath(path))
+                continue;
+
             var comparison = await CompareRollbackTrackedPathToBaselineAsync(
                 writeLease,
                 snapshot,
@@ -1853,6 +1864,40 @@ public partial class GameEngine
 
         return changed;
     }
+
+    private static bool IsClientOwnedRepairResubmissionPath(string path) =>
+        string.Equals(
+            path,
+            SystemModService.ManifestPath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            ProgressionScheduleService.SchedulePath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            ResourceMaterializationContract.DefinitionsPath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            ResourceMaterializationContract.StatePath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            ResourceMaterializationContract.HistoryPath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            ResourcePendingResolutionState.PendingPath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            EffectAcceptedTurnPlan.IdentityIndexPath,
+            StringComparison.OrdinalIgnoreCase);
 
     private async Task<bool> AreRollbackTrackedPathsResubmittedForRepairSessionAsync(
         RollbackSnapshot snapshot,

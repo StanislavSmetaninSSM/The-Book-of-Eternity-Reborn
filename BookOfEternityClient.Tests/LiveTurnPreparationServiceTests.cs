@@ -332,16 +332,6 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
     {
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.DefinitionsPath,
-            bootstrap.Definitions!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.StatePath,
-            bootstrap.State!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(
-            ResourceMaterializationContract.HistoryPath,
-            bootstrap.History!.ToCanonicalJson());
-
         var soulRoot = new JsonObject
         {
             ["currentRealm"] = "Chaos Sea",
@@ -356,6 +346,17 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
                 }
             }
         };
+        var guardianProfile = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile(
+            actorType: "guardian",
+            actorId: "guardian_liora",
+            realm: "Chaos Sea",
+            materializedAtTurn: 6);
+        guardianProfile["displayName"] = "Лиора";
+        guardianProfile["standardArts"] = new JsonObject
+        {
+            ["pressure"] = 4,
+            ["guard"] = 2
+        };
         var profilesRoot = new JsonObject
         {
             ["schemaVersion"] = 1,
@@ -366,39 +367,9 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
                     ["actorType"] = "player_soul",
                     ["actorId"] = "player_soul",
                     ["displayName"] = "Асуран",
-                    ["realm"] = "Chaos Sea",
-                    ["resourceOwnerBindings"] = new JsonArray
-                    {
-                        new JsonObject
-                        {
-                            ["realm"] = "chaos_sea",
-                            ["resourceOwnerId"] = "player_soul",
-                            ["state"] = "active"
-                        }
-                    }
+                    ["realm"] = "Chaos Sea"
                 },
-                new JsonObject
-                {
-                    ["actorType"] = "guardian",
-                    ["actorId"] = "guardian_liora",
-                    ["displayName"] = "Лиора",
-                    ["realm"] = "Chaos Sea",
-                    ["resourceOwnerBindings"] = new JsonArray
-                    {
-                        new JsonObject
-                        {
-                            ["realm"] = "chaos_sea",
-                            ["resourceOwnerId"] = "guardian_liora",
-                            ["state"] = "active"
-                        }
-                    },
-                    ["standardArts"] = new JsonObject
-                    {
-                        ["pressure"] = 4,
-                        ["guard"] = 2
-                    },
-                    ["specialArts"] = new JsonArray()
-                }
+                guardianProfile
             }
         };
         var activeConflict = new JsonObject
@@ -455,27 +426,71 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
             ["activeConflict"] = activeConflict,
             ["recentConflicts"] = new JsonArray()
         };
-        await _fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            soulRoot.ToJsonString());
-        await _fs.WriteFileAtomicAsync(
-            AfterlifeEntityProfileState.StatePath,
-            profilesRoot.ToJsonString());
-        await _fs.WriteFileAtomicAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString());
-        var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
-            _fs,
-            new AfterlifeOwnerResourceAcceptedState(
-                SpiritualConflict: acceptedConflictRoot),
-            turn: 6);
-        Assert.True(resourcePlan.IsValid, string.Join(Environment.NewLine, resourcePlan.Issues));
-        Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(_fs, resourcePlan));
+        var initialPlan = await CanonicalResourceQuartetTransaction
+            .ComposeExplicitBootstrapAsync(
+                bootstrap.Definitions!,
+                bootstrap.State!,
+                bootstrap.History!,
+                new AfterlifeOwnerResourceAcceptedState(
+                    Profiles: profilesRoot,
+                    SpiritualConflict: acceptedConflictRoot,
+                    SoulState: soulRoot),
+                _fs.ReadFileAsync);
+        await CommitFreshResourceBootstrapAsync(_fs, initialPlan);
         await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
         {
           "difficulty": "hard"
         }
         """);
+    }
+
+    private static async Task CommitFreshResourceBootstrapAsync(
+        FileSystemManager fs,
+        CanonicalResourceFreshBootstrapPlan plan)
+    {
+        Assert.True(plan.IsValid, string.Join(Environment.NewLine, plan.Issues));
+        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
+        {
+            new(
+                ResourceMaterializationContract.DefinitionsPath,
+                plan.BeforeImages[ResourceMaterializationContract.DefinitionsPath],
+                plan.Definitions.ToCanonicalJson(),
+                RequireCurrentBaseline: true),
+            new(
+                ResourceMaterializationContract.StatePath,
+                plan.BeforeImages[ResourceMaterializationContract.StatePath],
+                plan.StateAfterImage!.ToCanonicalJson(),
+                RequireCurrentBaseline: true),
+            new(
+                ResourceMaterializationContract.HistoryPath,
+                plan.BeforeImages[ResourceMaterializationContract.HistoryPath],
+                plan.HistoryAfterImage!.ToCanonicalJson(),
+                RequireCurrentBaseline: true)
+        };
+        foreach (var (path, afterImage) in plan.OwnerAfterImages)
+        {
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                path,
+                plan.BeforeImages[path],
+                afterImage.ToJsonString(),
+                RequireCurrentBaseline: true));
+        }
+
+        CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(
+            writes,
+            plan.QuartetProjection!);
+        Assert.True(await CoordinatedStateWriteHelper.TryCommitAsync(
+            fs,
+            writes.ToArray()));
+        var exactAuthority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            plan.Definitions,
+            fs.ReadFileAsync,
+            plan.StateAfterImage!,
+            plan.HistoryAfterImage!,
+            CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
+        Assert.True(
+            exactAuthority.IsValid,
+            string.Join(Environment.NewLine, exactAuthority.Issues));
     }
 
     private async Task<JsonObject> ReadJsonObjectAsync(string relativePath)

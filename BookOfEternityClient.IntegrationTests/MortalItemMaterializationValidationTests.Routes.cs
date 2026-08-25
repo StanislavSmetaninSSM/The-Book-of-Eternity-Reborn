@@ -168,7 +168,7 @@ public sealed partial class MortalItemMaterializationValidationTests
                 MortalItemTestFixture.CreateRawRoot(
                     "quest_reward",
                     "quest_reward"));
-            await context.NormalizeAcceptedTurnAsync();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
             var issues = await context.Validator.ValidateGameStateAsync(
                 IntegrationValidationProfiles.QuestReward);
@@ -188,6 +188,10 @@ public sealed partial class MortalItemMaterializationValidationTests
                 MortalItemTestFixture.CreateRawRoot(
                     "quest_reward",
                     "quest_reward"));
+            var rawIssues = await context.ValidateAcceptedTurnRawMaterializationAsync();
+            Assert.DoesNotContain(
+                rawIssues,
+                issue => issue.Severity == IssueSeverity.Error);
             await context.NormalizeAcceptedTurnAsync();
             await context.ForgeAcceptedCreateTransitionAuthorityAsync(
                 "forged_quest_reward");
@@ -210,7 +214,7 @@ public sealed partial class MortalItemMaterializationValidationTests
                 MortalItemTestFixture.CreateRawRoot(
                     "quest_reward",
                     "quest_reward"));
-            await context.NormalizeAcceptedTurnAsync();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
             await context.AppendAcceptedTransferTransitionAsync();
 
             var issues = await context.Validator.ValidateGameStateAsync(
@@ -336,7 +340,7 @@ public sealed partial class MortalItemMaterializationValidationTests
                     "trade_output",
                     "npc_trade_receipt"));
 
-            await context.NormalizeAcceptedTurnAsync();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
             var npcRoot = (await context.ReadJsonAsync(
                 NpcCoreChangesContract.NpcCorePath))!.AsObject();
@@ -475,7 +479,7 @@ public sealed partial class MortalItemMaterializationValidationTests
             Assert.DoesNotContain(itemIssues, issue =>
                 issue.Severity == IssueSeverity.Error);
 
-            await context.NormalizeAcceptedTurnAsync();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
             var current = (await context.ReadJsonAsync(
                 StorageTransportMoveService.CurrentLocationPath))!.AsObject();
@@ -536,7 +540,7 @@ public sealed partial class MortalItemMaterializationValidationTests
             Assert.DoesNotContain(itemIssues, issue =>
                 issue.Severity == IssueSeverity.Error);
 
-            await context.NormalizeAcceptedTurnAsync();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
             var current = (await context.ReadJsonAsync(
                 StorageTransportMoveService.CurrentLocationPath))!.AsObject();
@@ -569,7 +573,7 @@ public sealed partial class MortalItemMaterializationValidationTests
             Assert.DoesNotContain(itemIssues, issue =>
                 issue.Severity == IssueSeverity.Error);
 
-            await context.NormalizeAcceptedTurnAsync();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
             var current = (await context.ReadJsonAsync(
                 StorageTransportMoveService.CurrentLocationPath))!.AsObject();
@@ -620,7 +624,7 @@ public sealed partial class MortalItemMaterializationValidationTests
             Assert.DoesNotContain(itemIssues, issue =>
                 issue.Severity == IssueSeverity.Error);
 
-            await context.NormalizeAcceptedTurnAsync();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
             var offscreen = (await context.ReadJsonAsync(
                 MortalLocationStorageContentsState.StatePath))!.AsObject();

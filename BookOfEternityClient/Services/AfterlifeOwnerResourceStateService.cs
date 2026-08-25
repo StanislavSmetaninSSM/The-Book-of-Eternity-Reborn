@@ -44,7 +44,8 @@ internal sealed class AfterlifeOwnerResourceStateFilePlan
         ResourceHistoryState? historyAfterImage,
         IReadOnlyDictionary<string, JsonObject> ownerAfterImages,
         IReadOnlyDictionary<string, string?> beforeImages,
-        IReadOnlyList<ValidationIssue> issues)
+        IReadOnlyList<ValidationIssue> issues,
+        CanonicalResourceQuartetProjection? quartetProjection = null)
     {
         StateAfterImage = stateAfterImage;
         HistoryAfterImage = historyAfterImage;
@@ -56,6 +57,7 @@ internal sealed class AfterlifeOwnerResourceStateFilePlan
         _beforeImages = new ReadOnlyDictionary<string, string?>(
             new Dictionary<string, string?>(beforeImages, StringComparer.Ordinal));
         _issues = (issues ?? throw new ArgumentNullException(nameof(issues))).ToArray();
+        QuartetProjection = quartetProjection;
     }
 
     internal ResourceStateLedger? StateAfterImage { get; }
@@ -68,9 +70,12 @@ internal sealed class AfterlifeOwnerResourceStateFilePlan
 
     internal IReadOnlyList<ValidationIssue> Issues => Array.AsReadOnly(_issues.ToArray());
 
+    internal CanonicalResourceQuartetProjection? QuartetProjection { get; }
+
     internal bool IsValid =>
         StateAfterImage != null &&
         HistoryAfterImage != null &&
+        QuartetProjection != null &&
         _issues.Length == 0;
 }
 
@@ -104,37 +109,63 @@ internal static class AfterlifeOwnerResourceStateService
     internal static async Task<bool> TryCommitAsync(
         FileSystemManager fs,
         AfterlifeOwnerResourceStateFilePlan plan,
-        params CoordinatedStateWriteHelper.PlannedWrite[] additionalGuardWrites)
+        params CoordinatedStateWriteHelper.PlannedWrite[] additionalWrites)
     {
         await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        return await TryCommitAsync(fs, writeLease, plan, additionalGuardWrites);
+        return await TryCommitAsync(fs, writeLease, plan, additionalWrites);
     }
 
     internal static async Task<bool> TryCommitAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
         AfterlifeOwnerResourceStateFilePlan plan,
-        params CoordinatedStateWriteHelper.PlannedWrite[] additionalGuardWrites)
+        params CoordinatedStateWriteHelper.PlannedWrite[] additionalWrites)
     {
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(plan);
-        ArgumentNullException.ThrowIfNull(additionalGuardWrites);
-        if (additionalGuardWrites.Any(static write => !write.GuardOnly))
+        ArgumentNullException.ThrowIfNull(additionalWrites);
+        var canonicalPathComparer = OperatingSystem.IsWindows()
+            ? StringComparer.OrdinalIgnoreCase
+            : StringComparer.Ordinal;
+        var protectedPaths = OwnerPaths
+            .Concat(
+            [
+                ResourceMaterializationContract.DefinitionsPath,
+                ResourceMaterializationContract.StatePath,
+                ResourceMaterializationContract.HistoryPath,
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+            ])
+            .Select(fs.ResolvePath)
+            .ToHashSet(canonicalPathComparer);
+        var resolvedAdditionalWrites = additionalWrites
+            .Select(write => new
+            {
+                Write = write,
+                ResolvedPath = fs.ResolvePath(write.Path)
+            })
+            .ToArray();
+        if (resolvedAdditionalWrites.Any(item =>
+                !item.Write.RequireCurrentBaseline ||
+                protectedPaths.Contains(item.ResolvedPath)) ||
+            resolvedAdditionalWrites
+                .GroupBy(static item => item.ResolvedPath, canonicalPathComparer)
+                .Any(static group => group.Count() != 1))
         {
             throw new ArgumentException(
-                "Afterlife owner/resource commits accept only additional guard writes.",
-                nameof(additionalGuardWrites));
+                "Afterlife owner/resource commits require unique baseline-bound additional writes outside the protected owner/quartet paths.",
+                nameof(additionalWrites));
         }
         if (!plan.IsValid ||
             plan.StateAfterImage == null ||
-            plan.HistoryAfterImage == null)
+            plan.HistoryAfterImage == null ||
+            plan.QuartetProjection == null)
         {
             return false;
         }
 
         var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>(
-            additionalGuardWrites);
+            additionalWrites);
         writes.Add(CoordinatedStateWriteHelper.CreateGuardWrite(
             ResourceMaterializationContract.DefinitionsPath,
             plan.BeforeImages[ResourceMaterializationContract.DefinitionsPath]));
@@ -163,6 +194,9 @@ internal static class AfterlifeOwnerResourceStateService
             ResourceMaterializationContract.HistoryPath,
             plan.BeforeImages[ResourceMaterializationContract.HistoryPath],
             plan.HistoryAfterImage.ToCanonicalJson()));
+        CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(
+            writes,
+            plan.QuartetProjection);
         return await CoordinatedStateWriteHelper.TryCommitAsync(
             fs,
             writeLease,
@@ -271,12 +305,30 @@ internal static class AfterlifeOwnerResourceStateService
                 GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulAfterImage);
         }
 
+        var projectedDocuments = ownerAfterImages.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.ToJsonString(
+                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+            StringComparer.Ordinal);
+        var quartet = await CanonicalResourceQuartetTransaction.ComposeExistingSessionAsync(
+            definitions.Catalog,
+            state.Ledger,
+            history.History,
+            planning.StateAfterImage,
+            planning.HistoryAfterImage,
+            path => ReadAsync(fs, writeLease, path),
+            beforeImages,
+            projectedDocuments);
+        if (quartet.Projection == null)
+            return Failure(beforeImages, quartet.Issues);
+
         return new AfterlifeOwnerResourceStateFilePlan(
             planning.StateAfterImage,
             planning.HistoryAfterImage,
             ownerAfterImages,
-            beforeImages,
-            Array.Empty<ValidationIssue>());
+            quartet.Projection.BeforeImages,
+            Array.Empty<ValidationIssue>(),
+            quartet.Projection);
     }
 
     private static void AddAccepted(

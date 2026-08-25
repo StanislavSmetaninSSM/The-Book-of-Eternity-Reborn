@@ -90,12 +90,14 @@ $script:GmDocPathDirective = " GM documentation paths are repo-local and authori
 $script:AfterlifeRealmGateDirective = " Realm Gate is mandatory before broad state reads: read input/turn_request.json and game_state/meta/soul_state.json first. If currentRealm is Chaos Sea or Shining Abode, do not read or repair mortal world files before reading world, NPC, faction, quest, inventory, combat, or mortal misc state; use only afterlife surfaces unless validation_repair_request.json explicitly names a wrong-realm repair target. In afterlife turns, before terminal signal, verify you did not change MortalWorldProfile files under game_state/world, game_state/npcs, game_state/factions, game_state/player, game_state/inventory, game_state/combat, or Mortal quest files. If you accidentally changed any of them, restore or remove those wrong-realm changes before terminal completion or repair completion. The client may auto-rollback forbidden wrong-realm mutations from the validated pending_turn_snapshot and write game_state/control/validation_auto_rollback_report.json before repair; this report is diagnostic only and is not permission to author MortalWorldProfile changes from afterlife. If the client restored a forbidden file to the validated snapshot, remaining validation errors from that restored baseline are client-owned diagnostic noise for this turn; do not repair them by editing MortalWorldProfile files."
 $script:AfterlifeExamplesDirective = " If game_state/meta/soul_state.json.currentRealm is Chaos Sea or Shining Abode, or progressionControl contains any afterlife mustEvaluate*/afterlifeCatchup debt, read compact templates first and use '$($script:AfterlifeMatrixPath)' to select exact canonical afterlife surfaces/receipts. Open '$($script:AfterlifeTurnsExamplePath)' only when the compact templates and matrix do not cover the route-specific contract you need; do not open the huge example file for basic terminal, progression_report, actor reasoning, repair, or tempoAdvantage field names. Route references when needed: example 14 for Shining core action fragments, examples 16-18 for combined scheduler + pending contract + player-action turns, example 19 for ordinary scheduler-only Chaos Sea living-world turns, example 20 for system Guardian attraction, example 21 for protected return guard turns, example 22 for direct resident action / hidden pending-backed routing tags, example 23 for freeform Chaos Sea Abode search with reason/source=chaos_sea_abode_search, example 24 for afterlife spiritual conflict with diceAudit on contested exchange/resolve and either specialArtAudit/effectNote/specialCostMultiplierPercent or specialArtAudits[] when both sides use named special arts; never write both special-art audit fields on one exchange. Non-player special arts must match the resolved opposition operation used for actionCostAudit.opposition, not the player's exchange.operationType or a stale incomingAction candidate; incomingAction.finalOperationType is authoritative when present, and terminal/free player operations must not include actionCostAudit.player. Use example 25 for Source of Light capstone closure from game_state/control/pending_source_of_light_capstone.json into sourceOfLightCapstone, light_incarnate, and source_of_light_incarnated_light. Scheduler allowance is scheduler-owned only: progressionProcessingReport permits only scheduler-owned Shining/resident/trade progression fields and does not authorize availability, coreActionReceipts, gates, gachaSystem.gachaHistory, pendingNativeFactionDiscovery, preparedIncarnationPackage, lightSparks, treasury, or sourceOfLightCapstone unless that surface has its own client-authored contract closed in the same turn. Use example 26 for afterlifeEntityProfileUpdates / afterlifeEntityCustomStateChanges / afterlifeFateCardUnlocks / afterlifeActorGoalUpdates / afterlifeActorQuestUpdates / afterlifeActorActivityUpdates / completeAfterlifeActorActivities / afterlifeRelationshipChanges / afterlifeRelationshipLockUpdates / afterlifeBreakthroughQuestUpdates / afterlifeActorMaskAdds / afterlifeActorMaskUpdates / afterlifeActorMaskRemovals / afterlifeActorActiveMaskChanges / afterlifeEntityProgressionOverrides / afterlifeSpecialArtLearningReceipts / game_state/meta/afterlife_entity_profiles.json, including fateCards, guardianEffects, playerUnlocks, politicalEffects, combatEffects, trainingUnlocks, relationships, relationshipLock, breakthroughQuestId, redemptionQuestId, pointOfNoReturn, _clear_, masks, activeMaskId, concealedTruth, directives, revealConditions, deceptionRisk, linkedThreatId, linkedSarefAgentId, goals, personalQuests, currentActivity, completedActivities, gmThoughtsSummary, specialArts, upgradeCost with only inkFeathers/lightSparks and at least one positive value, no progression via initialTier in learning receipts, trainingConditions, costMultiplierPercent, customStates, statesToRemove, progressionLedger, lastAutoProgressionCycleKey, soulDissipationProof, targetStabilityCoefficient, and terminalGameOver. Use _true_self_ rather than null for active mask removal, keep hidden mask truth out of normal player UI until isRevealed=true, and never use Mortal NPCMaskAdds. Use example 26D for afterlifeThreatsToAdd / afterlifeThreatsToUpdate / completeAfterlifeThreatActivities / afterlifeThreatsToRemove / game_state/meta/afterlife_active_threats.json persistent threats: use threats[], currentActivity, impactProfile, visibleToPlayer, optional sarefLink, close currentActivity only through completion, do not leak hidden threats, and never use Mortal worldMapUpdates.activeThreats. Use example 26B for afterlifeChronicleUpdates / game_state/meta/afterlife_chronicles.json external memory: write lastEventsDescription only, never eventDescriptions[] in updates, and do not substitute worldEventsLog/currentLocationData/worldMapUpdates. Use example 28 for afterlifeGlobalFlagUpdates / game_state/meta/afterlife_global_flags.json global facts: use flags[] with visibility hidden/gm_only for private facts, include gmThoughtsSummary and obsoleteReason for obsolete flags, and never use Mortal worldStateFlags. If resolving afterlife spiritual conflict, Spiritual Arts, Source of Light capstone rewards, or afterlife entity profiles, also read '$($script:AfterlifeCombatGlossaryPath)' for Russian labels while keeping JSON keys/enums English."
 $script:ActorMaterializationDirective = " Actor Materialization v1 is mandatory for every newly significant Mortal NPC or non-player afterlife actor. Bind one materializationId and materializedAtTurn to one exact actorType:actorId; do not infer identity, skills, inventory, arts, or authority from a display name, prose, occupation, or setting genre. Names, archetype prose, item types, and genre keywords never grant mechanics. Record capabilities and every required sections disposition as populated or empty_by_design; every empty_by_design entry needs an in-world reason and keeps the real canonical empty field physically present as its exact empty array, object, or null. A legacy actor that first gains teacher, merchant/trade, combat, Actor Brain, or non-vacant leadership authority is promoted into significant structured play and must receive a complete materialization envelope in that same accepted turn. A new Mortal UpdateNPCs actor has exactly one non-empty location authority: a known currentLocationId or a valid same-turn initialLocationId, never neither or both. A new afterlife actor explicitly carries appearanceDescription, profileSummary, personalityProfile.archetype, motivation, personalityProfile.worldview, realm, locationId, goals with a non-empty plan, and exact actor-owned memory. Positive afterlife trade authority is exact and realm-local: in the Chaos Sea use canTrade=true only for the one active Guardian bound to the exact current abode; in the Shining Abode use it only for a non-player faction head whose leadership is secure or contested, whose faction is operational, and whose trade tier is at least 1. When authoritative trade evidence is unavailable at the validation boundary, fail closed with canTrade=false; never infer trading from names, roles, descriptions, or genre vocabulary. A current materialized profile uses exactly one canonical actorType and actorId and no actorRef alias. The first envelope on an existing profile must validate current actor-owned memory; an untouched legacy profile without a new envelope remains readable. Route Guardian memory to the Guardian thought journal, resident memory to the resident thought journal, and common-profile actor memory to profile gmThoughtsSummary. A bounded common-profile repair may change only the exact actor's gmThoughtsSummary and must preserve unrelated actors, root data, currencies, progression, materialization, and scalar fields. A progression ledger or external chronicle is audit/history and never substitutes for actor-owned thought memory. Populated agency requires meaningful goals, non-empty personalQuests, meaningful currentActivity, or non-empty completedActivities; progressionStrategy or a mask alone is not agency. An existing materialized afterlife profile must never be resent through the full afterlifeEntityProfileUpdates carrier; use the exact dedicated delta for later changes. A legacy first-envelope migration may use the full carrier only when validated pre-turn authority proves every historical field unchanged. For an existing NPC or afterlife actor, preserve the historical envelope and use a dedicated delta rather than rewriting materialization. A bounded worker repair may alter only the exact named section; the apply gate mechanically rejects protected actor data changes outside that scope."
-$script:AfterlifeActorResourceMaterializationDirective = " A complete first afterlife Actor Materialization profile may initialize a pre-sealed setting-defined resource allowed for afterlife_actor through one closed resourceMaterialization.resources array. Preserve exact actorId and materialization; create no second actor ID and never add actorRef. The client uses materializationId as the same-turn ownerRef for common resource authority, then removes resourceMaterialization and publishes resourceOwnerBindings plus common resource state/history atomically. Actor/effect selectors continue to use exact actorId. An existing materialized profile must not resend resourceMaterialization; use the registered capacity/lifecycle route for later changes. Unknown or prose-derived resources fail closed."
+$script:AfterlifeActorResourceMaterializationDirective = " A complete first non-player Actor Materialization profile may initialize a pre-sealed setting-defined resource allowed for afterlife_actor through one closed resourceMaterialization.resources array. Preserve exact actorId and materialization; create no second actor ID and never add actorRef. The client uses materializationId as the same-turn ownerRef for common resource authority, then removes resourceMaterialization and publishes resourceOwnerBindings plus the complete resource quartet atomically. The reserved first player_soul is the sole exception without a generic Actor Materialization envelope: it may carry the same closed resourceMaterialization, and the client derives its deterministic ownerRef from exact player_soul plus canonical realm; every first non-player without Actor Materialization fails closed. Actor realm refs, conflict-side owner IDs/refs, and Shining return-scope IDs/refs are deterministic client-owned fingerprints of actorId+realm, realm+conflictId, or shining_abode+returnCycleId; never author them. Actor/effect selectors continue to use exact actorId. An existing materialized profile must not resend resourceMaterialization; use the registered capacity/lifecycle route for later changes. Unknown or prose-derived resources fail closed."
 $script:AfterlifeActorLifecycleDirective = " Afterlife actor lifecycle: accepted profile actor types are guardian, resident, shining_resident, shining_faction_head, radiant_actor, saref_agent, system_actor, and custom_afterlife_actor; source-backed actors still require exact canonical authority. canTeach=true requires a positive standard/special art tier or another supported positive lesson such as mentorTrainingShowcase sourceCap greater than zero; tier/cap zero and a bare mentor flag do not qualify. Remove a physical resident record only when the validated pre-turn snapshot contains its exact no-target departure_only request and current state contains the exact departed_only receipt plus referenced departure history. Ordinary player projections hide gmOnly, secret, non-player-visible, and system_actor profiles unless explicit diagnostics are enabled."
 $script:FactionMaterializationDirective = " Faction Materialization v1 is mandatory for faction creation or ordinary faction update. Only a genuinely new Mortal faction uses the full factionDataChanges carrier with one immutable envelope, exact capability flags, and every section declared populated or empty_by_design with its canonical surface present. Every existing faction must already carry and preserve its accepted envelope; receipt-less canonical faction state and a full resend of an existing identity are invalid. Use factionCoreChanges for ordinary semantic updates and the existing dedicated commands for rank, branch, resource, project, custom-state, reputation, membership, and chronicle changes. Always open the compact Mortal faction template/guidance first; open the large main example only when compact templates do not cover a route-specific shape. In the Shining Abode, only exact native_discovery, player_founding, or story authority may materialize a faction; an active Guardian never invents a faction charter."
 $script:MortalItemMaterializationDirective = " Mortal Item Materialization v1 is mandatory for every durable ordinary Mortal item creation, repair, transfer, stack operation, storage move, or NPC trade. Always read '$($script:CompactMortalItemTemplatePath)' first. New roots use existedId = null, one turn-unique creationRef, a complete semantic shape, all twelve materialization.sections, and exact route authority. Do not author itemId, materializationReceipt, game_state/inventory/item_identity_index.json, seals, transitions, retirement, or lineage; these are client-owned. Existing physical items bind exact itemId and preserve envelope/receipt. isCarried, currentLocationId, and currentLocationName are not placement authority and must not be authored on items. Receipt-less canonical items are invalid because the game has not shipped and no compatibility promotion exists. Open '$($script:MortalItemMaterializationExamplePath)' only when the compact template does not cover the needed route-specific worked shape."
-$script:UnifiedResourceAuthorityDirective = " Unified Resource Authority v1 is mandatory for bounded Mortal and afterlife quantities. Author only transient resourceDefinitionCreations, resourceCapacityChanges, and resourceChanges. Existing owners use exact targetId; same-turn owners use the exact targetRef supplied by their owning materializer. Capacity operations are initialize, reconfigure, suspend, resume, and retire; ordinary operations are damage, restore, spend, and gain. game_state/resources/resource_state.json and game_state/resources/resource_history.json, including current/maximum, IDs, ordering, policies, and history, are client-owned and atomically published. There is no migration, direct canonical write, dual write, legacy mirror, or raw fallback. Open '$($script:MortalResourceMaterializationExamplePath)' for worked Mortal shapes."
+$script:UnifiedResourceAuthorityDirective = " Unified Resource Authority v1 is mandatory for bounded Mortal and afterlife quantities. Author only transient resourceDefinitionCreations, resourceCapacityChanges, and resourceChanges. Existing owners use exact targetId; same-turn owners use the exact targetRef supplied by their owning materializer. Capacity operations are initialize, reconfigure, suspend, resume, and retire; ordinary operations are damage, restore, spend, and gain. game_state/resources/resource_definitions.json, game_state/resources/resource_state.json, game_state/resources/resource_history.json, and game_state/resources/resource_owner_authority.json are one guarded client-owned quartet, including current/maximum, IDs, ordering, policies, history, and owner/capacity authority. Only Fresh New Game may create a missing owner-authority root; its preset/freeform Guardian and player owner after-images publish with the quartet in one deterministic coordinated resource write set and must immediately pass existing-session validation. Every existing session, including Mortal-incarnation bootstrap, fails closed on missing or stale authority without migration or self-heal. Afterlife actor-realm, conflict-side, and Shining-scope owner IDs/refs are deterministic client-owned fingerprints of stable identity seeds; identical accepted input yields identical authority and the GM never authors those IDs. There is no direct canonical write, dual write, legacy mirror, or raw fallback. Open '$($script:MortalResourceMaterializationExamplePath)' for worked Mortal shapes."
+$script:UnifiedResourceAuthorityDirective += " There is no migration or compatibility fallback."
 $script:EffectMaterializationDirective = " Effect Materialization v1 is mandatory whenever a source definition or active runtime effect is involved. Read '$($script:EffectMaterializationContractPath)' and use '$($script:EffectMaterializationExamplePath)' for route-specific examples. Author complete activeEffectDefinitions[] on exact current source owners and request apply/dispel/remove only through top-level effectChanges[]. Report only registered audited trigger events through top-level effectEventReports[]; for owner_critical_failure use exact mortal_action_roll evidence bound to the leading sealed d20 pool, never effectId/triggerId/post-state. The client alone owns active carriers, IDs, stacking, lifetime, index, pending requests, receipts, publication, and rollback. Never infer mechanics from prose or write legacy/direct carrier payloads."
+$script:EffectMaterializationDirective += " Bounded effect/resource waves: Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned; receipts provide only an allowed result and reason and never reconstruct, retarget, merge, or change protected origin."
 $script:AfterlifeExamplesDirective += $script:ActorMaterializationDirective
 $script:AfterlifeExamplesDirective += $script:AfterlifeActorResourceMaterializationDirective
 $script:AfterlifeExamplesDirective += $script:AfterlifeActorLifecycleDirective
@@ -112,6 +114,9 @@ $ReadyDir  = Join-Path $GameSessionPath "ready"
 $OutputDir = Join-Path $GameSessionPath "output"
 $ControlDir = Join-Path $GameSessionPath "game_state\control"
 $TurnRequestFile = Join-Path $InputDir "turn_request.json"
+$QteEffectResolutionRequestFile = Join-Path $InputDir "qte_effect_resolution_request.json"
+$QteEffectResolutionReceiptsFile = Join-Path $OutputDir "qte_effect_resolution_receipts.json"
+$QteEffectResolutionReadyFile = Join-Path $ReadyDir "qte_effect_resolution_complete.json"
 $PendingTurnSnapshotManifestFile = Join-Path $ControlDir "pending_turn_snapshot.json"
 $PendingTurnSnapshotAuthorityFile = Join-Path $ControlDir "pending_turn_snapshot.authority.json"
 $RepairRequestFile = Join-Path $ControlDir "validation_repair_request.json"
@@ -149,6 +154,7 @@ foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
 $script:GmTurnHelperBootstrapPath = Join-Path $ControlDir "gm_turn_helper.bootstrap.ps1"
 $script:GmTurnHelperDirective = " GM turn helper: dot-source '$script:GmTurnHelperBootstrapPath' before writing output/state files. Use Read-BoeJson -RelativePath '<file>' for JSON reads; it returns mutable JSON-like objects that preserve arrays and tolerate missing optional fields added with `$object.newField = <value>. Use Write-BoeJson -RelativePath '<file>' -Data <object> for JSON writes, Get-BoeJsonValue -Object <jsonObject> -Names @('NPCId','npcId','id','initialId') for optional or differently cased JSON fields, Set-BoeJsonProperty -Object <jsonObject> -Name '<field>' -Value <value> to add or update optional object properties, and Add-BoeJsonArrayItem -Object <jsonObject> -PropertyName '<arrayProperty>' -Item <value> -UniqueBy '<idField>' when adding/upserting JSON array entries. For Mortal NPC trade pending stock, prefer Complete-BoeNpcTradeInventoryRequest -RequestId '<requestId>' -Items <items>; it finds NPCs by NPCId/npcId/id/initialId, validates itemData.tradeItemClass, recalculates slot prices from pricingTradeTier, writes npc.tradeInventory, and adds the matching UpdateNpcTradeInventoryReceipts entry. For Guardian trade pending stock, prefer Complete-BoeGuardianTradeInventoryRequest -RequestId '<requestId>' -Items <items>; it reads pending_guardian_trade_request.json, computes generation/pricing reputation tier and priceInFeathers from canonical rules, writes guardian.tradeInventory, syncs activeGuardian, and adds UpdateGuardianTradeInventoryReceipts. For pending teacher/mentor training showcases, prefer Complete-BoeTrainingShowcaseRequest -RequestId '<requestId>' -Offers <offers> -Summary '<player-facing summary>'; it reads pending_training_showcase_requests.json, finds Mortal teachers or afterlife mentors by their sourceActorId, validates costs/caps/duplicate offer ids, writes trainingShowcase or mentorTrainingShowcase, and leaves the fulfilled pending request for client cleanup after accepted turn/view refresh. PowerShell collapses single JSON array items into scalars, so prefer Add-BoeJsonArrayItem over manual `$array += ...` for fields such as customProperties, entries, objectives, contents, journalEntries, and similar collections. For item journalEntries specifically, pass plain non-empty player-facing strings as -Item values without technical turn anchors such as '#[3].'; item journalEntries is a string array, not an array of objects. For NPCJournals in game_state/npcs/npc_journals.json, journalEntries is different: use objects with a non-empty description field, plus optional timestamp, event, emotionalImpact, and relationshipChange. Use Complete-BoeTurn -FilesModified @('<file>') as the LAST action for successful turns, Fail-BoeTurn -ErrorMessage '<reason>' as the LAST action for terminal errors, and Complete-BoeValidationRepair as the LAST action after validation repairs. Fail-BoeTurn writes ready/turn_error.json and then fails the shell command deliberately, so do not report success after calling it. After any terminal signal for the current request exists, the helper blocks further Write-BoeJson, Complete-BoeTurn, and Fail-BoeTurn calls; stop working on that request and wait for the client rollback/cleanup cycle instead of trying to repair it in-place. These helpers copy exact sessionId/requestId/turnNumber from the current client-authored request and refuse stale missing context. Complete-BoeTurn and Fail-BoeTurn also require current game_state/control/pending_turn_snapshot.json plus game_state/control/pending_turn_snapshot.authority.json with matching sessionId/requestId/turnNumber; if that pending authority is missing, stop and do not write a terminal signal. Helper writes and filesModified reject client-owned runtime state such as input/turn_request.json, game_state/history/chat_log.json, pending_turn_snapshot files, validation_repair_request.json, validation_diagnostic_failure_report.json, terminal_protocol_failure_request.json, gm_bridge_status.json, and stories/*.jsonl; let the client maintain those surfaces. When currentRealm is Chaos Sea or Shining Abode, helper writes and filesModified reject wrong-realm Mortal World profile paths under game_state/world, game_state/npcs, game_state/factions, game_state/player, game_state/inventory, game_state/combat, and game_state/quests; Complete-BoeTurn and Complete-BoeValidationRepair also compare these paths with game_state/control/pending_turn_snapshot and block raw wrong-realm mutations before writing completion signals. Never delete or rewrite input/turn_request.json or pending_turn_snapshot files; they are client-owned authority until the client closes the wait cycle."
 $script:GmTurnHelperDirective += " Client-owned world setup files also include game_state/control/next_life_scenario_core.json and lore/current_world/world_directives.json; do not write them or list them in Complete-BoeTurn -FilesModified."
+$script:GmTurnHelperDirective += " Accepted-mechanics client-owned files are mechanically blocked too: game_state/core/system_mods.json, game_state/control/progression_schedule.json, the complete game_state/resources resource_definitions/state/history/resource_owner_authority quartet, game_state/control/pending_effect_resolutions.json, and game_state/effects/effect_identity_index.json. Author only the transient effect/resource command surfaces."
 $script:GmContextPackRoot = Join-Path $ControlDir "gm_context_pack"
 $script:GmContextPackManifestPath = Join-Path $script:GmContextPackRoot "context_pack_manifest.json"
 $script:GmContextPackDirective = ""
@@ -1372,6 +1378,14 @@ Use this before opening large examples for ordinary live turns.
   reserved `world_map_creation` neighbor/`world_map_link_creation` directed
   link or a narrative-only unresolved exit. Do not author permanent IDs,
   receipts, the location identity index, or derived navigation.
+- For bounded effect/resource waves, answer the current safe packet only.
+  Resubmit the same complete semantic turn with receipts only for that packet;
+  the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned; receipts never reconstruct, retarget, merge, or change protected origin.
+- Never write accepted-mechanics client authority through the GM helper:
+  `system_mods.json`, `progression_schedule.json`, the resource
+  definitions/state/history/owner-authority quartet,
+  `pending_effect_resolutions.json`, and `effect_identity_index.json` are
+  client-owned. Author only transient effect/resource command surfaces.
 
 ## Output file skeletons
 
@@ -1605,9 +1619,12 @@ Use this before opening large examples for repair mode.
 1. Dot-source `game_state/control/gm_turn_helper.bootstrap.ps1`.
 2. Read `game_state/control/validation_repair_request.json`.
 3. Prefer `harnessRepairPackets[]`; they are the executable repair plan.
-4. Patch only already written files named by errors or packets.
-5. Do not create a new turn and do not write `ready/turn_complete.json`.
-6. Finish with `Complete-BoeValidationRepair` as the last command.
+4. If `fullTurnResubmissionRequired=false`, patch only already written GM-owned files named by errors or packets.
+5. If `fullTurnResubmissionRequired=true`, the client has restored the validated baseline: regenerate the same complete coherent response for this turn. `requiredResubmissionPaths` is the exact replay list of changed GM-authored command/output surfaces; rewrite every listed path and preserve every `resubmissionObligations[]` actor/route.
+6. Never add or write client-owned preparation/publication roots. They are absent from `requiredResubmissionPaths` and the client restores or republishes them itself: `game_state/core/system_mods.json`, `game_state/control/progression_schedule.json`, the resource definitions/state/history/owner-authority quartet, `game_state/control/pending_effect_resolutions.json`, and `game_state/effects/effect_identity_index.json`.
+7. `effect_materialization_repair` and `resource_semantic_omission_repair` are full-turn repairs, not in-place leaf patches.
+8. Do not create a new turn and do not write `ready/turn_complete.json`.
+9. Finish with `Complete-BoeValidationRepair` as the last command.
 
 ## Repair packet discipline
 
@@ -2494,7 +2511,7 @@ When the opponent remains relevant, keep enough structure for `/бой`:
 - read-only common health/poise projections when supplied by the client; never persist current/maximum values in the combatant object
 - status: active, defeated, fled, suppressed, restrained, or comparable canonical/readable state
 - actions[] with at least one useful combat action if it can still act
-- resistances/activeBuffs/activeDebuffs only when meaningful
+- resistances and the read-only player-facing active effect projection when meaningful; never author a runtime effect carrier or remaining lifetime
 - player-facing description of what the enemy is doing
 
 ## Output checklist
@@ -2615,9 +2632,11 @@ Write-GmContextPack
 $script:GmCompactTemplateDirective += $script:FactionMaterializationDirective
 $script:MortalItemMaterializationDirective = " Mortal Item Materialization v1 is mandatory for every durable ordinary Mortal item creation, repair, transfer, stack operation, storage move, or NPC trade. Always read '$($script:CompactMortalItemTemplatePath)' first. New roots use existedId = null, one turn-unique creationRef, a complete semantic shape, all twelve materialization.sections, and exact route authority. Do not author itemId, materializationReceipt, game_state/inventory/item_identity_index.json, seals, transitions, retirement, or lineage; these are client-owned. Existing physical items bind exact itemId and preserve envelope/receipt. isCarried, currentLocationId, and currentLocationName are not placement authority and must not be authored on items. Receipt-less canonical items are invalid because the game has not shipped and no compatibility promotion exists. Open '$($script:MortalItemMaterializationExamplePath)' only when the compact template does not cover the needed route-specific worked shape."
 $script:GmCompactTemplateDirective += $script:MortalItemMaterializationDirective
-$script:UnifiedResourceAuthorityDirective = " Unified Resource Authority v1 is mandatory for bounded Mortal and afterlife quantities. Author only transient resourceDefinitionCreations, resourceCapacityChanges, and resourceChanges. Existing owners use exact targetId; same-turn owners use the exact targetRef supplied by their owning materializer. Capacity operations are initialize, reconfigure, suspend, resume, and retire; ordinary operations are damage, restore, spend, and gain. game_state/resources/resource_state.json and game_state/resources/resource_history.json, including current/maximum, IDs, ordering, policies, and history, are client-owned and atomically published. There is no migration, direct canonical write, dual write, legacy mirror, or raw fallback. Open '$($script:MortalResourceMaterializationExamplePath)' for worked Mortal shapes."
+$script:UnifiedResourceAuthorityDirective = " Unified Resource Authority v1 is mandatory for bounded Mortal and afterlife quantities. Author only transient resourceDefinitionCreations, resourceCapacityChanges, and resourceChanges. Existing owners use exact targetId; same-turn owners use the exact targetRef supplied by their owning materializer. Capacity operations are initialize, reconfigure, suspend, resume, and retire; ordinary operations are damage, restore, spend, and gain. game_state/resources/resource_definitions.json, game_state/resources/resource_state.json, game_state/resources/resource_history.json, and game_state/resources/resource_owner_authority.json are one guarded client-owned quartet, including current/maximum, IDs, ordering, policies, history, and owner/capacity authority. Only Fresh New Game may create a missing owner-authority root; its preset/freeform Guardian and player owner after-images publish with the quartet in one deterministic coordinated resource write set and must immediately pass existing-session validation. Every existing session, including Mortal-incarnation bootstrap, fails closed on missing or stale authority without migration or self-heal. Afterlife actor-realm, conflict-side, and Shining-scope owner IDs/refs are deterministic client-owned fingerprints of stable identity seeds; identical accepted input yields identical authority and the GM never authors those IDs. There is no direct canonical write, dual write, legacy mirror, or raw fallback. Open '$($script:MortalResourceMaterializationExamplePath)' for worked Mortal shapes."
+$script:UnifiedResourceAuthorityDirective += " There is no migration or compatibility fallback."
 $script:GmCompactTemplateDirective += $script:UnifiedResourceAuthorityDirective
 $script:EffectMaterializationDirective = " Effect Materialization v1 is mandatory whenever a source definition or active runtime effect is involved. Read '$($script:EffectMaterializationContractPath)' and use '$($script:EffectMaterializationExamplePath)' for route-specific examples. Author complete activeEffectDefinitions[] on exact current source owners and request apply/dispel/remove only through top-level effectChanges[]. Report only registered audited trigger events through top-level effectEventReports[]; for owner_critical_failure use exact mortal_action_roll evidence bound to the leading sealed d20 pool, never effectId/triggerId/post-state. The client alone owns active carriers, IDs, stacking, lifetime, index, pending requests, receipts, publication, and rollback. Never infer mechanics from prose or write legacy/direct carrier payloads."
+$script:EffectMaterializationDirective += " Bounded effect/resource waves: Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned; receipts provide only an allowed result and reason and never reconstruct, retarget, merge, or change protected origin."
 $script:GmCompactTemplateDirective += $script:EffectMaterializationDirective
 
 $script:LastRepairRequestWrite = [datetime]::MinValue
@@ -5460,6 +5479,231 @@ function Dispatch-WithRetry {
 # Turn Processing
 # ═══════════════════════════════════════════════
 
+function Get-QteEffectResolutionRequestKey {
+    param([psobject]$Request)
+
+    if ($null -eq $Request) {
+        return ""
+    }
+
+    return @(
+        [string]$Request.sessionId,
+        [string]$Request.sessionGeneration,
+        [string]$Request.continuationId,
+        [string]$Request.requestId,
+        [string]$Request.waveId,
+        [string]$Request.waveOrdinal,
+        [string]$Request.acceptedSourceTurn,
+        [string]$Request.qteId
+    ) -join "|"
+}
+
+function Test-QteEffectResolutionRequestStillCurrent {
+    param(
+        [string]$RequestPath,
+        [string]$ExpectedRequestKey
+    )
+
+    if (!(Test-Path $RequestPath) -or [string]::IsNullOrWhiteSpace($ExpectedRequestKey)) {
+        return $false
+    }
+
+    try {
+        $current = Get-Content -Path $RequestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        return [string]::Equals(
+            (Get-QteEffectResolutionRequestKey -Request $current),
+            $ExpectedRequestKey,
+            [System.StringComparison]::Ordinal)
+    }
+    catch {
+        return $false
+    }
+}
+
+function Test-QteEffectResolutionReadyMatchesRequest {
+    param(
+        [psobject]$Request,
+        [string]$ReadyPath = $QteEffectResolutionReadyFile
+    )
+
+    if ($null -eq $Request -or !(Test-Path $ReadyPath)) {
+        return $false
+    }
+
+    try {
+        $ready = Get-Content -Path $ReadyPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        if (-not [string]::Equals(
+                [string]$ready.status,
+                "success",
+                [System.StringComparison]::Ordinal) -or
+            -not [string]::Equals(
+                [string]$ready.requestKind,
+                "qte_deferred_effect_resolution",
+                [System.StringComparison]::Ordinal)) {
+            return $false
+        }
+
+        foreach ($field in @(
+            "sessionId",
+            "sessionGeneration",
+            "continuationId",
+            "requestId",
+            "waveId",
+            "qteId",
+            "pendingStateFingerprint"
+        )) {
+            if (-not [string]::Equals(
+                    [string]$ready.$field,
+                    [string]$Request.$field,
+                    [System.StringComparison]::Ordinal)) {
+                return $false
+            }
+        }
+
+        return [int64]$ready.waveOrdinal -eq [int64]$Request.waveOrdinal -and
+            [int64]$ready.acceptedSourceTurn -eq [int64]$Request.acceptedSourceTurn
+    }
+    catch {
+        return $false
+    }
+}
+
+function Build-QteEffectResolutionDispatchMessage {
+    param([psobject]$Request)
+
+    $requestId = [string]$Request.requestId
+    $waveId = [string]$Request.waveId
+    $waveOrdinal = [int64]$Request.waveOrdinal
+
+    return @"
+Resolve bounded QTE effect receipt wave $waveOrdinal (requestId=$requestId, waveId=$waveId).
+This is a receipt-only task and NOT an ordinary turn.
+Dot-source '$script:GmTurnHelperBootstrapPath', then read '$GameSessionPath\input\qte_effect_resolution_request.json'.
+Use only safePacket.requests from that exact request. Return exactly one receipt for every request, preserve each requestId, choose only a listed allowedResults resultKind, obey its amount instruction, and provide a short in-world reason. Numeric amounts must be JSON numbers, never strings.
+Do NOT read input\turn_request.json, create a pending-turn snapshot, run story/progression/life-cycle work, reconstruct hidden mechanics, or inspect repository source.
+Do NOT write game state, narrative/interface output, output\qte_effect_resolution_receipts.json, or ready\qte_effect_resolution_complete.json yourself.
+Do NOT call Complete-BoeTurn, Fail-BoeTurn, or Complete-BoeValidationRepair. Do not use Write-BoeJson for this packet.
+Construct the closed receipt objects in memory and call Complete-BoeQteEffectResolution -Receipts `$receipts as the LAST action. The helper alone copies exact correlation, validates the closed response, writes output\qte_effect_resolution_receipts.json, and writes ready\qte_effect_resolution_complete.json last.
+After that helper call, stop immediately and do not report or write anything else.
+"@
+}
+
+function Process-QteEffectResolutionRequest {
+    param([string]$RequestPath)
+
+    if ($script:IsProcessing) { return }
+    $script:IsProcessing = $true
+
+    try {
+        Start-Sleep -Milliseconds 150
+        if (!(Test-Path $RequestPath)) {
+            return
+        }
+
+        $request = Get-Content -Path $RequestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        if (-not [string]::Equals(
+                [string]$request.requestKind,
+                "qte_deferred_effect_resolution",
+                [System.StringComparison]::Ordinal) -or
+            $null -eq $request.safePacket) {
+            throw "Invalid dedicated QTE effect-resolution request."
+        }
+
+        $requestKey = Get-QteEffectResolutionRequestKey -Request $request
+        if ([string]::IsNullOrWhiteSpace($requestKey.Replace("|", ""))) {
+            throw "Dedicated QTE effect-resolution request has no correlation authority."
+        }
+
+        if (Test-QteEffectResolutionReadyMatchesRequest `
+                -Request $request `
+                -ReadyPath $QteEffectResolutionReadyFile) {
+            Write-Log "  Found correlated QTE effect-resolution ready marker; waiting for client consumption." -Color DarkGray
+            return
+        }
+
+        $startedAt = Get-Date
+        $acceptedSourceTurn = if ($null -ne $request.acceptedSourceTurn) {
+            [int]$request.acceptedSourceTurn
+        } else {
+            -1
+        }
+        Write-Host ""
+        Write-Log "QTE effect receipt wave $($request.waveOrdinal) for source turn #$acceptedSourceTurn" -Level "QTE" -Color Cyan
+
+        $message = Build-QteEffectResolutionDispatchMessage -Request $request
+        $dispatchMaxWaitSeconds = if ($TurnTimeout -gt 0 -and $TurnTimeout -lt $script:BridgeDispatchMaxWaitSeconds) {
+            $TurnTimeout
+        } else {
+            $script:BridgeDispatchMaxWaitSeconds
+        }
+        $dispatch = Dispatch-WithRetry `
+            -Message $message `
+            -PendingPath $RequestPath `
+            -ReturnDetails `
+            -MaxWaitSeconds $dispatchMaxWaitSeconds
+        if ($dispatch.Status -eq "cancelled") {
+            Write-Log "  QTE effect receipt request was cancelled before dispatch." -Level "WARN" -Color Yellow
+            return
+        }
+        if ($dispatch.Status -eq "bridge-dispatch-timeout") {
+            $script:ErrorCount++
+            Write-Log "  GM bridge did not accept the QTE receipt packet; dedicated authority remains pending for retry." -Level "ERROR" -Color Red
+            return
+        }
+
+        $elapsed = 0
+        while ($TurnTimeout -le 0 -or $elapsed -lt $TurnTimeout) {
+            if (Test-QteEffectResolutionReadyMatchesRequest `
+                    -Request $request `
+                    -ReadyPath $QteEffectResolutionReadyFile) {
+                $duration = ((Get-Date) - $startedAt).TotalSeconds
+                Write-Log "  QTE effect receipt wave ready ($([math]::Round($duration, 1))s)" -Level "QTE" -Color Green
+                return
+            }
+
+            Start-Sleep -Seconds 1
+            $elapsed++
+
+            if (-not (Test-QteEffectResolutionRequestStillCurrent `
+                    -RequestPath $RequestPath `
+                    -ExpectedRequestKey $requestKey)) {
+                Write-Log "  QTE effect receipt wait closed because client authority was removed or replaced." -Level "WARN" -Color Yellow
+                return
+            }
+
+            if ($elapsed % 15 -eq 0 -and
+                (Test-GmBridgeReturnedIdleWithoutTerminalSignal -ElapsedSeconds $elapsed)) {
+                Write-Log "  GM bridge returned idle without the correlated QTE ready marker; redispatching the same sealed packet." -Level "WARN" -Color Yellow
+                $dispatch = Dispatch-WithRetry `
+                    -Message $message `
+                    -PendingPath $RequestPath `
+                    -ReturnDetails `
+                    -MaxWaitSeconds $dispatchMaxWaitSeconds
+                if ($dispatch.Status -eq "cancelled") {
+                    return
+                }
+            }
+
+            if ($elapsed % 60 -eq 0) {
+                Write-Log "  Waiting for QTE effect receipts... (${elapsed}s)" -Color DarkGray
+                Update-DaemonProcessingHeartbeat `
+                    -TurnNumber $acceptedSourceTurn `
+                    -ElapsedSeconds $elapsed
+            }
+        }
+
+        Write-Log "  QTE effect receipt wait reached the configured timeout; dedicated authority remains pending." -Level "WARN" -Color Yellow
+    }
+    catch {
+        $script:ErrorCount++
+        Write-Log "  QTE effect receipt dispatch error: $_" -Level "ERROR" -Color Red
+    }
+    finally {
+        Write-DaemonStatus -Status "running" -Reason "qte_effect_resolution_processing_finished"
+        $script:IsProcessing = $false
+    }
+}
+
 function Process-Turn {
     param([string]$RequestPath)
 
@@ -5858,6 +6102,12 @@ function Process-RepairRequest {
 
         $hasAcceptedTurnOutputArtifactRepair = @($repairPacketKinds | Where-Object { [string]::Equals($_, "accepted_turn_output_artifact_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
         $hasMortalLocationMaterializationRepair = @($repairPacketKinds | Where-Object { [string]::Equals($_, "mortal_location_materialization_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
+        $hasEffectMaterializationRepair = @($repairPacketKinds | Where-Object { [string]::Equals($_, "effect_materialization_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
+        $hasResourceSemanticOmissionRepair = @($repairPacketKinds | Where-Object { [string]::Equals($_, "resource_semantic_omission_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
+        $requiresFullTurnResubmission = ($repair.fullTurnResubmissionRequired -eq $true) -or
+            $hasMortalLocationMaterializationRepair -or
+            $hasEffectMaterializationRepair -or
+            $hasResourceSemanticOmissionRepair
         $hasGuardianPendingCreationRepair = @($repairPacketKinds | Where-Object { [string]::Equals($_, "guardian_pending_creation_materialization_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
         $hasGuardianTradeInventoryRepair = @($repairPacketKinds | Where-Object { [string]::Equals($_, "guardian_trade_inventory_resolution_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
         $hasStalePlayerFacingOutputRepair = @($issueCodes | Where-Object { [string]::Equals($_, "accepted_turn_stale_player_facing_output_after_canonical_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
@@ -5882,6 +6132,11 @@ function Process-RepairRequest {
         } else {
             ""
         }
+        $acceptedMechanicsFullTurnRepairDirective = if ($hasEffectMaterializationRepair -or $hasResourceSemanticOmissionRepair) {
+            " For effect_materialization_repair or resource_semantic_omission_repair, fullTurnResubmissionRequired=true means the validated baseline was restored. Regenerate the same complete semantic turn. requiredResubmissionPaths is the exact list of changed GM-authored command/output surfaces and every listed path must be freshly rewritten. Client-owned system_mods, progression_schedule, resource definitions/state/history/owner authority, pending_effect_resolutions, and effect_identity_index are restored or published by the client and must never be written or added to that list."
+        } else {
+            ""
+        }
         $guardianPendingCreationRepairDirective = if ($hasGuardianPendingCreationRepair -or $hasGuardianPendingCreationIssue) {
             " For startup Guardian creation repairs, use validation_repair_request.json.harnessRepairPackets[] kind guardian_pending_creation_materialization_repair before broad Guardian examples. Read game_state/meta/guardians.json.pendingGuardianCreation as startup authority; for a New Game freeform startup request, write UpdateGuardians.create as the UpdateGuardians[] JSON array with command=create and data=<full canonical Guardian> as the authority. Start from harnessRepairPackets[].canonicalCreateSkeleton and allowedEnums, then mirror that result into guardians[] + activeGuardian + chaosSeaNavigation and remove pendingGuardianCreation. Do not repair only materialized mirrors, keep pendingGuardianCreation as a pending-only fallback, delete it alone, or leave the Guardian only in prose."
         } else {
@@ -5893,13 +6148,13 @@ function Process-RepairRequest {
             ""
         }
 
-        $repairExecutionDirective = if ($hasMortalLocationMaterializationRepair) {
-            " Regenerate the complete required response package from the restored baseline; this is not an in-place canonical patch."
+        $repairExecutionDirective = if ($requiresFullTurnResubmission) {
+            " Regenerate the complete required response package from the restored baseline; this is not an in-place patch. When requiredResubmissionPaths is non-empty, it is the exact GM-authored replay obligation."
         } else {
             " Fix only the listed validation errors in the already written files IN PLACE."
         }
         $readyPath = "$GameSessionPath\game_state\control\validation_repair_ready.json"
-        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples.$outputArtifactRepairDirective$mortalLocationRepairDirective$guardianPendingCreationRepairDirective$guardianTradeInventoryRepairDirective Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs; use '$($script:CompactMortalNpcTemplatePath)' for any repair touching game_state/npcs/npc_core.json or NPC validation errors; use '$($script:CompactMortalFactionTemplatePath)' for any repair touching game_state/factions/* or faction validation errors; use '$($script:CompactMortalLocationTemplatePath)' for any repair touching game_state/world/current_location.json, game_state/world/world_map.json, or unknown location ids; use '$($script:CompactMortalSkillTemplatePath)' for any repair touching activeSkillChanges, passiveSkillChanges, skillMasteryChanges, or player skill files; use '$($script:CompactMortalExperienceTemplatePath)' for any repair touching game_state/player/experience.json, experienceGained, level-up, or stat-point level progression; and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective)$repairExecutionDirective Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
+        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples.$outputArtifactRepairDirective$mortalLocationRepairDirective$acceptedMechanicsFullTurnRepairDirective$guardianPendingCreationRepairDirective$guardianTradeInventoryRepairDirective Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs; use '$($script:CompactMortalNpcTemplatePath)' for any repair touching game_state/npcs/npc_core.json or NPC validation errors; use '$($script:CompactMortalFactionTemplatePath)' for any repair touching game_state/factions/* or faction validation errors; use '$($script:CompactMortalLocationTemplatePath)' for any repair touching game_state/world/current_location.json, game_state/world/world_map.json, or unknown location ids; use '$($script:CompactMortalSkillTemplatePath)' for any repair touching activeSkillChanges, passiveSkillChanges, skillMasteryChanges, or player skill files; use '$($script:CompactMortalExperienceTemplatePath)' for any repair touching game_state/player/experience.json, experienceGained, level-up, or stat-point level progression; and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective)$repairExecutionDirective Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
         if ($hasDiagnosticOnlyMetadata) {
             $message += " The current repair request marks sessionId/requestId/turnNumber as diagnostic-only sentinel values because validated pending snapshot context is unavailable or invalid. Do NOT copy those sentinel metadata into $readyPath. First restore pending snapshot context/authority and then use the freshest client-authored repair request with valid metadata before writing validation_repair_ready.json."
         }
@@ -6258,6 +6513,13 @@ function Resolve-DaemonTimeoutTerminalConflict {
 
 Assert-SingleDaemonInstance
 
+$qteEffectResolutionWatcher = New-Object System.IO.FileSystemWatcher
+$qteEffectResolutionWatcher.Path = $InputDir
+$qteEffectResolutionWatcher.Filter = "qte_effect_resolution_request.json"
+$qteEffectResolutionWatcher.IncludeSubdirectories = $false
+$qteEffectResolutionWatcher.NotifyFilter = [System.IO.NotifyFilters]::FileName -bor [System.IO.NotifyFilters]::CreationTime -bor [System.IO.NotifyFilters]::LastWrite
+$qteEffectResolutionWatcher.EnableRaisingEvents = $true
+
 $watcher = New-Object System.IO.FileSystemWatcher
 $watcher.Path = $InputDir
 $watcher.Filter = "turn_request.json"
@@ -6278,6 +6540,13 @@ $terminalProtocolFailureWatcher.Filter = "terminal_protocol_failure_request.json
 $terminalProtocolFailureWatcher.IncludeSubdirectories = $false
 $terminalProtocolFailureWatcher.NotifyFilter = [System.IO.NotifyFilters]::FileName -bor [System.IO.NotifyFilters]::CreationTime -bor [System.IO.NotifyFilters]::LastWrite
 $terminalProtocolFailureWatcher.EnableRaisingEvents = $true
+
+$qteEffectResolutionAction = {
+    $path = $Event.SourceEventArgs.FullPath
+    if ($Event.SourceEventArgs.ChangeType -eq "Created" -or $Event.SourceEventArgs.ChangeType -eq "Changed") {
+        Process-QteEffectResolutionRequest -RequestPath $path
+    }
+}
 
 $action = {
     $path = $Event.SourceEventArgs.FullPath
@@ -6300,6 +6569,8 @@ $terminalProtocolFailureAction = {
     }
 }
 
+Register-ObjectEvent $qteEffectResolutionWatcher "Created" -Action $qteEffectResolutionAction | Out-Null
+Register-ObjectEvent $qteEffectResolutionWatcher "Changed" -Action $qteEffectResolutionAction | Out-Null
 Register-ObjectEvent $watcher "Created" -Action $action | Out-Null
 Register-ObjectEvent $watcher "Changed" -Action $action | Out-Null
 Register-ObjectEvent $repairWatcher "Created" -Action $repairAction | Out-Null
@@ -6327,6 +6598,10 @@ try {
     Write-Host ""
 
     # Process existing request if any
+    if (Test-Path $QteEffectResolutionRequestFile) {
+        Write-Log "Found pending QTE effect-resolution request" -Level "STARTUP" -Color Yellow
+        Process-QteEffectResolutionRequest -RequestPath $QteEffectResolutionRequestFile
+    }
     if (Test-Path $TurnRequestFile) {
         Write-Log "Found pending turn request" -Level "STARTUP" -Color Yellow
         Process-Turn -RequestPath $TurnRequestFile
@@ -6347,6 +6622,9 @@ try {
             Start-Sleep -Milliseconds $PollingInterval
             Update-DaemonHeartbeat
 
+            if ((Test-Path $QteEffectResolutionRequestFile) -and !$script:IsProcessing) {
+                Process-QteEffectResolutionRequest -RequestPath $QteEffectResolutionRequestFile
+            }
             if ((Test-Path $TurnRequestFile) -and !$script:IsProcessing) {
                 Process-Turn -RequestPath $TurnRequestFile
             }
@@ -6382,6 +6660,8 @@ catch {
     Write-DaemonFatalReport -ErrorRecord $_ -Phase "fatal"
 }
 finally {
+    $qteEffectResolutionWatcher.EnableRaisingEvents = $false
+    $qteEffectResolutionWatcher.Dispose()
     $watcher.EnableRaisingEvents = $false
     $watcher.Dispose()
     $repairWatcher.EnableRaisingEvents = $false

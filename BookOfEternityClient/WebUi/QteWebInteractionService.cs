@@ -162,18 +162,29 @@ public sealed class QteWebInteractionService
         if (runtime.ActiveScene is { Offer: not null } active)
         {
             var offerIdentity = Fingerprint(active.Offer);
+            var awaitingEffectResolution = string.Equals(
+                active.EffectResolutionState,
+                "awaiting_receipt",
+                StringComparison.Ordinal);
             return new QteWebStateDto
             {
-                State = stateOverride ?? "Active",
+                State = stateOverride ??
+                    (awaitingEffectResolution
+                        ? "AwaitingEffectResolution"
+                        : "Active"),
                 ActiveScene = await BuildActiveSceneAsync(active, writeLease),
                 Resolution = resolution == null ? null : BuildResolution(resolution),
                 Completion = resolution?.Completion == null ? null : BuildCompletion(resolution.Completion),
-                AvailableOperations = ["submitAction"],
-                InteractionToken = _interactionTokens.Publish(
-                    writeLease,
-                    "offer",
-                    offerIdentity,
-                    Fingerprint(active)),
+                AvailableOperations = awaitingEffectResolution
+                    ? []
+                    : ["submitAction"],
+                InteractionToken = awaitingEffectResolution
+                    ? null
+                    : _interactionTokens.Publish(
+                        writeLease,
+                        "offer",
+                        offerIdentity,
+                        Fingerprint(active)),
                 Notification = notification
             };
         }

@@ -17,7 +17,13 @@ internal sealed record EffectReactionExecution(
     string? AfterComponentId,
     int MaxExpansion,
     EffectSourceAuthorityEntry? DownstreamSource,
-    JsonObject? Parameters);
+    JsonObject? Parameters,
+    EffectSourceKey? DownstreamSourceKey = null,
+    int ComponentPriority = 0,
+    EffectReplayIdentity? ReplacementTarget = null)
+{
+    internal string? ReplacementTargetEffectId => ReplacementTarget?.EffectId;
+}
 
 internal sealed record EffectReactionPlanningResult(
     IReadOnlyList<EffectReactionExecution> Executions,
@@ -36,7 +42,8 @@ internal sealed record EffectReactionExpansionUsage(
 
 internal sealed record EffectExecutableComponentSelection(
     string ComponentId,
-    string? AfterComponentId);
+    string? AfterComponentId,
+    JsonObject? IndexedComponent = null);
 
 internal static class EffectReactionExecutor
 {
@@ -50,6 +57,9 @@ internal static class EffectReactionExecutor
         ArgumentException.ThrowIfNullOrWhiteSpace(triggerId);
         ArgumentNullException.ThrowIfNull(producerEvent);
         ArgumentNullException.ThrowIfNull(sourceAuthority);
+
+        var replacementTargets = EffectReplacementTargetIndex.Build(
+            new[] { occurrence });
 
         var issues = new List<ValidationIssue>();
         if (!EffectEventTypeCatalog.IsResourceEvent(producerEvent.EventKind) ||
@@ -130,7 +140,9 @@ internal static class EffectReactionExecutor
                     component,
                     acceptedEvent,
                     sourceAuthority,
+                    replacementTargets,
                     issues,
+                    workMeter: null,
                     out var execution))
             {
                 executions.Add(execution);
@@ -139,6 +151,127 @@ internal static class EffectReactionExecutor
 
         return issues.Count == 0
             ? new EffectReactionPlanningResult(executions.ToArray(), Array.Empty<ValidationIssue>())
+            : new EffectReactionPlanningResult(
+                Array.Empty<EffectReactionExecution>(),
+                issues.ToArray());
+    }
+
+    internal static EffectReactionPlanningResult PlanResourceEvent(
+        EffectCarrierOccurrence occurrence,
+        string triggerId,
+        JsonObject exactTrigger,
+        IReadOnlyDictionary<string, JsonObject> componentsById,
+        ResourceAppliedEvent producerEvent,
+        EffectSourceAuthority sourceAuthority,
+        EffectReplacementTargetIndex replacementTargets,
+        EffectAcceptedTurnPlanner.EffectResourceRoutingWorkMeter workMeter)
+    {
+        ArgumentNullException.ThrowIfNull(occurrence);
+        ArgumentException.ThrowIfNullOrWhiteSpace(triggerId);
+        ArgumentNullException.ThrowIfNull(exactTrigger);
+        ArgumentNullException.ThrowIfNull(componentsById);
+        ArgumentNullException.ThrowIfNull(producerEvent);
+        ArgumentNullException.ThrowIfNull(sourceAuthority);
+        ArgumentNullException.ThrowIfNull(replacementTargets);
+        ArgumentNullException.ThrowIfNull(workMeter);
+
+        var issues = new List<ValidationIssue>();
+        if (!EffectEventTypeCatalog.IsResourceEvent(producerEvent.EventKind) ||
+            producerEvent.Turn <= 0 ||
+            !TryReadExactValue(producerEvent.EventRef))
+        {
+            Add(
+                issues,
+                "resourceEvent",
+                "effect_reaction_event_invalid",
+                "one exact emitted common-resource event",
+                producerEvent.EventKind + "/" + producerEvent.EventRef);
+            return new EffectReactionPlanningResult(
+                Array.Empty<EffectReactionExecution>(),
+                issues);
+        }
+        if (!HasExact(occurrence.Effect, "state", "active") ||
+            !TryReadExact(occurrence.Effect["realm"], out var realm) ||
+            occurrence.Effect["target"] is not JsonObject target ||
+            !TryReadExact(target["kind"], out var targetKind) ||
+            !TryReadExact(target["targetId"], out var targetId) ||
+            occurrence.Effect["triggers"] is not JsonArray ||
+            occurrence.Effect["components"] is not JsonArray)
+        {
+            Add(
+                issues,
+                occurrence.JsonPath,
+                "effect_reaction_target_unresolved",
+                "one exact active canonical effect occurrence",
+                occurrence.EffectId);
+            return new EffectReactionPlanningResult(
+                Array.Empty<EffectReactionExecution>(),
+                issues);
+        }
+        if (!HasExact(exactTrigger, "triggerId", triggerId) ||
+            !HasExact(exactTrigger, "eventType", producerEvent.EventKind) ||
+            exactTrigger["componentIds"] is not JsonArray selectedIds)
+        {
+            Add(
+                issues,
+                occurrence.JsonPath + ".triggers",
+                "effect_reaction_trigger_unresolved",
+                "one exact trigger for the emitted resource event",
+                triggerId);
+            return new EffectReactionPlanningResult(
+                Array.Empty<EffectReactionExecution>(),
+                issues);
+        }
+
+        var selectedReactions = new Dictionary<string, JsonObject>(
+            StringComparer.Ordinal);
+        foreach (var idNode in selectedIds)
+        {
+            workMeter.RecordSelectedComponentVisit();
+            if (!TryReadExact(idNode, out var componentId))
+                continue;
+            workMeter.RecordComponentIndexLookup();
+            if (componentsById.TryGetValue(componentId, out var component) &&
+                HasExact(component, "profile", "event_reaction"))
+            {
+                selectedReactions.TryAdd(componentId, component);
+            }
+        }
+
+        var acceptedEvent = new AcceptedEvent(
+            producerEvent.EventRef,
+            producerEvent.EventRef,
+            producerEvent.Turn,
+            producerEvent.EventKind,
+            new EffectTargetKey(realm, targetKind, targetId),
+            occurrence.EffectId,
+            triggerId);
+        var executions = new List<EffectReactionExecution>();
+        foreach (var component in selectedReactions.Values
+                     .OrderBy(component => ReadInt(component["priority"]))
+                     .ThenBy(
+                         component => component["componentId"]!.GetValue<string>(),
+                         StringComparer.Ordinal))
+        {
+            if (TryBuildExecution(
+                    occurrence,
+                    triggerId,
+                    component,
+                    acceptedEvent,
+                    sourceAuthority,
+                    replacementTargets,
+                    issues,
+                    workMeter,
+                    out var execution))
+            {
+                executions.Add(execution);
+            }
+        }
+
+        return issues.Count == 0
+            ? new EffectReactionPlanningResult(
+                executions.ToArray(),
+                Array.Empty<ValidationIssue>())
             : new EffectReactionPlanningResult(
                 Array.Empty<EffectReactionExecution>(),
                 issues.ToArray());
@@ -242,6 +375,102 @@ internal static class EffectReactionExecutor
             .ToArray();
     }
 
+    internal static IReadOnlyList<EffectExecutableComponentSelection>
+        ResolveExecutableComponents(
+        JsonObject trigger,
+        string eventType,
+        IReadOnlyDictionary<string, JsonObject> componentsById,
+        List<ValidationIssue> issues,
+        EffectAcceptedTurnPlanner.EffectResourceRoutingWorkMeter workMeter)
+    {
+        ArgumentNullException.ThrowIfNull(trigger);
+        ArgumentException.ThrowIfNullOrWhiteSpace(eventType);
+        ArgumentNullException.ThrowIfNull(componentsById);
+        ArgumentNullException.ThrowIfNull(issues);
+        ArgumentNullException.ThrowIfNull(workMeter);
+
+        var result = new Dictionary<string, EffectExecutableComponentSelection>(
+            StringComparer.Ordinal);
+        if (trigger["componentIds"] is not JsonArray selectedIds)
+            return Array.Empty<EffectExecutableComponentSelection>();
+
+        foreach (var idNode in selectedIds)
+        {
+            workMeter.RecordSelectedComponentVisit();
+            if (!TryReadExact(idNode, out var componentId))
+                continue;
+            workMeter.RecordComponentIndexLookup();
+            if (!componentsById.TryGetValue(componentId, out var component))
+                continue;
+            if (!HasExact(component, "profile", "event_reaction"))
+            {
+                if (!result.TryAdd(
+                        componentId,
+                        new EffectExecutableComponentSelection(
+                            componentId,
+                            null,
+                            component)))
+                {
+                    Add(
+                        issues,
+                        "effect.triggers.componentIds",
+                        "effect_reaction_component_dispatch_ambiguous",
+                        "one exact dispatch path per executable component",
+                        componentId);
+                }
+                continue;
+            }
+            if (component["payload"] is not JsonObject payload ||
+                !HasExact(payload, "eventType", eventType) ||
+                !TryReadExact(payload["resultKind"], out var resultKind) ||
+                !EffectReactionResultCatalog.TryResolve(resultKind, out var descriptor) ||
+                descriptor.Behavior != EffectReactionResultBehavior.PeriodicComponent ||
+                !TryReadExact(payload["componentId"], out var targetComponentId))
+            {
+                continue;
+            }
+            workMeter.RecordComponentIndexLookup();
+            if (!componentsById.TryGetValue(
+                    targetComponentId,
+                    out var targetComponent) ||
+                !TryReadExact(targetComponent["profile"], out var targetProfile) ||
+                targetProfile is not ("periodic_damage" or "periodic_restore"))
+            {
+                Add(
+                    issues,
+                    "effect.components[" + componentId + "].payload.componentId",
+                    "effect_reaction_component_unresolved",
+                    "one exact executable periodic component owned by this effect",
+                    targetComponentId);
+                continue;
+            }
+            var afterComponentId = HasExact(
+                    payload,
+                    "dependency",
+                    "after_component")
+                ? ReadOptionalExact(payload["afterComponentId"])
+                : null;
+            if (!result.TryAdd(
+                    targetComponentId,
+                    new EffectExecutableComponentSelection(
+                        targetComponentId,
+                        afterComponentId,
+                        targetComponent)))
+            {
+                Add(
+                    issues,
+                    "effect.components[" + componentId + "].payload.componentId",
+                    "effect_reaction_component_dispatch_ambiguous",
+                    "one exact dispatch path per executable component",
+                    targetComponentId);
+            }
+        }
+
+        return result.Values
+            .OrderBy(static value => value.ComponentId, StringComparer.Ordinal)
+            .ToArray();
+    }
+
     internal static EffectReactionPlanningResult Plan(
         JsonObject eventInput,
         EffectSourceAuthority sourceAuthority,
@@ -254,6 +483,8 @@ internal static class EffectReactionExecutor
         var issues = new List<ValidationIssue>();
         var catalog = EffectCarrierCatalog.Build(carriers);
         issues.AddRange(catalog.Issues);
+        var replacementTargets = EffectReplacementTargetIndex.Build(
+            catalog.Occurrences);
         var executions = new List<EffectReactionExecution>();
         if (eventInput["lifecycleEvents"] is not JsonArray lifecycleEvents)
         {
@@ -262,7 +493,6 @@ internal static class EffectReactionExecutor
                 issues);
         }
 
-        var totalExpansion = 0;
         foreach (var eventNode in lifecycleEvents)
         {
             if (!TryParseEvent(eventNode, issues, out var acceptedEvent))
@@ -328,20 +558,11 @@ internal static class EffectReactionExecutor
                                 component,
                                 acceptedEvent,
                                 sourceAuthority,
+                                replacementTargets,
                                 issues,
+                                workMeter: null,
                                 out var execution))
                         {
-                            continue;
-                        }
-                        totalExpansion++;
-                        if (totalExpansion > EffectReactionContract.MaximumExpansion)
-                        {
-                            Add(
-                                issues,
-                                occurrence.JsonPath + ".components[" + execution.ComponentId + "]",
-                                "effect_reaction_expansion_exceeded",
-                                $"at most {EffectReactionContract.MaximumExpansion} reaction operations in one accepted transition",
-                                totalExpansion.ToString());
                             continue;
                         }
                         executions.Add(execution);
@@ -349,8 +570,6 @@ internal static class EffectReactionExecutor
                 }
             }
         }
-
-        ValidateExpansionUsage(executions, issues);
 
         return issues.Count == 0
             ? new EffectReactionPlanningResult(
@@ -382,49 +601,15 @@ internal static class EffectReactionExecutor
                     group.Min(static execution => execution.MaxExpansion)));
     }
 
-    private static void ValidateExpansionUsage(
-        IReadOnlyList<EffectReactionExecution> executions,
-        List<ValidationIssue> issues)
-    {
-        foreach (var group in executions.GroupBy(static execution =>
-                     new EffectReactionExpansionKey(
-                         execution.EffectId,
-                         execution.ComponentId)))
-        {
-            var maxima = group
-                .Select(static execution => execution.MaxExpansion)
-                .Distinct()
-                .ToArray();
-            if (maxima.Length != 1)
-            {
-                Add(
-                    issues,
-                    "effect.reactions",
-                    "effect_reaction_expansion_policy_conflict",
-                    "one exact source-declared expansion maximum per effect component",
-                    group.Key.EffectId + "/" + group.Key.ComponentId);
-                continue;
-            }
-            var count = group.Count();
-            if (count > maxima[0])
-            {
-                Add(
-                    issues,
-                    "effect.reactions",
-                    "effect_reaction_expansion_exceeded",
-                    $"at most {maxima[0]} executions of this source-owned reaction component in one accepted transition",
-                    group.Key.EffectId + "/" + group.Key.ComponentId + "/" + count);
-            }
-        }
-    }
-
     private static bool TryBuildExecution(
         EffectCarrierOccurrence occurrence,
         string triggerId,
         JsonObject component,
         AcceptedEvent acceptedEvent,
         EffectSourceAuthority sourceAuthority,
+        EffectReplacementTargetIndex replacementTargets,
         List<ValidationIssue> issues,
+        EffectAcceptedTurnPlanner.EffectResourceRoutingWorkMeter? workMeter,
         out EffectReactionExecution execution)
     {
         execution = null!;
@@ -448,6 +633,9 @@ internal static class EffectReactionExecutor
         }
 
         EffectSourceAuthorityEntry? downstream = null;
+        EffectSourceKey? downstreamKey = null;
+        string? downstreamStackKey = null;
+        string? downstreamStackPolicy = null;
         JsonObject? parameters = null;
         if (descriptor.Behavior == EffectReactionResultBehavior.ApplyDefinition)
         {
@@ -465,28 +653,74 @@ internal static class EffectReactionExecutor
                     payload.ToJsonString());
                 return false;
             }
-            var resolution = sourceAuthority.ResolveCanonicalBinding(
-                new EffectSourceKey(
-                    acceptedEvent.Target.Realm,
-                    sourceKind,
-                    sourceId,
-                    definitionKey),
-                acceptedEvent.Target.Kind);
-            issues.AddRange(resolution.Issues);
-            if (!resolution.Success)
-                return false;
-            var parameterIssues = sourceAuthority.ValidateCanonicalParameters(
-                resolution.Source!,
-                reactionParameters);
+            var sourceKey = new EffectSourceKey(
+                acceptedEvent.Target.Realm,
+                sourceKind,
+                sourceId,
+                definitionKey);
+            IReadOnlyList<ValidationIssue> parameterIssues;
+            if (workMeter != null)
+            {
+                var routingResolution =
+                    sourceAuthority.ResolveCanonicalRoutingBinding(
+                        sourceKey,
+                        acceptedEvent.Target.Kind,
+                        workMeter);
+                issues.AddRange(routingResolution.Issues);
+                if (!routingResolution.Success)
+                    return false;
+                var routingSource = routingResolution.Source!.Value;
+                parameterIssues =
+                    sourceAuthority.ValidateCanonicalRoutingParameters(
+                        routingSource,
+                        reactionParameters);
+                downstreamKey = routingSource.Key;
+                downstreamStackKey = routingSource.StackKey;
+                downstreamStackPolicy = routingSource.StackPolicy;
+            }
+            else
+            {
+                var resolution = sourceAuthority.ResolveCanonicalBinding(
+                    sourceKey,
+                    acceptedEvent.Target.Kind);
+                issues.AddRange(resolution.Issues);
+                if (!resolution.Success)
+                    return false;
+                parameterIssues = sourceAuthority.ValidateCanonicalParameters(
+                    resolution.Source!,
+                    reactionParameters);
+                downstream = resolution.Source;
+                downstreamKey = resolution.Source!.Key;
+                downstreamStackKey = resolution.Source.Definition["stacking"]?
+                    ["stackKey"]?.GetValue<string>();
+                downstreamStackPolicy = resolution.Source.Definition["stacking"]?
+                    ["policy"]?.GetValue<string>();
+            }
             issues.AddRange(parameterIssues);
             if (parameterIssues.Count != 0)
                 return false;
-            downstream = resolution.Source;
             parameters = reactionParameters.DeepClone().AsObject();
         }
 
+        var replacementTarget = downstreamKey == null
+            ? null
+            : replacementTargets.ResolveExactTarget(
+                acceptedEvent.Target,
+                downstreamKey,
+                downstreamStackKey,
+                downstreamStackPolicy,
+                acceptedEvent.Turn);
+        var effectAuthority = EffectAcceptedTurnPlanner
+            .ResolvePendingEffectAuthority(
+                occurrence.Effect,
+                acceptedEvent.Turn);
         execution = new EffectReactionExecution(
-            $"{acceptedEvent.EventRef}:reaction:{occurrence.EffectId}:{componentId}",
+            CreateReactionEventRef(
+                acceptedEvent.EventRef,
+                occurrence.EffectId,
+                effectAuthority,
+                triggerId,
+                componentId),
             acceptedEvent.EventRef,
             acceptedEvent.CausalEventRef ?? acceptedEvent.EventRef,
             acceptedEvent.Turn,
@@ -500,8 +734,30 @@ internal static class EffectReactionExecutor
             ReadOptionalExact(payload["afterComponentId"]),
             maxExpansion,
             downstream,
-            parameters);
+            parameters,
+            downstreamKey,
+            ReadInt(component["priority"]),
+            replacementTarget);
         return true;
+    }
+
+    internal static string CreateReactionEventRef(
+        string acceptedEventRef,
+        string effectId,
+        ResourcePendingAuthorityBinding effectAuthority,
+        string triggerId,
+        string componentId)
+    {
+        using var builder = new ResourceFingerprintBuilder(
+            "effect-reaction-event-ref-v1");
+        builder.Append(acceptedEventRef);
+        EffectAcceptedTurnPlanner.AppendPendingEffectReplayIdentity(
+            builder,
+            effectId,
+            effectAuthority);
+        builder.Append(triggerId);
+        builder.Append(componentId);
+        return "effect_reaction_event_" + builder.Build()["sha256:".Length..];
     }
 
     private static bool TryParseEvent(

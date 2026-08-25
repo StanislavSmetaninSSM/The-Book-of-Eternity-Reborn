@@ -108,6 +108,60 @@ public sealed partial class EffectLifecycleSchedulerTests
     }
 
     [Theory]
+    [InlineData("stack", 2, 3)]
+    [InlineData("independent", 1, 1)]
+    public void ResolveApplication_ExplicitReplaceMaySupersedeOneDifferentPriorPolicyAtSameCoordinate(
+        string priorPolicy,
+        int currentStacks,
+        int priorMaximum)
+    {
+        var definition = CreateDefinition("replace", maxStacks: 1);
+        var existing = CreateExisting(
+            priorPolicy,
+            currentStacks,
+            maxStacks: priorMaximum);
+
+        var result = Resolve(definition, existing, "turn_43:accepted_replacement");
+
+        Assert.True(result.Success);
+        Assert.Equal("replace", result.Outcome);
+        Assert.True(result.CreatesNewIdentity);
+        Assert.True(result.TerminatesExisting);
+        Assert.Equal(EffectMaterializationTestFixture.EffectId, result.ExistingEffectId);
+    }
+
+    [Fact]
+    public void ResolveApplication_ExplicitReplaceRejectsMultiplePriorIdentitiesAtSameCoordinate()
+    {
+        var definition = CreateDefinition("replace", maxStacks: 1);
+        var first = CreateExisting(
+            "independent",
+            1,
+            "effect_independent_a",
+            maxStacks: 1);
+        var second = CreateExisting(
+            "independent",
+            1,
+            "effect_independent_b",
+            maxStacks: 1);
+
+        var result = EffectLifecycleScheduler.ResolveApplication(
+            new EffectStackApplicationInput(
+                new[] { first, second },
+                definition,
+                definition["components"]!.AsArray(),
+                CreateInitialLifetime(definition),
+                "turn_43:ambiguous_replacement",
+                EmptyEvents));
+
+        Assert.False(result.Success);
+        Assert.Contains(
+            result.Issues,
+            static issue => issue.Code ==
+                "effect_lifecycle_stack_coordinate_ambiguous");
+    }
+
+    [Theory]
     [InlineData("sum", 7d)]
     [InlineData("minimum", 3d)]
     [InlineData("maximum", 4d)]

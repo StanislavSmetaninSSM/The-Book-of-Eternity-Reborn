@@ -163,13 +163,8 @@ public sealed class ResourcePendingResolutionIntegrationTests
         var pending = ParsePending(
             await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath),
             definitions);
-        Assert.Equal(2, pending.Requests.Count);
-        var predecessor = Assert.Single(
-            pending.Requests,
-            request => request.MaximumAmount == 1m);
-        var dependent = Assert.Single(
-            pending.Requests,
-            request => request.MaximumAmount == 2m);
+        var predecessor = Assert.Single(pending.Requests);
+        Assert.Equal(1m, predecessor.MaximumAmount);
 
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         var backups = await context.ReadPendingSnapshotBackupsAsync();
@@ -184,13 +179,6 @@ public sealed class ResourcePendingResolutionIntegrationTests
                         ["requestId"] = predecessor.RequestId,
                         ["resultKind"] = "narrated_no_state_change",
                         ["reason"] = "Предшествующий компонент не изменил ресурс."
-                    },
-                    new JsonObject
-                    {
-                        ["requestId"] = dependent.RequestId,
-                        ["resultKind"] = "resource_delta",
-                        ["amount"] = 2,
-                        ["reason"] = "Зависимый компонент получил числовой результат."
                     }),
                 ["effectEventReports"] = new JsonArray()
             });
@@ -206,6 +194,12 @@ public sealed class ResourcePendingResolutionIntegrationTests
             Assert.NotNull(plan);
             Assert.False(plan!.AwaitsPendingResolution);
         }
+
+        var terminalPending = ParsePending(
+            await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath),
+            definitions);
+        Assert.Empty(terminalPending.Requests);
+        Assert.Single(terminalPending.TerminalReceipts);
 
         var history = ResourceHistoryState.ParseCanonical(
             (await context.ReadJsonAsync(ResourceMaterializationContract.HistoryPath))!
@@ -229,15 +223,47 @@ public sealed class ResourcePendingResolutionIntegrationTests
         var pending = ParsePending(
             await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath),
             definitions);
-        var predecessor = Assert.Single(
-            pending.Requests,
-            request => request.MaximumAmount == 1m);
-        var dependent = Assert.Single(
-            pending.Requests,
-            request => request.MaximumAmount == 2m);
+        var predecessor = Assert.Single(pending.Requests);
+        Assert.Equal(1m, predecessor.MaximumAmount);
 
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         var backups = await context.ReadPendingSnapshotBackupsAsync();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            new JsonObject
+            {
+                ["effectChanges"] = new JsonArray(),
+                ["effectResolutionReceipts"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["requestId"] = predecessor.RequestId,
+                        ["resultKind"] = "resource_delta",
+                        ["amount"] = 1,
+                        ["reason"] = "Предшествующий компонент изменил ресурс."
+                    }),
+                ["effectEventReports"] = new JsonArray()
+            });
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        AssertNoErrors(issues);
+        await using (var writeLease = await context.FileSystem
+                         .AcquireCanonicalWriteLeaseAsync())
+        {
+            var plan = await context.Normalizer.BindTo(writeLease)
+                .NormalizeAcceptedMechanicsAsync(backups);
+            Assert.NotNull(plan);
+            Assert.True(plan!.AwaitsPendingResolution);
+        }
+
+
+        var dependentPending = ParsePending(
+            await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath),
+            definitions);
+        var dependent = Assert.Single(dependentPending.Requests);
+        Assert.Equal(2m, dependent.MaximumAmount);
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+        var dependentBackups = await context.ReadPendingSnapshotBackupsAsync();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             new JsonObject
@@ -260,15 +286,14 @@ public sealed class ResourcePendingResolutionIntegrationTests
                     }),
                 ["effectEventReports"] = new JsonArray()
             });
-
-        var issues = await context.Validator
+        var dependentIssues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
-        AssertNoErrors(issues);
-        await using (var writeLease = await context.FileSystem
+        AssertNoErrors(dependentIssues);
+        await using (var dependentLease = await context.FileSystem
                          .AcquireCanonicalWriteLeaseAsync())
         {
-            var plan = await context.Normalizer.BindTo(writeLease)
-                .NormalizeAcceptedMechanicsAsync(backups);
+            var plan = await context.Normalizer.BindTo(dependentLease)
+                .NormalizeAcceptedMechanicsAsync(dependentBackups);
             Assert.NotNull(plan);
             Assert.False(plan!.AwaitsPendingResolution);
         }
@@ -412,8 +437,7 @@ public sealed class ResourcePendingResolutionIntegrationTests
                 ["amount"] = 1,
                 ["source"] = new JsonObject
                 {
-                    ["kind"] = "narrative_outcome",
-                    ["sourceId"] = "event_same_turn_bounded_hit"
+                    ["kind"] = "narrative_outcome"
                 },
                 ["eventRef"] = "turn_43:resource:1",
                 ["reason"] = "An accepted hit produces the exact resource event."

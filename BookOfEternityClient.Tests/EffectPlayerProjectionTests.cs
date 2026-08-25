@@ -172,7 +172,7 @@ public sealed class EffectPlayerProjectionTests
         Assert.Contains(
             reaction.Facts,
             fact => fact.Kind == "event_reaction" &&
-                    fact.Value.Contains("после текущего события", StringComparison.Ordinal));
+                    fact.Value.Contains("до текущего события", StringComparison.Ordinal));
 
         var afterlife = Assert.Single(BuildProjection(
             EffectMaterializationTestFixture.CreateCanonicalEffect(profile: "afterlife_combat_condition")).Entries);
@@ -331,6 +331,111 @@ public sealed class EffectPlayerProjectionTests
         Assert.Equal("Дорога к башне", route["title"]!.GetValue<string>());
         Assert.Equal("north_road", route["route"]!.GetValue<string>());
         Assert.Equal("слух трактирщика", route["source"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void SanitizeSemanticValue_RemovesCurrentResourcePendingStateRecursively()
+    {
+        const string fingerprint =
+            "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        var pending = ResourcePendingResolutionState.CreatePending(
+            canonicalJson: null,
+            new[]
+            {
+                new ResourcePendingResolutionDraft(
+                    "bounded_receipt",
+                    "session_private",
+                    "accepted_request_private",
+                    42,
+                    "event_private",
+                    "effect_private",
+                    new ResourcePendingAuthorityBinding("permanent", "effect_private"),
+                    new JsonObject
+                    {
+                        ["kind"] = "wound",
+                        ["sourceId"] = "wound_private",
+                        ["definitionKey"] = "bleeding_private"
+                    },
+                    new ResourcePendingAuthorityBinding("permanent", "wound_private"),
+                    new JsonObject
+                    {
+                        ["kind"] = "player",
+                        ["targetId"] = "player_current"
+                    },
+                    new ResourcePendingAuthorityBinding("permanent", "player_current"),
+                    "trigger_private",
+                    new ResourceCoordinate(
+                        "mortal_world",
+                        ResourceOwnerKind.Player,
+                        "player_current",
+                        "health"),
+                    new ResourcePendingAuthorityBinding("permanent", "player_current"),
+                    ResourceOperation.Damage,
+                    1,
+                    5,
+                    fingerprint,
+                    fingerprint,
+                    fingerprint,
+                    fingerprint,
+                    "Скрытая рана",
+                    "герой",
+                    "Здоровье",
+                    "урон",
+                    new ResourcePendingCausalAuthority(
+                        "effect_private",
+                        "trigger_private",
+                        "event_private",
+                        "event_private",
+                        ResourceProducerOperationKey: null,
+                        Priority: 0,
+                        ActivationOrdinal: 0,
+                        ConsumesUse: false,
+                        UsesBefore: null,
+                        "component_private",
+                        AfterComponentId: null,
+                        fingerprint,
+                        fingerprint,
+                        WaveOrdinal: 0))
+            },
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            () => "resource_resolution_private",
+            new DateTimeOffset(2026, 8, 23, 1, 0, 0, TimeSpan.Zero));
+        Assert.True(pending.IsValid);
+
+        var canonicalPending = pending.State!.ToCanonicalRoot();
+        var canonicalRequest = canonicalPending["requests"]![0]!.DeepClone();
+        var semantic = new JsonObject
+        {
+            ["scene"] = new JsonObject
+            {
+                ["summary"] = "Ветер стих.",
+                ["nested"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["technicalPending"] = canonicalPending,
+                        ["technicalRequest"] = canonicalRequest,
+                        ["gmPendingPacket"] = pending.SafeGmPacket!.DeepClone()
+                    },
+                    new JsonObject { ["visible"] = "Тропа свободна." })
+            }
+        };
+
+        var projected = Assert.IsType<JsonObject>(
+            EffectPlayerProjection.SanitizeSemanticValue(semantic));
+        var scene = Assert.IsType<JsonObject>(projected["scene"]);
+        var nested = Assert.IsType<JsonArray>(scene["nested"]);
+        var first = Assert.IsType<JsonObject>(nested[0]);
+        var second = Assert.IsType<JsonObject>(nested[1]);
+        var serialized = projected.ToJsonString();
+
+        Assert.False(first.ContainsKey("technicalPending"));
+        Assert.False(first.ContainsKey("technicalRequest"));
+        Assert.False(first.ContainsKey("gmPendingPacket"));
+        Assert.Equal("Тропа свободна.", second["visible"]!.GetValue<string>());
+        Assert.DoesNotContain("effect_private", serialized, StringComparison.Ordinal);
+        Assert.DoesNotContain("accepted_request_private", serialized, StringComparison.Ordinal);
+        Assert.DoesNotContain("trigger_private", serialized, StringComparison.Ordinal);
+        Assert.DoesNotContain(fingerprint, serialized, StringComparison.Ordinal);
     }
 
     private static EffectPlayerProjectionResult BuildProjection(JsonObject effect)

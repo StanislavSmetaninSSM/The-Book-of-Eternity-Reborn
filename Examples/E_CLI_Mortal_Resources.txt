@@ -231,6 +231,55 @@ Successful full-turn resubmission consumes the request and receipt exactly
 once through client-owned publication. A stale, partial, cross-target,
 wrong-operation, extra-field, or out-of-bound receipt fails closed.
 
+If that resolved output causally reaches another bounded component, the client
+returns a new safe packet and still publishes no mechanics or lifetime change.
+Answer the current safe packet only. Resubmit the same complete semantic turn
+with `effectResolutionReceipts[]` containing only that packet's unresolved
+requests; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned;
+do not copy an earlier wave back into the array or alter protected origin data.
+The client replays prior bindings at their original graph positions. Only the terminal wave
+publishes the whole resource/effect result atomically. Reusing an exact terminal
+receipt with the unchanged command envelope is a no-op; changing the original
+resource/effect commands makes it a conflicting replay.
+
+### mortal_resource_bounded_repair_v1
+
+If one exact ordinary resource command omitted only its required narrative
+reason, the client restores the validated baseline and issues a full-turn
+repair. In this worked attempt, only the resource command and two player-facing
+outputs were changed by the rejected response:
+
+```json
+{
+  "fullTurnResubmissionRequired": true,
+  "requiredResubmissionPaths": [
+    "game_state/resources/resource_commands.json",
+    "output/narrative_response.json",
+    "output/interface_updates.json"
+  ],
+  "harnessRepairPackets": [
+    {
+      "kind": "resource_semantic_omission_repair",
+      "actor": "ordinary resource change #1",
+      "route": "resourceChanges",
+      "transitionClass": "ordinary resource change #1",
+      "missingFields": ["narrative reason"],
+      "targetFiles": [],
+      "fullTurnResubmissionRequired": true
+    }
+  ]
+}
+```
+
+Regenerate all three listed GM-authored surfaces as one coherent response for
+the same turn. A command-only, ready-only, stale-output, formatting-only, or
+changed-amount retry is rejected. Client-owned `system_mods.json`,
+`progression_schedule.json`, `resource_definitions.json`, `resource_state.json`,
+`resource_history.json`, `resource_owner_authority.json`,
+`pending_effect_resolutions.json`, and `effect_identity_index.json` never appear
+in `requiredResubmissionPaths`; the client restores or republishes them and the
+GM must not write them.
+
 ### mortal_resource_illegal_direct_write_v1
 
 Forbidden legacy names such as currentHealth, healthPercentage, and maxDurability are never a legal resource authority. Do not patch canonical

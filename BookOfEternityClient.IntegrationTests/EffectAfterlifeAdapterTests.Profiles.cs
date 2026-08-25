@@ -48,8 +48,7 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
 
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),
@@ -129,8 +128,7 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.AfterlifeProfilesPath,
             root);
 
-        var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),
             DescribeIssues(issues));
@@ -196,8 +194,7 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
 
         Assert.Contains(
             issues,
@@ -236,8 +233,7 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
-        var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),
             DescribeIssues(issues));

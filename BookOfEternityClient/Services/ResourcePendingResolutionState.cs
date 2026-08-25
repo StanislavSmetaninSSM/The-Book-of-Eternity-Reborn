@@ -28,10 +28,28 @@ internal sealed record ResourcePendingResolutionDraft(
     string SourceAuthorityFingerprint,
     string PolicyFingerprint,
     string FullTurnFingerprint,
+    string SemanticTurnFingerprint,
     string SafeSourceLabel,
     string SafeTargetLabel,
     string SafeResourceLabel,
-    string SafeOperationLabel);
+    string SafeOperationLabel,
+    ResourcePendingCausalAuthority CausalAuthority);
+
+internal sealed record ResourcePendingCausalAuthority(
+    string EffectId,
+    string TriggerId,
+    string ActivationEventRef,
+    string TriggerEventRef,
+    string? ResourceProducerOperationKey,
+    int Priority,
+    long ActivationOrdinal,
+    bool ConsumesUse,
+    int? UsesBefore,
+    string ComponentId,
+    string? AfterComponentId,
+    string CandidateFingerprint,
+    string TranscriptPrefixFingerprint,
+    int WaveOrdinal);
 
 internal sealed record ResourcePendingAuthorityBinding(
     string BindingKind,
@@ -70,13 +88,15 @@ internal sealed class ResourcePendingRequest
         string sourceAuthorityFingerprint,
         string policyFingerprint,
         string fullTurnFingerprint,
+        string semanticTurnFingerprint,
         IReadOnlyList<string> requiredCompanions,
         string createdAtUtc,
         string replayFingerprint,
         string safeSourceLabel,
         string safeTargetLabel,
         string safeResourceLabel,
-        string safeOperationLabel)
+        string safeOperationLabel,
+        ResourcePendingCausalAuthority causalAuthority)
     {
         RequestId = requestId;
         SessionId = sessionId;
@@ -98,6 +118,7 @@ internal sealed class ResourcePendingRequest
         SourceAuthorityFingerprint = sourceAuthorityFingerprint;
         PolicyFingerprint = policyFingerprint;
         FullTurnFingerprint = fullTurnFingerprint;
+        SemanticTurnFingerprint = semanticTurnFingerprint;
         _requiredCompanions = requiredCompanions.ToArray();
         CreatedAtUtc = createdAtUtc;
         ReplayFingerprint = replayFingerprint;
@@ -105,6 +126,7 @@ internal sealed class ResourcePendingRequest
         SafeTargetLabel = safeTargetLabel;
         SafeResourceLabel = safeResourceLabel;
         SafeOperationLabel = safeOperationLabel;
+        CausalAuthority = causalAuthority with { };
     }
 
     internal string RequestId { get; }
@@ -127,6 +149,7 @@ internal sealed class ResourcePendingRequest
     internal string SourceAuthorityFingerprint { get; }
     internal string PolicyFingerprint { get; }
     internal string FullTurnFingerprint { get; }
+    internal string SemanticTurnFingerprint { get; }
     internal IReadOnlyList<string> RequiredCompanions =>
         Array.AsReadOnly(_requiredCompanions.ToArray());
     internal string CreatedAtUtc { get; }
@@ -136,6 +159,7 @@ internal sealed class ResourcePendingRequest
     internal string SafeTargetLabel { get; }
     internal string SafeResourceLabel { get; }
     internal string SafeOperationLabel { get; }
+    internal ResourcePendingCausalAuthority CausalAuthority { get; }
 
     internal ResourcePendingRequest Clone() =>
         new(
@@ -159,13 +183,15 @@ internal sealed class ResourcePendingRequest
             SourceAuthorityFingerprint,
             PolicyFingerprint,
             FullTurnFingerprint,
+            SemanticTurnFingerprint,
             _requiredCompanions,
             CreatedAtUtc,
             ReplayFingerprint,
             SafeSourceLabel,
             SafeTargetLabel,
             SafeResourceLabel,
-            SafeOperationLabel);
+            SafeOperationLabel,
+            CausalAuthority);
 }
 
 internal sealed record ResourcePendingTerminalReceipt(
@@ -175,13 +201,32 @@ internal sealed record ResourcePendingTerminalReceipt(
     int RequestTurn,
     string EventRef,
     string FullTurnFingerprint,
-    string RequestReplayFingerprint,
+    ResourcePendingRequest RequestAuthority,
+    string RequestAuthorityFingerprint,
     string ResultKind,
     decimal? Amount,
     string Reason,
     string ReceiptFingerprint,
     int ResolvedAtTurn,
-    string State);
+    string State)
+{
+    internal ResourcePendingTerminalReceipt DeepClone() =>
+        this with { RequestAuthority = RequestAuthority.Clone() };
+}
+
+internal sealed record ResourcePendingResolvedBinding(
+    ResourcePendingRequest RequestAuthority,
+    string ResultKind,
+    decimal? Amount,
+    string Reason,
+    string ReceiptFingerprint,
+    int ResolvedAtTurn)
+{
+    internal string RequestId => RequestAuthority.RequestId;
+
+    internal ResourcePendingResolvedBinding DeepClone() =>
+        this with { RequestAuthority = RequestAuthority.Clone() };
+}
 
 internal sealed record ResourcePendingResolutionStateResult(
     ResourcePendingResolutionState? State,
@@ -204,6 +249,7 @@ internal sealed record ResourcePendingResolutionResult(
     IReadOnlyList<ResourceMutationSourceExport> SourceExports,
     IReadOnlyList<ResourceMutationIntent> Mutations,
     IReadOnlyList<ResourcePendingTerminalReceipt> ReplayedTerminalReceipts,
+    IReadOnlyList<ResourcePendingResolvedBinding> ResolvedPendingBindings,
     IReadOnlyList<ValidationIssue> Issues)
 {
     internal bool IsValid => StateAfterImage != null && Issues.Count == 0;
@@ -213,7 +259,7 @@ internal sealed class ResourcePendingResolutionState
 {
     internal const string PendingPath =
         "game_state/control/pending_effect_resolutions.json";
-    internal const int SchemaVersion = 1;
+    internal const int SchemaVersion = 2;
     internal const int MaxRequestsPerTurn = 64;
 
     private static readonly HashSet<string> RootFields = Set(
@@ -223,8 +269,15 @@ internal sealed class ResourcePendingResolutionState
         "effectId", "effectAuthority", "source", "sourceAuthority", "target",
         "targetAuthority", "triggerId", "coordinate", "resourceAuthority", "operation",
         "allowedResults", "sourceAuthorityFingerprint", "policyFingerprint",
-        "fullTurnFingerprint", "requiredCompanions", "fullTurnResubmissionRequired",
-        "state", "createdAtUtc", "replayFingerprint", "projection");
+        "fullTurnFingerprint", "semanticTurnFingerprint", "requiredCompanions",
+        "fullTurnResubmissionRequired",
+        "state", "createdAtUtc", "replayFingerprint", "projection",
+        "causalAuthority");
+    private static readonly HashSet<string> CausalAuthorityFields = Set(
+        "effectId", "triggerId", "activationEventRef", "triggerEventRef",
+        "resourceProducerOperationKey", "priority", "activationOrdinal",
+        "consumesUse", "usesBefore", "componentId", "afterComponentId",
+        "candidateFingerprint", "transcriptPrefixFingerprint", "waveOrdinal");
     private static readonly HashSet<string> SourceFields = Set(
         "kind", "sourceId", "definitionKey");
     private static readonly HashSet<string> TargetFields = Set("kind", "targetId");
@@ -238,7 +291,7 @@ internal sealed class ResourcePendingResolutionState
         "sourceLabel", "targetLabel", "resourceLabel", "operationLabel");
     private static readonly HashSet<string> TerminalFields = Set(
         "requestId", "sessionId", "acceptedRequestId", "requestTurn", "eventRef",
-        "fullTurnFingerprint", "requestReplayFingerprint", "resultKind",
+        "fullTurnFingerprint", "requestAuthority", "requestAuthorityFingerprint", "resultKind",
         "amount", "reason", "receiptFingerprint", "resolvedAtTurn", "state");
     private static readonly HashSet<string> ReceiptFields = Set(
         "requestId", "resultKind", "amount", "reason");
@@ -255,15 +308,26 @@ internal sealed class ResourcePendingResolutionState
     {
         SessionId = sessionId;
         _requests = requests
-            .OrderBy(static request => request.RequestId, StringComparer.Ordinal)
+            .OrderBy(static request => request.CausalAuthority.WaveOrdinal)
+            .ThenBy(static request => request.CausalAuthority.ActivationOrdinal)
+            .ThenBy(
+                static request => request.CausalAuthority.ComponentId,
+                StringComparer.Ordinal)
+            .ThenBy(static request => request.RequestId, StringComparer.Ordinal)
             .Select(static request => request.Clone())
             .ToArray();
         _terminalReceipts = terminalReceipts
-            .OrderBy(static receipt => receipt.RequestTurn)
+            .OrderBy(static receipt =>
+                receipt.RequestAuthority.CausalAuthority.WaveOrdinal)
+            .ThenBy(static receipt =>
+                receipt.RequestAuthority.CausalAuthority.ActivationOrdinal)
+            .ThenBy(
+                static receipt => receipt.RequestAuthority.CausalAuthority.ComponentId,
+                StringComparer.Ordinal)
             .ThenBy(static receipt => receipt.RequestId, StringComparer.Ordinal)
-            .Select(static receipt => receipt with { })
+            .Select(static receipt => receipt.DeepClone())
             .ToArray();
-        Fingerprint = Hash("resource-pending-state-v1", ToCanonicalRoot());
+        Fingerprint = Hash("resource-pending-state-v2", ToCanonicalRoot());
     }
 
     internal string SessionId { get; }
@@ -274,7 +338,12 @@ internal sealed class ResourcePendingResolutionState
 
     internal IReadOnlyList<ResourcePendingTerminalReceipt> TerminalReceipts =>
         Array.AsReadOnly(
-            _terminalReceipts.Select(static receipt => receipt with { }).ToArray());
+            _terminalReceipts.Select(static receipt => receipt.DeepClone()).ToArray());
+
+    internal IReadOnlyList<ResourcePendingResolvedBinding> ResolvedPendingBindings =>
+        Array.AsReadOnly(_terminalReceipts
+            .Select(static receipt => ToResolvedBinding(receipt))
+            .ToArray());
 
     internal string Fingerprint { get; }
 
@@ -347,6 +416,45 @@ internal sealed class ResourcePendingResolutionState
 
         foreach (var draft in drafts)
             ValidateDraft(draft, definitions, sessionId, issues);
+        if (previous is { _terminalReceipts.Length: > 0 })
+        {
+            var scope = drafts[0];
+            var priorWaves = previous._terminalReceipts
+                .Where(terminal =>
+                    string.Equals(
+                        terminal.SessionId,
+                        scope.SessionId,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        terminal.AcceptedRequestId,
+                        scope.AcceptedRequestId,
+                        StringComparison.Ordinal) &&
+                    terminal.RequestTurn == scope.RequestTurn &&
+                    string.Equals(
+                        terminal.FullTurnFingerprint,
+                        scope.FullTurnFingerprint,
+                        StringComparison.Ordinal))
+                .Select(static terminal =>
+                    terminal.RequestAuthority.CausalAuthority.WaveOrdinal)
+                .ToArray();
+            if (priorWaves.Length != 0)
+            {
+                var previousWave = priorWaves.Max();
+                foreach (var draft in drafts)
+                {
+                    if (draft.CausalAuthority.WaveOrdinal <= previousWave)
+                    {
+                        Add(
+                            issues,
+                            PendingPath + ".requests.causalAuthority.waveOrdinal",
+                            "resource_pending_causal_wave_stale",
+                            $"wave ordinal greater than prior terminal wave {previousWave}",
+                            draft.CausalAuthority.WaveOrdinal.ToString(
+                                CultureInfo.InvariantCulture));
+                    }
+                }
+            }
+        }
         if (issues.Count != 0)
             return FailedCreation(issues);
 
@@ -496,9 +604,16 @@ internal sealed class ResourcePendingResolutionState
                 definitions,
                 sessionId,
                 issues);
-            var terminals = ParseTerminals(document.RootElement, issues);
+            var terminals = ParseTerminals(
+                document.RootElement,
+                definitions,
+                sessionId,
+                issues);
             ValidateRequestIdentitySets(requests, terminals, issues);
             ValidateCompanions(requests, issues);
+            ValidateCompanions(
+                terminals.Select(static terminal => terminal.RequestAuthority).ToArray(),
+                issues);
             if (issues.Count != 0 || sessionId == null)
                 return new ResourcePendingResolutionStateResult(null, issues);
 
@@ -602,6 +717,7 @@ internal sealed class ResourcePendingResolutionState
             }
             var fingerprint = ComputeReceiptFingerprint(
                 receipt.RequestId,
+                terminal.RequestAuthorityFingerprint,
                 receipt.ResultKind,
                 receipt.Amount,
                 receipt.Reason);
@@ -619,7 +735,7 @@ internal sealed class ResourcePendingResolutionState
             }
             else
             {
-                replayed.Add(terminal with { });
+                replayed.Add(terminal.DeepClone());
             }
         }
 
@@ -635,45 +751,35 @@ internal sealed class ResourcePendingResolutionState
                 continue;
             var fingerprint = ComputeReceiptFingerprint(
                 request.RequestId,
+                request.ReplayFingerprint,
                 receipt.ResultKind,
                 receipt.Amount,
                 receipt.Reason);
-            newTerminals.Add(new ResourcePendingTerminalReceipt(
+            var terminal = new ResourcePendingTerminalReceipt(
                 request.RequestId,
                 request.SessionId,
                 request.AcceptedRequestId,
                 request.RequestTurn,
                 request.EventRef,
                 request.FullTurnFingerprint,
+                request.Clone(),
                 request.ReplayFingerprint,
                 receipt.ResultKind!,
                 receipt.Amount,
                 receipt.Reason!,
                 fingerprint,
                 context.Turn,
-                "resolved_and_consumed"));
-            if (!string.Equals(
-                    receipt.ResultKind,
-                    "resource_delta",
-                    StringComparison.Ordinal))
+                "resolved_and_consumed");
+            newTerminals.Add(terminal);
+            if (!TryProjectMutationSourceExport(
+                    ToResolvedBinding(terminal),
+                    out var sourceExport) ||
+                sourceExport == null)
             {
                 continue;
             }
 
-            var sourceFingerprint = Hash(
-                "resource-bounded-receipt-source-v1",
-                new JsonObject
-                {
-                    ["requestId"] = request.RequestId,
-                    ["requestReplayFingerprint"] = request.ReplayFingerprint,
-                    ["receiptFingerprint"] = fingerprint
-                });
-            sourceExports.Add(new ResourceMutationSourceExport(
-                "bounded_receipt",
-                request.RequestId,
-                sourceFingerprint,
-                ResourceMutationSourceState.Active,
-                SameTurn: true));
+            sourceExports.Add(sourceExport);
             mutations.Add(new ResourceMutationIntent(
                 request.EventRef,
                 request.Coordinate,
@@ -694,12 +800,19 @@ internal sealed class ResourcePendingResolutionState
                 Array.Empty<ResourceMutationSourceExport>(),
                 Array.Empty<ResourceMutationIntent>(),
                 Array.Empty<ResourcePendingTerminalReceipt>(),
+                Array.Empty<ResourcePendingResolvedBinding>(),
                 issues.ToArray());
         }
 
         var terminalAfter = _terminalReceipts
             .Concat(newTerminals)
-            .OrderBy(static receipt => receipt.RequestTurn)
+            .OrderBy(static receipt =>
+                receipt.RequestAuthority.CausalAuthority.WaveOrdinal)
+            .ThenBy(static receipt =>
+                receipt.RequestAuthority.CausalAuthority.ActivationOrdinal)
+            .ThenBy(
+                static receipt => receipt.RequestAuthority.CausalAuthority.ComponentId,
+                StringComparer.Ordinal)
             .ThenBy(static receipt => receipt.RequestId, StringComparer.Ordinal)
             .ToArray();
         var stateAfter = new ResourcePendingResolutionState(
@@ -711,6 +824,7 @@ internal sealed class ResourcePendingResolutionState
             sourceExports.ToArray(),
             mutations.ToArray(),
             replayed.ToArray(),
+            stateAfter.ResolvedPendingBindings,
             Array.Empty<ValidationIssue>());
     }
 
@@ -800,13 +914,15 @@ internal sealed class ResourcePendingResolutionState
             draft.SourceAuthorityFingerprint,
             draft.PolicyFingerprint,
             draft.FullTurnFingerprint,
+            draft.SemanticTurnFingerprint,
             companions,
             createdAtUtc,
             replayFingerprint: string.Empty,
             draft.SafeSourceLabel,
             draft.SafeTargetLabel,
             draft.SafeResourceLabel,
-            draft.SafeOperationLabel);
+            draft.SafeOperationLabel,
+            draft.CausalAuthority);
         var replayFingerprint = ComputeRequestReplayFingerprint(provisional);
         return new ResourcePendingRequest(
             requestId,
@@ -829,13 +945,15 @@ internal sealed class ResourcePendingResolutionState
             draft.SourceAuthorityFingerprint,
             draft.PolicyFingerprint,
             draft.FullTurnFingerprint,
+            draft.SemanticTurnFingerprint,
             companions,
             createdAtUtc,
             replayFingerprint,
             draft.SafeSourceLabel,
             draft.SafeTargetLabel,
             draft.SafeResourceLabel,
-            draft.SafeOperationLabel);
+            draft.SafeOperationLabel,
+            draft.CausalAuthority);
     }
 
     private static void ValidateDraft(
@@ -852,6 +970,7 @@ internal sealed class ResourcePendingResolutionState
         ArgumentNullException.ThrowIfNull(draft.SourceAuthority);
         ArgumentNullException.ThrowIfNull(draft.TargetAuthority);
         ArgumentNullException.ThrowIfNull(draft.ResourceAuthority);
+        ArgumentNullException.ThrowIfNull(draft.CausalAuthority);
         if (!string.Equals(
                 draft.ResolutionMode,
                 "bounded_receipt",
@@ -891,6 +1010,11 @@ internal sealed class ResourcePendingResolutionState
         ValidateExact(draft.EventRef, "eventRef", "resource_pending_event_invalid", issues);
         ValidateExact(draft.EffectId, "effectId", "resource_pending_effect_invalid", issues);
         ValidateAuthorityBinding(draft.EffectAuthority, "effectAuthority", issues);
+        ValidateEffectAuthorityBinding(
+            draft.EffectId,
+            draft.EffectAuthority,
+            PendingPath,
+            issues);
         ValidateExact(draft.TriggerId, "triggerId", "resource_pending_trigger_invalid", issues);
         ValidateSourceTarget(draft.Source, draft.Target, PendingPath, issues);
         ValidateAuthorityBinding(draft.SourceAuthority, "sourceAuthority", issues);
@@ -910,10 +1034,317 @@ internal sealed class ResourcePendingResolutionState
             issues);
         ValidateFingerprint(draft.PolicyFingerprint, "policyFingerprint", issues);
         ValidateFingerprint(draft.FullTurnFingerprint, "fullTurnFingerprint", issues);
+        ValidateFingerprint(
+            draft.SemanticTurnFingerprint,
+            "semanticTurnFingerprint",
+            issues);
+        ValidateCausalAuthority(
+            draft.CausalAuthority,
+            draft.EffectId,
+            draft.TriggerId,
+            draft.EventRef,
+            PendingPath + ".causalAuthority",
+            issues);
         ValidateSafeLabel(draft.SafeSourceLabel, "safeSourceLabel", issues);
         ValidateSafeLabel(draft.SafeTargetLabel, "safeTargetLabel", issues);
         ValidateSafeLabel(draft.SafeResourceLabel, "safeResourceLabel", issues);
         ValidateSafeLabel(draft.SafeOperationLabel, "safeOperationLabel", issues);
+    }
+
+    private static ResourcePendingCausalAuthority? ParseCausalAuthority(
+        JsonElement parent,
+        string path,
+        string? requestEffectId,
+        string? requestTriggerId,
+        string? requestEventRef,
+        List<ValidationIssue> issues)
+    {
+        if (!parent.TryGetProperty("causalAuthority", out var node) ||
+            node.ValueKind != JsonValueKind.Object)
+        {
+            Add(
+                issues,
+                path + ".causalAuthority",
+                "resource_pending_causal_authority_invalid",
+                "closed causal authority object",
+                Describe(parent, "causalAuthority"));
+            return null;
+        }
+
+        var causalPath = path + ".causalAuthority";
+        ValidateClosedObject(
+            node,
+            causalPath,
+            CausalAuthorityFields,
+            "resource_pending_unknown_field",
+            issues);
+        var effectId = ReadExact(
+            node,
+            "effectId",
+            causalPath,
+            issues,
+            "resource_pending_causal_authority_invalid");
+        var triggerId = ReadExact(
+            node,
+            "triggerId",
+            causalPath,
+            issues,
+            "resource_pending_causal_authority_invalid");
+        var activationEventRef = ReadExact(
+            node,
+            "activationEventRef",
+            causalPath,
+            issues,
+            "resource_pending_causal_authority_invalid");
+        var triggerEventRef = ReadExact(
+            node,
+            "triggerEventRef",
+            causalPath,
+            issues,
+            "resource_pending_causal_authority_invalid");
+        var producerKey = ReadRequiredNullableExact(
+            node,
+            "resourceProducerOperationKey",
+            causalPath,
+            issues);
+        var priority = ReadInt(
+            node,
+            "priority",
+            causalPath,
+            issues,
+            "resource_pending_causal_authority_invalid");
+        var activationOrdinal = ReadLong(
+            node,
+            "activationOrdinal",
+            causalPath,
+            issues,
+            "resource_pending_causal_authority_invalid");
+        var consumesUse = ReadBool(node, "consumesUse", causalPath, issues);
+        var usesBefore = ReadRequiredNullableInt(
+            node,
+            "usesBefore",
+            causalPath,
+            issues);
+        var componentId = ReadExact(
+            node,
+            "componentId",
+            causalPath,
+            issues,
+            "resource_pending_causal_authority_invalid");
+        var afterComponentId = ReadRequiredNullableExact(
+            node,
+            "afterComponentId",
+            causalPath,
+            issues);
+        var candidateFingerprint = ReadFingerprint(
+            node,
+            "candidateFingerprint",
+            causalPath,
+            issues);
+        var transcriptPrefixFingerprint = ReadFingerprint(
+            node,
+            "transcriptPrefixFingerprint",
+            causalPath,
+            issues);
+        var waveOrdinal = ReadInt(
+            node,
+            "waveOrdinal",
+            causalPath,
+            issues,
+            "resource_pending_causal_authority_invalid");
+
+        if (!producerKey.IsValid || !usesBefore.IsValid ||
+            !afterComponentId.IsValid ||
+            new object?[]
+            {
+                effectId, triggerId, activationEventRef, triggerEventRef,
+                priority, activationOrdinal, componentId, candidateFingerprint,
+                transcriptPrefixFingerprint, waveOrdinal
+            }.Any(static value => value == null))
+        {
+            return null;
+        }
+
+        var causal = new ResourcePendingCausalAuthority(
+            effectId!,
+            triggerId!,
+            activationEventRef!,
+            triggerEventRef!,
+            producerKey.Value,
+            priority!.Value,
+            activationOrdinal!.Value,
+            consumesUse,
+            usesBefore.Value,
+            componentId!,
+            afterComponentId.Value,
+            candidateFingerprint!,
+            transcriptPrefixFingerprint!,
+            waveOrdinal!.Value);
+        ValidateCausalAuthority(
+            causal,
+            requestEffectId,
+            requestTriggerId,
+            requestEventRef,
+            causalPath,
+            issues);
+        return causal;
+    }
+
+    private static void ValidateCausalAuthority(
+        ResourcePendingCausalAuthority causal,
+        string? requestEffectId,
+        string? requestTriggerId,
+        string? requestEventRef,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        ValidateCausalExact(causal.EffectId, "effectId", path, issues);
+        ValidateCausalExact(causal.TriggerId, "triggerId", path, issues);
+        ValidateCausalExact(
+            causal.ActivationEventRef,
+            "activationEventRef",
+            path,
+            issues);
+        ValidateCausalExact(causal.TriggerEventRef, "triggerEventRef", path, issues);
+        if (causal.ResourceProducerOperationKey != null)
+        {
+            ValidateCausalExact(
+                causal.ResourceProducerOperationKey,
+                "resourceProducerOperationKey",
+                path,
+                issues);
+        }
+        ValidateCausalExact(causal.ComponentId, "componentId", path, issues);
+        if (causal.AfterComponentId != null)
+        {
+            ValidateCausalExact(
+                causal.AfterComponentId,
+                "afterComponentId",
+                path,
+                issues);
+            if (string.Equals(
+                    causal.ComponentId,
+                    causal.AfterComponentId,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                Add(
+                    issues,
+                    path + ".afterComponentId",
+                    "resource_pending_causal_authority_confusable",
+                    "absent or distinct exact after-component identity",
+                    causal.AfterComponentId);
+            }
+        }
+        if (causal.ActivationOrdinal < 0)
+        {
+            Add(
+                issues,
+                path + ".activationOrdinal",
+                "resource_pending_causal_authority_invalid",
+                "non-negative causal activation ordinal",
+                causal.ActivationOrdinal.ToString(CultureInfo.InvariantCulture));
+        }
+        if (causal.WaveOrdinal < 0)
+        {
+            Add(
+                issues,
+                path + ".waveOrdinal",
+                "resource_pending_causal_authority_invalid",
+                "non-negative causal wave ordinal",
+                causal.WaveOrdinal.ToString(CultureInfo.InvariantCulture));
+        }
+        if (causal.ConsumesUse != causal.UsesBefore.HasValue ||
+            causal.UsesBefore is <= 0)
+        {
+            Add(
+                issues,
+                path + ".usesBefore",
+                "resource_pending_causal_budget_invalid",
+                "positive usesBefore iff consumesUse is true; otherwise null",
+                causal.UsesBefore?.ToString(CultureInfo.InvariantCulture) ?? "null");
+        }
+        ValidateCausalFingerprint(
+            causal.CandidateFingerprint,
+            "candidateFingerprint",
+            path,
+            issues);
+        ValidateCausalFingerprint(
+            causal.TranscriptPrefixFingerprint,
+            "transcriptPrefixFingerprint",
+            path,
+            issues);
+
+        ValidateCausalAgreement(
+            causal.EffectId,
+            requestEffectId,
+            "effectId",
+            path,
+            issues);
+        ValidateCausalAgreement(
+            causal.TriggerId,
+            requestTriggerId,
+            "triggerId",
+            path,
+            issues);
+        ValidateCausalAgreement(
+            causal.ActivationEventRef,
+            requestEventRef,
+            "activationEventRef",
+            path,
+            issues);
+    }
+
+    private static void ValidateCausalExact(
+        string value,
+        string field,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (!ResourceMaterializationContract.IsExactIdentifier(value))
+        {
+            Add(
+                issues,
+                path + "." + field,
+                "resource_pending_causal_authority_invalid",
+                "non-empty trimmed exact identifier",
+                Describe(value));
+        }
+    }
+
+    private static void ValidateCausalFingerprint(
+        string value,
+        string field,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (!ResourceMaterializationContract.IsAuthorityFingerprint(value))
+        {
+            Add(
+                issues,
+                path + "." + field,
+                "resource_pending_fingerprint_invalid",
+                "lowercase SHA-256 authority fingerprint",
+                Describe(value));
+        }
+    }
+
+    private static void ValidateCausalAgreement(
+        string causalValue,
+        string? requestValue,
+        string field,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (requestValue != null &&
+            !string.Equals(causalValue, requestValue, StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                path + "." + field,
+                "resource_pending_causal_authority_stale",
+                requestValue,
+                causalValue);
+        }
     }
 
     private static List<ResourcePendingRequest> ParseRequests(
@@ -1025,6 +1456,14 @@ internal sealed class ResourcePendingResolutionState
                 "effectAuthority",
                 path,
                 issues);
+            if (effectId != null && effectAuthority != null)
+            {
+                ValidateEffectAuthorityBinding(
+                    effectId,
+                    effectAuthority,
+                    path,
+                    issues);
+            }
             var triggerId = ReadExact(
                 node,
                 "triggerId",
@@ -1078,6 +1517,11 @@ internal sealed class ResourcePendingResolutionState
                 "fullTurnFingerprint",
                 path,
                 issues);
+            var semanticTurnFingerprint = ReadFingerprint(
+                node,
+                "semanticTurnFingerprint",
+                path,
+                issues);
             var companions = ReadExactStringArray(
                 node,
                 "requiredCompanions",
@@ -1114,6 +1558,13 @@ internal sealed class ResourcePendingResolutionState
                 path,
                 issues);
             var projection = ParseProjection(node, path, issues);
+            var causalAuthority = ParseCausalAuthority(
+                node,
+                path,
+                effectId,
+                triggerId,
+                eventRef,
+                issues);
 
             if (coordinate != null && operation.HasValue &&
                 minimum.HasValue && maximum.HasValue)
@@ -1133,7 +1584,8 @@ internal sealed class ResourcePendingResolutionState
                     effectId, effectAuthority, source, sourceAuthority, target,
                     targetAuthority, triggerId, coordinate, resourceAuthority, operation, minimum,
                     maximum, sourceFingerprint, policyFingerprint, fullTurnFingerprint,
-                    createdAtUtc, replayFingerprint, projection
+                    semanticTurnFingerprint,
+                    createdAtUtc, replayFingerprint, projection, causalAuthority
                 }.Any(static value => value == null))
             {
                 continue;
@@ -1160,13 +1612,15 @@ internal sealed class ResourcePendingResolutionState
                 sourceFingerprint!,
                 policyFingerprint!,
                 fullTurnFingerprint!,
+                semanticTurnFingerprint!,
                 companions,
                 createdAtUtc!,
                 replayFingerprint!,
                 projection!.Value.Source,
                 projection.Value.Target,
                 projection.Value.Resource,
-                projection.Value.Operation);
+                projection.Value.Operation,
+                causalAuthority!);
             var expectedReplay = ComputeRequestReplayFingerprint(request);
             if (!string.Equals(
                     replayFingerprint,
@@ -1185,8 +1639,96 @@ internal sealed class ResourcePendingResolutionState
         return requests;
     }
 
+    private static ResourcePendingRequest? ParseTerminalRequestAuthority(
+        JsonElement terminal,
+        string path,
+        ResourceDefinitionCatalog definitions,
+        string? rootSessionId,
+        List<ValidationIssue> issues)
+    {
+        if (!terminal.TryGetProperty("requestAuthority", out var authorityNode) ||
+            authorityNode.ValueKind != JsonValueKind.Object)
+        {
+            Add(
+                issues,
+                path + ".requestAuthority",
+                "resource_pending_terminal_authority_invalid",
+                "full closed original request authority",
+                Describe(terminal, "requestAuthority"));
+            return null;
+        }
+
+        using var nestedDocument = JsonDocument.Parse(
+            "{\"requests\":[" + authorityNode.GetRawText() + "]}");
+        var nestedIssues = new List<ValidationIssue>();
+        var requests = ParseRequests(
+            nestedDocument.RootElement,
+            definitions,
+            rootSessionId,
+            nestedIssues);
+        issues.AddRange(nestedIssues);
+        if (nestedIssues.Count != 0 || requests.Count != 1)
+        {
+            Add(
+                issues,
+                path + ".requestAuthority",
+                "resource_pending_terminal_authority_invalid",
+                "one valid full original request authority",
+                requests.Count.ToString(CultureInfo.InvariantCulture));
+            return null;
+        }
+        return requests[0];
+    }
+
+    private static void ValidateTerminalRequestAgreement(
+        ResourcePendingRequest authority,
+        string authorityFingerprint,
+        string requestId,
+        string sessionId,
+        string acceptedRequestId,
+        int requestTurn,
+        string eventRef,
+        string fullTurnFingerprint,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var comparisons = new (string Field, string Expected, string Actual)[]
+        {
+            ("requestId", authority.RequestId, requestId),
+            ("sessionId", authority.SessionId, sessionId),
+            ("acceptedRequestId", authority.AcceptedRequestId, acceptedRequestId),
+            (
+                "requestTurn",
+                authority.RequestTurn.ToString(CultureInfo.InvariantCulture),
+                requestTurn.ToString(CultureInfo.InvariantCulture)),
+            ("eventRef", authority.EventRef, eventRef),
+            ("fullTurnFingerprint", authority.FullTurnFingerprint, fullTurnFingerprint),
+            (
+                "requestAuthorityFingerprint",
+                authority.ReplayFingerprint,
+                authorityFingerprint)
+        };
+        foreach (var comparison in comparisons)
+        {
+            if (!string.Equals(
+                    comparison.Expected,
+                    comparison.Actual,
+                    StringComparison.Ordinal))
+            {
+                Add(
+                    issues,
+                    path + "." + comparison.Field,
+                    "resource_pending_terminal_authority_stale",
+                    comparison.Expected,
+                    comparison.Actual);
+            }
+        }
+    }
+
     private static List<ResourcePendingTerminalReceipt> ParseTerminals(
         JsonElement root,
+        ResourceDefinitionCatalog definitions,
+        string? rootSessionId,
         List<ValidationIssue> issues)
     {
         if (!root.TryGetProperty("terminalReceipts", out var terminalsNode) ||
@@ -1257,9 +1799,15 @@ internal sealed class ResourcePendingResolutionState
                 "fullTurnFingerprint",
                 path,
                 issues);
-            var requestReplayFingerprint = ReadFingerprint(
+            var requestAuthority = ParseTerminalRequestAuthority(
                 node,
-                "requestReplayFingerprint",
+                path,
+                definitions,
+                rootSessionId,
+                issues);
+            var requestAuthorityFingerprint = ReadFingerprint(
+                node,
+                "requestAuthorityFingerprint",
                 path,
                 issues);
             var resultKind = ReadExact(
@@ -1315,15 +1863,28 @@ internal sealed class ResourcePendingResolutionState
             }
             if (requestId == null || sessionId == null || acceptedRequestId == null ||
                 !requestTurn.HasValue || eventRef == null || resultKind == null ||
-                fullTurnFingerprint == null || requestReplayFingerprint == null ||
+                fullTurnFingerprint == null || requestAuthority == null ||
+                requestAuthorityFingerprint == null ||
                 reason == null || receiptFingerprint == null ||
                 !resolvedAtTurn.HasValue || state == null)
             {
                 continue;
             }
             ValidateResultShape(resultKind, amount, path, issues);
+            ValidateTerminalRequestAgreement(
+                requestAuthority,
+                requestAuthorityFingerprint,
+                requestId,
+                sessionId,
+                acceptedRequestId,
+                requestTurn.Value,
+                eventRef,
+                fullTurnFingerprint,
+                path,
+                issues);
             var expectedFingerprint = ComputeReceiptFingerprint(
                 requestId,
+                requestAuthorityFingerprint,
                 resultKind,
                 amount,
                 reason);
@@ -1346,7 +1907,8 @@ internal sealed class ResourcePendingResolutionState
                 requestTurn.Value,
                 eventRef,
                 fullTurnFingerprint,
-                requestReplayFingerprint,
+                requestAuthority,
+                requestAuthorityFingerprint,
                 resultKind,
                 amount,
                 reason,
@@ -1764,12 +2326,15 @@ internal sealed class ResourcePendingResolutionState
             ["sourceAuthorityFingerprint"] = request.SourceAuthorityFingerprint,
             ["policyFingerprint"] = request.PolicyFingerprint,
             ["fullTurnFingerprint"] = request.FullTurnFingerprint,
+            ["semanticTurnFingerprint"] = request.SemanticTurnFingerprint,
             ["requiredCompanions"] = new JsonArray(request.RequiredCompanions
                 .Select(static value => (JsonNode)value)
                 .ToArray()),
             ["fullTurnResubmissionRequired"] = true,
             ["state"] = "pending",
             ["createdAtUtc"] = request.CreatedAtUtc,
+            ["causalAuthority"] = ToCanonicalCausalAuthority(
+                request.CausalAuthority),
             ["replayFingerprint"] = request.ReplayFingerprint,
             ["projection"] = new JsonObject
             {
@@ -1778,6 +2343,26 @@ internal sealed class ResourcePendingResolutionState
                 ["resourceLabel"] = request.SafeResourceLabel,
                 ["operationLabel"] = request.SafeOperationLabel
             }
+        };
+
+    private static JsonObject ToCanonicalCausalAuthority(
+        ResourcePendingCausalAuthority causal) =>
+        new()
+        {
+            ["effectId"] = causal.EffectId,
+            ["triggerId"] = causal.TriggerId,
+            ["activationEventRef"] = causal.ActivationEventRef,
+            ["triggerEventRef"] = causal.TriggerEventRef,
+            ["resourceProducerOperationKey"] = causal.ResourceProducerOperationKey,
+            ["priority"] = causal.Priority,
+            ["activationOrdinal"] = causal.ActivationOrdinal,
+            ["consumesUse"] = causal.ConsumesUse,
+            ["usesBefore"] = causal.UsesBefore,
+            ["componentId"] = causal.ComponentId,
+            ["afterComponentId"] = causal.AfterComponentId,
+            ["candidateFingerprint"] = causal.CandidateFingerprint,
+            ["transcriptPrefixFingerprint"] = causal.TranscriptPrefixFingerprint,
+            ["waveOrdinal"] = causal.WaveOrdinal
         };
 
     private static JsonObject ToCanonicalAuthorityBinding(
@@ -1799,7 +2384,10 @@ internal sealed class ResourcePendingResolutionState
             ["requestTurn"] = terminal.RequestTurn,
             ["eventRef"] = terminal.EventRef,
             ["fullTurnFingerprint"] = terminal.FullTurnFingerprint,
-            ["requestReplayFingerprint"] = terminal.RequestReplayFingerprint,
+            ["requestAuthority"] = ToCanonicalRequest(
+                terminal.RequestAuthority),
+            ["requestAuthorityFingerprint"] =
+                terminal.RequestAuthorityFingerprint,
             ["resultKind"] = terminal.ResultKind,
             ["reason"] = terminal.Reason,
             ["receiptFingerprint"] = terminal.ReceiptFingerprint,
@@ -1816,11 +2404,12 @@ internal sealed class ResourcePendingResolutionState
     {
         var node = ToCanonicalRequest(request);
         node.Remove("replayFingerprint");
-        return Hash("resource-pending-request-v1", node);
+        return Hash("resource-pending-request-v2", node);
     }
 
     private static string ComputeReceiptFingerprint(
         string requestId,
+        string requestAuthorityFingerprint,
         string? resultKind,
         decimal? amount,
         string? reason)
@@ -1828,12 +2417,55 @@ internal sealed class ResourcePendingResolutionState
         var node = new JsonObject
         {
             ["requestId"] = requestId,
+            ["requestAuthorityFingerprint"] = requestAuthorityFingerprint,
             ["resultKind"] = resultKind,
             ["reason"] = reason
         };
         if (amount.HasValue)
             node["amount"] = amount.Value;
-        return Hash("resource-pending-receipt-v1", node);
+        return Hash("resource-pending-receipt-v2", node);
+    }
+
+    private static ResourcePendingResolvedBinding ToResolvedBinding(
+        ResourcePendingTerminalReceipt terminal) =>
+        new(
+            terminal.RequestAuthority.Clone(),
+            terminal.ResultKind,
+            terminal.Amount,
+            terminal.Reason,
+            terminal.ReceiptFingerprint,
+            terminal.ResolvedAtTurn);
+
+    internal static bool TryProjectMutationSourceExport(
+        ResourcePendingResolvedBinding binding,
+        out ResourceMutationSourceExport? sourceExport)
+    {
+        ArgumentNullException.ThrowIfNull(binding);
+        if (!string.Equals(
+                binding.ResultKind,
+                "resource_delta",
+                StringComparison.Ordinal))
+        {
+            sourceExport = null;
+            return false;
+        }
+
+        var sourceFingerprint = Hash(
+            "resource-bounded-receipt-source-v2",
+            new JsonObject
+            {
+                ["requestId"] = binding.RequestId,
+                ["requestAuthorityFingerprint"] =
+                    binding.RequestAuthority.ReplayFingerprint,
+                ["receiptFingerprint"] = binding.ReceiptFingerprint
+            });
+        sourceExport = new ResourceMutationSourceExport(
+            "bounded_receipt",
+            binding.RequestId,
+            sourceFingerprint,
+            ResourceMutationSourceState.Active,
+            SameTurn: true);
+        return true;
     }
 
     private static JsonObject? ParseStrictIdentityObject(
@@ -1934,6 +2566,41 @@ internal sealed class ResourcePendingResolutionState
                 "bindingKind permanent|same_turn_ref|accepted_application and one exact authorityId",
                 binding.BindingKind + "/" + binding.AuthorityId);
         }
+    }
+
+    private static void ValidateEffectAuthorityBinding(
+        string effectId,
+        ResourcePendingAuthorityBinding binding,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var acceptedApplication = string.Equals(
+            binding.BindingKind,
+            "accepted_application",
+            StringComparison.Ordinal);
+        var matchingPermanent = string.Equals(
+                binding.BindingKind,
+                "permanent",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                binding.AuthorityId,
+                effectId,
+                StringComparison.Ordinal);
+        if ((acceptedApplication || matchingPermanent) &&
+            ResourceMaterializationContract.IsExactIdentifier(effectId) &&
+            ResourceMaterializationContract.IsExactIdentifier(
+                binding.AuthorityId))
+        {
+            return;
+        }
+
+        Add(
+            issues,
+            path + ".effectAuthority",
+            "resource_pending_effect_authority_invalid",
+            "accepted_application with one exact authorityId, or permanent authority equal to effectId",
+            binding.BindingKind + "/" + binding.AuthorityId +
+            " for " + effectId);
     }
 
     private static ResourceCoordinate? ParseCoordinate(
@@ -2334,6 +3001,91 @@ internal sealed class ResourcePendingResolutionState
             return null;
         }
         return value;
+    }
+
+    private static long? ReadLong(
+        JsonElement parent,
+        string field,
+        string path,
+        List<ValidationIssue> issues,
+        string code)
+    {
+        if (!parent.TryGetProperty(field, out var node) ||
+            node.ValueKind != JsonValueKind.Number ||
+            !node.TryGetInt64(out var value))
+        {
+            Add(
+                issues,
+                path + "." + field,
+                code,
+                "exact 64-bit integer",
+                Describe(parent, field));
+            return null;
+        }
+        return value;
+    }
+
+    private static (bool IsValid, string? Value) ReadRequiredNullableExact(
+        JsonElement parent,
+        string field,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (!parent.TryGetProperty(field, out var node))
+        {
+            Add(
+                issues,
+                path + "." + field,
+                "resource_pending_causal_authority_invalid",
+                "explicit null or exact identifier",
+                "missing");
+            return (false, null);
+        }
+        if (node.ValueKind == JsonValueKind.Null)
+            return (true, null);
+        if (node.ValueKind != JsonValueKind.String ||
+            !ResourceMaterializationContract.IsExactIdentifier(node.GetString()))
+        {
+            Add(
+                issues,
+                path + "." + field,
+                "resource_pending_causal_authority_invalid",
+                "explicit null or exact identifier",
+                node.GetRawText());
+            return (false, null);
+        }
+        return (true, node.GetString());
+    }
+
+    private static (bool IsValid, int? Value) ReadRequiredNullableInt(
+        JsonElement parent,
+        string field,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (!parent.TryGetProperty(field, out var node))
+        {
+            Add(
+                issues,
+                path + "." + field,
+                "resource_pending_causal_authority_invalid",
+                "explicit null or exact 32-bit integer",
+                "missing");
+            return (false, null);
+        }
+        if (node.ValueKind == JsonValueKind.Null)
+            return (true, null);
+        if (node.ValueKind != JsonValueKind.Number || !node.TryGetInt32(out var value))
+        {
+            Add(
+                issues,
+                path + "." + field,
+                "resource_pending_causal_authority_invalid",
+                "explicit null or exact 32-bit integer",
+                node.GetRawText());
+            return (false, null);
+        }
+        return (true, value);
     }
 
     private static bool ReadBool(

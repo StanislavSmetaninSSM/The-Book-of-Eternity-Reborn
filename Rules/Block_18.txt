@@ -1,3 +1,4 @@
+<!-- Effect Materialization v1: follow the mandatory shared contract in OtherGuides/Effect_Materialization_Contract.md for every active runtime effect. -->
 <instructionblock id="18">
  <title>
   Quest Management
@@ -69,6 +70,7 @@
                             "other": "narrative_description_of_other_rewards_string_optional"
                         },
                         "failureConsequences": "narrative_description_of_failure_punishment_string_optional",
+                        "activeEffectDefinitions": [ /* complete Effect Materialization v1 definitions owned by this quest, or [] */ ],
                         "detailsLog": ["array_of_strings_tracking_progress_and_new_info"],
                         "newDetailsLogEntry": "(string, optional) 
                             A single new log entry to be APPENDED to the existing detailsLog. 
@@ -108,6 +110,11 @@
                         - "other": Narrative description (e.g., "Improved relations with X faction").
 
                     9.  "failureConsequences": (string, optional) Describes potential negative outcomes if the quest is failed.
+
+                    Effect Materialization v1 quest source-owner boundary:
+                    - An active quest may own complete `activeEffectDefinitions[]` entries following `OtherGuides/Effect_Materialization_Contract.md`; prose in description, objectives, rewards, failureConsequences, or detailsLog never grants mechanics by itself.
+                    - A definition does not apply itself. Request an instance only through top-level `effectChanges[]` with `{ "kind": "quest", "sourceId": "<exact-questId>", "definitionKey": "<exact-definition-key>" }`, or use the exact same-turn sourceRef equal to the accepted new quest `initialId`.
+                    - Quest completion/failure may end a source-bound or condition-bound lifetime, but never author, decrement, or delete `activeEffects[]` directly. The client resolves the exact quest identity, lifecycle transition, stack policy, and carrier publication.
                     
                     10. "detailsLog": (array of strings) Append new relevant information, clues, or progress updates as strings. 
                     Each new entry is CRITICAL for long-term memory and MUST follow the Protocol of Detailed Context Logging (InstructionBlock #18.A).
