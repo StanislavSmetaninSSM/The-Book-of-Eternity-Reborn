@@ -355,6 +355,42 @@ public sealed class WoundConsequenceEnvelopeTests
             "wound_consequence_magnitude_exceeded");
     }
 
+    [Fact]
+    public void ScalarModifierCaps_CannotAmplifyAValueBeyondTheSeverityEnvelope()
+    {
+        var characteristic = JsonNode.Parse(
+            CharacteristicComponent("component_characteristic", "flat", -1m)
+                .GetRawText())!.AsObject();
+        characteristic["payload"]!["cap"] = new JsonObject
+        {
+            ["minimum"] = 100m,
+            ["maximum"] = 100m
+        };
+        AssertIssue(
+            Validate(MortalSingle(
+                "I",
+                Element(characteristic),
+                "characteristic_modifier")),
+            Path + ".effects[0].components[0].payload.cap",
+            "wound_consequence_magnitude_exceeded");
+
+        var resistance = JsonNode.Parse(
+            ResistanceComponent("component_resistance", "percent", -5m)
+                .GetRawText())!.AsObject();
+        resistance["payload"]!["cap"] = new JsonObject
+        {
+            ["minimum"] = -100m,
+            ["maximum"] = -100m
+        };
+        AssertIssue(
+            Validate(MortalSingle(
+                "I",
+                Element(resistance),
+                "resistance_modifier")),
+            Path + ".effects[0].components[0].payload.cap",
+            "wound_consequence_magnitude_exceeded");
+    }
+
     [Theory]
     [InlineData("I", 5)]
     [InlineData("II", 10)]
