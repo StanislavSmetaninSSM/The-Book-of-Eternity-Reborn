@@ -197,9 +197,10 @@ BookOfEternityClient/
 │   ├── GameEngine.SessionAndSnapshots.cs          # exact wound/scheduler/output coverage
 │   └── GameEngine.TurnLifecycle.cs                # accept only after full publication validation
 ├── UI/
-│   ├── ExplorerCommandCatalog.cs / ExplorerMode.cs
+│   ├── ExplorerMode.cs
 │   ├── ExplorerWoundCommandResultBuilder.cs
 │   └── ExplorerMode/*                             # remove legacy raw preview; guided console flow
+├── CommandProtocol/ExplorerCommandCatalog.cs      # canonical command/alias registry
 ├── WebUi/
 │   ├── ExplorerWebCommandService.cs
 │   ├── BrowserAfterlifeWriteService.cs
@@ -211,7 +212,7 @@ BookOfEternityClient/
 └── game_master_daemon.ps1                         # mandatory GM contract entrypoint
 
 BookOfEternityClient.WebFrontend/
-├── src/                                           # wound cards/flows only where generic blocks are insufficient
+├── src/                                           # dedicated wound cards and guided treatment steps over shared blocks
 └── test/                                          # player-facing copy/layout/parity/privacy coverage
 
 BookOfEternityClient.Tests/
@@ -373,8 +374,8 @@ dissipation.
 5. Implement shared `WoundApplicationService`/projection and register `/раны`,
    `/wounds`, `/лечить`, `/treat`, `/исцелить`, `/heal`; remove raw legacy status wound
    parsing.
-6. Implement browser presentation/menus through shared blocks, add visual-specific React
-   work only where generic rendering is insufficient, run frontend verification, and
+6. Implement dedicated browser wound cards/steps over the shared semantic blocks, run
+   frontend verification, and
    perform rendered desktop/mobile interaction checks.
 7. Update Mortal and afterlife rules, CLI specification, daemon/launcher prompts,
    contract guides/matrix/registry, Elyara docs, worked examples, validation manifest,

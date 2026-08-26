@@ -58,7 +58,8 @@ tick, or history mutation.
 ### Mortal wounds
 
 Severity I/II/III/IV permits at most 1/2/3/4 independently understandable mechanical
-consequences. Zero is legal when the authored injury is still complete and readable.
+consequences. Zero mechanical slots is legal only when an active complication or a
+care/recovery constraint changes the legal lifecycle; display text alone is invalid.
 
 ### Spiritual wounds
 
@@ -95,6 +96,54 @@ registered universal effect primitives without introducing a catalog of complete
 wounds. Severity III-IV may impose severe action restrictions, but at least one path to
 inspect, communicate, ask for help, receive treatment, or exit the condition must
 remain.
+
+### Exact version-1 Mortal registry
+
+The usable generic effect profiles are exactly `characteristic_modifier`,
+`roll_modifier`, `resistance_modifier`, `periodic_damage`, `periodic_restore`,
+`action_control`, and `event_reaction`. `wound_consequence` is a zero-slot marker. One
+independently affected characteristic, roll operation, resistance, periodic resource,
+action, or worst-case reaction component consumes one slot.
+
+| Per-slot limit | I | II | III | IV |
+| --- | ---: | ---: | ---: | ---: |
+| Absolute flat characteristic/resistance modifier | 1 | 2 | 3 | 4 |
+| Absolute percent characteristic/resistance modifier | 5% | 10% | 20% | 30% |
+| Periodic amount / accepted exact resource maximum | 5% | 10% | 20% | 30% |
+| Absolute action cost modifier | 1 | 2 | 3 | 4 |
+| `grant` | one action/slot | one | one | one |
+| `restrict` | one action/slot | one | one | one |
+| `forbid` | none | none | one non-safety action/slot | one non-safety action/slot |
+| Reaction definition expansion | none | none | one fully budgeted | one fully budgeted |
+
+Periodic values are quantum-aligned without rounding above the cap and execute at most
+once for one accepted source event. Roll array entries consume one slot each. Every
+worst-case reaction result is counted before admission. `forbid` may target only
+`attack`, `cast`, or `movement`; `defend`, `use_item`, `interact`, and `escape` remain
+non-forbiddable safety-capable action keys. Aggregate wound effects must still preserve
+inspection, communication, help, treatment, and exit.
+
+### Exact version-1 spiritual registry
+
+| Profile | Axis | Severity envelope |
+| --- | --- | --- |
+| `spiritual_roll_hindrance` | `rollMode` | one declared operation per slot at I-IV |
+| `spiritual_action_cost_burden` | `actionCostAudit` | +1 at I-II, +2 at III, +3 at IV |
+| `spiritual_position_burden` | `conflictPosition` | one adverse step at I-II, up to two at III-IV |
+| `spiritual_control_burden` | `controlState` | unavailable at I; one adverse step at II-IV |
+| `spiritual_strain_burden` | side strain | unavailable at I-II; one extra step at III-IV, capped at `broken` |
+| `spiritual_tempo_burden` | `tempoAdvantage` | deny one owner gain per slot at I-IV |
+| `spiritual_counter_burden` | `counterPayoff` | reduce one payoff step per slot at I-IV |
+| `spiritual_art_restriction` | one standard combat art | unavailable at I-II; restrict at III; forbid at IV |
+
+Every instance targets one declared non-safety operation/family, costs one slot, and is
+unique by profile/operation coordinate within the wound. `spiritual_healing`, wound
+inspection, communication, help, withdrawal, surrender, negotiation, and the separate
+dissipation decision cannot be targeted. Eligible operation keys are exactly
+`pressure`, `counter`, `guard`, `maneuver`, `binding`, `break_binding`,
+`force_binding`, `force_incarnation`, `incarnation_resistance`,
+`champion_coordination`, and `recover_spiritual_power`. These primitives may be combined into unique
+GM-authored spiritual wounds; they are not complete-wound templates.
 
 ## Severity rematerialization
 

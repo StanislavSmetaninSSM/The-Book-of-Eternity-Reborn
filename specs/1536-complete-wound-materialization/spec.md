@@ -209,12 +209,60 @@ As the game-running system, I can reject and repair an invalid wound proposal wi
 - **FR-020**: Removing or dispelling a wound-owned effect alone MUST NOT change the wound's severity, care state, recovery, or history.
 - **FR-021**: Full wound healing MUST terminate all active effects owned by that wound and MUST leave unrelated effects unchanged.
 - **FR-022**: Spiritual severity I-IV MUST materialize exactly one independently understandable legal afterlife consequence per severity step.
-- **FR-023**: Mortal severity I-IV MUST permit at most one, two, three, or four independently understandable consequences respectively and MUST NOT require a catalog of ready-made wounds.
+- **FR-023**: Mortal severity I-IV MUST permit at most one, two, three, or four independently understandable mechanical consequences respectively, MUST NOT require a catalog of ready-made wounds, and MUST contain at least one non-display impact: a mechanical consequence, active complication, or care/recovery constraint that changes the legal lifecycle.
 - **FR-024**: Display text, symptoms, and technical wound linkage MUST NOT consume a consequence slot; every independent mechanical modifier or restriction MUST consume one slot.
-- **FR-025**: Every usable consequence profile MUST have client-owned, severity-specific power and scope limits.
+- **FR-025**: Every usable consequence profile MUST belong to the closed version-1 primitive registry below and MUST have client-owned, severity-specific power, cadence, expansion, and scope limits.
 - **FR-026**: Heavy or critical restrictions MAY prevent specific actions but MUST preserve at least one path to inspect, communicate, request help, receive treatment, or leave the condition.
 - **FR-027**: A severity transition MUST atomically rematerialize a consequence set that fits the new slot and power budget.
 - **FR-028**: Independent curses, oaths, Fate Card outcomes, and Saref effects MUST NOT consume wound consequence slots unless the event explicitly materializes them as trauma-caused wound consequences.
+
+Version-1 Mortal wound effects MAY use the existing generic profiles
+`characteristic_modifier`, `roll_modifier`, `resistance_modifier`,
+`periodic_damage`, `periodic_restore`, `action_control`, and `event_reaction`.
+The `wound_consequence` source/display marker costs zero slots. Each independently
+affected characteristic, roll operation, resistance, periodic resource operation,
+action, or worst-case reaction result costs one slot. Per-slot severity limits are:
+
+| Limit | I | II | III | IV |
+| --- | ---: | ---: | ---: | ---: |
+| Absolute flat characteristic/resistance modifier | 1 | 2 | 3 | 4 |
+| Absolute percent characteristic/resistance modifier | 5% | 10% | 20% | 30% |
+| Periodic amount as accepted maximum of the exact resource per trigger | 5% | 10% | 20% | 30% |
+| Absolute action cost modifier | 1 | 2 | 3 | 4 |
+| Action `grant` | one action/slot | one | one | one |
+| Action `restrict` | allowed for one action/slot | allowed | allowed | allowed |
+| Action `forbid` | forbidden | forbidden | one non-safety action/slot | one non-safety action/slot |
+| Event reaction | deterministic registered outcome only; no definition expansion | same | at most one fully budgeted expansion | at most one fully budgeted expansion |
+
+Periodic values MUST be quantum-aligned without rounding above the percentage cap and
+MUST execute at most once for one accepted source event. Roll contributions cost one
+slot per listed operation. Reaction slot cost includes every worst-case spawned
+mechanical component. A Mortal `forbid` may target only `attack`, `cast`, or
+`movement`; `defend`, `use_item`, `interact`, and `escape` remain non-forbiddable
+safety-capable action keys. Aggregate restrictions MUST preserve inspection,
+communication, help, treatment, and exit.
+
+Version-1 spiritual wound consequences use exactly these closed profiles/axes:
+
+| Profile | Mechanical axis | Severity envelope |
+| --- | --- | --- |
+| `spiritual_roll_hindrance` | `rollMode` for one declared non-safety operation | one operation/slot at I-IV |
+| `spiritual_action_cost_burden` | `actionCostAudit` for one declared non-safety operation | +1 at I-II, +2 at III, +3 at IV |
+| `spiritual_position_burden` | starting/allowed `conflictPosition` | one adverse step at I-II, at most two at III-IV |
+| `spiritual_control_burden` | `controlState` resistance for one binding family | unavailable at I; one adverse step at II-IV |
+| `spiritual_strain_burden` | one extra strain step on one declared failed non-safety operation | unavailable at I-II; one step at III-IV, still capped at `broken` |
+| `spiritual_tempo_burden` | `tempoAdvantage` for one declared operation | deny one owner tempo gain/slot at I-IV |
+| `spiritual_counter_burden` | `counterPayoff` for one declared operation | reduce one payoff step/slot at I-IV |
+| `spiritual_art_restriction` | availability of one declared standard combat art | unavailable at I-II; restrict at III; forbid at IV |
+
+`spiritual_healing`, wound inspection, communication, requesting/receiving help,
+withdrawal, surrender, negotiation, and the separate dissipation decision are safety
+operations and MUST NOT be selected by a hindrance, cost, strain, or art-restriction
+profile. The exact eligible non-safety operation set is `pressure`, `counter`, `guard`,
+`maneuver`, `binding`, `break_binding`, `force_binding`, `force_incarnation`,
+`incarnation_resistance`, `champion_coordination`, and `recover_spiritual_power`.
+Duplicate profile/operation coordinates within one wound are invalid. These
+are consequence primitives, not a catalog of complete spiritual wounds.
 
 #### Spiritual conflict and injury
 
@@ -229,6 +277,16 @@ As the game-running system, I can reject and repair an invalid wound proposal wi
 - **FR-037**: Every non-training defeat without soul dissipation MUST produce a bounded conflict outcome with scope and end condition that prevents immediate repetition of the same aggression.
 - **FR-038**: Soul dissipation MUST always require valid authority and an explicit winner choice and MUST never be automatic or mandatory.
 - **FR-039**: Final published narration MUST state wound acquisition clearly, and the player MUST receive a direct wound notification with a route to wound detail.
+
+The destination-strain ceiling used by FR-032 is exact:
+
+| Destination strain | Rank | Maximum wound severity |
+| --- | ---: | --- |
+| `clear` | 0 | none |
+| `strained` | 1 | I |
+| `fractured` | 2 | II |
+| `overwhelmed` | 3 | III |
+| `broken` | 4 | IV |
 
 #### Spiritual arts, healing, and natural recovery
 

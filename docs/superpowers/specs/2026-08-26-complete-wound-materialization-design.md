@@ -420,6 +420,53 @@ remove every route to inspect the wound, communicate, request help, receive trea
 or otherwise leave the state. Repair packets show the GM the permitted envelope; the
 client never silently edits an overpowered component.
 
+The exact version-1 Mortal registry is
+`characteristic_modifier`, `roll_modifier`, `resistance_modifier`,
+`periodic_damage`, `periodic_restore`, `action_control`, and `event_reaction`.
+`wound_consequence` is a zero-slot source/display marker. One independently affected
+characteristic, roll operation, resistance, periodic resource operation, action, or
+worst-case reaction result costs one slot.
+
+| Per-slot limit | I | II | III | IV |
+| --- | ---: | ---: | ---: | ---: |
+| Absolute flat characteristic/resistance modifier | 1 | 2 | 3 | 4 |
+| Absolute percent characteristic/resistance modifier | 5% | 10% | 20% | 30% |
+| Periodic amount / accepted exact resource maximum | 5% | 10% | 20% | 30% |
+| Absolute action cost modifier | 1 | 2 | 3 | 4 |
+| `grant` | one action/slot | one | one | one |
+| `restrict` | one action/slot | one | one | one |
+| `forbid` | none | none | one non-safety action/slot | one non-safety action/slot |
+| Reaction definition expansion | none | none | one fully budgeted | one fully budgeted |
+
+Periodic values are quantum-aligned without exceeding the cap and execute at most
+once for one accepted source event. Reaction expansion counts every worst-case result
+against the wound budget. `forbid` may target only `attack`, `cast`, or `movement`;
+`defend`, `use_item`, `interact`, and `escape` cannot be forbidden. A Mortal wound with no mechanical slot is valid only when an
+active complication or care/recovery constraint changes its legal lifecycle; display
+copy alone is not a materialized wound impact.
+
+The exact version-1 spiritual registry is:
+
+| Profile | Axis | Severity envelope |
+| --- | --- | --- |
+| `spiritual_roll_hindrance` | `rollMode` | one declared operation/slot at I-IV |
+| `spiritual_action_cost_burden` | `actionCostAudit` | +1 at I-II, +2 at III, +3 at IV |
+| `spiritual_position_burden` | `conflictPosition` | one adverse step at I-II, up to two at III-IV |
+| `spiritual_control_burden` | `controlState` | unavailable at I; one adverse step at II-IV |
+| `spiritual_strain_burden` | side strain | unavailable at I-II; one extra step at III-IV, capped at `broken` |
+| `spiritual_tempo_burden` | `tempoAdvantage` | deny one owner gain/slot at I-IV |
+| `spiritual_counter_burden` | `counterPayoff` | reduce one payoff step/slot at I-IV |
+| `spiritual_art_restriction` | one standard combat art | unavailable at I-II; restrict at III; forbid at IV |
+
+Each instance targets one declared non-safety operation/family, costs one slot, and is
+unique by profile/operation coordinate. Spiritual Healing, inspection, communication,
+help, withdrawal, surrender, negotiation, and the separate dissipation decision cannot
+be targeted. Eligible operations are exactly `pressure`, `counter`, `guard`,
+`maneuver`, `binding`, `break_binding`, `force_binding`, `force_incarnation`,
+`incarnation_resistance`, `champion_coordination`, and `recover_spiritual_power`.
+These are bounded primitives from which the GM authors unique wounds, not
+complete-wound templates.
+
 ### Severity changes
 
 When severity changes, the GM rematerializes the legal current consequence set. The

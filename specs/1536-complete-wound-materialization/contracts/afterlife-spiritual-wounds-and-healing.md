@@ -50,9 +50,18 @@ and source cap. `harmfulMargin` is the sealed harmful margin before any normaliz
 critical-success display adjustment. Natural 1/20 do not raise the maximum. All audit
 inputs are client-computed or copied from validated conflict authority.
 
-The exact destination-strain cap table is registered in the afterlife adapter and must
-be monotonic: a safer destination cannot authorize a more severe wound than a more
-damaging one. Boundary tests cover every threshold and multi-rank jump.
+The exact destination-strain cap is:
+
+| Destination | Rank | Cap |
+| --- | ---: | --- |
+| `clear` | 0 | none |
+| `strained` | 1 | I |
+| `fractured` | 2 | II |
+| `overwhelmed` | 3 | III |
+| `broken` | 4 | IV |
+
+Boundary tests cover every threshold and multi-rank jump. A caller cannot substitute a
+looser table or derive the cap from prose.
 
 ## GM authority
 

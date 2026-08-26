@@ -150,7 +150,11 @@ Mortal severity I-IV allows at most 1/2/3/4 independent consequences. Spiritual
 severity I-IV requires exactly 1/2/3/4 consequences. Each consequence uses one
 registered component/profile and consumes one slot; display text and linkage consume no
 slot. Profile-specific severity envelopes cap magnitude, cadence, duration, scope, and
-action restriction.
+action restriction. The closed version-1 profile list and exact per-severity limits are
+normative in `contracts/wound-effects-and-atomicity.md`; they include every permitted
+generic Mortal component and eight fixed-setting spiritual axes. A Mortal wound with no
+mechanical slot still requires an active complication or care/recovery constraint that
+changes its legal lifecycle.
 
 **Rationale**: This preserves one mechanical effect engine while keeping wound
 lifecycle authority separate. Exact slot counting blocks a GM from packing several
@@ -200,7 +204,8 @@ traumaPressure = harmfulMargin
 
 Then apply the destination-strain and danger-mode hard caps. Natural 1/20 do not raise
 the wound maximum. Training forbids a wound absent an explicit earlier escalation;
-controlled caps at II. One new wound per side per conflict is allowed; later accepted
+controlled caps at II. Destination caps are exactly `clear -> none`, `strained -> I`,
+`fractured -> II`, `overwhelmed -> III`, and `broken -> IV`. One new wound per side per conflict is allowed; later accepted
 opportunities may worsen that wound. An older wound changes only through explicit
 re-trauma.
 

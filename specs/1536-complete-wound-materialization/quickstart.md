@@ -148,6 +148,8 @@ The clean feature baseline before implementation was Fast `4339/4339` in
    state.
 5. Repeat with a proven guaranteed trigger and `none`; expect rejection until the
    promised legal wound is supplied.
+6. Replay each accepted/declined/guaranteed operation 100 times; expect zero new
+   identities, effects, history rows, narration, or notifications.
 
 ### B. No wound catalog
 
@@ -216,6 +218,8 @@ Compare console/browser fixtures:
 - primary active list excludes healed wounds;
 - History is separate;
 - target choices list Self first;
+- full wound detail or the guided treatment flow starts within at most two selections
+  after opening its command;
 - same-name nearby actors are visibly disambiguated without IDs;
 - moved/stale target fails before resource use;
 - hidden routes, symptoms, private NPC wounds, seals, and validator fields never leak;
@@ -223,10 +227,13 @@ Compare console/browser fixtures:
 
 ### I. Atomic rollback
 
-Inject invalid data and publication failures at wound, effect, resource, profile,
-scheduler, history, and output stages. Compare exact bytes/existence for every snapshot
-path after recovery. Replay the same request and prove no duplicate identity, effect,
-charge, roll, cycle, notification, or history row.
+Inject every representative owner/severity/slot/effect/treatment/resource/narration
+error, correct it through the bounded packet, and prove the repair succeeds without
+rewriting valid siblings. Inject publication failures at wound, effect, resource,
+profile, scheduler, history, and output stages. Compare exact bytes/existence for every
+snapshot path after recovery. Replay each accepted event, attempt, course milestone,
+and cycle 100 times and prove no duplicate identity, effect, charge, roll, cycle,
+notification, or history row.
 
 ## 6. GM documentation acceptance
 

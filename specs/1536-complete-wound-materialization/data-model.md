@@ -289,17 +289,18 @@ outcome declares both transitions.
   "kind": "infection",
   "state": "active",
   "displayName": "Начавшееся воспаление",
-  "severityModifier": 1,
   "treatmentDifficultyModifier": 2,
   "ownedEffectIds": ["client-owned-effect-id"],
   "visibility": "known_to_player"
 }
 ```
 
-Complication `kind` uses a registered adapter profile, not a complete wound catalog.
-The profile defines legal fields, magnitudes, and treatment interactions. Unknown
-genre-specific facts may remain display/prognosis text until a registered mechanical
-primitive is needed.
+Complication `kind` is one of `bleeding`, `infection`, `pain`, `impairment`,
+`systemic_instability`, `spiritual_instability`, or `other`; this is a mechanical
+primitive list, not a complete wound catalog. `treatmentDifficultyModifier` is an
+integer 0-4 and participates only where the selected treatment resolver declares it.
+Genre-specific manifestation remains in bounded display/prognosis text, and any
+mechanical result still uses a registered consequence effect.
 
 ### 7.7 Consequences
 
@@ -310,13 +311,13 @@ primitive is needed.
   "entries": [
     {
       "slot": 1,
-      "profileKey": "wound_periodic_loss_v1",
+      "profileKey": "periodic_damage",
       "effectId": "client-owned-effect-id",
       "readableSummary": "Рана продолжает кровоточить."
     },
     {
       "slot": 2,
-      "profileKey": "wound_action_impairment_v1",
+      "profileKey": "action_control",
       "effectId": "client-owned-effect-id",
       "readableSummary": "Хват левой рукой затруднён."
     }
@@ -327,7 +328,56 @@ primitive is needed.
 Each entry maps to exactly one active #1535 effect whose exact source is this wound.
 The effect may contain only the component composition allowed by the registered wound
 consequence profile at the current severity. Mortal `slotsUsed <= rank`; spiritual
-`slotsUsed == rank`. Severity change replaces the whole owned set atomically.
+`slotsUsed == rank`. A Mortal wound with zero mechanical slots is valid only when it
+has an active complication or a care/recovery constraint whose presence changes a
+legal lifecycle transition; display text alone is never sufficient. Severity change
+replaces the whole owned set atomically.
+
+### 7.7.1 Closed Mortal component envelopes
+
+Allowed generic effect profiles are `characteristic_modifier`, `roll_modifier`,
+`resistance_modifier`, `periodic_damage`, `periodic_restore`, `action_control`, and
+`event_reaction`; `wound_consequence` is a zero-slot source/display marker. One
+independent characteristic, roll operation, resistance, periodic resource operation,
+action, or worst-case reaction result consumes one slot.
+
+| Per-slot limit | I | II | III | IV |
+| --- | ---: | ---: | ---: | ---: |
+| Absolute flat characteristic/resistance modifier | 1 | 2 | 3 | 4 |
+| Absolute percent characteristic/resistance modifier | 5% | 10% | 20% | 30% |
+| Periodic amount / accepted exact resource maximum | 5% | 10% | 20% | 30% |
+| Absolute action cost modifier | 1 | 2 | 3 | 4 |
+| `grant` | one action/slot | one | one | one |
+| `restrict` | one action/slot | one | one | one |
+| `forbid` | none | none | one non-safety action/slot | one non-safety action/slot |
+| Reaction definition expansion | none | none | one fully budgeted | one fully budgeted |
+
+Periodic values are quantum-aligned without exceeding the cap and execute no more than
+once per accepted source event. Every worst-case spawned reaction component consumes
+its own slot. `forbid` can target only `attack`, `cast`, or `movement`; `defend`,
+`use_item`, `interact`, and `escape` cannot be forbidden. Aggregate restrictions
+preserve inspection, communication, help, treatment, and exit.
+
+### 7.7.2 Closed spiritual consequence profiles
+
+| Profile | Axis | I | II | III | IV |
+| --- | --- | --- | --- | --- | --- |
+| `spiritual_roll_hindrance` | `rollMode` | one operation | one | one | one |
+| `spiritual_action_cost_burden` | `actionCostAudit` | +1 | +1 | +2 | +3 |
+| `spiritual_position_burden` | `conflictPosition` | one step | one | up to two | up to two |
+| `spiritual_control_burden` | `controlState` | forbidden | one step | one | one |
+| `spiritual_strain_burden` | side strain | forbidden | forbidden | one extra step | one extra step |
+| `spiritual_tempo_burden` | `tempoAdvantage` | deny one gain | same | same | same |
+| `spiritual_counter_burden` | `counterPayoff` | reduce one step | same | same | same |
+| `spiritual_art_restriction` | one standard combat art | forbidden | forbidden | restrict | forbid |
+
+Each row instance targets one declared non-safety operation/family and consumes one
+slot. Duplicate profile/operation coordinates are invalid. Healing, inspection,
+communication, help, withdrawal, surrender, negotiation, and dissipation choice cannot
+be targeted. Eligible operation keys are exactly `pressure`, `counter`, `guard`,
+`maneuver`, `binding`, `break_binding`, `force_binding`, `force_incarnation`,
+`incarnation_resistance`, `champion_coordination`, and `recover_spiritual_power`.
+Spiritual severity requires exactly `rank` legal entries.
 
 ### 7.8 Treatment
 
@@ -531,6 +581,11 @@ Each accepted strain transition records immutable audit inputs:
 extra jump steps, raw trauma pressure, formula severity, destination cap, danger cap,
 and final maximum. These are client-computed or copied from validated conflict
 authority; the GM cannot author them.
+
+The destination cap is exactly `clear -> none`, `strained -> I`, `fractured -> II`,
+`overwhelmed -> III`, and `broken -> IV`. A multi-rank jump uses the accepted final
+destination and separately records `extraJumpSteps`; no caller substitutes a looser
+table.
 
 If `newWoundId` is already set, a later eligible result may produce a worsen
 opportunity for that identity, not another create opportunity. Existing older wounds

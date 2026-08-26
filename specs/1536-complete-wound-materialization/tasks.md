@@ -36,8 +36,8 @@
 - [ ] T006 [P] Add RED global identity, confusable uniqueness, active/terminal status, owner/realm/carrier coordinate, and semantic fingerprint agreement tests in `BookOfEternityClient.Tests/WoundIdentityStateTests.cs`
 - [ ] T007 [P] Add RED player, dedicated NPC, combatant/group-member, afterlife profile, duplicate occurrence, wrong-realm, and promotion carrier tests in `BookOfEternityClient.Tests/WoundCarrierCatalogTests.cs`
 - [ ] T008 [P] Add RED append-only ordinal/fingerprint chain, operation-key replay, terminal continuity, healed-without-carrier, and no-reopen tests in `BookOfEternityClient.Tests/WoundHistoryStateTests.cs`
-- [ ] T009 [P] Add RED create/worsen/complicate/diagnose/stabilize/treat/recover/heal/legacy/archive transition and forbidden regression/domain-conversion tests in `BookOfEternityClient.Tests/WoundTransitionReducerTests.cs`
-- [ ] T010 [P] Add RED Mortal maximum and spiritual exact consequence slot, hidden component packing, power envelope, safe-exit, and independent effect tests in `BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs`
+- [ ] T009 [P] Add RED create/worsen/complicate/diagnose/stabilize/treat/recover/heal/legacy/archive transition, independent mechanical/cosmetic legacy, and forbidden regression/domain-conversion tests in `BookOfEternityClient.Tests/WoundTransitionReducerTests.cs`
+- [ ] T010 [P] Add RED exact version-1 Mortal/spiritual primitive registry, per-severity magnitude/cadence/expansion limits, Mortal non-display-impact minimum/maximum, spiritual exact slots, hidden component packing, safe-exit, and independent effect tests in `BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs`
 - [ ] T011 Add RED staged prepare/source-export/effect/finalize, reciprocal link, provisional identity, invalid sibling, and complete-plan tests in `BookOfEternityClient.Tests/WoundAcceptedTurnPlannerTests.cs`
 - [ ] T012 [P] Add RED wound command/input/fingerprint/before-image/cache equality, stale generation, take-once, and invalidation tests in `BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.Wounds.cs`
 - [ ] T013 [P] Add RED wound carrier/index/history/command/pending/scheduler/output snapshot inclusion and missing-before-image rejection tests in `BookOfEternityClient.Tests/PendingTurnSnapshotAuthorityTests.Wounds.cs`
@@ -49,13 +49,13 @@
 - [ ] T016 Implement client-owned identity index parsing, active/terminal agreement, exact fingerprints, and canonical serialization in `BookOfEternityClient/Services/WoundIdentityState.cs`
 - [ ] T017 Implement owner-appropriate occurrence indexing and exact owner resolution for player/NPC/combatant/afterlife carriers in `BookOfEternityClient/Services/WoundCarrierCatalog.cs`
 - [ ] T018 Implement append-only history, operation replay probes, terminal continuity, and the closed transition reducer in `BookOfEternityClient/Services/WoundHistoryState.cs` and `BookOfEternityClient/Services/WoundTransitionReducer.cs`
-- [ ] T019 Implement registered consequence slot derivation, Mortal/spiritual counts, severity-specific power/scope envelopes, and safe-exit checks in `BookOfEternityClient/Services/WoundConsequenceEnvelopeCatalog.cs`
+- [ ] T019 Implement the exact version-1 Mortal/spiritual registry, slot derivation, non-display-impact minimum, severity-specific magnitude/cadence/expansion/scope envelopes, and aggregate safe-exit checks in `BookOfEternityClient/Services/WoundConsequenceEnvelopeCatalog.cs`
 - [ ] T020 Implement staged wound preparation/finalization models, provisional identity allocation, source export, reciprocal link validation, and immutable after-images in `BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T021 Extend generation-scoped accepted authority and cache invalidation with prepared/final wound plans in `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs`
 - [ ] T022 Replace loose wound-source scans with accepted wound source exports while preserving existing static wound-source validation in `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs` and `BookOfEternityClient/Services/EffectSourceAuthority.cs`
 - [ ] T023 Extend common input bindings, authority fingerprints, planning context, after-images, touched/consumed paths, and path coverage for wounds in `BookOfEternityClient/Services/AcceptedMechanicsPlan.cs`
 - [ ] T024 Compose prepare -> effect -> finalize -> resource ordering, typed same-root results, and bounded work statistics in `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
-- [ ] T025 Add strict raw input/root composition and wound planning handoff to the accepted-mechanics validation phase in `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs` and `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs`
+- [ ] T025 Add the explicit accepted-turn wound completeness phase plus strict raw input/root composition and planning handoff in `BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs`, `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs`
 - [ ] T026 Publish and read-back-validate wound carriers/index/history/pending after-images only through the common write lease in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
 - [ ] T027 Extend snapshot collection/rollback and accepted post-validation with exact wound and output paths in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
 - [ ] T028 Run the smallest focused common-kernel filters through `scripts/test-csharp.ps1`, record RED-to-GREEN evidence and durations in `specs/1536-complete-wound-materialization/tasks.md`, and resolve every foundational failure before US1
@@ -76,8 +76,8 @@
 - [ ] T030 [P] [US1] Add RED pre-materialized guaranteed trigger, omitted result, source-state, hard-cap conflict, and exact retry tests in `BookOfEternityClient.Tests/WoundGuaranteedTriggerTests.cs`
 - [ ] T031 [P] [US1] Add RED exact player/NPC/combatant/Guardian/resident/radiant/soul target, named ambiguity, wrong realm, and source-event binding tests in `BookOfEternityClient.Tests/WoundSourceTargetAuthorityTests.cs`
 - [ ] T032 [P] [US1] Add RED acquisition narration completeness/contradiction, deterministic Russian notification, untrusted markup escaping, and no-ID projection tests in `BookOfEternityClient.Tests/WoundAcquisitionOutputTests.cs`
-- [ ] T033 [US1] Add RED end-to-end optional/lower/guaranteed/over-limit and wound-owned effect atomicity fixtures in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Creation.cs`
-- [ ] T034 [P] [US1] Add RED all-owner carrier/index/history agreement and combatant persistence transition cases in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Owners.cs`
+- [ ] T033 [US1] Add RED end-to-end optional/lower/guaranteed/over-limit, wound-owned effect atomicity, healed independent mechanical legacy, and cosmetic History legacy fixtures in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Creation.cs`
+- [ ] T034 [P] [US1] Add RED all-owner carrier/index/history agreement, combatant persistence, Mortal-to-afterlife no-conversion, and accepted spiritual profile realm-preservation transition cases in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Owners.cs`
 
 ### GREEN implementation
 
@@ -108,11 +108,11 @@
 
 ### RED tests
 
-- [ ] T046 [P] [US7] Add RED issue normalization, offending-path preservation, safe expected ranges, preserved siblings, and bounded candidate tests in `BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs`
+- [ ] T046 [P] [US7] Add RED table-driven owner/severity/slot/effect/treatment/resource/narration issue normalization, offending-path preservation, safe expected ranges, preserved siblings, required corrected response shape, and bounded candidate tests in `BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs`
 - [ ] T047 [P] [US7] Add RED hidden owner/provider/route/resource seal and private NPC data non-disclosure tests in `BookOfEternityClient.Tests/WoundRepairPacketPrivacyTests.cs`
 - [ ] T048 [P] [US7] Add RED changed event/target/roll/snapshot/generation invalidation, exact packet receipt, and take-once tests in `BookOfEternityClient.Tests/WoundAcceptedTurnPlanCacheTests.cs`
-- [ ] T049 [US7] Add RED failure injection before/after wound/effect/resource/profile/scheduler/history/output writes with byte/existence assertions in `BookOfEternityClient.IntegrationTests/WoundMaterializationRollbackTests.cs`
-- [ ] T050 [P] [US7] Add RED exact replay after success, repair, crash recovery, and consumed command tests in `BookOfEternityClient.IntegrationTests/WoundMaterializationReplayTests.cs`
+- [ ] T049 [US7] Add RED corrected repair roundtrips for every representative invalid category plus failure injection before/after wound/effect/resource/profile/scheduler/history/output writes with byte/existence assertions in `BookOfEternityClient.IntegrationTests/WoundMaterializationRollbackTests.cs`
+- [ ] T050 [P] [US7] Add RED 100-repeat loops for accepted event/treatment/course/cycle/payment/output identities after success, repair, crash recovery, and consumed commands, asserting zero duplicate state in `BookOfEternityClient.IntegrationTests/WoundMaterializationReplayTests.cs`
 
 ### GREEN implementation
 
@@ -136,7 +136,7 @@
 
 ### RED tests
 
-- [ ] T058 [P] [US2] Add RED complete Mortal route, AND requirements/OR alternatives, closed mode/outcome, and no wound-name lookup tests in `BookOfEternityClient.Tests/MortalWoundTreatmentContractTests.cs`
+- [ ] T058 [P] [US2] Add RED complete Mortal route, required non-display impact, AND requirements/OR alternatives, closed mode/outcome, and no wound/symptom/medicine/cure-name lookup tests in `BookOfEternityClient.Tests/MortalWoundTreatmentContractTests.cs`
 - [ ] T059 [P] [US2] Add RED hidden route reachable diagnosis, reveal boundaries, cyclic/impossible discovery, and evidence-backed alternative route tests in `BookOfEternityClient.Tests/MortalWoundDiagnosisTests.cs`
 - [ ] T060 [P] [US2] Add RED exact item/resource/skill/capability/provider/consent/facility/location/quest/effect/environment and stale/confusable/cross-realm reference tests in `BookOfEternityClient.Tests/MortalWoundRequirementAuthorityTests.cs`
 - [ ] T061 [P] [US2] Add RED procedure result bands, course milestone/interruption, guaranteed capability, natural 1/20 policy, and terminal attempt tests in `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.cs`
@@ -173,7 +173,7 @@
 
 ### RED tests
 
-- [ ] T076 [P] [US3] Add RED trauma-pressure term/threshold, harmful-margin source, art-tier delta, strain rank/jump, natural 1/20, and destination-cap boundary tests in `BookOfEternityClient.Tests/SpiritualWoundOpportunityTests.cs`
+- [ ] T076 [P] [US3] Add RED trauma-pressure term/threshold, harmful-margin source, resilience-tier delta with zero OD spend, strain rank/jump, natural 1/20, and exact `clear/strained/fractured/overwhelmed/broken` destination-cap boundary tests in `BookOfEternityClient.Tests/SpiritualWoundOpportunityTests.cs`
 - [ ] T077 [P] [US3] Add RED training escalation, controlled II cap, hostile/annihilation cap, mode visibility, and post-roll mode-change rejection tests in `BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.Wounds.cs`
 - [ ] T078 [P] [US3] Add RED one-new-wound-per-side, later worsening, declined-earlier opportunity, and explicit older-wound re-trauma tests in `BookOfEternityClient.Tests/SpiritualConflictWoundSealTests.cs`
 - [ ] T079 [P] [US3] Add RED non-training bounded anti-repeat defeat outcome and annihilation winner softer/optional dissipation tests in `BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.DefeatWounds.cs`
@@ -212,7 +212,7 @@
 - [ ] T093 [P] [US4] Add RED `spiritual_healing` tier 0-V bootstrap/profile/progression/training, visible name, diagnosis-at-zero, and insufficient-tier tests in `BookOfEternityClient.Tests/SpiritualHealingArtTests.cs`
 - [ ] T094 [P] [US4] Add RED `d20 + 2H` vs `10 + 2W + complications`, all margin bands, bounded two-step result, tier-before-natural-20, and natural-1 override tests in `BookOfEternityClient.Tests/SpiritualHealingResolverTests.cs`
 - [ ] T095 [P] [US4] Add RED combat base-5/reduction/floor-2 spend, explicit operation-to-art mapping, counter/matchup legality, and rollback tests in `BookOfEternityClient.Tests/SpiritualHealingCombatActionTests.cs`
-- [ ] T096 [P] [US4] Add RED one safe-cycle session, no OD, self no currency/item, one attempt per wound/cycle, failed-attempt world advance, and duplicate suppression tests in `BookOfEternityClient.Tests/SpiritualHealingSafeCycleTests.cs`
+- [ ] T096 [P] [US4] Add RED one safe-cycle session, no OD, self no currency/item, one attempt per wound/cycle, active-treatment-then-natural-recovery ordering, failed-attempt world advance, and duplicate suppression tests in `BookOfEternityClient.Tests/SpiritualHealingSafeCycleTests.cs`
 - [ ] T097 [P] [US4] Add RED `1+tier`, I=2/II=4/III=6/IV=8 thresholds, overflow, worsening reset, unsafe suppression, tier-0 20-cycle, and tier-V 4-cycle tests in `BookOfEternityClient.Tests/SpiritualWoundNaturalRecoveryTests.cs`
 - [ ] T098 [P] [US4] Add RED player/Guardian/resident/leader/radiant recovery, normal art progression, consent/reachability, and player-heals-entity tests in `BookOfEternityClient.IntegrationTests/AfterlifeWoundEntityRecoveryTests.cs`
 - [ ] T099 [US4] Add RED combat heal and safe self/helper/entity heal accepted-plan/resource/scheduler/effect/history/output lifecycle tests in `BookOfEternityClient.IntegrationTests/AfterlifeWoundHealingLifecycleTests.cs`
@@ -251,8 +251,8 @@
 - [ ] T113 [P] [US5] Add RED active-current-realm list, healed History separation, visible detail/effects/routes, empty state, and internal metadata omission tests in `BookOfEternityClient.Tests/WoundPlayerProjectionTests.cs`
 - [ ] T114 [P] [US5] Add RED Self-first nearby target list, exact hidden binding, duplicate-name disambiguation, wound discovery, consent, reachability, and stale confirmation tests in `BookOfEternityClient.Tests/WoundTargetSelectionTests.cs`
 - [ ] T115 [P] [US5] Add RED recursive hidden symptom/route/NPC/provider/effect privacy and Spectre/browser unsafe-text tests in `BookOfEternityClient.Tests/WoundProjectionPrivacyTests.cs`
-- [ ] T116 [P] [US5] Add RED `/раны`, `/wounds`, `/лечить`, `/treat`, `/исцелить`, `/heal` catalog/alias/result-flow tests in `BookOfEternityClient.IntegrationTests/ExplorerWoundCommandTests.cs`
-- [ ] T117 [US5] Add RED console/browser semantic parity for list/detail/History/target/method/confirmation/result/stale/error flows in `BookOfEternityClient.IntegrationTests/WoundConsoleBrowserParityTests.cs`
+- [ ] T116 [P] [US5] Add RED `/раны`, `/wounds`, `/лечить`, `/treat`, `/исцелить`, `/heal` catalog/alias/result-flow tests proving full detail or treatment-flow start within at most two selections in `BookOfEternityClient.IntegrationTests/ExplorerWoundCommandTests.cs`
+- [ ] T117 [US5] Add RED console/browser semantic parity for list/detail/History/target/method/confirmation/result/stale/error flows, including the same two-selection navigation bound, in `BookOfEternityClient.IntegrationTests/WoundConsoleBrowserParityTests.cs`
 - [ ] T118 [P] [US5] Add RED browser command menu, card hierarchy, responsive/keyboard flow, empty state, copy, and safe-render tests in `BookOfEternityClient.WebFrontend/test/woundCommands.test.tsx`
 
 ### GREEN implementation
@@ -262,9 +262,9 @@
 - [ ] T121 [US5] Implement the shared target -> wound/diagnosis -> route/helper -> requirements/quote -> confirmation -> result application workflow in `BookOfEternityClient/Services/WoundApplicationService.cs`
 - [ ] T122 [US5] Implement one-shot exact wound command staging/consumption and stale/replay rejection in `BookOfEternityClient/Services/WoundCommandState.cs`
 - [ ] T123 [US5] Add escaped Russian console list/detail/History/prompts/results using shared blocks in `BookOfEternityClient/UI/ExplorerWoundCommandResultBuilder.cs` and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Wounds.cs`
-- [ ] T124 [US5] Register all command aliases and route both Mortal/afterlife console actions to the shared handler in `BookOfEternityClient/UI/ExplorerCommandCatalog.cs` and `BookOfEternityClient/UI/ExplorerMode.cs`
+- [ ] T124 [US5] Register all command aliases and route both Mortal/afterlife console actions to the shared handler in `BookOfEternityClient/CommandProtocol/ExplorerCommandCatalog.cs` and `BookOfEternityClient/UI/ExplorerMode.cs`
 - [ ] T125 [US5] Route browser reads/writes, prompt sessions, command coverage, and menu entries through the shared handler in `BookOfEternityClient/WebUi/ExplorerWebCommandService.cs`, `BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs`, `BookOfEternityClient/WebUi/BrowserPlayerCommandMenuBuilder.cs`, and `BookOfEternityClient/WebUi/BrowserCommandCoverageService.cs`
-- [ ] T126 [US5] Implement wound-specific browser cards/steps only where shared generic blocks are insufficient, preserving the project design system and accessibility in `BookOfEternityClient.WebFrontend/src/components/WoundCommandView.tsx` and `BookOfEternityClient.WebFrontend/src/styles/wounds.css`
+- [ ] T126 [US5] Implement dedicated wound list/detail/History and guided treatment browser cards/steps over the shared semantic blocks, preserving the project design system and accessibility in `BookOfEternityClient.WebFrontend/src/components/WoundCommandView.tsx` and `BookOfEternityClient.WebFrontend/src/styles/wounds.css`
 - [ ] T127 [US5] Remove raw legacy wound parsing/previews and activeConditions duplication from `BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs`, `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs`, and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs`
 
 ### Player/GM documentation and verification
@@ -295,7 +295,7 @@
 ### GREEN implementation
 
 - [ ] T137 [US6] Implement strict healing service profiles, capability separation, quote/rounding, access, and compensation contracts in `BookOfEternityClient/Services/AfterlifeHealingServiceContract.cs`
-- [ ] T138 [US6] Compose Ink Feather reservation/charge/receipt and accepted non-currency agreements through common attempt/resource authority in `BookOfEternityClient/Services/AfterlifeHealingServicePlanner.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
+- [ ] T138 [US6] Compose Ink Feather reservation/charge/receipt through its existing specialized currency/accounting authority, and accepted non-currency agreements through the same wound attempt, without admitting Ink Feathers to the unified resource ledger, in `BookOfEternityClient/Services/AfterlifeHealingServicePlanner.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [ ] T139 [US6] Add fixed tier-V healing capability, Lazaret location, public 100% service, and negotiated compensation metadata to `BookOfEternityClient/system_guardians/built_in/elyara/manifest.json` and `BookOfEternityClient/system_guardians/built_in/elyara/dossier.md`
 - [ ] T140 [US6] Enforce Elyara discoverability/profile/service invariants during fresh game and subsequent validation/normalization in `BookOfEternityClient/Services/SystemGuardianLibraryService.cs` and `BookOfEternityClient/Services/Validation/ValidationService.GuardiansAndAfterlife.cs`
 - [ ] T141 [US6] Add visible primary `healing_support` to Shining resident role materialization and Russian display in `BookOfEternityClient/Services/ShiningAbodeState.cs`, `BookOfEternityClient/Services/GuardianAbodeResidentState.cs`, and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.cs`
