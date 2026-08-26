@@ -308,7 +308,7 @@ public sealed class WoundConsequenceEnvelopeTests
             new[]
             {
                 MarkerComponent("marker_direct"),
-                ReactionComponent("reaction", "apply_definition", 1)
+                ReactionComponent("reaction", "apply_definition", 2)
             },
             expansions: new[]
             {
@@ -956,7 +956,7 @@ public sealed class WoundConsequenceEnvelopeTests
     [InlineData("II")]
     public void ReactionDefinitionExpansion_IsUnavailableAtSeverityOneAndTwo(string severity)
     {
-        var reaction = ReactionComponent("component_reaction", "apply_definition", 1);
+        var reaction = ReactionComponent("component_reaction", "apply_definition", 2);
         var effect = Effect(
             "effect_reaction",
             new[] { reaction },
@@ -979,7 +979,7 @@ public sealed class WoundConsequenceEnvelopeTests
     [Fact]
     public void ReactionExpansion_ChargesTheReactionAndEveryWorstCaseExpandedComponent()
     {
-        var reaction = ReactionComponent("component_reaction", "apply_definition", 1);
+        var reaction = ReactionComponent("component_reaction", "apply_definition", 2);
         var expandedRoll = RollComponent(
             "component_expanded_roll",
             "attack_roll",
@@ -1010,12 +1010,50 @@ public sealed class WoundConsequenceEnvelopeTests
             result.Envelope.Slots.Select(static slot => slot.OperationKey));
     }
 
+    [Theory]
+    [InlineData(1, false)]
+    [InlineData(2, true)]
+    [InlineData(3, false)]
+    public void OwnedApplyDefinition_RequiresExactExecutionMaximumTwo(
+        int maxExpansion,
+        bool expectedValid)
+    {
+        var effect = Effect(
+            "effect_reaction",
+            new[]
+            {
+                ReactionComponent(
+                    "component_reaction",
+                    "apply_definition",
+                    maxExpansion)
+            },
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "component_reaction",
+                    new[] { MarkerComponent("component_marker") })
+            });
+
+        var result = Validate(MortalRequest(
+            "III",
+            new[] { effect },
+            Entries(1, "effect_reaction", "event_reaction")));
+
+        if (expectedValid)
+            AssertValid(result);
+        else
+            AssertIssue(
+                result,
+                Path + ".effects[0].components[0].payload.maxExpansion",
+                "wound_consequence_reaction_expansion_invalid");
+    }
+
     [Fact]
     public void ReactionExpansion_MustBePresentUniqueFullyFlattenedAndOneRelease()
     {
         var missing = Effect(
             "effect_reaction",
-            ReactionComponent("component_reaction", "apply_definition", 1));
+            ReactionComponent("component_reaction", "apply_definition", 2));
         AssertIssue(
             Validate(MortalSingle("III", missing, "event_reaction")),
             Path + ".effects[0].components[0].payload.definitionKey",
@@ -1023,7 +1061,7 @@ public sealed class WoundConsequenceEnvelopeTests
 
         var nested = Effect(
             "effect_reaction",
-            new[] { ReactionComponent("component_reaction", "apply_definition", 1) },
+            new[] { ReactionComponent("component_reaction", "apply_definition", 2) },
             expansions: new[]
             {
                 new WoundReactionExpansionProposal(
@@ -1040,7 +1078,7 @@ public sealed class WoundConsequenceEnvelopeTests
 
         var repeatedRelease = Effect(
             "effect_reaction",
-            new[] { ReactionComponent("component_reaction", "apply_definition", 2) },
+            new[] { ReactionComponent("component_reaction", "apply_definition", 3) },
             expansions: new[]
             {
                 new WoundReactionExpansionProposal(
@@ -1062,7 +1100,7 @@ public sealed class WoundConsequenceEnvelopeTests
 
         var duplicateExpansion = Effect(
             "effect_reaction",
-            new[] { ReactionComponent("component_reaction", "apply_definition", 1) },
+            new[] { ReactionComponent("component_reaction", "apply_definition", 2) },
             expansions: new[]
             {
                 new WoundReactionExpansionProposal(
@@ -1084,8 +1122,8 @@ public sealed class WoundConsequenceEnvelopeTests
             "effect_reaction",
             new[]
             {
-                ReactionComponent("reaction_a", "apply_definition", 1),
-                ReactionComponent("reaction_b", "apply_definition", 1)
+                ReactionComponent("reaction_a", "apply_definition", 2),
+                ReactionComponent("reaction_b", "apply_definition", 2)
             },
             expansions: new[]
             {
@@ -1110,7 +1148,7 @@ public sealed class WoundConsequenceEnvelopeTests
     {
         var first = Effect(
             "effect_reaction_a",
-            new[] { ReactionComponent("reaction_a", "apply_definition", 1) },
+            new[] { ReactionComponent("reaction_a", "apply_definition", 2) },
             expansions: new[]
             {
                 new WoundReactionExpansionProposal(
@@ -1119,7 +1157,7 @@ public sealed class WoundConsequenceEnvelopeTests
             });
         var second = Effect(
             "effect_reaction_b",
-            new[] { ReactionComponent("reaction_b", "apply_definition", 1) },
+            new[] { ReactionComponent("reaction_b", "apply_definition", 2) },
             expansions: new[]
             {
                 new WoundReactionExpansionProposal(
@@ -1152,7 +1190,7 @@ public sealed class WoundConsequenceEnvelopeTests
     {
         var owned = Effect(
             "effect_owned_reaction",
-            new[] { ReactionComponent("owned_reaction", "apply_definition", 1) },
+            new[] { ReactionComponent("owned_reaction", "apply_definition", 2) },
             expansions: new[]
             {
                 new WoundReactionExpansionProposal(
@@ -1196,7 +1234,7 @@ public sealed class WoundConsequenceEnvelopeTests
     {
         var owned = Effect(
             "effect_owned_reaction",
-            new[] { ReactionComponent("owned_reaction", "apply_definition", 1) },
+            new[] { ReactionComponent("owned_reaction", "apply_definition", 2) },
             expansions: new[]
             {
                 new WoundReactionExpansionProposal(
@@ -1848,7 +1886,7 @@ public sealed class WoundConsequenceEnvelopeTests
             new[]
             {
                 MarkerComponent("component_shared"),
-                ReactionComponent("component_reaction", "apply_definition", 1)
+                ReactionComponent("component_reaction", "apply_definition", 2)
             },
             expansions: new[]
             {
@@ -1936,7 +1974,7 @@ public sealed class WoundConsequenceEnvelopeTests
 
         var emptyExpansion = Effect(
             "effect_empty_expansion",
-            new[] { ReactionComponent("component_reaction", "apply_definition", 1) },
+            new[] { ReactionComponent("component_reaction", "apply_definition", 2) },
             expansions: new[]
             {
                 new WoundReactionExpansionProposal(
@@ -2368,7 +2406,7 @@ public sealed class WoundConsequenceEnvelopeTests
                 var expansion = new WoundReactionExpansionProposal("reaction", guarded);
                 var effect = Effect(
                     "effect_flattened",
-                    new[] { ReactionComponent("reaction", "apply_definition", 1) },
+                    new[] { ReactionComponent("reaction", "apply_definition", 2) },
                     expansions: new[] { expansion });
                 return Validate(MortalRequest(
                     "III",

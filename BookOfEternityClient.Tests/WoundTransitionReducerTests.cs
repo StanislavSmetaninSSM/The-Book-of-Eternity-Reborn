@@ -1020,6 +1020,131 @@ public sealed class WoundTransitionReducerTests
     }
 
     [Fact]
+    public void Reduce_Stabilize_AcceptsOneRootOwningMultipleConsequenceSlots()
+    {
+        var before = ParseWound(CreateCollapsedRootWound());
+        var after = NewTransition(before with
+        {
+            Care = before.Care with
+            {
+                State = "stabilized",
+                StabilizedAtTurn = 43,
+                LastAttemptId = "attempt_stabilize"
+            },
+            Recovery = before.Recovery with
+            {
+                Blockers = ImmutableArray<string>.Empty
+            }
+        }, "stabilize");
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "stabilize",
+            before,
+            after,
+            StabilizeEvidence(
+                before,
+                after,
+                removedBlockers: new[] { "not_stabilized" })));
+
+        AssertValid(result);
+        Assert.Equal(
+            new[] { "effect_wound_test_bleeding", "effect_wound_test_bleeding" },
+            result.ProposedAfter!.Consequences.Entries
+                .Select(static entry => entry.EffectId));
+    }
+
+    [Fact]
+    public void Reduce_Stabilize_RejectsRetainedOwnedDefinitionGraphDrift()
+    {
+        var beforeJson = WoundContractTestData.CreateActiveWound();
+        var before = ParseWound(beforeJson);
+        var afterJson = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(before))!.AsObject();
+        afterJson["consequences"]!["ownedEffectSources"]!["definitions"]![0]!["display"]!["description"] =
+            "Под тем же effectId подменено исходное определение.";
+        PrepareStabilized(afterJson);
+        var after = ParseWound(afterJson);
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "stabilize",
+            before,
+            after,
+            StabilizeEvidence(
+                before,
+                after,
+                removedBlockers: new[] { "not_stabilized" })));
+
+        AssertInvalid(result, "wound_transition_owned_source_graph_changed");
+    }
+
+    [Fact]
+    public void Reduce_Stabilize_RemovesDeclaredRootsSlotsAndUnreachableDefinitionsTogether()
+    {
+        var beforeJson = WoundContractTestData.CreateActiveWound();
+        beforeJson["complications"]!.AsArray().Add(new JsonObject
+        {
+            ["complicationId"] = "complication_pain",
+            ["kind"] = "pain",
+            ["state"] = "active",
+            ["displayName"] = "Болевое осложнение",
+            ["treatmentDifficultyModifier"] = 1,
+            ["ownedEffectIds"] = new JsonArray("effect_wound_test_pain"),
+            ["visibility"] = "known_to_player"
+        });
+        var before = ParseWound(beforeJson);
+
+        var afterJson = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(before))!.AsObject();
+        afterJson["complications"] = new JsonArray();
+        afterJson["consequences"]!["entries"]!.AsArray().RemoveAt(1);
+        afterJson["consequences"]!["slotsUsed"] = 1;
+        afterJson["consequences"]!["ownedEffectSources"]!["rootBindings"]!
+            .AsArray().RemoveAt(1);
+        afterJson["consequences"]!["ownedEffectSources"]!["definitions"]!
+            .AsArray().RemoveAt(1);
+        PrepareStabilized(afterJson);
+        var after = ParseWound(afterJson);
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "stabilize",
+            before,
+            after,
+            StabilizeEvidence(
+                before,
+                after,
+                removedComplications: new[] { "complication_pain" },
+                removedEffects: new[] { "effect_wound_test_pain" },
+                removedBlockers: new[] { "not_stabilized" })));
+
+        AssertValid(result);
+        var canonical = WoundMaterializationContract.SerializeCanonical(result.ProposedAfter!);
+        Assert.DoesNotContain("effect_wound_test_pain", canonical, StringComparison.Ordinal);
+        Assert.DoesNotContain("definition_wound_test_pain", canonical, StringComparison.Ordinal);
+        Assert.Equal(1, result.ProposedAfter!.Consequences.SlotsUsed);
+    }
+
+    [Fact]
+    public void Reduce_Worsen_RequiresFreshCompleteRootIdentitySet()
+    {
+        var before = PhysicalWound();
+        var freshAfter = ParseWound(CreateSeverityThreeWound(retainPriorRootIds: false));
+        AssertValid(WoundTransitionReducer.Reduce(Request(
+            "worsen",
+            before,
+            freshAfter,
+            WorsenEvidence(before, freshAfter))));
+
+        var retainedAfter = ParseWound(CreateSeverityThreeWound(retainPriorRootIds: true));
+        AssertInvalid(
+            WoundTransitionReducer.Reduce(Request(
+                "worsen",
+                before,
+                retainedAfter,
+                WorsenEvidence(before, retainedAfter))),
+            "wound_transition_severity_root_identity_reused");
+    }
+
+    [Fact]
     public void Reduce_Stabilize_RejectsComplicationEffectTransferredToConsequenceSlot()
     {
         const string effectId = "effect_binding_transfer";
@@ -1501,6 +1626,50 @@ public sealed class WoundTransitionReducerTests
         Assert.NotEmpty(effects.BeforeEffectIds);
         Assert.Empty(effects.AfterEffectIds);
         Assert.True(Assert.Single(result.Intents.OfType<WoundTransitionHistoryIntent>()).Terminal);
+    }
+
+    [Fact]
+    public void Reduce_Heal_RemovesDirectZeroSlotMarkerRoot()
+    {
+        var beforeJson = WoundContractTestData.CreateActiveWound();
+        var consequences = beforeJson["consequences"]!.AsObject();
+        beforeJson["severity"]!["value"] = "I";
+        beforeJson["severity"]!["rank"] = 1;
+        consequences["slotBudget"] = 1;
+        consequences["slotsUsed"] = 1;
+        consequences["entries"]!.AsArray().RemoveAt(1);
+        consequences["ownedEffectSources"]!["definitions"]!.AsArray().RemoveAt(1);
+        consequences["ownedEffectSources"]!["rootBindings"]!.AsArray().RemoveAt(1);
+        consequences["ownedEffectSources"]!["definitions"]!.AsArray().Add(
+            WoundContractTestData.CreateOwnedEffectDefinition(
+                "wound_test_torn_side",
+                "mortal_world",
+                "definition_wound_marker",
+                "wound_consequence"));
+        consequences["ownedEffectSources"]!["rootBindings"]!.AsArray().Add(
+            WoundContractTestData.CreateRootBinding(
+                "effect_wound_marker",
+                "definition_wound_marker"));
+        var before = ParseWound(beforeJson);
+        var after = NewTransition(before with
+        {
+            Lifecycle = "healed",
+            Care = before.Care with
+            {
+                State = "healed",
+                LastAttemptId = "attempt_heal"
+            }
+        }, "heal");
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "heal",
+            before,
+            after,
+            HealEvidence(before, after, attemptId: "attempt_heal")));
+
+        AssertValid(result);
+        var intent = Assert.Single(result.Intents.OfType<WoundEffectTransitionIntent>());
+        Assert.Contains("effect_wound_marker", intent.BeforeEffectIds);
     }
 
     [Fact]
@@ -2341,6 +2510,104 @@ public sealed class WoundTransitionReducerTests
 
     private static WoundMaterializationEnvelope PhysicalWound() => ParseWound(
         WoundContractTestData.CreateActiveWound());
+
+    private static JsonObject CreateCollapsedRootWound()
+    {
+        var wound = WoundContractTestData.CreateActiveWound();
+        var consequences = wound["consequences"]!.AsObject();
+        var sources = consequences["ownedEffectSources"]!.AsObject();
+        var definitions = sources["definitions"]!.AsArray();
+        var secondComponent = definitions[1]!["components"]![0]!
+            .DeepClone().AsObject();
+        secondComponent["componentId"] = "component_002";
+        definitions[0]!["components"]!.AsArray().Add(secondComponent);
+        definitions[0]!["triggers"]![0]!["componentIds"]!
+            .AsArray().Add("component_002");
+        definitions.RemoveAt(1);
+        sources["rootBindings"]!.AsArray().RemoveAt(1);
+        consequences["entries"]![1]!["effectId"] = "effect_wound_test_bleeding";
+        return wound;
+    }
+
+    private static JsonObject CreateSeverityThreeWound(bool retainPriorRootIds)
+    {
+        var wound = WoundContractTestData.CreateActiveWound();
+        wound["severity"]!["value"] = "III";
+        wound["severity"]!["rank"] = 3;
+        wound["severity"]!["lastChangeEventRef"] = "turn_43:wound_transition";
+        wound["lastTransition"] = new JsonObject
+        {
+            ["transitionId"] = "wound_transition_test_002",
+            ["ordinal"] = 2,
+            ["turn"] = 43,
+            ["kind"] = "worsen"
+        };
+        var rootIds = retainPriorRootIds
+            ? new[]
+            {
+                "effect_wound_test_bleeding",
+                "effect_wound_test_pain",
+                "effect_wound_fresh_2"
+            }
+            : new[]
+            {
+                "effect_wound_fresh_0",
+                "effect_wound_fresh_1",
+                "effect_wound_fresh_2"
+            };
+        var definitionKeys = retainPriorRootIds
+            ? new[]
+            {
+                "definition_wound_test_bleeding",
+                "definition_wound_test_pain",
+                "definition_wound_fresh_2"
+            }
+            : new[]
+            {
+                "definition_wound_fresh_0",
+                "definition_wound_fresh_1",
+                "definition_wound_fresh_2"
+            };
+        var consequences = wound["consequences"]!.AsObject();
+        consequences["slotBudget"] = 3;
+        consequences["slotsUsed"] = 3;
+        consequences["entries"] = new JsonArray(
+            Enumerable.Range(0, 3)
+                .Select(index => (JsonNode?)new JsonObject
+                {
+                    ["slot"] = index + 1,
+                    ["profileKey"] = "action_control",
+                    ["effectId"] = rootIds[index],
+                    ["readableSummary"] = $"Перематериализованный слот {index + 1}."
+                })
+                .ToArray());
+        consequences["ownedEffectSources"] =
+            WoundContractTestData.CreateOwnedEffectSources(
+                "wound_test_torn_side",
+                "mortal_world",
+                Enumerable.Range(0, 3)
+                    .Select(index => (
+                        rootIds[index],
+                        definitionKeys[index],
+                        "action_control"))
+                    .ToArray());
+        return wound;
+    }
+
+    private static void PrepareStabilized(JsonObject wound)
+    {
+        wound["care"]!["state"] = "stabilized";
+        wound["care"]!["stabilizedAtTurn"] = 43;
+        wound["care"]!["lastAttemptId"] = "attempt_stabilize";
+        wound["recovery"]!["blockers"] = new JsonArray();
+        wound["lastTransition"] = new JsonObject
+        {
+            ["transitionId"] = "wound_transition_test_002",
+            ["ordinal"] = 2,
+            ["turn"] = 43,
+            ["kind"] = "stabilize"
+        };
+    }
 
     private static WoundMaterializationEnvelope SpiritualWound() => ParseWound(
         WoundContractTestData.CreateActiveWound(

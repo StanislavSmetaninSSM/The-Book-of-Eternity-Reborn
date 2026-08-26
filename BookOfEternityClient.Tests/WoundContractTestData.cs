@@ -14,6 +14,8 @@ internal static class WoundContractTestData
     internal const int RequirementLimit = 16;
     internal const int ComplicationLimit = 16;
     internal const int ConsequenceLimit = 4;
+    internal const int OwnedEffectDefinitionLimit = 5;
+    internal const int OwnedEffectRootBindingLimit = 5;
     internal const int TransitionsPerAcceptedTurnLimit = 32;
 
     internal static JsonObject CreatePlayerCarrier(params JsonObject[] activeWounds) => new()
@@ -255,6 +257,11 @@ internal static class WoundContractTestData
         {
             ["slotBudget"] = 2,
             ["slotsUsed"] = 2,
+            ["ownedEffectSources"] = CreateOwnedEffectSources(
+                woundId,
+                realm,
+                ("effect_wound_test_bleeding", "definition_wound_test_bleeding", "periodic_damage"),
+                ("effect_wound_test_pain", "definition_wound_test_pain", "action_control")),
             ["entries"] = new JsonArray(
                 new JsonObject
                 {
@@ -310,6 +317,107 @@ internal static class WoundContractTestData
             ["kind"] = "create"
         }
     };
+
+    internal static JsonObject CreateOwnedEffectSources(
+        string woundId,
+        string realm,
+        params (string EffectId, string DefinitionKey, string Profile)[] roots)
+    {
+        ArgumentNullException.ThrowIfNull(roots);
+        var definitions = new JsonArray();
+        var rootBindings = new JsonArray();
+        foreach (var (effectId, definitionKey, profile) in roots)
+        {
+            definitions.Add(CreateOwnedEffectDefinition(
+                woundId,
+                realm,
+                definitionKey,
+                profile,
+                $"stack_{definitionKey}"));
+            rootBindings.Add(CreateRootBinding(effectId, definitionKey));
+        }
+
+        return new JsonObject
+        {
+            ["definitions"] = definitions,
+            ["rootBindings"] = rootBindings
+        };
+    }
+
+    internal static JsonObject CreateOwnedEffectDefinition(
+        string woundId,
+        string realm,
+        string definitionKey,
+        string profile = "periodic_damage",
+        string? stackKey = null)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition(profile);
+        definition["definitionKey"] = definitionKey;
+        definition["allowedRealms"] = new JsonArray(realm);
+        definition["allowedTargetKinds"] = new JsonArray(
+            "player",
+            "npc",
+            "combatant",
+            "guardian",
+            "resident",
+            "radiant_actor",
+            "afterlife_actor",
+            "spiritual_conflict_side");
+        definition["parameterBounds"] = new JsonObject();
+        definition["stacking"] = new JsonObject
+        {
+            ["stackKey"] = stackKey ?? $"stack_{definitionKey}",
+            ["policy"] = "independent",
+            ["maxStacks"] = 1,
+            ["atMaximum"] = "no_change",
+            ["refreshMode"] = null,
+            ["mergeRule"] = null
+        };
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "source_bound",
+            ["activePredicate"] = "active",
+            ["onSourceLoss"] = "expire"
+        };
+        definition["links"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "wound",
+            ["targetId"] = woundId,
+            ["role"] = "source"
+        });
+        if (string.Equals(profile, "wound_consequence", StringComparison.Ordinal))
+            definition["components"]![0]!["payload"]!["woundId"] = woundId;
+        return definition;
+    }
+
+    internal static JsonObject CreateRootBinding(
+        string effectId,
+        string definitionKey) => new()
+    {
+        ["effectId"] = effectId,
+        ["definitionKey"] = definitionKey
+    };
+
+    internal static JsonObject CreateApplyDefinitionRoot(
+        string woundId,
+        string realm,
+        string definitionKey,
+        string leafDefinitionKey,
+        int maxExpansion = 2)
+    {
+        var definition = CreateOwnedEffectDefinition(
+            woundId,
+            realm,
+            definitionKey,
+            "event_reaction");
+        var payload = definition["components"]![0]!["payload"]!.AsObject();
+        payload["resultKind"] = "apply_definition";
+        payload["dependency"] = "before_current_event";
+        payload["definitionKey"] = leafDefinitionKey;
+        payload["parameters"] = new JsonObject();
+        payload["maxExpansion"] = maxExpansion;
+        return definition;
+    }
 
     internal static JsonArray Repeat(int count, Func<int, JsonObject> factory)
     {
