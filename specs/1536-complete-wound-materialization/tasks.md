@@ -18,7 +18,7 @@
 - [X] T001 Create the reusable file-backed wound test context, canonical path inventory, exact before-image helpers, and deterministic identity factories in `BookOfEternityClient.IntegrationTests/WoundMaterializationTestContext.cs`
 - [X] T002 [P] Add strict version-1 player/NPC/combatant/afterlife carrier, index, history, command, and pending JSON builders in `BookOfEternityClient.Tests/WoundContractTestData.cs`
 - [X] T003 [P] Add post-apocalyptic, magical-world, spiritual-conflict, Elyara, and Shining faction seed builders in `BookOfEternityClient.IntegrationTests/WoundMaterializationTestFixtures.cs`
-- [ ] T004 [P] Create a source-ownership inventory test that records all current loose wound writers/readers and accepted-mechanics integration points in `BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs`
+- [X] T004 [P] Create a source-ownership inventory test that records all current loose wound writers/readers and accepted-mechanics integration points in `BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs`
 
 **Checkpoint**: Tests can create exact independent wound scenarios without production scaffolding or shared mutable roots.
 
