@@ -620,8 +620,9 @@ public sealed class WoundHistoryStateTests
         var auditResult = Parse(History(create, heal, legacy, archive));
         Assert.True(auditResult.IsValid, DescribeIssues(auditResult.Issues));
         var auditState = Assert.IsType<WoundHistoryState>(auditResult.State);
-        Assert.Equal("transition_2", Assert.Single(
-            auditState.Transitions.Where(static row => row.Terminal)).TransitionId);
+        Assert.Equal(
+            "transition_2",
+            Assert.Single(auditState.Transitions, static row => row.Terminal).TransitionId);
         Assert.All(
             auditState.Transitions.Where(static row => row.Kind is "legacy" or "archive"),
             row =>

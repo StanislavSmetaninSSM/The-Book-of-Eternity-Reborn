@@ -48,6 +48,11 @@ internal sealed class WoundCarrierCatalog
 
     internal IReadOnlyList<ValidationIssue> Issues { get; }
 
+    internal int CountExactOccurrences(string woundId) =>
+        !string.IsNullOrEmpty(woundId) && _byWoundId.TryGetValue(woundId, out var candidates)
+            ? candidates.Count
+            : 0;
+
     internal bool TryResolveOne(string woundId, out WoundCarrierOccurrence occurrence)
     {
         occurrence = null!;

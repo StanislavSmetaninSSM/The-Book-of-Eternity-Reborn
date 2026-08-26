@@ -72,7 +72,7 @@ internal sealed class WoundHistoryState
         "create", "worsen", "complicate", "diagnose", "stabilize", "treat",
         "recover", "heal", "legacy", "archive");
     private static readonly IReadOnlySet<string> PostTerminalKinds = Set("legacy", "archive");
-    private static readonly IReadOnlySet<string> TerminalKinds = Set("heal", "archive");
+    private static readonly IReadOnlySet<string> TerminalKinds = Set("heal");
 
     private readonly ImmutableArray<WoundHistoryTransition> _transitions;
     private readonly IReadOnlyDictionary<string, WoundHistoryTransition> _byTransitionId;
@@ -214,20 +214,26 @@ internal sealed class WoundHistoryState
         IEnumerable<WoundHistoryTransition> transitions)
     {
         ArgumentNullException.ThrowIfNull(transitions);
-        var candidates = transitions.ToArray();
+        var candidates = new List<WoundHistoryTransition>(MaxTransitions + 1);
+        using (var enumerator = transitions.GetEnumerator())
+        {
+            while (candidates.Count <= MaxTransitions && enumerator.MoveNext())
+                candidates.Add(enumerator.Current);
+        }
+
         var issues = new List<ValidationIssue>();
-        if (candidates.Length > MaxTransitions)
+        if (candidates.Count > MaxTransitions)
         {
             AddIssue(
                 issues,
                 HistoryPath + ".transitions",
                 "wound_history_limit_exceeded",
                 $"at most {MaxTransitions} immutable history rows",
-                candidates.Length.ToString(CultureInfo.InvariantCulture));
+                candidates.Count.ToString(CultureInfo.InvariantCulture));
             return new WoundHistoryParseResult(null, issues.ToImmutableArray());
         }
 
-        for (var index = 0; index < candidates.Length; index++)
+        for (var index = 0; index < candidates.Count; index++)
         {
             if (candidates[index] is null)
             {
@@ -406,25 +412,20 @@ internal sealed class WoundHistoryState
             }
 
             var terminalRows = history.Where(static row => row.Terminal).ToArray();
-            var occurrences = carriers.Occurrences
-                .Where(occurrence => string.Equals(
-                    occurrence.WoundId,
-                    entry.WoundId,
-                    StringComparison.Ordinal))
-                .ToArray();
+            var occurrenceCount = carriers.CountExactOccurrences(entry.WoundId);
             if (string.Equals(entry.Status, "active", StringComparison.Ordinal))
             {
                 ValidateActiveAgreement(
                     entry,
                     latest,
                     terminalRows,
-                    occurrences,
+                    occurrenceCount,
                     carriers,
                     issues);
             }
             else
             {
-                ValidateHealedAgreement(entry, terminalRows, occurrences, issues);
+                ValidateHealedAgreement(entry, terminalRows, occurrenceCount, issues);
             }
         }
 
@@ -843,24 +844,32 @@ internal sealed class WoundHistoryState
                         "legacy audit only after terminal wound evidence",
                         transition.TransitionId);
                 }
+                if (string.Equals(transition.Kind, "archive", StringComparison.Ordinal))
+                {
+                    AddIssue(
+                        issues,
+                        path + ".transitions",
+                        "wound_history_archive_before_terminal",
+                        "archive audit only after terminal wound evidence",
+                        transition.TransitionId);
+                }
                 if (transition.Terminal && !TerminalKinds.Contains(transition.Kind))
                 {
                     AddIssue(
                         issues,
                         path + ".transitions",
                         "wound_history_invalid_terminal_kind",
-                        "terminal=true only for heal or terminal archive",
+                        "terminal=true only for heal",
                         transition.Kind);
                 }
                 if (!transition.Terminal &&
-                    (string.Equals(transition.Kind, "heal", StringComparison.Ordinal) ||
-                     string.Equals(transition.Kind, "archive", StringComparison.Ordinal)))
+                    string.Equals(transition.Kind, "heal", StringComparison.Ordinal))
                 {
                     AddIssue(
                         issues,
                         path + ".transitions",
                         "wound_history_missing_terminal_flag",
-                        "heal/terminal archive seals terminal=true",
+                        "heal seals terminal=true",
                         transition.Kind);
                 }
             }
@@ -875,7 +884,7 @@ internal sealed class WoundHistoryState
         WoundIdentityEntry entry,
         WoundHistoryTransition latest,
         IReadOnlyCollection<WoundHistoryTransition> terminalRows,
-        IReadOnlyList<WoundCarrierOccurrence> occurrences,
+        int occurrenceCount,
         WoundCarrierCatalog carriers,
         ICollection<ValidationIssue> issues)
     {
@@ -888,14 +897,14 @@ internal sealed class WoundHistoryState
                 "no terminal history row for active identity",
                 entry.WoundId);
         }
-        if (occurrences.Count != 1 || !carriers.TryResolveOne(entry.WoundId, out var occurrence))
+        if (occurrenceCount != 1 || !carriers.TryResolveOne(entry.WoundId, out var occurrence))
         {
             AddIssue(
                 issues,
                 HistoryPath + ".transitions",
                 "wound_history_active_carrier_mismatch",
                 "exactly one resolvable active carrier occurrence",
-                $"{entry.WoundId}:{occurrences.Count}");
+                $"{entry.WoundId}:{occurrenceCount}");
             return;
         }
 
@@ -940,17 +949,17 @@ internal sealed class WoundHistoryState
     private static void ValidateHealedAgreement(
         WoundIdentityEntry entry,
         IReadOnlyList<WoundHistoryTransition> terminalRows,
-        IReadOnlyList<WoundCarrierOccurrence> occurrences,
+        int occurrenceCount,
         ICollection<ValidationIssue> issues)
     {
-        if (occurrences.Count != 0)
+        if (occurrenceCount != 0)
         {
             AddIssue(
                 issues,
                 HistoryPath + ".transitions",
                 "wound_history_healed_carrier_present",
                 "no active carrier for healed identity",
-                $"{entry.WoundId}:{occurrences.Count}");
+                $"{entry.WoundId}:{occurrenceCount}");
         }
         if (terminalRows.Count == 0)
         {
