@@ -1175,12 +1175,17 @@ public sealed class WoundConsequenceEnvelopeTests
         var invalidEffectId = Effect(
             " effect_owned",
             CharacteristicComponent("component", "flat", -1m));
+        var invalidEffectResult = Validate(MortalRequest(
+            "I",
+            new[] { invalidEffectId },
+            Entries(1, " effect_owned", "characteristic_modifier")));
         AssertIssue(
-            Validate(MortalRequest(
-                "I",
-                new[] { invalidEffectId },
-                Entries(1, " effect_owned", "characteristic_modifier"))),
+            invalidEffectResult,
             Path + ".effects[0].effectId",
+            "wound_consequence_identifier_invalid");
+        AssertIssue(
+            invalidEffectResult,
+            Path + ".declared.entries[0].effectId",
             "wound_consequence_identifier_invalid");
 
         var malformedBindings = new[]
