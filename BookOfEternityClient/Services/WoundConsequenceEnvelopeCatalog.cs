@@ -5,6 +5,8 @@ using System.Text.Json;
 
 namespace BookOfEternityClient.Services;
 
+internal sealed record WoundConsequenceInputFault(string PathSuffix, string Actual);
+
 internal sealed record WoundConsequenceLifecycleEvidence(
     bool ActiveComplicationChangesLifecycle,
     bool CareConstraintChangesLifecycle,
@@ -29,46 +31,74 @@ internal sealed record WoundPeriodicCadenceEvidence(
 internal sealed class WoundReactionExpansionProposal
 {
     internal WoundReactionExpansionProposal(
-        string reactionComponentId,
-        IReadOnlyList<JsonElement> components)
+        string? reactionComponentId,
+        IReadOnlyList<JsonElement>? components)
     {
-        ReactionComponentId = reactionComponentId;
-        Components = CloneElements(components);
+        ReactionComponentId = reactionComponentId ?? string.Empty;
+        var faults = ImmutableArray.CreateBuilder<WoundConsequenceInputFault>();
+        if (reactionComponentId == null)
+            faults.Add(new WoundConsequenceInputFault("reactionComponentId", "null"));
+        Components = CloneElements(components, faults);
+        InputFaults = faults.ToImmutable();
     }
 
     internal string ReactionComponentId { get; }
 
     internal ImmutableArray<JsonElement> Components { get; }
 
+    internal ImmutableArray<WoundConsequenceInputFault> InputFaults { get; }
+
     private static ImmutableArray<JsonElement> CloneElements(
-        IReadOnlyList<JsonElement> components) =>
-        components.Select(static component => component.Clone()).ToImmutableArray();
+        IReadOnlyList<JsonElement>? components,
+        ImmutableArray<WoundConsequenceInputFault>.Builder faults)
+    {
+        if (components == null)
+        {
+            faults.Add(new WoundConsequenceInputFault("components", "null"));
+            return ImmutableArray<JsonElement>.Empty;
+        }
+
+        var result = ImmutableArray.CreateBuilder<JsonElement>(components.Count);
+        for (var index = 0; index < components.Count; index++)
+        {
+            var component = components[index];
+            if (component.ValueKind == JsonValueKind.Undefined)
+            {
+                faults.Add(new WoundConsequenceInputFault(
+                    $"components[{index}]",
+                    "undefined JsonElement"));
+                result.Add(default);
+            }
+            else
+            {
+                result.Add(component.Clone());
+            }
+        }
+
+        return result.MoveToImmutable();
+    }
 }
 
 internal sealed class WoundConsequenceEffectProposal
 {
     internal WoundConsequenceEffectProposal(
-        string effectId,
-        string sourceKind,
-        string sourceId,
+        string? effectId,
+        string? sourceKind,
+        string? sourceId,
         string? reciprocalWoundId,
-        IReadOnlyList<JsonElement> components,
-        IReadOnlyList<WoundPeriodicCadenceEvidence> cadences,
-        IReadOnlyList<WoundReactionExpansionProposal> expansions)
+        IReadOnlyList<JsonElement>? components,
+        IReadOnlyList<WoundPeriodicCadenceEvidence>? cadences,
+        IReadOnlyList<WoundReactionExpansionProposal>? expansions)
     {
-        EffectId = effectId;
-        SourceKind = sourceKind;
-        SourceId = sourceId;
+        EffectId = effectId ?? string.Empty;
+        SourceKind = sourceKind ?? string.Empty;
+        SourceId = sourceId ?? string.Empty;
         ReciprocalWoundId = reciprocalWoundId;
-        Components = components
-            .Select(static component => component.Clone())
-            .ToImmutableArray();
-        Cadences = cadences.ToImmutableArray();
-        Expansions = expansions
-            .Select(static expansion => new WoundReactionExpansionProposal(
-                expansion.ReactionComponentId,
-                expansion.Components))
-            .ToImmutableArray();
+        var faults = ImmutableArray.CreateBuilder<WoundConsequenceInputFault>();
+        Components = CloneComponents(components, faults);
+        Cadences = CloneCadences(cadences, faults);
+        Expansions = CloneExpansions(expansions, faults);
+        InputFaults = faults.ToImmutable();
     }
 
     internal string EffectId { get; }
@@ -84,38 +114,125 @@ internal sealed class WoundConsequenceEffectProposal
     internal ImmutableArray<WoundPeriodicCadenceEvidence> Cadences { get; }
 
     internal ImmutableArray<WoundReactionExpansionProposal> Expansions { get; }
+
+    internal ImmutableArray<WoundConsequenceInputFault> InputFaults { get; }
+
+    internal bool IsMissing { get; private init; }
+
+    internal static WoundConsequenceEffectProposal Missing() =>
+        new(null, null, null, null, null, null, null) { IsMissing = true };
+
+    private static ImmutableArray<JsonElement> CloneComponents(
+        IReadOnlyList<JsonElement>? components,
+        ImmutableArray<WoundConsequenceInputFault>.Builder faults)
+    {
+        if (components == null)
+        {
+            faults.Add(new WoundConsequenceInputFault("components", "null"));
+            return ImmutableArray<JsonElement>.Empty;
+        }
+
+        var result = ImmutableArray.CreateBuilder<JsonElement>(components.Count);
+        for (var index = 0; index < components.Count; index++)
+        {
+            var component = components[index];
+            if (component.ValueKind == JsonValueKind.Undefined)
+            {
+                faults.Add(new WoundConsequenceInputFault(
+                    $"components[{index}]",
+                    "undefined JsonElement"));
+                result.Add(default);
+            }
+            else
+            {
+                result.Add(component.Clone());
+            }
+        }
+
+        return result.MoveToImmutable();
+    }
+
+    private static ImmutableArray<WoundPeriodicCadenceEvidence> CloneCadences(
+        IReadOnlyList<WoundPeriodicCadenceEvidence>? cadences,
+        ImmutableArray<WoundConsequenceInputFault>.Builder faults)
+    {
+        if (cadences == null)
+        {
+            faults.Add(new WoundConsequenceInputFault("cadences", "null"));
+            return ImmutableArray<WoundPeriodicCadenceEvidence>.Empty;
+        }
+
+        var result = ImmutableArray.CreateBuilder<WoundPeriodicCadenceEvidence>(cadences.Count);
+        for (var index = 0; index < cadences.Count; index++)
+        {
+            if (cadences[index] is { } cadence)
+            {
+                result.Add(cadence);
+            }
+            else
+            {
+                faults.Add(new WoundConsequenceInputFault($"cadences[{index}]", "null"));
+                result.Add(new WoundPeriodicCadenceEvidence(string.Empty, string.Empty, 0));
+            }
+        }
+
+        return result.MoveToImmutable();
+    }
+
+    private static ImmutableArray<WoundReactionExpansionProposal> CloneExpansions(
+        IReadOnlyList<WoundReactionExpansionProposal>? expansions,
+        ImmutableArray<WoundConsequenceInputFault>.Builder faults)
+    {
+        if (expansions == null)
+        {
+            faults.Add(new WoundConsequenceInputFault("expansions", "null"));
+            return ImmutableArray<WoundReactionExpansionProposal>.Empty;
+        }
+
+        var result = ImmutableArray.CreateBuilder<WoundReactionExpansionProposal>(
+            expansions.Count);
+        for (var index = 0; index < expansions.Count; index++)
+        {
+            if (expansions[index] is { } expansion)
+            {
+                result.Add(expansion);
+            }
+            else
+            {
+                faults.Add(new WoundConsequenceInputFault($"expansions[{index}]", "null"));
+                result.Add(new WoundReactionExpansionProposal(null, null));
+            }
+        }
+
+        return result.MoveToImmutable();
+    }
 }
 
 internal sealed class WoundConsequenceEnvelopeRequest
 {
     internal WoundConsequenceEnvelopeRequest(
-        string woundId,
-        string domain,
-        string severity,
-        WoundConsequences declaredConsequences,
-        WoundConsequenceLifecycleEvidence lifecycleEvidence,
-        IReadOnlyList<WoundConsequenceEffectProposal> effects,
-        IReadOnlyList<WoundResourceEnvelopeBound> resourceBounds)
+        string? woundId,
+        string? domain,
+        string? severity,
+        WoundConsequences? declaredConsequences,
+        WoundConsequenceLifecycleEvidence? lifecycleEvidence,
+        IReadOnlyList<WoundConsequenceEffectProposal>? effects,
+        IReadOnlyList<WoundResourceEnvelopeBound>? resourceBounds)
     {
-        WoundId = woundId;
-        Domain = domain;
-        Severity = severity;
-        DeclaredConsequences = new WoundConsequences(
-            declaredConsequences.SlotBudget,
-            declaredConsequences.SlotsUsed,
-            declaredConsequences.Entries.ToImmutableArray());
-        LifecycleEvidence = lifecycleEvidence;
-        Effects = effects
-            .Select(static effect => new WoundConsequenceEffectProposal(
-                effect.EffectId,
-                effect.SourceKind,
-                effect.SourceId,
-                effect.ReciprocalWoundId,
-                effect.Components,
-                effect.Cadences,
-                effect.Expansions))
-            .ToImmutableArray();
-        ResourceBounds = resourceBounds.ToImmutableArray();
+        WoundId = woundId ?? string.Empty;
+        Domain = domain ?? string.Empty;
+        Severity = severity ?? string.Empty;
+        var faults = ImmutableArray.CreateBuilder<WoundConsequenceInputFault>();
+        DeclaredConsequences = CloneDeclared(declaredConsequences, faults);
+        if (lifecycleEvidence == null)
+            faults.Add(new WoundConsequenceInputFault("lifecycleEvidence", "null"));
+        LifecycleEvidence = lifecycleEvidence ?? new WoundConsequenceLifecycleEvidence(
+            false,
+            false,
+            false);
+        Effects = CloneEffects(effects, faults);
+        ResourceBounds = CloneResourceBounds(resourceBounds, faults);
+        InputFaults = faults.ToImmutable();
     }
 
     internal string WoundId { get; }
@@ -131,6 +248,104 @@ internal sealed class WoundConsequenceEnvelopeRequest
     internal ImmutableArray<WoundConsequenceEffectProposal> Effects { get; }
 
     internal ImmutableArray<WoundResourceEnvelopeBound> ResourceBounds { get; }
+
+    internal ImmutableArray<WoundConsequenceInputFault> InputFaults { get; }
+
+    private static WoundConsequences CloneDeclared(
+        WoundConsequences? declared,
+        ImmutableArray<WoundConsequenceInputFault>.Builder faults)
+    {
+        if (declared == null)
+        {
+            faults.Add(new WoundConsequenceInputFault("declared", "null"));
+            return new WoundConsequences(0, 0, ImmutableArray<WoundConsequenceEntry>.Empty);
+        }
+
+        if (declared.Entries == null)
+        {
+            faults.Add(new WoundConsequenceInputFault("declared.entries", "null"));
+            return new WoundConsequences(
+                declared.SlotBudget,
+                declared.SlotsUsed,
+                ImmutableArray<WoundConsequenceEntry>.Empty);
+        }
+
+        var entries = ImmutableArray.CreateBuilder<WoundConsequenceEntry>(
+            declared.Entries.Count);
+        for (var index = 0; index < declared.Entries.Count; index++)
+        {
+            if (declared.Entries[index] is { } entry)
+            {
+                entries.Add(entry);
+            }
+            else
+            {
+                faults.Add(new WoundConsequenceInputFault(
+                    $"declared.entries[{index}]",
+                    "null"));
+                entries.Add(new WoundConsequenceEntry(0, string.Empty, string.Empty, string.Empty));
+            }
+        }
+
+        return new WoundConsequences(
+            declared.SlotBudget,
+            declared.SlotsUsed,
+            entries.MoveToImmutable());
+    }
+
+    private static ImmutableArray<WoundConsequenceEffectProposal> CloneEffects(
+        IReadOnlyList<WoundConsequenceEffectProposal>? effects,
+        ImmutableArray<WoundConsequenceInputFault>.Builder faults)
+    {
+        if (effects == null)
+        {
+            faults.Add(new WoundConsequenceInputFault("effects", "null"));
+            return ImmutableArray<WoundConsequenceEffectProposal>.Empty;
+        }
+
+        var result = ImmutableArray.CreateBuilder<WoundConsequenceEffectProposal>(effects.Count);
+        for (var index = 0; index < effects.Count; index++)
+        {
+            if (effects[index] is { } effect)
+            {
+                result.Add(effect);
+            }
+            else
+            {
+                faults.Add(new WoundConsequenceInputFault($"effects[{index}]", "null"));
+                result.Add(WoundConsequenceEffectProposal.Missing());
+            }
+        }
+
+        return result.MoveToImmutable();
+    }
+
+    private static ImmutableArray<WoundResourceEnvelopeBound> CloneResourceBounds(
+        IReadOnlyList<WoundResourceEnvelopeBound>? bounds,
+        ImmutableArray<WoundConsequenceInputFault>.Builder faults)
+    {
+        if (bounds == null)
+        {
+            faults.Add(new WoundConsequenceInputFault("resourceBounds", "null"));
+            return ImmutableArray<WoundResourceEnvelopeBound>.Empty;
+        }
+
+        var result = ImmutableArray.CreateBuilder<WoundResourceEnvelopeBound>(bounds.Count);
+        for (var index = 0; index < bounds.Count; index++)
+        {
+            if (bounds[index] is { } bound)
+            {
+                result.Add(bound);
+            }
+            else
+            {
+                faults.Add(new WoundConsequenceInputFault($"resourceBounds[{index}]", "null"));
+                result.Add(new WoundResourceEnvelopeBound(string.Empty, 0m, 0m));
+            }
+        }
+
+        return result.MoveToImmutable();
+    }
 }
 
 internal sealed record WoundDerivedConsequenceSlot(
@@ -255,10 +470,24 @@ internal static class WoundConsequenceEnvelopeCatalog
         WoundConsequenceEnvelopeRequest request,
         string path)
     {
-        ArgumentNullException.ThrowIfNull(request);
         path = string.IsNullOrWhiteSpace(path) ? "wound.consequences" : path;
-
         var issues = new List<ValidationIssue>();
+        if (request == null)
+        {
+            Add(
+                issues,
+                path,
+                "wound_consequence_input_invalid",
+                "one non-null wound consequence envelope request",
+                "null");
+            return new WoundConsequenceEnvelopeValidationResult(
+                null,
+                ImmutableArray<WoundConsequenceEffectProposal>.Empty,
+                issues.ToImmutableArray());
+        }
+
+        AddInputFaults(request, path, issues);
+        ValidateIdentifiers(request, path, issues);
         var owned = new List<IndexedEffect>();
         var independent = new List<WoundConsequenceEffectProposal>();
         ClassifyEffects(request, path, owned, independent, issues);
@@ -338,6 +567,126 @@ internal static class WoundConsequenceEnvelopeCatalog
             ImmutableArray<ValidationIssue>.Empty);
     }
 
+    private static void AddInputFaults(
+        WoundConsequenceEnvelopeRequest request,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        foreach (var fault in request.InputFaults)
+            AddInputFault(issues, path + "." + fault.PathSuffix, fault.Actual);
+
+        for (var effectIndex = 0; effectIndex < request.Effects.Length; effectIndex++)
+        {
+            var effect = request.Effects[effectIndex];
+            if (effect.IsMissing)
+                continue;
+            var effectPath = $"{path}.effects[{effectIndex}]";
+            foreach (var fault in effect.InputFaults)
+                AddInputFault(issues, effectPath + "." + fault.PathSuffix, fault.Actual);
+
+            for (var expansionIndex = 0;
+                 expansionIndex < effect.Expansions.Length;
+                 expansionIndex++)
+            {
+                var expansionPath = $"{effectPath}.expansions[{expansionIndex}]";
+                foreach (var fault in effect.Expansions[expansionIndex].InputFaults)
+                    AddInputFault(issues, expansionPath + "." + fault.PathSuffix, fault.Actual);
+            }
+        }
+    }
+
+    private static void AddInputFault(
+        List<ValidationIssue> issues,
+        string path,
+        string actual) =>
+        Add(
+            issues,
+            path,
+            "wound_consequence_input_invalid",
+            "non-null typed value or collection with defined JSON elements",
+            actual);
+
+    private static void ValidateIdentifiers(
+        WoundConsequenceEnvelopeRequest request,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        ValidateIdentifier(request.WoundId, path + ".woundId", issues);
+        for (var entryIndex = 0;
+             entryIndex < request.DeclaredConsequences.Entries.Count;
+             entryIndex++)
+        {
+            ValidateIdentifier(
+                request.DeclaredConsequences.Entries[entryIndex].EffectId,
+                $"{path}.declared.entries[{entryIndex}].effectId",
+                issues);
+        }
+
+        for (var effectIndex = 0; effectIndex < request.Effects.Length; effectIndex++)
+        {
+            var effect = request.Effects[effectIndex];
+            if (effect.IsMissing)
+                continue;
+            var effectPath = $"{path}.effects[{effectIndex}]";
+            ValidateIdentifier(effect.EffectId, effectPath + ".effectId", issues);
+            ValidateIdentifier(effect.SourceKind, effectPath + ".sourceKind", issues);
+            ValidateIdentifier(effect.SourceId, effectPath + ".sourceId", issues);
+            if (effect.ReciprocalWoundId != null)
+            {
+                ValidateIdentifier(
+                    effect.ReciprocalWoundId,
+                    effectPath + ".reciprocalWoundId",
+                    issues);
+            }
+
+            for (var cadenceIndex = 0;
+                 cadenceIndex < effect.Cadences.Length;
+                 cadenceIndex++)
+            {
+                var cadence = effect.Cadences[cadenceIndex];
+                var cadencePath = $"{effectPath}.cadences[{cadenceIndex}]";
+                ValidateIdentifier(cadence.ComponentId, cadencePath + ".componentId", issues);
+                ValidateIdentifier(cadence.SourceEvent, cadencePath + ".sourceEvent", issues);
+            }
+
+            for (var expansionIndex = 0;
+                 expansionIndex < effect.Expansions.Length;
+                 expansionIndex++)
+            {
+                ValidateIdentifier(
+                    effect.Expansions[expansionIndex].ReactionComponentId,
+                    $"{effectPath}.expansions[{expansionIndex}].reactionComponentId",
+                    issues);
+            }
+        }
+
+        for (var boundIndex = 0;
+             boundIndex < request.ResourceBounds.Length;
+             boundIndex++)
+        {
+            ValidateIdentifier(
+                request.ResourceBounds[boundIndex].ResourceKey,
+                $"{path}.resourceBounds[{boundIndex}].resourceKey",
+                issues);
+        }
+    }
+
+    private static void ValidateIdentifier(
+        string? value,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (!ResourceMaterializationContract.IsExactIdentifier(value))
+        {
+            Add(
+                issues,
+                path,
+                "wound_consequence_identifier_invalid",
+                "exact non-empty normalized identifier without surrounding whitespace",
+                value ?? "null");
+        }
+    }
+
     private static void ClassifyEffects(
         WoundConsequenceEnvelopeRequest request,
         string path,
@@ -348,6 +697,8 @@ internal static class WoundConsequenceEnvelopeCatalog
         for (var index = 0; index < request.Effects.Length; index++)
         {
             var effect = request.Effects[index];
+            if (effect.IsMissing)
+                continue;
             var sourceMatches =
                 string.Equals(effect.SourceKind, "wound", StringComparison.Ordinal) &&
                 string.Equals(effect.SourceId, request.WoundId, StringComparison.Ordinal);
@@ -434,6 +785,57 @@ internal static class WoundConsequenceEnvelopeCatalog
         _ => 0m
     };
 
+    private static MortalEvidenceIndex BuildMortalEvidenceIndex(
+        WoundConsequenceEffectProposal effect)
+    {
+        var cadences = new Dictionary<
+            string,
+            ImmutableArray<IndexedCadence>.Builder>(StringComparer.Ordinal);
+        for (var index = 0; index < effect.Cadences.Length; index++)
+        {
+            AddEvidence(
+                cadences,
+                effect.Cadences[index].ComponentId,
+                new IndexedCadence(index, effect.Cadences[index]));
+        }
+
+        var expansions = new Dictionary<
+            string,
+            ImmutableArray<IndexedExpansion>.Builder>(StringComparer.Ordinal);
+        for (var index = 0; index < effect.Expansions.Length; index++)
+        {
+            AddEvidence(
+                expansions,
+                effect.Expansions[index].ReactionComponentId,
+                new IndexedExpansion(index, effect.Expansions[index]));
+        }
+
+        return new MortalEvidenceIndex(
+            cadences.ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value.ToImmutable(),
+                StringComparer.Ordinal),
+            expansions.ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value.ToImmutable(),
+                StringComparer.Ordinal));
+    }
+
+    private static void AddEvidence<T>(
+        Dictionary<string, ImmutableArray<T>.Builder> index,
+        string? key,
+        T value)
+    {
+        key ??= string.Empty;
+        if (!index.TryGetValue(key, out var entries))
+        {
+            entries = ImmutableArray.CreateBuilder<T>();
+            index.Add(key, entries);
+        }
+
+        entries.Add(value);
+    }
+
     private static void ValidateMortalEffects(
         WoundConsequenceEnvelopeRequest request,
         int rank,
@@ -450,6 +852,7 @@ internal static class WoundConsequenceEnvelopeCatalog
             var effect = indexed.Effect;
             var effectPath = $"{path}.effects[{indexed.Index}]";
             var usedExpansions = new HashSet<int>();
+            var evidence = BuildMortalEvidenceIndex(effect);
 
             for (var componentIndex = 0;
                  componentIndex < effect.Components.Length;
@@ -459,6 +862,7 @@ internal static class WoundConsequenceEnvelopeCatalog
                     request,
                     rank,
                     indexed,
+                    evidence,
                     componentIndex,
                     effect.Components[componentIndex],
                     effectPath,
@@ -504,6 +908,7 @@ internal static class WoundConsequenceEnvelopeCatalog
         WoundConsequenceEnvelopeRequest request,
         int rank,
         IndexedEffect indexed,
+        MortalEvidenceIndex evidence,
         int componentIndex,
         JsonElement component,
         string componentContainerPath,
@@ -562,6 +967,7 @@ internal static class WoundConsequenceEnvelopeCatalog
                 request,
                 rank,
                 indexed,
+                evidence,
                 componentIndex,
                 component,
                 componentPath,
@@ -631,7 +1037,7 @@ internal static class WoundConsequenceEnvelopeCatalog
             case "periodic_restore":
                 ValidatePeriodic(
                     rank,
-                    indexed.Effect,
+                    evidence,
                     indexed.Effect.EffectId,
                     componentId,
                     profile,
@@ -706,6 +1112,26 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
+        if (payload.TryGetProperty("cap", out var cap) &&
+            cap.ValueKind == JsonValueKind.Object &&
+            cap.TryGetProperty("minimum", out var rawMinimum) &&
+            ResourceMaterializationContract.TryReadExactDecimal(rawMinimum, out var minimum) &&
+            cap.TryGetProperty("maximum", out var rawMaximum) &&
+            ResourceMaterializationContract.TryReadExactDecimal(rawMaximum, out var maximum))
+        {
+            var effective = Math.Min(Math.Max(value, minimum), maximum);
+            if (!WithinAbsoluteLimit(effective, limit))
+            {
+                Add(
+                    issues,
+                    componentPath + ".payload.cap",
+                    "wound_consequence_magnitude_exceeded",
+                    $"effective absolute {operation} modifier <= {limit.ToString(CultureInfo.InvariantCulture)} at severity rank {rank}",
+                    effective.ToString(CultureInfo.InvariantCulture));
+                return;
+            }
+        }
+
         AddSlot(
             candidates,
             coordinates,
@@ -764,7 +1190,7 @@ internal static class WoundConsequenceEnvelopeCatalog
 
     private static void ValidatePeriodic(
         int rank,
-        WoundConsequenceEffectProposal effect,
+        MortalEvidenceIndex evidence,
         string effectId,
         string componentId,
         string profile,
@@ -806,14 +1232,7 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
-        var cadences = effect.Cadences
-            .Select((cadence, index) => new IndexedCadence(index, cadence))
-            .Where(candidate => string.Equals(
-                candidate.Cadence.ComponentId,
-                componentId,
-                StringComparison.Ordinal))
-            .ToArray();
-        if (cadences.Length == 0)
+        if (!evidence.CadencesByComponentId.TryGetValue(componentId, out var cadences))
         {
             Add(
                 issues,
@@ -830,8 +1249,17 @@ internal static class WoundConsequenceEnvelopeCatalog
         {
             var cadence = indexedCadence.Cadence;
             var cadencePath = $"{effectPath}.cadences[{indexedCadence.Index}]";
-            if (!ResourceMaterializationContract.IsExactIdentifier(cadence.SourceEvent) ||
-                !seenEvents.Add(cadence.SourceEvent))
+            if (!EffectEventTypeCatalog.IsRegistered(cadence.SourceEvent))
+            {
+                Add(
+                    issues,
+                    cadencePath + ".sourceEvent",
+                    "wound_consequence_periodic_cadence_invalid",
+                    "one registered source event",
+                    cadence.SourceEvent);
+                cadenceValid = false;
+            }
+            else if (!seenEvents.Add(cadence.SourceEvent))
             {
                 Add(
                     issues,
@@ -962,6 +1390,7 @@ internal static class WoundConsequenceEnvelopeCatalog
         WoundConsequenceEnvelopeRequest request,
         int rank,
         IndexedEffect indexed,
+        MortalEvidenceIndex evidence,
         int componentIndex,
         JsonElement component,
         string componentPath,
@@ -1015,13 +1444,11 @@ internal static class WoundConsequenceEnvelopeCatalog
             componentPath + ".payload.resultKind",
             issues);
 
-        var expansionMatches = indexed.Effect.Expansions
-            .Select((expansion, index) => new IndexedExpansion(index, expansion))
-            .Where(candidate => string.Equals(
-                candidate.Expansion.ReactionComponentId,
-                componentId,
-                StringComparison.Ordinal))
-            .ToArray();
+        var expansionMatches = evidence.ExpansionsByReactionComponentId.TryGetValue(
+            componentId,
+            out var matches)
+            ? matches
+            : ImmutableArray<IndexedExpansion>.Empty;
         foreach (var match in expansionMatches)
             usedExpansions.Add(match.Index);
 
@@ -1100,6 +1527,7 @@ internal static class WoundConsequenceEnvelopeCatalog
                 request,
                 rank,
                 indexed,
+                evidence,
                 expansionComponentIndex,
                 expansion.Components[expansionComponentIndex],
                 expansionPath,
@@ -1604,6 +2032,11 @@ internal static class WoundConsequenceEnvelopeCatalog
     private sealed record IndexedExpansion(
         int Index,
         WoundReactionExpansionProposal Expansion);
+
+    private sealed record MortalEvidenceIndex(
+        IReadOnlyDictionary<string, ImmutableArray<IndexedCadence>> CadencesByComponentId,
+        IReadOnlyDictionary<string, ImmutableArray<IndexedExpansion>>
+            ExpansionsByReactionComponentId);
 
     private sealed record SlotCandidate(
         string EffectId,
