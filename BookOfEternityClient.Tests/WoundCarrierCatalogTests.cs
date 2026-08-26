@@ -241,6 +241,300 @@ public sealed class WoundCarrierCatalogTests
     }
 
     [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void Build_ReviewRegression_MalformedWoundIdentityParticipatesInGlobalUniqueness(
+        bool acrossCarriers,
+        bool confusable)
+    {
+        const string validWoundId = "wound_A";
+        var malformedWoundId = confusable ? "wound_А" : validWoundId;
+        var valid = Wound(validWoundId);
+        WoundCarrierCatalog catalog;
+
+        if (acrossCarriers)
+        {
+            var malformed = Wound(
+                malformedWoundId,
+                ownerKind: "npc",
+                ownerId: "npc_malformed_identity",
+                carrierPath: WoundCarrierCatalog.NpcPath);
+            malformed["display"]!.AsObject().Remove("description");
+            catalog = BuildCatalog(
+                player: WoundContractTestData.CreatePlayerCarrier(valid),
+                npcs: WoundContractTestData.CreateNamedNpcCarrier(
+                    "npc_malformed_identity",
+                    malformed));
+        }
+        else
+        {
+            var malformed = Wound(malformedWoundId);
+            malformed["display"]!.AsObject().Remove("description");
+            catalog = BuildCatalog(
+                player: WoundContractTestData.CreatePlayerCarrier(valid, malformed));
+        }
+
+        Assert.Contains(catalog.Issues, issue =>
+            issue.Code == "wound_materialization_missing_field");
+        AssertIssue(
+            catalog,
+            confusable
+                ? "wound_carrier_confusable_wound_id"
+                : "wound_carrier_duplicate_occurrence");
+        Assert.Single(catalog.Occurrences);
+        Assert.False(catalog.TryResolveOne(validWoundId, out _));
+        Assert.False(catalog.TryResolveOne(malformedWoundId, out _));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Build_ReviewRegression_DuplicateNpcOwnerCarriersIncludeEmptyObjects(
+        bool secondCarrierIsEmpty)
+    {
+        const string npcId = "npc_duplicate_owner";
+        var firstWound = Wound(
+            "wound_npc_owner_first",
+            ownerKind: "npc",
+            ownerId: npcId,
+            carrierPath: WoundCarrierCatalog.NpcPath);
+        var secondWound = Wound(
+            "wound_npc_owner_second",
+            ownerKind: "npc",
+            ownerId: npcId,
+            carrierPath: WoundCarrierCatalog.NpcPath);
+        var root = WoundContractTestData.CreateNamedNpcCarrier(npcId, firstWound);
+        root["entries"]!.AsArray().Add(new JsonObject
+        {
+            ["npcId"] = npcId,
+            ["activeWounds"] = secondCarrierIsEmpty
+                ? new JsonArray()
+                : Array(secondWound)
+        });
+
+        var catalog = BuildCatalog(npcs: root);
+
+        AssertIssue(catalog, "wound_carrier_duplicate_owner_carrier");
+        Assert.False(catalog.TryResolveOne("wound_npc_owner_first", out _));
+        if (!secondCarrierIsEmpty)
+            Assert.False(catalog.TryResolveOne("wound_npc_owner_second", out _));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Build_ReviewRegression_DuplicateCombatOwnersCollideAcrossEnemyAndAllyRoots(
+        bool nestedMember)
+    {
+        var ownerKind = nestedMember ? "combatant_member" : "combatant";
+        var ownerId = nestedMember ? "member_cross_root" : "combatant_cross_root";
+        var enemyWound = Wound(
+            "wound_cross_root_enemy",
+            ownerKind: ownerKind,
+            ownerId: ownerId,
+            carrierPath: WoundCarrierCatalog.EnemiesPath);
+        var allyWound = Wound(
+            "wound_cross_root_ally",
+            ownerKind: ownerKind,
+            ownerId: ownerId,
+            carrierPath: WoundCarrierCatalog.AlliesPath);
+        JsonObject enemyOwner;
+        JsonObject allyOwner;
+
+        if (nestedMember)
+        {
+            enemyOwner = new JsonObject
+            {
+                ["combatantId"] = "group_enemy",
+                ["isGroup"] = true,
+                ["members"] = Array(new JsonObject
+                {
+                    ["memberId"] = ownerId,
+                    ["activeWounds"] = Array(enemyWound)
+                })
+            };
+            allyOwner = new JsonObject
+            {
+                ["combatantId"] = "group_ally",
+                ["isGroup"] = true,
+                ["members"] = Array(new JsonObject
+                {
+                    ["memberId"] = ownerId,
+                    ["activeWounds"] = Array(allyWound)
+                })
+            };
+        }
+        else
+        {
+            enemyOwner = Combatant(ownerId, enemyWound);
+            allyOwner = Combatant(ownerId, allyWound);
+        }
+
+        var catalog = BuildCatalog(
+            enemies: CombatRoot("enemiesData", enemyOwner),
+            allies: CombatRoot("alliesData", allyOwner));
+
+        AssertIssue(catalog, "wound_carrier_duplicate_owner_carrier");
+        Assert.False(catalog.TryResolveOne("wound_cross_root_enemy", out _));
+        Assert.False(catalog.TryResolveOne("wound_cross_root_ally", out _));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Build_ReviewRegression_EmptyAmbiguousCombatObjectStillClaimsItsPositionalOwner(
+        bool nestedMember)
+    {
+        var ownerKind = nestedMember ? "combatant_member" : "combatant";
+        var ownerId = nestedMember ? "member_ambiguous_owner" : "combatant_ambiguous_owner";
+        var wound = Wound(
+            "wound_ambiguous_owner_collision",
+            ownerKind: ownerKind,
+            ownerId: ownerId,
+            carrierPath: WoundCarrierCatalog.EnemiesPath);
+        JsonObject validOwner;
+        JsonObject emptyAmbiguousOwner;
+
+        if (nestedMember)
+        {
+            validOwner = new JsonObject
+            {
+                ["combatantId"] = "group_valid_owner",
+                ["isGroup"] = true,
+                ["members"] = Array(new JsonObject
+                {
+                    ["memberId"] = ownerId,
+                    ["activeWounds"] = Array(wound)
+                })
+            };
+            emptyAmbiguousOwner = new JsonObject
+            {
+                ["combatantId"] = "group_ambiguous_owner",
+                ["isGroup"] = true,
+                ["members"] = Array(new JsonObject
+                {
+                    ["memberId"] = ownerId,
+                    ["combatantId"] = "conflicting_nested_identity",
+                    ["activeWounds"] = new JsonArray()
+                })
+            };
+        }
+        else
+        {
+            validOwner = Combatant(ownerId, wound);
+            emptyAmbiguousOwner = new JsonObject
+            {
+                ["combatantId"] = ownerId,
+                ["memberId"] = "conflicting_top_level_identity",
+                ["activeWounds"] = new JsonArray()
+            };
+        }
+
+        var catalog = BuildCatalog(
+            enemies: CombatRoot("enemiesData", validOwner),
+            allies: CombatRoot("alliesData", emptyAmbiguousOwner));
+
+        AssertIssue(catalog, "wound_carrier_duplicate_owner_carrier");
+        Assert.False(catalog.TryResolveOne("wound_ambiguous_owner_collision", out _));
+    }
+
+    [Fact]
+    public void Build_ReviewRegression_DerivedAfterlifeOwnerAliasesAndRealmsCannotCollide()
+    {
+        const string actorId = "resident_duplicate_owner";
+        var firstWound = Wound(
+            "wound_afterlife_owner_first",
+            realm: "chaos_sea",
+            ownerKind: "resident",
+            ownerId: actorId,
+            carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath,
+            domain: "spiritual");
+        var secondWound = Wound(
+            "wound_afterlife_owner_second",
+            realm: "chaos_sea",
+            ownerKind: "resident",
+            ownerId: actorId,
+            carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath,
+            domain: "spiritual");
+        var catalog = BuildCatalog(profiles: ProfileRoot(
+            Profile("resident", actorId, "Chaos Sea", firstWound),
+            Profile("shining_resident", actorId, "chaos_sea", secondWound)));
+
+        AssertIssue(catalog, "wound_carrier_duplicate_owner_carrier");
+        Assert.False(catalog.TryResolveOne("wound_afterlife_owner_first", out _));
+        Assert.False(catalog.TryResolveOne("wound_afterlife_owner_second", out _));
+    }
+
+    [Theory]
+    [InlineData("false")]
+    [InlineData("missing")]
+    [InlineData("non_boolean")]
+    [InlineData("true")]
+    public void Build_ReviewRegression_MemberCarrierRequiresExactBooleanTrueGroupParent(
+        string groupState)
+    {
+        var memberWound = Wound(
+            "wound_group_parent_gate_" + groupState,
+            ownerKind: "combatant_member",
+            ownerId: "member_group_parent_gate_" + groupState,
+            carrierPath: WoundCarrierCatalog.EnemiesPath);
+        var group = new JsonObject
+        {
+            ["combatantId"] = "group_parent_gate_" + groupState,
+            ["members"] = Array(new JsonObject
+            {
+                ["memberId"] = "member_group_parent_gate_" + groupState,
+                ["activeWounds"] = Array(memberWound)
+            })
+        };
+        if (groupState == "true")
+            group["isGroup"] = true;
+        else if (groupState == "false")
+            group["isGroup"] = false;
+        else if (groupState == "non_boolean")
+            group["isGroup"] = "true";
+
+        var catalog = BuildCatalog(enemies: CombatRoot("enemiesData", group));
+
+        if (groupState == "true")
+        {
+            Assert.Empty(catalog.Issues);
+            Assert.True(catalog.TryResolveOne(memberWound["woundId"]!.GetValue<string>(), out _));
+            return;
+        }
+
+        AssertIssue(catalog, "wound_carrier_group_identity_invalid");
+        Assert.Single(catalog.Occurrences);
+        Assert.False(catalog.TryResolveOne(memberWound["woundId"]!.GetValue<string>(), out _));
+    }
+
+    [Theory]
+    [InlineData(" Chaos Sea", "chaos_sea")]
+    [InlineData("Chaos Sea ", "chaos_sea")]
+    [InlineData("\tShining Abode", "shining_abode")]
+    [InlineData("Shining Abode\n", "shining_abode")]
+    public void Build_ReviewRegression_RejectsPaddedAfterlifeRealmBeforeNormalization(
+        string declaredRealm,
+        string normalizedRealm)
+    {
+        var wound = Wound(
+            "wound_padded_afterlife_realm",
+            realm: normalizedRealm,
+            ownerKind: "guardian",
+            ownerId: "guardian_padded_realm",
+            carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath,
+            domain: "spiritual");
+        var catalog = BuildCatalog(profiles: ProfileRoot(
+            Profile("guardian", "guardian_padded_realm", declaredRealm, wound)));
+
+        AssertIssue(catalog, "wound_carrier_afterlife_identity_invalid");
+        Assert.Empty(catalog.Occurrences);
+        Assert.False(catalog.TryResolveOne("wound_padded_afterlife_realm", out _));
+    }
+
+    [Theory]
     [MemberData(nameof(OwnerMismatchCases))]
     public void Build_EnvelopeOwnerMustMatchEveryPhysicallyDerivedCoordinateField(
         string field,

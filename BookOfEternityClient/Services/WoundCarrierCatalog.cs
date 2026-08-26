@@ -72,6 +72,7 @@ internal sealed class WoundCarrierCatalog
         builder.ScanCombatants(input.EnemyCombatants, EnemiesPath, "enemiesData");
         builder.ScanCombatants(input.AllyCombatants, AlliesPath, "alliesData");
         builder.ScanAfterlifeProfiles(input.AfterlifeProfiles);
+        builder.FinalizeOwnerCarrierUniqueness();
         builder.FinalizeIdentityUniqueness();
         return new WoundCarrierCatalog(builder);
     }
@@ -86,6 +87,18 @@ internal sealed class WoundCarrierCatalog
             "schemaVersion", "entries");
         private static readonly IReadOnlySet<string> NpcEntryFields = Set(
             "npcId", "activeWounds");
+
+        private sealed record LogicalOwnerKey(
+            string Realm,
+            string OwnerKind,
+            string OwnerId);
+
+        private sealed record OwnerCarrierSighting(
+            string JsonPath,
+            IReadOnlyList<string> WoundIds);
+
+        private readonly Dictionary<LogicalOwnerKey, List<OwnerCarrierSighting>>
+            _ownerCarrierSightings = new();
 
         internal List<WoundCarrierOccurrence> Occurrences { get; } = new();
         internal List<ValidationIssue> Issues { get; } = new();
@@ -152,6 +165,12 @@ internal sealed class WoundCarrierCatalog
                         Describe(entry["npcId"]));
                 }
 
+                var coordinate = hasNpcId
+                    ? new WoundCarrierCoordinate("mortal_world", "npc", npcId, NpcPath)
+                    : null;
+                if (coordinate is not null)
+                    RegisterOwnerCarrier(coordinate, entryPath, entry["activeWounds"]);
+
                 if (entry["activeWounds"] is not JsonArray wounds)
                 {
                     Add(
@@ -162,9 +181,6 @@ internal sealed class WoundCarrierCatalog
                     continue;
                 }
 
-                var coordinate = hasNpcId
-                    ? new WoundCarrierCoordinate("mortal_world", "npc", npcId, NpcPath)
-                    : null;
                 ScanWounds(
                     wounds,
                     NpcPath,
@@ -201,7 +217,12 @@ internal sealed class WoundCarrierCatalog
                     continue;
                 }
 
-                ScanCombatOwner(combatant, filePath, combatantPath, isMember: false);
+                ScanCombatOwner(
+                    combatant,
+                    filePath,
+                    combatantPath,
+                    isMember: false,
+                    inheritedCarrierInvalid: false);
                 if (!combatant.ContainsKey("members"))
                     continue;
                 if (combatant["members"] is not JsonArray members)
@@ -212,6 +233,19 @@ internal sealed class WoundCarrierCatalog
                         "nested group-member array",
                         Describe(combatant["members"]));
                     continue;
+                }
+
+                var isExactGroup = IsExactTrue(combatant["isGroup"]);
+                var hasNonEmptyMemberWoundState = members.Any(static member =>
+                    member is JsonObject memberObject &&
+                    HasPotentialWoundState(memberObject["activeWounds"]));
+                if (!isExactGroup && hasNonEmptyMemberWoundState)
+                {
+                    Add(
+                        combatantPath + ".isGroup",
+                        "wound_carrier_group_identity_invalid",
+                        "exact boolean true before nested member wound carriers",
+                        Describe(combatant["isGroup"]));
                 }
 
                 for (var memberIndex = 0; memberIndex < members.Count; memberIndex++)
@@ -227,7 +261,15 @@ internal sealed class WoundCarrierCatalog
                         continue;
                     }
 
-                    ScanCombatOwner(member, filePath, memberPath, isMember: true);
+                    if (isExactGroup || HasPotentialWoundState(member["activeWounds"]))
+                    {
+                        ScanCombatOwner(
+                            member,
+                            filePath,
+                            memberPath,
+                            isMember: true,
+                            inheritedCarrierInvalid: !isExactGroup);
+                    }
                 }
             }
         }
@@ -258,6 +300,15 @@ internal sealed class WoundCarrierCatalog
                         Describe(profiles[index]));
                     continue;
                 }
+                var identityValid = TryResolveAfterlifeCoordinate(profile, out var coordinate);
+                if (identityValid)
+                {
+                    RegisterOwnerCarrier(
+                        coordinate,
+                        profilePath,
+                        profile["activeWounds"]);
+                }
+
                 if (!profile.ContainsKey("activeWounds"))
                     continue;
                 if (profile["activeWounds"] is not JsonArray wounds)
@@ -272,7 +323,6 @@ internal sealed class WoundCarrierCatalog
                 if (wounds.Count == 0)
                     continue;
 
-                var identityValid = TryResolveAfterlifeCoordinate(profile, out var coordinate);
                 if (!identityValid)
                 {
                     Add(
@@ -323,6 +373,25 @@ internal sealed class WoundCarrierCatalog
                 {
                     confusableIdentities[confusableKey] = (pair.Key, pair.Value[0]);
                 }
+            }
+        }
+
+        internal void FinalizeOwnerCarrierUniqueness()
+        {
+            foreach (var pair in _ownerCarrierSightings)
+            {
+                if (pair.Value.Count < 2)
+                    continue;
+
+                foreach (var sighting in pair.Value)
+                    InvalidWoundIds.UnionWith(sighting.WoundIds);
+
+                Add(
+                    pair.Value[1].JsonPath,
+                    "wound_carrier_duplicate_owner_carrier",
+                    "exactly one physical carrier object for each logical owner coordinate",
+                    $"{pair.Value.Count} carrier objects for " +
+                    $"{pair.Key.Realm}/{pair.Key.OwnerKind}/{pair.Key.OwnerId}");
             }
         }
 
@@ -450,8 +519,32 @@ internal sealed class WoundCarrierCatalog
             JsonObject owner,
             string filePath,
             string ownerPath,
-            bool isMember)
+            bool isMember,
+            bool inheritedCarrierInvalid)
         {
+            var expectedIdentityField = isMember ? "memberId" : "combatantId";
+            var conflictingIdentityField = isMember ? "combatantId" : "memberId";
+            var hasExpectedIdentity = TryReadExactIdentifier(
+                owner[expectedIdentityField],
+                out var ownerId);
+            var hasConflictingIdentity = owner.ContainsKey(conflictingIdentityField) &&
+                                         owner[conflictingIdentityField] is not null;
+            var claimedCoordinate = hasExpectedIdentity
+                ? new WoundCarrierCoordinate(
+                    "mortal_world",
+                    isMember ? "combatant_member" : "combatant",
+                    ownerId,
+                    filePath)
+                : null;
+            if (claimedCoordinate is not null)
+            {
+                RegisterOwnerCarrier(
+                    claimedCoordinate,
+                    ownerPath,
+                    owner["activeWounds"]);
+            }
+            var coordinate = hasConflictingIdentity ? null : claimedCoordinate;
+
             if (!owner.ContainsKey("activeWounds"))
                 return;
             if (owner["activeWounds"] is not JsonArray wounds)
@@ -466,7 +559,7 @@ internal sealed class WoundCarrierCatalog
             if (wounds.Count == 0)
                 return;
 
-            var carrierInvalid = false;
+            var carrierInvalid = inheritedCarrierInvalid;
             if (owner.ContainsKey("combatantRef"))
             {
                 Add(
@@ -495,13 +588,6 @@ internal sealed class WoundCarrierCatalog
                 carrierInvalid = true;
             }
 
-            var expectedIdentityField = isMember ? "memberId" : "combatantId";
-            var conflictingIdentityField = isMember ? "combatantId" : "memberId";
-            var hasExpectedIdentity = TryReadExactIdentifier(
-                owner[expectedIdentityField],
-                out var ownerId);
-            var hasConflictingIdentity = owner.ContainsKey(conflictingIdentityField) &&
-                                         owner[conflictingIdentityField] is not null;
             if (!hasExpectedIdentity || hasConflictingIdentity)
             {
                 Add(
@@ -514,13 +600,6 @@ internal sealed class WoundCarrierCatalog
                 carrierInvalid = true;
             }
 
-            var coordinate = hasExpectedIdentity && !hasConflictingIdentity
-                ? new WoundCarrierCoordinate(
-                    "mortal_world",
-                    isMember ? "combatant_member" : "combatant",
-                    ownerId,
-                    filePath)
-                : null;
             ScanWounds(
                 wounds,
                 filePath,
@@ -539,14 +618,25 @@ internal sealed class WoundCarrierCatalog
             for (var index = 0; index < wounds.Count; index++)
             {
                 var jsonPath = $"{arrayPath}[{index}]";
+                string? sightedWoundId = null;
+                if (wounds[index] is JsonObject item &&
+                    TryReadExactIdentifier(item["woundId"], out var exactWoundId))
+                {
+                    sightedWoundId = exactWoundId;
+                    RegisterIdentitySighting(exactWoundId, jsonPath);
+                }
+
                 var result = WoundMaterializationContract.Parse(
                     wounds[index]?.ToJsonString() ?? "null",
                     jsonPath);
                 Issues.AddRange(result.Issues);
+                if (sightedWoundId is not null && result.Issues.Count > 0)
+                    InvalidWoundIds.Add(sightedWoundId);
                 if (result.Wound is not { } wound)
                     continue;
 
-                RegisterIdentitySighting(wound.WoundId, jsonPath);
+                if (sightedWoundId is null)
+                    RegisterIdentitySighting(wound.WoundId, jsonPath);
                 var occurrenceInvalid = carrierInvalid || coordinate is null;
                 if (!string.Equals(wound.Lifecycle, "active", StringComparison.Ordinal))
                 {
@@ -626,6 +716,26 @@ internal sealed class WoundCarrierCatalog
             occurrences.Add(occurrence);
         }
 
+        private void RegisterOwnerCarrier(
+            WoundCarrierCoordinate coordinate,
+            string jsonPath,
+            JsonNode? activeWounds)
+        {
+            var key = new LogicalOwnerKey(
+                coordinate.Realm,
+                coordinate.OwnerKind,
+                coordinate.OwnerId);
+            if (!_ownerCarrierSightings.TryGetValue(key, out var sightings))
+            {
+                sightings = new List<OwnerCarrierSighting>();
+                _ownerCarrierSightings.Add(key, sightings);
+            }
+
+            sightings.Add(new OwnerCarrierSighting(
+                jsonPath,
+                CollectExactWoundIds(activeWounds)));
+        }
+
         private void RegisterIdentitySighting(string woundId, string jsonPath)
         {
             if (!IdentitySightings.TryGetValue(woundId, out var paths))
@@ -634,6 +744,24 @@ internal sealed class WoundCarrierCatalog
                 IdentitySightings.Add(woundId, paths);
             }
             paths.Add(jsonPath);
+        }
+
+        private static IReadOnlyList<string> CollectExactWoundIds(JsonNode? node)
+        {
+            if (node is not JsonArray wounds)
+                return Array.Empty<string>();
+
+            var woundIds = new List<string>();
+            foreach (var wound in wounds)
+            {
+                if (wound is JsonObject item &&
+                    TryReadExactIdentifier(item["woundId"], out var woundId))
+                {
+                    woundIds.Add(woundId);
+                }
+            }
+
+            return woundIds.ToArray();
         }
 
         private bool ValidateClosedObject(
@@ -696,7 +824,7 @@ internal sealed class WoundCarrierCatalog
             coordinate = null!;
             if (!TryReadExactIdentifier(profile["actorType"], out var actorType) ||
                 !TryReadExactIdentifier(profile["actorId"], out var actorId) ||
-                !TryReadString(profile["realm"], out var realm) ||
+                !TryReadExactIdentifier(profile["realm"], out var realm) ||
                 !AfterlifeEntityProfileState.TryNormalizeEffectRealm(realm, out var normalizedRealm))
             {
                 return false;
@@ -759,13 +887,14 @@ internal sealed class WoundCarrierCatalog
             return ResourceMaterializationContract.IsExactIdentifier(value);
         }
 
-        private static bool TryReadString(JsonNode? node, out string value)
-        {
-            value = node is JsonValue jsonValue && jsonValue.TryGetValue<string>(out var text)
-                ? text
-                : string.Empty;
-            return value.Length > 0;
-        }
+        private static bool IsExactTrue(JsonNode? node) =>
+            node is JsonValue value &&
+            value.TryGetValue<bool>(out var isTrue) &&
+            isTrue;
+
+        private static bool HasPotentialWoundState(JsonNode? node) =>
+            node is JsonArray { Count: > 0 } ||
+            node is not null and not JsonArray;
 
         private static string Describe(JsonNode? node) => node?.ToJsonString() ?? "missing";
 
