@@ -36,10 +36,10 @@ internal static class WoundMaterializationTestFixtures
             LocationAuthorityRef: "body_part_left_forearm");
 
         var items = CreateMortalItems(
-            (refs.BandageItemId, "Стерильный бинт аварийного набора", "Стерильный бинт из аварийного медпункта удерживает повязку на загрязнённой ране."),
-            (refs.AntisepticItemId, "Антисептик из аварийного набора", "Антисептик очищает края раны от заражённой пыли обвала."),
-            (refs.SterileThreadItemId, "Стерильная хирургическая нить", "Хирургическая нить позволяет закрыть рваные края после очистки."),
-            (refs.AntibioticItemId, "Курс антибиотика широкого действия", "Курс антибиотика сдерживает риск воспаления после заражённого обвала."));
+            new(refs.BandageItemId, "Стерильный бинт аварийного набора", "Стерильный бинт из аварийного медпункта удерживает повязку на загрязнённой ране.", "sterile bandage in a post-apocalyptic field kit, no text"),
+            new(refs.AntisepticItemId, "Антисептик из аварийного набора", "Антисептик очищает края раны от заражённой пыли обвала.", "antiseptic ampoule from a collapsed aid station, no text"),
+            new(refs.SterileThreadItemId, "Стерильная хирургическая нить", "Хирургическая нить позволяет закрыть рваные края после очистки.", "sterile surgical thread on a field medic table, no text"),
+            new(refs.AntibioticItemId, "Курс антибиотика широкого действия", "Курс антибиотика сдерживает риск воспаления после заражённого обвала.", "antibiotic course in a rugged emergency case, no text"));
         var location = CreateScenarioLocation(refs.LocationRef, "Медпункт у обрушенного перехода", "Чистый стол медпункта среди заражённых обломков.", "visited");
         var proposal = CreateMortalProposal(
             refs,
@@ -56,7 +56,12 @@ internal static class WoundMaterializationTestFixtures
 
         return new MortalWoundScenarioFixture(
             proposal,
-            CreateMortalAuthorityRoots(items, location, refs, "Полевой медик", "field_medicine", "clean_work_surface"),
+            CreateMortalAuthorityRoots(items, location, refs, new MortalProviderPresentation(
+                "Полевой медик", "медик обрушенных кварталов", "Полевой медик сортирует раненых у заражённой переправы и объясняет каждый риск.",
+                "Выживание требует проверяемой помощи и честного учёта потерь.", "прагматичный спасатель", "Pragmatist", "союз аварийных медиков", "человек руин", "полевой хирург",
+                "Пыльный фартук, защитные очки и аварийный респиратор поверх перевязочного набора.", "После заражённого обвала собирал раненых у разрушенных переходов.",
+                "Подготовить чистый стол и не допустить новой инфекции.", "Стабилизировать раненых до эвакуации.", "Сохранить сеть безопасных медпунктов.",
+                "Объясняет полевую очистку раны, карантин и контроль инфекции.", "Основы полевой санитарии", "Показывает, как очистить рану, удержать карантин и проверить признаки инфекции.", "post-apocalyptic field medic at a collapsed aid station, no text", "field_medicine", "clean_work_surface")),
             refs,
             new WoundExpectedFacts("mortal_world", "physical", "II", refs.OwnerId, refs.EventRef,
                 "requires_stabilization", new[]
@@ -89,10 +94,10 @@ internal static class WoundMaterializationTestFixtures
             LocationAuthorityRef: "resonance_channel_left_hand");
 
         var items = CreateMortalItems(
-            (refs.BandageItemId, "Резонансная повязка", "Резонансная повязка гасит дрожь в обожжённых проводящих каналах."),
-            (refs.AntisepticItemId, "Пыль резонансного кристалла", "Кристаллическая пыль выравнивает сорванный ритм поющего стекла."),
-            (refs.SterileThreadItemId, "Настроенный лечебный фокус", "Лечебный фокус собирает рассеянный резонанс вокруг грудного канала."),
-            (refs.AntibioticItemId, "Эликсир серебряного мха", "Эликсир серебряного мха возвращает устойчивость после кристаллического ожога."));
+            new(refs.BandageItemId, "Резонансная повязка", "Резонансная повязка гасит дрожь в обожжённых проводящих каналах.", "resonant bandage glowing beside singing glass, no text"),
+            new(refs.AntisepticItemId, "Пыль резонансного кристалла", "Кристаллическая пыль выравнивает сорванный ритм поющего стекла.", "resonance crystal dust in an arcane vial, no text"),
+            new(refs.SterileThreadItemId, "Настроенный лечебный фокус", "Лечебный фокус собирает рассеянный резонанс вокруг грудного канала.", "tuned healing focus with crystalline light, no text"),
+            new(refs.AntibioticItemId, "Эликсир серебряного мха", "Эликсир серебряного мха возвращает устойчивость после кристаллического ожога.", "silver moss elixir in a glass observatory, no text"));
         var location = CreateScenarioLocation(refs.LocationRef, "Обсерватория Поющего Стекла", "Кристаллическая обсерватория с настроенной лечебной камерой.", "discovered");
         var proposal = CreateMortalProposal(
             refs,
@@ -109,7 +114,12 @@ internal static class WoundMaterializationTestFixtures
 
         return new MortalWoundScenarioFixture(
             proposal,
-            CreateMortalAuthorityRoots(items, location, refs, "Настройщик лечебных фокусов", "resonance_mending", "resonance_chamber"),
+            CreateMortalAuthorityRoots(items, location, refs, new MortalProviderPresentation(
+                "Настройщик лечебных фокусов", "резонансный целитель", "Настройщик лечебных фокусов выравнивает сорванные потоки в камере поющего стекла.",
+                "Магический резонанс лечится настройкой, а не грубой силой.", "созерцательный настройщик", "Dissident", "артель певчего стекла", "стеклорождённый", "мастер резонансной хирургии",
+                "Призматический плащ, медные камертонные кольца и светящийся фокус на груди.", "Учился слушать трещины поющих кристаллов в обсерватории, а не выживать среди обвалов.",
+                "Выверить частоту лечебной камеры для обожжённых каналов.", "Вернуть пациентам устойчивый внутренний резонанс.", "Сохранить школу бережной настройки кристаллов.",
+                "Учит читать отклик кристалла и безопасно направлять лечебный резонанс.", "Настройка лечебного резонанса", "Показывает, как считать отклик кристалла и направить резонанс без нового ожога.", "arcane resonance healer in a singing glass observatory, no text", "resonance_mending", "resonance_chamber")),
             refs,
             new WoundExpectedFacts("mortal_world", "physical", "II", refs.OwnerId, refs.EventRef,
                 "requires_stabilization", new[]
@@ -140,11 +150,9 @@ internal static class WoundMaterializationTestFixtures
         var sealedD20Ref = $"sealed_d20_turn_42_spiritual_strain_{suffix}";
         var playerProfile = CreateCurrentSpiritualProfile("player_soul", playerId, "Chaos Sea");
         var opponentProfile = CreateCurrentSpiritualProfile("guardian", opponentId, "Chaos Sea");
-        var conflict = new JsonObject
+        var conflict = AfterlifeSpiritualConflictState.CreateDefaultRoot();
+        conflict["activeConflict"] = new JsonObject
         {
-            ["schemaVersion"] = 1,
-            ["activeConflict"] = new JsonObject
-            {
                 ["conflictId"] = conflictId,
                 ["realm"] = "Chaos Sea",
                 ["sideModel"] = "direct_duel",
@@ -155,8 +163,6 @@ internal static class WoundMaterializationTestFixtures
                 ["conflictPosition"] = "contested",
                 ["resolutionState"] = "active",
                 ["exchangeLog"] = new JsonArray()
-            },
-            ["recentConflicts"] = new JsonArray()
         };
 
         var profiles = AfterlifeEntityProfileState.CreateDefaultRoot();
@@ -253,7 +259,7 @@ internal static class WoundMaterializationTestFixtures
         profiles[AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray(profile.DeepClone());
         var future = new JsonObject
         {
-            ["residentRole"] = new JsonObject { ["key"] = "healing_support", ["visibility"] = "known_to_player" },
+            ["primaryRole"] = new JsonObject { ["key"] = "healing_support", ["visibility"] = "known_to_player" },
             ["spiritualHealing"] = new JsonObject { ["tier"] = healingTier, ["experience"] = 0 },
             ["healingServiceProfile"] = serviceVisibility == null ? null : CreateHealingService(residentId, "shining_abode", locationId, serviceVisibility, 100)
         };
@@ -351,9 +357,7 @@ internal static class WoundMaterializationTestFixtures
         JsonObject[] items,
         JsonObject location,
         MortalWoundScenarioRefs refs,
-        string providerDisplayName,
-        string capabilityKind,
-        string facilityKind)
+        MortalProviderPresentation provider)
     {
         var bootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(Incarnation, Turn, 10, 10, 10, 10, 10);
         if (!bootstrap.IsValid)
@@ -369,19 +373,17 @@ internal static class WoundMaterializationTestFixtures
             MortalLocationTestFixture.CreateIdentityIndex(location),
             CreateMortalActorAuthority(
                 refs,
-                providerDisplayName,
-                location["name"]?.GetValue<string>() ?? throw new InvalidOperationException("Scenario location requires a name."),
-                capabilityKind,
-                facilityKind));
+                provider,
+                location["name"]?.GetValue<string>() ?? throw new InvalidOperationException("Scenario location requires a name.")));
     }
 
-    private static JsonObject[] CreateMortalItems(params (string ItemId, string Name, string Description)[] definitions) => definitions.Select(definition =>
+    private static JsonObject[] CreateMortalItems(params MortalItemPresentation[] definitions) => definitions.Select(definition =>
     {
-        var item = MortalItemTestFixture.CreateCanonicalRootAtTurn(definition.ItemId, Turn, "accepted_turn", "turn_outcome", "turn_42", definition.Name);
+        var item = MortalItemTestFixture.CreateCanonicalRootAtTurn(definition.ItemId, Turn, "player_acquisition", "turn_outcome", "turn_42", definition.Name);
         item["description"] = definition.Description;
         item["type"] = "Медицинский расходник";
         item["group"] = "Материалы лечения";
-        item["image_prompt"] = "лечебный расходник в тёмном фэнтези, без текста";
+        item["image_prompt"] = definition.ImagePrompt;
         MortalItemTestFixture.ResealCanonical(item);
         return item;
     }).ToArray();
@@ -398,54 +400,53 @@ internal static class WoundMaterializationTestFixtures
 
     private static JsonObject CreateMortalActorAuthority(
         MortalWoundScenarioRefs refs,
-        string providerDisplayName,
-        string locationName,
-        string capabilityKind,
-        string facilityKind)
+        MortalProviderPresentation provider,
+        string locationName)
     {
         var actor = EffectMaterializationTestFixture.CreateSameTurnMortalActor(refs.ProviderRef);
         actor["NPCId"] = refs.ProviderRef;
-        actor["name"] = providerDisplayName;
-        actor["displayName"] = providerDisplayName;
-        actor["role"] = "практик точной помощи";
-        actor["summary"] = $"{providerDisplayName} ведёт лечение по проверяемым признакам и не скрывает цену риска.";
-        actor["description"] = $"{providerDisplayName} ведёт лечение только по точным материальным основаниям.";
-        actor["image_prompt"] = "специалист по лечению в тёмном фэнтези, без текста";
-        actor["worldview"] = "Помощь должна опираться на наблюдаемые признаки и согласие пациента.";
-        actor["personalityArchetype"] = "внимательный практик";
-        actor["culturalStance"] = "полевой прагматик";
-        actor["race"] = "человек пограничья";
-        actor["class"] = "целитель-практик";
-        actor["appearanceDescription"] = "Носит потёртый фартук, чистые перчатки и подсумок с перевязочным набором.";
-        actor["history"] = "Собирал раненых после обвалов и научился сначала проверять источник боли.";
+        actor["name"] = provider.DisplayName;
+        actor["displayName"] = provider.DisplayName;
+        actor["role"] = provider.Role;
+        actor["summary"] = provider.Summary;
+        actor["description"] = provider.Summary;
+        actor["image_prompt"] = provider.ImagePrompt;
+        actor["worldview"] = provider.Worldview;
+        actor["personalityArchetype"] = provider.PersonalityArchetype;
+        actor["culturalStance"] = provider.CulturalStance;
+        actor["culturalLayer"] = provider.CulturalLayer;
+        actor["race"] = provider.Race;
+        actor["class"] = provider.Class;
+        actor["appearanceDescription"] = provider.AppearanceDescription;
+        actor["history"] = provider.History;
         actor["progressionType"] = "scenario_support_npc";
         actor["currentLocationId"] = refs.LocationRef;
         actor["currentLocationName"] = locationName;
-        actor["plans"] = "Подготовить безопасное место и провести лечение по подтверждённой схеме.";
+        actor["plans"] = provider.Plans;
         actor["goals"] = new JsonObject
         {
-            ["shortTerm"] = "Стабилизировать рану без неподтверждённых обещаний.",
-            ["longTerm"] = "Сохранить доступ к честной помощи для выживших."
+            ["shortTerm"] = provider.ShortTermGoal,
+            ["longTerm"] = provider.LongTermGoal
         };
         actor["teacherProfile"] = new JsonObject
         {
             ["canTeach"] = true,
             ["relationshipLevel"] = 25,
-            ["summary"] = "Объясняет, как читать признаки раны и готовить безопасную перевязку.",
+            ["summary"] = provider.TeachingSummary,
             ["skills"] = new JsonArray(new JsonObject
             {
-                ["skillId"] = capabilityKind,
-                ["skillName"] = "Основы точной помощи",
-                ["displayName"] = "Основы точной помощи",
+                ["skillId"] = provider.CapabilityKind,
+                ["skillName"] = provider.TeachingSkillName,
+                ["displayName"] = provider.TeachingSkillName,
                 ["skillKind"] = "passive_skill_mastery",
                 ["masteryLevel"] = 2,
                 ["currentMasteryLevel"] = 2,
                 ["maxMasteryLevel"] = 2,
-                ["summary"] = "Навык связывает уход за раной с проверяемыми признаками и доступными средствами."
+                ["summary"] = provider.TeachingSkillSummary
             })
         };
-        actor["capabilityEvidence"] = new JsonArray(new JsonObject { ["capabilityRef"] = refs.CapabilityRef, ["kind"] = capabilityKind, ["tier"] = 2, ["facilityRef"] = refs.FacilityRef });
-        actor["facilities"] = new JsonArray(new JsonObject { ["facilityRef"] = refs.FacilityRef, ["locationRef"] = refs.LocationRef, ["kind"] = facilityKind, ["visibility"] = "known_to_player" });
+        actor["capabilityEvidence"] = new JsonArray(new JsonObject { ["capabilityRef"] = refs.CapabilityRef, ["kind"] = provider.CapabilityKind, ["tier"] = 2, ["facilityRef"] = refs.FacilityRef });
+        actor["facilities"] = new JsonArray(new JsonObject { ["facilityRef"] = refs.FacilityRef, ["locationRef"] = refs.LocationRef, ["kind"] = provider.FacilityKind, ["visibility"] = "known_to_player" });
         return new JsonObject { ["NPCsInScene"] = new JsonArray(actor.DeepClone()) };
     }
 
@@ -529,17 +530,6 @@ internal static class WoundMaterializationTestFixtures
 
     private static JsonObject EmptyDisposition() => new() { ["state"] = "empty_by_design", ["reason"] = "Не требуется для сценарного seed." };
 
-    private static JsonObject CreateEmptyShiningGates() => new()
-    {
-        ["draftVersion"] = 0, ["hasOpenDraft"] = false, ["isStale"] = false, ["nextCandidateCursor"] = 0, ["rerollsRemaining"] = 0,
-        ["allCandidateBlessingCards"] = new JsonArray(), ["availableBlessingCards"] = new JsonArray(), ["shownBlessingCardIds"] = new JsonArray(), ["selectedBlessingCardIds"] = new JsonArray()
-    };
-
-    private static JsonObject CreateEmptyGachaSystem() => new()
-    {
-        ["chargesPerReturn"] = 0, ["chargesUsedThisReturn"] = 0, ["currentReturnCycleId"] = "return_1", ["gachaHistory"] = new JsonArray()
-    };
-
     private static IReadOnlyList<string> CreateMortalWritePaths() => CreateWritePaths(
         WoundMaterializationTestContext.PlayerWoundsPath,
         ResourceMaterializationContract.DefinitionsPath,
@@ -576,6 +566,28 @@ internal static class WoundMaterializationTestFixtures
 }
 
 internal sealed record MortalWoundScenarioFixture(JsonObject WoundProposal, MortalAuthorityRoots AuthorityRoots, MortalWoundScenarioRefs Refs, WoundExpectedFacts Expected, IReadOnlyList<string> CanonicalWritePaths);
+internal sealed record MortalItemPresentation(string ItemId, string Name, string Description, string ImagePrompt);
+internal sealed record MortalProviderPresentation(
+    string DisplayName,
+    string Role,
+    string Summary,
+    string Worldview,
+    string PersonalityArchetype,
+    string CulturalStance,
+    string CulturalLayer,
+    string Race,
+    string Class,
+    string AppearanceDescription,
+    string History,
+    string Plans,
+    string ShortTermGoal,
+    string LongTermGoal,
+    string TeachingSummary,
+    string TeachingSkillName,
+    string TeachingSkillSummary,
+    string ImagePrompt,
+    string CapabilityKind,
+    string FacilityKind);
 internal sealed record MortalAuthorityRoots(JsonObject ResourceDefinitions, JsonObject ResourceState, JsonObject ResourceHistory, JsonObject PlayerInventory, JsonObject ItemIdentityIndex, JsonObject WorldMap, JsonObject CurrentLocation, JsonObject LocationIdentityIndex, JsonObject ProviderAuthority);
 internal sealed record MortalWoundScenarioRefs(string WoundRef, string OwnerId, string EventRef, string RouteId, string HiddenRouteId, string DiagnosisPathId, string BandageItemId, string AntisepticItemId, string SterileThreadItemId, string AntibioticItemId, string CapabilityRef, string ProviderRef, string FacilityRef, string LocationRef, string ComplicationRef, string LocationAuthorityRef);
 internal sealed record WoundExpectedFacts(string Realm, string Domain, string Severity, string OwnerId, string EventRef, string RecoveryMode, IReadOnlyList<string> ConsumptionCoordinates);

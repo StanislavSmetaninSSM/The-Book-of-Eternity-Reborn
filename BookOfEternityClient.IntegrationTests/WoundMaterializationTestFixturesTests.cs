@@ -38,6 +38,25 @@ public sealed class WoundMaterializationTestFixturesTests
 
         AssertVisibleMortalPresentationIsSettingSpecific(postApocalyptic);
         AssertVisibleMortalPresentationIsSettingSpecific(magical);
+        var postProvider = postApocalyptic.AuthorityRoots.ProviderAuthority["NPCsInScene"]![0]!.AsObject();
+        var magicalProvider = magical.AuthorityRoots.ProviderAuthority["NPCsInScene"]![0]!.AsObject();
+        foreach (var field in new[] { "role", "summary", "worldview", "personalityArchetype", "culturalStance", "culturalLayer", "race", "class", "appearanceDescription", "history", "plans", "image_prompt", "currentLocationName" })
+            Assert.NotEqual(postProvider[field]!.GetValue<string>(), magicalProvider[field]!.GetValue<string>());
+        Assert.NotEqual(
+            postProvider["teacherProfile"]!["summary"]!.GetValue<string>(),
+            magicalProvider["teacherProfile"]!["summary"]!.GetValue<string>());
+        Assert.NotEqual(
+            postProvider["teacherProfile"]!["skills"]![0]!["summary"]!.GetValue<string>(),
+            magicalProvider["teacherProfile"]!["skills"]![0]!["summary"]!.GetValue<string>());
+        Assert.NotEqual(
+            postProvider["capabilityEvidence"]![0]!["kind"]!.GetValue<string>(),
+            magicalProvider["capabilityEvidence"]![0]!["kind"]!.GetValue<string>());
+        Assert.NotEqual(
+            postProvider["facilities"]![0]!["kind"]!.GetValue<string>(),
+            magicalProvider["facilities"]![0]!["kind"]!.GetValue<string>());
+        Assert.NotEqual(
+            postApocalyptic.AuthorityRoots.PlayerInventory["items"]![0]!["image_prompt"]!.GetValue<string>(),
+            magical.AuthorityRoots.PlayerInventory["items"]![0]!["image_prompt"]!.GetValue<string>());
     }
 
     [Fact]
@@ -112,7 +131,7 @@ public sealed class WoundMaterializationTestFixturesTests
         Assert.Equal("Shining Abode", profile["realm"]!.GetValue<string>());
         Assert.Null(resident["primaryRole"]);
         Assert.Null(profile["healingServiceProfile"]);
-        Assert.Equal("healing_support", fixture.FutureProposal["residentRole"]!["key"]!.GetValue<string>());
+        Assert.Equal("healing_support", fixture.FutureProposal["primaryRole"]!["key"]!.GetValue<string>());
         Assert.Equal("absent", fixture.Expected.ServiceVisibility);
     }
 
@@ -183,6 +202,36 @@ public sealed class WoundMaterializationTestFixturesTests
         AssertCanonicalRootHasNoErrors("ValidateGuardianStateData", shining.GuardianRoot, "game_state/meta/guardians.json");
     }
 
+    [Fact]
+    public async Task MortalCurrentRoots_PassTheirOwningContractsAndProviderBinding()
+    {
+        foreach (var fixture in new[]
+                 {
+                     WoundMaterializationTestFixtures.CreatePostApocalypticMortalScenario(),
+                     WoundMaterializationTestFixtures.CreateMagicalWorldMortalScenario()
+                 })
+        {
+            AssertMortalRootContracts(fixture);
+            await AssertMortalProviderContractAsync(fixture);
+        }
+    }
+
+    [Fact]
+    public async Task SpiritualConflictSeed_PassesFileBackedAfterlifeConflictValidation()
+    {
+        var fixture = WoundMaterializationTestFixtures.CreateSpiritualConflictScenario();
+        await using var context = await WoundMaterializationTestContext.CreateAsync();
+        await context.FileSystem.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        { "soulName": "Душа раненого путника", "currentRealm": "Chaos Sea" }
+        """);
+        await context.FileSystem.WriteFileAtomicAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            fixture.ConflictState.ToJsonString());
+
+        var issues = await context.Validator.ValidateGameStateAsync(IntegrationValidationProfiles.AfterlifeConflict);
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+    }
+
     private static void AssertVisibleMortalPresentationIsSettingSpecific(MortalWoundScenarioFixture fixture)
     {
         var item = fixture.AuthorityRoots.PlayerInventory["items"]![0]!.AsObject();
@@ -193,15 +242,89 @@ public sealed class WoundMaterializationTestFixturesTests
         Assert.Equal(location["name"]!.GetValue<string>(), provider["currentLocationName"]!.GetValue<string>());
         foreach (var visible in new[]
                  {
-                     item["description"]!.GetValue<string>(),
+                     item["description"]!.GetValue<string>(), item["image_prompt"]!.GetValue<string>(),
                      provider["role"]!.GetValue<string>(), provider["summary"]!.GetValue<string>(),
                      provider["worldview"]!.GetValue<string>(), provider["personalityArchetype"]!.GetValue<string>(),
-                     provider["currentLocationName"]!.GetValue<string>()
+                     provider["culturalStance"]!.GetValue<string>(), provider["race"]!.GetValue<string>(),
+                     provider["class"]!.GetValue<string>(), provider["appearanceDescription"]!.GetValue<string>(),
+                     provider["history"]!.GetValue<string>(), provider["plans"]!.GetValue<string>(),
+                     provider["goals"]!["shortTerm"]!.GetValue<string>(), provider["goals"]!["longTerm"]!.GetValue<string>(),
+                     provider["teacherProfile"]!["summary"]!.GetValue<string>(), provider["image_prompt"]!.GetValue<string>(),
+                     provider["teacherProfile"]!["skills"]![0]!["skillName"]!.GetValue<string>(),
+                     provider["teacherProfile"]!["skills"]![0]!["summary"]!.GetValue<string>(),
+                     provider["capabilityEvidence"]![0]!["kind"]!.GetValue<string>(),
+                     provider["facilities"]![0]!["kind"]!.GetValue<string>(),
+                     provider["currentLocationName"]!.GetValue<string>(), provider["culturalLayer"]!.GetValue<string>()
                  })
         {
             Assert.DoesNotContain("test", visible, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("setting-neutral", visible, StringComparison.OrdinalIgnoreCase);
         }
+    }
+
+    private static void AssertMortalRootContracts(MortalWoundScenarioFixture fixture)
+    {
+        var roots = fixture.AuthorityRoots;
+        foreach (var item in roots.PlayerInventory["items"]!.AsArray().OfType<JsonObject>())
+        {
+            using var document = JsonDocument.Parse(item.ToJsonString());
+            Assert.Empty(MortalItemMaterializationContract.Validate(
+                document.RootElement,
+                $"{InventoryEquipmentService.ItemsPath}.items[{item["itemId"]!.GetValue<string>()}]",
+                MortalItemMaterializationPhase.CanonicalPostSeal));
+        }
+
+        using var locationDocument = JsonDocument.Parse(roots.WorldMap["locations"]![0]!.ToJsonString());
+        using var currentDocument = JsonDocument.Parse(roots.CurrentLocation.ToJsonString());
+        Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalLocation(
+            locationDocument.RootElement, "wound fixture world-map location"));
+        Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalCurrentLocation(
+            currentDocument.RootElement, "wound fixture current location"));
+
+        var locationIndex = MortalLocationIdentityState.Parse(roots.LocationIdentityIndex);
+        Assert.Empty(locationIndex.Issues);
+        Assert.Empty(locationIndex.ValidateCanonicalState(roots.WorldMap));
+        var itemIndex = MortalItemIdentityState.Parse(roots.ItemIdentityIndex);
+        Assert.Empty(itemIndex.Issues);
+        Assert.Equal(
+            roots.PlayerInventory["items"]!.AsArray().OfType<JsonObject>()
+                .Select(item => item["itemId"]!.GetValue<string>()).OrderBy(id => id),
+            itemIndex.EntriesByItemId.Keys.OrderBy(id => id));
+
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(roots.ResourceDefinitions.ToJsonString(), allowMissingPristine: false);
+        Assert.True(definitions.IsValid, string.Join(Environment.NewLine, definitions.Issues.Select(issue => issue.Message)));
+        var state = ResourceStateContract.ParseCanonical(roots.ResourceState.ToJsonString(), definitions.Catalog!, allowMissingPristine: false);
+        Assert.True(state.IsValid, string.Join(Environment.NewLine, state.Issues.Select(issue => issue.Message)));
+        var history = ResourceHistoryState.ParseCanonical(roots.ResourceHistory.ToJsonString(), definitions.Catalog!, allowMissingPristine: false);
+        Assert.True(history.IsValid, string.Join(Environment.NewLine, history.Issues.Select(issue => issue.Message)));
+        Assert.IsType<JsonArray>(roots.PlayerInventory["items"]);
+        Assert.IsType<JsonObject>(roots.PlayerInventory["equippedItems"]);
+    }
+
+    private static async Task AssertMortalProviderContractAsync(MortalWoundScenarioFixture fixture)
+    {
+        await using var context = await WoundMaterializationTestContext.CreateAsync();
+        await context.FileSystem.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            fixture.AuthorityRoots.WorldMap.ToJsonString());
+        await context.FileSystem.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            fixture.AuthorityRoots.CurrentLocation.ToJsonString());
+        using var document = JsonDocument.Parse(fixture.AuthorityRoots.ProviderAuthority.ToJsonString());
+        var issues = new List<ValidationIssue>();
+        var method = typeof(ValidationService).GetMethod(
+            "ValidateNpcContract",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        method!.Invoke(context.Validator, new object[]
+        {
+            document.RootElement,
+            NpcCoreChangesContract.NpcCorePath,
+            issues,
+            false,
+            true
+        });
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
     }
 
     private static void AssertCanonicalRootHasNoErrors(string methodName, JsonObject root, string statePath)
