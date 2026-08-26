@@ -407,6 +407,17 @@ public sealed class WoundHistoryStateTests
     }
 
     [Fact]
+    public void Parse_ReadableSummaryUsesTheCommonBoundedUnicodeTextContract()
+    {
+        var row = Transition(
+            readableSummary: "Рана описана.\nОтмечен символ исцеления ✨");
+
+        var result = Parse(History(row));
+
+        Assert.True(result.IsValid, DescribeIssues(result.Issues));
+    }
+
+    [Fact]
     public void Parse_EnforcesVersionOneTwentyThousandRowBoundBeforeBuildingState()
     {
         var rows = Enumerable.Range(1, WoundHistoryState.MaxTransitions + 1)

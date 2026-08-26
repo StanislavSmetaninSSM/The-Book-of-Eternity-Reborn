@@ -1222,8 +1222,7 @@ internal sealed class WoundHistoryState
     private static bool IsReadableSummary(string? value) =>
         !string.IsNullOrWhiteSpace(value) &&
         value.Length <= WoundMaterializationContract.MaxReadableTextLength &&
-        string.Equals(value, value.Trim(), StringComparison.Ordinal) &&
-        !value.Any(static character => char.IsControl(character) || char.IsSurrogate(character));
+        string.Equals(value, value.Trim(), StringComparison.Ordinal);
 
     private static void ValidateClosedObject(
         JsonElement value,
