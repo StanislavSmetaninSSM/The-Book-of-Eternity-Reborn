@@ -61,7 +61,14 @@ internal static class WoundMaterializationTestFixtures
                 "Выживание требует проверяемой помощи и честного учёта потерь.", "прагматичный спасатель", "Pragmatist", "союз аварийных медиков", "человек руин", "полевой хирург",
                 "Пыльный фартук, защитные очки и аварийный респиратор поверх перевязочного набора.", "После заражённого обвала собирал раненых у разрушенных переходов.",
                 "Подготовить чистый стол и не допустить новой инфекции.", "Стабилизировать раненых до эвакуации.", "Сохранить сеть безопасных медпунктов.",
-                "Объясняет полевую очистку раны, карантин и контроль инфекции.", "Основы полевой санитарии", "Показывает, как очистить рану, удержать карантин и проверить признаки инфекции.", "post-apocalyptic field medic at a collapsed aid station, no text", "field_medicine", "clean_work_surface")),
+                "Объясняет полевую очистку раны, карантин и контроль инфекции.", "Основы полевой санитарии", "Показывает, как очистить рану, удержать карантин и проверить признаки инфекции.",
+                new[]
+                {
+                    new MortalPersonalityTraitPresentation("Полевое самообладание", "Сохраняет порядок у переправы при боли и шуме.", "Спокоен в аварийной смене", 8),
+                    new MortalPersonalityTraitPresentation("Санитарная строгость", "Не допускает грязный инструмент к свежей ране.", "Требователен к чистоте", 7),
+                    new MortalPersonalityTraitPresentation("Солидарность уцелевших", "Делит перевязки по срочности состояния.", "Надёжен для общины", 6)
+                },
+                "post-apocalyptic field medic at a collapsed aid station, no text", "field_medicine", "clean_work_surface")),
             refs,
             new WoundExpectedFacts("mortal_world", "physical", "II", refs.OwnerId, refs.EventRef,
                 "requires_stabilization", new[]
@@ -117,9 +124,16 @@ internal static class WoundMaterializationTestFixtures
             CreateMortalAuthorityRoots(items, location, refs, new MortalProviderPresentation(
                 "Настройщик лечебных фокусов", "резонансный целитель", "Настройщик лечебных фокусов выравнивает сорванные потоки в камере поющего стекла.",
                 "Магический резонанс лечится настройкой, а не грубой силой.", "созерцательный настройщик", "Dissident", "артель певчего стекла", "стеклорождённый", "мастер резонансной хирургии",
-                "Призматический плащ, медные камертонные кольца и светящийся фокус на груди.", "Учился слушать трещины поющих кристаллов в обсерватории, а не выживать среди обвалов.",
+                "Призматический плащ, медные камертонные кольца и светящийся фокус на груди.", "Учился слушать трещины поющих кристаллов в астрономической обсерватории и настраивать их лечебный отклик.",
                 "Выверить частоту лечебной камеры для обожжённых каналов.", "Вернуть пациентам устойчивый внутренний резонанс.", "Сохранить школу бережной настройки кристаллов.",
-                "Учит читать отклик кристалла и безопасно направлять лечебный резонанс.", "Настройка лечебного резонанса", "Показывает, как считать отклик кристалла и направить резонанс без нового ожога.", "arcane resonance healer in a singing glass observatory, no text", "resonance_mending", "resonance_chamber")),
+                "Учит читать отклик кристалла и безопасно направлять лечебный резонанс.", "Настройка лечебного резонанса", "Показывает, как считать отклик кристалла и направить резонанс без нового ожога.",
+                new[]
+                {
+                    new MortalPersonalityTraitPresentation("Слух к резонансу", "Различает гармоники поющего стекла в лечебном круге.", "Точно слышит отклик кристалла", 9),
+                    new MortalPersonalityTraitPresentation("Бережная настройка", "Снижает частоту фокуса, когда каналы дрожат.", "Мягко удерживает резонанс", 6),
+                    new MortalPersonalityTraitPresentation("Астрономическое терпение", "Ждёт чистого созвездия для сложной перестройки.", "Терпелив в ритуалах обсерватории", 5)
+                },
+                "arcane resonance healer in a singing glass observatory, no text", "resonance_mending", "resonance_chamber")),
             refs,
             new WoundExpectedFacts("mortal_world", "physical", "II", refs.OwnerId, refs.EventRef,
                 "requires_stabilization", new[]
@@ -419,6 +433,9 @@ internal static class WoundMaterializationTestFixtures
         actor["class"] = provider.Class;
         actor["appearanceDescription"] = provider.AppearanceDescription;
         actor["history"] = provider.History;
+        actor["personalityTraits"] = new JsonArray(provider.PersonalityTraits
+            .Select(CreateMortalPersonalityTrait)
+            .ToArray());
         actor["progressionType"] = "scenario_support_npc";
         actor["currentLocationId"] = refs.LocationRef;
         actor["currentLocationName"] = locationName;
@@ -449,6 +466,14 @@ internal static class WoundMaterializationTestFixtures
         actor["facilities"] = new JsonArray(new JsonObject { ["facilityRef"] = refs.FacilityRef, ["locationRef"] = refs.LocationRef, ["kind"] = provider.FacilityKind, ["visibility"] = "known_to_player" });
         return new JsonObject { ["NPCsInScene"] = new JsonArray(actor.DeepClone()) };
     }
+
+    private static JsonObject CreateMortalPersonalityTrait(MortalPersonalityTraitPresentation trait) => new()
+    {
+        ["traitName"] = trait.Name,
+        ["description"] = trait.Description,
+        ["valueDescription"] = trait.ValueDescription,
+        ["value"] = trait.Value
+    };
 
     private static JsonObject CreateCurrentSpiritualProfile(string actorType, string actorId, string realm)
     {
@@ -585,9 +610,11 @@ internal sealed record MortalProviderPresentation(
     string TeachingSummary,
     string TeachingSkillName,
     string TeachingSkillSummary,
+    IReadOnlyList<MortalPersonalityTraitPresentation> PersonalityTraits,
     string ImagePrompt,
     string CapabilityKind,
     string FacilityKind);
+internal sealed record MortalPersonalityTraitPresentation(string Name, string Description, string ValueDescription, int Value);
 internal sealed record MortalAuthorityRoots(JsonObject ResourceDefinitions, JsonObject ResourceState, JsonObject ResourceHistory, JsonObject PlayerInventory, JsonObject ItemIdentityIndex, JsonObject WorldMap, JsonObject CurrentLocation, JsonObject LocationIdentityIndex, JsonObject ProviderAuthority);
 internal sealed record MortalWoundScenarioRefs(string WoundRef, string OwnerId, string EventRef, string RouteId, string HiddenRouteId, string DiagnosisPathId, string BandageItemId, string AntisepticItemId, string SterileThreadItemId, string AntibioticItemId, string CapabilityRef, string ProviderRef, string FacilityRef, string LocationRef, string ComplicationRef, string LocationAuthorityRef);
 internal sealed record WoundExpectedFacts(string Realm, string Domain, string Severity, string OwnerId, string EventRef, string RecoveryMode, IReadOnlyList<string> ConsumptionCoordinates);

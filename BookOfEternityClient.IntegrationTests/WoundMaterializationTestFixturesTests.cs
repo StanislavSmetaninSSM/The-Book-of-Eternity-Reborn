@@ -40,6 +40,8 @@ public sealed class WoundMaterializationTestFixturesTests
         AssertVisibleMortalPresentationIsSettingSpecific(magical);
         var postProvider = postApocalyptic.AuthorityRoots.ProviderAuthority["NPCsInScene"]![0]!.AsObject();
         var magicalProvider = magical.AuthorityRoots.ProviderAuthority["NPCsInScene"]![0]!.AsObject();
+        AssertProviderPersonalityTraitsAreSettingSpecific(postProvider, magicalProvider);
+        AssertMagicalProviderDoesNotContainPostApocalypticMotifs(magicalProvider);
         foreach (var field in new[] { "role", "summary", "worldview", "personalityArchetype", "culturalStance", "culturalLayer", "race", "class", "appearanceDescription", "history", "plans", "image_prompt", "currentLocationName" })
             Assert.NotEqual(postProvider[field]!.GetValue<string>(), magicalProvider[field]!.GetValue<string>());
         Assert.NotEqual(
@@ -261,6 +263,53 @@ public sealed class WoundMaterializationTestFixturesTests
             Assert.DoesNotContain("setting-neutral", visible, StringComparison.OrdinalIgnoreCase);
         }
     }
+
+    private static void AssertProviderPersonalityTraitsAreSettingSpecific(JsonObject postProvider, JsonObject magicalProvider)
+    {
+        var postTraits = Assert.IsType<JsonArray>(postProvider["personalityTraits"]);
+        var magicalTraits = Assert.IsType<JsonArray>(magicalProvider["personalityTraits"]);
+        Assert.Equal(3, postTraits.Count);
+        Assert.Equal(3, magicalTraits.Count);
+
+        for (var index = 0; index < postTraits.Count; index++)
+        {
+            var postTrait = Assert.IsType<JsonObject>(postTraits[index]);
+            var magicalTrait = Assert.IsType<JsonObject>(magicalTraits[index]);
+            foreach (var field in new[] { "traitName", "description", "valueDescription" })
+            {
+                var postValue = postTrait[field]!.GetValue<string>();
+                var magicalValue = magicalTrait[field]!.GetValue<string>();
+                Assert.False(string.IsNullOrWhiteSpace(postValue));
+                Assert.False(string.IsNullOrWhiteSpace(magicalValue));
+                Assert.DoesNotContain("test", postValue, StringComparison.OrdinalIgnoreCase);
+                Assert.DoesNotContain("test", magicalValue, StringComparison.OrdinalIgnoreCase);
+                Assert.NotEqual(postValue, magicalValue);
+            }
+
+            var postScore = postTrait["value"]!.GetValue<int>();
+            var magicalScore = magicalTrait["value"]!.GetValue<int>();
+            Assert.InRange(postScore, 1, 10);
+            Assert.InRange(magicalScore, 1, 10);
+            Assert.NotEqual(postScore, magicalScore);
+        }
+    }
+
+    private static void AssertMagicalProviderDoesNotContainPostApocalypticMotifs(JsonObject magicalProvider)
+    {
+        var visibleData = EnumerateText(magicalProvider).ToArray();
+        foreach (var forbidden in new[] { "обвал", "руин", "аварийн", "зараж", "карантин", "выживать среди" })
+            Assert.DoesNotContain(visibleData, text => text.Contains(forbidden, StringComparison.OrdinalIgnoreCase));
+        foreach (var inherited in new[] { "Внимательность", "Осторожность", "Последовательность", "Замечает расхождения" })
+            Assert.DoesNotContain(inherited, magicalProvider["personalityTraits"]!.ToJsonString());
+    }
+
+    private static IEnumerable<string> EnumerateText(JsonNode? node) => node switch
+    {
+        JsonValue value when value.TryGetValue<string>(out var text) => new[] { text },
+        JsonObject obj => obj.SelectMany(property => EnumerateText(property.Value)),
+        JsonArray array => array.SelectMany(EnumerateText),
+        _ => Array.Empty<string>()
+    };
 
     private static void AssertMortalRootContracts(MortalWoundScenarioFixture fixture)
     {
