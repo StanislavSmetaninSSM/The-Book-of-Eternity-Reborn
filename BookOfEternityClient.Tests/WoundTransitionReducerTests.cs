@@ -627,7 +627,11 @@ public sealed class WoundTransitionReducerTests
                 LastTickKey = "tick_heal_due"
             }
         }, "recover");
-        var evidence = RecoverEvidence(before, after, Outcome(after, heals: true));
+        var evidence = RecoverEvidence(
+            before,
+            after,
+            Outcome(after, heals: true),
+            tickKey: "tick_heal_due");
 
         var result = WoundTransitionReducer.Reduce(Request("recover", before, after, evidence));
 
@@ -991,8 +995,10 @@ public sealed class WoundTransitionReducerTests
             kind,
             "wound_transition_test_002",
             "operation_wound_transition_002",
-            "turn_43:wound_transition",
-            43,
+            kind == "create" && after is not null
+                ? after.Origin.EventRef
+                : "turn_43:wound_transition",
+            after?.LastTransition.Turn ?? 43,
             before,
             after,
             evidence);
@@ -1031,8 +1037,8 @@ public sealed class WoundTransitionReducerTests
             complicationId,
             "turn_43:complication_cause",
             allowsWorsening,
-            maximumSeverityRank: 4,
-            hasPendingTreatmentOrRecovery: false);
+            MaximumSeverityRank: 4,
+            HasPendingTreatmentOrRecovery: false);
 
     private static WoundDiagnosisEvidence DiagnoseEvidence(
         WoundMaterializationEnvelope before,
@@ -1186,9 +1192,16 @@ public sealed class WoundTransitionReducerTests
             MaximumAtCreation = updateMaximumAtCreation
                 ? value
                 : wound.Severity.MaximumAtCreation,
-            LastChangeEventRef = "turn_43:wound_transition"
+            LastChangeEventRef = rank == wound.Severity.Rank
+                ? wound.Severity.LastChangeEventRef
+                : "turn_43:wound_transition"
         },
-        Consequences = wound.Consequences with { SlotBudget = rank }
+        Consequences = wound.Consequences with
+        {
+            SlotBudget = rank,
+            SlotsUsed = Math.Min(wound.Consequences.SlotsUsed, rank),
+            Entries = wound.Consequences.Entries.Take(rank).ToImmutableArray()
+        }
     };
 
     private static WoundMaterializationEnvelope NewTransition(
@@ -1197,6 +1210,9 @@ public sealed class WoundTransitionReducerTests
         int? ordinal = null,
         int turn = 43) => wound with
     {
+        Severity = kind == "create"
+            ? wound.Severity with { LastChangeEventRef = wound.Origin.EventRef }
+            : wound.Severity,
         LastTransition = new WoundLastTransition(
             "wound_transition_test_002",
             ordinal ?? wound.LastTransition.Ordinal + 1,
