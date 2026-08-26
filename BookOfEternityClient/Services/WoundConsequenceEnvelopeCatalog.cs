@@ -5,7 +5,11 @@ using System.Text.Json;
 
 namespace BookOfEternityClient.Services;
 
-internal sealed record WoundConsequenceInputFault(string PathSuffix, string Actual);
+internal sealed record WoundConsequenceInputFault(
+    string PathSuffix,
+    string Actual,
+    string Code = "wound_consequence_input_invalid",
+    string Expected = "non-null typed value or collection with defined JSON elements");
 
 internal sealed record WoundConsequenceLifecycleEvidence(
     bool ActiveComplicationChangesLifecycle,
@@ -55,6 +59,16 @@ internal sealed class WoundReactionExpansionProposal
         if (components == null)
         {
             faults.Add(new WoundConsequenceInputFault("components", "null"));
+            return ImmutableArray<JsonElement>.Empty;
+        }
+
+        if (components.Count > WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionComponents)
+        {
+            faults.Add(new WoundConsequenceInputFault(
+                "components",
+                components.Count.ToString(CultureInfo.InvariantCulture),
+                "wound_consequence_limit_exceeded",
+                $"at most {WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionComponents} flattened components"));
             return ImmutableArray<JsonElement>.Empty;
         }
 
@@ -132,6 +146,16 @@ internal sealed class WoundConsequenceEffectProposal
             return ImmutableArray<JsonElement>.Empty;
         }
 
+        if (components.Count > WoundConsequenceEnvelopeCatalog.MaximumComponentsPerEffect)
+        {
+            faults.Add(new WoundConsequenceInputFault(
+                "components",
+                components.Count.ToString(CultureInfo.InvariantCulture),
+                "wound_consequence_limit_exceeded",
+                $"at most {WoundConsequenceEnvelopeCatalog.MaximumComponentsPerEffect} components"));
+            return ImmutableArray<JsonElement>.Empty;
+        }
+
         var result = ImmutableArray.CreateBuilder<JsonElement>(components.Count);
         for (var index = 0; index < components.Count; index++)
         {
@@ -162,6 +186,16 @@ internal sealed class WoundConsequenceEffectProposal
             return ImmutableArray<WoundPeriodicCadenceEvidence>.Empty;
         }
 
+        if (cadences.Count > WoundConsequenceEnvelopeCatalog.MaximumCadencesPerEffect)
+        {
+            faults.Add(new WoundConsequenceInputFault(
+                "cadences",
+                cadences.Count.ToString(CultureInfo.InvariantCulture),
+                "wound_consequence_limit_exceeded",
+                $"at most {WoundConsequenceEnvelopeCatalog.MaximumCadencesPerEffect} cadence entries"));
+            return ImmutableArray<WoundPeriodicCadenceEvidence>.Empty;
+        }
+
         var result = ImmutableArray.CreateBuilder<WoundPeriodicCadenceEvidence>(cadences.Count);
         for (var index = 0; index < cadences.Count; index++)
         {
@@ -186,6 +220,16 @@ internal sealed class WoundConsequenceEffectProposal
         if (expansions == null)
         {
             faults.Add(new WoundConsequenceInputFault("expansions", "null"));
+            return ImmutableArray<WoundReactionExpansionProposal>.Empty;
+        }
+
+        if (expansions.Count > WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionsPerWound)
+        {
+            faults.Add(new WoundConsequenceInputFault(
+                "expansions",
+                expansions.Count.ToString(CultureInfo.InvariantCulture),
+                "wound_consequence_limit_exceeded",
+                $"at most {WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionsPerWound} flattened reaction expansion per wound"));
             return ImmutableArray<WoundReactionExpansionProposal>.Empty;
         }
 
@@ -231,6 +275,7 @@ internal sealed class WoundConsequenceEnvelopeRequest
             false,
             false);
         Effects = CloneEffects(effects, faults);
+        ValidateTotalExpansionBound(Effects, faults);
         ResourceBounds = CloneResourceBounds(resourceBounds, faults);
         InputFaults = faults.ToImmutable();
     }
@@ -270,6 +315,19 @@ internal sealed class WoundConsequenceEnvelopeRequest
                 ImmutableArray<WoundConsequenceEntry>.Empty);
         }
 
+        if (declared.Entries.Count > WoundMaterializationContract.MaxConsequences)
+        {
+            faults.Add(new WoundConsequenceInputFault(
+                "declared.entries",
+                declared.Entries.Count.ToString(CultureInfo.InvariantCulture),
+                "wound_consequence_limit_exceeded",
+                $"at most {WoundMaterializationContract.MaxConsequences} consequences"));
+            return new WoundConsequences(
+                declared.SlotBudget,
+                declared.SlotsUsed,
+                ImmutableArray<WoundConsequenceEntry>.Empty);
+        }
+
         var entries = ImmutableArray.CreateBuilder<WoundConsequenceEntry>(
             declared.Entries.Count);
         for (var index = 0; index < declared.Entries.Count; index++)
@@ -303,6 +361,16 @@ internal sealed class WoundConsequenceEnvelopeRequest
             return ImmutableArray<WoundConsequenceEffectProposal>.Empty;
         }
 
+        if (effects.Count > WoundConsequenceEnvelopeCatalog.MaximumEffectProposals)
+        {
+            faults.Add(new WoundConsequenceInputFault(
+                "effects",
+                effects.Count.ToString(CultureInfo.InvariantCulture),
+                "wound_consequence_limit_exceeded",
+                $"at most {WoundConsequenceEnvelopeCatalog.MaximumEffectProposals} effect proposals"));
+            return ImmutableArray<WoundConsequenceEffectProposal>.Empty;
+        }
+
         var result = ImmutableArray.CreateBuilder<WoundConsequenceEffectProposal>(effects.Count);
         for (var index = 0; index < effects.Count; index++)
         {
@@ -330,6 +398,16 @@ internal sealed class WoundConsequenceEnvelopeRequest
             return ImmutableArray<WoundResourceEnvelopeBound>.Empty;
         }
 
+        if (bounds.Count > WoundConsequenceEnvelopeCatalog.MaximumResourceBounds)
+        {
+            faults.Add(new WoundConsequenceInputFault(
+                "resourceBounds",
+                bounds.Count.ToString(CultureInfo.InvariantCulture),
+                "wound_consequence_limit_exceeded",
+                $"at most {WoundConsequenceEnvelopeCatalog.MaximumResourceBounds} resource-bound evidence entries"));
+            return ImmutableArray<WoundResourceEnvelopeBound>.Empty;
+        }
+
         var result = ImmutableArray.CreateBuilder<WoundResourceEnvelopeBound>(bounds.Count);
         for (var index = 0; index < bounds.Count; index++)
         {
@@ -345,6 +423,26 @@ internal sealed class WoundConsequenceEnvelopeRequest
         }
 
         return result.MoveToImmutable();
+    }
+
+    private static void ValidateTotalExpansionBound(
+        ImmutableArray<WoundConsequenceEffectProposal> effects,
+        ImmutableArray<WoundConsequenceInputFault>.Builder faults)
+    {
+        var total = 0;
+        foreach (var effect in effects)
+        {
+            total += effect.Expansions.Length;
+            if (total <= WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionsPerWound)
+                continue;
+
+            faults.Add(new WoundConsequenceInputFault(
+                "effects",
+                total.ToString(CultureInfo.InvariantCulture),
+                "wound_consequence_limit_exceeded",
+                $"at most {WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionsPerWound} flattened reaction expansion per wound"));
+            return;
+        }
     }
 }
 
@@ -405,7 +503,17 @@ internal sealed class WoundConsequenceEnvelopeValidationResult
 
 internal static class WoundConsequenceEnvelopeCatalog
 {
+    internal const int MaximumEffectProposals = 128;
+
+    internal const int MaximumComponentsPerEffect = 64;
+
+    internal const int MaximumCadencesPerEffect = 64;
+
+    internal const int MaximumReactionExpansionsPerWound = 1;
+
     internal const int MaximumReactionExpansionComponents = 64;
+
+    internal const int MaximumResourceBounds = 128;
 
     private const int MaximumConsequenceSlots = 4;
 
@@ -449,6 +557,9 @@ internal static class WoundConsequenceEnvelopeCatalog
             "incarnation_resistance",
             "champion_coordination",
             "recover_spiritual_power");
+
+    private static readonly ImmutableHashSet<string> SpiritualArtOperationSet =
+        AfterlifeEntityProfileState.StandardArtIds.ToImmutableHashSet(StringComparer.Ordinal);
 
     private static readonly ImmutableHashSet<string> MortalForbidActions =
         ImmutableHashSet.Create(StringComparer.Ordinal, "attack", "cast", "movement");
@@ -573,7 +684,7 @@ internal static class WoundConsequenceEnvelopeCatalog
         List<ValidationIssue> issues)
     {
         foreach (var fault in request.InputFaults)
-            AddInputFault(issues, path + "." + fault.PathSuffix, fault.Actual);
+            AddInputFault(issues, path + "." + fault.PathSuffix, fault);
 
         for (var effectIndex = 0; effectIndex < request.Effects.Length; effectIndex++)
         {
@@ -582,7 +693,7 @@ internal static class WoundConsequenceEnvelopeCatalog
                 continue;
             var effectPath = $"{path}.effects[{effectIndex}]";
             foreach (var fault in effect.InputFaults)
-                AddInputFault(issues, effectPath + "." + fault.PathSuffix, fault.Actual);
+                AddInputFault(issues, effectPath + "." + fault.PathSuffix, fault);
 
             for (var expansionIndex = 0;
                  expansionIndex < effect.Expansions.Length;
@@ -590,7 +701,7 @@ internal static class WoundConsequenceEnvelopeCatalog
             {
                 var expansionPath = $"{effectPath}.expansions[{expansionIndex}]";
                 foreach (var fault in effect.Expansions[expansionIndex].InputFaults)
-                    AddInputFault(issues, expansionPath + "." + fault.PathSuffix, fault.Actual);
+                    AddInputFault(issues, expansionPath + "." + fault.PathSuffix, fault);
             }
         }
     }
@@ -598,13 +709,13 @@ internal static class WoundConsequenceEnvelopeCatalog
     private static void AddInputFault(
         List<ValidationIssue> issues,
         string path,
-        string actual) =>
+        WoundConsequenceInputFault fault) =>
         Add(
             issues,
             path,
-            "wound_consequence_input_invalid",
-            "non-null typed value or collection with defined JSON elements",
-            actual);
+            fault.Code,
+            fault.Expected,
+            fault.Actual);
 
     private static void ValidateIdentifiers(
         WoundConsequenceEnvelopeRequest request,
@@ -622,13 +733,21 @@ internal static class WoundConsequenceEnvelopeCatalog
                 issues);
         }
 
+        var effectIds = new HashSet<string>(StringComparer.Ordinal);
+        var effectAliases = new HashSet<string>(StringComparer.Ordinal);
         for (var effectIndex = 0; effectIndex < request.Effects.Length; effectIndex++)
         {
             var effect = request.Effects[effectIndex];
             if (effect.IsMissing)
                 continue;
             var effectPath = $"{path}.effects[{effectIndex}]";
-            ValidateIdentifier(effect.EffectId, effectPath + ".effectId", issues);
+            ValidateUniqueIdentifier(
+                effect.EffectId,
+                effectPath + ".effectId",
+                "wound_consequence_effect_identity_duplicate",
+                effectIds,
+                effectAliases,
+                issues);
             ValidateIdentifier(effect.SourceKind, effectPath + ".sourceKind", issues);
             ValidateIdentifier(effect.SourceId, effectPath + ".sourceId", issues);
             if (effect.ReciprocalWoundId != null)
@@ -638,6 +757,15 @@ internal static class WoundConsequenceEnvelopeCatalog
                     effectPath + ".reciprocalWoundId",
                     issues);
             }
+
+            var componentIds = new HashSet<string>(StringComparer.Ordinal);
+            var componentAliases = new HashSet<string>(StringComparer.Ordinal);
+            ValidateComponentIdentities(
+                effect.Components,
+                effectPath + ".components",
+                componentIds,
+                componentAliases,
+                issues);
 
             for (var cadenceIndex = 0;
                  cadenceIndex < effect.Cadences.Length;
@@ -653,9 +781,17 @@ internal static class WoundConsequenceEnvelopeCatalog
                  expansionIndex < effect.Expansions.Length;
                  expansionIndex++)
             {
+                var expansion = effect.Expansions[expansionIndex];
+                var expansionPath = $"{effectPath}.expansions[{expansionIndex}]";
                 ValidateIdentifier(
-                    effect.Expansions[expansionIndex].ReactionComponentId,
-                    $"{effectPath}.expansions[{expansionIndex}].reactionComponentId",
+                    expansion.ReactionComponentId,
+                    expansionPath + ".reactionComponentId",
+                    issues);
+                ValidateComponentIdentities(
+                    expansion.Components,
+                    expansionPath + ".components",
+                    componentIds,
+                    componentAliases,
                     issues);
             }
         }
@@ -669,6 +805,159 @@ internal static class WoundConsequenceEnvelopeCatalog
                 $"{path}.resourceBounds[{boundIndex}].resourceKey",
                 issues);
         }
+    }
+
+    private static void ValidateUniqueIdentifier(
+        string? value,
+        string path,
+        string duplicateCode,
+        HashSet<string> exactValues,
+        HashSet<string> aliases,
+        List<ValidationIssue> issues)
+    {
+        if (!ResourceMaterializationContract.IsExactIdentifier(value))
+        {
+            ValidateIdentifier(value, path, issues);
+            return;
+        }
+
+        if (!exactValues.Add(value!) ||
+            !aliases.Add(ResourceMaterializationContract.BuildConfusableKey(value!)))
+        {
+            Add(
+                issues,
+                path,
+                duplicateCode,
+                "one exact and confusable-unique identifier",
+                value!);
+        }
+    }
+
+    private static void ValidateComponentIdentities(
+        ImmutableArray<JsonElement> components,
+        string path,
+        HashSet<string> exactValues,
+        HashSet<string> aliases,
+        List<ValidationIssue> issues)
+    {
+        if (components.IsEmpty)
+        {
+            Add(
+                issues,
+                path,
+                "wound_consequence_components_required",
+                "at least one bounded consequence component",
+                "0");
+            return;
+        }
+
+        for (var index = 0; index < components.Length; index++)
+        {
+            var component = components[index];
+            var componentPath = $"{path}[{index}]";
+            ValidateNoDuplicateRawProperties(component, componentPath, issues);
+
+            string? componentId = null;
+            if (component.ValueKind == JsonValueKind.Object &&
+                component.TryGetProperty("componentId", out var rawComponentId) &&
+                rawComponentId.ValueKind == JsonValueKind.String)
+            {
+                componentId = rawComponentId.GetString();
+            }
+
+            if (!ResourceMaterializationContract.IsExactIdentifier(componentId))
+            {
+                Add(
+                    issues,
+                    componentPath + ".componentId",
+                    "wound_consequence_identifier_invalid",
+                    "exact non-empty normalized identifier without surrounding whitespace",
+                    DescribeProperty(component, "componentId"));
+                continue;
+            }
+
+            if (!exactValues.Add(componentId!) ||
+                !aliases.Add(ResourceMaterializationContract.BuildConfusableKey(componentId!)))
+            {
+                Add(
+                    issues,
+                    componentPath + ".componentId",
+                    "wound_consequence_component_identity_duplicate",
+                    "one exact and confusable-unique component identifier within the effect",
+                    componentId!);
+            }
+        }
+    }
+
+    private static bool ValidateNoDuplicateRawProperties(
+        JsonElement value,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var valid = true;
+        if (value.ValueKind == JsonValueKind.Object)
+        {
+            var propertyNames = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var property in value.EnumerateObject())
+            {
+                var propertyPath = path + "." + property.Name;
+                if (!propertyNames.Add(property.Name))
+                {
+                    Add(
+                        issues,
+                        propertyPath,
+                        "wound_consequence_duplicate_property",
+                        "one occurrence of each exact JSON object property",
+                        property.Name);
+                    valid = false;
+                }
+
+                valid = ValidateNoDuplicateRawProperties(
+                    property.Value,
+                    propertyPath,
+                    issues) && valid;
+            }
+        }
+        else if (value.ValueKind == JsonValueKind.Array)
+        {
+            var index = 0;
+            foreach (var item in value.EnumerateArray())
+            {
+                valid = ValidateNoDuplicateRawProperties(
+                    item,
+                    $"{path}[{index}]",
+                    issues) && valid;
+                index++;
+            }
+        }
+
+        return valid;
+    }
+
+    private static bool ContainsDuplicateRawProperties(JsonElement value)
+    {
+        if (value.ValueKind == JsonValueKind.Object)
+        {
+            var propertyNames = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var property in value.EnumerateObject())
+            {
+                if (!propertyNames.Add(property.Name) ||
+                    ContainsDuplicateRawProperties(property.Value))
+                {
+                    return true;
+                }
+            }
+        }
+        else if (value.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in value.EnumerateArray())
+            {
+                if (ContainsDuplicateRawProperties(item))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     private static void ValidateIdentifier(
@@ -846,12 +1135,12 @@ internal static class WoundConsequenceEnvelopeCatalog
         string path,
         List<ValidationIssue> issues)
     {
-        var expansionReactionCount = 0;
         foreach (var indexed in owned)
         {
             var effect = indexed.Effect;
             var effectPath = $"{path}.effects[{indexed.Index}]";
             var usedExpansions = new HashSet<int>();
+            var cadenceUseCounts = new int[effect.Cadences.Length];
             var evidence = BuildMortalEvidenceIndex(effect);
 
             for (var componentIndex = 0;
@@ -873,8 +1162,23 @@ internal static class WoundConsequenceEnvelopeCatalog
                     candidates,
                     coordinates,
                     usedExpansions,
-                    ref expansionReactionCount,
+                    cadenceUseCounts,
                     issues);
+            }
+
+            for (var cadenceIndex = 0;
+                 cadenceIndex < effect.Cadences.Length;
+                 cadenceIndex++)
+            {
+                if (cadenceUseCounts[cadenceIndex] == 1)
+                    continue;
+
+                Add(
+                    issues,
+                    $"{effectPath}.cadences[{cadenceIndex}]",
+                    "wound_consequence_periodic_cadence_invalid",
+                    "cadence consumed by exactly one periodic component",
+                    cadenceUseCounts[cadenceIndex].ToString(CultureInfo.InvariantCulture));
             }
 
             for (var expansionIndex = 0;
@@ -891,16 +1195,6 @@ internal static class WoundConsequenceEnvelopeCatalog
                         effect.Expansions[expansionIndex].ReactionComponentId);
                 }
             }
-        }
-
-        if (expansionReactionCount > 1)
-        {
-            Add(
-                issues,
-                path + ".effects",
-                "wound_consequence_reaction_expansion_invalid",
-                "at most one fully budgeted definition expansion for one wound",
-                expansionReactionCount.ToString(CultureInfo.InvariantCulture));
         }
     }
 
@@ -919,10 +1213,13 @@ internal static class WoundConsequenceEnvelopeCatalog
         List<SlotCandidate> candidates,
         HashSet<string> coordinates,
         HashSet<int> usedExpansions,
-        ref int expansionReactionCount,
+        int[] cadenceUseCounts,
         List<ValidationIssue> issues)
     {
         var componentPath = $"{componentContainerPath}.components[{componentIndex}]";
+        if (ContainsDuplicateRawProperties(component))
+            return;
+
         if (!TryReadString(component, "profile", out var profile))
         {
             Add(
@@ -978,7 +1275,7 @@ internal static class WoundConsequenceEnvelopeCatalog
                 candidates,
                 coordinates,
                 usedExpansions,
-                ref expansionReactionCount,
+                cadenceUseCounts,
                 issues);
             return;
         }
@@ -1048,6 +1345,7 @@ internal static class WoundConsequenceEnvelopeCatalog
                     resourceBounds,
                     candidates,
                     coordinates,
+                    cadenceUseCounts,
                     issues);
                 break;
             case "action_control":
@@ -1112,24 +1410,55 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
+        var effective = value;
+        var effectivePath = componentPath + ".payload.value";
         if (payload.TryGetProperty("cap", out var cap) &&
-            cap.ValueKind == JsonValueKind.Object &&
-            cap.TryGetProperty("minimum", out var rawMinimum) &&
-            ResourceMaterializationContract.TryReadExactDecimal(rawMinimum, out var minimum) &&
-            cap.TryGetProperty("maximum", out var rawMaximum) &&
-            ResourceMaterializationContract.TryReadExactDecimal(rawMaximum, out var maximum))
+            cap.ValueKind == JsonValueKind.Object)
         {
-            var effective = Math.Min(Math.Max(value, minimum), maximum);
-            if (!WithinAbsoluteLimit(effective, limit))
+            var exactCap = true;
+            var minimum = 0m;
+            if (!cap.TryGetProperty("minimum", out var rawMinimum) ||
+                !ResourceMaterializationContract.TryReadExactDecimal(rawMinimum, out minimum))
             {
                 Add(
                     issues,
-                    componentPath + ".payload.cap",
+                    componentPath + ".payload.cap.minimum",
                     "wound_consequence_magnitude_exceeded",
-                    $"effective absolute {operation} modifier <= {limit.ToString(CultureInfo.InvariantCulture)} at severity rank {rank}",
-                    effective.ToString(CultureInfo.InvariantCulture));
-                return;
+                    "one exact decimal cap endpoint",
+                    DescribeProperty(cap, "minimum"));
+                exactCap = false;
             }
+
+            var maximum = 0m;
+            if (!cap.TryGetProperty("maximum", out var rawMaximum) ||
+                !ResourceMaterializationContract.TryReadExactDecimal(rawMaximum, out maximum))
+            {
+                Add(
+                    issues,
+                    componentPath + ".payload.cap.maximum",
+                    "wound_consequence_magnitude_exceeded",
+                    "one exact decimal cap endpoint",
+                    DescribeProperty(cap, "maximum"));
+                exactCap = false;
+            }
+
+            if (!exactCap)
+                return;
+
+            effective = Math.Max(effective, minimum);
+            effective = Math.Min(effective, maximum);
+            effectivePath = componentPath + ".payload.cap";
+        }
+
+        if (effective == 0m || !WithinAbsoluteLimit(effective, limit))
+        {
+            Add(
+                issues,
+                effectivePath,
+                "wound_consequence_magnitude_exceeded",
+                $"nonzero effective absolute {operation} modifier <= {limit.ToString(CultureInfo.InvariantCulture)} at severity rank {rank}",
+                effective.ToString(CultureInfo.InvariantCulture));
+            return;
         }
 
         AddSlot(
@@ -1201,6 +1530,7 @@ internal static class WoundConsequenceEnvelopeCatalog
         IReadOnlyDictionary<string, WoundResourceEnvelopeBound> resourceBounds,
         List<SlotCandidate> candidates,
         HashSet<string> coordinates,
+        int[] cadenceUseCounts,
         List<ValidationIssue> issues)
     {
         if (!TryReadString(payload, "resource", out var resource))
@@ -1247,6 +1577,7 @@ internal static class WoundConsequenceEnvelopeCatalog
         var cadenceValid = true;
         foreach (var indexedCadence in cadences)
         {
+            cadenceUseCounts[indexedCadence.Index]++;
             var cadence = indexedCadence.Cadence;
             var cadencePath = $"{effectPath}.cadences[{indexedCadence.Index}]";
             if (!EffectEventTypeCatalog.IsRegistered(cadence.SourceEvent))
@@ -1401,7 +1732,7 @@ internal static class WoundConsequenceEnvelopeCatalog
         List<SlotCandidate> candidates,
         HashSet<string> coordinates,
         HashSet<int> usedExpansions,
-        ref int expansionReactionCount,
+        int[] cadenceUseCounts,
         List<ValidationIssue> issues)
     {
         if (!component.TryGetProperty("payload", out var payload) ||
@@ -1467,7 +1798,19 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
-        expansionReactionCount++;
+        if (!payload.TryGetProperty("maxExpansion", out var rawMaximum) ||
+            !rawMaximum.TryGetInt32(out var declaredMaximum) ||
+            declaredMaximum != 1)
+        {
+            Add(
+                issues,
+                componentPath + ".payload.maxExpansion",
+                "wound_consequence_reaction_expansion_invalid",
+                "exact integer 1 release per accepted transition/source event",
+                DescribeProperty(payload, "maxExpansion"));
+            return;
+        }
+
         if (rank < 3)
         {
             Add(
@@ -1504,21 +1847,6 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
-        if (!payload.TryGetProperty("maxExpansion", out var rawMaximum) ||
-            !rawMaximum.TryGetInt32(out var declaredMaximum) ||
-            declaredMaximum < 1 ||
-            declaredMaximum > MaximumReactionExpansionComponents)
-        {
-            Add(
-                issues,
-                componentPath + ".payload.maxExpansion",
-                "wound_consequence_reaction_expansion_invalid",
-                $"integer 1..{MaximumReactionExpansionComponents}",
-                DescribeProperty(payload, "maxExpansion"));
-            return;
-        }
-
-        var derivedBefore = candidates.Count;
         for (var expansionComponentIndex = 0;
              expansionComponentIndex < expansion.Components.Length;
              expansionComponentIndex++)
@@ -1538,19 +1866,8 @@ internal static class WoundConsequenceEnvelopeCatalog
                 candidates,
                 coordinates,
                 usedExpansions,
-                ref expansionReactionCount,
+                cadenceUseCounts,
                 issues);
-        }
-
-        var expandedSlots = candidates.Count - derivedBefore;
-        if (expandedSlots > declaredMaximum)
-        {
-            Add(
-                issues,
-                expansionPath + ".components",
-                "wound_consequence_reaction_expansion_invalid",
-                $"at most {declaredMaximum} worst-case expanded mechanical slots",
-                expandedSlots.ToString(CultureInfo.InvariantCulture));
         }
     }
 
@@ -1605,6 +1922,9 @@ internal static class WoundConsequenceEnvelopeCatalog
         List<ValidationIssue> issues)
     {
         var componentPath = $"{effectPath}.components[{componentIndex}]";
+        if (ContainsDuplicateRawProperties(component))
+            return;
+
         if (!TryReadString(component, "profile", out var profile) ||
             !SpiritualProfileSet.Contains(profile))
         {
@@ -1641,8 +1961,14 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
+        var allowedOperations = string.Equals(
+            profile,
+            "spiritual_art_restriction",
+            StringComparison.Ordinal)
+            ? SpiritualArtOperationSet
+            : SpiritualOperationSet;
         if (!TryReadString(payload, "operation", out var operation) ||
-            !SpiritualOperationSet.Contains(operation))
+            !allowedOperations.Contains(operation))
         {
             Add(
                 issues,
@@ -1650,7 +1976,7 @@ internal static class WoundConsequenceEnvelopeCatalog
                 "wound_consequence_spiritual_operation_invalid",
                 string.Join(
                     " | ",
-                    SpiritualOperationSet.OrderBy(static value => value, StringComparer.Ordinal)),
+                    allowedOperations.OrderBy(static value => value, StringComparer.Ordinal)),
                 DescribeProperty(payload, "operation"));
             return;
         }
