@@ -566,6 +566,24 @@ public sealed class SpiritualWoundEffectProfileContractTests
             };
             yield return new object[]
             {
+                "spiritual_roll_hindrance", "force_incarnation", "\"disadvantage\"",
+                "Духовная проверка",
+                "Принуждение к воплощению: бросок совершается с помехой."
+            };
+            yield return new object[]
+            {
+                "spiritual_roll_hindrance", "champion_coordination", "\"disadvantage\"",
+                "Духовная проверка",
+                "Координация чемпиона: бросок совершается с помехой."
+            };
+            yield return new object[]
+            {
+                "spiritual_roll_hindrance", "recover_spiritual_power", "\"disadvantage\"",
+                "Духовная проверка",
+                "Восстановление духовной силы: бросок совершается с помехой."
+            };
+            yield return new object[]
+            {
                 "spiritual_action_cost_burden", "pressure", "1",
                 "Стоимость духовного действия",
                 "Давление: стоимость духовного действия увеличена на 1."
@@ -608,7 +626,7 @@ public sealed class SpiritualWoundEffectProfileContractTests
             {
                 "spiritual_art_restriction", "counter", "\"restrict\"",
                 "Доступность духовного искусства",
-                "Контрдействие: духовное искусство ограничено."
+                "Контрприём: духовное искусство ограничено."
             };
             yield return new object[]
             {
@@ -617,6 +635,17 @@ public sealed class SpiritualWoundEffectProfileContractTests
                 "Защита: духовное искусство запрещено."
             };
         }
+    }
+
+    [Fact]
+    public void ProjectionCases_CoverEveryRegisteredSpiritualOperation()
+    {
+        Assert.Equal(
+            Operations.OrderBy(static operation => operation, StringComparer.Ordinal),
+            ProjectionCases
+                .Select(static row => Assert.IsType<string>(row[1]))
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(static operation => operation, StringComparer.Ordinal));
     }
 
     [Fact]
