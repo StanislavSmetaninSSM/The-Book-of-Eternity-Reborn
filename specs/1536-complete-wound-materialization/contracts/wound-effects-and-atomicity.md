@@ -127,7 +127,10 @@ Periodic values are quantum-aligned without rounding above the cap and execute a
 once for one accepted source event. Roll array entries consume one slot each. Every
 worst-case reaction result is counted before admission. The single wound expansion
 ceiling applies only to wound-owned effects; bounded independent siblings are preserved
-outside wound slot and expansion budgets. `forbid` may target only
+outside wound slot and expansion budgets. A separate structural work bound permits at
+most 64 flattened reaction-expansion rows in each raw effect proposal before ownership
+classification; it does not consume the wound-owned semantic ceiling or discard bounded
+independent rows. `forbid` may target only
 `attack`, `cast`, or `movement`; `defend`, `use_item`, `interact`, and `escape` remain
 non-forbiddable safety-capable action keys. Aggregate wound effects must still preserve
 inspection, communication, help, treatment, and exit.

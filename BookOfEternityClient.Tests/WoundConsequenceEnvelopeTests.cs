@@ -1077,7 +1077,7 @@ public sealed class WoundConsequenceEnvelopeTests
                 "III",
                 new[] { duplicateExpansion },
                 Entries(1, "effect_reaction", "event_reaction"))),
-            Path + ".effects[0].expansions",
+            Path + ".effects",
             "wound_consequence_limit_exceeded");
 
         var twoReactions = Effect(
@@ -1101,7 +1101,7 @@ public sealed class WoundConsequenceEnvelopeTests
                 "IV",
                 new[] { twoReactions },
                 Entries(2, "effect_reaction", "event_reaction"))),
-            Path + ".effects[0].expansions",
+            Path + ".effects",
             "wound_consequence_limit_exceeded");
     }
 
@@ -1189,6 +1189,70 @@ public sealed class WoundConsequenceEnvelopeTests
         Assert.Equal(
             independent.Expansions[0].Components[0].GetRawText(),
             preserved.Expansions[0].Components[0].GetRawText());
+    }
+
+    [Fact]
+    public void IndependentReactionExpansions_MultipleRowsInOneProposalArePreservedOutsideTheOwnedCeiling()
+    {
+        var owned = Effect(
+            "effect_owned_reaction",
+            new[] { ReactionComponent("owned_reaction", "apply_definition", 1) },
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "owned_reaction",
+                    new[] { CharacteristicComponent("owned_expanded", "flat", -1m) })
+            });
+        var independentComponents = new[]
+        {
+            ReactionComponent("independent_reaction_a", "apply_definition", 1),
+            ReactionComponent("independent_reaction_b", "apply_definition", 1)
+        };
+        var independentExpansionComponents = new[]
+        {
+            CharacteristicComponent("independent_expanded_a", "flat", -1m),
+            ResistanceComponent("independent_expanded_b", "flat", -1m)
+        };
+        var independent = Effect(
+            "effect_independent_reaction",
+            independentComponents,
+            "curse",
+            "curse_reaction_bundle",
+            null,
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "independent_reaction_a",
+                    new[] { independentExpansionComponents[0] }),
+                new WoundReactionExpansionProposal(
+                    "independent_reaction_b",
+                    new[] { independentExpansionComponents[1] })
+            });
+
+        var result = Validate(MortalRequest(
+            "III",
+            new[] { independent, owned },
+            Entries(
+                (1, "effect_owned_reaction", "event_reaction"),
+                (2, "effect_owned_reaction", "characteristic_modifier"))));
+
+        AssertValid(result);
+        Assert.Single(Assert.Single(result.Envelope!.OwnedEffects).Expansions);
+        var preserved = Assert.Single(result.IndependentEffects);
+        Assert.Equal(2, preserved.Components.Length);
+        Assert.Equal(2, preserved.Expansions.Length);
+        for (var index = 0; index < 2; index++)
+        {
+            Assert.Equal(
+                independentComponents[index].GetRawText(),
+                preserved.Components[index].GetRawText());
+            Assert.Equal(
+                independent.Expansions[index].ReactionComponentId,
+                preserved.Expansions[index].ReactionComponentId);
+            Assert.Equal(
+                independentExpansionComponents[index].GetRawText(),
+                Assert.Single(preserved.Expansions[index].Components).GetRawText());
+        }
     }
 
     [Fact]
@@ -2216,29 +2280,77 @@ public sealed class WoundConsequenceEnvelopeTests
     }
 
     [Fact]
-    public void ReactionExpansionBound_IsCheckedBeforeReadingExpansionTwo()
+    public void ReactionExpansionProposalBound_PreservesExpansionSixtyFour()
     {
         var guarded = new GuardedReadOnlyList<WoundReactionExpansionProposal>(
-            2,
-            1,
+            64,
+            64,
+            index => new WoundReactionExpansionProposal(
+                $"reaction_{index:D2}",
+                new[] { UnknownComponent($"expanded_{index:D2}") }));
+        var independent = Effect(
+            "effect_expansion_boundary",
+            new[] { UnknownComponent("component_independent") },
+            "curse",
+            "curse_expansion_boundary",
+            null,
+            expansions: guarded);
+
+        var result = Validate(MortalRequest(
+            "I",
+            new[] { independent },
+            Array.Empty<WoundConsequenceEntry>(),
+            lifecycleEvidence: new WoundConsequenceLifecycleEvidence(true, false, false),
+            declaredSlotsUsed: 0));
+
+        AssertValid(result);
+        Assert.Equal(64, guarded.ReadCount);
+        Assert.Equal(64, Assert.Single(result.IndependentEffects).Expansions.Length);
+    }
+
+    [Fact]
+    public void ReactionExpansionProposalBound_IsCheckedBeforeReadingExpansionSixtyFive()
+    {
+        var guarded = new GuardedReadOnlyList<WoundReactionExpansionProposal>(
+            65,
+            64,
             index => new WoundReactionExpansionProposal(
                 $"reaction_{index}",
                 new[] { MarkerComponent($"marker_{index}") }));
 
-        AssertLimitBeforeRead(
+        var result = AssertLimitBeforeRead(
             guarded,
             () =>
             {
                 var effect = Effect(
                     "effect_expansions",
-                    new[] { ReactionComponent("reaction_0", "apply_definition", 1) },
+                    new[] { UnknownComponent("component_independent") },
+                    "curse",
+                    "curse_expansion_overflow",
+                    null,
                     expansions: guarded);
                 return Validate(MortalRequest(
-                    "III",
+                    "I",
                     new[] { effect },
-                    Entries(1, "effect_expansions", "event_reaction")));
+                    Array.Empty<WoundConsequenceEntry>(),
+                    lifecycleEvidence: new WoundConsequenceLifecycleEvidence(
+                        true,
+                        false,
+                        false),
+                    declaredSlotsUsed: 0));
             },
             Path + ".effects[0].expansions");
+        var issue = Assert.Single(result.Issues.Where(issue =>
+            string.Equals(
+                issue.FilePath,
+                Path + ".effects[0].expansions",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                issue.Code,
+                "wound_consequence_limit_exceeded",
+                StringComparison.Ordinal)));
+        Assert.Equal("at most 64 flattened reaction expansions per effect proposal", issue.Expected);
+        Assert.Equal("65", issue.Actual);
     }
 
     [Fact]
@@ -2733,7 +2845,7 @@ public sealed class WoundConsequenceEnvelopeTests
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
-    private static void AssertLimitBeforeRead<T>(
+    private static WoundConsequenceEnvelopeValidationResult AssertLimitBeforeRead<T>(
         GuardedReadOnlyList<T> guarded,
         Func<WoundConsequenceEnvelopeValidationResult> validate,
         string path)
@@ -2745,6 +2857,7 @@ public sealed class WoundConsequenceEnvelopeTests
         Assert.Equal(0, guarded.ReadCount);
         Assert.NotNull(result);
         AssertIssue(result!, path, "wound_consequence_limit_exceeded");
+        return result!;
     }
 
     private static void AssertValid(WoundConsequenceEnvelopeValidationResult result)

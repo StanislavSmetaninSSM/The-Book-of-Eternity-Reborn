@@ -367,6 +367,9 @@ Periodic values are quantum-aligned without exceeding the cap and execute no mor
 once per accepted source event. Every worst-case spawned reaction component consumes
 its own slot. The one-expansion-per-wound limit counts only wound-owned expansions;
 bounded independent effect siblings remain outside wound slot and expansion budgets.
+Before ownership classification, each raw effect proposal has a separate structural
+work bound of 64 flattened reaction-expansion rows. That bound does not turn into a
+wound budget and does not discard bounded independent rows.
 `forbid` can target only `attack`, `cast`, or `movement`; `defend`,
 `use_item`, `interact`, and `escape` cannot be forbidden. Aggregate restrictions
 preserve inspection, communication, help, treatment, and exit.
@@ -881,7 +884,8 @@ the choice revalidates target, wound, consent, provider, resources, and reachabi
 | Consequences per wound | 4 |
 | Effect proposals supplied to one wound-envelope validation | 128 |
 | Components or cadence entries per effect proposal | 64 |
-| Flattened reaction expansions per wound | 1 |
+| Flattened reaction-expansion rows per effect proposal (structural work bound) | 64 |
+| Wound-owned flattened reaction expansions per wound (semantic budget) | 1 |
 | Resource-bound evidence entries per wound envelope | 128 |
 | Wound transitions composed per turn | 32 |
 | Readable text field | repository-standard bounded GM text limit |

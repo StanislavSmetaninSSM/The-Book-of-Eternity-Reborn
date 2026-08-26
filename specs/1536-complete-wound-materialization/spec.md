@@ -247,6 +247,9 @@ MUST execute at most once for one accepted source event. Roll contributions cost
 slot per listed operation. Reaction slot cost includes every worst-case spawned
 mechanical component. The single wound expansion ceiling counts wound-owned expansions
 only; bounded independent effect siblings neither consume this ceiling nor wound slots.
+Independently of that semantic ceiling, one raw effect proposal may carry at most 64
+flattened reaction-expansion rows as a structural work bound; rows from an independent
+proposal remain preserved through exact ownership classification.
 A Mortal `forbid` may target only `attack`, `cast`, or
 `movement`; `defend`, `use_item`, `interact`, and `escape` remain non-forbiddable
 safety-capable action keys. Aggregate restrictions MUST preserve inspection,
