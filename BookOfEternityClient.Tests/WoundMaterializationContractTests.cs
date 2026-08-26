@@ -19,6 +19,7 @@ public sealed class WoundMaterializationContractTests
         Assert.Equal("wound_test_torn_side", wound.WoundId);
         Assert.Equal("active", wound.Lifecycle);
         Assert.Equal("mortal_world", wound.Owner.Realm);
+        Assert.Equal("game_state/player/wounds.json", wound.Owner.CarrierPath);
         Assert.Equal("physical", wound.Classification.Domain);
         Assert.Equal("anatomical", wound.Classification.LocationProfile.Kind);
         Assert.Equal("II", wound.Severity.Value);
@@ -475,6 +476,40 @@ public sealed class WoundMaterializationContractTests
         Assert.True(result.Issues.Count >= 2);
     }
 
+    [Theory]
+    [InlineData("createdAtTurn", "42", "42.5", "wound.origin.createdAtTurn")]
+    [InlineData("createdAtTurn", "42", "4.2e1", "wound.origin.createdAtTurn")]
+    [InlineData("createdAtTurn", "42", "2147483648", "wound.origin.createdAtTurn")]
+    [InlineData("cadence", "86400", "86400.5", "wound.recovery.cadence")]
+    [InlineData("cadence", "86400", "8.64e4", "wound.recovery.cadence")]
+    [InlineData("cadence", "86400", "9223372036854775808", "wound.recovery.cadence")]
+    [InlineData("currentStepThreshold", "3", "3.5", "wound.recovery.currentStepThreshold")]
+    [InlineData("currentStepThreshold", "3", "3e0", "wound.recovery.currentStepThreshold")]
+    [InlineData("currentStepThreshold", "3", "9223372036854775808", "wound.recovery.currentStepThreshold")]
+    [InlineData("ordinal", "1", "1.5", "wound.lastTransition.ordinal")]
+    [InlineData("ordinal", "1", "1e0", "wound.lastTransition.ordinal")]
+    [InlineData("ordinal", "1", "2147483648", "wound.lastTransition.ordinal")]
+    public void Parse_CommonIntegersRejectFractionExponentAndOverflowRawNumbers(
+        string field,
+        string validLexeme,
+        string invalidLexeme,
+        string expectedPath)
+    {
+        var json = WoundContractTestData.CreateActiveWound().ToJsonString();
+        var validToken = $"\"{field}\":{validLexeme}";
+        var invalidToken = $"\"{field}\":{invalidLexeme}";
+        Assert.Contains(validToken, json, StringComparison.Ordinal);
+
+        var result = WoundMaterializationContract.Parse(
+            json.Replace(validToken, invalidToken, StringComparison.Ordinal),
+            Path);
+
+        AssertInvalid(
+            result,
+            expectedPath,
+            "wound_materialization_invalid_field");
+    }
+
     [Fact]
     public void CanonicalSerialization_IsStableDetachedAndEmitsOnlyFinalVersionOneFields()
     {
@@ -496,6 +531,22 @@ public sealed class WoundMaterializationContractTests
             first,
             WoundMaterializationContract.SerializeCanonical(reversedResult.Wound!));
 
+        var opaqueReordered = WoundContractTestData.CreateActiveWound();
+        var reorderedRoute = opaqueReordered["treatment"]!["routes"]![0]!.AsObject();
+        reorderedRoute["resourcePolicy"] = ReverseObject(
+            reorderedRoute["resourcePolicy"]!.AsObject());
+        reorderedRoute["resolution"] = ReverseObject(
+            reorderedRoute["resolution"]!.AsObject());
+        reorderedRoute["requirements"]![0] = ReverseObject(
+            reorderedRoute["requirements"]![0]!.AsObject());
+        reorderedRoute["outcomes"]![0] = ReverseObject(
+            reorderedRoute["outcomes"]![0]!.AsObject());
+        var opaqueReorderedResult = Parse(opaqueReordered);
+        Assert.True(opaqueReorderedResult.IsValid, DescribeIssues(opaqueReorderedResult));
+        Assert.Equal(
+            first,
+            WoundMaterializationContract.SerializeCanonical(opaqueReorderedResult.Wound!));
+
         var reparsed = WoundMaterializationContract.Parse(first, Path);
         Assert.True(reparsed.IsValid);
         Assert.Equal(first, WoundMaterializationContract.SerializeCanonical(reparsed.Wound!));
@@ -514,6 +565,15 @@ public sealed class WoundMaterializationContractTests
         Assert.DoesNotContain("\"level\":", first, StringComparison.Ordinal);
         Assert.DoesNotContain("\"maximum\":", first, StringComparison.Ordinal);
         Assert.DoesNotContain("\"lastCareTurn\":", first, StringComparison.Ordinal);
+        Assert.Contains("\"itemRef\":\"sterile_thread\"", first, StringComparison.Ordinal);
+        Assert.Contains("\"capabilityRef\":\"field_medicine\"", first, StringComparison.Ordinal);
+        Assert.Contains(
+            "\"result\":[\"stabilize\",\"reduce_one\"]",
+            first,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("\"itemId\":", first, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"skillId\":", first, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"results\":", first, StringComparison.Ordinal);
     }
 
     private static WoundMaterializationParseResult Parse(JsonObject wound) =>
@@ -614,9 +674,17 @@ public sealed class WoundMaterializationContractTests
     private static JsonObject CreateRequirement(int index) => new()
     {
         ["kind"] = "item_quantity",
-        ["itemId"] = $"item_{index}",
+        ["itemRef"] = $"item_{index}",
         ["quantity"] = 1
     };
+
+    private static JsonObject ReverseObject(JsonObject source)
+    {
+        var result = new JsonObject();
+        foreach (var property in source.Reverse())
+            result[property.Key] = property.Value?.DeepClone();
+        return result;
+    }
 
     private static void SetPath(JsonObject root, string relativePath, JsonNode? value)
     {

@@ -310,7 +310,7 @@ internal static class WoundContractTestData
     private static JsonObject CreateOwner() => new()
     {
         ["realm"] = "mortal_world", ["ownerKind"] = "player", ["ownerId"] = "player_current",
-        ["carrierPath"] = "game_state/player/player.json#/activeWounds"
+        ["carrierPath"] = "game_state/player/wounds.json"
     };
 
     private static JsonObject CreateMortalProcedureRoute() => new()
@@ -323,13 +323,13 @@ internal static class WoundContractTestData
             new JsonObject
             {
                 ["kind"] = "item_quantity",
-                ["itemId"] = "sterile_thread",
+                ["itemRef"] = "sterile_thread",
                 ["quantity"] = 1
             },
             new JsonObject
             {
                 ["kind"] = "skill_tier",
-                ["skillId"] = "field_medicine",
+                ["capabilityRef"] = "field_medicine",
                 ["minimumTier"] = 2
             }),
         ["resourcePolicy"] = new JsonObject
@@ -349,22 +349,22 @@ internal static class WoundContractTestData
             new JsonObject
             {
                 ["minimumMargin"] = 5,
-                ["results"] = new JsonArray("stabilize", "reduce_one")
+                ["result"] = new JsonArray("stabilize", "reduce_one")
             },
             new JsonObject
             {
                 ["minimumMargin"] = 0,
-                ["results"] = new JsonArray("stabilize", "add_recovery:1")
+                ["result"] = new JsonArray("stabilize", "add_recovery:1")
             },
             new JsonObject
             {
                 ["minimumMargin"] = -4,
-                ["results"] = new JsonArray("no_improvement")
+                ["result"] = new JsonArray("no_improvement")
             },
             new JsonObject
             {
                 ["maximumMargin"] = -5,
-                ["results"] = new JsonArray("add_complication:irritation")
+                ["result"] = new JsonArray("add_complication:irritation")
             }),
         ["interruption"] = null
     };
