@@ -866,6 +866,10 @@ the choice revalidates target, wound, consent, provider, resources, and reachabi
 | Requirements per route/path | 16 |
 | Complications per wound | 16 |
 | Consequences per wound | 4 |
+| Effect proposals supplied to one wound-envelope validation | 128 |
+| Components or cadence entries per effect proposal | 64 |
+| Flattened reaction expansions per wound | 1 |
+| Resource-bound evidence entries per wound envelope | 128 |
 | Wound transitions composed per turn | 32 |
 | Readable text field | repository-standard bounded GM text limit |
 
