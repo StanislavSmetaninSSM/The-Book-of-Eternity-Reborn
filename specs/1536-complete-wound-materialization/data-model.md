@@ -132,9 +132,11 @@ combat root and promotion authority.
 
 History is append-only, ordered, and client-authored. `operationKey` is unique for the
 semantic event/attempt/course milestone/recovery cycle. The before/after fingerprint
-chain must be contiguous for each wound. Terminal `heal`/`archive` evidence prevents a
-replay from reopening or reapplying the wound. The player History projection reads a
-sanitized subset; internal IDs and fingerprints are never projected.
+chain must be contiguous for each wound. Exactly one terminal `heal` evidence row
+prevents a replay from reopening or reapplying the wound. Later `legacy` and `archive`
+rows are nonterminal audit/projection records that preserve the sealed terminal wound
+fingerprint. The player History projection reads a sanitized subset; internal IDs and
+fingerprints are never projected.
 
 ## 6. Active carrier roots
 
