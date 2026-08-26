@@ -189,12 +189,19 @@ internal static class WoundContractTestData
         }
     };
 
-    internal static JsonObject CreateActiveWound() => new()
+    internal static JsonObject CreateActiveWound(
+        string woundId = "wound_test_torn_side",
+        string realm = "mortal_world",
+        string ownerKind = "player",
+        string ownerId = "player_current",
+        string carrierPath = "game_state/player/wounds.json",
+        string lifecycle = "active",
+        string domain = "physical") => new()
     {
         ["schemaVersion"] = 1,
-        ["woundId"] = "wound_test_torn_side",
-        ["lifecycle"] = "active",
-        ["owner"] = CreateOwner(),
+        ["woundId"] = woundId,
+        ["lifecycle"] = lifecycle,
+        ["owner"] = CreateOwner(realm, ownerKind, ownerId, carrierPath),
         ["origin"] = new JsonObject
         {
             ["eventRef"] = "turn_42:wound_opened",
@@ -209,7 +216,7 @@ internal static class WoundContractTestData
         },
         ["classification"] = new JsonObject
         {
-            ["domain"] = "physical",
+            ["domain"] = domain,
             ["woundType"] = "Рваная режущая травма",
             ["locationProfile"] = new JsonObject
             {
@@ -267,19 +274,25 @@ internal static class WoundContractTestData
         ["treatment"] = new JsonObject
         {
             ["diagnosisPaths"] = new JsonArray(),
-            ["routes"] = new JsonArray(CreateMortalProcedureRoute()),
-            ["knownRouteIds"] = new JsonArray("clean_and_suture"),
+            ["routes"] = domain == "spiritual"
+                ? new JsonArray()
+                : new JsonArray(CreateMortalProcedureRoute()),
+            ["knownRouteIds"] = domain == "spiritual"
+                ? new JsonArray()
+                : new JsonArray("clean_and_suture"),
             ["completedRouteIds"] = new JsonArray()
         },
         ["recovery"] = new JsonObject
         {
-            ["mode"] = "requires_stabilization",
-            ["clockKind"] = "mortal_world_time",
-            ["cadence"] = 86400,
+            ["mode"] = domain == "spiritual" ? "progressive" : "requires_stabilization",
+            ["clockKind"] = domain == "spiritual" ? "afterlife_safe_cycle" : "mortal_world_time",
+            ["cadence"] = domain == "spiritual" ? 1 : 86400,
             ["currentStepProgress"] = 0,
-            ["currentStepThreshold"] = 3,
+            ["currentStepThreshold"] = domain == "spiritual" ? 4 : 3,
             ["lastTickKey"] = null,
-            ["blockers"] = new JsonArray("not_stabilized"),
+            ["blockers"] = domain == "spiritual"
+                ? new JsonArray()
+                : new JsonArray("not_stabilized"),
             ["carryOverflow"] = true,
             ["deteriorationPolicy"] = null
         },
@@ -312,10 +325,16 @@ internal static class WoundContractTestData
         ["realm"] = "mortal_world", ["ownerKind"] = "player", ["ownerId"] = "player_current"
     };
 
-    private static JsonObject CreateOwner() => new()
+    private static JsonObject CreateOwner(
+        string realm,
+        string ownerKind,
+        string ownerId,
+        string carrierPath) => new()
     {
-        ["realm"] = "mortal_world", ["ownerKind"] = "player", ["ownerId"] = "player_current",
-        ["carrierPath"] = "game_state/player/wounds.json"
+        ["realm"] = realm,
+        ["ownerKind"] = ownerKind,
+        ["ownerId"] = ownerId,
+        ["carrierPath"] = carrierPath
     };
 
     private static JsonObject CreateMortalProcedureRoute() => new()

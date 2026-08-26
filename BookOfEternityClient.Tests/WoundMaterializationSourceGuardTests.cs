@@ -258,6 +258,15 @@ public sealed class WoundMaterializationSourceGuardTests
             "internal static EffectCarrierCatalog Build(",
             "internal void ScanNpcs("),
         new(
+            "accepted-wound-carrier-catalog",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+            "internal sealed class WoundCarrierCatalog",
+            "internal const string PlayerPath = \"game_state/player/wounds.json\"",
+            "internal const string NpcPath = \"game_state/npcs/npc_wounds.json\"",
+            "internal static WoundCarrierCatalog Build(",
+            "internal void ScanNpcs("),
+        new(
             "accepted-wound-consequence-component-profile",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/EffectComponentProfiles.cs",
@@ -343,6 +352,7 @@ public sealed class WoundMaterializationSourceGuardTests
         Scope("explorer-preview-healing", "explorer-status-wound-preview-renderer", "healingState", "private static void AppendStatusWoundPreview(", "private static void AppendStatusCustomStatePreview("),
 
         Scope("accepted-npc-effect-carrier-path", "accepted-effect-carrier-catalog", "game_state/npcs/npc_effects.json", "internal const string NpcPath", "internal const string EnemiesPath"),
+        Scope("accepted-player-wound-carrier-path", "accepted-wound-carrier-catalog", "game_state/player/wounds.json", "internal const string PlayerPath", "internal const string NpcPath"),
     };
 
     [Fact]
