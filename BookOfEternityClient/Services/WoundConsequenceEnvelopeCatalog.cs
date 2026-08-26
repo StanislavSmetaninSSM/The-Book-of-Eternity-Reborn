@@ -223,13 +223,14 @@ internal sealed class WoundConsequenceEffectProposal
             return ImmutableArray<WoundReactionExpansionProposal>.Empty;
         }
 
-        if (expansions.Count > WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionsPerWound)
+        if (expansions.Count >
+            WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionsPerEffectProposal)
         {
             faults.Add(new WoundConsequenceInputFault(
                 "expansions",
                 expansions.Count.ToString(CultureInfo.InvariantCulture),
                 "wound_consequence_limit_exceeded",
-                $"at most {WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionsPerWound} flattened reaction expansion per wound"));
+                $"at most {WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionsPerEffectProposal} flattened reaction expansions per effect proposal"));
             return ImmutableArray<WoundReactionExpansionProposal>.Empty;
         }
 
@@ -487,6 +488,8 @@ internal static class WoundConsequenceEnvelopeCatalog
     internal const int MaximumComponentsPerEffect = 64;
 
     internal const int MaximumCadencesPerEffect = 64;
+
+    internal const int MaximumReactionExpansionsPerEffectProposal = 64;
 
     internal const int MaximumReactionExpansionsPerWound = 1;
 
