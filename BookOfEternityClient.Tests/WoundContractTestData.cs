@@ -192,36 +192,105 @@ internal static class WoundContractTestData
         ["owner"] = CreateOwner(),
         ["origin"] = new JsonObject
         {
-            ["eventRef"] = "turn_42:wound_opened", ["source"] = "accepted_turn",
-            ["opportunityRef"] = "opportunity_test_001", ["turn"] = 42,
+            ["eventRef"] = "turn_42:wound_opened",
+            ["sourceKind"] = "combat_action",
+            ["sourceId"] = "combat_action_test_001",
+            ["sourceState"] = "active",
+            ["createdAtTurn"] = 42,
+            ["createdAtCycleId"] = null,
+            ["opportunityId"] = "opportunity_test_001",
+            ["guaranteedTriggerId"] = null,
             ["readableCause"] = "Рваная рана получена в подтверждённом столкновении."
         },
         ["classification"] = new JsonObject
         {
-            ["domain"] = "physical", ["kind"] = "laceration",
-            ["location"] = new JsonObject { ["region"] = "left_side", ["anatomy"] = "torso" }
+            ["domain"] = "physical",
+            ["woundType"] = "Рваная режущая травма",
+            ["locationProfile"] = new JsonObject
+            {
+                ["kind"] = "anatomical",
+                ["readableLocus"] = "левый бок",
+                ["authorityKind"] = "body_part",
+                ["authorityRef"] = "left_side",
+                ["affectedSide"] = "left"
+            }
         },
         ["display"] = new JsonObject
         {
-            ["name"] = "Рваная рана левого бока", ["visibility"] = "known_to_player",
+            ["name"] = "Рваная рана левого бока",
+            ["description"] = "Края раны расходятся при резком движении.",
+            ["visibleSymptoms"] = new JsonArray("кровотечение", "боль при движении"),
             ["prognosis"] = "При своевременной обработке рана заживёт без осложнений.",
+            ["visibility"] = "known_to_player",
             ["acquisitionNarration"] = "Острый край распорол бок в короткой схватке."
         },
-        ["severity"] = new JsonObject { ["level"] = "II", ["rank"] = 2, ["maximum"] = "II" },
-        ["care"] = new JsonObject { ["state"] = "untreated", ["lastCareTurn"] = null },
+        ["severity"] = new JsonObject
+        {
+            ["value"] = "II",
+            ["rank"] = 2,
+            ["maximumAtCreation"] = "II",
+            ["lastChangeEventRef"] = "turn_42:wound_opened"
+        },
+        ["care"] = new JsonObject
+        {
+            ["state"] = "untreated",
+            ["stabilizedAtTurn"] = null,
+            ["activeCourseId"] = null,
+            ["lastAttemptId"] = null
+        },
         ["complications"] = new JsonArray(),
-        ["consequences"] = new JsonArray(
-            new JsonObject { ["slot"] = "pain", ["effectId"] = "effect_wound_test_pain" },
-            new JsonObject { ["slot"] = "bleeding", ["effectId"] = "effect_wound_test_bleeding" }),
-        ["treatment"] = new JsonObject { ["routes"] = new JsonArray(CreateMortalProcedureRoute()) },
+        ["consequences"] = new JsonObject
+        {
+            ["slotBudget"] = 2,
+            ["slotsUsed"] = 2,
+            ["entries"] = new JsonArray(
+                new JsonObject
+                {
+                    ["slot"] = 1,
+                    ["profileKey"] = "periodic_damage",
+                    ["effectId"] = "effect_wound_test_bleeding",
+                    ["readableSummary"] = "Рана продолжает кровоточить."
+                },
+                new JsonObject
+                {
+                    ["slot"] = 2,
+                    ["profileKey"] = "action_control",
+                    ["effectId"] = "effect_wound_test_pain",
+                    ["readableSummary"] = "Резкие движения затруднены."
+                })
+        },
+        ["treatment"] = new JsonObject
+        {
+            ["diagnosisPaths"] = new JsonArray(),
+            ["routes"] = new JsonArray(CreateMortalProcedureRoute()),
+            ["knownRouteIds"] = new JsonArray("clean_and_suture"),
+            ["completedRouteIds"] = new JsonArray()
+        },
         ["recovery"] = new JsonObject
         {
-            ["mode"] = "requires_stabilization", ["progress"] = 0, ["threshold"] = 3,
-            ["blockers"] = new JsonArray("requires_stabilization"), ["overflow"] = "cap_at_threshold",
-            ["deterioration"] = null
+            ["mode"] = "requires_stabilization",
+            ["clockKind"] = "mortal_world_time",
+            ["cadence"] = 86400,
+            ["currentStepProgress"] = 0,
+            ["currentStepThreshold"] = 3,
+            ["lastTickKey"] = null,
+            ["blockers"] = new JsonArray("not_stabilized"),
+            ["carryOverflow"] = true,
+            ["deteriorationPolicy"] = null
         },
-        ["relations"] = new JsonArray(),
-        ["lastTransition"] = CreateTransition()
+        ["relations"] = new JsonObject
+        {
+            ["priorWoundId"] = null,
+            ["legacyRefs"] = new JsonArray(),
+            ["independentEffectRefs"] = new JsonArray()
+        },
+        ["lastTransition"] = new JsonObject
+        {
+            ["transitionId"] = "wound_transition_test_001",
+            ["ordinal"] = 1,
+            ["turn"] = 42,
+            ["kind"] = "create"
+        }
     };
 
     internal static JsonArray Repeat(int count, Func<int, JsonObject> factory)
@@ -246,28 +315,58 @@ internal static class WoundContractTestData
 
     private static JsonObject CreateMortalProcedureRoute() => new()
     {
-        ["routeId"] = "clean_and_suture", ["displayName"] = "Очистить и наложить швы",
-        ["visibility"] = "known_to_player", ["mode"] = "procedure",
+        ["routeId"] = "clean_and_suture",
+        ["displayName"] = "Очистить и наложить швы",
+        ["visibility"] = "known_to_player",
+        ["mode"] = "procedure",
         ["requirements"] = new JsonArray(
-            new JsonObject { ["kind"] = "item", ["itemId"] = "sterile_thread", ["quantity"] = 1 },
-            new JsonObject { ["kind"] = "skill", ["skillId"] = "field_medicine", ["minimum"] = 2 }),
+            new JsonObject
+            {
+                ["kind"] = "item_quantity",
+                ["itemId"] = "sterile_thread",
+                ["quantity"] = 1
+            },
+            new JsonObject
+            {
+                ["kind"] = "skill_tier",
+                ["skillId"] = "field_medicine",
+                ["minimumTier"] = 2
+            }),
         ["resourcePolicy"] = new JsonObject
         {
             ["reserveBeforeResolution"] = true,
             ["consumeOn"] = new JsonArray("success", "partial_success", "failed_attempt"),
             ["refundOn"] = new JsonArray("cancelled", "validation_failed", "rolled_back"),
-            ["typedMutations"] = new JsonArray()
+            ["mutations"] = new JsonArray()
         },
         ["resolution"] = new JsonObject
         {
-            ["formulaKey"] = "mortal_wound_procedure_v1", ["difficulty"] = 15,
-            ["rollSource"] = "accepted_d20",
-            ["outcomes"] = new JsonArray(
-                new JsonObject { ["minimumMargin"] = 5, ["results"] = new JsonArray("stabilize", "reduce_one") },
-                new JsonObject { ["minimumMargin"] = 0, ["results"] = new JsonArray("stabilize", "add_recovery:1") },
-                new JsonObject { ["minimumMargin"] = -4, ["results"] = new JsonArray("no_improvement") },
-                new JsonObject { ["maximumMargin"] = -5, ["results"] = new JsonArray("add_complication:irritation") })
-        }
+            ["formulaKey"] = "mortal_wound_procedure_v1",
+            ["difficulty"] = 15,
+            ["rollSource"] = "accepted_d20"
+        },
+        ["outcomes"] = new JsonArray(
+            new JsonObject
+            {
+                ["minimumMargin"] = 5,
+                ["results"] = new JsonArray("stabilize", "reduce_one")
+            },
+            new JsonObject
+            {
+                ["minimumMargin"] = 0,
+                ["results"] = new JsonArray("stabilize", "add_recovery:1")
+            },
+            new JsonObject
+            {
+                ["minimumMargin"] = -4,
+                ["results"] = new JsonArray("no_improvement")
+            },
+            new JsonObject
+            {
+                ["maximumMargin"] = -5,
+                ["results"] = new JsonArray("add_complication:irritation")
+            }),
+        ["interruption"] = null
     };
 
     private static JsonObject AddActiveWoundsAtPointer(JsonObject root, string pointer, JsonObject[] activeWounds)
