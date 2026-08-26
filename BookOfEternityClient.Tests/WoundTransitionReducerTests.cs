@@ -661,6 +661,64 @@ public sealed class WoundTransitionReducerTests
         AssertInvalid(result, "wound_transition_effect_binding_changed");
     }
 
+    [Theory]
+    [InlineData(true, true, true, false)]
+    [InlineData(true, false, false, false)]
+    [InlineData(false, true, false, false)]
+    [InlineData(true, true, false, true)]
+    public void Reduce_Complicate_WithoutWorsening_BindsOnlyReciprocalDeclaredEffects(
+        bool complicationOwnsEffect,
+        bool addReciprocalConsequence,
+        bool addUnrelatedConsequence,
+        bool expectedValid)
+    {
+        const string reciprocalEffectId = "effect_complication_reciprocal";
+        var before = WithSeverity(PhysicalWound(), "IV", 4);
+        var complication = Complication(
+            "complication_reciprocal_gate",
+            "pain",
+            complicationOwnsEffect
+                ? new[] { reciprocalEffectId }
+                : Array.Empty<string>());
+        var entries = before.Consequences.Entries.ToList();
+        if (addReciprocalConsequence)
+        {
+            entries.Add(new WoundConsequenceEntry(
+                entries.Count + 1,
+                "action_control",
+                reciprocalEffectId,
+                "Добавлен взаимный слот эффекта осложнения."));
+        }
+        if (addUnrelatedConsequence)
+        {
+            entries.Add(new WoundConsequenceEntry(
+                entries.Count + 1,
+                "action_control",
+                "effect_unrelated_extra",
+                "Посторонний эффект не принадлежит осложнению."));
+        }
+        var after = NewTransition(before with
+        {
+            Complications = before.Complications.Append(complication).ToImmutableArray(),
+            Consequences = before.Consequences with
+            {
+                SlotsUsed = entries.Count,
+                Entries = entries.ToImmutableArray()
+            }
+        }, "complicate");
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "complicate",
+            before,
+            after,
+            ComplicateEvidence(before, after, complication.ComplicationId)));
+
+        if (expectedValid)
+            AssertValid(result);
+        else
+            AssertInvalid(result, "wound_transition_complication_effect_binding_invalid");
+    }
+
     [Fact]
     public void Reduce_Complicate_WithWorsening_AllowsCompleteEffectRematerialization()
     {
