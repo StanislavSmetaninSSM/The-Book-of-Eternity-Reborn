@@ -71,9 +71,16 @@ internal static class EffectMaterializationTestFixture
         string targetKind = "guardian",
         string realm = "chaos_sea",
         string woundId = "wound_spiritual_test",
-        string definitionKey = "definition_spiritual_wound_test")
+        string definitionKey = "definition_spiritual_wound_test",
+        string operation = "pressure",
+        JsonNode? magnitude = null)
     {
         var definition = CreateDefinition(profile);
+        definition["components"] = new JsonArray(
+            CreateSpiritualWoundComponent(
+                profile,
+                operation: operation,
+                magnitude: magnitude));
         definition["definitionKey"] = definitionKey;
         definition["display"]!["name"] = "Духовная рана";
         definition["display"]!["description"] = "Духовное повреждение мешает действовать в Посмертии.";
@@ -220,9 +227,16 @@ internal static class EffectMaterializationTestFixture
         string profile,
         string targetKind = "guardian",
         string realm = "chaos_sea",
-        string woundId = "wound_spiritual_test")
+        string woundId = "wound_spiritual_test",
+        string operation = "pressure",
+        JsonNode? magnitude = null)
     {
         var effect = CreateCanonicalEffect(targetKind, profile);
+        effect["components"] = new JsonArray(
+            CreateSpiritualWoundComponent(
+                profile,
+                operation: operation,
+                magnitude: magnitude));
         effect["realm"] = realm;
         effect["display"]!["name"] = "Духовная рана";
         effect["display"]!["description"] = "Духовное повреждение ограничивает действия.";
@@ -262,7 +276,9 @@ internal static class EffectMaterializationTestFixture
 
     internal static JsonObject CreateSpiritualWoundComponent(
         string profile,
-        string componentId = "component_001")
+        string componentId = "component_001",
+        string operation = "pressure",
+        JsonNode? magnitude = null)
     {
         var axis = profile switch
         {
@@ -281,10 +297,10 @@ internal static class EffectMaterializationTestFixture
         };
         var payload = new JsonObject
         {
-            ["operation"] = "pressure",
+            ["operation"] = operation,
             ["axis"] = axis
         };
-        payload["magnitude"] = profile switch
+        payload["magnitude"] = magnitude?.DeepClone() ?? (profile switch
         {
             "spiritual_roll_hindrance" => JsonValue.Create("disadvantage"),
             "spiritual_action_cost_burden" => JsonValue.Create(3),
@@ -294,7 +310,7 @@ internal static class EffectMaterializationTestFixture
             "spiritual_counter_burden" => JsonValue.Create("reduce_one_step"),
             "spiritual_art_restriction" => JsonValue.Create("forbid"),
             _ => null
-        };
+        });
         var component = CreateProfileComponent(profile, payload);
         component["componentId"] = componentId;
         return component;

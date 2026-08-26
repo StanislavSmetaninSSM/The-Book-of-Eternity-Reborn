@@ -20,6 +20,19 @@ public sealed class SpiritualWoundEffectProfileContractTests
         "spiritual_art_restriction"
     };
 
+    private static readonly string[] Operations =
+    {
+        "pressure", "counter", "guard", "maneuver", "binding", "break_binding",
+        "force_binding", "force_incarnation", "incarnation_resistance",
+        "champion_coordination", "recover_spiritual_power"
+    };
+
+    private static readonly string[] Axes =
+    {
+        "rollMode", "actionCostAudit", "conflictPosition", "controlState",
+        "sideStrain", "tempoAdvantage", "counterPayoff", "artAvailability"
+    };
+
     private static readonly string[] PersistentTargets =
     {
         "player", "guardian", "resident", "radiant_actor", "afterlife_actor"
@@ -36,38 +49,98 @@ public sealed class SpiritualWoundEffectProfileContractTests
         from realm in AfterlifeRealms
         select new object[] { profile, target, realm };
 
-    public static IEnumerable<object[]> InvalidMagnitudeCases
+    public static IEnumerable<object[]> ValidOperationCases
     {
         get
         {
-            yield return Case("spiritual_roll_hindrance", "\"advantage\"");
-            yield return Case("spiritual_roll_hindrance", "1");
-            yield return Case("spiritual_roll_hindrance", "null");
+            foreach (var profile in Profiles)
+            foreach (var operation in Operations)
+            {
+                if (string.Equals(profile, "spiritual_art_restriction", StringComparison.Ordinal) &&
+                    string.Equals(operation, "force_incarnation", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+                yield return Case(profile, operation);
+            }
+        }
+    }
 
-            yield return Case("spiritual_action_cost_burden", "\"1\"");
-            yield return Case("spiritual_action_cost_burden", "1.5");
-            yield return Case("spiritual_action_cost_burden", "null");
-            yield return Case("spiritual_action_cost_burden", "{}");
-            yield return Case("spiritual_action_cost_burden", "[]");
-            yield return Case("spiritual_action_cost_burden", "0");
-            yield return Case("spiritual_action_cost_burden", "4");
+    public static IEnumerable<object[]> InvalidOperationCases
+    {
+        get
+        {
+            foreach (var profile in Profiles)
+            {
+                foreach (var operation in new[]
+                         {
+                             "spiritual_healing", "unknown_operation", "Pressure", "pressur\u0435"
+                         })
+                {
+                    yield return Case(profile, operation);
+                }
+            }
+            yield return Case("spiritual_art_restriction", "force_incarnation");
+        }
+    }
 
-            yield return Case("spiritual_position_burden", "0");
-            yield return Case("spiritual_position_burden", "3");
-            yield return Case("spiritual_position_burden", "1.5");
-            yield return Case("spiritual_control_burden", "0");
-            yield return Case("spiritual_control_burden", "2");
-            yield return Case("spiritual_control_burden", "1.0");
-            yield return Case("spiritual_strain_burden", "0");
-            yield return Case("spiritual_strain_burden", "2");
-            yield return Case("spiritual_strain_burden", "1.0");
+    public static IEnumerable<object[]> InvalidAxisCases
+    {
+        get
+        {
+            foreach (var profile in Profiles)
+            {
+                var expectedAxis = AxisFor(profile);
+                foreach (var axis in Axes.Where(axis =>
+                             !string.Equals(axis, expectedAxis, StringComparison.Ordinal)))
+                {
+                    yield return Case(profile, axis);
+                }
+                yield return Case(profile, ToggleFirstCharacterCase(expectedAxis));
+            }
+        }
+    }
 
-            yield return Case("spiritual_tempo_burden", "\"deny_two_gains\"");
-            yield return Case("spiritual_tempo_burden", "1");
-            yield return Case("spiritual_counter_burden", "\"deny_one_gain\"");
-            yield return Case("spiritual_counter_burden", "1");
-            yield return Case("spiritual_art_restriction", "\"disadvantage\"");
-            yield return Case("spiritual_art_restriction", "1");
+    public static IEnumerable<object[]> ValidMagnitudeCases
+    {
+        get
+        {
+            yield return Case("spiritual_roll_hindrance", "\"disadvantage\"");
+            yield return Case("spiritual_action_cost_burden", "1");
+            yield return Case("spiritual_action_cost_burden", "2");
+            yield return Case("spiritual_action_cost_burden", "3");
+            yield return Case("spiritual_position_burden", "1");
+            yield return Case("spiritual_position_burden", "2");
+            yield return Case("spiritual_control_burden", "1");
+            yield return Case("spiritual_strain_burden", "1");
+            yield return Case("spiritual_tempo_burden", "\"deny_one_gain\"");
+            yield return Case("spiritual_counter_burden", "\"reduce_one_step\"");
+            yield return Case("spiritual_art_restriction", "\"restrict\"");
+            yield return Case("spiritual_art_restriction", "\"forbid\"");
+        }
+    }
+
+    public static IEnumerable<object[]> InvalidPayloadCases
+    {
+        get
+        {
+            foreach (var profile in Profiles)
+            {
+                foreach (var member in new[] { "operation", "axis", "magnitude" })
+                {
+                    yield return PayloadCase(profile, member, "missing", null);
+                    yield return PayloadCase(profile, member, "value", "null");
+                }
+
+                foreach (var member in new[] { "operation", "axis" })
+                foreach (var invalidJson in new[] { "1", "true", "{}", "[]" })
+                    yield return PayloadCase(profile, member, "value", invalidJson);
+
+                foreach (var invalidJson in InvalidMagnitudeJson(profile))
+                    yield return PayloadCase(profile, "magnitude", "value", invalidJson);
+
+                yield return PayloadCase(profile, "unregistered", "extra", "true");
+            }
         }
     }
 
@@ -90,6 +163,101 @@ public sealed class SpiritualWoundEffectProfileContractTests
                 descriptor.LegalMergeReducers.OrderBy(static value => value, StringComparer.Ordinal));
             Assert.False(string.IsNullOrWhiteSpace(descriptor.ProjectionDescriptor));
         }
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidOperationCases))]
+    public void CommonRegistry_AcceptsEveryExactProfileOperationAndAxisThroughBothBoundaries(
+        string profile,
+        string operation)
+    {
+        AssertAcceptedByBothBoundaries(
+            profile,
+            operation,
+            ParseRequiredJson(DefaultMagnitudeJson(profile)));
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidOperationCases))]
+    public void CommonRegistry_RejectsSafetyUnknownCaseConfusableAndIneligibleOperationsThroughBothBoundaries(
+        string profile,
+        string operation)
+    {
+        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(profile);
+        EffectPayload(effect)["operation"] = operation;
+        var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(profile);
+        DefinitionPayload(definition)["operation"] = operation;
+
+        AssertRejectedByBothBoundaries(
+            effect,
+            definition,
+            "operation");
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidAxisCases))]
+    public void CommonRegistry_RejectsEveryOtherRegisteredAndOrdinalCaseAxisThroughBothBoundaries(
+        string profile,
+        string axis)
+    {
+        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(profile);
+        EffectPayload(effect)["axis"] = axis;
+        var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(profile);
+        DefinitionPayload(definition)["axis"] = axis;
+
+        AssertRejectedByBothBoundaries(effect, definition, "axis");
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidMagnitudeCases))]
+    public void CommonRegistry_AcceptsEveryExactMagnitudeEndpointThroughBothBoundaries(
+        string profile,
+        string magnitudeJson)
+    {
+        AssertAcceptedByBothBoundaries(
+            profile,
+            "counter",
+            ParseRequiredJson(magnitudeJson));
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidPayloadCases))]
+    public void CommonRegistry_RejectsMissingNullWrongTypeLexemeAndClosedPayloadThroughBothBoundaries(
+        string profile,
+        string member,
+        string mutation,
+        string? valueJson)
+    {
+        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(profile);
+        var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(profile);
+        MutatePayload(EffectPayload(effect), member, mutation, valueJson);
+        MutatePayload(DefinitionPayload(definition), member, mutation, valueJson);
+
+        AssertRejectedByBothBoundaries(effect, definition, member);
+    }
+
+    [Fact]
+    public void CommonRegistry_RejectsConfusableProfileThroughBothBoundaries()
+    {
+        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(
+            "spiritual_roll_hindrance");
+        effect["components"]![0]!["profile"] = "spiritual_roll_h\u0456ndrance";
+        var effectIssues = ValidateEffect(effect);
+        Assert.NotEmpty(effectIssues);
+        AssertIssue(
+            effectIssues,
+            "effect.components[0].profile",
+            "effect_materialization_unknown_profile");
+
+        var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
+            "spiritual_roll_hindrance");
+        definition["components"]![0]!["profile"] = "spiritual_roll_h\u0456ndrance";
+        var definitionIssues = ValidateDefinitions("chaos_sea", definition);
+        Assert.NotEmpty(definitionIssues);
+        AssertIssue(
+            definitionIssues,
+            "definitions[0].components[0].profile",
+            "effect_source_definition_invalid_components");
     }
 
     [Theory]
@@ -125,16 +293,59 @@ public sealed class SpiritualWoundEffectProfileContractTests
         Assert.Empty(ValidateDefinitions(currentRealm, definition));
     }
 
+    [Fact]
+    public void CompleteDefinition_AllowsAllFivePersistentTargetsAsOneNonEmptySubset()
+    {
+        var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
+            "spiritual_roll_hindrance");
+        definition["allowedTargetKinds"] = new JsonArray(
+            PersistentTargets.Select(static target => (JsonNode?)target).ToArray());
+
+        Assert.Empty(ValidateDefinitions("chaos_sea", definition));
+    }
+
+    [Fact]
+    public void CompleteDefinition_AllowsOneWoundSourceLinkWithIndependentContextSibling()
+    {
+        var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
+            "spiritual_roll_hindrance");
+        definition["links"]!.AsArray().Add(new JsonObject
+        {
+            ["kind"] = "combat",
+            ["targetId"] = "afterlife_conflict_context_001",
+            ["role"] = "context"
+        });
+
+        Assert.Empty(ValidateDefinitions("chaos_sea", definition));
+    }
+
+    [Fact]
+    public void CompleteDefinition_AllowsOrdinaryAfterlifeTurnsLifetime()
+    {
+        var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
+            "spiritual_roll_hindrance");
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "turns",
+            ["initialTurns"] = 2,
+            ["advancePhase"] = "afterlife_exchange_end"
+        };
+
+        Assert.Empty(ValidateDefinitions("chaos_sea", definition));
+    }
+
     [Theory]
     [InlineData("current_mortal_realm", "definitions[0].allowedRealms", "effect_source_definition_spiritual_wound_realm_invalid")]
     [InlineData("allowed_mortal_realm", "definitions[0].allowedRealms", "effect_source_definition_spiritual_wound_realm_invalid")]
     [InlineData("spiritual_conflict_side", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid")]
     [InlineData("npc_target", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid")]
+    [InlineData("combatant_target", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid")]
+    [InlineData("mixed_target", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid")]
     [InlineData("missing_link", "definitions[0].links", "effect_source_definition_spiritual_wound_link_invalid")]
     [InlineData("wrong_link_kind", "definitions[0].links[0].kind", "effect_source_definition_spiritual_wound_link_invalid")]
     [InlineData("wrong_link_role", "definitions[0].links[0].role", "effect_source_definition_spiritual_wound_link_invalid")]
     [InlineData("duplicate_link", "definitions[0].links[1]", "effect_source_definition_spiritual_wound_link_invalid")]
-    [InlineData("confusable_link", "definitions[0].links[0].targetId", "effect_source_definition_spiritual_wound_link_invalid")]
+    [InlineData("confusable_duplicate_link", "definitions[0].links[1]", "effect_source_definition_spiritual_wound_link_invalid")]
     public void CompleteDefinition_SpiritualWoundScopeIsClosed(
         string mutation,
         string expectedPath,
@@ -160,6 +371,12 @@ public sealed class SpiritualWoundEffectProfileContractTests
             case "npc_target":
                 definition["allowedTargetKinds"] = new JsonArray("npc");
                 break;
+            case "combatant_target":
+                definition["allowedTargetKinds"] = new JsonArray("combatant");
+                break;
+            case "mixed_target":
+                definition["allowedTargetKinds"] = new JsonArray("guardian", "combatant");
+                break;
             case "missing_link":
                 definition["links"] = new JsonArray();
                 break;
@@ -172,8 +389,13 @@ public sealed class SpiritualWoundEffectProfileContractTests
             case "duplicate_link":
                 definition["links"]!.AsArray().Add(definition["links"]![0]!.DeepClone());
                 break;
-            case "confusable_link":
-                definition["links"]![0]!["targetId"] = "wound_sp\u0456ritual_test";
+            case "confusable_duplicate_link":
+                definition["links"]!.AsArray().Add(new JsonObject
+                {
+                    ["kind"] = "wound",
+                    ["targetId"] = "wound_sp\u0456ritual_test",
+                    ["role"] = "source"
+                });
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
@@ -182,76 +404,6 @@ public sealed class SpiritualWoundEffectProfileContractTests
         var issues = ValidateDefinitions(realm, definition);
 
         AssertIssue(issues, expectedPath, expectedCode);
-    }
-
-    [Theory]
-    [MemberData(nameof(InvalidMagnitudeCases))]
-    public void ComponentMagnitude_RejectsWrongTypeOrExactDomain(
-        string profile,
-        string invalidMagnitudeJson)
-    {
-        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(profile);
-        effect["components"]![0]!["payload"]!["magnitude"] =
-            JsonNode.Parse(invalidMagnitudeJson);
-        var effectIssues = ValidateEffect(effect);
-
-        AssertIssue(
-            effectIssues,
-            "effect.components[0].payload.magnitude",
-            "effect_materialization_invalid_component");
-
-        var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(profile);
-        definition["components"]![0]!["payload"]!["magnitude"] =
-            JsonNode.Parse(invalidMagnitudeJson);
-        AssertIssue(
-            ValidateDefinitions("chaos_sea", definition),
-            "definitions[0].components[0].payload.magnitude",
-            "effect_source_definition_invalid_components");
-    }
-
-    [Theory]
-    [InlineData("missing_operation", "effect.components[0].payload.operation")]
-    [InlineData("extra_payload", "effect.components[0].payload.unregistered")]
-    [InlineData("wrong_axis", "effect.components[0].payload.axis")]
-    [InlineData("art_force_incarnation", "effect.components[0].payload.operation")]
-    [InlineData("confusable_profile", "effect.components[0].profile")]
-    public void ComponentPayload_IsClosedProfileExactAndArtSafe(
-        string mutation,
-        string expectedPath)
-    {
-        var profile = mutation == "art_force_incarnation"
-            ? "spiritual_art_restriction"
-            : "spiritual_roll_hindrance";
-        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(profile);
-        switch (mutation)
-        {
-            case "missing_operation":
-                effect["components"]![0]!["payload"]!.AsObject().Remove("operation");
-                break;
-            case "extra_payload":
-                effect["components"]![0]!["payload"]!["unregistered"] = true;
-                break;
-            case "wrong_axis":
-                effect["components"]![0]!["payload"]!["axis"] = "sideStrain";
-                break;
-            case "art_force_incarnation":
-                effect["components"]![0]!["payload"]!["operation"] = "force_incarnation";
-                break;
-            case "confusable_profile":
-                effect["components"]![0]!["profile"] = "spiritual_roll_h\u0456ndrance";
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
-        }
-
-        var issues = ValidateEffect(effect);
-
-        AssertIssue(
-            issues,
-            expectedPath,
-            mutation == "confusable_profile"
-                ? "effect_materialization_unknown_profile"
-                : "effect_materialization_invalid_component");
     }
 
     [Fact]
@@ -287,17 +439,48 @@ public sealed class SpiritualWoundEffectProfileContractTests
     }
 
     [Theory]
-    [MemberData(nameof(ProjectionProfiles))]
-    public void VisibleCanonicalSpiritualWoundEffect_HasSafePlayerProjection(string profile)
+    [MemberData(nameof(ProjectionCases))]
+    public void VisibleCanonicalSpiritualWoundEffect_ProjectsExactMechanicsWithoutTechnicalIdentity(
+        string profile,
+        string operation,
+        string magnitudeJson,
+        string expectedMagnitude)
     {
-        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(profile);
+        const string effectId = "effect_projection_private_001";
+        const string componentId = "component_projection_private_001";
+        const string stackKey = "stack_projection_private_001";
+        const string targetId = "actor_projection_private_001";
+        const string woundId = "wound_projection_private_001";
+        const string definitionKey = "definition_projection_private_001";
+        const string contextId = "conflict_projection_private_001";
+        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(
+            profile,
+            targetKind: "guardian",
+            woundId: woundId,
+            operation: operation,
+            magnitude: ParseRequiredJson(magnitudeJson));
+        effect["effectId"] = effectId;
+        effect["target"]!["targetId"] = targetId;
+        effect["source"]!["sourceId"] = woundId;
+        effect["source"]!["definitionKey"] = definitionKey;
+        effect["components"]![0]!["componentId"] = componentId;
+        effect["triggers"]![0]!["componentIds"] = new JsonArray(componentId);
+        effect["stacking"]!["stackKey"] = stackKey;
+        effect["lifetime"]!["targetId"] = woundId;
+        effect["links"]![0]!["targetId"] = woundId;
+        effect["links"]!.AsArray().Add(new JsonObject
+        {
+            ["kind"] = "combat",
+            ["targetId"] = contextId,
+            ["role"] = "context"
+        });
         var profileRoot = new JsonObject
         {
             ["schemaVersion"] = 1,
             ["profiles"] = new JsonArray(new JsonObject
             {
                 ["actorType"] = "guardian",
-                ["actorId"] = "afterlife_actor_test",
+                ["actorId"] = targetId,
                 ["realm"] = "Chaos Sea",
                 ["activeEffects"] = new JsonArray(effect.DeepClone())
             })
@@ -311,17 +494,39 @@ public sealed class SpiritualWoundEffectProfileContractTests
 
         Assert.True(projection.IsAvailable);
         var entry = Assert.Single(projection.Entries);
-        Assert.Contains(entry.Facts, fact =>
-            string.Equals(fact.Kind, profile, StringComparison.Ordinal) &&
-            !string.IsNullOrWhiteSpace(fact.Value));
+        var fact = Assert.Single(entry.Facts, fact =>
+            string.Equals(fact.Kind, profile, StringComparison.Ordinal));
+        Assert.Equal(
+            $"operation={operation}; axis={AxisFor(profile)}; magnitude={expectedMagnitude}",
+            fact.Value);
         var visible = JsonSerializer.Serialize(projection);
-        Assert.DoesNotContain(EffectMaterializationTestFixture.EffectId, visible, StringComparison.Ordinal);
-        Assert.DoesNotContain("wound_spiritual_test", visible, StringComparison.Ordinal);
-        Assert.DoesNotContain("definition_spiritual_wound_test", visible, StringComparison.Ordinal);
+        foreach (var privateValue in new[]
+                 {
+                     effectId, componentId, stackKey, targetId, woundId, definitionKey, contextId,
+                     EffectMaterializationTestFixture.TransitionId, "turn_42:wound_opened"
+                 })
+        {
+            Assert.DoesNotContain(privateValue, visible, StringComparison.Ordinal);
+        }
+        Assert.DoesNotContain("\"links\"", visible, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"sourceId\"", visible, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"definitionKey\"", visible, StringComparison.Ordinal);
     }
 
-    public static IEnumerable<object[]> ProjectionProfiles =>
-        Profiles.Select(static profile => new object[] { profile });
+    public static IEnumerable<object[]> ProjectionCases
+    {
+        get
+        {
+            yield return new object[] { "spiritual_roll_hindrance", "counter", "\"disadvantage\"", "disadvantage" };
+            yield return new object[] { "spiritual_action_cost_burden", "guard", "2", "2" };
+            yield return new object[] { "spiritual_position_burden", "maneuver", "1", "1" };
+            yield return new object[] { "spiritual_control_burden", "binding", "1", "1" };
+            yield return new object[] { "spiritual_strain_burden", "break_binding", "1", "1" };
+            yield return new object[] { "spiritual_tempo_burden", "force_binding", "\"deny_one_gain\"", "deny_one_gain" };
+            yield return new object[] { "spiritual_counter_burden", "incarnation_resistance", "\"reduce_one_step\"", "reduce_one_step" };
+            yield return new object[] { "spiritual_art_restriction", "champion_coordination", "\"restrict\"", "restrict" };
+        }
+    }
 
     [Fact]
     public void SpiritualWoundOwnedSourceGraph_PreservesTwoComponentsOnOneRoot()
@@ -360,6 +565,127 @@ public sealed class SpiritualWoundEffectProfileContractTests
 
     private static object[] Case(string profile, string invalidJson) =>
         new object[] { profile, invalidJson };
+
+    private static object[] PayloadCase(
+        string profile,
+        string member,
+        string mutation,
+        string? valueJson) =>
+        new object[] { profile, member, mutation, valueJson! };
+
+    private static IEnumerable<string> InvalidMagnitudeJson(string profile) => profile switch
+    {
+        "spiritual_action_cost_burden" =>
+            new[] { "\"1\"", "true", "1.5", "1e0", "{}", "[]", "0", "4" },
+        "spiritual_position_burden" =>
+            new[] { "\"1\"", "true", "1.5", "1e0", "{}", "[]", "0", "3" },
+        "spiritual_control_burden" or "spiritual_strain_burden" =>
+            new[] { "\"1\"", "true", "1.5", "1e0", "{}", "[]", "0", "2" },
+        "spiritual_roll_hindrance" =>
+            new[] { "\"advantage\"", "1", "true", "{}", "[]" },
+        "spiritual_tempo_burden" =>
+            new[] { "\"deny_two_gains\"", "1", "true", "{}", "[]" },
+        "spiritual_counter_burden" =>
+            new[] { "\"deny_one_gain\"", "1", "true", "{}", "[]" },
+        "spiritual_art_restriction" =>
+            new[] { "\"disadvantage\"", "1", "true", "{}", "[]" },
+        _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, null)
+    };
+
+    private static string DefaultMagnitudeJson(string profile) => profile switch
+    {
+        "spiritual_roll_hindrance" => "\"disadvantage\"",
+        "spiritual_action_cost_burden" => "3",
+        "spiritual_position_burden" => "2",
+        "spiritual_control_burden" or "spiritual_strain_burden" => "1",
+        "spiritual_tempo_burden" => "\"deny_one_gain\"",
+        "spiritual_counter_burden" => "\"reduce_one_step\"",
+        "spiritual_art_restriction" => "\"forbid\"",
+        _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, null)
+    };
+
+    private static string AxisFor(string profile) => profile switch
+    {
+        "spiritual_roll_hindrance" => "rollMode",
+        "spiritual_action_cost_burden" => "actionCostAudit",
+        "spiritual_position_burden" => "conflictPosition",
+        "spiritual_control_burden" => "controlState",
+        "spiritual_strain_burden" => "sideStrain",
+        "spiritual_tempo_burden" => "tempoAdvantage",
+        "spiritual_counter_burden" => "counterPayoff",
+        "spiritual_art_restriction" => "artAvailability",
+        _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, null)
+    };
+
+    private static string ToggleFirstCharacterCase(string value) =>
+        char.ToUpperInvariant(value[0]) + value[1..];
+
+    private static JsonNode ParseRequiredJson(string json) =>
+        JsonNode.Parse(json) ?? throw new ArgumentException("Expected non-null JSON test value.", nameof(json));
+
+    private static JsonObject EffectPayload(JsonObject effect) =>
+        effect["components"]![0]!["payload"]!.AsObject();
+
+    private static JsonObject DefinitionPayload(JsonObject definition) =>
+        definition["components"]![0]!["payload"]!.AsObject();
+
+    private static void MutatePayload(
+        JsonObject payload,
+        string member,
+        string mutation,
+        string? valueJson)
+    {
+        switch (mutation)
+        {
+            case "missing":
+                payload.Remove(member);
+                break;
+            case "extra":
+            case "value":
+                payload[member] = valueJson == null ? null : JsonNode.Parse(valueJson);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+    }
+
+    private static void AssertAcceptedByBothBoundaries(
+        string profile,
+        string operation,
+        JsonNode magnitude)
+    {
+        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(
+            profile,
+            operation: operation,
+            magnitude: magnitude);
+        Assert.Empty(ValidateEffect(effect));
+
+        var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
+            profile,
+            operation: operation,
+            magnitude: magnitude);
+        Assert.Empty(ValidateDefinitions("chaos_sea", definition));
+    }
+
+    private static void AssertRejectedByBothBoundaries(
+        JsonObject effect,
+        JsonObject definition,
+        string member)
+    {
+        var effectIssues = ValidateEffect(effect);
+        Assert.NotEmpty(effectIssues);
+        AssertIssue(
+            effectIssues,
+            $"effect.components[0].payload.{member}",
+            "effect_materialization_invalid_component");
+
+        var definitionIssues = ValidateDefinitions("chaos_sea", definition);
+        Assert.NotEmpty(definitionIssues);
+        AssertIssue(
+            definitionIssues,
+            $"definitions[0].components[0].payload.{member}",
+            "effect_source_definition_invalid_components");
+    }
 
     private static IReadOnlyList<ValidationIssue> ValidateDefinitions(
         string realm,

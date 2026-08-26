@@ -1646,8 +1646,18 @@ public sealed class WoundTransitionReducerTests
     [Fact]
     public void Reduce_FollowUpHeal_RejectsMoreThanTwoSeveritySteps()
     {
-        var before = WithSeverity(SpiritualWound(), "III", 3);
-        var after = NewTransition(WithSeverity(before, "I", 1) with
+        var before = CreateSpiritualSeverityWound(
+            "III",
+            3,
+            "before_rank_three",
+            maximumAtCreation: "III");
+        var freshRankOne = CreateSpiritualSeverityWound(
+            "I",
+            1,
+            "after_rank_one",
+            maximumAtCreation: "III",
+            lastChangeEventRef: "turn_43:wound_transition");
+        var after = NewTransition(freshRankOne with
         {
             Care = before.Care with { LastAttemptId = "attempt_treat" }
         }, "treat");
@@ -1819,9 +1829,7 @@ public sealed class WoundTransitionReducerTests
         Assert.Equal("remove", effects.Operation);
         Assert.Equal(EffectIds(before), effects.BeforeEffectIds);
         Assert.Empty(effects.AfterEffectIds);
-        var history = Assert.Single(result.Intents.OfType<WoundTransitionHistoryIntent>());
-        Assert.True(history.Terminal);
-        Assert.Equal(Fingerprint(result.ProposedAfter!), history.AfterFingerprint);
+        AssertExactHealAfter(result, before, after);
     }
 
     [Fact]
@@ -1858,9 +1866,7 @@ public sealed class WoundTransitionReducerTests
         AssertValid(result);
         Assert.Empty(EffectIds(before));
         Assert.DoesNotContain(result.Intents, intent => intent is WoundEffectTransitionIntent);
-        var history = Assert.Single(result.Intents.OfType<WoundTransitionHistoryIntent>());
-        Assert.True(history.Terminal);
-        Assert.Equal(Fingerprint(result.ProposedAfter!), history.AfterFingerprint);
+        AssertExactHealAfter(result, before, after);
     }
 
     [Fact]
@@ -1904,7 +1910,10 @@ public sealed class WoundTransitionReducerTests
 
         AssertValid(result);
         var intent = Assert.Single(result.Intents.OfType<WoundEffectTransitionIntent>());
-        Assert.Contains("effect_wound_marker", intent.BeforeEffectIds);
+        Assert.Equal("remove", intent.Operation);
+        Assert.Equal(EffectIds(before), intent.BeforeEffectIds);
+        Assert.Empty(intent.AfterEffectIds);
+        AssertExactHealAfter(result, before, after);
     }
 
     [Fact]
@@ -2920,6 +2929,64 @@ public sealed class WoundTransitionReducerTests
     private static WoundMaterializationEnvelope SpiritualWound() => ParseWound(
         WoundContractTestData.CreateSpiritualActiveWound());
 
+    private static WoundMaterializationEnvelope CreateSpiritualSeverityWound(
+        string value,
+        int rank,
+        string identitySuffix,
+        string maximumAtCreation,
+        string lastChangeEventRef = "turn_42:wound_opened")
+    {
+        var profiles = new[]
+        {
+            "spiritual_roll_hindrance",
+            "spiritual_action_cost_burden",
+            "spiritual_position_burden"
+        };
+        var wound = WoundContractTestData.CreateSpiritualActiveWound();
+        wound["severity"]!["value"] = value;
+        wound["severity"]!["rank"] = rank;
+        wound["severity"]!["maximumAtCreation"] = maximumAtCreation;
+        wound["severity"]!["lastChangeEventRef"] = lastChangeEventRef;
+        var consequences = wound["consequences"]!.AsObject();
+        consequences["slotBudget"] = rank;
+        consequences["slotsUsed"] = rank;
+
+        var roots = Enumerable.Range(0, rank)
+            .Select(index => (
+                $"effect_spiritual_{identitySuffix}_{index}",
+                $"definition_spiritual_{identitySuffix}_{index}",
+                profiles[index]))
+            .ToArray();
+        var sources = WoundContractTestData.CreateOwnedEffectSourcesForTarget(
+            "wound_spiritual_test",
+            "chaos_sea",
+            "player",
+            roots);
+        for (var index = 0; index < rank; index++)
+        {
+            var componentId = $"component_spiritual_{identitySuffix}_{index}";
+            var definition = sources["definitions"]![index]!;
+            definition["components"]![0]!["componentId"] = componentId;
+            definition["triggers"]![0]!["componentIds"] = new JsonArray(componentId);
+        }
+        if (rank >= 2)
+            sources["definitions"]![1]!["components"]![0]!["payload"]!["magnitude"] = 2;
+        if (rank >= 3)
+            sources["definitions"]![2]!["components"]![0]!["payload"]!["magnitude"] = 2;
+        consequences["ownedEffectSources"] = sources;
+        consequences["entries"] = new JsonArray(
+            Enumerable.Range(0, rank)
+                .Select(index => (JsonNode?)new JsonObject
+                {
+                    ["slot"] = index + 1,
+                    ["profileKey"] = profiles[index],
+                    ["effectId"] = roots[index].Item1,
+                    ["readableSummary"] = $"Духовное следствие ранга {rank}, слот {index + 1}."
+                })
+                .ToArray());
+        return ParseWound(wound);
+    }
+
     private static WoundMaterializationEnvelope HealedWound()
     {
         var active = WithSeverity(PhysicalWound(), "I", 1);
@@ -3097,6 +3164,28 @@ public sealed class WoundTransitionReducerTests
         WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope after) =>
         Assert.Empty(EffectIds(before).Intersect(EffectIds(after), StringComparer.Ordinal));
+
+    private static void AssertExactHealAfter(
+        WoundTransitionReductionResult result,
+        WoundMaterializationEnvelope before,
+        WoundMaterializationEnvelope requestedAfter)
+    {
+        var proposedAfter = Assert.IsType<WoundMaterializationEnvelope>(result.ProposedAfter);
+        Assert.Equal(
+            WoundMaterializationContract.SerializeCanonical(requestedAfter),
+            WoundMaterializationContract.SerializeCanonical(proposedAfter));
+        var expectedFingerprint = Fingerprint(requestedAfter);
+        Assert.Equal(expectedFingerprint, Fingerprint(proposedAfter));
+        var history = Assert.Single(result.Intents.OfType<WoundTransitionHistoryIntent>());
+        Assert.True(history.Terminal);
+        Assert.Equal(expectedFingerprint, history.AfterFingerprint);
+
+        var beforeConsequences = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(before))!["consequences"]!.ToJsonString();
+        var terminalConsequences = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(proposedAfter))!["consequences"]!.ToJsonString();
+        Assert.Equal(beforeConsequences, terminalConsequences);
+    }
 
     private static string Fingerprint(WoundMaterializationEnvelope wound) =>
         WoundIdentityState.ComputeSemanticFingerprint(wound);

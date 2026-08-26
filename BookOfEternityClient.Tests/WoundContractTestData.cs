@@ -207,8 +207,10 @@ internal static class WoundContractTestData
         string ownerId = "player_current",
         string carrierPath = "game_state/player/wounds.json",
         string lifecycle = "active",
-        string domain = "physical") => new()
+        string domain = "physical")
     {
+        var wound = new JsonObject
+        {
         ["schemaVersion"] = 1,
         ["woundId"] = woundId,
         ["lifecycle"] = lifecycle,
@@ -326,22 +328,33 @@ internal static class WoundContractTestData
             ["turn"] = 42,
             ["kind"] = "create"
         }
-    };
+        };
+
+        if (string.Equals(domain, "spiritual", StringComparison.Ordinal))
+            ConfigureSpiritualDefaults(wound, woundId, realm, ownerKind);
+        return wound;
+    }
 
     internal static JsonObject CreateSpiritualActiveWound(
         string woundId = "wound_spiritual_test",
         string realm = "chaos_sea",
         string ownerKind = "player_soul",
         string ownerId = "player_soul_current",
-        string carrierPath = "game_state/meta/afterlife_entity_profiles.json#/playerSoul")
-    {
-        var wound = CreateActiveWound(
+        string carrierPath = "game_state/meta/afterlife_entity_profiles.json#/playerSoul") =>
+        CreateActiveWound(
             woundId,
             realm,
             ownerKind,
             ownerId,
             carrierPath,
             domain: "spiritual");
+
+    private static void ConfigureSpiritualDefaults(
+        JsonObject wound,
+        string woundId,
+        string realm,
+        string ownerKind)
+    {
         wound["classification"] = new JsonObject
         {
             ["domain"] = "spiritual",
@@ -397,7 +410,6 @@ internal static class WoundContractTestData
                 ["effectId"] = "effect_spiritual_cost",
                 ["readableSummary"] = "Духовные действия требуют дополнительного усилия."
             });
-        return wound;
     }
 
     internal static JsonObject CreateOwnedEffectSources(

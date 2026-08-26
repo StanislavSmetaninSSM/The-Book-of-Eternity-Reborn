@@ -358,6 +358,10 @@ public sealed class WoundMaterializationContractTests
             (
                 "wound.consequences.ownedEffectSources.definitions[1].stacking.stackKey",
                 wound => Definitions(wound)[1]!["stacking"]!["stackKey"] =
+                    Definitions(wound)[0]!["stacking"]!["stackKey"]!.GetValue<string>()),
+            (
+                "wound.consequences.ownedEffectSources.definitions[1].stacking.stackKey",
+                wound => Definitions(wound)[1]!["stacking"]!["stackKey"] =
                     "stack_definition_wound_test_bl\u0435eding"),
             (
                 "wound.consequences.ownedEffectSources.definitions[0].stacking.maxStacks",
@@ -802,21 +806,30 @@ public sealed class WoundMaterializationContractTests
             WoundIdentityState.ComputeSemanticFingerprint(firstWound),
             WoundIdentityState.ComputeSemanticFingerprint(changedBindingResult.Wound!));
 
-        var nestedReordered = WoundContractTestData.CreateActiveWound();
-        var definition = Definitions(nestedReordered)[0]!.AsObject();
-        definition["display"] = ReverseObject(definition["display"]!.AsObject());
-        definition["stacking"] = ReverseObject(definition["stacking"]!.AsObject());
-        definition["components"]![0]!["payload"] = ReverseObject(
-            definition["components"]![0]!["payload"]!.AsObject());
-        definition["components"]![0] = ReverseObject(
-            definition["components"]![0]!.AsObject());
-        definition["links"]![0] = ReverseObject(definition["links"]![0]!.AsObject());
-        Definitions(nestedReordered)[0] = ReverseObject(definition);
+        var completeGraphResult = Parse(CreateSingleLeafWound());
+        Assert.True(completeGraphResult.IsValid, DescribeIssues(completeGraphResult));
+        var completeGraphWound = completeGraphResult.Wound!;
+        var completeGraphCanonical =
+            WoundMaterializationContract.SerializeCanonical(completeGraphWound);
+        var nestedReordered = CreateSingleLeafWound();
+        for (var index = 0; index < Definitions(nestedReordered).Count; index++)
+        {
+            Definitions(nestedReordered)[index] =
+                ReverseEveryObject(Definitions(nestedReordered)[index]);
+        }
+        for (var index = 0; index < RootBindings(nestedReordered).Count; index++)
+        {
+            RootBindings(nestedReordered)[index] =
+                ReverseEveryObject(RootBindings(nestedReordered)[index]);
+        }
         var nestedResult = Parse(nestedReordered);
         Assert.True(nestedResult.IsValid, DescribeIssues(nestedResult));
         Assert.Equal(
-            canonical,
+            completeGraphCanonical,
             WoundMaterializationContract.SerializeCanonical(nestedResult.Wound!));
+        Assert.Equal(
+            WoundIdentityState.ComputeSemanticFingerprint(completeGraphWound),
+            WoundIdentityState.ComputeSemanticFingerprint(nestedResult.Wound!));
 
         var canonicalNode = JsonNode.Parse(canonical)!.AsObject();
         Assert.Equal(
@@ -830,6 +843,35 @@ public sealed class WoundMaterializationContractTests
             WoundMaterializationContract.SerializeCanonical(emptyResult.Wound!))!.AsObject();
         Assert.Empty(emptyCanonical["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray());
         Assert.Empty(emptyCanonical["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray());
+    }
+
+    [Fact]
+    public void CanonicalSerialization_FingerprintsAndRoundTripsRootOnlyMarkerBinding()
+    {
+        var baselineResult = Parse(CreateNonMechanicalWound(includeMarker: true));
+        Assert.True(baselineResult.IsValid, DescribeIssues(baselineResult));
+        var baseline = baselineResult.Wound!;
+        var baselineCanonical = WoundMaterializationContract.SerializeCanonical(baseline);
+
+        var changed = CreateNonMechanicalWound(includeMarker: true);
+        RootBindings(changed)[0]!["effectId"] = "effect_wound_marker_rebound";
+        var changedResult = Parse(changed);
+        Assert.True(changedResult.IsValid, DescribeIssues(changedResult));
+        var changedWound = changedResult.Wound!;
+        var changedCanonical = WoundMaterializationContract.SerializeCanonical(changedWound);
+
+        Assert.NotEqual(baselineCanonical, changedCanonical);
+        Assert.NotEqual(
+            WoundIdentityState.ComputeSemanticFingerprint(baseline),
+            WoundIdentityState.ComputeSemanticFingerprint(changedWound));
+        var roundTrip = Parse(JsonNode.Parse(changedCanonical)!.AsObject());
+        Assert.True(roundTrip.IsValid, DescribeIssues(roundTrip));
+        Assert.Equal(
+            changedCanonical,
+            WoundMaterializationContract.SerializeCanonical(roundTrip.Wound!));
+        Assert.Equal(
+            WoundIdentityState.ComputeSemanticFingerprint(changedWound),
+            WoundIdentityState.ComputeSemanticFingerprint(roundTrip.Wound!));
     }
 
     [Fact]
@@ -1544,6 +1586,24 @@ public sealed class WoundMaterializationContractTests
         foreach (var property in source.Reverse())
             result[property.Key] = property.Value?.DeepClone();
         return result;
+    }
+
+    private static JsonNode? ReverseEveryObject(JsonNode? source)
+    {
+        if (source is JsonObject sourceObject)
+        {
+            var result = new JsonObject();
+            foreach (var property in sourceObject.Reverse())
+                result[property.Key] = ReverseEveryObject(property.Value);
+            return result;
+        }
+        if (source is JsonArray sourceArray)
+        {
+            return new JsonArray(sourceArray
+                .Select(ReverseEveryObject)
+                .ToArray());
+        }
+        return source?.DeepClone();
     }
 
     private static void SetPath(JsonObject root, string relativePath, JsonNode? value)
