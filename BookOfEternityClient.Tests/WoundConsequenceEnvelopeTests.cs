@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Immutable;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
@@ -158,17 +157,13 @@ public sealed class WoundConsequenceEnvelopeTests
             WoundConsequenceEnvelopeCatalog.SpiritualOperationKeys.OrderBy(
                 static value => value,
                 StringComparer.Ordinal));
-        var restrictionRegistryProperty = Assert.IsAssignableFrom<PropertyInfo>(
-            typeof(WoundConsequenceEnvelopeCatalog).GetProperty(
-                "SpiritualArtRestrictionKeys",
-                BindingFlags.Static | BindingFlags.NonPublic));
-        var restrictionRegistry = Assert.IsAssignableFrom<IReadOnlySet<string>>(
-            restrictionRegistryProperty.GetValue(null));
         Assert.Equal(
             StandardSpiritualArtValues.OrderBy(
                 static value => value,
                 StringComparer.Ordinal),
-            restrictionRegistry.OrderBy(static value => value, StringComparer.Ordinal));
+            WoundConsequenceEnvelopeCatalog.SpiritualArtRestrictionKeys.OrderBy(
+                static value => value,
+                StringComparer.Ordinal));
     }
 
     [Theory]

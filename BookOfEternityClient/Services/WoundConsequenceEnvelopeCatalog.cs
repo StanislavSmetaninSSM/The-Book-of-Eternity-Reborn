@@ -275,7 +275,6 @@ internal sealed class WoundConsequenceEnvelopeRequest
             false,
             false);
         Effects = CloneEffects(effects, faults);
-        ValidateTotalExpansionBound(Effects, faults);
         ResourceBounds = CloneResourceBounds(resourceBounds, faults);
         InputFaults = faults.ToImmutable();
     }
@@ -424,26 +423,6 @@ internal sealed class WoundConsequenceEnvelopeRequest
 
         return result.MoveToImmutable();
     }
-
-    private static void ValidateTotalExpansionBound(
-        ImmutableArray<WoundConsequenceEffectProposal> effects,
-        ImmutableArray<WoundConsequenceInputFault>.Builder faults)
-    {
-        var total = 0;
-        foreach (var effect in effects)
-        {
-            total += effect.Expansions.Length;
-            if (total <= WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionsPerWound)
-                continue;
-
-            faults.Add(new WoundConsequenceInputFault(
-                "effects",
-                total.ToString(CultureInfo.InvariantCulture),
-                "wound_consequence_limit_exceeded",
-                $"at most {WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionsPerWound} flattened reaction expansion per wound"));
-            return;
-        }
-    }
 }
 
 internal sealed record WoundDerivedConsequenceSlot(
@@ -559,7 +538,18 @@ internal static class WoundConsequenceEnvelopeCatalog
             "recover_spiritual_power");
 
     private static readonly ImmutableHashSet<string> SpiritualArtOperationSet =
-        AfterlifeEntityProfileState.StandardArtIds.ToImmutableHashSet(StringComparer.Ordinal);
+        ImmutableHashSet.Create(
+            StringComparer.Ordinal,
+            "pressure",
+            "counter",
+            "guard",
+            "maneuver",
+            "binding",
+            "break_binding",
+            "force_binding",
+            "incarnation_resistance",
+            "champion_coordination",
+            "recover_spiritual_power");
 
     private static readonly ImmutableHashSet<string> MortalForbidActions =
         ImmutableHashSet.Create(StringComparer.Ordinal, "attack", "cast", "movement");
@@ -576,6 +566,9 @@ internal static class WoundConsequenceEnvelopeCatalog
     internal static IReadOnlySet<string> SpiritualProfiles => SpiritualProfileSet;
 
     internal static IReadOnlySet<string> SpiritualOperationKeys => SpiritualOperationSet;
+
+    internal static IReadOnlySet<string> SpiritualArtRestrictionKeys =>
+        SpiritualArtOperationSet;
 
     internal static WoundConsequenceEnvelopeValidationResult Validate(
         WoundConsequenceEnvelopeRequest request,
@@ -602,6 +595,7 @@ internal static class WoundConsequenceEnvelopeCatalog
         var owned = new List<IndexedEffect>();
         var independent = new List<WoundConsequenceEffectProposal>();
         ClassifyEffects(request, path, owned, independent, issues);
+        ValidateOwnedExpansionBound(owned, path, issues);
 
         var rank = SeverityRank(request.Severity);
         if (rank == 0)
@@ -620,6 +614,7 @@ internal static class WoundConsequenceEnvelopeCatalog
 
         if (string.Equals(request.Domain, "physical", StringComparison.Ordinal))
         {
+            ValidateMortalMarkerLimit(owned, path, issues);
             ValidateMortalEffects(
                 request,
                 rank,
@@ -1020,6 +1015,65 @@ internal static class WoundConsequenceEnvelopeCatalog
         }
     }
 
+    private static void ValidateOwnedExpansionBound(
+        IReadOnlyList<IndexedEffect> owned,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var total = 0;
+        foreach (var indexed in owned)
+            total += indexed.Effect.Expansions.Length;
+
+        if (total > MaximumReactionExpansionsPerWound)
+        {
+            Add(
+                issues,
+                path + ".effects",
+                "wound_consequence_limit_exceeded",
+                $"at most {MaximumReactionExpansionsPerWound} wound-owned flattened reaction expansion",
+                total.ToString(CultureInfo.InvariantCulture));
+        }
+    }
+
+    private static void ValidateMortalMarkerLimit(
+        IReadOnlyList<IndexedEffect> owned,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var markerCount = 0;
+        foreach (var indexed in owned)
+        {
+            markerCount += CountMortalMarkers(indexed.Effect.Components);
+            foreach (var expansion in indexed.Effect.Expansions)
+                markerCount += CountMortalMarkers(expansion.Components);
+        }
+
+        if (markerCount > 1)
+        {
+            Add(
+                issues,
+                path + ".effects",
+                "wound_consequence_marker_limit_exceeded",
+                "at most one wound_consequence marker across the wound-owned effect set",
+                markerCount.ToString(CultureInfo.InvariantCulture));
+        }
+    }
+
+    private static int CountMortalMarkers(ImmutableArray<JsonElement> components)
+    {
+        var count = 0;
+        foreach (var component in components)
+        {
+            if (TryReadString(component, "profile", out var profile) &&
+                string.Equals(profile, "wound_consequence", StringComparison.Ordinal))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     private static Dictionary<string, WoundResourceEnvelopeBound> ValidateResourceBounds(
         ImmutableArray<WoundResourceEnvelopeBound> bounds,
         string path,
@@ -1389,27 +1443,26 @@ internal static class WoundConsequenceEnvelopeCatalog
         List<ValidationIssue> issues)
     {
         if (!TryReadString(payload, targetField, out var target) ||
-            !TryReadString(payload, "operation", out var operation) ||
-            !payload.TryGetProperty("value", out var rawValue) ||
+            !TryReadString(payload, "operation", out var operation))
+        {
+            return;
+        }
+
+        if (!payload.TryGetProperty("value", out var rawValue) ||
             !ResourceMaterializationContract.TryReadExactDecimal(rawValue, out var value))
         {
+            Add(
+                issues,
+                componentPath + ".payload.value",
+                "wound_consequence_magnitude_exceeded",
+                "one exact nonzero decimal wound modifier",
+                DescribeProperty(payload, "value"));
             return;
         }
 
         var limit = string.Equals(operation, "percent", StringComparison.Ordinal)
             ? PercentageLimit(rank)
             : rank;
-        if (!WithinAbsoluteLimit(value, limit))
-        {
-            Add(
-                issues,
-                componentPath + ".payload.value",
-                "wound_consequence_magnitude_exceeded",
-                $"absolute {operation} modifier <= {limit.ToString(CultureInfo.InvariantCulture)} at severity rank {rank}",
-                value.ToString(CultureInfo.InvariantCulture));
-            return;
-        }
-
         var effective = value;
         var effectivePath = componentPath + ".payload.value";
         if (payload.TryGetProperty("cap", out var cap) &&
