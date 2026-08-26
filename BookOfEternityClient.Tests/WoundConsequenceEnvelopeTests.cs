@@ -1336,6 +1336,18 @@ public sealed class WoundConsequenceEnvelopeTests
     }
 
     [Fact]
+    public void NullRequest_ReturnsInputIssueWithoutThrowing()
+    {
+        WoundConsequenceEnvelopeValidationResult? result = null;
+        var exception = Record.Exception(() =>
+            result = WoundConsequenceEnvelopeCatalog.Validate(null!, Path));
+
+        Assert.Null(exception);
+        Assert.NotNull(result);
+        AssertIssue(result!, Path, "wound_consequence_input_invalid");
+    }
+
+    [Fact]
     public void Result_IsDeterministicAndImmutableAcrossInputOrderAndCallerMutation()
     {
         var effects = new List<WoundConsequenceEffectProposal>
