@@ -264,9 +264,11 @@ notification.
 }
 ```
 
-`rank` is the derived numeric representation 1-4 and must agree with `value`. A
-transition supplies explicit before/after severity; impossible improvement/worsening
-and severity V fail closed.
+`rank` is the derived numeric representation 1-4 and must agree with `value`.
+`maximumAtCreation` preserves the maximum severity sealed by the originating
+opportunity; it may be higher than the severity selected by the GM and never changes
+on later transitions. A transition supplies explicit before/after severity; impossible
+improvement/worsening and severity V fail closed.
 
 ### 7.5 Care
 
