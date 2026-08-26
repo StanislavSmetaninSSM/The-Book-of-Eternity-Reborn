@@ -66,9 +66,14 @@ internal static class WoundContractTestData
         string realm = "mortal_world",
         string ownerKind = "player",
         string ownerId = "player_current",
-        string carrierPath = "game_state/player/player.json#/activeWounds",
+        string carrierPath = "game_state/player/wounds.json",
         string domain = "physical",
-        string status = "active") => new()
+        string status = "active",
+        int createdAtTurn = 42,
+        string createdEventRef = "turn_42:wound_opened",
+        int lastTransitionOrdinal = 1,
+        string? terminalTransitionId = null,
+        string semanticFingerprint = "sha256:0000000000000000000000000000000000000000000000000000000000000000") => new()
     {
         ["woundId"] = woundId,
         ["realm"] = realm,
@@ -77,11 +82,11 @@ internal static class WoundContractTestData
         ["carrierPath"] = carrierPath,
         ["domain"] = domain,
         ["status"] = status,
-        ["createdAtTurn"] = 42,
-        ["createdEventRef"] = "turn_42:wound_opened",
-        ["lastTransitionOrdinal"] = 1,
-        ["terminalTransitionId"] = null,
-        ["semanticFingerprint"] = "wound-fingerprint-test-001"
+        ["createdAtTurn"] = createdAtTurn,
+        ["createdEventRef"] = createdEventRef,
+        ["lastTransitionOrdinal"] = lastTransitionOrdinal,
+        ["terminalTransitionId"] = terminalTransitionId,
+        ["semanticFingerprint"] = semanticFingerprint
     };
 
     internal static JsonObject CreateHistory(params JsonObject[] transitions) => new()
