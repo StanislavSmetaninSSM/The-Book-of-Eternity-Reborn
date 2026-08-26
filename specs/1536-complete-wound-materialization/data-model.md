@@ -341,9 +341,10 @@ replaces the whole owned set atomically.
 
 Allowed generic effect profiles are `characteristic_modifier`, `roll_modifier`,
 `resistance_modifier`, `periodic_damage`, `periodic_restore`, `action_control`, and
-`event_reaction`; `wound_consequence` is a zero-slot source/display marker. One
-independent characteristic, roll operation, resistance, periodic resource operation,
-action, or worst-case reaction result consumes one slot.
+`event_reaction`; `wound_consequence` is a zero-slot source/display marker, with at
+most one marker across the wound-owned effect set. One independent characteristic,
+roll operation, resistance, periodic resource operation, action, or worst-case reaction
+result consumes one slot.
 
 | Per-slot limit | I | II | III | IV |
 | --- | ---: | ---: | ---: | ---: |
@@ -356,9 +357,17 @@ action, or worst-case reaction result consumes one slot.
 | `forbid` | none | none | one non-safety action/slot | one non-safety action/slot |
 | Reaction definition expansion | none | none | one fully budgeted | one fully budgeted |
 
+For scalar modifiers, a non-null cap is evaluated exactly as runtime evaluates it:
+apply `minimum`, then `maximum`, and compare the resulting nonzero modifier to the
+severity limit. Both endpoints use the exact decimal contract. A larger finite raw
+value is legal when that runtime result is inside the envelope; an unrepresentable raw
+number fails closed and never disappears from slot accounting.
+
 Periodic values are quantum-aligned without exceeding the cap and execute no more than
 once per accepted source event. Every worst-case spawned reaction component consumes
-its own slot. `forbid` can target only `attack`, `cast`, or `movement`; `defend`,
+its own slot. The one-expansion-per-wound limit counts only wound-owned expansions;
+bounded independent effect siblings remain outside wound slot and expansion budgets.
+`forbid` can target only `attack`, `cast`, or `movement`; `defend`,
 `use_item`, `interact`, and `escape` cannot be forbidden. Aggregate restrictions
 preserve inspection, communication, help, treatment, and exit.
 
@@ -381,6 +390,10 @@ communication, help, withdrawal, surrender, negotiation, and dissipation choice 
 be targeted. Eligible operation keys are exactly `pressure`, `counter`, `guard`,
 `maneuver`, `binding`, `break_binding`, `force_binding`, `force_incarnation`,
 `incarnation_resistance`, `champion_coordination`, and `recover_spiritual_power`.
+The art-restriction subset is the ten combat arts above excluding
+`force_incarnation`; it is a dedicated closed operation set rather than a projection of
+the extensible standard-art registry, so later noncombat and healing arts remain
+ineligible.
 Spiritual severity requires exactly `rank` legal entries.
 
 ### 7.8 Treatment

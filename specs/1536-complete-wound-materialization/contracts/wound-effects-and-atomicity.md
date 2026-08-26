@@ -101,9 +101,10 @@ remain.
 
 The usable generic effect profiles are exactly `characteristic_modifier`,
 `roll_modifier`, `resistance_modifier`, `periodic_damage`, `periodic_restore`,
-`action_control`, and `event_reaction`. `wound_consequence` is a zero-slot marker. One
-independently affected characteristic, roll operation, resistance, periodic resource,
-action, or worst-case reaction component consumes one slot.
+`action_control`, and `event_reaction`. `wound_consequence` is a zero-slot marker, and
+at most one may appear across the wound-owned effect set. One independently affected
+characteristic, roll operation, resistance, periodic resource, action, or worst-case
+reaction component consumes one slot.
 
 | Per-slot limit | I | II | III | IV |
 | --- | ---: | ---: | ---: | ---: |
@@ -116,9 +117,17 @@ action, or worst-case reaction component consumes one slot.
 | `forbid` | none | none | one non-safety action/slot | one non-safety action/slot |
 | Reaction definition expansion | none | none | one fully budgeted | one fully budgeted |
 
+Scalar caps use the same order as runtime application: apply exact-decimal `minimum`,
+then exact-decimal `maximum`, and budget the resulting nonzero modifier. A larger finite
+raw value may be admitted when the cap makes the runtime modifier legal; a cap may not
+amplify it past the severity limit. A finite number outside the exact decimal contract
+is rejected and cannot silently remove a component from slot derivation.
+
 Periodic values are quantum-aligned without rounding above the cap and execute at most
 once for one accepted source event. Roll array entries consume one slot each. Every
-worst-case reaction result is counted before admission. `forbid` may target only
+worst-case reaction result is counted before admission. The single wound expansion
+ceiling applies only to wound-owned effects; bounded independent siblings are preserved
+outside wound slot and expansion budgets. `forbid` may target only
 `attack`, `cast`, or `movement`; `defend`, `use_item`, `interact`, and `escape` remain
 non-forbiddable safety-capable action keys. Aggregate wound effects must still preserve
 inspection, communication, help, treatment, and exit.
@@ -144,6 +153,13 @@ dissipation decision cannot be targeted. Eligible operation keys are exactly
 `force_binding`, `force_incarnation`, `incarnation_resistance`,
 `champion_coordination`, and `recover_spiritual_power`. These primitives may be combined into unique
 GM-authored spiritual wounds; they are not complete-wound templates.
+
+`spiritual_art_restriction` uses the dedicated ten-art combat subset: `pressure`,
+`counter`, `guard`, `maneuver`, `binding`, `break_binding`, `force_binding`,
+`incarnation_resistance`, `champion_coordination`, and `recover_spiritual_power`.
+It does not derive from the extensible standard-art registry and therefore never admits
+`force_incarnation`, `spiritual_resilience`, `spiritual_healing`, or later noncombat
+arts without an explicit versioned contract change.
 
 ## Severity rematerialization
 

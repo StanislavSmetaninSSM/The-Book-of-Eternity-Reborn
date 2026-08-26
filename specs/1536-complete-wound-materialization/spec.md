@@ -219,9 +219,10 @@ As the game-running system, I can reject and repair an invalid wound proposal wi
 Version-1 Mortal wound effects MAY use the existing generic profiles
 `characteristic_modifier`, `roll_modifier`, `resistance_modifier`,
 `periodic_damage`, `periodic_restore`, `action_control`, and `event_reaction`.
-The `wound_consequence` source/display marker costs zero slots. Each independently
-affected characteristic, roll operation, resistance, periodic resource operation,
-action, or worst-case reaction result costs one slot. Per-slot severity limits are:
+The `wound_consequence` source/display marker costs zero slots, and at most one such
+marker may exist across the wound-owned effect set. Each independently affected
+characteristic, roll operation, resistance, periodic resource operation, action, or
+worst-case reaction result costs one slot. Per-slot severity limits are:
 
 | Limit | I | II | III | IV |
 | --- | ---: | ---: | ---: | ---: |
@@ -234,10 +235,19 @@ action, or worst-case reaction result costs one slot. Per-slot severity limits a
 | Action `forbid` | forbidden | forbidden | one non-safety action/slot | one non-safety action/slot |
 | Event reaction | deterministic registered outcome only; no definition expansion | same | at most one fully budgeted expansion | at most one fully budgeted expansion |
 
+For a scalar modifier with a non-null `cap`, the severity limit applies to the exact
+runtime value after applying `minimum` and then `maximum`, in that order. Both cap
+endpoints MUST be exact decimals and the resulting modifier MUST be nonzero. A safe cap
+may bound a larger finite authored value; a cap cannot amplify the runtime value beyond
+the severity envelope. A finite generic-effect number that cannot be represented by the
+exact wound decimal contract MUST be rejected rather than omitted from slot derivation.
+
 Periodic values MUST be quantum-aligned without rounding above the percentage cap and
 MUST execute at most once for one accepted source event. Roll contributions cost one
 slot per listed operation. Reaction slot cost includes every worst-case spawned
-mechanical component. A Mortal `forbid` may target only `attack`, `cast`, or
+mechanical component. The single wound expansion ceiling counts wound-owned expansions
+only; bounded independent effect siblings neither consume this ceiling nor wound slots.
+A Mortal `forbid` may target only `attack`, `cast`, or
 `movement`; `defend`, `use_item`, `interact`, and `escape` remain non-forbiddable
 safety-capable action keys. Aggregate restrictions MUST preserve inspection,
 communication, help, treatment, and exit.
@@ -261,6 +271,11 @@ operations and MUST NOT be selected by a hindrance, cost, strain, or art-restric
 profile. The exact eligible non-safety operation set is `pressure`, `counter`, `guard`,
 `maneuver`, `binding`, `break_binding`, `force_binding`, `force_incarnation`,
 `incarnation_resistance`, `champion_coordination`, and `recover_spiritual_power`.
+The narrower `spiritual_art_restriction` target set is exactly the ten combat arts
+`pressure`, `counter`, `guard`, `maneuver`, `binding`, `break_binding`,
+`force_binding`, `incarnation_resistance`, `champion_coordination`, and
+`recover_spiritual_power`; it excludes `force_incarnation` and any present or future
+standard noncombat/healing art.
 Duplicate profile/operation coordinates within one wound are invalid. These
 are consequence primitives, not a catalog of complete spiritual wounds.
 
