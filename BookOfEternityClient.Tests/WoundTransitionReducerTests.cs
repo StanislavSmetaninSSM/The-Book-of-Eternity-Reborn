@@ -48,6 +48,40 @@ public sealed class WoundTransitionReducerTests
     }
 
     [Fact]
+    public void Reduce_Create_DirectZeroSlotMarkerRootEmitsApplyIntent()
+    {
+        const string effectId = "effect_wound_direct_marker";
+        const string definitionKey = "definition_wound_direct_marker";
+        var afterJson = WoundContractTestData.CreateActiveWound();
+        var consequences = afterJson["consequences"]!.AsObject();
+        consequences["slotsUsed"] = 0;
+        consequences["entries"] = new JsonArray();
+        consequences["ownedEffectSources"] =
+            WoundContractTestData.CreateOwnedEffectSources(
+                "wound_test_torn_side",
+                "mortal_world",
+                (effectId, definitionKey, "wound_consequence"));
+        var after = NewTransition(
+            ParseWound(afterJson),
+            "create",
+            ordinal: 1,
+            turn: 42);
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "create",
+            null,
+            after,
+            CreateEvidence(after)));
+
+        AssertValid(result);
+        Assert.Equal(new[] { effectId }, EffectIds(after));
+        var intent = Assert.Single(result.Intents.OfType<WoundEffectTransitionIntent>());
+        Assert.Equal("apply", intent.Operation);
+        Assert.Empty(intent.BeforeEffectIds);
+        Assert.Equal(new[] { effectId }, intent.AfterEffectIds);
+    }
+
+    [Fact]
     public void Reduce_Create_AllowsFreshCareButRejectsPriorIdentity()
     {
         var after = NewTransition(
@@ -1191,6 +1225,92 @@ public sealed class WoundTransitionReducerTests
     }
 
     [Fact]
+    public void Reduce_Stabilize_RemovesFirstSlotAndRootAndRenumbersRetainedGraph()
+    {
+        const string removedComplicationId = "complication_bleeding";
+        const string removedEffectId = "effect_wound_test_bleeding";
+        const string removedDefinitionKey = "definition_wound_test_bleeding";
+        const string retainedEffectId = "effect_wound_test_pain";
+        const string retainedDefinitionKey = "definition_wound_test_pain";
+        var beforeJson = WoundContractTestData.CreateActiveWound();
+        beforeJson["complications"]!.AsArray().Add(new JsonObject
+        {
+            ["complicationId"] = removedComplicationId,
+            ["kind"] = "bleeding",
+            ["state"] = "active",
+            ["displayName"] = "Кровоточащее осложнение",
+            ["treatmentDifficultyModifier"] = 1,
+            ["ownedEffectIds"] = new JsonArray(removedEffectId),
+            ["visibility"] = "known_to_player"
+        });
+        var before = ParseWound(beforeJson);
+        var pruned = RemoveOwnedRoot(
+            before with { Complications = ImmutableArray<WoundComplication>.Empty },
+            removedEffectId);
+        var after = NewTransition(pruned with
+        {
+            Care = before.Care with
+            {
+                State = "stabilized",
+                StabilizedAtTurn = 43,
+                LastAttemptId = "attempt_stabilize"
+            },
+            Recovery = before.Recovery with
+            {
+                Blockers = ImmutableArray<string>.Empty
+            }
+        }, "stabilize");
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "stabilize",
+            before,
+            after,
+            StabilizeEvidence(
+                before,
+                after,
+                removedComplications: new[] { removedComplicationId },
+                removedEffects: new[] { removedEffectId },
+                removedBlockers: new[] { "not_stabilized" })));
+
+        AssertValid(result);
+        var proposedAfter = result.ProposedAfter!;
+        Assert.Equal(Fingerprint(after), Fingerprint(proposedAfter));
+        Assert.Equal(1, proposedAfter.Consequences.SlotsUsed);
+        var retainedEntry = Assert.Single(proposedAfter.Consequences.Entries);
+        Assert.Equal(1, retainedEntry.Slot);
+        Assert.Equal(retainedEffectId, retainedEntry.EffectId);
+        var retainedBinding = Assert.Single(
+            proposedAfter.Consequences.OwnedEffectSources.RootBindings);
+        Assert.Equal(retainedEffectId, retainedBinding.EffectId);
+        Assert.Equal(retainedDefinitionKey, retainedBinding.DefinitionKey);
+
+        var beforeSources = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(before))!
+            ["consequences"]!["ownedEffectSources"]!;
+        var proposedSources = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(proposedAfter))!
+            ["consequences"]!["ownedEffectSources"]!;
+        var expectedRetainedDefinition = beforeSources["definitions"]!.AsArray()
+            .Single(definition => string.Equals(
+                definition!["definitionKey"]!.GetValue<string>(),
+                retainedDefinitionKey,
+                StringComparison.Ordinal));
+        var actualRetainedDefinition = Assert.Single(
+            proposedSources["definitions"]!.AsArray());
+        Assert.Equal(
+            expectedRetainedDefinition!.ToJsonString(),
+            actualRetainedDefinition!.ToJsonString());
+        var canonical = WoundMaterializationContract.SerializeCanonical(proposedAfter);
+        Assert.DoesNotContain(removedEffectId, canonical, StringComparison.Ordinal);
+        Assert.DoesNotContain(removedDefinitionKey, canonical, StringComparison.Ordinal);
+
+        var intent = Assert.Single(result.Intents.OfType<WoundEffectTransitionIntent>());
+        Assert.Equal("update", intent.Operation);
+        Assert.Equal(EffectIds(before), intent.BeforeEffectIds);
+        Assert.Equal(new[] { retainedEffectId }, intent.AfterEffectIds);
+    }
+
+    [Fact]
     public void Reduce_Stabilize_PrunesRemovedBranchAndPreservesReachableSibling()
     {
         const string removedEffectId = "effect_complication_removed_branch";
@@ -1323,6 +1443,50 @@ public sealed class WoundTransitionReducerTests
                 retainedAfter,
                 WorsenEvidence(before, retainedAfter))),
             "wound_transition_severity_root_identity_reused");
+    }
+
+    [Fact]
+    public void Reduce_Worsen_RejectsRootIdentityConfusableWithPriorRoot()
+    {
+        const string priorEffectId = "effect_wound_test_bleeding";
+        const string confusableEffectId = "EFFECT_WOUND_TEST_BLEEDING";
+        var before = PhysicalWound();
+        var afterJson = CreateSeverityThreeWound(retainPriorRootIds: false);
+        afterJson["consequences"]!["ownedEffectSources"]!["rootBindings"]![0]!["effectId"] =
+            confusableEffectId;
+        afterJson["consequences"]!["entries"]![0]!["effectId"] = confusableEffectId;
+        var after = ParseWound(afterJson);
+
+        var beforeRootIds = before.Consequences.OwnedEffectSources.RootBindings
+            .Select(static binding => binding.EffectId)
+            .ToArray();
+        var afterRootIds = after.Consequences.OwnedEffectSources.RootBindings
+            .Select(static binding => binding.EffectId)
+            .ToArray();
+        Assert.Equal(beforeRootIds.Length, beforeRootIds.Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(afterRootIds.Length, afterRootIds.Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(
+            beforeRootIds.Length,
+            beforeRootIds.Select(MortalLocationIdentityState.BuildConfusableKey)
+                .Distinct(StringComparer.Ordinal)
+                .Count());
+        Assert.Equal(
+            afterRootIds.Length,
+            afterRootIds.Select(MortalLocationIdentityState.BuildConfusableKey)
+                .Distinct(StringComparer.Ordinal)
+                .Count());
+        Assert.Empty(beforeRootIds.Intersect(afterRootIds, StringComparer.Ordinal));
+        Assert.Equal(
+            MortalLocationIdentityState.BuildConfusableKey(priorEffectId),
+            MortalLocationIdentityState.BuildConfusableKey(confusableEffectId));
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "worsen",
+            before,
+            after,
+            WorsenEvidence(before, after)));
+
+        AssertInvalid(result, "wound_transition_severity_root_identity_reused");
     }
 
     [Fact]
