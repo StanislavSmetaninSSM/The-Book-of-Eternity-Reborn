@@ -491,6 +491,23 @@ public sealed class WoundMaterializationContractTests
     }
 
     [Fact]
+    public void Parse_OwnedEffectSources_RejectsAdditionalNonWoundSourceAuthority()
+    {
+        var wound = WoundContractTestData.CreateActiveWound();
+        Definitions(wound)[0]!["links"]!.AsArray().Add(new JsonObject
+        {
+            ["kind"] = "quest",
+            ["targetId"] = "quest_unrelated_source",
+            ["role"] = "source"
+        });
+
+        AssertInvalid(
+            Parse(wound),
+            Path + ".consequences.ownedEffectSources.definitions[0].links[1].kind",
+            "wound_materialization_owned_source_graph_invalid");
+    }
+
+    [Fact]
     public void Parse_OwnedEffectSources_AcceptsOneLeafAtMaxTwoAndRejectsNestedOrSecondEdge()
     {
         var legal = CreateSingleLeafWound();
@@ -764,6 +781,20 @@ public sealed class WoundMaterializationContractTests
             Parse(displayOnlyMarker),
             Path + ".consequences.lifecycleEvidence",
             "wound_consequence_non_display_impact_required");
+    }
+
+    [Fact]
+    public void Parse_EmptyMortalGraph_AcceptsNoNaturalRecoveryAsLifecycleConstraint()
+    {
+        var wound = CreateNonMechanicalWound(includeMarker: false);
+        wound["care"]!["state"] = "stabilized";
+        wound["care"]!["stabilizedAtTurn"] = 42;
+        wound["recovery"]!["mode"] = "no_natural_recovery";
+        wound["recovery"]!["blockers"] = new JsonArray();
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
     }
 
     [Fact]

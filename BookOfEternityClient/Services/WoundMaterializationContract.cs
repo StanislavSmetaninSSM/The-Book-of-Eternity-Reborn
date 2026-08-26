@@ -92,7 +92,24 @@ internal sealed record WoundComplication(
 internal sealed record WoundConsequences(
     int SlotBudget,
     int SlotsUsed,
-    IReadOnlyList<WoundConsequenceEntry> Entries);
+    IReadOnlyList<WoundConsequenceEntry> Entries)
+{
+    internal WoundOwnedEffectSources OwnedEffectSources { get; init; } =
+        WoundOwnedEffectSources.Empty;
+}
+
+internal sealed record WoundOwnedEffectSources(
+    IReadOnlyList<JsonElement> Definitions,
+    IReadOnlyList<WoundRootEffectBinding> RootBindings)
+{
+    internal static WoundOwnedEffectSources Empty { get; } = new(
+        ImmutableArray<JsonElement>.Empty,
+        ImmutableArray<WoundRootEffectBinding>.Empty);
+}
+
+internal sealed record WoundRootEffectBinding(
+    string EffectId,
+    string DefinitionKey);
 
 internal sealed record WoundConsequenceEntry(
     int Slot,
@@ -155,6 +172,8 @@ internal static class WoundMaterializationContract
     internal const int MaxRequirementsPerTreatmentMember = 16;
     internal const int MaxComplications = 16;
     internal const int MaxConsequences = 4;
+    internal const int MaxOwnedEffectDefinitions = 5;
+    internal const int MaxOwnedEffectRootBindings = 5;
     internal const int MaxReadableTextLength = 2_000;
 
     private static readonly IReadOnlySet<string> RootFields = Set(
@@ -183,7 +202,11 @@ internal static class WoundMaterializationContract
         "complicationId", "kind", "state", "displayName", "treatmentDifficultyModifier",
         "ownedEffectIds", "visibility");
     private static readonly IReadOnlySet<string> ConsequencesFields = Set(
-        "slotBudget", "slotsUsed", "entries");
+        "slotBudget", "slotsUsed", "ownedEffectSources", "entries");
+    private static readonly IReadOnlySet<string> OwnedEffectSourcesFields = Set(
+        "definitions", "rootBindings");
+    private static readonly IReadOnlySet<string> RootEffectBindingFields = Set(
+        "effectId", "definitionKey");
     private static readonly IReadOnlySet<string> ConsequenceEntryFields = Set(
         "slot", "profileKey", "effectId", "readableSummary");
     private static readonly IReadOnlySet<string> TreatmentFields = Set(
@@ -290,10 +313,6 @@ internal static class WoundMaterializationContract
             var severity = ParseSeverity(ReadRequiredObject(root, "severity", path, issues), path + ".severity", issues);
             var care = ParseCare(ReadRequiredObject(root, "care", path, issues), path + ".care", issues);
             var complications = ParseComplications(root, path, issues);
-            var consequences = ParseConsequences(
-                ReadRequiredObject(root, "consequences", path, issues),
-                path + ".consequences",
-                issues);
             var treatment = ParseTreatment(
                 ReadRequiredObject(root, "treatment", path, issues),
                 path + ".treatment",
@@ -301,6 +320,18 @@ internal static class WoundMaterializationContract
             var recovery = ParseRecovery(
                 ReadRequiredObject(root, "recovery", path, issues),
                 path + ".recovery",
+                issues);
+            var consequences = ParseConsequences(
+                ReadRequiredObject(root, "consequences", path, issues),
+                path + ".consequences",
+                woundId,
+                lifecycle,
+                owner,
+                classification,
+                severity,
+                care,
+                complications,
+                recovery,
                 issues);
             var relations = ParseRelations(
                 ReadRequiredObject(root, "relations", path, issues),
@@ -535,19 +566,29 @@ internal static class WoundMaterializationContract
     private static WoundConsequences ParseConsequences(
         JsonElement value,
         string path,
+        string woundId,
+        string lifecycle,
+        WoundOwnerCoordinate owner,
+        WoundClassification classification,
+        WoundSeverity severity,
+        WoundCare care,
+        IReadOnlyList<WoundComplication> complications,
+        WoundRecovery recovery,
         List<ValidationIssue> issues)
     {
         ValidateObjectShape(value, path, ConsequencesFields, ConsequencesFields, issues);
         var slotBudget = ReadInt32(value, "slotBudget", path, 0, MaxConsequences, issues);
         var slotsUsed = ReadInt32(value, "slotsUsed", path, 0, MaxConsequences, issues);
-        if (!TryReadArray(value, "entries", path, out var entries, issues))
-            return new WoundConsequences(slotBudget, slotsUsed, ImmutableArray<WoundConsequenceEntry>.Empty);
-        AddLimitIssue(entries, path + ".entries", MaxConsequences, "consequences", issues);
+        var hasEntries = TryReadArray(value, "entries", path, out var entries, issues);
+        if (hasEntries)
+            AddLimitIssue(entries, path + ".entries", MaxConsequences, "consequences", issues);
 
         var parsed = ImmutableArray.CreateBuilder<WoundConsequenceEntry>();
         var slots = new HashSet<int>();
         var index = 0;
-        foreach (var item in entries.EnumerateArray())
+        foreach (var item in hasEntries
+                     ? entries.EnumerateArray()
+                     : Enumerable.Empty<JsonElement>())
         {
             if (index >= MaxConsequences)
                 break;
@@ -583,7 +624,8 @@ internal static class WoundMaterializationContract
             index++;
         }
 
-        if (slotsUsed != entries.GetArrayLength())
+        var entryCount = hasEntries ? entries.GetArrayLength() : 0;
+        if (slotsUsed != entryCount)
         {
             AddIssue(
                 issues,
@@ -602,8 +644,1026 @@ internal static class WoundMaterializationContract
                 slotBudget.ToString(CultureInfo.InvariantCulture));
         }
 
-        return new WoundConsequences(slotBudget, slotsUsed, parsed.ToImmutable());
+        var ownedEffectSources = ParseOwnedEffectSources(
+            value,
+            path,
+            owner.Realm,
+            issues);
+        var parsedEntries = parsed.ToImmutable();
+        ValidateOwnedEffectSources(
+            ownedEffectSources,
+            path + ".ownedEffectSources",
+            woundId,
+            lifecycle,
+            owner,
+            classification,
+            severity,
+            care,
+            complications,
+            recovery,
+            slotBudget,
+            slotsUsed,
+            parsedEntries,
+            value,
+            issues);
+
+        return new WoundConsequences(slotBudget, slotsUsed, parsedEntries)
+        {
+            OwnedEffectSources = ownedEffectSources
+        };
     }
+
+    private static WoundOwnedEffectSources ParseOwnedEffectSources(
+        JsonElement consequences,
+        string path,
+        string realm,
+        List<ValidationIssue> issues)
+    {
+        var sourcesPath = path + ".ownedEffectSources";
+        var value = ReadRequiredObject(consequences, "ownedEffectSources", path, issues);
+        ValidateObjectShape(
+            value,
+            sourcesPath,
+            OwnedEffectSourcesFields,
+            OwnedEffectSourcesFields,
+            issues);
+
+        var hasDefinitions = TryReadArray(
+            value,
+            "definitions",
+            sourcesPath,
+            out var definitions,
+            issues);
+        var hasRootBindings = TryReadArray(
+            value,
+            "rootBindings",
+            sourcesPath,
+            out var rootBindings,
+            issues);
+
+        var definitionsWithinLimit = hasDefinitions &&
+                                     definitions.GetArrayLength() <= MaxOwnedEffectDefinitions;
+        var rootsWithinLimit = hasRootBindings &&
+                               rootBindings.GetArrayLength() <= MaxOwnedEffectRootBindings;
+        if (hasDefinitions)
+        {
+            AddLimitIssue(
+                definitions,
+                sourcesPath + ".definitions",
+                MaxOwnedEffectDefinitions,
+                "wound-owned effect definitions",
+                issues);
+        }
+        if (hasRootBindings)
+        {
+            AddLimitIssue(
+                rootBindings,
+                sourcesPath + ".rootBindings",
+                MaxOwnedEffectRootBindings,
+                "wound-owned root bindings",
+                issues);
+        }
+
+        var parsedDefinitions = ImmutableArray.CreateBuilder<JsonElement>();
+        if (definitionsWithinLimit)
+        {
+            var definitionIndex = 0;
+            foreach (var definition in definitions.EnumerateArray())
+            {
+                var definitionPath = $"{sourcesPath}.definitions[{definitionIndex++}]";
+                if (definition.ValueKind != JsonValueKind.Object)
+                {
+                    AddIssue(
+                        issues,
+                        definitionPath,
+                        "wound_materialization_invalid_field",
+                        "complete wound-owned effect definition object",
+                        definition.ValueKind.ToString());
+                    continue;
+                }
+                parsedDefinitions.Add(definition.Clone());
+            }
+
+            foreach (var commonIssue in EffectSourceDefinitionContract.ValidateArray(
+                         definitions,
+                         sourcesPath + ".definitions",
+                         realm))
+            {
+                AddIssue(
+                    issues,
+                    commonIssue.FilePath,
+                    "wound_materialization_owned_source_graph_invalid",
+                    commonIssue.Expected ?? "valid common effect source definition graph",
+                    commonIssue.Actual ?? commonIssue.Code ?? "invalid");
+            }
+        }
+
+        var parsedRoots = ImmutableArray.CreateBuilder<WoundRootEffectBinding>();
+        if (rootsWithinLimit)
+        {
+            var rootIndex = 0;
+            foreach (var root in rootBindings.EnumerateArray())
+            {
+                var rootPath = $"{sourcesPath}.rootBindings[{rootIndex++}]";
+                if (root.ValueKind != JsonValueKind.Object)
+                {
+                    AddIssue(
+                        issues,
+                        rootPath,
+                        "wound_materialization_invalid_field",
+                        "closed wound root binding object",
+                        root.ValueKind.ToString());
+                    continue;
+                }
+                ValidateObjectShape(
+                    root,
+                    rootPath,
+                    RootEffectBindingFields,
+                    RootEffectBindingFields,
+                    issues);
+                parsedRoots.Add(new WoundRootEffectBinding(
+                    ReadExactIdentifier(root, "effectId", rootPath, issues),
+                    ReadExactIdentifier(root, "definitionKey", rootPath, issues)));
+            }
+        }
+
+        return new WoundOwnedEffectSources(
+            parsedDefinitions.ToImmutable(),
+            parsedRoots.ToImmutable());
+    }
+
+    private static void ValidateOwnedEffectSources(
+        WoundOwnedEffectSources sources,
+        string path,
+        string woundId,
+        string lifecycle,
+        WoundOwnerCoordinate owner,
+        WoundClassification classification,
+        WoundSeverity severity,
+        WoundCare care,
+        IReadOnlyList<WoundComplication> complications,
+        WoundRecovery recovery,
+        int slotBudget,
+        int slotsUsed,
+        IReadOnlyList<WoundConsequenceEntry> entries,
+        JsonElement rawConsequences,
+        List<ValidationIssue> issues)
+    {
+        var definitions = ReadOwnedDefinitionNodes(sources.Definitions, path);
+        var definitionsByKey = new Dictionary<string, OwnedDefinitionNode>(StringComparer.Ordinal);
+        var exactDefinitionKeys = new HashSet<string>(StringComparer.Ordinal);
+        var confusableDefinitionKeys = new HashSet<string>(StringComparer.Ordinal);
+        var exactStackKeys = new HashSet<string>(StringComparer.Ordinal);
+        var confusableStackKeys = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var definition in definitions)
+        {
+            AddUniqueOwnedIdentifier(
+                exactDefinitionKeys,
+                confusableDefinitionKeys,
+                definition.DefinitionKey,
+                definition.Path + ".definitionKey",
+                "definitionKey",
+                issues);
+            AddUniqueOwnedIdentifier(
+                exactStackKeys,
+                confusableStackKeys,
+                definition.StackKey,
+                definition.Path + ".stacking.stackKey",
+                "stacking.stackKey",
+                issues);
+            if (definition.DefinitionKey.Length > 0 &&
+                !definitionsByKey.ContainsKey(definition.DefinitionKey))
+            {
+                definitionsByKey.Add(definition.DefinitionKey, definition);
+            }
+            if (definition.MaxStacks != 1)
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    definition.Path + ".stacking.maxStacks",
+                    "exact integer 1 for a wound-owned definition",
+                    definition.MaxStacks?.ToString(CultureInfo.InvariantCulture) ?? "missing");
+            }
+            ValidateOwnedDefinitionAuthority(definition, woundId, owner, classification, issues);
+        }
+
+        var rootsByEffect = new Dictionary<string, OwnedRootNode>(StringComparer.Ordinal);
+        var rootsByDefinition = new Dictionary<string, OwnedRootNode>(StringComparer.Ordinal);
+        var exactEffectIds = new HashSet<string>(StringComparer.Ordinal);
+        var confusableEffectIds = new HashSet<string>(StringComparer.Ordinal);
+        var exactRootDefinitionKeys = new HashSet<string>(StringComparer.Ordinal);
+        var confusableRootDefinitionKeys = new HashSet<string>(StringComparer.Ordinal);
+        for (var index = 0; index < sources.RootBindings.Count; index++)
+        {
+            var binding = sources.RootBindings[index];
+            var root = new OwnedRootNode(
+                binding,
+                $"{path}.rootBindings[{index}]");
+            AddUniqueOwnedIdentifier(
+                exactEffectIds,
+                confusableEffectIds,
+                binding.EffectId,
+                root.Path + ".effectId",
+                "root effectId",
+                issues);
+            AddUniqueOwnedIdentifier(
+                exactRootDefinitionKeys,
+                confusableRootDefinitionKeys,
+                binding.DefinitionKey,
+                root.Path + ".definitionKey",
+                "root definitionKey",
+                issues);
+            if (binding.EffectId.Length > 0 && !rootsByEffect.ContainsKey(binding.EffectId))
+                rootsByEffect.Add(binding.EffectId, root);
+            if (binding.DefinitionKey.Length > 0 &&
+                !rootsByDefinition.ContainsKey(binding.DefinitionKey))
+            {
+                rootsByDefinition.Add(binding.DefinitionKey, root);
+            }
+            if (binding.DefinitionKey.Length > 0 &&
+                !definitionsByKey.ContainsKey(binding.DefinitionKey))
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    root.Path + ".definitionKey",
+                    "definitionKey resolving to one definition in this wound-owned graph",
+                    binding.DefinitionKey);
+            }
+        }
+
+        ValidateComplicationRootOwnership(
+            complications,
+            rootsByEffect,
+            path,
+            issues);
+        ValidateOwnedDefinitionGraph(
+            definitions,
+            definitionsByKey,
+            rootsByDefinition,
+            complications,
+            severity,
+            issues);
+        ValidateOwnedSlotReciprocity(
+            definitionsByKey,
+            rootsByEffect,
+            rootsByDefinition,
+            entries,
+            classification,
+            severity,
+            lifecycle,
+            care,
+            complications,
+            recovery,
+            slotBudget,
+            slotsUsed,
+            rawConsequences,
+            path,
+            issues);
+    }
+
+    private static ImmutableArray<OwnedDefinitionNode> ReadOwnedDefinitionNodes(
+        IReadOnlyList<JsonElement> definitions,
+        string path)
+    {
+        var result = ImmutableArray.CreateBuilder<OwnedDefinitionNode>();
+        for (var index = 0; index < definitions.Count; index++)
+        {
+            var definition = definitions[index];
+            if (definition.ValueKind != JsonValueKind.Object)
+                continue;
+            var definitionPath = $"{path}.definitions[{index}]";
+            TryReadExactIdentifier(definition, "definitionKey", out var definitionKey);
+
+            var stackKey = string.Empty;
+            var stackPolicy = string.Empty;
+            int? maxStacks = null;
+            if (definition.TryGetProperty("stacking", out var stacking) &&
+                stacking.ValueKind == JsonValueKind.Object)
+            {
+                TryReadExactIdentifier(stacking, "stackKey", out stackKey);
+                TryReadStringValue(stacking, "policy", out stackPolicy);
+                if (stacking.TryGetProperty("maxStacks", out var maximum) &&
+                    TryReadExactInt32(maximum, out var parsedMaximum))
+                {
+                    maxStacks = parsedMaximum;
+                }
+            }
+
+            var components = ImmutableArray.CreateBuilder<OwnedComponentNode>();
+            var edges = ImmutableArray.CreateBuilder<OwnedApplyEdge>();
+            if (definition.TryGetProperty("components", out var rawComponents) &&
+                rawComponents.ValueKind == JsonValueKind.Array)
+            {
+                var componentIndex = 0;
+                foreach (var component in rawComponents.EnumerateArray())
+                {
+                    var componentPath = $"{definitionPath}.components[{componentIndex++}]";
+                    if (component.ValueKind != JsonValueKind.Object ||
+                        !TryReadExactIdentifier(component, "profile", out var profile))
+                    {
+                        continue;
+                    }
+                    components.Add(new OwnedComponentNode(profile, componentPath, component));
+                    if (!string.Equals(profile, "event_reaction", StringComparison.Ordinal) ||
+                        !component.TryGetProperty("payload", out var payload) ||
+                        payload.ValueKind != JsonValueKind.Object ||
+                        !TryReadStringValue(payload, "resultKind", out var resultKind) ||
+                        !string.Equals(resultKind, "apply_definition", StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    TryReadExactIdentifier(payload, "definitionKey", out var targetDefinitionKey);
+                    int? maximumExpansion = null;
+                    if (payload.TryGetProperty("maxExpansion", out var rawMaximumExpansion) &&
+                        TryReadExactInt32(rawMaximumExpansion, out var parsedExpansion))
+                    {
+                        maximumExpansion = parsedExpansion;
+                    }
+                    var parameters = payload.TryGetProperty("parameters", out var rawParameters)
+                        ? rawParameters
+                        : default;
+                    edges.Add(new OwnedApplyEdge(
+                        targetDefinitionKey,
+                        componentPath + ".payload",
+                        maximumExpansion,
+                        parameters));
+                }
+            }
+
+            var parameterBounds = definition.TryGetProperty("parameterBounds", out var bounds)
+                ? bounds
+                : default;
+            result.Add(new OwnedDefinitionNode(
+                definitionKey,
+                stackKey,
+                stackPolicy,
+                maxStacks,
+                definitionPath,
+                definition,
+                parameterBounds,
+                components.ToImmutable(),
+                edges.ToImmutable()));
+        }
+        return result.ToImmutable();
+    }
+
+    private static void ValidateOwnedDefinitionAuthority(
+        OwnedDefinitionNode definition,
+        string woundId,
+        WoundOwnerCoordinate owner,
+        WoundClassification classification,
+        List<ValidationIssue> issues)
+    {
+        if (!ContainsExactString(definition.Element, "allowedRealms", owner.Realm))
+        {
+            AddOwnedGraphIssue(
+                issues,
+                definition.Path + ".allowedRealms",
+                "array containing the wound's exact current realm",
+                owner.Realm);
+        }
+
+        var targetKind = ResolveEffectTargetKind(owner.OwnerKind);
+        if (targetKind.Length > 0 &&
+            !ContainsExactString(definition.Element, "allowedTargetKinds", targetKind))
+        {
+            AddOwnedGraphIssue(
+                issues,
+                definition.Path + ".allowedTargetKinds",
+                "array containing the wound owner's exact effect target kind",
+                targetKind);
+        }
+
+        var sourceLinkCount = 0;
+        if (definition.Element.TryGetProperty("links", out var links) &&
+            links.ValueKind == JsonValueKind.Array)
+        {
+            var linkIndex = 0;
+            foreach (var link in links.EnumerateArray())
+            {
+                var linkPath = $"{definition.Path}.links[{linkIndex++}]";
+                if (link.ValueKind != JsonValueKind.Object ||
+                    !TryReadStringValue(link, "role", out var role) ||
+                    !string.Equals(role, "source", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (!TryReadStringValue(link, "kind", out var kind) ||
+                    !string.Equals(kind, "wound", StringComparison.Ordinal))
+                {
+                    AddOwnedGraphIssue(
+                        issues,
+                        linkPath + ".kind",
+                        "wound for every source-role link in a wound-owned definition",
+                        kind.Length == 0 ? "missing or invalid" : kind);
+                    continue;
+                }
+
+                sourceLinkCount++;
+                if (sourceLinkCount > 1)
+                {
+                    AddOwnedGraphIssue(
+                        issues,
+                        linkPath,
+                        "exactly one wound/source link per wound-owned definition",
+                        "additional wound/source link");
+                }
+
+                if (!TryReadExactIdentifier(link, "targetId", out var targetId) ||
+                    !string.Equals(targetId, woundId, StringComparison.Ordinal))
+                {
+                    AddOwnedGraphIssue(
+                        issues,
+                        definition.Path + ".links",
+                        "one wound/source link to the exact owning wound",
+                        targetId.Length == 0 ? "missing or invalid" : targetId);
+                    AddOwnedGraphIssue(
+                        issues,
+                        linkPath + ".targetId",
+                        "the exact owning woundId",
+                        targetId.Length == 0 ? "missing or invalid" : targetId);
+                }
+            }
+        }
+        if (sourceLinkCount == 0)
+        {
+            AddOwnedGraphIssue(
+                issues,
+                definition.Path + ".links",
+                "exactly one wound/source link to the owning wound",
+                "none");
+        }
+
+        foreach (var component in definition.Components)
+        {
+            var allowedProfile = string.Equals(
+                    classification.Domain,
+                    "physical",
+                    StringComparison.Ordinal)
+                ? WoundConsequenceEnvelopeCatalog.MortalMechanicalProfiles.Contains(component.Profile) ||
+                  WoundConsequenceEnvelopeCatalog.MortalZeroSlotProfiles.Contains(component.Profile)
+                : string.Equals(classification.Domain, "spiritual", StringComparison.Ordinal) &&
+                  (WoundConsequenceEnvelopeCatalog.SpiritualProfiles.Contains(component.Profile) ||
+                   string.Equals(component.Profile, "wound_consequence", StringComparison.Ordinal));
+            if (!allowedProfile)
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    component.Path + ".profile",
+                    "registered consequence profile for the wound domain",
+                    component.Profile);
+            }
+
+            if (!string.Equals(component.Profile, "wound_consequence", StringComparison.Ordinal) ||
+                !component.Element.TryGetProperty("payload", out var payload) ||
+                payload.ValueKind != JsonValueKind.Object)
+            {
+                continue;
+            }
+            if (!TryReadExactIdentifier(payload, "woundId", out var markerWoundId) ||
+                !string.Equals(markerWoundId, woundId, StringComparison.Ordinal))
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    component.Path + ".payload.woundId",
+                    "the exact owning woundId",
+                    markerWoundId.Length == 0 ? "missing or invalid" : markerWoundId);
+            }
+        }
+    }
+
+    private static void ValidateComplicationRootOwnership(
+        IReadOnlyList<WoundComplication> complications,
+        IReadOnlyDictionary<string, OwnedRootNode> rootsByEffect,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var exactOwnedIds = new HashSet<string>(StringComparer.Ordinal);
+        var confusableOwnedIds = new HashSet<string>(StringComparer.Ordinal);
+        for (var complicationIndex = 0;
+             complicationIndex < complications.Count;
+             complicationIndex++)
+        {
+            var complication = complications[complicationIndex];
+            for (var ownedIndex = 0;
+                 ownedIndex < complication.OwnedEffectIds.Count;
+                 ownedIndex++)
+            {
+                var effectId = complication.OwnedEffectIds[ownedIndex];
+                var ownedPath = WoundRootPath(path) +
+                                $".complications[{complicationIndex}].ownedEffectIds[{ownedIndex}]";
+                if (effectId.Length == 0)
+                    continue;
+                if (!exactOwnedIds.Add(effectId) ||
+                    !confusableOwnedIds.Add(MortalLocationIdentityState.BuildConfusableKey(effectId)))
+                {
+                    AddEffectBindingIssue(
+                        issues,
+                        ownedPath,
+                        "pairwise-disjoint exact/confusable complication root ownership",
+                        effectId);
+                }
+                if (!rootsByEffect.ContainsKey(effectId))
+                {
+                    AddEffectBindingIssue(
+                        issues,
+                        ownedPath,
+                        "effectId resolving to one persisted wound root binding",
+                        effectId);
+                }
+            }
+        }
+    }
+
+    private static void ValidateOwnedDefinitionGraph(
+        IReadOnlyList<OwnedDefinitionNode> definitions,
+        IReadOnlyDictionary<string, OwnedDefinitionNode> definitionsByKey,
+        IReadOnlyDictionary<string, OwnedRootNode> rootsByDefinition,
+        IReadOnlyList<WoundComplication> complications,
+        WoundSeverity severity,
+        List<ValidationIssue> issues)
+    {
+        var markerCount = 0;
+        foreach (var definition in definitions)
+        {
+            foreach (var component in definition.Components)
+            {
+                if (!string.Equals(component.Profile, "wound_consequence", StringComparison.Ordinal))
+                    continue;
+                markerCount++;
+                if (markerCount > 1)
+                {
+                    AddOwnedGraphIssue(
+                        issues,
+                        component.Path + ".profile",
+                        "at most one wound_consequence marker in the complete graph",
+                        markerCount.ToString(CultureInfo.InvariantCulture));
+                }
+            }
+
+            if (rootsByDefinition.ContainsKey(definition.DefinitionKey) &&
+                !IsEmptyObject(definition.ParameterBounds))
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    definition.Path + ".parameterBounds",
+                    "exact empty object for a directly bound root definition",
+                    DescribeElement(definition.ParameterBounds));
+            }
+        }
+
+        var allEdges = definitions
+            .SelectMany(static definition => definition.ApplyEdges.Select(edge =>
+                new OwnedGraphEdge(definition, edge)))
+            .ToArray();
+        for (var edgeIndex = 1; edgeIndex < allEdges.Length; edgeIndex++)
+        {
+            AddOwnedGraphIssue(
+                issues,
+                allEdges[edgeIndex].Edge.Path + ".definitionKey",
+                "at most one wound-owned apply_definition edge",
+                allEdges[edgeIndex].Edge.TargetDefinitionKey);
+        }
+
+        var inboundCounts = definitionsByKey.Keys.ToDictionary(
+            static key => key,
+            static _ => 0,
+            StringComparer.Ordinal);
+        foreach (var graphEdge in allEdges)
+        {
+            var source = graphEdge.Source;
+            var edge = graphEdge.Edge;
+            if (edge.MaximumExpansion != 2)
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    edge.Path + ".maxExpansion",
+                    "exact integer 2 for the one wound-owned reaction and leaf",
+                    edge.MaximumExpansion?.ToString(CultureInfo.InvariantCulture) ?? "missing");
+            }
+            if (severity.Rank < 3)
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    edge.Path + ".definitionKey",
+                    "apply_definition only for severity rank III or IV",
+                    severity.Rank.ToString(CultureInfo.InvariantCulture));
+            }
+            if (!definitionsByKey.TryGetValue(edge.TargetDefinitionKey, out var target))
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    edge.Path + ".definitionKey",
+                    "one exact downstream definition in the same wound graph",
+                    edge.TargetDefinitionKey.Length == 0 ? "missing" : edge.TargetDefinitionKey);
+                continue;
+            }
+
+            inboundCounts[target.DefinitionKey]++;
+            if (target.ApplyEdges.Length != 0)
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    target.ApplyEdges[0].Path + ".definitionKey",
+                    "no nested wound-owned apply_definition edge",
+                    target.ApplyEdges[0].TargetDefinitionKey);
+            }
+
+            if (!rootsByDefinition.TryGetValue(target.DefinitionKey, out var targetRoot))
+                continue;
+            if (!string.Equals(target.StackPolicy, "replace", StringComparison.Ordinal))
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    target.Path + ".stacking.policy",
+                    "replace for a root-bound reaction target",
+                    target.StackPolicy);
+            }
+            if (!IsEmptyObject(edge.Parameters))
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    edge.Path + ".parameters",
+                    "exact empty parameters for a root-bound reaction target",
+                    DescribeElement(edge.Parameters));
+            }
+            if (rootsByDefinition.TryGetValue(source.DefinitionKey, out var sourceRoot) &&
+                !string.Equals(
+                    ResolveOwnershipDomain(sourceRoot.Binding.EffectId, complications),
+                    ResolveOwnershipDomain(targetRoot.Binding.EffectId, complications),
+                    StringComparison.Ordinal))
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    edge.Path + ".definitionKey",
+                    "reaction target in the same reconstructed root-ownership domain",
+                    edge.TargetDefinitionKey);
+            }
+        }
+
+        foreach (var definition in definitions)
+        {
+            if (rootsByDefinition.ContainsKey(definition.DefinitionKey))
+                continue;
+            inboundCounts.TryGetValue(definition.DefinitionKey, out var inboundCount);
+            if (inboundCount != 1)
+            {
+                AddOwnedGraphIssue(
+                    issues,
+                    definition.Path,
+                    "unbound definition reachable exactly once from a direct root",
+                    inboundCount.ToString(CultureInfo.InvariantCulture));
+            }
+        }
+    }
+
+    private static void ValidateOwnedSlotReciprocity(
+        IReadOnlyDictionary<string, OwnedDefinitionNode> definitionsByKey,
+        IReadOnlyDictionary<string, OwnedRootNode> rootsByEffect,
+        IReadOnlyDictionary<string, OwnedRootNode> rootsByDefinition,
+        IReadOnlyList<WoundConsequenceEntry> entries,
+        WoundClassification classification,
+        WoundSeverity severity,
+        string lifecycle,
+        WoundCare care,
+        IReadOnlyList<WoundComplication> complications,
+        WoundRecovery recovery,
+        int slotBudget,
+        int slotsUsed,
+        JsonElement rawConsequences,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var entriesByEffect = entries
+            .Select((entry, index) => new OwnedEntryNode(
+                entry,
+                $"{WoundConsequencesPath(path)}.entries[{index}]"))
+            .GroupBy(static item => item.Entry.EffectId, StringComparer.Ordinal)
+            .ToDictionary(
+                static group => group.Key,
+                static group => group.ToArray(),
+                StringComparer.Ordinal);
+
+        foreach (var pair in entriesByEffect)
+        {
+            if (rootsByEffect.ContainsKey(pair.Key))
+                continue;
+            foreach (var entry in pair.Value)
+            {
+                AddEffectBindingIssue(
+                    issues,
+                    entry.Path + ".effectId",
+                    "effectId resolving to one direct wound root binding",
+                    entry.Entry.EffectId);
+            }
+        }
+
+        var derivedSlots = 0;
+        foreach (var root in rootsByEffect.Values)
+        {
+            if (!definitionsByKey.TryGetValue(root.Binding.DefinitionKey, out var definition))
+                continue;
+            var expectedProfiles = GetDirectSlotProfiles(definition);
+            foreach (var edge in definition.ApplyEdges)
+            {
+                if (rootsByDefinition.ContainsKey(edge.TargetDefinitionKey) ||
+                    !definitionsByKey.TryGetValue(edge.TargetDefinitionKey, out var leaf))
+                {
+                    continue;
+                }
+                expectedProfiles.AddRange(GetDirectSlotProfiles(leaf));
+            }
+            derivedSlots += expectedProfiles.Count;
+
+            entriesByEffect.TryGetValue(root.Binding.EffectId, out var ownedEntries);
+            ownedEntries ??= Array.Empty<OwnedEntryNode>();
+            var remaining = new List<string>(expectedProfiles);
+            foreach (var entry in ownedEntries)
+            {
+                var matchIndex = remaining.FindIndex(profile => string.Equals(
+                    profile,
+                    entry.Entry.ProfileKey,
+                    StringComparison.Ordinal));
+                if (matchIndex >= 0)
+                {
+                    remaining.RemoveAt(matchIndex);
+                    continue;
+                }
+                AddConsequenceSlotIssue(
+                    issues,
+                    entry.Path + ".profileKey",
+                    "profile matching one derived component slot of the bound root",
+                    entry.Entry.ProfileKey);
+            }
+            if (remaining.Count != 0)
+            {
+                AddEffectBindingIssue(
+                    issues,
+                    root.Path + ".effectId",
+                    "one reciprocal consequence entry for every derived mechanical slot",
+                    string.Join(",", remaining));
+            }
+        }
+
+        var consequencesPath = WoundConsequencesPath(path);
+        var rawSlotsUsed = slotsUsed;
+        if (rawConsequences.ValueKind == JsonValueKind.Object &&
+            rawConsequences.TryGetProperty("slotsUsed", out var rawSlots) &&
+            TryReadExactInt32(rawSlots, out var exactSlotsUsed))
+        {
+            rawSlotsUsed = exactSlotsUsed;
+        }
+        if (rawSlotsUsed != derivedSlots)
+        {
+            AddConsequenceSlotIssue(
+                issues,
+                consequencesPath + ".slotsUsed",
+                "exact number of derived wound consequence slots",
+                rawSlotsUsed.ToString(CultureInfo.InvariantCulture));
+        }
+        if (string.Equals(classification.Domain, "physical", StringComparison.Ordinal) &&
+            rawSlotsUsed > severity.Rank)
+        {
+            AddConsequenceSlotIssue(
+                issues,
+                consequencesPath + ".slotsUsed",
+                $"at most {severity.Rank} physical consequence slots",
+                rawSlotsUsed.ToString(CultureInfo.InvariantCulture));
+        }
+        if (string.Equals(classification.Domain, "spiritual", StringComparison.Ordinal) &&
+            rawSlotsUsed != severity.Rank)
+        {
+            AddConsequenceSlotIssue(
+                issues,
+                consequencesPath + ".slotsUsed",
+                $"exactly {severity.Rank} spiritual consequence slots",
+                rawSlotsUsed.ToString(CultureInfo.InvariantCulture));
+        }
+        if (slotBudget < rawSlotsUsed)
+        {
+            AddConsequenceSlotIssue(
+                issues,
+                consequencesPath + ".slotBudget",
+                "slotBudget greater than or equal to derived slotsUsed",
+                slotBudget.ToString(CultureInfo.InvariantCulture));
+        }
+
+        var orderedSlots = entries.Select(static entry => entry.Slot).Order().ToArray();
+        for (var index = 0; index < orderedSlots.Length; index++)
+        {
+            if (orderedSlots[index] == index + 1)
+                continue;
+            var entryIndex = entries
+                .Select((entry, originalIndex) => (entry, originalIndex))
+                .First(pair => pair.entry.Slot == orderedSlots[index])
+                .originalIndex;
+            AddConsequenceSlotIssue(
+                issues,
+                $"{consequencesPath}.entries[{entryIndex}].slot",
+                "contiguous one-based consequence slots",
+                orderedSlots[index].ToString(CultureInfo.InvariantCulture));
+        }
+
+        var changesLegalLifecycle = complications.Any(static complication =>
+                                        string.Equals(
+                                            complication.State,
+                                            "active",
+                                            StringComparison.Ordinal)) ||
+                                    recovery.Blockers.Count != 0 ||
+                                    string.Equals(
+                                        recovery.Mode,
+                                        "no_natural_recovery",
+                                        StringComparison.Ordinal) ||
+                                    recovery.DeteriorationPolicy.HasValue ||
+                                    care.ActiveCourseId is not null ||
+                                    care.State is "fresh" or "untreated" or "recovering";
+        if (string.Equals(lifecycle, "active", StringComparison.Ordinal) &&
+            string.Equals(classification.Domain, "physical", StringComparison.Ordinal) &&
+            derivedSlots == 0 &&
+            !changesLegalLifecycle)
+        {
+            AddIssue(
+                issues,
+                consequencesPath + ".lifecycleEvidence",
+                "wound_consequence_non_display_impact_required",
+                "mechanical slot or proven complication/care/recovery lifecycle impact",
+                "display-only or empty consequence graph");
+        }
+    }
+
+    private static List<string> GetDirectSlotProfiles(OwnedDefinitionNode definition)
+    {
+        var profiles = new List<string>();
+        foreach (var component in definition.Components)
+        {
+            if (string.Equals(component.Profile, "wound_consequence", StringComparison.Ordinal))
+                continue;
+            if (string.Equals(component.Profile, "roll_modifier", StringComparison.Ordinal) &&
+                component.Element.TryGetProperty("payload", out var payload) &&
+                payload.ValueKind == JsonValueKind.Object &&
+                payload.TryGetProperty("operations", out var operations) &&
+                operations.ValueKind == JsonValueKind.Array)
+            {
+                for (var index = 0; index < operations.GetArrayLength(); index++)
+                    profiles.Add(component.Profile);
+                continue;
+            }
+            profiles.Add(component.Profile);
+        }
+        return profiles;
+    }
+
+    private static string ResolveOwnershipDomain(
+        string effectId,
+        IReadOnlyList<WoundComplication> complications)
+    {
+        foreach (var complication in complications)
+        {
+            if (complication.OwnedEffectIds.Contains(effectId, StringComparer.Ordinal))
+                return complication.ComplicationId;
+        }
+        return "base_wound";
+    }
+
+    private static string ResolveEffectTargetKind(string ownerKind) => ownerKind switch
+    {
+        "player" or "player_soul" => "player",
+        "combatant" or "combatant_member" => "combatant",
+        "npc" or "guardian" or "resident" or "radiant_actor" or "afterlife_actor" => ownerKind,
+        _ => string.Empty
+    };
+
+    private static bool ContainsExactString(JsonElement root, string field, string expected)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(field, out var array) ||
+            array.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+        foreach (var item in array.EnumerateArray())
+        {
+            if (item.ValueKind == JsonValueKind.String &&
+                string.Equals(item.GetString(), expected, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static bool TryReadExactIdentifier(
+        JsonElement root,
+        string field,
+        out string value)
+    {
+        value = string.Empty;
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(field, out var element) ||
+            element.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+        var candidate = element.GetString();
+        if (!ResourceMaterializationContract.IsExactIdentifier(candidate))
+            return false;
+        value = candidate!;
+        return true;
+    }
+
+    private static bool TryReadStringValue(
+        JsonElement root,
+        string field,
+        out string value)
+    {
+        value = string.Empty;
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(field, out var element) ||
+            element.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+        value = element.GetString() ?? string.Empty;
+        return true;
+    }
+
+    private static bool IsEmptyObject(JsonElement value) =>
+        value.ValueKind == JsonValueKind.Object && !value.EnumerateObject().Any();
+
+    private static string DescribeElement(JsonElement value) =>
+        value.ValueKind == JsonValueKind.Undefined ? "missing" : value.GetRawText();
+
+    private static string WoundConsequencesPath(string ownedSourcesPath) =>
+        ownedSourcesPath.EndsWith(".ownedEffectSources", StringComparison.Ordinal)
+            ? ownedSourcesPath[..^".ownedEffectSources".Length]
+            : ownedSourcesPath;
+
+    private static string WoundRootPath(string ownedSourcesPath)
+    {
+        var consequencesPath = WoundConsequencesPath(ownedSourcesPath);
+        return consequencesPath.EndsWith(".consequences", StringComparison.Ordinal)
+            ? consequencesPath[..^".consequences".Length]
+            : consequencesPath;
+    }
+
+    private static void AddUniqueOwnedIdentifier(
+        HashSet<string> exact,
+        HashSet<string> confusable,
+        string value,
+        string path,
+        string label,
+        List<ValidationIssue> issues)
+    {
+        if (value.Length == 0)
+            return;
+        if (!exact.Add(value) ||
+            !confusable.Add(MortalLocationIdentityState.BuildConfusableKey(value)))
+        {
+            AddOwnedGraphIssue(
+                issues,
+                path,
+                $"one exact/confusable-unique {label}",
+                value);
+        }
+    }
+
+    private static void AddOwnedGraphIssue(
+        ICollection<ValidationIssue> issues,
+        string path,
+        string expected,
+        string actual) =>
+        AddIssue(
+            issues,
+            path,
+            "wound_materialization_owned_source_graph_invalid",
+            expected,
+            actual);
+
+    private static void AddEffectBindingIssue(
+        ICollection<ValidationIssue> issues,
+        string path,
+        string expected,
+        string actual) =>
+        AddIssue(
+            issues,
+            path,
+            "wound_materialization_effect_binding_invalid",
+            expected,
+            actual);
+
+    private static void AddConsequenceSlotIssue(
+        ICollection<ValidationIssue> issues,
+        string path,
+        string expected,
+        string actual) =>
+        AddIssue(
+            issues,
+            path,
+            "wound_materialization_consequence_slot_invalid",
+            expected,
+            actual);
 
     private static WoundTreatment ParseTreatment(
         JsonElement value,
@@ -1388,7 +2448,20 @@ internal static class WoundMaterializationContract
             case JsonValueKind.Array:
                 var index = 0;
                 foreach (var item in value.EnumerateArray())
+                {
+                    var maximum = path.EndsWith(
+                            ".consequences.ownedEffectSources.definitions",
+                            StringComparison.Ordinal)
+                        ? MaxOwnedEffectDefinitions
+                        : path.EndsWith(
+                            ".consequences.ownedEffectSources.rootBindings",
+                            StringComparison.Ordinal)
+                            ? MaxOwnedEffectRootBindings
+                            : int.MaxValue;
+                    if (index >= maximum)
+                        break;
                     FindDuplicateProperties(item, $"{path}[{index++}]", issues);
+                }
                 break;
         }
     }
@@ -1533,9 +2606,33 @@ internal static class WoundMaterializationContract
         writer.WriteStartObject();
         writer.WriteNumber("slotBudget", consequences.SlotBudget);
         writer.WriteNumber("slotsUsed", consequences.SlotsUsed);
+        writer.WritePropertyName("ownedEffectSources");
+        writer.WriteStartObject();
+        writer.WritePropertyName("definitions");
+        writer.WriteStartArray();
+        foreach (var definition in consequences.OwnedEffectSources.Definitions.OrderBy(
+                     static definition => ReadDefinitionKeyForOrdering(definition),
+                     StringComparer.Ordinal))
+        {
+            WriteCanonicalElement(writer, definition);
+        }
+        writer.WriteEndArray();
+        writer.WritePropertyName("rootBindings");
+        writer.WriteStartArray();
+        foreach (var binding in consequences.OwnedEffectSources.RootBindings
+                     .OrderBy(static binding => binding.EffectId, StringComparer.Ordinal)
+                     .ThenBy(static binding => binding.DefinitionKey, StringComparer.Ordinal))
+        {
+            writer.WriteStartObject();
+            writer.WriteString("effectId", binding.EffectId);
+            writer.WriteString("definitionKey", binding.DefinitionKey);
+            writer.WriteEndObject();
+        }
+        writer.WriteEndArray();
+        writer.WriteEndObject();
         writer.WritePropertyName("entries");
         writer.WriteStartArray();
-        foreach (var entry in consequences.Entries)
+        foreach (var entry in consequences.Entries.OrderBy(static entry => entry.Slot))
         {
             writer.WriteStartObject();
             writer.WriteNumber("slot", entry.Slot);
@@ -1547,6 +2644,11 @@ internal static class WoundMaterializationContract
         writer.WriteEndArray();
         writer.WriteEndObject();
     }
+
+    private static string ReadDefinitionKeyForOrdering(JsonElement definition) =>
+        TryReadExactIdentifier(definition, "definitionKey", out var definitionKey)
+            ? definitionKey
+            : string.Empty;
 
     private static void WriteTreatment(Utf8JsonWriter writer, WoundTreatment treatment)
     {
@@ -1715,4 +2817,38 @@ internal static class WoundMaterializationContract
                 throw new InvalidOperationException("Only detached valid JSON values can be serialized canonically.");
         }
     }
+
+    private sealed record OwnedComponentNode(
+        string Profile,
+        string Path,
+        JsonElement Element);
+
+    private sealed record OwnedApplyEdge(
+        string TargetDefinitionKey,
+        string Path,
+        int? MaximumExpansion,
+        JsonElement Parameters);
+
+    private sealed record OwnedDefinitionNode(
+        string DefinitionKey,
+        string StackKey,
+        string StackPolicy,
+        int? MaxStacks,
+        string Path,
+        JsonElement Element,
+        JsonElement ParameterBounds,
+        ImmutableArray<OwnedComponentNode> Components,
+        ImmutableArray<OwnedApplyEdge> ApplyEdges);
+
+    private sealed record OwnedRootNode(
+        WoundRootEffectBinding Binding,
+        string Path);
+
+    private sealed record OwnedGraphEdge(
+        OwnedDefinitionNode Source,
+        OwnedApplyEdge Edge);
+
+    private sealed record OwnedEntryNode(
+        WoundConsequenceEntry Entry,
+        string Path);
 }
