@@ -967,7 +967,7 @@ internal sealed class WoundHistoryState
                 issues,
                 HistoryPath + ".transitions",
                 "wound_history_terminal_evidence_missing",
-                "exactly one terminal heal/archive row for healed identity",
+                "exactly one terminal heal row for healed identity",
                 entry.WoundId);
             return;
         }
@@ -977,7 +977,7 @@ internal sealed class WoundHistoryState
                 issues,
                 HistoryPath + ".transitions",
                 "wound_history_terminal_evidence_extra",
-                "exactly one terminal heal/archive row for healed identity",
+                "exactly one terminal heal row for healed identity",
                 $"{entry.WoundId}:{terminalRows.Count}");
             return;
         }
