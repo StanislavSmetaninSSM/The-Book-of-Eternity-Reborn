@@ -890,6 +890,14 @@ internal static class WoundTransitionReducer
                 after,
                 issues,
                 requireAllPriorBindings: true);
+            if (added.Length == 1)
+            {
+                ValidateAddedComplicationEffectBindings(
+                    before,
+                    after,
+                    added[0],
+                    issues);
+            }
         }
         if (!CanonicalEqual(
                 before,
@@ -1890,6 +1898,36 @@ internal static class WoundTransitionReducer
                     "retained effect identity preserves its exact consequence or complication ownership binding",
                     pair.Key);
             }
+        }
+    }
+
+    private static void ValidateAddedComplicationEffectBindings(
+        WoundMaterializationEnvelope before,
+        WoundMaterializationEnvelope after,
+        WoundComplication addedComplication,
+        List<ValidationIssue> issues)
+    {
+        var priorEffectIds = EffectIds(before).ToHashSet(StringComparer.Ordinal);
+        var addedEffectIds = EffectIds(after)
+            .Where(effectId => !priorEffectIds.Contains(effectId))
+            .ToArray();
+        var priorConsequenceEffectIds = before.Consequences.Entries
+            .Select(static entry => entry.EffectId)
+            .ToHashSet(StringComparer.Ordinal);
+        var addedConsequenceEffectIds = after.Consequences.Entries
+            .Select(static entry => entry.EffectId)
+            .Where(effectId => !priorConsequenceEffectIds.Contains(effectId))
+            .ToArray();
+        if (!SameSet(addedEffectIds, addedComplication.OwnedEffectIds) ||
+            !SameSet(addedConsequenceEffectIds, addedComplication.OwnedEffectIds))
+        {
+            Add(
+                issues,
+                "wound_transition_complication_effect_binding_invalid",
+                "every new effect is owned by the declared complication and has one reciprocal consequence slot",
+                $"effects={string.Join(',', addedEffectIds)};" +
+                $"consequences={string.Join(',', addedConsequenceEffectIds)};" +
+                $"owned={string.Join(',', addedComplication.OwnedEffectIds)}");
         }
     }
 

@@ -438,7 +438,7 @@ public sealed class WoundTransitionReducerTests
     public void Reduce_Complicate_AddsOneExactComplicationOnceWithoutImplicitSeverityChange()
     {
         var before = PhysicalWound();
-        var complication = Complication("complication_infection", "infection", "effect_infection");
+        var complication = Complication("complication_infection", "infection");
         var after = NewTransition(before with
         {
             Complications = before.Complications.Append(complication).ToImmutableArray()
