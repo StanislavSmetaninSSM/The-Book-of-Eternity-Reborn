@@ -19,7 +19,7 @@ internal static class WoundContractTestData
     internal static JsonObject CreatePlayerCarrier(params JsonObject[] activeWounds) => new()
     {
         ["schemaVersion"] = 1,
-        ["owner"] = CreateOwner(),
+        ["owner"] = CreatePlayerCarrierOwner(),
         ["activeWounds"] = CloneArray(activeWounds)
     };
 
@@ -232,6 +232,11 @@ internal static class WoundContractTestData
         for (var index = 0; index < count; index++) result.Add(factory(index).DeepClone());
         return result;
     }
+
+    private static JsonObject CreatePlayerCarrierOwner() => new()
+    {
+        ["realm"] = "mortal_world", ["ownerKind"] = "player", ["ownerId"] = "player_current"
+    };
 
     private static JsonObject CreateOwner() => new()
     {
