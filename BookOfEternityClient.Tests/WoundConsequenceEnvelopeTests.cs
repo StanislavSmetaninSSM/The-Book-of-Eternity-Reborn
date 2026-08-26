@@ -496,6 +496,18 @@ public sealed class WoundConsequenceEnvelopeTests
                 })),
             Path + ".effects[0].cadences[1]",
             "wound_consequence_periodic_cadence_invalid");
+        AssertIssue(
+            Validate(MortalPeriodic(
+                4m,
+                new[]
+                {
+                    new WoundPeriodicCadenceEvidence(
+                        "component_periodic",
+                        "unregistered_event",
+                        1)
+                })),
+            Path + ".effects[0].cadences[0].sourceEvent",
+            "wound_consequence_periodic_cadence_invalid");
 
         AssertValid(Validate(MortalPeriodic(
             4m,
@@ -751,6 +763,26 @@ public sealed class WoundConsequenceEnvelopeTests
                 new[] { declaredTooSmall },
                 Entries(3, "effect_reaction", "event_reaction"))),
             Path + ".effects[0].expansions[0].components",
+            "wound_consequence_reaction_expansion_invalid");
+
+        var duplicateExpansion = Effect(
+            "effect_reaction",
+            new[] { ReactionComponent("component_reaction", "apply_definition", 1) },
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "component_reaction",
+                    new[] { MarkerComponent("marker_a") }),
+                new WoundReactionExpansionProposal(
+                    "component_reaction",
+                    new[] { MarkerComponent("marker_b") })
+            });
+        AssertIssue(
+            Validate(MortalRequest(
+                "III",
+                new[] { duplicateExpansion },
+                Entries(1, "effect_reaction", "event_reaction"))),
+            Path + ".effects[0].components[0].payload.definitionKey",
             "wound_consequence_reaction_expansion_invalid");
 
         var twoReactions = Effect(
@@ -1122,6 +1154,185 @@ public sealed class WoundConsequenceEnvelopeTests
                 "wound_consequence")),
             Path + ".effects[0].components[0].payload.woundId",
             "wound_consequence_binding_invalid");
+    }
+
+    [Fact]
+    public void RequestAndProposalIdentifiers_AreValidatedExactlyBeforeClassification()
+    {
+        var invalidWound = new WoundConsequenceEnvelopeRequest(
+            " wound_test_exact",
+            "physical",
+            "I",
+            new WoundConsequences(1, 0, Array.Empty<WoundConsequenceEntry>()),
+            new WoundConsequenceLifecycleEvidence(true, false, false),
+            Array.Empty<WoundConsequenceEffectProposal>(),
+            Array.Empty<WoundResourceEnvelopeBound>());
+        AssertIssue(
+            Validate(invalidWound),
+            Path + ".woundId",
+            "wound_consequence_identifier_invalid");
+
+        var invalidEffectId = Effect(
+            " effect_owned",
+            CharacteristicComponent("component", "flat", -1m));
+        AssertIssue(
+            Validate(MortalRequest(
+                "I",
+                new[] { invalidEffectId },
+                Entries(1, " effect_owned", "characteristic_modifier"))),
+            Path + ".effects[0].effectId",
+            "wound_consequence_identifier_invalid");
+
+        var malformedBindings = new[]
+        {
+            Effect(
+                "effect_kind",
+                new[] { UnknownComponent("component") },
+                " wound",
+                WoundId,
+                WoundId),
+            Effect(
+                "effect_source",
+                new[] { UnknownComponent("component") },
+                "wound",
+                " wound_other",
+                "wound_other"),
+            Effect(
+                "effect_reciprocal",
+                new[] { UnknownComponent("component") },
+                "wound",
+                "wound_other",
+                " wound_other")
+        };
+        var malformedResult = Validate(MortalRequest(
+            "I",
+            malformedBindings,
+            Array.Empty<WoundConsequenceEntry>(),
+            lifecycleEvidence: new WoundConsequenceLifecycleEvidence(true, false, false),
+            resourceBounds: new[]
+            {
+                new WoundResourceEnvelopeBound(" health", 100m, 1m)
+            }));
+        AssertIssue(
+            malformedResult,
+            Path + ".effects[0].sourceKind",
+            "wound_consequence_identifier_invalid");
+        AssertIssue(
+            malformedResult,
+            Path + ".effects[1].sourceId",
+            "wound_consequence_identifier_invalid");
+        AssertIssue(
+            malformedResult,
+            Path + ".effects[2].reciprocalWoundId",
+            "wound_consequence_identifier_invalid");
+        AssertIssue(
+            malformedResult,
+            Path + ".resourceBounds[0].resourceKey",
+            "wound_consequence_identifier_invalid");
+
+        var invalidEvidence = Effect(
+            "effect_evidence",
+            new[] { CharacteristicComponent("component", "flat", -1m) },
+            cadences: new[]
+            {
+                new WoundPeriodicCadenceEvidence(" component", " owner_turn_end", 1)
+            },
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    " reaction",
+                    new[] { MarkerComponent("marker") })
+            });
+        var evidenceResult = Validate(MortalRequest(
+            "I",
+            new[] { invalidEvidence },
+            Entries(1, "effect_evidence", "characteristic_modifier")));
+        AssertIssue(
+            evidenceResult,
+            Path + ".effects[0].cadences[0].componentId",
+            "wound_consequence_identifier_invalid");
+        AssertIssue(
+            evidenceResult,
+            Path + ".effects[0].cadences[0].sourceEvent",
+            "wound_consequence_identifier_invalid");
+        AssertIssue(
+            evidenceResult,
+            Path + ".effects[0].expansions[0].reactionComponentId",
+            "wound_consequence_identifier_invalid");
+    }
+
+    [Fact]
+    public void ForgedNullAndDefaultTypedInputs_ReturnPreciseIssuesWithoutThrowing()
+    {
+        WoundConsequenceEnvelopeValidationResult? result = null;
+        var exception = Record.Exception(() =>
+        {
+            var nullCollections = new WoundConsequenceEffectProposal(
+                "effect_null_collections",
+                "wound",
+                WoundId,
+                WoundId,
+                null!,
+                null!,
+                null!);
+            var defaultComponent = new WoundConsequenceEffectProposal(
+                "effect_default_component",
+                "wound",
+                WoundId,
+                WoundId,
+                new[] { default(JsonElement) },
+                Array.Empty<WoundPeriodicCadenceEvidence>(),
+                Array.Empty<WoundReactionExpansionProposal>());
+            var request = new WoundConsequenceEnvelopeRequest(
+                WoundId,
+                "physical",
+                "I",
+                null!,
+                null!,
+                new WoundConsequenceEffectProposal[]
+                {
+                    nullCollections,
+                    defaultComponent,
+                    null!
+                },
+                new WoundResourceEnvelopeBound[] { null! });
+            result = Validate(request);
+        });
+
+        Assert.Null(exception);
+        Assert.NotNull(result);
+        AssertIssue(result!, Path + ".declared", "wound_consequence_input_invalid");
+        AssertIssue(result!, Path + ".lifecycleEvidence", "wound_consequence_input_invalid");
+        AssertIssue(result!, Path + ".effects[0].components", "wound_consequence_input_invalid");
+        AssertIssue(result!, Path + ".effects[0].cadences", "wound_consequence_input_invalid");
+        AssertIssue(result!, Path + ".effects[0].expansions", "wound_consequence_input_invalid");
+        AssertIssue(result!, Path + ".effects[1].components[0]", "wound_consequence_input_invalid");
+        AssertIssue(result!, Path + ".effects[2]", "wound_consequence_input_invalid");
+        AssertIssue(result!, Path + ".resourceBounds[0]", "wound_consequence_input_invalid");
+    }
+
+    [Fact]
+    public void ForgedNullTopLevelListsAndDeclaredEntries_ReturnIssuesWithoutThrowing()
+    {
+        WoundConsequenceEnvelopeValidationResult? result = null;
+        var exception = Record.Exception(() =>
+        {
+            var request = new WoundConsequenceEnvelopeRequest(
+                WoundId,
+                "physical",
+                "I",
+                new WoundConsequences(1, 0, null!),
+                new WoundConsequenceLifecycleEvidence(true, false, false),
+                null!,
+                null!);
+            result = Validate(request);
+        });
+
+        Assert.Null(exception);
+        Assert.NotNull(result);
+        AssertIssue(result!, Path + ".declared.entries", "wound_consequence_input_invalid");
+        AssertIssue(result!, Path + ".effects", "wound_consequence_input_invalid");
+        AssertIssue(result!, Path + ".resourceBounds", "wound_consequence_input_invalid");
     }
 
     [Fact]
