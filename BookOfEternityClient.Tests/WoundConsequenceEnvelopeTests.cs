@@ -27,6 +27,20 @@ public sealed class WoundConsequenceEnvelopeTests
         "recover_spiritual_power"
     };
 
+    private static readonly string[] StandardSpiritualArtValues =
+    {
+        "pressure",
+        "counter",
+        "guard",
+        "maneuver",
+        "break_binding",
+        "binding",
+        "force_binding",
+        "incarnation_resistance",
+        "champion_coordination",
+        "recover_spiritual_power"
+    };
+
     public static TheoryData<string, int, decimal, decimal> MortalMagnitudeBounds => new()
     {
         { "I", 1, 1m, 5m },
@@ -75,6 +89,20 @@ public sealed class WoundConsequenceEnvelopeTests
         "dissipation"
     };
 
+    public static TheoryData<string> StandardSpiritualArts => new()
+    {
+        "pressure",
+        "counter",
+        "guard",
+        "maneuver",
+        "break_binding",
+        "binding",
+        "force_binding",
+        "incarnation_resistance",
+        "champion_coordination",
+        "recover_spiritual_power"
+    };
+
     [Fact]
     public void Registry_IsExactlyVersionOneAndSeparatesTheOnlyMortalZeroSlotMarker()
     {
@@ -115,6 +143,13 @@ public sealed class WoundConsequenceEnvelopeTests
                 static value => value,
                 StringComparer.Ordinal),
             WoundConsequenceEnvelopeCatalog.SpiritualOperationKeys.OrderBy(
+                static value => value,
+                StringComparer.Ordinal));
+        Assert.Equal(
+            StandardSpiritualArtValues.OrderBy(
+                static value => value,
+                StringComparer.Ordinal),
+            AfterlifeEntityProfileState.StandardArtIds.OrderBy(
                 static value => value,
                 StringComparer.Ordinal));
     }
@@ -392,6 +427,56 @@ public sealed class WoundConsequenceEnvelopeTests
     }
 
     [Theory]
+    [InlineData("minimum")]
+    [InlineData("maximum")]
+    public void ScalarModifierCaps_RequireExactDecimalEndpoints(string invalidEndpoint)
+    {
+        var minimum = string.Equals(invalidEndpoint, "minimum", StringComparison.Ordinal)
+            ? "1e50"
+            : "-1";
+        const string maximum = "1e50";
+        var component = RawElement($$"""
+            {
+              "componentId": "component_characteristic",
+              "profile": "characteristic_modifier",
+              "priority": 0,
+              "payload": {
+                "characteristic": "strength",
+                "operation": "flat",
+                "value": -1,
+                "cap": { "minimum": {{minimum}}, "maximum": {{maximum}} }
+              }
+            }
+            """);
+
+        AssertIssue(
+            Validate(MortalSingle("I", component, "characteristic_modifier")),
+            Path + $".effects[0].components[0].payload.cap.{invalidEndpoint}",
+            "wound_consequence_magnitude_exceeded");
+    }
+
+    [Fact]
+    public void ScalarModifierCaps_CannotTurnAMechanicalSlotIntoRuntimeZero()
+    {
+        var component = JsonNode.Parse(
+            CharacteristicComponent("component_characteristic", "flat", -1m)
+                .GetRawText())!.AsObject();
+        component["payload"]!["cap"] = new JsonObject
+        {
+            ["minimum"] = 0m,
+            ["maximum"] = 0m
+        };
+
+        AssertIssue(
+            Validate(MortalSingle(
+                "I",
+                Element(component),
+                "characteristic_modifier")),
+            Path + ".effects[0].components[0].payload.cap",
+            "wound_consequence_magnitude_exceeded");
+    }
+
+    [Theory]
     [InlineData("I", 5)]
     [InlineData("II", 10)]
     [InlineData("III", 20)]
@@ -516,6 +601,50 @@ public sealed class WoundConsequenceEnvelopeTests
                 new WoundPeriodicCadenceEvidence("component_periodic", "owner_turn_end", 1),
                 new WoundPeriodicCadenceEvidence("component_periodic", "scene_ended", 1)
             })));
+    }
+
+    [Fact]
+    public void EveryCadenceEntry_MustBelongToExactlyOnePeriodicComponent()
+    {
+        var nonPeriodic = Effect(
+            "effect_characteristic",
+            new[] { CharacteristicComponent("component_characteristic", "flat", -1m) },
+            cadences: new[]
+            {
+                new WoundPeriodicCadenceEvidence(
+                    "component_characteristic",
+                    "owner_turn_end",
+                    1)
+            });
+        AssertIssue(
+            Validate(MortalRequest(
+                "I",
+                new[] { nonPeriodic },
+                Entries(1, "effect_characteristic", "characteristic_modifier"))),
+            Path + ".effects[0].cadences[0]",
+            "wound_consequence_periodic_cadence_invalid");
+
+        var missingComponent = Effect(
+            "effect_periodic",
+            new[] { PeriodicComponent("component_periodic", 4m) },
+            cadences: new[]
+            {
+                new WoundPeriodicCadenceEvidence(
+                    "component_missing",
+                    "unregistered_event",
+                    1)
+            });
+        AssertIssue(
+            Validate(MortalRequest(
+                "I",
+                new[] { missingComponent },
+                Entries(1, "effect_periodic", "periodic_damage"),
+                resourceBounds: new[]
+                {
+                    new WoundResourceEnvelopeBound("health", 100m, 1m)
+                })),
+            Path + ".effects[0].cadences[0]",
+            "wound_consequence_periodic_cadence_invalid");
     }
 
     [Fact]
@@ -683,7 +812,7 @@ public sealed class WoundConsequenceEnvelopeTests
     [Fact]
     public void ReactionExpansion_ChargesTheReactionAndEveryWorstCaseExpandedComponent()
     {
-        var reaction = ReactionComponent("component_reaction", "apply_definition", 2);
+        var reaction = ReactionComponent("component_reaction", "apply_definition", 1);
         var expandedRoll = RollComponent(
             "component_expanded_roll",
             "attack_roll",
@@ -715,7 +844,7 @@ public sealed class WoundConsequenceEnvelopeTests
     }
 
     [Fact]
-    public void ReactionExpansion_MustBePresentUniqueFullyFlattenedAndWithinDeclaredBound()
+    public void ReactionExpansion_MustBePresentUniqueFullyFlattenedAndOneRelease()
     {
         var missing = Effect(
             "effect_reaction",
@@ -742,27 +871,26 @@ public sealed class WoundConsequenceEnvelopeTests
             Path + ".effects[0].expansions[0].components[0].profile",
             "wound_consequence_reaction_expansion_invalid");
 
-        var declaredTooSmall = Effect(
+        var repeatedRelease = Effect(
             "effect_reaction",
-            new[] { ReactionComponent("component_reaction", "apply_definition", 1) },
+            new[] { ReactionComponent("component_reaction", "apply_definition", 2) },
             expansions: new[]
             {
                 new WoundReactionExpansionProposal(
                     "component_reaction",
                     new[]
                     {
-                        RollComponent(
-                            "component_expanded_roll",
-                            "attack_roll",
-                            "defense_roll")
+                        CharacteristicComponent("component_expanded", "flat", -1m)
                     })
             });
         AssertIssue(
             Validate(MortalRequest(
                 "III",
-                new[] { declaredTooSmall },
-                Entries(3, "effect_reaction", "event_reaction"))),
-            Path + ".effects[0].expansions[0].components",
+                new[] { repeatedRelease },
+                Entries(
+                    (1, "effect_reaction", "event_reaction"),
+                    (2, "effect_reaction", "characteristic_modifier")))),
+            Path + ".effects[0].components[0].payload.maxExpansion",
             "wound_consequence_reaction_expansion_invalid");
 
         var duplicateExpansion = Effect(
@@ -782,8 +910,8 @@ public sealed class WoundConsequenceEnvelopeTests
                 "III",
                 new[] { duplicateExpansion },
                 Entries(1, "effect_reaction", "event_reaction"))),
-            Path + ".effects[0].components[0].payload.definitionKey",
-            "wound_consequence_reaction_expansion_invalid");
+            Path + ".effects[0].expansions",
+            "wound_consequence_limit_exceeded");
 
         var twoReactions = Effect(
             "effect_reaction",
@@ -806,8 +934,43 @@ public sealed class WoundConsequenceEnvelopeTests
                 "IV",
                 new[] { twoReactions },
                 Entries(2, "effect_reaction", "event_reaction"))),
+            Path + ".effects[0].expansions",
+            "wound_consequence_limit_exceeded");
+    }
+
+    [Fact]
+    public void ReactionExpansion_TotalAcrossTheWound_IsBoundedToOne()
+    {
+        var first = Effect(
+            "effect_reaction_a",
+            new[] { ReactionComponent("reaction_a", "apply_definition", 1) },
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "reaction_a",
+                    new[] { CharacteristicComponent("expanded_a", "flat", -1m) })
+            });
+        var second = Effect(
+            "effect_reaction_b",
+            new[] { ReactionComponent("reaction_b", "apply_definition", 1) },
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "reaction_b",
+                    new[] { ResistanceComponent("expanded_b", "flat", -1m) })
+            });
+
+        AssertIssue(
+            Validate(MortalRequest(
+                "IV",
+                new[] { first, second },
+                Entries(
+                    (1, "effect_reaction_a", "event_reaction"),
+                    (2, "effect_reaction_a", "characteristic_modifier"),
+                    (3, "effect_reaction_b", "event_reaction"),
+                    (4, "effect_reaction_b", "resistance_modifier")))),
             Path + ".effects",
-            "wound_consequence_reaction_expansion_invalid");
+            "wound_consequence_limit_exceeded");
     }
 
     [Fact]
@@ -1001,6 +1164,38 @@ public sealed class WoundConsequenceEnvelopeTests
                 "artAvailability",
                 "forbid"),
             "spiritual_art_restriction")));
+    }
+
+    [Theory]
+    [MemberData(nameof(StandardSpiritualArts))]
+    public void SpiritualArtRestriction_AcceptsEveryExactStandardArt(string operation)
+    {
+        AssertValid(Validate(SpiritualSingle(
+            "IV",
+            SpiritualComponent(
+                "component",
+                "spiritual_art_restriction",
+                operation,
+                "artAvailability",
+                "forbid"),
+            "spiritual_art_restriction")));
+    }
+
+    [Fact]
+    public void SpiritualArtRestriction_RejectsForceIncarnationAsNonStandard()
+    {
+        AssertIssue(
+            Validate(SpiritualSingle(
+                "IV",
+                SpiritualComponent(
+                    "component",
+                    "spiritual_art_restriction",
+                    "force_incarnation",
+                    "artAvailability",
+                    "forbid"),
+                "spiritual_art_restriction")),
+            Path + ".effects[0].components[0].payload.operation",
+            "wound_consequence_spiritual_operation_invalid");
     }
 
     [Fact]
@@ -1266,6 +1461,247 @@ public sealed class WoundConsequenceEnvelopeTests
             "wound_consequence_identifier_invalid");
     }
 
+    [Theory]
+    [InlineData("effect_shared")]
+    [InlineData("EFFECT_SHARED")]
+    public void EffectIdentities_AreExactAndConfusableUniqueAcrossEveryProposal(
+        string secondEffectId)
+    {
+        var ownedDuplicate = Validate(MortalRequest(
+            "II",
+            new[]
+            {
+                Effect(
+                    "effect_shared",
+                    CharacteristicComponent("component_a", "flat", -1m)),
+                Effect(
+                    secondEffectId,
+                    ActionComponent("component_b", "movement", "restrict"))
+            },
+            Entries(
+                (1, "effect_shared", "characteristic_modifier"),
+                (2, secondEffectId, "action_control"))));
+        AssertIssue(
+            ownedDuplicate,
+            Path + ".effects[1].effectId",
+            "wound_consequence_effect_identity_duplicate");
+
+        var ownedIndependentDuplicate = Validate(MortalRequest(
+            "I",
+            new[]
+            {
+                Effect(
+                    "effect_shared",
+                    CharacteristicComponent("component_owned", "flat", -1m)),
+                Effect(
+                    secondEffectId,
+                    new[] { UnknownComponent("component_independent") },
+                    "curse",
+                    "curse_exact",
+                    null)
+            },
+            Entries(1, "effect_shared", "characteristic_modifier")));
+        AssertIssue(
+            ownedIndependentDuplicate,
+            Path + ".effects[1].effectId",
+            "wound_consequence_effect_identity_duplicate");
+    }
+
+    [Theory]
+    [InlineData("component_shared")]
+    [InlineData("COMPONENT_SHARED")]
+    public void ComponentIdentities_AreExactAndConfusableUniqueAcrossOneEffect(
+        string secondComponentId)
+    {
+        var topLevel = Effect(
+            "effect_components",
+            CharacteristicComponent("component_shared", "flat", -1m),
+            ActionComponent(secondComponentId, "movement", "restrict"));
+        AssertIssue(
+            Validate(MortalRequest(
+                "II",
+                new[] { topLevel },
+                Entries(
+                    (1, "effect_components", "characteristic_modifier"),
+                    (2, "effect_components", "action_control")))),
+            Path + ".effects[0].components[1].componentId",
+            "wound_consequence_component_identity_duplicate");
+
+        var flattened = Effect(
+            "effect_flattened_components",
+            new[]
+            {
+                MarkerComponent("component_shared"),
+                ReactionComponent("component_reaction", "apply_definition", 1)
+            },
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "component_reaction",
+                    new[]
+                    {
+                        CharacteristicComponent(secondComponentId, "flat", -1m)
+                    })
+            });
+        AssertIssue(
+            Validate(MortalRequest(
+                "III",
+                new[] { flattened },
+                Entries(
+                    (1, "effect_flattened_components", "event_reaction"),
+                    (2, "effect_flattened_components", "characteristic_modifier")))),
+            Path + ".effects[0].expansions[0].components[0].componentId",
+            "wound_consequence_component_identity_duplicate");
+    }
+
+    [Fact]
+    public void IndependentComponentIdentifiers_AreValidatedBeforeSemanticDetachment()
+    {
+        var result = Validate(MortalRequest(
+            "I",
+            new[]
+            {
+                Effect(
+                    "effect_owned",
+                    CharacteristicComponent("component_owned", "flat", -1m)),
+                Effect(
+                    "effect_independent",
+                    new[] { UnknownComponent(" component_invalid") },
+                    "curse",
+                    "curse_exact",
+                    null)
+            },
+            Entries(1, "effect_owned", "characteristic_modifier")));
+
+        AssertIssue(
+            result,
+            Path + ".effects[1].components[0].componentId",
+            "wound_consequence_identifier_invalid");
+    }
+
+    [Fact]
+    public void EveryProposalAndPresentExpansion_RequiresNonEmptyComponents()
+    {
+        var emptyOwned = Effect(
+            "effect_empty_owned",
+            Array.Empty<JsonElement>());
+        AssertIssue(
+            Validate(MortalRequest(
+                "I",
+                new[] { emptyOwned },
+                Array.Empty<WoundConsequenceEntry>(),
+                lifecycleEvidence: new WoundConsequenceLifecycleEvidence(
+                    true,
+                    false,
+                    false),
+                declaredSlotsUsed: 0)),
+            Path + ".effects[0].components",
+            "wound_consequence_components_required");
+
+        var emptyIndependent = Effect(
+            "effect_empty_independent",
+            Array.Empty<JsonElement>(),
+            "curse",
+            "curse_exact",
+            null);
+        AssertIssue(
+            Validate(MortalRequest(
+                "I",
+                new[]
+                {
+                    Effect(
+                        "effect_owned",
+                        CharacteristicComponent("component_owned", "flat", -1m)),
+                    emptyIndependent
+                },
+                Entries(1, "effect_owned", "characteristic_modifier"))),
+            Path + ".effects[1].components",
+            "wound_consequence_components_required");
+
+        var emptyExpansion = Effect(
+            "effect_empty_expansion",
+            new[] { ReactionComponent("component_reaction", "apply_definition", 1) },
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "component_reaction",
+                    Array.Empty<JsonElement>())
+            });
+        AssertIssue(
+            Validate(MortalRequest(
+                "III",
+                new[] { emptyExpansion },
+                Entries(1, "effect_empty_expansion", "event_reaction"))),
+            Path + ".effects[0].expansions[0].components",
+            "wound_consequence_components_required");
+    }
+
+    [Fact]
+    public void DuplicateRawProperties_AreRejectedRecursivelyBeforeMortalSemantics()
+    {
+        var component = RawElement("""
+            {
+              "componentId": "component_duplicate",
+              "profile": "action_control",
+              "profile": "action_control",
+              "priority": 0,
+              "payload": {
+                "action": "escape",
+                "action": "attack",
+                "operation": "forbid",
+                "modifier": null
+              }
+            }
+            """);
+        var result = Validate(MortalSingle("III", component, "action_control"));
+
+        AssertIssue(
+            result,
+            Path + ".effects[0].components[0].profile",
+            "wound_consequence_duplicate_property");
+        AssertIssue(
+            result,
+            Path + ".effects[0].components[0].payload.action",
+            "wound_consequence_duplicate_property");
+    }
+
+    [Fact]
+    public void DuplicateRawProperties_AreRejectedRecursivelyBeforeSpiritualSemantics()
+    {
+        var component = RawElement("""
+            {
+              "componentId": "component_duplicate",
+              "profile": "unknown_profile",
+              "profile": "spiritual_art_restriction",
+              "priority": 0,
+              "payload": {
+                "operation": "withdrawal",
+                "operation": "pressure",
+                "axis": "artAvailability",
+                "magnitude": "restrict",
+                "magnitude": "restrict"
+              }
+            }
+            """);
+        var result = Validate(SpiritualSingle(
+            "III",
+            component,
+            "spiritual_art_restriction"));
+
+        AssertIssue(
+            result,
+            Path + ".effects[0].components[0].profile",
+            "wound_consequence_duplicate_property");
+        AssertIssue(
+            result,
+            Path + ".effects[0].components[0].payload.operation",
+            "wound_consequence_duplicate_property");
+        AssertIssue(
+            result,
+            Path + ".effects[0].components[0].payload.magnitude",
+            "wound_consequence_duplicate_property");
+    }
+
     [Fact]
     public void ForgedNullAndDefaultTypedInputs_ReturnPreciseIssuesWithoutThrowing()
     {
@@ -1423,6 +1859,208 @@ public sealed class WoundConsequenceEnvelopeTests
                 Entries(1, "effect_reaction", "event_reaction"))),
             Path + ".effects[0].expansions[0].components",
             "wound_consequence_limit_exceeded");
+    }
+
+    [Fact]
+    public void DeclaredConsequenceBound_IsCheckedBeforeReadingEntryFive()
+    {
+        var guarded = new GuardedReadOnlyList<WoundConsequenceEntry>(
+            WoundMaterializationContract.MaxConsequences + 1,
+            WoundMaterializationContract.MaxConsequences,
+            index => Entry(index + 1, "effect_unused", "wound_consequence"));
+
+        AssertLimitBeforeRead(
+            guarded,
+            () => Validate(MortalRequest(
+                "I",
+                Array.Empty<WoundConsequenceEffectProposal>(),
+                guarded,
+                lifecycleEvidence: new WoundConsequenceLifecycleEvidence(
+                    true,
+                    false,
+                    false),
+                declaredSlotsUsed: 0)),
+            Path + ".declared.entries");
+    }
+
+    [Fact]
+    public void EffectProposalBound_IsCheckedBeforeReadingProposalOneHundredTwentyNine()
+    {
+        var guarded = new GuardedReadOnlyList<WoundConsequenceEffectProposal>(
+            129,
+            128,
+            index => Effect(
+                $"effect_{index:D3}",
+                UnknownComponent($"component_{index:D3}")));
+
+        AssertLimitBeforeRead(
+            guarded,
+            () => Validate(MortalRequest(
+                "I",
+                guarded,
+                Array.Empty<WoundConsequenceEntry>(),
+                lifecycleEvidence: new WoundConsequenceLifecycleEvidence(
+                    true,
+                    false,
+                    false),
+                declaredSlotsUsed: 0)),
+            Path + ".effects");
+    }
+
+    [Fact]
+    public void ComponentBound_IsCheckedBeforeReadingComponentSixtyFive()
+    {
+        var guarded = new GuardedReadOnlyList<JsonElement>(
+            65,
+            64,
+            index => MarkerComponent($"component_{index:D2}"));
+
+        AssertLimitBeforeRead(
+            guarded,
+            () =>
+            {
+                var effect = Effect("effect_components", guarded);
+                return Validate(MortalRequest(
+                    "I",
+                    new[] { effect },
+                    Array.Empty<WoundConsequenceEntry>(),
+                    lifecycleEvidence: new WoundConsequenceLifecycleEvidence(
+                        true,
+                        false,
+                        false),
+                    declaredSlotsUsed: 0));
+            },
+            Path + ".effects[0].components");
+    }
+
+    [Fact]
+    public void CadenceBound_IsCheckedBeforeReadingCadenceSixtyFive()
+    {
+        var guarded = new GuardedReadOnlyList<WoundPeriodicCadenceEvidence>(
+            65,
+            64,
+            index => new WoundPeriodicCadenceEvidence(
+                $"component_{index:D2}",
+                "owner_turn_end",
+                1));
+
+        AssertLimitBeforeRead(
+            guarded,
+            () =>
+            {
+                var effect = Effect(
+                    "effect_cadences",
+                    new[]
+                    {
+                        CharacteristicComponent("component_characteristic", "flat", -1m)
+                    },
+                    cadences: guarded);
+                return Validate(MortalRequest(
+                    "I",
+                    new[] { effect },
+                    Entries(1, "effect_cadences", "characteristic_modifier")));
+            },
+            Path + ".effects[0].cadences");
+    }
+
+    [Fact]
+    public void ReactionExpansionBound_IsCheckedBeforeReadingExpansionTwo()
+    {
+        var guarded = new GuardedReadOnlyList<WoundReactionExpansionProposal>(
+            2,
+            1,
+            index => new WoundReactionExpansionProposal(
+                $"reaction_{index}",
+                new[] { MarkerComponent($"marker_{index}") }));
+
+        AssertLimitBeforeRead(
+            guarded,
+            () =>
+            {
+                var effect = Effect(
+                    "effect_expansions",
+                    new[] { ReactionComponent("reaction_0", "apply_definition", 1) },
+                    expansions: guarded);
+                return Validate(MortalRequest(
+                    "III",
+                    new[] { effect },
+                    Entries(1, "effect_expansions", "event_reaction")));
+            },
+            Path + ".effects[0].expansions");
+    }
+
+    [Fact]
+    public void FlattenedComponentBound_IsCheckedBeforeReadingComponentSixtyFive()
+    {
+        var guarded = new GuardedReadOnlyList<JsonElement>(
+            WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionComponents + 1,
+            WoundConsequenceEnvelopeCatalog.MaximumReactionExpansionComponents,
+            index => MarkerComponent($"expanded_{index:D2}"));
+
+        AssertLimitBeforeRead(
+            guarded,
+            () =>
+            {
+                var expansion = new WoundReactionExpansionProposal("reaction", guarded);
+                var effect = Effect(
+                    "effect_flattened",
+                    new[] { ReactionComponent("reaction", "apply_definition", 1) },
+                    expansions: new[] { expansion });
+                return Validate(MortalRequest(
+                    "III",
+                    new[] { effect },
+                    Entries(1, "effect_flattened", "event_reaction")));
+            },
+            Path + ".effects[0].expansions[0].components");
+    }
+
+    [Fact]
+    public void ResourceBoundEvidenceLimit_IsCheckedBeforeReadingEntryOneHundredTwentyNine()
+    {
+        var guarded = new GuardedReadOnlyList<WoundResourceEnvelopeBound>(
+            129,
+            128,
+            index => new WoundResourceEnvelopeBound($"resource_{index:D3}", 100m, 1m));
+
+        AssertLimitBeforeRead(
+            guarded,
+            () => Validate(MortalRequest(
+                "I",
+                new[]
+                {
+                    Effect(
+                        "effect_resource_context",
+                        CharacteristicComponent("component_characteristic", "flat", -1m))
+                },
+                Entries(1, "effect_resource_context", "characteristic_modifier"),
+                resourceBounds: guarded)),
+            Path + ".resourceBounds");
+    }
+
+    [Fact]
+    public void OneOwnedAndOneHundredTwentySevenIndependentEffects_ArePreservedAtTheBound()
+    {
+        var effects = new List<WoundConsequenceEffectProposal>
+        {
+            Effect(
+                "effect_owned",
+                CharacteristicComponent("component_owned", "flat", -1m))
+        };
+        effects.AddRange(Enumerable.Range(0, 127).Select(index => Effect(
+            $"effect_independent_{index:D3}",
+            new[] { UnknownComponent($"component_independent_{index:D3}") },
+            "curse",
+            $"curse_{index:D3}",
+            null)));
+
+        var result = Validate(MortalRequest(
+            "I",
+            effects,
+            Entries(1, "effect_owned", "characteristic_modifier")));
+
+        AssertValid(result);
+        Assert.Equal(127, result.IndependentEffects.Length);
+        Assert.Equal("effect_owned", result.Envelope!.OwnedEffects.Single().EffectId);
     }
 
     [Theory]
@@ -1771,6 +2409,69 @@ public sealed class WoundConsequenceEnvelopeTests
 
     private static JsonElement Element(JsonNode node) =>
         JsonSerializer.SerializeToElement(node);
+
+    private static JsonElement RawElement(string json)
+    {
+        using var document = JsonDocument.Parse(json);
+        return document.RootElement.Clone();
+    }
+
+    private sealed class GuardedReadOnlyList<T> : IReadOnlyList<T>
+    {
+        private readonly int _readableCount;
+        private readonly Func<int, T> _factory;
+
+        internal GuardedReadOnlyList(
+            int count,
+            int readableCount,
+            Func<int, T> factory)
+        {
+            Count = count;
+            _readableCount = readableCount;
+            _factory = factory;
+        }
+
+        public int Count { get; }
+
+        internal int ReadCount { get; private set; }
+
+        public T this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= _readableCount)
+                {
+                    throw new InvalidOperationException(
+                        $"Boundary item {index} must not be read.");
+                }
+
+                ReadCount++;
+                return _factory(index);
+            }
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (var index = 0; index < Count; index++)
+                yield return this[index];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+    private static void AssertLimitBeforeRead<T>(
+        GuardedReadOnlyList<T> guarded,
+        Func<WoundConsequenceEnvelopeValidationResult> validate,
+        string path)
+    {
+        WoundConsequenceEnvelopeValidationResult? result = null;
+        var exception = Record.Exception(() => result = validate());
+
+        Assert.Null(exception);
+        Assert.Equal(0, guarded.ReadCount);
+        Assert.NotNull(result);
+        AssertIssue(result!, path, "wound_consequence_limit_exceeded");
+    }
 
     private static void AssertValid(WoundConsequenceEnvelopeValidationResult result)
     {
