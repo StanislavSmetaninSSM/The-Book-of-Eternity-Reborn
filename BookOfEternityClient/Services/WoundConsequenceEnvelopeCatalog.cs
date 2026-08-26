@@ -513,47 +513,6 @@ internal static class WoundConsequenceEnvelopeCatalog
     private static readonly ImmutableHashSet<string> MortalZeroSlotProfileSet =
         ImmutableHashSet.Create(StringComparer.Ordinal, "wound_consequence");
 
-    private static readonly ImmutableHashSet<string> SpiritualProfileSet =
-        ImmutableHashSet.Create(
-            StringComparer.Ordinal,
-            "spiritual_roll_hindrance",
-            "spiritual_action_cost_burden",
-            "spiritual_position_burden",
-            "spiritual_control_burden",
-            "spiritual_strain_burden",
-            "spiritual_tempo_burden",
-            "spiritual_counter_burden",
-            "spiritual_art_restriction");
-
-    private static readonly ImmutableHashSet<string> SpiritualOperationSet =
-        ImmutableHashSet.Create(
-            StringComparer.Ordinal,
-            "pressure",
-            "counter",
-            "guard",
-            "maneuver",
-            "binding",
-            "break_binding",
-            "force_binding",
-            "force_incarnation",
-            "incarnation_resistance",
-            "champion_coordination",
-            "recover_spiritual_power");
-
-    private static readonly ImmutableHashSet<string> SpiritualArtOperationSet =
-        ImmutableHashSet.Create(
-            StringComparer.Ordinal,
-            "pressure",
-            "counter",
-            "guard",
-            "maneuver",
-            "binding",
-            "break_binding",
-            "force_binding",
-            "incarnation_resistance",
-            "champion_coordination",
-            "recover_spiritual_power");
-
     private static readonly ImmutableHashSet<string> MortalForbidActions =
         ImmutableHashSet.Create(StringComparer.Ordinal, "attack", "cast", "movement");
 
@@ -566,12 +525,14 @@ internal static class WoundConsequenceEnvelopeCatalog
     internal static IReadOnlySet<string> MortalZeroSlotProfiles =>
         MortalZeroSlotProfileSet;
 
-    internal static IReadOnlySet<string> SpiritualProfiles => SpiritualProfileSet;
+    internal static IReadOnlySet<string> SpiritualProfiles =>
+        SpiritualWoundEffectProfileCatalog.RegisteredProfiles;
 
-    internal static IReadOnlySet<string> SpiritualOperationKeys => SpiritualOperationSet;
+    internal static IReadOnlySet<string> SpiritualOperationKeys =>
+        SpiritualWoundEffectProfileCatalog.Operations;
 
     internal static IReadOnlySet<string> SpiritualArtRestrictionKeys =>
-        SpiritualArtOperationSet;
+        SpiritualWoundEffectProfileCatalog.ArtOperations;
 
     internal static WoundConsequenceEnvelopeValidationResult Validate(
         WoundConsequenceEnvelopeRequest request,
@@ -1856,13 +1817,17 @@ internal static class WoundConsequenceEnvelopeCatalog
 
         if (!payload.TryGetProperty("maxExpansion", out var rawMaximum) ||
             !rawMaximum.TryGetInt32(out var declaredMaximum) ||
-            declaredMaximum != 1)
+            !string.Equals(
+                rawMaximum.GetRawText(),
+                declaredMaximum.ToString(CultureInfo.InvariantCulture),
+                StringComparison.Ordinal) ||
+            declaredMaximum != 2)
         {
             Add(
                 issues,
                 componentPath + ".payload.maxExpansion",
                 "wound_consequence_reaction_expansion_invalid",
-                "exact integer 1 release per accepted transition/source event",
+                "exact integer 2 execution budget for one direct result plus one reachable definition application",
                 DescribeProperty(payload, "maxExpansion"));
             return;
         }
@@ -1982,7 +1947,9 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
 
         if (!TryReadString(component, "profile", out var profile) ||
-            !SpiritualProfileSet.Contains(profile))
+            !SpiritualWoundEffectProfileCatalog.TryGetProfile(
+                profile,
+                out var profileDescriptor))
         {
             Add(
                 issues,
@@ -1990,7 +1957,9 @@ internal static class WoundConsequenceEnvelopeCatalog
                 "wound_consequence_profile_unsupported",
                 string.Join(
                     " | ",
-                    SpiritualProfileSet.OrderBy(static value => value, StringComparer.Ordinal)),
+                    SpiritualWoundEffectProfileCatalog.RegisteredProfiles.OrderBy(
+                        static value => value,
+                        StringComparer.Ordinal)),
                 DescribeProperty(component, "profile"));
             return;
         }
@@ -2017,12 +1986,7 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
-        var allowedOperations = string.Equals(
-            profile,
-            "spiritual_art_restriction",
-            StringComparison.Ordinal)
-            ? SpiritualArtOperationSet
-            : SpiritualOperationSet;
+        var allowedOperations = profileDescriptor.LegalOperations;
         if (!TryReadString(payload, "operation", out var operation) ||
             !allowedOperations.Contains(operation))
         {
@@ -2037,7 +2001,7 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
-        var expectedAxis = SpiritualAxis(profile);
+        var expectedAxis = profileDescriptor.Axis;
         if (!TryReadString(payload, "axis", out var axis) ||
             !string.Equals(axis, expectedAxis, StringComparison.Ordinal))
         {
@@ -2062,6 +2026,7 @@ internal static class WoundConsequenceEnvelopeCatalog
         }
 
         if (!payload.TryGetProperty("magnitude", out var magnitude) ||
+            !profileDescriptor.IsMagnitudeValid(magnitude) ||
             !IsSpiritualMagnitudeValid(profile, rank, magnitude))
         {
             Add(
@@ -2087,19 +2052,6 @@ internal static class WoundConsequenceEnvelopeCatalog
             componentPath + ".payload.operation",
             issues);
     }
-
-    private static string SpiritualAxis(string profile) => profile switch
-    {
-        "spiritual_roll_hindrance" => "rollMode",
-        "spiritual_action_cost_burden" => "actionCostAudit",
-        "spiritual_position_burden" => "conflictPosition",
-        "spiritual_control_burden" => "controlState",
-        "spiritual_strain_burden" => "sideStrain",
-        "spiritual_tempo_burden" => "tempoAdvantage",
-        "spiritual_counter_burden" => "counterPayoff",
-        "spiritual_art_restriction" => "artAvailability",
-        _ => string.Empty
-    };
 
     private static bool IsSpiritualProfileAvailable(string profile, int rank) =>
         profile switch

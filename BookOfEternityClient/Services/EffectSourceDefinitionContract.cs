@@ -27,6 +27,10 @@ internal static class EffectSourceDefinitionContract
     private static readonly HashSet<string> TargetKinds = Set(
         "player", "npc", "combatant", "guardian", "resident", "radiant_actor",
         "afterlife_actor", "spiritual_conflict_side");
+    private static readonly HashSet<string> SpiritualWoundRealms = Set(
+        "chaos_sea", "shining_abode");
+    private static readonly HashSet<string> SpiritualWoundTargetKinds = Set(
+        "player", "guardian", "resident", "radiant_actor", "afterlife_actor");
     private static readonly HashSet<string> Categories = Set("buff", "debuff", "condition", "environmental", "mixed");
     private static readonly HashSet<string> Visibilities = Set("visible", "hidden", "gm_only");
     private static readonly HashSet<string> StackPolicies = Set("independent", "stack", "refresh", "replace", "merge");
@@ -154,6 +158,12 @@ internal static class EffectSourceDefinitionContract
             issues);
         ValidateRemoval(definition, path, issues);
         ValidateLinks(definition, path, issues);
+        ValidateSpiritualWoundAdapter(
+            definition,
+            path,
+            realm,
+            componentValidation,
+            issues);
     }
 
     private static void ValidateAfterlifeConditionAdapter(
@@ -237,6 +247,169 @@ internal static class EffectSourceDefinitionContract
             "one afterlife_combat_condition component targeting only spiritual_conflict_side with bounded uses, afterlife exchanges, or scene lifetime",
             definition.GetRawText());
     }
+
+    private static void ValidateSpiritualWoundAdapter(
+        JsonElement definition,
+        string path,
+        string realm,
+        ComponentValidationResult components,
+        List<ValidationIssue> issues)
+    {
+        if (!components.Profiles.Any(
+                SpiritualWoundEffectProfileCatalog.RegisteredProfiles.Contains))
+        {
+            return;
+        }
+
+        var hasOnlyAfterlifeRealms =
+            definition.TryGetProperty("allowedRealms", out var allowedRealms) &&
+            IsNonEmptySubset(allowedRealms, SpiritualWoundRealms) &&
+            ContainsExactValue(allowedRealms, realm);
+        if (!SpiritualWoundRealms.Contains(realm) || !hasOnlyAfterlifeRealms)
+        {
+            Add(
+                issues,
+                path + ".allowedRealms",
+                "effect_source_definition_spiritual_wound_realm_invalid",
+                "non-empty subset of chaos_sea | shining_abode containing the current afterlife realm",
+                Describe(definition, "allowedRealms"));
+        }
+
+        if (!definition.TryGetProperty("allowedTargetKinds", out var allowedTargets) ||
+            !IsNonEmptySubset(allowedTargets, SpiritualWoundTargetKinds))
+        {
+            Add(
+                issues,
+                path + ".allowedTargetKinds",
+                "effect_source_definition_spiritual_wound_target_invalid",
+                "non-empty subset of player | guardian | resident | radiant_actor | afterlife_actor",
+                Describe(definition, "allowedTargetKinds"));
+        }
+
+        ValidateSpiritualWoundLinks(definition, path, issues);
+    }
+
+    private static bool IsNonEmptySubset(
+        JsonElement values,
+        IReadOnlySet<string> allowed)
+    {
+        if (values.ValueKind != JsonValueKind.Array || values.GetArrayLength() == 0)
+            return false;
+
+        var exact = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var value in values.EnumerateArray())
+        {
+            if (!TryReadExactIdentifier(value, out var text) ||
+                !allowed.Contains(text) ||
+                !exact.Add(text))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static bool ContainsExactValue(JsonElement values, string expected) =>
+        values.ValueKind == JsonValueKind.Array &&
+        values.EnumerateArray().Any(value =>
+            TryReadExactIdentifier(value, out var text) &&
+            string.Equals(text, expected, StringComparison.Ordinal));
+
+    private static void ValidateSpiritualWoundLinks(
+        JsonElement definition,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (!definition.TryGetProperty("links", out var links) ||
+            links.ValueKind != JsonValueKind.Array ||
+            links.GetArrayLength() == 0)
+        {
+            AddSpiritualWoundLinkIssue(
+                issues,
+                path + ".links",
+                Describe(definition, "links"));
+            return;
+        }
+
+        var sourceCount = 0;
+        var sourceAliases = new HashSet<string>(StringComparer.Ordinal);
+        var emittedTargetedIssue = false;
+        string? firstNonSourceWoundRolePath = null;
+        string? firstNonSourceWoundRole = null;
+        var index = 0;
+        foreach (var link in links.EnumerateArray())
+        {
+            var linkPath = $"{path}.links[{index++}]";
+            if (link.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var hasKind = TryReadExactIdentifier(link, "kind", out var kind);
+            var hasRole = TryReadExactIdentifier(link, "role", out var role);
+            if (hasRole && string.Equals(role, "source", StringComparison.Ordinal) &&
+                (!hasKind || !string.Equals(kind, "wound", StringComparison.Ordinal)))
+            {
+                AddSpiritualWoundLinkIssue(
+                    issues,
+                    linkPath + ".kind",
+                    Describe(link, "kind"));
+                emittedTargetedIssue = true;
+                continue;
+            }
+
+            if (!hasKind || !string.Equals(kind, "wound", StringComparison.Ordinal))
+                continue;
+
+            if (hasRole &&
+                (string.Equals(role, "context", StringComparison.Ordinal) ||
+                 string.Equals(role, "condition", StringComparison.Ordinal)))
+            {
+                firstNonSourceWoundRolePath ??= linkPath + ".role";
+                firstNonSourceWoundRole ??= role;
+                continue;
+            }
+
+            if (!hasRole || !string.Equals(role, "source", StringComparison.Ordinal))
+            {
+                AddSpiritualWoundLinkIssue(
+                    issues,
+                    linkPath + ".role",
+                    Describe(link, "role"));
+                emittedTargetedIssue = true;
+                continue;
+            }
+
+            sourceCount++;
+            if (!TryReadExactIdentifier(link, "targetId", out var targetId) ||
+                sourceCount > 1 ||
+                !sourceAliases.Add(MortalLocationIdentityState.BuildConfusableKey(targetId)))
+            {
+                AddSpiritualWoundLinkIssue(
+                    issues,
+                    linkPath,
+                    link.GetRawText());
+                emittedTargetedIssue = true;
+            }
+        }
+
+        if (sourceCount == 0 && !emittedTargetedIssue)
+        {
+            AddSpiritualWoundLinkIssue(
+                issues,
+                firstNonSourceWoundRolePath ?? path + ".links",
+                firstNonSourceWoundRole ?? links.GetRawText());
+        }
+    }
+
+    private static void AddSpiritualWoundLinkIssue(
+        List<ValidationIssue> issues,
+        string path,
+        string actual) =>
+        Add(
+            issues,
+            path,
+            "effect_source_definition_spiritual_wound_link_invalid",
+            "exactly one exact/confusable-unique wound link with role source; independent context siblings may remain",
+            actual);
 
     private static void ValidateDisplay(JsonElement root, string path, List<ValidationIssue> issues)
     {

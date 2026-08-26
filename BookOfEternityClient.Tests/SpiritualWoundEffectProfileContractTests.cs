@@ -356,6 +356,23 @@ public sealed class SpiritualWoundEffectProfileContractTests
 
     [Theory]
     [MemberData(nameof(ProfileCases))]
+    public void CompleteDefinition_AllowsIndependentWoundContextSibling(
+        string profile)
+    {
+        var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
+            profile);
+        definition["links"]!.AsArray().Add(new JsonObject
+        {
+            ["kind"] = "wound",
+            ["targetId"] = "wound_related_context_001",
+            ["role"] = "context"
+        });
+
+        Assert.Empty(ValidateDefinitions("chaos_sea", definition));
+    }
+
+    [Theory]
+    [MemberData(nameof(ProfileCases))]
     public void CompleteDefinition_AllowsOrdinaryAfterlifeTurnsLifetime(string profile)
     {
         var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(

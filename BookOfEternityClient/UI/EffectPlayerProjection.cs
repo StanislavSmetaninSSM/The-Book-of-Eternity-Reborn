@@ -252,6 +252,13 @@ internal static class EffectPlayerProjection
             throw new InvalidOperationException("Accepted effect component has no payload.");
         }
 
+        if (SpiritualWoundEffectProfileCatalog.TryGetProfile(
+                profile,
+                out var spiritualProfile))
+        {
+            return ProjectSpiritualWoundComponent(payload, spiritualProfile);
+        }
+
         return profile switch
         {
             "characteristic_modifier" => new(
@@ -293,6 +300,70 @@ internal static class EffectPlayerProjection
             _ => throw new InvalidOperationException("Accepted effect contains an unregistered component profile.")
         };
     }
+
+    private static EffectPlayerFact ProjectSpiritualWoundComponent(
+        JsonElement payload,
+        SpiritualWoundProfileDescriptor profile)
+    {
+        var operationKey = ReadString(payload, "operation");
+        if (operationKey == null ||
+            !profile.LegalOperations.Contains(operationKey) ||
+            !SpiritualWoundEffectProfileCatalog.TryGetOperation(
+                operationKey,
+                out var operation) ||
+            !string.Equals(
+                ReadString(payload, "axis"),
+                profile.Axis,
+                StringComparison.Ordinal) ||
+            !payload.TryGetProperty("magnitude", out var magnitude) ||
+            !profile.IsMagnitudeValid(magnitude))
+        {
+            throw new InvalidOperationException(
+                "Accepted spiritual wound component violates its registered projection contract.");
+        }
+
+        var mechanic = profile.ProjectionKind switch
+        {
+            SpiritualWoundProjectionKind.RollHindrance =>
+                "бросок совершается с помехой.",
+            SpiritualWoundProjectionKind.ActionCostBurden =>
+                $"стоимость духовного действия увеличена на {ReadMagnitudeInteger(profile, magnitude)}.",
+            SpiritualWoundProjectionKind.PositionBurden =>
+                $"позиция ухудшена на {DescribeSteps(ReadMagnitudeInteger(profile, magnitude))}.",
+            SpiritualWoundProjectionKind.ControlBurden =>
+                $"контроль ухудшен на {DescribeSteps(ReadMagnitudeInteger(profile, magnitude))}.",
+            SpiritualWoundProjectionKind.StrainBurden =>
+                $"напряжение стороны увеличено на {DescribeSteps(ReadMagnitudeInteger(profile, magnitude))}.",
+            SpiritualWoundProjectionKind.TempoBurden =>
+                "получение одного преимущества темпа запрещено.",
+            SpiritualWoundProjectionKind.CounterBurden =>
+                "результат контрдействия снижен на 1 ступень.",
+            SpiritualWoundProjectionKind.ArtRestriction =>
+                string.Equals(magnitude.GetString(), "restrict", StringComparison.Ordinal)
+                    ? "духовное искусство ограничено."
+                    : "духовное искусство запрещено.",
+            _ => throw new InvalidOperationException(
+                "Accepted spiritual wound component has no player projection.")
+        };
+
+        return new EffectPlayerFact(
+            profile.Profile,
+            profile.PlayerLabel,
+            $"{operation.PlayerLabel}: {mechanic}");
+    }
+
+    private static int ReadMagnitudeInteger(
+        SpiritualWoundProfileDescriptor profile,
+        JsonElement magnitude)
+    {
+        if (profile.TryReadMagnitudeInteger(magnitude, out var value))
+            return value;
+        throw new InvalidOperationException(
+            "Accepted spiritual wound component has no exact integer magnitude.");
+    }
+
+    private static string DescribeSteps(int value) =>
+        value == 1 ? "1 ступень" : $"{value} ступени";
 
     private static string DescribeActionControl(JsonElement payload)
     {
