@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Immutable;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
@@ -47,6 +48,18 @@ public sealed class WoundConsequenceEnvelopeTests
         { "II", 2, 2m, 10m },
         { "III", 3, 3m, 20m },
         { "IV", 4, 4m, 30m }
+    };
+
+    public static TheoryData<string, string, int, int, int> SafeScalarCaps => new()
+    {
+        { "characteristic_modifier", "flat", 100, -1, 1 },
+        { "characteristic_modifier", "flat", -100, -1, 1 },
+        { "characteristic_modifier", "percent", 100, -5, 5 },
+        { "characteristic_modifier", "percent", -100, -5, 5 },
+        { "resistance_modifier", "flat", 100, -1, 1 },
+        { "resistance_modifier", "flat", -100, -1, 1 },
+        { "resistance_modifier", "percent", 100, -5, 5 },
+        { "resistance_modifier", "percent", -100, -5, 5 }
     };
 
     public static TheoryData<string, string, string, string> SpiritualProfiles => new()
@@ -145,13 +158,17 @@ public sealed class WoundConsequenceEnvelopeTests
             WoundConsequenceEnvelopeCatalog.SpiritualOperationKeys.OrderBy(
                 static value => value,
                 StringComparer.Ordinal));
+        var restrictionRegistryProperty = Assert.IsAssignableFrom<PropertyInfo>(
+            typeof(WoundConsequenceEnvelopeCatalog).GetProperty(
+                "SpiritualArtRestrictionKeys",
+                BindingFlags.Static | BindingFlags.NonPublic));
+        var restrictionRegistry = Assert.IsAssignableFrom<IReadOnlySet<string>>(
+            restrictionRegistryProperty.GetValue(null));
         Assert.Equal(
             StandardSpiritualArtValues.OrderBy(
                 static value => value,
                 StringComparer.Ordinal),
-            AfterlifeEntityProfileState.StandardArtIds.OrderBy(
-                static value => value,
-                StringComparer.Ordinal));
+            restrictionRegistry.OrderBy(static value => value, StringComparer.Ordinal));
     }
 
     [Theory]
@@ -244,6 +261,65 @@ public sealed class WoundConsequenceEnvelopeTests
                 ActiveComplicationChangesLifecycle: false,
                 CareConstraintChangesLifecycle: false,
                 RecoveryConstraintChangesLifecycle: true))));
+    }
+
+    [Fact]
+    public void MortalZeroSlotMarker_IsLimitedOnceAcrossTheCompleteOwnedComposition()
+    {
+        var lifecycle = new WoundConsequenceLifecycleEvidence(true, false, false);
+        var withinOneEffect = Validate(MortalRequest(
+            "I",
+            new[]
+            {
+                Effect(
+                    "effect_markers",
+                    MarkerComponent("marker_a"),
+                    MarkerComponent("marker_b"))
+            },
+            Array.Empty<WoundConsequenceEntry>(),
+            lifecycleEvidence: lifecycle,
+            declaredSlotsUsed: 0));
+        AssertIssue(
+            withinOneEffect,
+            Path + ".effects",
+            "wound_consequence_marker_limit_exceeded");
+
+        var acrossEffects = Validate(MortalRequest(
+            "I",
+            new[]
+            {
+                Effect("effect_marker_a", MarkerComponent("marker_a")),
+                Effect("effect_marker_b", MarkerComponent("marker_b"))
+            },
+            Array.Empty<WoundConsequenceEntry>(),
+            lifecycleEvidence: lifecycle,
+            declaredSlotsUsed: 0));
+        AssertIssue(
+            acrossEffects,
+            Path + ".effects",
+            "wound_consequence_marker_limit_exceeded");
+
+        var directAndFlattened = Effect(
+            "effect_direct_and_flattened_marker",
+            new[]
+            {
+                MarkerComponent("marker_direct"),
+                ReactionComponent("reaction", "apply_definition", 1)
+            },
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "reaction",
+                    new[] { MarkerComponent("marker_flattened") })
+            });
+        var directAndFlattenedResult = Validate(MortalRequest(
+            "III",
+            new[] { directAndFlattened },
+            Entries(1, "effect_direct_and_flattened_marker", "event_reaction")));
+        AssertIssue(
+            directAndFlattenedResult,
+            Path + ".effects",
+            "wound_consequence_marker_limit_exceeded");
     }
 
     [Fact]
@@ -474,6 +550,90 @@ public sealed class WoundConsequenceEnvelopeTests
                 "characteristic_modifier")),
             Path + ".effects[0].components[0].payload.cap",
             "wound_consequence_magnitude_exceeded");
+    }
+
+    [Theory]
+    [InlineData("characteristic_modifier", "characteristic", "strength")]
+    [InlineData("resistance_modifier", "resistance", "fire")]
+    public void ScalarModifiers_RejectGenericValidNonDecimalRawBeforeSlotAccounting(
+        string profile,
+        string targetField,
+        string target)
+    {
+        foreach (var capJson in new[] { "null", "{ \"minimum\": 1, \"maximum\": 1 }" })
+        {
+            var component = RawScalarComponent(
+                "component_non_decimal",
+                profile,
+                targetField,
+                target,
+                "flat",
+                "1e-29",
+                capJson);
+            var result = Validate(MortalRequest(
+                "I",
+                new[] { Effect("effect_non_decimal", component) },
+                Array.Empty<WoundConsequenceEntry>(),
+                lifecycleEvidence: new WoundConsequenceLifecycleEvidence(
+                    true,
+                    false,
+                    false),
+                declaredSlotsUsed: 0));
+
+            AssertIssue(
+                result,
+                Path + ".effects[0].components[0].payload.value",
+                "wound_consequence_magnitude_exceeded");
+            Assert.Null(result.Envelope);
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(SafeScalarCaps))]
+    public void ScalarModifierCaps_BudgetTheSafeRuntimeValueAfterMinimumThenMaximum(
+        string profile,
+        string operation,
+        int rawValue,
+        int minimum,
+        int maximum)
+    {
+        var component = JsonNode.Parse(
+            (string.Equals(profile, "characteristic_modifier", StringComparison.Ordinal)
+                ? CharacteristicComponent("component_safe_cap", operation, rawValue)
+                : ResistanceComponent("component_safe_cap", operation, rawValue))
+            .GetRawText())!.AsObject();
+        component["payload"]!["cap"] = new JsonObject
+        {
+            ["minimum"] = minimum,
+            ["maximum"] = maximum
+        };
+
+        var result = Validate(MortalSingle("I", Element(component), profile));
+
+        AssertValid(result);
+        var slot = Assert.Single(result.Envelope!.Slots);
+        Assert.Equal(profile, slot.ProfileKey);
+    }
+
+    [Fact]
+    public void ScalarModifierCaps_RetainGenericMinimumMaximumOrderingValidation()
+    {
+        var component = JsonNode.Parse(
+            CharacteristicComponent("component_reversed_cap", "flat", -1m)
+                .GetRawText())!.AsObject();
+        component["payload"]!["cap"] = new JsonObject
+        {
+            ["minimum"] = 1,
+            ["maximum"] = -1
+        };
+
+        AssertIssue(
+            Validate(MortalSingle(
+                "I",
+                Element(component),
+                "characteristic_modifier")),
+            Path + ".effects[0].components[0].payload.cap",
+            "effect_materialization_invalid_component");
     }
 
     [Theory]
@@ -960,17 +1120,99 @@ public sealed class WoundConsequenceEnvelopeTests
                     new[] { ResistanceComponent("expanded_b", "flat", -1m) })
             });
 
-        AssertIssue(
-            Validate(MortalRequest(
-                "IV",
-                new[] { first, second },
-                Entries(
-                    (1, "effect_reaction_a", "event_reaction"),
-                    (2, "effect_reaction_a", "characteristic_modifier"),
-                    (3, "effect_reaction_b", "event_reaction"),
-                    (4, "effect_reaction_b", "resistance_modifier")))),
-            Path + ".effects",
-            "wound_consequence_limit_exceeded");
+        foreach (var effects in new[]
+                 {
+                     new[] { first, second },
+                     new[] { second, first }
+                 })
+        {
+            AssertIssue(
+                Validate(MortalRequest(
+                    "IV",
+                    effects,
+                    Entries(
+                        (1, "effect_reaction_a", "event_reaction"),
+                        (2, "effect_reaction_a", "characteristic_modifier"),
+                        (3, "effect_reaction_b", "event_reaction"),
+                        (4, "effect_reaction_b", "resistance_modifier")))),
+                Path + ".effects",
+                "wound_consequence_limit_exceeded");
+        }
+    }
+
+    [Fact]
+    public void IndependentReactionExpansions_ArePreservedOutsideTheOwnedCeiling()
+    {
+        var owned = Effect(
+            "effect_owned_reaction",
+            new[] { ReactionComponent("owned_reaction", "apply_definition", 1) },
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "owned_reaction",
+                    new[] { CharacteristicComponent("owned_expanded", "flat", -1m) })
+            });
+        var independent = Effect(
+            "effect_independent_reaction",
+            new[] { UnknownComponent("independent_component") },
+            "curse",
+            "curse_reaction",
+            null,
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "independent_reaction",
+                    new[] { UnknownComponent("independent_expanded") })
+            });
+
+        var result = Validate(MortalRequest(
+            "III",
+            new[] { independent, owned },
+            Entries(
+                (1, "effect_owned_reaction", "event_reaction"),
+                (2, "effect_owned_reaction", "characteristic_modifier"))));
+
+        AssertValid(result);
+        Assert.Equal(2, result.Envelope!.SlotsUsed);
+        var preserved = Assert.Single(result.IndependentEffects);
+        Assert.Equal(independent.Components[0].GetRawText(), preserved.Components[0].GetRawText());
+        Assert.Equal(
+            independent.Expansions[0].ReactionComponentId,
+            Assert.Single(preserved.Expansions).ReactionComponentId);
+        Assert.Equal(
+            independent.Expansions[0].Components[0].GetRawText(),
+            preserved.Expansions[0].Components[0].GetRawText());
+    }
+
+    [Fact]
+    public void IndependentOnlyReactionExpansions_DoNotConsumeTheOwnedCeiling()
+    {
+        var independent = Enumerable.Range(0, 2)
+            .Select(index => Effect(
+                $"effect_independent_{index}",
+                new[] { UnknownComponent($"component_independent_{index}") },
+                "curse",
+                $"curse_{index}",
+                null,
+                expansions: new[]
+                {
+                    new WoundReactionExpansionProposal(
+                        $"reaction_independent_{index}",
+                        new[] { UnknownComponent($"expanded_independent_{index}") })
+                }))
+            .ToArray();
+
+        var result = Validate(MortalRequest(
+            "I",
+            independent,
+            Array.Empty<WoundConsequenceEntry>(),
+            lifecycleEvidence: new WoundConsequenceLifecycleEvidence(true, false, false),
+            declaredSlotsUsed: 0));
+
+        AssertValid(result);
+        Assert.Empty(result.Envelope!.OwnedEffects);
+        Assert.Equal(2, result.IndependentEffects.Length);
+        Assert.All(result.IndependentEffects, effect => Assert.Single(effect.Expansions));
     }
 
     [Fact]
@@ -1181,8 +1423,11 @@ public sealed class WoundConsequenceEnvelopeTests
             "spiritual_art_restriction")));
     }
 
-    [Fact]
-    public void SpiritualArtRestriction_RejectsForceIncarnationAsNonStandard()
+    [Theory]
+    [InlineData("force_incarnation")]
+    [InlineData("spiritual_resilience")]
+    [InlineData("spiritual_healing")]
+    public void SpiritualArtRestriction_RejectsNoncombatAndHealingArts(string operation)
     {
         AssertIssue(
             Validate(SpiritualSingle(
@@ -1190,7 +1435,7 @@ public sealed class WoundConsequenceEnvelopeTests
                 SpiritualComponent(
                     "component",
                     "spiritual_art_restriction",
-                    "force_incarnation",
+                    operation,
                     "artAvailability",
                     "forbid"),
                 "spiritual_art_restriction")),
@@ -2280,6 +2525,28 @@ public sealed class WoundConsequenceEnvelopeTests
                 ["value"] = value,
                 ["cap"] = null
             });
+
+    private static JsonElement RawScalarComponent(
+        string componentId,
+        string profile,
+        string targetField,
+        string target,
+        string operation,
+        string valueJson,
+        string capJson) =>
+        RawElement($$"""
+            {
+              "componentId": "{{componentId}}",
+              "profile": "{{profile}}",
+              "priority": 0,
+              "payload": {
+                "{{targetField}}": "{{target}}",
+                "operation": "{{operation}}",
+                "value": {{valueJson}},
+                "cap": {{capJson}}
+              }
+            }
+            """);
 
     private static JsonElement ResistanceComponent(
         string componentId,
