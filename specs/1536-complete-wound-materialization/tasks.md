@@ -32,7 +32,7 @@
 
 ### RED tests
 
-- [ ] T005 [P] Add RED closed-root/envelope, unknown/duplicate field, exact identifier, collection-limit, severity I-IV, location profile, and explicit legacy-shape rejection tests in `BookOfEternityClient.Tests/WoundMaterializationContractTests.cs`
+- [X] T005 [P] Add RED closed-root/envelope, unknown/duplicate field, exact identifier, collection-limit, severity I-IV, location profile, and explicit legacy-shape rejection tests in `BookOfEternityClient.Tests/WoundMaterializationContractTests.cs`
 - [ ] T006 [P] Add RED global identity, confusable uniqueness, active/terminal status, owner/realm/carrier coordinate, and semantic fingerprint agreement tests in `BookOfEternityClient.Tests/WoundIdentityStateTests.cs`
 - [ ] T007 [P] Add RED player, dedicated NPC, combatant/group-member, afterlife profile, duplicate occurrence, wrong-realm, and promotion carrier tests in `BookOfEternityClient.Tests/WoundCarrierCatalogTests.cs`
 - [ ] T008 [P] Add RED append-only ordinal/fingerprint chain, operation-key replay, terminal continuity, healed-without-carrier, and no-reopen tests in `BookOfEternityClient.Tests/WoundHistoryStateTests.cs`
@@ -45,7 +45,7 @@
 
 ### GREEN implementation
 
-- [ ] T015 Implement strict schema-version-1 roots, common envelope records, parsers, exact identifiers, bounds, and canonical serialization in `BookOfEternityClient/Services/WoundMaterializationContract.cs`
+- [X] T015 Implement strict schema-version-1 roots, common envelope records, parsers, exact identifiers, bounds, and canonical serialization in `BookOfEternityClient/Services/WoundMaterializationContract.cs`
 - [ ] T016 Implement client-owned identity index parsing, active/terminal agreement, exact fingerprints, and canonical serialization in `BookOfEternityClient/Services/WoundIdentityState.cs`
 - [ ] T017 Implement owner-appropriate occurrence indexing and exact owner resolution for player/NPC/combatant/afterlife carriers in `BookOfEternityClient/Services/WoundCarrierCatalog.cs`
 - [ ] T018 Implement append-only history, operation replay probes, terminal continuity, and the closed transition reducer in `BookOfEternityClient/Services/WoundHistoryState.cs` and `BookOfEternityClient/Services/WoundTransitionReducer.cs`
