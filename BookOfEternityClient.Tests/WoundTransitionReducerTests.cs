@@ -19,8 +19,13 @@ public sealed class WoundTransitionReducerTests
         string severity,
         int rank)
     {
+        var opportunity = WithSeverity(
+            PhysicalWound(),
+            "IV",
+            4,
+            updateMaximumAtCreation: true);
         var after = NewTransition(
-            WithSeverity(PhysicalWound(), severity, rank, updateMaximumAtCreation: true),
+            WithSeverity(opportunity, severity, rank),
             "create",
             ordinal: 1,
             turn: 42);
@@ -140,9 +145,26 @@ public sealed class WoundTransitionReducerTests
                 CreateEvidence(wrongCreatedTurn))),
             "wound_transition_create_chronology_invalid");
 
-        var forgedMaximum = legal with
+        var selectedBelowCap = NewTransition(
+            WithSeverity(
+                legal with
+                {
+                    Severity = legal.Severity with { MaximumAtCreation = "IV" }
+                },
+                "I",
+                1),
+            "create",
+            ordinal: 1,
+            turn: 42);
+        AssertValid(WoundTransitionReducer.Reduce(Request(
+            "create",
+            null,
+            selectedBelowCap,
+            CreateEvidence(selectedBelowCap, maximumSeverityRank: 4))));
+
+        var forgedMaximum = selectedBelowCap with
         {
-            Severity = legal.Severity with { MaximumAtCreation = "IV" }
+            Severity = selectedBelowCap.Severity with { MaximumAtCreation = "III" }
         };
         AssertInvalid(
             WoundTransitionReducer.Reduce(Request(
@@ -189,6 +211,121 @@ public sealed class WoundTransitionReducerTests
             TreatEvidence(before, after, Outcome(after, terminalAttempt: true))));
 
         AssertInvalid(result, "wound_transition_owner_coordinate_invalid");
+    }
+
+    [Fact]
+    public void Reduce_ActiveTransition_RejectsTurnRegressionButAllowsEqualPriorTurn()
+    {
+        var before = PhysicalWound();
+        var earlier = WorsenRequest(
+            before,
+            before.LastTransition.Turn - 1,
+            "transition_turn_regression");
+
+        AssertInvalid(
+            WoundTransitionReducer.Reduce(earlier),
+            "wound_transition_turn_regression");
+
+        var equal = WorsenRequest(
+            before,
+            before.LastTransition.Turn,
+            "transition_equal_turn");
+
+        AssertValid(WoundTransitionReducer.Reduce(equal));
+    }
+
+    [Theory]
+    [InlineData("legacy")]
+    [InlineData("archive")]
+    public void Reduce_PostTerminalAudit_RejectsTurnRegressionButAllowsEqualHealTurn(
+        string kind)
+    {
+        var before = HealedWound();
+
+        AssertInvalid(
+            WoundTransitionReducer.Reduce(PostTerminalAuditRequest(
+                kind,
+                before,
+                turn: before.LastTransition.Turn - 1,
+                transitionId: $"transition_{kind}_regression")),
+            "wound_transition_turn_regression");
+
+        AssertValid(WoundTransitionReducer.Reduce(PostTerminalAuditRequest(
+            kind,
+            before,
+            turn: before.LastTransition.Turn,
+            transitionId: $"transition_{kind}_equal_turn")));
+    }
+
+    [Theory]
+    [InlineData(
+        "worsen",
+        "transition_Exact",
+        "transition_Exact",
+        "wound_transition_duplicate_transition_id")]
+    [InlineData(
+        "worsen",
+        "transition_Exact",
+        "TRANSITION_EXACT",
+        "wound_transition_confusable_transition_id")]
+    [InlineData(
+        "archive",
+        "transition_A",
+        "transition_А",
+        "wound_transition_confusable_transition_id")]
+    public void Reduce_RejectsImmediatePriorExactOrUnicodeConfusableTransitionId(
+        string kind,
+        string priorTransitionId,
+        string transitionId,
+        string expectedIssue)
+    {
+        var before = kind == "worsen" ? PhysicalWound() : HealedWound();
+        before = before with
+        {
+            LastTransition = before.LastTransition with
+            {
+                TransitionId = priorTransitionId
+            }
+        };
+        var request = kind == "worsen"
+            ? WorsenRequest(before, before.LastTransition.Turn, transitionId)
+            : PostTerminalAuditRequest(
+                kind,
+                before,
+                turn: before.LastTransition.Turn,
+                transitionId: transitionId);
+
+        AssertInvalid(WoundTransitionReducer.Reduce(request), expectedIssue);
+    }
+
+    [Theory]
+    [InlineData("worsen")]
+    [InlineData("legacy")]
+    [InlineData("archive")]
+    public void Reduce_RejectsAppendAtExactPerWoundHistoryCapacityBoundary(string kind)
+    {
+        var before = kind == "worsen" ? PhysicalWound() : HealedWound();
+        before = before with
+        {
+            LastTransition = before.LastTransition with
+            {
+                Ordinal = WoundHistoryState.MaxTransitions
+            }
+        };
+        var request = kind == "worsen"
+            ? WorsenRequest(
+                before,
+                before.LastTransition.Turn,
+                "transition_capacity_exhausted")
+            : PostTerminalAuditRequest(
+                kind,
+                before,
+                turn: before.LastTransition.Turn,
+                transitionId: $"transition_{kind}_capacity_exhausted");
+
+        AssertInvalid(
+            WoundTransitionReducer.Reduce(request),
+            "wound_transition_history_capacity_exhausted");
     }
 
     [Fact]
@@ -463,6 +600,34 @@ public sealed class WoundTransitionReducerTests
     }
 
     [Fact]
+    public void Reduce_Complicate_RejectsConsequenceEffectTransferredToNewComplication()
+    {
+        var before = PhysicalWound();
+        var transferred = before.Consequences.Entries[1];
+        var complication = Complication(
+            "complication_effect_transfer",
+            "pain",
+            transferred.EffectId);
+        var after = NewTransition(before with
+        {
+            Complications = before.Complications.Append(complication).ToImmutableArray(),
+            Consequences = before.Consequences with
+            {
+                SlotsUsed = 1,
+                Entries = before.Consequences.Entries.Take(1).ToImmutableArray()
+            }
+        }, "complicate");
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "complicate",
+            before,
+            after,
+            ComplicateEvidence(before, after, complication.ComplicationId)));
+
+        AssertInvalid(result, "wound_transition_effect_binding_changed");
+    }
+
+    [Fact]
     public void Reduce_Diagnose_AppliesExactlyOneDeclaredPathIncludingComplicationReveal()
     {
         var complication = Complication("complication_infection", "infection") with
@@ -721,6 +886,52 @@ public sealed class WoundTransitionReducerTests
             StabilizeEvidence(before, after)));
 
         AssertInvalid(result, "wound_transition_retained_consequence_changed");
+    }
+
+    [Fact]
+    public void Reduce_Stabilize_RejectsComplicationEffectTransferredToConsequenceSlot()
+    {
+        const string effectId = "effect_binding_transfer";
+        var complication = Complication(
+            "complication_binding_transfer",
+            "pain",
+            effectId);
+        var before = WithSeverity(PhysicalWound(), "III", 3) with
+        {
+            Complications = ImmutableArray.Create(complication)
+        };
+        var after = NewTransition(before with
+        {
+            Care = before.Care with
+            {
+                State = "stabilized",
+                StabilizedAtTurn = 43,
+                LastAttemptId = "attempt_stabilize"
+            },
+            Complications = ImmutableArray<WoundComplication>.Empty,
+            Consequences = before.Consequences with
+            {
+                SlotsUsed = 3,
+                Entries = before.Consequences.Entries.Append(
+                    new WoundConsequenceEntry(
+                        3,
+                        "action_control",
+                        effectId,
+                        "Эффект нельзя скрыто перенести в слот следствия."))
+                    .ToImmutableArray()
+            }
+        }, "stabilize");
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "stabilize",
+            before,
+            after,
+            StabilizeEvidence(
+                before,
+                after,
+                removedComplications: new[] { complication.ComplicationId })));
+
+        AssertInvalid(result, "wound_transition_effect_binding_changed");
     }
 
     [Fact]
@@ -1009,6 +1220,77 @@ public sealed class WoundTransitionReducerTests
         AssertInvalid(result, "wound_transition_follow_up_heal_invalid");
     }
 
+    [Theory]
+    [InlineData("treat", "III", 3)]
+    [InlineData("treat", "II", 2)]
+    [InlineData("recover", "III", 3)]
+    [InlineData("recover", "II", 2)]
+    public void Reduce_TreatAndRecover_AllowOneOrTwoStepNonHealingReduction(
+        string kind,
+        string severity,
+        int rank)
+    {
+        var before = WithSeverity(PhysicalWound(), "IV", 4);
+        var changed = WithSeverity(before, severity, rank);
+        WoundTransitionEvidence evidence;
+        WoundMaterializationEnvelope after;
+        if (kind == "treat")
+        {
+            after = NewTransition(changed with
+            {
+                Care = before.Care with { LastAttemptId = "attempt_treat" }
+            }, kind);
+            evidence = TreatEvidence(
+                before,
+                after,
+                Outcome(after, terminalAttempt: true));
+        }
+        else
+        {
+            after = NewTransition(changed with
+            {
+                Recovery = before.Recovery with { LastTickKey = "tick_fresh" }
+            }, kind);
+            evidence = RecoverEvidence(before, after, Outcome(after));
+        }
+
+        AssertValid(WoundTransitionReducer.Reduce(Request(kind, before, after, evidence)));
+    }
+
+    [Theory]
+    [InlineData("treat")]
+    [InlineData("recover")]
+    public void Reduce_TreatAndRecover_RejectMoreThanTwoStepNonHealingReduction(string kind)
+    {
+        var before = WithSeverity(PhysicalWound(), "IV", 4);
+        var changed = WithSeverity(before, "I", 1);
+        WoundTransitionEvidence evidence;
+        WoundMaterializationEnvelope after;
+        if (kind == "treat")
+        {
+            after = NewTransition(changed with
+            {
+                Care = before.Care with { LastAttemptId = "attempt_treat" }
+            }, kind);
+            evidence = TreatEvidence(
+                before,
+                after,
+                Outcome(after, terminalAttempt: true));
+        }
+        else
+        {
+            after = NewTransition(changed with
+            {
+                Recovery = before.Recovery with { LastTickKey = "tick_fresh" }
+            }, kind);
+            evidence = RecoverEvidence(before, after, Outcome(after));
+        }
+
+        AssertInvalid(
+            WoundTransitionReducer.Reduce(Request(kind, before, after, evidence)),
+            "wound_transition_severity_reduction_exceeds_limit");
+    }
+
     [Fact]
     public void Reduce_Recover_RejectsReplayUnsealedRegressionAndUndeclaredWorsening()
     {
@@ -1228,6 +1510,41 @@ public sealed class WoundTransitionReducerTests
         Assert.False(Assert.Single(result.Intents.OfType<WoundTransitionHistoryIntent>()).Terminal);
         Assert.DoesNotContain(result.Intents, intent => intent is WoundCarrierTransitionIntent);
         Assert.DoesNotContain(result.Intents, intent => intent is WoundEffectTransitionIntent);
+    }
+
+    [Theory]
+    [InlineData("legacy", true, false)]
+    [InlineData("legacy", false, true)]
+    [InlineData("archive", true, false)]
+    [InlineData("archive", false, true)]
+    public void Reduce_PostTerminalAudit_RequiresExactImmediateHealAuthority(
+        string kind,
+        bool forgePriorKind,
+        bool forgeAuthorityRef)
+    {
+        var before = HealedWound();
+        if (forgePriorKind)
+        {
+            before = before with
+            {
+                LastTransition = before.LastTransition with { Kind = "archive" }
+            };
+        }
+        var terminalAuthorityRef = forgeAuthorityRef
+            ? "wound_transition_other_terminal"
+            : before.LastTransition.TransitionId;
+        var expectedIssue = kind == "legacy"
+            ? "wound_transition_legacy_source_invalid"
+            : "wound_transition_archive_source_invalid";
+
+        var result = WoundTransitionReducer.Reduce(PostTerminalAuditRequest(
+            kind,
+            before,
+            terminalAuthorityRef,
+            turn: before.LastTransition.Turn,
+            transitionId: $"transition_{kind}_invalid_terminal_authority"));
+
+        AssertInvalid(result, expectedIssue);
     }
 
     [Fact]
@@ -1642,6 +1959,58 @@ public sealed class WoundTransitionReducerTests
             before,
             after,
             evidence);
+
+    private static WoundTransitionRequest WorsenRequest(
+        WoundMaterializationEnvelope before,
+        int turn,
+        string transitionId)
+    {
+        var after = NewTransition(
+            WithSeverity(before, "III", 3) with
+            {
+                Recovery = before.Recovery with { CurrentStepProgress = 0 }
+            },
+            "worsen",
+            turn: turn,
+            transitionId: transitionId);
+        return Request(
+            "worsen",
+            before,
+            after,
+            WorsenEvidence(before, after),
+            transitionId: transitionId,
+            turn: turn);
+    }
+
+    private static WoundTransitionRequest PostTerminalAuditRequest(
+        string kind,
+        WoundMaterializationEnvelope before,
+        string? terminalAuthorityRef = null,
+        int? turn = null,
+        string transitionId = "transition_terminal_audit")
+    {
+        var authorityRef = terminalAuthorityRef ?? before.LastTransition.TransitionId;
+        WoundTransitionEvidence evidence = kind switch
+        {
+            "legacy" => new WoundLegacyEvidence(
+                authorityRef,
+                Fingerprint(before),
+                Fingerprint(before),
+                ImmutableArray<WoundLegacyDeclaration>.Empty),
+            "archive" => new WoundArchiveEvidence(
+                authorityRef,
+                Fingerprint(before),
+                Fingerprint(before)),
+            _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+        };
+        return Request(
+            kind,
+            before,
+            before,
+            evidence,
+            transitionId: transitionId,
+            turn: turn ?? before.LastTransition.Turn);
+    }
 
     private static WoundCreateEvidence CreateEvidence(
         WoundMaterializationEnvelope after,
