@@ -58,6 +58,18 @@ public sealed class WoundMaterializationSourceGuardTests
             "result[targetFile][prop.Name] = prop.Value.Clone();",
             "private async Task MergeFieldsIntoFile("),
         new(
+            "qte-terminal-response-wound-distribution-and-rollback",
+            InventoryCategory.LegacyLooseWoundSurface,
+            "BookOfEternityClient/Services/QteSceneService.cs",
+            "internal static readonly IReadOnlyCollection<string> BrowserTransactionRollbackPaths",
+            ".Concat(FileMapping.FieldToFile.Values)",
+            "private GameResponse BuildTerminalOutcomeResponse(",
+            "JsonSerializer.Deserialize<GameResponse>(responseFragment.ToJsonString(), JsonOpts)",
+            "private async Task ApplyTerminalOutcomeStateChangesCoreAsync(",
+            "await _stateDistributor.DistributeAsync(writeLease, response);",
+            "private static HashSet<string> CollectQteTrackedPaths(GameResponse response)",
+            "FileMapping.FieldToFile.TryGetValue(property.Name, out var targetPath)"),
+        new(
             "player-loose-wound-validation",
             InventoryCategory.LegacyLooseWoundSurface,
             "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
@@ -269,7 +281,11 @@ public sealed class WoundMaterializationSourceGuardTests
         "healingState",
         "descriptionOfEffects",
         "\"wounds\"",
-        "isHealed"
+        "isHealed",
+        "FileMapping.FieldToFile",
+        "JsonSerializer.Deserialize<GameResponse>",
+        "_stateDistributor.DistributeAsync",
+        "PlayerWoundsPath"
     };
 
     private static readonly DiscoveryAllowance[] DiscoveryAllowances =
@@ -282,6 +298,12 @@ public sealed class WoundMaterializationSourceGuardTests
         Scope("mapping-player-path", "player-wound-file-mapping", "game_state/player/wounds.json", "[\"playerWoundChanges\"] =", "[\"customStateChanges\"] ="),
         Scope("mapping-npc-command", "npc-wound-file-mapping", "NPCWoundChanges", "[\"NPCWoundChanges\"] =", "[\"NPCRelationshipChanges\"] ="),
         Scope("mapping-npc-path", "npc-wound-file-mapping", "game_state/npcs/npc_effects.json", "[\"NPCWoundChanges\"] =", "[\"NPCRelationshipChanges\"] ="),
+
+        Scope("state-distributor-field-mapping", "generic-response-file-distribution", "FileMapping.FieldToFile", "private Dictionary<string, Dictionary<string, JsonElement>> CollectFileUpdates(GameResponse response)", "private async Task MergeFieldsIntoFile("),
+        Scope("qte-browser-rollback-field-mapping", "qte-terminal-response-wound-distribution-and-rollback", "FileMapping.FieldToFile", "internal static readonly IReadOnlyCollection<string> BrowserTransactionRollbackPaths", "internal static readonly IReadOnlyList<string> RhythmPulsePatternVariations"),
+        Scope("qte-tracked-path-field-mapping", "qte-terminal-response-wound-distribution-and-rollback", "FileMapping.FieldToFile", "private static HashSet<string> CollectQteTrackedPaths(GameResponse response)", "private async Task RestoreQteNormalizationBaselineAsync("),
+        Scope("qte-terminal-game-response-deserialization", "qte-terminal-response-wound-distribution-and-rollback", "JsonSerializer.Deserialize<GameResponse>", "var response = responseFragment != null", "private static void RejectMaterializationWithoutAcceptedContinuation("),
+        Scope("qte-terminal-state-distribution", "qte-terminal-response-wound-distribution-and-rollback", "_stateDistributor.DistributeAsync", "private async Task ApplyTerminalOutcomeStateChangesCoreAsync(", "private async Task<QteNormalizationBaseline> CaptureQteNormalizationBaselineAsync("),
 
         Scope("player-validation-state-path", "player-loose-wound-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerStateFiles(", "private async Task ValidatePlayerContractFile("),
         Scope("player-validation-file-path", "player-loose-wound-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerFile(", "private void ValidatePlayerContract("),
@@ -301,8 +323,12 @@ public sealed class WoundMaterializationSourceGuardTests
         Scope("combatant-wound-type-enum", "combatant-wound-reference-type-authority", "WoundReference", "private static readonly HashSet<string> AllowedCombatantActiveEffectTypes", "private static readonly HashSet<string> AllowedVehicleTypes"),
 
         Scope("composer-player-wound-path", "loose-wound-effect-source-scan", "game_state/player/wounds.json", "internal const string PlayerWoundsPath", "internal static readonly string[] SameTurnOwnerAuthorityPaths"),
+        Scope("composer-player-wound-path-symbol", "loose-wound-effect-source-scan", "PlayerWoundsPath", "internal const string PlayerWoundsPath", "internal static readonly string[] SameTurnOwnerAuthorityPaths"),
+        Scope("composer-same-turn-wound-authority", "loose-wound-effect-source-scan", "PlayerWoundsPath", "internal static readonly string[] SameTurnOwnerAuthorityPaths", "internal static readonly string[] SourceAuthorityPaths"),
+        Scope("composer-source-wound-authority", "loose-wound-effect-source-scan", "PlayerWoundsPath", "internal static readonly string[] SourceAuthorityPaths", "private static readonly SourceDescriptor[] SkillSourceDescriptors"),
         Scope("composer-player-wound-wrapper", "loose-wound-effect-source-scan", "playerWoundChanges", "case PlayerWoundsPath:", "case \"game_state/quests/regular_quests.json\":"),
         Scope("composer-wounds-wrapper", "loose-wound-effect-source-scan", "\"wounds\"", "case PlayerWoundsPath:", "case \"game_state/quests/regular_quests.json\":"),
+        Scope("composer-wound-switch-path-symbol", "loose-wound-effect-source-scan", "PlayerWoundsPath", "case PlayerWoundsPath:", "case \"game_state/quests/regular_quests.json\":"),
         Scope("composer-healed-fallback", "loose-wound-effect-source-scan", "isHealed", "case \"wound\":", "case \"fate_card\":"),
         Scope("planner-npc-wound-fallback", "npc-effect-planner-wound-command-fallback", "NPCWoundChanges", "internal bool TryLocate(", "internal EffectCarrierCatalogInput ToInput("),
         Scope("effect-contract-npc-wound-command", "npc-effect-contract-wound-command-acceptance", "NPCWoundChanges", "private static void ValidateNpcCarrier(", "private static void ValidateEmbeddedCarrier("),
