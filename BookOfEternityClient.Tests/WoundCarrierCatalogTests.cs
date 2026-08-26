@@ -226,6 +226,25 @@ public sealed class WoundCarrierCatalogTests
     }
 
     [Fact]
+    public void Build_CountsExactOrdinalOccurrencesWithoutAliasFallback()
+    {
+        var empty = BuildCatalog();
+        var exact = BuildCatalog(
+            player: WoundContractTestData.CreatePlayerCarrier(Wound("wound_Exact")));
+        var duplicate = BuildCatalog(
+            player: WoundContractTestData.CreatePlayerCarrier(
+                Wound("wound_duplicate"),
+                Wound("wound_duplicate")));
+
+        Assert.Equal(0, empty.CountExactOccurrences("wound_missing"));
+        Assert.Equal(1, exact.CountExactOccurrences("wound_Exact"));
+        Assert.Equal(0, exact.CountExactOccurrences("WOUND_EXACT"));
+        Assert.Equal(0, exact.CountExactOccurrences("wound_Еxact"));
+        Assert.Equal(0, exact.CountExactOccurrences("Рваная рана левого бока"));
+        Assert.Equal(2, duplicate.CountExactOccurrences("wound_duplicate"));
+    }
+
+    [Fact]
     public void Build_RejectsConfusableButDistinctWoundIdsAndInvalidatesBoth()
     {
         var latin = Wound("wound_A");

@@ -437,6 +437,38 @@ public sealed class WoundHistoryStateTests
     }
 
     [Fact]
+    public void CreateValidated_StopsAtTheFirstRowBeyondTheVersionOneBound()
+    {
+        var enumerated = 0;
+
+        IEnumerable<WoundHistoryTransition> GuardedRows()
+        {
+            for (var index = 1; index <= WoundHistoryState.MaxTransitions + 1; index++)
+            {
+                enumerated++;
+                yield return TypedTransition(
+                    transitionId: "guarded_transition_" + index,
+                    woundId: "guarded_wound_" + index,
+                    operationKey: "guarded_operation_" + index,
+                    ordinal: index);
+            }
+
+            throw new InvalidOperationException(
+                "CreateValidated enumerated beyond the first over-limit row.");
+        }
+
+        var result = WoundHistoryState.CreateValidated(
+            WoundHistoryState.MaxTransitions + 1,
+            GuardedRows());
+
+        AssertInvalid(
+            result,
+            WoundHistoryState.HistoryPath + ".transitions",
+            "wound_history_limit_exceeded");
+        Assert.Equal(WoundHistoryState.MaxTransitions + 1, enumerated);
+    }
+
+    [Fact]
     public void CreateValidated_RechecksTypedRowsAndNeverReturnsPartialAuthority()
     {
         var invalid = TypedTransition() with { Kind = "Create", TransitionId = " forged" };
@@ -444,6 +476,49 @@ public sealed class WoundHistoryStateTests
         var result = WoundHistoryState.CreateValidated(2, new[] { invalid });
 
         AssertInvalid(result, WoundHistoryState.HistoryPath);
+    }
+
+    [Fact]
+    public void CreateValidated_ForgedNullAndDefaultRowsFailClosedWithoutThrowing()
+    {
+        var allNull = new WoundHistoryTransition(
+            null!,
+            null!,
+            0,
+            0,
+            null!,
+            -1,
+            null!,
+            null!,
+            null!,
+            null!,
+            null!,
+            null,
+            null!,
+            false);
+        var validWoundWithNullChain = TypedTransition() with
+        {
+            TransitionId = null!,
+            Kind = null!,
+            EventRef = null!,
+            OperationKey = null!,
+            BeforeFingerprint = null!,
+            AfterFingerprint = null!,
+            SourceFingerprint = null!,
+            ReadableSummary = null!
+        };
+
+        foreach (var forged in new[]
+                 {
+                     new WoundHistoryTransition[] { null! },
+                     new[] { allNull },
+                     new[] { validWoundWithNullChain }
+                 })
+        {
+            var result = WoundHistoryState.CreateValidated(2, forged);
+
+            AssertInvalid(result, WoundHistoryState.HistoryPath);
+        }
     }
 
     [Fact]
@@ -542,7 +617,18 @@ public sealed class WoundHistoryStateTests
             beforeFingerprint: Fingerprint('b'),
             afterFingerprint: Fingerprint('b'));
 
-        Assert.True(Parse(History(create, heal, legacy, archive)).IsValid);
+        var auditResult = Parse(History(create, heal, legacy, archive));
+        Assert.True(auditResult.IsValid, DescribeIssues(auditResult.Issues));
+        var auditState = Assert.IsType<WoundHistoryState>(auditResult.State);
+        Assert.Equal("transition_2", Assert.Single(
+            auditState.Transitions.Where(static row => row.Terminal)).TransitionId);
+        Assert.All(
+            auditState.Transitions.Where(static row => row.Kind is "legacy" or "archive"),
+            row =>
+            {
+                Assert.False(row.Terminal);
+                Assert.Equal(row.BeforeFingerprint, row.AfterFingerprint);
+            });
 
         foreach (var kind in new[]
                  {
@@ -588,21 +674,42 @@ public sealed class WoundHistoryStateTests
         AssertInvalid(Parse(History(createTerminal)), Path, "wound_history_invalid_terminal_kind");
 
         var create = Transition();
-        foreach (var kind in new[] { "heal", "archive" })
+        var healWithoutTerminalEvidence = Transition(
+            transitionId: "transition_2",
+            operationKey: "operation_2",
+            ordinal: 2,
+            woundTransitionOrdinal: 2,
+            kind: "heal",
+            beforeFingerprint: Fingerprint('a'),
+            afterFingerprint: Fingerprint('b'),
+            terminal: false);
+        AssertInvalid(
+            Parse(History(create, healWithoutTerminalEvidence)),
+            Path,
+            "wound_history_missing_terminal_flag");
+    }
+
+    [Fact]
+    public void Parse_CreateCannotShortcutDirectlyToTerminalArchive()
+    {
+        var create = Transition();
+        foreach (var terminal in new[] { false, true })
         {
-            var terminalKindWithoutEvidence = Transition(
+            var archive = Transition(
                 transitionId: "transition_2",
                 operationKey: "operation_2",
                 ordinal: 2,
                 woundTransitionOrdinal: 2,
-                kind: kind,
+                kind: "archive",
+                turn: 43,
                 beforeFingerprint: Fingerprint('a'),
                 afterFingerprint: Fingerprint('b'),
-                terminal: false);
+                terminal: terminal);
+
             AssertInvalid(
-                Parse(History(create, terminalKindWithoutEvidence)),
+                Parse(History(create, archive)),
                 Path,
-                "wound_history_missing_terminal_flag");
+                "wound_history_archive_before_terminal");
         }
     }
 
@@ -698,6 +805,49 @@ public sealed class WoundHistoryStateTests
         Assert.Contains(
             state.ValidateAgreement(wrongTerminal, emptyCarriers),
             issue => issue.Code == "wound_history_terminal_evidence_mismatch");
+    }
+
+    [Fact]
+    public void ValidateAgreement_PostHealLegacyAndArchivePreserveTheOriginalTerminalEvidence()
+    {
+        var terminalFingerprint = Fingerprint('b');
+        var state = AssertValidState(History(
+            Transition(),
+            Transition(
+                transitionId: "transition_heal",
+                operationKey: "operation_heal",
+                ordinal: 2,
+                woundTransitionOrdinal: 2,
+                kind: "heal",
+                turn: 43,
+                beforeFingerprint: Fingerprint('a'),
+                afterFingerprint: terminalFingerprint,
+                terminal: true),
+            Transition(
+                transitionId: "transition_legacy",
+                operationKey: "operation_legacy",
+                ordinal: 3,
+                woundTransitionOrdinal: 3,
+                kind: "legacy",
+                turn: 44,
+                beforeFingerprint: terminalFingerprint,
+                afterFingerprint: terminalFingerprint),
+            Transition(
+                transitionId: "transition_archive",
+                operationKey: "operation_archive",
+                ordinal: 4,
+                woundTransitionOrdinal: 4,
+                kind: "archive",
+                turn: 45,
+                beforeFingerprint: terminalFingerprint,
+                afterFingerprint: terminalFingerprint)));
+        var healed = ParseIdentities(WoundContractTestData.CreateIdentityEntry(
+            status: "healed",
+            lastTransitionOrdinal: 4,
+            terminalTransitionId: "transition_heal",
+            semanticFingerprint: terminalFingerprint));
+
+        Assert.Empty(state.ValidateAgreement(healed, EmptyCatalog()));
     }
 
     [Fact]
