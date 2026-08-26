@@ -342,6 +342,32 @@ public sealed class SpiritualWoundEffectProfileContractTests
 
     [Theory]
     [MemberData(nameof(ProfileCases))]
+    public void CompleteDefinition_EachSpiritualProfileAllowsOnlyItsRegisteredMergeReducer(
+        string profile)
+    {
+        var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
+            profile);
+        definition["stacking"] = new JsonObject
+        {
+            ["stackKey"] = "spiritual_wound_merge",
+            ["policy"] = "merge",
+            ["maxStacks"] = 1,
+            ["atMaximum"] = "no_change",
+            ["refreshMode"] = null,
+            ["mergeRule"] = "profile_specific"
+        };
+        Assert.Empty(ValidateDefinitions("chaos_sea", definition));
+
+        definition["stacking"]!["mergeRule"] = "sum";
+
+        AssertIssue(
+            ValidateDefinitions("chaos_sea", definition),
+            "definitions[0].stacking.mergeRule",
+            "effect_source_definition_invalid_merge_rule");
+    }
+
+    [Theory]
+    [MemberData(nameof(ProfileCases))]
     public void CompleteDefinition_AllowsOneWoundSourceLinkWithIndependentContextSibling(
         string profile)
     {
