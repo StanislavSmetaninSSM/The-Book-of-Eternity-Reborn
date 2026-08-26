@@ -78,6 +78,14 @@ The GM authors the wound's nature, spiritual locus, consequences, prognosis, and
 acquisition narration. The client validates exactly one legal afterlife consequence per
 severity step and rejects overpowered/illegal axes.
 
+Every accepted consequence is one of the eight registered persistent spiritual-wound
+#1535 profiles on the exact actor/profile carrier. It is not an
+`afterlife_combat_condition`, never targets `spiritual_conflict_side`, and never creates
+or mutates a `combatConditions[]` row. An active conflict projects only a typed derived
+owner-to-current-side contribution; conflict closure removes that evidence while the
+wound, source graph, root binding, and actor-carried effect remain under their own
+accepted lifecycles.
+
 ## One-new-wound-per-side seal
 
 Conflict state holds client-owned per-side evidence:

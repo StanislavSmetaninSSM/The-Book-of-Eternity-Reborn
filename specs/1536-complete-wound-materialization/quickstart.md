@@ -180,6 +180,12 @@ Assert:
 - GM may decline or choose lower severity;
 - one new wound per side, later worsening only;
 - older wounds require explicit re-trauma;
+- each spiritual consequence persists as one of the eight registered actor-profile
+  effects, projects an exact typed current-side contribution, and never becomes a
+  `spiritual_conflict_side` effect or `combatConditions[]` row;
+- a non-empty real combat-condition sibling remains independent and byte-identical,
+  while conflict close clears only derived wound evidence and retains the actor's wound,
+  source graph, root binding, and effect;
 - non-training defeat has a bounded anti-repeat result;
 - dissipation remains optional.
 

@@ -218,7 +218,7 @@ As the game-running system, I can reject and repair an invalid wound proposal wi
 - **FR-022**: Spiritual severity I-IV MUST materialize exactly one independently understandable legal afterlife consequence per severity step.
 - **FR-023**: Mortal severity I-IV MUST permit at most one, two, three, or four independently understandable mechanical consequences respectively, MUST NOT require a catalog of ready-made wounds, and MUST contain at least one non-display impact: a mechanical consequence, active complication, or care/recovery constraint that changes the legal lifecycle.
 - **FR-024**: Display text, symptoms, and technical wound linkage MUST NOT consume a consequence slot; every independent mechanical modifier or restriction MUST consume one slot.
-- **FR-025**: Every usable consequence profile MUST belong to the closed version-1 primitive registry below and MUST have client-owned, severity-specific power, cadence, expansion, and scope limits.
+- **FR-025**: Every usable consequence profile MUST belong to the closed version-1 primitive registry below and MUST have client-owned, severity-specific power, cadence, expansion, and scope limits. The eight spiritual profiles MUST also be registered as deterministic #1535 components with only `profile_specific` merge, a closed `{ operation, axis, magnitude }` payload, afterlife persistent-actor and exact wound-source-link scope, safe generic player projection, and no `spiritual_conflict_side` or `afterlife_combat_condition` substitution.
 - **FR-026**: Heavy or critical restrictions MAY prevent specific actions but MUST preserve at least one path to inspect, communicate, request help, receive treatment, or leave the condition.
 - **FR-027**: A severity transition MUST atomically terminate the complete old active/suspended wound-source effect group and then materialize a fresh consequence root set that fits the new slot and power budget; unchanged definitions MUST NOT preserve old runtime effect identities.
 - **FR-028**: Independent curses, oaths, Fate Card outcomes, and Saref effects MUST NOT consume wound consequence slots unless the event explicitly materializes them as trauma-caused wound consequences.
@@ -296,6 +296,30 @@ Version-1 spiritual wound consequences use exactly these closed profiles/axes:
 | `spiritual_tempo_burden` | `tempoAdvantage` for one declared operation | deny one owner tempo gain/slot at I-IV |
 | `spiritual_counter_burden` | `counterPayoff` for one declared operation | reduce one payoff step/slot at I-IV |
 | `spiritual_art_restriction` | availability of one declared standard combat art | unavailable at I-II; restrict at III; forbid at IV |
+
+These exact eight identifiers are first-class registered #1535 component profiles,
+not aliases for `afterlife_combat_condition`. Each is deterministic and declares only
+the `profile_specific` merge reducer. Their common component payload is the
+closed object `{ operation, axis, magnitude }`; the common effect contract validates
+the profile-invariant operation, axis, magnitude domain, and closed shape, while this
+wound contract remains the sole authority for severity availability, exact
+severity-specific magnitude, slot count, duplicate coordinates, and aggregate safe
+exit. The exact JSON operation/axis/magnitude domains are normative in
+`contracts/wound-effects-and-atomicity.md`. A source definition containing one of these profiles is legal only in
+`chaos_sea` or `shining_abode`, targets a persistent actor (`player`, `guardian`,
+`resident`, `radiant_actor`, or `afterlife_actor`), and contains an exact wound link
+with role `source`. It MUST NOT target `spiritual_conflict_side`.
+
+The accepted effect persists on the exact actor/profile carrier under the ordinary
+#1535 lifetime contract; the normal wound-owned form is `source_bound(active, expire)`.
+During an active conflict, when that target actor resolves to exactly one current
+accepted participant and side, a typed owner-to-current-side projector MUST emit the
+exact conflict-only mechanical contribution for every applicable component. With no
+active conflict it emits none; absent, duplicate, wrong-realm, or side-ambiguous
+membership MUST reject before any partial contribution or after-image. This behavior is
+not caller-selectable. Derived evidence is not a canonical effect, wound, or combat
+condition, MUST NOT mutate or duplicate `combatConditions[]`, and disappears with the
+conflict while the actor's wound and effect remain governed by their own lifecycles.
 
 `spiritual_healing`, wound inspection, communication, requesting/receiving help,
 withdrawal, surrender, negotiation, and the separate dissipation decision are safety

@@ -214,6 +214,16 @@ generic Mortal component and eight fixed-setting spiritual axes. A Mortal wound 
 mechanical slot still requires an active complication or care/recovery constraint that
 changes its legal lifecycle.
 
+The eight spiritual axes are registered directly as deterministic first-class #1535
+component profiles with only `profile_specific` merge and a closed
+`{ operation, axis, magnitude }` payload. They are persistent
+actor effects in afterlife realms, require an exact wound source link, and cannot target
+`spiritual_conflict_side`. They are deliberately distinct from
+`afterlife_combat_condition`, whose payload, finite conflict lifetime, side carrier,
+and `combatConditions[]` projection describe a transient conflict condition. Runtime
+conflict mechanics later derive a typed owner-to-current-side contribution without
+creating another canonical condition or changing the persistent payload.
+
 **Rationale**: This preserves one mechanical effect engine while keeping wound
 lifecycle authority separate. Persisting only slot effect IDs would lose a legal
 zero-slot marker and the definitions needed by later `apply_definition` reactions;

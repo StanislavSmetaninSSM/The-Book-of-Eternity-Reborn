@@ -550,6 +550,35 @@ the extensible standard-art registry, so later noncombat and healing arts remain
 ineligible.
 Spiritual severity requires exactly `rank` legal entries.
 
+All eight profile identifiers above are deterministic registered #1535 component
+primitives with only the `profile_specific` merge reducer and the exact closed payload
+`{ operation, axis, magnitude }`. The common registry owns
+closed payload/type/domain validation and deterministic execution/projection metadata;
+the wound envelope owns the severity table, exact magnitude at that severity, slot
+budget, coordinate uniqueness, and safe-exit checks. They are not represented by
+`afterlife_combat_condition`. The exact ordinal operation set, fixed axis, and JSON
+magnitude domain for each profile are defined by the common-registry table in
+`contracts/wound-effects-and-atomicity.md`; no name, prose, numeric-string, fractional,
+null, object, or array inference is permitted.
+
+A definition containing one of these profiles has only afterlife allowed realms and a
+non-empty subset of persistent actor target kinds: `player` (for `player_soul` in an
+afterlife realm), `guardian`, `resident`, `radiant_actor`, or `afterlife_actor`. It
+forbids `spiritual_conflict_side`, contains exactly one wound link with role `source`,
+and otherwise uses an ordinary valid #1535 lifetime. The normal persistent form is
+`source_bound` with `activePredicate = active` and `onSourceLoss = expire`; independent
+effect expiry or suppression does not heal the wound or erase its canonical source
+graph/root binding.
+
+The payload remains owner-relative in canonical state. A typed current-conflict
+projector resolves the exact persistent target actor to exactly one accepted conflict
+participant and side, then derives a private `SpiritualWoundConflictContribution`.
+`actionCostAudit` resolves to its player/opposition branch and `sideStrain` resolves to
+`playerSideStrain`/`oppositionSideStrain`; other axes retain their registered name.
+Absent, duplicate, wrong-realm, or side-ambiguous membership fails closed. The derived
+contribution is never stored as an effect, wound, or combat condition, and
+`combatConditions[]` remains byte-identical when only wound contributions change.
+
 ### 7.8 Treatment
 
 ```json

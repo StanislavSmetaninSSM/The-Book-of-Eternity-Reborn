@@ -80,10 +80,12 @@ mutation; replacement succession is non-ownership lifecycle evidence.
 
 **Constraints**: Direct pre-alpha cutover with no migration, legacy reader, dual write,
 or fallback; no wound catalog; no automatic ordinary wound or soul dissipation; exact
-ordinal/confusable authority; one new spiritual wound per side/conflict; effect removal
-cannot heal; one complete accepted transaction and snapshot rollback; one safe-cycle
-healing attempt per wound/cycle; console/browser semantic parity; Russian in-world copy;
-recursive privacy and renderer escaping; afterlife docs/examples/registry synchronized.
+ordinal/confusable authority; one new spiritual wound per side/conflict; eight
+first-class persistent spiritual wound effect profiles, never combat-condition aliases;
+effect removal cannot heal; one complete accepted transaction and snapshot rollback;
+one safe-cycle healing attempt per wound/cycle; console/browser semantic parity;
+Russian in-world copy; recursive privacy and renderer escaping; afterlife
+docs/examples/registry synchronized.
 
 **Scale/Scope**: One common kernel; Mortal and afterlife adapters; player, named NPC,
 combatant, player soul, Guardian, resident, radiant/afterlife actor owners; wound
@@ -238,6 +240,7 @@ BookOfEternityClient.WebFrontend/
 
 BookOfEternityClient.Tests/
 ├── Wound*Tests.cs                                 # strict contract/kernel/planner/projection/repair
+├── SpiritualWound*Tests.cs                        # registered profiles and conflict contribution
 ├── AcceptedMechanics*Tests.cs                     # cache/fingerprint/ordering/publication
 ├── Effect*Wounds*.cs                              # independence and reciprocal links
 ├── Afterlife*Tests.cs                             # arts/services/docs/source guards
@@ -272,6 +275,7 @@ Examples/
 ├── E_Block_5.txt
 ├── E_Block_10.txt
 ├── E_Block_12.txt
+├── E_CLI_Effect_Materialization.txt
 ├── E_CLI_Afterlife_Turns.txt
 └── example_validation_manifest.json
 CLI_API_Specification.md
@@ -341,6 +345,10 @@ No production code is edited in this phase.
    `apply_definition.maxExpansion = 2` when present, requiring same-domain `replace` for
    a root-bound target, and recording the producing effect in every reaction-created
    identity's first create transition.
+   Register the eight closed spiritual consequence profiles in the common effect
+   component registry with persistent-afterlife-actor/wound-link scope and a safe generic
+   player projection. Their canonical payload remains owner-relative; do not route them
+   through `afterlife_combat_condition` or `combatConditions[]`.
 5. Add RED common plan/cache/fingerprint/before-image/same-root/scale/replay/rollback
    tests, including cross-plan stage mixing and created-event versus causal-event
    tampering.

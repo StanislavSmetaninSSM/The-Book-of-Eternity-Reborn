@@ -358,6 +358,53 @@ It does not derive from the extensible standard-art registry and therefore never
 `force_incarnation`, `spiritual_resilience`, `spiritual_healing`, or later noncombat
 arts without an explicit versioned contract change.
 
+The eight identifiers in this registry are also exact first-class #1535 component
+profiles. Each has deterministic metadata, only the `profile_specific` merge reducer,
+and the same closed
+`{ operation, axis, magnitude }` payload accepted here; registry parity is mandatory so
+a consequence accepted by the wound envelope cannot be rejected by the common effect
+contract. `EffectComponentProfiles` owns profile-invariant shape/type/domain checks,
+while the wound envelope alone owns severity availability, exact magnitude for the
+accepted severity, slot accounting, coordinate uniqueness, and aggregate safe exits.
+
+The common registry uses two exact operation domains. `O` is `pressure`, `counter`,
+`guard`, `maneuver`, `binding`, `break_binding`, `force_binding`,
+`force_incarnation`, `incarnation_resistance`, `champion_coordination`, and
+`recover_spiritual_power`. `A` is the same set without `force_incarnation`. The common
+profile validator admits exactly this machine domain before the wound severity policy
+selects the legal member:
+
+| Profile | Operation domain | Exact axis | Exact JSON `magnitude` domain |
+| --- | --- | --- | --- |
+| `spiritual_roll_hindrance` | `O` | `rollMode` | string `disadvantage` |
+| `spiritual_action_cost_burden` | `O` | `actionCostAudit` | integer `1..3` |
+| `spiritual_position_burden` | `O` | `conflictPosition` | integer `1..2` |
+| `spiritual_control_burden` | `O` | `controlState` | integer `1` |
+| `spiritual_strain_burden` | `O` | `sideStrain` | integer `1` |
+| `spiritual_tempo_burden` | `O` | `tempoAdvantage` | string `deny_one_gain` |
+| `spiritual_counter_burden` | `O` | `counterPayoff` | string `reduce_one_step` |
+| `spiritual_art_restriction` | `A` | `artAvailability` | string `restrict` or `forbid` |
+
+An integer magnitude is a JSON number accepted exactly as an integer, not a numeric
+string, fractional value, non-finite value, or boolean. String values and all three
+payload property names are ordinal and case-sensitive. Missing, extra, null, object,
+or array values fail closed; display prose cannot supply a mechanical field.
+
+A #1535 source definition containing any of these profiles is scoped to
+`chaos_sea|shining_abode`, a persistent actor target (`player`, `guardian`, `resident`,
+`radiant_actor`, or `afterlife_actor`), and exactly one `wound` link with role `source`.
+It cannot target `spiritual_conflict_side` and does not inherit the finite-lifetime
+adapter imposed on `afterlife_combat_condition`; ordinary #1535 lifetime validation
+applies. Visible accepted effects require a safe generic player projection of profile,
+operation, axis, and magnitude without leaking internal wound/effect/source identity.
+
+Current-conflict application is a typed derived contribution from exact actor
+membership. It never translates the persistent component into
+`afterlife_combat_condition`, never adds it to `combatConditions[]`, and never creates a
+second canonical wound/effect copy. Conflict closure removes only derived evidence;
+the actor-carried wound, definition graph, root binding, and effect remain until their
+own accepted lifecycle transition.
+
 ## Severity rematerialization
 
 A change of severity does not incrementally patch arbitrary effects. The planner:
