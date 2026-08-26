@@ -957,6 +957,8 @@ WoundRootEffectApplication
   SourceSelector
   Parameters = {}
   SlotBindings[]
+  ExpectedComponentCount
+  ExpectedMaterializationFingerprint
   OwnershipDomain = base_wound | ComplicationId
   CausalEventRef
 
@@ -970,6 +972,10 @@ WoundRootEffectResult
   SourceKey
   TargetKey
   CarrierCoordinate
+  Materialization
+    SlotBindings[]
+    ComponentCount
+    MaterializationFingerprint
 
 WoundRootLineageAuthorityRow
   RootSelector = exactly one of ApplicationRef | EffectId
@@ -1004,14 +1010,32 @@ share one wound event. The effect planner processes terminal operations first,
 allocates random opaque IDs only for newly created roots, and returns one detached
 result per application. Wound finalization requires exact set/cardinality agreement and
 also compares disposition, transition ID, both event refs, source/target keys, and
-carrier coordinate before persisting only `{effectId, definitionKey}` root bindings.
+carrier coordinate, ordered slots, component count, and the materialization fingerprint
+before persisting only `{effectId, definitionKey}` root bindings. It independently
+recomputes the result fingerprint from the exact created active-effect after-image and
+the prepared root parameters; comparing two carried fingerprint strings is insufficient.
+
+`ExpectedMaterializationFingerprint` and result `MaterializationFingerprint` use domain
+`book_of_eternity.wound.effect_materialization`, version `1`. In exact order, the
+length-prefixed UTF-8 SHA-256 writer hashes domain, fingerprint version, exact source
+realm/kind/source ID/definition key, positive definition/effect schema version, recursively
+canonical compact parameters, component count, and each fully bound component's
+zero-based original ordinal plus recursively canonical compact JSON. Every field is
+encoded as `<UTF8-byte-count>:<field>`; output is lowercase `sha256:` plus 64 lowercase
+hexadecimal characters. Recursive canonicalization sorts object keys ordinally and
+preserves every array order. Version-1 direct-root parameters are exact `{}` but remain
+an explicit hash input. The expected value is derived from the detached source
+definition; the actual value is derived from the created effect after parameter binding.
+It is internal handoff authority and is not persisted in canonical wounds or player
+output. The consequence catalog remains the severity/power-policy authority.
 
 `SourceExportFingerprint` is the exact per-source pre-effect seal. It covers source
 schema/kind, permanent ID, optional local ref, state, non-materializable policy, realm,
 owner, accepted causal event, the recursively canonical complete definitions, ordered
 root-lineage-authority rows, and ordered root applications including application refs,
 operation ordinals/kinds, target/source selectors, empty parameters, slot bindings, and
-ownership domains. No newly allocated root-result effect ID is an input to a new root
+expected component counts/materialization fingerprints, and ownership domains. No newly
+allocated root-result effect ID is an input to a new root
 application or same-turn source export. Existing canonical root effect IDs may appear
 only in terminal operations or root-lineage authority and are covered by the
 `WoundPreparationFingerprint` or `SourceExportFingerprint`, respectively.
@@ -1024,8 +1048,9 @@ The staged contour uses non-interchangeable, internally computed seals:
 2. `EffectInputFingerprint` covers the complete ordinary effect input plus the typed
    wound batches, their upstream seals, and every derived operation/causal event pair.
 3. `EffectAcceptedTurnPlanFingerprint` covers that exact effect input, every allocated
-   effect/transition ID, exact application and termination result maps, and all effect
-   carrier/identity before- and after-images.
+   effect/transition ID, exact application and termination result maps including each
+   actual component count/materialization fingerprint, and all effect carrier/identity
+   before- and after-images from which that fingerprint can be recomputed.
 4. `WoundFinalPlanFingerprint` covers the wound-preparation and effect-plan seals plus
    final canonical wounds, root bindings, entries, complications, identity/history/
    pending/scheduler/output after-images, and exact wound intents.
@@ -1044,9 +1069,10 @@ seal.
 
 The same recomputation rule applies at every earlier boundary: the effect composer
 recomputes each source-export and wound-preparation seal from detached fields, the effect
-planner recomputes its complete input seal, and wound finalization recomputes the effect-
-plan seal before consuming any result. A downstream stage never treats a fingerprint
-property alone as proof of its payload.
+planner recomputes its complete input seal and every expected/actual materialization
+fingerprint, and wound finalization recomputes the effect-plan seal plus each created
+effect's materialization fingerprint before consuming any result. A downstream stage
+never treats a fingerprint property alone as proof of its payload.
 
 ## 15. Wound command staging
 

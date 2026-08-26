@@ -51,6 +51,8 @@ During preparation, each provisional wound exports one exact accepted source:
       },
       "parameters": {},
       "slotBindings": [1],
+      "expectedComponentCount": 1,
+      "expectedMaterializationFingerprint": "sha256:...",
       "ownershipDomain": "base_wound",
       "causalEventRef": "accepted-event-ref"
     }
@@ -66,6 +68,10 @@ The complete graph and root-application batch are sealed before the effect plann
 No effect ID is allocated by wound preparation. `applicationRef` is an opaque handoff
 correlation key, not an effect identity. For a newly created same-turn wound, the exact
 #1535 source selector uses `sourceRef`; using its not-yet-published `sourceId` is rejected.
+A root's expected component count and
+`book_of_eternity.wound.effect_materialization` version-1 fingerprint are internally
+derived from its exact source coordinate, schema, parameters, and ordered fully bound
+components; they are not caller assertions or effect identities.
 A definition referenced only by `apply_definition` has no root application and no
 reserved ID. The accepted effect runtime allocates a permanent opaque identity only if
 the corresponding root or later reaction is actually materialized. Response-local refs
@@ -133,15 +139,17 @@ the complete canonical source owner metadata, source ID/ref/state, non-materiali
 policy, accepted causal wound event, every detached definition, ordered root-lineage
 authority rows, and every ordered root application including `applicationRef`, operation
 ordinals/kind, exact target and source selector, empty parameters, slot bindings, and
-ownership domain. It is immutable pre-effect plan authority and is not a persisted wound
-field.
+expected component count/materialization fingerprint, and ownership domain. It is
+immutable pre-effect plan authority and is not a persisted wound field.
 
 The cross-stage seals are non-interchangeable. `WoundPreparationFingerprint` binds the
 accepted wound input, allocated wound/complication/transition IDs, detached drafts,
 source-export fingerprints, and terminal intents. `EffectInputFingerprint` additionally
 binds the complete typed operation batch and each derived-created/causal event pair.
 `EffectAcceptedTurnPlanFingerprint` additionally binds allocated effect/transition IDs,
-exact application/termination maps, and effect carrier/identity before- and after-images.
+exact application/termination maps including actual component counts/materialization
+fingerprints, and effect carrier/identity before- and after-images from which those
+fingerprints are independently recomputed.
 `WoundFinalPlanFingerprint` additionally binds the finalized canonical wound roots,
 bindings, entries, complications, history/index/pending/scheduler/output after-images,
 and intents. Finally, `AcceptedMechanicsPlan.PreparedPlanFingerprint` binds those seals,
@@ -155,8 +163,10 @@ take/peek. Mixing otherwise valid exports, result maps, operation events, effect
 after-images, or final wound bindings from different plans therefore fails closed.
 Every earlier consumer likewise recomputes its predecessor's seal from detached payload:
 the effect composer checks source-export and wound-preparation seals, the effect planner
-checks the effect-input seal, and wound finalization checks the effect-plan seal. A seal
-property is never trusted without payload recomputation.
+checks the effect-input seal and exact expected/created materialization, and wound
+finalization checks the effect-plan seal and recomputes every result fingerprint from its
+exact created active-effect after-image. A seal or fingerprint property is never trusted
+without payload recomputation.
 
 `complication.ownedEffectIds` is an exact subset of canonical root-binding effect IDs;
 the sets are pairwise disjoint between complications. A complication neither lists
@@ -228,7 +238,9 @@ root-bound definition has exact empty `parameterBounds`. Authored numeric/scope 
 are frozen directly in its components. A downstream-only definition may declare
 bounded parameters because the persisted `apply_definition` component also seals the
 exact parameters supplied when that reaction is released. Root parameters are not
-silently defaulted and are not duplicated in canonical root bindings.
+silently defaulted and are not duplicated in canonical root bindings. The exact `{}`
+still remains an explicit materialization-fingerprint input so a future parameterized
+root contract cannot silently reuse version-1 digests.
 
 Wound version 1 permits zero or one downstream definition and forbids nested
 wound-owned `apply_definition`. When the optional edge exists, that reaction's #1535
@@ -284,6 +296,13 @@ profile seals:
 - action/control restriction strength;
 - counterplay or safe-exit requirement;
 - whether the effect may remain when its visible symptom is suppressed.
+
+“Power” in this section names that heterogeneous catalog policy; it is not a universal
+numeric application-result field. Cross-stage equality instead uses the domain/versioned
+materialization fingerprint over the exact source coordinate, schema, parameters,
+component count, and ordered fully bound components. The effect stage derives it from
+the created active effect, and Finalize independently recomputes it from the detached
+after-image.
 
 Spiritual profiles use only legal afterlife conflict/profile axes. Mortal profiles use
 registered universal effect primitives without introducing a catalog of complete

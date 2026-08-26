@@ -138,6 +138,9 @@ player output is published when any gate fails.
    response-local `applicationRef`; a reaction-only descendant has neither an
    application nor a reserved identity. The source export is `Materializable = false`
    for ordinary GM effect commands; the typed batch is the sole direct-root allowlist.
+   Each root also carries an internally derived expected component count and versioned
+   fingerprint of its exact source coordinate, schema, parameters, and ordered fully
+   bound components.
 3. `EffectAcceptedTurnInputComposer` resolves the closed owner-to-target mapping,
    requires `sourceRef` for a new same-turn wound (`sourceId` for an existing stable
    wound), and derives a distinct internal operation event for each batch member from
@@ -147,11 +150,15 @@ player output is published when any gate fails.
 4. `EffectAcceptedTurnPlanner` validates the whole graph, materializes only the proposed
    roots, remains the sole allocator of random opaque permanent `effectId` values, and
    returns a detached typed result mapping every `applicationRef` to the identity it
-   created. A non-creating stack/refresh/merge result is invalid for a wound root.
+   created. The result's actual component count and materialization fingerprint are
+   derived from that exact created active effect. A non-creating stack/refresh/merge
+   result is invalid for a wound root.
 5. `WoundAcceptedTurnPlanner.Finalize` verifies the result set, create disposition and
    transition, both event refs, reciprocal root identity, complete graph membership/
-   linkage, owner, realm, source, target, carrier, slot, and power agreement, then
-   persists the graph and root bindings in the wound.
+   linkage, owner, realm, source, target, carrier, ordered slot, component-count, and
+   exact bound-materialization-fingerprint agreement, independently recomputing the
+   latter from the created effect after-image, then persists the graph and root bindings
+   in the wound.
 6. The common accepted-mechanics planner composes resources, scheduler, output, and all
    canonical after-images.
 7. One validated handoff publishes or rolls back everything.

@@ -38,7 +38,7 @@ Expected owning tests:
 - `WoundMaterializationContractTests`
 - `WoundIdentityStateTests`
 - `WoundCarrierCatalogTests`
-- `WoundAcceptedTurnPlannerTests`
+- `WoundEffectBatchPlannerTests`
 - `WoundConsequenceBudgetTests`
 - `WoundRepairPacketBuilderTests`
 - accepted-mechanics cache/scale/rollback extensions
@@ -105,7 +105,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 `
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 `
   -Lane Focused `
-  -Filter "FullyQualifiedName~WoundAcceptedTurnPlannerTests|FullyQualifiedName~WoundIdentityStateTests"
+  -Filter "FullyQualifiedName~WoundEffectBatchPlannerTests|FullyQualifiedName~WoundIdentityStateTests"
 ```
 
 ```powershell

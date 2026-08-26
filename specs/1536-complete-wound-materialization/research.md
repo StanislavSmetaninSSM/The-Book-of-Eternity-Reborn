@@ -67,6 +67,19 @@ Each earlier consumer also recomputes its predecessor seal from detached payload
 than trusting a fingerprint property: composer for source export/wound preparation,
 effect planner for effect input, and wound finalizer for the effect plan.
 
+Direct-root materialization agreement uses no universal numeric power. Prepare derives
+`ExpectedComponentCount` and `ExpectedMaterializationFingerprint`; the effect result
+derives `ComponentCount` and `MaterializationFingerprint` from the actual created active
+effect, and Finalize recomputes that value from the detached effect after-image. The
+version-1 fingerprint domain is
+`book_of_eternity.wound.effect_materialization`. Its UTF-8 length-prefixed SHA-256 input
+is domain/version, exact source realm/kind/id/definition key, effect schema version,
+recursively canonical compact application parameters, component count, and every
+fully bound component's original ordinal plus recursively canonical compact JSON.
+Object keys sort ordinally while component array order remains semantic. The digest is
+internal handoff authority, not canonical wound state or player output. Catalog
+validation remains the heterogeneous severity/power authority.
+
 **Alternatives rejected**:
 
 - A standalone wound normalizer after effects: cannot prove bidirectional ownership
@@ -74,6 +87,12 @@ effect planner for effect input, and wound finalizer for the effect plan.
 - Direct mutation in `ValidationService`: validation must not write canonical state.
 - Best-effort multi-file writes outside the current lease: violates rollback and retry
   requirements.
+- A decimal power agreement: no canonical producer exists for heterogeneous numeric,
+  string, cadence/resource-relative, restriction, and reaction profiles, so any mapping
+  would be lossy and arbitrary.
+- A per-profile power-evidence union in the effect handoff: duplicates T019 policy and
+  contextual evidence in T020 while still only echoing Prepare's validation; exact bound
+  materialization equality is the narrower cross-stage authority.
 
 ## R-003: Dedicated identity/history roots and owner-appropriate carriers
 

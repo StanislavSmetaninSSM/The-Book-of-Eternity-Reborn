@@ -24,8 +24,9 @@ the wound persists a bounded complete source-definition graph separately from th
 directly materialized root effect bindings, while later `apply_definition` descendants
 remain effect-runtime identities resolved through an indexed exact wound source;
 the prepare stage emits only typed root application refs, the effect planner remains the
-sole allocator of opaque permanent effect IDs and returns the exact result map consumed
-by finalization;
+sole allocator of opaque permanent effect IDs and returns the exact result map with
+actual component counts and domain/versioned materialization fingerprints derived from
+the created roots and consumed by finalization;
 the exported wound source is non-materializable to ordinary GM effect commands and the
 sealed typed batch is the only direct-root authority;
 each root receives a unique derived creation event while retaining the accepted wound
@@ -110,7 +111,7 @@ prompts; rules, guides, examples, manifests, documentation/source guards.
 
 ```powershell
 # During each TDD slice: use the smallest owning test class/filter.
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundAcceptedTurnPlannerTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundEffectBatchPlannerTests"
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~WoundMaterializationLifecycleTests"
 
 # One meaningful checkpoint after integrated behavior exists.
@@ -300,12 +301,14 @@ sealed event / player command / scheduler cycle
                     │
                     ▼
       Wound planner Prepare (no canonical writes)
-          │ wound ID + complete source graph + typed root refs (no effect IDs)
+          │ wound ID + complete source graph + typed root refs
+          │ + expected component counts/materialization fingerprints (no effect IDs)
           ▼
         Effect accepted-turn planner
-          │ opaque root IDs + exact application result map/after-images
+          │ opaque root IDs + actual recomputed counts/fingerprints
+          │ + exact application result map/after-images
           ▼
-      Wound planner Finalize (root links/graph/budgets)
+      Wound planner Finalize (root links/graph/budgets/exact materialization agreement)
           │ wound transitions + resource/item/scheduler intents
           ▼
          AcceptedMechanicsPlanner
@@ -338,9 +341,13 @@ No production code is edited in this phase.
 3. Add RED opportunity/source/guarantee and consequence budget/power tests.
 4. Persist the strict bounded wound-owned source graph and separate root bindings, then
    implement staged prepare/finalize planning, an immutable typed wound-effect operation
-   batch, accepted wound source export, effect-owned opaque root allocation, and exact
-   `applicationRef -> effectId` results. Do not preallocate any effect ID in the wound
-   planner; reaction-only descendants have no application ref or reserved identity.
+   batch, accepted wound source export, a shared domain/versioned materialization-
+   fingerprint writer, effect-owned opaque root allocation, and exact
+   `applicationRef -> effectId` results with actual component counts/fingerprints.
+   Prepare, effect planning, and Finalize independently derive or recompute the exact
+   source/component agreement from detached payloads. Do not preallocate any effect ID
+   in the wound planner; reaction-only descendants have no application ref or reserved
+   identity.
    Reconcile the optional wound single-leaf expansion with #1535 by requiring exact
    `apply_definition.maxExpansion = 2` when present, requiring same-domain `replace` for
    a root-bound target, and recording the producing effect in every reaction-created
