@@ -160,5 +160,5 @@ affected; it remains a conditional diagnostic lane.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/1543-unified-resource-authority/plan.md
+at specs/1536-complete-wound-materialization/plan.md
 <!-- SPECKIT END -->
