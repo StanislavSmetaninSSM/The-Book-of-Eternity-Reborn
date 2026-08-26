@@ -809,6 +809,9 @@ internal static class WoundMaterializationContract
         JsonElement rawConsequences,
         List<ValidationIssue> issues)
     {
+        if (OwnedEffectSourceLimitExceeded(rawConsequences))
+            return;
+
         var definitions = ReadOwnedDefinitionNodes(sources.Definitions, path);
         var definitionsByKey = new Dictionary<string, OwnedDefinitionNode>(StringComparer.Ordinal);
         var exactDefinitionKeys = new HashSet<string>(StringComparer.Ordinal);
@@ -844,6 +847,7 @@ internal static class WoundMaterializationContract
                     "exact integer 1 for a wound-owned definition",
                     definition.MaxStacks?.ToString(CultureInfo.InvariantCulture) ?? "missing");
             }
+            ValidateOwnedStackingCombination(definition, issues);
             ValidateOwnedDefinitionAuthority(definition, woundId, owner, classification, issues);
         }
 
@@ -936,12 +940,26 @@ internal static class WoundMaterializationContract
 
             var stackKey = string.Empty;
             var stackPolicy = string.Empty;
+            var atMaximum = string.Empty;
+            string? refreshMode = null;
+            string? mergeRule = null;
             int? maxStacks = null;
             if (definition.TryGetProperty("stacking", out var stacking) &&
                 stacking.ValueKind == JsonValueKind.Object)
             {
                 TryReadExactIdentifier(stacking, "stackKey", out stackKey);
                 TryReadStringValue(stacking, "policy", out stackPolicy);
+                TryReadStringValue(stacking, "atMaximum", out atMaximum);
+                if (stacking.TryGetProperty("refreshMode", out var rawRefreshMode) &&
+                    rawRefreshMode.ValueKind == JsonValueKind.String)
+                {
+                    refreshMode = rawRefreshMode.GetString();
+                }
+                if (stacking.TryGetProperty("mergeRule", out var rawMergeRule) &&
+                    rawMergeRule.ValueKind == JsonValueKind.String)
+                {
+                    mergeRule = rawMergeRule.GetString();
+                }
                 if (stacking.TryGetProperty("maxStacks", out var maximum) &&
                     TryReadExactInt32(maximum, out var parsedMaximum))
                 {
@@ -998,6 +1016,9 @@ internal static class WoundMaterializationContract
                 definitionKey,
                 stackKey,
                 stackPolicy,
+                atMaximum,
+                refreshMode,
+                mergeRule,
                 maxStacks,
                 definitionPath,
                 definition,
@@ -1008,6 +1029,58 @@ internal static class WoundMaterializationContract
         return result.ToImmutable();
     }
 
+    private static void ValidateOwnedStackingCombination(
+        OwnedDefinitionNode definition,
+        List<ValidationIssue> issues)
+    {
+        if (string.Equals(definition.StackPolicy, "independent", StringComparison.Ordinal) &&
+            !string.Equals(definition.AtMaximum, "no_change", StringComparison.Ordinal))
+        {
+            AddOwnedGraphIssue(
+                issues,
+                definition.Path + ".stacking.atMaximum",
+                "no_change for an independent wound-owned definition",
+                definition.AtMaximum);
+        }
+
+        if (!string.Equals(definition.StackPolicy, "refresh", StringComparison.Ordinal) &&
+            definition.RefreshMode is not null)
+        {
+            AddOwnedGraphIssue(
+                issues,
+                definition.Path + ".stacking.refreshMode",
+                "refreshMode omitted unless policy is refresh",
+                definition.RefreshMode);
+        }
+
+        if (!string.Equals(definition.StackPolicy, "merge", StringComparison.Ordinal) &&
+            definition.MergeRule is not null)
+        {
+            AddOwnedGraphIssue(
+                issues,
+                definition.Path + ".stacking.mergeRule",
+                "mergeRule omitted unless policy is merge",
+                definition.MergeRule);
+        }
+    }
+
+    private static bool OwnedEffectSourceLimitExceeded(JsonElement consequences)
+    {
+        if (consequences.ValueKind != JsonValueKind.Object ||
+            !consequences.TryGetProperty("ownedEffectSources", out var sources) ||
+            sources.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        return (sources.TryGetProperty("definitions", out var definitions) &&
+                definitions.ValueKind == JsonValueKind.Array &&
+                definitions.GetArrayLength() > MaxOwnedEffectDefinitions) ||
+               (sources.TryGetProperty("rootBindings", out var roots) &&
+                roots.ValueKind == JsonValueKind.Array &&
+                roots.GetArrayLength() > MaxOwnedEffectRootBindings);
+    }
+
     private static void ValidateOwnedDefinitionAuthority(
         OwnedDefinitionNode definition,
         string woundId,
@@ -1015,6 +1088,21 @@ internal static class WoundMaterializationContract
         WoundClassification classification,
         List<ValidationIssue> issues)
     {
+        if (definition.Element.TryGetProperty("lifetime", out var lifetime) &&
+            lifetime.ValueKind == JsonValueKind.Object &&
+            TryReadStringValue(lifetime, "mode", out var lifetimeMode) &&
+            string.Equals(lifetimeMode, "source_bound", StringComparison.Ordinal) &&
+            TryReadStringValue(lifetime, "activePredicate", out var activePredicate) &&
+            EffectSourcePredicateCatalog.IsRegistered(activePredicate) &&
+            !EffectSourcePredicateCatalog.IsAllowedForSource("wound", activePredicate))
+        {
+            AddOwnedGraphIssue(
+                issues,
+                definition.Path + ".lifetime.activePredicate",
+                "registered active predicate compatible with the exact wound source kind",
+                activePredicate);
+        }
+
         if (!ContainsExactString(definition.Element, "allowedRealms", owner.Realm))
         {
             AddOwnedGraphIssue(
@@ -1476,7 +1564,6 @@ internal static class WoundMaterializationContract
                                         recovery.Mode,
                                         "no_natural_recovery",
                                         StringComparison.Ordinal) ||
-                                    recovery.DeteriorationPolicy.HasValue ||
                                     care.ActiveCourseId is not null ||
                                     care.State is "fresh" or "untreated" or "recovering";
         if (string.Equals(lifecycle, "active", StringComparison.Ordinal) &&
@@ -2447,17 +2534,19 @@ internal static class WoundMaterializationContract
                 break;
             case JsonValueKind.Array:
                 var index = 0;
+                var maximum = path.EndsWith(
+                        ".consequences.ownedEffectSources.definitions",
+                        StringComparison.Ordinal)
+                    ? MaxOwnedEffectDefinitions
+                    : path.EndsWith(
+                        ".consequences.ownedEffectSources.rootBindings",
+                        StringComparison.Ordinal)
+                        ? MaxOwnedEffectRootBindings
+                        : int.MaxValue;
+                if (maximum != int.MaxValue && value.GetArrayLength() > maximum)
+                    break;
                 foreach (var item in value.EnumerateArray())
                 {
-                    var maximum = path.EndsWith(
-                            ".consequences.ownedEffectSources.definitions",
-                            StringComparison.Ordinal)
-                        ? MaxOwnedEffectDefinitions
-                        : path.EndsWith(
-                            ".consequences.ownedEffectSources.rootBindings",
-                            StringComparison.Ordinal)
-                            ? MaxOwnedEffectRootBindings
-                            : int.MaxValue;
                     if (index >= maximum)
                         break;
                     FindDuplicateProperties(item, $"{path}[{index++}]", issues);
@@ -2833,6 +2922,9 @@ internal static class WoundMaterializationContract
         string DefinitionKey,
         string StackKey,
         string StackPolicy,
+        string AtMaximum,
+        string? RefreshMode,
+        string? MergeRule,
         int? MaxStacks,
         string Path,
         JsonElement Element,
