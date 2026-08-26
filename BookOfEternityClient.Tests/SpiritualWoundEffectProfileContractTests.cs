@@ -49,6 +49,9 @@ public sealed class SpiritualWoundEffectProfileContractTests
         from realm in AfterlifeRealms
         select new object[] { profile, target, realm };
 
+    public static IEnumerable<object[]> ProfileCases =>
+        Profiles.Select(static profile => new object[] { profile });
+
     public static IEnumerable<object[]> ValidOperationCases
     {
         get
@@ -132,6 +135,10 @@ public sealed class SpiritualWoundEffectProfileContractTests
                     yield return PayloadCase(profile, member, "value", "null");
                 }
 
+                yield return PayloadCase(profile, "Operation", "case", "\"pressure\"");
+                yield return PayloadCase(profile, "Axis", "case", $"\"{AxisFor(profile)}\"");
+                yield return PayloadCase(profile, "Magnitude", "case", DefaultMagnitudeJson(profile));
+
                 foreach (var member in new[] { "operation", "axis" })
                 foreach (var invalidJson in new[] { "1", "true", "{}", "[]" })
                     yield return PayloadCase(profile, member, "value", invalidJson);
@@ -141,6 +148,30 @@ public sealed class SpiritualWoundEffectProfileContractTests
 
                 yield return PayloadCase(profile, "unregistered", "extra", "true");
             }
+        }
+    }
+
+    public static IEnumerable<object[]> InvalidScopeCases
+    {
+        get
+        {
+            var cases = new (string Mutation, string Path, string Code)[]
+            {
+                ("current_mortal_realm", "definitions[0].allowedRealms", "effect_source_definition_spiritual_wound_realm_invalid"),
+                ("allowed_mortal_realm", "definitions[0].allowedRealms", "effect_source_definition_spiritual_wound_realm_invalid"),
+                ("spiritual_conflict_side", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid"),
+                ("npc_target", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid"),
+                ("combatant_target", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid"),
+                ("mixed_target", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid"),
+                ("missing_link", "definitions[0].links", "effect_source_definition_spiritual_wound_link_invalid"),
+                ("wrong_link_kind", "definitions[0].links[0].kind", "effect_source_definition_spiritual_wound_link_invalid"),
+                ("wrong_link_role", "definitions[0].links[0].role", "effect_source_definition_spiritual_wound_link_invalid"),
+                ("duplicate_link", "definitions[0].links[1]", "effect_source_definition_spiritual_wound_link_invalid"),
+                ("confusable_duplicate_link", "definitions[0].links[1]", "effect_source_definition_spiritual_wound_link_invalid")
+            };
+            foreach (var profile in Profiles)
+            foreach (var (mutation, path, code) in cases)
+                yield return new object[] { profile, mutation, path, code };
         }
     }
 
@@ -293,22 +324,26 @@ public sealed class SpiritualWoundEffectProfileContractTests
         Assert.Empty(ValidateDefinitions(currentRealm, definition));
     }
 
-    [Fact]
-    public void CompleteDefinition_AllowsAllFivePersistentTargetsAsOneNonEmptySubset()
+    [Theory]
+    [MemberData(nameof(ProfileCases))]
+    public void CompleteDefinition_AllowsAllFivePersistentTargetsAsOneNonEmptySubset(
+        string profile)
     {
         var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
-            "spiritual_roll_hindrance");
+            profile);
         definition["allowedTargetKinds"] = new JsonArray(
             PersistentTargets.Select(static target => (JsonNode?)target).ToArray());
 
         Assert.Empty(ValidateDefinitions("chaos_sea", definition));
     }
 
-    [Fact]
-    public void CompleteDefinition_AllowsOneWoundSourceLinkWithIndependentContextSibling()
+    [Theory]
+    [MemberData(nameof(ProfileCases))]
+    public void CompleteDefinition_AllowsOneWoundSourceLinkWithIndependentContextSibling(
+        string profile)
     {
         var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
-            "spiritual_roll_hindrance");
+            profile);
         definition["links"]!.AsArray().Add(new JsonObject
         {
             ["kind"] = "combat",
@@ -319,11 +354,12 @@ public sealed class SpiritualWoundEffectProfileContractTests
         Assert.Empty(ValidateDefinitions("chaos_sea", definition));
     }
 
-    [Fact]
-    public void CompleteDefinition_AllowsOrdinaryAfterlifeTurnsLifetime()
+    [Theory]
+    [MemberData(nameof(ProfileCases))]
+    public void CompleteDefinition_AllowsOrdinaryAfterlifeTurnsLifetime(string profile)
     {
         var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
-            "spiritual_roll_hindrance");
+            profile);
         definition["lifetime"] = new JsonObject
         {
             ["mode"] = "turns",
@@ -335,18 +371,9 @@ public sealed class SpiritualWoundEffectProfileContractTests
     }
 
     [Theory]
-    [InlineData("current_mortal_realm", "definitions[0].allowedRealms", "effect_source_definition_spiritual_wound_realm_invalid")]
-    [InlineData("allowed_mortal_realm", "definitions[0].allowedRealms", "effect_source_definition_spiritual_wound_realm_invalid")]
-    [InlineData("spiritual_conflict_side", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid")]
-    [InlineData("npc_target", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid")]
-    [InlineData("combatant_target", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid")]
-    [InlineData("mixed_target", "definitions[0].allowedTargetKinds", "effect_source_definition_spiritual_wound_target_invalid")]
-    [InlineData("missing_link", "definitions[0].links", "effect_source_definition_spiritual_wound_link_invalid")]
-    [InlineData("wrong_link_kind", "definitions[0].links[0].kind", "effect_source_definition_spiritual_wound_link_invalid")]
-    [InlineData("wrong_link_role", "definitions[0].links[0].role", "effect_source_definition_spiritual_wound_link_invalid")]
-    [InlineData("duplicate_link", "definitions[0].links[1]", "effect_source_definition_spiritual_wound_link_invalid")]
-    [InlineData("confusable_duplicate_link", "definitions[0].links[1]", "effect_source_definition_spiritual_wound_link_invalid")]
+    [MemberData(nameof(InvalidScopeCases))]
     public void CompleteDefinition_SpiritualWoundScopeIsClosed(
+        string profile,
         string mutation,
         string expectedPath,
         string expectedCode)
@@ -354,13 +381,12 @@ public sealed class SpiritualWoundEffectProfileContractTests
         const string woundId = "wound_spiritual_test";
         var realm = "chaos_sea";
         var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
-            "spiritual_roll_hindrance",
+            profile,
             woundId: woundId);
         switch (mutation)
         {
             case "current_mortal_realm":
                 realm = "mortal_world";
-                definition["allowedRealms"] = new JsonArray("mortal_world");
                 break;
             case "allowed_mortal_realm":
                 definition["allowedRealms"] = new JsonArray("chaos_sea", "mortal_world");
@@ -444,7 +470,8 @@ public sealed class SpiritualWoundEffectProfileContractTests
         string profile,
         string operation,
         string magnitudeJson,
-        string expectedMagnitude)
+        string expectedLabel,
+        string expectedValue)
     {
         const string effectId = "effect_projection_private_001";
         const string componentId = "component_projection_private_001";
@@ -496,9 +523,19 @@ public sealed class SpiritualWoundEffectProfileContractTests
         var entry = Assert.Single(projection.Entries);
         var fact = Assert.Single(entry.Facts, fact =>
             string.Equals(fact.Kind, profile, StringComparison.Ordinal));
-        Assert.Equal(
-            $"operation={operation}; axis={AxisFor(profile)}; magnitude={expectedMagnitude}",
-            fact.Value);
+        Assert.Equal(expectedLabel, fact.Label);
+        Assert.Equal(expectedValue, fact.Value);
+        foreach (var rawPropertyName in new[] { "operation", "axis", "magnitude" })
+            Assert.DoesNotContain(rawPropertyName, fact.Value, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(operation, fact.Value, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(AxisFor(profile), fact.Value, StringComparison.OrdinalIgnoreCase);
+        var magnitudeNode = ParseRequiredJson(magnitudeJson);
+        if (magnitudeNode is JsonValue magnitudeValue &&
+            magnitudeValue.TryGetValue<string>(out var rawMagnitude))
+        {
+            Assert.DoesNotContain(rawMagnitude, fact.Value, StringComparison.OrdinalIgnoreCase);
+        }
+        Assert.DoesNotContain("_", fact.Value, StringComparison.Ordinal);
         var visible = JsonSerializer.Serialize(projection);
         foreach (var privateValue in new[]
                  {
@@ -517,14 +554,68 @@ public sealed class SpiritualWoundEffectProfileContractTests
     {
         get
         {
-            yield return new object[] { "spiritual_roll_hindrance", "counter", "\"disadvantage\"", "disadvantage" };
-            yield return new object[] { "spiritual_action_cost_burden", "guard", "2", "2" };
-            yield return new object[] { "spiritual_position_burden", "maneuver", "1", "1" };
-            yield return new object[] { "spiritual_control_burden", "binding", "1", "1" };
-            yield return new object[] { "spiritual_strain_burden", "break_binding", "1", "1" };
-            yield return new object[] { "spiritual_tempo_burden", "force_binding", "\"deny_one_gain\"", "deny_one_gain" };
-            yield return new object[] { "spiritual_counter_burden", "incarnation_resistance", "\"reduce_one_step\"", "reduce_one_step" };
-            yield return new object[] { "spiritual_art_restriction", "champion_coordination", "\"restrict\"", "restrict" };
+            yield return new object[]
+            {
+                "spiritual_roll_hindrance", "pressure", "\"disadvantage\"",
+                "Духовная проверка", "Давление: бросок совершается с помехой."
+            };
+            yield return new object[]
+            {
+                "spiritual_roll_hindrance", "counter", "\"disadvantage\"",
+                "Духовная проверка", "Контрприём: бросок совершается с помехой."
+            };
+            yield return new object[]
+            {
+                "spiritual_action_cost_burden", "pressure", "1",
+                "Стоимость духовного действия",
+                "Давление: стоимость духовного действия увеличена на 1."
+            };
+            yield return new object[]
+            {
+                "spiritual_action_cost_burden", "counter", "3",
+                "Стоимость духовного действия",
+                "Контрприём: стоимость духовного действия увеличена на 3."
+            };
+            yield return new object[]
+            {
+                "spiritual_position_burden", "maneuver", "1",
+                "Позиция в духовном конфликте", "Манёвр: позиция ухудшена на 1 ступень."
+            };
+            yield return new object[]
+            {
+                "spiritual_control_burden", "binding", "1",
+                "Духовный контроль", "Оковы: контроль ухудшен на 1 ступень."
+            };
+            yield return new object[]
+            {
+                "spiritual_strain_burden", "break_binding", "1",
+                "Духовное напряжение",
+                "Разрыв оков: напряжение стороны увеличено на 1 ступень."
+            };
+            yield return new object[]
+            {
+                "spiritual_tempo_burden", "force_binding", "\"deny_one_gain\"",
+                "Темп духовного конфликта",
+                "Принуждение оковами: получение одного преимущества темпа запрещено."
+            };
+            yield return new object[]
+            {
+                "spiritual_counter_burden", "incarnation_resistance", "\"reduce_one_step\"",
+                "Результат контрдействия",
+                "Сопротивление воплощению: результат контрдействия снижен на 1 ступень."
+            };
+            yield return new object[]
+            {
+                "spiritual_art_restriction", "counter", "\"restrict\"",
+                "Доступность духовного искусства",
+                "Контрдействие: духовное искусство ограничено."
+            };
+            yield return new object[]
+            {
+                "spiritual_art_restriction", "guard", "\"forbid\"",
+                "Доступность духовного искусства",
+                "Защита: духовное искусство запрещено."
+            };
         }
     }
 
@@ -576,19 +667,22 @@ public sealed class SpiritualWoundEffectProfileContractTests
     private static IEnumerable<string> InvalidMagnitudeJson(string profile) => profile switch
     {
         "spiritual_action_cost_burden" =>
-            new[] { "\"1\"", "true", "1.5", "1e0", "{}", "[]", "0", "4" },
+            new[] { "\"1\"", "true", "1.5", "1.0", "1e0", "{}", "[]", "0", "4" },
         "spiritual_position_burden" =>
-            new[] { "\"1\"", "true", "1.5", "1e0", "{}", "[]", "0", "3" },
+            new[] { "\"1\"", "true", "1.5", "1.0", "1e0", "{}", "[]", "0", "3" },
         "spiritual_control_burden" or "spiritual_strain_burden" =>
-            new[] { "\"1\"", "true", "1.5", "1e0", "{}", "[]", "0", "2" },
+            new[] { "\"1\"", "true", "1.5", "1.0", "1e0", "{}", "[]", "0", "2" },
         "spiritual_roll_hindrance" =>
-            new[] { "\"advantage\"", "1", "true", "{}", "[]" },
+            new[] { "\"advantage\"", "\"Disadvantage\"", "1", "true", "{}", "[]" },
         "spiritual_tempo_burden" =>
-            new[] { "\"deny_two_gains\"", "1", "true", "{}", "[]" },
+            new[] { "\"deny_two_gains\"", "\"Deny_one_gain\"", "1", "true", "{}", "[]" },
         "spiritual_counter_burden" =>
-            new[] { "\"deny_one_gain\"", "1", "true", "{}", "[]" },
+            new[] { "\"deny_one_gain\"", "\"Reduce_one_step\"", "1", "true", "{}", "[]" },
         "spiritual_art_restriction" =>
-            new[] { "\"disadvantage\"", "1", "true", "{}", "[]" },
+            new[]
+            {
+                "\"disadvantage\"", "\"Restrict\"", "\"Forbid\"", "1", "true", "{}", "[]"
+            },
         _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, null)
     };
 
@@ -639,6 +733,10 @@ public sealed class SpiritualWoundEffectProfileContractTests
         {
             case "missing":
                 payload.Remove(member);
+                break;
+            case "case":
+                payload.Remove(char.ToLowerInvariant(member[0]) + member[1..]);
+                payload[member] = valueJson == null ? null : JsonNode.Parse(valueJson);
                 break;
             case "extra":
             case "value":
