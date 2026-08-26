@@ -51,7 +51,7 @@ internal sealed record WoundDiagnosisEvidence(
     string AuthorityRef,
     string ExpectedBeforeFingerprint,
     string ExpectedAfterFingerprint,
-    IReadOnlyList<string> ReachableRouteIds)
+    IReadOnlyList<string> RevealedFacts)
     : WoundTransitionEvidence(AuthorityRef, ExpectedBeforeFingerprint, ExpectedAfterFingerprint);
 
 internal sealed record WoundStabilizationEvidence(
@@ -194,9 +194,6 @@ internal sealed record WoundTransitionReductionResult(
 
 internal static class WoundTransitionReducer
 {
-    internal const string NonexistentFingerprint =
-        "sha256:0000000000000000000000000000000000000000000000000000000000000000";
-
     private static readonly IReadOnlySet<string> Kinds = new HashSet<string>(
         new[]
         {
@@ -214,10 +211,18 @@ internal static class WoundTransitionReducer
             new[] { "effect", "skill", "trait", "other" },
             StringComparer.Ordinal);
 
-    internal static WoundTransitionReductionResult Reduce(WoundTransitionRequest request)
+    internal static WoundTransitionReductionResult Reduce(WoundTransitionRequest? request)
     {
-        ArgumentNullException.ThrowIfNull(request);
         var issues = new List<ValidationIssue>();
+        if (request is null)
+        {
+            Add(
+                issues,
+                "wound_transition_request_invalid",
+                "non-null typed wound transition request",
+                "null");
+            return Failure(issues);
+        }
         if (!Kinds.Contains(request.Kind))
         {
             Add(issues, "wound_transition_kind_unknown", "one exact closed transition kind", request.Kind);
@@ -236,8 +241,9 @@ internal static class WoundTransitionReducer
 
         if (request.Kind == "complicate" &&
             request.Evidence is WoundComplicationEvidence rawComplication &&
-            request.ProposedAfter is not null &&
+            request.ProposedAfter?.Complications is not null &&
             request.ProposedAfter.Complications.Count(value =>
+                value is not null &&
                 string.Equals(
                     value.ComplicationId,
                     rawComplication.ComplicationId,
@@ -252,6 +258,8 @@ internal static class WoundTransitionReducer
         }
 
         ValidateRequestAuthority(request, issues);
+        if (issues.Count != 0)
+            return Failure(issues);
         var before = Normalize(request.Before, "before", required: request.Kind != "create", issues);
         var after = Normalize(request.ProposedAfter, "after", required: true, issues);
         if (issues.Count != 0 || after is null)
@@ -259,8 +267,12 @@ internal static class WoundTransitionReducer
 
         ValidateEvidenceSeal(request, before, after, issues);
         ValidateTransitionMetadata(request, before, after, issues);
+        ValidateLegalCoordinate(after, "after", issues);
         if (before is not null)
+        {
+            ValidateLegalCoordinate(before, "before", issues);
             ValidateStableIdentityAndProvenance(before, after, issues);
+        }
         if (issues.Count != 0)
             return Failure(issues);
 
@@ -310,14 +322,21 @@ internal static class WoundTransitionReducer
         if (!Exact(request.TransitionId) ||
             !Exact(request.OperationKey) ||
             !Exact(request.EventRef) ||
-            request.Turn < 0 ||
-            request.Evidence is null)
+            request.Turn < 0)
         {
             Add(
                 issues,
                 "wound_transition_request_invalid",
                 "exact client transition/operation/event authority and non-negative turn",
                 $"transition={request.TransitionId};operation={request.OperationKey};event={request.EventRef};turn={request.Turn}");
+        }
+        if (request.Evidence is null)
+        {
+            Add(
+                issues,
+                "wound_transition_evidence_missing",
+                "non-null exact typed transition evidence",
+                "null");
         }
     }
 
@@ -384,7 +403,7 @@ internal static class WoundTransitionReducer
         }
 
         var actualBefore = before is null
-            ? NonexistentFingerprint
+            ? WoundHistoryState.ComputeNonexistentBeforeFingerprint(after.WoundId)
             : WoundIdentityState.ComputeSemanticFingerprint(before);
         var actualAfter = WoundIdentityState.ComputeSemanticFingerprint(after);
         if (!string.Equals(
@@ -417,6 +436,22 @@ internal static class WoundTransitionReducer
         WoundMaterializationEnvelope after,
         List<ValidationIssue> issues)
     {
+        if (before is not null &&
+            request.Kind is "legacy" or "archive" &&
+            TerminalPair(before, after))
+        {
+            if (after.LastTransition != before.LastTransition)
+            {
+                Add(
+                    issues,
+                    "wound_transition_metadata_mismatch",
+                    "post-terminal audit preserves the sealed wound lastTransition",
+                    $"{after.LastTransition.TransitionId}/{after.LastTransition.Kind}/" +
+                    $"{after.LastTransition.Turn}/{after.LastTransition.Ordinal}");
+            }
+            return;
+        }
+
         var expectedOrdinal = before is null ? 1 : before.LastTransition.Ordinal + 1;
         if (!string.Equals(
                 after.LastTransition.TransitionId,
@@ -513,6 +548,7 @@ internal static class WoundTransitionReducer
         }
         if (!Exact(evidence.OpportunityId) ||
             evidence.MaximumSeverityRank is < 1 or > 4 ||
+            evidence.ExpectedOwner is null ||
             !Exact(evidence.ExpectedDomain))
         {
             Add(
@@ -539,7 +575,10 @@ internal static class WoundTransitionReducer
                 after.WoundId);
         }
         if (!string.Equals(after.Lifecycle, "active", StringComparison.Ordinal) ||
-            after.Care.State is not ("fresh" or "untreated"))
+            after.Care.State is not ("fresh" or "untreated") ||
+            after.Care.StabilizedAtTurn is not null ||
+            after.Care.ActiveCourseId is not null ||
+            after.Care.LastAttemptId is not null)
         {
             Add(
                 issues,
@@ -547,22 +586,22 @@ internal static class WoundTransitionReducer
                 "active fresh or untreated wound",
                 $"{after.Lifecycle}/{after.Care.State}");
         }
+        if (after.Origin.CreatedAtTurn != request.Turn)
+        {
+            Add(
+                issues,
+                "wound_transition_create_chronology_invalid",
+                $"origin createdAtTurn equals sealed request turn {request.Turn}",
+                after.Origin.CreatedAtTurn.ToString());
+        }
         if (after.Severity.Rank > evidence.MaximumSeverityRank ||
-            SeverityRank(after.Severity.MaximumAtCreation) < after.Severity.Rank)
+            SeverityRank(after.Severity.MaximumAtCreation) != after.Severity.Rank)
         {
             Add(
                 issues,
                 "wound_transition_create_severity_forbidden",
                 $"severity I-{evidence.MaximumSeverityRank} within maximumAtCreation",
                 after.Severity.Rank.ToString());
-        }
-        if (!RealmDomainIsLegal(after))
-        {
-            Add(
-                issues,
-                "wound_transition_realm_domain_invalid",
-                "physical Mortal or spiritual afterlife coordinate",
-                $"{after.Owner.Realm}/{after.Classification.Domain}");
         }
     }
 
@@ -755,6 +794,31 @@ internal static class WoundTransitionReducer
                 "unchanged recovery without worsening",
                 after.WoundId);
         }
+        if (!worsened && after.Care != before.Care)
+        {
+            Add(
+                issues,
+                "wound_transition_complicate_care_changed",
+                "unchanged care without a sealed worsening outcome",
+                after.WoundId);
+        }
+        if (worsened && after.Care.ActiveCourseId is not null)
+        {
+            Add(
+                issues,
+                "wound_transition_pending_conflict",
+                "no active course after complication worsening",
+                after.Care.ActiveCourseId);
+        }
+        if (worsened && !SameRecoveryPolicyExceptStep(before.Recovery, after.Recovery))
+        {
+            Add(
+                issues,
+                "wound_transition_complicate_recovery_policy_changed",
+                "worsening resets only the current recovery step and preserves its sealed policy",
+                after.WoundId);
+        }
+        ValidateRetainedConsequences(before, after, issues);
         if (!CanonicalEqual(
                 before,
                 after with
@@ -792,34 +856,95 @@ internal static class WoundTransitionReducer
             ActiveSourceInvalid(issues, before, after);
             return;
         }
-        if (!ExactUnique(evidence.ReachableRouteIds))
+        if (!Exact(evidence.AuthorityRef) || !ExactUnique(evidence.RevealedFacts))
         {
             Add(
                 issues,
                 "wound_transition_evidence_invalid",
-                "unique exact reachable route identities",
-                "invalid route evidence");
+                "one exact diagnosis path and unique typed declared reveal facts",
+                evidence.AuthorityRef ?? "null");
+            return;
         }
 
-        var beforeKnown = before.Treatment.KnownRouteIds.ToHashSet(StringComparer.Ordinal);
-        var afterKnown = after.Treatment.KnownRouteIds.ToHashSet(StringComparer.Ordinal);
-        var reachable = evidence.ReachableRouteIds.ToHashSet(StringComparer.Ordinal);
-        var defined = after.Treatment.Routes.Select(static route => route.RouteId)
-            .ToHashSet(StringComparer.Ordinal);
-        var newlyKnown = afterKnown.Except(beforeKnown, StringComparer.Ordinal).ToArray();
-        if (!beforeKnown.IsSubsetOf(afterKnown) ||
-            newlyKnown.Any(value => !reachable.Contains(value) || !defined.Contains(value)))
+        var diagnosisPath = before.Treatment.DiagnosisPaths.SingleOrDefault(path =>
+            string.Equals(
+                path.DiagnosisPathId,
+                evidence.AuthorityRef,
+                StringComparison.Ordinal));
+        if (diagnosisPath is null ||
+            !SequenceEqual(diagnosisPath.Reveals, evidence.RevealedFacts) ||
+            evidence.RevealedFacts.Any(static fact => !TryParseDiagnosisReveal(
+                fact,
+                out _,
+                out _)))
         {
             Add(
                 issues,
                 "wound_transition_diagnosis_fact_unauthorized",
-                "only reachable declared route facts added without forgetting prior facts",
-                string.Join(",", newlyKnown));
+                "exact declared reveals of one accepted diagnosis path",
+                evidence.AuthorityRef);
+            return;
+        }
+
+        var definedRoutes = before.Treatment.Routes.Select(static route => route.RouteId)
+            .ToHashSet(StringComparer.Ordinal);
+        var definedComplications = before.Complications
+            .Select(static complication => complication.ComplicationId)
+            .ToHashSet(StringComparer.Ordinal);
+        var revealedRoutes = ImmutableArray.CreateBuilder<string>();
+        var revealedComplications = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var fact in evidence.RevealedFacts)
+        {
+            TryParseDiagnosisReveal(fact, out var kind, out var identifier);
+            if (kind == "route")
+                revealedRoutes.Add(identifier);
+            else
+                revealedComplications.Add(identifier);
+        }
+        if (revealedRoutes.Any(routeId => !definedRoutes.Contains(routeId)) ||
+            revealedComplications.Any(complicationId =>
+                !definedComplications.Contains(complicationId)))
+        {
+            Add(
+                issues,
+                "wound_transition_diagnosis_fact_unauthorized",
+                "every declared route/complication reveal resolves in the sealed wound",
+                string.Join(",", evidence.RevealedFacts));
+            return;
+        }
+
+        var expectedKnownRoutes = before.Treatment.KnownRouteIds
+            .Concat(revealedRoutes.Where(routeId => !before.Treatment.KnownRouteIds.Contains(
+                routeId,
+                StringComparer.Ordinal)))
+            .ToImmutableArray();
+        var expectedComplications = before.Complications.Select(complication =>
+                revealedComplications.Contains(complication.ComplicationId)
+                    ? complication with { Visibility = "known_to_player" }
+                    : complication)
+            .ToImmutableArray();
+        if (!SequenceEqual(after.Treatment.KnownRouteIds, expectedKnownRoutes) ||
+            !ComplicationSequenceEqual(after.Complications, expectedComplications))
+        {
+            Add(
+                issues,
+                "wound_transition_diagnosis_fact_unauthorized",
+                "only exact route and complication facts declared by the accepted diagnosis path",
+                evidence.AuthorityRef);
+        }
+        if (!DisplayEqual(after.Display, before.Display))
+        {
+            Add(
+                issues,
+                "wound_transition_diagnosis_display_changed",
+                "diagnosis cannot rewrite undeclared display text",
+                after.WoundId);
         }
 
         var normalizedAfter = after with
         {
             Display = before.Display,
+            Complications = before.Complications,
             Treatment = after.Treatment with { KnownRouteIds = before.Treatment.KnownRouteIds },
             LastTransition = before.LastTransition
         };
@@ -864,6 +989,7 @@ internal static class WoundTransitionReducer
                 "wound_transition_evidence_invalid",
                 "exact stabilization attempt and unique declared removals",
                 evidence.AttemptId);
+            return;
         }
         if (after.Severity.Rank != before.Severity.Rank)
         {
@@ -907,6 +1033,7 @@ internal static class WoundTransitionReducer
                 $"blockers={string.Join(',', removedBlockers)}/{string.Join(',', evidence.RemovedRecoveryBlockers)};" +
                 $"added={string.Join(',', addedComplications)}|{string.Join(',', addedEffects)}|{string.Join(',', addedBlockers)}");
         }
+        ValidateRetainedConsequences(before, after, issues);
         if (!SameRecoveryExceptBlockers(before.Recovery, after.Recovery) ||
             !CanonicalEqual(
                 before,
@@ -952,6 +1079,11 @@ internal static class WoundTransitionReducer
                 "exact sealed route/gate and attempt identity",
                 $"{evidence.RouteOrGateRef}/{evidence.AttemptId}");
         }
+        if (evidence.Outcome is null)
+        {
+            DeclaredOutcomeInvalid(issues, "null");
+            return;
+        }
         if (!string.Equals(after.Care.LastAttemptId, evidence.AttemptId, StringComparison.Ordinal))
         {
             Add(
@@ -979,7 +1111,7 @@ internal static class WoundTransitionReducer
                 $"{before.Severity.Rank}->{after.Severity.Rank}");
         }
         if (evidence.Outcome.Heals &&
-            (before.Severity.Rank != 1 || after.Severity.Rank != 1))
+            !FollowUpHealStageIsLegal(before, after))
         {
             Add(
                 issues,
@@ -987,6 +1119,7 @@ internal static class WoundTransitionReducer
                 "severity-I source and staging state for explicit heal",
                 $"{before.Severity.Rank}->{after.Severity.Rank}");
         }
+        ValidateRetainedConsequences(before, after, issues);
         if (!AllowedTreatmentScope(before, after))
         {
             Add(
@@ -1020,6 +1153,11 @@ internal static class WoundTransitionReducer
                 "wound_transition_evidence_invalid",
                 "exact fresh tick/cycle and clock authority",
                 $"{evidence.TickKey}/{evidence.ClockOrCycleRef}");
+        }
+        if (evidence.Outcome is null)
+        {
+            DeclaredOutcomeInvalid(issues, "null");
+            return;
         }
         if (string.Equals(
                 before.Recovery.LastTickKey,
@@ -1063,7 +1201,7 @@ internal static class WoundTransitionReducer
                 $"{before.Recovery.CurrentStepProgress}->{after.Recovery.CurrentStepProgress}");
         }
         if (evidence.Outcome.Heals &&
-            (before.Severity.Rank != 1 || after.Severity.Rank != 1))
+            !FollowUpHealStageIsLegal(before, after))
         {
             Add(
                 issues,
@@ -1071,6 +1209,7 @@ internal static class WoundTransitionReducer
                 "severity-I source and staging state for explicit heal",
                 $"{before.Severity.Rank}->{after.Severity.Rank}");
         }
+        ValidateRetainedConsequences(before, after, issues);
         if (!AllowedRecoveryScope(before, after))
         {
             Add(
@@ -1087,7 +1226,19 @@ internal static class WoundTransitionReducer
         List<ValidationIssue> issues)
     {
         if (outcome is null ||
-            outcome.ResultingSeverityRank != after.Severity.Rank ||
+            outcome.ResultingSeverityRank is < 1 or > 4 ||
+            !Exact(outcome.ResultingCareState) ||
+            outcome.ResultingRecoveryProgress < 0 ||
+            !ExactUnique(outcome.ResultingComplicationIds) ||
+            !ExactUnique(outcome.ResultingEffectIds) ||
+            !ExactUnique(outcome.ResultingRecoveryBlockers) ||
+            !ExactUnique(outcome.ResultingCompletedRouteIds))
+        {
+            DeclaredOutcomeInvalid(issues, after.WoundId);
+            return;
+        }
+
+        if (outcome.ResultingSeverityRank != after.Severity.Rank ||
             !string.Equals(
                 outcome.ResultingCareState,
                 after.Care.State,
@@ -1151,7 +1302,12 @@ internal static class WoundTransitionReducer
                 evidence.AttemptId,
                 after.Care.LastAttemptId ?? "null");
         }
-        ValidateLegacyDeclarations(before, after, evidence.Legacies, issues);
+        ValidateLegacyDeclarations(
+            before,
+            after,
+            evidence.Legacies,
+            appendToRelations: true,
+            issues);
         var normalizedAfter = after with
         {
             Lifecycle = before.Lifecycle,
@@ -1190,19 +1346,18 @@ internal static class WoundTransitionReducer
                 $"{before.Lifecycle}/{after.Lifecycle}/{evidence.TerminalAuthorityRef}");
             return;
         }
-        ValidateLegacyDeclarations(before, after, evidence.Legacies, issues);
-        var normalizedAfter = after with
-        {
-            Relations = before.Relations,
-            Display = before.Display,
-            LastTransition = before.LastTransition
-        };
-        if (!CanonicalEqual(before, normalizedAfter))
+        ValidateLegacyDeclarations(
+            before,
+            after,
+            evidence.Legacies,
+            appendToRelations: false,
+            issues);
+        if (!CanonicalEqual(before, after))
         {
             Add(
                 issues,
                 "wound_transition_legacy_scope_invalid",
-                "history-only cosmetic or independent mechanical legacy provenance",
+                "post-terminal legacy audit preserves the sealed wound fingerprint",
                 after.WoundId);
         }
     }
@@ -1227,9 +1382,7 @@ internal static class WoundTransitionReducer
                 $"{before.Lifecycle}/{after.Lifecycle}/{evidence.TerminalAuthorityRef}");
             return;
         }
-        if (!CanonicalEqual(
-                before,
-                after with { LastTransition = before.LastTransition }))
+        if (!CanonicalEqual(before, after))
         {
             Add(
                 issues,
@@ -1242,10 +1395,21 @@ internal static class WoundTransitionReducer
     private static void ValidateLegacyDeclarations(
         WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope after,
-        IReadOnlyList<WoundLegacyDeclaration> declarations,
+        IReadOnlyList<WoundLegacyDeclaration>? declarations,
+        bool appendToRelations,
         List<ValidationIssue> issues)
     {
-        if (declarations is null || declarations.Count == 0)
+        if (declarations is null || declarations.Any(static declaration => declaration is null))
+        {
+            Add(
+                issues,
+                "wound_transition_legacy_invalid",
+                "non-null bounded typed legacy declarations",
+                "null");
+            return;
+        }
+
+        if (declarations.Count == 0)
         {
             if (!SequenceEqual(before.Relations.LegacyRefs, after.Relations.LegacyRefs) ||
                 !SequenceEqual(
@@ -1289,6 +1453,22 @@ internal static class WoundTransitionReducer
                     "unique exact cosmetic history legacy or independent mechanical entity with exact wound provenance",
                     declaration.LegacyId);
             }
+        }
+
+        if (!appendToRelations)
+        {
+            if (!SequenceEqual(before.Relations.LegacyRefs, after.Relations.LegacyRefs) ||
+                !SequenceEqual(
+                    before.Relations.IndependentEffectRefs,
+                    after.Relations.IndependentEffectRefs))
+            {
+                Add(
+                    issues,
+                    "wound_transition_legacy_invalid",
+                    "post-terminal audit declarations do not mutate sealed wound relations",
+                    after.WoundId);
+            }
+            return;
         }
 
         var expectedCosmetic = before.Relations.LegacyRefs.Concat(
@@ -1409,7 +1589,7 @@ internal static class WoundTransitionReducer
         }
 
         var beforeFingerprint = before is null
-            ? NonexistentFingerprint
+            ? WoundHistoryState.ComputeNonexistentBeforeFingerprint(after.WoundId)
             : WoundIdentityState.ComputeSemanticFingerprint(before);
         var afterFingerprint = WoundIdentityState.ComputeSemanticFingerprint(after);
         intents.Add(new WoundTransitionHistoryIntent(
@@ -1423,7 +1603,7 @@ internal static class WoundTransitionReducer
             afterFingerprint,
             attemptId,
             tickKey,
-            request.Kind is "heal" or "archive"));
+            request.Kind == "heal"));
         return new WoundTransitionReductionResult(
             after,
             intents.ToImmutable(),
@@ -1432,10 +1612,14 @@ internal static class WoundTransitionReducer
 
     private static void AddLegacyIntents(
         ImmutableArray<WoundTransitionIntent>.Builder intents,
-        IReadOnlyList<WoundLegacyDeclaration> declarations)
+        IReadOnlyList<WoundLegacyDeclaration>? declarations)
     {
+        if (declarations is null)
+            return;
         foreach (var declaration in declarations)
         {
+            if (declaration is null)
+                continue;
             if (string.Equals(declaration.Kind, "cosmetic", StringComparison.Ordinal))
             {
                 intents.Add(new WoundCosmeticLegacyIntent(
@@ -1557,6 +1741,87 @@ internal static class WoundTransitionReducer
         SequenceEqual(left.OwnedEffectIds, right.OwnedEffectIds) &&
         string.Equals(left.Visibility, right.Visibility, StringComparison.Ordinal);
 
+    private static bool ComplicationSequenceEqual(
+        IReadOnlyList<WoundComplication>? left,
+        IReadOnlyList<WoundComplication>? right)
+    {
+        if (left is null || right is null || left.Count != right.Count)
+            return false;
+        for (var index = 0; index < left.Count; index++)
+        {
+            if (left[index] is null ||
+                right[index] is null ||
+                !ComplicationEqual(left[index], right[index]))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static void ValidateRetainedConsequences(
+        WoundMaterializationEnvelope before,
+        WoundMaterializationEnvelope after,
+        List<ValidationIssue> issues)
+    {
+        foreach (var prior in before.Consequences.Entries)
+        {
+            var retained = after.Consequences.Entries.Where(entry =>
+                    string.Equals(entry.EffectId, prior.EffectId, StringComparison.Ordinal))
+                .ToArray();
+            if (retained.Length > 1 ||
+                retained.Length == 1 && !ConsequenceEqual(prior, retained[0]))
+            {
+                Add(
+                    issues,
+                    "wound_transition_retained_consequence_changed",
+                    "retained consequence effect identity preserves exact slot/profile/summary payload",
+                    prior.EffectId);
+            }
+        }
+    }
+
+    private static bool ConsequenceEqual(
+        WoundConsequenceEntry left,
+        WoundConsequenceEntry right) =>
+        left.Slot == right.Slot &&
+        string.Equals(left.ProfileKey, right.ProfileKey, StringComparison.Ordinal) &&
+        string.Equals(left.EffectId, right.EffectId, StringComparison.Ordinal) &&
+        string.Equals(left.ReadableSummary, right.ReadableSummary, StringComparison.Ordinal);
+
+    private static bool DisplayEqual(WoundDisplay left, WoundDisplay right) =>
+        string.Equals(left.Name, right.Name, StringComparison.Ordinal) &&
+        string.Equals(left.Description, right.Description, StringComparison.Ordinal) &&
+        SequenceEqual(left.VisibleSymptoms, right.VisibleSymptoms) &&
+        string.Equals(left.Prognosis, right.Prognosis, StringComparison.Ordinal) &&
+        string.Equals(left.Visibility, right.Visibility, StringComparison.Ordinal) &&
+        string.Equals(
+            left.AcquisitionNarration,
+            right.AcquisitionNarration,
+            StringComparison.Ordinal);
+
+    private static bool TryParseDiagnosisReveal(
+        string? value,
+        out string kind,
+        out string identifier)
+    {
+        kind = string.Empty;
+        identifier = string.Empty;
+        if (value is null)
+            return false;
+        var separator = value.IndexOf(':');
+        if (separator <= 0 || separator == value.Length - 1)
+            return false;
+        kind = value[..separator];
+        identifier = value[(separator + 1)..];
+        return kind is "route" or "complication" && Exact(identifier);
+    }
+
+    private static bool FollowUpHealStageIsLegal(
+        WoundMaterializationEnvelope before,
+        WoundMaterializationEnvelope after) =>
+        before.Severity.Rank is 1 or 2 && after.Severity.Rank == 1;
+
     private static ImmutableArray<string> ComplicationIds(WoundMaterializationEnvelope wound) =>
         wound.Complications.Select(static value => value.ComplicationId).ToImmutableArray();
 
@@ -1624,13 +1889,45 @@ internal static class WoundTransitionReducer
             "active before and active after wound state",
             $"{before.Lifecycle}/{before.Care.State}->{after.Lifecycle}/{after.Care.State}");
 
-    private static bool RealmDomainIsLegal(WoundMaterializationEnvelope wound) =>
-        wound.Classification.Domain switch
+    private static void ValidateLegalCoordinate(
+        WoundMaterializationEnvelope wound,
+        string member,
+        List<ValidationIssue> issues)
+    {
+        var realmDomainLegal = wound.Classification.Domain switch
         {
             "physical" => string.Equals(wound.Owner.Realm, "mortal_world", StringComparison.Ordinal),
             "spiritual" => wound.Owner.Realm is "chaos_sea" or "shining_abode",
             _ => false
         };
+        if (!realmDomainLegal)
+        {
+            Add(
+                issues,
+                "wound_transition_realm_domain_invalid",
+                "physical Mortal or spiritual Chaos Sea/Shining Abode coordinate",
+                $"{member}:{wound.Owner.Realm}/{wound.Classification.Domain}");
+            return;
+        }
+
+        var ownerFamilyLegal = wound.Owner.Realm switch
+        {
+            "mortal_world" => wound.Owner.OwnerKind is
+                "player" or "npc" or "combatant" or "combatant_member",
+            "chaos_sea" or "shining_abode" => wound.Owner.OwnerKind is
+                "player_soul" or "guardian" or "resident" or "radiant_actor" or
+                "afterlife_actor",
+            _ => false
+        };
+        if (!ownerFamilyLegal)
+        {
+            Add(
+                issues,
+                "wound_transition_owner_coordinate_invalid",
+                "owner kind belongs to the exact Mortal or afterlife realm family",
+                $"{member}:{wound.Owner.Realm}/{wound.Owner.OwnerKind}");
+        }
+    }
 
     private static int SeverityRank(string value) => value switch
     {
@@ -1655,11 +1952,24 @@ internal static class WoundTransitionReducer
         return values.All(value => Exact(value) && unique.Add(value));
     }
 
-    private static bool SameSet(IEnumerable<string> left, IEnumerable<string> right) =>
+    private static bool SameSet(IEnumerable<string>? left, IEnumerable<string>? right) =>
+        left is not null &&
+        right is not null &&
         left.ToHashSet(StringComparer.Ordinal).SetEquals(right);
 
-    private static bool SequenceEqual(IEnumerable<string> left, IEnumerable<string> right) =>
+    private static bool SequenceEqual(IEnumerable<string>? left, IEnumerable<string>? right) =>
+        left is not null &&
+        right is not null &&
         left.SequenceEqual(right, StringComparer.Ordinal);
+
+    private static void DeclaredOutcomeInvalid(
+        List<ValidationIssue> issues,
+        string actual) =>
+        Add(
+            issues,
+            "wound_transition_declared_outcome_invalid",
+            "non-null bounded typed outcome with exact unique result lists",
+            actual);
 
     private static void EvidenceKindMismatch(
         List<ValidationIssue> issues,

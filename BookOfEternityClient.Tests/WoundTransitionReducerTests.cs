@@ -140,12 +140,16 @@ public sealed class WoundTransitionReducerTests
                 CreateEvidence(wrongCreatedTurn))),
             "wound_transition_create_chronology_invalid");
 
+        var forgedMaximum = legal with
+        {
+            Severity = legal.Severity with { MaximumAtCreation = "IV" }
+        };
         AssertInvalid(
             WoundTransitionReducer.Reduce(Request(
                 "create",
                 null,
-                legal,
-                CreateEvidence(legal, maximumSeverityRank: 4))),
+                forgedMaximum,
+                CreateEvidence(forgedMaximum, maximumSeverityRank: 4))),
             "wound_transition_create_severity_forbidden");
 
         var forgedCare = legal with
@@ -1194,13 +1198,7 @@ public sealed class WoundTransitionReducerTests
             null,
             "wound_other",
             "Некорректное наследие.");
-        var after = NewTransition(before with
-        {
-            Relations = before.Relations with
-            {
-                IndependentEffectRefs = ImmutableArray.Create(invalid.LegacyId)
-            }
-        }, "legacy");
+        var after = before;
 
         var result = WoundTransitionReducer.Reduce(Request(
             "legacy",
