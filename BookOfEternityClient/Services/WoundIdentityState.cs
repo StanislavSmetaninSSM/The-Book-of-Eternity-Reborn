@@ -217,6 +217,15 @@ internal sealed class WoundIdentityState
                 "active index status and active wound lifecycle",
                 $"index={entry.Status}; wound={wound.Lifecycle}");
         }
+        if (entry.TerminalTransitionId is not null)
+        {
+            AddIssue(
+                issues,
+                path + ".terminalTransitionId",
+                "wound_identity_active_agreement_mismatch",
+                "null terminalTransitionId for active identity agreement",
+                entry.TerminalTransitionId);
+        }
         AddAgreementIssueIfDifferent(
             issues, path + ".realm", wound.Owner.Realm, entry.Realm);
         AddAgreementIssueIfDifferent(

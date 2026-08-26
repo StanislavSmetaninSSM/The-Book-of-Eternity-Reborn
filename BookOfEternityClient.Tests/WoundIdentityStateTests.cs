@@ -355,6 +355,19 @@ public sealed class WoundIdentityStateTests
     }
 
     [Fact]
+    public void ValidateActiveAgreement_RejectsNonNullTerminalEvidenceForAlignedActivePair()
+    {
+        var (entry, wound) = CreateAlignedPair();
+        entry = entry with { TerminalTransitionId = "terminal_transition" };
+
+        var issues = WoundIdentityState.ValidateActiveAgreement(entry, wound, EntryPath);
+
+        var issue = Assert.Single(issues);
+        Assert.Equal("wound_identity_active_agreement_mismatch", issue.Code);
+        Assert.Equal(EntryPath + ".terminalTransitionId", issue.FilePath);
+    }
+
+    [Fact]
     public void ValidateActiveAgreement_RejectsTerminalPairInsteadOfTreatingItAsActive()
     {
         var (entry, wound) = CreateAlignedPair();
