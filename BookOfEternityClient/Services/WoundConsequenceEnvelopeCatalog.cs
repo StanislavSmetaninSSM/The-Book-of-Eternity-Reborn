@@ -1964,6 +1964,9 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
+        var commonIssues = new List<ValidationIssue>();
+        EffectComponentProfiles.ValidateComponent(component, componentPath, commonIssues);
+
         if (!IsClosedObject(
                 component,
                 "componentId",
@@ -2035,6 +2038,18 @@ internal static class WoundConsequenceEnvelopeCatalog
                 "wound_consequence_spiritual_magnitude_invalid",
                 ExpectedSpiritualMagnitude(profile, rank),
                 DescribeProperty(payload, "magnitude"));
+            return;
+        }
+
+        if (commonIssues.Count != 0)
+        {
+            var commonIssue = commonIssues[0];
+            Add(
+                issues,
+                commonIssue.FilePath,
+                "wound_consequence_spiritual_profile_invalid",
+                commonIssue.Expected ?? "component accepted by the common #1535 profile registry",
+                commonIssue.Actual ?? commonIssue.Code ?? "invalid component");
             return;
         }
 

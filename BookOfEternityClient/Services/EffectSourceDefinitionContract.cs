@@ -408,7 +408,7 @@ internal static class EffectSourceDefinitionContract
             issues,
             path,
             "effect_source_definition_spiritual_wound_link_invalid",
-            "exactly one exact/confusable-unique wound link with role source; independent context siblings may remain",
+            "exactly one exact/confusable-unique wound link with role source; independent context or condition siblings may remain",
             actual);
 
     private static void ValidateDisplay(JsonElement root, string path, List<ValidationIssue> issues)

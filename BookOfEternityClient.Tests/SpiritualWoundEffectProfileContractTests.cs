@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
@@ -167,6 +168,7 @@ public sealed class SpiritualWoundEffectProfileContractTests
                 ("wrong_link_kind", "definitions[0].links[0].kind", "effect_source_definition_spiritual_wound_link_invalid"),
                 ("wrong_link_role", "definitions[0].links[0].role", "effect_source_definition_spiritual_wound_link_invalid"),
                 ("duplicate_link", "definitions[0].links[1]", "effect_source_definition_spiritual_wound_link_invalid"),
+                ("distinct_duplicate_link", "definitions[0].links[1]", "effect_source_definition_spiritual_wound_link_invalid"),
                 ("confusable_duplicate_link", "definitions[0].links[1]", "effect_source_definition_spiritual_wound_link_invalid")
             };
             foreach (var profile in Profiles)
@@ -192,6 +194,7 @@ public sealed class SpiritualWoundEffectProfileContractTests
             Assert.Equal(
                 new[] { "profile_specific" },
                 descriptor.LegalMergeReducers.OrderBy(static value => value, StringComparer.Ordinal));
+            Assert.IsAssignableFrom<IImmutableSet<string>>(descriptor.LegalMergeReducers);
             Assert.False(string.IsNullOrWhiteSpace(descriptor.ProjectionDescriptor));
         }
     }
@@ -356,7 +359,7 @@ public sealed class SpiritualWoundEffectProfileContractTests
 
     [Theory]
     [MemberData(nameof(ProfileCases))]
-    public void CompleteDefinition_AllowsIndependentWoundContextSibling(
+    public void CompleteDefinition_AllowsIndependentWoundContextAndConditionSiblings(
         string profile)
     {
         var definition = EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
@@ -366,6 +369,12 @@ public sealed class SpiritualWoundEffectProfileContractTests
             ["kind"] = "wound",
             ["targetId"] = "wound_related_context_001",
             ["role"] = "context"
+        });
+        definition["links"]!.AsArray().Add(new JsonObject
+        {
+            ["kind"] = "wound",
+            ["targetId"] = "wound_related_condition_001",
+            ["role"] = "condition"
         });
 
         Assert.Empty(ValidateDefinitions("chaos_sea", definition));
@@ -431,6 +440,14 @@ public sealed class SpiritualWoundEffectProfileContractTests
                 break;
             case "duplicate_link":
                 definition["links"]!.AsArray().Add(definition["links"]![0]!.DeepClone());
+                break;
+            case "distinct_duplicate_link":
+                definition["links"]!.AsArray().Add(new JsonObject
+                {
+                    ["kind"] = "wound",
+                    ["targetId"] = "wound_spiritual_distinct_source",
+                    ["role"] = "source"
+                });
                 break;
             case "confusable_duplicate_link":
                 definition["links"]!.AsArray().Add(new JsonObject

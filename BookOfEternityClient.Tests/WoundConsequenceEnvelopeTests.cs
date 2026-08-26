@@ -1048,6 +1048,46 @@ public sealed class WoundConsequenceEnvelopeTests
                 "wound_consequence_reaction_expansion_invalid");
     }
 
+    [Theory]
+    [InlineData("2.0")]
+    [InlineData("2e0")]
+    public void OwnedApplyDefinition_RejectsNonCanonicalNumericLexeme(
+        string maxExpansionJson)
+    {
+        var reaction = RawElement($$"""
+            {
+              "componentId": "component_reaction",
+              "profile": "event_reaction",
+              "priority": 0,
+              "payload": {
+                "eventType": "owner_damaged",
+                "resultKind": "apply_definition",
+                "dependency": "after_current_event",
+                "definitionKey": "wound_reaction_definition",
+                "parameters": {},
+                "maxExpansion": {{maxExpansionJson}}
+              }
+            }
+            """);
+        var effect = Effect(
+            "effect_reaction",
+            new[] { reaction },
+            expansions: new[]
+            {
+                new WoundReactionExpansionProposal(
+                    "component_reaction",
+                    new[] { MarkerComponent("component_marker") })
+            });
+
+        AssertIssue(
+            Validate(MortalRequest(
+                "III",
+                new[] { effect },
+                Entries(1, "effect_reaction", "event_reaction"))),
+            Path + ".effects[0].components[0].payload.maxExpansion",
+            "effect_materialization_invalid_component");
+    }
+
     [Fact]
     public void ReactionExpansion_MustBePresentUniqueFullyFlattenedAndOneRelease()
     {
@@ -1367,6 +1407,26 @@ public sealed class WoundConsequenceEnvelopeTests
         Assert.Equal(axis, slot.Axis);
         Assert.Equal("pressure", slot.OperationKey);
         Assert.Equal(profile + ":pressure", slot.Coordinate);
+    }
+
+    [Fact]
+    public void SpiritualRegistry_UsesTheCommonComponentPriorityEnvelope()
+    {
+        var component = JsonNode.Parse(SpiritualComponent(
+            "component",
+            "spiritual_roll_hindrance",
+            "pressure",
+            "rollMode",
+            "disadvantage").GetRawText())!.AsObject();
+        component["priority"] = int.MaxValue;
+
+        AssertIssue(
+            Validate(SpiritualSingle(
+                "I",
+                Element(component),
+                "spiritual_roll_hindrance")),
+            Path + ".effects[0].components[0].priority",
+            "wound_consequence_spiritual_profile_invalid");
     }
 
     [Theory]

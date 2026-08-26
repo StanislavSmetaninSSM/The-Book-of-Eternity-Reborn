@@ -541,7 +541,7 @@ internal static class EffectComponentProfiles
         new(
             profile,
             EffectComponentResolutionMode.Deterministic,
-            new HashSet<string>(reducers, StringComparer.Ordinal),
+            reducers.ToImmutableHashSet(StringComparer.Ordinal),
             projection);
 
     private static void ValidateCharacteristicModifier(
