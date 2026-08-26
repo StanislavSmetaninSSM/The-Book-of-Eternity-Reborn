@@ -46,6 +46,8 @@ internal static class WoundMaterializationTestFixtures
             readableLocus: "наружная сторона левого предплечья",
             cause: "Острый металлический край вскрыл предплечье во время заражённого обвала.",
             visibleSymptoms: new JsonArray("кровотечение", "пульсирующая боль"),
+            complicationKind: "infection",
+            complicationDisplayName: "Риск воспаления",
             hiddenRoute: CreateAntibioticCourse(refs),
             visibleRoute: CreateCleanseAndSutureRoute(refs),
             diagnosisPath: CreateContaminationDiagnosisPath(refs));
@@ -97,6 +99,8 @@ internal static class WoundMaterializationTestFixtures
             readableLocus: "каналы левой руки и грудной резонатор",
             cause: "Трещина в поющем кристалле обожгла тело и нарушила внутренний резонанс.",
             visibleSymptoms: new JsonArray("светящиеся трещины кожи", "дрожь при магическом усилии"),
+            complicationKind: "spiritual_instability",
+            complicationDisplayName: "Резонансная нестабильность",
             hiddenRoute: CreateCrystalDustRitualRoute(refs),
             visibleRoute: CreateFocusStabilizationRoute(refs),
             diagnosisPath: CreateResonanceDiagnosisPath(refs));
@@ -202,7 +206,7 @@ internal static class WoundMaterializationTestFixtures
         };
         return new ElyaraScenarioFixture(
             new ElyaraBuiltInAssets(manifest.DeepClone().AsObject(), dossier, "/alwaysAvailable"), profiles, profile, future,
-            new ElyaraScenarioRefs("elyara", "location_elyara_lazaret", "service_elyara_healing", "availability_elyara_first_chaos_sea_entry"),
+            new ElyaraScenarioRefs("elyara", "location_elyara_lazaret", "service_elyara_healing", "/alwaysAvailable"),
             new ElyaraExpectedProtectedFields(DiscoverableFromFirstChaosSeaEntry: true, new[]
             {
                 "/standardArts/spiritual_healing/tier", "/locationId", "/locationName",
@@ -224,8 +228,11 @@ internal static class WoundMaterializationTestFixtures
         const string factionId = "faction_shining_wound_sanctuary";
         const string residentId = "resident_shining_wound_healer";
         const string locationId = "location_shining_wound_sanctuary";
-        var faction = CreateCurrentShiningFaction(factionId, locationId);
-        var resident = CreateCurrentResident(residentId, locationId);
+        var faction = CreateCurrentShiningFaction(factionId, locationId, residentId);
+        const string guardianId = "guard_system_azalia_001";
+        const string abodeId = "abode_azalia_wound_sanctuary";
+        var guardianRoot = CreateAzaliaGuardianRoot(guardianId, abodeId);
+        var resident = CreateCurrentResident(residentId, guardianId, abodeId, factionId);
         var profile = CreateCurrentSpiritualProfile("resident", residentId, "Shining Abode");
         var shining = ShiningAbodeState.CreateDefaultState();
         shining["availability"] = ShiningAbodeState.AvailabilityActive;
@@ -255,7 +262,8 @@ internal static class WoundMaterializationTestFixtures
             },
             profiles,
             future,
-            new ShiningFactionScenarioRefs(factionId, residentId, residentId, locationId,
+            guardianRoot,
+            new ShiningFactionScenarioRefs(factionId, residentId, residentId, abodeId,
                 serviceVisibility == null ? null : $"service_{residentId}_healing"),
             new ShiningFactionExpectedFacts(healingTier, serviceVisibility ?? "absent",
                 serviceVisibility == "public"),
@@ -269,6 +277,8 @@ internal static class WoundMaterializationTestFixtures
         string readableLocus,
         string cause,
         JsonArray visibleSymptoms,
+        string complicationKind,
+        string complicationDisplayName,
         JsonObject hiddenRoute,
         JsonObject visibleRoute,
         JsonObject diagnosisPath) => new()
@@ -281,7 +291,7 @@ internal static class WoundMaterializationTestFixtures
             ["display"] = new JsonObject { ["name"] = woundName, ["description"] = cause, ["visibleSymptoms"] = visibleSymptoms.DeepClone(), ["prognosis"] = "Без стабилизации вероятно осложнение.", ["visibility"] = "known_to_player", ["acquisitionNarration"] = cause },
             ["severity"] = new JsonObject { ["value"] = "II", ["rank"] = 2, ["maximumAtCreation"] = "II", ["lastChangeEventRef"] = refs.EventRef },
             ["care"] = new JsonObject { ["state"] = "untreated", ["stabilizedAtTurn"] = null, ["activeCourseId"] = null, ["lastAttemptId"] = null },
-            ["complications"] = new JsonArray(new JsonObject { ["complicationId"] = refs.ComplicationRef, ["kind"] = "infection", ["state"] = "risk", ["displayName"] = "Риск воспаления", ["treatmentDifficultyModifier"] = 0, ["ownedEffectIds"] = new JsonArray(), ["visibility"] = "hidden" }),
+            ["complications"] = new JsonArray(new JsonObject { ["complicationId"] = refs.ComplicationRef, ["kind"] = complicationKind, ["state"] = "risk", ["displayName"] = complicationDisplayName, ["treatmentDifficultyModifier"] = 0, ["ownedEffectIds"] = new JsonArray(), ["visibility"] = "hidden" }),
             ["consequences"] = new JsonObject { ["slotBudget"] = 2, ["slotsUsed"] = 2, ["entries"] = new JsonArray(new JsonObject { ["slot"] = 1, ["profileKey"] = "periodic_damage", ["effectId"] = $"effect_{refs.WoundRef}_visible_bleeding", ["readableSummary"] = "Кровотечение не остановлено." }, new JsonObject { ["slot"] = 2, ["profileKey"] = "action_control", ["effectId"] = $"effect_{refs.WoundRef}_visible_pain", ["readableSummary"] = "Боль мешает точным действиям." }) },
             ["treatment"] = new JsonObject { ["diagnosisPaths"] = new JsonArray(diagnosisPath.DeepClone()), ["routes"] = new JsonArray(visibleRoute.DeepClone(), hiddenRoute.DeepClone()), ["knownRouteIds"] = new JsonArray(refs.RouteId), ["completedRouteIds"] = new JsonArray() },
             ["recovery"] = new JsonObject { ["mode"] = "requires_stabilization", ["clockKind"] = "mortal_world_time", ["cadence"] = 86400, ["currentStepProgress"] = 0, ["currentStepThreshold"] = 3, ["lastTickKey"] = null, ["blockers"] = new JsonArray("not_stabilized"), ["carryOverflow"] = true, ["deteriorationPolicy"] = null },
@@ -420,9 +430,9 @@ internal static class WoundMaterializationTestFixtures
         ["compensationKinds"] = new JsonArray("ink_feathers", "favor", "debt", "quest", "free_aid"), ["accessConditions"] = new JsonArray()
     };
 
-    private static JsonObject CreateCurrentResident(string residentId, string locationId) => new()
+    private static JsonObject CreateCurrentResident(string residentId, string guardianId, string abodeId, string factionId) => new()
     {
-        ["residentId"] = residentId, ["guardianId"] = residentId, ["abodeId"] = locationId,
+        ["residentId"] = residentId, ["guardianId"] = guardianId, ["abodeId"] = abodeId,
         ["displayName"] = "Хранительница тихих швов", ["residentKind"] = "attendant_spirit", ["originType"] = "native_spirit",
         ["roleLabel"] = "целительница поддержки", ["summary"] = "Дух Обители, поддерживающий исцеление без ложного обещания полной цены.",
         ["bondLevel"] = 34, ["bondTier"] = "familiar", ["canGrantCompanionRelic"] = false, ["bondRewardState"] = "none", ["historyRevealed"] = false, ["isPresent"] = true,
@@ -430,16 +440,23 @@ internal static class WoundMaterializationTestFixtures
         ["abodeDisposition"] = new JsonObject { ["powerSensitivity"] = "medium", ["migrationDisposition"] = "selective", ["communalOrientation"] = "medium", ["stabilityNeed"] = "medium" }, ["abodeDevotionLevel"] = 28, ["abodeDevotionTier"] = "uncertain", ["restlessness"] = 12, ["migrationState"] = "restless",
         ["mortalWorldImprint"] = new JsonObject { ["originWorldSummary"] = "Она помнит только свет, в котором боль становилась выносимой.", ["futureCompanionPrompt"] = "Покажи её как целительницу, которая называет цену исцеления прямо.", ["bondReason"] = "Она сохраняет память о каждом согласившемся на помощь.", ["coreTraits"] = new JsonArray("внимательная", "стойкая"), ["archetypeHints"] = new JsonArray("healer", "witness"), ["appearanceMotifs"] = new JsonArray("серебряные нити", "тихий свет") },
         ["availableInteractions"] = new JsonArray("talk")
+        , ["ascensionState"] = "ascended", ["shiningFactionId"] = factionId, ["factionLoyaltyLevel"] = 50, ["factionLoyaltyTier"] = "committed", ["factionRestlessness"] = 20, ["factionRealignmentState"] = "settled", ["visibleRole"] = "social_support"
     };
 
-    private static JsonObject CreateCurrentShiningFaction(string factionId, string hallId) => new()
+    private static JsonObject CreateAzaliaGuardianRoot(string guardianId, string abodeId) => new()
+    {
+        ["guardians"] = new JsonArray(new JsonObject { ["guardianId"] = guardianId, ["canonicalName"] = "Азалия", ["sourcePreset"] = new JsonObject { ["presetId"] = "azalia", ["library"] = "built_in" }, ["abode"] = new JsonObject { ["abodeId"] = abodeId, ["isDiscovered"] = true } }),
+        ["activeGuardian"] = new JsonObject { ["guardianId"] = guardianId, ["canonicalName"] = "Азалия", ["abode"] = new JsonObject { ["abodeId"] = abodeId, ["isDiscovered"] = true } }
+    };
+
+    private static JsonObject CreateCurrentShiningFaction(string factionId, string hallId, string residentId) => new()
     {
         ["factionId"] = factionId, ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant, ["hallId"] = hallId,
         ["creationProvenance"] = new JsonObject { ["route"] = "native_discovery", ["authorityType"] = "shining_core_action_request", ["authorityId"] = "request_discover_shining_wound_sanctuary" },
         ["charter"] = new JsonObject { ["factionName"] = "Санктуарий Тихих Швов", ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord, ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial, ["summary"] = "Фракция духовной поддержки." },
         ["currentAgenda"] = "Сохранить доступный путь к помощи для жителей Обители.", ["visibility"] = "revealed", ["storyAuthority"] = null,
         ["factionLifecycle"] = new JsonObject { ["state"] = ShiningAbodeState.FactionLifecycleStateActive },
-        ["leadership"] = new JsonObject { ["headActorType"] = ShiningAbodeState.HeadActorTypeRadiantActor, ["headActorId"] = "radiant_actor_shining_wound_head", ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure },
+        ["leadership"] = new JsonObject { ["headActorType"] = ShiningAbodeState.HeadActorTypeResident, ["headActorId"] = residentId, ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure },
         ["strategicMemory"] = new JsonObject { ["summary"] = "Санктуарий хранит последовательность принятых обязательств.", ["lastUpdatedTurn"] = Turn, ["recentCampaigns"] = new JsonArray(), ["losses"] = new JsonArray(), ["alliances"] = new JsonArray(), ["enemies"] = new JsonArray() },
         ["chronicle"] = new JsonArray(new JsonObject { ["entryId"] = "chronicle_shining_wound_sanctuary", ["turnNumber"] = Turn, ["eventType"] = "faction_materialized", ["summary"] = "Санктуарий открыл свой зал.", ["visibility"] = "known", ["consequences"] = new JsonArray() }),
         ["baseStrength"] = 35, ["factionStrength"] = 35, ["investCountThisAscension"] = 0, ["projectArchetypesCountedThisAscension"] = new JsonArray(), ["projects"] = new JsonArray(), ["territorialInfluence"] = new JsonArray(), ["resourceLedger"] = new JsonArray(), ["tradeInventory"] = null, ["tradeInventoryReceipts"] = new JsonArray(), ["leadershipReceipts"] = new JsonArray(), ["leadershipHistory"] = new JsonArray(),
@@ -502,8 +519,8 @@ internal sealed record SpiritualConflictScenarioRefs(string PlayerProfileId, str
 internal sealed record SpiritualConflictExpectedFacts(string DangerMode, string BeforeStrain, string DestinationStrain, string ExpectedComputedCeiling, int HarmfulMargin, int TargetResilienceTier, int AppliedArtTier, int ExtraJumpSteps, bool HasPriorTrainingEscalation);
 internal sealed record ElyaraScenarioFixture(ElyaraBuiltInAssets BuiltInAssets, JsonObject AfterlifeProfiles, JsonObject AfterlifeProfile, JsonObject FutureProposal, ElyaraScenarioRefs Refs, ElyaraExpectedProtectedFields Expected, IReadOnlyList<string> CanonicalWritePaths);
 internal sealed record ElyaraBuiltInAssets(JsonObject Manifest, string DossierMarkdown, string DiscoverabilityPointer);
-internal sealed record ElyaraScenarioRefs(string GuardianId, string LocationRef, string ServiceRef, string FirstEntryAvailabilityRef);
+internal sealed record ElyaraScenarioRefs(string GuardianId, string LocationRef, string ServiceRef, string DiscoverabilityPointer);
 internal sealed record ElyaraExpectedProtectedFields(bool DiscoverableFromFirstChaosSeaEntry, IReadOnlyList<string> ProtectedProfilePaths);
-internal sealed record ShiningFactionScenarioFixture(JsonObject ShiningState, JsonObject ResidentRoster, JsonObject AfterlifeProfiles, JsonObject FutureProposal, ShiningFactionScenarioRefs Refs, ShiningFactionExpectedFacts Expected, IReadOnlyList<string> CanonicalWritePaths);
+internal sealed record ShiningFactionScenarioFixture(JsonObject ShiningState, JsonObject ResidentRoster, JsonObject AfterlifeProfiles, JsonObject FutureProposal, JsonObject GuardianRoot, ShiningFactionScenarioRefs Refs, ShiningFactionExpectedFacts Expected, IReadOnlyList<string> CanonicalWritePaths);
 internal sealed record ShiningFactionScenarioRefs(string FactionId, string ResidentId, string ProfileActorId, string LocationRef, string? ServiceRef);
 internal sealed record ShiningFactionExpectedFacts(int HealingTier, string ServiceVisibility, bool HasPublicCommandAccess);

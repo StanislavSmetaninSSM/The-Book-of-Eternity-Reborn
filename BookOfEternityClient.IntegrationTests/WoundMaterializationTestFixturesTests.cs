@@ -24,6 +24,8 @@ public sealed class WoundMaterializationTestFixturesTests
                 .GetValue<string>()["route:".Length..]);
         Assert.NotEqual(postApocalyptic.Refs.ComplicationRef, magical.Refs.ComplicationRef);
         Assert.NotEqual(postApocalyptic.Refs.LocationAuthorityRef, magical.Refs.LocationAuthorityRef);
+        Assert.Equal("infection", postApocalyptic.WoundProposal["complications"]![0]!["kind"]!.GetValue<string>());
+        Assert.Equal("spiritual_instability", magical.WoundProposal["complications"]![0]!["kind"]!.GetValue<string>());
     }
 
     [Fact]
@@ -67,6 +69,10 @@ public sealed class WoundMaterializationTestFixturesTests
         var profile = fixture.AfterlifeProfiles[AfterlifeEntityProfileState.ProfilesProperty]![0]!.AsObject();
 
         Assert.Equal("attendant_spirit", resident["residentKind"]!.GetValue<string>());
+        Assert.Equal("ascended", resident["ascensionState"]!.GetValue<string>());
+        Assert.Equal(fixture.Refs.FactionId, resident["shiningFactionId"]!.GetValue<string>());
+        Assert.Equal(resident["residentId"]!.GetValue<string>(), fixture.ShiningState["factions"]![0]!["leadership"]!["headActorId"]!.GetValue<string>());
+        Assert.NotNull(fixture.GuardianRoot);
         Assert.IsType<JsonObject>(resident["abodeDisposition"]);
         Assert.Equal("Shining Abode", profile["realm"]!.GetValue<string>());
         Assert.Null(resident["primaryRole"]);
@@ -86,5 +92,24 @@ public sealed class WoundMaterializationTestFixturesTests
         Assert.NotEqual(training.Refs.SealedD20Ref, annihilation.Refs.SealedD20Ref);
         Assert.Throws<ArgumentOutOfRangeException>(() =>
             WoundMaterializationTestFixtures.CreateShiningFactionScenario(0));
+    }
+
+    [Fact]
+    public void Builders_ReturnFreshManifestAndNestedAuthorityGraphs()
+    {
+        var firstElyara = WoundMaterializationTestFixtures.CreateElyaraScenario();
+        var secondElyara = WoundMaterializationTestFixtures.CreateElyaraScenario();
+        var firstShining = WoundMaterializationTestFixtures.CreateShiningFactionScenario();
+        var secondShining = WoundMaterializationTestFixtures.CreateShiningFactionScenario();
+        var firstMortal = WoundMaterializationTestFixtures.CreatePostApocalypticMortalScenario();
+        var secondMortal = WoundMaterializationTestFixtures.CreatePostApocalypticMortalScenario();
+
+        firstElyara.BuiltInAssets.Manifest["displayName"] = "mutated";
+        firstShining.ResidentRoster["entries"]![0]!["displayName"] = "mutated";
+        firstMortal.AuthorityRoots.PlayerInventory["items"]![0]!["name"] = "mutated";
+
+        Assert.NotEqual("mutated", secondElyara.BuiltInAssets.Manifest["displayName"]!.GetValue<string>());
+        Assert.NotEqual("mutated", secondShining.ResidentRoster["entries"]![0]!["displayName"]!.GetValue<string>());
+        Assert.NotEqual("mutated", secondMortal.AuthorityRoots.PlayerInventory["items"]![0]!["name"]!.GetValue<string>());
     }
 }
