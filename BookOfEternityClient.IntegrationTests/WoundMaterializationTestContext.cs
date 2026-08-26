@@ -27,6 +27,8 @@ internal sealed class WoundMaterializationTestContext : IAsyncDisposable
     internal const string CommandsPath = "game_state/wounds/wound_commands.json";
     internal const string PendingResolutionsPath =
         "game_state/control/pending_wound_resolutions.json";
+    internal const string PendingTurnSnapshotPath =
+        "game_state/control/pending_turn_snapshot.json";
     internal const string ProgressionSchedulePath =
         ProgressionScheduleService.SchedulePath;
     internal const string ProgressionReportPath = ProgressionScheduleService.ReportPath;
@@ -34,7 +36,7 @@ internal sealed class WoundMaterializationTestContext : IAsyncDisposable
     internal const string InterfaceUpdatesOutputPath = "output/interface_updates.json";
     internal const string DebugLogsOutputPath = "output/debug_logs.json";
 
-    internal static readonly string[] CanonicalWoundPaths =
+    private static readonly string[] CanonicalWoundPathInventory =
     {
         PlayerWoundsPath,
         NamedNpcWoundsPath,
@@ -47,12 +49,19 @@ internal sealed class WoundMaterializationTestContext : IAsyncDisposable
         HistoryPath,
         CommandsPath,
         PendingResolutionsPath,
+        PendingTurnSnapshotPath,
         ProgressionSchedulePath,
         ProgressionReportPath,
         NarrativeOutputPath,
         InterfaceUpdatesOutputPath,
         DebugLogsOutputPath
     };
+
+    private static readonly IReadOnlyList<string> CanonicalWoundPathsView =
+        Array.AsReadOnly(CanonicalWoundPathInventory);
+
+    internal static IReadOnlyList<string> CanonicalWoundPaths =>
+        CanonicalWoundPathsView;
 
     private readonly string _expectedTempRoot;
 
@@ -157,7 +166,7 @@ internal sealed class WoundMaterializationTestContext : IAsyncDisposable
 
     internal Task<IReadOnlyDictionary<string, WoundFileBeforeImage>>
         CaptureCanonicalBeforeImagesAsync() =>
-        CaptureBeforeImagesAsync(CanonicalWoundPaths);
+        CaptureBeforeImagesAsync(CanonicalWoundPathInventory);
 
     internal async Task AssertBeforeImagesUnchangedAsync(
         IReadOnlyDictionary<string, WoundFileBeforeImage> beforeImages)
@@ -235,15 +244,17 @@ internal sealed record WoundOperationCoordinates(
 
 internal sealed class WoundFileBeforeImage
 {
+    private readonly byte[]? _bytes;
+
     private WoundFileBeforeImage(bool existed, byte[]? bytes)
     {
         Existed = existed;
-        Bytes = bytes?.ToArray();
+        _bytes = bytes?.ToArray();
     }
 
     internal bool Existed { get; }
 
-    internal byte[]? Bytes { get; }
+    internal byte[]? Bytes => _bytes?.ToArray();
 
     internal static WoundFileBeforeImage FromRead(byte[]? bytes) =>
         new(bytes != null, bytes);
@@ -257,7 +268,7 @@ internal sealed class WoundFileBeforeImage
                 $"actual exists={actualBytes != null}.");
         }
 
-        if (Existed && !Bytes!.AsSpan().SequenceEqual(actualBytes))
+        if (Existed && !_bytes!.AsSpan().SequenceEqual(actualBytes))
         {
             throw new InvalidOperationException(
                 $"Exact before-image bytes changed for '{path}'.");
