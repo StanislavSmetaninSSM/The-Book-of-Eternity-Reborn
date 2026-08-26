@@ -370,7 +370,7 @@ internal static class EffectComponentProfiles
             ["event_reaction"] = new(
                 "event_reaction",
                 EffectComponentResolutionMode.Declared,
-                new HashSet<string>(StringComparer.Ordinal) { "profile_specific" },
+                ImmutableHashSet.Create(StringComparer.Ordinal, "profile_specific"),
                 "source-declared deterministic or bounded event reaction"),
             ["wound_consequence"] = Descriptor(
                 "wound_consequence", "wound consequence", "profile_specific"),

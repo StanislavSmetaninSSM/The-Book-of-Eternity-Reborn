@@ -150,6 +150,7 @@ public sealed class EffectSourceDefinitionContractTests
     [InlineData("periodic_damage", "sum", true)]
     [InlineData("roll_modifier", "sum", false)]
     [InlineData("event_reaction", "profile_specific", true)]
+    [InlineData("event_reaction", "sum", false)]
     public void ValidateArray_MergeReducerMustBeRegisteredForEveryComponentProfile(
         string profile,
         string mergeRule,

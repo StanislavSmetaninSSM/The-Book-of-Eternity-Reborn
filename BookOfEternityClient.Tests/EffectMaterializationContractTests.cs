@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
@@ -305,6 +306,16 @@ public sealed class EffectMaterializationContractTests
         Assert.Equal(expectedMode, descriptor.ResolutionMode.ToString());
         Assert.NotEmpty(descriptor.LegalMergeReducers);
         Assert.False(string.IsNullOrWhiteSpace(descriptor.ProjectionDescriptor));
+    }
+
+    [Fact]
+    public void Registry_EveryProfilePublishesAnImmutableMergeReducerSet()
+    {
+        foreach (var profile in EffectComponentProfiles.RegisteredProfiles)
+        {
+            Assert.True(EffectComponentProfiles.TryGetDescriptor(profile, out var descriptor));
+            Assert.IsAssignableFrom<IImmutableSet<string>>(descriptor.LegalMergeReducers);
+        }
     }
 
     [Fact]
