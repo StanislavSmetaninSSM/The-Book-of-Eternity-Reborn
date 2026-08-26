@@ -5,9 +5,11 @@
 
 ## Core separation
 
-A wound is independently treatable canonical state. A wound consequence is an active
-effect whose exact source is that wound. The effect engine applies mechanics; the wound
-kernel owns severity, care, treatment, recovery, and healing.
+A wound is independently treatable canonical state. Its directly materialized
+consequences and any later reaction descendants are effects whose exact source is that
+wound. The effect engine applies mechanics; the wound kernel owns severity, care,
+treatment, recovery, healing, the bounded complete source-definition graph, and the
+accepted root-materialization bindings.
 
 These statements are invariants:
 
@@ -26,12 +28,33 @@ During preparation, each provisional wound exports one exact accepted source:
 {
   "sourceKind": "wound",
   "sourceId": "client-provisional-wound-id",
+  "sourceRef": "response-local-wound-ref",
   "sourceState": "active",
+  "materializable": false,
   "realm": "mortal_world",
   "ownerKind": "player",
   "ownerId": "player_current",
   "eventRef": "accepted-event-ref",
-  "semanticFingerprint": "sha256:..."
+  "sourceExportFingerprint": "sha256:...",
+  "definitions": ["complete detached #1535 definition graph"],
+  "rootApplications": [
+    {
+      "applicationRef": "response-local-root-application-ref",
+      "mechanicsOrdinal": 1,
+      "operationOrdinal": 1,
+      "definitionKey": "wound_bleeding_root",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "source": {
+        "kind": "wound",
+        "sourceRef": "response-local-wound-ref",
+        "definitionKey": "wound_bleeding_root"
+      },
+      "parameters": {},
+      "slotBindings": [1],
+      "ownershipDomain": "base_wound",
+      "causalEventRef": "accepted-event-ref"
+    }
+  ]
 }
 ```
 
@@ -39,16 +62,187 @@ This export enters the existing accepted-plan effect source catalog. No loose sc
 `playerWoundChanges`, no wound-name inference, and no `duration=999` legacy reference is
 accepted.
 
+The complete graph and root-application batch are sealed before the effect planner runs.
+No effect ID is allocated by wound preparation. `applicationRef` is an opaque handoff
+correlation key, not an effect identity. For a newly created same-turn wound, the exact
+#1535 source selector uses `sourceRef`; using its not-yet-published `sourceId` is rejected.
+A definition referenced only by `apply_definition` has no root application and no
+reserved ID. The accepted effect runtime allocates a permanent opaque identity only if
+the corresponding root or later reaction is actually materialized. Response-local refs
+exist only in the prepared handoff.
+
+`WoundAcceptedTurnPlanner.Prepare` emits an immutable typed
+`WoundEffectOperationBatch`; it does not append forgeable GM `effectChanges[]` JSON.
+`EffectAcceptedTurnInputComposer` admits that batch beside ordinary GM effect commands,
+derives one exact/confusable-unique internal event reference per terminal/root operation
+with `CreateWoundEffectOperationEventRef(parentEventRef, mechanicsOrdinal,
+operationOrdinal, operationKind)`. The value is a client-owned
+`wound_effect:sha256:<canonical-tuple-hash>` namespace and cannot collide with public
+`turn_<n>[_effect_<n>]` authorities. The composer passes it to the ordinary effect
+planner as the exact root `createdEventRef`; the accepted wound event is separately
+passed as exact client-owned `causalEventRef`. Terminal transitions receive the same
+two-field separation. Sharing one causal wound event never permits two operations to
+share a created/transition event. `EffectAcceptedTurnPlan` alone allocates permanent
+effect IDs and returns a detached typed `applicationRef -> effectId` result for every
+wound root. Finalization
+rejects a missing, duplicate, confusable, non-creating, or extra result and requires
+exact agreement for the create transition ID, both event refs, source/target keys, and
+carrier coordinate. One wound event may therefore materialize several roots without
+reusing one #1535 operation event.
+
+Every canonical/same-turn wound `EffectSourceExport` has
+`Materializable = false`. Ordinary GM `effectChanges[].operation=apply` therefore cannot
+materialize a wound root or downstream definition by naming its source. The typed wound
+batch carries the only one-shot internal root-materialization authority. The effect
+planner resolves its exact allowlisted `(SourceExportFingerprint, applicationRef,
+definitionKey, target, source selector)` through canonical source binding plus ordinary
+parameter/target validation; it never turns the whole wound source into public apply
+authority. Later descendants remain reachable only through the sealed #1535 reaction
+executor.
+
+After finalization, canonical `consequences.ownedEffectSources` persists the complete
+definition graph and exact `{ effectId, definitionKey }` root bindings. Both arrays are
+mandatory even when empty; `definitions` and `rootBindings` each have a maximum of five
+entries and contain no local refs. The object, arrays, and elements are non-null. A legal
+non-mechanical Mortal wound exports a sealed zero-operation batch and empty source graph;
+the effect stage returns an empty result without allocating an ID or publishing a changed
+effect after-image, and wound finalization persists both empty arrays.
+Every graph definition carries the exact wound source link. Every definition without a
+direct root binding is reachable from exactly one directly bound definition. A bound
+definition may also be an `apply_definition` target; its later effect instance is a
+runtime descendant and does not receive another root binding only when that definition
+uses the exact legal `replace` policy and belongs to the producer's reconstructed
+root-ownership domain. Other stacking policies on a root-bound target and cross-domain
+edges fail closed alongside unresolved, orphan unbound, cyclic, cross-wound, duplicate,
+or confusable graphs.
+
+The five-definition ceiling follows from slot accounting, not a hidden catalog limit.
+An `event_reaction` producer consumes one slot and every flattened non-marker component
+of its leaf consumes another. Thus the legal severity-IV maximum with a mechanical
+downstream-only leaf is the reaction root, two other one-slot roots, the leaf, and the
+one zero-slot marker. Four ordinary one-slot roots plus a reaction and mechanical leaf
+already exceed four slots before a marker is considered.
+
+Canonical serialization sorts definitions by exact ordinal `definitionKey`, root
+bindings by `effectId` then `definitionKey`, and consequence entries by slot. It uses
+the shared recursive canonical object writer for each full definition while preserving
+#1535-defined nested array order. The whole wound semantic fingerprint covers all three
+collections; canonical state stores no second source fingerprint. The prepared handoff's
+exact JSON/API field is `sourceExportFingerprint` / `SourceExportFingerprint`. It seals
+the complete canonical source owner metadata, source ID/ref/state, non-materializable
+policy, accepted causal wound event, every detached definition, ordered root-lineage
+authority rows, and every ordered root application including `applicationRef`, operation
+ordinals/kind, exact target and source selector, empty parameters, slot bindings, and
+ownership domain. It is immutable pre-effect plan authority and is not a persisted wound
+field.
+
+The cross-stage seals are non-interchangeable. `WoundPreparationFingerprint` binds the
+accepted wound input, allocated wound/complication/transition IDs, detached drafts,
+source-export fingerprints, and terminal intents. `EffectInputFingerprint` additionally
+binds the complete typed operation batch and each derived-created/causal event pair.
+`EffectAcceptedTurnPlanFingerprint` additionally binds allocated effect/transition IDs,
+exact application/termination maps, and effect carrier/identity before- and after-images.
+`WoundFinalPlanFingerprint` additionally binds the finalized canonical wound roots,
+bindings, entries, complications, history/index/pending/scheduler/output after-images,
+and intents. Finally, `AcceptedMechanicsPlan.PreparedPlanFingerprint` binds those seals,
+the common input and authority fingerprints, all wound/effect/resource after-images and
+receipts, touched/consumed paths, pending state, scheduler outcomes, and output bindings.
+
+The common fingerprint is not a constructor argument or caller assertion. The common
+planner computes it only after cross-stage semantic agreement; the plan cache
+independently recomputes it from the detached plan before validation and again on
+take/peek. Mixing otherwise valid exports, result maps, operation events, effect
+after-images, or final wound bindings from different plans therefore fails closed.
+Every earlier consumer likewise recomputes its predecessor's seal from detached payload:
+the effect composer checks source-export and wound-preparation seals, the effect planner
+checks the effect-input seal, and wound finalization checks the effect-plan seal. A seal
+property is never trusted without payload recomputation.
+
+`complication.ownedEffectIds` is an exact subset of canonical root-binding effect IDs;
+the sets are pairwise disjoint between complications. A complication neither lists
+reaction descendants nor duplicates consequence slot truth. A reaction-created effect's
+create transition records its exact producing effect in `sourceEffectIds`; a direct root
+create transition has an empty source set. Ownership indexes read only the new identity's
+first `create` transition; `replace`, stack, refresh, and other transition result arrays
+are lifecycle evidence, not additional ownership parents.
+
+The planner reconstructs one ephemeral `WoundRootLineageAuthority` from root bindings
+and complication ownership: every root is assigned `base_wound` or one exact
+`complicationId`, and a reaction child inherits its producer's domain. Ordered authority
+rows participate in `SourceExportFingerprint` but are not new canonical wound fields.
+Before mutation, stack/refresh/merge/replace behavior between different domains is
+rejected because it cannot later be selectively inverted. A root-bound reaction target
+must use `replace` within the same domain; the prior target's replacement succession is
+not a second causal ownership edge.
+
+Removing a complication starts from its declared roots (including terminal roots),
+follows only this validated parent-to-child
+identity lineage inside the exact wound source group and persisted definition graph,
+and terminates only active/suspended members of that closure. Every group identity is
+visited at most once; a cycle, more than one causal `sourceEffectId` on first create,
+duplicate same-kind causal evidence, foreign-source edge, missing graph definition, or
+cross-domain edge fails before mutation. Legal replace/stack/refresh lifecycle result
+edges are ignored by this causal traversal. Full healing instead terminates the entire
+exact wound-source group.
+
+Selective complication resolution removes the complication, its declared root bindings,
+and every slot entry pointing to those roots, then recomputes `slotsUsed`. It prunes only
+definitions no longer reachable from any remaining root binding; a definition still
+bound or reachable from another root remains. Any active/suspended effect using a key
+that would be pruned is a lineage disagreement and rejects the transition. The global
+effect identity history retains terminal provenance. Thus independent dispel/expiry
+still retains wound source authority, while an explicit complication-removal transition
+produces a clean active wound graph. The remaining graph/slots must still satisfy the
+current severity envelope; otherwise the same atomic treatment must include its declared
+severity rematerialization or replacement consequence result.
+
 ## Effect proposal requirements
 
-Every wound-owned effect must contain:
+Every directly materialized wound-owned root effect must contain:
 
 - exact `source.kind = wound` and matching source ID;
-- exact same owner target, realm, and accepted event;
+- exact same owner target and realm, unique derived `createdEventRef`, and the wound's
+  accepted event as separate `causalEventRef`;
 - a registered wound consequence profile and allowed mechanical components;
 - a client-allocated effect ID after validation;
-- a reciprocal wound consequence slot;
+- a reciprocal canonical root binding;
 - visibility no broader than the source wound/target authority permits.
+
+The owner adapter is closed: wound `player_soul` targets #1535 `player`,
+`combatant_member` targets `combatant`, and every other supported wound owner kind maps
+to the identically named effect target kind. The adapter uses `targetRef` for an accepted
+same-turn target and `targetId` for a stable target. Direct root applications have
+exact/confusable-unique logical stack coordinates and must each create a new effect
+identity; wound finalization never treats a stack/refresh/merge of another root as a
+successful reciprocal binding.
+
+Every wound-owned definition has exact `stacking.maxStacks = 1`, and definition
+`stackKey` values are exact/confusable unique across the wound graph. All other
+policy/`atMaximum`/refresh/merge fields must satisfy their ordinary #1535 combination
+rules; in particular `independent` at its bound uses `atMaximum = no_change`. This keeps
+at most one active/suspended instance per wound definition without removing refresh,
+replace, merge, or legal root-definition reuse semantics.
+
+Version 1 root applications always use exact empty `{}` parameters and therefore every
+root-bound definition has exact empty `parameterBounds`. Authored numeric/scope values
+are frozen directly in its components. A downstream-only definition may declare
+bounded parameters because the persisted `apply_definition` component also seals the
+exact parameters supplied when that reaction is released. Root parameters are not
+silently defaulted and are not duplicated in canonical root bindings.
+
+Wound version 1 permits zero or one downstream definition and forbids nested
+wound-owned `apply_definition`. When the optional edge exists, that reaction's #1535
+`maxExpansion` is exactly `2` (the reaction plus its one reachable definition), while
+the wound semantic budget counts one downstream expansion. A graph without a reaction
+edge remains valid.
+
+Every slot-consuming root also has one or more reciprocal wound consequence entries.
+The sole legal zero-slot root exception is a directly materialized
+`wound_consequence` marker. The one permitted marker definition may instead be a later
+reaction descendant. A reaction-created instance receives no additional root binding
+and no slot, even when its definition is also directly root-bound; its complete
+definition is present in the wound graph and its worst-case components were charged to
+the originating reaction root before acceptance.
 
 An effect cannot contain a wound transition, wound command, treatment route, recovery
 tick, or history mutation.
@@ -168,11 +362,13 @@ arts without an explicit versioned contract change.
 
 A change of severity does not incrementally patch arbitrary effects. The planner:
 
-1. reads the old complete wound-owned effect set;
-2. validates the proposed new complete set against the new severity;
-3. plans terminal transitions for removed/replaced old effects;
-4. plans apply/update operations for the new set;
-5. validates exact reciprocal links and unrelated-effect preservation;
+1. reads the old complete source graph and the indexed active root/descendant effect set;
+2. validates the proposed new complete graph and root set against the new severity;
+3. plans terminal transitions for every active/suspended old root and descendant in the
+   exact wound source group, even when a definition remains semantically unchanged;
+4. applies every new root after that full teardown and requires a fresh effect identity
+   result for each application;
+5. validates exact reciprocal root links, graph membership, and unrelated-effect preservation;
 6. commits wound, index, history, effect carriers/index/history, and output together.
 
 There is never an accepted intermediate state where the wound says severity II while
@@ -184,8 +380,10 @@ If a wound-owned effect is independently dispelled or expires while the wound re
 active:
 
 - the effect transitions through the normal effect lifecycle;
-- the reciprocal wound slot remains as a known consequence definition with terminal or
-  suppressed effect status, according to its registered profile;
+- for a directly materialized root, its canonical root binding and reciprocal slots
+  remain as known source/consequence authority with terminal or suppressed effect status
+  according to the registered profile; a reaction descendant has neither and retains
+  only its persisted definition/source authority;
 - the wound severity/care/recovery does not change;
 - a later wound transition may rematerialize a currently legal effect through a new
   effect identity only when the wound/source rule declares that behavior;
@@ -223,6 +421,7 @@ whole-root producers for the same path are invalid.
 ## Saref boundary
 
 `memory_suppression` has an independent Saref source and is never included in a wound's
-owned effect IDs unless a distinct trauma-caused memory-loss effect was explicitly
-materialized from that wound. Healing a spiritual wound must prove the independent
+source graph or root bindings. A distinct trauma-caused memory-loss effect may instead
+be explicitly materialized as its own wound-owned definition and direct root when
+applicable. Healing a spiritual wound must prove the independent
 Saref effect's before/after bytes are unchanged.

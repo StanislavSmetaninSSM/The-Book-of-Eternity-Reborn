@@ -11,7 +11,10 @@ bounded semantic wound content and allowed narrative choices. Neither side may w
 complete canonical root independently.
 
 Canonical roots and carrier shapes are defined in `../data-model.md`. All roots use
-schema version 1 and closed parsing.
+schema version 1 and closed parsing. Every wound carries mandatory
+`consequences.ownedEffectSources` with a complete bounded #1535 definition graph and a
+separate exact root-binding set. The client rejects the former slot-only development
+shape; there is no migration or compatibility reader.
 
 ## Identity agreement
 
@@ -38,14 +41,21 @@ carrier and preserves history continuity.
 ### Create
 
 Requires one unconsumed legal opportunity. Creates one index entry, active carrier
-wound, initial history row, complete consequence effect set, and player-visible
-notification. A create operation is all-or-nothing.
+wound, initial history row, complete consequence source graph, directly materialized
+root effect set, and player-visible notification. Reaction-only descendant definitions
+receive no effect identity until their accepted trigger. Wound preparation allocates no
+effect identity: the subordinate effect plan allocates every opaque root ID and returns
+an exact typed application-result map before the wound is finalized. A create operation
+is all-or-nothing.
 
 ### Worsen
 
 Requires active severity I-III and a sealed deterioration/re-trauma/same-conflict
 opportunity. New severity must be higher and no greater than IV. It resets current-step
-recovery, rematerializes the complete consequence set, and appends one history row.
+recovery, terminates every active/suspended old root and descendant through the exact
+wound-source index, then rematerializes every new root with a fresh effect identity and
+appends one history row. This is a full source-group teardown, not an identity-preserving
+definition diff; an unchanged definition does not retain its former runtime instance.
 
 ### Complicate
 
@@ -79,8 +89,26 @@ text cannot tick recovery.
 ### Heal
 
 Requires an accepted transition from active severity I. It terminates all and only the
-wound's active effects, removes the wound from its carrier, marks the index terminal,
-and appends immutable terminal history. Healed wounds do not remain in the active list.
+wound's active root and reaction-descendant effects by the exact
+`(realm, wound, woundId, definitionKey)` index grouped by wound source, removes the wound
+from its carrier, marks the index terminal, and appends immutable terminal history.
+An active source entry whose definition key is absent from the persisted graph rejects
+the transaction. Healed wounds do not remain in the active list.
+
+Selective complication cleanup is narrower than healing. Complication root sets are
+pairwise disjoint. The planner reconstructs each root's scalar ownership domain as
+`base_wound` or the exact owning `complicationId`; reaction descendants inherit their
+producer's domain, and cross-domain stack/refresh/merge/replace is rejected before
+mutation. Cleanup begins even from a terminal declared root and follows only exact first-
+`create` reaction-parent lineage (`sourceEffectIds`) inside the same wound source,
+definition graph, and ownership domain, visiting each group identity at most once.
+Replacement succession remains separate lifecycle evidence and is not an ownership
+parent. It terminates only the active/suspended descendants of those roots; unrelated
+wound roots survive.
+The resolved complication, its declared root bindings, and reciprocal slots leave the
+active wound; `slotsUsed` is recomputed. Only definitions no longer reachable from any
+remaining root are pruned, and any active effect that would lose its definition rejects
+the transition. Terminal provenance remains in the global effect identity history.
 
 ### Legacy and archive
 
@@ -132,7 +160,10 @@ Pre-plan and post-publication validation independently prove:
 1. all roots parse as strict schema version 1;
 2. index/carrier uniqueness and agreement;
 3. index/history chain and terminal agreement;
-4. reciprocal wound/effect links;
+4. complete wound definition graph, root bindings, pairwise-disjoint complication root
+   ownership, reconstructed ownership domains, source and first-create causal-parent
+   indexes, slot-consuming roots, the optional zero-slot marker, and reaction-descendant
+   membership;
 5. exact owner/source/target/realm authority;
 6. legal treatment/recovery/state transitions;
 7. operation-key uniqueness;

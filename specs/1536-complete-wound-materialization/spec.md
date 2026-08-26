@@ -170,6 +170,13 @@ As the game-running system, I can reject and repair an invalid wound proposal wi
 - A hidden treatment route has no currently reachable discovery path.
 - A wound severity falls and its old consequence set no longer fits the new budget.
 - A wound-owned effect is independently removed or dispelled.
+- A legal zero-slot marker root must remain owned even though no consequence entry points to it.
+- A persisted `apply_definition` descendant materializes after the creation turn and must be healed with its source wound without becoming a preallocated root or mutating the wound at reaction time.
+- One accepted wound event materializes several roots; each receives a unique derived `createdEventRef` while retaining the shared wound event as separate `causalEventRef`, and the wound planner allocates no permanent effect IDs.
+- A root-bound definition is also a later reaction target; only same-ownership-domain `replace` may retire its current identity and create a descendant with first-create causal lineage but no additional root binding.
+- Four ordinary one-slot roots are combined with a reaction producer, a mechanical leaf, and an optional marker; the fifth mechanical slot must be rejected rather than used to evade the five-definition bound.
+- Individually valid wound preparation, effect results, operation events, and final wound bindings are mixed from different plans; the common prepared-plan seal must reject the composition.
+- Two complications attempt to claim the same root effect, or a descendant lineage crosses into another wound source.
 - An unrelated curse or Saref memory suppression exists beside a wound and must survive healing.
 - Full healing creates a permanent mechanical legacy and a cosmetic scar in the same transition.
 - A healed wound is referenced by an attempted active effect or treatment replay.
@@ -204,25 +211,47 @@ As the game-running system, I can reject and repair an invalid wound proposal wi
 
 #### Wound-owned effects and consequence budgets
 
-- **FR-018**: Mechanical wound consequences MUST be separate active effects with exact bidirectional wound/source ownership.
+- **FR-018**: Mechanical wound consequences MUST be separate effects whose exact wound source persists as a complete bounded #1535 definition graph plus separate directly materialized root-effect bindings. A wound source MUST be non-materializable through ordinary GM effect commands; only the sealed typed wound batch MAY authorize its exact roots, while later descendants require the #1535 reaction executor. Wound preparation MUST allocate no permanent effect ID; the cached effect plan MUST be the sole opaque ID allocator and MUST return one exact typed result for every root application. Every root MUST use a unique client-derived creation event while preserving the accepted wound event as separate causal chronology. Internally computed, independently revalidated stage and common-plan fingerprints MUST bind the exact source exports, typed operations, subordinate result maps/after-images, finalized wound bindings, and common publication plan so valid pieces from different plans cannot be mixed. Every active root or later reaction descendant MUST resolve back to the active wound through its exact source coordinate and persisted `definitionKey`.
 - **FR-019**: A wound-owned effect MUST NOT mutate, heal, worsen, delete, retarget, or reopen its source wound.
 - **FR-020**: Removing or dispelling a wound-owned effect alone MUST NOT change the wound's severity, care state, recovery, or history.
-- **FR-021**: Full wound healing MUST terminate all active effects owned by that wound and MUST leave unrelated effects unchanged.
+- **FR-021**: Full wound healing MUST terminate all active root and reaction-descendant effects found through the indexed exact wound source coordinate, MUST reject any active wound-source effect whose `definitionKey` is absent from the persisted graph, and MUST leave unrelated effects unchanged. Selective complication cleanup MUST require pairwise-disjoint complication roots, reconstruct one `base_wound` or exact-complication ownership domain per root, reject cross-domain stack/refresh/merge/replace before mutation, follow only validated same-source first-create causal lineage from those roots including when a declared root is already terminal, remove those root bindings/reciprocal slots, recompute slot use, and prune only definitions unreachable from every remaining root; replacement succession MUST remain non-ownership lifecycle evidence and global effect identity history MUST retain terminal provenance.
 - **FR-022**: Spiritual severity I-IV MUST materialize exactly one independently understandable legal afterlife consequence per severity step.
 - **FR-023**: Mortal severity I-IV MUST permit at most one, two, three, or four independently understandable mechanical consequences respectively, MUST NOT require a catalog of ready-made wounds, and MUST contain at least one non-display impact: a mechanical consequence, active complication, or care/recovery constraint that changes the legal lifecycle.
 - **FR-024**: Display text, symptoms, and technical wound linkage MUST NOT consume a consequence slot; every independent mechanical modifier or restriction MUST consume one slot.
 - **FR-025**: Every usable consequence profile MUST belong to the closed version-1 primitive registry below and MUST have client-owned, severity-specific power, cadence, expansion, and scope limits.
 - **FR-026**: Heavy or critical restrictions MAY prevent specific actions but MUST preserve at least one path to inspect, communicate, request help, receive treatment, or leave the condition.
-- **FR-027**: A severity transition MUST atomically rematerialize a consequence set that fits the new slot and power budget.
+- **FR-027**: A severity transition MUST atomically terminate the complete old active/suspended wound-source effect group and then materialize a fresh consequence root set that fits the new slot and power budget; unchanged definitions MUST NOT preserve old runtime effect identities.
 - **FR-028**: Independent curses, oaths, Fate Card outcomes, and Saref effects MUST NOT consume wound consequence slots unless the event explicitly materializes them as trauma-caused wound consequences.
 
 Version-1 Mortal wound effects MAY use the existing generic profiles
 `characteristic_modifier`, `roll_modifier`, `resistance_modifier`,
 `periodic_damage`, `periodic_restore`, `action_control`, and `event_reaction`.
 The `wound_consequence` source/display marker costs zero slots, and at most one such
-marker may exist across the wound-owned effect set. Each independently affected
+marker definition may exist across the wound-owned definition graph. When the marker is
+materialized directly, it remains a root binding even though it has no consequence
+entry; when it is a reaction-only descendant, it follows the ordinary descendant rule.
+A definition reached later through `apply_definition` has neither a root binding nor a
+preallocated effect identity; its worst-case mechanics are charged to the originating
+reaction root and its identity is allocated only by the accepted effect runtime. Version
+1 permits zero or one reachable leaf and no nested wound-owned expansion; when the edge
+exists, the reaction's #1535 `maxExpansion` is exactly `2` while the wound budget counts
+one downstream expansion. A zero-edge graph remains legal. A reaction-created instance
+records the producing effect identity
+but receives no additional root binding, including when its definition is also
+root-bound. A root-bound reaction target MUST use the exact legal `replace` policy and
+MUST share its producer's reconstructed root-ownership domain; other stacking policies
+or cross-domain mutation are rejected before effect state changes. The reaction
+component itself consumes one consequence slot, and every flattened non-marker leaf
+component consumes another. Each independently affected
 characteristic, roll operation, resistance, periodic resource operation, action, or
-worst-case reaction result costs one slot. Per-slot severity limits are:
+worst-case reaction result costs one slot.
+
+Every wound-owned definition has an exact/confusable-unique `stackKey` and exact
+`maxStacks = 1`; all remaining stacking fields obey their #1535 policy combinations.
+This permits no more than one active/suspended instance per definition without removing
+ordinary legal refresh, replace, merge, or same-domain reaction reuse.
+
+Per-slot severity limits are:
 
 | Limit | I | II | III | IV |
 | --- | ---: | ---: | ---: | ---: |
@@ -375,7 +404,7 @@ The destination-strain ceiling used by FR-032 is exact:
 - **Wound**: An independently treatable physical or spiritual injury with stable identity, owner, cause, severity, location, symptoms, care state, consequences, treatment/recovery policy, visibility, and history.
 - **Wound Opportunity**: Sealed evidence that an accepted event permits, forbids, caps, or guarantees a wound for one exact target.
 - **Wound Transition**: One accepted creation, worsening, complication, diagnosis, stabilization, treatment, recovery, healing, legacy, or archive/history change.
-- **Wound Consequence**: One independently understandable mechanical result represented by a wound-owned active effect and charged against the applicable severity budget.
+- **Wound Consequence**: One independently understandable mechanical result represented by a slot-charged wound-owned root effect or its already-budgeted reaction descendant; the wound persists the complete source-definition graph separately from directly materialized root bindings.
 - **Treatment Route**: A world-specific diagnosis/treatment contract with visibility, exact requirements, resolution mode, outcomes, resource behavior, and failure/interruption rules.
 - **Recovery Policy**: The exact natural-recovery clock, thresholds, blockers, and optional deterioration rules for one wound.
 - **Healing Session**: A sealed active treatment attempt with healer, target, wound, world/combat cost, roll or route result, and replay protection.

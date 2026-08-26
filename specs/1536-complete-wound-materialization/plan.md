@@ -20,6 +20,17 @@ The implementation extends the existing accepted-mechanics transaction rather th
 adding an independent writer. A staged
 `WoundAcceptedTurnPlanner.Prepare -> EffectAcceptedTurnPlanner ->
 WoundAcceptedTurnPlanner.Finalize` handshake resolves wound/effect source ownership;
+the wound persists a bounded complete source-definition graph separately from the
+directly materialized root effect bindings, while later `apply_definition` descendants
+remain effect-runtime identities resolved through an indexed exact wound source;
+the prepare stage emits only typed root application refs, the effect planner remains the
+sole allocator of opaque permanent effect IDs and returns the exact result map consumed
+by finalization;
+the exported wound source is non-materializable to ordinary GM effect commands and the
+sealed typed batch is the only direct-root authority;
+each root receives a unique derived creation event while retaining the accepted wound
+event as separate causal chronology, and non-interchangeable stage seals culminate in an
+internally computed/revalidated common prepared-plan fingerprint;
 the common plan then publishes wound carriers, identity/history, linked effects,
 resources/items, scheduler outcomes, provider payment, journals, and player output
 under one snapshot/write-lease/rollback boundary. Console and browser use one
@@ -56,7 +67,16 @@ repair/pending waves; ordinary wound query/choice response comparable to existin
 effects/status commands; no new unbounded test lane. Version-1 limits are 2,000 active
 wounds, 20,000 history rows, 128 commands, 64 pending candidates, 32 routes/diagnosis
 paths per wound, 16 requirements/complications, four consequences, and 32 wound
-transitions per accepted turn.
+transitions per accepted turn. Wound source indexing separately caps five definitions
+and five root bindings per wound, 10,000 of either across 2,000 pre-turn active wounds,
+at most 10,000 active/suspended wound-owned effect instances, and 160
+definitions/root applications across 32 same-turn transitions; generic
+non-wound source limits remain independent. The five-definition bound charges a slot to
+the reaction producer and each flattened non-marker leaf component. Selective
+complication cleanup builds one first-create causal parent index, visits each parsed
+source-group identity at most once, reconstructs `base_wound | complicationId` root
+domains, and rejects cyclic, ambiguous, foreign, or cross-domain lineage before
+mutation; replacement succession is non-ownership lifecycle evidence.
 
 **Constraints**: Direct pre-alpha cutover with no migration, legacy reader, dual write,
 or fallback; no wound catalog; no automatic ordinary wound or soul dissipation; exact
@@ -176,6 +196,7 @@ BookOfEternityClient/
 │   ├── AcceptedTurnAuthorityRegistry.cs           # generation-scoped wound authority
 │   ├── EffectAcceptedTurnInputComposer.cs         # accepted wound source exports
 │   ├── EffectSourceAuthority.cs                   # strict reciprocal wound bindings
+│   ├── EffectIdentityState.cs                     # exact wound-source/definition index
 │   ├── EffectComponentProfiles.cs                 # registered primitives, not severity policy
 │   ├── AfterlifeSpiritualConflictState.cs         # danger/opportunity/defeat/healing action
 │   ├── AfterlifeSpiritualConflictTurnPreviewService.cs
@@ -275,16 +296,16 @@ sealed event / player command / scheduler cycle
                     │
                     ▼
       Wound planner Prepare (no canonical writes)
-          │ provisional IDs + source exports
+          │ wound ID + complete source graph + typed root refs (no effect IDs)
           ▼
         Effect accepted-turn planner
-          │ exact effect after-images/identities
+          │ opaque root IDs + exact application result map/after-images
           ▼
-      Wound planner Finalize (links/budgets)
+      Wound planner Finalize (root links/graph/budgets)
           │ wound transitions + resource/item/scheduler intents
           ▼
          AcceptedMechanicsPlanner
-          │ one fingerprint / before-images / after-images
+          │ trusted common prepared-plan fingerprint / before-images / after-images
           ▼
  validated handoff + canonical write lease + snapshot rollback
           │
@@ -311,10 +332,18 @@ No production code is edited in this phase.
 2. Implement the version-1 wound envelope, owner coordinate, identity index, append-only
    history, carrier catalog, transition reducer, and agreement checks.
 3. Add RED opportunity/source/guarantee and consequence budget/power tests.
-4. Implement staged prepare/finalize planning and accepted wound source export to the
-   existing effect planner.
+4. Persist the strict bounded wound-owned source graph and separate root bindings, then
+   implement staged prepare/finalize planning, an immutable typed wound-effect operation
+   batch, accepted wound source export, effect-owned opaque root allocation, and exact
+   `applicationRef -> effectId` results. Do not preallocate any effect ID in the wound
+   planner; reaction-only descendants have no application ref or reserved identity.
+   Reconcile the optional wound single-leaf expansion with #1535 by requiring exact
+   `apply_definition.maxExpansion = 2` when present, requiring same-domain `replace` for
+   a root-bound target, and recording the producing effect in every reaction-created
+   identity's first create transition.
 5. Add RED common plan/cache/fingerprint/before-image/same-root/scale/replay/rollback
-   tests.
+   tests, including cross-plan stage mixing and created-event versus causal-event
+   tampering.
 6. Extend accepted-mechanics authority, planner, normalizer publication, snapshot
    coverage, and bounded repair. Do not expose player commands yet.
 7. Remove loose response/file-mapping/state-distributor wound authority and legacy
@@ -407,7 +436,13 @@ History-only; docs teach every authoring/repair workflow.
 
 | Risk | Control |
 | --- | --- |
-| Cyclic wound/effect dependency | Staged prepare/source export/effect/finalize handshake |
+| Cyclic wound/effect dependency | Staged typed prepare/source export/effect-result/finalize handshake plus a persisted bounded definition graph separated from root materializations; only the effect plan allocates permanent effect IDs |
+| Zero-slot or late reaction effect becomes orphaned | Root bindings retain direct roots; first-create transitions retain exact causal parent identity; indexed exact wound-source and lineage lookup validates graph membership and terminates the intended closure |
+| One wound event needs several root operations | The typed batch derives exact/confusable-unique internal created/transition event refs by common mechanics ordinal, retains the shared wound event as separate causal chronology, and returns one sealed result per application ref |
+| Selective complication cleanup captures another complication | Pairwise-disjoint root sets reconstruct exact ownership domains; cross-domain stack/refresh/merge/replace is rejected before mutation and traversal uses only same-domain first-create causal lineage |
+| Valid stage objects are mixed across plans | Non-interchangeable stage fingerprints bind source exports, operations, result maps, after-images, and final bindings; the common fingerprint is planner-computed and cache-revalidated, never caller asserted |
+| GM applies an internal wound definition directly | Wound source exports are non-materializable; only the fingerprinted typed root batch or sealed reaction executor grants application authority |
+| Descendant instances grow without a source-group bound | Wound definition stack keys are unique and `maxStacks=1`, so at most one active/suspended instance exists per persisted definition |
 | Partial cross-file publication | One common plan, exact before-images, write lease, post-agreement, snapshot rollback |
 | Same-root afterlife collisions | Typed root assembly and one producer per path |
 | GM invents client authority | Closed DTOs; client IDs/progress/history/receipts/fingerprints; bounded repair |

@@ -32,8 +32,13 @@ false universal damage model.
 `AcceptedMechanicsPlanningContext` and `AcceptedMechanicsPlan`. Use a staged
 `WoundAcceptedTurnPlanner.Prepare -> EffectAcceptedTurnPlanner ->
 WoundAcceptedTurnPlanner.Finalize` contour: preparation validates opportunity and
-owner authority and exports wound effect sources; the effect planner materializes those
-sources; finalization proves exact reciprocal links and consequence budgets. A valid plan carries
+owner authority and exports a complete bounded wound source-definition graph plus only
+the directly requested root applications as a typed batch of correlation refs; the
+effect planner remains the sole allocator of opaque permanent effect IDs, materializes
+those roots under distinct derived operation events, and returns the exact result map;
+finalization proves exact reciprocal root links and consequence budgets. Reaction-only
+descendant definitions persist in the graph without an application ref or preallocated
+identity and are resolved later through the indexed exact wound source. A valid plan carries
 wound carrier after-images, identity-index after-image, append-only history after-image,
 wound-owned effect changes, resource mutations, scheduler outcomes, and pending/receipt
 state under one input fingerprint and one canonical write lease.
@@ -44,6 +49,23 @@ atomic boundary for resources and effects. A parallel wound normalizer would int
 write-order races and partial commits. The staged contour resolves the otherwise cyclic
 dependency between wound source allocation and effect-link validation, while all
 after-images still publish together.
+
+The handoff uses a per-source `SourceExportFingerprint`, then distinct
+`WoundPreparationFingerprint`, `EffectInputFingerprint`,
+`EffectAcceptedTurnPlanFingerprint`, and `WoundFinalPlanFingerprint` stage seals. The
+common `AcceptedMechanicsPlan.PreparedPlanFingerprint` is computed only after semantic
+agreement and seals every stage, exact subordinate result map and after-image, final
+wound binding, resource result, path set, pending/scheduler state, and output binding.
+It is never accepted as a caller-supplied constructor value; the cache independently
+recomputes it from the detached plan before validation and on take/peek. This makes
+cross-plan mixing of otherwise valid stage objects fail closed. A newly created wound
+is selected by same-turn `sourceRef`, never by its not-yet-published permanent source ID.
+Permanent effect IDs are random inside the cached effect plan, as required by #1535, and
+are never deterministically derived from GM input.
+
+Each earlier consumer also recomputes its predecessor seal from detached payload rather
+than trusting a fingerprint property: composer for source export/wound preparation,
+effect planner for effect input, and wound finalizer for the effect plan.
 
 **Alternatives rejected**:
 
@@ -92,13 +114,19 @@ without turning every owner file into an ever-growing log.
 **Decision**: Reuse the exact-identifier, confusable rejection, owner-resolution, and
 promotion patterns established by effects/resources. The GM supplies a temporary
 semantic wound proposal reference only. The client allocates `woundId`, transition IDs,
-attempt IDs, course/cycle keys, ordinals, fingerprints, receipts, and history rows.
+attempt IDs, course/cycle keys, ordinals, fingerprints, receipts, and history rows. The
+effect planner, not the wound planner, allocates all permanent effect IDs.
 
 Supported owner kinds are closed: Mortal player, named NPC, Mortal combatant or group
 member, player soul, Guardian, Shining resident, radiant actor, and another accepted
 afterlife profile. Realm and owner coordinates must match the sealed event and linked
 effect target. Anonymous combatant wounds move only through the existing accepted
 combatant-persistence transition.
+
+The closed effect-target adapter maps `player_soul` to #1535 `player`,
+`combatant_member` to `combatant`, and every other wound owner to its identically named
+effect target. It chooses `targetRef` only for an accepted same-turn target and
+`targetId` for an already stable target.
 
 **Rationale**: GM-authored permanent IDs or name lookup would permit replay,
 cross-realm retargeting, and ambiguity. Existing effect target authority already proves
@@ -141,10 +169,40 @@ fixed afterlife setting.
 ## R-007: Reuse the effect engine with strict wound ownership
 
 **Decision**: Every mechanical consequence is a normal #1535 effect with
-`source.kind=wound` and the exact `woundId`; the wound stores the corresponding effect
-IDs. Admission requires exact bidirectional owner/realm/source agreement. Effect
-operations cannot mutate wound state. Wound transitions rematerialize the owned effect
-set atomically; full healing terminates only those effects.
+`source.kind=wound` and the exact `woundId`. The wound stores one mandatory bounded
+`ownedEffectSources` value: the complete detached definition graph plus separate
+`effectId -> definitionKey` bindings for roots materialized directly by a wound
+transition. A reaction-only descendant persists as a definition but has no root binding
+or preallocated identity. Admission requires exact bidirectional owner/realm/source
+agreement. Direct roots have unique stack coordinates and each must produce a new effect
+identity. Effect operations cannot mutate wound state. Severity rematerialization first
+terminates the complete old active/suspended wound source group and then creates every
+new root; full healing finds and terminates all active roots and descendants through an
+indexed exact wound-source coordinate.
+
+Wound source exports set `Materializable = false`, so ordinary GM `effectChanges[]`
+cannot apply graph definitions. The sealed typed batch is a one-shot internal allowlist
+for exact roots; downstream definitions remain reaction-only. Every graph definition
+has a unique stack key and exact `maxStacks = 1`, with the remaining #1535 stacking
+combination intact, bounding simultaneous source-group membership without discarding
+refresh/replace/merge semantics.
+
+Version 1 permits zero or one leaf `apply_definition` expansion and no nested wound
+expansion. When present, its #1535 `maxExpansion` is exactly 2 (the reaction plus the
+reachable leaf), while it consumes one wound expansion budget. A root-bound reaction
+target must use the exact legal `replace` policy and share the producer's reconstructed
+root-ownership domain. The planner derives each root's ephemeral domain as `base_wound`
+or its exact `complicationId`; descendants inherit their producer's domain, and
+cross-domain stack/refresh/merge/replace is rejected before mutation. A reaction-created
+identity records the producing effect in its first create transition's
+`sourceEffectIds`; replacement succession remains separate non-ownership lifecycle
+evidence. Complication-owned root sets are pairwise disjoint; selective cleanup traverses
+only that same-source, same-domain first-create lineage from declared roots, including
+terminal roots, and visits each source-group identity once.
+It removes the active complication, its root bindings and reciprocal slots, recomputes
+slot use, and prunes only definitions unreachable from every remaining root. Terminal
+provenance remains in the global effect identity history; an active effect that would
+lose its source definition rejects the transition.
 
 Mortal severity I-IV allows at most 1/2/3/4 independent consequences. Spiritual
 severity I-IV requires exactly 1/2/3/4 consequences. Each consequence uses one
@@ -157,8 +215,11 @@ mechanical slot still requires an active complication or care/recovery constrain
 changes its legal lifecycle.
 
 **Rationale**: This preserves one mechanical effect engine while keeping wound
-lifecycle authority separate. Exact slot counting blocks a GM from packing several
-mechanics into one prose object.
+lifecycle authority separate. Persisting only slot effect IDs would lose a legal
+zero-slot marker and the definitions needed by later `apply_definition` reactions;
+preallocating every descendant would instead create effects before their trigger. The
+two-layer graph/root model avoids both failures. Exact slot counting blocks a GM from
+packing several mechanics into one prose object.
 
 ## R-008: Mortal diagnosis and treatment are materialized routes
 
@@ -329,7 +390,9 @@ harness can make invalid state unrepresentable and give the GM a bounded repair 
 names, `canBeImprovedBy`, embedded generated-effect payloads, NPC wound writes to the
 effect carrier, and removal-on-heal behavior. Update current bootstrap roots, fixtures,
 examples, manifests, prompts, and tests to schema version 1. Do not add migration,
-dual-write, compatibility parsing, or legacy promotion.
+dual-write, compatibility parsing, or legacy promotion. A schema-version-1 wound whose
+`consequences` omit `ownedEffectSources`, including the former slot-only technical
+shape created earlier during #1536 development, is rejected rather than upgraded.
 
 **Rationale**: The project constitution and user explicitly waive pre-release save
 compatibility. Carrying both models would substantially weaken the new authority.
@@ -358,7 +421,27 @@ Add bounded descriptor counts and indexed identity/source/target lookups to prev
 quadratic scans. Suggested version-1 ceilings are 2,000 active wounds, 20,000 history
 rows, 128 wound commands per turn, 64 pending resolutions, 32 treatment routes per
 wound, 16 requirements per route, 4 consequences, and 32 transition steps per accepted
-turn.
+turn. The complete source graph adds exact derived bounds of five definitions and five
+root bindings per wound, 10,000 pre-turn definitions/root bindings across 2,000 active
+wounds, and 160 same-turn definitions/root applications across 32 transitions. These
+wound partitions are checked before concatenation with independently bounded generic
+effect sources.
+
+The five-definition proof charges one slot to the `event_reaction` producer and one to
+every flattened non-marker leaf component. A severity-IV wound may therefore contain a
+reaction root, two other one-slot roots, one mechanical downstream-only definition, and
+one marker (five definitions, four slots). Four ordinary one-slot roots plus a reaction
+and mechanical leaf exceeds the slot envelope before the optional marker is considered.
+A zero-edge graph remains legal.
+
+Selective lineage work is linear in the already parsed exact source-group membership:
+build the first-create causal parent/child index once, enqueue each member at most once,
+and reject cycles, more than one causal `sourceEffectId` on first create, duplicate
+same-kind causal evidence, foreign-source/domain edges, or definition keys absent from
+the persisted graph before mutation. Legal replacement succession is ignored for
+ownership traversal. Statistics prove visited identities do not exceed the parsed exact
+source-group identity count; no unrelated global effect-history limit is invented inside
+#1536.
 
 **Rationale**: The repository's test runner and mature effect/resource planners already
 enforce bounded execution and report artifacts. Explicit limits prevent malicious or

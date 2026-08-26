@@ -131,17 +131,41 @@ player output is published when any gate fails.
 ## Staged planning handshake
 
 1. `WoundAcceptedTurnPlanner.Prepare` validates opportunity/proposal fields independent
-   of generated effect identity and allocates provisional client identities in memory.
-2. It exports exact wound source definitions to `EffectAcceptedTurnInputComposer`.
-3. `EffectAcceptedTurnPlanner` validates/materializes the proposed consequence effects.
-4. `WoundAcceptedTurnPlanner.Finalize` verifies reciprocal wound/effect identity,
-   owner, realm, source, slot, and power agreement.
-5. The common accepted-mechanics planner composes resources, scheduler, output, and all
+   of generated effect identity and allocates only provisional wound and wound-transition
+   identities in memory. It allocates no effect ID.
+2. It exports the complete detached wound source-definition graph and an immutable typed
+   `WoundEffectOperationBatch` of exact direct root applications. Each root has only a
+   response-local `applicationRef`; a reaction-only descendant has neither an
+   application nor a reserved identity. The source export is `Materializable = false`
+   for ordinary GM effect commands; the typed batch is the sole direct-root allowlist.
+3. `EffectAcceptedTurnInputComposer` resolves the closed owner-to-target mapping,
+   requires `sourceRef` for a new same-turn wound (`sourceId` for an existing stable
+   wound), and derives a distinct internal operation event for each batch member from
+   the sealed wound event and mechanics ordinal. That derived value becomes the exact
+   created/transition event; the shared accepted wound event remains separate causal
+   chronology.
+4. `EffectAcceptedTurnPlanner` validates the whole graph, materializes only the proposed
+   roots, remains the sole allocator of random opaque permanent `effectId` values, and
+   returns a detached typed result mapping every `applicationRef` to the identity it
+   created. A non-creating stack/refresh/merge result is invalid for a wound root.
+5. `WoundAcceptedTurnPlanner.Finalize` verifies the result set, create disposition and
+   transition, both event refs, reciprocal root identity, complete graph membership/
+   linkage, owner, realm, source, target, carrier, slot, and power agreement, then
+   persists the graph and root bindings in the wound.
+6. The common accepted-mechanics planner composes resources, scheduler, output, and all
    canonical after-images.
-6. One validated handoff publishes or rolls back everything.
+7. One validated handoff publishes or rolls back everything.
 
-The provisional allocation is deterministic for the accepted input and is not visible
-or reusable before finalization.
+The prepared source export and operation batch are immutable and fingerprinted, while
+the permanent effect IDs remain random and opaque exactly as required by #1535.
+Non-interchangeable wound-preparation, effect-input, effect-plan, and wound-final seals
+culminate in one internally computed common prepared-plan fingerprint over all exact
+results and after-images. The cache independently recomputes it; no caller may assert a
+replacement seal or mix valid pieces from different plans. Reusing the same cached
+common plan reuses its allocated results; rebuilding after a changed session/snapshot/
+authority creates a different plan. `LocalWoundRef` and
+`applicationRef` remain handoff-only coordinates and are never persisted in canonical
+wound or effect state.
 
 ## Acquisition output
 

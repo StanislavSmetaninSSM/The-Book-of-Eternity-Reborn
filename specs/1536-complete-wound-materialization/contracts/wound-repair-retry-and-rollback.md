@@ -100,6 +100,16 @@ cache fingerprint includes:
 A cache hit is legal only for exact equality. Any mismatch discards the plan rather
 than partially recomputing it against stale provisional identities.
 
+The input/cache fingerprint above is distinct from the prepared-result seal. Internally
+computed `WoundPreparationFingerprint`, `EffectInputFingerprint`,
+`EffectAcceptedTurnPlanFingerprint`, and `WoundFinalPlanFingerprint` values bind each
+staged handoff. `AcceptedMechanicsPlan.PreparedPlanFingerprint` then binds those seals,
+all subordinate result maps and after-images, final wound root bindings, resources,
+paths, pending/scheduler state, and output. It is not accepted from a constructor caller;
+the cache independently recomputes it from detached plan data during validation and
+take/peek. A cross-plan source export, operation event, result, after-image, or final
+binding therefore invalidates the whole handoff.
+
 ## Retry identities
 
 | Operation | Unique replay coordinate |
