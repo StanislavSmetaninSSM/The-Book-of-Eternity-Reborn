@@ -628,6 +628,79 @@ public sealed class WoundTransitionReducerTests
     }
 
     [Fact]
+    public void Reduce_Complicate_WithoutWorsening_PreservesEveryPriorEffectBinding()
+    {
+        var before = PhysicalWound();
+        var removed = before.Consequences.Entries[1];
+        var replacement = removed with
+        {
+            EffectId = "effect_unrelated_replacement",
+            ReadableSummary = "Новый эффект не может заменить прежнюю связь без ухудшения."
+        };
+        var complication = Complication(
+            "complication_declared_addition",
+            "pain",
+            "effect_declared_complication");
+        var after = NewTransition(before with
+        {
+            Complications = before.Complications.Append(complication).ToImmutableArray(),
+            Consequences = before.Consequences with
+            {
+                Entries = ImmutableArray.Create(
+                    before.Consequences.Entries[0],
+                    replacement)
+            }
+        }, "complicate");
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "complicate",
+            before,
+            after,
+            ComplicateEvidence(before, after, complication.ComplicationId)));
+
+        AssertInvalid(result, "wound_transition_effect_binding_changed");
+    }
+
+    [Fact]
+    public void Reduce_Complicate_WithWorsening_AllowsCompleteEffectRematerialization()
+    {
+        var before = PhysicalWound();
+        var complication = Complication(
+            "complication_worsening_rematerialization",
+            "pain",
+            "effect_worsening_complication");
+        var rematerialized = before.Consequences.Entries.ToArray();
+        rematerialized[0] = rematerialized[0] with
+        {
+            ProfileKey = "action_control",
+            ReadableSummary = "Явное ухудшение полностью перематериализовало эффект."
+        };
+        var after = NewTransition(WithSeverity(before, "III", 3) with
+        {
+            Complications = before.Complications.Append(complication).ToImmutableArray(),
+            Consequences = WithSeverity(before, "III", 3).Consequences with
+            {
+                Entries = rematerialized.ToImmutableArray()
+            },
+            Recovery = before.Recovery with { CurrentStepProgress = 0 }
+        }, "complicate");
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "complicate",
+            before,
+            after,
+            ComplicateEvidence(
+                before,
+                after,
+                complication.ComplicationId,
+                allowsWorsening: true)));
+
+        AssertValid(result);
+        Assert.Contains(result.Intents, intent =>
+            intent is WoundEffectTransitionIntent { Operation: "replace" });
+    }
+
+    [Fact]
     public void Reduce_Diagnose_AppliesExactlyOneDeclaredPathIncludingComplicationReveal()
     {
         var complication = Complication("complication_infection", "infection") with
