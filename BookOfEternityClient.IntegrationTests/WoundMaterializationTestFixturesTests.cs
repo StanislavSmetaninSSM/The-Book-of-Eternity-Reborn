@@ -1,5 +1,9 @@
+using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -25,7 +29,15 @@ public sealed class WoundMaterializationTestFixturesTests
         Assert.NotEqual(postApocalyptic.Refs.ComplicationRef, magical.Refs.ComplicationRef);
         Assert.NotEqual(postApocalyptic.Refs.LocationAuthorityRef, magical.Refs.LocationAuthorityRef);
         Assert.Equal("infection", postApocalyptic.WoundProposal["complications"]![0]!["kind"]!.GetValue<string>());
+        Assert.Equal("Риск воспаления", postApocalyptic.WoundProposal["complications"]![0]!["displayName"]!.GetValue<string>());
         Assert.Equal("spiritual_instability", magical.WoundProposal["complications"]![0]!["kind"]!.GetValue<string>());
+        Assert.Equal("Резонансная нестабильность", magical.WoundProposal["complications"]![0]!["displayName"]!.GetValue<string>());
+        Assert.NotEqual(
+            postApocalyptic.WoundProposal["complications"]![0]!["displayName"]!.GetValue<string>(),
+            magical.WoundProposal["complications"]![0]!["displayName"]!.GetValue<string>());
+
+        AssertVisibleMortalPresentationIsSettingSpecific(postApocalyptic);
+        AssertVisibleMortalPresentationIsSettingSpecific(magical);
     }
 
     [Fact]
@@ -58,6 +70,7 @@ public sealed class WoundMaterializationTestFixturesTests
         Assert.Null(elyara["healingServiceProfile"]);
         Assert.True(fixture.BuiltInAssets.Manifest["alwaysAvailable"]!.GetValue<bool>());
         Assert.Equal("/alwaysAvailable", fixture.BuiltInAssets.DiscoverabilityPointer);
+        Assert.Equal(fixture.BuiltInAssets.DiscoverabilityPointer, fixture.Refs.DiscoverabilityPointer);
         Assert.Equal(5, fixture.FutureProposal["spiritualHealing"]!["tier"]!.GetValue<int>());
     }
 
@@ -71,8 +84,30 @@ public sealed class WoundMaterializationTestFixturesTests
         Assert.Equal("attendant_spirit", resident["residentKind"]!.GetValue<string>());
         Assert.Equal("ascended", resident["ascensionState"]!.GetValue<string>());
         Assert.Equal(fixture.Refs.FactionId, resident["shiningFactionId"]!.GetValue<string>());
-        Assert.Equal(resident["residentId"]!.GetValue<string>(), fixture.ShiningState["factions"]![0]!["leadership"]!["headActorId"]!.GetValue<string>());
-        Assert.NotNull(fixture.GuardianRoot);
+        Assert.Equal(ShiningAbodeState.ResidentRoleSocialSupport, resident["residentRole"]!.GetValue<string>());
+        Assert.Null(resident["visibleRole"]);
+        var faction = fixture.ShiningState["factions"]![0]!.AsObject();
+        var leadership = faction["leadership"]!.AsObject();
+        Assert.Equal(ShiningAbodeState.HeadActorTypeResident, leadership["headActorType"]!.GetValue<string>());
+        Assert.Equal(resident["residentId"]!.GetValue<string>(), leadership["headActorId"]!.GetValue<string>());
+        Assert.Equal(fixture.Refs.LocationRef, faction["hallId"]!.GetValue<string>());
+        Assert.Equal(resident["guardianId"]!.GetValue<string>(), fixture.Refs.HostGuardianId);
+        Assert.Equal(resident["abodeId"]!.GetValue<string>(), fixture.Refs.HostAbodeId);
+
+        var guardians = Assert.IsType<JsonArray>(fixture.GuardianRoot["guardians"]);
+        var guardian = Assert.Single(guardians.OfType<JsonObject>(), candidate =>
+            candidate["guardianId"]!.GetValue<string>() == resident["guardianId"]!.GetValue<string>());
+        Assert.Equal(resident["abodeId"]!.GetValue<string>(), guardian["abode"]!["abodeId"]!.GetValue<string>());
+        Assert.Equal("azalia", guardian["sourcePreset"]!["presetId"]!.GetValue<string>());
+        Assert.Contains("game_state/meta/guardians.json", fixture.CanonicalWritePaths);
+
+        var residentProfiles = profile.Parent!.AsArray().OfType<JsonObject>()
+            .Where(candidate => candidate["actorType"]!.GetValue<string>() == "resident" &&
+                                candidate["actorId"]!.GetValue<string>() == fixture.Refs.ResidentId)
+            .ToArray();
+        Assert.Single(residentProfiles);
+        Assert.True(faction["materialization"]!["capabilities"]!["hasResidentAffiliations"]!.GetValue<bool>());
+        Assert.Equal("populated", faction["materialization"]!["sections"]!["residentAffiliations"]!["state"]!.GetValue<string>());
         Assert.IsType<JsonObject>(resident["abodeDisposition"]);
         Assert.Equal("Shining Abode", profile["realm"]!.GetValue<string>());
         Assert.Null(resident["primaryRole"]);
@@ -97,19 +132,94 @@ public sealed class WoundMaterializationTestFixturesTests
     [Fact]
     public void Builders_ReturnFreshManifestAndNestedAuthorityGraphs()
     {
+        var firstPostApocalyptic = WoundMaterializationTestFixtures.CreatePostApocalypticMortalScenario();
+        var secondPostApocalyptic = WoundMaterializationTestFixtures.CreatePostApocalypticMortalScenario();
+        var firstMagical = WoundMaterializationTestFixtures.CreateMagicalWorldMortalScenario();
+        var secondMagical = WoundMaterializationTestFixtures.CreateMagicalWorldMortalScenario();
+        var firstConflict = WoundMaterializationTestFixtures.CreateSpiritualConflictScenario();
+        var secondConflict = WoundMaterializationTestFixtures.CreateSpiritualConflictScenario();
         var firstElyara = WoundMaterializationTestFixtures.CreateElyaraScenario();
         var secondElyara = WoundMaterializationTestFixtures.CreateElyaraScenario();
         var firstShining = WoundMaterializationTestFixtures.CreateShiningFactionScenario();
         var secondShining = WoundMaterializationTestFixtures.CreateShiningFactionScenario();
-        var firstMortal = WoundMaterializationTestFixtures.CreatePostApocalypticMortalScenario();
-        var secondMortal = WoundMaterializationTestFixtures.CreatePostApocalypticMortalScenario();
 
+        Assert.NotSame(firstPostApocalyptic.WoundProposal, secondPostApocalyptic.WoundProposal);
+        Assert.NotSame(firstPostApocalyptic.AuthorityRoots.PlayerInventory, secondPostApocalyptic.AuthorityRoots.PlayerInventory);
+        Assert.NotSame(firstMagical.WoundProposal, secondMagical.WoundProposal);
+        Assert.NotSame(firstMagical.AuthorityRoots.PlayerInventory, secondMagical.AuthorityRoots.PlayerInventory);
+        Assert.NotSame(firstPostApocalyptic.AuthorityRoots.PlayerInventory, firstMagical.AuthorityRoots.PlayerInventory);
+        Assert.NotSame(firstConflict.AfterlifeProfiles, secondConflict.AfterlifeProfiles);
+        Assert.NotSame(firstConflict.FutureProposal, secondConflict.FutureProposal);
+        Assert.NotSame(firstElyara.AfterlifeProfiles, secondElyara.AfterlifeProfiles);
+        Assert.NotSame(firstElyara.FutureProposal, secondElyara.FutureProposal);
+        Assert.NotSame(firstShining.ShiningState, secondShining.ShiningState);
+        Assert.NotSame(firstShining.FutureProposal, secondShining.FutureProposal);
+
+        firstPostApocalyptic.WoundProposal["display"]!["visibleSymptoms"]![0] = "mutated";
+        firstMagical.AuthorityRoots.PlayerInventory["items"]![0]!["name"] = "mutated";
+        firstConflict.FutureProposal["dangerEnvelope"]!["dangerMode"] = "mutated";
         firstElyara.BuiltInAssets.Manifest["displayName"] = "mutated";
         firstShining.ResidentRoster["entries"]![0]!["displayName"] = "mutated";
-        firstMortal.AuthorityRoots.PlayerInventory["items"]![0]!["name"] = "mutated";
 
+        Assert.NotEqual("mutated", secondPostApocalyptic.WoundProposal["display"]!["visibleSymptoms"]![0]!.GetValue<string>());
+        Assert.NotEqual("mutated", secondMagical.AuthorityRoots.PlayerInventory["items"]![0]!["name"]!.GetValue<string>());
+        Assert.NotEqual("mutated", secondConflict.FutureProposal["dangerEnvelope"]!["dangerMode"]!.GetValue<string>());
         Assert.NotEqual("mutated", secondElyara.BuiltInAssets.Manifest["displayName"]!.GetValue<string>());
         Assert.NotEqual("mutated", secondShining.ResidentRoster["entries"]![0]!["displayName"]!.GetValue<string>());
-        Assert.NotEqual("mutated", secondMortal.AuthorityRoots.PlayerInventory["items"]![0]!["name"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void CurrentCanonicalRoots_PassTheirOwningValidators()
+    {
+        var spiritual = WoundMaterializationTestFixtures.CreateSpiritualConflictScenario();
+        var elyara = WoundMaterializationTestFixtures.CreateElyaraScenario();
+        var shining = WoundMaterializationTestFixtures.CreateShiningFactionScenario();
+
+        AssertCanonicalRootHasNoErrors("ValidateAfterlifeEntityProfileStateFile", spiritual.AfterlifeProfiles, AfterlifeEntityProfileState.StatePath);
+        AssertCanonicalRootHasNoErrors("ValidateAfterlifeEntityProfileStateFile", elyara.AfterlifeProfiles, AfterlifeEntityProfileState.StatePath);
+        AssertCanonicalRootHasNoErrors("ValidateAfterlifeEntityProfileStateFile", shining.AfterlifeProfiles, AfterlifeEntityProfileState.StatePath);
+        AssertCanonicalRootHasNoErrors("ValidateGuardianAbodeResidentsStateFile", shining.ResidentRoster, GuardianAbodeResidentState.StatePath);
+        AssertCanonicalRootHasNoErrors("ValidateShiningAbodeStateFile", shining.ShiningState, ShiningAbodeState.StatePath);
+        AssertCanonicalRootHasNoErrors("ValidateGuardianStateData", shining.GuardianRoot, "game_state/meta/guardians.json");
+    }
+
+    private static void AssertVisibleMortalPresentationIsSettingSpecific(MortalWoundScenarioFixture fixture)
+    {
+        var item = fixture.AuthorityRoots.PlayerInventory["items"]![0]!.AsObject();
+        var provider = fixture.AuthorityRoots.ProviderAuthority["NPCsInScene"]![0]!.AsObject();
+        var location = fixture.AuthorityRoots.CurrentLocation;
+
+        Assert.False(string.IsNullOrWhiteSpace(item["description"]!.GetValue<string>()));
+        Assert.Equal(location["name"]!.GetValue<string>(), provider["currentLocationName"]!.GetValue<string>());
+        foreach (var visible in new[]
+                 {
+                     item["description"]!.GetValue<string>(),
+                     provider["role"]!.GetValue<string>(), provider["summary"]!.GetValue<string>(),
+                     provider["worldview"]!.GetValue<string>(), provider["personalityArchetype"]!.GetValue<string>(),
+                     provider["currentLocationName"]!.GetValue<string>()
+                 })
+        {
+            Assert.DoesNotContain("test", visible, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("setting-neutral", visible, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    private static void AssertCanonicalRootHasNoErrors(string methodName, JsonObject root, string statePath)
+    {
+        using var document = JsonDocument.Parse(root.ToJsonString());
+        var validator = new ValidationService(
+            new FileSystemManager(Path.GetTempPath(), NullLogger<FileSystemManager>.Instance),
+            NullLogger<ValidationService>.Instance);
+        var method = typeof(ValidationService).GetMethod(
+            methodName,
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        var issues = new List<ValidationIssue>();
+        method!.Invoke(validator, new object[] { document.RootElement, statePath, issues });
+        var errors = issues.Where(issue => issue.Severity == IssueSeverity.Error).ToArray();
+        Assert.True(errors.Length == 0, string.Join(
+            Environment.NewLine,
+            errors.Select(issue => $"{issue.Code}: {issue.FilePath}; expected={issue.Expected}; actual={issue.Actual}")));
     }
 }
