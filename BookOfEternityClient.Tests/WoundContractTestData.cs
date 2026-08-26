@@ -5,6 +5,15 @@ namespace BookOfEternityClient.Tests;
 /// <summary>Strict, deterministic version-1 JSON data for future wound contract tests.</summary>
 internal static class WoundContractTestData
 {
+    private static readonly string[] DistinctMortalProfiles =
+    {
+        "action_control",
+        "characteristic_modifier",
+        "resistance_modifier",
+        "periodic_damage",
+        "roll_modifier"
+    };
+
     internal const int ActiveWoundLimit = 2_000;
     internal const int HistoryRowLimit = 20_000;
     internal const int CommandLimit = 128;
@@ -257,9 +266,10 @@ internal static class WoundContractTestData
         {
             ["slotBudget"] = 2,
             ["slotsUsed"] = 2,
-            ["ownedEffectSources"] = CreateOwnedEffectSources(
+            ["ownedEffectSources"] = CreateOwnedEffectSourcesForTarget(
                 woundId,
                 realm,
+                ResolveEffectTargetKind(ownerKind),
                 ("effect_wound_test_bleeding", "definition_wound_test_bleeding", "periodic_damage"),
                 ("effect_wound_test_pain", "definition_wound_test_pain", "action_control")),
             ["entries"] = new JsonArray(
@@ -318,9 +328,88 @@ internal static class WoundContractTestData
         }
     };
 
+    internal static JsonObject CreateSpiritualActiveWound(
+        string woundId = "wound_spiritual_test",
+        string realm = "chaos_sea",
+        string ownerKind = "player_soul",
+        string ownerId = "player_soul_current",
+        string carrierPath = "game_state/meta/afterlife_entity_profiles.json#/playerSoul")
+    {
+        var wound = CreateActiveWound(
+            woundId,
+            realm,
+            ownerKind,
+            ownerId,
+            carrierPath,
+            domain: "spiritual");
+        wound["classification"] = new JsonObject
+        {
+            ["domain"] = "spiritual",
+            ["woundType"] = "Трещина духовной целостности",
+            ["locationProfile"] = new JsonObject
+            {
+                ["kind"] = "spiritual_axis",
+                ["readableLocus"] = "воля и духовное равновесие",
+                ["authorityKind"] = "spiritual_axis",
+                ["authorityRef"] = "will_and_balance",
+                ["affectedSide"] = "self"
+            }
+        };
+        wound["display"]!["name"] = "Трещина духовной целостности";
+        wound["display"]!["description"] =
+            "Пережитое столкновение нарушило волю и духовное равновесие.";
+        wound["display"]!["visibleSymptoms"] = new JsonArray(
+            "тяжесть духовных действий",
+            "неуверенность в противостоянии");
+        wound["display"]!["prognosis"] =
+            "Рана поддаётся духовному исцелению и естественному восстановлению.";
+        wound["display"]!["acquisitionNarration"] =
+            "Чужое давление оставило трещину в духовной целостности.";
+
+        var sources = CreateOwnedEffectSourcesForTarget(
+            woundId,
+            realm,
+            ResolveEffectTargetKind(ownerKind),
+            ("effect_spiritual_roll", "definition_spiritual_roll", "spiritual_roll_hindrance"),
+            ("effect_spiritual_cost", "definition_spiritual_cost", "spiritual_action_cost_burden"));
+        sources["definitions"]![0]!["components"]![0]!["componentId"] =
+            "component_spiritual_roll";
+        sources["definitions"]![1]!["components"]![0]!["componentId"] =
+            "component_spiritual_cost";
+        sources["definitions"]![1]!["components"]![0]!["payload"]!["magnitude"] = 1;
+        sources["definitions"]![0]!["triggers"]![0]!["componentIds"] =
+            new JsonArray("component_spiritual_roll");
+        sources["definitions"]![1]!["triggers"]![0]!["componentIds"] =
+            new JsonArray("component_spiritual_cost");
+        wound["consequences"]!["ownedEffectSources"] = sources;
+        wound["consequences"]!["entries"] = new JsonArray(
+            new JsonObject
+            {
+                ["slot"] = 1,
+                ["profileKey"] = "spiritual_roll_hindrance",
+                ["effectId"] = "effect_spiritual_roll",
+                ["readableSummary"] = "Духовные проверки проходят с помехой."
+            },
+            new JsonObject
+            {
+                ["slot"] = 2,
+                ["profileKey"] = "spiritual_action_cost_burden",
+                ["effectId"] = "effect_spiritual_cost",
+                ["readableSummary"] = "Духовные действия требуют дополнительного усилия."
+            });
+        return wound;
+    }
+
     internal static JsonObject CreateOwnedEffectSources(
         string woundId,
         string realm,
+        params (string EffectId, string DefinitionKey, string Profile)[] roots) =>
+        CreateOwnedEffectSourcesForTarget(woundId, realm, "player", roots);
+
+    internal static JsonObject CreateOwnedEffectSourcesForTarget(
+        string woundId,
+        string realm,
+        string targetKind,
         params (string EffectId, string DefinitionKey, string Profile)[] roots)
     {
         ArgumentNullException.ThrowIfNull(roots);
@@ -333,7 +422,8 @@ internal static class WoundContractTestData
                 realm,
                 definitionKey,
                 profile,
-                $"stack_{definitionKey}"));
+                $"stack_{definitionKey}",
+                targetKind));
             rootBindings.Add(CreateRootBinding(effectId, definitionKey));
         }
 
@@ -349,20 +439,13 @@ internal static class WoundContractTestData
         string realm,
         string definitionKey,
         string profile = "periodic_damage",
-        string? stackKey = null)
+        string? stackKey = null,
+        string targetKind = "player")
     {
         var definition = EffectMaterializationTestFixture.CreateDefinition(profile);
         definition["definitionKey"] = definitionKey;
         definition["allowedRealms"] = new JsonArray(realm);
-        definition["allowedTargetKinds"] = new JsonArray(
-            "player",
-            "npc",
-            "combatant",
-            "guardian",
-            "resident",
-            "radiant_actor",
-            "afterlife_actor",
-            "spiritual_conflict_side");
+        definition["allowedTargetKinds"] = new JsonArray(targetKind);
         definition["parameterBounds"] = new JsonObject();
         definition["stacking"] = new JsonObject
         {
@@ -389,6 +472,21 @@ internal static class WoundContractTestData
             definition["components"]![0]!["payload"]!["woundId"] = woundId;
         return definition;
     }
+
+    private static string ResolveEffectTargetKind(string ownerKind) => ownerKind switch
+    {
+        "player" or "player_soul" => "player",
+        "npc" => "npc",
+        "combatant" or "combatant_member" => "combatant",
+        "guardian" => "guardian",
+        "resident" => "resident",
+        "radiant_actor" => "radiant_actor",
+        "afterlife_actor" => "afterlife_actor",
+        _ => throw new ArgumentOutOfRangeException(
+            nameof(ownerKind),
+            ownerKind,
+            "Unsupported wound owner kind for effect-target test authority.")
+    };
 
     internal static JsonObject CreateRootBinding(
         string effectId,
@@ -427,6 +525,9 @@ internal static class WoundContractTestData
         for (var index = 0; index < count; index++) result.Add(factory(index).DeepClone());
         return result;
     }
+
+    internal static string DistinctMortalProfile(int index) =>
+        DistinctMortalProfiles[index % DistinctMortalProfiles.Length];
 
     private static JsonObject CreatePlayerCarrierOwner() => new()
     {

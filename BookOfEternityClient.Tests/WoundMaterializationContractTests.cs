@@ -129,6 +129,14 @@ public sealed class WoundMaterializationContractTests
             "\"sourceKind\":\"combat_action\"",
             "\"sourceKind\":\"combat_action\",\"sourceKind\":\"hazard\"",
             StringComparison.Ordinal);
+        var duplicateDefinition = json.Replace(
+            "\"definitionKey\":\"definition_wound_test_bleeding\"",
+            "\"definitionKey\":\"definition_wound_test_bleeding\",\"definitionKey\":\"forged\"",
+            StringComparison.Ordinal);
+        var duplicateBinding = json.Replace(
+            "\"effectId\":\"effect_wound_test_bleeding\",\"definitionKey\":\"definition_wound_test_bleeding\"",
+            "\"effectId\":\"effect_wound_test_bleeding\",\"effectId\":\"forged\",\"definitionKey\":\"definition_wound_test_bleeding\"",
+            StringComparison.Ordinal);
 
         AssertInvalid(
             WoundMaterializationContract.Parse(duplicateRoot, Path),
@@ -137,6 +145,14 @@ public sealed class WoundMaterializationContractTests
         AssertInvalid(
             WoundMaterializationContract.Parse(duplicateNested, Path),
             Path + ".origin.sourceKind",
+            "wound_materialization_duplicate_property");
+        AssertInvalid(
+            WoundMaterializationContract.Parse(duplicateDefinition, Path),
+            Path + ".consequences.ownedEffectSources.definitions[0].definitionKey",
+            "wound_materialization_duplicate_property");
+        AssertInvalid(
+            WoundMaterializationContract.Parse(duplicateBinding, Path),
+            Path + ".consequences.ownedEffectSources.rootBindings[0].effectId",
             "wound_materialization_duplicate_property");
     }
 
@@ -154,14 +170,24 @@ public sealed class WoundMaterializationContractTests
                  {
                      ("ownedEffectSources", wound =>
                          wound["consequences"]!["ownedEffectSources"] = null),
+                     ("ownedEffectSources", wound =>
+                         wound["consequences"]!["ownedEffectSources"] = new JsonArray()),
                      ("ownedEffectSources.definitions", wound =>
                          Sources(wound)["definitions"] = null),
+                     ("ownedEffectSources.definitions", wound =>
+                         Sources(wound)["definitions"] = new JsonObject()),
                      ("ownedEffectSources.rootBindings", wound =>
                          Sources(wound)["rootBindings"] = null),
+                     ("ownedEffectSources.rootBindings", wound =>
+                         Sources(wound)["rootBindings"] = new JsonObject()),
                      ("ownedEffectSources.definitions[0]", wound =>
                          Definitions(wound)[0] = null),
+                     ("ownedEffectSources.definitions[0]", wound =>
+                         Definitions(wound)[0] = "not_an_object"),
                      ("ownedEffectSources.rootBindings[0]", wound =>
-                         RootBindings(wound)[0] = null)
+                         RootBindings(wound)[0] = null),
+                     ("ownedEffectSources.rootBindings[0]", wound =>
+                         RootBindings(wound)[0] = 17)
                  })
         {
             var wound = WoundContractTestData.CreateActiveWound();
@@ -178,35 +204,94 @@ public sealed class WoundMaterializationContractTests
             Parse(unknown),
             Path + ".consequences.ownedEffectSources.applicationRefs",
             "wound_materialization_unknown_field");
+
+        foreach (var field in new[] { "parameters", "applicationRef", "sourceRef" })
+        {
+            var responseLocal = WoundContractTestData.CreateActiveWound();
+            RootBindings(responseLocal)[0]![field] = field == "parameters"
+                ? new JsonObject()
+                : "response_local_value";
+            AssertInvalid(
+                Parse(responseLocal),
+                $"{Path}.consequences.ownedEffectSources.rootBindings[0].{field}",
+                "wound_materialization_unknown_field");
+        }
     }
 
     [Fact]
     public void Parse_OwnedEffectSources_EnforcesExactFiveDefinitionAndRootBounds()
     {
         var atLimit = CreateSeverityFourFiveRootWound();
+        Assert.Equal(WoundContractTestData.OwnedEffectDefinitionLimit, Definitions(atLimit).Count);
+        Assert.Equal(WoundContractTestData.OwnedEffectRootBindingLimit, RootBindings(atLimit).Count);
         Assert.True(Parse(atLimit).IsValid, DescribeIssues(Parse(atLimit)));
 
-        var tooManyDefinitions = CreateSeverityFourFiveRootWound();
-        Definitions(tooManyDefinitions).Add(
+        var legalFiveDefinitionLeafGraph = CreateSingleLeafWound();
+        SetSeverity(legalFiveDefinitionLeafGraph, "IV", 4, "IV");
+        legalFiveDefinitionLeafGraph["consequences"]!["slotBudget"] = 4;
+        legalFiveDefinitionLeafGraph["consequences"]!["slotsUsed"] = 4;
+        for (var index = 0; index < 2; index++)
+        {
+            var effectId = $"effect_wound_legal_leaf_root_{index}";
+            var definitionKey = $"definition_wound_legal_leaf_root_{index}";
+            var profile = WoundContractTestData.DistinctMortalProfile(index);
+            Definitions(legalFiveDefinitionLeafGraph).Add(
+                WoundContractTestData.CreateOwnedEffectDefinition(
+                    "wound_test_torn_side",
+                    "mortal_world",
+                    definitionKey,
+                    profile));
+            RootBindings(legalFiveDefinitionLeafGraph).Add(
+                WoundContractTestData.CreateRootBinding(effectId, definitionKey));
+            Entries(legalFiveDefinitionLeafGraph).Add(new JsonObject
+            {
+                ["slot"] = index + 3,
+                ["profileKey"] = profile,
+                ["effectId"] = effectId,
+                ["readableSummary"] = $"Допустимый корень {index + 1}."
+            });
+        }
+        Definitions(legalFiveDefinitionLeafGraph).Add(
             WoundContractTestData.CreateOwnedEffectDefinition(
                 "wound_test_torn_side",
                 "mortal_world",
-                "definition_wound_sixth",
+                "definition_wound_legal_marker",
                 "wound_consequence"));
+        RootBindings(legalFiveDefinitionLeafGraph).Add(
+            WoundContractTestData.CreateRootBinding(
+                "effect_wound_legal_marker",
+                "definition_wound_legal_marker"));
+        Assert.True(
+            Parse(legalFiveDefinitionLeafGraph).IsValid,
+            DescribeIssues(Parse(legalFiveDefinitionLeafGraph)));
+
+        var tooManyDefinitions = CreateSeverityFourFiveRootWound();
+        Definitions(tooManyDefinitions).Add(
+            "poisonous_sixth_definition_must_not_be_read");
+        var tooManyDefinitionsResult = Parse(tooManyDefinitions);
         AssertInvalid(
-            Parse(tooManyDefinitions),
+            tooManyDefinitionsResult,
             Path + ".consequences.ownedEffectSources.definitions",
             "wound_materialization_limit_exceeded");
+        Assert.DoesNotContain(
+            tooManyDefinitionsResult.Issues,
+            issue => issue.FilePath.StartsWith(
+                $"{Path}.consequences.ownedEffectSources.definitions[{WoundContractTestData.OwnedEffectDefinitionLimit}]",
+                StringComparison.Ordinal));
 
         var tooManyRoots = CreateSeverityFourFiveRootWound();
         RootBindings(tooManyRoots).Add(
-            WoundContractTestData.CreateRootBinding(
-                "effect_wound_sixth",
-                "definition_wound_marker"));
+            "poisonous_sixth_binding_must_not_be_read");
+        var tooManyRootsResult = Parse(tooManyRoots);
         AssertInvalid(
-            Parse(tooManyRoots),
+            tooManyRootsResult,
             Path + ".consequences.ownedEffectSources.rootBindings",
             "wound_materialization_limit_exceeded");
+        Assert.DoesNotContain(
+            tooManyRootsResult.Issues,
+            issue => issue.FilePath.StartsWith(
+                $"{Path}.consequences.ownedEffectSources.rootBindings[{WoundContractTestData.OwnedEffectRootBindingLimit}]",
+                StringComparison.Ordinal));
 
         var fourRootsPlusLeaf = CreateSingleLeafWound();
         SetSeverity(fourRootsPlusLeaf, "IV", 4, "IV");
@@ -215,18 +300,19 @@ public sealed class WoundMaterializationContractTests
         {
             var effectId = $"effect_wound_boundary_{index}";
             var definitionKey = $"definition_wound_boundary_{index}";
+            var profile = WoundContractTestData.DistinctMortalProfile(index);
             Definitions(fourRootsPlusLeaf).Add(
                 WoundContractTestData.CreateOwnedEffectDefinition(
                     "wound_test_torn_side",
                     "mortal_world",
                     definitionKey,
-                    "action_control"));
+                    profile));
             RootBindings(fourRootsPlusLeaf).Add(
                 WoundContractTestData.CreateRootBinding(effectId, definitionKey));
             Entries(fourRootsPlusLeaf).Add(new JsonObject
             {
                 ["slot"] = index + 3,
-                ["profileKey"] = "action_control",
+                ["profileKey"] = profile,
                 ["effectId"] = effectId,
                 ["readableSummary"] = $"Граничное следствие {index + 1}."
             });
@@ -247,6 +333,14 @@ public sealed class WoundMaterializationContractTests
                 "wound.consequences.ownedEffectSources.definitions[1].definitionKey",
                 wound =>
                 {
+                    var duplicate = Definitions(wound)[0]!["definitionKey"]!.GetValue<string>();
+                    Definitions(wound)[1]!["definitionKey"] = duplicate;
+                    RootBindings(wound)[1]!["definitionKey"] = duplicate;
+                }),
+            (
+                "wound.consequences.ownedEffectSources.definitions[1].definitionKey",
+                wound =>
+                {
                     Definitions(wound)[1]!["definitionKey"] = "definition_wound_test_bl\u0435eding";
                     RootBindings(wound)[1]!["definitionKey"] = "definition_wound_test_bl\u0435eding";
                 }),
@@ -254,9 +348,17 @@ public sealed class WoundMaterializationContractTests
                 "wound.consequences.ownedEffectSources.rootBindings[1].effectId",
                 wound => RootBindings(wound)[1]!["effectId"] = "effect_wound_test_bl\u0435eding"),
             (
+                "wound.consequences.ownedEffectSources.rootBindings[1].effectId",
+                wound =>
+                {
+                    var duplicate = RootBindings(wound)[0]!["effectId"]!.GetValue<string>();
+                    RootBindings(wound)[1]!["effectId"] = duplicate;
+                    Entries(wound)[1]!["effectId"] = duplicate;
+                }),
+            (
                 "wound.consequences.ownedEffectSources.definitions[1].stacking.stackKey",
                 wound => Definitions(wound)[1]!["stacking"]!["stackKey"] =
-                    Definitions(wound)[0]!["stacking"]!["stackKey"]!.GetValue<string>()),
+                    "stack_definition_wound_test_bl\u0435eding"),
             (
                 "wound.consequences.ownedEffectSources.definitions[0].stacking.maxStacks",
                 wound => Definitions(wound)[0]!["stacking"]!["maxStacks"] = 2),
@@ -283,7 +385,15 @@ public sealed class WoundMaterializationContractTests
                         "definition_wound_orphan"))),
             (
                 "wound.consequences.ownedEffectSources.rootBindings[0].definitionKey",
-                wound => RootBindings(wound)[0]!["definitionKey"] = "definition_missing")
+                wound => RootBindings(wound)[0]!["definitionKey"] = "definition_missing"),
+            (
+                "wound.consequences.ownedEffectSources.rootBindings[1].definitionKey",
+                wound => RootBindings(wound)[1]!["definitionKey"] =
+                    "definition_wound_test_bleeding"),
+            (
+                "wound.consequences.ownedEffectSources.definitions[0].allowedTargetKinds",
+                wound => Definitions(wound)[0]!["allowedTargetKinds"] =
+                    new JsonArray("npc"))
         };
 
         foreach (var (expectedPath, mutate) in cases)
@@ -295,6 +405,85 @@ public sealed class WoundMaterializationContractTests
                 expectedPath,
                 "wound_materialization_owned_source_graph_invalid");
         }
+    }
+
+    [Theory]
+    [InlineData("independent", "no_change", null, null)]
+    [InlineData("stack", "no_change", null, null)]
+    [InlineData("refresh", "refresh", "reset", null)]
+    [InlineData("replace", "no_change", null, null)]
+    [InlineData("merge", "no_change", null, "sum")]
+    public void Parse_OwnedEffectSources_AcceptsEveryLegalDirectRootStackingPolicy(
+        string policy,
+        string atMaximum,
+        string? refreshMode,
+        string? mergeRule)
+    {
+        var wound = WoundContractTestData.CreateActiveWound();
+        var stacking = Definitions(wound)[0]!["stacking"]!.AsObject();
+        stacking["policy"] = policy;
+        stacking["maxStacks"] = 1;
+        stacking["atMaximum"] = atMaximum;
+        stacking["refreshMode"] = refreshMode;
+        stacking["mergeRule"] = mergeRule;
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+    }
+
+    [Fact]
+    public void Parse_OwnedEffectSources_RequiresClosedAcyclicExactWoundGraph()
+    {
+        var unresolved = CreateSingleLeafWound();
+        Definitions(unresolved)[0]!["components"]![0]!["payload"]!["definitionKey"] =
+            "definition_missing";
+        AssertInvalid(
+            Parse(unresolved),
+            Path + ".consequences.ownedEffectSources.definitions[0].components[0].payload.definitionKey",
+            "wound_materialization_owned_source_graph_invalid");
+
+        var cyclic = CreateSingleLeafWound();
+        Definitions(cyclic)[1] = WoundContractTestData.CreateApplyDefinitionRoot(
+            "wound_test_torn_side",
+            "mortal_world",
+            "definition_wound_leaf",
+            "definition_wound_reaction_root");
+        AssertInvalid(
+            Parse(cyclic),
+            Path + ".consequences.ownedEffectSources.definitions[1].components[0].payload.definitionKey",
+            "wound_materialization_owned_source_graph_invalid");
+
+        var missingLink = WoundContractTestData.CreateActiveWound();
+        Definitions(missingLink)[0]!["links"] = new JsonArray();
+        AssertInvalid(
+            Parse(missingLink),
+            Path + ".consequences.ownedEffectSources.definitions[0].links",
+            "wound_materialization_owned_source_graph_invalid");
+
+        var confusableLink = WoundContractTestData.CreateActiveWound();
+        Definitions(confusableLink)[0]!["links"]![0]!["targetId"] =
+            "wound_test_torn_s\u0456de";
+        AssertInvalid(
+            Parse(confusableLink),
+            Path + ".consequences.ownedEffectSources.definitions[0].links[0].targetId",
+            "wound_materialization_owned_source_graph_invalid");
+
+        var duplicateLink = WoundContractTestData.CreateActiveWound();
+        Definitions(duplicateLink)[0]!["links"]!.AsArray().Add(
+            Definitions(duplicateLink)[0]!["links"]![0]!.DeepClone());
+        AssertInvalid(
+            Parse(duplicateLink),
+            Path + ".consequences.ownedEffectSources.definitions[0].links[1]",
+            "wound_materialization_owned_source_graph_invalid");
+
+        var wrongMarkerWound = CreateNonMechanicalWound(includeMarker: true);
+        Definitions(wrongMarkerWound)[0]!["components"]![0]!["payload"]!["woundId"] =
+            "wound_other";
+        AssertInvalid(
+            Parse(wrongMarkerWound),
+            Path + ".consequences.ownedEffectSources.definitions[0].components[0].payload.woundId",
+            "wound_materialization_owned_source_graph_invalid");
     }
 
     [Fact]
@@ -405,6 +594,56 @@ public sealed class WoundMaterializationContractTests
             "effect_wound_reaction_root"));
         AssertInvalid(
             Parse(crossDomain),
+            Path + ".consequences.ownedEffectSources.definitions[0].components[0].payload.definitionKey",
+            "wound_materialization_owned_source_graph_invalid");
+    }
+
+    [Theory]
+    [InlineData("I", 1)]
+    [InlineData("II", 2)]
+    public void Parse_OwnedEffectSources_RejectsLeafExpansionBelowSeverityThree(
+        string severity,
+        int rank)
+    {
+        var wound = CreateSingleLeafWound();
+        SetSeverity(wound, severity, rank, severity);
+        wound["consequences"]!["slotBudget"] = rank;
+        wound["consequences"]!["slotsUsed"] = 1;
+        Definitions(wound)[0]!["components"]![0]!["payload"]!["parameters"] =
+            new JsonObject();
+        Definitions(wound)[1] =
+            WoundContractTestData.CreateOwnedEffectDefinition(
+                "wound_test_torn_side",
+                "mortal_world",
+                "definition_wound_leaf",
+                "wound_consequence");
+        Entries(wound).RemoveAt(1);
+
+        AssertInvalid(
+            Parse(wound),
+            Path + ".consequences.ownedEffectSources.definitions[0].components[0].payload.definitionKey",
+            "wound_materialization_owned_source_graph_invalid");
+    }
+
+    [Theory]
+    [InlineData("independent", null, null)]
+    [InlineData("stack", null, null)]
+    [InlineData("refresh", "reset", null)]
+    [InlineData("merge", null, "sum")]
+    public void Parse_RootBoundReactionTarget_RejectsEveryNonReplacePolicy(
+        string policy,
+        string? refreshMode,
+        string? mergeRule)
+    {
+        var wound = CreateSingleLeafWound(bindLeaf: true, leafPolicy: "replace");
+        var stacking = Definitions(wound)[1]!["stacking"]!.AsObject();
+        stacking["policy"] = policy;
+        stacking["refreshMode"] = refreshMode;
+        stacking["mergeRule"] = mergeRule;
+        stacking["atMaximum"] = policy == "refresh" ? "refresh" : "no_change";
+
+        AssertInvalid(
+            Parse(wound),
             Path + ".consequences.ownedEffectSources.definitions[1].stacking.policy",
             "wound_materialization_owned_source_graph_invalid");
     }
@@ -456,13 +695,8 @@ public sealed class WoundMaterializationContractTests
             Path + ".consequences.slotsUsed",
             "wound_materialization_consequence_slot_invalid");
 
-        var spiritualUnderRank = WoundContractTestData.CreateActiveWound(
-            woundId: "wound_spiritual_slots",
-            realm: "chaos_sea",
-            ownerKind: "player_soul",
-            ownerId: "player_soul_current",
-            carrierPath: "game_state/meta/afterlife_entity_profiles.json#/playerSoul",
-            domain: "spiritual");
+        var spiritualUnderRank = WoundContractTestData.CreateSpiritualActiveWound(
+            woundId: "wound_spiritual_slots");
         Entries(spiritualUnderRank).RemoveAt(1);
         RootBindings(spiritualUnderRank).RemoveAt(1);
         Definitions(spiritualUnderRank).RemoveAt(1);
@@ -471,6 +705,61 @@ public sealed class WoundMaterializationContractTests
             Parse(spiritualUnderRank),
             Path + ".consequences.slotsUsed",
             "wound_materialization_consequence_slot_invalid");
+    }
+
+    [Fact]
+    public void Parse_OwnedEffectSources_RejectsOrphanedRootAndComplicationJoins()
+    {
+        var missingComplicationRoot = WoundContractTestData.CreateActiveWound();
+        missingComplicationRoot["complications"]!.AsArray().Add(
+            CreateComplication(1, "effect_missing_complication_root"));
+        AssertInvalid(
+            Parse(missingComplicationRoot),
+            Path + ".complications[0].ownedEffectIds[0]",
+            "wound_materialization_effect_binding_invalid");
+
+        var confusableComplicationOverlap = WoundContractTestData.CreateActiveWound();
+        confusableComplicationOverlap["complications"]!.AsArray().Add(
+            CreateComplication(1, "effect_wound_test_bleeding"));
+        confusableComplicationOverlap["complications"]!.AsArray().Add(
+            CreateComplication(2, "effect_wound_test_bl\u0435eding"));
+        AssertInvalid(
+            Parse(confusableComplicationOverlap),
+            Path + ".complications[1].ownedEffectIds[0]",
+            "wound_materialization_effect_binding_invalid");
+
+        var orphanMechanicalRoot = WoundContractTestData.CreateActiveWound();
+        Definitions(orphanMechanicalRoot).Add(
+            WoundContractTestData.CreateOwnedEffectDefinition(
+                "wound_test_torn_side",
+                "mortal_world",
+                "definition_orphan_mechanical_root",
+                "characteristic_modifier"));
+        RootBindings(orphanMechanicalRoot).Add(
+            WoundContractTestData.CreateRootBinding(
+                "effect_orphan_mechanical_root",
+                "definition_orphan_mechanical_root"));
+        AssertInvalid(
+            Parse(orphanMechanicalRoot),
+            Path + ".consequences.ownedEffectSources.rootBindings[2].effectId",
+            "wound_materialization_effect_binding_invalid");
+
+        var descendantUsedAsSlotAuthority = CreateSingleLeafWound();
+        Entries(descendantUsedAsSlotAuthority)[1]!["effectId"] =
+            "effect_reaction_descendant_not_a_root";
+        AssertInvalid(
+            Parse(descendantUsedAsSlotAuthority),
+            Path + ".consequences.entries[1].effectId",
+            "wound_materialization_effect_binding_invalid");
+
+        var displayOnlyMarker = CreateNonMechanicalWound(includeMarker: true);
+        displayOnlyMarker["care"]!["state"] = "stabilized";
+        displayOnlyMarker["care"]!["stabilizedAtTurn"] = 42;
+        displayOnlyMarker["recovery"]!["blockers"] = new JsonArray();
+        AssertInvalid(
+            Parse(displayOnlyMarker),
+            Path + ".consequences.lifecycleEvidence",
+            "wound_consequence_non_display_impact_required");
     }
 
     [Fact]
@@ -493,6 +782,7 @@ public sealed class WoundMaterializationContractTests
             WoundMaterializationContract.SerializeCanonical(reorderedResult.Wound!));
 
         Definitions(callerOwned)[0]!["display"]!["description"] = "Подмена после parse";
+        RootBindings(callerOwned)[0]!["effectId"] = "effect_mutated_after_parse";
         Assert.Equal(canonical, WoundMaterializationContract.SerializeCanonical(firstWound));
 
         var changed = WoundContractTestData.CreateActiveWound();
@@ -503,11 +793,69 @@ public sealed class WoundMaterializationContractTests
             WoundIdentityState.ComputeSemanticFingerprint(firstWound),
             WoundIdentityState.ComputeSemanticFingerprint(changedResult.Wound!));
 
+        var changedBinding = WoundContractTestData.CreateActiveWound();
+        RootBindings(changedBinding)[0]!["effectId"] = "effect_wound_rebound";
+        Entries(changedBinding)[0]!["effectId"] = "effect_wound_rebound";
+        var changedBindingResult = Parse(changedBinding);
+        Assert.True(changedBindingResult.IsValid, DescribeIssues(changedBindingResult));
+        Assert.NotEqual(
+            WoundIdentityState.ComputeSemanticFingerprint(firstWound),
+            WoundIdentityState.ComputeSemanticFingerprint(changedBindingResult.Wound!));
+
+        var nestedReordered = WoundContractTestData.CreateActiveWound();
+        var definition = Definitions(nestedReordered)[0]!.AsObject();
+        definition["display"] = ReverseObject(definition["display"]!.AsObject());
+        definition["stacking"] = ReverseObject(definition["stacking"]!.AsObject());
+        definition["components"]![0]!["payload"] = ReverseObject(
+            definition["components"]![0]!["payload"]!.AsObject());
+        definition["components"]![0] = ReverseObject(
+            definition["components"]![0]!.AsObject());
+        definition["links"]![0] = ReverseObject(definition["links"]![0]!.AsObject());
+        Definitions(nestedReordered)[0] = ReverseObject(definition);
+        var nestedResult = Parse(nestedReordered);
+        Assert.True(nestedResult.IsValid, DescribeIssues(nestedResult));
+        Assert.Equal(
+            canonical,
+            WoundMaterializationContract.SerializeCanonical(nestedResult.Wound!));
+
         var canonicalNode = JsonNode.Parse(canonical)!.AsObject();
         Assert.Equal(
             new[] { "definitions", "rootBindings" },
             canonicalNode["consequences"]!["ownedEffectSources"]!.AsObject()
                 .Select(static property => property.Key));
+
+        var emptyResult = Parse(CreateNonMechanicalWound(includeMarker: false));
+        Assert.True(emptyResult.IsValid, DescribeIssues(emptyResult));
+        var emptyCanonical = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(emptyResult.Wound!))!.AsObject();
+        Assert.Empty(emptyCanonical["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray());
+        Assert.Empty(emptyCanonical["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray());
+    }
+
+    [Fact]
+    public void Parse_OwnedEffectSources_PreservesLegalNonSourceBoundLifetime()
+    {
+        var wound = WoundContractTestData.CreateActiveWound();
+        Definitions(wound)[0]!["lifetime"] = new JsonObject
+        {
+            ["mode"] = "turns",
+            ["initialTurns"] = 3,
+            ["advancePhase"] = "owner_turn_end"
+        };
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+        var canonical = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(result.Wound!))!.AsObject();
+        Assert.Equal(
+            "turns",
+            canonical["consequences"]!["ownedEffectSources"]!["definitions"]![0]!
+                ["lifetime"]!["mode"]!.GetValue<string>());
+        Assert.Equal(
+            WoundIdentityState.ComputeSemanticFingerprint(result.Wound!),
+            WoundIdentityState.ComputeSemanticFingerprint(
+                Assert.IsType<WoundMaterializationEnvelope>(Parse(canonical).Wound)));
     }
 
     [Theory]
@@ -1001,7 +1349,7 @@ public sealed class WoundMaterializationContractTests
             new JsonObject
             {
                 ["slot"] = index + 1,
-                ["profileKey"] = "action_control",
+                ["profileKey"] = WoundContractTestData.DistinctMortalProfile(index),
                 ["effectId"] = $"effect_{index}",
                 ["readableSummary"] = $"Последствие {index + 1}."
             });
@@ -1013,7 +1361,7 @@ public sealed class WoundMaterializationContractTests
                     .Select(index => (
                         $"effect_{index}",
                         $"definition_effect_{index}",
-                        "action_control"))
+                        WoundContractTestData.DistinctMortalProfile(index)))
                     .ToArray());
     }
 
@@ -1028,7 +1376,7 @@ public sealed class WoundMaterializationContractTests
             new JsonObject
             {
                 ["slot"] = index + 1,
-                ["profileKey"] = "action_control",
+                ["profileKey"] = WoundContractTestData.DistinctMortalProfile(index),
                 ["effectId"] = $"effect_wound_root_{index}",
                 ["readableSummary"] = $"Ограничение {index + 1}."
             });
@@ -1037,9 +1385,9 @@ public sealed class WoundMaterializationContractTests
                 "wound_test_torn_side",
                 "mortal_world",
                 ("effect_wound_root_0", "definition_wound_root_0", "action_control"),
-                ("effect_wound_root_1", "definition_wound_root_1", "action_control"),
-                ("effect_wound_root_2", "definition_wound_root_2", "action_control"),
-                ("effect_wound_root_3", "definition_wound_root_3", "action_control"),
+                ("effect_wound_root_1", "definition_wound_root_1", "characteristic_modifier"),
+                ("effect_wound_root_2", "definition_wound_root_2", "resistance_modifier"),
+                ("effect_wound_root_3", "definition_wound_root_3", "periodic_damage"),
                 ("effect_wound_marker", "definition_wound_marker", "wound_consequence"));
         return wound;
     }
@@ -1054,6 +1402,7 @@ public sealed class WoundMaterializationContractTests
         const string rootKey = "definition_wound_reaction_root";
         const string leafKey = "definition_wound_leaf";
         var wound = WoundContractTestData.CreateActiveWound();
+        SetSeverity(wound, "III", 3, "III");
         var root = WoundContractTestData.CreateApplyDefinitionRoot(
             woundId,
             "mortal_world",
@@ -1086,7 +1435,7 @@ public sealed class WoundMaterializationContractTests
         if (bindLeaf)
             bindings.Add(WoundContractTestData.CreateRootBinding(leafEffectId, leafKey));
         var consequences = wound["consequences"]!.AsObject();
-        consequences["slotBudget"] = 2;
+        consequences["slotBudget"] = 3;
         consequences["slotsUsed"] = 2;
         consequences["ownedEffectSources"] = new JsonObject
         {

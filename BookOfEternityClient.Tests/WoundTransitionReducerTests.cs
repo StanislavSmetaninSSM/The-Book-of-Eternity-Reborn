@@ -350,6 +350,7 @@ public sealed class WoundTransitionReducerTests
         var result = WoundTransitionReducer.Reduce(Request("worsen", before, after, evidence));
 
         AssertValid(result);
+        AssertFreshRootIds(before, after);
         Assert.Equal(3, result.ProposedAfter!.Severity.Rank);
         Assert.Equal(0, result.ProposedAfter.Recovery.CurrentStepProgress);
         Assert.Contains(result.Intents, intent =>
@@ -492,6 +493,7 @@ public sealed class WoundTransitionReducerTests
             after,
             ComplicateEvidence(before, after, complication.ComplicationId, allowsWorsening: true)));
         AssertValid(accepted);
+        AssertFreshRootIds(before, after);
     }
 
     [Fact]
@@ -639,8 +641,7 @@ public sealed class WoundTransitionReducerTests
         };
         var complication = Complication(
             "complication_declared_addition",
-            "pain",
-            "effect_declared_complication");
+            "pain");
         var after = NewTransition(before with
         {
             Complications = before.Complications.Append(complication).ToImmutableArray(),
@@ -680,41 +681,66 @@ public sealed class WoundTransitionReducerTests
             complicationOwnsEffect
                 ? new[] { reciprocalEffectId }
                 : Array.Empty<string>());
-        var entries = before.Consequences.Entries.ToList();
-        if (addReciprocalConsequence)
+        var graphAfter = before;
+        if (addReciprocalConsequence || complicationOwnsEffect)
         {
-            entries.Add(new WoundConsequenceEntry(
-                entries.Count + 1,
-                "action_control",
+            graphAfter = AddOwnedRoot(
+                graphAfter,
                 reciprocalEffectId,
-                "Добавлен взаимный слот эффекта осложнения."));
+                "definition_complication_reciprocal",
+                "characteristic_modifier",
+                addConsequenceSlot: true);
+            if (!addReciprocalConsequence)
+            {
+                graphAfter = graphAfter with
+                {
+                    Consequences = graphAfter.Consequences with
+                    {
+                        SlotsUsed = graphAfter.Consequences.SlotsUsed - 1,
+                        Entries = graphAfter.Consequences.Entries
+                            .Where(entry => !string.Equals(
+                                entry.EffectId,
+                                reciprocalEffectId,
+                                StringComparison.Ordinal))
+                            .ToImmutableArray()
+                    }
+                };
+            }
         }
         if (addUnrelatedConsequence)
         {
-            entries.Add(new WoundConsequenceEntry(
-                entries.Count + 1,
-                "action_control",
+            graphAfter = AddOwnedRoot(
+                graphAfter,
                 "effect_unrelated_extra",
-                "Посторонний эффект не принадлежит осложнению."));
+                "definition_unrelated_extra",
+                "resistance_modifier",
+                addConsequenceSlot: true);
         }
-        var after = NewTransition(before with
+        var after = NewTransition(graphAfter with
         {
-            Complications = before.Complications.Append(complication).ToImmutableArray(),
-            Consequences = before.Consequences with
-            {
-                SlotsUsed = entries.Count,
-                Entries = entries.ToImmutableArray()
-            }
+            Complications = before.Complications.Append(complication).ToImmutableArray()
         }, "complicate");
 
-        var result = WoundTransitionReducer.Reduce(Request(
+        var request = Request(
             "complicate",
             before,
             after,
-            ComplicateEvidence(before, after, complication.ComplicationId)));
+            ComplicateEvidence(before, after, complication.ComplicationId));
+        var result = WoundTransitionReducer.Reduce(request);
 
         if (expectedValid)
+        {
             AssertValid(result);
+            var effectIntent = Assert.Single(result.Intents.OfType<WoundEffectTransitionIntent>());
+            Assert.Equal(EffectIds(before), effectIntent.BeforeEffectIds);
+            Assert.Equal(EffectIds(after), effectIntent.AfterEffectIds);
+
+            var replay = WoundTransitionReducer.Reduce(request);
+            AssertValid(replay);
+            var replayIntent = Assert.Single(replay.Intents.OfType<WoundEffectTransitionIntent>());
+            Assert.Equal(effectIntent.BeforeEffectIds, replayIntent.BeforeEffectIds);
+            Assert.Equal(effectIntent.AfterEffectIds, replayIntent.AfterEffectIds);
+        }
         else
             AssertInvalid(result, "wound_transition_complication_effect_binding_invalid");
     }
@@ -725,18 +751,17 @@ public sealed class WoundTransitionReducerTests
         var before = PhysicalWound();
         var complication = Complication(
             "complication_worsening_rematerialization",
-            "pain",
-            "effect_worsening_complication");
-        var rematerialized = before.Consequences.Entries.ToArray();
+            "pain");
+        var changed = WithSeverity(before, "III", 3);
+        var rematerialized = changed.Consequences.Entries.ToArray();
         rematerialized[0] = rematerialized[0] with
         {
-            ProfileKey = "action_control",
             ReadableSummary = "Явное ухудшение полностью перематериализовало эффект."
         };
-        var after = NewTransition(WithSeverity(before, "III", 3) with
+        var after = NewTransition(changed with
         {
             Complications = before.Complications.Append(complication).ToImmutableArray(),
-            Consequences = WithSeverity(before, "III", 3).Consequences with
+            Consequences = changed.Consequences with
             {
                 Entries = rematerialized.ToImmutableArray()
             },
@@ -754,6 +779,7 @@ public sealed class WoundTransitionReducerTests
                 allowsWorsening: true)));
 
         AssertValid(result);
+        AssertFreshRootIds(before, after);
         Assert.Contains(result.Intents, intent =>
             intent is WoundEffectTransitionIntent { Operation: "replace" });
     }
@@ -897,19 +923,29 @@ public sealed class WoundTransitionReducerTests
     [Fact]
     public void Reduce_Stabilize_RemovesOnlyDeclaredComplicationEffectAndRecoveryBlocker()
     {
+        const string complicationEffectId = "effect_bleeding_complication";
         var complication = Complication(
             "complication_bleeding",
             "bleeding",
-            "effect_bleeding_complication");
-        var before = PhysicalWound() with
+            complicationEffectId);
+        var beforeWithRoot = AddOwnedRoot(
+            WithSeverity(PhysicalWound(), "III", 3),
+            complicationEffectId,
+            "definition_bleeding_complication",
+            "characteristic_modifier",
+            addConsequenceSlot: true);
+        var before = beforeWithRoot with
         {
             Complications = ImmutableArray.Create(complication),
-            Recovery = PhysicalWound().Recovery with
+            Recovery = beforeWithRoot.Recovery with
             {
                 Blockers = ImmutableArray.Create("not_stabilized", "unsafe_environment")
             }
         };
-        var after = NewTransition(before with
+        var removedRoot = RemoveOwnedRoot(
+            before with { Complications = ImmutableArray<WoundComplication>.Empty },
+            complicationEffectId);
+        var after = NewTransition(removedRoot with
         {
             Care = before.Care with
             {
@@ -924,11 +960,11 @@ public sealed class WoundTransitionReducerTests
             }
         }, "stabilize");
         var evidence = StabilizeEvidence(
-            before,
-            after,
-            removedComplications: new[] { complication.ComplicationId },
-            removedEffects: new[] { "effect_bleeding_complication" },
-            removedBlockers: new[] { "not_stabilized" });
+                before,
+                after,
+                removedComplications: new[] { complication.ComplicationId },
+                removedEffects: new[] { complicationEffectId },
+                removedBlockers: new[] { "not_stabilized" });
 
         var result = WoundTransitionReducer.Reduce(Request(
             "stabilize",
@@ -938,7 +974,7 @@ public sealed class WoundTransitionReducerTests
 
         AssertValid(result);
         Assert.Equal("stabilized", result.ProposedAfter!.Care.State);
-        Assert.Equal(2, result.ProposedAfter.Severity.Rank);
+        Assert.Equal(3, result.ProposedAfter.Severity.Rank);
         Assert.Single(result.Intents.OfType<WoundEffectTransitionIntent>());
     }
 
@@ -1078,6 +1114,31 @@ public sealed class WoundTransitionReducerTests
     }
 
     [Fact]
+    public void Reduce_Stabilize_RejectsRetainedRootBindingIdentityDrift()
+    {
+        var before = PhysicalWound();
+        var afterJson = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(before))!.AsObject();
+        afterJson["consequences"]!["ownedEffectSources"]!["rootBindings"]![0]!["effectId"] =
+            "effect_wound_rebound";
+        afterJson["consequences"]!["entries"]![0]!["effectId"] =
+            "effect_wound_rebound";
+        PrepareStabilized(afterJson);
+        var after = ParseWound(afterJson);
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "stabilize",
+            before,
+            after,
+            StabilizeEvidence(
+                before,
+                after,
+                removedBlockers: new[] { "not_stabilized" })));
+
+        AssertInvalid(result, "wound_transition_effect_binding_changed");
+    }
+
+    [Fact]
     public void Reduce_Stabilize_RemovesDeclaredRootsSlotsAndUnreachableDefinitionsTogether()
     {
         var beforeJson = WoundContractTestData.CreateActiveWound();
@@ -1121,6 +1182,126 @@ public sealed class WoundTransitionReducerTests
         Assert.DoesNotContain("effect_wound_test_pain", canonical, StringComparison.Ordinal);
         Assert.DoesNotContain("definition_wound_test_pain", canonical, StringComparison.Ordinal);
         Assert.Equal(1, result.ProposedAfter!.Consequences.SlotsUsed);
+        var effectIntent = Assert.Single(result.Intents.OfType<WoundEffectTransitionIntent>());
+        Assert.Equal(EffectIds(before), effectIntent.BeforeEffectIds);
+        Assert.Equal(EffectIds(after), effectIntent.AfterEffectIds);
+        Assert.Equal(
+            Fingerprint(result.ProposedAfter!),
+            Assert.Single(result.Intents.OfType<WoundTransitionHistoryIntent>()).AfterFingerprint);
+    }
+
+    [Fact]
+    public void Reduce_Stabilize_PrunesRemovedBranchAndPreservesReachableSibling()
+    {
+        const string removedEffectId = "effect_complication_removed_branch";
+        const string retainedEffectId = "effect_complication_retained_branch";
+        const string removedDefinitionKey = "definition_complication_removed_branch";
+        const string retainedDefinitionKey = "definition_complication_retained_branch";
+        var withRemoved = AddOwnedRoot(
+            WithSeverity(PhysicalWound(), "IV", 4),
+            removedEffectId,
+            removedDefinitionKey,
+            "characteristic_modifier",
+            addConsequenceSlot: true);
+        var withBoth = AddOwnedRoot(
+            withRemoved,
+            retainedEffectId,
+            retainedDefinitionKey,
+            "resistance_modifier",
+            addConsequenceSlot: true);
+        var removedComplication = Complication(
+            "complication_removed_branch",
+            "pain",
+            removedEffectId);
+        var retainedComplication = Complication(
+            "complication_retained_branch",
+            "impairment",
+            retainedEffectId);
+        var before = withBoth with
+        {
+            Complications = ImmutableArray.Create(removedComplication, retainedComplication)
+        };
+        var afterWithoutRoot = RemoveOwnedRoot(
+            before with { Complications = ImmutableArray.Create(retainedComplication) },
+            removedEffectId);
+        var after = NewTransition(afterWithoutRoot with
+        {
+            Care = before.Care with
+            {
+                State = "stabilized",
+                StabilizedAtTurn = 43,
+                LastAttemptId = "attempt_stabilize"
+            },
+            Recovery = before.Recovery with
+            {
+                Blockers = ImmutableArray<string>.Empty
+            }
+        }, "stabilize");
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "stabilize",
+            before,
+            after,
+            StabilizeEvidence(
+                before,
+                after,
+                removedComplications: new[] { removedComplication.ComplicationId },
+                removedEffects: new[] { removedEffectId },
+                removedBlockers: new[] { "not_stabilized" })));
+
+        AssertValid(result);
+        var canonical = WoundMaterializationContract.SerializeCanonical(result.ProposedAfter!);
+        Assert.DoesNotContain(removedEffectId, canonical, StringComparison.Ordinal);
+        Assert.DoesNotContain(removedDefinitionKey, canonical, StringComparison.Ordinal);
+        Assert.Contains(retainedEffectId, canonical, StringComparison.Ordinal);
+        Assert.Contains(retainedDefinitionKey, canonical, StringComparison.Ordinal);
+        Assert.Equal(3, result.ProposedAfter!.Consequences.SlotsUsed);
+        var intent = Assert.Single(result.Intents.OfType<WoundEffectTransitionIntent>());
+        Assert.Equal(EffectIds(before), intent.BeforeEffectIds);
+        Assert.Equal(EffectIds(after), intent.AfterEffectIds);
+    }
+
+    [Fact]
+    public void Reduce_Stabilize_RejectsRemovedComplicationWithRetainedUnreachableRoot()
+    {
+        const string effectId = "effect_wound_test_pain";
+        var complication = Complication("complication_pain", "pain", effectId);
+        var before = PhysicalWound() with
+        {
+            Complications = ImmutableArray.Create(complication)
+        };
+        var after = NewTransition(before with
+        {
+            Care = before.Care with
+            {
+                State = "stabilized",
+                StabilizedAtTurn = 43,
+                LastAttemptId = "attempt_stabilize"
+            },
+            Complications = ImmutableArray<WoundComplication>.Empty,
+            Consequences = before.Consequences with
+            {
+                SlotsUsed = 1,
+                Entries = before.Consequences.Entries.Take(1).ToImmutableArray()
+            },
+            Recovery = before.Recovery with
+            {
+                Blockers = ImmutableArray<string>.Empty
+            }
+        }, "stabilize");
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "stabilize",
+            before,
+            after,
+            StabilizeEvidence(
+                before,
+                after,
+                removedComplications: new[] { complication.ComplicationId },
+                removedEffects: new[] { effectId },
+                removedBlockers: new[] { "not_stabilized" })));
+
+        AssertInvalid(result, "wound_transition_owned_source_graph_invalid");
     }
 
     [Fact]
@@ -1152,7 +1333,13 @@ public sealed class WoundTransitionReducerTests
             "complication_binding_transfer",
             "pain",
             effectId);
-        var before = WithSeverity(PhysicalWound(), "III", 3) with
+        var beforeWithRoot = AddOwnedRoot(
+            WithSeverity(PhysicalWound(), "III", 3),
+            effectId,
+            "definition_binding_transfer_marker",
+            "wound_consequence",
+            addConsequenceSlot: false);
+        var before = beforeWithRoot with
         {
             Complications = ImmutableArray.Create(complication)
         };
@@ -1362,6 +1549,7 @@ public sealed class WoundTransitionReducerTests
         var result = WoundTransitionReducer.Reduce(Request("recover", before, after, evidence));
 
         AssertValid(result);
+        AssertFreshRootIds(before, after);
         Assert.Single(result.Intents.OfType<WoundRecoverySealIntent>());
         Assert.Equal("tick_fresh", result.ProposedAfter!.Recovery.LastTickKey);
     }
@@ -1510,7 +1698,13 @@ public sealed class WoundTransitionReducerTests
             evidence = RecoverEvidence(before, after, Outcome(after));
         }
 
-        AssertValid(WoundTransitionReducer.Reduce(Request(kind, before, after, evidence)));
+        var result = WoundTransitionReducer.Reduce(Request(kind, before, after, evidence));
+        AssertValid(result);
+        AssertFreshRootIds(before, after);
+        var intent = Assert.Single(result.Intents.OfType<WoundEffectTransitionIntent>());
+        Assert.Equal("replace", intent.Operation);
+        Assert.Equal(EffectIds(before), intent.BeforeEffectIds);
+        Assert.Equal(EffectIds(after), intent.AfterEffectIds);
     }
 
     [Theory]
@@ -1623,9 +1817,50 @@ public sealed class WoundTransitionReducerTests
             intent is WoundCarrierTransitionIntent { Operation: "remove" });
         var effects = Assert.Single(result.Intents.OfType<WoundEffectTransitionIntent>());
         Assert.Equal("remove", effects.Operation);
-        Assert.NotEmpty(effects.BeforeEffectIds);
+        Assert.Equal(EffectIds(before), effects.BeforeEffectIds);
         Assert.Empty(effects.AfterEffectIds);
-        Assert.True(Assert.Single(result.Intents.OfType<WoundTransitionHistoryIntent>()).Terminal);
+        var history = Assert.Single(result.Intents.OfType<WoundTransitionHistoryIntent>());
+        Assert.True(history.Terminal);
+        Assert.Equal(Fingerprint(result.ProposedAfter!), history.AfterFingerprint);
+    }
+
+    [Fact]
+    public void Reduce_Heal_EmptyOwnedSourceGraphEmitsNoEffectIntent()
+    {
+        var beforeJson = WoundContractTestData.CreateActiveWound();
+        beforeJson["severity"]!["value"] = "I";
+        beforeJson["severity"]!["rank"] = 1;
+        beforeJson["consequences"]!["slotBudget"] = 1;
+        beforeJson["consequences"]!["slotsUsed"] = 0;
+        beforeJson["consequences"]!["entries"] = new JsonArray();
+        beforeJson["consequences"]!["ownedEffectSources"] =
+            WoundContractTestData.CreateOwnedEffectSources(
+                "wound_test_torn_side",
+                "mortal_world");
+        var before = ParseWound(beforeJson);
+        var after = NewTransition(before with
+        {
+            Lifecycle = "healed",
+            Care = before.Care with
+            {
+                State = "healed",
+                ActiveCourseId = null,
+                LastAttemptId = "attempt_heal_empty_graph"
+            }
+        }, "heal");
+
+        var result = WoundTransitionReducer.Reduce(Request(
+            "heal",
+            before,
+            after,
+            HealEvidence(before, after, attemptId: "attempt_heal_empty_graph")));
+
+        AssertValid(result);
+        Assert.Empty(EffectIds(before));
+        Assert.DoesNotContain(result.Intents, intent => intent is WoundEffectTransitionIntent);
+        var history = Assert.Single(result.Intents.OfType<WoundTransitionHistoryIntent>());
+        Assert.True(history.Terminal);
+        Assert.Equal(Fingerprint(result.ProposedAfter!), history.AfterFingerprint);
     }
 
     [Fact]
@@ -2576,7 +2811,7 @@ public sealed class WoundTransitionReducerTests
                 .Select(index => (JsonNode?)new JsonObject
                 {
                     ["slot"] = index + 1,
-                    ["profileKey"] = "action_control",
+                    ["profileKey"] = WoundContractTestData.DistinctMortalProfile(index),
                     ["effectId"] = rootIds[index],
                     ["readableSummary"] = $"Перематериализованный слот {index + 1}."
                 })
@@ -2589,7 +2824,7 @@ public sealed class WoundTransitionReducerTests
                     .Select(index => (
                         rootIds[index],
                         definitionKeys[index],
-                        "action_control"))
+                        WoundContractTestData.DistinctMortalProfile(index)))
                     .ToArray());
         return wound;
     }
@@ -2609,14 +2844,81 @@ public sealed class WoundTransitionReducerTests
         };
     }
 
+    private static WoundMaterializationEnvelope AddOwnedRoot(
+        WoundMaterializationEnvelope wound,
+        string effectId,
+        string definitionKey,
+        string profile,
+        bool addConsequenceSlot)
+    {
+        var raw = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(wound))!.AsObject();
+        var sources = raw["consequences"]!["ownedEffectSources"]!.AsObject();
+        sources["definitions"]!.AsArray().Add(
+            WoundContractTestData.CreateOwnedEffectDefinition(
+                wound.WoundId,
+                wound.Owner.Realm,
+                definitionKey,
+                profile));
+        sources["rootBindings"]!.AsArray().Add(
+            WoundContractTestData.CreateRootBinding(effectId, definitionKey));
+        if (addConsequenceSlot)
+        {
+            var entries = raw["consequences"]!["entries"]!.AsArray();
+            entries.Add(new JsonObject
+            {
+                ["slot"] = entries.Count + 1,
+                ["profileKey"] = profile,
+                ["effectId"] = effectId,
+                ["readableSummary"] = "Дополнительное следствие принадлежит осложнению."
+            });
+            raw["consequences"]!["slotsUsed"] = entries.Count;
+        }
+        return ParseWound(raw);
+    }
+
+    private static WoundMaterializationEnvelope RemoveOwnedRoot(
+        WoundMaterializationEnvelope wound,
+        string effectId)
+    {
+        var raw = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(wound))!.AsObject();
+        var sources = raw["consequences"]!["ownedEffectSources"]!.AsObject();
+        var bindings = sources["rootBindings"]!.AsArray();
+        var bindingIndex = bindings
+            .Select((node, index) => (Node: node, Index: index))
+            .Single(pair => string.Equals(
+                pair.Node!["effectId"]!.GetValue<string>(),
+                effectId,
+                StringComparison.Ordinal))
+            .Index;
+        var definitionKey = bindings[bindingIndex]!["definitionKey"]!.GetValue<string>();
+        bindings.RemoveAt(bindingIndex);
+        var definitions = sources["definitions"]!.AsArray();
+        var definitionIndex = definitions
+            .Select((node, index) => (Node: node, Index: index))
+            .Single(pair => string.Equals(
+                pair.Node!["definitionKey"]!.GetValue<string>(),
+                definitionKey,
+                StringComparison.Ordinal))
+            .Index;
+        definitions.RemoveAt(definitionIndex);
+        var retainedEntries = raw["consequences"]!["entries"]!.AsArray()
+            .Where(node => !string.Equals(
+                node!["effectId"]!.GetValue<string>(),
+                effectId,
+                StringComparison.Ordinal))
+            .Select(static node => node!.DeepClone())
+            .ToArray();
+        for (var index = 0; index < retainedEntries.Length; index++)
+            retainedEntries[index]!["slot"] = index + 1;
+        raw["consequences"]!["entries"] = new JsonArray(retainedEntries);
+        raw["consequences"]!["slotsUsed"] = retainedEntries.Length;
+        return ParseWound(raw);
+    }
+
     private static WoundMaterializationEnvelope SpiritualWound() => ParseWound(
-        WoundContractTestData.CreateActiveWound(
-            woundId: "wound_spiritual_test",
-            realm: "chaos_sea",
-            ownerKind: "player_soul",
-            ownerId: "player_soul_current",
-            carrierPath: "game_state/meta/afterlife_entity_profiles.json#/playerSoul",
-            domain: "spiritual"));
+        WoundContractTestData.CreateSpiritualActiveWound());
 
     private static WoundMaterializationEnvelope HealedWound()
     {
@@ -2637,26 +2939,124 @@ public sealed class WoundTransitionReducerTests
         WoundMaterializationEnvelope wound,
         string value,
         int rank,
-        bool updateMaximumAtCreation = false) => wound with
+        bool updateMaximumAtCreation = false)
     {
-        Severity = wound.Severity with
+        var retainedEntries = wound.Consequences.Entries.Take(rank).ToArray();
+        var changed = wound with
         {
-            Value = value,
-            Rank = rank,
-            MaximumAtCreation = updateMaximumAtCreation
-                ? value
-                : wound.Severity.MaximumAtCreation,
-            LastChangeEventRef = rank == wound.Severity.Rank
-                ? wound.Severity.LastChangeEventRef
-                : "turn_43:wound_transition"
-        },
-        Consequences = wound.Consequences with
+            Severity = wound.Severity with
+            {
+                Value = value,
+                Rank = rank,
+                MaximumAtCreation = updateMaximumAtCreation
+                    ? value
+                    : wound.Severity.MaximumAtCreation,
+                LastChangeEventRef = rank == wound.Severity.Rank
+                    ? wound.Severity.LastChangeEventRef
+                    : "turn_43:wound_transition"
+            },
+            Consequences = wound.Consequences with
+            {
+                SlotBudget = rank,
+                SlotsUsed = retainedEntries.Length,
+                Entries = retainedEntries.ToImmutableArray()
+            }
+        };
+        if (rank == wound.Severity.Rank)
+            return changed;
+
+        var raw = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(changed))!.AsObject();
+        var entries = raw["consequences"]!["entries"]!.AsArray();
+        var sources = raw["consequences"]!["ownedEffectSources"]!.AsObject();
+        var definitions = sources["definitions"]!.AsArray();
+        var bindings = sources["rootBindings"]!.AsArray();
+        var retainedOldIds = entries
+            .Select(static entry => entry!["effectId"]!.GetValue<string>())
+            .Concat(raw["complications"]!.AsArray().SelectMany(static complication =>
+                complication!["ownedEffectIds"]!.AsArray()
+                    .Select(static effectId => effectId!.GetValue<string>())))
+            .ToHashSet(StringComparer.Ordinal);
+        foreach (var binding in bindings)
         {
-            SlotBudget = rank,
-            SlotsUsed = Math.Min(wound.Consequences.SlotsUsed, rank),
-            Entries = wound.Consequences.Entries.Take(rank).ToImmutableArray()
+            var definitionKey = binding!["definitionKey"]!.GetValue<string>();
+            var definition = definitions.Single(node => string.Equals(
+                node!["definitionKey"]!.GetValue<string>(),
+                definitionKey,
+                StringComparison.Ordinal));
+            var isMarker = definition!["components"]!.AsArray().Any(component =>
+                string.Equals(
+                    component!["profile"]!.GetValue<string>(),
+                    "wound_consequence",
+                    StringComparison.Ordinal));
+            if (isMarker)
+                retainedOldIds.Add(binding["effectId"]!.GetValue<string>());
         }
-    };
+
+        var retainedBindings = bindings
+            .Where(binding => retainedOldIds.Contains(
+                binding!["effectId"]!.GetValue<string>()))
+            .Select(static binding => binding!.DeepClone().AsObject())
+            .ToArray();
+        var idMap = new Dictionary<string, string>(StringComparer.Ordinal);
+        for (var index = 0; index < retainedBindings.Length; index++)
+        {
+            var oldId = retainedBindings[index]["effectId"]!.GetValue<string>();
+            var newId = $"effect_{wound.WoundId}_severity_{rank}_root_{index}";
+            idMap.Add(oldId, newId);
+            retainedBindings[index]["effectId"] = newId;
+        }
+
+        foreach (var entry in entries)
+        {
+            var oldId = entry!["effectId"]!.GetValue<string>();
+            entry["effectId"] = idMap[oldId];
+        }
+        foreach (var complication in raw["complications"]!.AsArray())
+        {
+            var owned = complication!["ownedEffectIds"]!.AsArray();
+            for (var index = 0; index < owned.Count; index++)
+                owned[index] = idMap[owned[index]!.GetValue<string>()];
+        }
+
+        var reachableDefinitionKeys = retainedBindings
+            .Select(static binding => binding["definitionKey"]!.GetValue<string>())
+            .ToHashSet(StringComparer.Ordinal);
+        var changedReachability = true;
+        while (changedReachability)
+        {
+            changedReachability = false;
+            foreach (var definition in definitions.Where(definition =>
+                         reachableDefinitionKeys.Contains(
+                             definition!["definitionKey"]!.GetValue<string>())))
+            {
+                foreach (var component in definition!["components"]!.AsArray())
+                {
+                    if (!string.Equals(
+                            component!["profile"]!.GetValue<string>(),
+                            "event_reaction",
+                            StringComparison.Ordinal) ||
+                        !string.Equals(
+                            component["payload"]!["resultKind"]?.GetValue<string>(),
+                            "apply_definition",
+                            StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+                    var targetKey = component["payload"]!["definitionKey"]!.GetValue<string>();
+                    changedReachability |= reachableDefinitionKeys.Add(targetKey);
+                }
+            }
+        }
+
+        sources["definitions"] = new JsonArray(definitions
+            .Where(definition => reachableDefinitionKeys.Contains(
+                definition!["definitionKey"]!.GetValue<string>()))
+            .Select(static definition => definition!.DeepClone())
+            .ToArray());
+        sources["rootBindings"] = new JsonArray(retainedBindings);
+        return ParseWound(raw);
+    }
 
     private static WoundMaterializationEnvelope NewTransition(
         WoundMaterializationEnvelope wound,
@@ -2686,11 +3086,17 @@ public sealed class WoundTransitionReducerTests
     }
 
     private static ImmutableArray<string> EffectIds(WoundMaterializationEnvelope wound) =>
-        wound.Consequences.Entries.Select(static entry => entry.EffectId)
-            .Concat(wound.Complications.SelectMany(static value => value.OwnedEffectIds))
+        JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(wound))!
+            ["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray()
+            .Select(static binding => binding!["effectId"]!.GetValue<string>())
             .Distinct(StringComparer.Ordinal)
             .OrderBy(static value => value, StringComparer.Ordinal)
             .ToImmutableArray();
+
+    private static void AssertFreshRootIds(
+        WoundMaterializationEnvelope before,
+        WoundMaterializationEnvelope after) =>
+        Assert.Empty(EffectIds(before).Intersect(EffectIds(after), StringComparer.Ordinal));
 
     private static string Fingerprint(WoundMaterializationEnvelope wound) =>
         WoundIdentityState.ComputeSemanticFingerprint(wound);
