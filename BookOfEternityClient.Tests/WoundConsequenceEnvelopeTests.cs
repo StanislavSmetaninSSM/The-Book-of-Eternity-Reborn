@@ -264,7 +264,7 @@ public sealed class WoundConsequenceEnvelopeTests
     }
 
     [Fact]
-    public void MortalZeroSlotMarker_IsLimitedOnceAcrossTheCompleteOwnedComposition()
+    public void MortalZeroSlotMarker_IsLimitedOnceWithinOneOwnedEffect()
     {
         var lifecycle = new WoundConsequenceLifecycleEvidence(true, false, false);
         var withinOneEffect = Validate(MortalRequest(
@@ -283,7 +283,12 @@ public sealed class WoundConsequenceEnvelopeTests
             withinOneEffect,
             Path + ".effects",
             "wound_consequence_marker_limit_exceeded");
+    }
 
+    [Fact]
+    public void MortalZeroSlotMarker_IsLimitedOnceAcrossOwnedEffects()
+    {
+        var lifecycle = new WoundConsequenceLifecycleEvidence(true, false, false);
         var acrossEffects = Validate(MortalRequest(
             "I",
             new[]
@@ -298,7 +303,11 @@ public sealed class WoundConsequenceEnvelopeTests
             acrossEffects,
             Path + ".effects",
             "wound_consequence_marker_limit_exceeded");
+    }
 
+    [Fact]
+    public void MortalZeroSlotMarker_IsLimitedOnceAcrossDirectAndFlattenedComponents()
+    {
         var directAndFlattened = Effect(
             "effect_direct_and_flattened_marker",
             new[]
@@ -553,39 +562,42 @@ public sealed class WoundConsequenceEnvelopeTests
     }
 
     [Theory]
-    [InlineData("characteristic_modifier", "characteristic", "strength")]
-    [InlineData("resistance_modifier", "resistance", "fire")]
+    [InlineData("characteristic_modifier", "characteristic", "strength", false)]
+    [InlineData("characteristic_modifier", "characteristic", "strength", true)]
+    [InlineData("resistance_modifier", "resistance", "fire", false)]
+    [InlineData("resistance_modifier", "resistance", "fire", true)]
     public void ScalarModifiers_RejectGenericValidNonDecimalRawBeforeSlotAccounting(
         string profile,
         string targetField,
-        string target)
+        string target,
+        bool capped)
     {
-        foreach (var capJson in new[] { "null", "{ \"minimum\": 1, \"maximum\": 1 }" })
-        {
-            var component = RawScalarComponent(
-                "component_non_decimal",
-                profile,
-                targetField,
-                target,
-                "flat",
-                "1e-29",
-                capJson);
-            var result = Validate(MortalRequest(
-                "I",
-                new[] { Effect("effect_non_decimal", component) },
-                Array.Empty<WoundConsequenceEntry>(),
-                lifecycleEvidence: new WoundConsequenceLifecycleEvidence(
-                    true,
-                    false,
-                    false),
-                declaredSlotsUsed: 0));
+        var capJson = capped
+            ? "{ \"minimum\": 1, \"maximum\": 1 }"
+            : "null";
+        var component = RawScalarComponent(
+            "component_non_decimal",
+            profile,
+            targetField,
+            target,
+            "flat",
+            "1e-29",
+            capJson);
+        var result = Validate(MortalRequest(
+            "I",
+            new[] { Effect("effect_non_decimal", component) },
+            Array.Empty<WoundConsequenceEntry>(),
+            lifecycleEvidence: new WoundConsequenceLifecycleEvidence(
+                true,
+                false,
+                false),
+            declaredSlotsUsed: 0));
 
-            AssertIssue(
-                result,
-                Path + ".effects[0].components[0].payload.value",
-                "wound_consequence_magnitude_exceeded");
-            Assert.Null(result.Envelope);
-        }
+        AssertIssue(
+            result,
+            Path + ".effects[0].components[0].payload.value",
+            "wound_consequence_magnitude_exceeded");
+        Assert.Null(result.Envelope);
     }
 
     [Theory]
