@@ -229,6 +229,23 @@ public sealed class WoundHistoryStateTests
     }
 
     [Fact]
+    public void Parse_GlobalAppendChronologyNeverMovesToAnEarlierTurn()
+    {
+        var later = Transition(woundId: "wound_a", turn: 43);
+        var earlier = Transition(
+            transitionId: "transition_2",
+            woundId: "wound_b",
+            operationKey: "operation_2",
+            ordinal: 2,
+            turn: 42);
+
+        AssertInvalid(
+            Parse(History(later, earlier)),
+            Path,
+            "wound_history_turn_regression");
+    }
+
+    [Fact]
     public void Parse_FirstRowUsesWoundBoundNonexistentFingerprintAndChainIsExact()
     {
         var first = Transition(woundId: "wound_a");
@@ -402,7 +419,10 @@ public sealed class WoundHistoryStateTests
 
         var result = WoundHistoryState.CreateValidated(rows.Length + 1, rows);
 
-        AssertInvalid(result, Path + ".transitions", "wound_history_limit_exceeded");
+        AssertInvalid(
+            result,
+            WoundHistoryState.HistoryPath + ".transitions",
+            "wound_history_limit_exceeded");
     }
 
     [Fact]
@@ -412,7 +432,7 @@ public sealed class WoundHistoryStateTests
 
         var result = WoundHistoryState.CreateValidated(2, new[] { invalid });
 
-        AssertInvalid(result, Path);
+        AssertInvalid(result, WoundHistoryState.HistoryPath);
     }
 
     [Fact]
@@ -882,7 +902,7 @@ public sealed class WoundHistoryStateTests
         Assert.Null(result.State);
         Assert.Contains(
             result.Issues,
-            issue => issue.Path.StartsWith(expectedPath, StringComparison.Ordinal) &&
+            issue => issue.FilePath.StartsWith(expectedPath, StringComparison.Ordinal) &&
                      (expectedCode is null || issue.Code == expectedCode));
     }
 
@@ -890,5 +910,5 @@ public sealed class WoundHistoryStateTests
 
     private static string DescribeIssues(IEnumerable<ValidationIssue> issues) => string.Join(
         Environment.NewLine,
-        issues.Select(issue => $"{issue.Path}: {issue.Code} ({issue.Expected}; {issue.Actual})"));
+        issues.Select(issue => $"{issue.FilePath}: {issue.Code} ({issue.Expected}; {issue.Actual})"));
 }
