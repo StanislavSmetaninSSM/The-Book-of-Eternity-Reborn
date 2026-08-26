@@ -882,8 +882,15 @@ internal static class WoundTransitionReducer
                 "worsening resets only the current recovery step and preserves its sealed policy",
                 after.WoundId);
         }
-        ValidateRetainedConsequences(before, after, issues);
-        ValidateRetainedEffectBindings(before, after, issues);
+        if (!worsened)
+        {
+            ValidateRetainedConsequences(before, after, issues);
+            ValidateRetainedEffectBindings(
+                before,
+                after,
+                issues,
+                requireAllPriorBindings: true);
+        }
         if (!CanonicalEqual(
                 before,
                 after with
@@ -1856,14 +1863,26 @@ internal static class WoundTransitionReducer
     private static void ValidateRetainedEffectBindings(
         WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope after,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        bool requireAllPriorBindings = false)
     {
         var beforeBindings = BuildEffectBindingMap(before);
         var afterBindings = BuildEffectBindingMap(after);
         foreach (var pair in beforeBindings)
         {
-            if (afterBindings.TryGetValue(pair.Key, out var current) &&
-                !SameBindingMultiset(pair.Value, current))
+            if (!afterBindings.TryGetValue(pair.Key, out var current))
+            {
+                if (requireAllPriorBindings)
+                {
+                    Add(
+                        issues,
+                        "wound_transition_effect_binding_changed",
+                        "non-worsening complication preserves every prior exact effect binding",
+                        pair.Key);
+                }
+                continue;
+            }
+            if (!SameBindingMultiset(pair.Value, current))
             {
                 Add(
                     issues,
