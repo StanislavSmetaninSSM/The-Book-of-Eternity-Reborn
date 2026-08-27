@@ -40,6 +40,10 @@ internal sealed class EffectAcceptedTurnPlan
     private readonly Lazy<EffectAcceptedTurnPlanner.EffectResourceTriggerIndex>
         _resourceTriggerIndex;
     private readonly JsonObject _eventInput;
+    private readonly EffectAcceptedTurnPlanner.AcceptedBoundaryCompletionProof?
+        _acceptedBoundaryCompletionProof;
+    private readonly string? _acceptedBoundaryBasePlanFingerprint;
+    private readonly string? _acceptedBoundaryFinalPlanFingerprint;
 
     internal const string CommandPath = "game_state/effects/effect_commands.json";
     internal const string IdentityIndexPath = "game_state/effects/effect_identity_index.json";
@@ -71,7 +75,10 @@ internal sealed class EffectAcceptedTurnPlan
         JsonObject identityIndexAfterImage,
         IReadOnlyList<string> touchedPaths,
         IReadOnlyList<string> deletedPaths,
-        EffectCarrierCatalogInput? acceptedCarrierBaselines = null)
+        EffectCarrierCatalogInput? acceptedCarrierBaselines = null,
+        EffectAcceptedTurnPlanner.AcceptedBoundaryCompletionProof?
+            acceptedBoundaryCompletionProof = null,
+        string? acceptedBoundaryBasePlanFingerprint = null)
     {
         InputFingerprint = inputFingerprint;
         CarrierAuthorityFingerprint = carrierAuthorityFingerprint;
@@ -135,6 +142,22 @@ internal sealed class EffectAcceptedTurnPlan
         _identityIndexAfterImage = identityIndexAfterImage.DeepClone().AsObject();
         TouchedPaths = ReadOnly(touchedPaths);
         DeletedPaths = ReadOnly(deletedPaths);
+        if (acceptedBoundaryCompletionProof is not null &&
+            !EffectAcceptedTurnPlanner.IsAcceptedBoundaryCompletionProof(
+                acceptedBoundaryCompletionProof))
+        {
+            throw new ArgumentException(
+                "Only the accepted effect boundary completer may seal a final plan.",
+                nameof(acceptedBoundaryCompletionProof));
+        }
+        _acceptedBoundaryCompletionProof = acceptedBoundaryCompletionProof;
+        _acceptedBoundaryBasePlanFingerprint = IsAcceptedBoundaryComplete
+            ? acceptedBoundaryBasePlanFingerprint ?? throw new ArgumentNullException(
+                nameof(acceptedBoundaryBasePlanFingerprint))
+            : null;
+        _acceptedBoundaryFinalPlanFingerprint = IsAcceptedBoundaryComplete
+            ? WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(this)
+            : null;
     }
 
     internal string InputFingerprint { get; }
@@ -246,6 +269,50 @@ internal sealed class EffectAcceptedTurnPlan
     internal IReadOnlyList<string> TouchedPaths { get; }
 
     internal IReadOnlyList<string> DeletedPaths { get; }
+
+    internal bool IsAcceptedBoundaryComplete =>
+        EffectAcceptedTurnPlanner.IsAcceptedBoundaryCompletionProof(
+            _acceptedBoundaryCompletionProof);
+
+    internal string? AcceptedBoundaryBasePlanFingerprint =>
+        _acceptedBoundaryBasePlanFingerprint;
+
+    internal string? AcceptedBoundaryFinalPlanFingerprint =>
+        _acceptedBoundaryFinalPlanFingerprint;
+
+    internal static EffectAcceptedTurnPlan DetachedCopyOf(
+        EffectAcceptedTurnPlan source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        return new EffectAcceptedTurnPlan(
+            source.InputFingerprint,
+            source.CarrierAuthorityFingerprint,
+            source.SourceAuthorityFingerprint,
+            source.TargetAuthorityFingerprint,
+            source.AllocatedCombatantIds,
+            source.AllocatedEffectIds,
+            source.AllocatedTransitionIds,
+            source.Sources,
+            source.Targets,
+            source.SourceBindings,
+            source.DeferredReactions,
+            source.ReactionExpansionCount,
+            source.ReactionExpansionUsage,
+            source.ActiveEffects,
+            source.ResourceTriggerCarriers,
+            source.SourceAuthority,
+            source.TargetAuthority,
+            source.EventInput,
+            source.CarrierBeforeImages,
+            source.CarrierAfterImages,
+            source.IdentityIndexBeforeImage,
+            source.IdentityIndexAfterImage,
+            source.TouchedPaths,
+            source.DeletedPaths,
+            source.AcceptedCarrierBaselines,
+            source._acceptedBoundaryCompletionProof,
+            source._acceptedBoundaryBasePlanFingerprint);
+    }
 
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>
         new(values.ToArray());

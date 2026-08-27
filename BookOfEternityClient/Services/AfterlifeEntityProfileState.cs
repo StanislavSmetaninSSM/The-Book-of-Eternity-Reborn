@@ -526,6 +526,7 @@ internal static class AfterlifeEntityProfileState
             PreserveHistoricalMaterialization(existing, replacement);
             PreserveResourceOwnerBindings(existing, replacement);
             PreserveActiveEffects(existing, replacement);
+            PreserveActiveWounds(existing, replacement);
             profiles[index] = replacement;
             return;
         }
@@ -533,6 +534,8 @@ internal static class AfterlifeEntityProfileState
         var addition = CloneObject(profile);
         if (addition["activeEffects"] is not JsonArray)
             addition["activeEffects"] = new JsonArray();
+        if (addition["activeWounds"] is not JsonArray)
+            addition["activeWounds"] = new JsonArray();
         profiles.Add(addition);
     }
 
@@ -542,6 +545,15 @@ internal static class AfterlifeEntityProfileState
     {
         replacement["activeEffects"] = existing["activeEffects"] is JsonArray effects
             ? effects.DeepClone()
+            : new JsonArray();
+    }
+
+    private static void PreserveActiveWounds(
+        JsonObject existing,
+        JsonObject replacement)
+    {
+        replacement["activeWounds"] = existing["activeWounds"] is JsonArray wounds
+            ? wounds.DeepClone()
             : new JsonArray();
     }
 

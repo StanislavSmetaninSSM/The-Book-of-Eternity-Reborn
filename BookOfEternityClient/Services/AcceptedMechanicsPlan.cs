@@ -893,14 +893,28 @@ internal sealed class AcceptedMechanicsWoundPublication
     private readonly JsonObject _identityAfterImage;
     private readonly JsonObject _historyAfterImage;
 
-    internal AcceptedMechanicsWoundPublication(
+    private AcceptedMechanicsWoundPublication(
         IReadOnlyDictionary<string, JsonObject> carrierAfterImages,
         JsonObject identityAfterImage,
-        JsonObject historyAfterImage)
+        JsonObject historyAfterImage,
+        string woundStageBundleFingerprint,
+        string finalEffectPlanFingerprint)
     {
         ArgumentNullException.ThrowIfNull(carrierAfterImages);
         ArgumentNullException.ThrowIfNull(identityAfterImage);
         ArgumentNullException.ThrowIfNull(historyAfterImage);
+        if (string.IsNullOrWhiteSpace(woundStageBundleFingerprint))
+        {
+            throw new ArgumentException(
+                "Expected the exact wound stage-bundle fingerprint.",
+                nameof(woundStageBundleFingerprint));
+        }
+        if (string.IsNullOrWhiteSpace(finalEffectPlanFingerprint))
+        {
+            throw new ArgumentException(
+                "Expected the exact final effect-plan fingerprint.",
+                nameof(finalEffectPlanFingerprint));
+        }
         _carrierAfterImages = new Dictionary<string, JsonObject>(
             StringComparer.Ordinal);
         foreach (var pair in carrierAfterImages)
@@ -915,6 +929,30 @@ internal sealed class AcceptedMechanicsWoundPublication
         }
         _identityAfterImage = identityAfterImage.DeepClone().AsObject();
         _historyAfterImage = historyAfterImage.DeepClone().AsObject();
+        WoundStageBundleFingerprint = woundStageBundleFingerprint;
+        FinalEffectPlanFingerprint = finalEffectPlanFingerprint;
+    }
+
+    internal static AcceptedMechanicsWoundPublication CreateValidated(
+        IReadOnlyDictionary<string, JsonObject> carrierAfterImages,
+        JsonObject identityAfterImage,
+        JsonObject historyAfterImage,
+        string woundStageBundleFingerprint,
+        string finalEffectPlanFingerprint,
+        AcceptedMechanicsCarrierAssembler.ValidatedPublicationProof proof)
+    {
+        if (!AcceptedMechanicsCarrierAssembler.IsPublicationProof(proof))
+        {
+            throw new ArgumentException(
+                "Only the typed accepted-mechanics carrier assembler may publish wound roots.",
+                nameof(proof));
+        }
+        return new AcceptedMechanicsWoundPublication(
+            carrierAfterImages,
+            identityAfterImage,
+            historyAfterImage,
+            woundStageBundleFingerprint,
+            finalEffectPlanFingerprint);
     }
 
     internal IReadOnlyDictionary<string, JsonObject> CarrierAfterImages =>
@@ -930,8 +968,83 @@ internal sealed class AcceptedMechanicsWoundPublication
     internal JsonObject HistoryAfterImage =>
         _historyAfterImage.DeepClone().AsObject();
 
+    internal string WoundStageBundleFingerprint { get; }
+
+    internal string FinalEffectPlanFingerprint { get; }
+
     internal AcceptedMechanicsWoundPublication DetachedCopy() =>
-        new(_carrierAfterImages, _identityAfterImage, _historyAfterImage);
+        new(
+            _carrierAfterImages,
+            _identityAfterImage,
+            _historyAfterImage,
+            WoundStageBundleFingerprint,
+            FinalEffectPlanFingerprint);
+}
+
+internal sealed class AcceptedMechanicsPendingPublicationAuthority
+{
+    internal AcceptedMechanicsPendingPublicationAuthority(
+        AcceptedMechanicsInput input,
+        JsonObject pendingState,
+        AcceptedMechanicsPlanner.PendingPublicationProof proof)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(pendingState);
+        if (!AcceptedMechanicsPlanner.IsPendingPublicationProof(proof))
+        {
+            throw new ArgumentException(
+                "Only the accepted mechanics pending derivation may seal pending publication authority.",
+                nameof(proof));
+        }
+        SessionId = input.SessionId;
+        AcceptedRequestId = input.RequestId;
+        Turn = input.Turn;
+        FullTurnFingerprint =
+            AcceptedMechanicsPlanner.CreatePendingFullTurnFingerprint(input);
+        SemanticTurnFingerprint =
+            AcceptedMechanicsPlanner.CreatePendingSemanticTurnFingerprint(input);
+        PendingStateFingerprint = ComputePendingStateFingerprint(pendingState);
+    }
+
+    internal string SessionId { get; }
+
+    internal string AcceptedRequestId { get; }
+
+    internal int Turn { get; }
+
+    internal string FullTurnFingerprint { get; }
+
+    internal string SemanticTurnFingerprint { get; }
+
+    internal string PendingStateFingerprint { get; }
+
+    internal bool AgreesWith(AcceptedMechanicsInput input)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        return string.Equals(SessionId, input.SessionId, StringComparison.Ordinal) &&
+               string.Equals(
+                   AcceptedRequestId,
+                   input.RequestId,
+                   StringComparison.Ordinal) &&
+               Turn == input.Turn &&
+               string.Equals(
+                   FullTurnFingerprint,
+                   AcceptedMechanicsPlanner.CreatePendingFullTurnFingerprint(input),
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   SemanticTurnFingerprint,
+                   AcceptedMechanicsPlanner.CreatePendingSemanticTurnFingerprint(input),
+                   StringComparison.Ordinal);
+    }
+
+    internal static string ComputePendingStateFingerprint(JsonObject pendingState)
+    {
+        ArgumentNullException.ThrowIfNull(pendingState);
+        using var builder = new ResourceFingerprintBuilder(
+            "accepted-mechanics-derived-pending-state-v1");
+        builder.Append(pendingState.ToJsonString());
+        return builder.Build();
+    }
 }
 
 internal sealed class AcceptedMechanicsPlan
@@ -949,6 +1062,8 @@ internal sealed class AcceptedMechanicsPlan
     private readonly JsonObject _effectIdentityAfterImage;
     private readonly Dictionary<string, JsonObject?> _pendingAfterImages;
     private readonly JsonObject? _pendingGmPacket;
+    private readonly AcceptedMechanicsPendingPublicationAuthority?
+        _pendingPublicationAuthority;
     private readonly Dictionary<string, JsonObject> _ownerCompanionAfterImages;
     private readonly AcceptedMechanicsOwnerTransition[] _ownerTransitions;
     private readonly Dictionary<string, CanonicalBeforeImage> _beforeImages;
@@ -975,10 +1090,9 @@ internal sealed class AcceptedMechanicsPlan
         EffectAcceptedTurnPlan? effectPlan,
         IReadOnlyList<AcceptedMechanicsOwnerTransition>? ownerTransitions = null,
         JsonObject? pendingGmPacket = null,
+        AcceptedMechanicsPendingPublicationAuthority? pendingPublicationAuthority = null,
         AcceptedMechanicsWoundStageBundle? woundStageBundle = null,
-        IReadOnlyDictionary<string, JsonObject>? woundCarrierAfterImages = null,
-        JsonObject? woundIdentityAfterImage = null,
-        JsonObject? woundHistoryAfterImage = null)
+        AcceptedMechanicsCarrierCompositionResult? carrierComposition = null)
     {
         if (!ResourceMaterializationContract.IsAuthorityFingerprint(inputFingerprint))
             throw new ArgumentException("Expected a lowercase SHA-256 plan fingerprint.", nameof(inputFingerprint));
@@ -990,6 +1104,7 @@ internal sealed class AcceptedMechanicsPlan
         _effectIdentityAfterImage = Clone(effectIdentityAfterImage, nameof(effectIdentityAfterImage));
         _pendingAfterImages = CloneNullableObjects(pendingAfterImages, nameof(pendingAfterImages));
         _pendingGmPacket = pendingGmPacket?.DeepClone().AsObject();
+        _pendingPublicationAuthority = pendingPublicationAuthority;
         _ownerCompanionAfterImages = CloneObjects(ownerCompanionAfterImages, nameof(ownerCompanionAfterImages));
         _ownerTransitions = ownerTransitions?.Select(value =>
             (value ?? throw new ArgumentNullException(nameof(ownerTransitions))).Clone()).ToArray() ??
@@ -1009,30 +1124,46 @@ internal sealed class AcceptedMechanicsPlan
         OwnerAuthority = ownerAuthority ?? throw new ArgumentNullException(nameof(ownerAuthority));
         EffectPlan = effectPlan;
         _woundStageBundle = woundStageBundle?.DetachedCopy();
-        var hasAnyWoundPublication =
-            woundCarrierAfterImages is not null ||
-            woundIdentityAfterImage is not null ||
-            woundHistoryAfterImage is not null;
-        if ((_woundStageBundle is null) != !hasAnyWoundPublication ||
-            (hasAnyWoundPublication &&
-             (woundCarrierAfterImages is null ||
-              woundIdentityAfterImage is null ||
-              woundHistoryAfterImage is null)))
+        if (carrierComposition is { Success: false })
         {
             throw new ArgumentException(
-                "A wound stage bundle and all wound publication after-images must be supplied together.",
+                "A failed carrier composition cannot be published.",
+                nameof(carrierComposition));
+        }
+        var woundPublication = carrierComposition?.WoundPublication;
+        if ((_woundStageBundle is null && carrierComposition is not null) ||
+            (_woundStageBundle is not null && carrierComposition is null &&
+             _pendingGmPacket is null) ||
+            (_pendingGmPacket is not null && carrierComposition is not null) ||
+            (carrierComposition is not null && woundPublication is null))
+        {
+            throw new ArgumentException(
+                "A complete wound plan requires one successful typed carrier composition; a pending-only plan may retain stages but cannot expose one.",
                 nameof(woundStageBundle));
         }
-        _woundPublication = !hasAnyWoundPublication
-            ? null
-            : new AcceptedMechanicsWoundPublication(
-                woundCarrierAfterImages!,
-                woundIdentityAfterImage!,
-                woundHistoryAfterImage!);
-        if (_woundStageBundle is not null && _woundPublication is not null)
+        _woundPublication = woundPublication?.DetachedCopy();
+        if (_woundStageBundle is not null &&
+            _woundPublication is not null &&
+            carrierComposition is not null)
         {
             var final = _woundStageBundle.FinalPlan;
-            if (!JsonNode.DeepEquals(
+            if (!ObjectMapsEqual(
+                    _effectCarrierAfterImages,
+                    carrierComposition.EffectCarrierAfterImages) ||
+                !ObjectMapsEqual(
+                    _ownerCompanionAfterImages,
+                    carrierComposition.OwnerCompanionAfterImages) ||
+                EffectPlan is null ||
+                !string.Equals(
+                    _woundStageBundle.BundleFingerprint,
+                    _woundPublication.WoundStageBundleFingerprint,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    WoundAcceptedTurnFingerprints
+                        .ComputeAcceptedEffectPlanPayload(EffectPlan),
+                    _woundPublication.FinalEffectPlanFingerprint,
+                    StringComparison.Ordinal) ||
+                !JsonNode.DeepEquals(
                     final.IdentityIndexAfterImage,
                     _woundPublication.IdentityAfterImage) ||
                 !JsonNode.DeepEquals(
@@ -1040,12 +1171,13 @@ internal sealed class AcceptedMechanicsPlan
                     _woundPublication.HistoryAfterImage))
             {
                 throw new ArgumentException(
-                    "Wound identity/history publication must equal the final wound stage after-images.",
+                    "Wound publication and all carrier maps must equal one proof-bound composition for the exact wound stages and final effect plan.",
                     nameof(woundStageBundle));
             }
         }
         TouchedPaths = NormalizePaths(touchedPaths, nameof(touchedPaths));
         ConsumedPaths = NormalizePaths(consumedPaths, nameof(consumedPaths));
+        ValidatePendingResolutionPublication();
         ValidateWholeRootProducerConflicts();
         ValidatePathCoverage();
         PreparedPlanFingerprint =
@@ -1071,6 +1203,9 @@ internal sealed class AcceptedMechanicsPlan
     internal bool AwaitsPendingResolution => _pendingGmPacket != null;
 
     internal JsonObject? PendingGmPacket => _pendingGmPacket?.DeepClone().AsObject();
+
+    internal AcceptedMechanicsPendingPublicationAuthority?
+        PendingPublicationAuthority => _pendingPublicationAuthority;
 
     internal IReadOnlyDictionary<string, JsonObject> OwnerCompanionAfterImages =>
         ReadOnlyObjects(_ownerCompanionAfterImages);
@@ -1111,6 +1246,130 @@ internal sealed class AcceptedMechanicsPlan
         _woundPublication?.HistoryAfterImage;
 
     internal string PreparedPlanFingerprint { get; }
+
+    private void ValidatePendingResolutionPublication()
+    {
+        if (_pendingGmPacket is null)
+        {
+            if (_pendingPublicationAuthority is not null)
+            {
+                throw new ArgumentException(
+                    "A non-pending plan cannot expose pending publication authority.",
+                    nameof(_pendingPublicationAuthority));
+            }
+            return;
+        }
+        if (_pendingPublicationAuthority is null)
+        {
+            throw new ArgumentException(
+                "A pending accepted plan requires exact accepted-turn publication authority.",
+                nameof(_pendingPublicationAuthority));
+        }
+        var exactTouched = new HashSet<string>(StringComparer.Ordinal)
+        {
+            DefinitionPath,
+            StatePath,
+            HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            EffectAcceptedTurnPlan.IdentityIndexPath,
+            ResourcePendingResolutionState.PendingPath
+        };
+        if (_pendingAfterImages.Count != 1 ||
+            _effectCarrierAfterImages.Count != 0 ||
+            _ownerCompanionAfterImages.Count != 0 ||
+            _ownerTransitions.Length != 0 ||
+            _resourceEvents.Length != 0 ||
+            ConsumedPaths.Count != 0 ||
+            !exactTouched.SetEquals(TouchedPaths))
+        {
+            throw new ArgumentException(
+                "A pending accepted plan may carry only the one technical pending write and no publish/delete mechanics.",
+                nameof(_pendingAfterImages));
+        }
+        if (_woundStageBundle is not null &&
+            (EffectPlan is null ||
+             !string.Equals(
+                 WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(
+                     EffectPlan),
+                 WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(
+                     _woundStageBundle.EffectBatchPlan.EffectPlan),
+                 StringComparison.Ordinal)))
+        {
+            throw new ArgumentException(
+                "A pending wound plan must retain the exact sealed wound effect stage.",
+                nameof(EffectPlan));
+        }
+        if (!_pendingAfterImages.TryGetValue(
+                ResourcePendingResolutionState.PendingPath,
+                out var pendingRoot) ||
+            pendingRoot is null ||
+            !TouchedPaths.Contains(
+                ResourcePendingResolutionState.PendingPath,
+                StringComparer.Ordinal))
+        {
+            throw new ArgumentException(
+                "A pending accepted plan requires one non-null touched technical pending after-image.",
+                nameof(_pendingAfterImages));
+        }
+
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            _definitionAfterImage.ToJsonString(),
+            allowMissingPristine: false);
+        if (!definitions.IsValid || definitions.Catalog is null)
+        {
+            throw new ArgumentException(
+                "A pending accepted plan requires a canonical resource definition catalog.",
+                nameof(_definitionAfterImage));
+        }
+        var pending = ResourcePendingResolutionState.ParseCanonical(
+            pendingRoot.ToJsonString(),
+            definitions.Catalog,
+            allowMissingPristine: false);
+        if (!pending.IsValid ||
+            pending.State is null ||
+            pending.State.Requests.Count == 0 ||
+            !JsonNode.DeepEquals(
+                _pendingGmPacket,
+                pending.State.BuildSafeGmPacket()))
+        {
+            throw new ArgumentException(
+                "A pending accepted plan requires canonical active requests and their exact safe GM packet.",
+                nameof(_pendingGmPacket));
+        }
+        if (!string.Equals(
+                pending.State.SessionId,
+                _pendingPublicationAuthority.SessionId,
+                StringComparison.Ordinal) ||
+            pending.State.Requests.Any(request =>
+                !string.Equals(
+                    request.SessionId,
+                    _pendingPublicationAuthority.SessionId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    request.AcceptedRequestId,
+                    _pendingPublicationAuthority.AcceptedRequestId,
+                    StringComparison.Ordinal) ||
+                request.RequestTurn != _pendingPublicationAuthority.Turn ||
+                !string.Equals(
+                    request.FullTurnFingerprint,
+                    _pendingPublicationAuthority.FullTurnFingerprint,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    request.SemanticTurnFingerprint,
+                    _pendingPublicationAuthority.SemanticTurnFingerprint,
+                    StringComparison.Ordinal)) ||
+            !string.Equals(
+                AcceptedMechanicsPendingPublicationAuthority
+                    .ComputePendingStateFingerprint(
+                        pending.State.ToCanonicalRoot()),
+                _pendingPublicationAuthority.PendingStateFingerprint,
+                StringComparison.Ordinal))
+        {
+            throw new ArgumentException(
+                "A pending accepted plan must belong to the exact session, request, turn, and full and semantic accepted-turn fingerprints.",
+                nameof(_pendingPublicationAuthority));
+        }
+    }
 
     private void ValidatePathCoverage()
     {
@@ -1276,6 +1535,13 @@ internal sealed class AcceptedMechanicsPlan
             static pair => pair.Value?.DeepClone().AsObject(),
             StringComparer.Ordinal));
 
+    private static bool ObjectMapsEqual(
+        IReadOnlyDictionary<string, JsonObject> first,
+        IReadOnlyDictionary<string, JsonObject> second) =>
+        first.Count == second.Count &&
+        first.All(pair => second.TryGetValue(pair.Key, out var value) &&
+            JsonNode.DeepEquals(pair.Value, value));
+
     private static IReadOnlyList<string> NormalizePaths(
         IReadOnlyList<string> paths,
         string parameterName)
@@ -1346,6 +1612,9 @@ internal static class AcceptedMechanicsPlanFingerprints
         fields.Add(Canonical(plan.EffectIdentityAfterImage));
         AppendNullableObjectMap(fields, plan.PendingAfterImages);
         AppendOptionalJson(fields, plan.PendingGmPacket);
+        AppendPendingPublicationAuthority(
+            fields,
+            plan.PendingPublicationAuthority);
         AppendObjectMap(fields, plan.OwnerCompanionAfterImages);
         AppendOwnerTransitions(fields, plan.OwnerTransitions);
         AppendResourceEvents(fields, plan.ResourceEvents);
@@ -1363,6 +1632,24 @@ internal static class AcceptedMechanicsPlanFingerprints
         AppendOrdered(fields, plan.TouchedPaths);
         AppendOrdered(fields, plan.ConsumedPaths);
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+    }
+
+    private static void AppendPendingPublicationAuthority(
+        ICollection<string?> fields,
+        AcceptedMechanicsPendingPublicationAuthority? authority)
+    {
+        if (authority is null)
+        {
+            fields.Add(null);
+            return;
+        }
+        fields.Add("present");
+        fields.Add(authority.SessionId);
+        fields.Add(authority.AcceptedRequestId);
+        fields.Add(authority.Turn.ToString(CultureInfo.InvariantCulture));
+        fields.Add(authority.FullTurnFingerprint);
+        fields.Add(authority.SemanticTurnFingerprint);
+        fields.Add(authority.PendingStateFingerprint);
     }
 
     internal static string ComputePlanningInput(AcceptedMechanicsInput input)

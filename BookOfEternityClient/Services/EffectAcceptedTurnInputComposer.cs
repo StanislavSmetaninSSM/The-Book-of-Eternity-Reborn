@@ -13,7 +13,6 @@ internal static class EffectAcceptedTurnInputComposer
     {
         "game_state/player/skills_active.json",
         "game_state/player/skills_passive.json",
-        PlayerWoundsPath,
         "game_state/quests/regular_quests.json",
         "game_state/quests/soul_quests.json",
         "game_state/world/world_events.json",
@@ -29,6 +28,7 @@ internal static class EffectAcceptedTurnInputComposer
         "game_state/player/skills_passive.json",
         "game_state/inventory/items.json",
         PlayerWoundsPath,
+        WoundCarrierCatalog.NpcPath,
         "game_state/quests/regular_quests.json",
         "game_state/quests/soul_quests.json",
         MortalLocationMaterializationContract.WorldMapPath,
@@ -49,11 +49,6 @@ internal static class EffectAcceptedTurnInputComposer
     private static readonly SourceDescriptor[] ItemSourceDescriptors =
     {
         new("item", "itemId")
-    };
-
-    private static readonly SourceDescriptor[] WoundSourceDescriptors =
-    {
-        new("wound", "woundId")
     };
 
     private static readonly SourceDescriptor[] QuestSourceDescriptors =
@@ -128,7 +123,8 @@ internal static class EffectAcceptedTurnInputComposer
         CombatantIdentityState? preallocatedCombatantIdentities = null,
         string realm = "mortal_world",
         IReadOnlySet<string>? grantedBuiltInApplicationAuthorities = null,
-        IReadOnlyList<JsonObject>? acceptedReportedLifecycleEvents = null)
+        IReadOnlyList<JsonObject>? acceptedReportedLifecycleEvents = null,
+        WoundPreparedAcceptedTurnPlan? preparedWoundPlan = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
         ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
@@ -137,21 +133,54 @@ internal static class EffectAcceptedTurnInputComposer
         ArgumentNullException.ThrowIfNull(acceptedCarriers);
         ArgumentNullException.ThrowIfNull(preTurnSourceRoots);
 
-        var replacedSources = replacedSourceOwners ??
-            new HashSet<EffectSourceOwnerKey>();
+        var preparedWounds = ComposePreparedWoundSources(
+            sessionId,
+            snapshotToken,
+            turn,
+            realm,
+            preparedWoundPlan,
+            acceptedPlanSourceExports);
+        var replacedSources = (replacedSourceOwners ??
+                new HashSet<EffectSourceOwnerKey>())
+            .Concat(preparedWounds.Groups.Select(static group =>
+                new EffectSourceOwnerKey(
+                    group.Key.Realm,
+                    group.Key.Kind,
+                    group.Key.SourceId)))
+            .ToHashSet();
+        var persistedWounds = CollectCanonicalWoundSources(
+            preTurnSourceRoots,
+            sameTurn: false);
         var preTurnSourceExports = CollectSources(preTurnSourceRoots, sameTurn: false)
+            .Concat(persistedWounds.Exports)
             .Concat(EffectBuiltInSourceCatalog.CreateCanonicalExports())
             .Where(export => !replacedSources.Contains(new EffectSourceOwnerKey(
                 export.Realm,
                 export.Kind,
                 export.SourceId)))
             .ToArray();
-        var planSourceExports = acceptedPlanSourceExports ?? Array.Empty<EffectSourceExport>();
+        var planSourceExports = (acceptedPlanSourceExports ??
+                Array.Empty<EffectSourceExport>())
+            .Where(static export => export is not null && !string.Equals(
+                export.Kind,
+                "wound",
+                StringComparison.Ordinal))
+            .Concat(preparedWounds.Exports)
+            .ToArray();
+        var woundGroups = persistedWounds.Groups
+            .Where(group => !replacedSources.Contains(new EffectSourceOwnerKey(
+                group.Key.Realm,
+                group.Key.Kind,
+                group.Key.SourceId)))
+            .Concat(preparedWounds.Groups)
+            .ToArray();
         var sourceAuthority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
             preTurnSourceExports,
             planSourceExports,
             new HashSet<string>(StringComparer.Ordinal),
-            grantedBuiltInApplicationAuthorities));
+            grantedBuiltInApplicationAuthorities,
+            woundGroups,
+            persistedWounds.Issues.Concat(preparedWounds.Issues).ToArray()));
         var acceptedSpiritualTargets = new List<EffectTargetExport>();
         CollectSpiritualConflictTargets(
             acceptedCarriers.SpiritualConflict,
@@ -175,8 +204,27 @@ internal static class EffectAcceptedTurnInputComposer
         var preTurnTargetKeys = preTurnTargets
             .Select(static target => (target.Realm, target.Kind, target.TargetId))
             .ToHashSet();
-        var acceptedTargets = acceptedPlanTargetExports ??
+        var suppliedAcceptedTargets = acceptedPlanTargetExports ??
             Array.Empty<EffectTargetExport>();
+        var suppliedAcceptedTargetKeys = suppliedAcceptedTargets
+            .Select(static target => new EffectTargetKey(
+                target.Realm,
+                target.Kind,
+                target.TargetId))
+            .ToHashSet();
+        var acceptedTargets = suppliedAcceptedTargets
+            .Concat(preparedWounds.Groups
+                .Select(static group => group.Target)
+                .Distinct()
+                .Where(target => !preTurnTargetKeys.Contains(
+                                     (target.Realm, target.Kind, target.TargetId)) &&
+                                 !suppliedAcceptedTargetKeys.Contains(target))
+                .Select(static target => new EffectTargetExport(
+                    target.Realm,
+                    target.Kind,
+                    target.TargetId,
+                    SameTurn: false)))
+            .ToArray();
         var acceptedStableTargets = acceptedTargets
             .Where(static target => target.TargetRef == null)
             .Select(static target => target with { SameTurn = false })
@@ -197,20 +245,32 @@ internal static class EffectAcceptedTurnInputComposer
         var lifecycleCarriers = PreserveClosingSpiritualConflictCarrier(
             preTurnCarriers,
             acceptedCarriers);
+        var eventInput = BuildAcceptedEventInput(
+            turn,
+            rawCommands,
+            currentWorldTime,
+            preTurnCarriers,
+            acceptedCarriers,
+            realm,
+            acceptedReportedLifecycleEvents);
+        if (preparedWoundPlan is not null && preparedWounds.Issues.Count == 0)
+        {
+            eventInput["events"] = new JsonArray(
+                preparedWoundPlan.Binding.AcceptedEvents.Select(static value =>
+                    (JsonNode)new JsonObject
+                    {
+                        ["eventRef"] = value.EventRef,
+                        ["kind"] = value.Kind,
+                        ["authorityId"] = value.AuthorityId
+                    }).ToArray());
+        }
         return new EffectAcceptedTurnInput(
             sessionId,
             snapshotToken,
             rawCommands.DeepClone().AsObject(),
             sourceAuthority,
             targetAuthority,
-            BuildAcceptedEventInput(
-                turn,
-                rawCommands,
-                currentWorldTime,
-                preTurnCarriers,
-                acceptedCarriers,
-                realm,
-                acceptedReportedLifecycleEvents),
+            eventInput,
             Realm: realm,
             PreTurnCarriers: CloneCarriers(lifecycleCarriers),
             PreTurnIdentityIndex: preTurnIdentityIndex?.DeepClone().AsObject(),
@@ -1176,12 +1236,18 @@ internal static class EffectAcceptedTurnInputComposer
         IReadOnlyDictionary<string, JsonNode?> sourceRoots)
     {
         ArgumentNullException.ThrowIfNull(sourceRoots);
+        var persistedWounds = CollectCanonicalWoundSources(
+            sourceRoots,
+            sameTurn: false);
         return EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
             CollectSources(sourceRoots, sameTurn: false)
+                .Concat(persistedWounds.Exports)
                 .Concat(EffectBuiltInSourceCatalog.CreateCanonicalExports())
                 .ToArray(),
             Array.Empty<EffectSourceExport>(),
-            new HashSet<string>(StringComparer.Ordinal)));
+            new HashSet<string>(StringComparer.Ordinal),
+            WoundGroups: persistedWounds.Groups,
+            CompositionIssues: persistedWounds.Issues));
     }
 
     internal static IReadOnlyList<ValidationIssue> ValidateRegisteredSourceOwners(
@@ -1537,6 +1603,287 @@ internal static class EffectAcceptedTurnInputComposer
         return exports;
     }
 
+    private static CanonicalWoundSourceComposition CollectCanonicalWoundSources(
+        IReadOnlyDictionary<string, JsonNode?> roots,
+        bool sameTurn)
+    {
+        static JsonObject? ReadRoot(
+            IReadOnlyDictionary<string, JsonNode?> sourceRoots,
+            string path) =>
+            sourceRoots.TryGetValue(path, out var node)
+                ? node as JsonObject
+                : null;
+
+        if (!roots.ContainsKey(WoundCarrierCatalog.PlayerPath) &&
+            !roots.ContainsKey(WoundCarrierCatalog.NpcPath) &&
+            !roots.ContainsKey(WoundCarrierCatalog.EnemiesPath) &&
+            !roots.ContainsKey(WoundCarrierCatalog.AlliesPath) &&
+            !roots.ContainsKey(WoundCarrierCatalog.AfterlifeProfilesPath))
+            return CanonicalWoundSourceComposition.Empty;
+
+        var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
+            ReadRoot(roots, WoundCarrierCatalog.PlayerPath),
+            ReadRoot(roots, WoundCarrierCatalog.NpcPath),
+            ReadRoot(roots, WoundCarrierCatalog.EnemiesPath),
+            ReadRoot(roots, WoundCarrierCatalog.AlliesPath),
+            ReadRoot(roots, WoundCarrierCatalog.AfterlifeProfilesPath)));
+        if (catalog.Issues.Count != 0)
+        {
+            return new CanonicalWoundSourceComposition(
+                Array.Empty<EffectSourceExport>(),
+                Array.Empty<WoundSourceGroupAuthority>(),
+                catalog.Issues.ToArray());
+        }
+
+        var exports = new List<EffectSourceExport>();
+        var groups = new List<WoundSourceGroupAuthority>();
+        var issues = new List<ValidationIssue>();
+        foreach (var occurrence in catalog.Occurrences
+                     .OrderBy(static value => value.Wound.Owner.Realm, StringComparer.Ordinal)
+                     .ThenBy(static value => value.WoundId, StringComparer.Ordinal))
+        {
+            if (!WoundEffectCarrierAdapter.TryCreateTargetKey(
+                    occurrence.Wound.Owner,
+                    out var target))
+            {
+                issues.Add(new ValidationIssue(
+                    occurrence.JsonPath + ".owner",
+                    IssueSeverity.Error,
+                    "A canonical wound owner must map to one exact effect target.",
+                    code: "effect_source_wound_owner_target_invalid",
+                    section: "wound_materialization",
+                    expected: "closed wound owner-to-effect-target mapping",
+                    actual: occurrence.Wound.Owner.ToString(),
+                    repairHint: "Restore the exact canonical wound owner coordinate before composing its effect source graph."));
+                continue;
+            }
+
+            var definitions = occurrence.Wound.Consequences.OwnedEffectSources.Definitions
+                .Select(static definition =>
+                {
+                    var node = JsonNode.Parse(definition.GetRawText())!.AsObject();
+                    return new WoundEffectSourceDefinition(
+                        node["definitionKey"]!.GetValue<string>(),
+                        node);
+                })
+                .ToArray();
+            var definitionNodes = new JsonArray(definitions
+                .Select(static definition => (JsonNode)definition.Definition)
+                .ToArray());
+            var rootDomains = occurrence.Wound.Consequences.OwnedEffectSources
+                .RootBindings.ToDictionary(
+                    static binding => binding.EffectId,
+                    static _ => WoundRootOwnershipDomain.BaseWound,
+                    StringComparer.Ordinal);
+            foreach (var complication in occurrence.Wound.Complications)
+            {
+                foreach (var effectId in complication.OwnedEffectIds)
+                {
+                    if (!rootDomains.TryGetValue(effectId, out var current) ||
+                        current != WoundRootOwnershipDomain.BaseWound)
+                    {
+                        issues.Add(new ValidationIssue(
+                            occurrence.JsonPath + ".complications",
+                            IssueSeverity.Error,
+                            "A persisted wound root must belong to one exact ownership domain.",
+                            code: "effect_source_wound_root_domain_invalid",
+                            section: "wound_materialization",
+                            expected: "pairwise-disjoint existing root ownership",
+                            actual: effectId,
+                            repairHint: "Restore complication ownedEffectIds to a pairwise-disjoint subset of canonical wound root bindings."));
+                        continue;
+                    }
+                    rootDomains[effectId] =
+                        WoundRootOwnershipDomain.ForComplication(
+                            complication.ComplicationId);
+                }
+            }
+            var existingRoots = occurrence.Wound.Consequences.OwnedEffectSources
+                .RootBindings
+                .OrderBy(static binding => binding.EffectId, StringComparer.Ordinal)
+                .ThenBy(static binding => binding.DefinitionKey, StringComparer.Ordinal)
+                .Select(binding => new WoundRootLineageAuthorityRow(
+                    null,
+                    binding.EffectId,
+                    binding.DefinitionKey,
+                    rootDomains[binding.EffectId]))
+                .ToArray();
+            exports.Add(new EffectSourceExport(
+                occurrence.Wound.Owner.Realm,
+                "wound",
+                occurrence.WoundId,
+                definitionNodes,
+                Materializable: false,
+                Active: string.Equals(
+                    occurrence.Wound.Lifecycle,
+                    "active",
+                    StringComparison.Ordinal),
+                SameTurn: sameTurn));
+            groups.Add(new WoundSourceGroupAuthority(
+                new EffectIdentitySourceGroup(
+                    occurrence.Wound.Owner.Realm,
+                    "wound",
+                    occurrence.WoundId),
+                occurrence.Wound.Owner,
+                target,
+                sameTurn,
+                sourceRef: null,
+                preparedSourceExportFingerprint: null,
+                definitions,
+                Array.Empty<WoundRootLineageAuthorityRow>(),
+                existingRoots));
+        }
+
+        if (issues.Count != 0)
+        {
+            return new CanonicalWoundSourceComposition(
+                Array.Empty<EffectSourceExport>(),
+                Array.Empty<WoundSourceGroupAuthority>(),
+                issues);
+        }
+        return new CanonicalWoundSourceComposition(exports, groups, issues);
+    }
+
+    private static CanonicalWoundSourceComposition ComposePreparedWoundSources(
+        string sessionId,
+        string snapshotToken,
+        int turn,
+        string realm,
+        WoundPreparedAcceptedTurnPlan? prepared,
+        IReadOnlyList<EffectSourceExport>? externallySuppliedExports)
+    {
+        var issues = new List<ValidationIssue>();
+        var injectedWounds = (externallySuppliedExports ??
+                Array.Empty<EffectSourceExport>())
+            .Where(static export => export is not null && string.Equals(
+                export.Kind,
+                "wound",
+                StringComparison.Ordinal))
+            .ToArray();
+        if (injectedWounds.Length != 0)
+        {
+            issues.Add(WoundCompositionIssue(
+                "effect_source_wound_external_export_forbidden",
+                "Wound source exports must descend from the sealed prepared wound plan.",
+                "no caller-supplied generic wound exports",
+                injectedWounds.Length.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture)));
+        }
+
+        if (prepared is null)
+        {
+            return issues.Count == 0
+                ? CanonicalWoundSourceComposition.Empty
+                : new CanonicalWoundSourceComposition(
+                    Array.Empty<EffectSourceExport>(),
+                    Array.Empty<WoundSourceGroupAuthority>(),
+                    issues);
+        }
+
+        issues.AddRange(WoundAcceptedTurnPlannerCore.ValidatePreparedAuthority(prepared));
+        var binding = prepared.Binding;
+        if (!string.Equals(binding.SessionId, sessionId, StringComparison.Ordinal) ||
+            !string.Equals(binding.SnapshotToken, snapshotToken, StringComparison.Ordinal) ||
+            binding.Turn != turn ||
+            !string.Equals(binding.Realm, realm, StringComparison.Ordinal))
+        {
+            issues.Add(WoundCompositionIssue(
+                "effect_source_wound_prepared_binding_mismatch",
+                "The prepared wound authority does not belong to this effect input.",
+                "exact session, snapshot, turn, and realm binding",
+                $"{binding.SessionId}/{binding.SnapshotToken}/{binding.Turn}/{binding.Realm}"));
+        }
+        if (issues.Count != 0)
+        {
+            return new CanonicalWoundSourceComposition(
+                Array.Empty<EffectSourceExport>(),
+                Array.Empty<WoundSourceGroupAuthority>(),
+                issues);
+        }
+
+        var exports = new List<EffectSourceExport>(
+            prepared.EffectOperationBatches.Count);
+        var groups = new List<WoundSourceGroupAuthority>(
+            prepared.EffectOperationBatches.Count);
+        foreach (var batch in prepared.EffectOperationBatches)
+        {
+            var source = batch.SourceExport;
+            if (!WoundEffectCarrierAdapter.TryCreateTargetKey(
+                    source.Owner,
+                    out var target))
+            {
+                issues.Add(WoundCompositionIssue(
+                    "effect_source_wound_owner_target_invalid",
+                    "The prepared wound owner does not map to one closed effect target.",
+                    "closed wound owner-to-effect-target mapping",
+                    source.Owner.ToString()));
+                continue;
+            }
+            var definitions = source.Definitions
+                .Select(static definition => new WoundEffectSourceDefinition(
+                    definition.DefinitionKey,
+                    definition.Definition))
+                .ToArray();
+            var applicationRoots = batch.RootLineageAuthority
+                .Where(static row => row.ApplicationRef is not null)
+                .ToArray();
+            var existingRoots = batch.RootLineageAuthority
+                .Where(static row => row.EffectId is not null)
+                .ToArray();
+            exports.Add(new EffectSourceExport(
+                source.Realm,
+                source.Kind,
+                source.SourceId,
+                new JsonArray(definitions.Select(static definition =>
+                    (JsonNode)definition.Definition).ToArray()),
+                Materializable: false,
+                Active: string.Equals(source.State, "active", StringComparison.Ordinal),
+                SameTurn: true,
+                SourceRef: source.SourceRef,
+                SatisfiedPredicates: new HashSet<string>(StringComparer.Ordinal)
+                {
+                    "active"
+                }));
+            groups.Add(new WoundSourceGroupAuthority(
+                new EffectIdentitySourceGroup(
+                    source.Realm,
+                    source.Kind,
+                    source.SourceId),
+                source.Owner,
+                target,
+                sameTurn: true,
+                source.SourceRef,
+                batch.SourceExportFingerprint,
+                definitions,
+                applicationRoots,
+                existingRoots));
+        }
+
+        if (issues.Count != 0)
+        {
+            return new CanonicalWoundSourceComposition(
+                Array.Empty<EffectSourceExport>(),
+                Array.Empty<WoundSourceGroupAuthority>(),
+                issues);
+        }
+        return new CanonicalWoundSourceComposition(exports, groups, issues);
+    }
+
+    private static ValidationIssue WoundCompositionIssue(
+        string code,
+        string message,
+        string expected,
+        string actual) =>
+        new(
+            "effectAcceptedTurn.woundSourceComposition",
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "wound_materialization",
+            expected: expected,
+            actual: actual,
+            repairHint: "Recompose effect authority from the exact sealed prepared wound plan and canonical pre-turn wound carriers.");
+
     private static IReadOnlySet<string> BuildSatisfiedPredicates(
         string path,
         string kind,
@@ -1863,13 +2210,6 @@ internal static class EffectAcceptedTurnInputComposer
                 foreach (var owner in EnumerateArrayOwners(root, "items"))
                     yield return Candidate(owner, inheritedRealm, ItemSourceDescriptors);
                 yield break;
-            case PlayerWoundsPath:
-                foreach (var owner in EnumerateArrayOwners(
-                             root,
-                             "playerWoundChanges",
-                             "wounds"))
-                    yield return Candidate(owner, inheritedRealm, WoundSourceDescriptors);
-                yield break;
             case "game_state/quests/regular_quests.json":
             case "game_state/quests/soul_quests.json":
                 foreach (var owner in EnumerateArrayOwners(root, "quests"))
@@ -2157,6 +2497,17 @@ internal static class EffectAcceptedTurnInputComposer
     private sealed record AfterlifeProfileRealmBinding(
         string Realm,
         bool Active);
+
+    private sealed record CanonicalWoundSourceComposition(
+        IReadOnlyList<EffectSourceExport> Exports,
+        IReadOnlyList<WoundSourceGroupAuthority> Groups,
+        IReadOnlyList<ValidationIssue> Issues)
+    {
+        internal static CanonicalWoundSourceComposition Empty { get; } = new(
+            Array.Empty<EffectSourceExport>(),
+            Array.Empty<WoundSourceGroupAuthority>(),
+            Array.Empty<ValidationIssue>());
+    }
 }
 
 internal sealed record EffectAcceptedOwnerExports(

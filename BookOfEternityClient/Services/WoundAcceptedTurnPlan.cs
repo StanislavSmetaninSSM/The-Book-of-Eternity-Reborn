@@ -590,19 +590,80 @@ internal sealed class WoundRootEffectApplication
 
 internal sealed class WoundTerminalEffectOperation
 {
+    private readonly EffectSourceKey? _expectedSourceKey;
+    private readonly EffectTargetKey? _expectedTargetKey;
+    private readonly EffectCarrierCoordinate? _expectedCarrierCoordinate;
+    private readonly EffectIdentityOwner? _expectedIdentityOwner;
+    private readonly EffectStackCoordinate? _expectedStackCoordinate;
+    private readonly WoundRootOwnershipDomain? _ownershipDomain;
+
     internal WoundTerminalEffectOperation(
         string operationRef,
         string operationKey,
-        string effectId)
+        string effectId,
+        int mechanicsOrdinal,
+        int operationOrdinal,
+        string operationKind,
+        string causalEventRef,
+        EffectSourceKey expectedSourceKey,
+        EffectTargetKey expectedTargetKey,
+        EffectCarrierCoordinate expectedCarrierCoordinate,
+        string expectedCarrierFilePath,
+        string expectedCarrierJsonPath,
+        EffectIdentityOwner expectedIdentityOwner,
+        EffectStackCoordinate expectedStackCoordinate,
+        string expectedEffectFingerprint,
+        string expectedIdentityFingerprint,
+        WoundRootOwnershipDomain ownershipDomain)
     {
         OperationRef = operationRef;
         OperationKey = operationKey;
         EffectId = effectId;
+        MechanicsOrdinal = mechanicsOrdinal;
+        OperationOrdinal = operationOrdinal;
+        OperationKind = operationKind;
+        CausalEventRef = causalEventRef;
+        _expectedSourceKey = WoundAcceptedTurnData.CloneSourceKey(
+            expectedSourceKey);
+        _expectedTargetKey = WoundAcceptedTurnData.CloneTargetKey(
+            expectedTargetKey);
+        _expectedCarrierCoordinate =
+            WoundAcceptedTurnData.CloneEffectCarrierCoordinate(
+                expectedCarrierCoordinate);
+        ExpectedCarrierFilePath = expectedCarrierFilePath;
+        ExpectedCarrierJsonPath = expectedCarrierJsonPath;
+        _expectedIdentityOwner = expectedIdentityOwner with { };
+        _expectedStackCoordinate = expectedStackCoordinate with { };
+        ExpectedEffectFingerprint = expectedEffectFingerprint;
+        ExpectedIdentityFingerprint = expectedIdentityFingerprint;
+        _ownershipDomain = WoundAcceptedTurnData.CloneOwnershipDomain(
+            ownershipDomain);
     }
 
     internal string OperationRef { get; }
     internal string OperationKey { get; }
     internal string EffectId { get; }
+    internal int MechanicsOrdinal { get; }
+    internal int OperationOrdinal { get; }
+    internal string OperationKind { get; }
+    internal string CausalEventRef { get; }
+    internal EffectSourceKey ExpectedSourceKey =>
+        WoundAcceptedTurnData.CloneSourceKey(_expectedSourceKey)!;
+    internal EffectTargetKey ExpectedTargetKey =>
+        WoundAcceptedTurnData.CloneTargetKey(_expectedTargetKey)!;
+    internal EffectCarrierCoordinate ExpectedCarrierCoordinate =>
+        WoundAcceptedTurnData.CloneEffectCarrierCoordinate(
+            _expectedCarrierCoordinate)!;
+    internal string ExpectedCarrierFilePath { get; }
+    internal string ExpectedCarrierJsonPath { get; }
+    internal EffectIdentityOwner ExpectedIdentityOwner =>
+        _expectedIdentityOwner! with { };
+    internal EffectStackCoordinate ExpectedStackCoordinate =>
+        _expectedStackCoordinate! with { };
+    internal string ExpectedEffectFingerprint { get; }
+    internal string ExpectedIdentityFingerprint { get; }
+    internal WoundRootOwnershipDomain OwnershipDomain =>
+        WoundAcceptedTurnData.CloneOwnershipDomain(_ownershipDomain)!;
 }
 
 internal sealed record WoundPreparedTransitionAuthority(
@@ -1468,7 +1529,24 @@ internal static class WoundAcceptedTurnData
 
     internal static WoundTerminalEffectOperation CloneTerminalOperation(
         WoundTerminalEffectOperation value) =>
-        new(value.OperationRef, value.OperationKey, value.EffectId);
+        new(
+            value.OperationRef,
+            value.OperationKey,
+            value.EffectId,
+            value.MechanicsOrdinal,
+            value.OperationOrdinal,
+            value.OperationKind,
+            value.CausalEventRef,
+            value.ExpectedSourceKey,
+            value.ExpectedTargetKey,
+            value.ExpectedCarrierCoordinate,
+            value.ExpectedCarrierFilePath,
+            value.ExpectedCarrierJsonPath,
+            value.ExpectedIdentityOwner,
+            value.ExpectedStackCoordinate,
+            value.ExpectedEffectFingerprint,
+            value.ExpectedIdentityFingerprint,
+            value.OwnershipDomain);
 
     internal static WoundPreparedTransitionAuthority? CloneTransitionAuthority(
         WoundPreparedTransitionAuthority? value) => value is null ? null : value with { };
@@ -1607,32 +1685,7 @@ internal static class WoundAcceptedTurnData
         EffectAcceptedTurnPlan value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        return new EffectAcceptedTurnPlan(
-            value.InputFingerprint,
-            value.CarrierAuthorityFingerprint,
-            value.SourceAuthorityFingerprint,
-            value.TargetAuthorityFingerprint,
-            value.AllocatedCombatantIds,
-            value.AllocatedEffectIds,
-            value.AllocatedTransitionIds,
-            value.Sources,
-            value.Targets,
-            value.SourceBindings,
-            value.DeferredReactions,
-            value.ReactionExpansionCount,
-            value.ReactionExpansionUsage,
-            value.ActiveEffects,
-            value.ResourceTriggerCarriers,
-            value.SourceAuthority,
-            value.TargetAuthority,
-            value.EventInput,
-            value.CarrierBeforeImages,
-            value.CarrierAfterImages,
-            value.IdentityIndexBeforeImage,
-            value.IdentityIndexAfterImage,
-            value.TouchedPaths,
-            value.DeletedPaths,
-            value.AcceptedCarrierBaselines);
+        return EffectAcceptedTurnPlan.DetachedCopyOf(value);
     }
 
     internal static EffectTargetAuthorityInput? CloneTargetAuthorityInput(
@@ -2075,11 +2128,10 @@ internal static class WoundAcceptedTurnFingerprints
                  terminalIndex < terminalOperations!.Count;
                  terminalIndex++)
             {
-                var terminal = terminalOperations[terminalIndex];
-                fields.Add(Number(terminalIndex));
-                fields.Add(terminal?.OperationRef);
-                fields.Add(terminal?.OperationKey);
-                fields.Add(terminal?.EffectId);
+                AppendTerminalOperation(
+                    fields,
+                    terminalIndex,
+                    terminalOperations[terminalIndex]);
             }
         }
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
@@ -2545,6 +2597,40 @@ internal static class WoundAcceptedTurnFingerprints
         fields.Add(value?.ExpectedCarrierCoordinate?.OwnerId);
         fields.Add(value?.ExpectedCarrierCoordinate?.Path);
         fields.Add(value?.ExpectedCarrierCoordinate?.Category);
+    }
+
+    private static void AppendTerminalOperation(
+        ICollection<string?> fields,
+        int index,
+        WoundTerminalEffectOperation? value)
+    {
+        fields.Add(Number(index));
+        fields.Add(value?.OperationRef);
+        fields.Add(value?.OperationKey);
+        fields.Add(value?.EffectId);
+        fields.Add(value is null ? null : Number(value.MechanicsOrdinal));
+        fields.Add(value is null ? null : Number(value.OperationOrdinal));
+        fields.Add(value?.OperationKind);
+        fields.Add(value?.CausalEventRef);
+        AppendSourceKey(fields, value?.ExpectedSourceKey);
+        AppendTargetKey(fields, value?.ExpectedTargetKey);
+        AppendCarrierCoordinate(fields, value?.ExpectedCarrierCoordinate);
+        fields.Add(value?.ExpectedCarrierFilePath);
+        fields.Add(value?.ExpectedCarrierJsonPath);
+        fields.Add(value?.ExpectedIdentityOwner?.Kind);
+        fields.Add(value?.ExpectedIdentityOwner?.OwnerId);
+        fields.Add(value?.ExpectedIdentityOwner?.CarrierPath);
+        fields.Add(value?.ExpectedIdentityOwner?.Collection);
+        fields.Add(value?.ExpectedStackCoordinate?.Realm);
+        fields.Add(value?.ExpectedStackCoordinate?.TargetKind);
+        fields.Add(value?.ExpectedStackCoordinate?.TargetId);
+        fields.Add(value?.ExpectedStackCoordinate?.SourceKind);
+        fields.Add(value?.ExpectedStackCoordinate?.SourceId);
+        fields.Add(value?.ExpectedStackCoordinate?.StackKey);
+        fields.Add(value?.ExpectedEffectFingerprint);
+        fields.Add(value?.ExpectedIdentityFingerprint);
+        fields.Add(value?.OwnershipDomain?.Kind);
+        fields.Add(value?.OwnershipDomain?.ComplicationId);
     }
 
     private static void AppendWoundCarriers(

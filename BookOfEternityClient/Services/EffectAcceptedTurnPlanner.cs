@@ -7,6 +7,20 @@ namespace BookOfEternityClient.Services;
 
 internal static class EffectAcceptedTurnPlanner
 {
+    internal sealed class AcceptedBoundaryCompletionProof
+    {
+        internal AcceptedBoundaryCompletionProof()
+        {
+        }
+    }
+
+    private static readonly AcceptedBoundaryCompletionProof
+        AcceptedBoundaryCompletionAuthority =
+            new();
+
+    internal static bool IsAcceptedBoundaryCompletionProof(
+        AcceptedBoundaryCompletionProof? proof) =>
+        ReferenceEquals(proof, AcceptedBoundaryCompletionAuthority);
     private static readonly HashSet<string> RootFields = Set(
         "effectChanges",
         "effectResolutionReceipts",
@@ -2186,6 +2200,17 @@ internal static class EffectAcceptedTurnPlanner
                 "null");
             return Failed(missingIssues);
         }
+        if (plan.IsAcceptedBoundaryComplete)
+        {
+            var repeatedIssues = new List<ValidationIssue>();
+            Add(
+                repeatedIssues,
+                EffectAcceptedTurnPlan.CommandPath,
+                "effect_boundary_completion_repeated",
+                "one initial effect plan completed exactly once",
+                "already completed");
+            return Failed(repeatedIssues);
+        }
         var expectedPlanAuthority =
             AcceptedMechanicsPlanner.CreateEffectPlanAuthority(plan);
         if (!transcript.IsComplete ||
@@ -2662,16 +2687,22 @@ internal static class EffectAcceptedTurnPlanner
                 identityRoot,
                 touchedPaths,
                 plan.DeletedPaths,
-                acceptedCarrierBaselines: plan.AcceptedCarrierBaselines),
+                acceptedCarrierBaselines: plan.AcceptedCarrierBaselines,
+                acceptedBoundaryCompletionProof:
+                    AcceptedBoundaryCompletionAuthority,
+                acceptedBoundaryBasePlanFingerprint:
+                    WoundAcceptedTurnFingerprints
+                        .ComputeAcceptedEffectPlanPayload(plan)),
             Array.Empty<ValidationIssue>());
     }
 
-    private static IReadOnlyList<WoundApplicationRequest> PrepareWoundApplications(
+    private static PreparedWoundOperations PrepareWoundOperations(
         EffectAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan prepared,
         List<ValidationIssue> issues)
     {
-        var result = new List<WoundApplicationRequest>();
+        var applications = new List<WoundApplicationRequest>();
+        var terminations = new List<WoundTerminalRequest>();
         var binding = prepared.Binding;
         var batches = prepared.EffectOperationBatches;
         var preparedWounds = prepared.PreparedWounds;
@@ -2691,7 +2722,7 @@ internal static class EffectAcceptedTurnPlanner
                 "wound_plan_effect_handoff_invalid",
                 "complete detached prepared plan and ordinary effect input",
                 "missing nested authority");
-            return result;
+            return new PreparedWoundOperations(applications, terminations);
         }
 
         if (!string.Equals(input.SessionId, binding.SessionId, StringComparison.Ordinal) ||
@@ -2721,7 +2752,7 @@ internal static class EffectAcceptedTurnPlanner
                 "wound_plan_effect_handoff_invalid",
                 "the exact prepared same-turn wound source set and no additional wound authority",
                 "same-turn wound source authority mismatch");
-            return result;
+            return new PreparedWoundOperations(applications, terminations);
         }
 
         var acceptedEvents = PrepareWoundAcceptedEvents(
@@ -2767,6 +2798,7 @@ internal static class EffectAcceptedTurnPlanner
         var createdEventAliases = acceptedEvents.Keys
             .Select(MortalLocationIdentityState.BuildConfusableKey)
             .ToHashSet(StringComparer.Ordinal);
+        var terminalEffectIds = new HashSet<string>(StringComparer.Ordinal);
         for (var batchIndex = 0; batchIndex < batches.Count; batchIndex++)
         {
             var batch = batches[batchIndex];
@@ -2810,10 +2842,12 @@ internal static class EffectAcceptedTurnPlanner
                 applicationAliases,
                 createdEvents,
                 createdEventAliases,
-                result,
+                terminalEffectIds,
+                applications,
+                terminations,
                 issues);
         }
-        return result;
+        return new PreparedWoundOperations(applications, terminations);
     }
 
     private static IReadOnlyDictionary<string, WoundAcceptedEventAuthority>
@@ -2888,7 +2922,9 @@ internal static class EffectAcceptedTurnPlanner
         HashSet<string> applicationAliases,
         HashSet<string> createdEvents,
         HashSet<string> createdEventAliases,
-        List<WoundApplicationRequest> result,
+        HashSet<string> terminalEffectIds,
+        List<WoundApplicationRequest> applications,
+        List<WoundTerminalRequest> terminations,
         List<ValidationIssue> issues)
     {
         var sourceExport = batch.SourceExport;
@@ -2914,23 +2950,23 @@ internal static class EffectAcceptedTurnPlanner
                 $"{batch.LocalWoundRef}/{batch.PreparedWoundId}");
             return;
         }
-        if (terminals.Count != 0)
-        {
-            AddWoundBatchIssue(
-                issues,
-                path + ".terminalOperations",
-                "wound_plan_effect_handoff_invalid",
-                "no terminal operations in a create-only wound root batch",
-                terminals.Count.ToString());
-        }
-        if (lineage.Count != roots.Count)
+        var terminalOnly = roots.Count == 0 && terminals.Count != 0;
+        var expectedLineageCount = terminalOnly
+            ? wound.Consequences.OwnedEffectSources.RootBindings.Count
+            : roots.Count;
+        if (lineage.Count != expectedLineageCount ||
+            terminalOnly && !ExistingWoundLineageMatches(
+                wound,
+                lineage))
         {
             AddWoundBatchIssue(
                 issues,
                 path + ".rootLineageAuthority",
                 "wound_plan_effect_handoff_invalid",
-                "one ordered application-authority row per root",
-                $"{lineage.Count}/{roots.Count}");
+                terminalOnly
+                    ? "one exact ordered existing-root lineage row per canonical wound root"
+                    : "one ordered application-authority row per root",
+                $"{lineage.Count}/{expectedLineageCount}");
         }
 
         if (!ValidateWoundSourceExport(
@@ -3063,8 +3099,131 @@ internal static class EffectAcceptedTurnPlanner
                     request.CreatedEventRef);
                 continue;
             }
-            result.Add(request);
+            applications.Add(request);
         }
+
+        for (var terminalIndex = 0;
+             terminalIndex < terminals.Count;
+             terminalIndex++)
+        {
+            var operation = terminals[terminalIndex];
+            var terminalPath =
+                $"{path}.terminalOperations[{terminalIndex}]";
+            if (!ValidatePreparedWoundTerminalOperation(
+                    operation,
+                    batch,
+                    wound,
+                    acceptedEvents,
+                    terminalPath,
+                    issues))
+            {
+                continue;
+            }
+            if (!createdEvents.Add(operation.OperationRef) ||
+                !createdEventAliases.Add(
+                    MortalLocationIdentityState.BuildConfusableKey(
+                        operation.OperationRef)) ||
+                !terminalEffectIds.Add(operation.EffectId))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    terminalPath,
+                    "wound_plan_effect_handoff_invalid",
+                    "globally exact/confusable-unique terminal event and one terminal operation per effect",
+                    operation.OperationRef + "/" + operation.EffectId);
+                continue;
+            }
+            terminations.Add(new WoundTerminalRequest(
+                batch,
+                wound,
+                operation));
+        }
+    }
+
+    private static bool ValidatePreparedWoundTerminalOperation(
+        WoundTerminalEffectOperation? operation,
+        WoundEffectOperationBatch batch,
+        WoundMaterializationEnvelope wound,
+        IReadOnlyDictionary<string, WoundAcceptedEventAuthority> acceptedEvents,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (operation is null)
+        {
+            AddWoundBatchIssue(
+                issues,
+                path,
+                "wound_plan_effect_handoff_invalid",
+                "one complete typed wound terminal operation",
+                "null");
+            return false;
+        }
+        var expectedEventRef = operation.MechanicsOrdinal > 0 &&
+                               operation.OperationOrdinal > 0
+            ? WoundEffectOperationEventRef.Create(
+                operation.CausalEventRef,
+                operation.MechanicsOrdinal,
+                operation.OperationOrdinal,
+                operation.OperationKind)
+            : string.Empty;
+        var targetIsExpected = WoundEffectCarrierAdapter.TryCreateTargetKey(
+            wound.Owner,
+            out var expectedTarget) &&
+            operation.ExpectedTargetKey == expectedTarget;
+        var valid =
+            TryExact(operation.OperationRef) &&
+            TryExact(operation.OperationKey) &&
+            TryExact(operation.EffectId) &&
+            operation.MechanicsOrdinal > 0 &&
+            operation.OperationOrdinal > 0 &&
+            string.Equals(
+                operation.OperationKind,
+                "expire",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                operation.OperationKey,
+                batch.TransitionAuthority.OperationKey,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                operation.CausalEventRef,
+                batch.SourceExport.CausalEventRef,
+                StringComparison.Ordinal) &&
+            acceptedEvents.ContainsKey(operation.CausalEventRef) &&
+            string.Equals(
+                operation.OperationRef,
+                expectedEventRef,
+                StringComparison.Ordinal) &&
+            operation.ExpectedSourceKey == new EffectSourceKey(
+                wound.Owner.Realm,
+                "wound",
+                wound.WoundId,
+                operation.ExpectedSourceKey.DefinitionKey) &&
+            targetIsExpected &&
+            operation.ExpectedCarrierCoordinate is not null &&
+            operation.ExpectedIdentityOwner is not null &&
+            operation.ExpectedStackCoordinate is not null &&
+            TryExact(operation.ExpectedCarrierFilePath) &&
+            TryExact(operation.ExpectedCarrierJsonPath) &&
+            ResourceMaterializationContract.IsAuthorityFingerprint(
+                operation.ExpectedEffectFingerprint) &&
+            ResourceMaterializationContract.IsAuthorityFingerprint(
+                operation.ExpectedIdentityFingerprint) &&
+            operation.OwnershipDomain is not null &&
+            operation.OwnershipDomain.Kind is "base_wound" or "complication" &&
+            (operation.OwnershipDomain.Kind == "base_wound"
+                ? operation.OwnershipDomain.ComplicationId is null
+                : operation.OwnershipDomain.ComplicationId is not null &&
+                  TryExact(operation.OwnershipDomain.ComplicationId));
+        if (valid)
+            return true;
+
+        AddWoundBatchIssue(
+            issues,
+            path,
+            "wound_plan_effect_handoff_invalid",
+            "one exact prepared expire operation bound to its wound transition, causal event, source, target, carrier, identity, stack, fingerprints, and ownership domain",
+            operation.OperationRef + "/" + operation.EffectId);
+        return false;
     }
 
     private static bool ValidateWoundDefinitionAuthorities(
@@ -3207,6 +3366,57 @@ internal static class EffectAcceptedTurnPlanner
             StringComparison.Ordinal) &&
         lineage.OwnershipDomain == root.OwnershipDomain;
 
+    private static bool ExistingWoundLineageMatches(
+        WoundMaterializationEnvelope wound,
+        IReadOnlyList<WoundRootLineageAuthorityRow> lineage)
+    {
+        var domains = wound.Consequences.OwnedEffectSources.RootBindings
+            .ToDictionary(
+                static binding => binding.EffectId,
+                static _ => WoundRootOwnershipDomain.BaseWound,
+                StringComparer.Ordinal);
+        foreach (var complication in wound.Complications)
+        {
+            foreach (var effectId in complication.OwnedEffectIds)
+            {
+                if (!domains.ContainsKey(effectId) ||
+                    domains[effectId] != WoundRootOwnershipDomain.BaseWound)
+                {
+                    return false;
+                }
+                domains[effectId] = WoundRootOwnershipDomain.ForComplication(
+                    complication.ComplicationId);
+            }
+        }
+        var bindings = wound.Consequences.OwnedEffectSources.RootBindings
+            .OrderBy(static binding => binding.EffectId, StringComparer.Ordinal)
+            .ThenBy(static binding => binding.DefinitionKey, StringComparer.Ordinal)
+            .ToArray();
+        if (bindings.Length != lineage.Count)
+            return false;
+        for (var index = 0; index < bindings.Length; index++)
+        {
+            var expected = bindings[index];
+            var actual = lineage[index];
+            if (actual is null ||
+                actual.ApplicationRef is not null ||
+                !string.Equals(
+                    actual.EffectId,
+                    expected.EffectId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    actual.DefinitionKey,
+                    expected.DefinitionKey,
+                    StringComparison.Ordinal) ||
+                !domains.TryGetValue(expected.EffectId, out var domain) ||
+                actual.OwnershipDomain != domain)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static WoundApplicationRequest? PrepareWoundApplication(
         EffectAcceptedTurnInput input,
         WoundEffectOperationBatch batch,
@@ -3309,9 +3519,19 @@ internal static class EffectAcceptedTurnPlanner
         }
 
         EffectSourceAuthorityEntry? resolvedSource = null;
-        var sourceResolution = input.SourceAuthority.ResolveCanonicalBinding(
-            expectedSource,
-            expectedTarget.Kind);
+        var sourceIdentityKind = sourceSelector.SourceRef is not null &&
+                                 sourceSelector.SourceId is null
+            ? WoundTypedRootSourceIdentityKind.NewSourceRef
+            : WoundTypedRootSourceIdentityKind.ExistingSourceId;
+        var sourceResolution = input.SourceAuthority.ResolveTypedWoundRootBinding(
+            new WoundTypedRootBindingRequest(
+                expectedSource,
+                sourceSelector,
+                sourceIdentityKind,
+                expectedTarget,
+                batch.SourceExportFingerprint,
+                root.ApplicationRef,
+                root.OwnershipDomain));
         issues.AddRange(sourceResolution.Issues.Select(issue =>
             Prefix(issue, path + ".source")));
         if (sourceResolution.Success)
@@ -3507,19 +3727,25 @@ internal static class EffectAcceptedTurnPlanner
 
     private static void ValidateWoundReplayAuthority(
         IReadOnlyList<WoundApplicationRequest> woundApplications,
+        IReadOnlyList<WoundTerminalRequest> woundTerminations,
         IReadOnlyList<Application> rawApplications,
         IReadOnlyList<TerminalOperation> rawTerminalOperations,
+        IReadOnlyList<EventAuthority> acceptedEvents,
         IReadOnlySet<string> processedEventRefs,
         List<ValidationIssue> issues)
     {
-        var aliases = processedEventRefs
+        var exact = processedEventRefs
+            .Concat(acceptedEvents.Select(static value => value.EventRef))
             .Concat(rawApplications.Select(static value => value.EventRef))
             .Concat(rawTerminalOperations.Select(static value => value.EventRef))
+            .ToHashSet(StringComparer.Ordinal);
+        var aliases = exact
             .Select(MortalLocationIdentityState.BuildConfusableKey)
             .ToHashSet(StringComparer.Ordinal);
         foreach (var request in woundApplications)
         {
-            if (!aliases.Add(MortalLocationIdentityState.BuildConfusableKey(
+            if (!exact.Add(request.CreatedEventRef) ||
+                !aliases.Add(MortalLocationIdentityState.BuildConfusableKey(
                     request.CreatedEventRef)))
             {
                 AddWoundBatchIssue(
@@ -3528,6 +3754,120 @@ internal static class EffectAcceptedTurnPlanner
                     "wound_plan_effect_handoff_invalid",
                     "derived wound create event absent from immutable effect history and current raw operations",
                     request.CreatedEventRef);
+            }
+        }
+
+        var rawTerminalEffectIds = rawTerminalOperations
+            .Select(static value => value.EffectId)
+            .ToHashSet(StringComparer.Ordinal);
+        var typedEffectIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var request in woundTerminations)
+        {
+            var operation = request.Operation;
+            if (!exact.Add(operation.OperationRef) ||
+                !aliases.Add(MortalLocationIdentityState.BuildConfusableKey(
+                    operation.OperationRef)) ||
+                !typedEffectIds.Add(operation.EffectId) ||
+                rawTerminalEffectIds.Contains(operation.EffectId))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    "prepared.terminalOperations",
+                    "wound_plan_effect_handoff_invalid",
+                    "derived wound terminal events must be exact/confusable unique and each effect may be terminalized by only one typed or raw operation",
+                    operation.OperationRef + "/" + operation.EffectId);
+            }
+        }
+    }
+
+    private static void ValidateWoundTerminalRequests(
+        IReadOnlyList<WoundTerminalRequest> requests,
+        EffectCarrierCatalog catalog,
+        EffectIdentityState identities,
+        List<ValidationIssue> issues)
+    {
+        foreach (var group in requests.GroupBy(static request =>
+                     (request.Batch.LocalWoundRef,
+                      request.Batch.PreparedWoundId)))
+        {
+            var first = group.First();
+            var selectedRoots = first.Batch.RootLineageAuthority
+                .Select(static row => row.EffectId)
+                .Where(static effectId => effectId is not null)
+                .Select(static effectId => effectId!)
+                .ToArray();
+            var lineage = WoundEffectLineagePlanner.Plan(
+                first.Wound,
+                identities,
+                selectedRoots);
+            issues.AddRange(lineage.Issues);
+            if (lineage.Issues.Count != 0)
+                continue;
+
+            var operations = group
+                .Select(static request => request.Operation)
+                .OrderBy(static operation => operation.OperationOrdinal)
+                .ToArray();
+            if (!lineage.ActiveOrSuspendedEffectIds.SequenceEqual(
+                    operations.Select(static operation => operation.EffectId),
+                    StringComparer.Ordinal))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    "prepared.terminalOperations",
+                    "wound_plan_effect_handoff_invalid",
+                    "the exact ordered active/suspended first-create lineage closure",
+                    string.Join(",", operations.Select(static operation =>
+                        operation.EffectId)));
+                continue;
+            }
+
+            foreach (var operation in operations)
+            {
+                if (!catalog.TryResolveOne(
+                        operation.EffectId,
+                        out var occurrence) ||
+                    !identities.TryGetEntry(
+                        operation.EffectId,
+                        out var identity) ||
+                    !WoundEffectTerminalOperationPlanner.OccurrenceAndIdentityAgree(
+                        occurrence,
+                        identity,
+                        operation.ExpectedSourceKey,
+                        operation.ExpectedTargetKey,
+                        operation.ExpectedCarrierCoordinate,
+                        operation.ExpectedIdentityOwner,
+                        operation.ExpectedStackCoordinate) ||
+                    !string.Equals(
+                        occurrence.FilePath,
+                        operation.ExpectedCarrierFilePath,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        occurrence.JsonPath,
+                        operation.ExpectedCarrierJsonPath,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        WoundEffectTerminalOperationPlanner.ComputeEffectFingerprint(
+                            occurrence),
+                        operation.ExpectedEffectFingerprint,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        WoundEffectTerminalOperationPlanner.ComputeIdentityFingerprint(
+                            identity),
+                        operation.ExpectedIdentityFingerprint,
+                        StringComparison.Ordinal) ||
+                    !lineage.OwnershipByEffectId.TryGetValue(
+                        operation.EffectId,
+                        out var ownership) ||
+                    ownership != operation.OwnershipDomain)
+                {
+                    AddWoundBatchIssue(
+                        issues,
+                        "prepared.terminalOperations",
+                        "wound_plan_effect_handoff_invalid",
+                        "one exact frozen carrier/identity occurrence and ownership domain for every terminal operation",
+                        operation.OperationRef + "/" + operation.EffectId);
+                }
             }
         }
     }
@@ -3721,7 +4061,8 @@ internal static class EffectAcceptedTurnPlanner
             input,
             fingerprint,
             identityFactory,
-            Array.Empty<WoundApplicationRequest>());
+            Array.Empty<WoundApplicationRequest>(),
+            Array.Empty<WoundTerminalRequest>());
 
     internal static EffectAcceptedTurnPlanningResult BuildWoundBatch(
         EffectAcceptedTurnInput input,
@@ -3733,7 +4074,7 @@ internal static class EffectAcceptedTurnPlanner
         ArgumentNullException.ThrowIfNull(identityFactory);
 
         var issues = new List<ValidationIssue>();
-        IReadOnlyList<WoundApplicationRequest> applications;
+        PreparedWoundOperations operations;
         string effectInputFingerprint;
         try
         {
@@ -3753,7 +4094,7 @@ internal static class EffectAcceptedTurnPlanner
                 return Failed(issues);
             }
 
-            applications = PrepareWoundApplications(input, prepared, issues);
+            operations = PrepareWoundOperations(input, prepared, issues);
             if (issues.Count > 0)
                 return Failed(issues);
 
@@ -3776,18 +4117,21 @@ internal static class EffectAcceptedTurnPlanner
             input,
             effectInputFingerprint,
             identityFactory,
-            applications);
+            operations.Applications,
+            operations.Terminations);
     }
 
     private static EffectAcceptedTurnPlanningResult BuildCore(
         EffectAcceptedTurnInput input,
         string fingerprint,
         EffectIdentityFactory identityFactory,
-        IReadOnlyList<WoundApplicationRequest> woundApplications)
+        IReadOnlyList<WoundApplicationRequest> woundApplications,
+        IReadOnlyList<WoundTerminalRequest> woundTerminations)
     {
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(identityFactory);
         ArgumentNullException.ThrowIfNull(woundApplications);
+        ArgumentNullException.ThrowIfNull(woundTerminations);
         var issues = new List<ValidationIssue>();
         issues.AddRange(input.SourceAuthority.Issues);
         if (!TryExact(input.SessionId) || !TryExact(input.SnapshotToken) || !TryExact(input.Realm))
@@ -3849,9 +4193,16 @@ internal static class EffectAcceptedTurnPlanner
             out var terminalOperations);
         ValidateWoundReplayAuthority(
             woundApplications,
+            woundTerminations,
             applications,
             terminalOperations,
+            acceptedEvents,
             processedEventRefs,
+            issues);
+        ValidateWoundTerminalRequests(
+            woundTerminations,
+            carrierCatalog,
+            identityState.State,
             issues);
         if (issues.Count > 0)
             return Failed(issues);
@@ -3863,6 +4214,23 @@ internal static class EffectAcceptedTurnPlanner
         var activeEffects = new List<JsonObject>();
         var usedSources = new List<EffectSourceAuthorityEntry>();
         var usedTargets = new List<EffectTargetKey>();
+
+        foreach (var request in woundTerminations)
+        {
+            ApplyWoundTerminalOperation(
+                request,
+                workspace,
+                identityState.State,
+                identityRoot,
+                identityFactory,
+                turn,
+                transitionIds,
+                activeEffects,
+                processedEventRefs,
+                issues);
+        }
+        if (issues.Count > 0)
+            return Failed(issues);
 
         ApplyDueLifecycleEvents(
             input.EventInput,
@@ -5113,6 +5481,87 @@ internal static class EffectAcceptedTurnPlanner
         }
     }
 
+    private static void ApplyWoundTerminalOperation(
+        WoundTerminalRequest request,
+        CarrierWorkspace workspace,
+        EffectIdentityState identities,
+        JsonObject identityRoot,
+        EffectIdentityFactory identityFactory,
+        int turn,
+        List<string> transitionIds,
+        List<JsonObject> activeEffects,
+        HashSet<string> processedEventRefs,
+        List<ValidationIssue> issues)
+    {
+        var operation = request.Operation;
+        var catalog = EffectCarrierCatalog.Build(workspace.ToInput());
+        issues.AddRange(catalog.Issues);
+        if (!catalog.TryResolveOne(operation.EffectId, out var occurrence) ||
+            !identities.TryGetEntry(operation.EffectId, out var identity) ||
+            !WoundEffectTerminalOperationPlanner.OccurrenceAndIdentityAgree(
+                occurrence,
+                identity,
+                operation.ExpectedSourceKey,
+                operation.ExpectedTargetKey,
+                operation.ExpectedCarrierCoordinate,
+                operation.ExpectedIdentityOwner,
+                operation.ExpectedStackCoordinate) ||
+            !string.Equals(
+                occurrence.FilePath,
+                operation.ExpectedCarrierFilePath,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                occurrence.JsonPath,
+                operation.ExpectedCarrierJsonPath,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                WoundEffectTerminalOperationPlanner.ComputeEffectFingerprint(
+                    occurrence),
+                operation.ExpectedEffectFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                WoundEffectTerminalOperationPlanner.ComputeIdentityFingerprint(
+                    identity),
+                operation.ExpectedIdentityFingerprint,
+                StringComparison.Ordinal))
+        {
+            AddWoundBatchIssue(
+                issues,
+                "prepared.terminalOperations",
+                "wound_plan_effect_handoff_invalid",
+                "the exact sealed wound-owned effect occurrence immediately before mutation",
+                operation.OperationRef + "/" + operation.EffectId);
+            return;
+        }
+        if (!workspace.TryRemoveEffect(operation.EffectId, out _))
+        {
+            AddWoundBatchIssue(
+                issues,
+                "prepared.terminalOperations",
+                "wound_plan_effect_handoff_invalid",
+                "one exact mutable wound-owned carrier occurrence",
+                operation.OperationRef + "/" + operation.EffectId);
+            return;
+        }
+
+        var transitionId = identityFactory.CreateTransitionId();
+        transitionIds.Add(transitionId);
+        AppendIdentityTransition(
+            identityRoot,
+            operation.EffectId,
+            "expired",
+            CreateTransition(
+                transitionId,
+                "expire",
+                turn,
+                operation.OperationRef,
+                new[] { operation.EffectId },
+                Array.Empty<string>()),
+            issues);
+        RemoveAffected(activeEffects, operation.EffectId);
+        processedEventRefs.Add(operation.OperationRef);
+    }
+
     private static void ApplyTerminalOperation(
         TerminalOperation operation,
         CarrierWorkspace workspace,
@@ -5311,7 +5760,8 @@ internal static class EffectAcceptedTurnPlanner
         List<JsonObject> activeEffects,
         HashSet<string> processedEventRefs,
         List<ValidationIssue> issues,
-        ReactionReplacementRuntimeExpectation? replacementExpectation = null)
+        ReactionReplacementRuntimeExpectation? replacementExpectation = null,
+        string? createSourceEffectId = null)
     {
         var definition = application.Source.Definition;
         if (definition["display"] is not JsonObject display ||
@@ -5467,7 +5917,8 @@ internal static class EffectAcceptedTurnPlanner
                 effectId,
                 createTransitionId,
                 turn,
-                createEventRef);
+                createEventRef,
+                createSourceEffectId);
             identityRoot["entries"]!.AsArray().Add(identityEntry);
             processedEventRefs.Add(application.EventRef);
             var reactionResult = new ReactionApplicationResult(
@@ -6031,7 +6482,8 @@ internal static class EffectAcceptedTurnPlanner
                 activeEffects,
                 processedEventRefs,
                 issues,
-                replacementExpectation);
+                replacementExpectation,
+                reaction.EffectId);
             var applicationResult = applicationExecution?.ReactionResult;
             if (issues.Count == 0 && applicationPlan?.IsReplacement == true)
             {
@@ -6506,7 +6958,8 @@ internal static class EffectAcceptedTurnPlanner
             var validCreate = HasExactReactionReplacementCreate(
                 identityEntries,
                 result.ResultIdentity,
-                expectedCreateEventRef);
+                expectedCreateEventRef,
+                reaction.EffectId);
             var validReplacement = expectsAbsence
                 ? result.ReplacedIdentity == null
                 : result.ReplacedIdentity == expectedTarget &&
@@ -6529,7 +6982,8 @@ internal static class EffectAcceptedTurnPlanner
     private static bool HasExactReactionReplacementCreate(
         IReadOnlyDictionary<string, JsonObject> identityEntries,
         EffectReplayIdentity result,
-        string expectedCreateEventRef)
+        string expectedCreateEventRef,
+        string expectedProducerEffectId)
     {
         if (!string.Equals(
                 result.Authority.BindingKind,
@@ -6556,7 +7010,12 @@ internal static class EffectAcceptedTurnPlanner
                 transition["eventRef"]?.GetValue<string>(),
                 result.Authority.AuthorityId,
                 StringComparison.Ordinal) &&
-            transition["sourceEffectIds"] is JsonArray { Count: 0 } &&
+            transition["sourceEffectIds"] is JsonArray sourceIds &&
+            sourceIds.Count == 1 &&
+            string.Equals(
+                sourceIds[0]?.GetValue<string>(),
+                expectedProducerEffectId,
+                StringComparison.Ordinal) &&
             transition["resultEffectIds"] is JsonArray resultIds &&
             resultIds.Count == 1 &&
             string.Equals(
@@ -6870,7 +7329,8 @@ internal static class EffectAcceptedTurnPlanner
         string effectId,
         string transitionId,
         int turn,
-        string eventRef)
+        string eventRef,
+        string? sourceEffectId)
     {
         var target = effect["target"]!.DeepClone().AsObject();
         var source = effect["source"]!.DeepClone().AsObject();
@@ -6904,7 +7364,9 @@ internal static class EffectAcceptedTurnPlanner
                 ["kind"] = "create",
                 ["turn"] = turn,
                 ["eventRef"] = eventRef,
-                ["sourceEffectIds"] = new JsonArray(),
+                ["sourceEffectIds"] = sourceEffectId is null
+                    ? new JsonArray()
+                    : new JsonArray(sourceEffectId),
                 ["resultEffectIds"] = new JsonArray(effectId),
                 ["receiptId"] = null
             })
@@ -7799,6 +8261,15 @@ internal static class EffectAcceptedTurnPlanner
         WoundEffectSourceDefinition SourceDefinition,
         Application Application,
         string CreatedEventRef);
+
+    private sealed record WoundTerminalRequest(
+        WoundEffectOperationBatch Batch,
+        WoundMaterializationEnvelope Wound,
+        WoundTerminalEffectOperation Operation);
+
+    private sealed record PreparedWoundOperations(
+        IReadOnlyList<WoundApplicationRequest> Applications,
+        IReadOnlyList<WoundTerminalRequest> Terminations);
 
     private sealed record ApplicationExecutionFacts(
         string Disposition,

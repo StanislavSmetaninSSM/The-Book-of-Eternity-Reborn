@@ -966,6 +966,383 @@ public sealed class WoundEffectBatchPlannerTests
     }
 
     [Fact]
+    public void EffectStage_RejectsTerminalOperationBoundToDifferentAcceptedEvent()
+    {
+        var input = CreateInput();
+        var foreignEvent = new WoundAcceptedEventAuthority(
+            "turn_42:wound:foreign_terminal_event",
+            "combat_outcome",
+            "authority_foreign_terminal_event",
+            Fingerprint("accepted-event:foreign-terminal-event"));
+        var acceptedEvents = input.Binding.AcceptedEvents
+            .Append(foreignEvent)
+            .ToArray();
+        input = input with
+        {
+            Binding = input.Binding with
+            {
+                AcceptedEvents = acceptedEvents,
+                AcceptedEventsFingerprint =
+                    ComputeExpectedAcceptedEventSetFingerprint(acceptedEvents)
+            }
+        };
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(
+            input,
+            new RecordingWoundIdentityAllocator("terminal_causal")));
+        var creationStage = BuildEffectStage(
+            prepared,
+            new ScriptedEffectIdentityFactory("terminal_causal_create"));
+        var creationPlan = AssertEffectPlan(creationStage.Result);
+        var created = Assert.Single(creationPlan.ApplicationResults);
+        var finalized = AssertFinalized(WoundAcceptedTurnPlanner.Finalize(
+            prepared,
+            creationStage.Result));
+        var wound = Assert.IsType<WoundMaterializationEnvelope>(
+            Assert.Single(Assert.Single(finalized.CarrierContributions).Mutations)
+                .AfterWound);
+        var preTurnCarriers = CreateEffectCarriersFromPlan(creationPlan.EffectPlan);
+        var identities = ParseEffectIdentityState(
+            creationPlan.EffectPlan.IdentityIndexAfterImage);
+        var batch = Assert.Single(prepared.EffectOperationBatches);
+        var terminal = WoundEffectTerminalOperationPlanner.Plan(
+            wound,
+            preTurnCarriers,
+            identities,
+            new[] { created.EffectId },
+            prepared.Binding.AcceptedEvents[0].EventRef,
+            mechanicsOrdinal: 1,
+            operationOrdinalOffset: 0,
+            batch.TransitionAuthority.OperationKey);
+        Assert.Empty(terminal.Issues);
+        var original = Assert.Single(terminal.Operations);
+        var forged = new WoundTerminalEffectOperation(
+            WoundEffectOperationEventRef.Create(
+                foreignEvent.EventRef,
+                original.MechanicsOrdinal,
+                original.OperationOrdinal,
+                original.OperationKind),
+            original.OperationKey,
+            original.EffectId,
+            original.MechanicsOrdinal,
+            original.OperationOrdinal,
+            original.OperationKind,
+            foreignEvent.EventRef,
+            original.ExpectedSourceKey,
+            original.ExpectedTargetKey,
+            original.ExpectedCarrierCoordinate,
+            original.ExpectedCarrierFilePath,
+            original.ExpectedCarrierJsonPath,
+            original.ExpectedIdentityOwner,
+            original.ExpectedStackCoordinate,
+            original.ExpectedEffectFingerprint,
+            original.ExpectedIdentityFingerprint,
+            original.OwnershipDomain);
+        var terminalPrepared = CreateTerminalPreparedPlan(
+            prepared,
+            wound,
+            forged);
+        var terminalInput = CreateEffectInput(
+            terminalPrepared,
+            preTurnCarriersOverride: preTurnCarriers,
+            preTurnIdentityIndexOverride:
+                creationPlan.EffectPlan.IdentityIndexAfterImage,
+            mutateEventInput: eventInput =>
+                eventInput["lifecycleEvents"] = new JsonArray(new JsonObject
+                {
+                    ["eventRef"] = "turn_42:lifecycle:wound_source_lost_foreign",
+                    ["turn"] = Turn,
+                    ["phase"] = "owner_turn_end",
+                    ["realm"] = Realm,
+                    ["target"] = new JsonObject
+                    {
+                        ["kind"] = "player",
+                        ["targetId"] = "player_current"
+                    },
+                    ["effectId"] = created.EffectId,
+                    ["sourceSatisfied"] = false
+                }));
+        var factory = new CountingEffectIdentityFactory();
+
+        var result = EffectAcceptedTurnPlanner.BuildWoundBatch(
+            terminalInput,
+            terminalPrepared,
+            factory);
+
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        Assert.Contains(result.Issues, static issue =>
+            issue.Code == "wound_plan_effect_handoff_invalid");
+        Assert.Equal(0, factory.EffectCalls);
+        Assert.Equal(0, factory.TransitionCalls);
+    }
+
+    [Fact]
+    public void EffectStage_TypedWoundTerminalRemovesExactCarrierAndExpiresIdentity()
+    {
+        var input = CreateInput(1, CandidateShape.Standard);
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(
+            input,
+            new RecordingWoundIdentityAllocator("terminal")));
+        var creationStage = BuildEffectStage(
+            prepared,
+            new ScriptedEffectIdentityFactory("terminal_create"));
+        var creationPlan = AssertEffectPlan(creationStage.Result);
+        var created = Assert.Single(creationPlan.ApplicationResults);
+        var finalized = AssertFinalized(WoundAcceptedTurnPlanner.Finalize(
+            prepared,
+            creationStage.Result));
+        var wound = Assert.IsType<WoundMaterializationEnvelope>(
+            Assert.Single(Assert.Single(finalized.CarrierContributions).Mutations)
+                .AfterWound);
+        var preTurnCarriers = CreateEffectCarriersFromPlan(creationPlan.EffectPlan);
+        var identities = ParseEffectIdentityState(
+            creationPlan.EffectPlan.IdentityIndexAfterImage);
+        var batch = Assert.Single(prepared.EffectOperationBatches);
+        var terminal = WoundEffectTerminalOperationPlanner.Plan(
+            wound,
+            preTurnCarriers,
+            identities,
+            wound.Consequences.OwnedEffectSources.RootBindings
+                .Select(static value => value.EffectId)
+                .ToArray(),
+            prepared.Binding.AcceptedEvents[0].EventRef,
+            mechanicsOrdinal: 1,
+            operationOrdinalOffset: 0,
+            batch.TransitionAuthority.OperationKey);
+
+        Assert.Empty(terminal.Issues);
+        var operation = Assert.Single(terminal.Operations);
+        Assert.Equal(created.EffectId, operation.EffectId);
+        var terminalPrepared = CreateTerminalPreparedPlan(
+            prepared,
+            wound,
+            operation);
+        var terminalInput = CreateEffectInput(
+            terminalPrepared,
+            preTurnCarriersOverride: preTurnCarriers,
+            preTurnIdentityIndexOverride:
+                creationPlan.EffectPlan.IdentityIndexAfterImage,
+            mutateEventInput: eventInput =>
+                eventInput["lifecycleEvents"] = new JsonArray(new JsonObject
+                {
+                    ["eventRef"] = "turn_42:lifecycle:wound_source_lost",
+                    ["turn"] = Turn,
+                    ["phase"] = "owner_turn_end",
+                    ["realm"] = Realm,
+                    ["target"] = new JsonObject
+                    {
+                        ["kind"] = "player",
+                        ["targetId"] = "player_current"
+                    },
+                    ["effectId"] = created.EffectId,
+                    ["sourceSatisfied"] = false
+                }));
+        var tamperedPlayer = terminalInput.PreTurnCarriers!.PlayerEffects!
+            .DeepClone().AsObject();
+        var tamperedEffect = Assert.Single(
+            tamperedPlayer["activeEffects"]!.AsArray().OfType<JsonObject>(),
+            effect => string.Equals(
+                effect["effectId"]?.GetValue<string>(),
+                created.EffectId,
+                StringComparison.Ordinal));
+        tamperedEffect["chronology"]!["lastTransitionId"] =
+            "effect_transition_forged_terminal_before_image";
+        var tamperedInput = terminalInput with
+        {
+            PreTurnCarriers = terminalInput.PreTurnCarriers with
+            {
+                PlayerEffects = tamperedPlayer
+            }
+        };
+        var rejectedFactory = new ScriptedEffectIdentityFactory(
+            "terminal_rejected");
+        var rejected = EffectAcceptedTurnPlanner.BuildWoundBatch(
+            tamperedInput,
+            terminalPrepared,
+            rejectedFactory);
+        Assert.False(rejected.Success);
+        Assert.Contains(rejected.Issues, issue => string.Equals(
+            issue.Code,
+            "wound_plan_effect_handoff_invalid",
+            StringComparison.Ordinal));
+        Assert.Equal(0, rejectedFactory.EffectCalls);
+        Assert.Equal(0, rejectedFactory.TransitionCalls);
+
+        var terminalFactory = new ScriptedEffectIdentityFactory("terminal_close");
+
+        var result = EffectAcceptedTurnPlanner.BuildWoundBatch(
+            terminalInput,
+            terminalPrepared,
+            terminalFactory);
+
+        Assert.True(
+            result.Success,
+            string.Join(" | ", result.Issues.Select(static issue =>
+                issue.Code + ":" + issue.Message)));
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(result.Plan);
+        Assert.DoesNotContain(
+            plan.CarrierAfterImages[EffectCarrierCatalog.PlayerPath]
+                ["activeEffects"]!.AsArray().OfType<JsonObject>(),
+            effect => string.Equals(
+                effect["effectId"]?.GetValue<string>(),
+                created.EffectId,
+                StringComparison.Ordinal));
+        var identity = FindIdentityIndexEffect(plan, created.EffectId);
+        Assert.Equal("expired", identity["state"]!.GetValue<string>());
+        var transition = Assert.IsType<JsonObject>(
+            Assert.Single(identity["transitions"]!.AsArray(), value =>
+                string.Equals(
+                    value?["eventRef"]?.GetValue<string>(),
+                    operation.OperationRef,
+                    StringComparison.Ordinal)));
+        Assert.Equal("expire", transition["kind"]!.GetValue<string>());
+        Assert.Equal(created.EffectId,
+            Assert.Single(transition["sourceEffectIds"]!.AsArray())!
+                .GetValue<string>());
+        Assert.Empty(transition["resultEffectIds"]!.AsArray());
+        Assert.Equal(0, terminalFactory.EffectCalls);
+        Assert.Equal(1, terminalFactory.TransitionCalls);
+
+        var accepted = WoundEffectBatchPlanner.AcceptEffectResult(
+            terminalPrepared,
+            terminalInput,
+            result);
+        Assert.True(
+            accepted.Success,
+            string.Join(" | ", accepted.Issues.Select(static issue =>
+                issue.Code + ":" + issue.Message)));
+        var acceptedPlan = Assert.IsType<WoundEffectBatchAcceptedPlan>(accepted.Plan);
+        Assert.Empty(acceptedPlan.ApplicationResults);
+        var termination = Assert.Single(acceptedPlan.TerminationResults);
+        Assert.Equal(operation.OperationRef, termination.OperationRef);
+        Assert.Equal("expired", termination.Disposition);
+        Assert.Equal(operation.EffectId, termination.EffectId);
+        Assert.Equal(transition["transitionId"]!.GetValue<string>(),
+            termination.TerminalTransitionId);
+        Assert.Equal(operation.OperationRef, termination.TransitionEventRef);
+        Assert.Equal(operation.CausalEventRef, termination.CausalEventRef);
+        Assert.Equal(operation.ExpectedSourceKey, termination.SourceKey);
+        Assert.Equal(operation.ExpectedTargetKey, termination.TargetKey);
+        Assert.Equal(
+            operation.ExpectedCarrierCoordinate,
+            termination.CarrierCoordinate);
+
+        var forgedTermination = termination with
+        {
+            SourceKey = termination.SourceKey with
+            {
+                DefinitionKey = "forged_terminal_definition"
+            }
+        };
+        var forgedPlan = WoundEffectBatchAcceptedPlan.Create(
+            terminalPrepared,
+            terminalInput,
+            plan,
+            acceptedPlan.ApplicationResults,
+            new[] { forgedTermination });
+        var forgedFinal = WoundAcceptedTurnPlanner.Finalize(
+            terminalPrepared,
+            new WoundEffectBatchPlanningResult(
+                forgedPlan,
+                Array.Empty<ValidationIssue>()));
+        Assert.False(forgedFinal.Success);
+        Assert.Contains(forgedFinal.Issues, issue => string.Equals(
+            issue.Code,
+            "wound_plan_effect_result_agreement_mismatch",
+            StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("carrier")]
+    [InlineData("identity")]
+    public void DeriveEffectResults_RejectsMutatedUnselectedSurvivingWoundEffect(
+        string mutation)
+    {
+        const string survivorEffectId = "effect_wound_survivor_fixture";
+        var input = CreateInput(1, CandidateShape.Standard);
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(
+            input,
+            new RecordingWoundIdentityAllocator("survivor")));
+        var creationStage = BuildEffectStage(
+            prepared,
+            new ScriptedEffectIdentityFactory("survivor_create"));
+        var creationPlan = AssertEffectPlan(creationStage.Result);
+        var created = Assert.Single(creationPlan.ApplicationResults);
+        var finalized = AssertFinalized(WoundAcceptedTurnPlanner.Finalize(
+            prepared,
+            creationStage.Result));
+        var wound = Assert.IsType<WoundMaterializationEnvelope>(
+            Assert.Single(Assert.Single(finalized.CarrierContributions).Mutations)
+                .AfterWound);
+        var preTurnCarriers = CreateEffectCarriersFromPlan(creationPlan.EffectPlan);
+        var identities = ParseEffectIdentityState(
+            creationPlan.EffectPlan.IdentityIndexAfterImage);
+        var batch = Assert.Single(prepared.EffectOperationBatches);
+        var terminal = WoundEffectTerminalOperationPlanner.Plan(
+            wound,
+            preTurnCarriers,
+            identities,
+            new[] { created.EffectId },
+            prepared.Binding.AcceptedEvents[0].EventRef,
+            mechanicsOrdinal: 1,
+            operationOrdinalOffset: 0,
+            batch.TransitionAuthority.OperationKey);
+        Assert.Empty(terminal.Issues);
+        var operation = Assert.Single(terminal.Operations);
+        var terminalPrepared = CreateTerminalPreparedPlan(
+            prepared,
+            wound,
+            operation);
+        var terminalInput = CreateEffectInput(
+            terminalPrepared,
+            preTurnCarriersOverride: preTurnCarriers,
+            preTurnIdentityIndexOverride:
+                creationPlan.EffectPlan.IdentityIndexAfterImage,
+            mutateEventInput: eventInput =>
+                eventInput["lifecycleEvents"] = new JsonArray(new JsonObject
+                {
+                    ["eventRef"] = "turn_42:lifecycle:wound_source_lost_survivor",
+                    ["turn"] = Turn,
+                    ["phase"] = "owner_turn_end",
+                    ["realm"] = Realm,
+                    ["target"] = new JsonObject
+                    {
+                        ["kind"] = "player",
+                        ["targetId"] = "player_current"
+                    },
+                    ["effectId"] = created.EffectId,
+                    ["sourceSatisfied"] = false
+                }));
+        var effectResult = EffectAcceptedTurnPlanner.BuildWoundBatch(
+            terminalInput,
+            terminalPrepared,
+            new ScriptedEffectIdentityFactory("survivor_terminal"));
+        Assert.True(
+            effectResult.Success,
+            string.Join(" | ", effectResult.Issues.Select(static issue =>
+                issue.Code + ":" + issue.Message +
+                "; expected=" + issue.Expected +
+                "; actual=" + issue.Actual)));
+        var accepted = WoundEffectBatchPlanner.AcceptEffectResult(
+            terminalPrepared,
+            terminalInput,
+            effectResult);
+        var acceptedPlan = Assert.IsType<WoundEffectBatchAcceptedPlan>(accepted.Plan);
+        var forgedEffectPlan = CloneEffectPlanWithInjectedSurvivorMutation(
+            acceptedPlan.EffectPlan,
+            created.EffectId,
+            survivorEffectId,
+            mutation);
+
+        var result = WoundAcceptedTurnPlannerCore.DeriveEffectResults(
+            terminalPrepared,
+            forgedEffectPlan);
+
+        Assert.Contains(result.Issues, static issue =>
+            issue.Code == "wound_plan_effect_result_agreement_mismatch");
+    }
+
+    [Fact]
     public void Finalize_CanonicallyRenumbersSlotsAfterReverseOrderedOpaqueIds()
     {
         var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(
@@ -1142,6 +1519,36 @@ public sealed class WoundEffectBatchPlannerTests
         Assert.True(WoundAcceptedTurnPlannerCore.SameTurnWoundAuthorityAgrees(
             prepared,
             input.SourceAuthority));
+    }
+
+    [Fact]
+    public void SameTurnWoundAuthorityAgrees_RejectsMissingEmptySourceGroup()
+    {
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(
+            CreateInput(1, CandidateShape.NoMechanics)));
+        var batch = Assert.Single(prepared.EffectOperationBatches);
+        var entryOnlyAuthority = EffectSourceAuthority.Build(
+            new EffectSourceAuthorityInput(
+                Array.Empty<EffectSourceExport>(),
+                new[]
+                {
+                    new EffectSourceExport(
+                        batch.SourceExport.Realm,
+                        batch.SourceExport.Kind,
+                        batch.SourceExport.SourceId,
+                        new JsonArray(),
+                        Materializable: false,
+                        Active: true,
+                        SameTurn: true,
+                        SourceRef: batch.SourceExport.SourceRef)
+                },
+                new HashSet<string>(StringComparer.Ordinal)));
+
+        Assert.Empty(entryOnlyAuthority.SnapshotSameTurnWoundEntries());
+        Assert.Empty(entryOnlyAuthority.SnapshotWoundGroupAuthorities());
+        Assert.False(WoundAcceptedTurnPlannerCore.SameTurnWoundAuthorityAgrees(
+            prepared,
+            entryOnlyAuthority));
     }
 
     [Fact]
@@ -3004,9 +3411,37 @@ public sealed class WoundEffectBatchPlannerTests
         int transitionCount = 1) =>
         CreateInput(transitionCount);
 
+    internal static WoundAcceptedTurnInput CreateInputForAcceptedCache(
+        OwnerFlavor flavor) =>
+        CreateInput(
+            transitionCount: 1,
+            shape: flavor == OwnerFlavor.AfterlifeGuardian
+                ? CandidateShape.SpiritualTwoRoots
+                : CandidateShape.Standard,
+            flavor: flavor);
+
+    internal static WoundAcceptedTurnInput CreateNoMechanicsInputForAcceptedCache() =>
+        CreateInput(
+            transitionCount: 1,
+            shape: CandidateShape.NoMechanics,
+            flavor: OwnerFlavor.Player);
+
     internal static EffectAcceptedTurnInput CreateEffectInputForAcceptedCache(
         WoundPreparedAcceptedTurnPlan prepared) =>
         CreateEffectInput(prepared);
+
+    internal static EffectAcceptedTurnInput CreateEffectInputForAcceptedCache(
+        WoundPreparedAcceptedTurnPlan prepared,
+        EffectSourceExport additionalPreTurnSource,
+        EffectCarrierCatalogInput preTurnCarriers,
+        JsonObject preTurnIdentityIndex,
+        Action<JsonObject> mutateEventInput) =>
+        CreateEffectInput(
+            prepared,
+            additionalPreTurnSources: new[] { additionalPreTurnSource },
+            preTurnCarriersOverride: preTurnCarriers,
+            preTurnIdentityIndexOverride: preTurnIdentityIndex,
+            mutateEventInput: mutateEventInput);
 
     private static (
         IReadOnlyList<WoundAcceptedEffectDefinitionDraft> Definitions,
@@ -3671,6 +4106,9 @@ public sealed class WoundEffectBatchPlannerTests
         {
             ["combatantId"] = "combatant_wound_batch",
             ["displayName"] = "Exact wounded combatant",
+            ["isGroup"] = false,
+            ["activeBuffs"] = new JsonArray(),
+            ["activeDebuffs"] = new JsonArray(),
             ["activeWounds"] = new JsonArray()
         })
     };
@@ -3779,10 +4217,95 @@ public sealed class WoundEffectBatchPlannerTests
             WoundEffectBatchPlanner.Build(prepared, input, identityFactory));
     }
 
+    private static EffectCarrierCatalogInput CreateEffectCarriersFromPlan(
+        EffectAcceptedTurnPlan plan) =>
+        new(
+            plan.CarrierAfterImages.GetValueOrDefault(
+                EffectCarrierCatalog.PlayerPath),
+            plan.CarrierAfterImages.GetValueOrDefault(
+                EffectCarrierCatalog.NpcPath),
+            plan.CarrierAfterImages.GetValueOrDefault(
+                EffectCarrierCatalog.EnemiesPath),
+            plan.CarrierAfterImages.GetValueOrDefault(
+                EffectCarrierCatalog.AlliesPath),
+            plan.CarrierAfterImages.GetValueOrDefault(
+                EffectCarrierCatalog.AfterlifeProfilesPath),
+            plan.CarrierAfterImages.GetValueOrDefault(
+                EffectCarrierCatalog.SpiritualConflictPath));
+
+    private static EffectIdentityState ParseEffectIdentityState(JsonObject root)
+    {
+        using var document = JsonDocument.Parse(root.ToJsonString());
+        var parsed = EffectIdentityState.Parse(
+            document.RootElement,
+            EffectAcceptedTurnPlan.IdentityIndexPath);
+        Assert.Empty(parsed.Issues);
+        return Assert.IsType<EffectIdentityState>(parsed.State);
+    }
+
+    private static WoundPreparedAcceptedTurnPlan CreateTerminalPreparedPlan(
+        WoundPreparedAcceptedTurnPlan prepared,
+        WoundMaterializationEnvelope wound,
+        WoundTerminalEffectOperation operation)
+    {
+        var original = Assert.Single(prepared.EffectOperationBatches);
+        var lineage = wound.Consequences.OwnedEffectSources.RootBindings
+            .OrderBy(static value => value.EffectId, StringComparer.Ordinal)
+            .ThenBy(static value => value.DefinitionKey, StringComparer.Ordinal)
+            .Select(static value => new WoundRootLineageAuthorityRow(
+                null,
+                value.EffectId,
+                value.DefinitionKey,
+                WoundRootOwnershipDomain.BaseWound))
+            .ToArray();
+        var provisionalBatch = new WoundEffectOperationBatch(
+            original.LocalWoundRef,
+            original.PreparedWoundId,
+            original.SourceExport,
+            Array.Empty<WoundRootEffectApplication>(),
+            new[] { operation },
+            lineage,
+            string.Empty,
+            original.TransitionAuthority);
+        var batch = new WoundEffectOperationBatch(
+            provisionalBatch.LocalWoundRef,
+            provisionalBatch.PreparedWoundId,
+            provisionalBatch.SourceExport,
+            provisionalBatch.RootApplications,
+            provisionalBatch.TerminalOperations,
+            provisionalBatch.RootLineageAuthority,
+            WoundAcceptedTurnFingerprints.ComputeSourceExport(provisionalBatch),
+            provisionalBatch.TransitionAuthority);
+        var provisional = new WoundPreparedAcceptedTurnPlan(
+            prepared.Binding,
+            prepared.BindingFingerprint,
+            prepared.InputFingerprint,
+            string.Empty,
+            prepared.AllocatedWoundIds,
+            prepared.AllocatedTransitionIds,
+            new[] { wound },
+            new[] { batch },
+            prepared.BaselineAuthority);
+        return new WoundPreparedAcceptedTurnPlan(
+            provisional.Binding,
+            provisional.BindingFingerprint,
+            provisional.InputFingerprint,
+            WoundAcceptedTurnFingerprints.ComputePreparation(provisional),
+            provisional.AllocatedWoundIds,
+            provisional.AllocatedTransitionIds,
+            provisional.PreparedWounds,
+            provisional.EffectOperationBatches,
+            provisional.BaselineAuthority);
+    }
+
     private static EffectAcceptedTurnInput CreateEffectInput(
         WoundPreparedAcceptedTurnPlan prepared,
         bool includeIndependentEffect = false,
-        Action<List<EffectSourceExport>>? mutateWoundExports = null)
+        Action<List<EffectSourceExport>>? mutateWoundExports = null,
+        IReadOnlyList<EffectSourceExport>? additionalPreTurnSources = null,
+        EffectCarrierCatalogInput? preTurnCarriersOverride = null,
+        JsonObject? preTurnIdentityIndexOverride = null,
+        Action<JsonObject>? mutateEventInput = null)
     {
         var woundExports = prepared.EffectOperationBatches.Select(batch =>
             new EffectSourceExport(
@@ -3825,11 +4348,43 @@ public sealed class WoundEffectBatchPlannerTests
             };
             commands.Add(command);
         }
+        preTurnSources.AddRange(
+            additionalPreTurnSources ?? Array.Empty<EffectSourceExport>());
+
+        var woundGroups = prepared.EffectOperationBatches.Select(batch =>
+        {
+            Assert.True(WoundEffectCarrierAdapter.TryCreateTargetKey(
+                batch.SourceExport.Owner,
+                out var target));
+            return new WoundSourceGroupAuthority(
+                new EffectIdentitySourceGroup(
+                    batch.SourceExport.Realm,
+                    batch.SourceExport.Kind,
+                    batch.SourceExport.SourceId),
+                batch.SourceExport.Owner,
+                target,
+                sameTurn: true,
+                batch.SourceExport.SourceRef,
+                batch.SourceExportFingerprint,
+                batch.SourceExport.Definitions
+                    .Select(static definition =>
+                        new WoundEffectSourceDefinition(
+                            definition.DefinitionKey,
+                            definition.Definition))
+                    .ToArray(),
+                batch.RootLineageAuthority
+                    .Where(static row => row.ApplicationRef is not null)
+                    .ToArray(),
+                batch.RootLineageAuthority
+                    .Where(static row => row.EffectId is not null)
+                    .ToArray());
+        }).ToArray();
 
         var sourceAuthority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
             preTurnSources,
             woundExports,
-            new HashSet<string>(StringComparer.Ordinal)));
+            new HashSet<string>(StringComparer.Ordinal),
+            WoundGroups: woundGroups));
         var targets = prepared.EffectOperationBatches
             .SelectMany(static batch => batch.RootApplications)
             .Select(static application => application.ExpectedTargetKey)
@@ -3867,17 +4422,20 @@ public sealed class WoundEffectBatchPlannerTests
                     ["authorityId"] = value.AuthorityId
                 }).ToArray())
         };
-        var afterlifeProfiles = prepared.BaselineAuthority
-            .PreTurnCarriers.AfterlifeProfiles;
-        var preTurnCarriers = afterlifeProfiles is null
+        mutateEventInput?.Invoke(eventInput);
+        var woundCarriers = prepared.BaselineAuthority.PreTurnCarriers;
+        var hasSharedCarrier = woundCarriers.EnemyCombatants is not null ||
+            woundCarriers.AllyCombatants is not null ||
+            woundCarriers.AfterlifeProfiles is not null;
+        var preTurnCarriers = preTurnCarriersOverride ?? (!hasSharedCarrier
             ? null
             : new EffectCarrierCatalogInput(
                 null,
                 null,
-                null,
-                null,
-                afterlifeProfiles,
-                null);
+                woundCarriers.EnemyCombatants,
+                woundCarriers.AllyCombatants,
+                woundCarriers.AfterlifeProfiles,
+                null));
         return new EffectAcceptedTurnInput(
             prepared.Binding.SessionId,
             prepared.Binding.SnapshotToken,
@@ -3887,7 +4445,7 @@ public sealed class WoundEffectBatchPlannerTests
             eventInput,
             prepared.Binding.Realm,
             PreTurnCarriers: preTurnCarriers,
-            PreTurnIdentityIndex: new JsonObject
+            PreTurnIdentityIndex: preTurnIdentityIndexOverride ?? new JsonObject
             {
                 ["schemaVersion"] = 1,
                 ["entries"] = new JsonArray()
@@ -3969,9 +4527,39 @@ public sealed class WoundEffectBatchPlannerTests
                     Materializable: false,
                     Active: true,
                     SameTurn: sameTurn,
-                    SourceRef: sameTurn
+                     SourceRef: sameTurn
+                         ? batch.SourceExport.SourceRef + sourceRefSuffix
+                         : null)).ToArray();
+            var woundGroups = prepared.EffectOperationBatches.Select(batch =>
+            {
+                Assert.True(WoundEffectCarrierAdapter.TryCreateTargetKey(
+                    batch.SourceExport.Owner,
+                    out var target));
+                return new WoundSourceGroupAuthority(
+                    new EffectIdentitySourceGroup(
+                        batch.SourceExport.Realm,
+                        batch.SourceExport.Kind,
+                        batch.SourceExport.SourceId),
+                    batch.SourceExport.Owner,
+                    target,
+                    sameTurn,
+                    sameTurn
                         ? batch.SourceExport.SourceRef + sourceRefSuffix
-                        : null)).ToArray();
+                        : null,
+                    sameTurn ? batch.SourceExportFingerprint : null,
+                    batch.SourceExport.Definitions
+                        .Select(static definition =>
+                            new WoundEffectSourceDefinition(
+                                definition.DefinitionKey,
+                                definition.Definition))
+                        .ToArray(),
+                    batch.RootLineageAuthority
+                        .Where(static row => row.ApplicationRef is not null)
+                        .ToArray(),
+                    batch.RootLineageAuthority
+                        .Where(static row => row.EffectId is not null)
+                        .ToArray());
+            }).ToArray();
             return EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
                 sameTurn ? Array.Empty<EffectSourceExport>() : exports,
                 sameTurn ? exports : Array.Empty<EffectSourceExport>(),
@@ -3981,7 +4569,8 @@ public sealed class WoundEffectBatchPlannerTests
                     {
                         EffectBuiltInSourceCatalog.FateShieldApplicationAuthority
                     }
-                    : new HashSet<string>(StringComparer.Ordinal)));
+                    : new HashSet<string>(StringComparer.Ordinal),
+                WoundGroups: woundGroups));
         }
 
         EffectTargetAuthority BuildTargetAuthority(bool sameTurn, string? targetRef)
@@ -4301,6 +4890,148 @@ public sealed class WoundEffectBatchPlannerTests
             source.TouchedPaths,
             source.DeletedPaths,
             source.AcceptedCarrierBaselines);
+    }
+
+    private static EffectAcceptedTurnPlan CloneEffectPlanWithInjectedSurvivorMutation(
+        EffectAcceptedTurnPlan source,
+        string terminalEffectId,
+        string survivorEffectId,
+        string mutation)
+    {
+        static JsonObject CreateSurvivorEffect(
+            JsonObject sourceEffect,
+            string effectId)
+        {
+            var survivor = sourceEffect.DeepClone().AsObject();
+            survivor["effectId"] = effectId;
+            survivor["chronology"]!["createdEventRef"] =
+                "turn_42:wound_survivor_fixture_created";
+            survivor["chronology"]!["lastTransitionId"] =
+                "effect_transition_wound_survivor_fixture_created";
+            return survivor;
+        }
+
+        static JsonObject CreateSurvivorIdentity(
+            JsonObject sourceIdentity,
+            string effectId)
+        {
+            var survivor = sourceIdentity.DeepClone().AsObject();
+            survivor["effectId"] = effectId;
+            var create = Assert.IsType<JsonObject>(
+                Assert.Single(survivor["transitions"]!.AsArray()));
+            create["transitionId"] =
+                "effect_transition_wound_survivor_fixture_created";
+            create["eventRef"] = "turn_42:wound_survivor_fixture_created";
+            create["resultEffectIds"] = new JsonArray(effectId);
+            return survivor;
+        }
+
+        var carrierBeforeImages = source.CarrierBeforeImages.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value?.DeepClone().AsObject(),
+            StringComparer.Ordinal);
+        var beforePlayerEffects = Assert.IsType<JsonObject>(
+            carrierBeforeImages[EffectCarrierCatalog.PlayerPath]);
+        var terminalEffect = Assert.Single(
+            beforePlayerEffects["activeEffects"]!.AsArray().OfType<JsonObject>(),
+            effect => string.Equals(
+                effect["effectId"]?.GetValue<string>(),
+                terminalEffectId,
+                StringComparison.Ordinal));
+        var survivorBeforeEffect = CreateSurvivorEffect(
+            terminalEffect,
+            survivorEffectId);
+        beforePlayerEffects["activeEffects"]!.AsArray().Add(
+            survivorBeforeEffect.DeepClone());
+
+        var resourceTriggerCarriers = source.ResourceTriggerCarriers;
+        var resourcePlayerEffects = Assert.IsType<JsonObject>(
+            resourceTriggerCarriers.PlayerEffects).DeepClone().AsObject();
+        var survivorResourceEffect = survivorBeforeEffect.DeepClone().AsObject();
+        resourcePlayerEffects["activeEffects"]!.AsArray().Add(
+            survivorResourceEffect);
+        resourceTriggerCarriers = resourceTriggerCarriers with
+        {
+            PlayerEffects = resourcePlayerEffects
+        };
+        var carrierAfterImages = source.CarrierAfterImages.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.DeepClone().AsObject(),
+            StringComparer.Ordinal);
+        var survivorPublicationEffect = survivorBeforeEffect.DeepClone().AsObject();
+        carrierAfterImages[EffectCarrierCatalog.PlayerPath]
+            ["activeEffects"]!.AsArray().Add(survivorPublicationEffect);
+        var identityIndexBeforeImage = Assert.IsType<JsonObject>(
+            source.IdentityIndexBeforeImage);
+        var terminalIdentityBefore = Assert.Single(
+            identityIndexBeforeImage["entries"]!.AsArray().OfType<JsonObject>(),
+            identity => string.Equals(
+                identity["effectId"]?.GetValue<string>(),
+                terminalEffectId,
+                StringComparison.Ordinal));
+        var survivorBeforeIdentity = CreateSurvivorIdentity(
+            terminalIdentityBefore,
+            survivorEffectId);
+        identityIndexBeforeImage["entries"]!.AsArray().Add(
+            survivorBeforeIdentity.DeepClone());
+        var identityIndexAfterImage = source.IdentityIndexAfterImage;
+        var survivorAfterIdentity = survivorBeforeIdentity.DeepClone().AsObject();
+        identityIndexAfterImage["entries"]!.AsArray().Add(survivorAfterIdentity);
+        var acceptedCarrierBaselines = source.AcceptedCarrierBaselines;
+        var acceptedPlayerEffects = Assert.IsType<JsonObject>(
+            acceptedCarrierBaselines.PlayerEffects).DeepClone().AsObject();
+        acceptedPlayerEffects["activeEffects"]!.AsArray().Add(
+            survivorBeforeEffect.DeepClone());
+        acceptedCarrierBaselines = acceptedCarrierBaselines with
+        {
+            PlayerEffects = acceptedPlayerEffects
+        };
+
+        switch (mutation)
+        {
+            case "carrier":
+                survivorResourceEffect["display"]!["name"] =
+                    "Forged surviving wound effect";
+                survivorPublicationEffect["display"]!["name"] =
+                    "Forged surviving wound effect";
+                break;
+            case "identity":
+                survivorAfterIdentity["owner"]!["ownerId"] =
+                    "player_forged_survivor";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(mutation),
+                    mutation,
+                    null);
+        }
+
+        return new EffectAcceptedTurnPlan(
+            source.InputFingerprint,
+            source.CarrierAuthorityFingerprint,
+            source.SourceAuthorityFingerprint,
+            source.TargetAuthorityFingerprint,
+            source.AllocatedCombatantIds,
+            source.AllocatedEffectIds,
+            source.AllocatedTransitionIds,
+            source.Sources,
+            source.Targets,
+            source.SourceBindings,
+            source.DeferredReactions,
+            source.ReactionExpansionCount,
+            source.ReactionExpansionUsage,
+            source.ActiveEffects,
+            resourceTriggerCarriers,
+            source.SourceAuthority,
+            source.TargetAuthority,
+            source.EventInput,
+            carrierBeforeImages,
+            carrierAfterImages,
+            identityIndexBeforeImage,
+            identityIndexAfterImage,
+            source.TouchedPaths,
+            source.DeletedPaths,
+            acceptedCarrierBaselines);
     }
 
     private static EffectAcceptedTurnPlan CloneEffectPlanWithSingleViewSourceMutation(

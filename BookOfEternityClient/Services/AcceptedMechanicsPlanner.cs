@@ -370,8 +370,2537 @@ internal class AcceptedMechanicsIdentityFactory
         "resource_transition_" + _guidFactory().ToString("N");
 }
 
+internal sealed class AcceptedMechanicsCarrierCompositionResult
+{
+    private readonly Dictionary<string, JsonObject> _effectCarrierAfterImages;
+    private readonly Dictionary<string, JsonObject> _ownerCompanionAfterImages;
+    private readonly ValidationIssue[] _issues;
+    private readonly AcceptedMechanicsWoundPublication? _woundPublication;
+
+    private AcceptedMechanicsCarrierCompositionResult(
+        IReadOnlyDictionary<string, JsonObject> effectCarrierAfterImages,
+        IReadOnlyDictionary<string, JsonObject> ownerCompanionAfterImages,
+        AcceptedMechanicsWoundPublication? woundPublication,
+        IReadOnlyList<ValidationIssue> issues)
+    {
+        _effectCarrierAfterImages = CloneRoots(effectCarrierAfterImages);
+        _ownerCompanionAfterImages = CloneRoots(ownerCompanionAfterImages);
+        _woundPublication = woundPublication?.DetachedCopy();
+        _issues = (issues ?? throw new ArgumentNullException(nameof(issues)))
+            .Select(static issue => new ValidationIssue(
+                issue.FilePath,
+                issue.Severity,
+                issue.Message,
+                issue.Code,
+                issue.Actor,
+                issue.Section,
+                issue.Expected,
+                issue.Actual,
+                issue.RepairHint,
+                issue.Category,
+                issue.RepairTargetFiles))
+            .ToArray();
+    }
+
+    internal static AcceptedMechanicsCarrierCompositionResult CreateValidated(
+        IReadOnlyDictionary<string, JsonObject> effectCarrierAfterImages,
+        IReadOnlyDictionary<string, JsonObject> ownerCompanionAfterImages,
+        AcceptedMechanicsWoundPublication? woundPublication,
+        IReadOnlyList<ValidationIssue> issues,
+        AcceptedMechanicsCarrierAssembler.ValidatedPublicationProof proof)
+    {
+        if (!AcceptedMechanicsCarrierAssembler.IsPublicationProof(proof))
+        {
+            throw new ArgumentException(
+                "Only the typed accepted-mechanics carrier assembler may create a carrier composition.",
+                nameof(proof));
+        }
+        return new AcceptedMechanicsCarrierCompositionResult(
+            effectCarrierAfterImages,
+            ownerCompanionAfterImages,
+            woundPublication,
+            issues);
+    }
+
+    internal IReadOnlyDictionary<string, JsonObject> EffectCarrierAfterImages =>
+        CloneRoots(_effectCarrierAfterImages);
+
+    internal IReadOnlyDictionary<string, JsonObject> OwnerCompanionAfterImages =>
+        CloneRoots(_ownerCompanionAfterImages);
+
+    internal AcceptedMechanicsWoundPublication? WoundPublication =>
+        _woundPublication?.DetachedCopy();
+
+    internal IReadOnlyList<ValidationIssue> Issues =>
+        Array.AsReadOnly(_issues.ToArray());
+
+    internal bool Success => _issues.Length == 0;
+
+    private static Dictionary<string, JsonObject> CloneRoots(
+        IReadOnlyDictionary<string, JsonObject> roots) =>
+        (roots ?? throw new ArgumentNullException(nameof(roots))).ToDictionary(
+            static pair => pair.Key,
+            static pair => (pair.Value ?? throw new ArgumentNullException(
+                nameof(roots))).DeepClone().AsObject(),
+            StringComparer.Ordinal);
+}
+
+internal static class AcceptedMechanicsCarrierAssembler
+{
+    internal sealed class ValidatedPublicationProof
+    {
+        private ValidatedPublicationProof()
+        {
+        }
+
+        internal static ValidatedPublicationProof Create() => new();
+    }
+
+    private static readonly ValidatedPublicationProof PublicationProof =
+        ValidatedPublicationProof.Create();
+
+    internal static bool IsPublicationProof(
+        ValidatedPublicationProof? proof) =>
+        ReferenceEquals(PublicationProof, proof);
+
+    internal static IReadOnlyList<ValidationIssue> ValidateInitialEffectPlan(
+        EffectAcceptedTurnPlan? effectPlan,
+        AcceptedMechanicsWoundStageBundle woundStages)
+    {
+        ArgumentNullException.ThrowIfNull(woundStages);
+        try
+        {
+            var stageEffectPlan = woundStages.EffectBatchPlan.EffectPlan;
+            if (effectPlan is not null &&
+                string.Equals(
+                    WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(
+                        effectPlan),
+                    WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(
+                        stageEffectPlan),
+                    StringComparison.Ordinal))
+            {
+                return Array.Empty<ValidationIssue>();
+            }
+        }
+        catch (Exception exception) when (
+            exception is ArgumentException or InvalidOperationException or
+                JsonException or NullReferenceException)
+        {
+            return new[]
+            {
+                Issue(
+                    "acceptedMechanics.woundCarrierAssembly",
+                    "accepted_mechanics_wound_effect_plan_mismatch",
+                    "The common effect plan could not be matched to the sealed wound effect stage.",
+                    "one exact common and wound-stage effect plan",
+                    exception.GetType().Name)
+            };
+        }
+
+        return new[]
+        {
+            Issue(
+                "acceptedMechanics.woundCarrierAssembly",
+                "accepted_mechanics_wound_effect_plan_mismatch",
+                "The common effect plan does not equal the sealed wound effect stage.",
+                "one exact common and wound-stage effect plan",
+                effectPlan is null ? "missing" : "different payload")
+        };
+    }
+
+    internal static AcceptedMechanicsCarrierCompositionResult Compose(
+        EffectAcceptedTurnPlan? effectPlan,
+        IReadOnlyDictionary<string, JsonObject> ownerCompanionAfterImages,
+        AcceptedMechanicsWoundStageBundle? woundStages)
+    {
+        ArgumentNullException.ThrowIfNull(ownerCompanionAfterImages);
+
+        try
+        {
+            var effectRoots = CloneRoots(
+                effectPlan?.CarrierAfterImages ??
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal));
+            var ownerRoots = CloneRoots(ownerCompanionAfterImages);
+            var acceptedEffectBaselines = effectPlan?.AcceptedCarrierBaselines;
+            foreach (var pair in effectRoots.OrderBy(
+                         static pair => pair.Key,
+                         StringComparer.Ordinal))
+            {
+                var acceptedBaseline = GetEffectRoot(
+                    acceptedEffectBaselines!,
+                    pair.Key);
+                if (acceptedBaseline is null)
+                {
+                    if (!IsValidPristineEffectRoot(pair.Key, pair.Value))
+                    {
+                        return Failed(
+                            "accepted_mechanics_effect_baseline_missing",
+                            "An effect after-image has no accepted baseline or registered pristine initialization shape.",
+                            "one exact accepted carrier baseline or player/NPC pristine effect root",
+                            pair.Key);
+                    }
+                    continue;
+                }
+                if (!NonEffectFieldsAgree(
+                        pair.Key,
+                        acceptedBaseline,
+                        pair.Value))
+                {
+                    return Failed(
+                        "accepted_mechanics_effect_owner_delta_invalid",
+                        "The effect after-image changed fields outside its registered effect collections.",
+                        "the exact accepted root plus effect-collection changes only",
+                        pair.Key);
+                }
+            }
+            foreach (var path in effectRoots.Keys
+                         .Intersect(ownerRoots.Keys, StringComparer.Ordinal)
+                         .OrderBy(static value => value, StringComparer.Ordinal)
+                         .ToArray())
+            {
+                var acceptedBaseline = GetEffectRoot(
+                    acceptedEffectBaselines!,
+                    path);
+                if (acceptedBaseline is null ||
+                    !JsonNode.DeepEquals(acceptedBaseline, ownerRoots[path]))
+                {
+                    return Failed(
+                        "accepted_mechanics_effect_owner_baseline_mismatch",
+                        "The effect after-image was not built on the exact typed owner after-image.",
+                        path,
+                        acceptedBaseline is null
+                            ? "unregistered effect carrier path"
+                            : "different owner baseline");
+                }
+                ownerRoots.Remove(path);
+            }
+
+            if (woundStages is null)
+            {
+                return AcceptedMechanicsCarrierCompositionResult.CreateValidated(
+                    effectRoots,
+                    ownerRoots,
+                    null,
+                    Array.Empty<ValidationIssue>(),
+                    PublicationProof);
+            }
+            if (effectPlan is null)
+            {
+                return Failed(
+                    "accepted_mechanics_wound_effect_plan_mismatch",
+                    "A wound transaction has no final common effect plan.",
+                    "one finalized effect plan",
+                    "missing");
+            }
+            var membershipFailure = ValidateFinalWoundEffectMembership(
+                effectPlan,
+                woundStages);
+            if (membershipFailure is not null)
+                return Failed(membershipFailure);
+            if (!effectPlan.IsAcceptedBoundaryComplete ||
+                !string.Equals(
+                    effectPlan.AcceptedBoundaryBasePlanFingerprint,
+                    WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(
+                        woundStages.EffectBatchPlan.EffectPlan),
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    effectPlan.AcceptedBoundaryFinalPlanFingerprint,
+                    WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(
+                        effectPlan),
+                    StringComparison.Ordinal))
+            {
+                return Failed(
+                    "accepted_mechanics_wound_effect_completion_required",
+                    "Wound carrier publication requires the typed completed effect boundary result.",
+                    "one effect plan produced by CompleteAcceptedBoundaryTranscript",
+                    "raw or reconstructed effect plan");
+            }
+
+            var input = woundStages.Input;
+            var final = woundStages.FinalPlan;
+            var woundRoots = new Dictionary<string, JsonObject>(
+                StringComparer.Ordinal);
+            var contributionOwners = new HashSet<WoundOwnerCoordinate>();
+            foreach (var pathGroup in final.CarrierContributions
+                         .GroupBy(static contribution =>
+                             contribution.Owner.CarrierPath,
+                             StringComparer.Ordinal)
+                         .OrderBy(static group => group.Key, StringComparer.Ordinal))
+            {
+                var path = pathGroup.Key;
+                var baseline = WoundCarrierCollectionAuthority.GetRoot(
+                    input.PreTurnCarriers,
+                    path);
+                if (baseline is null)
+                {
+                    return Failed(
+                        "accepted_mechanics_wound_carrier_missing",
+                        "The sealed pre-turn wound carrier root is absent.",
+                        path,
+                        "missing");
+                }
+
+                var selected = effectRoots.TryGetValue(path, out var effectRoot)
+                    ? effectRoot.DeepClone().AsObject()
+                    : ownerRoots.TryGetValue(path, out var ownerRoot)
+                        ? ownerRoot.DeepClone().AsObject()
+                        : baseline.DeepClone().AsObject();
+                foreach (var contribution in pathGroup
+                             .OrderBy(static value => value.Owner.Realm,
+                                 StringComparer.Ordinal)
+                             .ThenBy(static value => value.Owner.OwnerKind,
+                                 StringComparer.Ordinal)
+                             .ThenBy(static value => value.Owner.OwnerId,
+                                 StringComparer.Ordinal))
+                {
+                    var owner = contribution.Owner;
+                    if (!contributionOwners.Add(owner))
+                    {
+                        return Failed(
+                            "accepted_mechanics_wound_owner_contribution_duplicate",
+                            "A wound owner coordinate has more than one typed root contribution.",
+                            "one contribution per exact owner coordinate",
+                            DescribeOwner(owner));
+                    }
+
+                    if (!TryResolveWoundCollection(
+                            baseline,
+                            owner,
+                            out var baselineCollection,
+                            out var baselineFailure))
+                    {
+                        return Failed(baselineFailure!);
+                    }
+                    var expected = ComputeWoundCollectionFingerprint(
+                        owner,
+                        baselineCollection!);
+                    if (!string.Equals(
+                            expected,
+                            contribution.ExpectedWoundCollectionFingerprint,
+                            StringComparison.Ordinal))
+                    {
+                        return Failed(
+                            "accepted_mechanics_wound_contribution_stale",
+                            "The wound contribution does not bind the sealed pre-turn wound collection.",
+                            expected,
+                            contribution.ExpectedWoundCollectionFingerprint);
+                    }
+
+                    if (!TryResolveWoundCollection(
+                            selected,
+                            owner,
+                            out var selectedCollection,
+                            out var selectedFailure))
+                    {
+                        return Failed(selectedFailure!);
+                    }
+                    var selectedFingerprint = ComputeWoundCollectionFingerprint(
+                        owner,
+                        selectedCollection!);
+                    if (!string.Equals(
+                            expected,
+                            selectedFingerprint,
+                            StringComparison.Ordinal))
+                    {
+                        return Failed(
+                            "accepted_mechanics_wound_collection_stale",
+                            "Another same-root producer changed the wound collection before typed wound assembly.",
+                            expected,
+                            selectedFingerprint);
+                    }
+
+                    var mutationIds = new HashSet<string>(StringComparer.Ordinal);
+                    foreach (var mutation in contribution.Mutations)
+                    {
+                        if (!mutationIds.Add(mutation.WoundId))
+                        {
+                            return Failed(
+                                "accepted_mechanics_wound_mutation_duplicate",
+                                "One wound contribution mutates the same wound identity more than once.",
+                                "one mutation per woundId",
+                                mutation.WoundId);
+                        }
+                        var mutationFailure = ApplyMutation(
+                            selectedCollection,
+                            owner,
+                            mutation);
+                        if (mutationFailure is not null)
+                            return Failed(mutationFailure);
+                    }
+                }
+
+                woundRoots.Add(path, selected);
+                effectRoots.Remove(path);
+                ownerRoots.Remove(path);
+            }
+
+            var assembledCarriers = WoundAcceptedTurnData.CloneWoundCarriers(
+                input.PreTurnCarriers)!;
+            foreach (var pair in effectRoots
+                         .Concat(ownerRoots)
+                         .Concat(woundRoots)
+                         .Where(pair =>
+                             WoundCarrierCollectionAuthority.IsRegisteredPath(
+                                 pair.Key)))
+            {
+                assembledCarriers = WoundCarrierCollectionAuthority.WithRoot(
+                    assembledCarriers,
+                    pair.Key,
+                    pair.Value);
+            }
+            var assembledCatalog = WoundCarrierCatalog.Build(assembledCarriers);
+            var identity = WoundIdentityState.Parse(
+                final.IdentityIndexAfterImage.ToJsonString(),
+                WoundIdentityState.StatePath);
+            var history = WoundHistoryState.Parse(
+                final.HistoryAfterImage.ToJsonString(),
+                WoundHistoryState.HistoryPath);
+            var agreementIssues = new List<ValidationIssue>();
+            agreementIssues.AddRange(assembledCatalog.Issues);
+            agreementIssues.AddRange(identity.Issues);
+            agreementIssues.AddRange(history.Issues);
+            if (identity.State is not null && history.State is not null &&
+                assembledCatalog.Issues.Count == 0)
+            {
+                agreementIssues.AddRange(history.State.ValidateAgreement(
+                    identity.State,
+                    assembledCatalog));
+            }
+            if (agreementIssues.Count != 0 || identity.State is null ||
+                history.State is null)
+            {
+                return Failed(
+                    "accepted_mechanics_wound_publication_agreement_invalid",
+                    "The composed wound carriers do not agree with final wound identity and history.",
+                    "one canonical agreeing carrier, identity, and history result",
+                    string.Join(
+                        ",",
+                        agreementIssues.Select(static issue => issue.Code ??
+                            issue.FilePath)));
+            }
+
+            var publication = AcceptedMechanicsWoundPublication.CreateValidated(
+                woundRoots,
+                final.IdentityIndexAfterImage,
+                final.HistoryAfterImage,
+                woundStages.BundleFingerprint,
+                WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(
+                    effectPlan),
+                PublicationProof);
+            return AcceptedMechanicsCarrierCompositionResult.CreateValidated(
+                effectRoots,
+                ownerRoots,
+                publication,
+                Array.Empty<ValidationIssue>(),
+                PublicationProof);
+        }
+        catch (Exception exception) when (
+            exception is ArgumentException or InvalidOperationException or
+                JsonException or NullReferenceException)
+        {
+            return Failed(
+                "accepted_mechanics_wound_root_assembly_invalid",
+                "The detached wound carrier contributions could not be assembled atomically.",
+                "one exact typed same-root composition",
+                exception.GetType().Name);
+        }
+    }
+
+    private static ValidationIssue? ApplyMutation(
+        JsonArray collection,
+        WoundOwnerCoordinate owner,
+        WoundCarrierMutation mutation)
+    {
+        var matches = collection
+            .Select((node, index) => (Node: node, Index: index))
+            .Where(value => value.Node is JsonObject wound &&
+                string.Equals(
+                    wound["woundId"]?.GetValue<string>(),
+                    mutation.WoundId,
+                    StringComparison.Ordinal))
+            .ToArray();
+        var before = mutation.BeforeWound;
+        var after = mutation.AfterWound;
+        if (after is not null &&
+            (!string.Equals(after.WoundId, mutation.WoundId, StringComparison.Ordinal) ||
+             after.Owner != owner))
+        {
+            return Issue(
+                owner.CarrierPath,
+                "accepted_mechanics_wound_mutation_owner_mismatch",
+                "A typed wound mutation after-image does not match its owner coordinate.",
+                DescribeOwner(owner),
+                after.WoundId + "/" + DescribeOwner(after.Owner));
+        }
+        if (before is not null &&
+            (!string.Equals(before.WoundId, mutation.WoundId, StringComparison.Ordinal) ||
+             before.Owner != owner))
+        {
+            return Issue(
+                owner.CarrierPath,
+                "accepted_mechanics_wound_mutation_owner_mismatch",
+                "A typed wound mutation before-image does not match its owner coordinate.",
+                DescribeOwner(owner),
+                before.WoundId + "/" + DescribeOwner(before.Owner));
+        }
+
+        switch (mutation.Operation)
+        {
+            case "add" when before is null && after is not null && matches.Length == 0:
+                collection.Add(ParseWound(after));
+                return null;
+            case "update" when before is not null && after is not null &&
+                                    matches.Length == 1 &&
+                                    JsonNode.DeepEquals(matches[0].Node, ParseWound(before)):
+                collection[matches[0].Index] = ParseWound(after);
+                return null;
+            case "delete" when before is not null && after is null &&
+                                    matches.Length == 1 &&
+                                    JsonNode.DeepEquals(matches[0].Node, ParseWound(before)):
+                collection.RemoveAt(matches[0].Index);
+                return null;
+            default:
+                return Issue(
+                    owner.CarrierPath,
+                    "accepted_mechanics_wound_mutation_conflict",
+                    "A typed wound mutation does not agree with the exact selected carrier collection.",
+                    "canonical add, update, or delete with exact before/after state",
+                    mutation.Operation + "/" + mutation.WoundId +
+                    $"/matches={matches.Length}");
+        }
+    }
+
+    private static ValidationIssue? ValidateFinalWoundEffectMembership(
+        EffectAcceptedTurnPlan finalEffectPlan,
+        AcceptedMechanicsWoundStageBundle woundStages)
+    {
+        var stagedEffectPlan = woundStages.EffectBatchPlan.EffectPlan;
+        if (!FinalEffectAuthorityAgrees(stagedEffectPlan, finalEffectPlan))
+        {
+            return Issue(
+                "acceptedMechanics.woundCarrierAssembly",
+                "accepted_mechanics_wound_final_effect_authority_mismatch",
+                "The finalized effect plan does not descend from the sealed wound effect authority.",
+                "exact immutable input, authority, baseline, before-image, and event fields",
+                "foreign or changed final effect authority");
+        }
+        var stagedCatalog = EffectCarrierCatalog.Build(
+            stagedEffectPlan.ResourceTriggerCarriers);
+        var finalRuntimeCatalog = EffectCarrierCatalog.Build(
+            finalEffectPlan.ResourceTriggerCarriers);
+        var finalPublicationCatalog = EffectCarrierCatalog.Build(
+            CreateEffectCarrierInput(finalEffectPlan.CarrierAfterImages));
+        EffectIdentityParseResult? stagedIdentityParse = null;
+        EffectIdentityParseResult? identityParse = null;
+        if (woundStages.EffectBatchPlan.ApplicationResults.Count != 0 ||
+            woundStages.EffectBatchPlan.TerminationResults.Count != 0)
+        {
+            using var stagedDocument = JsonDocument.Parse(
+                stagedEffectPlan.IdentityIndexAfterImage.ToJsonString());
+            stagedIdentityParse = EffectIdentityState.Parse(
+                stagedDocument.RootElement,
+                EffectIdentityState.StatePath);
+            using var document = JsonDocument.Parse(
+                finalEffectPlan.IdentityIndexAfterImage.ToJsonString());
+            identityParse = EffectIdentityState.Parse(
+                document.RootElement,
+                EffectIdentityState.StatePath);
+        }
+        if (stagedCatalog.Issues.Count != 0 ||
+            finalRuntimeCatalog.Issues.Count != 0 ||
+            finalPublicationCatalog.Issues.Count != 0 ||
+            stagedIdentityParse is { State: null } ||
+            stagedIdentityParse?.Issues.Count > 0 ||
+            identityParse is { State: null } ||
+            identityParse?.Issues.Count > 0)
+        {
+            return Issue(
+                "acceptedMechanics.woundCarrierAssembly",
+                "accepted_mechanics_wound_final_effect_membership_invalid",
+                "The staged or final effect publication evidence is not canonical.",
+                "valid staged/runtime/publication carrier catalogs and final effect identity",
+                string.Join(
+                    ",",
+                        stagedCatalog.Issues
+                        .Concat(finalRuntimeCatalog.Issues)
+                        .Concat(finalPublicationCatalog.Issues)
+                        .Concat(stagedIdentityParse?.Issues ??
+                            Array.Empty<ValidationIssue>())
+                        .Concat(identityParse?.Issues ??
+                            Array.Empty<ValidationIssue>())
+                        .Select(static issue => issue.Code ?? issue.FilePath)));
+        }
+
+        foreach (var result in woundStages.EffectBatchPlan.ApplicationResults)
+        {
+            var activeMatches = finalEffectPlan.ActiveEffects
+                .Where(effect => ExactString(effect["effectId"], result.EffectId))
+                .ToArray();
+            if (!stagedCatalog.TryResolveOne(result.EffectId, out var staged) ||
+                !finalRuntimeCatalog.TryResolveOne(
+                    result.EffectId,
+                    out var finalRuntime) ||
+                !finalPublicationCatalog.TryResolveOne(
+                    result.EffectId,
+                    out var finalPublication) ||
+                staged.Coordinate != result.CarrierCoordinate ||
+                finalRuntime.Coordinate != result.CarrierCoordinate ||
+                finalPublication.Coordinate != result.CarrierCoordinate ||
+                activeMatches.Length != 1 ||
+                !JsonNode.DeepEquals(
+                    finalRuntime.Effect,
+                    finalPublication.Effect) ||
+                !JsonNode.DeepEquals(finalRuntime.Effect, activeMatches[0]) ||
+                !EffectIdentityFieldsAgree(
+                    staged.Effect,
+                    finalRuntime.Effect,
+                    result) ||
+                stagedIdentityParse?.State is null ||
+                !stagedIdentityParse.State.TryGetEntry(
+                    result.EffectId,
+                    out var stagedIdentity) ||
+                identityParse?.State is null ||
+                !identityParse.State.TryGetEntry(
+                    result.EffectId,
+                    out var identity) ||
+                !EffectProgressAgrees(
+                    staged.Effect,
+                    finalRuntime.Effect,
+                    stagedIdentity,
+                    identity,
+                    woundStages.Input.Binding.Turn) ||
+                !WoundAcceptedTurnPlannerCore.IdentityAgrees(
+                    identity,
+                    finalRuntime.Effect,
+                    finalRuntime.Coordinate,
+                    woundStages.Input.Binding.Turn) ||
+                !CreateEvidenceAgrees(
+                    identity,
+                    finalRuntime.Effect,
+                    result,
+                    woundStages.Input.Binding.Turn) ||
+                !finalEffectPlan.AllocatedEffectIds.Contains(
+                    result.EffectId,
+                    StringComparer.Ordinal) ||
+                !finalEffectPlan.AllocatedTransitionIds.Contains(
+                    result.CreateTransitionId,
+                    StringComparer.Ordinal))
+            {
+                return Issue(
+                    "acceptedMechanics.woundCarrierAssembly",
+                    "accepted_mechanics_wound_final_effect_membership_invalid",
+                    "A newly materialized wound effect is absent or changed incompatibly in the final effect plan.",
+                    "the exact created wound effect identity, source, target, carrier, components, and links",
+                    result.ApplicationRef + "/" + result.EffectId);
+            }
+        }
+
+        return null;
+    }
+
+    private static bool EffectProgressAgrees(
+        JsonObject staged,
+        JsonObject final,
+        EffectIdentityEntry stagedIdentity,
+        EffectIdentityEntry finalIdentity,
+        int acceptedTurn)
+    {
+        var immutableFields = new[]
+        {
+            "schemaVersion",
+            "entityKind",
+            "effectId",
+            "state",
+            "realm",
+            "target",
+            "display",
+            "source",
+            "components",
+            "stacking",
+            "triggers",
+            "removal",
+            "links"
+        };
+        if (immutableFields.Any(field =>
+                !JsonNode.DeepEquals(staged[field], final[field])) ||
+            staged["lifetime"] is not JsonObject stagedLifetime ||
+            final["lifetime"] is not JsonObject finalLifetime ||
+            staged["chronology"] is not JsonObject stagedChronology ||
+            final["chronology"] is not JsonObject finalChronology)
+        {
+            return false;
+        }
+
+        var stagedLifetimePolicy = stagedLifetime.DeepClone().AsObject();
+        var finalLifetimePolicy = finalLifetime.DeepClone().AsObject();
+        stagedLifetimePolicy.Remove("remainingTurns");
+        stagedLifetimePolicy.Remove("remainingUses");
+        finalLifetimePolicy.Remove("remainingTurns");
+        finalLifetimePolicy.Remove("remainingUses");
+        if (!JsonNode.DeepEquals(
+                   stagedLifetimePolicy,
+                   finalLifetimePolicy) ||
+            !JsonNode.DeepEquals(
+                   stagedChronology["createdAtTurn"],
+                   finalChronology["createdAtTurn"]) ||
+            !JsonNode.DeepEquals(
+                   stagedChronology["createdEventRef"],
+                   finalChronology["createdEventRef"]) ||
+            !JsonNode.DeepEquals(
+                   stagedChronology["causalEventRef"],
+                   finalChronology["causalEventRef"]) ||
+            !IdentityTransitionPrefixAgrees(stagedIdentity, finalIdentity))
+        {
+            return false;
+        }
+
+        var addedTransitions = finalIdentity.Transitions
+            .Skip(stagedIdentity.Transitions.Count)
+            .ToArray();
+        if (addedTransitions.Any(transition =>
+                transition.Turn != acceptedTurn ||
+                transition.SourceEffectIds.Count != 1 ||
+                transition.ResultEffectIds.Count != 1 ||
+                !string.Equals(
+                    transition.SourceEffectIds[0],
+                    stagedIdentity.EffectId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    transition.ResultEffectIds[0],
+                    stagedIdentity.EffectId,
+                    StringComparison.Ordinal) ||
+                transition.ReceiptId is not null ||
+                transition.Kind is not ("trigger" or "consume" or "suspend" or
+                    "resume")))
+        {
+            return false;
+        }
+
+        if (!TryReadOptionalPositiveInt(
+                stagedLifetime["remainingTurns"],
+                out var stagedTurns) ||
+            !TryReadOptionalPositiveInt(
+                finalLifetime["remainingTurns"],
+                out var finalTurns) ||
+            !TryReadOptionalPositiveInt(
+                stagedLifetime["remainingUses"],
+                out var stagedUses) ||
+            !TryReadOptionalPositiveInt(
+                finalLifetime["remainingUses"],
+                out var finalUses))
+        {
+            return false;
+        }
+        var consumed = addedTransitions.Count(static transition =>
+            string.Equals(transition.Kind, "consume", StringComparison.Ordinal));
+        var turnDelta = CounterDelta(stagedTurns, finalTurns);
+        var useDelta = CounterDelta(stagedUses, finalUses);
+        if (turnDelta < 0 || useDelta < 0 || turnDelta + useDelta != consumed)
+            return false;
+
+        var last = finalIdentity.Transitions[^1];
+        return ExactString(
+                   finalChronology["lastTransitionId"],
+                   last.TransitionId) &&
+               ExactInt(finalChronology["lastTransitionTurn"], last.Turn);
+    }
+
+    private static bool IdentityTransitionPrefixAgrees(
+        EffectIdentityEntry staged,
+        EffectIdentityEntry final)
+    {
+        if (!string.Equals(
+                staged.EffectId,
+                final.EffectId,
+                StringComparison.Ordinal) ||
+            staged.Transitions.Count > final.Transitions.Count)
+        {
+            return false;
+        }
+        for (var index = 0; index < staged.Transitions.Count; index++)
+        {
+            if (!JsonNode.DeepEquals(
+                    staged.Transitions[index].Raw,
+                    final.Transitions[index].Raw))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static bool TryReadOptionalPositiveInt(
+        JsonNode? node,
+        out int? value)
+    {
+        if (node is null)
+        {
+            value = null;
+            return true;
+        }
+        if (node is JsonValue json &&
+            json.TryGetValue<int>(out var parsed) && parsed > 0)
+        {
+            value = parsed;
+            return true;
+        }
+        value = null;
+        return false;
+    }
+
+    private static int CounterDelta(int? before, int? after)
+    {
+        if (!before.HasValue || !after.HasValue)
+            return before == after ? 0 : -1;
+        return before.Value - after.Value;
+    }
+
+    private static bool FinalEffectAuthorityAgrees(
+        EffectAcceptedTurnPlan staged,
+        EffectAcceptedTurnPlan final) =>
+        string.Equals(
+            staged.InputFingerprint,
+            final.InputFingerprint,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            staged.CarrierAuthorityFingerprint,
+            final.CarrierAuthorityFingerprint,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            staged.SourceAuthorityFingerprint,
+            final.SourceAuthorityFingerprint,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            staged.TargetAuthorityFingerprint,
+            final.TargetAuthorityFingerprint,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            staged.SourceAuthority.CanonicalFingerprint,
+            final.SourceAuthority.CanonicalFingerprint,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            staged.SourceAuthority.Fingerprint,
+            final.SourceAuthority.Fingerprint,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            staged.TargetAuthority.CanonicalFingerprint,
+            final.TargetAuthority.CanonicalFingerprint,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            staged.TargetAuthority.Fingerprint,
+            final.TargetAuthority.Fingerprint,
+            StringComparison.Ordinal) &&
+        staged.AllocatedCombatantIds.SequenceEqual(
+            final.AllocatedCombatantIds,
+            StringComparer.Ordinal) &&
+        JsonNode.DeepEquals(staged.EventInput, final.EventInput) &&
+        JsonNode.DeepEquals(
+            staged.IdentityIndexBeforeImage,
+            final.IdentityIndexBeforeImage) &&
+        staged.DeletedPaths.SequenceEqual(
+            final.DeletedPaths,
+            StringComparer.Ordinal) &&
+        NullableObjectMapsEqual(
+            staged.CarrierBeforeImages,
+            final.CarrierBeforeImages) &&
+        EffectCarrierInputsEqual(
+            staged.AcceptedCarrierBaselines,
+            final.AcceptedCarrierBaselines);
+
+    private static bool NullableObjectMapsEqual(
+        IReadOnlyDictionary<string, JsonObject?> first,
+        IReadOnlyDictionary<string, JsonObject?> second) =>
+        first.Count == second.Count &&
+        first.All(pair => second.TryGetValue(pair.Key, out var value) &&
+            JsonNode.DeepEquals(pair.Value, value));
+
+    private static bool EffectCarrierInputsEqual(
+        EffectCarrierCatalogInput first,
+        EffectCarrierCatalogInput second) =>
+        JsonNode.DeepEquals(first.PlayerEffects, second.PlayerEffects) &&
+        JsonNode.DeepEquals(first.NpcEffects, second.NpcEffects) &&
+        JsonNode.DeepEquals(
+            first.EnemyCombatants,
+            second.EnemyCombatants) &&
+        JsonNode.DeepEquals(
+            first.AllyCombatants,
+            second.AllyCombatants) &&
+        JsonNode.DeepEquals(
+            first.AfterlifeProfiles,
+            second.AfterlifeProfiles) &&
+        JsonNode.DeepEquals(
+            first.SpiritualConflict,
+            second.SpiritualConflict);
+
+    private static bool EffectIdentityFieldsAgree(
+        JsonObject staged,
+        JsonObject final,
+        EffectAcceptedApplicationResult result) =>
+        ExactString(staged["effectId"], result.EffectId) &&
+        ExactString(final["effectId"], result.EffectId) &&
+        string.Equals(
+            result.SourceKey.Realm,
+            result.TargetKey.Realm,
+            StringComparison.Ordinal) &&
+        ExactString(staged["realm"], result.SourceKey.Realm) &&
+        ExactString(final["realm"], result.SourceKey.Realm) &&
+        staged["source"] is JsonObject stagedSource &&
+        final["source"] is JsonObject finalSource &&
+        SourceAgrees(stagedSource, result.SourceKey) &&
+        SourceAgrees(finalSource, result.SourceKey) &&
+        staged["target"] is JsonObject stagedTarget &&
+        final["target"] is JsonObject finalTarget &&
+        TargetAgrees(stagedTarget, result.TargetKey) &&
+        TargetAgrees(finalTarget, result.TargetKey);
+
+    private static bool CreateEvidenceAgrees(
+        EffectIdentityEntry identity,
+        JsonObject effect,
+        EffectAcceptedApplicationResult result,
+        int acceptedTurn)
+    {
+        if (effect["chronology"] is not JsonObject chronology ||
+            !ExactInt(chronology["createdAtTurn"], acceptedTurn) ||
+            !ExactString(
+                chronology["createdEventRef"],
+                result.CreatedEventRef) ||
+            !ExactString(
+                chronology["causalEventRef"],
+                result.CausalEventRef))
+        {
+            return false;
+        }
+
+        var creates = identity.Transitions.Where(transition =>
+                string.Equals(
+                    transition.TransitionId,
+                    result.CreateTransitionId,
+                    StringComparison.Ordinal) &&
+                string.Equals(transition.Kind, "create", StringComparison.Ordinal) &&
+                transition.Turn == acceptedTurn &&
+                string.Equals(
+                    transition.EventRef,
+                    result.CreatedEventRef,
+                    StringComparison.Ordinal) &&
+                transition.SourceEffectIds.Count == 0 &&
+                transition.ResultEffectIds.Count == 1 &&
+                string.Equals(
+                    transition.ResultEffectIds[0],
+                    result.EffectId,
+                    StringComparison.Ordinal) &&
+                transition.ReceiptId is null)
+            .ToArray();
+        return creates.Length == 1;
+    }
+
+    private static bool SourceAgrees(
+        JsonObject source,
+        EffectSourceKey key) =>
+        ExactString(source["kind"], key.Kind) &&
+        ExactString(source["sourceId"], key.SourceId) &&
+        ExactString(source["definitionKey"], key.DefinitionKey);
+
+    private static bool TargetAgrees(
+        JsonObject target,
+        EffectTargetKey key) =>
+        ExactString(target["kind"], key.Kind) &&
+        ExactString(target["targetId"], key.TargetId);
+
+    private static bool ExactString(JsonNode? node, string expected) =>
+        node is JsonValue value &&
+        value.TryGetValue<string>(out var actual) &&
+        string.Equals(actual, expected, StringComparison.Ordinal);
+
+    private static bool ExactInt(JsonNode? node, int expected) =>
+        node is JsonValue value &&
+        value.TryGetValue<int>(out var actual) &&
+        actual == expected;
+
+    private static EffectCarrierCatalogInput CreateEffectCarrierInput(
+        IReadOnlyDictionary<string, JsonObject> roots)
+    {
+        JsonObject? Read(string path) =>
+            roots.TryGetValue(path, out var root)
+                ? root.DeepClone().AsObject()
+                : null;
+
+        return new EffectCarrierCatalogInput(
+            Read(EffectCarrierCatalog.PlayerPath),
+            Read(EffectCarrierCatalog.NpcPath),
+            Read(EffectCarrierCatalog.EnemiesPath),
+            Read(EffectCarrierCatalog.AlliesPath),
+            Read(EffectCarrierCatalog.AfterlifeProfilesPath),
+            Read(EffectCarrierCatalog.SpiritualConflictPath));
+    }
+
+    private static bool NonEffectFieldsAgree(
+        string path,
+        JsonObject baseline,
+        JsonObject afterImage)
+    {
+        var expected = baseline.DeepClone().AsObject();
+        var actual = afterImage.DeepClone().AsObject();
+        if (!RemoveEffectCollections(path, expected) ||
+            !RemoveEffectCollections(path, actual))
+        {
+            return false;
+        }
+        return JsonNode.DeepEquals(expected, actual);
+    }
+
+    private static bool IsValidPristineEffectRoot(
+        string path,
+        JsonObject afterImage)
+    {
+        var projection = afterImage.DeepClone().AsObject();
+        if (!RemoveEffectCollections(path, projection))
+            return false;
+        if (string.Equals(
+                path,
+                EffectCarrierCatalog.PlayerPath,
+                StringComparison.Ordinal))
+        {
+            return projection.Count == 1 &&
+                   ExactInt(
+                       projection["schemaVersion"],
+                       EffectMaterializationContract.SchemaVersion);
+        }
+        if (!string.Equals(
+                path,
+                EffectCarrierCatalog.NpcPath,
+                StringComparison.Ordinal) ||
+            !ExactInt(
+                projection["schemaVersion"],
+                EffectMaterializationContract.SchemaVersion) ||
+            projection["entries"] is not JsonArray entries ||
+            projection.Count != 2)
+        {
+            return false;
+        }
+        return entries.OfType<JsonObject>().All(static entry =>
+            entry.Count == 1 &&
+            entry["NPCId"] is JsonValue value &&
+            value.TryGetValue<string>(out var npcId) &&
+            ResourceMaterializationContract.IsExactIdentifier(npcId));
+    }
+
+    private static bool RemoveEffectCollections(
+        string path,
+        JsonObject root)
+    {
+        switch (path)
+        {
+            case EffectCarrierCatalog.PlayerPath:
+                root.Remove("activeEffects");
+                return true;
+            case EffectCarrierCatalog.NpcPath:
+                if (root["entries"] is not JsonArray entries)
+                    return false;
+                foreach (var entry in entries.OfType<JsonObject>())
+                    entry.Remove("activeEffects");
+                return true;
+            case EffectCarrierCatalog.EnemiesPath:
+                return RemoveCombatEffectCollections(root, "enemiesData");
+            case EffectCarrierCatalog.AlliesPath:
+                return RemoveCombatEffectCollections(root, "alliesData");
+            case EffectCarrierCatalog.AfterlifeProfilesPath:
+                if (root["profiles"] is not JsonArray profiles)
+                    return false;
+                foreach (var profile in profiles.OfType<JsonObject>())
+                    profile.Remove("activeEffects");
+                return true;
+            case EffectCarrierCatalog.SpiritualConflictPath:
+                if (root["activeConflict"] is JsonObject conflict)
+                    conflict.Remove("combatConditions");
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static bool RemoveCombatEffectCollections(
+        JsonObject root,
+        string collectionName)
+    {
+        if (root[collectionName] is not JsonArray combatants)
+            return false;
+        foreach (var combatant in combatants.OfType<JsonObject>())
+        {
+            combatant.Remove("activeBuffs");
+            combatant.Remove("activeDebuffs");
+            if (combatant["members"] is not JsonArray members)
+                continue;
+            foreach (var member in members.OfType<JsonObject>())
+            {
+                member.Remove("activeBuffs");
+                member.Remove("activeDebuffs");
+            }
+        }
+        return true;
+    }
+
+    private static JsonObject ParseWound(WoundMaterializationEnvelope wound) =>
+        JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(wound))!
+            .AsObject();
+
+    private static string ComputeWoundCollectionFingerprint(
+        WoundOwnerCoordinate owner,
+        JsonArray collection) =>
+        WoundCarrierCollectionAuthority.ComputeFingerprint(owner, collection);
+
+    private static bool TryResolveWoundCollection(
+        JsonObject root,
+        WoundOwnerCoordinate owner,
+        [NotNullWhen(true)] out JsonArray? collection,
+        [NotNullWhen(false)] out ValidationIssue? failure)
+    {
+        if (WoundCarrierCollectionAuthority.TryResolve(
+                root,
+                owner,
+                out collection,
+                out var reason))
+        {
+            failure = null;
+            return true;
+        }
+
+        failure = Issue(
+            owner.CarrierPath,
+            "accepted_mechanics_wound_owner_resolution_invalid",
+            "The typed wound owner does not resolve to one exact activeWounds slot.",
+            "one registered exact owner collection",
+            DescribeOwner(owner) + "/" + reason);
+        return false;
+    }
+
+    private static JsonObject? GetEffectRoot(
+        EffectCarrierCatalogInput carriers,
+        string path) => path switch
+        {
+            EffectCarrierCatalog.PlayerPath => carriers.PlayerEffects,
+            EffectCarrierCatalog.NpcPath => carriers.NpcEffects,
+            EffectCarrierCatalog.EnemiesPath => carriers.EnemyCombatants,
+            EffectCarrierCatalog.AlliesPath => carriers.AllyCombatants,
+            EffectCarrierCatalog.AfterlifeProfilesPath => carriers.AfterlifeProfiles,
+            EffectCarrierCatalog.SpiritualConflictPath => carriers.SpiritualConflict,
+            _ => null
+        };
+
+    private static Dictionary<string, JsonObject> CloneRoots(
+        IReadOnlyDictionary<string, JsonObject> roots) =>
+        roots.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.DeepClone().AsObject(),
+            StringComparer.Ordinal);
+
+    private static AcceptedMechanicsCarrierCompositionResult Failed(
+        ValidationIssue issue) =>
+        AcceptedMechanicsCarrierCompositionResult.CreateValidated(
+            new Dictionary<string, JsonObject>(StringComparer.Ordinal),
+            new Dictionary<string, JsonObject>(StringComparer.Ordinal),
+            null,
+            new[] { issue },
+            PublicationProof);
+
+    private static AcceptedMechanicsCarrierCompositionResult Failed(
+        string code,
+        string message,
+        string expected,
+        string actual) =>
+        Failed(Issue(
+            "acceptedMechanics.woundCarrierAssembly",
+            code,
+            message,
+            expected,
+            actual));
+
+    private static ValidationIssue Issue(
+        string path,
+        string code,
+        string message,
+        string expected,
+        string actual) =>
+        new(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            actor: "Client",
+            section: "wound_materialization",
+            expected: expected,
+            actual: actual,
+            repairHint:
+                "Rebuild one accepted common plan from the exact sealed before-images and typed wound/effect/owner contributions.");
+
+    private static string DescribeOwner(WoundOwnerCoordinate owner) =>
+        owner.Realm + "/" + owner.OwnerKind + "/" + owner.OwnerId + "/" +
+        owner.CarrierPath;
+}
+
+internal sealed record WoundEffectLineageWorkStatistics(
+    int SourceGroupIdentityCount,
+    int VisitedIdentityCount);
+
+internal sealed class WoundEffectLineagePlanningResult
+{
+    private readonly string[] _closureEffectIds;
+    private readonly string[] _activeOrSuspendedEffectIds;
+    private readonly IReadOnlyDictionary<string, WoundRootOwnershipDomain>
+        _ownershipByEffectId;
+    private readonly IReadOnlyDictionary<string, WoundRootOwnershipDomain>
+        _ownershipByDefinitionKey;
+    private readonly ValidationIssue[] _issues;
+
+    internal WoundEffectLineagePlanningResult(
+        IReadOnlyList<string> closureEffectIds,
+        IReadOnlyList<string> activeOrSuspendedEffectIds,
+        IReadOnlyDictionary<string, WoundRootOwnershipDomain> ownershipByEffectId,
+        IReadOnlyDictionary<string, WoundRootOwnershipDomain>
+            ownershipByDefinitionKey,
+        WoundEffectLineageWorkStatistics work,
+        IReadOnlyList<ValidationIssue> issues)
+    {
+        _closureEffectIds = (closureEffectIds ??
+            throw new ArgumentNullException(nameof(closureEffectIds))).ToArray();
+        _activeOrSuspendedEffectIds = (activeOrSuspendedEffectIds ??
+            throw new ArgumentNullException(nameof(activeOrSuspendedEffectIds)))
+            .ToArray();
+        _ownershipByEffectId = (ownershipByEffectId ??
+            throw new ArgumentNullException(nameof(ownershipByEffectId)))
+            .ToDictionary(
+                static pair => pair.Key,
+                static pair => new WoundRootOwnershipDomain(
+                    pair.Value.Kind,
+                    pair.Value.ComplicationId),
+                StringComparer.Ordinal);
+        _ownershipByDefinitionKey = (ownershipByDefinitionKey ??
+            throw new ArgumentNullException(nameof(ownershipByDefinitionKey)))
+            .ToDictionary(
+                static pair => pair.Key,
+                static pair => new WoundRootOwnershipDomain(
+                    pair.Value.Kind,
+                    pair.Value.ComplicationId),
+                StringComparer.Ordinal);
+        Work = work ?? throw new ArgumentNullException(nameof(work));
+        _issues = (issues ?? throw new ArgumentNullException(nameof(issues)))
+            .ToArray();
+    }
+
+    internal bool Success => _issues.Length == 0;
+
+    internal IReadOnlyList<string> ClosureEffectIds =>
+        Array.AsReadOnly(_closureEffectIds.ToArray());
+
+    internal IReadOnlyList<string> ActiveOrSuspendedEffectIds =>
+        Array.AsReadOnly(_activeOrSuspendedEffectIds.ToArray());
+
+    internal IReadOnlyDictionary<string, WoundRootOwnershipDomain>
+        OwnershipByEffectId => new ReadOnlyDictionary<
+            string,
+            WoundRootOwnershipDomain>(
+                _ownershipByEffectId.ToDictionary(
+                    static pair => pair.Key,
+                    static pair => new WoundRootOwnershipDomain(
+                        pair.Value.Kind,
+                        pair.Value.ComplicationId),
+                    StringComparer.Ordinal));
+
+    internal IReadOnlyDictionary<string, WoundRootOwnershipDomain>
+        OwnershipByDefinitionKey => new ReadOnlyDictionary<
+            string,
+            WoundRootOwnershipDomain>(
+                _ownershipByDefinitionKey.ToDictionary(
+                    static pair => pair.Key,
+                    static pair => new WoundRootOwnershipDomain(
+                        pair.Value.Kind,
+                        pair.Value.ComplicationId),
+                    StringComparer.Ordinal));
+
+    internal WoundEffectLineageWorkStatistics Work { get; }
+
+    internal IReadOnlyList<ValidationIssue> Issues =>
+        Array.AsReadOnly(_issues.ToArray());
+}
+
+internal static class WoundEffectLineagePlanner
+{
+    private const int MaxIssues = 20;
+
+    internal static WoundEffectLineagePlanningResult Plan(
+        WoundMaterializationEnvelope wound,
+        EffectIdentityState identities,
+        IReadOnlyList<string>? selectedRootEffectIds = null)
+    {
+        ArgumentNullException.ThrowIfNull(wound);
+        ArgumentNullException.ThrowIfNull(identities);
+
+        var issues = new List<ValidationIssue>();
+        var sourceGroup = new EffectIdentitySourceGroup(
+            wound.Owner.Realm,
+            "wound",
+            wound.WoundId);
+        var sourceMembers = identities.ResolveSourceGroup(sourceGroup).ToArray();
+        var sourceMembersById = sourceMembers.ToDictionary(
+            static entry => entry.EffectId,
+            StringComparer.Ordinal);
+        var definitionsByKey = wound.Consequences.OwnedEffectSources
+            .DefinitionFacts
+            .ToDictionary(
+                static definition => definition.DefinitionKey,
+                StringComparer.Ordinal);
+        var rootsById = wound.Consequences.OwnedEffectSources.RootBindings
+            .ToDictionary(
+                static binding => binding.EffectId,
+                StringComparer.Ordinal);
+        var rootDomains = BuildRootDomains(wound, rootsById, issues);
+        var definitionDomains = BuildDefinitionDomains(
+            wound,
+            rootsById,
+            rootDomains,
+            definitionsByKey,
+            issues);
+        var selectedRoots = ResolveSelectedRoots(
+            selectedRootEffectIds,
+            rootsById,
+            issues);
+
+        ValidateActiveMembership(
+            sourceMembers,
+            definitionsByKey,
+            rootsById,
+            issues);
+        ValidateCurrentDefinitionAcyclicity(
+            sourceMembers,
+            definitionsByKey,
+            issues);
+
+        var visited = new HashSet<string>(StringComparer.Ordinal);
+        var originRootByEffect = new Dictionary<string, string>(
+            StringComparer.Ordinal);
+        var ownershipByEffect = new Dictionary<string, WoundRootOwnershipDomain>(
+            StringComparer.Ordinal);
+        var queue = new Queue<LineageVisit>();
+
+        foreach (var binding in rootsById.Values.OrderBy(
+                     static binding => binding.EffectId,
+                     StringComparer.Ordinal))
+        {
+            if (!sourceMembersById.TryGetValue(binding.EffectId, out var entry))
+            {
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundEffectLineage.rootBindings",
+                    "accepted_mechanics_wound_lineage_root_missing",
+                    "Every current wound root binding must resolve in its exact effect source group.",
+                    binding.EffectId,
+                    "missing");
+                continue;
+            }
+            if (!string.Equals(
+                    ReadDefinitionKey(entry),
+                    binding.DefinitionKey,
+                    StringComparison.Ordinal))
+            {
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundEffectLineage.rootBindings",
+                    "accepted_mechanics_wound_lineage_root_definition_mismatch",
+                    "A wound root identity must retain the definition bound by the wound.",
+                    binding.DefinitionKey,
+                    ReadDefinitionKey(entry));
+                continue;
+            }
+            if (!definitionsByKey.ContainsKey(binding.DefinitionKey))
+            {
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundEffectLineage.rootBindings",
+                    "accepted_mechanics_wound_lineage_definition_missing",
+                    "A current wound root must resolve in the persisted source graph.",
+                    binding.DefinitionKey,
+                    "missing");
+                continue;
+            }
+            if (!ValidateCreateEvidence(
+                    entry,
+                    Array.Empty<string>(),
+                    issues))
+            {
+                continue;
+            }
+
+            var domain = rootDomains.TryGetValue(binding.EffectId, out var owned)
+                ? owned
+                : WoundRootOwnershipDomain.BaseWound;
+            queue.Enqueue(new LineageVisit(
+                entry,
+                binding.EffectId,
+                domain));
+        }
+
+        while (queue.Count != 0)
+        {
+            var visit = queue.Dequeue();
+            if (!visited.Add(visit.Entry.EffectId))
+            {
+                if (!originRootByEffect.TryGetValue(
+                        visit.Entry.EffectId,
+                        out var existingRoot) ||
+                    !string.Equals(
+                        existingRoot,
+                        visit.OriginRootEffectId,
+                        StringComparison.Ordinal) ||
+                    !ownershipByEffect.TryGetValue(
+                        visit.Entry.EffectId,
+                        out var existingDomain) ||
+                    existingDomain != visit.Domain)
+                {
+                    AddIssue(
+                        issues,
+                        "acceptedMechanics.woundEffectLineage",
+                        "accepted_mechanics_wound_lineage_ambiguous",
+                        "Each effect identity must belong to exactly one wound root lineage and ownership domain.",
+                        existingRoot ?? "one root",
+                        visit.OriginRootEffectId);
+                }
+                continue;
+            }
+
+            originRootByEffect.Add(
+                visit.Entry.EffectId,
+                visit.OriginRootEffectId);
+            ownershipByEffect.Add(
+                visit.Entry.EffectId,
+                visit.Domain);
+
+            var parentDefinitionKey = ReadDefinitionKey(visit.Entry);
+            if (!definitionsByKey.TryGetValue(
+                    parentDefinitionKey,
+                    out var parentDefinition))
+            {
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundEffectLineage",
+                    "accepted_mechanics_wound_lineage_definition_missing",
+                    "Every identity in the current wound lineage must resolve in the persisted source graph.",
+                    parentDefinitionKey,
+                    "missing");
+                continue;
+            }
+
+            if (!IdentityAuthorityAgrees(
+                    wound,
+                    visit.Entry,
+                    parentDefinition))
+            {
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundEffectLineage." +
+                    visit.Entry.EffectId,
+                    "accepted_mechanics_wound_lineage_identity_authority_mismatch",
+                    "Every current wound-lineage identity must retain the exact wound owner, target, carrier owner, and stack coordinate derived from its definition.",
+                    wound.Owner.ToString(),
+                    visit.Entry.Owner + "/" + visit.Entry.StackCoordinate);
+            }
+
+            foreach (var child in identities.ResolveFirstCreateChildren(
+                         visit.Entry.EffectId)
+                     .OrderBy(static entry => entry.EffectId, StringComparer.Ordinal))
+            {
+                if (!IsExactSourceGroup(child, sourceGroup))
+                {
+                    AddIssue(
+                        issues,
+                        "acceptedMechanics.woundEffectLineage",
+                        "accepted_mechanics_wound_lineage_foreign_child",
+                        "A reaction-created wound descendant must retain the exact parent wound source group.",
+                        DescribeSourceGroup(sourceGroup),
+                        DescribeSourceGroup(child));
+                    continue;
+                }
+
+                var childDefinitionKey = ReadDefinitionKey(child);
+                if (!definitionsByKey.ContainsKey(childDefinitionKey))
+                {
+                    AddIssue(
+                        issues,
+                        "acceptedMechanics.woundEffectLineage",
+                        "accepted_mechanics_wound_lineage_definition_missing",
+                        "A reaction-created wound descendant must resolve in the current persisted source graph.",
+                        string.Join(",", parentDefinition.ApplyDefinitionTargets),
+                        childDefinitionKey);
+                    continue;
+                }
+                if (!parentDefinition.ApplyDefinitionTargets.Contains(
+                        childDefinitionKey,
+                        StringComparer.Ordinal))
+                {
+                    AddIssue(
+                        issues,
+                        "acceptedMechanics.woundEffectLineage",
+                        "accepted_mechanics_wound_lineage_edge_invalid",
+                        "A reaction-created child definition must be an exact apply_definition target of its causal parent.",
+                        string.Join(",", parentDefinition.ApplyDefinitionTargets),
+                        childDefinitionKey);
+                    continue;
+                }
+                if (!ValidateCreateEvidence(
+                        child,
+                        new[] { visit.Entry.EffectId },
+                        issues))
+                {
+                    continue;
+                }
+
+                if (!definitionDomains.TryGetValue(
+                        childDefinitionKey,
+                        out var childDefinitionDomain) ||
+                    childDefinitionDomain != visit.Domain)
+                {
+                    AddIssue(
+                        issues,
+                        "acceptedMechanics.woundEffectLineage",
+                        "accepted_mechanics_wound_lineage_cross_domain",
+                        "A reaction descendant may occupy only a definition in the same unique wound ownership domain.",
+                        DescribeDomain(visit.Domain),
+                        childDefinitionDomain is null
+                            ? "ambiguous or missing"
+                            : DescribeDomain(childDefinitionDomain));
+                    continue;
+                }
+
+                queue.Enqueue(new LineageVisit(
+                    child,
+                    visit.OriginRootEffectId,
+                    visit.Domain));
+            }
+        }
+
+        foreach (var current in sourceMembers.Where(entry =>
+                     definitionsByKey.ContainsKey(ReadDefinitionKey(entry))))
+        {
+            if (!visited.Contains(current.EffectId))
+            {
+                var active = IsActiveOrSuspended(current);
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundEffectLineage",
+                    active
+                        ? "accepted_mechanics_wound_lineage_active_unreachable"
+                        : "accepted_mechanics_wound_lineage_current_unreachable",
+                    active
+                        ? "Every active or suspended identity in the exact wound source group must be reachable from one current root by first-create causality."
+                        : "Every terminal identity whose definition remains current in the exact wound source group must be reachable from one current root by first-create causality.",
+                    "reachable current wound lineage",
+                    current.EffectId);
+            }
+        }
+
+        var closure = originRootByEffect
+            .Where(pair => selectedRoots.Contains(pair.Value))
+            .Select(static pair => pair.Key)
+            .OrderBy(static effectId => effectId, StringComparer.Ordinal)
+            .ToArray();
+        var activeClosure = closure
+            .Where(effectId => sourceMembersById.TryGetValue(effectId, out var entry) &&
+                               IsActiveOrSuspended(entry))
+            .ToArray();
+        var selectedOwnership = closure.ToDictionary(
+            static effectId => effectId,
+            effectId => ownershipByEffect[effectId],
+            StringComparer.Ordinal);
+        return new WoundEffectLineagePlanningResult(
+            closure,
+            activeClosure,
+            selectedOwnership,
+            definitionDomains,
+            new WoundEffectLineageWorkStatistics(
+                sourceMembers.Length,
+                visited.Count),
+            issues);
+    }
+
+    private static Dictionary<string, WoundRootOwnershipDomain>
+        BuildDefinitionDomains(
+            WoundMaterializationEnvelope wound,
+            IReadOnlyDictionary<string, WoundRootEffectBinding> rootsById,
+            IReadOnlyDictionary<string, WoundRootOwnershipDomain> rootDomains,
+            IReadOnlyDictionary<string, WoundOwnedEffectDefinitionFact>
+                definitionsByKey,
+            ICollection<ValidationIssue> issues)
+    {
+        var result = new Dictionary<string, WoundRootOwnershipDomain>(
+            StringComparer.Ordinal);
+        var ambiguous = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var root in rootsById.Values.OrderBy(
+                     static binding => binding.EffectId,
+                     StringComparer.Ordinal))
+        {
+            if (!rootDomains.TryGetValue(root.EffectId, out var domain))
+                continue;
+            var queue = new Queue<string>();
+            var visited = new HashSet<string>(StringComparer.Ordinal);
+            queue.Enqueue(root.DefinitionKey);
+            while (queue.Count != 0)
+            {
+                var definitionKey = queue.Dequeue();
+                if (!visited.Add(definitionKey))
+                    continue;
+                if (!definitionsByKey.TryGetValue(definitionKey, out var definition))
+                    continue;
+                if (result.TryGetValue(definitionKey, out var existingDomain) &&
+                    existingDomain != domain)
+                {
+                    if (ambiguous.Add(definitionKey))
+                    {
+                        AddIssue(
+                            issues,
+                            "acceptedMechanics.woundEffectLineage.definitionGraph",
+                            "accepted_mechanics_wound_lineage_cross_domain",
+                            "Every reachable wound definition must belong to one exact base-wound or complication domain before reaction execution.",
+                            DescribeDomain(existingDomain),
+                            DescribeDomain(domain) + "/" + definitionKey);
+                    }
+                }
+                else
+                {
+                    result[definitionKey] = domain;
+                }
+
+                foreach (var target in definition.ApplyDefinitionTargets)
+                    queue.Enqueue(target);
+            }
+        }
+        foreach (var definitionKey in ambiguous)
+            result.Remove(definitionKey);
+        return result;
+    }
+
+    private static Dictionary<string, WoundRootOwnershipDomain> BuildRootDomains(
+        WoundMaterializationEnvelope wound,
+        IReadOnlyDictionary<string, WoundRootEffectBinding> rootsById,
+        ICollection<ValidationIssue> issues)
+    {
+        var result = rootsById.Keys.ToDictionary(
+            static effectId => effectId,
+            static _ => WoundRootOwnershipDomain.BaseWound,
+            StringComparer.Ordinal);
+        foreach (var complication in wound.Complications)
+        {
+            foreach (var effectId in complication.OwnedEffectIds)
+            {
+                if (!result.ContainsKey(effectId))
+                {
+                    AddIssue(
+                        issues,
+                        "acceptedMechanics.woundEffectLineage.complications",
+                        "accepted_mechanics_wound_lineage_complication_root_missing",
+                        "Every complication-owned effect must be one current root binding.",
+                        "current root effectId",
+                        effectId);
+                    continue;
+                }
+                var domain = WoundRootOwnershipDomain.ForComplication(
+                    complication.ComplicationId);
+                if (result[effectId] != WoundRootOwnershipDomain.BaseWound)
+                {
+                    AddIssue(
+                        issues,
+                        "acceptedMechanics.woundEffectLineage.complications",
+                        "accepted_mechanics_wound_lineage_cross_domain",
+                        "A wound root may belong to only one complication ownership domain.",
+                        DescribeDomain(result[effectId]),
+                        DescribeDomain(domain));
+                    continue;
+                }
+                result[effectId] = domain;
+            }
+        }
+        return result;
+    }
+
+    private static HashSet<string> ResolveSelectedRoots(
+        IReadOnlyList<string>? selectedRootEffectIds,
+        IReadOnlyDictionary<string, WoundRootEffectBinding> rootsById,
+        ICollection<ValidationIssue> issues)
+    {
+        var result = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var effectId in selectedRootEffectIds ?? rootsById.Keys.ToArray())
+        {
+            if (!ResourceMaterializationContract.IsExactIdentifier(effectId) ||
+                !result.Add(effectId))
+            {
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundEffectLineage.selectedRoots",
+                    "accepted_mechanics_wound_lineage_selection_invalid",
+                    "Unique exact current wound root effectIds.",
+                    "unique current root",
+                    effectId ?? "null");
+                continue;
+            }
+            if (!rootsById.ContainsKey(effectId))
+            {
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundEffectLineage.selectedRoots",
+                    "accepted_mechanics_wound_lineage_selection_invalid",
+                    "Only exact current wound root bindings may select a lineage closure.",
+                    string.Join(",", rootsById.Keys.OrderBy(static value => value, StringComparer.Ordinal)),
+                    effectId);
+            }
+        }
+        return result;
+    }
+
+    private static void ValidateActiveMembership(
+        IReadOnlyList<EffectIdentityEntry> sourceMembers,
+        IReadOnlyDictionary<string, WoundOwnedEffectDefinitionFact> definitionsByKey,
+        IReadOnlyDictionary<string, WoundRootEffectBinding> rootsById,
+        ICollection<ValidationIssue> issues)
+    {
+        var active = sourceMembers.Where(IsActiveOrSuspended).ToArray();
+        if (active.Length > WoundMaterializationContract.MaxOwnedEffectDefinitions)
+        {
+            AddIssue(
+                issues,
+                "acceptedMechanics.woundEffectLineage",
+                "accepted_mechanics_wound_lineage_active_bound_exceeded",
+                "At most one simultaneous source member per bounded wound definition.",
+                WoundMaterializationContract.MaxOwnedEffectDefinitions.ToString(),
+                active.Length.ToString());
+        }
+        foreach (var entry in active)
+        {
+            var definitionKey = ReadDefinitionKey(entry);
+            if (!definitionsByKey.ContainsKey(definitionKey))
+            {
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundEffectLineage",
+                    "accepted_mechanics_wound_lineage_definition_missing",
+                    "Every active or suspended wound-source identity must resolve in the current persisted graph.",
+                    "current definitionKey",
+                    definitionKey);
+            }
+        }
+        foreach (var duplicate in active.GroupBy(
+                     ReadDefinitionKey,
+                     StringComparer.Ordinal)
+                 .Where(static group => group.Count() > 1))
+        {
+            AddIssue(
+                issues,
+                "acceptedMechanics.woundEffectLineage",
+                "accepted_mechanics_wound_lineage_active_duplicate",
+                "At most one active or suspended identity may occupy each wound definition coordinate.",
+                "one identity",
+                string.Join(",", duplicate.Select(static entry => entry.EffectId)));
+        }
+
+        foreach (var root in rootsById.Values)
+        {
+            if (!definitionsByKey.ContainsKey(root.DefinitionKey))
+            {
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundEffectLineage.rootBindings",
+                    "accepted_mechanics_wound_lineage_definition_missing",
+                    "Every current wound root binding must resolve in the persisted source graph.",
+                    "current definitionKey",
+                    root.DefinitionKey);
+            }
+        }
+    }
+
+    private static void ValidateCurrentDefinitionAcyclicity(
+        IReadOnlyList<EffectIdentityEntry> sourceMembers,
+        IReadOnlyDictionary<string, WoundOwnedEffectDefinitionFact> definitionsByKey,
+        ICollection<ValidationIssue> issues)
+    {
+        var currentMembers = sourceMembers
+            .Where(entry => definitionsByKey.ContainsKey(ReadDefinitionKey(entry)))
+            .ToDictionary(
+                static entry => entry.EffectId,
+                StringComparer.Ordinal);
+        var indegree = currentMembers.Keys.ToDictionary(
+            static effectId => effectId,
+            static _ => 0,
+            StringComparer.Ordinal);
+        var children = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+        foreach (var entry in currentMembers.Values)
+        {
+            var creates = entry.Transitions.Where(static transition =>
+                    string.Equals(transition.Kind, "create", StringComparison.Ordinal))
+                .ToArray();
+            if (creates.Length != 1 ||
+                !string.Equals(
+                    entry.Transitions[0].TransitionId,
+                    creates[0].TransitionId,
+                    StringComparison.Ordinal) ||
+                creates[0].ResultEffectIds.Count != 1 ||
+                !string.Equals(
+                    creates[0].ResultEffectIds[0],
+                    entry.EffectId,
+                    StringComparison.Ordinal) ||
+                creates[0].SourceEffectIds.Count > 1 ||
+                creates[0].ReceiptId is not null)
+            {
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundEffectLineage." + entry.EffectId,
+                    "accepted_mechanics_wound_lineage_create_invalid",
+                    "Every identity whose definition remains current must retain exactly one first create transition with self result and no receipt.",
+                    "one first create transition",
+                    creates.Length + " create transition(s)");
+                continue;
+            }
+            foreach (var parent in creates[0].SourceEffectIds)
+            {
+                if (!currentMembers.ContainsKey(parent))
+                    continue;
+                if (!children.TryGetValue(parent, out var values))
+                {
+                    values = new List<string>();
+                    children.Add(parent, values);
+                }
+                values.Add(entry.EffectId);
+                indegree[entry.EffectId]++;
+            }
+        }
+
+        var ready = new Queue<string>(indegree
+            .Where(static pair => pair.Value == 0)
+            .Select(static pair => pair.Key)
+            .OrderBy(static effectId => effectId, StringComparer.Ordinal));
+        var processed = 0;
+        while (ready.Count != 0)
+        {
+            var effectId = ready.Dequeue();
+            processed++;
+            if (!children.TryGetValue(effectId, out var descendants))
+                continue;
+            foreach (var child in descendants)
+            {
+                indegree[child]--;
+                if (indegree[child] == 0)
+                    ready.Enqueue(child);
+            }
+        }
+        if (processed == currentMembers.Count)
+            return;
+
+        AddIssue(
+            issues,
+            "acceptedMechanics.woundEffectLineage",
+            "accepted_mechanics_wound_lineage_cycle",
+            "First-create causal ownership within the current wound definition graph must be acyclic.",
+            "acyclic first-create lineage",
+            string.Join(",", indegree
+                .Where(static pair => pair.Value > 0)
+                .Select(static pair => pair.Key)
+                .OrderBy(static effectId => effectId, StringComparer.Ordinal)));
+    }
+
+    private static bool ValidateCreateEvidence(
+        EffectIdentityEntry entry,
+        IReadOnlyList<string> expectedParents,
+        ICollection<ValidationIssue> issues)
+    {
+        var creates = entry.Transitions.Where(static transition =>
+                string.Equals(transition.Kind, "create", StringComparison.Ordinal))
+            .ToArray();
+        var valid = creates.Length == 1 &&
+                    ReferenceEquals(creates[0], entry.Transitions[0]) &&
+                    creates[0].SourceEffectIds.SequenceEqual(
+                        expectedParents,
+                        StringComparer.Ordinal) &&
+                    creates[0].ResultEffectIds.Count == 1 &&
+                    string.Equals(
+                        creates[0].ResultEffectIds[0],
+                        entry.EffectId,
+                        StringComparison.Ordinal) &&
+                    creates[0].ReceiptId is null;
+        if (valid)
+            return true;
+
+        AddIssue(
+            issues,
+            "acceptedMechanics.woundEffectLineage." + entry.EffectId,
+            "accepted_mechanics_wound_lineage_create_invalid",
+            "Ownership lineage requires one first create transition with exact causal parents, self result, and no receipt.",
+            expectedParents.Count == 0
+                ? "direct root with no causal parent"
+                : "exact causal parent " + expectedParents[0],
+            creates.Length == 0
+                ? "missing create"
+                : creates.Length + " create transition(s); parents=" +
+                  string.Join(",", creates[0].SourceEffectIds));
+        return false;
+    }
+
+    private static bool IsExactSourceGroup(
+        EffectIdentityEntry entry,
+        EffectIdentitySourceGroup group) =>
+        string.Equals(entry.Realm, group.Realm, StringComparison.Ordinal) &&
+        string.Equals(
+            entry.Source["kind"]!.GetValue<string>(),
+            group.Kind,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            entry.Source["sourceId"]!.GetValue<string>(),
+            group.SourceId,
+            StringComparison.Ordinal);
+
+    private static bool IsActiveOrSuspended(EffectIdentityEntry entry) =>
+        entry.State is "active" or "suspended";
+
+    private static string ReadDefinitionKey(EffectIdentityEntry entry) =>
+        entry.Source["definitionKey"]!.GetValue<string>();
+
+    private static bool IdentityAuthorityAgrees(
+        WoundMaterializationEnvelope wound,
+        EffectIdentityEntry identity,
+        WoundOwnedEffectDefinitionFact definitionFact)
+    {
+        if (!WoundEffectCarrierAdapter.TryCreateTargetKey(
+                wound.Owner,
+                out var expectedTarget) ||
+            JsonNode.Parse(definitionFact.CanonicalJson) is not
+                JsonObject definition ||
+            !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(
+                wound.Owner,
+                expectedTarget,
+                definition,
+                out var expectedCoordinate) ||
+            !WoundEffectTerminalOperationPlanner.TryCreateExpectedIdentityOwner(
+                expectedTarget,
+                expectedCoordinate,
+                out var expectedOwner) ||
+            definition["stacking"] is not JsonObject stacking ||
+            stacking["stackKey"] is not JsonValue stackKeyNode ||
+            !stackKeyNode.TryGetValue<string>(out var stackKey) ||
+            !ResourceMaterializationContract.IsExactIdentifier(stackKey))
+        {
+            return false;
+        }
+
+        var expectedStack = new EffectStackCoordinate(
+            expectedTarget.Realm,
+            expectedTarget.Kind,
+            expectedTarget.TargetId,
+            "wound",
+            wound.WoundId,
+            stackKey);
+        return identity.Owner == expectedOwner &&
+               identity.StackCoordinate == expectedStack &&
+               string.Equals(
+                   identity.Realm,
+                   expectedTarget.Realm,
+                   StringComparison.Ordinal) &&
+               identity.Target["kind"] is JsonValue kindNode &&
+               kindNode.TryGetValue<string>(out var targetKind) &&
+               string.Equals(
+                   targetKind,
+                   expectedTarget.Kind,
+                   StringComparison.Ordinal) &&
+               identity.Target["targetId"] is JsonValue targetIdNode &&
+               targetIdNode.TryGetValue<string>(out var targetId) &&
+               string.Equals(
+                   targetId,
+                   expectedTarget.TargetId,
+                   StringComparison.Ordinal);
+    }
+
+    private static string DescribeSourceGroup(EffectIdentitySourceGroup group) =>
+        group.Realm + "/" + group.Kind + "/" + group.SourceId;
+
+    private static string DescribeSourceGroup(EffectIdentityEntry entry) =>
+        entry.Realm + "/" + entry.Source["kind"]!.GetValue<string>() + "/" +
+        entry.Source["sourceId"]!.GetValue<string>();
+
+    private static string DescribeDomain(WoundRootOwnershipDomain domain) =>
+        domain.Kind + "/" + (domain.ComplicationId ?? "-");
+
+    private static void AddIssue(
+        ICollection<ValidationIssue> issues,
+        string path,
+        string code,
+        string message,
+        string expected,
+        string actual)
+    {
+        if (issues.Count >= MaxIssues)
+            return;
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            actor: "Client",
+            section: "wound_materialization",
+            expected: expected,
+            actual: actual,
+            repairHint:
+                "Restore the exact client-owned first-create lineage for this wound source group before retrying the accepted mutation."));
+    }
+
+    private sealed record LineageVisit(
+        EffectIdentityEntry Entry,
+        string OriginRootEffectId,
+        WoundRootOwnershipDomain Domain);
+}
+
+internal sealed class WoundEffectTerminalOperationPlanningResult
+{
+    private readonly WoundTerminalEffectOperation[] _operations;
+    private readonly ValidationIssue[] _issues;
+
+    internal WoundEffectTerminalOperationPlanningResult(
+        IReadOnlyList<WoundTerminalEffectOperation> operations,
+        WoundEffectLineageWorkStatistics lineageWork,
+        IReadOnlyList<ValidationIssue> issues)
+    {
+        _operations = (operations ??
+            throw new ArgumentNullException(nameof(operations)))
+            .Select(WoundAcceptedTurnData.CloneTerminalOperation)
+            .ToArray();
+        LineageWork = lineageWork ??
+            throw new ArgumentNullException(nameof(lineageWork));
+        _issues = (issues ?? throw new ArgumentNullException(nameof(issues)))
+            .ToArray();
+    }
+
+    internal bool Success => _issues.Length == 0;
+
+    internal IReadOnlyList<WoundTerminalEffectOperation> Operations =>
+        Array.AsReadOnly(_operations
+            .Select(WoundAcceptedTurnData.CloneTerminalOperation)
+            .ToArray());
+
+    internal WoundEffectLineageWorkStatistics LineageWork { get; }
+
+    internal IReadOnlyList<ValidationIssue> Issues =>
+        Array.AsReadOnly(_issues.ToArray());
+}
+
+internal static class WoundEffectTerminalOperationPlanner
+{
+    private const int MaxIssues = 20;
+    private const string FingerprintVersion = "1";
+
+    internal static WoundEffectTerminalOperationPlanningResult Plan(
+        WoundMaterializationEnvelope wound,
+        EffectCarrierCatalogInput carriers,
+        EffectIdentityState identities,
+        IReadOnlyList<string> selectedRootEffectIds,
+        string causalEventRef,
+        int mechanicsOrdinal,
+        int operationOrdinalOffset,
+        string operationKey)
+    {
+        ArgumentNullException.ThrowIfNull(wound);
+        ArgumentNullException.ThrowIfNull(carriers);
+        ArgumentNullException.ThrowIfNull(identities);
+        ArgumentNullException.ThrowIfNull(selectedRootEffectIds);
+
+        var lineage = WoundEffectLineagePlanner.Plan(
+            wound,
+            identities,
+            selectedRootEffectIds);
+        var issues = lineage.Issues.ToList();
+        if (!ResourceMaterializationContract.IsExactIdentifier(causalEventRef) ||
+            mechanicsOrdinal <= 0 ||
+            operationOrdinalOffset < 0 ||
+            !ResourceMaterializationContract.IsExactIdentifier(operationKey))
+        {
+            AddIssue(
+                issues,
+                "acceptedMechanics.woundTerminalOperations",
+                "accepted_mechanics_wound_terminal_request_invalid",
+                "A wound terminal request must carry one exact causal event, positive mechanics ordinal, non-negative operation offset, and exact operation key.",
+                "closed terminal request authority",
+                $"{causalEventRef}/{mechanicsOrdinal}/{operationOrdinalOffset}/{operationKey}");
+        }
+
+        var catalog = EffectCarrierCatalog.Build(carriers);
+        if (catalog.Issues.Count != 0)
+        {
+            AddIssue(
+                issues,
+                "acceptedMechanics.woundTerminalOperations.carriers",
+                "accepted_mechanics_wound_terminal_carrier_catalog_invalid",
+                "Terminal planning requires one canonical and globally unique pre-mutation effect carrier catalog.",
+                "valid canonical carrier catalog",
+                string.Join(",", catalog.Issues.Select(static issue =>
+                    issue.Code)));
+        }
+
+        if (!WoundEffectCarrierAdapter.TryCreateTargetKey(
+                wound.Owner,
+                out var expectedTarget))
+        {
+            AddIssue(
+                issues,
+                "acceptedMechanics.woundTerminalOperations.owner",
+                "accepted_mechanics_wound_terminal_owner_invalid",
+                "A wound terminal request must resolve its wound owner to one exact effect target.",
+                "closed wound-owner target",
+                wound.Owner.ToString());
+        }
+
+        if (issues.Count != 0)
+        {
+            return Failed(lineage.Work, issues);
+        }
+
+        var definitions = wound.Consequences.OwnedEffectSources.DefinitionFacts
+            .ToDictionary(
+                static definition => definition.DefinitionKey,
+                StringComparer.Ordinal);
+        var sourceGroup = new EffectIdentitySourceGroup(
+            wound.Owner.Realm,
+            "wound",
+            wound.WoundId);
+        foreach (var identity in identities.ResolveSourceGroup(sourceGroup)
+                     .Where(static entry => entry.State is "active" or "suspended"))
+        {
+            if (ActiveOccurrenceAndIdentityAgree(
+                    wound,
+                    expectedTarget,
+                    definitions,
+                    catalog,
+                    identity))
+            {
+                continue;
+            }
+
+            AddOccurrenceMismatch(
+                issues,
+                identity.EffectId,
+                "unresolved full-lineage occurrence");
+        }
+        if (issues.Count != 0)
+            return Failed(lineage.Work, issues);
+
+        var ownershipByEffect = lineage.OwnershipByEffectId;
+        var operations = new List<WoundTerminalEffectOperation>();
+        var operationIndex = 0;
+        foreach (var effectId in lineage.ActiveOrSuspendedEffectIds)
+        {
+            operationIndex++;
+            if (!identities.TryGetEntry(effectId, out var identity) ||
+                !catalog.TryResolveOne(effectId, out var occurrence) ||
+                !TryReadString(identity.Source, "definitionKey", out var definitionKey) ||
+                !definitions.TryGetValue(definitionKey, out var definitionFact) ||
+                JsonNode.Parse(definitionFact.CanonicalJson) is not JsonObject definition ||
+                !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(
+                    wound.Owner,
+                    expectedTarget,
+                    definition,
+                    out var expectedCoordinate) ||
+                !TryCreateExpectedIdentityOwner(
+                    expectedTarget,
+                    expectedCoordinate,
+                    out var expectedOwner) ||
+                !TryReadEffectStackKey(occurrence.Effect, out var stackKey))
+            {
+                AddOccurrenceMismatch(issues, effectId, "unresolved sealed occurrence");
+                continue;
+            }
+
+            var expectedSource = new EffectSourceKey(
+                wound.Owner.Realm,
+                "wound",
+                wound.WoundId,
+                definitionKey);
+            var expectedStack = new EffectStackCoordinate(
+                expectedTarget.Realm,
+                expectedTarget.Kind,
+                expectedTarget.TargetId,
+                expectedSource.Kind,
+                expectedSource.SourceId,
+                stackKey);
+            if (!OccurrenceAndIdentityAgree(
+                    occurrence,
+                    identity,
+                    expectedSource,
+                    expectedTarget,
+                    expectedCoordinate,
+                    expectedOwner,
+                    expectedStack))
+            {
+                AddOccurrenceMismatch(
+                    issues,
+                    effectId,
+                    occurrence.JsonPath);
+                continue;
+            }
+
+            if (!ownershipByEffect.TryGetValue(effectId, out var ownership))
+            {
+                AddOccurrenceMismatch(issues, effectId, "missing lineage domain");
+                continue;
+            }
+
+            int operationOrdinal;
+            try
+            {
+                operationOrdinal = checked(operationOrdinalOffset + operationIndex);
+            }
+            catch (OverflowException)
+            {
+                AddIssue(
+                    issues,
+                    "acceptedMechanics.woundTerminalOperations",
+                    "accepted_mechanics_wound_terminal_request_invalid",
+                    "The derived operation ordinal must remain a positive Int32 value.",
+                    "positive Int32 operation ordinal",
+                    "overflow");
+                continue;
+            }
+
+            var effectFingerprint = ComputeEffectFingerprint(occurrence);
+            var identityFingerprint = ComputeIdentityFingerprint(identity);
+            var operationRef = CreateOperationRef(
+                causalEventRef,
+                mechanicsOrdinal,
+                operationOrdinal,
+                "expire");
+            operations.Add(new WoundTerminalEffectOperation(
+                operationRef,
+                operationKey,
+                effectId,
+                mechanicsOrdinal,
+                operationOrdinal,
+                "expire",
+                causalEventRef,
+                expectedSource,
+                expectedTarget,
+                expectedCoordinate,
+                occurrence.FilePath,
+                occurrence.JsonPath,
+                expectedOwner,
+                expectedStack,
+                effectFingerprint,
+                identityFingerprint,
+                ownership));
+        }
+
+        return issues.Count == 0
+            ? new WoundEffectTerminalOperationPlanningResult(
+                operations,
+                lineage.Work,
+                issues)
+            : Failed(lineage.Work, issues);
+    }
+
+    internal static string ComputeEffectFingerprint(
+        EffectCarrierOccurrence occurrence) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.wound.terminal_effect_occurrence",
+            FingerprintVersion,
+            occurrence.EffectId,
+            occurrence.FilePath,
+            occurrence.JsonPath,
+            occurrence.Coordinate.Kind,
+            occurrence.Coordinate.OwnerId,
+            occurrence.Coordinate.Path,
+            occurrence.Coordinate.Category,
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(occurrence.Effect)
+        });
+
+    internal static string ComputeIdentityFingerprint(
+        EffectIdentityEntry identity) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.wound.terminal_effect_identity",
+            FingerprintVersion,
+            identity.EffectId,
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(identity.Raw)
+        });
+
+    internal static bool OccurrenceAndIdentityAgree(
+        EffectCarrierOccurrence occurrence,
+        EffectIdentityEntry identity,
+        EffectSourceKey expectedSource,
+        EffectTargetKey expectedTarget,
+        EffectCarrierCoordinate expectedCoordinate,
+        EffectIdentityOwner expectedOwner,
+        EffectStackCoordinate expectedStack)
+    {
+        ArgumentNullException.ThrowIfNull(occurrence);
+        ArgumentNullException.ThrowIfNull(identity);
+        return string.Equals(
+                   occurrence.EffectId,
+                   identity.EffectId,
+                   StringComparison.Ordinal) &&
+               occurrence.Coordinate == expectedCoordinate &&
+               string.Equals(
+                   occurrence.FilePath,
+                   expectedCoordinate.Path,
+                   StringComparison.Ordinal) &&
+               identity.Owner == expectedOwner &&
+               identity.StackCoordinate == expectedStack &&
+               string.Equals(identity.Realm, expectedTarget.Realm,
+                   StringComparison.Ordinal) &&
+               identity.State is "active" or "suspended" &&
+               EffectHasExactAuthority(
+                   occurrence.Effect,
+                   identity,
+                   expectedSource,
+                   expectedTarget,
+                   expectedStack.StackKey);
+    }
+
+    private static bool ActiveOccurrenceAndIdentityAgree(
+        WoundMaterializationEnvelope wound,
+        EffectTargetKey expectedTarget,
+        IReadOnlyDictionary<string, WoundOwnedEffectDefinitionFact> definitions,
+        EffectCarrierCatalog catalog,
+        EffectIdentityEntry identity)
+    {
+        if (!catalog.TryResolveOne(identity.EffectId, out var occurrence) ||
+            !TryReadString(
+                identity.Source,
+                "definitionKey",
+                out var definitionKey) ||
+            !definitions.TryGetValue(definitionKey, out var definitionFact) ||
+            JsonNode.Parse(definitionFact.CanonicalJson) is not
+                JsonObject definition ||
+            !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(
+                wound.Owner,
+                expectedTarget,
+                definition,
+                out var expectedCoordinate) ||
+            !TryCreateExpectedIdentityOwner(
+                expectedTarget,
+                expectedCoordinate,
+                out var expectedOwner) ||
+            !TryReadEffectStackKey(occurrence.Effect, out var stackKey))
+        {
+            return false;
+        }
+
+        var expectedSource = new EffectSourceKey(
+            wound.Owner.Realm,
+            "wound",
+            wound.WoundId,
+            definitionKey);
+        var expectedStack = new EffectStackCoordinate(
+            expectedTarget.Realm,
+            expectedTarget.Kind,
+            expectedTarget.TargetId,
+            expectedSource.Kind,
+            expectedSource.SourceId,
+            stackKey);
+        return OccurrenceAndIdentityAgree(
+            occurrence,
+            identity,
+            expectedSource,
+            expectedTarget,
+            expectedCoordinate,
+            expectedOwner,
+            expectedStack);
+    }
+
+    private static bool EffectHasExactAuthority(
+        JsonObject effect,
+        EffectIdentityEntry identity,
+        EffectSourceKey expectedSource,
+        EffectTargetKey expectedTarget,
+        string expectedStackKey)
+    {
+        var firstTransition = identity.Transitions.FirstOrDefault();
+        var lastTransition = identity.Transitions.LastOrDefault();
+        return
+        TryReadString(effect, "effectId", out var effectId) &&
+        string.Equals(effectId, identity.EffectId, StringComparison.Ordinal) &&
+        TryReadString(effect, "state", out var state) &&
+        string.Equals(state, identity.State, StringComparison.Ordinal) &&
+        TryReadString(effect, "realm", out var realm) &&
+        string.Equals(realm, expectedTarget.Realm, StringComparison.Ordinal) &&
+        effect["target"] is JsonObject effectTarget &&
+        HasExactTarget(effectTarget, expectedTarget) &&
+        HasExactTarget(identity.Target, expectedTarget) &&
+        effect["source"] is JsonObject effectSource &&
+        HasExactSource(effectSource, expectedSource) &&
+        HasExactSource(identity.Source, expectedSource) &&
+        TryReadEffectStackKey(effect, out var stackKey) &&
+        string.Equals(stackKey, expectedStackKey, StringComparison.Ordinal) &&
+        effect["chronology"] is JsonObject chronology &&
+        TryReadInt(chronology, "createdAtTurn", out var createdAtTurn) &&
+        identity.CreatedAtTurn == createdAtTurn &&
+        firstTransition is not null &&
+        TryReadString(chronology, "createdEventRef", out var createdEventRef) &&
+        string.Equals(
+            firstTransition.EventRef,
+            createdEventRef,
+            StringComparison.Ordinal) &&
+        lastTransition is not null &&
+        TryReadString(
+            chronology,
+            "lastTransitionId",
+            out var lastTransitionId) &&
+        string.Equals(
+            lastTransition.TransitionId,
+            lastTransitionId,
+            StringComparison.Ordinal) &&
+        TryReadInt(
+            chronology,
+            "lastTransitionTurn",
+            out var lastTransitionTurn) &&
+        lastTransition.Turn == lastTransitionTurn;
+    }
+
+    private static bool HasExactTarget(
+        JsonObject target,
+        EffectTargetKey expected) =>
+        target.Count == 2 &&
+        TryReadString(target, "kind", out var kind) &&
+        TryReadString(target, "targetId", out var targetId) &&
+        string.Equals(kind, expected.Kind, StringComparison.Ordinal) &&
+        string.Equals(targetId, expected.TargetId, StringComparison.Ordinal);
+
+    private static bool HasExactSource(
+        JsonObject source,
+        EffectSourceKey expected) =>
+        source.Count == 3 &&
+        TryReadString(source, "kind", out var kind) &&
+        TryReadString(source, "sourceId", out var sourceId) &&
+        TryReadString(source, "definitionKey", out var definitionKey) &&
+        string.Equals(kind, expected.Kind, StringComparison.Ordinal) &&
+        string.Equals(sourceId, expected.SourceId, StringComparison.Ordinal) &&
+        string.Equals(
+            definitionKey,
+            expected.DefinitionKey,
+            StringComparison.Ordinal);
+
+    private static bool TryReadEffectStackKey(
+        JsonObject effect,
+        [NotNullWhen(true)] out string? stackKey)
+    {
+        stackKey = null;
+        return effect["stacking"] is JsonObject stacking &&
+               TryReadString(stacking, "stackKey", out stackKey);
+    }
+
+    private static bool TryReadString(
+        JsonObject value,
+        string property,
+        [NotNullWhen(true)] out string? result)
+    {
+        result = value[property] is JsonValue node &&
+                 node.TryGetValue<string>(out var candidate) &&
+                 ResourceMaterializationContract.IsExactIdentifier(candidate)
+            ? candidate
+            : null;
+        return result is not null;
+    }
+
+    private static bool TryReadInt(
+        JsonObject value,
+        string property,
+        out int result)
+    {
+        result = 0;
+        return value[property] is JsonValue node &&
+               node.TryGetValue<int>(out result);
+    }
+
+    internal static bool TryCreateExpectedIdentityOwner(
+        EffectTargetKey target,
+        EffectCarrierCoordinate coordinate,
+        [NotNullWhen(true)] out EffectIdentityOwner? owner)
+    {
+        var collection = coordinate.Kind switch
+        {
+            "player" or "npc" or "afterlife_profile" => "activeEffects",
+            "combatant" when coordinate.Category == "buff" => "activeBuffs",
+            "combatant" when coordinate.Category == "debuff" => "activeDebuffs",
+            _ => string.Empty
+        };
+        owner = collection.Length == 0
+            ? null
+            : new EffectIdentityOwner(
+                target.Kind,
+                target.TargetId,
+                coordinate.Path,
+                collection);
+        return owner is not null;
+    }
+
+    private static string CreateOperationRef(
+        string causalEventRef,
+        int mechanicsOrdinal,
+        int operationOrdinal,
+        string operationKind) =>
+        WoundEffectOperationEventRef.Create(
+            causalEventRef,
+            mechanicsOrdinal,
+            operationOrdinal,
+            operationKind);
+
+    private static WoundEffectTerminalOperationPlanningResult Failed(
+        WoundEffectLineageWorkStatistics work,
+        IReadOnlyList<ValidationIssue> issues) =>
+        new(
+            Array.Empty<WoundTerminalEffectOperation>(),
+            work,
+            issues);
+
+    private static void AddOccurrenceMismatch(
+        ICollection<ValidationIssue> issues,
+        string effectId,
+        string actual) =>
+        AddIssue(
+            issues,
+            "acceptedMechanics.woundTerminalOperations." + effectId,
+            "accepted_mechanics_wound_terminal_occurrence_mismatch",
+            "A terminal wound operation must bind one exact pre-mutation carrier occurrence to its exact identity row, wound owner, target, source, stack, and lineage domain.",
+            "exact sealed carrier and identity agreement",
+            actual);
+
+    private static void AddIssue(
+        ICollection<ValidationIssue> issues,
+        string path,
+        string code,
+        string message,
+        string expected,
+        string actual)
+    {
+        if (issues.Count >= MaxIssues)
+            return;
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            actor: "Client",
+            section: "wound_materialization",
+            expected: expected,
+            actual: actual,
+            repairHint:
+                "Restore the exact sealed pre-mutation wound effect carrier and identity lineage before retrying the accepted wound mutation."));
+    }
+}
+
 internal static class AcceptedMechanicsPlanner
 {
+    internal sealed class PendingPublicationProof
+    {
+        internal PendingPublicationProof()
+        {
+        }
+    }
+
+    private static readonly PendingPublicationProof PendingProof =
+        new();
+
+    internal static bool IsPendingPublicationProof(
+        PendingPublicationProof? proof) => ReferenceEquals(PendingProof, proof);
+
     private sealed record PendingBoundaryDecision(
         bool AwaitingReceipt,
         ResourcePendingResolutionState? StateAfterImage,
@@ -740,6 +3269,21 @@ internal static class AcceptedMechanicsPlanner
                     "missing"));
         }
 
+        var woundStages = context.WoundStageBundle;
+        if (woundStages is not null)
+        {
+            var woundEffectAgreement =
+                AcceptedMechanicsCarrierAssembler.ValidateInitialEffectPlan(
+                    context.EffectPlan,
+                    woundStages);
+            if (woundEffectAgreement.Count != 0)
+            {
+                return new AcceptedMechanicsPlanningResult(
+                    null,
+                    woundEffectAgreement);
+            }
+        }
+
         var issues = new List<ValidationIssue>();
         var definitions = context.Definitions;
         var sameTurnDefinitions = new Dictionary<string, ResourceDefinition>(
@@ -1030,8 +3574,12 @@ internal static class AcceptedMechanicsPlanner
             resourceResult.StateAfterImage.ToCanonicalJson())!.AsObject();
         var historyAfterImage = JsonNode.Parse(
             resourceResult.HistoryAfterImage.ToCanonicalJson())!.AsObject();
-        var carriers = effectPlan?.CarrierAfterImages ??
-            new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        var carriers = (effectPlan?.CarrierAfterImages ??
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal))
+            .ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal);
         var ownerCompanionAfterImages = context.OwnerCompanionAfterImages
             .ToDictionary(
                 static pair => pair.Key,
@@ -1061,14 +3609,34 @@ internal static class AcceptedMechanicsPlanner
         }
         if (issues.Count != 0)
             return new AcceptedMechanicsPlanningResult(null, issues);
-        foreach (var carrierPath in carriers.Keys)
-            ownerCompanionAfterImages.Remove(carrierPath);
+        var carrierComposition = AcceptedMechanicsCarrierAssembler.Compose(
+            effectPlan,
+            ownerCompanionAfterImages,
+            woundStages);
+        if (!carrierComposition.Success)
+        {
+            return new AcceptedMechanicsPlanningResult(
+                null,
+                carrierComposition.Issues);
+        }
+        carriers = carrierComposition.EffectCarrierAfterImages.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.DeepClone().AsObject(),
+            StringComparer.Ordinal);
+        ownerCompanionAfterImages =
+            carrierComposition.OwnerCompanionAfterImages.ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal);
+        var woundPublication = carrierComposition.WoundPublication;
         foreach (var transitionPath in ownerTransitions
                      .Select(static value => value.Path)
                      .Distinct(StringComparer.Ordinal))
         {
             if (ownerCompanionAfterImages.ContainsKey(transitionPath) ||
-                carriers.ContainsKey(transitionPath))
+                carriers.ContainsKey(transitionPath) ||
+                (woundPublication?.CarrierAfterImages.ContainsKey(transitionPath) ??
+                 false))
             {
                 issues.AddRange(Issue(
                     "accepted_mechanics_owner_transition_path_conflict",
@@ -1095,6 +3663,13 @@ internal static class AcceptedMechanicsPlanner
             touched.UnionWith(effectPlan.TouchedPaths);
             touched.UnionWith(effectPlan.DeletedPaths);
         }
+        if (woundPublication is not null)
+        {
+            touched.Add(AcceptedMechanicsPlan.WoundCommandPath);
+            touched.UnionWith(woundPublication.CarrierAfterImages.Keys);
+            touched.Add(WoundIdentityState.StatePath);
+            touched.Add(WoundHistoryState.HistoryPath);
+        }
         touched.UnionWith(ownerCompanionAfterImages.Keys);
         touched.UnionWith(ownerTransitions.Select(static value => value.Path));
         if (pendingDecision.StateAfterImage != null)
@@ -1104,6 +3679,8 @@ internal static class AcceptedMechanicsPlanner
             consumed.Add(ResourceMaterializationContract.CommandPath);
         if (effectPlan != null)
             consumed.UnionWith(effectPlan.DeletedPaths);
+        if (woundPublication is not null)
+            consumed.Add(AcceptedMechanicsPlan.WoundCommandPath);
 
         return new AcceptedMechanicsPlanningResult(
             new AcceptedMechanicsPlan(
@@ -1133,7 +3710,11 @@ internal static class AcceptedMechanicsPlanner
                     context.Owners.Fingerprint),
                 context.Owners,
                 effectPlan,
-                ownerTransitions),
+                ownerTransitions: ownerTransitions,
+                woundStageBundle: woundStages,
+                carrierComposition: woundStages is null
+                    ? null
+                    : carrierComposition),
             Array.Empty<ValidationIssue>());
     }
 
@@ -2050,6 +4631,7 @@ internal static class AcceptedMechanicsPlanner
         builder.Append(input.AuthorityFingerprints.EffectIdentityIndex);
         builder.Append(input.AuthorityFingerprints.AcceptedEvents);
         builder.Append(input.AuthorityFingerprints.InternalInputs);
+        AppendPendingFullWoundBinding(builder, input);
         return builder.Build();
     }
 
@@ -2068,7 +4650,49 @@ internal static class AcceptedMechanicsPlanner
         builder.Append(input.AcceptedEvents.ToJsonString());
         builder.Append(input.ResourceCommands.ToJsonString());
         builder.Append(effectCommands.ToJsonString());
+        AppendPendingWoundCommands(builder, input);
         return builder.Build();
+    }
+
+    private static void AppendPendingFullWoundBinding(
+        ResourceFingerprintBuilder builder,
+        AcceptedMechanicsInput input)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(input);
+
+        AppendPendingWoundCommands(builder, input);
+        var woundInput = input.WoundInput;
+        builder.Append(woundInput is null ? "wound-input-absent" : "wound-input-present");
+        if (woundInput is not null)
+            builder.Append(WoundAcceptedTurnFingerprints.ComputeInput(woundInput));
+
+        var woundStages = input.PlanningContext?.WoundStageBundle;
+        builder.Append(woundStages is null ? "wound-stages-absent" : "wound-stages-present");
+        if (woundStages is not null)
+        {
+            builder.Append(woundStages.InputFingerprint);
+            builder.Append(woundStages.BundleFingerprint);
+        }
+        builder.Append(input.AuthorityFingerprints.WoundCarriers);
+        builder.Append(input.AuthorityFingerprints.WoundIdentityIndex);
+        builder.Append(input.AuthorityFingerprints.WoundHistory);
+    }
+
+    private static void AppendPendingWoundCommands(
+        ResourceFingerprintBuilder builder,
+        AcceptedMechanicsInput input)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(input);
+
+        var woundCommands = input.WoundCommands;
+        builder.Append(
+            woundCommands is null
+                ? "wound-commands-absent"
+                : "wound-commands-present");
+        if (woundCommands is not null)
+            builder.Append(woundCommands.ToJsonString());
     }
 
     private static AcceptedMechanicsPlanningResult BuildAwaitingReceiptPlan(
@@ -2117,7 +4741,13 @@ internal static class AcceptedMechanicsPlanner
                 context.Owners,
                 effectPlan,
                 ownerTransitions: null,
-                pendingGmPacket: pending.SafeGmPacket),
+                pendingGmPacket: pending.SafeGmPacket,
+                pendingPublicationAuthority:
+                    new AcceptedMechanicsPendingPublicationAuthority(
+                        input,
+                        pending.StateAfterImage!.ToCanonicalRoot(),
+                        PendingProof),
+                woundStageBundle: context.WoundStageBundle),
             Array.Empty<ValidationIssue>());
     }
 

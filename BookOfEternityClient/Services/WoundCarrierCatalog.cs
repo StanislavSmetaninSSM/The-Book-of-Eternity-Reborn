@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
@@ -21,6 +22,245 @@ internal sealed record WoundCarrierCatalogInput(
     JsonObject? EnemyCombatants,
     JsonObject? AllyCombatants,
     JsonObject? AfterlifeProfiles);
+
+internal static class WoundCarrierCollectionAuthority
+{
+    private const string FingerprintDomain =
+        "book_of_eternity.wound.carrier_collection";
+
+    internal static string ComputeFingerprint(
+        WoundCarrierCatalogInput carriers,
+        WoundOwnerCoordinate owner) =>
+        ComputeFingerprint(owner, Resolve(carriers, owner));
+
+    internal static string ComputeFingerprint(
+        WoundOwnerCoordinate owner,
+        JsonArray collection) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            FingerprintDomain,
+            "1",
+            owner.Realm,
+            owner.OwnerKind,
+            owner.OwnerId,
+            owner.CarrierPath,
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(collection)
+        });
+
+    internal static JsonArray Resolve(
+        WoundCarrierCatalogInput carriers,
+        WoundOwnerCoordinate owner)
+    {
+        ArgumentNullException.ThrowIfNull(carriers);
+        ArgumentNullException.ThrowIfNull(owner);
+        var root = GetRoot(carriers, owner.CarrierPath) ??
+            throw new InvalidOperationException(
+                "The sealed wound owner carrier root is absent.");
+        if (!TryResolve(root, owner, out var collection, out _))
+        {
+            throw new InvalidOperationException(
+                "The sealed wound owner carrier collection is absent or ambiguous.");
+        }
+        return collection;
+    }
+
+    internal static bool TryResolve(
+        JsonObject root,
+        WoundOwnerCoordinate owner,
+        [NotNullWhen(true)] out JsonArray? collection,
+        [NotNullWhen(false)] out string? failure)
+    {
+        ArgumentNullException.ThrowIfNull(root);
+        ArgumentNullException.ThrowIfNull(owner);
+        collection = null;
+        failure = null;
+        if (!IsRegisteredOwnerPath(owner))
+        {
+            failure = "unregistered owner/path coordinate";
+            return false;
+        }
+
+        IEnumerable<JsonObject> candidates;
+        switch (owner.OwnerKind)
+        {
+            case "player":
+                candidates = RootMatchesPlayer(root, owner)
+                    ? new[] { root }
+                    : Array.Empty<JsonObject>();
+                break;
+            case "npc":
+                candidates = (root["entries"] as JsonArray ?? new JsonArray())
+                    .OfType<JsonObject>()
+                    .Where(value => ExactString(
+                        value["npcId"],
+                        owner.OwnerId));
+                break;
+            case "combatant":
+            case "combatant_member":
+                candidates = ResolveCombatantOwners(root, owner);
+                break;
+            default:
+                candidates = (root["profiles"] as JsonArray ?? new JsonArray())
+                    .OfType<JsonObject>()
+                    .Where(value => AfterlifeProfileMatches(value, owner));
+                break;
+        }
+
+        var matches = candidates.ToArray();
+        if (matches.Length != 1 || matches[0]["activeWounds"] is not JsonArray wounds)
+        {
+            failure = $"owner matches={matches.Length}; activeWounds=" +
+                (matches.Length == 1
+                    ? matches[0]["activeWounds"]?.GetType().Name ?? "null"
+                    : "unresolved");
+            return false;
+        }
+
+        collection = wounds;
+        return true;
+    }
+
+    internal static JsonObject? GetRoot(
+        WoundCarrierCatalogInput carriers,
+        string path) => path switch
+        {
+            WoundCarrierCatalog.PlayerPath => carriers.PlayerWounds,
+            WoundCarrierCatalog.NpcPath => carriers.NpcWounds,
+            WoundCarrierCatalog.EnemiesPath => carriers.EnemyCombatants,
+            WoundCarrierCatalog.AlliesPath => carriers.AllyCombatants,
+            WoundCarrierCatalog.AfterlifeProfilesPath => carriers.AfterlifeProfiles,
+            _ => null
+        };
+
+    internal static bool IsRegisteredPath(string path) => path is
+        WoundCarrierCatalog.PlayerPath or
+        WoundCarrierCatalog.NpcPath or
+        WoundCarrierCatalog.EnemiesPath or
+        WoundCarrierCatalog.AlliesPath or
+        WoundCarrierCatalog.AfterlifeProfilesPath;
+
+    internal static WoundCarrierCatalogInput WithRoot(
+        WoundCarrierCatalogInput carriers,
+        string path,
+        JsonObject root) => path switch
+        {
+            WoundCarrierCatalog.PlayerPath => carriers with
+            {
+                PlayerWounds = root.DeepClone().AsObject()
+            },
+            WoundCarrierCatalog.NpcPath => carriers with
+            {
+                NpcWounds = root.DeepClone().AsObject()
+            },
+            WoundCarrierCatalog.EnemiesPath => carriers with
+            {
+                EnemyCombatants = root.DeepClone().AsObject()
+            },
+            WoundCarrierCatalog.AlliesPath => carriers with
+            {
+                AllyCombatants = root.DeepClone().AsObject()
+            },
+            WoundCarrierCatalog.AfterlifeProfilesPath => carriers with
+            {
+                AfterlifeProfiles = root.DeepClone().AsObject()
+            },
+            _ => throw new ArgumentException(
+                "Expected a registered wound carrier path.",
+                nameof(path))
+        };
+
+    private static bool IsRegisteredOwnerPath(WoundOwnerCoordinate owner) =>
+        owner switch
+        {
+            { Realm: "mortal_world", OwnerKind: "player", OwnerId: "player_current",
+                CarrierPath: WoundCarrierCatalog.PlayerPath } => true,
+            { Realm: "mortal_world", OwnerKind: "npc",
+                CarrierPath: WoundCarrierCatalog.NpcPath } => true,
+            { Realm: "mortal_world", OwnerKind: "combatant" or "combatant_member",
+                CarrierPath: WoundCarrierCatalog.EnemiesPath or
+                    WoundCarrierCatalog.AlliesPath } => true,
+            { Realm: "chaos_sea" or "shining_abode",
+                OwnerKind: "guardian" or "resident" or "radiant_actor" or
+                    "afterlife_actor" or "player_soul",
+                CarrierPath: WoundCarrierCatalog.AfterlifeProfilesPath } => true,
+            _ => false
+        } && ResourceMaterializationContract.IsExactIdentifier(owner.OwnerId);
+
+    private static bool RootMatchesPlayer(
+        JsonObject root,
+        WoundOwnerCoordinate owner) =>
+        root["owner"] is JsonObject rootOwner &&
+        ExactString(rootOwner["realm"], owner.Realm) &&
+        ExactString(rootOwner["ownerKind"], owner.OwnerKind) &&
+        ExactString(rootOwner["ownerId"], owner.OwnerId);
+
+    private static IEnumerable<JsonObject> ResolveCombatantOwners(
+        JsonObject root,
+        WoundOwnerCoordinate owner)
+    {
+        var collectionName = string.Equals(
+            owner.CarrierPath,
+            WoundCarrierCatalog.EnemiesPath,
+            StringComparison.Ordinal)
+            ? "enemiesData"
+            : "alliesData";
+        var combatants = (root[collectionName] as JsonArray ?? new JsonArray())
+            .OfType<JsonObject>();
+        if (string.Equals(owner.OwnerKind, "combatant", StringComparison.Ordinal))
+        {
+            return combatants.Where(value =>
+                ExactString(value["combatantId"], owner.OwnerId));
+        }
+
+        return combatants
+            .SelectMany(static value =>
+                (value["members"] as JsonArray ?? new JsonArray())
+                    .OfType<JsonObject>())
+            .Where(value => ExactString(value["memberId"], owner.OwnerId));
+    }
+
+    private static bool AfterlifeProfileMatches(
+        JsonObject profile,
+        WoundOwnerCoordinate owner)
+    {
+        if (!ExactString(profile["actorId"], owner.OwnerId) ||
+            !TryString(profile["actorType"], out var actorType) ||
+            !TryString(profile["realm"], out var realm) ||
+            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(
+                realm,
+                out var normalizedRealm) ||
+            !string.Equals(normalizedRealm, owner.Realm, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var ownerKind = actorType switch
+        {
+            "player_soul" => "player_soul",
+            "guardian" => "guardian",
+            "resident" or "shining_resident" => "resident",
+            "radiant_actor" => "radiant_actor",
+            "shining_faction_head" or "saref_agent" or "system_actor" or
+                "custom_afterlife_actor" => "afterlife_actor",
+            _ => null
+        };
+        return string.Equals(ownerKind, owner.OwnerKind, StringComparison.Ordinal);
+    }
+
+    private static bool ExactString(JsonNode? node, string expected) =>
+        TryString(node, out var actual) &&
+        string.Equals(actual, expected, StringComparison.Ordinal);
+
+    private static bool TryString(
+        JsonNode? node,
+        [NotNullWhen(true)] out string? value)
+    {
+        value = null;
+        return node is JsonValue json &&
+               json.TryGetValue(out value) &&
+               !string.IsNullOrWhiteSpace(value);
+    }
+}
 
 internal sealed class WoundCarrierCatalog
 {

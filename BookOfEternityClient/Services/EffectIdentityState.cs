@@ -48,6 +48,17 @@ internal sealed record EffectIdentityEntry(
     IReadOnlyList<EffectIdentityTransition> Transitions,
     JsonObject Raw);
 
+internal sealed record EffectIdentitySourceCoordinate(
+    string Realm,
+    string Kind,
+    string SourceId,
+    string DefinitionKey);
+
+internal sealed record EffectIdentitySourceGroup(
+    string Realm,
+    string Kind,
+    string SourceId);
+
 internal sealed record EffectIdentityParseResult(
     EffectIdentityState? State,
     IReadOnlyList<ValidationIssue> Issues);
@@ -84,11 +95,53 @@ internal sealed class EffectIdentityState
 
     private readonly JsonObject _root;
     private readonly Dictionary<string, EffectIdentityEntry> _entries;
+    private readonly Dictionary<
+        EffectIdentitySourceCoordinate,
+        EffectIdentityEntry[]> _entriesBySourceCoordinate;
+    private readonly Dictionary<
+        EffectIdentitySourceGroup,
+        EffectIdentityEntry[]> _entriesBySourceGroup;
+    private readonly Dictionary<string, EffectIdentityEntry[]>
+        _firstCreateChildrenByParent;
 
     private EffectIdentityState(JsonObject root, IEnumerable<EffectIdentityEntry> entries)
     {
+        var materialized = entries.ToArray();
         _root = root;
-        _entries = entries.ToDictionary(static entry => entry.EffectId, StringComparer.Ordinal);
+        _entries = materialized.ToDictionary(
+            static entry => entry.EffectId,
+            StringComparer.Ordinal);
+        _entriesBySourceCoordinate = materialized
+            .GroupBy(CreateSourceCoordinate)
+            .ToDictionary(
+                static group => group.Key,
+                static group => group
+                    .OrderBy(static entry => entry.EffectId, StringComparer.Ordinal)
+                    .ToArray());
+        _entriesBySourceGroup = materialized
+            .GroupBy(CreateSourceGroup)
+            .ToDictionary(
+                static group => group.Key,
+                static group => group
+                    .OrderBy(static entry => entry.EffectId, StringComparer.Ordinal)
+                    .ToArray());
+        _firstCreateChildrenByParent = materialized
+            .Where(static entry =>
+                entry.Transitions.Count != 0 &&
+                string.Equals(
+                    entry.Transitions[0].Kind,
+                    "create",
+                    StringComparison.Ordinal))
+            .SelectMany(static entry => entry.Transitions[0].SourceEffectIds
+                .Select(parent => (Parent: parent, Child: entry)))
+            .GroupBy(static pair => pair.Parent, StringComparer.Ordinal)
+            .ToDictionary(
+                static group => group.Key,
+                static group => group
+                    .Select(static pair => pair.Child)
+                    .OrderBy(static entry => entry.EffectId, StringComparer.Ordinal)
+                    .ToArray(),
+                StringComparer.Ordinal);
     }
 
     internal IReadOnlyCollection<EffectIdentityEntry> Entries => _entries.Values;
@@ -96,7 +149,40 @@ internal sealed class EffectIdentityState
     internal bool TryGetEntry(string effectId, out EffectIdentityEntry entry) =>
         _entries.TryGetValue(effectId, out entry!);
 
+    internal IReadOnlyList<EffectIdentityEntry> ResolveSourceCoordinate(
+        EffectIdentitySourceCoordinate coordinate) =>
+        _entriesBySourceCoordinate.TryGetValue(coordinate, out var entries)
+            ? Array.AsReadOnly(entries.ToArray())
+            : Array.Empty<EffectIdentityEntry>();
+
+    internal IReadOnlyList<EffectIdentityEntry> ResolveSourceGroup(
+        EffectIdentitySourceGroup group) =>
+        _entriesBySourceGroup.TryGetValue(group, out var entries)
+            ? Array.AsReadOnly(entries.ToArray())
+            : Array.Empty<EffectIdentityEntry>();
+
+    internal IReadOnlyList<EffectIdentityEntry> ResolveFirstCreateChildren(
+        string parentEffectId) =>
+        _firstCreateChildrenByParent.TryGetValue(parentEffectId, out var entries)
+            ? Array.AsReadOnly(entries.ToArray())
+            : Array.Empty<EffectIdentityEntry>();
+
     internal JsonObject ToJson() => _root.DeepClone().AsObject();
+
+    private static EffectIdentitySourceCoordinate CreateSourceCoordinate(
+        EffectIdentityEntry entry) =>
+        new(
+            entry.Realm,
+            entry.Source["kind"]!.GetValue<string>(),
+            entry.Source["sourceId"]!.GetValue<string>(),
+            entry.Source["definitionKey"]!.GetValue<string>());
+
+    private static EffectIdentitySourceGroup CreateSourceGroup(
+        EffectIdentityEntry entry) =>
+        new(
+            entry.Realm,
+            entry.Source["kind"]!.GetValue<string>(),
+            entry.Source["sourceId"]!.GetValue<string>());
 
     internal static EffectIdentityParseResult Parse(JsonElement root, string path)
     {

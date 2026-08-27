@@ -126,6 +126,39 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
     }
 
     [Fact]
+    public void WoundCommonPlan_PublishesExactFinalTypedCarrierContribution()
+    {
+        var stages = CreateWoundCommonStages(
+            "validated_publication",
+            "validated_publication");
+
+        var plan = CreateWoundCommonPlan(stages.Bundle, afterImageMarker: 1);
+
+        var root = plan.WoundCarrierAfterImages[
+            WoundCarrierCatalog.PlayerPath];
+        var published = Assert.Single(root["activeWounds"]!.AsArray());
+        var expected = Assert.IsType<WoundMaterializationEnvelope>(
+            Assert.Single(Assert.Single(stages.Final.CarrierContributions)
+                .Mutations).AfterWound);
+        Assert.Equal(
+            expected.WoundId,
+            published!["woundId"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void WoundPublication_HasNoAssemblyVisibleRawConstructor()
+    {
+        var constructors = typeof(AcceptedMechanicsWoundPublication)
+            .GetConstructors(
+                BindingFlags.Instance |
+                BindingFlags.Public |
+                BindingFlags.NonPublic);
+
+        Assert.All(constructors, static constructor =>
+            Assert.True(constructor.IsPrivate));
+    }
+
+    [Fact]
     public void WoundCommonPreparedFingerprint_CoversResultMapsAndAfterImages()
     {
         var input = CreateWoundCommonInput("result-map");
@@ -757,19 +790,50 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             new CountingPlanner().Build(input, inputFingerprint).Plan);
         var stateAfterImage = basePlan.StateAfterImage;
         stateAfterImage["woundCommonMarker"] = afterImageMarker;
-        var woundCarrierAfterImages =
-            new Dictionary<string, JsonObject>(StringComparer.Ordinal)
-            {
-                [woundCarrierPath ?? WoundCarrierCatalog.PlayerPath] =
-                    woundStages.Input.PreTurnCarriers.PlayerWounds!
-            };
+        var effectiveEffectPlan = commonEffectPlan ??
+            CompleteEffectPlanForAssembly(
+                woundStages.EffectBatchPlan.EffectPlan);
+        var composition = AcceptedMechanicsCarrierAssembler.Compose(
+            effectiveEffectPlan,
+            basePlan.OwnerCompanionAfterImages,
+            woundStages);
+        Assert.True(
+            composition.Success,
+            string.Join(Environment.NewLine, composition.Issues.Select(
+                static issue => $"{issue.Code}: {issue.Message}")));
+        var effectCarrierAfterImages =
+            composition.EffectCarrierAfterImages.ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal);
+        if (woundCarrierPath is not null)
+        {
+            var competingPath = string.Equals(
+                woundCarrierPath,
+                "game_state/effects/effects.json",
+                StringComparison.Ordinal)
+                ? WoundCarrierCatalog.PlayerPath
+                : woundCarrierPath;
+            effectCarrierAfterImages[competingPath] =
+                new JsonObject { ["schemaVersion"] = 1 };
+        }
         var woundPaths = new[]
         {
             WoundCommonCommandPath,
-            woundCarrierPath ?? WoundCarrierCatalog.PlayerPath,
+            WoundCarrierCatalog.PlayerPath,
             WoundIdentityState.StatePath,
             WoundHistoryState.HistoryPath
-        };
+        }.Concat(woundCarrierPath is null
+            ? Array.Empty<string>()
+            : new[]
+            {
+                string.Equals(
+                    woundCarrierPath,
+                    "game_state/effects/effects.json",
+                    StringComparison.Ordinal)
+                    ? WoundCarrierCatalog.PlayerPath
+                    : woundCarrierPath
+            }).ToArray();
         var touchedWoundPaths = omitWoundCommandTouched
             ? woundPaths.Where(static path =>
                 path != WoundCommonCommandPath).ToArray()
@@ -784,8 +848,8 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             basePlan.DefinitionAfterImage,
             stateAfterImage,
             basePlan.HistoryAfterImage,
-            basePlan.EffectCarrierAfterImages,
-            basePlan.EffectIdentityAfterImage,
+            effectCarrierAfterImages,
+            effectiveEffectPlan.IdentityIndexAfterImage,
             effectivePending,
             basePlan.OwnerCompanionAfterImages,
             basePlan.BeforeImages,
@@ -794,6 +858,7 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                     !omitWoundCommandTouched ||
                     path != WoundCommonCommandPath)
                 .Concat(touchedWoundPaths)
+                .Concat(effectCarrierAfterImages.Keys)
                 .Concat(effectivePending.Keys)
                 .Concat(effectiveOwnerTransitions.Select(static value => value.Path))
                 .ToArray(),
@@ -805,13 +870,34 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             basePlan.ResourceEvents,
             basePlan.ProjectionInput,
             basePlan.OwnerAuthority,
-            commonEffectPlan ?? basePlan.EffectPlan,
+            effectiveEffectPlan,
             effectiveOwnerTransitions,
             basePlan.PendingGmPacket,
             woundStageBundle: woundStages,
-            woundCarrierAfterImages: woundCarrierAfterImages,
-            woundIdentityAfterImage: woundStages.FinalPlan.IdentityIndexAfterImage,
-            woundHistoryAfterImage: woundStages.FinalPlan.HistoryAfterImage);
+            carrierComposition: composition);
+    }
+
+    private static EffectAcceptedTurnPlan CompleteEffectPlanForAssembly(
+        EffectAcceptedTurnPlan source)
+    {
+        var transcriptBuilder = new AcceptedEffectBoundaryTranscript.Builder(
+            AcceptedMechanicsPlanner.CreateEffectPlanAuthority(source));
+        transcriptBuilder.SealUseProjection();
+        var transcript = transcriptBuilder.Freeze();
+        Assert.True(
+            transcript.IsValid,
+            string.Join(Environment.NewLine, transcript.Issues.Select(static issue =>
+                $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}")));
+        var completed = EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
+            source,
+            transcript.Transcript!,
+            new EffectIdentityFactory());
+        Assert.True(
+            completed.Success,
+            string.Join(Environment.NewLine, completed.Issues.Select(static issue =>
+                $"{issue.Code}: {issue.Message}")));
+        Assert.True(completed.Plan!.IsAcceptedBoundaryComplete);
+        return completed.Plan;
     }
 
     private static AcceptedMechanicsInput CreateWoundCommonAcceptedInput(
@@ -825,6 +911,8 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
         var beforeImages = BeforeImages(new byte[] { 4, 5, 6 });
         beforeImages[WoundCommonCommandPath] =
             new CanonicalBeforeImage(true, new byte[] { 8 });
+        beforeImages[EffectCarrierCatalog.PlayerPath] =
+            new CanonicalBeforeImage(true, new byte[] { 15 });
         beforeImages[WoundCarrierCatalog.PlayerPath] =
             new CanonicalBeforeImage(true, new byte[] { 9 });
         beforeImages[WoundIdentityState.StatePath] =
@@ -886,7 +974,7 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             baseline.Sources,
             baseline.Commands,
             baseline.EffectIdentityRoot,
-            baseline.EffectPlan,
+            woundStages.EffectBatchPlan.EffectPlan,
             baseline.CapacityTransitions,
             baseline.OwnerCapacityDrafts,
             baseline.TerminalOwners,

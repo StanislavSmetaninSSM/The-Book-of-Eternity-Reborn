@@ -210,6 +210,12 @@ internal sealed class AcceptedMechanicsPlanCache
                 "accepted_mechanics_wound_command_path_mismatch",
                 "a present wound command root touched, consumed, and protected by one exact before-image");
         }
+        if (!PendingPublicationAuthorityAgrees(input, plan))
+        {
+            return Failed(
+                "accepted_mechanics_pending_authority_mismatch",
+                "pending publication authority for the exact session, request, turn, and full accepted-turn fingerprint");
+        }
         if (!PreparedFingerprintAgrees(result))
         {
             return Failed(
@@ -217,6 +223,16 @@ internal sealed class AcceptedMechanicsPlanCache
                 "one independently recomputed complete prepared-plan fingerprint");
         }
         return result;
+    }
+
+    private static bool PendingPublicationAuthorityAgrees(
+        AcceptedMechanicsInput input,
+        AcceptedMechanicsPlan plan)
+    {
+        var authority = plan.PendingPublicationAuthority;
+        return plan.AwaitsPendingResolution
+            ? authority is not null && authority.AgreesWith(input)
+            : authority is null;
     }
 
     private static bool WoundStagesAgree(
@@ -279,6 +295,13 @@ internal sealed class AcceptedMechanicsPlanCache
         var consumed = plan.ConsumedPaths.Contains(
             AcceptedMechanicsPlan.WoundCommandPath,
             StringComparer.Ordinal);
+        if (plan.AwaitsPendingResolution)
+        {
+            return !touched &&
+                   !consumed &&
+                   (!present || plan.BeforeImages.ContainsKey(
+                       AcceptedMechanicsPlan.WoundCommandPath));
+        }
         return present == touched &&
                present == consumed &&
                (!present || plan.BeforeImages.ContainsKey(

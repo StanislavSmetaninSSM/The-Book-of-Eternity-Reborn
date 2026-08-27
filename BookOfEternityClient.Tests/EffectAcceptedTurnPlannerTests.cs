@@ -227,7 +227,9 @@ public sealed class EffectAcceptedTurnPlannerTests
             identityDocument.RootElement,
             EffectAcceptedTurnPlan.IdentityIndexPath);
         Assert.Empty(parsedIndex.Issues);
-        Assert.Equal(plan.AllocatedEffectIds.Single(), Assert.Single(parsedIndex.State!.Entries).EffectId);
+        var identity = Assert.Single(parsedIndex.State!.Entries);
+        Assert.Equal(plan.AllocatedEffectIds.Single(), identity.EffectId);
+        Assert.Empty(Assert.Single(identity.Transitions).SourceEffectIds);
         Assert.Equal(
             new[]
             {
@@ -975,6 +977,20 @@ public sealed class EffectAcceptedTurnPlannerTests
                 "reaction_child",
                 StringComparison.Ordinal));
         var childEffectId = childEffect["effectId"]!.GetValue<string>();
+        var childIdentity = Assert.Single(
+            finalizedPlan.IdentityIndexAfterImage["entries"]!
+                .AsArray()
+                .OfType<JsonObject>(),
+            value => string.Equals(
+                value["effectId"]?.GetValue<string>(),
+                childEffectId,
+                StringComparison.Ordinal));
+        var childCreate = Assert.IsType<JsonObject>(
+            Assert.Single(childIdentity["transitions"]!.AsArray()));
+        Assert.Equal(
+            effect["effectId"]!.GetValue<string>(),
+            Assert.Single(childCreate["sourceEffectIds"]!.AsArray())!
+                .GetValue<string>());
 
         var nextInput = new EffectAcceptedTurnInput(
             "session_effect_reaction_next",
@@ -1244,6 +1260,12 @@ public sealed class EffectAcceptedTurnPlannerTests
         Assert.True(JsonNode.DeepEquals(
             oldIdentity["stackCoordinate"],
             replacementIdentity["stackCoordinate"]));
+        var replacementCreate = Assert.IsType<JsonObject>(
+            Assert.Single(replacementIdentity["transitions"]!.AsArray()));
+        Assert.Equal(
+            oldEffectId,
+            Assert.Single(replacementCreate["sourceEffectIds"]!.AsArray())!
+                .GetValue<string>());
 
         var nextInput = new EffectAcceptedTurnInput(
             "session_effect_replacement_next",
@@ -1398,6 +1420,172 @@ public sealed class EffectAcceptedTurnPlannerTests
             expectedAuthorityId,
             execution.ReplacementTarget.Authority.AuthorityId);
         Assert.NotEqual(execution.EffectId, execution.ReplacementTargetEffectId);
+    }
+
+    [Fact]
+    public void ApplyDefinitionReaction_DistinctProducerOwnsCreateWhileIncumbentOwnsReplaceSuccession()
+    {
+        const string producerEffectId = "effect_distinct_lineage_producer";
+        const string incumbentEffectId = "effect_distinct_lineage_incumbent";
+        const string producerDefinitionKey =
+            "reaction_distinct_lineage_producer";
+        const string replacementDefinitionKey =
+            "reaction_distinct_lineage_replacement";
+        const string producerStackKey = "reaction-distinct-lineage-producer";
+        const string replacementStackKey =
+            "reaction-distinct-lineage-replacement";
+
+        var producerDefinition = EffectMaterializationTestFixture.CreateDefinition(
+            "event_reaction");
+        producerDefinition["definitionKey"] = producerDefinitionKey;
+        producerDefinition["stacking"]!["stackKey"] = producerStackKey;
+        producerDefinition["components"]![0]!["payload"]!["resultKind"] =
+            "apply_definition";
+        producerDefinition["components"]![0]!["payload"]!["definitionKey"] =
+            replacementDefinitionKey;
+        producerDefinition["components"]![0]!["payload"]!["parameters"] =
+            new JsonObject { ["amount"] = 3 };
+        producerDefinition["components"]![0]!["payload"]!["maxExpansion"] = 2;
+
+        var replacementDefinition =
+            EffectMaterializationTestFixture.CreateDefinition("periodic_restore");
+        replacementDefinition["definitionKey"] = replacementDefinitionKey;
+        replacementDefinition["stacking"]!["stackKey"] = replacementStackKey;
+        replacementDefinition["stacking"]!["policy"] = "replace";
+        replacementDefinition["stacking"]!["maxStacks"] = 1;
+        replacementDefinition["stacking"]!["atMaximum"] = "no_change";
+
+        var producer = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "event_reaction");
+        producer["effectId"] = producerEffectId;
+        producer["source"]!["definitionKey"] = producerDefinitionKey;
+        producer["stacking"]!["stackKey"] = producerStackKey;
+        producer["components"] = producerDefinition["components"]!.DeepClone();
+        producer["triggers"] = producerDefinition["triggers"]!.DeepClone();
+
+        var incumbent = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            profile: "periodic_restore");
+        incumbent["effectId"] = incumbentEffectId;
+        incumbent["source"]!["definitionKey"] = replacementDefinitionKey;
+        incumbent["stacking"]!["stackKey"] = replacementStackKey;
+        incumbent["stacking"]!["policy"] = "replace";
+
+        var baseline = CreateReactionInput(
+            producer,
+            producerDefinition,
+            replacementDefinition);
+        var preTurnIdentityIndex =
+            EffectMaterializationTestFixture.CreateIdentityIndex(
+                producer,
+                incumbent);
+        preTurnIdentityIndex["entries"]![1]!["transitions"]![0]!
+            ["transitionId"] = "effect_transition_distinct_lineage_incumbent";
+        preTurnIdentityIndex["entries"]![1]!["transitions"]![0]!
+            ["eventRef"] = "turn_42:distinct_lineage_incumbent_created";
+        var input = baseline with
+        {
+            PreTurnCarriers = new EffectCarrierCatalogInput(
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["activeEffects"] = new JsonArray(
+                        producer.DeepClone(),
+                        incumbent.DeepClone())
+                },
+                null,
+                null,
+                null,
+                null,
+                null),
+            PreTurnIdentityIndex = preTurnIdentityIndex
+        };
+        var factory = new CountingFactory();
+        var built = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
+        Assert.True(
+            built.Success,
+            string.Join(Environment.NewLine, built.Issues));
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(built.Plan);
+
+        var resourceDefinitions = ResourceDefinitionCatalog.CreateBuiltIn();
+        var due = EffectAcceptedTurnPlanner.ResolveDuePeriodicResourceMutations(
+            plan,
+            ResourceOwnerAuthority.CreateCurrentPlayerAuthority(
+                resourceDefinitions),
+            resourceDefinitions);
+        Assert.True(due.IsValid, string.Join(Environment.NewLine, due.Issues));
+        var reaction = Assert.Single(Assert.Single(
+            due.TriggerCandidates).ReactionOutputs);
+        Assert.Equal(producerEffectId, reaction.EffectId);
+        Assert.Equal(incumbentEffectId, reaction.ReplacementTargetEffectId);
+
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        Assert.True(
+            bootstrap.IsValid,
+            string.Join(Environment.NewLine, bootstrap.Issues));
+        var sources = ResourceMutationSourceCatalog.Create(due.SourceExports);
+        Assert.True(sources.IsValid, string.Join(Environment.NewLine, sources.Issues));
+        var resources = AcceptedMechanicsPlanner.BuildResources(
+            new AcceptedMechanicsResourceInput(
+                Turn: 42,
+                Definitions: bootstrap.Definitions!,
+                State: bootstrap.State!,
+                History: bootstrap.History!,
+                Sources: sources.Catalog!,
+                Mutations: due.Mutations,
+                InitialTriggerCandidates: due.TriggerCandidates,
+                InitialEffectResolutionWork: due.Work,
+                EffectPlanAuthority:
+                    AcceptedMechanicsPlanner.CreateEffectPlanAuthority(plan)),
+            new AcceptedMechanicsIdentityFactory());
+        Assert.True(
+            resources.IsValid,
+            string.Join(Environment.NewLine, resources.Issues));
+
+        var finalized = EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
+            plan,
+            resources.EffectBoundaryTranscript,
+            factory);
+        Assert.True(
+            finalized.Success,
+            string.Join(Environment.NewLine, finalized.Issues.Select(static issue =>
+                $"{issue.Code}@{issue.FilePath}: expected={issue.Expected}; actual={issue.Actual}")));
+        var identities = Assert.IsType<EffectAcceptedTurnPlan>(finalized.Plan)
+            .IdentityIndexAfterImage["entries"]!
+            .AsArray()
+            .OfType<JsonObject>()
+            .ToArray();
+        var replacement = Assert.Single(identities, entry =>
+            string.Equals(
+                entry["source"]?["definitionKey"]?.GetValue<string>(),
+                replacementDefinitionKey,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                entry["state"]?.GetValue<string>(),
+                "active",
+                StringComparison.Ordinal));
+        var replacementEffectId = replacement["effectId"]!.GetValue<string>();
+        Assert.NotEqual(incumbentEffectId, replacementEffectId);
+        var replacementCreate = Assert.IsType<JsonObject>(
+            Assert.Single(replacement["transitions"]!.AsArray()));
+        Assert.Equal(
+            producerEffectId,
+            Assert.Single(replacementCreate["sourceEffectIds"]!.AsArray())!
+                .GetValue<string>());
+
+        var closedIncumbent = Assert.Single(identities, entry => string.Equals(
+            entry["effectId"]?.GetValue<string>(),
+            incumbentEffectId,
+            StringComparison.Ordinal));
+        Assert.Equal("replaced", closedIncumbent["state"]!.GetValue<string>());
+        var replace = closedIncumbent["transitions"]!.AsArray()[^1]!.AsObject();
+        Assert.Equal(
+            incumbentEffectId,
+            Assert.Single(replace["sourceEffectIds"]!.AsArray())!
+                .GetValue<string>());
+        Assert.Equal(
+            replacementEffectId,
+            Assert.Single(replace["resultEffectIds"]!.AsArray())!
+                .GetValue<string>());
     }
 
     [Fact]

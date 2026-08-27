@@ -492,19 +492,32 @@ internal static class WoundAcceptedTurnPlannerCore
         var expectedApplications = prepared.EffectOperationBatches
             .SelectMany(static batch => batch.RootApplications)
             .ToArray();
+        var expectedTerminations = prepared.EffectOperationBatches
+            .SelectMany(static batch => batch.TerminalOperations)
+            .ToArray();
         var applications = accepted.ApplicationResults;
         var terminations = accepted.TerminationResults;
         if (applications.Count != expectedApplications.Length ||
-            terminations.Count != prepared.EffectOperationBatches.Sum(static batch =>
-                batch.TerminalOperations.Count) ||
+            terminations.Count != expectedTerminations.Length ||
             !ExactAndConfusableUnique(applications.Select(static value => value.ApplicationRef)) ||
             !ExactAndConfusableUnique(applications.Select(static value => value.EffectId)) ||
             !ExactAndConfusableUnique(applications.Select(static value => value.CreateTransitionId)) ||
             !ExactAndConfusableUnique(applications.Select(static value => value.CreatedEventRef)) ||
+            !ExactAndConfusableUnique(terminations.Select(static value => value.OperationRef)) ||
+            !ExactAndConfusableUnique(terminations.Select(static value => value.EffectId)) ||
+            !ExactAndConfusableUnique(terminations.Select(static value =>
+                value.TerminalTransitionId)) ||
             !applications.Select(static value => value.ApplicationRef)
                 .SequenceEqual(
                     expectedApplications.Select(static value => value.ApplicationRef),
-                    StringComparer.Ordinal))
+                    StringComparer.Ordinal) ||
+            !terminations.Select(static value => value.OperationRef)
+                .SequenceEqual(
+                    expectedTerminations.Select(static value => value.OperationRef),
+                    StringComparer.Ordinal) ||
+            applications.Select(static value => value.EffectId).Intersect(
+                terminations.Select(static value => value.EffectId),
+                StringComparer.Ordinal).Any())
         {
             return FailedFinal(
                 "wound_plan_effect_result_set_mismatch",
@@ -524,6 +537,17 @@ internal static class WoundAcceptedTurnPlannerCore
                 "created_new_identity",
                 string.Join(",", applications.Select(static value => value.Disposition)));
         }
+        if (terminations.Any(static value => !string.Equals(
+                value.Disposition,
+                "expired",
+                StringComparison.Ordinal)))
+        {
+            return FailedFinal(
+                "wound_plan_effect_result_disposition_mismatch",
+                "Every typed wound terminal operation must expire its exact effect identity.",
+                "expired",
+                string.Join(",", terminations.Select(static value => value.Disposition)));
+        }
 
         var derived = DeriveEffectResults(prepared, accepted.EffectPlan);
         if (derived.Issues.Count != 0)
@@ -535,6 +559,17 @@ internal static class WoundAcceptedTurnPlannerCore
                 "A carried wound application result disagrees with its prepared root or detached after-images.",
                 "exact application, event, source, target, carrier, and materialization agreement",
                 "well-formed but divergent application result");
+        }
+        if (!TerminationsAgree(
+                expectedTerminations,
+                terminations,
+                derived.Terminations))
+        {
+            return FailedFinal(
+                "wound_plan_effect_result_agreement_mismatch",
+                "A carried wound termination result disagrees with its prepared operation or detached before/after evidence.",
+                "exact operation, terminal transition, event, source, target, and carrier agreement",
+                "well-formed but divergent termination result");
         }
 
         return ComposeFinalPlan(prepared, accepted, applications);
@@ -671,6 +706,45 @@ internal static class WoundAcceptedTurnPlannerCore
                     value.Materialization.SlotBindings,
                     root.SlotBindings) ||
                 !ApplicationResultsEqual(value, actual))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static bool TerminationsAgree(
+        IReadOnlyList<WoundTerminalEffectOperation> expected,
+        IReadOnlyList<EffectAcceptedTerminationResult> carried,
+        IReadOnlyList<EffectAcceptedTerminationResult> derived)
+    {
+        if (expected.Count != carried.Count || carried.Count != derived.Count)
+            return false;
+        for (var index = 0; index < expected.Count; index++)
+        {
+            var operation = expected[index];
+            var value = carried[index];
+            if (!string.Equals(
+                    value.OperationRef,
+                    operation.OperationRef,
+                    StringComparison.Ordinal) ||
+                !string.Equals(value.Disposition, "expired", StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.EffectId,
+                    operation.EffectId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.TransitionEventRef,
+                    operation.OperationRef,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.CausalEventRef,
+                    operation.CausalEventRef,
+                    StringComparison.Ordinal) ||
+                value.SourceKey != operation.ExpectedSourceKey ||
+                value.TargetKey != operation.ExpectedTargetKey ||
+                value.CarrierCoordinate != operation.ExpectedCarrierCoordinate ||
+                value != derived[index])
             {
                 return false;
             }
@@ -1052,20 +1126,8 @@ internal static class WoundAcceptedTurnPlannerCore
 
     private static string ComputeWoundCollectionFingerprint(
         WoundCarrierCatalogInput baseline,
-        WoundOwnerCoordinate owner)
-    {
-        var collection = ResolveWoundCollection(baseline, owner);
-        return WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
-        {
-            "book_of_eternity.wound.carrier_collection",
-            "1",
-            owner.Realm,
-            owner.OwnerKind,
-            owner.OwnerId,
-            owner.CarrierPath,
-            WoundAcceptedTurnFingerprintWriter.CanonicalJson(collection)
-        });
-    }
+        WoundOwnerCoordinate owner) =>
+        WoundCarrierCollectionAuthority.ComputeFingerprint(baseline, owner);
 
     private static WoundCarrierCatalogInput ApplyFinalWounds(
         WoundCarrierCatalogInput baseline,
@@ -1079,105 +1141,10 @@ internal static class WoundAcceptedTurnPlannerCore
             baseline.AfterlifeProfiles?.DeepClone().AsObject());
         foreach (var wound in wounds)
         {
-            ResolveWoundCollection(result, wound.Owner).Add(
+            WoundCarrierCollectionAuthority.Resolve(result, wound.Owner).Add(
                 JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(wound)));
         }
         return result;
-    }
-
-    private static JsonArray ResolveWoundCollection(
-        WoundCarrierCatalogInput carriers,
-        WoundOwnerCoordinate owner)
-    {
-        switch (owner.OwnerKind)
-        {
-            case "player":
-                if (carriers.PlayerWounds?["activeWounds"] is JsonArray player)
-                    return player;
-                break;
-            case "npc":
-                if (carriers.NpcWounds?["entries"] is JsonArray npcEntries)
-                {
-                    var npc = npcEntries.OfType<JsonObject>().SingleOrDefault(value =>
-                        string.Equals(
-                            value["npcId"]?.GetValue<string>(),
-                            owner.OwnerId,
-                            StringComparison.Ordinal));
-                    if (npc?["activeWounds"] is JsonArray npcWounds)
-                        return npcWounds;
-                }
-                break;
-            case "guardian":
-            case "resident":
-            case "radiant_actor":
-            case "afterlife_actor":
-            case "player_soul":
-                if (carriers.AfterlifeProfiles?["profiles"] is JsonArray profiles)
-                {
-                    var profile = profiles.OfType<JsonObject>().SingleOrDefault(value =>
-                        string.Equals(
-                            value["actorId"]?.GetValue<string>(),
-                            owner.OwnerId,
-                            StringComparison.Ordinal));
-                    if (profile?["activeWounds"] is JsonArray afterlifeWounds)
-                        return afterlifeWounds;
-                }
-                break;
-            case "combatant":
-            case "combatant_member":
-            {
-                var root = string.Equals(
-                    owner.CarrierPath,
-                    WoundCarrierCatalog.EnemiesPath,
-                    StringComparison.Ordinal)
-                    ? carriers.EnemyCombatants
-                    : carriers.AllyCombatants;
-                var combatantWounds = ResolveCombatantWoundCollection(
-                    root,
-                    owner.OwnerId,
-                    string.Equals(owner.OwnerKind, "combatant_member", StringComparison.Ordinal));
-                if (combatantWounds is not null)
-                    return combatantWounds;
-                break;
-            }
-        }
-        throw new InvalidOperationException("The sealed wound owner carrier collection is absent.");
-    }
-
-    private static JsonArray? ResolveCombatantWoundCollection(
-        JsonObject? root,
-        string ownerId,
-        bool member)
-    {
-        if (root is null)
-            return null;
-        foreach (var name in new[] { "enemiesData", "alliesData" })
-        {
-            if (root[name] is not JsonArray combatants)
-                continue;
-            foreach (var combatant in combatants.OfType<JsonObject>())
-            {
-                if (!member &&
-                    string.Equals(
-                        combatant["combatantId"]?.GetValue<string>(),
-                        ownerId,
-                        StringComparison.Ordinal) &&
-                    combatant["activeWounds"] is JsonArray direct)
-                {
-                    return direct;
-                }
-                if (!member || combatant["members"] is not JsonArray members)
-                    continue;
-                var memberNode = members.OfType<JsonObject>().SingleOrDefault(value =>
-                    string.Equals(
-                        value["memberId"]?.GetValue<string>(),
-                        ownerId,
-                        StringComparison.Ordinal));
-                if (memberNode?["activeWounds"] is JsonArray nested)
-                    return nested;
-            }
-        }
-        return null;
     }
 
     private static WoundAcceptedTurnPlanningResult FailedFinal(
@@ -2325,19 +2292,59 @@ internal static class WoundAcceptedTurnPlannerCore
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(authority);
 
+        if (authority.Issues.Count != 0 ||
+            ValidatePreparedAuthority(prepared).Count != 0)
+        {
+            return false;
+        }
+
         var expected = new List<(
             EffectSourceKey Key,
             string SourceRef,
             JsonObject Definition)>();
+        var expectedGroups = new List<WoundSourceGroupAuthority>();
         foreach (var batch in prepared.EffectOperationBatches)
         {
             var export = batch.SourceExport;
             if (!string.Equals(export.Kind, "wound", StringComparison.Ordinal) ||
                 export.Materializable ||
-                !string.Equals(export.SourceRef, batch.LocalWoundRef, StringComparison.Ordinal))
+                !string.Equals(
+                    export.SourceRef,
+                    batch.LocalWoundRef,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    WoundAcceptedTurnFingerprints.ComputeSourceExport(batch),
+                    batch.SourceExportFingerprint,
+                    StringComparison.Ordinal) ||
+                !WoundEffectCarrierAdapter.TryCreateTargetKey(
+                    export.Owner,
+                    out var target))
             {
                 return false;
             }
+
+            var definitions = export.Definitions
+                .Select(static definition => new WoundEffectSourceDefinition(
+                    definition.DefinitionKey,
+                    definition.Definition))
+                .ToArray();
+            expectedGroups.Add(new WoundSourceGroupAuthority(
+                new EffectIdentitySourceGroup(
+                    export.Realm,
+                    export.Kind,
+                    export.SourceId),
+                export.Owner,
+                target,
+                sameTurn: true,
+                export.SourceRef,
+                batch.SourceExportFingerprint,
+                definitions,
+                batch.RootLineageAuthority
+                    .Where(static row => row.ApplicationRef is not null)
+                    .ToArray(),
+                batch.RootLineageAuthority
+                    .Where(static row => row.EffectId is not null)
+                    .ToArray()));
 
             foreach (var definition in export.Definitions)
             {
@@ -2349,6 +2356,27 @@ internal static class WoundAcceptedTurnPlannerCore
                         definition.DefinitionKey),
                     batch.LocalWoundRef,
                     definition.Definition));
+            }
+        }
+
+        var orderedExpectedGroups = expectedGroups
+            .OrderBy(static group => group.Key.Realm, StringComparer.Ordinal)
+            .ThenBy(static group => group.Key.SourceId, StringComparer.Ordinal)
+            .ToArray();
+        var actualGroups = authority.SnapshotWoundGroupAuthorities()
+            .Where(static group => group.SameTurn)
+            .OrderBy(static group => group.Key.Realm, StringComparer.Ordinal)
+            .ThenBy(static group => group.Key.SourceId, StringComparer.Ordinal)
+            .ToArray();
+        if (actualGroups.Length != orderedExpectedGroups.Length)
+            return false;
+        for (var index = 0; index < orderedExpectedGroups.Length; index++)
+        {
+            if (!WoundGroupsAgree(
+                    orderedExpectedGroups[index],
+                    actualGroups[index]))
+            {
+                return false;
             }
         }
 
@@ -2387,11 +2415,64 @@ internal static class WoundAcceptedTurnPlannerCore
         return true;
     }
 
+    private static bool WoundGroupsAgree(
+        WoundSourceGroupAuthority expected,
+        WoundSourceGroupAuthority actual)
+    {
+        if (expected.Key != actual.Key ||
+            expected.Owner != actual.Owner ||
+            expected.Target != actual.Target ||
+            expected.SameTurn != actual.SameTurn ||
+            !string.Equals(
+                expected.SourceRef,
+                actual.SourceRef,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                expected.PreparedSourceExportFingerprint,
+                actual.PreparedSourceExportFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                actual.GraphAuthorityFingerprint,
+                actual.RecomputeGraphAuthorityFingerprint(),
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                expected.GraphAuthorityFingerprint,
+                actual.GraphAuthorityFingerprint,
+                StringComparison.Ordinal) ||
+            expected.Definitions.Count != actual.Definitions.Count ||
+            expected.ApplicationRootLineage.Count !=
+                actual.ApplicationRootLineage.Count ||
+            expected.ExistingRootLineage.Count !=
+                actual.ExistingRootLineage.Count)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < expected.Definitions.Count; index++)
+        {
+            if (!string.Equals(
+                    expected.Definitions[index].DefinitionKey,
+                    actual.Definitions[index].DefinitionKey,
+                    StringComparison.Ordinal) ||
+                !JsonNode.DeepEquals(
+                    expected.Definitions[index].Definition,
+                    actual.Definitions[index].Definition))
+            {
+                return false;
+            }
+        }
+
+        return expected.ApplicationRootLineage.SequenceEqual(
+                   actual.ApplicationRootLineage) &&
+               expected.ExistingRootLineage.SequenceEqual(
+                   actual.ExistingRootLineage);
+    }
+
     private static bool EventInputAgrees(
         WoundAcceptedTurnBinding binding,
         JsonObject eventInput)
     {
-        if (eventInput.Count != 2 ||
+        if (eventInput.Count < 2 ||
             !eventInput.ContainsKey("turn") ||
             !eventInput.ContainsKey("events") ||
             !TryInt(eventInput["turn"], out var turn) || turn != binding.Turn ||
@@ -2428,19 +2509,15 @@ internal static class WoundAcceptedTurnPlannerCore
     {
         try
         {
-            if (prepared.EffectOperationBatches.Any(static batch =>
-                    batch.TerminalOperations.Count != 0))
-            {
-                return FailedDerivation(
-                    "Current accepted create drafts must not contain terminal operations.");
-            }
-
             var carrierCatalog = EffectCarrierCatalog.Build(effectPlan.ResourceTriggerCarriers);
             if (carrierCatalog.Issues.Count != 0)
                 return FailedDerivation("The detached effect carrier after-images are invalid.");
             var publicationCarrierCatalog = BuildPublicationCarrierCatalog(effectPlan);
             if (publicationCarrierCatalog.Issues.Count != 0)
                 return FailedDerivation("The detached publication carrier after-images are invalid.");
+            var beforeCarrierCatalog = BuildBeforeCarrierCatalog(effectPlan);
+            if (beforeCarrierCatalog.Issues.Count != 0)
+                return FailedDerivation("The detached effect carrier before-images are invalid.");
 
             EffectIdentityParseResult identityParse;
             using (var document = JsonDocument.Parse(
@@ -2452,6 +2529,25 @@ internal static class WoundAcceptedTurnPlannerCore
             }
             if (identityParse.State is null || identityParse.Issues.Count != 0)
                 return FailedDerivation("The detached effect identity after-image is invalid.");
+
+            EffectIdentityParseResult identityBeforeParse;
+            using (var document = JsonDocument.Parse(
+                       (effectPlan.IdentityIndexBeforeImage ?? new JsonObject
+                       {
+                           ["schemaVersion"] = 1,
+                           ["entries"] = new JsonArray()
+                       }).ToJsonString()))
+            {
+                identityBeforeParse = EffectIdentityState.Parse(
+                    document.RootElement,
+                    EffectAcceptedTurnPlan.IdentityIndexPath);
+            }
+            if (identityBeforeParse.State is null ||
+                identityBeforeParse.Issues.Count != 0)
+            {
+                return FailedDerivation(
+                    "The detached effect identity before-image is invalid.");
+            }
 
             var applications = new List<EffectAcceptedApplicationResult>();
             foreach (var batch in prepared.EffectOperationBatches)
@@ -2628,22 +2724,145 @@ internal static class WoundAcceptedTurnPlannerCore
                 }
             }
 
+            var terminations = new List<EffectAcceptedTerminationResult>();
+            foreach (var expected in prepared.EffectOperationBatches
+                         .SelectMany(static batch => batch.TerminalOperations))
+            {
+                if (!beforeCarrierCatalog.TryResolveOne(
+                        expected.EffectId,
+                        out var beforeOccurrence) ||
+                    !identityBeforeParse.State.TryGetEntry(
+                        expected.EffectId,
+                        out var beforeIdentity) ||
+                    !WoundEffectTerminalOperationPlanner.OccurrenceAndIdentityAgree(
+                        beforeOccurrence,
+                        beforeIdentity,
+                        expected.ExpectedSourceKey,
+                        expected.ExpectedTargetKey,
+                        expected.ExpectedCarrierCoordinate,
+                        expected.ExpectedIdentityOwner,
+                        expected.ExpectedStackCoordinate) ||
+                    !string.Equals(
+                        beforeOccurrence.FilePath,
+                        expected.ExpectedCarrierFilePath,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        beforeOccurrence.JsonPath,
+                        expected.ExpectedCarrierJsonPath,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        WoundEffectTerminalOperationPlanner.ComputeEffectFingerprint(
+                            beforeOccurrence),
+                        expected.ExpectedEffectFingerprint,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        WoundEffectTerminalOperationPlanner.ComputeIdentityFingerprint(
+                            beforeIdentity),
+                        expected.ExpectedIdentityFingerprint,
+                        StringComparison.Ordinal))
+                {
+                    return FailedDerivation(
+                        "A prepared terminal operation disagrees with its sealed before-image occurrence or identity.");
+                }
+
+                if (carrierCatalog.TryResolveOne(expected.EffectId, out _) ||
+                    publicationCarrierCatalog.TryResolveOne(expected.EffectId, out _) ||
+                    effectPlan.ActiveEffects.Any(effect => string.Equals(
+                        effect["effectId"]?.GetValue<string>(),
+                        expected.EffectId,
+                        StringComparison.Ordinal)) ||
+                    !identityParse.State.TryGetEntry(
+                        expected.EffectId,
+                        out var afterIdentity))
+                {
+                    return FailedDerivation(
+                        "A terminalized wound-owned effect remains active or lacks retained identity history.");
+                }
+
+                var transitions = afterIdentity.Transitions.Where(transition =>
+                        string.Equals(
+                            transition.EventRef,
+                            expected.OperationRef,
+                            StringComparison.Ordinal))
+                    .ToArray();
+                if (transitions.Length != 1)
+                {
+                    return FailedDerivation(
+                        "A terminalized wound-owned effect lacks one exact terminal transition event.");
+                }
+                var transition = transitions[0];
+                if (!string.Equals(afterIdentity.State, "expired", StringComparison.Ordinal) ||
+                    !string.Equals(transition.Kind, "expire", StringComparison.Ordinal) ||
+                    transition.Turn != prepared.Binding.Turn ||
+                    transition.SourceEffectIds.Count != 1 ||
+                    !string.Equals(
+                        transition.SourceEffectIds[0],
+                        expected.EffectId,
+                        StringComparison.Ordinal) ||
+                    transition.ResultEffectIds.Count != 0 ||
+                    transition.ReceiptId is not null ||
+                    !effectPlan.AllocatedTransitionIds.Contains(
+                        transition.TransitionId,
+                        StringComparer.Ordinal) ||
+                    beforeIdentity.Transitions.Any(value => string.Equals(
+                        value.EventRef,
+                        expected.OperationRef,
+                        StringComparison.Ordinal)))
+                {
+                    return FailedDerivation(
+                        "A terminalized wound-owned effect has divergent terminal chronology.");
+                }
+
+                var expectedAfterIdentity = beforeIdentity.Raw.DeepClone().AsObject();
+                expectedAfterIdentity["state"] = "expired";
+                expectedAfterIdentity["transitions"]!.AsArray().Add(
+                    transition.Raw.DeepClone());
+                if (!JsonNode.DeepEquals(
+                        expectedAfterIdentity,
+                        afterIdentity.Raw))
+                {
+                    return FailedDerivation(
+                        "A terminal operation changed effect identity authority beyond the exact appended transition.");
+                }
+
+                terminations.Add(new EffectAcceptedTerminationResult(
+                    expected.OperationRef,
+                    "expired",
+                    expected.EffectId,
+                    transition.TransitionId,
+                    transition.EventRef,
+                    expected.CausalEventRef,
+                    expected.ExpectedSourceKey,
+                    expected.ExpectedTargetKey,
+                    expected.ExpectedCarrierCoordinate));
+            }
+
             if (!ExactAndConfusableUnique(applications.Select(static value => value.ApplicationRef)) ||
                 !ExactAndConfusableUnique(applications.Select(static value => value.EffectId)) ||
                 !ExactAndConfusableUnique(applications.Select(static value => value.CreateTransitionId)) ||
-                !ExactAndConfusableUnique(applications.Select(static value => value.CreatedEventRef)))
+                !ExactAndConfusableUnique(applications.Select(static value => value.CreatedEventRef)) ||
+                !ExactAndConfusableUnique(terminations.Select(static value => value.OperationRef)) ||
+                !ExactAndConfusableUnique(terminations.Select(static value => value.EffectId)) ||
+                !ExactAndConfusableUnique(terminations.Select(static value =>
+                    value.TerminalTransitionId)) ||
+                applications.Select(static value => value.EffectId).Intersect(
+                    terminations.Select(static value => value.EffectId),
+                    StringComparer.Ordinal).Any())
             {
-                return FailedDerivation("Created effect result identities are duplicate or confusable.");
+                return FailedDerivation(
+                    "Created or terminal effect result identities are duplicate, confusable, or overlapping.");
             }
 
             if (!PreparedWoundEffectViewsAgree(
                     prepared,
                     applications,
+                    terminations,
+                    identityBeforeParse.State,
+                    beforeCarrierCatalog,
                     effectPlan.ActiveEffects,
-                    carrierCatalog.Occurrences.Select(static occurrence => occurrence.Effect),
-                    publicationCarrierCatalog.Occurrences.Select(static occurrence =>
-                        occurrence.Effect),
-                    identityParse.State.Entries.Select(static entry => entry.Raw)))
+                    carrierCatalog,
+                    publicationCarrierCatalog,
+                    identityParse.State))
             {
                 return FailedDerivation(
                     "Prepared wound-owned effects are not the exact reciprocal root set in active, carrier, and identity after-images.");
@@ -2651,7 +2870,7 @@ internal static class WoundAcceptedTurnPlannerCore
 
             return new EffectDerivation(
                 applications,
-                Array.Empty<EffectAcceptedTerminationResult>(),
+                terminations,
                 Array.Empty<ValidationIssue>());
         }
         catch (Exception exception) when (
@@ -2665,43 +2884,141 @@ internal static class WoundAcceptedTurnPlannerCore
     private static bool PreparedWoundEffectViewsAgree(
         WoundPreparedAcceptedTurnPlan prepared,
         IReadOnlyList<EffectAcceptedApplicationResult> applications,
+        IReadOnlyList<EffectAcceptedTerminationResult> terminations,
+        EffectIdentityState identityBefore,
+        EffectCarrierCatalog beforeCarrierCatalog,
         IEnumerable<JsonObject> activeEffects,
-        IEnumerable<JsonObject> carrierEffects,
-        IEnumerable<JsonObject> publicationCarrierEffects,
-        IEnumerable<JsonObject> identityEntries)
+        EffectCarrierCatalog carrierCatalog,
+        EffectCarrierCatalog publicationCarrierCatalog,
+        EffectIdentityState identityAfter)
     {
         var preparedWoundIds = prepared.AllocatedWoundIds.ToHashSet(StringComparer.Ordinal);
         var preparedWoundAliases = preparedWoundIds
             .Select(MortalLocationIdentityState.BuildConfusableKey)
             .ToHashSet(StringComparer.Ordinal);
-        var expectedEffectIds = applications
+        var applicationIds = applications
             .Select(static application => application.EffectId)
             .ToHashSet(StringComparer.Ordinal);
+        var terminationIds = terminations
+            .Select(static termination => termination.EffectId)
+            .ToHashSet(StringComparer.Ordinal);
+        if (!TryCollectPreparedWoundOwnedEffectIds(
+                identityBefore.Entries.Select(static entry => entry.Raw),
+                preparedWoundIds,
+                preparedWoundAliases,
+                out var beforeIdentityIds) ||
+            !TryCollectPreparedWoundOwnedEffectIds(
+                identityBefore.Entries
+                    .Where(static entry => entry.State is "active" or "suspended")
+                    .Select(static entry => entry.Raw),
+                preparedWoundIds,
+                preparedWoundAliases,
+                out var beforeActiveIdentityIds) ||
+            !terminationIds.IsSubsetOf(beforeActiveIdentityIds))
+        {
+            return false;
+        }
+        var expectedActiveIds = beforeActiveIdentityIds
+            .Except(terminationIds, StringComparer.Ordinal)
+            .Concat(applicationIds)
+            .ToHashSet(StringComparer.Ordinal);
+        var expectedIdentityIds = beforeIdentityIds
+            .Concat(applicationIds)
+            .ToHashSet(StringComparer.Ordinal);
+        var afterIdentityEntries = identityAfter.Entries
+            .Select(static entry => entry.Raw)
+            .ToArray();
 
         return TryCollectPreparedWoundOwnedEffectIds(
                    activeEffects,
                    preparedWoundIds,
                    preparedWoundAliases,
                    out var activeEffectIds) &&
-               activeEffectIds.SetEquals(expectedEffectIds) &&
+               activeEffectIds.SetEquals(applicationIds) &&
                TryCollectPreparedWoundOwnedEffectIds(
-                   carrierEffects,
+                   carrierCatalog.Occurrences.Select(static occurrence =>
+                       occurrence.Effect),
                    preparedWoundIds,
                    preparedWoundAliases,
                    out var carrierEffectIds) &&
-               carrierEffectIds.SetEquals(expectedEffectIds) &&
+               carrierEffectIds.SetEquals(expectedActiveIds) &&
                TryCollectPreparedWoundOwnedEffectIds(
-                   publicationCarrierEffects,
+                   publicationCarrierCatalog.Occurrences.Select(static occurrence =>
+                       occurrence.Effect),
                    preparedWoundIds,
                    preparedWoundAliases,
                    out var publicationCarrierEffectIds) &&
-               publicationCarrierEffectIds.SetEquals(expectedEffectIds) &&
+               publicationCarrierEffectIds.SetEquals(expectedActiveIds) &&
                TryCollectPreparedWoundOwnedEffectIds(
-                   identityEntries,
+                   afterIdentityEntries,
                    preparedWoundIds,
                    preparedWoundAliases,
                    out var identityEffectIds) &&
-               identityEffectIds.SetEquals(expectedEffectIds);
+               identityEffectIds.SetEquals(expectedIdentityIds) &&
+               TryCollectPreparedWoundOwnedEffectIds(
+                   afterIdentityEntries.Where(static entry =>
+                       entry["state"]?.GetValue<string>() is
+                           "active" or "suspended"),
+                   preparedWoundIds,
+                   preparedWoundAliases,
+                   out var activeIdentityEffectIds) &&
+               activeIdentityEffectIds.SetEquals(expectedActiveIds) &&
+               SurvivingWoundEffectViewsAgree(
+                   beforeActiveIdentityIds,
+                   terminationIds,
+                   identityBefore,
+                   identityAfter,
+                   beforeCarrierCatalog,
+                   carrierCatalog,
+                   publicationCarrierCatalog);
+    }
+
+    private static bool SurvivingWoundEffectViewsAgree(
+        IReadOnlySet<string> beforeActiveIdentityIds,
+        IReadOnlySet<string> terminationIds,
+        EffectIdentityState identityBefore,
+        EffectIdentityState identityAfter,
+        EffectCarrierCatalog beforeCarrierCatalog,
+        EffectCarrierCatalog carrierCatalog,
+        EffectCarrierCatalog publicationCarrierCatalog)
+    {
+        foreach (var effectId in beforeActiveIdentityIds)
+        {
+            if (terminationIds.Contains(effectId))
+                continue;
+
+            if (!identityBefore.TryGetEntry(effectId, out var beforeIdentity) ||
+                !identityAfter.TryGetEntry(effectId, out var afterIdentity) ||
+                !JsonNode.DeepEquals(beforeIdentity.Raw, afterIdentity.Raw) ||
+                !beforeCarrierCatalog.TryResolveOne(
+                    effectId,
+                    out var beforeOccurrence) ||
+                !carrierCatalog.TryResolveOne(effectId, out var afterOccurrence) ||
+                !publicationCarrierCatalog.TryResolveOne(
+                    effectId,
+                    out var publicationOccurrence) ||
+                beforeOccurrence.Coordinate != afterOccurrence.Coordinate ||
+                beforeOccurrence.Coordinate != publicationOccurrence.Coordinate ||
+                !string.Equals(
+                    beforeOccurrence.FilePath,
+                    afterOccurrence.FilePath,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    beforeOccurrence.FilePath,
+                    publicationOccurrence.FilePath,
+                    StringComparison.Ordinal) ||
+                !JsonNode.DeepEquals(
+                    beforeOccurrence.Effect,
+                    afterOccurrence.Effect) ||
+                !JsonNode.DeepEquals(
+                    beforeOccurrence.Effect,
+                    publicationOccurrence.Effect))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static bool TryCollectPreparedWoundOwnedEffectIds(
@@ -2761,6 +3078,24 @@ internal static class WoundAcceptedTurnPlannerCore
             Read(EffectCarrierCatalog.SpiritualConflictPath)));
     }
 
+    private static EffectCarrierCatalog BuildBeforeCarrierCatalog(
+        EffectAcceptedTurnPlan effectPlan)
+    {
+        var beforeImages = effectPlan.CarrierBeforeImages;
+        JsonObject? Read(string path) =>
+            beforeImages.TryGetValue(path, out var root)
+                ? root?.DeepClone().AsObject()
+                : null;
+
+        return EffectCarrierCatalog.Build(new EffectCarrierCatalogInput(
+            Read(EffectCarrierCatalog.PlayerPath),
+            Read(EffectCarrierCatalog.NpcPath),
+            Read(EffectCarrierCatalog.EnemiesPath),
+            Read(EffectCarrierCatalog.AlliesPath),
+            Read(EffectCarrierCatalog.AfterlifeProfilesPath),
+            Read(EffectCarrierCatalog.SpiritualConflictPath)));
+    }
+
     private static EffectDerivation FailedDerivation(string actual) =>
         new(
             Array.Empty<EffectAcceptedApplicationResult>(),
@@ -2774,7 +3109,7 @@ internal static class WoundAcceptedTurnPlannerCore
                     actual)
             });
 
-    private static bool IdentityAgrees(
+    internal static bool IdentityAgrees(
         EffectIdentityEntry identity,
         JsonObject effect,
         EffectCarrierCoordinate coordinate,
@@ -2972,70 +3307,18 @@ internal static class WoundAcceptedTurnPlannerCore
         WoundCarrierCatalogInput carriers,
         WoundOwnerCoordinate owner)
     {
-        if (owner is null || !Exact(owner.OwnerId) || !Exact(owner.OwnerKind))
+        if (owner is null)
             return false;
-        if (!string.Equals(owner.CarrierPath, ExpectedWoundCarrierPath(owner), StringComparison.Ordinal))
-            return false;
-
-        return owner.OwnerKind switch
-        {
-            "player" =>
-                string.Equals(owner.Realm, "mortal_world", StringComparison.Ordinal) &&
-                string.Equals(owner.OwnerId, "player_current", StringComparison.Ordinal) &&
-                carriers.PlayerWounds?["activeWounds"] is JsonArray,
-            "npc" =>
-                string.Equals(owner.Realm, "mortal_world", StringComparison.Ordinal) &&
-                carriers.NpcWounds?["entries"] is JsonArray npcEntries &&
-                     npcEntries.OfType<JsonObject>().Any(value =>
-                         string.Equals(
-                             value["npcId"]?.GetValue<string>(),
-                             owner.OwnerId,
-                             StringComparison.Ordinal) &&
-                         value["activeWounds"] is JsonArray),
-            "guardian" or "resident" or "radiant_actor" or "afterlife_actor" or
-                "player_soul" =>
-                owner.Realm is "chaos_sea" or "shining_abode" &&
-                carriers.AfterlifeProfiles?["profiles"] is JsonArray profiles &&
-                profiles.OfType<JsonObject>().Any(value =>
-                    AfterlifeEntityProfileState.TryResolveEffectTarget(
-                        value,
-                        out var target) &&
-                    target == CreateTargetKey(owner) &&
-                    value["activeWounds"] is JsonArray),
-            "combatant" or "combatant_member" when
-                string.Equals(owner.Realm, "mortal_world", StringComparison.Ordinal) =>
-                owner.CarrierPath switch
-            {
-                WoundCarrierCatalog.EnemiesPath => ResolveCombatantWoundCollection(
-                    carriers.EnemyCombatants,
-                    owner.OwnerId,
-                    string.Equals(
-                        owner.OwnerKind,
-                        "combatant_member",
-                        StringComparison.Ordinal)) is not null,
-                WoundCarrierCatalog.AlliesPath => ResolveCombatantWoundCollection(
-                    carriers.AllyCombatants,
-                    owner.OwnerId,
-                    string.Equals(
-                        owner.OwnerKind,
-                        "combatant_member",
-                        StringComparison.Ordinal)) is not null,
-                _ => false
-            },
-            _ => false
-        };
+        var root = WoundCarrierCollectionAuthority.GetRoot(
+            carriers,
+            owner.CarrierPath);
+        return root is not null &&
+               WoundCarrierCollectionAuthority.TryResolve(
+                   root,
+                   owner,
+                   out _,
+                   out _);
     }
-
-    private static string ExpectedWoundCarrierPath(WoundOwnerCoordinate owner) =>
-        owner.OwnerKind switch
-        {
-            "player" => WoundCarrierCatalog.PlayerPath,
-            "npc" => WoundCarrierCatalog.NpcPath,
-            "combatant" or "combatant_member" => owner.CarrierPath,
-            "guardian" or "resident" or "radiant_actor" or "afterlife_actor" or
-                "player_soul" => WoundCarrierCatalog.AfterlifeProfilesPath,
-            _ => string.Empty
-        };
 
     private static bool TryReadChronologyString(
         JsonObject effect,
