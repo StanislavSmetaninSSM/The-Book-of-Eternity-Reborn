@@ -708,6 +708,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
     private readonly WoundMaterializationEnvelope[]? _preparedWounds;
     private readonly WoundEffectOperationBatch[]? _effectOperationBatches;
     private readonly WoundPreparedBaselineAuthority? _baselineAuthority;
+    private readonly object? _cacheAuthorityStateToken;
+    private readonly object? _cachePreparedStageToken;
 
     internal WoundPreparedAcceptedTurnPlan(
         WoundAcceptedTurnBinding binding,
@@ -718,7 +720,9 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         IReadOnlyList<string> allocatedTransitionIds,
         IReadOnlyList<WoundMaterializationEnvelope> preparedWounds,
         IReadOnlyList<WoundEffectOperationBatch> effectOperationBatches,
-        WoundPreparedBaselineAuthority baselineAuthority)
+        WoundPreparedBaselineAuthority baselineAuthority,
+        object? cacheAuthorityStateToken = null,
+        object? cachePreparedStageToken = null)
     {
         _binding = WoundAcceptedTurnData.CloneBinding(binding);
         BindingFingerprint = bindingFingerprint;
@@ -735,6 +739,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             WoundAcceptedTurnData.CloneOperationBatch);
         _baselineAuthority =
             WoundAcceptedTurnData.CloneBaselineAuthority(baselineAuthority);
+        _cacheAuthorityStateToken = cacheAuthorityStateToken;
+        _cachePreparedStageToken = cachePreparedStageToken;
     }
 
     internal WoundAcceptedTurnBinding Binding =>
@@ -756,6 +762,51 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             WoundAcceptedTurnData.CloneOperationBatch);
     internal WoundPreparedBaselineAuthority BaselineAuthority =>
         WoundAcceptedTurnData.CloneBaselineAuthority(_baselineAuthority)!;
+
+    internal WoundPreparedAcceptedTurnPlan BindToCacheAuthority(
+        object authorityStateToken,
+        object preparedStageToken)
+    {
+        ArgumentNullException.ThrowIfNull(authorityStateToken);
+        ArgumentNullException.ThrowIfNull(preparedStageToken);
+        return new WoundPreparedAcceptedTurnPlan(
+            Binding,
+            BindingFingerprint,
+            InputFingerprint,
+            WoundPreparationFingerprint,
+            AllocatedWoundIds,
+            AllocatedTransitionIds,
+            PreparedWounds,
+            EffectOperationBatches,
+            BaselineAuthority,
+            authorityStateToken,
+            preparedStageToken);
+    }
+
+    internal WoundPreparedAcceptedTurnPlan ClonePreservingCacheAuthority() =>
+        new(
+            Binding,
+            BindingFingerprint,
+            InputFingerprint,
+            WoundPreparationFingerprint,
+            AllocatedWoundIds,
+            AllocatedTransitionIds,
+            PreparedWounds,
+            EffectOperationBatches,
+            BaselineAuthority,
+            _cacheAuthorityStateToken,
+            _cachePreparedStageToken);
+
+    internal bool HasCacheAuthorityState => _cacheAuthorityStateToken is not null;
+
+    internal bool BelongsToCacheAuthorityState(object authorityStateToken) =>
+        ReferenceEquals(_cacheAuthorityStateToken, authorityStateToken);
+
+    internal bool BelongsToPreparedStage(
+        object authorityStateToken,
+        object preparedStageToken) =>
+        ReferenceEquals(_cacheAuthorityStateToken, authorityStateToken) &&
+        ReferenceEquals(_cachePreparedStageToken, preparedStageToken);
 }
 
 internal sealed record WoundAcceptedTurnPreparationResult
@@ -839,6 +890,8 @@ internal sealed class WoundEffectBatchAcceptedPlan
     private readonly EffectAcceptedTurnPlan _effectPlan;
     private readonly EffectAcceptedApplicationResult[]? _applicationResults;
     private readonly EffectAcceptedTerminationResult[]? _terminationResults;
+    private readonly object? _cacheAuthorityStateToken;
+    private readonly object? _cacheEffectStageToken;
 
     private WoundEffectBatchAcceptedPlan(
         EffectAcceptedTurnInput effectInput,
@@ -847,7 +900,9 @@ internal sealed class WoundEffectBatchAcceptedPlan
         string effectInputFingerprint,
         string effectAcceptedTurnPlanFingerprint,
         IReadOnlyList<EffectAcceptedApplicationResult> applicationResults,
-        IReadOnlyList<EffectAcceptedTerminationResult> terminationResults)
+        IReadOnlyList<EffectAcceptedTerminationResult> terminationResults,
+        object? cacheAuthorityStateToken = null,
+        object? cacheEffectStageToken = null)
     {
         _effectInput = WoundAcceptedTurnData.CloneEffectInput(effectInput);
         _effectPlan = WoundAcceptedTurnData.CloneEffectPlan(effectPlan);
@@ -860,6 +915,8 @@ internal sealed class WoundEffectBatchAcceptedPlan
         _terminationResults = WoundAcceptedTurnData.FreezeList(
             terminationResults,
             WoundAcceptedTurnData.CloneTerminationResult);
+        _cacheAuthorityStateToken = cacheAuthorityStateToken;
+        _cacheEffectStageToken = cacheEffectStageToken;
     }
 
     internal EffectAcceptedTurnInput EffectInput =>
@@ -885,7 +942,35 @@ internal sealed class WoundEffectBatchAcceptedPlan
         EffectInputFingerprint,
         EffectAcceptedTurnPlanFingerprint,
         _applicationResults!,
-        _terminationResults!);
+        _terminationResults!,
+        _cacheAuthorityStateToken,
+        _cacheEffectStageToken);
+
+    internal WoundEffectBatchAcceptedPlan BindToCacheAuthority(
+        object authorityStateToken,
+        object effectStageToken)
+    {
+        ArgumentNullException.ThrowIfNull(authorityStateToken);
+        ArgumentNullException.ThrowIfNull(effectStageToken);
+        return new WoundEffectBatchAcceptedPlan(
+            _effectInput,
+            _effectPlan,
+            WoundPreparationFingerprint,
+            EffectInputFingerprint,
+            EffectAcceptedTurnPlanFingerprint,
+            _applicationResults!,
+            _terminationResults!,
+            authorityStateToken,
+            effectStageToken);
+    }
+
+    internal bool HasCacheAuthorityState => _cacheAuthorityStateToken is not null;
+
+    internal bool BelongsToEffectStage(
+        object authorityStateToken,
+        object effectStageToken) =>
+        ReferenceEquals(_cacheAuthorityStateToken, authorityStateToken) &&
+        ReferenceEquals(_cacheEffectStageToken, effectStageToken);
 
     internal static WoundEffectBatchAcceptedPlan Create(
         WoundPreparedAcceptedTurnPlan prepared,
@@ -1415,16 +1500,7 @@ internal static class WoundAcceptedTurnData
         WoundPreparedAcceptedTurnPlan? value) =>
         value is null
             ? null
-            : new WoundPreparedAcceptedTurnPlan(
-                value.Binding,
-                value.BindingFingerprint,
-                value.InputFingerprint,
-                value.WoundPreparationFingerprint,
-                value.AllocatedWoundIds,
-                value.AllocatedTransitionIds,
-                value.PreparedWounds,
-                value.EffectOperationBatches,
-                value.BaselineAuthority);
+            : value.ClonePreservingCacheAuthority();
 
     internal static WoundEffectMaterializationAgreement? CloneAgreement(
         WoundEffectMaterializationAgreement? value) =>
@@ -2404,17 +2480,23 @@ internal static class WoundAcceptedTurnFingerprints
         ICollection<string?> fields,
         EffectCarrierCatalogInput? value)
     {
+        if (value is null)
+        {
+            fields.Add(null);
+            return;
+        }
+        fields.Add("present");
         fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-            value?.PlayerEffects));
-        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(value?.NpcEffects));
+            value.PlayerEffects));
+        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(value.NpcEffects));
         fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-            value?.EnemyCombatants));
+            value.EnemyCombatants));
         fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-            value?.AllyCombatants));
+            value.AllyCombatants));
         fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-            value?.AfterlifeProfiles));
+            value.AfterlifeProfiles));
         fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-            value?.SpiritualConflict));
+            value.SpiritualConflict));
     }
 
     private static void AppendTargetAuthorityInput(

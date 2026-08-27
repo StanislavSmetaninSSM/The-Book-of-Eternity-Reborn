@@ -83,8 +83,16 @@ public sealed class CanonicalNormalizationAuthoritySourceGuardTests
             "internal static MortalItemAcceptedTurnAuthority.Cache",
             registrySource,
             StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "internal static WoundAcceptedTurnPlanCache",
+            registrySource,
+            StringComparison.Ordinal);
         Assert.Contains(
             "private static AcceptedTurnAuthorityState GetState(",
+            registrySource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "private sealed class AcceptedTurnAuthorityState",
             registrySource,
             StringComparison.Ordinal);
         Assert.Contains(

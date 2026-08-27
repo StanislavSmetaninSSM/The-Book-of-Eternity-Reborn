@@ -3000,6 +3000,14 @@ public sealed class WoundEffectBatchPlannerTests
             WoundContractTestData.CreateHistory());
     }
 
+    internal static WoundAcceptedTurnInput CreateInputForAcceptedCache(
+        int transitionCount = 1) =>
+        CreateInput(transitionCount);
+
+    internal static EffectAcceptedTurnInput CreateEffectInputForAcceptedCache(
+        WoundPreparedAcceptedTurnPlan prepared) =>
+        CreateEffectInput(prepared);
+
     private static (
         IReadOnlyList<WoundAcceptedEffectDefinitionDraft> Definitions,
         IReadOnlyList<WoundAcceptedRootApplicationDraft> RootApplications,

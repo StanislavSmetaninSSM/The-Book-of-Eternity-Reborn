@@ -194,6 +194,14 @@ public sealed class WoundMaterializationSourceGuardTests
             "internal bool TryTakeValidated(",
             "internal static class AcceptedMechanicsPlanAuthority"),
         new(
+            "accepted-wound-plan-cache",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundAcceptedTurnPlanCache.cs",
+            "internal sealed class WoundAcceptedTurnPlanCache",
+            "internal WoundAcceptedTurnPreparationResult GetOrBuildPrepared(",
+            "internal WoundAcceptedTurnPlanningResult GetOrBuildFinal(",
+            "internal static class WoundAcceptedTurnPlanAuthority"),
+        new(
             "accepted-mechanics-planner",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",

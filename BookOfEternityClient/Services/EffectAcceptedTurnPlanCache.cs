@@ -9,10 +9,23 @@ internal readonly record struct EffectAcceptedTurnPlanBinding(
     string SessionId,
     string SnapshotToken);
 
+internal delegate EffectAcceptedTurnPlanningResult EffectAcceptedTurnPlanFactory(
+    EffectAcceptedTurnInput input,
+    string fingerprint,
+    EffectIdentityFactory identityFactory);
+
+internal delegate EffectAcceptedTurnPlanningResult
+    WoundEffectAcceptedTurnPlanFactory(
+        EffectAcceptedTurnInput input,
+        WoundPreparedAcceptedTurnPlan prepared,
+        EffectIdentityFactory identityFactory);
+
 internal sealed class EffectAcceptedTurnPlanCache
 {
     private readonly object _gate = new();
     private readonly EffectIdentityFactory _identityFactory;
+    private readonly EffectAcceptedTurnPlanFactory _planner;
+    private readonly WoundEffectAcceptedTurnPlanFactory _woundPlanner;
     private string? _fingerprint;
     private EffectAcceptedTurnPlanningResult? _result;
     private EffectAcceptedTurnPlanBinding? _validatedBinding;
@@ -24,19 +37,78 @@ internal sealed class EffectAcceptedTurnPlanCache
     }
 
     internal EffectAcceptedTurnPlanCache(EffectIdentityFactory identityFactory)
+        : this(
+            identityFactory,
+            EffectAcceptedTurnPlanner.Build,
+            EffectAcceptedTurnPlanner.BuildWoundBatch)
     {
-        _identityFactory = identityFactory ?? throw new ArgumentNullException(nameof(identityFactory));
     }
 
-    internal EffectAcceptedTurnPlanningResult GetOrBuild(EffectAcceptedTurnInput input)
+    internal EffectAcceptedTurnPlanCache(
+        EffectIdentityFactory identityFactory,
+        EffectAcceptedTurnPlanFactory planner,
+        WoundEffectAcceptedTurnPlanFactory woundPlanner)
+    {
+        _identityFactory = identityFactory ?? throw new ArgumentNullException(nameof(identityFactory));
+        _planner = planner ?? throw new ArgumentNullException(nameof(planner));
+        _woundPlanner = woundPlanner ??
+            throw new ArgumentNullException(nameof(woundPlanner));
+    }
+
+    internal EffectAcceptedTurnPlanningResult GetOrBuild(
+        EffectAcceptedTurnInput input) =>
+        GetOrBuild(input, out _);
+
+    internal EffectAcceptedTurnPlanningResult GetOrBuild(
+        EffectAcceptedTurnInput input,
+        out bool reused)
     {
         ArgumentNullException.ThrowIfNull(input);
         var fingerprint = CreateFingerprint(input);
+        return GetOrBuildCore(
+            fingerprint,
+            () => _planner(
+                input,
+                fingerprint,
+                _identityFactory),
+            out reused);
+    }
+
+    internal EffectAcceptedTurnPlanningResult GetOrBuildWoundValidated(
+        WoundPreparedAcceptedTurnPlan prepared,
+        EffectAcceptedTurnInput input,
+        out bool reused)
+    {
+        ArgumentNullException.ThrowIfNull(prepared);
+        ArgumentNullException.ThrowIfNull(input);
+        var fingerprint = WoundAcceptedTurnFingerprints.ComputeEffectInput(
+            prepared,
+            input);
+        var result = GetOrBuildCore(
+            fingerprint,
+            () => _woundPlanner(
+                input,
+                prepared,
+                _identityFactory),
+            out reused);
+        return SetValidated(input, result);
+    }
+
+    private EffectAcceptedTurnPlanningResult GetOrBuildCore(
+        string fingerprint,
+        Func<EffectAcceptedTurnPlanningResult> planner,
+        out bool reused)
+    {
+        reused = false;
         lock (_gate)
         {
             if (string.Equals(_fingerprint, fingerprint, StringComparison.Ordinal) && _result != null)
+            {
+                reused = true;
                 return _result;
-            var result = EffectAcceptedTurnPlanner.Build(input, fingerprint, _identityFactory);
+            }
+            var result = planner() ?? throw new InvalidOperationException(
+                "Effect accepted-turn planner returned null.");
             _fingerprint = fingerprint;
             _result = result;
             return result;
@@ -44,9 +116,21 @@ internal sealed class EffectAcceptedTurnPlanCache
     }
 
     internal EffectAcceptedTurnPlanningResult GetOrBuildValidated(
-        EffectAcceptedTurnInput input)
+        EffectAcceptedTurnInput input) =>
+        GetOrBuildValidated(input, out _);
+
+    internal EffectAcceptedTurnPlanningResult GetOrBuildValidated(
+        EffectAcceptedTurnInput input,
+        out bool reused)
     {
-        var result = GetOrBuild(input);
+        var result = GetOrBuild(input, out reused);
+        return SetValidated(input, result);
+    }
+
+    private EffectAcceptedTurnPlanningResult SetValidated(
+        EffectAcceptedTurnInput input,
+        EffectAcceptedTurnPlanningResult result)
+    {
         if (!result.Success)
         {
             lock (_gate)
@@ -70,6 +154,17 @@ internal sealed class EffectAcceptedTurnPlanCache
     {
         lock (_gate)
         {
+            _validatedBinding = null;
+            _validatedResult = null;
+        }
+    }
+
+    internal void InvalidateAll()
+    {
+        lock (_gate)
+        {
+            _fingerprint = null;
+            _result = null;
             _validatedBinding = null;
             _validatedResult = null;
         }

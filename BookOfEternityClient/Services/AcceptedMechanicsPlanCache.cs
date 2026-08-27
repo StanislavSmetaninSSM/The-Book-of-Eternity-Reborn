@@ -106,6 +106,16 @@ internal sealed class AcceptedMechanicsPlanCache
             InvalidateValidatedCore();
     }
 
+    internal void InvalidateAll()
+    {
+        lock (_gate)
+        {
+            _inputFingerprint = null;
+            _planningResult = null;
+            InvalidateValidatedCore();
+        }
+    }
+
     internal bool TryPeekValidated(
         out AcceptedMechanicsPlanBinding binding,
         out AcceptedMechanicsPlanningResult result)

@@ -4,7 +4,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class AcceptedMechanicsPlanCacheTests
+public sealed partial class AcceptedMechanicsPlanCacheTests
 {
     [Fact]
     public void GetOrBuildValidated_IdenticalCompleteInputReusesOnePlanAndIdentityAllocation()
@@ -270,7 +270,8 @@ public sealed class AcceptedMechanicsPlanCacheTests
         string? mutation = null,
         JsonObject? resourceCommands = null,
         IReadOnlyDictionary<string, CanonicalBeforeImage>? beforeImages = null,
-        IReadOnlyList<ValidationIssue>? validationIssues = null)
+        IReadOnlyList<ValidationIssue>? validationIssues = null,
+        AcceptedMechanicsPlanningContext? planningContext = null)
     {
         var fingerprints = Fingerprints(mutation);
         var canonicalBeforeImages = beforeImages ?? BeforeImages(
@@ -289,7 +290,8 @@ public sealed class AcceptedMechanicsPlanCacheTests
             InternalInputs: Object("internal", mutation == "internal_input" ? 2 : 1),
             AuthorityFingerprints: fingerprints,
             BeforeImages: canonicalBeforeImages,
-            ValidationIssues: validationIssues ?? Array.Empty<ValidationIssue>());
+            ValidationIssues: validationIssues ?? Array.Empty<ValidationIssue>(),
+            PlanningContext: planningContext);
     }
 
     private static AcceptedMechanicsAuthorityFingerprints Fingerprints(string? mutation) => new(
