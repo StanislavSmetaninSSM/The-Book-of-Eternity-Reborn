@@ -102,10 +102,22 @@ internal sealed record WoundOwnedEffectSources(
     IReadOnlyList<JsonElement> Definitions,
     IReadOnlyList<WoundRootEffectBinding> RootBindings)
 {
+    internal IReadOnlyList<WoundOwnedEffectDefinitionFact> DefinitionFacts { get; init; } =
+        ImmutableArray<WoundOwnedEffectDefinitionFact>.Empty;
+
     internal static WoundOwnedEffectSources Empty { get; } = new(
         ImmutableArray<JsonElement>.Empty,
-        ImmutableArray<WoundRootEffectBinding>.Empty);
+        ImmutableArray<WoundRootEffectBinding>.Empty)
+    {
+        DefinitionFacts = ImmutableArray<WoundOwnedEffectDefinitionFact>.Empty
+    };
 }
+
+internal sealed record WoundOwnedEffectDefinitionFact(
+    string DefinitionKey,
+    string CanonicalJson,
+    ImmutableArray<string> ApplyDefinitionTargets,
+    bool ContainsWoundConsequenceMarker);
 
 internal sealed record WoundRootEffectBinding(
     string EffectId,
@@ -787,9 +799,65 @@ internal static class WoundMaterializationContract
             }
         }
 
+        var immutableDefinitions = parsedDefinitions.ToImmutable();
         return new WoundOwnedEffectSources(
-            parsedDefinitions.ToImmutable(),
-            parsedRoots.ToImmutable());
+            immutableDefinitions,
+            parsedRoots.ToImmutable())
+        {
+            DefinitionFacts = BuildOwnedEffectDefinitionFacts(immutableDefinitions)
+        };
+    }
+
+    private static ImmutableArray<WoundOwnedEffectDefinitionFact> BuildOwnedEffectDefinitionFacts(
+        IReadOnlyList<JsonElement> definitions)
+    {
+        var result = ImmutableArray.CreateBuilder<WoundOwnedEffectDefinitionFact>(definitions.Count);
+        foreach (var definition in definitions)
+        {
+            if (definition.ValueKind != JsonValueKind.Object ||
+                !TryReadExactIdentifier(definition, "definitionKey", out var definitionKey))
+            {
+                continue;
+            }
+
+            var targets = ImmutableArray.CreateBuilder<string>();
+            var containsMarker = false;
+            if (definition.TryGetProperty("components", out var components) &&
+                components.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var component in components.EnumerateArray())
+                {
+                    if (component.ValueKind != JsonValueKind.Object ||
+                        !TryReadExactIdentifier(component, "profile", out var profile))
+                    {
+                        continue;
+                    }
+
+                    containsMarker |= string.Equals(
+                        profile,
+                        "wound_consequence",
+                        StringComparison.Ordinal);
+                    if (!string.Equals(profile, "event_reaction", StringComparison.Ordinal) ||
+                        !component.TryGetProperty("payload", out var payload) ||
+                        payload.ValueKind != JsonValueKind.Object ||
+                        !TryReadStringValue(payload, "resultKind", out var resultKind) ||
+                        !string.Equals(resultKind, "apply_definition", StringComparison.Ordinal) ||
+                        !TryReadExactIdentifier(payload, "definitionKey", out var targetDefinitionKey))
+                    {
+                        continue;
+                    }
+
+                    targets.Add(targetDefinitionKey);
+                }
+            }
+
+            result.Add(new WoundOwnedEffectDefinitionFact(
+                definitionKey,
+                SerializeCanonicalElement(definition),
+                targets.ToImmutable(),
+                containsMarker));
+        }
+        return result.ToImmutable();
     }
 
     private static void ValidateOwnedEffectSources(
@@ -2864,6 +2932,22 @@ internal static class WoundMaterializationContract
     {
         if (value is not null)
             writer.WriteString(propertyName, value);
+    }
+
+    private static string SerializeCanonicalElement(JsonElement value)
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        using (var writer = new Utf8JsonWriter(
+                   buffer,
+                   new JsonWriterOptions
+                   {
+                       Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                       Indented = false
+                   }))
+        {
+            WriteCanonicalElement(writer, value);
+        }
+        return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 
     private static void WriteCanonicalElement(Utf8JsonWriter writer, JsonElement value)

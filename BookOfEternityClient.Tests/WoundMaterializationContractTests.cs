@@ -806,6 +806,41 @@ public sealed class WoundMaterializationContractTests
     }
 
     [Fact]
+    public void Parse_OwnedEffectSources_ExposesDetachedCanonicalDefinitionFacts()
+    {
+        var source = CreateSingleLeafWound();
+        var result = Parse(source);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+        var facts = result.Wound!.Consequences.OwnedEffectSources.DefinitionFacts;
+        Assert.Equal(2, facts.Count);
+        var root = Assert.Single(facts, static fact =>
+            fact.DefinitionKey == "definition_wound_reaction_root");
+        Assert.Equal(
+            new[] { "definition_wound_leaf" },
+            root.ApplyDefinitionTargets);
+        Assert.False(root.ContainsWoundConsequenceMarker);
+        var leaf = Assert.Single(facts, static fact =>
+            fact.DefinitionKey == "definition_wound_leaf");
+        Assert.Empty(leaf.ApplyDefinitionTargets);
+        Assert.Contains(
+            "\"definitionKey\":\"definition_wound_leaf\"",
+            leaf.CanonicalJson,
+            StringComparison.Ordinal);
+
+        var retainedCanonical = root.CanonicalJson;
+        source["consequences"]!["ownedEffectSources"]!["definitions"]![0]!["display"]!["description"] =
+            "Mutation after parsing must not alter the typed fact.";
+        Assert.Equal(retainedCanonical, root.CanonicalJson);
+
+        var markerResult = Parse(CreateNonMechanicalWound(includeMarker: true));
+        Assert.True(markerResult.IsValid, DescribeIssues(markerResult));
+        Assert.True(Assert.Single(
+            markerResult.Wound!.Consequences.OwnedEffectSources.DefinitionFacts)
+            .ContainsWoundConsequenceMarker);
+    }
+
+    [Fact]
     public void Parse_OwnedEffectSources_RejectsOrphanedRootAndComplicationJoins()
     {
         var missingComplicationRoot = WoundContractTestData.CreateActiveWound();

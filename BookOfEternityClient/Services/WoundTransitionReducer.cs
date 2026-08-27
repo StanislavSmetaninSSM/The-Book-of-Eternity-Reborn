@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Text.Json;
 
 namespace BookOfEternityClient.Services;
 
@@ -194,15 +195,14 @@ internal sealed record WoundTransitionReductionResult(
 
 internal static class WoundTransitionReducer
 {
-    private sealed record EffectBinding(
-        string BindingKind,
-        string OwnerRef,
-        int Slot,
-        string ProfileKey,
-        string ReadablePayload,
-        string State,
-        int TreatmentDifficultyModifier,
-        string Visibility);
+    private sealed record OwnedSourceTransitionView(
+        ImmutableArray<string> RootEffectIds,
+        ImmutableDictionary<string, string> DefinitionKeyByEffectId,
+        ImmutableDictionary<string, string> EffectIdByRootDefinitionKey,
+        ImmutableDictionary<string, WoundOwnedEffectDefinitionFact> DefinitionByKey,
+        ImmutableDictionary<string, ImmutableArray<string>> ReachableDefinitionKeysByEffectId,
+        ImmutableDictionary<string, ImmutableArray<WoundConsequenceEntry>> SlotsByEffectId,
+        ImmutableDictionary<string, string> OwnershipDomainByEffectId);
 
     private static readonly IReadOnlySet<string> Kinds = new HashSet<string>(
         new[]
@@ -268,6 +268,12 @@ internal static class WoundTransitionReducer
         }
 
         ValidateRequestAuthority(request, issues);
+        if (issues.Count != 0)
+            return Failure(issues);
+        ValidateRawCoordinateAndProvenancePreflight(request, issues);
+        if (issues.Count != 0)
+            return Failure(issues);
+        ValidateRetainedRemovedComplicationRootPreflight(request, issues);
         if (issues.Count != 0)
             return Failure(issues);
         var before = Normalize(request.Before, "before", required: request.Kind != "create", issues);
@@ -352,6 +358,314 @@ internal static class WoundTransitionReducer
                 "null");
         }
     }
+
+    private static void ValidateRawCoordinateAndProvenancePreflight(
+        WoundTransitionRequest request,
+        List<ValidationIssue> issues)
+    {
+        var before = request.Before;
+        var after = request.ProposedAfter;
+        if (after is null ||
+            !RawEnvelopeCollectionsAreBounded(after))
+        {
+            return;
+        }
+        if (before is not null && !RawEnvelopeCollectionsAreBounded(before))
+            return;
+
+        var coordinateIssues = new List<ValidationIssue>();
+        ValidateLegalCoordinate(after, "after", coordinateIssues);
+        if (before is not null)
+        {
+            ValidateLegalCoordinate(before, "before", coordinateIssues);
+            ValidateStableIdentityAndProvenance(before, after, coordinateIssues);
+        }
+        if (coordinateIssues.Count == 0)
+            return;
+
+        var earlierIssues = ValidateRawEarlierGates(request, before, after);
+        issues.AddRange(earlierIssues.Count == 0 ? coordinateIssues : earlierIssues);
+    }
+
+    private static void ValidateRetainedRemovedComplicationRootPreflight(
+        WoundTransitionRequest request,
+        List<ValidationIssue> issues)
+    {
+        if (!string.Equals(request.Kind, "stabilize", StringComparison.Ordinal) ||
+            request.Evidence is not WoundStabilizationEvidence stabilization ||
+            request.Before is not { } before ||
+            request.ProposedAfter is not { } after ||
+            stabilization.RemovedComplicationIds is null ||
+            stabilization.RemovedEffectIds is null ||
+            stabilization.RemovedRecoveryBlockers is null ||
+            stabilization.RemovedComplicationIds.Count != 1 ||
+            stabilization.RemovedEffectIds.Count != 1 ||
+            stabilization.RemovedRecoveryBlockers.Count >
+                WoundMaterializationContract.MaxTreatmentRoutes ||
+            !ExactUnique(stabilization.RemovedComplicationIds) ||
+            !ExactUnique(stabilization.RemovedEffectIds) ||
+            !ExactUnique(stabilization.RemovedRecoveryBlockers) ||
+            !RawEnvelopeCollectionsAreBounded(before) ||
+            !RawEnvelopeCollectionsAreBounded(after))
+        {
+            return;
+        }
+
+        var normalizedBefore = NormalizeForRawProof(before);
+        if (normalizedBefore is null)
+            return;
+
+        var complicationId = stabilization.RemovedComplicationIds[0];
+        var effectId = stabilization.RemovedEffectIds[0];
+        var priorComplications = normalizedBefore.Complications.Where(complication =>
+                string.Equals(complication.ComplicationId, complicationId, StringComparison.Ordinal))
+            .Take(2)
+            .ToArray();
+        if (priorComplications.Length != 1 ||
+            priorComplications[0].OwnedEffectIds.Count != 1 ||
+            !string.Equals(
+                priorComplications[0].OwnedEffectIds[0],
+                effectId,
+                StringComparison.Ordinal) ||
+            after.Complications.Any(complication => string.Equals(
+                complication.ComplicationId,
+                complicationId,
+                StringComparison.Ordinal)) ||
+            after.Consequences.Entries.Any(entry => string.Equals(
+                entry.EffectId,
+                effectId,
+                StringComparison.Ordinal)))
+        {
+            return;
+        }
+
+        var currentBindings = after.Consequences.OwnedEffectSources.RootBindings
+            .Where(binding => string.Equals(binding.EffectId, effectId, StringComparison.Ordinal))
+            .Take(2)
+            .ToArray();
+        if (currentBindings.Length != 1)
+            return;
+
+        var branchProof = normalizedBefore with
+        {
+            Consequences = normalizedBefore.Consequences with
+            {
+                OwnedEffectSources = after.Consequences.OwnedEffectSources
+            }
+        };
+        var normalizedBranchProof = NormalizeForRawProof(branchProof);
+        if (normalizedBranchProof is null)
+            return;
+
+        var proofView = BuildOwnedSourceTransitionView(normalizedBranchProof);
+        if (!proofView.ReachableDefinitionKeysByEffectId.TryGetValue(
+                effectId,
+                out var targetReachability) ||
+            RootReachabilityContainsWoundMarker(proofView, effectId))
+        {
+            return;
+        }
+
+        var retainedReachability = proofView.RootEffectIds
+            .Where(rootEffectId => !string.Equals(
+                rootEffectId,
+                effectId,
+                StringComparison.Ordinal))
+            .SelectMany(rootEffectId => proofView.ReachableDefinitionKeysByEffectId[rootEffectId])
+            .ToHashSet(StringComparer.Ordinal);
+        var prunedDefinitionKeys = targetReachability
+            .Where(definitionKey => !retainedReachability.Contains(definitionKey))
+            .ToHashSet(StringComparer.Ordinal);
+        if (prunedDefinitionKeys.Count == 0)
+            return;
+
+        var proofSources = normalizedBranchProof.Consequences.OwnedEffectSources;
+        var retainedDefinitions = proofSources.Definitions.Where(definition =>
+                !prunedDefinitionKeys.Contains(
+                    definition.GetProperty("definitionKey").GetString()!))
+            .ToImmutableArray();
+        var retainedFacts = proofSources.DefinitionFacts.Where(fact =>
+                !prunedDefinitionKeys.Contains(fact.DefinitionKey))
+            .ToImmutableArray();
+        var retainedBindings = proofSources.RootBindings.Where(binding =>
+                !string.Equals(binding.EffectId, effectId, StringComparison.Ordinal))
+            .ToImmutableArray();
+        var repairedAfter = after with
+        {
+            Consequences = after.Consequences with
+            {
+                OwnedEffectSources = new WoundOwnedEffectSources(
+                    retainedDefinitions,
+                    retainedBindings)
+                {
+                    DefinitionFacts = retainedFacts
+                }
+            }
+        };
+        var normalizedRepairedAfter = NormalizeForRawProof(repairedAfter);
+        if (normalizedRepairedAfter is null)
+            return;
+
+        var earlierIssues = ValidateRawEarlierGates(request, normalizedBefore, after);
+        if (earlierIssues.Count != 0)
+        {
+            issues.AddRange(earlierIssues);
+            return;
+        }
+
+        ValidateLegalCoordinate(after, "after", issues);
+        ValidateLegalCoordinate(normalizedBefore, "before", issues);
+        ValidateStableIdentityAndProvenance(normalizedBefore, after, issues);
+        if (issues.Count != 0)
+            return;
+
+        if (ValidateStabilizePreOwnedSourceGates(
+                request,
+                normalizedBefore,
+                after,
+                issues) is null)
+        {
+            return;
+        }
+
+        ValidateSameRankOwnedSourceDelta(
+            normalizedBefore,
+            normalizedBranchProof,
+            null,
+            issues);
+        if (issues.Count != 0)
+            return;
+
+        ValidateStabilize(request, normalizedBefore, normalizedRepairedAfter, issues);
+        if (issues.Count != 0)
+            return;
+
+        AddOwnedSourceIssue(
+            issues,
+            "wound_transition_owned_source_graph_invalid",
+            "removed complication root absent with its induced slots and unreachable definition branch",
+            effectId);
+    }
+
+    private static List<ValidationIssue> ValidateRawEarlierGates(
+        WoundTransitionRequest request,
+        WoundMaterializationEnvelope? before,
+        WoundMaterializationEnvelope after)
+    {
+        var earlierIssues = new List<ValidationIssue>();
+        ValidateHistoryAppendPreconditions(request, before, earlierIssues);
+        if (earlierIssues.Count == 0)
+            ValidateEvidenceSeal(request, before, after, earlierIssues);
+        if (earlierIssues.Count == 0)
+            ValidateTransitionMetadata(request, before, after, earlierIssues);
+        return earlierIssues;
+    }
+
+    private static WoundMaterializationEnvelope? NormalizeForRawProof(
+        WoundMaterializationEnvelope wound)
+    {
+        var proofIssues = new List<ValidationIssue>();
+        var normalized = Normalize(wound, "rawProof", required: true, proofIssues);
+        return proofIssues.Count == 0 ? normalized : null;
+    }
+
+    private static bool RawEnvelopeCollectionsAreBounded(WoundMaterializationEnvelope wound)
+    {
+        if (wound.Owner is null ||
+            wound.Origin is null ||
+            wound.Classification?.LocationProfile is null ||
+            wound.Display is null ||
+            wound.Severity is null ||
+            wound.Care is null ||
+            wound.Consequences?.OwnedEffectSources is null ||
+            wound.Treatment is null ||
+            wound.Recovery is null ||
+            wound.Relations is null ||
+            wound.LastTransition is null ||
+            !BoundedReferences(
+                wound.Display.VisibleSymptoms,
+                WoundMaterializationContract.MaxRequirementsPerTreatmentMember) ||
+            !BoundedReferences(
+                wound.Complications,
+                WoundMaterializationContract.MaxComplications) ||
+            wound.Complications.Any(complication => !BoundedReferences(
+                complication.OwnedEffectIds,
+                WoundMaterializationContract.MaxOwnedEffectRootBindings)) ||
+            !BoundedReferences(
+                wound.Consequences.Entries,
+                WoundMaterializationContract.MaxConsequences) ||
+            !BoundedJsonElements(
+                wound.Consequences.OwnedEffectSources.Definitions,
+                WoundMaterializationContract.MaxOwnedEffectDefinitions) ||
+            !BoundedReferences(
+                wound.Consequences.OwnedEffectSources.RootBindings,
+                WoundMaterializationContract.MaxOwnedEffectRootBindings) ||
+            !BoundedReferences(
+                wound.Consequences.OwnedEffectSources.DefinitionFacts,
+                WoundMaterializationContract.MaxOwnedEffectDefinitions) ||
+            wound.Consequences.OwnedEffectSources.DefinitionFacts.Any(fact =>
+                fact.ApplyDefinitionTargets.IsDefault ||
+                fact.ApplyDefinitionTargets.Length >
+                    WoundMaterializationContract.MaxOwnedEffectDefinitions) ||
+            !BoundedReferences(
+                wound.Treatment.DiagnosisPaths,
+                WoundMaterializationContract.MaxDiagnosisPaths) ||
+            !BoundedReferences(
+                wound.Treatment.Routes,
+                WoundMaterializationContract.MaxTreatmentRoutes) ||
+            !BoundedReferences(
+                wound.Treatment.KnownRouteIds,
+                WoundMaterializationContract.MaxTreatmentRoutes) ||
+            !BoundedReferences(
+                wound.Treatment.CompletedRouteIds,
+                WoundMaterializationContract.MaxTreatmentRoutes) ||
+            wound.Treatment.DiagnosisPaths.Any(path =>
+                !BoundedJsonElements(
+                    path.Requirements,
+                    WoundMaterializationContract.MaxRequirementsPerTreatmentMember) ||
+                !BoundedReferences(
+                    path.Reveals,
+                    WoundMaterializationContract.MaxRequirementsPerTreatmentMember) ||
+                path.Check.ValueKind == JsonValueKind.Undefined) ||
+            wound.Treatment.Routes.Any(route =>
+                !BoundedJsonElements(
+                    route.Requirements,
+                    WoundMaterializationContract.MaxRequirementsPerTreatmentMember) ||
+                !BoundedJsonElements(
+                    route.Outcomes,
+                    WoundMaterializationContract.MaxRequirementsPerTreatmentMember) ||
+                route.ResourcePolicy.ValueKind == JsonValueKind.Undefined ||
+                route.Resolution.ValueKind == JsonValueKind.Undefined ||
+                route.Interruption is { ValueKind: JsonValueKind.Undefined }) ||
+            !BoundedReferences(
+                wound.Recovery.Blockers,
+                WoundMaterializationContract.MaxTreatmentRoutes) ||
+            wound.Recovery.DeteriorationPolicy is { ValueKind: JsonValueKind.Undefined } ||
+            !BoundedReferences(
+                wound.Relations.LegacyRefs,
+                WoundMaterializationContract.MaxTreatmentRoutes) ||
+            !BoundedReferences(
+                wound.Relations.IndependentEffectRefs,
+                WoundMaterializationContract.MaxTreatmentRoutes))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool BoundedReferences<T>(IReadOnlyList<T>? values, int maximum)
+        where T : class =>
+        values is not null &&
+        values.Count <= maximum &&
+        values.All(static value => value is not null);
+
+    private static bool BoundedJsonElements(
+        IReadOnlyList<JsonElement>? values,
+        int maximum) =>
+        values is not null &&
+        values.Count <= maximum &&
+        values.All(static value => value.ValueKind != JsonValueKind.Undefined);
 
     private static WoundMaterializationEnvelope? Normalize(
         WoundMaterializationEnvelope? wound,
@@ -731,7 +1045,10 @@ internal static class WoundTransitionReducer
                 "no active course after worsening",
                 after.Care.ActiveCourseId);
         }
-        if (!SameRecoveryPolicyExceptStep(before.Recovery, after.Recovery) ||
+        if (issues.Count == 0)
+            ValidateFreshSeverityRootSet(before, after, issues);
+        if (issues.Count == 0 &&
+            (!SameRecoveryPolicyExceptStep(before.Recovery, after.Recovery) ||
             !CanonicalEqual(
                 before,
                 after with
@@ -742,7 +1059,7 @@ internal static class WoundTransitionReducer
                     Recovery = before.Recovery,
                     Display = before.Display,
                     LastTransition = before.LastTransition
-                }))
+                })))
         {
             Add(
                 issues,
@@ -882,24 +1199,19 @@ internal static class WoundTransitionReducer
                 "worsening resets only the current recovery step and preserves its sealed policy",
                 after.WoundId);
         }
-        if (!worsened)
+        if (issues.Count == 0)
         {
-            ValidateRetainedConsequences(before, after, issues);
-            ValidateRetainedEffectBindings(
-                before,
-                after,
-                issues,
-                requireAllPriorBindings: true);
-            if (added.Length == 1)
-            {
-                ValidateAddedComplicationEffectBindings(
+            if (worsened)
+                ValidateFreshSeverityRootSet(before, after, issues);
+            else
+                ValidateSameRankOwnedSourceDelta(
                     before,
                     after,
-                    added[0],
+                    added.SingleOrDefault(),
                     issues);
-            }
         }
-        if (!CanonicalEqual(
+        if (issues.Count == 0 &&
+            !CanonicalEqual(
                 before,
                 after with
                 {
@@ -1044,10 +1356,73 @@ internal static class WoundTransitionReducer
         WoundMaterializationEnvelope after,
         List<ValidationIssue> issues)
     {
+        var evidence = ValidateStabilizePreOwnedSourceGates(
+            request,
+            before,
+            after,
+            issues);
+        if (evidence is null)
+            return;
+
+        if (issues.Count == 0)
+            ValidateSameRankOwnedSourceDelta(before, after, null, issues);
+
+        var removedComplications = RemovedComplicationIds(before, after);
+        var removedEffects = RemovedValues(EffectIds(before), EffectIds(after));
+        var removedBlockers = RemovedValues(before.Recovery.Blockers, after.Recovery.Blockers);
+        var addedComplications = AddedComplicationIds(before, after);
+        var addedEffects = RemovedValues(EffectIds(after), EffectIds(before));
+        var addedBlockers = RemovedValues(after.Recovery.Blockers, before.Recovery.Blockers);
+        if (issues.Count == 0 &&
+            (addedComplications.Count != 0 ||
+            addedEffects.Count != 0 ||
+            addedBlockers.Count != 0 ||
+            !SameSet(removedComplications, evidence.RemovedComplicationIds) ||
+            !SameSet(removedEffects, evidence.RemovedEffectIds) ||
+            !SameSet(removedBlockers, evidence.RemovedRecoveryBlockers) ||
+            !RetainedComplicationsUnchanged(before, after)))
+        {
+            Add(
+                issues,
+                "wound_transition_stabilize_removal_undeclared",
+                "only the exact declared complication/effect/blocker removals",
+                $"comp={string.Join(',', removedComplications)}/{string.Join(',', evidence.RemovedComplicationIds)};" +
+                $"effects={string.Join(',', removedEffects)}/{string.Join(',', evidence.RemovedEffectIds)};" +
+                $"blockers={string.Join(',', removedBlockers)}/{string.Join(',', evidence.RemovedRecoveryBlockers)};" +
+                $"added={string.Join(',', addedComplications)}|{string.Join(',', addedEffects)}|{string.Join(',', addedBlockers)}");
+        }
+        if (issues.Count == 0 &&
+            (!SameRecoveryExceptBlockers(before.Recovery, after.Recovery) ||
+            !CanonicalEqual(
+                before,
+                after with
+                {
+                    Care = before.Care,
+                    Complications = before.Complications,
+                    Consequences = before.Consequences,
+                    Recovery = before.Recovery,
+                    Display = before.Display,
+                    LastTransition = before.LastTransition
+                })))
+        {
+            Add(
+                issues,
+                "wound_transition_stabilize_scope_invalid",
+                "only care stabilization, declared removals/unlocks, and display",
+                after.WoundId);
+        }
+    }
+
+    private static WoundStabilizationEvidence? ValidateStabilizePreOwnedSourceGates(
+        WoundTransitionRequest request,
+        WoundMaterializationEnvelope before,
+        WoundMaterializationEnvelope after,
+        List<ValidationIssue> issues)
+    {
         if (request.Evidence is not WoundStabilizationEvidence evidence)
         {
             EvidenceKindMismatch(issues, "WoundStabilizationEvidence", request.Evidence);
-            return;
+            return null;
         }
         if (!ActivePair(before, after) ||
             before.Care.State is "stabilized" or "healed")
@@ -1057,7 +1432,7 @@ internal static class WoundTransitionReducer
                 "wound_transition_stabilize_source_invalid",
                 "active unstabilized wound",
                 $"{before.Lifecycle}/{before.Care.State}");
-            return;
+            return null;
         }
         if (!Exact(evidence.AttemptId) ||
             !ExactUnique(evidence.RemovedComplicationIds) ||
@@ -1069,7 +1444,7 @@ internal static class WoundTransitionReducer
                 "wound_transition_evidence_invalid",
                 "exact stabilization attempt and unique declared removals",
                 evidence.AttemptId);
-            return;
+            return null;
         }
         if (after.Severity.Rank != before.Severity.Rank)
         {
@@ -1089,51 +1464,7 @@ internal static class WoundTransitionReducer
                 "stabilized care bound to exact turn and attempt",
                 $"{after.Care.State}/{after.Care.StabilizedAtTurn}/{after.Care.LastAttemptId}");
         }
-
-        var removedComplications = RemovedComplicationIds(before, after);
-        var removedEffects = RemovedValues(EffectIds(before), EffectIds(after));
-        var removedBlockers = RemovedValues(before.Recovery.Blockers, after.Recovery.Blockers);
-        var addedComplications = AddedComplicationIds(before, after);
-        var addedEffects = RemovedValues(EffectIds(after), EffectIds(before));
-        var addedBlockers = RemovedValues(after.Recovery.Blockers, before.Recovery.Blockers);
-        if (addedComplications.Count != 0 ||
-            addedEffects.Count != 0 ||
-            addedBlockers.Count != 0 ||
-            !SameSet(removedComplications, evidence.RemovedComplicationIds) ||
-            !SameSet(removedEffects, evidence.RemovedEffectIds) ||
-            !SameSet(removedBlockers, evidence.RemovedRecoveryBlockers) ||
-            !RetainedComplicationsUnchanged(before, after))
-        {
-            Add(
-                issues,
-                "wound_transition_stabilize_removal_undeclared",
-                "only the exact declared complication/effect/blocker removals",
-                $"comp={string.Join(',', removedComplications)}/{string.Join(',', evidence.RemovedComplicationIds)};" +
-                $"effects={string.Join(',', removedEffects)}/{string.Join(',', evidence.RemovedEffectIds)};" +
-                $"blockers={string.Join(',', removedBlockers)}/{string.Join(',', evidence.RemovedRecoveryBlockers)};" +
-                $"added={string.Join(',', addedComplications)}|{string.Join(',', addedEffects)}|{string.Join(',', addedBlockers)}");
-        }
-        ValidateRetainedConsequences(before, after, issues);
-        ValidateRetainedEffectBindings(before, after, issues);
-        if (!SameRecoveryExceptBlockers(before.Recovery, after.Recovery) ||
-            !CanonicalEqual(
-                before,
-                after with
-                {
-                    Care = before.Care,
-                    Complications = before.Complications,
-                    Consequences = before.Consequences,
-                    Recovery = before.Recovery,
-                    Display = before.Display,
-                    LastTransition = before.LastTransition
-                }))
-        {
-            Add(
-                issues,
-                "wound_transition_stabilize_scope_invalid",
-                "only care stabilization, declared removals/unlocks, and display",
-                after.WoundId);
-        }
+        return issues.Count == 0 ? evidence : null;
     }
 
     private static void ValidateTreat(
@@ -1201,9 +1532,14 @@ internal static class WoundTransitionReducer
                 "severity-I source and staging state for explicit heal",
                 $"{before.Severity.Rank}->{after.Severity.Rank}");
         }
-        ValidateRetainedConsequences(before, after, issues);
-        ValidateRetainedEffectBindings(before, after, issues);
-        if (!AllowedTreatmentScope(before, after))
+        if (issues.Count == 0)
+        {
+            if (before.Severity.Rank != after.Severity.Rank)
+                ValidateFreshSeverityRootSet(before, after, issues);
+            else
+                ValidateSameRankOwnedSourceDelta(before, after, null, issues);
+        }
+        if (issues.Count == 0 && !AllowedTreatmentScope(before, after))
         {
             Add(
                 issues,
@@ -1293,9 +1629,14 @@ internal static class WoundTransitionReducer
                 "severity-I source and staging state for explicit heal",
                 $"{before.Severity.Rank}->{after.Severity.Rank}");
         }
-        ValidateRetainedConsequences(before, after, issues);
-        ValidateRetainedEffectBindings(before, after, issues);
-        if (!AllowedRecoveryScope(before, after))
+        if (issues.Count == 0)
+        {
+            if (before.Severity.Rank != after.Severity.Rank)
+                ValidateFreshSeverityRootSet(before, after, issues);
+            else
+                ValidateSameRankOwnedSourceDelta(before, after, null, issues);
+        }
+        if (issues.Count == 0 && !AllowedRecoveryScope(before, after))
         {
             Add(
                 issues,
@@ -1621,6 +1962,7 @@ internal static class WoundTransitionReducer
         }
         else if (before is not null &&
                  request.Kind is not ("legacy" or "archive" or "diagnose") &&
+                 (beforeEffects.Length != 0 || afterEffects.Length != 0) &&
                  (request.Kind == "worsen" ||
                   before.Severity.Rank != after.Severity.Rank ||
                   !SequenceEqual(beforeEffects, afterEffects)))
@@ -1846,168 +2188,396 @@ internal static class WoundTransitionReducer
         return true;
     }
 
-    private static void ValidateRetainedConsequences(
+    private static void ValidateSameRankOwnedSourceDelta(
         WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope after,
+        WoundComplication? addedComplication,
         List<ValidationIssue> issues)
     {
-        foreach (var prior in before.Consequences.Entries)
-        {
-            var retained = after.Consequences.Entries.Where(entry =>
-                    string.Equals(entry.EffectId, prior.EffectId, StringComparison.Ordinal))
-                .ToArray();
-            if (retained.Length > 1 ||
-                retained.Length == 1 && !ConsequenceEqual(prior, retained[0]))
-            {
-                Add(
-                    issues,
-                    "wound_transition_retained_consequence_changed",
-                    "retained consequence effect identity preserves exact slot/profile/summary payload",
-                    prior.EffectId);
-            }
-        }
-    }
+        var prior = BuildOwnedSourceTransitionView(before);
+        var current = BuildOwnedSourceTransitionView(after);
+        var priorRoots = prior.RootEffectIds.ToHashSet(StringComparer.Ordinal);
+        var currentRoots = current.RootEffectIds.ToHashSet(StringComparer.Ordinal);
+        var retainedRoots = priorRoots
+            .Intersect(currentRoots, StringComparer.Ordinal)
+            .OrderBy(static value => value, StringComparer.Ordinal)
+            .ToArray();
 
-    private static void ValidateRetainedEffectBindings(
-        WoundMaterializationEnvelope before,
-        WoundMaterializationEnvelope after,
-        List<ValidationIssue> issues,
-        bool requireAllPriorBindings = false)
-    {
-        var beforeBindings = BuildEffectBindingMap(before);
-        var afterBindings = BuildEffectBindingMap(after);
-        foreach (var pair in beforeBindings)
+        foreach (var effectId in retainedRoots)
         {
-            if (!afterBindings.TryGetValue(pair.Key, out var current))
+            if (!string.Equals(
+                    prior.DefinitionKeyByEffectId[effectId],
+                    current.DefinitionKeyByEffectId[effectId],
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    prior.OwnershipDomainByEffectId[effectId],
+                    current.OwnershipDomainByEffectId[effectId],
+                    StringComparison.Ordinal))
             {
-                if (requireAllPriorBindings)
-                {
-                    Add(
-                        issues,
-                        "wound_transition_effect_binding_changed",
-                        "non-worsening complication preserves every prior exact effect binding",
-                        pair.Key);
-                }
-                continue;
-            }
-            if (!SameBindingMultiset(pair.Value, current))
-            {
-                Add(
+                AddOwnedSourceIssue(
                     issues,
                     "wound_transition_effect_binding_changed",
-                    "retained effect identity preserves its exact consequence or complication ownership binding",
-                    pair.Key);
+                    "retained root preserves its exact definition and base_wound or complication ownership domain",
+                    effectId);
+                return;
+            }
+        }
+
+        foreach (var pair in prior.EffectIdByRootDefinitionKey.OrderBy(
+                     static pair => pair.Key,
+                     StringComparer.Ordinal))
+        {
+            if (current.EffectIdByRootDefinitionKey.TryGetValue(pair.Key, out var currentEffectId) &&
+                !string.Equals(pair.Value, currentEffectId, StringComparison.Ordinal))
+            {
+                AddOwnedSourceIssue(
+                    issues,
+                    "wound_transition_effect_binding_changed",
+                    "one retained root definition remains bound to its exact effectId",
+                    $"{pair.Value}->{currentEffectId}");
+                return;
+            }
+        }
+
+        if (addedComplication is not null)
+        {
+            var missingPriorRoot = prior.RootEffectIds.FirstOrDefault(effectId =>
+                !currentRoots.Contains(effectId));
+            if (missingPriorRoot is not null)
+            {
+                AddOwnedSourceIssue(
+                    issues,
+                    "wound_transition_effect_binding_changed",
+                    "same-rank complication addition preserves every prior root binding",
+                    missingPriorRoot);
+                return;
+            }
+        }
+
+        var priorRetainedEntries = before.Consequences.Entries
+            .Where(entry => retainedRoots.Contains(entry.EffectId, StringComparer.Ordinal))
+            .ToArray();
+        var currentRetainedEntries = after.Consequences.Entries
+            .Where(entry => retainedRoots.Contains(entry.EffectId, StringComparer.Ordinal))
+            .ToArray();
+        if (priorRetainedEntries.Length != currentRetainedEntries.Length ||
+            !priorRetainedEntries.Select(static entry => entry.EffectId).SequenceEqual(
+                currentRetainedEntries.Select(static entry => entry.EffectId),
+                StringComparer.Ordinal))
+        {
+            AddOwnedSourceIssue(
+                issues,
+                "wound_transition_effect_binding_changed",
+                "retained roots preserve reciprocal consequence multiplicity and relative ownership order",
+                string.Join(',', retainedRoots));
+            return;
+        }
+
+        foreach (var definitionKey in prior.DefinitionByKey.Keys
+                     .Intersect(current.DefinitionByKey.Keys, StringComparer.Ordinal)
+                     .OrderBy(static value => value, StringComparer.Ordinal))
+        {
+            if (!string.Equals(
+                    prior.DefinitionByKey[definitionKey].CanonicalJson,
+                    current.DefinitionByKey[definitionKey].CanonicalJson,
+                    StringComparison.Ordinal))
+            {
+                AddOwnedSourceIssue(
+                    issues,
+                    "wound_transition_owned_source_graph_changed",
+                    "retained definition preserves its exact canonical source graph body",
+                    definitionKey);
+                return;
+            }
+        }
+
+        if (addedComplication is not null)
+        {
+            if (!ValidateAddedComplicationOwnedSourceDelta(
+                    prior,
+                    current,
+                    addedComplication,
+                    issues))
+            {
+                return;
+            }
+        }
+        else if (!ValidateRemovalOwnedSourceDelta(prior, current, before, after, issues))
+        {
+            return;
+        }
+
+        if (before.Consequences.SlotBudget != after.Consequences.SlotBudget ||
+            after.Consequences.SlotsUsed != after.Consequences.Entries.Count ||
+            after.Consequences.Entries
+                .Select(static entry => entry.Slot)
+                .Where((slot, index) => slot != index + 1)
+                .Any())
+        {
+            AddOwnedSourceIssue(
+                issues,
+                "wound_transition_owned_source_graph_invalid",
+                "same-rank source delta preserves slot budget and emits contiguous one-based recomputed slotsUsed",
+                $"budget={before.Consequences.SlotBudget}->{after.Consequences.SlotBudget};" +
+                $"slotsUsed={after.Consequences.SlotsUsed};entries={after.Consequences.Entries.Count}");
+            return;
+        }
+
+        for (var index = 0; index < priorRetainedEntries.Length; index++)
+        {
+            if (!ConsequencePayloadEqual(priorRetainedEntries[index], currentRetainedEntries[index]))
+            {
+                AddOwnedSourceIssue(
+                    issues,
+                    "wound_transition_retained_consequence_changed",
+                    "retained consequence preserves exact effectId/profile/summary payload and relative order",
+                    priorRetainedEntries[index].EffectId);
+                return;
             }
         }
     }
 
-    private static void ValidateAddedComplicationEffectBindings(
-        WoundMaterializationEnvelope before,
-        WoundMaterializationEnvelope after,
+    private static bool ValidateAddedComplicationOwnedSourceDelta(
+        OwnedSourceTransitionView prior,
+        OwnedSourceTransitionView current,
         WoundComplication addedComplication,
         List<ValidationIssue> issues)
     {
-        var priorEffectIds = EffectIds(before).ToHashSet(StringComparer.Ordinal);
-        var addedEffectIds = EffectIds(after)
-            .Where(effectId => !priorEffectIds.Contains(effectId))
-            .ToArray();
-        var priorConsequenceEffectIds = before.Consequences.Entries
-            .Select(static entry => entry.EffectId)
-            .ToHashSet(StringComparer.Ordinal);
-        var addedConsequenceEffectIds = after.Consequences.Entries
-            .Select(static entry => entry.EffectId)
-            .Where(effectId => !priorConsequenceEffectIds.Contains(effectId))
-            .ToArray();
-        if (!SameSet(addedEffectIds, addedComplication.OwnedEffectIds) ||
-            !SameSet(addedConsequenceEffectIds, addedComplication.OwnedEffectIds))
+        var priorRoots = prior.RootEffectIds.ToHashSet(StringComparer.Ordinal);
+        var addedRoots = current.RootEffectIds
+            .Where(effectId => !priorRoots.Contains(effectId))
+            .ToImmutableArray();
+        if (!SameSet(addedRoots, addedComplication.OwnedEffectIds) ||
+            addedRoots.Any(effectId =>
+                !string.Equals(
+                    current.OwnershipDomainByEffectId[effectId],
+                    addedComplication.ComplicationId,
+                    StringComparison.Ordinal)))
         {
-            Add(
+            AddOwnedSourceIssue(
                 issues,
                 "wound_transition_complication_effect_binding_invalid",
-                "every new effect is owned by the declared complication and has one reciprocal consequence slot",
-                $"effects={string.Join(',', addedEffectIds)};" +
-                $"consequences={string.Join(',', addedConsequenceEffectIds)};" +
-                $"owned={string.Join(',', addedComplication.OwnedEffectIds)}");
+                "new root set equals the declared complication-owned set in one exact ownership domain",
+                $"roots={string.Join(',', addedRoots)};owned={string.Join(',', addedComplication.OwnedEffectIds)}");
+            return false;
         }
+
+        var expectedDefinitions = prior.DefinitionByKey.Keys.ToHashSet(StringComparer.Ordinal);
+        foreach (var effectId in addedRoots)
+            expectedDefinitions.UnionWith(current.ReachableDefinitionKeysByEffectId[effectId]);
+        if (!expectedDefinitions.SetEquals(current.DefinitionByKey.Keys) ||
+            addedRoots.Any(effectId =>
+                current.SlotsByEffectId[effectId].Length == 0 &&
+                !RootReachabilityContainsWoundMarker(current, effectId)))
+        {
+            AddOwnedSourceIssue(
+                issues,
+                "wound_transition_complication_effect_binding_invalid",
+                "new complication contributes only its complete reachable branches and every non-marker root has reciprocal slots",
+                addedComplication.ComplicationId);
+            return false;
+        }
+        return true;
     }
 
-    private static Dictionary<string, List<EffectBinding>> BuildEffectBindingMap(
+    private static bool ValidateRemovalOwnedSourceDelta(
+        OwnedSourceTransitionView prior,
+        OwnedSourceTransitionView current,
+        WoundMaterializationEnvelope before,
+        WoundMaterializationEnvelope after,
+        List<ValidationIssue> issues)
+    {
+        var priorRoots = prior.RootEffectIds.ToHashSet(StringComparer.Ordinal);
+        var addedRoot = current.RootEffectIds.FirstOrDefault(effectId =>
+            !priorRoots.Contains(effectId));
+        if (addedRoot is not null)
+        {
+            AddOwnedSourceIssue(
+                issues,
+                "wound_transition_owned_source_graph_invalid",
+                "unchanged-severity stabilization/treatment/recovery is removal-only",
+                addedRoot);
+            return false;
+        }
+
+        var expectedDefinitions = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var effectId in current.RootEffectIds)
+            expectedDefinitions.UnionWith(prior.ReachableDefinitionKeysByEffectId[effectId]);
+        if (!expectedDefinitions.SetEquals(current.DefinitionByKey.Keys))
+        {
+            AddOwnedSourceIssue(
+                issues,
+                "wound_transition_owned_source_graph_invalid",
+                "after definitions equal the exact prior graph subset reachable from remaining roots",
+                string.Join(',', current.DefinitionByKey.Keys.OrderBy(
+                    static value => value,
+                    StringComparer.Ordinal)));
+            return false;
+        }
+
+        var currentRoots = current.RootEffectIds.ToHashSet(StringComparer.Ordinal);
+        var expectedEntries = before.Consequences.Entries
+            .Where(entry => currentRoots.Contains(entry.EffectId))
+            .ToArray();
+        if (expectedEntries.Length != after.Consequences.Entries.Count ||
+            !expectedEntries.Select(static entry => entry.EffectId).SequenceEqual(
+                after.Consequences.Entries.Select(static entry => entry.EffectId),
+                StringComparer.Ordinal))
+        {
+            AddOwnedSourceIssue(
+                issues,
+                "wound_transition_owned_source_graph_invalid",
+                "after slots equal the exact retained-root projection of prior slots",
+                string.Join(',', after.Consequences.Entries.Select(static entry => entry.EffectId)));
+            return false;
+        }
+        return true;
+    }
+
+    private static void ValidateFreshSeverityRootSet(
+        WoundMaterializationEnvelope before,
+        WoundMaterializationEnvelope after,
+        List<ValidationIssue> issues)
+    {
+        if (before.Severity.Rank == after.Severity.Rank)
+            return;
+        var priorRoots = EffectIds(before);
+        var currentRoots = EffectIds(after);
+        var exactCollision = priorRoots.Intersect(currentRoots, StringComparer.Ordinal)
+            .OrderBy(static value => value, StringComparer.Ordinal)
+            .FirstOrDefault();
+        var priorConfusable = priorRoots.ToDictionary(
+            MortalLocationIdentityState.BuildConfusableKey,
+            static value => value,
+            StringComparer.Ordinal);
+        var confusableCollision = currentRoots
+            .Select(effectId => (
+                EffectId: effectId,
+                Key: MortalLocationIdentityState.BuildConfusableKey(effectId)))
+            .Where(pair => priorConfusable.ContainsKey(pair.Key))
+            .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
+            .FirstOrDefault();
+        if (exactCollision is null && confusableCollision.EffectId is null)
+            return;
+
+        AddOwnedSourceIssue(
+            issues,
+            "wound_transition_severity_root_identity_reused",
+            "severity change uses a fresh exact and confusable root effect identity set",
+            exactCollision ??
+            $"{priorConfusable[confusableCollision.Key]}~{confusableCollision.EffectId}");
+    }
+
+    private static OwnedSourceTransitionView BuildOwnedSourceTransitionView(
         WoundMaterializationEnvelope wound)
     {
-        var bindings = new Dictionary<string, List<EffectBinding>>(StringComparer.Ordinal);
-        foreach (var consequence in wound.Consequences.Entries)
+        var definitions = ImmutableDictionary.CreateBuilder<
+            string,
+            WoundOwnedEffectDefinitionFact>(
+            StringComparer.Ordinal);
+        foreach (var fact in wound.Consequences.OwnedEffectSources.DefinitionFacts)
+            definitions.Add(fact.DefinitionKey, fact);
+
+        var rootDefinitions = ImmutableDictionary.CreateBuilder<string, string>(
+            StringComparer.Ordinal);
+        var effectsByRootDefinition = ImmutableDictionary.CreateBuilder<string, string>(
+            StringComparer.Ordinal);
+        foreach (var binding in wound.Consequences.OwnedEffectSources.RootBindings)
         {
-            AddEffectBinding(
-                bindings,
-                consequence.EffectId,
-                new EffectBinding(
-                    "consequence",
-                    "consequence_slot",
-                    consequence.Slot,
-                    consequence.ProfileKey,
-                    consequence.ReadableSummary,
-                    string.Empty,
-                    0,
-                    string.Empty));
+            rootDefinitions.Add(binding.EffectId, binding.DefinitionKey);
+            effectsByRootDefinition.Add(binding.DefinitionKey, binding.EffectId);
+        }
+
+        var rootEffectIds = rootDefinitions.Keys
+            .OrderBy(static value => value, StringComparer.Ordinal)
+            .ToImmutableArray();
+        var slots = ImmutableDictionary.CreateBuilder<
+            string,
+            ImmutableArray<WoundConsequenceEntry>>(StringComparer.Ordinal);
+        var ownershipDomains = ImmutableDictionary.CreateBuilder<string, string>(
+            StringComparer.Ordinal);
+        foreach (var effectId in rootEffectIds)
+        {
+            slots.Add(
+                effectId,
+                wound.Consequences.Entries.Where(entry => string.Equals(
+                        entry.EffectId,
+                        effectId,
+                        StringComparison.Ordinal))
+                    .ToImmutableArray());
+            ownershipDomains.Add(effectId, "base_wound");
         }
         foreach (var complication in wound.Complications)
         {
             foreach (var effectId in complication.OwnedEffectIds)
+                ownershipDomains[effectId] = complication.ComplicationId;
+        }
+
+        var immutableDefinitions = definitions.ToImmutable();
+        var reachable = ImmutableDictionary.CreateBuilder<string, ImmutableArray<string>>(
+            StringComparer.Ordinal);
+        foreach (var effectId in rootEffectIds)
+        {
+            reachable.Add(
+                effectId,
+                ReadReachableDefinitionKeys(
+                    rootDefinitions[effectId],
+                    immutableDefinitions));
+        }
+
+        return new OwnedSourceTransitionView(
+            rootEffectIds,
+            rootDefinitions.ToImmutable(),
+            effectsByRootDefinition.ToImmutable(),
+            immutableDefinitions,
+            reachable.ToImmutable(),
+            slots.ToImmutable(),
+            ownershipDomains.ToImmutable());
+    }
+
+    private static ImmutableArray<string> ReadReachableDefinitionKeys(
+        string rootDefinitionKey,
+        IReadOnlyDictionary<string, WoundOwnedEffectDefinitionFact> definitions)
+    {
+        var reachable = new HashSet<string>(StringComparer.Ordinal);
+        var pending = new Stack<string>();
+        pending.Push(rootDefinitionKey);
+        while (pending.Count != 0)
+        {
+            var definitionKey = pending.Pop();
+            if (!reachable.Add(definitionKey) ||
+                !definitions.TryGetValue(definitionKey, out var definition))
             {
-                AddEffectBinding(
-                    bindings,
-                    effectId,
-                    new EffectBinding(
-                        "complication",
-                        complication.ComplicationId,
-                        0,
-                        complication.Kind,
-                        complication.DisplayName,
-                        complication.State,
-                        complication.TreatmentDifficultyModifier,
-                        complication.Visibility));
+                continue;
             }
+            foreach (var targetDefinitionKey in definition.ApplyDefinitionTargets)
+                pending.Push(targetDefinitionKey);
         }
-        return bindings;
+        return reachable.OrderBy(static value => value, StringComparer.Ordinal)
+            .ToImmutableArray();
     }
 
-    private static void AddEffectBinding(
-        IDictionary<string, List<EffectBinding>> bindings,
-        string effectId,
-        EffectBinding binding)
-    {
-        if (!bindings.TryGetValue(effectId, out var values))
-        {
-            values = new List<EffectBinding>();
-            bindings.Add(effectId, values);
-        }
-        values.Add(binding);
-    }
+    private static bool RootReachabilityContainsWoundMarker(
+        OwnedSourceTransitionView view,
+        string effectId) =>
+        view.ReachableDefinitionKeysByEffectId.TryGetValue(effectId, out var reachable) &&
+        reachable.Any(definitionKey =>
+            view.DefinitionByKey.TryGetValue(definitionKey, out var definition) &&
+            definition.ContainsWoundConsequenceMarker);
 
-    private static bool SameBindingMultiset(
-        IReadOnlyList<EffectBinding> left,
-        IReadOnlyList<EffectBinding> right)
-    {
-        if (left.Count != right.Count)
-            return false;
-        var unmatched = right.ToList();
-        foreach (var binding in left)
-        {
-            var index = unmatched.FindIndex(value => value == binding);
-            if (index < 0)
-                return false;
-            unmatched.RemoveAt(index);
-        }
-        return unmatched.Count == 0;
-    }
-
-    private static bool ConsequenceEqual(
+    private static bool ConsequencePayloadEqual(
         WoundConsequenceEntry left,
         WoundConsequenceEntry right) =>
-        left.Slot == right.Slot &&
         string.Equals(left.ProfileKey, right.ProfileKey, StringComparison.Ordinal) &&
         string.Equals(left.EffectId, right.EffectId, StringComparison.Ordinal) &&
         string.Equals(left.ReadableSummary, right.ReadableSummary, StringComparison.Ordinal);
+
+    private static void AddOwnedSourceIssue(
+        ICollection<ValidationIssue> issues,
+        string code,
+        string expected,
+        string actual) =>
+        Add(issues, code, expected, actual);
 
     private static bool DisplayEqual(WoundDisplay left, WoundDisplay right) =>
         string.Equals(left.Name, right.Name, StringComparison.Ordinal) &&
@@ -2062,9 +2632,8 @@ internal static class WoundTransitionReducer
         wound.Complications.Select(static value => value.ComplicationId).ToImmutableArray();
 
     private static ImmutableArray<string> EffectIds(WoundMaterializationEnvelope wound) =>
-        wound.Consequences.Entries.Select(static value => value.EffectId)
-            .Concat(wound.Complications.SelectMany(static value => value.OwnedEffectIds))
-            .Distinct(StringComparer.Ordinal)
+        wound.Consequences.OwnedEffectSources.RootBindings
+            .Select(static value => value.EffectId)
             .OrderBy(static value => value, StringComparer.Ordinal)
             .ToImmutableArray();
 
