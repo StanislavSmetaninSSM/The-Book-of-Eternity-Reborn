@@ -1909,6 +1909,8 @@ internal static class WoundAcceptedTurnFingerprints
         "book_of_eternity.wound.effect_input";
     private const string EffectPlanDomain =
         "book_of_eternity.wound.effect_accepted_plan";
+    private const string AcceptedEffectPlanPayloadDomain =
+        "book_of_eternity.effect.accepted_plan_payload";
     private const string FinalPlanDomain =
         "book_of_eternity.wound.final_plan";
 
@@ -2261,6 +2263,90 @@ internal static class WoundAcceptedTurnFingerprints
             fields.Add(Number(index));
             AppendTerminationResult(fields, terminationResults[index]);
         }
+        return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+    }
+
+    internal static string ComputeAcceptedEffectPlanPayload(
+        EffectAcceptedTurnPlan plan)
+    {
+        ArgumentNullException.ThrowIfNull(plan);
+        var sources = plan.Sources;
+        var targets = plan.Targets;
+        var sourceBindings = plan.SourceBindings;
+        var deferredReactions = plan.DeferredReactions;
+        var activeEffects = plan.ActiveEffects;
+        var fields = new List<string?>
+        {
+            AcceptedEffectPlanPayloadDomain,
+            Version,
+            plan.InputFingerprint,
+            plan.CarrierAuthorityFingerprint,
+            plan.SourceAuthorityFingerprint,
+            plan.TargetAuthorityFingerprint
+        };
+        AppendOrdered(fields, plan.AllocatedCombatantIds, includeCount: true);
+        AppendOrdered(fields, plan.AllocatedEffectIds, includeCount: true);
+        AppendOrdered(fields, plan.AllocatedTransitionIds, includeCount: true);
+
+        fields.Add(Count(sources));
+        for (var index = 0; index < sources.Count; index++)
+        {
+            fields.Add(Number(index));
+            AppendSourceKey(fields, sources[index]);
+        }
+        fields.Add(Count(targets));
+        for (var index = 0; index < targets.Count; index++)
+        {
+            fields.Add(Number(index));
+            AppendTargetKey(fields, targets[index]);
+        }
+        fields.Add(Count(sourceBindings));
+        for (var index = 0; index < sourceBindings.Count; index++)
+        {
+            fields.Add(Number(index));
+            AppendSourceBinding(fields, sourceBindings[index]);
+        }
+        fields.Add(Count(deferredReactions));
+        for (var index = 0; index < deferredReactions.Count; index++)
+        {
+            fields.Add(Number(index));
+            AppendReaction(fields, deferredReactions[index]);
+        }
+        fields.Add(Number(plan.ReactionExpansionCount));
+        var usage = plan.ReactionExpansionUsage
+            .OrderBy(static pair => pair.Key.EffectId, StringComparer.Ordinal)
+            .ThenBy(static pair => pair.Key.ComponentId, StringComparer.Ordinal)
+            .ToArray();
+        fields.Add(Number(usage.Length));
+        for (var index = 0; index < usage.Length; index++)
+        {
+            fields.Add(Number(index));
+            fields.Add(usage[index].Key.EffectId);
+            fields.Add(usage[index].Key.ComponentId);
+            fields.Add(Number(usage[index].Value.Count));
+            fields.Add(Number(usage[index].Value.Maximum));
+        }
+        fields.Add(Count(activeEffects));
+        for (var index = 0; index < activeEffects.Count; index++)
+        {
+            fields.Add(Number(index));
+            fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                activeEffects[index]));
+        }
+        AppendEffectCarriers(fields, plan.ResourceTriggerCarriers);
+        fields.Add(plan.SourceAuthority?.Fingerprint);
+        fields.Add(plan.TargetAuthority?.Fingerprint);
+        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+            plan.EventInput));
+        AppendCarrierBeforeImages(fields, plan.CarrierBeforeImages);
+        AppendCarrierAfterImages(fields, plan.CarrierAfterImages);
+        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+            plan.IdentityIndexBeforeImage));
+        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+            plan.IdentityIndexAfterImage));
+        AppendOrdered(fields, plan.TouchedPaths, includeCount: true);
+        AppendOrdered(fields, plan.DeletedPaths, includeCount: true);
+        AppendEffectCarriers(fields, plan.AcceptedCarrierBaselines);
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
 

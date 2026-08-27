@@ -283,6 +283,20 @@ internal static class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
+                var woundMismatch = GetCommonWoundStageMismatch(input);
+                if (woundMismatch is not null)
+                {
+                    InvalidateWoundAndDependentCore();
+                    return new AcceptedMechanicsPlanningResult(
+                        null,
+                        new[]
+                        {
+                            WoundIssue(
+                                "accepted_mechanics_wound_stage_provenance_mismatch",
+                                "the current registry-owned prepared, effect, and final wound stages",
+                                woundMismatch)
+                        });
+                }
                 try
                 {
                     return _commonPlan.GetOrBuildValidated(input);
@@ -294,6 +308,95 @@ internal static class AcceptedTurnAuthorityRegistry
                 }
             }
         }
+
+        private string? GetCommonWoundStageMismatch(
+            AcceptedMechanicsInput input)
+        {
+            ArgumentNullException.ThrowIfNull(input);
+            try
+            {
+                var woundInput = input.WoundInput;
+                var bundle = input.PlanningContext?.WoundStageBundle;
+                if (woundInput is null || bundle is null)
+                {
+                    if (_woundPlan.TryPeekPrepared(out var preparedResult) &&
+                        preparedResult.Success &&
+                        preparedResult.Plan is { } currentPrepared &&
+                        CommonBindingAgrees(
+                            input,
+                            currentPrepared.Binding))
+                    {
+                        return "current wound stages were omitted from the common input";
+                    }
+                    return null;
+                }
+
+                var prepared = bundle.PreparedPlan;
+                var preparedMismatch =
+                    _woundPlan.GetPreparedMismatchCode(prepared);
+                if (preparedMismatch is not null)
+                    return preparedMismatch;
+
+                var effect = bundle.EffectBatchPlan;
+                if (!CurrentWoundEffectAgrees(
+                        prepared,
+                        new WoundEffectBatchPlanningResult(
+                            effect,
+                            Array.Empty<ValidationIssue>())))
+                {
+                    return "foreign or rotated wound effect stage";
+                }
+
+                if (!_woundPlan.TryPeekFinal(out var cachedFinal) ||
+                    !cachedFinal.Success ||
+                    cachedFinal.Plan is not { } currentFinal)
+                {
+                    return "missing current final wound stage";
+                }
+                var validatedFinal =
+                    WoundAcceptedTurnPlanCache.ValidateFinalResult(
+                        prepared,
+                        effect,
+                        cachedFinal);
+                if (!validatedFinal.Success)
+                    return "invalid current final wound stage";
+
+                var suppliedFinal = bundle.FinalPlan;
+                return string.Equals(
+                    suppliedFinal.WoundFinalPlanFingerprint,
+                    currentFinal.WoundFinalPlanFingerprint,
+                    StringComparison.Ordinal)
+                    ? null
+                    : "foreign or rotated final wound stage";
+            }
+            catch (Exception exception) when (
+                exception is ArgumentException or InvalidOperationException or
+                    System.Text.Json.JsonException or NullReferenceException)
+            {
+                return exception.GetType().Name;
+            }
+        }
+
+        private static bool CommonBindingAgrees(
+            AcceptedMechanicsInput input,
+            WoundAcceptedTurnBinding woundBinding) =>
+            string.Equals(
+                input.SessionId,
+                woundBinding.SessionId,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                input.RequestId,
+                woundBinding.RequestId,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                input.SnapshotToken,
+                woundBinding.SnapshotToken,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                input.Realm,
+                woundBinding.Realm,
+                StringComparison.Ordinal) &&
+            input.Turn == woundBinding.Turn;
 
         internal void InvalidateCommonValidated()
         {

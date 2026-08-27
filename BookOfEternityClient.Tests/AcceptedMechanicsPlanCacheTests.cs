@@ -43,8 +43,12 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
     [InlineData("commands")]
     [InlineData("pending")]
     [InlineData("internal_inputs")]
+    [InlineData("wound_carriers")]
+    [InlineData("wound_index")]
+    [InlineData("wound_history")]
     [InlineData("resource_commands")]
     [InlineData("effect_commands")]
+    [InlineData("wound_commands")]
     [InlineData("pending_input")]
     [InlineData("internal_input")]
     [InlineData("before_bytes")]
@@ -57,8 +61,14 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
         var first = cache.GetOrBuildValidated(Input());
         var second = cache.GetOrBuildValidated(Input(mutation));
 
-        Assert.True(first.Success);
-        Assert.True(second.Success);
+        Assert.True(
+            first.Success,
+            string.Join(Environment.NewLine, first.Issues.Select(static issue =>
+                $"{issue.Code}: {issue.Message}")));
+        Assert.True(
+            second.Success,
+            string.Join(Environment.NewLine, second.Issues.Select(static issue =>
+                $"{issue.Code}: {issue.Message}")));
         Assert.NotSame(first.Plan, second.Plan);
         Assert.NotEqual(first.Plan!.InputFingerprint, second.Plan!.InputFingerprint);
         Assert.Equal(2, planner.Calls);
@@ -219,6 +229,7 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             "game_state/resources/resource_commands.json",
             "game_state/resources/resource_definitions.json",
             "game_state/resources/resource_history.json",
+            "game_state/resources/resource_owner_authority.json",
             "game_state/resources/resource_state.json"
         }, result.Plan.TouchedPaths);
     }
@@ -271,12 +282,28 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
         JsonObject? resourceCommands = null,
         IReadOnlyDictionary<string, CanonicalBeforeImage>? beforeImages = null,
         IReadOnlyList<ValidationIssue>? validationIssues = null,
-        AcceptedMechanicsPlanningContext? planningContext = null)
+        AcceptedMechanicsPlanningContext? planningContext = null,
+        JsonObject? woundCommands = null,
+        WoundAcceptedTurnInput? woundInput = null,
+        bool preserveMissingWoundCommandBeforeImage = false)
     {
         var fingerprints = Fingerprints(mutation);
-        var canonicalBeforeImages = beforeImages ?? BeforeImages(
+        var canonicalBeforeImages = (beforeImages ?? BeforeImages(
             mutation == "before_bytes" ? new byte[] { 4, 5, 7 } : new byte[] { 4, 5, 6 },
-            stateAbsent: mutation == "before_absence");
+            stateAbsent: mutation == "before_absence"))
+            .ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value,
+                StringComparer.Ordinal);
+        var effectiveWoundCommands = woundCommands ??
+            (mutation == "wound_commands" ? Object("wounds", 1) : null);
+        if (!preserveMissingWoundCommandBeforeImage &&
+            effectiveWoundCommands is not null &&
+            !canonicalBeforeImages.ContainsKey(WoundCommonCommandPath))
+        {
+            canonicalBeforeImages[WoundCommonCommandPath] =
+                new CanonicalBeforeImage(true, new byte[] { 8 });
+        }
         return new AcceptedMechanicsInput(
             SessionId: mutation == "session" ? "session_b" : "session_a",
             RequestId: mutation == "request" ? "request_b" : "request_a",
@@ -291,7 +318,10 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             AuthorityFingerprints: fingerprints,
             BeforeImages: canonicalBeforeImages,
             ValidationIssues: validationIssues ?? Array.Empty<ValidationIssue>(),
-            PlanningContext: planningContext);
+            PlanningContext: planningContext,
+            WoundCommands: effectiveWoundCommands,
+            WoundInput: woundInput ??
+                (mutation == "wound_input" ? WoundInput() : null));
     }
 
     private static AcceptedMechanicsAuthorityFingerprints Fingerprints(string? mutation) => new(
@@ -306,7 +336,10 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
         AcceptedEvents: Hash(mutation == "accepted_events" ? 'b' : 'a'),
         Commands: Hash(mutation == "commands" ? 'b' : 'a'),
         Pending: Hash(mutation == "pending" ? 'b' : 'a'),
-        InternalInputs: Hash(mutation == "internal_inputs" ? 'b' : 'a'));
+        InternalInputs: Hash(mutation == "internal_inputs" ? 'b' : 'a'),
+        WoundCarriers: Hash(mutation == "wound_carriers" ? 'b' : 'a'),
+        WoundIdentityIndex: Hash(mutation == "wound_index" ? 'b' : 'a'),
+        WoundHistory: Hash(mutation == "wound_history" ? 'b' : 'a'));
 
     private static string Hash(char value) => "sha256:" + new string(value, 64);
 
@@ -321,6 +354,8 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             ["game_state/resources/resource_commands.json"] = new(true, new byte[] { 4 }),
             ["game_state/resources/resource_definitions.json"] = new(true, new byte[] { 5 }),
             ["game_state/resources/resource_history.json"] = new(true, new byte[] { 6 }),
+            [CanonicalResourceOwnerAuthorityComposer.AuthorityPath] =
+                new(true, new byte[] { 7 }),
             ["game_state/resources/resource_state.json"] = stateAbsent
                 ? new CanonicalBeforeImage(false, null)
                 : new CanonicalBeforeImage(true, stateBytes)
@@ -392,16 +427,21 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                 "game_state/resources/resource_state.json",
                 "game_state/effects/effects.json",
                 "game_state/resources/resource_definitions.json",
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
                 "game_state/effects/effect_identity_index.json",
                 "game_state/resources/resource_history.json",
                 "game_state/resources/resource_commands.json",
                 "game_state/effects/effect_commands.json"
-            };
+            }.Concat(input.WoundCommands is null
+                ? Array.Empty<string>()
+                : new[] { WoundCommonCommandPath }).ToArray();
             var consumed = new[]
             {
                 "game_state/resources/resource_commands.json",
                 "game_state/effects/effect_commands.json"
-            };
+            }.Concat(input.WoundCommands is null
+                ? Array.Empty<string>()
+                : new[] { WoundCommonCommandPath }).ToArray();
             return new AcceptedMechanicsPlanningResult(
                 new AcceptedMechanicsPlan(
                     inputFingerprint,

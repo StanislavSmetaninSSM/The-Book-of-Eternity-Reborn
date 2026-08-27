@@ -396,7 +396,7 @@ internal sealed class WoundAcceptedTurnPlanCache
         }
     }
 
-    private static WoundAcceptedTurnPreparationResult ValidatePreparedResult(
+    internal static WoundAcceptedTurnPreparationResult ValidatePreparedResult(
         WoundAcceptedTurnInput input,
         string inputFingerprint,
         WoundAcceptedTurnPreparationResult result)
@@ -616,7 +616,7 @@ internal sealed class WoundAcceptedTurnPlanCache
         return true;
     }
 
-    private static WoundAcceptedTurnPlanningResult ValidateFinalResult(
+    internal static WoundAcceptedTurnPlanningResult ValidateFinalResult(
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchAcceptedPlan effectPlan,
         WoundAcceptedTurnPlanningResult result)

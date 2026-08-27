@@ -1,6 +1,4 @@
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json.Nodes;
+using System.Text.Json;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -46,18 +44,31 @@ internal sealed class AcceptedMechanicsPlanCache
             }
 
             var binding = input.CreateBinding();
-            var fingerprint = CreateFingerprint(binding);
+            var bindingFingerprint =
+                AcceptedMechanicsPlanFingerprints.ComputeInput(binding);
+            var fingerprint =
+                AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input);
             AcceptedMechanicsPlanningResult result;
             if (_planningResult != null &&
                 string.Equals(_inputFingerprint, fingerprint, StringComparison.Ordinal))
             {
-                result = _planningResult;
+                result = ValidatePlannerResult(input, fingerprint, _planningResult);
+                if (!result.Success)
+                {
+                    InvalidateAllCore();
+                    return result;
+                }
             }
             else
             {
-                result = _planner(input, fingerprint) ??
+                var candidate = _planner(input, fingerprint) ??
                     throw new InvalidOperationException("Accepted mechanics planner returned null.");
-                result = ValidatePlannerResult(input, fingerprint, result);
+                result = ValidatePlannerResult(input, fingerprint, candidate);
+                if (candidate.Success && !result.Success)
+                {
+                    InvalidateAllCore();
+                    return result;
+                }
                 _inputFingerprint = fingerprint;
                 _planningResult = result;
             }
@@ -68,7 +79,7 @@ internal sealed class AcceptedMechanicsPlanCache
                 return result;
             }
 
-            _validatedBindingFingerprint = fingerprint;
+            _validatedBindingFingerprint = bindingFingerprint;
             _validatedBinding = input.CreateBinding();
             _validatedResult = result;
             return result;
@@ -80,20 +91,21 @@ internal sealed class AcceptedMechanicsPlanCache
         out AcceptedMechanicsPlanningResult result)
     {
         ArgumentNullException.ThrowIfNull(liveBinding);
-        var fingerprint = CreateFingerprint(liveBinding);
+        var fingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(liveBinding);
         lock (_gate)
         {
             if (_validatedResult != null &&
                 string.Equals(
                     _validatedBindingFingerprint,
                     fingerprint,
-                    StringComparison.Ordinal))
+                    StringComparison.Ordinal) &&
+                PreparedFingerprintAgrees(_validatedResult))
             {
                 result = _validatedResult;
                 InvalidateValidatedCore();
                 return true;
             }
-            InvalidateValidatedCore();
+            InvalidateAllCore();
         }
 
         result = null!;
@@ -109,11 +121,7 @@ internal sealed class AcceptedMechanicsPlanCache
     internal void InvalidateAll()
     {
         lock (_gate)
-        {
-            _inputFingerprint = null;
-            _planningResult = null;
-            InvalidateValidatedCore();
-        }
+            InvalidateAllCore();
     }
 
     internal bool TryPeekValidated(
@@ -124,6 +132,13 @@ internal sealed class AcceptedMechanicsPlanCache
         {
             if (_validatedBinding != null && _validatedResult != null)
             {
+                if (!PreparedFingerprintAgrees(_validatedResult))
+                {
+                    InvalidateAllCore();
+                    binding = null!;
+                    result = null!;
+                    return false;
+                }
                 binding = new AcceptedMechanicsPlanBinding(
                     _validatedBinding.SessionId,
                     _validatedBinding.RequestId,
@@ -136,7 +151,9 @@ internal sealed class AcceptedMechanicsPlanCache
                     _validatedBinding.PendingInput,
                     _validatedBinding.InternalInputs,
                     _validatedBinding.AuthorityFingerprints,
-                    _validatedBinding.BeforeImages);
+                    _validatedBinding.BeforeImages,
+                    _validatedBinding.WoundCommands,
+                    _validatedBinding.WoundInput);
                 result = _validatedResult;
                 return true;
             }
@@ -151,6 +168,13 @@ internal sealed class AcceptedMechanicsPlanCache
         _validatedBindingFingerprint = null;
         _validatedBinding = null;
         _validatedResult = null;
+    }
+
+    private void InvalidateAllCore()
+    {
+        _inputFingerprint = null;
+        _planningResult = null;
+        InvalidateValidatedCore();
     }
 
     private static AcceptedMechanicsPlanningResult ValidatePlannerResult(
@@ -174,8 +198,114 @@ internal sealed class AcceptedMechanicsPlanCache
             return Failed("accepted_mechanics_authority_fingerprint_mismatch", "exact input authority fingerprints");
         if (!BeforeImagesEqual(plan.BeforeImages, input.BeforeImages))
             return Failed("accepted_mechanics_before_image_mismatch", "exact input before-images");
+        if (!WoundStagesAgree(input, plan))
+        {
+            return Failed(
+                "accepted_mechanics_wound_stage_mismatch",
+                "the exact full-input wound stage bundle from the planning context");
+        }
+        if (!WoundCommandPathAgrees(input, plan))
+        {
+            return Failed(
+                "accepted_mechanics_wound_command_path_mismatch",
+                "a present wound command root touched, consumed, and protected by one exact before-image");
+        }
+        if (!PreparedFingerprintAgrees(result))
+        {
+            return Failed(
+                "accepted_mechanics_prepared_plan_fingerprint_mismatch",
+                "one independently recomputed complete prepared-plan fingerprint");
+        }
         return result;
     }
+
+    private static bool WoundStagesAgree(
+        AcceptedMechanicsInput input,
+        AcceptedMechanicsPlan plan)
+    {
+        try
+        {
+            var woundInput = input.WoundInput;
+            var expected = input.PlanningContext?.WoundStageBundle;
+            var actual = plan.WoundStageBundle;
+            if ((woundInput is null) != (expected is null) ||
+                (expected is null) != (actual is null))
+            {
+                return false;
+            }
+            if (expected is null)
+                return true;
+            var woundBinding = woundInput!.Binding;
+            return string.Equals(
+                       input.SessionId,
+                       woundBinding.SessionId,
+                       StringComparison.Ordinal) &&
+                   string.Equals(
+                       input.RequestId,
+                       woundBinding.RequestId,
+                       StringComparison.Ordinal) &&
+                   string.Equals(
+                       input.SnapshotToken,
+                       woundBinding.SnapshotToken,
+                       StringComparison.Ordinal) &&
+                   string.Equals(
+                       input.Realm,
+                       woundBinding.Realm,
+                       StringComparison.Ordinal) &&
+                   input.Turn == woundBinding.Turn &&
+                   string.Equals(
+                       WoundAcceptedTurnFingerprints.ComputeInput(woundInput),
+                       expected.InputFingerprint,
+                       StringComparison.Ordinal) &&
+                   string.Equals(
+                       expected.BundleFingerprint,
+                       actual!.BundleFingerprint,
+                       StringComparison.Ordinal);
+        }
+        catch (Exception exception) when (IsMalformedBoundary(exception))
+        {
+            return false;
+        }
+    }
+
+    private static bool WoundCommandPathAgrees(
+        AcceptedMechanicsInput input,
+        AcceptedMechanicsPlan plan)
+    {
+        var present = input.WoundCommands is not null;
+        var touched = plan.TouchedPaths.Contains(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            StringComparer.Ordinal);
+        var consumed = plan.ConsumedPaths.Contains(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            StringComparer.Ordinal);
+        return present == touched &&
+               present == consumed &&
+               (!present || plan.BeforeImages.ContainsKey(
+                   AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    private static bool PreparedFingerprintAgrees(
+        AcceptedMechanicsPlanningResult result)
+    {
+        if (!result.Success || result.Plan is null)
+            return false;
+        try
+        {
+            return string.Equals(
+                result.Plan.PreparedPlanFingerprint,
+                AcceptedMechanicsPlanFingerprints.ComputePrepared(result.Plan),
+                StringComparison.Ordinal);
+        }
+        catch (Exception exception) when (IsMalformedBoundary(exception))
+        {
+            return false;
+        }
+    }
+
+    private static bool IsMalformedBoundary(Exception exception) =>
+        exception is ArgumentException or InvalidOperationException or
+            JsonException or NullReferenceException;
 
     private static bool BeforeImagesEqual(
         IReadOnlyDictionary<string, CanonicalBeforeImage> left,
@@ -216,55 +346,6 @@ internal sealed class AcceptedMechanicsPlanCache
                     repairHint: "Discard the plan and rebuild once from the complete validated accepted-turn input.")
             });
 
-    private static string CreateFingerprint(AcceptedMechanicsPlanBinding binding)
-    {
-        var root = new JsonObject
-        {
-            ["schemaVersion"] = 2,
-            ["sessionId"] = binding.SessionId,
-            ["requestId"] = binding.RequestId,
-            ["snapshotToken"] = binding.SnapshotToken,
-            ["realm"] = binding.Realm,
-            ["turn"] = binding.Turn,
-            ["acceptedEvents"] = Canonicalize(binding.AcceptedEvents),
-            ["resourceCommands"] = Canonicalize(binding.ResourceCommands),
-            ["effectCommands"] = Canonicalize(binding.EffectCommands),
-            ["pendingInput"] = Canonicalize(binding.PendingInput),
-            ["internalInputs"] = Canonicalize(binding.InternalInputs),
-            ["authorityFingerprints"] = new JsonObject(
-                binding.AuthorityFingerprints.Enumerate()
-                    .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
-                    .Select(static pair =>
-                        KeyValuePair.Create<string, JsonNode?>(pair.Key, pair.Value))),
-            ["beforeImages"] = new JsonArray(binding.BeforeImages
-                .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
-                .Select(pair => (JsonNode)new JsonObject
-                {
-                    ["path"] = pair.Key,
-                    ["existed"] = pair.Value.Existed,
-                    ["bytes"] = pair.Value.Bytes == null
-                        ? null
-                        : Convert.ToBase64String(pair.Value.Bytes)
-                }).ToArray())
-        };
-        return "sha256:" + Convert.ToHexString(
-            SHA256.HashData(Encoding.UTF8.GetBytes(root.ToJsonString())))
-            .ToLowerInvariant();
-    }
-
-    private static JsonNode? Canonicalize(JsonNode? node)
-    {
-        if (node is JsonObject valueObject)
-        {
-            var result = new JsonObject();
-            foreach (var pair in valueObject.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
-                result.Add(pair.Key, Canonicalize(pair.Value));
-            return result;
-        }
-        if (node is JsonArray valueArray)
-            return new JsonArray(valueArray.Select(Canonicalize).ToArray());
-        return node?.DeepClone();
-    }
 }
 
 internal static class AcceptedMechanicsPlanAuthority

@@ -433,7 +433,16 @@ public partial class ValidationService
                 acceptedCommands.Root.ToJsonString() + "\n" +
                 (effectCommandJson ?? "<missing>")),
             Pending: HashNode("accepted-mechanics-pending-v1", pendingInput),
-            InternalInputs: HashNode("accepted-mechanics-internal-v1", internalInputs));
+            InternalInputs: HashNode("accepted-mechanics-internal-v1", internalInputs),
+            WoundCarriers: HashText(
+                "accepted-mechanics-wound-carriers-v1",
+                "<missing>"),
+            WoundIdentityIndex: HashText(
+                "accepted-mechanics-wound-index-v1",
+                "<missing>"),
+            WoundHistory: HashText(
+                "accepted-mechanics-wound-history-v1",
+                "<missing>"));
         var planningCommands = isTerminalReceiptReplay
             ? ResourceAcceptedTurnInputComposer.Parse("{}")
             : commands;

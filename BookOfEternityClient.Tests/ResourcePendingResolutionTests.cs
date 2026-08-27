@@ -977,7 +977,10 @@ public sealed class ResourcePendingResolutionTests
             AcceptedEvents: FingerprintA,
             Commands: commandsFingerprint,
             Pending: pendingFingerprint,
-            InternalInputs: internalInputsFingerprint);
+            InternalInputs: internalInputsFingerprint,
+            WoundCarriers: FingerprintA,
+            WoundIdentityIndex: FingerprintA,
+            WoundHistory: FingerprintA);
         return new AcceptedMechanicsInput(
             "session-pending-fingerprint",
             "request-pending-fingerprint",
