@@ -939,6 +939,12 @@ The in-memory handoff is closed and typed:
 WoundPreparedPlan
   WoundPreparationFingerprint
   EffectOperationBatches[]
+  BaselineAuthority (internal only)
+    PreTurnCarriers
+    PreTurnIdentityIndex
+    PreTurnHistory
+    PreparedInputFingerprint
+    AuthoritySeal
 
 WoundEffectOperationBatch
   LocalWoundRef
@@ -947,6 +953,14 @@ WoundEffectOperationBatch
   TerminalOperations[]
   RootLineageAuthority[]
   SourceExportFingerprint
+  TransitionAuthority (internal only)
+    OpportunityId
+    OpportunityAuthorityFingerprint
+    OperationKey
+    ReadableSummary
+    MaximumSeverityRank
+    PreparedInputFingerprint
+    AuthoritySeal
 
 WoundRootEffectApplication
   ApplicationRef
@@ -995,6 +1009,25 @@ apply any root or downstream definition. Only the fingerprinted typed batch gran
 one-shot internal authority for its exact root tuple; later downstream materialization
 is authorized only by the existing sealed #1535 reaction executor.
 
+`TransitionAuthority` preserves the accepted transition facts that Finalize and the
+real wound reducer/history require even when a valid wound has no mechanical roots.
+It is immutable, internal, and neither persisted nor added to the public source-export
+or preparation fingerprint format. Its domain/versioned `AuthoritySeal` binds the
+prepared input fingerprint, local and permanent wound identities, opportunity identity
+and fingerprint, operation key, readable summary, and maximum severity rank. Finalize
+requires exact prepared-input agreement and independently recomputes this seal before
+constructing reducer evidence or history. Thus a zero-operation batch cannot lose its
+transition provenance, and an authority carrier from another prepared plan cannot be
+mixed into the current plan.
+
+`BaselineAuthority` preserves the detached wound-carrier, identity-index, and history
+before-images required for final collection seals and atomic after-images. Its separate
+domain/versioned seal binds the prepared input fingerprint and fixed-order canonical
+bytes for all five optional carrier roots, the identity index, and history; null roots
+remain distinct from empty objects. Finalize requires exact input-fingerprint agreement
+and recomputes this seal before reading a baseline. The record is internal and does not
+change the frozen public preparation-fingerprint encoding.
+
 `ApplicationRef` is exact/confusable unique across the accepted turn and is never
 canonical state. The effect composer derives a different replay-safe internal event
 reference for every terminal and root application through
@@ -1014,6 +1047,24 @@ carrier coordinate, ordered slots, component count, and the materialization fing
 before persisting only `{effectId, definitionKey}` root bindings. It independently
 recomputes the result fingerprint from the exact created active-effect after-image and
 the prepared root parameters; comparing two carried fingerprint strings is insufficient.
+
+All accepted event references seed the exact/confusable created-event exclusion set
+before either effect identity factory runs. A derived wound operation reference must be
+unique against that entire set and every other derived reference, even if an accepted
+authority already uses the syntactically valid `wound_effect:sha256:...` namespace.
+Likewise, the same-turn `kind=wound` entries in `EffectSourceAuthority` must be the exact
+prepared export set rather than a superset: an unused extra entry rejects the handoff,
+while unrelated pre-turn sources remain legal. Returned source entries use detached
+definitions and detached/frozen satisfied-predicate evidence.
+
+The `SlotBindings` on a prepared root use provisional correlation ordinals because no
+permanent effect identity exists at Prepare. Once the effect plan has allocated random
+opaque IDs, result `SlotBindings` use canonical post-allocation ordinals: roots are
+ordered by actual `effectId`, each root keeps its prepared semantic slot order, and the
+whole wound batch is numbered contiguously from 1. Finalize recomputes that mapping from
+detached prepared roots and accepted results before writing consequence entries. Opaque
+ID generation therefore remains random and is never made order-preserving merely to
+stabilize slots.
 
 `ExpectedMaterializationFingerprint` and result `MaterializationFingerprint` use domain
 `book_of_eternity.wound.effect_materialization`, version `1`. In exact order, the
@@ -1073,6 +1124,15 @@ planner recomputes its complete input seal and every expected/actual materializa
 fingerprint, and wound finalization recomputes the effect-plan seal plus each created
 effect's materialization fingerprint before consuming any result. A downstream stage
 never treats a fingerprint property alone as proof of its payload.
+
+Finalization derives the current prepared wound's exact reciprocal root-effect set from
+four independent after-image views: the plan's active-effect list, runtime
+resource-trigger carriers, publication carrier roots, and identity index. Every view
+must contain exactly the accepted root IDs and no additional effect claiming a prepared
+wound source. Each root identity must also agree on owner collection, complete stack
+coordinate, source/target, accepted-turn chronology, and its sole create transition;
+the transition ID must be present in `AllocatedTransitionIds`. These checks are semantic
+and are repeated after effect-plan resealing.
 
 ## 15. Wound command staging
 

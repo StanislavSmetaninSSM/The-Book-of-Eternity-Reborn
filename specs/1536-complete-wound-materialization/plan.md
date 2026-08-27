@@ -348,6 +348,25 @@ No production code is edited in this phase.
    source/component agreement from detached payloads. Do not preallocate any effect ID
    in the wound planner; reaction-only descendants have no application ref or reserved
    identity.
+   Treat prepared slot ordinals as correlations, then canonically renumber the accepted
+   result slots per wound batch after random opaque IDs exist (`effectId` ordinal,
+   prepared within-root semantic order, contiguous `1..N`); Finalize independently
+   recomputes that mapping before persistence.
+   Carry reducer/history-only transition facts through an internal immutable authority
+   record with a separate seal bound to the prepared input and local/permanent wound
+   identities, so zero-operation wounds retain exact provenance without changing the
+   public source-export or preparation fingerprint format.
+   Preserve pre-turn wound carriers, identity, and history through a second detached
+   internal authority record whose seal binds their fixed-order canonical bytes to the
+   prepared input, so Finalize can derive honest collection and history after-images
+   without recovering state from an irreversible fingerprint.
+   Require the same-turn wound source-authority set to equal the prepared exports
+   exactly, reserve every accepted event reference against derived wound operation
+   events before allocation, and freeze/detach returned predicate evidence.
+   During Finalize, independently require the exact reciprocal prepared-root effect set
+   in active effects, runtime carriers, publication carriers, and identity entries;
+   verify full identity semantics and allocator-backed create-transition evidence after
+   resealing.
    Reconcile the optional wound single-leaf expansion with #1535 by requiring exact
    `apply_definition.maxExpansion = 2` when present, requiring same-domain `replace` for
    a root-bound target, and recording the producing effect in every reaction-created

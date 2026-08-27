@@ -559,8 +559,14 @@ public sealed class WoundCarrierCatalogTests
         string field,
         string wrongValue)
     {
-        var wound = Wound("wound_mismatch");
-        wound["owner"]![field] = wrongValue;
+        var wound = field switch
+        {
+            "realm" => Wound("wound_mismatch", realm: wrongValue),
+            "ownerKind" => Wound("wound_mismatch", ownerKind: wrongValue),
+            "ownerId" => Wound("wound_mismatch", ownerId: wrongValue),
+            "carrierPath" => Wound("wound_mismatch", carrierPath: wrongValue),
+            _ => throw new ArgumentOutOfRangeException(nameof(field), field, null)
+        };
 
         var catalog = BuildCatalog(
             player: WoundContractTestData.CreatePlayerCarrier(wound));

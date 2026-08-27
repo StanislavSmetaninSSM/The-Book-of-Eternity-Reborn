@@ -2666,13 +2666,1128 @@ internal static class EffectAcceptedTurnPlanner
             Array.Empty<ValidationIssue>());
     }
 
+    private static IReadOnlyList<WoundApplicationRequest> PrepareWoundApplications(
+        EffectAcceptedTurnInput input,
+        WoundPreparedAcceptedTurnPlan prepared,
+        List<ValidationIssue> issues)
+    {
+        var result = new List<WoundApplicationRequest>();
+        var binding = prepared.Binding;
+        var batches = prepared.EffectOperationBatches;
+        var preparedWounds = prepared.PreparedWounds;
+        var allocatedWoundIds = prepared.AllocatedWoundIds;
+        if (binding is null ||
+            batches is null ||
+            preparedWounds is null ||
+            allocatedWoundIds is null ||
+            input.RawCommands is null ||
+            input.SourceAuthority is null ||
+            input.TargetAuthority is null ||
+            input.EventInput is null)
+        {
+            AddWoundBatchIssue(
+                issues,
+                "prepared",
+                "wound_plan_effect_handoff_invalid",
+                "complete detached prepared plan and ordinary effect input",
+                "missing nested authority");
+            return result;
+        }
+
+        if (!string.Equals(input.SessionId, binding.SessionId, StringComparison.Ordinal) ||
+            !string.Equals(
+                input.SnapshotToken,
+                binding.SnapshotToken,
+                StringComparison.Ordinal) ||
+            !string.Equals(input.Realm, binding.Realm, StringComparison.Ordinal) ||
+            !TryReadPositiveInt(input.EventInput["turn"], out var turn) ||
+            turn != binding.Turn)
+        {
+            AddWoundBatchIssue(
+                issues,
+                "effectInput",
+                "wound_plan_effect_handoff_invalid",
+                "effect input bound to the exact prepared session, snapshot, realm, and turn",
+                $"{input.SessionId}/{input.SnapshotToken}/{input.Realm}/{Describe(input.EventInput["turn"])}");
+        }
+
+        if (!WoundAcceptedTurnPlannerCore.SameTurnWoundAuthorityAgrees(
+                prepared,
+                input.SourceAuthority))
+        {
+            AddWoundBatchIssue(
+                issues,
+                "effectInput.sourceAuthority",
+                "wound_plan_effect_handoff_invalid",
+                "the exact prepared same-turn wound source set and no additional wound authority",
+                "same-turn wound source authority mismatch");
+            return result;
+        }
+
+        var acceptedEvents = PrepareWoundAcceptedEvents(
+            binding,
+            input.EventInput["events"],
+            issues);
+        var allocatedIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var woundId in allocatedWoundIds)
+        {
+            if (!TryExact(woundId) || !allocatedIds.Add(woundId))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    "prepared.allocatedWoundIds",
+                    "wound_plan_effect_handoff_invalid",
+                    "exact unique allocated wound identities",
+                    woundId ?? "missing");
+            }
+        }
+
+        var woundsById = new Dictionary<
+            string,
+            WoundMaterializationEnvelope>(StringComparer.Ordinal);
+        for (var index = 0; index < preparedWounds.Count; index++)
+        {
+            var wound = preparedWounds[index];
+            if (wound is null ||
+                !TryExact(wound.WoundId) ||
+                !woundsById.TryAdd(wound.WoundId, wound))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    $"prepared.preparedWounds[{index}]",
+                    "wound_plan_effect_handoff_invalid",
+                    "one exact unique prepared wound",
+                    wound?.WoundId ?? "missing");
+            }
+        }
+
+        var applicationRefs = new HashSet<string>(StringComparer.Ordinal);
+        var applicationAliases = new HashSet<string>(StringComparer.Ordinal);
+        var createdEvents = acceptedEvents.Keys.ToHashSet(StringComparer.Ordinal);
+        var createdEventAliases = acceptedEvents.Keys
+            .Select(MortalLocationIdentityState.BuildConfusableKey)
+            .ToHashSet(StringComparer.Ordinal);
+        for (var batchIndex = 0; batchIndex < batches.Count; batchIndex++)
+        {
+            var batch = batches[batchIndex];
+            var path = $"prepared.effectOperationBatches[{batchIndex}]";
+            if (batch is null)
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    path,
+                    "wound_plan_effect_handoff_invalid",
+                    "complete typed wound effect batch",
+                    "null");
+                continue;
+            }
+
+            var actualSourceExportFingerprint =
+                WoundAcceptedTurnFingerprints.ComputeSourceExport(batch);
+            if (!string.Equals(
+                    actualSourceExportFingerprint,
+                    batch.SourceExportFingerprint,
+                    StringComparison.Ordinal))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    path + ".sourceExportFingerprint",
+                    "wound_plan_prepared_seal_mismatch",
+                    "the exact recomputed detached source export fingerprint",
+                    batch.SourceExportFingerprint);
+                continue;
+            }
+
+            PrepareWoundBatchApplications(
+                input,
+                prepared,
+                batch,
+                path,
+                allocatedIds,
+                woundsById,
+                acceptedEvents,
+                applicationRefs,
+                applicationAliases,
+                createdEvents,
+                createdEventAliases,
+                result,
+                issues);
+        }
+        return result;
+    }
+
+    private static IReadOnlyDictionary<string, WoundAcceptedEventAuthority>
+        PrepareWoundAcceptedEvents(
+            WoundAcceptedTurnBinding binding,
+            JsonNode? inputEvents,
+            List<ValidationIssue> issues)
+    {
+        var result = new Dictionary<
+            string,
+            WoundAcceptedEventAuthority>(StringComparer.Ordinal);
+        var accepted = binding.AcceptedEvents;
+        if (accepted is null ||
+            inputEvents is not JsonArray events ||
+            events.Count != accepted.Count)
+        {
+            AddWoundBatchIssue(
+                issues,
+                "effectInput.eventInput.events",
+                "wound_plan_effect_handoff_invalid",
+                "the exact ordered prepared accepted-event set",
+                Describe(inputEvents));
+            return result;
+        }
+
+        var aliases = new HashSet<string>(StringComparer.Ordinal);
+        for (var index = 0; index < accepted.Count; index++)
+        {
+            var authority = accepted[index];
+            var node = events[index];
+            var path = $"effectInput.eventInput.events[{index}]";
+            if (authority is null ||
+                !TryExact(authority.EventRef) ||
+                !TryExact(authority.Kind) ||
+                !TryExact(authority.AuthorityId) ||
+                !TryExact(authority.SemanticFingerprint) ||
+                node is not JsonObject value ||
+                !HasOnly(value, "kind", "authorityId", "eventRef") ||
+                !TryReadExact(value["eventRef"], out var eventRef) ||
+                !TryReadExact(value["kind"], out var kind) ||
+                !TryReadExact(value["authorityId"], out var authorityId) ||
+                !string.Equals(eventRef, authority.EventRef, StringComparison.Ordinal) ||
+                !string.Equals(kind, authority.Kind, StringComparison.Ordinal) ||
+                !string.Equals(
+                    authorityId,
+                    authority.AuthorityId,
+                    StringComparison.Ordinal) ||
+                !result.TryAdd(authority.EventRef, authority) ||
+                !aliases.Add(MortalLocationIdentityState.BuildConfusableKey(
+                    authority.EventRef)))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    path,
+                    "wound_plan_effect_handoff_invalid",
+                    "one exact/confusable-unique prepared accepted event at the same ordinal",
+                    Describe(node));
+            }
+        }
+        return result;
+    }
+
+    private static void PrepareWoundBatchApplications(
+        EffectAcceptedTurnInput input,
+        WoundPreparedAcceptedTurnPlan prepared,
+        WoundEffectOperationBatch batch,
+        string path,
+        IReadOnlySet<string> allocatedWoundIds,
+        IReadOnlyDictionary<string, WoundMaterializationEnvelope> woundsById,
+        IReadOnlyDictionary<string, WoundAcceptedEventAuthority> acceptedEvents,
+        HashSet<string> applicationRefs,
+        HashSet<string> applicationAliases,
+        HashSet<string> createdEvents,
+        HashSet<string> createdEventAliases,
+        List<WoundApplicationRequest> result,
+        List<ValidationIssue> issues)
+    {
+        var sourceExport = batch.SourceExport;
+        var roots = batch.RootApplications;
+        var terminals = batch.TerminalOperations;
+        var lineage = batch.RootLineageAuthority;
+        var transitionAuthority = batch.TransitionAuthority;
+        if (sourceExport is null ||
+            roots is null ||
+            terminals is null ||
+            lineage is null ||
+            transitionAuthority is null ||
+            !TryExact(batch.LocalWoundRef) ||
+            !TryExact(batch.PreparedWoundId) ||
+            !allocatedWoundIds.Contains(batch.PreparedWoundId) ||
+            !woundsById.TryGetValue(batch.PreparedWoundId, out var wound))
+        {
+            AddWoundBatchIssue(
+                issues,
+                path,
+                "wound_plan_effect_handoff_invalid",
+                "complete typed batch for one exact allocated prepared wound",
+                $"{batch.LocalWoundRef}/{batch.PreparedWoundId}");
+            return;
+        }
+        if (terminals.Count != 0)
+        {
+            AddWoundBatchIssue(
+                issues,
+                path + ".terminalOperations",
+                "wound_plan_effect_handoff_invalid",
+                "no terminal operations in a create-only wound root batch",
+                terminals.Count.ToString());
+        }
+        if (lineage.Count != roots.Count)
+        {
+            AddWoundBatchIssue(
+                issues,
+                path + ".rootLineageAuthority",
+                "wound_plan_effect_handoff_invalid",
+                "one ordered application-authority row per root",
+                $"{lineage.Count}/{roots.Count}");
+        }
+
+        if (!ValidateWoundSourceExport(
+                prepared,
+                batch,
+                sourceExport,
+                wound,
+                transitionAuthority,
+                acceptedEvents,
+                path,
+                issues))
+        {
+            return;
+        }
+
+        var definitions = new Dictionary<
+            string,
+            WoundEffectSourceDefinition>(StringComparer.Ordinal);
+        var definitionAliases = new HashSet<string>(StringComparer.Ordinal);
+        var sourceDefinitions = sourceExport.Definitions;
+        if (sourceDefinitions is null)
+        {
+            AddWoundBatchIssue(
+                issues,
+                path + ".sourceExport.definitions",
+                "wound_plan_effect_handoff_invalid",
+                "ordered detached source definitions",
+                "missing");
+            return;
+        }
+        var definitionIssueCount = issues.Count;
+        for (var index = 0; index < sourceDefinitions.Count; index++)
+        {
+            var definition = sourceDefinitions[index];
+            if (definition is null ||
+                !TryExact(definition.DefinitionKey) ||
+                definition.Definition is not JsonObject definitionJson ||
+                !TryReadExact(definitionJson["definitionKey"], out var embeddedKey) ||
+                !string.Equals(
+                    embeddedKey,
+                    definition.DefinitionKey,
+                    StringComparison.Ordinal) ||
+                !definitions.TryAdd(definition.DefinitionKey, definition) ||
+                !definitionAliases.Add(
+                    MortalLocationIdentityState.BuildConfusableKey(
+                        definition.DefinitionKey)))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    $"{path}.sourceExport.definitions[{index}]",
+                    "wound_plan_effect_handoff_invalid",
+                    "one exact/confusable-unique canonical definition key and body",
+                    definition?.DefinitionKey ?? "missing");
+            }
+        }
+        if (issues.Count != definitionIssueCount ||
+            !ValidateWoundDefinitionAuthorities(
+                input.SourceAuthority,
+                sourceExport,
+                batch.LocalWoundRef,
+                definitions,
+                path,
+                issues))
+        {
+            return;
+        }
+
+        for (var rootIndex = 0; rootIndex < roots.Count; rootIndex++)
+        {
+            var root = roots[rootIndex];
+            var rootPath = $"{path}.rootApplications[{rootIndex}]";
+            if (root is null ||
+                !TryExact(root.ApplicationRef) ||
+                !applicationRefs.Add(root.ApplicationRef) ||
+                !applicationAliases.Add(
+                    MortalLocationIdentityState.BuildConfusableKey(
+                        root.ApplicationRef)))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    rootPath + ".applicationRef",
+                    "wound_plan_effect_handoff_invalid",
+                    "globally exact/confusable-unique typed root applicationRef",
+                    root?.ApplicationRef ?? "missing");
+                continue;
+            }
+            if (rootIndex >= lineage.Count ||
+                !WoundLineageMatches(lineage[rootIndex], root))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    rootPath,
+                    "wound_plan_effect_handoff_invalid",
+                    "exact ordered prepared root lineage authority",
+                    root.ApplicationRef);
+                continue;
+            }
+            if (!definitions.TryGetValue(root.DefinitionKey, out var definition))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    rootPath + ".definitionKey",
+                    "wound_plan_effect_handoff_invalid",
+                    "one exact allowlisted detached root definition",
+                    root.DefinitionKey);
+                continue;
+            }
+
+            var request = PrepareWoundApplication(
+                input,
+                batch,
+                sourceExport,
+                definition,
+                root,
+                acceptedEvents,
+                rootPath,
+                issues);
+            if (request is null)
+                continue;
+            if (!createdEvents.Add(request.CreatedEventRef) ||
+                !createdEventAliases.Add(
+                    MortalLocationIdentityState.BuildConfusableKey(
+                        request.CreatedEventRef)))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    rootPath + ".createdEventRef",
+                    "wound_plan_effect_handoff_invalid",
+                    "globally exact/confusable-unique derived wound create event",
+                    request.CreatedEventRef);
+                continue;
+            }
+            result.Add(request);
+        }
+    }
+
+    private static bool ValidateWoundDefinitionAuthorities(
+        EffectSourceAuthority authority,
+        WoundEffectSourceExport sourceExport,
+        string localWoundRef,
+        IReadOnlyDictionary<string, WoundEffectSourceDefinition> definitions,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (!TryMapWoundOwnerTarget(sourceExport.Owner, out var targetKind))
+        {
+            AddWoundBatchIssue(
+                issues,
+                path + ".sourceExport.owner",
+                "wound_plan_effect_handoff_invalid",
+                "one narrowly supported wound owner target kind",
+                sourceExport.Owner.OwnerKind);
+            return false;
+        }
+
+        var issueCount = issues.Count;
+        foreach (var pair in definitions)
+        {
+            var key = new EffectSourceKey(
+                sourceExport.Realm,
+                "wound",
+                sourceExport.SourceId,
+                pair.Key);
+            var resolution = authority.ResolveCanonicalBinding(key, targetKind);
+            issues.AddRange(resolution.Issues.Select(issue =>
+                Prefix(issue, path + ".sourceExport.definitions")));
+            var resolved = resolution.Source;
+            if (!resolution.Success ||
+                resolved is null ||
+                resolved.Key != key ||
+                !resolved.SameTurn ||
+                resolved.Materializable ||
+                !resolved.Active ||
+                !string.Equals(
+                    resolved.SourceRef,
+                    localWoundRef,
+                    StringComparison.Ordinal) ||
+                !JsonNode.DeepEquals(
+                    resolved.Definition,
+                    pair.Value.Definition))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    path + ".sourceExport.definitions",
+                    "wound_plan_effect_handoff_invalid",
+                    "exact active same-turn non-materializable canonical authority for every detached wound definition",
+                    key.ToString());
+            }
+        }
+        return issues.Count == issueCount;
+    }
+
+    private static bool ValidateWoundSourceExport(
+        WoundPreparedAcceptedTurnPlan prepared,
+        WoundEffectOperationBatch batch,
+        WoundEffectSourceExport source,
+        WoundMaterializationEnvelope wound,
+        WoundPreparedTransitionAuthority transition,
+        IReadOnlyDictionary<string, WoundAcceptedEventAuthority> acceptedEvents,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var owner = source.Owner;
+        var expectedOwner = wound.Owner;
+        var origin = wound.Origin;
+        var valid =
+            source.SchemaVersion == 1 &&
+            string.Equals(source.Kind, "wound", StringComparison.Ordinal) &&
+            string.Equals(
+                source.SourceId,
+                batch.PreparedWoundId,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                source.SourceRef,
+                batch.LocalWoundRef,
+                StringComparison.Ordinal) &&
+            string.Equals(source.State, "active", StringComparison.Ordinal) &&
+            !source.Materializable &&
+            string.Equals(
+                source.Realm,
+                prepared.Binding.Realm,
+                StringComparison.Ordinal) &&
+            owner is not null &&
+            expectedOwner is not null &&
+            owner == expectedOwner &&
+            origin is not null &&
+            string.Equals(
+                source.CausalEventRef,
+                origin.EventRef,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                transition.PreparedInputFingerprint,
+                prepared.InputFingerprint,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                transition.OpportunityId,
+                source.OpportunityId,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                transition.OpportunityAuthorityFingerprint,
+                source.OpportunityAuthorityFingerprint,
+                StringComparison.Ordinal) &&
+            acceptedEvents.TryGetValue(
+                source.CausalEventRef,
+                out var acceptedEvent) &&
+            string.Equals(
+                acceptedEvent.SemanticFingerprint,
+                source.EventSemanticFingerprint,
+                StringComparison.Ordinal);
+        if (!valid)
+        {
+            AddWoundBatchIssue(
+                issues,
+                path + ".sourceExport",
+                "wound_plan_effect_handoff_invalid",
+                "exact active non-materializable wound source export bound to its prepared wound, opportunity, owner, and accepted event",
+                $"{source.Realm}/{source.Kind}/{source.SourceId}/{source.SourceRef}/{source.State}/{source.Materializable}");
+        }
+        return valid;
+    }
+
+    private static bool WoundLineageMatches(
+        WoundRootLineageAuthorityRow? lineage,
+        WoundRootEffectApplication root) =>
+        lineage is not null &&
+        string.Equals(
+            lineage.ApplicationRef,
+            root.ApplicationRef,
+            StringComparison.Ordinal) &&
+        lineage.EffectId is null &&
+        string.Equals(
+            lineage.DefinitionKey,
+            root.DefinitionKey,
+            StringComparison.Ordinal) &&
+        lineage.OwnershipDomain == root.OwnershipDomain;
+
+    private static WoundApplicationRequest? PrepareWoundApplication(
+        EffectAcceptedTurnInput input,
+        WoundEffectOperationBatch batch,
+        WoundEffectSourceExport sourceExport,
+        WoundEffectSourceDefinition sourceDefinition,
+        WoundRootEffectApplication root,
+        IReadOnlyDictionary<string, WoundAcceptedEventAuthority> acceptedEvents,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var issueCount = issues.Count;
+        var sourceSelector = root.SourceSelector;
+        var expectedSource = root.ExpectedSourceKey;
+        var targetSelector = root.TargetSelector;
+        var expectedTarget = root.ExpectedTargetKey;
+        var parameters = root.Parameters;
+        var expectedCoordinate = root.ExpectedCarrierCoordinate;
+        var owner = sourceExport.Owner;
+        if (sourceSelector is null ||
+            expectedSource is null ||
+            targetSelector is null ||
+            expectedTarget is null ||
+            parameters is null ||
+            expectedCoordinate is null ||
+            owner is null ||
+            root.SlotBindings is null ||
+            root.MechanicsOrdinal <= 0 ||
+            root.OperationOrdinal <= 0 ||
+            !TryExact(root.OperationKey) ||
+            !TryExact(root.DefinitionKey) ||
+            !string.Equals(root.OperationKind, "apply", StringComparison.Ordinal) ||
+            !string.Equals(
+                root.CausalEventRef,
+                sourceExport.CausalEventRef,
+                StringComparison.Ordinal) ||
+            !acceptedEvents.ContainsKey(root.CausalEventRef))
+        {
+            AddWoundBatchIssue(
+                issues,
+                path,
+                "wound_plan_effect_handoff_invalid",
+                "complete direct apply root bound to its exact prepared operation and causal event",
+                root.ApplicationRef);
+            return null;
+        }
+
+        if (!TryMapWoundOwnerTarget(owner, out var targetKind) ||
+            expectedTarget != new EffectTargetKey(
+                owner.Realm,
+                targetKind,
+                owner.OwnerId) ||
+            !string.Equals(
+                targetSelector.Kind,
+                targetKind,
+                StringComparison.Ordinal))
+        {
+            AddWoundBatchIssue(
+                issues,
+                path + ".target",
+                "wound_plan_effect_handoff_invalid",
+                "exact narrowly mapped wound-owner target",
+                expectedTarget.ToString());
+        }
+        ValidateWoundTargetSelector(
+            input.TargetAuthority,
+            targetSelector,
+            expectedTarget,
+            path + ".target",
+            issues);
+
+        if (!string.Equals(
+                sourceSelector.Realm,
+                sourceExport.Realm,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                sourceSelector.Kind,
+                "wound",
+                StringComparison.Ordinal) ||
+            sourceSelector.SourceId is not null ||
+            !string.Equals(
+                sourceSelector.SourceRef,
+                batch.LocalWoundRef,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                sourceSelector.DefinitionKey,
+                root.DefinitionKey,
+                StringComparison.Ordinal) ||
+            expectedSource != new EffectSourceKey(
+                sourceExport.Realm,
+                "wound",
+                batch.PreparedWoundId,
+                root.DefinitionKey))
+        {
+            AddWoundBatchIssue(
+                issues,
+                path + ".source",
+                "wound_plan_effect_handoff_invalid",
+                "exact sourceRef-only wound selector and resolved permanent source key",
+                expectedSource.ToString());
+        }
+
+        EffectSourceAuthorityEntry? resolvedSource = null;
+        var sourceResolution = input.SourceAuthority.ResolveCanonicalBinding(
+            expectedSource,
+            expectedTarget.Kind);
+        issues.AddRange(sourceResolution.Issues.Select(issue =>
+            Prefix(issue, path + ".source")));
+        if (sourceResolution.Success)
+        {
+            resolvedSource = sourceResolution.Source;
+            var detachedDefinition = sourceDefinition.Definition;
+            if (resolvedSource is null ||
+                resolvedSource.Key != expectedSource ||
+                !resolvedSource.SameTurn ||
+                resolvedSource.Materializable ||
+                !resolvedSource.Active ||
+                !string.Equals(
+                    resolvedSource.SourceRef,
+                    batch.LocalWoundRef,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    sourceDefinition.DefinitionKey,
+                    root.DefinitionKey,
+                    StringComparison.Ordinal) ||
+                detachedDefinition is null ||
+                !JsonNode.DeepEquals(
+                    resolvedSource.Definition,
+                    detachedDefinition))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    path + ".source",
+                    "wound_plan_effect_handoff_invalid",
+                    "exact active same-turn non-materializable canonical wound source and definition",
+                    expectedSource.ToString());
+            }
+        }
+
+        if (resolvedSource is not null)
+        {
+            issues.AddRange(input.SourceAuthority
+                .ValidateCanonicalParameters(resolvedSource, parameters)
+                .Select(issue => Prefix(issue, path + ".parameters")));
+            ValidateWoundMaterializationExpectation(
+                root,
+                resolvedSource,
+                parameters,
+                path,
+                issues);
+            if (!TryCreateExpectedWoundCarrierCoordinate(
+                    owner,
+                    expectedTarget,
+                    resolvedSource.Definition,
+                    out var actualCoordinate) ||
+                actualCoordinate != expectedCoordinate)
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    path + ".expectedCarrierCoordinate",
+                    "wound_plan_effect_handoff_invalid",
+                    "exact carrier coordinate derived from the owner, target, and canonical definition",
+                    expectedCoordinate.ToString());
+            }
+        }
+
+        if (issues.Count != issueCount || resolvedSource is null)
+            return null;
+        var createdEventRef = WoundEffectOperationEventRef.Create(
+            root.CausalEventRef,
+            root.MechanicsOrdinal,
+            root.OperationOrdinal,
+            root.OperationKind);
+        if (!TryExact(createdEventRef) ||
+            string.Equals(
+                createdEventRef,
+                root.CausalEventRef,
+                StringComparison.Ordinal))
+        {
+            AddWoundBatchIssue(
+                issues,
+                path + ".createdEventRef",
+                "wound_plan_effect_handoff_invalid",
+                "one distinct exact derived wound effect event",
+                createdEventRef);
+            return null;
+        }
+
+        return new WoundApplicationRequest(
+            batch,
+            root,
+            sourceExport,
+            sourceDefinition,
+            new Application(
+                resolvedSource,
+                expectedTarget,
+                parameters.DeepClone().AsObject(),
+                createdEventRef,
+                root.CausalEventRef),
+            createdEventRef);
+    }
+
+    private static void ValidateWoundTargetSelector(
+        EffectTargetAuthority authority,
+        WoundEffectTargetSelector selector,
+        EffectTargetKey expected,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var hasTargetId = TryExact(selector.TargetId ?? string.Empty);
+        var hasTargetRef = TryExact(selector.TargetRef ?? string.Empty);
+        if (hasTargetId == hasTargetRef ||
+            !authority.TryResolveAcceptedTarget(expected, out var accepted) ||
+            accepted is null ||
+            (hasTargetId &&
+             (!string.Equals(
+                  selector.TargetId,
+                  expected.TargetId,
+                  StringComparison.Ordinal) ||
+              accepted.SameTurn)) ||
+            (hasTargetRef &&
+             (!accepted.SameTurn ||
+              !string.Equals(
+                  selector.TargetRef,
+                  accepted.TargetRef,
+                  StringComparison.Ordinal))))
+        {
+            AddWoundBatchIssue(
+                issues,
+                path,
+                "wound_plan_effect_handoff_invalid",
+                "exact accepted targetId for a pre-turn target or targetRef for a same-turn target",
+                $"{selector.Kind}/{selector.TargetId}/{selector.TargetRef}");
+        }
+    }
+
+    private static void ValidateWoundMaterializationExpectation(
+        WoundRootEffectApplication root,
+        EffectSourceAuthorityEntry source,
+        JsonObject parameters,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (source.Definition["components"] is not JsonArray components)
+        {
+            AddWoundBatchIssue(
+                issues,
+                path + ".definition.components",
+                "wound_plan_effect_handoff_invalid",
+                "canonical source-owned component array",
+                Describe(source.Definition["components"]));
+            return;
+        }
+        var materialized = components.DeepClone().AsArray();
+        BindParameters(materialized, parameters);
+        var fingerprint = WoundEffectMaterializationFingerprint.Compute(
+            source.Key,
+            EffectMaterializationContract.SchemaVersion,
+            parameters,
+            materialized);
+        if (root.ExpectedComponentCount != materialized.Count ||
+            !string.Equals(
+                root.ExpectedMaterializationFingerprint,
+                fingerprint,
+                StringComparison.Ordinal))
+        {
+            AddWoundBatchIssue(
+                issues,
+                path + ".expectedMaterializationFingerprint",
+                "wound_plan_effect_handoff_invalid",
+                "exact component count and materialization fingerprint recomputed from canonical source and parameters",
+                $"{root.ExpectedComponentCount}/{root.ExpectedMaterializationFingerprint}");
+        }
+    }
+
+    private static bool TryMapWoundOwnerTarget(
+        WoundOwnerCoordinate owner,
+        out string targetKind)
+    {
+        if (WoundEffectCarrierAdapter.TryCreateTargetKey(owner, out var target))
+        {
+            targetKind = target.Kind;
+            return true;
+        }
+        targetKind = string.Empty;
+        return false;
+    }
+
+    private static bool TryCreateExpectedWoundCarrierCoordinate(
+        WoundOwnerCoordinate owner,
+        EffectTargetKey target,
+        JsonObject definition,
+        out EffectCarrierCoordinate coordinate) =>
+        WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(
+            owner,
+            target,
+            definition,
+            out coordinate);
+
+    private static void ValidateWoundReplayAuthority(
+        IReadOnlyList<WoundApplicationRequest> woundApplications,
+        IReadOnlyList<Application> rawApplications,
+        IReadOnlyList<TerminalOperation> rawTerminalOperations,
+        IReadOnlySet<string> processedEventRefs,
+        List<ValidationIssue> issues)
+    {
+        var aliases = processedEventRefs
+            .Concat(rawApplications.Select(static value => value.EventRef))
+            .Concat(rawTerminalOperations.Select(static value => value.EventRef))
+            .Select(MortalLocationIdentityState.BuildConfusableKey)
+            .ToHashSet(StringComparer.Ordinal);
+        foreach (var request in woundApplications)
+        {
+            if (!aliases.Add(MortalLocationIdentityState.BuildConfusableKey(
+                    request.CreatedEventRef)))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    "prepared.rootApplications.createdEventRef",
+                    "wound_plan_effect_handoff_invalid",
+                    "derived wound create event absent from immutable effect history and current raw operations",
+                    request.CreatedEventRef);
+            }
+        }
+    }
+
+    private static void ValidateWoundApplicationExecution(
+        WoundApplicationRequest request,
+        ApplicationExecutionFacts execution,
+        List<ValidationIssue> issues)
+    {
+        if (!string.Equals(
+                execution.Disposition,
+                "created_new_identity",
+                StringComparison.Ordinal))
+        {
+            AddWoundBatchIssue(
+                issues,
+                "woundApplication.disposition",
+                "wound_plan_effect_result_disposition_mismatch",
+                "created_new_identity",
+                execution.Disposition);
+            return;
+        }
+
+        var root = request.Root;
+        var application = request.Application;
+        var effect = execution.CreatedEffect;
+        var identity = execution.CreatedIdentityEntry;
+        var parameters = application.Parameters;
+        var valid =
+            TryExact(execution.EffectId) &&
+            TryExact(execution.TransitionId) &&
+            string.Equals(
+                execution.CreatedEventRef,
+                request.CreatedEventRef,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                execution.CausalEventRef,
+                root.CausalEventRef,
+                StringComparison.Ordinal) &&
+            execution.Source == root.ExpectedSourceKey &&
+            execution.Target == root.ExpectedTargetKey &&
+            execution.CarrierCoordinate == root.ExpectedCarrierCoordinate &&
+            effect is not null &&
+            identity is not null &&
+            parameters is not null &&
+            EffectEvidenceMatches(
+                effect,
+                execution,
+                root,
+                parameters) &&
+            IdentityEvidenceMatches(identity, execution);
+        if (!valid)
+        {
+            AddWoundBatchIssue(
+                issues,
+                "woundApplication",
+                "wound_plan_effect_result_agreement_mismatch",
+                "exact created effect, create transition, chronology, source, target, carrier, and materialization evidence",
+                root.ApplicationRef);
+        }
+    }
+
+    private static bool EffectEvidenceMatches(
+        JsonObject effect,
+        ApplicationExecutionFacts execution,
+        WoundRootEffectApplication root,
+        JsonObject parameters)
+    {
+        if (!TryReadExact(effect["effectId"], out var effectId) ||
+            !string.Equals(effectId, execution.EffectId, StringComparison.Ordinal) ||
+            effect["schemaVersion"] is not JsonValue schemaNode ||
+            !schemaNode.TryGetValue<int>(out var schemaVersion) ||
+            schemaVersion != EffectMaterializationContract.SchemaVersion ||
+            !TryReadExact(effect["state"], out var state) ||
+            !string.Equals(state, "active", StringComparison.Ordinal) ||
+            !TryReadExact(effect["realm"], out var realm) ||
+            !string.Equals(realm, execution.Target.Realm, StringComparison.Ordinal) ||
+            effect["source"] is not JsonObject source ||
+            !TryReadExact(source["kind"], out var sourceKind) ||
+            !TryReadExact(source["sourceId"], out var sourceId) ||
+            !TryReadExact(source["definitionKey"], out var definitionKey) ||
+            !string.Equals(
+                sourceKind,
+                execution.Source.Kind,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                sourceId,
+                execution.Source.SourceId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                definitionKey,
+                execution.Source.DefinitionKey,
+                StringComparison.Ordinal) ||
+            effect["target"] is not JsonObject target ||
+            !TryReadExact(target["kind"], out var targetKind) ||
+            !TryReadExact(target["targetId"], out var targetId) ||
+            !string.Equals(
+                targetKind,
+                execution.Target.Kind,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                targetId,
+                execution.Target.TargetId,
+                StringComparison.Ordinal) ||
+            effect["chronology"] is not JsonObject chronology ||
+            !TryReadExact(
+                chronology["createdEventRef"],
+                out var createdEventRef) ||
+            !TryReadExact(
+                chronology["causalEventRef"],
+                out var causalEventRef) ||
+            !TryReadExact(
+                chronology["lastTransitionId"],
+                out var lastTransitionId) ||
+            !string.Equals(
+                createdEventRef,
+                execution.CreatedEventRef,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                causalEventRef,
+                execution.CausalEventRef,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                lastTransitionId,
+                execution.TransitionId,
+                StringComparison.Ordinal) ||
+            effect["components"] is not JsonArray components ||
+            components.Count != root.ExpectedComponentCount)
+        {
+            return false;
+        }
+
+        var materializationFingerprint =
+            WoundEffectMaterializationFingerprint.Compute(
+                execution.Source,
+                schemaVersion,
+                parameters,
+                components);
+        return string.Equals(
+            materializationFingerprint,
+            root.ExpectedMaterializationFingerprint,
+            StringComparison.Ordinal);
+    }
+
+    private static bool IdentityEvidenceMatches(
+        JsonObject identity,
+        ApplicationExecutionFacts execution)
+    {
+        if (!TryReadExact(identity["effectId"], out var effectId) ||
+            !string.Equals(effectId, execution.EffectId, StringComparison.Ordinal) ||
+            !TryReadExact(identity["state"], out var state) ||
+            !string.Equals(state, "active", StringComparison.Ordinal) ||
+            !TryReadExact(identity["realm"], out var realm) ||
+            !string.Equals(realm, execution.Target.Realm, StringComparison.Ordinal) ||
+            identity["owner"] is not JsonObject owner ||
+            !TryReadExact(owner["ownerId"], out var ownerId) ||
+            !TryReadExact(owner["carrierPath"], out var carrierPath) ||
+            !string.Equals(
+                ownerId,
+                execution.Target.TargetId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                carrierPath,
+                execution.CarrierCoordinate.Path,
+                StringComparison.Ordinal) ||
+            identity["transitions"] is not JsonArray { Count: 1 } transitions ||
+            transitions[0] is not JsonObject create ||
+            !TryReadExact(create["transitionId"], out var transitionId) ||
+            !TryReadExact(create["kind"], out var transitionKind) ||
+            !TryReadExact(create["eventRef"], out var eventRef) ||
+            !string.Equals(
+                transitionId,
+                execution.TransitionId,
+                StringComparison.Ordinal) ||
+            !string.Equals(transitionKind, "create", StringComparison.Ordinal) ||
+            !string.Equals(
+                eventRef,
+                execution.CreatedEventRef,
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+        return true;
+    }
+
     internal static EffectAcceptedTurnPlanningResult Build(
         EffectAcceptedTurnInput input,
         string fingerprint,
+        EffectIdentityFactory identityFactory) =>
+        BuildCore(
+            input,
+            fingerprint,
+            identityFactory,
+            Array.Empty<WoundApplicationRequest>());
+
+    internal static EffectAcceptedTurnPlanningResult BuildWoundBatch(
+        EffectAcceptedTurnInput input,
+        WoundPreparedAcceptedTurnPlan prepared,
         EffectIdentityFactory identityFactory)
     {
         ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(identityFactory);
+
+        var issues = new List<ValidationIssue>();
+        IReadOnlyList<WoundApplicationRequest> applications;
+        string effectInputFingerprint;
+        try
+        {
+            var actualPreparationFingerprint =
+                WoundAcceptedTurnFingerprints.ComputePreparation(prepared);
+            if (!string.Equals(
+                    actualPreparationFingerprint,
+                    prepared.WoundPreparationFingerprint,
+                    StringComparison.Ordinal))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    "prepared.woundPreparationFingerprint",
+                    "wound_plan_prepared_seal_mismatch",
+                    "the exact recomputed detached wound preparation fingerprint",
+                    prepared.WoundPreparationFingerprint);
+                return Failed(issues);
+            }
+
+            applications = PrepareWoundApplications(input, prepared, issues);
+            if (issues.Count > 0)
+                return Failed(issues);
+
+            effectInputFingerprint =
+                WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input);
+        }
+        catch (Exception exception) when (
+            exception is ArgumentException or InvalidOperationException or
+                JsonException or NullReferenceException)
+        {
+            AddWoundBatchIssue(
+                issues,
+                "prepared",
+                "wound_plan_effect_handoff_invalid",
+                "well-formed detached wound preparation and effect input",
+                exception.GetType().Name);
+            return Failed(issues);
+        }
+        return BuildCore(
+            input,
+            effectInputFingerprint,
+            identityFactory,
+            applications);
+    }
+
+    private static EffectAcceptedTurnPlanningResult BuildCore(
+        EffectAcceptedTurnInput input,
+        string fingerprint,
+        EffectIdentityFactory identityFactory,
+        IReadOnlyList<WoundApplicationRequest> woundApplications)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(identityFactory);
+        ArgumentNullException.ThrowIfNull(woundApplications);
         var issues = new List<ValidationIssue>();
         issues.AddRange(input.SourceAuthority.Issues);
         if (!TryExact(input.SessionId) || !TryExact(input.SnapshotToken) || !TryExact(input.Realm))
@@ -2732,6 +3847,12 @@ internal static class EffectAcceptedTurnPlanner
             issues,
             out var applications,
             out var terminalOperations);
+        ValidateWoundReplayAuthority(
+            woundApplications,
+            applications,
+            terminalOperations,
+            processedEventRefs,
+            issues);
         if (issues.Count > 0)
             return Failed(issues);
 
@@ -2790,6 +3911,41 @@ internal static class EffectAcceptedTurnPlanner
                 issues);
             usedSources.Add(application.Source);
             usedTargets.Add(application.Target);
+        }
+        if (issues.Count > 0)
+            return Failed(issues);
+
+        foreach (var request in woundApplications)
+        {
+            var issueCount = issues.Count;
+            var execution = ApplyApplication(
+                request.Application,
+                input.Realm,
+                input.EventInput,
+                workspace,
+                identityRoot,
+                identityFactory,
+                turn,
+                effectIds,
+                transitionIds,
+                activeEffects,
+                processedEventRefs,
+                issues);
+            if (execution is null && issues.Count == issueCount)
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    "woundApplication",
+                    "wound_plan_effect_result_agreement_mismatch",
+                    "one exact typed wound application execution",
+                    request.Root.ApplicationRef);
+            }
+            else if (execution != null)
+            {
+                ValidateWoundApplicationExecution(request, execution, issues);
+            }
+            usedSources.Add(request.Application.Source);
+            usedTargets.Add(request.Application.Target);
         }
         if (issues.Count > 0)
             return Failed(issues);
@@ -4142,7 +5298,7 @@ internal static class EffectAcceptedTurnPlanner
                            authority.AuthorityId;
                 }));
 
-    private static ReactionApplicationResult? ApplyApplication(
+    private static ApplicationExecutionFacts? ApplyApplication(
         Application application,
         string realm,
         JsonObject eventInput,
@@ -4305,21 +5461,36 @@ internal static class EffectAcceptedTurnPlanner
             slot.Collection.Add(effect.DeepClone());
             workspace.Touch(slot);
             activeEffects.Add(effect);
-            identityRoot["entries"]!.AsArray().Add(CreateIdentityEntry(
+            var identityEntry = CreateIdentityEntry(
                 effect,
                 slot,
                 effectId,
                 createTransitionId,
                 turn,
-                createEventRef));
+                createEventRef);
+            identityRoot["entries"]!.AsArray().Add(identityEntry);
             processedEventRefs.Add(application.EventRef);
-            return new ReactionApplicationResult(
+            var reactionResult = new ReactionApplicationResult(
                 new EffectReplayIdentity(
                     effectId,
                     ResolvePendingEffectAuthority(effect, turn)),
                 resolution.TerminatesExisting
                     ? replacementExpectation?.ExactTarget
                     : null);
+            return new ApplicationExecutionFacts(
+                resolution.TerminatesExisting
+                    ? "replace"
+                    : "created_new_identity",
+                effectId,
+                createTransitionId,
+                createEventRef,
+                application.CausalEventRef,
+                application.Source.Key,
+                application.Target,
+                slot.Coordinate,
+                effect.DeepClone().AsObject(),
+                identityEntry.DeepClone().AsObject(),
+                reactionResult);
         }
 
         if (!TryExact(resolution.ExistingEffectId ?? string.Empty) ||
@@ -4364,7 +5535,18 @@ internal static class EffectAcceptedTurnPlanner
             issues);
         AddOrReplaceAffected(activeEffects, updated);
         processedEventRefs.Add(application.EventRef);
-        return null;
+        return new ApplicationExecutionFacts(
+            resolution.Outcome,
+            resolution.ExistingEffectId!,
+            transitionId,
+            null,
+            application.CausalEventRef,
+            application.Source.Key,
+            application.Target,
+            slot.Coordinate,
+            null,
+            null,
+            null);
     }
 
     private static void ApplyDueLifecycleEvents(
@@ -4831,7 +6013,7 @@ internal static class EffectAcceptedTurnPlanner
                         return;
                 }
             }
-            var applicationResult = ApplyApplication(
+            var applicationExecution = ApplyApplication(
                 new Application(
                     downstreamSource,
                     reaction.Target,
@@ -4850,6 +6032,7 @@ internal static class EffectAcceptedTurnPlanner
                 processedEventRefs,
                 issues,
                 replacementExpectation);
+            var applicationResult = applicationExecution?.ReactionResult;
             if (issues.Count == 0 && applicationPlan?.IsReplacement == true)
             {
                 if (applicationResult == null ||
@@ -6586,12 +7769,49 @@ internal static class EffectAcceptedTurnPlanner
             actual: actual,
             repairHint: "Resubmit one closed source-authorized effect operation and omit all client-owned identity, carrier, stack, lifetime, receipt, and post-state fields."));
 
+    private static void AddWoundBatchIssue(
+        List<ValidationIssue> issues,
+        string path,
+        string code,
+        string expected,
+        string actual) =>
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            "Typed wound effect authority cannot produce one exact accepted effect after-image.",
+            code: code,
+            section: "wound_materialization",
+            expected: expected,
+            actual: actual,
+            repairHint: "Recompute the detached prepared wound batch and route only its exact typed root applications through the accepted effect planner."));
+
     private sealed record Application(
         EffectSourceAuthorityEntry Source,
         EffectTargetKey Target,
         JsonObject? Parameters,
         string EventRef,
         string CausalEventRef);
+
+    private sealed record WoundApplicationRequest(
+        WoundEffectOperationBatch Batch,
+        WoundRootEffectApplication Root,
+        WoundEffectSourceExport SourceExport,
+        WoundEffectSourceDefinition SourceDefinition,
+        Application Application,
+        string CreatedEventRef);
+
+    private sealed record ApplicationExecutionFacts(
+        string Disposition,
+        string EffectId,
+        string TransitionId,
+        string? CreatedEventRef,
+        string CausalEventRef,
+        EffectSourceKey Source,
+        EffectTargetKey Target,
+        EffectCarrierCoordinate CarrierCoordinate,
+        JsonObject? CreatedEffect,
+        JsonObject? CreatedIdentityEntry,
+        ReactionApplicationResult? ReactionResult);
 
     private enum ReactionReplacementExpectationKind
     {
@@ -6663,7 +7883,8 @@ internal static class EffectAcceptedTurnPlanner
         string Path,
         string CollectionName,
         JsonArray Collection,
-        JsonObject Root);
+        JsonObject Root,
+        EffectCarrierCoordinate Coordinate);
 
     private sealed class CarrierWorkspace
     {
@@ -6828,7 +8049,16 @@ internal static class EffectAcceptedTurnPlanner
                     if (_player["activeEffects"] is not JsonArray playerEffects)
                         return InvalidCarrier(issues, EffectCarrierCatalog.PlayerPath, _player, out slot);
                     _afterImages[EffectCarrierCatalog.PlayerPath] = _player;
-                    slot = new CarrierSlot(EffectCarrierCatalog.PlayerPath, "activeEffects", playerEffects, _player);
+                    slot = new CarrierSlot(
+                        EffectCarrierCatalog.PlayerPath,
+                        "activeEffects",
+                        playerEffects,
+                        _player,
+                        new EffectCarrierCoordinate(
+                            "player",
+                            "player_current",
+                            EffectCarrierCatalog.PlayerPath,
+                            null));
                     return true;
                 case "npc":
                     _npcs ??= new JsonObject
@@ -6867,7 +8097,16 @@ internal static class EffectAcceptedTurnPlanner
                     if (npcEntry["activeEffects"] is not JsonArray npcEffects)
                         return InvalidCarrier(issues, EffectCarrierCatalog.NpcPath, npcEntry, out slot);
                     _afterImages[EffectCarrierCatalog.NpcPath] = _npcs;
-                    slot = new CarrierSlot(EffectCarrierCatalog.NpcPath, "activeEffects", npcEffects, _npcs);
+                    slot = new CarrierSlot(
+                        EffectCarrierCatalog.NpcPath,
+                        "activeEffects",
+                        npcEffects,
+                        _npcs,
+                        new EffectCarrierCoordinate(
+                            "npc",
+                            target.TargetId,
+                            EffectCarrierCatalog.NpcPath,
+                            null));
                     return true;
                 case "combatant":
                     return TryLocateCombatant(target.TargetId, category, issues, out slot);
@@ -6939,7 +8178,16 @@ internal static class EffectAcceptedTurnPlanner
                 }
             }
             _afterImages[match.Path] = match.Root;
-            slot = new CarrierSlot(match.Path, collectionName, effects, match.Root);
+            slot = new CarrierSlot(
+                match.Path,
+                collectionName,
+                effects,
+                match.Root,
+                new EffectCarrierCoordinate(
+                    "combatant",
+                    targetId,
+                    match.Path,
+                    category));
             return true;
         }
 
@@ -6996,7 +8244,12 @@ internal static class EffectAcceptedTurnPlanner
                 EffectCarrierCatalog.AfterlifeProfilesPath,
                 "activeEffects",
                 effects,
-                _afterlifeProfiles);
+                _afterlifeProfiles,
+                new EffectCarrierCoordinate(
+                    "afterlife_profile",
+                    target.TargetId,
+                    EffectCarrierCatalog.AfterlifeProfilesPath,
+                    null));
             return true;
         }
 
@@ -7040,7 +8293,12 @@ internal static class EffectAcceptedTurnPlanner
                 EffectCarrierCatalog.SpiritualConflictPath,
                 "combatConditions",
                 conditions,
-                _spiritualConflict);
+                _spiritualConflict,
+                new EffectCarrierCoordinate(
+                    "spiritual_conflict",
+                    target.TargetId,
+                    EffectCarrierCatalog.SpiritualConflictPath,
+                    side));
             return true;
         }
 
@@ -7052,6 +8310,8 @@ internal static class EffectAcceptedTurnPlanner
                 for (var index = 0; index < slot.Collection.Count; index++)
                 {
                     if (slot.Collection[index] is JsonObject effect &&
+                        (slot.Coordinate.Kind != "spiritual_conflict" ||
+                         EffectMatchesSpiritualSlot(effect, slot.Coordinate)) &&
                         string.Equals(
                             effect["effectId"]?.GetValue<string>(),
                             effectId,
@@ -7067,13 +8327,36 @@ internal static class EffectAcceptedTurnPlanner
         private IEnumerable<CarrierSlot> EnumerateSlots()
         {
             if (_player?["activeEffects"] is JsonArray playerEffects)
-                yield return new CarrierSlot(EffectCarrierCatalog.PlayerPath, "activeEffects", playerEffects, _player);
+            {
+                yield return new CarrierSlot(
+                    EffectCarrierCatalog.PlayerPath,
+                    "activeEffects",
+                    playerEffects,
+                    _player,
+                    new EffectCarrierCoordinate(
+                        "player",
+                        "player_current",
+                        EffectCarrierCatalog.PlayerPath,
+                        null));
+            }
             if (_npcs?["entries"] is JsonArray npcEntries)
             {
                 foreach (var entry in npcEntries.OfType<JsonObject>())
                 {
-                    if (entry["activeEffects"] is JsonArray effects)
-                        yield return new CarrierSlot(EffectCarrierCatalog.NpcPath, "activeEffects", effects, _npcs);
+                    if (TryReadExact(entry["NPCId"], out var npcId) &&
+                        entry["activeEffects"] is JsonArray effects)
+                    {
+                        yield return new CarrierSlot(
+                            EffectCarrierCatalog.NpcPath,
+                            "activeEffects",
+                            effects,
+                            _npcs,
+                            new EffectCarrierCoordinate(
+                                "npc",
+                                npcId,
+                                EffectCarrierCatalog.NpcPath,
+                                null));
+                    }
                 }
             }
             foreach (var slot in EnumerateCombatantSlots(
@@ -7094,18 +8377,48 @@ internal static class EffectAcceptedTurnPlanner
             {
                 foreach (var profile in profiles.OfType<JsonObject>())
                 {
-                    if (profile["activeEffects"] is JsonArray effects)
-                        yield return new CarrierSlot(EffectCarrierCatalog.AfterlifeProfilesPath, "activeEffects", effects, _afterlifeProfiles);
+                    if (AfterlifeEntityProfileState.TryResolveEffectTarget(
+                            profile,
+                            out var target) &&
+                        profile["activeEffects"] is JsonArray effects)
+                    {
+                        yield return new CarrierSlot(
+                            EffectCarrierCatalog.AfterlifeProfilesPath,
+                            "activeEffects",
+                            effects,
+                            _afterlifeProfiles,
+                            new EffectCarrierCoordinate(
+                                "afterlife_profile",
+                                target.TargetId,
+                                EffectCarrierCatalog.AfterlifeProfilesPath,
+                                null));
+                    }
                 }
             }
             if (_spiritualConflict?["activeConflict"] is JsonObject conflict &&
                 conflict["combatConditions"] is JsonArray conditions)
             {
-                yield return new CarrierSlot(
-                    EffectCarrierCatalog.SpiritualConflictPath,
-                    "combatConditions",
-                    conditions,
-                    _spiritualConflict);
+                foreach (var side in AfterlifeSpiritualConflictState
+                             .CombatConditionTargetSides)
+                {
+                    if (!AfterlifeSpiritualConflictState.TryResolveEffectTarget(
+                            _spiritualConflict,
+                            side,
+                            out var target))
+                    {
+                        continue;
+                    }
+                    yield return new CarrierSlot(
+                        EffectCarrierCatalog.SpiritualConflictPath,
+                        "combatConditions",
+                        conditions,
+                        _spiritualConflict,
+                        new EffectCarrierCoordinate(
+                            "spiritual_conflict",
+                            target.TargetId,
+                            EffectCarrierCatalog.SpiritualConflictPath,
+                            side));
+                }
             }
         }
 
@@ -7118,10 +8431,35 @@ internal static class EffectAcceptedTurnPlanner
                 yield break;
             foreach (var combatant in combatants.OfType<JsonObject>())
             {
-                if (combatant["activeBuffs"] is JsonArray buffs)
-                    yield return new CarrierSlot(path, "activeBuffs", buffs, root);
-                if (combatant["activeDebuffs"] is JsonArray debuffs)
-                    yield return new CarrierSlot(path, "activeDebuffs", debuffs, root);
+                if (TryResolveCombatantOwnerId(combatant, out var targetId))
+                {
+                    if (combatant["activeBuffs"] is JsonArray buffs)
+                    {
+                        yield return new CarrierSlot(
+                            path,
+                            "activeBuffs",
+                            buffs,
+                            root,
+                            new EffectCarrierCoordinate(
+                                "combatant",
+                                targetId,
+                                path,
+                                "buff"));
+                    }
+                    if (combatant["activeDebuffs"] is JsonArray debuffs)
+                    {
+                        yield return new CarrierSlot(
+                            path,
+                            "activeDebuffs",
+                            debuffs,
+                            root,
+                            new EffectCarrierCoordinate(
+                                "combatant",
+                                targetId,
+                                path,
+                                "debuff"));
+                    }
+                }
                 if (combatant["isGroup"] is not JsonValue groupNode ||
                     !groupNode.TryGetValue<bool>(out var isGroup) ||
                     !isGroup ||
@@ -7131,13 +8469,56 @@ internal static class EffectAcceptedTurnPlanner
                 }
                 foreach (var member in members.OfType<JsonObject>())
                 {
+                    if (!TryResolveCombatantOwnerId(member, out var memberId))
+                        continue;
                     if (member["activeBuffs"] is JsonArray memberBuffs)
-                        yield return new CarrierSlot(path, "activeBuffs", memberBuffs, root);
+                    {
+                        yield return new CarrierSlot(
+                            path,
+                            "activeBuffs",
+                            memberBuffs,
+                            root,
+                            new EffectCarrierCoordinate(
+                                "combatant",
+                                memberId,
+                                path,
+                                "buff"));
+                    }
                     if (member["activeDebuffs"] is JsonArray memberDebuffs)
-                        yield return new CarrierSlot(path, "activeDebuffs", memberDebuffs, root);
+                    {
+                        yield return new CarrierSlot(
+                            path,
+                            "activeDebuffs",
+                            memberDebuffs,
+                            root,
+                            new EffectCarrierCoordinate(
+                                "combatant",
+                                memberId,
+                                path,
+                                "debuff"));
+                    }
                 }
             }
         }
+
+        private static bool TryResolveCombatantOwnerId(
+            JsonObject owner,
+            out string targetId)
+        {
+            var hasCombatantId = TryReadExact(
+                owner["combatantId"],
+                out var combatantId);
+            var hasMemberId = TryReadExact(owner["memberId"], out var memberId);
+            targetId = hasMemberId ? memberId : combatantId;
+            return hasCombatantId != hasMemberId;
+        }
+
+        private static bool EffectMatchesSpiritualSlot(
+            JsonObject effect,
+            EffectCarrierCoordinate coordinate) =>
+            effect["target"] is JsonObject target &&
+            TryReadExact(target["targetId"], out var targetId) &&
+            string.Equals(targetId, coordinate.OwnerId, StringComparison.Ordinal);
 
         private static void AddCombatantMatches(
             JsonObject? root,

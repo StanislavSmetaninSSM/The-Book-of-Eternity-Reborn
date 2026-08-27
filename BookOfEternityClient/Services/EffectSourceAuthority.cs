@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -135,6 +136,29 @@ internal sealed class EffectSourceAuthority
     internal string Fingerprint { get; }
 
     internal string CanonicalFingerprint { get; }
+
+    internal IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnWoundEntries() =>
+        _entries.Values
+            .Where(static entry =>
+                entry.SameTurn &&
+                string.Equals(entry.Key.Kind, "wound", StringComparison.Ordinal))
+            .OrderBy(static entry => entry.Key.Realm, StringComparer.Ordinal)
+            .ThenBy(static entry => entry.Key.SourceId, StringComparer.Ordinal)
+            .ThenBy(static entry => entry.Key.DefinitionKey, StringComparer.Ordinal)
+            .Select(static entry => new EffectSourceAuthorityEntry(
+                new EffectSourceKey(
+                    entry.Key.Realm,
+                    entry.Key.Kind,
+                    entry.Key.SourceId,
+                    entry.Key.DefinitionKey),
+                entry.Definition.DeepClone().AsObject(),
+                entry.Materializable,
+                entry.Active,
+                entry.SameTurn,
+                entry.SourceRef,
+                entry.SatisfiedPredicates.ToFrozenSet(StringComparer.Ordinal),
+                entry.RequiredApplicationAuthority))
+            .ToArray();
 
     internal static EffectSourceAuthority Build(EffectSourceAuthorityInput input)
     {
@@ -277,7 +301,7 @@ internal sealed class EffectSourceAuthority
                 ValidateParameters(entry.Definition, parameters, issues);
             return issues.Count == 0
                 ? new EffectSourceResolution(
-                    entry with { Definition = entry.Definition.DeepClone().AsObject() },
+                    DetachEntry(entry),
                     Array.Empty<ValidationIssue>())
                 : new EffectSourceResolution(null, issues);
         }
@@ -365,7 +389,7 @@ internal sealed class EffectSourceAuthority
             ValidateResolvedEntry(entry, targetKind, parameters, issues);
             return issues.Count == 0
                 ? new EffectSourceResolution(
-                    entry with { Definition = entry.Definition.DeepClone().AsObject() },
+                    DetachEntry(entry),
                     Array.Empty<ValidationIssue>())
                 : new EffectSourceResolution(null, issues);
         }
@@ -474,10 +498,7 @@ internal sealed class EffectSourceAuthority
             ValidateTargetKind(entry.Definition, targetKind, issues);
             return issues.Count == 0
                 ? new EffectSourceResolution(
-                    entry with
-                    {
-                        Definition = entry.Definition.DeepClone().AsObject()
-                    },
+                    DetachEntry(entry),
                     Array.Empty<ValidationIssue>())
                 : new EffectSourceResolution(null, issues);
         }
@@ -709,6 +730,15 @@ internal sealed class EffectSourceAuthority
         MortalLocationIdentityState.BuildConfusableKey(sourceId) + "\u001f" +
         MortalLocationIdentityState.BuildConfusableKey(definitionKey);
 
+    private static EffectSourceAuthorityEntry DetachEntry(
+        EffectSourceAuthorityEntry entry) =>
+        entry with
+        {
+            Definition = entry.Definition.DeepClone().AsObject(),
+            SatisfiedPredicates = entry.SatisfiedPredicates.ToFrozenSet(
+                StringComparer.Ordinal)
+        };
+
     private static string RefAlias(string realm, string kind, string sourceRef, string definitionKey) =>
         realm + "\u001f" + kind + "\u001f" +
         MortalLocationIdentityState.BuildConfusableKey(sourceRef) + "\u001f" +
@@ -849,8 +879,9 @@ internal sealed class EffectSourceAuthority
                 }
                 var key = new EffectSourceKey(export.Realm, export.Kind, export.SourceId, definitionKey);
                 var satisfiedPredicates = EffectSourcePredicateCatalog.NormalizeSatisfied(
-                    export.Active,
-                    export.SatisfiedPredicates);
+                        export.Active,
+                        export.SatisfiedPredicates)
+                    .ToFrozenSet(StringComparer.Ordinal);
                 var entry = new EffectSourceAuthorityEntry(
                     key,
                     definition.DeepClone().AsObject(),

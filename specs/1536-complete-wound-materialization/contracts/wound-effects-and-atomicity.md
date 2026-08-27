@@ -96,6 +96,14 @@ exact agreement for the create transition ID, both event refs, source/target key
 carrier coordinate. One wound event may therefore materialize several roots without
 reusing one #1535 operation event.
 
+Before any effect or transition identity is allocated, the effect planner reserves the
+exact and confusable aliases of every accepted event reference in the turn. Each derived
+wound operation event must be unique against that complete accepted-authority set and
+against all earlier derived operation events. An accepted authority whose value happens
+to equal or resemble a valid `wound_effect:sha256:...` derivation therefore rejects the
+whole handoff before either identity factory is called; namespace shape alone is not a
+substitute for set exclusion.
+
 Every canonical/same-turn wound `EffectSourceExport` has
 `Materializable = false`. Ordinary GM `effectChanges[].operation=apply` therefore cannot
 materialize a wound root or downstream definition by naming its source. The typed wound
@@ -105,6 +113,15 @@ definitionKey, target, source selector)` through canonical source binding plus o
 parameter/target validation; it never turns the whole wound source into public apply
 authority. Later descendants remain reachable only through the sealed #1535 reaction
 executor.
+
+The effect boundary requires the complete set of same-turn `kind=wound` source entries
+to equal the prepared batches exactly, including source key, local ref, detached
+definition, active/non-materializable flags, predicate evidence, and absence of an
+ordinary application grant. It is not a subset check: an otherwise valid unused extra
+same-turn wound export also invalidates the handoff before allocation. Unrelated legal
+pre-turn sources may coexist. Source-authority snapshots and satisfied-predicate sets
+returned to callers are detached/frozen so mutation cannot change later resolution
+while leaving an earlier fingerprint apparently valid.
 
 After finalization, canonical `consequences.ownedEffectSources` persists the complete
 definition graph and exact `{ effectId, definitionKey }` root bindings. Both arrays are
@@ -142,10 +159,39 @@ ordinals/kind, exact target and source selector, empty parameters, slot bindings
 expected component count/materialization fingerprint, and ownership domain. It is
 immutable pre-effect plan authority and is not a persisted wound field.
 
+Prepared slot numbers are provisional correlation ordinals only: random opaque effect
+IDs do not exist yet and therefore cannot determine canonical persisted entry order.
+After allocation, the effect result renumbers slots independently inside each wound
+batch by exact actual `effectId` ordinal and then by the prepared within-root semantic
+order, producing one global contiguous `1..N` sequence. Finalize independently derives
+the same mapping from the prepared roots plus accepted result IDs, requires exact
+agreement, and persists only those post-allocation ordinals. It must not constrain the
+effect allocator to lexically increasing IDs or retain a draft ordinal that disagrees
+with canonical consequence derivation.
+
+Each batch also carries a non-public immutable transition-authority record for facts
+needed by the wound reducer and append-only history even when the batch has zero roots:
+opportunity identity/fingerprint, operation key, readable summary, and maximum severity
+rank. A separate domain/versioned seal binds those facts to the prepared input
+fingerprint and both the local and permanent wound identities. This record is not a
+canonical wound field and does not alter the frozen source-export or preparation
+fingerprint encoding. Finalize must match its prepared-input binding and recompute the
+seal before using any of its fields.
+
+The prepared plan likewise carries a non-public immutable baseline-authority record
+containing detached pre-turn wound carriers, wound identity index, and wound history.
+Its own seal binds the prepared input fingerprint plus fixed-order canonical bytes for
+all five nullable carrier roots, identity, and history. Finalize checks that binding and
+recomputes the seal before deriving collection before-seals or identity/history
+after-images. The baseline is neither persisted as a second state surface nor added to
+the frozen public preparation-fingerprint encoding.
+
 The cross-stage seals are non-interchangeable. `WoundPreparationFingerprint` binds the
 accepted wound input, allocated wound/complication/transition IDs, detached drafts,
 source-export fingerprints, and terminal intents. `EffectInputFingerprint` additionally
-binds the complete typed operation batch and each derived-created/causal event pair.
+binds the complete typed operation batch, each derived-created/causal event pair, and
+the full source/target routing-authority fingerprints including same-turn/ref/grant
+facts hidden from their canonical publication fingerprints.
 `EffectAcceptedTurnPlanFingerprint` additionally binds allocated effect/transition IDs,
 exact application/termination maps including actual component counts/materialization
 fingerprints, and effect carrier/identity before- and after-images from which those
@@ -167,6 +213,16 @@ checks the effect-input seal and exact expected/created materialization, and wou
 finalization checks the effect-plan seal and recomputes every result fingerprint from its
 exact created active-effect after-image. A seal or fingerprint property is never trusted
 without payload recomputation.
+
+For each prepared root, Finalize also requires the create transition ID found in the
+effect chronology to belong to the effect plan's allocator evidence. It then verifies
+that the exact reciprocal set of current-wound-owned effect IDs appears independently
+and without extras in all four detached views: `ActiveEffects`, runtime resource-trigger
+carriers, publication carrier after-images, and the identity-index after-image. Identity
+entries must agree with owner collection, complete stack coordinate, source and target,
+accepted-turn chronology, and one exact create transition. Resealing several altered
+views cannot legitimize an orphan or a fabricated transition; one divergent view rejects
+the whole finalization.
 
 `complication.ownedEffectIds` is an exact subset of canonical root-binding effect IDs;
 the sets are pairwise disjoint between complications. A complication neither lists
