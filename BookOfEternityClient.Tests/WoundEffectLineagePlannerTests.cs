@@ -5,7 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class WoundEffectLineagePlannerTests
+public sealed partial class WoundEffectLineagePlannerTests
 {
     private const string WoundId = "wound_lineage_planner";
     private const string RootEffectId = "effect_wound_lineage_root";
@@ -416,7 +416,9 @@ public sealed class WoundEffectLineagePlannerTests
         Assert.Contains(result.Issues, issue => issue.Code == expectedCode);
     }
 
-    private static WoundMaterializationEnvelope CreateLineageWound()
+    private static WoundMaterializationEnvelope CreateLineageWound(
+        string eventType = "owner_damaged",
+        string triggerId = "on_owner_damaged")
     {
         var wound = WoundContractTestData.CreateActiveWound(WoundId);
         wound["severity"]!["value"] = "III";
@@ -428,6 +430,9 @@ public sealed class WoundEffectLineagePlannerTests
             "mortal_world",
             RootDefinitionKey,
             ChildDefinitionKey);
+        root["components"]![0]!["payload"]!["eventType"] = eventType;
+        root["triggers"]![0]!["eventType"] = eventType;
+        root["triggers"]![0]!["triggerId"] = triggerId;
         var child = WoundContractTestData.CreateOwnedEffectDefinition(
             WoundId,
             "mortal_world",

@@ -208,7 +208,8 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
         var stages = CreateWoundCommonStages(
             "effect_payload",
             "effect_payload");
-        var effectPlan = stages.Effect.EffectPlan;
+        var effectPlan = CompleteEffectPlanForAssembly(
+            stages.Effect.EffectPlan);
         var changedEffectPlan = MutateTopLevelEffectPlan(
             effectPlan,
             mutation);
@@ -1124,8 +1125,24 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             plan.IdentityIndexAfterImage,
             plan.TouchedPaths,
             plan.DeletedPaths,
-            plan.AcceptedCarrierBaselines);
+            plan.AcceptedCarrierBaselines,
+            acceptedBoundaryCompletionProof:
+                ReadAcceptedBoundaryCompletionProof(plan),
+            acceptedBoundaryBasePlanFingerprint:
+                plan.AcceptedBoundaryBasePlanFingerprint,
+            woundApplicationRootEffectBindings:
+                plan.WoundApplicationRootEffectBindings);
     }
+
+    private static EffectAcceptedTurnPlanner.AcceptedBoundaryCompletionProof?
+        ReadAcceptedBoundaryCompletionProof(EffectAcceptedTurnPlan plan) =>
+        (EffectAcceptedTurnPlanner.AcceptedBoundaryCompletionProof?)typeof(
+                EffectAcceptedTurnPlan)
+            .GetField(
+                "_acceptedBoundaryCompletionProof",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic)!
+            .GetValue(plan);
 
     private static WoundEffectBatchAcceptedPlan AssertWoundCommonEffect(
         WoundEffectBatchPlanningResult result)

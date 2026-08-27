@@ -1171,7 +1171,7 @@ internal sealed class AcceptedMechanicsPlan
                     _woundPublication.HistoryAfterImage))
             {
                 throw new ArgumentException(
-                    "Wound publication and all carrier maps must equal one proof-bound composition for the exact wound stages and final effect plan.",
+                    "Wound publication and all carrier maps must equal one proof-bound composition for the exact wound stages and final effect plan; competing or drifted effect/wound producers are forbidden.",
                     nameof(woundStageBundle));
             }
         }

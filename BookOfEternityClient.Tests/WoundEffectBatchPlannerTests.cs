@@ -15,7 +15,7 @@ namespace BookOfEternityClient.Tests;
 /// traversal and common accepted-mechanics orchestration; T012/T021/T023 own cache and
 /// common-plan fingerprints; T026 owns publication.
 /// </summary>
-public sealed class WoundEffectBatchPlannerTests
+public sealed partial class WoundEffectBatchPlannerTests
 {
     private const string SessionId = "session_wound_batch_test";
     private const string RequestId = "request_wound_batch_test";
@@ -3295,7 +3295,8 @@ public sealed class WoundEffectBatchPlannerTests
         int transitionCount = 1,
         CandidateShape shape = CandidateShape.Standard,
         OwnerFlavor flavor = OwnerFlavor.Player,
-        bool shareCausalEvent = false)
+        bool shareCausalEvent = false,
+        string reactionEventType = "owner_damaged")
     {
         if (transitionCount < 1)
             throw new ArgumentOutOfRangeException(nameof(transitionCount));
@@ -3351,7 +3352,11 @@ public sealed class WoundEffectBatchPlannerTests
                 maximumSeverityRank,
                 Fingerprint($"opportunity:{ordinal:D3}:{owner}")));
 
-            var draftGraph = CreateDraftGraph(shape, ordinal, owner);
+            var draftGraph = CreateDraftGraph(
+                shape,
+                ordinal,
+                owner,
+                reactionEventType);
             var proposed = CreateProposedWound(
                 localWoundRef,
                 localTransitionRef,
@@ -3450,7 +3455,8 @@ public sealed class WoundEffectBatchPlannerTests
         CreateDraftGraph(
             CandidateShape shape,
             int woundOrdinal,
-            WoundOwnerCoordinate owner)
+            WoundOwnerCoordinate owner,
+            string reactionEventType = "owner_damaged")
     {
         var roots = shape switch
         {
@@ -3508,7 +3514,8 @@ public sealed class WoundEffectBatchPlannerTests
                 owner,
                 $"component_{woundOrdinal:D3}_{rootOrdinal:D3}_001",
                 $"draft_wound_{woundOrdinal:D3}",
-                leafKey);
+                leafKey,
+                reactionEventType);
             if (profile == "wound_consequence")
             {
                 definition["components"]![0]!["payload"]!["woundId"] =
@@ -3582,7 +3589,8 @@ public sealed class WoundEffectBatchPlannerTests
         WoundOwnerCoordinate owner,
         string componentId,
         string woundId,
-        string? applyDefinitionKey = null)
+        string? applyDefinitionKey = null,
+        string reactionEventType = "owner_damaged")
     {
         var definition = profile.StartsWith("spiritual_", StringComparison.Ordinal)
             ? EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(
@@ -3611,10 +3619,14 @@ public sealed class WoundEffectBatchPlannerTests
         if (applyDefinitionKey is not null)
         {
             var payload = component["payload"]!.AsObject();
+            payload["eventType"] = reactionEventType;
             payload["resultKind"] = "apply_definition";
             payload["definitionKey"] = applyDefinitionKey;
             payload["parameters"] = new JsonObject();
             payload["maxExpansion"] = 2;
+            definition["triggers"]![0]!["eventType"] = reactionEventType;
+            definition["triggers"]![0]!["triggerId"] =
+                "on_" + reactionEventType;
         }
 
         return definition;
@@ -4846,7 +4858,13 @@ public sealed class WoundEffectBatchPlannerTests
             identityIndexAfterImage,
             source.TouchedPaths,
             source.DeletedPaths,
-            source.AcceptedCarrierBaselines);
+            source.AcceptedCarrierBaselines,
+            acceptedBoundaryCompletionProof:
+                ReadAcceptedBoundaryCompletionProof(source),
+            acceptedBoundaryBasePlanFingerprint:
+                source.AcceptedBoundaryBasePlanFingerprint,
+            woundApplicationRootEffectBindings:
+                source.WoundApplicationRootEffectBindings);
     }
 
     private static EffectAcceptedTurnPlan CloneEffectPlanWithCarrierAfterImageMutation(
@@ -4889,7 +4907,13 @@ public sealed class WoundEffectBatchPlannerTests
             source.IdentityIndexAfterImage,
             source.TouchedPaths,
             source.DeletedPaths,
-            source.AcceptedCarrierBaselines);
+            source.AcceptedCarrierBaselines,
+            acceptedBoundaryCompletionProof:
+                ReadAcceptedBoundaryCompletionProof(source),
+            acceptedBoundaryBasePlanFingerprint:
+                source.AcceptedBoundaryBasePlanFingerprint,
+            woundApplicationRootEffectBindings:
+                source.WoundApplicationRootEffectBindings);
     }
 
     private static EffectAcceptedTurnPlan CloneEffectPlanWithInjectedSurvivorMutation(
@@ -5031,7 +5055,13 @@ public sealed class WoundEffectBatchPlannerTests
             identityIndexAfterImage,
             source.TouchedPaths,
             source.DeletedPaths,
-            acceptedCarrierBaselines);
+            acceptedCarrierBaselines,
+            acceptedBoundaryCompletionProof:
+                ReadAcceptedBoundaryCompletionProof(source),
+            acceptedBoundaryBasePlanFingerprint:
+                source.AcceptedBoundaryBasePlanFingerprint,
+            woundApplicationRootEffectBindings:
+                source.WoundApplicationRootEffectBindings);
     }
 
     private static EffectAcceptedTurnPlan CloneEffectPlanWithSingleViewSourceMutation(
@@ -5128,7 +5158,13 @@ public sealed class WoundEffectBatchPlannerTests
             identityIndexAfterImage,
             source.TouchedPaths,
             source.DeletedPaths,
-            source.AcceptedCarrierBaselines);
+            source.AcceptedCarrierBaselines,
+            acceptedBoundaryCompletionProof:
+                ReadAcceptedBoundaryCompletionProof(source),
+            acceptedBoundaryBasePlanFingerprint:
+                source.AcceptedBoundaryBasePlanFingerprint,
+            woundApplicationRootEffectBindings:
+                source.WoundApplicationRootEffectBindings);
     }
 
     private static EffectAcceptedTurnPlan CloneEffectPlanWithCreateTransitionId(
@@ -5201,7 +5237,13 @@ public sealed class WoundEffectBatchPlannerTests
             identityIndexAfterImage,
             source.TouchedPaths,
             source.DeletedPaths,
-            source.AcceptedCarrierBaselines);
+            source.AcceptedCarrierBaselines,
+            acceptedBoundaryCompletionProof:
+                ReadAcceptedBoundaryCompletionProof(source),
+            acceptedBoundaryBasePlanFingerprint:
+                source.AcceptedBoundaryBasePlanFingerprint,
+            woundApplicationRootEffectBindings:
+                source.WoundApplicationRootEffectBindings);
     }
 
     private static EffectAcceptedTurnPlan CloneEffectPlanWithAuthorities(
@@ -5233,7 +5275,13 @@ public sealed class WoundEffectBatchPlannerTests
             source.IdentityIndexAfterImage,
             source.TouchedPaths,
             source.DeletedPaths,
-            source.AcceptedCarrierBaselines);
+            source.AcceptedCarrierBaselines,
+            acceptedBoundaryCompletionProof:
+                ReadAcceptedBoundaryCompletionProof(source),
+            acceptedBoundaryBasePlanFingerprint:
+                source.AcceptedBoundaryBasePlanFingerprint,
+            woundApplicationRootEffectBindings:
+                source.WoundApplicationRootEffectBindings);
 
     private static void MutateActiveEffect(
         IEnumerable<JsonObject> activeEffects,
@@ -5246,6 +5294,16 @@ public sealed class WoundEffectBatchPlannerTests
             StringComparison.Ordinal));
         mutation(activeEffect);
     }
+
+    private static EffectAcceptedTurnPlanner.AcceptedBoundaryCompletionProof?
+        ReadAcceptedBoundaryCompletionProof(EffectAcceptedTurnPlan plan) =>
+        (EffectAcceptedTurnPlanner.AcceptedBoundaryCompletionProof?)typeof(
+                EffectAcceptedTurnPlan)
+            .GetField(
+                "_acceptedBoundaryCompletionProof",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic)!
+            .GetValue(plan);
 
     private static WoundEffectBatchPlanningResult RewrapEffectStage(
         WoundPreparedAcceptedTurnPlan prepared,

@@ -3204,6 +3204,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             "periodic_restore");
         effect["effectId"] = effectId;
         effect["target"]!["targetId"] = npcId;
+        effect["source"]!["kind"] = "quest";
         effect["source"]!["sourceId"] = sourceId;
         effect["chronology"]!["createdEventRef"] =
             "turn_42:many_runtime_triggers";
@@ -3317,7 +3318,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                 {
                     new EffectSourceExport(
                         "mortal_world",
-                        "wound",
+                        "quest",
                         sourceId,
                         new JsonArray(definition.DeepClone()),
                         Materializable: true,
@@ -3331,7 +3332,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
         var binding = sourceAuthority.ResolveCanonicalBinding(
             new EffectSourceKey(
                 "mortal_world",
-                "wound",
+                "quest",
                 sourceId,
                 EffectMaterializationTestFixture.DefinitionKey),
             "npc");
@@ -3839,6 +3840,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             "player",
             "periodic_restore");
         oldEffect["effectId"] = oldEffectId;
+        oldEffect["source"]!["kind"] = "quest";
         oldEffect["source"]!["sourceId"] = rootSourceId;
         oldEffect["source"]!["definitionKey"] = rootDefinitionKey;
         oldEffect["stacking"]!["stackKey"] = sharedStackKey;
@@ -3849,6 +3851,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             "player",
             "action_control");
         siblingEffect["effectId"] = siblingEffectId;
+        siblingEffect["source"]!["kind"] = "quest";
         siblingEffect["source"]!["sourceId"] = siblingSourceId;
         siblingEffect["source"]!["definitionKey"] = siblingDefinitionKey;
         siblingEffect["stacking"]!["stackKey"] = siblingStackKey;
@@ -3864,7 +3867,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                 {
                     new EffectSourceExport(
                         "mortal_world",
-                        "wound",
+                        "quest",
                         rootSourceId,
                         new JsonArray(
                             rootDefinition.DeepClone(),
@@ -3874,7 +3877,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                         SameTurn: false),
                     new EffectSourceExport(
                         "mortal_world",
-                        "wound",
+                        "quest",
                         siblingSourceId,
                         new JsonArray(siblingDefinition.DeepClone()),
                         Materializable: true,
@@ -3939,14 +3942,14 @@ public sealed class EffectResourceTriggerRoutingScaleTests
         var rootBinding = sourceAuthority.ResolveCanonicalBinding(
             new EffectSourceKey(
                 "mortal_world",
-                "wound",
+                "quest",
                 rootSourceId,
                 rootDefinitionKey),
             "player");
         var siblingBinding = sourceAuthority.ResolveCanonicalBinding(
             new EffectSourceKey(
                 "mortal_world",
-                "wound",
+                "quest",
                 siblingSourceId,
                 siblingDefinitionKey),
             "player");
@@ -4066,6 +4069,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             "periodic_restore");
         effect["effectId"] = effectId;
         effect["target"]!["targetId"] = npcId;
+        effect["source"]!["kind"] = "quest";
         effect["source"]!["sourceId"] = sourceId;
         effect["chronology"]!["createdEventRef"] =
             "turn_42:accepted_event_budget";
@@ -4293,7 +4297,10 @@ public sealed class EffectResourceTriggerRoutingScaleTests
         if (competingEffect != null)
             activeEffects.Add(competingEffect);
         if (frozenReplacementTargetEffect != null)
+        {
+            frozenReplacementTargetEffect["source"]!["kind"] = "quest";
             activeEffects.Add(frozenReplacementTargetEffect);
+        }
         var carriers = CreateNpcCarriers(npcId, activeEffects);
         var sourceDefinitions = new JsonArray(definition.DeepClone());
         if (competingDefinition != null)
@@ -4308,7 +4315,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                 {
                     new EffectSourceExport(
                         "mortal_world",
-                        "wound",
+                        "quest",
                         sourceId,
                         sourceDefinitions,
                         Materializable: true,
@@ -4322,7 +4329,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
         var binding = sourceAuthority.ResolveCanonicalBinding(
             new EffectSourceKey(
                 "mortal_world",
-                "wound",
+                "quest",
                 sourceId,
                 EffectMaterializationTestFixture.DefinitionKey),
             "npc");
@@ -4336,7 +4343,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             var competingBinding = sourceAuthority.ResolveCanonicalBinding(
                 new EffectSourceKey(
                     "mortal_world",
-                    "wound",
+                    "quest",
                     sourceId,
                     competingDefinitionKey),
                 "npc");

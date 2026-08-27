@@ -51,7 +51,8 @@ internal static class EffectReactionExecutor
         EffectCarrierOccurrence occurrence,
         string triggerId,
         ResourceAppliedEvent producerEvent,
-        EffectSourceAuthority sourceAuthority)
+        EffectSourceAuthority sourceAuthority,
+        WoundReactionLineageAuthority? woundLineageAuthority = null)
     {
         ArgumentNullException.ThrowIfNull(occurrence);
         ArgumentException.ThrowIfNullOrWhiteSpace(triggerId);
@@ -143,6 +144,7 @@ internal static class EffectReactionExecutor
                     replacementTargets,
                     issues,
                     workMeter: null,
+                    woundLineageAuthority: woundLineageAuthority,
                     out var execution))
             {
                 executions.Add(execution);
@@ -164,7 +166,8 @@ internal static class EffectReactionExecutor
         ResourceAppliedEvent producerEvent,
         EffectSourceAuthority sourceAuthority,
         EffectReplacementTargetIndex replacementTargets,
-        EffectAcceptedTurnPlanner.EffectResourceRoutingWorkMeter workMeter)
+        EffectAcceptedTurnPlanner.EffectResourceRoutingWorkMeter workMeter,
+        WoundReactionLineageAuthority? woundLineageAuthority = null)
     {
         ArgumentNullException.ThrowIfNull(occurrence);
         ArgumentException.ThrowIfNullOrWhiteSpace(triggerId);
@@ -262,6 +265,7 @@ internal static class EffectReactionExecutor
                     replacementTargets,
                     issues,
                     workMeter,
+                    woundLineageAuthority,
                     out var execution))
             {
                 executions.Add(execution);
@@ -474,7 +478,8 @@ internal static class EffectReactionExecutor
     internal static EffectReactionPlanningResult Plan(
         JsonObject eventInput,
         EffectSourceAuthority sourceAuthority,
-        EffectCarrierCatalogInput carriers)
+        EffectCarrierCatalogInput carriers,
+        WoundReactionLineageAuthority? woundLineageAuthority = null)
     {
         ArgumentNullException.ThrowIfNull(eventInput);
         ArgumentNullException.ThrowIfNull(sourceAuthority);
@@ -561,6 +566,7 @@ internal static class EffectReactionExecutor
                                 replacementTargets,
                                 issues,
                                 workMeter: null,
+                                woundLineageAuthority: woundLineageAuthority,
                                 out var execution))
                         {
                             continue;
@@ -610,6 +616,7 @@ internal static class EffectReactionExecutor
         EffectReplacementTargetIndex replacementTargets,
         List<ValidationIssue> issues,
         EffectAcceptedTurnPlanner.EffectResourceRoutingWorkMeter? workMeter,
+        WoundReactionLineageAuthority? woundLineageAuthority,
         out EffectReactionExecution execution)
     {
         execution = null!;
@@ -659,7 +666,37 @@ internal static class EffectReactionExecutor
                 sourceId,
                 definitionKey);
             IReadOnlyList<ValidationIssue> parameterIssues;
-            if (workMeter != null)
+            if (string.Equals(sourceKind, "wound", StringComparison.Ordinal))
+            {
+                if (woundLineageAuthority is null)
+                {
+                    Add(
+                        issues,
+                        occurrence.JsonPath + ".components[" + componentId + "].payload",
+                        "effect_reaction_wound_lineage_authority_missing",
+                        "sealed typed wound lineage authority for every wound-owned apply_definition reaction",
+                        sourceKey.ToString());
+                    return false;
+                }
+                var woundResolution = woundLineageAuthority.ResolveApplyDefinition(
+                    occurrence,
+                    component,
+                    acceptedEvent.Target,
+                    definitionKey);
+                issues.AddRange(woundResolution.Issues);
+                if (!woundResolution.Success)
+                    return false;
+                downstream = woundResolution.Source;
+                downstreamKey = woundResolution.Source!.Key;
+                downstreamStackKey = woundResolution.Source.Definition["stacking"]?
+                    ["stackKey"]?.GetValue<string>();
+                downstreamStackPolicy = woundResolution.Source.Definition["stacking"]?
+                    ["policy"]?.GetValue<string>();
+                parameterIssues = sourceAuthority.ValidateCanonicalParameters(
+                    woundResolution.Source,
+                    reactionParameters);
+            }
+            else if (workMeter != null)
             {
                 var routingResolution =
                     sourceAuthority.ResolveCanonicalRoutingBinding(

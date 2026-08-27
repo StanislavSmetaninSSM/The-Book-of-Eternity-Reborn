@@ -2241,6 +2241,9 @@ internal static class WoundAcceptedTurnFingerprints
         AppendOrdered(fields, plan.AllocatedCombatantIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedEffectIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedTransitionIds, includeCount: true);
+        AppendWoundApplicationRootEffectBindings(
+            fields,
+            plan.WoundApplicationRootEffectBindings);
 
         fields.Add(Count(sources));
         for (var index = 0; index < sources.Count; index++)
@@ -2339,6 +2342,9 @@ internal static class WoundAcceptedTurnFingerprints
         AppendOrdered(fields, plan.AllocatedCombatantIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedEffectIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedTransitionIds, includeCount: true);
+        AppendWoundApplicationRootEffectBindings(
+            fields,
+            plan.WoundApplicationRootEffectBindings);
 
         fields.Add(Count(sources));
         for (var index = 0; index < sources.Count; index++)
@@ -2400,6 +2406,19 @@ internal static class WoundAcceptedTurnFingerprints
         AppendOrdered(fields, plan.DeletedPaths, includeCount: true);
         AppendEffectCarriers(fields, plan.AcceptedCarrierBaselines);
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+    }
+
+    private static void AppendWoundApplicationRootEffectBindings(
+        ICollection<string?> fields,
+        IReadOnlyList<WoundApplicationRootEffectBinding> bindings)
+    {
+        fields.Add(Count(bindings));
+        for (var index = 0; index < bindings.Count; index++)
+        {
+            fields.Add(Number(index));
+            fields.Add(bindings[index]?.ApplicationRef);
+            fields.Add(bindings[index]?.EffectId);
+        }
     }
 
     internal static string ComputeFinal(

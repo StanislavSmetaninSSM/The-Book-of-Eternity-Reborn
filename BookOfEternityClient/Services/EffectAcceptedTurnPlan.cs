@@ -44,6 +44,8 @@ internal sealed class EffectAcceptedTurnPlan
         _acceptedBoundaryCompletionProof;
     private readonly string? _acceptedBoundaryBasePlanFingerprint;
     private readonly string? _acceptedBoundaryFinalPlanFingerprint;
+    private readonly WoundApplicationRootEffectBinding[]
+        _woundApplicationRootEffectBindings;
 
     internal const string CommandPath = "game_state/effects/effect_commands.json";
     internal const string IdentityIndexPath = "game_state/effects/effect_identity_index.json";
@@ -78,7 +80,9 @@ internal sealed class EffectAcceptedTurnPlan
         EffectCarrierCatalogInput? acceptedCarrierBaselines = null,
         EffectAcceptedTurnPlanner.AcceptedBoundaryCompletionProof?
             acceptedBoundaryCompletionProof = null,
-        string? acceptedBoundaryBasePlanFingerprint = null)
+        string? acceptedBoundaryBasePlanFingerprint = null,
+        IReadOnlyList<WoundApplicationRootEffectBinding>?
+            woundApplicationRootEffectBindings = null)
     {
         InputFingerprint = inputFingerprint;
         CarrierAuthorityFingerprint = carrierAuthorityFingerprint;
@@ -140,6 +144,13 @@ internal sealed class EffectAcceptedTurnPlan
             StringComparer.Ordinal);
         _identityIndexBeforeImage = identityIndexBeforeImage?.DeepClone().AsObject();
         _identityIndexAfterImage = identityIndexAfterImage.DeepClone().AsObject();
+        _woundApplicationRootEffectBindings =
+            (woundApplicationRootEffectBindings ??
+             Array.Empty<WoundApplicationRootEffectBinding>())
+            .Select(static binding => new WoundApplicationRootEffectBinding(
+                binding.ApplicationRef,
+                binding.EffectId))
+            .ToArray();
         TouchedPaths = ReadOnly(touchedPaths);
         DeletedPaths = ReadOnly(deletedPaths);
         if (acceptedBoundaryCompletionProof is not null &&
@@ -266,6 +277,15 @@ internal sealed class EffectAcceptedTurnPlan
 
     internal JsonObject IdentityIndexAfterImage => _identityIndexAfterImage.DeepClone().AsObject();
 
+    internal IReadOnlyList<WoundApplicationRootEffectBinding>
+        WoundApplicationRootEffectBindings =>
+        new ReadOnlyCollection<WoundApplicationRootEffectBinding>(
+            _woundApplicationRootEffectBindings
+                .Select(static binding => new WoundApplicationRootEffectBinding(
+                    binding.ApplicationRef,
+                    binding.EffectId))
+                .ToArray());
+
     internal IReadOnlyList<string> TouchedPaths { get; }
 
     internal IReadOnlyList<string> DeletedPaths { get; }
@@ -311,7 +331,8 @@ internal sealed class EffectAcceptedTurnPlan
             source.DeletedPaths,
             source.AcceptedCarrierBaselines,
             source._acceptedBoundaryCompletionProof,
-            source._acceptedBoundaryBasePlanFingerprint);
+            source._acceptedBoundaryBasePlanFingerprint,
+            source.WoundApplicationRootEffectBindings);
     }
 
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>

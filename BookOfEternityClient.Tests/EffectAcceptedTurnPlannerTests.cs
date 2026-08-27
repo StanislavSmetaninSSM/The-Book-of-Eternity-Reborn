@@ -1376,6 +1376,8 @@ public sealed class EffectAcceptedTurnPlannerTests
         var replaced = EffectMaterializationTestFixture.CreateCanonicalEffect(
             profile: "periodic_restore");
         replaced["effectId"] = "effect_distinct_stack_target";
+        replaced["source"]!["kind"] = "quest";
+        replaced["source"]!["sourceId"] = "quest_effect_reaction_test";
         replaced["source"]!["definitionKey"] = replacementDefinitionKey;
         replaced["stacking"]!["stackKey"] = replacedStackKey;
         replaced["stacking"]!["policy"] = "replace";
@@ -1466,6 +1468,8 @@ public sealed class EffectAcceptedTurnPlannerTests
         var incumbent = EffectMaterializationTestFixture.CreateCanonicalEffect(
             profile: "periodic_restore");
         incumbent["effectId"] = incumbentEffectId;
+        incumbent["source"]!["kind"] = "quest";
+        incumbent["source"]!["sourceId"] = "quest_effect_reaction_test";
         incumbent["source"]!["definitionKey"] = replacementDefinitionKey;
         incumbent["stacking"]!["stackKey"] = replacementStackKey;
         incumbent["stacking"]!["policy"] = "replace";
@@ -2134,13 +2138,15 @@ public sealed class EffectAcceptedTurnPlannerTests
         JsonObject effect,
         params JsonObject[] definitions)
     {
+        effect["source"]!["kind"] = "quest";
+        effect["source"]!["sourceId"] = "quest_effect_reaction_test";
         var source = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
             new[]
             {
                 new EffectSourceExport(
                     "mortal_world",
-                    "wound",
-                    "wound_test_torn_side",
+                    "quest",
+                    "quest_effect_reaction_test",
                     new JsonArray(definitions.Select(static value =>
                         (JsonNode)value.DeepClone()).ToArray()),
                     Materializable: true,

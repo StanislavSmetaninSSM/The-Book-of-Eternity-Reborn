@@ -1132,7 +1132,9 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                 new HashSet<string>(StringComparer.Ordinal)
                 {
                     EffectBuiltInSourceCatalog.FateShieldApplicationAuthority
-                }));
+                },
+                WoundGroups:
+                    initial.SourceAuthority.SnapshotWoundGroupAuthorities()));
         Assert.Empty(driftedAuthority.Issues);
         Assert.Equal(
             initial.SourceAuthority.CanonicalFingerprint,
@@ -1277,7 +1279,13 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             identityIndexAfterImage ?? source.IdentityIndexAfterImage,
             source.TouchedPaths,
             source.DeletedPaths,
-            source.AcceptedCarrierBaselines);
+            source.AcceptedCarrierBaselines,
+            acceptedBoundaryCompletionProof:
+                ReadAcceptedBoundaryCompletionProof(source),
+            acceptedBoundaryBasePlanFingerprint:
+                source.AcceptedBoundaryBasePlanFingerprint,
+            woundApplicationRootEffectBindings:
+                source.WoundApplicationRootEffectBindings);
 
     private static EffectAcceptedTurnPlan ReplaceEffectEverywhere(
         EffectAcceptedTurnPlan source,
