@@ -181,6 +181,77 @@ public sealed class WoundOpportunityAuthorityTests
             issue.Code == "wound_opportunity_already_consumed");
     }
 
+    [Fact]
+    public void Compose_SealsExactWorseningTargetAndRejectsResealedMutation()
+    {
+        var before = ParseWound(WoundContractTestData.CreateActiveWound());
+        var result = WoundOpportunityAuthority.Compose(BuildRequest(
+            maximumSeverityRank: 3,
+            worseningTarget: new WoundOpportunityWorseningTargetEvidence(
+                before,
+                "retrauma")));
+
+        Assert.True(result.Success);
+        var opportunity = Assert.IsType<WoundOpportunityAuthority>(
+            result.Opportunity);
+        var target = Assert.IsType<WoundOpportunityWorseningTargetAuthority>(
+            opportunity.WorseningTarget);
+        Assert.Equal(before.WoundId, target.Wound.WoundId);
+        Assert.Equal(
+            WoundIdentityState.ComputeSemanticFingerprint(before),
+            target.ExpectedBeforeFingerprint);
+        Assert.True(WoundOpportunityAuthority.HasCompleteShape(opportunity));
+
+        var changed = before with
+        {
+            Display = before.Display with
+            {
+                Prognosis = "Подменённый прогноз после запечатывания."
+            }
+        };
+        var tampered = opportunity with
+        {
+            WorseningTarget = new WoundOpportunityWorseningTargetAuthority(
+                changed,
+                target.CauseKind,
+                target.ExpectedBeforeFingerprint)
+        };
+
+        Assert.False(WoundOpportunityAuthority.HasCompleteShape(tampered));
+    }
+
+    [Theory]
+    [InlineData(1, "I")]
+    [InlineData(2, "II")]
+    public void EvaluateDecision_WorseningRejectsSameOrLowerSeverity(
+        int severityRank,
+        string severity)
+    {
+        var before = ParseWound(WoundContractTestData.CreateActiveWound());
+        var opportunity = Assert.IsType<WoundOpportunityAuthority>(
+            WoundOpportunityAuthority.Compose(BuildRequest(
+                maximumSeverityRank: 3,
+                worseningTarget: new WoundOpportunityWorseningTargetEvidence(
+                    before,
+                    "deterioration"))).Opportunity);
+
+        var result = WoundOpportunityDecisionAuthority.Evaluate(
+            opportunity,
+            new WoundOpportunityDecisionRequest(
+                opportunity.PublicRef,
+                "materialize",
+                severityRank,
+                "wound_local_worsening"),
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+
+        Assert.False(result.Success);
+        Assert.Null(result.Decision);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "wound_worsening_severity_not_higher" &&
+            issue.Expected == "III-III" &&
+            issue.Actual == severity);
+    }
+
     private static WoundOpportunityAuthority ComposeValidOpportunity(
         int maximumSeverityRank)
     {
@@ -194,7 +265,8 @@ public sealed class WoundOpportunityAuthorityTests
         string adapterKind = "formal",
         string authorityKind = "combat_resolution",
         string outcomeKind = "harmful",
-        int maximumSeverityRank = 2)
+        int maximumSeverityRank = 2,
+        WoundOpportunityWorseningTargetEvidence? worseningTarget = null)
     {
         var eventEvidence = new WoundOpportunityEventEvidence(
             adapterKind,
@@ -238,6 +310,16 @@ public sealed class WoundOpportunityAuthorityTests
             new WoundOpportunitySafeContext(
                 "вы",
                 "осколок стекла после обвала",
-                new[] { "anatomical", "systemic", "other" }));
+                new[] { "anatomical", "systemic", "other" }),
+            worseningTarget);
+    }
+
+    private static WoundMaterializationEnvelope ParseWound(JsonObject value)
+    {
+        var parsed = WoundMaterializationContract.Parse(
+            value.ToJsonString(),
+            "test.wound");
+        Assert.True(parsed.IsValid);
+        return Assert.IsType<WoundMaterializationEnvelope>(parsed.Wound);
     }
 }

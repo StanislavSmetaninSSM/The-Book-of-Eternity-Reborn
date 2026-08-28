@@ -150,13 +150,21 @@ internal static partial class WoundResponseInputComposer
             {
                 try
                 {
-                    var composed = TryComposeCreateTransition(
-                        binding,
-                        opportunity,
-                        response,
-                        evaluated.Decision,
-                        finalSceneText,
-                        issues);
+                    var composed = opportunity.WorseningTarget is null
+                        ? TryComposeCreateTransition(
+                            binding,
+                            opportunity,
+                            response,
+                            evaluated.Decision,
+                            finalSceneText,
+                            issues)
+                        : TryComposeWorsenTransition(
+                            binding,
+                            opportunity,
+                            response,
+                            evaluated.Decision,
+                            finalSceneText,
+                            issues);
                     transition = composed.Transition;
                     notification = composed.Notification;
                 }

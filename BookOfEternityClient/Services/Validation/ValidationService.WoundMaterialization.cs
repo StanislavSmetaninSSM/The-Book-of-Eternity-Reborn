@@ -330,7 +330,9 @@ public partial class ValidationService
             recomposed.Transitions,
             carriers,
             draft.PreTurnIdentityIndex,
-            draft.PreTurnHistory);
+            draft.PreTurnHistory,
+            effectInput.PreTurnCarriers,
+            effectInput.PreTurnIdentityIndex);
         var prepared = WoundAcceptedTurnPlanAuthority.GetOrBuildPreparedValidated(
             _fs,
             writeLease,

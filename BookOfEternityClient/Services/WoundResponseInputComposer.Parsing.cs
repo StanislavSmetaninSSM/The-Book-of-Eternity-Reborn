@@ -440,6 +440,201 @@ internal static partial class WoundResponseInputComposer
             : new TransitionComposition(null, null);
     }
 
+    private static TransitionComposition TryComposeWorsenTransition(
+        WoundAcceptedTurnBinding binding,
+        WoundOpportunityAuthority opportunity,
+        ParsedDecision response,
+        WoundOpportunityDecisionAuthority decision,
+        string? finalSceneText,
+        ICollection<ValidationIssue> issues)
+    {
+        var start = issues.Count;
+        var composed = TryComposeCreateTransition(
+            binding,
+            opportunity,
+            response,
+            decision,
+            finalSceneText,
+            issues);
+        if (issues.Count != start ||
+            composed.Transition is not { } createDraft ||
+            opportunity.WorseningTarget is not { } target)
+        {
+            return new TransitionComposition(null, null);
+        }
+
+        var before = target.Wound;
+        var proposed = createDraft.ProposedAfter;
+        var path = $"woundDecisions[{response.Index}].proposal";
+        if (before.Classification != proposed.Classification)
+        {
+            Add(
+                issues,
+                path + ".classification",
+                "wound_response_worsening_classification_changed",
+                "the existing wound classification unchanged",
+                proposed.Classification.ToString());
+        }
+        if (!SameCanonicalSection(before, proposed, "treatment"))
+        {
+            Add(
+                issues,
+                path + ".treatment",
+                "wound_response_worsening_treatment_changed",
+                "the existing treatment model unchanged",
+                "changed treatment model");
+        }
+
+        var complicationIds = new Dictionary<string, string>(StringComparer.Ordinal);
+        if (before.Complications.Count != proposed.Complications.Count)
+        {
+            Add(
+                issues,
+                path + ".complications",
+                "wound_response_worsening_complications_changed",
+                "the exact existing complication set",
+                $"{before.Complications.Count}->{proposed.Complications.Count}");
+        }
+        else
+        {
+            for (var index = 0; index < before.Complications.Count; index++)
+            {
+                var prior = before.Complications[index];
+                var candidate = proposed.Complications[index];
+                if (!SameComplicationProposal(prior, candidate) ||
+                    !complicationIds.TryAdd(
+                        candidate.ComplicationId,
+                        prior.ComplicationId))
+                {
+                    Add(
+                        issues,
+                        $"{path}.complications[{index}]",
+                        "wound_response_worsening_complications_changed",
+                        "the same ordered complication facts under response-local refs",
+                        candidate.ComplicationId);
+                }
+            }
+        }
+        if (proposed.Recovery.CurrentStepProgress != 0)
+        {
+            Add(
+                issues,
+                path + ".recovery.currentStepProgress",
+                "wound_response_worsening_progress_not_reset",
+                "0",
+                proposed.Recovery.CurrentStepProgress.ToString(
+                    CultureInfo.InvariantCulture));
+        }
+        if (issues.Count != start)
+            return new TransitionComposition(null, null);
+
+        var roots = createDraft.RootApplications.Select(root =>
+        {
+            if (!string.Equals(
+                    root.OwnershipDomain.Kind,
+                    "complication",
+                    StringComparison.Ordinal))
+            {
+                return root;
+            }
+            if (root.OwnershipDomain.ComplicationId is null ||
+                !complicationIds.TryGetValue(
+                    root.OwnershipDomain.ComplicationId,
+                    out var permanentComplicationId))
+            {
+                throw new InvalidOperationException(
+                    "Worsening root has no exact existing complication binding.");
+            }
+            return root with
+            {
+                OwnershipDomain = WoundRootOwnershipDomain.ForComplication(
+                    permanentComplicationId)
+            };
+        }).ToArray();
+        var localTransitionRef = CreateLocalIdentifier(
+            "wound_transition_ref",
+            decision.DecisionFingerprint,
+            "worsen");
+        var after = before with
+        {
+            Display = proposed.Display,
+            Severity = proposed.Severity with
+            {
+                MaximumAtCreation = before.Severity.MaximumAtCreation,
+                LastChangeEventRef = opportunity.EventRef
+            },
+            Care = before.Care,
+            Complications = before.Complications.Select(static value => value with
+            {
+                OwnedEffectIds = Array.Empty<string>()
+            }).ToArray(),
+            Consequences = proposed.Consequences,
+            Recovery = proposed.Recovery,
+            LastTransition = new WoundLastTransition(
+                localTransitionRef,
+                checked(before.LastTransition.Ordinal + 1),
+                binding.Turn,
+                "worsen")
+        };
+        var transition = new WoundAcceptedTransitionDraft(
+            "worsen",
+            decision.OperationKey,
+            createDraft.LocalWoundRef,
+            localTransitionRef,
+            opportunity.OpportunityId,
+            $"Рана «{after.Display.Name}» ухудшилась до {after.Severity.Value}.",
+            after,
+            createDraft.EffectDefinitions,
+            roots,
+            createDraft.SlotBindings);
+        var output = WoundPlayerNotification.ComposeWorsening(
+            new WoundWorseningOutputRequest(
+                createDraft.LocalWoundRef,
+                opportunity.EventRef,
+                after,
+                new WoundAcquisitionNarrationClaim(
+                    createDraft.LocalWoundRef,
+                    opportunity.EventRef,
+                    opportunity.Domain,
+                    after.Display.Name,
+                    after.Severity.Rank,
+                    after.Display.AcquisitionNarration),
+                finalSceneText ?? string.Empty));
+        foreach (var issue in output.Issues)
+            issues.Add(WoundAcceptedTurnData.CloneIssue(issue));
+        return output.Success
+            ? new TransitionComposition(transition, output.Notification)
+            : new TransitionComposition(null, null);
+    }
+
+    private static bool SameCanonicalSection(
+        WoundMaterializationEnvelope left,
+        WoundMaterializationEnvelope right,
+        string section)
+    {
+        var leftRoot = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(left))!.AsObject();
+        var rightRoot = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(right))!.AsObject();
+        return JsonNode.DeepEquals(leftRoot[section], rightRoot[section]);
+    }
+
+    private static bool SameComplicationProposal(
+        WoundComplication prior,
+        WoundComplication candidate) =>
+        string.Equals(prior.Kind, candidate.Kind, StringComparison.Ordinal) &&
+        string.Equals(prior.State, candidate.State, StringComparison.Ordinal) &&
+        string.Equals(
+            prior.DisplayName,
+            candidate.DisplayName,
+            StringComparison.Ordinal) &&
+        prior.TreatmentDifficultyModifier ==
+            candidate.TreatmentDifficultyModifier &&
+        string.Equals(
+            prior.Visibility,
+            candidate.Visibility,
+            StringComparison.Ordinal);
+
     private static IReadOnlyList<ParsedComplicationProposal> ParseComplications(
         IReadOnlyList<JsonElement> elements,
         string path,

@@ -643,7 +643,10 @@ internal sealed class AcceptedMechanicsWoundStageBundle
                     transition.OpportunityAuthorityFingerprint,
                     transition.OperationKey,
                     transition.ReadableSummary,
-                    transition.MaximumSeverityRank),
+                    transition.MaximumSeverityRank,
+                    transition.TransitionKind,
+                    transition.CauseKind,
+                    transition.ExpectedBeforeFingerprint),
                 transition.AuthoritySeal,
                 nameof(preparedPlan),
                 "prepared transition authority");

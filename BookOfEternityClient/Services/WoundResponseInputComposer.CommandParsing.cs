@@ -54,7 +54,7 @@ internal static partial class WoundResponseInputComposer
         "opportunityId", "publicRef", "eventRef", "eventKind",
         "eventAuthorityId", "owner", "domain", "profileKey", "sourceKind",
         "sourceId", "sourceState", "minimumSeverityRank",
-        "maximumSeverityRank", "guaranteedTrigger", "safeContext",
+        "maximumSeverityRank", "guaranteedTrigger", "worseningTarget", "safeContext",
         "inputEvidenceFingerprint", "authorityFingerprint");
     private static readonly IReadOnlySet<string> SerializedOwnerFields = Set(
         "realm", "ownerKind", "ownerId", "carrierPath");
@@ -64,6 +64,8 @@ internal static partial class WoundResponseInputComposer
         "sourceContractFingerprint", "authorityFingerprint");
     private static readonly IReadOnlySet<string> SerializedSafeContextFields = Set(
         "target", "cause", "allowedLocationKinds");
+    private static readonly IReadOnlySet<string> SerializedWorseningTargetFields = Set(
+        "causeKind", "expectedBeforeFingerprint", "wound");
 
     internal static WoundResponseCommandParsingResult ParseCommandRoot(
         JsonElement root)
@@ -365,6 +367,33 @@ internal static partial class WoundResponseInputComposer
                 guaranteeElement.ValueKind.ToString());
         }
 
+        WoundOpportunityWorseningTargetAuthority? worseningTarget = null;
+        if (!fields.TryGetValue("worseningTarget", out var worseningElement))
+        {
+            AddCommandIssue(
+                issues,
+                path + ".worseningTarget",
+                "wound_command_missing_field",
+                "worsening target object or null",
+                "missing");
+        }
+        else if (worseningElement.ValueKind == JsonValueKind.Object)
+        {
+            worseningTarget = ParseWorseningTarget(
+                worseningElement,
+                path + ".worseningTarget",
+                issues);
+        }
+        else if (worseningElement.ValueKind != JsonValueKind.Null)
+        {
+            AddCommandIssue(
+                issues,
+                path + ".worseningTarget",
+                "wound_command_invalid_field",
+                "worsening target object or null",
+                worseningElement.ValueKind.ToString());
+        }
+
         var safeContext = fields.TryGetValue("safeContext", out var safeElement)
             ? ParseSafeContext(safeElement, path + ".safeContext", issues)
             : null;
@@ -401,7 +430,10 @@ internal static partial class WoundResponseInputComposer
             guarantee,
             safeContext,
             inputFingerprint!,
-            authorityFingerprint!);
+            authorityFingerprint!)
+        {
+            WorseningTarget = worseningTarget
+        };
         if (WoundOpportunityAuthority.HasCompleteShape(opportunity))
             return opportunity;
 
@@ -412,6 +444,58 @@ internal static partial class WoundResponseInputComposer
             "one complete sealed wound opportunity",
             "shape or authority fingerprint mismatch");
         return null;
+    }
+
+    private static WoundOpportunityWorseningTargetAuthority? ParseWorseningTarget(
+        JsonElement element,
+        string path,
+        ICollection<ValidationIssue> issues)
+    {
+        var start = issues.Count;
+        if (!TryReadFields(
+                element,
+                SerializedWorseningTargetFields,
+                SerializedWorseningTargetFields,
+                path,
+                issues,
+                out var fields))
+        {
+            return null;
+        }
+
+        var causeKind = ReadExactIdentifier(fields, "causeKind", path, issues);
+        var fingerprint = ReadExactIdentifier(
+            fields,
+            "expectedBeforeFingerprint",
+            path,
+            issues);
+        WoundMaterializationEnvelope? wound = null;
+        if (!fields.TryGetValue("wound", out var woundElement) ||
+            woundElement.ValueKind != JsonValueKind.Object)
+        {
+            AddCommandIssue(
+                issues,
+                path + ".wound",
+                "wound_command_invalid_field",
+                "one canonical wound object",
+                Raw(fields, "wound"));
+        }
+        else
+        {
+            var parsed = WoundMaterializationContract.Parse(
+                woundElement.GetRawText(),
+                path + ".wound");
+            foreach (var issue in parsed.Issues)
+                issues.Add(WoundAcceptedTurnData.CloneIssue(issue));
+            wound = parsed.Wound;
+        }
+
+        return issues.Count == start && wound is not null
+            ? new WoundOpportunityWorseningTargetAuthority(
+                wound,
+                causeKind!,
+                fingerprint!)
+            : null;
     }
 
     private static WoundOwnerCoordinate? ParseOwner(

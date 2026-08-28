@@ -2976,22 +2976,62 @@ internal static class EffectAcceptedTurnPlanner
                 $"{batch.LocalWoundRef}/{batch.PreparedWoundId}");
             return;
         }
+        var terminalWound = wound;
+        if (terminals.Count != 0 &&
+            string.Equals(
+                transitionAuthority.TransitionKind,
+                "worsen",
+                StringComparison.Ordinal))
+        {
+            var baselineCatalog = WoundCarrierCatalog.Build(
+                prepared.BaselineAuthority.PreTurnCarriers);
+            var matches = baselineCatalog.Occurrences.Where(value =>
+                    string.Equals(
+                        value.WoundId,
+                        batch.PreparedWoundId,
+                        StringComparison.Ordinal))
+                .ToArray();
+            if (baselineCatalog.Issues.Count != 0 ||
+                matches.Length != 1 ||
+                !string.Equals(
+                    WoundIdentityState.ComputeSemanticFingerprint(
+                        matches[0].Wound),
+                    transitionAuthority.ExpectedBeforeFingerprint,
+                    StringComparison.Ordinal))
+            {
+                AddWoundBatchIssue(
+                    issues,
+                    path + ".terminalOperations",
+                    "wound_plan_effect_handoff_invalid",
+                    "the exact sealed pre-turn wound selected for worsening teardown",
+                    batch.PreparedWoundId);
+                return;
+            }
+            terminalWound = matches[0].Wound;
+        }
         var terminalOnly = roots.Count == 0 && terminals.Count != 0;
-        var expectedLineageCount = terminalOnly
-            ? wound.Consequences.OwnedEffectSources.RootBindings.Count
-            : roots.Count;
+        var retainedDefinitionKeys = sourceExport.Definitions
+            .Select(static value => value.DefinitionKey)
+            .ToHashSet(StringComparer.Ordinal);
+        var expectedExistingLineageCount = terminals.Count == 0
+            ? 0
+            : terminalWound.Consequences.OwnedEffectSources.RootBindings.Count(
+                value => retainedDefinitionKeys.Contains(value.DefinitionKey));
+        var expectedLineageCount = roots.Count + expectedExistingLineageCount;
+        var existingLineage = lineage.Skip(roots.Count).ToArray();
         if (lineage.Count != expectedLineageCount ||
-            terminalOnly && !ExistingWoundLineageMatches(
-                wound,
-                lineage))
+            terminals.Count != 0 && !ExistingWoundLineageMatches(
+                terminalWound,
+                existingLineage,
+                retainedDefinitionKeys))
         {
             AddWoundBatchIssue(
                 issues,
                 path + ".rootLineageAuthority",
                 "wound_plan_effect_handoff_invalid",
                 terminalOnly
-                    ? "one exact ordered existing-root lineage row per canonical wound root"
-                    : "one ordered application-authority row per root",
+                    ? "one exact ordered retained existing-root lineage row per canonical wound root"
+                    : "ordered application roots followed by retained existing-root lineage",
                 $"{lineage.Count}/{expectedLineageCount}");
         }
 
@@ -3138,7 +3178,7 @@ internal static class EffectAcceptedTurnPlanner
             if (!ValidatePreparedWoundTerminalOperation(
                     operation,
                     batch,
-                    wound,
+                    terminalWound,
                     acceptedEvents,
                     terminalPath,
                     issues))
@@ -3161,7 +3201,7 @@ internal static class EffectAcceptedTurnPlanner
             }
             terminations.Add(new WoundTerminalRequest(
                 batch,
-                wound,
+                terminalWound,
                 operation));
         }
     }
@@ -3321,6 +3361,25 @@ internal static class EffectAcceptedTurnPlanner
         var owner = source.Owner;
         var expectedOwner = wound.Owner;
         var origin = wound.Origin;
+        var createAuthority = string.Equals(
+            transition.TransitionKind,
+            "create",
+            StringComparison.Ordinal) &&
+            origin is not null &&
+            transition.CauseKind is null &&
+            transition.ExpectedBeforeFingerprint is null &&
+            string.Equals(
+                source.CausalEventRef,
+                origin.EventRef,
+                StringComparison.Ordinal);
+        var worseningAuthority = string.Equals(
+            transition.TransitionKind,
+            "worsen",
+            StringComparison.Ordinal) &&
+            transition.CauseKind is { } causeKind &&
+            TryExact(causeKind) &&
+            ResourceMaterializationContract.IsAuthorityFingerprint(
+                transition.ExpectedBeforeFingerprint);
         var valid =
             source.SchemaVersion == 1 &&
             string.Equals(source.Kind, "wound", StringComparison.Ordinal) &&
@@ -3344,8 +3403,13 @@ internal static class EffectAcceptedTurnPlanner
             origin is not null &&
             string.Equals(
                 source.CausalEventRef,
-                origin.EventRef,
+                wound.Severity.LastChangeEventRef,
                 StringComparison.Ordinal) &&
+            string.Equals(
+                transition.TransitionKind,
+                wound.LastTransition.Kind,
+                StringComparison.Ordinal) &&
+            (createAuthority || worseningAuthority) &&
             string.Equals(
                 transition.PreparedInputFingerprint,
                 prepared.InputFingerprint,
@@ -3394,7 +3458,8 @@ internal static class EffectAcceptedTurnPlanner
 
     private static bool ExistingWoundLineageMatches(
         WoundMaterializationEnvelope wound,
-        IReadOnlyList<WoundRootLineageAuthorityRow> lineage)
+        IReadOnlyList<WoundRootLineageAuthorityRow> lineage,
+        IReadOnlySet<string>? retainedDefinitionKeys = null)
     {
         var domains = wound.Consequences.OwnedEffectSources.RootBindings
             .ToDictionary(
@@ -3415,6 +3480,8 @@ internal static class EffectAcceptedTurnPlanner
             }
         }
         var bindings = wound.Consequences.OwnedEffectSources.RootBindings
+            .Where(binding => retainedDefinitionKeys is null ||
+                retainedDefinitionKeys.Contains(binding.DefinitionKey))
             .OrderBy(static binding => binding.EffectId, StringComparer.Ordinal)
             .ThenBy(static binding => binding.DefinitionKey, StringComparer.Ordinal)
             .ToArray();
@@ -3817,10 +3884,9 @@ internal static class EffectAcceptedTurnPlanner
                       request.Batch.PreparedWoundId)))
         {
             var first = group.First();
-            var selectedRoots = first.Batch.RootLineageAuthority
+            var selectedRoots = first.Wound.Consequences.OwnedEffectSources
+                .RootBindings
                 .Select(static row => row.EffectId)
-                .Where(static effectId => effectId is not null)
-                .Select(static effectId => effectId!)
                 .ToArray();
             var lineage = WoundEffectLineagePlanner.Plan(
                 first.Wound,

@@ -1049,12 +1049,14 @@ internal static class WoundTransitionReducer
             ValidateFreshSeverityRootSet(before, after, issues);
         if (issues.Count == 0 &&
             (!SameRecoveryPolicyExceptStep(before.Recovery, after.Recovery) ||
+            !SameComplicationFacts(before.Complications, after.Complications) ||
             !CanonicalEqual(
                 before,
                 after with
                 {
                     Severity = before.Severity,
                     Care = before.Care,
+                    Complications = before.Complications,
                     Consequences = before.Consequences,
                     Recovery = before.Recovery,
                     Display = before.Display,
@@ -1067,6 +1069,25 @@ internal static class WoundTransitionReducer
                 "only severity, care reset, current recovery step, display, and consequence rematerialization",
                 after.WoundId);
         }
+    }
+
+    private static bool SameComplicationFacts(
+        IReadOnlyList<WoundComplication> before,
+        IReadOnlyList<WoundComplication> after)
+    {
+        if (before.Count != after.Count)
+            return false;
+        for (var index = 0; index < before.Count; index++)
+        {
+            if (before[index] != after[index] with
+                {
+                    OwnedEffectIds = before[index].OwnedEffectIds
+                })
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static void ValidateComplicate(

@@ -23,6 +23,13 @@ internal sealed record WoundAcquisitionOutputRequest(
     WoundAcquisitionNarrationClaim Claim,
     string FinalSceneText);
 
+internal sealed record WoundWorseningOutputRequest(
+    string LocalWoundRef,
+    string EventRef,
+    WoundMaterializationEnvelope Wound,
+    WoundAcquisitionNarrationClaim Claim,
+    string FinalSceneText);
+
 internal sealed record WoundAcquisitionOutputResult(
     WoundPlayerNotification? Notification,
     WoundPlayerTextProjection? AcquisitionNarration,
@@ -45,12 +52,43 @@ internal sealed record WoundPlayerNotification(
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(request.Wound);
-        ArgumentNullException.ThrowIfNull(request.Claim);
+        return ComposeCore(
+            request.LocalWoundRef,
+            request.Wound,
+            request.Claim,
+            request.Wound.Origin.EventRef,
+            request.FinalSceneText,
+            worsening: false);
+    }
+
+    internal static WoundAcquisitionOutputResult ComposeWorsening(
+        WoundWorseningOutputRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        return ComposeCore(
+            request.LocalWoundRef,
+            request.Wound,
+            request.Claim,
+            request.EventRef,
+            request.FinalSceneText,
+            worsening: true);
+    }
+
+    private static WoundAcquisitionOutputResult ComposeCore(
+        string localWoundRef,
+        WoundMaterializationEnvelope wound,
+        WoundAcquisitionNarrationClaim claim,
+        string expectedEventRef,
+        string finalSceneText,
+        bool worsening)
+    {
+        ArgumentNullException.ThrowIfNull(wound);
+        ArgumentNullException.ThrowIfNull(claim);
         var issues = new List<ValidationIssue>();
-        if (string.IsNullOrWhiteSpace(request.Claim.Text) ||
-            string.IsNullOrWhiteSpace(request.FinalSceneText) ||
-            !request.FinalSceneText.Contains(
-                request.Claim.Text,
+        if (string.IsNullOrWhiteSpace(claim.Text) ||
+            string.IsNullOrWhiteSpace(finalSceneText) ||
+            !finalSceneText.Contains(
+                claim.Text,
                 StringComparison.Ordinal))
         {
             Add(
@@ -58,24 +96,22 @@ internal sealed record WoundPlayerNotification(
                 "woundAcquisition.narration",
                 "wound_acquisition_narration_missing",
                 "the exact non-empty acquisition narration inside the final scene",
-                string.IsNullOrWhiteSpace(request.Claim.Text)
+                string.IsNullOrWhiteSpace(claim.Text)
                     ? "empty claim"
                     : "claim absent from final scene");
             return new WoundAcquisitionOutputResult(null, null, issues);
         }
 
         var contradictions = new List<string>();
-        var wound = request.Wound;
-        var claim = request.Claim;
         if (!string.Equals(
-                request.LocalWoundRef,
+                localWoundRef,
                 claim.LocalWoundRef,
                 StringComparison.Ordinal))
         {
             contradictions.Add("wound_ref");
         }
         if (!string.Equals(
-                wound.Origin.EventRef,
+                expectedEventRef,
                 claim.EventRef,
                 StringComparison.Ordinal))
         {
@@ -115,12 +151,17 @@ internal sealed record WoundPlayerNotification(
             return new WoundAcquisitionOutputResult(null, null, issues);
         }
 
-        var prefix = string.Equals(
+        var spiritual = string.Equals(
             wound.Classification.Domain,
             "spiritual",
-            StringComparison.Ordinal)
-            ? "Получена духовная рана"
-            : "Получена рана";
+            StringComparison.Ordinal);
+        var prefix = worsening
+            ? spiritual
+                ? "Духовная рана ухудшилась"
+                : "Рана ухудшилась"
+            : spiritual
+                ? "Получена духовная рана"
+                : "Получена рана";
         var plain =
             $"{prefix}: {wound.Display.Name} ({wound.Severity.Value}). Подробнее: {Command}";
         return new WoundAcquisitionOutputResult(

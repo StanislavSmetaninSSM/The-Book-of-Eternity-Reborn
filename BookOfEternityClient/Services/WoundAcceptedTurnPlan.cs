@@ -87,6 +87,8 @@ internal sealed record WoundAcceptedTurnInput
     private WoundCarrierCatalogInput? _preTurnCarriers;
     private JsonObject? _preTurnIdentityIndex;
     private JsonObject? _preTurnHistory;
+    private EffectCarrierCatalogInput? _preTurnEffectCarriers;
+    private JsonObject? _preTurnEffectIdentityIndex;
 
     internal WoundAcceptedTurnInput(
         WoundAcceptedTurnBinding binding,
@@ -94,7 +96,9 @@ internal sealed record WoundAcceptedTurnInput
         IReadOnlyList<WoundAcceptedTransitionDraft> transitions,
         WoundCarrierCatalogInput preTurnCarriers,
         JsonObject preTurnIdentityIndex,
-        JsonObject preTurnHistory)
+        JsonObject preTurnHistory,
+        EffectCarrierCatalogInput? preTurnEffectCarriers = null,
+        JsonObject? preTurnEffectIdentityIndex = null)
     {
         Binding = binding;
         Opportunities = opportunities;
@@ -102,6 +106,8 @@ internal sealed record WoundAcceptedTurnInput
         PreTurnCarriers = preTurnCarriers;
         PreTurnIdentityIndex = preTurnIdentityIndex;
         PreTurnHistory = preTurnHistory;
+        PreTurnEffectCarriers = preTurnEffectCarriers;
+        PreTurnEffectIdentityIndex = preTurnEffectIdentityIndex;
     }
 
     internal WoundAcceptedTurnBinding Binding
@@ -146,6 +152,20 @@ internal sealed record WoundAcceptedTurnInput
     {
         get => WoundAcceptedTurnData.CloneObject(_preTurnHistory)!;
         init => _preTurnHistory = WoundAcceptedTurnData.CloneObject(value);
+    }
+
+    internal EffectCarrierCatalogInput? PreTurnEffectCarriers
+    {
+        get => WoundAcceptedTurnData.CloneEffectCarriers(_preTurnEffectCarriers);
+        init => _preTurnEffectCarriers =
+            WoundAcceptedTurnData.CloneEffectCarriers(value);
+    }
+
+    internal JsonObject? PreTurnEffectIdentityIndex
+    {
+        get => WoundAcceptedTurnData.CloneObject(_preTurnEffectIdentityIndex);
+        init => _preTurnEffectIdentityIndex =
+            WoundAcceptedTurnData.CloneObject(value);
     }
 }
 
@@ -680,6 +700,9 @@ internal sealed record WoundPreparedTransitionAuthority(
     string OperationKey,
     string ReadableSummary,
     int MaximumSeverityRank,
+    string TransitionKind,
+    string? CauseKind,
+    string? ExpectedBeforeFingerprint,
     string AuthoritySeal);
 
 internal sealed class WoundEffectOperationBatch
@@ -1430,7 +1453,9 @@ internal static class WoundAcceptedTurnData
                 value.Transitions,
                 value.PreTurnCarriers,
                 value.PreTurnIdentityIndex,
-                value.PreTurnHistory);
+                value.PreTurnHistory,
+                value.PreTurnEffectCarriers,
+                value.PreTurnEffectIdentityIndex);
 
     internal static WoundOpportunityAuthority CloneOpportunity(
         WoundOpportunityAuthority value) =>
@@ -1454,7 +1479,11 @@ internal static class WoundAcceptedTurnData
             WoundOpportunityAuthority.CloneGuarantee(value.GuaranteedTrigger),
             WoundOpportunityAuthority.CloneSafeContext(value.SafeContext),
             value.InputEvidenceFingerprint,
-            value.AuthorityFingerprint);
+            value.AuthorityFingerprint)
+        {
+            WorseningTarget = WoundOpportunityAuthority.CloneWorseningTarget(
+                value.WorseningTarget)
+        };
 
     internal static WoundAcceptedEffectDefinitionDraft CloneDefinitionDraft(
         WoundAcceptedEffectDefinitionDraft value) =>
@@ -2036,6 +2065,9 @@ internal static class WoundAcceptedTurnFingerprints
             input.PreTurnIdentityIndex));
         fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
             input.PreTurnHistory));
+        AppendEffectCarriers(fields, input.PreTurnEffectCarriers);
+        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+            input.PreTurnEffectIdentityIndex));
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
 
@@ -2147,6 +2179,19 @@ internal static class WoundAcceptedTurnFingerprints
             fields.Add(batch?.LocalWoundRef);
             fields.Add(batch?.PreparedWoundId);
             fields.Add(batch is null ? null : ComputeSourceExport(batch));
+            var transitionAuthority = batch?.TransitionAuthority;
+            fields.Add(transitionAuthority?.PreparedInputFingerprint);
+            fields.Add(transitionAuthority?.OpportunityId);
+            fields.Add(transitionAuthority?.OpportunityAuthorityFingerprint);
+            fields.Add(transitionAuthority?.OperationKey);
+            fields.Add(transitionAuthority?.ReadableSummary);
+            fields.Add(transitionAuthority is null
+                ? null
+                : Number(transitionAuthority.MaximumSeverityRank));
+            fields.Add(transitionAuthority?.TransitionKind);
+            fields.Add(transitionAuthority?.CauseKind);
+            fields.Add(transitionAuthority?.ExpectedBeforeFingerprint);
+            fields.Add(transitionAuthority?.AuthoritySeal);
             var terminalOperations = batch?.TerminalOperations;
             fields.Add(Count(terminalOperations));
             if (batch is null)
@@ -2172,7 +2217,10 @@ internal static class WoundAcceptedTurnFingerprints
         string opportunityAuthorityFingerprint,
         string operationKey,
         string readableSummary,
-        int maximumSeverityRank) =>
+        int maximumSeverityRank,
+        string transitionKind = "create",
+        string? causeKind = null,
+        string? expectedBeforeFingerprint = null) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
             TransitionAuthorityDomain,
@@ -2184,7 +2232,10 @@ internal static class WoundAcceptedTurnFingerprints
             opportunityAuthorityFingerprint,
             operationKey,
             readableSummary,
-            Number(maximumSeverityRank)
+            Number(maximumSeverityRank),
+            transitionKind,
+            causeKind,
+            expectedBeforeFingerprint
         });
 
     internal static string ComputeBaselineAuthority(
@@ -2568,6 +2619,13 @@ internal static class WoundAcceptedTurnFingerprints
             }
         }
         fields.Add(value?.InputEvidenceFingerprint);
+        var worseningTarget = value?.WorseningTarget;
+        fields.Add(worseningTarget?.CauseKind);
+        fields.Add(worseningTarget?.ExpectedBeforeFingerprint);
+        fields.Add(worseningTarget is null
+            ? null
+            : WoundMaterializationContract.SerializeCanonical(
+                worseningTarget.Wound));
         fields.Add(value?.AuthorityFingerprint);
     }
 

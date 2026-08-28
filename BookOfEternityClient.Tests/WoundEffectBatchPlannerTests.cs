@@ -2405,7 +2405,10 @@ public sealed partial class WoundEffectBatchPlannerTests
             "sha256:opportunity_authority",
             "operation_authority",
             "Духовная рана получена.",
-            "4"
+            "4",
+            "create",
+            null,
+            null
         };
         var transitionSeal = WoundAcceptedTurnFingerprints.ComputeTransitionAuthority(
             inputFingerprint,
@@ -2461,6 +2464,9 @@ public sealed partial class WoundEffectBatchPlannerTests
     [InlineData("operation_key")]
     [InlineData("readable_summary")]
     [InlineData("maximum_severity")]
+    [InlineData("transition_kind")]
+    [InlineData("cause_kind")]
+    [InlineData("expected_before_fingerprint")]
     public void TransitionAuthoritySeal_BindsEveryAcceptedField(string mutation)
     {
         var original = ComputeTransitionAuthoritySeal();
@@ -5708,6 +5714,9 @@ public sealed partial class WoundEffectBatchPlannerTests
         var operation = "operation_transition";
         var summary = "Transition summary.";
         var maximumSeverity = 4;
+        var transitionKind = "create";
+        string? causeKind = null;
+        string? expectedBeforeFingerprint = null;
         switch (mutation)
         {
             case null:
@@ -5736,6 +5745,15 @@ public sealed partial class WoundEffectBatchPlannerTests
             case "maximum_severity":
                 maximumSeverity = 3;
                 break;
+            case "transition_kind":
+                transitionKind = "worsen";
+                break;
+            case "cause_kind":
+                causeKind = "retrauma";
+                break;
+            case "expected_before_fingerprint":
+                expectedBeforeFingerprint = "sha256:before_transition";
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
         }
@@ -5748,7 +5766,10 @@ public sealed partial class WoundEffectBatchPlannerTests
             opportunityFingerprint,
             operation,
             summary,
-            maximumSeverity);
+            maximumSeverity,
+            transitionKind,
+            causeKind,
+            expectedBeforeFingerprint);
     }
 
     private static WoundCarrierCatalogInput CreateAuthorityCarrierMatrix() => new(
@@ -5986,6 +6007,17 @@ public sealed partial class WoundEffectBatchPlannerTests
             fields.Add(batch.LocalWoundRef);
             fields.Add(batch.PreparedWoundId);
             fields.Add(ComputeExpectedSourceExportFingerprint(batch));
+            fields.Add(batch.TransitionAuthority.PreparedInputFingerprint);
+            fields.Add(batch.TransitionAuthority.OpportunityId);
+            fields.Add(batch.TransitionAuthority.OpportunityAuthorityFingerprint);
+            fields.Add(batch.TransitionAuthority.OperationKey);
+            fields.Add(batch.TransitionAuthority.ReadableSummary);
+            fields.Add(batch.TransitionAuthority.MaximumSeverityRank.ToString(
+                CultureInfo.InvariantCulture));
+            fields.Add(batch.TransitionAuthority.TransitionKind);
+            fields.Add(batch.TransitionAuthority.CauseKind);
+            fields.Add(batch.TransitionAuthority.ExpectedBeforeFingerprint);
+            fields.Add(batch.TransitionAuthority.AuthoritySeal);
             fields.Add(batch.TerminalOperations.Count.ToString(CultureInfo.InvariantCulture));
             for (var terminalIndex = 0;
                  terminalIndex < batch.TerminalOperations.Count;

@@ -26,6 +26,9 @@ internal static partial class WoundResponseInputComposer
         ["guaranteedTrigger"] = value.GuaranteedTrigger is null
             ? null
             : SerializeGuarantee(value.GuaranteedTrigger),
+        ["worseningTarget"] = value.WorseningTarget is null
+            ? null
+            : SerializeWorseningTarget(value.WorseningTarget),
         ["safeContext"] = new JsonObject
         {
             ["target"] = value.SafeContext.Target,
@@ -37,6 +40,15 @@ internal static partial class WoundResponseInputComposer
         },
         ["inputEvidenceFingerprint"] = value.InputEvidenceFingerprint,
         ["authorityFingerprint"] = value.AuthorityFingerprint
+    };
+
+    private static JsonObject SerializeWorseningTarget(
+        WoundOpportunityWorseningTargetAuthority value) => new()
+    {
+        ["causeKind"] = value.CauseKind,
+        ["expectedBeforeFingerprint"] = value.ExpectedBeforeFingerprint,
+        ["wound"] = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(value.Wound))
     };
 
     private static JsonObject SerializeGuarantee(

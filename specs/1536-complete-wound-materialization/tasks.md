@@ -259,8 +259,8 @@ Production remains untouched.
 - [X] T035 [US1] Implement sealed Mortal/mechanical/narrative/spiritual wound opportunities, guarantees, safe GM context, and consumed decision authority in `BookOfEternityClient/Services/WoundOpportunityAuthority.cs`
 - [X] T036 [US1] Add the strict response proposal/decision fields and remove permanent-ID authority from GM input in `BookOfEternityClient/Models/GameResponse.cs` and `BookOfEternityClient/Services/WoundResponseInputComposer.cs`
 - [X] T037 [US1] Bind exact event/source/target/realm/profile and guaranteed evidence during wound preparation in `BookOfEternityClient/Services/WoundSourceAuthority.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
-- [ ] T038 [US1] Wire optional, lower-than-cap, guaranteed, declined, and worsening US1 response proposals plus exact opportunity/source authority into the completed T020/T022/T024 typed wound-batch/finalization API without adding a second effect path in `BookOfEternityClient/Services/WoundResponseInputComposer.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
-- [ ] T039 [US1] Compose create/worsen/decline after-images, client-owned wound IDs, effect-plan-owned root IDs, full old source-group teardown before worsen rematerialization, history, owner carriers, and combatant promotion transitions in `BookOfEternityClient/Services/WoundAcceptedOwnerCarrierAuthority.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/WoundTransitionReducer.cs`
+- [X] T038 [US1] Wire optional, lower-than-cap, guaranteed, declined, and worsening US1 response proposals plus exact opportunity/source authority into the completed T020/T022/T024 typed wound-batch/finalization API without adding a second effect path in `BookOfEternityClient/Services/WoundResponseInputComposer.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
+- [X] T039 [US1] Compose create/worsen/decline after-images, client-owned wound IDs, effect-plan-owned root IDs, full old source-group teardown before worsen rematerialization, history, owner carriers, and combatant promotion transitions in `BookOfEternityClient/Services/WoundAcceptedOwnerCarrierAuthority.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/WoundTransitionReducer.cs`
 - [ ] T040 [US1] Add escaped acquisition narration validation and deterministic player notification/output binding to the accepted turn in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs` and `BookOfEternityClient/UI/WoundPlayerNotification.cs`
 - [ ] T041 [US1] Replace direct `playerWoundChanges`/`NPCWoundChanges` distribution with strict accepted wound command consumption in `BookOfEternityClient/Configuration/FileMapping.cs`, `BookOfEternityClient/IO/StateDistributor.cs`, and `BookOfEternityClient/Models/GameResponse.cs`
 
@@ -362,6 +362,27 @@ T039 remains open for guaranteed/worsen after-images, old source-group teardown,
 the complete common-plan owner transition contour. This checkpoint adds no GM-authored
 surface or afterlife pending/control/response field, so prompts, examples, manifests,
 the Afterlife Contract Matrix, and documentation guards require no update here.
+
+T038/T039 completion evidence (2026-08-28): guaranteed creation and exact worsening now
+use the same sealed wound-batch/effect-plan/finalization path as ordinary creation. A
+worsen opportunity seals the complete active before-wound and cause; preparation
+resolves it against carrier and identity baselines, reuses the stable `woundId`, plans
+full terminal teardown of the old root/descendant effect lineage, and lets the ordinary
+effect planner allocate a fresh replacement root set. Finalization emits an `update`
+carrier mutation, replaces the identity row, preserves creation facts and
+`maximumAtCreation`, and appends the next `worsen` history row. Stale before authority
+fails before mutation. The exact worsening lifecycle and stale-target checks are GREEN
+(`20260828-213500-112-35696-fff4b4c7894f46d690964c6bba51abd1-focused`,
+`20260828-214006-517-44160-9106f5216f214f488ab8e9957af4ad86-focused`).
+Independent seal/fingerprint coverage is GREEN `189/189`
+(`20260828-214525-451-41664-4d1142b4b3f4467391e851a78f354e1e-focused`),
+the adjacent cache/reducer/opportunity contour is GREEN `332/332`
+(`20260828-214655-479-34328-5e515aa592c04b93a36cf49da339d91e-focused`),
+and the complete lifecycle class is GREEN `38/38`, warning-free
+(`20260828-214746-595-45676-444a697ec7d243da82a5517c060dd303-focused`).
+T040 still owns accepted-turn output/notification publication. No GM-facing contract or
+afterlife pending/control field changes in this checkpoint, so documentation remains
+owned by T042-T044.
 
 ### GM contract synchronization
 

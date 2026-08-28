@@ -100,6 +100,46 @@ internal sealed record WoundGuaranteedTriggerAuthority(
     string SourceContractFingerprint,
     string AuthorityFingerprint);
 
+internal sealed record WoundOpportunityWorseningTargetEvidence(
+    WoundMaterializationEnvelope Wound,
+    string CauseKind);
+
+internal sealed class WoundOpportunityWorseningTargetAuthority :
+    IEquatable<WoundOpportunityWorseningTargetAuthority>
+{
+    private readonly WoundMaterializationEnvelope? _wound;
+
+    internal WoundOpportunityWorseningTargetAuthority(
+        WoundMaterializationEnvelope wound,
+        string causeKind,
+        string expectedBeforeFingerprint)
+    {
+        _wound = WoundAcceptedTurnData.CloneWound(wound);
+        CauseKind = causeKind;
+        ExpectedBeforeFingerprint = expectedBeforeFingerprint;
+    }
+
+    internal WoundMaterializationEnvelope Wound =>
+        WoundAcceptedTurnData.CloneWound(_wound)!;
+    internal string CauseKind { get; }
+    internal string ExpectedBeforeFingerprint { get; }
+
+    public bool Equals(WoundOpportunityWorseningTargetAuthority? other) =>
+        other is not null &&
+        string.Equals(CauseKind, other.CauseKind, StringComparison.Ordinal) &&
+        string.Equals(
+            ExpectedBeforeFingerprint,
+            other.ExpectedBeforeFingerprint,
+            StringComparison.Ordinal);
+
+    public override bool Equals(object? obj) =>
+        obj is WoundOpportunityWorseningTargetAuthority other && Equals(other);
+
+    public override int GetHashCode() => HashCode.Combine(
+        StringComparer.Ordinal.GetHashCode(CauseKind),
+        StringComparer.Ordinal.GetHashCode(ExpectedBeforeFingerprint));
+}
+
 internal sealed record WoundOpportunityBuildRequest(
     WoundAcceptedTurnBinding Binding,
     string OpportunityId,
@@ -114,7 +154,8 @@ internal sealed record WoundOpportunityBuildRequest(
     WoundOpportunityEventEvidence EventEvidence,
     int HardMaximumSeverityRank,
     WoundGuaranteedTriggerEvidence? GuaranteedTrigger,
-    WoundOpportunitySafeContext SafeContext);
+    WoundOpportunitySafeContext SafeContext,
+    WoundOpportunityWorseningTargetEvidence? WorseningTarget = null);
 
 internal sealed record WoundOpportunityCompositionResult(
     WoundOpportunityAuthority? Opportunity,
@@ -146,6 +187,18 @@ internal sealed partial record WoundOpportunityAuthority
         "mental",
         "spiritual_axis",
         "other");
+    private static readonly IReadOnlySet<string> WorseningCauseKinds = Set(
+        "deterioration",
+        "retrauma",
+        "same_conflict");
+
+    private WoundOpportunityWorseningTargetAuthority? _worseningTarget;
+
+    internal WoundOpportunityWorseningTargetAuthority? WorseningTarget
+    {
+        get => CloneWorseningTarget(_worseningTarget);
+        init => _worseningTarget = CloneWorseningTarget(value);
+    }
 
     internal static WoundOpportunityCompositionResult Compose(
         WoundOpportunityBuildRequest request)
@@ -232,12 +285,22 @@ internal sealed partial record WoundOpportunityAuthority
             guarantee = SealGuarantee(request, issues);
         }
 
+        var maximum = eventEvidence is null
+            ? 0
+            : Math.Min(
+                eventEvidence.MaximumSeverityRank,
+                request.HardMaximumSeverityRank);
+        var worseningTarget = request.WorseningTarget is null
+            ? null
+            : SealWorseningTarget(
+                request,
+                maximum,
+                guarantee?.RequiredSeverityRank,
+                issues);
+
         if (issues.Count != 0)
             return new WoundOpportunityCompositionResult(null, issues);
 
-        var maximum = Math.Min(
-            eventEvidence!.MaximumSeverityRank,
-            request.HardMaximumSeverityRank);
         var minimum = guarantee?.RequiredSeverityRank;
         var safeContext = CloneSafeContext(request.SafeContext);
         var authorityFingerprint = ComputeAuthorityFingerprint(
@@ -258,6 +321,7 @@ internal sealed partial record WoundOpportunityAuthority
             minimum,
             maximum,
             guarantee,
+            worseningTarget,
             safeContext,
             inputEvidenceFingerprint);
         return new WoundOpportunityCompositionResult(
@@ -281,7 +345,10 @@ internal sealed partial record WoundOpportunityAuthority
                 CloneGuarantee(guarantee),
                 safeContext,
                 inputEvidenceFingerprint,
-                authorityFingerprint),
+                authorityFingerprint)
+            {
+                WorseningTarget = CloneWorseningTarget(worseningTarget)
+            },
             Array.Empty<ValidationIssue>());
     }
 
@@ -307,6 +374,7 @@ internal sealed partial record WoundOpportunityAuthority
             value.MinimumSeverityRank,
             value.MaximumSeverityRank,
             value.GuaranteedTrigger,
+            value.WorseningTarget,
             value.SafeContext,
             value.InputEvidenceFingerprint);
     }
@@ -334,6 +402,7 @@ internal sealed partial record WoundOpportunityAuthority
             !ResourceMaterializationContract.IsAuthorityFingerprint(
                 value.InputEvidenceFingerprint) ||
             !SafeContextIsValid(value.SafeContext) ||
+            !WorseningTargetShapeIsValid(value) ||
             !string.Equals(
                 value.AuthorityFingerprint,
                 RecomputeAuthorityFingerprint(value),
@@ -389,6 +458,91 @@ internal sealed partial record WoundOpportunityAuthority
         WoundGuaranteedTriggerAuthority? value) => value is null
         ? null
         : value with { Owner = value.Owner with { } };
+
+    internal static WoundOpportunityWorseningTargetAuthority? CloneWorseningTarget(
+        WoundOpportunityWorseningTargetAuthority? value) => value is null
+        ? null
+        : new WoundOpportunityWorseningTargetAuthority(
+            value.Wound,
+            value.CauseKind,
+            value.ExpectedBeforeFingerprint);
+
+    private static WoundOpportunityWorseningTargetAuthority? SealWorseningTarget(
+        WoundOpportunityBuildRequest request,
+        int maximumSeverityRank,
+        int? minimumSeverityRank,
+        ICollection<ValidationIssue> issues)
+    {
+        var evidence = request.WorseningTarget!;
+        if (evidence.Wound is null ||
+            !WorseningCauseKinds.Contains(evidence.CauseKind))
+        {
+            Add(
+                issues,
+                "woundOpportunity.worseningTarget",
+                "wound_worsening_target_invalid",
+                "one active canonical wound and deterioration, retrauma, or same_conflict cause",
+                "malformed worsening target evidence");
+            return null;
+        }
+
+        try
+        {
+            var canonical = WoundMaterializationContract.SerializeCanonical(
+                evidence.Wound);
+            var parsed = WoundMaterializationContract.Parse(
+                canonical,
+                "woundOpportunity.worseningTarget.wound");
+            if (!parsed.IsValid || parsed.Wound is null)
+            {
+                Add(
+                    issues,
+                    "woundOpportunity.worseningTarget.wound",
+                    "wound_worsening_target_invalid",
+                    "one complete canonical active wound",
+                    string.Join(",", parsed.Issues.Select(static issue => issue.Code)));
+                return null;
+            }
+
+            var wound = parsed.Wound;
+            if (!string.Equals(wound.Lifecycle, "active", StringComparison.Ordinal) ||
+                wound.Owner != request.Owner ||
+                !string.Equals(
+                    wound.Classification.Domain,
+                    request.Domain,
+                    StringComparison.Ordinal) ||
+                wound.Severity.Rank is < 1 or >= 4 ||
+                wound.Severity.Rank >= maximumSeverityRank ||
+                (minimumSeverityRank.HasValue &&
+                 minimumSeverityRank.Value <= wound.Severity.Rank))
+            {
+                Add(
+                    issues,
+                    "woundOpportunity.worseningTarget",
+                    "wound_worsening_target_binding_invalid",
+                    "the exact active owner/domain wound below every sealed result bound",
+                    $"{wound.WoundId}/{wound.Owner}/{wound.Classification.Domain}/{wound.Severity.Rank}->{maximumSeverityRank}");
+                return null;
+            }
+
+            return new WoundOpportunityWorseningTargetAuthority(
+                wound,
+                evidence.CauseKind,
+                WoundIdentityState.ComputeSemanticFingerprint(wound));
+        }
+        catch (Exception exception) when (
+            exception is ArgumentException or InvalidOperationException or
+                System.Text.Json.JsonException or NullReferenceException)
+        {
+            Add(
+                issues,
+                "woundOpportunity.worseningTarget.wound",
+                "wound_worsening_target_invalid",
+                "one complete canonical active wound",
+                exception.GetType().Name);
+            return null;
+        }
+    }
 
     private static WoundGuaranteedTriggerAuthority? SealGuarantee(
         WoundOpportunityBuildRequest request,
@@ -635,6 +789,39 @@ internal sealed partial record WoundOpportunityAuthority
         ResourceMaterializationContract.IsAuthorityFingerprint(
             value.SourceContractFingerprint);
 
+    private static bool WorseningTargetShapeIsValid(
+        WoundOpportunityAuthority opportunity)
+    {
+        var target = opportunity.WorseningTarget;
+        if (target is null)
+            return true;
+        try
+        {
+            var wound = target.Wound;
+            return WorseningCauseKinds.Contains(target.CauseKind) &&
+                   string.Equals(wound.Lifecycle, "active", StringComparison.Ordinal) &&
+                   wound.Owner == opportunity.Owner &&
+                   string.Equals(
+                       wound.Classification.Domain,
+                       opportunity.Domain,
+                       StringComparison.Ordinal) &&
+                   wound.Severity.Rank is >= 1 and < 4 &&
+                   wound.Severity.Rank < opportunity.MaximumSeverityRank &&
+                   (!opportunity.MinimumSeverityRank.HasValue ||
+                    opportunity.MinimumSeverityRank.Value > wound.Severity.Rank) &&
+                   string.Equals(
+                       target.ExpectedBeforeFingerprint,
+                       WoundIdentityState.ComputeSemanticFingerprint(wound),
+                       StringComparison.Ordinal);
+        }
+        catch (Exception exception) when (
+            exception is ArgumentException or InvalidOperationException or
+                System.Text.Json.JsonException or NullReferenceException)
+        {
+            return false;
+        }
+    }
+
     private static bool OwnerIsValid(WoundOwnerCoordinate? value) => value switch
     {
         { Realm: "mortal_world", OwnerKind: "player", OwnerId: "player_current",
@@ -691,6 +878,7 @@ internal sealed partial record WoundOpportunityAuthority
         int? minimumSeverityRank,
         int maximumSeverityRank,
         WoundGuaranteedTriggerAuthority? guarantee,
+        WoundOpportunityWorseningTargetAuthority? worseningTarget,
         WoundOpportunitySafeContext safeContext,
         string inputEvidenceFingerprint)
     {
@@ -718,6 +906,8 @@ internal sealed partial record WoundOpportunityAuthority
             minimumSeverityRank?.ToString(CultureInfo.InvariantCulture),
             maximumSeverityRank.ToString(CultureInfo.InvariantCulture),
             guarantee?.AuthorityFingerprint,
+            worseningTarget?.CauseKind,
+            worseningTarget?.ExpectedBeforeFingerprint,
             safeContext.Target,
             safeContext.Cause,
             safeContext.AllowedLocationKinds.Count.ToString(
@@ -896,6 +1086,17 @@ internal sealed partial record WoundOpportunityDecisionAuthority(
                         Roman(opportunity.GuaranteedTrigger.RequiredSeverityRank),
                         Roman(selectedSeverity.Value));
                 }
+                var worseningTarget = opportunity.WorseningTarget;
+                if (worseningTarget is not null &&
+                    selectedSeverity <= worseningTarget.Wound.Severity.Rank)
+                {
+                    Add(
+                        issues,
+                        "woundDecision.severityRank",
+                        "wound_worsening_severity_not_higher",
+                        $"{Roman(worseningTarget.Wound.Severity.Rank + 1)}-{Roman(opportunity.MaximumSeverityRank)}",
+                        Roman(selectedSeverity.Value));
+                }
                 break;
             default:
                 Add(
@@ -921,6 +1122,7 @@ internal sealed partial record WoundOpportunityDecisionAuthority(
                 opportunity.Owner.OwnerKind,
                 opportunity.Owner.OwnerId,
                 opportunity.Owner.CarrierPath,
+                opportunity.WorseningTarget?.ExpectedBeforeFingerprint,
                 request.Decision,
                 selectedSeverity?.ToString(CultureInfo.InvariantCulture),
                 localWoundRef

@@ -457,12 +457,17 @@ internal sealed class WoundAcceptedTurnPlanCache
                     null,
                     authorityIssues);
             }
-            if (!PreparedInputAuthorityAgrees(input, inputFingerprint, plan))
+            if (!PreparedInputAuthorityAgrees(
+                    input,
+                    inputFingerprint,
+                    plan,
+                    out var authorityMismatch))
             {
                 return FailedPreparation(
                     "wound_plan_prepared_binding_mismatch",
                     inputFingerprint,
-                    "prepared payload derived from different input authority");
+                    "prepared payload derived from different input authority: " +
+                    authorityMismatch);
             }
             if (!PreparedReplayAgrees(input, plan))
             {
@@ -499,8 +504,10 @@ internal sealed class WoundAcceptedTurnPlanCache
     private static bool PreparedInputAuthorityAgrees(
         WoundAcceptedTurnInput input,
         string inputFingerprint,
-        WoundPreparedAcceptedTurnPlan plan)
+        WoundPreparedAcceptedTurnPlan plan,
+        out string mismatch)
     {
+        mismatch = string.Empty;
         var baseline = plan.BaselineAuthority;
         var expectedBaselineSeal =
             WoundAcceptedTurnFingerprints.ComputeBaselineAuthority(
@@ -517,13 +524,17 @@ internal sealed class WoundAcceptedTurnPlanCache
                 expectedBaselineSeal,
                 StringComparison.Ordinal))
         {
+            mismatch = "baseline authority";
             return false;
         }
 
         var transitions = input.Transitions;
         var batches = plan.EffectOperationBatches;
         if (transitions.Count != batches.Count)
+        {
+            mismatch = "transition count";
             return false;
+        }
         var opportunities = input.Opportunities.ToDictionary(
             static value => value.OpportunityId,
             StringComparer.Ordinal);
@@ -534,29 +545,87 @@ internal sealed class WoundAcceptedTurnPlanCache
             var authority = batch.TransitionAuthority;
             if (!opportunities.TryGetValue(
                     draft.OpportunityId,
-                    out var opportunity) ||
-                !string.Equals(
+                    out var opportunity))
+            {
+                mismatch = $"transition[{index}] opportunity";
+                return false;
+            }
+            if (!string.Equals(
                     batch.LocalWoundRef,
                     draft.LocalWoundRef,
-                    StringComparison.Ordinal) ||
-                !string.Equals(
+                    StringComparison.Ordinal))
+            {
+                mismatch = $"transition[{index}] local wound ref";
+                return false;
+            }
+            if (!string.Equals(
                     authority.OpportunityId,
                     draft.OpportunityId,
-                    StringComparison.Ordinal) ||
-                !string.Equals(
+                    StringComparison.Ordinal))
+            {
+                mismatch = $"transition[{index}] opportunity id";
+                return false;
+            }
+            if (!string.Equals(
                     authority.OpportunityAuthorityFingerprint,
                     opportunity.AuthorityFingerprint,
-                    StringComparison.Ordinal) ||
-                !string.Equals(
+                    StringComparison.Ordinal))
+            {
+                mismatch = $"transition[{index}] opportunity fingerprint";
+                return false;
+            }
+            if (!string.Equals(
                     authority.OperationKey,
                     draft.OperationKey,
-                    StringComparison.Ordinal) ||
-                !string.Equals(
+                    StringComparison.Ordinal))
+            {
+                mismatch = $"transition[{index}] operation key";
+                return false;
+            }
+            if (!string.Equals(
                     authority.ReadableSummary,
                     draft.ReadableSummary,
-                    StringComparison.Ordinal) ||
-                authority.MaximumSeverityRank != opportunity.MaximumSeverityRank)
+                    StringComparison.Ordinal))
             {
+                mismatch = $"transition[{index}] readable summary";
+                return false;
+            }
+            if (authority.MaximumSeverityRank != opportunity.MaximumSeverityRank)
+            {
+                mismatch = $"transition[{index}] maximum severity";
+                return false;
+            }
+            if (!string.Equals(
+                    authority.TransitionKind,
+                    draft.Kind,
+                    StringComparison.Ordinal))
+            {
+                mismatch = $"transition[{index}] kind";
+                return false;
+            }
+            if (!string.Equals(
+                    authority.CauseKind,
+                    opportunity.WorseningTarget?.CauseKind,
+                    StringComparison.Ordinal))
+            {
+                mismatch = $"transition[{index}] cause";
+                return false;
+            }
+            if (!string.Equals(
+                    authority.ExpectedBeforeFingerprint,
+                    opportunity.WorseningTarget?.ExpectedBeforeFingerprint,
+                    StringComparison.Ordinal))
+            {
+                mismatch = $"transition[{index}] before fingerprint";
+                return false;
+            }
+            if (opportunity.WorseningTarget is { } target &&
+                !string.Equals(
+                     batch.PreparedWoundId,
+                     target.Wound.WoundId,
+                     StringComparison.Ordinal))
+            {
+                mismatch = $"transition[{index}] stable wound id";
                 return false;
             }
         }
