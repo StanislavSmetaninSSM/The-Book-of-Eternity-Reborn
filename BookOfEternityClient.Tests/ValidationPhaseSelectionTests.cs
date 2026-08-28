@@ -196,6 +196,40 @@ public sealed class ValidationPhaseSelectionTests : IDisposable
     }
 
     [Fact]
+    public void WoundMaterializationPhase_IsIncludedInAllAndSelectable()
+    {
+        Assert.True(
+            GameStateValidationPhase.All.HasFlag(
+                GameStateValidationPhase.AcceptedTurnWoundMaterializationCompleteness));
+        Assert.True(
+            GameStateValidationPhase.Selectable.HasFlag(
+                GameStateValidationPhase.AcceptedTurnWoundMaterializationCompleteness));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_WoundMaterializationSelection_DoesNotRunJsonIntegrity()
+    {
+        await _fileSystem.WriteFileAtomicAsync(
+            "game_state/misc/phase_selection_invalid.json",
+            "{");
+        var identity = WoundContractTestData.CreateIdentityIndex();
+        identity["gmCanEdit"] = true;
+        await _fileSystem.WriteFileAtomicAsync(
+            WoundIdentityState.StatePath,
+            identity.ToJsonString());
+        await _fileSystem.WriteFileAtomicAsync(
+            WoundHistoryState.HistoryPath,
+            WoundContractTestData.CreateHistory().ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.AcceptedTurnWoundMaterializationCompleteness);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "wound_identity_unknown_field");
+        Assert.DoesNotContain(issues, issue => issue.Code == "invalid_json_file");
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_LocationMaterializationSelection_DoesNotRunJsonIntegrity()
     {
         await _fileSystem.WriteFileAtomicAsync(

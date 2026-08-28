@@ -36,8 +36,10 @@ public partial class ValidationService
         finally
         {
             if (!keepCommonHandoff)
+            {
                 AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
-            EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
+                EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
+            }
         }
     }
 
@@ -214,15 +216,18 @@ public partial class ValidationService
             effectCommandJson,
             pendingResolutionState);
         var effectIssues = new List<ValidationIssue>();
+        var woundHandoffSink = new AcceptedTurnWoundHandoffSink();
         await ValidateAcceptedTurnRawEffectMaterializationAsync(
             effectIssues,
             ownerComposition,
             isTerminalReceiptReplay,
             manifest,
-            writeLease);
+            writeLease,
+            woundHandoffSink);
         issues.AddRange(effectIssues);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
+        var woundHandoff = woundHandoffSink.Value;
 
         EffectAcceptedTurnPlan? effectPlan = null;
         if (EffectAcceptedTurnPlanAuthority.TryPeekValidated(
@@ -273,7 +278,8 @@ public partial class ValidationService
             ownerComposition.TerminalOwners.Count == 0 &&
             ownerComposition.OwnerCompanionAfterImages.Count == 0 &&
             ownerComposition.OwnerTransitions.Count == 0 &&
-            !acceptedItemOwners.Any(static owner => owner.SameTurn))
+            !acceptedItemOwners.Any(static owner => owner.SameTurn) &&
+            woundHandoff is null)
             return issues;
 
         var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
@@ -369,7 +375,16 @@ public partial class ValidationService
                     ["turn"] = manifest.TurnNumber,
                     ["packets"] = fullParty.FingerprintRoot
                 }
-                : new JsonObject()
+                : new JsonObject(),
+            ["woundStage"] = woundHandoff is null
+                ? new JsonObject()
+                : new JsonObject
+                {
+                    ["inputFingerprint"] =
+                        woundHandoff.StageBundle.InputFingerprint,
+                    ["bundleFingerprint"] =
+                        woundHandoff.StageBundle.BundleFingerprint
+                }
         };
         var beforePaths = new HashSet<string>(StringComparer.Ordinal)
         {
@@ -389,6 +404,15 @@ public partial class ValidationService
             beforePaths.UnionWith(effectPlan.TouchedPaths);
             beforePaths.UnionWith(effectPlan.DeletedPaths);
             beforePaths.UnionWith(effectPlan.CarrierBeforeImages.Keys);
+        }
+        if (woundHandoff is not null)
+        {
+            beforePaths.Add(AcceptedMechanicsPlan.WoundCommandPath);
+            beforePaths.Add(WoundIdentityState.StatePath);
+            beforePaths.Add(WoundHistoryState.HistoryPath);
+            beforePaths.UnionWith(woundHandoff.StageBundle.FinalPlan
+                .CarrierContributions
+                .Select(static contribution => contribution.Owner.CarrierPath));
         }
         beforePaths.UnionWith(ownerComposition.OwnerCompanionAfterImages.Keys);
         beforePaths.UnionWith(ownerComposition.OwnerTransitions.Select(static value => value.Path));
@@ -431,17 +455,23 @@ public partial class ValidationService
             Commands: HashText(
                 "accepted-mechanics-commands-v1",
                 acceptedCommands.Root.ToJsonString() + "\n" +
-                (effectCommandJson ?? "<missing>")),
+                (effectCommandJson ?? "<missing>") + "\n" +
+                (woundHandoff?.Commands.ToJsonString() ?? "<missing>")),
             Pending: HashNode("accepted-mechanics-pending-v1", pendingInput),
             InternalInputs: HashNode("accepted-mechanics-internal-v1", internalInputs),
             WoundCarriers: HashText(
                 "accepted-mechanics-wound-carriers-v1",
-                "<missing>"),
+                woundHandoff is null
+                    ? "<missing>"
+                    : ComputeAcceptedWoundCarrierAuthority(
+                        woundHandoff.Input.PreTurnCarriers)),
             WoundIdentityIndex: HashText(
                 "accepted-mechanics-wound-index-v1",
+                woundHandoff?.Input.PreTurnIdentityIndex.ToJsonString() ??
                 "<missing>"),
             WoundHistory: HashText(
                 "accepted-mechanics-wound-history-v1",
+                woundHandoff?.Input.PreTurnHistory.ToJsonString() ??
                 "<missing>"));
         var planningCommands = isTerminalReceiptReplay
             ? ResourceAcceptedTurnInputComposer.Parse("{}")
@@ -461,7 +491,8 @@ public partial class ValidationService
             ownerCompanionAfterImages: ownerComposition.OwnerCompanionAfterImages,
             ownerTransitions: ownerComposition.OwnerTransitions,
             registeredSystemOutcomes: registeredSystemOutcomes,
-            pendingResolutionState: pendingResolutionState);
+            pendingResolutionState: pendingResolutionState,
+            woundStageBundle: woundHandoff?.StageBundle);
         var input = new AcceptedMechanicsInput(
             manifest.SessionId,
             manifest.RequestId,
@@ -476,7 +507,9 @@ public partial class ValidationService
             fingerprints,
             beforeImages,
             issues,
-            context);
+            PlanningContext: context,
+            WoundCommands: woundHandoff?.Commands,
+            WoundInput: woundHandoff?.Input);
         var result = AcceptedMechanicsPlanAuthority.GetOrBuildValidated(
             _fs,
             writeLease,

@@ -99,7 +99,8 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
 
     internal async Task CaptureValidatedPendingSnapshotAsync(
         int turn = 42,
-        string currentRealm = "Mortal World")
+        string currentRealm = "Mortal World",
+        IEnumerable<string>? additionalTrackedPaths = null)
     {
         const string sessionId = "session_resource_materialization";
         const string requestId = "request_resource_materialization";
@@ -122,6 +123,7 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         var trackedPaths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
             .Concat(AllResourcePaths)
             .Append(FullPartyInteractionsPath)
+            .Concat(additionalTrackedPaths ?? Array.Empty<string>())
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(static path => path, StringComparer.Ordinal);
 

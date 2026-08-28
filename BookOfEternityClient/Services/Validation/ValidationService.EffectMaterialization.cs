@@ -100,12 +100,14 @@ public partial class ValidationService
         ResourceOwnerCompositionResult? resourceOwners,
         bool suppressEffectExecutionForTerminalReceiptReplay,
         ValidationPendingTurnSnapshotManifest? validatedManifest,
-        FileSystemManager.CanonicalWriteLease writeLease)
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AcceptedTurnWoundHandoffSink? woundHandoffSink = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
         var commandJson = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
+        var hasWoundCommand = _fs.FileExists(AcceptedMechanicsPlan.WoundCommandPath);
         var currentCarriers = await ReadEffectCarriersAsync(null, issues);
         if (currentCarriers.SpiritualConflict?[AfterlifeSpiritualConflictState.ResponseField]
             is JsonNode spiritualConflictUpdate)
@@ -134,10 +136,12 @@ public partial class ValidationService
             (lookup?.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
              lookup?.Manifest == null))
         {
-            if (hasCommand || hasCurrentEffectAuthority)
+            if (hasCommand || hasCurrentEffectAuthority || hasWoundCommand)
             {
                 issues.Add(NewEffectIssue(
-                    EffectAcceptedTurnPlan.CommandPath,
+                    hasWoundCommand
+                        ? AcceptedMechanicsPlan.WoundCommandPath
+                        : EffectAcceptedTurnPlan.CommandPath,
                     "effect_materialization_snapshot_required",
                     "usable validated pending-turn snapshot before effect validation",
                     lookup?.Status.ToString() ?? "Missing"));
@@ -166,6 +170,11 @@ public partial class ValidationService
             .ResolveAcceptedTurnApplicationAuthorities(
                 manifest.PlayerAction,
                 acceptedRealm);
+        var rawWoundDraft = await LoadAcceptedTurnRawWoundDraftAsync(
+            manifest,
+            issues);
+        if (hasWoundCommand && rawWoundDraft is null)
+            return;
         var preTurnCarriers = await ReadSnapshotEffectCarriersAsync(manifest, issues);
         var plannedCarriers = ProjectAcceptedSpiritualConflictCarrier(
             ApplyResourceOwnerAfterImages(
@@ -209,7 +218,8 @@ public partial class ValidationService
             issues.AddRange(sourceAuthority.Issues);
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) ||
                 (!EffectAcceptedTurnInputComposer.HasPendingCombatantRefs(currentCarriers) &&
-                 EffectCarrierCatalog.Build(currentCarriers).Occurrences.Count == 0))
+                 EffectCarrierCatalog.Build(currentCarriers).Occurrences.Count == 0 &&
+                 rawWoundDraft is null))
             {
                 return;
             }
@@ -253,31 +263,68 @@ public partial class ValidationService
                 .ToHashSet();
 
             var emptyCommands = EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot();
-            var identityInput = EffectAcceptedTurnInputComposer.Compose(
-                manifest.SessionId,
-                manifest.ManifestPayloadHash,
-                manifest.TurnNumber,
-                emptyCommands,
-                preTurnCarriers,
-                plannedCarriers,
-                preTurnIndex,
-                preTurnSources,
-                identityAcceptedPlanSources,
-                identityAcceptedPlanTargets,
-                identityReplacedSourceOwners,
-                identityOwnerExports.ReplacedTargets
-                    .Concat(acceptedCombatTargets.ReplacedTargets)
-                    .ToHashSet(),
-                currentWorldTime,
-                publicationCarrierBaselines: currentCarriers,
-                preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities,
-                realm: acceptedRealm,
-                grantedBuiltInApplicationAuthorities: builtInApplicationAuthorities);
-            var identityResult = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
-                _fs,
+            var identityReplacedTargets = identityOwnerExports.ReplacedTargets
+                .Concat(acceptedCombatTargets.ReplacedTargets)
+                .ToHashSet();
+            EffectAcceptedTurnInput ComposeIdentityInput(
+                WoundPreparedAcceptedTurnPlan? preparedWoundPlan = null) =>
+                EffectAcceptedTurnInputComposer.Compose(
+                    manifest.SessionId,
+                    manifest.ManifestPayloadHash,
+                    manifest.TurnNumber,
+                    emptyCommands,
+                    preTurnCarriers,
+                    plannedCarriers,
+                    preTurnIndex,
+                    preTurnSources,
+                    identityAcceptedPlanSources,
+                    identityAcceptedPlanTargets,
+                    identityReplacedSourceOwners,
+                    identityReplacedTargets,
+                    currentWorldTime,
+                    publicationCarrierBaselines: currentCarriers,
+                    preallocatedCombatantIdentities:
+                        resourceOwners?.CombatantIdentities,
+                    realm: acceptedRealm,
+                    grantedBuiltInApplicationAuthorities:
+                        builtInApplicationAuthorities,
+                    preparedWoundPlan: preparedWoundPlan);
+
+            var identityInput = ComposeIdentityInput();
+            var preparedWound = PrepareAcceptedTurnWoundHandoff(
+                rawWoundDraft,
+                manifest,
+                acceptedRealm,
+                identityInput.EventInput,
                 writeLease,
-                identityInput);
-            issues.AddRange(identityResult.Issues);
+                issues);
+            if (rawWoundDraft is not null && preparedWound is null)
+                return;
+            if (preparedWound is null)
+            {
+                var identityResult = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
+                    _fs,
+                    writeLease,
+                    identityInput);
+                issues.AddRange(identityResult.Issues);
+                return;
+            }
+
+            identityInput = ComposeIdentityInput(preparedWound.PreparedPlan);
+            var woundEffectResult = WoundAcceptedTurnPlanAuthority
+                .GetOrBuildEffectValidated(
+                    _fs,
+                    writeLease,
+                    preparedWound.PreparedPlan,
+                    identityInput);
+            issues.AddRange(woundEffectResult.Issues);
+            var woundHandoff = FinalizeAcceptedTurnWoundHandoff(
+                preparedWound,
+                woundEffectResult,
+                writeLease,
+                issues);
+            if (woundHandoffSink is not null)
+                woundHandoffSink.Value = woundHandoff;
             return;
         }
 
@@ -334,27 +381,45 @@ public partial class ValidationService
                 manifest.SessionId,
                 manifest.ManifestPayloadHash))
             .ToHashSet();
-        var input = EffectAcceptedTurnInputComposer.Compose(
-            manifest.SessionId,
-            manifest.ManifestPayloadHash,
-            manifest.TurnNumber,
-            commands,
-            preTurnCarriers,
-            plannedCarriers,
-            preTurnIndex,
-            preTurnSources,
-            acceptedPlanSources,
-            acceptedPlanTargets,
-            replacedSourceOwners,
-            ownerExports.ReplacedTargets
-                .Concat(acceptedCombatTargets.ReplacedTargets)
-                .ToHashSet(),
-            currentWorldTime,
-            publicationCarrierBaselines: currentCarriers,
-            preallocatedCombatantIdentities: resourceOwners?.CombatantIdentities,
-            realm: acceptedRealm,
-            grantedBuiltInApplicationAuthorities: builtInApplicationAuthorities,
-            acceptedReportedLifecycleEvents: reportedEvents.LifecycleEvents);
+        var replacedTargets = ownerExports.ReplacedTargets
+            .Concat(acceptedCombatTargets.ReplacedTargets)
+            .ToHashSet();
+        EffectAcceptedTurnInput ComposeInput(
+            WoundPreparedAcceptedTurnPlan? preparedWoundPlan = null) =>
+            EffectAcceptedTurnInputComposer.Compose(
+                manifest.SessionId,
+                manifest.ManifestPayloadHash,
+                manifest.TurnNumber,
+                commands,
+                preTurnCarriers,
+                plannedCarriers,
+                preTurnIndex,
+                preTurnSources,
+                acceptedPlanSources,
+                acceptedPlanTargets,
+                replacedSourceOwners,
+                replacedTargets,
+                currentWorldTime,
+                publicationCarrierBaselines: currentCarriers,
+                preallocatedCombatantIdentities:
+                    resourceOwners?.CombatantIdentities,
+                realm: acceptedRealm,
+                grantedBuiltInApplicationAuthorities:
+                    builtInApplicationAuthorities,
+                acceptedReportedLifecycleEvents: reportedEvents.LifecycleEvents,
+                preparedWoundPlan: preparedWoundPlan);
+        var input = ComposeInput();
+        var prepared = PrepareAcceptedTurnWoundHandoff(
+            rawWoundDraft,
+            manifest,
+            acceptedRealm,
+            input.EventInput,
+            writeLease,
+            issues);
+        if (rawWoundDraft is not null && prepared is null)
+            return;
+        if (prepared is not null)
+            input = ComposeInput(prepared.PreparedPlan);
         if (suppressEffectExecutionForTerminalReceiptReplay)
         {
             var replayEventInput = input.EventInput;
@@ -367,11 +432,29 @@ public partial class ValidationService
                 EventInput = replayEventInput
             };
         }
-        var result = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
+        if (prepared is null)
+        {
+            var result = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(
+                _fs,
+                writeLease,
+                input);
+            issues.AddRange(result.Issues);
+            return;
+        }
+
+        var woundResult = WoundAcceptedTurnPlanAuthority.GetOrBuildEffectValidated(
             _fs,
             writeLease,
+            prepared.PreparedPlan,
             input);
-        issues.AddRange(result.Issues);
+        issues.AddRange(woundResult.Issues);
+        var completedWoundHandoff = FinalizeAcceptedTurnWoundHandoff(
+            prepared,
+            woundResult,
+            writeLease,
+            issues);
+        if (woundHandoffSink is not null)
+            woundHandoffSink.Value = completedWoundHandoff;
     }
 
     private static EffectCarrierCatalogInput ApplyResourceOwnerAfterImages(
