@@ -815,7 +815,7 @@ failure, duplicate ID, or incomplete owned-tree cleanup
 ### RED tests
 
 - [X] T058 [P] [US2] Add RED complete Mortal route, required non-display impact, AND requirements/OR alternatives, closed mode/outcome, and no wound/symptom/medicine/cure-name lookup tests in `BookOfEternityClient.Tests/MortalWoundTreatmentContractTests.cs`
-- [ ] T059 [P] [US2] Add RED readable diagnosis path, bounded `requiresKnownFacts` least-fixed-point reachability, `gm_only` route rejection, known/completed-route agreement, exact staged success/failure command plus durable history/replay result and reveal boundaries, cyclic/impossible discovery, append-only evidence-backed `author_alternative_treatment`, kind-specific pending/repair response, and recursive repair privacy tests proving internal seals/operation keys stay omitted in `BookOfEternityClient.Tests/MortalWoundDiagnosisTests.cs`
+- [X] T059 [P] [US2] Add RED readable diagnosis path, bounded `requiresKnownFacts` least-fixed-point reachability, `gm_only` route rejection, known/completed-route agreement, exact staged success/failure command plus durable history/replay result and reveal boundaries, cyclic/impossible discovery, append-only evidence-backed `author_alternative_treatment`, kind-specific pending/repair response, and recursive repair privacy tests proving internal seals/operation keys stay omitted in `BookOfEternityClient.Tests/MortalWoundDiagnosisTests.cs`
 - [ ] T060 [P] [US2] Add RED exact item/resource/skill/capability/provider/consent/facility/location/quest/effect/environment and stale/confusable/cross-realm reference tests in `BookOfEternityClient.Tests/MortalWoundRequirementAuthorityTests.cs`
 - [ ] T061 [P] [US2] Add RED procedure result bands, course milestone/interruption, guaranteed capability, natural 1/20 policy, and terminal attempt tests in `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.cs`
 - [ ] T062 [P] [US2] Add RED progressive/requires-stabilization/no-natural recovery, deterioration, clock replay, overflow, and Mortal death-boundary tests in `BookOfEternityClient.Tests/MortalWoundRecoveryTests.cs`
@@ -831,6 +831,20 @@ reference preservation, and same-name wounds with independent routes. There
 was no timeout or duplicate test ID. Production code is unchanged. Independent
 review closed with 0 Critical, 0 Important, and 0 Minor findings; T059 owns the
 next diagnosis/discoverability RED boundary.
+
+T059 RED evidence (2026-08-29): 97 diagnosis/discovery/alternative-authoring rows
+execute with a warning-free build; three baseline controls pass and 94 intended
+semantic assertions remain RED
+(`20260829-094250-461-28628-fdb0ef3e86e2411e93e216312771db1b-focused`).
+The frozen boundary covers ordered route- and complication-fact fixed-point discovery,
+success/failure terminal attempts and exact typed history replay, immutable prior
+routes/paths/history, sealed visible/hidden alternative append and command
+recomposition, kind-specific repair, and recursive key/value privacy. There was no
+timeout or duplicate test ID. Production code is unchanged; the plan now names only
+production-owned planner/history/command sealing seams so the tests contain no local
+hash recipe or evidence-constructor topology. Independent final rereview closed with
+0 Critical, 0 Important, and 0 Minor findings; T060 owns exact current-world reference
+authority next.
 
 ### GREEN implementation
 

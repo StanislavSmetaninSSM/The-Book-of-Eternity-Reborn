@@ -409,6 +409,35 @@ Checkpoint: both cross-setting fixtures complete create -> diagnosis success/fai
 optional alternative-route authoring -> treat/recover -> heal -> History, with exact
 rollback and no catalog lookup.
 
+T067 uses one production-owned sealing boundary rather than exposing evidence-record
+construction or fingerprint recipes to callers. `MortalWoundTreatmentPlanner` is the
+sole producer of `WoundTransitionRequest` values for `diagnose` and
+`author_alternative_treatment`: its `CreateDiagnosisTransition` and
+`CreateAlternativeTreatmentTransition` factories accept transition coordinates,
+the parsed before/proposed-after wounds, and only the already validated external
+authority fingerprints. The factories derive the complete-or-empty diagnosis reveal
+set, the appended route/path identities, every wound-local before/after/route/path/
+result seal, and the typed durable result. Reducer tests consume those factories and
+may tamper with the returned request or after-image; they must not instantiate a
+concrete evidence record by reflection or implement a test-only hash domain.
+
+`WoundHistoryState` similarly owns `ComputeTransitionResultFingerprint` and immutable
+`AppendTransition` operations. Append consumes a validated
+`WoundTransitionHistoryIntent`, assigns the next global/per-wound ordinals, preserves
+all prior rows byte-for-byte, recomputes the typed result seal, and returns a newly
+validated state. Replay probes and already-accepted receipts carry that same typed
+result. This is the stable semantic seam for T059/T067; concrete evidence-record and
+hash-writer topology remains an implementation detail.
+
+For command round-trip tests, `WoundResponseInputComposer` owns
+`ComposeAcceptedTransitionCommandRoot(binding, request, finalSceneText)`. It emits the
+closed safe command from a planner-sealed request; `ParseCommandRoot` followed by
+`RecomposeCommandRoot` must reproduce that root exactly. Mutation after composition is
+rejected either by strict parsing/seal validation or by recomposition, never accepted
+by trusting caller-supplied fingerprints. Tests may hand-author malformed shapes for
+field/path diagnostics, but only this production composer establishes a valid sealed
+command authority.
+
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 
 1. Add RED danger-mode, formula threshold, strain cap, optional/lower/one-per-side/
