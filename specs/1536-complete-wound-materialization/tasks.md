@@ -209,7 +209,7 @@ tracked by T022-T027 and the story-specific documentation tasks.
 - [X] T029 [P] [US1] Add RED formal and narrative event opportunity, harmless-result conflict, none/lower/equal/over-maximum decision, and consumed-decline tests in `BookOfEternityClient.Tests/WoundOpportunityAuthorityTests.cs`
 - [X] T030 [P] [US1] Add RED pre-materialized guaranteed trigger, omitted result, source-state, hard-cap conflict, and exact retry tests in `BookOfEternityClient.Tests/WoundGuaranteedTriggerTests.cs`
 - [X] T031 [P] [US1] Add RED exact player/NPC/combatant/Guardian/resident/radiant/soul target, named ambiguity, wrong realm, and source-event binding tests in `BookOfEternityClient.Tests/WoundSourceTargetAuthorityTests.cs`
-- [ ] T032 [P] [US1] Add RED acquisition narration completeness/contradiction, deterministic Russian notification, untrusted markup escaping, and no-ID projection tests in `BookOfEternityClient.Tests/WoundAcquisitionOutputTests.cs`
+- [X] T032 [P] [US1] Add RED acquisition narration completeness/contradiction, deterministic Russian notification, untrusted markup escaping, and no-ID projection tests in `BookOfEternityClient.Tests/WoundAcquisitionOutputTests.cs`
 - [ ] T033 [US1] Add RED end-to-end optional/lower/guaranteed/over-limit, wound-owned effect atomicity, healed independent mechanical legacy, and cosmetic History legacy fixtures in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Creation.cs`
 - [ ] T034 [P] [US1] Add RED all-owner carrier/index/history agreement, combatant persistence, Mortal-to-afterlife no-conversion, and accepted spiritual profile realm-preservation transition cases in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Owners.cs`
 
@@ -227,6 +227,13 @@ hard-cap conflict, and exact retry contract reaches the same intentionally absen
 US1 input boundary (0 warnings, 2 expected compiler errors across T029/T030, no
 tests executed, no timeout/duplicates;
 `20260828-171916-306-34132-d084bbe8f687450da9178a3ed187d916-focused`).
+Production remains untouched.
+
+T032 RED evidence (2026-08-28): acquisition narration presence and exact structured
+agreement, deterministic physical/spiritual Russian notifications, console/browser
+escaping, and a player-visible no-ID/no-authority projection are specified. Focused
+stops on eight intentionally absent T029-T032 types with 0 warnings, no timeout or
+duplicates (`20260828-172813-800-36780-6e5028e3411940b899b272550e66a08f-focused`).
 Production remains untouched.
 
 T031 RED evidence (2026-08-28): exact player/NPC/combatant/Guardian/
