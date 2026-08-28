@@ -208,7 +208,7 @@ tracked by T022-T027 and the story-specific documentation tasks.
 
 - [X] T029 [P] [US1] Add RED formal and narrative event opportunity, harmless-result conflict, none/lower/equal/over-maximum decision, and consumed-decline tests in `BookOfEternityClient.Tests/WoundOpportunityAuthorityTests.cs`
 - [X] T030 [P] [US1] Add RED pre-materialized guaranteed trigger, omitted result, source-state, hard-cap conflict, and exact retry tests in `BookOfEternityClient.Tests/WoundGuaranteedTriggerTests.cs`
-- [ ] T031 [P] [US1] Add RED exact player/NPC/combatant/Guardian/resident/radiant/soul target, named ambiguity, wrong realm, and source-event binding tests in `BookOfEternityClient.Tests/WoundSourceTargetAuthorityTests.cs`
+- [X] T031 [P] [US1] Add RED exact player/NPC/combatant/Guardian/resident/radiant/soul target, named ambiguity, wrong realm, and source-event binding tests in `BookOfEternityClient.Tests/WoundSourceTargetAuthorityTests.cs`
 - [ ] T032 [P] [US1] Add RED acquisition narration completeness/contradiction, deterministic Russian notification, untrusted markup escaping, and no-ID projection tests in `BookOfEternityClient.Tests/WoundAcquisitionOutputTests.cs`
 - [ ] T033 [US1] Add RED end-to-end optional/lower/guaranteed/over-limit, wound-owned effect atomicity, healed independent mechanical legacy, and cosmetic History legacy fixtures in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Creation.cs`
 - [ ] T034 [P] [US1] Add RED all-owner carrier/index/history agreement, combatant persistence, Mortal-to-afterlife no-conversion, and accepted spiritual profile realm-preservation transition cases in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Owners.cs`
@@ -227,6 +227,14 @@ hard-cap conflict, and exact retry contract reaches the same intentionally absen
 US1 input boundary (0 warnings, 2 expected compiler errors across T029/T030, no
 tests executed, no timeout/duplicates;
 `20260828-171916-306-34132-d084bbe8f687450da9178a3ed187d916-focused`).
+Production remains untouched.
+
+T031 RED evidence (2026-08-28): exact player/NPC/combatant/Guardian/
+resident/radiant/player-soul owner-to-effect-target mappings, duplicate display-name
+ambiguity, cross-realm rejection, and exact source/event/fingerprint binding are now
+specified. Focused stops on seven intentionally absent T029-T031 authority types with
+0 warnings, no timeout/duplicates, and no executed tests
+(`20260828-172341-053-27028-eb6c5f5031794e72bc2b17dd8390421b-focused`).
 Production remains untouched.
 
 ### GREEN implementation
