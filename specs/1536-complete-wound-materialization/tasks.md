@@ -507,11 +507,24 @@ duplicate IDs
 
 ### RED tests
 
-- [ ] T046 [P] [US7] Add RED table-driven owner/severity/slot/effect/treatment/resource/narration issue normalization, offending-path preservation, safe expected ranges, preserved siblings, required corrected response shape, and bounded candidate tests in `BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs`
+- [X] T046 [P] [US7] Add RED table-driven owner/severity/slot/effect/treatment/resource/narration issue normalization, offending-path preservation, safe expected ranges, preserved siblings, required corrected response shape, and bounded candidate tests in `BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs`
 - [ ] T047 [P] [US7] Add RED hidden owner/provider/route/resource seal and private NPC data non-disclosure tests in `BookOfEternityClient.Tests/WoundRepairPacketPrivacyTests.cs`
 - [ ] T048 [P] [US7] Add RED changed event/target/roll/snapshot/generation invalidation, exact packet receipt, and take-once tests in `BookOfEternityClient.Tests/WoundAcceptedTurnPlanCacheTests.cs`
 - [ ] T049 [US7] Add RED corrected repair roundtrips for every representative invalid category plus failure injection before/after wound/effect/resource/profile/scheduler/history/output writes with byte/existence assertions in `BookOfEternityClient.IntegrationTests/WoundMaterializationRollbackTests.cs`
 - [ ] T050 [P] [US7] Add RED 100-repeat loops for accepted event/treatment/course/cycle/payment/output identities after success, repair, crash recovery, and consumed commands, asserting zero duplicate state in `BookOfEternityClient.IntegrationTests/WoundMaterializationReplayTests.cs`
+
+T046 RED evidence (2026-08-29): the new table-driven repair contract covers exact
+owner, severity, consequence-slot, linked-effect, treatment, resource, and acquisition-
+narration issue normalization; strips file/index prefixes to safe semantic paths; uses
+client-bounded expectations instead of validator-internal authority prose; removes only
+the offending proposal leaf while preserving every valid sibling; requires one exact
+candidate decision plus the complete narration response; serializes only the closed
+repair packet; accepts exactly 64 unique candidates in stable order; and rejects the
+whole wave for a 65th or exact/confusable candidate reference. The Focused RED build is
+warning-free and stops only at the intentionally absent `WoundRepairBuildRequest` and
+`WoundRepairCandidateInput` production boundary, with no tests executed, timeout, or
+duplicate IDs
+(`20260829-004616-241-34108-ed55326470544e94a989feb0387a0cf6-focused`).
 
 ### GREEN implementation
 
