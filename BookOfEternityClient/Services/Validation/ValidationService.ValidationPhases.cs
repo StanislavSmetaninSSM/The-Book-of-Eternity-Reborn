@@ -119,7 +119,9 @@ public partial class ValidationService
         if (phases.HasFlag(
                 GameStateValidationPhase.AcceptedTurnWoundMaterializationCompleteness))
         {
-            await ValidateAcceptedTurnCanonicalWoundMaterializationAsync(issues);
+            await ValidateAcceptedTurnCanonicalWoundMaterializationAsync(
+                issues,
+                writeLease: null);
         }
         if (phases.Includes(GameStateValidationPhase.AfterlifeSpiritualConflictState))
             await ValidateAfterlifeSpiritualConflictStateAsync(issues);

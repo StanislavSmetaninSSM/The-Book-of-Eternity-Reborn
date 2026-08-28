@@ -1373,6 +1373,16 @@ internal sealed class AcceptedMechanicsPlan
 
     private void ValidatePathCoverage()
     {
+        if (_woundStageBundle is not null &&
+            !WoundAcceptedTurnSnapshotContract.HasCompleteBeforeImages(
+                _beforeImages,
+                out var missingWoundAuthorityPath))
+        {
+            throw new ArgumentException(
+                $"Wound accepted mechanics path '{missingWoundAuthorityPath}' has no exact before-image.",
+                nameof(BeforeImages));
+        }
+
         var touched = new HashSet<string>(TouchedPaths, StringComparer.Ordinal);
         var required = new HashSet<string>(StringComparer.Ordinal)
         {

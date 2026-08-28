@@ -54,7 +54,7 @@ component wrapper codes. Accept ordinary `source_bound(active, expire)` without 
 finite condition adapter, and keep the corresponding persistent-actor
 `afterlife_combat_condition` lifetime rejection as an already-GREEN control.
 - [X] T012 [P] Add RED wound command/input/fingerprint/before-image/cache equality, internally computed common `PreparedPlanFingerprint`, independent cache recomputation, source/export/result/event/effect-after-image/final-binding cross-plan tamper rejection, stale generation, take-once, and invalidation tests in `BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.Wounds.cs`
-- [ ] T013 [P] Add RED wound carrier/index/history/command/pending/scheduler/output snapshot inclusion and missing-before-image rejection tests in `BookOfEternityClient.Tests/PendingTurnSnapshotAuthorityTests.Wounds.cs`
+- [X] T013 [P] Add RED wound carrier/index/history/command/pending/scheduler/output snapshot inclusion and missing-before-image rejection tests in `BookOfEternityClient.Tests/PendingTurnSnapshotAuthorityTests.Wounds.cs`
 - [X] T014 [P] Add RED exact persisted/same-turn wound source export, `Materializable=false` raw-GM-apply rejection with typed-root and reaction-only authorization, mandatory `sourceRef` for new wounds, closed wound-owner/effect-target mapping, exact `SourceExportFingerprint` and reconstructed `base_wound | complicationId` root-lineage-authority coverage including existing canonical `EffectId` versus new `applicationRef` selectors, full-key/group and first-create causal-parent indexes, direct-root empty versus reaction-child exact singleton `sourceEffectIds`, legal mixed create-causality plus replacement-succession evidence, terminal-root descendant traversal, independent wound-owned effect terminalization that preserves byte-identical canonical wound state, semantic fingerprint, complete definition graph, root bindings, entries, severity, care, recovery, and history, root-bound target exact same-domain `replace` plus pre-mutation cross-domain stack/refresh/merge/replace rejection, cyclic/multiple-causal-create-parent/duplicate-same-kind/foreign-lineage rejection, 160 same-turn and 10,000 pre-turn definition/root bounds, at-most-five simultaneous source members and one-visit-per-parsed-source-member linear work, exact created-event/causal-event agreement, trusted common composition/finalization and cross-plan tamper rejection, and version-1 aggregate tests in `BookOfEternityClient.Tests/EffectIdentityStateTests.Wounds.cs`, `BookOfEternityClient.Tests/EffectSourceAuthorityTests.Wounds.cs`, `BookOfEternityClient.Tests/EffectAcceptedTurnInputComposerTests.Wounds.cs`, `BookOfEternityClient.Tests/WoundEffectLineagePlannerTests.cs`, `BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.Wounds.cs`, and `BookOfEternityClient.IntegrationTests/WoundAcceptedMechanicsScaleTests.cs`
 
 ### GREEN implementation
@@ -79,7 +79,7 @@ finite condition adapter, and keep the corresponding persistent-actor
 - [X] T024 Compose prepare -> typed wound-effect batch -> effect-owned ID/result map -> finalize -> resource ordering, derive globally unique internal effect-operation events for every batch member while retaining the shared wound event as separate causal chronology, require exact result set/cardinality/new-identity/source/target/event/carrier outcomes, compose same-root results, reject cross-plan stage mixing, terminate pairwise-disjoint declared complication first-create causal-lineage closures (including from terminal roots), remove those roots/slots, prune only definitions unreachable from all remaining roots, recompute slot use, and retain terminal provenance in effect identity history; perform full old source-group teardown before severity rematerialization, terminate the complete active wound-source group on healing, preserve byte-identical canonical wound state and fingerprint when one wound-owned effect independently expires, is suppressed, or is dispelled, preserve no wound mutation for ordinary descendant reaction materialization, and expose linear work statistics proving visited identities do not exceed parsed exact source-group membership in `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [X] T025 Add the explicit accepted-turn wound completeness phase plus strict raw input/root composition and planning handoff in `BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs`, `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs`
 - [X] T026 Publish and read-back-validate wound carriers/index/history/pending after-images only through the common write lease in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
-- [ ] T027 Extend snapshot collection/rollback and accepted post-validation with exact wound and output paths in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
+- [X] T027 Extend snapshot collection/rollback and accepted post-validation with exact wound and output paths in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
 - [ ] T028 Run the smallest focused common-kernel filters through `scripts/test-csharp.ps1`, record RED-to-GREEN evidence and durations in `specs/1536-complete-wound-materialization/tasks.md`, and resolve every foundational failure before US1
 
 T014/T022/T024 closure evidence: commits `2610916c` and `270193d7`; Focused
@@ -122,6 +122,25 @@ and the full common cache control is GREEN `182/182`
 This is an unexposed client-owned publication seam; it adds no GM-authored command,
 response, pending file, or player workflow, so GM prompts/examples remain owned by
 the later story tasks that expose wound authoring and treatment.
+
+T013/T027 closure evidence (2026-08-28): the snapshot-authority API first failed
+to compile as expected (`20260828-154127-963-36448-f8f0f419383b4ca1935bbf5020e18a5b-focused`),
+the common plan then rejected only 4 of the required 14 missing-before-image cases
+(`20260828-154547-904-38668-c37f044c7e6c4e3b975f45ac5fe1077f-focused`),
+and dynamic touched-path coverage initially had no contract implementation
+(`20260828-155843-246-30508-556c6218aec24dccbb9490c2fac545fc-focused`).
+The completed exact present-or-signed-absent snapshot and common-plan guards are
+GREEN `239/239`
+(`20260828-161309-843-40640-a979df93ac05434ab10959305481c050-focused`).
+Canonical publication/output-drift rollback is GREEN `11/11`
+(`20260828-162030-463-36224-82ec9a39a350495baff9430a8d277a84-focused`),
+and a real GameEngine lifecycle proves snapshot hashes, rollback backups, and
+byte-exact restoration for all 14 foundational paths `1/1`
+(`20260828-161649-472-28716-682280345f24486f8a716cdf0818d8b2-focused`).
+The common plan also unions dynamically touched game/lore/output paths and rejects
+arbitrary or non-canonical paths. These tasks strengthen only client-owned atomicity
+and introduce no GM-authored or player-visible contract, so prompts, examples, and
+afterlife documentation remain unchanged here.
 
 **T011/T020 execution gate**: complete these task IDs in two test-first tranches. First,
 add and observe the canonical persistence/reducer RED tests, then make only that

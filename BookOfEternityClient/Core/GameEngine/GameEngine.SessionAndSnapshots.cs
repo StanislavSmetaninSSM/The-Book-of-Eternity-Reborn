@@ -634,6 +634,18 @@ public partial class GameEngine
         }
 
         var canonicalFiles = new HashSet<string>(CanonicalStateNormalizer.CanonicalAccumulatedFiles, StringComparer.OrdinalIgnoreCase);
+        canonicalFiles.UnionWith(WoundAcceptedTurnSnapshotContract.RequiredPaths);
+        if (_fs.FileExists(AcceptedMechanicsPlan.WoundCommandPath) &&
+            !PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
+                payload,
+                static authorityPayload => authorityPayload.Files,
+                static authorityPayload => authorityPayload.SnapshotFileHashes,
+                static authorityPayload => authorityPayload.RollbackBaselineFiles,
+                WoundAcceptedTurnSnapshotContract.RequiredPaths,
+                out _))
+        {
+            return null;
+        }
         var baselineCanonicalFiles = payload.RollbackBaselineFiles
             .Where(path => !string.IsNullOrWhiteSpace(path) && canonicalFiles.Contains(path))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -1682,13 +1694,8 @@ public partial class GameEngine
             }
         }
 
-        foreach (var outputFile in new[]
-        {
-            "output/narrative_response.json",
-            "output/interface_updates.json",
-            "output/debug_logs.json",
-            QteSceneService.QteOfferPath
-        })
+        foreach (var outputFile in WoundAcceptedTurnSnapshotContract.OutputPaths
+                     .Append(QteSceneService.QteOfferPath))
         {
             if (_fs.FileExists(writeLease, outputFile))
                 files.Add(outputFile);

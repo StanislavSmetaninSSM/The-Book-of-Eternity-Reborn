@@ -282,6 +282,85 @@ internal static class PendingTurnSnapshotAuthority
         return true;
     }
 
+    internal static bool HasValidatedRollbackSnapshotCoverage<TManifest>(
+        TManifest manifest,
+        Func<TManifest, IDictionary<string, string>?> getFiles,
+        Func<TManifest, IDictionary<string, string>?> getSnapshotFileHashes,
+        Func<TManifest, IEnumerable<string>?> getRollbackBaselineFiles,
+        IEnumerable<string> requiredPaths,
+        out string? missingPath)
+        where TManifest : class
+    {
+        missingPath = null;
+        if (manifest == null)
+            return false;
+
+        var files = getFiles(manifest);
+        var snapshotFileHashes = getSnapshotFileHashes(manifest);
+        var rollbackBaselineFiles = getRollbackBaselineFiles(manifest);
+        if (files == null ||
+            snapshotFileHashes == null ||
+            rollbackBaselineFiles == null ||
+            requiredPaths == null)
+        {
+            return false;
+        }
+
+        var rollbackBaselineSet = new HashSet<string>(
+            rollbackBaselineFiles
+                .Where(path => !string.IsNullOrWhiteSpace(path))
+                .Select(NormalizePath),
+            StringComparer.OrdinalIgnoreCase);
+
+        foreach (var path in requiredPaths)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                missingPath = path;
+                return false;
+            }
+
+            var normalizedPath = NormalizePath(path);
+            if (!IsSafeRelativePath(normalizedPath))
+            {
+                missingPath = normalizedPath;
+                return false;
+            }
+
+            var hasSnapshot = files.TryGetValue(
+                normalizedPath,
+                out var snapshotPath);
+            var hasSnapshotHash = snapshotFileHashes.TryGetValue(
+                normalizedPath,
+                out var expectedSnapshotHash);
+            if (!rollbackBaselineSet.Contains(normalizedPath))
+            {
+                if (hasSnapshot || hasSnapshotHash)
+                {
+                    missingPath = normalizedPath;
+                    return false;
+                }
+
+                // The detached authority signs the complete rollback baseline set.
+                // Absence from that set and both snapshot maps is therefore the exact
+                // before-turn evidence for a path created during the accepted turn.
+                continue;
+            }
+
+            if (!hasSnapshot ||
+                string.IsNullOrWhiteSpace(snapshotPath) ||
+                !IsSafeRelativePath(snapshotPath) ||
+                !hasSnapshotHash ||
+                string.IsNullOrWhiteSpace(expectedSnapshotHash))
+            {
+                missingPath = normalizedPath;
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     internal static string CreateDetachedAuthorityJson<TManifest>(
         TManifest manifest,
         JsonSerializerOptions manifestHashOptions,

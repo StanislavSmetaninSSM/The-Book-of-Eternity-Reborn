@@ -1012,10 +1012,67 @@ public partial class GameEngine
             return new AcceptedTurnCanonicalRefreshResult(false, Array.Empty<ValidationIssue>());
 
         var refresh = await RefreshCanonicalStateAsync(snapshot);
+        var postSealIssues = refresh.Issues.ToList();
+        if (refresh.MechanicsPlan?.WoundStageBundle is not null)
+        {
+            postSealIssues.AddRange(
+                await ValidateAcceptedWoundPostPublicationAuthorityAsync(
+                    refresh.MechanicsPlan,
+                    activeSnapshotContext));
+        }
         return new AcceptedTurnCanonicalRefreshResult(
             true,
-            refresh.Issues,
+            postSealIssues,
             refresh.MechanicsPlan);
+    }
+
+    private async Task<IReadOnlyList<ValidationIssue>>
+        ValidateAcceptedWoundPostPublicationAuthorityAsync(
+            AcceptedMechanicsPlan plan,
+            ValidatedPendingTurnSnapshotContext? activeSnapshotContext)
+    {
+        var issues = new List<ValidationIssue>();
+        var woundStages = plan.WoundStageBundle;
+        if (woundStages == null)
+            return issues;
+        var snapshotContext = activeSnapshotContext;
+        if (snapshotContext == null)
+        {
+            var resolution = await ResolveActivePendingTurnSnapshotContextAsync();
+            snapshotContext = resolution.Context;
+        }
+
+        string? missingSnapshotPath = null;
+        var requiredSnapshotPaths =
+            WoundAcceptedTurnSnapshotContract.BuildRequiredPaths(
+                plan.TouchedPaths);
+        if (snapshotContext == null ||
+            snapshotContext.TurnNumber != woundStages.Input.Binding.Turn ||
+            !PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
+                snapshotContext.Payload,
+                static payload => payload.Files,
+                static payload => payload.SnapshotFileHashes,
+                static payload => payload.RollbackBaselineFiles,
+                requiredSnapshotPaths,
+                out missingSnapshotPath))
+        {
+            issues.Add(new ValidationIssue(
+                missingSnapshotPath ?? AcceptedMechanicsPlan.WoundCommandPath,
+                IssueSeverity.Error,
+                "Accepted wound publication lacks exact signed rollback snapshot coverage.",
+                code: "wound_materialization_snapshot_before_image_missing",
+                section: "AcceptedTurnWoundMaterialization",
+                expected: "signed present-or-absent rollback evidence for every wound, scheduler, and output authority path",
+                actual: "snapshot context or one exact path registration is missing"));
+            return issues;
+        }
+
+        issues.AddRange(await WoundAcceptedTurnSnapshotContract
+            .ValidatePublishedOutputAuthorityAsync(
+                plan,
+                path => _fs.ReadFileBytesAsync(path)));
+
+        return issues;
     }
 
     private sealed record AcceptedTurnCanonicalRefreshResult(

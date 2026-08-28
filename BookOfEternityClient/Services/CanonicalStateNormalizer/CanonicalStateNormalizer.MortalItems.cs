@@ -1568,6 +1568,19 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 .ValidateAcceptedTurnCanonicalResourceMaterializationAsync(writeLease));
             issues.AddRange(await validator
                 .ValidateAcceptedTurnCanonicalEffectMaterializationAsync(writeLease));
+            if (mechanicsPlan?.WoundStageBundle is not null)
+            {
+                issues.AddRange(await WoundAcceptedTurnSnapshotContract
+                    .ValidatePublishedOutputAuthorityAsync(
+                        mechanicsPlan,
+                        path => fs.ReadFileBytesAsync(writeLease, path)));
+                if (!mechanicsPlan.AwaitsPendingResolution)
+                {
+                    issues.AddRange(await validator
+                        .ValidateAcceptedTurnCanonicalWoundMaterializationAsync(
+                            writeLease));
+                }
+            }
             if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
             {
                 await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);

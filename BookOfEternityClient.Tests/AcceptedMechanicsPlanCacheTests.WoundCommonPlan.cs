@@ -450,8 +450,18 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
     [Theory]
     [InlineData("game_state/wounds/wound_commands.json")]
     [InlineData("game_state/player/wounds.json")]
+    [InlineData("game_state/npcs/npc_wounds.json")]
+    [InlineData("game_state/combat/enemies.json")]
+    [InlineData("game_state/combat/allies.json")]
+    [InlineData("game_state/meta/afterlife_entity_profiles.json")]
     [InlineData("game_state/wounds/wound_identity_index.json")]
     [InlineData("game_state/wounds/wound_history.json")]
+    [InlineData("game_state/control/pending_wound_resolutions.json")]
+    [InlineData("game_state/control/progression_schedule.json")]
+    [InlineData("game_state/control/progression_report.json")]
+    [InlineData("output/narrative_response.json")]
+    [InlineData("output/interface_updates.json")]
+    [InlineData("output/debug_logs.json")]
     public void WoundCommonPlan_RejectsMissingWoundBeforeImage(string path)
     {
         var stages = CreateWoundCommonStages("missing_before", "missing_before");
@@ -920,6 +930,12 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             new CanonicalBeforeImage(true, new byte[] { 10 });
         beforeImages[WoundHistoryState.HistoryPath] =
             new CanonicalBeforeImage(true, new byte[] { 11 });
+        foreach (var path in WoundAcceptedTurnSnapshotContract.RequiredPaths)
+        {
+            beforeImages.TryAdd(
+                path,
+                new CanonicalBeforeImage(false, null));
+        }
         beforeImages[woundCarrierPath ?? WoundCarrierCatalog.PlayerPath] =
             new CanonicalBeforeImage(true, new byte[] { 12 });
         foreach (var path in pendingAfterImages?.Keys ?? Array.Empty<string>())

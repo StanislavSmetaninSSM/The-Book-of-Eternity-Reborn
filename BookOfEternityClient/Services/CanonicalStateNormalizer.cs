@@ -122,6 +122,7 @@ public partial class CanonicalStateNormalizer
             ResourceMaterializationContract.CommandPath,
             "game_state/control/pending_effect_resolutions.json"
         })
+        .Concat(WoundAcceptedTurnSnapshotContract.RequiredPaths)
         .Distinct(StringComparer.Ordinal)
         .ToArray();
 

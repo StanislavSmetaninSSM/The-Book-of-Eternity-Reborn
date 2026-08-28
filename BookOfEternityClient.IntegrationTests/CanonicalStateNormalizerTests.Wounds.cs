@@ -115,6 +115,81 @@ public sealed class CanonicalStateNormalizerWoundTests
         Assert.Contains(WoundCarrierCatalog.AfterlifeProfilesPath, exception.Message);
     }
 
+    [Fact]
+    public async Task CompleteWoundPlan_PostPublicationOutputDrift_RestoresWholeLocalTransaction()
+    {
+        const string outputPath = "output/narrative_response.json";
+        const string acceptedOutput = "{\"response\":\"Sealed wound narration.\"}";
+        var armed = false;
+        var driftInjected = false;
+        string? sessionPath = null;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationAsync = path =>
+            {
+                if (!armed ||
+                    driftInjected ||
+                    !string.Equals(
+                        path,
+                        ResourceMaterializationContract.DefinitionsPath,
+                        StringComparison.Ordinal))
+                {
+                    return Task.CompletedTask;
+                }
+
+                driftInjected = true;
+                File.WriteAllText(
+                    Path.Combine(
+                        sessionPath!,
+                        outputPath.Replace('/', Path.DirectorySeparatorChar)),
+                    "{\"response\":\"Drifted after preflight.\"}",
+                    new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+                return Task.CompletedTask;
+            }
+        };
+        await using var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
+        sessionPath = context.FileSystem.GameSessionPath;
+        await context.FileSystem.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
+        await SeedValidatedEmptyWoundCommandAsync(context);
+        await context.FileSystem.WriteFileAtomicAsync(outputPath, acceptedOutput);
+        var itemIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            itemIssues,
+            issue => issue.Severity == IssueSeverity.Error);
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        var manifest = JsonNode.Parse((await context.FileSystem.ReadFileAsync(
+            "game_state/control/pending_turn_snapshot.json"))!)!.AsObject();
+        var backups = manifest["files"]!.AsObject().ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value!.GetValue<string>(),
+            StringComparer.OrdinalIgnoreCase);
+
+        armed = true;
+        var result = await AcceptedTurnCanonicalStateRefresh
+            .NormalizeAndValidateWithPlanAsync(
+                context.FileSystem,
+                context.Normalizer,
+                context.Validator,
+                backups);
+
+        Assert.True(driftInjected);
+        Assert.Null(result.MechanicsPlan);
+        Assert.Contains(
+            result.Issues,
+            static issue => issue.Code ==
+                "wound_materialization_output_authority_mismatch");
+        Assert.Equal(
+            acceptedOutput,
+            await context.FileSystem.ReadFileAsync(outputPath));
+        Assert.NotNull(await context.ReadJsonAsync(
+            AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
     private static async Task SeedValidatedEmptyWoundCommandAsync(
         ResourceMaterializationTestContext context)
     {

@@ -54,20 +54,48 @@ public partial class ValidationService
         ValidateAcceptedTurnCanonicalWoundMaterializationAsync()
     {
         var issues = new List<ValidationIssue>();
-        await ValidateAcceptedTurnCanonicalWoundMaterializationAsync(issues);
+        await ValidateAcceptedTurnCanonicalWoundMaterializationAsync(
+            issues,
+            writeLease: null);
+        return issues;
+    }
+
+    internal async Task<IReadOnlyList<ValidationIssue>>
+        ValidateAcceptedTurnCanonicalWoundMaterializationAsync(
+            FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        var issues = new List<ValidationIssue>();
+        await ValidateAcceptedTurnCanonicalWoundMaterializationAsync(
+            issues,
+            writeLease);
         return issues;
     }
 
     private async Task ValidateAcceptedTurnCanonicalWoundMaterializationAsync(
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
         ArgumentNullException.ThrowIfNull(issues);
         var carrierJson = new Dictionary<string, string?>(StringComparer.Ordinal);
         foreach (var path in CanonicalWoundCarrierPaths)
-            carrierJson[path] = await _fs.ReadFileAsync(path);
-        var identityJson = await _fs.ReadFileAsync(WoundIdentityState.StatePath);
-        var historyJson = await _fs.ReadFileAsync(WoundHistoryState.HistoryPath);
-        var commandJson = await _fs.ReadFileAsync(AcceptedMechanicsPlan.WoundCommandPath);
+        {
+            carrierJson[path] = writeLease == null
+                ? await _fs.ReadFileAsync(path)
+                : await _fs.ReadFileAsync(writeLease, path);
+        }
+        var identityJson = writeLease == null
+            ? await _fs.ReadFileAsync(WoundIdentityState.StatePath)
+            : await _fs.ReadFileAsync(writeLease, WoundIdentityState.StatePath);
+        var historyJson = writeLease == null
+            ? await _fs.ReadFileAsync(WoundHistoryState.HistoryPath)
+            : await _fs.ReadFileAsync(writeLease, WoundHistoryState.HistoryPath);
+        var commandJson = writeLease == null
+            ? await _fs.ReadFileAsync(AcceptedMechanicsPlan.WoundCommandPath)
+            : await _fs.ReadFileAsync(
+                writeLease,
+                AcceptedMechanicsPlan.WoundCommandPath);
         if (identityJson is null &&
             historyJson is null &&
             commandJson is null &&
@@ -140,6 +168,23 @@ public partial class ValidationService
         var commands = ParseAcceptedTurnWoundCommands(commandJson, manifest, issues);
         if (commands is null)
             return null;
+
+        if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
+                manifest,
+                static value => value.Files,
+                static value => value.SnapshotFileHashes,
+                static value => value.RollbackBaselineFiles,
+                WoundAcceptedTurnSnapshotContract.RequiredPaths,
+                out var missingSnapshotPath))
+        {
+            issues.Add(WoundIssue(
+                missingSnapshotPath ?? AcceptedMechanicsPlan.WoundCommandPath,
+                "wound_materialization_snapshot_before_image_missing",
+                "exact signed rollback snapshot evidence for every wound, scheduler, and output authority path",
+                "missing, contradictory, or incompletely registered snapshot before-image",
+                IssueCategory.ClientOwnedSurface));
+            return null;
+        }
 
         var preTurnJson = new Dictionary<string, string?>(StringComparer.Ordinal);
         foreach (var path in CanonicalWoundCarrierPaths)

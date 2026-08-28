@@ -407,10 +407,8 @@ public partial class ValidationService
         }
         if (woundHandoff is not null)
         {
-            beforePaths.Add(AcceptedMechanicsPlan.WoundCommandPath);
-            beforePaths.Add(WoundIdentityState.StatePath);
-            beforePaths.Add(WoundHistoryState.HistoryPath);
-            beforePaths.UnionWith(CanonicalWoundCarrierPaths);
+            beforePaths.UnionWith(
+                WoundAcceptedTurnSnapshotContract.RequiredPaths);
         }
         beforePaths.UnionWith(ownerComposition.OwnerCompanionAfterImages.Keys);
         beforePaths.UnionWith(ownerComposition.OwnerTransitions.Select(static value => value.Path));
@@ -513,6 +511,31 @@ public partial class ValidationService
             writeLease,
             input);
         issues.AddRange(result.Issues);
+        if (result.Success &&
+            result.Plan?.WoundStageBundle is not null)
+        {
+            var requiredSnapshotPaths =
+                WoundAcceptedTurnSnapshotContract.BuildRequiredPaths(
+                    result.Plan.TouchedPaths);
+            if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
+                    manifest,
+                    static value => value.Files,
+                    static value => value.SnapshotFileHashes,
+                    static value => value.RollbackBaselineFiles,
+                    requiredSnapshotPaths,
+                    out var missingSnapshotPath))
+            {
+                AcceptedMechanicsPlanAuthority.InvalidateValidated(
+                    _fs,
+                    writeLease);
+                issues.Add(WoundIssue(
+                    missingSnapshotPath ?? AcceptedMechanicsPlan.WoundCommandPath,
+                    "wound_materialization_snapshot_before_image_missing",
+                    "exact signed rollback snapshot evidence for every dynamically touched wound-plan path",
+                    "missing, contradictory, or incompletely registered snapshot before-image",
+                    IssueCategory.ClientOwnedSurface));
+            }
+        }
         return issues;
     }
 

@@ -7,12 +7,7 @@ namespace BookOfEternityClient.Tests;
 public sealed class WoundMaterializationValidationTests
 {
     internal static readonly string[] SnapshotWoundPaths =
-    {
-        WoundCarrierCatalog.PlayerPath,
-        WoundCarrierCatalog.NpcPath,
-        WoundIdentityState.StatePath,
-        WoundHistoryState.HistoryPath
-    };
+        WoundAcceptedTurnSnapshotContract.RequiredPaths.ToArray();
 
     [Fact]
     public async Task EmptyStrictCommand_ComposesOneSealedWoundStageIntoCommonPlan()
