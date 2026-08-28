@@ -814,12 +814,23 @@ failure, duplicate ID, or incomplete owned-tree cleanup
 
 ### RED tests
 
-- [ ] T058 [P] [US2] Add RED complete Mortal route, required non-display impact, AND requirements/OR alternatives, closed mode/outcome, and no wound/symptom/medicine/cure-name lookup tests in `BookOfEternityClient.Tests/MortalWoundTreatmentContractTests.cs`
+- [X] T058 [P] [US2] Add RED complete Mortal route, required non-display impact, AND requirements/OR alternatives, closed mode/outcome, and no wound/symptom/medicine/cure-name lookup tests in `BookOfEternityClient.Tests/MortalWoundTreatmentContractTests.cs`
 - [ ] T059 [P] [US2] Add RED hidden route reachable diagnosis, reveal boundaries, cyclic/impossible discovery, and evidence-backed alternative route tests in `BookOfEternityClient.Tests/MortalWoundDiagnosisTests.cs`
 - [ ] T060 [P] [US2] Add RED exact item/resource/skill/capability/provider/consent/facility/location/quest/effect/environment and stale/confusable/cross-realm reference tests in `BookOfEternityClient.Tests/MortalWoundRequirementAuthorityTests.cs`
 - [ ] T061 [P] [US2] Add RED procedure result bands, course milestone/interruption, guaranteed capability, natural 1/20 policy, and terminal attempt tests in `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.cs`
 - [ ] T062 [P] [US2] Add RED progressive/requires-stabilization/no-natural recovery, deterioration, clock replay, overflow, and Mortal death-boundary tests in `BookOfEternityClient.Tests/MortalWoundRecoveryTests.cs`
 - [ ] T063 [US2] Add RED cross-setting create -> diagnose -> procedure/course/guaranteed -> recover -> heal -> History journeys and atomic resource/item use in `BookOfEternityClient.IntegrationTests/MortalWoundMaterializationLifecycleTests.cs`
+
+T058 RED evidence (2026-08-29): 27 treatment-contract rows execute with a
+warning-free build; seven existing/baseline controls pass and twenty intended
+semantic assertions remain RED (`20260829-075246-452-37752-4e825b2038cb4f78b39a9137ad3f7403-focused`).
+The frozen boundary covers complete procedure structure, required non-display
+impact, conjunctive requirements versus alternative complete routes, closed
+mode/mechanical/outcome vocabularies, exact cross-setting prose and semantic
+reference preservation, and same-name wounds with independent routes. There
+was no timeout or duplicate test ID. Production code is unchanged. Independent
+review closed with 0 Critical, 0 Important, and 0 Minor findings; T059 owns the
+next diagnosis/discoverability RED boundary.
 
 ### GREEN implementation
 
