@@ -509,7 +509,7 @@ duplicate IDs
 
 - [X] T046 [P] [US7] Add RED table-driven owner/severity/slot/effect/treatment/resource/narration issue normalization, offending-path preservation, safe expected ranges, preserved siblings, required corrected response shape, and bounded candidate tests in `BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs`
 - [X] T047 [P] [US7] Add RED hidden owner/provider/route/resource seal and private NPC data non-disclosure tests in `BookOfEternityClient.Tests/WoundRepairPacketPrivacyTests.cs`
-- [ ] T048 [P] [US7] Add RED changed event/target/roll/snapshot/generation invalidation, exact packet receipt, and take-once tests in `BookOfEternityClient.Tests/WoundAcceptedTurnPlanCacheTests.cs`
+- [X] T048 [P] [US7] Add RED changed event/target/roll/snapshot/generation invalidation, exact packet receipt, and take-once tests in `BookOfEternityClient.Tests/WoundAcceptedTurnPlanCacheTests.cs`
 - [ ] T049 [US7] Add RED corrected repair roundtrips for every representative invalid category plus failure injection before/after wound/effect/resource/profile/scheduler/history/output writes with byte/existence assertions in `BookOfEternityClient.IntegrationTests/WoundMaterializationRollbackTests.cs`
 - [ ] T050 [P] [US7] Add RED 100-repeat loops for accepted event/treatment/course/cycle/payment/output identities after success, repair, crash recovery, and consumed commands, asserting zero duplicate state in `BookOfEternityClient.IntegrationTests/WoundMaterializationReplayTests.cs`
 
@@ -536,6 +536,16 @@ snapshots and repeated serialization from later input/output-graph mutation. The
 Focused RED build is warning-free and remains blocked only by the same intentionally
 absent T051 repair DTO/builder boundary, with no tests executed, timeout, or duplicate
 IDs (`20260829-005106-735-44732-50a5628e52d24198abb189b2a5f33a63-focused`).
+
+T048 RED evidence (2026-08-29): the repair-wave cache contract now invalidates every
+pending candidate when event, target, roll, snapshot, or generation authority changes;
+requires exact session/request/snapshot/candidate/semantic receipt agreement; consumes
+each exact candidate once without destroying valid unconsumed siblings; revokes repair
+receipts together with prepared/final authority on `InvalidateAll`; and replaces prior
+waves atomically when a new generation is registered. The Focused RED build is
+warning-free and stops only at the intentionally absent T051 packet types plus the T053
+cache surface, with no tests executed, timeout, or duplicate IDs
+(`20260829-005454-253-39064-a529faa40242497a8a48233af84e24cf-focused`).
 
 ### GREEN implementation
 
