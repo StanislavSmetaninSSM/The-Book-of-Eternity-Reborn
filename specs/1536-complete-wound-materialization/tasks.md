@@ -206,12 +206,20 @@ tracked by T022-T027 and the story-specific documentation tasks.
 
 ### RED tests
 
-- [ ] T029 [P] [US1] Add RED formal and narrative event opportunity, harmless-result conflict, none/lower/equal/over-maximum decision, and consumed-decline tests in `BookOfEternityClient.Tests/WoundOpportunityAuthorityTests.cs`
+- [X] T029 [P] [US1] Add RED formal and narrative event opportunity, harmless-result conflict, none/lower/equal/over-maximum decision, and consumed-decline tests in `BookOfEternityClient.Tests/WoundOpportunityAuthorityTests.cs`
 - [ ] T030 [P] [US1] Add RED pre-materialized guaranteed trigger, omitted result, source-state, hard-cap conflict, and exact retry tests in `BookOfEternityClient.Tests/WoundGuaranteedTriggerTests.cs`
 - [ ] T031 [P] [US1] Add RED exact player/NPC/combatant/Guardian/resident/radiant/soul target, named ambiguity, wrong realm, and source-event binding tests in `BookOfEternityClient.Tests/WoundSourceTargetAuthorityTests.cs`
 - [ ] T032 [P] [US1] Add RED acquisition narration completeness/contradiction, deterministic Russian notification, untrusted markup escaping, and no-ID projection tests in `BookOfEternityClient.Tests/WoundAcquisitionOutputTests.cs`
 - [ ] T033 [US1] Add RED end-to-end optional/lower/guaranteed/over-limit, wound-owned effect atomicity, healed independent mechanical legacy, and cosmetic History legacy fixtures in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Creation.cs`
 - [ ] T034 [P] [US1] Add RED all-owner carrier/index/history agreement, combatant persistence, Mortal-to-afterlife no-conversion, and accepted spiritual profile realm-preservation transition cases in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Owners.cs`
+
+T029 RED evidence (2026-08-28): the new formal/narrative opportunity,
+harmless-conflict, legal severity range, over-maximum, and consumed-decline replay
+contract reaches the production assembly and fails compilation only on the first
+intentionally absent US1 surface, `WoundOpportunityBuildRequest` (0 warnings,
+1 expected error, no tests executed, no timeout/duplicates;
+`20260828-171614-101-21144-606fe2f437e94fb4a7b271eb9b8421d0-focused`).
+No production file is changed by this RED checkpoint.
 
 ### GREEN implementation
 
