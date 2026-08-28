@@ -577,13 +577,31 @@ history/receipt/planner replay surface, with no tests executed, timeout, or dupl
 
 ### GREEN implementation
 
-- [ ] T051 [US7] Implement bounded wound construction/repair/narration/alternative-treatment packets and recursive privacy sanitization in `BookOfEternityClient/Services/WoundRepairPacketBuilder.cs`
+- [X] T051 [US7] Implement bounded wound construction/repair/narration/alternative-treatment packets and recursive privacy sanitization in `BookOfEternityClient/Services/WoundRepairPacketBuilder.cs`
 - [ ] T052 [US7] Integrate wound repair obligations, safe harness packets, exact resubmission shape, and unrelated-response preservation in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
 - [ ] T053 [US7] Invalidate prepared/final wound, effect, and common handoffs together on repair/rejection/snapshot mismatch in `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs`
 - [ ] T054 [US7] Extend exact snapshot and post-publication agreement to scheduler, journals, quests, inventory/characteristics, debug/output, and pending wound roots in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
 - [ ] T055 [US7] Add operation/attempt/course/cycle/payment/output replay coordinates and already-accepted receipt projection in `BookOfEternityClient/Services/WoundHistoryState.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T056 [US7] Add invalid proposal, bounded repair, stale packet, rollback, and replay worked guidance in `OtherGuides/Wound_Materialization_Contract.md`, `Rules/Block_12.txt`, and `Examples/E_Block_12.txt`
 - [ ] T057 [US7] Run focused repair/privacy/cache/rollback/replay filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
+
+T051 GREEN evidence (2026-08-29): the new immutable repair packet boundary accepts a
+stable wave of at most 64 exact/confusable-unique construction, repair, narration, or
+alternative-treatment candidates; normalizes only registered wound-owned issue paths;
+derives the sealed candidate-specific severity range; removes only offending proposal
+leaves; and emits one closed corrected decision plus mandatory final-scene narration.
+Recursive projection strips permanent wound/effect/owner/provider/resource identities,
+canonical carrier paths, authority fingerprints, seals, private NPC/GM data, and
+unrelated response content while preserving readable authored siblings. Input and
+serialized packet graphs are detached, unsafe evidence is redacted, and protected
+canonical paths or an invalid candidate fail the complete wave closed. The repair-wave
+cache surface required to compile the frozen T048 contract was also introduced ahead
+of its registry integration in T053. Fresh combined Focused verification is
+warning-free: 41/41 packet, privacy, and cache tests pass with no timeout or duplicate
+IDs (`20260829-014851-152-37584-42da496bb92e4a9992a3c80ac080ff8d-focused`). Two
+RED-fixture defects found by the first execution were corrected without weakening the
+contract: readable Cyrillic assertions now use the repository's relaxed JSON encoder,
+and the target-authority mutation now supplies a genuinely different fingerprint.
 
 **Checkpoint**: Invalid or repeated wound work cannot leak authority, alter unrelated content, or leave partial state.
 

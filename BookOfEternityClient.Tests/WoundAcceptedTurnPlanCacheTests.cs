@@ -22,7 +22,7 @@ public sealed class WoundAcceptedTurnPlanCacheTests
         var changed = changedAuthority switch
         {
             "event" => authority with { EventFingerprint = Fingerprint('b') },
-            "target" => authority with { TargetFingerprint = Fingerprint('b') },
+            "target" => authority with { TargetFingerprint = Fingerprint('d') },
             "roll" => authority with { RollFingerprint = Fingerprint('b') },
             "snapshot" => authority with { SnapshotToken = "snapshot_repair_changed" },
             "generation" => authority with { Generation = "generation_repair_changed" },

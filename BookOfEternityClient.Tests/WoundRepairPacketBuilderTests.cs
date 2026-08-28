@@ -151,6 +151,21 @@ public sealed class WoundRepairPacketBuilderTests
     }
 
     [Fact]
+    public void Build_UsesTheCandidateSpecificSealedSeverityRange()
+    {
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(CreateRequest(
+            CreateCandidate(
+                "candidate_safe_001",
+                "woundDecisions[0].proposal.severity",
+                "wound_severity_above_opportunity",
+                "IV",
+                minimumSeverity: "II",
+                maximumSeverity: "III"))));
+
+        Assert.Equal("II-III", Assert.Single(packet.Issues).Expected);
+    }
+
+    [Fact]
     public void ToJsonObject_SerializesOnlyTheClosedWoundRepairContract()
     {
         var packet = Assert.Single(WoundRepairPacketBuilder.Build(CreateRequest(
@@ -251,7 +266,9 @@ public sealed class WoundRepairPacketBuilderTests
         string code,
         string actual,
         JsonObject? proposal = null,
-        string? semanticFingerprint = null)
+        string? semanticFingerprint = null,
+        string minimumSeverity = "I",
+        string maximumSeverity = "II")
     {
         var issue = new ValidationIssue(
             rawPath,
@@ -274,8 +291,8 @@ public sealed class WoundRepairPacketBuilderTests
                 ["realm"] = "Смертный мир"
             },
             new[] { "none", "materialize" },
-            "I",
-            "II",
+            minimumSeverity,
+            maximumSeverity,
             new JsonObject
             {
                 ["opportunityRef"] = "opportunity_safe_001",

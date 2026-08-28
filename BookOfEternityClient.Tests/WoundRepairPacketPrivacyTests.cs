@@ -1,3 +1,5 @@
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -6,6 +8,11 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class WoundRepairPacketPrivacyTests
 {
+    private static readonly JsonSerializerOptions ReadableJson = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
+
     [Theory]
     [InlineData("ownerId", "owner_secret_17")]
     [InlineData("providerId", "provider_secret_23")]
@@ -33,7 +40,7 @@ public sealed class WoundRepairPacketPrivacyTests
         };
 
         var packet = Assert.Single(WoundRepairPacketBuilder.Build(CreateRequest(candidate)));
-        var serialized = packet.ToJsonObject().ToJsonString();
+        var serialized = packet.ToJsonObject().ToJsonString(ReadableJson);
 
         Assert.DoesNotContain(forbiddenKey, serialized, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(secret, serialized, StringComparison.Ordinal);
@@ -101,7 +108,7 @@ public sealed class WoundRepairPacketPrivacyTests
         });
 
         var packet = Assert.Single(WoundRepairPacketBuilder.Build(CreateRequest(candidate)));
-        var serialized = packet.ToJsonObject().ToJsonString();
+        var serialized = packet.ToJsonObject().ToJsonString(ReadableJson);
 
         Assert.DoesNotContain("wound_permanent_secret", serialized, StringComparison.Ordinal);
         Assert.DoesNotContain("npc_permanent_secret", serialized, StringComparison.Ordinal);
@@ -137,7 +144,7 @@ public sealed class WoundRepairPacketPrivacyTests
             "не показывать игроку";
 
         var packet = Assert.Single(WoundRepairPacketBuilder.Build(CreateRequest(candidate)));
-        var serialized = packet.ToJsonObject().ToJsonString();
+        var serialized = packet.ToJsonObject().ToJsonString(ReadableJson);
 
         Assert.DoesNotContain("unrelatedQuestChange", serialized, StringComparison.Ordinal);
         Assert.DoesNotContain("quest_private_secret", serialized, StringComparison.Ordinal);
@@ -182,7 +189,7 @@ public sealed class WoundRepairPacketPrivacyTests
         var first = packet.ToJsonObject();
         first["safeContext"]!["providerId"] = "late_provider_secret";
         first["preservedProposal"]!["effectId"] = "late_effect_secret";
-        var secondSerialized = packet.ToJsonObject().ToJsonString();
+        var secondSerialized = packet.ToJsonObject().ToJsonString(ReadableJson);
 
         Assert.DoesNotContain("late_owner_secret", secondSerialized, StringComparison.Ordinal);
         Assert.DoesNotContain("late_wound_secret", secondSerialized, StringComparison.Ordinal);

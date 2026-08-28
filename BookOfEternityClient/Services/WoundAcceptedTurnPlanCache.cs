@@ -22,6 +22,10 @@ internal sealed class WoundAcceptedTurnPlanCache
     private string? _finalPreparedFingerprint;
     private string? _finalEffectFingerprint;
     private WoundAcceptedTurnPlanningResult? _finalResult;
+    private WoundRepairPacketAuthority? _repairAuthority;
+    private readonly Dictionary<string, WoundRepairPacket> _repairPackets =
+        new(StringComparer.Ordinal);
+    private readonly HashSet<WoundRepairPacketReceipt> _consumedRepairReceipts = new();
 
     internal WoundAcceptedTurnPlanCache()
         : this(
@@ -53,6 +57,90 @@ internal sealed class WoundAcceptedTurnPlanCache
         {
             lock (_gate)
                 return _finalResult is not null;
+        }
+    }
+
+    internal bool HasRepairWave
+    {
+        get
+        {
+            lock (_gate)
+                return _repairAuthority is not null && _repairPackets.Count != 0;
+        }
+    }
+
+    internal bool TryRegisterRepairWave(
+        WoundRepairPacketAuthority authority,
+        IReadOnlyList<WoundRepairPacket> packets)
+    {
+        ArgumentNullException.ThrowIfNull(authority);
+        ArgumentNullException.ThrowIfNull(packets);
+        lock (_gate)
+        {
+            InvalidateAllCore();
+            if (!ValidRepairAuthority(authority) ||
+                packets.Count is < 1 or > 64)
+            {
+                return false;
+            }
+
+            var candidateRefs = new HashSet<string>(StringComparer.Ordinal);
+            var confusableRefs = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var packet in packets)
+            {
+                if (packet is null ||
+                    !RepairPacketAgrees(authority, packet) ||
+                    !candidateRefs.Add(packet.CandidateRef) ||
+                    !confusableRefs.Add(
+                        MortalLocationIdentityState.BuildConfusableKey(
+                            packet.CandidateRef)))
+                {
+                    InvalidateAllCore();
+                    return false;
+                }
+                _repairPackets.Add(packet.CandidateRef, packet);
+            }
+
+            _repairAuthority = authority;
+            return true;
+        }
+    }
+
+    internal bool TryTakeRepairPacket(
+        WoundRepairPacketAuthority liveAuthority,
+        WoundRepairPacketReceipt receipt,
+        out WoundRepairPacket packet)
+    {
+        ArgumentNullException.ThrowIfNull(liveAuthority);
+        ArgumentNullException.ThrowIfNull(receipt);
+        lock (_gate)
+        {
+            packet = null!;
+            if (_repairAuthority is null)
+            {
+                InvalidateAllCore();
+                return false;
+            }
+            if (!Equals(_repairAuthority, liveAuthority))
+            {
+                InvalidateAllCore();
+                return false;
+            }
+            if (_consumedRepairReceipts.Contains(receipt))
+                return false;
+            if (!_repairPackets.TryGetValue(receipt.CandidateRef, out var candidate) ||
+                !Equals(candidate.CreateReceipt(), receipt))
+            {
+                InvalidateAllCore();
+                return false;
+            }
+
+            _repairPackets.Remove(receipt.CandidateRef);
+            _consumedRepairReceipts.Add(receipt);
+            packet = candidate;
+            if (_repairPackets.Count == 0)
+                ClearRepairWaveCore();
+            return true;
         }
     }
 
@@ -799,6 +887,7 @@ internal sealed class WoundAcceptedTurnPlanCache
         _preparedStageToken = null;
         _preparedResult = null;
         InvalidateFinalCore();
+        ClearRepairWaveCore();
     }
 
     private void InvalidateFinalCore()
@@ -807,6 +896,44 @@ internal sealed class WoundAcceptedTurnPlanCache
         _finalEffectFingerprint = null;
         _finalResult = null;
     }
+
+    private void ClearRepairWaveCore()
+    {
+        _repairAuthority = null;
+        _repairPackets.Clear();
+        _consumedRepairReceipts.Clear();
+    }
+
+    private static bool ValidRepairAuthority(WoundRepairPacketAuthority authority) =>
+        ResourceMaterializationContract.IsExactIdentifier(authority.SessionId) &&
+        ResourceMaterializationContract.IsExactIdentifier(authority.RequestId) &&
+        ResourceMaterializationContract.IsExactIdentifier(authority.SnapshotToken) &&
+        ResourceMaterializationContract.IsExactIdentifier(authority.Generation) &&
+        ResourceMaterializationContract.IsAuthorityFingerprint(
+            authority.EventFingerprint) &&
+        ResourceMaterializationContract.IsAuthorityFingerprint(
+            authority.TargetFingerprint) &&
+        ResourceMaterializationContract.IsAuthorityFingerprint(
+            authority.RollFingerprint);
+
+    private static bool RepairPacketAgrees(
+        WoundRepairPacketAuthority authority,
+        WoundRepairPacket packet) =>
+        string.Equals(
+            authority.SessionId,
+            packet.SessionId,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            authority.RequestId,
+            packet.RequestId,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            authority.SnapshotToken,
+            packet.SnapshotToken,
+            StringComparison.Ordinal) &&
+        ResourceMaterializationContract.IsExactIdentifier(packet.CandidateRef) &&
+        ResourceMaterializationContract.IsAuthorityFingerprint(
+            packet.SemanticFingerprint);
 
     private static WoundAcceptedTurnPreparationResult Detach(
         WoundAcceptedTurnPreparationResult result) =>
