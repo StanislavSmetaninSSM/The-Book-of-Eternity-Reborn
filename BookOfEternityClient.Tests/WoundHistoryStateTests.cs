@@ -75,7 +75,9 @@ public sealed class WoundHistoryStateTests
         {
             "transitionId", "woundId", "ordinal", "woundTransitionOrdinal", "kind",
             "turn", "eventRef", "operationKey", "beforeFingerprint", "afterFingerprint",
-            "sourceFingerprint", "attemptId", "readableSummary", "terminal"
+            "sourceFingerprint", "attemptId", "courseId", "courseMilestoneOrdinal",
+            "cycleKey", "paymentFingerprint", "outputFingerprint", "readableSummary",
+            "terminal"
         };
         foreach (var field in requiredRowFields)
         {
@@ -130,6 +132,11 @@ public sealed class WoundHistoryStateTests
                      ("turn", -1),
                      ("terminal", "false"),
                      ("attemptId", new JsonObject()),
+                     ("courseId", new JsonObject()),
+                     ("courseMilestoneOrdinal", 0),
+                     ("cycleKey", new JsonObject()),
+                     ("paymentFingerprint", "sha256:invalid"),
+                     ("outputFingerprint", null),
                      ("beforeFingerprint", null),
                      ("afterFingerprint", "wound-fingerprint-test-001"),
                      ("sourceFingerprint", "source-fingerprint-test-001")
@@ -139,6 +146,17 @@ public sealed class WoundHistoryStateTests
             row[field] = invalid?.DeepClone();
             AssertInvalid(Parse(History(row)), FirstRowPath + "." + field);
         }
+    }
+
+    [Fact]
+    public void Parse_CourseMilestoneRequiresExactCourseIdentity()
+    {
+        var row = Transition(courseMilestoneOrdinal: 1);
+
+        AssertInvalid(
+            Parse(History(row)),
+            FirstRowPath + ".courseId",
+            "wound_history_course_coordinate_incomplete");
     }
 
     [Fact]
@@ -365,7 +383,8 @@ public sealed class WoundHistoryStateTests
     {
         foreach (var field in new[]
                  {
-                     "transitionId", "woundId", "eventRef", "operationKey", "attemptId"
+                     "transitionId", "woundId", "eventRef", "operationKey", "attemptId",
+                     "courseId", "cycleKey"
                  })
         {
             var row = Transition(beforeFingerprint: Fingerprint('f'));
@@ -380,7 +399,11 @@ public sealed class WoundHistoryStateTests
     [Fact]
     public void Parse_RequiresValidAuthorityFingerprintsAndBoundedReadableSummary()
     {
-        foreach (var field in new[] { "beforeFingerprint", "afterFingerprint", "sourceFingerprint" })
+        foreach (var field in new[]
+                 {
+                     "beforeFingerprint", "afterFingerprint", "sourceFingerprint",
+                     "paymentFingerprint", "outputFingerprint"
+                 })
         {
             var row = Transition();
             row[field] = "sha256:" + new string('A', 64);
@@ -494,6 +517,11 @@ public sealed class WoundHistoryStateTests
             null!,
             null!,
             null,
+            null,
+            null,
+            null,
+            null,
+            null!,
             null!,
             false);
         var validWoundWithNullChain = TypedTransition() with
@@ -545,6 +573,11 @@ public sealed class WoundHistoryStateTests
             exact with { AfterFingerprint = Fingerprint('c') },
             exact with { SourceFingerprint = Fingerprint('d') },
             exact with { AttemptId = "attempt_other" },
+            exact with { CourseId = "course_other" },
+            exact with { CourseMilestoneOrdinal = 2 },
+            exact with { CycleKey = "cycle_other" },
+            exact with { PaymentFingerprint = Fingerprint('e') },
+            exact with { OutputFingerprint = Fingerprint('0') },
             exact with { ReadableSummary = "Иное принятое значение." },
             exact with { Terminal = true }
         };
@@ -977,6 +1010,11 @@ public sealed class WoundHistoryStateTests
         string? afterFingerprint = null,
         string? sourceFingerprint = null,
         string? attemptId = null,
+        string? courseId = null,
+        int? courseMilestoneOrdinal = null,
+        string? cycleKey = null,
+        string? paymentFingerprint = null,
+        string? outputFingerprint = null,
         string readableSummary = "Рана зафиксирована после подтверждённого события.",
         bool terminal = false) => new()
     {
@@ -992,6 +1030,11 @@ public sealed class WoundHistoryStateTests
         ["afterFingerprint"] = afterFingerprint ?? Fingerprint('a'),
         ["sourceFingerprint"] = sourceFingerprint ?? Fingerprint('e'),
         ["attemptId"] = attemptId,
+        ["courseId"] = courseId,
+        ["courseMilestoneOrdinal"] = courseMilestoneOrdinal,
+        ["cycleKey"] = cycleKey,
+        ["paymentFingerprint"] = paymentFingerprint,
+        ["outputFingerprint"] = outputFingerprint ?? Fingerprint('f'),
         ["readableSummary"] = readableSummary,
         ["terminal"] = terminal
     };
@@ -1009,6 +1052,11 @@ public sealed class WoundHistoryStateTests
         string? afterFingerprint = null,
         string? sourceFingerprint = null,
         string? attemptId = null,
+        string? courseId = null,
+        int? courseMilestoneOrdinal = null,
+        string? cycleKey = null,
+        string? paymentFingerprint = null,
+        string? outputFingerprint = null,
         string readableSummary = "Рана зафиксирована после подтверждённого события.",
         bool terminal = false) => new(
         transitionId,
@@ -1023,6 +1071,11 @@ public sealed class WoundHistoryStateTests
         afterFingerprint ?? Fingerprint('a'),
         sourceFingerprint ?? Fingerprint('e'),
         attemptId,
+        courseId,
+        courseMilestoneOrdinal,
+        cycleKey,
+        paymentFingerprint,
+        outputFingerprint ?? Fingerprint('f'),
         readableSummary,
         terminal);
 

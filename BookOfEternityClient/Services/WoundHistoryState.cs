@@ -28,6 +28,11 @@ internal sealed record WoundHistoryTransition(
     string AfterFingerprint,
     string SourceFingerprint,
     string? AttemptId,
+    string? CourseId,
+    int? CourseMilestoneOrdinal,
+    string? CycleKey,
+    string? PaymentFingerprint,
+    string OutputFingerprint,
     string ReadableSummary,
     bool Terminal);
 
@@ -41,13 +46,30 @@ internal sealed record WoundHistoryReplayProbe(
     string AfterFingerprint,
     string SourceFingerprint,
     string? AttemptId,
+    string? CourseId,
+    int? CourseMilestoneOrdinal,
+    string? CycleKey,
+    string? PaymentFingerprint,
+    string OutputFingerprint,
     string ReadableSummary,
     bool Terminal);
+
+internal sealed record WoundAlreadyAcceptedReceipt(
+    string OperationKey,
+    string EventRef,
+    string? AttemptId,
+    string? CourseId,
+    int? CourseMilestoneOrdinal,
+    string? CycleKey,
+    string? PaymentFingerprint,
+    string OutputFingerprint,
+    string ReadableSummary);
 
 internal sealed record WoundHistoryReplayResult(
     WoundHistoryReplayDisposition Disposition,
     WoundHistoryTransition? Transition,
-    IReadOnlyList<ValidationIssue> Issues);
+    IReadOnlyList<ValidationIssue> Issues,
+    WoundAlreadyAcceptedReceipt? AlreadyAcceptedReceipt);
 
 internal sealed record WoundHistoryParseResult(
     WoundHistoryState? State,
@@ -67,7 +89,9 @@ internal sealed class WoundHistoryState
     private static readonly IReadOnlySet<string> TransitionFields = Set(
         "transitionId", "woundId", "ordinal", "woundTransitionOrdinal", "kind", "turn",
         "eventRef", "operationKey", "beforeFingerprint", "afterFingerprint",
-        "sourceFingerprint", "attemptId", "readableSummary", "terminal");
+        "sourceFingerprint", "attemptId", "courseId", "courseMilestoneOrdinal",
+        "cycleKey", "paymentFingerprint", "outputFingerprint", "readableSummary",
+        "terminal");
     private static readonly IReadOnlySet<string> Kinds = Set(
         "create", "worsen", "complicate", "diagnose", "stabilize", "treat",
         "recover", "heal", "legacy", "archive");
@@ -262,6 +286,24 @@ internal sealed class WoundHistoryState
         return "sha256:" + Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
     }
 
+    internal static string ComputeOutputFingerprint(
+        string operationKey,
+        string eventRef,
+        string readableSummary)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(operationKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(eventRef);
+        ArgumentException.ThrowIfNullOrWhiteSpace(readableSummary);
+        return WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.wound.accepted_output",
+            "1",
+            operationKey,
+            eventRef,
+            readableSummary
+        });
+    }
+
     internal static WoundHistoryReplayProbe CreateReplayProbe(
         WoundHistoryTransition transition)
     {
@@ -276,6 +318,11 @@ internal sealed class WoundHistoryState
             transition.AfterFingerprint,
             transition.SourceFingerprint,
             transition.AttemptId,
+            transition.CourseId,
+            transition.CourseMilestoneOrdinal,
+            transition.CycleKey,
+            transition.PaymentFingerprint,
+            transition.OutputFingerprint,
             transition.ReadableSummary,
             transition.Terminal);
     }
@@ -303,6 +350,17 @@ internal sealed class WoundHistoryState
                    probe.SourceFingerprint,
                    StringComparison.Ordinal) &&
                string.Equals(transition.AttemptId, probe.AttemptId, StringComparison.Ordinal) &&
+               string.Equals(transition.CourseId, probe.CourseId, StringComparison.Ordinal) &&
+               transition.CourseMilestoneOrdinal == probe.CourseMilestoneOrdinal &&
+               string.Equals(transition.CycleKey, probe.CycleKey, StringComparison.Ordinal) &&
+               string.Equals(
+                   transition.PaymentFingerprint,
+                   probe.PaymentFingerprint,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   transition.OutputFingerprint,
+                   probe.OutputFingerprint,
+                   StringComparison.Ordinal) &&
                string.Equals(
                    transition.ReadableSummary,
                    probe.ReadableSummary,
@@ -318,7 +376,8 @@ internal sealed class WoundHistoryState
             return new WoundHistoryReplayResult(
                 WoundHistoryReplayDisposition.None,
                 null,
-                ImmutableArray<ValidationIssue>.Empty);
+                ImmutableArray<ValidationIssue>.Empty,
+                null);
         }
 
         if (ReplaySemanticsMatch(transition, probe))
@@ -326,7 +385,8 @@ internal sealed class WoundHistoryState
             return new WoundHistoryReplayResult(
                 WoundHistoryReplayDisposition.Exact,
                 transition,
-                ImmutableArray<ValidationIssue>.Empty);
+                ImmutableArray<ValidationIssue>.Empty,
+                null);
         }
 
         var issues = ImmutableArray.CreateBuilder<ValidationIssue>();
@@ -339,7 +399,8 @@ internal sealed class WoundHistoryState
         return new WoundHistoryReplayResult(
             WoundHistoryReplayDisposition.Conflict,
             transition,
-            issues.ToImmutable());
+            issues.ToImmutable(),
+            null);
     }
 
     internal IReadOnlyList<ValidationIssue> ValidateAgreement(
@@ -532,6 +593,25 @@ internal sealed class WoundHistoryState
             path,
             issues);
         var attemptId = ReadNullableExactIdentifier(element, "attemptId", path, issues);
+        var courseId = ReadNullableExactIdentifier(element, "courseId", path, issues);
+        var courseMilestoneOrdinal = ReadNullableInt32(
+            element,
+            "courseMilestoneOrdinal",
+            path,
+            1,
+            MaxTransitions,
+            issues);
+        var cycleKey = ReadNullableExactIdentifier(element, "cycleKey", path, issues);
+        var paymentFingerprint = ReadNullableFingerprint(
+            element,
+            "paymentFingerprint",
+            path,
+            issues);
+        var outputFingerprint = ReadFingerprint(
+            element,
+            "outputFingerprint",
+            path,
+            issues);
         var summary = ReadSummary(element, path, issues);
         var terminal = ReadBoolean(element, "terminal", path, issues);
 
@@ -549,6 +629,11 @@ internal sealed class WoundHistoryState
                 afterFingerprint,
                 sourceFingerprint,
                 attemptId,
+                courseId,
+                courseMilestoneOrdinal,
+                cycleKey,
+                paymentFingerprint,
+                outputFingerprint,
                 summary,
                 terminal)
             : null;
@@ -680,6 +765,28 @@ internal sealed class WoundHistoryState
         ValidateTypedIdentifier(transition.OperationKey, path + ".operationKey", issues);
         if (transition.AttemptId is not null)
             ValidateTypedIdentifier(transition.AttemptId, path + ".attemptId", issues);
+        if (transition.CourseId is not null)
+            ValidateTypedIdentifier(transition.CourseId, path + ".courseId", issues);
+        if (transition.CycleKey is not null)
+            ValidateTypedIdentifier(transition.CycleKey, path + ".cycleKey", issues);
+        if (transition.CourseMilestoneOrdinal is < 1 or > MaxTransitions)
+        {
+            AddIssue(
+                issues,
+                path + ".courseMilestoneOrdinal",
+                "wound_history_invalid_field",
+                $"null or exact integer 1..{MaxTransitions}",
+                transition.CourseMilestoneOrdinal.Value.ToString(CultureInfo.InvariantCulture));
+        }
+        if (transition.CourseMilestoneOrdinal.HasValue && transition.CourseId is null)
+        {
+            AddIssue(
+                issues,
+                path + ".courseId",
+                "wound_history_course_coordinate_incomplete",
+                "courseId whenever courseMilestoneOrdinal is present",
+                "null");
+        }
         if (transition.Ordinal < 1 || transition.Ordinal > MaxTransitions)
         {
             AddIssue(
@@ -720,6 +827,17 @@ internal sealed class WoundHistoryState
         ValidateTypedFingerprint(transition.BeforeFingerprint, path + ".beforeFingerprint", issues);
         ValidateTypedFingerprint(transition.AfterFingerprint, path + ".afterFingerprint", issues);
         ValidateTypedFingerprint(transition.SourceFingerprint, path + ".sourceFingerprint", issues);
+        if (transition.PaymentFingerprint is not null)
+        {
+            ValidateTypedFingerprint(
+                transition.PaymentFingerprint,
+                path + ".paymentFingerprint",
+                issues);
+        }
+        ValidateTypedFingerprint(
+            transition.OutputFingerprint,
+            path + ".outputFingerprint",
+            issues);
         if (!IsReadableSummary(transition.ReadableSummary))
         {
             AddIssue(
@@ -1143,6 +1261,30 @@ internal sealed class WoundHistoryState
         return string.Empty;
     }
 
+    private static string? ReadNullableFingerprint(
+        JsonElement root,
+        string field,
+        string path,
+        ICollection<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var value))
+            return null;
+        if (value.ValueKind == JsonValueKind.Null)
+            return null;
+        if (value.ValueKind == JsonValueKind.String &&
+            ResourceMaterializationContract.IsAuthorityFingerprint(value.GetString()))
+        {
+            return value.GetString();
+        }
+        AddIssue(
+            issues,
+            path + "." + field,
+            "wound_history_invalid_fingerprint",
+            "null or exact lowercase sha256: fingerprint with 64 hexadecimal digits",
+            value.GetRawText());
+        return null;
+    }
+
     private static string ReadKind(
         JsonElement root,
         string path,
@@ -1186,6 +1328,34 @@ internal sealed class WoundHistoryState
             $"exact integer {minimum}..{maximum}",
             Describe(root, field));
         return 0;
+    }
+
+    private static int? ReadNullableInt32(
+        JsonElement root,
+        string field,
+        string path,
+        int minimum,
+        int maximum,
+        ICollection<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var value))
+            return null;
+        if (value.ValueKind == JsonValueKind.Null)
+            return null;
+        if (value.ValueKind == JsonValueKind.Number &&
+            value.TryGetInt32(out var result) &&
+            value.GetRawText().IndexOfAny(new[] { '.', 'e', 'E' }) < 0 &&
+            result >= minimum && result <= maximum)
+        {
+            return result;
+        }
+        AddIssue(
+            issues,
+            path + "." + field,
+            "wound_history_invalid_field",
+            $"null or exact integer {minimum}..{maximum}",
+            value.GetRawText());
+        return null;
     }
 
     private static bool ReadBoolean(
@@ -1329,6 +1499,29 @@ internal sealed class WoundHistoryState
             writer.WriteNull("attemptId");
         else
             writer.WriteString("attemptId", transition.AttemptId);
+        if (transition.CourseId is null)
+            writer.WriteNull("courseId");
+        else
+            writer.WriteString("courseId", transition.CourseId);
+        if (transition.CourseMilestoneOrdinal.HasValue)
+        {
+            writer.WriteNumber(
+                "courseMilestoneOrdinal",
+                transition.CourseMilestoneOrdinal.Value);
+        }
+        else
+        {
+            writer.WriteNull("courseMilestoneOrdinal");
+        }
+        if (transition.CycleKey is null)
+            writer.WriteNull("cycleKey");
+        else
+            writer.WriteString("cycleKey", transition.CycleKey);
+        if (transition.PaymentFingerprint is null)
+            writer.WriteNull("paymentFingerprint");
+        else
+            writer.WriteString("paymentFingerprint", transition.PaymentFingerprint);
+        writer.WriteString("outputFingerprint", transition.OutputFingerprint);
         writer.WriteString("readableSummary", transition.ReadableSummary);
         writer.WriteBoolean("terminal", transition.Terminal);
         writer.WriteEndObject();

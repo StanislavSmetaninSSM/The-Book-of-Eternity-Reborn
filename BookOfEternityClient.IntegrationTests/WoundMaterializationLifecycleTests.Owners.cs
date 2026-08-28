@@ -327,6 +327,11 @@ public sealed partial class WoundMaterializationLifecycleTests
                 ["afterFingerprint"] = fingerprint,
                 ["sourceFingerprint"] = Fingerprint($"source_{scenario}"),
                 ["attemptId"] = null,
+                ["courseId"] = null,
+                ["courseMilestoneOrdinal"] = null,
+                ["cycleKey"] = null,
+                ["paymentFingerprint"] = null,
+                ["outputFingerprint"] = Fingerprint($"output_{scenario}"),
                 ["readableSummary"] = "Рана получена и привязана к точному владельцу.",
                 ["terminal"] = false
             })

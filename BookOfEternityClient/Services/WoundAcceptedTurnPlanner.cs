@@ -187,6 +187,36 @@ internal static class WoundEffectBatchPlanner
 
 internal static class WoundAcceptedTurnPlanner
 {
+    internal static WoundHistoryReplayResult ResolveAcceptedReplay(
+        WoundHistoryState history,
+        WoundHistoryReplayProbe probe)
+    {
+        ArgumentNullException.ThrowIfNull(history);
+        ArgumentNullException.ThrowIfNull(probe);
+
+        var replay = history.ResolveReplay(probe);
+        if (replay.Disposition != WoundHistoryReplayDisposition.Exact ||
+            replay.Transition is null)
+        {
+            return replay;
+        }
+
+        var accepted = replay.Transition;
+        return replay with
+        {
+            AlreadyAcceptedReceipt = new WoundAlreadyAcceptedReceipt(
+                accepted.OperationKey,
+                accepted.EventRef,
+                accepted.AttemptId,
+                accepted.CourseId,
+                accepted.CourseMilestoneOrdinal,
+                accepted.CycleKey,
+                accepted.PaymentFingerprint,
+                accepted.OutputFingerprint,
+                accepted.ReadableSummary)
+        };
+    }
+
     internal static WoundAcceptedSourceBindingResult BindAcceptedSourceTargets(
         WoundAcceptedTurnBinding binding,
         IReadOnlyList<WoundOpportunityAuthority> opportunities,
@@ -977,6 +1007,14 @@ internal static class WoundAcceptedTurnPlannerCore
                     historyIntent.AfterFingerprint,
                     authority.OpportunityAuthorityFingerprint,
                     historyIntent.AttemptId,
+                    reduction.ProposedAfter.Care.ActiveCourseId,
+                    null,
+                    historyIntent.TickKey,
+                    null,
+                    WoundHistoryState.ComputeOutputFingerprint(
+                        historyIntent.OperationKey,
+                        historyIntent.EventRef,
+                        authority.ReadableSummary),
                     authority.ReadableSummary,
                     historyIntent.Terminal));
             }

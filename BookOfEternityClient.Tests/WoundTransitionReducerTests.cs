@@ -3685,6 +3685,14 @@ public sealed class WoundTransitionReducerTests
             intent.AfterFingerprint,
             ValidFingerprint('d'),
             intent.AttemptId,
+            null,
+            null,
+            intent.TickKey,
+            null,
+            WoundHistoryState.ComputeOutputFingerprint(
+                intent.OperationKey,
+                intent.EventRef,
+                "Проверяемый переход материализации раны."),
             "Проверяемый переход материализации раны.",
             intent.Terminal);
 

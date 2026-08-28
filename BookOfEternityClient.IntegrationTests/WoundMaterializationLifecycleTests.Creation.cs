@@ -1097,6 +1097,14 @@ internal sealed record WoundLifecycleLegacyFixture(
         ["afterFingerprint"] = after,
         ["sourceFingerprint"] = source,
         ["attemptId"] = null,
+        ["courseId"] = null,
+        ["courseMilestoneOrdinal"] = null,
+        ["cycleKey"] = null,
+        ["paymentFingerprint"] = null,
+        ["outputFingerprint"] = WoundHistoryState.ComputeOutputFingerprint(
+            operationKey,
+            eventRef,
+            summary),
         ["readableSummary"] = summary,
         ["terminal"] = terminal
     };

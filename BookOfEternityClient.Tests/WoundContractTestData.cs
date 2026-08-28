@@ -125,6 +125,11 @@ internal static class WoundContractTestData
         ["afterFingerprint"] = "wound-fingerprint-test-001",
         ["sourceFingerprint"] = "source-fingerprint-test-001",
         ["attemptId"] = "attempt_test_001",
+        ["courseId"] = null,
+        ["courseMilestoneOrdinal"] = null,
+        ["cycleKey"] = null,
+        ["paymentFingerprint"] = null,
+        ["outputFingerprint"] = "sha256:" + new string('f', 64),
         ["readableSummary"] = "Рана зафиксирована после подтверждённого события.",
         ["terminal"] = terminal
     };

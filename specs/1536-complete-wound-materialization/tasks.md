@@ -581,8 +581,9 @@ history/receipt/planner replay surface, with no tests executed, timeout, or dupl
 - [X] T052 [US7] Integrate wound repair obligations, safe harness packets, exact resubmission shape, and unrelated-response preservation in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
 - [X] T053 [US7] Invalidate prepared/final wound, effect, and common handoffs together on repair/rejection/snapshot mismatch in `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs`
 - [X] T054 [US7] Extend exact snapshot and post-publication agreement to scheduler, journals, quests, inventory/characteristics, debug/output, and pending wound roots in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
-- [ ] T055 [US7] Add operation/attempt/course/cycle/payment/output replay coordinates and already-accepted receipt projection in `BookOfEternityClient/Services/WoundHistoryState.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
+- [X] T055 [US7] Add operation/attempt/course/cycle/payment/output replay coordinates and already-accepted receipt projection in `BookOfEternityClient/Services/WoundHistoryState.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T056 [US7] Add invalid proposal, bounded repair, stale packet, rollback, and replay worked guidance in `OtherGuides/Wound_Materialization_Contract.md`, `Rules/Block_12.txt`, and `Examples/E_Block_12.txt`
+- [ ] T057A [US7] Resolve the inherited strict response/repair regressions exposed by the complete lifecycle filter, including duplicate-property fail-closed handling and preservation of the registered response issue codes
 - [ ] T057 [US7] Run focused repair/privacy/cache/rollback/replay filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
 
 T051 GREEN evidence (2026-08-29): the new immutable repair packet boundary accepts a
@@ -700,6 +701,40 @@ review found 0 Critical, 0 Important, and 0 Minor issues. This is client-owned
 transactional hardening of existing roots only: it adds no command, field, response,
 pending action type, or GM-authored output, so Mortal/afterlife prompts, docs, examples,
 manifests, and documentation guards require no T054 update.
+
+T055 GREEN evidence (2026-08-29): strict wound history rows now persist the exact
+accepted treatment attempt, course and milestone, recovery cycle, payment, and output
+coordinates beside the existing operation/event authority. Parsing, typed-state
+validation, canonical serialization, and replay comparison all use the same closed
+version-1 shape; a milestone without its course identity fails closed. There is no
+legacy compatibility branch or migration path. Exact replay projects one immutable
+already-accepted receipt from the persisted transition, never from caller-supplied
+values, while unknown operations return no receipt and any coordinate mismatch returns
+`wound_history_conflicting_replay` without mutation. Current create/worsen publication
+records its client-derived output fingerprint and leaves inapplicable coordinates
+explicitly null for later treatment/recovery stages.
+
+The frozen RED build failed only on the nine deliberately absent T055 types, members,
+and replay fields
+(`20260829-054701-274-29880-0bd78e42eed94b39a81e294920fcb2d2-focused`). Fresh GREEN
+verification is warning-free: all 13 file-backed success/repair/crash-recovery/consumed
+command replay contours pass their 100-repeat exact/conflict loops
+(`20260829-055750-954-7200-9b10bc6b62a240ef9910f56788bbb8c8-focused`), strict history
+passes 47/47 (`20260829-061327-918-35960-95174bfa943346e7a6ef43779a2de9eb-focused`),
+transition/effect planning passes 316/316
+(`20260829-060351-677-16156-1d0a377b573643fb9fbd934e3be65f4e-focused`), and the 30
+relevant creation/worsening/owner/publication lifecycle rows pass 30/30
+(`20260829-061414-906-34256-ddfe87b6e6f747a68df15a91c96c008d-focused`). The complete Fast
+lane passes 6,091/6,091 in 4:31 with no timeout or duplicate IDs
+(`20260829-061536-448-40368-4723f5255d9c46d6a0a3f9e6fa319407-fast`). Independent
+read-only review found 0 Critical, 0 Important, and 0 Minor issues and declared T055
+ready. The schema is client-owned, but GM-facing repair/replay workflow documentation
+is intentionally synchronized in T056.
+
+An exploratory complete wound lifecycle/validation selection also exposed eight
+response/repair failures outside the T055 files (59/67 passed); a representative raw
+duplicate-property exception reproduces unchanged on baseline commit `93b71676`.
+T057A tracks that inherited US7 debt explicitly before the final T057 GREEN gate.
 
 **Checkpoint**: Invalid or repeated wound work cannot leak authority, alter unrelated content, or leave partial state.
 
