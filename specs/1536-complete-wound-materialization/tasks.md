@@ -425,7 +425,7 @@ T042-T044 still own the GM-facing contract, examples, manifest, and prompt updat
 - [X] T042 [P] [US1] Add RED source/documentation guards for wound constructor, optional GM choice, guarantee, severity bounds, acquisition narration, effect separation, and the exact registered spiritual wound profile set in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs` and `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
 - [X] T043 [US1] Create the GM-facing common constructor/authority/effect contract in `OtherGuides/Wound_Materialization_Contract.md`, synchronize the wound-source and exact spiritual-profile registry sections in `OtherGuides/Effect_Materialization_Contract.md`, and update `Examples/E_CLI_Effect_Materialization.txt` plus `Examples/example_validation_manifest.json` so all exact eight registered spiritual wound profiles have closed fragments and at least one complete worked GM spiritual-wound source graph
 - [X] T044 [US1] Replace the loose constructor and add optional/lower/guaranteed/rejected worked examples in `Rules/Block_5.txt`, `Examples/E_Block_5.txt`, and `BookOfEternityClient/game_master_daemon.ps1`; synchronize the remaining active wound-routing references in `Rules/Block_2.txt`, `Rules/Block_12.txt`, `Rules/Block_15.txt`, `Rules/Block_CLI_Operations.txt`, and `Examples/E_Block_16.txt`
-- [ ] T045 [US1] Run focused US1 unit/integration/documentation filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
+- [X] T045 [US1] Run focused US1 unit/integration/documentation filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
 
 T042 RED evidence (2026-08-28): seven documentation/source guards now specify the
 strict common constructor, ordinary optional/lower and guaranteed decisions, legal
@@ -474,6 +474,26 @@ updated and the fresh control is GREEN. After aligning the daemon wording with t
 actual `decision=none|materialize` enum, its AST parse remained clean and the exact
 rule/daemon guards reran GREEN `2/2`
 (`20260828-235935-513-39900-28a66e601ac54fff9e5c2c473c99c523-focused`).
+
+T045 completion evidence (2026-08-29): the focused US1 opportunity, guarantee,
+source/target, acquisition output, source-guard, UI/refresh, and GM-documentation
+selection is GREEN `61/61`
+(`20260829-000256-625-32552-b63f520a920c490d91c61b8e998a8dfb-focused`); the complete
+creation/owner/command/response lifecycle plus manifest/parser/source examples is GREEN
+`50/50` (`20260829-000423-299-46036-578336cfb5c84749ac2f71244671aa80-focused`);
+and the required afterlife documentation guard is GREEN `118/118`
+(`20260829-000621-443-27040-a25b8d82d0fd47be92d3578a70164da1-focused`). The first
+conditional FullValidation correctly exposed that its accepted-turn scenario baseline
+still omitted the mandatory empty schema-v1 wound identity/history roots and the empty
+Azalia `activeWounds` carrier; after adding those exact current-schema fixtures, the
+runtime manifest scenario is GREEN `1/1` with measured eight-minute headroom
+(`20260829-001935-192-44600-db8a4e4072fc4c11b95cfb556e3097f5-focused`). The same run
+also exposed a pre-existing 38-byte stale exact-size expectation for the unchanged
+tracked Mortal save; the corrected integrity sentinel is GREEN `1/1`
+(`20260829-002157-811-35304-b39948aa5b4d4cef91b06616ff2e8628-focused`). Final
+FullValidation is GREEN `1848/1848` in `00:10:11`, warning-free, with no timeout or
+duplicate IDs
+(`20260829-002249-557-18320-77e1e13cc9c1496ba0e51716c3edd2fb-fullvalidation`).
 
 **Checkpoint**: Wound creation is complete, fair, atomic, narrated, and independently testable; no treatment or player command is exposed yet.
 

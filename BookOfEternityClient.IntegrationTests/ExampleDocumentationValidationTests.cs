@@ -2455,6 +2455,13 @@ public sealed partial class ExampleDocumentationValidationTests
             "game_state/inventory/item_identity_index.json",
             """{ "schemaVersion": 1, "entries": [] }""");
 
+        await fs.WriteFileAtomicAsync(
+            WoundIdentityState.StatePath,
+            """{ "schemaVersion": 1, "entries": [] }""");
+        await fs.WriteFileAtomicAsync(
+            WoundHistoryState.HistoryPath,
+            """{ "schemaVersion": 1, "nextOrdinal": 1, "transitions": [] }""");
+
         var neutralLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
             "loc_afterlife_documentation_baseline",
             "Нейтральная точка проверки документации");
@@ -2695,6 +2702,7 @@ public sealed partial class ExampleDocumentationValidationTests
         profile["locationId"] = "abode_azalia_memory_silk_001";
         profile["locationName"] = "Обитель Азалии";
         profile["activeEffects"] = new JsonArray();
+        profile["activeWounds"] = new JsonArray();
 
         var root = AfterlifeEntityProfileState.CreateDefaultRoot();
         Assert.IsType<JsonArray>(root[AfterlifeEntityProfileState.ProfilesProperty])

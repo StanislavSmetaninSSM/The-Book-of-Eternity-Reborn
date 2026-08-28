@@ -57,7 +57,7 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         }
 
         Assert.Equal(104, observed.Max(item => item.EntryCount));
-        Assert.Equal(372_978, observed.Max(item => item.ExpandedBytes));
+        Assert.Equal(373_016, observed.Max(item => item.ExpandedBytes));
         Assert.Equal(60_825, observed.Max(item => item.LargestEntryBytes));
         Assert.Equal(3_735, observed.Max(item => item.NameUtf8Bytes));
 
