@@ -1140,11 +1140,9 @@ FOR API MODE: All existing restrictions remain functional.
                                  
                                     g)  Check for Defeat: If the accepted health transition reaches its sealed minimum, handle defeat and narrate/update only the non-resource tactical status.
                                  
-                                    h) Check for Significant Damage Consequences:
-                                       After applying health loss, evaluate if the 'FinalDamageToTarget%' inflicted by this single 'Damage' effect meets a threshold 
-                                       for additional consequences as per InstructionBlock '5' -> Rule '5.20.3' (Triggering Wounds or Damage-Induced Debuffs).
-                                       If so, the GM applies an appropriate Wound (for PC/NPC, if a detailed wound system is used) or, more commonly, a temporary Debuff to the target.
-                                       This new Debuff is reported as per InstructionBlock '5' -> Rule '5.20.4'.
+                                    h) Resolve Separately Authorized Consequences:
+                                       Do not infer a wound opportunity from a damage percentage or a prose threshold. If the client exposes an exact wound opportunity for the accepted event, make the bounded GM choice through top-level `woundDecisions[]` as defined in Rule #5.20.1-#5.20.2.
+                                       A temporary debuff is a separate registered effect. Request it only through top-level `effectChanges[]` when its exact source/event authority exists; it never substitutes for a wound decision (Rule #5.20.3).
 
                                     i) Logging: Record all steps of this calculation in 'gm_thoughts_markdown'.
 
@@ -1224,14 +1222,14 @@ FOR API MODE: All existing restrictions remain functional.
                             2.  For the Player Character:
                                 - Health Changes: Narrate and emit the exact `resourceChanges` command; player status remains a client projection and carries no resource authority.
                                 - New Temporary Buffs/Debuffs: Request apply/dispel/remove through top-level 'effectChanges[]' using one exact source definition and player target. Do not update a carrier directly; playerStatus is display-only.
-                                - New/Updated Wounds: Report via 'playerWoundChanges' array (using #5.20.3 structure). Update 'playerStatus.activeConditions' to reflect significant wounds.
+                                - Exposed Wound Opportunities: Answer each exact current opportunity once through top-level `woundDecisions[]` using its opaque `opportunityRef` and Rule #5.20. Do not update `playerStatus.activeConditions`; wound publication and projections are client-owned.
 
                             3.  For Named NPCs (from 'NPCsInScene' in Context):
                                 - If NPC is an active combatant (in 'enemiesData'/'alliesData'): Handle as per point 1 (update their object there).
                                 - If NPC is affected but *not* an active combatant in those arrays:
                                     - Health Changes: Narrate and emit the exact `resourceChanges` command against target.kind='npc' and the accepted NPC targetId; never resend a numeric NPC health field.
                                     - New Temporary Buffs/Debuffs: Request lifecycle through top-level 'effectChanges[]' with target.kind='npc' and the exact accepted NPC targetId. Never resend a named-NPC effect carrier.
-                                    - New/Updated Wounds: Report via 'NPCWoundChanges' array ({ "NPCId": "guid", "wounds": [array_of_wound_objects_as_per_5.20.3] }).
+                                    - Exposed Wound Opportunities: Answer each exact current opportunity once through top-level `woundDecisions[]` using its opaque `opportunityRef` and Rule #5.20. Do not author an NPC ID inside the decision; the client-owned opportunity already seals the target.
 
                             4.  Logging: Ensure all health changes, application of new status effects, and Wounds are detailed in 'gm_thoughts_markdown'.
                             
@@ -1643,8 +1641,8 @@ FOR API MODE: All existing restrictions remain functional.
 
                             -   IF the array is NOT empty: This means the character has one or more documented, specific injuries.
                                 -   Conclusion: The player's intent is to treat one of THESE existing wounds.
-                                -   Action: Your action becomes a "Heal Wound" attempt. 
-                                    Proceed with the logic for healing, likely involving a First Aid check or item use that contributes 'treatmentProgress' to a specific Wound Object (as per Rule #5.20.6).
+                                -   Action: Your action becomes a "Heal Wound" attempt.
+                                    Use the current client-owned treatment command or pending route for the selected visible wound as defined in Rule #5.20.4. The setting determines medicine, herbs, crystals, procedures, payment, time, and checks; never write `treatmentProgress` or wound state directly.
 
                             ]]>
      </content>

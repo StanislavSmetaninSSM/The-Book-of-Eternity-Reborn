@@ -271,9 +271,9 @@ FOR API MODE: All existing restrictions remain functional.
                           b) Narrate the stagger/guard break in 'response' (e.g., "The orc staggers backward, guard completely broken!").
                           c) Log the stagger event in 'gm_thoughts_markdown'.
                           d) On the target's NEXT turn, restore the exact poise deficit through an authorized resource transition; do not write a carrier value.
-                    5.  Check for Additional Effects from Damage Severity:
-                        - After updating health, the GM MUST consider if the damage taken was significant enough to cause a Wound or a temporary debilitating Debuff as per rules in InstructionBlock '5' -> Rule '5.20' (Wound System and Debuffs from Significant Damage Overview), particularly #5.20.3 (Triggering Wounds or Damage-Induced Debuffs).
-                        - If such an effect is applied, report it as per #5.20.4 (Reporting and Applying Wounds/Damage-Induced Debuffs).
+                    5.  Resolve Separately Authorized Consequences:
+                        - Do not derive a wound from a damage-percentage threshold. If the client exposes an exact wound opportunity for this accepted event, answer it through top-level `woundDecisions[]` under #5.20.1-#5.20.2; an ordinary wound remains optional unless the opportunity carries a guaranteed result.
+                        - A temporary debilitating effect is independent from a wound. Request it only through top-level `effectChanges[]` under its registered source authority and keep it separate as required by #5.20.3.
                     6.  Check for Defeat: If the accepted health transition reaches its sealed minimum:
                         - For Generic Enemies/Allies: Narrate their defeat (slain, destroyed, or fleeing). They are removed from active combat.
                         - **CRITICAL DIRECTIVE FOR PLAYER DEFEAT (The Defeat Adjudication Protocol):**

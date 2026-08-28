@@ -1019,12 +1019,12 @@
     },
     {
       "file": "E_Block_5.txt",
-      "line": 2568,
+      "line": 2729,
       "reason": "Legacy NPC creation fragment uses ellipsis and is not a standalone JSON document."
     },
     {
       "file": "E_Block_5.txt",
-      "line": 2586,
+      "line": 2747,
       "reason": "Legacy NPC update fragment uses ellipsis and is not a standalone JSON document."
     }
   ],

@@ -424,7 +424,7 @@ T042-T044 still own the GM-facing contract, examples, manifest, and prompt updat
 
 - [X] T042 [P] [US1] Add RED source/documentation guards for wound constructor, optional GM choice, guarantee, severity bounds, acquisition narration, effect separation, and the exact registered spiritual wound profile set in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs` and `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
 - [X] T043 [US1] Create the GM-facing common constructor/authority/effect contract in `OtherGuides/Wound_Materialization_Contract.md`, synchronize the wound-source and exact spiritual-profile registry sections in `OtherGuides/Effect_Materialization_Contract.md`, and update `Examples/E_CLI_Effect_Materialization.txt` plus `Examples/example_validation_manifest.json` so all exact eight registered spiritual wound profiles have closed fragments and at least one complete worked GM spiritual-wound source graph
-- [ ] T044 [US1] Replace the loose constructor and add optional/lower/guaranteed/rejected worked examples in `Rules/Block_5.txt`, `Examples/E_Block_5.txt`, and `BookOfEternityClient/game_master_daemon.ps1`
+- [X] T044 [US1] Replace the loose constructor and add optional/lower/guaranteed/rejected worked examples in `Rules/Block_5.txt`, `Examples/E_Block_5.txt`, and `BookOfEternityClient/game_master_daemon.ps1`; synchronize the remaining active wound-routing references in `Rules/Block_2.txt`, `Rules/Block_12.txt`, `Rules/Block_15.txt`, `Rules/Block_CLI_Operations.txt`, and `Examples/E_Block_16.txt`
 - [ ] T045 [US1] Run focused US1 unit/integration/documentation filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
 
 T042 RED evidence (2026-08-28): seven documentation/source guards now specify the
@@ -454,6 +454,26 @@ and manifest/parser/GameResponse-shape/production-example controls are GREEN `6/
 (`20260828-234032-563-29748-823a643b14be42d5b30e84ca5607a7f6-focused`), all
 warning-free. T044 retains the Mortal rule, four constructor examples, and mandatory
 daemon entrypoint.
+
+T044 completion evidence (2026-08-28): Rule 5.20 and four named worked responses now
+use only the strict `woundDecisions[]` constructor, including optional decline,
+lower-than-maximum severity, guaranteed creation, and rejected over-maximum severity.
+The GM daemon copies `Wound_Materialization_Contract.md` into the session context pack,
+publishes its authoritative path, and injects a mandatory opportunity-aware directive
+into ordinary, repair, and terminal prompts. Active combat/schema/CLI guidance no longer
+mentions the retired player/NPC wound wrappers, no longer derives wounds from percentage
+thresholds, and keeps `npc_wounds.json` independent from `npc_effects.json`. The daemon
+parses successfully under the PowerShell AST parser. Unit prompt/effect controls are
+GREEN `5/5` (`20260828-235655-578-4108-9e1b5df0247b4b209f3c042848103cab-focused`);
+manifest, JSON syntax, GameResponse shape, exact spiritual-profile, and complete-source
+controls are GREEN `5/5`
+(`20260828-235723-278-29848-f15bfc3be91a45548294e1b68e89d10f-focused`), with
+warning-free builds. The first parser rerun correctly exposed two line-bound legacy
+syntax exemptions shifted by the expanded examples; their manifest coordinates were
+updated and the fresh control is GREEN. After aligning the daemon wording with the
+actual `decision=none|materialize` enum, its AST parse remained clean and the exact
+rule/daemon guards reran GREEN `2/2`
+(`20260828-235935-513-39900-28a66e601ac54fff9e5c2c473c99c523-focused`).
 
 **Checkpoint**: Wound creation is complete, fair, atomic, narrated, and independently testable; no treatment or player command is exposed yet.
 

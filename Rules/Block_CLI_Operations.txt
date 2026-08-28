@@ -166,7 +166,8 @@
                     - game_state/player/weight_calc.json ← calculatedWeightData
                     - game_state/player/status_changes.json ← statsIncreased, statsDecreased, moneyChange
                     - game_state/player/experience.json ← experienceGained, playerEffortTrackerChange
-                    - game_state/player/wounds.json ← playerWoundChanges
+                    - game_state/wounds/wound_commands.json ← woundDecisions (transient strict commands; client consumes them)
+                    - game_state/player/wounds.json ← client-materialized canonical Mortal player wounds (never direct GM output)
                     - game_state/player/custom_states.json ← customStateChanges
                     - game_state/player/stealth.json ← playerStealthStateChange
                     - game_state/player/transformation.json ← playerAppearanceChange, playerImagePromptChange, playerRaceChange, playerRaceDescriptionChange, playerClassChange, playerClassDescriptionChange, playerAutoCombatSkillChange, playerCharacterNameChange
@@ -233,7 +234,8 @@
                     **NPC SYSTEM (14 FILES):**
                     - game_state/npcs/npc_core.json ← UpdateNPCs, NPCsRenameData, NPCsInScene, Mortal NPC teacher `trainingShowcase`
                     - game_state/npcs/npc_skills.json ← NPCActiveSkillChanges, NPCPassiveSkillChanges, NPCSkillMasteryChanges, NPCPassiveSkillMasteryChanges
-                    - game_state/npcs/npc_effects.json ← NPCWoundChanges plus client-materialized canonical NPC effect entries; active effects are requested only through effectChanges[]
+                    - game_state/npcs/npc_effects.json ← client-materialized canonical NPC active effects only; active effects are requested through effectChanges[]
+                    - game_state/npcs/npc_wounds.json ← client-materialized canonical named-NPC wounds from accepted woundDecisions[] (never direct GM output and never mixed into npc_effects.json)
                     - game_state/npcs/npc_relationships.json ← NPCRelationshipChanges, interNPCRelationshipChanges, NPCRelationshipLockUpdates
                     - game_state/npcs/npc_goals.json ← NPCGoalUpdates, NPCQuestUpdates
                     - game_state/npcs/npc_inventory.json ← NPCInventoryAdds/Updates/Removals, NPCEquipmentChanges; item-owned reserves remain on the common resource coordinate after carrier movement
