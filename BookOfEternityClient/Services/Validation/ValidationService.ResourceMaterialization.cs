@@ -410,9 +410,7 @@ public partial class ValidationService
             beforePaths.Add(AcceptedMechanicsPlan.WoundCommandPath);
             beforePaths.Add(WoundIdentityState.StatePath);
             beforePaths.Add(WoundHistoryState.HistoryPath);
-            beforePaths.UnionWith(woundHandoff.StageBundle.FinalPlan
-                .CarrierContributions
-                .Select(static contribution => contribution.Owner.CarrierPath));
+            beforePaths.UnionWith(CanonicalWoundCarrierPaths);
         }
         beforePaths.UnionWith(ownerComposition.OwnerCompanionAfterImages.Keys);
         beforePaths.UnionWith(ownerComposition.OwnerTransitions.Select(static value => value.Path));

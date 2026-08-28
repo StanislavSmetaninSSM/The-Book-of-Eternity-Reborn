@@ -78,7 +78,7 @@ finite condition adapter, and keep the corresponding persistent-actor
 - [X] T023 Add the canonical common-plan detached-payload fingerprint writer and extend common input bindings, authority and non-interchangeable stage fingerprint fields, planning context, exact subordinate result maps and after-images, trusted common `PreparedPlanFingerprint`, touched/consumed paths, and path coverage for wounds in `BookOfEternityClient/Services/AcceptedMechanicsPlan.cs`
 - [X] T024 Compose prepare -> typed wound-effect batch -> effect-owned ID/result map -> finalize -> resource ordering, derive globally unique internal effect-operation events for every batch member while retaining the shared wound event as separate causal chronology, require exact result set/cardinality/new-identity/source/target/event/carrier outcomes, compose same-root results, reject cross-plan stage mixing, terminate pairwise-disjoint declared complication first-create causal-lineage closures (including from terminal roots), remove those roots/slots, prune only definitions unreachable from all remaining roots, recompute slot use, and retain terminal provenance in effect identity history; perform full old source-group teardown before severity rematerialization, terminate the complete active wound-source group on healing, preserve byte-identical canonical wound state and fingerprint when one wound-owned effect independently expires, is suppressed, or is dispelled, preserve no wound mutation for ordinary descendant reaction materialization, and expose linear work statistics proving visited identities do not exceed parsed exact source-group membership in `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [X] T025 Add the explicit accepted-turn wound completeness phase plus strict raw input/root composition and planning handoff in `BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs`, `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs`
-- [ ] T026 Publish and read-back-validate wound carriers/index/history/pending after-images only through the common write lease in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
+- [X] T026 Publish and read-back-validate wound carriers/index/history/pending after-images only through the common write lease in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
 - [ ] T027 Extend snapshot collection/rollback and accepted post-validation with exact wound and output paths in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
 - [ ] T028 Run the smallest focused common-kernel filters through `scripts/test-csharp.ps1`, record RED-to-GREEN evidence and durations in `specs/1536-complete-wound-materialization/tasks.md`, and resolve every foundational failure before US1
 
@@ -108,6 +108,20 @@ all 40 failures are legacy effect fixtures that still attempt ordinary GM
 materialization from persisted `wound` sources. T022 intentionally made those
 sources `Materializable=false`; migrating those fixtures to the sealed wound-batch
 flow and resolving every resulting foundational failure remains owned by T028.
+
+T026 closure evidence (2026-08-28): the publication/read-back RED failed `0/2`
+for the expected missing wound writes and missing post-write drift check
+(`20260828-150713-304-33416-b09e022b56ea4325a948e8a0281d87b4-focused`).
+The completed wound validation/publication contour is GREEN `10/10`
+(`20260828-151802-495-34348-3a30bec885524cbb9f4f9812a41a3a7a-focused`),
+including all-carrier before-image protection and post-write identity/history
+agreement. A production typed non-empty wound plan proves the carrier/index/history
+write set `1/1` (`20260828-151542-113-24808-7dd7f784d84c47aba17c2651ad14a33e-focused`),
+and the full common cache control is GREEN `182/182`
+(`20260828-151905-961-36280-eb0a34850af94489bd44d49716e596e7-focused`).
+This is an unexposed client-owned publication seam; it adds no GM-authored command,
+response, pending file, or player workflow, so GM prompts/examples remain owned by
+the later story tasks that expose wound authoring and treatment.
 
 **T011/T020 execution gate**: complete these task IDs in two test-first tranches. First,
 add and observe the canonical persistence/reducer RED tests, then make only that

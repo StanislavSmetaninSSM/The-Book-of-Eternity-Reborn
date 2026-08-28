@@ -6,7 +6,7 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class WoundMaterializationValidationTests
 {
-    private static readonly string[] SnapshotWoundPaths =
+    internal static readonly string[] SnapshotWoundPaths =
     {
         WoundCarrierCatalog.PlayerPath,
         WoundCarrierCatalog.NpcPath,
@@ -196,7 +196,7 @@ public sealed class WoundMaterializationValidationTests
             out _));
     }
 
-    private static async Task SeedEmptyFoundationsAsync(
+    internal static async Task SeedEmptyFoundationsAsync(
         ResourceMaterializationTestContext context)
     {
         await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
@@ -233,13 +233,13 @@ public sealed class WoundMaterializationValidationTests
             }.ToJsonString());
     }
 
-    private static JsonObject EmptyIdentity() => new()
+    internal static JsonObject EmptyIdentity() => new()
     {
         ["schemaVersion"] = 1,
         ["entries"] = new JsonArray()
     };
 
-    private static JsonObject EmptyCommands(
+    internal static JsonObject EmptyCommands(
         string sessionId,
         string requestId,
         string snapshotToken) => new()
@@ -272,7 +272,7 @@ public sealed class WoundMaterializationValidationTests
         return command.ToJsonString();
     }
 
-    private static async Task<string> ReadSnapshotTokenAsync(
+    internal static async Task<string> ReadSnapshotTokenAsync(
         ResourceMaterializationTestContext context)
     {
         var manifest = Assert.IsType<JsonObject>(await context.ReadJsonAsync(

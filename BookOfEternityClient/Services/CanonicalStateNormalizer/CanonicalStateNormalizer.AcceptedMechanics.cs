@@ -140,6 +140,7 @@ public partial class CanonicalStateNormalizer
                 writes[pair.Key] = pair.Value;
             foreach (var pair in plan.EffectCarrierAfterImages)
                 writes[pair.Key] = pair.Value;
+            AddWoundPublicationWrites(plan, writes);
         }
         foreach (var pair in plan.PendingAfterImages)
         {
@@ -173,9 +174,11 @@ public partial class CanonicalStateNormalizer
             await ReadExactPublishedAfterImageAsync(
                 ResourcePendingResolutionState.PendingPath,
                 pending);
+            await ValidatePublishedWoundAfterImagesAsync(plan);
         }
         else
         {
+            await ValidatePublishedWoundAfterImagesAsync(plan);
             await ValidatePublishedOwnerTransitionsAsync(plan);
             await ValidatePublishedResourceAfterImagesAsync(plan);
         }
