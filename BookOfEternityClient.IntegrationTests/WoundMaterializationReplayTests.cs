@@ -112,11 +112,12 @@ public sealed partial class WoundMaterializationLifecycleTests
             authority.Opportunity.InputEvidenceFingerprint,
             Fingerprint("replay-repair-target"),
             Fingerprint("replay-repair-roll"));
-        var repairCache = new WoundAcceptedTurnPlanCache();
-        Assert.True(repairCache.TryRegisterRepairWave(
+        var repairCache = new AcceptedMechanicsPlanCache(
+            AcceptedMechanicsPlanner.BuildAcceptedPlan);
+        Assert.True(repairCache.TryRegisterWoundRepairWave(
             repairAuthority,
             new[] { packet }));
-        Assert.True(repairCache.TryTakeRepairPacket(
+        Assert.True(repairCache.TryTakeWoundRepairPacket(
             repairAuthority,
             packet.CreateReceipt(),
             out var acceptedPacket));
@@ -162,7 +163,7 @@ public sealed partial class WoundMaterializationLifecycleTests
         }
 
         await context.AssertUnchangedAsync(before);
-        Assert.False(repairCache.HasRepairWave);
+        Assert.False(repairCache.HasWoundRepairWave);
         Assert.Single(Assert.IsType<JsonObject>(await context.ReadJsonAsync(
             WoundCarrierCatalog.PlayerPath))["activeWounds"]!.AsArray());
         Assert.Single(Assert.IsType<JsonObject>(await context.ReadJsonAsync(

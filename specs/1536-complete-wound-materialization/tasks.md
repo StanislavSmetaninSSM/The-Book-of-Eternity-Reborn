@@ -579,7 +579,7 @@ history/receipt/planner replay surface, with no tests executed, timeout, or dupl
 
 - [X] T051 [US7] Implement bounded wound construction/repair/narration/alternative-treatment packets and recursive privacy sanitization in `BookOfEternityClient/Services/WoundRepairPacketBuilder.cs`
 - [X] T052 [US7] Integrate wound repair obligations, safe harness packets, exact resubmission shape, and unrelated-response preservation in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
-- [ ] T053 [US7] Invalidate prepared/final wound, effect, and common handoffs together on repair/rejection/snapshot mismatch in `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs`
+- [X] T053 [US7] Invalidate prepared/final wound, effect, and common handoffs together on repair/rejection/snapshot mismatch in `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs`
 - [ ] T054 [US7] Extend exact snapshot and post-publication agreement to scheduler, journals, quests, inventory/characteristics, debug/output, and pending wound roots in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
 - [ ] T055 [US7] Add operation/attempt/course/cycle/payment/output replay coordinates and already-accepted receipt projection in `BookOfEternityClient/Services/WoundHistoryState.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T056 [US7] Add invalid proposal, bounded repair, stale packet, rollback, and replay worked guidance in `OtherGuides/Wound_Materialization_Contract.md`, `Rules/Block_12.txt`, and `Examples/E_Block_12.txt`
@@ -632,6 +632,35 @@ authority (`20260829-035614-147-37444-a13a1e4f0cc34ad69ced4be42709a8d9-fast`). T
 present at the T051 `HEAD` boundary and T052 does not modify that cache. Durable
 GM-facing worked repair/rollback guidance remains explicitly assigned to T056 after the
 T053-T055 authority, snapshot, and replay contours stabilize.
+
+T053 GREEN evidence (2026-08-29): repair waves now live under the common accepted-turn
+cache and registry lock instead of exposing an independent take surface from the wound
+cache. Registering a wave first invalidates prepared/final wound plans, effect plans,
+the common handoff, wound/effect batches, and Mortal item authority. Changed event,
+target, roll, snapshot, generation, or receipt authority closes the wave and invalidates
+the aggregate state; an exact already-consumed receipt remains take-once without
+destroying still-valid sibling packets. New common or wound preparation, explicit
+invalidation, and filesystem session-generation rotation revoke the wave atomically.
+The frozen RED failed only because the aggregate surface was absent
+(`20260829-041101-286-43456-5d924ee30cf54d9e9e8a45c3d164028b-focused`). Fresh unit
+authority verification passes 19/19
+(`20260829-043127-023-2536-bd7b2d619d77475190aed1769a777004-focused`), and rollback plus
+replay integration verification passes 42/42
+(`20260829-042504-981-30120-95ef51800a2d4088b4c753bad8dcd17e-focused`). The bounded Fast
+lane reached its five-minute limit only after all 5,850 executed tests had passed; the
+two unfinished wound transition/consequence classes then passed 278/278 through a
+Focused continuation (`20260829-043430-238-40016-d591395524764269bb33d127db5cd65a-fast`,
+`20260829-044553-688-15916-d3ad105e70ca4a7e83562caab2e1b4ae-focused`). The test-runner
+source guard also passes 1/1 after restoring the unchanged bounded runner
+(`20260829-044747-936-30128-f1609f9c84b1410cb385b8b8d5ca0c3b-focused`). Review found no
+critical defect. It did not justify coupling repair-wave generation to filesystem
+session generation: those are separate epochs, while registry rotation already drops
+the complete old state. It also did not justify adding a second GameEngine repair
+authority beside T052's exact runtime retry obligation; T053 deliberately owns the
+shared cache/registry handoff. This is an internal in-memory authority change with no
+new player command, canonical state, pending/control file, response field, or GM-authored
+surface, so Mortal/afterlife prompts, docs, examples, manifests, and source guards do not
+require a T053 update; durable worked guidance remains assigned to T056.
 
 **Checkpoint**: Invalid or repeated wound work cannot leak authority, alter unrelated content, or leave partial state.
 

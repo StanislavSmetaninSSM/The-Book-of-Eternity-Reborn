@@ -214,15 +214,16 @@ public sealed partial class WoundMaterializationLifecycleTests
             authority.Opportunity.InputEvidenceFingerprint,
             Fingerprint("target-" + category),
             Fingerprint("roll-" + category));
-        var repairCache = new WoundAcceptedTurnPlanCache();
-        Assert.True(repairCache.TryRegisterRepairWave(
+        var repairCache = new AcceptedMechanicsPlanCache(
+            AcceptedMechanicsPlanner.BuildAcceptedPlan);
+        Assert.True(repairCache.TryRegisterWoundRepairWave(
             repairAuthority,
             new[] { packet }));
-        Assert.True(repairCache.TryTakeRepairPacket(
+        Assert.True(repairCache.TryTakeWoundRepairPacket(
             repairAuthority,
             packet.CreateReceipt(),
             out var takenPacket));
-        Assert.False(repairCache.HasRepairWave);
+        Assert.False(repairCache.HasWoundRepairWave);
 
         var correctedProposal = takenPacket.PreservedProposal.DeepClone().AsObject();
         ApplyRepairCorrection(category, correctedProposal, validProposal);

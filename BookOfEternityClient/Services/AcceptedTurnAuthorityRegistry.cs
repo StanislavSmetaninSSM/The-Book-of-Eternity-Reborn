@@ -43,6 +43,31 @@ internal static class AcceptedTurnAuthorityRegistry
             out binding,
             out result);
 
+    internal static bool TryRegisterWoundRepairWave(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WoundRepairPacketAuthority authority,
+        IReadOnlyList<WoundRepairPacket> packets) =>
+        GetState(fileSystem, writeLease).TryRegisterWoundRepairWave(
+            authority,
+            packets);
+
+    internal static bool TryTakeWoundRepairPacket(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WoundRepairPacketAuthority liveAuthority,
+        WoundRepairPacketReceipt receipt,
+        out WoundRepairPacket packet) =>
+        GetState(fileSystem, writeLease).TryTakeWoundRepairPacket(
+            liveAuthority,
+            receipt,
+            out packet);
+
+    internal static bool HasWoundRepairWave(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        GetState(fileSystem, writeLease).HasWoundRepairWave();
+
     internal static EffectAcceptedTurnPlanningResult GetOrBuildEffectValidated(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -416,6 +441,42 @@ internal static class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
                 return _commonPlan.TryPeekValidated(out binding, out result);
+        }
+
+        internal bool TryRegisterWoundRepairWave(
+            WoundRepairPacketAuthority authority,
+            IReadOnlyList<WoundRepairPacket> packets)
+        {
+            lock (_gate)
+            {
+                InvalidateAllCore();
+                return _commonPlan.TryRegisterWoundRepairWave(
+                    authority,
+                    packets);
+            }
+        }
+
+        internal bool TryTakeWoundRepairPacket(
+            WoundRepairPacketAuthority liveAuthority,
+            WoundRepairPacketReceipt receipt,
+            out WoundRepairPacket packet)
+        {
+            lock (_gate)
+            {
+                var taken = _commonPlan.TryTakeWoundRepairPacket(
+                    liveAuthority,
+                    receipt,
+                    out packet);
+                if (!taken && !_commonPlan.HasWoundRepairWave)
+                    InvalidateAllCore();
+                return taken;
+            }
+        }
+
+        internal bool HasWoundRepairWave()
+        {
+            lock (_gate)
+                return _commonPlan.HasWoundRepairWave;
         }
 
         internal WoundAcceptedTurnPreparationResult GetOrBuildWoundPrepared(

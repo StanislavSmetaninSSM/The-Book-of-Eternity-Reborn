@@ -16,6 +16,11 @@ internal sealed class AcceptedMechanicsPlanCache
     private string? _validatedBindingFingerprint;
     private AcceptedMechanicsPlanBinding? _validatedBinding;
     private AcceptedMechanicsPlanningResult? _validatedResult;
+    private WoundRepairPacketAuthority? _woundRepairAuthority;
+    private readonly Dictionary<string, WoundRepairPacket> _woundRepairPackets =
+        new(StringComparer.Ordinal);
+    private readonly HashSet<WoundRepairPacketReceipt> _consumedWoundRepairReceipts =
+        new();
 
     internal AcceptedMechanicsPlanCache(AcceptedMechanicsPlanFactory planner) =>
         _planner = planner ?? throw new ArgumentNullException(nameof(planner));
@@ -29,12 +34,98 @@ internal sealed class AcceptedMechanicsPlanCache
         }
     }
 
+    internal bool HasWoundRepairWave
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _woundRepairAuthority is not null &&
+                       _woundRepairPackets.Count != 0;
+            }
+        }
+    }
+
+    internal bool TryRegisterWoundRepairWave(
+        WoundRepairPacketAuthority authority,
+        IReadOnlyList<WoundRepairPacket> packets)
+    {
+        ArgumentNullException.ThrowIfNull(authority);
+        ArgumentNullException.ThrowIfNull(packets);
+        lock (_gate)
+        {
+            InvalidateAllCore();
+            if (!ValidWoundRepairAuthority(authority) ||
+                packets.Count is < 1 or > 64)
+            {
+                return false;
+            }
+
+            var candidateRefs = new HashSet<string>(StringComparer.Ordinal);
+            var confusableRefs = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var packet in packets)
+            {
+                if (packet is null ||
+                    !WoundRepairPacketAgrees(authority, packet) ||
+                    !candidateRefs.Add(packet.CandidateRef) ||
+                    !confusableRefs.Add(
+                        MortalLocationIdentityState.BuildConfusableKey(
+                            packet.CandidateRef)))
+                {
+                    InvalidateAllCore();
+                    return false;
+                }
+                _woundRepairPackets.Add(packet.CandidateRef, packet);
+            }
+
+            _woundRepairAuthority = authority;
+            return true;
+        }
+    }
+
+    internal bool TryTakeWoundRepairPacket(
+        WoundRepairPacketAuthority liveAuthority,
+        WoundRepairPacketReceipt receipt,
+        out WoundRepairPacket packet)
+    {
+        ArgumentNullException.ThrowIfNull(liveAuthority);
+        ArgumentNullException.ThrowIfNull(receipt);
+        lock (_gate)
+        {
+            packet = null!;
+            if (_woundRepairAuthority is null ||
+                !Equals(_woundRepairAuthority, liveAuthority))
+            {
+                InvalidateAllCore();
+                return false;
+            }
+            if (_consumedWoundRepairReceipts.Contains(receipt))
+                return false;
+            if (!_woundRepairPackets.TryGetValue(
+                    receipt.CandidateRef,
+                    out var candidate) ||
+                !Equals(candidate.CreateReceipt(), receipt))
+            {
+                InvalidateAllCore();
+                return false;
+            }
+
+            _woundRepairPackets.Remove(receipt.CandidateRef);
+            _consumedWoundRepairReceipts.Add(receipt);
+            packet = candidate;
+            if (_woundRepairPackets.Count == 0)
+                ClearWoundRepairWaveCore();
+            return true;
+        }
+    }
+
     internal AcceptedMechanicsPlanningResult GetOrBuildValidated(
         AcceptedMechanicsInput input)
     {
         ArgumentNullException.ThrowIfNull(input);
         lock (_gate)
         {
+            ClearWoundRepairWaveCore();
             InvalidateValidatedCore();
             if (input.ValidationIssues.Count > 0)
             {
@@ -175,7 +266,47 @@ internal sealed class AcceptedMechanicsPlanCache
         _inputFingerprint = null;
         _planningResult = null;
         InvalidateValidatedCore();
+        ClearWoundRepairWaveCore();
     }
+
+    private void ClearWoundRepairWaveCore()
+    {
+        _woundRepairAuthority = null;
+        _woundRepairPackets.Clear();
+        _consumedWoundRepairReceipts.Clear();
+    }
+
+    private static bool ValidWoundRepairAuthority(
+        WoundRepairPacketAuthority authority) =>
+        ResourceMaterializationContract.IsExactIdentifier(authority.SessionId) &&
+        ResourceMaterializationContract.IsExactIdentifier(authority.RequestId) &&
+        ResourceMaterializationContract.IsExactIdentifier(authority.SnapshotToken) &&
+        ResourceMaterializationContract.IsExactIdentifier(authority.Generation) &&
+        ResourceMaterializationContract.IsAuthorityFingerprint(
+            authority.EventFingerprint) &&
+        ResourceMaterializationContract.IsAuthorityFingerprint(
+            authority.TargetFingerprint) &&
+        ResourceMaterializationContract.IsAuthorityFingerprint(
+            authority.RollFingerprint);
+
+    private static bool WoundRepairPacketAgrees(
+        WoundRepairPacketAuthority authority,
+        WoundRepairPacket packet) =>
+        string.Equals(
+            authority.SessionId,
+            packet.SessionId,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            authority.RequestId,
+            packet.RequestId,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            authority.SnapshotToken,
+            packet.SnapshotToken,
+            StringComparison.Ordinal) &&
+        ResourceMaterializationContract.IsExactIdentifier(packet.CandidateRef) &&
+        ResourceMaterializationContract.IsAuthorityFingerprint(
+            packet.SemanticFingerprint);
 
     private static AcceptedMechanicsPlanningResult ValidatePlannerResult(
         AcceptedMechanicsInput input,
@@ -403,6 +534,56 @@ internal static class AcceptedMechanicsPlanAuthority
             writeLease,
             liveBinding,
             out result);
+    }
+
+    internal static bool TryRegisterWoundRepairWave(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WoundRepairPacketAuthority authority,
+        IReadOnlyList<WoundRepairPacket> packets)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(authority);
+        ArgumentNullException.ThrowIfNull(packets);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry.TryRegisterWoundRepairWave(
+            fileSystem,
+            writeLease,
+            authority,
+            packets);
+    }
+
+    internal static bool TryTakeWoundRepairPacket(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WoundRepairPacketAuthority liveAuthority,
+        WoundRepairPacketReceipt receipt,
+        out WoundRepairPacket packet)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(liveAuthority);
+        ArgumentNullException.ThrowIfNull(receipt);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry.TryTakeWoundRepairPacket(
+            fileSystem,
+            writeLease,
+            liveAuthority,
+            receipt,
+            out packet);
+    }
+
+    internal static bool HasWoundRepairWave(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry.HasWoundRepairWave(
+            fileSystem,
+            writeLease);
     }
 
     internal static void InvalidateValidated(

@@ -951,6 +951,247 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
     }
 
     [Fact]
+    public async Task AcceptedTurnRegistry_RepairWaveRegistrationClearsEveryAuthorityStage()
+    {
+        var root = CreateAuthorityRoot();
+        try
+        {
+            var fileSystem = CreateFileSystem(root);
+            await using var lease =
+                await fileSystem.AcquireCanonicalWriteLeaseAsync();
+            SeedAcceptedTurnAuthority(fileSystem, lease);
+            var authority = WoundAcceptedTurnPlanCacheTests.CreateAuthority();
+            var packet = WoundAcceptedTurnPlanCacheTests.CreatePacket();
+
+            Assert.True(AcceptedMechanicsPlanAuthority.TryRegisterWoundRepairWave(
+                fileSystem,
+                lease,
+                authority,
+                new[] { packet }));
+
+            Assert.False(WoundAcceptedTurnPlanAuthority.TryPeekPrepared(
+                fileSystem,
+                lease,
+                out _));
+            Assert.False(WoundAcceptedTurnPlanAuthority.TryPeekFinal(
+                fileSystem,
+                lease,
+                out _));
+            Assert.False(EffectAcceptedTurnPlanAuthority.TryPeekValidated(
+                fileSystem,
+                lease,
+                out _));
+            Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                fileSystem,
+                lease,
+                out _,
+                out _));
+            Assert.False(AcceptedTurnAuthorityRegistry.HasMortalItemsValidated(
+                fileSystem,
+                lease));
+            Assert.True(AcceptedMechanicsPlanAuthority.HasWoundRepairWave(
+                fileSystem,
+                lease));
+            Assert.True(AcceptedMechanicsPlanAuthority.TryTakeWoundRepairPacket(
+                fileSystem,
+                lease,
+                authority,
+                packet.CreateReceipt(),
+                out var taken));
+            Assert.Equal(packet.CandidateRef, taken.CandidateRef);
+            Assert.False(AcceptedMechanicsPlanAuthority.HasWoundRepairWave(
+                fileSystem,
+                lease));
+        }
+        finally
+        {
+            DeleteAuthorityRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task AcceptedTurnRegistry_RepairSnapshotMismatchClearsEveryAuthorityStage()
+    {
+        var root = CreateAuthorityRoot();
+        try
+        {
+            var fileSystem = CreateFileSystem(root);
+            await using var lease =
+                await fileSystem.AcquireCanonicalWriteLeaseAsync();
+            SeedAcceptedTurnAuthority(fileSystem, lease);
+            var authority = WoundAcceptedTurnPlanCacheTests.CreateAuthority();
+            var mismatchedPacket = WoundAcceptedTurnPlanCacheTests.CreatePacket(
+                snapshotToken: "snapshot_repair_changed");
+
+            Assert.False(AcceptedMechanicsPlanAuthority.TryRegisterWoundRepairWave(
+                fileSystem,
+                lease,
+                authority,
+                new[] { mismatchedPacket }));
+
+            Assert.False(WoundAcceptedTurnPlanAuthority.TryPeekPrepared(
+                fileSystem,
+                lease,
+                out _));
+            Assert.False(WoundAcceptedTurnPlanAuthority.TryPeekFinal(
+                fileSystem,
+                lease,
+                out _));
+            Assert.False(EffectAcceptedTurnPlanAuthority.TryPeekValidated(
+                fileSystem,
+                lease,
+                out _));
+            Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                fileSystem,
+                lease,
+                out _,
+                out _));
+            Assert.False(AcceptedTurnAuthorityRegistry.HasMortalItemsValidated(
+                fileSystem,
+                lease));
+            Assert.False(AcceptedMechanicsPlanAuthority.HasWoundRepairWave(
+                fileSystem,
+                lease));
+        }
+        finally
+        {
+            DeleteAuthorityRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task AcceptedTurnRegistry_ConsumedRepairReceiptPreservesValidSibling()
+    {
+        var root = CreateAuthorityRoot();
+        try
+        {
+            var fileSystem = CreateFileSystem(root);
+            await using var lease =
+                await fileSystem.AcquireCanonicalWriteLeaseAsync();
+            var authority = WoundAcceptedTurnPlanCacheTests.CreateAuthority();
+            var first = WoundAcceptedTurnPlanCacheTests.CreatePacket(
+                "candidate_repair_001",
+                WoundFingerprint("repair-first"));
+            var second = WoundAcceptedTurnPlanCacheTests.CreatePacket(
+                "candidate_repair_002",
+                WoundFingerprint("repair-second"));
+            Assert.True(AcceptedMechanicsPlanAuthority.TryRegisterWoundRepairWave(
+                fileSystem,
+                lease,
+                authority,
+                new[] { first, second }));
+
+            Assert.True(AcceptedMechanicsPlanAuthority.TryTakeWoundRepairPacket(
+                fileSystem,
+                lease,
+                authority,
+                first.CreateReceipt(),
+                out _));
+            Assert.False(AcceptedMechanicsPlanAuthority.TryTakeWoundRepairPacket(
+                fileSystem,
+                lease,
+                authority,
+                first.CreateReceipt(),
+                out _));
+            Assert.True(AcceptedMechanicsPlanAuthority.HasWoundRepairWave(
+                fileSystem,
+                lease));
+            Assert.True(AcceptedMechanicsPlanAuthority.TryTakeWoundRepairPacket(
+                fileSystem,
+                lease,
+                authority,
+                second.CreateReceipt(),
+                out var taken));
+            Assert.Equal(second.CandidateRef, taken.CandidateRef);
+        }
+        finally
+        {
+            DeleteAuthorityRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task AcceptedTurnRegistry_NewWoundPreparationRevokesPendingRepairWave()
+    {
+        var root = CreateAuthorityRoot();
+        try
+        {
+            var fileSystem = CreateFileSystem(root);
+            await using var lease =
+                await fileSystem.AcquireCanonicalWriteLeaseAsync();
+            var authority = WoundAcceptedTurnPlanCacheTests.CreateAuthority();
+            var packet = WoundAcceptedTurnPlanCacheTests.CreatePacket();
+            Assert.True(AcceptedMechanicsPlanAuthority.TryRegisterWoundRepairWave(
+                fileSystem,
+                lease,
+                authority,
+                new[] { packet }));
+
+            AssertPrepared(WoundAcceptedTurnPlanAuthority.GetOrBuildPreparedValidated(
+                fileSystem,
+                lease,
+                WoundInput()));
+
+            Assert.False(AcceptedMechanicsPlanAuthority.HasWoundRepairWave(
+                fileSystem,
+                lease));
+            Assert.False(AcceptedMechanicsPlanAuthority.TryTakeWoundRepairPacket(
+                fileSystem,
+                lease,
+                authority,
+                packet.CreateReceipt(),
+                out _));
+        }
+        finally
+        {
+            DeleteAuthorityRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task AcceptedTurnRegistry_RotatedSessionGenerationRevokesRepairWave()
+    {
+        var root = CreateAuthorityRoot();
+        try
+        {
+            var fileSystem = CreateFileSystem(root);
+            var authority = WoundAcceptedTurnPlanCacheTests.CreateAuthority();
+            var packet = WoundAcceptedTurnPlanCacheTests.CreatePacket();
+            await using (var lease =
+                         await fileSystem.AcquireCanonicalWriteLeaseAsync())
+            {
+                Assert.True(
+                    AcceptedMechanicsPlanAuthority.TryRegisterWoundRepairWave(
+                        fileSystem,
+                        lease,
+                        authority,
+                        new[] { packet }));
+            }
+
+            await using var lifecycle =
+                await fileSystem.AcquireSessionLifecycleLeaseAsync();
+            await using var replacement =
+                await fileSystem.AcquireSessionReplacementWriteLeaseAsync(
+                    lifecycle);
+            fileSystem.RotateSessionGeneration(replacement);
+
+            Assert.False(AcceptedMechanicsPlanAuthority.HasWoundRepairWave(
+                fileSystem,
+                replacement));
+            Assert.False(AcceptedMechanicsPlanAuthority.TryTakeWoundRepairPacket(
+                fileSystem,
+                replacement,
+                authority,
+                packet.CreateReceipt(),
+                out _));
+        }
+        finally
+        {
+            DeleteAuthorityRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task AcceptedTurnRegistry_CommonTakeClearsSubordinateHandoffsAtomically()
     {
         var root = CreateAuthorityRoot();

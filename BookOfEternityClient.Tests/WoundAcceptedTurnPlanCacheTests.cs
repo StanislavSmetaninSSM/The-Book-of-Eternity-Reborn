@@ -15,10 +15,10 @@ public sealed class WoundAcceptedTurnPlanCacheTests
     public void RepairWave_ChangedSemanticAuthorityInvalidatesEveryPendingPacket(
         string changedAuthority)
     {
-        var cache = new WoundAcceptedTurnPlanCache();
+        var cache = CreateCache();
         var authority = CreateAuthority();
         var packet = CreatePacket();
-        Assert.True(cache.TryRegisterRepairWave(authority, new[] { packet }));
+        Assert.True(cache.TryRegisterWoundRepairWave(authority, new[] { packet }));
         var changed = changedAuthority switch
         {
             "event" => authority with { EventFingerprint = Fingerprint('b') },
@@ -29,12 +29,12 @@ public sealed class WoundAcceptedTurnPlanCacheTests
             _ => throw new ArgumentOutOfRangeException(nameof(changedAuthority))
         };
 
-        Assert.False(cache.TryTakeRepairPacket(
+        Assert.False(cache.TryTakeWoundRepairPacket(
             changed,
             packet.CreateReceipt(),
             out _));
-        Assert.False(cache.HasRepairWave);
-        Assert.False(cache.TryTakeRepairPacket(
+        Assert.False(cache.HasWoundRepairWave);
+        Assert.False(cache.TryTakeWoundRepairPacket(
             authority,
             packet.CreateReceipt(),
             out _));
@@ -48,10 +48,10 @@ public sealed class WoundAcceptedTurnPlanCacheTests
     [InlineData("semantic")]
     public void RepairWave_RequiresTheExactPacketReceipt(string changedField)
     {
-        var cache = new WoundAcceptedTurnPlanCache();
+        var cache = CreateCache();
         var authority = CreateAuthority();
         var packet = CreatePacket();
-        Assert.True(cache.TryRegisterRepairWave(authority, new[] { packet }));
+        Assert.True(cache.TryRegisterWoundRepairWave(authority, new[] { packet }));
         var exact = packet.CreateReceipt();
         var changed = changedField switch
         {
@@ -63,12 +63,12 @@ public sealed class WoundAcceptedTurnPlanCacheTests
             _ => throw new ArgumentOutOfRangeException(nameof(changedField))
         };
 
-        Assert.False(cache.TryTakeRepairPacket(authority, changed, out _));
-        Assert.False(cache.HasRepairWave);
+        Assert.False(cache.TryTakeWoundRepairPacket(authority, changed, out _));
+        Assert.False(cache.HasWoundRepairWave);
 
         var replacement = CreatePacket();
-        Assert.True(cache.TryRegisterRepairWave(authority, new[] { replacement }));
-        Assert.True(cache.TryTakeRepairPacket(
+        Assert.True(cache.TryRegisterWoundRepairWave(authority, new[] { replacement }));
+        Assert.True(cache.TryTakeWoundRepairPacket(
             authority,
             replacement.CreateReceipt(),
             out var taken));
@@ -78,30 +78,30 @@ public sealed class WoundAcceptedTurnPlanCacheTests
     [Fact]
     public void RepairWave_ExactReceiptConsumesOneCandidateExactlyOnce()
     {
-        var cache = new WoundAcceptedTurnPlanCache();
+        var cache = CreateCache();
         var authority = CreateAuthority();
         var first = CreatePacket("candidate_repair_001", Fingerprint('a'));
         var second = CreatePacket("candidate_repair_002", Fingerprint('b'));
-        Assert.True(cache.TryRegisterRepairWave(authority, new[] { first, second }));
+        Assert.True(cache.TryRegisterWoundRepairWave(authority, new[] { first, second }));
 
-        Assert.True(cache.TryTakeRepairPacket(
+        Assert.True(cache.TryTakeWoundRepairPacket(
             authority,
             first.CreateReceipt(),
             out var taken));
         Assert.Equal(first.CandidateRef, taken.CandidateRef);
-        Assert.True(cache.HasRepairWave);
-        Assert.False(cache.TryTakeRepairPacket(
+        Assert.True(cache.HasWoundRepairWave);
+        Assert.False(cache.TryTakeWoundRepairPacket(
             authority,
             first.CreateReceipt(),
             out _));
 
-        Assert.True(cache.TryTakeRepairPacket(
+        Assert.True(cache.TryTakeWoundRepairPacket(
             authority,
             second.CreateReceipt(),
             out var secondTaken));
         Assert.Equal(second.CandidateRef, secondTaken.CandidateRef);
-        Assert.False(cache.HasRepairWave);
-        Assert.False(cache.TryTakeRepairPacket(
+        Assert.False(cache.HasWoundRepairWave);
+        Assert.False(cache.TryTakeWoundRepairPacket(
             authority,
             second.CreateReceipt(),
             out _));
@@ -110,29 +110,28 @@ public sealed class WoundAcceptedTurnPlanCacheTests
     [Fact]
     public void RepairWave_InvalidateAllRevokesOutstandingReceiptsAndPreparedAuthorityTogether()
     {
-        var cache = new WoundAcceptedTurnPlanCache();
+        var cache = CreateCache();
         var authority = CreateAuthority();
         var packet = CreatePacket();
-        Assert.True(cache.TryRegisterRepairWave(authority, new[] { packet }));
+        Assert.True(cache.TryRegisterWoundRepairWave(authority, new[] { packet }));
 
         cache.InvalidateAll();
 
-        Assert.False(cache.HasRepairWave);
-        Assert.False(cache.TryTakeRepairPacket(
+        Assert.False(cache.HasWoundRepairWave);
+        Assert.False(cache.TryTakeWoundRepairPacket(
             authority,
             packet.CreateReceipt(),
             out _));
-        Assert.False(cache.HasPrepared);
-        Assert.False(cache.HasFinal);
+        Assert.False(cache.HasValidated);
     }
 
     [Fact]
     public void RepairWave_RegisteringNewGenerationRevokesEveryReceiptFromThePriorWave()
     {
-        var cache = new WoundAcceptedTurnPlanCache();
+        var cache = CreateCache();
         var oldAuthority = CreateAuthority();
         var oldPacket = CreatePacket("candidate_repair_old", Fingerprint('a'));
-        Assert.True(cache.TryRegisterRepairWave(oldAuthority, new[] { oldPacket }));
+        Assert.True(cache.TryRegisterWoundRepairWave(oldAuthority, new[] { oldPacket }));
 
         var newAuthority = oldAuthority with
         {
@@ -149,23 +148,26 @@ public sealed class WoundAcceptedTurnPlanCacheTests
             newAuthority.SessionId,
             newAuthority.RequestId,
             newAuthority.SnapshotToken);
-        Assert.True(cache.TryRegisterRepairWave(newAuthority, new[] { newPacket }));
+        Assert.True(cache.TryRegisterWoundRepairWave(newAuthority, new[] { newPacket }));
 
-        Assert.False(cache.TryTakeRepairPacket(
+        Assert.False(cache.TryTakeWoundRepairPacket(
             oldAuthority,
             oldPacket.CreateReceipt(),
             out _));
-        Assert.False(cache.HasRepairWave);
+        Assert.False(cache.HasWoundRepairWave);
 
-        Assert.True(cache.TryRegisterRepairWave(newAuthority, new[] { newPacket }));
-        Assert.True(cache.TryTakeRepairPacket(
+        Assert.True(cache.TryRegisterWoundRepairWave(newAuthority, new[] { newPacket }));
+        Assert.True(cache.TryTakeWoundRepairPacket(
             newAuthority,
             newPacket.CreateReceipt(),
             out var taken));
         Assert.Equal("candidate_repair_new", taken.CandidateRef);
     }
 
-    private static WoundRepairPacketAuthority CreateAuthority() => new(
+    private static AcceptedMechanicsPlanCache CreateCache() =>
+        new(AcceptedMechanicsPlanner.BuildAcceptedPlan);
+
+    internal static WoundRepairPacketAuthority CreateAuthority() => new(
         "session_repair_cache",
         "request_repair_cache",
         "snapshot_repair_cache",
@@ -174,7 +176,7 @@ public sealed class WoundAcceptedTurnPlanCacheTests
         Fingerprint('b'),
         Fingerprint('c'));
 
-    private static WoundRepairPacket CreatePacket(
+    internal static WoundRepairPacket CreatePacket(
         string candidateRef = "candidate_repair_001",
         string? semanticFingerprint = null,
         string sessionId = "session_repair_cache",
