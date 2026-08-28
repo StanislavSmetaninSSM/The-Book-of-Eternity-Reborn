@@ -211,7 +211,7 @@ tracked by T022-T027 and the story-specific documentation tasks.
 - [X] T031 [P] [US1] Add RED exact player/NPC/combatant/Guardian/resident/radiant/soul target, named ambiguity, wrong realm, and source-event binding tests in `BookOfEternityClient.Tests/WoundSourceTargetAuthorityTests.cs`
 - [X] T032 [P] [US1] Add RED acquisition narration completeness/contradiction, deterministic Russian notification, untrusted markup escaping, and no-ID projection tests in `BookOfEternityClient.Tests/WoundAcquisitionOutputTests.cs`
 - [X] T033 [US1] Add RED end-to-end optional/lower/guaranteed/over-limit, wound-owned effect atomicity, healed independent mechanical legacy, and cosmetic History legacy fixtures in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Creation.cs`
-- [ ] T034 [P] [US1] Add RED all-owner carrier/index/history agreement, combatant persistence, Mortal-to-afterlife no-conversion, and accepted spiritual profile realm-preservation transition cases in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Owners.cs`
+- [X] T034 [P] [US1] Add RED all-owner carrier/index/history agreement, combatant persistence, Mortal-to-afterlife no-conversion, and accepted spiritual profile realm-preservation transition cases in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Owners.cs`
 
 T029 RED evidence (2026-08-28): the new formal/narrative opportunity,
 harmless-conflict, legal severity range, over-maximum, and consumed-decline replay
@@ -335,6 +335,15 @@ event-kind builder; that exact regression is GREEN after resealing its matching
 opportunity (`20260828-195052-313-17096-ae1d4c79e1fd41d2b8355567dc5a4e7a-focused`).
 T038 remains open for successful guaranteed publication and the worsen path; T039 still
 owns their complete canonical after-images and owner transitions.
+
+T034 RED evidence (2026-08-28): the integration matrix now covers every closed wound
+owner kind with exact carrier/index/history agreement, same-turn combatant reference
+allocation before wound creation, Mortal physical-wound non-conversion on entry to the
+afterlife, and same-realm accepted afterlife profile updates that preserve spiritual
+wounds while accepting unrelated owner fields. Focused compilation is warning-free and
+stops only on the three expected uses of the intentionally absent
+`WoundAcceptedOwnerCarrierAuthority`; no tests execute and no timeout or duplicate IDs
+occur (`20260828-202335-226-44312-b9a17c0035314e7a8607301dd9301508-focused`).
 
 ### GM contract synchronization
 
