@@ -258,6 +258,20 @@ requirements are AND; routes are OR alternatives. Reference exact accepted items
 resources, capabilities, skills, providers, facilities, locations, clocks, and
 environmental conditions.
 
+The intra-wound discovery graph is explicit rather than inferred from prose or world
+names. Diagnosis paths carry typed `requiresKnownFacts[]` and `reveals[]`; the client
+computes a least fixed point seeded by already known routes and public/player-known
+complications. Hidden paths require a non-empty satisfied prerequisite, GM-only paths
+never prove player reachability, and self/unseeded cycles fail closed. Exact external
+world reachability is a separate fresh authority proof so structural parsing does not
+scan mutable canonical roots.
+
+Diagnosis attempt evidence has one sealed `success|failure` result. Success reveals the
+complete declared fact set; failure reveals none and remains terminal/retry-safe. A
+later cure uses its own `author_alternative_treatment` transition, appending exactly one
+complete route plus a required reachable path when hidden and one new history row. It
+never reuses `diagnose`, replaces prior route definitions, or rewrites old history.
+
 Support three closed modes:
 
 - `procedure`: one sealed check and bounded result bands;

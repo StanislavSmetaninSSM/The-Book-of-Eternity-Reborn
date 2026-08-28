@@ -36,6 +36,7 @@ existing `validation_repair_request.json` contour.
 ```json
 {
   "kind": "wound_materialization_repair",
+  "candidateKind": "repair_wound",
   "sessionId": "exact-session",
   "requestId": "exact-request",
   "snapshotToken": "exact-snapshot",
@@ -59,6 +60,35 @@ existing `validation_repair_request.json` contour.
 }
 ```
 
+`candidateKind` is one of `construct_wound`, `repair_wound`,
+`author_alternative_treatment`, or `narrate_acquisition`; it selects a closed preserved
+payload and required response shape. Construction/repair candidates continue to require
+one corrected `woundDecisions[]` entry. An alternative-treatment candidate instead
+contains only the safe opaque `authoringRequestRef`, readable accepted-evidence context,
+non-offending route/path content, and exact semantic issue paths. Its required response
+shape is exactly:
+
+```json
+{
+  "woundTreatmentAuthorings": [
+    {
+      "authoringRequestRef": "safe-opaque-request-ref",
+      "decision": "author",
+      "route": {},
+      "diagnosisPath": null
+    }
+  ],
+  "response": "complete accepted scene"
+}
+```
+
+For `decision=decline`, both payloads are null. For `decision=author`, route is one
+complete append-only route; `diagnosisPath` is one complete reachable path exactly when
+the route is hidden and null otherwise. The retry cannot submit a construction
+`woundDecisions[]` entry, alter an existing route/path, or change the bound evidence
+event. The client retains before/route/path/authority fingerprints and the operation key
+only in the opaque pending authority; none are exposed in the packet.
+
 ### Packet privacy
 
 The packet includes only exact offending semantic paths, legal closed shapes/ranges,
@@ -67,6 +97,7 @@ safe readable context, and preserved non-offending authored content. It excludes
 - permanent wound/effect/owner/resource identities;
 - hidden target/private NPC facts;
 - source and resource seals;
+- alternative-route before/route/path/authority fingerprints and operation keys;
 - unrelated response content;
 - permissions to rewrite the accepted event, roll, target, opportunity, or snapshot.
 
@@ -116,6 +147,8 @@ binding therefore invalidates the whole handoff.
 | --- | --- |
 | opportunity decision | opportunity + event + owner + decision |
 | creation/worsening | event + source + target + wound/provisional ref |
+| diagnosis attempt | attempt ID + wound + diagnosis path + sealed check result |
+| alternative-route authoring | authoring request + wound + evidence event + operation key |
 | procedure/healing attempt | attempt ID + wound + healer + target + sealed roll |
 | course milestone | course ID + milestone ordinal + due event |
 | natural recovery | wound + exact clock/cycle key |

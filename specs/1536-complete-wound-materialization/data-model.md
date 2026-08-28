@@ -42,7 +42,9 @@ confusable fallback. The client owns permanent identities.
 | `careState` | `fresh`, `untreated`, `stabilized`, `recovering`, `healed` |
 | `visibility` | `public`, `known_to_player`, `hidden`, `gm_only` |
 | `locationKind` | `anatomical`, `systemic`, `mental`, `spiritual_axis`, `other` |
-| `transitionKind` | `create`, `worsen`, `complicate`, `diagnose`, `stabilize`, `treat`, `recover`, `heal`, `legacy`, `archive` |
+| `transitionKind` | `create`, `worsen`, `complicate`, `diagnose`, `author_alternative_treatment`, `stabilize`, `treat`, `recover`, `heal`, `legacy`, `archive` |
+| `diagnosisResult` | `success`, `failure` |
+| `diagnosisFailurePolicy` | `no_reveal` |
 | `routeMode` | `procedure`, `course`, `guaranteed` |
 | `recoveryMode` | `progressive`, `requires_stabilization`, `no_natural_recovery` |
 | `conflictDangerMode` | `training`, `controlled`, `hostile`, `annihilation` |
@@ -115,7 +117,7 @@ combat root and promotion authority.
       "woundId": "client-owned",
       "ordinal": 17,
       "woundTransitionOrdinal": 3,
-      "kind": "treat",
+      "kind": "diagnose",
       "turn": 45,
       "eventRef": "accepted-event-ref",
       "operationKey": "retry-safe-key",
@@ -123,7 +125,14 @@ combat root and promotion authority.
       "afterFingerprint": "sha256:...",
       "sourceFingerprint": "sha256:...",
       "attemptId": "client-owned-attempt-id",
-      "readableSummary": "Рана очищена и стабилизирована.",
+      "transitionResult": {
+        "kind": "diagnose",
+        "diagnosisPathId": "gm-local-stable-within-wound",
+        "result": "failure",
+        "revealedFacts": [],
+        "resultFingerprint": "sha256:..."
+      },
+      "readableSummary": "Диагноз пока не установлен.",
       "terminal": false
     }
   ]
@@ -137,6 +146,32 @@ prevents a replay from reopening or reapplying the wound. Later `legacy` and `ar
 rows are nonterminal audit/projection records that preserve the sealed terminal wound
 fingerprint. The player History projection reads a sanitized subset; internal IDs and
 fingerprints are never projected.
+
+`transitionResult` is null for transition kinds whose durable replay result is already
+fully represented by their existing typed coordinates and before/after state. It is a
+required closed object for `diagnose` and `author_alternative_treatment`. A diagnosis
+result repeats the exact path, terminal-attempt `success|failure`, complete-or-empty ordered
+`revealedFacts[]`, and recomputable result fingerprint; this remains durable even when
+failure leaves the wound after-state unchanged. An alternative-authoring result stores
+the safe authoring request reference, appended route/path IDs, their fingerprints, and
+the recomputable accepted result fingerprint. `decline` has no transition row. The
+history parser, replay probe, and already-accepted receipt compare and return the exact
+typed result rather than treating matching before/after fingerprints as proof of the
+same semantic attempt.
+
+The alternative-authoring history result shape is exactly:
+
+```json
+{
+  "kind": "author_alternative_treatment",
+  "authoringRequestRef": "safe-opaque-request-ref",
+  "addedRouteId": "new-complete-route",
+  "addedDiagnosisPathId": null,
+  "routeFingerprint": "sha256:...",
+  "diagnosisPathFingerprint": null,
+  "resultFingerprint": "sha256:..."
+}
+```
 
 ## 6. Active carrier roots
 
@@ -684,7 +719,9 @@ The client allocates permanent identities after complete validation.
 ```json
 {
   "diagnosisPathId": "gm-local-stable-within-wound",
+  "displayName": "Проверить признаки заражения",
   "visibility": "known_to_player",
+  "requiresKnownFacts": [],
   "requirements": [],
   "check": {},
   "reveals": ["route:clean_and_suture", "complication:infection"],
@@ -692,9 +729,55 @@ The client allocates permanent identities after complete validation.
 }
 ```
 
-A hidden route must be revealed by at least one diagnosis path whose requirements are
-reachable from current canonical world capabilities, locations, quests, or provider
-access. Cyclic hidden-only revelation is invalid.
+`requiresKnownFacts[]` and `reveals[]` are unique ordered arrays of at most 16 exact
+`route:<routeId>` or `complication:<complicationId>` facts that resolve inside the
+same wound. The initial
+known set is `knownRouteIds[]` plus complications whose visibility is `public` or
+`known_to_player`. A `public` or `known_to_player` path becomes structurally available
+when all of its known-fact prerequisites are in the set. A `hidden` path requires at
+least one such prerequisite and becomes available only after all of them are known. A
+`gm_only` path never proves player reachability. Applying available paths adds their
+declared facts until a least fixed point is reached. Every hidden route must be in that
+fixed point; a self-dependency, an unseeded strongly connected component, a dangling
+fact, or a path available only through `gm_only` knowledge is invalid.
+
+This fixed-point check proves only the intra-wound discovery graph. A separate fresh
+authority proof must establish that each selected path's item, skill, provider,
+facility, location, quest, capability, and other registered world requirements can be
+reached in the current realm. The structural parser never scans or guesses world state.
+
+Diagnosis resolution uses one client-sealed attempt authority:
+
+```json
+{
+  "commandRef": "client-owned",
+  "operationKey": "client-owned-retry-safe-key",
+  "attemptId": "client-owned",
+  "woundId": "exact-active-wound",
+  "diagnosisPathId": "gm-local-stable-within-wound",
+  "expectedBeforeFingerprint": "sha256:...",
+  "pathFingerprint": "sha256:...",
+  "requirementAuthorityFingerprint": "sha256:...",
+  "checkResultFingerprint": "sha256:...",
+  "authorityFingerprint": "sha256:..."
+}
+```
+
+Its result evidence is:
+
+```json
+{
+  "result": "success",
+  "revealedFacts": ["route:clean_and_suture", "complication:infection"],
+  "resultFingerprint": "sha256:..."
+}
+```
+
+`result` is exactly `success` or `failure`. Success carries the complete ordered
+`reveals[]` of one reachable path. Failure carries an empty `revealedFacts[]`, changes
+no known fact, and is still a terminal retry-safe attempt. Version 1 supports only
+`failurePolicy=no_reveal`; readable failure output may state the need for better
+expertise but must not name an unrevealed route or complication.
 
 ### Route
 
@@ -711,6 +794,100 @@ access. Cyclic hidden-only revelation is invalid.
   "interruption": null
 }
 ```
+
+For a Mortal wound, route visibility is closed to `public`, `known_to_player`, or
+`hidden`; `gm_only` is not a treatment route because it has no player-reachable
+lifecycle. Every public/player-known route ID occurs in `knownRouteIds[]`. A hidden
+route ID is absent until already diagnosed, but once revealed it remains in
+`knownRouteIds[]` without rewriting the route's authored visibility. Every known or
+completed route ID resolves exactly once in `routes[]`, and every completed route is
+also known.
+
+### Alternative treatment authoring authority
+
+A later world-specific cure is not smuggled through `diagnose`. Before asking the GM
+to author anything, the client seals one transient request authority:
+
+```json
+{
+  "schemaVersion": 1,
+  "sessionId": "exact-session",
+  "requestId": "exact-request",
+  "snapshotToken": "exact-snapshot",
+  "authoringRequestRef": "client-owned",
+  "operationKey": "client-owned-retry-safe-key",
+  "woundId": "exact-active-wound",
+  "eventRef": "accepted-evidence-event",
+  "expectedBeforeFingerprint": "sha256:...",
+  "evidenceAuthorityFingerprint": "sha256:...",
+  "authorityFingerprint": "sha256:..."
+}
+```
+
+After a strict GM response resolves that request, the client re-resolves all route/path
+requirements and seals accepted transition evidence:
+
+```json
+{
+  "authoringRequestRef": "client-owned",
+  "requestAuthorityFingerprint": "sha256:...",
+  "operationKey": "client-owned-retry-safe-key",
+  "woundId": "exact-active-wound",
+  "eventRef": "accepted-evidence-event",
+  "addedRouteId": "new-complete-route",
+  "addedDiagnosisPathId": null,
+  "expectedBeforeFingerprint": "sha256:...",
+  "expectedAfterFingerprint": "sha256:...",
+  "routeFingerprint": "sha256:...",
+  "diagnosisPathFingerprint": null,
+  "evidenceAuthorityFingerprint": "sha256:...",
+  "requirementAuthorityFingerprint": "sha256:...",
+  "authorityFingerprint": "sha256:..."
+}
+```
+
+The matching accepted command result is:
+
+```json
+{
+  "decision": "author",
+  "route": {},
+  "diagnosisPath": null,
+  "resultFingerprint": "sha256:..."
+}
+```
+
+The accepted `author_alternative_treatment` transition appends exactly the bound route
+and one new history row. A visible route is appended to `knownRouteIds[]`. A hidden
+route leaves `knownRouteIds[]` unchanged and requires one newly appended diagnosis path
+whose fixed-point and fresh world-authority proofs are valid. Existing routes,
+diagnosis paths, completed/known route order, and all earlier history rows are
+byte-identical. Replacement, reordering, deletion, a second route/path, or an unbound
+route/path fingerprint fails closed.
+
+The GM-facing response uses one closed top-level array whose entries correlate only by
+the safe opaque `authoringRequestRef`:
+
+```json
+{
+  "woundTreatmentAuthorings": [
+    {
+      "authoringRequestRef": "safe-opaque-request-ref",
+      "decision": "author",
+      "route": {},
+      "diagnosisPath": null
+    }
+  ]
+}
+```
+
+`decision` is `author` or `decline`. `author` requires one complete route and requires
+exactly one complete diagnosis path when that route is hidden; it requires null
+`diagnosisPath` for a visible route. `decline` requires both payloads null and creates
+no transition. The client, not the GM, resolves the safe request reference to the
+sealed request authority, validates and seals the accepted transition evidence, writes
+the accepted command, and allocates transition/history identity. A route/path
+fingerprint is never accepted from the pre-response request or the GM.
 
 ### Requirement union
 
@@ -1144,41 +1321,89 @@ and are repeated after effect-plan resealing.
   "snapshotToken": "exact-snapshot",
   "commands": [
     {
+      "kind": "accepted_transition",
       "commandRef": "client-owned",
-      "kind": "treat",
-      "targetBinding": "client-owned-hidden-selection",
-      "woundId": "exact-active-wound",
-      "routeId": null,
-      "providerBinding": null,
-      "quotedCompensation": null,
-      "authorityFingerprint": "sha256:..."
+      "transitionKind": "diagnose",
+      "operationKey": "client-owned-retry-safe-key",
+      "authority": {},
+      "result": {},
+      "finalSceneText": "escaped accepted scene or null"
     }
   ]
 }
 ```
 
-Allowed command kinds are `materialize`, `worsen`, `diagnose`, `stabilize`, `treat`,
-`recover`, and `heal`. Commands are one-shot, consumed only by the matching accepted
-plan, and absent in ordinary read-only `/раны` queries. The GM cannot write the command
-root.
+The closed command discriminator is `opportunity_decision` for the already defined
+create/worsen decision envelope or `accepted_transition` for one typed existing-wound
+operation. Accepted transition kinds are `diagnose`,
+`author_alternative_treatment`, `stabilize`, `treat`, `recover`, and `heal`; every kind
+has a distinct closed authority/result payload and is independently recomposed before
+consumption. `materialize` and `worsen` are decisions inside
+`opportunity_decision`, not loose command aliases.
+
+Every `accepted_transition` has exactly `kind`, `commandRef`, `transitionKind`,
+`operationKey`, `authority`, `result`, and `finalSceneText`. For `diagnose`,
+`authority` binds exact command/attempt/wound/path identity, the
+expected before fingerprint, path fingerprint, fresh requirement authority, sealed
+check result, and its own authority fingerprint. `result` carries the exact
+`success|failure`, the required complete-or-empty `revealedFacts[]`, and a result
+fingerprint. The command `operationKey` and `attemptId` become the corresponding
+history replay coordinates.
+
+For `author_alternative_treatment`, `authority` is the post-response accepted
+transition evidence from section 9. It binds the transient request through
+`requestAuthorityFingerprint`, repeats the exact operation/wound/event coordinates,
+and seals the complete proposed before/after, route/path, fresh requirement, and
+evidence-authority fingerprints. `result` is exactly `decision=author`, the complete
+route, the optional required diagnosis path, and a recomputable result fingerprint.
+The reducer recomputes both the result and authority instead of trusting either seal.
+A decline produces no command or history row. `authoringRequestRef` is the safe
+response correlation and exact command reference, while `operationKey` is the unique
+history coordinate.
+
+Commands are one-shot, consumed only by the matching accepted plan, bound to the root
+session/request/snapshot plus exact final-scene text, and absent in ordinary read-only
+`/раны` queries. The GM cannot write the command root. No command is staged from a raw
+response that fails strict kind-specific parsing, authority recomputation, or exact
+typed recomposition.
 
 ## 16. Pending wound resolution
 
 The pending root stores a bounded wave of at most 64 candidates and their exact safe
 authority. It distinguishes `construct_wound`, `repair_wound`,
-`author_alternative_treatment`, and `narrate_acquisition`. A candidate contains:
+`author_alternative_treatment`, and `narrate_acquisition`. Every candidate contains a
+kind, safe opaque candidate/correlation reference, exact semantic fingerprint, safe
+readable context, offending paths, receipt identity, and transcript prefix.
+
+A `construct_wound` or `repair_wound` candidate additionally contains:
 
 - safe readable event/target/realm context;
 - allowed decision (`none` or materialize) and severity range;
 - closed domain/profile/location/complication/consequence/treatment schema;
 - immutable event/target/roll/guarantee/attempt/cycle fingerprints;
 - offending semantic paths and expected bounds for repair;
-- preserved non-offending proposal fields;
-- receipt identity and transcript prefix.
+- preserved non-offending wound proposal fields.
 
-It omits permanent client IDs, hidden target/private NPC data, resource seals, internal
-owner coordinates, and unrelated response content. A receipt is accepted once. A
-changed snapshot or semantic authority invalidates the pending wave.
+An `author_alternative_treatment` candidate instead contains:
+
+- the safe opaque `authoringRequestRef` and readable accepted-evidence summary;
+- allowed decision (`decline` or `author`);
+- the closed route/optional diagnosis-path schema and append-only constraints;
+- internally sealed before/route/path/authority fingerprints and operation key;
+- only the rejected route/path semantic leaves needed for bounded correction.
+
+Its repair packet exposes `candidateKind=author_alternative_treatment`, preserves only
+non-offending route/path content, and requires one corrected
+`woundTreatmentAuthorings[]` entry with the exact safe `authoringRequestRef`, decision,
+route, and diagnosisPath fields. It never asks the GM to resubmit a construction
+`woundDecisions[]` entry for this candidate.
+
+The GM-facing packet omits permanent client IDs, hidden target/private NPC data,
+before/route/path/authority fingerprints, operation keys, resource seals, internal
+owner coordinates, and unrelated response content. The client-owned pending root keeps
+the sealed fields required for retry comparison. A receipt is accepted once. A changed
+snapshot, wound fingerprint, evidence event, or semantic authority invalidates the
+pending wave.
 
 ## 17. Transition state machine
 
@@ -1188,6 +1413,7 @@ changed snapshot or semantic authority invalidates the pending wave.
 | `worsen` | active I-III or same-conflict wound | higher active severity, max IV | Resets current-step recovery; replaces effects |
 | `complicate` | active wound | same or declared worse severity | Adds registered complication/effect only once |
 | `diagnose` | active, discoverable path | same mechanics plus newly known facts | Never heals by itself |
+| `author_alternative_treatment` | active Mortal wound; sealed evidence-backed authoring authority | same mechanics plus one appended complete route and optional required diagnosis path | Never rewrites an existing route/path or prior history |
 | `stabilize` | active unstabilized | stabilized | May remove only declared complication/effect |
 | `treat` | active; complete route/gate | sealed result | Attempt may fail and still be terminal/charged |
 | `recover` | active; due valid clock/cycle | progress or lower severity/healed | Idempotent by tick key |
@@ -1269,6 +1495,7 @@ the choice revalidates target, wound, consent, provider, resources, and reachabi
 | Treatment routes per wound | 32 |
 | Diagnosis paths per wound | 32 |
 | Requirements per route/path | 16 |
+| Known-fact prerequisites or reveals per diagnosis path | 16 |
 | Complications per wound | 16 |
 | Consequences per wound | 4 |
 | Persisted wound-owned effect definitions per wound | 5 |

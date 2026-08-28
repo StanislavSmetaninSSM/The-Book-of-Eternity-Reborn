@@ -65,9 +65,23 @@ keys are rejected.
 
 ### Diagnose
 
-Reveals only fields named by one reachable accepted diagnosis path. It cannot reduce
-severity, care state, complication state, or resource values. A failed diagnosis may
-consume only its declared resources and produces one terminal attempt result.
+Requires one reachable path and client-sealed `success` or `failure` attempt evidence.
+Success reveals the complete ordered fact set named by that path. Failure reveals no
+fact and changes no known route or complication visibility. Neither result can reduce
+severity, change care/recovery/consequence mechanics, rewrite display text, or mutate
+resources directly. A failed diagnosis may consume only resources declared through
+the common accepted-mechanics plan and still produces one terminal retry-safe attempt.
+
+### Author alternative treatment
+
+Requires an active Mortal wound, one fresh pre-response authoring request bound to the
+current before fingerprint and accepted event, and post-response accepted-transition
+evidence bound to that request, the complete new route, and optional diagnosis path.
+It appends exactly one route and one history row. A
+visible route also becomes known; a hidden route requires one atomically appended
+diagnosis path that passes both the intra-wound discovery fixed point and fresh world
+reachability proof. Existing routes, paths, known/completed route order, and prior
+history are immutable. The transition cannot treat, stabilize, worsen, or heal.
 
 ### Stabilize
 

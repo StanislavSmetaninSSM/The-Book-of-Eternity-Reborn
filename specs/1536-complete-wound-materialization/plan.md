@@ -67,7 +67,8 @@ the number of wound/effect/resource operations; no wound-by-effect nested scans;
 repair/pending waves; ordinary wound query/choice response comparable to existing
 effects/status commands; no new unbounded test lane. Version-1 limits are 2,000 active
 wounds, 20,000 history rows, 128 commands, 64 pending candidates, 32 routes/diagnosis
-paths per wound, 16 requirements/complications, four consequences, and 32 wound
+paths per wound, 16 requirements per route/path, 16 known-fact prerequisites and 16
+reveals per diagnosis path, 16 complications, four consequences, and 32 wound
 transitions per accepted turn. Wound source indexing separately caps five definitions
 and five root bindings per wound, 10,000 of either across 2,000 pre-turn active wounds,
 at most 10,000 active/suspended wound-owned effect instances, and 160
@@ -393,16 +394,20 @@ history atomically for every owner carrier; effect removal never heals it.
 2. Implement Mortal event adapters and complete free-form proposal validation without a
    wound catalog.
 3. Add RED route/discovery/requirement/procedure/course/guaranteed/resource/stale-ref
-   tests using two unrelated setting fixtures.
-4. Implement treatment capabilities, exact item/resource/skill/provider/facility/
-   location resolution, reservation, and outcome composition.
+   tests using two unrelated setting fixtures. Discovery uses an explicit
+   `requiresKnownFacts` least-fixed-point graph, sealed success/failure diagnosis
+   evidence, and a distinct append-only `author_alternative_treatment` transition.
+4. Implement structural treatment/discovery validation separately from fresh exact
+   item/resource/skill/provider/facility/location reachability, then compose sealed
+   diagnosis/alternative-route authority, reservation, and outcomes.
 5. Add RED recovery/deterioration/time/retry/death-boundary tests and implement the
    registered Mortal policy scheduler.
 6. Replace legacy Mortal rule/example/UI preview shapes and add a complete GM worked
    lifecycle before exposing the Mortal command flow.
 
-Checkpoint: both cross-setting fixtures complete create -> diagnose -> treat/recover ->
-heal -> History, with exact rollback and no catalog lookup.
+Checkpoint: both cross-setting fixtures complete create -> diagnosis success/failure ->
+optional alternative-route authoring -> treat/recover -> heal -> History, with exact
+rollback and no catalog lookup.
 
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 

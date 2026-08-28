@@ -130,10 +130,13 @@ results impossible to enter canonical state.
     resource change, resistance change, or action control. These primitives are not
     a catalog of wound names, anatomies, medicines, symptoms, or cures.
 31. Each Mortal wound includes at least one mechanically complete treatment route.
-    A route may be hidden until diagnosis, but every hidden route has a reachable,
-    materialized discovery path.
+    A route may be hidden until diagnosis, but every hidden route enters an explicit
+    least-fixed-point discovery graph seeded by known routes and visible complications,
+    and at least one such path has fresh reachable world authority. Unseeded cycles
+    and GM-only dead ends are invalid.
 32. Additional evidence-backed treatment routes may be materialized later when a
-    player finds a valid world-specific solution.
+    player finds a valid world-specific solution. They use a distinct append-only
+    `author_alternative_treatment` transition rather than overloading diagnosis.
 33. Treatment routes may require exact items/doses, capabilities, skills,
     specialists, facilities, time, order, and environmental conditions. Requirements
     inside one route are conjunctive; separate routes are alternatives.
@@ -345,7 +348,7 @@ Every wound has a closed versioned semantic envelope:
 | Consequences | Exact wound-owned active effect links and declared slot accounting |
 | Treatment | Known/hidden treatment and diagnosis routes with exact requirements and outcomes |
 | Recovery | Natural-recovery policy, current-step progress, safe-cycle/time evidence, deterioration policy |
-| History | Ordered client-authored create/worsen/stabilize/treat/recover/heal/legacy transitions |
+| History | Ordered client-authored `create`/`worsen`/`diagnose`/`author_alternative_treatment`/`stabilize`/`treat`/`recover`/`heal`/`legacy` transitions |
 | Relations | Optional prior wound or independent legacy/effect references without shared lifecycle authority |
 
 `locationProfile` is explicit but not a wound or anatomy catalog. It distinguishes an
@@ -655,7 +658,35 @@ least one attainable diagnostic path so the GM cannot create an unknowable cure.
 
 Mortal diagnosis uses materialized setting-appropriate skills, tools, procedures,
 providers, facilities, clues, and checks. It does not reuse Spiritual Healing. A
-successful diagnosis reveals only the facts authorized by that path.
+diagnosis path has a readable name, exact visibility, closed
+`requiresKnownFacts[]`, exact world requirements, one sealed check, exact typed
+`reveals[]`, and `failurePolicy=no_reveal` in version 1. Requirements, known-fact
+prerequisites, and reveals are independently bounded to 16 entries per path.
+
+Known facts are exact route or complication coordinates inside the same wound. The
+client starts with current known routes and public/player-known complications, then
+repeatedly enables public/player-known paths whose prerequisites are known. A hidden
+path becomes available only after a non-empty known-fact prerequisite set is
+satisfied; a GM-only path never establishes player reachability. Available paths add
+their declared reveals until the least fixed point is stable. Self-dependencies,
+unseeded cycles, dangling facts, and hidden routes outside the closure fail closed.
+This structural graph does not replace the fresh item/provider/facility/location/
+quest/capability reachability proof.
+
+Diagnosis attempt evidence is sealed to exactly `success` or `failure`. Success reveals
+the complete ordered facts of exactly one reachable path. Failure reveals nothing and
+still consumes its one retry-safe attempt; player-facing failure may explain the need
+for better expertise without naming a hidden route or complication.
+
+A later evidence-backed cure uses a separate `author_alternative_treatment`
+transition. It appends exactly one complete route and one history row. A visible route
+also enters the known set; a hidden route atomically appends exactly one bound reachable
+diagnosis path and remains unknown. Existing route/path definitions, their order, and
+all prior history are byte-identical. The transient client request authority binds the
+current wound/event/before fingerprint before the GM response. After the response, the
+client re-resolves requirements and seals separate accepted-transition evidence over
+that request plus the exact route/path and proposed after-image fingerprints before
+the reducer can accept the append.
 
 Route requirements may include:
 
@@ -958,7 +989,8 @@ smallest failing test at the owning boundary.
 
 ### Integration coverage
 
-- Mortal create -> diagnose -> stabilize/treat -> recover -> heal -> History;
+- Mortal create -> diagnosis success/failure -> optional alternative-route authoring ->
+  stabilize/treat -> recover -> heal -> History;
 - physical alternative cures across at least two setting styles without a wound
   catalog;
 - spiritual exchange -> GM decision -> bounded materialization -> final narration;
@@ -1024,8 +1056,9 @@ The feature is complete only when:
    different occurrence and treatment models.
 4. Wound-owned effects apply and end atomically, cannot mutate the wound, and never
    remove unrelated effects.
-5. Creation, worsening, complication, diagnosis, stabilization, active treatment,
-   natural recovery, healing, legacy, and History transitions are deterministic,
+5. Creation, worsening, complication, diagnosis, alternative-treatment authoring,
+   stabilization, active treatment, natural recovery, healing, legacy, and History
+   transitions are deterministic,
    bounded, retry-safe, and rollback-safe.
 6. Spiritual conflict, arts, defeat outcomes, natural entity recovery, Elyara, and
    Shining faction healer roles obey the accepted rules.

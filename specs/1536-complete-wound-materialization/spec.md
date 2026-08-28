@@ -17,6 +17,14 @@
 - **Save compatibility**: Not required under the pre-release constitution and the user's explicit decision. Repository bootstrap state, fixtures, examples, and tests move directly to the new contract.
 - **Out of scope**: A catalog of ready-made wounds; migration of non-empty legacy saves; replacement of the effect engine; a general combat-damage or experience redesign; automatic post-battle fatigue; automatic soul dissipation; a full afterlife inventory; a mandatory public clinic for the whole Shining Abode. If Saref's `memory_suppression` is only audit metadata rather than a complete independent effect, a separate linked issue MUST be created before #1536 closes.
 
+## Clarifications
+
+### Session 2026-08-29
+
+- Q: How is a hidden-route discovery cycle represented and rejected without moving exact world-reference authority into the structural parser? → A: Each diagnosis path declares closed `requiresKnownFacts`; the client computes a least fixed point from already known routes and visible complications, while exact world reachability remains a separate fresh authority proof.
+- Q: How does a failed diagnosis differ from a malicious empty reveal? → A: Client-sealed diagnosis evidence declares exactly `success` or `failure`; success reveals the complete declared fact set, while failure reveals nothing and is still one terminal retry-safe attempt.
+- Q: How is a later evidence-backed cure added without abusing `diagnose` or rewriting history? → A: `author_alternative_treatment` is a distinct sealed transition that appends exactly one complete route and, for a hidden route, one reachable diagnosis path; prior definitions and history remain immutable.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Receive a Complete and Fair Wound (Priority: P1)
@@ -53,6 +61,8 @@ As a Mortal player, I can understand and treat a wound using methods appropriate
 4. **Given** an uninterrupted course, **When** every dose and time milestone completes, **Then** the declared wound transition occurs exactly once.
 5. **Given** a source explicitly promising guaranteed healing, **When** its exact capability and requirements are proven, **Then** the deterministic result occurs without an improvised GM override.
 6. **Given** a player proposes a plausible new cure, **When** the GM materializes an evidence-backed alternative route, **Then** it becomes a legal alternative without rewriting earlier history.
+7. **Given** a failed diagnosis attempt, **When** its sealed result is applied, **Then** it reveals no hidden route or complication and cannot be replayed as a second attempt.
+8. **Given** hidden routes whose only diagnosis paths depend on facts revealed by one another, **When** the wound is validated, **Then** the unresolved discovery cycle is rejected.
 
 ---
 
@@ -201,7 +211,7 @@ As the game-running system, I can reject and repair an invalid wound proposal wi
 - **FR-008**: Wound creation, linked effects, resource changes, history, narration, notification, and projections MUST publish atomically.
 - **FR-009**: Invalid wound materialization MUST publish no partial canonical or player-visible result and MUST produce a bounded repair request.
 - **FR-010**: Repair MUST preserve valid unrelated authored content while preventing changes to the sealed event, roll, target, or internal authority.
-- **FR-011**: Create, worsen, complicate, diagnose, stabilize, treat, recover, heal, legacy, and archive/history transitions MUST be explicit, bounded, deterministic, and replay-safe.
+- **FR-011**: Create, worsen, complicate, diagnose, `author_alternative_treatment`, stabilize, treat, recover, heal, legacy, and archive/history transitions MUST be explicit, bounded, deterministic, and replay-safe.
 - **FR-012**: The same accepted event, attempt, course milestone, or recovery cycle MUST NOT create or advance a wound more than once.
 - **FR-013**: Active wounds MUST remain in exact owner-appropriate carriers governed by one common identity/history authority.
 - **FR-014**: A physical wound MUST NOT silently convert into a spiritual wound during realm transition.
@@ -382,8 +392,8 @@ The destination-strain ceiling used by FR-032 is exact:
 - **FR-055**: Every Mortal wound MUST be freely authored for the current world and MUST NOT be selected from a predefined wound, symptom, medicine, or cure catalog.
 - **FR-056**: A Mortal wound MAY compose any universal registered mechanical primitive permitted by its severity envelope and exact target/resource authority.
 - **FR-057**: Every Mortal wound MUST have at least one mechanically complete treatment route at creation.
-- **FR-058**: Every hidden treatment route MUST have at least one reachable, materialized diagnostic or discovery path.
-- **FR-059**: New evidence-backed alternative treatment routes MAY be added later without changing prior wound history.
+- **FR-058**: Every diagnosis path MUST have a readable name, at most 16 unique ordered typed already-known fact prerequisites, at most 16 exact world requirements, a sealed check, and at most 16 unique ordered exact declared reveals. The client MUST compute the least discovery fixed point from current known routes and public/player-known complications; `hidden` paths require a non-empty satisfied known-fact prerequisite, `gm_only` paths never establish player reachability, unresolved cycles MUST fail closed, and every hidden treatment route MUST be present in the resulting reachable set. Exact item/provider/location/quest/capability reachability MUST be proven separately against fresh canonical authority.
+- **FR-059**: A new evidence-backed alternative treatment route MAY be added only by one sealed `author_alternative_treatment` transition. It MUST append exactly one complete route, MUST append one reachable diagnosis path atomically when the new route remains hidden, MUST preserve all prior routes, paths, and history rows byte-for-byte, and MUST append exactly one new transition history row.
 - **FR-060**: One treatment route MAY require exact items/doses, capabilities, skills, providers, facilities, time, ordered steps, and environmental conditions; all declared requirements in that route MUST hold.
 - **FR-061**: Separate treatment routes MUST be alternatives and MAY have different risks, resource costs, or outcomes.
 - **FR-062**: Procedure routes MUST use a predeclared bounded check and result bands; course routes MUST use exact doses/time and interruption behavior; guaranteed routes MUST require an explicit pre-materialized source capability.
@@ -398,7 +408,7 @@ The destination-strain ceiling used by FR-032 is exact:
 - **FR-068**: Healed wounds MUST appear only through a separate History action.
 - **FR-069**: Active wound detail MUST show readable severity, origin, symptoms, visible effects, recovery state, known treatment options, available help, and a treatment action without internal metadata.
 - **FR-070**: `/лечить` and `/treat` MUST provide one guided treatment flow; `/исцелить` and `/heal` MUST act as afterlife aliases.
-- **FR-071**: Diagnosis MUST be integrated into the guided treatment flow and MUST reveal only authorized information.
+- **FR-071**: Diagnosis MUST be integrated into the guided treatment flow. Client-sealed diagnosis evidence MUST declare exactly `success` or `failure`: success reveals the complete fact set declared by exactly one reachable path, while failure reveals none, leaks no hidden route or complication, and remains one terminal retry-safe attempt.
 - **FR-072**: Target selection MUST list Self first and then visible reachable nearby entities; players MUST NOT need to type names or technical identities.
 - **FR-073**: Equal display names MUST be disambiguated with visible context while the selected exact identity remains hidden.
 - **FR-074**: Reachability, consent, wound activity, provider capability, and exact requirements MUST be revalidated immediately before publication.
@@ -427,7 +437,7 @@ The destination-strain ceiling used by FR-032 is exact:
 
 - **Wound**: An independently treatable physical or spiritual injury with stable identity, owner, cause, severity, location, symptoms, care state, consequences, treatment/recovery policy, visibility, and history.
 - **Wound Opportunity**: Sealed evidence that an accepted event permits, forbids, caps, or guarantees a wound for one exact target.
-- **Wound Transition**: One accepted creation, worsening, complication, diagnosis, stabilization, treatment, recovery, healing, legacy, or archive/history change.
+- **Wound Transition**: One accepted creation, worsening, complication, diagnosis, alternative-treatment authoring, stabilization, treatment, recovery, healing, legacy, or archive/history change.
 - **Wound Consequence**: One independently understandable mechanical result represented by a slot-charged wound-owned root effect or its already-budgeted reaction descendant; the wound persists the complete source-definition graph separately from directly materialized root bindings.
 - **Treatment Route**: A world-specific diagnosis/treatment contract with visibility, exact requirements, resolution mode, outcomes, resource behavior, and failure/interruption rules.
 - **Recovery Policy**: The exact natural-recovery clock, thresholds, blockers, and optional deterioration rules for one wound.

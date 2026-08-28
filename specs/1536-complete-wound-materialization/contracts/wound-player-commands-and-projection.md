@@ -104,7 +104,11 @@ realm. The most restrictive applicable authority wins.
 
 - A visible effect may link to a visible wound.
 - An active wound may summarize only visible owned effects.
-- Hidden treatment routes show only a reachable diagnosis need.
+- Hidden treatment routes show only a reachable diagnosis need. A hidden diagnosis
+  path is absent until its non-empty `requiresKnownFacts[]` set is satisfied; a
+  `gm_only` path is never projected as player reachability.
+- A failed diagnosis reports only a readable unmet-expertise/requirement result and
+  never names or summarizes any unrevealed route or complication.
 - Private NPC wounds are not returned simply because the NPC is nearby.
 - An inaccessible visible faction healer remains visible but shows the known access
   condition; hidden conditions remain a general negotiation/relationship need.

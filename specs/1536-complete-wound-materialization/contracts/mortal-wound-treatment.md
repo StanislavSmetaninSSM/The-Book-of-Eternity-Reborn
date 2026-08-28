@@ -26,8 +26,19 @@ The client never derives any of these fields from the wound name or narrative pr
 ## Treatment routes
 
 All requirements in one route are conjunctive. Separate routes are alternatives.
+Mortal route visibility is `public`, `known_to_player`, or `hidden`; a `gm_only` route
+is invalid because it has no player-reachable treatment lifecycle. Public/player-known
+routes must be present in `knownRouteIds[]`; hidden routes enter that set only after
+diagnosis. Known/completed IDs resolve exact routes, and completed routes are known.
 Routes may be added later only through an accepted evidence-backed
-`author_alternative_treatment` transition; prior history is immutable.
+`author_alternative_treatment` transition. That transition appends exactly one bound
+complete route and one history row. A visible route also appends its ID to the known
+set; a hidden route instead appends exactly one bound reachable diagnosis path. It
+cannot replace, reorder, delete, or reinterpret an existing route/path or rewrite any
+prior history row. Its pre-response request binds the active wound, accepted evidence
+event, operation key, and before fingerprint; after the GM authors the route/path, the
+client re-resolves requirements and seals separate accepted-transition evidence over
+the request, complete proposal, and proposed after-image before staging a command.
 
 ### Procedure
 
@@ -112,17 +123,40 @@ time. If its authority becomes stale before commit, the route fails closed.
 
 ## Diagnosis paths and hidden routes
 
-A hidden route is legal only when at least one diagnosis path can become reachable
-through current canonical gameplay. The reachability proof may refer to a visible clue,
-skill, provider, item, facility, location, or quest state. These are invalid:
+A diagnosis path has a readable `displayName`, exact `visibility`, closed
+`requiresKnownFacts[]`, exact world `requirements[]`, one sealed `check`, exact typed
+`reveals[]`, and version-1 `failurePolicy=no_reveal`. Known facts use only
+`route:<routeId>` and `complication:<complicationId>` references inside the same wound.
+Each of the three arrays is independently bounded to 16 entries;
+`requiresKnownFacts[]` and `reveals[]` are unique and ordered.
+
+The client computes a least fixed point. It starts with `knownRouteIds[]` and public or
+player-known complications. Public/player-known paths become available when all known
+fact prerequisites are present. Hidden paths require a non-empty prerequisite set and
+become available only after it is satisfied; GM-only paths never establish player
+reachability. Each available path adds exactly its declared reveals. Every hidden route
+must enter the fixed point.
+
+This structural graph is separate from fresh world authority. Before accepting the
+wound or a later route, the client also proves that at least one path for each hidden
+route can become reachable through exact current gameplay: visible structured wound
+facts, skills,
+providers, items, facilities, locations, quests, or other registered requirements.
+These are invalid:
 
 - a hidden route revealed only by itself;
+- an unseeded cycle of hidden routes/complications and diagnosis prerequisites;
 - a private GM fact with no attainable discovery path;
 - a display-name-only item/provider/location reference;
 - a path requiring an impossible or wrong-realm capability.
 
-Diagnosis reveals only its declared facts. Tier/skill failure may return a readable
-need for better expertise without leaking the hidden route.
+Diagnosis result evidence is client-sealed and closed to `success` or `failure`.
+Success reveals the complete ordered fact set declared by exactly one reachable path.
+Failure reveals nothing, changes no known fact, and remains one terminal retry-safe
+attempt. Tier/skill failure may return a readable need for better expertise without
+leaking the hidden route or complication. Resource consumption for either result uses
+the ordinary accepted atomic resource policy; the diagnosis result itself carries no
+raw inventory mutation authority.
 
 ## Exact requirements
 
