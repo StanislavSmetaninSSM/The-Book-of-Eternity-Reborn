@@ -511,7 +511,7 @@ duplicate IDs
 - [X] T047 [P] [US7] Add RED hidden owner/provider/route/resource seal and private NPC data non-disclosure tests in `BookOfEternityClient.Tests/WoundRepairPacketPrivacyTests.cs`
 - [X] T048 [P] [US7] Add RED changed event/target/roll/snapshot/generation invalidation, exact packet receipt, and take-once tests in `BookOfEternityClient.Tests/WoundAcceptedTurnPlanCacheTests.cs`
 - [X] T049 [US7] Add RED corrected repair roundtrips for every representative invalid category plus failure injection before/after wound/effect/resource/profile/scheduler/history/output writes with byte/existence assertions in `BookOfEternityClient.IntegrationTests/WoundMaterializationRollbackTests.cs`
-- [ ] T050 [P] [US7] Add RED 100-repeat loops for accepted event/treatment/course/cycle/payment/output identities after success, repair, crash recovery, and consumed commands, asserting zero duplicate state in `BookOfEternityClient.IntegrationTests/WoundMaterializationReplayTests.cs`
+- [X] T050 [P] [US7] Add RED 100-repeat loops for accepted event/treatment/course/cycle/payment/output identities after success, repair, crash recovery, and consumed commands, asserting zero duplicate state in `BookOfEternityClient.IntegrationTests/WoundMaterializationReplayTests.cs`
 
 T046 RED evidence (2026-08-29): the new table-driven repair contract covers exact
 owner, severity, consequence-slot, linked-effect, treatment, resource, and acquisition-
@@ -560,6 +560,20 @@ leaf with required `displayName`. The Focused Integration RED build is warning-f
 stops only at the intentionally absent T051 builder/packet types and T053 repair-cache
 surface, with no tests executed, timeout, or duplicate IDs
 (`20260829-011751-823-21140-117e8f3898284e5d829f803a09e12933-focused`).
+
+T050 RED evidence (2026-08-29): one hundred exact repeats of an accepted opportunity
+receipt and one hundred repeats after a corrected severity repair must emit no
+transition, notification, or command and leave the accepted wound/effect/resource roots
+byte-identical. Separate file-backed 100-repeat contours cover ordinary success,
+successful repair, an exact command retained across crash recovery, and an already
+consumed command. Durable history replay now requires event, attempt, course,
+course-milestone, cycle, payment, and output agreement and returns one stable
+already-accepted receipt; changing any one of those seven coordinates remains a
+conflict for all 100 attempts while wound/effect/resource/scheduler/output state retains
+one result. The Focused Integration RED build is warning-free and stops only at the
+intentionally absent T051 repair types, T053 repair-cache methods, and T055 extended
+history/receipt/planner replay surface, with no tests executed, timeout, or duplicate IDs
+(`20260829-013011-609-32928-64fdccecee2440f4ad30f3736b450586-focused`).
 
 ### GREEN implementation
 
