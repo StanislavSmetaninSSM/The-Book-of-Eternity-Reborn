@@ -71,6 +71,19 @@ public sealed class WoundOpportunityAuthorityTests
                 StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void Compose_MissingEventEvidenceFailsClosed()
+    {
+        var request = BuildRequest() with { EventEvidence = null! };
+
+        var result = WoundOpportunityAuthority.Compose(request);
+
+        Assert.False(result.Success);
+        Assert.Null(result.Opportunity);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "wound_opportunity_event_evidence_invalid");
+    }
+
     [Theory]
     [InlineData("none", null, null)]
     [InlineData("materialize", 1, "wound_local_minor")]
@@ -220,8 +233,8 @@ public sealed class WoundOpportunityAuthorityTests
             "combat_action_test_001",
             "active",
             eventEvidence,
-            hardMaximumSeverityRank: 4,
-            guaranteedTrigger: null,
+            HardMaximumSeverityRank: 4,
+            GuaranteedTrigger: null,
             new WoundOpportunitySafeContext(
                 "вы",
                 "осколок стекла после обвала",

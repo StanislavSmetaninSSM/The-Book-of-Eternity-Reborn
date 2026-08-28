@@ -2335,7 +2335,15 @@ public sealed partial class WoundEffectBatchPlannerTests
         {
             Binding = staleInput.Binding with { RequestId = "request_stale" },
             Opportunities = staleInput.Opportunities.Select(static value =>
-                value with { RequestId = "request_stale" }).ToArray()
+            {
+                var changed = value with { RequestId = "request_stale" };
+                return changed with
+                {
+                    AuthorityFingerprint =
+                        WoundOpportunityAuthority
+                            .RecomputeAuthorityFingerprint(changed)
+                };
+            }).ToArray()
         };
         var stalePrepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(
             staleInput,
@@ -3337,20 +3345,37 @@ public sealed partial class WoundEffectBatchPlannerTests
                 CandidateShape.ReactionWithMarkerLeaf => 3,
                 _ => 2
             };
-            opportunities.Add(new WoundOpportunityAuthority(
+            var opportunity = new WoundOpportunityAuthority(
                 SessionId,
                 RequestId,
                 SnapshotToken,
                 opportunityId,
+                $"wound_opportunity_{ordinal:D3}",
                 eventAuthority.EventRef,
                 owner,
                 domain,
+                domain == "spiritual"
+                    ? "afterlife_strain_transition_v1"
+                    : "mortal_formal_injury_v1",
                 "combat_action",
                 $"combat_action_{ordinal:D3}",
                 "active",
-                1,
+                null,
                 maximumSeverityRank,
-                Fingerprint($"opportunity:{ordinal:D3}:{owner}")));
+                null,
+                new WoundOpportunitySafeContext(
+                    "Проверяемая цель",
+                    $"Причина ранения {ordinal:D3}.",
+                    domain == "spiritual"
+                        ? new[] { "spiritual_axis" }
+                        : new[] { "anatomical", "systemic", "other" }),
+                Fingerprint($"opportunity-evidence:{ordinal:D3}:{owner}"),
+                Fingerprint($"opportunity-placeholder:{ordinal:D3}:{owner}"));
+            opportunities.Add(opportunity with
+            {
+                AuthorityFingerprint =
+                    WoundOpportunityAuthority.RecomputeAuthorityFingerprint(opportunity)
+            });
 
             var draftGraph = CreateDraftGraph(
                 shape,

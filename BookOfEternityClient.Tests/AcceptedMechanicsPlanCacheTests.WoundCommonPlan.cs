@@ -711,7 +711,10 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                 RequestId = requestId
             },
             Opportunities = input.Opportunities.Select(value =>
-                value with { RequestId = requestId }).ToArray()
+                ResealWoundOpportunity(value with
+                {
+                    RequestId = requestId
+                })).ToArray()
         };
     }
 
@@ -730,14 +733,22 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                 Realm = commonInput.Realm,
                 Turn = commonInput.Turn
             },
-            Opportunities = input.Opportunities.Select(value => value with
-            {
-                SessionId = commonInput.SessionId,
-                RequestId = commonInput.RequestId,
-                SnapshotToken = commonInput.SnapshotToken
-            }).ToArray()
+            Opportunities = input.Opportunities.Select(value =>
+                ResealWoundOpportunity(value with
+                {
+                    SessionId = commonInput.SessionId,
+                    RequestId = commonInput.RequestId,
+                    SnapshotToken = commonInput.SnapshotToken
+                })).ToArray()
         };
     }
+
+    private static WoundOpportunityAuthority ResealWoundOpportunity(
+        WoundOpportunityAuthority value) => value with
+    {
+        AuthorityFingerprint =
+            WoundOpportunityAuthority.RecomputeAuthorityFingerprint(value)
+    };
 
     private static AcceptedMechanicsPlanBinding CreateWoundCommonBinding(
         JsonObject? woundCommands,

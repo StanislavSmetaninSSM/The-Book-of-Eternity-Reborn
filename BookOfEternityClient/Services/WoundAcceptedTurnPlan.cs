@@ -149,19 +149,24 @@ internal sealed record WoundAcceptedTurnInput
     }
 }
 
-internal sealed record WoundOpportunityAuthority(
+internal sealed partial record WoundOpportunityAuthority(
     string SessionId,
     string RequestId,
     string SnapshotToken,
     string OpportunityId,
+    string PublicRef,
     string EventRef,
     WoundOwnerCoordinate Owner,
     string Domain,
+    string ProfileKey,
     string SourceKind,
     string SourceId,
     string SourceState,
     int? MinimumSeverityRank,
     int MaximumSeverityRank,
+    WoundGuaranteedTriggerAuthority? GuaranteedTrigger,
+    WoundOpportunitySafeContext SafeContext,
+    string InputEvidenceFingerprint,
     string AuthorityFingerprint);
 
 internal sealed record WoundAcceptedEffectDefinitionDraft
@@ -1427,7 +1432,25 @@ internal static class WoundAcceptedTurnData
 
     internal static WoundOpportunityAuthority CloneOpportunity(
         WoundOpportunityAuthority value) =>
-        value with { Owner = CloneOwner(value.Owner)! };
+        new(
+            value.SessionId,
+            value.RequestId,
+            value.SnapshotToken,
+            value.OpportunityId,
+            value.PublicRef,
+            value.EventRef,
+            CloneOwner(value.Owner)!,
+            value.Domain,
+            value.ProfileKey,
+            value.SourceKind,
+            value.SourceId,
+            value.SourceState,
+            value.MinimumSeverityRank,
+            value.MaximumSeverityRank,
+            WoundOpportunityAuthority.CloneGuarantee(value.GuaranteedTrigger),
+            WoundOpportunityAuthority.CloneSafeContext(value.SafeContext),
+            value.InputEvidenceFingerprint,
+            value.AuthorityFingerprint);
 
     internal static WoundAcceptedEffectDefinitionDraft CloneDefinitionDraft(
         WoundAcceptedEffectDefinitionDraft value) =>
@@ -2497,9 +2520,11 @@ internal static class WoundAcceptedTurnFingerprints
         fields.Add(value?.RequestId);
         fields.Add(value?.SnapshotToken);
         fields.Add(value?.OpportunityId);
+        fields.Add(value?.PublicRef);
         fields.Add(value?.EventRef);
         AppendOwner(fields, value?.Owner);
         fields.Add(value?.Domain);
+        fields.Add(value?.ProfileKey);
         fields.Add(value?.SourceKind);
         fields.Add(value?.SourceId);
         fields.Add(value?.SourceState);
@@ -2507,6 +2532,36 @@ internal static class WoundAcceptedTurnFingerprints
             ? Number(minimum)
             : null);
         fields.Add(value is null ? null : Number(value.MaximumSeverityRank));
+        var guarantee = value?.GuaranteedTrigger;
+        fields.Add(guarantee?.TriggerId);
+        fields.Add(guarantee?.SourceKind);
+        fields.Add(guarantee?.SourceId);
+        fields.Add(guarantee?.SourceState);
+        fields.Add(guarantee?.Realm);
+        fields.Add(guarantee?.Domain);
+        AppendOwner(fields, guarantee?.Owner);
+        fields.Add(guarantee is null
+            ? null
+            : Number(guarantee.RequiredSeverityRank));
+        fields.Add(guarantee is null
+            ? null
+            : Number(guarantee.MaterializedAtTurn));
+        fields.Add(guarantee?.SourceContractFingerprint);
+        fields.Add(guarantee?.AuthorityFingerprint);
+        var safeContext = value?.SafeContext;
+        fields.Add(safeContext?.Target);
+        fields.Add(safeContext?.Cause);
+        var locationKinds = safeContext?.AllowedLocationKinds;
+        fields.Add(Count(locationKinds));
+        if (locationKinds is not null)
+        {
+            for (var index = 0; index < locationKinds.Count; index++)
+            {
+                fields.Add(Number(index));
+                fields.Add(locationKinds[index]);
+            }
+        }
+        fields.Add(value?.InputEvidenceFingerprint);
         fields.Add(value?.AuthorityFingerprint);
     }
 

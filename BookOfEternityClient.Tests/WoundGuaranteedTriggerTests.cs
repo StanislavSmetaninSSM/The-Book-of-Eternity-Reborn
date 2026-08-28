@@ -159,6 +159,40 @@ public sealed class WoundGuaranteedTriggerTests
         Assert.Equal(firstDecision.OperationKey, retriedDecision.Decision.OperationKey);
     }
 
+    [Fact]
+    public void HasCompleteShape_RejectsGuaranteeSealedForAnotherOwner()
+    {
+        var primary = ComposeGuaranteedOpportunity();
+        var foreignOwner = new WoundOwnerCoordinate(
+            "mortal_world",
+            "npc",
+            "npc_foreign",
+            "game_state/npcs/npc_wounds.json");
+        var foreignRequest = BuildGuaranteedRequest();
+        foreignRequest = foreignRequest with
+        {
+            Owner = foreignOwner,
+            GuaranteedTrigger = foreignRequest.GuaranteedTrigger! with
+            {
+                Owner = foreignOwner
+            }
+        };
+        var foreign = Assert.IsType<WoundOpportunityAuthority>(
+            WoundOpportunityAuthority.Compose(foreignRequest).Opportunity);
+        var changed = primary with
+        {
+            GuaranteedTrigger = foreign.GuaranteedTrigger,
+            MinimumSeverityRank = foreign.MinimumSeverityRank
+        };
+        var resealed = changed with
+        {
+            AuthorityFingerprint =
+                WoundOpportunityAuthority.RecomputeAuthorityFingerprint(changed)
+        };
+
+        Assert.False(WoundOpportunityAuthority.HasCompleteShape(resealed));
+    }
+
     private static WoundOpportunityAuthority ComposeGuaranteedOpportunity()
     {
         var result = WoundOpportunityAuthority.Compose(BuildGuaranteedRequest());

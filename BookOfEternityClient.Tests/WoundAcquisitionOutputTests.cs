@@ -131,11 +131,15 @@ public sealed class WoundAcquisitionOutputTests
             $"Сцена: {unsafeNarration}"));
 
         Assert.True(result.Success);
-        Assert.DoesNotContain("[red]", result.Notification!.Text.ConsoleMarkup);
+        Assert.DoesNotContain(
+            "[red]<script>",
+            result.Notification!.Text.ConsoleMarkup);
         Assert.Contains("[[red]]", result.Notification.Text.ConsoleMarkup);
         Assert.DoesNotContain("<script>", result.Notification.Text.BrowserText);
         Assert.Contains("&lt;script&gt;", result.Notification.Text.BrowserText);
-        Assert.DoesNotContain("[bold]", result.AcquisitionNarration!.ConsoleMarkup);
+        Assert.DoesNotContain(
+            "[bold]Осколок",
+            result.AcquisitionNarration!.ConsoleMarkup);
         Assert.Contains("[[bold]]", result.AcquisitionNarration.ConsoleMarkup);
         Assert.DoesNotContain("<img", result.AcquisitionNarration.BrowserText);
         Assert.Contains("&lt;img", result.AcquisitionNarration.BrowserText);

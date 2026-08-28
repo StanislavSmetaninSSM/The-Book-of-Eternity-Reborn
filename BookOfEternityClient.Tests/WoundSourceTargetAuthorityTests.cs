@@ -222,6 +222,63 @@ public sealed class WoundSourceTargetAuthorityTests
             issue.Code == "wound_source_event_fingerprint_mismatch");
     }
 
+    [Fact]
+    public void Build_MalformedExportFailsClosedWithoutCloningIt()
+    {
+        var inputs = CreateFixtureInputs("mortal_world", new WoundTargetExport(
+            new WoundOwnerCoordinate(
+                "mortal_world",
+                "player",
+                "player_current",
+                "game_state/player/wounds.json"),
+            new EffectTargetKey("mortal_world", "player", "player_current"),
+            SameTurn: false,
+            TargetRef: null,
+            DisplayName: "Вы"));
+
+        var authority = WoundSourceAuthority.Build(new WoundSourceAuthorityInput(
+            inputs.Binding,
+            new WoundSourceEventExport[] { null! },
+            inputs.Targets,
+            inputs.EffectTargets));
+
+        Assert.Contains(authority.Issues, issue =>
+            issue.Code == "wound_source_event_invalid");
+    }
+
+    [Fact]
+    public void Build_MalformedAcceptedEventFailsClosed()
+    {
+        var inputs = CreateFixtureInputs("mortal_world", new WoundTargetExport(
+            new WoundOwnerCoordinate(
+                "mortal_world",
+                "player",
+                "player_current",
+                "game_state/player/wounds.json"),
+            new EffectTargetKey("mortal_world", "player", "player_current"),
+            SameTurn: false,
+            TargetRef: null,
+            DisplayName: "Вы"));
+        var malformedEvents = new WoundAcceptedEventAuthority[] { null! };
+        var malformedBinding = new WoundAcceptedTurnBinding(
+            inputs.Binding.SessionId,
+            inputs.Binding.RequestId,
+            inputs.Binding.SnapshotToken,
+            inputs.Binding.Realm,
+            inputs.Binding.Turn,
+            malformedEvents,
+            WoundAcceptedEventSetFingerprint.Compute(malformedEvents));
+
+        var authority = WoundSourceAuthority.Build(new WoundSourceAuthorityInput(
+            malformedBinding,
+            new[] { inputs.Source },
+            inputs.Targets,
+            inputs.EffectTargets));
+
+        Assert.Contains(authority.Issues, issue =>
+            issue.Code == "wound_source_binding_invalid");
+    }
+
     private static SourceFixture BuildFixture(
         string realm,
         params WoundTargetExport[] targets)

@@ -246,13 +246,40 @@ Production remains untouched.
 
 ### GREEN implementation
 
-- [ ] T035 [US1] Implement sealed Mortal/mechanical/narrative/spiritual wound opportunities, guarantees, safe GM context, and consumed decision authority in `BookOfEternityClient/Services/WoundOpportunityAuthority.cs`
+- [X] T035 [US1] Implement sealed Mortal/mechanical/narrative/spiritual wound opportunities, guarantees, safe GM context, and consumed decision authority in `BookOfEternityClient/Services/WoundOpportunityAuthority.cs`
 - [ ] T036 [US1] Add the strict response proposal/decision fields and remove permanent-ID authority from GM input in `BookOfEternityClient/Models/GameResponse.cs` and `BookOfEternityClient/Services/WoundResponseInputComposer.cs`
 - [ ] T037 [US1] Bind exact event/source/target/realm/profile and guaranteed evidence during wound preparation in `BookOfEternityClient/Services/WoundSourceAuthority.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T038 [US1] Wire optional, lower-than-cap, guaranteed, declined, and worsening US1 response proposals plus exact opportunity/source authority into the completed T020/T022/T024 typed wound-batch/finalization API without adding a second effect path in `BookOfEternityClient/Services/WoundResponseInputComposer.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T039 [US1] Compose create/worsen/decline after-images, client-owned wound IDs, effect-plan-owned root IDs, full old source-group teardown before worsen rematerialization, history, owner carriers, and combatant promotion transitions in `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs` and `BookOfEternityClient/Services/WoundTransitionReducer.cs`
 - [ ] T040 [US1] Add escaped acquisition narration validation and deterministic player notification/output binding to the accepted turn in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs` and `BookOfEternityClient/UI/WoundPlayerNotification.cs`
 - [ ] T041 [US1] Replace direct `playerWoundChanges`/`NPCWoundChanges` distribution with strict accepted wound command consumption in `BookOfEternityClient/Configuration/FileMapping.cs`, `BookOfEternityClient/IO/StateDistributor.cs`, and `BookOfEternityClient/Models/GameResponse.cs`
+
+T035 GREEN evidence (2026-08-28): the opportunity authority now recomputes the
+accepted event-evidence seal, applies ordinary hard caps, fails closed on harmless
+conflicts, seals pre-materialized active guarantees without inventing a compromise,
+projects bounded safe context, and derives replay-stable consumed decision/operation
+authority. The first semantic run reached all 44 new tests (43 pass/1 over-broad
+escaping assertion); after correcting that assertion, the full new authority/output
+set plus the existing wound effect planner is GREEN `230/230`, warning-free
+(`20260828-174543-410-27288-84c076e306aa4efa86768f114a4d3dce-focused`).
+The existing wound source guard remains GREEN `2/2`
+(`20260828-174701-133-7656-d64c6e40fcd842b8a791584a4a8c1a4e-focused`).
+`WoundSourceAuthority` and `WoundPlayerNotification` are implemented as tested pure
+boundaries in the same tranche, but T037 and T040 remain open until the accepted-turn
+planner and GameEngine consume them. No GM-authored/runtime response surface exists
+yet, so T043/T044 documentation and examples are intentionally not advanced here.
+
+T035 review hardening (2026-08-28): malformed event/source rows now fail closed
+without throwing, and a separately valid guaranteed-trigger seal cannot be transplanted
+onto another owner under a recomputed opportunity seal. The new authority regressions
+are GREEN `21/21` and `15/15`
+(`20260828-175501-281-33012-ceef5ff3bcea4ff0835182cee1f691f7-focused`,
+`20260828-175741-134-9332-a1e363a762d24a5ba349091bf82a3359-focused`).
+The expanded wound/cache/snapshot checkpoint initially exposed one stale cache-test
+builder, not 62 independent runtime failures; after resealing its intentionally changed
+request coordinates, the exact same control is GREEN `1700/1700`, warning-free and
+without duplicates or timeout
+(`20260828-180057-724-33360-eb419aa63f9b4900be317353c3ad18b3-focused`).
 
 ### GM contract synchronization
 

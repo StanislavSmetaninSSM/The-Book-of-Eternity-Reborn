@@ -1491,19 +1491,7 @@ internal static class WoundAcceptedTurnPlannerCore
     }
 
     private static bool OpportunityShapeIsValid(WoundOpportunityAuthority value) =>
-        value is not null &&
-        value.Owner is not null &&
-        Exact(value.OpportunityId) &&
-        Exact(value.EventRef) &&
-        Exact(value.Domain) &&
-        Exact(value.SourceKind) &&
-        Exact(value.SourceId) &&
-        Exact(value.SourceState) &&
-        Fingerprint(value.AuthorityFingerprint) &&
-        value.MaximumSeverityRank is >= 1 and <= 4 &&
-        value.MinimumSeverityRank is null or (>= 1 and <= 4) &&
-        (!value.MinimumSeverityRank.HasValue ||
-         value.MinimumSeverityRank.Value <= value.MaximumSeverityRank);
+        WoundOpportunityAuthority.HasCompleteShape(value);
 
     private static void ValidateTransitionBinding(
         WoundAcceptedTurnBinding binding,
