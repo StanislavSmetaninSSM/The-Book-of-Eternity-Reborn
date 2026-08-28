@@ -260,7 +260,7 @@ Production remains untouched.
 - [X] T036 [US1] Add the strict response proposal/decision fields and remove permanent-ID authority from GM input in `BookOfEternityClient/Models/GameResponse.cs` and `BookOfEternityClient/Services/WoundResponseInputComposer.cs`
 - [X] T037 [US1] Bind exact event/source/target/realm/profile and guaranteed evidence during wound preparation in `BookOfEternityClient/Services/WoundSourceAuthority.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T038 [US1] Wire optional, lower-than-cap, guaranteed, declined, and worsening US1 response proposals plus exact opportunity/source authority into the completed T020/T022/T024 typed wound-batch/finalization API without adding a second effect path in `BookOfEternityClient/Services/WoundResponseInputComposer.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
-- [ ] T039 [US1] Compose create/worsen/decline after-images, client-owned wound IDs, effect-plan-owned root IDs, full old source-group teardown before worsen rematerialization, history, owner carriers, and combatant promotion transitions in `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs` and `BookOfEternityClient/Services/WoundTransitionReducer.cs`
+- [ ] T039 [US1] Compose create/worsen/decline after-images, client-owned wound IDs, effect-plan-owned root IDs, full old source-group teardown before worsen rematerialization, history, owner carriers, and combatant promotion transitions in `BookOfEternityClient/Services/WoundAcceptedOwnerCarrierAuthority.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/WoundTransitionReducer.cs`
 - [ ] T040 [US1] Add escaped acquisition narration validation and deterministic player notification/output binding to the accepted turn in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs` and `BookOfEternityClient/UI/WoundPlayerNotification.cs`
 - [ ] T041 [US1] Replace direct `playerWoundChanges`/`NPCWoundChanges` distribution with strict accepted wound command consumption in `BookOfEternityClient/Configuration/FileMapping.cs`, `BookOfEternityClient/IO/StateDistributor.cs`, and `BookOfEternityClient/Models/GameResponse.cs`
 
@@ -344,6 +344,24 @@ wounds while accepting unrelated owner fields. Focused compilation is warning-fr
 stops only on the three expected uses of the intentionally absent
 `WoundAcceptedOwnerCarrierAuthority`; no tests execute and no timeout or duplicate IDs
 occur (`20260828-202335-226-44312-b9a17c0035314e7a8607301dd9301508-focused`).
+
+T034 GREEN / T039 owner-baseline checkpoint (2026-08-28): accepted combat and
+afterlife owner roots are now composed with client-owned pre-turn `activeWounds`
+collections before wound preparation. Existing wounds remain byte-equivalent, GM
+injections are discarded, new permanent combatants/NPCs/profiles receive exact empty
+collections, and disappearance of an active wound fails closed pending a separate typed
+owner transition. The same contour exposed and fixed the existing normalized
+`chaos_sea|shining_abode` player-soul realm projector bug by resolving afterlife tokens
+before the generic Mortal fallback. The complete lifecycle class is GREEN `35/35`,
+warning-free
+(`20260828-203502-794-16132-3232389c3419479b8c09f8324a90d494-focused`);
+adjacent carrier/cache/root-assembly/effect-input/source-guard controls are GREEN
+`261/261`
+(`20260828-203729-965-20712-0dbbf85b708747fc89637aa671736f62-focused`).
+T039 remains open for guaranteed/worsen after-images, old source-group teardown, and
+the complete common-plan owner transition contour. This checkpoint adds no GM-authored
+surface or afterlife pending/control/response field, so prompts, examples, manifests,
+the Afterlife Contract Matrix, and documentation guards require no update here.
 
 ### GM contract synchronization
 

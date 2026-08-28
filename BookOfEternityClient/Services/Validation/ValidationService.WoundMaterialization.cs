@@ -315,11 +315,20 @@ public partial class ValidationService
         if (!sourceBinding.Success)
             return null;
 
+        var acceptedOwnerCarriers = WoundAcceptedOwnerCarrierAuthority.Compose(
+            draft.PreTurnCarriers,
+            effectInput.AcceptedCarrierBaselines ??
+            effectInput.PreTurnCarriers ??
+            new EffectCarrierCatalogInput(null, null, null, null, null, null));
+        issues.AddRange(acceptedOwnerCarriers.Issues);
+        if (!acceptedOwnerCarriers.Success || acceptedOwnerCarriers.Carriers is not { } carriers)
+            return null;
+
         var input = new WoundAcceptedTurnInput(
             binding,
             recomposed.MaterializedOpportunities,
             recomposed.Transitions,
-            draft.PreTurnCarriers,
+            carriers,
             draft.PreTurnIdentityIndex,
             draft.PreTurnHistory);
         var prepared = WoundAcceptedTurnPlanAuthority.GetOrBuildPreparedValidated(

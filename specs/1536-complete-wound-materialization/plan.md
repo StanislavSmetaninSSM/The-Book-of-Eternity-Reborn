@@ -186,6 +186,7 @@ BookOfEternityClient/
 │   ├── WoundMaterializationContract*.cs          # strict parsers, bounds, canonical models
 │   ├── WoundIdentityState.cs                     # client index/history agreement
 │   ├── WoundCarrierCatalog.cs                    # player/NPC/combatant/afterlife occurrences
+│   ├── WoundAcceptedOwnerCarrierAuthority.cs     # accepted owner shape plus client-owned wound baseline
 │   ├── WoundSourceAuthority.cs                   # event/source/owner/opportunity adapters
 │   ├── WoundConsequenceEnvelopeCatalog.cs        # slot/power profiles
 │   ├── WoundAcceptedTurnPlan*.cs                 # prepare/finalize/cache/handoff

@@ -138,8 +138,10 @@ internal static class AfterlifeEntityProfileState
         string newRealm)
     {
         ArgumentNullException.ThrowIfNull(currentRoot);
-        if (!RealmSemantics.IsMortalRealm(newRealm) &&
-            !TryNormalizeEffectRealm(newRealm, out _))
+        var isAfterlifeRealm = TryNormalizeEffectRealm(
+            newRealm,
+            out var normalizedRealm);
+        if (!isAfterlifeRealm && !RealmSemantics.IsMortalRealm(newRealm))
         {
             throw new InvalidOperationException(
                 $"Unsupported player_soul lifecycle realm '{newRealm}'.");
@@ -166,10 +168,9 @@ internal static class AfterlifeEntityProfileState
         // owner composer uses soul_state.currentRealm to suspend every
         // realm-bound binding while preserving sealed realm-independent
         // capabilities on the persistent player_soul identity.
-        if (RealmSemantics.IsMortalRealm(newRealm))
+        if (!isAfterlifeRealm)
             return projected;
 
-        TryNormalizeEffectRealm(newRealm, out var normalizedRealm);
         playerProfiles[0]["realm"] = normalizedRealm == "chaos_sea"
             ? "Chaos Sea"
             : "Shining Abode";

@@ -32,7 +32,7 @@ public sealed partial class WoundMaterializationLifecycleTests
         yield return OwnerCase(
             "chaos_sea",
             "player_soul",
-            "player_soul_current",
+            "player_soul",
             WoundCarrierCatalog.AfterlifeProfilesPath,
             "player_soul");
         yield return OwnerCase(
@@ -137,16 +137,18 @@ public sealed partial class WoundMaterializationLifecycleTests
             accepted);
 
         Assert.True(composition.Success, Describe(composition.Issues));
+        var composedCarriers = Assert.IsType<WoundCarrierCatalogInput>(
+            composition.Carriers);
         var owner = new WoundOwnerCoordinate(
             "mortal_world",
             "combatant",
             combatantId,
             WoundCarrierCatalog.EnemiesPath);
         var acceptedCollection = WoundCarrierCollectionAuthority.Resolve(
-            composition.Carriers!,
+            composedCarriers,
             owner);
         Assert.Empty(acceptedCollection);
-        var acceptedCombatant = composition.Carriers!.EnemyCombatants![
+        var acceptedCombatant = composedCarriers.EnemyCombatants![
             "enemiesData"]![0]!.AsObject();
         Assert.Equal(combatantId, acceptedCombatant["combatantId"]!.GetValue<string>());
         Assert.False(acceptedCombatant.ContainsKey("combatantRef"));
@@ -158,7 +160,7 @@ public sealed partial class WoundMaterializationLifecycleTests
         acceptedCollection.Add(ToWoundNode(wound));
         AssertCanonicalAgreement(CreateOwnerState(
             wound,
-            composition.Carriers,
+            composedCarriers,
             "accepted_combatant_wound"));
     }
 
@@ -174,7 +176,7 @@ public sealed partial class WoundMaterializationLifecycleTests
             "mortal_death_boundary");
         var soulRoot = CreateAfterlifeRoot(
             "player_soul",
-            "player_soul_current",
+            "player_soul",
             "Shining Abode");
         var preTurn = mortal.Carriers with
         {
