@@ -25,6 +25,25 @@ public sealed partial class PendingTurnSnapshotAuthorityTests
             WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
             ProgressionScheduleService.SchedulePath,
             ProgressionScheduleService.ReportPath,
+            GuardianProjectState.JournalPath,
+            GuardianPowerEventState.JournalPath,
+            "game_state/npcs/npc_journals.json",
+            NpcInteractionJournalState.StatePath,
+            "game_state/npcs/item_journals.json",
+            GuardianThoughtJournalState.StatePath,
+            GuardianSocialJournalState.StatePath,
+            "game_state/quests/regular_quests.json",
+            "game_state/quests/soul_quests.json",
+            "game_state/quests/quest_history.json",
+            InventoryEquipmentService.ItemsPath,
+            MortalItemIdentityState.StatePath,
+            MortalItemAcceptedTransferCatalog.NpcCommandsPath,
+            MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+            "game_state/inventory/recipes.json",
+            "game_state/inventory/item_bonds.json",
+            "game_state/inventory/item_text_updates.json",
+            "game_state/misc/characteristics.json",
+            "game_state/player/computed_characteristics.json",
             "output/narrative_response.json",
             "output/interface_updates.json",
             "output/debug_logs.json"
@@ -154,7 +173,7 @@ public sealed partial class PendingTurnSnapshotAuthorityTests
     [Fact]
     public void WoundSnapshotContract_BuildRequiredPaths_UnionsDynamicPlanPaths()
     {
-        const string dynamicQuestPath = "game_state/quests/regular_quests.json";
+        const string dynamicQuestPath = "game_state/quests/dynamic_side_quest.json";
 
         var paths = WoundAcceptedTurnSnapshotContract.BuildRequiredPaths(
             new[] { dynamicQuestPath, WoundCarrierCatalog.PlayerPath });

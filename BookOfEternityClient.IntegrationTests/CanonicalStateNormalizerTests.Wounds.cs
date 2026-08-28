@@ -8,6 +8,17 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class CanonicalStateNormalizerWoundTests
 {
+    public static TheoryData<string> RetainedPublicationAgreementPaths => new()
+    {
+        ProgressionScheduleService.SchedulePath,
+        GuardianProjectState.JournalPath,
+        "game_state/quests/regular_quests.json",
+        InventoryEquipmentService.ItemsPath,
+        "game_state/misc/characteristics.json",
+        "output/narrative_response.json",
+        WoundAcceptedTurnSnapshotContract.PendingResolutionPath
+    };
+
     [Fact]
     public async Task CompleteWoundPlan_PublishesIndexAndHistoryAndConsumesCommand()
     {
@@ -115,8 +126,10 @@ public sealed class CanonicalStateNormalizerWoundTests
         Assert.Contains(WoundCarrierCatalog.AfterlifeProfilesPath, exception.Message);
     }
 
-    [Fact]
-    public async Task CompleteWoundPlan_PostPublicationOutputDrift_RestoresWholeLocalTransaction()
+    [Theory]
+    [MemberData(nameof(RetainedPublicationAgreementPaths))]
+    public async Task CompleteWoundPlan_PostPublicationRetainedRootDrift_RestoresWholeLocalTransaction(
+        string protectedPath)
     {
         const string outputPath = "output/narrative_response.json";
         const string acceptedOutput = "{\"response\":\"Sealed wound narration.\"}";
@@ -138,11 +151,13 @@ public sealed class CanonicalStateNormalizerWoundTests
                 }
 
                 driftInjected = true;
+                var fullPath = Path.Combine(
+                    sessionPath!,
+                    protectedPath.Replace('/', Path.DirectorySeparatorChar));
+                Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
                 File.WriteAllText(
-                    Path.Combine(
-                        sessionPath!,
-                        outputPath.Replace('/', Path.DirectorySeparatorChar)),
-                    "{\"response\":\"Drifted after preflight.\"}",
+                    fullPath,
+                    "{\"driftedAfterNormalization\":true}",
                     new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
                 return Task.CompletedTask;
             }
@@ -162,6 +177,7 @@ public sealed class CanonicalStateNormalizerWoundTests
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        var protectedBefore = await context.FileSystem.ReadFileBytesAsync(protectedPath);
         var manifest = JsonNode.Parse((await context.FileSystem.ReadFileAsync(
             "game_state/control/pending_turn_snapshot.json"))!)!.AsObject();
         var backups = manifest["files"]!.AsObject().ToDictionary(
@@ -170,22 +186,19 @@ public sealed class CanonicalStateNormalizerWoundTests
             StringComparer.OrdinalIgnoreCase);
 
         armed = true;
-        var result = await AcceptedTurnCanonicalStateRefresh
-            .NormalizeAndValidateWithPlanAsync(
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
                 context.FileSystem,
                 context.Normalizer,
                 context.Validator,
-                backups);
+                backups));
 
         Assert.True(driftInjected);
-        Assert.Null(result.MechanicsPlan);
-        Assert.Contains(
-            result.Issues,
-            static issue => issue.Code ==
-                "wound_materialization_output_authority_mismatch");
-        Assert.Equal(
-            acceptedOutput,
-            await context.FileSystem.ReadFileAsync(outputPath));
+        Assert.Contains(protectedPath, exception.Message);
+        var protectedAfter = await context.FileSystem.ReadFileBytesAsync(protectedPath);
+        Assert.Equal(protectedBefore == null, protectedAfter == null);
+        if (protectedBefore != null)
+            Assert.Equal(protectedBefore, protectedAfter);
         Assert.NotNull(await context.ReadJsonAsync(
             AcceptedMechanicsPlan.WoundCommandPath));
     }

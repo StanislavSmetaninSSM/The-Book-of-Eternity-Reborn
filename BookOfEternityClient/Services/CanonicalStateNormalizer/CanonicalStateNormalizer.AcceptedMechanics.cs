@@ -151,21 +151,34 @@ public partial class CanonicalStateNormalizer
         if (!plan.AwaitsPendingResolution)
             await AddOwnerTransitionWritesAsync(plan, writes);
 
+        var deletePaths = plan.PendingAfterImages
+            .Where(static pair => pair.Value == null)
+            .Select(static pair => pair.Key)
+            .Concat(plan.ConsumedPaths)
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(static path => path, StringComparer.Ordinal)
+            .ToArray();
+        var retainedPublicationBeforeImages =
+            await CaptureRetainedPublicationAgreementBeforeImagesAsync(
+                plan,
+                writes.Keys,
+                deletePaths);
+
         foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
         {
             await WriteCanonicalFileAtomicAsync(
                 pair.Key,
                 pair.Value.ToJsonString(JsonOpts));
         }
-        foreach (var path in plan.PendingAfterImages
-                     .Where(static pair => pair.Value == null)
-                     .Select(static pair => pair.Key)
-                     .Concat(plan.ConsumedPaths)
-                     .Distinct(StringComparer.Ordinal)
-                     .OrderBy(static path => path, StringComparer.Ordinal))
+        foreach (var path in deletePaths)
         {
             _fs.DeleteFile(_writeLease, path);
         }
+
+        await ValidateAcceptedMechanicsPublicationAgreementAsync(
+            writes,
+            deletePaths,
+            retainedPublicationBeforeImages);
 
         if (plan.AwaitsPendingResolution)
         {
@@ -184,6 +197,68 @@ public partial class CanonicalStateNormalizer
             await ValidatePublishedResourceAfterImagesAsync(plan);
         }
         return plan;
+    }
+
+    private async Task<IReadOnlyDictionary<string, CanonicalBeforeImage>>
+        CaptureRetainedPublicationAgreementBeforeImagesAsync(
+            AcceptedMechanicsPlan plan,
+            IEnumerable<string> writePaths,
+            IEnumerable<string> deletePaths)
+    {
+        var producedPaths = new HashSet<string>(writePaths, StringComparer.Ordinal);
+        producedPaths.UnionWith(deletePaths);
+        var retained = new Dictionary<string, CanonicalBeforeImage>(
+            StringComparer.Ordinal);
+        foreach (var path in WoundAcceptedTurnSnapshotContract.PublicationAgreementPaths
+                     .Concat(plan.TouchedPaths)
+                     .Distinct(StringComparer.Ordinal)
+                     .Where(path => !producedPaths.Contains(path))
+                     .OrderBy(static path => path, StringComparer.Ordinal))
+        {
+            var bytes = await _fs.ReadFileBytesAsync(_writeLease!, path);
+            retained.Add(path, new CanonicalBeforeImage(bytes != null, bytes));
+        }
+
+        return retained;
+    }
+
+    private async Task ValidateAcceptedMechanicsPublicationAgreementAsync(
+        IReadOnlyDictionary<string, JsonObject> writes,
+        IReadOnlyList<string> deletePaths,
+        IReadOnlyDictionary<string, CanonicalBeforeImage> retainedBeforeImages)
+    {
+        foreach (var pair in writes.OrderBy(
+                     static value => value.Key,
+                     StringComparer.Ordinal))
+        {
+            _ = await ReadExactPublishedAfterImageAsync(pair.Key, pair.Value);
+        }
+
+        foreach (var path in deletePaths)
+        {
+            if (_fs.FileExists(_writeLease!, path))
+            {
+                throw new InvalidDataException(
+                    $"Accepted mechanics publication retained deleted authority at '{path}'.");
+            }
+        }
+
+        foreach (var pair in retainedBeforeImages.OrderBy(
+                     static value => value.Key,
+                     StringComparer.Ordinal))
+        {
+            var current = await _fs.ReadFileBytesAsync(_writeLease!, pair.Key);
+            var expected = pair.Value.Bytes;
+            var exact = pair.Value.Existed == (current != null) &&
+                        (expected == null
+                            ? current == null
+                            : current != null && expected.AsSpan().SequenceEqual(current));
+            if (!exact)
+            {
+                throw new InvalidDataException(
+                    $"Accepted mechanics publication changed retained authority at '{pair.Key}' after normalization.");
+            }
+        }
     }
 
     private async Task<AcceptedMechanicsNormalizationPreflight>

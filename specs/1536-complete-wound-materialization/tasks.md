@@ -580,7 +580,7 @@ history/receipt/planner replay surface, with no tests executed, timeout, or dupl
 - [X] T051 [US7] Implement bounded wound construction/repair/narration/alternative-treatment packets and recursive privacy sanitization in `BookOfEternityClient/Services/WoundRepairPacketBuilder.cs`
 - [X] T052 [US7] Integrate wound repair obligations, safe harness packets, exact resubmission shape, and unrelated-response preservation in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
 - [X] T053 [US7] Invalidate prepared/final wound, effect, and common handoffs together on repair/rejection/snapshot mismatch in `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs`
-- [ ] T054 [US7] Extend exact snapshot and post-publication agreement to scheduler, journals, quests, inventory/characteristics, debug/output, and pending wound roots in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
+- [X] T054 [US7] Extend exact snapshot and post-publication agreement to scheduler, journals, quests, inventory/characteristics, debug/output, and pending wound roots in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
 - [ ] T055 [US7] Add operation/attempt/course/cycle/payment/output replay coordinates and already-accepted receipt projection in `BookOfEternityClient/Services/WoundHistoryState.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T056 [US7] Add invalid proposal, bounded repair, stale packet, rollback, and replay worked guidance in `OtherGuides/Wound_Materialization_Contract.md`, `Rules/Block_12.txt`, and `Examples/E_Block_12.txt`
 - [ ] T057 [US7] Run focused repair/privacy/cache/rollback/replay filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
@@ -661,6 +661,45 @@ shared cache/registry handoff. This is an internal in-memory authority change wi
 new player command, canonical state, pending/control file, response field, or GM-authored
 surface, so Mortal/afterlife prompts, docs, examples, manifests, and source guards do not
 require a T053 update; durable worked guidance remains assigned to T056.
+
+T054 GREEN evidence (2026-08-29): the wound accepted-turn snapshot contract now seals
+33 exact roots spanning wound carriers/identity/history, scheduler/report, every
+participating journal, regular/soul/history quests, player and NPC inventory sidecars,
+base and computed characteristics, the pending wound command/resolution roots, and all
+three final output surfaces. `GameEngine` requires that complete publication agreement
+when loading a wound baseline, including signed absence, while the normalizer's local
+transaction inherits the same expanded rollback inventory. Immediately after generic
+normalization and before common publication, the publisher partitions authority into
+planned writes, planned deletes, and retained roots. It then proves every serialized
+after-image byte-for-byte, every deletion by exact absence, and every retained root by
+unchanged existence and bytes under the owning canonical write lease; any mismatch
+throws and restores the whole local transaction.
+
+The unit RED failed on the missing extended inventory
+(`20260829-051549-667-33996-44efed5840314af1820dd47e324fc6c9-focused`), and all seven
+representative scheduler, journal, quest, inventory, characteristic, output, and pending
+drift rows RED-failed because no publication exception existed
+(`20260829-051734-228-40772-e28da54b26a7475eb631f3b5181a2a01-focused`). Fresh GREEN
+verification passes 39/39 snapshot-contract cases
+(`20260829-052416-670-36264-57eb2b01cff24f2f8acaa94a454f8198-focused`), 10/10 common
+normalizer wound cases (`20260829-052453-503-24892-c7f83a5df955460db1672e8a43a00960-focused`),
+the complete 33-root GameEngine snapshot/rollback contour 1/1
+(`20260829-052628-355-24520-4788e1e3166644e0982e6e91976995c4-focused`), and all 24
+before/after publication failure boundaries
+(`20260829-052826-831-44808-2401a36246e64774b18273ca90955114-focused`). The bounded Fast
+lane reached exactly five minutes after 4,770/4,770 completed results passed; its two
+unfinished shards then passed sequentially 64/64 and 1,193/1,193, completing all 6,027
+Fast cases without a duplicate ID
+(`20260829-053150-947-39720-1c262b5092fa4d2289a80158411ffd91-fast`,
+`20260829-053825-928-29632-f107ff3b1a244640861be487dba371d1-focused`,
+`20260829-053848-261-32560-a439f62c7d534623856f0d051c930ca1-focused`). The one
+load-sensitive fencing row interrupted inside the timed-out shard also passes alone 1/1
+in 0.73 seconds (`20260829-053757-453-32320-023d39c515bf4f7dba499d9af2bb887b-focused`),
+confirming parallel saturation rather than a product regression. Independent read-only
+review found 0 Critical, 0 Important, and 0 Minor issues. This is client-owned
+transactional hardening of existing roots only: it adds no command, field, response,
+pending action type, or GM-authored output, so Mortal/afterlife prompts, docs, examples,
+manifests, and documentation guards require no T054 update.
 
 **Checkpoint**: Invalid or repeated wound work cannot leak authority, alter unrelated content, or leave partial state.
 

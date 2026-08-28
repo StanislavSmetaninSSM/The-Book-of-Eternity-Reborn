@@ -654,14 +654,15 @@ public partial class GameEngine
         }
 
         var canonicalFiles = new HashSet<string>(CanonicalStateNormalizer.CanonicalAccumulatedFiles, StringComparer.OrdinalIgnoreCase);
-        canonicalFiles.UnionWith(WoundAcceptedTurnSnapshotContract.RequiredPaths);
+        canonicalFiles.UnionWith(
+            WoundAcceptedTurnSnapshotContract.PublicationAgreementPaths);
         if (_fs.FileExists(AcceptedMechanicsPlan.WoundCommandPath) &&
             !PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
                 payload,
                 static authorityPayload => authorityPayload.Files,
                 static authorityPayload => authorityPayload.SnapshotFileHashes,
                 static authorityPayload => authorityPayload.RollbackBaselineFiles,
-                WoundAcceptedTurnSnapshotContract.RequiredPaths,
+                WoundAcceptedTurnSnapshotContract.PublicationAgreementPaths,
                 out _))
         {
             return null;

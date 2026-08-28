@@ -20,6 +20,37 @@ internal static class WoundAcceptedTurnSnapshotContract
         ProgressionScheduleService.ReportPath
     ];
 
+    private static readonly string[] JournalPathInventory =
+    [
+        GuardianProjectState.JournalPath,
+        GuardianPowerEventState.JournalPath,
+        "game_state/npcs/npc_journals.json",
+        NpcInteractionJournalState.StatePath,
+        "game_state/npcs/item_journals.json",
+        GuardianThoughtJournalState.StatePath,
+        GuardianSocialJournalState.StatePath
+    ];
+
+    private static readonly string[] QuestPathInventory =
+    [
+        "game_state/quests/regular_quests.json",
+        "game_state/quests/soul_quests.json",
+        "game_state/quests/quest_history.json"
+    ];
+
+    private static readonly string[] InventoryAndCharacteristicPathInventory =
+    [
+        InventoryEquipmentService.ItemsPath,
+        MortalItemIdentityState.StatePath,
+        MortalItemAcceptedTransferCatalog.NpcCommandsPath,
+        MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+        "game_state/inventory/recipes.json",
+        "game_state/inventory/item_bonds.json",
+        "game_state/inventory/item_text_updates.json",
+        "game_state/misc/characteristics.json",
+        "game_state/player/computed_characteristics.json"
+    ];
+
     private static readonly string[] OutputPathInventory =
     [
         "output/narrative_response.json",
@@ -36,6 +67,9 @@ internal static class WoundAcceptedTurnSnapshotContract
             PendingResolutionPath
         ])
         .Concat(SchedulerPathInventory)
+        .Concat(JournalPathInventory)
+        .Concat(QuestPathInventory)
+        .Concat(InventoryAndCharacteristicPathInventory)
         .Concat(OutputPathInventory)
         .Distinct(StringComparer.Ordinal)
         .OrderBy(static path => path, StringComparer.Ordinal)
@@ -49,6 +83,9 @@ internal static class WoundAcceptedTurnSnapshotContract
 
     internal static IReadOnlyList<string> OutputPaths { get; } =
         Array.AsReadOnly(OutputPathInventory);
+
+    internal static IReadOnlyList<string> PublicationAgreementPaths { get; } =
+        Array.AsReadOnly(RequiredPathInventory);
 
     internal static IReadOnlyList<string> RequiredPaths { get; } =
         Array.AsReadOnly(RequiredPathInventory);
@@ -121,7 +158,7 @@ internal static class WoundAcceptedTurnSnapshotContract
                 "Accepted wound publication lost an exact required before-image.",
                 code: "wound_materialization_before_image_missing",
                 section: "AcceptedTurnWoundMaterialization",
-                expected: "exact before-image for every wound, scheduler, and output authority path",
+                expected: "exact before-image for every wound, scheduler, journal, quest, inventory, characteristic, pending, and output authority path",
                 actual: "required before-image is missing"));
             return issues;
         }
