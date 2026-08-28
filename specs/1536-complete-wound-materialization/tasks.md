@@ -207,7 +207,7 @@ tracked by T022-T027 and the story-specific documentation tasks.
 ### RED tests
 
 - [X] T029 [P] [US1] Add RED formal and narrative event opportunity, harmless-result conflict, none/lower/equal/over-maximum decision, and consumed-decline tests in `BookOfEternityClient.Tests/WoundOpportunityAuthorityTests.cs`
-- [ ] T030 [P] [US1] Add RED pre-materialized guaranteed trigger, omitted result, source-state, hard-cap conflict, and exact retry tests in `BookOfEternityClient.Tests/WoundGuaranteedTriggerTests.cs`
+- [X] T030 [P] [US1] Add RED pre-materialized guaranteed trigger, omitted result, source-state, hard-cap conflict, and exact retry tests in `BookOfEternityClient.Tests/WoundGuaranteedTriggerTests.cs`
 - [ ] T031 [P] [US1] Add RED exact player/NPC/combatant/Guardian/resident/radiant/soul target, named ambiguity, wrong realm, and source-event binding tests in `BookOfEternityClient.Tests/WoundSourceTargetAuthorityTests.cs`
 - [ ] T032 [P] [US1] Add RED acquisition narration completeness/contradiction, deterministic Russian notification, untrusted markup escaping, and no-ID projection tests in `BookOfEternityClient.Tests/WoundAcquisitionOutputTests.cs`
 - [ ] T033 [US1] Add RED end-to-end optional/lower/guaranteed/over-limit, wound-owned effect atomicity, healed independent mechanical legacy, and cosmetic History legacy fixtures in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Creation.cs`
@@ -220,6 +220,14 @@ intentionally absent US1 surface, `WoundOpportunityBuildRequest` (0 warnings,
 1 expected error, no tests executed, no timeout/duplicates;
 `20260828-171614-101-21144-606fe2f437e94fb4a7b271eb9b8421d0-focused`).
 No production file is changed by this RED checkpoint.
+
+T030 RED evidence (2026-08-28): the pre-materialized guarantee, same-turn
+rejection, inactive/consumed/suspended source-state, omitted/exact result,
+hard-cap conflict, and exact retry contract reaches the same intentionally absent
+US1 input boundary (0 warnings, 2 expected compiler errors across T029/T030, no
+tests executed, no timeout/duplicates;
+`20260828-171916-306-34132-d084bbe8f687450da9178a3ed187d916-focused`).
+Production remains untouched.
 
 ### GREEN implementation
 
