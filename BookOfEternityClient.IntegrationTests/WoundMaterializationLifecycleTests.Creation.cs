@@ -1,8 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.IO;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -257,6 +259,161 @@ public sealed partial class WoundMaterializationLifecycleTests
             issue.RepairTargetFiles.SequenceEqual(
                 new[] { "output/narrative_response.json" },
                 StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public async Task StateDistributor_TypedWoundCompositionPublishesOnlyStrictCommand()
+    {
+        await using var context = await CreatePlayerContextAsync();
+        var authority = await CreateAuthorityAsync(
+            context,
+            maximumSeverityRank: 2);
+        var response = Response(Decision(
+            "materialize",
+            CreatePhysicalProposal(severity: "II", includeMechanicalRoot: true)));
+        var composed = WoundResponseInputComposer.Compose(
+            authority.Binding,
+            new[] { authority.Opportunity },
+            response.WoundDecisions,
+            response.Response,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        Assert.True(composed.Success, Describe(composed.Issues));
+        var distributor = new StateDistributor(
+            context.FileSystem,
+            NullLogger<StateDistributor>.Instance);
+
+        var modified = await distributor.DistributeAsync(response, composed);
+
+        Assert.Contains(AcceptedMechanicsPlan.WoundCommandPath, modified);
+        var distributedCommand = JsonNode.Parse(
+            await context.FileSystem.ReadFileAsync(
+                AcceptedMechanicsPlan.WoundCommandPath) ?? "null");
+        Assert.True(JsonNode.DeepEquals(
+            composed.CommandRoot,
+            distributedCommand));
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.True(
+            issues.All(static issue => issue.Severity != IssueSeverity.Error),
+            Describe(issues));
+        await using var lease =
+            await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(await context.Normalizer
+            .BindTo(lease)
+            .NormalizeAcceptedMechanicsAsync(backups: null));
+
+        Assert.NotNull(plan.WoundStageBundle);
+        Assert.False(context.FileSystem.FileExists(
+            lease,
+            AcceptedMechanicsPlan.WoundCommandPath));
+        var player = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            WoundCarrierCatalog.PlayerPath));
+        Assert.Single(Assert.IsType<JsonArray>(player["activeWounds"]));
+    }
+
+    [Theory]
+    [InlineData("scene")]
+    [InlineData("decision")]
+    [InlineData("extra_decision")]
+    public async Task StateDistributor_RejectsTypedCommandDetachedFromResponse(
+        string mutation)
+    {
+        await using var context = await CreatePlayerContextAsync();
+        var authority = await CreateAuthorityAsync(
+            context,
+            maximumSeverityRank: 2);
+        var response = Response(Decision(
+            "materialize",
+            CreatePhysicalProposal(severity: "II", includeMechanicalRoot: true)));
+        var composed = WoundResponseInputComposer.Compose(
+            authority.Binding,
+            new[] { authority.Opportunity },
+            response.WoundDecisions,
+            response.Response,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        Assert.True(composed.Success, Describe(composed.Issues));
+        if (mutation == "scene")
+        {
+            response.Response = "Подменённая сцена без принятого описания раны.";
+        }
+        else if (mutation == "decision")
+        {
+            response.WoundDecisions = new[]
+            {
+                ToElement(Decision("none", proposal: null))
+            };
+        }
+        else
+        {
+            response.WoundDecisions =
+            [
+                .. response.WoundDecisions!,
+                ToElement(Decision("none", proposal: null))
+            ];
+        }
+        var distributor = new StateDistributor(
+            context.FileSystem,
+            NullLogger<StateDistributor>.Instance);
+
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(
+            () => distributor.DistributeAsync(response, composed));
+
+        Assert.Contains(
+            "wound_accepted_command_unbound",
+            exception.Message,
+            StringComparison.Ordinal);
+        Assert.False(context.FileSystem.FileExists(
+            AcceptedMechanicsPlan.WoundCommandPath));
+        Assert.False(context.FileSystem.FileExists(
+            WoundMaterializationTestContext.NarrativeOutputPath));
+    }
+
+    [Fact]
+    public async Task StateDistributor_StrictWoundCommandFailureRestoresExactBeforeImage()
+    {
+        await using var context = await CreatePlayerContextAsync();
+        var authority = await CreateAuthorityAsync(
+            context,
+            maximumSeverityRank: 2);
+        var response = Response(Decision(
+            "materialize",
+            CreatePhysicalProposal(severity: "II", includeMechanicalRoot: true)));
+        var composed = WoundResponseInputComposer.Compose(
+            authority.Binding,
+            new[] { authority.Opportunity },
+            response.WoundDecisions,
+            response.Response,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        Assert.True(composed.Success, Describe(composed.Issues));
+        var originalCommandBytes = System.Text.Encoding.UTF8.GetBytes(
+            "{\"sentinel\":\"exact-before-image\"}");
+        await context.FileSystem.WriteFileAtomicBytesAsync(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            originalCommandBytes);
+        var distributor = new StateDistributor(
+            context.FileSystem,
+            NullLogger<StateDistributor>.Instance,
+            new StateDistributorHooks
+            {
+                AfterFileMutationAppliedAsync = path =>
+                    string.Equals(
+                        path,
+                        AcceptedMechanicsPlan.WoundCommandPath,
+                        StringComparison.Ordinal)
+                        ? throw new IOException("Injected strict wound command failure.")
+                        : Task.CompletedTask
+            });
+
+        await Assert.ThrowsAsync<IOException>(
+            () => distributor.DistributeAsync(response, composed));
+
+        Assert.Equal(
+            originalCommandBytes,
+            await context.FileSystem.ReadFileBytesAsync(
+                AcceptedMechanicsPlan.WoundCommandPath));
+        Assert.False(context.FileSystem.FileExists(
+            WoundMaterializationTestContext.NarrativeOutputPath));
     }
 
     [Fact]

@@ -26,49 +26,28 @@ public sealed class WoundMaterializationSourceGuardTests
     private static readonly InventoryEntry[] Inventory =
     {
         new(
-            "game-response-player-wound-command",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "game-response-wound-decision",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Models/GameResponse.cs",
-            "[JsonPropertyName(\"playerWoundChanges\")]",
-            "public JsonElement[]? PlayerWoundChanges { get; set; }"),
+            "[JsonPropertyName(\"woundDecisions\")]",
+            "public JsonElement[]? WoundDecisions { get; set; }",
+            "[JsonIgnore]",
+            "public string[]? WoundNotifications { get; set; }"),
         new(
-            "game-response-npc-wound-command",
-            InventoryCategory.LegacyLooseWoundSurface,
-            "BookOfEternityClient/Models/GameResponse.cs",
-            "[JsonPropertyName(\"NPCWoundChanges\")]",
-            "public JsonElement[]? NPCWoundChanges { get; set; }"),
-        new(
-            "player-wound-file-mapping",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "wound-client-consumed-file-mapping",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Configuration/FileMapping.cs",
-            "public static readonly Dictionary<string, string> FieldToFile",
-            "[\"playerWoundChanges\"] = \"game_state/player/wounds.json\""),
+            "public static readonly HashSet<string> ClientConsumedResponseFields",
+            "\"woundDecisions\""),
         new(
-            "npc-wound-file-mapping",
-            InventoryCategory.LegacyLooseWoundSurface,
-            "BookOfEternityClient/Configuration/FileMapping.cs",
-            "public static readonly Dictionary<string, string> FieldToFile",
-            "[\"NPCWoundChanges\"] = \"game_state/npcs/npc_effects.json\""),
-        new(
-            "generic-response-file-distribution",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "strict-wound-command-distribution",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/IO/StateDistributor.cs",
-            "private Dictionary<string, Dictionary<string, JsonElement>> CollectFileUpdates(GameResponse response)",
-            "FileMapping.FieldToFile.TryGetValue(prop.Name, out var targetFile)",
-            "result[targetFile][prop.Name] = prop.Value.Clone();",
-            "private async Task MergeFieldsIntoFile("),
-        new(
-            "qte-terminal-response-wound-distribution-and-rollback",
-            InventoryCategory.LegacyLooseWoundSurface,
-            "BookOfEternityClient/Services/QteSceneService.cs",
-            "internal static readonly IReadOnlyCollection<string> BrowserTransactionRollbackPaths",
-            ".Concat(FileMapping.FieldToFile.Values)",
-            "private GameResponse BuildTerminalOutcomeResponse(",
-            "JsonSerializer.Deserialize<GameResponse>(responseFragment.ToJsonString(), JsonOpts)",
-            "private async Task ApplyTerminalOutcomeStateChangesCoreAsync(",
-            "await _stateDistributor.DistributeAsync(writeLease, response);",
-            "private static HashSet<string> CollectQteTrackedPaths(GameResponse response)",
-            "FileMapping.FieldToFile.TryGetValue(property.Name, out var targetPath)"),
+            "WoundResponseInputCompositionResult acceptedWoundInput",
+            "ResolveAcceptedWoundCommand(",
+            "WoundResponseInputComposer.ParseCommandRoot(",
+            "AcceptedMechanicsPlan.WoundCommandPath",
+            "WriteAcceptedWoundCommandAsync("),
         new(
             "player-loose-wound-validation",
             InventoryCategory.LegacyLooseWoundSurface,
@@ -294,7 +273,6 @@ public sealed class WoundMaterializationSourceGuardTests
     private static readonly string[] DiscoveryTokens =
     {
         "playerWoundChanges",
-        "PlayerWoundChanges",
         "NPCWoundChanges",
         "WoundReference",
         "sourceWoundId",
@@ -305,29 +283,11 @@ public sealed class WoundMaterializationSourceGuardTests
         "healingState",
         "descriptionOfEffects",
         "isHealed",
-        "FileMapping.FieldToFile",
-        "JsonSerializer.Deserialize<GameResponse>",
-        "_stateDistributor.DistributeAsync",
         "PlayerWoundsPath"
     };
 
     private static readonly DiscoveryAllowance[] DiscoveryAllowances =
     {
-        Scope("response-player-json-name", "game-response-player-wound-command", "playerWoundChanges", "[JsonPropertyName(\"playerWoundChanges\")]", "[JsonPropertyName(\"customStateChanges\")]"),
-        Scope("response-player-property", "game-response-player-wound-command", "PlayerWoundChanges", "[JsonPropertyName(\"playerWoundChanges\")]", "[JsonPropertyName(\"customStateChanges\")]"),
-        Scope("response-npc-command", "game-response-npc-wound-command", "NPCWoundChanges", "[JsonPropertyName(\"NPCWoundChanges\")]", "[JsonPropertyName(\"interNPCRelationshipChanges\")]"),
-
-        Scope("mapping-player-command", "player-wound-file-mapping", "playerWoundChanges", "[\"playerWoundChanges\"] =", "[\"customStateChanges\"] ="),
-        Scope("mapping-player-path", "player-wound-file-mapping", "game_state/player/wounds.json", "[\"playerWoundChanges\"] =", "[\"customStateChanges\"] ="),
-        Scope("mapping-npc-command", "npc-wound-file-mapping", "NPCWoundChanges", "[\"NPCWoundChanges\"] =", "[\"NPCRelationshipChanges\"] ="),
-        Scope("mapping-npc-path", "npc-wound-file-mapping", "game_state/npcs/npc_effects.json", "[\"NPCWoundChanges\"] =", "[\"NPCRelationshipChanges\"] ="),
-
-        Scope("state-distributor-field-mapping", "generic-response-file-distribution", "FileMapping.FieldToFile", "private Dictionary<string, Dictionary<string, JsonElement>> CollectFileUpdates(GameResponse response)", "private async Task MergeFieldsIntoFile("),
-        Scope("qte-browser-rollback-field-mapping", "qte-terminal-response-wound-distribution-and-rollback", "FileMapping.FieldToFile", "internal static readonly IReadOnlyCollection<string> BrowserTransactionRollbackPaths", "internal static readonly IReadOnlyList<string> RhythmPulsePatternVariations"),
-        Scope("qte-tracked-path-field-mapping", "qte-terminal-response-wound-distribution-and-rollback", "FileMapping.FieldToFile", "private static HashSet<string> CollectQteTrackedPaths(GameResponse response)", "private async Task RestoreQteNormalizationBaselineAsync("),
-        Scope("qte-terminal-game-response-deserialization", "qte-terminal-response-wound-distribution-and-rollback", "JsonSerializer.Deserialize<GameResponse>", "var response = responseFragment != null", "private static void RejectMaterializationWithoutAcceptedContinuation("),
-        Scope("qte-terminal-state-distribution", "qte-terminal-response-wound-distribution-and-rollback", "_stateDistributor.DistributeAsync", "private async Task ApplyTerminalOutcomeStateChangesCoreAsync(", "private async Task<QteNormalizationBaseline> CaptureQteNormalizationBaselineAsync("),
-
         Scope("player-validation-state-path", "player-loose-wound-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerStateFiles(", "private async Task ValidatePlayerContractFile("),
         Scope("player-validation-file-path", "player-loose-wound-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerFile(", "private void ValidatePlayerContract("),
         Scope("player-validation-command", "player-loose-wound-validation", "playerWoundChanges", "private void ValidatePlayerContract(", "private void ValidatePlayerStatus("),
@@ -412,6 +372,43 @@ public sealed class WoundMaterializationSourceGuardTests
                 $"{owner.Category} '{owner.Id}' cannot bound discovery token '{allowance.Token}' " +
                 $"between '{allowance.StartAnchor}' and '{allowance.EndAnchor}' in '{owner.RelativePath}'.");
         }
+    }
+
+    [Fact]
+    public void DirectLooseWoundDistribution_IsRetiredBehindTypedCommandConsumption()
+    {
+        var responseSource = File.ReadAllText(ToAbsolutePath(
+            "BookOfEternityClient/Models/GameResponse.cs"));
+        var mappingSource = File.ReadAllText(ToAbsolutePath(
+            "BookOfEternityClient/Configuration/FileMapping.cs"));
+        var distributorSource = File.ReadAllText(ToAbsolutePath(
+            "BookOfEternityClient/IO/StateDistributor.cs"));
+
+        Assert.DoesNotContain("PlayerWoundChanges", responseSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("playerWoundChanges", responseSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("NPCWoundChanges", responseSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("playerWoundChanges", mappingSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("NPCWoundChanges", mappingSource, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "game_state/player/wounds.json",
+            mappingSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "game_state/npcs/npc_effects.json",
+            mappingSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "FileMapping.ClientConsumedResponseFields.Contains(prop.Name)",
+            distributorSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "WoundResponseInputComposer.ParseCommandRoot(",
+            distributorSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "WriteAcceptedWoundCommandAsync(",
+            distributorSource,
+            StringComparison.Ordinal);
     }
 
     [Fact]

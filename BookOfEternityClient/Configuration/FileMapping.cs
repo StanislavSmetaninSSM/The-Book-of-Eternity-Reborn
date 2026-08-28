@@ -28,7 +28,6 @@ public static class FileMapping
         ["moneyChange"] = "game_state/player/status_changes.json",
         ["experienceGained"] = "game_state/player/experience.json",
         ["playerEffortTrackerChange"] = "game_state/player/experience.json",
-        ["playerWoundChanges"] = "game_state/player/wounds.json",
         ["customStateChanges"] = "game_state/player/custom_states.json",
         ["playerStealthStateChange"] = "game_state/player/stealth.json",
         ["playerAppearanceChange"] = "game_state/player/transformation.json",
@@ -82,7 +81,6 @@ public static class FileMapping
         ["NPCPassiveSkillChanges"] = "game_state/npcs/npc_skills.json",
         ["NPCSkillMasteryChanges"] = "game_state/npcs/npc_skills.json",
         ["NPCPassiveSkillMasteryChanges"] = "game_state/npcs/npc_skills.json",
-        ["NPCWoundChanges"] = "game_state/npcs/npc_effects.json",
         ["NPCRelationshipChanges"] = "game_state/npcs/npc_relationships.json",
         ["interNPCRelationshipChanges"] = "game_state/npcs/npc_relationships.json",
         ["NPCRelationshipLockUpdates"] = "game_state/npcs/npc_relationships.json",
@@ -229,5 +227,15 @@ public static class FileMapping
         "gm_thoughts_markdown",
         "dialogueOptions",
         "image_prompt"
+    };
+
+    /// <summary>
+    /// GM response fields that require client-owned authority before distribution.
+    /// They must never enter the generic field-to-file mapper.
+    /// </summary>
+    public static readonly HashSet<string> ClientConsumedResponseFields = new(
+        StringComparer.OrdinalIgnoreCase)
+    {
+        "woundDecisions"
     };
 }

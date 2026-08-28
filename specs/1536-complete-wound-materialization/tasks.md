@@ -262,7 +262,7 @@ Production remains untouched.
 - [X] T038 [US1] Wire optional, lower-than-cap, guaranteed, declined, and worsening US1 response proposals plus exact opportunity/source authority into the completed T020/T022/T024 typed wound-batch/finalization API without adding a second effect path in `BookOfEternityClient/Services/WoundResponseInputComposer.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [X] T039 [US1] Compose create/worsen/decline after-images, client-owned wound IDs, effect-plan-owned root IDs, full old source-group teardown before worsen rematerialization, history, owner carriers, and combatant promotion transitions in `BookOfEternityClient/Services/WoundAcceptedOwnerCarrierAuthority.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/WoundTransitionReducer.cs`
 - [X] T040 [US1] Add escaped acquisition narration validation and deterministic player notification/output binding to the accepted turn in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs` and `BookOfEternityClient/UI/WoundPlayerNotification.cs`
-- [ ] T041 [US1] Replace direct `playerWoundChanges`/`NPCWoundChanges` distribution with strict accepted wound command consumption in `BookOfEternityClient/Configuration/FileMapping.cs`, `BookOfEternityClient/IO/StateDistributor.cs`, and `BookOfEternityClient/Models/GameResponse.cs`
+- [X] T041 [US1] Replace direct `playerWoundChanges`/`NPCWoundChanges` distribution with strict accepted wound command consumption in `BookOfEternityClient/Configuration/FileMapping.cs`, `BookOfEternityClient/IO/StateDistributor.cs`, and `BookOfEternityClient/Models/GameResponse.cs`
 
 T035 GREEN evidence (2026-08-28): the opportunity authority now recomputes the
 accepted event-evidence seal, applies ordinary hard caps, fails closed on harmless
@@ -402,6 +402,23 @@ and adjacent GameEngine/wound source guards are GREEN `118/118`
 (`20260828-224155-205-37584-4cfb16ab5d0f42a3ace1b2b2e7d292de-focused`).
 GM prompt, worked-example, manifest, and documentation-guard synchronization remains
 explicitly owned by T042-T044 before the US1 checkpoint can close.
+
+T041 completion evidence (2026-08-28): the legacy `playerWoundChanges` and
+`NPCWoundChanges` response properties and field-to-file mappings are removed. Raw
+`woundDecisions` are client-consumed and cannot enter generic distribution; a nonempty
+wound command is written only from a successful typed composition result after an
+independent strict parse and exact rebinding to the current normalized narrative and
+one-to-one response decision set. The command participates in the same backup,
+mutation-hook, rollback, and output-publication transaction, including byte-exact
+restoration of a preexisting command on injected failure. Unit/source/refresh controls
+are GREEN `16/16`, warning-free
+(`20260828-231503-257-26160-7d040482fa694d50bd7443bbfe4be752-focused`);
+the complete wound lifecycle is GREEN `44/44`
+(`20260828-231527-257-30912-264ab76dd1f74b7cadda4a7599389684-focused`);
+and the adjacent QTE distribution/rollback contour is GREEN `117/117`
+(`20260828-231746-113-33628-a9c372a469c84fd9b9ac65f9a25ff76e-focused`).
+Remaining legacy wound validation/fallback surfaces are deliberately owned by T149;
+T042-T044 still own the GM-facing contract, examples, manifest, and prompt updates.
 
 ### GM contract synchronization
 

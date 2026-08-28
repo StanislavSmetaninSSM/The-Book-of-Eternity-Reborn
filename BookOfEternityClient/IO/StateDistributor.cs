@@ -50,20 +50,44 @@ public class StateDistributor
     public async Task<List<string>> DistributeAsync(GameResponse response)
     {
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        return await DistributeAsync(writeLease, response);
+        return await DistributeAsync(
+            writeLease,
+            response,
+            acceptedWoundInput: null);
+    }
+
+    internal async Task<List<string>> DistributeAsync(
+        GameResponse response,
+        WoundResponseInputCompositionResult acceptedWoundInput)
+    {
+        ArgumentNullException.ThrowIfNull(acceptedWoundInput);
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await DistributeAsync(writeLease, response, acceptedWoundInput);
     }
 
     internal async Task<List<string>> DistributeAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
-        GameResponse response)
+        GameResponse response) =>
+        await DistributeAsync(writeLease, response, acceptedWoundInput: null);
+
+    private async Task<List<string>> DistributeAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        GameResponse response,
+        WoundResponseInputCompositionResult? acceptedWoundInput)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(response);
 
+        var acceptedWoundCommand = ResolveAcceptedWoundCommand(
+            response,
+            acceptedWoundInput);
         var modifiedFiles = new List<string>();
         var fileUpdates = CollectFileUpdates(response);
         var targetPaths = fileUpdates.Keys
             .Concat(CollectOutputPaths(response))
+            .Concat(acceptedWoundCommand is null
+                ? Array.Empty<string>()
+                : new[] { AcceptedMechanicsPlan.WoundCommandPath })
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
         var mutations = new Dictionary<string, DistributionMutation>(
@@ -93,6 +117,15 @@ public class StateDistributor
                 modifiedFiles.Add(filePath);
                 if (_hooks?.AfterFileMutationAppliedAsync != null)
                     await _hooks.AfterFileMutationAppliedAsync(filePath);
+            }
+
+            if (acceptedWoundCommand is not null)
+            {
+                await WriteAcceptedWoundCommandAsync(
+                    writeLease,
+                    acceptedWoundCommand,
+                    mutations,
+                    modifiedFiles);
             }
 
             // Phase 3: Write output interface files
@@ -135,6 +168,9 @@ public class StateDistributor
             if (FileMapping.OutputOnlyResponseFields.Contains(prop.Name))
                 continue;
 
+            if (FileMapping.ClientConsumedResponseFields.Contains(prop.Name))
+                continue;
+
             if (FileMapping.FieldToFile.TryGetValue(prop.Name, out var targetFile))
             {
                 if (!result.ContainsKey(targetFile))
@@ -148,6 +184,118 @@ public class StateDistributor
         }
 
         return result;
+    }
+
+    private static JsonObject? ResolveAcceptedWoundCommand(
+        GameResponse response,
+        WoundResponseInputCompositionResult? acceptedWoundInput)
+    {
+        var hasRawDecisions = response.WoundDecisions is { Length: > 0 };
+        if (acceptedWoundInput is null)
+        {
+            if (hasRawDecisions)
+            {
+                throw new InvalidDataException(
+                    "wound_decisions_require_accepted_command: raw wound decisions cannot enter generic state distribution.");
+            }
+
+            return null;
+        }
+
+        if (!acceptedWoundInput.Success || acceptedWoundInput.CommandRoot is not { } root)
+        {
+            throw new InvalidDataException(
+                "wound_accepted_command_invalid: wound distribution requires one successful typed composition result.");
+        }
+
+        var parsed = WoundResponseInputComposer.ParseCommandRoot(
+            JsonSerializer.SerializeToElement(root, JsonOpts));
+        if (!parsed.Success)
+        {
+            throw new InvalidDataException(
+                "wound_accepted_command_invalid: the typed wound command failed independent strict parsing.");
+        }
+
+        if (root["commands"] is not JsonArray commands)
+        {
+            throw new InvalidDataException(
+                "wound_accepted_command_invalid: the typed wound command has no commands array.");
+        }
+        if (commands.Count == 0)
+            return null;
+        if (!hasRawDecisions)
+        {
+            throw new InvalidDataException(
+                "wound_accepted_command_unbound: a non-empty typed wound command has no response decisions.");
+        }
+        var rawResponseDecisions = response.WoundDecisions!;
+        if (rawResponseDecisions.Length !=
+            acceptedWoundInput.DecisionReceipts.Count)
+        {
+            throw new InvalidDataException(
+                "wound_accepted_command_unbound: the response decision set changed after typed composition.");
+        }
+
+        var responseDecisions = rawResponseDecisions
+            .Select(static value => JsonNode.Parse(value.GetRawText()))
+            .ToArray();
+        var matchedDecisionIndexes = new HashSet<int>();
+        var publishedScene = PlayerFacingTextNormalizer
+            .NormalizeEscapedLineBreakArtifacts(response.Response);
+        foreach (var commandNode in commands)
+        {
+            if (commandNode is not JsonObject command ||
+                !TryReadNullableString(command["finalSceneText"], out var commandScene) ||
+                !string.Equals(commandScene, publishedScene, StringComparison.Ordinal) ||
+                command["decision"] is not JsonObject commandDecision)
+            {
+                throw new InvalidDataException(
+                    "wound_accepted_command_unbound: the typed command no longer matches the distributed player response.");
+            }
+
+            var matchingIndexes = responseDecisions
+                .Select((decision, index) => (decision, index))
+                .Where(value =>
+                    !matchedDecisionIndexes.Contains(value.index) &&
+                    JsonNode.DeepEquals(value.decision, commandDecision))
+                .Select(static value => value.index)
+                .ToArray();
+            if (matchingIndexes.Length != 1)
+            {
+                throw new InvalidDataException(
+                    "wound_accepted_command_unbound: the typed command decision is missing or ambiguous in the response.");
+            }
+
+            matchedDecisionIndexes.Add(matchingIndexes[0]);
+        }
+
+        return root.DeepClone().AsObject();
+    }
+
+    private static bool TryReadNullableString(JsonNode? node, out string? value)
+    {
+        value = null;
+        if (node is null)
+            return true;
+        return node is JsonValue scalar &&
+               scalar.TryGetValue<string>(out value);
+    }
+
+    private async Task WriteAcceptedWoundCommandAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        JsonObject commandRoot,
+        IReadOnlyDictionary<string, DistributionMutation> mutations,
+        ICollection<string> modifiedFiles)
+    {
+        var path = AcceptedMechanicsPlan.WoundCommandPath;
+        await _fs.WriteFileAtomicAsync(
+            writeLease,
+            path,
+            commandRoot.ToJsonString(JsonOpts));
+        mutations[path].MutationApplied = true;
+        modifiedFiles.Add(path);
+        if (_hooks?.AfterFileMutationAppliedAsync != null)
+            await _hooks.AfterFileMutationAppliedAsync(path);
     }
 
     private async Task MergeFieldsIntoFile(
