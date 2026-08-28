@@ -40,7 +40,9 @@ The exact source ID must resolve in the accepted composed state. Display names, 
 
 ## 3. Registered component profiles
 
-The nine current profiles are:
+The nine general profiles are listed here. Wound Materialization adds the exact eight
+spiritual-wound profiles in section 7.1; they are first-class registered profiles, not
+aliases of the general afterlife condition profile.
 
 1. `characteristic_modifier`
 2. `roll_modifier`
@@ -236,7 +238,50 @@ wrong dice/outcome, duplicate reports, and client-owned selectors fail closed.
 
 ## 7. Wounds are independent entities
 
-A wound source may own a `wound_consequence` definition and exact wound link. That grants read-only source/loss authority to the effect planner. Effect removal never heals or deletes the wound. Treatment is a separate accepted wound transition; an effect-only turn cannot mutate wound bytes, severity, treatment state, or wound identity.
+A wound may own a complete definition graph and exact wound source link. In a new-wound
+proposal the GM supplies each complete definition under
+`woundDecisions[].proposal.consequenceDefinitions[]` with exact empty `links`; the
+client binds the accepted wound source. The exported wound source is
+non-materializable to ordinary GM `effectChanges[]`. Only the client-derived typed root
+batch may create its declared direct roots, while later descendants execute through the
+sealed common reaction engine.
+
+The exact wound link grants read-only source/loss authority to the effect planner.
+Effect removal never heals or deletes the wound. Treatment is a separate accepted
+wound transition; an effect-only turn cannot mutate wound bytes, severity, treatment
+state, or wound identity. Healing retires the exact wound-owned root/descendant group
+but preserves unrelated effects and global terminal provenance.
+
+## 7.1 wound_spiritual_profiles_v1
+
+Wound Materialization v1 extends the common component registry with exactly eight
+deterministic spiritual-wound profiles:
+
+| Profile | Exact axis | Exact magnitude domain |
+| --- | --- | --- |
+| `spiritual_roll_hindrance` | `rollMode` | `disadvantage` |
+| `spiritual_action_cost_burden` | `actionCostAudit` | integer 1, 2, or 3 |
+| `spiritual_position_burden` | `conflictPosition` | integer 1 or 2 |
+| `spiritual_control_burden` | `controlState` | integer 1 |
+| `spiritual_strain_burden` | `sideStrain` | integer 1 |
+| `spiritual_tempo_burden` | `tempoAdvantage` | `deny_one_gain` |
+| `spiritual_counter_burden` | `counterPayoff` | `reduce_one_step` |
+| `spiritual_art_restriction` | `artAvailability` | `restrict` or `forbid` |
+
+Every component uses the closed `{ operation, axis, magnitude }` payload and only the
+`profile_specific` merge reducer. The common registry validates exact payload shape,
+operation set, fixed axis, magnitude type/value, deterministic resolution, afterlife
+realm, persistent-actor target, and exact wound source link. The wound contract alone
+validates severity availability, severity-specific magnitude, slot count, duplicate
+coordinates, and aggregate safety.
+
+These profiles MUST NOT masquerade as `afterlife_combat_condition`, target a spiritual
+conflict side, or write `combatConditions[]`. Their canonical effect remains on the
+persistent actor. A client-owned projector may derive a temporary current-conflict
+contribution only after resolving that actor to one exact participant and side. Effect
+expiry/removal does not heal the wound, and wound healing retires only the exact
+wound-owned source group. See `OtherGuides/Wound_Materialization_Contract.md` and the
+two named spiritual-wound examples in `Examples/E_CLI_Effect_Materialization.txt`.
 
 ## 8. Afterlife adapter
 
@@ -254,6 +299,6 @@ Only one exact semantic omission may receive a bounded repair packet. Identity/s
 
 ## 10. Worked examples
 
-- Mortal construction, all profiles, policies, lifetimes, sources, wound independence, rejection, and bounded repair: `Examples/E_CLI_Effect_Materialization.txt`.
+- Mortal construction, all profiles, policies, lifetimes, sources, wound independence, the exact eight spiritual-wound profiles, one complete spiritual-wound source graph, rejection, and bounded repair: `Examples/E_CLI_Effect_Materialization.txt`.
 - Fate Shield purchase plus a later sealed critical-failure event report: `Examples/E_CLI_Ink_Feather_Actions.txt`.
 - Afterlife profile and all five spiritual-condition lifecycles: `Examples/E_CLI_Afterlife_Turns.txt`.

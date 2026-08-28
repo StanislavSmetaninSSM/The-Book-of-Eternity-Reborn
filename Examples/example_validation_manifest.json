@@ -7,10 +7,10 @@
       "statePath": "game_state/effects/effect_commands.json",
       "responseSurface": "activeEffectDefinitions[] registered component fragments",
       "realms": ["Mortal World", "Chaos Sea", "Shining Abode"],
-      "description": "All nine registered component profiles are shown with their closed profile-owned payloads and no prose mechanics.",
+      "description": "All nine general component profiles are shown with their closed profile-owned payloads and no prose mechanics; the eight dedicated spiritual-wound profiles have their own exact matrix.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "The matrix intentionally isolates profile payloads; ExampleDocumentationValidationTests composes every fragment into a complete test definition and runs the production source-definition contract.",
-      "coverageLimit": "Exact nine-profile catalog and production validation of each composed payload; accepted source existence, planning, and publication remain lifecycle-test-owned.",
+      "coverageLimit": "Exact nine-profile general catalog and production validation of each composed payload; the separate spiritual-wound matrix owns its eight additional profiles, while accepted source existence, planning, and publication remain lifecycle-test-owned.",
       "requiredText": ["effect_mortal_profiles_v1", "characteristic_modifier", "afterlife_combat_condition"]
     },
     {
@@ -108,6 +108,30 @@
       "focusedFragmentReason": "The fragment highlights the shared exact wound ID without reproducing a complete wound owner and effect accepted plan.",
       "coverageLimit": "Component/link/source-bound shape and independence rule; byte preservation is covered by EffectMaterializationValidationTests.Wounds.",
       "requiredText": ["effect_wound_independence_v1", "wound_consequence", "Effect removal never heals or deletes the wound"]
+    },
+    {
+      "contractId": "wound_spiritual_profiles_v1",
+      "file": "E_CLI_Effect_Materialization.txt",
+      "statePath": "spiritual wound consequenceDefinitions[].definition + common effect component registry",
+      "responseSurface": "registeredSpiritualWoundProfileFragments[] closed component matrix",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "All exact eight registered spiritual-wound component profiles are documented with closed operation, axis, and magnitude payloads and without combat-condition substitution.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.SpiritualWoundProfileExample_UsesExactClosedRuntimeCatalog -> EffectSourceDefinitionContract.ValidateArray",
+      "coverageLimit": "Executes every documented component fragment through the production source-definition contract in both afterlife realms; severity-specific slot admission remains WoundConsequenceEnvelope test-owned.",
+      "requiredText": ["wound_spiritual_profiles_v1", "spiritual_roll_hindrance", "spiritual_action_cost_burden", "spiritual_position_burden", "spiritual_control_burden", "spiritual_strain_burden", "spiritual_tempo_burden", "spiritual_counter_burden", "spiritual_art_restriction", "not aliases for"]
+    },
+    {
+      "contractId": "wound_spiritual_source_worked_v1",
+      "file": "E_CLI_Effect_Materialization.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json + game_state/wounds/* + game_state/effects/*",
+      "responseSurface": "woundDecisions[].proposal.consequenceDefinitions[] complete GM source graph",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "One complete severity-III GM spiritual-wound proposal owns a production-valid three-slot source definition while all permanent wound/effect identity and source-link authority remain client-owned.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.SpiritualWoundWorkedExample_IsCompleteGmSourceGraphWithoutClientIds -> EffectSourceDefinitionContract.ValidateArray",
+      "coverageLimit": "Validates the complete ID-free GM source definition in both afterlife realms and checks root/slot presence; opportunity binding, severity admission, opaque identity allocation, and atomic publication remain wound lifecycle-test-owned.",
+      "requiredText": ["wound_spiritual_source_worked_v1", "woundDecisions", "consequenceDefinitions", "fractured-resonance-burdens", "links", "remain client-owned"]
     },
     {
       "contractId": "effect_bounded_repair_v1",

@@ -173,6 +173,8 @@ public sealed partial class ExampleDocumentationValidationTests
             ["effect_mortal_source_worked_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_mortal_dispel_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_wound_independence_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["wound_spiritual_profiles_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["wound_spiritual_source_worked_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_bounded_repair_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_afterlife_profile_v1"] = "E_CLI_Afterlife_Turns.txt",
             ["afterlife_resource_bounded_receipt_waves_v1"] =

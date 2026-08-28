@@ -423,7 +423,7 @@ T042-T044 still own the GM-facing contract, examples, manifest, and prompt updat
 ### GM contract synchronization
 
 - [X] T042 [P] [US1] Add RED source/documentation guards for wound constructor, optional GM choice, guarantee, severity bounds, acquisition narration, effect separation, and the exact registered spiritual wound profile set in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs` and `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
-- [ ] T043 [US1] Create the GM-facing common constructor/authority/effect contract in `OtherGuides/Wound_Materialization_Contract.md`, synchronize the wound-source and exact spiritual-profile registry sections in `OtherGuides/Effect_Materialization_Contract.md`, and update `Examples/E_CLI_Effect_Materialization.txt` plus `Examples/example_validation_manifest.json` so all exact eight registered spiritual wound profiles have closed fragments and at least one complete worked GM spiritual-wound source graph
+- [X] T043 [US1] Create the GM-facing common constructor/authority/effect contract in `OtherGuides/Wound_Materialization_Contract.md`, synchronize the wound-source and exact spiritual-profile registry sections in `OtherGuides/Effect_Materialization_Contract.md`, and update `Examples/E_CLI_Effect_Materialization.txt` plus `Examples/example_validation_manifest.json` so all exact eight registered spiritual wound profiles have closed fragments and at least one complete worked GM spiritual-wound source graph
 - [ ] T044 [US1] Replace the loose constructor and add optional/lower/guaranteed/rejected worked examples in `Rules/Block_5.txt`, `Examples/E_Block_5.txt`, and `BookOfEternityClient/game_master_daemon.ps1`
 - [ ] T045 [US1] Run focused US1 unit/integration/documentation filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
 
@@ -439,6 +439,21 @@ expected missing daemon entrypoint (`0/1`,
 RED is exactly the two absent named examples and two absent manifest entries (`0/3`,
 `20260828-232732-653-41640-b16623c093e14c9e8771fa07babcb0c8-focused`). Both projects
 compile warning-free; T043-T044 own the corresponding GREEN documentation.
+
+T043 completion evidence (2026-08-28): the new GM-facing common contract documents
+the strict ID-free constructor, ordinary none-through-maximum choice, guaranteed
+result, exact acquisition narration, separate wound/effect lifecycles, direct schema-v1
+cutover, and exact eight-profile spiritual registry. The common effect contract now
+distinguishes its nine general profiles from the eight wound-specific profiles and
+documents non-materializable wound-source/typed-root authority. The example corpus and
+manifest contain closed fragments for every runtime-derived spiritual profile plus one
+complete severity-III GM source graph; every fragment and the graph execute through
+`EffectSourceDefinitionContract` in both afterlife realms. Contract/registry guards are
+GREEN `2/2` (`20260828-234009-456-35664-e0d5af41e67b4af99aa1120683773499-focused`),
+and manifest/parser/GameResponse-shape/production-example controls are GREEN `6/6`
+(`20260828-234032-563-29748-823a643b14be42d5b30e84ca5607a7f6-focused`), all
+warning-free. T044 retains the Mortal rule, four constructor examples, and mandatory
+daemon entrypoint.
 
 **Checkpoint**: Wound creation is complete, fair, atomic, narrated, and independently testable; no treatment or player command is exposed yet.
 
