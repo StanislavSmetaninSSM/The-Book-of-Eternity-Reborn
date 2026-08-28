@@ -210,7 +210,7 @@ tracked by T022-T027 and the story-specific documentation tasks.
 - [X] T030 [P] [US1] Add RED pre-materialized guaranteed trigger, omitted result, source-state, hard-cap conflict, and exact retry tests in `BookOfEternityClient.Tests/WoundGuaranteedTriggerTests.cs`
 - [X] T031 [P] [US1] Add RED exact player/NPC/combatant/Guardian/resident/radiant/soul target, named ambiguity, wrong realm, and source-event binding tests in `BookOfEternityClient.Tests/WoundSourceTargetAuthorityTests.cs`
 - [X] T032 [P] [US1] Add RED acquisition narration completeness/contradiction, deterministic Russian notification, untrusted markup escaping, and no-ID projection tests in `BookOfEternityClient.Tests/WoundAcquisitionOutputTests.cs`
-- [ ] T033 [US1] Add RED end-to-end optional/lower/guaranteed/over-limit, wound-owned effect atomicity, healed independent mechanical legacy, and cosmetic History legacy fixtures in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Creation.cs`
+- [X] T033 [US1] Add RED end-to-end optional/lower/guaranteed/over-limit, wound-owned effect atomicity, healed independent mechanical legacy, and cosmetic History legacy fixtures in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Creation.cs`
 - [ ] T034 [P] [US1] Add RED all-owner carrier/index/history agreement, combatant persistence, Mortal-to-afterlife no-conversion, and accepted spiritual profile realm-preservation transition cases in `BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.Owners.cs`
 
 T029 RED evidence (2026-08-28): the new formal/narrative opportunity,
@@ -242,6 +242,16 @@ ambiguity, cross-realm rejection, and exact source/event/fingerprint binding are
 specified. Focused stops on seven intentionally absent T029-T031 authority types with
 0 warnings, no timeout/duplicates, and no executed tests
 (`20260828-172341-053-27028-eb6c5f5031794e72bc2b17dd8390421b-focused`).
+Production remains untouched.
+
+T033 RED evidence (2026-08-28): the accepted response now has end-to-end fixtures for
+an optional decline, a lower-than-cap materialization, an omitted guaranteed result,
+an over-cap proposal, atomic wound-owned effect/carrier/index/history publication,
+and separation of healed cosmetic versus independent mechanical legacies. Focused
+reaches the production assembly with 0 warnings and stops only on the nine expected
+uses of the intentionally absent strict `WoundDecisions` / `WoundResponseInputComposer`
+surface; no tests execute, no timeout or duplicate IDs occur
+(`20260828-183829-283-25676-96135e584bca44b1b84be6c0fe064ef7-focused`).
 Production remains untouched.
 
 ### GREEN implementation
