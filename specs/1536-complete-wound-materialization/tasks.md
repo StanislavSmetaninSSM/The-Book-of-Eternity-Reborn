@@ -80,7 +80,7 @@ finite condition adapter, and keep the corresponding persistent-actor
 - [X] T025 Add the explicit accepted-turn wound completeness phase plus strict raw input/root composition and planning handoff in `BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs`, `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs`
 - [X] T026 Publish and read-back-validate wound carriers/index/history/pending after-images only through the common write lease in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
 - [X] T027 Extend snapshot collection/rollback and accepted post-validation with exact wound and output paths in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
-- [ ] T028 Run the smallest focused common-kernel filters through `scripts/test-csharp.ps1`, record RED-to-GREEN evidence and durations in `specs/1536-complete-wound-materialization/tasks.md`, and resolve every foundational failure before US1
+- [X] T028 Run the smallest focused common-kernel filters through `scripts/test-csharp.ps1`, record RED-to-GREEN evidence and durations in `specs/1536-complete-wound-materialization/tasks.md`, and resolve every foundational failure before US1
 
 T014/T022/T024 closure evidence: commits `2610916c` and `270193d7`; Focused
 lineage `27/27` (`20260828-014902-256-5936-aa690e20e7ba4f55afb78076a31e80ee-focused`),
@@ -90,10 +90,10 @@ common cache `181/181` (`20260828-015055-084-8980-840ecfb6e5d74e71b4b10bbbe4df0e
 and resource-routing integration `69/69` (`20260828-013931-489-18588-7f33d769e2c14ec093eeee7529463337-focused`).
 The canonical source inventory is synchronized by `f86b33f1` with Focused
 `2/2` (`20260828-020009-476-31152-24197f842b24404f95b05b77f461c903-focused`).
-The Fast checkpoint remains open under T028: a no-build control completed
-`5760` green tests with zero failures/duplicates but reached the five-minute
-hard cap; tracked separately as #1550 rather than changing test infrastructure
-inside #1536.
+The earlier Fast checkpoint completed `5760` green tests with zero
+failures/duplicates but reached the five-minute hard cap. T028 repeats and
+records this control below; the runner-capacity limitation remains tracked
+separately as #1550 rather than changing test infrastructure inside #1536.
 
 T025 closure evidence (2026-08-28): the strict command/root and common-handoff
 integration scenarios are GREEN `7/7`
@@ -141,6 +141,33 @@ The common plan also unions dynamically touched game/lore/output paths and rejec
 arbitrary or non-canonical paths. These tasks strengthen only client-owned atomicity
 and introduce no GM-authored or player-visible contract, so prompts, examples, and
 afterlife documentation remain unchanged here.
+
+T028 closure evidence (2026-08-28): the inherited integration baseline was
+`161/201` with 40 legacy fixtures attempting ordinary GM application from
+non-materializable persisted wound sources
+(`20260828-144439-136-34732-12d497fe45734918be90e37e069bcf22-focused`).
+Separating ordinary materializable skill fixtures from explicit wound guards first
+reduced this to `189/201`
+(`20260828-163307-021-33160-e7eebdd10e064099bf7cfbe84b84fa77-focused`),
+then the direct-cutover wound guard set reached `8/8`
+(`20260828-165106-473-32824-3cf3dfd2a26a496bb877cc1b2c438023-focused`).
+The exact original effect/resource selection is now GREEN `201/201` in 3m27s
+(`20260828-165209-803-9280-e194438275b54e278eff96f84ca872e5-focused`).
+A Fast control exposed one real source guard: the reserved
+`pending_wound_resolutions.json` path was absent from the afterlife inventory
+(`2313/2314`, `20260828-165635-559-39216-8e227544282a4125b1699ba737be1a6e-fast`).
+The inventory now explicitly excludes that future path because this foundational
+slice has no runtime writer, resolver, receipt consumer, status surface, or
+GM-facing pending contract; the registry guard is GREEN `6/6`
+(`20260828-170027-003-32848-2d2d77437b6846dea1308f5295673522-focused`).
+The repeated Fast control executed `5575/5575` green tests with zero failures or
+duplicates before the known five-minute hard cap #1550 stopped remaining shards
+(`20260828-170122-115-7968-1d262fc23d5e4b09a035a342d3870a4c-fast`).
+Using the documented explicit Focused headroom instead of optimizing seconds, the
+complete wound/common-cache/snapshot domain is GREEN `1652/1652` in 29s
+(`20260828-170644-433-32604-09a45b93f2564ac2bf32410d7fdd4a6a-focused`).
+No foundational functional failure remains. No matrix/example update is warranted
+until a later story task adds the actual pending wound lifecycle and GM surface.
 
 **T011/T020 execution gate**: complete these task IDs in two test-first tranches. First,
 add and observe the canonical persistence/reducer RED tests, then make only that

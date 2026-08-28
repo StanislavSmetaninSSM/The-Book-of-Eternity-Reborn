@@ -18,6 +18,8 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
     internal const string CommandPath = "game_state/effects/effect_commands.json";
     internal const string PendingResolutionPath = "game_state/control/pending_effect_resolutions.json";
     internal const string PlayerWoundsPath = "game_state/player/wounds.json";
+    internal const string MaterializableSkillPath = "game_state/player/skills_active.json";
+    internal const string MaterializableSkillId = "skill_test_bleeding";
 
     internal static readonly string[] OwnedPaths =
     {
@@ -266,6 +268,45 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
                 ["activeEffectDefinitions"] = new JsonArray(
                     definition ?? EffectMaterializationTestFixture.CreateDefinition())
             }));
+    }
+
+    internal Task SeedPlayerSkillSourceAsync(
+        JsonObject? definition = null,
+        string skillId = MaterializableSkillId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(skillId);
+        return WriteJsonAsync(
+            MaterializableSkillPath,
+            new JsonObject
+            {
+                ["activeSkillChanges"] = new JsonArray(new JsonObject
+                {
+                    ["skillId"] = skillId,
+                    ["skillName"] = "Кровавый след",
+                    ["skillDescription"] =
+                        "Полный материализуемый источник для проверки эффектов.",
+                    ["rarity"] = "common",
+                    ["actionCost"] = "Main",
+                    ["combatEffect"] = new JsonObject
+                    {
+                        ["isActivatedEffect"] = true,
+                        ["actionName"] = "Кровавый след",
+                        ["actionCost"] = "Main",
+                        ["effects"] = new JsonArray(new JsonObject
+                        {
+                            ["effectType"] = "Damage",
+                            ["value"] = "10%",
+                            ["targetType"] = "enemy",
+                            ["effectDescription"] =
+                                "Навык оставляет проверяемый кровавый след.",
+                            ["poiseDamage"] = "5%"
+                        })
+                    },
+                    ["activeEffectDefinitions"] = new JsonArray(
+                        definition ?? EffectMaterializationTestFixture.CreateDefinition())
+                }),
+                ["removeActiveSkills"] = new JsonArray()
+            });
     }
 
     internal Task SyncPendingSnapshotAuthorityAsync() =>

@@ -7,13 +7,12 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class EffectMaterializationValidationTests
 {
     [Fact]
-    public async Task WoundConsequence_ApplyPublishesNoWoundWriteCapability()
+    public async Task WoundConsequence_OrdinaryApplyIsRejectedWithoutWoundWriteCapability()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         var definition = CreateSourceBoundWoundConsequenceDefinition();
         await context.SeedPlayerWoundSourceAsync(definition);
         await context.CaptureValidatedPendingSnapshotAsync();
-        var backups = await context.ReadPendingSnapshotBackupsAsync();
         var command = CreateWoundConsequenceApplyCommand();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
@@ -24,40 +23,33 @@ public sealed partial class EffectMaterializationValidationTests
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
-        AssertNoEffectErrors(issues);
-        var plan = await context.NormalizeAcceptedEffectsAsync(backups);
-        Assert.NotNull(plan);
-        AssertEffectPlanCannotWriteWounds(plan);
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_selector_unresolved");
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
         Assert.Equal(
             woundBefore,
             await context.CaptureBytesAsync(
                 EffectMaterializationTestContext.PlayerWoundsPath));
-        var effect = await ReadSinglePlayerEffectAsync(context);
-        Assert.Equal(
-            "wound_consequence",
-            effect["components"]![0]!["profile"]!.GetValue<string>());
-        Assert.Equal(
-            "wound_test_torn_side",
-            effect["links"]![0]!["targetId"]!.GetValue<string>());
-        Assert.Equal("source_bound", effect["lifetime"]!["mode"]!.GetValue<string>());
-        Assert.Equal("wound", effect["lifetime"]!["linkKind"]!.GetValue<string>());
-        Assert.Equal(
-            "wound_test_torn_side",
-            effect["lifetime"]!["targetId"]!.GetValue<string>());
+        Assert.Null(await context.ReadJsonAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath));
+        Assert.Null(await context.ReadJsonAsync(
+            EffectMaterializationTestContext.IdentityIndexPath));
     }
 
     [Theory]
     [InlineData("dispel", "physical_treatment", "dispelled")]
     [InlineData("remove", "stop_bleeding", "removed")]
-    public async Task WoundConsequence_TerminalEffectOperationNeverTreatsWound(
+    public async Task TerminalEffectOperation_NeverMutatesCanonicalWoundCarrier(
         string operation,
         string authorityKind,
         string terminalState)
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        var definition = CreateSourceBoundWoundConsequenceDefinition();
-        var existing = CreateSourceBoundWoundConsequenceEffect(definition);
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        var existing = CreateLifecycleEffect(definition, currentStacks: 1);
         await SeedLifecycleStateAsync(context, definition, existing);
+        await SeedCanonicalEmptyPlayerWoundCarrierAsync(context);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         var backups = await context.ReadPendingSnapshotBackupsAsync();
         await context.WriteJsonAsync(
@@ -89,16 +81,16 @@ public sealed partial class EffectMaterializationValidationTests
     }
 
     [Fact]
-    public async Task WoundConsequence_DueExpiryLeavesWoundByteExact()
+    public async Task DueEffectExpiry_LeavesCanonicalWoundCarrierByteExact()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        var definition = EffectMaterializationTestFixture.CreateDefinition(
-            "wound_consequence");
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
         var existing = CreateLifecycleEffect(
             definition,
             currentStacks: 1,
             remainingTurns: 1);
         await SeedLifecycleStateAsync(context, definition, existing);
+        await SeedCanonicalEmptyPlayerWoundCarrierAsync(context);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         var backups = await context.ReadPendingSnapshotBackupsAsync();
         var woundBefore = await context.CaptureBytesAsync(
@@ -121,59 +113,54 @@ public sealed partial class EffectMaterializationValidationTests
     }
 
     [Fact]
-    public async Task WoundTreatment_ExpiresDeclaredSourceBoundConsequenceWithoutRewritingTreatment()
+    public async Task DirectLegacyWoundTreatmentMutation_FailsClosedWithoutEffectPublication()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        var definition = CreateSourceBoundWoundConsequenceDefinition();
-        var existing = CreateSourceBoundWoundConsequenceEffect(definition);
-        await SeedLifecycleStateAsync(context, definition, existing);
+        await SeedCanonicalEmptyPlayerWoundCarrierAsync(context);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
-        var backups = await context.ReadPendingSnapshotBackupsAsync();
-        var wounds = (await context.ReadJsonAsync(
-            EffectMaterializationTestContext.PlayerWoundsPath))!.AsArray();
-        wounds[0]!["isHealed"] = true;
-        wounds[0]!["healingState"] = new JsonObject
-        {
-            ["state"] = "healed",
-            ["treatedAtTurn"] = 43,
-            ["treatment"] = "surgical_closure"
-        };
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerWoundsPath,
-            wounds);
-        var acceptedTreatment = await context.CaptureBytesAsync(
+            new JsonArray(new JsonObject
+            {
+                ["woundId"] = "wound_test_torn_side",
+                ["isHealed"] = true,
+                ["healingState"] = new JsonObject
+                {
+                    ["state"] = "healed",
+                    ["treatedAtTurn"] = 43,
+                    ["treatment"] = "surgical_closure"
+                }
+            }));
+        var acceptedMutation = await context.CaptureBytesAsync(
             EffectMaterializationTestContext.PlayerWoundsPath);
 
         var issues = await context.Validator
-            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+            .ValidateAcceptedTurnCanonicalWoundMaterializationAsync();
 
-        AssertNoEffectErrors(issues);
-        var plan = await context.NormalizeAcceptedEffectsAsync(backups);
-        Assert.NotNull(plan);
-        AssertEffectPlanCannotWriteWounds(plan);
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.FilePath.StartsWith(
+                EffectMaterializationTestContext.PlayerWoundsPath,
+                StringComparison.Ordinal));
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
         Assert.Equal(
-            acceptedTreatment,
+            acceptedMutation,
             await context.CaptureBytesAsync(
                 EffectMaterializationTestContext.PlayerWoundsPath));
-        var player = (await context.ReadJsonAsync(
-            EffectMaterializationTestContext.PlayerEffectsPath))!.AsObject();
-        Assert.Empty(player["activeEffects"]!.AsArray());
-        var index = (await context.ReadJsonAsync(
-            EffectMaterializationTestContext.IdentityIndexPath))!.AsObject();
-        var entry = index["entries"]![0]!.AsObject();
-        Assert.Equal("expired", entry["state"]!.GetValue<string>());
-        var transition = entry["transitions"]!.AsArray()[^1]!.AsObject();
-        Assert.Equal("expire", transition["kind"]!.GetValue<string>());
+        Assert.Null(await context.ReadJsonAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath));
+        Assert.Null(await context.ReadJsonAsync(
+            EffectMaterializationTestContext.IdentityIndexPath));
     }
 
     [Fact]
     public async Task EffectCommand_CannotCarryDirectWoundMutation()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        var definition = CreateSourceBoundWoundConsequenceDefinition();
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync();
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = CreateWoundConsequenceApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["woundChanges"] = new JsonArray(new JsonObject
         {
             ["woundId"] = "wound_test_torn_side",
@@ -202,11 +189,11 @@ public sealed partial class EffectMaterializationValidationTests
     }
 
     [Fact]
-    public async Task WoundConsequence_LateSourceTreatmentRollsBackEffectPublicationOnly()
+    public async Task LateEffectCommandMutation_RollsBackEffectPublicationOnly()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        var definition = CreateSourceBoundWoundConsequenceDefinition();
-        var existing = CreateSourceBoundWoundConsequenceEffect(definition);
+        var definition = EffectMaterializationTestFixture.CreateDefinition();
+        var existing = CreateLifecycleEffect(definition, currentStacks: 1);
         await SeedLifecycleStateAsync(context, definition, existing);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         var backups = await context.ReadPendingSnapshotBackupsAsync();
@@ -217,14 +204,14 @@ public sealed partial class EffectMaterializationValidationTests
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         AssertNoEffectErrors(issues);
-        var wounds = (await context.ReadJsonAsync(
-            EffectMaterializationTestContext.PlayerWoundsPath))!.AsArray();
-        wounds[0]!["isHealed"] = true;
+        var command = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.CommandPath))!.AsObject();
+        command["effectChanges"]![0]!["reason"] =
+            "Команда изменена после запечатывания плана.";
         await context.WriteJsonAsync(
-            EffectMaterializationTestContext.PlayerWoundsPath,
-            wounds);
+            EffectMaterializationTestContext.CommandPath,
+            command);
         var before = await context.CaptureBytesAsync(
-            EffectMaterializationTestContext.PlayerWoundsPath,
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.IdentityIndexPath,
             EffectMaterializationTestContext.CommandPath);
@@ -235,18 +222,18 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.Equal(
             before,
             await context.CaptureBytesAsync(
-                EffectMaterializationTestContext.PlayerWoundsPath,
                 EffectMaterializationTestContext.PlayerEffectsPath,
                 EffectMaterializationTestContext.IdentityIndexPath,
                 EffectMaterializationTestContext.CommandPath));
     }
 
     [Fact]
-    public async Task WoundConsequence_NpcCarrierPreservesAdjacentNpcWoundState()
+    public async Task EffectApply_LegacyNpcWoundPayloadIsRejectedBeforePublication()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        var definition = CreateSourceBoundWoundConsequenceDefinition();
-        await context.SeedPlayerWoundSourceAsync(definition);
+        var definition = EffectMaterializationTestFixture.CreateDefinition(
+            "action_control");
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject
@@ -277,8 +264,8 @@ public sealed partial class EffectMaterializationValidationTests
                 ["_lastUpdated"] = "2026-08-22T00:00:00Z"
             });
         await context.CaptureValidatedPendingSnapshotAsync();
-        var backups = await context.ReadPendingSnapshotBackupsAsync();
-        var command = CreateWoundConsequenceApplyCommand("npc");
+        var command = CreateMaterializableApplyCommand("npc");
+        command["parameters"] = new JsonObject();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
@@ -286,18 +273,17 @@ public sealed partial class EffectMaterializationValidationTests
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
-        AssertNoEffectErrors(issues);
-        var plan = await context.NormalizeAcceptedEffectsAsync(backups);
-        Assert.NotNull(plan);
-        AssertEffectPlanCannotWriteWounds(plan);
+        Assert.Contains(issues, issue =>
+            issue.Code == "accepted_mechanics_effect_owner_delta_invalid");
+        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+            context.FileSystem));
         var root = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.NpcEffectsPath))!.AsObject();
         Assert.True(JsonNode.DeepEquals(adjacentWounds, root["NPCWoundChanges"]));
         Assert.Equal(
             "2026-08-22T00:00:00Z",
             root["_lastUpdated"]!.GetValue<string>());
-        var entry = Assert.IsType<JsonObject>(Assert.Single(root["entries"]!.AsArray()));
-        Assert.Single(entry["activeEffects"]!.AsArray());
+        Assert.False(root.ContainsKey("entries"));
     }
 
     private static JsonObject CreateSourceBoundWoundConsequenceDefinition()
@@ -313,19 +299,23 @@ public sealed partial class EffectMaterializationValidationTests
         return definition;
     }
 
-    private static JsonObject CreateSourceBoundWoundConsequenceEffect(
-        JsonObject definition)
+    private static Task SeedCanonicalEmptyPlayerWoundCarrierAsync(
+        EffectMaterializationTestContext context)
     {
-        var effect = CreateLifecycleEffect(definition, currentStacks: 1);
-        effect["lifetime"] = new JsonObject
-        {
-            ["mode"] = "source_bound",
-            ["linkKind"] = "wound",
-            ["targetId"] = "wound_test_torn_side",
-            ["activePredicate"] = "active",
-            ["onSourceLoss"] = "expire"
-        };
-        return effect;
+        ArgumentNullException.ThrowIfNull(context);
+        return context.WriteJsonAsync(
+            EffectMaterializationTestContext.PlayerWoundsPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["owner"] = new JsonObject
+                {
+                    ["realm"] = "mortal_world",
+                    ["ownerKind"] = "player",
+                    ["ownerId"] = "player_current",
+                },
+                ["activeWounds"] = new JsonArray()
+            });
     }
 
     private static JsonObject CreateWoundConsequenceApplyCommand(
