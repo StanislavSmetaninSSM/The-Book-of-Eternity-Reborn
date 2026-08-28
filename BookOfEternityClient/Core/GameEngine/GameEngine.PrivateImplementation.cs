@@ -88,7 +88,7 @@ public partial class GameEngine
         public bool FullTurnResubmissionRequired { get; set; }
         public string GmInstructions { get; set; } = "";
         public List<string> SummaryGroups { get; set; } = new();
-        public List<ValidationRepairHarnessPacket> HarnessRepairPackets { get; set; } = new();
+        public List<JsonObject> HarnessRepairPackets { get; set; } = new();
         public List<ValidationRepairResubmissionObligation> ResubmissionObligations { get; set; } = new();
         public List<string> RequiredResubmissionPaths { get; set; } = new();
         public List<ValidationRepairIssue> Errors { get; set; } = new();
@@ -118,6 +118,11 @@ public partial class GameEngine
     private sealed record ResourceRepairRetryObligation(
         int CommandOrdinal,
         JsonObject ExpectedCommandRootWithoutReason);
+
+    private sealed record WoundRepairRetryObligation(
+        int CommandOrdinal,
+        WoundRepairPacket Packet,
+        JsonObject ExpectedCommandRoot);
 
     private sealed record RepairResubmissionPathObligation(
         string Path,

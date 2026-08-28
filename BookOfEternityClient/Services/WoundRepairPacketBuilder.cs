@@ -24,6 +24,95 @@ internal sealed record WoundRepairPacketAuthority(
     string TargetFingerprint,
     string RollFingerprint);
 
+/// <summary>
+/// Detached client-owned authority needed to reconstruct one bounded wound repair
+/// candidate from a validation issue. None of these fields is inferred from an
+/// error message or from mutable canonical state during repair dispatch.
+/// </summary>
+internal sealed class WoundRepairContext
+{
+    private readonly JsonObject _safeContext;
+    private readonly string[] _allowedDecisions;
+    private readonly JsonObject _rejectedDecision;
+
+    internal WoundRepairContext(
+        string sessionId,
+        string requestId,
+        string snapshotToken,
+        string kind,
+        string candidateRef,
+        string semanticFingerprint,
+        string opportunityRef,
+        JsonObject safeContext,
+        IReadOnlyList<string> allowedDecisions,
+        string minimumSeverity,
+        string maximumSeverity,
+        JsonObject rejectedDecision,
+        string? opportunityAuthorityFingerprint = null)
+    {
+        SessionId = sessionId;
+        RequestId = requestId;
+        SnapshotToken = snapshotToken;
+        Kind = kind;
+        CandidateRef = candidateRef;
+        SemanticFingerprint = semanticFingerprint;
+        OpportunityRef = opportunityRef;
+        _safeContext = safeContext?.DeepClone().AsObject() ?? new JsonObject();
+        _allowedDecisions = allowedDecisions?.ToArray() ?? Array.Empty<string>();
+        MinimumSeverity = minimumSeverity;
+        MaximumSeverity = maximumSeverity;
+        _rejectedDecision = rejectedDecision?.DeepClone().AsObject() ?? new JsonObject();
+        OpportunityAuthorityFingerprint = opportunityAuthorityFingerprint;
+    }
+
+    internal string SessionId { get; }
+    internal string RequestId { get; }
+    internal string SnapshotToken { get; }
+    internal string Kind { get; }
+    internal string CandidateRef { get; }
+    internal string SemanticFingerprint { get; }
+    internal string OpportunityRef { get; }
+    internal JsonObject SafeContext => _safeContext.DeepClone().AsObject();
+    internal IReadOnlyList<string> AllowedDecisions => _allowedDecisions.ToArray();
+    internal string MinimumSeverity { get; }
+    internal string MaximumSeverity { get; }
+    internal JsonObject RejectedDecision => _rejectedDecision.DeepClone().AsObject();
+    internal string? OpportunityAuthorityFingerprint { get; }
+
+    internal WoundRepairContext Clone() => new(
+        SessionId,
+        RequestId,
+        SnapshotToken,
+        Kind,
+        CandidateRef,
+        SemanticFingerprint,
+        OpportunityRef,
+        _safeContext,
+        _allowedDecisions,
+        MinimumSeverity,
+        MaximumSeverity,
+        _rejectedDecision,
+        OpportunityAuthorityFingerprint);
+
+    internal bool HasSameAuthority(WoundRepairContext other) =>
+        string.Equals(SessionId, other.SessionId, StringComparison.Ordinal) &&
+        string.Equals(RequestId, other.RequestId, StringComparison.Ordinal) &&
+        string.Equals(SnapshotToken, other.SnapshotToken, StringComparison.Ordinal) &&
+        string.Equals(Kind, other.Kind, StringComparison.Ordinal) &&
+        string.Equals(CandidateRef, other.CandidateRef, StringComparison.Ordinal) &&
+        string.Equals(SemanticFingerprint, other.SemanticFingerprint, StringComparison.Ordinal) &&
+        string.Equals(OpportunityRef, other.OpportunityRef, StringComparison.Ordinal) &&
+        _allowedDecisions.SequenceEqual(other._allowedDecisions, StringComparer.Ordinal) &&
+        string.Equals(MinimumSeverity, other.MinimumSeverity, StringComparison.Ordinal) &&
+        string.Equals(MaximumSeverity, other.MaximumSeverity, StringComparison.Ordinal) &&
+        string.Equals(
+            OpportunityAuthorityFingerprint,
+            other.OpportunityAuthorityFingerprint,
+            StringComparison.Ordinal) &&
+        JsonNode.DeepEquals(_safeContext, other._safeContext) &&
+        JsonNode.DeepEquals(_rejectedDecision, other._rejectedDecision);
+}
+
 internal sealed class WoundRepairBuildRequest
 {
     private readonly WoundRepairCandidateInput[] _candidates;
@@ -67,7 +156,8 @@ internal sealed class WoundRepairCandidateInput
         string minimumSeverity,
         string maximumSeverity,
         JsonObject rejectedDecision,
-        IReadOnlyList<ValidationIssue> issues)
+        IReadOnlyList<ValidationIssue> issues,
+        string? opportunityAuthorityFingerprint = null)
     {
         Kind = kind;
         CandidateRef = candidateRef;
@@ -79,6 +169,7 @@ internal sealed class WoundRepairCandidateInput
         MaximumSeverity = maximumSeverity;
         RejectedDecision = rejectedDecision?.DeepClone().AsObject() ?? new JsonObject();
         _issues = issues?.ToArray() ?? Array.Empty<ValidationIssue>();
+        OpportunityAuthorityFingerprint = opportunityAuthorityFingerprint;
     }
 
     internal string Kind { get; }
@@ -91,6 +182,7 @@ internal sealed class WoundRepairCandidateInput
     internal string MaximumSeverity { get; }
     internal JsonObject RejectedDecision { get; }
     internal IReadOnlyList<ValidationIssue> Issues => _issues;
+    internal string? OpportunityAuthorityFingerprint { get; }
 }
 
 internal sealed class WoundRepairPacket
@@ -99,6 +191,8 @@ internal sealed class WoundRepairPacket
     private readonly JsonObject _safeContext;
     private readonly JsonObject _preservedProposal;
     private readonly JsonObject _requiredResponseShape;
+    private readonly JsonObject _rejectedDecision;
+    private readonly string? _opportunityAuthorityFingerprint;
 
     internal WoundRepairPacket(
         string sessionId,
@@ -109,7 +203,9 @@ internal sealed class WoundRepairPacket
         IReadOnlyList<WoundRepairPacketIssue> issues,
         JsonObject safeContext,
         JsonObject preservedProposal,
-        JsonObject requiredResponseShape)
+        JsonObject requiredResponseShape,
+        JsonObject rejectedDecision,
+        string? opportunityAuthorityFingerprint)
     {
         SessionId = sessionId;
         RequestId = requestId;
@@ -120,6 +216,8 @@ internal sealed class WoundRepairPacket
         _safeContext = safeContext.DeepClone().AsObject();
         _preservedProposal = preservedProposal.DeepClone().AsObject();
         _requiredResponseShape = requiredResponseShape.DeepClone().AsObject();
+        _rejectedDecision = rejectedDecision.DeepClone().AsObject();
+        _opportunityAuthorityFingerprint = opportunityAuthorityFingerprint;
     }
 
     internal string Kind => "wound_materialization_repair";
@@ -132,6 +230,49 @@ internal sealed class WoundRepairPacket
     internal JsonObject SafeContext => _safeContext.DeepClone().AsObject();
     internal JsonObject PreservedProposal => _preservedProposal.DeepClone().AsObject();
     internal JsonObject RequiredResponseShape => _requiredResponseShape.DeepClone().AsObject();
+    internal bool RequiresResponseCorrection => _issues.Any(static issue =>
+        string.Equals(issue.Path, "response", StringComparison.Ordinal));
+
+    internal string? OpportunityRef =>
+        _requiredResponseShape["woundDecisions"] is JsonArray { Count: 1 } decisions &&
+        decisions[0] is JsonObject decision &&
+        decision["opportunityRef"] is JsonValue value &&
+        value.TryGetValue<string>(out var opportunityRef)
+            ? opportunityRef
+            : null;
+
+    internal bool MatchesRejectedDecision(JsonObject? decision) =>
+        decision is not null && JsonNode.DeepEquals(decision, _rejectedDecision);
+
+    internal bool MatchesOpportunity(WoundOpportunityAuthority? opportunity)
+    {
+        if (opportunity is null ||
+            !ResourceMaterializationContract.IsAuthorityFingerprint(
+                _opportunityAuthorityFingerprint) ||
+            !string.Equals(
+                opportunity.AuthorityFingerprint,
+                _opportunityAuthorityFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(opportunity.SessionId, SessionId, StringComparison.Ordinal) ||
+            !string.Equals(opportunity.RequestId, RequestId, StringComparison.Ordinal) ||
+            !string.Equals(
+                opportunity.SnapshotToken,
+                SnapshotToken,
+                StringComparison.Ordinal) ||
+            _requiredResponseShape["woundDecisions"] is not JsonArray decisions ||
+            decisions.Count != 1 ||
+            decisions[0] is not JsonObject decision ||
+            decision["opportunityRef"] is not JsonValue expectedRefNode ||
+            !expectedRefNode.TryGetValue<string>(out var expectedRef))
+        {
+            return false;
+        }
+        return string.Equals(
+                   opportunity.PublicRef,
+                   expectedRef,
+                   StringComparison.Ordinal) &&
+               WoundOpportunityAuthority.HasCompleteShape(opportunity);
+    }
 
     internal WoundRepairPacketReceipt CreateReceipt() => new(
         SessionId,
@@ -160,6 +301,111 @@ internal sealed class WoundRepairPacket
         ["preservedProposal"] = _preservedProposal.DeepClone(),
         ["requiredResponseShape"] = _requiredResponseShape.DeepClone()
     };
+
+    internal bool MatchesCorrectedDecision(
+        JsonObject? correctedDecision,
+        string? finalSceneText)
+    {
+        if (correctedDecision is null ||
+            correctedDecision.Count != 4 ||
+            correctedDecision.Any(static pair => pair.Key is not
+                ("opportunityRef" or "decision" or "woundRef" or "proposal")) ||
+            _requiredResponseShape["woundDecisions"] is not JsonArray requiredDecisions ||
+            requiredDecisions.Count != 1 ||
+            requiredDecisions[0] is not JsonObject requiredDecision ||
+            !SameRequiredString(
+                correctedDecision,
+                requiredDecision,
+                "opportunityRef") ||
+            !SameRequiredString(correctedDecision, requiredDecision, "decision") ||
+            !SameRequiredString(correctedDecision, requiredDecision, "woundRef") ||
+            correctedDecision["proposal"] is not JsonObject correctedProposal)
+        {
+            return false;
+        }
+
+        var proposalWithoutCorrections = correctedProposal.DeepClone().AsObject();
+        foreach (var issue in _issues)
+        {
+            if (string.Equals(issue.Path, "response", StringComparison.Ordinal))
+                continue;
+            if (!issue.Path.StartsWith("proposal.", StringComparison.Ordinal))
+                return false;
+            var semanticPath = issue.Path["proposal.".Length..];
+            var omissionRequired =
+                (string.Equals(
+                     issue.Code,
+                     "wound_response_unknown_field",
+                     StringComparison.Ordinal) &&
+                 string.Equals(issue.Path, "proposal.owner", StringComparison.Ordinal)) ||
+                string.Equals(
+                    issue.Code,
+                    "wound_materialization_invalid_field",
+                    StringComparison.Ordinal);
+            var correctedContainsPath = TryResolvePath(
+                correctedProposal,
+                semanticPath,
+                out _);
+            if (omissionRequired == correctedContainsPath)
+                return false;
+            WoundRepairPacketBuilder.RemovePath(
+                proposalWithoutCorrections,
+                semanticPath);
+        }
+
+        if (!JsonNode.DeepEquals(proposalWithoutCorrections, _preservedProposal) ||
+            !TryResolvePath(
+                correctedProposal,
+                "display.acquisitionNarration",
+                out var narrationNode) ||
+            narrationNode is not JsonValue narrationValue ||
+            !narrationValue.TryGetValue<string>(out var narration) ||
+            string.IsNullOrWhiteSpace(narration) ||
+            string.IsNullOrWhiteSpace(finalSceneText) ||
+            !finalSceneText.Contains(narration, StringComparison.Ordinal))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    private static bool SameRequiredString(
+        JsonObject actual,
+        JsonObject expected,
+        string property) =>
+        actual[property] is JsonValue actualValue &&
+        expected[property] is JsonValue expectedValue &&
+        actualValue.TryGetValue<string>(out var actualText) &&
+        expectedValue.TryGetValue<string>(out var expectedText) &&
+        string.Equals(actualText, expectedText, StringComparison.Ordinal);
+
+    private static bool TryResolvePath(
+        JsonObject root,
+        string path,
+        out JsonNode? value)
+    {
+        value = root;
+        if (!WoundRepairPacketBuilder.TryParsePath(path, out var segments))
+            return false;
+        foreach (var segment in segments)
+        {
+            value = segment switch
+            {
+                string property when value is JsonObject currentObject &&
+                                     currentObject.TryGetPropertyValue(
+                                         property,
+                                         out var propertyValue) =>
+                    propertyValue,
+                int ordinal when value is JsonArray currentArray &&
+                                 ordinal >= 0 && ordinal < currentArray.Count =>
+                    currentArray[ordinal],
+                _ => null
+            };
+            if (value is null)
+                return false;
+        }
+        return true;
+    }
 }
 
 /// <summary>
@@ -197,6 +443,22 @@ internal static class WoundRepairPacketBuilder
         },
         StringComparer.Ordinal);
 
+    private static readonly HashSet<string> RepairableIssueCodes = new(
+        new[]
+        {
+            "wound_response_unknown_field",
+            "wound_severity_above_opportunity",
+            "wound_consequence_slot_budget_exceeded",
+            "wound_materialization_effect_binding_invalid",
+            "wound_materialization_missing_field",
+            "wound_consequence_resource_bound_missing",
+            "wound_acquisition_narration_missing",
+            "wound_acquisition_narration_contradiction",
+            "wound_materialization_invalid_field",
+            "wound_repair_retry_authority_unavailable"
+        },
+        StringComparer.Ordinal);
+
     private static readonly HashSet<string> SensitiveKeys = new(
         new[]
         {
@@ -227,6 +489,118 @@ internal static class WoundRepairPacketBuilder
     internal static bool RequiresFailClosedRollback(
         WoundRepairBuildRequest request) =>
         !TryBuild(request, out _);
+
+    internal static IReadOnlyList<WoundRepairPacket> Build(
+        IEnumerable<ValidationIssue> issues)
+    {
+        var snapshot = issues?.ToArray() ?? Array.Empty<ValidationIssue>();
+        return TryBuild(snapshot, out var packets)
+            ? packets
+            : Array.Empty<WoundRepairPacket>();
+    }
+
+    internal static bool RequiresFailClosedRollback(
+        IEnumerable<ValidationIssue> issues)
+    {
+        var snapshot = issues?.ToArray() ?? Array.Empty<ValidationIssue>();
+        return snapshot.Any(IsRepairableIssue) && !TryBuild(snapshot, out _);
+    }
+
+    private static bool TryBuild(
+        IReadOnlyList<ValidationIssue> issues,
+        out IReadOnlyList<WoundRepairPacket> packets)
+    {
+        packets = Array.Empty<WoundRepairPacket>();
+        var repairable = issues.Where(IsRepairableIssue).ToArray();
+        if (repairable.Length == 0)
+            return true;
+        if (repairable.Any(static issue => issue.WoundRepairContext is null) ||
+            issues.Any(static issue =>
+                issue.WoundRepairContext is not null && !IsRepairableIssue(issue)))
+        {
+            return false;
+        }
+
+        var contexts = repairable
+            .Select(static issue => issue.WoundRepairContext!)
+            .ToArray();
+        var requestContext = contexts[0];
+        if (contexts.Any(context =>
+                !string.Equals(
+                    context.SessionId,
+                    requestContext.SessionId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    context.RequestId,
+                    requestContext.RequestId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    context.SnapshotToken,
+                    requestContext.SnapshotToken,
+                    StringComparison.Ordinal)))
+        {
+            return false;
+        }
+
+        var candidates = new List<WoundRepairCandidateInput>();
+        foreach (var group in repairable.GroupBy(
+                     static issue => issue.WoundRepairContext!.CandidateRef,
+                     StringComparer.Ordinal))
+        {
+            var context = group.First().WoundRepairContext!;
+            if (group.Any(issue =>
+                    !context.HasSameAuthority(issue.WoundRepairContext!)))
+            {
+                return false;
+            }
+
+            var normalizedIssues = group.Select(static issue => new ValidationIssue(
+                    issue.FilePath,
+                    issue.Severity,
+                    issue.Message,
+                    issue.Code,
+                    issue.Actor,
+                    "wound_materialization",
+                    issue.Expected,
+                    issue.Actual,
+                    issue.RepairHint,
+                    issue.Category,
+                    issue.RepairTargetFiles.ToArray()))
+                .ToArray();
+            candidates.Add(new WoundRepairCandidateInput(
+                context.Kind,
+                context.CandidateRef,
+                context.SemanticFingerprint,
+                context.OpportunityRef,
+                context.SafeContext,
+                context.AllowedDecisions,
+                context.MinimumSeverity,
+                context.MaximumSeverity,
+                context.RejectedDecision,
+                normalizedIssues,
+                context.OpportunityAuthorityFingerprint));
+        }
+
+        return TryBuild(new WoundRepairBuildRequest(
+            requestContext.SessionId,
+            requestContext.RequestId,
+            requestContext.SnapshotToken,
+            candidates), out packets);
+    }
+
+    internal static bool IsRepairableIssue(ValidationIssue? issue) =>
+        issue is not null &&
+        issue.Severity == IssueSeverity.Error &&
+        issue.Code is not null &&
+        RepairableIssueCodes.Contains(issue.Code) &&
+        (string.Equals(
+             issue.Section,
+             "wound_materialization",
+             StringComparison.OrdinalIgnoreCase) ||
+         string.Equals(
+             issue.Section,
+             "wound_response",
+             StringComparison.OrdinalIgnoreCase));
 
     private static bool TryBuild(
         WoundRepairBuildRequest? request,
@@ -269,6 +643,9 @@ internal static class WoundRepairPacketBuilder
             !Exact(candidate.CandidateRef) ||
             !ResourceMaterializationContract.IsAuthorityFingerprint(
                 candidate.SemanticFingerprint) ||
+            (candidate.OpportunityAuthorityFingerprint is not null &&
+             !ResourceMaterializationContract.IsAuthorityFingerprint(
+                 candidate.OpportunityAuthorityFingerprint)) ||
             !Exact(candidate.OpportunityRef) ||
             !ValidAllowedDecisions(candidate.AllowedDecisions) ||
             !TrySeverityRank(candidate.MinimumSeverity, out var minimumSeverity) ||
@@ -353,7 +730,9 @@ internal static class WoundRepairPacketBuilder
             issues,
             safeContext,
             preservedProposal,
-            requiredResponseShape);
+            requiredResponseShape,
+            rejectedDecision,
+            candidate.OpportunityAuthorityFingerprint);
         return true;
     }
 
@@ -488,7 +867,9 @@ internal static class WoundRepairPacketBuilder
             expected = "one accepted resource and a bounded quantum-aligned amount";
             return true;
         }
-        if (path == "response" && code == "wound_acquisition_narration_missing")
+        if (path == "response" && code is
+                "wound_acquisition_narration_missing" or
+                "wound_acquisition_narration_contradiction")
         {
             expected = "the exact acquisition narration inside the final scene";
             return true;
@@ -599,7 +980,7 @@ internal static class WoundRepairPacketBuilder
             value.Contains(secret, StringComparison.Ordinal));
     }
 
-    private static void RemovePath(JsonObject root, string path)
+    internal static void RemovePath(JsonObject root, string path)
     {
         if (!TryParsePath(path, out var segments) || segments.Count == 0)
             return;
@@ -632,7 +1013,7 @@ internal static class WoundRepairPacketBuilder
         }
     }
 
-    private static bool TryParsePath(
+    internal static bool TryParsePath(
         string value,
         out IReadOnlyList<object> segments)
     {
@@ -691,9 +1072,11 @@ internal static class WoundRepairPacketBuilder
     }
 
     private static bool ValidAllowedDecisions(IReadOnlyList<string> values) =>
-        values.Count == 2 &&
-        string.Equals(values[0], "none", StringComparison.Ordinal) &&
-        string.Equals(values[1], "materialize", StringComparison.Ordinal);
+        (values.Count == 2 &&
+         string.Equals(values[0], "none", StringComparison.Ordinal) &&
+         string.Equals(values[1], "materialize", StringComparison.Ordinal)) ||
+        (values.Count == 1 &&
+         string.Equals(values[0], "materialize", StringComparison.Ordinal));
 
     private static bool TrySeverityRank(string? value, out int rank)
     {

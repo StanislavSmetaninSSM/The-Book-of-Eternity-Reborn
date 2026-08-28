@@ -578,7 +578,7 @@ history/receipt/planner replay surface, with no tests executed, timeout, or dupl
 ### GREEN implementation
 
 - [X] T051 [US7] Implement bounded wound construction/repair/narration/alternative-treatment packets and recursive privacy sanitization in `BookOfEternityClient/Services/WoundRepairPacketBuilder.cs`
-- [ ] T052 [US7] Integrate wound repair obligations, safe harness packets, exact resubmission shape, and unrelated-response preservation in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
+- [X] T052 [US7] Integrate wound repair obligations, safe harness packets, exact resubmission shape, and unrelated-response preservation in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
 - [ ] T053 [US7] Invalidate prepared/final wound, effect, and common handoffs together on repair/rejection/snapshot mismatch in `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs`
 - [ ] T054 [US7] Extend exact snapshot and post-publication agreement to scheduler, journals, quests, inventory/characteristics, debug/output, and pending wound roots in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
 - [ ] T055 [US7] Add operation/attempt/course/cycle/payment/output replay coordinates and already-accepted receipt projection in `BookOfEternityClient/Services/WoundHistoryState.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
@@ -602,6 +602,36 @@ IDs (`20260829-014851-152-37584-42da496bb92e4a9992a3c80ac080ff8d-focused`). Two
 RED-fixture defects found by the first execution were corrected without weakening the
 contract: readable Cyrillic assertions now use the repository's relaxed JSON encoder,
 and the target-authority mutation now supplies a genuinely different fingerprint.
+
+T052 GREEN evidence (2026-08-29): real response-validation issues now retain detached
+candidate authority and are projected into the closed T051 packet without exposing the
+sealed opportunity fingerprint. Resource-bearing wound consequences are checked at the
+raw resource-validation boundary against the exact accepted owner mapping, canonical
+definition/operation policy, active owner capability, and active or same-turn capacity;
+the first RED proved the former structural composer had no such authority
+(`20260829-031840-993-6052-cf5cf8f5400b4bc894bc9b21ac08790d-focused`). Before
+rollback, `GameEngine` captures one strict rejected wound command per packet. A retry
+must resubmit the complete command root with the same session/request/snapshot, sealed
+opportunity, command count/order, final-scene authority, and every non-offending sibling;
+only the listed rejected semantic leaf (or the explicitly rejected narration response)
+may differ. Missing, malformed, ambiguous, changed, or rollback-less retry authority now
+fails closed instead of dispatching a broad GM repair. The repair request serializes the
+closed wound packet directly, declares the exact `woundDecisions` obligation, and tells
+the GM to repeat the coherent turn rather than patch restored canonical files.
+
+Fresh verification is warning-free: packet/request unit contracts pass 29/29
+(`20260829-035105-420-41476-818e5b31a23a4acaaeae1eb7a0bc1ae3-focused`), and the
+complete rollback/repair integration filter passes 40/40, including all seven
+representative invalid categories, exact unrelated-command preservation, fail-closed
+retry capture, and 24 before/after publication failure boundaries
+(`20260829-035205-812-9232-30d4d199ea1044ec8e89e946fc382bce-focused`). The required
+Fast checkpoint executed 3867 tests with 3866 passing and only the deliberately frozen
+next-task RED `WoundCache_HasNoIndependentTakeSurface` failing because T051 temporarily
+introduced the local repair-wave take surface that T053 must move under common registry
+authority (`20260829-035614-147-37444-a13a1e4f0cc34ad69ced4be42709a8d9-fast`). This is
+present at the T051 `HEAD` boundary and T052 does not modify that cache. Durable
+GM-facing worked repair/rollback guidance remains explicitly assigned to T056 after the
+T053-T055 authority, snapshot, and replay contours stabilize.
 
 **Checkpoint**: Invalid or repeated wound work cannot leak authority, alter unrelated content, or leave partial state.
 

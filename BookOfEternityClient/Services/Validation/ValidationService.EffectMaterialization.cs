@@ -56,6 +56,8 @@ public partial class ValidationService
             await ValidateAcceptedTurnRawEffectMaterializationAsync(
                 issues,
                 null,
+                null,
+                null,
                 false,
                 validatedManifest: null,
                 writeLease);
@@ -98,6 +100,8 @@ public partial class ValidationService
     private async Task ValidateAcceptedTurnRawEffectMaterializationAsync(
         List<ValidationIssue> issues,
         ResourceOwnerCompositionResult? resourceOwners,
+        ResourceDefinitionCatalog? resourceDefinitions,
+        ResourceStateLedger? resourceState,
         bool suppressEffectExecutionForTerminalReceiptReplay,
         ValidationPendingTurnSnapshotManifest? validatedManifest,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -296,6 +300,9 @@ public partial class ValidationService
                 manifest,
                 acceptedRealm,
                 identityInput,
+                resourceOwners,
+                resourceDefinitions,
+                resourceState,
                 writeLease,
                 issues);
             if (rawWoundDraft is not null && preparedWound is null)
@@ -414,6 +421,9 @@ public partial class ValidationService
             manifest,
             acceptedRealm,
             input,
+            resourceOwners,
+            resourceDefinitions,
+            resourceState,
             writeLease,
             issues);
         if (rawWoundDraft is not null && prepared is null)

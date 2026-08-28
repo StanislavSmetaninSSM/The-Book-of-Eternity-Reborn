@@ -266,6 +266,9 @@ public partial class ValidationService
         ValidationPendingTurnSnapshotManifest manifest,
         string realm,
         EffectAcceptedTurnInput effectInput,
+        ResourceOwnerCompositionResult? resourceOwners,
+        ResourceDefinitionCatalog? resourceDefinitions,
+        ResourceStateLedger? resourceState,
         FileSystemManager.CanonicalWriteLease writeLease,
         List<ValidationIssue> issues)
     {
@@ -315,6 +318,25 @@ public partial class ValidationService
         if (!sourceBinding.Success)
             return null;
 
+        var resourceIssues = ValidateAcceptedWoundResourceBindings(
+            draft.ParsedCommands,
+            effectInput.TargetAuthority,
+            resourceOwners,
+            resourceDefinitions,
+            resourceState);
+        if (resourceIssues.Count != 0)
+        {
+            var commands = draft.ParsedCommands.Commands;
+            issues.AddRange(WoundResponseInputComposer.AttachRepairContexts(
+                binding,
+                commands.Select(static value => value.Opportunity).ToArray(),
+                commands.Select(static value => value.Decision).ToArray(),
+                commands.Count == 0 ? null : commands[0].FinalSceneText,
+                resourceIssues));
+            if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+                return null;
+        }
+
         var acceptedOwnerCarriers = WoundAcceptedOwnerCarrierAuthority.Compose(
             draft.PreTurnCarriers,
             effectInput.AcceptedCarrierBaselines ??
@@ -344,6 +366,207 @@ public partial class ValidationService
                 WoundAcceptedTurnData.CloneInput(input)!,
                 prepared.Plan)
             : null;
+    }
+
+    private static IReadOnlyList<ValidationIssue>
+        ValidateAcceptedWoundResourceBindings(
+            WoundResponseCommandParsingResult parsedCommands,
+            EffectTargetAuthority targetAuthority,
+            ResourceOwnerCompositionResult? resourceOwners,
+            ResourceDefinitionCatalog? resourceDefinitions,
+            ResourceStateLedger? resourceState)
+    {
+        ArgumentNullException.ThrowIfNull(parsedCommands);
+        ArgumentNullException.ThrowIfNull(targetAuthority);
+        if (resourceOwners?.Authority is null ||
+            resourceDefinitions is null ||
+            resourceState is null)
+        {
+            return Array.Empty<ValidationIssue>();
+        }
+
+        var issues = new List<ValidationIssue>();
+        var commands = parsedCommands.Commands;
+        for (var commandIndex = 0; commandIndex < commands.Count; commandIndex++)
+        {
+            var command = commands[commandIndex];
+            if (command.Decision.ValueKind != JsonValueKind.Object ||
+                !command.Decision.TryGetProperty("decision", out var decision) ||
+                decision.ValueKind != JsonValueKind.String ||
+                !string.Equals(
+                    decision.GetString(),
+                    "materialize",
+                    StringComparison.Ordinal) ||
+                !command.Decision.TryGetProperty("proposal", out var proposal) ||
+                proposal.ValueKind != JsonValueKind.Object ||
+                !proposal.TryGetProperty(
+                    "consequenceDefinitions",
+                    out var consequenceDefinitions) ||
+                consequenceDefinitions.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            var ownerResolved = TryResolveAcceptedWoundResourceOwner(
+                command.Opportunity,
+                targetAuthority,
+                out var resourceOwner);
+            var definitionIndex = 0;
+            foreach (var consequenceDefinition in
+                     consequenceDefinitions.EnumerateArray())
+            {
+                if (consequenceDefinition.ValueKind != JsonValueKind.Object ||
+                    !consequenceDefinition.TryGetProperty(
+                        "definition",
+                        out var effectDefinition) ||
+                    effectDefinition.ValueKind != JsonValueKind.Object ||
+                    !effectDefinition.TryGetProperty(
+                        "components",
+                        out var components) ||
+                    components.ValueKind != JsonValueKind.Array)
+                {
+                    definitionIndex++;
+                    continue;
+                }
+
+                var componentIndex = 0;
+                foreach (var component in components.EnumerateArray())
+                {
+                    if (TryReadPeriodicWoundResource(
+                            component,
+                            out var operation,
+                            out var resourceKey) &&
+                        (!ownerResolved ||
+                         !HasAcceptedWoundResourceBound(
+                             resourceOwner,
+                             resourceKey,
+                             operation,
+                             resourceOwners,
+                             resourceDefinitions,
+                             resourceState)))
+                    {
+                        issues.Add(WoundIssue(
+                            $"woundDecisions[{commandIndex}].proposal." +
+                            $"consequenceDefinitions[{definitionIndex}]." +
+                            $"definition.components[{componentIndex}].payload.resource",
+                            "wound_consequence_resource_bound_missing",
+                            "one exact active resource bound for the accepted wound owner",
+                            resourceKey));
+                    }
+                    componentIndex++;
+                }
+                definitionIndex++;
+            }
+        }
+        return issues;
+    }
+
+    private static bool TryResolveAcceptedWoundResourceOwner(
+        WoundOpportunityAuthority opportunity,
+        EffectTargetAuthority targetAuthority,
+        out ResourceOwnerKey owner)
+    {
+        owner = null!;
+        return WoundEffectCarrierAdapter.TryCreateTargetKey(
+                   opportunity.Owner,
+                   out var target) &&
+               targetAuthority.TryResolveAcceptedTarget(target, out var export) &&
+               export is not null &&
+               EffectAcceptedTurnPlanner.TryMapEffectTargetToResourceOwner(
+                   target,
+                   export,
+                   out owner);
+    }
+
+    private static bool TryReadPeriodicWoundResource(
+        JsonElement component,
+        out ResourceOperation operation,
+        out string resourceKey)
+    {
+        operation = default;
+        resourceKey = string.Empty;
+        if (component.ValueKind != JsonValueKind.Object ||
+            !component.TryGetProperty("profile", out var profile) ||
+            profile.ValueKind != JsonValueKind.String ||
+            !component.TryGetProperty("payload", out var payload) ||
+            payload.ValueKind != JsonValueKind.Object ||
+            !payload.TryGetProperty("resource", out var resource) ||
+            resource.ValueKind != JsonValueKind.String ||
+            !ResourceMaterializationContract.IsExactIdentifier(
+                resource.GetString()))
+        {
+            return false;
+        }
+
+        var profileKey = profile.GetString();
+        operation = profileKey switch
+        {
+            "periodic_damage" => ResourceOperation.Damage,
+            "periodic_restore" => ResourceOperation.Restore,
+            _ => default
+        };
+        if (profileKey is not ("periodic_damage" or "periodic_restore"))
+        {
+            return false;
+        }
+
+        resourceKey = resource.GetString()!;
+        return true;
+    }
+
+    private static bool HasAcceptedWoundResourceBound(
+        ResourceOwnerKey owner,
+        string resourceKey,
+        ResourceOperation operation,
+        ResourceOwnerCompositionResult resourceOwners,
+        ResourceDefinitionCatalog resourceDefinitions,
+        ResourceStateLedger resourceState)
+    {
+        if (!resourceDefinitions.TryResolveExact(
+                resourceKey,
+                out var definition) ||
+            definition is null ||
+            !definition.AllowedOwnerKinds.Contains(owner.OwnerKind) ||
+            !definition.AllowedOperations.Contains(operation) ||
+            resourceOwners.Authority is null ||
+            !resourceOwners.Authority.ResolveAcceptedCoordinate(
+                owner,
+                resourceKey).Success)
+        {
+            return false;
+        }
+
+        var coordinate = new ResourceCoordinate(
+            owner.Realm,
+            owner.OwnerKind,
+            owner.ResourceOwnerId,
+            resourceKey);
+        var capacityDrafts = resourceOwners.CapacityDrafts
+            .Where(value => value.Coordinate == coordinate)
+            .ToArray();
+        decimal maximum;
+        if (capacityDrafts.Length == 1)
+        {
+            maximum = capacityDrafts[0].AcceptedMaximum;
+        }
+        else if (capacityDrafts.Length == 0 &&
+                 resourceState.TryResolveExact(coordinate, out var state) &&
+                 state is not null &&
+                 state.State == ResourceLifecycleState.Active)
+        {
+            maximum = state.Maximum;
+        }
+        else
+        {
+            return false;
+        }
+
+        return maximum > 0m &&
+               definition.Quantum > 0m &&
+               ResourceMaterializationContract.IsQuantumAligned(
+                   maximum,
+                   0m,
+                   definition.Quantum);
     }
 
     private AcceptedTurnWoundPlanningHandoff? FinalizeAcceptedTurnWoundHandoff(

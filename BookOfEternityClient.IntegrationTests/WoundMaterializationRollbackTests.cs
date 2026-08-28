@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -47,6 +48,117 @@ public sealed partial class WoundMaterializationLifecycleTests
         }
     };
 
+    public static TheoryData<string, string, string> WoundResponseRepairContextCases => new()
+    {
+        {
+            "owner",
+            "proposal.owner",
+            "wound_response_unknown_field"
+        },
+        {
+            "severity",
+            "proposal.severity",
+            "wound_severity_above_opportunity"
+        },
+        {
+            "slot",
+            "proposal.consequenceDefinitions[0].root.slots",
+            "wound_consequence_slot_budget_exceeded"
+        },
+        {
+            "effect",
+            "proposal.consequenceDefinitions[0].definition.links",
+            "wound_materialization_effect_binding_invalid"
+        },
+        {
+            "treatment",
+            "proposal.treatment.routes[0].displayName",
+            "wound_materialization_missing_field"
+        },
+        {
+            "narration",
+            "response",
+            "wound_acquisition_narration_missing"
+        }
+    };
+
+    [Theory]
+    [MemberData(nameof(WoundResponseRepairContextCases))]
+    public async Task WoundMaterializationRollbackTests_RejectedResponseCarriesSafeRepairAuthority(
+        string category,
+        string issuePath,
+        string issueCode)
+    {
+        await using var context = await CreatePlayerContextAsync();
+        var authority = await CreateAuthorityAsync(context, maximumSeverityRank: 2);
+        var rejectedProposal = CreateRepairRoundtripProposal(category);
+        ApplyRejectedRepairMutation(category, rejectedProposal);
+        var rejectedResponse = Response(Decision("materialize", rejectedProposal));
+        if (string.Equals(category, "narration", StringComparison.Ordinal))
+        {
+            rejectedResponse.Response =
+                "Вы вовремя отступаете от обвала и продолжаете путь без происшествий.";
+        }
+
+        var rejected = WoundResponseInputComposer.Compose(
+            authority.Binding,
+            new[] { authority.Opportunity },
+            rejectedResponse.WoundDecisions,
+            rejectedResponse.Response,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+
+        Assert.False(rejected.Success);
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(rejected.Issues));
+        Assert.False(WoundRepairPacketBuilder.RequiresFailClosedRollback(
+            rejected.Issues));
+        Assert.Contains(packet.Issues, issue =>
+            string.Equals(issue.Code, issueCode, StringComparison.Ordinal) &&
+            string.Equals(issue.Path, issuePath, StringComparison.Ordinal));
+        Assert.True(packet.MatchesOpportunity(authority.Opportunity));
+        Assert.DoesNotContain(
+            authority.Opportunity.AuthorityFingerprint,
+            packet.ToJsonObject().ToJsonString(),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task WoundMaterializationRollbackTests_UnregisteredResourceCarriesCanonicalRepairAuthority()
+    {
+        await using var context = await CreatePlayerContextAsync();
+        var authority = await CreateAuthorityAsync(context, maximumSeverityRank: 2);
+        var rejectedProposal = CreateRepairRoundtripProposal("resource");
+        ApplyRejectedRepairMutation("resource", rejectedProposal);
+        var rejectedResponse = Response(Decision("materialize", rejectedProposal));
+        var composed = WoundResponseInputComposer.Compose(
+            authority.Binding,
+            new[] { authority.Opportunity },
+            rejectedResponse.WoundDecisions,
+            rejectedResponse.Response,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        Assert.True(composed.Success, Describe(composed.Issues));
+
+        await context.WriteExactJsonAsync(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            Assert.IsType<JsonObject>(composed.CommandRoot).ToJsonString());
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        var issue = Assert.Single(issues, static issue => string.Equals(
+            issue.Code,
+            "wound_consequence_resource_bound_missing",
+            StringComparison.Ordinal));
+        Assert.Equal(
+            "woundDecisions[0].proposal.consequenceDefinitions[0].definition.components[0].payload.resource",
+            issue.FilePath);
+        Assert.NotNull(issue.WoundRepairContext);
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(issues));
+        Assert.True(packet.MatchesOpportunity(authority.Opportunity));
+        Assert.DoesNotContain(
+            authority.Opportunity.AuthorityFingerprint,
+            packet.ToJsonObject().ToJsonString(),
+            StringComparison.Ordinal);
+    }
+
     [Theory]
     [MemberData(nameof(WoundRepairRoundtripCases))]
     public async Task WoundMaterializationRollbackTests_CorrectedRepairRoundtripPublishesOneAtomicResult(
@@ -72,43 +184,27 @@ public sealed partial class WoundMaterializationLifecycleTests
             rejectedResponse.WoundDecisions,
             rejectedResponse.Response,
             Array.Empty<WoundOpportunityDecisionReceipt>());
-        Assert.False(rejected.Success);
-        Assert.Null(rejected.CommandRoot);
+        IReadOnlyList<ValidationIssue> rejectedIssues;
+        if (string.Equals(category, "resource", StringComparison.Ordinal))
+        {
+            Assert.True(rejected.Success, Describe(rejected.Issues));
+            await context.WriteExactJsonAsync(
+                AcceptedMechanicsPlan.WoundCommandPath,
+                Assert.IsType<JsonObject>(rejected.CommandRoot).ToJsonString());
+            rejectedIssues = await context.Validator
+                .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        }
+        else
+        {
+            Assert.False(rejected.Success);
+            Assert.Null(rejected.CommandRoot);
+            rejectedIssues = rejected.Issues;
+        }
 
-        var semanticFingerprint = Fingerprint("repair-" + category);
-        var issue = new ValidationIssue(
-            issuePath,
-            IssueSeverity.Error,
-            "The rejected wound response violates one bounded GM-owned field.",
-            code: issueCode,
-            section: "wound_materialization",
-            expected: "validator-internal authority evidence",
-            actual: DescribeRejectedRepairValue(category),
-            repairHint: "validator-internal repair implementation detail");
-        var packet = Assert.Single(WoundRepairPacketBuilder.Build(
-            new WoundRepairBuildRequest(
-                authority.Binding.SessionId,
-                authority.Binding.RequestId,
-                authority.Binding.SnapshotToken,
-                new[]
-                {
-                    new WoundRepairCandidateInput(
-                        "repair_wound",
-                        "candidate_repair_" + category,
-                        semanticFingerprint,
-                        authority.Opportunity.PublicRef,
-                        new JsonObject
-                        {
-                            ["event"] = "острый край во время обвала",
-                            ["target"] = "игрок",
-                            ["realm"] = "Смертный мир"
-                        },
-                        new[] { "none", "materialize" },
-                        "I",
-                        "II",
-                        Decision("materialize", rejectedProposal),
-                        new[] { issue })
-                })));
+        Assert.Contains(rejectedIssues, issue =>
+            string.Equals(issue.Code, issueCode, StringComparison.Ordinal) &&
+            string.Equals(issue.FilePath, issuePath, StringComparison.Ordinal));
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(rejectedIssues));
 
         var repairAuthority = new WoundRepairPacketAuthority(
             authority.Binding.SessionId,
@@ -134,7 +230,11 @@ public sealed partial class WoundMaterializationLifecycleTests
             JsonNode.DeepEquals(validProposal, correctedProposal),
             $"The '{category}' repair changed content outside the rejected semantic leaf.");
 
-        var correctedResponse = Response(Decision("materialize", correctedProposal));
+        var correctedDecision = Decision("materialize", correctedProposal);
+        var correctedResponse = Response(correctedDecision);
+        Assert.True(takenPacket.MatchesCorrectedDecision(
+            correctedDecision,
+            correctedResponse.Response));
         var corrected = WoundResponseInputComposer.Compose(
             authority.Binding,
             new[] { authority.Opportunity },
@@ -167,7 +267,7 @@ public sealed partial class WoundMaterializationLifecycleTests
             AcceptedMechanicsPlan.WoundCommandPath));
     }
 
-    private static JsonObject CreateRepairRoundtripProposal(string category)
+    internal static JsonObject CreateRepairRoundtripProposal(string category)
     {
         var proposal = CreatePhysicalProposal(
             severity: "II",
@@ -301,21 +401,116 @@ public sealed partial class WoundMaterializationLifecycleTests
         }
     }
 
-    private static string DescribeRejectedRepairValue(string category) => category switch
-    {
-        "owner" => "forbidden owner field",
-        "severity" => "III",
-        "slot" => "3",
-        "effect" => "missing reciprocal link",
-        "treatment" => "missing",
-        "resource" => "unregistered resource",
-        "narration" => "missing",
-        _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
-    };
 }
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    [Fact]
+    public async Task WoundMaterializationRollbackTests_ExactRetryPreservesUnrelatedWoundCommands()
+    {
+        var (binding, opportunities) = CreateWoundRepairRetryAuthorities();
+        var firstProposal = WoundMaterializationLifecycleTests
+            .CreateRepairRoundtripProposal("severity");
+        var secondProposal = WoundMaterializationLifecycleTests
+            .CreateRepairRoundtripProposal("severity");
+        secondProposal["display"]!["name"] = "Ушиб правого плеча";
+        secondProposal["display"]!["acquisitionNarration"] =
+            "Тяжёлый камень ударяет вас в правое плечо.";
+
+        var firstDecision = CreateWoundRepairRetryDecision(
+            opportunities[0].PublicRef,
+            "local_wound_retry_first",
+            firstProposal);
+        var secondDecision = CreateWoundRepairRetryDecision(
+            opportunities[1].PublicRef,
+            "local_wound_retry_second",
+            secondProposal);
+        var finalSceneText = string.Join(
+            ' ',
+            firstProposal["display"]!["acquisitionNarration"]!.GetValue<string>(),
+            secondProposal["display"]!["acquisitionNarration"]!.GetValue<string>());
+        var valid = WoundResponseInputComposer.Compose(
+            binding,
+            opportunities,
+            new[] { ToWoundRepairRetryElement(firstDecision),
+                ToWoundRepairRetryElement(secondDecision) },
+            finalSceneText,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        Assert.True(valid.Success, DescribeWoundRepairRetryIssues(valid.Issues));
+
+        var rejectedFirstDecision = firstDecision.DeepClone().AsObject();
+        rejectedFirstDecision["proposal"]!["severity"] = "III";
+        var rejected = WoundResponseInputComposer.Compose(
+            binding,
+            opportunities,
+            new[] { ToWoundRepairRetryElement(rejectedFirstDecision),
+                ToWoundRepairRetryElement(secondDecision) },
+            finalSceneText,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        Assert.False(rejected.Success);
+        var packets = WoundRepairPacketBuilder.Build(rejected.Issues);
+        Assert.Single(packets);
+
+        var rejectedRoot = Assert.IsType<JsonObject>(valid.CommandRoot);
+        rejectedRoot["commands"]![0]!["decision"] =
+            rejectedFirstDecision.DeepClone();
+        await _fs.WriteFileAtomicAsync(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            rejectedRoot.ToJsonString());
+        var engine = CreateGameEngine();
+        var obligations = await InvokePrivateTaskResultAsync(
+            engine,
+            "CaptureWoundRepairRetryObligationsAsync",
+            packets);
+
+        var correctedRoot = rejectedRoot.DeepClone().AsObject();
+        correctedRoot["commands"]![0]!["decision"] = firstDecision.DeepClone();
+        await _fs.WriteFileAtomicAsync(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            correctedRoot.ToJsonString());
+        Assert.True(await InvokePrivateAsync<bool>(
+            engine,
+            "HasExactWoundRepairResubmissionAsync",
+            obligations));
+
+        var unrelatedMutation = correctedRoot.DeepClone().AsObject();
+        unrelatedMutation["commands"]![1]!["decision"]!["proposal"]!
+            ["display"]!["name"] = "Подменённое соседнее ранение";
+        await _fs.WriteFileAtomicAsync(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            unrelatedMutation.ToJsonString());
+        Assert.False(await InvokePrivateAsync<bool>(
+            engine,
+            "HasExactWoundRepairResubmissionAsync",
+            obligations));
+    }
+
+    [Fact]
+    public void WoundMaterializationRollbackTests_MissingRetryAuthorityForActionablePacketRequiresFailClosed()
+    {
+        var repairIssue = CreateActionableWoundRepairIssue();
+        Assert.Single(WoundRepairPacketBuilder.Build(new[] { repairIssue }));
+        Assert.False(GameEngine.RequiresWoundRepairFailClosed(
+            new[] { repairIssue },
+            rollbackAvailable: true));
+        Assert.True(GameEngine.RequiresWoundRepairFailClosed(
+            new[] { repairIssue },
+            rollbackAvailable: false));
+
+        var retryAuthorityIssue = new ValidationIssue(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            IssueSeverity.Error,
+            "Wound repair could not bind the rejected proposal to one exact retry authority.",
+            code: "wound_repair_retry_authority_unavailable",
+            actor: "Client",
+            section: "wound_materialization",
+            expected: "one strict rejected wound command",
+            actual: "missing");
+        Assert.True(GameEngine.RequiresWoundRepairFailClosed(
+            new[] { repairIssue, retryAuthorityIssue },
+            rollbackAvailable: true));
+    }
+
     private static readonly string[] WoundRollbackPublicationPaths =
     [
         WoundCarrierCatalog.PlayerPath,
@@ -419,6 +614,152 @@ public sealed partial class GameEngineTurnLifecycleTests
     private static string SanitizeWoundFailurePath(string path) =>
         new(path.Select(static character =>
             char.IsLetterOrDigit(character) ? character : '_').ToArray());
+
+    private static (WoundAcceptedTurnBinding Binding,
+        IReadOnlyList<WoundOpportunityAuthority> Opportunities)
+        CreateWoundRepairRetryAuthorities()
+    {
+        var owner = new WoundOwnerCoordinate(
+            "mortal_world",
+            "player",
+            "player_current",
+            WoundCarrierCatalog.PlayerPath);
+        var evidence = new[]
+        {
+            new WoundOpportunityEventEvidence(
+                "formal",
+                "accepted_turn",
+                "turn_42_first_harm",
+                "harmful",
+                2,
+                "Острый край рассекает левое предплечье."),
+            new WoundOpportunityEventEvidence(
+                "formal",
+                "accepted_turn",
+                "turn_42_second_harm",
+                "harmful",
+                2,
+                "Тяжёлый камень ударяет правое плечо.")
+        };
+        var events = evidence.Select((value, index) =>
+            new WoundAcceptedEventAuthority(
+                $"event_wound_retry_{index}",
+                value.AuthorityKind,
+                value.AuthorityId,
+                WoundOpportunityEventEvidenceFingerprint.Compute(value)))
+            .ToArray();
+        var binding = new WoundAcceptedTurnBinding(
+            "session_wound_retry_exact",
+            "request_wound_retry_exact",
+            "snapshot_wound_retry_exact",
+            "mortal_world",
+            42,
+            events,
+            WoundAcceptedEventSetFingerprint.Compute(events));
+        var opportunities = evidence.Select((value, index) =>
+        {
+            var result = WoundOpportunityAuthority.Compose(
+                new WoundOpportunityBuildRequest(
+                    binding,
+                    $"opportunity_id_wound_retry_{index}",
+                    $"opportunity_wound_retry_{index}",
+                    events[index].EventRef,
+                    owner,
+                    "physical",
+                    "mortal_formal_injury_v1",
+                    "combat_action",
+                    $"combat_action_wound_retry_{index}",
+                    "active",
+                    value,
+                    HardMaximumSeverityRank: 4,
+                    GuaranteedTrigger: null,
+                    new WoundOpportunitySafeContext(
+                        "вы",
+                        index == 0
+                            ? "острый край"
+                            : "тяжёлый камень",
+                        new[] { "anatomical", "systemic", "other" })));
+            Assert.True(
+                result.Success,
+                DescribeWoundRepairRetryIssues(result.Issues));
+            return Assert.IsType<WoundOpportunityAuthority>(result.Opportunity);
+        }).ToArray();
+        return (binding, opportunities);
+    }
+
+    private static JsonObject CreateWoundRepairRetryDecision(
+        string opportunityRef,
+        string woundRef,
+        JsonObject proposal) =>
+        new()
+        {
+            ["opportunityRef"] = opportunityRef,
+            ["decision"] = "materialize",
+            ["woundRef"] = woundRef,
+            ["proposal"] = proposal.DeepClone()
+        };
+
+    private static JsonElement ToWoundRepairRetryElement(JsonNode value) =>
+        JsonSerializer.SerializeToElement(value);
+
+    private static string DescribeWoundRepairRetryIssues(
+        IEnumerable<ValidationIssue> issues) =>
+        string.Join(Environment.NewLine, issues.Select(static issue =>
+            $"{issue} code={issue.Code}; expected={issue.Expected}; actual={issue.Actual}"));
+
+    private static ValidationIssue CreateActionableWoundRepairIssue()
+    {
+        var issue = new ValidationIssue(
+            "woundDecisions[0].proposal.severity",
+            IssueSeverity.Error,
+            "Severity exceeds the sealed opportunity.",
+            code: "wound_severity_above_opportunity",
+            section: "wound_materialization",
+            expected: "validator-internal range",
+            actual: "III");
+        issue.WoundRepairContext = new WoundRepairContext(
+            "session_wound_retry_guard",
+            "request_wound_retry_guard",
+            "snapshot_wound_retry_guard",
+            "construct_wound",
+            "candidate_wound_retry_guard",
+            WoundAcceptedTurnFingerprintWriter.Compute(
+                new[] { "candidate-wound-retry-guard" }),
+            "opportunity_wound_retry_guard",
+            new JsonObject
+            {
+                ["event"] = "осколок после обвала",
+                ["target"] = "игрок",
+                ["realm"] = "Смертный мир"
+            },
+            new[] { "none", "materialize" },
+            "I",
+            "II",
+            new JsonObject
+            {
+                ["opportunityRef"] = "opportunity_wound_retry_guard",
+                ["decision"] = "materialize",
+                ["woundRef"] = "local_wound_retry_guard",
+                ["proposal"] = new JsonObject
+                {
+                    ["classification"] = new JsonObject(),
+                    ["display"] = new JsonObject
+                    {
+                        ["name"] = "Рваная рана",
+                        ["acquisitionNarration"] =
+                            "Осколок рассекает предплечье."
+                    },
+                    ["severity"] = "III",
+                    ["complications"] = new JsonArray(),
+                    ["consequenceDefinitions"] = new JsonArray(),
+                    ["treatment"] = new JsonObject(),
+                    ["recovery"] = new JsonObject()
+                }
+            },
+            WoundAcceptedTurnFingerprintWriter.Compute(
+                new[] { "opportunity-wound-retry-guard" }));
+        return issue;
+    }
 
     private sealed class WoundRollbackFailureProbe
     {

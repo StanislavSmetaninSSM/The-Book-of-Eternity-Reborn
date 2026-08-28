@@ -122,7 +122,14 @@ internal static partial class WoundResponseInputComposer
 
         ValidateDecisionBijection(opportunities, parsed, issues);
         if (issues.Count != 0)
-            return Failure(issues);
+        {
+            return Failure(AttachRepairContexts(
+                binding,
+                opportunities,
+                rawDecisions,
+                finalSceneText,
+                issues));
+        }
 
         var opportunityByRef = opportunities.ToDictionary(
             static value => value.PublicRef,
@@ -139,7 +146,10 @@ internal static partial class WoundResponseInputComposer
                     response.SeverityRank,
                     response.LocalWoundRef),
                 priorReceipts);
-            issues.AddRange(evaluated.Issues);
+            foreach (var issue in evaluated.Issues)
+            {
+                issues.Add(CloneIssueForDecision(issue, response.Index));
+            }
             if (!evaluated.Success || evaluated.Decision is null)
                 continue;
 
@@ -191,7 +201,14 @@ internal static partial class WoundResponseInputComposer
         }
 
         if (issues.Count != 0 || accepted.Count != parsed.Count)
-            return Failure(issues);
+        {
+            return Failure(AttachRepairContexts(
+                binding,
+                opportunities,
+                rawDecisions,
+                finalSceneText,
+                issues));
+        }
 
         var commands = new JsonArray();
         foreach (var value in accepted.Where(static value => !value.AlreadyConsumed))
@@ -407,6 +424,412 @@ internal static partial class WoundResponseInputComposer
                     "incomplete composition")
             }
             : issues);
+
+    internal static IReadOnlyList<ValidationIssue> AttachRepairContexts(
+        WoundAcceptedTurnBinding binding,
+        IReadOnlyList<WoundOpportunityAuthority> opportunities,
+        IReadOnlyList<JsonElement> rawDecisions,
+        string? finalSceneText,
+        IReadOnlyList<ValidationIssue> issues)
+    {
+        var result = issues.Select(WoundAcceptedTurnData.CloneIssue).ToList();
+        var additions = new List<ValidationIssue>();
+        for (var issueIndex = 0; issueIndex < result.Count; issueIndex++)
+        {
+            var issue = result[issueIndex];
+            var replacedSourceIssue = false;
+            foreach (var decisionIndex in ResolveRepairDecisionIndexes(
+                         issue,
+                         rawDecisions))
+            {
+                if (!TryBuildRepairIssue(
+                        binding,
+                        opportunities,
+                        rawDecisions,
+                        finalSceneText,
+                        issue,
+                        decisionIndex,
+                        out var projected))
+                {
+                    continue;
+                }
+
+                if (WoundRepairPacketBuilder.IsRepairableIssue(issue) &&
+                    !replacedSourceIssue)
+                {
+                    result[issueIndex] = projected;
+                    replacedSourceIssue = true;
+                }
+                else
+                {
+                    additions.Add(projected);
+                }
+            }
+        }
+
+        foreach (var addition in additions)
+        {
+            if (!result.Any(issue =>
+                    string.Equals(issue.Code, addition.Code, StringComparison.Ordinal) &&
+                    string.Equals(
+                        issue.FilePath,
+                        addition.FilePath,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        issue.WoundRepairContext?.CandidateRef,
+                        addition.WoundRepairContext?.CandidateRef,
+                        StringComparison.Ordinal)))
+            {
+                result.Add(addition);
+            }
+        }
+        return result;
+    }
+
+    private static IReadOnlyList<int> ResolveRepairDecisionIndexes(
+        ValidationIssue issue,
+        IReadOnlyList<JsonElement> rawDecisions)
+    {
+        if (TryReadDecisionIndex(issue.FilePath, out var decisionIndex))
+            return new[] { decisionIndex };
+        if (issue.Code is not
+                "wound_acquisition_narration_missing" and
+                not "wound_acquisition_narration_contradiction")
+        {
+            return Array.Empty<int>();
+        }
+
+        return rawDecisions
+            .Select((decision, index) => (decision, index))
+            .Where(static value => IsMaterializeDecision(value.decision))
+            .Select(static value => value.index)
+            .ToArray();
+    }
+
+    private static bool TryBuildRepairIssue(
+        WoundAcceptedTurnBinding binding,
+        IReadOnlyList<WoundOpportunityAuthority> opportunities,
+        IReadOnlyList<JsonElement> rawDecisions,
+        string? finalSceneText,
+        ValidationIssue source,
+        int decisionIndex,
+        out ValidationIssue projected)
+    {
+        projected = null!;
+        if (decisionIndex < 0 ||
+            decisionIndex >= rawDecisions.Count ||
+            rawDecisions[decisionIndex].ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        JsonObject rejectedDecision;
+        try
+        {
+            rejectedDecision = JsonNode.Parse(
+                rawDecisions[decisionIndex].GetRawText())?.AsObject() ??
+                new JsonObject();
+        }
+        catch (Exception exception) when (
+            exception is JsonException or InvalidOperationException)
+        {
+            return false;
+        }
+
+        if (!TryReadRepairString(
+                rejectedDecision,
+                "opportunityRef",
+                out var opportunityRef) ||
+            !TryReadRepairString(rejectedDecision, "decision", out var decision) ||
+            !string.Equals(decision, "materialize", StringComparison.Ordinal) ||
+            !TryReadRepairString(rejectedDecision, "woundRef", out _) ||
+            rejectedDecision["proposal"] is not JsonObject proposal)
+        {
+            return false;
+        }
+
+        var matchingOpportunities = opportunities.Where(value =>
+            string.Equals(value.PublicRef, opportunityRef, StringComparison.Ordinal))
+            .ToArray();
+        if (matchingOpportunities.Length != 1)
+            return false;
+        var opportunity = matchingOpportunities[0];
+        if (!TryProjectRepairCoordinate(
+                source,
+                decisionIndex,
+                proposal,
+                out var projectedPath,
+                out var projectedCode))
+        {
+            return false;
+        }
+
+        projected = new ValidationIssue(
+            projectedPath,
+            source.Severity,
+            source.Message,
+            projectedCode,
+            source.Actor,
+            "wound_materialization",
+            source.Expected,
+            source.Actual,
+            source.RepairHint,
+            source.Category,
+            source.RepairTargetFiles.ToArray())
+        {
+            WoundRepairContext = new WoundRepairContext(
+                binding.SessionId,
+                binding.RequestId,
+                binding.SnapshotToken,
+                opportunity.WorseningTarget is null
+                    ? "construct_wound"
+                    : "repair_wound",
+                CreateLocalIdentifier(
+                    "candidate_wound_repair",
+                    binding.SessionId,
+                    binding.RequestId,
+                    binding.SnapshotToken,
+                    opportunity.PublicRef,
+                    decisionIndex.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture)),
+                WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+                {
+                    "book_of_eternity.wound.repair_candidate",
+                    "1",
+                    binding.SessionId,
+                    binding.RequestId,
+                    binding.SnapshotToken,
+                    opportunity.AuthorityFingerprint,
+                    rawDecisions[decisionIndex].GetRawText(),
+                    finalSceneText
+                }),
+                opportunity.PublicRef,
+                new JsonObject
+                {
+                    ["event"] = opportunity.SafeContext.Cause,
+                    ["target"] = opportunity.SafeContext.Target,
+                    ["realm"] = ReadableRealm(binding.Realm)
+                },
+                opportunity.GuaranteedTrigger is null
+                    ? new[] { "none", "materialize" }
+                    : new[] { "materialize" },
+                Roman(opportunity.MinimumSeverityRank ?? 1),
+                Roman(opportunity.MaximumSeverityRank),
+                rejectedDecision,
+                opportunity.AuthorityFingerprint)
+        };
+        return WoundRepairPacketBuilder.IsRepairableIssue(projected);
+    }
+
+    private static bool TryProjectRepairCoordinate(
+        ValidationIssue issue,
+        int decisionIndex,
+        JsonObject proposal,
+        out string path,
+        out string code)
+    {
+        var prefix = $"woundDecisions[{decisionIndex}].proposal.";
+        path = issue.FilePath;
+        code = issue.Code ?? string.Empty;
+
+        if (code == "wound_severity_above_opportunity")
+        {
+            path = prefix + "severity";
+            return true;
+        }
+        if (code is
+                "wound_acquisition_narration_missing" or
+                "wound_acquisition_narration_contradiction")
+        {
+            path = "output/narrative_response.json.response";
+            return true;
+        }
+        if (code == "wound_response_unknown_field" &&
+            string.Equals(issue.FilePath, prefix + "owner", StringComparison.Ordinal))
+        {
+            return true;
+        }
+        if (code == "wound_response_unknown_field" &&
+            issue.FilePath.StartsWith(prefix, StringComparison.Ordinal))
+        {
+            code = "wound_materialization_invalid_field";
+            return true;
+        }
+        if (code is
+                "wound_consequence_slot_budget_exceeded" or
+                "wound_materialization_consequence_slot_invalid")
+        {
+            return TryFindOverBudgetSlotPath(proposal, prefix, out path) &&
+                   SetCode("wound_consequence_slot_budget_exceeded", ref code);
+        }
+        if ((code == "wound_materialization_effect_binding_invalid" ||
+             code == "wound_response_client_authority_forbidden") &&
+            TryFindEffectLinkPath(proposal, prefix, issue.FilePath, out path))
+        {
+            code = "wound_materialization_effect_binding_invalid";
+            return true;
+        }
+        if (code == "wound_materialization_missing_field" &&
+            issue.FilePath.StartsWith(prefix + "treatment.routes[", StringComparison.Ordinal))
+        {
+            return true;
+        }
+        if (code == "wound_consequence_resource_bound_missing" &&
+            issue.FilePath.StartsWith(prefix, StringComparison.Ordinal) &&
+            issue.FilePath.EndsWith(".payload.resource", StringComparison.Ordinal))
+        {
+            return true;
+        }
+        if (code == "wound_materialization_invalid_field" &&
+            issue.FilePath.StartsWith(prefix, StringComparison.Ordinal))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private static bool TryFindOverBudgetSlotPath(
+        JsonObject proposal,
+        string prefix,
+        out string path)
+    {
+        path = string.Empty;
+        if (proposal["consequenceDefinitions"] is not JsonArray definitions)
+            return false;
+        for (var index = 0; index < definitions.Count; index++)
+        {
+            if (definitions[index]?["root"]?["slots"] is JsonArray slots &&
+                slots.Count > 2)
+            {
+                path = $"{prefix}consequenceDefinitions[{index}].root.slots";
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static bool TryFindEffectLinkPath(
+        JsonObject proposal,
+        string prefix,
+        string issuePath,
+        out string path)
+    {
+        if (issuePath.StartsWith(prefix, StringComparison.Ordinal) &&
+            issuePath.EndsWith(".definition.links", StringComparison.Ordinal))
+        {
+            path = issuePath;
+            return true;
+        }
+
+        if (proposal["consequenceDefinitions"] is JsonArray definitions)
+        {
+            for (var index = 0; index < definitions.Count; index++)
+            {
+                if (definitions[index]?["definition"]?["links"] is JsonArray links &&
+                    links.Count != 0)
+                {
+                    path = $"{prefix}consequenceDefinitions[{index}].definition.links";
+                    return true;
+                }
+            }
+        }
+        path = string.Empty;
+        return false;
+    }
+
+    private static bool TryReadDecisionIndex(string path, out int index)
+    {
+        index = -1;
+        const string prefix = "woundDecisions[";
+        if (!path.StartsWith(prefix, StringComparison.Ordinal))
+            return false;
+        var close = path.IndexOf(']', prefix.Length);
+        if (close < 0)
+            return false;
+        var token = path[prefix.Length..close];
+        return int.TryParse(
+                   token,
+                   System.Globalization.NumberStyles.None,
+                   System.Globalization.CultureInfo.InvariantCulture,
+                   out index) &&
+               index >= 0 &&
+               string.Equals(
+                   token,
+                   index.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                   StringComparison.Ordinal);
+    }
+
+    private static bool IsMaterializeDecision(JsonElement decision)
+    {
+        if (decision.ValueKind != JsonValueKind.Object)
+            return false;
+        var values = decision.EnumerateObject()
+            .Where(static property => string.Equals(
+                property.Name,
+                "decision",
+                StringComparison.Ordinal))
+            .ToArray();
+        return values.Length == 1 &&
+               values[0].Value.ValueKind == JsonValueKind.String &&
+               string.Equals(
+                   values[0].Value.GetString(),
+                   "materialize",
+                   StringComparison.Ordinal);
+    }
+
+    private static bool TryReadRepairString(
+        JsonObject source,
+        string property,
+        out string value)
+    {
+        value = source[property] is JsonValue scalar &&
+                scalar.TryGetValue<string>(out var text)
+            ? text
+            : string.Empty;
+        return ResourceMaterializationContract.IsExactIdentifier(value);
+    }
+
+    private static ValidationIssue CloneIssueForDecision(
+        ValidationIssue issue,
+        int decisionIndex)
+    {
+        var path = issue.Code == "wound_severity_above_opportunity"
+            ? $"woundDecisions[{decisionIndex}].proposal.severity"
+            : issue.FilePath;
+        return new ValidationIssue(
+            path,
+            issue.Severity,
+            issue.Message,
+            issue.Code,
+            issue.Actor,
+            issue.Section,
+            issue.Expected,
+            issue.Actual,
+            issue.RepairHint,
+            issue.Category,
+            issue.RepairTargetFiles.ToArray())
+        {
+            FactionRepairClassification = issue.FactionRepairClassification,
+            MortalItemRepairContext = issue.MortalItemRepairContext,
+            MortalLocationRepairContext = issue.MortalLocationRepairContext,
+            EffectRepairContext = issue.EffectRepairContext,
+            WoundRepairContext = issue.WoundRepairContext?.Clone()
+        };
+    }
+
+    private static string ReadableRealm(string realm) => realm switch
+    {
+        "mortal_world" => "Смертный мир",
+        "chaos_sea" => "Море Хаоса",
+        "shining_abode" => "Сияющая обитель",
+        _ => realm
+    };
+
+    private static bool SetCode(string value, ref string code)
+    {
+        code = value;
+        return true;
+    }
 
     private static ValidationIssue NewIssue(
         string path,

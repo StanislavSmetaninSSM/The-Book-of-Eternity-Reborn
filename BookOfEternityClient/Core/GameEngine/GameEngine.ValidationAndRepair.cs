@@ -290,6 +290,9 @@ public partial class GameEngine
         IReadOnlyList<ResourceRepairRetryObligation>? resourceRetryObligations = null;
         List<ValidationIssue>? resourceRetryErrors = null;
         IReadOnlyList<RepairResubmissionPathObligation>? resourceRequiredResubmissionPaths = null;
+        IReadOnlyList<WoundRepairRetryObligation>? woundRepairRetryObligations = null;
+        List<ValidationIssue>? woundRepairRetryErrors = null;
+        IReadOnlyList<RepairResubmissionPathObligation>? woundRequiredResubmissionPaths = null;
         byte[]? pendingResolutionRepairCheckpoint = null;
         using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
 
@@ -354,6 +357,27 @@ public partial class GameEngine
                             string.Equals(issue.Actor, retryError.Actor, StringComparison.Ordinal)))
                     {
                         rawIssues.Add(retryError);
+                    }
+                }
+            }
+            if (woundRepairRetryObligations is { Count: > 0 } &&
+                (!await HasExactWoundRepairResubmissionAsync(
+                     woundRepairRetryObligations) ||
+                 rollbackSnapshot == null ||
+                 woundRequiredResubmissionPaths == null ||
+                 !await AreRollbackTrackedPathsResubmittedForRepairSessionAsync(
+                     rollbackSnapshot,
+                     woundRequiredResubmissionPaths,
+                     lastCriticalRepairSessionGeneration!)))
+            {
+                foreach (var retryError in woundRepairRetryErrors!)
+                {
+                    if (!rawIssues.Any(issue =>
+                            string.Equals(issue.Code, retryError.Code, StringComparison.Ordinal) &&
+                            string.Equals(issue.FilePath, retryError.FilePath, StringComparison.Ordinal) &&
+                            string.Equals(issue.Actor, retryError.Actor, StringComparison.Ordinal)))
+                    {
+                        rawIssues.Add(WoundAcceptedTurnData.CloneIssue(retryError));
                     }
                 }
             }
@@ -446,6 +470,33 @@ public partial class GameEngine
                         }
                     }
                 }
+                var actionableWoundPackets = WoundRepairPacketBuilder.Build(rawErrors);
+                if (actionableWoundPackets.Count > 0 &&
+                    woundRepairRetryObligations == null)
+                {
+                    var capturedWoundObligations =
+                        await CaptureWoundRepairRetryObligationsAsync(
+                            actionableWoundPackets);
+                    if (capturedWoundObligations.Count !=
+                        actionableWoundPackets.Count)
+                    {
+                        rawErrors.Add(BuildWoundRepairRetryAuthorityIssue());
+                    }
+                    else
+                    {
+                        woundRepairRetryObligations = capturedWoundObligations;
+                        woundRepairRetryErrors = rawErrors
+                            .Select(WoundAcceptedTurnData.CloneIssue)
+                            .ToList();
+                        if (HasRollbackCapability(rollbackSnapshot))
+                        {
+                            woundRequiredResubmissionPaths =
+                                await CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
+                                    rollbackSnapshot!,
+                                    lastCriticalRepairSessionGeneration);
+                        }
+                    }
+                }
                 if (!await WaitForContractRepairAsync(
                         source,
                         rawErrors,
@@ -458,6 +509,8 @@ public partial class GameEngine
                         effectRequiredResubmissionPaths,
                         resourceRetryObligations,
                         resourceRequiredResubmissionPaths,
+                        woundRepairRetryObligations,
+                        woundRequiredResubmissionPaths,
                         pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
                     return false;
                 lastCriticalRepairStartedAtUtc = rawRepairStartedAtUtc;
@@ -548,12 +601,41 @@ public partial class GameEngine
                 lastCriticalRepairAttempt = criticalRepairAttempt;
                 lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
                 var postSealRepairStartedAtUtc = DateTime.UtcNow;
+                var actionableWoundPackets = WoundRepairPacketBuilder.Build(postSealErrors);
+                if (actionableWoundPackets.Count > 0 &&
+                    woundRepairRetryObligations == null)
+                {
+                    var capturedWoundObligations =
+                        await CaptureWoundRepairRetryObligationsAsync(
+                            actionableWoundPackets);
+                    if (capturedWoundObligations.Count !=
+                        actionableWoundPackets.Count)
+                    {
+                        postSealErrors.Add(BuildWoundRepairRetryAuthorityIssue());
+                    }
+                    else
+                    {
+                        woundRepairRetryObligations = capturedWoundObligations;
+                        woundRepairRetryErrors = postSealErrors
+                            .Select(WoundAcceptedTurnData.CloneIssue)
+                            .ToList();
+                        if (HasRollbackCapability(rollbackSnapshot))
+                        {
+                            woundRequiredResubmissionPaths =
+                                await CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
+                                    rollbackSnapshot!,
+                                    lastCriticalRepairSessionGeneration);
+                        }
+                    }
+                }
                 if (!await WaitForContractRepairAsync(
                         source,
                         postSealErrors,
                         criticalRepairAttempt,
                         rollbackSnapshot,
                         lastCriticalRepairSessionGeneration,
+                        woundRepairRetryObligations: woundRepairRetryObligations,
+                        woundRequiredResubmissionPaths: woundRequiredResubmissionPaths,
                         pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
                 {
                     return false;
@@ -984,6 +1066,176 @@ public partial class GameEngine
             return null;
         }
     }
+
+    private async Task<IReadOnlyList<WoundRepairRetryObligation>>
+        CaptureWoundRepairRetryObligationsAsync(
+            IReadOnlyList<WoundRepairPacket> packets)
+    {
+        var (root, parsed) = await ReadStrictWoundRepairCommandAsync();
+        if (root is null || parsed is null || !parsed.Success)
+            return Array.Empty<WoundRepairRetryObligation>();
+
+        var result = new List<WoundRepairRetryObligation>(packets.Count);
+        foreach (var packet in packets)
+        {
+            var matchingIndexes = parsed.Commands
+                .Select((command, index) => (command, index))
+                .Where(value =>
+                    packet.MatchesOpportunity(value.command.Opportunity) &&
+                    TryReadWoundRepairDecision(
+                        value.command.Decision,
+                        out var decision) &&
+                    packet.MatchesRejectedDecision(decision))
+                .Select(static value => value.index)
+                .ToArray();
+            if (matchingIndexes.Length != 1 ||
+                result.Any(obligation =>
+                    obligation.CommandOrdinal == matchingIndexes[0]))
+            {
+                return Array.Empty<WoundRepairRetryObligation>();
+            }
+            result.Add(new WoundRepairRetryObligation(
+                matchingIndexes[0],
+                packet,
+                root.DeepClone().AsObject()));
+        }
+        return result;
+    }
+
+    private async Task<bool> HasExactWoundRepairResubmissionAsync(
+        IReadOnlyList<WoundRepairRetryObligation> obligations)
+    {
+        if (obligations.Count == 0)
+            return true;
+        var (root, parsed) = await ReadStrictWoundRepairCommandAsync();
+        if (root is null || parsed is null || !parsed.Success ||
+            obligations.Any(obligation => !JsonNode.DeepEquals(
+                obligation.ExpectedCommandRoot,
+                obligations[0].ExpectedCommandRoot)))
+        {
+            return false;
+        }
+
+        var normalized = root.DeepClone().AsObject();
+        var expected = obligations[0].ExpectedCommandRoot.DeepClone().AsObject();
+        if (normalized["commands"] is not JsonArray normalizedCommands ||
+            expected["commands"] is not JsonArray expectedCommands ||
+            normalizedCommands.Count != expectedCommands.Count ||
+            parsed.Commands.Count != normalizedCommands.Count)
+        {
+            return false;
+        }
+
+        foreach (var obligation in obligations)
+        {
+            if (!RootMatchesWoundRepairPacket(root, obligation.Packet) ||
+                obligation.CommandOrdinal < 0 ||
+                obligation.CommandOrdinal >= parsed.Commands.Count ||
+                normalizedCommands[obligation.CommandOrdinal] is not JsonObject currentCommand ||
+                expectedCommands[obligation.CommandOrdinal] is not JsonObject expectedCommand ||
+                !obligation.Packet.MatchesOpportunity(
+                    parsed.Commands[obligation.CommandOrdinal].Opportunity) ||
+                !TryReadWoundRepairDecision(
+                    parsed.Commands[obligation.CommandOrdinal].Decision,
+                    out var decision) ||
+                !obligation.Packet.MatchesCorrectedDecision(
+                    decision,
+                    parsed.Commands[obligation.CommandOrdinal].FinalSceneText))
+            {
+                return false;
+            }
+
+            currentCommand["decision"] = expectedCommand["decision"]?.DeepClone();
+        }
+
+        if (obligations.Any(static obligation =>
+                obligation.Packet.RequiresResponseCorrection))
+        {
+            for (var index = 0; index < normalizedCommands.Count; index++)
+            {
+                if (normalizedCommands[index] is not JsonObject currentCommand ||
+                    expectedCommands[index] is not JsonObject expectedCommand)
+                {
+                    return false;
+                }
+                currentCommand["finalSceneText"] =
+                    expectedCommand["finalSceneText"]?.DeepClone();
+            }
+        }
+
+        return JsonNode.DeepEquals(normalized, expected);
+    }
+
+    private async Task<(JsonObject? Root, WoundResponseCommandParsingResult? Parsed)>
+        ReadStrictWoundRepairCommandAsync()
+    {
+        var json = await _fs.ReadFileAsync(AcceptedMechanicsPlan.WoundCommandPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return (null, null);
+        try
+        {
+            var root = StrictJsonAuthority.Deserialize<JsonObject>(
+                json,
+                JsonOpts,
+                "wound repair command");
+            if (root is null)
+                return (null, null);
+            var parsed = WoundResponseInputComposer.ParseCommandRoot(
+                JsonSerializer.SerializeToElement(root, JsonOpts));
+            return parsed.Success ? (root, parsed) : (null, null);
+        }
+        catch (Exception exception) when (
+            exception is JsonException or InvalidDataException or
+                InvalidOperationException or NotSupportedException)
+        {
+            return (null, null);
+        }
+    }
+
+    private static bool TryReadWoundRepairDecision(
+        JsonElement element,
+        out JsonObject decision)
+    {
+        decision = null!;
+        try
+        {
+            decision = JsonNode.Parse(element.GetRawText())?.AsObject()!;
+            return decision is not null;
+        }
+        catch (Exception exception) when (
+            exception is JsonException or InvalidOperationException)
+        {
+            return false;
+        }
+    }
+
+    private static ValidationIssue BuildWoundRepairRetryAuthorityIssue() => new(
+        AcceptedMechanicsPlan.WoundCommandPath,
+        IssueSeverity.Error,
+        "Wound repair could not bind the rejected proposal to one exact retry authority.",
+        code: "wound_repair_retry_authority_unavailable",
+        actor: "Client",
+        section: "wound_materialization",
+        expected:
+            "one strict rejected wound command bound to the exact sealed opportunity",
+        actual: "missing, malformed, ambiguous, or changed before repair capture",
+        category: IssueCategory.StateConsistency);
+
+    private static bool RootMatchesWoundRepairPacket(
+        JsonObject root,
+        WoundRepairPacket packet) =>
+        ReadExactWoundRepairRootString(root, "sessionId") == packet.SessionId &&
+        ReadExactWoundRepairRootString(root, "requestId") == packet.RequestId &&
+        ReadExactWoundRepairRootString(root, "snapshotToken") == packet.SnapshotToken;
+
+    private static string? ReadExactWoundRepairRootString(
+        JsonObject root,
+        string property) =>
+        root[property] is JsonValue value &&
+        value.TryGetValue<string>(out var text) &&
+        ResourceMaterializationContract.IsExactIdentifier(text)
+            ? text
+            : null;
 
     private static bool IsReadableResourceRepairReason(JsonNode? node) =>
         node is JsonValue value &&
@@ -1834,6 +2086,20 @@ public partial class GameEngine
         _inputSource.ReadKey(intercept: true);
     }
 
+    internal static bool RequiresWoundRepairFailClosed(
+        IReadOnlyList<ValidationIssue> errors,
+        bool rollbackAvailable)
+    {
+        ArgumentNullException.ThrowIfNull(errors);
+        var actionablePackets = WoundRepairPacketBuilder.Build(errors);
+        return WoundRepairPacketBuilder.RequiresFailClosedRollback(errors) ||
+               (actionablePackets.Count > 0 && !rollbackAvailable) ||
+               errors.Any(static issue => string.Equals(
+                   issue.Code,
+                   "wound_repair_retry_authority_unavailable",
+                   StringComparison.Ordinal));
+    }
+
     private async Task<string> CaptureCurrentSessionGenerationAsync()
     {
         if (SessionOperationContext.TryGetExpectedGeneration(
@@ -1855,6 +2121,8 @@ public partial class GameEngine
         IReadOnlyList<RepairResubmissionPathObligation>? effectRequiredResubmissionPaths = null,
         IReadOnlyList<ResourceRepairRetryObligation>? resourceRetryObligations = null,
         IReadOnlyList<RepairResubmissionPathObligation>? resourceRequiredResubmissionPaths = null,
+        IReadOnlyList<WoundRepairRetryObligation>? woundRepairRetryObligations = null,
+        IReadOnlyList<RepairResubmissionPathObligation>? woundRequiredResubmissionPaths = null,
         bool boundedPendingResolutionResubmission = false,
         byte[]? pendingResolutionRepairCheckpoint = null)
     {
@@ -1890,10 +2158,16 @@ public partial class GameEngine
             (!isBoundedPendingResolutionResubmission &&
              ResourceRepairPacketBuilder.RequiresFailClosedRollback(errors)) ||
             (hasActionableResourceRepair && !rollbackAvailable);
+        var woundRepairPackets = WoundRepairPacketBuilder.Build(errors);
+        var hasActionableWoundRepair = woundRepairPackets.Count > 0;
+        var requiresWoundFailClosed = RequiresWoundRepairFailClosed(
+            errors,
+            rollbackAvailable);
         if (requiresMortalItemFailClosed ||
             requiresMortalLocationFailClosed ||
             requiresEffectFailClosed ||
-            requiresResourceFailClosed)
+            requiresResourceFailClosed ||
+            requiresWoundFailClosed)
         {
             _logger.LogError(
                 "Materialization repair after {Source} has protected or unresolved authority; rejecting the accepted state for caller-owned rollback instead of dispatching a broad GM repair.",
@@ -1932,6 +2206,17 @@ public partial class GameEngine
                         rollbackSnapshot,
                         repairSessionGeneration));
             }
+            if (requiresWoundFailClosed)
+            {
+                await RunBestEffortFailClosedBookkeepingAsync(
+                    "write the protected wound diagnostic report",
+                    () => WriteProtectedWoundDiagnosticFailureReportAsync(
+                        source,
+                        errors,
+                        attempt,
+                        rollbackSnapshot,
+                        repairSessionGeneration));
+            }
             await RunBestEffortFailClosedBookkeepingAsync(
                 "clean validation-repair control files after protected Mortal materialization rejection",
                 () => DeleteValidationRepairFilesForSessionAsync(repairSessionGeneration));
@@ -1944,7 +2229,8 @@ public partial class GameEngine
 
         if (hasActionableMortalLocationRepair ||
             hasActionableEffectRepair ||
-            hasActionableResourceRepair)
+            hasActionableResourceRepair ||
+            hasActionableWoundRepair)
         {
             await RestorePreTurnBaselineForRepairSessionAsync(
                 rollbackSnapshot!,
@@ -1963,6 +2249,8 @@ public partial class GameEngine
             effectRequiredResubmissionPaths,
             resourceRetryObligations,
             resourceRequiredResubmissionPaths,
+            woundRepairRetryObligations,
+            woundRequiredResubmissionPaths,
             effectRepairPackets,
             isBoundedPendingResolutionResubmission);
         ThrowIfValidationRepairDispatchSessionReplaced(dispatch);
@@ -2534,7 +2822,7 @@ public partial class GameEngine
                 if (request?.HarnessRepairPackets is { Count: > 0 })
                 {
                     refs.AddRange(request.HarnessRepairPackets
-                        .Select(packet => packet.Kind)
+                        .Select(ReadValidationRepairPacketKind)
                         .Where(kind => !string.IsNullOrWhiteSpace(kind))!);
                 }
             }
@@ -2551,7 +2839,7 @@ public partial class GameEngine
             refs.AddRange(BuildValidationRepairHarnessPackets(
                     PrioritizeValidationErrors(errors).ToList(),
                     await ReadCurrentGuardianRepairActorNameHintsAsync())
-                .Select(packet => packet.Kind)
+                .Select(ReadValidationRepairPacketKind)
                 .Where(kind => !string.IsNullOrWhiteSpace(kind))!);
         }
 
@@ -2651,6 +2939,8 @@ public partial class GameEngine
         IReadOnlyList<RepairResubmissionPathObligation>? effectRequiredResubmissionPaths = null,
         IReadOnlyList<ResourceRepairRetryObligation>? resourceRetryObligations = null,
         IReadOnlyList<RepairResubmissionPathObligation>? resourceRequiredResubmissionPaths = null,
+        IReadOnlyList<WoundRepairRetryObligation>? woundRepairRetryObligations = null,
+        IReadOnlyList<RepairResubmissionPathObligation>? woundRequiredResubmissionPaths = null,
         IReadOnlyList<EffectRepairPacket>? effectRepairPackets = null,
         bool boundedPendingResolutionResubmission = false)
     {
@@ -2665,7 +2955,11 @@ public partial class GameEngine
             mortalLocationRetryObligations is { Count: > 0 } ||
             effectRetryObligations is { Count: > 0 } ||
             effectRepairPackets is { Count: > 0 } ||
+            woundRepairRetryObligations is { Count: > 0 } ||
             resourceRepairPackets.Count > 0;
+        var woundRepairPackets = WoundRepairPacketBuilder.Build(prioritizedErrors);
+        fullTurnResubmissionRequired =
+            fullTurnResubmissionRequired || woundRepairPackets.Count > 0;
         var gmInstructions = BuildValidationRepairRequestInstructions(
             pendingSnapshot,
             fullTurnResubmissionRequired,
@@ -2710,12 +3004,23 @@ public partial class GameEngine
                         Route = "resourceChanges",
                         RawCarrier = "accepted turn response"
                     }) ?? Enumerable.Empty<ValidationRepairResubmissionObligation>())
+                .Concat((woundRepairRetryObligations?
+                        .Select(static obligation => obligation.Packet) ??
+                    woundRepairPackets).Select(packet =>
+                    new ValidationRepairResubmissionObligation
+                    {
+                        Actor = packet.CandidateRef,
+                        Route = "woundDecisions",
+                        RawCarrier = "accepted turn response"
+                    }))
                 .ToList(),
             RequiredResubmissionPaths = (mortalLocationRequiredResubmissionPaths ??
                     Array.Empty<RepairResubmissionPathObligation>())
                 .Concat(effectRequiredResubmissionPaths ??
                         Array.Empty<RepairResubmissionPathObligation>())
                 .Concat(resourceRequiredResubmissionPaths ??
+                        Array.Empty<RepairResubmissionPathObligation>())
+                .Concat(woundRequiredResubmissionPaths ??
                         Array.Empty<RepairResubmissionPathObligation>())
                 .Select(static obligation => obligation.Path)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -2915,7 +3220,44 @@ public partial class GameEngine
             expectedSessionGeneration);
     }
 
-    private static List<ValidationRepairHarnessPacket> BuildValidationRepairHarnessPackets(
+    private async Task WriteProtectedWoundDiagnosticFailureReportAsync(
+        string source,
+        IReadOnlyList<ValidationIssue> errors,
+        int attempt,
+        RollbackSnapshot? rollbackSnapshot,
+        string expectedSessionGeneration)
+    {
+        var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
+        var report = new
+        {
+            source,
+            detectedAtUtc = DateTime.UtcNow.ToString("o"),
+            attempt,
+            reason = "Protected or unresolved wound authority requires fail-closed rollback before GM repair dispatch.",
+            rollbackAvailable = HasRollbackCapability(rollbackSnapshot),
+            summaryGroups = BuildValidationSummaryLines(prioritizedErrors, 6),
+            errors = prioritizedErrors.Select(e => new
+            {
+                code = e.Code ?? "validation_error",
+                filePath = e.FilePath,
+                severity = e.Severity.ToString(),
+                category = e.Category.ToString(),
+                message = e.Message,
+                actor = e.Actor,
+                section = e.Section,
+                expected = e.Expected,
+                actual = e.Actual,
+                repairHint = e.RepairHint
+            }).ToList()
+        };
+
+        await WriteValidationRepairFileForSessionAsync(
+            ValidationDiagnosticFailureReportPath,
+            JsonSerializer.Serialize(report, JsonOpts),
+            expectedSessionGeneration);
+    }
+
+    private static List<JsonObject> BuildValidationRepairHarnessPackets(
         IReadOnlyList<ValidationIssue> errors,
         IReadOnlyCollection<string>? guardianActorNameHints = null,
         IReadOnlyList<EffectRepairPacket>? effectRepairPackets = null)
@@ -3067,8 +3409,25 @@ public partial class GameEngine
         if (afterlifeEntityProfileScaffoldErrors.Count > 0)
             packets.Add(BuildAfterlifeEntityProfileScaffoldRepairPacket(afterlifeEntityProfileScaffoldErrors));
 
-        return packets;
+        var serializedPackets = packets
+            .Select(SerializeValidationRepairHarnessPacket)
+            .ToList();
+        serializedPackets.AddRange(WoundRepairPacketBuilder.Build(errors)
+            .Select(static packet => packet.ToJsonObject()));
+        return serializedPackets;
     }
+
+    private static JsonObject SerializeValidationRepairHarnessPacket(
+        ValidationRepairHarnessPacket packet) =>
+        JsonSerializer.SerializeToNode(packet, JsonOpts)?.AsObject() ??
+        throw new InvalidDataException(
+            "Validation repair harness packet could not be serialized.");
+
+    private static string? ReadValidationRepairPacketKind(JsonObject packet) =>
+        packet["kind"] is JsonValue value &&
+        value.TryGetValue<string>(out var kind)
+            ? kind
+            : null;
 
     private static ValidationRepairHarnessPacket BuildMortalItemRepairHarnessPacket(
         MortalItemRepairPacket source)
@@ -6496,7 +6855,8 @@ public partial class GameEngine
               "Пересоздай согласованные command/output surfaces и только затем отправь validation_repair_ready.json. "
             : fullTurnResubmissionRequired
             ? "Отклонённая попытка полностью удалена и восстановлено состояние до хода. Не исправляй baseline-файлы in place. " +
-              "Для effect_materialization_repair и resource_semantic_omission_repair значение fullTurnResubmissionRequired=true означает полный повтор того же связного ответа, а не точечный patch. " +
+              "Для effect_materialization_repair, resource_semantic_omission_repair и wound_materialization_repair значение fullTurnResubmissionRequired=true означает полный повтор того же связного ответа, а не точечный patch. " +
+              "Для wound_materialization_repair сохрани preservedProposal без изменений, исправь только paths из issues/requiredResponseShape.correctOnly и включи display.acquisitionNarration дословно в полный response; sealed event/target/opportunity и unrelated response content менять нельзя. " +
               "Заново обработай исходный input/turn_request.json как один полный ответ на тот же ход: пересоздай все изменённые в отклонённой попытке command/output surfaces, обязательно повтори каждую exact actor+route из resubmissionObligations и исправь перечисленные поля. " +
               "requiredResubmissionPaths перечисляет только фактически изменённые GM-authored command/output surfaces, которые должны быть заново записаны до сигнала готовности. " +
               "Client-owned preparation/publication roots клиент восстанавливает или пересоздаёт сам: не пиши и не ожидай в requiredResubmissionPaths system_mods.json, progression_schedule.json, resource_definitions.json, resource_state.json, resource_history.json, resource_owner_authority.json, pending_effect_resolutions.json или effect_identity_index.json. " +

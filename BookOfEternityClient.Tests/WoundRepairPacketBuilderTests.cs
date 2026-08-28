@@ -253,6 +253,155 @@ public sealed class WoundRepairPacketBuilderTests
         Assert.True(WoundRepairPacketBuilder.RequiresFailClosedRollback(request));
     }
 
+    [Fact]
+    public void Build_ContextualValidationIssueReconstructsTheExactSafeCandidate()
+    {
+        var candidate = CreateCandidate(
+            "candidate_safe_001",
+            "woundDecisions[0].proposal.severity",
+            "wound_severity_above_opportunity",
+            "III");
+        var request = CreateRequest(candidate);
+        var issue = Assert.Single(candidate.Issues);
+        issue.WoundRepairContext = new WoundRepairContext(
+            request.SessionId,
+            request.RequestId,
+            request.SnapshotToken,
+            candidate.Kind,
+            candidate.CandidateRef,
+            candidate.SemanticFingerprint,
+            candidate.OpportunityRef,
+            candidate.SafeContext,
+            candidate.AllowedDecisions,
+            candidate.MinimumSeverity,
+            candidate.MaximumSeverity,
+            candidate.RejectedDecision);
+
+        var direct = Assert.Single(WoundRepairPacketBuilder.Build(request));
+        var contextual = Assert.Single(WoundRepairPacketBuilder.Build(
+            new[] { issue }));
+
+        Assert.True(JsonNode.DeepEquals(
+            direct.ToJsonObject(),
+            contextual.ToJsonObject()));
+        Assert.False(WoundRepairPacketBuilder.RequiresFailClosedRollback(
+            new[] { issue }));
+    }
+
+    [Fact]
+    public void Build_RepairableValidationIssueWithoutSafeContextFailsClosed()
+    {
+        var issue = new ValidationIssue(
+            "woundDecisions[0].proposal.severity",
+            IssueSeverity.Error,
+            "Severity exceeds the sealed opportunity.",
+            code: "wound_severity_above_opportunity",
+            section: "wound_materialization",
+            expected: "validator-internal range",
+            actual: "III");
+
+        Assert.Empty(WoundRepairPacketBuilder.Build(new[] { issue }));
+        Assert.True(WoundRepairPacketBuilder.RequiresFailClosedRollback(
+            new[] { issue }));
+    }
+
+    [Fact]
+    public void MatchesCorrectedDecision_AcceptsOnlyTheListedLeafAndExactNarration()
+    {
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(CreateRequest(
+            CreateCandidate(
+                "candidate_retry_exact_001",
+                "woundDecisions[0].proposal.severity",
+                "wound_severity_above_opportunity",
+                "III"))));
+        var correctedProposal = packet.PreservedProposal;
+        correctedProposal["severity"] = "II";
+        var correctedDecision = new JsonObject
+        {
+            ["opportunityRef"] = "opportunity_safe_001",
+            ["decision"] = "materialize",
+            ["woundRef"] = "local_wound_ref_001",
+            ["proposal"] = correctedProposal
+        };
+        const string narration =
+            "Крюк срывается с цепи и вспарывает вам предплечье.";
+
+        Assert.True(packet.MatchesCorrectedDecision(
+            correctedDecision,
+            "Пыль оседает. " + narration + " Вы отступаете к стене."));
+
+        var changedSibling = correctedDecision.DeepClone().AsObject();
+        changedSibling["proposal"]!["display"]!["name"] = "Другая рана";
+        Assert.False(packet.MatchesCorrectedDecision(
+            changedSibling,
+            narration));
+        Assert.False(packet.MatchesCorrectedDecision(
+            correctedDecision,
+            "Пыль оседает, но описание получения раны пропущено."));
+    }
+
+    [Fact]
+    public void MatchesCorrectedDecision_RequiresForbiddenOwnerLeafToStayOmitted()
+    {
+        var proposal = CreateProposal();
+        proposal["owner"] = new JsonObject
+        {
+            ["ownerId"] = "hidden_owner",
+            ["carrierPath"] = "hidden_carrier"
+        };
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(CreateRequest(
+            CreateCandidate(
+                "candidate_retry_owner_001",
+                "woundDecisions[0].proposal.owner",
+                "wound_response_unknown_field",
+                "owner",
+                proposal))));
+        var correctedDecision = new JsonObject
+        {
+            ["opportunityRef"] = "opportunity_safe_001",
+            ["decision"] = "materialize",
+            ["woundRef"] = "local_wound_ref_001",
+            ["proposal"] = packet.PreservedProposal
+        };
+        const string narration =
+            "Крюк срывается с цепи и вспарывает вам предплечье.";
+
+        Assert.True(packet.MatchesCorrectedDecision(
+            correctedDecision,
+            narration));
+        correctedDecision["proposal"]!["owner"] = new JsonObject();
+        Assert.False(packet.MatchesCorrectedDecision(
+            correctedDecision,
+            narration));
+    }
+
+    [Fact]
+    public void MatchesOpportunity_RequiresTheExactUnpublishedSealedAuthority()
+    {
+        var opportunity = CreateOpportunity();
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(CreateRequest(
+            CreateCandidate(
+                "candidate_retry_authority_001",
+                "woundDecisions[0].proposal.severity",
+                "wound_severity_above_opportunity",
+                "III",
+                opportunityAuthorityFingerprint:
+                    opportunity.AuthorityFingerprint))));
+
+        Assert.True(packet.MatchesOpportunity(opportunity));
+        var changed = opportunity with { SourceId = "changed_combat_action" };
+        changed = changed with
+        {
+            AuthorityFingerprint =
+                WoundOpportunityAuthority.RecomputeAuthorityFingerprint(changed)
+        };
+        Assert.False(packet.MatchesOpportunity(changed));
+        Assert.DoesNotContain(
+            opportunity.AuthorityFingerprint,
+            packet.ToJsonObject().ToJsonString(),
+            StringComparison.Ordinal);
+    }
+
     private static WoundRepairBuildRequest CreateRequest(
         params WoundRepairCandidateInput[] candidates) => new(
         "session_wound_repair",
@@ -268,7 +417,8 @@ public sealed class WoundRepairPacketBuilderTests
         JsonObject? proposal = null,
         string? semanticFingerprint = null,
         string minimumSeverity = "I",
-        string maximumSeverity = "II")
+        string maximumSeverity = "II",
+        string? opportunityAuthorityFingerprint = null)
     {
         var issue = new ValidationIssue(
             rawPath,
@@ -300,7 +450,58 @@ public sealed class WoundRepairPacketBuilderTests
                 ["woundRef"] = "local_wound_ref_001",
                 ["proposal"] = (proposal ?? CreateProposal()).DeepClone()
             },
-            new[] { issue });
+            new[] { issue },
+            opportunityAuthorityFingerprint);
+    }
+
+    private static WoundOpportunityAuthority CreateOpportunity()
+    {
+        var evidence = new WoundOpportunityEventEvidence(
+            "narrative",
+            "narrative_injury",
+            "event_authority_repair_001",
+            "harmful",
+            2,
+            "Осколок после обвала ранит цель.");
+        var acceptedEvent = new WoundAcceptedEventAuthority(
+            "event_repair_001",
+            "narrative_injury",
+            "event_authority_repair_001",
+            WoundOpportunityEventEvidenceFingerprint.Compute(evidence));
+        var acceptedEvents = new[] { acceptedEvent };
+        var binding = new WoundAcceptedTurnBinding(
+            "session_wound_repair",
+            "request_wound_repair",
+            "snapshot_wound_repair",
+            "mortal_world",
+            7,
+            acceptedEvents,
+            WoundAcceptedEventSetFingerprint.Compute(acceptedEvents));
+        var result = WoundOpportunityAuthority.Compose(
+            new WoundOpportunityBuildRequest(
+                binding,
+                "opportunity_internal_repair_001",
+                "opportunity_safe_001",
+                acceptedEvent.EventRef,
+                new WoundOwnerCoordinate(
+                    "mortal_world",
+                    "player",
+                    "player_current",
+                    "game_state/player/wounds.json"),
+                "physical",
+                "mortal_narrative_injury_v1",
+                "combat_action",
+                "combat_action_repair_001",
+                "active",
+                evidence,
+                2,
+                null,
+                new WoundOpportunitySafeContext(
+                    "игрок",
+                    "осколок после обвала",
+                    new[] { "anatomical", "systemic", "other" })));
+        Assert.True(result.Success);
+        return Assert.IsType<WoundOpportunityAuthority>(result.Opportunity);
     }
 
     private static JsonObject CreateProposal() => new()

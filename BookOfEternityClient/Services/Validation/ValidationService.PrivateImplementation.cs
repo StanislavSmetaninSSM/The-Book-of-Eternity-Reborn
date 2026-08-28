@@ -623,6 +623,7 @@ public class ValidationIssue
     internal MortalItemRepairContext? MortalItemRepairContext { get; set; }
     internal MortalLocationRepairContext? MortalLocationRepairContext { get; set; }
     internal EffectRepairContext? EffectRepairContext { get; set; }
+    internal WoundRepairContext? WoundRepairContext { get; set; }
 
     public ValidationIssue(
         string filePath,

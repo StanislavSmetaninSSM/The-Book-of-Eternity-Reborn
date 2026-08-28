@@ -7942,7 +7942,7 @@ internal static class EffectAcceptedTurnPlanner
             "spiritual_conflict_side";
     }
 
-    private static bool TryMapEffectTargetToResourceOwner(
+    internal static bool TryMapEffectTargetToResourceOwner(
         EffectTargetKey target,
         EffectTargetExport export,
         out ResourceOwnerKey owner)

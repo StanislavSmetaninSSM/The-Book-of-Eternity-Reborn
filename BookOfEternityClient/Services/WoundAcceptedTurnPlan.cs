@@ -1783,7 +1783,8 @@ internal static class WoundAcceptedTurnData
                 value.MortalItemRepairContext),
             MortalLocationRepairContext = CloneMortalLocationRepairContext(
                 value.MortalLocationRepairContext),
-            EffectRepairContext = CloneEffectRepairContext(value.EffectRepairContext)
+            EffectRepairContext = CloneEffectRepairContext(value.EffectRepairContext),
+            WoundRepairContext = value.WoundRepairContext?.Clone()
         };
         return clone;
     }

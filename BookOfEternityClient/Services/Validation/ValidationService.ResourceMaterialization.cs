@@ -220,6 +220,8 @@ public partial class ValidationService
         await ValidateAcceptedTurnRawEffectMaterializationAsync(
             effectIssues,
             ownerComposition,
+            definitions,
+            stateResult.Ledger,
             isTerminalReceiptReplay,
             manifest,
             writeLease,
