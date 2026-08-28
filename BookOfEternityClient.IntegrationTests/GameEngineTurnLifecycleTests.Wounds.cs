@@ -1,12 +1,41 @@
 using System.Text.Json;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    [Fact]
+    public async Task BuildGameResponse_TakesAcceptedWoundNotificationsExactlyOnce()
+    {
+        var engine = CreateGameEngine();
+        var notification = new WoundPlayerNotification(
+            new WoundPlayerTextProjection(
+                "Получена рана: Ожог ладони (I). Подробнее: /раны",
+                "Получена рана: Ожог ладони (I). Подробнее: /раны",
+                "Получена рана: Ожог ладони (I). Подробнее: /раны"),
+            "/раны");
+        SetPrivateField(
+            engine,
+            "_acceptedTurnWoundNotifications",
+            new[] { notification });
+
+        var first = Assert.IsType<GameResponse>(await InvokePrivateTaskResultAsync(
+            engine,
+            "BuildGameResponseFromFiles"));
+        var second = Assert.IsType<GameResponse>(await InvokePrivateTaskResultAsync(
+            engine,
+            "BuildGameResponseFromFiles"));
+
+        Assert.Equal(
+            notification.Text.PlainText,
+            Assert.Single(first.WoundNotifications!));
+        Assert.True(second.WoundNotifications is null or { Length: 0 });
+    }
+
     [Fact]
     public async Task WoundSnapshotAndRollback_TracksEveryFoundationalAuthorityPath()
     {

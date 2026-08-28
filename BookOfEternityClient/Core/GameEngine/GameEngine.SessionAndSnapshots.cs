@@ -128,7 +128,26 @@ public partial class GameEngine
             CurrentCondition = st.CurrentCondition
         };
 
+        var woundNotifications = TakeAcceptedTurnWoundNotifications();
+        if (woundNotifications.Count != 0)
+        {
+            response.WoundNotifications = woundNotifications
+                .Select(static value => value.Text.PlainText)
+                .ToArray();
+        }
+
         return response;
+    }
+
+    private IReadOnlyList<WoundPlayerNotification> TakeAcceptedTurnWoundNotifications()
+    {
+        var notifications = Interlocked.Exchange(
+            ref _acceptedTurnWoundNotifications,
+            Array.Empty<WoundPlayerNotification>());
+        return Array.AsReadOnly(notifications.Select(static value => value with
+        {
+            Text = value.Text with { }
+        }).ToArray());
     }
 
     private GameResponse MergeWithLastResponse(GameResponse? refreshed)
@@ -145,6 +164,7 @@ public partial class GameEngine
     private async Task RebindRuntimeAfterSessionReplacementAsync()
     {
         _lastResponse = null;
+        _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
         _pendingImagePrompt = null;
         _pendingMemoryLegacyAwaitingConsumption = false;
         _mainMenuSessionWarning = null;

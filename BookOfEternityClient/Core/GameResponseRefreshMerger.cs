@@ -24,6 +24,12 @@ internal static class GameResponseRefreshMerger
         {
             refreshed.DialogueOptions = current.DialogueOptions;
         }
+        if ((refreshed.WoundNotifications == null ||
+             refreshed.WoundNotifications.Length == 0) &&
+            current.WoundNotifications is { Length: > 0 })
+        {
+            refreshed.WoundNotifications = current.WoundNotifications.ToArray();
+        }
 
         return refreshed;
     }

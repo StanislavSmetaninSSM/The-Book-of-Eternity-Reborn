@@ -41,6 +41,34 @@ internal sealed record WoundAcquisitionOutputResult(
         Issues.Count == 0;
 }
 
+internal sealed class WoundAcceptedTurnOutputBindingResult
+{
+    private readonly WoundPlayerNotification[] _notifications;
+    private readonly ValidationIssue[] _issues;
+
+    internal WoundAcceptedTurnOutputBindingResult(
+        IReadOnlyList<WoundPlayerNotification> notifications,
+        IReadOnlyList<ValidationIssue> issues)
+    {
+        _notifications = notifications.Select(static value => value with
+        {
+            Text = value.Text with { }
+        }).ToArray();
+        _issues = issues.Select(WoundAcceptedTurnData.CloneIssue).ToArray();
+    }
+
+    internal IReadOnlyList<WoundPlayerNotification> Notifications =>
+        Array.AsReadOnly(_notifications.Select(static value => value with
+        {
+            Text = value.Text with { }
+        }).ToArray());
+
+    internal IReadOnlyList<ValidationIssue> Issues =>
+        Array.AsReadOnly(_issues.Select(WoundAcceptedTurnData.CloneIssue).ToArray());
+
+    internal bool Success => _issues.Length == 0;
+}
+
 internal sealed record WoundPlayerNotification(
     WoundPlayerTextProjection Text,
     string DetailCommand)
@@ -72,6 +100,109 @@ internal sealed record WoundPlayerNotification(
             request.EventRef,
             request.FinalSceneText,
             worsening: true);
+    }
+
+    internal static WoundAcceptedTurnOutputBindingResult ComposeAcceptedTurn(
+        AcceptedMechanicsWoundStageBundle bundle,
+        string finalSceneText)
+    {
+        ArgumentNullException.ThrowIfNull(bundle);
+        var input = bundle.Input;
+        var prepared = bundle.PreparedPlan;
+        var final = bundle.FinalPlan;
+        var transitions = input.Transitions;
+        var batches = prepared.EffectOperationBatches;
+        var mutations = final.CarrierContributions
+            .SelectMany(static value => value.Mutations)
+            .ToArray();
+        var issues = new List<ValidationIssue>();
+        var notifications = new List<WoundPlayerNotification>(transitions.Count);
+        var matchedWoundIds = new HashSet<string>(StringComparer.Ordinal);
+
+        if (transitions.Count != batches.Count ||
+            transitions.Count != mutations.Length)
+        {
+            AddAcceptedTurnBindingIssue(
+                issues,
+                "transition/mutation cardinality",
+                $"{transitions.Count}/{batches.Count}/{mutations.Length}");
+            return new WoundAcceptedTurnOutputBindingResult(
+                Array.Empty<WoundPlayerNotification>(),
+                issues);
+        }
+
+        for (var index = 0; index < transitions.Count; index++)
+        {
+            var transition = transitions[index];
+            var batch = batches[index];
+            var matches = mutations.Where(value => string.Equals(
+                    value.WoundId,
+                    batch.PreparedWoundId,
+                    StringComparison.Ordinal))
+                .ToArray();
+            if (matches.Length != 1 ||
+                matches[0].AfterWound is not { } wound ||
+                !matchedWoundIds.Add(wound.WoundId) ||
+                !string.Equals(
+                    transition.LocalWoundRef,
+                    batch.LocalWoundRef,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    transition.Kind,
+                    batch.TransitionAuthority.TransitionKind,
+                    StringComparison.Ordinal) ||
+                transition.Kind is not ("create" or "worsen") ||
+                !string.Equals(
+                    transition.Kind == "create" ? "add" : "update",
+                    matches[0].Operation,
+                    StringComparison.Ordinal))
+            {
+                AddAcceptedTurnBindingIssue(
+                    issues,
+                    $"transition[{index}]",
+                    $"{transition.Kind}/{batch.PreparedWoundId}/matches={matches.Length}");
+                continue;
+            }
+
+            var claim = new WoundAcquisitionNarrationClaim(
+                transition.LocalWoundRef,
+                batch.SourceExport.CausalEventRef,
+                wound.Classification.Domain,
+                wound.Display.Name,
+                wound.Severity.Rank,
+                wound.Display.AcquisitionNarration);
+            var composed = string.Equals(
+                    transition.Kind,
+                    "worsen",
+                    StringComparison.Ordinal)
+                ? ComposeWorsening(new WoundWorseningOutputRequest(
+                    transition.LocalWoundRef,
+                    batch.SourceExport.CausalEventRef,
+                    wound,
+                    claim,
+                    finalSceneText))
+                : Compose(new WoundAcquisitionOutputRequest(
+                    transition.LocalWoundRef,
+                    wound,
+                    claim,
+                    finalSceneText));
+            issues.AddRange(composed.Issues.Select(WoundAcceptedTurnData.CloneIssue));
+            if (composed.Notification is { } notification)
+                notifications.Add(notification);
+        }
+
+        return issues.Count == 0 && notifications.Count == transitions.Count
+            ? new WoundAcceptedTurnOutputBindingResult(notifications, issues)
+            : new WoundAcceptedTurnOutputBindingResult(
+                Array.Empty<WoundPlayerNotification>(),
+                issues.Count == 0
+                    ? new[]
+                    {
+                        AcceptedTurnBindingIssue(
+                            "notification cardinality",
+                            $"{notifications.Count}/{transitions.Count}")
+                    }
+                    : issues);
     }
 
     private static WoundAcquisitionOutputResult ComposeCore(
@@ -174,6 +305,24 @@ internal sealed record WoundPlayerNotification(
         value,
         Markup.Escape(value),
         HtmlEncoder.Default.Encode(value));
+
+    private static void AddAcceptedTurnBindingIssue(
+        ICollection<ValidationIssue> issues,
+        string expected,
+        string actual) => issues.Add(AcceptedTurnBindingIssue(expected, actual));
+
+    private static ValidationIssue AcceptedTurnBindingIssue(
+        string expected,
+        string actual) => new(
+        "acceptedWoundOutput",
+        IssueSeverity.Error,
+        "Accepted wound output no longer agrees with its finalized typed transition.",
+        code: "wound_accepted_output_binding_invalid",
+        section: "wound_acquisition_output",
+        expected: expected,
+        actual: actual,
+        repairHint:
+            "Rebuild the accepted wound output from the exact finalized wound plan.");
 
     private static void Add(
         ICollection<ValidationIssue> issues,

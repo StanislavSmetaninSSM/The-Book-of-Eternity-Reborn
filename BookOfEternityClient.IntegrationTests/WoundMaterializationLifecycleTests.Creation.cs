@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -33,7 +34,12 @@ public sealed partial class WoundMaterializationLifecycleTests
 
         Assert.True(composed.Success, Describe(composed.Issues));
         Assert.Empty(composed.Notifications);
-        await PublishAsync(context, Assert.IsType<JsonObject>(composed.CommandRoot));
+        var plan = await PublishAsync(
+            context,
+            Assert.IsType<JsonObject>(composed.CommandRoot));
+        var output = GameEngine.BindAcceptedWoundOutput(plan, response.Response!);
+        Assert.True(output.Success, Describe(output.Issues));
+        Assert.Empty(output.Notifications);
 
         var player = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
             WoundCarrierCatalog.PlayerPath));
@@ -195,6 +201,65 @@ public sealed partial class WoundMaterializationLifecycleTests
     }
 
     [Fact]
+    public async Task AcceptedTurnOutputBinding_RecomputesNotificationAndRejectsChangedScene()
+    {
+        await using var context = await CreatePlayerContextAsync();
+        var authority = await CreateAuthorityAsync(
+            context,
+            maximumSeverityRank: 2);
+        var response = Response(Decision(
+            "materialize",
+            CreatePhysicalProposal(severity: "II", includeMechanicalRoot: true)));
+        var composed = WoundResponseInputComposer.Compose(
+            authority.Binding,
+            new[] { authority.Opportunity },
+            response.WoundDecisions,
+            response.Response,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        Assert.True(composed.Success, Describe(composed.Issues));
+        var plan = await PublishAsync(
+            context,
+            Assert.IsType<JsonObject>(composed.CommandRoot));
+
+        var accepted = GameEngine.BindAcceptedWoundOutput(
+            plan,
+            response.Response!);
+
+        Assert.True(accepted.Success, Describe(accepted.Issues));
+        Assert.Equal(
+            "Получена рана: Рваная рана предплечья (II). Подробнее: /раны",
+            Assert.Single(accepted.Notifications).Text.PlainText);
+
+        await context.WriteExactJsonAsync(
+            "output/narrative_response.json",
+            new JsonObject
+            {
+                ["response"] = response.Response,
+                ["timestamp"] = "2026-08-28T22:00:00Z"
+            }.ToJsonString());
+        var published = await GameEngine.BindPublishedAcceptedWoundOutputAsync(
+            context.FileSystem,
+            plan);
+        Assert.True(published.Success, Describe(published.Issues));
+        Assert.Equal(
+            accepted.Notifications,
+            published.Notifications);
+
+        var rejected = GameEngine.BindAcceptedWoundOutput(
+            plan,
+            "Вы успеваете отступить от обвала, не замечая последствий.");
+
+        Assert.False(rejected.Success);
+        Assert.Empty(rejected.Notifications);
+        Assert.Contains(rejected.Issues, issue =>
+            issue.Code == "wound_acquisition_narration_missing" &&
+            issue.FilePath == "output/narrative_response.json.response" &&
+            issue.RepairTargetFiles.SequenceEqual(
+                new[] { "output/narrative_response.json" },
+                StringComparer.Ordinal));
+    }
+
+    [Fact]
     public async Task ExistingWound_WorseningReusesIdentityReplacesEffectsAndAppendsHistory()
     {
         await using var context = await CreatePlayerContextAsync();
@@ -252,7 +317,16 @@ public sealed partial class WoundMaterializationLifecycleTests
         Assert.Equal(
             "Рана ухудшилась: Рваная рана предплечья (III). Подробнее: /раны",
             Assert.Single(worsening.Notifications).Text.PlainText);
-        await PublishAsync(context, Assert.IsType<JsonObject>(worsening.CommandRoot));
+        var worseningPlan = await PublishAsync(
+            context,
+            Assert.IsType<JsonObject>(worsening.CommandRoot));
+        var worseningOutput = GameEngine.BindAcceptedWoundOutput(
+            worseningPlan,
+            worseningResponse.Response!);
+        Assert.True(worseningOutput.Success, Describe(worseningOutput.Issues));
+        Assert.Equal(
+            "Рана ухудшилась: Рваная рана предплечья (III). Подробнее: /раны",
+            Assert.Single(worseningOutput.Notifications).Text.PlainText);
 
         var playerAfter = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
             WoundCarrierCatalog.PlayerPath));

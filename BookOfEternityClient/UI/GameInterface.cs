@@ -40,6 +40,11 @@ public class GameInterface
             RenderNarrative(lastResponse?.Response ?? state.Narrative, state.IsInAfterlifeRealm);
         }
 
+        if (lastResponse?.WoundNotifications is { Length: > 0 })
+        {
+            RenderWoundNotifications(lastResponse.WoundNotifications);
+        }
+
         // Combat log if present (mortal life only)
         if (!state.IsInAfterlifeRealm && !string.IsNullOrEmpty(lastResponse?.CombatLogMarkdown))
         {
@@ -74,6 +79,17 @@ public class GameInterface
         // Separator
         var sepColor = state.IsInAfterlifeRealm ? "blue" : "green";
         AnsiConsole.Write(new Rule().RuleStyle(sepColor));
+    }
+
+    private static void RenderWoundNotifications(IEnumerable<string> notifications)
+    {
+        foreach (var notification in notifications.Where(static value =>
+                     !string.IsNullOrWhiteSpace(value)))
+        {
+            AnsiConsole.MarkupLine(
+                $"[gold1]⚕[/] {Markup.Escape(notification)}");
+        }
+        AnsiConsole.WriteLine();
     }
 
     /// <summary>

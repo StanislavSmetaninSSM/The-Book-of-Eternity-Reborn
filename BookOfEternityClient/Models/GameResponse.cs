@@ -108,6 +108,9 @@ public class GameResponse
     [JsonPropertyName("woundDecisions")]
     public JsonElement[]? WoundDecisions { get; set; }
 
+    [JsonIgnore]
+    public string[]? WoundNotifications { get; set; }
+
     [JsonPropertyName("resourceDefinitionCreations")]
     public JsonElement[]? ResourceDefinitionCreations { get; set; }
 

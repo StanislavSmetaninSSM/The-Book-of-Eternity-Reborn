@@ -18,6 +18,8 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
+    private const string WoundNarrativeOutputPath =
+        "output/narrative_response.json";
     private const string GmBridgeIdleWithoutTerminalSignalHarnessSource = "gm_bridge_idle_without_terminal_signal";
     private const string GmOutputWithoutTerminalSignalHarnessSource = "gm_output_without_terminal_signal";
     private const string ClientRecoveredMissingTerminalSignalHarnessSource = "client_recovered_gm_output_without_terminal_signal";
@@ -26,6 +28,59 @@ public partial class GameEngine
         "output/narrative_response.json",
         "output/debug_logs.json"
     ];
+    private WoundPlayerNotification[] _acceptedTurnWoundNotifications =
+        Array.Empty<WoundPlayerNotification>();
+
+    internal static WoundAcceptedTurnOutputBindingResult BindAcceptedWoundOutput(
+        AcceptedMechanicsPlan plan,
+        string finalSceneText)
+    {
+        ArgumentNullException.ThrowIfNull(plan);
+        var bundle = plan.WoundStageBundle;
+        if (bundle is null)
+        {
+            return new WoundAcceptedTurnOutputBindingResult(
+                Array.Empty<WoundPlayerNotification>(),
+                Array.Empty<ValidationIssue>());
+        }
+
+        var bound = WoundPlayerNotification.ComposeAcceptedTurn(
+            bundle,
+            finalSceneText);
+        if (bound.Success)
+            return bound;
+
+        return new WoundAcceptedTurnOutputBindingResult(
+            Array.Empty<WoundPlayerNotification>(),
+            bound.Issues.Select(static issue =>
+            {
+                var narrativeRepairable = IsWoundNarrationRepairIssue(issue);
+                return new ValidationIssue(
+                    narrativeRepairable
+                        ? WoundNarrativeOutputPath + ".response"
+                        : AcceptedMechanicsPlan.WoundCommandPath,
+                    issue.Severity,
+                    issue.Message,
+                    code: issue.Code,
+                    actor: narrativeRepairable ? issue.Actor : "Client",
+                    section: issue.Section,
+                    expected: issue.Expected,
+                    actual: issue.Actual,
+                    repairHint: narrativeRepairable
+                        ? issue.RepairHint
+                        : "Reject the accepted turn because its finalized wound stages no longer agree.",
+                    category: issue.Category,
+                    repairTargetFiles: narrativeRepairable
+                        ? new[] { WoundNarrativeOutputPath }
+                        : Array.Empty<string>());
+            })
+                .ToArray());
+    }
+
+    private static bool IsWoundNarrationRepairIssue(ValidationIssue issue) =>
+        issue.Code is
+            "wound_acquisition_narration_missing" or
+            "wound_acquisition_narration_contradiction";
 
     private async Task EnsureClientOwnedSystemFilesHealthyAsync()
     {
@@ -219,6 +274,7 @@ public partial class GameEngine
         int expectedTurn,
         ProgressionControl? progressionControl)
     {
+        _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
         var criticalRepairAttempt = 0;
         List<ValidationIssue>? lastCriticalRepairErrors = null;
         var lastCriticalRepairAttempt = 0;
@@ -477,13 +533,14 @@ public partial class GameEngine
             }
 
             var postSealErrors = PrioritizeValidationErrors(
-                    canonicalRefresh.PostSealIssues.Where(issue => issue.Severity == IssueSeverity.Error))
+                    canonicalRefresh.PostSealIssues.Where(issue =>
+                        issue.Severity == IssueSeverity.Error))
                 .ToList();
             if (postSealErrors.Count > 0)
             {
                 criticalRepairAttempt++;
                 _logger.LogError(
-                    "Critical accepted-turn Mortal item post-seal validation failure after {Source}: {Count} errors",
+                    "Critical accepted-turn post-seal validation failure after {Source}: {Count} errors",
                     source,
                     postSealErrors.Count);
 
@@ -626,6 +683,11 @@ public partial class GameEngine
                 await CleanupAcceptedTurnCommandSurfacesAsync();
             }
             await RefreshRuntimeStateAsync();
+            _acceptedTurnWoundNotifications = canonicalRefresh.WoundNotifications
+                .Select(static value => value with
+                {
+                    Text = value.Text with { }
+                }).ToArray();
             return true;
         }
     }
@@ -1013,17 +1075,70 @@ public partial class GameEngine
 
         var refresh = await RefreshCanonicalStateAsync(snapshot);
         var postSealIssues = refresh.Issues.ToList();
+        IReadOnlyList<WoundPlayerNotification> woundNotifications =
+            Array.Empty<WoundPlayerNotification>();
         if (refresh.MechanicsPlan?.WoundStageBundle is not null)
         {
             postSealIssues.AddRange(
                 await ValidateAcceptedWoundPostPublicationAuthorityAsync(
                     refresh.MechanicsPlan,
                     activeSnapshotContext));
+            var output = await BindPublishedAcceptedWoundOutputAsync(
+                refresh.MechanicsPlan);
+            if (output.Issues.Any(static issue =>
+                    !IsWoundNarrationRepairIssue(issue)))
+            {
+                throw new InvalidDataException(
+                    "The accepted wound output does not agree with its finalized typed stages.");
+            }
+            postSealIssues.AddRange(output.Issues);
+            if (output.Success)
+                woundNotifications = output.Notifications;
         }
         return new AcceptedTurnCanonicalRefreshResult(
             true,
             postSealIssues,
-            refresh.MechanicsPlan);
+            refresh.MechanicsPlan,
+            woundNotifications);
+    }
+
+    private async Task<WoundAcceptedTurnOutputBindingResult>
+        BindPublishedAcceptedWoundOutputAsync(AcceptedMechanicsPlan plan) =>
+        await BindPublishedAcceptedWoundOutputAsync(_fs, plan);
+
+    internal static async Task<WoundAcceptedTurnOutputBindingResult>
+        BindPublishedAcceptedWoundOutputAsync(
+            FileSystemManager fileSystem,
+            AcceptedMechanicsPlan plan)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(plan);
+        var finalSceneText = string.Empty;
+        try
+        {
+            var json = await fileSystem.ReadFileAsync(WoundNarrativeOutputPath);
+            if (!string.IsNullOrWhiteSpace(json))
+            {
+                var root = StrictJsonAuthority.Deserialize<JsonObject>(
+                    json,
+                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed,
+                    "accepted wound narrative output");
+                if (root is { } acceptedRoot &&
+                    acceptedRoot["response"] is JsonValue responseValue &&
+                    responseValue.TryGetValue<string>(out var response))
+                {
+                    finalSceneText = response ?? string.Empty;
+                }
+            }
+        }
+        catch (Exception exception) when (
+            exception is JsonException or InvalidDataException or
+                InvalidOperationException or NotSupportedException)
+        {
+            finalSceneText = string.Empty;
+        }
+
+        return BindAcceptedWoundOutput(plan, finalSceneText);
     }
 
     private async Task<IReadOnlyList<ValidationIssue>>
@@ -1078,7 +1193,12 @@ public partial class GameEngine
     private sealed record AcceptedTurnCanonicalRefreshResult(
         bool BaselineUsable,
         IReadOnlyList<ValidationIssue> PostSealIssues,
-        AcceptedMechanicsPlan? MechanicsPlan = null);
+        AcceptedMechanicsPlan? MechanicsPlan = null,
+        IReadOnlyList<WoundPlayerNotification>? AcceptedWoundNotifications = null)
+    {
+        internal IReadOnlyList<WoundPlayerNotification> WoundNotifications { get; } =
+            AcceptedWoundNotifications ?? Array.Empty<WoundPlayerNotification>();
+    }
 
     private static ValidationIssue BuildBoundedResourceResolutionResubmissionIssue(
         AcceptedMechanicsPlan plan)

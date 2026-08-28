@@ -261,7 +261,7 @@ Production remains untouched.
 - [X] T037 [US1] Bind exact event/source/target/realm/profile and guaranteed evidence during wound preparation in `BookOfEternityClient/Services/WoundSourceAuthority.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [X] T038 [US1] Wire optional, lower-than-cap, guaranteed, declined, and worsening US1 response proposals plus exact opportunity/source authority into the completed T020/T022/T024 typed wound-batch/finalization API without adding a second effect path in `BookOfEternityClient/Services/WoundResponseInputComposer.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [X] T039 [US1] Compose create/worsen/decline after-images, client-owned wound IDs, effect-plan-owned root IDs, full old source-group teardown before worsen rematerialization, history, owner carriers, and combatant promotion transitions in `BookOfEternityClient/Services/WoundAcceptedOwnerCarrierAuthority.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/WoundTransitionReducer.cs`
-- [ ] T040 [US1] Add escaped acquisition narration validation and deterministic player notification/output binding to the accepted turn in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs` and `BookOfEternityClient/UI/WoundPlayerNotification.cs`
+- [X] T040 [US1] Add escaped acquisition narration validation and deterministic player notification/output binding to the accepted turn in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs` and `BookOfEternityClient/UI/WoundPlayerNotification.cs`
 - [ ] T041 [US1] Replace direct `playerWoundChanges`/`NPCWoundChanges` distribution with strict accepted wound command consumption in `BookOfEternityClient/Configuration/FileMapping.cs`, `BookOfEternityClient/IO/StateDistributor.cs`, and `BookOfEternityClient/Models/GameResponse.cs`
 
 T035 GREEN evidence (2026-08-28): the opportunity authority now recomputes the
@@ -383,6 +383,25 @@ and the complete lifecycle class is GREEN `38/38`, warning-free
 T040 still owns accepted-turn output/notification publication. No GM-facing contract or
 afterlife pending/control field changes in this checkpoint, so documentation remains
 owned by T042-T044.
+
+T040 completion evidence (2026-08-28): accepted output is now recomputed from the
+detached finalized wound-stage bundle, correlates every input transition, prepared
+batch, and final owner-carrier mutation by exact permanent wound identity, rereads the
+strict published narrative response, and publishes notifications only when the exact
+acquisition narration remains present; every player projection escapes untrusted
+markup. Narrative errors target only
+`output/narrative_response.json`; an internal stage mismatch is client-owned and fails
+closed. The take-once notification handoff survives read-only refreshes without entering
+the serialized GM response, and console rendering escapes untrusted markup while
+showing no wound/effect IDs. The final unit contour is GREEN `27/27`, warning-free
+(`20260828-224642-879-43440-2ced4139b2b34baeb4b180efa097bff9-focused`),
+the complete creation/owner lifecycle plus take-once response contour is GREEN `40/40`,
+warning-free
+(`20260828-224416-720-33836-248d56b4f4eb4f0a93222665bbd9c626-focused`),
+and adjacent GameEngine/wound source guards are GREEN `118/118`
+(`20260828-224155-205-37584-4cfb16ab5d0f42a3ace1b2b2e7d292de-focused`).
+GM prompt, worked-example, manifest, and documentation-guard synchronization remains
+explicitly owned by T042-T044 before the US1 checkpoint can close.
 
 ### GM contract synchronization
 
