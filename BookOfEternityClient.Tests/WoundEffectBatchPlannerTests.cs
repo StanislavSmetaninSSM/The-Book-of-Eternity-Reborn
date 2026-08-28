@@ -3352,6 +3352,8 @@ public sealed partial class WoundEffectBatchPlannerTests
                 opportunityId,
                 $"wound_opportunity_{ordinal:D3}",
                 eventAuthority.EventRef,
+                eventAuthority.Kind,
+                eventAuthority.AuthorityId,
                 owner,
                 domain,
                 domain == "spiritual"
@@ -3369,7 +3371,7 @@ public sealed partial class WoundEffectBatchPlannerTests
                     domain == "spiritual"
                         ? new[] { "spiritual_axis" }
                         : new[] { "anatomical", "systemic", "other" }),
-                Fingerprint($"opportunity-evidence:{ordinal:D3}:{owner}"),
+                eventAuthority.SemanticFingerprint,
                 Fingerprint($"opportunity-placeholder:{ordinal:D3}:{owner}"));
             opportunities.Add(opportunity with
             {

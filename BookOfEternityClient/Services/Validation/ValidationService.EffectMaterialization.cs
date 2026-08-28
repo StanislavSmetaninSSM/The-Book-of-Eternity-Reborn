@@ -295,7 +295,7 @@ public partial class ValidationService
                 rawWoundDraft,
                 manifest,
                 acceptedRealm,
-                identityInput.EventInput,
+                identityInput,
                 writeLease,
                 issues);
             if (rawWoundDraft is not null && preparedWound is null)
@@ -413,7 +413,7 @@ public partial class ValidationService
             rawWoundDraft,
             manifest,
             acceptedRealm,
-            input.EventInput,
+            input,
             writeLease,
             issues);
         if (rawWoundDraft is not null && prepared is null)

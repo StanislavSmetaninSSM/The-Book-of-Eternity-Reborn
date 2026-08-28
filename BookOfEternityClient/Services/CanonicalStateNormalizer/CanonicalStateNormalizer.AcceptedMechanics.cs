@@ -76,7 +76,8 @@ public partial class CanonicalStateNormalizer
             {
                 await ValidateEffectPlanPublicationBindingAsync(
                     plan.EffectPlan,
-                    normalizedAcceptedCarrierBaselines);
+                    normalizedAcceptedCarrierBaselines,
+                    plan.WoundStageBundle);
             }
 
             // Other normalizers may intentionally consume plan before-images. The pending

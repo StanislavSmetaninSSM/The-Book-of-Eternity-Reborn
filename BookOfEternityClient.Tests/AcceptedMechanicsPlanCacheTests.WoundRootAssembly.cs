@@ -23,7 +23,16 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                 AcceptedEvents = acceptedEvents,
                 AcceptedEventsFingerprint =
                     WoundAcceptedEventSetFingerprint.Compute(acceptedEvents)
-            }
+            },
+            Opportunities = woundInput.Opportunities.Select(value =>
+                ResealWoundOpportunity(value with
+                {
+                    EventKind = acceptedEvents.Single(eventValue =>
+                        string.Equals(
+                            eventValue.EventRef,
+                            value.EventRef,
+                            StringComparison.Ordinal)).Kind
+                })).ToArray()
         };
         var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(woundInput));
         var boundedDefinition =

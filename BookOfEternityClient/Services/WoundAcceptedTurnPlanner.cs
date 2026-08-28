@@ -187,6 +187,15 @@ internal static class WoundEffectBatchPlanner
 
 internal static class WoundAcceptedTurnPlanner
 {
+    internal static WoundAcceptedSourceBindingResult BindAcceptedSourceTargets(
+        WoundAcceptedTurnBinding binding,
+        IReadOnlyList<WoundOpportunityAuthority> opportunities,
+        EffectTargetAuthority effectTargets) =>
+        WoundAcceptedTurnPlannerCore.BindAcceptedSourceTargets(
+            binding,
+            opportunities,
+            effectTargets);
+
     internal static WoundAcceptedTurnPreparationResult Prepare(
         WoundAcceptedTurnInput input)
     {
@@ -1227,7 +1236,8 @@ internal static class WoundAcceptedTurnPlannerCore
         var validOpportunityRows = new HashSet<WoundOpportunityAuthority>();
         foreach (var opportunity in input.Opportunities)
         {
-            if (OpportunityShapeIsValid(opportunity))
+            if (OpportunityShapeIsValid(opportunity) &&
+                OpportunityEventBindingIsValid(input.Binding, opportunity))
             {
                 validOpportunityRows.Add(opportunity);
                 continue;
@@ -1492,6 +1502,41 @@ internal static class WoundAcceptedTurnPlannerCore
 
     private static bool OpportunityShapeIsValid(WoundOpportunityAuthority value) =>
         WoundOpportunityAuthority.HasCompleteShape(value);
+
+    private static bool OpportunityEventBindingIsValid(
+        WoundAcceptedTurnBinding binding,
+        WoundOpportunityAuthority opportunity)
+    {
+        if (binding.AcceptedEvents is null)
+            return false;
+        var matches = binding.AcceptedEvents.Where(value =>
+            value is not null && string.Equals(
+            value.EventRef,
+            opportunity.EventRef,
+            StringComparison.Ordinal)).ToArray();
+        return matches.Length == 1 &&
+               string.Equals(
+                   matches[0].Kind,
+                   opportunity.EventKind,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   matches[0].AuthorityId,
+                   opportunity.EventAuthorityId,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   matches[0].SemanticFingerprint,
+                   opportunity.InputEvidenceFingerprint,
+                   StringComparison.Ordinal);
+    }
+
+    internal static WoundAcceptedSourceBindingResult BindAcceptedSourceTargets(
+        WoundAcceptedTurnBinding binding,
+        IReadOnlyList<WoundOpportunityAuthority> opportunities,
+        EffectTargetAuthority effectTargets) =>
+        WoundSourceAuthority.BindAcceptedOpportunities(
+            binding,
+            opportunities,
+            effectTargets);
 
     private static void ValidateTransitionBinding(
         WoundAcceptedTurnBinding binding,

@@ -6,8 +6,6 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
-    private const int MaximumAcceptedTurnWoundCommands = 128;
-
     private static readonly string[] CanonicalWoundCarrierPaths =
     {
         WoundCarrierCatalog.PlayerPath,
@@ -17,23 +15,11 @@ public partial class ValidationService
         WoundCarrierCatalog.AfterlifeProfilesPath
     };
 
-    private static readonly IReadOnlySet<string> WoundCommandRootFields =
-        new HashSet<string>(StringComparer.Ordinal)
-        {
-            "schemaVersion",
-            "sessionId",
-            "requestId",
-            "snapshotToken",
-            "commands"
-        };
-
     private sealed record AcceptedTurnRawWoundDraft(
-        JsonObject Commands,
+        WoundResponseCommandParsingResult ParsedCommands,
         WoundCarrierCatalogInput PreTurnCarriers,
         JsonObject PreTurnIdentityIndex,
-        JsonObject PreTurnHistory,
-        IReadOnlyList<WoundOpportunityAuthority> Opportunities,
-        IReadOnlyList<WoundAcceptedTransitionDraft> Transitions);
+        JsonObject PreTurnHistory);
 
     private sealed record AcceptedTurnPreparedWoundHandoff(
         JsonObject Commands,
@@ -165,8 +151,11 @@ public partial class ValidationService
         if (commandJson is null)
             return null;
 
-        var commands = ParseAcceptedTurnWoundCommands(commandJson, manifest, issues);
-        if (commands is null)
+        var parsedCommands = ParseAcceptedTurnWoundCommands(
+            commandJson,
+            manifest,
+            issues);
+        if (parsedCommands is null || parsedCommands.CommandRoot is null)
             return null;
 
         if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
@@ -264,35 +253,36 @@ public partial class ValidationService
         }
 
         return new AcceptedTurnRawWoundDraft(
-            commands.DeepClone().AsObject(),
+            parsedCommands,
             WoundAcceptedTurnData.CloneWoundCarriers(preTurnCarriers)!,
             JsonNode.Parse(WoundIdentityState.SerializeCanonical(identity.State))!
                 .AsObject(),
             JsonNode.Parse(WoundHistoryState.SerializeCanonical(history.State))!
-                .AsObject(),
-            Array.Empty<WoundOpportunityAuthority>(),
-            Array.Empty<WoundAcceptedTransitionDraft>());
+                .AsObject());
     }
 
     private AcceptedTurnPreparedWoundHandoff? PrepareAcceptedTurnWoundHandoff(
         AcceptedTurnRawWoundDraft? draft,
         ValidationPendingTurnSnapshotManifest manifest,
         string realm,
-        JsonObject effectEventInput,
+        EffectAcceptedTurnInput effectInput,
         FileSystemManager.CanonicalWriteLease writeLease,
         List<ValidationIssue> issues)
     {
         if (draft is null)
             return null;
         ArgumentNullException.ThrowIfNull(manifest);
-        ArgumentNullException.ThrowIfNull(effectEventInput);
+        ArgumentNullException.ThrowIfNull(effectInput);
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(issues);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
 
         var acceptedEvents = ComposeWoundAcceptedEvents(
             manifest,
-            effectEventInput,
+            effectInput.EventInput,
+            draft.ParsedCommands.Commands
+                .Select(static value => value.Opportunity)
+                .ToArray(),
             issues);
         if (acceptedEvents.Count == 0 ||
             issues.Any(static issue => issue.Severity == IssueSeverity.Error))
@@ -307,10 +297,28 @@ public partial class ValidationService
             manifest.TurnNumber,
             acceptedEvents,
             WoundAcceptedEventSetFingerprint.Compute(acceptedEvents));
+        var recomposed = WoundResponseInputComposer.RecomposeCommandRoot(
+            binding,
+            draft.ParsedCommands,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        issues.AddRange(recomposed.Issues);
+        if (!recomposed.Success || recomposed.CommandRoot is null)
+            return null;
+
+        var sourceBinding = WoundAcceptedTurnPlanner.BindAcceptedSourceTargets(
+            binding,
+            draft.ParsedCommands.Commands
+                .Select(static value => value.Opportunity)
+                .ToArray(),
+            effectInput.TargetAuthority);
+        issues.AddRange(sourceBinding.Issues);
+        if (!sourceBinding.Success)
+            return null;
+
         var input = new WoundAcceptedTurnInput(
             binding,
-            draft.Opportunities,
-            draft.Transitions,
+            recomposed.MaterializedOpportunities,
+            recomposed.Transitions,
             draft.PreTurnCarriers,
             draft.PreTurnIdentityIndex,
             draft.PreTurnHistory);
@@ -321,7 +329,7 @@ public partial class ValidationService
         issues.AddRange(prepared.Issues);
         return prepared.Success && prepared.Plan is not null
             ? new AcceptedTurnPreparedWoundHandoff(
-                draft.Commands.DeepClone().AsObject(),
+                recomposed.CommandRoot,
                 WoundAcceptedTurnData.CloneInput(input)!,
                 prepared.Plan)
             : null;
@@ -371,7 +379,7 @@ public partial class ValidationService
         }
     }
 
-    private static JsonObject? ParseAcceptedTurnWoundCommands(
+    private static WoundResponseCommandParsingResult? ParseAcceptedTurnWoundCommands(
         string json,
         ValidationPendingTurnSnapshotManifest manifest,
         List<ValidationIssue> issues)
@@ -394,64 +402,10 @@ public partial class ValidationService
         using (document)
         {
             var root = document.RootElement;
-            if (root.ValueKind != JsonValueKind.Object)
-            {
-                issues.Add(WoundIssue(
-                    AcceptedMechanicsPlan.WoundCommandPath,
-                    "wound_command_invalid_root",
-                    "strict schema-version-1 command object",
-                    root.ValueKind.ToString()));
+            var parsed = WoundResponseInputComposer.ParseCommandRoot(root);
+            issues.AddRange(parsed.Issues);
+            if (!parsed.Success)
                 return null;
-            }
-
-            var seen = new HashSet<string>(StringComparer.Ordinal);
-            foreach (var property in root.EnumerateObject())
-            {
-                var propertyPath = AcceptedMechanicsPlan.WoundCommandPath + "." +
-                    property.Name;
-                if (!seen.Add(property.Name))
-                {
-                    issues.Add(WoundIssue(
-                        propertyPath,
-                        "wound_command_duplicate_field",
-                        "one exact occurrence of each root field",
-                        property.Name));
-                }
-                if (!WoundCommandRootFields.Contains(property.Name))
-                {
-                    issues.Add(WoundIssue(
-                        propertyPath,
-                        "wound_command_unknown_field",
-                        string.Join(", ", WoundCommandRootFields.OrderBy(
-                            static value => value,
-                            StringComparer.Ordinal)),
-                        property.Name));
-                }
-            }
-            foreach (var field in WoundCommandRootFields.Where(field =>
-                         !root.TryGetProperty(field, out _)))
-            {
-                issues.Add(WoundIssue(
-                    AcceptedMechanicsPlan.WoundCommandPath + "." + field,
-                    "wound_command_missing_field",
-                    "required strict command root field",
-                    "missing"));
-            }
-
-            var schemaValid = root.TryGetProperty("schemaVersion", out var schema) &&
-                schema.ValueKind == JsonValueKind.Number &&
-                schema.TryGetInt32(out var schemaVersion) &&
-                schemaVersion == 1;
-            if (!schemaValid)
-            {
-                issues.Add(WoundIssue(
-                    AcceptedMechanicsPlan.WoundCommandPath + ".schemaVersion",
-                    "wound_command_invalid_field",
-                    "exact integer schemaVersion 1",
-                    root.TryGetProperty("schemaVersion", out schema)
-                        ? schema.GetRawText()
-                        : "missing"));
-            }
             ValidateWoundCommandBinding(
                 root,
                 "sessionId",
@@ -468,38 +422,9 @@ public partial class ValidationService
                 manifest.ManifestPayloadHash,
                 issues);
 
-            if (!root.TryGetProperty("commands", out var commands) ||
-                commands.ValueKind != JsonValueKind.Array)
-            {
-                issues.Add(WoundIssue(
-                    AcceptedMechanicsPlan.WoundCommandPath + ".commands",
-                    "wound_command_invalid_field",
-                    "strict command array",
-                    root.TryGetProperty("commands", out commands)
-                        ? commands.ValueKind.ToString()
-                        : "missing"));
-            }
-            else if (commands.GetArrayLength() > MaximumAcceptedTurnWoundCommands)
-            {
-                issues.Add(WoundIssue(
-                    AcceptedMechanicsPlan.WoundCommandPath + ".commands",
-                    "wound_command_limit_exceeded",
-                    $"at most {MaximumAcceptedTurnWoundCommands} accepted wound commands",
-                    commands.GetArrayLength().ToString(
-                        System.Globalization.CultureInfo.InvariantCulture)));
-            }
-            else if (commands.GetArrayLength() != 0)
-            {
-                issues.Add(WoundIssue(
-                    AcceptedMechanicsPlan.WoundCommandPath + ".commands",
-                    "wound_command_transition_adapter_unavailable",
-                    "an empty foundational command batch until a typed story adapter supplies transitions",
-                    $"{commands.GetArrayLength()} unadapted commands"));
-            }
-
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
                 return null;
-            return JsonNode.Parse(root.GetRawText())!.AsObject();
+            return parsed;
         }
     }
 
@@ -550,8 +475,10 @@ public partial class ValidationService
         ComposeWoundAcceptedEvents(
             ValidationPendingTurnSnapshotManifest manifest,
             JsonObject eventInput,
+            IReadOnlyList<WoundOpportunityAuthority> opportunities,
             List<ValidationIssue> issues)
     {
+        ArgumentNullException.ThrowIfNull(opportunities);
         if (eventInput["events"] is not JsonArray events || events.Count == 0)
         {
             issues.Add(WoundIssue(
@@ -577,16 +504,65 @@ public partial class ValidationService
                     events[index]?.ToJsonString() ?? "null"));
                 continue;
             }
-            result.Add(new WoundAcceptedEventAuthority(
-                eventRef,
-                kind,
-                authorityId,
-                HashText(
+            var matchingOpportunities = opportunities.Where(value =>
+                string.Equals(
+                    value.EventRef,
+                    eventRef,
+                    StringComparison.Ordinal)).ToArray();
+            string semanticFingerprint;
+            if (matchingOpportunities.Length == 0)
+            {
+                semanticFingerprint = HashText(
                     "accepted-wound-event-authority-v1",
                     manifest.SessionId + "\n" +
                     manifest.RequestId + "\n" +
                     manifest.ManifestPayloadHash + "\n" +
-                    row.ToJsonString())));
+                    row.ToJsonString());
+            }
+            else
+            {
+                var fingerprints = matchingOpportunities
+                    .Select(static value => value.InputEvidenceFingerprint)
+                    .Distinct(StringComparer.Ordinal)
+                    .ToArray();
+                if (fingerprints.Length != 1 ||
+                    matchingOpportunities.Any(value =>
+                        !string.Equals(value.EventKind, kind, StringComparison.Ordinal) ||
+                        !string.Equals(
+                            value.EventAuthorityId,
+                            authorityId,
+                            StringComparison.Ordinal)))
+                {
+                    issues.Add(WoundIssue(
+                        $"{AcceptedMechanicsPlan.WoundCommandPath}.acceptedEvents[{index}]",
+                        "wound_materialization_event_authority_mismatch",
+                        "the exact accepted event kind, authorityId, and one evidence seal",
+                        eventRef));
+                    continue;
+                }
+                semanticFingerprint = fingerprints[0];
+            }
+            result.Add(new WoundAcceptedEventAuthority(
+                eventRef,
+                kind,
+                authorityId,
+                semanticFingerprint));
+        }
+
+        foreach (var opportunity in opportunities)
+        {
+            if (result.Count(value => string.Equals(
+                    value.EventRef,
+                    opportunity.EventRef,
+                    StringComparison.Ordinal)) == 1)
+            {
+                continue;
+            }
+            issues.Add(WoundIssue(
+                AcceptedMechanicsPlan.WoundCommandPath + ".commands",
+                "wound_materialization_event_authority_mismatch",
+                "one exact accepted runtime event for every sealed opportunity",
+                opportunity.EventRef));
         }
         return result;
     }

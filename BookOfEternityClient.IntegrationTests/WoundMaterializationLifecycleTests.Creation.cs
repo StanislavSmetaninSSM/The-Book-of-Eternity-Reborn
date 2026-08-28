@@ -211,6 +211,34 @@ public sealed partial class WoundMaterializationLifecycleTests
     {
         var context = await ResourceMaterializationTestContext.CreateAsync();
         await WoundMaterializationValidationTests.SeedEmptyFoundationsAsync(context);
+        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+            incarnationNumber: 1,
+            turn: 41,
+            permanentStrength: 10,
+            permanentConstitution: 10,
+            permanentIntelligence: 10,
+            permanentWisdom: 10,
+            permanentFaith: 10);
+        Assert.True(resources.IsValid, Describe(resources.Issues));
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.DefinitionsPath,
+            resources.Definitions!.ToCanonicalJson());
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.StatePath,
+            resources.State!.ToCanonicalJson());
+        await context.WriteExactJsonAsync(
+            ResourceMaterializationContract.HistoryPath,
+            resources.History!.ToCanonicalJson());
+        var resourceOwners = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+            resources.Definitions,
+            context.FileSystem.ReadFileAsync,
+            resources.State,
+            resources.History,
+            CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap);
+        Assert.True(resourceOwners.IsValid, Describe(resourceOwners.Issues));
+        await context.WriteExactJsonAsync(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            resourceOwners.CanonicalAuthorityJson!);
         await context.WriteExactJsonAsync(
             EffectCarrierCatalog.PlayerPath,
             new JsonObject
@@ -416,9 +444,9 @@ public sealed partial class WoundMaterializationLifecycleTests
             commandRoot.ToJsonString());
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
-        Assert.DoesNotContain(
-            issues,
-            issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(
+            issues.All(static issue => issue.Severity != IssueSeverity.Error),
+            Describe(issues));
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
         return Assert.IsType<AcceptedMechanicsPlan>(await context.Normalizer
             .BindTo(lease)
@@ -432,7 +460,8 @@ public sealed partial class WoundMaterializationLifecycleTests
         WoundAcceptedTurnFingerprintWriter.Compute(new[] { value });
 
     private static string Describe(IEnumerable<ValidationIssue> issues) =>
-        string.Join(Environment.NewLine, issues.Select(static issue => issue.ToString()));
+        string.Join(Environment.NewLine, issues.Select(static issue =>
+            $"{issue} code={issue.Code}; expected={issue.Expected}; actual={issue.Actual}"));
 
     private sealed record CreationAuthority(
         WoundAcceptedTurnBinding Binding,

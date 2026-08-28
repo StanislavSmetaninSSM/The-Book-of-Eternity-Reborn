@@ -156,6 +156,8 @@ internal sealed partial record WoundOpportunityAuthority(
     string OpportunityId,
     string PublicRef,
     string EventRef,
+    string EventKind,
+    string EventAuthorityId,
     WoundOwnerCoordinate Owner,
     string Domain,
     string ProfileKey,
@@ -1439,6 +1441,8 @@ internal static class WoundAcceptedTurnData
             value.OpportunityId,
             value.PublicRef,
             value.EventRef,
+            value.EventKind,
+            value.EventAuthorityId,
             CloneOwner(value.Owner)!,
             value.Domain,
             value.ProfileKey,
@@ -2522,6 +2526,8 @@ internal static class WoundAcceptedTurnFingerprints
         fields.Add(value?.OpportunityId);
         fields.Add(value?.PublicRef);
         fields.Add(value?.EventRef);
+        fields.Add(value?.EventKind);
+        fields.Add(value?.EventAuthorityId);
         AppendOwner(fields, value?.Owner);
         fields.Add(value?.Domain);
         fields.Add(value?.ProfileKey);

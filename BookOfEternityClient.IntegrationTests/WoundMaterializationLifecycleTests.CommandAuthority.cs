@@ -90,6 +90,63 @@ public sealed partial class WoundMaterializationLifecycleTests
             issue.FilePath!.Contains("opportunity.sourceId", StringComparison.Ordinal));
     }
 
+    [Theory]
+    [InlineData("source_id", false)]
+    [InlineData("profile", false)]
+    [InlineData("owner", false)]
+    [InlineData("event_kind", false)]
+    [InlineData("guarantee_source", true)]
+    public async Task AcceptedCommand_ChangedSealedCoordinateFailsRecomposition(
+        string mutation,
+        bool guaranteed)
+    {
+        await using var context = await CreatePlayerContextAsync();
+        var authority = await CreateAuthorityAsync(
+            context,
+            maximumSeverityRank: 2,
+            guaranteedSeverityRank: guaranteed ? 2 : null);
+        var response = guaranteed
+            ? Response(Decision(
+                "materialize",
+                CreatePhysicalProposal("II", includeMechanicalRoot: false)))
+            : Response(Decision("none", proposal: null));
+        var composed = WoundResponseInputComposer.Compose(
+            authority.Binding,
+            new[] { authority.Opportunity },
+            response.WoundDecisions,
+            response.Response,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        Assert.True(composed.Success, Describe(composed.Issues));
+        var commandRoot = Assert.IsType<JsonObject>(composed.CommandRoot);
+        var opportunity = commandRoot["commands"]![0]!["opportunity"]!.AsObject();
+        switch (mutation)
+        {
+            case "source_id":
+                opportunity["sourceId"] = "combat_action_changed_after_seal";
+                break;
+            case "profile":
+                opportunity["profileKey"] = "mortal_changed_profile_v1";
+                break;
+            case "owner":
+                opportunity["owner"]!["ownerId"] = "player_changed_after_seal";
+                break;
+            case "event_kind":
+                opportunity["eventKind"] = "changed_event_kind";
+                break;
+            case "guarantee_source":
+                opportunity["guaranteedTrigger"]!["sourceId"] =
+                    "combat_action_changed_guarantee";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+
+        var issues = await ValidateCommandAsync(context, commandRoot.ToJsonString());
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "wound_command_opportunity_invalid");
+    }
+
     private static async Task<IReadOnlyList<ValidationIssue>> ValidateCommandAsync(
         ResourceMaterializationTestContext context,
         string json)

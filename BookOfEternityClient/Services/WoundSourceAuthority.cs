@@ -60,6 +60,13 @@ internal sealed record WoundSourceTargetResolution(
     internal bool Success => Authority is not null && Issues.Count == 0;
 }
 
+internal sealed record WoundAcceptedSourceBindingResult(
+    IReadOnlyList<WoundSourceTargetAuthority> Authorities,
+    IReadOnlyList<ValidationIssue> Issues)
+{
+    internal bool Success => Issues.Count == 0;
+}
+
 internal sealed class WoundSourceAuthority
 {
     private const string AuthorityDomain =
@@ -108,6 +115,133 @@ internal sealed class WoundSourceAuthority
             input.Sources,
             input.Targets,
             input.EffectTargets,
+            issues);
+    }
+
+    internal static WoundAcceptedSourceBindingResult BindAcceptedOpportunities(
+        WoundAcceptedTurnBinding binding,
+        IReadOnlyList<WoundOpportunityAuthority> opportunities,
+        EffectTargetAuthority effectTargets)
+    {
+        ArgumentNullException.ThrowIfNull(binding);
+        ArgumentNullException.ThrowIfNull(opportunities);
+        ArgumentNullException.ThrowIfNull(effectTargets);
+        if (opportunities.Count == 0)
+        {
+            return new WoundAcceptedSourceBindingResult(
+                Array.Empty<WoundSourceTargetAuthority>(),
+                Array.Empty<ValidationIssue>());
+        }
+
+        var issues = new List<ValidationIssue>();
+        var sources = new List<WoundSourceEventExport>();
+        foreach (var eventGroup in opportunities.GroupBy(
+                     static value => value.EventRef,
+                     StringComparer.Ordinal))
+        {
+            var first = eventGroup.First();
+            if (eventGroup.Any(value =>
+                    !string.Equals(
+                        value.InputEvidenceFingerprint,
+                        first.InputEvidenceFingerprint,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(value.SourceKind, first.SourceKind, StringComparison.Ordinal) ||
+                    !string.Equals(value.SourceId, first.SourceId, StringComparison.Ordinal) ||
+                    !string.Equals(value.SourceState, first.SourceState, StringComparison.Ordinal) ||
+                    !string.Equals(value.Owner.Realm, first.Owner.Realm, StringComparison.Ordinal) ||
+                    !string.Equals(value.Domain, first.Domain, StringComparison.Ordinal)))
+            {
+                Add(
+                    issues,
+                    "woundSource.sources",
+                    "wound_source_event_invalid",
+                    "one exact source coordinate and evidence seal per accepted event",
+                    first.EventRef);
+                continue;
+            }
+            sources.Add(new WoundSourceEventExport(
+                first.EventRef,
+                first.InputEvidenceFingerprint,
+                first.SourceKind,
+                first.SourceId,
+                first.SourceState,
+                first.Owner.Realm,
+                first.Domain));
+        }
+
+        var targets = new List<WoundTargetExport>();
+        foreach (var ownerGroup in opportunities.GroupBy(
+                     static value => value.Owner,
+                     EqualityComparer<WoundOwnerCoordinate>.Default))
+        {
+            var first = ownerGroup.First();
+            var targetKind = EffectKind(first.Owner.OwnerKind);
+            var targetKey = targetKind is null
+                ? null
+                : new EffectTargetKey(
+                    first.Owner.Realm,
+                    targetKind,
+                    first.Owner.OwnerId);
+            if (targetKey is null ||
+                !effectTargets.TryResolveAcceptedTarget(targetKey, out var target) ||
+                target is null)
+            {
+                Add(
+                    issues,
+                    "woundSource.target",
+                    "wound_target_selector_unresolved",
+                    "one exact accepted effect target for the sealed wound owner",
+                    targetKey?.ToString() ?? first.Owner.ToString());
+                continue;
+            }
+            targets.Add(new WoundTargetExport(
+                first.Owner with { },
+                targetKey,
+                target.SameTurn,
+                target.TargetRef,
+                first.SafeContext.Target));
+        }
+
+        if (issues.Count != 0)
+            return new WoundAcceptedSourceBindingResult(
+                Array.Empty<WoundSourceTargetAuthority>(),
+                issues);
+
+        var authority = Build(new WoundSourceAuthorityInput(
+            binding,
+            sources,
+            targets,
+            effectTargets));
+        issues.AddRange(authority.Issues);
+        var resolved = new List<WoundSourceTargetAuthority>(opportunities.Count);
+        foreach (var opportunity in opportunities)
+        {
+            var target = targets.Single(value => value.Owner == opportunity.Owner);
+            var resolution = authority.Resolve(new WoundSourceTargetRequest(
+                opportunity.EventRef,
+                opportunity.SourceKind,
+                opportunity.SourceId,
+                opportunity.SourceState,
+                opportunity.Owner.Realm,
+                opportunity.Domain,
+                new WoundTargetSelector(
+                    opportunity.Owner.OwnerKind,
+                    target.SameTurn ? null : opportunity.Owner.OwnerId,
+                    target.SameTurn ? target.TargetRef : null,
+                    TargetName: null)));
+            issues.AddRange(resolution.Issues);
+            if (resolution.Authority is not null)
+                resolved.Add(resolution.Authority);
+        }
+
+        return new WoundAcceptedSourceBindingResult(
+            issues.Count == 0
+                ? resolved.Select(static value => value with
+                {
+                    Owner = value.Owner with { },
+                    EffectTarget = value.EffectTarget with { }
+                }).ToArray()
+                : Array.Empty<WoundSourceTargetAuthority>(),
             issues);
     }
 

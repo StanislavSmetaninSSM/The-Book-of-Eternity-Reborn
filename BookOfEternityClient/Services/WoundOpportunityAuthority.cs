@@ -247,6 +247,8 @@ internal sealed partial record WoundOpportunityAuthority
             request.OpportunityId,
             request.PublicRef,
             request.EventRef!,
+            matchingEvents[0].Kind,
+            matchingEvents[0].AuthorityId,
             request.Owner,
             request.Domain,
             request.ProfileKey,
@@ -266,6 +268,8 @@ internal sealed partial record WoundOpportunityAuthority
                 request.OpportunityId,
                 request.PublicRef,
                 request.EventRef!,
+                matchingEvents[0].Kind,
+                matchingEvents[0].AuthorityId,
                 request.Owner with { },
                 request.Domain,
                 request.ProfileKey,
@@ -292,6 +296,8 @@ internal sealed partial record WoundOpportunityAuthority
             value.OpportunityId,
             value.PublicRef,
             value.EventRef,
+            value.EventKind,
+            value.EventAuthorityId,
             value.Owner,
             value.Domain,
             value.ProfileKey,
@@ -314,6 +320,8 @@ internal sealed partial record WoundOpportunityAuthority
             !Exact(value.OpportunityId) ||
             !PublicRefIsValid(value.PublicRef) ||
             !Exact(value.EventRef) ||
+            !Exact(value.EventKind) ||
+            !Exact(value.EventAuthorityId) ||
             !OwnerIsValid(value.Owner) ||
             !Domains.Contains(value.Domain) ||
             !Exact(value.ProfileKey) ||
@@ -672,6 +680,8 @@ internal sealed partial record WoundOpportunityAuthority
         string opportunityId,
         string publicRef,
         string eventRef,
+        string eventKind,
+        string eventAuthorityId,
         WoundOwnerCoordinate owner,
         string domain,
         string profileKey,
@@ -694,6 +704,8 @@ internal sealed partial record WoundOpportunityAuthority
             opportunityId,
             publicRef,
             eventRef,
+            eventKind,
+            eventAuthorityId,
             owner.Realm,
             owner.OwnerKind,
             owner.OwnerId,

@@ -258,7 +258,7 @@ Production remains untouched.
 
 - [X] T035 [US1] Implement sealed Mortal/mechanical/narrative/spiritual wound opportunities, guarantees, safe GM context, and consumed decision authority in `BookOfEternityClient/Services/WoundOpportunityAuthority.cs`
 - [X] T036 [US1] Add the strict response proposal/decision fields and remove permanent-ID authority from GM input in `BookOfEternityClient/Models/GameResponse.cs` and `BookOfEternityClient/Services/WoundResponseInputComposer.cs`
-- [ ] T037 [US1] Bind exact event/source/target/realm/profile and guaranteed evidence during wound preparation in `BookOfEternityClient/Services/WoundSourceAuthority.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
+- [X] T037 [US1] Bind exact event/source/target/realm/profile and guaranteed evidence during wound preparation in `BookOfEternityClient/Services/WoundSourceAuthority.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T038 [US1] Wire optional, lower-than-cap, guaranteed, declined, and worsening US1 response proposals plus exact opportunity/source authority into the completed T020/T022/T024 typed wound-batch/finalization API without adding a second effect path in `BookOfEternityClient/Services/WoundResponseInputComposer.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T039 [US1] Compose create/worsen/decline after-images, client-owned wound IDs, effect-plan-owned root IDs, full old source-group teardown before worsen rematerialization, history, owner carriers, and combatant promotion transitions in `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs` and `BookOfEternityClient/Services/WoundTransitionReducer.cs`
 - [ ] T040 [US1] Add escaped acquisition narration validation and deterministic player notification/output binding to the accepted turn in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs` and `BookOfEternityClient/UI/WoundPlayerNotification.cs`
@@ -313,6 +313,28 @@ builder, not 62 independent runtime failures; after resealing its intentionally 
 request coordinates, the exact same control is GREEN `1700/1700`, warning-free and
 without duplicates or timeout
 (`20260828-180057-724-33360-eb419aa63f9b4900be317353c3ad18b3-focused`).
+
+T037 GREEN evidence (2026-08-28): accepted wound commands are now reparsed from
+duplicate-preserving raw JSON, typed-recomposed byte-semantically, and bound to the
+exact runtime event kind/authority/evidence seal plus the current effect target. The
+planner rejects foreign events, unresolved owners even on a decline, changed source/
+realm/profile/guarantee seals, and malformed nested command authority before allocation.
+The same common effect planner remains the only root-ID allocator, and publication
+independently rebuilds its canonical source catalog with the validated same-turn wound
+stage rather than bypassing stale-plan checks. The owning integration contour is GREEN
+`18/18` and warning-free
+(`20260828-194143-970-30396-78849bd3926a44a9a1176e142f7c05d9-focused`);
+the opportunity/guarantee/source-target/effect-stage/source-guard contour is GREEN
+`224/224`
+(`20260828-194431-494-6488-d1a4d1f30137497881929e1b1b7b54ab-focused`).
+The explicit post-seal source/profile/owner/event-kind/guarantee mutation matrix is
+GREEN `5/5`
+(`20260828-195246-611-3428-974376736bdc46d5bdf04904cf16f58f-focused`).
+The meaningful Fast checkpoint reached `3818/3819` before exposing one stale test-only
+event-kind builder; that exact regression is GREEN after resealing its matching
+opportunity (`20260828-195052-313-17096-ae1d4c79e1fd41d2b8355567dc5a4e7a-focused`).
+T038 remains open for successful guaranteed publication and the worsen path; T039 still
+owns their complete canonical after-images and owner transitions.
 
 ### GM contract synchronization
 

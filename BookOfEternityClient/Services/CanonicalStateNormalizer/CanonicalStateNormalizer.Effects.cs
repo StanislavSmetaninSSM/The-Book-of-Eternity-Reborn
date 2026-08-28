@@ -7,7 +7,8 @@ public partial class CanonicalStateNormalizer
 {
     private async Task ValidateEffectPlanPublicationBindingAsync(
         EffectAcceptedTurnPlan plan,
-        bool normalizedAcceptedCarrierBaselines)
+        bool normalizedAcceptedCarrierBaselines,
+        AcceptedMechanicsWoundStageBundle? woundStageBundle)
     {
         var liveCarriers = await ReadEffectPublicationCarriersAsync();
         var expectedCarrierFingerprint = normalizedAcceptedCarrierBaselines
@@ -59,7 +60,9 @@ public partial class CanonicalStateNormalizer
 
         var catalog = EffectCarrierCatalog.Build(effectiveCarriers);
         var sourceAuthority =
-            EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(sourceRoots);
+            EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(
+                sourceRoots,
+                woundStageBundle?.PreparedPlan);
         var targetAuthority =
             EffectAcceptedTurnInputComposer.BuildCanonicalTargetAuthority(
                 effectiveCarriers,

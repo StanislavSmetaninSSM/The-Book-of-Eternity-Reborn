@@ -1233,21 +1233,51 @@ internal static class EffectAcceptedTurnInputComposer
     }
 
     internal static EffectSourceAuthority BuildCanonicalSourceAuthority(
-        IReadOnlyDictionary<string, JsonNode?> sourceRoots)
+        IReadOnlyDictionary<string, JsonNode?> sourceRoots,
+        WoundPreparedAcceptedTurnPlan? preparedWoundPlan = null)
     {
         ArgumentNullException.ThrowIfNull(sourceRoots);
         var persistedWounds = CollectCanonicalWoundSources(
             sourceRoots,
             sameTurn: false);
+        var preparedWounds = preparedWoundPlan is null
+            ? CanonicalWoundSourceComposition.Empty
+            : ComposePreparedWoundSources(
+                preparedWoundPlan.Binding.SessionId,
+                preparedWoundPlan.Binding.SnapshotToken,
+                preparedWoundPlan.Binding.Turn,
+                preparedWoundPlan.Binding.Realm,
+                preparedWoundPlan,
+                externallySuppliedExports: null);
+        var replacedWoundOwners = preparedWounds.Groups
+            .Select(static group => new EffectSourceOwnerKey(
+                group.Key.Realm,
+                group.Key.Kind,
+                group.Key.SourceId))
+            .ToHashSet();
         return EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
             CollectSources(sourceRoots, sameTurn: false)
                 .Concat(persistedWounds.Exports)
                 .Concat(EffectBuiltInSourceCatalog.CreateCanonicalExports())
+                .Where(export => !replacedWoundOwners.Contains(
+                    new EffectSourceOwnerKey(
+                        export.Realm,
+                        export.Kind,
+                        export.SourceId)))
                 .ToArray(),
-            Array.Empty<EffectSourceExport>(),
+            preparedWounds.Exports,
             new HashSet<string>(StringComparer.Ordinal),
-            WoundGroups: persistedWounds.Groups,
-            CompositionIssues: persistedWounds.Issues));
+            WoundGroups: persistedWounds.Groups
+                .Where(group => !replacedWoundOwners.Contains(
+                    new EffectSourceOwnerKey(
+                        group.Key.Realm,
+                        group.Key.Kind,
+                        group.Key.SourceId)))
+                .Concat(preparedWounds.Groups)
+                .ToArray(),
+            CompositionIssues: persistedWounds.Issues
+                .Concat(preparedWounds.Issues)
+                .ToArray()));
     }
 
     internal static IReadOnlyList<ValidationIssue> ValidateRegisteredSourceOwners(

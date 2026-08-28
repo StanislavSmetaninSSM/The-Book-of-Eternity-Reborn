@@ -13,6 +13,8 @@ internal static partial class WoundResponseInputComposer
         ["opportunityId"] = value.OpportunityId,
         ["publicRef"] = value.PublicRef,
         ["eventRef"] = value.EventRef,
+        ["eventKind"] = value.EventKind,
+        ["eventAuthorityId"] = value.EventAuthorityId,
         ["owner"] = SerializeOwner(value.Owner),
         ["domain"] = value.Domain,
         ["profileKey"] = value.ProfileKey,

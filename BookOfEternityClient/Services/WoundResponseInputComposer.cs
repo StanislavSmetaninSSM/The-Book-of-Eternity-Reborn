@@ -7,6 +7,7 @@ namespace BookOfEternityClient.Services;
 internal sealed class WoundResponseInputCompositionResult
 {
     private readonly JsonObject? _commandRoot;
+    private readonly WoundOpportunityAuthority[] _materializedOpportunities;
     private readonly WoundAcceptedTransitionDraft[] _transitions;
     private readonly WoundPlayerNotification[] _notifications;
     private readonly WoundOpportunityDecisionReceipt[] _decisionReceipts;
@@ -14,12 +15,16 @@ internal sealed class WoundResponseInputCompositionResult
 
     internal WoundResponseInputCompositionResult(
         JsonObject? commandRoot,
+        IReadOnlyList<WoundOpportunityAuthority> materializedOpportunities,
         IReadOnlyList<WoundAcceptedTransitionDraft> transitions,
         IReadOnlyList<WoundPlayerNotification> notifications,
         IReadOnlyList<WoundOpportunityDecisionReceipt> decisionReceipts,
         IReadOnlyList<ValidationIssue> issues)
     {
         _commandRoot = commandRoot?.DeepClone().AsObject();
+        _materializedOpportunities = materializedOpportunities
+            .Select(WoundAcceptedTurnData.CloneOpportunity)
+            .ToArray();
         _transitions = transitions
             .Select(WoundAcceptedTurnData.CloneTransitionDraft)
             .ToArray();
@@ -33,6 +38,11 @@ internal sealed class WoundResponseInputCompositionResult
     }
 
     internal JsonObject? CommandRoot => _commandRoot?.DeepClone().AsObject();
+
+    internal IReadOnlyList<WoundOpportunityAuthority> MaterializedOpportunities =>
+        Array.AsReadOnly(_materializedOpportunities
+            .Select(WoundAcceptedTurnData.CloneOpportunity)
+            .ToArray());
 
     internal IReadOnlyList<WoundAcceptedTransitionDraft> Transitions =>
         Array.AsReadOnly(_transitions
@@ -197,6 +207,9 @@ internal static partial class WoundResponseInputComposer
         };
         return new WoundResponseInputCompositionResult(
             commandRoot,
+            accepted.Where(static value => value.Transition is not null)
+                .Select(static value => value.Opportunity)
+                .ToArray(),
             accepted.Where(static value => value.Transition is not null)
                 .Select(static value => value.Transition!)
                 .ToArray(),
@@ -372,6 +385,7 @@ internal static partial class WoundResponseInputComposer
     private static WoundResponseInputCompositionResult Failure(
         IReadOnlyList<ValidationIssue> issues) => new(
         null,
+        Array.Empty<WoundOpportunityAuthority>(),
         Array.Empty<WoundAcceptedTransitionDraft>(),
         Array.Empty<WoundPlayerNotification>(),
         Array.Empty<WoundOpportunityDecisionReceipt>(),
