@@ -582,7 +582,7 @@ history/receipt/planner replay surface, with no tests executed, timeout, or dupl
 - [X] T053 [US7] Invalidate prepared/final wound, effect, and common handoffs together on repair/rejection/snapshot mismatch in `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs`
 - [X] T054 [US7] Extend exact snapshot and post-publication agreement to scheduler, journals, quests, inventory/characteristics, debug/output, and pending wound roots in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
 - [X] T055 [US7] Add operation/attempt/course/cycle/payment/output replay coordinates and already-accepted receipt projection in `BookOfEternityClient/Services/WoundHistoryState.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
-- [ ] T056 [US7] Add invalid proposal, bounded repair, stale packet, rollback, and replay worked guidance in `OtherGuides/Wound_Materialization_Contract.md`, `Rules/Block_12.txt`, and `Examples/E_Block_12.txt`
+- [X] T056 [US7] Add invalid proposal, bounded repair, stale packet, rollback, and replay worked guidance in `OtherGuides/Wound_Materialization_Contract.md`, `Rules/Block_12.txt`, and `Examples/E_Block_12.txt`
 - [ ] T057A [US7] Resolve the inherited strict response/repair regressions exposed by the complete lifecycle filter, including duplicate-property fail-closed handling and preservation of the registered response issue codes
 - [ ] T057 [US7] Run focused repair/privacy/cache/rollback/replay filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
 
@@ -730,6 +730,33 @@ lane passes 6,091/6,091 in 4:31 with no timeout or duplicate IDs
 read-only review found 0 Critical, 0 Important, and 0 Minor issues and declared T055
 ready. The schema is client-owned, but GM-facing repair/replay workflow documentation
 is intentionally synchronized in T056.
+
+T056 GREEN evidence (2026-08-29): the shared GM wound contract, Block 12 rule, and
+worked Block 12 example now describe the real 1-64 candidate repair wave, one-or-more
+issues per packet, exact rollback-tracked before-image restoration, opaque binding
+envelope versus sanitized semantic payload, all-packet atomic full-turn resubmission,
+the exact `requiredResponseShape.woundDecisions[0].proposal.correctOnly` path, stale
+authority rejection, and hidden-ID/seal privacy boundary. The complete worked
+invalid-severity flow includes a parseable production-shaped packet with the offending
+leaf removed from `preservedProposal`, followed by a full corrected wound response.
+Replay guidance is deliberately qualified as the internal history resolver guarantee,
+not a currently dispatched GM/player receipt, and distinguishes an unknown operation
+key (`None`) from a matched-key coordinate conflict. The first documentation RED failed
+on the absent workflow markers
+(`20260829-063149-182-38628-cc7c87cc67d547e18dcd0db696d0fc12-focused`); strengthened
+review-driven REDs then caught missing wave/path and operation-key guard text
+(`20260829-064337-063-18124-73ff908b9fa34c1ebc4053885ef00329-focused`,
+`20260829-064808-417-43604-a1fbe4bd65134aaf807ff44aa65acd0c-focused`). Final source,
+prompt, and privacy guards pass 58/58
+(`20260829-065146-299-44596-6f2c7ff9225146478dbf756a6d94b054-focused`); JSON/example
+integration controls pass 3/3
+(`20260829-065230-947-36232-5d8c8429622848e28d795578f65e08b9-focused`); both XML
+documents parse and `git diff --check` is clean. Independent review finished at 0
+Critical, 0 Important, and 0 Minor findings with Ready=yes after three remediation
+passes. No afterlife matrix or example manifest update is needed: T056 changes no
+runtime afterlife pending/control/action/response contract, and the Block 12 teaching
+packet is parsed and guarded in place rather than registered as a production-valid
+manifest scenario.
 
 An exploratory complete wound lifecycle/validation selection also exposed eight
 response/repair failures outside the T055 files (59/67 passed); a representative raw

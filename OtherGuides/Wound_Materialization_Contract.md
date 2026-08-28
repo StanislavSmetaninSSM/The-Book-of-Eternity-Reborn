@@ -182,10 +182,61 @@ detached narration fail before wound/effect/history/output publication. The same
 accepted decision replays idempotently; a changed decision, scene, opportunity, event,
 snapshot, owner, realm, source, or guarantee requires fresh authority.
 
-Repair packets expose only the offending GM-authored path, legal bound, and safe
-context. They never expose hidden owner bindings, permanent IDs, source seals,
-canonical before-images, or internal paths. Resubmit the complete corrected semantic
-turn through the owning repair protocol.
+### wound_repair_retry_v1
+
+An invalid proposal does not partially enter the game. For example, if the sealed
+opportunity has `maximumSeverity: "II"` and the GM proposes severity III, validation
+reports `wound_severity_above_opportunity`. Before asking for a correction, the client
+restores the exact before-image of every rollback-tracked canonical and player-output
+file touched by the rejected turn. No wound, wound-owned effect, payment, history
+transition, notification, or narrative output from that attempt survives.
+
+When the errors are safely repairable, the client emits one bounded current repair wave
+of 1-64 `wound_materialization_repair` packets: one packet per rejected candidate, with
+one or more issues in each packet. Its opaque binding envelope contains the exact
+`sessionId`, `requestId`, `snapshotToken`, `candidateRef`, and `semanticFingerprint`.
+Its sanitized semantic payload contains only the offending paths, legal bounds, safe
+event/target/realm context, `preservedProposal`, and `requiredResponseShape`. It never
+exposes hidden owner bindings, permanent IDs, source seals, canonical before-images,
+private paths, or unrelated response content.
+
+Use every packet only for its bound session, request, snapshot, candidate, and rejected
+proposal. Correct every packet and every listed path in the current repair wave, then
+resubmit them together in one complete corrected semantic turn through the owning
+repair protocol. Reproduce the complete original response and preserve every unrelated
+semantic decision. For each packet, use `preservedProposal` as the base, add or replace
+only the paths listed by
+`requiredResponseShape.woundDecisions[0].proposal.correctOnly`, and include
+`display.acquisitionNarration` verbatim in the complete final scene. A patch fragment,
+an omitted sibling packet, or a direct canonical file edit is not a valid retry.
+
+### wound_stale_repair_packet_v1
+
+A repair wave is single-authority, not reusable authority. If any packet's session,
+request, snapshot, opportunity, accepted event, target, roll, generation, rejected
+proposal, or command root no longer matches, stop. Do not adapt the old wave, guess IDs,
+or repeat the roll. Request fresh authority and answer the new current opportunity.
+
+Only one exact complete corrected retry may consume the bound wave. A second attempt
+with changed semantic content is a conflict, even when the prose seems equivalent.
+The client either accepts every packet atomically or keeps the restored exact
+before-image unchanged.
+
+### wound_rollback_replay_v1
+
+The following is an internal history resolver guarantee, not a currently dispatched
+GM/player receipt. When an owning accepted treatment/recovery stage invokes the
+resolver after acceptance, an exact transport/crash replay resolves to the same
+already-accepted receipt from persisted history. The resolver itself performs no
+second charge, no second history transition, no new wound/effect publication, no
+course or cycle advance, no notification, and no output rewrite.
+
+The operation key selects the persisted transition. An unknown operation key is no replay match
+and requires fresh authority. For a matched operation key, the event,
+attempt, treatment course and milestone, recovery cycle, payment fingerprint, output
+fingerprint, and readable result must also match exactly; changing any of those
+coordinates is a conflicting replay and never creates a second transition under the old
+operation key.
 
 ## Worked examples
 
@@ -194,5 +245,8 @@ turn through the owning repair protocol.
   `wound_spiritual_profiles_v1` and `wound_spiritual_source_worked_v1`.
 - Optional, lower-severity, guaranteed, and rejected constructor responses are in
   `Examples/E_Block_5.txt`.
+- The complete invalid-severity, bounded retry, stale-packet, rollback, and exact
+  replay walkthrough is in `Examples/E_Block_12.txt` under
+  `wound_repair_retry_v1`.
 - The common effect source, lifetime, reaction, and repair rules remain normative in
   `OtherGuides/Effect_Materialization_Contract.md`.

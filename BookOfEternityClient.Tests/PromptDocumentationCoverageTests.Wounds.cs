@@ -1,4 +1,6 @@
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -145,6 +147,120 @@ public sealed partial class PromptDocumentationCoverageTests
             Assert.Contains("magnitude", section, StringComparison.Ordinal);
             Assert.Contains("afterlife_combat_condition", section, StringComparison.Ordinal);
             Assert.Contains("MUST NOT", section, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void WoundRepairReplayGuidance_DocumentsBoundedRetryRollbackAndReceipt()
+    {
+        var contract = ReadRepoFile(
+            "OtherGuides",
+            "Wound_Materialization_Contract.md");
+        var rules = ReadRepoFile("Rules", "Block_12.txt");
+        var examples = ReadRepoFile("Examples", "E_Block_12.txt");
+
+        foreach (var document in new[] { contract, rules, examples })
+        {
+            foreach (var marker in new[]
+                     {
+                         "wound_repair_retry_v1",
+                         "wound_stale_repair_packet_v1",
+                         "wound_rollback_replay_v1"
+                     })
+            {
+                Assert.Contains(marker, document, StringComparison.Ordinal);
+            }
+
+            foreach (var required in new[]
+                     {
+                         "wound_materialization_repair",
+                         "complete corrected semantic turn",
+                         "exact before-image",
+                         "fresh authority",
+                         "already-accepted receipt",
+                         "every packet and every listed path in the current repair wave",
+                         "requiredResponseShape.woundDecisions[0].proposal.correctOnly",
+                         "internal history resolver guarantee",
+                         "unknown operation key is no replay match",
+                         "matched operation key"
+                     })
+            {
+                Assert.Contains(required, document, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        foreach (var required in new[]
+                 {
+                     "wound_severity_above_opportunity",
+                     "maximumSeverity",
+                     "woundDecisions",
+                     "acquisitionNarration",
+                     "no second charge",
+                     "no second history transition"
+                 })
+        {
+            Assert.Contains(required, examples, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains(
+            "rollback-tracked canonical and player-output",
+            contract,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            "opaque binding envelope",
+            contract,
+            StringComparison.OrdinalIgnoreCase);
+        var staleMarker = contract.IndexOf(
+            "wound_stale_repair_packet_v1",
+            StringComparison.Ordinal);
+        var replayMarker = contract.IndexOf(
+            "wound_rollback_replay_v1",
+            StringComparison.Ordinal);
+        Assert.True(staleMarker >= 0 && replayMarker > staleMarker);
+        Assert.DoesNotContain(
+            "receipt",
+            contract[staleMarker..replayMarker],
+            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "receipt changed before correction",
+            examples,
+            StringComparison.OrdinalIgnoreCase);
+
+        var exampleDocument = XDocument.Parse(examples, LoadOptions.PreserveWhitespace);
+        var packetText = Assert.Single(exampleDocument
+            .Descendants("clientrepairpacketexcerpt"))
+            .Value;
+        var packet = Assert.IsType<JsonObject>(JsonNode.Parse(packetText));
+        Assert.Equal(
+            new[]
+            {
+                "kind", "sessionId", "requestId", "snapshotToken", "candidateRef",
+                "semanticFingerprint", "issues", "safeContext", "preservedProposal",
+                "requiredResponseShape"
+            },
+            packet.Select(static pair => pair.Key));
+        Assert.Equal(
+            "wound_materialization_repair",
+            packet["kind"]!.GetValue<string>());
+        var preservedProposal = packet["preservedProposal"]!.AsObject();
+        Assert.False(preservedProposal.ContainsKey("severity"));
+        Assert.Equal(
+            "proposal.severity",
+            packet["requiredResponseShape"]!["woundDecisions"]![0]!["proposal"]!
+                ["correctOnly"]![0]!.GetValue<string>());
+        var serializedPacket = packet.ToJsonString();
+        foreach (var sensitiveKey in new[]
+                 {
+                     "woundId", "effectId", "ownerId", "providerId", "resourceId",
+                     "routeSeal", "resourceSeal", "providerSeal", "sourceSeal",
+                     "carrierPath", "authorityFingerprint", "opportunityId", "eventRef",
+                     "privateNpcData", "gmPrivateNotes"
+                 })
+        {
+            Assert.DoesNotContain(
+                $"\"{sensitiveKey}\"",
+                serializedPacket,
+                StringComparison.Ordinal);
         }
     }
 

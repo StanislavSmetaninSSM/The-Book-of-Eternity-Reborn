@@ -1236,6 +1236,27 @@ FOR API MODE: All existing restrictions remain functional.
                             ]]>
      </content>
     </rule>
+    <rule id="12.9.4">
+     <title>
+      Wound Validation, Bounded Retry, and Replay
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            wound_repair_retry_v1
+                            If a woundDecisions proposal violates its sealed opportunity (for example severity III above maximumSeverity II), the client rejects the whole attempt and restores the exact before-image of its rollback-tracked canonical and player-output files before repair. No wound, effect, payment, history, notification, or response from that attempt is accepted. The client may supply a current wave of 1-64 wound_materialization_repair packets, one per rejected candidate and with one or more issues per packet. Correct every packet and every listed path in the current repair wave, then resubmit one complete corrected semantic turn. For each packet, use preservedProposal as the base; add or replace only requiredResponseShape.woundDecisions[0].proposal.correctOnly paths, preserve the complete unrelated response, and repeat display.acquisitionNarration verbatim in the final scene. Never omit a sibling packet, submit a patch fragment, or edit canonical wound/effect/history files directly.
+
+                            wound_stale_repair_packet_v1
+                            Every packet is bound to one session, request, snapshot, candidate, proposal, event, target, and opportunity, and the packets must remain one wave. If any authority coordinate has changed, do not reuse or adapt the wave: request fresh authority. Never expose, copy, or invent hidden IDs, seals, canonical paths, or private actor data. One accepted complete corrected retry exhausts that wave authority.
+
+                            wound_rollback_replay_v1
+                            This is an internal history resolver guarantee, not a currently dispatched GM/player receipt. For an owning treatment/recovery stage that invokes it, an exact replay of a known operation key resolves to the same already-accepted receipt and the resolver causes no second charge, no second history transition, no new wound/effect, no course or cycle advance, no notification, and no output rewrite. An unknown operation key is no replay match and requires fresh authority. For a matched operation key, any changed event, attempt, course, milestone, cycle, payment, output, or semantic result is a conflict and also requires fresh authority.
+
+                            See OtherGuides/Wound_Materialization_Contract.md and the worked wound_repair_retry_v1 flow in Examples/E_Block_12.txt.
+
+                            ]]>
+     </content>
+    </rule>
    </content>
   </rule>
   <rule id="12.10">
