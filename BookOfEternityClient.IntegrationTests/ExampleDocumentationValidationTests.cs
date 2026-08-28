@@ -16,7 +16,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "FullValidation")]
-public sealed class ExampleDocumentationValidationTests
+public sealed partial class ExampleDocumentationValidationTests
 {
     private static readonly JsonDocumentOptions DocumentOptions = new()
     {

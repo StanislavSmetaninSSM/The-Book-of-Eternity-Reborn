@@ -7,7 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class PromptDocumentationCoverageTests
+public sealed partial class PromptDocumentationCoverageTests
 {
     [Fact]
     public void MortalItemIdentityIndex_IsClientOwnedAcrossValidationAndRepairMappings()

@@ -422,10 +422,23 @@ T042-T044 still own the GM-facing contract, examples, manifest, and prompt updat
 
 ### GM contract synchronization
 
-- [ ] T042 [P] [US1] Add RED source/documentation guards for wound constructor, optional GM choice, guarantee, severity bounds, acquisition narration, effect separation, and the exact registered spiritual wound profile set in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs` and `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
+- [X] T042 [P] [US1] Add RED source/documentation guards for wound constructor, optional GM choice, guarantee, severity bounds, acquisition narration, effect separation, and the exact registered spiritual wound profile set in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs` and `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
 - [ ] T043 [US1] Create the GM-facing common constructor/authority/effect contract in `OtherGuides/Wound_Materialization_Contract.md`, synchronize the wound-source and exact spiritual-profile registry sections in `OtherGuides/Effect_Materialization_Contract.md`, and update `Examples/E_CLI_Effect_Materialization.txt` plus `Examples/example_validation_manifest.json` so all exact eight registered spiritual wound profiles have closed fragments and at least one complete worked GM spiritual-wound source graph
 - [ ] T044 [US1] Replace the loose constructor and add optional/lower/guaranteed/rejected worked examples in `Rules/Block_5.txt`, `Examples/E_Block_5.txt`, and `BookOfEternityClient/game_master_daemon.ps1`
 - [ ] T045 [US1] Run focused US1 unit/integration/documentation filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
+
+T042 RED evidence (2026-08-28): seven documentation/source guards now specify the
+strict common constructor, ordinary optional/lower and guaranteed decisions, legal
+severity/narration/effect boundaries, mandatory daemon routing, exact runtime-derived
+eight-profile spiritual catalog, manifest coverage, closed profile fragments, and one
+production-valid GM spiritual-wound source graph without client identities. Unit RED
+is the expected missing contract/rule/profile surface (`0/3`,
+`20260828-232552-262-36208-c50750536b0747138a94eb46d4c4b3fe-focused`) plus the
+expected missing daemon entrypoint (`0/1`,
+`20260828-232717-038-18916-6b195d3cf3ba4b9fad0ca13db90d3ba4-focused`). Integration
+RED is exactly the two absent named examples and two absent manifest entries (`0/3`,
+`20260828-232732-653-41640-b16623c093e14c9e8771fa07babcb0c8-focused`). Both projects
+compile warning-free; T043-T044 own the corresponding GREEN documentation.
 
 **Checkpoint**: Wound creation is complete, fair, atomic, narrated, and independently testable; no treatment or player command is exposed yet.
 
