@@ -301,6 +301,13 @@ and the wound source guard remains GREEN `2/2`
 (`20260828-190216-860-2028-415de2c7a56c463dbfc5983be64c9fdf-focused`).
 The two publication fixtures intentionally remain RED at the existing nonempty command
 adapter until T037/T038; T040-T044 still own runtime output and GM documentation wiring.
+T037/T038 accepted-command RED expansion (2026-08-28): the integration contour now
+also requires an exact accepted event, an accepted owner/effect-target binding even for
+a declined opportunity, and duplicate-preserving strict parsing of nested sealed
+opportunity fields. The expected pre-adapter state is `13/18` GREEN with exactly those
+three authority regressions plus the existing decline/create publication fixtures RED,
+warning-free and without timeout
+(`20260828-191957-736-31776-8eeccdf68b0b43e58a8a2590728fff92-focused`).
 The expanded wound/cache/snapshot checkpoint initially exposed one stale cache-test
 builder, not 62 independent runtime failures; after resealing its intentionally changed
 request coordinates, the exact same control is GREEN `1700/1700`, warning-free and

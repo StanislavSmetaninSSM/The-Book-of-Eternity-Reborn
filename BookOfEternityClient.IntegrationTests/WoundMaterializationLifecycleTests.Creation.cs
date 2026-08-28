@@ -229,7 +229,9 @@ public sealed partial class WoundMaterializationLifecycleTests
     private static async Task<CreationAuthority> CreateAuthorityAsync(
         ResourceMaterializationTestContext context,
         int maximumSeverityRank,
-        int? guaranteedSeverityRank = null)
+        int? guaranteedSeverityRank = null,
+        string eventRef = EventRef,
+        WoundOwnerCoordinate? acceptedOwner = null)
     {
         var snapshotToken = await WoundMaterializationValidationTests
             .ReadSnapshotTokenAsync(context);
@@ -241,7 +243,7 @@ public sealed partial class WoundMaterializationLifecycleTests
             maximumSeverityRank,
             "Острый край ранит левое предплечье во время обвала.");
         var acceptedEvent = new WoundAcceptedEventAuthority(
-            EventRef,
+            eventRef,
             evidence.AuthorityKind,
             evidence.AuthorityId,
             WoundOpportunityEventEvidenceFingerprint.Compute(evidence));
@@ -254,7 +256,7 @@ public sealed partial class WoundMaterializationLifecycleTests
             42,
             events,
             WoundAcceptedEventSetFingerprint.Compute(events));
-        var owner = new WoundOwnerCoordinate(
+        var owner = acceptedOwner ?? new WoundOwnerCoordinate(
             "mortal_world",
             "player",
             "player_current",
@@ -276,7 +278,7 @@ public sealed partial class WoundMaterializationLifecycleTests
             binding,
             OpportunityId,
             OpportunityRef,
-            EventRef,
+            eventRef,
             owner,
             "physical",
             "mortal_formal_injury_v1",
