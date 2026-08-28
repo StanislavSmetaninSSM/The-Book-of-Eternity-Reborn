@@ -257,7 +257,7 @@ Production remains untouched.
 ### GREEN implementation
 
 - [X] T035 [US1] Implement sealed Mortal/mechanical/narrative/spiritual wound opportunities, guarantees, safe GM context, and consumed decision authority in `BookOfEternityClient/Services/WoundOpportunityAuthority.cs`
-- [ ] T036 [US1] Add the strict response proposal/decision fields and remove permanent-ID authority from GM input in `BookOfEternityClient/Models/GameResponse.cs` and `BookOfEternityClient/Services/WoundResponseInputComposer.cs`
+- [X] T036 [US1] Add the strict response proposal/decision fields and remove permanent-ID authority from GM input in `BookOfEternityClient/Models/GameResponse.cs` and `BookOfEternityClient/Services/WoundResponseInputComposer.cs`
 - [ ] T037 [US1] Bind exact event/source/target/realm/profile and guaranteed evidence during wound preparation in `BookOfEternityClient/Services/WoundSourceAuthority.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T038 [US1] Wire optional, lower-than-cap, guaranteed, declined, and worsening US1 response proposals plus exact opportunity/source authority into the completed T020/T022/T024 typed wound-batch/finalization API without adding a second effect path in `BookOfEternityClient/Services/WoundResponseInputComposer.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [ ] T039 [US1] Compose create/worsen/decline after-images, client-owned wound IDs, effect-plan-owned root IDs, full old source-group teardown before worsen rematerialization, history, owner carriers, and combatant promotion transitions in `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs` and `BookOfEternityClient/Services/WoundTransitionReducer.cs`
@@ -285,6 +285,22 @@ onto another owner under a recomputed opportunity seal. The new authority regres
 are GREEN `21/21` and `15/15`
 (`20260828-175501-281-33012-ceef5ff3bcea4ff0835182cee1f691f7-focused`,
 `20260828-175741-134-9332-a1e363a762d24a5ba349091bf82a3359-focused`).
+
+T036 GREEN evidence (2026-08-28): `GameResponse.woundDecisions` now accepts only
+strict `none` or ID-free `materialize` proposals. The pure composer binds one decision
+to one sealed opportunity, derives complication/transition/root-application local
+coordinates, validates a complete ephemeral canonical wound/effect graph, produces
+detached typed drafts and notifications, and emits a sealed client command without
+granting the GM `woundId`, `effectId`, `complicationId`, or transition authority.
+Malformed nested scalars fail closed rather than throwing. The owning response/decision/
+guarantee/legacy contour is GREEN `13/13`, warning-free
+(`20260828-190346-049-19220-89e7b4c3dba743f388c5e9992a62d6e4-focused`),
+the explicit malformed-scalar regression is GREEN `1/1`
+(`20260828-185947-824-29544-c429eb338bf54823a29db9245571414b-focused`),
+and the wound source guard remains GREEN `2/2`
+(`20260828-190216-860-2028-415de2c7a56c463dbfc5983be64c9fdf-focused`).
+The two publication fixtures intentionally remain RED at the existing nonempty command
+adapter until T037/T038; T040-T044 still own runtime output and GM documentation wiring.
 The expanded wound/cache/snapshot checkpoint initially exposed one stale cache-test
 builder, not 62 independent runtime failures; after resealing its intentionally changed
 request coordinates, the exact same control is GREEN `1700/1700`, warning-free and
