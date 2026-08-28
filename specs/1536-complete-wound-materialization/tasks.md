@@ -510,7 +510,7 @@ duplicate IDs
 - [X] T046 [P] [US7] Add RED table-driven owner/severity/slot/effect/treatment/resource/narration issue normalization, offending-path preservation, safe expected ranges, preserved siblings, required corrected response shape, and bounded candidate tests in `BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs`
 - [X] T047 [P] [US7] Add RED hidden owner/provider/route/resource seal and private NPC data non-disclosure tests in `BookOfEternityClient.Tests/WoundRepairPacketPrivacyTests.cs`
 - [X] T048 [P] [US7] Add RED changed event/target/roll/snapshot/generation invalidation, exact packet receipt, and take-once tests in `BookOfEternityClient.Tests/WoundAcceptedTurnPlanCacheTests.cs`
-- [ ] T049 [US7] Add RED corrected repair roundtrips for every representative invalid category plus failure injection before/after wound/effect/resource/profile/scheduler/history/output writes with byte/existence assertions in `BookOfEternityClient.IntegrationTests/WoundMaterializationRollbackTests.cs`
+- [X] T049 [US7] Add RED corrected repair roundtrips for every representative invalid category plus failure injection before/after wound/effect/resource/profile/scheduler/history/output writes with byte/existence assertions in `BookOfEternityClient.IntegrationTests/WoundMaterializationRollbackTests.cs`
 - [ ] T050 [P] [US7] Add RED 100-repeat loops for accepted event/treatment/course/cycle/payment/output identities after success, repair, crash recovery, and consumed commands, asserting zero duplicate state in `BookOfEternityClient.IntegrationTests/WoundMaterializationReplayTests.cs`
 
 T046 RED evidence (2026-08-29): the new table-driven repair contract covers exact
@@ -546,6 +546,20 @@ waves atomically when a new generation is registered. The Focused RED build is
 warning-free and stops only at the intentionally absent T051 packet types plus the T053
 cache surface, with no tests executed, timeout, or duplicate IDs
 (`20260829-005454-253-39064-a529faa40242497a8a48233af84e24cf-focused`).
+
+T049 RED evidence (2026-08-29): the integration contract now roundtrips corrected owner,
+severity, slot, linked-effect, treatment, resource, and narration candidates through an
+exact take-once repair receipt into one atomic wound/effect/index/history publication.
+The rejected proposal is restored from the packet's preserved siblings by changing only
+the named semantic leaf. A 24-case before/after failure matrix covers wound carrier and
+identity, effect carrier and identity, resource, afterlife profile, scheduler/report,
+wound history, and all three output surfaces; every row requires exact bytes and exact
+existence restoration across the whole mixed present/absent set. The treatment fixture
+was also aligned with the actual closed schema by replacing the nonexistent `aftercare`
+leaf with required `displayName`. The Focused Integration RED build is warning-free and
+stops only at the intentionally absent T051 builder/packet types and T053 repair-cache
+surface, with no tests executed, timeout, or duplicate IDs
+(`20260829-011751-823-21140-117e8f3898284e5d829f803a09e12933-focused`).
 
 ### GREEN implementation
 

@@ -667,9 +667,10 @@ public sealed partial class WoundMaterializationLifecycleTests
             StringComparison.Ordinal);
     }
 
-    private static async Task<ResourceMaterializationTestContext> CreatePlayerContextAsync()
+    private static async Task<ResourceMaterializationTestContext> CreatePlayerContextAsync(
+        FileSystemManagerHooks? hooks = null)
     {
-        var context = await ResourceMaterializationTestContext.CreateAsync();
+        var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
         await WoundMaterializationValidationTests.SeedEmptyFoundationsAsync(context);
         var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(
             incarnationNumber: 1,

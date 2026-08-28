@@ -32,9 +32,9 @@ public sealed class WoundRepairPacketBuilderTests
         "one complete wound-owned effect definition with response-local links",
         "missing reciprocal link")]
     [InlineData(
-        "woundDecisions[0].proposal.treatment.routes[0].aftercare",
+        "woundDecisions[0].proposal.treatment.routes[0].displayName",
         "wound_materialization_missing_field",
-        "proposal.treatment.routes[0].aftercare",
+        "proposal.treatment.routes[0].displayName",
         "one complete treatment route in the closed wound schema",
         "missing")]
     [InlineData(
@@ -106,8 +106,8 @@ public sealed class WoundRepairPacketBuilderTests
         var originalRoute = original["treatment"]!["routes"]![0]!.AsObject();
         var preservedRoute = preserved["treatment"]!["routes"]![0]!.AsObject();
         Assert.Equal(
-            originalRoute["routeRef"]!.ToJsonString(),
-            preservedRoute["routeRef"]!.ToJsonString());
+            originalRoute["routeId"]!.ToJsonString(),
+            preservedRoute["routeId"]!.ToJsonString());
         Assert.Equal(
             originalRoute["requirements"]!.ToJsonString(),
             preservedRoute["requirements"]!.ToJsonString());
@@ -343,25 +343,41 @@ public sealed class WoundRepairPacketBuilderTests
             ["diagnosisPaths"] = new JsonArray(),
             ["routes"] = new JsonArray(new JsonObject
             {
-                ["routeRef"] = "clean_and_suture",
-                ["requirements"] = new JsonArray(new JsonObject
-                {
-                    ["kind"] = "cleaning_supplies"
-                }),
+                ["routeId"] = "clean_and_suture",
+                ["displayName"] = "Очистить и наложить швы",
+                ["visibility"] = "known_to_player",
+                ["mode"] = "procedure",
+                ["requirements"] = new JsonArray(),
                 ["resourcePolicy"] = new JsonObject
                 {
-                    ["kind"] = "consume_item",
-                    ["resource"] = "bandage",
-                    ["amount"] = 1
+                    ["reserveBeforeResolution"] = true,
+                    ["consumeOn"] = new JsonArray("success", "partial_success"),
+                    ["refundOn"] = new JsonArray("validation_failed", "rolled_back"),
+                    ["mutations"] = new JsonArray()
                 },
-                ["aftercare"] = "Держать повязку сухой."
+                ["resolution"] = new JsonObject
+                {
+                    ["formulaKey"] = "mortal_wound_procedure_v1",
+                    ["difficulty"] = 12,
+                    ["rollSource"] = "accepted_d20"
+                },
+                ["outcomes"] = new JsonArray(),
+                ["interruption"] = null
             }),
-            ["failurePolicy"] = "progress_stalls"
+            ["knownRouteIds"] = new JsonArray("clean_and_suture"),
+            ["completedRouteIds"] = new JsonArray()
         },
         ["recovery"] = new JsonObject
         {
-            ["mode"] = "mortal_clock",
-            ["currentStepProgress"] = 0
+            ["mode"] = "requires_stabilization",
+            ["clockKind"] = "mortal_world_time",
+            ["cadence"] = 86400,
+            ["currentStepProgress"] = 0,
+            ["currentStepThreshold"] = 3,
+            ["lastTickKey"] = null,
+            ["blockers"] = new JsonArray("not_stabilized"),
+            ["carryOverflow"] = true,
+            ["deteriorationPolicy"] = null
         }
     };
 
