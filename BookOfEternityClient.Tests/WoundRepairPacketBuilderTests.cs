@@ -14,6 +14,12 @@ public sealed class WoundRepairPacketBuilderTests
         "owner omitted; the client keeps the sealed target",
         "forbidden owner field")]
     [InlineData(
+        "woundDecisions[0].proposal.unexpectedNote",
+        "wound_response_unknown_field",
+        "proposal.unexpectedNote",
+        "remove only this unknown GM-authored field and preserve every valid sibling",
+        "unexpected note")]
+    [InlineData(
         "woundDecisions[0].proposal.severity",
         "wound_severity_above_opportunity",
         "proposal.severity",
@@ -370,6 +376,42 @@ public sealed class WoundRepairPacketBuilderTests
             correctedDecision,
             narration));
         correctedDecision["proposal"]!["owner"] = new JsonObject();
+        Assert.False(packet.MatchesCorrectedDecision(
+            correctedDecision,
+            narration));
+    }
+
+    [Fact]
+    public void MatchesCorrectedDecision_PreservesUnknownFieldCodeAndRequiresOmission()
+    {
+        var proposal = CreateProposal();
+        proposal["unexpectedNote"] = "remove me";
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(CreateRequest(
+            CreateCandidate(
+                "candidate_retry_unknown_001",
+                "woundDecisions[0].proposal.unexpectedNote",
+                "wound_response_unknown_field",
+                "unexpected note",
+                proposal))));
+        Assert.Equal(
+            "wound_response_unknown_field",
+            Assert.Single(packet.Issues).Code);
+        Assert.False(packet.PreservedProposal.ContainsKey("unexpectedNote"));
+
+        var correctedDecision = new JsonObject
+        {
+            ["opportunityRef"] = "opportunity_safe_001",
+            ["decision"] = "materialize",
+            ["woundRef"] = "local_wound_ref_001",
+            ["proposal"] = packet.PreservedProposal
+        };
+        const string narration =
+            "Крюк срывается с цепи и вспарывает вам предплечье.";
+
+        Assert.True(packet.MatchesCorrectedDecision(
+            correctedDecision,
+            narration));
+        correctedDecision["proposal"]!["unexpectedNote"] = "still present";
         Assert.False(packet.MatchesCorrectedDecision(
             correctedDecision,
             narration));

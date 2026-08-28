@@ -136,7 +136,18 @@ internal static partial class WoundResponseInputComposer
             {
                 var command = ParseCommand(element, index, issues);
                 if (command is not null)
+                {
                     commands.Add(command);
+                }
+                else
+                {
+                    AddCommandIssue(
+                        issues,
+                        $"{AcceptedMechanicsPlan.WoundCommandPath}.commands[{index}]",
+                        "wound_command_transition_adapter_unavailable",
+                        "one complete client-adapted opportunity_decision command",
+                        "command could not be adapted to one typed wound transition");
+                }
                 index++;
             }
         }

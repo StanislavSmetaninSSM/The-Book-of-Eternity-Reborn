@@ -447,6 +447,7 @@ internal static partial class WoundResponseInputComposer
                         opportunities,
                         rawDecisions,
                         finalSceneText,
+                        issues,
                         issue,
                         decisionIndex,
                         out var projected))
@@ -511,6 +512,7 @@ internal static partial class WoundResponseInputComposer
         IReadOnlyList<WoundOpportunityAuthority> opportunities,
         IReadOnlyList<JsonElement> rawDecisions,
         string? finalSceneText,
+        IReadOnlyList<ValidationIssue> allIssues,
         ValidationIssue source,
         int decisionIndex,
         out ValidationIssue projected)
@@ -522,6 +524,14 @@ internal static partial class WoundResponseInputComposer
         {
             return false;
         }
+
+        var duplicateIssues = new List<ValidationIssue>();
+        ValidateNoDuplicateProperties(
+            rawDecisions[decisionIndex],
+            $"woundDecisions[{decisionIndex}]",
+            duplicateIssues);
+        if (duplicateIssues.Count != 0)
+            return false;
 
         JsonObject rejectedDecision;
         try
@@ -560,6 +570,20 @@ internal static partial class WoundResponseInputComposer
                 proposal,
                 out var projectedPath,
                 out var projectedCode))
+        {
+            return false;
+        }
+        if (string.Equals(
+                source.Code,
+                "wound_response_unknown_field",
+                StringComparison.Ordinal) &&
+            !HasValidSanitizedUnknownFieldBase(
+                binding,
+                opportunity,
+                rejectedDecision,
+                decisionIndex,
+                allIssues,
+                finalSceneText))
         {
             return false;
         }
@@ -621,6 +645,87 @@ internal static partial class WoundResponseInputComposer
         return WoundRepairPacketBuilder.IsRepairableIssue(projected);
     }
 
+    private static bool HasValidSanitizedUnknownFieldBase(
+        WoundAcceptedTurnBinding binding,
+        WoundOpportunityAuthority opportunity,
+        JsonObject rejectedDecision,
+        int decisionIndex,
+        IReadOnlyList<ValidationIssue> allIssues,
+        string? finalSceneText)
+    {
+        var prefix = $"woundDecisions[{decisionIndex}].proposal.";
+        var unknownPaths = allIssues
+            .Where(issue =>
+                string.Equals(
+                    issue.Code,
+                    "wound_response_unknown_field",
+                    StringComparison.Ordinal) &&
+                issue.FilePath.StartsWith(prefix, StringComparison.Ordinal))
+            .Select(issue => issue.FilePath[prefix.Length..])
+            .Where(static path => path.Length != 0)
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        if (unknownPaths.Length == 0)
+            return false;
+
+        var sanitizedDecision = rejectedDecision.DeepClone().AsObject();
+        if (sanitizedDecision["proposal"] is not JsonObject sanitizedProposal)
+            return false;
+        foreach (var unknownPath in unknownPaths)
+            WoundRepairPacketBuilder.RemovePath(sanitizedProposal, unknownPath);
+
+        var validationIssues = new List<ValidationIssue>();
+        try
+        {
+            using var document = JsonDocument.Parse(sanitizedDecision.ToJsonString());
+            if (!TryParseDecision(
+                    document.RootElement,
+                    decisionIndex,
+                    validationIssues,
+                    out var parsed) ||
+                parsed is null)
+            {
+                return false;
+            }
+
+            var evaluated = WoundOpportunityDecisionAuthority.Evaluate(
+                opportunity,
+                new WoundOpportunityDecisionRequest(
+                    parsed.OpportunityRef,
+                    parsed.Decision,
+                    parsed.SeverityRank,
+                    parsed.LocalWoundRef),
+                Array.Empty<WoundOpportunityDecisionReceipt>());
+            foreach (var issue in evaluated.Issues)
+                validationIssues.Add(CloneIssueForDecision(issue, decisionIndex));
+            if (!evaluated.Success || evaluated.Decision is null)
+                return false;
+
+            var composed = opportunity.WorseningTarget is null
+                ? TryComposeCreateTransition(
+                    binding,
+                    opportunity,
+                    parsed,
+                    evaluated.Decision,
+                    finalSceneText,
+                    validationIssues)
+                : TryComposeWorsenTransition(
+                    binding,
+                    opportunity,
+                    parsed,
+                    evaluated.Decision,
+                    finalSceneText,
+                    validationIssues);
+            return validationIssues.Count == 0 && composed.Transition is not null;
+        }
+        catch (Exception exception) when (
+            exception is JsonException or InvalidOperationException or
+                ArgumentException or FormatException or OverflowException)
+        {
+            return false;
+        }
+    }
+
     private static bool TryProjectRepairCoordinate(
         ValidationIssue issue,
         int decisionIndex,
@@ -652,7 +757,6 @@ internal static partial class WoundResponseInputComposer
         if (code == "wound_response_unknown_field" &&
             issue.FilePath.StartsWith(prefix, StringComparison.Ordinal))
         {
-            code = "wound_materialization_invalid_field";
             return true;
         }
         if (code is

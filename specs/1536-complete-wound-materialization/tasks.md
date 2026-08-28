@@ -583,8 +583,8 @@ history/receipt/planner replay surface, with no tests executed, timeout, or dupl
 - [X] T054 [US7] Extend exact snapshot and post-publication agreement to scheduler, journals, quests, inventory/characteristics, debug/output, and pending wound roots in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs`
 - [X] T055 [US7] Add operation/attempt/course/cycle/payment/output replay coordinates and already-accepted receipt projection in `BookOfEternityClient/Services/WoundHistoryState.cs` and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
 - [X] T056 [US7] Add invalid proposal, bounded repair, stale packet, rollback, and replay worked guidance in `OtherGuides/Wound_Materialization_Contract.md`, `Rules/Block_12.txt`, and `Examples/E_Block_12.txt`
-- [ ] T057A [US7] Resolve the inherited strict response/repair regressions exposed by the complete lifecycle filter, including duplicate-property fail-closed handling and preservation of the registered response issue codes
-- [ ] T057 [US7] Run focused repair/privacy/cache/rollback/replay filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
+- [X] T057A [US7] Resolve the inherited strict response/repair regressions exposed by the complete lifecycle filter, including duplicate-property fail-closed handling and preservation of the registered response issue codes
+- [X] T057 [US7] Run focused repair/privacy/cache/rollback/replay filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
 
 T051 GREEN evidence (2026-08-29): the new immutable repair packet boundary accepts a
 stable wave of at most 64 exact/confusable-unique construction, repair, narration, or
@@ -762,6 +762,45 @@ An exploratory complete wound lifecycle/validation selection also exposed eight
 response/repair failures outside the T055 files (59/67 passed); a representative raw
 duplicate-property exception reproduces unchanged on baseline commit `93b71676`.
 T057A tracks that inherited US7 debt explicitly before the final T057 GREEN gate.
+
+T057A GREEN evidence (2026-08-29): strict command parsing now retains its detailed
+diagnostics and also reports the aggregate typed-adapter-unavailable boundary whenever
+one command cannot be adapted. Raw duplicate JSON properties are rejected before DOM
+projection, so ambiguous input remains fail-closed without throwing. Safe unknown
+proposal leaves retain the registered `wound_response_unknown_field` code and require
+omission on retry; repair authority is attached only after removing every listed
+unknown leaf for that exact decision from a clone and proving the shared sanitized base
+through strict parse, opportunity evaluation, and complete create/worsen composition.
+Malformed known siblings therefore remain fail-closed, while two harmless unknown
+leaves produce one atomic packet with two exact correction paths. Sensitive paths still
+reject the entire wave in the packet builder.
+
+The inherited 8-failure baseline is recorded in
+`20260829-065429-059-33512-07c6ca6eabf8402f95589a6e32d07647-focused`.
+The new multi-unknown regression first failed 0/1 as intended
+(`20260829-072206-239-39924-a9e4bf04bc2f489c9ec7a924f5e95607-focused`)
+and then passed 1/1 after grouped sanitization
+(`20260829-072318-517-19700-293e7ff1b97045938fcb5a9ab32c9800-focused`).
+Final lifecycle verification passes 62/62
+(`20260829-072452-897-43828-7aba14dfadf749a299622ff1f076ec80-focused`),
+including the malformed-sibling and grouped-unknown regressions. Independent final
+read-only review found 0 Critical, 0 Important, and 0 Minor findings and declared the
+change Ready. This restores the already documented strict repair contract and adds no
+new command, response field, canonical state, pending action, or GM-authored capability;
+Mortal/afterlife prompts, examples, manifests, and source guards therefore need no
+additional T057A update beyond T056.
+
+T057 GREEN evidence (2026-08-29): packet construction and recursive privacy pass 35/35
+(`20260829-072718-577-23268-db102cc7b43c4d13a7a0b8dffdae2a0b-focused`),
+the complete rollback/repair contour passes 40/40
+(`20260829-072855-003-31940-8c56ce22558943939d160db3e5a32c26-focused`),
+repair-wave cache invalidation/take-once authority passes 6/6
+(`20260829-073041-603-32276-7c78bcadd4dd4e8ca8862f4b01396911-focused`),
+and durable replay passes 13/13
+(`20260829-073106-084-41876-3f9f62276372467f8c0c147057a89848-focused`).
+The required Fast checkpoint passes all 6094/6094 tests in 4:34 with no timeout,
+failure, duplicate ID, or incomplete owned-tree cleanup
+(`20260829-073143-109-28696-7f0b3521b63146d58cafaa9b7ac1be86-fast`).
 
 **Checkpoint**: Invalid or repeated wound work cannot leak authority, alter unrelated content, or leave partial state.
 

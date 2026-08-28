@@ -333,11 +333,10 @@ internal sealed class WoundRepairPacket
                 return false;
             var semanticPath = issue.Path["proposal.".Length..];
             var omissionRequired =
-                (string.Equals(
-                     issue.Code,
-                     "wound_response_unknown_field",
-                     StringComparison.Ordinal) &&
-                 string.Equals(issue.Path, "proposal.owner", StringComparison.Ordinal)) ||
+                string.Equals(
+                    issue.Code,
+                    "wound_response_unknown_field",
+                    StringComparison.Ordinal) ||
                 string.Equals(
                     issue.Code,
                     "wound_materialization_invalid_field",
@@ -831,6 +830,13 @@ internal static class WoundRepairPacketBuilder
         if (path == "proposal.owner" && code == "wound_response_unknown_field")
         {
             expected = "owner omitted; the client keeps the sealed target";
+            return true;
+        }
+        if (path.StartsWith("proposal.", StringComparison.Ordinal) &&
+            code == "wound_response_unknown_field")
+        {
+            expected =
+                "remove only this unknown GM-authored field and preserve every valid sibling";
             return true;
         }
         if (path == "proposal.severity" && code == "wound_severity_above_opportunity")

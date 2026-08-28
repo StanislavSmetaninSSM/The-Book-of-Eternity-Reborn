@@ -61,6 +61,73 @@ public sealed partial class WoundMaterializationLifecycleTests
     }
 
     [Fact]
+    public async Task ResponseProposal_UnknownFieldBesideMalformedKnownSiblingFailsRepairClosed()
+    {
+        await using var context = await CreatePlayerContextAsync();
+        var authority = await CreateAuthorityAsync(context, maximumSeverityRank: 2);
+        var proposal = CreatePhysicalProposal("I", includeMechanicalRoot: true);
+        proposal["unexpectedNote"] = "remove me";
+        proposal["display"] = 17;
+        var response = Response(Decision("materialize", proposal));
+
+        var composed = WoundResponseInputComposer.Compose(
+            authority.Binding,
+            new[] { authority.Opportunity },
+            response.WoundDecisions,
+            response.Response,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+
+        Assert.False(composed.Success);
+        Assert.Contains(composed.Issues, issue =>
+            issue.Code == "wound_response_unknown_field" &&
+            issue.FilePath == "woundDecisions[0].proposal.unexpectedNote");
+        Assert.All(composed.Issues, issue => Assert.Null(issue.WoundRepairContext));
+        Assert.Empty(WoundRepairPacketBuilder.Build(composed.Issues));
+        Assert.True(WoundRepairPacketBuilder.RequiresFailClosedRollback(
+            composed.Issues));
+    }
+
+    [Fact]
+    public async Task ResponseProposal_TwoUnknownFieldsProduceOneAtomicRepairPacket()
+    {
+        await using var context = await CreatePlayerContextAsync();
+        var authority = await CreateAuthorityAsync(context, maximumSeverityRank: 2);
+        var proposal = CreatePhysicalProposal("I", includeMechanicalRoot: true);
+        proposal["unexpectedNote"] = "remove me";
+        proposal["unusedDecoration"] = "remove me too";
+        var response = Response(Decision("materialize", proposal));
+
+        var composed = WoundResponseInputComposer.Compose(
+            authority.Binding,
+            new[] { authority.Opportunity },
+            response.WoundDecisions,
+            response.Response,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+
+        Assert.False(composed.Success);
+        var repairIssues = composed.Issues.Where(issue =>
+                issue.Code == "wound_response_unknown_field")
+            .ToArray();
+        Assert.Equal(2, repairIssues.Length);
+        Assert.All(repairIssues, issue => Assert.NotNull(issue.WoundRepairContext));
+        Assert.Single(repairIssues.Select(issue =>
+            issue.WoundRepairContext!.CandidateRef).Distinct(StringComparer.Ordinal));
+
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(composed.Issues));
+        Assert.Equal(
+            new[]
+            {
+                "proposal.unexpectedNote",
+                "proposal.unusedDecoration"
+            },
+            packet.Issues.Select(issue => issue.Path).Order(StringComparer.Ordinal));
+        Assert.False(packet.PreservedProposal.ContainsKey("unexpectedNote"));
+        Assert.False(packet.PreservedProposal.ContainsKey("unusedDecoration"));
+        Assert.False(WoundRepairPacketBuilder.RequiresFailClosedRollback(
+            composed.Issues));
+    }
+
+    [Fact]
     public async Task ResponseProposal_MalformedDefinitionScalarFailsClosedWithoutThrowing()
     {
         await using var context = await CreatePlayerContextAsync();
