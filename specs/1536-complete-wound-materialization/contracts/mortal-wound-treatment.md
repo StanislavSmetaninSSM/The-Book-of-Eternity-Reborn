@@ -724,6 +724,24 @@ retirement, ID/capability change, or limit change rejects and rolls back the who
 Exact replay returns before these live gates and may supply no current proof; it cannot
 publish again.
 
+Capability export diagnostics use one closed, stable boundary vocabulary.  The
+`FilePath` values below name typed treatment coordinates rather than an incidental JSON
+array index, so the same proof failure is reported identically for player/NPC and
+active/passive skill roots:
+
+| Failure | Exact code | Exact `FilePath` |
+| --- | --- | --- |
+| a combatant/member target has no canonical player/NPC promotion for a target-owned source | `mortal_wound_treatment_capability_actor_promotion_required` | `treatmentCapability.target` |
+| route actor role disagrees with the selected proof owner | `mortal_wound_treatment_capability_binding_mismatch` | `treatmentCapability.actorRole` |
+| canonical source owner disagrees with the sealed actor binding | `mortal_wound_treatment_capability_binding_mismatch` | `treatmentCapability.sourceOwner` |
+| selected current/final skill source is absent | `mortal_wound_treatment_capability_source_missing` | `treatmentCapability.source` |
+| selected current/final source is inactive or retired | `mortal_wound_treatment_capability_source_inactive` | `treatmentCapability.source.lifecycle` |
+| selected current/final skill identity is exact-duplicate or Unicode-confusable | `mortal_wound_treatment_capability_source_ambiguous` | `treatmentCapability.source.skillId` |
+| final source ID, capability, domain, limits, or semantic fingerprint differs from the sealed proof | `mortal_wound_treatment_capability_publication_mismatch` | `treatmentCapability.publicationPlan` |
+
+The exporter returns the scenario-specific row above; it must not replace it with a
+generic invalid-authority issue from an unrelated earlier boundary.
+
 `heal` never skips the canonical severity-I gate. Ordered outcome primitives are
 evaluated against a working state; a route for a higher severity must first declare
 enough legal reductions to reach I, after which `heal` requests the separate canonical
