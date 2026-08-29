@@ -71,6 +71,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         "changed_final_domain_rejects",
         "changed_final_operation_limits_reject",
         "duplicate_or_confusable_final_skill_row_rejects",
+        "confusable_final_skill_sibling_rejects",
         "stale_final_source_rejects",
         "publication_export_accepts_no_detached_json_or_publication_intent"
     }.Select(static row => new object[] { DescribeScenario(row, publication: true) });
@@ -186,7 +187,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
     {
         var acceptedState = BuildAcceptedState(fixture);
         var coordinates = CreateCoordinates(fixture, acceptedState);
-        var publicationPlan = BuildPublicationPlan(fixture);
+        var publicationPlan = BuildPublicationPlan(fixture, acceptedState, coordinates);
         var result = InvokeCapabilityExporter(
             "ExportForPublication",
             acceptedState,
@@ -331,24 +332,40 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         return ReadValidTypedResult(result, "Coordinates", "attempt coordinates");
     }
 
-    private static object BuildPublicationPlan(CapabilityAuthorityFixture fixture)
+    private static object BuildPublicationPlan(
+        CapabilityAuthorityFixture fixture,
+        object acceptedState,
+        object coordinates)
     {
-        var result = AcceptedMechanicsPlanAuthority.GetOrBuildValidated(
-            fixture.FileSystem,
-            fixture.Lease,
-            fixture.CreatePublicationPlanningInput());
-        Assert.True(result.Success, DescribeIssues(result.Issues));
-        Assert.NotNull(result.Plan);
+        // T066 must own publication composition: tests must never assemble an
+        // AcceptedMechanicsInput, authority fingerprints, event export, before image,
+        // or owner companion after-image.  This coordinator is responsible for taking
+        // the exact same lease/binding accepted state and re-peeking the validated
+        // common cache that already holds the final canonical skill root.
+        var coordinatorType = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundTreatmentCapabilityPublicationCoordinator",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.NotNull(coordinatorType);
+        var method = Assert.Single(
+            coordinatorType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+            static candidate => candidate.Name == "GetOrBuildValidatedPlan" &&
+                                candidate.GetParameters().Length == 2);
+        var parameters = method.GetParameters();
+        Assert.Equal(acceptedState.GetType(), parameters[0].ParameterType);
+        Assert.Equal(coordinates.GetType(), parameters[1].ParameterType);
+        var result = Invoke(method, new[] { acceptedState, coordinates });
+        var publicationPlan = ReadValidTypedResult(result, "Plan", "capability publication coordinator");
         Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
             fixture.FileSystem,
             fixture.Lease,
             out var cachedBinding,
             out var cached));
         Assert.True(cached.Success, DescribeIssues(cached.Issues));
-        Assert.Same(result.Plan, cached.Plan);
+        Assert.Same(publicationPlan, cached.Plan);
         fixture.AssertCachedPublicationPlanBinding(cachedBinding);
-        fixture.AssertPublicationPlanBindsOnlyTheSelectedRoot(result.Plan!);
-        return result.Plan!;
+        fixture.AssertPublicationPlanBindsOnlyTheSelectedRoot(publicationPlan);
+        return publicationPlan;
     }
 
     private static CapabilityProofView InvokeCapabilityExporter(
@@ -605,6 +622,10 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             case "duplicate_or_confusable_final_skill_row_rejects":
                 OtherSkill(fixture, scenario)["skillId"] = sourceSkill["skillId"]!.DeepClone();
                 break;
+            case "confusable_final_skill_sibling_rejects":
+                OtherSkill(fixture, scenario)["skillId"] =
+                    scenario.SkillId.Replace("i", "і", StringComparison.Ordinal);
+                break;
             case "stale_final_source_rejects":
                 sourceSkill["active"] = false;
                 break;
@@ -745,12 +766,12 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 break;
             case "ordinary_capability_projection_comes_from_same_skill":
             case "mastery_gate_remains_separate_skill_tier_requirement":
-                AssertGuaranteedRequirementBundleUsesUnchangedT060(fixture);
+                AssertGuaranteedRequirementBundleDelegatesToUnchangedT060(fixture);
                 break;
         }
     }
 
-    private static void AssertGuaranteedRequirementBundleUsesUnchangedT060(
+    private static void AssertGuaranteedRequirementBundleDelegatesToUnchangedT060(
         CapabilityAuthorityFixture fixture)
     {
         var authorityType = typeof(WoundMaterializationContract).Assembly.GetType(
@@ -758,6 +779,10 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             throwOnError: false,
             ignoreCase: false);
         Assert.NotNull(authorityType);
+        // The existing baseline exposes no public accepted ParseSnapshot that this
+        // fixture can construct without becoming a second requirement authority.
+        // Freeze the exact three-argument target that CreateForGuaranteed delegates
+        // to, then assert that production factory's returned, typed T060 surface.
         var resolver = Assert.Single(
             authorityType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
             static candidate => candidate.Name == "ResolveRequirements" &&
@@ -972,6 +997,15 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Assert.False(string.IsNullOrWhiteSpace(issue.Code));
             Assert.False(string.IsNullOrWhiteSpace(issue.FilePath));
         });
+        if (scenario.ExpectedCode is not null)
+        {
+            Assert.NotNull(scenario.ExpectedPath);
+            Assert.Contains(
+                issues,
+                issue =>
+                    string.Equals(issue.Code, scenario.ExpectedCode, StringComparison.Ordinal) &&
+                    string.Equals(issue.FilePath, scenario.ExpectedPath, StringComparison.Ordinal));
+        }
         AssertFrozenIssues(issues);
     }
 
@@ -982,6 +1016,8 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             static property => property.CanWrite);
         if (issues is IList mutableIssues)
             Assert.ThrowsAny<Exception>(() => mutableIssues.Add(null));
+        else
+            Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(issues);
     }
 
     private static object Invoke(MethodInfo method, object?[] arguments)
@@ -1077,8 +1113,34 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "changed_final_domain_rejects" or
             "changed_final_operation_limits_reject" or
             "duplicate_or_confusable_final_skill_row_rejects" or
+            "confusable_final_skill_sibling_rejects" or
             "stale_final_source_rejects" => CapabilityFailureBoundary.Exporter,
             _ => CapabilityFailureBoundary.None
+        };
+        (string? expectedCode, string? expectedPath) = name switch
+        {
+            "target_owned_combatant_requires_promotion" =>
+                ("mortal_wound_treatment_capability_actor_promotion_required", "treatmentCapability.target"),
+            "wrong_role_rejects" =>
+                ("mortal_wound_treatment_capability_binding_mismatch", ".actorRole"),
+            "wrong_owner_rejects" =>
+                ("mortal_wound_treatment_capability_binding_mismatch", ".sourceOwner"),
+            "removed_final_skill_rejects" =>
+                ("mortal_wound_treatment_capability_source_missing", ".source"),
+            "inactive_skill_rejects" or
+            "retired_skill_rejects" or
+            "retired_final_skill_rejects" or
+            "stale_final_source_rejects" =>
+                ("mortal_wound_treatment_capability_source_inactive", ".source.lifecycle"),
+            "duplicate_or_confusable_final_skill_row_rejects" or
+            "confusable_final_skill_sibling_rejects" =>
+                ("mortal_wound_treatment_capability_source_ambiguous", ".source.skillId"),
+            "changed_final_skill_id_rejects" or
+            "changed_final_capability_ref_rejects" or
+            "changed_final_domain_rejects" or
+            "changed_final_operation_limits_reject" =>
+                ("mortal_wound_treatment_capability_publication_mismatch", ".publicationPlan"),
+            _ => (null, null)
         };
         return new CapabilityScenario(
             name,
@@ -1094,7 +1156,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             targetId,
             expectedBoundary == CapabilityFailureBoundary.None,
             publication,
-            expectedBoundary);
+            expectedBoundary,
+            expectedCode,
+            expectedPath);
     }
 
     private static JsonObject Skill(JsonObject fixture, string owner, string skillKind) =>
@@ -1147,7 +1211,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         string TargetId,
         bool ExpectedValid,
         bool Publication,
-        CapabilityFailureBoundary ExpectedBoundary);
+        CapabilityFailureBoundary ExpectedBoundary,
+        string? ExpectedCode,
+        string? ExpectedPath);
 
     private sealed class CapabilityAuthorityFixture : IDisposable
     {
@@ -1461,92 +1527,16 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             return document.RootElement.Clone();
         }
 
-        internal AcceptedMechanicsInput CreatePublicationPlanningInput()
-        {
-            var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
-            var history = ResourceHistoryState.CreateValidated(
-                Array.Empty<ResourceTransition>(),
-                definitions).History!;
-            var owners = ResourceOwnerAuthority.Build(
-                new ResourceOwnerAuthorityInput(
-                    Array.Empty<ResourceOwnerExport>(),
-                    Array.Empty<ResourceOwnerExport>(),
-                    Array.Empty<ResourceOwnerKey>()));
-            var sources = ResourceMutationSourceCatalog.Create(
-                Array.Empty<ResourceMutationSourceExport>()).Catalog!;
-            var commands = ResourceAcceptedTurnInputComposer.Parse(null);
-            var afterImages = UsesFinalAfterImage
-                ? new Dictionary<string, JsonObject>(StringComparer.Ordinal)
-                {
-                    [SelectedSkillRootPath] = SelectedSkillRoot(FinalSource)
-                }
-                : new Dictionary<string, JsonObject>(StringComparer.Ordinal);
-            var planningContext = new AcceptedMechanicsPlanningContext(
-                definitions.ToCanonicalRoot(),
-                definitions,
-                new ResourceStateLedger(Array.Empty<ResourceStateEntry>()),
-                history,
-                owners,
-                sources,
-                commands,
-                new JsonObject
-                {
-                    ["schemaVersion"] = 1,
-                    ["entries"] = new JsonArray()
-                },
-                effectPlan: null,
-                ownerCompanionAfterImages: afterImages);
-            var beforeImages = PublicationBeforeImages(afterImages.Keys);
-            var fingerprint = WoundAcceptedEventSetFingerprint.Compute(new[]
-            {
-                new WoundAcceptedEventAuthority(
-                    EventRef,
-                    "mortal_wound_treatment",
-                    "mortal_wound_treatment_publication_plan",
-                    "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
-            });
-            var fingerprints = new AcceptedMechanicsAuthorityFingerprints(
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint,
-                fingerprint);
-            return new AcceptedMechanicsInput(
-                "session_capability_publication",
-                "request_capability_publication",
-                "snapshot_capability_publication",
-                "mortal_world",
-                42,
-                new JsonObject { ["acceptedEvents"] = new JsonArray() },
-                commands.Root,
-                new JsonObject(),
-                new JsonObject(),
-                new JsonObject { ["authorityKind"] = "capability_publication" },
-                fingerprints,
-                beforeImages,
-                Array.Empty<ValidationIssue>(),
-                planningContext);
-        }
-
         internal void AssertPublicationPlanBindsOnlyTheSelectedRoot(
-            AcceptedMechanicsPlan plan)
+            object plan)
         {
-            var afterImages = plan.OwnerCompanionAfterImages;
+            var afterImages = Assert.IsAssignableFrom<IReadOnlyDictionary<string, JsonObject>>(
+                ReadRequiredProperty(plan, "OwnerCompanionAfterImages"));
             if (!UsesFinalAfterImage)
             {
-                Assert.False(
-                    afterImages.ContainsKey(SelectedSkillRootPath),
-                    "An untouched publication must leave its selected skill root lease-bound.");
+                Assert.DoesNotContain(
+                    SelectedSkillRootPath,
+                    afterImages.Keys);
                 return;
             }
 
@@ -1558,9 +1548,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
         internal void AssertCachedPublicationPlanBinding(AcceptedMechanicsPlanBinding binding)
         {
-            Assert.Equal("session_capability_publication", binding.SessionId);
-            Assert.Equal("request_capability_publication", binding.RequestId);
-            Assert.Equal("snapshot_capability_publication", binding.SnapshotToken);
+            Assert.Equal(Binding.SessionId, binding.SessionId);
+            Assert.Equal(Binding.RequestId, binding.RequestId);
+            Assert.Equal(Binding.SnapshotToken, binding.SnapshotToken);
             if (UsesFinalAfterImage)
                 Assert.True(binding.BeforeImages.ContainsKey(SelectedSkillRootPath));
             else
@@ -1625,31 +1615,6 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     })
                 }
             };
-        }
-
-        private Dictionary<string, CanonicalBeforeImage> PublicationBeforeImages(
-            IEnumerable<string> touchedSkillPaths)
-        {
-            var paths = new[]
-            {
-                ResourceMaterializationContract.DefinitionsPath,
-                ResourceMaterializationContract.StatePath,
-                ResourceMaterializationContract.HistoryPath,
-                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
-                EffectAcceptedTurnPlan.IdentityIndexPath
-            }.Concat(touchedSkillPaths);
-            return paths.Distinct(StringComparer.Ordinal).ToDictionary(
-                static path => path,
-                path => ReadCanonicalBeforeImage(path),
-                StringComparer.Ordinal);
-        }
-
-        private CanonicalBeforeImage ReadCanonicalBeforeImage(string path)
-        {
-            var fullPath = FileSystem.ResolvePath(path);
-            return File.Exists(fullPath)
-                ? new CanonicalBeforeImage(true, File.ReadAllBytes(fullPath))
-                : new CanonicalBeforeImage(false, null);
         }
 
         private JsonObject? ReadRoot(string path)
