@@ -364,9 +364,7 @@ public sealed class MortalWoundRecoveryTests
         Assert.Equal(fixture.Binding.Turn, bundle.FinalPlan.Binding.Turn);
         var acceptedPlan = Assert.IsType<AcceptedMechanicsPlan>(Required(result, "AcceptedPlan"));
         AssertPublishedWoundPlan(acceptedPlan, bundle, fixture.WoundId);
-        Fixture.AssertAllGovernedBytesUnchanged(fixture.FileSystem, before);
-        _ = Fixture.CaptureAllGovernedBytes(fixture.FileSystem, acceptedPlan);
-        Fixture.AssertPlanBeforeImagesMatchFilesystem(fixture.FileSystem, acceptedPlan);
+        Fixture.AssertComposeDidNotWrite(fixture.FileSystem, before, acceptedPlan);
         var receipt = Required(result, "Receipt");
         AssertReceipt(receipt, fixture.WoundId, resolution);
         Assert.Same(acceptedPlan, PublishAcceptedPlan(fixture));
@@ -840,6 +838,19 @@ public sealed class MortalWoundRecoveryTests
                 Assert.Equal(pair.Value.Existed, actual is not null);
                 AssertBytesEqual(pair.Value.Bytes, actual, pair.Key);
             }
+        }
+
+        internal static void AssertComposeDidNotWrite(
+            FileSystemManager fs,
+            IReadOnlyDictionary<string, byte[]?> baseline,
+            AcceptedMechanicsPlan plan)
+        {
+            var governed = CaptureAllGovernedBytes(fs, plan);
+            AssertAllGovernedBytesUnchanged(fs, baseline);
+            AssertPlanBeforeImagesMatchFilesystem(fs, plan);
+            Assert.All(plan.TouchedPaths, path => Assert.Contains(path, governed.Keys));
+            Assert.All(plan.ConsumedPaths, path => Assert.Contains(path, governed.Keys));
+            Assert.All(plan.BeforeImages.Keys, path => Assert.Contains(path, governed.Keys));
         }
 
         internal static void AssertAcceptedPlanPublishedExactly(
