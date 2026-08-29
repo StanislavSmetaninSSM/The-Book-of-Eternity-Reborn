@@ -1862,6 +1862,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
         internal void AssertPreparedLiveTurnMatchesExportedBinding(object binding)
         {
+            var acceptedBinding = Assert.IsType<WoundAcceptedTurnBinding>(binding);
             var turnRequest = ReadRoot(LiveTurnPreparationService.TurnRequestPath);
             Assert.NotNull(turnRequest);
             Assert.Equal(PreparedTurn.SessionId, turnRequest!["sessionId"]!.GetValue<string>());
@@ -1870,17 +1871,22 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Assert.Equal("normal", turnRequest["gameMode"]!.GetValue<string>());
             Assert.Equal(new[] { 17 }, turnRequest["preGeneratedDices1d20"]!.AsArray()
                 .Select(static die => die!.GetValue<int>()));
-            Assert.Equal(PreparedTurn.SessionId, Assert.IsType<string>(ReadRequiredProperty(binding, "SessionId")));
-            Assert.Equal(PreparedTurn.RequestId, Assert.IsType<string>(ReadRequiredProperty(binding, "RequestId")));
-            Assert.Equal(PreparedTurn.TurnNumber, Convert.ToInt32(ReadRequiredProperty(binding, "Turn")));
-            Assert.False(string.IsNullOrWhiteSpace(
-                Assert.IsType<string>(ReadRequiredProperty(binding, "SnapshotToken"))));
+            Assert.Equal(PreparedTurn.SessionId, acceptedBinding.SessionId);
+            Assert.Equal(PreparedTurn.RequestId, acceptedBinding.RequestId);
+            Assert.Equal(PreparedTurn.TurnNumber, acceptedBinding.Turn);
+            Assert.Equal("mortal_world", acceptedBinding.Realm);
             var manifest = ReadRoot(PreparedTurn.ManifestPath);
             Assert.NotNull(manifest);
             Assert.Equal(PreparedTurn.SessionId, manifest!["sessionId"]!.GetValue<string>());
             Assert.Equal(PreparedTurn.RequestId, manifest["requestId"]!.GetValue<string>());
             Assert.Equal(PreparedTurn.TurnNumber, manifest["turnNumber"]!.GetValue<int>());
-            Assert.False(string.IsNullOrWhiteSpace(manifest["manifestPayloadHash"]!.GetValue<string>()));
+            var manifestPayloadHash = manifest["manifestPayloadHash"]!.GetValue<string>();
+            Assert.False(string.IsNullOrWhiteSpace(manifestPayloadHash));
+            Assert.Equal(manifestPayloadHash, acceptedBinding.SnapshotToken);
+            Assert.NotEmpty(acceptedBinding.AcceptedEvents);
+            Assert.Equal(
+                WoundAcceptedEventSetFingerprint.Compute(acceptedBinding.AcceptedEvents),
+                acceptedBinding.AcceptedEventsFingerprint);
         }
 
         private static JsonElement ParseFirstSkill(JsonObject owner, string skillArray)
