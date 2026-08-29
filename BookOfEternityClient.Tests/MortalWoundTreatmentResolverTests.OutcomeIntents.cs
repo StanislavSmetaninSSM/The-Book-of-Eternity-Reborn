@@ -223,8 +223,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             acceptedState, history, before.Wound!, scenario.OperationKey, scenario.RouteId, scenario.EventRef
         }), "Request", testCase.Name + " request");
+        object? deteriorationAuthority = null;
         if (testCase.Name == "deterioration_handoff")
-            AssertResolverFacingDeteriorationAuthority(
+            deteriorationAuthority = AssertResolverFacingDeteriorationAuthority(
                 acceptedState,
                 ReadRequiredProperty(prepared, "Coordinates"),
                 "untreated_infection");
@@ -234,6 +235,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             prepared, history, before.Wound, acceptedState
         });
+
+        if (deteriorationAuthority is not null)
+        {
+            var intent = OutcomeIntentAt(resolution, 0);
+            Assert.Equal(
+                Convert.ToString(ReadRequiredProperty(deteriorationAuthority, "AuthorityFingerprint")),
+                Convert.ToString(ReadRequiredProperty(intent, "DeteriorationAuthorityFingerprint")));
+        }
 
         return resolution;
     }
@@ -324,7 +333,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         return scenario;
     }
 
-    private static void AssertResolverFacingDeteriorationAuthority(
+    private static object AssertResolverFacingDeteriorationAuthority(
         object acceptedState,
         object coordinates,
         string policyRef)
@@ -344,6 +353,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("StrictlyWorsening", Convert.ToString(ReadRequiredProperty(typed, "Classification")));
         Assert.False(string.IsNullOrWhiteSpace(
             Convert.ToString(ReadRequiredProperty(typed, "AuthorityFingerprint"))));
+        return typed;
     }
 
     private static JsonObject CreateEffectfulComplicationDraft(string complicationRef) => new()

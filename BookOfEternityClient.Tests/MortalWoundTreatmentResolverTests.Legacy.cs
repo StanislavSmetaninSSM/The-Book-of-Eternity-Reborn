@@ -112,7 +112,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 .Where(static property => property.GetIndexParameters().Length == 0)
                 .Select(static property => property.Name)
                 .OrderBy(static property => property));
-        Assert.Equal("t061_mechanical", typedBatch.LocalWoundRef);
+        Assert.Equal(
+            Convert.ToString(ReadRequiredProperty(binding, "LegacyId")),
+            typedBatch.LocalWoundRef);
         Assert.False(string.IsNullOrWhiteSpace(typedBatch.PreparedWoundId));
         var source = typedBatch.SourceExport;
         Assert.Equal("wound_legacy", source.Kind);

@@ -25,7 +25,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("CanonicalWriteLease", compose.GetParameters()[1].ParameterType.Name);
         Assert.Equal("WoundAcceptedTurnBinding", compose.GetParameters()[2].ParameterType.Name);
         Assert.Equal("GameResponse", compose.GetParameters()[3].ParameterType.Name);
+        Assert.Equal("MortalWoundTreatmentAcceptedStateAuthority", compose.GetParameters()[4].ParameterType.Name);
+        Assert.Equal("MortalWoundTreatmentAttemptRequest", compose.GetParameters()[5].ParameterType.Name);
+        Assert.Equal("MortalWoundTreatmentResolution", compose.GetParameters()[6].ParameterType.Name);
         Assert.DoesNotContain(compose.GetParameters(), static parameter =>
+            typeof(System.Text.Json.Nodes.JsonNode).IsAssignableFrom(parameter.ParameterType) ||
             parameter.ParameterType.Name.Contains("History", StringComparison.Ordinal) ||
             parameter.ParameterType.Name.Contains("Receipt", StringComparison.Ordinal));
         AssertClosedResultType(compose.ReturnType, "Plan");
