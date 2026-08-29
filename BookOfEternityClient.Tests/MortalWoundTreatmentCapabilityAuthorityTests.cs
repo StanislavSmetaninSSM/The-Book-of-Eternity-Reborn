@@ -94,6 +94,15 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         fixture.AssertAcceptedCombatWoundCarrier();
     }
 
+    [Fact]
+    public void FixtureControl_PristineEffectRootsProduceAcceptedEmptyMechanicsSnapshot()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario("player_active_skill_exports_physical_capability", publication: false));
+
+        fixture.AssertPristineEffectMechanicsSnapshot();
+    }
+
     [Theory]
     [MemberData(nameof(CurrentExportRows))]
     public void ExportCurrent_UsesOnlyCanonicalPlayerOrNpcSkillCapabilitySource(
@@ -855,6 +864,15 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             AssertCanonicalFixtureShape(currentSource);
             AssertCanonicalFixtureShape(finalSource);
             WriteCanonicalSkillSources(fileSystem, currentSource);
+            Directory.CreateDirectory(Path.GetDirectoryName(
+                fileSystem.ResolvePath("game_state/world/world_time.json"))!);
+            File.WriteAllText(
+                fileSystem.ResolvePath("game_state/world/world_time.json"),
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["currentTimeInMinutes"] = 1_260
+                }.ToJsonString());
             var combatTarget = scenario.TargetKind is "combatant" or "combatant_member";
             var carrierPath = scenario.TargetKind == "combatant_member"
                 ? WoundCarrierCatalog.AlliesPath
@@ -988,6 +1006,16 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     ? WoundCarrierCatalog.AlliesPath
                     : WoundCarrierCatalog.EnemiesPath,
                 occurrence.Coordinate.CarrierPath);
+        }
+
+        internal void AssertPristineEffectMechanicsSnapshot()
+        {
+            var snapshot = EffectMechanicsSnapshot.LoadAsync(FileSystem, Lease)
+                .GetAwaiter().GetResult();
+            Assert.True(snapshot.IsAccepted, DescribeIssues(snapshot.Issues));
+            Assert.Empty(snapshot.Issues);
+            Assert.Empty(snapshot.Components);
+            Assert.Empty(snapshot.Effects);
         }
 
         internal AcceptedMechanicsInput CreatePublicationPlanningInput()
