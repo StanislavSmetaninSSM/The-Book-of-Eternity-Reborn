@@ -8,8 +8,13 @@ public sealed class WoundOpportunityAuthorityTests
 {
     [Theory]
     [InlineData("formal", "combat_resolution")]
+    [InlineData("qte", "qte_resolution")]
+    [InlineData("combat", "combat_resolution")]
+    [InlineData("trap", "trap_resolution")]
+    [InlineData("check", "check_resolution")]
+    [InlineData("hazard", "hazard_resolution")]
     [InlineData("narrative", "narrative_injury")]
-    public void Compose_SealsFormalAndNarrativeOrdinaryOpportunity(
+    public void Compose_SealsEveryRegisteredMortalOrdinaryOpportunity(
         string adapterKind,
         string authorityKind)
     {
@@ -82,6 +87,53 @@ public sealed class WoundOpportunityAuthorityTests
         Assert.Null(result.Opportunity);
         Assert.Contains(result.Issues, issue =>
             issue.Code == "wound_opportunity_event_evidence_invalid");
+    }
+
+    [Fact]
+    public void Compose_SealsTheCompleteAcceptedEventSetIntoOpportunityAuthority()
+    {
+        var request = BuildRequest();
+        var selected = request.Binding.AcceptedEvents[0];
+        var sibling = new WoundAcceptedEventAuthority(
+            "turn_42:sibling_event",
+            "resource_change",
+            "resource_result_test_001",
+            Fingerprint('a'));
+        var acceptedEvents = new[] { selected, sibling };
+        var binding = request.Binding with
+        {
+            AcceptedEvents = acceptedEvents,
+            AcceptedEventsFingerprint =
+                WoundAcceptedEventSetFingerprint.Compute(acceptedEvents)
+        };
+
+        var baseline = WoundOpportunityAuthority.Compose(request with
+        {
+            Binding = binding
+        });
+        var changedEvents = new[]
+        {
+            selected,
+            sibling with { SemanticFingerprint = Fingerprint('b') }
+        };
+        var changed = WoundOpportunityAuthority.Compose(request with
+        {
+            Binding = binding with
+            {
+                AcceptedEvents = changedEvents,
+                AcceptedEventsFingerprint =
+                    WoundAcceptedEventSetFingerprint.Compute(changedEvents)
+            }
+        });
+
+        Assert.True(baseline.Success);
+        Assert.True(changed.Success);
+        Assert.Equal(
+            binding.AcceptedEventsFingerprint,
+            baseline.Opportunity!.AcceptedEventsFingerprint);
+        Assert.NotEqual(
+            baseline.Opportunity.AuthorityFingerprint,
+            changed.Opportunity!.AuthorityFingerprint);
     }
 
     [Theory]
@@ -322,4 +374,7 @@ public sealed class WoundOpportunityAuthorityTests
         Assert.True(parsed.IsValid);
         return Assert.IsType<WoundMaterializationEnvelope>(parsed.Wound);
     }
+
+    private static string Fingerprint(char value) =>
+        "sha256:" + new string(value, 64);
 }

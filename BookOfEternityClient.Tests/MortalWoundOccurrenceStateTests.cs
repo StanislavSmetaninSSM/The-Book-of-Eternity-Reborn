@@ -75,7 +75,7 @@ public sealed class MortalWoundOccurrenceStateTests
                 "MinimumSeverityRank",
                 "Outcome", "Owner", "ProducerCandidateCount", "ProducerCandidateOrdinal", "ProducerOperationKey",
                 "ProfileKey", "SafeContext", "Source", "SourceRequestId", "SourceResultFingerprint", "SourceSessionId",
-                "SourceTurn", "WorseningTarget"
+                "SourceSnapshotToken", "SourceTurn", "WorseningTarget"
             },
             candidate.GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(property => property.Name).OrderBy(name => name));
         Assert.DoesNotContain(candidate.GetProperties(BindingFlags.Public | BindingFlags.Instance), property =>
@@ -243,8 +243,9 @@ public sealed class MortalWoundOccurrenceStateTests
     {
         foreach (var (mutation, path) in new (Action<JsonObject> Mutation, string Path)[]
                  {
-                     (row => row["sourceSessionId"] = " source_session_41", ".sourceSessionId"),
-                     (row => row["sourceRequestId"] = "source_request_41\u0001", ".sourceRequestId"),
+                      (row => row["sourceSessionId"] = " source_session_41", ".sourceSessionId"),
+                      (row => row["sourceRequestId"] = "source_request_41\u0001", ".sourceRequestId"),
+                      (row => row["sourceSnapshotToken"] = " source_snapshot_41", ".sourceSnapshotToken"),
                      (row => row["producerOperationKey"] = " source_batch_formal", ".producerOperationKey"),
                      (row => row["producerCandidateCount"] = 33, ".producerCandidateCount"),
                      (row => row["profileKey"] = " mortal_formal_injury_v1", ".profileKey"),
@@ -764,7 +765,7 @@ public sealed class MortalWoundOccurrenceStateTests
 
     private static readonly string[] RequiredRowFields =
     {
-        "occurrenceId", "opportunityRef", "sourceSessionId", "sourceRequestId", "sourceTurn",
+        "occurrenceId", "opportunityRef", "sourceSessionId", "sourceRequestId", "sourceSnapshotToken", "sourceTurn",
         "producerOperationKey", "producerCandidateOrdinal", "producerCandidateCount", "adapterKind",
         "acceptedEventOrdinal", "acceptedEvents", "acceptedEventsFingerprint", "owner", "domain",
         "profileKey", "source", "outcome", "hardMaximumSeverityRank", "minimumSeverityRank",
@@ -818,6 +819,7 @@ public sealed class MortalWoundOccurrenceStateTests
     private static MortalWoundOccurrenceCandidate Candidate(int ordinal, int count) => new(
         SourceSessionId: "source_session_41",
         SourceRequestId: "source_request_41",
+        SourceSnapshotToken: "source_snapshot_41",
         SourceTurn: 41,
         ProducerOperationKey: "source_batch_append_41",
         ProducerCandidateOrdinal: ordinal,
@@ -874,7 +876,8 @@ public sealed class MortalWoundOccurrenceStateTests
         var row = new JsonObject
         {
         ["occurrenceId"] = string.Empty, ["opportunityRef"] = string.Empty,
-        ["sourceSessionId"] = "source_session_41", ["sourceRequestId"] = "source_request_41", ["sourceTurn"] = 41,
+        ["sourceSessionId"] = "source_session_41", ["sourceRequestId"] = "source_request_41",
+        ["sourceSnapshotToken"] = "source_snapshot_41", ["sourceTurn"] = 41,
         ["producerOperationKey"] = producerOperationKey, ["producerCandidateOrdinal"] = producerCandidateOrdinal,
         ["producerCandidateCount"] = producerCandidateCount, ["adapterKind"] = adapterKind,
         ["acceptedEventOrdinal"] = 0,
@@ -978,7 +981,8 @@ public sealed class MortalWoundOccurrenceStateTests
         var fields = new List<string?>
         {
             "book_of_eternity.mortal_wound.occurrence_candidate", "1",
-            Value(row, "sourceSessionId"), Value(row, "sourceRequestId"), Number(row, "sourceTurn"),
+            Value(row, "sourceSessionId"), Value(row, "sourceRequestId"), Value(row, "sourceSnapshotToken"),
+            Number(row, "sourceTurn"),
             Value(row, "producerOperationKey"), Number(row, "producerCandidateOrdinal"), Number(row, "producerCandidateCount"),
             Value(row, "adapterKind"), Number(row, "acceptedEventOrdinal"), Value(row, "acceptedEventsFingerprint"),
             Value(owner, "realm"), Value(owner, "ownerKind"), Value(owner, "ownerId"), Value(owner, "carrierPath"),

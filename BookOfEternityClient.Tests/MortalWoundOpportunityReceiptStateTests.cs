@@ -153,7 +153,7 @@ public sealed class MortalWoundOpportunityReceiptStateTests
     {
         foreach (var field in new[]
                  {
-                     "sourceSessionId", "sourceRequestId", "sourceTurn", "producerOperationKey",
+                      "sourceSessionId", "sourceRequestId", "sourceSnapshotToken", "sourceTurn", "producerOperationKey",
                      "producerCandidateOrdinal", "producerCandidateCount", "sourceResultFingerprint",
                      "candidateFingerprint", "occurrenceFingerprint", "opportunityAuthorityFingerprint",
                      "eventSemanticFingerprint", "decisionFingerprint", "receiptFingerprint"
@@ -254,9 +254,10 @@ public sealed class MortalWoundOpportunityReceiptStateTests
         var canonical = JsonNode.Parse(MortalWoundOpportunityReceiptState.SerializeCanonical(consumed.ReceiptState))!.AsObject();
         foreach (var mutation in new Action<JsonObject>[]
                  {
-                     row => row["sourceSessionId"] = "source_session_changed",
-                     row => row["sourceRequestId"] = "source_request_changed",
-                     row => row["sourceTurn"] = 99,
+                      row => row["sourceSessionId"] = "source_session_changed",
+                      row => row["sourceRequestId"] = "source_request_changed",
+                      row => row["sourceSnapshotToken"] = "source_snapshot_changed",
+                      row => row["sourceTurn"] = 99,
                      row => row["producerCandidateCount"] = 3,
                      row => row["sourceResultFingerprint"] = ExternalFingerprint("changed-source-result")
                  })
@@ -593,7 +594,7 @@ public sealed class MortalWoundOpportunityReceiptStateTests
     {
         "receiptId", "ordinal", "opportunityId", "opportunityAuthorityFingerprint", "sessionId",
         "requestId", "snapshotToken", "turn", "eventRef", "eventSemanticFingerprint",
-        "sourceSessionId", "sourceRequestId", "sourceTurn", "producerOperationKey",
+        "sourceSessionId", "sourceRequestId", "sourceSnapshotToken", "sourceTurn", "producerOperationKey",
         "producerCandidateOrdinal", "producerCandidateCount", "sourceResultFingerprint",
         "candidateFingerprint", "occurrenceFingerprint", "decision", "decisionFingerprint",
         "operationKey", "woundId", "transitionId", "receiptFingerprint"
@@ -763,7 +764,8 @@ public sealed class MortalWoundOpportunityReceiptStateTests
             ["opportunityAuthorityFingerprint"] = ExternalFingerprint("opportunity:" + opportunityId), ["sessionId"] = "session_42",
             ["requestId"] = "request_42", ["snapshotToken"] = "snapshot_42", ["turn"] = 42,
             ["eventRef"] = "event_42_0", ["eventSemanticFingerprint"] = ExternalFingerprint("event:42:0"),
-            ["sourceSessionId"] = "session_41", ["sourceRequestId"] = "request_41", ["sourceTurn"] = 41,
+            ["sourceSessionId"] = "session_41", ["sourceRequestId"] = "request_41",
+            ["sourceSnapshotToken"] = "snapshot_41", ["sourceTurn"] = 41,
             ["producerOperationKey"] = producerOperationKey, ["producerCandidateOrdinal"] = producerCandidateOrdinal,
             ["producerCandidateCount"] = producerCandidateCount, ["sourceResultFingerprint"] = ExternalFingerprint("source:" + producerOperationKey),
             ["candidateFingerprint"] = candidateFingerprint,
@@ -842,7 +844,8 @@ public sealed class MortalWoundOpportunityReceiptStateTests
         Value(row, "receiptId"), Number(row, "ordinal"), Value(row, "opportunityId"),
         Value(row, "opportunityAuthorityFingerprint"), Value(row, "sessionId"), Value(row, "requestId"),
         Value(row, "snapshotToken"), Number(row, "turn"), Value(row, "eventRef"), Value(row, "eventSemanticFingerprint"),
-        Value(row, "sourceSessionId"), Value(row, "sourceRequestId"), Number(row, "sourceTurn"),
+        Value(row, "sourceSessionId"), Value(row, "sourceRequestId"), Value(row, "sourceSnapshotToken"),
+        Number(row, "sourceTurn"),
         Value(row, "producerOperationKey"), Number(row, "producerCandidateOrdinal"), Number(row, "producerCandidateCount"),
         Value(row, "sourceResultFingerprint"), Value(row, "candidateFingerprint"), Value(row, "occurrenceFingerprint"),
         Value(row, "decision"), Value(row, "decisionFingerprint"), Value(row, "operationKey"), NullableValue(row, "woundId"),

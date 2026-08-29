@@ -19,7 +19,9 @@ public partial class ValidationService
         WoundResponseCommandParsingResult ParsedCommands,
         WoundCarrierCatalogInput PreTurnCarriers,
         JsonObject PreTurnIdentityIndex,
-        JsonObject PreTurnHistory);
+        JsonObject PreTurnHistory,
+        MortalWoundOccurrenceState SignedOccurrences,
+        MortalWoundOpportunityReceiptState SignedReceipts);
 
     private sealed record AcceptedTurnPreparedWoundHandoff(
         JsonObject Commands,
@@ -188,6 +190,12 @@ public partial class ValidationService
         var preTurnHistoryJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             manifest,
             WoundHistoryState.HistoryPath);
+        var signedOccurrenceJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+            manifest,
+            MortalWoundOccurrenceState.StatePath);
+        var signedReceiptJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+            manifest,
+            MortalWoundOpportunityReceiptState.StatePath);
 
         await ValidateWoundClientOwnedBaselineAsync(
             WoundCarrierCatalog.PlayerPath,
@@ -204,6 +212,14 @@ public partial class ValidationService
         await ValidateWoundClientOwnedBaselineAsync(
             WoundHistoryState.HistoryPath,
             preTurnHistoryJson,
+            issues);
+        await ValidateWoundClientOwnedBaselineAsync(
+            MortalWoundOccurrenceState.StatePath,
+            signedOccurrenceJson,
+            issues);
+        await ValidateWoundClientOwnedBaselineAsync(
+            MortalWoundOpportunityReceiptState.StatePath,
+            signedReceiptJson,
             issues);
 
         var preTurnCarriers = new WoundCarrierCatalogInput(
@@ -235,8 +251,16 @@ public partial class ValidationService
         var history = WoundHistoryState.Parse(
             preTurnHistoryJson,
             WoundHistoryState.HistoryPath);
+        var occurrences = MortalWoundOccurrenceState.Parse(
+            signedOccurrenceJson,
+            MortalWoundOccurrenceState.StatePath);
+        var receipts = MortalWoundOpportunityReceiptState.Parse(
+            signedReceiptJson,
+            MortalWoundOpportunityReceiptState.StatePath);
         issues.AddRange(identity.Issues);
         issues.AddRange(history.Issues);
+        issues.AddRange(occurrences.Issues);
+        issues.AddRange(receipts.Issues);
         if (carrierCatalog.Issues.Count == 0 &&
             identity.State is not null &&
             history.State is not null)
@@ -245,9 +269,19 @@ public partial class ValidationService
                 identity.State,
                 carrierCatalog));
         }
+        if (occurrences.State is not null && receipts.State is not null)
+        {
+            issues.AddRange(
+                MortalWoundOpportunityReceiptState
+                    .ValidateConsumedOccurrenceAgreement(
+                        occurrences.State,
+                        receipts.State));
+        }
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) ||
             identity.State is null ||
-            history.State is null)
+            history.State is null ||
+            occurrences.State is null ||
+            receipts.State is null)
         {
             return null;
         }
@@ -258,7 +292,9 @@ public partial class ValidationService
             JsonNode.Parse(WoundIdentityState.SerializeCanonical(identity.State))!
                 .AsObject(),
             JsonNode.Parse(WoundHistoryState.SerializeCanonical(history.State))!
-                .AsObject());
+                .AsObject(),
+            occurrences.State,
+            receipts.State);
     }
 
     private AcceptedTurnPreparedWoundHandoff? PrepareAcceptedTurnWoundHandoff(
@@ -280,30 +316,29 @@ public partial class ValidationService
         ArgumentNullException.ThrowIfNull(issues);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
 
-        var acceptedEvents = ComposeWoundAcceptedEvents(
-            manifest,
-            effectInput.EventInput,
-            draft.ParsedCommands.Commands
-                .Select(static value => value.Opportunity)
-                .ToArray(),
-            issues);
-        if (acceptedEvents.Count == 0 ||
-            issues.Any(static issue => issue.Severity == IssueSeverity.Error))
-        {
-            return null;
-        }
-        var binding = new WoundAcceptedTurnBinding(
+        var validationAuthority =
+            MortalWoundOpportunityValidationAuthority.Reconstruct(
             manifest.SessionId,
             manifest.RequestId,
             manifest.ManifestPayloadHash,
             realm,
             manifest.TurnNumber,
-            acceptedEvents,
-            WoundAcceptedEventSetFingerprint.Compute(acceptedEvents));
+            draft.SignedOccurrences,
+            draft.SignedReceipts,
+            draft.PreTurnCarriers,
+            draft.ParsedCommands.Commands
+                .Select(static value => value.Opportunity)
+                .ToArray());
+        issues.AddRange(validationAuthority.Issues);
+        if (!validationAuthority.Success ||
+            validationAuthority.Binding is not { } binding)
+        {
+            return null;
+        }
         var recomposed = WoundResponseInputComposer.RecomposeCommandRoot(
             binding,
             draft.ParsedCommands,
-            Array.Empty<WoundOpportunityDecisionReceipt>());
+            validationAuthority.PriorReceipts);
         issues.AddRange(recomposed.Issues);
         if (!recomposed.Success || recomposed.CommandRoot is null)
             return null;
@@ -703,118 +738,6 @@ public partial class ValidationService
                     ? "current root created outside accepted wound planning"
                     : "current bytes differ from validated snapshot",
             IssueCategory.ClientOwnedSurface));
-    }
-
-    private static IReadOnlyList<WoundAcceptedEventAuthority>
-        ComposeWoundAcceptedEvents(
-            ValidationPendingTurnSnapshotManifest manifest,
-            JsonObject eventInput,
-            IReadOnlyList<WoundOpportunityAuthority> opportunities,
-            List<ValidationIssue> issues)
-    {
-        ArgumentNullException.ThrowIfNull(opportunities);
-        if (eventInput["events"] is not JsonArray events || events.Count == 0)
-        {
-            issues.Add(WoundIssue(
-                AcceptedMechanicsPlan.WoundCommandPath,
-                "wound_materialization_event_authority_missing",
-                "one or more accepted effect-event authority rows",
-                "missing or empty events"));
-            return Array.Empty<WoundAcceptedEventAuthority>();
-        }
-
-        var result = new List<WoundAcceptedEventAuthority>(events.Count);
-        for (var index = 0; index < events.Count; index++)
-        {
-            if (events[index] is not JsonObject row ||
-                !TryReadExactWoundString(row["eventRef"], out var eventRef) ||
-                !TryReadExactWoundString(row["kind"], out var kind) ||
-                !TryReadExactWoundString(row["authorityId"], out var authorityId))
-            {
-                issues.Add(WoundIssue(
-                    $"{AcceptedMechanicsPlan.WoundCommandPath}.acceptedEvents[{index}]",
-                    "wound_materialization_event_authority_invalid",
-                    "exact eventRef, kind, and authorityId",
-                    events[index]?.ToJsonString() ?? "null"));
-                continue;
-            }
-            var matchingOpportunities = opportunities.Where(value =>
-                string.Equals(
-                    value.EventRef,
-                    eventRef,
-                    StringComparison.Ordinal)).ToArray();
-            string semanticFingerprint;
-            if (matchingOpportunities.Length == 0)
-            {
-                semanticFingerprint = HashText(
-                    "accepted-wound-event-authority-v1",
-                    manifest.SessionId + "\n" +
-                    manifest.RequestId + "\n" +
-                    manifest.ManifestPayloadHash + "\n" +
-                    row.ToJsonString());
-            }
-            else
-            {
-                var fingerprints = matchingOpportunities
-                    .Select(static value => value.InputEvidenceFingerprint)
-                    .Distinct(StringComparer.Ordinal)
-                    .ToArray();
-                if (fingerprints.Length != 1 ||
-                    matchingOpportunities.Any(value =>
-                        !string.Equals(value.EventKind, kind, StringComparison.Ordinal) ||
-                        !string.Equals(
-                            value.EventAuthorityId,
-                            authorityId,
-                            StringComparison.Ordinal)))
-                {
-                    issues.Add(WoundIssue(
-                        $"{AcceptedMechanicsPlan.WoundCommandPath}.acceptedEvents[{index}]",
-                        "wound_materialization_event_authority_mismatch",
-                        "the exact accepted event kind, authorityId, and one evidence seal",
-                        eventRef));
-                    continue;
-                }
-                semanticFingerprint = fingerprints[0];
-            }
-            result.Add(new WoundAcceptedEventAuthority(
-                eventRef,
-                kind,
-                authorityId,
-                semanticFingerprint));
-        }
-
-        foreach (var opportunity in opportunities)
-        {
-            if (result.Count(value => string.Equals(
-                    value.EventRef,
-                    opportunity.EventRef,
-                    StringComparison.Ordinal)) == 1)
-            {
-                continue;
-            }
-            issues.Add(WoundIssue(
-                AcceptedMechanicsPlan.WoundCommandPath + ".commands",
-                "wound_materialization_event_authority_mismatch",
-                "one exact accepted runtime event for every sealed opportunity",
-                opportunity.EventRef));
-        }
-        return result;
-    }
-
-    private static bool TryReadExactWoundString(
-        JsonNode? node,
-        out string value)
-    {
-        value = string.Empty;
-        if (node is not JsonValue scalar ||
-            !scalar.TryGetValue<string>(out var candidate) ||
-            !ResourceMaterializationContract.IsExactIdentifier(candidate))
-        {
-            return false;
-        }
-
-        value = candidate;
-        return true;
     }
 
     private static string ComputeAcceptedWoundCarrierAuthority(

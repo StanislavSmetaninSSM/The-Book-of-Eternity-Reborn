@@ -146,6 +146,153 @@ internal static class WoundAcceptedEventAuthorityComposer
             Array.Empty<ValidationIssue>());
     }
 
+    /// <summary>
+    /// Verifies the complete historical event vector sealed by a Mortal occurrence,
+    /// then derives the equivalent vector for the active decision snapshot. Generic
+    /// sibling seals are deliberately rebound; selected wound semantics remain derived
+    /// from the signed occurrence rather than copied from persisted fingerprints.
+    /// </summary>
+    internal static WoundAcceptedEventAuthorityCompositionResult
+        RebindMortalOccurrence(
+            MortalWoundOccurrence occurrence,
+            IReadOnlyList<MortalWoundOccurrence> producerBatch,
+            string sessionId,
+            string requestId,
+            string snapshotToken,
+            int turn)
+    {
+        ArgumentNullException.ThrowIfNull(occurrence);
+        ArgumentNullException.ThrowIfNull(producerBatch);
+        var storedEvents = occurrence.AcceptedEvents ??
+            Array.Empty<WoundAcceptedEventAuthority>();
+        if (occurrence.AcceptedEventOrdinal < 0 ||
+            occurrence.AcceptedEventOrdinal >= storedEvents.Count)
+        {
+            return MortalRebindFailure(
+                "mortal_wound_occurrence_event_authority_mismatch",
+                "selected occurrence event ordinal is outside the stored vector");
+        }
+
+        var coordinates = storedEvents
+            .Select(value => value is null
+                ? null!
+                : new WoundAcceptedResponseEventCoordinate(
+                    value.EventRef,
+                    value.Kind,
+                    value.AuthorityId))
+            .ToArray();
+        var orderedBatch = producerBatch
+            .OrderBy(value => value?.ProducerCandidateOrdinal ?? int.MaxValue)
+            .ToArray();
+        if (orderedBatch.Length != occurrence.ProducerCandidateCount ||
+            orderedBatch.Length == 0 ||
+            !orderedBatch.Select(value => value?.ProducerCandidateOrdinal ?? -1)
+                .SequenceEqual(Enumerable.Range(0, orderedBatch.Length)) ||
+            orderedBatch.Count(value => value is not null && string.Equals(
+                value.OccurrenceId,
+                occurrence.OccurrenceId,
+                StringComparison.Ordinal)) != 1 ||
+            orderedBatch.Any(value => value is null ||
+                !string.Equals(
+                    value.ProducerOperationKey,
+                    occurrence.ProducerOperationKey,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.SourceSessionId,
+                    occurrence.SourceSessionId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.SourceRequestId,
+                    occurrence.SourceRequestId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.SourceSnapshotToken,
+                    occurrence.SourceSnapshotToken,
+                    StringComparison.Ordinal) ||
+                value.SourceTurn != occurrence.SourceTurn ||
+                value.ProducerCandidateCount != occurrence.ProducerCandidateCount ||
+                !string.Equals(
+                    value.AdapterKind,
+                    occurrence.AdapterKind,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.SourceResultFingerprint,
+                    occurrence.SourceResultFingerprint,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.AcceptedEventsFingerprint,
+                    occurrence.AcceptedEventsFingerprint,
+                    StringComparison.Ordinal) ||
+                !value.AcceptedEvents.SequenceEqual(storedEvents)))
+        {
+            return MortalRebindFailure(
+                "mortal_wound_occurrence_event_authority_mismatch",
+                "producer batch is incomplete or disagrees on source authority");
+        }
+
+        var selectedEvidence = new Dictionary<int, WoundOpportunityEventEvidence>();
+        foreach (var row in orderedBatch)
+        {
+            if (row.AcceptedEventOrdinal < 0 ||
+                row.AcceptedEventOrdinal >= storedEvents.Count ||
+                row.Outcome is null ||
+                storedEvents[row.AcceptedEventOrdinal] is not { } selected)
+            {
+                return MortalRebindFailure(
+                    "mortal_wound_occurrence_event_authority_mismatch",
+                    "producer batch selects an invalid event or outcome");
+            }
+            var evidence = new WoundOpportunityEventEvidence(
+                row.AdapterKind,
+                selected.Kind,
+                selected.AuthorityId,
+                row.Outcome.Kind,
+                row.Outcome.MaximumSeverityRank,
+                row.Outcome.ReadableCause);
+            if (selectedEvidence.TryGetValue(row.AcceptedEventOrdinal, out var prior) &&
+                prior != evidence)
+            {
+                return MortalRebindFailure(
+                    "mortal_wound_occurrence_event_authority_mismatch",
+                    "shared selected event has contradictory wound semantics");
+            }
+            selectedEvidence[row.AcceptedEventOrdinal] = evidence;
+        }
+        var selections = selectedEvidence
+            .OrderBy(pair => pair.Key)
+            .Select(pair => new WoundSelectedEventEvidence(pair.Key, pair.Value))
+            .ToArray();
+        var historical = Compose(
+            new WoundAcceptedResponseEventProjection(
+                occurrence.SourceSessionId,
+                occurrence.SourceRequestId,
+                occurrence.SourceSnapshotToken,
+                occurrence.SourceTurn,
+                coordinates),
+            selections);
+        if (!historical.Success)
+            return historical;
+        if (!historical.Events.SequenceEqual(storedEvents) ||
+            !string.Equals(
+                historical.EventsFingerprint,
+                occurrence.AcceptedEventsFingerprint,
+                StringComparison.Ordinal))
+        {
+            return MortalRebindFailure(
+                "mortal_wound_occurrence_event_authority_mismatch",
+                "stored event vector does not match its source snapshot authority");
+        }
+
+        return Compose(
+            new WoundAcceptedResponseEventProjection(
+                sessionId,
+                requestId,
+                snapshotToken,
+                turn,
+                coordinates),
+            selections);
+    }
+
     private static IReadOnlyDictionary<int, WoundOpportunityEventEvidence>
         ValidateSelections(
             IReadOnlyList<WoundSelectedEventEvidence> selections,
@@ -237,6 +384,24 @@ internal static class WoundAcceptedEventAuthorityComposer
         Array.Empty<WoundAcceptedEventAuthority>(),
         string.Empty,
         Array.AsReadOnly(issues.ToArray()));
+
+    private static WoundAcceptedEventAuthorityCompositionResult MortalRebindFailure(
+        string code,
+        string actual) => Failure(new[]
+        {
+            new ValidationIssue(
+                MortalWoundOccurrenceState.StatePath,
+                IssueSeverity.Error,
+                "The signed Mortal wound occurrence event authority is invalid.",
+                code: code,
+                actor: "Client",
+                section: "wound_accepted_event_authority",
+                expected:
+                "the exact historical event vector and one complete active-snapshot rebind",
+                actual: actual,
+                repairHint:
+                "Restore the signed occurrence snapshot; never copy, replace, remove, add, or reorder accepted event authority.")
+        });
 
     private static void Add(
         ICollection<ValidationIssue> issues,

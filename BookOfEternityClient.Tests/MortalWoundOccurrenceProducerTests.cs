@@ -91,6 +91,7 @@ public sealed class MortalWoundOccurrenceProducerTests
             Assert.Equal(producer.SourceResultFingerprint, candidate.SourceResultFingerprint);
             Assert.Equal(producer.AcceptedResponse.SessionId, candidate.SourceSessionId);
             Assert.Equal(producer.AcceptedResponse.RequestId, candidate.SourceRequestId);
+            Assert.Equal(producer.AcceptedResponse.SnapshotToken, candidate.SourceSnapshotToken);
             Assert.Equal(producer.AcceptedResponse.Turn, candidate.SourceTurn);
             Assert.Equal(2, candidate.AcceptedEvents.Count);
         });

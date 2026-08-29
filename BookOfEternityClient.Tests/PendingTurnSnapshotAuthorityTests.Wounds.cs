@@ -21,6 +21,8 @@ public sealed partial class PendingTurnSnapshotAuthorityTests
             WoundCarrierCatalog.AfterlifeProfilesPath,
             WoundIdentityState.StatePath,
             WoundHistoryState.HistoryPath,
+            MortalWoundOccurrenceState.StatePath,
+            MortalWoundOpportunityReceiptState.StatePath,
             AcceptedMechanicsPlan.WoundCommandPath,
             WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
             ProgressionScheduleService.SchedulePath,

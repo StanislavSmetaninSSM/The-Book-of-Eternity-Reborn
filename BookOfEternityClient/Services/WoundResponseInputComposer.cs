@@ -290,6 +290,10 @@ internal static partial class WoundResponseInputComposer
                 !string.Equals(value.SessionId, binding.SessionId, StringComparison.Ordinal) ||
                 !string.Equals(value.RequestId, binding.RequestId, StringComparison.Ordinal) ||
                 !string.Equals(value.SnapshotToken, binding.SnapshotToken, StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.AcceptedEventsFingerprint,
+                    binding.AcceptedEventsFingerprint,
+                    StringComparison.Ordinal) ||
                 !string.Equals(value.Owner.Realm, binding.Realm, StringComparison.Ordinal) ||
                 acceptedEvents.Count(eventValue => string.Equals(
                     eventValue.EventRef,

@@ -42,11 +42,24 @@ occurrence. The seven closed version-1 kinds are `formal`, `qte`, `combat`, `tra
 `check`, `hazard`, and `narrative`; all use the same occurrence authority envelope and
 kind-specific canonical evidence checks.
 
+The closed correlation root contains only `schemaVersion`, `adapterKind`,
+`acceptedEventOrdinal`, `opportunityRef`, `owner`, `domain`, `profileKey`, `source`,
+`outcome`, `safeContext`, and an optional complete `worseningTarget`. Absence means
+create; explicit null is invalid. In particular, `hardMaximumSeverityRank`, nullable
+minimum/guarantee, source or decision binding, accepted-event kind/ID/ref/seals,
+occurrence/producer IDs and fingerprints, receipts, transitions, proposals, anchors,
+and after-images are forbidden. The hard maximum and guarantee are derived only from
+the signed occurrence.
+
 The accepted wound binding seals the complete ordered accepted-event set reconstructed
 from the immutable accepted response and the occurrence authority. The occurrence
 selects one exact zero-based ordinal inside that set. Initial composition and accepted-
 turn validation reconstruct the set independently; an added, removed, replaced, or
-reordered sibling invalidates the wound command. `worseningTarget` is absent for create
+reordered sibling invalidates the wound command. The historical set is first recomposed
+under the occurrence's exact source session/request/snapshot-token/turn and compared to
+its stored seal. The same ordered coordinate vector is then rebound to the active
+decision snapshot: selected evidence is derived again, while generic sibling seals are
+allowed to change only through that binding. `worseningTarget` is absent for create
 and is one explicit exact active-wound/cause coordinate for worsen; it is never inferred.
 The occurrence persists the original ordered 1-160 event authorities and their
 recomputed set fingerprint, plus one stable source `producerOperationKey` and exact
@@ -56,8 +69,19 @@ its durable consumed receipt, while changed semantics under that key conflict. A
 harmless typed result creates no candidate or public opportunity.
 The producer key identifies the batch and therefore repeats across its rows; each row is
 identified by `(producerOperationKey, producerCandidateOrdinal)`. Every pending or
-consumed row in that group must agree on source session/request/turn, count, adapter and
-source-result authority/fingerprint, and no ordinal may exist in both roots.
+consumed row in that group must agree on source session/request/snapshot token/turn,
+count, adapter, source-result authority/fingerprint, and no ordinal may exist in both
+roots.
+
+Accepted-turn validation treats the command opportunity only as comparison input. The
+pending occurrence and append-only receipt roots are mandatory signed snapshot paths;
+their live bytes must still equal the snapshot before-image. The validator parses both,
+checks their union agreement, reconstructs each complete producer batch and active-
+snapshot event vector, resolves an explicit worsening target only in the signed carrier,
+and composes a fresh opportunity from occurrence-owned fields. Every field and seal must
+match the submitted opportunity, and the exact signed prior receipt projection is used
+when the command is recomposed. Raw effect-event JSON and the submitted
+`inputEvidenceFingerprint` are never evidence at this boundary.
 
 ## Client-authored opportunity
 
@@ -239,13 +263,15 @@ only for corrected acquisition narration while preserving the valid proposal.
   require or synthesize a wound-history transition.
 - The receipt binds the opportunity authority, signed turn/snapshot, selected event and
   semantic fingerprint, decision fingerprint, and operation key. Exact cold replay
-  returns no command/transition; changed semantics conflict; only a newly sealed
-  occurrence/snapshot creates a distinct opportunity.
+  while the same active snapshot retains its pre-consumption occurrence returns no
+  command/transition; changed semantics conflict; a newer snapshot makes the old
+  correlation stale, and only a newly sealed occurrence creates a distinct opportunity.
 - A `none` receipt has no wound/transition coordinate and no wound-history row. A
   `materialize` receipt names one exact wound and `create|worsen` transition and agrees
   with that history row on transition/wound/turn/event/operation and opportunity source
   fingerprint.
-- Every receipt retains the consumed occurrence's source session/request/turn,
+- Every receipt retains the consumed occurrence's source session/request/snapshot
+  token/turn,
   producer operation key and candidate ordinal/count, plus source-result/candidate/
   occurrence fingerprints. The source-result publisher reads both roots before append,
   so exact retry after consumption is still a no-op and changed source semantics still

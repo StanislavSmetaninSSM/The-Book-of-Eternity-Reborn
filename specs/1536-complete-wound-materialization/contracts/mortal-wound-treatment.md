@@ -1344,22 +1344,36 @@ gameResponse)`: its strict source-shaped `JsonElement` may carry adapter/event o
 public opportunity correlation, owner/domain/profile/source/outcome/safe-context, and
 an optional exact worsening wound/cause, but no session/request/snapshot binding,
 accepted-event kind/ID/ref, occurrence/event semantic fingerprint, transition ID,
-decision receipt, anchor, or after-image. This ingress is correlation only. Under the
+decision receipt, anchor, or after-image. `hardMaximumSeverityRank`, minimum severity,
+and guarantee are also forbidden even as repeated correlation; they are derived only
+from the signed occurrence. `worseningTarget` is absent for create and a complete
+non-null object for worsen. This ingress is correlation only. Under the
 live canonical lease the adapter validates the pending-turn manifest/authority and exact
 snapshot bytes, resolves one matching client-sealed accepted occurrence, derives the
-complete ordered accepted-event set and evidence seal through the shared typed event
-composer, and, only when the explicit
+historical complete ordered accepted-event set under its exact source
+session/request/snapshot-token/turn, then rebinds the same coordinate vector and derived
+selected evidence to the active decision snapshot through the shared typed event
+composer. It also requires the current receipt root to retain the signed append-only
+prefix and the live pending root to equal the signed rows minus exactly retained
+consumptions. Only when the explicit
 worsening coordinate is present, selects the canonical active wound exactly once from
-that signed before-image. The accepted-turn validator independently reconstructs the
-same complete event set and occurrence authority from the distributed response; it may
-not replace the recomputed set with the command binding. The adapter then builds the
+that signed before-image. The accepted-turn validator independently reads the occurrence
+and decision-receipt roots from the signed snapshot, verifies their cross-root agreement
+and unchanged live bytes, then reconstructs the same complete event set and opportunity
+authority from those roots plus the signed wound carrier. It may not trust the
+distributed effect-event projection or replace the recomputed set with the command
+binding. A self-consistent command with changed owner, profile, source, cap, guarantee,
+selected event, sibling event order, or worsening wound is rejected. Exact signed prior
+receipts are fed into strict command recomposition. The adapter then builds the
 sealed opportunity and returns the ordinary
 `WoundResponseInputCompositionResult` without writing. The caller then uses the real
 `StateDistributor` overload and
 `ValidationService.ValidateAcceptedTurnRawEffectMaterializationAsync()`; only the common
 accepted-plan publisher may append the decision receipt, consume the pending occurrence,
 and commit the optional creation/worsening. An exact prior receipt is a no-command replay;
-a changed decision for that occurrence conflicts.
+a changed decision for that occurrence conflicts. This cold replay is valid only while
+the same active snapshot retains the signed pre-consumption occurrence; a subsequent
+snapshot makes the old correlation stale.
 
 The shared event composer accepts no raw response JSON and no caller-supplied semantic
 fingerprint. Its input is one immutable typed response-event projection and selected

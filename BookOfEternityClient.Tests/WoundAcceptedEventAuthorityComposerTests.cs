@@ -145,6 +145,61 @@ public sealed class WoundAcceptedEventAuthorityComposerTests
     }
 
     [Fact]
+    public void RebindMortalOccurrence_VerifiesHistoricalSetAndRebindsTheCompleteVector()
+    {
+        var occurrence = Occurrence();
+
+        var rebound = WoundAcceptedEventAuthorityComposer.RebindMortalOccurrence(
+            occurrence,
+            new[] { occurrence },
+            "session_73",
+            "request_73",
+            Fingerprint('d'),
+            73);
+
+        Assert.True(rebound.Success, Describe(rebound.Issues));
+        Assert.Equal(
+            occurrence.AcceptedEvents.Select(value =>
+                (value.EventRef, value.Kind, value.AuthorityId)),
+            rebound.Events.Select(value =>
+                (value.EventRef, value.Kind, value.AuthorityId)));
+        Assert.Equal(
+            occurrence.AcceptedEvents[occurrence.AcceptedEventOrdinal]
+                .SemanticFingerprint,
+            rebound.Events[occurrence.AcceptedEventOrdinal].SemanticFingerprint);
+        Assert.NotEqual(
+            occurrence.AcceptedEvents[0].SemanticFingerprint,
+            rebound.Events[0].SemanticFingerprint);
+        Assert.Equal(
+            WoundAcceptedEventSetFingerprint.Compute(rebound.Events),
+            rebound.EventsFingerprint);
+
+        var tamperedEvents = occurrence.AcceptedEvents.ToArray();
+        tamperedEvents[0] = tamperedEvents[0] with
+        {
+            SemanticFingerprint = Fingerprint('e')
+        };
+        var tampered = occurrence with
+        {
+            AcceptedEvents = tamperedEvents,
+            AcceptedEventsFingerprint =
+                WoundAcceptedEventSetFingerprint.Compute(tamperedEvents)
+        };
+        var rejected = WoundAcceptedEventAuthorityComposer.RebindMortalOccurrence(
+            tampered,
+            new[] { tampered },
+            "session_73",
+            "request_73",
+            Fingerprint('d'),
+            73);
+
+        Assert.False(rejected.Success);
+        Assert.Empty(rejected.Events);
+        Assert.Contains(rejected.Issues, issue =>
+            issue.Code == "mortal_wound_occurrence_event_authority_mismatch");
+    }
+
+    [Fact]
     public void Compose_RejectsMalformedLimitsAndExactOrConfusableAuthorityCollisions()
     {
         foreach (var projection in new[]
@@ -240,6 +295,69 @@ public sealed class WoundAcceptedEventAuthorityComposerTests
         "harmful",
         2,
         "Проверяемая причина ранения.");
+
+    private static MortalWoundOccurrence Occurrence()
+    {
+        var projection = Projection(
+            Event("event_72_0", "accepted_turn", "turn_72"),
+            Event("event_72_1", "formal_retrauma", "source_72_1"));
+        var eventResult = WoundAcceptedEventAuthorityComposer.Compose(
+            projection,
+            new[]
+            {
+                new WoundSelectedEventEvidence(
+                    1,
+                    Evidence("formal", "formal_retrauma", "source_72_1"))
+            });
+        Assert.True(eventResult.Success, Describe(eventResult.Issues));
+        var candidate = new MortalWoundOccurrenceCandidate(
+            projection.SessionId,
+            projection.RequestId,
+            projection.SnapshotToken,
+            projection.Turn,
+            "producer_operation_72",
+            0,
+            1,
+            "formal",
+            1,
+            eventResult.Events,
+            new WoundOwnerCoordinate(
+                "mortal_world",
+                "player",
+                "player_current",
+                "game_state/player/wounds.json"),
+            "physical",
+            "mortal_formal_retrauma_v1",
+            new MortalWoundOccurrenceSource(
+                "formal_retrauma",
+                "source_72_1",
+                "accepted"),
+            new MortalWoundOccurrenceOutcome(
+                "harmful",
+                2,
+                "Проверяемая причина ранения."),
+            4,
+            null,
+            null,
+            new WoundOpportunitySafeContext(
+                "рука",
+                "повторная травма",
+                new[] { "anatomical" }),
+            null,
+            Fingerprint('f'));
+        var emptyOccurrences = MortalWoundOccurrenceState.Parse(
+            "{\"schemaVersion\":1,\"occurrences\":[]}",
+            MortalWoundOccurrenceState.StatePath).State!;
+        var emptyReceipts = MortalWoundOpportunityReceiptState.Parse(
+            "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[]}",
+            MortalWoundOpportunityReceiptState.StatePath).State!;
+        var append = MortalWoundOccurrenceState.PlanAppend(
+            emptyOccurrences,
+            new MortalWoundOccurrenceCandidateBatch(new[] { candidate }),
+            emptyReceipts);
+        Assert.Equal("appended", append.Disposition);
+        return Assert.Single(append.State!.Occurrences);
+    }
 
     private static string Fingerprint(char value) => "sha256:" + new string(value, 64);
 

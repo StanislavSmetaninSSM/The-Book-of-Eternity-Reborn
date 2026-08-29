@@ -419,14 +419,21 @@ history atomically for every owner carrier; effect removal never heals it.
    signed formal/QTE/combat/trap/check/hazard/narrative occurrence, and derives the
    owner/profile/source/outcome/severity and optional explicit create-versus-worsen
    target, plus the exact nullable minimum/guaranteed-trigger authority already supported
-   by the opportunity contract. A shared composer accepts only a closed typed response-
+   by the opportunity contract. The correlation may repeat the selected ordinal and
+   public owner/profile/source/outcome/safe-context fields, but never the hard maximum,
+   minimum/guarantee, binding, event coordinates/seals, receipt, transition, anchor, or
+   after-image. A shared composer accepts only a closed typed response-
    event projection plus selected typed evidence at exact zero-based ordinals; it derives
    every selected semantic seal itself, preserves the compatible generic-event seal, and
    returns the complete ordered event set plus its fingerprint. It does not accept raw
    JSON or caller-provided fingerprints. The source-result boundary, later adapter, and
    `ValidationService` each build their own projection/evidence from their authoritative
-   typed result or signed occurrence. `ValidationService` independently reconstructs
-   and compares it instead of replacing it with the command binding. The adapter returns
+   typed result or signed occurrence. `ValidationService` independently reads both
+   occurrence and decision-receipt roots from the signed pre-turn snapshot, verifies
+   their agreement and unchanged live bytes, reconstructs the complete event set and
+   opportunity from those roots plus the signed wound carrier, and compares the result
+   instead of replacing it with the command binding. Exact signed prior receipts are
+   then used for command recomposition. The adapter returns
    the existing wound composition result without writing. Formal re-trauma then uses the
    ordinary `StateDistributor` -> `ValidationService` -> common-plan pipeline; callers
    cannot inject or reuse an occurrence, treatment binding, fingerprint, transition,
@@ -441,8 +448,11 @@ history atomically for every owner carrier; effect removal never heals it.
    candidates in sealed batch-ordinal order; only a subsequent pending-turn
    snapshot that seals its exact bytes may expose the opportunity to the GM. The later
    wound-decision common plan appends the exact opportunity-decision receipt (including
-   `none`) and consumes the pending occurrence, so restart replay is either an exact no-
-   command result or a conflict. Both state implementations reuse the length-prefixed
+   `none`) and consumes the pending occurrence. While the same active pending-turn
+   snapshot is retained, restart replay reconstructs authority from its signed pre-
+   consumption occurrence plus the current append-only receipt/pending partition and is
+   either an exact no-command result or a conflict; a newer snapshot makes the old
+   correlation stale. Both state implementations reuse the length-prefixed
    UTF-8 SHA-256 writer; their exact v1 candidate/occurrence/receipt domain strings,
    field order, derived IDs, and null encoding are frozen in `data-model.md`, so tests
    can detect a reordered or caller-trusted seal independently.

@@ -185,6 +185,7 @@ internal sealed class MortalWoundOccurrenceState
         var opportunityRef = Text(row, "opportunityRef", path, issues);
         var session = Text(row, "sourceSessionId", path, issues);
         var request = Text(row, "sourceRequestId", path, issues);
+        var snapshot = Text(row, "sourceSnapshotToken", path, issues);
         var turn = Int(row, "sourceTurn", path, issues, true);
         var key = Text(row, "producerOperationKey", path, issues);
         var ordinal = Int(row, "producerCandidateOrdinal", path, issues, true);
@@ -207,13 +208,13 @@ internal sealed class MortalWoundOccurrenceState
         var candidateFingerprint = Text(row, "candidateFingerprint", path, issues);
         var occurrenceFingerprint = Text(row, "occurrenceFingerprint", path, issues);
 
-        if (new[] { occurrenceId, opportunityRef, session, request, key, adapter, eventsFingerprint, domain, profile,
+        if (new[] { occurrenceId, opportunityRef, session, request, snapshot, key, adapter, eventsFingerprint, domain, profile,
                 sourceResult, candidateFingerprint, occurrenceFingerprint }.Any(value => value is null) ||
             turn is null || ordinal is null || count is null || eventOrdinal is null || hard is null || owner is null ||
             source is null || outcome is null || safe is null)
             return null;
 
-        var occurrence = new MortalWoundOccurrence(occurrenceId!, opportunityRef!, session!, request!, turn.Value,
+        var occurrence = new MortalWoundOccurrence(occurrenceId!, opportunityRef!, session!, request!, snapshot!, turn.Value,
             key!, ordinal.Value, count.Value, adapter!, eventOrdinal.Value, events, eventsFingerprint!, owner, domain!, profile!,
             source, outcome, hard.Value, minimum, guarantee, safe, target, sourceResult!, candidateFingerprint!, occurrenceFingerprint!);
         ValidateOccurrence(occurrence, path, issues);
@@ -229,6 +230,7 @@ internal sealed class MortalWoundOccurrenceState
             Add(issues, path, "mortal_wound_occurrence_invalid_field");
         ValidateExact(value.SourceSessionId, path + ".sourceSessionId", issues);
         ValidateExact(value.SourceRequestId, path + ".sourceRequestId", issues);
+        ValidateExact(value.SourceSnapshotToken, path + ".sourceSnapshotToken", issues);
         ValidateExact(value.ProducerOperationKey, path + ".producerOperationKey", issues);
         ValidateExact(value.ProfileKey, path + ".profileKey", issues);
         ValidateExact(value.Source.Kind, path + ".source.kind", issues);
@@ -350,7 +352,7 @@ internal sealed class MortalWoundOccurrenceState
         {
             var guarantee = candidate.GuaranteedTrigger is null ? null : ToAuthority(candidate.GuaranteedTrigger);
             var occurrence = new MortalWoundOccurrence(string.Empty, string.Empty, candidate.SourceSessionId, candidate.SourceRequestId,
-                candidate.SourceTurn, candidate.ProducerOperationKey, candidate.ProducerCandidateOrdinal, candidate.ProducerCandidateCount,
+                candidate.SourceSnapshotToken, candidate.SourceTurn, candidate.ProducerOperationKey, candidate.ProducerCandidateOrdinal, candidate.ProducerCandidateCount,
                 candidate.AdapterKind, candidate.AcceptedEventOrdinal, candidate.AcceptedEvents, eventFingerprint, candidate.Owner,
                 candidate.Domain, candidate.ProfileKey, candidate.Source, candidate.Outcome, candidate.HardMaximumSeverityRank,
                 candidate.MinimumSeverityRank, guarantee, candidate.SafeContext, candidate.WorseningTarget, candidate.SourceResultFingerprint,
@@ -375,7 +377,8 @@ internal sealed class MortalWoundOccurrenceState
 
     private static bool SameBatchAuthority(MortalWoundOccurrenceCandidate first, MortalWoundOccurrenceCandidate other) =>
         first.SourceSessionId == other.SourceSessionId && first.SourceRequestId == other.SourceRequestId &&
-        first.SourceTurn == other.SourceTurn && first.AdapterKind == other.AdapterKind &&
+        first.SourceSnapshotToken == other.SourceSnapshotToken && first.SourceTurn == other.SourceTurn &&
+        first.AdapterKind == other.AdapterKind &&
         first.SourceResultFingerprint == other.SourceResultFingerprint;
 
     private static bool SameOccurrence(MortalWoundOccurrence left, MortalWoundOccurrence right) =>
@@ -389,6 +392,7 @@ internal sealed class MortalWoundOccurrenceState
         return receipt.OpportunityId == occurrence.OccurrenceId &&
             receipt.SourceSessionId == occurrence.SourceSessionId &&
             receipt.SourceRequestId == occurrence.SourceRequestId &&
+            receipt.SourceSnapshotToken == occurrence.SourceSnapshotToken &&
             receipt.SourceTurn == occurrence.SourceTurn &&
             receipt.ProducerOperationKey == occurrence.ProducerOperationKey &&
             receipt.ProducerCandidateOrdinal == occurrence.ProducerCandidateOrdinal &&
@@ -413,7 +417,8 @@ internal sealed class MortalWoundOccurrenceState
     // source tuple and seals; it never accepts caller-supplied flattened receipt data.
     private static IEnumerable<MortalWoundOccurrence> ConsumedOccurrences(MortalWoundOpportunityReceiptState receipts) =>
         receipts.Receipts.Select(receipt => new MortalWoundOccurrence(
-            receipt.OpportunityId, string.Empty, receipt.SourceSessionId, receipt.SourceRequestId, receipt.SourceTurn,
+            receipt.OpportunityId, string.Empty, receipt.SourceSessionId, receipt.SourceRequestId,
+            receipt.SourceSnapshotToken, receipt.SourceTurn,
             receipt.ProducerOperationKey, receipt.ProducerCandidateOrdinal, receipt.ProducerCandidateCount, string.Empty, 0,
             Array.Empty<WoundAcceptedEventAuthority>(), string.Empty,
             new WoundOwnerCoordinate(string.Empty, string.Empty, string.Empty, string.Empty), string.Empty, string.Empty,
@@ -519,7 +524,8 @@ internal sealed class MortalWoundOccurrenceState
     }
 
     private static bool SameStoredBatchAuthority(MortalWoundOccurrence first, MortalWoundOccurrence other) =>
-        first.SourceSessionId == other.SourceSessionId && first.SourceRequestId == other.SourceRequestId && first.SourceTurn == other.SourceTurn &&
+        first.SourceSessionId == other.SourceSessionId && first.SourceRequestId == other.SourceRequestId &&
+        first.SourceSnapshotToken == other.SourceSnapshotToken && first.SourceTurn == other.SourceTurn &&
         first.ProducerCandidateCount == other.ProducerCandidateCount && first.AdapterKind == other.AdapterKind &&
         first.SourceResultFingerprint == other.SourceResultFingerprint && first.AcceptedEventsFingerprint == other.AcceptedEventsFingerprint;
 
@@ -700,10 +706,16 @@ internal sealed class MortalWoundOccurrenceState
 
     private static bool OwnerIsMortal(WoundOwnerCoordinate owner) => owner switch
     {
-        { Realm: "mortal_world", OwnerKind: "player", OwnerId: "player_current", CarrierPath: "game_state/player/wounds.json" } => true,
-        { Realm: "mortal_world", OwnerKind: "npc", CarrierPath: "game_state/npcs/npc_wounds.json" } => Exact(owner.OwnerId),
-        { Realm: "mortal_world", OwnerKind: "combatant", CarrierPath: "game_state/combat/enemies.json" or "game_state/combat/allies.json" } => Exact(owner.OwnerId),
-        { Realm: "mortal_world", OwnerKind: "combatant_member", CarrierPath: "game_state/combat/enemies.json" or "game_state/combat/allies.json" } => Exact(owner.OwnerId),
+        { Realm: "mortal_world", OwnerKind: "player", OwnerId: "player_current",
+            CarrierPath: WoundCarrierCatalog.PlayerPath } => true,
+        { Realm: "mortal_world", OwnerKind: "npc",
+            CarrierPath: WoundCarrierCatalog.NpcPath } => Exact(owner.OwnerId),
+        { Realm: "mortal_world", OwnerKind: "combatant",
+            CarrierPath: WoundCarrierCatalog.EnemiesPath or
+                WoundCarrierCatalog.AlliesPath } => Exact(owner.OwnerId),
+        { Realm: "mortal_world", OwnerKind: "combatant_member",
+            CarrierPath: WoundCarrierCatalog.EnemiesPath or
+                WoundCarrierCatalog.AlliesPath } => Exact(owner.OwnerId),
         _ => false
     };
 
@@ -748,7 +760,7 @@ internal sealed class MortalWoundOccurrenceState
         var fields = new List<string?>
         {
             "book_of_eternity.mortal_wound.occurrence_candidate", "1", value.SourceSessionId, value.SourceRequestId,
-            value.SourceTurn.ToString(CultureInfo.InvariantCulture), value.ProducerOperationKey,
+            value.SourceSnapshotToken, value.SourceTurn.ToString(CultureInfo.InvariantCulture), value.ProducerOperationKey,
             value.ProducerCandidateOrdinal.ToString(CultureInfo.InvariantCulture), value.ProducerCandidateCount.ToString(CultureInfo.InvariantCulture),
             value.AdapterKind, value.AcceptedEventOrdinal.ToString(CultureInfo.InvariantCulture), value.AcceptedEventsFingerprint,
             value.Owner.Realm, value.Owner.OwnerKind, value.Owner.OwnerId, value.Owner.CarrierPath, value.Domain, value.ProfileKey,
@@ -808,7 +820,8 @@ internal sealed class MortalWoundOccurrenceState
     {
         writer.WriteStartObject();
         writer.WriteString("occurrenceId", value.OccurrenceId); writer.WriteString("opportunityRef", value.OpportunityRef);
-        writer.WriteString("sourceSessionId", value.SourceSessionId); writer.WriteString("sourceRequestId", value.SourceRequestId); writer.WriteNumber("sourceTurn", value.SourceTurn);
+        writer.WriteString("sourceSessionId", value.SourceSessionId); writer.WriteString("sourceRequestId", value.SourceRequestId);
+        writer.WriteString("sourceSnapshotToken", value.SourceSnapshotToken); writer.WriteNumber("sourceTurn", value.SourceTurn);
         writer.WriteString("producerOperationKey", value.ProducerOperationKey); writer.WriteNumber("producerCandidateOrdinal", value.ProducerCandidateOrdinal); writer.WriteNumber("producerCandidateCount", value.ProducerCandidateCount);
         writer.WriteString("adapterKind", value.AdapterKind); writer.WriteNumber("acceptedEventOrdinal", value.AcceptedEventOrdinal);
         writer.WritePropertyName("acceptedEvents"); writer.WriteStartArray();
@@ -842,7 +855,7 @@ internal sealed class MortalWoundOccurrenceState
     }
 
     private static readonly IReadOnlySet<string> RootFields = Set("schemaVersion", "occurrences");
-    private static readonly IReadOnlySet<string> RowFields = Set("occurrenceId", "opportunityRef", "sourceSessionId", "sourceRequestId", "sourceTurn", "producerOperationKey", "producerCandidateOrdinal", "producerCandidateCount", "adapterKind", "acceptedEventOrdinal", "acceptedEvents", "acceptedEventsFingerprint", "owner", "domain", "profileKey", "source", "outcome", "hardMaximumSeverityRank", "minimumSeverityRank", "guaranteedTrigger", "safeContext", "worseningTarget", "sourceResultFingerprint", "candidateFingerprint", "occurrenceFingerprint");
+    private static readonly IReadOnlySet<string> RowFields = Set("occurrenceId", "opportunityRef", "sourceSessionId", "sourceRequestId", "sourceSnapshotToken", "sourceTurn", "producerOperationKey", "producerCandidateOrdinal", "producerCandidateCount", "adapterKind", "acceptedEventOrdinal", "acceptedEvents", "acceptedEventsFingerprint", "owner", "domain", "profileKey", "source", "outcome", "hardMaximumSeverityRank", "minimumSeverityRank", "guaranteedTrigger", "safeContext", "worseningTarget", "sourceResultFingerprint", "candidateFingerprint", "occurrenceFingerprint");
     private static readonly IReadOnlySet<string> EventFields = Set("eventRef", "kind", "authorityId", "semanticFingerprint");
     private static readonly IReadOnlySet<string> OwnerFields = Set("realm", "ownerKind", "ownerId", "carrierPath");
     private static readonly IReadOnlySet<string> SourceFields = Set("kind", "sourceId", "state");
@@ -862,7 +875,7 @@ internal sealed record MortalWoundOccurrenceCandidate
 {
     private IReadOnlyList<WoundAcceptedEventAuthority> _acceptedEvents = Array.Empty<WoundAcceptedEventAuthority>();
     internal MortalWoundOccurrenceCandidate(
-        string SourceSessionId, string SourceRequestId, int SourceTurn, string ProducerOperationKey,
+        string SourceSessionId, string SourceRequestId, string SourceSnapshotToken, int SourceTurn, string ProducerOperationKey,
         int ProducerCandidateOrdinal, int ProducerCandidateCount, string AdapterKind, int AcceptedEventOrdinal,
         IReadOnlyList<WoundAcceptedEventAuthority> AcceptedEvents, WoundOwnerCoordinate Owner, string Domain,
         string ProfileKey, MortalWoundOccurrenceSource Source, MortalWoundOccurrenceOutcome Outcome,
@@ -872,6 +885,7 @@ internal sealed record MortalWoundOccurrenceCandidate
     {
         this.SourceSessionId = SourceSessionId;
         this.SourceRequestId = SourceRequestId;
+        this.SourceSnapshotToken = SourceSnapshotToken;
         this.SourceTurn = SourceTurn;
         this.ProducerOperationKey = ProducerOperationKey;
         this.ProducerCandidateOrdinal = ProducerCandidateOrdinal;
@@ -894,6 +908,7 @@ internal sealed record MortalWoundOccurrenceCandidate
 
     public string SourceSessionId { get; init; }
     public string SourceRequestId { get; init; }
+    public string SourceSnapshotToken { get; init; }
     public int SourceTurn { get; init; }
     public string ProducerOperationKey { get; init; }
     public int ProducerCandidateOrdinal { get; init; }
@@ -935,7 +950,7 @@ internal sealed record MortalWoundOccurrenceCandidateBatch
 }
 
 internal sealed record MortalWoundOccurrence(
-    string OccurrenceId, string OpportunityRef, string SourceSessionId, string SourceRequestId, int SourceTurn,
+    string OccurrenceId, string OpportunityRef, string SourceSessionId, string SourceRequestId, string SourceSnapshotToken, int SourceTurn,
     string ProducerOperationKey, int ProducerCandidateOrdinal, int ProducerCandidateCount, string AdapterKind, int AcceptedEventOrdinal,
     IReadOnlyList<WoundAcceptedEventAuthority> AcceptedEvents, string AcceptedEventsFingerprint, WoundOwnerCoordinate Owner,
     string Domain, string ProfileKey, MortalWoundOccurrenceSource Source, MortalWoundOccurrenceOutcome Outcome,

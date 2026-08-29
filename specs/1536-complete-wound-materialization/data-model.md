@@ -1487,6 +1487,7 @@ pending-turn snapshot before the GM receives an opportunity. It has the closed s
       "opportunityRef": "safe-public-correlation",
       "sourceSessionId": "exact-source-session",
       "sourceRequestId": "exact-source-request",
+      "sourceSnapshotToken": "exact-source-snapshot",
       "sourceTurn": 41,
       "producerOperationKey": "mortal_wound_source_operation_...",
       "producerCandidateOrdinal": 0,
@@ -1548,10 +1549,14 @@ produce no occurrence candidate or public opportunity. Only the next active pend
 turn snapshot may make a sealed harmful row available to the GM. A current combatant, hazard,
 source definition, die, or prose row is only supporting source evidence and cannot
 create an occurrence by itself. The
-source-shaped adapter input repeats only public correlation fields and must agree
-exactly with one signed occurrence; it never carries the occurrence fingerprint,
-session/request/snapshot authority, accepted-event coordinates, transition identity,
-receipt, anchor, or after-image.
+source-shaped adapter input repeats only `schemaVersion`, `adapterKind`,
+`acceptedEventOrdinal`, `opportunityRef`, `owner`, `domain`, `profileKey`, `source`,
+`outcome`, `safeContext`, and an absent-for-create or complete non-null
+`worseningTarget`. It must agree exactly with one signed occurrence. It never carries
+the hard maximum, minimum/guarantee, occurrence or producer identity, source or decision
+session/request/snapshot/turn authority, accepted-event kind/ID/ref/fingerprint,
+transition identity, receipt, proposal, anchor, or after-image. Explicit null
+`worseningTarget` is invalid rather than an alias for absence.
 
 The shared event primitive uses a closed `WoundAcceptedResponseEventProjection`
 (`sessionId`, `requestId`, `snapshotToken`, positive `turn`, ordered typed event
@@ -1565,6 +1570,16 @@ fingerprints, free-string selection, and ambiguous exact/confusable `(kind, auth
 pairs are not accepted at this boundary. Producer, later adapter, and validator wiring
 must each derive this projection/evidence from their own typed accepted result or the
 current signed occurrence; a GM correlation or parsed command is never that authority.
+
+For a later decision, the adapter first recomposes the historical complete event vector
+under `sourceSessionId`, `sourceRequestId`, `sourceSnapshotToken`, and `sourceTurn` and
+requires byte-semantic equality with the occurrence's stored vector/fingerprint. It then
+rebinds the same ordered coordinate triples to the active decision snapshot and derives
+selected evidence for every selected ordinal in the complete producer batch. Selected
+wound semantics stay stable; generic sibling fingerprints are recomputed for the active
+snapshot. The current opportunity therefore seals the active recomposed
+`acceptedEventsFingerprint`; copying the historical source-set fingerprint or composing
+only the selected row is invalid.
 
 The registered producer seam is deliberately separate from correlation adapters. A
 producer projects only after its client-owned accepted result is finalized. An empty
@@ -1585,8 +1600,8 @@ the unique contiguous ordinals `0..count-1`. Pure append logic validates this se
 orders it by ordinal, so caller enumeration order cannot change the after-image.
 Occurrence IDs, public refs, candidate fingerprints, and semantic candidate coordinates
 are exact/confusable unique. `producerOperationKey` is unique per batch, not per row:
-every row sharing it must agree exactly on source session/request/turn, candidate count,
-adapter/source-result authority and source-result fingerprint, while
+every row sharing it must agree exactly on source session/request/snapshot token/turn,
+candidate count, adapter/source-result authority and source-result fingerprint, while
 `(producerOperationKey, producerCandidateOrdinal)` is exact/confusable unique across
 pending and consumed rows. Candidate and occurrence
 fingerprints are domain/versioned and recomputed over every semantic field, including
@@ -1599,8 +1614,9 @@ for every row its zero-based index, `eventRef`, `kind`, `authorityId`, and
 `semanticFingerprint` in original order.
 `candidateFingerprint` uses domain
 `book_of_eternity.mortal_wound.occurrence_candidate`, version `1`, followed in order by:
-source session/request/turn; producer operation key, candidate ordinal/count; adapter
-kind, selected event ordinal, and the recomputed event-set fingerprint; owner realm/kind/
+source session/request/snapshot token/turn; producer operation key, candidate
+ordinal/count; adapter kind, selected event ordinal, and the recomputed event-set
+fingerprint; owner realm/kind/
 ID/carrier path; domain and profile; source kind/ID/state; outcome kind/maximum/readable
 cause; hard maximum, nullable minimum, and nullable recomputed guarantee-authority
 fingerprint; safe target/cause, location count, then each zero-based location index and
@@ -1635,8 +1651,8 @@ all-or-nothing under the 32-row pending bound.
 
 The construction seam is exact: `MortalWoundOccurrenceCandidateBatch` takes only
 `IReadOnlyList<MortalWoundOccurrenceCandidate>`. Each candidate constructor takes, in
-schema order, source session/request/turn; producer key/ordinal/count; adapter kind;
-selected ordinal plus `IReadOnlyList<WoundAcceptedEventAuthority>`; owner; domain;
+schema order, source session/request/snapshot token/turn; producer key/ordinal/count;
+adapter kind; selected ordinal plus `IReadOnlyList<WoundAcceptedEventAuthority>`; owner; domain;
 profile; typed source; typed outcome; hard maximum; nullable minimum; nullable existing
 `WoundGuaranteedTriggerEvidence`; safe context; nullable typed worsening target; and
 source-result fingerprint. The small typed records are
@@ -1708,6 +1724,19 @@ normalizes caller batch enumeration into ascending candidate ordinal. Historical
 T070 against the signed before-image; the parser is never treated as proof that an
 unsigned earlier root had the same rows.
 
+Both this root and `game_state/wounds/wound_opportunity_receipts.json` are foundational
+members of `WoundAcceptedTurnSnapshotContract.RequiredPaths`. When a distributed wound
+command is admitted, `ValidationService` reads their exact signed before-images, requires
+the live client-owned files to remain byte-identical, parses both closed schemas, and
+validates their cross-root consumed-occurrence agreement. For every submitted command
+opportunity it resolves exactly one signed occurrence by client-owned `occurrenceId`,
+historically recomposes the complete producer event vector, rebinds that vector to the
+active decision snapshot, and rebuilds owner/profile/source/outcome/cap/guarantee and
+optional worsening authority. Worsening resolves only against the signed wound-carrier
+before-image. The rebuilt opportunity must equal the submitted authority field-for-field;
+a merely self-consistent command seal is insufficient. All signed prior receipts are
+projected into ordinary decision receipts for strict command recomposition.
+
 ### 8.2 Opportunity decision receipts
 
 The append-only client-owned root
@@ -1732,6 +1761,7 @@ including `none`:
       "eventSemanticFingerprint": "sha256:...",
       "sourceSessionId": "exact-source-session",
       "sourceRequestId": "exact-source-request",
+      "sourceSnapshotToken": "exact-source-snapshot",
       "sourceTurn": 41,
       "producerOperationKey": "mortal_wound_source_operation_...",
       "producerCandidateOrdinal": 0,
@@ -1802,7 +1832,7 @@ lookup, returns a detached original receipt, and changes neither state. A change
 an opportunity absent from both states, or the same tuple in both states conflicts and
 returns no after-states. `ValidateConsumedOccurrenceAgreement(pending, receipts)` checks
 the complete pending-plus-consumed batch partition, cross-root tuple/identity uniqueness,
-and shared source session/request/turn/count/source-result agreement.
+and shared source session/request/snapshot token/turn/count/source-result agreement.
 
 `MortalWoundOpportunityDecisionBinding` is exactly session ID, request ID, snapshot
 token, and turn. `MortalWoundOpportunityReceiptDraft` is exactly that binding,
@@ -1815,16 +1845,22 @@ has null `woundId` and `transitionId` and no wound-history row. A `materialize` 
 has both exact values and must match exactly one `create|worsen` history row on
 `transitionId`, `woundId`, `turn`, `eventRef`, `operationKey`, and
 `sourceFingerprint == opportunityAuthorityFingerprint`. Exact cold replay returns the
-original detached receipt without a new command or transition. Replay is indexed first
-by opportunity ID: reusing the same opportunity with a different decision or any
+original detached receipt without a new command or transition. The production adapter
+supports that replay while the same active decision snapshot is retained: the signed
+snapshot still contains the complete pre-consumption occurrence, while the current
+append-only receipt/live pending partition proves whether it was consumed. After
+terminal cleanup or preparation of a newer snapshot, the historical source correlation
+is stale and is not replay authority. Replay is indexed first by opportunity ID: reusing
+the same opportunity with a different decision or any
 changed session/request/snapshot/turn/event/fingerprint/operation/transition coordinate
 conflicts. A new signed occurrence/snapshot produces a new opportunity. The common
 accepted plan composes the receipt after-image together with any wound/effect/history
 changes, consumes the pending occurrence, and remains the sole publisher; the adapter
 and state distributor never write either canonical root directly.
 
-The durable receipt also retains the consumed occurrence's source session/request/turn,
-producer operation key and batch ordinal/count, source-result/candidate/occurrence
+The durable receipt also retains the consumed occurrence's source
+session/request/snapshot token/turn, producer operation key and batch ordinal/count,
+source-result/candidate/occurrence
 fingerprints. The source-result T070 transaction reads both pending occurrences and
 receipts as signed before-images before append. For every complete retried batch it
 combines pending and consumed rows by producer operation key: all exact candidates mean

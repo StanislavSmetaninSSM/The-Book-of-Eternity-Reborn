@@ -15,6 +15,7 @@ internal static partial class WoundResponseInputComposer
         ["eventRef"] = value.EventRef,
         ["eventKind"] = value.EventKind,
         ["eventAuthorityId"] = value.EventAuthorityId,
+        ["acceptedEventsFingerprint"] = value.AcceptedEventsFingerprint,
         ["owner"] = SerializeOwner(value.Owner),
         ["domain"] = value.Domain,
         ["profileKey"] = value.ProfileKey,

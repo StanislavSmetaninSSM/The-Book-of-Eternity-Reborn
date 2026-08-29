@@ -30,7 +30,7 @@ internal sealed class MortalWoundOpportunityReceiptState
         "receiptId", "ordinal", "opportunityId", "opportunityAuthorityFingerprint",
         "sessionId", "requestId", "snapshotToken", "turn", "eventRef",
         "eventSemanticFingerprint", "sourceSessionId", "sourceRequestId",
-        "sourceTurn", "producerOperationKey", "producerCandidateOrdinal",
+        "sourceSnapshotToken", "sourceTurn", "producerOperationKey", "producerCandidateOrdinal",
         "producerCandidateCount", "sourceResultFingerprint", "candidateFingerprint",
         "occurrenceFingerprint", "decision", "decisionFingerprint", "operationKey",
         "woundId", "transitionId", "receiptFingerprint");
@@ -214,6 +214,7 @@ internal sealed class MortalWoundOpportunityReceiptState
             receipt.EventSemanticFingerprint,
             receipt.SourceSessionId,
             receipt.SourceRequestId,
+            receipt.SourceSnapshotToken,
             Number(receipt.SourceTurn),
             receipt.ProducerOperationKey,
             Number(receipt.ProducerCandidateOrdinal),
@@ -391,6 +392,7 @@ internal sealed class MortalWoundOpportunityReceiptState
                 occurrence.OccurrenceId,
                 occurrence.SourceSessionId,
                 occurrence.SourceRequestId,
+                occurrence.SourceSnapshotToken,
                 occurrence.SourceTurn,
                 occurrence.ProducerOperationKey,
                 occurrence.ProducerCandidateOrdinal,
@@ -404,6 +406,7 @@ internal sealed class MortalWoundOpportunityReceiptState
                 receipt.OpportunityId,
                 receipt.SourceSessionId,
                 receipt.SourceRequestId,
+                receipt.SourceSnapshotToken,
                 receipt.SourceTurn,
                 receipt.ProducerOperationKey,
                 receipt.ProducerCandidateOrdinal,
@@ -522,6 +525,11 @@ internal sealed class MortalWoundOpportunityReceiptState
             issues);
         var sourceSessionId = ReadIdentifier(row, "sourceSessionId", path, issues);
         var sourceRequestId = ReadIdentifier(row, "sourceRequestId", path, issues);
+        var sourceSnapshotToken = ReadIdentifier(
+            row,
+            "sourceSnapshotToken",
+            path,
+            issues);
         var sourceTurn = ReadInteger(
             row,
             "sourceTurn",
@@ -582,7 +590,7 @@ internal sealed class MortalWoundOpportunityReceiptState
             opportunityAuthorityFingerprint is null || sessionId is null ||
             requestId is null || snapshotToken is null || turn is null ||
             eventRef is null || eventSemanticFingerprint is null ||
-            sourceSessionId is null || sourceRequestId is null || sourceTurn is null ||
+            sourceSessionId is null || sourceRequestId is null || sourceSnapshotToken is null || sourceTurn is null ||
             producerOperationKey is null || producerCandidateOrdinal is null ||
             producerCandidateCount is null || sourceResultFingerprint is null ||
             candidateFingerprint is null || occurrenceFingerprint is null ||
@@ -605,6 +613,7 @@ internal sealed class MortalWoundOpportunityReceiptState
             eventSemanticFingerprint,
             sourceSessionId,
             sourceRequestId,
+            sourceSnapshotToken,
             sourceTurn.Value,
             producerOperationKey,
             producerCandidateOrdinal.Value,
@@ -1006,6 +1015,7 @@ internal sealed class MortalWoundOpportunityReceiptState
             selectedEvent.SemanticFingerprint,
             occurrence.SourceSessionId,
             occurrence.SourceRequestId,
+            occurrence.SourceSnapshotToken,
             occurrence.SourceTurn,
             occurrence.ProducerOperationKey,
             occurrence.ProducerCandidateOrdinal,
@@ -1061,6 +1071,7 @@ internal sealed class MortalWoundOpportunityReceiptState
         MortalWoundOpportunityReceipt right) =>
         string.Equals(left.SourceSessionId, right.SourceSessionId, StringComparison.Ordinal) &&
         string.Equals(left.SourceRequestId, right.SourceRequestId, StringComparison.Ordinal) &&
+        string.Equals(left.SourceSnapshotToken, right.SourceSnapshotToken, StringComparison.Ordinal) &&
         left.SourceTurn == right.SourceTurn &&
         left.ProducerCandidateCount == right.ProducerCandidateCount &&
         string.Equals(
@@ -1073,6 +1084,7 @@ internal sealed class MortalWoundOpportunityReceiptState
         ConsumedOccurrenceProjection right) =>
         string.Equals(left.SourceSessionId, right.SourceSessionId, StringComparison.Ordinal) &&
         string.Equals(left.SourceRequestId, right.SourceRequestId, StringComparison.Ordinal) &&
+        string.Equals(left.SourceSnapshotToken, right.SourceSnapshotToken, StringComparison.Ordinal) &&
         left.SourceTurn == right.SourceTurn &&
         left.ProducerCandidateCount == right.ProducerCandidateCount &&
         string.Equals(
@@ -1351,6 +1363,7 @@ internal sealed class MortalWoundOpportunityReceiptState
             receipt.EventSemanticFingerprint);
         writer.WriteString("sourceSessionId", receipt.SourceSessionId);
         writer.WriteString("sourceRequestId", receipt.SourceRequestId);
+        writer.WriteString("sourceSnapshotToken", receipt.SourceSnapshotToken);
         writer.WriteNumber("sourceTurn", receipt.SourceTurn);
         writer.WriteString("producerOperationKey", receipt.ProducerOperationKey);
         writer.WriteNumber(
@@ -1381,6 +1394,7 @@ internal sealed class MortalWoundOpportunityReceiptState
         string OpportunityId,
         string SourceSessionId,
         string SourceRequestId,
+        string SourceSnapshotToken,
         int SourceTurn,
         string ProducerOperationKey,
         int ProducerCandidateOrdinal,
@@ -1420,6 +1434,7 @@ internal sealed record MortalWoundOpportunityReceipt(
     string EventSemanticFingerprint,
     string SourceSessionId,
     string SourceRequestId,
+    string SourceSnapshotToken,
     int SourceTurn,
     string ProducerOperationKey,
     int ProducerCandidateOrdinal,

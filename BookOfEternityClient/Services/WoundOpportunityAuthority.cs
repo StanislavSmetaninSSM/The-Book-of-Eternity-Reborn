@@ -174,6 +174,11 @@ internal sealed partial record WoundOpportunityAuthority
 
     private static readonly IReadOnlySet<string> AdapterKinds = Set(
         "formal",
+        "qte",
+        "combat",
+        "trap",
+        "check",
+        "hazard",
         "narrative");
     private static readonly IReadOnlySet<string> OutcomeKinds = Set(
         "harmful",
@@ -312,6 +317,7 @@ internal sealed partial record WoundOpportunityAuthority
             request.EventRef!,
             matchingEvents[0].Kind,
             matchingEvents[0].AuthorityId,
+            binding.AcceptedEventsFingerprint,
             request.Owner,
             request.Domain,
             request.ProfileKey,
@@ -334,6 +340,7 @@ internal sealed partial record WoundOpportunityAuthority
                 request.EventRef!,
                 matchingEvents[0].Kind,
                 matchingEvents[0].AuthorityId,
+                binding.AcceptedEventsFingerprint,
                 request.Owner with { },
                 request.Domain,
                 request.ProfileKey,
@@ -365,6 +372,7 @@ internal sealed partial record WoundOpportunityAuthority
             value.EventRef,
             value.EventKind,
             value.EventAuthorityId,
+            value.AcceptedEventsFingerprint,
             value.Owner,
             value.Domain,
             value.ProfileKey,
@@ -390,6 +398,8 @@ internal sealed partial record WoundOpportunityAuthority
             !Exact(value.EventRef) ||
             !Exact(value.EventKind) ||
             !Exact(value.EventAuthorityId) ||
+            !ResourceMaterializationContract.IsAuthorityFingerprint(
+                value.AcceptedEventsFingerprint) ||
             !OwnerIsValid(value.Owner) ||
             !Domains.Contains(value.Domain) ||
             !Exact(value.ProfileKey) ||
@@ -869,6 +879,7 @@ internal sealed partial record WoundOpportunityAuthority
         string eventRef,
         string eventKind,
         string eventAuthorityId,
+        string acceptedEventsFingerprint,
         WoundOwnerCoordinate owner,
         string domain,
         string profileKey,
@@ -894,6 +905,7 @@ internal sealed partial record WoundOpportunityAuthority
             eventRef,
             eventKind,
             eventAuthorityId,
+            acceptedEventsFingerprint,
             owner.Realm,
             owner.OwnerKind,
             owner.OwnerId,

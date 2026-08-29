@@ -3360,6 +3360,7 @@ public sealed partial class WoundEffectBatchPlannerTests
                 eventAuthority.EventRef,
                 eventAuthority.Kind,
                 eventAuthority.AuthorityId,
+                binding.AcceptedEventsFingerprint,
                 owner,
                 domain,
                 domain == "spiritual"

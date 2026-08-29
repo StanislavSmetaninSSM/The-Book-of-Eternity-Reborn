@@ -52,7 +52,7 @@ internal static partial class WoundResponseInputComposer
     private static readonly IReadOnlySet<string> SerializedOpportunityFields = Set(
         "schemaVersion", "sessionId", "requestId", "snapshotToken",
         "opportunityId", "publicRef", "eventRef", "eventKind",
-        "eventAuthorityId", "owner", "domain", "profileKey", "sourceKind",
+        "eventAuthorityId", "acceptedEventsFingerprint", "owner", "domain", "profileKey", "sourceKind",
         "sourceId", "sourceState", "minimumSeverityRank",
         "maximumSeverityRank", "guaranteedTrigger", "worseningTarget", "safeContext",
         "inputEvidenceFingerprint", "authorityFingerprint");
@@ -315,6 +315,11 @@ internal static partial class WoundResponseInputComposer
             "eventAuthorityId",
             path,
             issues);
+        var acceptedEventsFingerprint = ReadExactIdentifier(
+            fields,
+            "acceptedEventsFingerprint",
+            path,
+            issues);
         var owner = fields.TryGetValue("owner", out var ownerElement)
             ? ParseOwner(ownerElement, path + ".owner", issues)
             : null;
@@ -430,6 +435,7 @@ internal static partial class WoundResponseInputComposer
             eventRef!,
             eventKind!,
             eventAuthorityId!,
+            acceptedEventsFingerprint!,
             owner,
             domain!,
             profileKey!,

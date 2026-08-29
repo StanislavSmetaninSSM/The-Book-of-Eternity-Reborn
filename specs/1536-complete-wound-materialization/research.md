@@ -162,8 +162,13 @@ sealed batch-ordinal order, and the next active pending-turn snapshot seals thei
 before exposing an opportunity.
 Correlation-only source input resolves exactly
 one such occurrence; current source state, combat membership, a hazard, dice, or prose
-cannot prove that the event occurred. The client independently reconstructs the complete
-ordered accepted-event set during initial composition and validation, then derives a
+cannot prove that the event occurred. It may repeat only public correlation and never
+the hard maximum, guarantee, binding, event authority, receipt, or after-image. The
+occurrence seals its exact source snapshot token. The client first verifies the stored
+historical event vector under those source coordinates, then rebinds the same complete
+ordered coordinate vector to the active decision snapshot during initial composition
+and validation. Selected wound semantics remain derived while generic sibling seals are
+recomputed. It then derives a
 `WoundOpportunity` containing exact event/target/realm/domain evidence, legal severity
 range, profile, and any guarantee. Absence of `worseningTarget` means create; worsening
 requires one explicit exact active-wound coordinate. The GM may choose none or any
@@ -173,9 +178,12 @@ narration; the client adds an explicit notification and rejects contradictory
 narration/state.
 
 Every accepted `none` or `materialize` decision appends one client-owned receipt and
-consumes the occurrence through the same atomic accepted plan. Exact cold replay emits
-no command or transition, while changed semantics conflict. A decline has no wound-
-history transition but remains durably auditable through its receipt.
+consumes the occurrence through the same atomic accepted plan. While the same active
+pending-turn snapshot is retained, exact cold replay uses its signed pre-consumption
+occurrence plus the current append-only receipt/pending partition and emits no command
+or transition; changed semantics conflict. A newer snapshot makes the old correlation
+stale. A decline has no wound-history transition but remains durably auditable through
+its receipt.
 
 **Rationale**: This preserves GM narrative judgment and prevents the client from
 inventing wounds. The signed occurrence prevents an available source from being

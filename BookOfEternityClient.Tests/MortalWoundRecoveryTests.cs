@@ -1510,7 +1510,6 @@ public sealed class MortalWoundRecoveryTests
                 ["readableCause"] =
                     "Повторный удар снова раскрыл стабилизированную рану."
             },
-            ["hardMaximumSeverityRank"] = 4,
             ["safeContext"] = new JsonObject
             {
                 ["target"] = "вы",

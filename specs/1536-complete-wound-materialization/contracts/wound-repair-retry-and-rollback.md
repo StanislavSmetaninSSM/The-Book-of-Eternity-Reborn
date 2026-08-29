@@ -165,7 +165,8 @@ notification, or history row.
 The pending-turn snapshot and common plan before-images cover every touched path,
 including:
 
-- all wound carriers, index, history, commands, and pending root;
+- all wound carriers, index, history, commands, pending occurrence/resolution roots, and
+  append-only opportunity-decision receipts;
 - effect carriers, definitions/source authority, identity/history, and pending root;
 - resource definitions/state/history/owner authority/commands/pending;
 - Mortal inventory/item identity and affected characteristics;

@@ -222,6 +222,7 @@ internal static class MortalWoundOccurrenceCandidateReducer
         var candidates = harms.Select(harm => new MortalWoundOccurrenceCandidate(
             producer.AcceptedResponse.SessionId,
             producer.AcceptedResponse.RequestId,
+            producer.AcceptedResponse.SnapshotToken,
             producer.AcceptedResponse.Turn,
             producer.ProducerOperationKey,
             harm.ProducerCandidateOrdinal,
