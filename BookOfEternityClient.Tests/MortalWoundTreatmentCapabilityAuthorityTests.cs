@@ -306,7 +306,8 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         ["skillId"] = kind == "active" ? SkillId : "skill_triage_passive_01",
         ["displayName"] = kind == "active" ? "Field Medicine" : "Triage Discipline",
         ["lifecycle"] = "active",
-        ["active"] = true
+        ["active"] = true,
+        ["tier"] = 3
     };
 
     private static void ConfigureCapabilitySource(
@@ -583,7 +584,50 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 fixture.MutatePersistedSelectedSourceAfterExport();
                 Assert.Equal(beforeMutation, JsonSerializer.Serialize(result.Proof, result.Proof.GetType()));
                 break;
+            case "ordinary_capability_projection_comes_from_same_skill":
+            case "mastery_gate_remains_separate_skill_tier_requirement":
+                AssertGuaranteedRequirementBundleUsesUnchangedT060(fixture);
+                break;
         }
+    }
+
+    private static void AssertGuaranteedRequirementBundleUsesUnchangedT060(
+        CapabilityAuthorityFixture fixture)
+    {
+        var authorityType = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundTreatmentAuthority",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.NotNull(authorityType);
+        var resolver = Assert.Single(
+            authorityType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+            static candidate => candidate.Name == "ResolveRequirements" &&
+                                candidate.GetParameters().Length == 3);
+        Assert.Equal(typeof(WoundTreatmentRoute), resolver.GetParameters()[0].ParameterType);
+
+        var acceptedState = BuildAcceptedState(fixture);
+        var coordinates = CreateCoordinates(fixture, acceptedState);
+        var bundleType = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundTreatmentRequirementAuthorityBundle",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.NotNull(bundleType);
+        var factory = Assert.Single(
+            bundleType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+            static candidate => candidate.Name == "CreateForGuaranteed" &&
+                                candidate.GetParameters().Length == 3);
+        var parameters = factory.GetParameters();
+        Assert.Equal(acceptedState.GetType(), parameters[0].ParameterType);
+        Assert.Equal(coordinates.GetType(), parameters[1].ParameterType);
+        Assert.Equal(typeof(WoundMaterializationEnvelope), parameters[2].ParameterType);
+        var result = Invoke(factory, new[] { acceptedState, coordinates, (object)fixture.Before });
+        var authority = ReadValidTypedResult(result, "Authority", "guaranteed requirement bundle");
+        var serialized = JsonSerializer.Serialize(authority, authority.GetType());
+        Assert.Contains(CapabilityRef, serialized, StringComparison.Ordinal);
+        Assert.Contains(fixture.Scenario.SkillId, serialized, StringComparison.Ordinal);
+        Assert.DoesNotContain("mortalWoundTreatmentCapabilities", serialized, StringComparison.Ordinal);
+        Assert.DoesNotContain("ProofFingerprint", serialized, StringComparison.Ordinal);
+        Assert.DoesNotContain("maximumRecoveryPoints", serialized, StringComparison.Ordinal);
     }
 
     private static object ParseAuthorityInput(
@@ -764,7 +808,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         }
 
         internal const string WoundId = "wound_test_torn_side";
-        internal const string RouteId = "clean_and_suture";
+        internal const string RouteId = "guaranteed_v1";
         internal const string EventRef = "turn_42:wound_treatment";
         internal const string OperationKey = "capability_authority_operation_001";
 
@@ -822,6 +866,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     ownerId: scenario.TargetId,
                     carrierPath: carrierPath)
                 : WoundContractTestData.CreateActiveWound(woundId: WoundId);
+            woundRoot["treatment"]!["routes"] = new JsonArray(
+                CreateGuaranteedRoute(scenario));
+            woundRoot["treatment"]!["knownRouteIds"] = new JsonArray(RouteId);
             var parsed = WoundMaterializationContract.Parse(woundRoot.ToJsonString(), "wound");
             Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
             if (combatTarget)
@@ -1130,6 +1177,46 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 ? JsonNode.Parse(File.ReadAllText(fullPath))!.AsObject()
                 : null;
         }
+
+        private static JsonObject CreateGuaranteedRoute(CapabilityScenario scenario) => new()
+        {
+            ["routeId"] = RouteId,
+            ["displayName"] = "Guaranteed canonical care",
+            ["visibility"] = "known_to_player",
+            ["mode"] = "guaranteed",
+            ["requirements"] = new JsonArray(
+                new JsonObject
+                {
+                    ["kind"] = "source_capability",
+                    ["capabilityRef"] = CapabilityRef,
+                    ["actorRole"] = scenario.ActorRole
+                },
+                new JsonObject
+                {
+                    ["kind"] = "skill_tier",
+                    ["capabilityRef"] = scenario.SkillId,
+                    ["minimumTier"] = 2,
+                    ["actorRole"] = scenario.ActorRole
+                }),
+            ["resourcePolicy"] = new JsonObject
+            {
+                ["reserveBeforeResolution"] = true,
+                ["consumeOn"] = new JsonArray("success"),
+                ["refundOn"] = new JsonArray("cancelled", "validation_failed", "rolled_back"),
+                ["mutations"] = new JsonArray()
+            },
+            ["resolution"] = new JsonObject
+            {
+                ["capabilityRef"] = CapabilityRef,
+                ["actorRole"] = scenario.ActorRole
+            },
+            ["outcomes"] = new JsonArray(new JsonObject
+            {
+                ["category"] = "success",
+                ["result"] = new JsonArray(new JsonObject { ["kind"] = "stabilize" })
+            }),
+            ["interruption"] = null
+        };
 
         private static void WriteCanonicalSkillSources(FileSystemManager fileSystem, JsonObject source)
         {
