@@ -954,7 +954,7 @@ exact valid course/guaranteed route shapes, and procedure/course/guaranteed reso
   not add an alternate create authority. Stabilization reads its canonical before-state
   and must produce a second complete sealed stage bundle; it cannot publish a generic
   reducer result or caller-authored after-image. Freeze the production-owned
-  `MortalWoundTreatmentAcceptedStageBundleComposer.ComposeStabilization(fs, lease, binding, woundId)`
+  `WoundAcceptedTurnContinuationStageComposer.ComposeStabilization(fs, lease, binding, woundId)`
   seam returning that bundle. That authority builds the full common input and
   after-images from the sealed bundle plus canonical roots and registers the ordinary
   `AcceptedMechanicsPlan`.

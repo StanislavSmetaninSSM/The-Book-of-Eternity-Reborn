@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -19,8 +20,10 @@ namespace BookOfEternityClient.Tests;
 /// batch -> Finalize pipeline. T070's future
 /// AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated overload consumes that sealed
 /// <see cref="AcceptedMechanicsWoundStageBundle"/> into the common plan; it is not an
-/// alternative create authority. Stabilization is a second complete sealed wound-stage
-/// bundle over the canonical before-state, never a generic reduction publication.
+/// alternative create authority. T070's production-owned
+/// WoundAcceptedTurnContinuationStageComposer.ComposeStabilization is a second complete
+/// sealed wound-stage bundle over the canonical before-state, never a generic reduction
+/// publication.
 /// MortalWoundRecoveryAcceptedPlanComposer.Compose(FileSystemManager,
 /// CanonicalWriteLease, WoundAcceptedTurnBinding, MortalWoundRecoveryResolution) for a
 /// recovery result. Both must register an <see cref="AcceptedMechanicsPlan"/> with the
@@ -569,29 +572,37 @@ public sealed class MortalWoundRecoveryTests
                     creationInput, prepared, Assert.IsType<WoundEffectBatchAcceptedPlan>(effect.Plan), finalized);
                 ComposeAndPublishWoundStages(fs, lease, creationBundle);
                 var woundId = Assert.Single(finalized.AllocatedWoundIds);
+                WoundAcceptedTurnBinding? stabilizationBindingForComparison = null;
                 if (scenario.StartsStabilized)
                 {
                     // This future T070 seam is intentionally the only stabilization fixture
                     // boundary: it must read the canonical before-state and produce a second
                     // full Prepare -> #1535 -> Finalize wound stage bundle. The test never
                     // supplies an after-image, reducer result, authority, or plan.
-                    var stabilizationFixtureInput = WoundEffectBatchPlannerTests.CreateInputForAcceptedCache();
-                    var stabilizationBinding = stabilizationFixtureInput.Binding;
-                    WriteTurnRequest(fs, stabilizationBinding);
-                    AssertLiveTurnCorrelation(fs, stabilizationBinding, stabilizationFixtureInput);
                     if (scenario.StabilizationMinute is { } stabilizationMinute)
                         Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath,
                             new JsonObject { ["currentTimeInMinutes"] = stabilizationMinute });
+                    lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                    lease = null;
+                    var stabilizationBinding = PrepareUniqueLiveBinding(fs, 43, "stabilization");
+                    AssertDistinctTurnBinding(creationInput.Binding, stabilizationBinding);
+                    stabilizationBindingForComparison = stabilizationBinding;
+                    AssertLiveTurnCorrelation(fs, stabilizationBinding, null, preparedManifest: true);
+                    lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
                     var stabilizationBundle = BuildStabilizationBundle(
                         fs, lease, stabilizationBinding, woundId);
                     ComposeAndPublishWoundStages(fs, lease, stabilizationBundle);
                 }
-                var recoveryFixtureInput = WoundEffectBatchPlannerTests.CreateInputForAcceptedCache();
-                var recoveryBinding = recoveryFixtureInput.Binding;
-                WriteTurnRequest(fs, recoveryBinding);
-                AssertLiveTurnCorrelation(fs, recoveryBinding, recoveryFixtureInput);
                 Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath,
                     new JsonObject { ["currentTimeInMinutes"] = scenario.Minute });
+                lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                lease = null;
+                var recoveryBinding = PrepareUniqueLiveBinding(fs, 44, "recovery");
+                AssertDistinctTurnBinding(creationInput.Binding, recoveryBinding);
+                if (stabilizationBindingForComparison is not null)
+                    AssertDistinctTurnBinding(stabilizationBindingForComparison, recoveryBinding);
+                AssertLiveTurnCorrelation(fs, recoveryBinding, null, preparedManifest: true);
+                lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
                 return new(root, fs, lease,
                     recoveryBinding,
                     woundId, scenario);
@@ -661,7 +672,7 @@ public sealed class MortalWoundRecoveryTests
             string woundId)
         {
             var type = typeof(WoundMaterializationContract).Assembly.GetType(
-                "BookOfEternityClient.Services.MortalWoundTreatmentAcceptedStageBundleComposer", false, false);
+                "BookOfEternityClient.Services.WoundAcceptedTurnContinuationStageComposer", false, false);
             Assert.True(type is not null,
                 "T070 stabilization stage composer is absent; tests must not hand-write carrier/index/history/after-images.");
             var method = ExactStatic(type!, "ComposeStabilization", 4);
@@ -687,7 +698,8 @@ public sealed class MortalWoundRecoveryTests
         private static void AssertLiveTurnCorrelation(
             FileSystemManager fs,
             WoundAcceptedTurnBinding binding,
-            WoundAcceptedTurnInput? input)
+            WoundAcceptedTurnInput? input,
+            bool preparedManifest = false)
         {
             var turn = JsonNode.Parse(File.ReadAllText(fs.ResolvePath(LiveTurnPreparationService.TurnRequestPath)))!.AsObject();
             Assert.Equal(binding.SessionId, turn["sessionId"]!.GetValue<string>());
@@ -697,6 +709,19 @@ public sealed class MortalWoundRecoveryTests
             Assert.NotEqual(string.Empty, binding.SnapshotToken);
             Assert.Equal(WoundAcceptedEventSetFingerprint.Compute(binding.AcceptedEvents), binding.AcceptedEventsFingerprint);
             Assert.NotEmpty(binding.AcceptedEvents);
+            if (preparedManifest)
+            {
+                var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+                    File.ReadAllText(fs.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)),
+                    LiveTurnPreparationService.ManifestJsonOptions);
+                Assert.NotNull(manifest);
+                Assert.Equal(binding.SessionId, manifest!.SessionId);
+                Assert.Equal(binding.RequestId, manifest.RequestId);
+                Assert.Equal(binding.Turn, manifest.TurnNumber);
+                Assert.Equal(manifest.ManifestPayloadHash, binding.SnapshotToken);
+                Assert.Equal(manifest.ManifestPayloadHash, binding.AcceptedEvents.Single().SemanticFingerprint);
+                Assert.Equal("Mortal World", turn["currentRealm"]!.GetValue<string>());
+            }
             if (input is not null)
             {
                 Assert.Equal(binding.SessionId, input.Binding.SessionId);
@@ -706,6 +731,58 @@ public sealed class MortalWoundRecoveryTests
                 Assert.Equal(binding.Turn, input.Binding.Turn);
                 Assert.Equal(binding.AcceptedEventsFingerprint, input.Binding.AcceptedEventsFingerprint);
             }
+        }
+
+        private static WoundAcceptedTurnBinding PrepareUniqueLiveBinding(
+            FileSystemManager fs,
+            int turn,
+            string purpose)
+        {
+            var result = new LiveTurnPreparationService(fs).PrepareAsync(new LiveTurnPreparationOptions
+            {
+                SessionId = "session_t062",
+                RequestId = $"request_t062_{turn}",
+                TurnNumber = turn,
+                CurrentRealm = "Mortal World",
+                PlayerAction = $"T062 {purpose} accepted wound continuation.",
+                PreGeneratedDices1d20 = new[] { 17 }
+            }).GetAwaiter().GetResult();
+            var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+                File.ReadAllText(fs.ResolvePath(result.ManifestPath)),
+                LiveTurnPreparationService.ManifestJsonOptions)
+                ?? throw new Xunit.Sdk.XunitException("Prepared turn omitted its snapshot manifest.");
+            Assert.Equal(result.SessionId, manifest.SessionId);
+            Assert.Equal(result.RequestId, manifest.RequestId);
+            Assert.Equal(result.TurnNumber, manifest.TurnNumber);
+            Assert.False(string.IsNullOrWhiteSpace(manifest.ManifestPayloadHash));
+            var events = new[]
+            {
+                new WoundAcceptedEventAuthority(
+                    $"turn_{turn}:wound:{purpose}",
+                    "accepted_turn",
+                    $"prepared_turn_{turn}_{purpose}",
+                    manifest.ManifestPayloadHash)
+            };
+            return new WoundAcceptedTurnBinding(
+                manifest.SessionId,
+                manifest.RequestId,
+                manifest.ManifestPayloadHash,
+                "mortal_world",
+                manifest.TurnNumber,
+                events,
+                WoundAcceptedEventSetFingerprint.Compute(events));
+        }
+
+        private static void AssertDistinctTurnBinding(
+            WoundAcceptedTurnBinding earlier,
+            WoundAcceptedTurnBinding later)
+        {
+            Assert.NotEqual(earlier.RequestId, later.RequestId);
+            Assert.NotEqual(earlier.SnapshotToken, later.SnapshotToken);
+            Assert.NotEqual(earlier.Turn, later.Turn);
+            Assert.NotEqual(earlier.AcceptedEventsFingerprint, later.AcceptedEventsFingerprint);
+            Assert.DoesNotContain(later.AcceptedEvents, laterEvent => earlier.AcceptedEvents.Any(
+                earlierEvent => string.Equals(earlierEvent.EventRef, laterEvent.EventRef, StringComparison.Ordinal)));
         }
 
         private JsonObject? Read(string path)

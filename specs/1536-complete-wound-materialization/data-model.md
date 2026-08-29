@@ -1360,7 +1360,7 @@ receipt, and after-images. Initial create is the existing sealed
 `WoundAcceptedTurnPlanner` `Prepare -> effect batch -> Finalize` path, not a recovery
 or generic-reducer shortcut. Stabilization also creates a second sealed bundle from the
 canonical before-state through that exact contour; no caller provides an after-image or
-a raw reducer result. `MortalWoundTreatmentAcceptedStageBundleComposer.ComposeStabilization`
+a raw reducer result. `WoundAcceptedTurnContinuationStageComposer.ComposeStabilization`
 is the production-owned continuation seam and accepts only `fs`, `lease`, `binding`, and
 the exact wound ID. T070 passes each sealed bundle to its future
 `AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(fs, lease, bundle)`, which

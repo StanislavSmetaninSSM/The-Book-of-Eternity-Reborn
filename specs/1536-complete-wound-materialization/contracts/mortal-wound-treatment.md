@@ -1305,7 +1305,7 @@ writer. Stabilization must likewise read the canonical before-state and produce 
 complete sealed `Prepare -> #1535 effect batch -> Finalize`
 `AcceptedMechanicsWoundStageBundle`; it may not publish a generic reducer result or a
 caller-authored after-image. T070 exposes this only as
-`MortalWoundTreatmentAcceptedStageBundleComposer.ComposeStabilization(fs, lease,
+`WoundAcceptedTurnContinuationStageComposer.ComposeStabilization(fs, lease,
 binding, woundId)`, returning that sealed bundle with no caller-owned mutation or
 after-image parameter. T070's future overload passes each sealed bundle to
 `AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(fs, lease, bundle)`, which
