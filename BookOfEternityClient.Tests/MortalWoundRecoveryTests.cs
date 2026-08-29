@@ -43,7 +43,9 @@ public sealed class MortalWoundRecoveryTests
         Scenario.MultiCadenceJump(), Scenario.StabilizationRebasesCadence(),
         Scenario.GraceMinusOne(), Scenario.Grace(), Scenario.GracePlusOne(),
         Scenario.RequiresStabilization(), Scenario.NoNaturalRecovery(),
-        Scenario.CheckedOverflow(), Scenario.DeteriorationCadenceOverflow(),
+        Scenario.CheckedOverflow(), Scenario.RecoveryNextAnchorOverflow(),
+        Scenario.DeteriorationCadenceOverflow(),
+        Scenario.DeteriorationNextAnchorOverflow(),
         Scenario.DeteriorationMultiCadence(), Scenario.DeathHandoff(), Scenario.Replay()
     }.Select(static value => new object[] { value });
 
@@ -103,6 +105,16 @@ public sealed class MortalWoundRecoveryTests
         AssertClosed(allowed, "IsValid", "Issues");
         Assert.True(Assert.IsType<bool>(Required(allowed, "IsValid")));
         Assert.Empty(Values(allowed, "Issues"));
+
+        foreach (var anchor in new[] { "recoveryAnchor", "deteriorationAnchor" })
+        {
+            var absentOnly = WoundContractTestData.CreateActiveWound();
+            absentOnly["recovery"]!.Remove(anchor);
+            var absentResult = Invoke(validate, absentOnly, "wound");
+            AssertClosed(absentResult, "IsValid", "Issues");
+            Assert.True(Assert.IsType<bool>(Required(absentResult, "IsValid")), anchor);
+            Assert.Empty(Values(absentResult, "Issues"));
+        }
     }
 
     [Theory]
@@ -124,13 +136,39 @@ public sealed class MortalWoundRecoveryTests
         if (resolution is null)
             return;
         var receipt = ComposeAndPublishRecovery(fixture, resolution!);
+        var recoveryAfterPublish = fixture.CaptureRecoveryStateBytes();
         fixture.AssertCarrierIdentityHistoryAgreement();
         if (!scenario.ReplayAfterCommit)
             return;
+        var firstBinding = fixture.Binding;
+        fixture.PrepareFreshContinuationTurn(45, "same_clock_replay");
+        Assert.NotEqual(firstBinding.Turn, fixture.Binding.Turn);
+        var sameClockTree = fixture.CaptureCanonicalTreeBytes();
+        AssertExactReplay(InvokePlan(fixture), receipt);
+        fixture.AssertCanonicalTreeBytesUnchanged(sameClockTree);
         fixture.RestartForReplay();
         fixture.AssertCarrierIdentityHistoryAgreement();
+        fixture.AssertRecoveryStateBytesEqual(recoveryAfterPublish);
         fixture.CorruptLiveClock();
         AssertExactReplay(InvokePlan(fixture), receipt);
+    }
+
+    [Theory]
+    [InlineData("receipt")]
+    [InlineData("history")]
+    public void Replay_TamperedDurableEvidenceDominatesLiveClock(string tamper)
+    {
+        using var fixture = Fixture.Create(Scenario.Replay());
+        var resolution = AssertPlannerResult(InvokePlan(fixture), Scenario.Replay(), fixture.WoundId);
+        Assert.NotNull(resolution);
+        var receipt = ComposeAndPublishRecovery(fixture, resolution!);
+        fixture.PrepareFreshContinuationTurn(45, "tamper_replay");
+        fixture.RestartForReplay();
+        fixture.TamperPersistedRecoveryEvidence(tamper);
+        fixture.CorruptLiveClock();
+
+        AssertInvalidHistory(InvokePlan(fixture));
+        AssertReceipt(receipt, fixture.WoundId);
     }
 
     [Theory]
@@ -364,6 +402,7 @@ public sealed class MortalWoundRecoveryTests
     {
         var before = Fixture.CaptureAllGovernedBytes(fixture.FileSystem);
         var wholeTreeBefore = fixture.CaptureCanonicalTreeBytes();
+        var deteriorationAnchorBefore = fixture.CaptureDeteriorationAnchorBytes();
         var type = typeof(WoundMaterializationContract).Assembly.GetType(
             "BookOfEternityClient.Services.MortalWoundRecoveryAcceptedPlanComposer", false, false);
         Assert.True(type is not null,
@@ -397,6 +436,8 @@ public sealed class MortalWoundRecoveryTests
         AssertReceipt(receipt, fixture.WoundId, resolution);
         Assert.Same(acceptedPlan, PublishAcceptedPlan(fixture));
         Fixture.AssertAcceptedPlanPublishedExactly(fixture.FileSystem, before, acceptedPlan);
+        if (!fixture.ExpectsDeteriorationIntent)
+            fixture.AssertDeteriorationAnchorBytesEqual(deteriorationAnchorBefore);
         return receipt;
     }
 
@@ -416,6 +457,15 @@ public sealed class MortalWoundRecoveryTests
         var replay = Required(result, "ReplayReceipt");
         AssertReceipt(replay);
         AssertReceiptEqual(receipt, replay);
+    }
+
+    private static void AssertInvalidHistory(object result)
+    {
+        AssertClosed(result, "Disposition", "Issues", "ReplayReceipt", "Resolution");
+        Assert.Equal("InvalidHistory", Convert.ToString(Required(result, "Disposition")));
+        Assert.NotEmpty(Values(result, "Issues"));
+        Assert.Null(Optional(result, "ReplayReceipt"));
+        Assert.Null(Optional(result, "Resolution"));
     }
 
     private static void AssertReceipt(object receipt, string? expectedWoundId = null, object? resolution = null)
@@ -569,10 +619,17 @@ public sealed class MortalWoundRecoveryTests
         internal static Scenario CheckedOverflow() => Create("checked_anchor_cadence_overflow", "progressive", long.MaxValue,
             "", null, null, null, [], expected: "Rejected", anchor: long.MaxValue - 5, cadence: 10,
             elapsedCadences: 0, creationMinute: long.MaxValue - 5);
+        internal static Scenario RecoveryNextAnchorOverflow() => Create("checked_next_recovery_anchor_overflow", "progressive", long.MaxValue,
+            "", null, null, null, [], expected: "Rejected", anchor: long.MaxValue - 30, cadence: 10,
+            elapsedCadences: 0, creationMinute: long.MaxValue - 30);
         internal static Scenario DeteriorationCadenceOverflow() => Create("checked_deterioration_cadence_overflow", "requires_stabilization", long.MaxValue,
             "", null, null, null, [], "increase_severity", stabilized: false, expected: "Rejected",
             deteriorationAnchor: long.MaxValue - 5, elapsedCadences: 0, elapsedDeteriorationCadences: 0,
             creationMinute: long.MaxValue - 5);
+        internal static Scenario DeteriorationNextAnchorOverflow() => Create("checked_deterioration_next_anchor_overflow", "requires_stabilization", long.MaxValue,
+            "", null, null, null, [], "increase_severity", stabilized: false, expected: "Rejected",
+            deteriorationAnchor: long.MaxValue - 40, elapsedCadences: 0, elapsedDeteriorationCadences: 0,
+            creationMinute: long.MaxValue - 40, graceMinutes: 10);
         internal static Scenario DeteriorationMultiCadence() => Create("deterioration_multi_cadence", "requires_stabilization", 155,
             "Deteriorated", "untreated_infection", 110, 130, ["MortalWoundRecoveryDeteriorationIntent"], "increase_severity",
             stabilized: false, elapsedCadences: 0, elapsedDeteriorationCadences: 3, nextDeteriorationAnchor: 160);
@@ -595,7 +652,8 @@ public sealed class MortalWoundRecoveryTests
             long cadence = 10, bool death = false, bool replay = false, bool policyValid = false,
             long? stabilizationMinute = null, long? deteriorationAnchor = null, long elapsedCadences = 1,
             long elapsedDeteriorationCadences = 0, long? nextRecoveryAnchor = null,
-            long? nextDeteriorationAnchor = null, long creationMinute = 100)
+            long? nextDeteriorationAnchor = null, long creationMinute = 100,
+            long graceMinutes = 30)
         {
             var wound = WoundContractTestData.CreateActiveWound();
             // GM data may declare recovery mode and cadence, but not a canonical state
@@ -603,7 +661,7 @@ public sealed class MortalWoundRecoveryTests
             // stabilized wound, Fixture materializes its second transition through T070.
             wound["care"]!["state"] = "untreated";
             wound["care"]!["stabilizedAtTurn"] = null;
-            wound["recovery"] = Recovery(mode, cadence, policyKind, policyRef);
+            wound["recovery"] = Recovery(mode, cadence, policyKind, policyRef, graceMinutes);
             var requirements = wound["treatment"]!["routes"]![0]!["requirements"]!.AsArray();
             requirements.Add(new JsonObject { ["kind"] = "provider", ["providerRef"] = "field_medic_01" });
             requirements.Add(new JsonObject
@@ -630,7 +688,8 @@ public sealed class MortalWoundRecoveryTests
         }
     }
 
-    private static JsonObject Recovery(string mode, long cadence, string? policyKind, string? policyRef) => new()
+    private static JsonObject Recovery(string mode, long cadence, string? policyKind, string? policyRef,
+        long graceMinutes = 30) => new()
     {
         ["mode"] = mode, ["clockKind"] = "world_time.currentTimeInMinutes",
         ["cadence"] = cadence, ["currentStepProgress"] = 0, ["currentStepThreshold"] = 1,
@@ -640,7 +699,7 @@ public sealed class MortalWoundRecoveryTests
         ["deteriorationPolicy"] = policyKind is null ? null : new JsonObject
         {
             ["policyRef"] = policyRef ?? "untreated_infection", ["unmetConditions"] = new JsonArray("not_stabilized"),
-            ["graceMinutes"] = 30L, ["cadenceMinutes"] = 10L,
+            ["graceMinutes"] = graceMinutes, ["cadenceMinutes"] = 10L,
             ["result"] = new JsonObject { ["kind"] = policyKind }
         }
     };
@@ -654,10 +713,12 @@ public sealed class MortalWoundRecoveryTests
         private string Root { get; }
         internal FileSystemManager FileSystem { get; private set; }
         internal FileSystemManager.CanonicalWriteLease Lease { get; private set; }
-        internal WoundAcceptedTurnBinding Binding { get; }
+        internal WoundAcceptedTurnBinding Binding { get; private set; }
         internal string WoundId { get; }
         internal string Name => Scenario.Name;
         internal string PolicyRef => Assert.IsType<JsonObject>(Scenario.Wound["recovery"]!["deteriorationPolicy"])["policyRef"]!.GetValue<string>();
+        internal bool ExpectsDeteriorationIntent => Scenario.IntentTypes.Contains(
+            "MortalWoundRecoveryDeteriorationIntent", StringComparer.Ordinal);
         private Scenario Scenario { get; }
 
         internal static Fixture Create(Scenario scenario)
@@ -750,6 +811,33 @@ public sealed class MortalWoundRecoveryTests
             Assert.Empty(history.State!.ValidateAgreement(identity.State, catalog));
         }
 
+        internal byte[] CaptureRecoveryStateBytes()
+        {
+            var player = ReadRoot(FileSystem, WoundCarrierCatalog.PlayerPath);
+            var wound = Assert.Single(player["activeWounds"]!.AsArray()).AsObject();
+            return System.Text.Encoding.UTF8.GetBytes(wound["recovery"]!.ToJsonString());
+        }
+
+        internal void AssertRecoveryStateBytesEqual(byte[] expected) =>
+            Assert.True(expected.AsSpan().SequenceEqual(CaptureRecoveryStateBytes()));
+
+        internal byte[]? CaptureDeteriorationAnchorBytes()
+        {
+            var player = ReadRoot(FileSystem, WoundCarrierCatalog.PlayerPath);
+            var wound = Assert.Single(player["activeWounds"]!.AsArray()).AsObject();
+            return wound["recovery"]?["deteriorationAnchor"] is { } anchor
+                ? System.Text.Encoding.UTF8.GetBytes(anchor.ToJsonString())
+                : null;
+        }
+
+        internal void AssertDeteriorationAnchorBytesEqual(byte[]? expected)
+        {
+            var actual = CaptureDeteriorationAnchorBytes();
+            Assert.Equal(expected is not null, actual is not null);
+            if (expected is not null)
+                Assert.True(expected.AsSpan().SequenceEqual(Assert.IsType<byte[]>(actual)));
+        }
+
         internal IReadOnlyDictionary<string, byte[]> CaptureCanonicalTreeBytes() =>
             CaptureTreeBytes(Root);
 
@@ -804,7 +892,42 @@ public sealed class MortalWoundRecoveryTests
             FileSystem = new FileSystemManager(Root, NullLogger<FileSystemManager>.Instance);
             FileSystem.EnsureDirectoryStructure();
             Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+            Binding = ExportRecoveryBinding(FileSystem, Lease, WoundId);
             AssertCarrierIdentityHistoryAgreement();
+        }
+
+        internal void PrepareFreshContinuationTurn(int turn, string operation)
+        {
+            Write(FileSystem, EffectAcceptedTurnInputComposer.WorldTimePath,
+                new JsonObject { ["currentTimeInMinutes"] = Scenario.Minute });
+            Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            PrepareLiveTurn(FileSystem, turn, operation);
+            Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+            Binding = ExportRecoveryBinding(FileSystem, Lease, WoundId);
+            Assert.Equal(turn, Binding.Turn);
+            Assert.Equal($"request_t062_{turn}", Binding.RequestId);
+        }
+
+        internal void TamperPersistedRecoveryEvidence(string kind)
+        {
+            var history = ReadRoot(FileSystem, WoundHistoryState.HistoryPath);
+            var transitions = Assert.IsType<JsonArray>(history["transitions"]);
+            Assert.NotEmpty(transitions);
+            switch (kind)
+            {
+                case "history":
+                    Assert.IsType<JsonObject>(transitions[^1])["afterFingerprint"] =
+                        "sha256:" + new string('0', 64);
+                    break;
+                case "receipt":
+                    var fingerprints = FindProperties(history, "receiptFingerprint").ToArray();
+                    var receipt = Assert.Single(fingerprints);
+                    receipt["receiptFingerprint"] = "sha256:" + new string('0', 64);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
+            }
+            Write(FileSystem, WoundHistoryState.HistoryPath, history);
         }
 
         public void Dispose() { Lease.DisposeAsync().AsTask().GetAwaiter().GetResult(); Directory.Delete(Root, recursive: true); }
@@ -1276,6 +1399,31 @@ public sealed class MortalWoundRecoveryTests
 
         private static JsonObject ReadRoot(FileSystemManager fs, string path) =>
             JsonNode.Parse(File.ReadAllText(fs.ResolvePath(path)))!.AsObject();
+
+        private static IEnumerable<JsonObject> FindProperties(JsonNode? value, string propertyName)
+        {
+            switch (value)
+            {
+                case JsonObject obj:
+                    if (obj.ContainsKey(propertyName))
+                        yield return obj;
+                    foreach (var child in obj.Values)
+                    {
+                        foreach (var match in FindProperties(child, propertyName))
+                            yield return match;
+                    }
+                    yield break;
+                case JsonArray array:
+                    foreach (var child in array)
+                    {
+                        foreach (var match in FindProperties(child, propertyName))
+                            yield return match;
+                    }
+                    yield break;
+                default:
+                    yield break;
+            }
+        }
 
         private static void Write(FileSystemManager fs, string path, JsonObject root)
         {
