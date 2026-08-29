@@ -263,6 +263,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
         Assert.ThrowsAny<Exception>(() => PublishCachedAcceptedPlan(fixture));
         Assert.True(fault.Fired);
+        fault.AssertFiredAfterAnEarlierPlanWrite(flow.Plan);
         fixture.AssertGovernedSkillRootsMatchBeforeImages(beforeImages);
     }
 
@@ -1588,16 +1589,20 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
     {
         private string? _path;
 
+        private readonly List<string> _observedPaths = [];
+
         internal bool Fired { get; private set; }
 
         internal void Arm(string path)
         {
             _path = path;
             Fired = false;
+            _observedPaths.Clear();
         }
 
         internal Task BeforeCanonicalMutationAsync(string path)
         {
+            _observedPaths.Add(path);
             if (!Fired && string.Equals(path, _path, StringComparison.Ordinal))
             {
                 Fired = true;
@@ -1606,6 +1611,25 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             }
 
             return Task.CompletedTask;
+        }
+
+        internal void AssertFiredAfterAnEarlierPlanWrite(object plan)
+        {
+            Assert.True(Fired);
+            Assert.NotNull(_path);
+            var firedIndex = _observedPaths.FindIndex(path =>
+                string.Equals(path, _path, StringComparison.Ordinal));
+            Assert.True(firedIndex > 0,
+                "The injected failure must occur after at least one publication mutation.");
+            var planWriteSet = ReadEnumerableProperty(plan, "TouchedPaths")
+                .Select(Assert.IsType<string>)
+                .Concat(Assert.IsAssignableFrom<IReadOnlyDictionary<string, JsonObject>>(
+                    ReadRequiredProperty(plan, "OwnerCompanionAfterImages")).Keys)
+                .ToHashSet(StringComparer.Ordinal);
+            Assert.Contains(
+                _observedPaths.Take(firedIndex),
+                path => !string.Equals(path, _path, StringComparison.Ordinal) &&
+                        planWriteSet.Contains(path));
         }
     }
 
