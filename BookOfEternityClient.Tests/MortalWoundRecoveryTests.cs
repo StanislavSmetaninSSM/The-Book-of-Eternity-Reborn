@@ -355,13 +355,22 @@ public sealed class MortalWoundRecoveryTests
         Assert.Equal(fixture.Binding.SessionId, bundle.Input.Binding.SessionId);
         Assert.Equal(fixture.Binding.RequestId, bundle.Input.Binding.RequestId);
         Assert.Equal(fixture.Binding.SnapshotToken, bundle.Input.Binding.SnapshotToken);
+        Assert.Equal(fixture.Binding.Realm, bundle.Input.Binding.Realm);
+        Assert.Equal(fixture.Binding.Turn, bundle.Input.Binding.Turn);
         Assert.Equal(fixture.Binding.AcceptedEventsFingerprint, bundle.Input.Binding.AcceptedEventsFingerprint);
+        Assert.Equal(fixture.Binding.AcceptedEvents, bundle.Input.Binding.AcceptedEvents);
+        Assert.Equal(fixture.Binding.AcceptedEvents, bundle.FinalPlan.Binding.AcceptedEvents);
+        Assert.Equal(fixture.Binding.Realm, bundle.FinalPlan.Binding.Realm);
+        Assert.Equal(fixture.Binding.Turn, bundle.FinalPlan.Binding.Turn);
         var acceptedPlan = Assert.IsType<AcceptedMechanicsPlan>(Required(result, "AcceptedPlan"));
-        AssertPublishedWoundPlan(acceptedPlan, bundle);
+        AssertPublishedWoundPlan(acceptedPlan, bundle, fixture.WoundId);
         Fixture.AssertAllGovernedBytesUnchanged(fixture.FileSystem, before);
+        _ = Fixture.CaptureAllGovernedBytes(fixture.FileSystem, acceptedPlan);
+        Fixture.AssertPlanBeforeImagesMatchFilesystem(fixture.FileSystem, acceptedPlan);
         var receipt = Required(result, "Receipt");
         AssertReceipt(receipt, fixture.WoundId, resolution);
         Assert.Same(acceptedPlan, PublishAcceptedPlan(fixture));
+        Fixture.AssertAcceptedPlanPublishedExactly(fixture.FileSystem, before, acceptedPlan);
         return receipt;
     }
 
@@ -386,9 +395,10 @@ public sealed class MortalWoundRecoveryTests
     private static void AssertReceipt(object receipt, string? expectedWoundId = null, object? resolution = null)
     {
         Assert.False(receipt is JsonNode);
-        AssertClosed(receipt, "ReceiptFingerprint", "TickKey", "WoundId");
+        AssertClosed(receipt, "AuthorityFingerprint", "ReceiptFingerprint", "TickKey", "WoundId");
         Assert.NotEqual(string.Empty, Assert.IsType<string>(Required(receipt, "TickKey")));
         AssertFingerprint(Required(receipt, "ReceiptFingerprint"));
+        AssertFingerprint(Required(receipt, "AuthorityFingerprint"));
         if (expectedWoundId is not null)
             Assert.Equal(expectedWoundId, Required(receipt, "WoundId"));
         if (resolution is not null)
@@ -408,7 +418,8 @@ public sealed class MortalWoundRecoveryTests
 
     private static void AssertPublishedWoundPlan(
         AcceptedMechanicsPlan plan,
-        AcceptedMechanicsWoundStageBundle? expectedBundle)
+        AcceptedMechanicsWoundStageBundle? expectedBundle,
+        string? selectedWoundId = null)
     {
         var actual = Assert.IsType<AcceptedMechanicsWoundStageBundle>(plan.WoundStageBundle);
         if (expectedBundle is not null)
@@ -424,6 +435,35 @@ public sealed class MortalWoundRecoveryTests
         Assert.NotEmpty(Assert.IsType<JsonObject>(plan.WoundCarrierAfterImages[WoundCarrierCatalog.PlayerPath]));
         Assert.NotEmpty(Assert.IsType<JsonObject>(plan.WoundIdentityAfterImage));
         Assert.NotEmpty(Assert.IsType<JsonObject>(plan.WoundHistoryAfterImage));
+        if (selectedWoundId is null)
+            return;
+
+        var carriers = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
+            plan.WoundCarrierAfterImages[WoundCarrierCatalog.PlayerPath], null, null, null, null));
+        Assert.Empty(carriers.Issues);
+        Assert.True(carriers.TryResolveOne(selectedWoundId, out var occurrence));
+        var identity = WoundIdentityState.Parse(
+            plan.WoundIdentityAfterImage!.ToJsonString(), WoundIdentityState.StatePath);
+        var history = WoundHistoryState.Parse(
+            plan.WoundHistoryAfterImage!.ToJsonString(), WoundHistoryState.HistoryPath);
+        Assert.True(identity.IsValid, Issues(identity.Issues));
+        Assert.True(history.IsValid, Issues(history.Issues));
+        Assert.True(identity.State!.TryGetEntry(selectedWoundId, out var entry));
+        Assert.Empty(WoundIdentityState.ValidateActiveAgreement(entry!, occurrence.Wound, "recoveryPlan"));
+        Assert.Empty(history.State!.ValidateAgreement(identity.State, carriers));
+        var final = actual.FinalPlan;
+        Assert.Contains(selectedWoundId, final.AllocatedWoundIds);
+        Assert.Contains(final.TransitionIntents, value => value switch
+        {
+            WoundCarrierTransitionIntent carrier => carrier.WoundId == selectedWoundId,
+            WoundEffectTransitionIntent effect => effect.WoundId == selectedWoundId,
+            WoundTransitionHistoryIntent historyIntent => historyIntent.WoundId == selectedWoundId,
+            WoundAttemptTerminalIntent attempt => attempt.WoundId == selectedWoundId,
+            WoundRecoverySealIntent recovery => recovery.WoundId == selectedWoundId,
+            WoundFollowUpHealIntent heal => heal.WoundId == selectedWoundId,
+            WoundArchiveProjectionIntent archive => archive.WoundId == selectedWoundId,
+            _ => false
+        });
     }
 
     private static MethodInfo ExactStatic(Type type, string name, int arity) => Assert.Single(
@@ -697,7 +737,7 @@ public sealed class MortalWoundRecoveryTests
             Assert.True(Assert.IsType<bool>(Required(result, "Success")));
             Assert.Empty(Values(result, "Issues"));
             var plan = Assert.IsType<AcceptedMechanicsPlan>(Required(result, "Plan"));
-            AssertPublishedWoundPlan(plan, bundle);
+            AssertPublishedWoundPlan(plan, bundle, Assert.Single(bundle.FinalPlan.AllocatedWoundIds));
             var published = new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
                 .BindTo(lease)
                 .NormalizeAcceptedMechanicsAsync(backups: null)
@@ -743,23 +783,42 @@ public sealed class MortalWoundRecoveryTests
             var governedBefore = CaptureAllGovernedBytes(fs);
             var composed = Invoke(compose, fs, lease, new GameResponse(), acceptedState, request, resolution);
             var plan = Assert.IsType<AcceptedMechanicsPlan>(Required(composed, "Plan"));
-            AssertPublishedWoundPlan(plan, Assert.IsType<AcceptedMechanicsWoundStageBundle>(Required(composed, "WoundStageBundle")));
+            AssertPublishedWoundPlan(plan, Assert.IsType<AcceptedMechanicsWoundStageBundle>(Required(composed, "WoundStageBundle")), woundId);
             AssertAllGovernedBytesUnchanged(fs, governedBefore);
             Assert.Same(plan, new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
                 .BindTo(lease).NormalizeAcceptedMechanicsAsync(null).GetAwaiter().GetResult());
             Assert.NotEqual("untreated", ReadCanonicalWound(fs, woundId).Care.State);
         }
 
-        internal static IReadOnlyDictionary<string, byte[]?> CaptureAllGovernedBytes(FileSystemManager fs) =>
-            new[]
+        internal static IReadOnlyDictionary<string, byte[]?> CaptureAllGovernedBytes(
+            FileSystemManager fs,
+            AcceptedMechanicsPlan? plan = null)
+        {
+            var paths = new HashSet<string>(WoundAcceptedTurnSnapshotContract.RequiredPaths,
+                StringComparer.Ordinal)
             {
-                WoundCarrierCatalog.PlayerPath, WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
-                EffectAcceptedTurnInputComposer.WorldTimePath
-            }.ToDictionary(path => path, path =>
+                WoundCarrierCatalog.PlayerPath,
+                WoundIdentityState.StatePath,
+                WoundHistoryState.HistoryPath,
+                EffectAcceptedTurnInputComposer.WorldTimePath,
+                EffectAcceptedTurnPlan.IdentityIndexPath,
+                AcceptedMechanicsPlan.DefinitionPath,
+                AcceptedMechanicsPlan.StatePath,
+                AcceptedMechanicsPlan.HistoryPath,
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+            };
+            if (plan is not null)
             {
-                var full = fs.ResolvePath(path);
-                return File.Exists(full) ? File.ReadAllBytes(full) : null;
-            }, StringComparer.Ordinal);
+                paths.UnionWith(plan.TouchedPaths);
+                paths.UnionWith(plan.ConsumedPaths);
+                paths.UnionWith(plan.BeforeImages.Keys);
+                paths.UnionWith(plan.WoundCarrierAfterImages.Keys);
+                paths.UnionWith(plan.EffectCarrierAfterImages.Keys);
+                paths.UnionWith(plan.OwnerCompanionAfterImages.Keys);
+                paths.UnionWith(plan.PendingAfterImages.Keys);
+            }
+            return paths.ToDictionary(path => path, path => ReadBytes(fs, path), StringComparer.Ordinal);
+        }
 
         internal static void AssertAllGovernedBytesUnchanged(
             FileSystemManager fs,
@@ -767,10 +826,122 @@ public sealed class MortalWoundRecoveryTests
         {
             foreach (var pair in before)
             {
-                var full = fs.ResolvePath(pair.Key);
-                if (pair.Value is null) Assert.False(File.Exists(full), pair.Key);
-                else Assert.Equal(pair.Value, File.ReadAllBytes(full));
+                AssertBytesEqual(pair.Value, ReadBytes(fs, pair.Key), pair.Key);
             }
+        }
+
+        internal static void AssertPlanBeforeImagesMatchFilesystem(
+            FileSystemManager fs,
+            AcceptedMechanicsPlan plan)
+        {
+            foreach (var pair in plan.BeforeImages)
+            {
+                var actual = ReadBytes(fs, pair.Key);
+                Assert.Equal(pair.Value.Existed, actual is not null);
+                AssertBytesEqual(pair.Value.Bytes, actual, pair.Key);
+            }
+        }
+
+        internal static void AssertAcceptedPlanPublishedExactly(
+            FileSystemManager fs,
+            IReadOnlyDictionary<string, byte[]?> beforeCompose,
+            AcceptedMechanicsPlan plan)
+        {
+            var writes = ExpectedPublishedAfterImages(plan);
+            var deletes = plan.PendingAfterImages
+                .Where(static pair => pair.Value is null)
+                .Select(static pair => pair.Key)
+                .Concat(plan.ConsumedPaths)
+                .Distinct(StringComparer.Ordinal)
+                .ToHashSet(StringComparer.Ordinal);
+
+            foreach (var pair in writes)
+            {
+                var bytes = ReadBytes(fs, pair.Key);
+                Assert.NotNull(bytes);
+                var actual = JsonNode.Parse(System.Text.Encoding.UTF8.GetString(bytes!));
+                Assert.True(JsonNode.DeepEquals(pair.Value, actual), pair.Key);
+            }
+            foreach (var path in deletes)
+                Assert.Null(ReadBytes(fs, path));
+
+            var produced = writes.Keys.Concat(deletes).ToHashSet(StringComparer.Ordinal);
+            foreach (var pair in plan.BeforeImages.Where(pair => !produced.Contains(pair.Key)))
+            {
+                var actual = ReadBytes(fs, pair.Key);
+                Assert.Equal(pair.Value.Existed, actual is not null);
+                AssertBytesEqual(pair.Value.Bytes, actual, pair.Key);
+            }
+            foreach (var pair in beforeCompose.Where(pair => !produced.Contains(pair.Key)))
+                AssertBytesEqual(pair.Value, ReadBytes(fs, pair.Key), pair.Key);
+        }
+
+        private static IReadOnlyDictionary<string, JsonObject> ExpectedPublishedAfterImages(
+            AcceptedMechanicsPlan plan)
+        {
+            Assert.Empty(plan.OwnerTransitions);
+            var writes = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+            AddWrite(writes, AcceptedMechanicsPlan.DefinitionPath, plan.DefinitionAfterImage);
+            AddWrite(writes, AcceptedMechanicsPlan.StatePath, plan.StateAfterImage);
+            AddWrite(writes, AcceptedMechanicsPlan.HistoryPath, plan.HistoryAfterImage);
+            AddWrite(writes, CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                ExpectedCanonicalResourceOwnerAuthorityAfterImage(plan));
+            AddWrite(writes, EffectAcceptedTurnPlan.IdentityIndexPath, plan.EffectIdentityAfterImage);
+            foreach (var pair in plan.OwnerCompanionAfterImages)
+                AddWrite(writes, pair.Key, pair.Value);
+            foreach (var pair in plan.EffectCarrierAfterImages)
+                AddWrite(writes, pair.Key, pair.Value);
+            foreach (var pair in plan.WoundCarrierAfterImages)
+                AddWrite(writes, pair.Key, pair.Value);
+            if (plan.WoundIdentityAfterImage is { } identity)
+                AddWrite(writes, WoundIdentityState.StatePath, identity);
+            if (plan.WoundHistoryAfterImage is { } history)
+                AddWrite(writes, WoundHistoryState.HistoryPath, history);
+            foreach (var pair in plan.PendingAfterImages.Where(static pair => pair.Value is not null))
+                AddWrite(writes, pair.Key, pair.Value!);
+            return writes;
+        }
+
+        private static JsonObject ExpectedCanonicalResourceOwnerAuthorityAfterImage(
+            AcceptedMechanicsPlan plan)
+        {
+            var definitions = ResourceDefinitionCatalog.ParseCanonical(
+                plan.DefinitionAfterImage.ToJsonString(), allowMissingPristine: false);
+            Assert.NotNull(definitions.Catalog);
+            var state = ResourceStateContract.ParseCanonical(
+                plan.StateAfterImage.ToJsonString(), definitions.Catalog!, allowMissingPristine: false);
+            var history = ResourceHistoryState.ParseCanonical(
+                plan.HistoryAfterImage.ToJsonString(), definitions.Catalog!, allowMissingPristine: false);
+            Assert.NotNull(state.Ledger);
+            Assert.NotNull(history.History);
+            return JsonNode.Parse(CanonicalResourceOwnerAuthorityComposer.CreateCanonicalAuthorityJson(
+                plan.OwnerAuthority, state.Ledger!, history.History!))!.AsObject();
+        }
+
+        private static void AddWrite(
+            IDictionary<string, JsonObject> writes,
+            string path,
+            JsonObject value)
+        {
+            if (writes.TryGetValue(path, out var previous))
+            {
+                Assert.True(JsonNode.DeepEquals(previous, value), path);
+                return;
+            }
+            writes.Add(path, value);
+        }
+
+        private static byte[]? ReadBytes(FileSystemManager fs, string path)
+        {
+            var full = fs.ResolvePath(path);
+            return File.Exists(full) ? File.ReadAllBytes(full) : null;
+        }
+
+        private static void AssertBytesEqual(byte[]? expected, byte[]? actual, string path)
+        {
+            Assert.Equal(expected is not null, actual is not null);
+            if (expected is not null)
+                Assert.Equal(expected, actual);
         }
 
         internal const string CanonicalDeteriorationPolicyPath =

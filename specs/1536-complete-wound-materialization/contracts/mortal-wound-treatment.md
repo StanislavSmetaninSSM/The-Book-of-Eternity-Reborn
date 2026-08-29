@@ -1317,6 +1317,9 @@ builds/registers the ordinary common plan from canonical roots.
 `MortalWoundRecoveryAcceptedPlanComposer.Compose` returns the same exact sealed
 `WoundStageBundle` beside its common plan and receipt, so the caller can verify the
 registered plan's full input/preparation/effect/final/bundle fingerprint agreement.
+The detached recovery receipt has exactly `AuthorityFingerprint`, `ReceiptFingerprint`,
+`TickKey`, and `WoundId`; its authority/tick/wound fields must agree with the sealed
+resolution and persisted history row.
 The only public intent shapes are closed:
 `MortalWoundRecoveryProgressIntent(AuthorityFingerprint, ElapsedCadences,
 NextRecoveryAnchorMinute, RecoveryAnchorMinute, TickKey, WoundId)`,

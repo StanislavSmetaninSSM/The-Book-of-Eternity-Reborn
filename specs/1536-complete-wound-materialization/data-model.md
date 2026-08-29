@@ -1370,6 +1370,12 @@ builds/registers the ordinary common plan from canonical roots. The registered p
 retains the exact non-null bundle plus input/preparation/effect/final/bundle seals and
 wound carrier/identity/history after-images for publication.
 
+The detached persisted recovery receipt is a closed four-field value:
+`AuthorityFingerprint`, `ReceiptFingerprint`, `TickKey`, and `WoundId`.  Its exact
+authority, tick, and wound coordinates equal the sealed recovery resolution and the
+durable history row; it contains neither a mutation nor a caller-supplied receipt
+payload.
+
 For spiritual wounds `clockKind=afterlife_safe_cycle`, cadence is one safe cycle,
 threshold derives from current severity, and progress per cycle derives from the
 owner's accepted Spiritual Healing tier.
