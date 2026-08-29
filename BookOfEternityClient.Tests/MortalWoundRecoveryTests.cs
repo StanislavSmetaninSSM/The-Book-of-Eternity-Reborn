@@ -112,7 +112,13 @@ public sealed class MortalWoundRecoveryTests
         using var fixture = Fixture.Create(scenario);
         fixture.AssertCarrierIdentityHistoryAgreement();
 
-        var resolution = AssertPlannerResult(InvokePlan(fixture), scenario);
+        var rejectedBefore = Fixture.CaptureAllGovernedBytes(fixture.FileSystem);
+        var resolution = AssertPlannerResult(InvokePlan(fixture), scenario, fixture.WoundId);
+        if (resolution is null)
+        {
+            Fixture.AssertAllGovernedBytesUnchanged(fixture.FileSystem, rejectedBefore);
+            Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(fixture.FileSystem, fixture.Lease, out _, out _));
+        }
         if (resolution is null)
             return;
         var receipt = ComposeAndPublishRecovery(fixture, resolution!);
@@ -201,7 +207,7 @@ public sealed class MortalWoundRecoveryTests
         return Invoke(method, fixture.FileSystem, fixture.Lease, fixture.Binding, fixture.WoundId);
     }
 
-    private static object? AssertPlannerResult(object result, Scenario scenario)
+    private static object? AssertPlannerResult(object result, Scenario scenario, string woundId)
     {
         AssertClosed(result, "Disposition", "Issues", "ReplayReceipt", "Resolution");
         Assert.Equal(scenario.Disposition, Convert.ToString(Required(result, "Disposition")));
@@ -221,11 +227,11 @@ public sealed class MortalWoundRecoveryTests
 
         Assert.Empty(issues);
         Assert.NotNull(resolution);
-        AssertResolution(resolution!, scenario);
+        AssertResolution(resolution!, scenario, woundId);
         return resolution;
     }
 
-    private static void AssertResolution(object resolution, Scenario scenario)
+    private static void AssertResolution(object resolution, Scenario scenario, string woundId)
     {
         AssertClosed(resolution,
             "AuthorityFingerprint", "CadenceDueMinute", "ClockKind", "ClockSourcePath",
@@ -255,7 +261,8 @@ public sealed class MortalWoundRecoveryTests
 
         var intents = Values(resolution, "TransitionIntents").ToArray();
         Assert.Equal(scenario.IntentTypes, intents.Select(static value => value.GetType().Name));
-        Assert.All(intents, intent => AssertTypedIntent(intent, scenario, Required(resolution, "TickKey")));
+        Assert.All(intents, intent => AssertTypedIntent(intent, scenario, woundId,
+            Required(resolution, "TickKey"), Required(resolution, "AuthorityFingerprint")));
         Assert.DoesNotContain(resolution.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
             static p => p.Name.Contains("History", StringComparison.Ordinal) ||
                         p.Name.Contains("WoundMutation", StringComparison.Ordinal) ||
@@ -271,7 +278,7 @@ public sealed class MortalWoundRecoveryTests
             Assert.Null(death);
     }
 
-    private static void AssertTypedIntent(object value, Scenario scenario, object tickKey)
+    private static void AssertTypedIntent(object value, Scenario scenario, string woundId, object tickKey, object authorityFingerprint)
     {
         Assert.False(value is JsonNode);
         Assert.Contains(value.GetType().Name, new[]
@@ -281,7 +288,8 @@ public sealed class MortalWoundRecoveryTests
         });
         AssertClosedIntent(value);
         Assert.Equal(tickKey, Required(value, "TickKey"));
-        AssertFingerprint(Required(value, "AuthorityFingerprint"));
+        Assert.Equal(woundId, Required(value, "WoundId"));
+        Assert.Equal(authorityFingerprint, Required(value, "AuthorityFingerprint"));
         if (value.GetType().Name == "MortalWoundRecoveryProgressIntent")
         {
             Assert.Equal(scenario.ElapsedCadences, Assert.IsType<long>(Required(value, "ElapsedCadences")));
@@ -293,6 +301,8 @@ public sealed class MortalWoundRecoveryTests
             Assert.Equal(scenario.PolicyRefExpected, NullableString(value, "PolicyRef"));
             Assert.Equal(scenario.NextDeteriorationAnchor, NullableLong(value, "NextDeteriorationAnchorMinute"));
         }
+        if (value.GetType().Name == "MortalWoundDeathHandoffIntent")
+            Assert.Equal(scenario.PolicyRefExpected, NullableString(value, "PolicyRef"));
         Assert.DoesNotContain(value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
             static p => p.Name.Contains("Json", StringComparison.Ordinal) ||
                         p.Name.Contains("History", StringComparison.Ordinal) ||
@@ -342,11 +352,15 @@ public sealed class MortalWoundRecoveryTests
         Assert.Equal("Composed", Convert.ToString(Required(result, "Disposition")));
         Assert.Empty(Values(result, "Issues"));
         var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(Required(result, "WoundStageBundle"));
+        Assert.Equal(fixture.Binding.SessionId, bundle.Input.Binding.SessionId);
+        Assert.Equal(fixture.Binding.RequestId, bundle.Input.Binding.RequestId);
+        Assert.Equal(fixture.Binding.SnapshotToken, bundle.Input.Binding.SnapshotToken);
+        Assert.Equal(fixture.Binding.AcceptedEventsFingerprint, bundle.Input.Binding.AcceptedEventsFingerprint);
         var acceptedPlan = Assert.IsType<AcceptedMechanicsPlan>(Required(result, "AcceptedPlan"));
         AssertPublishedWoundPlan(acceptedPlan, bundle);
         Fixture.AssertAllGovernedBytesUnchanged(fixture.FileSystem, before);
         var receipt = Required(result, "Receipt");
-        AssertReceipt(receipt);
+        AssertReceipt(receipt, fixture.WoundId, resolution);
         Assert.Same(acceptedPlan, PublishAcceptedPlan(fixture));
         return receipt;
     }
@@ -369,12 +383,19 @@ public sealed class MortalWoundRecoveryTests
         AssertReceiptEqual(receipt, replay);
     }
 
-    private static void AssertReceipt(object receipt)
+    private static void AssertReceipt(object receipt, string? expectedWoundId = null, object? resolution = null)
     {
         Assert.False(receipt is JsonNode);
         AssertClosed(receipt, "ReceiptFingerprint", "TickKey", "WoundId");
         Assert.NotEqual(string.Empty, Assert.IsType<string>(Required(receipt, "TickKey")));
         AssertFingerprint(Required(receipt, "ReceiptFingerprint"));
+        if (expectedWoundId is not null)
+            Assert.Equal(expectedWoundId, Required(receipt, "WoundId"));
+        if (resolution is not null)
+        {
+            Assert.Equal(Required(resolution, "TickKey"), Required(receipt, "TickKey"));
+            Assert.Equal(Required(resolution, "AuthorityFingerprint"), Required(receipt, "AuthorityFingerprint"));
+        }
     }
 
     private static void AssertReceiptEqual(object expected, object actual)
