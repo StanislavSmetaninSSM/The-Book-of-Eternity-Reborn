@@ -1361,9 +1361,10 @@ receipt, and after-images. Initial create is the existing sealed
 `WoundAcceptedTurnPlanner` `Prepare -> effect batch -> Finalize` path, not a recovery
 or generic-reducer shortcut. Stabilization also creates a second sealed bundle from the
 canonical before-state through that exact contour; no caller provides an after-image or
-a raw reducer result. `WoundAcceptedTurnContinuationStageComposer.ComposeStabilization`
-is the production-owned continuation seam and accepts only `fs`, `lease`, `binding`, and
-the exact wound ID. T070 passes each sealed bundle to its future
+a raw reducer result. A legal stabilization is instead carried by the sealed T067
+treatment request/resolution through T070's six-argument treatment-publication pipeline;
+the recovery continuation obtains its binding anew from the four-argument T066
+accepted-state export. T070 passes each sealed bundle to its future
 `AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(fs, lease, bundle)`, which
 builds/registers the ordinary common plan from canonical roots. The registered plan
 retains the exact non-null bundle plus input/preparation/effect/final/bundle seals and

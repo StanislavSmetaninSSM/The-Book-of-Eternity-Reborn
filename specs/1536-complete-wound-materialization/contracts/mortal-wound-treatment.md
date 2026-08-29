@@ -1305,10 +1305,13 @@ effect-batch, and finalization flow; recovery may not introduce an alternate cre
 writer. Stabilization must likewise read the canonical before-state and produce its own
 complete sealed `Prepare -> #1535 effect batch -> Finalize`
 `AcceptedMechanicsWoundStageBundle`; it may not publish a generic reducer result or a
-caller-authored after-image. T070 exposes this only as
-`WoundAcceptedTurnContinuationStageComposer.ComposeStabilization(fs, lease,
-binding, woundId)`, returning that sealed bundle with no caller-owned mutation or
-after-image parameter. T070's future overload passes each sealed bundle to
+caller-authored after-image. Stabilization is instead a selected, sealed T067 treatment
+request/resolution consumed by the existing six-argument
+`WoundAcceptedTurnPlanner.ComposeMortalWoundTreatmentPublication(fs, lease,
+gameResponse, acceptedState, request, resolution)` pipeline. The recovery planner
+obtains its binding only through
+`MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(fs, lease, context, woundId)`;
+no test or caller may manufacture an event/binding/fingerprint. T070's future overload passes each sealed bundle to
 `AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(fs, lease, bundle)`, which
 builds/registers the ordinary common plan from canonical roots.
 `MortalWoundRecoveryAcceptedPlanComposer.Compose` returns the same exact sealed

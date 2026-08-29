@@ -956,9 +956,11 @@ exact valid course/guaranteed route shapes, and procedure/course/guaranteed reso
   `AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(fs, lease, bundle)`; it does
   not add an alternate create authority. Stabilization reads its canonical before-state
   and must produce a second complete sealed stage bundle; it cannot publish a generic
-  reducer result or caller-authored after-image. Freeze the production-owned
-  `WoundAcceptedTurnContinuationStageComposer.ComposeStabilization(fs, lease, binding, woundId)`
-  seam returning that bundle. That authority builds the full common input and
+  reducer result or caller-authored after-image. It must be the selected sealed T067
+  treatment request/resolution consumed by the existing six-argument
+  `WoundAcceptedTurnPlanner.ComposeMortalWoundTreatmentPublication(...)` path; recovery
+  reacquires its binding through T066 `ExportCurrent(fs, lease, context, woundId)`. That
+  authority builds the full common input and
   after-images from the sealed bundle plus canonical roots and registers the ordinary
   `AcceptedMechanicsPlan`.
   `MortalWoundRecoveryAcceptedPlanComposer.Compose(...)` follows the same delegation
