@@ -103,6 +103,15 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         fixture.AssertPristineEffectMechanicsSnapshot();
     }
 
+    [Fact]
+    public void FixtureControl_SelectedSkillRowsUseExistingProductionMaterializationShapes()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario("player_active_skill_exports_physical_capability", publication: false));
+
+        fixture.AssertProductionValidSkillShapes();
+    }
+
     [Theory]
     [MemberData(nameof(CurrentExportRows))]
     public void ExportCurrent_UsesOnlyCanonicalPlayerOrNpcSkillCapabilitySource(
@@ -110,7 +119,27 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
     {
         using var fixture = CapabilityAuthorityFixture.Create(scenario);
 
-        var result = InvokeExportCurrent(fixture, scenario);
+        if (scenario.ExpectedBoundary == CapabilityFailureBoundary.Context)
+        {
+            AssertContextRejected(fixture, scenario);
+            return;
+        }
+
+        if (scenario.ExpectedBoundary == CapabilityFailureBoundary.AcceptedState)
+        {
+            AssertAcceptedStateRejected(fixture, scenario);
+            return;
+        }
+
+        var acceptedState = BuildAcceptedState(fixture);
+        var coordinates = CreateCoordinates(fixture, acceptedState);
+        fixture.ApplyLiveExporterMutation();
+        var result = InvokeCapabilityExporter(
+            "ExportCurrent",
+            acceptedState,
+            coordinates,
+            CapabilityRef,
+            scenario.ActorRole);
         AssertCapabilityResult(result, scenario);
         AssertScenarioSpecificCurrentSemantics(fixture, scenario, result);
     }
@@ -172,18 +201,27 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
     private static object BuildAcceptedState(CapabilityAuthorityFixture fixture)
     {
+        var result = BuildAcceptedStateResult(fixture);
+        AssertValidResultShell(result.IsValid, result.Issues, result.Authority, "accepted state");
+        return result.Authority!;
+    }
+
+    private static AcceptedStateView BuildAcceptedStateResult(CapabilityAuthorityFixture fixture)
+    {
         var treatmentAuthorityType = typeof(WoundMaterializationContract).Assembly.GetType(
             "BookOfEternityClient.Services.MortalWoundTreatmentAuthority",
             throwOnError: false,
             ignoreCase: false);
         Assert.NotNull(treatmentAuthorityType);
 
-        var context = ParseAuthorityInput(
+        var parsedContext = ParseAuthorityInputResult(
             treatmentAuthorityType,
             "ParseContext",
             "Context",
             fixture.ContextRoot,
             "treatmentContext");
+        AssertValidResultShell(parsedContext.IsValid, parsedContext.Issues, parsedContext.Value, "treatment context");
+        var context = parsedContext.Value!;
         var method = Assert.Single(
             typeof(AcceptedTurnAuthorityRegistry).GetMethods(
                 BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
@@ -205,7 +243,37 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             context,
             CapabilityAuthorityFixture.WoundId
         });
-        return ReadValidTypedResult(result, "Authority", "accepted state");
+        var typedResult = ReadTypedResult(result, "Authority");
+        return new AcceptedStateView(
+            typedResult.IsValid,
+            typedResult.Issues,
+            typedResult.Value);
+    }
+
+    private static void AssertContextRejected(
+        CapabilityAuthorityFixture fixture,
+        CapabilityScenario scenario)
+    {
+        var treatmentAuthorityType = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundTreatmentAuthority",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.NotNull(treatmentAuthorityType);
+        var result = ParseAuthorityInputResult(
+            treatmentAuthorityType,
+            "ParseContext",
+            "Context",
+            fixture.ContextRoot,
+            "treatmentContext");
+        AssertInvalidResultShell(result.IsValid, result.Issues, result.Value, scenario, "context");
+    }
+
+    private static void AssertAcceptedStateRejected(
+        CapabilityAuthorityFixture fixture,
+        CapabilityScenario scenario)
+    {
+        var result = BuildAcceptedStateResult(fixture);
+        AssertInvalidResultShell(result.IsValid, result.Issues, result.Authority, scenario, "accepted state");
     }
 
     private static object CreateCoordinates(
@@ -310,14 +378,52 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         ["passiveSkills"] = new JsonArray(CreateSkill("passive"))
     };
 
-    private static JsonObject CreateSkill(string kind) => new()
+    private static JsonObject CreateSkill(string kind)
     {
-        ["skillId"] = kind == "active" ? SkillId : "skill_triage_passive_01",
-        ["displayName"] = kind == "active" ? "Field Medicine" : "Triage Discipline",
-        ["lifecycle"] = "active",
-        ["active"] = true,
-        ["tier"] = 3
-    };
+        // These are the smallest current production-valid materialization shapes from
+        // ActorMaterializationContractTests.  The capability adapter must consume the
+        // canonical skill rows, not a parallel test-only projection.
+        var common = new JsonObject
+        {
+            ["skillId"] = kind == "active" ? SkillId : "skill_triage_passive_01",
+            ["displayName"] = kind == "active" ? "Field Medicine" : "Triage Discipline",
+            ["lifecycle"] = "active",
+            ["active"] = true,
+            ["tier"] = 3,
+            ["skillName"] = kind == "active" ? "Field Medicine" : "Triage Discipline",
+            ["skillDescription"] = kind == "active"
+                ? "Provides precise field care under pressure."
+                : "Retains a disciplined triage routine.",
+            ["rarity"] = "Common"
+        };
+        if (kind == "active")
+        {
+            common["actionCost"] = "Main";
+            common["combatEffect"] = new JsonObject
+            {
+                ["isActivatedEffect"] = true,
+                ["actionName"] = "Field treatment",
+                ["effects"] = new JsonArray(new JsonObject
+                {
+                    ["effectType"] = "Damage",
+                    ["value"] = "10%",
+                    ["targetType"] = "Enemy",
+                    ["effectDescription"] = "A controlled intervention.",
+                    ["poiseDamage"] = "5%"
+                })
+            };
+        }
+        else
+        {
+            common["type"] = "Utility";
+            common["group"] = "Medicine";
+            common["masteryLevel"] = 3;
+            common["maxMasteryLevel"] = 5;
+            common["structuredBonuses"] = null;
+        }
+
+        return common;
+    }
 
     private static void ConfigureCapabilitySource(
         JsonObject fixture,
@@ -478,8 +584,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.Equal(scenario.ExpectedValid, result.IsValid);
         if (!scenario.ExpectedValid)
         {
-            Assert.Null(result.Proof);
-            Assert.NotEmpty(result.Issues);
+            AssertInvalidResultShell(result.IsValid, result.Issues, result.Proof, scenario, "capability exporter");
             return;
         }
 
@@ -631,15 +736,119 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.Equal(typeof(WoundMaterializationEnvelope), parameters[2].ParameterType);
         var result = Invoke(factory, new[] { acceptedState, coordinates, (object)fixture.Before });
         var authority = ReadValidTypedResult(result, "Authority", "guaranteed requirement bundle");
-        var serialized = JsonSerializer.Serialize(authority, authority.GetType());
-        Assert.Contains(CapabilityRef, serialized, StringComparison.Ordinal);
-        Assert.Contains(fixture.Scenario.SkillId, serialized, StringComparison.Ordinal);
-        Assert.DoesNotContain("mortalWoundTreatmentCapabilities", serialized, StringComparison.Ordinal);
-        Assert.DoesNotContain("ProofFingerprint", serialized, StringComparison.Ordinal);
-        Assert.DoesNotContain("maximumRecoveryPoints", serialized, StringComparison.Ordinal);
+        AssertClosedProperties(authority, new[]
+        {
+            "Mode", "ContextFingerprint", "AcceptedStateFingerprint", "RouteFingerprint", "CourseId",
+            "CourseMilestoneOrdinal", "CourseCoordinateFingerprint", "CourseRequirementStatus",
+            "InterruptionReason", "Scopes", "AuthorityFingerprint"
+        });
+        Assert.Equal("guaranteed", Assert.IsType<string>(ReadRequiredProperty(authority, "Mode")));
+        Assert.Null(ReadPropertyAllowingNull(authority, "CourseId"));
+        Assert.Null(ReadPropertyAllowingNull(authority, "CourseMilestoneOrdinal"));
+        Assert.Null(ReadPropertyAllowingNull(authority, "CourseCoordinateFingerprint"));
+        Assert.Null(ReadPropertyAllowingNull(authority, "CourseRequirementStatus"));
+        Assert.Null(ReadPropertyAllowingNull(authority, "InterruptionReason"));
+        AssertAuthorityFingerprint(ReadRequiredProperty(authority, "AuthorityFingerprint"));
+
+        var scopes = ReadEnumerableProperty(authority, "Scopes").ToArray();
+        var scope = Assert.Single(scopes);
+        AssertClosedProperties(scope, new[]
+        {
+            "Scope", "CourseMilestoneOrdinal", "Status", "Bindings", "FailureWitnesses",
+            "AuthorityFingerprint"
+        });
+        Assert.Equal("common", Assert.IsType<string>(ReadRequiredProperty(scope, "Scope")));
+        Assert.Null(ReadPropertyAllowingNull(scope, "CourseMilestoneOrdinal"));
+        Assert.Equal("Satisfied", Assert.IsType<string>(ReadRequiredProperty(scope, "Status")));
+        Assert.Empty(ReadEnumerableProperty(scope, "FailureWitnesses"));
+        AssertAuthorityFingerprint(ReadRequiredProperty(scope, "AuthorityFingerprint"));
+
+        var bindings = ReadEnumerableProperty(scope, "Bindings").ToArray();
+        Assert.Equal(2, bindings.Length);
+        AssertGuaranteedBinding(bindings[0], fixture, requirementIndex: 0, "source_capability", CapabilityRef);
+        AssertGuaranteedBinding(bindings[1], fixture, requirementIndex: 1, "skill_tier", fixture.Scenario.SkillId);
+        AssertNoGuaranteeProofOrLimitSurface(authority);
     }
 
-    private static object ParseAuthorityInput(
+    private static void AssertGuaranteedBinding(
+        object binding,
+        CapabilityAuthorityFixture fixture,
+        int requirementIndex,
+        string kind,
+        string authorityRef)
+    {
+        AssertClosedProperties(binding, new[]
+        {
+            "RequirementIndex", "ResolvedRequirement", "SuccessWitness", "BindingFingerprint"
+        });
+        Assert.Equal(requirementIndex, Assert.IsType<int>(ReadRequiredProperty(binding, "RequirementIndex")));
+        AssertAuthorityFingerprint(ReadRequiredProperty(binding, "BindingFingerprint"));
+
+        var row = ReadRequiredProperty(binding, "ResolvedRequirement");
+        AssertClosedProperties(row, new[]
+        {
+            "AuthorityFingerprint", "AuthorityRef", "CurrentState", "CurrentTier", "Kind", "LocationId",
+            "MinimumTier", "OwnerId", "OwnerKind", "ProviderId", "ProviderKind", "Realm",
+            "RequestedQuantity", "RequirementIndex", "TargetId", "TargetKind"
+        });
+        Assert.Equal(requirementIndex, Assert.IsType<int>(ReadRequiredProperty(row, "RequirementIndex")));
+        Assert.Equal(kind, Assert.IsType<string>(ReadRequiredProperty(row, "Kind")));
+        Assert.Equal(authorityRef, Assert.IsType<string>(ReadRequiredProperty(row, "AuthorityRef")));
+        Assert.Equal("mortal_world", Assert.IsType<string>(ReadRequiredProperty(row, "Realm")));
+        Assert.Equal(fixture.Scenario.ProviderKind, ReadNullableStringProperty(row, "ProviderKind"));
+        Assert.Equal(fixture.Scenario.ProviderId, ReadNullableStringProperty(row, "ProviderId"));
+        Assert.Equal(fixture.Scenario.TargetKind, ReadNullableStringProperty(row, "TargetKind"));
+        Assert.Equal(fixture.Scenario.TargetId, ReadNullableStringProperty(row, "TargetId"));
+        Assert.Equal("loc_field_clinic_001", ReadNullableStringProperty(row, "LocationId"));
+        AssertAuthorityFingerprint(ReadRequiredProperty(row, "AuthorityFingerprint"));
+
+        var witness = ReadRequiredProperty(binding, "SuccessWitness");
+        Assert.False(witness is JsonNode or JsonDocument or JsonElement);
+        foreach (var name in new[]
+                 {
+                     "Scope", "RequirementIndex", "Kind", "AuthorityRef", "SnapshotToken", "Realm",
+                     "WitnessFingerprint"
+                 })
+            Assert.NotNull(witness.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public));
+        Assert.Equal("common", Assert.IsType<string>(ReadRequiredProperty(witness, "Scope")));
+        Assert.Equal(requirementIndex, Assert.IsType<int>(ReadRequiredProperty(witness, "RequirementIndex")));
+        Assert.Equal(kind, Assert.IsType<string>(ReadRequiredProperty(witness, "Kind")));
+        Assert.Equal(authorityRef, Assert.IsType<string>(ReadRequiredProperty(witness, "AuthorityRef")));
+        Assert.Equal("mortal_world", Assert.IsType<string>(ReadRequiredProperty(witness, "Realm")));
+        AssertAuthorityFingerprint(ReadRequiredProperty(witness, "WitnessFingerprint"));
+        AssertNoGuaranteeProofOrLimitSurface(witness);
+    }
+
+    private static void AssertNoGuaranteeProofOrLimitSurface(object value)
+    {
+        Assert.DoesNotContain(
+            value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(static property => property.GetIndexParameters().Length == 0)
+                .Select(static property => property.Name),
+            static name => name.Contains("Proof", StringComparison.Ordinal) ||
+                           name.Contains("Limit", StringComparison.Ordinal) ||
+                           name.Contains("mortalWoundTreatmentCapabilities", StringComparison.Ordinal));
+    }
+
+    private static void AssertAuthorityFingerprint(object fingerprint) =>
+        Assert.True(ResourceMaterializationContract.IsAuthorityFingerprint(
+            Assert.IsType<string>(fingerprint)));
+
+    private static void AssertClosedProperties(object value, IEnumerable<string> expected) =>
+        Assert.Equal(
+            expected.OrderBy(static name => name, StringComparer.Ordinal),
+            value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(static property => property.GetIndexParameters().Length == 0)
+                .Select(static property => property.Name)
+                .OrderBy(static name => name, StringComparer.Ordinal));
+
+    private static string? ReadNullableStringProperty(object instance, string name)
+    {
+        var value = ReadPropertyAllowingNull(instance, name);
+        return value is null ? null : Assert.IsType<string>(value);
+    }
+
+    private static TypedResultView ParseAuthorityInputResult(
         Type authorityType,
         string methodName,
         string valueProperty,
@@ -653,12 +862,20 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 candidate.GetParameters().Length == 2 &&
                 candidate.GetParameters().All(static parameter => parameter.ParameterType == typeof(string)));
         var parsed = Invoke(method, new object[] { root.ToJsonString(), path });
-        var value = ReadValidTypedResult(parsed, valueProperty, methodName);
-        Assert.False(value is JsonNode or JsonElement or JsonDocument or string);
-        return value;
+        var result = ReadTypedResult(parsed, valueProperty);
+        if (result.Value is not null)
+            Assert.False(result.Value is JsonNode or JsonElement or JsonDocument or string);
+        return result;
     }
 
     private static object ReadValidTypedResult(object result, string valueProperty, string boundary)
+    {
+        var parsed = ReadTypedResult(result, valueProperty);
+        AssertValidResultShell(parsed.IsValid, parsed.Issues, parsed.Value, boundary);
+        return parsed.Value!;
+    }
+
+    private static TypedResultView ReadTypedResult(object result, string valueProperty)
     {
         var properties = result.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
             .Where(static property => property.GetIndexParameters().Length == 0)
@@ -672,11 +889,54 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         var issues = ReadEnumerableProperty(result, "Issues")
             .Select(Assert.IsType<ValidationIssue>)
             .ToArray();
+        var value = ReadPropertyAllowingNull(result, valueProperty);
+        return new TypedResultView(isValid, issues, value);
+    }
+
+    private static void AssertValidResultShell(
+        bool isValid,
+        IReadOnlyList<ValidationIssue> issues,
+        object? value,
+        string boundary)
+    {
         Assert.True(isValid, $"{boundary} failed: {DescribeIssues(issues)}");
         Assert.Empty(issues);
-        var value = ReadPropertyAllowingNull(result, valueProperty);
         Assert.NotNull(value);
-        return value;
+    }
+
+    private static void AssertInvalidResultShell(
+        bool isValid,
+        IReadOnlyList<ValidationIssue> issues,
+        object? value,
+        CapabilityScenario scenario,
+        string actualBoundary)
+    {
+        Assert.NotEqual(CapabilityFailureBoundary.None, scenario.ExpectedBoundary);
+        Assert.Equal(scenario.ExpectedBoundary.ToString(), actualBoundary switch
+        {
+            "context" => CapabilityFailureBoundary.Context.ToString(),
+            "accepted state" => CapabilityFailureBoundary.AcceptedState.ToString(),
+            "capability exporter" => CapabilityFailureBoundary.Exporter.ToString(),
+            _ => actualBoundary
+        });
+        Assert.False(isValid);
+        Assert.Null(value);
+        Assert.NotEmpty(issues);
+        Assert.All(issues, static issue =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(issue.Code));
+            Assert.False(string.IsNullOrWhiteSpace(issue.FilePath));
+        });
+        AssertFrozenIssues(issues);
+    }
+
+    private static void AssertFrozenIssues(IReadOnlyList<ValidationIssue> issues)
+    {
+        Assert.DoesNotContain(
+            issues.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
+            static property => property.CanWrite);
+        if (issues is IList mutableIssues)
+            Assert.ThrowsAny<Exception>(() => mutableIssues.Add(issues[0]));
     }
 
     private static object Invoke(MethodInfo method, object?[] arguments)
@@ -729,7 +989,10 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         var actorRole = name.Contains("target_owned", StringComparison.Ordinal)
             ? "target"
             : "provider";
-        var providerKind = name == "wrong_owner_rejects" ? "player" : owner;
+        // The accepted context always starts with the real provider binding.  The
+        // wrong-owner row changes only the live canonical NPC root after that state is
+        // sealed, so it cannot accidentally test an earlier context rejection.
+        var providerKind = owner;
         var providerId = providerKind == "player" ? "player_current" : "npc_field_medic_01";
         var targetKind = name.Contains("combatant_member", StringComparison.Ordinal)
             ? "combatant_member"
@@ -741,8 +1004,37 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             : targetKind == "combatant" ? "combatant_wounded_01" : "player_current";
         if (name == "wrong_role_rejects")
             actorRole = "target";
-        var expectedValid = !name.Contains("reject", StringComparison.Ordinal) &&
-                            name != "target_owned_combatant_requires_promotion";
+        var expectedBoundary = name switch
+        {
+            "wrong_realm_rejects" => CapabilityFailureBoundary.Context,
+            "idless_extension_bearing_skill_rejects" or
+            "duplicate_skill_id_across_active_and_passive_rejects" or
+            "case_changed_skill_id_rejects" or
+            "unicode_confusable_skill_id_rejects" or
+            "duplicate_capability_ref_across_skill_kinds_rejects" or
+            "unicode_confusable_capability_ref_rejects" or
+            "spiritual_domain_rejects" or
+            "unknown_domain_rejects" or
+            "invalid_severity_envelope_rejects" or
+            "open_extension_field_rejects" or
+            "open_operation_limits_field_rejects" or
+            "aggregate_operation_limit_overflow_rejects" or
+            "all_zero_operation_limit_rejects" => CapabilityFailureBoundary.AcceptedState,
+            "inactive_skill_rejects" or
+            "retired_skill_rejects" or
+            "wrong_owner_rejects" or
+            "wrong_role_rejects" or
+            "target_owned_combatant_requires_promotion" or
+            "removed_final_skill_rejects" or
+            "retired_final_skill_rejects" or
+            "changed_final_skill_id_rejects" or
+            "changed_final_capability_ref_rejects" or
+            "changed_final_domain_rejects" or
+            "changed_final_operation_limits_reject" or
+            "duplicate_or_confusable_final_skill_row_rejects" or
+            "stale_final_source_rejects" => CapabilityFailureBoundary.Exporter,
+            _ => CapabilityFailureBoundary.None
+        };
         return new CapabilityScenario(
             name,
             owner,
@@ -755,8 +1047,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             providerId,
             targetKind,
             targetId,
-            expectedValid,
-            publication);
+            expectedBoundary == CapabilityFailureBoundary.None,
+            publication,
+            expectedBoundary);
     }
 
     private static JsonObject Skill(JsonObject fixture, string owner, string skillKind) =>
@@ -779,6 +1072,24 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         IReadOnlyList<ValidationIssue> Issues,
         object? Proof);
 
+    private sealed record TypedResultView(
+        bool IsValid,
+        IReadOnlyList<ValidationIssue> Issues,
+        object? Value);
+
+    private sealed record AcceptedStateView(
+        bool IsValid,
+        IReadOnlyList<ValidationIssue> Issues,
+        object? Authority);
+
+    public enum CapabilityFailureBoundary
+    {
+        None,
+        Context,
+        AcceptedState,
+        Exporter
+    }
+
     public sealed record CapabilityScenario(
         string Name,
         string SourceOwner,
@@ -790,7 +1101,8 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         string TargetKind,
         string TargetId,
         bool ExpectedValid,
-        bool Publication);
+        bool Publication,
+        CapabilityFailureBoundary ExpectedBoundary);
 
     private sealed class CapabilityAuthorityFixture : IDisposable
     {
@@ -859,7 +1171,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                         scenario.SourceSkillArray)))["maximumRecoveryPoints"] = 2;
                 }
             }
-            else
+            else if (scenario.ExpectedBoundary != CapabilityFailureBoundary.Exporter)
                 ApplyScenario(currentSource, scenario);
             AssertCanonicalFixtureShape(currentSource);
             AssertCanonicalFixtureShape(finalSource);
@@ -986,6 +1298,37 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             WriteCanonicalSkillSources(FileSystem, CurrentSource);
         }
 
+        internal void ApplyLiveExporterMutation()
+        {
+            if (Scenario.ExpectedBoundary != CapabilityFailureBoundary.Exporter || Scenario.Publication)
+                return;
+
+            var source = Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray);
+            switch (Scenario.Name)
+            {
+                case "inactive_skill_rejects":
+                    source["active"] = false;
+                    break;
+                case "retired_skill_rejects":
+                    source["lifecycle"] = "retired";
+                    break;
+                case "wrong_owner_rejects":
+                    Assert.Equal("npc", Scenario.SourceOwner);
+                    Assert.IsType<JsonObject>(CurrentSource["npc"])["ownerId"] = "npc_wrong_owner_01";
+                    break;
+                // The target role and unpromoted combat target retain the sealed valid
+                // context/root and are rejected solely by the capability exporter.
+                case "wrong_role_rejects":
+                case "target_owned_combatant_requires_promotion":
+                    break;
+                default:
+                    throw new InvalidOperationException(
+                        $"No live exporter mutation is defined for {Scenario.Name}.");
+            }
+
+            WriteCanonicalSkillSources(FileSystem, CurrentSource);
+        }
+
         internal void AssertAcceptedCombatWoundCarrier()
         {
             Assert.True(Scenario.TargetKind is "combatant" or "combatant_member");
@@ -1016,6 +1359,15 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Assert.Empty(snapshot.Issues);
             Assert.Empty(snapshot.Components);
             Assert.Empty(snapshot.Effects);
+        }
+
+        internal void AssertProductionValidSkillShapes()
+        {
+            var player = Assert.IsType<JsonObject>(CurrentSource["player"]);
+            using var active = JsonDocument.Parse(player["activeSkills"]!.AsArray()[0]!.ToJsonString());
+            using var passive = JsonDocument.Parse(player["passiveSkills"]!.AsArray()[0]!.ToJsonString());
+            Assert.True(ValidationService.IsProductionValidMortalActiveSkill(active.RootElement));
+            Assert.True(ValidationService.IsProductionValidMortalPassiveSkill(passive.RootElement));
         }
 
         internal AcceptedMechanicsInput CreatePublicationPlanningInput()
