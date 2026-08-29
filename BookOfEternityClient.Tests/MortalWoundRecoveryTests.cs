@@ -9,147 +9,138 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>
-/// RED boundary for T062/T069. The recovery contract deliberately did not freeze a
-/// callable planner signature.  This file therefore fixes the smallest authority-only
-/// seam: MortalWoundRecoveryPlanner.Plan(FileSystemManager, CanonicalWriteLease,
-/// WoundAcceptedTurnBinding, string woundId).  It must read the canonical wound,
-/// history, and world clock itself; callers cannot supply a minute, tick key,
-/// fingerprint, result, mutation plan, or deterioration authority.
-/// The separate T069 classifier is likewise authority-only:
-/// MortalWoundDeteriorationPolicyAuthority.Create(FileSystemManager,
-/// CanonicalWriteLease, WoundAcceptedTurnBinding, string woundId, string policyRef).
-/// T061's interruption resolver may consume its typed result, but cannot classify
-/// a raw policy itself.
+/// RED contract for T062/T069 recovery and the T070 persistence handoff. The planner is
+/// authority-only: MortalWoundRecoveryPlanner.Plan(FileSystemManager,
+/// CanonicalWriteLease, WoundAcceptedTurnBinding, string woundId). It reads carrier,
+/// identity, history, anchor and canonical world clock itself; no caller minute, tick,
+/// fingerprint, mutation, receipt, history row or policy is accepted.
+///
+/// The baseline create uses the existing WoundAcceptedTurnPlanner Prepare -> #1535 effect
+/// batch -> Finalize pipeline. T070's existing
+/// AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated overload consumes that sealed
+/// <see cref="AcceptedMechanicsWoundStageBundle"/> into the common plan; it is not an
+/// alternative create authority. A generic WoundTransitionAcceptedPlanComposer
+/// may compose only an already-canonical continuation reduction, together with all
+/// common effect/resource/history roots. MortalWoundRecoveryAcceptedPlanComposer.Compose(FileSystemManager,
+/// CanonicalWriteLease, WoundAcceptedTurnBinding, MortalWoundRecoveryResolution) for a
+/// recovery result. Both must register an <see cref="AcceptedMechanicsPlan"/> with the
+/// common accepted-plan authority; <see cref="CanonicalStateNormalizer"/> is the sole
+/// publisher. Tests never write carrier/index/history, a receipt, or an after-image.
+/// T069 interruption classification is separately
+/// MortalWoundDeteriorationPolicyAuthority.Create(FileSystemManager, CanonicalWriteLease,
+/// WoundAcceptedTurnBinding, string woundId, string policyRef).
 /// </summary>
 public sealed class MortalWoundRecoveryTests
 {
-    private const string PlannerTypeName =
-        "BookOfEternityClient.Services.MortalWoundRecoveryPlanner";
+    private const string PlannerName = "BookOfEternityClient.Services.MortalWoundRecoveryPlanner";
 
-    public static IEnumerable<object[]> RecoveryPlannerRows => new[]
+    public static IEnumerable<object[]> PlannerRows => new[]
     {
-        RecoveryScenario.ProgressiveDue(),
-        RecoveryScenario.RequiresStabilizationBlocked(),
-        RecoveryScenario.NoNaturalRecovery(),
-        RecoveryScenario.GraceBoundary(),
-        RecoveryScenario.ExactReplayPrecedesLiveClock(),
-        RecoveryScenario.CheckedMinuteOverflowRejected(),
-        RecoveryScenario.DeathContourStopsAtOwningLifecycle()
-    }.Select(static scenario => new object[] { scenario });
+        Scenario.DueMinusOne(), Scenario.Due(), Scenario.DuePlusOne(),
+        Scenario.MultiCadenceJump(), Scenario.StabilizationRebasesCadence(),
+        Scenario.GraceMinusOne(), Scenario.Grace(), Scenario.GracePlusOne(),
+        Scenario.RequiresStabilization(), Scenario.NoNaturalRecovery(),
+        Scenario.CheckedOverflow(), Scenario.DeathHandoff(), Scenario.Replay()
+    }.Select(static value => new object[] { value });
 
-    public static IEnumerable<object[]> InterruptionPolicyRows => new[]
+    public static IEnumerable<object[]> PolicyRows => new[]
     {
-        RecoveryScenario.StrictlyWorseningInterruption(),
-        RecoveryScenario.NeutralInterruptionRejected(),
-        RecoveryScenario.BeneficialInterruptionRejected()
-    }.Select(static scenario => new object[] { scenario });
-
-    public static IEnumerable<object[]> SemanticRows => RecoveryPlannerRows.Concat(InterruptionPolicyRows);
+        Scenario.StrictlyWorsening(), Scenario.NeutralPolicy(), Scenario.BeneficialPolicy()
+    }.Select(static value => new object[] { value });
 
     [Theory]
-    [MemberData(nameof(RecoveryPlannerRows))]
-    public void FixtureControl_RecoveryWoundHistoryAndCanonicalWorldMinuteAreCurrentlyValid(
-        RecoveryScenario scenario)
+    [MemberData(nameof(PlannerRows))]
+    public void FixtureControl_RecoveryShapeAndWorldTimeAreCurrentlyValid(Scenario scenario)
     {
-        var wound = WoundMaterializationContract.Parse(scenario.Wound.ToJsonString(), "wound");
-        var history = WoundHistoryState.Parse(scenario.History.ToJsonString(), "history");
-        var worldMinute = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
-            scenario.WorldTime.ToJsonString());
+        var parsed = WoundMaterializationContract.Parse(scenario.Wound.ToJsonString(), "wound");
+        Assert.True(parsed.IsValid, Issues(parsed.Issues));
+        Assert.Equal(scenario.CreationMinute,
+            EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(scenario.WorldTime.ToJsonString()));
+        Assert.Equal("world_time.currentTimeInMinutes", parsed.Wound!.Recovery.ClockKind);
+    }
 
-        Assert.True(wound.IsValid, DescribeIssues(wound.Issues));
-        Assert.True(history.IsValid, DescribeIssues(history.Issues));
-        Assert.Equal(scenario.WorldMinute, worldMinute);
-        Assert.Equal("world_time.currentTimeInMinutes",
-            wound.Wound!.Recovery.ClockKind);
-        Assert.Equal(scenario.Mode, wound.Wound.Recovery.Mode);
+    [Fact]
+    public void Authoring_RejectsClientOwnedRecoveryAndDeteriorationAnchors()
+    {
+        var proposed = WoundContractTestData.CreateActiveWound();
+        proposed["recovery"]!["recoveryAnchor"] = new JsonObject
+        {
+            ["anchorKind"] = "creation", ["anchorMinute"] = 100,
+            ["anchorTransitionId"] = "forged_client_anchor"
+        };
+        proposed["recovery"]!["deteriorationAnchor"] = new JsonObject
+        {
+            ["conditionKey"] = "not_stabilized", ["anchorMinute"] = 100,
+            ["anchorTransitionId"] = "forged_client_anchor"
+        };
+
+        var type = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundRecoveryAuthoringAuthority", false, false);
+        Assert.True(type is not null,
+            "T065/T070 must distinguish a GM proposal from canonical recovery state before accepting anchors.");
+        var validate = ExactStatic(type!, "ValidateProposal", 2);
+        Assert.Equal("MortalWoundRecoveryAuthoringValidationResult", validate.ReturnType.Name);
+        Assert.Equal(typeof(JsonObject), validate.GetParameters()[0].ParameterType);
+        Assert.Equal(typeof(string), validate.GetParameters()[1].ParameterType);
+        var result = Invoke(validate, proposed, "wound");
+        AssertClosed(result, "IsValid", "Issues");
+        Assert.False(Assert.IsType<bool>(Required(result, "IsValid")));
+        Assert.Contains(Values(result, "Issues").Select(Assert.IsType<ValidationIssue>), issue =>
+            issue.Code == "wound_materialization_client_owned_field" &&
+            issue.Path == "wound.recovery.recoveryAnchor");
+
+        var nullAnchors = WoundContractTestData.CreateActiveWound();
+        nullAnchors["recovery"]!["recoveryAnchor"] = null;
+        nullAnchors["recovery"]!["deteriorationAnchor"] = null;
+        var allowed = Invoke(validate, nullAnchors, "wound");
+        AssertClosed(allowed, "IsValid", "Issues");
+        Assert.True(Assert.IsType<bool>(Required(allowed, "IsValid")));
+        Assert.Empty(Values(allowed, "Issues"));
     }
 
     [Theory]
-    [MemberData(nameof(SemanticRows))]
-    public void Plan_UsesOnlyCanonicalRecoveryAuthorityAndReturnsTheExpectedT062Disposition(
-        RecoveryScenario scenario)
+    [MemberData(nameof(PlannerRows))]
+    public void Plan_UsesCanonicalAnchorClockAndClosedTransitionIntents(Scenario scenario)
     {
-        using var fixture = RecoveryFixture.Create(scenario);
-        fixture.AssertCurrentCanonicalInputs();
+        using var fixture = Fixture.Create(scenario);
+        fixture.AssertCarrierIdentityHistoryAgreement();
 
-        var planner = typeof(WoundMaterializationContract).Assembly.GetType(
-            PlannerTypeName,
-            throwOnError: false,
-            ignoreCase: false);
-        Assert.True(planner is not null,
-            $"T069 recovery planner is absent; '{scenario.Name}' cannot bypass its canonical authority boundary.");
+        var resolution = AssertPlannerResult(InvokePlan(fixture), scenario);
+        if (!scenario.ReplayAfterCommit)
+            return;
 
-        var plan = ExactStaticMethod(planner!, "Plan", 4);
-        Assert.Equal("MortalWoundRecoveryPlanningResult", plan.ReturnType.Name);
-        Assert.Equal(typeof(FileSystemManager), plan.GetParameters()[0].ParameterType);
-        Assert.Equal(fixture.Lease.GetType(), plan.GetParameters()[1].ParameterType);
-        Assert.Equal(typeof(WoundAcceptedTurnBinding), plan.GetParameters()[2].ParameterType);
-        Assert.Equal(typeof(string), plan.GetParameters()[3].ParameterType);
-        Assert.DoesNotContain(plan.GetParameters(), parameter =>
-            parameter.ParameterType == typeof(long) ||
-            parameter.ParameterType == typeof(JsonNode) ||
-            parameter.Name!.Contains("fingerprint", StringComparison.OrdinalIgnoreCase) ||
-            parameter.Name.Contains("tick", StringComparison.OrdinalIgnoreCase) ||
-            parameter.Name.Contains("plan", StringComparison.OrdinalIgnoreCase));
-
-        var result = Invoke(plan, new object?[]
-        {
-            fixture.FileSystem,
-            fixture.Lease,
-            fixture.Binding,
-            fixture.WoundId
-        });
-        AssertRecoveryResult(result, scenario);
+        var receipt = ComposeAndPublishRecovery(fixture, resolution!);
+        fixture.AssertCarrierIdentityHistoryAgreement();
+        fixture.CorruptLiveClock();
+        AssertExactReplay(InvokePlan(fixture), receipt);
     }
 
     [Theory]
-    [MemberData(nameof(InterruptionPolicyRows))]
-    public void InterruptionPolicy_RequiresTypedT069StrictWorseningAuthority(
-        RecoveryScenario scenario)
+    [MemberData(nameof(PolicyRows))]
+    public void InterruptionPolicy_UsesOnlyTypedT069StrictWorseningAuthority(Scenario scenario)
     {
-        using var fixture = RecoveryFixture.Create(scenario);
-        fixture.AssertCurrentCanonicalInputs();
+        using var fixture = Fixture.Create(scenario);
+        fixture.AssertCarrierIdentityHistoryAgreement();
+        var type = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundDeteriorationPolicyAuthority", false, false);
+        Assert.True(type is not null, "T069 policy authority is absent; raw policy JSON is not a resolver seam.");
+        var method = ExactStatic(type!, "Create", 5);
+        Assert.Equal("MortalWoundDeteriorationPolicyAuthorityResult", method.ReturnType.Name);
+        Assert.Equal(typeof(FileSystemManager), method.GetParameters()[0].ParameterType);
+        Assert.Equal(fixture.Lease.GetType(), method.GetParameters()[1].ParameterType);
+        Assert.Equal(typeof(WoundAcceptedTurnBinding), method.GetParameters()[2].ParameterType);
+        Assert.Equal(typeof(string), method.GetParameters()[3].ParameterType);
+        Assert.Equal(typeof(string), method.GetParameters()[4].ParameterType);
+        Assert.DoesNotContain(method.GetParameters(), static p =>
+            p.ParameterType == typeof(JsonNode) || p.Name!.Contains("fingerprint", StringComparison.OrdinalIgnoreCase));
 
-        var authorityType = typeof(WoundMaterializationContract).Assembly.GetType(
-            "BookOfEternityClient.Services.MortalWoundDeteriorationPolicyAuthority",
-            throwOnError: false,
-            ignoreCase: false);
-        Assert.True(authorityType is not null,
-            $"T069 deterioration authority is absent; '{scenario.Name}' must not be classified from raw route JSON.");
-
-        var create = ExactStaticMethod(authorityType!, "Create", 5);
-        Assert.Equal("MortalWoundDeteriorationPolicyAuthorityResult", create.ReturnType.Name);
-        Assert.Equal(typeof(FileSystemManager), create.GetParameters()[0].ParameterType);
-        Assert.Equal(fixture.Lease.GetType(), create.GetParameters()[1].ParameterType);
-        Assert.Equal(typeof(WoundAcceptedTurnBinding), create.GetParameters()[2].ParameterType);
-        Assert.Equal(typeof(string), create.GetParameters()[3].ParameterType);
-        Assert.Equal(typeof(string), create.GetParameters()[4].ParameterType);
-        Assert.DoesNotContain(create.GetParameters(), parameter =>
-            parameter.ParameterType == typeof(JsonNode) ||
-            parameter.Name!.Contains("fingerprint", StringComparison.OrdinalIgnoreCase));
-
-        var result = Invoke(create, new object?[]
-        {
-            fixture.FileSystem,
-            fixture.Lease,
-            fixture.Binding,
-            fixture.WoundId,
-            fixture.PolicyRef
-        });
-        Assert.Equal(
-            new[] { "Authority", "IsValid", "Issues" },
-            result.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(static property => property.GetIndexParameters().Length == 0)
-                .Select(static property => property.Name)
-                .OrderBy(static name => name, StringComparer.Ordinal));
-        var isValid = Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid"));
-        var issues = ReadEnumerableProperty(result, "Issues")
-            .Select(Assert.IsType<ValidationIssue>)
-            .ToArray();
-        var authority = ReadPropertyAllowingNull(result, "Authority");
-
-        Assert.Equal(scenario.ExpectedPolicyAuthority, isValid);
-        if (!isValid)
+        var result = Invoke(method, fixture.FileSystem, fixture.Lease, fixture.Binding, fixture.WoundId, fixture.PolicyRef);
+        AssertClosed(result, "Authority", "IsValid", "Issues");
+        var valid = Assert.IsType<bool>(Required(result, "IsValid"));
+        var issues = Values(result, "Issues").Select(Assert.IsType<ValidationIssue>).ToArray();
+        var authority = Optional(result, "Authority");
+        Assert.Equal(scenario.PolicyValid, valid);
+        if (!valid)
         {
             Assert.NotEmpty(issues);
             Assert.Null(authority);
@@ -158,487 +149,526 @@ public sealed class MortalWoundRecoveryTests
 
         Assert.Empty(issues);
         Assert.NotNull(authority);
-        Assert.Equal(fixture.PolicyRef,
-            Assert.IsType<string>(ReadRequiredProperty(authority!, "PolicyRef")));
-        Assert.Equal("StrictlyWorsening",
-            Convert.ToString(ReadRequiredProperty(authority, "Classification")));
-        Assert.NotNull(ReadRequiredProperty(authority, "AuthorityFingerprint"));
+        Assert.Equal(fixture.PolicyRef, Assert.IsType<string>(Required(authority!, "PolicyRef")));
+        Assert.Equal("StrictlyWorsening", Convert.ToString(Required(authority, "Classification")));
+        AssertFingerprint(Required(authority, "AuthorityFingerprint"));
     }
 
-    private static void AssertRecoveryResult(object result, RecoveryScenario scenario)
+    [Fact]
+    public void InterruptionPolicy_ResolverOverloadBindsAcceptedStateAndAttemptCoordinates()
     {
-        Assert.Equal(
-            new[] { "Disposition", "Issues", "ReplayReceipt", "Resolution" },
-            result.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(static property => property.GetIndexParameters().Length == 0)
-                .Select(static property => property.Name)
-                .OrderBy(static name => name, StringComparer.Ordinal));
+        var type = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundDeteriorationPolicyAuthority", false, false);
+        Assert.True(type is not null, "T069 deterioration authority is absent.");
+        var method = ExactStatic(type!, "Create", 3);
+        Assert.Equal("MortalWoundDeteriorationPolicyAuthorityResult", method.ReturnType.Name);
+        Assert.Equal("MortalWoundTreatmentAcceptedStateAuthority", method.GetParameters()[0].ParameterType.Name);
+        Assert.Equal("MortalWoundTreatmentAttemptCoordinates", method.GetParameters()[1].ParameterType.Name);
+        Assert.Equal(typeof(string), method.GetParameters()[2].ParameterType);
+        Assert.DoesNotContain(method.GetParameters(), static parameter =>
+            parameter.ParameterType == typeof(JsonNode) ||
+            parameter.Name!.Contains("fingerprint", StringComparison.OrdinalIgnoreCase) ||
+            parameter.Name.Contains("wound", StringComparison.OrdinalIgnoreCase));
+    }
 
-        var disposition = Convert.ToString(ReadRequiredProperty(result, "Disposition"));
-        var issues = ReadEnumerableProperty(result, "Issues")
-            .Select(Assert.IsType<ValidationIssue>)
-            .ToArray();
-        var resolution = ReadPropertyAllowingNull(result, "Resolution");
-        var replayReceipt = ReadPropertyAllowingNull(result, "ReplayReceipt");
+    private static object InvokePlan(Fixture fixture)
+    {
+        var type = typeof(WoundMaterializationContract).Assembly.GetType(PlannerName, false, false);
+        Assert.True(type is not null, $"T069 planner is absent for '{fixture.Name}'.");
+        var method = ExactStatic(type!, "Plan", 4);
+        Assert.Equal("MortalWoundRecoveryPlanningResult", method.ReturnType.Name);
+        Assert.Equal(typeof(FileSystemManager), method.GetParameters()[0].ParameterType);
+        Assert.Equal(fixture.Lease.GetType(), method.GetParameters()[1].ParameterType);
+        Assert.Equal(typeof(WoundAcceptedTurnBinding), method.GetParameters()[2].ParameterType);
+        Assert.Equal(typeof(string), method.GetParameters()[3].ParameterType);
+        Assert.DoesNotContain(method.GetParameters(), static p =>
+            p.ParameterType == typeof(long) || p.ParameterType == typeof(JsonNode) ||
+            p.Name!.Contains("fingerprint", StringComparison.OrdinalIgnoreCase) ||
+            p.Name.Contains("tick", StringComparison.OrdinalIgnoreCase) ||
+            p.Name.Contains("plan", StringComparison.OrdinalIgnoreCase));
+        return Invoke(method, fixture.FileSystem, fixture.Lease, fixture.Binding, fixture.WoundId);
+    }
 
-        Assert.Equal(scenario.ExpectedDisposition, disposition);
-        if (scenario.ExpectedDisposition == "Rejected")
+    private static object? AssertPlannerResult(object result, Scenario scenario)
+    {
+        AssertClosed(result, "Disposition", "Issues", "ReplayReceipt", "Resolution");
+        Assert.Equal(scenario.Disposition, Convert.ToString(Required(result, "Disposition")));
+        var issues = Values(result, "Issues").Select(Assert.IsType<ValidationIssue>).ToArray();
+        var resolution = Optional(result, "Resolution");
+        Assert.Null(Optional(result, "ReplayReceipt"));
+        if (scenario.Disposition == "Rejected")
         {
             Assert.NotEmpty(issues);
             Assert.Null(resolution);
-            Assert.Null(replayReceipt);
-            return;
+            return null;
         }
 
         Assert.Empty(issues);
-        if (scenario.ExpectedDisposition == "ExactReplay")
-        {
-            Assert.Null(resolution);
-            Assert.NotNull(replayReceipt);
-            AssertDetachedReplayReceipt(replayReceipt!);
-            return;
-        }
-
-        Assert.Null(replayReceipt);
         Assert.NotNull(resolution);
-        AssertRecoveryResolution(resolution!, scenario);
+        AssertResolution(resolution!, scenario);
+        return resolution;
     }
 
-    private static void AssertRecoveryResolution(object resolution, RecoveryScenario scenario)
+    private static void AssertResolution(object resolution, Scenario scenario)
     {
-        // The outer four-field shell is deliberately exact.  T069 owns the rest of
-        // this new DTO, but these public properties are the minimum observable
-        // recovery evidence: no caller-created tick/mutation object can replace it.
-        Assert.Equal(scenario.Mode, Assert.IsType<string>(ReadRequiredProperty(resolution, "Mode")));
-        Assert.Equal("world_time.currentTimeInMinutes",
-            Assert.IsType<string>(ReadRequiredProperty(resolution, "ClockKind")));
+        AssertClosed(resolution,
+            "AuthorityFingerprint", "CadenceDueMinute", "ClockKind", "ClockSourcePath",
+            "CurrentTimeInMinutes", "DeathHandoff", "DeteriorationGraceDeadlineMinute",
+            "DeteriorationAnchorMinute", "DeteriorationPolicyRef", "ElapsedCadences",
+            "ElapsedDeteriorationCadences", "Mode", "NextRecoveryAnchorMinute",
+            "NextDeteriorationAnchorMinute", "RecoveryAnchorMinute", "RecoveryDisposition",
+            "TickKey", "TransitionIntents");
+        Assert.Equal(scenario.Mode, Assert.IsType<string>(Required(resolution, "Mode")));
+        Assert.Equal("world_time.currentTimeInMinutes", Assert.IsType<string>(Required(resolution, "ClockKind")));
         Assert.Equal(EffectAcceptedTurnInputComposer.WorldTimePath,
-            Assert.IsType<string>(ReadRequiredProperty(resolution, "ClockSourcePath")));
-        Assert.Equal(scenario.WorldMinute,
-            Assert.IsType<long>(ReadRequiredProperty(resolution, "CurrentTimeInMinutes")));
-        Assert.NotEqual(string.Empty, Assert.IsType<string>(ReadRequiredProperty(resolution, "TickKey")));
-        Assert.Equal(scenario.ExpectedRecoveryDisposition,
-            Convert.ToString(ReadRequiredProperty(resolution, "RecoveryDisposition")));
+            Assert.IsType<string>(Required(resolution, "ClockSourcePath")));
+        Assert.Equal(scenario.Minute, Assert.IsType<long>(Required(resolution, "CurrentTimeInMinutes")));
+        Assert.Equal(scenario.Anchor, Assert.IsType<long>(Required(resolution, "RecoveryAnchorMinute")));
+        Assert.Equal(scenario.DeteriorationAnchor, NullableLong(resolution, "DeteriorationAnchorMinute"));
+        Assert.Equal(scenario.Due, NullableLong(resolution, "CadenceDueMinute"));
+        Assert.Equal(scenario.GraceDeadline, NullableLong(resolution, "DeteriorationGraceDeadlineMinute"));
+        Assert.Equal(scenario.ElapsedCadences, Assert.IsType<long>(Required(resolution, "ElapsedCadences")));
+        Assert.Equal(scenario.ElapsedDeteriorationCadences,
+            Assert.IsType<long>(Required(resolution, "ElapsedDeteriorationCadences")));
+        Assert.Equal(scenario.NextRecoveryAnchor, NullableLong(resolution, "NextRecoveryAnchorMinute"));
+        Assert.Equal(scenario.NextDeteriorationAnchor,
+            NullableLong(resolution, "NextDeteriorationAnchorMinute"));
+        Assert.Equal(scenario.RecoveryDisposition, Convert.ToString(Required(resolution, "RecoveryDisposition")));
+        Assert.Equal(scenario.PolicyRefExpected, NullableString(resolution, "DeteriorationPolicyRef"));
+        AssertFingerprint(Required(resolution, "AuthorityFingerprint"));
 
-        if (scenario.ExpectedPolicyRef is null)
+        var intents = Values(resolution, "TransitionIntents").ToArray();
+        Assert.Equal(scenario.IntentTypes, intents.Select(static value => value.GetType().Name));
+        Assert.All(intents, AssertTypedIntent);
+        Assert.DoesNotContain(resolution.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
+            static p => p.Name.Contains("History", StringComparison.Ordinal) ||
+                        p.Name.Contains("WoundMutation", StringComparison.Ordinal) ||
+                        p.Name.Contains("DeathMutation", StringComparison.Ordinal));
+        var death = Optional(resolution, "DeathHandoff");
+        if (scenario.DeathHandoff)
         {
-            Assert.Null(ReadPropertyAllowingNull(resolution, "DeteriorationPolicyRef"));
+            Assert.NotNull(death);
+            Assert.Equal("MortalWoundDeathHandoffIntent", death!.GetType().Name);
+            Assert.Contains(intents, value => ReferenceEquals(value, death));
         }
         else
-        {
-            Assert.Equal(scenario.ExpectedPolicyRef,
-                Assert.IsType<string>(ReadRequiredProperty(resolution, "DeteriorationPolicyRef")));
-        }
-
-        Assert.Equal(scenario.ExpectedDeathBoundary,
-            Convert.ToString(ReadRequiredProperty(resolution, "DeathBoundary")));
-        Assert.Equal(scenario.ExpectedHistoryIntent,
-            ReadPropertyAllowingNull(resolution, "HistoryIntent") is not null);
+            Assert.Null(death);
     }
 
-    private static void AssertDetachedReplayReceipt(object receipt)
+    private static void AssertTypedIntent(object value)
+    {
+        Assert.False(value is JsonNode);
+        Assert.Contains(value.GetType().Name, new[]
+        {
+            "MortalWoundRecoveryProgressIntent", "MortalWoundRecoveryDeteriorationIntent",
+            "MortalWoundDeathHandoffIntent"
+        });
+        Assert.DoesNotContain(value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
+            static p => p.Name.Contains("Json", StringComparison.Ordinal) ||
+                        p.Name.Contains("History", StringComparison.Ordinal) ||
+                        p.Name.Contains("After", StringComparison.Ordinal));
+    }
+
+    private static object ComposeAndPublishRecovery(Fixture fixture, object resolution)
+    {
+        var type = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundRecoveryAcceptedPlanComposer", false, false);
+        Assert.True(type is not null,
+            "T070 recovery accepted-plan composer is absent; a test must not apply a resolution.");
+        var method = ExactStatic(type!, "Compose", 4);
+        Assert.Equal("MortalWoundRecoveryAcceptedPlanCompositionResult", method.ReturnType.Name);
+        Assert.Equal(typeof(FileSystemManager), method.GetParameters()[0].ParameterType);
+        Assert.Equal(fixture.Lease.GetType(), method.GetParameters()[1].ParameterType);
+        Assert.Equal(typeof(WoundAcceptedTurnBinding), method.GetParameters()[2].ParameterType);
+        Assert.Equal(resolution.GetType(), method.GetParameters()[3].ParameterType);
+        var result = Invoke(method, fixture.FileSystem, fixture.Lease, fixture.Binding, resolution);
+        AssertClosed(result, "AcceptedPlan", "Disposition", "Issues", "Receipt");
+        Assert.Equal("Composed", Convert.ToString(Required(result, "Disposition")));
+        Assert.Empty(Values(result, "Issues"));
+        var acceptedPlan = Required(result, "AcceptedPlan");
+        Assert.Equal("AcceptedMechanicsPlan", acceptedPlan.GetType().Name);
+        var receipt = Required(result, "Receipt");
+        AssertReceipt(receipt);
+        Assert.Same(acceptedPlan, PublishAcceptedPlan(fixture));
+        return receipt;
+    }
+
+    private static object PublishAcceptedPlan(Fixture fixture) =>
+        new CanonicalStateNormalizer(fixture.FileSystem, NullLogger<CanonicalStateNormalizer>.Instance)
+            .BindTo(fixture.Lease)
+            .NormalizeAcceptedMechanicsAsync(backups: null)
+            .GetAwaiter().GetResult()
+            ?? throw new Xunit.Sdk.XunitException("Common accepted-plan publisher returned no plan.");
+
+    private static void AssertExactReplay(object result, object receipt)
+    {
+        AssertClosed(result, "Disposition", "Issues", "ReplayReceipt", "Resolution");
+        Assert.Equal("ExactReplay", Convert.ToString(Required(result, "Disposition")));
+        Assert.Empty(Values(result, "Issues"));
+        Assert.Null(Optional(result, "Resolution"));
+        var replay = Required(result, "ReplayReceipt");
+        AssertReceipt(replay);
+        Assert.Equal(Required(receipt, "TickKey"), Required(replay, "TickKey"));
+        Assert.Equal(Required(receipt, "ReceiptFingerprint"), Required(replay, "ReceiptFingerprint"));
+    }
+
+    private static void AssertReceipt(object receipt)
     {
         Assert.False(receipt is JsonNode);
-        Assert.NotNull(ReadRequiredProperty(receipt, "TickKey"));
-        Assert.NotNull(ReadRequiredProperty(receipt, "ReceiptFingerprint"));
-        Assert.Null(ReadPropertyAllowingNull(receipt, "HistoryIntent"));
+        AssertClosed(receipt, "ReceiptFingerprint", "TickKey", "WoundId");
+        Assert.NotEqual(string.Empty, Assert.IsType<string>(Required(receipt, "TickKey")));
+        AssertFingerprint(Required(receipt, "ReceiptFingerprint"));
     }
 
-    private static MethodInfo ExactStaticMethod(Type type, string name, int parameterCount) =>
-        Assert.Single(
-            type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
-            candidate => candidate.Name == name && candidate.GetParameters().Length == parameterCount);
+    private static MethodInfo ExactStatic(Type type, string name, int arity) => Assert.Single(
+        type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+        method => method.Name == name && method.GetParameters().Length == arity);
 
-    private static object Invoke(MethodInfo method, object?[] arguments)
+    private static object Invoke(MethodInfo method, params object?[] values)
     {
-        try
-        {
-            return method.Invoke(null, arguments)
-                ?? throw new InvalidOperationException($"{method.Name} returned null.");
-        }
-        catch (TargetInvocationException exception) when (exception.InnerException is not null)
-        {
-            throw exception.InnerException;
-        }
+        try { return method.Invoke(null, values) ?? throw new InvalidOperationException($"{method.Name} returned null."); }
+        catch (TargetInvocationException error) when (error.InnerException is not null) { throw error.InnerException; }
     }
 
-    private static object ReadRequiredProperty(object instance, string name) =>
-        ReadPropertyAllowingNull(instance, name)
-        ?? throw new Xunit.Sdk.XunitException($"Missing non-null {name}.");
+    private static void AssertClosed(object instance, params string[] names) => Assert.Equal(
+        names.OrderBy(static name => name, StringComparer.Ordinal),
+        instance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            .Where(static property => property.GetIndexParameters().Length == 0)
+            .Select(static property => property.Name).OrderBy(static name => name, StringComparer.Ordinal));
 
-    private static object? ReadPropertyAllowingNull(object instance, string name)
+    private static object Required(object value, string property) => Optional(value, property)
+        ?? throw new Xunit.Sdk.XunitException($"Missing non-null {property}.");
+
+    private static object? Optional(object value, string property)
     {
-        var property = instance.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public);
-        Assert.NotNull(property);
-        return property!.GetValue(instance);
+        var info = value.GetType().GetProperty(property, BindingFlags.Instance | BindingFlags.Public);
+        Assert.NotNull(info);
+        return info!.GetValue(value);
     }
 
-    private static IEnumerable<object> ReadEnumerableProperty(object instance, string name) =>
-        Assert.IsAssignableFrom<IEnumerable>(ReadRequiredProperty(instance, name)).Cast<object>();
+    private static IEnumerable<object> Values(object value, string property) =>
+        Assert.IsAssignableFrom<IEnumerable>(Required(value, property)).Cast<object>();
 
-    private static string DescribeIssues(IEnumerable<ValidationIssue> issues) =>
-        string.Join(" | ", issues.Select(issue => $"{issue.Code}@{issue.FilePath}"));
+    private static string? NullableString(object value, string property) => Optional(value, property) is { } raw
+        ? Assert.IsType<string>(raw) : null;
 
-    public sealed record RecoveryScenario(
-        string Name,
-        string Mode,
-        long WorldMinute,
-        JsonObject Wound,
-        JsonObject History,
-        JsonObject WorldTime,
-        string ExpectedDisposition,
-        string ExpectedRecoveryDisposition,
-        string? ExpectedPolicyRef,
-        string ExpectedDeathBoundary,
-        bool ExpectedHistoryIntent,
-        bool ExpectedPolicyAuthority)
+    private static long? NullableLong(object value, string property) => Optional(value, property) is { } raw
+        ? Assert.IsType<long>(raw) : null;
+
+    private static void AssertFingerprint(object value) => Assert.True(
+        ResourceMaterializationContract.IsAuthorityFingerprint(Assert.IsType<string>(value)));
+
+    private static string Issues(IEnumerable<ValidationIssue> values) =>
+        string.Join(" | ", values.Select(static issue => $"{issue.Code}@{issue.FilePath}"));
+
+    public sealed record Scenario(
+        string Name, string Mode, long Anchor, long? DeteriorationAnchor, long CreationMinute,
+        long? StabilizationMinute, long Minute, JsonObject Wound, JsonObject WorldTime,
+        string Disposition, string RecoveryDisposition, string? PolicyRefExpected, long? Due,
+        long? GraceDeadline, long ElapsedCadences, long ElapsedDeteriorationCadences,
+        long? NextRecoveryAnchor, long? NextDeteriorationAnchor, string[] IntentTypes,
+        bool DeathHandoff, bool ReplayAfterCommit,
+        bool PolicyValid, bool StartsStabilized)
     {
-        internal static RecoveryScenario ProgressiveDue() => Create(
-            "progressive_at_inclusive_cadence_advances_once",
-            "progressive",
-            worldMinute: 1_440,
-            expectedDisposition: "Resolved",
-            expectedRecoveryDisposition: "Progressed");
+        internal static Scenario DueMinusOne() => Create("cadence_due_minus_one", "progressive", 109,
+            "NotDue", null, 110, null, [], elapsedCadences: 0);
+        internal static Scenario Due() => Create("cadence_due", "progressive", 110,
+            "Progressed", null, 110, null, ["MortalWoundRecoveryProgressIntent"]);
+        internal static Scenario DuePlusOne() => Create("cadence_due_plus_one", "progressive", 111,
+            "Progressed", null, 110, null, ["MortalWoundRecoveryProgressIntent"]);
+        internal static Scenario MultiCadenceJump() => Create("cadence_jump_three_elapsed", "progressive", 135,
+            "Progressed", null, 110, null, ["MortalWoundRecoveryProgressIntent"], elapsedCadences: 3,
+            nextRecoveryAnchor: 140);
+        internal static Scenario StabilizationRebasesCadence() => Create("stabilization_rebases_cadence", "requires_stabilization", 159,
+            "NotDue", null, 160, null, [], stabilizationMinute: 150, anchor: 150);
+        internal static Scenario GraceMinusOne() => Create("grace_minus_one", "requires_stabilization", 129,
+            "BlockedNotStabilized", "untreated_infection", 110, 130, [], "increase_severity", stabilized: false,
+            elapsedCadences: 0);
+        internal static Scenario Grace() => Create("grace", "requires_stabilization", 130,
+            "Deteriorated", "untreated_infection", 110, 130, ["MortalWoundRecoveryDeteriorationIntent"], "increase_severity", stabilized: false,
+            elapsedCadences: 0, elapsedDeteriorationCadences: 1);
+        internal static Scenario GracePlusOne() => Create("grace_plus_one", "requires_stabilization", 131,
+            "Deteriorated", "untreated_infection", 110, 130, ["MortalWoundRecoveryDeteriorationIntent"], "increase_severity", stabilized: false,
+            elapsedCadences: 0, elapsedDeteriorationCadences: 1);
+        internal static Scenario RequiresStabilization() => Create("requires_stabilization", "requires_stabilization", 110,
+            "BlockedNotStabilized", null, 110, null, [], stabilized: false, elapsedCadences: 0);
+        internal static Scenario NoNaturalRecovery() => Create("no_natural_recovery", "no_natural_recovery", 110,
+            "NoNaturalRecovery", null, null, null, [], elapsedCadences: 0, nextRecoveryAnchor: null);
+        internal static Scenario CheckedOverflow() => Create("checked_anchor_cadence_overflow", "progressive", long.MaxValue,
+            "", null, null, null, [], expected: "Rejected", anchor: long.MaxValue - 5, cadence: 10,
+            elapsedCadences: 0, creationMinute: long.MaxValue - 5);
+        internal static Scenario DeathHandoff() => Create("death_is_lifecycle_handoff", "requires_stabilization", 130,
+            "DeathHandoffRequired", "untreated_infection", 110, 130, ["MortalWoundDeathHandoffIntent"], "death_contour", stabilized: false,
+            death: true, elapsedCadences: 0, elapsedDeteriorationCadences: 1);
+        internal static Scenario Replay() => Create("replay_precedes_malformed_clock", "progressive", 110,
+            "Progressed", null, 110, null, ["MortalWoundRecoveryProgressIntent"], replay: true);
+        internal static Scenario StrictlyWorsening() => Create("strictly_worsening_interruption", "requires_stabilization", 130,
+            "Deteriorated", "missed_course_dose", 110, 130, ["MortalWoundRecoveryDeteriorationIntent"],
+            "increase_severity", "missed_course_dose", false, policyValid: true);
+        internal static Scenario NeutralPolicy() => Create("neutral_interruption_rejected", "requires_stabilization", 130,
+            "", null, 110, 130, [], "no_change", stabilized: false, expected: "Rejected");
+        internal static Scenario BeneficialPolicy() => Create("beneficial_interruption_rejected", "requires_stabilization", 130,
+            "", null, 110, 130, [], "add_recovery", stabilized: false, expected: "Rejected");
 
-        internal static RecoveryScenario RequiresStabilizationBlocked() => Create(
-            "requires_stabilization_blocks_unstabilized_wound",
-            "requires_stabilization",
-            worldMinute: 1_440,
-            expectedDisposition: "Resolved",
-            expectedRecoveryDisposition: "BlockedNotStabilized",
-            stabilized: false);
-
-        internal static RecoveryScenario NoNaturalRecovery() => Create(
-            "no_natural_recovery_has_no_tick_mutation",
-            "no_natural_recovery",
-            worldMinute: 1_440,
-            expectedDisposition: "Resolved",
-            expectedRecoveryDisposition: "NoNaturalRecovery");
-
-        internal static RecoveryScenario GraceBoundary() => Create(
-            "deterioration_grace_boundary_is_inclusive",
-            "requires_stabilization",
-            worldMinute: 30,
-            policyKind: "increase_severity",
-            expectedDisposition: "Resolved",
-            expectedRecoveryDisposition: "Deteriorated",
-            expectedPolicyRef: "untreated_infection",
-            stabilized: false);
-
-        internal static RecoveryScenario StrictlyWorseningInterruption() => Create(
-            "course_interruption_uses_strictly_worsening_policy",
-            "requires_stabilization",
-            worldMinute: 30,
-            policyKind: "increase_severity",
-            expectedDisposition: "Resolved",
-            expectedRecoveryDisposition: "Deteriorated",
-            expectedPolicyRef: "missed_course_dose",
-            useCourseInterruption: true,
-            stabilized: false);
-
-        internal static RecoveryScenario NeutralInterruptionRejected() => Create(
-            "course_interruption_rejects_neutral_deterioration_policy",
-            "requires_stabilization",
-            worldMinute: 30,
-            policyKind: "no_change",
-            expectedDisposition: "Rejected",
-            expectedRecoveryDisposition: "",
-            expectedPolicyRef: null,
-            useCourseInterruption: true,
-            stabilized: false);
-
-        internal static RecoveryScenario BeneficialInterruptionRejected() => Create(
-            "course_interruption_rejects_beneficial_deterioration_policy",
-            "requires_stabilization",
-            worldMinute: 30,
-            policyKind: "add_recovery",
-            expectedDisposition: "Rejected",
-            expectedRecoveryDisposition: "",
-            expectedPolicyRef: null,
-            useCourseInterruption: true,
-            stabilized: false);
-
-        internal static RecoveryScenario ExactReplayPrecedesLiveClock() => Create(
-            "exact_recovery_replay_precedes_live_clock_read",
-            "progressive",
-            worldMinute: 1_440,
-            expectedDisposition: "ExactReplay",
-            expectedRecoveryDisposition: "",
-            replay: true);
-
-        internal static RecoveryScenario CheckedMinuteOverflowRejected() => Create(
-            "checked_cadence_or_grace_overflow_rejects_before_tick",
-            "requires_stabilization",
-            worldMinute: long.MaxValue,
-            policyKind: "increase_severity",
-            expectedDisposition: "Rejected",
-            expectedRecoveryDisposition: "",
-            expectedPolicyRef: null,
-            cadence: 1L,
-            policyGraceMinutes: long.MaxValue,
-            stabilized: false);
-
-        internal static RecoveryScenario DeathContourStopsAtOwningLifecycle() => Create(
-            "mortal_death_contour_requires_owning_lifecycle_boundary",
-            "requires_stabilization",
-            worldMinute: 30,
-            policyKind: "death_contour",
-            expectedDisposition: "Resolved",
-            expectedRecoveryDisposition: "DeathBoundaryReached",
-            expectedPolicyRef: "untreated_infection",
-            deathBoundary: "RequiresOwningLifecycle",
-            stabilized: false);
-
-        private static RecoveryScenario Create(
-            string name,
-            string mode,
-            long worldMinute,
-            string expectedDisposition,
-            string expectedRecoveryDisposition,
-            string? policyKind = null,
-            string? expectedPolicyRef = null,
-            long cadence = 1_440L,
-            long policyGraceMinutes = 30L,
-            bool useCourseInterruption = false,
-            bool stabilized = true,
-            bool replay = false,
-            string deathBoundary = "None")
+        private static Scenario Create(string name, string mode, long minute, string recoveryDisposition,
+            string? expectedPolicyRef, long? due, long? grace, string[] intents, string? policyKind = null,
+            string? policyRef = null, bool stabilized = true, string expected = "Resolved", long anchor = 100,
+            long cadence = 10, bool death = false, bool replay = false, bool policyValid = false,
+            long? stabilizationMinute = null, long? deteriorationAnchor = null, long elapsedCadences = 1,
+            long elapsedDeteriorationCadences = 0, long? nextRecoveryAnchor = null,
+            long? nextDeteriorationAnchor = null, long creationMinute = 100)
         {
             var wound = WoundContractTestData.CreateActiveWound();
-            wound["care"]!["state"] = stabilized ? "stabilized" : "untreated";
-            wound["care"]!["stabilizedAtTurn"] = stabilized ? 42 : null;
-            wound["recovery"] = RecoveryRoot(
-                mode,
-                cadence,
-                policyKind,
-                expectedPolicyRef,
-                policyGraceMinutes);
-            if (useCourseInterruption)
-                ConfigureCourseInterruption(wound, expectedPolicyRef ?? "untreated_infection");
-
-            var history = replay
-                ? WoundContractTestData.CreateHistory(WoundContractTestData.CreateTransition(
-                    kind: "recover",
-                    terminal: false))
-                : WoundContractTestData.CreateHistory();
-            if (replay)
-            {
-                // This row is canonical persisted evidence from a prior accepted tick;
-                // the planner owns key derivation and must return it before reading the
-                // contemporaneous clock again.
-                var row = history["transitions"]![0]!.AsObject();
-                row["cycleKey"] = "recovery_tick_wound_test_torn_side_001";
-                row["operationKey"] = "recovery_operation_wound_test_torn_side_001";
-            }
-
-            return new RecoveryScenario(
-                name,
-                mode,
-                worldMinute,
-                wound,
-                history,
-                new JsonObject { ["currentTimeInMinutes"] = worldMinute },
-                expectedDisposition,
-                expectedRecoveryDisposition,
-                expectedPolicyRef,
-                deathBoundary,
-                expectedRecoveryDisposition is "Progressed" or "Deteriorated",
-                policyKind is "increase_severity" or "death_contour");
+            // GM data may declare recovery mode and cadence, but not a canonical state
+            // transition. The accepted creation is always untreated; when a row needs a
+            // stabilized wound, Fixture materializes its second transition through T070.
+            wound["care"]!["state"] = "untreated";
+            wound["care"]!["stabilizedAtTurn"] = null;
+            wound["recovery"] = Recovery(mode, cadence, policyKind, policyRef);
+            var conditionAnchor = deteriorationAnchor ?? (policyKind is null ? null : creationMinute);
+            var elapsedDeterioration = policyKind is null ? 0 : elapsedDeteriorationCadences;
+            return new(name, mode, anchor, conditionAnchor, creationMinute, stabilizationMinute, minute, wound,
+                new JsonObject { ["currentTimeInMinutes"] = creationMinute }, expected, recoveryDisposition,
+                expectedPolicyRef, due, grace, elapsedCadences, elapsedDeterioration,
+                nextRecoveryAnchor ?? (expected == "Rejected" ? null :
+                    (elapsedCadences == 0 ? anchor + cadence : anchor + (elapsedCadences + 1) * cadence)),
+                nextDeteriorationAnchor ?? (conditionAnchor is null || elapsedDeterioration == 0
+                    ? (conditionAnchor is null ? null : conditionAnchor + (grace ?? 0))
+                    : conditionAnchor + (grace ?? 0) + elapsedDeterioration * cadence),
+                intents, death, replay, policyValid, stabilized);
         }
     }
 
-    private static JsonObject RecoveryRoot(
-        string mode,
-        long cadence,
-        string? policyKind,
-        string? policyRef,
-        long policyGraceMinutes) => new()
+    private static JsonObject Recovery(string mode, long cadence, string? policyKind, string? policyRef) => new()
     {
-        ["mode"] = mode,
-        ["clockKind"] = "world_time.currentTimeInMinutes",
-        ["cadence"] = cadence,
-        ["currentStepProgress"] = 0,
-        ["currentStepThreshold"] = 1,
+        ["mode"] = mode, ["clockKind"] = "world_time.currentTimeInMinutes",
+        ["cadence"] = cadence, ["currentStepProgress"] = 0, ["currentStepThreshold"] = 1,
         ["lastTickKey"] = null,
-        ["blockers"] = mode == "requires_stabilization"
-            ? new JsonArray("not_stabilized")
-            : new JsonArray(),
+        ["blockers"] = mode == "requires_stabilization" ? new JsonArray("not_stabilized") : new JsonArray(),
         ["carryOverflow"] = true,
         ["deteriorationPolicy"] = policyKind is null ? null : new JsonObject
         {
-            // T069 owns strict parsing of this currently opaque canonical field.
-            ["policyRef"] = policyRef ?? "untreated_infection",
-            ["unmetConditions"] = new JsonArray("not_stabilized"),
-            ["graceMinutes"] = policyGraceMinutes,
-            ["cadenceMinutes"] = 10L,
+            ["policyRef"] = policyRef ?? "untreated_infection", ["unmetConditions"] = new JsonArray("not_stabilized"),
+            ["graceMinutes"] = 30L, ["cadenceMinutes"] = 10L,
             ["result"] = new JsonObject { ["kind"] = policyKind }
         }
     };
 
-    private static void ConfigureCourseInterruption(JsonObject wound, string policyRef)
+    private sealed class Fixture : IDisposable
     {
-        var route = wound["treatment"]!["routes"]![0]!.AsObject();
-        route.Clear();
-        route["routeId"] = "recovery_course";
-        route["displayName"] = "Recovery course";
-        route["visibility"] = "known_to_player";
-        route["mode"] = "course";
-        wound["treatment"]!["knownRouteIds"] = new JsonArray("recovery_course");
-        route["requirements"] = new JsonArray(new JsonObject
-        {
-            ["kind"] = "provider",
-            ["providerRef"] = "field_medic_01"
-        });
-        route["resourcePolicy"] = new JsonObject
-        {
-            ["reserveBeforeResolution"] = true,
-            ["consumeOn"] = new JsonArray("success"),
-            ["refundOn"] = new JsonArray("cancelled", "validation_failed", "rolled_back"),
-            ["mutations"] = new JsonArray(new JsonObject
-            {
-                ["kind"] = "consume_requirement",
-                ["scope"] = "course_milestone",
-                ["milestoneOrdinal"] = 1,
-                ["requirementIndex"] = 0
-            })
-        };
-        route["resolution"] = new JsonObject
-        {
-            ["clockKind"] = "world_time.currentTimeInMinutes",
-            ["maximumGapMinutes"] = 600L
-        };
-        route["outcomes"] = new JsonArray(
-            new JsonObject
-            {
-                ["ordinal"] = 1,
-                ["afterMinutes"] = 0L,
-                ["requirements"] = new JsonArray(new JsonObject
-                {
-                    ["kind"] = "item_quantity",
-                    ["itemRef"] = "antibiotic_dose",
-                    ["quantity"] = 1,
-                    ["ownerRole"] = "target"
-                }),
-                ["category"] = "success",
-                ["completion"] = "completed",
-                ["result"] = new JsonArray(new JsonObject { ["kind"] = "stabilize" })
-            });
-        route["interruption"] = new JsonObject
-        {
-            ["category"] = "failed_attempt",
-            ["result"] = new JsonArray(new JsonObject
-            {
-                ["kind"] = "apply_deterioration",
-                ["policyRef"] = policyRef
-            })
-        };
-    }
-
-    private sealed class RecoveryFixture : IDisposable
-    {
-        private RecoveryFixture(
-            string root,
-            FileSystemManager fileSystem,
-            FileSystemManager.CanonicalWriteLease lease,
-            WoundAcceptedTurnBinding binding,
-            string woundId,
-            RecoveryScenario scenario)
-        {
-            Root = root;
-            FileSystem = fileSystem;
-            Lease = lease;
-            Binding = binding;
-            WoundId = woundId;
-            Scenario = scenario;
-        }
+        private Fixture(string root, FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
+            WoundAcceptedTurnBinding binding, string woundId, Scenario scenario)
+        { Root = root; FileSystem = fs; Lease = lease; Binding = binding; WoundId = woundId; Scenario = scenario; }
 
         private string Root { get; }
         internal FileSystemManager FileSystem { get; }
         internal FileSystemManager.CanonicalWriteLease Lease { get; }
         internal WoundAcceptedTurnBinding Binding { get; }
         internal string WoundId { get; }
+        internal string Name => Scenario.Name;
         internal string PolicyRef => Assert.IsType<JsonObject>(Scenario.Wound["recovery"]!["deteriorationPolicy"])["policyRef"]!.GetValue<string>();
-        private RecoveryScenario Scenario { get; }
+        private Scenario Scenario { get; }
 
-        internal static RecoveryFixture Create(RecoveryScenario scenario)
+        internal static Fixture Create(Scenario scenario)
         {
             var root = Path.Combine(Path.GetTempPath(), "boe-t062-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
-            var fileSystem = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
-            fileSystem.EnsureDirectoryStructure();
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            FileSystemManager.CanonicalWriteLease? lease = null;
             try
             {
-                Write(fileSystem, "game_state/player/wounds.json",
-                    WoundContractTestData.CreatePlayerCarrier(scenario.Wound));
-                Write(fileSystem, WoundHistoryState.HistoryPath, scenario.History);
-                Write(fileSystem, EffectAcceptedTurnInputComposer.WorldTimePath, scenario.WorldTime);
-                Write(fileSystem, "input/turn_request.json", new JsonObject
+                Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath, scenario.WorldTime);
+                WriteTurnRequest(fs, 42);
+                lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+                var parsed = WoundMaterializationContract.Parse(scenario.Wound.ToJsonString(), "recoveryBaseline");
+                Assert.True(parsed.IsValid, Issues(parsed.Issues));
+                var creationInput = WoundEffectBatchPlannerTests.CreateInputForAcceptedCache();
+                var creationDraft = Assert.Single(creationInput.Transitions);
+                creationInput = creationInput with
                 {
-                    ["sessionId"] = "session_t062",
-                    ["requestId"] = "request_t062",
-                    ["turnNumber"] = 42,
-                    ["gameMode"] = "normal",
-                    ["preGeneratedDices1d20"] = new JsonArray(17)
-                });
-
-                var events = new[]
-                {
-                    new WoundAcceptedEventAuthority(
-                        "turn_42:recovery_tick",
-                        "mortal_wound_recovery",
-                        "t062_recovery_event",
-                        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                    Transitions = new[] { creationDraft with
+                    {
+                        ProposedAfter = creationDraft.ProposedAfter with { Recovery = parsed.Wound!.Recovery }
+                    }}
                 };
-                var binding = new WoundAcceptedTurnBinding(
-                    "session_t062",
-                    "request_t062",
-                    "snapshot_t062",
-                    "mortal_world",
-                    42,
-                    events,
-                    WoundAcceptedEventSetFingerprint.Compute(events));
-                var lease = fileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
-                return new RecoveryFixture(
-                    root,
-                    fileSystem,
-                    lease,
-                    binding,
-                    scenario.Wound["woundId"]!.GetValue<string>(),
-                    scenario);
+                var preparedResult = WoundAcceptedTurnPlanner.Prepare(creationInput);
+                Assert.Empty(preparedResult.Issues);
+                var prepared = Assert.IsType<WoundPreparedAcceptedTurnPlan>(preparedResult.Plan);
+                var effect = WoundEffectBatchPlanner.Build(prepared,
+                    WoundEffectBatchPlannerTests.CreateEffectInputForAcceptedCache(prepared),
+                    new EffectIdentityFactory());
+                Assert.True(effect.Success, Issues(effect.Issues));
+                var finalizedResult = WoundAcceptedTurnPlanner.Finalize(prepared, effect);
+                Assert.Empty(finalizedResult.Issues);
+                var finalized = Assert.IsType<WoundAcceptedTurnPlan>(finalizedResult.Plan);
+                var creationBundle = new AcceptedMechanicsWoundStageBundle(
+                    creationInput, prepared, Assert.IsType<WoundEffectBatchAcceptedPlan>(effect.Plan), finalized);
+                ComposeAndPublishCreation(fs, lease, creationBundle);
+                var woundId = Assert.Single(finalized.AllocatedWoundIds);
+                if (scenario.StartsStabilized)
+                {
+                    WriteTurnRequest(fs, 43);
+                    if (scenario.StabilizationMinute is { } stabilizationMinute)
+                        Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath,
+                            new JsonObject { ["currentTimeInMinutes"] = stabilizationMinute });
+                    var created = ReadCanonicalWound(fs, woundId);
+                    var stabilized = CreateStabilizedAfter(JsonNode.Parse(
+                        WoundMaterializationContract.SerializeCanonical(created))!.AsObject());
+                    var parsedStabilized = WoundMaterializationContract.Parse(
+                        stabilized.ToJsonString(), "recoveryStabilization");
+                    Assert.True(parsedStabilized.IsValid, Issues(parsedStabilized.Issues));
+                    var stabilization = WoundTransitionReducer.Reduce(CreateStabilizationRequest(
+                        created, parsedStabilized.Wound!));
+                    Assert.True(stabilization.IsValid, Issues(stabilization.Issues));
+                    ComposeAndPublishContinuation(fs, lease,
+                        CreateBinding(43, "turn_43:stabilize", "mortal_wound_treatment"), stabilization);
+                }
+                WriteTurnRequest(fs, 44);
+                Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath,
+                    new JsonObject { ["currentTimeInMinutes"] = scenario.Minute });
+                return new(root, fs, lease,
+                    CreateBinding(44, "turn_44:recovery_tick", "mortal_wound_recovery"),
+                    woundId, scenario);
             }
             catch
             {
+                if (lease is not null) lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
                 Directory.Delete(root, recursive: true);
                 throw;
             }
         }
 
-        internal void AssertCurrentCanonicalInputs()
+        internal void AssertCarrierIdentityHistoryAgreement()
         {
-            var wound = WoundMaterializationContract.Parse(
-                File.ReadAllText(FileSystem.ResolvePath("game_state/player/wounds.json")),
-                "playerWounds");
-            var history = WoundHistoryState.Parse(
-                File.ReadAllText(FileSystem.ResolvePath(WoundHistoryState.HistoryPath)),
-                "history");
-            var worldMinute = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
-                File.ReadAllText(FileSystem.ResolvePath(EffectAcceptedTurnInputComposer.WorldTimePath)));
-            Assert.True(wound.IsValid, DescribeIssues(wound.Issues));
-            Assert.True(history.IsValid, DescribeIssues(history.Issues));
-            Assert.Equal(Scenario.WorldMinute, worldMinute);
+            var player = Read(WoundCarrierCatalog.PlayerPath);
+            var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(player, null, null, null, null));
+            Assert.Empty(catalog.Issues);
+            Assert.True(catalog.TryResolveOne(WoundId, out var occurrence));
+            var identity = WoundIdentityState.Parse(File.ReadAllText(FileSystem.ResolvePath(WoundIdentityState.StatePath)), WoundIdentityState.StatePath);
+            var history = WoundHistoryState.Parse(File.ReadAllText(FileSystem.ResolvePath(WoundHistoryState.HistoryPath)), WoundHistoryState.HistoryPath);
+            Assert.True(identity.IsValid, Issues(identity.Issues));
+            Assert.True(history.IsValid, Issues(history.Issues));
+            Assert.True(identity.State!.TryGetEntry(WoundId, out var entry));
+            Assert.Empty(WoundIdentityState.ValidateActiveAgreement(entry!, occurrence.Wound, "recoveryBaseline"));
+            Assert.Empty(history.State!.ValidateAgreement(identity.State, catalog));
         }
 
-        public void Dispose()
+        internal void CorruptLiveClock() => Write(FileSystem, EffectAcceptedTurnInputComposer.WorldTimePath,
+            new JsonObject { ["currentTimeInMinutes"] = "malformed" });
+
+        public void Dispose() { Lease.DisposeAsync().AsTask().GetAwaiter().GetResult(); Directory.Delete(Root, recursive: true); }
+
+        private static void ComposeAndPublishCreation(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
+            AcceptedMechanicsWoundStageBundle bundle)
         {
-            Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
-            Directory.Delete(Root, recursive: true);
+            var method = ExactStatic(typeof(AcceptedMechanicsPlanAuthority), "GetOrBuildWoundValidated", 3);
+            Assert.Equal(typeof(AcceptedMechanicsPlanningResult), method.ReturnType);
+            Assert.Equal(typeof(FileSystemManager), method.GetParameters()[0].ParameterType);
+            Assert.Equal(lease.GetType(), method.GetParameters()[1].ParameterType);
+            Assert.Equal(typeof(AcceptedMechanicsWoundStageBundle), method.GetParameters()[2].ParameterType);
+            var result = Invoke(method, fs, lease, bundle);
+            AssertClosed(result, "Issues", "Plan", "Success");
+            Assert.True(Assert.IsType<bool>(Required(result, "Success")));
+            Assert.Empty(Values(result, "Issues"));
+            var plan = Required(result, "Plan");
+            Assert.Equal("AcceptedMechanicsPlan", plan.GetType().Name);
+            var published = new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
+                .BindTo(lease)
+                .NormalizeAcceptedMechanicsAsync(backups: null)
+                .GetAwaiter().GetResult();
+            Assert.Same(plan, published);
         }
 
-        private static void Write(FileSystemManager fileSystem, string relativePath, JsonObject root)
+        private static void ComposeAndPublishContinuation(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
+            WoundAcceptedTurnBinding binding, WoundTransitionReductionResult reduction)
         {
-            var fullPath = fileSystem.ResolvePath(relativePath);
-            Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
-            File.WriteAllText(fullPath, root.ToJsonString());
+            var type = typeof(WoundMaterializationContract).Assembly.GetType(
+                "BookOfEternityClient.Services.WoundTransitionAcceptedPlanComposer", false, false);
+            Assert.True(type is not null,
+                "T070 transition accepted-plan composer is absent; tests must not hand-write carrier/index/history.");
+            var method = ExactStatic(type!, "ComposeContinuation", 4);
+            Assert.Equal("WoundTransitionAcceptedPlanCompositionResult", method.ReturnType.Name);
+            Assert.Equal(typeof(FileSystemManager), method.GetParameters()[0].ParameterType);
+            Assert.Equal(lease.GetType(), method.GetParameters()[1].ParameterType);
+            Assert.Equal(typeof(WoundAcceptedTurnBinding), method.GetParameters()[2].ParameterType);
+            Assert.Equal(typeof(WoundTransitionReductionResult), method.GetParameters()[3].ParameterType);
+            var result = Invoke(method, fs, lease, binding, reduction);
+            AssertClosed(result, "AcceptedPlan", "Disposition", "Issues");
+            Assert.Equal("Composed", Convert.ToString(Required(result, "Disposition")));
+            Assert.Empty(Values(result, "Issues"));
+            var plan = Required(result, "AcceptedPlan");
+            Assert.Equal("AcceptedMechanicsPlan", plan.GetType().Name);
+            var published = new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
+                .BindTo(lease)
+                .NormalizeAcceptedMechanicsAsync(backups: null)
+                .GetAwaiter().GetResult();
+            Assert.Same(plan, published);
+        }
+
+        private static WoundMaterializationEnvelope ReadCanonicalWound(FileSystemManager fs, string woundId)
+        {
+            var full = fs.ResolvePath(WoundCarrierCatalog.PlayerPath);
+            var player = File.Exists(full) ? JsonNode.Parse(File.ReadAllText(full))!.AsObject() : null;
+            var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(player, null, null, null, null));
+            Assert.Empty(catalog.Issues);
+            Assert.True(catalog.TryResolveOne(woundId, out var occurrence));
+            return occurrence.Wound;
+        }
+
+        private static JsonObject CreateStabilizedAfter(JsonObject baseline)
+        {
+            var after = baseline.DeepClone().AsObject();
+            after["care"]!["state"] = "stabilized";
+            after["care"]!["stabilizedAtTurn"] = 43;
+            after["care"]!["lastAttemptId"] = "attempt_stabilize_001";
+            after["recovery"]!["blockers"] = new JsonArray();
+            after["lastTransition"] = new JsonObject
+            {
+                ["transitionId"] = "wound_transition_test_002", ["ordinal"] = 2,
+                ["turn"] = 43, ["kind"] = "stabilize"
+            };
+            return after;
+        }
+
+        private static WoundTransitionRequest CreateStabilizationRequest(
+            WoundMaterializationEnvelope before,
+            WoundMaterializationEnvelope after) => new(
+            "stabilize", "wound_transition_test_002", "operation_test_wound_stabilize_001",
+            "turn_43:stabilize", 43, before, after, new WoundStabilizationEvidence(
+                "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                WoundIdentityState.ComputeSemanticFingerprint(before),
+                WoundIdentityState.ComputeSemanticFingerprint(after), "attempt_stabilize_001",
+                Array.Empty<string>(), Array.Empty<string>(), new[] { "not_stabilized" }));
+
+        private static WoundAcceptedTurnBinding CreateBinding(int turn, string eventRef, string sourceKind)
+        {
+            var events = new[] { new WoundAcceptedEventAuthority(eventRef, sourceKind,
+                "t062_" + turn, "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") };
+            return new WoundAcceptedTurnBinding("session_t062", "request_t062_" + turn,
+                "snapshot_t062_" + turn, "mortal_world", turn, events,
+                WoundAcceptedEventSetFingerprint.Compute(events));
+        }
+
+        private static void WriteTurnRequest(FileSystemManager fs, int turn) => Write(fs,
+            LiveTurnPreparationService.TurnRequestPath, new JsonObject
+            {
+                ["sessionId"] = "session_t062", ["requestId"] = "request_t062_" + turn,
+                ["turnNumber"] = turn, ["gameMode"] = "normal",
+                ["preGeneratedDices1d20"] = new JsonArray(17)
+            });
+
+        private JsonObject? Read(string path)
+        {
+            var full = FileSystem.ResolvePath(path);
+            return File.Exists(full) ? JsonNode.Parse(File.ReadAllText(full))!.AsObject() : null;
+        }
+
+        private static void Write(FileSystemManager fs, string path, JsonObject root)
+        {
+            var full = fs.ResolvePath(path);
+            Directory.CreateDirectory(Path.GetDirectoryName(full)!);
+            File.WriteAllText(full, root.ToJsonString());
         }
     }
 }

@@ -1294,10 +1294,32 @@ include visible provider/access facts in projection.
 
 ### 7.9 Recovery
 
+The GM-authored recovery proposal contains only the declared mode/cadence/threshold/
+blocker/policy fields below.  `recoveryAnchor` and `deteriorationAnchor` are absent or
+null in that proposal; any non-null value is a client-owned-field error.  On accepted
+creation, T070 derives the canonical anchors from the exact canonical
+`world_time.currentTimeInMinutes` and accepted create transition ID, and the canonical
+carrier may then contain the following additional client-owned state:
+
+`MortalWoundRecoveryAuthoringAuthority.ValidateProposal(JsonObject proposedWound,
+string path)` is the authoring boundary for this distinction. Its closed result is
+exactly `IsValid` and frozen `Issues`; it allows absent/null anchors and reports a
+non-null proposal anchor at its exact recovery path before accepted-state composition.
+
 ```json
 {
   "mode": "requires_stabilization",
   "clockKind": "world_time.currentTimeInMinutes",
+  "recoveryAnchor": {
+    "anchorKind": "creation",
+    "anchorMinute": 1260,
+    "anchorTransitionId": "client-owned"
+  },
+  "deteriorationAnchor": {
+    "conditionKey": "not_stabilized",
+    "anchorMinute": 1260,
+    "anchorTransitionId": "client-owned"
+  },
   "cadence": 1440,
   "currentStepProgress": 0,
   "currentStepThreshold": 3,
@@ -1311,6 +1333,37 @@ include visible provider/access facts in projection.
 For Mortal wounds `cadence` is a positive signed 64-bit count of canonical world
 minutes and uses the same `world_time.currentTimeInMinutes` authority as treatment
 courses; it never uses wall time or a parallel seconds counter.
+
+`recoveryAnchor` and `deteriorationAnchor` are independent closed canonical state.
+`recoveryAnchor` supplies the next progressive cadence: at `due - 1` no transition is
+eligible, while `due` and later evaluate `elapsedCadences = floor((now-anchor)/cadence)`
+with checked signed-64-bit arithmetic and publish `nextRecoveryAnchorMinute`.  A
+time jump must consume that exact count in one typed recovery intent and move the next
+anchor past `now`; the same clock event therefore cannot create a second tick.  A
+stabilization accepted at minute `S` rebases only `recoveryAnchor` to `S`, so blocked
+days never become immediate catch-up healing.
+
+`deteriorationAnchor` is allocated only when its exact `conditionKey` first becomes
+unmet (or re-enters that condition) and is cleared when it ceases.  It is not reset by
+a recovery-progress tick.  Its first deterioration deadline is
+`anchorMinute + graceMinutes`, inclusive: `grace - 1` does nothing, `grace` and later
+evaluate the checked elapsed deterioration cadence and publish the next deadline.
+Both anchors carry the authoritative allocating transition ID; callers and GM output
+cannot supply minutes, tick keys, fingerprints, history rows, or anchors.
+
+The planner returns exactly `Disposition`, `Issues`, `ReplayReceipt`, and `Resolution`.
+Its successful resolution has only typed recovery-progress, deterioration, or
+death-handoff intents; it has no direct wound/death/history mutation.  T070 composes
+those intents into the existing `AcceptedMechanicsPlan` authority and
+`CanonicalStateNormalizer` is the sole atomic publisher of carrier, identity, history,
+receipt, and after-images. Initial create is the existing sealed
+`WoundAcceptedTurnPlanner` `Prepare -> effect batch -> Finalize` path, not a recovery
+or generic-reducer shortcut. T070 passes that sealed bundle to existing
+`AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(fs, lease, bundle)`, which
+builds/registers the ordinary common plan from canonical roots; a generic reduction can
+be composed only for a continuation of an already-canonical wound and delegates to the
+same authority.
+
 For spiritual wounds `clockKind=afterlife_safe_cycle`, cadence is one safe cycle,
 threshold derives from current severity, and progress per cycle derives from the
 owner's accepted Spiritual Healing tier.

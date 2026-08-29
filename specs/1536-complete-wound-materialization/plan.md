@@ -412,7 +412,13 @@ history atomically for every owner carrier; effect removal never heals it.
    persistence. Continuation resource controls run after B.
 5. Add RED recovery/deterioration/canonical `world_time.currentTimeInMinutes`/retry/
    death-boundary tests and implement the registered Mortal policy scheduler without a
-   parallel seconds or wall-time clock.
+   parallel seconds or wall-time clock. The GM proposal cannot author canonical anchors:
+   accepted create allocates the recovery anchor from the sealed current minute and
+   transition ID; a separate condition/deterioration anchor preserves grace across
+   recovery ticks. Due/grace boundaries and time jumps use checked elapsed-cadence plus
+   next-anchor state, stabilization rebases recovery only, and death remains a lifecycle
+   handoff. T070 composes typed transition intents into the existing accepted-plan
+   authority; `CanonicalStateNormalizer` remains the only publisher.
 6. Replace legacy Mortal rule/example/UI preview shapes and add a complete GM worked
    lifecycle before exposing the Mortal command flow.
 

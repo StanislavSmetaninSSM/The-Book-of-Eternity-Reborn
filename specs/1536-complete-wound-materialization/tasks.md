@@ -839,7 +839,7 @@ failure, duplicate ID, or incomplete owned-tree cleanup
   merged/split batches. Finalization MUST return one matching ordered fingerprinted
   `MortalWoundHealLegacyApplicationResultGroup` of complete existing
   `EffectAcceptedApplicationResult` rows per mechanical batch.
-- [ ] T062 [P] [US2] Add RED progressive/requires-stabilization/no-natural recovery, canonical `world_time.currentTimeInMinutes` cadence/grace authority, exact deterioration-policy semantics including interruption `apply_deterioration(policyRef)` strictly-worsening validation and neutral/beneficial rejection, clock replay, overflow, and Mortal death-boundary tests in `BookOfEternityClient.Tests/MortalWoundRecoveryTests.cs`
+- [ ] T062 [P] [US2] Add RED progressive/requires-stabilization/no-natural recovery, canonical `world_time.currentTimeInMinutes` cadence/grace authority, client-owned accepted-create recovery anchor plus separate condition/deterioration anchor, inclusive due-1/due/due+1 and grace-1/grace/grace+1 boundaries, checked elapsed/next-anchor time jumps, stabilization rebase/no catch-up, exact deterioration-policy semantics including interruption `apply_deterioration(policyRef)` strictly-worsening validation and neutral/beneficial rejection, replay-before-live-clock, overflow, closed typed transition intents, and Mortal death-lifecycle-handoff tests in `BookOfEternityClient.Tests/MortalWoundRecoveryTests.cs`. The RED fixture must obtain carrier/identity/history only through T070 common accepted-plan composition and normal publication; it must never hand-write recovery receipt/history/after-images.
 - [ ] T063 [US2] Add RED cross-setting create -> diagnose success/failure -> author alternative -> procedure/course/guaranteed -> recover -> heal -> History journeys and atomic resource/item use in `BookOfEternityClient.IntegrationTests/MortalWoundMaterializationLifecycleTests.cs`
 
 T058 RED evidence (2026-08-29): 27 treatment-contract rows execute with a
@@ -886,7 +886,7 @@ exact valid course/guaranteed route shapes, and procedure/course/guaranteed reso
 ### GREEN implementation
 
 - [ ] T064 [US2] Implement formal/QTE/combat/trap/check/hazard/narrative Mortal opportunity adapters and causal/profile validation in `BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs`
-- [ ] T065 [US2] Implement strict readable diagnosis paths, typed known-fact prerequisites/reveals, least-fixed-point discovery validation, treatment routes/known/completed agreement, exact common route envelope, exact/confusable categorized gapless procedure bands with an applicable positive operation in every `success` band, contiguous canonical-minute course milestones with non-empty positive final course, closed no-improvement/effectless-positive-difficulty-complication/current-policy-reference interruption shape, guaranteed singleton source reference, canonical-versus-proposal complication selector dialects, and closed ordered typed outcomes reusing the current complication/consequence sub-proposal plus proposal-safe cosmetic/mechanical-effect heal-legacy drafts in `BookOfEternityClient/Services/MortalWoundTreatmentContract.cs` and `BookOfEternityClient/Services/WoundMaterializationContract.cs`
+- [ ] T065 [US2] Implement strict readable diagnosis paths, typed known-fact prerequisites/reveals, least-fixed-point discovery validation, treatment routes/known/completed agreement, exact common route envelope, exact/confusable categorized gapless procedure bands with an applicable positive operation in every `success` band, contiguous canonical-minute course milestones with non-empty positive final course, closed no-improvement/effectless-positive-difficulty-complication/current-policy-reference interruption shape, guaranteed singleton source reference, canonical-versus-proposal complication selector dialects, client-owned canonical recovery/deterioration-anchor authoring rejection (proposal absent/null only), and closed ordered typed outcomes reusing the current complication/consequence sub-proposal plus proposal-safe cosmetic/mechanical-effect heal-legacy drafts in `BookOfEternityClient/Services/MortalWoundTreatmentContract.cs` and `BookOfEternityClient/Services/WoundMaterializationContract.cs`
   T065 also owns structural positive-kind versus attempt-time applicability separation,
   positive-only non-empty ordinary course milestones, at-most-one-final-heal and
   aggregate legacy/severity bounds, checked numeric validation,
@@ -940,7 +940,7 @@ exact valid course/guaranteed route shapes, and procedure/course/guaranteed reso
   T068 MUST accept complete course-mode authority (not bare time), seal matching course
   ID/ordinal/coordinate evidence into bundle/reservation claims, and finalize solely from
   the resolution's full nested RequestAuthority without an unsealed live lookup.
-- [ ] T069 [US2] Implement canonical-world-minute recovery/deterioration policies, cadence/blockers/overflow, exact strictly-worsening policy classification for treatment interruption references, and exact tick outcomes in `BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs`
+- [ ] T069 [US2] Implement canonical-world-minute recovery/deterioration policies, independent recovery versus condition/deterioration anchors, cadence/blockers/overflow/elapsed-next-anchor semantics, exact strictly-worsening policy classification for treatment interruption references, and exact closed typed tick outcomes in `BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs`. `MortalWoundDeteriorationPolicyAuthority` must offer the resolver-bound `Create(acceptedState, coordinates, policyRef)` overload as well as the canonical recovery-planner factory; neither accepts injected JSON/fingerprint/authority.
 - [ ] T070 [US2] Compose Mortal diagnosis/alternative-route/treatment/recovery wound/effect/item/resource/history/output after-images; re-export guaranteed authority from the final composed player/NPC skill after-image whenever its root is touched; revalidate and atomically consume/expire the already T067-resolved exact per-attempt Fate Shield intent or roll back; and prepare deterministic cosmetic IDs plus non-GM `wound_legacy` source exports/history through `MortalWoundHealLegacyPlanner` before publication. Register the closed legacy source, feed its ordered per-mechanical-legacy typed batches through #1535 while leaving effect IDs solely to that planner, exclude it from active-wound cleanup, and preserve source/history after later effect removal in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/MortalWoundHealLegacyPlanner.cs`, `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs`, `BookOfEternityClient/Services/EffectSourceAuthority.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
   T070 MUST consume the exact T067 outcome-intent/DeclaredResult pair without raw-route
   reparsing or identity allocation; update the existing non-heal/follow-up-heal reducer
@@ -948,6 +948,18 @@ exact valid course/guaranteed route shapes, and procedure/course/guaranteed reso
   `MortalWoundHealLegacyPlanner.Prepare(binding,resolution,workingWound)` before #1535 and
   `Finalize(preparation,acceptedEffectPlan)` afterward; emit durable legacy rows only from
   finalization; and validate all derived heal/legacy child operation/event coordinates.
+  T070 additionally feeds the sealed existing `WoundAcceptedTurnPlanner`
+  `Prepare -> #1535 effect batch -> Finalize` bundle into the existing common authority
+  `AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(fs, lease, bundle)`; it does
+  not add an alternate create authority. That authority builds the full common input and
+  after-images from the sealed bundle plus canonical roots and registers the ordinary
+  `AcceptedMechanicsPlan`. A generic transition-reduction composer may be used only for
+  an already-canonical continuation, must delegate to that common authority, and must
+  assemble the full common effect/resource/history roots.
+  `MortalWoundRecoveryAcceptedPlanComposer.Compose(...)` follows the same delegation
+  for a typed recovery resolution. The common
+  `CanonicalStateNormalizer` accepted-plan path is the sole publisher of the composed
+  wound carrier, identity, history, receipt, and recovery anchors.
 - [ ] T071 [US2] Remove loose Mortal aliases/wrappers, `generatedEffects`, `healingState.canBeImprovedBy`, `WoundReference`, `sourceWoundId`, `duration=999`, and NPC-effect-carrier fallbacks in `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`
 
 **T066/T067-A/T068+T069/T067-B execution gate**: implement T066's accepted-state,

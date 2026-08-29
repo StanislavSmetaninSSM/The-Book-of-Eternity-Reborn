@@ -1273,6 +1273,46 @@ Mortal elapsed-time policies use only canonical
 signed 64-bit minute counts with checked arithmetic. They do not introduce a seconds
 counter or consult wall-clock time.
 
+The GM proposal leaves client-owned `recoveryAnchor` and `deteriorationAnchor` absent
+or null; a non-null proposal value rejects. At accepted create T070 allocates `recoveryAnchor` from the
+current canonical minute plus the accepted create transition ID. `recoveryAnchor` is
+the progressive schedule anchor: `due-1` is not due; at `due` and later a single typed
+intent carries the checked elapsed cadence count and a next anchor strictly after the
+current minute. A committed tick advances that schedule, so the same clock event has no
+second effect. Accepted stabilization at minute `S` rebases this schedule to `S`; time
+spent blocked never becomes catch-up healing.
+
+`MortalWoundRecoveryAuthoringAuthority.ValidateProposal(proposedWound, path)` is the
+closed authoring check: its only public result fields are `IsValid` and immutable
+`Issues`, and it rejects a non-null client-owned anchor at the exact proposal path.
+
+Optional deterioration uses a distinct client-owned `deteriorationAnchor`, allocated
+only when its exact unmet condition begins or re-enters. It is not reset by a recovery
+progress tick. Its first deadline is `conditionAnchor + graceMinutes` inclusive:
+`grace-1` has no deterioration and `grace`/`grace+1` use checked elapsed policy cadence.
+The anchor contains its allocating transition ID and cannot be forged by a caller.
+
+`MortalWoundRecoveryPlanner.Plan(fs, lease, binding, woundId)` has no caller-supplied
+clock, plan, fingerprint, mutation, receipt, history, tick, or policy argument. Its
+four-field result is exactly `Disposition`, `Issues`, `ReplayReceipt`, and
+`Resolution`; resolution emits only closed typed progress/deterioration/death-handoff
+intents. Death is a lifecycle-owner handoff, not direct wound/death mutation. T070's
+accepted-plan composers register these intents with common `AcceptedMechanicsPlan`
+authority and only the normal accepted-plan publisher writes canonical roots.
+Initial wound create remains the existing sealed `WoundAcceptedTurnPlanner` preparation,
+effect-batch, and finalization flow; recovery may not introduce an alternate create
+writer. T070 passes its sealed bundle to
+`AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(fs, lease, bundle)`, which
+builds/registers the ordinary common plan from canonical roots. A generic reduction is
+admissible only as an already-canonical continuation assembled with the common
+effect/resource/history roots and delegated to that same authority.
+
+Treatment interruption uses the same T069 classification, never raw policy JSON:
+`MortalWoundDeteriorationPolicyAuthority.Create(acceptedState, coordinates, policyRef)`
+binds the exact current wound/policy/attempt coordinates for a resolver, while the
+five-argument canonical-state factory remains the recovery planner seam. Both return
+the same closed authority result and accept no injected fingerprint or authority.
+
 Prose such as "через несколько дней стало лучше" is not recovery evidence. A repeated
 turn or clock event cannot tick twice.
 
