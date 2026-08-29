@@ -47,7 +47,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         "display_name_change_never_grants_authority",
         "proof_is_detached_and_immutable",
         "proof_contains_only_context_coordinates_owner_skill_capability_and_fingerprints"
-    }.Select(static row => new object[] { row });
+    }.Select(static row => new object[] { DescribeScenario(row, publication: false) });
 
     public static IEnumerable<object[]> PublicationExportRows => new[]
     {
@@ -66,7 +66,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         "duplicate_or_confusable_final_skill_row_rejects",
         "stale_final_source_rejects",
         "publication_export_accepts_no_detached_json_or_publication_intent"
-    }.Select(static row => new object[] { row });
+    }.Select(static row => new object[] { DescribeScenario(row, publication: true) });
 
     [Fact]
     public void IndependentControl_ExistingActiveWoundFixtureStillParses()
@@ -81,27 +81,30 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
     [Theory]
     [MemberData(nameof(CurrentExportRows))]
-    public void ExportCurrent_UsesOnlyCanonicalPlayerOrNpcSkillCapabilitySource(string scenario)
+    public void ExportCurrent_UsesOnlyCanonicalPlayerOrNpcSkillCapabilitySource(
+        CapabilityScenario scenario)
     {
         using var fixture = CapabilityAuthorityFixture.Create(scenario);
 
         var result = InvokeExportCurrent(fixture, scenario);
-        AssertCapabilityResult(result, ExpectedValidity(scenario), scenario);
+        AssertCapabilityResult(result, scenario);
+        AssertScenarioSpecificCurrentSemantics(fixture, scenario, result);
     }
 
     [Theory]
     [MemberData(nameof(PublicationExportRows))]
-    public void ExportForPublication_RevalidatesTheExactCurrentOrFinalSkillSource(string scenario)
+    public void ExportForPublication_RevalidatesTheExactCurrentOrFinalSkillSource(
+        CapabilityScenario scenario)
     {
         using var fixture = CapabilityAuthorityFixture.Create(scenario);
 
         var result = InvokeExportForPublication(fixture, scenario);
-        AssertCapabilityResult(result, ExpectedValidity(scenario), scenario);
+        AssertCapabilityResult(result, scenario);
     }
 
     private static CapabilityProofView InvokeExportCurrent(
         CapabilityAuthorityFixture fixture,
-        string scenario)
+        CapabilityScenario scenario)
     {
         var acceptedState = BuildAcceptedState(fixture);
         var coordinates = CreateCoordinates(fixture, acceptedState);
@@ -110,12 +113,12 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             acceptedState,
             coordinates,
             CapabilityRef,
-            ActorRole(scenario));
+            scenario.ActorRole);
     }
 
     private static CapabilityProofView InvokeExportForPublication(
         CapabilityAuthorityFixture fixture,
-        string scenario)
+        CapabilityScenario scenario)
     {
         var acceptedState = BuildAcceptedState(fixture);
         var coordinates = CreateCoordinates(fixture, acceptedState);
@@ -125,7 +128,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             acceptedState,
             coordinates,
             CapabilityRef,
-            ActorRole(scenario),
+            scenario.ActorRole,
             publicationPlan);
     }
 
@@ -212,6 +215,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.True(found, "The fixture must obtain the publication plan through the production accepted-plan authority.");
         Assert.NotNull(arguments[3]);
         var planningResult = arguments[3]!;
+        fixture.AssertFinalSkillAfterImageIsBound(planningResult);
         return ReadValidTypedResult(planningResult, "Plan", "publication plan");
     }
 
@@ -278,13 +282,32 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         ["skillId"] = kind == "active" ? SkillId : "skill_triage_passive_01",
         ["displayName"] = kind == "active" ? "Field Medicine" : "Triage Discipline",
         ["lifecycle"] = "active",
-        ["active"] = true,
-        ["mortalWoundTreatmentCapabilities"] = new JsonArray(new JsonObject
+        ["active"] = true
+    };
+
+    private static void ConfigureCapabilitySource(
+        JsonObject fixture,
+        CapabilityScenario scenario)
+    {
+        foreach (var owner in new[] { "player", "npc" })
+        {
+            foreach (var skillArray in new[] { "activeSkills", "passiveSkills" })
+            {
+                Skill(fixture, owner, skillArray).Remove("mortalWoundTreatmentCapabilities");
+            }
+        }
+
+        var source = Skill(fixture, scenario.SourceOwner, scenario.SourceSkillArray);
+        source["skillId"] = scenario.SkillId;
+        AddCapability(source, CapabilityRef);
+    }
+
+    private static void AddCapability(JsonObject skill, string capabilityRef)
+    {
+        skill["mortalWoundTreatmentCapabilities"] = new JsonArray(new JsonObject
         {
             ["schemaVersion"] = 1,
-            ["capabilityRef"] = kind == "active"
-                ? CapabilityRef
-                : "triage_support_capability",
+            ["capabilityRef"] = capabilityRef,
             ["woundDomain"] = "physical",
             ["minimumSeverityRank"] = 1,
             ["maximumSeverityRank"] = 4,
@@ -298,41 +321,46 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 ["maximumCosmeticHealLegacies"] = 1,
                 ["maximumMechanicalEffectHealLegacies"] = 1
             }
-        })
-    };
+        });
+    }
 
-    private static void ApplyScenario(JsonObject fixture, string scenario)
+    private static JsonObject OtherSkill(JsonObject fixture, CapabilityScenario scenario) =>
+        Skill(
+            fixture,
+            scenario.SourceOwner,
+            scenario.SourceSkillArray == "activeSkills" ? "passiveSkills" : "activeSkills");
+
+    private static void ApplyScenario(JsonObject fixture, CapabilityScenario scenario)
     {
-        var playerActive = Skill(fixture, "player", "activeSkills");
-        var playerPassive = Skill(fixture, "player", "passiveSkills");
-        var npcActive = Skill(fixture, "npc", "activeSkills");
-        var capability = Capability(playerActive);
+        ConfigureCapabilitySource(fixture, scenario);
+        var sourceSkill = Skill(fixture, scenario.SourceOwner, scenario.SourceSkillArray);
+        var capability = Capability(sourceSkill);
 
-        switch (scenario)
+        switch (scenario.Name)
         {
             case "idless_extension_bearing_skill_rejects":
-                playerActive.Remove("skillId");
+                sourceSkill.Remove("skillId");
                 break;
             case "duplicate_skill_id_across_active_and_passive_rejects":
-                playerPassive["skillId"] = SkillId;
+                OtherSkill(fixture, scenario)["skillId"] = sourceSkill["skillId"]!.DeepClone();
                 break;
             case "case_changed_skill_id_rejects":
-                playerPassive["skillId"] = "SKILL_FIELD_MEDICINE_01";
+                OtherSkill(fixture, scenario)["skillId"] = "SKILL_FIELD_MEDICINE_01";
                 break;
             case "unicode_confusable_skill_id_rejects":
-                playerPassive["skillId"] = "skill_fieлd_medicine_01";
+                OtherSkill(fixture, scenario)["skillId"] = "skill_fieлd_medicine_01";
                 break;
             case "duplicate_capability_ref_across_skill_kinds_rejects":
-                Capability(playerPassive)["capabilityRef"] = CapabilityRef;
+                AddCapability(OtherSkill(fixture, scenario), CapabilityRef);
                 break;
             case "unicode_confusable_capability_ref_rejects":
-                Capability(playerPassive)["capabilityRef"] = "fieӁd_medicine_guaranteed_care";
+                AddCapability(OtherSkill(fixture, scenario), "fieӁd_medicine_guaranteed_care");
                 break;
             case "inactive_skill_rejects":
-                playerActive["active"] = false;
+                sourceSkill["active"] = false;
                 break;
             case "retired_skill_rejects":
-                playerActive["lifecycle"] = "retired";
+                sourceSkill["lifecycle"] = "retired";
                 break;
             case "wrong_owner_role_or_realm_rejects":
                 fixture["realm"] = "chaos_sea";
@@ -364,16 +392,16 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 Limits(capability)["maximumRecoveryPoints"] = 2;
                 break;
             case "display_name_change_never_grants_authority":
-                playerActive["displayName"] = "Unrelated wording only";
+                sourceSkill["displayName"] = "Unrelated wording only";
                 break;
             case "removed_final_skill_rejects":
-                fixture["player"]!["activeSkills"] = new JsonArray();
+                fixture[scenario.SourceOwner]![scenario.SourceSkillArray] = new JsonArray();
                 break;
             case "retired_final_skill_rejects":
-                playerActive["lifecycle"] = "retired";
+                sourceSkill["lifecycle"] = "retired";
                 break;
             case "changed_final_skill_id_rejects":
-                playerActive["skillId"] = "skill_after_image_changed_01";
+                sourceSkill["skillId"] = "skill_after_image_changed_01";
                 break;
             case "changed_final_capability_ref_rejects":
                 capability["capabilityRef"] = "after_image_changed_capability";
@@ -382,10 +410,10 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 capability["woundDomain"] = "spiritual";
                 break;
             case "duplicate_or_confusable_final_skill_row_rejects":
-                npcActive["skillId"] = SkillId;
+                OtherSkill(fixture, scenario)["skillId"] = sourceSkill["skillId"]!.DeepClone();
                 break;
             case "stale_final_source_rejects":
-                playerActive["active"] = false;
+                sourceSkill["active"] = false;
                 break;
         }
     }
@@ -403,11 +431,10 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
     private static void AssertCapabilityResult(
         CapabilityProofView result,
-        bool expectedValid,
-        string scenario)
+        CapabilityScenario scenario)
     {
-        Assert.Equal(expectedValid, result.IsValid);
-        if (!expectedValid)
+        Assert.Equal(scenario.ExpectedValid, result.IsValid);
+        if (!scenario.ExpectedValid)
         {
             Assert.Null(result.Proof);
             Assert.NotEmpty(result.Issues);
@@ -417,7 +444,15 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.Empty(result.Issues);
         Assert.NotNull(result.Proof);
         var proof = result.Proof!;
-        AssertProofShape(proof, scenario);
+        AssertProofShape(proof, scenario.Name);
+        Assert.Equal(scenario.SkillId, Assert.IsType<string>(ReadRequiredProperty(proof, "SkillId")));
+        Assert.Equal(scenario.SourceOwner, Assert.IsType<string>(ReadRequiredProperty(proof, "OwnerKind")));
+        Assert.Equal(
+            scenario.SourceOwner == "player" ? "player_current" : "npc_field_medic_01",
+            Assert.IsType<string>(ReadRequiredProperty(proof, "OwnerId")));
+        Assert.Equal(
+            scenario.SourceSkillArray == "activeSkills" ? "active" : "passive",
+            Assert.IsType<string>(ReadRequiredProperty(proof, "SkillKind")));
     }
 
     private static void AssertProofShape(object proof, string scenario)
@@ -458,6 +493,68 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.False(
             JsonSerializer.Serialize(proof, proof.GetType()).Contains("mortalWoundTreatmentCapabilities", StringComparison.Ordinal),
             $"{scenario} leaked source JSON through the detached proof.");
+    }
+
+    private static void AssertScenarioSpecificCurrentSemantics(
+        CapabilityAuthorityFixture fixture,
+        CapabilityScenario scenario,
+        CapabilityProofView result)
+    {
+        if (!scenario.ExpectedValid)
+            return;
+
+        switch (scenario.Name)
+        {
+            case "source_semantic_change_changes_proof":
+            case "display_name_change_never_grants_authority":
+                using (var baselineFixture = CapabilityAuthorityFixture.Create(
+                           scenario with { Name = "baseline_current_source" }))
+                {
+                    var baseline = InvokeExportCurrent(baselineFixture, baselineFixture.Scenario);
+                    AssertCapabilityResult(baseline, baselineFixture.Scenario);
+                    Assert.NotNull(baseline.Proof);
+                    Assert.NotNull(result.Proof);
+                    var baselineSource = Assert.IsType<string>(ReadRequiredProperty(
+                        baseline.Proof!, "SourceSemanticFingerprint"));
+                    var currentSource = Assert.IsType<string>(ReadRequiredProperty(
+                        result.Proof!, "SourceSemanticFingerprint"));
+                    var baselineProof = Assert.IsType<string>(ReadRequiredProperty(
+                        baseline.Proof!, "ProofFingerprint"));
+                    var currentProof = Assert.IsType<string>(ReadRequiredProperty(
+                        result.Proof!, "ProofFingerprint"));
+                    if (scenario.Name == "source_semantic_change_changes_proof")
+                    {
+                        Assert.NotEqual(baselineSource, currentSource);
+                        Assert.NotEqual(baselineProof, currentProof);
+                    }
+                    else
+                    {
+                        Assert.Equal(baselineSource, currentSource);
+                        Assert.Equal(baselineProof, currentProof);
+                    }
+                }
+                break;
+            case "ordinary_capability_projection_comes_from_same_skill":
+                var projection = fixture.T060CapabilityProjection();
+                Assert.Equal(
+                    new[] { "active", "capabilityRef", "displayName", "lifecycle" },
+                    projection.Select(static entry => entry.Key).OrderBy(static key => key, StringComparer.Ordinal));
+                Assert.Equal(CapabilityRef, projection["capabilityRef"]!.GetValue<string>());
+                Assert.Null(projection["operationLimits"]);
+                Assert.Null(projection["proofFingerprint"]);
+                break;
+            case "mastery_gate_remains_separate_skill_tier_requirement":
+                Assert.Equal("skill_tier", fixture.SiblingMasteryRequirement["kind"]!.GetValue<string>());
+                Assert.Equal(fixture.Scenario.SkillId, fixture.SiblingMasteryRequirement["skillRef"]!.GetValue<string>());
+                Assert.Null(fixture.SiblingMasteryRequirement["capabilityRef"]);
+                break;
+            case "proof_is_detached_and_immutable":
+                Assert.NotNull(result.Proof);
+                var beforeMutation = JsonSerializer.Serialize(result.Proof, result.Proof!.GetType());
+                fixture.MutatePersistedSelectedSourceAfterExport();
+                Assert.Equal(beforeMutation, JsonSerializer.Serialize(result.Proof, result.Proof.GetType()));
+                break;
+        }
     }
 
     private static object ParseAuthorityInput(
@@ -534,15 +631,44 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.IsAssignableFrom<IEnumerable>(ReadRequiredProperty(instance, propertyName))
             .Cast<object>();
 
-    private static bool ExpectedValidity(string scenario) => scenario switch
+    private static CapabilityScenario DescribeScenario(string name, bool publication)
     {
-        "target_owned_combatant_requires_promotion" => false,
-        _ when scenario.Contains("reject", StringComparison.Ordinal) => false,
-        _ => true
-    };
-
-    private static string ActorRole(string scenario) =>
-        scenario.Contains("target_owned", StringComparison.Ordinal) ? "target" : "provider";
+        var (owner, skillArray) = name switch
+        {
+            "player_active_skill_exports_physical_capability" or
+            "untouched_player_skill_reads_current_lease_bound_root" or
+            "touched_player_active_skill_reads_exact_final_after_image" => ("player", "activeSkills"),
+            "player_passive_skill_exports_physical_capability" or
+            "touched_player_passive_skill_reads_exact_final_after_image" => ("player", "passiveSkills"),
+            "npc_passive_skill_exports_physical_capability" => ("npc", "passiveSkills"),
+            _ => ("npc", "activeSkills")
+        };
+        var actorRole = name.Contains("target_owned", StringComparison.Ordinal)
+            ? "target"
+            : "provider";
+        var providerKind = owner;
+        var providerId = owner == "player" ? "player_current" : "npc_field_medic_01";
+        var targetKind = name.Contains("combatant", StringComparison.Ordinal)
+            ? "combatant"
+            : "player";
+        var targetId = targetKind == "combatant" ? "combatant_wounded_01" : "player_current";
+        var expectedValid = !name.Contains("reject", StringComparison.Ordinal) &&
+                            name != "target_owned_combatant_requires_promotion";
+        return new CapabilityScenario(
+            name,
+            owner,
+            skillArray,
+            owner == "player" && skillArray == "activeSkills"
+                ? SkillId
+                : $"skill_{owner}_{(skillArray == "activeSkills" ? "active" : "passive")}_medicine_01",
+            actorRole,
+            providerKind,
+            providerId,
+            targetKind,
+            targetId,
+            expectedValid,
+            publication);
+    }
 
     private static JsonObject Skill(JsonObject fixture, string owner, string skillKind) =>
         Assert.IsType<JsonObject>(Assert.Single(
@@ -564,6 +690,19 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         IReadOnlyList<ValidationIssue> Issues,
         object? Proof);
 
+    public sealed record CapabilityScenario(
+        string Name,
+        string SourceOwner,
+        string SourceSkillArray,
+        string SkillId,
+        string ActorRole,
+        string ProviderKind,
+        string ProviderId,
+        string TargetKind,
+        string TargetId,
+        bool ExpectedValid,
+        bool Publication);
+
     private sealed class CapabilityAuthorityFixture : IDisposable
     {
         private CapabilityAuthorityFixture(
@@ -572,7 +711,11 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             FileSystemManager.CanonicalWriteLease lease,
             WoundAcceptedTurnBinding binding,
             WoundMaterializationEnvelope before,
-            JsonObject contextRoot)
+            JsonObject contextRoot,
+            CapabilityScenario scenario,
+            JsonObject currentSource,
+            JsonObject finalSource,
+            JsonObject siblingMasteryRequirement)
         {
             Root = root;
             FileSystem = fileSystem;
@@ -580,6 +723,10 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Binding = binding;
             Before = before;
             ContextRoot = contextRoot;
+            Scenario = scenario;
+            CurrentSource = currentSource;
+            FinalSource = finalSource;
+            SiblingMasteryRequirement = siblingMasteryRequirement;
         }
 
         internal const string WoundId = "wound_test_torn_side";
@@ -593,8 +740,12 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         internal WoundAcceptedTurnBinding Binding { get; }
         internal WoundMaterializationEnvelope Before { get; }
         internal JsonObject ContextRoot { get; }
+        internal CapabilityScenario Scenario { get; }
+        internal JsonObject CurrentSource { get; }
+        internal JsonObject FinalSource { get; }
+        internal JsonObject SiblingMasteryRequirement { get; }
 
-        internal static CapabilityAuthorityFixture Create(string scenario)
+        internal static CapabilityAuthorityFixture Create(CapabilityScenario scenario)
         {
             var root = Path.Combine(Path.GetTempPath(), "boe-capability-authority-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
@@ -603,10 +754,18 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Directory.CreateDirectory(Path.GetDirectoryName(
                 fileSystem.ResolvePath("game_state/wounds/identity_index.json"))!);
 
-            var source = CreateCanonicalSkillFixture();
-            ApplyScenario(source, scenario);
-            AssertCanonicalFixtureShape(source);
-            WriteCanonicalSkillSources(fileSystem, source);
+            var currentSource = CreateCanonicalSkillFixture();
+            ApplyScenario(currentSource, scenario with { Name = "baseline_current_source" });
+            var finalSource = scenario.Publication
+                ? currentSource.DeepClone().AsObject()
+                : currentSource;
+            if (scenario.Publication)
+                ApplyScenario(finalSource, scenario);
+            else
+                ApplyScenario(currentSource, scenario);
+            AssertCanonicalFixtureShape(currentSource);
+            AssertCanonicalFixtureShape(finalSource);
+            WriteCanonicalSkillSources(fileSystem, currentSource);
             var woundRoot = WoundContractTestData.CreateActiveWound(woundId: WoundId);
             var parsed = WoundMaterializationContract.Parse(woundRoot.ToJsonString(), "wound");
             Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
@@ -648,11 +807,21 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 {
                     ["schemaVersion"] = 1,
                     ["realm"] = "mortal_world",
-                    ["targetKind"] = "player",
-                    ["targetId"] = "player_current",
-                    ["providerKind"] = "npc",
-                    ["providerId"] = "npc_field_medic_01",
+                    ["targetKind"] = scenario.TargetKind,
+                    ["targetId"] = scenario.TargetId,
+                    ["providerKind"] = scenario.ProviderKind,
+                    ["providerId"] = scenario.ProviderId,
                     ["currentLocationId"] = "loc_field_clinic_001"
+                },
+                scenario,
+                currentSource,
+                finalSource,
+                new JsonObject
+                {
+                    ["kind"] = "skill_tier",
+                    ["skillRef"] = scenario.SkillId,
+                    ["minimumTier"] = 2,
+                    ["targetRole"] = scenario.ActorRole
                 });
         }
 
@@ -660,6 +829,32 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         {
             Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
             Directory.Delete(Root, recursive: true);
+        }
+
+        internal void MutatePersistedSelectedSourceAfterExport()
+        {
+            var skill = Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray);
+            skill["displayName"] = "Mutated only after proof export";
+            WriteCanonicalSkillSources(FileSystem, CurrentSource);
+        }
+
+        internal JsonObject T060CapabilityProjection() => new()
+        {
+            ["capabilityRef"] = CapabilityRef,
+            ["displayName"] = Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray)["displayName"]!.DeepClone(),
+            ["lifecycle"] = Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray)["lifecycle"]!.DeepClone(),
+            ["active"] = Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray)["active"]!.DeepClone()
+        };
+
+        internal void AssertFinalSkillAfterImageIsBound(object planningResult)
+        {
+            var finalSkill = Skill(FinalSource, Scenario.SourceOwner, Scenario.SourceSkillArray);
+            var serializedPlan = JsonSerializer.Serialize(planningResult, planningResult.GetType());
+            Assert.Contains(finalSkill["skillId"]!.GetValue<string>(), serializedPlan, StringComparison.Ordinal);
+            Assert.DoesNotContain(
+                JsonSerializer.Serialize(CurrentSource, CurrentSource.GetType()),
+                serializedPlan,
+                StringComparison.Ordinal);
         }
 
         private static void WriteCanonicalSkillSources(FileSystemManager fileSystem, JsonObject source)
