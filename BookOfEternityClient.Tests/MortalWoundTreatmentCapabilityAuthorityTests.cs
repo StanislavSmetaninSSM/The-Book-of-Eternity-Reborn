@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -413,9 +414,10 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         object request,
         object resolution)
     {
-        // T070 alone composes final owner-companion after-images and populates the
-        // common accepted-plan cache.  There is intentionally no test-built plan,
-        // planning input, final skill root, binding, or publication coordinator.
+        // T070 alone validates and normalizes the GM proposal, derives final
+        // owner-companion after-images, and populates the common accepted-plan
+        // cache. There is intentionally no test-built plan, planning input, final
+        // root, or publication coordinator.
         var pipelineType = typeof(WoundMaterializationContract).Assembly.GetType(
             "BookOfEternityClient.Services.WoundAcceptedTurnPlanner",
             throwOnError: false,
@@ -424,13 +426,30 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         var compose = Assert.Single(pipelineType.GetMethods(
             BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
             static candidate => candidate.Name == "ComposeMortalWoundTreatmentPublication" &&
-                                candidate.GetParameters().Length == 3);
+                                candidate.GetParameters().Length == 7);
         var parameters = compose.GetParameters();
-        Assert.Equal(acceptedState.GetType(), parameters[0].ParameterType);
-        Assert.Equal(request.GetType(), parameters[1].ParameterType);
-        Assert.Equal(resolution.GetType(), parameters[2].ParameterType);
-        var composed = Invoke(compose, new[] { acceptedState, request, resolution });
+        Assert.Equal(typeof(FileSystemManager), parameters[0].ParameterType);
+        Assert.Equal(typeof(FileSystemManager.CanonicalWriteLease), parameters[1].ParameterType);
+        Assert.Equal(typeof(WoundAcceptedTurnBinding), parameters[2].ParameterType);
+        Assert.Equal(typeof(GameResponse), parameters[3].ParameterType);
+        Assert.Equal(acceptedState.GetType(), parameters[4].ParameterType);
+        Assert.Equal(request.GetType(), parameters[5].ParameterType);
+        Assert.Equal(resolution.GetType(), parameters[6].ParameterType);
+        var proposal = fixture.CreatePublicationProposal();
+        fixture.AssertPublicationProposalIsNotFinalPlanAuthority(proposal);
+        var composed = Invoke(compose, new object?[]
+        {
+            fixture.FileSystem,
+            fixture.Lease,
+            fixture.Binding,
+            proposal,
+            acceptedState,
+            request,
+            resolution
+        });
         var publicationPlan = ReadValidTypedResult(composed, "Plan", "T070 accepted publication");
+        Assert.NotSame(proposal, publicationPlan);
+        Assert.NotEqual(proposal.GetType(), publicationPlan.GetType());
         Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
             fixture.FileSystem,
             fixture.Lease,
@@ -439,7 +458,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.True(cached.Success, DescribeIssues(cached.Issues));
         Assert.Same(publicationPlan, cached.Plan);
         fixture.AssertCachedPublicationPlanBinding(cachedBinding);
-        fixture.AssertPublicationPlanBindsOnlyTheSelectedRoot(publicationPlan);
+        fixture.AssertPublicationPlanBindsOnlyTheSelectedRoot(publicationPlan, proposal);
         return publicationPlan;
     }
 
@@ -1637,6 +1656,156 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             };
         }
 
+        internal GameResponse CreatePublicationProposal()
+        {
+            // This is the only publication input owned by the test: an ordinary GM
+            // response. FinalSource remains an oracle for the normalized canonical
+            // result that the T070 composer must derive; it is never passed to the
+            // composer as an after-image or accepted-plan input.
+            var proposal = new GameResponse();
+            if (!UsesFinalAfterImage)
+                return proposal;
+            AddPlayerProposalChanges(proposal, "activeSkills");
+            AddPlayerProposalChanges(proposal, "passiveSkills");
+            AddNpcProposalChanges(proposal, "activeSkills");
+            AddNpcProposalChanges(proposal, "passiveSkills");
+            return proposal;
+        }
+
+        internal void AssertPublicationProposalIsNotFinalPlanAuthority(GameResponse proposal)
+        {
+            Assert.NotNull(proposal);
+            Assert.DoesNotContain(
+                proposal.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                    .Select(static property => property.Name),
+                static name => name.Contains("Plan", StringComparison.Ordinal) ||
+                               name.Contains("AfterImage", StringComparison.Ordinal) ||
+                               name.Contains("Fingerprint", StringComparison.Ordinal) ||
+                               name.Contains("Authority", StringComparison.Ordinal) ||
+                               name.Contains("Proof", StringComparison.Ordinal));
+            Assert.Null(proposal.WoundDecisions);
+
+            if (!UsesFinalAfterImage)
+            {
+                Assert.Null(proposal.ActiveSkillChanges);
+                Assert.Null(proposal.RemoveActiveSkills);
+                Assert.Null(proposal.PassiveSkillChanges);
+                Assert.Null(proposal.RemovePassiveSkills);
+                Assert.Null(proposal.NPCActiveSkillChanges);
+                Assert.Null(proposal.NPCPassiveSkillChanges);
+                return;
+            }
+
+            // A touched proposal carries a complete selected skill row (or a
+            // genuine removal command) and never a serialised final canonical root.
+            var proposalJson = JsonSerializer.Serialize(proposal);
+            Assert.DoesNotContain("OwnerCompanionAfterImages", proposalJson, StringComparison.Ordinal);
+            Assert.DoesNotContain("AcceptedMechanicsPlan", proposalJson, StringComparison.Ordinal);
+            Assert.DoesNotContain("ProofFingerprint", proposalJson, StringComparison.Ordinal);
+            Assert.DoesNotContain("SourceSemanticFingerprint", proposalJson, StringComparison.Ordinal);
+            Assert.True(
+                proposal.ActiveSkillChanges is { Length: > 0 } ||
+                proposal.RemoveActiveSkills is { Length: > 0 } ||
+                proposal.PassiveSkillChanges is { Length: > 0 } ||
+                proposal.RemovePassiveSkills is { Length: > 0 } ||
+                proposal.NPCActiveSkillChanges is { Length: > 0 } ||
+                proposal.NPCPassiveSkillChanges is { Length: > 0 });
+            AssertProposalCarriesExactSelectedSkillChange(proposal);
+        }
+
+        private void AssertProposalCarriesExactSelectedSkillChange(GameResponse proposal)
+        {
+            var finalRows = Assert.IsType<JsonArray>(
+                FinalSource[Scenario.SourceOwner]![Scenario.SourceSkillArray]);
+            if (Scenario.SourceOwner == "player")
+            {
+                var changes = Scenario.SourceSkillArray == "activeSkills"
+                    ? proposal.ActiveSkillChanges
+                    : proposal.PassiveSkillChanges;
+                var removals = Scenario.SourceSkillArray == "activeSkills"
+                    ? proposal.RemoveActiveSkills
+                    : proposal.RemovePassiveSkills;
+                if (finalRows.Count == 0)
+                {
+                    Assert.Null(changes);
+                    Assert.Equal(new[] { Scenario.SkillId }, removals);
+                    return;
+                }
+
+                Assert.Null(removals);
+                var actual = Assert.Single(changes!);
+                Assert.Equal(finalRows[0]!.ToJsonString(), actual.GetRawText());
+                return;
+            }
+
+            var npcChanges = Scenario.SourceSkillArray == "activeSkills"
+                ? proposal.NPCActiveSkillChanges
+                : proposal.NPCPassiveSkillChanges;
+            var npcChange = JsonNode.Parse(Assert.Single(npcChanges!).GetRawText())!.AsObject();
+            Assert.Equal(Scenario.ProviderId, npcChange["npcId"]!.GetValue<string>());
+            if (finalRows.Count == 0)
+            {
+                Assert.Equal(new[] { Scenario.SkillId }, npcChange["skillsToRemove"]!.AsArray()
+                    .Select(static value => value!.GetValue<string>()));
+                Assert.Null(npcChange["skillChanges"]);
+                return;
+            }
+
+            Assert.Null(npcChange["skillsToRemove"]);
+            var actualRows = npcChange["skillChanges"]!.AsArray();
+            Assert.Equal(finalRows.ToJsonString(), actualRows.ToJsonString());
+        }
+
+        private void AddPlayerProposalChanges(GameResponse proposal, string skillArray)
+        {
+            var current = Assert.IsType<JsonArray>(CurrentSource["player"]![skillArray]);
+            var final = Assert.IsType<JsonArray>(FinalSource["player"]![skillArray]);
+            var selectedArray = string.Equals(skillArray, Scenario.SourceSkillArray, StringComparison.Ordinal) &&
+                                string.Equals(Scenario.SourceOwner, "player", StringComparison.Ordinal);
+            if (JsonNode.DeepEquals(current, final) && !selectedArray)
+                return;
+            if (selectedArray && final.Count == 0)
+            {
+                if (skillArray == "activeSkills")
+                    proposal.RemoveActiveSkills = new[] { Scenario.SkillId };
+                else
+                    proposal.RemovePassiveSkills = new[] { Scenario.SkillId };
+                return;
+            }
+
+            var changes = ToProposalElements(final);
+            if (skillArray == "activeSkills")
+                proposal.ActiveSkillChanges = changes;
+            else
+                proposal.PassiveSkillChanges = changes;
+        }
+
+        private void AddNpcProposalChanges(GameResponse proposal, string skillArray)
+        {
+            var current = Assert.IsType<JsonArray>(CurrentSource["npc"]![skillArray]);
+            var final = Assert.IsType<JsonArray>(FinalSource["npc"]![skillArray]);
+            var selectedArray = string.Equals(skillArray, Scenario.SourceSkillArray, StringComparison.Ordinal) &&
+                                string.Equals(Scenario.SourceOwner, "npc", StringComparison.Ordinal);
+            if (JsonNode.DeepEquals(current, final) && !selectedArray)
+                return;
+            var npcChange = new JsonObject
+            {
+                ["npcId"] = Scenario.ProviderId
+            };
+            if (selectedArray && final.Count == 0)
+                npcChange["skillsToRemove"] = new JsonArray(Scenario.SkillId);
+            else
+                npcChange["skillChanges"] = final.DeepClone();
+            var changes = new[] { JsonSerializer.SerializeToElement(npcChange) };
+            if (skillArray == "activeSkills")
+                proposal.NPCActiveSkillChanges = changes;
+            else
+                proposal.NPCPassiveSkillChanges = changes;
+        }
+
+        private static JsonElement[] ToProposalElements(JsonArray rows) =>
+            rows.Select(static row => JsonSerializer.SerializeToElement(row)).ToArray();
+
         internal void ApplyLiveExporterMutation()
         {
             if (Scenario.ExpectedBoundary != CapabilityFailureBoundary.Exporter || Scenario.Publication)
@@ -1742,8 +1911,10 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         }
 
         internal void AssertPublicationPlanBindsOnlyTheSelectedRoot(
-            object plan)
+            object plan,
+            GameResponse proposal)
         {
+            AssertPublicationProposalIsNotFinalPlanAuthority(proposal);
             var afterImages = Assert.IsAssignableFrom<IReadOnlyDictionary<string, JsonObject>>(
                 ReadRequiredProperty(plan, "OwnerCompanionAfterImages"));
             if (!UsesFinalAfterImage)
