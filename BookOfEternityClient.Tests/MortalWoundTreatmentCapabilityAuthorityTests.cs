@@ -112,6 +112,15 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         fixture.AssertProductionValidSkillShapes();
     }
 
+    [Fact]
+    public void FixtureControl_LiveTurnRequestMatchesAcceptedBinding()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario("player_active_skill_exports_physical_capability", publication: false));
+
+        fixture.AssertLiveTurnRequestMatchesBinding();
+    }
+
     [Theory]
     [MemberData(nameof(CurrentExportRows))]
     public void ExportCurrent_UsesOnlyCanonicalPlayerOrNpcSkillCapabilitySource(
@@ -936,7 +945,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             issues.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
             static property => property.CanWrite);
         if (issues is IList mutableIssues)
-            Assert.ThrowsAny<Exception>(() => mutableIssues.Add(issues[0]));
+            Assert.ThrowsAny<Exception>(() => mutableIssues.Add(null));
     }
 
     private static object Invoke(MethodInfo method, object?[] arguments)
@@ -1008,6 +1017,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         {
             "wrong_realm_rejects" => CapabilityFailureBoundary.Context,
             "idless_extension_bearing_skill_rejects" or
+            "target_owned_combatant_requires_promotion" or
             "duplicate_skill_id_across_active_and_passive_rejects" or
             "case_changed_skill_id_rejects" or
             "unicode_confusable_skill_id_rejects" or
@@ -1024,7 +1034,6 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "retired_skill_rejects" or
             "wrong_owner_rejects" or
             "wrong_role_rejects" or
-            "target_owned_combatant_requires_promotion" or
             "removed_final_skill_rejects" or
             "retired_final_skill_rejects" or
             "changed_final_skill_id_rejects" or
@@ -1150,7 +1159,11 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             var fileSystem = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fileSystem.EnsureDirectoryStructure();
             Directory.CreateDirectory(Path.GetDirectoryName(
-                fileSystem.ResolvePath("game_state/wounds/identity_index.json"))!);
+                fileSystem.ResolvePath(WoundIdentityState.StatePath))!);
+            Directory.CreateDirectory(Path.GetDirectoryName(
+                fileSystem.ResolvePath(WoundHistoryState.HistoryPath))!);
+            Directory.CreateDirectory(Path.GetDirectoryName(
+                fileSystem.ResolvePath(LiveTurnPreparationService.TurnRequestPath))!);
 
             var currentSource = CreateCanonicalSkillFixture();
             ApplyScenario(currentSource, scenario with { Name = "baseline_current_source" });
@@ -1236,7 +1249,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     WoundContractTestData.CreatePlayerCarrier(woundRoot).ToJsonString());
             }
             File.WriteAllText(
-                fileSystem.ResolvePath("game_state/wounds/identity_index.json"),
+                fileSystem.ResolvePath(WoundIdentityState.StatePath),
                 WoundContractTestData.CreateIdentityIndex(
                     WoundContractTestData.CreateIdentityEntry(
                         woundId: WoundId,
@@ -1244,8 +1257,18 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                         ownerId: combatTarget ? scenario.TargetId : "player_current",
                         carrierPath: combatTarget ? carrierPath : "game_state/player/wounds.json")).ToJsonString());
             File.WriteAllText(
-                fileSystem.ResolvePath("game_state/wounds/history.json"),
+                fileSystem.ResolvePath(WoundHistoryState.HistoryPath),
                 WoundContractTestData.CreateHistory(WoundContractTestData.CreateTransition()).ToJsonString());
+            File.WriteAllText(
+                fileSystem.ResolvePath(LiveTurnPreparationService.TurnRequestPath),
+                new JsonObject
+                {
+                    ["sessionId"] = "session_capability_authority",
+                    ["requestId"] = "request_capability_authority",
+                    ["turnNumber"] = 42,
+                    ["gameMode"] = "normal",
+                    ["preGeneratedDices1d20"] = new JsonArray(17)
+                }.ToJsonString());
 
             var acceptedEvents = new[]
             {
@@ -1316,10 +1339,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     Assert.Equal("npc", Scenario.SourceOwner);
                     Assert.IsType<JsonObject>(CurrentSource["npc"])["ownerId"] = "npc_wrong_owner_01";
                     break;
-                // The target role and unpromoted combat target retain the sealed valid
-                // context/root and are rejected solely by the capability exporter.
+                // Wrong role retains the sealed valid context/root and is rejected
+                // solely by the capability exporter.
                 case "wrong_role_rejects":
-                case "target_owned_combatant_requires_promotion":
                     break;
                 default:
                     throw new InvalidOperationException(
@@ -1364,10 +1386,42 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         internal void AssertProductionValidSkillShapes()
         {
             var player = Assert.IsType<JsonObject>(CurrentSource["player"]);
-            using var active = JsonDocument.Parse(player["activeSkills"]!.AsArray()[0]!.ToJsonString());
-            using var passive = JsonDocument.Parse(player["passiveSkills"]!.AsArray()[0]!.ToJsonString());
-            Assert.True(ValidationService.IsProductionValidMortalActiveSkill(active.RootElement));
-            Assert.True(ValidationService.IsProductionValidMortalPassiveSkill(passive.RootElement));
+            var npc = Assert.IsType<JsonObject>(CurrentSource["npc"]);
+            Assert.True(
+                ValidationService.IsProductionValidMortalActiveSkill(ParseFirstSkill(player, "activeSkills")));
+            Assert.True(
+                ValidationService.IsProductionValidMortalPassiveSkill(ParseFirstSkill(player, "passiveSkills")));
+            Assert.True(
+                ValidationService.IsProductionValidMortalActiveSkill(ParseFirstSkill(npc, "activeSkills")));
+            Assert.True(
+                ValidationService.IsProductionValidMortalPassiveSkill(ParseFirstSkill(npc, "passiveSkills")));
+
+            var npcRoot = ReadRoot("game_state/npcs/npc_core.json");
+            var persistedNpc = Assert.IsType<JsonObject>(Assert.Single(
+                Assert.IsType<JsonArray>(npcRoot!["NPCs"])));
+            Assert.Equal("npc_field_medic_01", persistedNpc["npcId"]!.GetValue<string>());
+            Assert.True(ValidationService.IsProductionValidMortalActiveSkill(
+                ParseFirstSkill(persistedNpc, "activeSkills")));
+            Assert.True(ValidationService.IsProductionValidMortalPassiveSkill(
+                ParseFirstSkill(persistedNpc, "passiveSkills")));
+        }
+
+        internal void AssertLiveTurnRequestMatchesBinding()
+        {
+            var turnRequest = ReadRoot(LiveTurnPreparationService.TurnRequestPath);
+            Assert.NotNull(turnRequest);
+            Assert.Equal("session_capability_authority", turnRequest!["sessionId"]!.GetValue<string>());
+            Assert.Equal("request_capability_authority", turnRequest["requestId"]!.GetValue<string>());
+            Assert.Equal(42, turnRequest["turnNumber"]!.GetValue<int>());
+            Assert.Equal("normal", turnRequest["gameMode"]!.GetValue<string>());
+            Assert.Equal(new[] { 17 }, turnRequest["preGeneratedDices1d20"]!.AsArray()
+                .Select(static die => die!.GetValue<int>()));
+        }
+
+        private static JsonElement ParseFirstSkill(JsonObject owner, string skillArray)
+        {
+            using var document = JsonDocument.Parse(owner[skillArray]!.AsArray()[0]!.ToJsonString());
+            return document.RootElement.Clone();
         }
 
         internal AcceptedMechanicsInput CreatePublicationPlanningInput()
