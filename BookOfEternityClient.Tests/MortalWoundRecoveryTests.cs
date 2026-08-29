@@ -43,7 +43,8 @@ public sealed class MortalWoundRecoveryTests
         Scenario.MultiCadenceJump(), Scenario.StabilizationRebasesCadence(),
         Scenario.GraceMinusOne(), Scenario.Grace(), Scenario.GracePlusOne(),
         Scenario.RequiresStabilization(), Scenario.NoNaturalRecovery(),
-        Scenario.CheckedOverflow(), Scenario.DeathHandoff(), Scenario.Replay()
+        Scenario.CheckedOverflow(), Scenario.DeteriorationCadenceOverflow(),
+        Scenario.DeteriorationMultiCadence(), Scenario.DeathHandoff(), Scenario.Replay()
     }.Select(static value => new object[] { value });
 
     public static IEnumerable<object[]> PolicyRows => new[]
@@ -462,6 +463,13 @@ public sealed class MortalWoundRecoveryTests
         internal static Scenario CheckedOverflow() => Create("checked_anchor_cadence_overflow", "progressive", long.MaxValue,
             "", null, null, null, [], expected: "Rejected", anchor: long.MaxValue - 5, cadence: 10,
             elapsedCadences: 0, creationMinute: long.MaxValue - 5);
+        internal static Scenario DeteriorationCadenceOverflow() => Create("checked_deterioration_cadence_overflow", "requires_stabilization", long.MaxValue,
+            "", null, null, null, [], "increase_severity", stabilized: false, expected: "Rejected",
+            deteriorationAnchor: long.MaxValue - 5, elapsedCadences: 0, elapsedDeteriorationCadences: 0,
+            creationMinute: long.MaxValue - 5);
+        internal static Scenario DeteriorationMultiCadence() => Create("deterioration_multi_cadence", "requires_stabilization", 155,
+            "Deteriorated", "untreated_infection", 110, 130, ["MortalWoundRecoveryDeteriorationIntent"], "increase_severity",
+            stabilized: false, elapsedCadences: 0, elapsedDeteriorationCadences: 3, nextDeteriorationAnchor: 160);
         internal static Scenario DeathHandoff() => Create("death_is_lifecycle_handoff", "requires_stabilization", 130,
             "DeathHandoffRequired", "untreated_infection", 110, 130, ["MortalWoundDeathHandoffIntent"], "death_contour", stabilized: false,
             death: true, elapsedCadences: 0, elapsedDeteriorationCadences: 1);
@@ -495,7 +503,7 @@ public sealed class MortalWoundRecoveryTests
             return new(name, mode, anchor, conditionAnchor, creationMinute, stabilizationMinute, minute, wound,
                 new JsonObject { ["currentTimeInMinutes"] = creationMinute }, expected, recoveryDisposition,
                 expectedPolicyRef, due, grace, elapsedCadences, elapsedDeterioration,
-                nextRecoveryAnchor ?? (expected == "Rejected" ? null :
+                mode == "no_natural_recovery" ? null : nextRecoveryAnchor ?? (expected == "Rejected" ? null :
                     (elapsedCadences == 0 ? anchor + cadence : anchor + (elapsedCadences + 1) * cadence)),
                 nextDeteriorationAnchor ?? (conditionAnchor is null || elapsedDeterioration == 0
                     ? (conditionAnchor is null ? null : conditionAnchor + (grace ?? 0))
