@@ -354,16 +354,18 @@ public sealed class WoundMaterializationValidationTests
             out _));
     }
 
-    [Fact]
-    public async Task RawValidation_AllowsOrdinarySharedCarrierFieldsToChangeWhenWoundsDoNot()
+    [Theory]
+    [InlineData(WoundCarrierCatalog.EnemiesPath)]
+    [InlineData(WoundCarrierCatalog.AlliesPath)]
+    [InlineData(WoundCarrierCatalog.AfterlifeProfilesPath)]
+    public async Task RawValidation_AllowsOrdinarySharedCarrierFieldsToChangeWhenWoundsDoNot(
+        string carrierPath)
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
         await SeedEmptyFoundationsAsync(context);
-        var carrier = CreateSharedCarrier(
-            WoundCarrierCatalog.EnemiesPath,
-            includeWound: false);
+        var carrier = CreateSharedCarrier(carrierPath, includeWound: true);
         await context.WriteExactJsonAsync(
-            WoundCarrierCatalog.EnemiesPath,
+            carrierPath,
             carrier.ToJsonString());
         await context.CaptureValidatedPendingSnapshotAsync(
             additionalTrackedPaths: SnapshotWoundPaths);
@@ -373,9 +375,9 @@ public sealed class WoundMaterializationValidationTests
                 sessionId: "session_resource_materialization",
                 requestId: "request_resource_materialization",
                 snapshotToken: await ReadSnapshotTokenAsync(context)).ToJsonString());
-        carrier["enemiesData"]![0]!["initiative"] = 17;
+        MutateFirstSharedOrdinaryField(carrierPath, carrier);
         await context.WriteExactJsonAsync(
-            WoundCarrierCatalog.EnemiesPath,
+            carrierPath,
             carrier.ToJsonString());
 
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
@@ -383,7 +385,7 @@ public sealed class WoundMaterializationValidationTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync(lease);
 
         Assert.DoesNotContain(issues, issue =>
-            issue.FilePath == WoundCarrierCatalog.EnemiesPath &&
+            issue.FilePath == carrierPath &&
             issue.Code == "wound_materialization_client_owned_root_mutated");
     }
 
@@ -683,6 +685,27 @@ public sealed class WoundMaterializationValidationTests
                     ["activeWounds"]!.AsArray(),
             _ => throw new ArgumentOutOfRangeException(nameof(path), path, null)
         };
+
+    private static void MutateFirstSharedOrdinaryField(
+        string path,
+        JsonObject root)
+    {
+        switch (path)
+        {
+            case WoundCarrierCatalog.EnemiesPath:
+                root["enemiesData"]![0]!["initiative"] = 17;
+                return;
+            case WoundCarrierCatalog.AlliesPath:
+                root["alliesData"]![0]!["initiative"] = 17;
+                return;
+            case WoundCarrierCatalog.AfterlifeProfilesPath:
+                root[AfterlifeEntityProfileState.ProfilesProperty]![0]!["displayName"] =
+                    "Хранитель с обновлённым обычным описанием";
+                return;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(path), path, null);
+        }
+    }
 
     private static string RemoveCommandField(JsonObject command, string field)
     {

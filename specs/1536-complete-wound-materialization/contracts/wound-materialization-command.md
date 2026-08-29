@@ -84,15 +84,21 @@ roots.
 Accepted-turn validation treats the command opportunity only as comparison input. The
 pending occurrence, append-only receipt, wound history and identity roots plus all five
 wound carriers are mandatory members of one strict signed-snapshot read; their live
-bytes must still equal the byte-hash before-images under the same active lease and one
-non-conflicting lifecycle context. Recursive duplicate fields reject before carrier
+authority must still agree with the signed byte-hash before-images under the same active
+lease and one non-conflicting lifecycle context. The dedicated player and NPC wound
+roots, occurrence, receipt, history, and identity roots remain byte-identical. The
+shared combat-enemy, combat-ally, and afterlife-profile roots instead preserve an
+independently parsed canonical projection of every wound owner coordinate and complete
+wound envelope, so unrelated ordinary fields may advance through their own accepted
+mechanic. Any added, removed, moved, changed, malformed, or duplicated wound authority
+in a shared root conflicts. Recursive duplicate fields reject before carrier
 materialization. The validator parses the roots, checks pending/consumed and history
 agreement, reconstructs each complete producer batch and active-snapshot event vector,
 resolves an explicit worsening target only in the full signed carrier catalog, and
 composes a fresh opportunity from occurrence-owned fields. Every field and seal must
 match the submitted opportunity. A signed prior receipt is projected only after full
-fresh opportunity/decision/coordinate/history replay agreement. Raw effect-event JSON and the submitted
-`inputEvidenceFingerprint` are never evidence at this boundary.
+fresh opportunity/decision/coordinate/history replay agreement. Raw effect-event JSON
+and the submitted `inputEvidenceFingerprint` are never evidence at this boundary.
 
 ## Client-authored opportunity
 
