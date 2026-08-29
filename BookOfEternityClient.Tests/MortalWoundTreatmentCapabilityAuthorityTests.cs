@@ -1122,24 +1122,24 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "target_owned_combatant_requires_promotion" =>
                 ("mortal_wound_treatment_capability_actor_promotion_required", "treatmentCapability.target"),
             "wrong_role_rejects" =>
-                ("mortal_wound_treatment_capability_binding_mismatch", ".actorRole"),
+                ("mortal_wound_treatment_capability_binding_mismatch", "treatmentCapability.actorRole"),
             "wrong_owner_rejects" =>
-                ("mortal_wound_treatment_capability_binding_mismatch", ".sourceOwner"),
+                ("mortal_wound_treatment_capability_binding_mismatch", "treatmentCapability.sourceOwner"),
             "removed_final_skill_rejects" =>
-                ("mortal_wound_treatment_capability_source_missing", ".source"),
+                ("mortal_wound_treatment_capability_source_missing", "treatmentCapability.source"),
             "inactive_skill_rejects" or
             "retired_skill_rejects" or
             "retired_final_skill_rejects" or
             "stale_final_source_rejects" =>
-                ("mortal_wound_treatment_capability_source_inactive", ".source.lifecycle"),
+                ("mortal_wound_treatment_capability_source_inactive", "treatmentCapability.source.lifecycle"),
             "duplicate_or_confusable_final_skill_row_rejects" or
             "confusable_final_skill_sibling_rejects" =>
-                ("mortal_wound_treatment_capability_source_ambiguous", ".source.skillId"),
+                ("mortal_wound_treatment_capability_source_ambiguous", "treatmentCapability.source.skillId"),
             "changed_final_skill_id_rejects" or
             "changed_final_capability_ref_rejects" or
             "changed_final_domain_rejects" or
             "changed_final_operation_limits_reject" =>
-                ("mortal_wound_treatment_capability_publication_mismatch", ".publicationPlan"),
+                ("mortal_wound_treatment_capability_publication_mismatch", "treatmentCapability.publicationPlan"),
             _ => (null, null)
         };
         return new CapabilityScenario(
