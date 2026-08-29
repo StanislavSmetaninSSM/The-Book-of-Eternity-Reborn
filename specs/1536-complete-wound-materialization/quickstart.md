@@ -226,6 +226,15 @@ healing, and history survival after later effect removal. Treat an exact combata
 course and a provider-owned guarantee; require accepted promotion before a target-owned
 combatant guarantee.
 
+For Mortal recovery, create an untreated `requires_stabilization` wound at minute 100,
+stabilize it through the sealed treatment/publication path at minute 150, and assert the
+condition anchor is cleared while recovery is rebased to 150. At minute 170 submit a
+source-shaped formal re-trauma through the manifest-bound T064 adapter, real
+`StateDistributor`, `ValidationService`, and common publisher. Assert the client derives
+untreated care plus `not_stabilized`, the new deterioration anchor names the exact
+published `worsen` transition at minute 170, and the recovery anchor remains byte-
+identical to the stabilization-rebased value.
+
 ### C. Wound/effect separation
 
 1. Create a wound with pain and bleeding effects.

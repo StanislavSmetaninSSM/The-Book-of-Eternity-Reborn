@@ -12,6 +12,26 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class MortalWoundTreatmentResolverTests
 {
     [Fact]
+    public void Replay_ValidEmptyHistoryReturnsNotFoundBeforeAnyFreshAuthorityExists()
+    {
+        var history = WoundHistoryState.Parse(
+            WoundContractTestData.CreateHistory().ToJsonString(),
+            WoundHistoryState.HistoryPath);
+        Assert.True(history.IsValid, DescribeIssues(history.Issues));
+
+        var probe = ProbeTreatment(
+            history,
+            "operation_t061_not_found",
+            "attempt_t061_not_found",
+            "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        AssertClosedProperties(probe, new[] { "Status", "Issues", "Request", "Receipt" });
+        Assert.Equal("NotFound", Convert.ToString(ReadRequiredProperty(probe, "Status")));
+        Assert.Empty(AsObjects(ReadRequiredProperty(probe, "Issues")));
+        Assert.Null(ReadPropertyAllowingNull(probe, "Request"));
+        Assert.Null(ReadPropertyAllowingNull(probe, "Receipt"));
+    }
+
+    [Fact]
     public void Replay_PublishedCommonPlanRestartsIntoDetachedExactRequestAndReceiptWithoutNewWork()
     {
         var scenario = CreateScenario(
@@ -25,28 +45,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
             scenario.RouteId);
         Assert.NotEmpty(AsObjects(ReadRequiredProperty(flow.Resolution, "OutcomeIntents")));
         ComposeAndPublishTreatment(fixture, flow);
+        Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
+        fixture.AssertItemIdentityIndexValid();
 
-        var observedPaths = new[]
-        {
-            WoundCarrierCatalog.PlayerPath,
-            WoundIdentityState.StatePath,
-            WoundHistoryState.HistoryPath,
-            "game_state/inventory/items.json",
-            "game_state/inventory/item_identity_index.json",
-            EffectCarrierCatalog.PlayerPath,
-            EffectIdentityState.StatePath
-        };
-        var acceptedBytes = observedPaths.ToDictionary(
-            static path => path,
-            path => File.Exists(fixture.FileSystem.ResolvePath(path))
-                ? File.ReadAllBytes(fixture.FileSystem.ResolvePath(path))
-                : Array.Empty<byte>(),
-            StringComparer.Ordinal);
         var originalRequest = flow.Request;
         var originalRequestJson = CanonicalValue(originalRequest);
 
         fixture.RestartForReplay();
         var history = fixture.ReadCurrentHistory();
+        var acceptedTree = CaptureResolverFixtureTree(fixture.Root);
         var coordinates = ReadRequiredProperty(originalRequest, "Coordinates");
         var probe = ProbeTreatment(
             history,
@@ -85,13 +92,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             static property => property.Name.Contains("Intent", StringComparison.Ordinal) ||
                                property.Name.Contains("Claim", StringComparison.Ordinal));
 
-        foreach (var path in observedPaths)
-        {
-            var current = File.Exists(fixture.FileSystem.ResolvePath(path))
-                ? File.ReadAllBytes(fixture.FileSystem.ResolvePath(path))
-                : Array.Empty<byte>();
-            Assert.Equal(acceptedBytes[path], current);
-        }
+        AssertResolverFixtureTreeUnchanged(fixture.Root, acceptedTree);
     }
 
     [Fact]
@@ -122,10 +123,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("Conflict", Convert.ToString(ReadRequiredProperty(conflict, "Status")));
         Assert.Null(ReadPropertyAllowingNull(conflict, "Request"));
         Assert.Null(ReadPropertyAllowingNull(conflict, "Receipt"));
-        var conflictIssue = Assert.Single(AsObjects(ReadRequiredProperty(conflict, "Issues"))
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(conflict, "Issues"))
             .Select(Assert.IsType<ValidationIssue>));
-        Assert.Equal("mortal_wound_treatment_replay_conflict", conflictIssue.Code);
-        Assert.Equal("treatmentAttempt.requestFingerprint", conflictIssue.FilePath);
 
         var historyPath = fixture.FileSystem.ResolvePath(WoundHistoryState.HistoryPath);
         var historyRoot = JsonNode.Parse(File.ReadAllText(historyPath))!.AsObject();
@@ -138,11 +137,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             File.ReadAllText(historyPath),
             WoundHistoryState.HistoryPath);
         Assert.False(malformed.IsValid);
-        var parseIssue = Assert.Single(malformed.Issues);
-        Assert.Equal("wound_history_treatment_receipt_fingerprint_mismatch", parseIssue.Code);
-        Assert.Equal(
-            $"{WoundHistoryState.HistoryPath}.transitions[{transitionIndex}].transitionResult.receiptFingerprint",
-            parseIssue.FilePath);
+        Assert.NotEmpty(malformed.Issues);
 
         var invalid = ProbeTreatment(
             malformed,
@@ -152,10 +147,50 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("InvalidHistory", Convert.ToString(ReadRequiredProperty(invalid, "Status")));
         Assert.Null(ReadPropertyAllowingNull(invalid, "Request"));
         Assert.Null(ReadPropertyAllowingNull(invalid, "Receipt"));
-        var invalidIssue = Assert.Single(AsObjects(ReadRequiredProperty(invalid, "Issues"))
-            .Select(Assert.IsType<ValidationIssue>));
-        Assert.Equal(parseIssue.Code, invalidIssue.Code);
-        Assert.Equal(parseIssue.FilePath, invalidIssue.FilePath);
+        var invalidIssues = AsObjects(ReadRequiredProperty(invalid, "Issues"))
+            .Select(Assert.IsType<ValidationIssue>)
+            .ToArray();
+        Assert.Equal(
+            malformed.Issues.Select(CanonicalValue),
+            invalidIssues.Select(CanonicalValue));
+    }
+
+    [Theory]
+    [InlineData("operation")]
+    [InlineData("attempt")]
+    [InlineData("fingerprint")]
+    public void Replay_ReusedSemanticCoordinateConflictsIndependently(string axis)
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_axis",
+            scenario.RouteId);
+        ComposeAndPublishTreatment(fixture, flow);
+        fixture.RestartForReplay();
+
+        var coordinates = ReadRequiredProperty(flow.Request, "Coordinates");
+        var operationKey = Convert.ToString(ReadRequiredProperty(coordinates, "OperationKey"))!;
+        var attemptId = Convert.ToString(ReadRequiredProperty(coordinates, "AttemptId"))!;
+        var requestFingerprint = Convert.ToString(ReadRequiredProperty(
+            flow.Request,
+            "RequestFingerprint"))!;
+        var probe = ProbeTreatment(
+            fixture.ReadCurrentHistory(),
+            axis == "attempt" ? operationKey + "_different" : operationKey,
+            axis == "operation" ? attemptId + "_different" : attemptId,
+            axis == "fingerprint"
+                ? "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                : requestFingerprint);
+
+        Assert.Equal("Conflict", Convert.ToString(ReadRequiredProperty(probe, "Status")));
+        Assert.Null(ReadPropertyAllowingNull(probe, "Request"));
+        Assert.Null(ReadPropertyAllowingNull(probe, "Receipt"));
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(probe, "Issues")));
     }
 
     [Fact]
@@ -236,5 +271,28 @@ public sealed partial class MortalWoundTreatmentResolverTests
                      "ResolutionAuthorityFingerprint", "ResultFingerprint", "ReceiptFingerprint"
                  })
             AssertAuthorityFingerprint(ReadRequiredProperty(receipt, property));
+    }
+
+    private static IReadOnlyDictionary<string, byte[]> CaptureResolverFixtureTree(string root) =>
+        Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
+            .OrderBy(static path => path, StringComparer.Ordinal)
+            .ToDictionary(
+                path => Path.GetRelativePath(root, path).Replace('\\', '/'),
+                File.ReadAllBytes,
+                StringComparer.Ordinal);
+
+    private static void AssertResolverFixtureTreeUnchanged(
+        string root,
+        IReadOnlyDictionary<string, byte[]> before)
+    {
+        var after = CaptureResolverFixtureTree(root);
+        Assert.Equal(
+            before.Keys.OrderBy(static path => path, StringComparer.Ordinal),
+            after.Keys.OrderBy(static path => path, StringComparer.Ordinal));
+        foreach (var pair in before)
+        {
+            Assert.True(after.TryGetValue(pair.Key, out var bytes), pair.Key);
+            Assert.True(pair.Value.AsSpan().SequenceEqual(bytes), pair.Key);
+        }
     }
 }

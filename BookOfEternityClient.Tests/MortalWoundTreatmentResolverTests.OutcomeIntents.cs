@@ -66,7 +66,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         Assert.False(before.IsValid);
         Assert.Contains(before.Issues, issue =>
-            string.Equals(issue.Path,
+            string.Equals(issue.FilePath,
                 "wound.treatment.routes[0].outcomes[2].result[1].complicationDraft.complications[0].complicationRef",
                 StringComparison.Ordinal)
             && string.Equals(issue.Code, "wound_materialization_invalid_field", StringComparison.Ordinal));
@@ -111,8 +111,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "procedure",
             "failed_attempt",
             new[] { "add_complication" });
-        var exactFirst = OutcomeIntentAt(ResolveProductionOutcomeIntent(testCase), 0);
-        var exactSecond = OutcomeIntentAt(ResolveProductionOutcomeIntent(testCase), 0);
+        var exactRun = ResolveProductionOutcomeIntentRun(testCase, resolveExactRetry: true);
+        var exactFirst = OutcomeIntentAt(exactRun.First, 0);
+        var exactSecond = OutcomeIntentAt(exactRun.ExactRetry!, 0);
         Assert.Equal(
             Convert.ToString(ReadRequiredProperty(exactFirst, "ComplicationId")),
             Convert.ToString(ReadRequiredProperty(exactSecond, "ComplicationId")));
@@ -147,8 +148,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "guaranteed",
             "success",
             new[] { "remove_complication", "heal" });
-        var first = MechanicalLegacySeed(OutcomeIntentAt(ResolveProductionOutcomeIntent(testCase), 1));
-        var exactRetry = MechanicalLegacySeed(OutcomeIntentAt(ResolveProductionOutcomeIntent(testCase), 1));
+        var exactRun = ResolveProductionOutcomeIntentRun(testCase, resolveExactRetry: true);
+        var first = MechanicalLegacySeed(OutcomeIntentAt(exactRun.First, 1));
+        var exactRetry = MechanicalLegacySeed(OutcomeIntentAt(exactRun.ExactRetry!, 1));
         var reordered = MechanicalLegacySeed(OutcomeIntentAt(
             ResolveProductionOutcomeIntent(testCase, reverseLegacies: true), 1));
         Assert.Equal(Convert.ToString(ReadRequiredProperty(first, "LegacyId")),
@@ -161,8 +163,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
     public void OutcomeIntent_HealChildCoordinatesAreStableForRetryAndChangeWithTheSealedRequest()
     {
         var testCase = GuaranteedHealCase();
-        var first = OutcomeIntentAt(ResolveProductionOutcomeIntent(testCase), 1);
-        var retry = OutcomeIntentAt(ResolveProductionOutcomeIntent(testCase), 1);
+        var exactRun = ResolveProductionOutcomeIntentRun(testCase, resolveExactRetry: true);
+        var first = OutcomeIntentAt(exactRun.First, 1);
+        var retry = OutcomeIntentAt(exactRun.ExactRetry!, 1);
         var changedRequest = OutcomeIntentAt(
             ResolveProductionOutcomeIntent(testCase, operationSuffix: "_different_request"), 1);
 
@@ -195,7 +198,22 @@ public sealed partial class MortalWoundTreatmentResolverTests
         string? operationSuffix = null,
         string? complicationRef = null,
         bool reverseLegacies = false,
-        bool routeAlreadyCompleted = false)
+        bool routeAlreadyCompleted = false) =>
+        ResolveProductionOutcomeIntentRun(
+            testCase,
+            operationSuffix,
+            complicationRef,
+            reverseLegacies,
+            routeAlreadyCompleted,
+            resolveExactRetry: false).First;
+
+    private static OutcomeResolutionRun ResolveProductionOutcomeIntentRun(
+        OutcomeIntentCase testCase,
+        string? operationSuffix = null,
+        string? complicationRef = null,
+        bool reverseLegacies = false,
+        bool routeAlreadyCompleted = false,
+        bool resolveExactRetry = false)
     {
         var planner = RequireOutcomeResolver();
         var scenario = CreateOutcomeIntentScenario(testCase, complicationRef, reverseLegacies);
@@ -231,12 +249,31 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 acceptedState,
                 ReadRequiredProperty(prepared, "Coordinates"),
                 "t061_strict_deterioration");
-        var resolution = Invoke(ExactStaticMethod(planner, testCase.Mode == "procedure"
+        var resolver = ExactStaticMethod(planner, testCase.Mode == "procedure"
             ? "CreateProcedureAttempt"
-            : "CreateGuaranteedAttempt", 4), new object?[]
+            : "CreateGuaranteedAttempt", 4);
+        var resolverArguments = new object?[]
         {
             prepared, history, before.Wound, acceptedState
-        });
+        };
+        var resolution = Invoke(resolver, resolverArguments);
+        var exactRetry = resolveExactRetry
+            ? Invoke(resolver, resolverArguments)
+            : null;
+
+        if (exactRetry is not null)
+        {
+            Assert.Equal(
+                CanonicalValue(ReadRequiredProperty(resolution, "Resolution")),
+                CanonicalValue(ReadRequiredProperty(exactRetry, "Resolution")));
+            Assert.Equal(
+                CanonicalValue(ReadRequiredProperty(
+                    ReadRequiredProperty(resolution, "Resolution"),
+                    "RequestAuthority")),
+                CanonicalValue(ReadRequiredProperty(
+                    ReadRequiredProperty(exactRetry, "Resolution"),
+                    "RequestAuthority")));
+        }
 
         if (deteriorationAuthority is not null)
         {
@@ -246,7 +283,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 Convert.ToString(ReadRequiredProperty(intent, "DeteriorationAuthorityFingerprint")));
         }
 
-        return resolution;
+        return new OutcomeResolutionRun(resolution, exactRetry);
     }
 
     [Fact]
@@ -485,10 +522,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static string[] SelectedOutcomeKinds(WoundMaterializationEnvelope wound, OutcomeIntentCase testCase)
     {
         var route = Assert.Single(wound.Treatment.Routes);
-        var selected = testCase.Mode == "procedure"
-            ? route.Outcomes[2]
-            : route.Outcomes[0];
-        return selected.Result.Select(static operation => operation.Kind).ToArray();
+        var selected = Assert.Single(route.Outcomes, outcome =>
+            string.Equals(
+                outcome.GetProperty("category").GetString(),
+                testCase.Category,
+                StringComparison.Ordinal));
+        return selected.GetProperty("result")
+            .EnumerateArray()
+            .Select(static operation => operation.GetProperty("kind").GetString()!)
+            .ToArray();
     }
 
     private static string CanonicalBindings(object intent, string property) =>
@@ -609,6 +651,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.DoesNotContain("PublicationAuthority", properties);
         Assert.DoesNotContain("HistoryIntents", properties);
     }
+
+    private sealed record OutcomeResolutionRun(object First, object? ExactRetry);
 
     public sealed record OutcomeIntentCase(
         string Name,

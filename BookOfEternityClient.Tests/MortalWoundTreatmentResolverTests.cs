@@ -35,12 +35,31 @@ public sealed partial class MortalWoundTreatmentResolverTests
         "guaranteed_current_capability_proof_stabilizes",
         "guaranteed_severity_one_heal_has_empty_legacy_array");
 
+    public static IEnumerable<object[]> CombatTreatmentRows => new[]
+    {
+        new object[] { "combatant", "combatant_wounded_01", "procedure" },
+        new object[] { "combatant", "combatant_wounded_01", "course" },
+        new object[] { "combatant_member", "combatant_member_wounded_01", "procedure" },
+        new object[] { "combatant_member", "combatant_member_wounded_01", "course" }
+    };
+
     public static IEnumerable<object[]> CourseWindowRows => new[]
     {
-        new object[] { 479L, "TooEarly", null },
+        new object[] { 479L, "TooEarly", null! },
         new object[] { 480L, "Ready", "ready" },
         new object[] { 1_080L, "Ready", "ready" },
         new object[] { 1_081L, "DeadlineExceeded", "deadline_exceeded" }
+    };
+
+    public static IEnumerable<object[]> ProcedureBoundaryRows => new[]
+    {
+        new object[] { "natural_twenty_overrides_numeric_failure", 20, 30, false, false, "success", 0 },
+        new object[] { "player_natural_one_without_fate_uses_worst_band", 1, 1, false, false, "failed_attempt", 3 },
+        new object[] { "npc_natural_one_ignores_player_fate", 1, 1, true, true, "failed_attempt", 3 },
+        new object[] { "margin_negative_one", 11, 15, false, false, "failed_attempt", 2 },
+        new object[] { "margin_zero", 12, 15, false, false, "partial_success", 1 },
+        new object[] { "margin_four", 16, 15, false, false, "partial_success", 1 },
+        new object[] { "margin_five", 17, 15, false, false, "success", 0 }
     };
 
     [Fact]
@@ -198,6 +217,68 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void CourseHighLevelPreparation_TooEarlyCreatesNoRequestOrReservation()
+    {
+        var scenario = CreateScenario(
+            "course_first_milestone_is_ready_at_inclusive_due_time",
+            "course");
+        scenario.AcceptedState["antibioticDoseCount"] = 2;
+        const string fallbackRouteId = "procedure_t061_after_too_early_course";
+        var fallbackRoute = StrictProcedureRoute();
+        fallbackRoute["routeId"] = fallbackRouteId;
+        fallbackRoute["requirements"]![0]!["itemRef"] = "antibiotic_dose";
+        fallbackRoute["requirements"]![0]!["ownerRole"] = "target";
+        scenario.Before["treatment"]!["routes"]!.AsArray().Add(fallbackRoute);
+        scenario.Before["treatment"]!["knownRouteIds"]!.AsArray().Add(fallbackRouteId);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        ComposeAndPublishTreatment(fixture, ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_start",
+            scenario.RouteId));
+        Assert.Equal(1, fixture.ReadPlayerItemCount("antibiotic_dose"));
+        fixture.PrepareNextTurn(43, 479, "course_too_early_high_level");
+        var acceptedState = fixture.GetAcceptedState();
+        var tree = CaptureResolverFixtureTree(fixture.Root);
+        var result = Invoke(
+            ExactStaticMethod(RequireOutcomeResolver(), "PrepareCourseMilestoneRequest", 6),
+            new object?[]
+            {
+                acceptedState,
+                fixture.ReadCurrentHistory(),
+                fixture.ReadCurrentWound(),
+                scenario.OperationKey + "_too_early_high_level",
+                scenario.RouteId,
+                fixture.AcceptedEventRef(acceptedState)
+            });
+
+        AssertInvalidTypedResult(result, "Request", "too-early high-level course preparation");
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues"))
+            .Select(Assert.IsType<ValidationIssue>));
+        AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
+
+        var fallback = Invoke(
+            ExactStaticMethod(RequireOutcomeResolver(), "PrepareProcedureRequest", 6),
+            new object?[]
+            {
+                acceptedState,
+                fixture.ReadCurrentHistory(),
+                fixture.ReadCurrentWound(),
+                scenario.OperationKey + "_after_too_early",
+                fallbackRouteId,
+                fixture.AcceptedEventRef(acceptedState)
+            });
+        var fallbackRequest = ReadValidTypedResult(
+            fallback,
+            "Request",
+            "procedure after too-early course rejection");
+        Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(
+            ReadRequiredProperty(fallbackRequest, "ModeAuthority"),
+            "SourceIndices")));
+        AssertSingleHeldClaim(fallbackRequest, "antibiotic_dose");
+    }
+
+    [Fact]
     public void CourseContinuation_ReconstructsOrdinalsAcrossRestartsAndCompletionClearsPointer()
     {
         var scenario = CreateScenario(
@@ -212,6 +293,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             scenario.RouteId);
         AssertCourseAcceptedResolution(first, 1, "active", interruption: false);
         ComposeAndPublishTreatment(fixture, first);
+        Assert.Equal(7, fixture.ReadPlayerItemCount("antibiotic_dose"));
+        fixture.AssertItemIdentityIndexValid();
 
         fixture.RestartForReplay();
         fixture.PrepareNextTurn(43, 480, "course_ordinal_2");
@@ -222,6 +305,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             scenario.RouteId);
         AssertCourseAcceptedResolution(second, 2, "active", interruption: false);
         ComposeAndPublishTreatment(fixture, second);
+        Assert.Equal(6, fixture.ReadPlayerItemCount("antibiotic_dose"));
+        fixture.AssertItemIdentityIndexValid();
 
         fixture.RestartForReplay();
         fixture.PrepareNextTurn(44, 960, "course_ordinal_3");
@@ -235,6 +320,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             third.Resolution,
             "RouteCompletion")));
         ComposeAndPublishTreatment(fixture, third);
+        Assert.Equal(5, fixture.ReadPlayerItemCount("antibiotic_dose"));
+        fixture.AssertItemIdentityIndexValid();
 
         var carrier = JsonNode.Parse(File.ReadAllText(fixture.FileSystem.ResolvePath(
             WoundCarrierCatalog.PlayerPath)))!.AsObject();
@@ -260,6 +347,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             scenario.OperationKey + "_start",
             scenario.RouteId);
         ComposeAndPublishTreatment(fixture, first);
+        Assert.Equal(7, fixture.ReadPlayerItemCount("antibiotic_dose"));
         fixture.RemoveCurrentPlayerDose();
         fixture.PrepareNextTurn(43, 480, "course_unsatisfied");
 
@@ -288,6 +376,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             interrupted.Resolution,
             "ConsumptionTrigger")));
         ComposeAndPublishTreatment(fixture, interrupted);
+        Assert.Equal(0, fixture.ReadPlayerItemCount("antibiotic_dose"));
+        fixture.AssertItemIdentityIndexValid();
 
         var wound = fixture.ReadCurrentWound();
         Assert.Null(wound.Care.ActiveCourseId);
@@ -312,6 +402,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "course",
             scenario.OperationKey + "_start",
             scenario.RouteId));
+        Assert.Equal(7, fixture.ReadPlayerItemCount("antibiotic_dose"));
         fixture.RemoveCurrentPlayerDose();
         fixture.PrepareNextTurn(43, 1_081, "course_deadline_unsatisfied");
 
@@ -337,6 +428,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ReadRequiredProperty(interrupted.Request, "ModeAuthority"),
             "WindowDisposition")));
         ComposeAndPublishTreatment(fixture, interrupted);
+        Assert.Equal(0, fixture.ReadPlayerItemCount("antibiotic_dose"));
+        fixture.AssertItemIdentityIndexValid();
         Assert.Null(fixture.ReadCurrentWound().Care.ActiveCourseId);
     }
 
@@ -382,10 +475,125 @@ public sealed partial class MortalWoundTreatmentResolverTests
             });
         Assert.Equal("InvalidAuthority", Convert.ToString(ReadRequiredProperty(classified, "Status")));
         Assert.Null(ReadPropertyAllowingNull(classified, "Authority"));
-        var issue = Assert.Single(AsObjects(ReadRequiredProperty(classified, "Issues"))
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(classified, "Issues"))
             .Select(Assert.IsType<ValidationIssue>));
-        Assert.Equal("mortal_wound_course_history_authority_mismatch", issue.Code);
-        Assert.Equal(WoundHistoryState.HistoryPath, issue.FilePath);
+    }
+
+    [Fact]
+    public void CourseHighLevelPreparation_StaleHistoryRejectsBeforeResourceReservation()
+    {
+        var scenario = CreateScenario(
+            "course_first_milestone_is_ready_at_inclusive_due_time",
+            "course");
+        scenario.AcceptedState["antibioticDoseCount"] = 2;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        ComposeAndPublishTreatment(fixture, ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_start",
+            scenario.RouteId));
+        Assert.Equal(1, fixture.ReadPlayerItemCount("antibiotic_dose"));
+        fixture.PrepareNextTurn(43, 480, "course_stale_high_level");
+        var acceptedState = fixture.GetAcceptedState();
+        var staleHistory = WoundHistoryState.Parse(
+            WoundContractTestData.CreateHistory().ToJsonString(),
+            WoundHistoryState.HistoryPath);
+        Assert.True(staleHistory.IsValid, DescribeIssues(staleHistory.Issues));
+        var tree = CaptureResolverFixtureTree(fixture.Root);
+        var result = Invoke(
+            ExactStaticMethod(RequireOutcomeResolver(), "PrepareCourseMilestoneRequest", 6),
+            new object?[]
+            {
+                acceptedState,
+                staleHistory,
+                fixture.ReadCurrentWound(),
+                scenario.OperationKey + "_stale_high_level",
+                scenario.RouteId,
+                fixture.AcceptedEventRef(acceptedState)
+            });
+
+        AssertInvalidTypedResult(result, "Request", "stale high-level course history");
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues"))
+            .Select(Assert.IsType<ValidationIssue>));
+        AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
+
+        var recovered = Invoke(
+            ExactStaticMethod(RequireOutcomeResolver(), "PrepareCourseMilestoneRequest", 6),
+            new object?[]
+            {
+                acceptedState,
+                fixture.ReadCurrentHistory(),
+                fixture.ReadCurrentWound(),
+                scenario.OperationKey + "_after_stale_history",
+                scenario.RouteId,
+                fixture.AcceptedEventRef(acceptedState)
+            });
+        var recoveredRequest = ReadValidTypedResult(
+            recovered,
+            "Request",
+            "course retry after stale-history rejection");
+        Assert.Equal(2, Convert.ToInt32(ReadRequiredProperty(
+            recoveredRequest,
+            "MilestoneOrdinal")));
+        AssertSingleHeldClaim(recoveredRequest, "antibiotic_dose");
+    }
+
+    [Fact]
+    public void CourseContinuation_CoalescesExactRetryButRejectsIndependentCourseIdMilestoneCollision()
+    {
+        var scenario = CreateScenario(
+            "course_first_milestone_is_ready_at_inclusive_due_time",
+            "course");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        ComposeAndPublishTreatment(fixture, ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_start",
+            scenario.RouteId));
+        fixture.PrepareNextTurn(43, 480, "course_coordinate_collision");
+        var first = ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_milestone_two_first",
+            scenario.RouteId);
+        var firstCoordinates = ReadRequiredProperty(first.Request, "Coordinates");
+        var firstCourseAuthority = ReadRequiredProperty(first.Request, "ModeAuthority");
+        Assert.Equal(
+            fixture.ReadCurrentWound().Care.ActiveCourseId,
+            Convert.ToString(ReadRequiredProperty(firstCourseAuthority, "CourseId")));
+        Assert.Equal(2, Convert.ToInt32(ReadRequiredProperty(
+            firstCourseAuthority,
+            "MilestoneOrdinal")));
+
+        var exactRetry = ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_milestone_two_first",
+            scenario.RouteId);
+        Assert.Equal(CanonicalValue(first.Request), CanonicalValue(exactRetry.Request));
+        Assert.Equal(CanonicalValue(first.Resolution), CanonicalValue(exactRetry.Resolution));
+
+        var acceptedState = fixture.GetAcceptedState();
+        var tree = CaptureResolverFixtureTree(fixture.Root);
+        var conflictingOperationKey = scenario.OperationKey + "_milestone_two_conflict";
+        Assert.NotEqual(
+            Convert.ToString(ReadRequiredProperty(firstCoordinates, "OperationKey")),
+            conflictingOperationKey);
+        var conflict = Invoke(
+            ExactStaticMethod(RequireOutcomeResolver(), "PrepareCourseMilestoneRequest", 6),
+            new object?[]
+            {
+                acceptedState,
+                fixture.ReadCurrentHistory(),
+                fixture.ReadCurrentWound(),
+                conflictingOperationKey,
+                scenario.RouteId,
+                fixture.AcceptedEventRef(acceptedState)
+            });
+        AssertInvalidTypedResult(conflict, "Request", "course milestone coordinate conflict");
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(conflict, "Issues"))
+            .Select(Assert.IsType<ValidationIssue>));
+        AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
     }
 
     [Fact]
@@ -419,6 +627,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             false);
         Assert.NotNull(planner);
         var acceptedState = fixture.GetAcceptedState();
+        var tree = CaptureResolverFixtureTree(fixture.Root);
         var result = Invoke(
             ExactStaticMethod(planner!, "PrepareCourseMilestoneRequest", 6),
             new object?[]
@@ -431,12 +640,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 fixture.AcceptedEventRef(acceptedState)
             });
         AssertInvalidTypedResult(result, "Request", "second active course");
-        var issue = Assert.Single(AsObjects(ReadRequiredProperty(result, "Issues"))
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues"))
             .Select(Assert.IsType<ValidationIssue>));
-        Assert.Equal("mortal_wound_course_active_collision", issue.Code);
-        Assert.Equal(
-            WoundCarrierCatalog.PlayerPath + ".activeWounds[0].care.activeCourseId",
-            issue.FilePath);
+        AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
     }
 
     [Fact]
@@ -447,6 +653,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "course_first_milestone_is_ready_at_inclusive_due_time",
             "course");
         scenario.AcceptedState["worldMinute"] = minute;
+        scenario.AcceptedState["antibioticDoseCount"] = 1;
+        const string safeRouteId = "course_t061_after_deadline_overflow";
+        var safeRoute = scenario.Before["treatment"]!["routes"]![0]!
+            .DeepClone()
+            .AsObject();
+        safeRoute["routeId"] = safeRouteId;
+        safeRoute["resolution"]!["maximumGapMinutes"] = 0;
+        safeRoute["outcomes"]![1]!["afterMinutes"] = 1;
+        safeRoute["outcomes"]![2]!["afterMinutes"] = 2;
+        scenario.Before["treatment"]!["routes"]!.AsArray().Add(safeRoute);
+        scenario.Before["treatment"]!["knownRouteIds"]!.AsArray().Add(safeRouteId);
         scenario = scenario with { WorldMinute = minute };
         using var fixture = AcceptedStateFixture.Create(scenario);
         var planner = typeof(WoundMaterializationContract).Assembly.GetType(
@@ -455,6 +672,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             false);
         Assert.NotNull(planner);
         var acceptedState = fixture.GetAcceptedState();
+        var tree = CaptureResolverFixtureTree(fixture.Root);
         var result = Invoke(
             ExactStaticMethod(planner!, "PrepareCourseMilestoneRequest", 6),
             new object?[]
@@ -467,10 +685,29 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 fixture.AcceptedEventRef(acceptedState)
             });
         AssertInvalidTypedResult(result, "Request", "checked course deadline overflow");
-        var issue = Assert.Single(AsObjects(ReadRequiredProperty(result, "Issues"))
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues"))
             .Select(Assert.IsType<ValidationIssue>));
-        Assert.Equal("mortal_wound_course_time_overflow", issue.Code);
-        Assert.Equal("game_state/world/world_time.json.currentTimeInMinutes", issue.FilePath);
+        AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
+
+        var recovered = Invoke(
+            ExactStaticMethod(planner!, "PrepareCourseMilestoneRequest", 6),
+            new object?[]
+            {
+                acceptedState,
+                fixture.ReadCurrentHistory(),
+                fixture.ReadCurrentWound(),
+                scenario.OperationKey + "_after_overflow",
+                safeRouteId,
+                fixture.AcceptedEventRef(acceptedState)
+            });
+        var recoveredRequest = ReadValidTypedResult(
+            recovered,
+            "Request",
+            "course start after checked-overflow rejection");
+        Assert.Equal(1, Convert.ToInt32(ReadRequiredProperty(
+            recoveredRequest,
+            "MilestoneOrdinal")));
+        AssertSingleHeldClaim(recoveredRequest, "antibiotic_dose");
     }
 
     [Fact]
@@ -523,6 +760,443 @@ public sealed partial class MortalWoundTreatmentResolverTests
         ExecutePreparedFlow(CreateScenario(scenario, "procedure"));
 
     [Theory]
+    [MemberData(nameof(ProcedureBoundaryRows))]
+    public void ProcedureResolution_UsesExactCriticalAndMarginBoundaries(
+        string name,
+        int naturalRoll,
+        int difficulty,
+        bool fixedZero,
+        bool seedPlayerFate,
+        string expectedCategory,
+        int expectedBandIndex)
+    {
+        var scenario = CreateProcedureBoundaryScenario(
+            name,
+            naturalRoll,
+            difficulty,
+            fixedZero,
+            seedPlayerFate,
+            expectedCategory,
+            expectedBandIndex);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey,
+            scenario.RouteId);
+
+        Assert.Equal(expectedCategory,
+            Convert.ToString(ReadRequiredProperty(flow.Resolution, "ResultCategory")));
+        Assert.Equal(expectedBandIndex,
+            Convert.ToInt32(ReadRequiredProperty(flow.Resolution, "SelectedOutcomeIndex")));
+        AssertProcedureCheckAuthority(
+            ReadRequiredProperty(flow.Request, "ModeAuthority"),
+            scenario);
+        AssertPreparedCriticalReaction(flow.Request, flow.AcceptedState, scenario);
+        AssertProcedureResolutionEvidence(
+            ReadRequiredProperty(flow.Resolution, "ModeEvidence"),
+            ReadRequiredProperty(flow.Request, "ModeAuthority"),
+            flow.Resolution,
+            scenario);
+    }
+
+    [Fact]
+    public void ProcedurePreparation_CheckedDifficultyOverflowRejectsWithoutReservationOrWrite()
+    {
+        var scenario = CreateProcedureBoundaryScenario(
+            "effective_difficulty_overflow",
+            naturalRoll: 1,
+            difficulty: int.MaxValue,
+            fixedZero: false,
+            seedPlayerFate: true,
+            expectedCategory: "failed_attempt",
+            expectedBandIndex: 3);
+        scenario.AcceptedState["sterileThreadCount"] = 1;
+        const string safeRouteId = "procedure_t061_after_difficulty_overflow";
+        var safeRoute = scenario.Before["treatment"]!["routes"]![0]!
+            .DeepClone()
+            .AsObject();
+        safeRoute["routeId"] = safeRouteId;
+        safeRoute["resolution"]!["difficulty"] = 10;
+        scenario.Before["treatment"]!["routes"]!.AsArray().Add(safeRoute);
+        scenario.Before["treatment"]!["knownRouteIds"]!.AsArray().Add(safeRouteId);
+        scenario.Before["complications"] = new JsonArray(new JsonObject
+        {
+            ["complicationId"] = "overflow_pressure_01",
+            ["kind"] = "pain",
+            ["state"] = "active",
+            ["displayName"] = "Overflow pressure",
+            ["treatmentDifficultyModifier"] = 1,
+            ["ownedEffectIds"] = new JsonArray(),
+            ["visibility"] = "known_to_player"
+        });
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = fixture.GetAcceptedState();
+        var before = fixture.ReadCurrentWound();
+        var history = fixture.ReadCurrentHistory();
+        var treeBefore = CaptureResolverFixtureTree(fixture.Root);
+        var planner = RequireOutcomeResolver();
+        var result = Invoke(
+            ExactStaticMethod(planner, "PrepareProcedureRequest", 6),
+            new object?[]
+            {
+                acceptedState,
+                history,
+                before,
+                scenario.OperationKey,
+                scenario.RouteId,
+                fixture.AcceptedEventRef(acceptedState)
+            });
+
+        AssertInvalidTypedResult(result, "Request", "checked procedure difficulty overflow");
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues"))
+            .Select(Assert.IsType<ValidationIssue>));
+        AssertResolverFixtureTreeUnchanged(fixture.Root, treeBefore);
+
+        var recovered = Invoke(
+            ExactStaticMethod(planner, "PrepareProcedureRequest", 6),
+            new object?[]
+            {
+                acceptedState,
+                history,
+                before,
+                scenario.OperationKey + "_after_overflow",
+                safeRouteId,
+                fixture.AcceptedEventRef(acceptedState)
+            });
+        var recoveredRequest = ReadValidTypedResult(
+            recovered,
+            "Request",
+            "procedure after checked-difficulty rejection");
+        Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(
+            ReadRequiredProperty(recoveredRequest, "ModeAuthority"),
+            "SourceIndices")));
+        Assert.Equal(
+            "effect_fate_shield_older",
+            ReadPreparedFateEffectId(recoveredRequest));
+        AssertSingleHeldClaim(recoveredRequest, "sterile_thread");
+    }
+
+    [Fact]
+    public void ProcedureReservations_CoalesceExactRetryAndAdvanceDiceAndFateWithinAcceptedInput()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1, 1, 17);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+
+        var first = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_first",
+            scenario.RouteId);
+        Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(
+            ReadRequiredProperty(first.Request, "ModeAuthority"),
+            "SourceIndices")));
+        Assert.Equal("effect_fate_shield_older", Convert.ToString(ReadRequiredProperty(
+            ReadRequiredProperty(
+                ReadRequiredProperty(first.Request, "ModeAuthority"),
+                "PreparedCriticalReaction"),
+            "EffectId")));
+
+        var firstRetry = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_first",
+            scenario.RouteId);
+        Assert.Equal(CanonicalValue(first.Request), CanonicalValue(firstRetry.Request));
+        Assert.Equal(CanonicalValue(first.Resolution), CanonicalValue(firstRetry.Resolution));
+
+        var second = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_second",
+            scenario.RouteId);
+        Assert.Equal(new[] { 1 }, ReadIntSequence(ReadRequiredProperty(
+            ReadRequiredProperty(second.Request, "ModeAuthority"),
+            "SourceIndices")));
+        Assert.Equal("effect_fate_shield_newer", Convert.ToString(ReadRequiredProperty(
+            ReadRequiredProperty(
+                ReadRequiredProperty(second.Request, "ModeAuthority"),
+                "PreparedCriticalReaction"),
+            "EffectId")));
+        Assert.NotEqual(
+            ReadRequiredProperty(first.Request, "RequestFingerprint"),
+            ReadRequiredProperty(second.Request, "RequestFingerprint"));
+
+        var secondRetry = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_second",
+            scenario.RouteId);
+        Assert.Equal(CanonicalValue(second.Request), CanonicalValue(secondRetry.Request));
+        Assert.Equal(CanonicalValue(second.Resolution), CanonicalValue(secondRetry.Resolution));
+    }
+
+    [Fact]
+    public void ProcedureFailedAttempt_ConsumesExactlyItsDeclaredQuantityOnce()
+    {
+        var scenario = CreateScenario(
+            "procedure_disadvantage_uses_two_contiguous_dice",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_failed_consumption",
+            scenario.RouteId);
+        Assert.Equal("failed_attempt", Convert.ToString(ReadRequiredProperty(
+            flow.Resolution,
+            "ResultCategory")));
+        ComposeAndPublishTreatment(fixture, flow);
+        Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
+        fixture.AssertItemIdentityIndexValid();
+        Assert.Equal("active", fixture.ReadCurrentWound().Lifecycle);
+        var historyRoot = JsonNode.Parse(File.ReadAllText(fixture.FileSystem.ResolvePath(
+            WoundHistoryState.HistoryPath)))!.AsObject();
+        var treatmentRow = Assert.Single(historyRoot["transitions"]!.AsArray(), row =>
+            string.Equals(
+                row!["kind"]!.GetValue<string>(),
+                "treat",
+                StringComparison.Ordinal));
+        Assert.False(treatmentRow!["terminal"]!.GetValue<bool>());
+        Assert.Equal("accepted_terminal",
+            treatmentRow["transitionResult"]!["attemptDisposition"]!.GetValue<string>());
+        Assert.DoesNotContain(historyRoot["transitions"]!.AsArray(), row =>
+            string.Equals(
+                row!["kind"]!.GetValue<string>(),
+                "heal",
+                StringComparison.Ordinal));
+
+        fixture.RestartForReplay();
+        var history = fixture.ReadCurrentHistory();
+        var tree = CaptureResolverFixtureTree(fixture.Root);
+        var replay = Invoke(
+            ExactStaticMethod(RequireOutcomeResolver(), "CreateProcedureAttempt", 4),
+            new object?[] { flow.Request, history, null, null });
+        Assert.Equal("ExactReplay", Convert.ToString(ReadRequiredProperty(replay, "Disposition")));
+        AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
+        Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
+        fixture.AssertItemIdentityIndexValid();
+    }
+
+    [Theory]
+    [InlineData("procedure_normal_uses_lowest_free_die", "success", true)]
+    [InlineData("procedure_disadvantage_uses_two_contiguous_dice", "none", false)]
+    public void ProcedureFinalization_ConsumesOnlySelectedSupplyAndReleasesEveryOtherHeldClaim(
+        string scenarioName,
+        string expectedTrigger,
+        bool consumesSupply)
+    {
+        var scenario = CreateScenario(scenarioName, "procedure");
+        scenario.Before["severity"]!["value"] = "III";
+        scenario.Before["severity"]!["rank"] = 3;
+        scenario.Before["severity"]!["maximumAtCreation"] = "III";
+        scenario.Before["consequences"]!["slotBudget"] = 3;
+        scenario.AcceptedState["sterileThreadCount"] = consumesSupply ? 2 : 1;
+        scenario.AcceptedState["reusableToolCount"] = 1;
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        route["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "reduce_severity",
+            ["steps"] = 1
+        });
+        route["requirements"]!.AsArray().Insert(1, new JsonObject
+        {
+            ["kind"] = "item_quantity",
+            ["itemRef"] = "reusable_field_kit",
+            ["quantity"] = 1,
+            ["ownerRole"] = "provider"
+        });
+        route["resolution"]!["modifierSource"]!["requirementIndex"] = 2;
+        if (!consumesSupply)
+            route["resourcePolicy"]!["consumeOn"] = new JsonArray("success");
+        scenario = scenario with { ExpectedIntentCount = 1 };
+
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        Assert.Equal(
+            consumesSupply ? 2 : 1,
+            fixture.ReadNpcItemCount("sterile_thread"));
+        Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_resource_release",
+            scenario.RouteId);
+        Assert.Equal(expectedTrigger, Convert.ToString(ReadRequiredProperty(
+            flow.Resolution,
+            "ConsumptionTrigger")));
+        Assert.Equal(
+            consumesSupply ? "success" : "failed_attempt",
+            Convert.ToString(ReadRequiredProperty(flow.Resolution, "ResultCategory")));
+        AssertHeldRequirementClaims(
+            flow.Request,
+            "reusable_field_kit",
+            "sterile_thread");
+
+        ComposeAndPublishTreatment(fixture, flow);
+
+        Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
+        Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
+        fixture.AssertItemIdentityIndexValid();
+
+        fixture.PrepareNextTurn(
+            43,
+            1_260,
+            consumesSupply ? "reusable_tool_after_consumption" : "release_only_retry",
+            consumesSupply ? new[] { 17 } : new[] { 4, 19 });
+        var fresh = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_fresh_resource_reclaim",
+            scenario.RouteId);
+        AssertHeldRequirementClaims(
+            fresh.Request,
+            "reusable_field_kit",
+            "sterile_thread");
+        Assert.NotEqual(
+            Convert.ToString(ReadRequiredProperty(
+                ReadRequiredProperty(flow.Request, "ResourceAuthority"),
+                "ReservationId")),
+            Convert.ToString(ReadRequiredProperty(
+                ReadRequiredProperty(fresh.Request, "ResourceAuthority"),
+                "ReservationId")));
+    }
+
+    [Fact]
+    public void ProcedureFateReaction_ConsumesOldestAtomicallyThenExposesNextShield()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var first = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_publish_first_fate",
+            scenario.RouteId);
+        ComposeAndPublishTreatment(fixture, first);
+        Assert.Equal(new[] { "effect_fate_shield_newer" }, fixture.ReadActivePlayerEffectIds());
+        Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
+
+        fixture.PrepareNextTurn(
+            43,
+            1_261,
+            "publish_second_fate",
+            new[] { 1, 17 });
+        var second = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_publish_second_fate",
+            scenario.RouteId);
+        Assert.Equal("effect_fate_shield_newer", Convert.ToString(ReadRequiredProperty(
+            ReadRequiredProperty(
+                ReadRequiredProperty(second.Request, "ModeAuthority"),
+                "PreparedCriticalReaction"),
+            "EffectId")));
+        ComposeAndPublishTreatment(fixture, second);
+        Assert.Empty(fixture.ReadActivePlayerEffectIds());
+        Assert.Equal(0, fixture.ReadNpcItemCount("sterile_thread"));
+        fixture.AssertItemIdentityIndexValid();
+    }
+
+    [Fact]
+    public void ProcedureFateReaction_TypedAndLegacyReportDuplicateRejectsBeforePublication()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        scenario.AcceptedState["sterileThreadCount"] = 1;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_cross_surface_duplicate",
+            scenario.RouteId);
+        var report = new JsonObject
+        {
+            ["eventType"] = "owner_critical_failure",
+            ["target"] = new JsonObject
+            {
+                ["kind"] = "player",
+                ["targetId"] = "player_current"
+            },
+            ["evidence"] = new JsonObject
+            {
+                ["kind"] = "mortal_action_roll",
+                ["rollMode"] = "normal",
+                ["diceIndexes"] = new JsonArray(0),
+                ["selectedIndex"] = 0,
+                ["selectedValue"] = 1,
+                ["originalOutcome"] = "critical_failure",
+                ["resolvedOutcome"] = "failure"
+            },
+            ["reason"] = "Legacy Fate report must not duplicate typed treatment."
+        };
+        using var reportDocument = JsonDocument.Parse(report.ToJsonString());
+        var proposal = new GameResponse
+        {
+            EffectEventReports = new[] { reportDocument.RootElement.Clone() }
+        };
+        var tree = CaptureResolverFixtureTree(fixture.Root);
+        var planner = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.WoundAcceptedTurnPlanner",
+            false,
+            false);
+        Assert.NotNull(planner);
+        var result = Invoke(
+            ExactStaticMethod(planner!, "ComposeMortalWoundTreatmentPublication", 6),
+            new object?[]
+            {
+                fixture.FileSystem,
+                fixture.Lease,
+                proposal,
+                flow.AcceptedState,
+                flow.Request,
+                flow.Resolution
+            });
+
+        AssertInvalidTypedResult(result, "Plan", "typed/legacy Fate duplicate");
+        Assert.Contains(
+            AsObjects(ReadRequiredProperty(result, "Issues")).Select(Assert.IsType<ValidationIssue>),
+            static issue => string.Equals(
+                issue.Code,
+                "wound_treatment_fate_reaction_cross_surface_duplicate",
+                StringComparison.Ordinal));
+        AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
+        Assert.Equal(
+            new[] { "effect_fate_shield_older", "effect_fate_shield_newer" },
+            fixture.ReadActivePlayerEffectIds());
+        Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
+
+        var coordinates = ReadRequiredProperty(flow.Request, "Coordinates");
+        var probe = InvokeInstance(
+            ExactInstanceMethod(typeof(WoundHistoryParseResult), "ProbeTreatmentAttempt", 3),
+            fixture.ReadCurrentHistory(),
+            new object?[]
+            {
+                ReadRequiredProperty(coordinates, "OperationKey"),
+                ReadRequiredProperty(coordinates, "AttemptId"),
+                ReadRequiredProperty(flow.Request, "RequestFingerprint")
+            });
+        Assert.Equal("NotFound", Convert.ToString(ReadRequiredProperty(probe, "Status")));
+        var replacement = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_after_rejected_duplicate",
+            scenario.RouteId);
+        Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(
+            ReadRequiredProperty(replacement.Request, "ModeAuthority"),
+            "SourceIndices")));
+        Assert.Equal("effect_fate_shield_older", Convert.ToString(ReadRequiredProperty(
+            ReadRequiredProperty(
+                ReadRequiredProperty(replacement.Request, "ModeAuthority"),
+                "PreparedCriticalReaction"),
+            "EffectId")));
+    }
+
+    [Theory]
     [MemberData(nameof(CourseRows))]
     public void PrepareCourseMilestoneRequest_ResolvesOnlyThroughLeaseBoundAcceptedState(
         string scenario) =>
@@ -534,6 +1208,70 @@ public sealed partial class MortalWoundTreatmentResolverTests
         string scenario) =>
         ExecutePreparedFlow(CreateScenario(scenario, "guaranteed"));
 
+    [Theory]
+    [MemberData(nameof(CombatTreatmentRows))]
+    public void CombatTarget_ProcedureAndCourseResolveAndPublishAgainstTheExactAcceptedCarrier(
+        string targetKind,
+        string targetId,
+        string mode)
+    {
+        var scenario = CreateCombatTreatmentScenario(targetKind, targetId, mode);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var targetCarrierPath = fixture.TargetCarrierPath;
+        var targetCarrierBefore = File.ReadAllBytes(
+            fixture.FileSystem.ResolvePath(targetCarrierPath));
+        var playerCarrierBefore = File.ReadAllBytes(
+            fixture.FileSystem.ResolvePath(WoundCarrierCatalog.PlayerPath));
+
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            mode,
+            scenario.OperationKey + "_" + targetKind,
+            scenario.RouteId);
+        var coordinates = ReadRequiredProperty(flow.Request, "Coordinates");
+        Assert.Equal(targetKind, Convert.ToString(ReadRequiredProperty(
+            coordinates,
+            "TargetKind")));
+        Assert.Equal(targetId, Convert.ToString(ReadRequiredProperty(
+            coordinates,
+            "TargetId")));
+        Assert.Equal("npc", Convert.ToString(ReadRequiredProperty(
+            coordinates,
+            "ProviderKind")));
+        Assert.Equal("field_medic_01", Convert.ToString(ReadRequiredProperty(
+            coordinates,
+            "ProviderId")));
+        fixture.AssertCurrentWoundCoordinate(targetKind, targetId, targetCarrierPath);
+
+        ComposeAndPublishTreatment(fixture, flow);
+
+        Assert.False(targetCarrierBefore.SequenceEqual(File.ReadAllBytes(
+            fixture.FileSystem.ResolvePath(targetCarrierPath))));
+        Assert.Equal(
+            playerCarrierBefore,
+            File.ReadAllBytes(fixture.FileSystem.ResolvePath(
+                WoundCarrierCatalog.PlayerPath)));
+        var after = fixture.AssertCurrentWoundCoordinate(
+            targetKind,
+            targetId,
+            targetCarrierPath);
+        if (string.Equals(mode, "course", StringComparison.Ordinal))
+            Assert.False(string.IsNullOrWhiteSpace(after.Care.ActiveCourseId));
+        else
+            Assert.True(after.Severity.Rank < flow.Before.Severity.Rank);
+
+        var history = JsonNode.Parse(File.ReadAllText(fixture.FileSystem.ResolvePath(
+            WoundHistoryState.HistoryPath)))!.AsObject();
+        Assert.Single(history["transitions"]!.AsArray(), row => string.Equals(
+            row!["kind"]!.GetValue<string>(),
+            "treat",
+            StringComparison.Ordinal));
+
+        fixture.RestartForReplay();
+        fixture.AssertCurrentWoundCoordinate(targetKind, targetId, targetCarrierPath);
+        Assert.True(fixture.ReadCurrentHistory().IsValid);
+    }
+
     private static IEnumerable<object[]> Rows(params string[] values) =>
         values.Select(static value => new object[] { value });
 
@@ -541,6 +1279,61 @@ public sealed partial class MortalWoundTreatmentResolverTests
         ProcedureRows.Select(row => new object[] { (string)row[0], "procedure" })
             .Concat(CourseRows.Select(row => new object[] { (string)row[0], "course" }))
             .Concat(GuaranteedRows.Select(row => new object[] { (string)row[0], "guaranteed" }));
+
+    private static ResolverScenario CreateCombatTreatmentScenario(
+        string targetKind,
+        string targetId,
+        string mode)
+    {
+        var scenarioName = string.Equals(mode, "procedure", StringComparison.Ordinal)
+            ? "procedure_normal_uses_lowest_free_die"
+            : "course_first_milestone_is_ready_at_inclusive_due_time";
+        var scenario = CreateScenario(scenarioName, mode);
+        var carrierPath = AcceptedStateFixture.ResolveTargetCarrierPath(targetKind);
+        var before = WoundContractTestData.CreateActiveWound(
+            woundId: scenario.Before["woundId"]!.GetValue<string>(),
+            ownerKind: targetKind,
+            ownerId: targetId,
+            carrierPath: carrierPath);
+        var route = scenario.Before["treatment"]!["routes"]![0]!
+            .DeepClone()
+            .AsObject();
+        if (string.Equals(mode, "procedure", StringComparison.Ordinal))
+        {
+            route["requirements"] = new JsonArray(new JsonObject
+            {
+                ["kind"] = "skill_tier",
+                ["capabilityRef"] = "field_medicine",
+                ["minimumTier"] = 2,
+                ["actorRole"] = "provider"
+            });
+            route["resourcePolicy"] = Policy(new JsonArray(), new JsonArray());
+            route["resolution"]!["modifierSource"] = new JsonObject
+            {
+                ["kind"] = "resolved_skill_tier",
+                ["requirementIndex"] = 0
+            };
+        }
+        else
+        {
+            route["resourcePolicy"] = Policy(new JsonArray(), new JsonArray());
+            foreach (var milestone in route["outcomes"]!.AsArray())
+                milestone!["requirements"] = new JsonArray();
+        }
+        before["treatment"]!["routes"] = new JsonArray(route);
+        before["treatment"]!["knownRouteIds"] = new JsonArray(
+            route["routeId"]!.DeepClone());
+        var acceptedState = scenario.AcceptedState.DeepClone().AsObject();
+        acceptedState["targetKind"] = targetKind;
+        acceptedState["targetId"] = targetId;
+        acceptedState["skillRows"] = new JsonArray("skill_field_medicine_npc_01");
+        return scenario with
+        {
+            AcceptedState = acceptedState,
+            Before = before,
+            OperationKey = scenario.OperationKey + "_combat_target"
+        };
+    }
 
     private static ResolverScenario CreateScenario(string name, string mode)
     {
@@ -599,6 +1392,20 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "guaranteed_severity_one_heal_has_empty_legacy_array" => new ScenarioSemantics("normal", new[] { 0 }, 0, 17, 1_260, true, "Resolved", "success", 1, null),
             _ => throw new ArgumentOutOfRangeException(nameof(name), name, "Retained scenarios must have concrete semantics.")
         };
+        if (name == "procedure_player_natural_one_reserves_oldest_fate_shield")
+        {
+            route["outcomes"] = new JsonArray(
+                Band("success", 5, null, "success", new JsonArray(
+                    new JsonObject { ["kind"] = "stabilize" },
+                    new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 })),
+                Band("partial", 0, 4, "partial_success", new JsonArray(
+                    new JsonObject { ["kind"] = "stabilize" },
+                    new JsonObject { ["kind"] = "add_recovery", ["points"] = 1 })),
+                Band("failed", -4, -1, "failed_attempt", new JsonArray(
+                    new JsonObject { ["kind"] = "no_improvement" })),
+                Band("critical", null, -5, "failed_attempt", new JsonArray(
+                    new JsonObject { ["kind"] = "no_improvement" })));
+        }
         acceptedState["rollMode"] = semantic.RollMode;
         acceptedState["acceptedDice"] = semantic.RollMode switch
         {
@@ -643,7 +1450,55 @@ public sealed partial class MortalWoundTreatmentResolverTests
             semantic.WorldMinute,
             semantic.RequirementsAvailable,
             semantic.ExpectedIntentCount,
+            semantic.ExpectedFateEffectId,
             semantic.ExpectedFateEffectId);
+    }
+
+    private static ResolverScenario CreateProcedureBoundaryScenario(
+        string name,
+        int naturalRoll,
+        int difficulty,
+        bool fixedZero,
+        bool seedPlayerFate,
+        string expectedCategory,
+        int expectedBandIndex)
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        route["resolution"]!["difficulty"] = difficulty;
+        if (fixedZero)
+            route["resolution"]!["modifierSource"] = new JsonObject { ["kind"] = "fixed_zero" };
+        if (naturalRoll == 1)
+        {
+            route["outcomes"] = new JsonArray(
+                Band("success", 5, null, "success", new JsonArray(
+                    new JsonObject { ["kind"] = "stabilize" },
+                    new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 })),
+                Band("partial", 0, 4, "partial_success", new JsonArray(
+                    new JsonObject { ["kind"] = "stabilize" },
+                    new JsonObject { ["kind"] = "add_recovery", ["points"] = 1 })),
+                Band("failed", -4, -1, "failed_attempt", new JsonArray(
+                    new JsonObject { ["kind"] = "no_improvement" })),
+                Band("critical", null, -5, "failed_attempt", new JsonArray(
+                    new JsonObject { ["kind"] = "no_improvement" })));
+        }
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(naturalRoll, 7, 13);
+        scenario.AcceptedState["operationLabel"] = name;
+        var expectedIntentCount = route["outcomes"]![expectedBandIndex]!["result"]!.AsArray().Count;
+        return scenario with
+        {
+            Name = name,
+            OperationKey = "operation_t061_" + name,
+            ExpectedCategory = expectedCategory,
+            ExpectedSourceIndices = new[] { 0 },
+            ExpectedSelectedSourceIndex = 0,
+            ExpectedNaturalRoll = naturalRoll,
+            ExpectedIntentCount = expectedIntentCount,
+            ExpectedFateEffectId = null,
+            SeedFateEffectId = seedPlayerFate ? "effect_fate_shield_older" : null
+        };
     }
 
     private static void ConfigureModeRoute(JsonObject route, string mode, string name)
@@ -718,7 +1573,27 @@ public sealed partial class MortalWoundTreatmentResolverTests
         ["items"] = dose == null ? new JsonArray() : new JsonArray(dose)
     };
 
-    private static JsonObject NpcCoreRoot(JsonObject sterileThread) => new()
+    private static JsonObject CreateItemIdentityIndex(
+        JsonObject sterileThread,
+        JsonObject? reusableTool,
+        JsonObject? dose)
+    {
+        var carriers = new List<(
+            JsonObject Item,
+            string Kind,
+            string OwnerId,
+            string? ContainerId)>
+        {
+            (sterileThread, "npc_inventory", "field_medic_01", null)
+        };
+        if (reusableTool is not null)
+            carriers.Add((reusableTool, "npc_inventory", "field_medic_01", null));
+        if (dose is not null)
+            carriers.Add((dose, "player_inventory", "player", null));
+        return MortalItemTestFixture.CreateIndexForCarriers(carriers.ToArray());
+    }
+
+    private static JsonObject NpcCoreRoot(params JsonObject[] inventory) => new()
     {
         // MortalItemCarrierCatalog deliberately accepts only UpdateNPCs and
         // NPCsInScene for canonical NPC inventories.  Keep the item in the latter
@@ -726,7 +1601,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         ["NPCsInScene"] = new JsonArray(new JsonObject
         {
             ["NPCId"] = "field_medic_01",
-            ["inventory"] = new JsonArray(sterileThread)
+            ["inventory"] = new JsonArray(inventory.Cast<JsonNode?>().ToArray())
         })
     };
 
@@ -807,12 +1682,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
             effects.Add(roll);
         }
 
-        if (scenario.ExpectedFateEffectId is not null)
+        if (scenario.SeedFateEffectId is not null)
         {
             // Two independently materialized shields are required to prove that
             // the shared production arbiter selects accepted chronology's oldest
             // eligible carrier rather than merely accepting the only candidate.
-            effects.Add(CreateCanonicalFateShield(scenario.ExpectedFateEffectId));
+            effects.Add(CreateCanonicalFateShield(scenario.SeedFateEffectId));
             effects.Add(CreateCanonicalFateShield("effect_fate_shield_newer"));
         }
 
@@ -896,7 +1771,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             ["stackKey"] = "ink-feather-fate-shield",
             ["policy"] = "independent",
-            ["maxStacks"] = 10,
+            // The source definition permits ten independent instances, while each
+            // materialized independent occurrence owns exactly one local stack.
+            ["maxStacks"] = 1,
             ["currentStacks"] = 1,
             ["refreshMode"] = null,
             ["mergeRule"] = null
@@ -1307,12 +2184,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var result = Invoke(
             ExactStaticMethod(catalogType, "ResolvePreparedMortalWoundCriticalReaction", 2),
             new[] { request, acceptedState });
-        Assert.Equal(
-            new[] { "IsValid", "Issues", "Intent" },
-            result.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(static property => property.GetIndexParameters().Length == 0)
-                .Select(static property => property.Name)
-                .OrderBy(static property => property));
+        AssertClosedProperties(result, new[] { "IsValid", "Issues", "Intent" });
         Assert.True(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")));
         Assert.Empty(Assert.IsAssignableFrom<System.Collections.IEnumerable>(
             ReadRequiredProperty(result, "Issues")).Cast<object>());
@@ -1698,10 +2570,36 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("AcceptedTerminal", Assert.IsType<string>(ReadRequiredProperty(resolved, "AttemptDisposition")));
         Assert.Equal(scenario.ExpectedCategory,
             Assert.IsType<string>(ReadRequiredProperty(resolved, "ResultCategory")));
-        Assert.Equal(request.GetType(), ReadRequiredProperty(resolved, "RequestAuthority").GetType());
-        AssertCompleteRequestBundle(ReadRequiredProperty(resolved, "RequestAuthority"), scenario);
+        if (scenario.Name == "procedure_player_natural_one_reserves_oldest_fate_shield")
+            Assert.Equal(2, Convert.ToInt32(ReadRequiredProperty(resolved, "SelectedOutcomeIndex")));
+        var resolvedRequest = ReadRequiredProperty(resolved, "RequestAuthority");
+        Assert.Equal(request.GetType(), resolvedRequest.GetType());
+        Assert.Equal(CanonicalValue(request), CanonicalValue(resolvedRequest));
+        AssertCompleteRequestBundle(resolvedRequest, scenario);
+        Assert.Equal(
+            CanonicalValue(ReadRequiredProperty(request, "Coordinates")),
+            CanonicalValue(ReadRequiredProperty(resolved, "Coordinates")));
+        Assert.Equal(
+            CanonicalValue(ReadRequiredProperty(request, "RequirementAuthority")),
+            CanonicalValue(ReadRequiredProperty(resolved, "RequirementAuthority")));
+        Assert.Equal(
+            CanonicalValue(ReadRequiredProperty(request, "ResourceAuthority")),
+            CanonicalValue(ReadRequiredProperty(resolved, "ResourceAuthority")));
+        Assert.Equal(
+            ReadRequiredProperty(request, "RequestFingerprint"),
+            ReadRequiredProperty(resolved, "RequestFingerprint"));
+        Assert.Equal(
+            ReadRequiredProperty(ReadRequiredProperty(request, "RequirementAuthority"), "RouteFingerprint"),
+            ReadRequiredProperty(resolved, "RouteFingerprint"));
+        Assert.Equal(
+            ReadPropertyAllowingNull(request, "MilestoneOrdinal"),
+            ReadPropertyAllowingNull(resolved, "CourseMilestoneOrdinal"));
         if (scenario.Mode == "procedure")
-            AssertProcedureCheckAuthority(ReadRequiredProperty(resolved, "ModeEvidence"), scenario);
+            AssertProcedureResolutionEvidence(
+                ReadRequiredProperty(resolved, "ModeEvidence"),
+                ReadRequiredProperty(request, "ModeAuthority"),
+                resolved,
+                scenario);
         var intents = Assert.IsAssignableFrom<System.Collections.IEnumerable>(
             ReadRequiredProperty(resolved, "OutcomeIntents")).Cast<object>().ToArray();
         Assert.Equal(scenario.ExpectedIntentCount, intents.Length);
@@ -2009,6 +2907,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.Equal("item_quantity", ReadRequiredProperty(claim, "Kind"));
             Assert.Equal(claimRef, ReadRequiredProperty(claim, "AuthorityRef"));
             Assert.Equal("mortal_world", ReadRequiredProperty(claim, "Realm"));
+            Assert.Equal(
+                scenario.Mode == "course" ? "player" : "npc",
+                ReadRequiredProperty(claim, "OwnerKind"));
+            Assert.Equal(
+                scenario.Mode == "course" ? "player_current" : "field_medic_01",
+                ReadRequiredProperty(claim, "OwnerId"));
             Assert.Equal(1, Convert.ToInt32(ReadRequiredProperty(claim, "Quantity")));
             AssertAuthorityFingerprint(ReadRequiredProperty(claim, "SuccessWitnessFingerprint"));
             AssertAuthorityFingerprint(ReadRequiredProperty(claim, "ClaimFingerprint"));
@@ -2040,6 +2944,53 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.Null(ReadPropertyAllowingNull(resource, "CourseMilestoneOrdinal"));
             Assert.Null(ReadPropertyAllowingNull(resource, "CourseCoordinateFingerprint"));
         }
+    }
+
+    private static void AssertSingleHeldClaim(object request, string expectedAuthorityRef)
+    {
+        var resource = ReadRequiredProperty(request, "ResourceAuthority");
+        Assert.Equal("held", Convert.ToString(ReadRequiredProperty(
+            resource,
+            "ReservationDisposition")));
+        Assert.False(string.IsNullOrWhiteSpace(Convert.ToString(ReadRequiredProperty(
+            resource,
+            "ReservationId"))));
+
+        var claim = Assert.Single(AsObjects(ReadRequiredProperty(resource, "Claims")));
+        Assert.Equal(expectedAuthorityRef, Convert.ToString(ReadRequiredProperty(
+            claim,
+            "AuthorityRef")));
+        Assert.Equal(1, Convert.ToInt32(ReadRequiredProperty(claim, "Quantity")));
+        AssertAuthorityFingerprint(ReadRequiredProperty(claim, "SuccessWitnessFingerprint"));
+        AssertAuthorityFingerprint(ReadRequiredProperty(claim, "ClaimFingerprint"));
+    }
+
+    private static void AssertHeldRequirementClaims(
+        object request,
+        params string[] expectedAuthorityRefs)
+    {
+        var resource = ReadRequiredProperty(request, "ResourceAuthority");
+        Assert.Equal("held", Convert.ToString(ReadRequiredProperty(
+            resource,
+            "ReservationDisposition")));
+        Assert.False(string.IsNullOrWhiteSpace(Convert.ToString(ReadRequiredProperty(
+            resource,
+            "ReservationId"))));
+        var claims = AsObjects(ReadRequiredProperty(resource, "Claims"));
+        Assert.Equal(
+            expectedAuthorityRefs.OrderBy(static value => value, StringComparer.Ordinal),
+            claims.Select(claim => Convert.ToString(ReadRequiredProperty(
+                    claim,
+                    "AuthorityRef"))!)
+                .OrderBy(static value => value, StringComparer.Ordinal));
+        Assert.All(claims, claim =>
+        {
+            Assert.Equal(1, Convert.ToInt32(ReadRequiredProperty(claim, "Quantity")));
+            AssertAuthorityFingerprint(ReadRequiredProperty(
+                claim,
+                "SuccessWitnessFingerprint"));
+            AssertAuthorityFingerprint(ReadRequiredProperty(claim, "ClaimFingerprint"));
+        });
     }
 
     private static void AssertCourseModeAuthority(
@@ -2168,8 +3119,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("input/turn_request.json",
             Convert.ToString(ReadRequiredProperty(authority, "SourcePath")));
         Assert.Equal(scenario.RollMode, Convert.ToString(ReadRequiredProperty(authority, "RollMode")));
-        Assert.Equal("player", Convert.ToString(ReadRequiredProperty(authority, "RollActorKind")));
-        Assert.Equal("player_current", Convert.ToString(ReadRequiredProperty(authority, "RollActorId")));
+        var modifierKind = scenario.Before["treatment"]!["routes"]![0]!["resolution"]!["modifierSource"]!["kind"]!
+            .GetValue<string>();
+        Assert.Equal(modifierKind == "fixed_zero" ? "npc" : "player",
+            Convert.ToString(ReadRequiredProperty(authority, "RollActorKind")));
+        Assert.Equal(modifierKind == "fixed_zero" ? "field_medic_01" : "player_current",
+            Convert.ToString(ReadRequiredProperty(authority, "RollActorId")));
         var contributions = Assert.IsAssignableFrom<System.Collections.IEnumerable>(
             ReadRequiredProperty(authority, "RollContributions")).Cast<object>().ToArray();
         if (scenario.RollMode == "normal")
@@ -2217,6 +3172,92 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Convert.ToString(ReadRequiredProperty(prepared, "AcceptedEffectFingerprint"))));
         Assert.False(string.IsNullOrWhiteSpace(
             Convert.ToString(ReadRequiredProperty(prepared, "PreparedReactionFingerprint"))));
+    }
+
+    private static void AssertProcedureResolutionEvidence(
+        object evidence,
+        object preparedAuthority,
+        object resolution,
+        ResolverScenario scenario)
+    {
+        AssertClosedProperties(evidence, new[]
+        {
+            "RollMode", "RollActorKind", "RollActorId", "SourceIndices", "SourceRolls",
+            "SelectedSourceIndex", "NaturalRoll", "Modifier", "Total", "BaseDifficulty",
+            "ComplicationDifficultyModifier", "EffectiveDifficulty", "Margin",
+            "OriginalOutcome", "ResolvedOutcome", "SelectedBandId", "SelectedOutcomeIndex",
+            "ReactionEffectId", "ReactionTriggerId", "ReactionFingerprint",
+            "AcceptedRollFingerprint"
+        });
+
+        foreach (var property in new[]
+                 {
+                     "RollMode", "RollActorKind", "RollActorId", "SourceIndices", "SourceRolls",
+                     "SelectedSourceIndex", "NaturalRoll", "Modifier",
+                     "ComplicationDifficultyModifier", "EffectiveDifficulty"
+                 })
+        {
+            Assert.Equal(
+                CanonicalValue(ReadRequiredProperty(preparedAuthority, property)),
+                CanonicalValue(ReadRequiredProperty(evidence, property)));
+        }
+
+        var naturalRoll = Convert.ToInt32(ReadRequiredProperty(evidence, "NaturalRoll"));
+        var modifier = Convert.ToInt32(ReadRequiredProperty(evidence, "Modifier"));
+        var total = checked(naturalRoll + modifier);
+        var baseDifficulty = scenario.Before["treatment"]!["routes"]![0]!["resolution"]!["difficulty"]!
+            .GetValue<int>();
+        var complicationModifier = Convert.ToInt32(
+            ReadRequiredProperty(evidence, "ComplicationDifficultyModifier"));
+        var effectiveDifficulty = checked(baseDifficulty + complicationModifier);
+        Assert.Equal(total, Convert.ToInt32(ReadRequiredProperty(evidence, "Total")));
+        Assert.Equal(baseDifficulty, Convert.ToInt32(ReadRequiredProperty(evidence, "BaseDifficulty")));
+        Assert.Equal(effectiveDifficulty,
+            Convert.ToInt32(ReadRequiredProperty(evidence, "EffectiveDifficulty")));
+        Assert.Equal(checked(total - effectiveDifficulty),
+            Convert.ToInt32(ReadRequiredProperty(evidence, "Margin")));
+
+        var expectedOriginal = naturalRoll switch
+        {
+            20 => "critical_success",
+            1 => "critical_failure",
+            _ => "ordinary"
+        };
+        var expectedResolved = naturalRoll == 1 && scenario.ExpectedFateEffectId is not null
+            ? "failure"
+            : expectedOriginal;
+        Assert.Equal(expectedOriginal, Convert.ToString(ReadRequiredProperty(evidence, "OriginalOutcome")));
+        Assert.Equal(expectedResolved, Convert.ToString(ReadRequiredProperty(evidence, "ResolvedOutcome")));
+
+        var selectedIndex = Convert.ToInt32(ReadRequiredProperty(resolution, "SelectedOutcomeIndex"));
+        Assert.Equal(selectedIndex,
+            Convert.ToInt32(ReadRequiredProperty(evidence, "SelectedOutcomeIndex")));
+        var selectedBand = scenario.Before["treatment"]!["routes"]![0]!["outcomes"]![selectedIndex]!;
+        Assert.Equal(selectedBand["bandId"]!.GetValue<string>(),
+            Convert.ToString(ReadRequiredProperty(evidence, "SelectedBandId")));
+        Assert.Equal(selectedBand["category"]!.GetValue<string>(),
+            Convert.ToString(ReadRequiredProperty(resolution, "ResultCategory")));
+
+        if (scenario.ExpectedFateEffectId is null)
+        {
+            Assert.Null(ReadPropertyAllowingNull(evidence, "ReactionEffectId"));
+            Assert.Null(ReadPropertyAllowingNull(evidence, "ReactionTriggerId"));
+            Assert.Null(ReadPropertyAllowingNull(evidence, "ReactionFingerprint"));
+            Assert.Null(ReadPropertyAllowingNull(resolution, "CriticalReactionIntent"));
+        }
+        else
+        {
+            Assert.Equal(scenario.ExpectedFateEffectId,
+                Convert.ToString(ReadRequiredProperty(evidence, "ReactionEffectId")));
+            Assert.Equal("fate_shield_on_critical_failure",
+                Convert.ToString(ReadRequiredProperty(evidence, "ReactionTriggerId")));
+            AssertAuthorityFingerprint(ReadRequiredProperty(evidence, "ReactionFingerprint"));
+            var reactionIntent = ReadRequiredProperty(resolution, "CriticalReactionIntent");
+            Assert.Equal(
+                ReadRequiredProperty(reactionIntent, "IntentFingerprint"),
+                ReadRequiredProperty(evidence, "ReactionFingerprint"));
+        }
+        AssertAuthorityFingerprint(ReadRequiredProperty(evidence, "AcceptedRollFingerprint"));
     }
 
     private static int[] ReadIntSequence(object value) =>
@@ -2286,7 +3327,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         long WorldMinute,
         bool RequirementsAvailable,
         int ExpectedIntentCount,
-        string? ExpectedFateEffectId);
+        string? ExpectedFateEffectId,
+        string? SeedFateEffectId);
 
     private sealed record ScenarioSemantics(
         string RollMode,
@@ -2321,13 +3363,19 @@ public sealed partial class MortalWoundTreatmentResolverTests
             FileSystemManager fileSystem,
             FileSystemManager.CanonicalWriteLease lease,
             object treatmentContext,
-            string woundId)
+            string woundId,
+            string targetKind,
+            string targetId,
+            string targetCarrierPath)
         {
             Root = root;
             FileSystem = fileSystem;
             Lease = lease;
             TreatmentContext = treatmentContext;
             WoundId = woundId;
+            TargetKind = targetKind;
+            TargetId = targetId;
+            TargetCarrierPath = targetCarrierPath;
         }
 
         internal string Root { get; }
@@ -2335,6 +3383,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal FileSystemManager.CanonicalWriteLease Lease { get; private set; }
         private object TreatmentContext { get; }
         internal string WoundId { get; }
+        internal string TargetKind { get; }
+        internal string TargetId { get; }
+        internal string TargetCarrierPath { get; }
 
         internal static AcceptedStateFixture Create(ResolverScenario scenario)
         {
@@ -2342,6 +3393,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Directory.CreateDirectory(root);
             var fileSystem = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fileSystem.EnsureDirectoryStructure();
+            var targetKind = scenario.AcceptedState["targetKind"]!.GetValue<string>();
+            var targetId = scenario.AcceptedState["targetId"]!.GetValue<string>();
+            var targetCarrierPath = ResolveTargetCarrierPath(targetKind);
+            FileSystemManager.CanonicalWriteLease? lease = null;
             try
             {
                 foreach (var relativePath in new[]
@@ -2351,8 +3406,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
                              "game_state/meta/soul_state.json",
                              "input/turn_request.json",
                              WoundIdentityState.StatePath,
-                             WoundHistoryState.HistoryPath,
-                             EffectCarrierCatalog.PlayerPath,
+                              WoundHistoryState.HistoryPath,
+                              WoundCarrierCatalog.PlayerPath,
+                              WoundCarrierCatalog.EnemiesPath,
+                              WoundCarrierCatalog.AlliesPath,
+                              EffectCarrierCatalog.PlayerPath,
                              EffectIdentityState.StatePath,
                              "game_state/inventory/items.json",
                              "game_state/inventory/item_identity_index.json"
@@ -2361,13 +3419,27 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     Directory.CreateDirectory(Path.GetDirectoryName(
                         fileSystem.ResolvePath(relativePath))!);
                 }
-                File.WriteAllText(
-                    fileSystem.ResolvePath("game_state/player/wounds.json"),
-                    WoundContractTestData.CreatePlayerCarrier(scenario.Before).ToJsonString());
+                WriteTargetWoundCarrier(
+                    fileSystem,
+                    targetKind,
+                    targetId,
+                    targetCarrierPath,
+                    scenario.Before);
+                var parsedBefore = WoundMaterializationContract.Parse(
+                    scenario.Before.ToJsonString(),
+                    targetCarrierPath + ".activeWounds[0]");
+                Assert.True(parsedBefore.IsValid, DescribeIssues(parsedBefore.Issues));
+                var woundFingerprint = WoundIdentityState.ComputeSemanticFingerprint(
+                    Assert.IsType<WoundMaterializationEnvelope>(parsedBefore.Wound));
                 File.WriteAllText(
                     fileSystem.ResolvePath(WoundIdentityState.StatePath),
                     WoundContractTestData.CreateIdentityIndex(
-                        WoundContractTestData.CreateIdentityEntry()).ToJsonString());
+                        WoundContractTestData.CreateIdentityEntry(
+                            woundId: scenario.Before["woundId"]!.GetValue<string>(),
+                            ownerKind: targetKind,
+                            ownerId: targetId,
+                            carrierPath: targetCarrierPath,
+                            semanticFingerprint: woundFingerprint)).ToJsonString());
                 File.WriteAllText(
                     fileSystem.ResolvePath(WoundHistoryState.HistoryPath),
                     scenario.History.ToJsonString());
@@ -2381,13 +3453,25 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/player/skills_passive.json"),
                     new JsonObject { ["passiveSkillChanges"] = new JsonArray() }.ToJsonString());
-                var sterileThread = CreateCanonicalStack("sterile_thread", 2);
+                var sterileThread = CreateCanonicalStack(
+                    "sterile_thread",
+                    scenario.AcceptedState["sterileThreadCount"]?.GetValue<int>() ?? 2);
                 var dose = scenario.RequirementsAvailable
-                    ? CreateCanonicalStack("antibiotic_dose", 8)
+                    ? CreateCanonicalStack(
+                        "antibiotic_dose",
+                        scenario.AcceptedState["antibioticDoseCount"]?.GetValue<int>() ?? 8)
                     : null;
-                var npcCore = NpcCoreRoot(sterileThread);
+                var reusableTool = scenario.AcceptedState["reusableToolCount"] is null
+                    ? null
+                    : CreateCanonicalStack(
+                        "reusable_field_kit",
+                        scenario.AcceptedState["reusableToolCount"]!.GetValue<int>());
+                var npcCore = reusableTool is null
+                    ? NpcCoreRoot(sterileThread)
+                    : NpcCoreRoot(sterileThread, reusableTool);
                 npcCore["NPCsInScene"]![0]!["activeSkills"] = new JsonArray(
-                    CreateTreatmentSkill("skill_guaranteed_care_01", "exact_materialized_healing_source"));
+                    CreateTreatmentSkill("skill_guaranteed_care_01", "exact_materialized_healing_source"),
+                    CreateTreatmentSkill("skill_field_medicine_npc_01", "field_medicine"));
                 npcCore["NPCsInScene"]![0]!["passiveSkills"] = new JsonArray();
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/npcs/npc_core.json"),
@@ -2414,14 +3498,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     PlayerInventoryRoot(dose).ToJsonString());
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/inventory/item_identity_index.json"),
-                    dose == null
-                        ? MortalItemTestFixture.CreateIndexForCarrier(
-                            sterileThread,
-                            "npc_inventory",
-                            "field_medic_01").ToJsonString()
-                        : MortalItemTestFixture.CreateIndexForCarriers(
-                            (sterileThread, "npc_inventory", "field_medic_01", null),
-                            (dose, "player_inventory", "player", null)).ToJsonString());
+                    CreateItemIdentityIndex(sterileThread, reusableTool, dose).ToJsonString());
                 var effectState = CreateCanonicalPlayerEffectState(scenario);
                 File.WriteAllText(
                     fileSystem.ResolvePath(EffectCarrierCatalog.PlayerPath),
@@ -2453,7 +3530,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 Assert.Equal(
                     scenario.AcceptedState["requestId"]!.GetValue<string>(),
                     preparedTurn.RequestId);
-                var lease = fileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+                lease = fileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
                 var effectSnapshot = EffectMechanicsSnapshot.LoadAsync(fileSystem, lease)
                     .GetAwaiter()
                     .GetResult();
@@ -2474,12 +3551,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         {
                             ["schemaVersion"] = 1,
                             ["realm"] = "mortal_world",
-                            ["targetKind"] = "player",
-                            ["targetId"] = "player_current",
+                            ["targetKind"] = targetKind,
+                            ["targetId"] = targetId,
                             ["providerKind"] = "npc",
                             ["providerId"] = "field_medic_01",
                             ["currentLocationId"] = "loc_field_clinic_001"
-                        },
+                        }.ToJsonString(),
                         "treatmentContext"
                     });
                 var context = ReadValidTypedResult(
@@ -2491,13 +3568,68 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     fileSystem,
                     lease,
                     context,
-                    scenario.Before["woundId"]!.GetValue<string>());
+                    scenario.Before["woundId"]!.GetValue<string>(),
+                    targetKind,
+                    targetId,
+                    targetCarrierPath);
             }
             catch
             {
+                lease?.DisposeAsync().AsTask().GetAwaiter().GetResult();
                 Directory.Delete(root, recursive: true);
                 throw;
             }
+        }
+
+        private static void WriteTargetWoundCarrier(
+            FileSystemManager fileSystem,
+            string targetKind,
+            string targetId,
+            string targetCarrierPath,
+            JsonObject wound)
+        {
+            if (string.Equals(targetKind, "player", StringComparison.Ordinal))
+            {
+                File.WriteAllText(
+                    fileSystem.ResolvePath(WoundCarrierCatalog.PlayerPath),
+                    WoundContractTestData.CreatePlayerCarrier(wound).ToJsonString());
+                return;
+            }
+
+            File.WriteAllText(
+                fileSystem.ResolvePath(WoundCarrierCatalog.PlayerPath),
+                WoundContractTestData.CreatePlayerCarrier().ToJsonString());
+            var combatant = string.Equals(
+                targetKind,
+                "combatant_member",
+                StringComparison.Ordinal)
+                ? new JsonObject
+                {
+                    ["combatantId"] = "combatant_group_t061",
+                    ["isGroup"] = true,
+                    ["members"] = new JsonArray(new JsonObject
+                    {
+                        ["memberId"] = targetId,
+                        ["activeWounds"] = new JsonArray(wound.DeepClone())
+                    })
+                }
+                : new JsonObject
+                {
+                    ["combatantId"] = targetId,
+                    ["activeWounds"] = new JsonArray(wound.DeepClone())
+                };
+            var collectionName = string.Equals(
+                targetKind,
+                "combatant_member",
+                StringComparison.Ordinal)
+                ? "alliesData"
+                : "enemiesData";
+            File.WriteAllText(
+                fileSystem.ResolvePath(targetCarrierPath),
+                new JsonObject
+                {
+                    [collectionName] = new JsonArray(combatant)
+                }.ToJsonString());
         }
 
         internal object ExportCurrent()
@@ -2527,6 +3659,26 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal string AcceptedEventRef(object acceptedState) =>
             Assert.Single(Assert.IsType<WoundAcceptedTurnBinding>(
                 ReadAcceptedStateMember(acceptedState, "Binding")).AcceptedEvents).EventRef;
+
+        internal void ReleaseLeaseForExternalDistribution() =>
+            Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+
+        internal void ReacquireLeaseAfterExternalDistribution() =>
+            Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+
+        internal AcceptedStateFixture AttachColdRoot(
+            string root,
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease lease) =>
+            new(
+                root,
+                fileSystem,
+                lease,
+                TreatmentContext,
+                WoundId,
+                TargetKind,
+                TargetId,
+                TargetCarrierPath);
 
         internal void AssertCanonicalScenarioAuthority(
             object acceptedState,
@@ -2560,11 +3712,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         StringComparison.Ordinal) &&
                     string.Equals(component.Profile, "roll_modifier", StringComparison.Ordinal));
             }
-            if (scenario.ExpectedFateEffectId is not null)
+            if (scenario.SeedFateEffectId is not null)
             {
                 Assert.Contains(effects.Effects, effect => string.Equals(
                     effect.EffectId,
-                    scenario.ExpectedFateEffectId,
+                    scenario.SeedFateEffectId,
                     StringComparison.Ordinal));
                 Assert.Contains(effects.Effects, effect => string.Equals(
                     effect.EffectId,
@@ -2590,14 +3742,45 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
 
         internal WoundMaterializationEnvelope ReadCurrentWound()
+            => AssertCurrentWoundCoordinate(TargetKind, TargetId, TargetCarrierPath);
+
+        internal WoundMaterializationEnvelope AssertCurrentWoundCoordinate(
+            string expectedTargetKind,
+            string expectedTargetId,
+            string expectedCarrierPath)
         {
-            var root = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
-                WoundCarrierCatalog.PlayerPath)))!.AsObject();
-            var parsed = WoundMaterializationContract.Parse(
-                root["activeWounds"]![0]!.ToJsonString(),
-                WoundCarrierCatalog.PlayerPath + ".activeWounds[0]");
-            Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
-            return Assert.IsType<WoundMaterializationEnvelope>(parsed.Wound);
+            var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
+                PlayerWounds: ReadOptionalJsonObject(WoundCarrierCatalog.PlayerPath),
+                NpcWounds: null,
+                EnemyCombatants: ReadOptionalJsonObject(WoundCarrierCatalog.EnemiesPath),
+                AllyCombatants: ReadOptionalJsonObject(WoundCarrierCatalog.AlliesPath),
+                AfterlifeProfiles: null));
+            Assert.Empty(catalog.Issues);
+            Assert.True(catalog.TryResolveOne(WoundId, out var occurrence));
+            Assert.Equal(expectedTargetKind, occurrence.Coordinate.OwnerKind);
+            Assert.Equal(expectedTargetId, occurrence.Coordinate.OwnerId);
+            Assert.Equal(expectedCarrierPath, occurrence.Coordinate.CarrierPath);
+            Assert.Equal(expectedCarrierPath, occurrence.FilePath);
+            return occurrence.Wound;
+        }
+
+        internal static string ResolveTargetCarrierPath(string targetKind) => targetKind switch
+        {
+            "player" => WoundCarrierCatalog.PlayerPath,
+            "combatant" => WoundCarrierCatalog.EnemiesPath,
+            "combatant_member" => WoundCarrierCatalog.AlliesPath,
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(targetKind),
+                targetKind,
+                "The T061 resolver fixture supports canonical player and combat targets only.")
+        };
+
+        private JsonObject? ReadOptionalJsonObject(string relativePath)
+        {
+            var path = FileSystem.ResolvePath(relativePath);
+            return File.Exists(path)
+                ? JsonNode.Parse(File.ReadAllText(path))!.AsObject()
+                : null;
         }
 
         internal WoundHistoryParseResult ReadCurrentHistory()
@@ -2610,7 +3793,59 @@ public sealed partial class MortalWoundTreatmentResolverTests
             return parsed;
         }
 
-        internal void PrepareNextTurn(int turn, long worldMinute, string operationLabel)
+        internal int ReadPlayerItemCount(string itemId)
+        {
+            var root = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                "game_state/inventory/items.json")))!.AsObject();
+            var items = root["items"]!.AsArray()
+                .Where(candidate => string.Equals(
+                    candidate!["itemId"]!.GetValue<string>(),
+                    itemId,
+                    StringComparison.Ordinal))
+                .ToArray();
+            Assert.True(items.Length <= 1);
+            return items.Length == 0 ? 0 : items[0]!["count"]!.GetValue<int>();
+        }
+
+        internal int ReadNpcItemCount(string itemId)
+        {
+            var root = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                "game_state/npcs/npc_core.json")))!.AsObject();
+            var npc = Assert.Single(root["NPCsInScene"]!.AsArray(), candidate => string.Equals(
+                candidate!["NPCId"]!.GetValue<string>(),
+                "field_medic_01",
+                StringComparison.Ordinal));
+            var items = npc!["inventory"]!.AsArray()
+                .Where(candidate => string.Equals(
+                    candidate!["itemId"]!.GetValue<string>(),
+                    itemId,
+                    StringComparison.Ordinal))
+                .ToArray();
+            Assert.True(items.Length <= 1);
+            return items.Length == 0 ? 0 : items[0]!["count"]!.GetValue<int>();
+        }
+
+        internal string[] ReadActivePlayerEffectIds()
+        {
+            var root = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                EffectCarrierCatalog.PlayerPath)))!.AsObject();
+            return root["activeEffects"]!.AsArray()
+                .Select(effect => effect!["effectId"]!.GetValue<string>())
+                .ToArray();
+        }
+
+        internal void AssertItemIdentityIndexValid()
+        {
+            var parsed = MortalItemIdentityState.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                MortalItemIdentityState.StatePath)));
+            Assert.Empty(parsed.Issues);
+        }
+
+        internal void PrepareNextTurn(
+            int turn,
+            long worldMinute,
+            string operationLabel,
+            IReadOnlyList<int>? acceptedDice = null)
         {
             Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
             File.WriteAllText(
@@ -2628,7 +3863,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     TurnNumber = turn,
                     PlayerAction = $"Continue mortal wound treatment: {operationLabel}.",
                     CurrentRealm = "Mortal World",
-                    PreGeneratedDices1d20 = new[] { 17, 4, 1, 20 }
+                    PreGeneratedDices1d20 = acceptedDice?.ToArray() ?? new[] { 17, 4, 1, 20 }
                 }).GetAwaiter().GetResult();
             Assert.Equal(turn, prepared.TurnNumber);
             Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();

@@ -397,7 +397,13 @@ history atomically for every owner carrier; effect removal never heals it.
 
 1. Add RED formal/narrative opportunity and GM optional/lower/guaranteed tests.
 2. Implement Mortal event adapters and complete free-form proposal validation without a
-   wound catalog.
+   wound catalog. The production-only `ComposeAcceptedResponse(fs, lease, sourceEvent,
+   gameResponse)` ingress reads the live pending-turn manifest, derives event/binding/
+   evidence/opportunity authority from a closed source-shaped event, and returns the
+   existing wound composition result without writing. Formal re-trauma then uses the
+   ordinary `StateDistributor` -> `ValidationService` -> common-plan pipeline; callers
+   cannot inject or reuse a treatment binding, fingerprint, transition, anchor, or
+   after-image.
 3. Add RED route/discovery/requirement/procedure/course/guaranteed/resource/stale-ref
    tests using two unrelated setting fixtures. Discovery uses an explicit
    `requiresKnownFacts` least-fixed-point graph, sealed success/failure diagnosis
@@ -416,7 +422,9 @@ history atomically for every owner carrier; effect removal never heals it.
    accepted create allocates the recovery anchor from the sealed current minute and
    transition ID; a separate condition/deterioration anchor preserves grace across
    recovery ticks. Due/grace boundaries and time jumps use checked elapsed-cadence plus
-   next-anchor state, stabilization rebases recovery only, and death remains a lifecycle
+   next-anchor state, stabilization rebases recovery and clears its satisfied condition
+   anchor, while an accepted worsening re-entry allocates a fresh deterioration anchor
+   from the exact `worsen` transition without resetting recovery; death remains a lifecycle
    handoff. T070 composes typed transition intents into the existing accepted-plan
    authority; `CanonicalStateNormalizer` remains the only publisher.
 6. Replace legacy Mortal rule/example/UI preview shapes and add a complete GM worked
@@ -446,14 +454,19 @@ validated state. Replay probes and already-accepted receipts carry that same typ
 result. This is the stable semantic seam for T059/T067; concrete evidence-record and
 hash-writer topology remains an implementation detail.
 
-For command round-trip tests, `WoundResponseInputComposer` owns
-`ComposeAcceptedTransitionCommandRoot(binding, request, finalSceneText)`. It emits the
-closed safe command from a planner-sealed request; `ParseCommandRoot` followed by
-`RecomposeCommandRoot` must reproduce that root exactly. Mutation after composition is
-rejected either by strict parsing/seal validation or by recomposition, never accepted
-by trusting caller-supplied fingerprints. Tests may hand-author malformed shapes for
-field/path diagnostics, but only this production composer establishes a valid sealed
-command authority.
+For command round-trip tests, `WoundResponseInputComposer` owns the existing sole
+`ComposeAcceptedTransitionCommandRoot(WoundAcceptedTurnBinding,
+WoundTransitionRequest, string)` entry point for reducer-produced transition requests.
+T067 adds the distinct pure
+`ComposeMortalWoundTreatmentCommandRoot(WoundAcceptedTurnBinding,
+MortalWoundTreatmentResolution, string)` entry point because a pre-resolution attempt
+request cannot supply the selected typed result and overloading the existing name would
+break its frozen single-method surface. Both emit the closed safe command only from
+planner-sealed authority; `ParseCommandRoot` followed by `RecomposeCommandRoot` must
+reproduce that root exactly. Mutation after composition is rejected either by strict
+parsing/seal validation or by recomposition, never accepted by trusting caller-supplied
+fingerprints. Tests may hand-author malformed shapes for field/path diagnostics, but
+only these production composers establish valid sealed command authority.
 
 T060/T066 use one production-owned, side-effect-free requirement boundary:
 `MortalWoundTreatmentAuthority.ResolveRequirements(route, context, currentSnapshot)`.
@@ -703,14 +716,32 @@ route/common/course/scoped-row/non-overbooking seals, result/receipt fingerprint
 all enclosing-row agreements. The detached receipt projects only the already-verified
 bundle fingerprint and cannot be reused as resource authority.
 
+The pending copy is a private top-level `submittedTreatmentRequests[]` collection, not a
+new GM repair-candidate kind. It is composed only alongside a real non-empty wound-repair
+wave from the already parsed/recomposed command root, retains exact outer coordinates and
+the full detached typed request, and is absent otherwise. Public repair packets never
+expose it.
+
 Command and pending storage may hold the same request during one repair wave. Parsers
 and dice/Fate/resource registries coalesce byte-semantic exact copies by
 `(OperationKey, AttemptId, RequestFingerprint)` into one logical request/claim. A
 different request, nested bundle/resource authority, or outer coordinate under a reused
 operation/attempt coordinate conflicts; exact copies never double-reserve.
 
-After restart the typed command/pending authority restores the submitted operation key,
-attempt ID, and request fingerprint without consulting current state. The planner first
+After a true cold restart from copied durable bytes under a different filesystem root
+and fresh process-local registries, the typed command/pending authority restores the
+full detached request, submitted operation key, attempt ID, and request fingerprint
+without consulting current state or a cached canonical-root identity. The ordinary
+mode-specific T067 `Create*Attempt(request, history, before, acceptedState)` reducer then
+recomputes the exact full Resolution, including ordered `OutcomeIntents` and nullable
+`CriticalReactionIntent`, from that request plus fresh canonical authority. A second cold
+consumer passes only that typed request/resolution pair through the existing six-argument
+T070 publication. Actionable intents are not serialized as a trusted command-result
+shortcut: the persisted history-shaped result and every nested request/result seal are
+recomputed, and any post-seal result-semantic replacement fails parsing or recomposition.
+Failed persistence or rollback restores the
+original command/pending/history bytes, releases provisional die/Fate/resource claims,
+and permits one exact retry without duplicate claims or intents. The planner first
 calls `WoundHistoryParseResult.ProbeTreatmentAttempt(operationKey, attemptId,
 requestFingerprint)`, which returns exactly `NotFound|ExactReplay|Conflict|InvalidHistory`,
 frozen issues, nullable detached restored request, and nullable detached original typed
@@ -826,7 +857,7 @@ legacy GM five-argument Compose/leading-dice API remains unchanged. A typed over
 shares the accepted-state reservation registry: it reconstructs candidates already held
 by full command/pending/history requests, excludes them, and provisionally chooses the
 next oldest in deterministic transition order. Persistence confirms and failed sealing
-    releases the reservation, preventing two requests or a restart from claiming one shield.
+releases the reservation, preventing two requests or a restart from claiming one shield.
 The exact typed seam is
 `EffectAcceptedEventReportCatalog.ResolvePreparedMortalWoundCriticalReaction(request,
 acceptedState)`, returning `MortalWoundCriticalReactionResolutionResult` with exactly

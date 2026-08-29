@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.IO;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -39,14 +41,14 @@ public sealed class MortalWoundRecoveryTests
 
     public static IEnumerable<object[]> PlannerRows => new[]
     {
-        Scenario.DueMinusOne(), Scenario.Due(), Scenario.DuePlusOne(),
+        Scenario.DueMinusOne(), Scenario.AtDueBoundary(), Scenario.DuePlusOne(),
         Scenario.MultiCadenceJump(), Scenario.StabilizationRebasesCadence(),
         Scenario.GraceMinusOne(), Scenario.Grace(), Scenario.GracePlusOne(),
         Scenario.RequiresStabilization(), Scenario.NoNaturalRecovery(),
         Scenario.CheckedOverflow(), Scenario.RecoveryNextAnchorOverflow(),
         Scenario.DeteriorationCadenceOverflow(),
         Scenario.DeteriorationNextAnchorOverflow(),
-        Scenario.DeteriorationMultiCadence(), Scenario.DeathHandoff(), Scenario.Replay()
+        Scenario.DeteriorationMultiCadence(), Scenario.DeathHandoffRequired(), Scenario.Replay()
     }.Select(static value => new object[] { value });
 
     public static IEnumerable<object[]> PolicyRows => new[]
@@ -109,12 +111,48 @@ public sealed class MortalWoundRecoveryTests
         foreach (var anchor in new[] { "recoveryAnchor", "deteriorationAnchor" })
         {
             var absentOnly = WoundContractTestData.CreateActiveWound();
-            absentOnly["recovery"]!.Remove(anchor);
+            absentOnly["recovery"]!.AsObject().Remove(anchor);
             var absentResult = Invoke(validate, absentOnly, "wound");
             AssertClosed(absentResult, "IsValid", "Issues");
             Assert.True(Assert.IsType<bool>(Required(absentResult, "IsValid")), anchor);
             Assert.Empty(Values(absentResult, "Issues"));
         }
+    }
+
+    [Fact]
+    public void DeteriorationAnchor_ClearsOnSealedStabilizationAndReallocatesOnSealedConditionReentry()
+    {
+        using var fixture = Fixture.Create(Scenario.DeteriorationAnchorLifecycle());
+
+        var initial = Assert.IsType<byte[]>(fixture.InitialDeteriorationAnchorBytes);
+        Assert.Null(fixture.PostStabilizationDeteriorationAnchorBytes);
+        var initialAnchor = JsonNode.Parse(initial)!.AsObject();
+        Assert.Equal("not_stabilized", initialAnchor["conditionKey"]!.GetValue<string>());
+        Assert.Equal(100, initialAnchor["anchorMinute"]!.GetValue<long>());
+        var stabilizedRecoveryAnchor = Assert.IsType<byte[]>(
+            fixture.CaptureRecoveryAnchorBytes());
+        Assert.Equal(
+            150,
+            JsonNode.Parse(stabilizedRecoveryAnchor)!["anchorMinute"]!.GetValue<long>());
+
+        var publication = fixture.PublishSealedWorseningReentry(turn: 45, minute: 170);
+
+        var reentered = Assert.IsType<byte[]>(fixture.CaptureDeteriorationAnchorBytes());
+        Assert.False(initial.AsSpan().SequenceEqual(reentered));
+        var reenteredAnchor = JsonNode.Parse(reentered)!.AsObject();
+        Assert.Equal("not_stabilized", reenteredAnchor["conditionKey"]!.GetValue<string>());
+        Assert.Equal(170, reenteredAnchor["anchorMinute"]!.GetValue<long>());
+        Assert.Equal(
+            publication.WorseningTransitionId,
+            reenteredAnchor["anchorTransitionId"]!.GetValue<string>());
+        Assert.False(
+            string.Equals(
+                initialAnchor["anchorTransitionId"]!.GetValue<string>(),
+                publication.WorseningTransitionId,
+                StringComparison.Ordinal));
+        Assert.True(stabilizedRecoveryAnchor.AsSpan().SequenceEqual(
+            Assert.IsType<byte[]>(fixture.CaptureRecoveryAnchorBytes())));
+        fixture.AssertCarrierIdentityHistoryAgreement();
     }
 
     [Theory]
@@ -221,7 +259,7 @@ public sealed class MortalWoundRecoveryTests
     public void AcceptedStateExport_RejectsCanonicalTreatmentAuthorityFaultBeforeComposition(
         string mutation)
     {
-        using var fixture = Fixture.Create(Scenario.Due());
+        using var fixture = Fixture.Create(Scenario.AtDueBoundary());
         fixture.MutateTreatmentAuthorityRoot(mutation);
         var before = fixture.CaptureCanonicalTreeBytes();
 
@@ -583,6 +621,8 @@ public sealed class MortalWoundRecoveryTests
     private static string Issues(IEnumerable<ValidationIssue> values) =>
         string.Join(" | ", values.Select(static issue => $"{issue.Code}@{issue.FilePath}"));
 
+    private sealed record WorseningReentryPublication(string WorseningTransitionId);
+
     public sealed record Scenario(
         string Name, string Mode, long Anchor, long? DeteriorationAnchor, long CreationMinute,
         long? StabilizationMinute, long Minute, JsonObject Wound, JsonObject WorldTime,
@@ -590,11 +630,11 @@ public sealed class MortalWoundRecoveryTests
         long? GraceDeadline, long ElapsedCadences, long ElapsedDeteriorationCadences,
         long? NextRecoveryAnchor, long? NextDeteriorationAnchor, string[] IntentTypes,
         bool DeathHandoff, bool ReplayAfterCommit,
-        bool PolicyValid, bool StartsStabilized)
+        bool PolicyValid, bool StartsStabilized, bool NoMechanics)
     {
         internal static Scenario DueMinusOne() => Create("cadence_due_minus_one", "progressive", 109,
             "NotDue", null, 110, null, [], elapsedCadences: 0);
-        internal static Scenario Due() => Create("cadence_due", "progressive", 110,
+        internal static Scenario AtDueBoundary() => Create("cadence_due", "progressive", 110,
             "Progressed", null, 110, null, ["MortalWoundRecoveryProgressIntent"]);
         internal static Scenario DuePlusOne() => Create("cadence_due_plus_one", "progressive", 111,
             "Progressed", null, 110, null, ["MortalWoundRecoveryProgressIntent"]);
@@ -633,11 +673,15 @@ public sealed class MortalWoundRecoveryTests
         internal static Scenario DeteriorationMultiCadence() => Create("deterioration_multi_cadence", "requires_stabilization", 155,
             "Deteriorated", "untreated_infection", 110, 130, ["MortalWoundRecoveryDeteriorationIntent"], "increase_severity",
             stabilized: false, elapsedCadences: 0, elapsedDeteriorationCadences: 3, nextDeteriorationAnchor: 160);
-        internal static Scenario DeathHandoff() => Create("death_is_lifecycle_handoff", "requires_stabilization", 130,
+        internal static Scenario DeathHandoffRequired() => Create("death_is_lifecycle_handoff", "requires_stabilization", 130,
             "DeathHandoffRequired", "untreated_infection", 110, 130, ["MortalWoundDeathHandoffIntent"], "death_contour", stabilized: false,
             death: true, elapsedCadences: 0, elapsedDeteriorationCadences: 1);
         internal static Scenario Replay() => Create("replay_precedes_malformed_clock", "progressive", 110,
             "Progressed", null, 110, null, ["MortalWoundRecoveryProgressIntent"], replay: true);
+        internal static Scenario DeteriorationAnchorLifecycle() => Create(
+            "deterioration_anchor_clear_and_reentry", "requires_stabilization", 160,
+            "NotDue", null, 110, 130, [], "increase_severity", "untreated_infection",
+            stabilized: true, stabilizationMinute: 150, anchor: 150, noMechanics: true);
         internal static Scenario StrictlyWorsening() => Create("strictly_worsening_interruption", "requires_stabilization", 130,
             "Deteriorated", "missed_course_dose", 110, 130, ["MortalWoundRecoveryDeteriorationIntent"],
             "increase_severity", "missed_course_dose", false, policyValid: true);
@@ -653,7 +697,7 @@ public sealed class MortalWoundRecoveryTests
             long? stabilizationMinute = null, long? deteriorationAnchor = null, long elapsedCadences = 1,
             long elapsedDeteriorationCadences = 0, long? nextRecoveryAnchor = null,
             long? nextDeteriorationAnchor = null, long creationMinute = 100,
-            long graceMinutes = 30)
+            long graceMinutes = 30, bool noMechanics = false)
         {
             var wound = WoundContractTestData.CreateActiveWound();
             // GM data may declare recovery mode and cadence, but not a canonical state
@@ -684,7 +728,7 @@ public sealed class MortalWoundRecoveryTests
                 nextDeteriorationAnchor ?? (conditionAnchor is null || elapsedDeterioration == 0
                     ? (conditionAnchor is null ? null : conditionAnchor + (grace ?? 0))
                     : conditionAnchor + (grace ?? 0) + elapsedDeterioration * cadence),
-                intents, death, replay, policyValid, stabilized);
+                intents, death, replay, policyValid, stabilized, noMechanics);
         }
     }
 
@@ -707,14 +751,26 @@ public sealed class MortalWoundRecoveryTests
     private sealed class Fixture : IDisposable
     {
         private Fixture(string root, FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
-            WoundAcceptedTurnBinding binding, string woundId, Scenario scenario)
-        { Root = root; FileSystem = fs; Lease = lease; Binding = binding; WoundId = woundId; Scenario = scenario; }
+            WoundAcceptedTurnBinding binding, string woundId, Scenario scenario,
+            byte[]? initialDeteriorationAnchorBytes, byte[]? postStabilizationDeteriorationAnchorBytes)
+        {
+            Root = root;
+            FileSystem = fs;
+            Lease = lease;
+            Binding = binding;
+            WoundId = woundId;
+            Scenario = scenario;
+            InitialDeteriorationAnchorBytes = initialDeteriorationAnchorBytes;
+            PostStabilizationDeteriorationAnchorBytes = postStabilizationDeteriorationAnchorBytes;
+        }
 
         private string Root { get; }
         internal FileSystemManager FileSystem { get; private set; }
         internal FileSystemManager.CanonicalWriteLease Lease { get; private set; }
         internal WoundAcceptedTurnBinding Binding { get; private set; }
         internal string WoundId { get; }
+        internal byte[]? InitialDeteriorationAnchorBytes { get; }
+        internal byte[]? PostStabilizationDeteriorationAnchorBytes { get; }
         internal string Name => Scenario.Name;
         internal string PolicyRef => Assert.IsType<JsonObject>(Scenario.Wound["recovery"]!["deteriorationPolicy"])["policyRef"]!.GetValue<string>();
         internal bool ExpectsDeteriorationIntent => Scenario.IntentTypes.Contains(
@@ -734,7 +790,9 @@ public sealed class MortalWoundRecoveryTests
                 Assert.True(parsed.IsValid, Issues(parsed.Issues));
                 WriteCanonicalTreatmentAuthorityRoots(fs);
                 AssertCanonicalTreatmentAuthorityRoots(fs);
-                var creationInput = WoundEffectBatchPlannerTests.CreateInputForAcceptedCache();
+                var creationInput = scenario.NoMechanics
+                    ? WoundEffectBatchPlannerTests.CreateNoMechanicsInputForAcceptedCache()
+                    : WoundEffectBatchPlannerTests.CreateInputForAcceptedCache();
                 Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath, scenario.WorldTime);
                 WriteTurnRequest(fs, creationInput.Binding);
                 AssertLiveTurnCorrelation(fs, creationInput.Binding, creationInput);
@@ -761,6 +819,7 @@ public sealed class MortalWoundRecoveryTests
                     creationInput, prepared, Assert.IsType<WoundEffectBatchAcceptedPlan>(effect.Plan), finalized);
                 ComposeAndPublishWoundStages(fs, lease, creationBundle);
                 var woundId = Assert.Single(finalized.AllocatedWoundIds);
+                var initialDeteriorationAnchorBytes = CaptureDeteriorationAnchorBytes(fs);
                 if (scenario.StartsStabilized)
                 {
                     // T067/T070 is the only legal stabilization path.  Keep this RED at
@@ -775,6 +834,8 @@ public sealed class MortalWoundRecoveryTests
                     lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
                     ResolveAndPublishStabilization(fs, lease, woundId);
                 }
+                var postStabilizationDeteriorationAnchorBytes =
+                    CaptureDeteriorationAnchorBytes(fs);
                 Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath,
                     new JsonObject { ["currentTimeInMinutes"] = scenario.Minute });
                 lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
@@ -784,9 +845,9 @@ public sealed class MortalWoundRecoveryTests
                 // T066 must export the recovery binding from the current prepared turn;
                 // the bootstrap creation binding is never reused for this continuation.
                 var recoveryBinding = ExportRecoveryBinding(fs, lease, woundId);
-                return new(root, fs, lease,
-                    recoveryBinding,
-                    woundId, scenario);
+                return new(root, fs, lease, recoveryBinding, woundId, scenario,
+                    initialDeteriorationAnchorBytes,
+                    postStabilizationDeteriorationAnchorBytes);
             }
             catch
             {
@@ -814,7 +875,8 @@ public sealed class MortalWoundRecoveryTests
         internal byte[] CaptureRecoveryStateBytes()
         {
             var player = ReadRoot(FileSystem, WoundCarrierCatalog.PlayerPath);
-            var wound = Assert.Single(player["activeWounds"]!.AsArray()).AsObject();
+            var wound = Assert.IsType<JsonObject>(Assert.Single(
+                player["activeWounds"]!.AsArray()));
             return System.Text.Encoding.UTF8.GetBytes(wound["recovery"]!.ToJsonString());
         }
 
@@ -822,9 +884,23 @@ public sealed class MortalWoundRecoveryTests
             Assert.True(expected.AsSpan().SequenceEqual(CaptureRecoveryStateBytes()));
 
         internal byte[]? CaptureDeteriorationAnchorBytes()
+            => CaptureDeteriorationAnchorBytes(FileSystem);
+
+        internal byte[]? CaptureRecoveryAnchorBytes()
         {
             var player = ReadRoot(FileSystem, WoundCarrierCatalog.PlayerPath);
-            var wound = Assert.Single(player["activeWounds"]!.AsArray()).AsObject();
+            var wound = Assert.IsType<JsonObject>(Assert.Single(
+                player["activeWounds"]!.AsArray()));
+            return wound["recovery"]?["recoveryAnchor"] is { } anchor
+                ? System.Text.Encoding.UTF8.GetBytes(anchor.ToJsonString())
+                : null;
+        }
+
+        private static byte[]? CaptureDeteriorationAnchorBytes(FileSystemManager fs)
+        {
+            var player = ReadRoot(fs, WoundCarrierCatalog.PlayerPath);
+            var wound = Assert.IsType<JsonObject>(Assert.Single(
+                player["activeWounds"]!.AsArray()));
             return wound["recovery"]?["deteriorationAnchor"] is { } anchor
                 ? System.Text.Encoding.UTF8.GetBytes(anchor.ToJsonString())
                 : null;
@@ -862,7 +938,8 @@ public sealed class MortalWoundRecoveryTests
         internal void MutateTreatmentAuthorityRoot(string mutation)
         {
             var npc = ReadRoot(FileSystem, "game_state/npcs/npc_core.json");
-            var medic = Assert.Single(npc["NPCsInScene"]!.AsArray()).AsObject();
+            var medic = Assert.IsType<JsonObject>(Assert.Single(
+                npc["NPCsInScene"]!.AsArray()));
             switch (mutation)
             {
                 case "missing_provider":
@@ -906,6 +983,89 @@ public sealed class MortalWoundRecoveryTests
             Binding = ExportRecoveryBinding(FileSystem, Lease, WoundId);
             Assert.Equal(turn, Binding.Turn);
             Assert.Equal($"request_t062_{turn}", Binding.RequestId);
+        }
+
+        internal WorseningReentryPublication PublishSealedWorseningReentry(int turn, long minute)
+        {
+            var before = ReadCanonicalWound(FileSystem, WoundId);
+            Assert.Equal("stabilized", before.Care.State);
+            Assert.DoesNotContain("not_stabilized", before.Recovery.Blockers);
+            const string narration =
+                "Повторный удар разрывает уже сведённые края раны; прежняя стабилизация утрачена.";
+            var opportunityRef = $"wound-opportunity-t062-retrauma-{turn}";
+            var decision = new JsonObject
+            {
+                ["opportunityRef"] = opportunityRef,
+                ["decision"] = "materialize",
+                ["woundRef"] = "wound_local_t062_retrauma",
+                ["proposal"] = CreateWorseningReentryProposal(before, narration)
+            };
+            var response = new GameResponse
+            {
+                Response = narration,
+                EffectChanges = Array.Empty<JsonElement>(),
+                EffectResolutionReceipts = Array.Empty<JsonElement>(),
+                EffectEventReports = Array.Empty<JsonElement>(),
+                WoundDecisions = new[] { JsonSerializer.SerializeToElement(decision) }
+            };
+
+            Write(FileSystem, EffectAcceptedTurnInputComposer.WorldTimePath,
+                new JsonObject { ["currentTimeInMinutes"] = minute });
+            Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            PrepareLiveTurn(FileSystem, turn, "formal combat retrauma");
+            Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+            var sourceEvent = CreateWorseningReentrySource(
+                before,
+                opportunityRef,
+                turn);
+            var treeBeforeComposition = CaptureCanonicalTreeBytes();
+            var composed = ComposeAcceptedWorseningResponse(
+                FileSystem,
+                Lease,
+                sourceEvent,
+                response);
+            AssertCanonicalTreeBytesUnchanged(treeBeforeComposition);
+            Assert.True(composed.Success, Issues(composed.Issues));
+            var worseningDraft = Assert.Single(composed.Transitions);
+            Assert.Equal("worsen", worseningDraft.Kind);
+            Assert.Equal("untreated", worseningDraft.ProposedAfter.Care.State);
+            Assert.Null(worseningDraft.ProposedAfter.Care.StabilizedAtTurn);
+            Assert.Contains("not_stabilized", worseningDraft.ProposedAfter.Recovery.Blockers);
+            Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            var distributor = new StateDistributor(
+                FileSystem,
+                NullLogger<StateDistributor>.Instance);
+            distributor.DistributeAsync(response, composed).GetAwaiter().GetResult();
+            var validationIssues = new ValidationService(
+                    FileSystem,
+                    NullLogger<ValidationService>.Instance)
+                .ValidateAcceptedTurnRawEffectMaterializationAsync()
+                .GetAwaiter().GetResult();
+            Assert.DoesNotContain(
+                validationIssues,
+                static issue => issue.Severity == IssueSeverity.Error);
+            Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+            var published = Assert.IsType<AcceptedMechanicsPlan>(
+                new CanonicalStateNormalizer(
+                        FileSystem,
+                        NullLogger<CanonicalStateNormalizer>.Instance)
+                    .BindTo(Lease)
+                    .NormalizeAcceptedMechanicsAsync(backups: null)
+                    .GetAwaiter().GetResult());
+            var finalized = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
+                published.WoundStageBundle).FinalPlan;
+            var worseningTransitionId = Assert.Single(finalized.AllocatedTransitionIds);
+            Binding = ExportRecoveryBinding(FileSystem, Lease, WoundId);
+            var history = WoundHistoryState.Parse(
+                File.ReadAllText(FileSystem.ResolvePath(WoundHistoryState.HistoryPath)),
+                WoundHistoryState.HistoryPath);
+            Assert.True(history.IsValid, Issues(history.Issues));
+            var publishedTransition = Assert.Single(
+                history.State!.Transitions,
+                value => string.Equals(value.TransitionId, worseningTransitionId, StringComparison.Ordinal));
+            Assert.Equal("worsen", publishedTransition.Kind);
+            Assert.Equal(turn, publishedTransition.Turn);
+            return new WorseningReentryPublication(worseningTransitionId);
         }
 
         internal void TamperPersistedRecoveryEvidence(string kind)
@@ -1285,6 +1445,146 @@ public sealed class MortalWoundRecoveryTests
             return occurrence.Wound;
         }
 
+        private static JsonObject CreateWorseningReentryProposal(
+            WoundMaterializationEnvelope before,
+            string narration)
+        {
+            var canonical = JsonNode.Parse(
+                WoundMaterializationContract.SerializeCanonical(before))!.AsObject();
+            var classification = canonical["classification"]!.DeepClone().AsObject();
+            classification.Remove("domain");
+            var display = canonical["display"]!.DeepClone().AsObject();
+            display["description"] =
+                "Повторная травма раскрыла рану и вернула опасность осложнений.";
+            display["visibleSymptoms"] = new JsonArray(
+                "возобновившееся кровотечение",
+                "резкая боль при движении");
+            display["prognosis"] =
+                "Рану необходимо снова стабилизировать до продолжения восстановления.";
+            display["acquisitionNarration"] = narration;
+            var recovery = canonical["recovery"]!.DeepClone().AsObject();
+            recovery.Remove("recoveryAnchor");
+            recovery.Remove("deteriorationAnchor");
+            recovery["currentStepProgress"] = 0;
+            recovery["blockers"] = new JsonArray("not_stabilized");
+            return new JsonObject
+            {
+                ["classification"] = classification,
+                ["display"] = display,
+                ["severity"] = "III",
+                ["complications"] = new JsonArray(),
+                ["consequenceDefinitions"] = new JsonArray(),
+                ["treatment"] = canonical["treatment"]!.DeepClone(),
+                ["recovery"] = recovery
+            };
+        }
+
+        private static JsonObject CreateWorseningReentrySource(
+            WoundMaterializationEnvelope before,
+            string opportunityRef,
+            int turn) => new()
+        {
+            ["schemaVersion"] = 1,
+            ["adapterKind"] = "formal",
+            ["acceptedEventOrdinal"] = 0,
+            ["opportunityRef"] = opportunityRef,
+            ["owner"] = new JsonObject
+            {
+                ["realm"] = before.Owner.Realm,
+                ["ownerKind"] = before.Owner.OwnerKind,
+                ["ownerId"] = before.Owner.OwnerId,
+                ["carrierPath"] = before.Owner.CarrierPath
+            },
+            ["domain"] = before.Classification.Domain,
+            ["profileKey"] = "mortal_formal_injury_v1",
+            ["source"] = new JsonObject
+            {
+                ["kind"] = "combat_action",
+                ["sourceId"] = $"combat_retrauma_t062_{turn}",
+                ["state"] = "active"
+            },
+            ["outcome"] = new JsonObject
+            {
+                ["kind"] = "harmful",
+                ["maximumSeverityRank"] = 3,
+                ["readableCause"] =
+                    "Повторный удар снова раскрыл стабилизированную рану."
+            },
+            ["hardMaximumSeverityRank"] = 4,
+            ["safeContext"] = new JsonObject
+            {
+                ["target"] = "вы",
+                ["cause"] = "повторный удар",
+                ["allowedLocationKinds"] = new JsonArray(
+                    "anatomical",
+                    "systemic",
+                    "other")
+            },
+            ["worseningTarget"] = new JsonObject
+            {
+                ["woundId"] = before.WoundId,
+                ["causeKind"] = "retrauma"
+            }
+        };
+
+        private static WoundResponseInputCompositionResult ComposeAcceptedWorseningResponse(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease lease,
+            JsonObject sourceEvent,
+            GameResponse response)
+        {
+            var adapter = typeof(WoundMaterializationContract).Assembly.GetType(
+                "BookOfEternityClient.Services.MortalWoundOpportunityAdapter",
+                throwOnError: false,
+                ignoreCase: false);
+            Assert.NotNull(adapter);
+            Assert.Empty(adapter!.GetConstructors(BindingFlags.Instance | BindingFlags.Public));
+            var compose = ExactStatic(adapter, "ComposeAcceptedResponse", 4);
+            var parameters = compose.GetParameters();
+            Assert.Equal(typeof(FileSystemManager), parameters[0].ParameterType);
+            Assert.Equal(lease.GetType(), parameters[1].ParameterType);
+            Assert.Equal(typeof(JsonElement), parameters[2].ParameterType);
+            Assert.Equal(typeof(GameResponse), parameters[3].ParameterType);
+            Assert.DoesNotContain(
+                adapter.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+                static method => method.Name == "ComposeAcceptedResponse" &&
+                                 method.GetParameters().Any(parameter =>
+                                     parameter.ParameterType == typeof(WoundAcceptedTurnBinding) ||
+                                     parameter.ParameterType == typeof(WoundOpportunityAuthority) ||
+                                     parameter.Name?.Contains("fingerprint", StringComparison.OrdinalIgnoreCase) == true));
+            var composed = Invoke(
+                compose,
+                fs,
+                lease,
+                JsonSerializer.SerializeToElement(sourceEvent),
+                response);
+            return Assert.IsType<WoundResponseInputCompositionResult>(composed);
+        }
+
+        private static WoundCarrierCatalogInput ReadWoundCarriers(FileSystemManager fs) => new(
+            ReadOptionalRoot(fs, WoundCarrierCatalog.PlayerPath),
+            ReadOptionalRoot(fs, WoundCarrierCatalog.NpcPath),
+            ReadOptionalRoot(fs, WoundCarrierCatalog.EnemiesPath),
+            ReadOptionalRoot(fs, WoundCarrierCatalog.AlliesPath),
+            ReadOptionalRoot(fs, WoundCarrierCatalog.AfterlifeProfilesPath));
+
+        private static EffectCarrierCatalogInput ReadEffectCarriers(FileSystemManager fs) => new(
+            ReadOptionalRoot(fs, EffectCarrierCatalog.PlayerPath),
+            ReadOptionalRoot(fs, EffectCarrierCatalog.NpcPath),
+            ReadOptionalRoot(fs, EffectCarrierCatalog.EnemiesPath),
+            ReadOptionalRoot(fs, EffectCarrierCatalog.AlliesPath),
+            ReadOptionalRoot(fs, EffectCarrierCatalog.AfterlifeProfilesPath),
+            ReadOptionalRoot(fs, EffectCarrierCatalog.SpiritualConflictPath));
+
+        private static JsonObject? ReadOptionalRoot(FileSystemManager fs, string path) =>
+            ReadOptionalNode(fs, path) as JsonObject;
+
+        private static JsonNode? ReadOptionalNode(FileSystemManager fs, string path)
+        {
+            var full = fs.ResolvePath(path);
+            return File.Exists(full) ? JsonNode.Parse(File.ReadAllText(full)) : null;
+        }
+
         private static void PrepareLiveTurn(FileSystemManager fs, int turn, string operation) =>
             new LiveTurnPreparationService(fs).PrepareAsync(new LiveTurnPreparationOptions
             {
@@ -1348,7 +1648,8 @@ public sealed class MortalWoundRecoveryTests
         private static void AssertCanonicalTreatmentAuthorityRoots(FileSystemManager fs)
         {
             var npc = ReadRoot(fs, "game_state/npcs/npc_core.json");
-            var medic = Assert.Single(npc["NPCsInScene"]!.AsArray()).AsObject();
+            var medic = Assert.IsType<JsonObject>(Assert.Single(
+                npc["NPCsInScene"]!.AsArray()));
             Assert.Equal("field_medic_01", medic["NPCId"]!.GetValue<string>());
             Assert.Equal("loc_field_clinic_001", medic["currentLocationId"]!.GetValue<string>());
             Assert.Equal("sterile_thread", medic["inventory"]![0]!["itemId"]!.GetValue<string>());
@@ -1407,7 +1708,7 @@ public sealed class MortalWoundRecoveryTests
                 case JsonObject obj:
                     if (obj.ContainsKey(propertyName))
                         yield return obj;
-                    foreach (var child in obj.Values)
+                    foreach (var (_, child) in obj)
                     {
                         foreach (var match in FindProperties(child, propertyName))
                             yield return match;

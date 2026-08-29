@@ -613,10 +613,22 @@ A differing request, bundle, resource authority, or outer coordinate under eithe
 semantic coordinate is a conflict/invalid state; exact copies never double-reserve or
 look like duplicate operations.
 
-After restart, the typed accepted-transition command/pending parser restores the
-client-owned submitted request before any current-state lookup; its operation key,
-attempt ID, and request fingerprint are therefore available without rebuilding an
-authority from the current wound. `WoundHistoryParseResult.ProbeTreatmentAttempt(string
+After a true cold restart from copied durable bytes under a different filesystem root
+with fresh process-local registries, the typed accepted-transition command/pending parser
+restores the complete detached client-owned submitted request before any current-state lookup; its operation
+key, attempt ID, and request fingerprint are therefore available without rebuilding an
+authority from the current wound or reusing cached canonical-root identity. Failed
+persistence or rollback releases every provisional die, Fate, and resource claim, leaves
+no durable command/pending/history duplicate, and permits one exact retry.
+For an unaccepted persisted command, that restored request enters the ordinary
+mode-specific T067 `Create*Attempt(Request, History, Before, AcceptedState)` reducer. The
+reducer uses fresh canonical authority to recreate the exact full Resolution, including
+ordered `OutcomeIntents` and nullable `CriticalReactionIntent`; the typed pair then enters
+the existing six-argument T070 publication. The command result remains history-shaped and
+does not persist actionable intents. Its declared result, mode evidence, resolution/result
+fingerprints, and all nested request/result agreements are independently recomputed, so a
+post-seal semantic replacement is invalid at parse or recompose time.
+`WoundHistoryParseResult.ProbeTreatmentAttempt(string
 operationKey, string attemptId, string requestFingerprint)` returns one immutable
 `MortalWoundTreatmentReplayProbeResult` with exactly `Status`, frozen `Issues`, nullable
 restored `Request`, and nullable original typed `Receipt`. `Status` is
@@ -1352,6 +1364,21 @@ evaluate the checked elapsed deterioration cadence and publish the next deadline
 Both anchors carry the authoritative allocating transition ID; callers and GM output
 cannot supply minutes, tick keys, fingerprints, history rows, or anchors.
 
+For `requires_stabilization`, a sealed stabilization at minute `S` clears the
+`not_stabilized` deterioration anchor and leaves the recovery anchor rebased to `S`.
+If a later accepted `worsen` transition re-enters `not_stabilized`, T070 derives
+`care.state=untreated`, clears `stabilizedAtTurn`, restores that blocker, and allocates a
+fresh deterioration anchor whose `anchorMinute` is the accepted canonical minute and
+whose `anchorTransitionId` is the exact published worsening transition ID. The recovery
+anchor remains byte-semantically unchanged. The re-trauma source is a closed
+source-shaped `MortalWoundOpportunityAdapter.ComposeAcceptedResponse(fs, lease,
+sourceEvent, gameResponse)` input containing no binding, event fingerprint, transition
+ID, or anchor. The adapter reads the live pending-turn manifest, derives the accepted
+event/binding and sealed opportunity, and returns the ordinary
+`WoundResponseInputCompositionResult`; only `StateDistributor` followed by
+`ValidationService.ValidateAcceptedTurnRawEffectMaterializationAsync()` may admit it to
+the common accepted plan.
+
 The planner returns exactly `Disposition`, `Issues`, `ReplayReceipt`, and `Resolution`.
 Its successful resolution has only typed recovery-progress, deterioration, or
 death-handoff intents; it has no direct wound/death/history mutation.  T070 composes
@@ -1784,6 +1811,14 @@ namespaced `applicationRef -> effectId/materializationFingerprint` agreement bef
 terminal heal or legacy history row can be published. Unknown branch, missing/extra
 field, ID collision, missing/extra/reordered/merged/split batch or result-map entry, or
 source/history mismatch rejects the whole atomic plan.
+
+Finalization validates the production accepted-plan seal before classifying topology,
+then compares the ordered structural batch key: every mechanical batch's ordered
+`localLegacyRef` plus its ordered local root-application refs and their grouping. This
+precedes request-derived namespaces, source seals, and exact seed/source/ref/request
+agreement. Only a real structural difference emits
+`mortal_wound_legacy_topology_mismatch`; a same-topology foreign request rejects without
+that code.
 
 `ApplicationResults` is exactly a frozen ordered array of
 `MortalWoundHealLegacyApplicationResultGroup`, one row per prepared mechanical batch in
@@ -2677,6 +2712,15 @@ primitives reach severity I and then request `heal`, the planner emits the separ
 validated follow-up heal intent without copying the treatment attempt ID onto the heal
 history row.
 
+Only the pure
+`WoundResponseInputComposer.ComposeMortalWoundTreatmentCommandRoot(binding,
+resolution, finalSceneText)` creates a valid typed `treat` command row. Its second
+argument is the self-contained accepted `MortalWoundTreatmentResolution`, whose embedded
+full request and result are recomputed against the binding. The existing
+`ComposeAcceptedTransitionCommandRoot(binding, WoundTransitionRequest,
+finalSceneText)` remains a separate single method for the reducer transition surface;
+there is no same-name treatment overload and no filesystem parameter on either composer.
+
 Commands are one-shot, consumed only by the matching accepted plan, bound to the root
 session/request/snapshot plus exact final-scene text, and absent in ordinary read-only
 `/раны` queries. The GM cannot write the command root. No command is staged from a raw
@@ -2720,6 +2764,18 @@ owner coordinates, and unrelated response content. The client-owned pending root
 the sealed fields required for retry comparison. A receipt is accepted once. A changed
 snapshot, wound fingerprint, evidence event, or semantic authority invalidates the
 pending wave.
+
+The client-owned root has one additional optional top-level field,
+`submittedTreatmentRequests[]`. It is not a fifth candidate kind and is not copied into
+the GM-facing packet. `WoundRepairPacketBuilder.ComposePendingRoot(binding, packets,
+parsedCommand)` may create it only when `packets` is a real non-empty bounded repair wave
+and `parsedCommand` is the successfully parsed/recomposed command root for the same
+session/request/snapshot binding. Each exact-unique row carries the accepted-transition
+outer coordinates and the full detached typed `treat` request, including the complete
+requirement bundle and resource authority. The collection is absent—not an empty claim
+surface—when there is no real repair wave or no submitted treatment request. Command and
+pending copies are parsed independently, recomputed, and byte-semantically coalesced;
+any nested or outer disagreement fails closed.
 
 ## 17. Transition state machine
 
