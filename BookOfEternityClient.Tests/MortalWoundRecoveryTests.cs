@@ -113,10 +113,12 @@ public sealed class MortalWoundRecoveryTests
         fixture.AssertCarrierIdentityHistoryAgreement();
 
         var rejectedBefore = Fixture.CaptureAllGovernedBytes(fixture.FileSystem);
+        var rejectedTreeBefore = fixture.CaptureCanonicalTreeBytes();
         var resolution = AssertPlannerResult(InvokePlan(fixture), scenario, fixture.WoundId);
         if (resolution is null)
         {
             Fixture.AssertAllGovernedBytesUnchanged(fixture.FileSystem, rejectedBefore);
+            fixture.AssertCanonicalTreeBytesUnchanged(rejectedTreeBefore);
             Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(fixture.FileSystem, fixture.Lease, out _, out _));
         }
         if (resolution is null)
@@ -337,6 +339,7 @@ public sealed class MortalWoundRecoveryTests
     private static object ComposeAndPublishRecovery(Fixture fixture, object resolution)
     {
         var before = Fixture.CaptureAllGovernedBytes(fixture.FileSystem);
+        var wholeTreeBefore = fixture.CaptureCanonicalTreeBytes();
         var type = typeof(WoundMaterializationContract).Assembly.GetType(
             "BookOfEternityClient.Services.MortalWoundRecoveryAcceptedPlanComposer", false, false);
         Assert.True(type is not null,
@@ -365,6 +368,7 @@ public sealed class MortalWoundRecoveryTests
         var acceptedPlan = Assert.IsType<AcceptedMechanicsPlan>(Required(result, "AcceptedPlan"));
         AssertPublishedWoundPlan(acceptedPlan, bundle, fixture.WoundId);
         Fixture.AssertComposeDidNotWrite(fixture.FileSystem, before, acceptedPlan);
+        fixture.AssertCanonicalTreeBytesUnchanged(wholeTreeBefore);
         var receipt = Required(result, "Receipt");
         AssertReceipt(receipt, fixture.WoundId, resolution);
         Assert.Same(acceptedPlan, PublishAcceptedPlan(fixture));
@@ -708,6 +712,22 @@ public sealed class MortalWoundRecoveryTests
             Assert.Empty(history.State!.ValidateAgreement(identity.State, catalog));
         }
 
+        internal IReadOnlyDictionary<string, byte[]> CaptureCanonicalTreeBytes() =>
+            CaptureTreeBytes(Root);
+
+        internal void AssertCanonicalTreeBytesUnchanged(
+            IReadOnlyDictionary<string, byte[]> before)
+        {
+            var after = CaptureCanonicalTreeBytes();
+            Assert.Equal(before.Keys.OrderBy(static path => path, StringComparer.Ordinal),
+                after.Keys.OrderBy(static path => path, StringComparer.Ordinal));
+            foreach (var pair in before)
+            {
+                Assert.True(after.TryGetValue(pair.Key, out var actual), pair.Key);
+                Assert.True(pair.Value.AsSpan().SequenceEqual(actual), pair.Key);
+            }
+        }
+
         internal void CorruptLiveClock() => Write(FileSystem, EffectAcceptedTurnInputComposer.WorldTimePath,
             new JsonObject { ["currentTimeInMinutes"] = "malformed" });
 
@@ -725,6 +745,7 @@ public sealed class MortalWoundRecoveryTests
         private static void ComposeAndPublishWoundStages(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
             AcceptedMechanicsWoundStageBundle bundle)
         {
+            var wholeTreeBefore = CaptureTreeBytes(fs.GameSessionPath);
             var method = ExactStatic(typeof(AcceptedMechanicsPlanAuthority), "GetOrBuildWoundValidated", 3);
             Assert.Equal(typeof(AcceptedMechanicsPlanningResult), method.ReturnType);
             Assert.Equal(typeof(FileSystemManager), method.GetParameters()[0].ParameterType);
@@ -736,6 +757,7 @@ public sealed class MortalWoundRecoveryTests
             Assert.Empty(Values(result, "Issues"));
             var plan = Assert.IsType<AcceptedMechanicsPlan>(Required(result, "Plan"));
             AssertPublishedWoundPlan(plan, bundle, Assert.Single(bundle.FinalPlan.AllocatedWoundIds));
+            AssertTreeBytesUnchanged(fs, wholeTreeBefore);
             var published = new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
                 .BindTo(lease)
                 .NormalizeAcceptedMechanicsAsync(backups: null)
@@ -779,10 +801,12 @@ public sealed class MortalWoundRecoveryTests
             Assert.Empty(Values(resolutionResult, "Issues"));
             var resolution = Required(resolutionResult, "Resolution");
             var governedBefore = CaptureAllGovernedBytes(fs);
+            var wholeTreeBefore = CaptureTreeBytes(fs.GameSessionPath);
             var composed = Invoke(compose, fs, lease, new GameResponse(), acceptedState, request, resolution);
             var plan = Assert.IsType<AcceptedMechanicsPlan>(Required(composed, "Plan"));
             AssertPublishedWoundPlan(plan, Assert.IsType<AcceptedMechanicsWoundStageBundle>(Required(composed, "WoundStageBundle")), woundId);
             AssertAllGovernedBytesUnchanged(fs, governedBefore);
+            AssertTreeBytesUnchanged(fs, wholeTreeBefore);
             Assert.Same(plan, new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
                 .BindTo(lease).NormalizeAcceptedMechanicsAsync(null).GetAwaiter().GetResult());
             Assert.NotEqual("untreated", ReadCanonicalWound(fs, woundId).Care.State);
@@ -946,6 +970,28 @@ public sealed class MortalWoundRecoveryTests
         {
             var full = fs.ResolvePath(path);
             return File.Exists(full) ? File.ReadAllBytes(full) : null;
+        }
+
+        private static IReadOnlyDictionary<string, byte[]> CaptureTreeBytes(string root) =>
+            Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
+                .OrderBy(static path => path, StringComparer.Ordinal)
+                .ToDictionary(
+                    path => Path.GetRelativePath(root, path).Replace('\\', '/'),
+                    File.ReadAllBytes,
+                    StringComparer.Ordinal);
+
+        private static void AssertTreeBytesUnchanged(
+            FileSystemManager fs,
+            IReadOnlyDictionary<string, byte[]> before)
+        {
+            var after = CaptureTreeBytes(fs.GameSessionPath);
+            Assert.Equal(before.Keys.OrderBy(static path => path, StringComparer.Ordinal),
+                after.Keys.OrderBy(static path => path, StringComparer.Ordinal));
+            foreach (var pair in before)
+            {
+                Assert.True(after.TryGetValue(pair.Key, out var actual), pair.Key);
+                Assert.True(pair.Value.AsSpan().SequenceEqual(actual), pair.Key);
+            }
         }
 
         private static void AssertBytesEqual(byte[]? expected, byte[]? actual, string path)
