@@ -26,6 +26,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         "npc_active_skill_exports_physical_capability",
         "npc_passive_skill_exports_physical_capability",
         "provider_owned_proof_may_target_combatant",
+        "provider_owned_proof_may_target_combatant_member",
         "target_owned_combatant_requires_promotion",
         "ordinary_capability_projection_comes_from_same_skill",
         "mastery_gate_remains_separate_skill_tier_requirement",
@@ -37,10 +38,14 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         "unicode_confusable_capability_ref_rejects",
         "inactive_skill_rejects",
         "retired_skill_rejects",
-        "wrong_owner_role_or_realm_rejects",
-        "spiritual_or_unknown_domain_rejects",
+        "wrong_owner_rejects",
+        "wrong_role_rejects",
+        "wrong_realm_rejects",
+        "spiritual_domain_rejects",
+        "unknown_domain_rejects",
         "invalid_severity_envelope_rejects",
-        "open_extension_or_limit_fields_reject",
+        "open_extension_field_rejects",
+        "open_operation_limits_field_rejects",
         "aggregate_operation_limit_overflow_rejects",
         "all_zero_operation_limit_rejects",
         "source_semantic_change_changes_proof",
@@ -77,6 +82,16 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
         Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
         Assert.NotNull(parsed.Wound);
+    }
+
+    [Theory]
+    [InlineData("provider_owned_proof_may_target_combatant")]
+    [InlineData("provider_owned_proof_may_target_combatant_member")]
+    public void FixtureControl_CombatTargetHasOneAcceptedCarrierAndIdentity(string name)
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(name, publication: false));
+
+        fixture.AssertAcceptedCombatWoundCarrier();
     }
 
     [Theory]
@@ -131,6 +146,18 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             scenario.ActorRole,
             publicationPlan);
         fixture.AssertPublicationExportReadsSelectedRoot(result);
+        if (scenario.Name == "unchanged_final_source_reexports_equal_proof")
+        {
+            var current = InvokeExportCurrent(fixture, scenario);
+            Assert.NotNull(current.Proof);
+            Assert.NotNull(result.Proof);
+            Assert.Equal(
+                ReadRequiredProperty(current.Proof!, "SourceSemanticFingerprint"),
+                ReadRequiredProperty(result.Proof!, "SourceSemanticFingerprint"));
+            Assert.Equal(
+                ReadRequiredProperty(current.Proof!, "ProofFingerprint"),
+                ReadRequiredProperty(result.Proof!, "ProofFingerprint"));
+        }
         return result;
     }
 
@@ -342,16 +369,18 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 OtherSkill(fixture, scenario)["skillId"] = sourceSkill["skillId"]!.DeepClone();
                 break;
             case "case_changed_skill_id_rejects":
-                OtherSkill(fixture, scenario)["skillId"] = "SKILL_FIELD_MEDICINE_01";
+                OtherSkill(fixture, scenario)["skillId"] = scenario.SkillId.ToUpperInvariant();
                 break;
             case "unicode_confusable_skill_id_rejects":
-                OtherSkill(fixture, scenario)["skillId"] = "skill_fieлd_medicine_01";
+                OtherSkill(fixture, scenario)["skillId"] =
+                    scenario.SkillId.Replace("i", "і", StringComparison.Ordinal);
                 break;
             case "duplicate_capability_ref_across_skill_kinds_rejects":
                 AddCapability(OtherSkill(fixture, scenario), CapabilityRef);
                 break;
             case "unicode_confusable_capability_ref_rejects":
-                AddCapability(OtherSkill(fixture, scenario), "fieӁd_medicine_guaranteed_care");
+                AddCapability(OtherSkill(fixture, scenario),
+                    CapabilityRef.Replace("i", "і", StringComparison.Ordinal));
                 break;
             case "inactive_skill_rejects":
                 sourceSkill["active"] = false;
@@ -359,18 +388,24 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             case "retired_skill_rejects":
                 sourceSkill["lifecycle"] = "retired";
                 break;
-            case "wrong_owner_role_or_realm_rejects":
+            case "wrong_realm_rejects":
                 fixture["realm"] = "chaos_sea";
                 break;
-            case "spiritual_or_unknown_domain_rejects":
+            case "spiritual_domain_rejects":
                 capability["woundDomain"] = "spiritual";
+                break;
+            case "unknown_domain_rejects":
+                capability["woundDomain"] = "unknown";
                 break;
             case "invalid_severity_envelope_rejects":
                 capability["minimumSeverityRank"] = 4;
                 capability["maximumSeverityRank"] = 1;
                 break;
-            case "open_extension_or_limit_fields_reject":
+            case "open_extension_field_rejects":
                 capability["callerMayOverride"] = true;
+                break;
+            case "open_operation_limits_field_rejects":
+                Limits(capability)["callerMayOverride"] = true;
                 break;
             case "aggregate_operation_limit_overflow_rejects":
                 Limits(capability)["maximumRecoveryPoints"] = long.MaxValue;
@@ -531,23 +566,20 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     }
                 }
                 break;
-            case "ordinary_capability_projection_comes_from_same_skill":
-                var projection = fixture.T060CapabilityProjection();
-                Assert.Equal(
-                    new[] { "active", "capabilityRef", "displayName", "lifecycle" },
-                    projection.Select(static entry => entry.Key).OrderBy(static key => key, StringComparer.Ordinal));
-                Assert.Equal(CapabilityRef, projection["capabilityRef"]!.GetValue<string>());
-                Assert.Null(projection["operationLimits"]);
-                Assert.Null(projection["proofFingerprint"]);
-                break;
-            case "mastery_gate_remains_separate_skill_tier_requirement":
-                Assert.Equal("skill_tier", fixture.SiblingMasteryRequirement["kind"]!.GetValue<string>());
-                Assert.Equal(fixture.Scenario.SkillId, fixture.SiblingMasteryRequirement["skillRef"]!.GetValue<string>());
-                Assert.Null(fixture.SiblingMasteryRequirement["capabilityRef"]);
-                break;
             case "proof_is_detached_and_immutable":
                 Assert.NotNull(result.Proof);
                 var beforeMutation = JsonSerializer.Serialize(result.Proof, result.Proof!.GetType());
+                var operationLimits = ReadRequiredProperty(result.Proof, "OperationLimits");
+                Assert.All(
+                    operationLimits.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
+                    static property => Assert.False(property.CanWrite));
+                var complicationKinds = ReadRequiredProperty(
+                    operationLimits,
+                    "RemovableComplicationKinds");
+                if (complicationKinds is IList mutableKinds)
+                {
+                    Assert.ThrowsAny<Exception>(() => mutableKinds.Add("forged"));
+                }
                 fixture.MutatePersistedSelectedSourceAfterExport();
                 Assert.Equal(beforeMutation, JsonSerializer.Serialize(result.Proof, result.Proof.GetType()));
                 break;
@@ -637,18 +669,25 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "touched_player_active_skill_reads_exact_final_after_image" => ("player", "activeSkills"),
             "player_passive_skill_exports_physical_capability" or
             "touched_player_passive_skill_reads_exact_final_after_image" => ("player", "passiveSkills"),
+            "target_owned_combatant_requires_promotion" => ("player", "activeSkills"),
             "npc_passive_skill_exports_physical_capability" => ("npc", "passiveSkills"),
             _ => ("npc", "activeSkills")
         };
         var actorRole = name.Contains("target_owned", StringComparison.Ordinal)
             ? "target"
             : "provider";
-        var providerKind = owner;
-        var providerId = owner == "player" ? "player_current" : "npc_field_medic_01";
-        var targetKind = name.Contains("combatant", StringComparison.Ordinal)
-            ? "combatant"
+        var providerKind = name == "wrong_owner_rejects" ? "player" : owner;
+        var providerId = providerKind == "player" ? "player_current" : "npc_field_medic_01";
+        var targetKind = name.Contains("combatant_member", StringComparison.Ordinal)
+            ? "combatant_member"
+            : name.Contains("combatant", StringComparison.Ordinal)
+                ? "combatant"
             : "player";
-        var targetId = targetKind == "combatant" ? "combatant_wounded_01" : "player_current";
+        var targetId = targetKind == "combatant_member"
+            ? "combatant_member_wounded_01"
+            : targetKind == "combatant" ? "combatant_wounded_01" : "player_current";
+        if (name == "wrong_role_rejects")
+            actorRole = "target";
         var expectedValid = !name.Contains("reject", StringComparison.Ordinal) &&
                             name != "target_owned_combatant_requires_promotion";
         return new CapabilityScenario(
@@ -711,8 +750,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             JsonObject contextRoot,
             CapabilityScenario scenario,
             JsonObject currentSource,
-            JsonObject finalSource,
-            JsonObject siblingMasteryRequirement)
+            JsonObject finalSource)
         {
             Root = root;
             FileSystem = fileSystem;
@@ -723,7 +761,6 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Scenario = scenario;
             CurrentSource = currentSource;
             FinalSource = finalSource;
-            SiblingMasteryRequirement = siblingMasteryRequirement;
         }
 
         internal const string WoundId = "wound_test_torn_side";
@@ -740,7 +777,6 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         internal CapabilityScenario Scenario { get; }
         internal JsonObject CurrentSource { get; }
         internal JsonObject FinalSource { get; }
-        internal JsonObject SiblingMasteryRequirement { get; }
 
         internal static CapabilityAuthorityFixture Create(CapabilityScenario scenario)
         {
@@ -775,16 +811,61 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             AssertCanonicalFixtureShape(currentSource);
             AssertCanonicalFixtureShape(finalSource);
             WriteCanonicalSkillSources(fileSystem, currentSource);
-            var woundRoot = WoundContractTestData.CreateActiveWound(woundId: WoundId);
+            var combatTarget = scenario.TargetKind is "combatant" or "combatant_member";
+            var carrierPath = scenario.TargetKind == "combatant_member"
+                ? WoundCarrierCatalog.AlliesPath
+                : WoundCarrierCatalog.EnemiesPath;
+            var woundRoot = combatTarget
+                ? WoundContractTestData.CreateActiveWound(
+                    woundId: WoundId,
+                    ownerKind: scenario.TargetKind,
+                    ownerId: scenario.TargetId,
+                    carrierPath: carrierPath)
+                : WoundContractTestData.CreateActiveWound(woundId: WoundId);
             var parsed = WoundMaterializationContract.Parse(woundRoot.ToJsonString(), "wound");
             Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
-            File.WriteAllText(
-                fileSystem.ResolvePath("game_state/player/wounds.json"),
-                WoundContractTestData.CreatePlayerCarrier(woundRoot).ToJsonString());
+            if (combatTarget)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(
+                    fileSystem.ResolvePath(carrierPath))!);
+                var combatant = scenario.TargetKind == "combatant_member"
+                    ? new JsonObject
+                    {
+                        ["combatantId"] = "combatant_group_01",
+                        ["isGroup"] = true,
+                        ["members"] = new JsonArray(new JsonObject
+                        {
+                            ["memberId"] = scenario.TargetId,
+                            ["activeWounds"] = new JsonArray(woundRoot.DeepClone())
+                        })
+                    }
+                    : new JsonObject
+                    {
+                        ["combatantId"] = scenario.TargetId,
+                        ["activeWounds"] = new JsonArray(woundRoot.DeepClone())
+                    };
+                File.WriteAllText(
+                    fileSystem.ResolvePath(carrierPath),
+                    new JsonObject
+                    {
+                        [scenario.TargetKind == "combatant_member" ? "alliesData" : "enemiesData"] =
+                            new JsonArray(combatant)
+                    }.ToJsonString());
+            }
+            else
+            {
+                File.WriteAllText(
+                    fileSystem.ResolvePath("game_state/player/wounds.json"),
+                    WoundContractTestData.CreatePlayerCarrier(woundRoot).ToJsonString());
+            }
             File.WriteAllText(
                 fileSystem.ResolvePath("game_state/wounds/identity_index.json"),
                 WoundContractTestData.CreateIdentityIndex(
-                    WoundContractTestData.CreateIdentityEntry(woundId: WoundId)).ToJsonString());
+                    WoundContractTestData.CreateIdentityEntry(
+                        woundId: WoundId,
+                        ownerKind: combatTarget ? scenario.TargetKind : "player",
+                        ownerId: combatTarget ? scenario.TargetId : "player_current",
+                        carrierPath: combatTarget ? carrierPath : "game_state/player/wounds.json")).ToJsonString());
             File.WriteAllText(
                 fileSystem.ResolvePath("game_state/wounds/history.json"),
                 WoundContractTestData.CreateHistory(WoundContractTestData.CreateTransition()).ToJsonString());
@@ -815,7 +896,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 new JsonObject
                 {
                     ["schemaVersion"] = 1,
-                    ["realm"] = "mortal_world",
+                    ["realm"] = currentSource["realm"]!.GetValue<string>(),
                     ["targetKind"] = scenario.TargetKind,
                     ["targetId"] = scenario.TargetId,
                     ["providerKind"] = scenario.ProviderKind,
@@ -824,14 +905,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 },
                 scenario,
                 currentSource,
-                finalSource,
-                new JsonObject
-                {
-                    ["kind"] = "skill_tier",
-                    ["skillRef"] = scenario.SkillId,
-                    ["minimumTier"] = 2,
-                    ["targetRole"] = scenario.ActorRole
-                });
+                finalSource);
         }
 
         public void Dispose()
@@ -847,13 +921,27 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             WriteCanonicalSkillSources(FileSystem, CurrentSource);
         }
 
-        internal JsonObject T060CapabilityProjection() => new()
+        internal void AssertAcceptedCombatWoundCarrier()
         {
-            ["capabilityRef"] = CapabilityRef,
-            ["displayName"] = Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray)["displayName"]!.DeepClone(),
-            ["lifecycle"] = Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray)["lifecycle"]!.DeepClone(),
-            ["active"] = Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray)["active"]!.DeepClone()
-        };
+            Assert.True(Scenario.TargetKind is "combatant" or "combatant_member");
+            var enemy = ReadRoot(WoundCarrierCatalog.EnemiesPath);
+            var ally = ReadRoot(WoundCarrierCatalog.AlliesPath);
+            var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
+                PlayerWounds: null,
+                NpcWounds: null,
+                EnemyCombatants: enemy,
+                AllyCombatants: ally,
+                AfterlifeProfiles: null));
+            Assert.Empty(catalog.Issues);
+            Assert.True(catalog.TryResolveOne(WoundId, out var occurrence));
+            Assert.Equal(Scenario.TargetKind, occurrence.Coordinate.OwnerKind);
+            Assert.Equal(Scenario.TargetId, occurrence.Coordinate.OwnerId);
+            Assert.Equal(
+                Scenario.TargetKind == "combatant_member"
+                    ? WoundCarrierCatalog.AlliesPath
+                    : WoundCarrierCatalog.EnemiesPath,
+                occurrence.Coordinate.CarrierPath);
+        }
 
         internal AcceptedMechanicsInput CreatePublicationPlanningInput()
         {
@@ -1033,6 +1121,14 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             return File.Exists(fullPath)
                 ? new CanonicalBeforeImage(true, File.ReadAllBytes(fullPath))
                 : new CanonicalBeforeImage(false, null);
+        }
+
+        private JsonObject? ReadRoot(string path)
+        {
+            var fullPath = FileSystem.ResolvePath(path);
+            return File.Exists(fullPath)
+                ? JsonNode.Parse(File.ReadAllText(fullPath))!.AsObject()
+                : null;
         }
 
         private static void WriteCanonicalSkillSources(FileSystemManager fileSystem, JsonObject source)
