@@ -123,13 +123,15 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         var acceptedState = BuildAcceptedState(fixture);
         var coordinates = CreateCoordinates(fixture, acceptedState);
         var publicationPlan = BuildPublicationPlan(fixture);
-        return InvokeCapabilityExporter(
+        var result = InvokeCapabilityExporter(
             "ExportForPublication",
             acceptedState,
             coordinates,
             CapabilityRef,
             scenario.ActorRole,
             publicationPlan);
+        fixture.AssertPublicationExportReadsSelectedRoot(result);
+        return result;
     }
 
     private static object BuildAcceptedState(CapabilityAuthorityFixture fixture)
@@ -204,19 +206,14 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
     private static object BuildPublicationPlan(CapabilityAuthorityFixture fixture)
     {
-        var method = Assert.Single(
-            typeof(AcceptedMechanicsPlanAuthority).GetMethods(
-                BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
-            candidate =>
-                candidate.Name == "TryPeekValidated" &&
-                candidate.GetParameters().Length == 4);
-        var arguments = new object?[] { fixture.FileSystem, fixture.Lease, null, null };
-        var found = Assert.IsType<bool>(Invoke(method, arguments));
-        Assert.True(found, "The fixture must obtain the publication plan through the production accepted-plan authority.");
-        Assert.NotNull(arguments[3]);
-        var planningResult = arguments[3]!;
-        fixture.AssertFinalSkillAfterImageIsBound(planningResult);
-        return ReadValidTypedResult(planningResult, "Plan", "publication plan");
+        var result = AcceptedMechanicsPlanAuthority.GetOrBuildValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            fixture.CreatePublicationPlanningInput());
+        Assert.True(result.Success, DescribeIssues(result.Issues));
+        Assert.NotNull(result.Plan);
+        fixture.AssertPublicationPlanBindsOnlyTheSelectedRoot(result.Plan!);
+        return result.Plan!;
     }
 
     private static CapabilityProofView InvokeCapabilityExporter(
@@ -760,7 +757,19 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 ? currentSource.DeepClone().AsObject()
                 : currentSource;
             if (scenario.Publication)
+            {
                 ApplyScenario(finalSource, scenario);
+                if (scenario.Name.StartsWith("untouched_", StringComparison.Ordinal))
+                {
+                    // The untouched plan deliberately contains no skill-root after-image.
+                    // A distinct still-valid live root proves that ExportForPublication
+                    // must read the lease-bound canonical source rather than any final root.
+                    Limits(Capability(Skill(
+                        currentSource,
+                        scenario.SourceOwner,
+                        scenario.SourceSkillArray)))["maximumRecoveryPoints"] = 2;
+                }
+            }
             else
                 ApplyScenario(currentSource, scenario);
             AssertCanonicalFixtureShape(currentSource);
@@ -846,15 +855,184 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             ["active"] = Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray)["active"]!.DeepClone()
         };
 
-        internal void AssertFinalSkillAfterImageIsBound(object planningResult)
+        internal AcceptedMechanicsInput CreatePublicationPlanningInput()
         {
-            var finalSkill = Skill(FinalSource, Scenario.SourceOwner, Scenario.SourceSkillArray);
-            var serializedPlan = JsonSerializer.Serialize(planningResult, planningResult.GetType());
-            Assert.Contains(finalSkill["skillId"]!.GetValue<string>(), serializedPlan, StringComparison.Ordinal);
-            Assert.DoesNotContain(
-                JsonSerializer.Serialize(CurrentSource, CurrentSource.GetType()),
-                serializedPlan,
-                StringComparison.Ordinal);
+            var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
+            var history = ResourceHistoryState.CreateValidated(
+                Array.Empty<ResourceTransition>(),
+                definitions).History!;
+            var owners = ResourceOwnerAuthority.Build(
+                new ResourceOwnerAuthorityInput(
+                    Array.Empty<ResourceOwnerExport>(),
+                    Array.Empty<ResourceOwnerExport>(),
+                    Array.Empty<ResourceOwnerKey>()));
+            var sources = ResourceMutationSourceCatalog.Create(
+                Array.Empty<ResourceMutationSourceExport>()).Catalog!;
+            var commands = ResourceAcceptedTurnInputComposer.Parse(null);
+            var afterImages = UsesFinalAfterImage
+                ? new Dictionary<string, JsonObject>(StringComparer.Ordinal)
+                {
+                    [SelectedSkillRootPath] = SelectedSkillRoot(FinalSource)
+                }
+                : new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+            var planningContext = new AcceptedMechanicsPlanningContext(
+                definitions.ToCanonicalRoot(),
+                definitions,
+                new ResourceStateLedger(Array.Empty<ResourceStateEntry>()),
+                history,
+                owners,
+                sources,
+                commands,
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["entries"] = new JsonArray()
+                },
+                effectPlan: null,
+                ownerCompanionAfterImages: afterImages);
+            var beforeImages = PublicationBeforeImages(afterImages.Keys);
+            var fingerprint = WoundAcceptedEventSetFingerprint.Compute(new[]
+            {
+                new WoundAcceptedEventAuthority(
+                    EventRef,
+                    "mortal_wound_treatment",
+                    "mortal_wound_treatment_publication_plan",
+                    "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+            });
+            var fingerprints = new AcceptedMechanicsAuthorityFingerprints(
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint,
+                fingerprint);
+            return new AcceptedMechanicsInput(
+                "session_capability_publication",
+                "request_capability_publication",
+                "snapshot_capability_publication",
+                "mortal_world",
+                42,
+                new JsonObject { ["acceptedEvents"] = new JsonArray() },
+                commands.Root,
+                new JsonObject(),
+                new JsonObject(),
+                new JsonObject { ["authorityKind"] = "capability_publication" },
+                fingerprints,
+                beforeImages,
+                Array.Empty<ValidationIssue>(),
+                planningContext);
+        }
+
+        internal void AssertPublicationPlanBindsOnlyTheSelectedRoot(
+            AcceptedMechanicsPlan plan)
+        {
+            var afterImages = plan.OwnerCompanionAfterImages;
+            if (!UsesFinalAfterImage)
+            {
+                Assert.False(
+                    afterImages.ContainsKey(SelectedSkillRootPath),
+                    "An untouched publication must leave its selected skill root lease-bound.");
+                return;
+            }
+
+            Assert.True(afterImages.TryGetValue(SelectedSkillRootPath, out var actual));
+            Assert.Equal(
+                SelectedSkillRoot(FinalSource).ToJsonString(),
+                actual!.ToJsonString());
+        }
+
+        internal void AssertPublicationExportReadsSelectedRoot(CapabilityProofView result)
+        {
+            if (!Scenario.ExpectedValid)
+                return;
+
+            Assert.NotNull(result.Proof);
+            var proof = result.Proof!;
+            Assert.Equal(
+                SelectedSkillRootPath,
+                Assert.IsType<string>(ReadRequiredProperty(proof, "SourcePath")));
+            var limits = ReadRequiredProperty(proof, "OperationLimits");
+            Assert.Equal(
+                (long)ExpectedPublicationRecoveryPoints,
+                Convert.ToInt64(ReadRequiredProperty(limits, "MaximumRecoveryPoints")));
+        }
+
+        private bool UsesFinalAfterImage =>
+            Scenario.Publication &&
+            !Scenario.Name.StartsWith("untouched_", StringComparison.Ordinal);
+
+        private int ExpectedPublicationRecoveryPoints =>
+            Limits(Capability(Skill(
+                UsesFinalAfterImage ? FinalSource : CurrentSource,
+                Scenario.SourceOwner,
+                Scenario.SourceSkillArray)))["maximumRecoveryPoints"]!.GetValue<int>();
+
+        private string SelectedSkillRootPath => Scenario.SourceOwner switch
+        {
+            "player" when Scenario.SourceSkillArray == "activeSkills" =>
+                "game_state/player/skills_active.json",
+            "player" => "game_state/player/skills_passive.json",
+            _ => "game_state/npcs/npc_core.json"
+        };
+
+        private JsonObject SelectedSkillRoot(JsonObject source)
+        {
+            var player = Assert.IsType<JsonObject>(source["player"]);
+            var npc = Assert.IsType<JsonObject>(source["npc"]);
+            return Scenario.SourceOwner switch
+            {
+                "player" when Scenario.SourceSkillArray == "activeSkills" => new JsonObject
+                {
+                    ["activeSkillChanges"] = player["activeSkills"]!.DeepClone()
+                },
+                "player" => new JsonObject
+                {
+                    ["passiveSkillChanges"] = player["passiveSkills"]!.DeepClone()
+                },
+                _ => new JsonObject
+                {
+                    ["NPCs"] = new JsonArray(new JsonObject
+                    {
+                        ["npcId"] = npc["ownerId"]!.DeepClone(),
+                        ["activeSkills"] = npc["activeSkills"]!.DeepClone(),
+                        ["passiveSkills"] = npc["passiveSkills"]!.DeepClone()
+                    })
+                }
+            };
+        }
+
+        private Dictionary<string, CanonicalBeforeImage> PublicationBeforeImages(
+            IEnumerable<string> touchedSkillPaths)
+        {
+            var paths = new[]
+            {
+                ResourceMaterializationContract.DefinitionsPath,
+                ResourceMaterializationContract.StatePath,
+                ResourceMaterializationContract.HistoryPath,
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                EffectAcceptedTurnPlan.IdentityIndexPath
+            }.Concat(touchedSkillPaths);
+            return paths.Distinct(StringComparer.Ordinal).ToDictionary(
+                static path => path,
+                path => ReadCanonicalBeforeImage(path),
+                StringComparer.Ordinal);
+        }
+
+        private CanonicalBeforeImage ReadCanonicalBeforeImage(string path)
+        {
+            var fullPath = FileSystem.ResolvePath(path);
+            return File.Exists(fullPath)
+                ? new CanonicalBeforeImage(true, File.ReadAllBytes(fullPath))
+                : new CanonicalBeforeImage(false, null);
         }
 
         private static void WriteCanonicalSkillSources(FileSystemManager fileSystem, JsonObject source)
