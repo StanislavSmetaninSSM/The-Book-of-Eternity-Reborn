@@ -35,7 +35,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         var preparationResult = Invoke(ExactStaticMethod(legacyPlanner, "Prepare", 3), new object?[]
         {
-            fixture.Binding, resolution, before.Wound
+            ReadAcceptedStateMember(acceptedState, "Binding"), resolution, before.Wound
         });
         var preparation = ReadValidTypedResult(preparationResult, "Preparation", "legacy preparation");
         AssertClosedProperties(preparation, new[]

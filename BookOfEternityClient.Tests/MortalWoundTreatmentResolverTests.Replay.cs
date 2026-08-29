@@ -20,14 +20,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.True(planner is not null,
             "T070 must compose a treatment publication through the common accepted-plan planner; T061 never appends history directly.");
 
-        var compose = ExactStaticMethod(planner!, "ComposeMortalWoundTreatmentPublication", 7);
+        var compose = ExactStaticMethod(planner!, "ComposeMortalWoundTreatmentPublication", 6);
         Assert.Equal("FileSystemManager", compose.GetParameters()[0].ParameterType.Name);
         Assert.Equal("CanonicalWriteLease", compose.GetParameters()[1].ParameterType.Name);
-        Assert.Equal("WoundAcceptedTurnBinding", compose.GetParameters()[2].ParameterType.Name);
-        Assert.Equal("GameResponse", compose.GetParameters()[3].ParameterType.Name);
-        Assert.Equal("MortalWoundTreatmentAcceptedStateAuthority", compose.GetParameters()[4].ParameterType.Name);
-        Assert.Equal("MortalWoundTreatmentAttemptRequest", compose.GetParameters()[5].ParameterType.Name);
-        Assert.Equal("MortalWoundTreatmentResolution", compose.GetParameters()[6].ParameterType.Name);
+        Assert.Equal("GameResponse", compose.GetParameters()[2].ParameterType.Name);
+        Assert.Equal("MortalWoundTreatmentAcceptedStateAuthority", compose.GetParameters()[3].ParameterType.Name);
+        Assert.Equal("MortalWoundTreatmentAttemptRequest", compose.GetParameters()[4].ParameterType.Name);
+        Assert.Equal("MortalWoundTreatmentResolution", compose.GetParameters()[5].ParameterType.Name);
         Assert.DoesNotContain(compose.GetParameters(), static parameter =>
             typeof(System.Text.Json.Nodes.JsonNode).IsAssignableFrom(parameter.ParameterType) ||
             parameter.ParameterType.Name.Contains("History", StringComparison.Ordinal) ||

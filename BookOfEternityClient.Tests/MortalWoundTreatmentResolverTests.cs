@@ -156,60 +156,35 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.True(ValidationService.IsProductionValidMortalActiveSkill(provider.RootElement));
     }
 
-    [Theory]
-    [MemberData(nameof(ProcedureRows))]
-    public void FixtureControl_ProductionEffectRootsExposeOrderedFateAndRollMode(
-        string scenario)
+    [Fact]
+    public void AcceptedStateExport_UsesOnlyTheCanonicalTurnAndCarriesItsOwnProductionBinding()
     {
-        var descriptor = CreateScenario(scenario, "procedure");
-        var roots = CreateEffectRoots(descriptor);
-        var snapshot = EffectMechanicsSnapshot.Build(new EffectMechanicsInput(
-            new EffectCarrierCatalogInput(roots.PlayerEffects, null, null, null, null, null),
-            roots.IdentityIndex));
+        // T066 is the one admission boundary for a treatment attempt.  This control
+        // deliberately prepares a real pending turn instead of supplying either a
+        // WoundAcceptedTurnBinding or an accepted-event/fingerprint surrogate.
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        var exported = fixture.ExportCurrent();
 
-        Assert.True(snapshot.IsAccepted, DescribeIssues(snapshot.Issues));
-        var carrierOrder = roots.PlayerEffects["activeEffects"]!.AsArray()
-            .OfType<JsonObject>()
-            .Where(effect => effect["effectId"]!.GetValue<string>()
-                .StartsWith("effect_fate_shield_", StringComparison.Ordinal))
-            .Select(effect => effect["effectId"]!.GetValue<string>())
-            .ToArray();
-        Assert.Equal(
-            new[] { "effect_fate_shield_newer", "effect_fate_shield_older" },
-            carrierOrder);
-        var effects = roots.PlayerEffects["activeEffects"]!.AsArray()
-            .OfType<JsonObject>()
-            .Where(effect => effect["effectId"]!.GetValue<string>()
-                .StartsWith("effect_fate_shield_", StringComparison.Ordinal))
-            .OrderBy(effect => effect["chronology"]!["createdAtTurn"]!.GetValue<int>())
-            .ToArray();
-        Assert.Collection(
-            effects,
-            effect =>
-            {
-                Assert.Equal("effect_fate_shield_older", effect["effectId"]!.GetValue<string>());
-                Assert.Equal(37, effect["chronology"]!["createdAtTurn"]!.GetValue<int>());
-            },
-            effect =>
-            {
-                Assert.Equal("effect_fate_shield_newer", effect["effectId"]!.GetValue<string>());
-                Assert.Equal(42, effect["chronology"]!["createdAtTurn"]!.GetValue<int>());
-            });
-        var identities = roots.IdentityIndex["entries"]!.AsArray().OfType<JsonObject>()
-            .ToDictionary(entry => entry["effectId"]!.GetValue<string>(), StringComparer.Ordinal);
-        foreach (var effect in effects)
-        {
-            var effectId = effect["effectId"]!.GetValue<string>();
-            var createdAtTurn = effect["chronology"]!["createdAtTurn"]!.GetValue<int>();
-            var identity = identities[effectId];
-            var transition = identity["transitions"]![0]!.AsObject();
-            Assert.Equal(createdAtTurn, identity["createdAtTurn"]!.GetValue<int>());
-            Assert.Equal(createdAtTurn, transition["turn"]!.GetValue<int>());
-            Assert.Equal(effect["chronology"]!["createdEventRef"]!.GetValue<string>(),
-                transition["eventRef"]!.GetValue<string>());
-            Assert.Equal(effect["chronology"]!["lastTransitionId"]!.GetValue<string>(),
-                transition["transitionId"]!.GetValue<string>());
-        }
+        Assert.Equal("MortalWoundTreatmentAcceptedStateAuthorityResult", exported.GetType().Name);
+        AssertClosedProperties(exported, new[] { "IsValid", "Issues", "Authority" });
+        var acceptedState = ReadValidTypedResult(exported, "Authority", "T066 accepted-state export");
+        Assert.Equal("MortalWoundTreatmentAcceptedStateAuthority", acceptedState.GetType().Name);
+        var binding = Assert.IsType<WoundAcceptedTurnBinding>(
+            ReadAcceptedStateMember(acceptedState, "Binding"));
+        Assert.False(string.IsNullOrWhiteSpace(binding.SessionId));
+        Assert.False(string.IsNullOrWhiteSpace(binding.RequestId));
+        Assert.False(string.IsNullOrWhiteSpace(binding.SnapshotToken));
+        Assert.Equal("mortal_world", binding.Realm);
+        Assert.True(binding.Turn > 0);
+        Assert.NotEmpty(binding.AcceptedEvents);
+        Assert.False(string.IsNullOrWhiteSpace(binding.AcceptedEventsFingerprint));
+        Assert.DoesNotContain(
+            acceptedState.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
+            static property => property.PropertyType == typeof(JsonObject) ||
+                               property.PropertyType == typeof(JsonArray) ||
+                               property.Name.Contains("Dice", StringComparison.OrdinalIgnoreCase));
     }
 
     [Theory]
@@ -397,129 +372,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static JsonObject Band(string id, int? minimum, int? maximum, string category, JsonArray result) => new() { ["bandId"] = id, ["minimumMargin"] = minimum, ["maximumMargin"] = maximum, ["category"] = category, ["result"] = result };
     private static JsonObject CourseMutation(int ordinal) => new() { ["kind"] = "consume_requirement", ["scope"] = "course_milestone", ["milestoneOrdinal"] = ordinal, ["requirementIndex"] = 0 };
     private static JsonObject CourseMilestone(int ordinal, long afterMinutes, string completion, JsonArray result) => new() { ["ordinal"] = ordinal, ["afterMinutes"] = afterMinutes, ["requirements"] = new JsonArray(new JsonObject { ["kind"] = "item_quantity", ["itemRef"] = "antibiotic_dose", ["quantity"] = 1, ["ownerRole"] = "target" }), ["category"] = "success", ["completion"] = completion, ["result"] = result };
-    private static EffectRoots CreateEffectRoots(ResolverScenario scenario)
-    {
-        var effects = new List<JsonObject>
-        {
-            // Carrier order must not choose the shield: newer deliberately precedes
-            // older, while the production arbiter still chooses createdAtTurn 37.
-            CreateMaterializedFateShield("effect_fate_shield_newer", 42),
-            CreateMaterializedFateShield("effect_fate_shield_older", 37)
-        };
-        if (scenario.RollMode is "advantage" or "disadvantage")
-            effects.Add(CreateRollModeEffect(scenario.RollMode));
-        return new EffectRoots(
-            new JsonObject
-            {
-                ["schemaVersion"] = 1,
-                ["activeEffects"] = new JsonArray(effects.Select(static effect => (JsonNode)effect).ToArray())
-            },
-            CreateEffectIdentityIndex(effects));
-    }
-
-    private static JsonObject CreateMaterializedFateShield(string effectId, int createdAtTurn)
-    {
-        // Let the accepted-turn effect planner materialize the built-in source.  It
-        // supplies the full uses lifetime (including consuming trigger IDs) and the
-        // canonical built-in component/trigger topology; the fixture changes only
-        // independent carrier identity and chronology afterwards.
-        var planned = BuildFateShieldPlan();
-        Assert.True(planned.Success, DescribeIssues(planned.Issues));
-        var effect = Assert.Single(planned.Plan!.ActiveEffects).DeepClone().AsObject();
-        effect["effectId"] = effectId;
-        effect["chronology"]!["createdAtTurn"] = createdAtTurn;
-        effect["chronology"]!["lastTransitionTurn"] = createdAtTurn;
-        return effect;
-    }
-
-    private static EffectAcceptedTurnPlanningResult BuildFateShieldPlan()
-    {
-        var commands = new JsonObject
-        {
-            ["effectChanges"] = new JsonArray(new JsonObject
-            {
-                ["operation"] = "apply",
-                ["target"] = new JsonObject { ["kind"] = "player", ["targetId"] = "player_current" },
-                ["source"] = new JsonObject
-                {
-                    ["kind"] = EffectBuiltInSourceCatalog.FateShieldSourceKind,
-                    ["sourceId"] = EffectBuiltInSourceCatalog.FateShieldSourceId,
-                    ["definitionKey"] = EffectBuiltInSourceCatalog.FateShieldDefinitionKey
-                },
-                ["parameters"] = new JsonObject(),
-                ["eventRef"] = new JsonObject { ["kind"] = "accepted_turn", ["authorityId"] = "turn_42" },
-                ["reason"] = "T061 canonical Fate Shield fixture."
-            }),
-            ["effectResolutionReceipts"] = new JsonArray()
-        };
-        var input = new EffectAcceptedTurnInput(
-            "session_t061_fate",
-            "snapshot_t061_fate",
-            commands,
-            EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
-                EffectBuiltInSourceCatalog.CreateCanonicalExports(),
-                Array.Empty<EffectSourceExport>(),
-                new HashSet<string>(StringComparer.Ordinal),
-                new HashSet<string>(StringComparer.Ordinal)
-                {
-                    EffectBuiltInSourceCatalog.FateShieldApplicationAuthority
-                })),
-            EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
-                new[] { new EffectTargetExport("mortal_world", "player", "player_current", SameTurn: false) },
-                Array.Empty<EffectTargetExport>(),
-                new HashSet<string>(StringComparer.Ordinal),
-                null)),
-            new JsonObject
-            {
-                ["turn"] = 42,
-                ["events"] = new JsonArray(new JsonObject
-                {
-                    ["kind"] = "accepted_turn", ["authorityId"] = "turn_42",
-                    ["eventRef"] = "turn_42:accepted_effect"
-                }),
-                ["lifecycleEvents"] = new JsonArray()
-            },
-            PreTurnCarriers: new EffectCarrierCatalogInput(null, null, null, null, null, null));
-        return EffectAcceptedTurnPlanner.Build(
-            input,
-            "t061_fate_shield_fixture",
-            new EffectIdentityFactory());
-    }
-
-    private static JsonObject CreateRollModeEffect(string rollMode)
-    {
-        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("player", "roll_modifier");
-        effect["effectId"] = "effect_roll_modifier_" + rollMode;
-        effect["components"]![0]!["payload"] = new JsonObject
-        {
-            ["operations"] = new JsonArray("skill_check"),
-            ["contribution"] = rollMode
-        };
-        return effect;
-    }
-
-    private static JsonObject CreateEffectIdentityIndex(IEnumerable<JsonObject> effects)
-    {
-        var rows = effects.ToArray();
-        var index = EffectMaterializationTestFixture.CreateIdentityIndex(rows);
-        var entries = index["entries"]!.AsArray().OfType<JsonObject>().ToArray();
-        for (var ordinal = 0; ordinal < entries.Length; ordinal++)
-        {
-            var effect = rows[ordinal];
-            var createdAtTurn = effect["chronology"]!["createdAtTurn"]!.GetValue<int>();
-            var eventRef = $"turn_{createdAtTurn}:fate_shield_created:{ordinal + 1}";
-            var transitionId = $"effect_transition_fate_shield_{ordinal + 1}";
-            entries[ordinal]["createdAtTurn"] = createdAtTurn;
-            var transition = entries[ordinal]["transitions"]![0]!.AsObject();
-            transition["transitionId"] = transitionId;
-            transition["turn"] = createdAtTurn;
-            transition["eventRef"] = eventRef;
-            effect["chronology"]!["createdEventRef"] = eventRef;
-            effect["chronology"]!["lastTransitionId"] = transitionId;
-        }
-        return index;
-    }
-
     private static JsonObject CreateCanonicalStack(string itemId, int count)
     {
         var item = MortalItemTestFixture.CreateCanonicalRoot(itemId);
@@ -1187,6 +1039,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
         return value;
     }
 
+    private static object ReadAcceptedStateMember(object acceptedState, string name)
+    {
+        var property = acceptedState.GetType().GetProperty(
+            name,
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        Assert.NotNull(property);
+        var value = property.GetValue(acceptedState);
+        Assert.NotNull(value);
+        return value;
+    }
+
     private static object ReadRequiredProperty(object?[] arguments, int index, string boundary)
     {
         var value = arguments[index];
@@ -1236,31 +1099,23 @@ public sealed partial class MortalWoundTreatmentResolverTests
         int ExpectedIntentCount,
         string? ExpectedFateEffectId);
 
-    private sealed record EffectRoots(JsonObject PlayerEffects, JsonObject IdentityIndex);
-
     private sealed class AcceptedStateFixture : IDisposable
     {
         private AcceptedStateFixture(
             string root,
             FileSystemManager fileSystem,
             FileSystemManager.CanonicalWriteLease lease,
-            WoundAcceptedTurnBinding binding,
-            JsonObject context,
             string woundId)
         {
             Root = root;
             FileSystem = fileSystem;
             Lease = lease;
-            Binding = binding;
-            Context = context;
             WoundId = woundId;
         }
 
         private string Root { get; }
         private FileSystemManager FileSystem { get; }
         private FileSystemManager.CanonicalWriteLease Lease { get; }
-        private WoundAcceptedTurnBinding Binding { get; }
-        private JsonObject Context { get; }
         private string WoundId { get; }
 
         internal static AcceptedStateFixture Create(ResolverScenario scenario)
@@ -1275,8 +1130,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
                          {
                              "game_state/world/world_time.json",
                              "input/turn_request.json",
-                             EffectCarrierCatalog.PlayerPath,
-                             EffectIdentityState.StatePath,
                              WoundIdentityState.StatePath,
                              WoundHistoryState.HistoryPath,
                              "game_state/inventory/items.json",
@@ -1337,56 +1190,33 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         : MortalItemTestFixture.CreateIndexForCarriers(
                             (sterileThread, "npc_inventory", "field_medic_01", null),
                             (dose, "player_inventory", "player", null)).ToJsonString());
-                File.WriteAllText(
-                    fileSystem.ResolvePath("input/turn_request.json"),
-                    new JsonObject
+                var preparedTurn = new LiveTurnPreparationService(fileSystem)
+                    .PrepareAsync(new LiveTurnPreparationOptions
                     {
-                        ["sessionId"] = scenario.AcceptedState["sessionId"]!.DeepClone(),
-                        ["requestId"] = scenario.AcceptedState["requestId"]!.DeepClone(),
-                        ["turnNumber"] = scenario.AcceptedState["turn"]!.DeepClone(),
-                        ["gameMode"] = "normal",
-                        ["preGeneratedDices1d20"] = scenario.AcceptedState["acceptedDice"]!.DeepClone()
-                    }.ToJsonString());
-                var effectRoots = CreateEffectRoots(scenario);
-                File.WriteAllText(
-                    fileSystem.ResolvePath(EffectCarrierCatalog.PlayerPath),
-                    effectRoots.PlayerEffects.ToJsonString());
-                File.WriteAllText(
-                    fileSystem.ResolvePath(EffectIdentityState.StatePath),
-                    effectRoots.IdentityIndex.ToJsonString());
-
-                var acceptedEvents = new[]
-                {
-                    new WoundAcceptedEventAuthority(
-                        scenario.EventRef,
-                        "mortal_wound_treatment",
-                        "t061_accepted_event_authority",
-                        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                };
-                var binding = new WoundAcceptedTurnBinding(
+                        SessionId = scenario.AcceptedState["sessionId"]!.GetValue<string>(),
+                        RequestId = scenario.AcceptedState["requestId"]!.GetValue<string>(),
+                        TurnNumber = scenario.AcceptedState["turn"]!.GetValue<int>(),
+                        PlayerAction = "T061 canonical treatment attempt preparation.",
+                        CurrentRealm = "Mortal World",
+                        PreGeneratedDices1d20 = scenario.AcceptedState["acceptedDice"]!
+                            .AsArray()
+                            .Select(static die => die!.GetValue<int>())
+                            .ToArray()
+                    })
+                    .GetAwaiter()
+                    .GetResult();
+                Assert.Equal("input/turn_request.json", preparedTurn.TurnRequestPath);
+                Assert.Equal(
                     scenario.AcceptedState["sessionId"]!.GetValue<string>(),
+                    preparedTurn.SessionId);
+                Assert.Equal(
                     scenario.AcceptedState["requestId"]!.GetValue<string>(),
-                    scenario.AcceptedState["snapshotToken"]!.GetValue<string>(),
-                    "mortal_world",
-                    scenario.AcceptedState["turn"]!.GetValue<int>(),
-                    acceptedEvents,
-                    WoundAcceptedEventSetFingerprint.Compute(acceptedEvents));
+                    preparedTurn.RequestId);
                 var lease = fileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
                 return new AcceptedStateFixture(
                     root,
                     fileSystem,
                     lease,
-                    binding,
-                    new JsonObject
-                    {
-                        ["schemaVersion"] = 1,
-                        ["realm"] = "mortal_world",
-                        ["targetKind"] = "player",
-                        ["targetId"] = "player_current",
-                        ["providerKind"] = "npc",
-                        ["providerId"] = "field_medic_01",
-                        ["currentLocationId"] = "loc_field_clinic_001"
-                    },
                     scenario.Before["woundId"]!.GetValue<string>());
             }
             catch
@@ -1396,35 +1226,27 @@ public sealed partial class MortalWoundTreatmentResolverTests
             }
         }
 
-        internal object GetAcceptedState()
+        internal object ExportCurrent()
         {
             var authorityType = typeof(WoundMaterializationContract).Assembly.GetType(
-                "BookOfEternityClient.Services.MortalWoundTreatmentAuthority",
+                "BookOfEternityClient.Services.MortalWoundTreatmentAcceptedStateAuthority",
                 throwOnError: false,
                 ignoreCase: false);
             Assert.NotNull(authorityType);
-            var parseContext = ExactStaticMethod(authorityType, "ParseContext", 2);
-            var parsedContext = Invoke(parseContext, new object?[] { Context.ToJsonString(), "treatmentContext" });
-            var context = ReadValidTypedResult(parsedContext, "Context", "T060 context");
-            var registry = typeof(WoundMaterializationContract).Assembly.GetType(
-                "BookOfEternityClient.Services.AcceptedTurnAuthorityRegistry",
-                throwOnError: false,
-                ignoreCase: false);
-            Assert.NotNull(registry);
-            var getAcceptedState = ExactStaticMethod(
-                registry,
-                "GetOrBuildMortalWoundTreatmentAcceptedState",
-                5);
-            var result = Invoke(getAcceptedState, new object?[]
+            var export = ExactStaticMethod(authorityType, "ExportCurrent", 3);
+            Assert.Equal(typeof(FileSystemManager), export.GetParameters()[0].ParameterType);
+            Assert.Equal(typeof(FileSystemManager.CanonicalWriteLease), export.GetParameters()[1].ParameterType);
+            Assert.Equal(typeof(string), export.GetParameters()[2].ParameterType);
+            return Invoke(export, new object?[]
             {
                 FileSystem,
                 Lease,
-                Binding,
-                context,
                 WoundId
             });
-            return ReadValidTypedResult(result, "Authority", "T061 accepted state");
         }
+
+        internal object GetAcceptedState() =>
+            ReadValidTypedResult(ExportCurrent(), "Authority", "T066 accepted-state export");
 
         internal void AssertUnchangedT060RequirementResolution(WoundTreatmentRoute route)
         {
@@ -1433,60 +1255,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 throwOnError: false,
                 ignoreCase: false);
             Assert.NotNull(authorityType);
-            var context = ReadValidTypedResult(
-                Invoke(ExactStaticMethod(authorityType, "ParseContext", 2),
-                    new object?[] { Context.ToJsonString(), "treatmentContext" }),
-                "Context", "T060 context");
-            var snapshot = ReadValidTypedResult(
-                Invoke(ExactStaticMethod(authorityType, "ParseSnapshot", 2),
-                    new object?[] { CreateT060Snapshot().ToJsonString(), "treatmentSnapshot" }),
-                "Snapshot", "T060 snapshot");
+            var acceptedState = GetAcceptedState();
+            var context = ReadAcceptedStateMember(acceptedState, "RequirementContext");
+            var snapshot = ReadAcceptedStateMember(acceptedState, "RequirementSnapshot");
             var result = Invoke(ExactStaticMethod(authorityType, "ResolveRequirements", 3),
                 new[] { (object)route, context, snapshot });
             Assert.True(Assert.IsType<bool>(ReadRequiredProperty(result, "Success")),
                 "The canonical procedure fixture must satisfy the unchanged T060 authority.");
         }
-
-        private static JsonObject CreateT060Snapshot() => new()
-        {
-            ["schemaVersion"] = 1,
-            ["snapshotToken"] = "snapshot_t061",
-            ["items"] = new JsonArray(new JsonObject
-            {
-                ["itemId"] = "sterile_thread", ["displayName"] = "Sterile thread",
-                ["realm"] = "mortal_world", ["ownerKind"] = "npc", ["ownerId"] = "field_medic_01",
-                ["count"] = 2, ["availableCount"] = 2, ["reservationState"] = "available",
-                ["lifecycle"] = "active", ["active"] = true
-            }),
-            ["resources"] = new JsonArray(),
-            ["actors"] = new JsonArray(
-                new JsonObject
-                {
-                    ["actorKind"] = "player", ["actorId"] = "player_current", ["displayName"] = "Patient",
-                    ["realm"] = "mortal_world", ["currentLocationId"] = "loc_field_clinic_001",
-                    ["lifecycle"] = "active", ["active"] = true, ["reachable"] = true,
-                    ["skills"] = new JsonArray(new JsonObject
-                    {
-                        ["capabilityRef"] = "field_medicine", ["displayName"] = "Field Medicine",
-                        ["tier"] = 3, ["lifecycle"] = "active", ["active"] = true
-                    }),
-                    ["capabilities"] = new JsonArray(), ["consents"] = new JsonArray()
-                },
-                new JsonObject
-                {
-                    ["actorKind"] = "npc", ["actorId"] = "field_medic_01", ["displayName"] = "Field medic",
-                    ["realm"] = "mortal_world", ["currentLocationId"] = "loc_field_clinic_001",
-                    ["lifecycle"] = "active", ["active"] = true, ["reachable"] = true,
-                    ["skills"] = new JsonArray(new JsonObject
-                    {
-                        ["capabilityRef"] = "exact_materialized_healing_source", ["displayName"] = "Guaranteed care",
-                        ["tier"] = 3, ["lifecycle"] = "active", ["active"] = true
-                    }),
-                    ["capabilities"] = new JsonArray(), ["consents"] = new JsonArray()
-                }),
-            ["facilities"] = new JsonArray(), ["locations"] = new JsonArray(), ["quests"] = new JsonArray(),
-            ["effects"] = new JsonArray(), ["environments"] = new JsonArray()
-        };
 
         public void Dispose()
         {
