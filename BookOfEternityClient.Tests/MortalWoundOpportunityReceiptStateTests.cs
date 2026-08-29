@@ -65,9 +65,26 @@ public sealed class MortalWoundOpportunityReceiptStateTests
             AssertInvalid(Parse(Root(row)), RowPath + "." + field, "mortal_wound_opportunity_receipt_missing_field");
         }
 
+        foreach (var field in RequiredConsumedSelectionFields)
+        {
+            var row = Row();
+            row["consumedEventSelection"]!.AsObject().Remove(field);
+            AssertInvalid(
+                Parse(Root(row)),
+                RowPath + ".consumedEventSelection." + field,
+                "mortal_wound_opportunity_receipt_missing_field");
+        }
+
         var unknown = Row();
         unknown["history"] = new JsonObject();
         AssertInvalid(Parse(Root(unknown)), RowPath + ".history", "mortal_wound_opportunity_receipt_unknown_field");
+
+        var unknownSelection = Row();
+        unknownSelection["consumedEventSelection"]!["legacyAuthority"] = "forged";
+        AssertInvalid(
+            Parse(Root(unknownSelection)),
+            RowPath + ".consumedEventSelection.legacyAuthority",
+            "mortal_wound_opportunity_receipt_unknown_field");
 
         var baseline = Root(Row());
         var receiptId = baseline["receipts"]![0]!["receiptId"]!.GetValue<string>();
@@ -180,6 +197,19 @@ public sealed class MortalWoundOpportunityReceiptStateTests
 
         AssertInvalid(Parse(Root(row)), RowPath + ".receiptFingerprint",
             "mortal_wound_opportunity_receipt_fingerprint_mismatch");
+    }
+
+    [Fact]
+    public void Parse_RejectsAResealedConsumedSelectionThatDisagreesWithItsSemanticFingerprint()
+    {
+        var row = Row();
+        row["consumedEventSelection"]!["authorityId"] = "authority_changed";
+        RecomputeReceiptFingerprint(row);
+
+        AssertInvalid(
+            Parse(Root(row)),
+            RowPath + ".consumedEventSelection",
+            "mortal_wound_opportunity_receipt_event_selection_mismatch");
     }
 
     [Fact]
@@ -593,11 +623,17 @@ public sealed class MortalWoundOpportunityReceiptStateTests
     private static readonly string[] RequiredRowFields =
     {
         "receiptId", "ordinal", "opportunityId", "opportunityAuthorityFingerprint", "sessionId",
-        "requestId", "snapshotToken", "turn", "eventRef", "eventSemanticFingerprint",
+        "requestId", "snapshotToken", "turn", "eventRef", "eventSemanticFingerprint", "consumedEventSelection",
         "sourceSessionId", "sourceRequestId", "sourceSnapshotToken", "sourceTurn", "producerOperationKey",
         "producerCandidateOrdinal", "producerCandidateCount", "sourceResultFingerprint",
         "candidateFingerprint", "occurrenceFingerprint", "decision", "decisionFingerprint",
         "operationKey", "woundId", "transitionId", "receiptFingerprint"
+    };
+
+    private static readonly string[] RequiredConsumedSelectionFields =
+    {
+        "acceptedEventOrdinal", "adapterKind", "authorityKind", "authorityId",
+        "outcomeKind", "maximumSeverityRank", "readableCause"
     };
 
     private static object Parse(JsonObject root) => Parse(root.ToJsonString());
@@ -748,6 +784,13 @@ public sealed class MortalWoundOpportunityReceiptStateTests
         int producerCandidateOrdinal = 0, int producerCandidateCount = 1,
         string decision = "none", string? woundId = null, string? transitionId = null)
     {
+        var consumedEvidence = new WoundOpportunityEventEvidence(
+            "formal",
+            "check_result",
+            "authority_42_0",
+            "harmful",
+            3,
+            "Вредоносный исход.");
         var candidateFingerprint = ExternalFingerprint("candidate:" + producerOperationKey + ":" + producerCandidateOrdinal);
         var opportunityId = "mortal_wound_occurrence_" + candidateFingerprint["sha256:".Length..];
         var occurrenceFingerprint = Hash(
@@ -763,7 +806,17 @@ public sealed class MortalWoundOpportunityReceiptStateTests
             ["receiptId"] = computedReceiptId, ["ordinal"] = ordinal, ["opportunityId"] = opportunityId,
             ["opportunityAuthorityFingerprint"] = ExternalFingerprint("opportunity:" + opportunityId), ["sessionId"] = "session_42",
             ["requestId"] = "request_42", ["snapshotToken"] = "snapshot_42", ["turn"] = 42,
-            ["eventRef"] = "event_42_0", ["eventSemanticFingerprint"] = ExternalFingerprint("event:42:0"),
+            ["eventRef"] = "event_42_0", ["eventSemanticFingerprint"] = WoundOpportunityEventEvidenceFingerprint.Compute(consumedEvidence),
+            ["consumedEventSelection"] = new JsonObject
+            {
+                ["acceptedEventOrdinal"] = 0,
+                ["adapterKind"] = consumedEvidence.AdapterKind,
+                ["authorityKind"] = consumedEvidence.AuthorityKind,
+                ["authorityId"] = consumedEvidence.AuthorityId,
+                ["outcomeKind"] = consumedEvidence.OutcomeKind,
+                ["maximumSeverityRank"] = consumedEvidence.MaximumSeverityRank,
+                ["readableCause"] = consumedEvidence.ReadableCause
+            },
             ["sourceSessionId"] = "session_41", ["sourceRequestId"] = "request_41",
             ["sourceSnapshotToken"] = "snapshot_41", ["sourceTurn"] = 41,
             ["producerOperationKey"] = producerOperationKey, ["producerCandidateOrdinal"] = producerCandidateOrdinal,
@@ -839,17 +892,23 @@ public sealed class MortalWoundOpportunityReceiptStateTests
         Assert.Equal(properties.OrderBy(value => value), type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Select(property => property.Name).OrderBy(value => value));
 
-    private static string ComputeReceiptFingerprint(JsonObject row) => Hash(
-        "book_of_eternity.mortal_wound.opportunity_receipt", "1",
-        Value(row, "receiptId"), Number(row, "ordinal"), Value(row, "opportunityId"),
-        Value(row, "opportunityAuthorityFingerprint"), Value(row, "sessionId"), Value(row, "requestId"),
-        Value(row, "snapshotToken"), Number(row, "turn"), Value(row, "eventRef"), Value(row, "eventSemanticFingerprint"),
-        Value(row, "sourceSessionId"), Value(row, "sourceRequestId"), Value(row, "sourceSnapshotToken"),
-        Number(row, "sourceTurn"),
-        Value(row, "producerOperationKey"), Number(row, "producerCandidateOrdinal"), Number(row, "producerCandidateCount"),
-        Value(row, "sourceResultFingerprint"), Value(row, "candidateFingerprint"), Value(row, "occurrenceFingerprint"),
-        Value(row, "decision"), Value(row, "decisionFingerprint"), Value(row, "operationKey"), NullableValue(row, "woundId"),
-        NullableValue(row, "transitionId"));
+    private static string ComputeReceiptFingerprint(JsonObject row)
+    {
+        var selection = row["consumedEventSelection"]!.AsObject();
+        return Hash(
+            "book_of_eternity.mortal_wound.opportunity_receipt", "1",
+            Value(row, "receiptId"), Number(row, "ordinal"), Value(row, "opportunityId"),
+            Value(row, "opportunityAuthorityFingerprint"), Value(row, "sessionId"), Value(row, "requestId"),
+            Value(row, "snapshotToken"), Number(row, "turn"), Value(row, "eventRef"), Value(row, "eventSemanticFingerprint"),
+            Number(selection, "acceptedEventOrdinal"), Value(selection, "adapterKind"), Value(selection, "authorityKind"),
+            Value(selection, "authorityId"), Value(selection, "outcomeKind"), Number(selection, "maximumSeverityRank"),
+            Value(selection, "readableCause"), Value(row, "sourceSessionId"), Value(row, "sourceRequestId"),
+            Value(row, "sourceSnapshotToken"), Number(row, "sourceTurn"), Value(row, "producerOperationKey"),
+            Number(row, "producerCandidateOrdinal"), Number(row, "producerCandidateCount"),
+            Value(row, "sourceResultFingerprint"), Value(row, "candidateFingerprint"), Value(row, "occurrenceFingerprint"),
+            Value(row, "decision"), Value(row, "decisionFingerprint"), Value(row, "operationKey"), NullableValue(row, "woundId"),
+            NullableValue(row, "transitionId"));
+    }
 
     private static void RecomputeReceiptIdentity(JsonObject row)
     {

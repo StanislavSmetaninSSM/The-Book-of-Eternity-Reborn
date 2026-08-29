@@ -32,6 +32,14 @@ occurrence root. The opportunity is not exposed until a subsequent active pendin
 snapshot seals that root's exact bytes. The later decision transaction is the sole
 publisher of receipt and occurrence-consumption after-images.
 
+The seven names are a closed reducer/adapter language, not permission to fabricate seven
+placeholder producer results. A concrete producer is registered only together with its
+real finalized typed source resolver; unsupported resolvers stay unregistered and fail
+closed. T064 owns this write-free reducer, signed-correlation adapter, and validation
+boundary. T070 owns the first production orchestration call, occurrence/receipt
+after-images, and atomic publication, so current source JSON or prose can never stand in
+for a missing typed producer.
+
 For Mortal adapters the source-shaped ingress is only a correlation projection. It
 must resolve one exact client-owned accepted-occurrence row from the active signed
 pending-turn snapshot. The occurrence authority, not the ingress, supplies the adapter
@@ -74,13 +82,16 @@ count, adapter, source-result authority/fingerprint, and no ordinal may exist in
 roots.
 
 Accepted-turn validation treats the command opportunity only as comparison input. The
-pending occurrence and append-only receipt roots are mandatory signed snapshot paths;
-their live bytes must still equal the snapshot before-image. The validator parses both,
-checks their union agreement, reconstructs each complete producer batch and active-
-snapshot event vector, resolves an explicit worsening target only in the signed carrier,
-and composes a fresh opportunity from occurrence-owned fields. Every field and seal must
-match the submitted opportunity, and the exact signed prior receipt projection is used
-when the command is recomposed. Raw effect-event JSON and the submitted
+pending occurrence, append-only receipt, wound history and identity roots plus all five
+wound carriers are mandatory members of one strict signed-snapshot read; their live
+bytes must still equal the byte-hash before-images under the same active lease and one
+non-conflicting lifecycle context. Recursive duplicate fields reject before carrier
+materialization. The validator parses the roots, checks pending/consumed and history
+agreement, reconstructs each complete producer batch and active-snapshot event vector,
+resolves an explicit worsening target only in the full signed carrier catalog, and
+composes a fresh opportunity from occurrence-owned fields. Every field and seal must
+match the submitted opportunity. A signed prior receipt is projected only after full
+fresh opportunity/decision/coordinate/history replay agreement. Raw effect-event JSON and the submitted
 `inputEvidenceFingerprint` are never evidence at this boundary.
 
 ## Client-authored opportunity
@@ -262,7 +273,9 @@ only for corrected acquisition narration while preserving the valid proposal.
   decision receipt through the same common publication transaction. A decline does not
   require or synthesize a wound-history transition.
 - The receipt binds the opportunity authority, signed turn/snapshot, selected event and
-  semantic fingerprint, decision fingerprint, and operation key. Exact cold replay
+  semantic fingerprint, decision fingerprint, and operation key. It also stores the
+  selected event ordinal and the closed adapter/authority/outcome/rank/readable-cause
+  evidence from which the semantic fingerprint is recomputed. Exact cold replay
   while the same active snapshot retains its pre-consumption occurrence returns no
   command/transition; changed semantics conflict; a newer snapshot makes the old
   correlation stale, and only a newly sealed occurrence creates a distinct opportunity.
@@ -276,6 +289,14 @@ only for corrected acquisition narration while preserving the valid proposal.
   occurrence fingerprints. The source-result publisher reads both roots before append,
   so exact retry after consumption is still a no-op and changed source semantics still
   conflict.
+- A partially consumed producer batch is reconstructed from the union of pending rows
+  and receipt selections. Every ordinal must occur exactly once; the pending row's full
+  ordered event vector and each receipt's recomputed selected evidence must agree before
+  the remaining opportunity can be rebound to a newer active snapshot.
+- A receipt is never projected from its three replay keys alone. The client first
+  compares the freshly rebuilt opportunity, decision receipt, conditional wound and
+  transition IDs, and current history; changed authority or missing/foreign history is
+  a conflict even if every persisted receipt-local hash was resealed consistently.
 - Repair uses the same event, target, roll, maximum, and provisional semantic proposal.
 - A changed snapshot or semantic event abandons the pending packet and requires a new
   opportunity.

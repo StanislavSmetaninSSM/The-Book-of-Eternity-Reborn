@@ -159,10 +159,28 @@ internal static class WoundAcceptedEventAuthorityComposer
             string sessionId,
             string requestId,
             string snapshotToken,
+            int turn) => RebindMortalOccurrence(
+            occurrence,
+            producerBatch,
+            Array.Empty<MortalWoundOpportunityReceipt>(),
+            sessionId,
+            requestId,
+            snapshotToken,
+            turn);
+
+    internal static WoundAcceptedEventAuthorityCompositionResult
+        RebindMortalOccurrence(
+            MortalWoundOccurrence occurrence,
+            IReadOnlyList<MortalWoundOccurrence> pendingProducerBatch,
+            IReadOnlyList<MortalWoundOpportunityReceipt> consumedProducerBatch,
+            string sessionId,
+            string requestId,
+            string snapshotToken,
             int turn)
     {
         ArgumentNullException.ThrowIfNull(occurrence);
-        ArgumentNullException.ThrowIfNull(producerBatch);
+        ArgumentNullException.ThrowIfNull(pendingProducerBatch);
+        ArgumentNullException.ThrowIfNull(consumedProducerBatch);
         var storedEvents = occurrence.AcceptedEvents ??
             Array.Empty<WoundAcceptedEventAuthority>();
         if (occurrence.AcceptedEventOrdinal < 0 ||
@@ -181,18 +199,27 @@ internal static class WoundAcceptedEventAuthorityComposer
                     value.Kind,
                     value.AuthorityId))
             .ToArray();
-        var orderedBatch = producerBatch
+        var orderedPending = pendingProducerBatch
             .OrderBy(value => value?.ProducerCandidateOrdinal ?? int.MaxValue)
             .ToArray();
-        if (orderedBatch.Length != occurrence.ProducerCandidateCount ||
-            orderedBatch.Length == 0 ||
-            !orderedBatch.Select(value => value?.ProducerCandidateOrdinal ?? -1)
-                .SequenceEqual(Enumerable.Range(0, orderedBatch.Length)) ||
-            orderedBatch.Count(value => value is not null && string.Equals(
+        var orderedConsumed = consumedProducerBatch
+            .OrderBy(value => value?.ProducerCandidateOrdinal ?? int.MaxValue)
+            .ToArray();
+        var candidateOrdinals = orderedPending
+            .Select(value => value?.ProducerCandidateOrdinal ?? -1)
+            .Concat(orderedConsumed.Select(value =>
+                value?.ProducerCandidateOrdinal ?? -1))
+            .OrderBy(value => value)
+            .ToArray();
+        if (candidateOrdinals.Length != occurrence.ProducerCandidateCount ||
+            candidateOrdinals.Length == 0 ||
+            !candidateOrdinals.SequenceEqual(
+                Enumerable.Range(0, occurrence.ProducerCandidateCount)) ||
+            orderedPending.Count(value => value is not null && string.Equals(
                 value.OccurrenceId,
                 occurrence.OccurrenceId,
                 StringComparison.Ordinal)) != 1 ||
-            orderedBatch.Any(value => value is null ||
+            orderedPending.Any(value => value is null ||
                 !string.Equals(
                     value.ProducerOperationKey,
                     occurrence.ProducerOperationKey,
@@ -230,8 +257,37 @@ internal static class WoundAcceptedEventAuthorityComposer
                 "producer batch is incomplete or disagrees on source authority");
         }
 
+        if (orderedConsumed.Any(value => value is null ||
+                !string.Equals(
+                    value.ProducerOperationKey,
+                    occurrence.ProducerOperationKey,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.SourceSessionId,
+                    occurrence.SourceSessionId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.SourceRequestId,
+                    occurrence.SourceRequestId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    value.SourceSnapshotToken,
+                    occurrence.SourceSnapshotToken,
+                    StringComparison.Ordinal) ||
+                value.SourceTurn != occurrence.SourceTurn ||
+                value.ProducerCandidateCount != occurrence.ProducerCandidateCount ||
+                !string.Equals(
+                    value.SourceResultFingerprint,
+                    occurrence.SourceResultFingerprint,
+                    StringComparison.Ordinal)))
+        {
+            return MortalRebindFailure(
+                "mortal_wound_occurrence_event_authority_mismatch",
+                "consumed producer batch disagrees on source authority");
+        }
+
         var selectedEvidence = new Dictionary<int, WoundOpportunityEventEvidence>();
-        foreach (var row in orderedBatch)
+        foreach (var row in orderedPending)
         {
             if (row.AcceptedEventOrdinal < 0 ||
                 row.AcceptedEventOrdinal >= storedEvents.Count ||
@@ -257,6 +313,51 @@ internal static class WoundAcceptedEventAuthorityComposer
                     "shared selected event has contradictory wound semantics");
             }
             selectedEvidence[row.AcceptedEventOrdinal] = evidence;
+        }
+        foreach (var receipt in orderedConsumed)
+        {
+            var selection = receipt.ConsumedEventSelection;
+            if (selection is null ||
+                selection.AcceptedEventOrdinal < 0 ||
+                selection.AcceptedEventOrdinal >= storedEvents.Count ||
+                storedEvents[selection.AcceptedEventOrdinal] is not { } selected ||
+                !string.Equals(selected.EventRef, receipt.EventRef, StringComparison.Ordinal) ||
+                !string.Equals(
+                    selected.Kind,
+                    selection.Evidence.AuthorityKind,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    selected.AuthorityId,
+                    selection.Evidence.AuthorityId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    selected.SemanticFingerprint,
+                    receipt.EventSemanticFingerprint,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    receipt.EventSemanticFingerprint,
+                    WoundOpportunityEventEvidenceFingerprint.Compute(
+                        selection.Evidence),
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    selection.Evidence.AdapterKind,
+                    occurrence.AdapterKind,
+                    StringComparison.Ordinal))
+            {
+                return MortalRebindFailure(
+                    "mortal_wound_occurrence_event_authority_mismatch",
+                    "consumed event selection disagrees with the stored event vector");
+            }
+            if (selectedEvidence.TryGetValue(
+                    selection.AcceptedEventOrdinal,
+                    out var prior) && prior != selection.Evidence)
+            {
+                return MortalRebindFailure(
+                    "mortal_wound_occurrence_event_authority_mismatch",
+                    "shared selected event has contradictory consumed semantics");
+            }
+            selectedEvidence[selection.AcceptedEventOrdinal] =
+                selection.Evidence with { };
         }
         var selections = selectedEvidence
             .OrderBy(pair => pair.Key)

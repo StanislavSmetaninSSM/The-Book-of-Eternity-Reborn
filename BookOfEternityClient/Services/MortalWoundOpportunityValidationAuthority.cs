@@ -38,7 +38,8 @@ internal static class MortalWoundOpportunityValidationAuthority
                 "the validation binding is malformed");
         }
 
-        if (submittedOpportunities.Count == 0)
+        if (submittedOpportunities.Count == 0 &&
+            signedOccurrences.Occurrences.Count != 0)
         {
             Add(
                 issues,
@@ -58,7 +59,17 @@ internal static class MortalWoundOpportunityValidationAuthority
         if (issues.Count != 0)
             return Failure(issues);
 
-        WoundAcceptedTurnBinding? binding = null;
+        WoundAcceptedTurnBinding? binding = submittedOpportunities.Count == 0
+            ? new WoundAcceptedTurnBinding(
+                sessionId,
+                requestId,
+                snapshotToken,
+                realm,
+                turn,
+                Array.Empty<WoundAcceptedEventAuthority>(),
+                WoundAcceptedEventSetFingerprint.Compute(
+                    Array.Empty<WoundAcceptedEventAuthority>()))
+            : null;
         var expectedOpportunities = new List<WoundOpportunityAuthority>(
             submittedOpportunities.Count);
         var submittedIds = new HashSet<string>(StringComparer.Ordinal);
@@ -106,10 +117,17 @@ internal static class MortalWoundOpportunityValidationAuthority
                     occurrence.ProducerOperationKey,
                     StringComparison.Ordinal))
                 .ToArray();
+            var consumedProducerBatch = signedReceipts.Receipts
+                .Where(value => string.Equals(
+                    value.ProducerOperationKey,
+                    occurrence.ProducerOperationKey,
+                    StringComparison.Ordinal))
+                .ToArray();
             var rebound = WoundAcceptedEventAuthorityComposer
                 .RebindMortalOccurrence(
                     occurrence,
                     producerBatch,
+                    consumedProducerBatch,
                     sessionId,
                     requestId,
                     snapshotToken,
@@ -402,7 +420,6 @@ internal sealed class MortalWoundOpportunityValidationResult
 
     internal bool Success =>
         _binding is not null &&
-        _opportunities.Length != 0 &&
         _issues.Length == 0;
 
     internal WoundAcceptedTurnBinding? Binding =>

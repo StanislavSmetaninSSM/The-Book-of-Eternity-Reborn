@@ -1364,7 +1364,11 @@ internal static class WoundAcceptedTurnPlannerCore
                 issues.ToArray());
         }
 
-        ValidateBinding(input.Binding, issues);
+        ValidateBinding(
+            input.Binding,
+            allowEmptyEvents:
+                input.Opportunities.Count == 0 && input.Transitions.Count == 0,
+            issues: issues);
         if (input.Transitions.Count > MaximumTransitions)
         {
             issues.Add(NewIssue(
@@ -1658,6 +1662,7 @@ internal static class WoundAcceptedTurnPlannerCore
 
     private static void ValidateBinding(
         WoundAcceptedTurnBinding binding,
+        bool allowEmptyEvents,
         ICollection<ValidationIssue> issues)
     {
         if (!Exact(binding.SessionId) ||
@@ -1676,7 +1681,7 @@ internal static class WoundAcceptedTurnPlannerCore
             return;
         }
 
-        if (binding.AcceptedEvents.Count == 0 ||
+        if ((!allowEmptyEvents && binding.AcceptedEvents.Count == 0) ||
             binding.AcceptedEvents.Any(static value =>
                 value is null ||
                 !Exact(value.EventRef) ||
@@ -1687,7 +1692,9 @@ internal static class WoundAcceptedTurnPlannerCore
             issues.Add(NewIssue(
                 "wound_plan_event_authority_invalid",
                 "The accepted event set contains a malformed authority row.",
-                "one or more exact four-field accepted event authorities",
+                allowEmptyEvents
+                    ? "an empty or exact four-field accepted event authority set"
+                    : "one or more exact four-field accepted event authorities",
                 "empty or malformed event authority"));
             return;
         }
@@ -2748,7 +2755,7 @@ internal static class WoundAcceptedTurnPlannerCore
                 input.EventInput is null ||
                 input.SourceAuthority.Issues.Count != 0 ||
                  input.TargetAuthority.Issues.Count != 0 ||
-                 !EventInputAgrees(prepared.Binding, input.EventInput) ||
+                 !EventInputAgrees(prepared, input.EventInput) ||
                  !SameTurnWoundAuthorityAgrees(prepared, input.SourceAuthority))
             {
                 return false;
@@ -2993,19 +3000,35 @@ internal static class WoundAcceptedTurnPlannerCore
                    actual.ExistingRootLineage);
     }
 
+    internal static bool IsEmptyWoundStage(WoundPreparedAcceptedTurnPlan prepared)
+    {
+        ArgumentNullException.ThrowIfNull(prepared);
+        return prepared.Binding.AcceptedEvents.Count == 0 &&
+               prepared.AllocatedWoundIds.Count == 0 &&
+               prepared.AllocatedTransitionIds.Count == 0 &&
+               prepared.PreparedWounds.Count == 0 &&
+               prepared.EffectOperationBatches.Count == 0;
+    }
+
     private static bool EventInputAgrees(
-        WoundAcceptedTurnBinding binding,
+        WoundPreparedAcceptedTurnPlan prepared,
         JsonObject eventInput)
     {
+        var binding = prepared.Binding;
         if (eventInput.Count < 2 ||
             !eventInput.ContainsKey("turn") ||
             !eventInput.ContainsKey("events") ||
             !TryInt(eventInput["turn"], out var turn) || turn != binding.Turn ||
-            eventInput["events"] is not JsonArray events ||
-            events.Count != binding.AcceptedEvents.Count)
+            eventInput["events"] is not JsonArray events)
         {
             return false;
         }
+
+        if (IsEmptyWoundStage(prepared))
+            return true;
+
+        if (events.Count != binding.AcceptedEvents.Count)
+            return false;
 
         for (var index = 0; index < events.Count; index++)
         {

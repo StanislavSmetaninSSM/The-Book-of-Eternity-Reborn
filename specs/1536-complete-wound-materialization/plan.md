@@ -198,7 +198,10 @@ BookOfEternityClient/
 │   ├── WoundCarrierCatalog.cs                    # player/NPC/combatant/afterlife occurrences
 │   ├── WoundAcceptedOwnerCarrierAuthority.cs     # accepted owner shape plus client-owned wound baseline
 │   ├── WoundSourceAuthority.cs                   # event/source/owner/opportunity adapters
+│   ├── MortalWoundOccurrenceProducer.cs          # finalized typed source-result reducer seam
 │   ├── MortalWoundOccurrenceState.cs             # signed seven-kind pending occurrence authority
+│   ├── MortalWoundOpportunityAdapter.cs          # lease-bound source-shaped correlation ingress
+│   ├── MortalWoundOpportunityValidationAuthority.cs # independent accepted-turn reconstruction
 │   ├── MortalWoundOpportunityReceiptState.cs     # append-only decision replay state
 │   ├── PendingTurnSnapshotReader.cs              # current manifest plus exact signed snapshot reads
 │   ├── WoundAcceptedEventAuthorityComposer.cs    # one complete event-set reconstruction
@@ -442,6 +445,11 @@ history atomically for every owner carrier; effect removal never heals it.
    none. Producers use one sibling of the registered-system-outcome projection seam after
    actual resource/effect finalization; unsupported producer kinds remain unregistered
    and fail closed rather than inferring harm from combatant, hazard, die, or prose JSON.
+   The seven names are the closed common language, not a mandate for placeholder
+   implementors: a concrete registration arrives only with the owning finalized typed
+   resolver. T064 freezes the pure reducer plus signed correlation/validation seam;
+   T070 supplies the first reachable production orchestration and remains the sole
+   occurrence/receipt publisher.
    The source-result common plan reads both pending occurrences and durable
    decision receipts, resolves exact pending/consumed replay versus changed-source
    conflict by producer operation key, and atomically appends only genuinely new

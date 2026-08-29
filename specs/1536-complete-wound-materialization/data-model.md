@@ -1759,6 +1759,15 @@ including `none`:
       "turn": 42,
       "eventRef": "accepted-event-ref",
       "eventSemanticFingerprint": "sha256:...",
+      "consumedEventSelection": {
+        "acceptedEventOrdinal": 0,
+        "adapterKind": "formal",
+        "authorityKind": "formal_retrauma",
+        "authorityId": "accepted-source-authority",
+        "outcomeKind": "harmful",
+        "maximumSeverityRank": 2,
+        "readableCause": "Повторная травма подтверждена принятым результатом."
+      },
       "sourceSessionId": "exact-source-session",
       "sourceRequestId": "exact-source-request",
       "sourceSnapshotToken": "exact-source-snapshot",
@@ -1786,7 +1795,13 @@ row; IDs, opportunity IDs, and decision operation keys are exact/confusable uniq
 Producer operation keys repeat only for candidates from the same batch and obey the
 same batch agreement plus `(producerOperationKey, producerCandidateOrdinal)` uniqueness
 across the union of pending occurrences and receipts. Receipt fingerprints are domain/
-versioned and recomputed over every row field except themselves. T070 enforces append-
+versioned and recomputed over every row field except themselves. The closed
+`consumedEventSelection` retains the selected ordinal plus the exact six-field semantic
+evidence used by `WoundOpportunityEventEvidenceFingerprint`; the parser recomputes
+`eventSemanticFingerprint` from it and rejects a merely resealed disagreement. This is
+the minimum durable evidence needed to reconstruct a producer batch after one candidate
+has moved from pending occurrences into receipts without persisting a second copy of the
+complete occurrence. T070 enforces append-
 only agreement against the
 signed before-image; exact canonical snapshot/write-lease authority is the anti-
 truncation boundary used by the rest of client-owned canonical state.
@@ -1796,9 +1811,11 @@ The version-1 `receiptId` seed uses the same length-prefixed writer with domain
 decision operation key, and decision fingerprint; the ID is `mortal_wound_receipt_` plus
 the seed hash hex. `receiptFingerprint` uses domain
 `book_of_eternity.mortal_wound.opportunity_receipt`, version `1`, then every persisted
-receipt field in schema order except itself. Nullable wound/transition coordinates use
-the writer's null sentinel. The parser recomputes both the derived receipt ID and receipt
-fingerprint. Source-result, full candidate semantics, event, opportunity, and decision
+receipt field in schema order except itself. The seven nested selection fields occur
+immediately after `eventSemanticFingerprint` in the hash vector and in their schema
+order. Nullable wound/transition coordinates use the writer's null sentinel. The parser
+recomputes the selected-event semantic fingerprint, derived receipt ID, and receipt
+fingerprint. Source-result, full candidate semantics, opportunity, and decision
 seals remain typed input authorities whose exact cross-root agreement is checked by the
 pure append/agreement planners; the candidate-to-ID-to-occurrence chain itself is locally
 recomputed and is not opaque input.
@@ -1833,6 +1850,11 @@ an opportunity absent from both states, or the same tuple in both states conflic
 returns no after-states. `ValidateConsumedOccurrenceAgreement(pending, receipts)` checks
 the complete pending-plus-consumed batch partition, cross-root tuple/identity uniqueness,
 and shared source session/request/snapshot token/turn/count/source-result agreement.
+For a mixed producer batch, the surviving pending occurrence supplies the immutable
+complete ordered event vector, while every consumed receipt supplies its independently
+recomputable selected-event evidence. The event composer requires the union to contain
+every candidate ordinal exactly once and rejects missing, duplicate, reordered, or
+cross-semantics evidence before rebinding the remaining opportunity to a new snapshot.
 
 `MortalWoundOpportunityDecisionBinding` is exactly session ID, request ID, snapshot
 token, and turn. `MortalWoundOpportunityReceiptDraft` is exactly that binding,
@@ -1857,6 +1879,22 @@ conflicts. A new signed occurrence/snapshot produces a new opportunity. The comm
 accepted plan composes the receipt after-image together with any wound/effect/history
 changes, consumes the pending occurrence, and remains the sole publisher; the adapter
 and state distributor never write either canonical root directly.
+
+Before projecting any durable receipt into ordinary response recomposition, the adapter
+and `ValidationService` call the same exact-replay classifier with the freshly rebuilt
+full opportunity, active turn, expected decision receipt, conditional wound/transition
+IDs, and parsed history. It compares the complete opportunity/session/request/snapshot/
+turn/event/decision/operation/coordinate authority and then enforces history agreement.
+`ValidateHistoryAgreement` also audits every current receipt even when no replay is
+requested. A locally self-consistent reseal therefore cannot suppress a new decision or
+replace a missing or foreign history transition.
+
+The validation read is one lease-bound strict snapshot over all five wound carriers,
+the wound identity and history roots, and the occurrence and receipt roots. It requires
+byte-hash authority, one non-conflicting active lifecycle context, exact current bytes,
+and recursive duplicate-property preflight before `JsonNode` materialization. A second
+owner-only read, text-equal BOM/encoding mutation, or duplicate wound ID in another
+signed carrier cannot create a different worsening view.
 
 The durable receipt also retains the consumed occurrence's source
 session/request/snapshot token/turn, producer operation key and batch ordinal/count,

@@ -253,7 +253,9 @@ internal static class EffectAcceptedTurnInputComposer
             acceptedCarriers,
             realm,
             acceptedReportedLifecycleEvents);
-        if (preparedWoundPlan is not null && preparedWounds.Issues.Count == 0)
+        if (preparedWoundPlan is not null &&
+            preparedWounds.Issues.Count == 0 &&
+            preparedWoundPlan.Binding.AcceptedEvents.Count != 0)
         {
             eventInput["events"] = new JsonArray(
                 preparedWoundPlan.Binding.AcceptedEvents.Select(static value =>

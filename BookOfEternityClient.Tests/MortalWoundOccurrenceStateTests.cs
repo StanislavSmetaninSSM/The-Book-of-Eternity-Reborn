@@ -721,7 +721,7 @@ public sealed class MortalWoundOccurrenceStateTests
         var mutations = new (Action<JsonObject> Mutate, bool ResealIdentity)[]
         {
             (row => row["eventRef"] = "event_changed", false),
-            (row => row["eventSemanticFingerprint"] = ExternalFingerprint("event:changed"), false),
+            (ChangeConsumedEventEvidence, false),
             (row => row["sourceSessionId"] = "source_session_changed", false),
             (row => row["sourceRequestId"] = "source_request_changed", false),
             (row => row["sourceTurn"] = 99, false),
@@ -773,6 +773,21 @@ public sealed class MortalWoundOccurrenceStateTests
         "sourceResultFingerprint", "candidateFingerprint", "occurrenceFingerprint"
     };
 
+    private static void ChangeConsumedEventEvidence(JsonObject row)
+    {
+        var selection = row["consumedEventSelection"]!.AsObject();
+        selection["readableCause"] = "Измененная проверяемая причина ранения.";
+        row["eventSemanticFingerprint"] =
+            WoundOpportunityEventEvidenceFingerprint.Compute(
+                new WoundOpportunityEventEvidence(
+                    selection["adapterKind"]!.GetValue<string>(),
+                    selection["authorityKind"]!.GetValue<string>(),
+                    selection["authorityId"]!.GetValue<string>(),
+                    selection["outcomeKind"]!.GetValue<string>(),
+                    selection["maximumSeverityRank"]!.GetValue<int>(),
+                    selection["readableCause"]!.GetValue<string>()));
+    }
+
     private static object Parse(JsonObject root) => Parse(root.ToJsonString());
     private static object Parse(string? json) => Invoke(ExactStatic(RequiredType(), "Parse", 2), json!, RootPath);
 
@@ -806,7 +821,14 @@ public sealed class MortalWoundOccurrenceStateTests
             ["eventRef"] = "event_41_1",
             ["kind"] = "formal_retrauma",
             ["authorityId"] = "event_authority_41_1",
-            ["semanticFingerprint"] = ExternalFingerprint("event:formal_retrauma:1")
+            ["semanticFingerprint"] = WoundOpportunityEventEvidenceFingerprint.Compute(
+                new WoundOpportunityEventEvidence(
+                    "formal",
+                    "formal_retrauma",
+                    "event_authority_41_1",
+                    "harmful",
+                    2,
+                    "Подтвержденное повреждение."))
         });
         RecomputeOccurrenceFingerprints(first);
         var second = first.DeepClone().AsObject();
@@ -828,8 +850,18 @@ public sealed class MortalWoundOccurrenceStateTests
         AcceptedEventOrdinal: ordinal,
         AcceptedEvents:
         [
-            new WoundAcceptedEventAuthority("event_41_0", "formal_retrauma", "event_authority_41_0", ExternalFingerprint("event:formal_retrauma:0")),
-            new WoundAcceptedEventAuthority("event_41_1", "formal_retrauma", "event_authority_41_1", ExternalFingerprint("event:formal_retrauma:1"))
+            new WoundAcceptedEventAuthority(
+                "event_41_0",
+                "formal_retrauma",
+                "event_authority_41_0",
+                WoundOpportunityEventEvidenceFingerprint.Compute(new WoundOpportunityEventEvidence(
+                    "formal", "formal_retrauma", "event_authority_41_0", "harmful", 2, "Подтвержденное повреждение."))),
+            new WoundAcceptedEventAuthority(
+                "event_41_1",
+                "formal_retrauma",
+                "event_authority_41_1",
+                WoundOpportunityEventEvidenceFingerprint.Compute(new WoundOpportunityEventEvidence(
+                    "formal", "formal_retrauma", "event_authority_41_1", "harmful", 2, "Подтвержденное повреждение.")))
         ],
         Owner: new WoundOwnerCoordinate("mortal_world", "player", "player_current", "game_state/player/wounds.json"),
         Domain: "physical",
@@ -868,7 +900,14 @@ public sealed class MortalWoundOccurrenceStateTests
         int? minimumSeverityRank = null)
     {
         var sourceKind = adapterKind == "formal" ? "formal_retrauma" : adapterKind;
-        var eventSemanticFingerprint = ExternalFingerprint("event:" + sourceKind);
+        var eventSemanticFingerprint = WoundOpportunityEventEvidenceFingerprint.Compute(
+            new WoundOpportunityEventEvidence(
+                adapterKind,
+                sourceKind,
+                "event_authority_41_0",
+                "harmful",
+                2,
+                "Подтвержденное повреждение."));
         var sourceResultFingerprint = ExternalFingerprint("source-result:" + producerOperationKey);
         var acceptedEventsFingerprint = Hash(
             "book_of_eternity.wound.accepted_event_set", "1", "1", "0", "event_41_0",

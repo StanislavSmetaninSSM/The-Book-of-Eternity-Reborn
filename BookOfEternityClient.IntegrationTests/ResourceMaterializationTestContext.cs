@@ -1,6 +1,8 @@
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -147,6 +149,8 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
             ["turnNumber"] = turn,
             ["requestTimestamp"] = "2026-08-15T00:00:00Z",
             ["playerAction"] = playerAction,
+            ["progressionControl"] = JsonSerializer.SerializeToNode(
+                new ProgressionControl { CurrentRealm = currentRealm }),
             ["files"] = files,
             ["snapshotFileHashes"] = snapshotFileHashes,
             ["clientOwnedValidationHashes"] = new JsonObject(),

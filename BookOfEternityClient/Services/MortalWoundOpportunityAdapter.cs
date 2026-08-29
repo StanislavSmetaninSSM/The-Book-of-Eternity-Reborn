@@ -44,6 +44,14 @@ internal static class MortalWoundOpportunityAdapter
         "formal", "qte", "combat", "trap", "check", "hazard", "narrative");
     private static readonly IReadOnlySet<string> LocationKinds = Set(
         "anatomical", "systemic", "mental", "spiritual_axis", "other");
+    private static readonly string[] WoundCarrierPaths =
+    {
+        WoundCarrierCatalog.PlayerPath,
+        WoundCarrierCatalog.NpcPath,
+        WoundCarrierCatalog.EnemiesPath,
+        WoundCarrierCatalog.AlliesPath,
+        WoundCarrierCatalog.AfterlifeProfilesPath
+    };
 
     internal static WoundResponseInputCompositionResult ComposeAcceptedResponse(
         FileSystemManager fs,
@@ -60,14 +68,18 @@ internal static class MortalWoundOpportunityAdapter
         if (!TryParseSourceCorrelation(sourceEvent, issues, out var correlation))
             return Failure(issues);
 
+        var requiredPaths = new List<string>
+        {
+            MortalWoundOccurrenceState.StatePath,
+            MortalWoundOpportunityReceiptState.StatePath,
+            WoundHistoryState.HistoryPath
+        };
+        if (correlation!.WorseningTarget is not null)
+            requiredPaths.AddRange(WoundCarrierPaths);
         var snapshotRead = PendingTurnSnapshotReader.ReadCurrent(
             fs,
             lease,
-            new[]
-            {
-                MortalWoundOccurrenceState.StatePath,
-                MortalWoundOpportunityReceiptState.StatePath
-            });
+            requiredPaths);
         if (!snapshotRead.Success || snapshotRead.Snapshot is null)
             return Failure(snapshotRead.Issues);
         var snapshot = snapshotRead.Snapshot;
@@ -79,7 +91,11 @@ internal static class MortalWoundOpportunityAdapter
             !TryParseReceiptState(
                 snapshot.ReadRequiredBytes(MortalWoundOpportunityReceiptState.StatePath),
                 issues,
-                out var signedReceipts))
+                out var signedReceipts) ||
+            !TryParseHistoryState(
+                snapshot.ReadRequiredBytes(WoundHistoryState.HistoryPath),
+                issues,
+                out var signedHistory))
         {
             return Failure(issues);
         }
@@ -88,6 +104,10 @@ internal static class MortalWoundOpportunityAdapter
             MortalWoundOpportunityReceiptState.ValidateConsumedOccurrenceAgreement(
                 signedOccurrences!,
                 signedReceipts!));
+        issues.AddRange(
+            MortalWoundOpportunityReceiptState.ValidateHistoryAgreement(
+                signedReceipts!,
+                signedHistory!));
         if (issues.Count != 0)
             return Failure(issues);
 
@@ -119,7 +139,8 @@ internal static class MortalWoundOpportunityAdapter
                 signedOccurrences,
                 signedReceipts!,
                 issues,
-                out var currentReceipts))
+                out var currentReceipts,
+                out var currentHistory))
         {
             return Failure(issues);
         }
@@ -130,9 +151,16 @@ internal static class MortalWoundOpportunityAdapter
                 occurrence.ProducerOperationKey,
                 StringComparison.Ordinal))
             .ToArray();
+        var consumedProducerBatch = signedReceipts!.Receipts
+            .Where(value => string.Equals(
+                value.ProducerOperationKey,
+                occurrence.ProducerOperationKey,
+                StringComparison.Ordinal))
+            .ToArray();
         var rebound = WoundAcceptedEventAuthorityComposer.RebindMortalOccurrence(
             occurrence,
             producerBatch,
+            consumedProducerBatch,
             snapshot.SessionId,
             snapshot.RequestId,
             snapshot.SnapshotToken,
@@ -153,8 +181,7 @@ internal static class MortalWoundOpportunityAdapter
         WoundOpportunityWorseningTargetEvidence? worseningEvidence = null;
         if (occurrence.WorseningTarget is not null &&
             !TryResolveSignedWorseningTarget(
-                fs,
-                lease,
+                snapshot,
                 occurrence,
                 issues,
                 out worseningEvidence))
@@ -195,6 +222,50 @@ internal static class MortalWoundOpportunityAdapter
                 value.DecisionFingerprint,
                 value.OperationKey))
             .ToArray();
+        var fresh = WoundResponseInputComposer.Compose(
+            binding,
+            new[] { opportunityResult.Opportunity },
+            gameResponse.WoundDecisions,
+            PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(
+                gameResponse.Response),
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        if (!fresh.Success)
+            return fresh;
+        var matchingReceipts = currentReceipts.Receipts.Where(value =>
+            string.Equals(
+                value.OpportunityId,
+                opportunityResult.Opportunity.OpportunityId,
+                StringComparison.Ordinal)).ToArray();
+        if (matchingReceipts.Length != 0)
+        {
+            if (!TryReadFreshDecision(
+                    fresh,
+                    out var expectedDecision,
+                    out var expectedReceipt,
+                    out var expectedWoundId,
+                    out var expectedTransitionId))
+            {
+                return Failure(new[]
+                {
+                    new ValidationIssue(
+                        SourcePath,
+                        IssueSeverity.Error,
+                        "Mortal wound replay could not be reconstructed.",
+                        "mortal_wound_opportunity_adapter_receipt_replay_mismatch")
+                });
+            }
+            var replayIssues = MortalWoundOpportunityReceiptState.ValidateExactReplay(
+                currentReceipts,
+                opportunityResult.Opportunity,
+                snapshot.TurnNumber,
+                expectedDecision!,
+                expectedReceipt!,
+                expectedWoundId,
+                expectedTransitionId,
+                currentHistory!);
+            if (replayIssues.Count != 0)
+                return Failure(replayIssues);
+        }
         return WoundResponseInputComposer.Compose(
             binding,
             new[] { opportunityResult.Opportunity },
@@ -492,28 +563,40 @@ internal static class MortalWoundOpportunityAdapter
         MortalWoundOccurrenceState signedOccurrences,
         MortalWoundOpportunityReceiptState signedReceipts,
         List<ValidationIssue> issues,
-        out MortalWoundOpportunityReceiptState? currentReceipts)
+        out MortalWoundOpportunityReceiptState? currentReceipts,
+        out WoundHistoryState? currentHistory)
     {
         currentReceipts = null;
+        currentHistory = null;
         var currentOccurrenceParse = MortalWoundOccurrenceState.Parse(
             fs.ReadFileSync(MortalWoundOccurrenceState.StatePath),
             MortalWoundOccurrenceState.StatePath);
         var currentReceiptParse = MortalWoundOpportunityReceiptState.Parse(
             fs.ReadFileSync(MortalWoundOpportunityReceiptState.StatePath),
             MortalWoundOpportunityReceiptState.StatePath);
+        var currentHistoryParse = WoundHistoryState.Parse(
+            fs.ReadFileSync(WoundHistoryState.HistoryPath),
+            WoundHistoryState.HistoryPath);
         if (!currentOccurrenceParse.IsValid || currentOccurrenceParse.State is null)
             issues.AddRange(currentOccurrenceParse.Issues);
         if (!currentReceiptParse.IsValid || currentReceiptParse.State is null)
             issues.AddRange(currentReceiptParse.Issues);
+        if (!currentHistoryParse.IsValid || currentHistoryParse.State is null)
+            issues.AddRange(currentHistoryParse.Issues);
         if (issues.Count != 0)
             return false;
 
         var currentOccurrences = currentOccurrenceParse.State!;
         currentReceipts = currentReceiptParse.State!;
+        currentHistory = currentHistoryParse.State!;
         issues.AddRange(
             MortalWoundOpportunityReceiptState.ValidateConsumedOccurrenceAgreement(
                 currentOccurrences,
                 currentReceipts));
+        issues.AddRange(
+            MortalWoundOpportunityReceiptState.ValidateHistoryAgreement(
+                currentReceipts,
+                currentHistory));
         if (issues.Count != 0)
             return false;
 
@@ -586,48 +669,51 @@ internal static class MortalWoundOpportunityAdapter
                receipt.ProducerCandidateCount == occurrence.ProducerCandidateCount &&
                receipt.SourceResultFingerprint == occurrence.SourceResultFingerprint &&
                receipt.CandidateFingerprint == occurrence.CandidateFingerprint &&
-               receipt.OccurrenceFingerprint == occurrence.OccurrenceFingerprint;
+               receipt.OccurrenceFingerprint == occurrence.OccurrenceFingerprint &&
+               receipt.ConsumedEventSelection.AcceptedEventOrdinal ==
+                   occurrence.AcceptedEventOrdinal &&
+               receipt.ConsumedEventSelection.Evidence ==
+                   new WoundOpportunityEventEvidence(
+                       occurrence.AdapterKind,
+                       selected.Kind,
+                       selected.AuthorityId,
+                       occurrence.Outcome.Kind,
+                       occurrence.Outcome.MaximumSeverityRank,
+                       occurrence.Outcome.ReadableCause);
     }
 
     private static bool TryResolveSignedWorseningTarget(
-        FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease lease,
+        PendingTurnSnapshotReadAuthority snapshot,
         MortalWoundOccurrence occurrence,
         List<ValidationIssue> issues,
         out WoundOpportunityWorseningTargetEvidence? evidence)
     {
         evidence = null;
         var target = occurrence.WorseningTarget!;
-        var read = PendingTurnSnapshotReader.ReadCurrent(
-            fs,
-            lease,
-            new[]
-            {
-                MortalWoundOccurrenceState.StatePath,
-                MortalWoundOpportunityReceiptState.StatePath,
-                occurrence.Owner.CarrierPath
-            });
-        if (!read.Success || read.Snapshot is null)
-        {
-            issues.AddRange(read.Issues);
-            return false;
-        }
-
-        if (!TryParseSignedCarrierRoot(
-                read.Snapshot.ReadRequiredBytes(occurrence.Owner.CarrierPath),
-                occurrence.Owner.CarrierPath,
-                issues,
-                out var carrierRoot))
-        {
-            return false;
-        }
 
         try
         {
-            var carriers = WoundCarrierCollectionAuthority.WithRoot(
-                new WoundCarrierCatalogInput(null, null, null, null, null),
-                occurrence.Owner.CarrierPath,
-                carrierRoot!);
+            var carriers = new WoundCarrierCatalogInput(
+                null,
+                null,
+                null,
+                null,
+                null);
+            foreach (var path in WoundCarrierPaths)
+            {
+                if (!TryParseSignedCarrierRoot(
+                        snapshot.ReadRequiredBytes(path),
+                        path,
+                        issues,
+                        out var carrierRoot))
+                {
+                    return false;
+                }
+                carriers = WoundCarrierCollectionAuthority.WithRoot(
+                    carriers,
+                    path,
+                    carrierRoot!);
+            }
             var catalog = WoundCarrierCatalog.Build(carriers);
             issues.AddRange(catalog.Issues);
             if (issues.Count != 0 ||
@@ -713,6 +799,60 @@ internal static class MortalWoundOpportunityAdapter
             return false;
         }
         state = parsed.State;
+        return true;
+    }
+
+    private static bool TryParseHistoryState(
+        byte[] bytes,
+        List<ValidationIssue> issues,
+        out WoundHistoryState? state)
+    {
+        state = null;
+        if (!TryDecode(bytes, WoundHistoryState.HistoryPath, issues, out var json))
+            return false;
+        var parsed = WoundHistoryState.Parse(json, WoundHistoryState.HistoryPath);
+        if (!parsed.IsValid || parsed.State is null)
+        {
+            issues.AddRange(parsed.Issues);
+            return false;
+        }
+        state = parsed.State;
+        return true;
+    }
+
+    private static bool TryReadFreshDecision(
+        WoundResponseInputCompositionResult fresh,
+        out string? decision,
+        out WoundOpportunityDecisionReceipt? receipt,
+        out string? woundId,
+        out string? transitionId)
+    {
+        decision = null;
+        receipt = null;
+        woundId = null;
+        transitionId = null;
+        if (fresh.CommandRoot?["commands"] is not JsonArray { Count: 1 } commands ||
+            commands[0]?["decision"] is not JsonObject decisionRoot ||
+            decisionRoot["decision"] is not JsonValue decisionValue ||
+            !decisionValue.TryGetValue<string>(out decision) ||
+            fresh.DecisionReceipts.Count != 1)
+        {
+            return false;
+        }
+        if (string.Equals(decision, "materialize", StringComparison.Ordinal))
+        {
+            if (fresh.Transitions.Count != 1)
+                return false;
+            var transition = fresh.Transitions[0];
+            woundId = transition.LocalWoundRef;
+            transitionId = transition.LocalTransitionRef;
+        }
+        else if (!string.Equals(decision, "none", StringComparison.Ordinal) ||
+                 fresh.Transitions.Count != 0)
+        {
+            return false;
+        }
+        receipt = fresh.DecisionReceipts[0] with { };
         return true;
     }
 

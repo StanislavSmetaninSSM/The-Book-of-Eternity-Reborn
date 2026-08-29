@@ -979,9 +979,9 @@ even when only BOM/encoding bytes differ, resolves one agreeing set of authorita
 lifecycle contexts, excludes diagnostic-only repair metadata, verifies requested signed
 coverage and bytes, and returns detached immutable before-images without writing.
 Independent rereview closed both prior Critical findings and returned Ready YES. This
-checkpoint does not mark T064 complete; typed producer registration, complete accepted-
+checkpoint does not mark T064 complete; the typed producer reducer, complete accepted-
 event projection, source-shaped ingress, independent validation reconstruction, and
-T070 publication remain outstanding.
+the separately owned T070 publication remain outstanding.
 
 T064 accepted-event primitive checkpoint evidence (2026-08-30): the closed typed
 projection/ordinal-evidence composer executes 7/7 rows and the combined occurrence,
@@ -1005,8 +1005,10 @@ producer failure. The source guard deliberately freezes the current production i
 list as empty: all seven kinds are the closed reducer language, not invented producer
 results, and each future registration must arrive with a real finalized typed resolver.
 Independent rereview returned Ready YES with no Critical or Important findings. This
-checkpoint does not mark T064 complete; source-specific registrations, signed-occurrence
-correlation, independent validation reconstruction, and T070 publication remain outstanding.
+checkpoint does not mark T064 complete; signed-occurrence correlation and independent
+validation reconstruction remain outstanding. Concrete producer registrations are not
+placeholder T064 work: each arrives only with its real finalized typed resolver, and
+T070 owns the first reachable orchestration and publication call.
 
 T064 ingress/validation checkpoint evidence (2026-08-30): the exact write-free
 seven-kind source adapter, signed occurrence correlation, active receipt/pending
@@ -1023,9 +1025,26 @@ prior-receipt projection. This checkpoint does not mark T064 complete until fina
 cross-contour verification and independent review are finished; T070 remains the sole
 future publisher of occurrence/receipt after-images.
 
+T064 replay/snapshot hardening checkpoint evidence (2026-08-30): consumed receipts now
+retain a closed selected-event evidence projection whose semantic seal is recomputed;
+mixed pending/consumed producer batches reconstruct every ordinal; persisted replay is
+compared against the freshly rebuilt full opportunity, decision, conditional IDs, and
+history before projection. Adapter and validation use one lease-bound byte-exact snapshot
+over all wound carriers plus identity/history/occurrence/receipt roots, with recursive
+duplicate-property rejection. An empty accepted wound stage remains sealed in the common
+plan without replacing ordinary effect-event authority. The combined T064 and adjacent
+effect-planner Focused selection passes 385/385 with a warning-free build
+(`20260830-073940-020-39452-a287841111364c60ae27bc549fc32c57-focused`), and the full
+file-backed wound-validation class passes 10/10
+(`20260830-074040-808-27336-0f5d98e1c7bb47c699f80bee00d1f86d-focused`). The Fast
+checkpoint completed 1,338 rows before its fail-fast boundary: 1,270 PASS and the exact
+68 previously frozen T066/T070 capability/publication RED rows remained RED, with no
+T064 failure, timeout, duplicate ID, warning, or incomplete owned-process cleanup
+(`20260830-074142-125-12292-5c7df86f39a840249bc97f03cb276230-fast`).
+
 ### GREEN implementation
 
-- [ ] T064 [US2] Implement formal/QTE/combat/trap/check/hazard/narrative Mortal opportunity adapters and causal/profile validation in `BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs`, `BookOfEternityClient/Services/MortalWoundOccurrenceState.cs`, `BookOfEternityClient/Services/PendingTurnSnapshotReader.cs`, `BookOfEternityClient/Services/WoundAcceptedEventAuthorityComposer.cs`, and `BookOfEternityClient/Services/MortalWoundOpportunityReceiptState.cs`. Each registered typed producer must reduce its harmful accepted result to one immutable complete occurrence-candidate batch in the same seven-kind language; harmless results yield no candidate and the later source-shaped ingress cannot manufacture one. The pure occurrence state owns a 32-row bound, exact source session/request/snapshot token/turn plus stable batch-scoped producer operation key and candidate ordinal/count, the original ordered 1-160 accepted-event authorities/set fingerprint/selected ordinal, strict Mortal owner/profile/source/outcome/hard-maximum/safe-context/create-or-worsen fields, candidate/source-result/occurrence fingerprints, exact/confusable uniqueness of `(producerOperationKey, producerCandidateOrdinal)` across pending and consumed rows with same-batch authority agreement, canonical ordinal ordering, and exact-replay-versus-changed-operation conflict. Add the exact write-free `ComposeAcceptedResponse(FileSystemManager, CanonicalWriteLease, JsonElement sourceEvent, GameResponse)` ingress: its closed source shape may select adapter/event ordinal and carry only public correlation, owner/domain/profile/source/outcome/safe-context plus an absent create or explicit worsening coordinate; hard maximum, minimum, and guarantee remain signed-occurrence-only authority, and it must reject caller session/request/snapshot binding, occurrence/event kind/ID/ref, fingerprints, transition IDs, receipts, anchors, and after-images. Add a shared current pending-snapshot reader that validates the manifest, detached reader authority, active request context, required coverage, and exact signed bytes before resolving the source-shaped correlation. Current source/combatant/hazard/die/prose presence alone MUST NOT prove a harmful occurrence. Derive owner/profile/source-state/outcome/legal locations/hard maximum only from the signed occurrence plus kind-specific canonical evidence. Build and seal the complete ordered accepted-event set from the immutable response plus occurrence, select one exact ordinal inside it, and make `ValidationService` independently reconstruct and compare that same set rather than replace it from the command. Add a strict 20,000-row append-only opportunity-decision receipt state/parser with contiguous ordinals, exact replay indexed by opportunity before operation, retained consumed-occurrence source coordinates/fingerprints, conditional null versus exact wound/transition coordinates, and full materialized history agreement; feed its exact prior receipts into initial composition, recomposition, and source-result replay. Return the ordinary `WoundResponseInputCompositionResult` and delegate command staging/admission to `StateDistributor` and `ValidationService`; both state types expose parse/serialize/fingerprint/pure after-image helpers only, and no adapter or distributor writes occurrence/receipt canonical roots directly.
+- [ ] T064 [US2] Implement formal/QTE/combat/trap/check/hazard/narrative Mortal opportunity adapters and causal/profile validation in `BookOfEternityClient/Services/MortalWoundOccurrenceProducer.cs`, `BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs`, `BookOfEternityClient/Services/MortalWoundOccurrenceState.cs`, `BookOfEternityClient/Services/PendingTurnSnapshotReader.cs`, `BookOfEternityClient/Services/WoundAcceptedEventAuthorityComposer.cs`, `BookOfEternityClient/Services/MortalWoundOpportunityReceiptState.cs`, `BookOfEternityClient/Services/MortalWoundOpportunityValidationAuthority.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`. Each registered typed producer must reduce its harmful accepted result to one immutable complete occurrence-candidate batch in the same seven-kind language; harmless results yield no candidate and the later source-shaped ingress cannot manufacture one. The pure occurrence state owns a 32-row bound, exact source session/request/snapshot token/turn plus stable batch-scoped producer operation key and candidate ordinal/count, the original ordered 1-160 accepted-event authorities/set fingerprint/selected ordinal, strict Mortal owner/profile/source/outcome/hard-maximum/safe-context/create-or-worsen fields, candidate/source-result/occurrence fingerprints, exact/confusable uniqueness of `(producerOperationKey, producerCandidateOrdinal)` across pending and consumed rows with same-batch authority agreement, canonical ordinal ordering, and exact-replay-versus-changed-operation conflict. Add the exact write-free `ComposeAcceptedResponse(FileSystemManager, CanonicalWriteLease, JsonElement sourceEvent, GameResponse)` ingress: its closed source shape may select adapter/event ordinal and carry only public correlation, owner/domain/profile/source/outcome/safe-context plus an absent create or explicit worsening coordinate; hard maximum, minimum, and guarantee remain signed-occurrence-only authority, and it must reject caller session/request/snapshot binding, occurrence/event kind/ID/ref, fingerprints, transition IDs, receipts, anchors, and after-images. Add a shared current pending-snapshot reader that validates the manifest, detached reader authority, active request context, required coverage, and exact signed bytes before resolving the source-shaped correlation. Current source/combatant/hazard/die/prose presence alone MUST NOT prove a harmful occurrence. Derive owner/profile/source-state/outcome/legal locations/hard maximum only from the signed occurrence plus kind-specific canonical evidence. Build and seal the complete ordered accepted-event set from the immutable response plus occurrence, select one exact ordinal inside it, and make `ValidationService` independently reconstruct and compare that same set rather than replace it from the command. Add a strict 20,000-row append-only opportunity-decision receipt state/parser with contiguous ordinals, exact replay indexed by opportunity before operation, retained consumed-occurrence source coordinates/fingerprints, conditional null versus exact wound/transition coordinates, and full materialized history agreement; feed its exact prior receipts into initial composition, recomposition, and source-result replay. Return the ordinary `WoundResponseInputCompositionResult` and delegate command staging/admission to `StateDistributor` and `ValidationService`; both state types expose parse/serialize/fingerprint/pure after-image helpers only, and no adapter or distributor writes occurrence/receipt canonical roots directly.
   The occurrence state also preserves the existing opportunity contract's exact nullable
   `minimumSeverityRank`/pre-materialized guaranteed-trigger pair. Both are null for an
   ordinary opportunity; a complete guarantee is source/owner/domain bound, sealed into
@@ -1036,6 +1055,10 @@ future publisher of occurrence/receipt after-images.
   `PlanConsumeAndAppend` result. It MUST NOT accept a detached occurrence as proof of
   current pending membership: new acceptance moves exactly one row pending -> receipt,
   while durable-receipt-first exact replay changes neither state.
+  `registered typed producer` is conditional: the seven names are the closed common
+  reducer language. T064 MUST keep a missing real source resolver unregistered and MUST
+  NOT add a placeholder producer; T070 wires the first real finalized source transaction
+  to this reducer and remains the sole publisher of occurrence/receipt after-images.
 - [ ] T065 [US2] Implement strict readable diagnosis paths, typed known-fact prerequisites/reveals, least-fixed-point discovery validation, treatment routes/known/completed agreement, exact common route envelope, exact/confusable categorized gapless procedure bands with an applicable positive operation in every `success` band, contiguous canonical-minute course milestones with non-empty positive final course, closed no-improvement/effectless-positive-difficulty-complication/current-policy-reference interruption shape, guaranteed singleton source reference, canonical-versus-proposal complication selector dialects, client-owned canonical recovery/deterioration-anchor authoring rejection (proposal absent/null only), and closed ordered typed outcomes reusing the current complication/consequence sub-proposal plus proposal-safe cosmetic/mechanical-effect heal-legacy drafts in `BookOfEternityClient/Services/MortalWoundTreatmentContract.cs` and `BookOfEternityClient/Services/WoundMaterializationContract.cs`
   T065 also owns structural positive-kind versus attempt-time applicability separation,
   positive-only non-empty ordinary course milestones, at-most-one-final-heal and

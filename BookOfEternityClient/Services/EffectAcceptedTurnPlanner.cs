@@ -2781,6 +2781,9 @@ internal static class EffectAcceptedTurnPlanner
             return new PreparedWoundOperations(applications, terminations);
         }
 
+        if (WoundAcceptedTurnPlannerCore.IsEmptyWoundStage(prepared))
+            return new PreparedWoundOperations(applications, terminations);
+
         var acceptedEvents = PrepareWoundAcceptedEvents(
             binding,
             input.EventInput["events"],

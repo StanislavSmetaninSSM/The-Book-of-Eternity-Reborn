@@ -147,6 +147,28 @@ public sealed class MortalWoundOpportunityAdapterTests
     }
 
     [Fact]
+    public async Task ComposeAcceptedResponse_RejectsWorseningTargetDuplicatedAcrossSignedCarriers()
+    {
+        const string woundId = "wound_adapter_global_duplicate";
+        await using var fixture = await Fixture.CreateAsync(
+            "formal",
+            worseningWoundId: woundId,
+            duplicateWorseningInNpc: true);
+        var before = fixture.CaptureTree();
+
+        var result = MortalWoundOpportunityAdapter.ComposeAcceptedResponse(
+            fixture.FileSystem,
+            fixture.Lease,
+            JsonSerializer.SerializeToElement(fixture.SourceEvent),
+            fixture.NoneResponse());
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_wound_opportunity_adapter_worsening_target_unresolved");
+        AssertTreeEqual(before, fixture.CaptureTree());
+    }
+
+    [Fact]
     public async Task ValidationAuthority_IndependentlyReconstructsTheCompleteEventSet()
     {
         await using var fixture = await Fixture.CreateAsync("formal");
@@ -432,6 +454,83 @@ public sealed class MortalWoundOpportunityAdapterTests
         AssertTreeEqual(beforeStale, fixture.CaptureTree());
     }
 
+    [Fact]
+    public async Task ComposeAcceptedResponse_RebindsTheRemainingCandidateFromAMixedSignedBatch()
+    {
+        await using var fixture = await Fixture.CreateAsync(
+            "formal",
+            candidateCount: 2);
+        var first = MortalWoundOpportunityAdapter.ComposeAcceptedResponse(
+            fixture.FileSystem,
+            fixture.Lease,
+            JsonSerializer.SerializeToElement(fixture.SourceEvent),
+            fixture.NoneResponse());
+        Assert.True(first.Success, Describe(first.Issues));
+        await fixture.PublishNoneReceiptAsync(first);
+        fixture.SelectCandidate(1);
+        await fixture.PrepareNextTurnAsync();
+
+        var remaining = MortalWoundOpportunityAdapter.ComposeAcceptedResponse(
+            fixture.FileSystem,
+            fixture.Lease,
+            JsonSerializer.SerializeToElement(fixture.SourceEvent),
+            fixture.NoneResponse());
+
+        Assert.True(remaining.Success, Describe(remaining.Issues));
+        var command = Assert.Single(ParseCommand(remaining).Commands);
+        Assert.Equal(fixture.Occurrence.OccurrenceId, command.Opportunity.OpportunityId);
+        Assert.Equal(1, fixture.Occurrence.ProducerCandidateOrdinal);
+    }
+
+    [Fact]
+    public async Task ComposeAcceptedResponse_RejectsAResealedReceiptWhoseDecisionDoesNotMatchItsSeal()
+    {
+        await using var fixture = await Fixture.CreateAsync("formal");
+        var first = MortalWoundOpportunityAdapter.ComposeAcceptedResponse(
+            fixture.FileSystem,
+            fixture.Lease,
+            JsonSerializer.SerializeToElement(fixture.SourceEvent),
+            fixture.NoneResponse());
+        Assert.True(first.Success, Describe(first.Issues));
+        await fixture.PublishNoneReceiptAsync(first);
+        await fixture.ResealCurrentReceiptAsMaterializeAsync();
+
+        var replay = MortalWoundOpportunityAdapter.ComposeAcceptedResponse(
+            fixture.FileSystem,
+            fixture.Lease,
+            JsonSerializer.SerializeToElement(fixture.SourceEvent),
+            fixture.NoneResponse());
+
+        Assert.False(replay.Success);
+        Assert.Contains(replay.Issues, issue =>
+            issue.Code is "mortal_wound_opportunity_receipt_history_conflict" or
+                "mortal_wound_opportunity_adapter_receipt_replay_mismatch");
+    }
+
+    [Fact]
+    public async Task ComposeAcceptedResponse_RejectsAResealedReceiptWithChangedOpportunityAuthority()
+    {
+        await using var fixture = await Fixture.CreateAsync("formal");
+        var first = MortalWoundOpportunityAdapter.ComposeAcceptedResponse(
+            fixture.FileSystem,
+            fixture.Lease,
+            JsonSerializer.SerializeToElement(fixture.SourceEvent),
+            fixture.NoneResponse());
+        Assert.True(first.Success, Describe(first.Issues));
+        await fixture.PublishNoneReceiptAsync(first);
+        await fixture.ResealCurrentReceiptAuthorityAsync();
+
+        var replay = MortalWoundOpportunityAdapter.ComposeAcceptedResponse(
+            fixture.FileSystem,
+            fixture.Lease,
+            JsonSerializer.SerializeToElement(fixture.SourceEvent),
+            fixture.NoneResponse());
+
+        Assert.False(replay.Success);
+        Assert.Contains(replay.Issues, issue =>
+            issue.Code == "mortal_wound_opportunity_adapter_receipt_replay_mismatch");
+    }
+
     private static WoundResponseCommandParsingResult ParseCommand(
         WoundResponseInputCompositionResult composition)
     {
@@ -488,8 +587,8 @@ public sealed class MortalWoundOpportunityAdapterTests
 
         internal FileSystemManager FileSystem { get; private set; }
         internal FileSystemManager.CanonicalWriteLease Lease { get; private set; }
-        internal MortalWoundOccurrence Occurrence { get; }
-        internal JsonObject SourceEvent { get; }
+        internal MortalWoundOccurrence Occurrence { get; private set; }
+        internal JsonObject SourceEvent { get; private set; }
         internal string ActiveSnapshotToken { get; private set; }
         internal MortalWoundOccurrenceState SignedOccurrences =>
             _signedOccurrences.DetachForReceiptPlan();
@@ -519,7 +618,9 @@ public sealed class MortalWoundOpportunityAdapterTests
 
         internal static async Task<Fixture> CreateAsync(
             string adapterKind,
-            string? worseningWoundId = null)
+            string? worseningWoundId = null,
+            int candidateCount = 1,
+            bool duplicateWorseningInNpc = false)
         {
             var root = Path.Combine(
                 Path.GetTempPath(),
@@ -532,17 +633,34 @@ public sealed class MortalWoundOpportunityAdapterTests
                 "{\"schemaVersion\":1,\"occurrences\":[]}");
             var emptyReceipts = ParseReceipts(
                 "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[]}");
-            var eventCoordinates = new[]
-            {
-                new WoundAcceptedResponseEventCoordinate(
-                    "event_adapter_selected",
-                    adapterKind + "_resolution",
-                    "authority_adapter_selected"),
-                new WoundAcceptedResponseEventCoordinate(
-                    "event_adapter_sibling",
-                    "resource_resolution",
-                    "authority_adapter_sibling")
-            };
+            Assert.InRange(candidateCount, 1, 2);
+            var eventCoordinates = candidateCount == 1
+                ? new[]
+                {
+                    new WoundAcceptedResponseEventCoordinate(
+                        "event_adapter_selected",
+                        adapterKind + "_resolution",
+                        "authority_adapter_selected"),
+                    new WoundAcceptedResponseEventCoordinate(
+                        "event_adapter_sibling",
+                        "resource_resolution",
+                        "authority_adapter_sibling")
+                }
+                : new[]
+                {
+                    new WoundAcceptedResponseEventCoordinate(
+                        "event_adapter_selected_0",
+                        adapterKind + "_resolution",
+                        "authority_adapter_selected_0"),
+                    new WoundAcceptedResponseEventCoordinate(
+                        "event_adapter_selected_1",
+                        adapterKind + "_resolution",
+                        "authority_adapter_selected_1"),
+                    new WoundAcceptedResponseEventCoordinate(
+                        "event_adapter_sibling",
+                        "resource_resolution",
+                        "authority_adapter_sibling")
+                };
             var eventSet = WoundAcceptedEventAuthorityComposer.Compose(
                 new WoundAcceptedResponseEventProjection(
                     "source_session_adapter",
@@ -550,67 +668,68 @@ public sealed class MortalWoundOpportunityAdapterTests
                     "source_snapshot_adapter",
                     41,
                     eventCoordinates),
-                new[]
-                {
-                    new WoundSelectedEventEvidence(
-                        0,
+                Enumerable.Range(0, candidateCount)
+                    .Select(index => new WoundSelectedEventEvidence(
+                        index,
                         new WoundOpportunityEventEvidence(
                             adapterKind,
-                            eventCoordinates[0].Kind,
-                            eventCoordinates[0].AuthorityId,
+                            eventCoordinates[index].Kind,
+                            eventCoordinates[index].AuthorityId,
                             "harmful",
                             3,
-                            "Подтверждённое повреждение в принятом результате."))
-                });
+                            "Подтверждённое повреждение в принятом результате.")))
+                    .ToArray());
             Assert.True(eventSet.Success, Describe(eventSet.Issues));
 
-            var candidate = new MortalWoundOccurrenceCandidate(
-                "source_session_adapter",
-                "source_request_adapter",
-                "source_snapshot_adapter",
-                41,
-                "source_batch_adapter_" + adapterKind,
-                0,
-                1,
-                adapterKind,
-                0,
-                eventSet.Events,
-                new WoundOwnerCoordinate(
-                    "mortal_world",
-                    "player",
-                    "player_current",
-                    WoundCarrierCatalog.PlayerPath),
-                "physical",
-                "mortal_" + adapterKind + "_injury_v1",
-                new MortalWoundOccurrenceSource(
-                    adapterKind + "_source",
-                    "source_adapter_accepted",
-                    "active"),
-                new MortalWoundOccurrenceOutcome(
-                    "harmful",
-                    3,
-                    "Подтверждённое повреждение в принятом результате."),
-                4,
-                null,
-                null,
-                new WoundOpportunitySafeContext(
-                    "вы",
-                    "принятое опасное событие",
-                    new[] { "anatomical", "systemic", "other" }),
-                worseningWoundId is null
-                    ? null
-                    : new MortalWoundOccurrenceWorseningTarget(
-                        worseningWoundId,
-                        "retrauma"),
-                Fingerprint("source-result:" + adapterKind));
+            var candidates = Enumerable.Range(0, candidateCount)
+                .Select(index => new MortalWoundOccurrenceCandidate(
+                    "source_session_adapter",
+                    "source_request_adapter",
+                    "source_snapshot_adapter",
+                    41,
+                    "source_batch_adapter_" + adapterKind,
+                    index,
+                    candidateCount,
+                    adapterKind,
+                    index,
+                    eventSet.Events,
+                    new WoundOwnerCoordinate(
+                        "mortal_world",
+                        "player",
+                        "player_current",
+                        WoundCarrierCatalog.PlayerPath),
+                    "physical",
+                    "mortal_" + adapterKind + "_injury_v1",
+                    new MortalWoundOccurrenceSource(
+                        adapterKind + "_source",
+                        "source_adapter_accepted_" + index,
+                        "active"),
+                    new MortalWoundOccurrenceOutcome(
+                        "harmful",
+                        3,
+                        "Подтверждённое повреждение в принятом результате."),
+                    4,
+                    null,
+                    null,
+                    new WoundOpportunitySafeContext(
+                        "вы",
+                        "принятое опасное событие",
+                        new[] { "anatomical", "systemic", "other" }),
+                    worseningWoundId is null
+                        ? null
+                        : new MortalWoundOccurrenceWorseningTarget(
+                            worseningWoundId,
+                            "retrauma"),
+                    Fingerprint("source-result:" + adapterKind)))
+                .ToArray();
             var append = MortalWoundOccurrenceState.PlanAppend(
                 emptyOccurrences,
-                new MortalWoundOccurrenceCandidateBatch(new[] { candidate }),
+                new MortalWoundOccurrenceCandidateBatch(candidates),
                 emptyReceipts);
             Assert.Equal("appended", append.Disposition);
             Assert.Empty(append.Issues);
             var signedOccurrences = append.State!;
-            var occurrence = Assert.Single(signedOccurrences.Occurrences);
+            var occurrence = signedOccurrences.Occurrences[0];
 
             await fs.WriteFileAtomicAsync(
                 MortalWoundOccurrenceState.StatePath,
@@ -618,6 +737,37 @@ public sealed class MortalWoundOpportunityAdapterTests
             await fs.WriteFileAtomicAsync(
                 MortalWoundOpportunityReceiptState.StatePath,
                 MortalWoundOpportunityReceiptState.SerializeCanonical(emptyReceipts));
+            await fs.WriteFileAtomicAsync(
+                WoundHistoryState.HistoryPath,
+                WoundContractTestData.CreateHistory().ToJsonString());
+            await fs.WriteFileAtomicAsync(
+                WoundCarrierCatalog.NpcPath,
+                (duplicateWorseningInNpc
+                    ? WoundContractTestData.CreateNamedNpcCarrier(
+                        "npc_duplicate_owner",
+                        WoundContractTestData.CreateActiveWound(
+                            worseningWoundId!,
+                            ownerKind: "npc",
+                            ownerId: "npc_duplicate_owner",
+                            carrierPath: WoundCarrierCatalog.NpcPath))
+                    : new JsonObject
+                    {
+                        ["schemaVersion"] = 1,
+                        ["entries"] = new JsonArray()
+                    }).ToJsonString());
+            await fs.WriteFileAtomicAsync(
+                WoundCarrierCatalog.EnemiesPath,
+                new JsonObject { ["enemiesData"] = new JsonArray() }.ToJsonString());
+            await fs.WriteFileAtomicAsync(
+                WoundCarrierCatalog.AlliesPath,
+                new JsonObject { ["alliesData"] = new JsonArray() }.ToJsonString());
+            await fs.WriteFileAtomicAsync(
+                WoundCarrierCatalog.AfterlifeProfilesPath,
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["profiles"] = new JsonArray()
+                }.ToJsonString());
             if (worseningWoundId is not null)
             {
                 await fs.WriteFileAtomicAsync(
@@ -711,6 +861,73 @@ public sealed class MortalWoundOpportunityAdapterTests
                 Lease,
                 MortalWoundOpportunityReceiptState.StatePath,
                 MortalWoundOpportunityReceiptState.SerializeCanonical(plan.ReceiptState!));
+        }
+
+        internal void SelectCandidate(int ordinal)
+        {
+            Occurrence = _signedOccurrences.Occurrences.Single(value =>
+                value.ProducerCandidateOrdinal == ordinal);
+            SourceEvent = SourceEventFor(Occurrence);
+        }
+
+        internal async Task ResealCurrentReceiptAsMaterializeAsync()
+        {
+            var current = ParseReceipts(FileSystem.ReadFileSync(
+                MortalWoundOpportunityReceiptState.StatePath)!);
+            var original = Assert.Single(current.Receipts);
+            var changed = original with
+            {
+                Decision = "materialize",
+                WoundId = "wound_resealed_mismatch",
+                TransitionId = "transition_resealed_mismatch",
+                ReceiptFingerprint = string.Empty
+            };
+            changed = changed with
+            {
+                ReceiptFingerprint =
+                    MortalWoundOpportunityReceiptState.ComputeReceiptFingerprint(changed)
+            };
+            var root = JsonNode.Parse(
+                MortalWoundOpportunityReceiptState.SerializeCanonical(current))!
+                .AsObject();
+            var row = root["receipts"]!.AsArray()[0]!.AsObject();
+            row["decision"] = changed.Decision;
+            row["woundId"] = changed.WoundId;
+            row["transitionId"] = changed.TransitionId;
+            row["receiptFingerprint"] = changed.ReceiptFingerprint;
+            await FileSystem.WriteFileAtomicAsync(
+                Lease,
+                MortalWoundOpportunityReceiptState.StatePath,
+                root.ToJsonString());
+        }
+
+        internal async Task ResealCurrentReceiptAuthorityAsync()
+        {
+            var current = ParseReceipts(FileSystem.ReadFileSync(
+                MortalWoundOpportunityReceiptState.StatePath)!);
+            var original = Assert.Single(current.Receipts);
+            var changed = original with
+            {
+                OpportunityAuthorityFingerprint =
+                    Fingerprint("forged-opportunity-authority"),
+                ReceiptFingerprint = string.Empty
+            };
+            changed = changed with
+            {
+                ReceiptFingerprint =
+                    MortalWoundOpportunityReceiptState.ComputeReceiptFingerprint(changed)
+            };
+            var root = JsonNode.Parse(
+                MortalWoundOpportunityReceiptState.SerializeCanonical(current))!
+                .AsObject();
+            var row = root["receipts"]!.AsArray()[0]!.AsObject();
+            row["opportunityAuthorityFingerprint"] =
+                changed.OpportunityAuthorityFingerprint;
+            row["receiptFingerprint"] = changed.ReceiptFingerprint;
+            await FileSystem.WriteFileAtomicAsync(
+                Lease,
+                MortalWoundOpportunityReceiptState.StatePath,
+                root.ToJsonString());
         }
 
         internal async Task RestartAsync()

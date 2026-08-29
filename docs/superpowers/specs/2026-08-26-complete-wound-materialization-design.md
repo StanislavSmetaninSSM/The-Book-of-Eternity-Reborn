@@ -309,6 +309,9 @@ The client never tries to infer genre physics from narrative prose.
 The adapter's source-shaped input is correlation, not causal authority. Before the GM
 receives an opportunity, the owning formal/QTE/combat/trap/check/hazard/narrative
 producer returns one closed write-free complete harmful occurrence-candidate batch. The
+seven names are the closed reducer language, not seven placeholder implementations: a
+producer is registered only with its real finalized typed resolver, and an unsupported
+kind remains unreachable until T070 wires that source transaction. The
 source-result common accepted plan first resolves its stable operation keys against both
 pending rows and durable consumed receipts, then atomically publishes only genuinely new
 candidates in sealed batch-ordinal order. Only the following pending-turn snapshot that
@@ -332,6 +335,13 @@ exact cold replay creates no command or transition; changing the decision confli
 only a newly sealed occurrence/snapshot creates another opportunity. Materialized
 receipts additionally agree with normal wound transition history, while a decline does
 not invent a wound-history row.
+Each receipt retains the selected ordinal and closed adapter/authority/outcome/rank/
+readable-cause evidence, so its event-semantic seal can be recomputed and a mixed
+pending/consumed producer batch remains reconstructable. Before projection, cold replay
+must agree with the freshly rebuilt full opportunity, expected decision receipt,
+conditional wound/transition coordinates, and current history. This replay authority is
+valid only while the same active pending-turn snapshot still seals the pre-consumption
+occurrence; a later snapshot does not revive old source correlation.
 The pure decision plan receives both current parsed before-states and returns both
 after-states. It resolves a new decision only from the current pending state and resolves
 cold replay from the durable receipt first; a detached older occurrence is not

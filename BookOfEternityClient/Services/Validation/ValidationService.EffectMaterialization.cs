@@ -111,7 +111,10 @@ public partial class ValidationService
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
         var commandJson = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
-        var hasWoundCommand = _fs.FileExists(AcceptedMechanicsPlan.WoundCommandPath);
+        var woundCommandJson = await _fs.ReadFileAsync(
+            writeLease,
+            AcceptedMechanicsPlan.WoundCommandPath);
+        var hasWoundCommand = woundCommandJson is not null;
         var currentCarriers = await ReadEffectCarriersAsync(null, issues);
         if (currentCarriers.SpiritualConflict?[AfterlifeSpiritualConflictState.ResponseField]
             is JsonNode spiritualConflictUpdate)
@@ -174,9 +177,13 @@ public partial class ValidationService
             .ResolveAcceptedTurnApplicationAuthorities(
                 manifest.PlayerAction,
                 acceptedRealm);
-        var rawWoundDraft = await LoadAcceptedTurnRawWoundDraftAsync(
-            manifest,
-            issues);
+        var rawWoundDraft = hasWoundCommand
+            ? await LoadAcceptedTurnRawWoundDraftAsync(
+                manifest,
+                writeLease,
+                woundCommandJson!,
+                issues)
+            : null;
         if (hasWoundCommand && rawWoundDraft is null)
             return;
         var preTurnCarriers = await ReadSnapshotEffectCarriersAsync(manifest, issues);

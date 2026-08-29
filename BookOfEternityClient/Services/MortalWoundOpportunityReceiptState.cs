@@ -18,6 +18,8 @@ internal sealed class MortalWoundOpportunityReceiptState
     private const int SchemaVersion = 1;
     private const int MaximumReceipts = 20_000;
     private const int MaximumCandidateCount = 32;
+    private const int MaximumAcceptedEventOrdinal = 159;
+    private const int MaximumReadableLength = 2_000;
     private const string ReceiptIdPrefix = "mortal_wound_receipt_";
     private const string OccurrenceIdPrefix = "mortal_wound_occurrence_";
     private const string OpportunityRefPrefix = "mortal_wound_";
@@ -29,11 +31,16 @@ internal sealed class MortalWoundOpportunityReceiptState
     private static readonly IReadOnlySet<string> ReceiptFields = Set(
         "receiptId", "ordinal", "opportunityId", "opportunityAuthorityFingerprint",
         "sessionId", "requestId", "snapshotToken", "turn", "eventRef",
-        "eventSemanticFingerprint", "sourceSessionId", "sourceRequestId",
+        "eventSemanticFingerprint", "consumedEventSelection", "sourceSessionId", "sourceRequestId",
         "sourceSnapshotToken", "sourceTurn", "producerOperationKey", "producerCandidateOrdinal",
         "producerCandidateCount", "sourceResultFingerprint", "candidateFingerprint",
         "occurrenceFingerprint", "decision", "decisionFingerprint", "operationKey",
         "woundId", "transitionId", "receiptFingerprint");
+    private static readonly IReadOnlySet<string> ConsumedSelectionFields = Set(
+        "acceptedEventOrdinal", "adapterKind", "authorityKind", "authorityId",
+        "outcomeKind", "maximumSeverityRank", "readableCause");
+    private static readonly IReadOnlySet<string> AdapterKinds = Set(
+        "formal", "qte", "combat", "trap", "check", "hazard", "narrative");
 
     private readonly ReadOnlyCollection<MortalWoundOpportunityReceipt> _receipts;
 
@@ -212,6 +219,13 @@ internal sealed class MortalWoundOpportunityReceiptState
             Number(receipt.Turn),
             receipt.EventRef,
             receipt.EventSemanticFingerprint,
+            Number(receipt.ConsumedEventSelection.AcceptedEventOrdinal),
+            receipt.ConsumedEventSelection.Evidence.AdapterKind,
+            receipt.ConsumedEventSelection.Evidence.AuthorityKind,
+            receipt.ConsumedEventSelection.Evidence.AuthorityId,
+            receipt.ConsumedEventSelection.Evidence.OutcomeKind,
+            Number(receipt.ConsumedEventSelection.Evidence.MaximumSeverityRank),
+            receipt.ConsumedEventSelection.Evidence.ReadableCause,
             receipt.SourceSessionId,
             receipt.SourceRequestId,
             receipt.SourceSnapshotToken,
@@ -484,6 +498,88 @@ internal sealed class MortalWoundOpportunityReceiptState
         return Array.AsReadOnly(issues.ToArray());
     }
 
+    public static IReadOnlyList<ValidationIssue> ValidateHistoryAgreement(
+        MortalWoundOpportunityReceiptState receipts,
+        WoundHistoryState history)
+    {
+        ArgumentNullException.ThrowIfNull(receipts);
+        ArgumentNullException.ThrowIfNull(history);
+        var issues = new List<ValidationIssue>();
+        foreach (var receipt in receipts._receipts)
+        {
+            _ = TryValidateHistoryAgreement(
+                receipt,
+                expectedTransitionKind: null,
+                history,
+                issues,
+                out _);
+        }
+        return Array.AsReadOnly(issues.ToArray());
+    }
+
+    public static IReadOnlyList<ValidationIssue> ValidateExactReplay(
+        MortalWoundOpportunityReceiptState receipts,
+        WoundOpportunityAuthority opportunity,
+        int turn,
+        string expectedDecision,
+        WoundOpportunityDecisionReceipt expectedReceipt,
+        string? expectedWoundId,
+        string? expectedTransitionId,
+        WoundHistoryState history)
+    {
+        ArgumentNullException.ThrowIfNull(receipts);
+        ArgumentNullException.ThrowIfNull(opportunity);
+        ArgumentException.ThrowIfNullOrWhiteSpace(expectedDecision);
+        ArgumentNullException.ThrowIfNull(expectedReceipt);
+        ArgumentNullException.ThrowIfNull(history);
+        var issues = new List<ValidationIssue>();
+        var matches = receipts._receipts.Where(value => string.Equals(
+            value.OpportunityId,
+            opportunity.OpportunityId,
+            StringComparison.Ordinal)).ToArray();
+        if (matches.Length != 1)
+        {
+            Add(
+                issues,
+                StatePath + ".receipts",
+                "mortal_wound_opportunity_adapter_receipt_replay_mismatch");
+            return Array.AsReadOnly(issues.ToArray());
+        }
+
+        var receipt = matches[0];
+        if (!string.Equals(receipt.OpportunityAuthorityFingerprint,
+                opportunity.AuthorityFingerprint, StringComparison.Ordinal) ||
+            !string.Equals(receipt.SessionId, opportunity.SessionId, StringComparison.Ordinal) ||
+            !string.Equals(receipt.RequestId, opportunity.RequestId, StringComparison.Ordinal) ||
+            !string.Equals(receipt.SnapshotToken, opportunity.SnapshotToken, StringComparison.Ordinal) ||
+            receipt.Turn != turn ||
+            !string.Equals(receipt.EventRef, opportunity.EventRef, StringComparison.Ordinal) ||
+            !string.Equals(receipt.Decision, expectedDecision, StringComparison.Ordinal) ||
+            !string.Equals(receipt.DecisionFingerprint,
+                expectedReceipt.DecisionFingerprint, StringComparison.Ordinal) ||
+            !string.Equals(receipt.OperationKey,
+                expectedReceipt.OperationKey, StringComparison.Ordinal) ||
+            !string.Equals(receipt.WoundId,
+                expectedWoundId, StringComparison.Ordinal) ||
+            !string.Equals(receipt.TransitionId,
+                expectedTransitionId, StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                StatePath + ".receipts",
+                "mortal_wound_opportunity_adapter_receipt_replay_mismatch");
+            return Array.AsReadOnly(issues.ToArray());
+        }
+
+        _ = TryValidateHistoryAgreement(
+            receipt,
+            expectedTransitionKind: null,
+            history,
+            issues,
+            out _);
+        return Array.AsReadOnly(issues.ToArray());
+    }
+
     private static MortalWoundOpportunityReceipt? ParseReceipt(
         JsonElement row,
         string path,
@@ -516,11 +612,15 @@ internal sealed class MortalWoundOpportunityReceiptState
         var sessionId = ReadIdentifier(row, "sessionId", path, issues);
         var requestId = ReadIdentifier(row, "requestId", path, issues);
         var snapshotToken = ReadIdentifier(row, "snapshotToken", path, issues);
-        var turn = ReadInteger(row, "turn", path, 0, int.MaxValue, issues);
+        var turn = ReadInteger(row, "turn", path, 1, int.MaxValue, issues);
         var eventRef = ReadIdentifier(row, "eventRef", path, issues);
         var eventSemanticFingerprint = ReadFingerprint(
             row,
             "eventSemanticFingerprint",
+            path,
+            issues);
+        var consumedEventSelection = ParseConsumedEventSelection(
+            row,
             path,
             issues);
         var sourceSessionId = ReadIdentifier(row, "sourceSessionId", path, issues);
@@ -590,6 +690,7 @@ internal sealed class MortalWoundOpportunityReceiptState
             opportunityAuthorityFingerprint is null || sessionId is null ||
             requestId is null || snapshotToken is null || turn is null ||
             eventRef is null || eventSemanticFingerprint is null ||
+            consumedEventSelection is null ||
             sourceSessionId is null || sourceRequestId is null || sourceSnapshotToken is null || sourceTurn is null ||
             producerOperationKey is null || producerCandidateOrdinal is null ||
             producerCandidateCount is null || sourceResultFingerprint is null ||
@@ -611,6 +712,7 @@ internal sealed class MortalWoundOpportunityReceiptState
             turn.Value,
             eventRef,
             eventSemanticFingerprint,
+            consumedEventSelection,
             sourceSessionId,
             sourceRequestId,
             sourceSnapshotToken,
@@ -632,6 +734,106 @@ internal sealed class MortalWoundOpportunityReceiptState
         return receipt;
     }
 
+    private static MortalWoundConsumedEventSelection? ParseConsumedEventSelection(
+        JsonElement row,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var selectionPath = path + ".consumedEventSelection";
+        if (!row.TryGetProperty("consumedEventSelection", out var value))
+        {
+            Add(
+                issues,
+                selectionPath,
+                "mortal_wound_opportunity_receipt_missing_field");
+            return null;
+        }
+        if (value.ValueKind != JsonValueKind.Object)
+        {
+            Add(
+                issues,
+                selectionPath,
+                "mortal_wound_opportunity_receipt_invalid_field");
+            return null;
+        }
+
+        ResourceMaterializationContract.FindDuplicateProperties(
+            value,
+            selectionPath,
+            issues,
+            "mortal_wound_opportunity_receipt_duplicate_property");
+        ResourceMaterializationContract.ValidateClosedObject(
+            value,
+            selectionPath,
+            ConsumedSelectionFields,
+            issues,
+            "mortal_wound_opportunity_receipt_unknown_field");
+        var acceptedEventOrdinal = ReadInteger(
+            value,
+            "acceptedEventOrdinal",
+            selectionPath,
+            0,
+            MaximumAcceptedEventOrdinal,
+            issues);
+        var adapterKind = ReadIdentifier(
+            value,
+            "adapterKind",
+            selectionPath,
+            issues);
+        var authorityKind = ReadIdentifier(
+            value,
+            "authorityKind",
+            selectionPath,
+            issues);
+        var authorityId = ReadIdentifier(
+            value,
+            "authorityId",
+            selectionPath,
+            issues);
+        var outcomeKind = ReadIdentifier(
+            value,
+            "outcomeKind",
+            selectionPath,
+            issues);
+        var maximumSeverityRank = ReadInteger(
+            value,
+            "maximumSeverityRank",
+            selectionPath,
+            1,
+            4,
+            issues);
+        var readableCause = ReadReadable(
+            value,
+            "readableCause",
+            selectionPath,
+            issues);
+        if (acceptedEventOrdinal is null || adapterKind is null ||
+            authorityKind is null || authorityId is null || outcomeKind is null ||
+            maximumSeverityRank is null || readableCause is null)
+        {
+            return null;
+        }
+        if (!AdapterKinds.Contains(adapterKind) ||
+            !string.Equals(outcomeKind, "harmful", StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                selectionPath,
+                "mortal_wound_opportunity_receipt_invalid_field");
+            return null;
+        }
+
+        return new MortalWoundConsumedEventSelection(
+            acceptedEventOrdinal.Value,
+            new WoundOpportunityEventEvidence(
+                adapterKind,
+                authorityKind,
+                authorityId,
+                outcomeKind,
+                maximumSeverityRank.Value,
+                readableCause));
+    }
+
     private static void ValidateReceipt(
         MortalWoundOpportunityReceipt receipt,
         string path,
@@ -643,6 +845,18 @@ internal sealed class MortalWoundOpportunityReceiptState
                 issues,
                 path + ".producerCandidateOrdinal",
                 "mortal_wound_opportunity_receipt_invalid_field");
+        }
+
+        if (!string.Equals(
+                receipt.EventSemanticFingerprint,
+                WoundOpportunityEventEvidenceFingerprint.Compute(
+                    receipt.ConsumedEventSelection.Evidence),
+                StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                path + ".consumedEventSelection",
+                "mortal_wound_opportunity_receipt_event_selection_mismatch");
         }
 
         if (!DecisionCoordinatesAgree(
@@ -841,7 +1055,7 @@ internal sealed class MortalWoundOpportunityReceiptState
         if (!ExactIdentifier(draft.Binding.SessionId) ||
             !ExactIdentifier(draft.Binding.RequestId) ||
             !ExactIdentifier(draft.Binding.SnapshotToken) ||
-            draft.Binding.Turn < 0)
+            draft.Binding.Turn <= 0)
         {
             AddConflict(issues, path + ".binding");
         }
@@ -887,7 +1101,7 @@ internal sealed class MortalWoundOpportunityReceiptState
                     draft.OperationKey,
                     StringComparison.Ordinal)))
             {
-                AddConflict(issues, WoundHistoryState.HistoryPath);
+                AddHistoryConflict(issues);
                 agreement = null;
                 return false;
             }
@@ -913,7 +1127,7 @@ internal sealed class MortalWoundOpportunityReceiptState
                 draft.OpportunityAuthorityFingerprint,
                 expectedTransitionKind))
         {
-            AddConflict(issues, WoundHistoryState.HistoryPath);
+            AddHistoryConflict(issues);
             agreement = null;
             return false;
         }
@@ -936,7 +1150,7 @@ internal sealed class MortalWoundOpportunityReceiptState
                     receipt.OperationKey,
                     StringComparison.Ordinal)))
             {
-                AddConflict(issues, WoundHistoryState.HistoryPath);
+                AddHistoryConflict(issues);
                 agreement = null;
                 return false;
             }
@@ -962,7 +1176,7 @@ internal sealed class MortalWoundOpportunityReceiptState
                 receipt.OpportunityAuthorityFingerprint,
                 expectedTransitionKind))
         {
-            AddConflict(issues, WoundHistoryState.HistoryPath);
+            AddHistoryConflict(issues);
             agreement = null;
             return false;
         }
@@ -1013,6 +1227,15 @@ internal sealed class MortalWoundOpportunityReceiptState
             draft.Binding.Turn,
             selectedEvent.EventRef,
             selectedEvent.SemanticFingerprint,
+            new MortalWoundConsumedEventSelection(
+                occurrence.AcceptedEventOrdinal,
+                new WoundOpportunityEventEvidence(
+                    occurrence.AdapterKind,
+                    selectedEvent.Kind,
+                    selectedEvent.AuthorityId,
+                    occurrence.Outcome.Kind,
+                    occurrence.Outcome.MaximumSeverityRank,
+                    occurrence.Outcome.ReadableCause)),
             occurrence.SourceSessionId,
             occurrence.SourceRequestId,
             occurrence.SourceSnapshotToken,
@@ -1232,6 +1455,31 @@ internal sealed class MortalWoundOpportunityReceiptState
         return null;
     }
 
+    private static string? ReadReadable(
+        JsonElement value,
+        string name,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var text = ReadString(value, name, path, issues);
+        if (text is not null &&
+            text.Length <= MaximumReadableLength &&
+            string.Equals(text, text.Trim(), StringComparison.Ordinal) &&
+            !text.Any(char.IsControl))
+        {
+            return text;
+        }
+
+        if (text is not null)
+        {
+            Add(
+                issues,
+                path + "." + name,
+                "mortal_wound_opportunity_receipt_invalid_field");
+        }
+        return null;
+    }
+
     private static string? ReadString(
         JsonElement value,
         string name,
@@ -1325,6 +1573,12 @@ internal sealed class MortalWoundOpportunityReceiptState
             path,
             "mortal_wound_opportunity_receipt_conflict"));
 
+    private static void AddHistoryConflict(
+        ICollection<ValidationIssue> issues) =>
+        issues.Add(NewIssue(
+            WoundHistoryState.HistoryPath,
+            "mortal_wound_opportunity_receipt_history_conflict"));
+
     private static void Add(
         ICollection<ValidationIssue> issues,
         string path,
@@ -1361,6 +1615,30 @@ internal sealed class MortalWoundOpportunityReceiptState
         writer.WriteString(
             "eventSemanticFingerprint",
             receipt.EventSemanticFingerprint);
+        writer.WritePropertyName("consumedEventSelection");
+        writer.WriteStartObject();
+        writer.WriteNumber(
+            "acceptedEventOrdinal",
+            receipt.ConsumedEventSelection.AcceptedEventOrdinal);
+        writer.WriteString(
+            "adapterKind",
+            receipt.ConsumedEventSelection.Evidence.AdapterKind);
+        writer.WriteString(
+            "authorityKind",
+            receipt.ConsumedEventSelection.Evidence.AuthorityKind);
+        writer.WriteString(
+            "authorityId",
+            receipt.ConsumedEventSelection.Evidence.AuthorityId);
+        writer.WriteString(
+            "outcomeKind",
+            receipt.ConsumedEventSelection.Evidence.OutcomeKind);
+        writer.WriteNumber(
+            "maximumSeverityRank",
+            receipt.ConsumedEventSelection.Evidence.MaximumSeverityRank);
+        writer.WriteString(
+            "readableCause",
+            receipt.ConsumedEventSelection.Evidence.ReadableCause);
+        writer.WriteEndObject();
         writer.WriteString("sourceSessionId", receipt.SourceSessionId);
         writer.WriteString("sourceRequestId", receipt.SourceRequestId);
         writer.WriteString("sourceSnapshotToken", receipt.SourceSnapshotToken);
@@ -1432,6 +1710,7 @@ internal sealed record MortalWoundOpportunityReceipt(
     int Turn,
     string EventRef,
     string EventSemanticFingerprint,
+    MortalWoundConsumedEventSelection ConsumedEventSelection,
     string SourceSessionId,
     string SourceRequestId,
     string SourceSnapshotToken,
@@ -1448,6 +1727,10 @@ internal sealed record MortalWoundOpportunityReceipt(
     string? WoundId,
     string? TransitionId,
     string ReceiptFingerprint);
+
+internal sealed record MortalWoundConsumedEventSelection(
+    int AcceptedEventOrdinal,
+    WoundOpportunityEventEvidence Evidence);
 
 internal sealed record MortalWoundOpportunityReceiptParseResult(
     bool IsValid,

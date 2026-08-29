@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -35,19 +36,25 @@ public sealed class WoundMaterializationValidationTests
             errors.Length == 0,
             string.Join(
                 Environment.NewLine,
-                errors.Select(static issue => issue.ToString())));
+                errors.Select(static issue =>
+                    $"{issue.Code}: {issue.FilePath}: {issue.Actual}")));
+        var hasPrepared = WoundAcceptedTurnPlanAuthority.TryPeekPrepared(
+            context.FileSystem,
+            lease,
+            out _);
+        var hasCommon = AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            lease,
+            out var binding,
+            out var result);
         Assert.True(
-            WoundAcceptedTurnPlanAuthority.TryPeekPrepared(
-                context.FileSystem,
-                lease,
-                out _),
-            "The raw wound command did not reach the prepared wound stage.");
+            hasPrepared,
+            "The raw wound command did not reach the prepared wound stage; " +
+            $"common={hasCommon}." + Environment.NewLine +
+            string.Join(Environment.NewLine, issues.Select(static issue =>
+                $"{issue.Code}: {issue.FilePath}: {issue.Actual}")));
         Assert.True(
-            AcceptedMechanicsPlanAuthority.TryPeekValidated(
-                context.FileSystem,
-                lease,
-                out var binding,
-                out var result),
+            hasCommon,
             string.Join(
                 Environment.NewLine,
                 issues.Select(static issue => issue.ToString())));
@@ -180,10 +187,120 @@ public sealed class WoundMaterializationValidationTests
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync(lease);
 
+        Assert.True(
+            issues.Any(issue =>
+                issue.FilePath == WoundIdentityState.StatePath &&
+                issue.Code == "wound_materialization_client_owned_root_mutated" &&
+                issue.Category == IssueCategory.ClientOwnedSurface),
+            string.Join(Environment.NewLine, issues.Select(issue =>
+                $"{issue.Code}: {issue.FilePath}: {issue.Actual}")));
+        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            lease,
+            out _,
+            out _));
+    }
+
+    [Fact]
+    public async Task RawValidation_RejectsEncodingOnlyClientOwnedMutationAgainstExactSnapshotBytes()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await SeedEmptyFoundationsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync(
+            additionalTrackedPaths: SnapshotWoundPaths);
+        var snapshotToken = await ReadSnapshotTokenAsync(context);
+        await context.WriteExactJsonAsync(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            EmptyCommands(
+                sessionId: "session_resource_materialization",
+                requestId: "request_resource_materialization",
+                snapshotToken: snapshotToken).ToJsonString());
+        var identityBytes = Assert.IsType<byte[]>(
+            await context.FileSystem.ReadFileBytesAsync(WoundIdentityState.StatePath));
+        await context.WriteExactBytesAsync(
+            WoundIdentityState.StatePath,
+            Encoding.UTF8.GetPreamble().Concat(identityBytes).ToArray());
+
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync(lease);
+
+        Assert.True(
+            issues.Any(issue =>
+                issue.FilePath == WoundIdentityState.StatePath &&
+                issue.Code == "wound_materialization_client_owned_root_mutated" &&
+                issue.Category == IssueCategory.ClientOwnedSurface),
+            string.Join(Environment.NewLine, issues.Select(issue =>
+                $"{issue.Code}: {issue.FilePath}: {issue.Actual}")));
+        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            lease,
+            out _,
+            out _));
+    }
+
+    [Fact]
+    public async Task RawValidation_RejectsConflictingLifecycleContextBeforeWoundPlanning()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await SeedEmptyFoundationsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync(
+            additionalTrackedPaths: SnapshotWoundPaths);
+        var snapshotToken = await ReadSnapshotTokenAsync(context);
+        await context.WriteExactJsonAsync(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            EmptyCommands(
+                sessionId: "session_resource_materialization",
+                requestId: "request_resource_materialization",
+                snapshotToken: snapshotToken).ToJsonString());
+        await context.WriteExactJsonAsync(
+            "game_state/control/validation_repair_request.json",
+            new JsonObject
+            {
+                ["sessionId"] = "session_resource_materialization",
+                ["requestId"] = "request_conflicting_repair",
+                ["turnNumber"] = 43
+            }.ToJsonString());
+
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync(lease);
+
         Assert.Contains(issues, issue =>
-            issue.FilePath == WoundIdentityState.StatePath &&
-            issue.Code == "wound_materialization_client_owned_root_mutated" &&
-            issue.Category == IssueCategory.ClientOwnedSurface);
+            issue.Code == "pending_turn_snapshot_reader_context_conflict");
+        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            lease,
+            out _,
+            out _));
+    }
+
+    [Fact]
+    public async Task RawValidation_RejectsDuplicateNestedPropertyInSignedWoundCarrier()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await SeedEmptyFoundationsAsync(context);
+        await context.WriteExactJsonAsync(
+            WoundCarrierCatalog.PlayerPath,
+            """
+            {"schemaVersion":1,"owner":{"realm":"mortal_world","ownerKind":"player","ownerId":"player_current","ownerId":"player_current"},"activeWounds":[]}
+            """);
+        await context.CaptureValidatedPendingSnapshotAsync(
+            additionalTrackedPaths: SnapshotWoundPaths);
+        await context.WriteExactJsonAsync(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            EmptyCommands(
+                sessionId: "session_resource_materialization",
+                requestId: "request_resource_materialization",
+                snapshotToken: await ReadSnapshotTokenAsync(context)).ToJsonString());
+
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync(lease);
+
+        Assert.Contains(issues, issue =>
+            issue.FilePath == WoundCarrierCatalog.PlayerPath + ".owner.ownerId" &&
+            issue.Code == "wound_carrier_duplicate_property");
         Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
             context.FileSystem,
             lease,
@@ -216,6 +333,25 @@ public sealed class WoundMaterializationValidationTests
                 ["entries"] = new JsonArray()
             }.ToJsonString());
         await context.WriteExactJsonAsync(
+            WoundCarrierCatalog.EnemiesPath,
+            new JsonObject
+            {
+                ["enemiesData"] = new JsonArray()
+            }.ToJsonString());
+        await context.WriteExactJsonAsync(
+            WoundCarrierCatalog.AlliesPath,
+            new JsonObject
+            {
+                ["alliesData"] = new JsonArray()
+            }.ToJsonString());
+        await context.WriteExactJsonAsync(
+            WoundCarrierCatalog.AfterlifeProfilesPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["profiles"] = new JsonArray()
+            }.ToJsonString());
+        await context.WriteExactJsonAsync(
             WoundIdentityState.StatePath,
             EmptyIdentity().ToJsonString());
         await context.WriteExactJsonAsync(
@@ -225,6 +361,21 @@ public sealed class WoundMaterializationValidationTests
                 ["schemaVersion"] = 1,
                 ["nextOrdinal"] = 1,
                 ["transitions"] = new JsonArray()
+            }.ToJsonString());
+        await context.WriteExactJsonAsync(
+            MortalWoundOccurrenceState.StatePath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["occurrences"] = new JsonArray()
+            }.ToJsonString());
+        await context.WriteExactJsonAsync(
+            MortalWoundOpportunityReceiptState.StatePath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["nextOrdinal"] = 1,
+                ["receipts"] = new JsonArray()
             }.ToJsonString());
     }
 

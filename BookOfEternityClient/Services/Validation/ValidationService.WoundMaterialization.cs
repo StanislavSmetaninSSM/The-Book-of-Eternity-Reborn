@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -14,6 +15,17 @@ public partial class ValidationService
         WoundCarrierCatalog.AlliesPath,
         WoundCarrierCatalog.AfterlifeProfilesPath
     };
+
+    private static readonly string[] CanonicalWoundSnapshotReadPaths =
+        CanonicalWoundCarrierPaths
+            .Concat(
+            [
+                WoundIdentityState.StatePath,
+                WoundHistoryState.HistoryPath,
+                MortalWoundOccurrenceState.StatePath,
+                MortalWoundOpportunityReceiptState.StatePath
+            ])
+            .ToArray();
 
     private sealed record AcceptedTurnRawWoundDraft(
         WoundResponseCommandParsingResult ParsedCommands,
@@ -145,13 +157,15 @@ public partial class ValidationService
     private async Task<AcceptedTurnRawWoundDraft?>
         LoadAcceptedTurnRawWoundDraftAsync(
             ValidationPendingTurnSnapshotManifest manifest,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            string commandJson,
             List<ValidationIssue> issues)
     {
         ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(commandJson);
         ArgumentNullException.ThrowIfNull(issues);
-        var commandJson = await _fs.ReadFileAsync(AcceptedMechanicsPlan.WoundCommandPath);
-        if (commandJson is null)
-            return null;
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
 
         var parsedCommands = ParseAcceptedTurnWoundCommands(
             commandJson,
@@ -159,6 +173,38 @@ public partial class ValidationService
             issues);
         if (parsedCommands is null || parsedCommands.CommandRoot is null)
             return null;
+
+        var snapshotRead = PendingTurnSnapshotReader.ReadCurrent(
+            _fs,
+            writeLease,
+            CanonicalWoundSnapshotReadPaths);
+        if (!snapshotRead.Success || snapshotRead.Snapshot is null)
+        {
+            issues.AddRange(snapshotRead.Issues);
+            return null;
+        }
+        var snapshot = snapshotRead.Snapshot;
+        var computedManifestHash = ComputeManifestPayloadHash(manifest);
+        if (!string.Equals(
+                computedManifestHash,
+                manifest.ManifestPayloadHash,
+                StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(snapshot.SessionId, manifest.SessionId, StringComparison.Ordinal) ||
+            !string.Equals(snapshot.RequestId, manifest.RequestId, StringComparison.Ordinal) ||
+            !string.Equals(
+                snapshot.SnapshotToken,
+                manifest.ManifestPayloadHash,
+                StringComparison.OrdinalIgnoreCase) ||
+            snapshot.TurnNumber != manifest.TurnNumber)
+        {
+            issues.Add(WoundIssue(
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                "wound_materialization_snapshot_binding_mismatch",
+                "one exact validated pending-turn manifest and strict snapshot-reader authority",
+                "the validation manifest does not identify the strict current snapshot",
+                IssueCategory.ClientOwnedSurface));
+            return null;
+        }
 
         if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
                 manifest,
@@ -177,50 +223,42 @@ public partial class ValidationService
             return null;
         }
 
-        var preTurnJson = new Dictionary<string, string?>(StringComparer.Ordinal);
-        foreach (var path in CanonicalWoundCarrierPaths)
+        var preTurnBytes = CanonicalWoundSnapshotReadPaths.ToDictionary(
+            static path => path,
+            snapshot.ReadRequiredBytes,
+            StringComparer.Ordinal);
+        foreach (var path in new[]
+                 {
+                     WoundCarrierCatalog.PlayerPath,
+                     WoundCarrierCatalog.NpcPath,
+                     WoundIdentityState.StatePath,
+                     WoundHistoryState.HistoryPath,
+                     MortalWoundOccurrenceState.StatePath,
+                     MortalWoundOpportunityReceiptState.StatePath
+                 })
         {
-            preTurnJson[path] = await ReadValidatedPendingTurnSnapshotFileAsync(
-                manifest,
-                path);
+            await ValidateWoundClientOwnedBaselineAsync(
+                path,
+                preTurnBytes[path],
+                writeLease,
+                issues);
         }
-        var preTurnIdentityJson = await ReadValidatedPendingTurnSnapshotFileAsync(
-            manifest,
-            WoundIdentityState.StatePath);
-        var preTurnHistoryJson = await ReadValidatedPendingTurnSnapshotFileAsync(
-            manifest,
-            WoundHistoryState.HistoryPath);
-        var signedOccurrenceJson = await ReadValidatedPendingTurnSnapshotFileAsync(
-            manifest,
-            MortalWoundOccurrenceState.StatePath);
-        var signedReceiptJson = await ReadValidatedPendingTurnSnapshotFileAsync(
-            manifest,
-            MortalWoundOpportunityReceiptState.StatePath);
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+            return null;
 
-        await ValidateWoundClientOwnedBaselineAsync(
-            WoundCarrierCatalog.PlayerPath,
-            preTurnJson[WoundCarrierCatalog.PlayerPath],
-            issues);
-        await ValidateWoundClientOwnedBaselineAsync(
-            WoundCarrierCatalog.NpcPath,
-            preTurnJson[WoundCarrierCatalog.NpcPath],
-            issues);
-        await ValidateWoundClientOwnedBaselineAsync(
-            WoundIdentityState.StatePath,
-            preTurnIdentityJson,
-            issues);
-        await ValidateWoundClientOwnedBaselineAsync(
-            WoundHistoryState.HistoryPath,
-            preTurnHistoryJson,
-            issues);
-        await ValidateWoundClientOwnedBaselineAsync(
-            MortalWoundOccurrenceState.StatePath,
-            signedOccurrenceJson,
-            issues);
-        await ValidateWoundClientOwnedBaselineAsync(
-            MortalWoundOpportunityReceiptState.StatePath,
-            signedReceiptJson,
-            issues);
+        var preTurnJson = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var (path, bytes) in preTurnBytes)
+        {
+            var json = DecodeWoundSnapshotJson(bytes, path, issues);
+            if (json is not null)
+                preTurnJson[path] = json;
+        }
+        if (preTurnJson.Count != preTurnBytes.Count)
+            return null;
+        var preTurnIdentityJson = preTurnJson[WoundIdentityState.StatePath];
+        var preTurnHistoryJson = preTurnJson[WoundHistoryState.HistoryPath];
+        var signedOccurrenceJson = preTurnJson[MortalWoundOccurrenceState.StatePath];
+        var signedReceiptJson = preTurnJson[MortalWoundOpportunityReceiptState.StatePath];
 
         var preTurnCarriers = new WoundCarrierCatalogInput(
             ParseWoundCarrierRoot(
@@ -276,6 +314,13 @@ public partial class ValidationService
                     .ValidateConsumedOccurrenceAgreement(
                         occurrences.State,
                         receipts.State));
+            if (history.State is not null)
+            {
+                issues.AddRange(
+                    MortalWoundOpportunityReceiptState.ValidateHistoryAgreement(
+                        receipts.State,
+                        history.State));
+            }
         }
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) ||
             identity.State is null ||
@@ -333,6 +378,10 @@ public partial class ValidationService
         if (!validationAuthority.Success ||
             validationAuthority.Binding is not { } binding)
         {
+            AddMissingWoundStageIssue(
+                issues,
+                "wound_materialization_validation_authority_partial",
+                "independent occurrence validation authority");
             return null;
         }
         var recomposed = WoundResponseInputComposer.RecomposeCommandRoot(
@@ -341,7 +390,13 @@ public partial class ValidationService
             validationAuthority.PriorReceipts);
         issues.AddRange(recomposed.Issues);
         if (!recomposed.Success || recomposed.CommandRoot is null)
+        {
+            AddMissingWoundStageIssue(
+                issues,
+                "wound_materialization_recomposition_partial",
+                "exact typed wound command recomposition");
             return null;
+        }
 
         var sourceBinding = WoundAcceptedTurnPlanner.BindAcceptedSourceTargets(
             binding,
@@ -351,7 +406,13 @@ public partial class ValidationService
             effectInput.TargetAuthority);
         issues.AddRange(sourceBinding.Issues);
         if (!sourceBinding.Success)
+        {
+            AddMissingWoundStageIssue(
+                issues,
+                "wound_materialization_source_binding_partial",
+                "accepted wound source/target binding");
             return null;
+        }
 
         var resourceIssues = ValidateAcceptedWoundResourceBindings(
             draft.ParsedCommands,
@@ -379,7 +440,13 @@ public partial class ValidationService
             new EffectCarrierCatalogInput(null, null, null, null, null, null));
         issues.AddRange(acceptedOwnerCarriers.Issues);
         if (!acceptedOwnerCarriers.Success || acceptedOwnerCarriers.Carriers is not { } carriers)
+        {
+            AddMissingWoundStageIssue(
+                issues,
+                "wound_materialization_owner_carrier_partial",
+                "accepted wound owner carrier authority");
             return null;
+        }
 
         var input = new WoundAcceptedTurnInput(
             binding,
@@ -395,12 +462,32 @@ public partial class ValidationService
             writeLease,
             input);
         issues.AddRange(prepared.Issues);
-        return prepared.Success && prepared.Plan is not null
-            ? new AcceptedTurnPreparedWoundHandoff(
-                recomposed.CommandRoot,
-                WoundAcceptedTurnData.CloneInput(input)!,
-                prepared.Plan)
-            : null;
+        if (!prepared.Success || prepared.Plan is null)
+        {
+            AddMissingWoundStageIssue(
+                issues,
+                "wound_materialization_prepared_stage_partial",
+                "one complete prepared wound stage");
+            return null;
+        }
+        return new AcceptedTurnPreparedWoundHandoff(
+            recomposed.CommandRoot,
+            WoundAcceptedTurnData.CloneInput(input)!,
+            prepared.Plan);
+    }
+
+    private static void AddMissingWoundStageIssue(
+        List<ValidationIssue> issues,
+        string code,
+        string expected)
+    {
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+            return;
+        issues.Add(WoundIssue(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            code,
+            expected,
+            "the stage returned neither complete authority nor a typed error"));
     }
 
     private static IReadOnlyList<ValidationIssue>
@@ -722,22 +809,58 @@ public partial class ValidationService
 
     private async Task ValidateWoundClientOwnedBaselineAsync(
         string path,
-        string? preTurnJson,
+        byte[] preTurnBytes,
+        FileSystemManager.CanonicalWriteLease writeLease,
         List<ValidationIssue> issues)
     {
-        var currentJson = await _fs.ReadFileAsync(path);
-        if (string.Equals(currentJson, preTurnJson, StringComparison.Ordinal))
+        ArgumentNullException.ThrowIfNull(preTurnBytes);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        var currentBytes = await _fs.ReadFileBytesAsync(writeLease, path);
+        if (currentBytes is not null &&
+            currentBytes.AsSpan().SequenceEqual(preTurnBytes))
+        {
             return;
+        }
         issues.Add(WoundIssue(
             path,
             "wound_materialization_client_owned_root_mutated",
             "byte-identical validated pre-turn client-owned wound root",
-            currentJson is null
+            currentBytes is null
                 ? "current root missing"
-                : preTurnJson is null
-                    ? "current root created outside accepted wound planning"
-                    : "current bytes differ from validated snapshot",
+                : "current bytes differ from validated snapshot",
             IssueCategory.ClientOwnedSurface));
+    }
+
+    private static string? DecodeWoundSnapshotJson(
+        byte[] bytes,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        ArgumentNullException.ThrowIfNull(bytes);
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentNullException.ThrowIfNull(issues);
+        try
+        {
+            var preamble = Encoding.UTF8.GetPreamble();
+            var offset = bytes.AsSpan().StartsWith(preamble)
+                ? preamble.Length
+                : 0;
+            return new UTF8Encoding(
+                    encoderShouldEmitUTF8Identifier: false,
+                    throwOnInvalidBytes: true)
+                .GetString(bytes, offset, bytes.Length - offset);
+        }
+        catch (DecoderFallbackException exception)
+        {
+            issues.Add(WoundIssue(
+                path,
+                "wound_materialization_snapshot_encoding_invalid",
+                "strict UTF-8 JSON bytes in the validated pending-turn snapshot",
+                exception.GetType().Name,
+                IssueCategory.ClientOwnedSurface));
+            return null;
+        }
     }
 
     private static string ComputeAcceptedWoundCarrierAuthority(
@@ -763,11 +886,24 @@ public partial class ValidationService
             return null;
         try
         {
-            return JsonNode.Parse(json) is JsonObject root
-                ? root
-                : AddInvalidRoot();
+            using var document = JsonDocument.Parse(json);
+            var rootElement = document.RootElement;
+            if (rootElement.ValueKind != JsonValueKind.Object)
+                return AddInvalidRoot();
+
+            var issueCount = issues.Count;
+            ResourceMaterializationContract.FindDuplicateProperties(
+                rootElement,
+                path,
+                issues,
+                "wound_carrier_duplicate_property");
+            if (issues.Count != issueCount)
+                return null;
+
+            return JsonNode.Parse(rootElement.GetRawText())!.AsObject();
         }
-        catch (JsonException exception)
+        catch (Exception exception) when (
+            exception is JsonException or ArgumentException)
         {
             issues.Add(WoundIssue(
                 path,

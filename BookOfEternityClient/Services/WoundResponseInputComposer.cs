@@ -261,7 +261,7 @@ internal static partial class WoundResponseInputComposer
             ResourceMaterializationContract.IsExactIdentifier(binding.SnapshotToken) &&
             binding.Realm is "mortal_world" or "chaos_sea" or "shining_abode" &&
             binding.Turn > 0 &&
-            acceptedEvents.Count > 0 &&
+            (acceptedEvents.Count > 0 || opportunities.Count == 0) &&
             acceptedEvents.All(static value => value is not null &&
                 ResourceMaterializationContract.IsExactIdentifier(value.EventRef) &&
                 ResourceMaterializationContract.IsExactIdentifier(value.Kind) &&
