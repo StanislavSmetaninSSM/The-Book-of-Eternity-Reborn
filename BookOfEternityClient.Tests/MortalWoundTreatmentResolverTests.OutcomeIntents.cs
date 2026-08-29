@@ -213,6 +213,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         if (scenario.Mode == "procedure")
             fixture.AssertUnchangedT060RequirementResolution(Assert.Single(before.Wound!.Treatment.Routes));
         var acceptedState = fixture.GetAcceptedState();
+        fixture.AssertCanonicalScenarioAuthority(acceptedState, scenario);
         var factory = ExactStaticMethod(planner, testCase.Mode switch
         {
             "procedure" => "PrepareProcedureRequest",
@@ -221,14 +222,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }, 6);
         var prepared = ReadValidTypedResult(Invoke(factory, new object?[]
         {
-            acceptedState, history, before.Wound!, scenario.OperationKey, scenario.RouteId, scenario.EventRef
+            acceptedState, history, before.Wound!, scenario.OperationKey, scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState)
         }), "Request", testCase.Name + " request");
         object? deteriorationAuthority = null;
         if (testCase.Name == "deterioration_handoff")
             deteriorationAuthority = AssertResolverFacingDeteriorationAuthority(
                 acceptedState,
                 ReadRequiredProperty(prepared, "Coordinates"),
-                "untreated_infection");
+                "t061_strict_deterioration");
         var resolution = Invoke(ExactStaticMethod(planner, testCase.Mode == "procedure"
             ? "CreateProcedureAttempt"
             : "CreateGuaranteedAttempt", 4), new object?[]
@@ -248,22 +250,23 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
-    public void OutcomeIntent_ReceiptOwnershipIsDetachedAndReplayNeedsProductionAppend()
+    public void OutcomeIntent_PublishedReceiptIsDetachedAndOwnsNoActionableSurface()
     {
-        RequireOutcomeResolver();
-
-        // The only existing production replay entry is ProbeTreatmentAttempt.  A
-        // durable typed treat append/publication API is not present yet, so this test
-        // deliberately freezes receipt ownership without forging a history row or a
-        // receipt merely to fabricate an ExactReplay.
-        var probe = ExactInstanceMethod(typeof(WoundHistoryParseResult), "ProbeTreatmentAttempt", 3);
-        Assert.Equal("MortalWoundTreatmentReplayProbeResult", probe.ReturnType.Name);
-        var receipt = typeof(WoundMaterializationContract).Assembly.GetType(
-            "BookOfEternityClient.Services.MortalWoundTreatmentReceipt",
-            throwOnError: false,
-            ignoreCase: false);
-        Assert.NotNull(receipt);
-        AssertReceiptOwnsNoActionableOutcomeSurface(receipt);
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_receipt",
+            scenario.RouteId);
+        ComposeAndPublishTreatment(fixture, flow);
+        var probe = ProbePublishedTreatment(fixture, flow.Request);
+        Assert.Equal("ExactReplay", Convert.ToString(ReadRequiredProperty(probe, "Status")));
+        var receipt = ReadRequiredProperty(probe, "Receipt");
+        AssertReceiptOwnsNoActionableOutcomeSurface(receipt.GetType());
+        AssertClosedTreatmentReceipt(receipt, flow.Request, flow.Resolution);
     }
 
     private static Type RequireOutcomeResolver()
@@ -302,15 +305,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
             case "deterioration_handoff":
                 scenario.Before["recovery"]!["deteriorationPolicy"] = new JsonObject
                 {
-                    ["policyRef"] = "untreated_infection",
+                    ["policyRef"] = "t061_strict_deterioration",
                     ["unmetConditions"] = new JsonArray("not_stabilized"),
-                    ["effect"] = "worsen_severity",
-                    ["steps"] = 1
+                    ["graceMinutes"] = 30L,
+                    ["cadenceMinutes"] = 10L,
+                    ["result"] = new JsonObject { ["kind"] = "increase_severity" }
                 };
                 route["outcomes"]![2]!["result"] = new JsonArray(new JsonObject
                 {
                     ["kind"] = "apply_deterioration",
-                    ["policyRef"] = "untreated_infection"
+                    ["policyRef"] = "t061_strict_deterioration"
                 });
                 break;
             case "guaranteed_remove_then_heal":
@@ -394,26 +398,39 @@ public sealed partial class MortalWoundTreatmentResolverTests
         ["readableSummary"] = "T061 cosmetic scar."
     };
 
-    private static JsonObject CreateMechanicalLegacyDraft() => new()
+    private static JsonObject CreateMechanicalLegacyDraft() =>
+        CreateMechanicalLegacyDraft(
+            "t061_mechanical",
+            "t061_legacy_application");
+
+    private static JsonObject CreateMechanicalLegacyDraft(
+        string localLegacyRef,
+        params string[] applicationRefs)
     {
-        ["localLegacyRef"] = "t061_mechanical",
-        ["kind"] = "mechanical_effect",
-        ["effectDraft"] = new JsonObject
+        var definitionRef = localLegacyRef + "_definition";
+        return new JsonObject
         {
-            ["schemaVersion"] = 1,
-            ["definitions"] = new JsonArray(new JsonObject
+            ["localLegacyRef"] = localLegacyRef,
+            ["kind"] = "mechanical_effect",
+            ["effectDraft"] = new JsonObject
             {
-                ["definitionRef"] = "t061_legacy_definition",
-                ["definition"] = CreateSourceBoundActionControlDefinition("t061-legacy")
-            }),
-            ["applications"] = new JsonArray(new JsonObject
-            {
-                ["applicationRef"] = "t061_legacy_application",
-                ["definitionRef"] = "t061_legacy_definition",
-                ["parameters"] = new JsonObject()
-            })
-        }
-    };
+                ["schemaVersion"] = 1,
+                ["definitions"] = new JsonArray(new JsonObject
+                {
+                    ["definitionRef"] = definitionRef,
+                    ["definition"] = CreateSourceBoundActionControlDefinition(
+                        "t061-legacy-" + localLegacyRef)
+                }),
+                ["applications"] = new JsonArray(applicationRefs.Select(applicationRef =>
+                    (JsonNode)new JsonObject
+                    {
+                        ["applicationRef"] = applicationRef,
+                        ["definitionRef"] = definitionRef,
+                        ["parameters"] = new JsonObject()
+                    }).ToArray())
+            }
+        };
+    }
 
     private static JsonObject CreateSourceBoundActionControlDefinition(string definitionKey)
     {
@@ -477,7 +494,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static string CanonicalBindings(object intent, string property) =>
         CanonicalValue(ReadRequiredProperty(intent, property));
 
-    private static string CanonicalValue(object value) => JsonSerializer.Serialize(value);
+    private static string CanonicalValue(object? value) => JsonSerializer.Serialize(value);
 
     private static object OutcomeIntentAt(object resolutionResult, int ordinal)
     {

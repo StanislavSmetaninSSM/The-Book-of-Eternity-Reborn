@@ -1,25 +1,171 @@
 using System.Reflection;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 /// <summary>
-/// T061 restart/replay boundary.  It deliberately has no local treatment-history row:
-/// only the future client-owned append coordinator may persist a resolved attempt.
+/// T061/T070 restart boundary. A replay row is never hand-authored here: the only
+/// durable treatment attempt comes from the common accepted-mechanics publisher.
 /// </summary>
 public sealed partial class MortalWoundTreatmentResolverTests
 {
     [Fact]
-    public void Replay_RequiresTheCommonT070PublicationPlanBeforeProbeCanExerciseDetachedExactReplay()
+    public void Replay_PublishedCommonPlanRestartsIntoDetachedExactRequestAndReceiptWithoutNewWork()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_replay",
+            scenario.RouteId);
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(flow.Resolution, "OutcomeIntents")));
+        ComposeAndPublishTreatment(fixture, flow);
+
+        var observedPaths = new[]
+        {
+            WoundCarrierCatalog.PlayerPath,
+            WoundIdentityState.StatePath,
+            WoundHistoryState.HistoryPath,
+            "game_state/inventory/items.json",
+            "game_state/inventory/item_identity_index.json",
+            EffectCarrierCatalog.PlayerPath,
+            EffectIdentityState.StatePath
+        };
+        var acceptedBytes = observedPaths.ToDictionary(
+            static path => path,
+            path => File.Exists(fixture.FileSystem.ResolvePath(path))
+                ? File.ReadAllBytes(fixture.FileSystem.ResolvePath(path))
+                : Array.Empty<byte>(),
+            StringComparer.Ordinal);
+        var originalRequest = flow.Request;
+        var originalRequestJson = CanonicalValue(originalRequest);
+
+        fixture.RestartForReplay();
+        var history = fixture.ReadCurrentHistory();
+        var coordinates = ReadRequiredProperty(originalRequest, "Coordinates");
+        var probe = ProbeTreatment(
+            history,
+            Convert.ToString(ReadRequiredProperty(coordinates, "OperationKey"))!,
+            Convert.ToString(ReadRequiredProperty(coordinates, "AttemptId"))!,
+            Convert.ToString(ReadRequiredProperty(originalRequest, "RequestFingerprint"))!);
+        AssertClosedProperties(probe, new[] { "Status", "Issues", "Request", "Receipt" });
+        Assert.Equal("ExactReplay", Convert.ToString(ReadRequiredProperty(probe, "Status")));
+        Assert.Empty(AsObjects(ReadRequiredProperty(probe, "Issues")));
+        var restoredRequest = ReadRequiredProperty(probe, "Request");
+        var restoredReceipt = ReadRequiredProperty(probe, "Receipt");
+        Assert.NotSame(originalRequest, restoredRequest);
+        Assert.Equal(originalRequestJson, CanonicalValue(restoredRequest));
+        AssertReceiptOwnsNoActionableOutcomeSurface(restoredReceipt.GetType());
+        AssertClosedTreatmentReceipt(restoredReceipt, restoredRequest, flow.Resolution);
+        Assert.NotSame(
+            ReadRequiredProperty(restoredRequest, "Coordinates"),
+            ReadRequiredProperty(restoredReceipt, "Coordinates"));
+
+        var planner = RequireOutcomeResolver();
+        var replay = Invoke(
+            ExactStaticMethod(planner, "CreateProcedureAttempt", 4),
+            new object?[] { restoredRequest, history, null, null });
+        AssertClosedProperties(replay, new[]
+        {
+            "Disposition", "Issues", "ReplayReceipt", "Resolution"
+        });
+        Assert.Equal("ExactReplay", Convert.ToString(ReadRequiredProperty(replay, "Disposition")));
+        Assert.Empty(AsObjects(ReadRequiredProperty(replay, "Issues")));
+        Assert.Null(ReadPropertyAllowingNull(replay, "Resolution"));
+        Assert.Equal(
+            CanonicalValue(restoredReceipt),
+            CanonicalValue(ReadRequiredProperty(replay, "ReplayReceipt")));
+        Assert.DoesNotContain(
+            replay.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
+            static property => property.Name.Contains("Intent", StringComparison.Ordinal) ||
+                               property.Name.Contains("Claim", StringComparison.Ordinal));
+
+        foreach (var path in observedPaths)
+        {
+            var current = File.Exists(fixture.FileSystem.ResolvePath(path))
+                ? File.ReadAllBytes(fixture.FileSystem.ResolvePath(path))
+                : Array.Empty<byte>();
+            Assert.Equal(acceptedBytes[path], current);
+        }
+    }
+
+    [Fact]
+    public void Replay_ChangedFingerprintConflictsButMalformedHistoryDominatesEveryCoordinate()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_precedence",
+            scenario.RouteId);
+        ComposeAndPublishTreatment(fixture, flow);
+        fixture.RestartForReplay();
+
+        var coordinates = ReadRequiredProperty(flow.Request, "Coordinates");
+        var operationKey = Convert.ToString(ReadRequiredProperty(coordinates, "OperationKey"))!;
+        var attemptId = Convert.ToString(ReadRequiredProperty(coordinates, "AttemptId"))!;
+        const string changedFingerprint =
+            "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+        var conflict = ProbeTreatment(
+            fixture.ReadCurrentHistory(),
+            operationKey,
+            attemptId,
+            changedFingerprint);
+        Assert.Equal("Conflict", Convert.ToString(ReadRequiredProperty(conflict, "Status")));
+        Assert.Null(ReadPropertyAllowingNull(conflict, "Request"));
+        Assert.Null(ReadPropertyAllowingNull(conflict, "Receipt"));
+        var conflictIssue = Assert.Single(AsObjects(ReadRequiredProperty(conflict, "Issues"))
+            .Select(Assert.IsType<ValidationIssue>));
+        Assert.Equal("mortal_wound_treatment_replay_conflict", conflictIssue.Code);
+        Assert.Equal("treatmentAttempt.requestFingerprint", conflictIssue.FilePath);
+
+        var historyPath = fixture.FileSystem.ResolvePath(WoundHistoryState.HistoryPath);
+        var historyRoot = JsonNode.Parse(File.ReadAllText(historyPath))!.AsObject();
+        var transitions = historyRoot["transitions"]!.AsArray();
+        var transitionIndex = transitions.Count - 1;
+        transitions[transitionIndex]!["transitionResult"]!["receiptFingerprint"] =
+            "sha256:0000000000000000000000000000000000000000000000000000000000000000";
+        File.WriteAllText(historyPath, historyRoot.ToJsonString());
+        var malformed = WoundHistoryState.Parse(
+            File.ReadAllText(historyPath),
+            WoundHistoryState.HistoryPath);
+        Assert.False(malformed.IsValid);
+        var parseIssue = Assert.Single(malformed.Issues);
+        Assert.Equal("wound_history_treatment_receipt_fingerprint_mismatch", parseIssue.Code);
+        Assert.Equal(
+            $"{WoundHistoryState.HistoryPath}.transitions[{transitionIndex}].transitionResult.receiptFingerprint",
+            parseIssue.FilePath);
+
+        var invalid = ProbeTreatment(
+            malformed,
+            "operation_t061_completely_different",
+            "attempt_t061_completely_different",
+            changedFingerprint);
+        Assert.Equal("InvalidHistory", Convert.ToString(ReadRequiredProperty(invalid, "Status")));
+        Assert.Null(ReadPropertyAllowingNull(invalid, "Request"));
+        Assert.Null(ReadPropertyAllowingNull(invalid, "Receipt"));
+        var invalidIssue = Assert.Single(AsObjects(ReadRequiredProperty(invalid, "Issues"))
+            .Select(Assert.IsType<ValidationIssue>));
+        Assert.Equal(parseIssue.Code, invalidIssue.Code);
+        Assert.Equal(parseIssue.FilePath, invalidIssue.FilePath);
+    }
+
+    [Fact]
+    public void Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces()
     {
         var planner = typeof(WoundMaterializationContract).Assembly.GetType(
             "BookOfEternityClient.Services.WoundAcceptedTurnPlanner",
-            throwOnError: false,
-            ignoreCase: false);
-        Assert.True(planner is not null,
-            "T070 must compose a treatment publication through the common accepted-plan planner; T061 never appends history directly.");
-
+            false,
+            false);
+        Assert.NotNull(planner);
         var compose = ExactStaticMethod(planner!, "ComposeMortalWoundTreatmentPublication", 6);
         Assert.Equal("FileSystemManager", compose.GetParameters()[0].ParameterType.Name);
         Assert.Equal("CanonicalWriteLease", compose.GetParameters()[1].ParameterType.Name);
@@ -28,26 +174,67 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("MortalWoundTreatmentAttemptRequest", compose.GetParameters()[4].ParameterType.Name);
         Assert.Equal("MortalWoundTreatmentResolution", compose.GetParameters()[5].ParameterType.Name);
         Assert.DoesNotContain(compose.GetParameters(), static parameter =>
-            typeof(System.Text.Json.Nodes.JsonNode).IsAssignableFrom(parameter.ParameterType) ||
+            typeof(JsonNode).IsAssignableFrom(parameter.ParameterType) ||
             parameter.ParameterType.Name.Contains("History", StringComparison.Ordinal) ||
             parameter.ParameterType.Name.Contains("Receipt", StringComparison.Ordinal));
         AssertClosedResultType(compose.ReturnType, "Plan");
-    }
 
-    [Fact]
-    public void ReplayProbe_ExactContractKeepsNoIntentAndReturnsOnlyDetachedRequestAndReceipt()
-    {
         var probe = ExactInstanceMethod(typeof(WoundHistoryParseResult), "ProbeTreatmentAttempt", 3);
         Assert.Equal("MortalWoundTreatmentReplayProbeResult", probe.ReturnType.Name);
-        Assert.Equal(typeof(string), probe.GetParameters()[0].ParameterType);
-        Assert.Equal(typeof(string), probe.GetParameters()[1].ParameterType);
-        Assert.Equal(typeof(string), probe.GetParameters()[2].ParameterType);
-
+        Assert.All(probe.GetParameters(), static parameter => Assert.Equal(typeof(string), parameter.ParameterType));
         Assert.Equal(
             new[] { "Status", "Issues", "Request", "Receipt" }.OrderBy(static value => value),
             probe.ReturnType.GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .Where(static property => property.GetIndexParameters().Length == 0)
                 .Select(static property => property.Name)
                 .OrderBy(static value => value));
+    }
+
+    private static object ProbeTreatment(
+        WoundHistoryParseResult history,
+        string operationKey,
+        string attemptId,
+        string requestFingerprint) =>
+        InvokeInstance(
+            ExactInstanceMethod(typeof(WoundHistoryParseResult), "ProbeTreatmentAttempt", 3),
+            history,
+            new object?[] { operationKey, attemptId, requestFingerprint });
+
+    private static void AssertClosedTreatmentReceipt(
+        object receipt,
+        object request,
+        object expectedResolution)
+    {
+        AssertReceiptOwnsNoActionableOutcomeSurface(receipt.GetType());
+        Assert.Equal(
+            CanonicalValue(ReadRequiredProperty(request, "Coordinates")),
+            CanonicalValue(ReadRequiredProperty(receipt, "Coordinates")));
+        Assert.Equal(
+            Convert.ToString(ReadRequiredProperty(request, "RequestFingerprint")),
+            Convert.ToString(ReadRequiredProperty(receipt, "RequestFingerprint")));
+        Assert.Equal(
+            ReadRequiredProperty(ReadRequiredProperty(request, "RequirementAuthority"), "AuthorityFingerprint"),
+            ReadRequiredProperty(receipt, "RequirementAuthorityFingerprint"));
+        Assert.Equal(
+            ReadRequiredProperty(ReadRequiredProperty(request, "ResourceAuthority"), "AuthorityFingerprint"),
+            ReadRequiredProperty(receipt, "ResourceAuthorityFingerprint"));
+        foreach (var property in new[]
+                 {
+                     "Mode", "AttemptDisposition", "ResultCategory", "SelectedOutcomeIndex", "Interruption",
+                     "DeclaredResult", "ConsumptionTrigger", "CourseId", "CourseMilestoneOrdinal",
+                     "CourseDisposition", "ModeEvidence", "RouteFingerprint", "ResolutionAuthorityFingerprint",
+                     "RequestFingerprint", "ResultFingerprint", "RouteCompletion"
+                 })
+        {
+            Assert.Equal(
+                CanonicalValue(ReadPropertyAllowingNull(expectedResolution, property)),
+                CanonicalValue(ReadPropertyAllowingNull(receipt, property)));
+        }
+        foreach (var property in new[]
+                 {
+                     "RequirementAuthorityFingerprint", "ResourceAuthorityFingerprint",
+                     "ResolutionAuthorityFingerprint", "ResultFingerprint", "ReceiptFingerprint"
+                 })
+            AssertAuthorityFingerprint(ReadRequiredProperty(receipt, property));
     }
 }
