@@ -2,6 +2,7 @@ using System.Collections;
 using System.Reflection;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -681,17 +682,47 @@ public sealed class MortalWoundRecoveryTests
             var treatmentPlanner = typeof(WoundMaterializationContract).Assembly.GetType(
                 "BookOfEternityClient.Services.MortalWoundTreatmentPlanner", false, false);
             Assert.True(treatmentPlanner is not null, "T067 treatment planner is absent.");
-            var prepared = Invoke(ExactStatic(treatmentPlanner!, "PrepareGuaranteedRequest", 6),
-                acceptedState, history.State, before, "operation_t062_stabilize", routeId, eventRef);
+            var prepared = Invoke(ExactStatic(treatmentPlanner!, "PrepareProcedureRequest", 6),
+                acceptedState, history, before, "operation_t062_stabilize", routeId, eventRef);
             var request = Required(prepared, "Request");
-            var resolutionResult = Invoke(ExactStatic(treatmentPlanner, "CreateGuaranteedAttempt", 4),
-                request, history.State, before, acceptedState);
+            AssertClosed(prepared, "Issues", "Request");
+            var resolutionResult = Invoke(ExactStatic(treatmentPlanner, "CreateProcedureAttempt", 4),
+                request, history, before, acceptedState);
+            AssertClosed(resolutionResult, "Disposition", "Issues", "ReplayReceipt", "Resolution");
+            Assert.Equal("Resolved", Convert.ToString(Required(resolutionResult, "Disposition")));
+            Assert.Empty(Values(resolutionResult, "Issues"));
             var resolution = Required(resolutionResult, "Resolution");
+            var governedBefore = CaptureGovernedBytes(fs);
             var composed = Invoke(compose, fs, lease, new GameResponse(), acceptedState, request, resolution);
             var plan = Assert.IsType<AcceptedMechanicsPlan>(Required(composed, "Plan"));
             AssertPublishedWoundPlan(plan, Assert.IsType<AcceptedMechanicsWoundStageBundle>(Required(composed, "WoundStageBundle")));
+            AssertGovernedBytesUnchanged(fs, governedBefore);
             Assert.Same(plan, new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
                 .BindTo(lease).NormalizeAcceptedMechanicsAsync(null).GetAwaiter().GetResult());
+            Assert.NotEqual("untreated", ReadCanonicalWound(fs, woundId).Care.State);
+        }
+
+        private static IReadOnlyDictionary<string, byte[]?> CaptureGovernedBytes(FileSystemManager fs) =>
+            new[]
+            {
+                WoundCarrierCatalog.PlayerPath, WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
+                EffectAcceptedTurnInputComposer.WorldTimePath
+            }.ToDictionary(path => path, path =>
+            {
+                var full = fs.ResolvePath(path);
+                return File.Exists(full) ? File.ReadAllBytes(full) : null;
+            }, StringComparer.Ordinal);
+
+        private static void AssertGovernedBytesUnchanged(
+            FileSystemManager fs,
+            IReadOnlyDictionary<string, byte[]?> before)
+        {
+            foreach (var pair in before)
+            {
+                var full = fs.ResolvePath(pair.Key);
+                if (pair.Value is null) Assert.False(File.Exists(full), pair.Key);
+                else Assert.Equal(pair.Value, File.ReadAllBytes(full));
+            }
         }
 
         internal const string CanonicalDeteriorationPolicyPath =
