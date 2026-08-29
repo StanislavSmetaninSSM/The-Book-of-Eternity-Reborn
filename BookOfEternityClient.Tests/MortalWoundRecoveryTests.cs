@@ -579,13 +579,21 @@ public sealed class MortalWoundRecoveryTests
                     if (scenario.StabilizationMinute is { } stabilizationMinute)
                         Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath,
                             new JsonObject { ["currentTimeInMinutes"] = stabilizationMinute });
-                    AssertT067T070StabilizationBoundary(fs, lease, woundId);
+                    lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                    lease = null;
+                    PrepareLiveTurn(fs, 43, "stabilization");
+                    lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+                    ResolveAndPublishStabilization(fs, lease, woundId);
                 }
+                Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath,
+                    new JsonObject { ["currentTimeInMinutes"] = scenario.Minute });
+                lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                lease = null;
+                PrepareLiveTurn(fs, 44, "recovery");
+                lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
                 // T066 must export the recovery binding from the current prepared turn;
                 // the bootstrap creation binding is never reused for this continuation.
                 var recoveryBinding = ExportRecoveryBinding(fs, lease, woundId);
-                Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath,
-                    new JsonObject { ["currentTimeInMinutes"] = scenario.Minute });
                 return new(root, fs, lease,
                     recoveryBinding,
                     woundId, scenario);
@@ -648,7 +656,7 @@ public sealed class MortalWoundRecoveryTests
             Assert.Same(plan, published);
         }
 
-        private static void AssertT067T070StabilizationBoundary(
+        private static void ResolveAndPublishStabilization(
             FileSystemManager fs,
             FileSystemManager.CanonicalWriteLease lease,
             string woundId)
@@ -663,7 +671,27 @@ public sealed class MortalWoundRecoveryTests
             Assert.Equal("MortalWoundTreatmentAcceptedStateAuthority", compose.GetParameters()[3].ParameterType.Name);
             Assert.Contains("Request", compose.GetParameters()[4].ParameterType.Name, StringComparison.Ordinal);
             Assert.Contains("Resolution", compose.GetParameters()[5].ParameterType.Name, StringComparison.Ordinal);
-            Assert.NotEqual(string.Empty, woundId);
+            var acceptedState = ExportAcceptedState(fs, lease, woundId);
+            var binding = Assert.IsType<WoundAcceptedTurnBinding>(Required(acceptedState, "Binding"));
+            var before = ReadCanonicalWound(fs, woundId);
+            var history = WoundHistoryState.Parse(File.ReadAllText(fs.ResolvePath(WoundHistoryState.HistoryPath)), WoundHistoryState.HistoryPath);
+            Assert.True(history.IsValid, Issues(history.Issues));
+            var routeId = Assert.Single(before.Treatment.Routes).RouteId;
+            var eventRef = Assert.Single(binding.AcceptedEvents).EventRef;
+            var treatmentPlanner = typeof(WoundMaterializationContract).Assembly.GetType(
+                "BookOfEternityClient.Services.MortalWoundTreatmentPlanner", false, false);
+            Assert.True(treatmentPlanner is not null, "T067 treatment planner is absent.");
+            var prepared = Invoke(ExactStatic(treatmentPlanner!, "PrepareGuaranteedRequest", 6),
+                acceptedState, history.State, before, "operation_t062_stabilize", routeId, eventRef);
+            var request = Required(prepared, "Request");
+            var resolutionResult = Invoke(ExactStatic(treatmentPlanner, "CreateGuaranteedAttempt", 4),
+                request, history.State, before, acceptedState);
+            var resolution = Required(resolutionResult, "Resolution");
+            var composed = Invoke(compose, fs, lease, new GameResponse(), acceptedState, request, resolution);
+            var plan = Assert.IsType<AcceptedMechanicsPlan>(Required(composed, "Plan"));
+            AssertPublishedWoundPlan(plan, Assert.IsType<AcceptedMechanicsWoundStageBundle>(Required(composed, "WoundStageBundle")));
+            Assert.Same(plan, new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
+                .BindTo(lease).NormalizeAcceptedMechanicsAsync(null).GetAwaiter().GetResult());
         }
 
         internal const string CanonicalDeteriorationPolicyPath =
@@ -706,6 +734,15 @@ public sealed class MortalWoundRecoveryTests
             FileSystemManager.CanonicalWriteLease lease,
             string woundId)
         {
+            var acceptedState = ExportAcceptedState(fs, lease, woundId);
+            return Assert.IsType<WoundAcceptedTurnBinding>(Required(acceptedState, "Binding"));
+        }
+
+        private static object ExportAcceptedState(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease lease,
+            string woundId)
+        {
             var treatment = typeof(WoundMaterializationContract).Assembly.GetType(
                 "BookOfEternityClient.Services.MortalWoundTreatmentAuthority", false, false);
             var exportType = typeof(WoundMaterializationContract).Assembly.GetType(
@@ -724,18 +761,32 @@ public sealed class MortalWoundRecoveryTests
             var result = Invoke(export, fs, lease, context, woundId);
             AssertClosed(result, "Authority", "IsValid", "Issues");
             Assert.True(Assert.IsType<bool>(Required(result, "IsValid")), Issues(Values(result, "Issues").Select(Assert.IsType<ValidationIssue>)));
-            var acceptedState = Required(result, "Authority");
-            return Assert.IsType<WoundAcceptedTurnBinding>(Required(acceptedState, "Binding"));
+            return Required(result, "Authority");
         }
 
         private static JsonObject RecoverySelectionContext(string woundId) => new()
         {
-            ["provider"] = new JsonObject { ["kind"] = "npc", ["id"] = "field_medic_01" },
-            ["target"] = new JsonObject { ["kind"] = "player", ["id"] = "player_current" },
-            ["woundId"] = woundId,
-            ["locationId"] = "loc_field_clinic_001",
-            ["mode"] = "guaranteed"
+            ["schemaVersion"] = 1, ["realm"] = "mortal_world",
+            ["providerKind"] = "npc", ["providerId"] = "field_medic_01",
+            ["targetKind"] = "player", ["targetId"] = "player_current",
+            ["currentLocationId"] = "loc_field_clinic_001"
         };
+
+        private static WoundMaterializationEnvelope ReadCanonicalWound(FileSystemManager fs, string woundId)
+        {
+            var player = JsonNode.Parse(File.ReadAllText(fs.ResolvePath(WoundCarrierCatalog.PlayerPath)))!.AsObject();
+            var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(player, null, null, null, null));
+            Assert.True(catalog.TryResolveOne(woundId, out var occurrence));
+            return occurrence.Wound;
+        }
+
+        private static void PrepareLiveTurn(FileSystemManager fs, int turn, string operation) =>
+            new LiveTurnPreparationService(fs).PrepareAsync(new LiveTurnPreparationOptions
+            {
+                SessionId = "session_t062", RequestId = $"request_t062_{turn}", TurnNumber = turn,
+                CurrentRealm = "Mortal World", PlayerAction = "T062 " + operation,
+                PreGeneratedDices1d20 = new[] { 17 }
+            }).GetAwaiter().GetResult();
 
         private JsonObject? Read(string path)
         {
