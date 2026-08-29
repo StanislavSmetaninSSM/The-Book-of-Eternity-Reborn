@@ -174,6 +174,30 @@ public sealed class MortalWoundRecoveryTests
         AssertFingerprint(Required(authority, "AuthorityFingerprint"));
     }
 
+    [Theory]
+    [InlineData("missing_provider")]
+    [InlineData("stale_skill")]
+    [InlineData("missing_item")]
+    [InlineData("mismatched_location")]
+    [InlineData("withdrawn_consent")]
+    public void AcceptedStateExport_RejectsCanonicalTreatmentAuthorityFaultBeforeComposition(
+        string mutation)
+    {
+        using var fixture = Fixture.Create(Scenario.Due());
+        fixture.MutateTreatmentAuthorityRoot(mutation);
+        var before = fixture.CaptureCanonicalTreeBytes();
+
+        var exported = fixture.ExportCurrentResult();
+
+        AssertClosed(exported, "Authority", "IsValid", "Issues");
+        Assert.False(Assert.IsType<bool>(Required(exported, "IsValid")));
+        Assert.Null(Optional(exported, "Authority"));
+        Assert.NotEmpty(Values(exported, "Issues"));
+        fixture.AssertCanonicalTreeBytesUnchanged(before);
+        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem, fixture.Lease, out _, out _));
+    }
+
     [Fact]
     public void InterruptionPolicy_ResolverOverloadBindsAcceptedStateAndAttemptCoordinates()
     {
@@ -580,6 +604,18 @@ public sealed class MortalWoundRecoveryTests
             wound["care"]!["state"] = "untreated";
             wound["care"]!["stabilizedAtTurn"] = null;
             wound["recovery"] = Recovery(mode, cadence, policyKind, policyRef);
+            var requirements = wound["treatment"]!["routes"]![0]!["requirements"]!.AsArray();
+            requirements.Add(new JsonObject { ["kind"] = "provider", ["providerRef"] = "field_medic_01" });
+            requirements.Add(new JsonObject
+            {
+                ["kind"] = "consent", ["consentRef"] = "consent_field_medic_player_01",
+                ["providerRef"] = "field_medic_01", ["targetRef"] = "player_current"
+            });
+            requirements.Add(new JsonObject { ["kind"] = "facility", ["facilityRef"] = "fac_field_clinic_001" });
+            requirements.Add(new JsonObject
+            {
+                ["kind"] = "location", ["locationRef"] = "loc_field_clinic_001", ["targetRole"] = "target"
+            });
             var conditionAnchor = deteriorationAnchor ?? (policyKind is null ? null : creationMinute);
             var elapsedDeterioration = policyKind is null ? 0 : elapsedDeteriorationCadences;
             return new(name, mode, anchor, conditionAnchor, creationMinute, stabilizationMinute, minute, wound,
@@ -635,6 +671,8 @@ public sealed class MortalWoundRecoveryTests
             {
                 var parsed = WoundMaterializationContract.Parse(scenario.Wound.ToJsonString(), "recoveryBaseline");
                 Assert.True(parsed.IsValid, Issues(parsed.Issues));
+                WriteCanonicalTreatmentAuthorityRoots(fs);
+                AssertCanonicalTreatmentAuthorityRoots(fs);
                 var creationInput = WoundEffectBatchPlannerTests.CreateInputForAcceptedCache();
                 Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath, scenario.WorldTime);
                 WriteTurnRequest(fs, creationInput.Binding);
@@ -730,6 +768,35 @@ public sealed class MortalWoundRecoveryTests
 
         internal void CorruptLiveClock() => Write(FileSystem, EffectAcceptedTurnInputComposer.WorldTimePath,
             new JsonObject { ["currentTimeInMinutes"] = "malformed" });
+
+        internal object ExportCurrentResult() => ExportAcceptedStateResult(FileSystem, Lease, WoundId);
+
+        internal void MutateTreatmentAuthorityRoot(string mutation)
+        {
+            var npc = ReadRoot(FileSystem, "game_state/npcs/npc_core.json");
+            var medic = Assert.Single(npc["NPCsInScene"]!.AsArray()).AsObject();
+            switch (mutation)
+            {
+                case "missing_provider":
+                    npc["NPCsInScene"] = new JsonArray();
+                    break;
+                case "stale_skill":
+                    medic["activeSkills"]![0]!["active"] = false;
+                    break;
+                case "missing_item":
+                    medic["inventory"] = new JsonArray();
+                    break;
+                case "mismatched_location":
+                    medic["currentLocationId"] = "loc_elsewhere_001";
+                    break;
+                case "withdrawn_consent":
+                    medic["consents"]![0]!["status"] = "withdrawn";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+            }
+            Write(FileSystem, "game_state/npcs/npc_core.json", npc);
+        }
 
         internal void RestartForReplay()
         {
@@ -1050,6 +1117,17 @@ public sealed class MortalWoundRecoveryTests
             FileSystemManager.CanonicalWriteLease lease,
             string woundId)
         {
+            var result = ExportAcceptedStateResult(fs, lease, woundId);
+            AssertClosed(result, "Authority", "IsValid", "Issues");
+            Assert.True(Assert.IsType<bool>(Required(result, "IsValid")), Issues(Values(result, "Issues").Select(Assert.IsType<ValidationIssue>)));
+            return Required(result, "Authority");
+        }
+
+        private static object ExportAcceptedStateResult(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease lease,
+            string woundId)
+        {
             var treatment = typeof(WoundMaterializationContract).Assembly.GetType(
                 "BookOfEternityClient.Services.MortalWoundTreatmentAuthority", false, false);
             var exportType = typeof(WoundMaterializationContract).Assembly.GetType(
@@ -1065,10 +1143,7 @@ public sealed class MortalWoundRecoveryTests
             Assert.Equal(lease.GetType(), export.GetParameters()[1].ParameterType);
             Assert.Equal(context.GetType(), export.GetParameters()[2].ParameterType);
             Assert.Equal(typeof(string), export.GetParameters()[3].ParameterType);
-            var result = Invoke(export, fs, lease, context, woundId);
-            AssertClosed(result, "Authority", "IsValid", "Issues");
-            Assert.True(Assert.IsType<bool>(Required(result, "IsValid")), Issues(Values(result, "Issues").Select(Assert.IsType<ValidationIssue>)));
-            return Required(result, "Authority");
+            return Invoke(export, fs, lease, context, woundId);
         }
 
         private static JsonObject RecoverySelectionContext(string woundId) => new()
@@ -1095,11 +1170,112 @@ public sealed class MortalWoundRecoveryTests
                 PreGeneratedDices1d20 = new[] { 17 }
             }).GetAwaiter().GetResult();
 
+        private static void WriteCanonicalTreatmentAuthorityRoots(FileSystemManager fs)
+        {
+            var sterileThread = MortalItemTestFixture.CreateCanonicalRoot("sterile_thread");
+            sterileThread["count"] = 2;
+            MortalItemTestFixture.ResealCanonical(sterileThread);
+            Write(fs, "game_state/player/skills_active.json", new JsonObject
+            {
+                ["activeSkillChanges"] = new JsonArray(CreateTreatmentSkill(
+                    "skill_player_first_aid_01", "player_first_aid"))
+            });
+            Write(fs, "game_state/player/skills_passive.json", new JsonObject
+            {
+                ["passiveSkillChanges"] = new JsonArray()
+            });
+            Write(fs, "game_state/npcs/npc_core.json", new JsonObject
+            {
+                ["NPCsInScene"] = new JsonArray(new JsonObject
+                {
+                    ["NPCId"] = "field_medic_01",
+                    ["currentLocationId"] = "loc_field_clinic_001",
+                    ["inventory"] = new JsonArray(sterileThread),
+                    ["activeSkills"] = new JsonArray(CreateTreatmentSkill(
+                        "skill_field_medicine_01", "field_medicine")),
+                    ["passiveSkills"] = new JsonArray(),
+                    ["consents"] = new JsonArray(new JsonObject
+                    {
+                        ["consentRef"] = "consent_field_medic_player_01",
+                        ["providerKind"] = "npc", ["providerId"] = "field_medic_01",
+                        ["targetKind"] = "player", ["targetId"] = "player_current",
+                        ["status"] = "granted", ["lifecycle"] = "active", ["active"] = true
+                    })
+                })
+            });
+            Write(fs, "game_state/inventory/item_identity_index.json",
+                MortalItemTestFixture.CreateIndexForCarrier(
+                    sterileThread, "npc_inventory", "field_medic_01"));
+            Write(fs, "game_state/world/current_location.json", new JsonObject
+            {
+                ["locationId"] = "loc_field_clinic_001", ["realm"] = "mortal_world",
+                ["active"] = true,
+                ["facilities"] = new JsonArray(new JsonObject
+                {
+                    ["facilityId"] = "fac_field_clinic_001", ["locationId"] = "loc_field_clinic_001",
+                    ["realm"] = "mortal_world", ["active"] = true, ["available"] = true
+                }),
+                ["presentActors"] = new JsonArray(
+                    new JsonObject { ["actorKind"] = "player", ["actorId"] = "player_current" },
+                    new JsonObject { ["actorKind"] = "npc", ["actorId"] = "field_medic_01" })
+            });
+            Write(fs, "game_state/meta/soul_state.json", new JsonObject { ["currentRealm"] = "Mortal World" });
+        }
+
+        private static void AssertCanonicalTreatmentAuthorityRoots(FileSystemManager fs)
+        {
+            var npc = ReadRoot(fs, "game_state/npcs/npc_core.json");
+            var medic = Assert.Single(npc["NPCsInScene"]!.AsArray()).AsObject();
+            Assert.Equal("field_medic_01", medic["NPCId"]!.GetValue<string>());
+            Assert.Equal("loc_field_clinic_001", medic["currentLocationId"]!.GetValue<string>());
+            Assert.Equal("sterile_thread", medic["inventory"]![0]!["itemId"]!.GetValue<string>());
+            Assert.Equal("skill_field_medicine_01", medic["activeSkills"]![0]!["skillId"]!.GetValue<string>());
+            Assert.Equal("field_medicine", medic["activeSkills"]![0]!["mortalWoundTreatmentCapabilities"]![0]!["capabilityRef"]!.GetValue<string>());
+            Assert.Equal("consent_field_medic_player_01", medic["consents"]![0]!["consentRef"]!.GetValue<string>());
+            var location = ReadRoot(fs, "game_state/world/current_location.json");
+            Assert.Equal("loc_field_clinic_001", location["locationId"]!.GetValue<string>());
+            Assert.Equal("fac_field_clinic_001", location["facilities"]![0]!["facilityId"]!.GetValue<string>());
+        }
+
+        private static JsonObject CreateTreatmentSkill(string skillId, string capabilityRef) => new()
+        {
+            ["skillId"] = skillId, ["displayName"] = "Field Medicine", ["lifecycle"] = "active",
+            ["active"] = true, ["tier"] = 3, ["skillName"] = "Field Medicine",
+            ["skillDescription"] = "Provides precise field care under pressure.", ["rarity"] = "Common",
+            ["actionCost"] = "Main",
+            ["combatEffect"] = new JsonObject
+            {
+                ["isActivatedEffect"] = true, ["actionName"] = "Field treatment",
+                ["effects"] = new JsonArray(new JsonObject
+                {
+                    ["effectType"] = "Damage", ["value"] = "10%", ["targetType"] = "Enemy",
+                    ["effectDescription"] = "A controlled intervention.", ["poiseDamage"] = "5%"
+                })
+            },
+            ["mortalWoundTreatmentCapabilities"] = new JsonArray(new JsonObject
+            {
+                ["schemaVersion"] = 1, ["capabilityRef"] = capabilityRef,
+                ["woundDomain"] = "physical",
+                ["minimumSeverityRank"] = 1, ["maximumSeverityRank"] = 4,
+                ["operationLimits"] = new JsonObject
+                {
+                    ["mayStabilize"] = true, ["maximumRecoveryPoints"] = 2,
+                    ["maximumSeverityReductionSteps"] = 1,
+                    ["removableComplicationKinds"] = new JsonArray("infection"),
+                    ["mayHealAtSeverityI"] = true, ["maximumCosmeticHealLegacies"] = 1,
+                    ["maximumMechanicalEffectHealLegacies"] = 1
+                }
+            })
+        };
+
         private JsonObject? Read(string path)
         {
             var full = FileSystem.ResolvePath(path);
             return File.Exists(full) ? JsonNode.Parse(File.ReadAllText(full))!.AsObject() : null;
         }
+
+        private static JsonObject ReadRoot(FileSystemManager fs, string path) =>
+            JsonNode.Parse(File.ReadAllText(fs.ResolvePath(path)))!.AsObject();
 
         private static void Write(FileSystemManager fs, string path, JsonObject root)
         {
