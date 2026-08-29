@@ -295,13 +295,34 @@ can be materialized. It contains the exact target and realm, causal event/source
 evidence, permitted wound domain, maximum severity, whether a wound is forbidden,
 optional source-owned guarantee, and the accepted chronology fingerprint.
 
-Formal client-owned events such as combat exchanges, traps, QTEs, checks, and
-pre-materialized source triggers compute this envelope from their existing result.
-Pure roleplay events have no invented universal damage formula. Their adapter accepts
-the GM's explicit causal profile and I-IV proposal, while still validating chronology,
-target, realm, closed fields, and any contradiction with sealed mechanical evidence.
-If a sealed outcome proves an event harmless, a contradictory critical wound is
+The seven owning producer kinds are formal, QTE, combat, trap, check, hazard, and
+narrative. Item/skill/effect and other pre-materialized source triggers enter the
+`formal` family rather than creating extra kinds. Each producer computes a closed
+accepted occurrence from its typed result. Pure roleplay events have no invented
+universal damage formula: the narrative producer may admit the GM's causal description
+only while accepting that upstream typed result, then seals its bounded profile,
+outcome, and maximum. The later wound-opportunity ingress cannot author or alter those
+facts. If the sealed occurrence proves an event harmless, a contradictory wound is
 rejected. The client never tries to infer genre physics from narrative prose.
+
+The adapter's source-shaped input is correlation, not causal authority. Before the GM
+receives an opportunity, the owning formal/QTE/combat/trap/check/hazard/narrative
+producer returns one closed write-free accepted-occurrence candidate, the source-result
+common accepted plan publishes it atomically, and only the following pending-turn
+snapshot that seals its exact bytes exposes it as an opportunity. A source
+definition, current combatant, active
+hazard, die, or prose row by itself cannot stand in for that accepted result. Initial
+composition and accepted-turn validation independently reconstruct the complete ordered
+event set from the immutable response plus occurrence; the wound selects one ordinal but
+seals the whole set. Create has no worsening coordinate, while worsen always names one
+explicit exact active wound.
+
+Every accepted opportunity decision, including no wound, appends one durable client-
+owned receipt in the same common transaction that consumes the pending occurrence. An
+exact cold replay creates no command or transition; changing the decision conflicts;
+only a newly sealed occurrence/snapshot creates another opportunity. Materialized
+receipts additionally agree with normal wound transition history, while a decline does
+not invent a wound-history row.
 
 For an ordinary opportunity, zero through the maximum severity are legal: zero means
 the GM chose no wound. A guaranteed trigger supplies its own minimum/maximum or exact
@@ -309,23 +330,30 @@ result and makes omission invalid after the trigger succeeds. Hard realm rules s
 as training mode remain authoritative; a source cannot smuggle an injury into a
 training conflict without an accepted prior escalation.
 
-## Two-Phase Atomic Publication
+## Staged Atomic Publication
 
-Wound-capable turns use a bounded two-phase flow:
+Wound-capable Mortal turns use two separately atomic accepted transactions with a
+signed pending boundary between them:
 
-1. The GM drafts the exchange/event, proposed outcome, and whether it intends a wound.
-2. The client seals the accepted event evidence and computes the wound-opportunity
-   envelope. Nothing player-visible publishes yet.
-3. If a wound is chosen or guaranteed, the client gives the GM a bounded
-   materialization packet containing only the legal target, realm, severity range,
-   consequence budget, component envelopes, and required treatment fields.
-4. The GM authors the wound, linked consequence definitions, treatment/recovery
-   contract, and revised final prose describing how the wound was received.
-5. The client builds the composed wound/effect/resource/scheduler/output plan and
-   validates it without writing canonical state.
-6. A valid plan commits all after-images and player output atomically. An invalid plan
-   publishes nothing and returns a bounded repair packet naming only the rejected
-   fields and legal ranges.
+1. The owning formal/QTE/combat/trap/check/hazard/narrative producer accepts its typed
+   source result and asks T064 to reduce it to one write-free occurrence candidate.
+2. The source-result T070 common plan independently validates that candidate and
+   atomically appends it to the pending occurrence root. Neither the producer nor its
+   adapter writes canonical state, and this transaction publishes no wound.
+3. A subsequent active pending-turn snapshot seals the exact occurrence-root bytes.
+   Only then does the client expose the bounded opportunity context to the GM.
+4. The GM chooses `none` or `materialize`. For materialization it authors the wound,
+   linked consequence definitions, treatment/recovery contract, and revised final prose
+   describing how the wound was received, all within the sealed profile and maximum.
+5. T064 treats the returned source-shaped fields as correlation only, resolves the
+   exact occurrence from the signed snapshot, and reconstructs the complete accepted-
+   event set. Accepted-turn validation independently reconstructs and compares it.
+6. The later T070 decision plan validates without writing, appends one durable decision
+   receipt, consumes the occurrence, and, only for `materialize`, composes wound/effect/
+   resource/scheduler/output after-images.
+7. A valid decision plan commits every receipt/consumption/materialization after-image
+   and player output atomically. An invalid plan publishes nothing and returns a bounded
+   repair packet naming only the rejected fields and legal ranges.
 
 The final GM pass must make acquisition of the wound legible in the scene. The client
 also displays `Получена духовная рана: <name>. Подробнее: /раны` or its Mortal
@@ -638,12 +666,13 @@ A Mortal wound proposal includes:
 - a natural-recovery policy;
 - final acquisition narration.
 
-Formal combat/QTE/check/trap/mechanical events contribute their owning adapter's
-sealed maximum severity. A pure roleplay injury uses the narrative-event adapter:
-the GM proposes the causal profile and severity, and the client validates the closed
-contract and rejects conflict with any sealed harmless or lower-bound result. There
-is deliberately no cross-setting formula that pretends an ogre club, decompression,
-nanite infection, and healing-crystal backlash share one damage scale.
+Formal, QTE, combat, trap, check, and hazard producers contribute their sealed maximum
+severity. A pure roleplay injury uses the narrative producer: upstream accepted GM
+description is reduced to one bounded signed occurrence before the wound opportunity is
+shown. At the later materialization step the GM may author wound fiction and choose only
+within that occurrence's profile and severity envelope; source-shaped input cannot
+replace them. There is deliberately no cross-setting formula that pretends an ogre club,
+decompression, nanite infection, and healing-crystal backlash share one damage scale.
 
 The client validates only universal mechanical primitives and bounds. It never
 selects a wound from a predefined list or derives the wound's fiction from component
@@ -943,7 +972,8 @@ split into independently reviewable, non-half-exposed slices:
 
 ### Slice 2: Mortal materialization and treatment
 
-- formal and narrative wound-opportunity adapters;
+- signed formal/QTE/combat/trap/check/hazard/narrative wound-opportunity adapters,
+  complete-event-set parity, and durable decision receipts;
 - free GM construction without a wound catalog;
 - diagnosis/treatment routes and natural recovery/deterioration policies;
 - exact resource/source/provider/facility resolution;

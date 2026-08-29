@@ -11,7 +11,9 @@
 | `game_state/wounds/wound_identity_index.json` | client-owned | One stable identity and one active carrier occurrence per wound |
 | `game_state/wounds/wound_history.json` | client-owned | Append-only accepted transition/replay/terminal evidence |
 | `game_state/wounds/wound_commands.json` | client-owned command staging | Exact materialization/treatment/diagnosis/recovery intents for one accepted request |
+| `game_state/wounds/wound_opportunity_receipts.json` | client-owned append-only | Durable accepted `none`/`materialize` decisions and cold-replay authority |
 | `game_state/control/pending_wound_resolutions.json` | client-owned pending | Bounded GM construction/repair work, exact receipts, and immutable authority |
+| `game_state/control/pending_mortal_wound_occurrences.json` | client-owned pending | Signed seven-kind Mortal occurrences captured by the active pending-turn snapshot |
 | `game_state/player/wounds.json` | composed client/GM semantic carrier | Mortal player active wounds |
 | `game_state/npcs/npc_wounds.json` | composed client/GM semantic carrier | Named Mortal NPC active wounds, separate from effects |
 | `game_state/combat/enemies.json` / `allies.json` | existing combatant authority | `activeWounds[]` on exact combatants or group members |
@@ -1469,6 +1471,110 @@ or
 ```
 
 The client allocates permanent identities after complete validation.
+
+### 8.1 Signed Mortal accepted occurrence
+
+The client-owned pending root
+`game_state/control/pending_mortal_wound_occurrences.json` is captured by the active
+pending-turn snapshot before the GM receives an opportunity. It has the closed shape:
+
+```json
+{
+  "schemaVersion": 1,
+  "occurrences": [
+    {
+      "occurrenceId": "client-owned",
+      "opportunityRef": "safe-public-correlation",
+      "adapterKind": "formal",
+      "acceptedEventOrdinal": 0,
+      "owner": {
+        "realm": "mortal_world",
+        "ownerKind": "player",
+        "ownerId": "player_current",
+        "carrierPath": "game_state/player/wounds.json"
+      },
+      "domain": "physical",
+      "profileKey": "mortal_formal_retrauma_v1",
+      "source": {
+        "kind": "formal_retrauma",
+        "sourceId": "accepted-source-coordinate",
+        "state": "accepted"
+      },
+      "outcome": {
+        "kind": "harmful",
+        "maximumSeverityRank": 2,
+        "readableCause": "Повторная травма уже поврежденной руки."
+      },
+      "safeContext": {
+        "target": "поврежденная рука",
+        "cause": "повторный удар",
+        "allowedLocationKinds": ["anatomical"]
+      },
+      "worseningTarget": {
+        "woundId": "exact-active-wound-id",
+        "causeKind": "retrauma"
+      },
+      "occurrenceFingerprint": "sha256:..."
+    }
+  ]
+}
+```
+
+The seven exact adapter kinds are `formal`, `qte`, `combat`, `trap`, `check`,
+`hazard`, and `narrative`. A registered client producer reduces its accepted typed
+result to one immutable occurrence candidate, and the source-result common accepted
+plan atomically publishes that candidate to this root. Only the next active pending-turn
+snapshot may make the sealed row available to the GM. A current combatant, hazard,
+source definition, die, or prose row is only supporting source evidence and cannot
+create an occurrence by itself. The
+source-shaped adapter input repeats only public correlation fields and must agree
+exactly with one signed occurrence; it never carries the occurrence fingerprint,
+session/request/snapshot authority, accepted-event coordinates, transition identity,
+receipt, anchor, or after-image.
+
+`worseningTarget` is absent for create and non-null only for an explicit worsen. A null,
+partial, stale, foreign, terminal, duplicate, or inferred target is invalid. The
+occurrence selects one ordinal in the complete accepted-event set, but the binding seals
+the whole ordered set reconstructed independently at composition and validation.
+
+### 8.2 Opportunity decision receipts
+
+The append-only client-owned root
+`game_state/wounds/wound_opportunity_receipts.json` stores every accepted decision,
+including `none`:
+
+```json
+{
+  "schemaVersion": 1,
+  "nextOrdinal": 2,
+  "receipts": [
+    {
+      "receiptId": "client-owned",
+      "ordinal": 1,
+      "opportunityId": "client-owned",
+      "opportunityAuthorityFingerprint": "sha256:...",
+      "sessionId": "exact-session",
+      "requestId": "exact-request",
+      "snapshotToken": "exact-snapshot",
+      "turn": 42,
+      "eventRef": "accepted-event-ref",
+      "eventSemanticFingerprint": "sha256:...",
+      "decision": "none",
+      "decisionFingerprint": "sha256:...",
+      "operationKey": "wound_operation_...",
+      "receiptFingerprint": "sha256:..."
+    }
+  ]
+}
+```
+
+The root rejects malformed, duplicate, reordered, or conflicting rows and must agree
+with wound history for materialized decisions. Exact cold replay returns the original
+detached receipt without a new command or transition. Reusing the same opportunity with
+a different decision conflicts. A new signed occurrence/snapshot produces a new
+opportunity. The common accepted plan composes the receipt after-image together with any
+wound/effect/history changes, consumes the pending occurrence, and remains the sole
+publisher; the adapter and state distributor never write either canonical root directly.
 
 ## 9. Treatment route model
 

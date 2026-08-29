@@ -14,13 +14,40 @@ fiction. It applies to Mortal and afterlife wound creation/worsening.
 A registered adapter may create an opportunity only from an accepted, exact event:
 
 - Mortal combat, QTE, trap, check, hazard, item/skill/effect trigger, or explicit
-  narrative injury event;
+  narrative injury event; item/skill/effect triggers enter the closed `formal` producer
+  family and never introduce an eighth adapter kind;
 - spiritual-conflict strain transition or explicit re-trauma action;
 - a pre-materialized source whose contract guarantees a wound.
 
-The adapter seals owner, realm, domain, event/source evidence, legal location profile,
-and maximum severity. Narrative adapters accept a GM-authored causal profile only
-inside a closed shape and cannot contradict a sealed harmless/lower event.
+The owning producer seals owner, realm, domain, event/source evidence, legal location
+profile, and maximum severity into the accepted occurrence. For narrative injuries, the
+producer may admit a GM-authored causal description only while accepting the upstream
+typed narrative result; it reduces that result to the same bounded `narrative`
+occurrence envelope. The later wound-opportunity ingress can only correlate with that
+row and cannot author or change its profile, outcome, or maximum.
+
+Producer adapters return immutable occurrence candidates without writing. The common
+accepted planner for the source-result transaction is the sole publisher to the pending
+occurrence root. The opportunity is not exposed until a subsequent active pending-turn
+snapshot seals that root's exact bytes. The later decision transaction is the sole
+publisher of receipt and occurrence-consumption after-images.
+
+For Mortal adapters the source-shaped ingress is only a correlation projection. It
+must resolve one exact client-owned accepted-occurrence row from the active signed
+pending-turn snapshot. The occurrence authority, not the ingress, supplies the adapter
+kind, owner, source coordinates/state, bounded causal profile, audited outcome, legal
+location kinds, readable cause, and hard severity maximum. Current source presence,
+combat membership, an active hazard, sealed dice, or narrative prose alone proves no
+occurrence. The seven closed version-1 kinds are `formal`, `qte`, `combat`, `trap`,
+`check`, `hazard`, and `narrative`; all use the same occurrence authority envelope and
+kind-specific canonical evidence checks.
+
+The accepted wound binding seals the complete ordered accepted-event set reconstructed
+from the immutable accepted response and the occurrence authority. The occurrence
+selects one exact zero-based ordinal inside that set. Initial composition and accepted-
+turn validation reconstruct the set independently; an added, removed, replaced, or
+reordered sibling invalidates the wound command. `worseningTarget` is absent for create
+and is one explicit exact active-wound/cause coordinate for worsen; it is never inferred.
 
 ## Client-authored opportunity
 
@@ -197,6 +224,13 @@ only for corrected acquisition narration while preserving the valid proposal.
 - `opportunityId + eventRef + owner + decision` participates in the operation key.
 - The same accepted opportunity cannot allocate a second wound.
 - A consumed decline cannot later be replayed as an injury without a new event.
+- Every accepted decision, including `none`, appends one sealed client-owned opportunity
+  decision receipt through the same common publication transaction. A decline does not
+  require or synthesize a wound-history transition.
+- The receipt binds the opportunity authority, signed turn/snapshot, selected event and
+  semantic fingerprint, decision fingerprint, and operation key. Exact cold replay
+  returns no command/transition; changed semantics conflict; only a newly sealed
+  occurrence/snapshot creates a distinct opportunity.
 - Repair uses the same event, target, roll, maximum, and provisional semantic proposal.
 - A changed snapshot or semantic event abandons the pending packet and requires a new
   opportunity.

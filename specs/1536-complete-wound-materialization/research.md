@@ -153,15 +153,32 @@ the necessary owner identities and promotion semantics.
 
 ## R-005: A wound opportunity is a sealed maximum, not an automatic injury
 
-**Decision**: Every mechanically eligible event produces a client-owned
+**Decision**: Every accepted Mortal producer reduces the exact formal, QTE, combat,
+trap, check, hazard, or narrative result to one immutable occurrence candidate. The
+source-result common accepted plan publishes it to the client-owned pending root, and
+the next active pending-turn snapshot seals its bytes before exposing the opportunity.
+Correlation-only source input resolves exactly
+one such occurrence; current source state, combat membership, a hazard, dice, or prose
+cannot prove that the event occurred. The client independently reconstructs the complete
+ordered accepted-event set during initial composition and validation, then derives a
 `WoundOpportunity` containing exact event/target/realm/domain evidence, legal severity
-range, profile, and any guarantee. The GM may choose none or any severity up to the
-maximum for ordinary opportunities. Only a previously materialized guaranteed trigger
-requires a wound. The GM also supplies the readable acquisition narration; the client
-adds an explicit notification and rejects contradictory narration/state.
+range, profile, and any guarantee. Absence of `worseningTarget` means create; worsening
+requires one explicit exact active-wound coordinate. The GM may choose none or any
+severity up to the maximum for ordinary opportunities. Only a previously materialized
+guaranteed trigger requires a wound. The GM also supplies the readable acquisition
+narration; the client adds an explicit notification and rejects contradictory
+narration/state.
+
+Every accepted `none` or `materialize` decision appends one client-owned receipt and
+consumes the occurrence through the same atomic accepted plan. Exact cold replay emits
+no command or transition, while changed semantics conflict. A decline has no wound-
+history transition but remains durably auditable through its receipt.
 
 **Rationale**: This preserves GM narrative judgment and prevents the client from
-inventing wounds. It also makes a guaranteed skill/item/source promise enforceable.
+inventing wounds. The signed occurrence prevents an available source from being
+mistaken for an event that actually happened; the complete event-set seal prevents
+sibling-event tampering; the durable receipt closes restart replay even for a decline.
+It also makes a guaranteed skill/item/source promise enforceable.
 
 **Alternatives rejected**:
 

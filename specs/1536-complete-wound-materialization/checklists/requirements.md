@@ -36,3 +36,4 @@
 - The mandatory verification section names repository commands because project governance requires executable verification evidence; product requirements and success criteria remain technology-agnostic.
 - The specification deliberately defines universal mechanical primitives without defining a catalog of complete wounds, symptoms, medicines, or cures.
 - The user's section-by-section design approval and advance approval of the written specification resolve all product-level choices before the formal clarification pass.
+- Revalidated 2026-08-29 after the T064 authority review: all seven Mortal occurrence kinds now require signed causal authority, complete-event-set parity, explicit create/worsen semantics, and durable decision replay; no new product clarification is required.

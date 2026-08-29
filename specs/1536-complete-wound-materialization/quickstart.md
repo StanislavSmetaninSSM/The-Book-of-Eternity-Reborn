@@ -51,15 +51,18 @@ publication before adding setting workflows.
 
 Expected owning tests:
 
-- `MortalWoundOpportunityTests`
+- `WoundOpportunityAuthorityTests`
+- `MortalWoundOpportunityAdapterTests`
 - `MortalWoundTreatmentContractTests`
 - `MortalWoundRecoveryTests`
 - `MortalWoundMaterializationLifecycleTests`
 
-Prove formal and narrative opportunities, optional GM choice, guaranteed trigger,
-cross-setting free construction, diagnosis reachability, procedure/course/guaranteed
-routes, exact resources/providers/facilities, recovery/deterioration, and terminal
-History.
+Prove signed formal, QTE, combat, trap, check, hazard, and narrative occurrences through
+one current-snapshot contour; reject missing/stale/tampered occurrence bytes and every
+complete-event-set sibling add/remove/reorder. Then prove optional GM choice, durable
+decline/materialize replay receipts, guaranteed trigger, cross-setting free construction,
+diagnosis reachability, procedure/course/guaranteed routes, exact resources/providers/
+facilities, recovery/deterioration, and terminal history.
 
 ### Slice C: afterlife adapter
 
@@ -140,15 +143,27 @@ The clean feature baseline before implementation was Fast `4339/4339` in
 
 ### A. Optional bounded creation
 
-1. Seal a Mortal opportunity with maximum II.
-2. Submit `decision=none`; expect no wound and a consumed opportunity result.
-3. Repeat from a fresh fixture with severity I; expect one wound/effect/history/output
-   transaction.
-4. Submit severity III; expect a bounded repair packet and byte-identical canonical
+1. Publish one signed accepted occurrence from each formal, QTE, combat, trap, check,
+   hazard, and narrative producer, capture its exact bytes in the active pending-turn
+   snapshot, and resolve it through correlation-only source input. Reject source
+   presence, combat membership, a hazard, dice, or prose without the matching occurrence.
+2. Seal a Mortal opportunity with maximum II from one exact occurrence and the complete
+   ordered accepted-event set. Add, remove, replace, or reorder a sibling event and
+   expect rejection with byte-identical canonical state.
+3. Submit `decision=none`; expect no wound-history row, one durable decision receipt,
+   and atomic consumption of the occurrence.
+4. Restart and replay that exact decline; expect no command, transition, identity,
+   narration, or notification. Change the decision for the consumed opportunity and
+   expect a semantic conflict.
+5. Repeat from a newly signed occurrence/snapshot with severity I and no
+   `worseningTarget`; expect one wound/effect/history/receipt/output transaction.
+6. Repeat with one explicit exact active-wound `worseningTarget`; expect a worsening.
+   Reject null, partial, inferred, stale, foreign, terminal, or duplicate targets.
+7. Submit severity III; expect a bounded repair packet and byte-identical canonical
    state.
-5. Repeat with a proven guaranteed trigger and `none`; expect rejection until the
+8. Repeat with a proven guaranteed trigger and `none`; expect rejection until the
    promised legal wound is supplied.
-6. Replay each accepted/declined/guaranteed operation 100 times; expect zero new
+9. Replay each accepted/declined/guaranteed operation 100 times; expect zero new
    identities, effects, history rows, narration, or notifications.
 
 ### B. No wound catalog

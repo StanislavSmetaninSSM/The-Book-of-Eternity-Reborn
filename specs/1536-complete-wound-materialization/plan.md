@@ -37,6 +37,14 @@ resources/items, scheduler outcomes, provider payment, journals, and player outp
 under one snapshot/write-lease/rollback boundary. Console and browser use one
 visibility-safe application/projection service for `/раны` and `/лечить` workflows.
 
+Mortal opportunity ingress uses a signed accepted-occurrence boundary rather than
+trusting source-shaped JSON. One closed pending occurrence language covers formal, QTE,
+combat, trap, check, hazard, and narrative producers; the active pending-turn snapshot
+binds its exact bytes. Initial composition and validation independently reconstruct the
+complete ordered accepted-event set, and the common plan atomically appends one durable
+opportunity-decision receipt for both `none` and `materialize` while consuming the
+pending occurrence. This closes cold replay without adding a second writer.
+
 ## Technical Context
 
 **Language/Version**: C#/.NET 8 (`net8.0`, nullable enabled); TypeScript 6.0 and React
@@ -189,6 +197,10 @@ BookOfEternityClient/
 │   ├── WoundCarrierCatalog.cs                    # player/NPC/combatant/afterlife occurrences
 │   ├── WoundAcceptedOwnerCarrierAuthority.cs     # accepted owner shape plus client-owned wound baseline
 │   ├── WoundSourceAuthority.cs                   # event/source/owner/opportunity adapters
+│   ├── MortalWoundOccurrenceState.cs             # signed seven-kind pending occurrence authority
+│   ├── MortalWoundOpportunityReceiptState.cs     # append-only decision replay state
+│   ├── PendingTurnSnapshotReader.cs              # current manifest plus exact signed snapshot reads
+│   ├── WoundAcceptedEventAuthorityComposer.cs    # one complete event-set reconstruction
 │   ├── WoundConsequenceEnvelopeCatalog.cs        # slot/power profiles
 │   ├── WoundAcceptedTurnPlan*.cs                 # prepare/finalize/cache/handoff
 │   ├── WoundTreatment*.cs                        # Mortal routes, spiritual resolver, quotes/attempts
@@ -395,15 +407,29 @@ history atomically for every owner carrier; effect removal never heals it.
 
 ### Phase 2 — Mortal occurrence, diagnosis, treatment, and recovery
 
-1. Add RED formal/narrative opportunity and GM optional/lower/guaranteed tests.
+1. Add RED signed formal/QTE/combat/trap/check/hazard/narrative occurrence,
+   current-snapshot/event-set parity, optional create versus explicit worsen, and GM
+   optional/lower/guaranteed/durable-replay tests.
 2. Implement Mortal event adapters and complete free-form proposal validation without a
-   wound catalog. The production-only `ComposeAcceptedResponse(fs, lease, sourceEvent,
-   gameResponse)` ingress reads the live pending-turn manifest, derives event/binding/
-   evidence/opportunity authority from a closed source-shaped event, and returns the
-   existing wound composition result without writing. Formal re-trauma then uses the
+   wound catalog. A shared current-snapshot reader verifies the live manifest, detached
+   authority, active request context, required path coverage, and exact signed bytes.
+   The production-only `ComposeAcceptedResponse(fs, lease, sourceEvent, gameResponse)`
+   ingress treats the closed source-shaped event as correlation only, resolves one
+   signed formal/QTE/combat/trap/check/hazard/narrative occurrence, and derives the
+   owner/profile/source/outcome/severity and optional explicit create-versus-worsen
+   target. A shared composer builds the complete ordered accepted-event set from the
+   immutable response plus occurrence; `ValidationService` independently reconstructs
+   and compares it instead of replacing it with the command binding. The adapter returns
+   the existing wound composition result without writing. Formal re-trauma then uses the
    ordinary `StateDistributor` -> `ValidationService` -> common-plan pipeline; callers
-   cannot inject or reuse a treatment binding, fingerprint, transition, anchor, or
-   after-image.
+   cannot inject or reuse an occurrence, treatment binding, fingerprint, transition,
+   receipt, anchor, or after-image. Each typed producer first reduces its accepted result
+   to a write-free occurrence candidate. The source-result common plan atomically
+   appends that candidate to the pending occurrence root; only a subsequent pending-turn
+   snapshot that seals its exact bytes may expose the opportunity to the GM. The later
+   wound-decision common plan appends the exact opportunity-decision receipt (including
+   `none`) and consumes the pending occurrence, so restart replay is either an exact no-
+   command result or a conflict.
 3. Add RED route/discovery/requirement/procedure/course/guaranteed/resource/stale-ref
    tests using two unrelated setting fixtures. Discovery uses an explicit
    `requiresKnownFacts` least-fixed-point graph, sealed success/failure diagnosis
