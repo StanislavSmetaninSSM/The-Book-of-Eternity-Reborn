@@ -102,6 +102,29 @@ public sealed class MortalWoundTreatmentResolverTests
     }
 
     [Theory]
+    [InlineData("procedure")]
+    [InlineData("course")]
+    [InlineData("guaranteed")]
+    public void FixtureControl_StrictModeSpecificRouteAndEmptyHistoryParse(string mode)
+    {
+        var wound = WoundContractTestData.CreateActiveWound();
+        var route = mode switch
+        {
+            "procedure" => StrictProcedureRoute(),
+            "course" => StrictCourseRoute(),
+            "guaranteed" => StrictGuaranteedRoute(),
+            _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
+        };
+        wound["treatment"]!["routes"] = new JsonArray(route);
+        wound["treatment"]!["knownRouteIds"] = new JsonArray(route["routeId"]!.DeepClone());
+        var parsed = WoundMaterializationContract.Parse(wound.ToJsonString(), "wound");
+        var history = WoundHistoryState.Parse(WoundContractTestData.CreateHistory().ToJsonString(), "history");
+        Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
+        Assert.True(history.IsValid, DescribeIssues(history.Issues));
+        Assert.Equal(mode, Assert.Single(parsed.Wound!.Treatment.Routes).Mode);
+    }
+
+    [Theory]
     [MemberData(nameof(ProcedureRows))]
     public void PrepareProcedureRequest_ResolvesOnlyThroughLeaseBoundAcceptedState(
         string scenario) =>
@@ -199,52 +222,61 @@ public sealed class MortalWoundTreatmentResolverTests
 
     private static void ConfigureModeRoute(JsonObject route, string mode, string name)
     {
-        route["routeId"] = mode + "_t061_" + name;
-        route["mode"] = mode;
-        route["requirements"] = new JsonArray(
-            new JsonObject
-            {
-                ["kind"] = "skill_tier",
-                ["skillRef"] = "skill_field_medicine_01",
-                ["minimumTier"] = 2
-            },
-            new JsonObject
-            {
-                ["kind"] = "item_quantity",
-                ["itemRef"] = "itm_sterile_thread_001",
-                ["quantity"] = 1
-            });
-        if (mode == "procedure")
+        var strict = mode switch
         {
-            route["resolution"]!["difficulty"] = name.Contains("overflow", StringComparison.Ordinal)
-                ? int.MaxValue
-                : 8;
-            return;
-        }
-
-        route["resolution"] = mode == "course"
-            ? new JsonObject
-            {
-                ["schemaVersion"] = 1,
-                ["courseIdPrefix"] = "course_t061",
-                ["milestones"] = new JsonArray(new JsonObject
-                {
-                    ["ordinal"] = 1,
-                    ["dueMinute"] = 1_260,
-                    ["deadlineMinute"] = 1_320,
-                    ["completion"] = "completed",
-                    ["result"] = new JsonArray("add_recovery")
-                })
-            }
-            : new JsonObject
-            {
-                ["schemaVersion"] = 1,
-                ["capabilityRef"] = "field_medicine_guaranteed_care",
-                ["actorRole"] = "provider",
-                ["result"] = new JsonArray("reduce_severity")
-            };
-        route["outcomes"] = new JsonArray();
+            "procedure" => StrictProcedureRoute(),
+            "course" => StrictCourseRoute(),
+            "guaranteed" => StrictGuaranteedRoute(),
+            _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
+        };
+        route.Clear();
+        foreach (var pair in strict)
+            route[pair.Key] = pair.Value?.DeepClone();
+        route["routeId"] = mode + "_t061_" + name;
+        if (name.Contains("overflow", StringComparison.Ordinal))
+            route["resolution"]!["difficulty"] = int.MaxValue;
+        if (name.Contains("nonbeneficial", StringComparison.Ordinal))
+            route["interruption"]!["result"] = new JsonArray(new JsonObject { ["kind"] = "stabilize" });
     }
+
+    private static JsonObject StrictProcedureRoute() => new()
+    {
+        ["routeId"] = "procedure_v1", ["displayName"] = "Procedure", ["visibility"] = "known_to_player", ["mode"] = "procedure",
+        ["requirements"] = new JsonArray(
+            new JsonObject { ["kind"] = "item_quantity", ["itemRef"] = "sterile_thread", ["quantity"] = 1, ["ownerRole"] = "provider" },
+            new JsonObject { ["kind"] = "skill_tier", ["capabilityRef"] = "field_medicine", ["minimumTier"] = 2, ["actorRole"] = "provider" }),
+        ["resourcePolicy"] = Policy(new JsonArray("success", "partial_success", "failed_attempt"), new JsonArray(new JsonObject { ["kind"] = "consume_requirement", ["scope"] = "common", ["milestoneOrdinal"] = null, ["requirementIndex"] = 0 })),
+        ["resolution"] = new JsonObject { ["formulaKey"] = "mortal_wound_procedure_v1", ["difficulty"] = 15, ["rollSource"] = "accepted_d20", ["criticalPolicy"] = "natural_20_first_natural_1_last", ["modifierSource"] = new JsonObject { ["kind"] = "resolved_skill_tier", ["requirementIndex"] = 1 } },
+        ["outcomes"] = new JsonArray(
+            Band("success", 5, null, "success", new JsonArray(new JsonObject { ["kind"] = "stabilize" }, new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 })),
+            Band("partial", 0, 4, "partial_success", new JsonArray(new JsonObject { ["kind"] = "stabilize" }, new JsonObject { ["kind"] = "add_recovery", ["points"] = 1 })),
+            Band("failed", null, -1, "failed_attempt", new JsonArray(new JsonObject { ["kind"] = "no_improvement" }))),
+        ["interruption"] = null
+    };
+
+    private static JsonObject StrictCourseRoute() => new()
+    {
+        ["routeId"] = "course_v1", ["displayName"] = "Course", ["visibility"] = "known_to_player", ["mode"] = "course",
+        ["requirements"] = new JsonArray(new JsonObject { ["kind"] = "provider", ["providerRef"] = "field_medic_01" }),
+        ["resourcePolicy"] = Policy(new JsonArray("success"), new JsonArray(CourseMutation(1), CourseMutation(2), CourseMutation(3))),
+        ["resolution"] = new JsonObject { ["clockKind"] = "world_time.currentTimeInMinutes", ["maximumGapMinutes"] = 600 },
+        ["outcomes"] = new JsonArray(CourseMilestone(1, 0, "active", new JsonArray()), CourseMilestone(2, 480, "active", new JsonArray()), CourseMilestone(3, 960, "completed", new JsonArray(new JsonObject { ["kind"] = "heal" }))),
+        ["interruption"] = new JsonObject { ["category"] = "failed_attempt", ["result"] = new JsonArray(new JsonObject { ["kind"] = "no_improvement" }) }
+    };
+
+    private static JsonObject StrictGuaranteedRoute() => new()
+    {
+        ["routeId"] = "guaranteed_v1", ["displayName"] = "Guaranteed", ["visibility"] = "known_to_player", ["mode"] = "guaranteed",
+        ["requirements"] = new JsonArray(new JsonObject { ["kind"] = "source_capability", ["capabilityRef"] = "exact_materialized_healing_source", ["actorRole"] = "provider" }),
+        ["resourcePolicy"] = Policy(new JsonArray("success"), new JsonArray()),
+        ["resolution"] = new JsonObject { ["capabilityRef"] = "exact_materialized_healing_source", ["actorRole"] = "provider" },
+        ["outcomes"] = new JsonArray(new JsonObject { ["category"] = "success", ["result"] = new JsonArray(new JsonObject { ["kind"] = "stabilize" }) }), ["interruption"] = null
+    };
+
+    private static JsonObject Policy(JsonArray consumeOn, JsonArray mutations) => new() { ["reserveBeforeResolution"] = true, ["consumeOn"] = consumeOn, ["refundOn"] = new JsonArray("cancelled", "validation_failed", "rolled_back"), ["mutations"] = mutations };
+    private static JsonObject Band(string id, int? minimum, int? maximum, string category, JsonArray result) => new() { ["bandId"] = id, ["minimumMargin"] = minimum, ["maximumMargin"] = maximum, ["category"] = category, ["result"] = result };
+    private static JsonObject CourseMutation(int ordinal) => new() { ["kind"] = "consume_requirement", ["scope"] = "course_milestone", ["milestoneOrdinal"] = ordinal, ["requirementIndex"] = 0 };
+    private static JsonObject CourseMilestone(int ordinal, long afterMinutes, string completion, JsonArray result) => new() { ["ordinal"] = ordinal, ["afterMinutes"] = afterMinutes, ["requirements"] = new JsonArray(new JsonObject { ["kind"] = "item_quantity", ["itemRef"] = "antibiotic_dose", ["quantity"] = 1, ["ownerRole"] = "target" }), ["category"] = "success", ["completion"] = completion, ["result"] = result };
 
     private static JsonObject CreateHistoryFor(string name, string mode)
     {
