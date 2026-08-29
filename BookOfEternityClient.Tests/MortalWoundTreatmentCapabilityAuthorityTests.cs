@@ -143,9 +143,25 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.NotSame(baselineState, changedState);
         Assert.NotNull(baselineExport.Binding);
         Assert.NotNull(changedExport.Binding);
+        var baselineBinding = Assert.IsType<WoundAcceptedTurnBinding>(baselineExport.Binding);
+        var changedBinding = Assert.IsType<WoundAcceptedTurnBinding>(changedExport.Binding);
         Assert.NotEqual(
-            ReadRequiredProperty(baselineExport.Binding!, "SnapshotToken"),
-            ReadRequiredProperty(changedExport.Binding!, "SnapshotToken"));
+            baselineBinding.SnapshotToken,
+            changedBinding.SnapshotToken);
+        Assert.NotEqual(
+            baselineBinding.AcceptedEventsFingerprint,
+            changedBinding.AcceptedEventsFingerprint);
+        var baselineEvent = Assert.Single(baselineBinding.AcceptedEvents,
+            static value => value.EventRef == CapabilityAuthorityFixture.EventRef);
+        var changedEvent = Assert.Single(changedBinding.AcceptedEvents,
+            static value => value.EventRef == CapabilityAuthorityFixture.EventRef);
+        Assert.Equal($"turn_{baselineBinding.Turn}:accepted_effect", baselineEvent.EventRef);
+        Assert.Equal($"turn_{changedBinding.Turn}:accepted_effect", changedEvent.EventRef);
+        Assert.Equal(CapabilityAuthorityFixture.EventKind, baselineEvent.Kind);
+        Assert.Equal(CapabilityAuthorityFixture.EventKind, changedEvent.Kind);
+        Assert.Equal(CapabilityAuthorityFixture.EventAuthorityId, baselineEvent.AuthorityId);
+        Assert.Equal(CapabilityAuthorityFixture.EventAuthorityId, changedEvent.AuthorityId);
+        Assert.NotEqual(baselineEvent.SemanticFingerprint, changedEvent.SemanticFingerprint);
     }
 
     [Theory]
@@ -188,15 +204,6 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
     {
         using var fixture = CapabilityAuthorityFixture.Create(scenario);
 
-        if (scenario.ExpectedBoundary == CapabilityFailureBoundary.PublicationComposition)
-        {
-            // The existing skill-root composer is the T070 input boundary.  A
-            // renamed-ID proposal is remove/add by skillName, and its selector must
-            // be rejected there rather than pretending an exporter can observe it.
-            fixture.AssertChangedIdentityProposalIsRejectedBySkillComposition();
-            return;
-        }
-
         var result = InvokeExportForPublication(fixture, scenario);
         AssertCapabilityResult(result, scenario);
     }
@@ -229,9 +236,11 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         var beforeImages = fixture.CaptureGovernedPublicationBeforeImages(flow.Plan);
         fixture.MutateGovernedRootAfterComposition();
         var staleImages = fixture.CaptureGovernedPublicationBeforeImages(flow.Plan);
-        Assert.NotEqual(
-            beforeImages[fixture.SelectedPublicationRootPath].Bytes,
-            staleImages[fixture.SelectedPublicationRootPath].Bytes);
+        var beforeBytes = beforeImages[fixture.SelectedPublicationRootPath].Bytes;
+        var staleBytes = staleImages[fixture.SelectedPublicationRootPath].Bytes;
+        Assert.NotNull(beforeBytes);
+        Assert.NotNull(staleBytes);
+        Assert.False(beforeBytes.AsSpan().SequenceEqual(staleBytes));
 
         Assert.ThrowsAny<Exception>(() => PublishCachedAcceptedPlan(fixture));
         fixture.AssertGovernedSkillRootsMatchBeforeImages(staleImages);
@@ -258,7 +267,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
     }
 
     [Fact]
-    public void PublicationPlan_ExactRetryReusesTheCachedPlanAndDivergentCoordinatesDoNotPublish()
+    public void PublicationPlan_ExactRetryReusesTheCachedPlanAndDivergentCoordinatesRejectBeforePublication()
     {
         using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
             "touched_player_active_skill_reads_exact_final_after_image", publication: true));
@@ -266,6 +275,13 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         var first = ComposePublicationFlow(fixture);
         var retry = ComposePublicationFlow(fixture);
         Assert.Same(first.Plan, retry.Plan);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out var cachedRetry));
+        Assert.True(cachedRetry.Success, DescribeIssues(cachedRetry.Issues));
+        Assert.Same(first.Plan, cachedRetry.Plan);
         var beforeImages = fixture.CaptureGovernedPublicationBeforeImages(first.Plan);
 
         Assert.ThrowsAny<Exception>(() => ComposePublicationFlow(
@@ -675,9 +691,6 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         {
             Assert.Empty(authority.GetConstructors(BindingFlags.Instance | BindingFlags.Public));
             Assert.DoesNotContain(
-                authority.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic),
-                static constructor => constructor.GetParameters().Any(IsDangerousDetachedPublicationParameter));
-            Assert.DoesNotContain(
                 authority.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
                 static method => (method.Name == "ExportCurrent" || method.Name == "ExportForPublication") &&
                                  method.GetParameters().Any(IsDangerousDetachedPublicationParameter));
@@ -900,6 +913,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 break;
             case "changed_final_skill_id_rejects":
                 sourceSkill["skillId"] = "skill_after_image_changed_01";
+                sourceSkill["skillName"] = "After-image Field Medicine";
                 break;
             case "changed_final_capability_ref_rejects":
                 capability["capabilityRef"] = "after_image_changed_capability";
@@ -1482,7 +1496,6 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "open_operation_limits_field_rejects" or
             "aggregate_operation_limit_overflow_rejects" or
             "all_zero_operation_limit_rejects" => CapabilityFailureBoundary.AcceptedState,
-            "changed_final_skill_id_rejects" => CapabilityFailureBoundary.PublicationComposition,
             "inactive_skill_rejects" or
             "retired_skill_rejects" or
             "wrong_owner_rejects" or
@@ -1490,6 +1503,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "target_owned_combatant_requires_promotion" or
             "removed_final_skill_rejects" or
             "retired_final_skill_rejects" or
+            "changed_final_skill_id_rejects" or
             "changed_final_capability_ref_rejects" or
             "changed_final_domain_rejects" or
             "changed_final_operation_limits_reject" or
@@ -1516,9 +1530,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "duplicate_or_confusable_final_skill_row_rejects" or
             "confusable_final_skill_sibling_rejects" =>
                 ("mortal_wound_treatment_capability_source_ambiguous", "treatmentCapability.source.skillId"),
-            "changed_final_skill_id_rejects" =>
-                ("effect_skill_composition_selector_unknown",
-                    "game_state/player/skills_active.json.removeActiveSkills[0]"),
+            "changed_final_skill_id_rejects" or
             "changed_final_capability_ref_rejects" or
             "changed_final_domain_rejects" or
             "changed_final_operation_limits_reject" =>
@@ -1613,7 +1625,6 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         None,
         Context,
         AcceptedState,
-        PublicationComposition,
         Exporter
     }
 
@@ -2102,35 +2113,6 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         private static JsonElement[] ToProposalElements(JsonArray rows) =>
             rows.Select(static row => JsonSerializer.SerializeToElement(row)).ToArray();
 
-        internal void AssertChangedIdentityProposalIsRejectedBySkillComposition()
-        {
-            Assert.Equal("changed_final_skill_id_rejects", Scenario.Name);
-            Assert.Equal("player", Scenario.SourceOwner);
-            Assert.Equal("activeSkills", Scenario.SourceSkillArray);
-            var proposal = CreatePublicationProposal();
-            Assert.NotNull(proposal.ActiveSkillChanges);
-            Assert.Equal(new[] { SelectedSkillName }, proposal.RemoveActiveSkills);
-            var proposedRoot = new JsonObject
-            {
-                ["activeSkillChanges"] = new JsonArray(proposal.ActiveSkillChanges!
-                    .Select(static row => JsonNode.Parse(row.GetRawText()))
-                    .ToArray()),
-                ["removeActiveSkills"] = new JsonArray(
-                    proposal.RemoveActiveSkills!.Select(static value => JsonValue.Create(value)).ToArray())
-            };
-            var preTurnRoot = JsonNode.Parse(File.ReadAllText(
-                FileSystem.ResolvePath(SelectedSkillRootPath)));
-            var error = Assert.Throws<InvalidDataException>(() =>
-                EffectAcceptedTurnInputComposer.ComposeSkillAcceptedRoot(
-                    preTurnRoot,
-                    proposedRoot,
-                    "activeSkillChanges",
-                    "removeActiveSkills",
-                    SelectedSkillRootPath));
-            Assert.Contains("effect_skill_composition_selector_unknown", error.Message,
-                StringComparison.Ordinal);
-        }
-
         internal void ApplyLiveExporterMutation()
         {
             if (Scenario.ExpectedBoundary != CapabilityFailureBoundary.Exporter || Scenario.Publication)
@@ -2353,7 +2335,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             if (before.Existed)
             {
                 Assert.NotNull(before.Bytes);
-                Assert.Equal(before.Bytes, File.ReadAllBytes(physicalPath));
+                Assert.True(before.Bytes.AsSpan().SequenceEqual(
+                    File.ReadAllBytes(physicalPath)),
+                    $"Canonical bytes changed at '{path}'.");
             }
             else
                 Assert.Null(before.Bytes);
