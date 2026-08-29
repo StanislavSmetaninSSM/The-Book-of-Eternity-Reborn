@@ -1,0 +1,471 @@
+using System.Collections.ObjectModel;
+using System.Text.Json;
+using BookOfEternityClient.Core;
+
+namespace BookOfEternityClient.Services;
+
+/// <summary>
+/// Reads immutable bytes from the current detached-authority pending-turn snapshot.
+/// It never treats the live canonical root as the accepted before-image.
+/// </summary>
+internal static class PendingTurnSnapshotReader
+{
+    private const int MaximumRequiredPaths = 64;
+    private static readonly PendingTurnSnapshotContextSource[] CurrentContextSources =
+    {
+        new("game_state/control/validation_repair_request.json", IsRepairRequest: true),
+        new(LiveTurnPreparationService.TurnRequestPath, IsRepairRequest: false),
+        new("ready/turn_complete.json", IsRepairRequest: false)
+    };
+
+    internal static PendingTurnSnapshotReadResult ReadCurrent(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease,
+        IReadOnlyCollection<string> requiredLogicalPaths)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(lease);
+        ArgumentNullException.ThrowIfNull(requiredLogicalPaths);
+        fs.EnsureCanonicalWriteLeaseActive(lease);
+
+        var issues = new List<ValidationIssue>();
+        var required = ValidateRequiredPaths(requiredLogicalPaths, issues);
+        if (issues.Count != 0)
+            return Failure(issues);
+
+        LiveTurnPendingSnapshotManifest? manifest;
+        try
+        {
+            var manifestJson = fs.ReadFileSync(
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+            manifest = string.IsNullOrWhiteSpace(manifestJson)
+                ? null
+                : JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+                    manifestJson,
+                    LiveTurnPreparationService.ManifestJsonOptions);
+        }
+        catch (JsonException)
+        {
+            manifest = null;
+        }
+
+        if (manifest is null)
+        {
+            Add(
+                issues,
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                "pending_turn_snapshot_reader_manifest_invalid",
+                "missing or malformed pending-turn manifest");
+            return Failure(issues);
+        }
+
+        var authorityJson = fs.ReadFileSync(PendingTurnSnapshotAuthority.AuthorityPath);
+        if (!PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(
+                manifest,
+                authorityJson,
+                LiveTurnPreparationService.ManifestHashJsonOptions,
+                static value => value.ManifestPayloadHash,
+                static (value, hash) => value.ManifestPayloadHash = hash,
+                static value => value.SessionId,
+                static value => value.RequestId,
+                static value => value.TurnNumber,
+                static value => value.Files,
+                static value => value.SnapshotFileHashes,
+                static value => value.ClientOwnedValidationHashes,
+                static value => value.RollbackBaselineFiles,
+                static value => value.SourceLabel,
+                static value => value.RollbackBackups,
+                fs.ReadFileBytesSync,
+                out var payload,
+                out var authorityFailure) ||
+            payload is null)
+        {
+            Add(
+                issues,
+                PendingTurnSnapshotAuthority.AuthorityPath,
+                "pending_turn_snapshot_reader_authority_invalid",
+                authorityFailure);
+            return Failure(issues);
+        }
+
+        if (!string.Equals(
+                payload.SnapshotHashMode,
+                PendingTurnSnapshotAuthority.ExactSnapshotHashMode,
+                StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                PendingTurnSnapshotAuthority.AuthorityPath,
+                "pending_turn_snapshot_reader_hash_mode_invalid",
+                payload.SnapshotHashMode ?? "legacy text hash mode");
+            return Failure(issues);
+        }
+
+        var contextReads = CurrentContextSources
+            .Select(source => ReadCurrentContext(fs, source))
+            .ToArray();
+        var invalidContext = contextReads.FirstOrDefault(
+            read => read.Status == PendingTurnSnapshotContextStatus.Invalid);
+        if (invalidContext is not null)
+        {
+            Add(
+                issues,
+                invalidContext.Path,
+                "pending_turn_snapshot_reader_context_invalid",
+                "an existing lifecycle context is malformed or incomplete");
+            return Failure(issues);
+        }
+
+        var usableContexts = contextReads
+            .Where(read => read.Status == PendingTurnSnapshotContextStatus.Usable)
+            .ToArray();
+        if (usableContexts.Length == 0)
+        {
+            Add(
+                issues,
+                LiveTurnPreparationService.TurnRequestPath,
+                "pending_turn_snapshot_reader_context_stale",
+                "no authoritative current request context exists");
+            return Failure(issues);
+        }
+
+        var firstContext = usableContexts[0].Context!;
+        if (usableContexts.Skip(1).Any(read =>
+                !ContextsMatch(firstContext, read.Context!)))
+        {
+            Add(
+                issues,
+                LiveTurnPreparationService.TurnRequestPath,
+                "pending_turn_snapshot_reader_context_conflict",
+                string.Join(
+                    "; ",
+                    usableContexts.Select(read =>
+                        $"{read.Path}={DescribeContext(read.Context!)}")));
+            return Failure(issues);
+        }
+
+        if (!usableContexts.All(read => ContextMatches(manifest, read.Context!)))
+        {
+            Add(
+                issues,
+                LiveTurnPreparationService.TurnRequestPath,
+                "pending_turn_snapshot_reader_context_stale",
+                "the authoritative current request context does not match the signed manifest");
+            return Failure(issues);
+        }
+
+        var realm = NormalizeRealm(manifest.ProgressionControl?.CurrentRealm);
+        if (realm.Length == 0)
+        {
+            Add(
+                issues,
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                "pending_turn_snapshot_reader_realm_invalid",
+                manifest.ProgressionControl?.CurrentRealm ?? "null");
+            return Failure(issues);
+        }
+
+        var bytesByPath = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+        foreach (var logicalPath in required)
+        {
+            var fileRows = manifest.Files
+                .Where(pair => string.Equals(pair.Key, logicalPath, StringComparison.Ordinal))
+                .ToArray();
+            var hashRows = manifest.SnapshotFileHashes
+                .Where(pair => string.Equals(pair.Key, logicalPath, StringComparison.Ordinal))
+                .ToArray();
+            if (fileRows.Length != 1 || hashRows.Length != 1)
+            {
+                Add(
+                    issues,
+                    logicalPath,
+                    "pending_turn_snapshot_reader_coverage_missing",
+                    "required logical path is absent or ambiguous in signed snapshot coverage");
+                continue;
+            }
+
+            var snapshotPath = fileRows[0].Value;
+            if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(snapshotPath) ||
+                !snapshotPath.StartsWith(
+                    LiveTurnPreparationService.PendingTurnSnapshotDirectory + "/",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                Add(
+                    issues,
+                    logicalPath,
+                    "pending_turn_snapshot_reader_snapshot_path_invalid",
+                    snapshotPath);
+                continue;
+            }
+
+            var bytes = fs.ReadFileBytesSync(snapshotPath);
+            if (bytes is null ||
+                !string.Equals(
+                    PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(payload, bytes),
+                    hashRows[0].Value,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                Add(
+                    issues,
+                    logicalPath,
+                    "pending_turn_snapshot_reader_bytes_mismatch",
+                    bytes is null ? "snapshot bytes are missing" : "snapshot bytes do not match their signed hash");
+                continue;
+            }
+
+            bytesByPath[logicalPath] = bytes.ToArray();
+        }
+
+        if (issues.Count != 0)
+            return Failure(issues);
+
+        return new PendingTurnSnapshotReadResult(
+            true,
+            new PendingTurnSnapshotReadAuthority(
+                manifest.SessionId,
+                manifest.RequestId,
+                manifest.ManifestPayloadHash,
+                manifest.TurnNumber,
+                realm,
+                bytesByPath),
+            Array.Empty<ValidationIssue>());
+    }
+
+    private static IReadOnlyList<string> ValidateRequiredPaths(
+        IReadOnlyCollection<string> paths,
+        ICollection<ValidationIssue> issues)
+    {
+        if (paths.Count is < 1 or > MaximumRequiredPaths)
+        {
+            Add(
+                issues,
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                "pending_turn_snapshot_reader_required_paths_invalid",
+                $"count={paths.Count}");
+            return Array.Empty<string>();
+        }
+
+        var result = new List<string>(paths.Count);
+        var exact = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var path in paths)
+        {
+            if (string.IsNullOrWhiteSpace(path) ||
+                !string.Equals(path, path.Trim(), StringComparison.Ordinal) ||
+                path.Contains('\\') ||
+                !PendingTurnSnapshotAuthority.IsSafeRelativePath(path) ||
+                !exact.Add(path))
+            {
+                Add(
+                    issues,
+                    LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                    "pending_turn_snapshot_reader_required_paths_invalid",
+                    path ?? "null");
+                continue;
+            }
+            result.Add(path);
+        }
+        return Array.AsReadOnly(result.ToArray());
+    }
+
+    private static PendingTurnSnapshotContextRead ReadCurrentContext(
+        FileSystemManager fs,
+        PendingTurnSnapshotContextSource source)
+    {
+        if (!fs.FileExists(source.Path))
+            return new PendingTurnSnapshotContextRead(
+                source.Path,
+                PendingTurnSnapshotContextStatus.Missing,
+                null);
+
+        var json = fs.ReadFileSync(source.Path);
+        if (string.IsNullOrWhiteSpace(json))
+            return new PendingTurnSnapshotContextRead(
+                source.Path,
+                PendingTurnSnapshotContextStatus.Invalid,
+                null);
+
+        try
+        {
+            using var document = JsonDocument.Parse(json);
+            var root = document.RootElement;
+            if (source.IsRepairRequest &&
+                root.ValueKind == JsonValueKind.Object &&
+                root.TryGetProperty("metadataDiagnosticOnly", out var diagnosticNode))
+            {
+                if (diagnosticNode.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+                {
+                    return new PendingTurnSnapshotContextRead(
+                        source.Path,
+                        PendingTurnSnapshotContextStatus.Invalid,
+                        null);
+                }
+
+                if (diagnosticNode.GetBoolean())
+                {
+                    return new PendingTurnSnapshotContextRead(
+                        source.Path,
+                        PendingTurnSnapshotContextStatus.DiagnosticOnly,
+                        null);
+                }
+            }
+
+            if (root.ValueKind != JsonValueKind.Object ||
+                !root.TryGetProperty("sessionId", out var sessionNode) ||
+                sessionNode.ValueKind != JsonValueKind.String ||
+                !root.TryGetProperty("requestId", out var requestNode) ||
+                requestNode.ValueKind != JsonValueKind.String ||
+                !root.TryGetProperty("turnNumber", out var turnNode) ||
+                turnNode.ValueKind != JsonValueKind.Number ||
+                !turnNode.TryGetInt32(out var turn))
+            {
+                return new PendingTurnSnapshotContextRead(
+                    source.Path,
+                    PendingTurnSnapshotContextStatus.Invalid,
+                    null);
+            }
+
+            var session = sessionNode.GetString() ?? string.Empty;
+            var request = requestNode.GetString() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(session) ||
+                string.IsNullOrWhiteSpace(request) ||
+                turn <= 0)
+            {
+                return new PendingTurnSnapshotContextRead(
+                    source.Path,
+                    PendingTurnSnapshotContextStatus.Invalid,
+                    null);
+            }
+
+            return new PendingTurnSnapshotContextRead(
+                source.Path,
+                PendingTurnSnapshotContextStatus.Usable,
+                new PendingTurnSnapshotRequestContext(session, request, turn));
+        }
+        catch (JsonException)
+        {
+            return new PendingTurnSnapshotContextRead(
+                source.Path,
+                PendingTurnSnapshotContextStatus.Invalid,
+                null);
+        }
+    }
+
+    private static bool ContextsMatch(
+        PendingTurnSnapshotRequestContext left,
+        PendingTurnSnapshotRequestContext right) =>
+        left.TurnNumber == right.TurnNumber &&
+        PendingTurnSnapshotAuthority.DoesPendingTurnContextIdMatch(
+            left.SessionId,
+            right.SessionId) &&
+        PendingTurnSnapshotAuthority.DoesPendingTurnContextIdMatch(
+            left.RequestId,
+            right.RequestId);
+
+    private static string DescribeContext(PendingTurnSnapshotRequestContext context) =>
+        $"{context.SessionId}/{context.RequestId}/{context.TurnNumber}";
+
+    private static bool ContextMatches(
+        LiveTurnPendingSnapshotManifest manifest,
+        PendingTurnSnapshotRequestContext context) =>
+        manifest.TurnNumber == context.TurnNumber &&
+        PendingTurnSnapshotAuthority.DoesPendingTurnContextIdMatch(
+            manifest.SessionId,
+            context.SessionId) &&
+        PendingTurnSnapshotAuthority.DoesPendingTurnContextIdMatch(
+            manifest.RequestId,
+            context.RequestId);
+
+    private static string NormalizeRealm(string? value) => value switch
+    {
+        "Mortal World" or "mortal_world" => "mortal_world",
+        "Chaos Sea" or "chaos_sea" => "chaos_sea",
+        "Shining Abode" or "shining_abode" => "shining_abode",
+        _ => string.Empty
+    };
+
+    private static PendingTurnSnapshotReadResult Failure(
+        IEnumerable<ValidationIssue> issues) =>
+        new(false, null, Array.AsReadOnly(issues.ToArray()));
+
+    private static void Add(
+        ICollection<ValidationIssue> issues,
+        string path,
+        string code,
+        string actual) => issues.Add(new ValidationIssue(
+        path,
+        IssueSeverity.Error,
+        "The current pending-turn snapshot cannot provide immutable reader authority.",
+        code: code,
+        actor: "Client",
+        section: "pending_turn_snapshot_reader",
+        expected: "one current detached-authority manifest with exact signed required bytes",
+        actual: actual,
+        repairHint:
+        "Recreate the active turn snapshot through the client; never substitute live or caller-authored bytes."));
+
+    private sealed record PendingTurnSnapshotRequestContext(
+        string SessionId,
+        string RequestId,
+        int TurnNumber);
+
+    private sealed record PendingTurnSnapshotContextSource(
+        string Path,
+        bool IsRepairRequest);
+
+    private sealed record PendingTurnSnapshotContextRead(
+        string Path,
+        PendingTurnSnapshotContextStatus Status,
+        PendingTurnSnapshotRequestContext? Context);
+
+    private enum PendingTurnSnapshotContextStatus
+    {
+        Missing,
+        Invalid,
+        DiagnosticOnly,
+        Usable
+    }
+}
+
+internal sealed class PendingTurnSnapshotReadAuthority
+{
+    private readonly ReadOnlyDictionary<string, byte[]> _bytesByPath;
+
+    internal PendingTurnSnapshotReadAuthority(
+        string sessionId,
+        string requestId,
+        string snapshotToken,
+        int turnNumber,
+        string realm,
+        IReadOnlyDictionary<string, byte[]> bytesByPath)
+    {
+        SessionId = sessionId;
+        RequestId = requestId;
+        SnapshotToken = snapshotToken;
+        TurnNumber = turnNumber;
+        Realm = realm;
+        _bytesByPath = new ReadOnlyDictionary<string, byte[]>(
+            bytesByPath.ToDictionary(
+                pair => pair.Key,
+                pair => pair.Value.ToArray(),
+                StringComparer.Ordinal));
+    }
+
+    public string SessionId { get; }
+    public string RequestId { get; }
+    public string SnapshotToken { get; }
+    public int TurnNumber { get; }
+    public string Realm { get; }
+
+    public byte[] ReadRequiredBytes(string logicalPath)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(logicalPath);
+        if (!_bytesByPath.TryGetValue(logicalPath, out var bytes))
+            throw new KeyNotFoundException($"Required snapshot path '{logicalPath}' was not validated.");
+        return bytes.ToArray();
+    }
+}
+
+internal sealed record PendingTurnSnapshotReadResult(
+    bool Success,
+    PendingTurnSnapshotReadAuthority? Snapshot,
+    IReadOnlyList<ValidationIssue> Issues);
