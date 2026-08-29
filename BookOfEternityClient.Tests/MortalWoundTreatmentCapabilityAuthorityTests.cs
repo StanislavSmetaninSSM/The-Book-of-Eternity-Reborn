@@ -128,6 +128,26 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         fixture.AssertPreparedLiveTurnMatchesExportedBinding(exported.Binding!);
     }
 
+    [Fact]
+    public void AcceptedStateExport_BindsThePreparedManifestToCanonicalSourceChanges()
+    {
+        using var baseline = CapabilityAuthorityFixture.Create(
+            DescribeScenario("baseline_current_source", publication: false));
+        using var changed = CapabilityAuthorityFixture.Create(
+            DescribeScenario("source_semantic_change_changes_proof", publication: false));
+
+        var baselineExport = ExportAcceptedState(baseline);
+        var changedExport = ExportAcceptedState(changed);
+        var baselineState = RequireAcceptedState(baselineExport);
+        var changedState = RequireAcceptedState(changedExport);
+        Assert.NotSame(baselineState, changedState);
+        Assert.NotNull(baselineExport.Binding);
+        Assert.NotNull(changedExport.Binding);
+        Assert.NotEqual(
+            ReadRequiredProperty(baselineExport.Binding!, "SnapshotToken"),
+            ReadRequiredProperty(changedExport.Binding!, "SnapshotToken"));
+    }
+
     [Theory]
     [MemberData(nameof(CurrentExportRows))]
     public void ExportCurrent_UsesOnlyCanonicalPlayerOrNpcSkillCapabilitySource(
@@ -148,7 +168,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         }
 
         var accepted = ExportAcceptedState(fixture);
-        var acceptedState = accepted.Authority!;
+        var acceptedState = RequireAcceptedState(accepted);
         var coordinates = CreateCoordinates(fixture, acceptedState);
         fixture.ApplyLiveExporterMutation();
         var result = InvokeCapabilityExporter(
@@ -191,7 +211,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         CapabilityScenario scenario)
     {
         var accepted = ExportAcceptedState(fixture);
-        var acceptedState = accepted.Authority!;
+        var acceptedState = RequireAcceptedState(accepted);
         var coordinates = CreateCoordinates(fixture, acceptedState);
         // Publication always begins by sealing the same live canonical proof that the
         // guaranteed request carries.  The final root is then supplied only by T070's
@@ -240,6 +260,11 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
     private static object BuildAcceptedState(CapabilityAuthorityFixture fixture)
     {
         var result = ExportAcceptedState(fixture);
+        return RequireAcceptedState(result);
+    }
+
+    private static object RequireAcceptedState(AcceptedStateView result)
+    {
         AssertValidResultShell(result.IsValid, result.Issues, result.Authority, "accepted state");
         return result.Authority!;
     }
@@ -253,21 +278,43 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             throwOnError: false,
             ignoreCase: false);
         Assert.NotNull(acceptedStateAuthorityType);
+        Assert.Empty(acceptedStateAuthorityType!.GetConstructors(BindingFlags.Instance | BindingFlags.Public));
+        Assert.DoesNotContain(
+            acceptedStateAuthorityType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+            static candidate => candidate.Name == "ExportCurrent" &&
+                                candidate.GetParameters().Any(static parameter =>
+                                    parameter.ParameterType == typeof(JsonNode) ||
+                                    parameter.ParameterType == typeof(JsonObject) ||
+                                    parameter.ParameterType == typeof(JsonElement)));
+        var treatmentAuthorityType = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundTreatmentAuthority",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.NotNull(treatmentAuthorityType);
+        var parsedContext = ParseTreatmentContext(treatmentAuthorityType!, fixture.ContextRoot);
+        AssertValidResultShell(
+            parsedContext.IsValid,
+            parsedContext.Issues,
+            parsedContext.Value,
+            "treatment context");
+        var context = parsedContext.Value!;
         var method = Assert.Single(
             acceptedStateAuthorityType!.GetMethods(
                 BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
             candidate =>
                 candidate.Name == "ExportCurrent" &&
-                candidate.GetParameters().Length == 3);
+                candidate.GetParameters().Length == 4);
         var parameters = method.GetParameters();
         Assert.Equal(typeof(FileSystemManager), parameters[0].ParameterType);
         Assert.Equal(fixture.Lease.GetType(), parameters[1].ParameterType);
-        Assert.Equal(typeof(string), parameters[2].ParameterType);
+        Assert.Equal(context.GetType(), parameters[2].ParameterType);
+        Assert.Equal(typeof(string), parameters[3].ParameterType);
 
         var result = Invoke(method, new object[]
         {
             fixture.FileSystem,
             fixture.Lease,
+            context,
             CapabilityAuthorityFixture.WoundId
         });
         var typedResult = ReadTypedResult(result, "Authority");
@@ -289,8 +336,13 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         CapabilityAuthorityFixture fixture,
         CapabilityScenario scenario)
     {
-        var result = ExportAcceptedState(fixture);
-        AssertInvalidResultShell(result.IsValid, result.Issues, result.Authority, scenario, "context");
+        var treatmentAuthorityType = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundTreatmentAuthority",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.NotNull(treatmentAuthorityType);
+        var result = ParseTreatmentContext(treatmentAuthorityType!, fixture.ContextRoot);
+        AssertInvalidResultShell(result.IsValid, result.Issues, result.Value, scenario, "context");
     }
 
     private static void AssertAcceptedStateRejected(
@@ -433,6 +485,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.Equal(resolution.GetType(), parameters[5].ParameterType);
         var proposal = fixture.CreatePublicationProposal();
         fixture.AssertPublicationProposalIsNotFinalPlanAuthority(proposal);
+        var beforeComposeBytes = fixture.CapturePublicationCanonicalBytes();
         var composed = Invoke(compose, new object?[]
         {
             fixture.FileSystem,
@@ -442,6 +495,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             request,
             resolution
         });
+        fixture.AssertPublicationComposeDidNotWriteCanonicalRoots(beforeComposeBytes);
         var publicationPlan = ReadValidTypedResult(composed, "Plan", "T070 accepted publication");
         Assert.NotSame(proposal, publicationPlan);
         Assert.NotEqual(proposal.GetType(), publicationPlan.GetType());
@@ -899,8 +953,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.Equal(typeof(WoundTreatmentRoute), resolver.GetParameters()[0].ParameterType);
 
         var accepted = ExportAcceptedState(fixture);
-        AssertValidResultShell(accepted.IsValid, accepted.Issues, accepted.Authority, "accepted state");
-        var acceptedState = accepted.Authority!;
+        var acceptedState = RequireAcceptedState(accepted);
         var context = ReadAcceptedStateMember(acceptedState, "RequirementContext");
         var snapshot = ReadAcceptedStateMember(acceptedState, "RequirementSnapshot");
         Assert.Equal(resolver.GetParameters()[1].ParameterType, context.GetType());
@@ -1085,6 +1138,17 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
     {
         var value = ReadPropertyAllowingNull(instance, name);
         return value is null ? null : Assert.IsType<string>(value);
+    }
+
+    private static TypedResultView ParseTreatmentContext(Type authorityType, JsonObject contextRoot)
+    {
+        var parser = Assert.Single(
+            authorityType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+            static candidate => candidate.Name == "ParseContext" &&
+                                candidate.GetParameters().Length == 2 &&
+                                candidate.GetParameters().All(static parameter => parameter.ParameterType == typeof(string)));
+        var parsed = Invoke(parser, new object[] { contextRoot.ToJsonString(), "treatmentContext" });
+        return ReadTypedResult(parsed, "Context");
     }
 
     private static object ReadValidTypedResult(object result, string valueProperty, string boundary)
@@ -1392,6 +1456,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             FileSystemManager.CanonicalWriteLease lease,
             WoundMaterializationEnvelope before,
             LiveTurnPreparationResult preparedTurn,
+            JsonObject contextRoot,
             CapabilityScenario scenario,
             JsonObject currentSource,
             JsonObject finalSource)
@@ -1401,6 +1466,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Lease = lease;
             Before = before;
             PreparedTurn = preparedTurn;
+            ContextRoot = contextRoot;
             Scenario = scenario;
             CurrentSource = currentSource;
             FinalSource = finalSource;
@@ -1408,7 +1474,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
         internal const string WoundId = "wound_test_torn_side";
         internal const string RouteId = "guaranteed_v1";
-        internal const string EventRef = "turn_42:wound_treatment";
+        internal const string EventRef = "turn_42:accepted_effect";
+        internal const string EventKind = "accepted_turn";
+        internal const string EventAuthorityId = "turn_42";
         internal const string OperationKey = "capability_authority_operation_001";
 
         internal string Root { get; }
@@ -1416,6 +1484,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         internal FileSystemManager.CanonicalWriteLease Lease { get; }
         internal WoundMaterializationEnvelope Before { get; }
         internal LiveTurnPreparationResult PreparedTurn { get; }
+        internal JsonObject ContextRoot { get; }
         internal CapabilityScenario Scenario { get; }
         internal JsonObject CurrentSource { get; }
         internal JsonObject FinalSource { get; }
@@ -1553,6 +1622,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 lease,
                 parsed.Wound!,
                 preparedTurn,
+                CreateSelectionContext(scenario, currentSource),
                 scenario,
                 currentSource,
                 finalSource);
@@ -1563,6 +1633,19 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
             Directory.Delete(Root, recursive: true);
         }
+
+        private static JsonObject CreateSelectionContext(
+            CapabilityScenario scenario,
+            JsonObject currentSource) => new()
+        {
+            ["schemaVersion"] = 1,
+            ["realm"] = currentSource["realm"]!.GetValue<string>(),
+            ["targetKind"] = scenario.TargetKind,
+            ["targetId"] = scenario.TargetId,
+            ["providerKind"] = scenario.ProviderKind,
+            ["providerId"] = scenario.ProviderId,
+            ["currentLocationId"] = "loc_field_clinic_001"
+        };
 
         internal void MutatePersistedSelectedSourceAfterExport()
         {
@@ -1599,11 +1682,47 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
         private JsonObject CreateScenarioProposalRows()
         {
-            // This separately applies the named GM operation to the live before
-            // rows. It intentionally does not copy FinalSource, which remains the
-            // assertion oracle for T070's production-normalized after-image.
+            // This is deliberately independent from FinalSource: it models only
+            // legal GM commands against the live before rows, while FinalSource is
+            // the separately derived assertion oracle for T070 normalization.
             var rows = CurrentSource.DeepClone().AsObject();
-            ApplyScenario(rows, Scenario);
+            var selected = Skill(rows, Scenario.SourceOwner, Scenario.SourceSkillArray);
+            var capability = Capability(selected);
+            switch (Scenario.Name)
+            {
+                case "removed_final_skill_rejects":
+                    rows[Scenario.SourceOwner]![Scenario.SourceSkillArray] = new JsonArray();
+                    break;
+                case "retired_final_skill_rejects":
+                    selected["lifecycle"] = "retired";
+                    break;
+                case "changed_final_capability_ref_rejects":
+                    capability["capabilityRef"] = "after_image_changed_capability";
+                    break;
+                case "changed_final_domain_rejects":
+                    capability["woundDomain"] = "spiritual";
+                    break;
+                case "changed_final_operation_limits_reject":
+                    Limits(capability)["maximumRecoveryPoints"] = 2;
+                    break;
+                case "stale_final_source_rejects":
+                    selected["active"] = false;
+                    break;
+                case "duplicate_or_confusable_final_skill_row_rejects":
+                    OtherSkill(rows, Scenario)["skillId"] = selected["skillId"]!.DeepClone();
+                    break;
+                case "confusable_final_skill_sibling_rejects":
+                    OtherSkill(rows, Scenario)["skillId"] =
+                        Scenario.SkillId.Replace("i", "і", StringComparison.Ordinal);
+                    break;
+                case "changed_final_skill_id_rejects":
+                    // Existing composition selects an update by exact skillId/name;
+                    // replacement identity must therefore be an explicit remove/add,
+                    // not a fictional in-place ID rewrite.
+                    selected["skillId"] = "skill_after_image_changed_01";
+                    selected["skillName"] = "After-image Field Medicine";
+                    break;
+            }
             return rows;
         }
 
@@ -1690,11 +1809,14 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 if (finalRows.Count == 0)
                 {
                     Assert.Null(changes);
-                    Assert.Equal(new[] { Scenario.SkillId }, removals);
+                    Assert.Equal(new[] { SelectedSkillName }, removals);
                     return;
                 }
 
-                Assert.Null(removals);
+                if (Scenario.Name == "changed_final_skill_id_rejects")
+                    Assert.Equal(new[] { SelectedSkillName }, removals);
+                else
+                    Assert.Null(removals);
                 var actual = Assert.Single(changes!);
                 Assert.Equal(finalRows[0]!.ToJsonString(), actual.GetRawText());
                 return;
@@ -1713,7 +1835,11 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 return;
             }
 
-            Assert.Null(npcChange["skillsToRemove"]);
+            if (Scenario.Name == "changed_final_skill_id_rejects")
+                Assert.Equal(new[] { SelectedSkillName }, npcChange["skillsToRemove"]!.AsArray()
+                    .Select(static value => value!.GetValue<string>()));
+            else
+                Assert.Null(npcChange["skillsToRemove"]);
             var actualRows = npcChange["skillChanges"]!.AsArray();
             Assert.Equal(finalRows.ToJsonString(), actualRows.ToJsonString());
         }
@@ -1732,9 +1858,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             if (selectedArray && final.Count == 0)
             {
                 if (skillArray == "activeSkills")
-                    proposal.RemoveActiveSkills = new[] { Scenario.SkillId };
+                    proposal.RemoveActiveSkills = new[] { SelectedSkillName };
                 else
-                    proposal.RemovePassiveSkills = new[] { Scenario.SkillId };
+                    proposal.RemovePassiveSkills = new[] { SelectedSkillName };
                 return;
             }
 
@@ -1743,6 +1869,13 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 proposal.ActiveSkillChanges = changes;
             else
                 proposal.PassiveSkillChanges = changes;
+            if (selectedArray && Scenario.Name == "changed_final_skill_id_rejects")
+            {
+                if (skillArray == "activeSkills")
+                    proposal.RemoveActiveSkills = new[] { SelectedSkillName };
+                else
+                    proposal.RemovePassiveSkills = new[] { SelectedSkillName };
+            }
         }
 
         private void AddNpcProposalChanges(
@@ -1761,9 +1894,11 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 ["npcId"] = Scenario.ProviderId
             };
             if (selectedArray && final.Count == 0)
-                npcChange["skillsToRemove"] = new JsonArray(Scenario.SkillId);
+                npcChange["skillsToRemove"] = new JsonArray(SelectedSkillName);
             else
                 npcChange["skillChanges"] = final.DeepClone();
+            if (selectedArray && Scenario.Name == "changed_final_skill_id_rejects")
+                npcChange["skillsToRemove"] = new JsonArray(SelectedSkillName);
             var changes = new[] { JsonSerializer.SerializeToElement(npcChange) };
             if (skillArray == "activeSkills")
                 proposal.NPCActiveSkillChanges = changes;
@@ -1884,9 +2019,31 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Assert.False(string.IsNullOrWhiteSpace(manifestPayloadHash));
             Assert.Equal(manifestPayloadHash, acceptedBinding.SnapshotToken);
             Assert.NotEmpty(acceptedBinding.AcceptedEvents);
-            Assert.Equal(
-                WoundAcceptedEventSetFingerprint.Compute(acceptedBinding.AcceptedEvents),
-                acceptedBinding.AcceptedEventsFingerprint);
+            Assert.False(string.IsNullOrWhiteSpace(acceptedBinding.AcceptedEventsFingerprint));
+            var acceptedEvent = Assert.Single(
+                acceptedBinding.AcceptedEvents,
+                static value => value.EventRef == EventRef);
+            Assert.Equal(EventKind, acceptedEvent.Kind);
+            Assert.Equal(EventAuthorityId, acceptedEvent.AuthorityId);
+            Assert.False(string.IsNullOrWhiteSpace(acceptedEvent.SemanticFingerprint));
+        }
+
+        internal IReadOnlyDictionary<string, byte[]> CapturePublicationCanonicalBytes() =>
+            new[]
+            {
+                "game_state/player/skills_active.json",
+                "game_state/player/skills_passive.json",
+                "game_state/npcs/npc_core.json"
+            }.ToDictionary(
+                static path => path,
+                path => File.ReadAllBytes(FileSystem.ResolvePath(path)),
+                StringComparer.Ordinal);
+
+        internal void AssertPublicationComposeDidNotWriteCanonicalRoots(
+            IReadOnlyDictionary<string, byte[]> beforeComposeBytes)
+        {
+            foreach (var (path, expectedBytes) in beforeComposeBytes)
+                Assert.Equal(expectedBytes, File.ReadAllBytes(FileSystem.ResolvePath(path)));
         }
 
         private static JsonElement ParseFirstSkill(JsonObject owner, string skillArray)
@@ -2048,6 +2205,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "player" => "game_state/player/skills_passive.json",
             _ => "game_state/npcs/npc_core.json"
         };
+
+        private string SelectedSkillName =>
+            Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray)["skillName"]!.GetValue<string>();
 
         private JsonObject SelectedSkillRoot(JsonObject source)
             => PublicationRoot(source, SelectedSkillRootPath);
