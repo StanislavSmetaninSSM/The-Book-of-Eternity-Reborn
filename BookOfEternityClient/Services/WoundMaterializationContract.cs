@@ -152,7 +152,10 @@ internal sealed record WoundTreatmentRoute(
     JsonElement ResourcePolicy,
     JsonElement Resolution,
     IReadOnlyList<JsonElement> Outcomes,
-    JsonElement? Interruption);
+    JsonElement? Interruption)
+{
+    internal string SourcePath { get; init; } = string.Empty;
+}
 
 internal sealed record WoundRecovery(
     string Mode,
@@ -1923,7 +1926,10 @@ internal static class WoundMaterializationContract
                 ReadOpaqueObject(item, "resourcePolicy", itemPath, issues),
                 ReadOpaqueObject(item, "resolution", itemPath, issues),
                 ReadOpaqueObjectArray(item, "outcomes", itemPath, issues),
-                ReadNullableOpaqueObject(item, "interruption", itemPath, issues)));
+                ReadNullableOpaqueObject(item, "interruption", itemPath, issues))
+            {
+                SourcePath = itemPath
+            });
             index++;
         }
 

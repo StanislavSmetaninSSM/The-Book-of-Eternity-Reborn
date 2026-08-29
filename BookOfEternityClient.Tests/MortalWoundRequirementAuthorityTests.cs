@@ -73,6 +73,35 @@ public sealed class MortalWoundRequirementAuthorityTests
             ("environment", "environments[0]")
         }.Select(static row => new object[] { row.Item1, row.Item2 });
 
+    public static IEnumerable<object[]> SnapshotActorKindCases =>
+        new[]
+        {
+            ("item", "ownerKind", "items[0].ownerKind"),
+            ("resource", "ownerKind", "resources[0].ownerKind"),
+            ("actor", "actorKind", "actors[0].actorKind"),
+            ("consent", "providerKind", "actors[0].consents[0].providerKind"),
+            ("consent", "targetKind", "actors[0].consents[0].targetKind"),
+            ("present_actor", "actorKind", "locations[0].presentActors[0].actorKind"),
+            ("effect", "targetKind", "effects[0].targetKind")
+        }.Select(static row => new object[] { row.Item1, row.Item2, row.Item3 });
+
+    public static IEnumerable<object[]> ContextBindingCases =>
+        new[]
+        {
+            ("duplicate_target", "targetId", "mortal_wound_treatment_context_target_mismatch"),
+            ("target_foreign_realm", "targetId", "mortal_wound_treatment_context_target_mismatch"),
+            ("target_retired", "targetId", "mortal_wound_treatment_context_target_mismatch"),
+            ("target_inactive", "targetId", "mortal_wound_treatment_context_target_mismatch"),
+            ("duplicate_provider", "providerId", "mortal_wound_treatment_context_provider_mismatch"),
+            ("provider_foreign_realm", "providerId", "mortal_wound_treatment_context_provider_mismatch"),
+            ("provider_retired", "providerId", "mortal_wound_treatment_context_provider_mismatch"),
+            ("provider_inactive", "providerId", "mortal_wound_treatment_context_provider_mismatch"),
+            ("duplicate_location", "currentLocationId", "mortal_wound_treatment_context_location_mismatch"),
+            ("location_foreign_realm", "currentLocationId", "mortal_wound_treatment_context_location_mismatch"),
+            ("location_retired", "currentLocationId", "mortal_wound_treatment_context_location_mismatch"),
+            ("location_inactive", "currentLocationId", "mortal_wound_treatment_context_location_mismatch")
+        }.Select(static row => new object[] { row.Item1, row.Item2, row.Item3 });
+
     public static IEnumerable<object[]> ConfusableReferenceCases
     {
         get
@@ -194,6 +223,46 @@ public sealed class MortalWoundRequirementAuthorityTests
     }
 
     [Theory]
+    [InlineData("targetKind")]
+    [InlineData("providerKind")]
+    public void ParseContext_RejectsUnknownActorKind(string field)
+    {
+        var root = CreateContext();
+        root[field] = "creature";
+
+        var parsed = InvokeAuthorityParser(
+            "ParseContext",
+            "Context",
+            root,
+            "treatmentContext");
+
+        Assert.False(parsed.IsValid);
+        Assert.Null(parsed.Value);
+        Assert.Contains(parsed.Issues, issue =>
+            issue.Code == "mortal_wound_treatment_context_invalid_field" &&
+            issue.FilePath == "treatmentContext." + field);
+    }
+
+    [Fact]
+    public void ParseContext_RejectsRawDuplicateKnownRootProperty()
+    {
+        var root = CreateContext();
+        var json = DuplicateFirstKnownProperty(root, root, out var field);
+
+        var parsed = InvokeAuthorityParser(
+            "ParseContext",
+            "Context",
+            json,
+            "treatmentContext");
+
+        Assert.False(parsed.IsValid);
+        Assert.Null(parsed.Value);
+        Assert.Contains(parsed.Issues, issue =>
+            issue.Code == "mortal_wound_treatment_context_duplicate_property" &&
+            issue.FilePath == "treatmentContext." + field);
+    }
+
+    [Theory]
     [InlineData("unknown_field", "mortal_wound_treatment_snapshot_unknown_field", "unexpected")]
     [InlineData("missing_field", "mortal_wound_treatment_snapshot_missing_field", "actors")]
     [InlineData("wrong_version", "mortal_wound_treatment_snapshot_schema_version_invalid", "schemaVersion")]
@@ -259,6 +328,25 @@ public sealed class MortalWoundRequirementAuthorityTests
             issue.FilePath == "treatmentSnapshot." + expectedField);
     }
 
+    [Fact]
+    public void ParseSnapshot_RejectsRawDuplicateKnownRootProperty()
+    {
+        var root = CreateSnapshot();
+        var json = DuplicateFirstKnownProperty(root, root, out var field);
+
+        var parsed = InvokeAuthorityParser(
+            "ParseSnapshot",
+            "Snapshot",
+            json,
+            "treatmentSnapshot");
+
+        Assert.False(parsed.IsValid);
+        Assert.Null(parsed.Value);
+        Assert.Contains(parsed.Issues, issue =>
+            issue.Code == "mortal_wound_treatment_snapshot_duplicate_property" &&
+            issue.FilePath == "treatmentSnapshot." + field);
+    }
+
     [Theory]
     [MemberData(nameof(SnapshotClosedObjectCases))]
     public void ParseSnapshot_RejectsUnknownMemberInEveryNestedClosedObject(
@@ -280,6 +368,53 @@ public sealed class MortalWoundRequirementAuthorityTests
             issue.Code == "mortal_wound_treatment_snapshot_unknown_field" &&
             issue.FilePath ==
             $"treatmentSnapshot.{expectedObjectPath}.unexpected");
+    }
+
+    [Theory]
+    [MemberData(nameof(SnapshotClosedObjectCases))]
+    public void ParseSnapshot_RejectsRawDuplicateKnownMemberInEveryNestedClosedObject(
+        string objectShape,
+        string expectedObjectPath)
+    {
+        var root = CreateSnapshot();
+        var nested = SnapshotClosedObject(root, objectShape);
+        var json = DuplicateFirstKnownProperty(root, nested, out var field);
+
+        var parsed = InvokeAuthorityParser(
+            "ParseSnapshot",
+            "Snapshot",
+            json,
+            "treatmentSnapshot");
+
+        Assert.False(parsed.IsValid);
+        Assert.Null(parsed.Value);
+        Assert.Contains(parsed.Issues, issue =>
+            issue.Code == "mortal_wound_treatment_snapshot_duplicate_property" &&
+            issue.FilePath ==
+            $"treatmentSnapshot.{expectedObjectPath}.{field}");
+    }
+
+    [Theory]
+    [MemberData(nameof(SnapshotActorKindCases))]
+    public void ParseSnapshot_RejectsUnknownActorKindInEveryCoordinate(
+        string objectShape,
+        string field,
+        string expectedPath)
+    {
+        var root = CreateSnapshot();
+        SnapshotClosedObject(root, objectShape)[field] = "creature";
+
+        var parsed = InvokeAuthorityParser(
+            "ParseSnapshot",
+            "Snapshot",
+            root,
+            "treatmentSnapshot");
+
+        Assert.False(parsed.IsValid);
+        Assert.Null(parsed.Value);
+        Assert.Contains(parsed.Issues, issue =>
+            issue.Code == "mortal_wound_treatment_snapshot_invalid_field" &&
+            issue.FilePath == "treatmentSnapshot." + expectedPath);
     }
 
     [Fact]
@@ -616,6 +751,7 @@ public sealed class MortalWoundRequirementAuthorityTests
         {
             case "insufficient_count":
                 item["count"] = 1;
+                item["availableCount"] = 1;
                 break;
             case "insufficient_available":
                 item["availableCount"] = 1;
@@ -665,6 +801,7 @@ public sealed class MortalWoundRequirementAuthorityTests
         {
             case "insufficient_value":
                 resource["currentValue"] = 2;
+                resource["availableValue"] = 2;
                 break;
             case "insufficient_available":
                 resource["availableValue"] = 2;
@@ -845,6 +982,69 @@ public sealed class MortalWoundRequirementAuthorityTests
             CreateRoute(CreateRequirement(requirementKind)),
             context,
             CreateSnapshot());
+
+        AssertFailure(
+            result,
+            expectedCode,
+            requirementIndex: null,
+            expectedPath: "treatmentContext." + contextField);
+    }
+
+    [Theory]
+    [MemberData(nameof(ContextBindingCases))]
+    public void Resolve_ContextCoordinatesRequireOneCurrentActiveSameRealmAuthority(
+        string mutation,
+        string contextField,
+        string expectedCode)
+    {
+        var snapshot = CreateSnapshot();
+        switch (mutation)
+        {
+            case "duplicate_target":
+                snapshot["actors"]!.AsArray().Add(Target(snapshot).DeepClone());
+                break;
+            case "target_foreign_realm":
+                Target(snapshot)["realm"] = "chaos_sea";
+                break;
+            case "target_retired":
+                Target(snapshot)["lifecycle"] = "retired";
+                break;
+            case "target_inactive":
+                Target(snapshot)["active"] = false;
+                break;
+            case "duplicate_provider":
+                snapshot["actors"]!.AsArray().Add(Provider(snapshot).DeepClone());
+                break;
+            case "provider_foreign_realm":
+                Provider(snapshot)["realm"] = "chaos_sea";
+                break;
+            case "provider_retired":
+                Provider(snapshot)["lifecycle"] = "retired";
+                break;
+            case "provider_inactive":
+                Provider(snapshot)["active"] = false;
+                break;
+            case "duplicate_location":
+                snapshot["locations"]!.AsArray().Add(
+                    First(snapshot, "locations").DeepClone());
+                break;
+            case "location_foreign_realm":
+                First(snapshot, "locations")["realm"] = "chaos_sea";
+                break;
+            case "location_retired":
+                First(snapshot, "locations")["lifecycle"] = "retired";
+                break;
+            case "location_inactive":
+                First(snapshot, "locations")["active"] = false;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+
+        var result = Resolve(
+            CreateRoute(CreateRequirement("item_quantity")),
+            CreateContext(),
+            snapshot);
 
         AssertFailure(
             result,
@@ -1292,6 +1492,17 @@ public sealed class MortalWoundRequirementAuthorityTests
         string valueProperty,
         JsonObject root,
         string path)
+        => InvokeAuthorityParser(
+            methodName,
+            valueProperty,
+            root.ToJsonString(),
+            path);
+
+    private static AuthorityParseView InvokeAuthorityParser(
+        string methodName,
+        string valueProperty,
+        string json,
+        string path)
     {
         var authorityType = typeof(WoundMaterializationContract).Assembly.GetType(
             "BookOfEternityClient.Services.MortalWoundTreatmentAuthority",
@@ -1302,7 +1513,7 @@ public sealed class MortalWoundRequirementAuthorityTests
             authorityType,
             methodName,
             valueProperty,
-            root,
+            json,
             path);
     }
 
@@ -1311,6 +1522,19 @@ public sealed class MortalWoundRequirementAuthorityTests
         string methodName,
         string valueProperty,
         JsonObject root,
+        string path)
+        => InvokeAuthorityParser(
+            authorityType,
+            methodName,
+            valueProperty,
+            root.ToJsonString(),
+            path);
+
+    private static AuthorityParseView InvokeAuthorityParser(
+        Type authorityType,
+        string methodName,
+        string valueProperty,
+        string json,
         string path)
     {
         var method = Assert.Single(
@@ -1324,7 +1548,7 @@ public sealed class MortalWoundRequirementAuthorityTests
         object parseResult;
         try
         {
-            var invoked = method.Invoke(null, new object[] { root.ToJsonString(), path });
+            var invoked = method.Invoke(null, new object[] { json, path });
             Assert.NotNull(invoked);
             parseResult = invoked;
         }
@@ -1747,6 +1971,25 @@ public sealed class MortalWoundRequirementAuthorityTests
     {
         using var document = JsonDocument.Parse(value.ToJsonString());
         return document.RootElement.Clone();
+    }
+
+    private static string DuplicateFirstKnownProperty(
+        JsonObject root,
+        JsonObject target,
+        out string field)
+    {
+        var property = target.First();
+        field = property.Key;
+        var propertyJson = JsonSerializer.Serialize(property.Key) + ":" +
+                           (property.Value?.ToJsonString() ?? "null");
+        var targetJson = target.ToJsonString();
+        Assert.StartsWith("{" + propertyJson, targetJson, StringComparison.Ordinal);
+        var duplicatedTarget = "{" + propertyJson + "," + targetJson[1..];
+        var rootJson = root.ToJsonString();
+        var targetIndex = rootJson.IndexOf(targetJson, StringComparison.Ordinal);
+        Assert.True(targetIndex >= 0, $"Nested target was not found in raw root: {targetJson}");
+        return rootJson[..targetIndex] + duplicatedTarget +
+               rootJson[(targetIndex + targetJson.Length)..];
     }
 
     private static JsonObject[] CreateCompleteRequirements() =>
