@@ -168,6 +168,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
             roots.IdentityIndex));
 
         Assert.True(snapshot.IsAccepted, DescribeIssues(snapshot.Issues));
+        var carrierOrder = roots.PlayerEffects["activeEffects"]!.AsArray()
+            .OfType<JsonObject>()
+            .Where(effect => effect["effectId"]!.GetValue<string>()
+                .StartsWith("effect_fate_shield_", StringComparison.Ordinal))
+            .Select(effect => effect["effectId"]!.GetValue<string>())
+            .ToArray();
+        Assert.Equal(
+            new[] { "effect_fate_shield_newer", "effect_fate_shield_older" },
+            carrierOrder);
         var effects = roots.PlayerEffects["activeEffects"]!.AsArray()
             .OfType<JsonObject>()
             .Where(effect => effect["effectId"]!.GetValue<string>()
@@ -392,8 +401,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var effects = new List<JsonObject>
         {
-            CreateMaterializedFateShield("effect_fate_shield_older", 37),
-            CreateMaterializedFateShield("effect_fate_shield_newer", 42)
+            // Carrier order must not choose the shield: newer deliberately precedes
+            // older, while the production arbiter still chooses createdAtTurn 37.
+            CreateMaterializedFateShield("effect_fate_shield_newer", 42),
+            CreateMaterializedFateShield("effect_fate_shield_older", 37)
         };
         if (scenario.RollMode is "advantage" or "disadvantage")
             effects.Add(CreateRollModeEffect(scenario.RollMode));
@@ -408,46 +419,71 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     private static JsonObject CreateMaterializedFateShield(string effectId, int createdAtTurn)
     {
-        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("player", "event_reaction");
+        // Let the accepted-turn effect planner materialize the built-in source.  It
+        // supplies the full uses lifetime (including consuming trigger IDs) and the
+        // canonical built-in component/trigger topology; the fixture changes only
+        // independent carrier identity and chronology afterwards.
+        var planned = BuildFateShieldPlan();
+        Assert.True(planned.Success, DescribeIssues(planned.Issues));
+        var effect = Assert.Single(planned.Plan!.ActiveEffects).DeepClone().AsObject();
         effect["effectId"] = effectId;
-        effect["source"] = new JsonObject
-        {
-            ["kind"] = EffectBuiltInSourceCatalog.FateShieldSourceKind,
-            ["sourceId"] = EffectBuiltInSourceCatalog.FateShieldSourceId,
-            ["definitionKey"] = EffectBuiltInSourceCatalog.FateShieldDefinitionKey
-        };
-        effect["lifetime"] = new JsonObject
-        {
-            ["mode"] = "uses",
-            ["remainingUses"] = 1
-        };
-        effect["components"] = new JsonArray(new JsonObject
-        {
-            ["componentId"] = "fate_shield_reaction",
-            ["profile"] = "event_reaction",
-            ["priority"] = -100,
-            ["payload"] = new JsonObject
-            {
-                ["eventType"] = "owner_critical_failure",
-                ["resultKind"] = "event_outcome",
-                ["originalOutcome"] = "critical_failure",
-                ["resolvedOutcome"] = "failure",
-                ["dependency"] = "before_current_event",
-                ["maxExpansion"] = 1
-            }
-        });
-        effect["triggers"] = new JsonArray(new JsonObject
-        {
-            ["triggerId"] = "fate_shield_on_critical_failure",
-            ["eventType"] = "owner_critical_failure",
-            ["priority"] = -100,
-            ["componentIds"] = new JsonArray("fate_shield_reaction"),
-            ["consumeUses"] = true,
-            ["resolutionMode"] = "deterministic"
-        });
         effect["chronology"]!["createdAtTurn"] = createdAtTurn;
         effect["chronology"]!["lastTransitionTurn"] = createdAtTurn;
         return effect;
+    }
+
+    private static EffectAcceptedTurnPlanningResult BuildFateShieldPlan()
+    {
+        var commands = new JsonObject
+        {
+            ["effectChanges"] = new JsonArray(new JsonObject
+            {
+                ["operation"] = "apply",
+                ["target"] = new JsonObject { ["kind"] = "player", ["targetId"] = "player_current" },
+                ["source"] = new JsonObject
+                {
+                    ["kind"] = EffectBuiltInSourceCatalog.FateShieldSourceKind,
+                    ["sourceId"] = EffectBuiltInSourceCatalog.FateShieldSourceId,
+                    ["definitionKey"] = EffectBuiltInSourceCatalog.FateShieldDefinitionKey
+                },
+                ["parameters"] = new JsonObject(),
+                ["eventRef"] = new JsonObject { ["kind"] = "accepted_turn", ["authorityId"] = "turn_42" },
+                ["reason"] = "T061 canonical Fate Shield fixture."
+            }),
+            ["effectResolutionReceipts"] = new JsonArray()
+        };
+        var input = new EffectAcceptedTurnInput(
+            "session_t061_fate",
+            "snapshot_t061_fate",
+            commands,
+            EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+                EffectBuiltInSourceCatalog.CreateCanonicalExports(),
+                Array.Empty<EffectSourceExport>(),
+                new HashSet<string>(StringComparer.Ordinal),
+                new HashSet<string>(StringComparer.Ordinal)
+                {
+                    EffectBuiltInSourceCatalog.FateShieldApplicationAuthority
+                })),
+            EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
+                new[] { new EffectTargetExport("mortal_world", "player", "player_current", SameTurn: false) },
+                Array.Empty<EffectTargetExport>(),
+                new HashSet<string>(StringComparer.Ordinal),
+                null)),
+            new JsonObject
+            {
+                ["turn"] = 42,
+                ["events"] = new JsonArray(new JsonObject
+                {
+                    ["kind"] = "accepted_turn", ["authorityId"] = "turn_42",
+                    ["eventRef"] = "turn_42:accepted_effect"
+                }),
+                ["lifecycleEvents"] = new JsonArray()
+            },
+            PreTurnCarriers: new EffectCarrierCatalogInput(null, null, null, null, null, null));
+        return EffectAcceptedTurnPlanner.Build(
+            input,
+            "t061_fate_shield_fixture",
+            new EffectIdentityFactory());
     }
 
     private static JsonObject CreateRollModeEffect(string rollMode)
@@ -649,9 +685,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         var request = ReadValidTypedResult(preparedResult, "Request", scenario.Name + " request");
         if (scenario.Mode == "procedure")
+        {
             AssertProcedureCheckAuthority(
                 ReadRequiredProperty(request, "ModeAuthority"),
                 scenario);
+            AssertPreparedCriticalReaction(request, acceptedState, scenario);
+        }
         var resolver = ExactStaticMethod(planner, resolverName, 4);
         var resolution = Invoke(resolver, new[]
         {
@@ -661,6 +700,54 @@ public sealed partial class MortalWoundTreatmentResolverTests
             acceptedState
         });
         AssertResolutionShape(resolution, scenario, request);
+    }
+
+    private static void AssertPreparedCriticalReaction(
+        object request,
+        object acceptedState,
+        ResolverScenario scenario)
+    {
+        var catalogType = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.EffectAcceptedEventReportCatalog",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.NotNull(catalogType);
+        var result = Invoke(
+            ExactStaticMethod(catalogType, "ResolvePreparedMortalWoundCriticalReaction", 2),
+            new[] { request, acceptedState });
+        Assert.Equal(
+            new[] { "IsValid", "Issues", "Intent" },
+            result.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(static property => property.GetIndexParameters().Length == 0)
+                .Select(static property => property.Name)
+                .OrderBy(static property => property));
+        Assert.True(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")));
+        Assert.Empty(Assert.IsAssignableFrom<System.Collections.IEnumerable>(
+            ReadRequiredProperty(result, "Issues")).Cast<object>());
+        var intent = ReadPropertyAllowingNull(result, "Intent");
+        if (scenario.ExpectedFateEffectId == null)
+        {
+            Assert.Null(intent);
+            return;
+        }
+
+        Assert.NotNull(intent);
+        AssertClosedProperties(intent!, new[]
+        {
+            "EventType", "EventRef", "CausalEventRef", "Turn", "Realm", "TargetKind", "TargetId",
+            "EffectId", "TriggerId", "AcceptedEffectFingerprint", "PreparedReactionFingerprint",
+            "RequestFingerprint", "IntentFingerprint"
+        });
+        Assert.Equal("owner_critical_failure", Convert.ToString(ReadRequiredProperty(intent, "EventType")));
+        Assert.Equal("mortal_world", Convert.ToString(ReadRequiredProperty(intent, "Realm")));
+        Assert.Equal("player", Convert.ToString(ReadRequiredProperty(intent, "TargetKind")));
+        Assert.Equal("player_current", Convert.ToString(ReadRequiredProperty(intent, "TargetId")));
+        Assert.Equal(scenario.ExpectedFateEffectId, Convert.ToString(ReadRequiredProperty(intent, "EffectId")));
+        Assert.Equal("fate_shield_on_critical_failure", Convert.ToString(ReadRequiredProperty(intent, "TriggerId")));
+        Assert.False(string.IsNullOrWhiteSpace(
+            Convert.ToString(ReadRequiredProperty(intent, "AcceptedEffectFingerprint"))));
+        Assert.False(string.IsNullOrWhiteSpace(
+            Convert.ToString(ReadRequiredProperty(intent, "PreparedReactionFingerprint"))));
     }
 
     private static void AssertCourseUnsatisfiedRequirementSeam(
@@ -699,7 +786,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Invoke(ExactStaticMethod(courseModeType, "Create", 5), new[]
             {
                 acceptedState, coordinates, (object)before, history, gameTime
-            }));
+            }),
+            scenario);
         var bundleType = typeof(WoundMaterializationContract).Assembly.GetType(
             "BookOfEternityClient.Services.MortalWoundTreatmentRequirementAuthorityBundle",
             throwOnError: false,
@@ -730,7 +818,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         AssertInvalidTypedResult(preparation, "Authority", scenario.Name + " no-reservation preparation");
     }
 
-    private static object AssertReadyCourseModeAuthority(object result)
+    private static object AssertReadyCourseModeAuthority(object result, ResolverScenario scenario)
     {
         AssertClosedProperties(result, new[] { "Disposition", "Issues", "Authority" });
         Assert.Equal("Ready", Convert.ToString(ReadRequiredProperty(result, "Disposition")));
@@ -738,6 +826,27 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ReadRequiredProperty(result, "Issues")).Cast<object>());
         var authority = ReadPropertyAllowingNull(result, "Authority");
         Assert.NotNull(authority);
+        AssertClosedProperties(authority!, new[]
+        {
+            "GameTimeAuthority", "CourseId", "MilestoneOrdinal", "DueAtGameTimeMinutes",
+            "DeadlineAtGameTimeMinutes", "WindowDisposition", "CourseStartAuthority",
+            "CourseCoordinateFingerprint", "CoordinatesFingerprint", "AcceptedStateFingerprint",
+            "AuthorityFingerprint"
+        });
+        Assert.NotNull(ReadRequiredProperty(authority, "CourseId"));
+        Assert.Equal(1, Convert.ToInt32(ReadRequiredProperty(authority, "MilestoneOrdinal")));
+        Assert.Equal(scenario.WorldMinute,
+            Convert.ToInt64(ReadRequiredProperty(authority, "DueAtGameTimeMinutes")));
+        Assert.Equal("ready", Convert.ToString(ReadRequiredProperty(authority, "WindowDisposition")));
+        var start = ReadRequiredProperty(authority, "CourseStartAuthority");
+        Assert.NotNull(start);
+        Assert.NotNull(ReadRequiredProperty(start, "StartingWound"));
+        Assert.False(string.IsNullOrWhiteSpace(
+            Convert.ToString(ReadRequiredProperty(start, "AuthorityFingerprint"))));
+        Assert.False(string.IsNullOrWhiteSpace(
+            Convert.ToString(ReadRequiredProperty(authority, "CourseCoordinateFingerprint"))));
+        Assert.False(string.IsNullOrWhiteSpace(
+            Convert.ToString(ReadRequiredProperty(authority, "AuthorityFingerprint"))));
         return authority!;
     }
 
@@ -1043,10 +1152,18 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
 
         Assert.NotNull(prepared);
+        AssertClosedProperties(prepared!, new[]
+        {
+            "EffectId", "TriggerId", "AcceptedEffectFingerprint", "PreparedReactionFingerprint"
+        });
         Assert.Equal(scenario.ExpectedFateEffectId,
             Convert.ToString(ReadRequiredProperty(prepared!, "EffectId")));
         Assert.Equal("fate_shield_on_critical_failure",
             Convert.ToString(ReadRequiredProperty(prepared, "TriggerId")));
+        Assert.False(string.IsNullOrWhiteSpace(
+            Convert.ToString(ReadRequiredProperty(prepared, "AcceptedEffectFingerprint"))));
+        Assert.False(string.IsNullOrWhiteSpace(
+            Convert.ToString(ReadRequiredProperty(prepared, "PreparedReactionFingerprint"))));
     }
 
     private static int[] ReadIntSequence(object value) =>
