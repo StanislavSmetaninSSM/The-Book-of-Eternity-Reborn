@@ -1845,6 +1845,8 @@ public sealed class MortalWoundTreatmentContractTests
             definition["definitionRef"] = definitionRef;
             definition["definition"]!["definitionKey"] =
                 $"residual-tremor-definition-{index}";
+            definition["definition"]!["stacking"]!["stackKey"] =
+                $"stack_residual_tremor_definition_{index}";
             definitions.Add(definition);
 
             var application = applicationTemplate.DeepClone().AsObject();
