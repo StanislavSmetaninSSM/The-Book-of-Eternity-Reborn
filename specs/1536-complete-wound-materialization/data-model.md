@@ -1553,6 +1553,27 @@ exactly with one signed occurrence; it never carries the occurrence fingerprint,
 session/request/snapshot authority, accepted-event coordinates, transition identity,
 receipt, anchor, or after-image.
 
+The shared event primitive uses a closed `WoundAcceptedResponseEventProjection`
+(`sessionId`, `requestId`, `snapshotToken`, positive `turn`, ordered typed event
+coordinates) and zero or more `WoundSelectedEventEvidence` values keyed by exact
+zero-based ordinal. Selected evidence carries semantic facts but no fingerprint; the
+composer derives the existing opportunity-evidence seal. Generic rows retain the
+existing `accepted-wound-event-authority-v1` byte formula and production property order,
+so this hardening requires no migration. The result returns both the complete immutable
+event authority and `acceptedEventsFingerprint`. Raw `JsonObject`, caller-provided event
+fingerprints, free-string selection, and ambiguous exact/confusable `(kind, authorityId)`
+pairs are not accepted at this boundary. Producer, later adapter, and validator wiring
+must each derive this projection/evidence from their own typed accepted result or the
+current signed occurrence; a GM correlation or parsed command is never that authority.
+
+The registered producer seam is deliberately separate from correlation adapters. A
+producer projects only after its client-owned accepted result is finalized. An empty
+harm list means harmless; no separate caller-authored harmful flag exists. A producer
+kind without such a typed result remains unregistered and fails closed until its actual
+resolver supplies owner/profile/source/outcome/cap/location/create-or-worsen authority.
+It is forbidden to synthesize that missing result from current combatant, hazard,
+resource-event, die, response-fragment, or narrative-prose presence.
+
 The pending root contains at most 32 occurrences. Each occurrence contains 1-160 exact
 accepted events in original order; `acceptedEventOrdinal` is zero-based and must select
 one row, while `acceptedEventsFingerprint` is independently recomputed over the whole

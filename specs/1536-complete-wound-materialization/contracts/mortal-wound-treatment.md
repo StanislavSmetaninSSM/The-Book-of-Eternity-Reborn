@@ -1347,7 +1347,8 @@ accepted-event kind/ID/ref, occurrence/event semantic fingerprint, transition ID
 decision receipt, anchor, or after-image. This ingress is correlation only. Under the
 live canonical lease the adapter validates the pending-turn manifest/authority and exact
 snapshot bytes, resolves one matching client-sealed accepted occurrence, derives the
-complete ordered accepted-event set and evidence seal, and, only when the explicit
+complete ordered accepted-event set and evidence seal through the shared typed event
+composer, and, only when the explicit
 worsening coordinate is present, selects the canonical active wound exactly once from
 that signed before-image. The accepted-turn validator independently reconstructs the
 same complete event set and occurrence authority from the distributed response; it may
@@ -1359,6 +1360,17 @@ sealed opportunity and returns the ordinary
 accepted-plan publisher may append the decision receipt, consume the pending occurrence,
 and commit the optional creation/worsening. An exact prior receipt is a no-command replay;
 a changed decision for that occurrence conflicts.
+
+The shared event composer accepts no raw response JSON and no caller-supplied semantic
+fingerprint. Its input is one immutable typed response-event projection and selected
+typed wound evidence addressed only by exact zero-based ordinal. It derives selected
+seals, retains the established generic-event byte formula, rejects exact/confusable event
+and `(kind, authorityId)` collisions, and returns the full ordered event-set fingerprint.
+At the initial source boundary this projection comes from a registered client-owned
+producer result after real mechanics finalization; at decision and validation boundaries
+it is independently derived from the current signed occurrence. Unsupported producer
+kinds remain fail-closed until a real typed resolver exists; prose or raw carrier/source
+presence cannot manufacture an injury result.
 
 `MortalWoundRecoveryPlanner.Plan(fs, lease, binding, woundId)` has no caller-supplied
 clock, plan, fingerprint, mutation, receipt, history, tick, or policy argument. Its

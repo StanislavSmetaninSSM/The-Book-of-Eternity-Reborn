@@ -419,15 +419,23 @@ history atomically for every owner carrier; effect removal never heals it.
    signed formal/QTE/combat/trap/check/hazard/narrative occurrence, and derives the
    owner/profile/source/outcome/severity and optional explicit create-versus-worsen
    target, plus the exact nullable minimum/guaranteed-trigger authority already supported
-   by the opportunity contract. A shared composer builds the complete ordered accepted-event set from the
-   immutable response plus occurrence; `ValidationService` independently reconstructs
+   by the opportunity contract. A shared composer accepts only a closed typed response-
+   event projection plus selected typed evidence at exact zero-based ordinals; it derives
+   every selected semantic seal itself, preserves the compatible generic-event seal, and
+   returns the complete ordered event set plus its fingerprint. It does not accept raw
+   JSON or caller-provided fingerprints. The source-result boundary, later adapter, and
+   `ValidationService` each build their own projection/evidence from their authoritative
+   typed result or signed occurrence. `ValidationService` independently reconstructs
    and compares it instead of replacing it with the command binding. The adapter returns
    the existing wound composition result without writing. Formal re-trauma then uses the
    ordinary `StateDistributor` -> `ValidationService` -> common-plan pipeline; callers
    cannot inject or reuse an occurrence, treatment binding, fingerprint, transition,
    receipt, anchor, or after-image. Each typed producer first reduces its accepted result
    to a write-free complete harmful occurrence-candidate batch; harmless results produce
-   none. The source-result common plan reads both pending occurrences and durable
+   none. Producers use one sibling of the registered-system-outcome projection seam after
+   actual resource/effect finalization; unsupported producer kinds remain unregistered
+   and fail closed rather than inferring harm from combatant, hazard, die, or prose JSON.
+   The source-result common plan reads both pending occurrences and durable
    decision receipts, resolves exact pending/consumed replay versus changed-source
    conflict by producer operation key, and atomically appends only genuinely new
    candidates in sealed batch-ordinal order; only a subsequent pending-turn
