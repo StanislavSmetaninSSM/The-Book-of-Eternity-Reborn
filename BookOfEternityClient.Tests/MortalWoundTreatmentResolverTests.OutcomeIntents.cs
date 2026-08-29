@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -19,7 +20,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
         new OutcomeIntentCase("stabilize_reduce", "procedure_normal_uses_lowest_free_die", "procedure", "success", new[] { "stabilize", "reduce_severity" }),
         new OutcomeIntentCase("stabilize_recovery", "procedure_normal_uses_lowest_free_die", "procedure", "success", new[] { "stabilize", "add_recovery" }),
         new OutcomeIntentCase("effectful_complication", "procedure_disadvantage_uses_two_contiguous_dice", "procedure", "failed_attempt", new[] { "add_complication" }),
-        new OutcomeIntentCase("deterioration_handoff", "procedure_disadvantage_uses_two_contiguous_dice", "procedure", "failed_attempt", new[] { "apply_deterioration" }),
         new OutcomeIntentCase("guaranteed_remove_then_heal", "guaranteed_severity_one_heal_has_empty_legacy_array", "guaranteed", "success", new[] { "remove_complication", "heal" })
     }.Select(static row => new object[] { row });
 
@@ -29,6 +29,65 @@ public sealed partial class MortalWoundTreatmentResolverTests
         OutcomeIntentCase testCase)
     {
         AssertResolvedOutcomeIntentPair(ResolveProductionOutcomeIntent(testCase), testCase);
+    }
+
+    [Theory]
+    [MemberData(nameof(OutcomeIntentRows))]
+    public void FixtureControl_OutcomeIntentModifiedValidRouteParsesBeforePlannerExists(
+        OutcomeIntentCase testCase)
+    {
+        var scenario = CreateOutcomeIntentScenario(testCase);
+        var before = WoundMaterializationContract.Parse(scenario.Before.ToJsonString(), "wound");
+        var history = WoundHistoryState.Parse(scenario.History.ToJsonString(), "history");
+
+        Assert.True(before.IsValid, DescribeIssues(before.Issues));
+        Assert.True(history.IsValid, DescribeIssues(history.Issues));
+        Assert.Equal(testCase.Mode, Assert.Single(before.Wound!.Treatment.Routes).Mode);
+        Assert.Equal(testCase.Kinds, SelectedOutcomeKinds(before.Wound!, testCase));
+    }
+
+    [Fact]
+    public void Parser_OutcomeIntentDuplicateAddComplicationRefRejectsAtTheSecondLocalRef()
+    {
+        var testCase = new OutcomeIntentCase(
+            "effectful_complication",
+            "procedure_disadvantage_uses_two_contiguous_dice",
+            "procedure",
+            "failed_attempt",
+            new[] { "add_complication" });
+        var scenario = CreateOutcomeIntentScenario(testCase);
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        route["outcomes"]![2]!["result"] = new JsonArray(
+            new JsonObject { ["kind"] = "add_complication", ["complicationDraft"] = CreateEffectfulComplicationDraft("t061_collision") },
+            new JsonObject { ["kind"] = "add_complication", ["complicationDraft"] = CreateEffectfulComplicationDraft("t061_collision") });
+
+        var before = WoundMaterializationContract.Parse(scenario.Before.ToJsonString(), "wound");
+
+        Assert.False(before.IsValid);
+        Assert.Contains(before.Issues, issue =>
+            string.Equals(issue.Path,
+                "wound.treatment.routes[0].outcomes[2].result[1].complicationDraft.complications[0].complicationRef",
+                StringComparison.Ordinal)
+            && string.Equals(issue.Code, "wound_materialization_invalid_field", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void DeteriorationHandoff_UsesTheExactT069TypedAuthorityFactory()
+    {
+        var authority = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundDeteriorationPolicyAuthority",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.True(authority is not null,
+            "T069 must own the typed deterioration authority; T061 must never supply policy JSON or a fingerprint.");
+        var create = ExactStaticMethod(authority!, "Create", 5);
+        Assert.Equal("MortalWoundDeteriorationPolicyAuthorityResult", create.ReturnType.Name);
+        Assert.Equal("FileSystemManager", create.GetParameters()[0].ParameterType.Name);
+        Assert.Equal("CanonicalWriteLease", create.GetParameters()[1].ParameterType.Name);
+        Assert.Equal("WoundAcceptedTurnBinding", create.GetParameters()[2].ParameterType.Name);
+        Assert.Equal(typeof(string), create.GetParameters()[3].ParameterType);
+        Assert.Equal(typeof(string), create.GetParameters()[4].ParameterType);
+        AssertClosedResultType(create.ReturnType, "Authority");
     }
 
     [Fact]
@@ -59,37 +118,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.NotEqual(
             Convert.ToString(ReadRequiredProperty(exactFirst, "ComplicationId")),
             Convert.ToString(ReadRequiredProperty(changedLocalRef, "ComplicationId")));
-    }
-
-    [Fact]
-    public void OutcomeIntent_SiblingCanonicalReferenceCollisionRejectsBeforeAnyIntent()
-    {
-        var planner = RequireOutcomeResolver();
-        var testCase = new OutcomeIntentCase(
-            "effectful_complication",
-            "procedure_disadvantage_uses_two_contiguous_dice",
-            "procedure",
-            "failed_attempt",
-            new[] { "add_complication" });
-        var scenario = CreateOutcomeIntentScenario(testCase);
-        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
-        route["outcomes"]![2]!["result"] = new JsonArray(
-            new JsonObject { ["kind"] = "add_complication", ["complicationDraft"] = CreateEffectfulComplicationDraft("t061_collision") },
-            new JsonObject { ["kind"] = "add_complication", ["complicationDraft"] = CreateEffectfulComplicationDraft("t061_collision") });
-        var before = WoundMaterializationContract.Parse(scenario.Before.ToJsonString(), "wound");
-        var history = WoundHistoryState.Parse(scenario.History.ToJsonString(), "history");
-        Assert.True(before.IsValid, DescribeIssues(before.Issues));
-        Assert.True(history.IsValid, DescribeIssues(history.Issues));
-        Assert.Equal("active", before.Wound!.Lifecycle);
-
-        using var fixture = AcceptedStateFixture.Create(scenario);
-        fixture.AssertUnchangedT060RequirementResolution(Assert.Single(before.Wound!.Treatment.Routes));
-        var acceptedState = fixture.GetAcceptedState();
-        var prepared = Invoke(ExactStaticMethod(planner, "PrepareProcedureRequest", 6), new object?[]
-        {
-            acceptedState, history, before.Wound!, scenario.OperationKey, scenario.RouteId, scenario.EventRef
-        });
-        AssertInvalidTypedResult(prepared, "Request", "sibling complication collision");
+        Assert.NotEqual(
+            CanonicalBindings(exactFirst, "DefinitionReferenceBindings"),
+            CanonicalBindings(changedLocalRef, "DefinitionReferenceBindings"));
+        Assert.NotEqual(
+            CanonicalBindings(exactFirst, "ApplicationReferenceBindings"),
+            CanonicalBindings(changedLocalRef, "ApplicationReferenceBindings"));
     }
 
     [Fact]
@@ -109,6 +143,22 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Convert.ToString(ReadRequiredProperty(exactRetry, "LegacyId")));
         Assert.NotEqual(Convert.ToString(ReadRequiredProperty(first, "LegacyId")),
             Convert.ToString(ReadRequiredProperty(reordered, "LegacyId")));
+    }
+
+    [Fact]
+    public void OutcomeIntent_HealChildCoordinatesAreStableForRetryAndChangeWithTheSealedRequest()
+    {
+        var testCase = GuaranteedHealCase();
+        var first = OutcomeIntentAt(ResolveProductionOutcomeIntent(testCase), 1);
+        var retry = OutcomeIntentAt(ResolveProductionOutcomeIntent(testCase), 1);
+        var changedRequest = OutcomeIntentAt(
+            ResolveProductionOutcomeIntent(testCase, operationSuffix: "_different_request"), 1);
+
+        var firstCoordinates = CanonicalValue(ReadRequiredProperty(first, "HealChildCoordinates"));
+        Assert.Equal(firstCoordinates,
+            CanonicalValue(ReadRequiredProperty(retry, "HealChildCoordinates")));
+        Assert.NotEqual(firstCoordinates,
+            CanonicalValue(ReadRequiredProperty(changedRequest, "HealChildCoordinates")));
     }
 
     [Fact]
@@ -146,9 +196,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.True(before.IsValid, DescribeIssues(before.Issues));
         Assert.True(history.IsValid, DescribeIssues(history.Issues));
         Assert.Equal("active", before.Wound!.Lifecycle);
-
-        if (testCase.Name == "deterioration_handoff")
-            RequireT069DeteriorationHandoff();
 
         using var fixture = AcceptedStateFixture.Create(scenario);
         if (scenario.Mode == "procedure")
@@ -224,13 +271,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     ["kind"] = "add_complication",
                     ["complicationDraft"] = CreateEffectfulComplicationDraft(
                         complicationRef ?? "t061_irritation")
-                });
-                break;
-            case "deterioration_handoff":
-                route["outcomes"]![2]!["result"] = new JsonArray(new JsonObject
-                {
-                    ["kind"] = "apply_deterioration",
-                    ["policyRef"] = "t061_strict_deterioration"
                 });
                 break;
             case "guaranteed_remove_then_heal":
@@ -327,18 +367,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
         return definition;
     }
 
-    private static void RequireT069DeteriorationHandoff()
-    {
-        var recovery = typeof(WoundMaterializationContract).Assembly.GetType(
-            "BookOfEternityClient.Services.MortalWoundRecoveryPlanner",
-            throwOnError: false,
-            ignoreCase: false);
-        Assert.True(recovery is not null,
-            "T069 MortalWoundRecoveryPlanner is required to mint the typed deterioration authority; T061 never supplies that fingerprint.");
-        Assert.Contains(recovery!.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
-            method => method.Name.Contains("Deterioration", StringComparison.Ordinal));
-    }
-
     private static void AssertResolvedOutcomeIntentPair(object result, OutcomeIntentCase testCase)
     {
         AssertClosedProperties(result, new[] { "Disposition", "Issues", "Resolution", "ReplayReceipt" });
@@ -373,6 +401,20 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     private static object[] AsObjects(object value) =>
         Assert.IsAssignableFrom<IEnumerable>(value).Cast<object>().ToArray();
+
+    private static string[] SelectedOutcomeKinds(WoundMaterializationEnvelope wound, OutcomeIntentCase testCase)
+    {
+        var route = Assert.Single(wound.Treatment.Routes);
+        var selected = testCase.Mode == "procedure"
+            ? route.Outcomes[2]
+            : route.Outcomes[0];
+        return selected.Result.Select(static operation => operation.Kind).ToArray();
+    }
+
+    private static string CanonicalBindings(object intent, string property) =>
+        CanonicalValue(ReadRequiredProperty(intent, property));
+
+    private static string CanonicalValue(object value) => JsonSerializer.Serialize(value);
 
     private static object OutcomeIntentAt(object resolutionResult, int ordinal)
     {
