@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -123,6 +124,18 @@ public sealed class MortalWoundTreatmentResolverTests
             catalog.ByItemId.ContainsKey("antibiotic_dose"));
     }
 
+    [Fact]
+    public void FixtureControl_PlayerAndProviderSkillsUseProductionValidActiveSkillShapes()
+    {
+        using var player = JsonDocument.Parse(
+            CreateTreatmentSkill("skill_field_medicine_01", "field_medicine").ToJsonString());
+        using var provider = JsonDocument.Parse(
+            CreateTreatmentSkill("skill_guaranteed_care_01", "exact_materialized_healing_source").ToJsonString());
+
+        Assert.True(ValidationService.IsProductionValidMortalActiveSkill(player.RootElement));
+        Assert.True(ValidationService.IsProductionValidMortalActiveSkill(provider.RootElement));
+    }
+
     [Theory]
     [MemberData(nameof(ProcedureRows))]
     public void FixtureControl_ProductionEffectRootsExposeOrderedFateAndRollMode(
@@ -135,11 +148,39 @@ public sealed class MortalWoundTreatmentResolverTests
             roots.IdentityIndex));
 
         Assert.True(snapshot.IsAccepted, DescribeIssues(snapshot.Issues));
-        Assert.Equal(
-            new[] { "effect_fate_shield_newer", "effect_fate_shield_older" },
-            snapshot.Effects.Select(effect => effect.EffectId)
-                .Where(static effectId => effectId.StartsWith("effect_fate_shield_", StringComparison.Ordinal))
-                .OrderBy(static effectId => effectId, StringComparer.Ordinal));
+        var effects = roots.PlayerEffects["activeEffects"]!.AsArray()
+            .OfType<JsonObject>()
+            .Where(effect => effect["effectId"]!.GetValue<string>()
+                .StartsWith("effect_fate_shield_", StringComparison.Ordinal))
+            .OrderBy(effect => effect["chronology"]!["createdAtTurn"]!.GetValue<int>())
+            .ToArray();
+        Assert.Collection(
+            effects,
+            effect =>
+            {
+                Assert.Equal("effect_fate_shield_older", effect["effectId"]!.GetValue<string>());
+                Assert.Equal(37, effect["chronology"]!["createdAtTurn"]!.GetValue<int>());
+            },
+            effect =>
+            {
+                Assert.Equal("effect_fate_shield_newer", effect["effectId"]!.GetValue<string>());
+                Assert.Equal(42, effect["chronology"]!["createdAtTurn"]!.GetValue<int>());
+            });
+        var identities = roots.IdentityIndex["entries"]!.AsArray().OfType<JsonObject>()
+            .ToDictionary(entry => entry["effectId"]!.GetValue<string>(), StringComparer.Ordinal);
+        foreach (var effect in effects)
+        {
+            var effectId = effect["effectId"]!.GetValue<string>();
+            var createdAtTurn = effect["chronology"]!["createdAtTurn"]!.GetValue<int>();
+            var identity = identities[effectId];
+            var transition = identity["transitions"]![0]!.AsObject();
+            Assert.Equal(createdAtTurn, identity["createdAtTurn"]!.GetValue<int>());
+            Assert.Equal(createdAtTurn, transition["turn"]!.GetValue<int>());
+            Assert.Equal(effect["chronology"]!["createdEventRef"]!.GetValue<string>(),
+                transition["eventRef"]!.GetValue<string>());
+            Assert.Equal(effect["chronology"]!["lastTransitionId"]!.GetValue<string>(),
+                transition["transitionId"]!.GetValue<string>());
+        }
     }
 
     [Theory]
@@ -288,7 +329,10 @@ public sealed class MortalWoundTreatmentResolverTests
         ["routeId"] = "procedure_v1", ["displayName"] = "Procedure", ["visibility"] = "known_to_player", ["mode"] = "procedure",
         ["requirements"] = new JsonArray(
             new JsonObject { ["kind"] = "item_quantity", ["itemRef"] = "sterile_thread", ["quantity"] = 1, ["ownerRole"] = "provider" },
-            new JsonObject { ["kind"] = "skill_tier", ["capabilityRef"] = "field_medicine", ["minimumTier"] = 2, ["actorRole"] = "provider" }),
+            // The procedure is performed on the player target.  The provider still
+            // supplies the sterile thread, while the target's accepted skill is the
+            // only legal source of the player-owned d20/Fate reaction below.
+            new JsonObject { ["kind"] = "skill_tier", ["capabilityRef"] = "field_medicine", ["minimumTier"] = 2, ["actorRole"] = "target" }),
         ["resourcePolicy"] = Policy(new JsonArray("success", "partial_success", "failed_attempt"), new JsonArray(new JsonObject { ["kind"] = "consume_requirement", ["scope"] = "common", ["milestoneOrdinal"] = null, ["requirementIndex"] = 0 })),
         ["resolution"] = new JsonObject { ["formulaKey"] = "mortal_wound_procedure_v1", ["difficulty"] = 15, ["rollSource"] = "accepted_d20", ["criticalPolicy"] = "natural_20_first_natural_1_last", ["modifierSource"] = new JsonObject { ["kind"] = "resolved_skill_tier", ["requirementIndex"] = 1 } },
         ["outcomes"] = new JsonArray(
@@ -407,12 +451,15 @@ public sealed class MortalWoundTreatmentResolverTests
         {
             var effect = rows[ordinal];
             var createdAtTurn = effect["chronology"]!["createdAtTurn"]!.GetValue<int>();
+            var eventRef = $"turn_{createdAtTurn}:fate_shield_created:{ordinal + 1}";
+            var transitionId = $"effect_transition_fate_shield_{ordinal + 1}";
             entries[ordinal]["createdAtTurn"] = createdAtTurn;
-            entries[ordinal]["transitions"]![0]!["turn"] = createdAtTurn;
-            entries[ordinal]["transitions"]![0]!["eventRef"] =
-                $"turn_{createdAtTurn}:t061_effect:{ordinal + 1}";
-            effect["chronology"]!["createdEventRef"] =
-                $"turn_{createdAtTurn}:t061_effect:{ordinal + 1}";
+            var transition = entries[ordinal]["transitions"]![0]!.AsObject();
+            transition["transitionId"] = transitionId;
+            transition["turn"] = createdAtTurn;
+            transition["eventRef"] = eventRef;
+            effect["chronology"]!["createdEventRef"] = eventRef;
+            effect["chronology"]!["lastTransitionId"] = transitionId;
         }
         return index;
     }
@@ -436,6 +483,53 @@ public sealed class MortalWoundTreatmentResolverTests
         {
             ["npcId"] = "field_medic_01",
             ["inventory"] = new JsonArray(sterileThread)
+        })
+    };
+
+    private static JsonObject CreateTreatmentSkill(string skillId, string capabilityRef) => new()
+    {
+        // This is the smallest current production-valid active-skill envelope
+        // from ActorMaterializationContractTests, extended only by T060's
+        // materialized treatment capability surface.
+        ["skillId"] = skillId,
+        ["displayName"] = "Field Medicine",
+        ["lifecycle"] = "active",
+        ["active"] = true,
+        ["tier"] = 3,
+        ["skillName"] = "Field Medicine",
+        ["skillDescription"] = "Provides precise field care under pressure.",
+        ["rarity"] = "Common",
+        ["actionCost"] = "Main",
+        ["combatEffect"] = new JsonObject
+        {
+            ["isActivatedEffect"] = true,
+            ["actionName"] = "Field treatment",
+            ["effects"] = new JsonArray(new JsonObject
+            {
+                ["effectType"] = "Damage",
+                ["value"] = "10%",
+                ["targetType"] = "Enemy",
+                ["effectDescription"] = "A controlled intervention.",
+                ["poiseDamage"] = "5%"
+            })
+        },
+        ["mortalWoundTreatmentCapabilities"] = new JsonArray(new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["capabilityRef"] = capabilityRef,
+            ["woundDomain"] = "physical",
+            ["minimumSeverityRank"] = 1,
+            ["maximumSeverityRank"] = 4,
+            ["operationLimits"] = new JsonObject
+            {
+                ["mayStabilize"] = true,
+                ["maximumRecoveryPoints"] = 2,
+                ["maximumSeverityReductionSteps"] = 1,
+                ["removableComplicationKinds"] = new JsonArray("infection"),
+                ["mayHealAtSeverityI"] = true,
+                ["maximumCosmeticHealLegacies"] = 1,
+                ["maximumMechanicalEffectHealLegacies"] = 1
+            }
         })
     };
 
@@ -908,6 +1002,8 @@ public sealed class MortalWoundTreatmentResolverTests
                              "input/turn_request.json",
                              EffectCarrierCatalog.PlayerPath,
                              EffectIdentityState.StatePath,
+                             WoundIdentityState.StatePath,
+                             WoundHistoryState.HistoryPath,
                              "game_state/inventory/items.json",
                              "game_state/inventory/item_identity_index.json"
                          })
@@ -919,17 +1015,18 @@ public sealed class MortalWoundTreatmentResolverTests
                     fileSystem.ResolvePath("game_state/player/wounds.json"),
                     WoundContractTestData.CreatePlayerCarrier(scenario.Before).ToJsonString());
                 File.WriteAllText(
-                    fileSystem.ResolvePath("game_state/wounds/identity_index.json"),
+                    fileSystem.ResolvePath(WoundIdentityState.StatePath),
                     WoundContractTestData.CreateIdentityIndex(
                         WoundContractTestData.CreateIdentityEntry()).ToJsonString());
                 File.WriteAllText(
-                    fileSystem.ResolvePath("game_state/wounds/history.json"),
+                    fileSystem.ResolvePath(WoundHistoryState.HistoryPath),
                     scenario.History.ToJsonString());
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/player/skills_active.json"),
                     new JsonObject
                     {
-                        ["activeSkillChanges"] = new JsonArray(CreateTreatmentSkill())
+                        ["activeSkillChanges"] = new JsonArray(
+                            CreateTreatmentSkill("skill_field_medicine_01", "field_medicine"))
                     }.ToJsonString());
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/player/skills_passive.json"),
@@ -939,7 +1036,8 @@ public sealed class MortalWoundTreatmentResolverTests
                     ? CreateCanonicalStack("antibiotic_dose", 1)
                     : null;
                 var npcCore = NpcCoreRoot(sterileThread);
-                npcCore["NPCs"]![0]!["activeSkills"] = new JsonArray(CreateTreatmentSkill());
+                npcCore["NPCs"]![0]!["activeSkills"] = new JsonArray(
+                    CreateTreatmentSkill("skill_guaranteed_care_01", "exact_materialized_healing_source"));
                 npcCore["NPCs"]![0]!["passiveSkills"] = new JsonArray();
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/npcs/npc_core.json"),
@@ -1023,33 +1121,6 @@ public sealed class MortalWoundTreatmentResolverTests
             }
         }
 
-        private static JsonObject CreateTreatmentSkill() => new()
-        {
-            ["skillId"] = "skill_field_medicine_01",
-            ["displayName"] = "Field Medicine",
-            ["lifecycle"] = "active",
-            ["active"] = true,
-            ["tier"] = 3,
-            ["mortalWoundTreatmentCapabilities"] = new JsonArray(new JsonObject
-            {
-                ["schemaVersion"] = 1,
-                ["capabilityRef"] = "exact_materialized_healing_source",
-                ["woundDomain"] = "physical",
-                ["minimumSeverityRank"] = 1,
-                ["maximumSeverityRank"] = 4,
-                ["operationLimits"] = new JsonObject
-                {
-                    ["mayStabilize"] = true,
-                    ["maximumRecoveryPoints"] = 2,
-                    ["maximumSeverityReductionSteps"] = 1,
-                    ["removableComplicationKinds"] = new JsonArray("infection"),
-                    ["mayHealAtSeverityI"] = true,
-                    ["maximumCosmeticHealLegacies"] = 1,
-                    ["maximumMechanicalEffectHealLegacies"] = 1
-                }
-            })
-        };
-
         internal object GetAcceptedState()
         {
             var authorityType = typeof(WoundMaterializationContract).Assembly.GetType(
@@ -1113,18 +1184,31 @@ public sealed class MortalWoundTreatmentResolverTests
                 ["lifecycle"] = "active", ["active"] = true
             }),
             ["resources"] = new JsonArray(),
-            ["actors"] = new JsonArray(new JsonObject
-            {
-                ["actorKind"] = "npc", ["actorId"] = "field_medic_01", ["displayName"] = "Field medic",
-                ["realm"] = "mortal_world", ["currentLocationId"] = "loc_field_clinic_001",
-                ["lifecycle"] = "active", ["active"] = true, ["reachable"] = true,
-                ["skills"] = new JsonArray(new JsonObject
+            ["actors"] = new JsonArray(
+                new JsonObject
                 {
-                    ["capabilityRef"] = "field_medicine", ["displayName"] = "Field Medicine",
-                    ["tier"] = 3, ["lifecycle"] = "active", ["active"] = true
+                    ["actorKind"] = "player", ["actorId"] = "player_current", ["displayName"] = "Patient",
+                    ["realm"] = "mortal_world", ["currentLocationId"] = "loc_field_clinic_001",
+                    ["lifecycle"] = "active", ["active"] = true, ["reachable"] = true,
+                    ["skills"] = new JsonArray(new JsonObject
+                    {
+                        ["capabilityRef"] = "field_medicine", ["displayName"] = "Field Medicine",
+                        ["tier"] = 3, ["lifecycle"] = "active", ["active"] = true
+                    }),
+                    ["capabilities"] = new JsonArray(), ["consents"] = new JsonArray()
+                },
+                new JsonObject
+                {
+                    ["actorKind"] = "npc", ["actorId"] = "field_medic_01", ["displayName"] = "Field medic",
+                    ["realm"] = "mortal_world", ["currentLocationId"] = "loc_field_clinic_001",
+                    ["lifecycle"] = "active", ["active"] = true, ["reachable"] = true,
+                    ["skills"] = new JsonArray(new JsonObject
+                    {
+                        ["capabilityRef"] = "exact_materialized_healing_source", ["displayName"] = "Guaranteed care",
+                        ["tier"] = 3, ["lifecycle"] = "active", ["active"] = true
+                    }),
+                    ["capabilities"] = new JsonArray(), ["consents"] = new JsonArray()
                 }),
-                ["capabilities"] = new JsonArray(), ["consents"] = new JsonArray()
-            }),
             ["facilities"] = new JsonArray(), ["locations"] = new JsonArray(), ["quests"] = new JsonArray(),
             ["effects"] = new JsonArray(), ["environments"] = new JsonArray()
         };
