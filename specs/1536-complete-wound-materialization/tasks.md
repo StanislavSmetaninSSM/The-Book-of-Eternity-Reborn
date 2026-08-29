@@ -895,7 +895,10 @@ exact valid course/guaranteed route shapes, and procedure/course/guaranteed reso
   T066 also owns `AcceptedTurnAuthorityRegistry.cs`,
   `MortalWoundTreatmentAcceptedStateAuthority.cs`, and
   `MortalWoundTreatmentRequirementAuthorityBundle.cs`, including the canonical lease-
-  bound accepted-state export, combatant/member actor projection, production attempt-
+  bound four-argument `MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(
+  FileSystemManager, CanonicalWriteLease, MortalWoundTreatmentAuthority.Context, string woundId)`
+  export, which revalidates the parsed source-shaped selection context and derives the
+  live binding/events internally; combatant/member actor projection; production attempt-
   coordinate/game-time/course-mode/start-authority immutable types, first-course mode
   creation, exact `CreateForProcedure|CreateForGuaranteed` factories, shared pure bundle/
   witness writers and the `CreateForCourseMilestone` API shell, complete

@@ -379,10 +379,11 @@ rolled-back work produces no treatment history row.
 ### Transient Mortal treatment attempt authorities
 
 `MortalWoundTreatmentAcceptedStateAuthority` is created only by
-`AcceptedTurnAuthorityRegistry.GetOrBuildMortalWoundTreatmentAcceptedState(
-FileSystemManager, CanonicalWriteLease, WoundAcceptedTurnBinding,
-MortalWoundTreatmentAuthority.Context, string woundId)`. The adapter verifies the live turn request and,
-under that one lease, strictly composes the unchanged T060 snapshot, world minute,
+`MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(
+FileSystemManager, CanonicalWriteLease, MortalWoundTreatmentAuthority.Context, string woundId)`.
+The caller may obtain `Context` only through the strict production `ParseContext` selection parser;
+the exporter verifies that selection against the live turn and internally derives the binding/events.
+Under that one lease it strictly composes the unchanged T060 snapshot, world minute,
 current player/NPC skill source, accepted combat-actor treatment projection, accepted effect mechanics, complete wound carriers,
 wound identity index, and wound history; it selects and seals the exact current wound
 and complete history fingerprints. Its result has exactly

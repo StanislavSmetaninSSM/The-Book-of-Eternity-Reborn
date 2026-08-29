@@ -564,9 +564,10 @@ and invoke only public-to-the-assembly factories on `MortalWoundTreatmentPlanner
 the resolver result; they do not instantiate evidence records, implement fingerprint
 writers, select outcome bands locally, or claim terminality.
 
-`AcceptedTurnAuthorityRegistry.GetOrBuildMortalWoundTreatmentAcceptedState(fs,
-writeLease, binding, context, woundId)` is the sole new-attempt production adapter. Under
-the active canonical lease it validates live turn/binding agreement and strictly reads
+`MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(fs, writeLease, context,
+woundId)` is the sole new-attempt production adapter. Under the active canonical lease
+it revalidates the strict production-parsed selection context against the live turn,
+derives the binding/events internally, and strictly reads
 the unchanged T060 authority projection, world minute, player/NPC skill sources, the
 accepted combat-actor treatment projection,
 accepted effect mechanics, wound carriers, wound identity, and wound history. The

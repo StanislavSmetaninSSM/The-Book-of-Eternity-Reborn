@@ -749,12 +749,13 @@ follow-up transition. The example therefore applies only to a severity-I wound.
 
 ## Resolution, attempts, and consumption
 
-No raw JSON, die array, numeric modifier, clock value, skill root, or caller fingerprint
-is an accepted new-attempt input. The production integration first calls
-`AcceptedTurnAuthorityRegistry.GetOrBuildMortalWoundTreatmentAcceptedState(
-FileSystemManager, CanonicalWriteLease, WoundAcceptedTurnBinding,
-MortalWoundTreatmentAuthority.Context, string woundId)`. Under the active canonical lease this adapter
-validates the live turn request against the binding, strictly composes the unchanged
+No raw JSON, die array, numeric modifier, clock value, skill root, caller binding, or
+caller fingerprint is an accepted new-attempt input. The production integration first
+parses only source-shaped selection JSON through `MortalWoundTreatmentAuthority.ParseContext`
+and then calls `MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(
+FileSystemManager, CanonicalWriteLease, MortalWoundTreatmentAuthority.Context, string woundId)`.
+Under the active canonical lease this exporter revalidates that selection against the
+live turn and internally derives the binding/event set before it strictly composes the unchanged
 T060 context/snapshot, reads canonical world time, current player/NPC skill sources, and
 the accepted combat-actor treatment projection,
 loads the accepted effect snapshot, and strictly reads the complete current wound
