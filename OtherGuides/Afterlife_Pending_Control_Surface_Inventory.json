@@ -675,6 +675,10 @@
       "reason": "Reserved by issue #1536 for later bounded wound-resolution and healing lifecycle tasks; the foundational snapshot contract has no runtime writer, resolver, receipt consumer, status surface, or GM-facing pending contract yet."
     },
     {
+      "path": "game_state/control/pending_mortal_wound_occurrences.json",
+      "reason": "Client-owned Mortal World occurrence authority for issue #1536. It is sealed into accepted-turn snapshots and is neither an afterlife gameplay contract nor a GM-authored/status-audit surface."
+    },
+    {
       "path": "game_state/control/gm_cli_window_binding.json",
       "reason": "Local GM bridge/window infrastructure."
     },
