@@ -817,8 +817,29 @@ failure, duplicate ID, or incomplete owned-tree cleanup
 - [X] T058 [P] [US2] Add RED complete Mortal route, required non-display impact, AND requirements/OR alternatives, closed mode/outcome, and no wound/symptom/medicine/cure-name lookup tests in `BookOfEternityClient.Tests/MortalWoundTreatmentContractTests.cs`
 - [X] T059 [P] [US2] Add RED readable diagnosis path, bounded `requiresKnownFacts` least-fixed-point reachability, `gm_only` route rejection, known/completed-route agreement, exact staged success/failure command plus durable history/replay result and reveal boundaries, cyclic/impossible discovery, append-only evidence-backed `author_alternative_treatment`, kind-specific pending/repair response, and recursive repair privacy tests proving internal seals/operation keys stay omitted in `BookOfEternityClient.Tests/MortalWoundDiagnosisTests.cs`
 - [X] T060 [P] [US2] Add RED recursively strict immutable authority projections, generic self/player/NPC actor bindings, exact item/resource/skill/capability/provider/consent/facility/location/quest/effect/environment, and stale/confusable/cross-realm reference tests in `BookOfEternityClient.Tests/MortalWoundRequirementAuthorityTests.cs`
-- [ ] T061 [P] [US2] Add RED procedure result bands, course milestone/interruption, guaranteed capability, natural 1/20 policy, and terminal attempt tests in `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.cs`
-- [ ] T062 [P] [US2] Add RED progressive/requires-stabilization/no-natural recovery, deterioration, clock replay, overflow, and Mortal death-boundary tests in `BookOfEternityClient.Tests/MortalWoundRecoveryTests.cs`
+- [ ] T061 [P] [US2] Add RED exact valid/invalid procedure/course/guaranteed route shapes; every procedure `success` band including natural 20 having an applicable positive state change; final-course positive/non-empty rules; closed typed outcomes; proposal `complicationRef` -> canonical `complicationId` rewrite; current GM-safe effectless/effectful complication sub-proposal reuse; closed cosmetic/mechanical-effect legacy drafts; non-public `wound_legacy` survival; structurally non-beneficial interruption; and exact/confusable refs/band IDs in `BookOfEternityClient.Tests/MortalWoundTreatmentContractTests.cs`. Freeze the completed three-argument T060 surface unchanged and add canonical player/NPC active/passive skill extension/provenance, extension-bearing `skillId` exact/confusable uniqueness against all current skill rows, idless/domain/severity/aggregate-limit failures, same-skill unchanged capability projection, and final-after-image publication proof tests in `BookOfEternityClient.Tests/MortalWoundTreatmentCapabilityAuthorityTests.cs`. Add production-only accepted-state canonical lease/context/event/history/wound/skill/effect reads with no raw JSON/dice/modifier authority; normal/advantage/disadvantage reduction; restart-safe contiguous dice and Fate Shield reservations/collisions; exact typed `ResolvePreparedMortalWoundCriticalReaction` intent and legacy GM API compatibility; production coordinates/d20/world-minute and `SealProcedureRequest|SealCourseMilestoneRequest|SealGuaranteedRequest`; complete scoped requirement bundles with kind-complete typed success witnesses that independently recompute unchanged T060 row seals plus typed failure witnesses; one exact detached receipt; full command/pending/history request+bundle persistence and nested seal recomputation; restart `ProbeTreatmentAttempt` invalid-history dominance/exact detached request+receipt/no-intents; procedure numeric/category/Fate band boundaries and overflow; replay-before-fresh-state; course `Satisfied|Unsatisfied|InvalidAuthority` inclusive milestone/interruption/restart precedence; guaranteed sealed/current/final-composed proof plus sibling tier gate; ordered heal gate; immutable resolved-versus-replay payloads/consumption; derived route completion; attempt-terminal versus wound-terminal; and semantic coordinate conflict tests in `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.cs`
+  Every fresh procedure band MUST simulate as a currently legal complete transition before
+  the attempt can consume its sealed die; every `success` band additionally MUST produce
+  an actual monotone improvement, so an inapplicable partial/failed row cannot become a
+  free reroll.
+  T061 additionally freezes: exact six-argument high-level request factories and internal
+  bundle factories; complete course-mode/start-wound authority, single-active-course
+  lifecycle, milestone-bound bundle/resource coordinates, and current-state route
+  applicability; full self-contained `RequestAuthority` inside Resolution; byte-semantic
+  command/pending coalescing; exact combatant/member procedure/course targeting with
+  canonical-player/NPC-only guarantee source; `woundDomain=physical`; same-turn typed-vs-
+  legacy Fate duplicate rejection; one final heal, aggregate legacy/reduction limits and
+  checked recovery/capability arithmetic; exact typed outcome-intent cardinality/payload/
+  derived IDs/ref namespaces; two-phase legacy Prepare/Finalize plus unique heal/legacy
+  child coordinates; deterministic selected-outcome and route-completion values; and
+  rollback/replay without duplicate intents or claims.
+  Legacy RED coverage MUST require an exact frozen ordered `EffectOperationBatches`
+  array with one `WoundEffectOperationBatch` per mechanical legacy, none per cosmetic
+  legacy, exact seed/source/ref agreement, and rejection of missing/extra/reordered/
+  merged/split batches. Finalization MUST return one matching ordered fingerprinted
+  `MortalWoundHealLegacyApplicationResultGroup` of complete existing
+  `EffectAcceptedApplicationResult` rows per mechanical batch.
+- [ ] T062 [P] [US2] Add RED progressive/requires-stabilization/no-natural recovery, canonical `world_time.currentTimeInMinutes` cadence/grace authority, exact deterioration-policy semantics including interruption `apply_deterioration(policyRef)` strictly-worsening validation and neutral/beneficial rejection, clock replay, overflow, and Mortal death-boundary tests in `BookOfEternityClient.Tests/MortalWoundRecoveryTests.cs`
 - [ ] T063 [US2] Add RED cross-setting create -> diagnose success/failure -> author alternative -> procedure/course/guaranteed -> recover -> heal -> History journeys and atomic resource/item use in `BookOfEternityClient.IntegrationTests/MortalWoundMaterializationLifecycleTests.cs`
 
 T058 RED evidence (2026-08-29): 27 treatment-contract rows execute with a
@@ -857,24 +878,95 @@ fresh ownership/availability/reservation/reachability/consent/co-presence/state 
 detached exact result rows, and production-owned semantic fingerprints with no mutation
 authority. There was no timeout or duplicate test ID. Production code is unchanged.
 Independent final rereview closed with 0 Critical, 0 Important, and 0 Minor findings;
-T061 owns procedure/course/guaranteed result resolution next.
+the later T061 design audit proved that transient requirement rows cannot safely grant a
+guarantee. T061 therefore keeps the exact three-argument T060 parser/resolver/result
+surface unchanged and owns a separate canonical player/NPC skill capability authority,
+exact valid course/guaranteed route shapes, and procedure/course/guaranteed resolution.
 
 ### GREEN implementation
 
 - [ ] T064 [US2] Implement formal/QTE/combat/trap/check/hazard/narrative Mortal opportunity adapters and causal/profile validation in `BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs`
-- [ ] T065 [US2] Implement strict readable diagnosis paths, typed known-fact prerequisites/reveals, least-fixed-point discovery validation, treatment routes/known/completed agreement, requirements, resolution modes, and outcomes in `BookOfEternityClient/Services/MortalWoundTreatmentContract.cs` and `BookOfEternityClient/Services/WoundMaterializationContract.cs`
-- [ ] T066 [US2] Implement the production-owned recursively strict immutable transient context/snapshot parsers and side-effect-free generic self/player/NPC exact materialized item/resource/skill/capability/provider/consent/facility/location/quest/effect/environment resolver, including conjunctive aggregate demand, ownership, availability/reservation, reachability/co-presence, stale/confusable/cross-realm rejection, detached ordered evidence, and semantic authority fingerprints in `BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs`
-- [ ] T067 [US2] Implement sealed diagnosis success/failure and terminal attempt identity, append-only `author_alternative_treatment` authority/transition, strict GM response -> accepted-transition command adaptation, kind-specific pending/repair packets, procedure/course/guaranteed attempt resolution, bounded transition intents, and exact durable history/replay result support in `BookOfEternityClient/Models/GameResponse.cs`, `BookOfEternityClient/Configuration/FileMapping.cs`, `BookOfEternityClient/IO/StateDistributor.cs`, `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`, `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`, `BookOfEternityClient/Services/MortalWoundTreatmentPlanner.cs`, `BookOfEternityClient/Services/WoundResponseInputComposer.cs`, `BookOfEternityClient/Services/WoundResponseInputComposer.Parsing.cs`, `BookOfEternityClient/Services/WoundResponseInputComposer.CommandParsing.cs`, `BookOfEternityClient/Services/WoundRepairPacketBuilder.cs`, `BookOfEternityClient/Services/WoundTransitionReducer.cs`, `BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs`, and `BookOfEternityClient/Services/WoundHistoryState.cs`
-- [ ] T068 [US2] Route item reservations/consumption and common resource mutations through accepted typed authorities with rollback/replay in `BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
-- [ ] T069 [US2] Implement game-time recovery/deterioration policies, cadence/blockers/overflow, and exact tick outcomes in `BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs`
-- [ ] T070 [US2] Compose Mortal diagnosis/alternative-route/treatment/recovery wound/effect/item/resource/history/output after-images in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
+- [ ] T065 [US2] Implement strict readable diagnosis paths, typed known-fact prerequisites/reveals, least-fixed-point discovery validation, treatment routes/known/completed agreement, exact common route envelope, exact/confusable categorized gapless procedure bands with an applicable positive operation in every `success` band, contiguous canonical-minute course milestones with non-empty positive final course, closed no-improvement/effectless-positive-difficulty-complication/current-policy-reference interruption shape, guaranteed singleton source reference, canonical-versus-proposal complication selector dialects, and closed ordered typed outcomes reusing the current complication/consequence sub-proposal plus proposal-safe cosmetic/mechanical-effect heal-legacy drafts in `BookOfEternityClient/Services/MortalWoundTreatmentContract.cs` and `BookOfEternityClient/Services/WoundMaterializationContract.cs`
+  T065 also owns structural positive-kind versus attempt-time applicability separation,
+  positive-only non-empty ordinary course milestones, at-most-one-final-heal and
+  aggregate legacy/severity bounds, checked numeric validation,
+  selected-result complication-ref uniqueness, and closed local reference namespace rules.
+- [ ] T066 [US2] Preserve the completed three-argument T060 surface and implement a separate complete scoped course-milestone requirement classifier with kind-complete typed success witnesses/shared internal T060 row-fingerprint recomputation and typed failure witnesses plus canonical player/NPC active/passive skill `mortalWoundTreatmentCapabilities[]` validation/normalization/export proof (linked for later adoption by #1533), including permanent exact/confusable-unique skill identity across all current active/passive rows, domain/severity/aggregate operation limits, provenance, idless/confusable/stale rejection, deterministic unchanged-shape T060 capability projection from the same skill, separate unchanged-T060 tier gates, current and final-composed publication proof exporters, and source/proof fingerprints in `BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs`, `BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs`, `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Skills.cs`
+  T066 also owns `AcceptedTurnAuthorityRegistry.cs`,
+  `MortalWoundTreatmentAcceptedStateAuthority.cs`, and
+  `MortalWoundTreatmentRequirementAuthorityBundle.cs`, including the canonical lease-
+  bound accepted-state export, combatant/member actor projection, production attempt-
+  coordinate/game-time/course-mode/start-authority immutable types, first-course mode
+  creation, exact `CreateForProcedure|CreateForGuaranteed` factories, shared pure bundle/
+  witness writers and the `CreateForCourseMilestone` API shell, complete
+  course coordinate binding, and version-1 `woundDomain=physical` enforcement. These
+  prerequisite authority types MUST exist before T068 and T067 consume them.
+- [ ] T067 [US2] Implement diagnosis/alternative-authoring orchestration and the complete
+  production treatment resolver in two explicit phases around T068: deterministic request/attempt/
+  course identities; strict response adaptation and repair; exact six-argument request
+  factories; procedure dice/effect/Fate semantics with same-turn legacy-report guard;
+  complete course mode/start/single-active-course/restart precedence; canonical
+  guaranteed proof; full self-contained Resolution plus one receipt; typed outcome
+  intents with derived complication/legacy IDs, ref namespaces, child coordinates, and
+  exact declared-result agreement; command/pending/history coalescing and nested seal
+  recomputation; invalid-history-first replay; deterministic selected index/route
+  completion; derived attempt terminality; and operation/attempt/course/event collision
+  rejection in `BookOfEternityClient/Models/GameResponse.cs`,
+  `BookOfEternityClient/Configuration/FileMapping.cs`,
+  `BookOfEternityClient/IO/StateDistributor.cs`,
+  `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`,
+  `BookOfEternityClient/Services/MortalWoundProcedureDiceReservationRegistry.cs`,
+  `BookOfEternityClient/Services/MortalWoundCriticalReactionReservationRegistry.cs`,
+  `BookOfEternityClient/Services/MortalWoundTreatmentReceipt.cs`,
+  `BookOfEternityClient/Services/MortalWoundTreatmentPlanner.cs`,
+  `BookOfEternityClient/Services/MortalWoundTreatmentResolver.cs`,
+  `BookOfEternityClient/Services/EffectAcceptedEventReportCatalog.cs`,
+  `BookOfEternityClient/Services/FateShieldReactionArbiter.cs`,
+  `BookOfEternityClient/Services/WoundResponseInputComposer.cs`,
+  `BookOfEternityClient/Services/WoundResponseInputComposer.Parsing.cs`,
+  `BookOfEternityClient/Services/WoundResponseInputComposer.CommandParsing.cs`,
+  `BookOfEternityClient/Services/WoundRepairPacketBuilder.cs`,
+  `BookOfEternityClient/Services/WoundTransitionReducer.cs`,
+  `BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs`, and
+  `BookOfEternityClient/Services/WoundHistoryState.cs`
+  Phase A (after T066, before T068/T069) owns only the production procedure-check authority,
+  dice/Fate registries and shared arbiter/typed reaction seam, plus immutable request/
+  resolution/outcome-intent type shells required by T068; it performs no request sealing
+  or semantic resolution. Phase B (after T068) owns high-level request sealing,
+  persistence, resolver semantics, history/replay, course-continuation reconstruction,
+  final `CreateForCourseMilestone` integration, and accepted-transition integration.
+- [ ] T068 [US2] Implement the prerequisite two-stage item/resource authority before T067 resolver integration: closed policy validation with scoped/milestone `consume_requirement` selectors; `PrepareProcedure|PrepareCourse|PrepareGuaranteed` production overloads; deterministic lease/generation-scoped reservation IDs and restart-safe command/pending claim coalescing/aggregate non-overbooking; immutable policy/claim authority sealing against complete success witnesses; exact retry/conflict/release; and post-resolution `Finalize(resolution)` that consumes only selected full-quantity claims, releases tools/non-consuming results, and integrates cancellation/validation/rollback/replay without consuming an unmet/current/future course step in `BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.cs`, `BookOfEternityClient/Services/MortalWoundTreatmentResourceReservationRegistry.cs`, and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
+  T068 MUST accept complete course-mode authority (not bare time), seal matching course
+  ID/ordinal/coordinate evidence into bundle/reservation claims, and finalize solely from
+  the resolution's full nested RequestAuthority without an unsealed live lookup.
+- [ ] T069 [US2] Implement canonical-world-minute recovery/deterioration policies, cadence/blockers/overflow, exact strictly-worsening policy classification for treatment interruption references, and exact tick outcomes in `BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs`
+- [ ] T070 [US2] Compose Mortal diagnosis/alternative-route/treatment/recovery wound/effect/item/resource/history/output after-images; re-export guaranteed authority from the final composed player/NPC skill after-image whenever its root is touched; revalidate and atomically consume/expire the already T067-resolved exact per-attempt Fate Shield intent or roll back; and prepare deterministic cosmetic IDs plus non-GM `wound_legacy` source exports/history through `MortalWoundHealLegacyPlanner` before publication. Register the closed legacy source, feed its ordered per-mechanical-legacy typed batches through #1535 while leaving effect IDs solely to that planner, exclude it from active-wound cleanup, and preserve source/history after later effect removal in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/MortalWoundHealLegacyPlanner.cs`, `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs`, `BookOfEternityClient/Services/EffectSourceAuthority.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
+  T070 MUST consume the exact T067 outcome-intent/DeclaredResult pair without raw-route
+  reparsing or identity allocation; update the existing non-heal/follow-up-heal reducer
+  gates for the sealed <=2 / staged-to-I contour; call
+  `MortalWoundHealLegacyPlanner.Prepare(binding,resolution,workingWound)` before #1535 and
+  `Finalize(preparation,acceptedEffectPlan)` afterward; emit durable legacy rows only from
+  finalization; and validate all derived heal/legacy child operation/event coordinates.
 - [ ] T071 [US2] Remove loose Mortal aliases/wrappers, `generatedEffects`, `healingState.canBeImprovedBy`, `WoundReference`, `sourceWoundId`, `duration=999`, and NPC-effect-carrier fallbacks in `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`
+
+**T066/T067-A/T068+T069/T067-B execution gate**: implement T066's accepted-state,
+coordinate/time/course/start and bundle/capability types plus first-course/non-course
+factories; implement only T067 phase A's procedure die/Fate authority and shared immutable
+shells; implement T068 resource authority and T069 deterioration authority; then finish
+T067 phase B's typed history/course-continuation/bundle integration, request factories,
+and resolver. T068's pre-B control covers procedure/guaranteed/first-course preparation;
+continuation/restart resource integration is verified after B. T066 owns lease/base
+bundle/course types, T067-A owns procedure authority, T068 owns resources, T069 owns
+deterioration policy, and T067-B owns history-driven course authority plus orchestration/
+persistence/outcome resolution. None may use test-created authority/reservation or a raw
+mutation fallback.
 
 ### GM contract synchronization
 
-- [ ] T072 [P] [US2] Add RED Mortal diagnosis/hidden route/procedure/course/guarantee/resource/recovery documentation guards in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.MortalWounds.cs` and `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.MortalWounds.cs`
-- [ ] T073 [US2] Replace legacy Mortal wound/treatment/recovery guidance in `Rules/Block_2.txt`, `Rules/Block_5.txt`, `Rules/Block_10.txt`, `Rules/Block_12.txt`, and `CLI_API_Specification.md`
-- [ ] T074 [US2] Add post-apocalyptic and magical visible/hidden/alternative/partial/course/recovery/healing worked examples in `Examples/E_Block_5.txt`, `Examples/E_Block_10.txt`, `Examples/E_Block_12.txt`, and `Examples/example_validation_manifest.json`
+- [ ] T072 [P] [US2] Add RED Mortal diagnosis/hidden route/procedure/course/guarantee/resource/recovery documentation guards, including canonical skill extension fields, proposal-local complication removal, and typed client-owned Fate Shield treatment behavior with unchanged legacy GM report API, in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.MortalWounds.cs` and `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.MortalWounds.cs`
+- [ ] T073 [US2] Replace legacy Mortal wound/treatment/recovery guidance and synchronize wound/skill/effect materialization compatibility in `Rules/Block_2.txt`, `Rules/Block_5.txt`, `Rules/Block_7.txt`, `Rules/Block_8.txt`, `Rules/Block_10.txt`, `Rules/Block_12.txt`, `CLI_API_Specification.md`, `OtherGuides/Wound_Materialization_Contract.md`, and `OtherGuides/Effect_Materialization_Contract.md`
+- [ ] T074 [US2] Add post-apocalyptic and magical visible/hidden/alternative/partial/course/recovery/healing worked examples plus canonical skill guarantee, Fate Shield treatment compatibility, and the two-phase non-public `wound_legacy` source/result-map flow in `Examples/E_Block_5.txt`, `Examples/E_Block_7.txt`, `Examples/E_Block_8.txt`, `Examples/E_Block_10.txt`, `Examples/E_Block_12.txt`, `Examples/E_CLI_Ink_Feather_Actions.txt`, `Examples/E_CLI_Effect_Materialization.txt`, and `Examples/example_validation_manifest.json`
 - [ ] T075 [US2] Run focused Mortal contract/authority/resolver/recovery/lifecycle/docs filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
 
 **Checkpoint**: Arbitrary Mortal wounds have complete setting-specific treatment and recovery lifecycles with exact resource authority and no catalog.

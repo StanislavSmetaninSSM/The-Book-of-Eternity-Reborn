@@ -92,7 +92,19 @@ complication/effect or unlock recovery, but it does not implicitly reduce severi
 
 Requires an exact active wound, fresh target/provider/reachability/consent authority,
 complete route or standard spiritual-healing gate, one sealed attempt, and any reserved
-resources. Only the declared result band applies.
+resources. Only the declared result band/milestone/guaranteed outcome applies. Every
+accepted treatment result is terminal for its retry-safe attempt, including declared no
+improvement, harmful failure, or course interruption; that does not set the wound
+history row's lifecycle `terminal` flag. Procedure natural criticals run only after hard
+authority gates. A course interrupts only on a trustworthy unsatisfied live predicate
+or exceeded deadline; invalid authority rejects. Guaranteed routes require both the
+unchanged successful capability requirement and a separate canonical current player/NPC
+skill proof with permanent source identity and matching operation limits. Closed typed
+treatment operations may stage the working severity down to I and then request a
+separate follow-up heal; they cannot heal directly from a higher working severity. A new
+complication carries its complete validated complication proposal: its consequence graph
+is either exact empty for an effectless complication or one complete validated effect
+draft. Lasting legacies occur only as complete declarations on that follow-up heal.
 
 ### Recover
 
@@ -102,7 +114,8 @@ text cannot tick recovery.
 
 ### Heal
 
-Requires an accepted transition from active severity I. It terminates all and only the
+Requires an accepted transition from active severity I, including a severity-I
+after-image staged by an immediately preceding accepted treatment result. It terminates all and only the
 wound's active root and reaction-descendant effects by the exact
 `(realm, wound, woundId, definitionKey)` index grouped by wound source, removes the wound
 from its carrier, marks the index terminal, and appends immutable terminal history.
@@ -126,10 +139,14 @@ the transition. Terminal provenance remains in the global effect identity histor
 
 ### Legacy and archive
 
-A cosmetic scar/legacy may remain in readable history. Any lasting mechanical modifier
-is a new independent effect/skill/trait/other registered entity linked by provenance to
-the terminal wound. It does not keep the wound active. Archive changes projection, not
-terminal replay evidence.
+A cosmetic scar/legacy may remain in readable history. Version 1 represents every
+lasting mechanical modifier as a new independent #1535 effect, never as an open
+skill/trait/other payload. Its client-only, non-GM-materializable
+`sourceKind=wound_legacy`/`sourceId=legacyId` authority is reconstructed from the exact
+typed nonterminal `legacy` history row linked to the terminal wound. It does not keep the
+wound active and is not included in active-wound effect cleanup. Later dispel/removal may
+end that effect but cannot erase the legacy row, source provenance, terminal replay
+evidence, or cosmetic history. Archive changes projection, not any of those authorities.
 
 ## Forbidden transitions
 
@@ -180,7 +197,8 @@ Pre-plan and post-publication validation independently prove:
    membership;
 5. exact owner/source/target/realm authority;
 6. legal treatment/recovery/state transitions;
-7. operation-key uniqueness;
+7. independent exact/confusable uniqueness and semantic agreement for every operation
+   key, every non-null treatment attempt ID, and every `(courseId, milestoneOrdinal)`;
 8. complete before-image coverage;
 9. canonical after-image byte equality after publication.
 

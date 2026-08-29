@@ -162,6 +162,70 @@ Materialize these through the same contract:
 Assert that no wound-name/cure catalog lookup occurs, while exact registered
 requirements/outcomes and resource authority are enforced.
 
+For the post-apocalyptic procedure, cover every inclusive margin edge plus a natural 1
+with a numerically successful total and a natural 20 with a numerically failed total;
+hard requirements must still win. Reject a fresh attempt if any possible band is not a
+legal complete transition against the sealed current wound; separately reject every
+`success` band that has no applicable positive state change, including a natural-20
+no-op. Prove an old route remains structurally valid while an inapplicable fresh attempt
+rejects without consuming a new reroll opportunity.
+Exercise normal, advantage,
+disadvantage, cancellation, tie selection, contiguous dice claims, simultaneous/retried/
+restarted claim collisions, and pool exhaustion without caller dice or modifier inputs.
+For a player natural 1, prove the exact typed per-attempt Fate Shield adapter selects and
+reserves the oldest eligible shield, remaps only `critical_failure -> failure`, consumes
+it atomically, and remains restart-safe; prove NPC checks do not consume it and the legacy
+GM five-argument report API remains unchanged. Reject a same-turn typed procedure plus
+legacy GM critical report before either Fate claim is confirmed. Continue the antibiotic course at due time and its
+inclusive deadline, reload from history between milestones, and prove deadline+1 uses
+only the declared non-beneficial interruption with no current/future dose consumption.
+Prove first-course start requires an empty active-course pointer, persists the complete
+typed starting wound, rejects a concurrent second course, and restores exact next-
+milestone authority after restart. Allow a procedure/guaranteed attempt during the course,
+then prove heal/final completion/interruption clears the pointer.
+Reject an empty final milestone/all-empty course; prove only intermediate milestones may
+be empty, every non-empty milestone excludes no-op/complication/deterioration operations,
+and the ordinal sequence contains an applicable positive treatment operation.
+Reject an interruption's effectful or zero-difficulty complication and any neutral/
+beneficial deterioration policy.
+Separately prove trustworthy lost-dose/consent/co-presence evidence is `Unsatisfied` and
+interrupts, while malformed/ambiguous/changed-seal evidence is `InvalidAuthority` and
+only rejects. Persist and recompute the complete common/milestone requirement scopes,
+successful bindings, typed loss witnesses, and one exact detached receipt; prove replay
+does not expose those rows as consumption authority. Validate neutral/beneficial
+interruption deterioration policies at the T062/T069 recovery-policy boundary. For the
+magical guaranteed route, prove exact actor role, permanent
+skill/capability identity, exact `woundDomain=physical`, severity, source fingerprint, operation-limit agreement,
+aggregate operation/legacy bounds, deterministic unchanged capability projection from
+that same skill, exact/confusable `skillId` uniqueness across current active/passive rows,
+any separate sibling tier requirement with a canonical player/NPC skill export, and final
+proof re-export from a same-turn composed skill after-image;
+reject ordinary capability presence,
+an idless or duplicate/confusable skill, a shape-valid transient guarantee, and a plan
+that removes/changes the guaranteeing skill before publication. Include one complete typed
+effectless complication draft and one complete effectful complication draft, and reject
+their old colon-token/incomplete-payload forms before consuming a die. Exercise initial
+same-proposal and later opaque `complicationRef` removal rewrite and reject proposal IDs
+or canonical refs. Exercise multiple complication/legacy drafts with reused local nested
+spellings and prove only operation/ref-namespaced bindings cross the effect boundary;
+reject exact/confusable aggregate collisions. Require at most one final `heal`, checked
+recovery/capability aggregation, non-heal severity reduction <=2, and heal-staged
+reduction <=3 only to reach I. Confirm
+that successful route completion is appended once without disabling a later new legal
+attempt. Persist the full sealed request through command/pending/history, reload using
+history alone, and prove the probe returns a detached request plus receipt with no
+actionable intents before reading current state; tampered nested seals are
+`InvalidHistory`. Exercise cosmetic plus 1-5-definition/1-5-application
+`mechanical_effect` legacies, the eight-row/confusable-ref bounds, and one exact ordered
+`WoundEffectOperationBatch` per mechanical legacy with no cosmetic batch. Prove each
+batch exports only its matching `wound_legacy/legacyId` source, #1535 allocates every
+effect ID, and missing/extra/reordered/merged/split batches reject. Reconstruct the exact
+per-legacy #1535 result maps through `Prepare` then `Finalize`, retain non-public
+`wound_legacy` authority, derived unique heal/legacy child coordinates, survival through
+healing, and history survival after later effect removal. Treat an exact combatant/member wound by procedure/
+course and a provider-owned guarantee; require accepted promotion before a target-owned
+combatant guarantee.
+
 ### C. Wound/effect separation
 
 1. Create a wound with pain and bleeding effects.
@@ -246,7 +310,8 @@ notification, or history row.
 The completed change must include and validate worked examples for:
 
 - Mortal visible treatment, hidden diagnosis, alternative cure, partial/failure,
-  recovery, and healing;
+  recovery, healing, canonical skill guarantee, and typed client-owned Fate Shield
+  treatment compatibility while preserving the legacy GM report path;
 - spiritual no-wound choice, lower wound, guarantee, over-limit repair, combat healing,
   self/provider/NPC natural recovery;
 - Elyara paid and negotiated service;

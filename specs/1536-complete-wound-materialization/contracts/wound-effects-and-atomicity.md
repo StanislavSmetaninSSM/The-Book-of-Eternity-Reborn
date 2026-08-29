@@ -17,8 +17,9 @@ These statements are invariants:
   worsen, stabilize, retarget, delete, or reopen the wound;
 - healing a wound ends all and only effects owned by that wound;
 - unrelated effects survive every wound transition;
-- a lasting post-healing mechanic becomes an independent entity with provenance, not a
-  wound-owned effect on a terminal wound.
+- a lasting post-healing mechanic becomes an independent #1535 effect under typed
+  `sourceKind=wound_legacy` provenance, not a wound-owned effect on a terminal wound or
+  an open skill/trait/other entity.
 
 ## Source export
 
@@ -63,6 +64,42 @@ During preparation, each provisional wound exports one exact accepted source:
 This export enters the existing accepted-plan effect source catalog. No loose scan of
 `playerWoundChanges`, no wound-name inference, and no `duration=999` legacy reference is
 accepted.
+
+### Terminal legacy source export
+
+A selected `mechanical_effect` heal legacy exports a separate client-only source whose
+kind is exactly `wound_legacy` and whose source ID is the deterministic `legacyId`.
+Ordinary GM `effectChanges[]` can neither author nor apply it. During same-turn planning
+its only source authority is the sealed T067 legacy seed plus
+`MortalWoundHealLegacyPreparation`: together they carry the exact terminal wound/
+transition/owner/realm coordinates, complete proposal-safe definition graph, ordered
+namespaced applications, its own immutable `WoundEffectOperationBatch`, and source-
+export/preparation fingerprints, but no effect ID or history row. Preparation exposes a
+frozen ordered `EffectOperationBatches` array with exactly one batch per mechanical
+legacy in legacy-ordinal order and no batch for a cosmetic legacy. A batch exports only
+that seed's independent `sourceKind=wound_legacy/sourceId=legacyId` source; two legacy
+sources can never share one batch. After #1535 returns every accepted per-batch
+application result map and the effect-plan seal,
+`MortalWoundHealLegacyPlanner.Finalize(preparation, acceptedEffectPlan)` verifies them and
+only then creates the typed nonterminal legacy history row after the wound's terminal
+heal row. That finalized durable row is the sole reload source authority. Same-turn
+effect planning never depends on its own not-yet-created result/history row.
+
+One heal has at most eight exact/confusable-unique local legacy refs. Each mechanical
+source has 1-5 complete #1535 definitions and 1-5 same-draft applications; the whole turn
+retains a 160-definition/160-application typed legacy batch ceiling. The accepted #1535
+planner alone allocates effect IDs. Full healing groups only `sourceKind=wound` and
+therefore cannot terminate `wound_legacy`; later ordinary effect removal cannot delete
+the source/history row or terminal replay evidence.
+
+One heal therefore produces at most eight legacy batches and at most forty legacy
+definitions/applications before the stricter whole-turn 160/160 aggregate is applied.
+An all-cosmetic or empty legacy set has exactly zero batches. Preparation/finalization
+rejects missing, extra, reordered, merged, or split batches and any disagreement between
+legacy ordinal, `LegacyId`, source export, namespaced refs, or returned result map.
+Finalization groups the existing complete `EffectAcceptedApplicationResult` rows into
+one fingerprinted ordered result group per mechanical batch; group and result ordering
+must match batch and root-application ordering exactly.
 
 The complete graph and root-application batch are sealed before the effect planner runs.
 No effect ID is allocated by wound preparation. `applicationRef` is an opaque handoff

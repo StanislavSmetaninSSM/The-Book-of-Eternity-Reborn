@@ -140,7 +140,11 @@ combat root and promotion authority.
 ```
 
 History is append-only, ordered, and client-authored. `operationKey` is unique for the
-semantic event/attempt/course milestone/recovery cycle. The before/after fingerprint
+semantic event/attempt/course milestone/recovery cycle. Every non-null `attemptId` is
+also unique, and every non-null `(courseId, courseMilestoneOrdinal)` pair is unique;
+exact semantic replay returns the original typed receipt, while reuse under a changed
+operation or result conflicts. Course coordinates are either both null or both present,
+and accepted ordinals for one course are contiguous from 1. The before/after fingerprint
 chain must be contiguous for each wound. Exactly one terminal `heal` evidence row
 prevents a replay from reopening or reapplying the wound. Later `legacy` and `archive`
 rows are nonterminal audit/projection records that preserve the sealed terminal wound
@@ -149,15 +153,30 @@ fingerprints are never projected.
 
 `transitionResult` is null for transition kinds whose durable replay result is already
 fully represented by their existing typed coordinates and before/after state. It is a
-required closed object for `diagnose` and `author_alternative_treatment`. A diagnosis
+required closed object for `diagnose`, `author_alternative_treatment`, `treat`, and
+`legacy`. A diagnosis
 result repeats the exact path, terminal-attempt `success|failure`, complete-or-empty ordered
 `revealedFacts[]`, and recomputable result fingerprint; this remains durable even when
 failure leaves the wound after-state unchanged. An alternative-authoring result stores
 the safe authoring request reference, appended route/path IDs, their fingerprints, and
-the recomputable accepted result fingerprint. `decline` has no transition row. The
+the recomputable accepted result fingerprint. A treatment result stores the exact
+resolved route/mode/outcome category and ordered declared result plus its roll, course,
+or guaranteed-source proof; this remains durable when treatment leaves wound mechanics
+unchanged. `decline` has no transition row. The
 history parser, replay probe, and already-accepted receipt compare and return the exact
 typed result rather than treating matching before/after fingerprints as proof of the
 same semantic attempt.
+
+A `legacy` result is a closed union. Cosmetic rows contain exactly `kind=legacy`,
+`legacyKind=cosmetic`, `legacyId`, `localLegacyRef`, `woundId`,
+`terminalTransitionId`, `readableSummary`, and `resultFingerprint`. Mechanical rows add
+exactly `sourceKind=wound_legacy`, `sourceId` equal to `legacyId`, owner/realm,
+the complete detached `effectDraft`, its `sourceExportFingerprint`, an ordered exact
+`applicationResults[]` map whose rows contain `applicationRef`, accepted `effectId`, and
+`materializationFingerprint`, the `effectPlanFingerprint`, and the recomputable result
+fingerprint. They preserve the terminal wound's
+before/after fingerprint and remain nonterminal audit/source authority; neither effect
+removal nor archive deletes them.
 
 The alternative-authoring history result shape is exactly:
 
@@ -172,6 +191,650 @@ The alternative-authoring history result shape is exactly:
   "resultFingerprint": "sha256:..."
 }
 ```
+
+The common treatment history result shape is exactly. This worked row uses a separate
+no-requirement `simple_bandage` route with `modifierSource.kind=fixed_zero`; it is not the
+skill-based `clean_and_suture` route from the treatment contract example:
+
+```json
+{
+  "kind": "treat",
+  "mode": "procedure",
+  "attemptDisposition": "accepted_terminal",
+  "routeId": "simple_bandage",
+  "routeFingerprint": "sha256:...",
+  "requestAuthority": {
+    "mode": "procedure",
+    "coordinates": {
+      "schemaVersion": 1,
+      "sessionId": "exact-session",
+      "sessionGeneration": "stable-session-generation",
+      "requestId": "exact-request",
+      "snapshotToken": "exact-snapshot",
+      "operationKey": "client-owned-retry-safe-key",
+      "attemptId": "client-owned-attempt-id",
+      "woundId": "exact-active-wound",
+      "routeId": "simple_bandage",
+      "expectedBeforeFingerprint": "sha256:...",
+      "eventRef": "accepted-event-ref",
+      "eventKind": "accepted-event-kind",
+      "eventAuthorityId": "accepted-event-authority-id",
+      "eventSemanticFingerprint": "sha256:...",
+      "turn": 45,
+      "realm": "mortal_world",
+      "providerKind": "npc",
+      "providerId": "npc_healer_001",
+      "targetKind": "player",
+      "targetId": "player_current",
+      "locationId": "loc_field_clinic_001",
+      "contextFingerprint": "sha256:...",
+      "acceptedStateFingerprint": "sha256:...",
+      "coordinatesFingerprint": "sha256:..."
+    },
+    "milestoneOrdinal": null,
+    "modeAuthority": {
+      "sourcePath": "input/turn_request.json",
+      "rollMode": "normal",
+      "rollActorKind": "npc",
+      "rollActorId": "npc_healer_001",
+      "rollContributions": [],
+      "sourceIndices": [0],
+      "sourceRolls": [12],
+      "selectedSourceIndex": 0,
+      "naturalRoll": 12,
+      "modifier": 0,
+      "complicationDifficultyModifier": 0,
+      "effectiveDifficulty": 10,
+      "requirementAuthorityFingerprint": "sha256:...",
+      "coordinatesFingerprint": "sha256:...",
+      "acceptedStateFingerprint": "sha256:...",
+      "preparedCriticalReaction": null,
+      "authorityFingerprint": "sha256:..."
+    },
+    "requirementAuthority": {
+      "mode": "procedure",
+      "contextFingerprint": "sha256:...",
+      "acceptedStateFingerprint": "sha256:...",
+      "routeFingerprint": "sha256:...",
+      "courseId": null,
+      "courseMilestoneOrdinal": null,
+      "courseCoordinateFingerprint": null,
+      "courseRequirementStatus": null,
+      "interruptionReason": null,
+      "scopes": [
+        {
+          "scope": "common",
+          "courseMilestoneOrdinal": null,
+          "status": "satisfied",
+          "bindings": [],
+          "failureWitnesses": [],
+          "authorityFingerprint": "sha256:..."
+        }
+      ],
+      "authorityFingerprint": "sha256:..."
+    },
+    "resourceAuthority": {
+      "reservationDisposition": "not_required",
+      "reservationId": null,
+      "coordinatesFingerprint": "sha256:...",
+      "acceptedStateFingerprint": "sha256:...",
+      "routeFingerprint": "sha256:...",
+      "courseId": null,
+      "courseMilestoneOrdinal": null,
+      "courseCoordinateFingerprint": null,
+      "requirementAuthorityFingerprint": "sha256:...",
+      "policy": {
+        "reserveBeforeResolution": true,
+        "consumeOn": ["success", "partial_success", "failed_attempt"],
+        "refundOn": ["cancelled", "validation_failed", "rolled_back"],
+        "mutations": []
+      },
+      "claims": [],
+      "authorityFingerprint": "sha256:..."
+    },
+    "requestFingerprint": "sha256:..."
+  },
+  "resultCategory": "partial_success",
+  "selectedOutcomeIndex": 1,
+  "interruption": false,
+  "declaredResult": [
+    { "kind": "stabilize" },
+    { "kind": "add_recovery", "points": 1 }
+  ],
+  "consumptionTrigger": "partial_success",
+  "resolutionAuthorityFingerprint": "sha256:...",
+  "modeEvidence": {
+    "rollMode": "normal",
+    "rollActorKind": "npc",
+    "rollActorId": "npc_healer_001",
+    "sourceIndices": [0],
+    "sourceRolls": [12],
+    "selectedSourceIndex": 0,
+    "naturalRoll": 12,
+    "modifier": 0,
+    "total": 12,
+    "baseDifficulty": 10,
+    "complicationDifficultyModifier": 0,
+    "effectiveDifficulty": 10,
+    "margin": 2,
+    "originalOutcome": "ordinary",
+    "resolvedOutcome": "ordinary",
+    "selectedBandId": "simple_partial",
+    "selectedOutcomeIndex": 1,
+    "reactionEffectId": null,
+    "reactionTriggerId": null,
+    "reactionFingerprint": null,
+    "acceptedRollFingerprint": "sha256:..."
+  },
+  "routeCompletion": "none",
+  "resultFingerprint": "sha256:...",
+  "receiptFingerprint": "sha256:..."
+}
+```
+
+`modeEvidence` is a closed union selected by `mode`. Procedure evidence is exactly the
+fields above. Course evidence is exactly `courseId`, `milestoneOrdinal`,
+`courseStartedAtGameTimeMinutes`, `resolvedAtGameTimeMinutes`, `clockEvidenceFingerprint`,
+and `courseDisposition=active|completed|interrupted`. Guaranteed evidence is exactly
+`capabilityRef`, `actorRole`, `skillId`, `sourceSemanticFingerprint`, and
+`capabilityProofFingerprint`. A course interruption has
+`selectedOutcomeIndex=null`, `interruption=true`, the route's exact declared
+interruption result/category, and `consumptionTrigger=none`. Other accepted outcomes
+repeat their declared category as the trigger only when that category occurs in sealed
+`resourceAuthority.policy.consumeOn`; otherwise their trigger is `none` and every held
+claim is released rather than consumed.
+
+`requestAuthority` is the complete recursively closed serialized
+`MortalWoundTreatmentAttemptRequest`, not a fingerprint placeholder. Its exact
+`resourceAuthority` is the pre-resolution reservation authority defined below. Its `mode` must
+equal the sibling result mode, every coordinate must agree with the enclosing history
+row, and its recomputed `requestFingerprint` participates in `resultFingerprint`.
+There is no sibling `requestFingerprint` field. Procedure `modeAuthority` has exactly
+the procedure-check fields shown above. Course `modeAuthority` is the complete immutable
+`MortalWoundCourseModeAuthority`: it contains nested game-time authority, course ID/
+ordinal, due/deadline/window disposition, complete `CourseStartAuthority` with detached
+typed starting wound, course-coordinate/coordinate/accepted-state fingerprints, and
+authority fingerprint.
+Guaranteed `modeAuthority` is the complete immutable capability
+proof defined below, including its operation limits. The parser recomputes all nested
+coordinate, mode-authority, request, and result fingerprints; a syntactically valid
+carried string is never accepted as proof.
+
+`requestAuthority.requirementAuthority` is the complete immutable bundle accepted by the
+live resolution, not only its fingerprint. It occurs only once in serialized treatment
+history; the live resolution's `RequirementAuthority` property is that same immutable
+object, not a second serialized copy. The history parser recomputes its context,
+accepted-state, route, common/course authority, scoped-row, aggregate non-overbooking,
+and bundle seals before deriving a replay receipt. This preserves restart auditability
+for procedure, guaranteed, satisfied course, and trusted-unsatisfied interruption.
+Only the already-verified detached receipt projects
+`RequirementAuthorityFingerprint=RequirementAuthority.AuthorityFingerprint`; it does
+not expose the bundle rows or turn them back into consumption authority.
+
+Every accepted treatment has `attemptDisposition=accepted_terminal`; this is not the
+history row's wound-lifecycle `terminal` flag. Treatment rows remain `terminal=false`.
+Only the separate accepted `heal` row may be wound-terminal. Rejected, cancelled, or
+rolled-back work produces no treatment history row.
+
+### Transient Mortal treatment attempt authorities
+
+`MortalWoundTreatmentAcceptedStateAuthority` is created only by
+`AcceptedTurnAuthorityRegistry.GetOrBuildMortalWoundTreatmentAcceptedState(
+FileSystemManager, CanonicalWriteLease, WoundAcceptedTurnBinding,
+MortalWoundTreatmentAuthority.Context, string woundId)`. The adapter verifies the live turn request and,
+under that one lease, strictly composes the unchanged T060 snapshot, world minute,
+current player/NPC skill source, accepted combat-actor treatment projection, accepted effect mechanics, complete wound carriers,
+wound identity index, and wound history; it selects and seals the exact current wound
+and complete history fingerprints. Its result has exactly
+`IsValid`, frozen `Issues`, and nullable `Authority`; the authority exposes no raw JSON,
+dice collection, caller fingerprint, or public constructor. Absolute root identity and
+live revision are runtime-only admission guards. Durable fingerprints use stable session
+generation, session/request/snapshot/turn, semantic context, and semantic canonical file
+hashes including wound carriers/index/history, so restart or root relocation does not
+invalidate accepted history.
+
+`MortalWoundTreatmentAttemptCoordinates` is produced only by
+`MortalWoundTreatmentPlanner.CreateAttemptCoordinates(acceptedState, before,
+operationKey, routeId, eventRef)` and contains exactly `SchemaVersion`, `SessionId`,
+`SessionGeneration`, `RequestId`, `SnapshotToken`, `OperationKey`, derived `AttemptId`,
+`WoundId`, `RouteId`, `ExpectedBeforeFingerprint`, `EventRef`, `EventKind`,
+`EventAuthorityId`, `EventSemanticFingerprint`, `Turn`, `Realm`,
+`ProviderKind`, `ProviderId`, `TargetKind`, `TargetId`, `LocationId`,
+`ContextFingerprint`, `AcceptedStateFingerprint`, and `CoordinatesFingerprint`. Target
+and realm must equal the Mortal wound owner, and `before` must equal the authority's
+selected current wound semantically and by recomputed fingerprint. On a new resolution,
+the valid history parse result must equal the authority's complete history fingerprint.
+`EventRef` must resolve exactly once in `WoundAcceptedTurnBinding.AcceptedEvents`, and
+the matching event kind/authority ID/semantic fingerprint are sealed. `OperationKey`
+must be an exact identifier unique across reconstructed command/pending/history attempts.
+The deterministic identity input is the
+complete ordered semantic coordinate set except derived ID/fingerprint. There is no
+constructor accepting a caller context, attempt/course ID, route, band, outcome, or
+terminal flag. The result contains exactly `IsValid`, frozen `Issues`, and nullable
+`Coordinates`.
+
+Procedure `resolution.modifierSource` is the closed union exact
+`{kind=fixed_zero}` or `{kind=resolved_skill_tier, requirementIndex}`. The zero-based
+index must point to one satisfied T060 `skill_tier` row; its current tier is the modifier
+and its resolved owner is the roll actor. `fixed_zero` uses modifier zero and the
+provider roll actor. `MortalWoundProcedureCheckAuthority.Create(coordinates, route,
+before, requirementAuthority, acceptedState)` derives that fact, adds every active
+complication's `treatmentDifficultyModifier` to authored difficulty with checked
+arithmetic, and filters accepted active roll-actor effects to `roll_modifier` components
+containing `skill_check`. Advantage only selects `advantage`, disadvantage only selects
+`disadvantage`, both cancel to `normal`; stacks/repetition do not escalate and version 1
+has no great/dire mode. Normal uses one die, the other modes two; advantage selects the
+higher and disadvantage the lower, with lower source index winning ties.
+
+For selected natural 1 and exact roll actor `player/player_current`, the check factory
+also asks a shared production Fate Shield arbiter for the same eligible oldest carrier
+ordering used by `EffectAcceptedEventReportCatalog`. The sealed authority's nullable
+prepared candidate fixes effect ID, trigger ID, accepted-effect fingerprint, and its own
+fingerprint before resolution. The existing GM five-argument report API and leading-dice
+contract remain unchanged; this typed adapter accepts only the production procedure
+check authority. The registry reconstructs candidates reserved by full sealed procedure
+requests in command/pending/history authority for the same binding, excludes those effect
+IDs, and provisionally selects the next oldest in accepted-transition order. Exact retry
+reuses it; successful persistence confirms it and failed sealing/persistence releases it,
+so two procedures cannot claim one shield even across restart. Revalidation yields an immutable reaction/lifecycle intent, never a
+carrier mutation. Without a candidate, evidence records
+`critical_failure -> critical_failure` and the last band. With one, it records
+`critical_failure -> failure`, selects the first authored `failed_attempt` band, and
+consumes the shield atomically in T070 even if both indices are the same. NPC roll actors
+never qualify. Mode evidence always persists exact closed original/resolved outcome,
+selected band ID/index, and all-null or all-present reaction effect/trigger/fingerprint
+fields.
+
+The exact revalidation seam is
+`EffectAcceptedEventReportCatalog.ResolvePreparedMortalWoundCriticalReaction(
+MortalWoundTreatmentAttemptRequest request,
+MortalWoundTreatmentAcceptedStateAuthority acceptedState)`. Its
+`MortalWoundCriticalReactionResolutionResult` contains exactly `IsValid`, frozen
+`Issues`, and nullable immutable `Intent`. The intent contains exactly
+`EventType=owner_critical_failure`, deterministic per-attempt `EventRef` and
+`CausalEventRef`, `Turn`, `Realm=mortal_world`, `TargetKind=player`,
+`TargetId=player_current`, `EffectId`, `TriggerId`, `AcceptedEffectFingerprint`,
+`PreparedReactionFingerprint`, `RequestFingerprint`, and `IntentFingerprint`.
+Both event refs are written from stable accepted session-generation/request/snapshot/
+turn plus the exact `AttemptId` and event role; they cannot collide across treatment
+attempts or reuse the generic GM roll ref. Every field is sealed. The existing GM
+five-argument `Compose` method and its leading-dice evidence shape remain unchanged;
+both paths use one extracted `FateShieldReactionArbiter` for eligibility and oldest-
+carrier ordering.
+
+One accepted response may not submit both a typed procedure-treatment request and a
+legacy GM `owner_critical_failure` effect report for that same accepted turn. The
+common accepted-input coordinator detects the cross-surface pair before either Fate
+candidate is confirmed and rejects the whole response with
+`wound_treatment_fate_reaction_cross_surface_duplicate`, releasing every provisional
+die, Fate, and resource claim. Legacy GM reports remain legal for non-treatment Mortal
+actions, and multiple typed treatment requests remain legal through the shared
+reservation registry.
+
+The mapping is closed: selected 20 is
+`OriginalOutcome=critical_success, ResolvedOutcome=critical_success`; selected 2-19 is
+`ordinary, ordinary`; selected 1 without a shield is
+`critical_failure, critical_failure`; selected 1 with the prepared shield is
+`critical_failure, failure`. Only the final mapping has an all-present reaction triple.
+Its `ReactionFingerprint` is the resolved typed lifecycle intent fingerprint, not the
+candidate's `PreparedReactionFingerprint`. `SelectedBandId` and
+`SelectedOutcomeIndex` must equal the outer resolution fields exactly.
+
+The production dice registry reconstructs occupied indices from all strictly valid full
+sealed procedure requests in typed wound commands, pending packets, and accepted history
+for the same session/request/snapshot. In deterministic accepted-transition order it
+provisionally allocates the lowest contiguous free one/two-index span. Exact retry gets
+the same claim; changed coordinate/mode conflicts. Successful request persistence under
+the same lease confirms the claim, while failed sealing/persistence releases it. Restart
+therefore cannot issue an index held by a pending request.
+
+`MortalWoundProcedureCheckAuthority` contains exactly `SourcePath`, `RollMode`,
+`RollActorKind`, `RollActorId`, frozen ordered `RollContributions` rows of `EffectId`,
+`ComponentId`, and `Contribution`, frozen `SourceIndices`, frozen `SourceRolls`,
+`SelectedSourceIndex`, `NaturalRoll`, `Modifier`,
+`ComplicationDifficultyModifier`, `EffectiveDifficulty`,
+`RequirementAuthorityFingerprint`, `CoordinatesFingerprint`,
+`AcceptedStateFingerprint`, nullable immutable `PreparedCriticalReaction`, and
+`AuthorityFingerprint`. The candidate contains exactly `EffectId`, `TriggerId`,
+`AcceptedEffectFingerprint`, and `PreparedReactionFingerprint`. It contains no caller
+total, margin, category, band, or result.
+
+`MortalWoundGameTimeAuthority.Create(acceptedState, coordinates)` returns
+`MortalWoundGameTimeAuthorityResult` with exactly `IsValid`, frozen `Issues`, and
+nullable `Authority`. Its authority contains exactly `ClockKind`, `SourcePath`,
+`CurrentTimeInMinutes`, `CoordinatesFingerprint`, `AcceptedStateFingerprint`, and
+`AuthorityFingerprint`. No wall time, JSON, numeric value, or caller seal is accepted.
+
+Course mode next calls
+`MortalWoundCourseModeAuthority.Create(acceptedState, coordinates, before, history,
+gameTimeAuthority)`. Its result contains exactly
+`Disposition=TooEarly|Ready|DeadlineExceeded|InvalidAuthority`, frozen `Issues`, and
+nullable immutable `Authority`; only `Ready|DeadlineExceeded` carry authority. The
+authority contains exactly the immutable game-time authority, `CourseId`,
+`MilestoneOrdinal`, `DueAtGameTimeMinutes`, `DeadlineAtGameTimeMinutes`,
+`WindowDisposition=ready|deadline_exceeded`, complete immutable `CourseStartAuthority`,
+`CourseCoordinateFingerprint`, `CoordinatesFingerprint`, `AcceptedStateFingerprint`,
+and `AuthorityFingerprint`. The versioned course-coordinate fingerprint binds exact
+course ID, milestone ordinal, wound/route fingerprints, and the complete course-start
+authority fingerprint; bundle, resource, request, resolution, and history recompute the
+same value.
+`TooEarly` is a nonterminal rejection before requirement classification/reservation.
+
+On ordinal 1, `before.Care.ActiveCourseId` must be null. The course-start authority stores
+exactly the deterministic course ID, route ID/fingerprint, complete detached typed
+`StartingWound`, its fingerprint, start minute, accepted-state/coordinate fingerprints,
+and its own fingerprint. On continuation, the current active-course ID must equal the
+unique contiguous prior history course/route and that original authority is restored and
+recomputed byte-semantically; no current wound or hash-only baseline substitutes for it.
+Another course cannot start while the pointer is non-null. A legal procedure or guaranteed
+route may still target the wound during a course; a terminal heal clears the pointer, and
+subsequent course use then rejects. Final milestone or interruption also clears it.
+
+The structural route parser merely requires every procedure success band and the complete
+course to contain positive operation kinds, and forbids `no_improvement`,
+`add_complication`, and `apply_deterioration` in procedure success/course milestone
+results. It never revalidates old routes against the wound's later current state. Before a
+new procedure/guaranteed attempt, the planner simulates every possible result against the
+sealed current `before`; every result must be a legal complete transition and every
+success must additionally produce at least one actual monotone improvement. At course start it simulates the full ordinal sequence against
+`CourseStartAuthority.StartingWound` and requires at least one actual improvement. Later
+milestones use that durable completeness proof and separately validate the selected
+milestone against current canonical state.
+
+`MortalWoundTreatmentAttemptRequest` is a closed immutable union produced only by
+`SealProcedureRequest(MortalWoundTreatmentAttemptCoordinates,
+MortalWoundProcedureCheckAuthority, MortalWoundTreatmentRequirementAuthorityBundle,
+MortalWoundTreatmentResourceReservationAuthority)`,
+`SealCourseMilestoneRequest(MortalWoundTreatmentAttemptCoordinates, int,
+MortalWoundCourseModeAuthority, MortalWoundTreatmentRequirementAuthorityBundle,
+MortalWoundTreatmentResourceReservationAuthority)`, or
+`SealGuaranteedRequest(MortalWoundTreatmentAttemptCoordinates,
+MortalWoundTreatmentCapabilityProof, MortalWoundTreatmentRequirementAuthorityBundle,
+MortalWoundTreatmentResourceReservationAuthority)`.
+Each returns
+`MortalWoundTreatmentAttemptRequestResult` with exactly `IsValid`, frozen `Issues`, and
+nullable `Request`. The request
+contains exactly `Mode`, `Coordinates`, `MilestoneOrdinal`, `ModeAuthority`,
+`RequirementAuthority`, `ResourceAuthority`, and
+`RequestFingerprint`; `MilestoneOrdinal` is present only for course mode, while
+`ModeAuthority` is exactly the procedure-check, complete course-mode, or canonical capability proof
+type. The request fingerprint binds the complete coordinates plus the applicable mode
+authority, full requirement authority, resource authority, and ordinal under one
+versioned domain. A new operation creates coordinates and
+seals a request once; repair/retry restores that request from client-owned pending/
+accepted evidence. Rebuilding it from a current after-state is not replay.
+
+Tests and production reach those sealers only through the exact public-to-assembly
+orchestration factories
+`MortalWoundTreatmentPlanner.PrepareProcedureRequest(acceptedState, history, before,
+operationKey, routeId, eventRef)`, `PrepareCourseMilestoneRequest(...)`, and
+`PrepareGuaranteedRequest(...)`, all with that same six-argument surface and all
+returning `MortalWoundTreatmentAttemptRequestResult`. Each factory internally creates
+coordinates and resolves the route from `before`. Procedure and guaranteed preparation
+then create the complete requirement bundle, build their typed mode authority, prepare
+resources, and seal the request. For procedure mode, after the bundle is satisfied and
+before the check factory may reserve dice/Fate evidence, the planner performs the exact
+all-band current-applicability simulation described below. Course preparation instead creates game-time and the
+complete course-mode authority first, then creates the milestone-bound requirement
+bundle, prepares resources, and seals the request.
+Callers cannot construct a bundle/witness, inject a course baseline, or choose a
+reservation. Any failed stage releases every provisional claim and returns no request.
+
+The exact internal production bundle factories used by that orchestration are
+`MortalWoundTreatmentRequirementAuthorityBundle.CreateForProcedure(acceptedState,
+coordinates, before)`, `CreateForGuaranteed(acceptedState, coordinates, before)`, and
+`CreateForCourseMilestone(acceptedState, coordinates, before, history,
+MortalWoundCourseModeAuthority)`. The first two return
+`MortalWoundTreatmentRequirementAuthorityBundleResult` with exactly `IsValid`, frozen
+`Issues`, and nullable `Authority`, and produce authority only for fully satisfied common
+requirements. The course method returns `MortalWoundCourseRequirementAuthorityResult`
+with exactly `Status=Satisfied|Unsatisfied|InvalidAuthority`, frozen `Issues`, and
+nullable full bundle `Authority`; satisfied/unsatisfied have one, invalid does not.
+Factories select the route/scopes themselves, invoke unchanged T060, build complete
+success/failure witnesses, and accept no requirement array, context/snapshot, or caller
+fingerprint.
+
+Before acceptance the full serialized request, including its nested complete
+`RequirementAuthority` and `ResourceAuthority`, is stored under the typed `treat`
+authority in `game_state/wounds/wound_commands.json`, and in
+`game_state/control/pending_wound_resolutions.json` whenever a bounded GM repair or
+construction wave is required. The accepted transition copies the exact detached
+request into `transitionResult.requestAuthority` in
+`game_state/wounds/wound_history.json`. Command, pending, and history parsers use the
+same canonical serializer/parser; none stores only a request fingerprint. The outer
+command `operationKey`, history `attemptId`/course coordinates, and all duplicated
+request coordinates must agree exactly.
+
+The same request may legitimately appear in both command and pending storage during one
+repair wave. Every parser and dice/Fate/resource registry coalesces byte-semantic exact
+copies by `(OperationKey, AttemptId, RequestFingerprint)` into one logical request/claim.
+A differing request, bundle, resource authority, or outer coordinate under either reused
+semantic coordinate is a conflict/invalid state; exact copies never double-reserve or
+look like duplicate operations.
+
+After restart, the typed accepted-transition command/pending parser restores the
+client-owned submitted request before any current-state lookup; its operation key,
+attempt ID, and request fingerprint are therefore available without rebuilding an
+authority from the current wound. `WoundHistoryParseResult.ProbeTreatmentAttempt(string
+operationKey, string attemptId, string requestFingerprint)` returns one immutable
+`MortalWoundTreatmentReplayProbeResult` with exactly `Status`, frozen `Issues`, nullable
+restored `Request`, and nullable original typed `Receipt`. `Status` is
+`NotFound|ExactReplay|Conflict|InvalidHistory`. An invalid parse maps directly to
+`InvalidHistory` with its frozen parse issues; the valid-only `WoundHistoryState` never
+needs a diagnostic state or test constructor. The probe first recomputes the stored
+coordinates, mode-authority, request, and result fingerprints and validates every
+enclosing-row agreement; `InvalidHistory` dominates all other classifications.
+`ExactReplay` returns detached request and receipt without consulting a current wound,
+snapshot, route, resource, clock, or skill source. Reuse of the operation or attempt
+coordinate under another request fingerprint is `Conflict`. Only `NotFound` requires
+non-null current wound and accepted-state authority. Each mode entry point takes
+`Request`, `WoundHistoryParseResult`, nullable `Before`, and nullable `AcceptedState` in
+that order and probes before dereferencing either live argument. Guaranteed mode exports
+the current proof from accepted state and requires equality with the sealed proof; the
+publication boundary exports it again immediately before commit.
+
+`MortalWoundCourseRequirementAuthorityResult` contains exactly `Status`, frozen `Issues`,
+and nullable full `Authority`. `Status` is `Satisfied|Unsatisfied|InvalidAuthority`.
+The factory selects common plus the exact requested route milestone itself and binds the
+complete course-mode/start authority; it does not accept an arbitrary requirement
+array. On `Satisfied|Unsatisfied`, `Authority` is the complete immutable milestone-bound
+bundle, including unchanged successful T060 bindings and typed failure witnesses; on
+`InvalidAuthority` it is null. Trustworthy current
+predicate loss is `Unsatisfied`; malformed/ambiguous/
+cross-realm authority or changed route/history/coordinate/seal is `InvalidAuthority`.
+
+Every new resolution embeds one immutable
+`MortalWoundTreatmentRequirementAuthorityBundle` with exactly `Mode`,
+`ContextFingerprint`, `AcceptedStateFingerprint`, `RouteFingerprint`, nullable
+`CourseId`, nullable `CourseMilestoneOrdinal`, nullable `CourseCoordinateFingerprint`,
+nullable `CourseRequirementStatus=Satisfied|Unsatisfied`, nullable
+`InterruptionReason=deadline_exceeded|requirements_unsatisfied`, frozen `Scopes`, and
+`AuthorityFingerprint`. A scope authority has exactly
+`Scope=common|course_milestone`, nullable `CourseMilestoneOrdinal`,
+`Status=Satisfied|Unsatisfied`, frozen `Bindings`,
+frozen `FailureWitnesses`, and `AuthorityFingerprint`; scope occurs once and milestone
+scope exists only for course mode. Course bundle coordinates are all-present and equal
+to the complete course-mode authority; non-course coordinates are all null. Only the
+course-milestone scope repeats the exact ordinal; the common scope keeps it null. A
+binding has exactly its zero-based local
+`RequirementIndex`, one unchanged T060 `ResolvedRequirement`, one complete typed
+`SuccessWitness`, and `BindingFingerprint`. Every authored requirement index appears
+exactly once as either a successful binding or a failure witness, never both, and common
+rows are never repeated in milestone scope.
+
+Non-course bundles require every course coordinate, course status, and interruption
+reason to be null. Course bundles require all three course coordinates plus a real
+status; `InterruptionReason` is present exactly for an accepted course interruption and
+is null for a satisfied accepted milestone.
+
+The success witness is a closed union keyed by the same `Kind`. Its common coordinates
+are exactly `Scope`, `RequirementIndex`, `Kind`, `AuthorityRef`, `SnapshotToken`, `Realm`,
+nullable owner/provider/target kind/ID and `LocationId`, plus `WitnessFingerprint`.
+Its kind payload stores every non-display mechanical value needed by the unchanged T060
+row writer: item count/available count/reservation/lifecycle/active; resource current/
+available value/reservation/lifecycle/active; skill tier/lifecycle/active plus selected
+actor lifecycle/active/reachability/current location and required presence; capability
+lifecycle/active plus the same actor evidence; provider lifecycle/active/reachability/
+current location/presence; consent status/lifecycle/active plus exact provider/target
+bindings and their required reachability/presence; facility lifecycle/active/available/
+location plus required actor presence; location lifecycle/active plus required actor
+presence; or quest/effect/environment state/lifecycle/active with their exact target or
+location coordinate. It also repeats the authored requested quantity, minimum tier, or
+required state when applicable. All inapplicable fields are absent inside the closed
+kind payload, not nullable aliases.
+
+The history parser reconstructs the exact T060 input row from the success witness,
+recomputes `ResolvedRequirement.AuthorityFingerprint` through the shared unchanged T060
+writer, verifies all public-row/witness coordinates and values, then recomputes binding,
+scope, and bundle seals. A carried successful-row hash is never trusted, and diagnostics/
+display names are not persisted. T060's three-argument resolver and public row shape stay
+unchanged.
+
+A failure witness contains exactly `Scope`, `RequirementIndex`, `Kind`, `AuthorityRef`,
+closed `LossReason=authority_absent|quantity_insufficient|reserved|tier_insufficient|
+retired|inactive|state_mismatch|owner_unavailable|provider_unreachable|consent_absent|
+facility_unavailable|wrong_location|actor_not_present`, nullable immutable
+`Observation`, and `WitnessFingerprint`. `authority_absent` alone has null observation.
+Every other reason carries a closed kind-specific observation with the same complete
+non-display source/context slice as that kind's success witness, even though one required
+predicate is false: exact realm/owner/provider/target/current-and-required location;
+requested and total/available quantity plus reservation state; required/current tier or
+state; lifecycle/active; availability; reachability; presence; and consent as applicable.
+No generic nullable value bag exists. The kind/reason matrix deterministically requires
+the offending value (`reserved`, retired lifecycle, inactive, insufficient available
+quantity/tier, unequal state/location, false availability/reachability/presence/consent)
+while preserving all sibling values needed to replay unchanged T060. These are typed
+mechanical witnesses, not persisted `ValidationIssue` diagnostics.
+
+`resourcePolicy` is closed and declarative. `reserveBeforeResolution` is exactly `true`.
+`consumeOn` is an ordered exact-unique subset of categories reachable by that mode
+(`success|partial_success|failed_attempt` for procedure, only `success` for course or
+guaranteed) and may be empty. `refundOn` is exactly the ordered
+`cancelled|validation_failed|rolled_back` set. `mutations` contains only 0-64 exact-
+unique `{kind=consume_requirement, scope=common|course_milestone,
+milestoneOrdinal, requirementIndex}` selectors. A common selector has null ordinal; a
+course selector has its exact positive milestone ordinal. Each selector resolves once to
+an authored `item_quantity|resource_quantity` requirement in that scope. It consumes the
+full declared quantity only when the selected category is in `consumeOn`; unlisted
+quantity requirements are reserved as tools/preconditions but released without
+consumption. Raw delta/value/write payloads are forbidden.
+
+After the provisional procedure-check, complete course-mode, or capability authority exists but
+before band/milestone/guaranteed resolution, production calls the corresponding exact
+overload:
+
+```csharp
+MortalWoundTreatmentResourcePreparationResult PrepareProcedure(
+    MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+    MortalWoundTreatmentAttemptCoordinates coordinates,
+    WoundMaterializationEnvelope before,
+    MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
+    MortalWoundProcedureCheckAuthority modeAuthority)
+
+MortalWoundTreatmentResourcePreparationResult PrepareCourse(
+    MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+    MortalWoundTreatmentAttemptCoordinates coordinates,
+    WoundMaterializationEnvelope before,
+    MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
+    MortalWoundCourseModeAuthority modeAuthority)
+
+MortalWoundTreatmentResourcePreparationResult PrepareGuaranteed(
+    MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+    MortalWoundTreatmentAttemptCoordinates coordinates,
+    WoundMaterializationEnvelope before,
+    MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
+    MortalWoundTreatmentCapabilityProof modeAuthority)
+```
+
+Each result contains exactly `IsValid`, frozen `Issues`, and nullable immutable
+`Authority`. No overload accepts a route, policy JSON, caller claim, quantity, or
+fingerprint: it resolves the exact route from `before`/coordinates and verifies the
+accepted-state/mode/bundle seals. Procedure and guaranteed preparation require a fully
+satisfied bundle. Course preparation itself rechecks clock/status precedence: too early
+or invalid authority rejects; ordinal-1 unsatisfied requirements reject without creating
+a course; only an already active course's trusted interruption creates no held claims;
+an accepted satisfied milestone reserves its current scopes.
+
+`MortalWoundTreatmentResourceReservationAuthority` contains exactly
+`ReservationDisposition=held|not_required`, nullable deterministic `ReservationId`,
+`CoordinatesFingerprint`, `AcceptedStateFingerprint`, `RouteFingerprint`,
+nullable `CourseId`, nullable `CourseMilestoneOrdinal`, nullable
+`CourseCoordinateFingerprint`,
+`RequirementAuthorityFingerprint`, immutable typed `Policy`, frozen ordered `Claims`,
+and `AuthorityFingerprint`. Course coordinates are all-present and must equal both the
+course-mode and requirement-bundle coordinates; non-course coordinates are all null.
+A held claim contains exactly `Scope`, `RequirementIndex`,
+`Kind=item_quantity|resource_quantity`, `AuthorityRef`, `Realm`, `OwnerKind`, `OwnerId`,
+positive `Quantity`, `SuccessWitnessFingerprint`, and `ClaimFingerprint`. All current
+quantity requirements are claims; policy mutation selectors decide which are eventually
+consumed. `not_required` has null ID and empty claims and is legal only for a trusted
+already-active course interruption or when the current satisfied scopes contain no
+quantity requirement.
+
+The lease/generation-scoped reservation registry reconstructs held claims from every
+strictly valid complete `treat` request (which owns its full bundle) in command/pending state for the
+binding, rejects aggregate overbooking against the witnessed availability, returns the
+same reservation for exact retry, and conflicts on changed coordinates/policy/bundle.
+Accepted history marks a reservation finalized rather than held. Preparation is
+provisional; successful request sealing+persistence confirms it, while preparation,
+sealing, validation, cancellation, or persistence failure releases it together with any
+provisional die/Fate claim. Restart cannot reserve a quantity already held by pending
+work.
+
+Aggregate non-overbooking is checked across successful bindings in all scopes before a
+consuming result. Non-course bundles have null course fields and one satisfied common
+scope. Every course runs both scopes after the too-early clock gate; invalid authority
+rejects, aggregate status is satisfied only if both scopes are satisfied, and
+`deadline_exceeded` dominates `requirements_unsatisfied` when both apply. An unsatisfied
+accepted interruption therefore retains complete recomputable success and loss evidence.
+
+After resolution T068 accepts exactly
+`MortalWoundTreatmentResourceComposer.Finalize(MortalWoundTreatmentResolution)` and is
+the only resource/item mutation composer. It recomputes request/resource/bundle/policy/
+claim seals and derives the selected mutation selectors. A held authority plus a trigger
+present in `Policy.ConsumeOn` emits exact typed full-quantity consume intents only for
+matching current-scope selectors and releases every other held claim. Trigger `None`
+emits release-only finalization; `not_required` emits an empty plan. A category/policy/
+reservation mismatch rejects. Commit marks the deterministic reservation finalized;
+cancel, validation failure, or rollback releases it. Exact replay calls neither prepare
+nor finalize.
+
+`MortalWoundTreatmentResolutionResult` contains exactly `Disposition`, frozen `Issues`,
+nullable immutable `Resolution`, and nullable immutable `ReplayReceipt`; disposition is
+`Rejected|Resolved|ExactReplay|Conflict`. The accepted resolution contains exact mode/
+coordinates and exactly the public properties `Mode`, `Coordinates`,
+`AttemptDisposition`, `ResultCategory`, `SelectedOutcomeIndex`, `Interruption`,
+`DeclaredResult`, `OutcomeIntents`, nullable immutable `CriticalReactionIntent`,
+`ConsumptionTrigger`, `CourseId`,
+`CourseMilestoneOrdinal`, `CourseDisposition`, immutable full `RequestAuthority`,
+`RequirementAuthority`,
+`ResourceAuthority`, `ModeEvidence`, `RouteFingerprint`, `ResolutionAuthorityFingerprint`,
+`RequestFingerprint`, `ResultFingerprint`, and `RouteCompletion`. Inapplicable course fields are null;
+`AttemptDisposition` is `AcceptedTerminal`; `RouteCompletion` is `AppendOnce|None`.
+`SelectedOutcomeIndex` is the zero-based selected procedure band, exactly
+`CourseMilestoneOrdinal - 1` for an accepted course milestone, `0` for a guaranteed
+singleton, and null for a course interruption; outer resolution, mode evidence,
+history, and receipt must agree.
+Only `Resolved` has a non-null `Resolution`, whose `OutcomeIntents` are actionable once.
+The resolution's coordinates, mode evidence, complete requirement bundle, resource
+authority, course fields, and request fingerprint must agree exactly with their nested
+copies in `RequestAuthority`; the result fingerprint binds the complete request rather
+than trusting an outer fingerprint. This is the self-contained input on which resource
+finalization recomputes every request/bundle/policy/claim seal.
+`CriticalReactionIntent` is non-null only for the mitigated player-natural-1 case,
+participates in `ResultFingerprint`, and is revalidated/consumed only by T070. History
+and receipt retain audit evidence/fingerprint but no actionable reaction intent.
+Only `ExactReplay` has a non-null detached original typed `ReplayReceipt`.
+`MortalWoundTreatmentReceipt` is the exact type of both outer `ReplayReceipt` and probe
+`Receipt`; it contains exactly `Mode`, `Coordinates`, `AttemptDisposition`,
+`ResultCategory`, `SelectedOutcomeIndex`, `Interruption`, immutable `DeclaredResult`,
+`ConsumptionTrigger`, `CourseId`, `CourseMilestoneOrdinal`, `CourseDisposition`,
+`RequirementAuthorityFingerprint`, `ResourceAuthorityFingerprint`, immutable `ModeEvidence`, `RouteFingerprint`,
+`ResolutionAuthorityFingerprint`, `RequestFingerprint`, `ResultFingerprint`,
+`RouteCompletion`, and `ReceiptFingerprint`. It has no outcome/resource/wound/effect/
+history/publication intent or requirement rows. Rejected
+and conflicting results have both payloads null. Neither payload exposes raw JSON,
+resource/item mutation, or writable collections.
 
 ## 6. Active carrier roots
 
@@ -634,8 +1297,8 @@ include visible provider/access facts in projection.
 ```json
 {
   "mode": "requires_stabilization",
-  "clockKind": "mortal_world_time",
-  "cadence": 86400,
+  "clockKind": "world_time.currentTimeInMinutes",
+  "cadence": 1440,
   "currentStepProgress": 0,
   "currentStepThreshold": 3,
   "lastTickKey": null,
@@ -645,6 +1308,9 @@ include visible provider/access facts in projection.
 }
 ```
 
+For Mortal wounds `cadence` is a positive signed 64-bit count of canonical world
+minutes and uses the same `world_time.currentTimeInMinutes` authority as treatment
+courses; it never uses wall time or a parallel seconds counter.
 For spiritual wounds `clockKind=afterlife_safe_cycle`, cadence is one safe cycle,
 threshold derives from current severity, and progress per cycle derives from the
 owner's accepted Spiritual Healing tier.
@@ -803,6 +1469,307 @@ route ID is absent until already diagnosed, but once revealed it remains in
 completed route ID resolves exactly once in `routes[]`, and every completed route is
 also known.
 
+The common route object never gains mode-specific top-level aliases. Its exact
+`resolution`, `outcomes`, and `interruption` shapes are selected by `mode`:
+
+| Mode | `resolution` | `outcomes` | `interruption` |
+|---|---|---|---|
+| `procedure` | exactly `formulaKey=mortal_wound_procedure_v1`, integer `difficulty`, `rollSource=accepted_d20`, `criticalPolicy=natural_20_first_natural_1_last`, and closed `modifierSource=fixed_zero|resolved_skill_tier(requirementIndex)` | 2-16 exact categorized inclusive margin bands | required null |
+| `course` | exactly `clockKind=world_time.currentTimeInMinutes`, non-negative integer `maximumGapMinutes` | 1-32 contiguous ordinal milestones with increasing `afterMinutes`, closed requirements, exact `category=success`, `active|completed` completion, and ordered result | required exact `category=failed_attempt`/result object |
+| `guaranteed` | exactly `capabilityRef` and `actorRole=provider|target` | exactly one category/result object whose category is `success` | required null |
+
+A procedure band has exactly `bandId`, nullable inclusive `minimumMargin` and
+`maximumMargin`, `category=success|partial_success|failed_attempt`, and non-empty
+ordered `result`. Bands are authored best-to-worst and form a gapless, non-overlapping
+partition of all integer margins: the first has null maximum, the last has null
+minimum, adjacent finite bounds differ by exactly one, and all intermediate rows have
+both bounds. Band IDs are exact and case/Unicode-confusable unique within the route.
+Category rank cannot improve as rows descend; the first is `success` and
+the last `failed_attempt`. Natural 20 selects index 0 and natural 1 first establishes the
+final-index `critical_failure` only after every hard gate succeeds; a prepared shared
+Fate Shield may then remap final selection to the first failed index as ordinary
+`failure`. Rolls 2-19 use the one inclusive interval containing
+the checked 64-bit margin. The closed modifier source is either exact zero/provider roll
+actor or the current tier and resolved actor of one indexed satisfied `skill_tier` row.
+Every active complication difficulty modifier is added to the authored non-negative
+signed-32-bit difficulty. Accepted roll-actor `skill_check` roll effects reduce to
+normal/advantage/disadvantage by same-direction collapse and opposite-direction
+cancellation; normal claims one die, advantage/disadvantage two, and lower source index
+wins an equal-dice tie. The selected natural die is 1-20, modifier is signed 32-bit,
+finite band bounds are signed 64-bit, and every sum/narrowing is checked. Overflow or
+insufficient unclaimed accepted dice rejects before attempt acceptance.
+
+A course milestone has exactly `ordinal`, non-negative `afterMinutes`, closed
+`requirements`, `category=success`, `completion`, and ordered `result`. Ordinal 1 has
+`afterMinutes=0`; only the final milestone has `completion=completed`; intermediate
+results may be empty because accepting the milestone itself advances course state. The
+final result is non-empty, and the complete course contains at least one applicable
+positive treatment operation; completing an all-empty course is invalid.
+Course common requirements and current-milestone requirements are conjunctive. The
+interruption object has exactly `category` and non-empty ordered `result`.
+All course clock coordinates, `afterMinutes`, and `maximumGapMinutes` are non-negative
+signed 64-bit integers; due/deadline addition is checked and overflow rejects rather
+than completing or interrupting a milestone.
+
+Every `result` is an array of at most eight closed typed operations. Procedure,
+guaranteed, interruption, and final-course results are non-empty; only an intermediate
+course milestone may use an exact empty array. Every result contains at most one `heal`;
+when present it is the final operation, so no operation can run after the terminal
+follow-up transition. The version-1 operation union is exactly `no_improvement`,
+`stabilize`, `add_recovery`, `reduce_severity`, `remove_complication`,
+`add_complication`, `apply_deterioration`, and `heal`. Representative compact canonical
+rows are:
+
+```json
+[
+  { "kind": "stabilize" },
+  { "kind": "add_recovery", "points": 1 },
+  { "kind": "reduce_severity", "steps": 1 },
+  { "kind": "remove_complication", "complicationId": "infection_01" },
+  { "kind": "apply_deterioration", "policyRef": "missed_care_policy" },
+  { "kind": "heal", "legacies": [] }
+]
+```
+
+`no_improvement` has only `kind` and must be the sole operation. `stabilize` likewise
+has only `kind`; recovery points are positive signed 32-bit; severity steps are exactly
+one or two; complication removal names one exact currently present complication;
+`add_complication` carries the complete closed sub-proposal defined below;
+`apply_deterioration` names the exact typed policy introduced by T062. `heal.legacies`
+contains at most eight rows.
+
+Every ordered `add_recovery` accumulation and application to signed-64-bit
+`Recovery.CurrentStepProgress` uses checked 64-bit arithmetic. Guaranteed aggregate
+comparison widens every signed-32-bit operation value and limit to checked signed
+64-bit before summing. Any parse-time, simulation-time, resolution-time, or publication-
+time overflow rejects before a die is consumed or an after-image is published.
+Aggregate `reduce_severity.steps` is at most two when the selected result has no `heal`.
+A result ending in its one legal `heal` may aggregate at most three reduction steps, but
+only to reach a working severity of exactly I before the separate follow-up heal. T067
+retains the existing non-healing reduction guard and updates the follow-up-heal gate to
+validate this sealed ordered working-state contour.
+
+The operation shown above is the canonical persisted dialect: it has
+`complicationId`, never a response-local ref. A GM-authored initial wound proposal uses
+exactly `{ "kind": "remove_complication", "complicationRef": "..." }`; that ref must
+resolve case/confusable-exactly to one complication row in the same proposal. A later
+`author_alternative_treatment` packet exposes bounded opaque existing-complication
+selector refs, and the GM uses the same `complicationRef` field to copy exactly one of
+them. `WoundResponseInputComposer` is the sole adapter: after allocating initial IDs or
+resolving an alternative packet selector, it rewrites the operation to canonical
+`complicationId` before `WoundMaterializationContract` parses/persists the route.
+Canonical state rejects `complicationRef`; GM proposal input rejects `complicationId`.
+Unresolved, duplicate, cross-wound, or confusable refs reject the complete proposal.
+
+The exact closed version-1 `heal.legacies` union is:
+
+```json
+[
+  {
+    "localLegacyRef": "thin_scar",
+    "kind": "cosmetic",
+    "readableSummary": "После раны остался тонкий шрам."
+  },
+  {
+    "localLegacyRef": "restricted_grip",
+    "kind": "mechanical_effect",
+    "readableSummary": "Повреждённая кисть хуже переносит длительное напряжение.",
+    "effectDraft": {
+      "schemaVersion": 1,
+      "definitions": [
+        {
+          "definitionRef": "restricted_grip_definition",
+          "definition": "complete detached #1535 definition with links=[]"
+        }
+      ],
+      "applications": [
+        {
+          "applicationRef": "restricted_grip_root",
+          "definitionRef": "restricted_grip_definition",
+          "parameters": {}
+        }
+      ]
+    }
+  }
+]
+```
+
+A cosmetic draft has exactly `localLegacyRef`, `kind=cosmetic`, and bounded
+`readableSummary`. A mechanical draft has exactly those first three fields with
+`kind=mechanical_effect` plus `effectDraft`. The effect draft has exactly
+`schemaVersion=1`, `definitions`, and `applications`, each a non-empty bounded array.
+Each array contains from one through five rows, reusing
+`WoundMaterializationContract.MaxOwnedEffectDefinitions` and
+`MaxOwnedEffectRootBindings` respectively.
+Every definition wrapper has exactly response-local `definitionRef` and one complete
+detached valid #1535 `definition` whose `links` is exact empty `[]`; every application
+has exactly response-local `applicationRef`, same-draft `definitionRef`, and complete
+closed `parameters`. Definition refs, definition keys, and application refs are each
+exact/confusable unique within that one legacy draft; every application resolves once inside the same draft, external
+definitions are forbidden, and every unbound definition is reachable under the normal
+#1535 graph rules. Target is derived from the treatment owner. Source kind/ID, accepted
+event, operation ordinal, stack/lifetime carrier state, materialization fingerprints,
+effect/transition IDs, and history coordinates are client-derived and forbidden in the
+authored draft.
+Version 1 deliberately has no open `entityKind`, `payload`, `skill`, `trait`, or `other`
+branch: every arbitrary lasting mechanic is represented by the already complete effect
+component language, while readable non-mechanical aftermath is cosmetic.
+Every `localLegacyRef` is an exact identifier and the complete selected result is exact
+and Unicode-confusable unique by that ref; collision is rejected structurally before
+identity allocation or a roll. Because a result permits only one final `heal`, the
+combined cosmetic plus mechanical legacy count is an aggregate maximum of eight for the
+whole selected result, never a per-operation allowance.
+
+The identity allocator namespaces every mechanical-legacy nested technical reference as
+`localLegacyRef/localRef`; different legacy drafts may reuse their local definition or
+application spellings without collision. The persisted application result map and every
+#1535 handoff use only those namespaced references. The allocator rejects a collision
+between any namespaced reference, derived permanent identity, or existing working-wound
+source coordinate before creating an effect plan.
+
+`add_complication` contains one complete `complicationDraft` with exactly
+`complications` and `consequenceDefinitions`. It is the existing GM-safe wound proposal
+sub-shape: `complications` has exactly one current response-local complication row and
+each consequence row is the existing exact `definitionRef/definition/root` wrapper;
+every non-null root's current `ownership` names that one complication ref and its current
+`slots` are complete. Definitions have `links=[]`; the existing adapter alone derives
+source links, application/operation refs, IDs, slot ordinals, and fingerprints. The
+consequence array may be empty for a non-effectful complication. Its local references
+are exact/confusable unique and an effectful graph obeys current #1535 and wound
+slot/severity bounds. A parallel `ownedEffectDraft`, accepted root application,
+result-map field, string token, complication-name lookup, raw mutation, or unknown
+operation is invalid.
+
+Within one selected result, the sole complication ref from every `add_complication`
+operation is exact and Unicode-confusable unique across all such operations. The adapter
+namespaces each nested definition/application/derived operation ref by the selected
+operation ordinal plus that complication ref, and rejects any collision with another
+selected operation or the working wound's existing source graph. Local spellings inside
+different complication drafts may otherwise repeat because only their namespaced form
+crosses the accepted-effect boundary.
+
+`MortalWoundTreatmentOutcomeIntent` is the exact immutable T067 -> T070 handoff. It is a
+closed union with common public properties exactly `OperationOrdinal`, `Kind`,
+`DeclaredOperationFingerprint`, and `IntentFingerprint`. Its branch payloads are:
+
+- `no_improvement` and `stabilize`: no additional fields;
+- `add_recovery`: positive `Points`;
+- `reduce_severity`: `Steps=1|2`;
+- `remove_complication`: exact canonical `ComplicationId`;
+- `apply_deterioration`: exact `PolicyRef` and recomputable
+  `DeteriorationAuthorityFingerprint` from T069;
+- `add_complication`: authored `ComplicationRef`, deterministic permanent
+  `ComplicationId`, frozen ordered `DefinitionReferenceBindings` and
+  `ApplicationReferenceBindings` mapping every local ref to its operation-ordinal/
+  complication-ref namespaced ref, plus `PreparationFingerprint`;
+- `heal`: immutable `HealChildCoordinates`, frozen ordered `LegacySeedBindings`, and
+  `PreparationFingerprint`. Each seed contains exactly zero-based `LegacyOrdinal`,
+  `LocalLegacyRef`, deterministic permanent `LegacyId`, `Kind`, frozen ordered local-to-
+  namespaced definition/application reference bindings (empty for cosmetic),
+  `DeclaredLegacyFingerprint`, and `SeedFingerprint`.
+
+There is exactly one intent for every operation in `DeclaredResult`, in identical order,
+including `no_improvement`; no extra or omitted intent is legal. The resolver recomputes
+each declared-operation fingerprint from the already typed route result and requires
+exact kind/value/ref agreement. Permanent complication/legacy IDs and all namespaced
+refs derive only from the full request fingerprint, operation ordinal, and exact local
+ref. T070 consumes these typed intents plus the matching typed `DeclaredResult`; it may
+build the ordinary wound/#1535 batches but may neither parse raw route JSON nor allocate,
+rename, or reinterpret an ID/ref. Cardinality, ordering, binding, or fingerprint
+disagreement rejects before after-image composition.
+
+When selected, permanent complication and legacy IDs are deterministic functions of the
+sealed request fingerprint, operation/legacy ordinal, and exact local ref. A mechanical legacy's one durable
+`legacyId` is also its source ID under the new client-only
+`sourceKind=wound_legacy`. That source is non-public and non-GM-materializable. During
+same-turn planning its authority is exactly the sealed T067 legacy seed plus immutable
+legacy preparation; after finalization, the accepted typed `legacy` history row linked to
+the terminal wound is its sole durable reload authority. The row persists the complete
+definition graph, namespaced root applications, wound ID, terminal transition ID, owner,
+realm, accepted application result map/effect-plan seal, and source fingerprint. The accepted #1535 effect
+planner remains the sole effect-ID allocator. Healing terminates only effects owned by
+the active `sourceKind=wound` graph and cannot capture the independent
+`wound_legacy` source; later dispel/removal may end its effect but never deletes its
+legacy/history/replay provenance.
+
+`MortalWoundHealLegacyPlanner.Prepare(WoundAcceptedTurnBinding binding,
+MortalWoundTreatmentResolution resolution, WoundMaterializationEnvelope workingWound)`
+is the sole preparation API. It returns
+`MortalWoundHealLegacyPreparationResult` with exactly `IsValid`, frozen `Issues`, and
+nullable immutable `Preparation`. The preparation contains exactly immutable
+`LegacyDraftBindings`, frozen ordered `EffectOperationBatches`, and a production-owned
+`PreparationFingerprint`; it contains no effect ID and no durable history intent. The
+array has exactly one immutable `WoundEffectOperationBatch` for each
+`mechanical_effect` binding in ascending legacy ordinal and no row for a cosmetic
+binding. Every batch exports one and only one `sourceKind=wound_legacy` source whose
+source ID equals that binding's deterministic `LegacyId`; no batch may merge definitions
+or applications from distinct legacy sources. Namespaced refs, source export, seed,
+draft binding, and batch seals agree exactly. An all-cosmetic/empty legacy set produces
+an exact empty batch array. `PreparationFingerprint` binds both ordered collections.
+
+After #1535 planning, the sole completion API is
+`MortalWoundHealLegacyPlanner.Finalize(MortalWoundHealLegacyPreparation preparation,
+EffectAcceptedTurnPlan acceptedEffectPlan)`. It returns
+`MortalWoundHealLegacyFinalizationResult` with exactly `IsValid`, frozen `Issues`, and
+nullable immutable `Finalization`. The finalization contains exactly immutable resolved
+`LegacyBindings`, typed durable `HistoryIntents`, the complete ordered per-legacy
+`ApplicationResults`, `EffectPlanFingerprint`, and `FinalizationFingerprint`. It
+recomputes the preparation, every batch/source boundary, the effect-plan seal, and every
+namespaced `applicationRef -> effectId/materializationFingerprint` agreement before any
+terminal heal or legacy history row can be published. Unknown branch, missing/extra
+field, ID collision, missing/extra/reordered/merged/split batch or result-map entry, or
+source/history mismatch rejects the whole atomic plan.
+
+`ApplicationResults` is exactly a frozen ordered array of
+`MortalWoundHealLegacyApplicationResultGroup`, one row per prepared mechanical batch in
+the same order and no row for a cosmetic legacy. Each group contains exactly
+`LegacyOrdinal`, `LegacyId`, `SourceExportFingerprint`, frozen ordered non-empty
+`Results` using the existing complete `EffectAcceptedApplicationResult` type, and
+`ResultGroupFingerprint`. Result order equals the matching batch's root-application
+order, and the group fingerprint binds every complete accepted result rather than an
+effect-ID-only projection.
+
+The selected request owns the primary `treat` operation/event coordinates. A terminal
+follow-up heal derives one child operation key, transition ID, event ref, and causal ref
+from the complete sealed request plus fixed role `heal`; each legacy row derives its own
+coordinates from that same request plus fixed role `legacy`, zero-based legacy ordinal,
+and exact `localLegacyRef`. These versioned client-owned derivations are pairwise exact/
+confusable unique and every enclosing history row must agree with them. Any collision
+with existing command/history/event coordinates rejects the whole plan before
+publication. Exact replay returns its receipt before planning and therefore regenerates
+none of the treat/heal/legacy rows or child coordinates.
+
+Operations evaluate in authored order against one working wound. Every selectable
+outcome must be applicable before its roll is consumed. `heal` is valid only after prior
+operations have reached severity I and becomes a separate canonical follow-up heal;
+legacies cannot appear outside it. An interruption is exactly category
+`failed_attempt` and either sole `no_improvement` or only complete harmful
+`add_complication`/`apply_deterioration` operations. It cannot produce a beneficial
+state change.
+
+The exact positive-operation set is an applicable state-changing `stabilize`,
+`add_recovery`, `reduce_severity`, `remove_complication`, or `heal`.
+`no_improvement`, `add_complication`, and `apply_deterioration` are never positive. A
+course's mechanical completeness is checked by evaluating every milestone result in
+ordinal order against one copy of the starting working wound; at least one operation in
+that sequence must be positive when reached. Each real milestone later revalidates its
+operations against current canonical state before acceptance.
+
+For interruption specifically, `add_complication` must contain exact empty
+`consequenceDefinitions` and its sole complication's
+`treatmentDifficultyModifier` must be 1-4. An effectful or zero-difficulty complication
+is not provably adverse and is invalid. `apply_deterioration` must resolve to a T062
+typed policy whose transition is strictly worsening; neutral or beneficial policy is
+invalid.
+
+A guaranteed route contains exactly one matching `source_capability` requirement with
+the same `capabilityRef` and `actorRole` as its resolution. Its singleton outcome is
+not a caller or GM success assertion: the resolver must prove an active matching
+canonical skill capability proof and validate every operation against its declared
+limits before selecting it. Its result contains at least one applicable positive
+operation and cannot contain `no_improvement`, `add_complication`, or
+`apply_deterioration`. A transient capability row alone is insufficient.
+
 ### Alternative treatment authoring authority
 
 A later world-specific cure is not smuggled through `diagnose`. Before asking the GM
@@ -949,9 +1916,15 @@ and is never canonical game state or GM-authored input. The context has exactly:
 ```
 
 Target/provider identity is always the ordinal pair `(actorKind, actorId)`; actor IDs
-are not assumed globally unique across kinds. Either coordinate may identify a player
-or NPC, an NPC is a legal treatment target, and provider and target may be the same
-typed coordinate for self-treatment. The snapshot has exactly
+are not assumed globally unique across kinds. For procedure/course treatment either
+coordinate may identify a player, named NPC, exact current `combatant`, or exact current
+`combatant_member`; all four are legal physical-wound targets and provider/target may be
+the same typed coordinate for self-treatment. Combat coordinates are read only from the
+accepted combat root and carry its existing promotion authority; display names or member
+array indices never substitute for IDs. A guaranteed capability proof remains sourced
+only from a canonical player/NPC skill: a combatant wound may use a player/NPC provider
+guarantee, while `actorRole=target` first requires the existing accepted persistence/
+promotion transition to a canonical player/NPC owner. The snapshot has exactly
 `schemaVersion=1`, exact `snapshotToken`, and the arrays `items`, `resources`, `actors`,
 `facilities`, `locations`, `quests`, `effects`, and `environments`. Every object below
 is closed. `displayName` is required diagnostic text but never authority or fingerprint
@@ -985,6 +1958,105 @@ selected requirement with a reference-specific cross-realm or ambiguity issue in
 of letting a parser silently choose one. Resolver output remains the separately sealed
 evidence described in the plan and cannot expose mutation or reservation intents.
 
+The completed T060 projection and its resolved row shape remain unchanged. In
+particular, transient `actors[].capabilities[]` rows do not carry treatment guarantees
+or source-contract fingerprints and parsing such a row never grants provenance.
+
+### Canonical Mortal wound-treatment skill capability
+
+A guaranteed route uses a separate optional extension on a canonical current player or
+NPC active/passive skill row:
+
+```json
+{
+  "skillId": "skill_field_medicine_01",
+  "mortalWoundTreatmentCapabilities": [
+    {
+      "schemaVersion": 1,
+      "capabilityRef": "field_medicine_guaranteed_care",
+      "woundDomain": "physical",
+      "minimumSeverityRank": 1,
+      "maximumSeverityRank": 2,
+      "operationLimits": {
+        "mayStabilize": true,
+        "maximumRecoveryPoints": 1,
+        "maximumSeverityReductionSteps": 1,
+        "removableComplicationKinds": ["bleeding", "infection"],
+        "mayHealAtSeverityI": true,
+        "maximumCosmeticHealLegacies": 1,
+        "maximumMechanicalEffectHealLegacies": 1
+      }
+    }
+  ]
+}
+```
+
+The snippet shows only the wound-specific extension; the containing skill must still be
+a complete valid active/passive skill. An extension-bearing skill has a required exact
+permanent `skillId`; idless skills remain legal under the pre-#1533 ordinary skill
+contract but cannot prove a guarantee. Each extension-bearing row's `skillId` must be
+exact and case/Unicode-confusable unique against every current active and passive skill
+row for that actor, including rows without the extension; duplicate/confusable active-
+versus-passive identities invalidate the extension authority. Capability refs are exact
+and case/Unicode-confusable unique across both skill kinds for one actor. Ranks are 1-4 with minimum no
+greater than maximum; numeric operation limits are non-negative signed
+32-bit values, severity reduction is at most three, each legacy count is 0-8, and their
+sum is at most the exact eight-row wound legacy bound. Complication kinds use the closed wound complication
+enum. `maximumRecoveryPoints`, `maximumSeverityReductionSteps`, and both legacy limits
+bound aggregate sums/counts across the whole ordered singleton guaranteed result, not
+each operation independently; repeated operations cannot multiply an allowance.
+`remove_complication` must match the declared kind set and the global eight-operation
+bound, and at most one `heal` operation is legal. At least one positive operation limit
+must be non-zero/true/non-empty; an all-zero capability is not a guarantee.
+`woundDomain` is exactly the literal `physical` in schema version 1; `spiritual`, an
+unknown domain, or a caller-extensible domain value rejects the entire capability row.
+
+The player source rows are the fully composed current entries in
+`game_state/player/skills_active.json.activeSkillChanges[]` and
+`game_state/player/skills_passive.json.passiveSkillChanges[]`; NPC rows are the selected
+current NPC's `activeSkills[]` and `passiveSkills[]`. Delta payloads, backups, GM response
+objects, display names, and the T060 transient snapshot are not source authority.
+
+The same exact current extension-bearing skill row is also the sole canonical source for
+the route's ordinary T060 `source_capability` predicate. The T066 snapshot composer
+deterministically projects one unchanged-shape `actors[].capabilities[]` row with exactly
+`capabilityRef`, diagnostic `displayName` from the current skill, current `lifecycle`, and
+current `active`; it projects no guarantee fields or fingerprints. Missing, duplicate,
+idless, inactive, or ambiguous source skills cannot manufacture that row. T060 then
+resolves the ordinary row unchanged, while the separate canonical exporter below proves
+the guarantee; callers cannot supply two unrelated capability sources with the same ref.
+
+`MortalWoundTreatmentCapabilityAuthority` exports an immutable proof only from the
+exact current canonical player/NPC owner and skill row. The proof contains exactly
+`SnapshotToken`, `SourcePath`, `OwnerKind`, `OwnerId`, `SkillKind`, `SkillId`, `CapabilityRef`,
+`WoundDomain`, `MinimumSeverityRank`, `MaximumSeverityRank`, the immutable operation
+limits, `ContextFingerprint`, `AcceptedStateFingerprint`, `CoordinatesFingerprint`,
+`SourceSemanticFingerprint`, and `ProofFingerprint`. Presence/removal, exact
+owner/skill/capability identity, and every mechanical limit participate in the
+fingerprints; display text does not. A route that needs a mastery/tier gate declares an
+ordinary sibling `skill_tier` requirement and leaves that proof to unchanged T060. A
+JSON shape parser is only a strict fixture adapter and cannot create an accepted proof.
+The full skill materialization feature
+#1533 must preserve this extension rather than replace it with a parallel guarantee.
+
+Accepted proofs are created only by
+`MortalWoundTreatmentCapabilityAuthority.ExportCurrent(acceptedState, coordinates,
+capabilityRef, actorRole)`. The lease-bound accepted state selects the exact player/NPC
+owner and fixes the source path to the composed current player skill files or
+`game_state/npcs/npc_core.json`; the result has exactly `IsValid`, frozen `Issues`, and
+nullable `Proof` in `MortalWoundTreatmentCapabilityProofResult`. No API accepts source
+JSON or a caller source/proof fingerprint.
+
+Immediately before publication T070 calls
+`MortalWoundTreatmentCapabilityAuthority.ExportForPublication(acceptedState,
+coordinates, capabilityRef, actorRole, AcceptedMechanicsPlan publicationPlan)`. It has
+the same exact result shape. If the final plan touches the selected player's active or
+passive skill root, or the selected NPC skill root, the exporter strictly validates and
+reads that final after-image; otherwise it reads the current root under the same lease.
+It accepts no detached JSON. The final proof and source semantic fingerprint must exactly
+equal the request's sealed proof, so a same-turn plan cannot consume a guarantee while
+also removing, retiring, duplicating, or changing its skill/capability authority.
+
 ### Resource policy
 
 ```json
@@ -992,23 +2064,109 @@ evidence described in the plan and cannot expose mutation or reservation intents
   "reserveBeforeResolution": true,
   "consumeOn": ["success", "partial_success", "failed_attempt"],
   "refundOn": ["cancelled", "validation_failed", "rolled_back"],
-  "mutations": []
+  "mutations": [
+    { "kind": "consume_requirement", "scope": "common", "milestoneOrdinal": null, "requirementIndex": 0 }
+  ]
 }
 ```
 
-Resource/item mutations use their established typed authorities. A route cannot write
-inventory or resource ledger values directly.
+Each mutation is only a selector for the full quantity of an exact authored item/resource
+requirement; it is not a raw delta. Quantity requirements without selectors are still
+reserved as tools/preconditions and then released. Course-milestone selectors also name
+their exact ordinal. Resource/item mutations use their established typed authorities. A
+route cannot write inventory or resource ledger values directly.
 
 ### Resolution and outcome bands
 
-`procedure` binds a registered roll/check formula and closed ordered bands.
-`course` binds an exact dose/milestone sequence and does not roll unless a declared
-milestone uses a registered procedure. `guaranteed` binds a proven source capability.
+`procedure` binds a registered roll/check formula, one closed modifier source, and closed
+ordered bands. Its production check authority contains the lease-bound roll actor,
+normal/advantage/disadvantage contributions, durable contiguous pool claim, selected
+natural die, requirement-derived modifier, summed complication difficulty, and seals.
+The resolver derives checked 64-bit total and margin. Requirement, wound/route,
+before-state, accepted-state, and roll seals have precedence over natural criticals.
+Natural 20 selects the first band; natural 1 first establishes last-band critical
+failure, then only a prepared Fate Shield may remap it to the first failed band; rolls
+2-19 select by margin.
+Caller-provided dice/index/modifier/total/margin/category/band/outcome/terminal fields are
+invalid authority.
 
-Outcomes may compose only explicit bounded transitions: add/remove a complication,
-stabilize, add recovery progress, reduce severity by one/two, heal, add an independent
-legacy, or apply a declared deterioration consequence. No outcome may reopen a healed
-wound or change owner/domain.
+`course` binds an exact dose/milestone sequence. For milestone `n`, its inclusive
+window is `[startedAt + afterMinutes, due + maximumGapMinutes]` under exact canonical
+`world_time.currentTimeInMinutes` authority. Too early rejects without a terminal
+attempt. After the too-early gate, the separate scoped requirement authority always classifies
+fresh common/current-milestone evidence as `Satisfied`, `Unsatisfied`, or
+`InvalidAuthority`: only trustworthy live predicate loss is `Unsatisfied`; malformed,
+ambiguous, cross-realm, changed-coordinate/history, or fingerprint evidence is invalid
+and rejects. Too late or `Unsatisfied` on an active course selects the declared
+interruption; when both apply, `deadline_exceeded` dominates the interruption reason.
+Exact-deadline `Satisfied` completion wins. Every accepted milestone/interruption is a terminal attempt,
+but only final completion adds the route to `completedRouteIds[]`. Typed treatment
+history stores sufficient route/course/clock evidence to reconstruct the next legal
+milestone after reload.
+Ordinal 1 requires `activeCourseId=null` and stores complete course-start authority with
+the typed starting wound; continuation requires the agreeing pointer and next contiguous
+history ordinal. A second course rejects. Procedure/guaranteed treatment may occur while
+active, but heal/final completion/interruption clears the pointer.
+
+`guaranteed` binds both a successful unchanged T060 `source_capability` row and a
+separate canonical skill capability proof. Owner/role/capability identity, permanent
+skill ID, source fingerprint, exact `woundDomain=physical`, rank, and sibling requirements
+must agree. Each singleton result operation must remain within the proof's exact
+operation limits and the singleton must make an actual monotone improvement against the
+sealed current wound. No roll fields exist for this mode, and no natural critical, transient
+JSON guarantee, or GM override participates.
+
+Outcomes use only the typed closed operation union above. No outcome may reopen a healed
+wound, change owner/domain, smuggle a name-derived complication, or carry an incomplete
+mechanical payload. Ordered operations evaluate against a working state. `heal` is legal
+only once that working state is severity I and schedules the separate canonical heal
+transition with its complete legacy drafts; enough declared reductions may precede it,
+but it never skips severity ranks. Every result has at most one final `heal`; aggregate
+recovery/capability arithmetic is checked, and aggregate severity reduction is <=2
+without heal or <=3 only to stage a final heal from working rank I. `no_improvement` is
+exclusive and changes no wound mechanics.
+
+Every procedure band categorized `success` structurally contains a positive kind and no
+no-op/harm kind. Before each fresh attempt every band independently simulates against
+the sealed current wound and must be a legal complete transition; every success band
+must additionally produce at least one actual monotone improvement. The first/natural-20
+band is not exempt. An inapplicable partial/failed band blocks the attempt before its
+sealed die can become a free reroll, without invalidating the persisted route shape. A success-category
+`no_improvement` or a result containing only complication/deterioration operations is invalid, so
+`completedRouteIds[]` cannot record a no-op as completed. Partial and failed bands may
+remain non-improving when otherwise legal.
+
+The pure resolution boundary returns immutable typed outcome intents and one
+`consumptionTrigger=success|partial_success|failed_attempt|none`; it never returns raw
+item/resource mutations. The trigger equals the selected category only when the sealed
+policy includes it; otherwise it is `none`. A course interruption always uses `none`, so
+neither its unmet current milestone nor future milestones are consumed. T068 alone
+prepares the pre-resolution reservation authority and finalizes release/typed mutations.
+
+Treatment replay is independently unique by operation key, every non-null attempt ID,
+and every non-null `(courseId, milestoneOrdinal)` pair. An exact repeat returns the
+existing typed receipt. Reusing any coordinate with changed roll, time, route, wound,
+requirement, capability, outcome, or result fingerprint conflicts. Procedure and
+guaranteed attempts have no course coordinates; course milestones and interruptions
+have both. Attempt terminality is derived from an accepted resolution; it is never a
+caller-authored `TerminalAttempt` boolean and is distinct from terminal wound healing.
+
+Replay/conflict lookup runs before fresh-state resolution. An exact replay is proven
+from the original sealed semantic request and typed history result and returns that
+receipt without consulting resources/capabilities already consumed or the current wound
+after-image; it emits no intent. A new semantic operation alone proceeds to current
+before-state and requirement validation. No durable row means validation failure,
+cancellation, or rollback cannot take this replay path.
+
+`completedRouteIds[]` records first successful completion in append order and never
+disables an otherwise legal later attempt. A procedure appends only for category
+`success`; a course only at its final `completion=completed` milestone; a guaranteed
+route on its accepted singleton success. Partial/failed procedures, intermediate course
+milestones, interruptions, and exact replays do not append. `RouteCompletion=AppendOnce`
+iff this attempt is one of those qualifying successes and the route ID is absent from
+the sealed before-image; a later qualifying success for an already recorded route uses
+`None`. The composer independently derives the same value, so the ID remains unique and
+the resolution/history fingerprint is deterministic.
 
 ## 10. Spiritual conflict additions
 
@@ -1440,6 +2598,20 @@ A decline produces no command or history row. `authoringRequestRef` is the safe
 response correlation and exact command reference, while `operationKey` is the unique
 history coordinate.
 
+For `treat`, `authority` is produced only by `MortalWoundTreatmentPlanner`. It binds the
+exact operation/attempt/wound/route/before-state coordinates, route fingerprint, fresh
+requirement authority, and exactly one mode proof: accepted d20, course clock/history,
+or materialized treatment-guarantee source contract. Its `request` member is the full
+canonical `MortalWoundTreatmentAttemptRequest`; the outer command operation key and all
+authority/result copies must agree with it. `result` is the exact closed typed treatment
+history result from section 5, including the same full `requestAuthority`, the selected authored outcome or
+interruption, category, ordered result, consumption trigger, mode evidence, and
+recomputable fingerprints. The reducer derives the terminal-attempt intent from this
+validated result; an input boolean cannot assert terminality. If ordered treatment
+primitives reach severity I and then request `heal`, the planner emits the separately
+validated follow-up heal intent without copying the treatment attempt ID onto the heal
+history row.
+
 Commands are one-shot, consumed only by the matching accepted plan, bound to the root
 session/request/snapshot plus exact final-scene text, and absent in ordinary read-only
 `/раны` queries. The GM cannot write the command root. No command is staged from a raw
@@ -1577,6 +2749,9 @@ the choice revalidates target, wound, consent, provider, resources, and reachabi
 | Known-fact prerequisites or reveals per diagnosis path | 16 |
 | Complications per wound | 16 |
 | Consequences per wound | 4 |
+| Heal legacy drafts / durable legacy relations per wound | 8 |
+| Definitions per mechanical-effect legacy | 5 |
+| Root applications per mechanical-effect legacy | 5 |
 | Persisted wound-owned effect definitions per wound | 5 |
 | Persisted wound-owned root effect bindings per wound | 5 |
 | Persisted pre-turn wound-owned definitions across 2,000 active wounds | 10,000 |
@@ -1584,6 +2759,8 @@ the choice revalidates target, wound, consent, provider, resources, and reachabi
 | Active/suspended wound-owned effect instances across active wounds | 10,000 |
 | Same-turn wound-owned definitions across 32 transitions | 160 |
 | Same-turn wound-owned root applications across 32 transitions | 160 |
+| Same-turn mechanical-legacy definitions across all heal transitions | 160 |
+| Same-turn mechanical-legacy root applications across all heal transitions | 160 |
 | Effect proposals supplied to one wound-envelope validation | 128 |
 | Components or cadence entries per effect proposal | 64 |
 | Flattened reaction-expansion rows per effect proposal (structural work bound) | 64 |
