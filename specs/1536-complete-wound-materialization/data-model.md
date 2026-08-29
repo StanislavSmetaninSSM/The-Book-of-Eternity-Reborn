@@ -1521,6 +1521,8 @@ pending-turn snapshot before the GM receives an opportunity. It has the closed s
         "readableCause": "Повторная травма уже поврежденной руки."
       },
       "hardMaximumSeverityRank": 4,
+      "minimumSeverityRank": null,
+      "guaranteedTrigger": null,
       "safeContext": {
         "target": "поврежденная рука",
         "cause": "повторный удар",
@@ -1569,6 +1571,58 @@ pending and consumed rows. Candidate and occurrence
 fingerprints are domain/versioned and recomputed over every semantic field, including
 the ordered event set; neither is accepted as caller authority.
 
+Version 1 uses the existing length-prefixed UTF-8 SHA-256 writer (including its null
+sentinel). Every integer below uses invariant decimal text. `acceptedEventsFingerprint`
+uses domain `book_of_eternity.wound.accepted_event_set`, version `1`, event count, then
+for every row its zero-based index, `eventRef`, `kind`, `authorityId`, and
+`semanticFingerprint` in original order.
+`candidateFingerprint` uses domain
+`book_of_eternity.mortal_wound.occurrence_candidate`, version `1`, followed in order by:
+source session/request/turn; producer operation key, candidate ordinal/count; adapter
+kind, selected event ordinal, and the recomputed event-set fingerprint; owner realm/kind/
+ID/carrier path; domain and profile; source kind/ID/state; outcome kind/maximum/readable
+cause; hard maximum, nullable minimum, and nullable recomputed guarantee-authority
+fingerprint; safe target/cause, location count, then each zero-based location index and
+value in order;
+`create|worsen` plus nullable wound/cause coordinates; and the source-result fingerprint.
+The client derives `occurrenceId` as `mortal_wound_occurrence_` plus the candidate hash
+hex and `opportunityRef` as `mortal_wound_` plus the same hex. `occurrenceFingerprint`
+uses domain `book_of_eternity.mortal_wound.occurrence`, version `1`, then that occurrence
+ID, public ref, and candidate fingerprint. Parsing recomputes the event-set, candidate,
+derived identities, and occurrence fingerprint rather than trusting persisted copies.
+The typed append candidate therefore has no occurrence ID, public ref, event-set
+fingerprint, candidate fingerprint, occurrence fingerprint, or guarantee-authority
+fingerprint fields; the pure append planner derives all six. Rows in one producer batch share the exact complete accepted-
+event array/fingerprint, although different candidates may select different ordinals.
+
+The pure occurrence append API is
+`PlanAppend(MortalWoundOccurrenceState before,
+MortalWoundOccurrenceCandidateBatch batch,
+MortalWoundOpportunityReceiptState consumedReceipts)`. The non-empty batch owns an
+immutable list of semantic candidates with the fields above but none of the derived
+fields just listed. It must contain exactly one complete producer key/count and every
+ordinal `0..count-1`; caller order is ignored and the derived append order is ordinal.
+Its `BatchFingerprint` uses domain
+`book_of_eternity.mortal_wound.occurrence_candidate_batch`, version `1`, producer key,
+candidate count, then each ordinal and derived candidate fingerprint in ordinal order.
+The result is closed to `Disposition`, `Issues`, `State`, and `BatchFingerprint`, where
+disposition is exactly `appended|exact_replay|conflict`. Exact replay requires every
+candidate to match either one pending occurrence or one consumed receipt; a mixture is
+normal after partial decision processing. A missing ordinal, changed coordinate/seal,
+or pending/consumed duplicate is conflict and returns no after-state. A new append is
+all-or-nothing under the 32-row pending bound.
+
+The construction seam is exact: `MortalWoundOccurrenceCandidateBatch` takes only
+`IReadOnlyList<MortalWoundOccurrenceCandidate>`. Each candidate constructor takes, in
+schema order, source session/request/turn; producer key/ordinal/count; adapter kind;
+selected ordinal plus `IReadOnlyList<WoundAcceptedEventAuthority>`; owner; domain;
+profile; typed source; typed outcome; hard maximum; nullable minimum; nullable existing
+`WoundGuaranteedTriggerEvidence`; safe context; nullable typed worsening target; and
+source-result fingerprint. The small typed records are
+`MortalWoundOccurrenceSource(Kind, SourceId, State)`,
+`MortalWoundOccurrenceOutcome(Kind, MaximumSeverityRank, ReadableCause)`, and
+`MortalWoundOccurrenceWorseningTarget(WoundId, CauseKind)`.
+
 Mortal owners are exactly `player|npc|combatant|combatant_member` on their registered
 carrier paths, and domain is exactly `physical`. A persisted occurrence outcome is
 exactly `harmful` with rank I-IV; a harmless typed result is rejected before candidate
@@ -1578,13 +1632,58 @@ Safe context uses unique closed location kinds and bounded readable text. Source
 ID, and state remain typed-producer coordinates whose kind-specific canonical agreement
 is revalidated by T064 rather than an open authorization surface.
 
+An ordinary occurrence has explicit null `minimumSeverityRank` and
+`guaranteedTrigger`. A guaranteed occurrence has a rank I-IV minimum and one complete
+pre-materialized trigger containing trigger/source coordinates, realm/domain/owner,
+required rank, `materializedAtTurn`, source-contract fingerprint, and the recomputed
+existing `book_of_eternity.wound.guaranteed_trigger_authority` v1 fingerprint. Its
+required rank equals the minimum, is within both outcome and hard maxima, its source/
+realm/domain/owner exactly match the occurrence, its source state is `active`, and it was
+materialized before `sourceTurn`. Partial, caller-sealed, stale, or contradictory
+guarantees reject. This preserves the mandatory-result behavior after a cold restart;
+a guaranteed occurrence cannot become an ordinary optional one.
+
+The non-null pair has this exact closed property order and shape:
+
+```json
+{
+  "minimumSeverityRank": 2,
+  "guaranteedTrigger": {
+    "triggerId": "exact-pre-materialized-trigger",
+    "sourceKind": "exact-occurrence-source-kind",
+    "sourceId": "exact-occurrence-source-id",
+    "sourceState": "active",
+    "realm": "mortal_world",
+    "domain": "physical",
+    "owner": {
+      "realm": "mortal_world",
+      "ownerKind": "player",
+      "ownerId": "player_current",
+      "carrierPath": "game_state/player/wounds.json"
+    },
+    "requiredSeverityRank": 2,
+    "materializedAtTurn": 40,
+    "sourceContractFingerprint": "sha256:...",
+    "authorityFingerprint": "sha256:..."
+  }
+}
+```
+
+The guarantee-authority fingerprint uses domain
+`book_of_eternity.wound.guaranteed_trigger_authority`, version `1`, followed by
+`triggerId`, source kind/ID/state, realm, domain, owner realm/kind/ID/carrier path,
+required severity rank, materialized turn, and source-contract fingerprint. Both integer
+fields use invariant decimal text. The append candidate supplies the evidence fields but
+not `authorityFingerprint`; the pure planner derives it.
+
 `worseningTarget` is absent for create and non-null only for an explicit worsen. A null,
 partial, stale, foreign, terminal, duplicate, or inferred target is invalid. The
 Mortal worsening cause is exactly `deterioration|retrauma`. The
 occurrence selects one ordinal in the complete accepted-event set, but the binding seals
 the whole ordered set reconstructed independently at composition and validation.
 The strict state parser preserves canonical row order and rejects malformed, duplicate,
-confusable, or over-limit state. Historical append/consumption agreement is enforced by
+confusable, over-limit, or same-batch out-of-order state; only the typed append planner
+normalizes caller batch enumeration into ascending candidate ordinal. Historical append/consumption agreement is enforced by
 T070 against the signed before-image; the parser is never treated as proof that an
 unsigned earlier root had the same rows.
 
@@ -1640,6 +1739,55 @@ versioned and recomputed over every row field except themselves. T070 enforces a
 only agreement against the
 signed before-image; exact canonical snapshot/write-lease authority is the anti-
 truncation boundary used by the rest of client-owned canonical state.
+
+The version-1 `receiptId` seed uses the same length-prefixed writer with domain
+`book_of_eternity.mortal_wound.opportunity_receipt_id`, version `1`, then opportunity ID,
+decision operation key, and decision fingerprint; the ID is `mortal_wound_receipt_` plus
+the seed hash hex. `receiptFingerprint` uses domain
+`book_of_eternity.mortal_wound.opportunity_receipt`, version `1`, then every persisted
+receipt field in schema order except itself. Nullable wound/transition coordinates use
+the writer's null sentinel. The parser recomputes both the derived receipt ID and receipt
+fingerprint. Source-result, full candidate semantics, event, opportunity, and decision
+seals remain typed input authorities whose exact cross-root agreement is checked by the
+pure append/agreement planners; the candidate-to-ID-to-occurrence chain itself is locally
+recomputed and is not opaque input.
+The receipt parser additionally proves every locally derivable link:
+`opportunityId == mortal_wound_occurrence_ + candidate hash hex`, the public occurrence
+ref reconstructed from the candidate hash reproduces `occurrenceFingerprint`, and
+`operationKey == wound_operation_ + decision hash hex`. It cannot recompute the full
+candidate or decision seal from the receipt projection alone, so their signed source and
+decision authorities remain mandatory T070 inputs.
+The decision draft does not repeat caller-supplied occurrence/source/batch/event fields.
+It carries only the decision-turn binding, client-owned opportunity ID used for exact
+lookup, opportunity-authority fingerprint, decision authority, and conditional wound/
+transition coordinates. The planner itself resolves the occurrence from the current
+parsed pending before-state for a new decision, then projects every consumed-source and
+selected-event field. A detached occurrence object is never accepted as membership
+proof.
+
+The pure decision API is
+`PlanConsumeAndAppend(MortalWoundOccurrenceState pendingBefore,
+MortalWoundOpportunityReceiptState receiptBefore,
+MortalWoundOpportunityReceiptDraft draft, WoundHistoryState plannedHistory)`. Passing
+the parsed complete planned history state avoids a forgeable caller projection: `none`
+requires no transition with the decision operation key, while `materialize` requires
+exactly one ordinary `create|worsen` transition agreeing on transition/wound/turn/event/
+operation/source authority. The closed result contains `Disposition`, `Issues`,
+`OccurrenceState`, `ReceiptState`, `Receipt`, and `HistoryAgreement`; disposition is
+exactly `appended|exact_replay|conflict`. A new accepted decision atomically removes the
+exact current pending row and appends its receipt in the two returned after-states.
+Exact replay is resolved by opportunity ID in the durable receipt state before pending
+lookup, returns a detached original receipt, and changes neither state. A changed replay,
+an opportunity absent from both states, or the same tuple in both states conflicts and
+returns no after-states. `ValidateConsumedOccurrenceAgreement(pending, receipts)` checks
+the complete pending-plus-consumed batch partition, cross-root tuple/identity uniqueness,
+and shared source session/request/turn/count/source-result agreement.
+
+`MortalWoundOpportunityDecisionBinding` is exactly session ID, request ID, snapshot
+token, and turn. `MortalWoundOpportunityReceiptDraft` is exactly that binding,
+`OpportunityId`, opportunity-authority fingerprint, decision, decision fingerprint,
+operation key, and nullable wound/transition IDs; it has no occurrence object or repeated
+consumed-source/event coordinates.
 
 The root rejects malformed, duplicate, reordered, or conflicting rows. A `none` receipt
 has null `woundId` and `transitionId` and no wound-history row. A `materialize` receipt

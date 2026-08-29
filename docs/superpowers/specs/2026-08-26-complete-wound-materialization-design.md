@@ -320,12 +320,29 @@ event set from the immutable response plus occurrence; the wound selects one ord
 seals the whole set. Create has no worsening coordinate, while worsen always names one
 explicit exact active wound.
 
+The occurrence also preserves the existing opportunity contract's exact nullable
+minimum-severity/guaranteed-trigger pair. Ordinary cases persist both as null; a
+guaranteed case persists one pre-materialized, source/owner/domain-bound trigger whose
+required rank is the minimum and remains inside every hard cap. This authority is part
+of the candidate seal, so restart cannot turn a mandatory wound into an optional one.
+
 Every accepted opportunity decision, including no wound, appends one durable client-
 owned receipt in the same common transaction that consumes the pending occurrence. An
 exact cold replay creates no command or transition; changing the decision conflicts;
 only a newly sealed occurrence/snapshot creates another opportunity. Materialized
 receipts additionally agree with normal wound transition history, while a decline does
 not invent a wound-history row.
+The pure decision plan receives both current parsed before-states and returns both
+after-states. It resolves a new decision only from the current pending state and resolves
+cold replay from the durable receipt first; a detached older occurrence is not
+membership authority.
+
+The pending and receipt roots use the same length-prefixed UTF-8 SHA-256 primitive as
+the accepted-turn contract. Their v1 candidate, occurrence, receipt-ID, and receipt
+domains, exact field order, derived client IDs, and null encoding are normative in the
+Spec Kit data model. Parsers recompute all locally derivable seals and identities;
+source/event/opportunity/decision seals are accepted only as typed cross-root authority,
+never as permission to write.
 
 For an ordinary opportunity, zero through the maximum severity are legal: zero means
 the GM chose no wound. A guaranteed trigger supplies its own minimum/maximum or exact

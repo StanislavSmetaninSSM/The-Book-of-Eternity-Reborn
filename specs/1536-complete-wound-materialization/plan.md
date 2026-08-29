@@ -418,7 +418,8 @@ history atomically for every owner carrier; effect removal never heals it.
    ingress treats the closed source-shaped event as correlation only, resolves one
    signed formal/QTE/combat/trap/check/hazard/narrative occurrence, and derives the
    owner/profile/source/outcome/severity and optional explicit create-versus-worsen
-   target. A shared composer builds the complete ordered accepted-event set from the
+   target, plus the exact nullable minimum/guaranteed-trigger authority already supported
+   by the opportunity contract. A shared composer builds the complete ordered accepted-event set from the
    immutable response plus occurrence; `ValidationService` independently reconstructs
    and compares it instead of replacing it with the command binding. The adapter returns
    the existing wound composition result without writing. Formal re-trauma then uses the
@@ -433,7 +434,10 @@ history atomically for every owner carrier; effect removal never heals it.
    snapshot that seals its exact bytes may expose the opportunity to the GM. The later
    wound-decision common plan appends the exact opportunity-decision receipt (including
    `none`) and consumes the pending occurrence, so restart replay is either an exact no-
-   command result or a conflict.
+   command result or a conflict. Both state implementations reuse the length-prefixed
+   UTF-8 SHA-256 writer; their exact v1 candidate/occurrence/receipt domain strings,
+   field order, derived IDs, and null encoding are frozen in `data-model.md`, so tests
+   can detect a reordered or caller-trusted seal independently.
 3. Add RED route/discovery/requirement/procedure/course/guaranteed/resource/stale-ref
    tests using two unrelated setting fixtures. Discovery uses an explicit
    `requiresKnownFacts` least-fixed-point graph, sealed success/failure diagnosis
