@@ -113,11 +113,12 @@ public sealed class MortalWoundRecoveryTests
         fixture.AssertCarrierIdentityHistoryAgreement();
 
         var resolution = AssertPlannerResult(InvokePlan(fixture), scenario);
-        if (!scenario.ReplayAfterCommit)
+        if (resolution is null)
             return;
-
         var receipt = ComposeAndPublishRecovery(fixture, resolution!);
         fixture.AssertCarrierIdentityHistoryAgreement();
+        if (!scenario.ReplayAfterCommit)
+            return;
         fixture.RestartForReplay();
         fixture.AssertCarrierIdentityHistoryAgreement();
         fixture.CorruptLiveClock();
@@ -254,7 +255,7 @@ public sealed class MortalWoundRecoveryTests
 
         var intents = Values(resolution, "TransitionIntents").ToArray();
         Assert.Equal(scenario.IntentTypes, intents.Select(static value => value.GetType().Name));
-        Assert.All(intents, AssertTypedIntent);
+        Assert.All(intents, intent => AssertTypedIntent(intent, scenario, Required(resolution, "TickKey")));
         Assert.DoesNotContain(resolution.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
             static p => p.Name.Contains("History", StringComparison.Ordinal) ||
                         p.Name.Contains("WoundMutation", StringComparison.Ordinal) ||
@@ -270,7 +271,7 @@ public sealed class MortalWoundRecoveryTests
             Assert.Null(death);
     }
 
-    private static void AssertTypedIntent(object value)
+    private static void AssertTypedIntent(object value, Scenario scenario, object tickKey)
     {
         Assert.False(value is JsonNode);
         Assert.Contains(value.GetType().Name, new[]
@@ -279,6 +280,19 @@ public sealed class MortalWoundRecoveryTests
             "MortalWoundDeathHandoffIntent"
         });
         AssertClosedIntent(value);
+        Assert.Equal(tickKey, Required(value, "TickKey"));
+        AssertFingerprint(Required(value, "AuthorityFingerprint"));
+        if (value.GetType().Name == "MortalWoundRecoveryProgressIntent")
+        {
+            Assert.Equal(scenario.ElapsedCadences, Assert.IsType<long>(Required(value, "ElapsedCadences")));
+            Assert.Equal(scenario.NextRecoveryAnchor, NullableLong(value, "NextRecoveryAnchorMinute"));
+        }
+        if (value.GetType().Name == "MortalWoundRecoveryDeteriorationIntent")
+        {
+            Assert.Equal(scenario.ElapsedDeteriorationCadences, Assert.IsType<long>(Required(value, "ElapsedCadences")));
+            Assert.Equal(scenario.PolicyRefExpected, NullableString(value, "PolicyRef"));
+            Assert.Equal(scenario.NextDeteriorationAnchor, NullableLong(value, "NextDeteriorationAnchorMinute"));
+        }
         Assert.DoesNotContain(value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
             static p => p.Name.Contains("Json", StringComparison.Ordinal) ||
                         p.Name.Contains("History", StringComparison.Ordinal) ||
@@ -312,6 +326,7 @@ public sealed class MortalWoundRecoveryTests
 
     private static object ComposeAndPublishRecovery(Fixture fixture, object resolution)
     {
+        var before = Fixture.CaptureAllGovernedBytes(fixture.FileSystem);
         var type = typeof(WoundMaterializationContract).Assembly.GetType(
             "BookOfEternityClient.Services.MortalWoundRecoveryAcceptedPlanComposer", false, false);
         Assert.True(type is not null,
@@ -329,6 +344,7 @@ public sealed class MortalWoundRecoveryTests
         var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(Required(result, "WoundStageBundle"));
         var acceptedPlan = Assert.IsType<AcceptedMechanicsPlan>(Required(result, "AcceptedPlan"));
         AssertPublishedWoundPlan(acceptedPlan, bundle);
+        Fixture.AssertAllGovernedBytesUnchanged(fixture.FileSystem, before);
         var receipt = Required(result, "Receipt");
         AssertReceipt(receipt);
         Assert.Same(acceptedPlan, PublishAcceptedPlan(fixture));
@@ -703,17 +719,17 @@ public sealed class MortalWoundRecoveryTests
             Assert.Equal("Resolved", Convert.ToString(Required(resolutionResult, "Disposition")));
             Assert.Empty(Values(resolutionResult, "Issues"));
             var resolution = Required(resolutionResult, "Resolution");
-            var governedBefore = CaptureGovernedBytes(fs);
+            var governedBefore = CaptureAllGovernedBytes(fs);
             var composed = Invoke(compose, fs, lease, new GameResponse(), acceptedState, request, resolution);
             var plan = Assert.IsType<AcceptedMechanicsPlan>(Required(composed, "Plan"));
             AssertPublishedWoundPlan(plan, Assert.IsType<AcceptedMechanicsWoundStageBundle>(Required(composed, "WoundStageBundle")));
-            AssertGovernedBytesUnchanged(fs, governedBefore);
+            AssertAllGovernedBytesUnchanged(fs, governedBefore);
             Assert.Same(plan, new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
                 .BindTo(lease).NormalizeAcceptedMechanicsAsync(null).GetAwaiter().GetResult());
             Assert.NotEqual("untreated", ReadCanonicalWound(fs, woundId).Care.State);
         }
 
-        private static IReadOnlyDictionary<string, byte[]?> CaptureGovernedBytes(FileSystemManager fs) =>
+        internal static IReadOnlyDictionary<string, byte[]?> CaptureAllGovernedBytes(FileSystemManager fs) =>
             new[]
             {
                 WoundCarrierCatalog.PlayerPath, WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
@@ -724,7 +740,7 @@ public sealed class MortalWoundRecoveryTests
                 return File.Exists(full) ? File.ReadAllBytes(full) : null;
             }, StringComparer.Ordinal);
 
-        private static void AssertGovernedBytesUnchanged(
+        internal static void AssertAllGovernedBytesUnchanged(
             FileSystemManager fs,
             IReadOnlyDictionary<string, byte[]?> before)
         {
