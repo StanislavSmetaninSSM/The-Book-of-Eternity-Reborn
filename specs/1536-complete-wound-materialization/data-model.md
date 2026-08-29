@@ -1485,8 +1485,23 @@ pending-turn snapshot before the GM receives an opportunity. It has the closed s
     {
       "occurrenceId": "client-owned",
       "opportunityRef": "safe-public-correlation",
+      "sourceSessionId": "exact-source-session",
+      "sourceRequestId": "exact-source-request",
+      "sourceTurn": 41,
+      "producerOperationKey": "mortal_wound_source_operation_...",
+      "producerCandidateOrdinal": 0,
+      "producerCandidateCount": 1,
       "adapterKind": "formal",
       "acceptedEventOrdinal": 0,
+      "acceptedEvents": [
+        {
+          "eventRef": "accepted-event-ref",
+          "kind": "formal_retrauma",
+          "authorityId": "accepted-source-coordinate",
+          "semanticFingerprint": "sha256:..."
+        }
+      ],
+      "acceptedEventsFingerprint": "sha256:...",
       "owner": {
         "realm": "mortal_world",
         "ownerKind": "player",
@@ -1505,6 +1520,7 @@ pending-turn snapshot before the GM receives an opportunity. It has the closed s
         "maximumSeverityRank": 2,
         "readableCause": "Повторная травма уже поврежденной руки."
       },
+      "hardMaximumSeverityRank": 4,
       "safeContext": {
         "target": "поврежденная рука",
         "cause": "повторный удар",
@@ -1514,6 +1530,8 @@ pending-turn snapshot before the GM receives an opportunity. It has the closed s
         "woundId": "exact-active-wound-id",
         "causeKind": "retrauma"
       },
+      "sourceResultFingerprint": "sha256:...",
+      "candidateFingerprint": "sha256:...",
       "occurrenceFingerprint": "sha256:..."
     }
   ]
@@ -1521,10 +1539,11 @@ pending-turn snapshot before the GM receives an opportunity. It has the closed s
 ```
 
 The seven exact adapter kinds are `formal`, `qte`, `combat`, `trap`, `check`,
-`hazard`, and `narrative`. A registered client producer reduces its accepted typed
-result to one immutable occurrence candidate, and the source-result common accepted
-plan atomically publishes that candidate to this root. Only the next active pending-turn
-snapshot may make the sealed row available to the GM. A current combatant, hazard,
+`hazard`, and `narrative`. A registered client producer reduces each harmful accepted
+typed result to one immutable occurrence-candidate batch, and the source-result common
+accepted plan atomically publishes the complete batch to this root. Harmless results
+produce no occurrence candidate or public opportunity. Only the next active pending-
+turn snapshot may make a sealed harmful row available to the GM. A current combatant, hazard,
 source definition, die, or prose row is only supporting source evidence and cannot
 create an occurrence by itself. The
 source-shaped adapter input repeats only public correlation fields and must agree
@@ -1532,10 +1551,42 @@ exactly with one signed occurrence; it never carries the occurrence fingerprint,
 session/request/snapshot authority, accepted-event coordinates, transition identity,
 receipt, anchor, or after-image.
 
+The pending root contains at most 32 occurrences. Each occurrence contains 1-160 exact
+accepted events in original order; `acceptedEventOrdinal` is zero-based and must select
+one row, while `acceptedEventsFingerprint` is independently recomputed over the whole
+array. `producerOperationKey` is the stable source-result replay coordinate: an exact
+candidate retry resolves the existing row and changed semantics under the same key
+conflict. Every candidate also seals a zero-based `producerCandidateOrdinal` and the
+positive complete `producerCandidateCount`; a source-result batch must contain exactly
+the unique contiguous ordinals `0..count-1`. Pure append logic validates this set and
+orders it by ordinal, so caller enumeration order cannot change the after-image.
+Occurrence IDs, public refs, candidate fingerprints, and semantic candidate coordinates
+are exact/confusable unique. `producerOperationKey` is unique per batch, not per row:
+every row sharing it must agree exactly on source session/request/turn, candidate count,
+adapter/source-result authority and source-result fingerprint, while
+`(producerOperationKey, producerCandidateOrdinal)` is exact/confusable unique across
+pending and consumed rows. Candidate and occurrence
+fingerprints are domain/versioned and recomputed over every semantic field, including
+the ordered event set; neither is accepted as caller authority.
+
+Mortal owners are exactly `player|npc|combatant|combatant_member` on their registered
+carrier paths, and domain is exactly `physical`. A persisted occurrence outcome is
+exactly `harmful` with rank I-IV; a harmless typed result is rejected before candidate
+publication, and later source ingress cannot invent a row for it.
+`hardMaximumSeverityRank` is I-IV and is sealed by the typed producer.
+Safe context uses unique closed location kinds and bounded readable text. Source kind,
+ID, and state remain typed-producer coordinates whose kind-specific canonical agreement
+is revalidated by T064 rather than an open authorization surface.
+
 `worseningTarget` is absent for create and non-null only for an explicit worsen. A null,
 partial, stale, foreign, terminal, duplicate, or inferred target is invalid. The
+Mortal worsening cause is exactly `deterioration|retrauma`. The
 occurrence selects one ordinal in the complete accepted-event set, but the binding seals
 the whole ordered set reconstructed independently at composition and validation.
+The strict state parser preserves canonical row order and rejects malformed, duplicate,
+confusable, or over-limit state. Historical append/consumption agreement is enforced by
+T070 against the signed before-image; the parser is never treated as proof that an
+unsigned earlier root had the same rows.
 
 ### 8.2 Opportunity decision receipts
 
@@ -1559,22 +1610,57 @@ including `none`:
       "turn": 42,
       "eventRef": "accepted-event-ref",
       "eventSemanticFingerprint": "sha256:...",
+      "sourceSessionId": "exact-source-session",
+      "sourceRequestId": "exact-source-request",
+      "sourceTurn": 41,
+      "producerOperationKey": "mortal_wound_source_operation_...",
+      "producerCandidateOrdinal": 0,
+      "producerCandidateCount": 1,
+      "sourceResultFingerprint": "sha256:...",
+      "candidateFingerprint": "sha256:...",
+      "occurrenceFingerprint": "sha256:...",
       "decision": "none",
       "decisionFingerprint": "sha256:...",
       "operationKey": "wound_operation_...",
+      "woundId": null,
+      "transitionId": null,
       "receiptFingerprint": "sha256:..."
     }
   ]
 }
 ```
 
-The root rejects malformed, duplicate, reordered, or conflicting rows and must agree
-with wound history for materialized decisions. Exact cold replay returns the original
-detached receipt without a new command or transition. Reusing the same opportunity with
-a different decision conflicts. A new signed occurrence/snapshot produces a new
-opportunity. The common accepted plan composes the receipt after-image together with any
-wound/effect/history changes, consumes the pending occurrence, and remains the sole
-publisher; the adapter and state distributor never write either canonical root directly.
+The receipt root contains at most 20,000 rows. `opportunityId` is the exact consumed
+`occurrenceId`. Ordinals are contiguous from one and `nextOrdinal` is exactly the next
+row; IDs, opportunity IDs, and decision operation keys are exact/confusable unique.
+Producer operation keys repeat only for candidates from the same batch and obey the
+same batch agreement plus `(producerOperationKey, producerCandidateOrdinal)` uniqueness
+across the union of pending occurrences and receipts. Receipt fingerprints are domain/
+versioned and recomputed over every row field except themselves. T070 enforces append-
+only agreement against the
+signed before-image; exact canonical snapshot/write-lease authority is the anti-
+truncation boundary used by the rest of client-owned canonical state.
+
+The root rejects malformed, duplicate, reordered, or conflicting rows. A `none` receipt
+has null `woundId` and `transitionId` and no wound-history row. A `materialize` receipt
+has both exact values and must match exactly one `create|worsen` history row on
+`transitionId`, `woundId`, `turn`, `eventRef`, `operationKey`, and
+`sourceFingerprint == opportunityAuthorityFingerprint`. Exact cold replay returns the
+original detached receipt without a new command or transition. Replay is indexed first
+by opportunity ID: reusing the same opportunity with a different decision or any
+changed session/request/snapshot/turn/event/fingerprint/operation/transition coordinate
+conflicts. A new signed occurrence/snapshot produces a new opportunity. The common
+accepted plan composes the receipt after-image together with any wound/effect/history
+changes, consumes the pending occurrence, and remains the sole publisher; the adapter
+and state distributor never write either canonical root directly.
+
+The durable receipt also retains the consumed occurrence's source session/request/turn,
+producer operation key and batch ordinal/count, source-result/candidate/occurrence
+fingerprints. The source-result T070 transaction reads both pending occurrences and
+receipts as signed before-images before append. For every complete retried batch it
+combines pending and consumed rows by producer operation key: all exact candidates mean
+no new occurrence, while any changed coordinate/fingerprint conflicts. Thus consumption
+cannot reopen the original source result as a fresh opportunity.
 
 ## 9. Treatment route model
 
@@ -2968,8 +3054,11 @@ the choice revalidates target, wound, consent, provider, resources, and reachabi
 | --- | ---: |
 | Active wounds across all carriers | 2,000 |
 | History transitions | 20,000 |
+| Opportunity-decision receipts | 20,000 |
 | Wound commands per accepted turn | 128 |
-| Pending wound candidates | 64 |
+| Pending wound repair candidates | 64 |
+| Pending Mortal accepted occurrences | 32 |
+| Accepted events per Mortal occurrence | 160 |
 | Treatment routes per wound | 32 |
 | Diagnosis paths per wound | 32 |
 | Requirements per route/path | 16 |

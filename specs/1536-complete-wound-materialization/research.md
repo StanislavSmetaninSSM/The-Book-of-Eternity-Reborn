@@ -153,10 +153,13 @@ the necessary owner identities and promotion semantics.
 
 ## R-005: A wound opportunity is a sealed maximum, not an automatic injury
 
-**Decision**: Every accepted Mortal producer reduces the exact formal, QTE, combat,
-trap, check, hazard, or narrative result to one immutable occurrence candidate. The
-source-result common accepted plan publishes it to the client-owned pending root, and
-the next active pending-turn snapshot seals its bytes before exposing the opportunity.
+**Decision**: Every accepted Mortal producer reduces a harmful exact formal, QTE,
+combat, trap, check, hazard, or narrative result to one immutable complete occurrence-
+candidate batch; a harmless result produces none. The source-result common accepted
+plan checks stable producer operation keys against pending occurrences and durable
+consumed receipts, publishes only new candidates to the client-owned pending root in
+sealed batch-ordinal order, and the next active pending-turn snapshot seals their bytes
+before exposing an opportunity.
 Correlation-only source input resolves exactly
 one such occurrence; current source state, combat membership, a hazard, dice, or prose
 cannot prove that the event occurred. The client independently reconstructs the complete
@@ -479,9 +482,10 @@ selection legitimately exceeds its default; do not remove coverage to win second
 
 Add bounded descriptor counts and indexed identity/source/target lookups to prevent
 quadratic scans. Suggested version-1 ceilings are 2,000 active wounds, 20,000 history
-rows, 128 wound commands per turn, 64 pending resolutions, 32 treatment routes per
-wound, 16 requirements per route, 4 consequences, and 32 transition steps per accepted
-turn. The complete source graph adds exact derived bounds of five definitions and five
+rows, 20,000 opportunity-decision receipts, 128 wound commands per turn, 64 repair
+resolutions, 32 pending Mortal occurrences with 1-160 accepted events each, 32 treatment
+routes per wound, 16 requirements per route, 4 consequences, and 32 transition steps per
+accepted turn. The complete source graph adds exact derived bounds of five definitions and five
 root bindings per wound, 10,000 pre-turn definitions/root bindings across 2,000 active
 wounds, and 160 same-turn definitions/root applications across 32 transitions. These
 wound partitions are checked before concatenation with independently bounded generic

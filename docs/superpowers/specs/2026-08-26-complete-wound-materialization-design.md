@@ -302,14 +302,17 @@ accepted occurrence from its typed result. Pure roleplay events have no invented
 universal damage formula: the narrative producer may admit the GM's causal description
 only while accepting that upstream typed result, then seals its bounded profile,
 outcome, and maximum. The later wound-opportunity ingress cannot author or alter those
-facts. If the sealed occurrence proves an event harmless, a contradictory wound is
-rejected. The client never tries to infer genre physics from narrative prose.
+facts. If the accepted typed result is harmless, the producer returns no occurrence
+candidate or public opportunity; a later attempt to correlate a wound therefore fails.
+The client never tries to infer genre physics from narrative prose.
 
 The adapter's source-shaped input is correlation, not causal authority. Before the GM
 receives an opportunity, the owning formal/QTE/combat/trap/check/hazard/narrative
-producer returns one closed write-free accepted-occurrence candidate, the source-result
-common accepted plan publishes it atomically, and only the following pending-turn
-snapshot that seals its exact bytes exposes it as an opportunity. A source
+producer returns one closed write-free complete harmful occurrence-candidate batch. The
+source-result common accepted plan first resolves its stable operation keys against both
+pending rows and durable consumed receipts, then atomically publishes only genuinely new
+candidates in sealed batch-ordinal order. Only the following pending-turn snapshot that
+seals their exact bytes exposes them as opportunities. A source
 definition, current combatant, active
 hazard, die, or prose row by itself cannot stand in for that accepted result. Initial
 composition and accepted-turn validation independently reconstruct the complete ordered
@@ -336,10 +339,13 @@ Wound-capable Mortal turns use two separately atomic accepted transactions with 
 signed pending boundary between them:
 
 1. The owning formal/QTE/combat/trap/check/hazard/narrative producer accepts its typed
-   source result and asks T064 to reduce it to one write-free occurrence candidate.
-2. The source-result T070 common plan independently validates that candidate and
-   atomically appends it to the pending occurrence root. Neither the producer nor its
-   adapter writes canonical state, and this transaction publishes no wound.
+   source result and asks T064 to reduce a harmful result to one write-free complete
+   candidate batch; a harmless result produces none.
+2. The source-result T070 common plan independently validates the batch and both signed
+   occurrence/receipt before-images, resolves pending or consumed exact replay versus
+   changed semantics by stable producer operation key, and atomically appends only new
+   candidates in sealed ordinal order. Neither the producer nor its adapter writes
+   canonical state, and this transaction publishes no wound.
 3. A subsequent active pending-turn snapshot seals the exact occurrence-root bytes.
    Only then does the client expose the bounded opportunity context to the GM.
 4. The GM chooses `none` or `materialize`. For materialization it authors the wound,

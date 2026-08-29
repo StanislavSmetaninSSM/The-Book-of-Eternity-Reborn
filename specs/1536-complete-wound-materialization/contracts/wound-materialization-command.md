@@ -48,6 +48,16 @@ selects one exact zero-based ordinal inside that set. Initial composition and ac
 turn validation reconstruct the set independently; an added, removed, replaced, or
 reordered sibling invalidates the wound command. `worseningTarget` is absent for create
 and is one explicit exact active-wound/cause coordinate for worsen; it is never inferred.
+The occurrence persists the original ordered 1-160 event authorities and their
+recomputed set fingerprint, plus one stable source `producerOperationKey` and exact
+candidate ordinal/count for the complete harmful source-result batch. Pure append logic
+sorts by the sealed ordinal. Exact source retry reuses a pending occurrence or resolves
+its durable consumed receipt, while changed semantics under that key conflict. A
+harmless typed result creates no candidate or public opportunity.
+The producer key identifies the batch and therefore repeats across its rows; each row is
+identified by `(producerOperationKey, producerCandidateOrdinal)`. Every pending or
+consumed row in that group must agree on source session/request/turn, count, adapter and
+source-result authority/fingerprint, and no ordinal may exist in both roots.
 
 ## Client-authored opportunity
 
@@ -231,6 +241,15 @@ only for corrected acquisition narration while preserving the valid proposal.
   semantic fingerprint, decision fingerprint, and operation key. Exact cold replay
   returns no command/transition; changed semantics conflict; only a newly sealed
   occurrence/snapshot creates a distinct opportunity.
+- A `none` receipt has no wound/transition coordinate and no wound-history row. A
+  `materialize` receipt names one exact wound and `create|worsen` transition and agrees
+  with that history row on transition/wound/turn/event/operation and opportunity source
+  fingerprint.
+- Every receipt retains the consumed occurrence's source session/request/turn,
+  producer operation key and candidate ordinal/count, plus source-result/candidate/
+  occurrence fingerprints. The source-result publisher reads both roots before append,
+  so exact retry after consumption is still a no-op and changed source semantics still
+  conflict.
 - Repair uses the same event, target, roll, maximum, and provisional semantic proposal.
 - A changed snapshot or semantic event abandons the pending packet and requires a new
   opportunity.

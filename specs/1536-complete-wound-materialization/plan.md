@@ -74,10 +74,11 @@ file-backed canonical state, GM bridge/daemon prompts, and React browser fronten
 the number of wound/effect/resource operations; no wound-by-effect nested scans; bounded
 repair/pending waves; ordinary wound query/choice response comparable to existing
 effects/status commands; no new unbounded test lane. Version-1 limits are 2,000 active
-wounds, 20,000 history rows, 128 commands, 64 pending candidates, 32 routes/diagnosis
-paths per wound, 16 requirements per route/path, 16 known-fact prerequisites and 16
-reveals per diagnosis path, 16 complications, four consequences, and 32 wound
-transitions per accepted turn. Wound source indexing separately caps five definitions
+wounds, 20,000 history rows, 20,000 opportunity-decision receipts, 128 commands, 64
+repair candidates, 32 pending Mortal occurrences with 1-160 accepted events each, 32
+routes/diagnosis paths per wound, 16 requirements per route/path, 16 known-fact
+prerequisites and 16 reveals per diagnosis path, 16 complications, four consequences,
+and 32 wound transitions per accepted turn. Wound source indexing separately caps five definitions
 and five root bindings per wound, 10,000 of either across 2,000 pre-turn active wounds,
 at most 10,000 active/suspended wound-owned effect instances, and 160
 definitions/root applications across 32 same-turn transitions; generic
@@ -424,8 +425,11 @@ history atomically for every owner carrier; effect removal never heals it.
    ordinary `StateDistributor` -> `ValidationService` -> common-plan pipeline; callers
    cannot inject or reuse an occurrence, treatment binding, fingerprint, transition,
    receipt, anchor, or after-image. Each typed producer first reduces its accepted result
-   to a write-free occurrence candidate. The source-result common plan atomically
-   appends that candidate to the pending occurrence root; only a subsequent pending-turn
+   to a write-free complete harmful occurrence-candidate batch; harmless results produce
+   none. The source-result common plan reads both pending occurrences and durable
+   decision receipts, resolves exact pending/consumed replay versus changed-source
+   conflict by producer operation key, and atomically appends only genuinely new
+   candidates in sealed batch-ordinal order; only a subsequent pending-turn
    snapshot that seals its exact bytes may expose the opportunity to the GM. The later
    wound-decision common plan appends the exact opportunity-decision receipt (including
    `none`) and consumes the pending occurrence, so restart replay is either an exact no-
