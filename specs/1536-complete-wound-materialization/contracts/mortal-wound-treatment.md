@@ -1355,12 +1355,17 @@ session/request/snapshot-token/turn, then rebinds the same coordinate vector and
 selected evidence to the active decision snapshot through the shared typed event
 composer. It also requires the current receipt root to retain the signed append-only
 prefix and the live pending root to equal the signed rows minus exactly retained
-consumptions. Only when the explicit
+consumptions. The live history must retain its exact signed ordered prefix; rows after
+that prefix and appended `materialize` receipts form an exact one-to-one
+`create|worsen` agreement, while appended `none` receipts contribute no history row.
+Only when the explicit
 worsening coordinate is present, selects the canonical active wound exactly once from
 that signed before-image. The accepted-turn validator independently reads the occurrence
 and decision-receipt roots from the signed snapshot, verifies their cross-root agreement
-and unchanged live bytes, then reconstructs the same complete event set and opportunity
-authority from those roots plus the signed wound carrier. It may not trust the
+and unchanged dedicated live bytes, then reconstructs the same complete event set and
+opportunity authority from those roots plus the signed wound carrier. Shared enemy,
+ally, and afterlife-profile carriers preserve their canonical wound-owned projection
+while unrelated ordinary fields remain available to other accepted mechanics. It may not trust the
 distributed effect-event projection or replace the recomputed set with the command
 binding. A self-consistent command with changed owner, profile, source, cap, guarantee,
 selected event, sibling event order, or worsening wound is rejected. Exact signed prior

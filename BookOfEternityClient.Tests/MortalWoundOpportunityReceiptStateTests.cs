@@ -288,9 +288,16 @@ public sealed class MortalWoundOpportunityReceiptStateTests
                       row => row["sourceRequestId"] = "source_request_changed",
                       row => row["sourceSnapshotToken"] = "source_snapshot_changed",
                       row => row["sourceTurn"] = 99,
-                     row => row["producerCandidateCount"] = 3,
-                     row => row["sourceResultFingerprint"] = ExternalFingerprint("changed-source-result")
-                 })
+                      row =>
+                      {
+                          var selection = row["consumedEventSelection"]!.AsObject();
+                          selection["adapterKind"] = "qte";
+                          row["eventSemanticFingerprint"] =
+                              ComputeConsumedEventFingerprint(selection);
+                      },
+                      row => row["producerCandidateCount"] = 3,
+                      row => row["sourceResultFingerprint"] = ExternalFingerprint("changed-source-result")
+                  })
         {
             var changedRoot = canonical.DeepClone().AsObject();
             var changedRow = changedRoot["receipts"]![0]!.AsObject();
@@ -302,6 +309,33 @@ public sealed class MortalWoundOpportunityReceiptStateTests
                 consumed.OccurrenceState,
                 changed.State!));
         }
+    }
+
+    [Fact]
+    public void Parse_RejectsMixedAdaptersWithinOneFullyConsumedBatch()
+    {
+        var first = Row(
+            ordinal: 1,
+            decisionSeed: "decision_1",
+            producerOperationKey: "batch_shared_adapter",
+            producerCandidateOrdinal: 0,
+            producerCandidateCount: 2);
+        var second = Row(
+            ordinal: 2,
+            decisionSeed: "decision_2",
+            producerOperationKey: "batch_shared_adapter",
+            producerCandidateOrdinal: 1,
+            producerCandidateCount: 2);
+        var selection = second["consumedEventSelection"]!.AsObject();
+        selection["adapterKind"] = "qte";
+        second["eventSemanticFingerprint"] =
+            ComputeConsumedEventFingerprint(selection);
+        RecomputeReceiptFingerprint(second);
+
+        AssertInvalid(
+            Parse(Root(3, first, second)),
+            RootPath,
+            "mortal_wound_opportunity_receipt_batch_agreement_mismatch");
     }
 
     [Fact]
@@ -909,6 +943,16 @@ public sealed class MortalWoundOpportunityReceiptStateTests
             Value(row, "decision"), Value(row, "decisionFingerprint"), Value(row, "operationKey"), NullableValue(row, "woundId"),
             NullableValue(row, "transitionId"));
     }
+
+    private static string ComputeConsumedEventFingerprint(JsonObject selection) =>
+        WoundOpportunityEventEvidenceFingerprint.Compute(
+            new WoundOpportunityEventEvidence(
+                Value(selection, "adapterKind"),
+                Value(selection, "authorityKind"),
+                Value(selection, "authorityId"),
+                Value(selection, "outcomeKind"),
+                selection["maximumSeverityRank"]!.GetValue<int>(),
+                Value(selection, "readableCause")));
 
     private static void RecomputeReceiptIdentity(JsonObject row)
     {

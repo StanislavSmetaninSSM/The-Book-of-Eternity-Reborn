@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -166,6 +167,8 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
                 (preGeneratedDices1d20 ?? Array.Empty<int>())
                 .Select(static value => (JsonNode)value)
                 .ToArray()),
+            ["progressionControl"] = JsonSerializer.SerializeToNode(
+                new ProgressionControl { CurrentRealm = currentRealm }),
             ["files"] = files,
             ["snapshotFileHashes"] = snapshotFileHashes,
             ["clientOwnedValidationHashes"] = new JsonObject(),

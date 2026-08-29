@@ -261,6 +261,15 @@ public sealed class WoundMaterializationSourceGuardTests
             "internal static WoundCarrierCatalog Build(",
             "internal void ScanNpcs("),
         new(
+            "accepted-mortal-wound-source-adapter",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+            "internal static class MortalWoundOpportunityAdapter",
+            "internal static WoundResponseInputCompositionResult ComposeAcceptedResponse(",
+            "currentHistory.Transitions.Count < signedHistory.Transitions.Count",
+            "HistoryTransitionMatchesReceipt(",
+            "live wound-history additions are not the exact materialized appended-receipt transitions"),
+        new(
             "accepted-mortal-wound-validation-authority",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/MortalWoundOpportunityValidationAuthority.cs",
@@ -276,6 +285,8 @@ public sealed class WoundMaterializationSourceGuardTests
             "BookOfEternityClient/Services/MortalWoundOpportunityReceiptState.cs",
             "\"consumedEventSelection\"",
             "internal sealed record MortalWoundConsumedEventSelection(",
+            "left.ConsumedEventSelection.Evidence.AdapterKind",
+            "string.Equals(left.AdapterKind, right.AdapterKind, StringComparison.Ordinal)",
             "public static IReadOnlyList<ValidationIssue> ValidateHistoryAgreement(",
             "public static IReadOnlyList<ValidationIssue> ValidateExactReplay("),
         new(
@@ -288,6 +299,8 @@ public sealed class WoundMaterializationSourceGuardTests
             "MortalWoundOpportunityReceiptState.ValidateHistoryAgreement(",
             "MortalWoundOpportunityValidationAuthority.Reconstruct(",
             "validationAuthority.PriorReceipts",
+            "ValidateSharedWoundCarrierBaselineAsync(",
+            "ComputeSharedWoundCarrierProjection(",
             "ResourceMaterializationContract.FindDuplicateProperties("),
         new(
             "accepted-wound-consequence-component-profile",

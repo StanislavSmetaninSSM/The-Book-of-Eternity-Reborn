@@ -411,6 +411,7 @@ internal sealed class MortalWoundOpportunityReceiptState
                 occurrence.ProducerOperationKey,
                 occurrence.ProducerCandidateOrdinal,
                 occurrence.ProducerCandidateCount,
+                occurrence.AdapterKind,
                 occurrence.SourceResultFingerprint,
                 occurrence.CandidateFingerprint,
                 occurrence.OccurrenceFingerprint,
@@ -425,6 +426,7 @@ internal sealed class MortalWoundOpportunityReceiptState
                 receipt.ProducerOperationKey,
                 receipt.ProducerCandidateOrdinal,
                 receipt.ProducerCandidateCount,
+                receipt.ConsumedEventSelection.Evidence.AdapterKind,
                 receipt.SourceResultFingerprint,
                 receipt.CandidateFingerprint,
                 receipt.OccurrenceFingerprint,
@@ -1298,6 +1300,10 @@ internal sealed class MortalWoundOpportunityReceiptState
         left.SourceTurn == right.SourceTurn &&
         left.ProducerCandidateCount == right.ProducerCandidateCount &&
         string.Equals(
+            left.ConsumedEventSelection.Evidence.AdapterKind,
+            right.ConsumedEventSelection.Evidence.AdapterKind,
+            StringComparison.Ordinal) &&
+        string.Equals(
             left.SourceResultFingerprint,
             right.SourceResultFingerprint,
             StringComparison.Ordinal);
@@ -1310,6 +1316,7 @@ internal sealed class MortalWoundOpportunityReceiptState
         string.Equals(left.SourceSnapshotToken, right.SourceSnapshotToken, StringComparison.Ordinal) &&
         left.SourceTurn == right.SourceTurn &&
         left.ProducerCandidateCount == right.ProducerCandidateCount &&
+        string.Equals(left.AdapterKind, right.AdapterKind, StringComparison.Ordinal) &&
         string.Equals(
             left.SourceResultFingerprint,
             right.SourceResultFingerprint,
@@ -1677,6 +1684,7 @@ internal sealed class MortalWoundOpportunityReceiptState
         string ProducerOperationKey,
         int ProducerCandidateOrdinal,
         int ProducerCandidateCount,
+        string AdapterKind,
         string SourceResultFingerprint,
         string CandidateFingerprint,
         string OccurrenceFingerprint,

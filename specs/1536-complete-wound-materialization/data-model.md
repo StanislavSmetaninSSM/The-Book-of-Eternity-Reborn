@@ -1601,7 +1601,8 @@ orders it by ordinal, so caller enumeration order cannot change the after-image.
 Occurrence IDs, public refs, candidate fingerprints, and semantic candidate coordinates
 are exact/confusable unique. `producerOperationKey` is unique per batch, not per row:
 every row sharing it must agree exactly on source session/request/snapshot token/turn,
-candidate count, adapter/source-result authority and source-result fingerprint, while
+candidate count, exact `adapterKind`, source-result authority, and source-result
+fingerprint, while
 `(producerOperationKey, producerCandidateOrdinal)` is exact/confusable unique across
 pending and consumed rows. Candidate and occurrence
 fingerprints are domain/versioned and recomputed over every semantic field, including
@@ -1889,12 +1890,32 @@ turn/event/decision/operation/coordinate authority and then enforces history agr
 requested. A locally self-consistent reseal therefore cannot suppress a new decision or
 replace a missing or foreign history transition.
 
+The live receipt/history partition additionally preserves the complete signed history
+as an exact ordered prefix. Every history row appended after that prefix must match
+exactly one newly appended `materialize` receipt, and every newly appended
+`materialize` receipt must match exactly one appended nonterminal `create|worsen` row
+on transition/wound/turn/event/operation/source authority. A newly appended `none`
+receipt justifies no history row. Replacing a signed row, appending an unreceipted row,
+or appending a materialization receipt without its row conflicts before recomposition.
+
 The validation read is one lease-bound strict snapshot over all five wound carriers,
 the wound identity and history roots, and the occurrence and receipt roots. It requires
-byte-hash authority, one non-conflicting active lifecycle context, exact current bytes,
-and recursive duplicate-property preflight before `JsonNode` materialization. A second
-owner-only read, text-equal BOM/encoding mutation, or duplicate wound ID in another
-signed carrier cannot create a different worsening view.
+byte-hash authority, one non-conflicting active lifecycle context, and recursive
+duplicate-property preflight before `JsonNode` materialization. The dedicated player
+and NPC wound roots plus identity, history, occurrence, and receipt roots must remain
+byte-identical to their signed before-images. The shared combat-enemy, combat-ally, and
+afterlife-profile roots instead preserve an independently parsed canonical projection
+of every wound occurrence, owner coordinate, and complete wound envelope; unrelated
+ordinary fields in those shared roots may continue through their own accepted mechanic.
+A missing/malformed shared root or any changed, added, removed, moved, or duplicated
+`activeWounds` authority conflicts. A second owner-only read, text-equal
+BOM/encoding mutation of a dedicated root, or duplicate wound ID in another signed
+carrier cannot create a different worsening view.
+
+An accepted empty wound stage remains a real sealed stage but contributes no wound
+transition or wound effect batch. It must preserve the ordinary effect plan's complete
+non-empty `EventInput.events` vector and the resulting canonical effect publication;
+it cannot replace that vector with an empty wound event set.
 
 The durable receipt also retains the consumed occurrence's source
 session/request/snapshot token/turn, producer operation key and batch ordinal/count,

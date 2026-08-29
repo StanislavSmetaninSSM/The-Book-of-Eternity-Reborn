@@ -281,6 +281,19 @@ public partial class ValidationService
                 preTurnJson[WoundCarrierCatalog.AfterlifeProfilesPath],
                 WoundCarrierCatalog.AfterlifeProfilesPath,
                 issues));
+        foreach (var path in new[]
+                 {
+                     WoundCarrierCatalog.EnemiesPath,
+                     WoundCarrierCatalog.AlliesPath,
+                     WoundCarrierCatalog.AfterlifeProfilesPath
+                 })
+        {
+            await ValidateSharedWoundCarrierBaselineAsync(
+                path,
+                preTurnCarriers,
+                writeLease,
+                issues);
+        }
         var carrierCatalog = WoundCarrierCatalog.Build(preTurnCarriers);
         issues.AddRange(carrierCatalog.Issues);
         var identity = WoundIdentityState.Parse(
@@ -830,6 +843,129 @@ public partial class ValidationService
                 ? "current root missing"
                 : "current bytes differ from validated snapshot",
             IssueCategory.ClientOwnedSurface));
+    }
+
+    private async Task ValidateSharedWoundCarrierBaselineAsync(
+        string path,
+        WoundCarrierCatalogInput preTurnCarriers,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        List<ValidationIssue> issues)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentNullException.ThrowIfNull(preTurnCarriers);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(issues);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+
+        var preTurnRoot = WoundCarrierCollectionAuthority.GetRoot(
+            preTurnCarriers,
+            path);
+        if (preTurnRoot is null)
+            return;
+
+        var currentBytes = await _fs.ReadFileBytesAsync(writeLease, path);
+        if (currentBytes is null)
+        {
+            AddSharedCarrierMutation(path, "current shared carrier root is missing");
+            return;
+        }
+
+        var issueCount = issues.Count;
+        var currentJson = DecodeWoundSnapshotJson(currentBytes, path, issues);
+        var currentRoot = currentJson is null
+            ? null
+            : ParseWoundCarrierRoot(currentJson, path, issues);
+        if (currentRoot is null)
+        {
+            AddSharedCarrierMutation(
+                path,
+                issues.Count == issueCount
+                    ? "current shared carrier root is invalid"
+                    : "current shared carrier root failed strict duplicate-safe parsing");
+            return;
+        }
+
+        var preTurnCatalog = WoundCarrierCatalog.Build(
+            SingleWoundCarrier(path, preTurnRoot));
+        if (preTurnCatalog.Issues.Count != 0)
+            return;
+
+        var currentCatalog = WoundCarrierCatalog.Build(
+            SingleWoundCarrier(path, currentRoot));
+        if (currentCatalog.Issues.Count != 0)
+        {
+            issues.AddRange(currentCatalog.Issues);
+            AddSharedCarrierMutation(
+                path,
+                "current shared activeWounds projection is not a valid canonical carrier");
+            return;
+        }
+
+        var expected = ComputeSharedWoundCarrierProjection(
+            path,
+            preTurnCatalog);
+        var actual = ComputeSharedWoundCarrierProjection(
+            path,
+            currentCatalog);
+        if (!string.Equals(expected, actual, StringComparison.Ordinal))
+        {
+            AddSharedCarrierMutation(
+                path,
+                "current shared activeWounds projection differs from the validated snapshot");
+        }
+
+        return;
+
+        void AddSharedCarrierMutation(string filePath, string actual) =>
+            issues.Add(WoundIssue(
+                filePath,
+                "wound_materialization_client_owned_root_mutated",
+                "the exact canonical wound-owned projection from the validated pre-turn shared carrier",
+                actual,
+                IssueCategory.ClientOwnedSurface));
+    }
+
+    private static WoundCarrierCatalogInput SingleWoundCarrier(
+        string path,
+        JsonObject root) => path switch
+        {
+            WoundCarrierCatalog.EnemiesPath =>
+                new WoundCarrierCatalogInput(null, null, root, null, null),
+            WoundCarrierCatalog.AlliesPath =>
+                new WoundCarrierCatalogInput(null, null, null, root, null),
+            WoundCarrierCatalog.AfterlifeProfilesPath =>
+                new WoundCarrierCatalogInput(null, null, null, null, root),
+            _ => throw new ArgumentOutOfRangeException(nameof(path), path, null)
+        };
+
+    private static string ComputeSharedWoundCarrierProjection(
+        string path,
+        WoundCarrierCatalog catalog)
+    {
+        var ordered = catalog.Occurrences
+            .OrderBy(static value => value.Coordinate.Realm, StringComparer.Ordinal)
+            .ThenBy(static value => value.Coordinate.OwnerKind, StringComparer.Ordinal)
+            .ThenBy(static value => value.Coordinate.OwnerId, StringComparer.Ordinal)
+            .ThenBy(static value => value.WoundId, StringComparer.Ordinal)
+            .ToArray();
+        var fields = new List<string?>
+        {
+            "book_of_eternity.wound.shared_carrier_projection",
+            "1",
+            path,
+            ordered.Length.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        };
+        foreach (var occurrence in ordered)
+        {
+            fields.Add(occurrence.Coordinate.Realm);
+            fields.Add(occurrence.Coordinate.OwnerKind);
+            fields.Add(occurrence.Coordinate.OwnerId);
+            fields.Add(occurrence.Coordinate.CarrierPath);
+            fields.Add(occurrence.WoundId);
+            fields.Add(WoundMaterializationContract.SerializeCanonical(
+                occurrence.Wound));
+        }
+        return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
 
     private static string? DecodeWoundSnapshotJson(

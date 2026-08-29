@@ -380,7 +380,9 @@ signed pending boundary between them:
    describing how the wound was received, all within the sealed profile and maximum.
 5. T064 treats the returned source-shaped fields as correlation only, resolves the
    exact occurrence from the signed snapshot, and reconstructs the complete accepted-
-   event set. Accepted-turn validation independently reconstructs and compares it.
+   event set. Accepted-turn validation independently reconstructs and compares it. An
+   empty wound stage stays sealed without replacing an ordinary effect's accepted-event
+   vector or suppressing its eventual publication.
 6. The later T070 decision plan validates without writing, appends one durable decision
    receipt, consumes the occurrence, and, only for `materialize`, composes wound/effect/
    resource/scheduler/output after-images.
@@ -941,6 +943,15 @@ effect carriers/index, resources/inventory, characteristics, quests, scheduler s
 journals, and final player output. A crash or rejection restores all of them or
 commits all of them. Retry-safe operation keys prevent duplicate wounds, effects,
 charges, recovery ticks, rolls, notifications, and history rows.
+
+Dedicated wound roots remain byte-identical to their signed before-images during
+decision validation. Shared enemy, ally, and afterlife-profile carriers are checked by
+a duplicate-safe canonical projection of their wound-owned subtrees, so another
+accepted mechanic may still change unrelated fields while no wound can be added,
+removed, moved, or edited outside the sealed wound plan. Live decision receipts retain
+the signed receipt and history prefixes; every appended `materialize` receipt is in
+one-to-one agreement with one appended nonterminal `create|worsen` history row, while
+`none` appends no history row.
 
 ## Privacy and GM Context
 

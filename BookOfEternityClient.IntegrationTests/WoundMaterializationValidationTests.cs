@@ -71,6 +71,82 @@ public sealed class WoundMaterializationValidationTests
     }
 
     [Fact]
+    public async Task EmptyWoundStage_PreservesOrdinaryEffectEventAndPublishesEffect()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await context.SeedPlayerSkillSourceAsync();
+        await SeedEmptyWoundFoundationsAsync(context);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        var backups = await context.ReadPendingSnapshotBackupsAsync();
+        var snapshotToken = await ReadSnapshotTokenAsync(context);
+
+        var effectCommand = EffectMaterializationTestFixture.CreateApplyCommand();
+        effectCommand["source"] = new JsonObject
+        {
+            ["kind"] = "skill",
+            ["sourceId"] = EffectMaterializationTestContext.MaterializableSkillId,
+            ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
+        };
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            EffectMaterializationTestFixture.CreateCommandRoot(effectCommand));
+        await context.WriteJsonAsync(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            EmptyCommands(
+                sessionId: "session_effect_materialization",
+                requestId: "request_effect_materialization",
+                snapshotToken: snapshotToken));
+
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync(lease);
+        var errors = issues
+            .Where(static issue => issue.Severity == IssueSeverity.Error)
+            .ToArray();
+        Assert.True(
+            errors.Length == 0,
+            string.Join(Environment.NewLine, errors.Select(static issue =>
+                $"{issue.Code}: {issue.FilePath}: {issue.Actual}")));
+
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            lease,
+            out _,
+            out var result));
+        Assert.True(result.Success);
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(result.Plan);
+        var woundStages = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
+            plan.WoundStageBundle);
+        Assert.Empty(woundStages.Input.Transitions);
+        Assert.Empty(woundStages.PreparedPlan.EffectOperationBatches);
+
+        var effectPlan = Assert.IsType<EffectAcceptedTurnPlan>(plan.EffectPlan);
+        var acceptedEvent = Assert.IsType<JsonObject>(
+            Assert.Single(effectPlan.EventInput["events"]!.AsArray()));
+        Assert.Equal("accepted_turn", acceptedEvent["kind"]!.GetValue<string>());
+        Assert.Equal("turn_42", acceptedEvent["authorityId"]!.GetValue<string>());
+        Assert.Equal(
+            "turn_42:accepted_effect",
+            acceptedEvent["eventRef"]!.GetValue<string>());
+        Assert.Single(effectPlan.ActiveEffects);
+
+        var published = await context.Normalizer.BindTo(lease)
+            .NormalizeAcceptedMechanicsAsync(backups);
+        Assert.NotNull(published);
+        var playerEffects = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath));
+        var publishedEffect = Assert.IsType<JsonObject>(
+            Assert.Single(playerEffects["activeEffects"]!.AsArray()));
+        Assert.Equal("skill", publishedEffect["source"]!["kind"]!.GetValue<string>());
+        Assert.Equal(
+            EffectMaterializationTestContext.MaterializableSkillId,
+            publishedEffect["source"]!["sourceId"]!.GetValue<string>());
+        Assert.Null(await context.ReadJsonAsync(
+            EffectMaterializationTestContext.CommandPath));
+        Assert.Null(await context.ReadJsonAsync(AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
     public async Task StrictCommand_RejectsUnknownRootFieldBeforeAnyCommonHandoff()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
@@ -239,6 +315,78 @@ public sealed class WoundMaterializationValidationTests
             out _));
     }
 
+    [Theory]
+    [InlineData(WoundCarrierCatalog.EnemiesPath)]
+    [InlineData(WoundCarrierCatalog.AlliesPath)]
+    [InlineData(WoundCarrierCatalog.AfterlifeProfilesPath)]
+    public async Task RawValidation_RejectsLiveSharedCarrierActiveWoundsMutation(
+        string carrierPath)
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await SeedEmptyFoundationsAsync(context);
+        var carrier = CreateSharedCarrier(carrierPath, includeWound: true);
+        await context.WriteExactJsonAsync(carrierPath, carrier.ToJsonString());
+        await context.CaptureValidatedPendingSnapshotAsync(
+            additionalTrackedPaths: SnapshotWoundPaths);
+        await context.WriteExactJsonAsync(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            EmptyCommands(
+                sessionId: "session_resource_materialization",
+                requestId: "request_resource_materialization",
+                snapshotToken: await ReadSnapshotTokenAsync(context)).ToJsonString());
+        ResolveFirstSharedActiveWounds(carrierPath, carrier)[0]!
+            ["display"]!["description"] =
+                "Текущая допустимая форма раны подменена после подписанного снимка.";
+        await context.WriteExactJsonAsync(carrierPath, carrier.ToJsonString());
+
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawEffectMaterializationAsync(lease);
+
+        Assert.Contains(issues, issue =>
+            issue.FilePath == carrierPath &&
+            issue.Code == "wound_materialization_client_owned_root_mutated" &&
+            issue.Category == IssueCategory.ClientOwnedSurface);
+        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            lease,
+            out _,
+            out _));
+    }
+
+    [Fact]
+    public async Task RawValidation_AllowsOrdinarySharedCarrierFieldsToChangeWhenWoundsDoNot()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await SeedEmptyFoundationsAsync(context);
+        var carrier = CreateSharedCarrier(
+            WoundCarrierCatalog.EnemiesPath,
+            includeWound: false);
+        await context.WriteExactJsonAsync(
+            WoundCarrierCatalog.EnemiesPath,
+            carrier.ToJsonString());
+        await context.CaptureValidatedPendingSnapshotAsync(
+            additionalTrackedPaths: SnapshotWoundPaths);
+        await context.WriteExactJsonAsync(
+            AcceptedMechanicsPlan.WoundCommandPath,
+            EmptyCommands(
+                sessionId: "session_resource_materialization",
+                requestId: "request_resource_materialization",
+                snapshotToken: await ReadSnapshotTokenAsync(context)).ToJsonString());
+        carrier["enemiesData"]![0]!["initiative"] = 17;
+        await context.WriteExactJsonAsync(
+            WoundCarrierCatalog.EnemiesPath,
+            carrier.ToJsonString());
+
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync(lease);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.FilePath == WoundCarrierCatalog.EnemiesPath &&
+            issue.Code == "wound_materialization_client_owned_root_mutated");
+    }
+
     [Fact]
     public async Task RawValidation_RejectsConflictingLifecycleContextBeforeWoundPlanning()
     {
@@ -379,6 +527,68 @@ public sealed class WoundMaterializationValidationTests
             }.ToJsonString());
     }
 
+    private static async Task SeedEmptyWoundFoundationsAsync(
+        EffectMaterializationTestContext context)
+    {
+        await context.WriteJsonAsync(
+            WoundCarrierCatalog.PlayerPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["owner"] = new JsonObject
+                {
+                    ["realm"] = "mortal_world",
+                    ["ownerKind"] = "player",
+                    ["ownerId"] = "player_current"
+                },
+                ["activeWounds"] = new JsonArray()
+            });
+        await context.WriteJsonAsync(
+            WoundCarrierCatalog.NpcPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["entries"] = new JsonArray()
+            });
+        await context.WriteJsonAsync(
+            WoundCarrierCatalog.EnemiesPath,
+            new JsonObject { ["enemiesData"] = new JsonArray() });
+        await context.WriteJsonAsync(
+            WoundCarrierCatalog.AlliesPath,
+            new JsonObject { ["alliesData"] = new JsonArray() });
+        await context.WriteJsonAsync(
+            WoundCarrierCatalog.AfterlifeProfilesPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["profiles"] = new JsonArray()
+            });
+        await context.WriteJsonAsync(WoundIdentityState.StatePath, EmptyIdentity());
+        await context.WriteJsonAsync(
+            WoundHistoryState.HistoryPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["nextOrdinal"] = 1,
+                ["transitions"] = new JsonArray()
+            });
+        await context.WriteJsonAsync(
+            MortalWoundOccurrenceState.StatePath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["occurrences"] = new JsonArray()
+            });
+        await context.WriteJsonAsync(
+            MortalWoundOpportunityReceiptState.StatePath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["nextOrdinal"] = 1,
+                ["receipts"] = new JsonArray()
+            });
+    }
+
     internal static JsonObject EmptyIdentity() => new()
     {
         ["schemaVersion"] = 1,
@@ -396,6 +606,83 @@ public sealed class WoundMaterializationValidationTests
         ["snapshotToken"] = snapshotToken,
         ["commands"] = new JsonArray()
     };
+
+    private static JsonObject CreateSharedCarrier(
+        string path,
+        bool includeWound)
+    {
+        if (path is WoundCarrierCatalog.EnemiesPath or WoundCarrierCatalog.AlliesPath)
+        {
+            var collection = path == WoundCarrierCatalog.EnemiesPath
+                ? "enemiesData"
+                : "alliesData";
+            var wounds = includeWound
+                ? new JsonArray(WoundContractTestData.CreateActiveWound(
+                    woundId: "wound_shared_carrier_baseline",
+                    ownerKind: "combatant",
+                    ownerId: "combatant_wound_baseline",
+                    carrierPath: path))
+                : new JsonArray();
+            return new JsonObject
+            {
+                [collection] = new JsonArray(new JsonObject
+                {
+                    ["combatantId"] = "combatant_wound_baseline",
+                    ["initiative"] = 12,
+                    ["activeBuffs"] = new JsonArray(),
+                    ["activeDebuffs"] = new JsonArray(),
+                    ["activeWounds"] = wounds
+                })
+            };
+        }
+
+        if (path == WoundCarrierCatalog.AfterlifeProfilesPath)
+        {
+            return new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                [AfterlifeEntityProfileState.ProfilesProperty] =
+                    new JsonArray(new JsonObject
+                    {
+                        ["actorType"] = "guardian",
+                        ["actorId"] = "guardian_wound_baseline",
+                        ["displayName"] = "Хранитель тестовой раны",
+                        ["realm"] = "Chaos Sea",
+                        ["resourceOwnerBindings"] = new JsonArray(new JsonObject
+                        {
+                            ["realm"] = "chaos_sea",
+                            ["resourceOwnerId"] = "guardian_wound_baseline",
+                            ["state"] = "active"
+                        }),
+                        ["activeWounds"] = includeWound
+                            ? new JsonArray(WoundContractTestData.CreateActiveWound(
+                                woundId: "wound_shared_afterlife_baseline",
+                                realm: "chaos_sea",
+                                ownerKind: "guardian",
+                                ownerId: "guardian_wound_baseline",
+                                carrierPath: path,
+                                domain: "spiritual"))
+                            : new JsonArray()
+                    })
+            };
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(path), path, null);
+    }
+
+    private static JsonArray ResolveFirstSharedActiveWounds(
+        string path,
+        JsonObject root) => path switch
+        {
+            WoundCarrierCatalog.EnemiesPath =>
+                root["enemiesData"]![0]!["activeWounds"]!.AsArray(),
+            WoundCarrierCatalog.AlliesPath =>
+                root["alliesData"]![0]!["activeWounds"]!.AsArray(),
+            WoundCarrierCatalog.AfterlifeProfilesPath =>
+                root[AfterlifeEntityProfileState.ProfilesProperty]![0]!
+                    ["activeWounds"]!.AsArray(),
+            _ => throw new ArgumentOutOfRangeException(nameof(path), path, null)
+        };
 
     private static string RemoveCommandField(JsonObject command, string field)
     {
@@ -420,6 +707,14 @@ public sealed class WoundMaterializationValidationTests
 
     internal static async Task<string> ReadSnapshotTokenAsync(
         ResourceMaterializationTestContext context)
+    {
+        var manifest = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            "game_state/control/pending_turn_snapshot.json"));
+        return manifest["manifestPayloadHash"]!.GetValue<string>();
+    }
+
+    private static async Task<string> ReadSnapshotTokenAsync(
+        EffectMaterializationTestContext context)
     {
         var manifest = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
             "game_state/control/pending_turn_snapshot.json"));

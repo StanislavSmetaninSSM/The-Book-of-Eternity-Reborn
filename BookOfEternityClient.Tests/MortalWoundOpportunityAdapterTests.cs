@@ -454,6 +454,29 @@ public sealed class MortalWoundOpportunityAdapterTests
         AssertTreeEqual(beforeStale, fixture.CaptureTree());
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ComposeAcceptedResponse_RejectsUnreceiptedHistoryAppendOrSignedPrefixReplacement(
+        bool replaceSignedPrefix)
+    {
+        await using var fixture = await Fixture.CreateAsync(
+            "formal",
+            seedExistingHistory: replaceSignedPrefix);
+        await fixture.ReplaceCurrentHistoryAsync(
+            replaceSignedPrefix ? "replacement" : "appended");
+
+        var result = MortalWoundOpportunityAdapter.ComposeAcceptedResponse(
+            fixture.FileSystem,
+            fixture.Lease,
+            JsonSerializer.SerializeToElement(fixture.SourceEvent),
+            fixture.NoneResponse());
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_wound_opportunity_adapter_current_state_conflict");
+    }
+
     [Fact]
     public async Task ComposeAcceptedResponse_RebindsTheRemainingCandidateFromAMixedSignedBatch()
     {
@@ -620,7 +643,8 @@ public sealed class MortalWoundOpportunityAdapterTests
             string adapterKind,
             string? worseningWoundId = null,
             int candidateCount = 1,
-            bool duplicateWorseningInNpc = false)
+            bool duplicateWorseningInNpc = false,
+            bool seedExistingHistory = false)
         {
             var root = Path.Combine(
                 Path.GetTempPath(),
@@ -739,7 +763,7 @@ public sealed class MortalWoundOpportunityAdapterTests
                 MortalWoundOpportunityReceiptState.SerializeCanonical(emptyReceipts));
             await fs.WriteFileAtomicAsync(
                 WoundHistoryState.HistoryPath,
-                WoundContractTestData.CreateHistory().ToJsonString());
+                CreateHistory(seedExistingHistory ? "signed" : null).ToJsonString());
             await fs.WriteFileAtomicAsync(
                 WoundCarrierCatalog.NpcPath,
                 (duplicateWorseningInNpc
@@ -930,6 +954,12 @@ public sealed class MortalWoundOpportunityAdapterTests
                 root.ToJsonString());
         }
 
+        internal Task ReplaceCurrentHistoryAsync(string suffix) =>
+            FileSystem.WriteFileAtomicAsync(
+                Lease,
+                WoundHistoryState.HistoryPath,
+                CreateHistory(suffix).ToJsonString());
+
         internal async Task RestartAsync()
         {
             await Lease.DisposeAsync();
@@ -1054,6 +1084,36 @@ public sealed class MortalWoundOpportunityAdapterTests
         }
 
         internal static WoundHistoryState EmptyHistory() => ParseHistory();
+
+        private static JsonObject CreateHistory(string? suffix)
+        {
+            if (suffix is null)
+                return WoundContractTestData.CreateHistory();
+            var woundId = "wound_history_" + suffix;
+            return WoundContractTestData.CreateHistory(new JsonObject
+            {
+                ["transitionId"] = "wound_transition_history_" + suffix,
+                ["woundId"] = woundId,
+                ["ordinal"] = 1,
+                ["woundTransitionOrdinal"] = 1,
+                ["kind"] = "create",
+                ["turn"] = ActiveTurn,
+                ["eventRef"] = "event_history_" + suffix,
+                ["operationKey"] = "operation_history_" + suffix,
+                ["beforeFingerprint"] =
+                    WoundHistoryState.ComputeNonexistentBeforeFingerprint(woundId),
+                ["afterFingerprint"] = Fingerprint("history-after:" + suffix),
+                ["sourceFingerprint"] = Fingerprint("history-source:" + suffix),
+                ["attemptId"] = null,
+                ["courseId"] = null,
+                ["courseMilestoneOrdinal"] = null,
+                ["cycleKey"] = null,
+                ["paymentFingerprint"] = null,
+                ["outputFingerprint"] = Fingerprint("history-output:" + suffix),
+                ["readableSummary"] = "Независимая запись истории для проверки префикса.",
+                ["terminal"] = false
+            });
+        }
 
         internal static string FingerprintForTest(string value) =>
             Fingerprint(value);

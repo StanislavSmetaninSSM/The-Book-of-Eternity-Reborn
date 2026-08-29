@@ -138,6 +138,7 @@ internal static class MortalWoundOpportunityAdapter
                 snapshot,
                 signedOccurrences,
                 signedReceipts!,
+                signedHistory!,
                 issues,
                 out var currentReceipts,
                 out var currentHistory))
@@ -562,6 +563,7 @@ internal static class MortalWoundOpportunityAdapter
         PendingTurnSnapshotReadAuthority snapshot,
         MortalWoundOccurrenceState signedOccurrences,
         MortalWoundOpportunityReceiptState signedReceipts,
+        WoundHistoryState signedHistory,
         List<ValidationIssue> issues,
         out MortalWoundOpportunityReceiptState? currentReceipts,
         out WoundHistoryState? currentHistory)
@@ -608,6 +610,14 @@ internal static class MortalWoundOpportunityAdapter
             return false;
         }
 
+        if (currentHistory.Transitions.Count < signedHistory.Transitions.Count ||
+            !signedHistory.Transitions.SequenceEqual(
+                currentHistory.Transitions.Take(signedHistory.Transitions.Count)))
+        {
+            CurrentStateConflict(issues, "the signed wound-history prefix was replaced");
+            return false;
+        }
+
         var appended = currentReceipts.Receipts
             .Skip(signedReceipts.Receipts.Count)
             .ToArray();
@@ -623,6 +633,26 @@ internal static class MortalWoundOpportunityAdapter
             CurrentStateConflict(
                 issues,
                 "an appended receipt is not retained from this signed decision snapshot");
+            return false;
+        }
+
+        var appendedHistory = currentHistory.Transitions
+            .Skip(signedHistory.Transitions.Count)
+            .ToArray();
+        var appendedMaterializations = appended
+            .Where(static receipt => receipt.Decision == "materialize")
+            .ToArray();
+        if (appendedHistory.Length != appendedMaterializations.Length ||
+            appendedMaterializations.Any(receipt =>
+                appendedHistory.Count(transition =>
+                    HistoryTransitionMatchesReceipt(transition, receipt)) != 1) ||
+            appendedHistory.Any(transition =>
+                appendedMaterializations.Count(receipt =>
+                    HistoryTransitionMatchesReceipt(transition, receipt)) != 1))
+        {
+            CurrentStateConflict(
+                issues,
+                "live wound-history additions are not the exact materialized appended-receipt transitions");
             return false;
         }
 
@@ -646,6 +676,27 @@ internal static class MortalWoundOpportunityAdapter
 
         return true;
     }
+
+    private static bool HistoryTransitionMatchesReceipt(
+        WoundHistoryTransition transition,
+        MortalWoundOpportunityReceipt receipt) =>
+        transition.Kind is "create" or "worsen" &&
+        string.Equals(
+            transition.TransitionId,
+            receipt.TransitionId,
+            StringComparison.Ordinal) &&
+        string.Equals(transition.WoundId, receipt.WoundId, StringComparison.Ordinal) &&
+        transition.Turn == receipt.Turn &&
+        string.Equals(transition.EventRef, receipt.EventRef, StringComparison.Ordinal) &&
+        string.Equals(
+            transition.OperationKey,
+            receipt.OperationKey,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            transition.SourceFingerprint,
+            receipt.OpportunityAuthorityFingerprint,
+            StringComparison.Ordinal) &&
+        !transition.Terminal;
 
     private static bool ReceiptRetainsOccurrence(
         MortalWoundOpportunityReceipt receipt,
