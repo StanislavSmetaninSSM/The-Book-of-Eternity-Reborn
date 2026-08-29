@@ -11,23 +11,24 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class MortalWoundTreatmentResolverTests
 {
     [Fact]
-    public void Replay_RequiresProductionAppendBeforeProbeCanExerciseDetachedExactReplay()
+    public void Replay_RequiresTheCommonT070PublicationPlanBeforeProbeCanExerciseDetachedExactReplay()
     {
-        var coordinator = typeof(WoundMaterializationContract).Assembly.GetType(
-            "BookOfEternityClient.Services.MortalWoundTreatmentPersistenceCoordinator",
+        var planner = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.WoundAcceptedTurnPlanner",
             throwOnError: false,
             ignoreCase: false);
-        Assert.True(coordinator is not null,
-            "T067-B must add the sole production-owned MortalWoundTreatmentPersistenceCoordinator.AppendResolvedAttempt " +
-            "before T061 can construct durable treatment history without a test-authored row.");
+        Assert.True(planner is not null,
+            "T070 must compose a treatment publication through the common accepted-plan planner; T061 never appends history directly.");
 
-        var append = ExactStaticMethod(coordinator!, "AppendResolvedAttempt", 4);
-        Assert.Equal("MortalWoundTreatmentAppendResult", append.ReturnType.Name);
-        Assert.Equal("FileSystemManager", append.GetParameters()[0].ParameterType.Name);
-        Assert.Equal("CanonicalWriteLease", append.GetParameters()[1].ParameterType.Name);
-        Assert.Equal("WoundAcceptedTurnBinding", append.GetParameters()[2].ParameterType.Name);
-        Assert.Equal("MortalWoundTreatmentResolution", append.GetParameters()[3].ParameterType.Name);
-        AssertClosedResultType(append.ReturnType, "History");
+        var compose = ExactStaticMethod(planner!, "ComposeMortalWoundTreatmentPublication", 7);
+        Assert.Equal("FileSystemManager", compose.GetParameters()[0].ParameterType.Name);
+        Assert.Equal("CanonicalWriteLease", compose.GetParameters()[1].ParameterType.Name);
+        Assert.Equal("WoundAcceptedTurnBinding", compose.GetParameters()[2].ParameterType.Name);
+        Assert.Equal("GameResponse", compose.GetParameters()[3].ParameterType.Name);
+        Assert.DoesNotContain(compose.GetParameters(), static parameter =>
+            parameter.ParameterType.Name.Contains("History", StringComparison.Ordinal) ||
+            parameter.ParameterType.Name.Contains("Receipt", StringComparison.Ordinal));
+        AssertClosedResultType(compose.ReturnType, "Plan");
     }
 
     [Fact]

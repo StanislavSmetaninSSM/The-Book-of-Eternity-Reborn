@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Reflection;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -49,6 +48,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(2, bindings.Length);
         Assert.Single(batches);
         Assert.Equal("t061_mechanical", Convert.ToString(ReadRequiredProperty(bindings[1], "LocalLegacyRef")));
+        AssertLegacyBindingHasExactBatchSurface(bindings[1]);
         AssertBatchAgreesWithMechanicalBinding(batches[0], bindings[1]);
     }
 
@@ -66,6 +66,19 @@ public sealed partial class MortalWoundTreatmentResolverTests
         // an accepted plan: a future production composition coordinator is the only
         // legal source for the second argument.
         AssertClosedResultType(finalize.ReturnType, "Finalization");
+    }
+
+    [Fact]
+    public void LegacyFinalization_GetsItsAcceptedPlanOnlyThroughTheT070EffectInputComposerBridge()
+    {
+        var compose = ExactStaticMethod(
+            typeof(EffectAcceptedTurnInputComposer),
+            "ComposeMortalWoundLegacyBatches",
+            2);
+        Assert.Equal("EffectAcceptedTurnInputCompositionResult", compose.ReturnType.Name);
+        Assert.Equal(typeof(EffectAcceptedTurnInput), compose.GetParameters()[0].ParameterType);
+        Assert.Equal("MortalWoundHealLegacyPreparation", compose.GetParameters()[1].ParameterType.Name);
+        AssertClosedResultType(compose.ReturnType, "Input");
     }
 
     private static OutcomeIntentCase GuaranteedHealCase() => new(
@@ -88,19 +101,36 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     private static void AssertBatchAgreesWithMechanicalBinding(object batch, object binding)
     {
-        AssertClosedProperties(batch, new[]
-        {
-            "LocalWoundRef", "EffectSourceExport", "RootApplications", "TerminalOperations",
-            "RootLineageAuthority", "SourceExportFingerprint"
-        });
-        var source = ReadRequiredProperty(batch, "EffectSourceExport");
-        Assert.Equal("wound_legacy", Convert.ToString(ReadRequiredProperty(source, "SourceKind")));
+        var typedBatch = Assert.IsType<WoundEffectOperationBatch>(batch);
+        Assert.Equal(
+            new[]
+            {
+                "LocalWoundRef", "PreparedWoundId", "SourceExport", "RootApplications",
+                "TerminalOperations", "RootLineageAuthority", "SourceExportFingerprint", "TransitionAuthority"
+            }.OrderBy(static property => property),
+            typeof(WoundEffectOperationBatch).GetProperties(BindingFlags.Instance | BindingFlags.NonPublic)
+                .Where(static property => property.GetIndexParameters().Length == 0)
+                .Select(static property => property.Name)
+                .OrderBy(static property => property));
+        Assert.Equal("t061_mechanical", typedBatch.LocalWoundRef);
+        Assert.False(string.IsNullOrWhiteSpace(typedBatch.PreparedWoundId));
+        var source = typedBatch.SourceExport;
+        Assert.Equal("wound_legacy", source.Kind);
         Assert.Equal(
             Convert.ToString(ReadRequiredProperty(binding, "LegacyId")),
-            Convert.ToString(ReadRequiredProperty(source, "SourceId")));
-        Assert.NotEmpty(AsObjects(ReadRequiredProperty(batch, "RootApplications")));
-        Assert.False(string.IsNullOrWhiteSpace(
-            Convert.ToString(ReadRequiredProperty(batch, "SourceExportFingerprint"))));
+            source.SourceId);
+        Assert.NotEmpty(typedBatch.RootApplications);
+        Assert.NotNull(typedBatch.TransitionAuthority);
+        Assert.False(string.IsNullOrWhiteSpace(typedBatch.SourceExportFingerprint));
+    }
+
+    private static void AssertLegacyBindingHasExactBatchSurface(object binding)
+    {
+        AssertClosedProperties(binding, new[]
+        {
+            "LegacyOrdinal", "LocalLegacyRef", "LegacyId", "Kind", "DefinitionReferenceBindings",
+            "ApplicationReferenceBindings", "DeclaredLegacyFingerprint", "SeedFingerprint"
+        });
     }
 
     private static void AssertClosedResultType(Type resultType, string nullableValue)

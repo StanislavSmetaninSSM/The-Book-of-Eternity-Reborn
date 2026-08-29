@@ -20,6 +20,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         new OutcomeIntentCase("stabilize_reduce", "procedure_normal_uses_lowest_free_die", "procedure", "success", new[] { "stabilize", "reduce_severity" }),
         new OutcomeIntentCase("stabilize_recovery", "procedure_normal_uses_lowest_free_die", "procedure", "success", new[] { "stabilize", "add_recovery" }),
         new OutcomeIntentCase("effectful_complication", "procedure_disadvantage_uses_two_contiguous_dice", "procedure", "failed_attempt", new[] { "add_complication" }),
+        new OutcomeIntentCase("deterioration_handoff", "procedure_disadvantage_uses_two_contiguous_dice", "procedure", "failed_attempt", new[] { "apply_deterioration" }),
         new OutcomeIntentCase("guaranteed_remove_then_heal", "guaranteed_severity_one_heal_has_empty_legacy_array", "guaranteed", "success", new[] { "remove_complication", "heal" })
     }.Select(static row => new object[] { row });
 
@@ -88,6 +89,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(typeof(string), create.GetParameters()[3].ParameterType);
         Assert.Equal(typeof(string), create.GetParameters()[4].ParameterType);
         AssertClosedResultType(create.ReturnType, "Authority");
+
+        // The resolver-facing overload is intentionally distinct: planner code obtains
+        // the T069 authority from its accepted state and coordinates and never accepts a
+        // caller-made fingerprint, file-system root, lease, or binding.
+        var resolverFacing = ExactStaticMethod(authority, "Create", 3);
+        Assert.Equal(typeof(string), resolverFacing.GetParameters()[2].ParameterType);
+        Assert.DoesNotContain(resolverFacing.GetParameters(), static parameter =>
+            typeof(JsonNode).IsAssignableFrom(parameter.ParameterType) ||
+            parameter.Name!.Contains("fingerprint", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal("MortalWoundDeteriorationPolicyAuthorityResult", resolverFacing.ReturnType.Name);
+        AssertClosedResultType(resolverFacing.ReturnType, "Authority");
     }
 
     [Fact]
@@ -211,6 +223,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             acceptedState, history, before.Wound!, scenario.OperationKey, scenario.RouteId, scenario.EventRef
         }), "Request", testCase.Name + " request");
+        if (testCase.Name == "deterioration_handoff")
+            AssertResolverFacingDeteriorationAuthority(
+                acceptedState,
+                ReadRequiredProperty(prepared, "Coordinates"),
+                "untreated_infection");
         var resolution = Invoke(ExactStaticMethod(planner, testCase.Mode == "procedure"
             ? "CreateProcedureAttempt"
             : "CreateGuaranteedAttempt", 4), new object?[]
@@ -273,6 +290,20 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         complicationRef ?? "t061_irritation")
                 });
                 break;
+            case "deterioration_handoff":
+                scenario.Before["recovery"]!["deteriorationPolicy"] = new JsonObject
+                {
+                    ["policyRef"] = "untreated_infection",
+                    ["unmetConditions"] = new JsonArray("not_stabilized"),
+                    ["effect"] = "worsen_severity",
+                    ["steps"] = 1
+                };
+                route["outcomes"]![2]!["result"] = new JsonArray(new JsonObject
+                {
+                    ["kind"] = "apply_deterioration",
+                    ["policyRef"] = "untreated_infection"
+                });
+                break;
             case "guaranteed_remove_then_heal":
                 scenario.Before["complications"] = new JsonArray(new JsonObject
                 {
@@ -291,6 +322,28 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
 
         return scenario;
+    }
+
+    private static void AssertResolverFacingDeteriorationAuthority(
+        object acceptedState,
+        object coordinates,
+        string policyRef)
+    {
+        var authority = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundDeteriorationPolicyAuthority",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.True(authority is not null,
+            "T069 typed deterioration authority is required before a valid interruption can resolve.");
+        var create = ExactStaticMethod(authority!, "Create", 3);
+        Assert.Equal(acceptedState.GetType(), create.GetParameters()[0].ParameterType);
+        Assert.Equal(coordinates.GetType(), create.GetParameters()[1].ParameterType);
+        var result = Invoke(create, new[] { acceptedState, coordinates, (object)policyRef });
+        var typed = ReadValidTypedResult(result, "Authority", "T069 resolver-facing deterioration authority");
+        Assert.Equal(policyRef, Convert.ToString(ReadRequiredProperty(typed, "PolicyRef")));
+        Assert.Equal("StrictlyWorsening", Convert.ToString(ReadRequiredProperty(typed, "Classification")));
+        Assert.False(string.IsNullOrWhiteSpace(
+            Convert.ToString(ReadRequiredProperty(typed, "AuthorityFingerprint"))));
     }
 
     private static JsonObject CreateEffectfulComplicationDraft(string complicationRef) => new()
