@@ -15,7 +15,7 @@ namespace BookOfEternityClient.Tests;
 /// the reflection adapter below then drives only the public-to-assembly planner
 /// factories and mode resolver entries documented by the treatment contract.
 /// </summary>
-public sealed class MortalWoundTreatmentResolverTests
+public sealed partial class MortalWoundTreatmentResolverTests
 {
     private const string PlannerTypeName =
         "BookOfEternityClient.Services.MortalWoundTreatmentPlanner";
@@ -122,6 +122,26 @@ public sealed class MortalWoundTreatmentResolverTests
         Assert.Single(catalog.ByItemId["sterile_thread"]);
         Assert.Equal(descriptor.RequirementsAvailable,
             catalog.ByItemId.ContainsKey("antibiotic_dose"));
+    }
+
+    [Fact]
+    public void FixtureControl_CourseStartIsFirstMilestoneAtItsInclusiveDueTime()
+    {
+        var descriptor = CreateScenario(
+            "course_first_milestone_is_ready_at_inclusive_due_time",
+            "course");
+        var wound = WoundMaterializationContract.Parse(descriptor.Before.ToJsonString(), "wound");
+        var history = WoundHistoryState.Parse(descriptor.History.ToJsonString(), "history");
+
+        Assert.True(wound.IsValid, DescribeIssues(wound.Issues));
+        Assert.True(history.IsValid, DescribeIssues(history.Issues));
+        Assert.Null(wound.Wound!.Care.ActiveCourseId);
+        Assert.Empty(history.State!.Transitions);
+        Assert.Equal(1, history.State.NextOrdinal);
+        var first = descriptor.Before["treatment"]!["routes"]![0]!["outcomes"]![0]!.AsObject();
+        Assert.Equal(1, first["ordinal"]!.GetValue<int>());
+        Assert.Equal(0L, first["afterMinutes"]!.GetValue<long>());
+        Assert.Equal(0L, descriptor.WorldMinute);
     }
 
     [Fact]
@@ -479,9 +499,12 @@ public sealed class MortalWoundTreatmentResolverTests
 
     private static JsonObject NpcCoreRoot(JsonObject sterileThread) => new()
     {
-        ["NPCs"] = new JsonArray(new JsonObject
+        // MortalItemCarrierCatalog deliberately accepts only UpdateNPCs and
+        // NPCsInScene for canonical NPC inventories.  Keep the item in the latter
+        // rather than an ignored compatibility section.
+        ["NPCsInScene"] = new JsonArray(new JsonObject
         {
-            ["npcId"] = "field_medic_01",
+            ["NPCId"] = "field_medic_01",
             ["inventory"] = new JsonArray(sterileThread)
         })
     };
@@ -600,6 +623,15 @@ public sealed class MortalWoundTreatmentResolverTests
                 Assert.Single(before.Wound!.Treatment.Routes));
         }
         var acceptedState = fixture.GetAcceptedState();
+        if (scenario.Name == "course_unsatisfied_dose_requirement_has_no_reservation")
+        {
+            AssertCourseUnsatisfiedRequirementSeam(
+                planner,
+                acceptedState,
+                history,
+                before.Wound!,
+                scenario);
+        }
         var preparedResult = Invoke(factory, new object?[]
         {
             acceptedState,
@@ -629,6 +661,113 @@ public sealed class MortalWoundTreatmentResolverTests
             acceptedState
         });
         AssertResolutionShape(resolution, scenario, request);
+    }
+
+    private static void AssertCourseUnsatisfiedRequirementSeam(
+        Type planner,
+        object acceptedState,
+        WoundHistoryParseResult history,
+        WoundMaterializationEnvelope before,
+        ResolverScenario scenario)
+    {
+        // This follows the production course chain instead of inferring a missing
+        // dose from the high-level preparation failure.  Each authority is created
+        // by its owning future factory; no coordinates, clock, bundle, or claim is
+        // test-constructed.
+        var coordinates = ReadValidTypedResult(
+            Invoke(ExactStaticMethod(planner, "CreateAttemptCoordinates", 5), new object?[]
+            {
+                acceptedState, before, scenario.OperationKey, scenario.RouteId, scenario.EventRef
+            }),
+            "Coordinates",
+            scenario.Name + " coordinates");
+        var gameTimeType = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundGameTimeAuthority",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.NotNull(gameTimeType);
+        var gameTime = ReadValidTypedResult(
+            Invoke(ExactStaticMethod(gameTimeType, "Create", 2), new[] { acceptedState, coordinates }),
+            "Authority",
+            scenario.Name + " game time");
+        var courseModeType = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundCourseModeAuthority",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.NotNull(courseModeType);
+        var courseMode = AssertReadyCourseModeAuthority(
+            Invoke(ExactStaticMethod(courseModeType, "Create", 5), new[]
+            {
+                acceptedState, coordinates, (object)before, history, gameTime
+            }));
+        var bundleType = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundTreatmentRequirementAuthorityBundle",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.NotNull(bundleType);
+        var requirement = Invoke(
+            ExactStaticMethod(bundleType, "CreateForCourseMilestone", 5),
+            new[] { acceptedState, coordinates, (object)before, history, courseMode });
+        AssertClosedProperties(requirement, new[] { "Status", "Issues", "Authority" });
+        Assert.Equal("Unsatisfied", Convert.ToString(ReadRequiredProperty(requirement, "Status")));
+        var bundle = ReadPropertyAllowingNull(requirement, "Authority");
+        Assert.NotNull(bundle);
+        AssertCourseUnsatisfiedBundle(bundle!);
+
+        var resourceComposer = typeof(WoundMaterializationContract).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundTreatmentResourceComposer",
+            throwOnError: false,
+            ignoreCase: false);
+        Assert.NotNull(resourceComposer);
+        var preparation = Invoke(ExactStaticMethod(resourceComposer, "PrepareCourse", 5), new[]
+        {
+            acceptedState, coordinates, (object)before, bundle, courseMode
+        });
+        // At first milestone, trustworthy Unsatisfied must reject before a
+        // reservation exists.  The null authority therefore proves no claim/ID can
+        // be observed or persisted, while the prior status assertion rules out
+        // InvalidAuthority accidentally taking this branch.
+        AssertInvalidTypedResult(preparation, "Authority", scenario.Name + " no-reservation preparation");
+    }
+
+    private static object AssertReadyCourseModeAuthority(object result)
+    {
+        AssertClosedProperties(result, new[] { "Disposition", "Issues", "Authority" });
+        Assert.Equal("Ready", Convert.ToString(ReadRequiredProperty(result, "Disposition")));
+        Assert.Empty(Assert.IsAssignableFrom<System.Collections.IEnumerable>(
+            ReadRequiredProperty(result, "Issues")).Cast<object>());
+        var authority = ReadPropertyAllowingNull(result, "Authority");
+        Assert.NotNull(authority);
+        return authority!;
+    }
+
+    private static void AssertCourseUnsatisfiedBundle(object bundle)
+    {
+        AssertClosedProperties(bundle, new[]
+        {
+            "Mode", "ContextFingerprint", "AcceptedStateFingerprint", "RouteFingerprint", "CourseId",
+            "CourseMilestoneOrdinal", "CourseCoordinateFingerprint", "CourseRequirementStatus",
+            "InterruptionReason", "Scopes", "AuthorityFingerprint"
+        });
+        Assert.Equal("course", Convert.ToString(ReadRequiredProperty(bundle, "Mode")));
+        Assert.Equal("Unsatisfied", Convert.ToString(
+            ReadRequiredProperty(bundle, "CourseRequirementStatus")));
+        Assert.Null(ReadPropertyAllowingNull(bundle, "InterruptionReason"));
+        Assert.NotNull(ReadRequiredProperty(bundle, "CourseId"));
+        Assert.Equal(1, Convert.ToInt32(ReadRequiredProperty(bundle, "CourseMilestoneOrdinal")));
+        var scopes = Assert.IsAssignableFrom<System.Collections.IEnumerable>(
+            ReadRequiredProperty(bundle, "Scopes")).Cast<object>().ToArray();
+        Assert.Equal(2, scopes.Length);
+        var common = Assert.Single(scopes, scope =>
+            string.Equals(Convert.ToString(ReadRequiredProperty(scope, "Scope")), "common", StringComparison.Ordinal));
+        var milestone = Assert.Single(scopes, scope =>
+            string.Equals(Convert.ToString(ReadRequiredProperty(scope, "Scope")), "course_milestone", StringComparison.Ordinal));
+        Assert.Equal("Satisfied", Convert.ToString(ReadRequiredProperty(common, "Status")));
+        Assert.Equal("Unsatisfied", Convert.ToString(ReadRequiredProperty(milestone, "Status")));
+        Assert.Empty(Assert.IsAssignableFrom<System.Collections.IEnumerable>(
+            ReadRequiredProperty(milestone, "Bindings")).Cast<object>());
+        Assert.NotEmpty(Assert.IsAssignableFrom<System.Collections.IEnumerable>(
+            ReadRequiredProperty(milestone, "FailureWitnesses")).Cast<object>());
     }
 
     private static MethodInfo ExactStaticMethod(Type type, string name, int parameterCount) =>
@@ -864,9 +1003,28 @@ public sealed class MortalWoundTreatmentResolverTests
             "CoordinatesFingerprint", "AcceptedStateFingerprint", "PreparedCriticalReaction",
             "AuthorityFingerprint"
         });
+        Assert.Equal("input/turn_request.json",
+            Convert.ToString(ReadRequiredProperty(authority, "SourcePath")));
         Assert.Equal(scenario.RollMode, Convert.ToString(ReadRequiredProperty(authority, "RollMode")));
         Assert.Equal("player", Convert.ToString(ReadRequiredProperty(authority, "RollActorKind")));
         Assert.Equal("player_current", Convert.ToString(ReadRequiredProperty(authority, "RollActorId")));
+        var contributions = Assert.IsAssignableFrom<System.Collections.IEnumerable>(
+            ReadRequiredProperty(authority, "RollContributions")).Cast<object>().ToArray();
+        if (scenario.RollMode == "normal")
+        {
+            Assert.Empty(contributions);
+        }
+        else
+        {
+            var contribution = Assert.Single(contributions);
+            AssertClosedProperties(contribution, new[] { "EffectId", "ComponentId", "Contribution" });
+            Assert.Equal("effect_roll_modifier_" + scenario.RollMode,
+                Convert.ToString(ReadRequiredProperty(contribution, "EffectId")));
+            Assert.Equal("component_001",
+                Convert.ToString(ReadRequiredProperty(contribution, "ComponentId")));
+            Assert.Equal(scenario.RollMode,
+                Convert.ToString(ReadRequiredProperty(contribution, "Contribution")));
+        }
         Assert.Equal(scenario.ExpectedSourceIndices,
             ReadIntSequence(ReadRequiredProperty(authority, "SourceIndices")));
         var acceptedDice = scenario.AcceptedState["acceptedDice"]!.AsArray();
@@ -1036,9 +1194,9 @@ public sealed class MortalWoundTreatmentResolverTests
                     ? CreateCanonicalStack("antibiotic_dose", 1)
                     : null;
                 var npcCore = NpcCoreRoot(sterileThread);
-                npcCore["NPCs"]![0]!["activeSkills"] = new JsonArray(
+                npcCore["NPCsInScene"]![0]!["activeSkills"] = new JsonArray(
                     CreateTreatmentSkill("skill_guaranteed_care_01", "exact_materialized_healing_source"));
-                npcCore["NPCs"]![0]!["passiveSkills"] = new JsonArray();
+                npcCore["NPCsInScene"]![0]!["passiveSkills"] = new JsonArray();
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/npcs/npc_core.json"),
                     npcCore.ToJsonString());
