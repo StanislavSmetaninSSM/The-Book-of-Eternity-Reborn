@@ -2901,6 +2901,59 @@ internal static class AcceptedMechanicsPlanner
     internal static bool IsPendingPublicationProof(
         PendingPublicationProof? proof) => ReferenceEquals(PendingProof, proof);
 
+    /// <summary>
+    /// Projects only explicitly registered Mortal wound producers against the exact
+    /// finalized resource/effect result. Publication of the returned batches belongs to
+    /// the later common-plan occurrence stage.
+    /// </summary>
+    internal static MortalWoundOccurrenceProducerPlanningResult
+        ReduceMortalWoundOccurrenceProducers(
+            AcceptedMechanicsResourcePlanningResult resourceResult,
+            IReadOnlyList<IMortalWoundOccurrenceProducerDraft> registeredProducers)
+    {
+        ArgumentNullException.ThrowIfNull(resourceResult);
+        ArgumentNullException.ThrowIfNull(registeredProducers);
+        var results = new List<MortalWoundOccurrenceCandidateReductionResult>();
+        var batches = new List<MortalWoundOccurrenceCandidateBatch>();
+        var issues = new List<ValidationIssue>();
+        foreach (var producer in registeredProducers)
+        {
+            if (producer is null)
+            {
+                issues.Add(new ValidationIssue(
+                    "mortalWoundProducers",
+                    IssueSeverity.Error,
+                    "A registered Mortal wound producer is missing.",
+                    code: "mortal_wound_producer_registration_invalid",
+                    actor: "Client",
+                    section: "mortal_wound_occurrence_producer",
+                    expected: "one non-null registered typed producer",
+                    actual: "null",
+                    repairHint:
+                    "Repair the client-owned producer registration before retrying the accepted result."));
+                continue;
+            }
+
+            var reduced = MortalWoundOccurrenceCandidateReducer.ReduceRegistered(
+                producer,
+                resourceResult);
+            results.Add(reduced);
+            issues.AddRange(reduced.Issues);
+            if (reduced.Success && reduced.Batch is not null)
+                batches.Add(reduced.Batch);
+        }
+
+        return issues.Count == 0
+            ? new MortalWoundOccurrenceProducerPlanningResult(
+                results,
+                batches,
+                Array.Empty<ValidationIssue>())
+            : new MortalWoundOccurrenceProducerPlanningResult(
+                results,
+                Array.Empty<MortalWoundOccurrenceCandidateBatch>(),
+                issues);
+    }
+
     private sealed record PendingBoundaryDecision(
         bool AwaitingReceipt,
         ResourcePendingResolutionState? StateAfterImage,
