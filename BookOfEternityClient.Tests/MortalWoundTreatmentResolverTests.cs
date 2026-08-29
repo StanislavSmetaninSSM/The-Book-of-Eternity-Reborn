@@ -23,8 +23,7 @@ public sealed class MortalWoundTreatmentResolverTests
         "procedure_normal_uses_lowest_free_die",
         "procedure_advantage_uses_two_contiguous_dice",
         "procedure_disadvantage_uses_two_contiguous_dice",
-        "procedure_player_natural_one_reserves_oldest_fate_shield",
-        "procedure_checked_difficulty_overflow_rejects");
+        "procedure_player_natural_one_reserves_oldest_fate_shield");
 
     public static IEnumerable<object[]> CourseRows => Rows(
         "course_first_milestone_is_ready_at_inclusive_due_time",
@@ -92,12 +91,55 @@ public sealed class MortalWoundTreatmentResolverTests
         Assert.Equal(descriptor.WorldMinute, descriptor.AcceptedState["worldMinute"]!.GetValue<long>());
         Assert.Equal(descriptor.RequirementsAvailable, descriptor.AcceptedState["requirementsAvailable"]!.GetValue<bool>());
         Assert.Equal(descriptor.ExpectedNaturalRoll,
-            descriptor.AcceptedState["acceptedDice"]!.AsArray()[descriptor.ExpectedSourceIndices[0]]!.GetValue<int>());
+            descriptor.AcceptedState["acceptedDice"]!.AsArray()[descriptor.ExpectedSelectedSourceIndex]!.GetValue<int>());
         if (scenario.Contains("severity_one", StringComparison.Ordinal))
         {
             Assert.Equal("I", descriptor.Before["severity"]!["value"]!.GetValue<string>());
             Assert.Empty(descriptor.Before["treatment"]!["routes"]![0]!["outcomes"]![0]!["result"]![0]!["legacies"]!.AsArray());
         }
+    }
+
+    [Theory]
+    [MemberData(nameof(CourseRows))]
+    public void FixtureControl_CanonicalItemCarrierRootsExposeOnlyTheCurrentCourseDose(
+        string scenario)
+    {
+        var descriptor = CreateScenario(scenario, "course");
+        var sterileThread = CreateCanonicalStack("sterile_thread", 2);
+        var dose = descriptor.RequirementsAvailable
+            ? CreateCanonicalStack("antibiotic_dose", 1)
+            : null;
+        var catalog = MortalItemCarrierCatalog.Build(new MortalItemCarrierCatalogInput(
+            PlayerInventoryRoot(dose),
+            NpcCoreRoot(sterileThread),
+            null,
+            null,
+            null,
+            new Dictionary<string, JsonObject>(StringComparer.Ordinal)));
+
+        Assert.Empty(catalog.Issues);
+        Assert.Single(catalog.ByItemId["sterile_thread"]);
+        Assert.Equal(descriptor.RequirementsAvailable,
+            catalog.ByItemId.ContainsKey("antibiotic_dose"));
+    }
+
+    [Theory]
+    [MemberData(nameof(ProcedureRows))]
+    public void FixtureControl_ProductionEffectRootsExposeOrderedFateAndRollMode(
+        string scenario)
+    {
+        var descriptor = CreateScenario(scenario, "procedure");
+        var roots = CreateEffectRoots(descriptor);
+        var snapshot = EffectMechanicsSnapshot.Build(new EffectMechanicsInput(
+            new EffectCarrierCatalogInput(roots.PlayerEffects, null, null, null, null, null),
+            roots.IdentityIndex));
+
+        Assert.True(snapshot.IsAccepted, DescribeIssues(snapshot.Issues));
+        Assert.Equal(
+            new[] { "effect_fate_shield_newer", "effect_fate_shield_older" },
+            snapshot.Effects.Select(effect => effect.EffectId)
+                .Where(static effectId => effectId.StartsWith("effect_fate_shield_", StringComparison.Ordinal))
+                .OrderBy(static effectId => effectId, StringComparer.Ordinal));
     }
 
     [Theory]
@@ -150,15 +192,15 @@ public sealed class MortalWoundTreatmentResolverTests
             ["woundId"] = "wound_test_torn_side",
             ["eventRef"] = "turn_42:treatment_event_" + name,
             ["acceptedDice"] = new JsonArray(4, 17, 1, 20),
-            ["fateShields"] = new JsonArray("effect_fate_shield_001"),
-            ["activeEffectIds"] = new JsonArray("effect_roll_modifier_001"),
             ["skillRows"] = new JsonArray("skill_field_medicine_01"),
             ["canonicalReads"] = new JsonArray(
                 "wound_carriers",
                 "wound_identity_index",
                 "wound_history",
                 "world_time",
-                "effects",
+                "turn_request",
+                "effect_carriers",
+                "effect_identity_index",
                 "skills")
         };
 
@@ -169,15 +211,14 @@ public sealed class MortalWoundTreatmentResolverTests
         acceptedState["requestedMode"] = mode;
         var semantic = name switch
         {
-            "procedure_normal_uses_lowest_free_die" => new ScenarioSemantics("normal", new[] { 0 }, 17, 1_260, true, "Resolved", "success", 2),
-            "procedure_advantage_uses_two_contiguous_dice" => new ScenarioSemantics("advantage", new[] { 0, 1 }, 4, 1_260, true, "Resolved", "success", 2),
-            "procedure_disadvantage_uses_two_contiguous_dice" => new ScenarioSemantics("disadvantage", new[] { 0, 1 }, 4, 1_260, true, "Resolved", "failed_attempt", 1),
-            "procedure_player_natural_one_reserves_oldest_fate_shield" => new ScenarioSemantics("normal", new[] { 0 }, 1, 1_260, true, "Resolved", "failed_attempt", 1),
-            "procedure_checked_difficulty_overflow_rejects" => new ScenarioSemantics("normal", new[] { 0 }, 17, 1_260, true, "PreparationRejected", null, 0),
-            "course_first_milestone_is_ready_at_inclusive_due_time" => new ScenarioSemantics("normal", new[] { 0 }, 17, 0, true, "Resolved", "success", 0),
-            "course_unsatisfied_dose_requirement_has_no_reservation" => new ScenarioSemantics("normal", new[] { 0 }, 17, 0, false, "PreparationRejected", null, 0),
-            "guaranteed_current_capability_proof_stabilizes" => new ScenarioSemantics("normal", new[] { 0 }, 17, 1_260, true, "Resolved", "success", 1),
-            "guaranteed_severity_one_heal_has_empty_legacy_array" => new ScenarioSemantics("normal", new[] { 0 }, 17, 1_260, true, "Resolved", "success", 1),
+            "procedure_normal_uses_lowest_free_die" => new ScenarioSemantics("normal", new[] { 0 }, 0, 17, 1_260, true, "Resolved", "success", 2, null),
+            "procedure_advantage_uses_two_contiguous_dice" => new ScenarioSemantics("advantage", new[] { 0, 1 }, 1, 19, 1_260, true, "Resolved", "success", 2, null),
+            "procedure_disadvantage_uses_two_contiguous_dice" => new ScenarioSemantics("disadvantage", new[] { 0, 1 }, 0, 4, 1_260, true, "Resolved", "failed_attempt", 1, null),
+            "procedure_player_natural_one_reserves_oldest_fate_shield" => new ScenarioSemantics("normal", new[] { 0 }, 0, 1, 1_260, true, "Resolved", "failed_attempt", 1, "effect_fate_shield_older"),
+            "course_first_milestone_is_ready_at_inclusive_due_time" => new ScenarioSemantics("normal", new[] { 0 }, 0, 17, 0, true, "Resolved", "success", 0, null),
+            "course_unsatisfied_dose_requirement_has_no_reservation" => new ScenarioSemantics("normal", new[] { 0 }, 0, 17, 0, false, "PreparationRejected", null, 0, null),
+            "guaranteed_current_capability_proof_stabilizes" => new ScenarioSemantics("normal", new[] { 0 }, 0, 17, 1_260, true, "Resolved", "success", 1, null),
+            "guaranteed_severity_one_heal_has_empty_legacy_array" => new ScenarioSemantics("normal", new[] { 0 }, 0, 17, 1_260, true, "Resolved", "success", 1, null),
             _ => throw new ArgumentOutOfRangeException(nameof(name), name, "Retained scenarios must have concrete semantics.")
         };
         acceptedState["rollMode"] = semantic.RollMode;
@@ -219,10 +260,12 @@ public sealed class MortalWoundTreatmentResolverTests
             semantic.ExpectedCategory,
             semantic.RollMode,
             semantic.SourceIndices,
+            semantic.SelectedSourceIndex,
             semantic.NaturalRoll,
             semantic.WorldMinute,
             semantic.RequirementsAvailable,
-            semantic.ExpectedIntentCount);
+            semantic.ExpectedIntentCount,
+            semantic.ExpectedFateEffectId);
     }
 
     private static void ConfigureModeRoute(JsonObject route, string mode, string name)
@@ -238,8 +281,6 @@ public sealed class MortalWoundTreatmentResolverTests
         foreach (var pair in strict)
             route[pair.Key] = pair.Value?.DeepClone();
         route["routeId"] = mode + "_t061_" + name;
-        if (name.Contains("overflow", StringComparison.Ordinal))
-            route["resolution"]!["difficulty"] = int.MaxValue;
     }
 
     private static JsonObject StrictProcedureRoute() => new()
@@ -263,7 +304,10 @@ public sealed class MortalWoundTreatmentResolverTests
         ["requirements"] = new JsonArray(new JsonObject { ["kind"] = "provider", ["providerRef"] = "field_medic_01" }),
         ["resourcePolicy"] = Policy(new JsonArray("success"), new JsonArray(CourseMutation(1), CourseMutation(2), CourseMutation(3))),
         ["resolution"] = new JsonObject { ["clockKind"] = "world_time.currentTimeInMinutes", ["maximumGapMinutes"] = 600 },
-        ["outcomes"] = new JsonArray(CourseMilestone(1, 0, "active", new JsonArray()), CourseMilestone(2, 480, "active", new JsonArray()), CourseMilestone(3, 960, "completed", new JsonArray(new JsonObject { ["kind"] = "heal", ["legacies"] = new JsonArray() }))),
+        ["outcomes"] = new JsonArray(
+            CourseMilestone(1, 0, "active", new JsonArray()),
+            CourseMilestone(2, 480, "active", new JsonArray(new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 })),
+            CourseMilestone(3, 960, "completed", new JsonArray(new JsonObject { ["kind"] = "heal", ["legacies"] = new JsonArray() }))),
         ["interruption"] = new JsonObject { ["category"] = "failed_attempt", ["result"] = new JsonArray(new JsonObject { ["kind"] = "no_improvement" }) }
     };
 
@@ -280,6 +324,120 @@ public sealed class MortalWoundTreatmentResolverTests
     private static JsonObject Band(string id, int? minimum, int? maximum, string category, JsonArray result) => new() { ["bandId"] = id, ["minimumMargin"] = minimum, ["maximumMargin"] = maximum, ["category"] = category, ["result"] = result };
     private static JsonObject CourseMutation(int ordinal) => new() { ["kind"] = "consume_requirement", ["scope"] = "course_milestone", ["milestoneOrdinal"] = ordinal, ["requirementIndex"] = 0 };
     private static JsonObject CourseMilestone(int ordinal, long afterMinutes, string completion, JsonArray result) => new() { ["ordinal"] = ordinal, ["afterMinutes"] = afterMinutes, ["requirements"] = new JsonArray(new JsonObject { ["kind"] = "item_quantity", ["itemRef"] = "antibiotic_dose", ["quantity"] = 1, ["ownerRole"] = "target" }), ["category"] = "success", ["completion"] = completion, ["result"] = result };
+    private static EffectRoots CreateEffectRoots(ResolverScenario scenario)
+    {
+        var effects = new List<JsonObject>
+        {
+            CreateMaterializedFateShield("effect_fate_shield_older", 37),
+            CreateMaterializedFateShield("effect_fate_shield_newer", 42)
+        };
+        if (scenario.RollMode is "advantage" or "disadvantage")
+            effects.Add(CreateRollModeEffect(scenario.RollMode));
+        return new EffectRoots(
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeEffects"] = new JsonArray(effects.Select(static effect => (JsonNode)effect).ToArray())
+            },
+            CreateEffectIdentityIndex(effects));
+    }
+
+    private static JsonObject CreateMaterializedFateShield(string effectId, int createdAtTurn)
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("player", "event_reaction");
+        effect["effectId"] = effectId;
+        effect["source"] = new JsonObject
+        {
+            ["kind"] = EffectBuiltInSourceCatalog.FateShieldSourceKind,
+            ["sourceId"] = EffectBuiltInSourceCatalog.FateShieldSourceId,
+            ["definitionKey"] = EffectBuiltInSourceCatalog.FateShieldDefinitionKey
+        };
+        effect["lifetime"] = new JsonObject
+        {
+            ["mode"] = "uses",
+            ["remainingUses"] = 1
+        };
+        effect["components"] = new JsonArray(new JsonObject
+        {
+            ["componentId"] = "fate_shield_reaction",
+            ["profile"] = "event_reaction",
+            ["priority"] = -100,
+            ["payload"] = new JsonObject
+            {
+                ["eventType"] = "owner_critical_failure",
+                ["resultKind"] = "event_outcome",
+                ["originalOutcome"] = "critical_failure",
+                ["resolvedOutcome"] = "failure",
+                ["dependency"] = "before_current_event",
+                ["maxExpansion"] = 1
+            }
+        });
+        effect["triggers"] = new JsonArray(new JsonObject
+        {
+            ["triggerId"] = "fate_shield_on_critical_failure",
+            ["eventType"] = "owner_critical_failure",
+            ["priority"] = -100,
+            ["componentIds"] = new JsonArray("fate_shield_reaction"),
+            ["consumeUses"] = true,
+            ["resolutionMode"] = "deterministic"
+        });
+        effect["chronology"]!["createdAtTurn"] = createdAtTurn;
+        effect["chronology"]!["lastTransitionTurn"] = createdAtTurn;
+        return effect;
+    }
+
+    private static JsonObject CreateRollModeEffect(string rollMode)
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("player", "roll_modifier");
+        effect["effectId"] = "effect_roll_modifier_" + rollMode;
+        effect["components"]![0]!["payload"] = new JsonObject
+        {
+            ["operations"] = new JsonArray("skill_check"),
+            ["contribution"] = rollMode
+        };
+        return effect;
+    }
+
+    private static JsonObject CreateEffectIdentityIndex(IEnumerable<JsonObject> effects)
+    {
+        var rows = effects.ToArray();
+        var index = EffectMaterializationTestFixture.CreateIdentityIndex(rows);
+        var entries = index["entries"]!.AsArray().OfType<JsonObject>().ToArray();
+        for (var ordinal = 0; ordinal < entries.Length; ordinal++)
+        {
+            var effect = rows[ordinal];
+            var createdAtTurn = effect["chronology"]!["createdAtTurn"]!.GetValue<int>();
+            entries[ordinal]["createdAtTurn"] = createdAtTurn;
+            entries[ordinal]["transitions"]![0]!["turn"] = createdAtTurn;
+            entries[ordinal]["transitions"]![0]!["eventRef"] =
+                $"turn_{createdAtTurn}:t061_effect:{ordinal + 1}";
+            effect["chronology"]!["createdEventRef"] =
+                $"turn_{createdAtTurn}:t061_effect:{ordinal + 1}";
+        }
+        return index;
+    }
+
+    private static JsonObject CreateCanonicalStack(string itemId, int count)
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot(itemId);
+        item["count"] = count;
+        MortalItemTestFixture.ResealCanonical(item);
+        return item;
+    }
+
+    private static JsonObject PlayerInventoryRoot(JsonObject? dose) => new()
+    {
+        ["items"] = dose == null ? new JsonArray() : new JsonArray(dose)
+    };
+
+    private static JsonObject NpcCoreRoot(JsonObject sterileThread) => new()
+    {
+        ["NPCs"] = new JsonArray(new JsonObject
+        {
+            ["npcId"] = "field_medic_01",
+            ["inventory"] = new JsonArray(sterileThread)
+        })
+    };
 
     private static JsonObject CreateHistoryFor(string name, string mode)
     {
@@ -364,6 +522,10 @@ public sealed class MortalWoundTreatmentResolverTests
         }
 
         var request = ReadValidTypedResult(preparedResult, "Request", scenario.Name + " request");
+        if (scenario.Mode == "procedure")
+            AssertProcedureCheckAuthority(
+                ReadRequiredProperty(request, "ModeAuthority"),
+                scenario);
         var resolver = ExactStaticMethod(planner, resolverName, 4);
         var resolution = Invoke(resolver, new[]
         {
@@ -543,6 +705,8 @@ public sealed class MortalWoundTreatmentResolverTests
             Assert.IsType<string>(ReadRequiredProperty(resolved, "ResultCategory")));
         Assert.Equal(request.GetType(), ReadRequiredProperty(resolved, "RequestAuthority").GetType());
         AssertCompleteRequestBundle(ReadRequiredProperty(resolved, "RequestAuthority"), scenario);
+        if (scenario.Mode == "procedure")
+            AssertProcedureCheckAuthority(ReadRequiredProperty(resolved, "ModeEvidence"), scenario);
         var intents = Assert.IsAssignableFrom<System.Collections.IEnumerable>(
             ReadRequiredProperty(resolved, "OutcomeIntents")).Cast<object>().ToArray();
         Assert.Equal(scenario.ExpectedIntentCount, intents.Length);
@@ -596,6 +760,49 @@ public sealed class MortalWoundTreatmentResolverTests
         }
     }
 
+    private static void AssertProcedureCheckAuthority(object authority, ResolverScenario scenario)
+    {
+        AssertClosedProperties(authority, new[]
+        {
+            "SourcePath", "RollMode", "RollActorKind", "RollActorId", "RollContributions",
+            "SourceIndices", "SourceRolls", "SelectedSourceIndex", "NaturalRoll", "Modifier",
+            "ComplicationDifficultyModifier", "EffectiveDifficulty", "RequirementAuthorityFingerprint",
+            "CoordinatesFingerprint", "AcceptedStateFingerprint", "PreparedCriticalReaction",
+            "AuthorityFingerprint"
+        });
+        Assert.Equal(scenario.RollMode, Convert.ToString(ReadRequiredProperty(authority, "RollMode")));
+        Assert.Equal("player", Convert.ToString(ReadRequiredProperty(authority, "RollActorKind")));
+        Assert.Equal("player_current", Convert.ToString(ReadRequiredProperty(authority, "RollActorId")));
+        Assert.Equal(scenario.ExpectedSourceIndices,
+            ReadIntSequence(ReadRequiredProperty(authority, "SourceIndices")));
+        var acceptedDice = scenario.AcceptedState["acceptedDice"]!.AsArray();
+        Assert.Equal(
+            scenario.ExpectedSourceIndices.Select(index => acceptedDice[index]!.GetValue<int>()),
+            ReadIntSequence(ReadRequiredProperty(authority, "SourceRolls")));
+        Assert.Equal(scenario.ExpectedSelectedSourceIndex,
+            Convert.ToInt32(ReadRequiredProperty(authority, "SelectedSourceIndex")));
+        Assert.Equal(scenario.ExpectedNaturalRoll,
+            Convert.ToInt32(ReadRequiredProperty(authority, "NaturalRoll")));
+        var prepared = ReadPropertyAllowingNull(authority, "PreparedCriticalReaction");
+        if (scenario.ExpectedFateEffectId == null)
+        {
+            Assert.Null(prepared);
+            return;
+        }
+
+        Assert.NotNull(prepared);
+        Assert.Equal(scenario.ExpectedFateEffectId,
+            Convert.ToString(ReadRequiredProperty(prepared!, "EffectId")));
+        Assert.Equal("fate_shield_on_critical_failure",
+            Convert.ToString(ReadRequiredProperty(prepared, "TriggerId")));
+    }
+
+    private static int[] ReadIntSequence(object value) =>
+        Assert.IsAssignableFrom<System.Collections.IEnumerable>(value)
+            .Cast<object>()
+            .Select(Convert.ToInt32)
+            .ToArray();
+
     private static void AssertClosedProperties(object value, IEnumerable<string> expected) =>
         Assert.Equal(
             expected.OrderBy(static name => name),
@@ -641,20 +848,26 @@ public sealed class MortalWoundTreatmentResolverTests
         string? ExpectedCategory,
         string RollMode,
         int[] ExpectedSourceIndices,
+        int ExpectedSelectedSourceIndex,
         int ExpectedNaturalRoll,
         long WorldMinute,
         bool RequirementsAvailable,
-        int ExpectedIntentCount);
+        int ExpectedIntentCount,
+        string? ExpectedFateEffectId);
 
     private sealed record ScenarioSemantics(
         string RollMode,
         int[] SourceIndices,
+        int SelectedSourceIndex,
         int NaturalRoll,
         long WorldMinute,
         bool RequirementsAvailable,
         string ExpectedBoundary,
         string? ExpectedCategory,
-        int ExpectedIntentCount);
+        int ExpectedIntentCount,
+        string? ExpectedFateEffectId);
+
+    private sealed record EffectRoots(JsonObject PlayerEffects, JsonObject IdentityIndex);
 
     private sealed class AcceptedStateFixture : IDisposable
     {
@@ -692,9 +905,11 @@ public sealed class MortalWoundTreatmentResolverTests
                 foreach (var relativePath in new[]
                          {
                              "game_state/world/world_time.json",
-                             "game_state/turn/accepted_dice.json",
-                             "game_state/effects/accepted_treatment_effects.json",
-                             "game_state/player/inventory.json"
+                             "input/turn_request.json",
+                             EffectCarrierCatalog.PlayerPath,
+                             EffectIdentityState.StatePath,
+                             "game_state/inventory/items.json",
+                             "game_state/inventory/item_identity_index.json"
                          })
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(
@@ -719,17 +934,16 @@ public sealed class MortalWoundTreatmentResolverTests
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/player/skills_passive.json"),
                     new JsonObject { ["passiveSkillChanges"] = new JsonArray() }.ToJsonString());
+                var sterileThread = CreateCanonicalStack("sterile_thread", 2);
+                var dose = scenario.RequirementsAvailable
+                    ? CreateCanonicalStack("antibiotic_dose", 1)
+                    : null;
+                var npcCore = NpcCoreRoot(sterileThread);
+                npcCore["NPCs"]![0]!["activeSkills"] = new JsonArray(CreateTreatmentSkill());
+                npcCore["NPCs"]![0]!["passiveSkills"] = new JsonArray();
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/npcs/npc_core.json"),
-                    new JsonObject
-                    {
-                        ["NPCs"] = new JsonArray(new JsonObject
-                        {
-                            ["npcId"] = "field_medic_01",
-                            ["activeSkills"] = new JsonArray(CreateTreatmentSkill()),
-                            ["passiveSkills"] = new JsonArray()
-                        })
-                    }.ToJsonString());
+                    npcCore.ToJsonString());
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/world/world_time.json"),
                     new JsonObject
@@ -738,46 +952,35 @@ public sealed class MortalWoundTreatmentResolverTests
                         ["currentTimeInMinutes"] = scenario.AcceptedState["worldMinute"]!.DeepClone()
                     }.ToJsonString());
                 File.WriteAllText(
-                    fileSystem.ResolvePath("game_state/player/inventory.json"),
-                    new JsonObject
-                    {
-                        ["items"] = new JsonArray(new JsonObject
-                        {
-                            ["id"] = "antibiotic_dose",
-                            ["quantity"] = scenario.RequirementsAvailable ? 3 : 0,
-                            ["availableQuantity"] = scenario.RequirementsAvailable ? 3 : 0,
-                            ["ownerKind"] = "player",
-                            ["ownerId"] = "player_current"
-                        })
-                    }.ToJsonString());
+                    fileSystem.ResolvePath("game_state/inventory/items.json"),
+                    PlayerInventoryRoot(dose).ToJsonString());
                 File.WriteAllText(
-                    fileSystem.ResolvePath("game_state/turn/accepted_dice.json"),
-                    new JsonObject
-                    {
-                        ["schemaVersion"] = 1,
-                        ["rollMode"] = scenario.Name.Contains("advantage", StringComparison.Ordinal)
-                            ? "advantage"
-                            : scenario.Name.Contains("disadvantage", StringComparison.Ordinal)
-                                ? "disadvantage" : "normal",
-                        ["dice"] = scenario.AcceptedState["acceptedDice"]!.DeepClone()
-                    }.ToJsonString());
+                    fileSystem.ResolvePath("game_state/inventory/item_identity_index.json"),
+                    dose == null
+                        ? MortalItemTestFixture.CreateIndexForCarrier(
+                            sterileThread,
+                            "npc_inventory",
+                            "field_medic_01").ToJsonString()
+                        : MortalItemTestFixture.CreateIndexForCarriers(
+                            (sterileThread, "npc_inventory", "field_medic_01", null),
+                            (dose, "player_inventory", "player", null)).ToJsonString());
                 File.WriteAllText(
-                    fileSystem.ResolvePath("game_state/effects/accepted_treatment_effects.json"),
+                    fileSystem.ResolvePath("input/turn_request.json"),
                     new JsonObject
                     {
-                        ["schemaVersion"] = 1,
-                        ["rollModifiers"] = new JsonArray(new JsonObject
-                        {
-                            ["effectId"] = "effect_roll_modifier_001",
-                            ["componentId"] = "component_roll_modifier_001",
-                            ["targetId"] = "player_current",
-                            ["operation"] = "skill_check",
-                            ["contribution"] = scenario.Name.Contains("advantage", StringComparison.Ordinal)
-                                ? "advantage" : scenario.Name.Contains("disadvantage", StringComparison.Ordinal)
-                                    ? "disadvantage" : "normal"
-                        }),
-                        ["fateShields"] = scenario.AcceptedState["fateShields"]!.DeepClone()
+                        ["sessionId"] = scenario.AcceptedState["sessionId"]!.DeepClone(),
+                        ["requestId"] = scenario.AcceptedState["requestId"]!.DeepClone(),
+                        ["turnNumber"] = scenario.AcceptedState["turn"]!.DeepClone(),
+                        ["gameMode"] = "normal",
+                        ["preGeneratedDices1d20"] = scenario.AcceptedState["acceptedDice"]!.DeepClone()
                     }.ToJsonString());
+                var effectRoots = CreateEffectRoots(scenario);
+                File.WriteAllText(
+                    fileSystem.ResolvePath(EffectCarrierCatalog.PlayerPath),
+                    effectRoots.PlayerEffects.ToJsonString());
+                File.WriteAllText(
+                    fileSystem.ResolvePath(EffectIdentityState.StatePath),
+                    effectRoots.IdentityIndex.ToJsonString());
 
                 var acceptedEvents = new[]
                 {
