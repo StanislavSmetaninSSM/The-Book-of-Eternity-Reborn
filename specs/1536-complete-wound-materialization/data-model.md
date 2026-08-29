@@ -906,6 +906,85 @@ re-resolved against the fresh snapshot immediately before commit. Removing a ref
 capability while a route/course is active fails closed unless the route declared an
 interruption transition.
 
+For Mortal version 1, the authority-resolved members frozen by T060/T066 have no
+implicit role defaults. Their exact closed shapes are:
+
+| `kind` | Required fields after `kind` |
+|---|---|
+| `item_quantity` | exact permanent `itemRef`, positive integer `quantity`, `ownerRole=provider|target` |
+| `resource_quantity` | exact registered `resourceRef`, positive integer `quantity`, `ownerRole=provider|target` |
+| `skill_tier` | exact materialized `capabilityRef`, integer `minimumTier`, `actorRole=provider|target` |
+| `source_capability` | exact materialized `capabilityRef`, `actorRole=provider|target` |
+| `provider` | selected exact permanent `providerRef` |
+| `consent` | exact current `consentRef`, exact `providerRef`, exact `targetRef` |
+| `facility` | exact materialized `facilityRef` |
+| `location` | exact materialized `locationRef`, `targetRole=target` |
+| `quest_state` | exact materialized `questRef`, exact `requiredState` |
+| `effect_state` | exact active `effectRef`, exact `requiredState`, `targetRole=target` |
+| `environment` | exact registered `environmentRef`, exact `requiredState` |
+
+The roles bind only to the already selected typed treatment context. They are required,
+cannot contain actor identities, and cannot be inferred from names, prose, or route
+mode. `source_capability.actorRole` therefore explicitly decides whether the provider
+or target must own the capability. Facility/environment rows bind the exact current
+location; location/effect rows also bind the exact target. Requirement objects never
+carry reservations, mutations, consumed values, or caller-authored authority seals.
+
+### Transient Mortal treatment authority projection
+
+T060/T066 use a closed internal version-1 adapter projection. It is parsed by
+`MortalWoundTreatmentAuthority.ParseContext` / `ParseSnapshot`, exists only in memory,
+and is never canonical game state or GM-authored input. The context has exactly:
+
+```json
+{
+  "schemaVersion": 1,
+  "realm": "mortal_world",
+  "targetKind": "player",
+  "targetId": "exact-permanent-actor-id",
+  "providerKind": "npc",
+  "providerId": "exact-permanent-actor-id",
+  "currentLocationId": "exact-materialized-location-id"
+}
+```
+
+Target/provider identity is always the ordinal pair `(actorKind, actorId)`; actor IDs
+are not assumed globally unique across kinds. Either coordinate may identify a player
+or NPC, an NPC is a legal treatment target, and provider and target may be the same
+typed coordinate for self-treatment. The snapshot has exactly
+`schemaVersion=1`, exact `snapshotToken`, and the arrays `items`, `resources`, `actors`,
+`facilities`, `locations`, `quests`, `effects`, and `environments`. Every object below
+is closed. `displayName` is required diagnostic text but never authority or fingerprint
+input. `lifecycle` is `active|retired`; `active=false` represents a current disabled or
+otherwise unusable live row independently from permanent retirement.
+
+| Array/member | Exact fields |
+|---|---|
+| `items[]` | `itemId`, `displayName`, `realm`, `ownerKind`, `ownerId`, positive `count`, non-negative `availableCount <= count`, `reservationState=available|reserved`, `lifecycle`, `active` |
+| `resources[]` | `resourceRef`, `displayName`, `realm`, `ownerKind`, `ownerId`, non-negative `currentValue`, non-negative `availableValue <= currentValue`, `reservationState=available|reserved`, `lifecycle`, `active` |
+| `actors[]` | `actorKind`, `actorId`, `displayName`, `realm`, `currentLocationId`, `lifecycle`, `active`, `reachable`, and closed `skills`, `capabilities`, `consents` arrays |
+| `actors[].skills[]` | `capabilityRef`, `displayName`, integer `tier`, `lifecycle`, `active` |
+| `actors[].capabilities[]` | `capabilityRef`, `displayName`, `lifecycle`, `active` |
+| `actors[].consents[]` | `consentRef`, `displayName`, `providerKind`, `providerId`, `targetKind`, `targetId`, `status=granted|withdrawn`, `lifecycle`, `active` |
+| `facilities[]` | `facilityId`, `displayName`, `realm`, `locationId`, `lifecycle`, `active`, `available` |
+| `locations[]` | `locationId`, `displayName`, `realm`, `lifecycle`, `active`, closed `presentActors[]` |
+| `locations[].presentActors[]` | exact `actorKind`, exact `actorId` |
+| `quests[]` | `questId`, `displayName`, `realm`, exact current `state`, `lifecycle`, `active` |
+| `effects[]` | `effectId`, `displayName`, `realm`, `targetKind`, `targetId`, exact current `state`, `lifecycle`, `active` |
+| `environments[]` | `environmentId`, `displayName`, `realm`, `locationId`, exact current `state`, `lifecycle`, `active` |
+
+The adapter that assembles this projection must source each field from the corresponding
+already-validated canonical authority. Parsing never grants authority by itself. All
+identities and state strings are exact ordinal identifiers; counts/available values and
+tiers are integers. Arrays and nested collections are detached and immutable after
+parse; no parsed member retains a raw `JsonNode`, `JsonElement`, or `JsonDocument`.
+Missing/unknown fields, wrong types/version, an invalid context realm, or
+contradictory numeric bounds reject the projection. A structurally well-formed foreign-
+realm row or duplicate exact row is retained: the resolver must reject it against the
+selected requirement with a reference-specific cross-realm or ambiguity issue instead
+of letting a parser silently choose one. Resolver output remains the separately sealed
+evidence described in the plan and cannot expose mutation or reservation intents.
+
 ### Resource policy
 
 ```json

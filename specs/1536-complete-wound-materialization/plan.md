@@ -438,6 +438,64 @@ by trusting caller-supplied fingerprints. Tests may hand-author malformed shapes
 field/path diagnostics, but only this production composer establishes a valid sealed
 command authority.
 
+T060/T066 use one production-owned, side-effect-free requirement boundary:
+`MortalWoundTreatmentAuthority.ResolveRequirements(route, context, currentSnapshot)`.
+`context` is a typed exact binding for the Mortal realm, target, provider, and current
+location. Provider and target are generic typed actor coordinates: either can be a
+player or NPC, and the two coordinates may be identical for self-treatment.
+`currentSnapshot` is a typed immutable projection assembled from the existing
+canonical item identity/carrier, resource owner/ledger, actor skill/capability, location,
+facility, quest, effect, and environment authorities; it is neither persisted nor
+GM-authored. Its detached
+entries carry exact ordinal identities, realm/owner/location bindings, current
+lifecycle/availability/reservation or state values, and display text only as
+non-authoritative diagnostics. Actor entries additionally carry exact reachability and
+target-specific treatment consent.
+
+Tests and integration adapters obtain those types only through the production-owned
+`ParseContext(json, path)` and `ParseSnapshot(json, path)` entry points on
+`MortalWoundTreatmentAuthority`. They return `IsValid`, ordinary `ValidationIssue`s,
+and respectively one nullable typed `Context` or `Snapshot`. Both parsers validate a
+recursively closed version-1 transient projection, reject impossible available-versus-
+total numeric bounds, and return detached externally immutable values; no
+test or caller may deserialize an arbitrary JSON fixture directly into a future runtime
+type or retain `JsonNode`, `JsonElement`, or `JsonDocument` anywhere in the parsed typed
+graph, and no caller may pass `JsonObject` to `ResolveRequirements`. The transient JSON
+exists only as a strict adapter/testing seam for already-authoritative canonical exports
+and is never a second persisted game-state or GM response contract.
+
+The resolver returns an externally immutable detached
+`MortalWoundRequirementAuthorityResult` containing
+only `Success`, frozen `Issues`, ordered `ResolvedRequirements`, and a production-owned
+`AuthorityFingerprint`. Each resolved row repeats the zero-based `RequirementIndex`,
+`Kind`, exact `AuthorityRef`, `Realm`, applicable `OwnerKind`/`OwnerId`,
+`ProviderKind`/`ProviderId`, `TargetKind`/`TargetId`, and `LocationId` coordinates, and
+applicable `RequestedQuantity`, `MinimumTier`, `CurrentTier`, and `CurrentState`, plus
+its production-owned `AuthorityFingerprint`; every inapplicable coordinate is null.
+It resolves all route requirements conjunctively and rechecks
+every reference against the supplied fresh snapshot using ordinal identity; display
+names, case folding, Unicode-confusable aliases, previous identities, and cross-realm
+rows are never fallback keys. Inactive/retired, unavailable/reserved, insufficient,
+wrong-owner, unreachable, unconsented, wrong-location, absent-target, or wrong-state
+authority fails closed. Repeated requirements for the same exact item/resource authority
+are accumulated in route order and their total demand must fit the one current available
+amount; individually satisfiable predicates cannot overbook the same authority.
+
+The result `AuthorityFingerprint` binds a versioned domain, snapshot token, the complete
+ordered canonical requirement predicates, exact context coordinates, ordered resolved
+rows, and ordered issues/current mechanical authority values. Changing requirement
+quantity/order/reference, context, lifecycle, owner, availability, tier, reachability,
+consent, presence, or state changes the fingerprint. Display names and other explicitly
+diagnostic projection text are excluded, so diagnostic-only wording changes do not
+change it. Each row fingerprint binds that row's exact authority coordinates and current
+mechanical values, its requirement index/kind/reference/requested predicate values, and
+all applicable exact context coordinates under its own production domain.
+
+The resolver emits no reservation, item mutation, resource
+mutation, treatment transition, or consumption intent. T068 alone translates a wholly
+successful detached result into typed atomic reservations/mutations, so any T060/T066
+failure necessarily leaves all game state untouched.
+
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 
 1. Add RED danger-mode, formula threshold, strain cap, optional/lower/one-per-side/

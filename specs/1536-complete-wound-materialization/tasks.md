@@ -816,7 +816,7 @@ failure, duplicate ID, or incomplete owned-tree cleanup
 
 - [X] T058 [P] [US2] Add RED complete Mortal route, required non-display impact, AND requirements/OR alternatives, closed mode/outcome, and no wound/symptom/medicine/cure-name lookup tests in `BookOfEternityClient.Tests/MortalWoundTreatmentContractTests.cs`
 - [X] T059 [P] [US2] Add RED readable diagnosis path, bounded `requiresKnownFacts` least-fixed-point reachability, `gm_only` route rejection, known/completed-route agreement, exact staged success/failure command plus durable history/replay result and reveal boundaries, cyclic/impossible discovery, append-only evidence-backed `author_alternative_treatment`, kind-specific pending/repair response, and recursive repair privacy tests proving internal seals/operation keys stay omitted in `BookOfEternityClient.Tests/MortalWoundDiagnosisTests.cs`
-- [ ] T060 [P] [US2] Add RED exact item/resource/skill/capability/provider/consent/facility/location/quest/effect/environment and stale/confusable/cross-realm reference tests in `BookOfEternityClient.Tests/MortalWoundRequirementAuthorityTests.cs`
+- [X] T060 [P] [US2] Add RED recursively strict immutable authority projections, generic self/player/NPC actor bindings, exact item/resource/skill/capability/provider/consent/facility/location/quest/effect/environment, and stale/confusable/cross-realm reference tests in `BookOfEternityClient.Tests/MortalWoundRequirementAuthorityTests.cs`
 - [ ] T061 [P] [US2] Add RED procedure result bands, course milestone/interruption, guaranteed capability, natural 1/20 policy, and terminal attempt tests in `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.cs`
 - [ ] T062 [P] [US2] Add RED progressive/requires-stabilization/no-natural recovery, deterioration, clock replay, overflow, and Mortal death-boundary tests in `BookOfEternityClient.Tests/MortalWoundRecoveryTests.cs`
 - [ ] T063 [US2] Add RED cross-setting create -> diagnose success/failure -> author alternative -> procedure/course/guaranteed -> recover -> heal -> History journeys and atomic resource/item use in `BookOfEternityClient.IntegrationTests/MortalWoundMaterializationLifecycleTests.cs`
@@ -846,11 +846,24 @@ hash recipe or evidence-constructor topology. Independent final rereview closed 
 0 Critical, 0 Important, and 0 Minor findings; T060 owns exact current-world reference
 authority next.
 
+T060 RED evidence (2026-08-29): 200 exact-authority rows execute with a
+warning-free build; one independent requirement round-trip control passes and all 199
+intended assertions remain uniformly RED on the absent production-owned T066 authority
+type (`20260829-103452-285-2988-1b2622a16b424b75a27df0ef73bcfd66-focused`).
+The frozen boundary covers recursively closed and externally immutable context/snapshot
+projections, all eleven exact requirement kinds, generic player/NPC/self actor bindings,
+ordinal/confusable/stale/cross-realm/ambiguous references, aggregate non-overbooking,
+fresh ownership/availability/reservation/reachability/consent/co-presence/state checks,
+detached exact result rows, and production-owned semantic fingerprints with no mutation
+authority. There was no timeout or duplicate test ID. Production code is unchanged.
+Independent final rereview closed with 0 Critical, 0 Important, and 0 Minor findings;
+T061 owns procedure/course/guaranteed result resolution next.
+
 ### GREEN implementation
 
 - [ ] T064 [US2] Implement formal/QTE/combat/trap/check/hazard/narrative Mortal opportunity adapters and causal/profile validation in `BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs`
 - [ ] T065 [US2] Implement strict readable diagnosis paths, typed known-fact prerequisites/reveals, least-fixed-point discovery validation, treatment routes/known/completed agreement, requirements, resolution modes, and outcomes in `BookOfEternityClient/Services/MortalWoundTreatmentContract.cs` and `BookOfEternityClient/Services/WoundMaterializationContract.cs`
-- [ ] T066 [US2] Implement exact materialized item/resource/skill/capability/provider/facility/location/quest/effect resolution in `BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs`
+- [ ] T066 [US2] Implement the production-owned recursively strict immutable transient context/snapshot parsers and side-effect-free generic self/player/NPC exact materialized item/resource/skill/capability/provider/consent/facility/location/quest/effect/environment resolver, including conjunctive aggregate demand, ownership, availability/reservation, reachability/co-presence, stale/confusable/cross-realm rejection, detached ordered evidence, and semantic authority fingerprints in `BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs`
 - [ ] T067 [US2] Implement sealed diagnosis success/failure and terminal attempt identity, append-only `author_alternative_treatment` authority/transition, strict GM response -> accepted-transition command adaptation, kind-specific pending/repair packets, procedure/course/guaranteed attempt resolution, bounded transition intents, and exact durable history/replay result support in `BookOfEternityClient/Models/GameResponse.cs`, `BookOfEternityClient/Configuration/FileMapping.cs`, `BookOfEternityClient/IO/StateDistributor.cs`, `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`, `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`, `BookOfEternityClient/Services/MortalWoundTreatmentPlanner.cs`, `BookOfEternityClient/Services/WoundResponseInputComposer.cs`, `BookOfEternityClient/Services/WoundResponseInputComposer.Parsing.cs`, `BookOfEternityClient/Services/WoundResponseInputComposer.CommandParsing.cs`, `BookOfEternityClient/Services/WoundRepairPacketBuilder.cs`, `BookOfEternityClient/Services/WoundTransitionReducer.cs`, `BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs`, and `BookOfEternityClient/Services/WoundHistoryState.cs`
 - [ ] T068 [US2] Route item reservations/consumption and common resource mutations through accepted typed authorities with rollback/replay in `BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [ ] T069 [US2] Implement game-time recovery/deterioration policies, cadence/blockers/overflow, and exact tick outcomes in `BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs`

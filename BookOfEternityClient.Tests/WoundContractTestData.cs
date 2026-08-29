@@ -574,13 +574,15 @@ internal static class WoundContractTestData
             {
                 ["kind"] = "item_quantity",
                 ["itemRef"] = "sterile_thread",
-                ["quantity"] = 1
+                ["quantity"] = 1,
+                ["ownerRole"] = "provider"
             },
             new JsonObject
             {
                 ["kind"] = "skill_tier",
                 ["capabilityRef"] = "field_medicine",
-                ["minimumTier"] = 2
+                ["minimumTier"] = 2,
+                ["actorRole"] = "provider"
             }),
         ["resourcePolicy"] = new JsonObject
         {

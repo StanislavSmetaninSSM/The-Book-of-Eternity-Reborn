@@ -53,9 +53,9 @@ Example shape:
   "displayName": "Очистить и ушить рану",
   "mode": "procedure",
   "requirements": [
-    { "kind": "item_quantity", "itemRef": "sterile_thread", "quantity": 1 },
-    { "kind": "item_quantity", "itemRef": "antiseptic", "quantity": 1 },
-    { "kind": "skill_tier", "capabilityRef": "field_medicine", "minimumTier": 2 },
+    { "kind": "item_quantity", "itemRef": "sterile_thread", "quantity": 1, "ownerRole": "provider" },
+    { "kind": "item_quantity", "itemRef": "antiseptic", "quantity": 1, "ownerRole": "provider" },
+    { "kind": "skill_tier", "capabilityRef": "field_medicine", "minimumTier": 2, "actorRole": "provider" },
     { "kind": "facility", "facilityRef": "clean_work_surface" }
   ],
   "resourcePolicy": {
@@ -173,6 +173,40 @@ The final attempt revalidates:
 If any reference is stale, nothing is consumed. Removing a referenced item, skill,
 effect, or facility during an active course uses the route's explicit interruption
 policy or fails closed; no implicit migration is performed.
+
+The Mortal version-1 authority-resolved requirement members in this slice are closed:
+
+- `item_quantity`: exactly `kind`, exact permanent `itemRef`, positive integer
+  `quantity`, and `ownerRole=provider|target`;
+- `resource_quantity`: exactly `kind`, exact registered `resourceRef`, positive integer
+  `quantity`, and `ownerRole=provider|target`;
+- `skill_tier`: exactly `kind`, exact materialized `capabilityRef`, integer
+  `minimumTier`, and `actorRole=provider|target`;
+- `source_capability`: exactly `kind`, exact materialized `capabilityRef`, and
+  `actorRole=provider|target`;
+- `provider`: exactly `kind` and the selected exact permanent `providerRef`;
+- `consent`: exactly `kind`, exact current `consentRef`, exact `providerRef`, and exact
+  `targetRef`;
+- `facility`: exactly `kind` and exact materialized `facilityRef`;
+- `location`: exactly `kind`, exact materialized `locationRef`, and
+  `targetRole=target`;
+- `quest_state`: exactly `kind`, exact materialized `questRef`, and exact
+  `requiredState`;
+- `effect_state`: exactly `kind`, exact active `effectRef`, exact `requiredState`, and
+  `targetRole=target`;
+- `environment`: exactly `kind`, exact registered `environmentRef`, and exact
+  `requiredState`.
+
+Roles are semantic bindings to the already selected treatment context, never display
+names or caller-provided actor IDs. `source_capability` does not imply the provider: its
+explicit `actorRole` decides whether the provider or target must own the capability.
+Provider and target are typed actor coordinates rather than fixed NPC/player roles: an
+NPC may be the target, a player may be the provider, and one player coordinate may fill
+both roles during self-treatment.
+Facility/environment authority must be bound to the context's exact current location;
+location and effect requirements additionally bind the exact selected target. These
+objects declare predicates only and never contain reservations, mutations, consumed
+amounts, or caller-authored authority fingerprints.
 
 ## Resource and item handling
 

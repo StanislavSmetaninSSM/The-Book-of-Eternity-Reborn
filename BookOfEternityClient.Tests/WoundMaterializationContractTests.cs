@@ -1744,7 +1744,8 @@ public sealed class WoundMaterializationContractTests
     {
         ["kind"] = "item_quantity",
         ["itemRef"] = $"item_{index}",
-        ["quantity"] = 1
+        ["quantity"] = 1,
+        ["ownerRole"] = "provider"
     };
 
     private static JsonObject ReverseObject(JsonObject source)
