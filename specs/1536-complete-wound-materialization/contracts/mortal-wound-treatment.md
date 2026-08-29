@@ -1301,11 +1301,35 @@ accepted-plan composers register these intents with common `AcceptedMechanicsPla
 authority and only the normal accepted-plan publisher writes canonical roots.
 Initial wound create remains the existing sealed `WoundAcceptedTurnPlanner` preparation,
 effect-batch, and finalization flow; recovery may not introduce an alternate create
-writer. T070 passes its sealed bundle to
+writer. Stabilization must likewise read the canonical before-state and produce its own
+complete sealed `Prepare -> #1535 effect batch -> Finalize`
+`AcceptedMechanicsWoundStageBundle`; it may not publish a generic reducer result or a
+caller-authored after-image. T070 exposes this only as
+`MortalWoundTreatmentAcceptedStageBundleComposer.ComposeStabilization(fs, lease,
+binding, woundId)`, returning that sealed bundle with no caller-owned mutation or
+after-image parameter. T070's future overload passes each sealed bundle to
 `AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(fs, lease, bundle)`, which
-builds/registers the ordinary common plan from canonical roots. A generic reduction is
-admissible only as an already-canonical continuation assembled with the common
-effect/resource/history roots and delegated to that same authority.
+builds/registers the ordinary common plan from canonical roots.
+`MortalWoundRecoveryAcceptedPlanComposer.Compose` returns the same exact sealed
+`WoundStageBundle` beside its common plan and receipt, so the caller can verify the
+registered plan's full input/preparation/effect/final/bundle fingerprint agreement.
+The only public intent shapes are closed:
+`MortalWoundRecoveryProgressIntent(AuthorityFingerprint, ElapsedCadences,
+NextRecoveryAnchorMinute, RecoveryAnchorMinute, TickKey, WoundId)`,
+`MortalWoundRecoveryDeteriorationIntent(AuthorityFingerprint, ElapsedCadences,
+NextDeteriorationAnchorMinute, PolicyRef, TickKey, WoundId)`, and
+`MortalWoundDeathHandoffIntent(AuthorityFingerprint, PolicyRef, TickKey, WoundId)`.
+None carries a mutation, writer, after-image, history row, or JSON payload.
+
+The recovery planner rejects a checked cadence/deadline/next-anchor time overflow with
+the sole issue `mortal_wound_recovery_checked_time_overflow` at
+`game_state/world/world_time.json`. A neutral or beneficial deterioration policy rejects
+with the sole issue `mortal_wound_deterioration_policy_not_strictly_worsening` at the
+canonical player-carrier path
+`game_state/player/wounds.json.activeWounds[0].recovery.deteriorationPolicy` for the
+selected wound. A replay after normal publication reopens/revalidates the persisted
+history receipt before consulting the live clock; it returns the full closed receipt,
+not an in-memory/cache projection.
 
 Treatment interruption uses the same T069 classification, never raw policy JSON:
 `MortalWoundDeteriorationPolicyAuthority.Create(acceptedState, coordinates, policyRef)`

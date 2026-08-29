@@ -1358,11 +1358,15 @@ those intents into the existing `AcceptedMechanicsPlan` authority and
 `CanonicalStateNormalizer` is the sole atomic publisher of carrier, identity, history,
 receipt, and after-images. Initial create is the existing sealed
 `WoundAcceptedTurnPlanner` `Prepare -> effect batch -> Finalize` path, not a recovery
-or generic-reducer shortcut. T070 passes that sealed bundle to existing
+or generic-reducer shortcut. Stabilization also creates a second sealed bundle from the
+canonical before-state through that exact contour; no caller provides an after-image or
+a raw reducer result. `MortalWoundTreatmentAcceptedStageBundleComposer.ComposeStabilization`
+is the production-owned continuation seam and accepts only `fs`, `lease`, `binding`, and
+the exact wound ID. T070 passes each sealed bundle to its future
 `AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(fs, lease, bundle)`, which
-builds/registers the ordinary common plan from canonical roots; a generic reduction can
-be composed only for a continuation of an already-canonical wound and delegates to the
-same authority.
+builds/registers the ordinary common plan from canonical roots. The registered plan
+retains the exact non-null bundle plus input/preparation/effect/final/bundle seals and
+wound carrier/identity/history after-images for publication.
 
 For spiritual wounds `clockKind=afterlife_safe_cycle`, cadence is one safe cycle,
 threshold derives from current severity, and progress per cycle derives from the

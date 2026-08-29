@@ -948,14 +948,16 @@ exact valid course/guaranteed route shapes, and procedure/course/guaranteed reso
   `MortalWoundHealLegacyPlanner.Prepare(binding,resolution,workingWound)` before #1535 and
   `Finalize(preparation,acceptedEffectPlan)` afterward; emit durable legacy rows only from
   finalization; and validate all derived heal/legacy child operation/event coordinates.
-  T070 additionally feeds the sealed existing `WoundAcceptedTurnPlanner`
-  `Prepare -> #1535 effect batch -> Finalize` bundle into the existing common authority
+  T070 additionally feeds every initial or stabilization sealed existing `WoundAcceptedTurnPlanner`
+  `Prepare -> #1535 effect batch -> Finalize` bundle into the future common-authority overload
   `AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(fs, lease, bundle)`; it does
-  not add an alternate create authority. That authority builds the full common input and
+  not add an alternate create authority. Stabilization reads its canonical before-state
+  and must produce a second complete sealed stage bundle; it cannot publish a generic
+  reducer result or caller-authored after-image. Freeze the production-owned
+  `MortalWoundTreatmentAcceptedStageBundleComposer.ComposeStabilization(fs, lease, binding, woundId)`
+  seam returning that bundle. That authority builds the full common input and
   after-images from the sealed bundle plus canonical roots and registers the ordinary
-  `AcceptedMechanicsPlan`. A generic transition-reduction composer may be used only for
-  an already-canonical continuation, must delegate to that common authority, and must
-  assemble the full common effect/resource/history roots.
+  `AcceptedMechanicsPlan`.
   `MortalWoundRecoveryAcceptedPlanComposer.Compose(...)` follows the same delegation
   for a typed recovery resolution. The common
   `CanonicalStateNormalizer` accepted-plan path is the sole publisher of the composed

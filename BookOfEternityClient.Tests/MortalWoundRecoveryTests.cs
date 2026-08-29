@@ -16,12 +16,12 @@ namespace BookOfEternityClient.Tests;
 /// fingerprint, mutation, receipt, history row or policy is accepted.
 ///
 /// The baseline create uses the existing WoundAcceptedTurnPlanner Prepare -> #1535 effect
-/// batch -> Finalize pipeline. T070's existing
+/// batch -> Finalize pipeline. T070's future
 /// AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated overload consumes that sealed
 /// <see cref="AcceptedMechanicsWoundStageBundle"/> into the common plan; it is not an
-/// alternative create authority. A generic WoundTransitionAcceptedPlanComposer
-/// may compose only an already-canonical continuation reduction, together with all
-/// common effect/resource/history roots. MortalWoundRecoveryAcceptedPlanComposer.Compose(FileSystemManager,
+/// alternative create authority. Stabilization is a second complete sealed wound-stage
+/// bundle over the canonical before-state, never a generic reduction publication.
+/// MortalWoundRecoveryAcceptedPlanComposer.Compose(FileSystemManager,
 /// CanonicalWriteLease, WoundAcceptedTurnBinding, MortalWoundRecoveryResolution) for a
 /// recovery result. Both must register an <see cref="AcceptedMechanicsPlan"/> with the
 /// common accepted-plan authority; <see cref="CanonicalStateNormalizer"/> is the sole
@@ -87,7 +87,7 @@ public sealed class MortalWoundRecoveryTests
         Assert.False(Assert.IsType<bool>(Required(result, "IsValid")));
         Assert.Contains(Values(result, "Issues").Select(Assert.IsType<ValidationIssue>), issue =>
             issue.Code == "wound_materialization_client_owned_field" &&
-            issue.Path == "wound.recovery.recoveryAnchor");
+            issue.FilePath == "wound.recovery.recoveryAnchor");
 
         var nullAnchors = WoundContractTestData.CreateActiveWound();
         nullAnchors["recovery"]!["recoveryAnchor"] = null;
@@ -110,6 +110,8 @@ public sealed class MortalWoundRecoveryTests
             return;
 
         var receipt = ComposeAndPublishRecovery(fixture, resolution!);
+        fixture.AssertCarrierIdentityHistoryAgreement();
+        fixture.RestartForReplay();
         fixture.AssertCarrierIdentityHistoryAgreement();
         fixture.CorruptLiveClock();
         AssertExactReplay(InvokePlan(fixture), receipt);
@@ -142,7 +144,9 @@ public sealed class MortalWoundRecoveryTests
         Assert.Equal(scenario.PolicyValid, valid);
         if (!valid)
         {
-            Assert.NotEmpty(issues);
+            Assert.Single(issues);
+            Assert.Equal("mortal_wound_deterioration_policy_not_strictly_worsening", issues[0].Code);
+            Assert.Equal(Fixture.CanonicalDeteriorationPolicyPath, issues[0].FilePath);
             Assert.Null(authority);
             return;
         }
@@ -198,7 +202,11 @@ public sealed class MortalWoundRecoveryTests
         Assert.Null(Optional(result, "ReplayReceipt"));
         if (scenario.Disposition == "Rejected")
         {
-            Assert.NotEmpty(issues);
+            Assert.Collection(issues, issue =>
+            {
+                Assert.Equal("mortal_wound_recovery_checked_time_overflow", issue.Code);
+                Assert.Equal(EffectAcceptedTurnInputComposer.WorldTimePath, issue.FilePath);
+            });
             Assert.Null(resolution);
             return null;
         }
@@ -263,10 +271,36 @@ public sealed class MortalWoundRecoveryTests
             "MortalWoundRecoveryProgressIntent", "MortalWoundRecoveryDeteriorationIntent",
             "MortalWoundDeathHandoffIntent"
         });
+        AssertClosedIntent(value);
         Assert.DoesNotContain(value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public),
             static p => p.Name.Contains("Json", StringComparison.Ordinal) ||
                         p.Name.Contains("History", StringComparison.Ordinal) ||
-                        p.Name.Contains("After", StringComparison.Ordinal));
+                        p.Name.Contains("After", StringComparison.Ordinal) ||
+                        p.Name.Contains("Mutation", StringComparison.Ordinal) ||
+                        p.Name.Contains("Writer", StringComparison.Ordinal));
+    }
+
+    private static void AssertClosedIntent(object value)
+    {
+        var expected = value.GetType().Name switch
+        {
+            "MortalWoundRecoveryProgressIntent" => new[]
+            {
+                "AuthorityFingerprint", "ElapsedCadences", "NextRecoveryAnchorMinute",
+                "RecoveryAnchorMinute", "TickKey", "WoundId"
+            },
+            "MortalWoundRecoveryDeteriorationIntent" => new[]
+            {
+                "AuthorityFingerprint", "ElapsedCadences", "NextDeteriorationAnchorMinute",
+                "PolicyRef", "TickKey", "WoundId"
+            },
+            "MortalWoundDeathHandoffIntent" => new[]
+            {
+                "AuthorityFingerprint", "PolicyRef", "TickKey", "WoundId"
+            },
+            _ => throw new Xunit.Sdk.XunitException($"Unknown recovery intent '{value.GetType().Name}'.")
+        };
+        AssertClosed(value, expected);
     }
 
     private static object ComposeAndPublishRecovery(Fixture fixture, object resolution)
@@ -282,11 +316,12 @@ public sealed class MortalWoundRecoveryTests
         Assert.Equal(typeof(WoundAcceptedTurnBinding), method.GetParameters()[2].ParameterType);
         Assert.Equal(resolution.GetType(), method.GetParameters()[3].ParameterType);
         var result = Invoke(method, fixture.FileSystem, fixture.Lease, fixture.Binding, resolution);
-        AssertClosed(result, "AcceptedPlan", "Disposition", "Issues", "Receipt");
+        AssertClosed(result, "AcceptedPlan", "Disposition", "Issues", "Receipt", "WoundStageBundle");
         Assert.Equal("Composed", Convert.ToString(Required(result, "Disposition")));
         Assert.Empty(Values(result, "Issues"));
-        var acceptedPlan = Required(result, "AcceptedPlan");
-        Assert.Equal("AcceptedMechanicsPlan", acceptedPlan.GetType().Name);
+        var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(Required(result, "WoundStageBundle"));
+        var acceptedPlan = Assert.IsType<AcceptedMechanicsPlan>(Required(result, "AcceptedPlan"));
+        AssertPublishedWoundPlan(acceptedPlan, bundle);
         var receipt = Required(result, "Receipt");
         AssertReceipt(receipt);
         Assert.Same(acceptedPlan, PublishAcceptedPlan(fixture));
@@ -308,8 +343,7 @@ public sealed class MortalWoundRecoveryTests
         Assert.Null(Optional(result, "Resolution"));
         var replay = Required(result, "ReplayReceipt");
         AssertReceipt(replay);
-        Assert.Equal(Required(receipt, "TickKey"), Required(replay, "TickKey"));
-        Assert.Equal(Required(receipt, "ReceiptFingerprint"), Required(replay, "ReceiptFingerprint"));
+        AssertReceiptEqual(receipt, replay);
     }
 
     private static void AssertReceipt(object receipt)
@@ -318,6 +352,34 @@ public sealed class MortalWoundRecoveryTests
         AssertClosed(receipt, "ReceiptFingerprint", "TickKey", "WoundId");
         Assert.NotEqual(string.Empty, Assert.IsType<string>(Required(receipt, "TickKey")));
         AssertFingerprint(Required(receipt, "ReceiptFingerprint"));
+    }
+
+    private static void AssertReceiptEqual(object expected, object actual)
+    {
+        AssertReceipt(expected);
+        AssertReceipt(actual);
+        foreach (var property in expected.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            Assert.Equal(property.GetValue(expected), Required(actual, property.Name));
+    }
+
+    private static void AssertPublishedWoundPlan(
+        AcceptedMechanicsPlan plan,
+        AcceptedMechanicsWoundStageBundle? expectedBundle)
+    {
+        var actual = Assert.IsType<AcceptedMechanicsWoundStageBundle>(plan.WoundStageBundle);
+        if (expectedBundle is not null)
+        {
+            Assert.Equal(expectedBundle.InputFingerprint, actual.InputFingerprint);
+            Assert.Equal(expectedBundle.WoundPreparationFingerprint, actual.WoundPreparationFingerprint);
+            Assert.Equal(expectedBundle.EffectInputFingerprint, actual.EffectInputFingerprint);
+            Assert.Equal(expectedBundle.EffectAcceptedTurnPlanFingerprint, actual.EffectAcceptedTurnPlanFingerprint);
+            Assert.Equal(expectedBundle.WoundFinalPlanFingerprint, actual.WoundFinalPlanFingerprint);
+            Assert.Equal(expectedBundle.BundleFingerprint, actual.BundleFingerprint);
+        }
+        Assert.Contains(WoundCarrierCatalog.PlayerPath, plan.WoundCarrierAfterImages.Keys);
+        Assert.NotEmpty(Assert.IsType<JsonObject>(plan.WoundCarrierAfterImages[WoundCarrierCatalog.PlayerPath]));
+        Assert.NotEmpty(Assert.IsType<JsonObject>(plan.WoundIdentityAfterImage));
+        Assert.NotEmpty(Assert.IsType<JsonObject>(plan.WoundHistoryAfterImage));
     }
 
     private static MethodInfo ExactStatic(Type type, string name, int arity) => Assert.Single(
@@ -461,8 +523,8 @@ public sealed class MortalWoundRecoveryTests
         { Root = root; FileSystem = fs; Lease = lease; Binding = binding; WoundId = woundId; Scenario = scenario; }
 
         private string Root { get; }
-        internal FileSystemManager FileSystem { get; }
-        internal FileSystemManager.CanonicalWriteLease Lease { get; }
+        internal FileSystemManager FileSystem { get; private set; }
+        internal FileSystemManager.CanonicalWriteLease Lease { get; private set; }
         internal WoundAcceptedTurnBinding Binding { get; }
         internal string WoundId { get; }
         internal string Name => Scenario.Name;
@@ -478,12 +540,13 @@ public sealed class MortalWoundRecoveryTests
             FileSystemManager.CanonicalWriteLease? lease = null;
             try
             {
-                Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath, scenario.WorldTime);
-                WriteTurnRequest(fs, 42);
-                lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
                 var parsed = WoundMaterializationContract.Parse(scenario.Wound.ToJsonString(), "recoveryBaseline");
                 Assert.True(parsed.IsValid, Issues(parsed.Issues));
                 var creationInput = WoundEffectBatchPlannerTests.CreateInputForAcceptedCache();
+                Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath, scenario.WorldTime);
+                WriteTurnRequest(fs, creationInput.Binding);
+                AssertLiveTurnCorrelation(fs, creationInput.Binding, creationInput);
+                lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
                 var creationDraft = Assert.Single(creationInput.Transitions);
                 creationInput = creationInput with
                 {
@@ -504,31 +567,33 @@ public sealed class MortalWoundRecoveryTests
                 var finalized = Assert.IsType<WoundAcceptedTurnPlan>(finalizedResult.Plan);
                 var creationBundle = new AcceptedMechanicsWoundStageBundle(
                     creationInput, prepared, Assert.IsType<WoundEffectBatchAcceptedPlan>(effect.Plan), finalized);
-                ComposeAndPublishCreation(fs, lease, creationBundle);
+                ComposeAndPublishWoundStages(fs, lease, creationBundle);
                 var woundId = Assert.Single(finalized.AllocatedWoundIds);
                 if (scenario.StartsStabilized)
                 {
-                    WriteTurnRequest(fs, 43);
+                    // This future T070 seam is intentionally the only stabilization fixture
+                    // boundary: it must read the canonical before-state and produce a second
+                    // full Prepare -> #1535 -> Finalize wound stage bundle. The test never
+                    // supplies an after-image, reducer result, authority, or plan.
+                    var stabilizationFixtureInput = WoundEffectBatchPlannerTests.CreateInputForAcceptedCache();
+                    var stabilizationBinding = stabilizationFixtureInput.Binding;
+                    WriteTurnRequest(fs, stabilizationBinding);
+                    AssertLiveTurnCorrelation(fs, stabilizationBinding, stabilizationFixtureInput);
                     if (scenario.StabilizationMinute is { } stabilizationMinute)
                         Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath,
                             new JsonObject { ["currentTimeInMinutes"] = stabilizationMinute });
-                    var created = ReadCanonicalWound(fs, woundId);
-                    var stabilized = CreateStabilizedAfter(JsonNode.Parse(
-                        WoundMaterializationContract.SerializeCanonical(created))!.AsObject());
-                    var parsedStabilized = WoundMaterializationContract.Parse(
-                        stabilized.ToJsonString(), "recoveryStabilization");
-                    Assert.True(parsedStabilized.IsValid, Issues(parsedStabilized.Issues));
-                    var stabilization = WoundTransitionReducer.Reduce(CreateStabilizationRequest(
-                        created, parsedStabilized.Wound!));
-                    Assert.True(stabilization.IsValid, Issues(stabilization.Issues));
-                    ComposeAndPublishContinuation(fs, lease,
-                        CreateBinding(43, "turn_43:stabilize", "mortal_wound_treatment"), stabilization);
+                    var stabilizationBundle = BuildStabilizationBundle(
+                        fs, lease, stabilizationBinding, woundId);
+                    ComposeAndPublishWoundStages(fs, lease, stabilizationBundle);
                 }
-                WriteTurnRequest(fs, 44);
+                var recoveryFixtureInput = WoundEffectBatchPlannerTests.CreateInputForAcceptedCache();
+                var recoveryBinding = recoveryFixtureInput.Binding;
+                WriteTurnRequest(fs, recoveryBinding);
+                AssertLiveTurnCorrelation(fs, recoveryBinding, recoveryFixtureInput);
                 Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath,
                     new JsonObject { ["currentTimeInMinutes"] = scenario.Minute });
                 return new(root, fs, lease,
-                    CreateBinding(44, "turn_44:recovery_tick", "mortal_wound_recovery"),
+                    recoveryBinding,
                     woundId, scenario);
             }
             catch
@@ -557,9 +622,18 @@ public sealed class MortalWoundRecoveryTests
         internal void CorruptLiveClock() => Write(FileSystem, EffectAcceptedTurnInputComposer.WorldTimePath,
             new JsonObject { ["currentTimeInMinutes"] = "malformed" });
 
+        internal void RestartForReplay()
+        {
+            Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            FileSystem = new FileSystemManager(Root, NullLogger<FileSystemManager>.Instance);
+            FileSystem.EnsureDirectoryStructure();
+            Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+            AssertCarrierIdentityHistoryAgreement();
+        }
+
         public void Dispose() { Lease.DisposeAsync().AsTask().GetAwaiter().GetResult(); Directory.Delete(Root, recursive: true); }
 
-        private static void ComposeAndPublishCreation(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
+        private static void ComposeAndPublishWoundStages(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
             AcceptedMechanicsWoundStageBundle bundle)
         {
             var method = ExactStatic(typeof(AcceptedMechanicsPlanAuthority), "GetOrBuildWoundValidated", 3);
@@ -571,8 +645,8 @@ public sealed class MortalWoundRecoveryTests
             AssertClosed(result, "Issues", "Plan", "Success");
             Assert.True(Assert.IsType<bool>(Required(result, "Success")));
             Assert.Empty(Values(result, "Issues"));
-            var plan = Required(result, "Plan");
-            Assert.Equal("AcceptedMechanicsPlan", plan.GetType().Name);
+            var plan = Assert.IsType<AcceptedMechanicsPlan>(Required(result, "Plan"));
+            AssertPublishedWoundPlan(plan, bundle);
             var published = new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
                 .BindTo(lease)
                 .NormalizeAcceptedMechanicsAsync(backups: null)
@@ -580,83 +654,59 @@ public sealed class MortalWoundRecoveryTests
             Assert.Same(plan, published);
         }
 
-        private static void ComposeAndPublishContinuation(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
-            WoundAcceptedTurnBinding binding, WoundTransitionReductionResult reduction)
+        private static AcceptedMechanicsWoundStageBundle BuildStabilizationBundle(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease lease,
+            WoundAcceptedTurnBinding binding,
+            string woundId)
         {
             var type = typeof(WoundMaterializationContract).Assembly.GetType(
-                "BookOfEternityClient.Services.WoundTransitionAcceptedPlanComposer", false, false);
+                "BookOfEternityClient.Services.MortalWoundTreatmentAcceptedStageBundleComposer", false, false);
             Assert.True(type is not null,
-                "T070 transition accepted-plan composer is absent; tests must not hand-write carrier/index/history.");
-            var method = ExactStatic(type!, "ComposeContinuation", 4);
-            Assert.Equal("WoundTransitionAcceptedPlanCompositionResult", method.ReturnType.Name);
+                "T070 stabilization stage composer is absent; tests must not hand-write carrier/index/history/after-images.");
+            var method = ExactStatic(type!, "ComposeStabilization", 4);
+            Assert.Equal(typeof(AcceptedMechanicsWoundStageBundle), method.ReturnType);
             Assert.Equal(typeof(FileSystemManager), method.GetParameters()[0].ParameterType);
             Assert.Equal(lease.GetType(), method.GetParameters()[1].ParameterType);
             Assert.Equal(typeof(WoundAcceptedTurnBinding), method.GetParameters()[2].ParameterType);
-            Assert.Equal(typeof(WoundTransitionReductionResult), method.GetParameters()[3].ParameterType);
-            var result = Invoke(method, fs, lease, binding, reduction);
-            AssertClosed(result, "AcceptedPlan", "Disposition", "Issues");
-            Assert.Equal("Composed", Convert.ToString(Required(result, "Disposition")));
-            Assert.Empty(Values(result, "Issues"));
-            var plan = Required(result, "AcceptedPlan");
-            Assert.Equal("AcceptedMechanicsPlan", plan.GetType().Name);
-            var published = new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
-                .BindTo(lease)
-                .NormalizeAcceptedMechanicsAsync(backups: null)
-                .GetAwaiter().GetResult();
-            Assert.Same(plan, published);
+            Assert.Equal(typeof(string), method.GetParameters()[3].ParameterType);
+            return Assert.IsType<AcceptedMechanicsWoundStageBundle>(Invoke(method, fs, lease, binding, woundId));
         }
 
-        private static WoundMaterializationEnvelope ReadCanonicalWound(FileSystemManager fs, string woundId)
-        {
-            var full = fs.ResolvePath(WoundCarrierCatalog.PlayerPath);
-            var player = File.Exists(full) ? JsonNode.Parse(File.ReadAllText(full))!.AsObject() : null;
-            var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(player, null, null, null, null));
-            Assert.Empty(catalog.Issues);
-            Assert.True(catalog.TryResolveOne(woundId, out var occurrence));
-            return occurrence.Wound;
-        }
+        internal const string CanonicalDeteriorationPolicyPath =
+            "game_state/player/wounds.json.activeWounds[0].recovery.deteriorationPolicy";
 
-        private static JsonObject CreateStabilizedAfter(JsonObject baseline)
-        {
-            var after = baseline.DeepClone().AsObject();
-            after["care"]!["state"] = "stabilized";
-            after["care"]!["stabilizedAtTurn"] = 43;
-            after["care"]!["lastAttemptId"] = "attempt_stabilize_001";
-            after["recovery"]!["blockers"] = new JsonArray();
-            after["lastTransition"] = new JsonObject
-            {
-                ["transitionId"] = "wound_transition_test_002", ["ordinal"] = 2,
-                ["turn"] = 43, ["kind"] = "stabilize"
-            };
-            return after;
-        }
-
-        private static WoundTransitionRequest CreateStabilizationRequest(
-            WoundMaterializationEnvelope before,
-            WoundMaterializationEnvelope after) => new(
-            "stabilize", "wound_transition_test_002", "operation_test_wound_stabilize_001",
-            "turn_43:stabilize", 43, before, after, new WoundStabilizationEvidence(
-                "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-                WoundIdentityState.ComputeSemanticFingerprint(before),
-                WoundIdentityState.ComputeSemanticFingerprint(after), "attempt_stabilize_001",
-                Array.Empty<string>(), Array.Empty<string>(), new[] { "not_stabilized" }));
-
-        private static WoundAcceptedTurnBinding CreateBinding(int turn, string eventRef, string sourceKind)
-        {
-            var events = new[] { new WoundAcceptedEventAuthority(eventRef, sourceKind,
-                "t062_" + turn, "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") };
-            return new WoundAcceptedTurnBinding("session_t062", "request_t062_" + turn,
-                "snapshot_t062_" + turn, "mortal_world", turn, events,
-                WoundAcceptedEventSetFingerprint.Compute(events));
-        }
-
-        private static void WriteTurnRequest(FileSystemManager fs, int turn) => Write(fs,
+        private static void WriteTurnRequest(FileSystemManager fs, WoundAcceptedTurnBinding binding) => Write(fs,
             LiveTurnPreparationService.TurnRequestPath, new JsonObject
             {
-                ["sessionId"] = "session_t062", ["requestId"] = "request_t062_" + turn,
-                ["turnNumber"] = turn, ["gameMode"] = "normal",
+                ["sessionId"] = binding.SessionId, ["requestId"] = binding.RequestId,
+                ["turnNumber"] = binding.Turn, ["gameMode"] = "normal",
                 ["preGeneratedDices1d20"] = new JsonArray(17)
             });
+
+        private static void AssertLiveTurnCorrelation(
+            FileSystemManager fs,
+            WoundAcceptedTurnBinding binding,
+            WoundAcceptedTurnInput? input)
+        {
+            var turn = JsonNode.Parse(File.ReadAllText(fs.ResolvePath(LiveTurnPreparationService.TurnRequestPath)))!.AsObject();
+            Assert.Equal(binding.SessionId, turn["sessionId"]!.GetValue<string>());
+            Assert.Equal(binding.RequestId, turn["requestId"]!.GetValue<string>());
+            Assert.Equal(binding.Turn, turn["turnNumber"]!.GetValue<int>());
+            Assert.Equal("mortal_world", binding.Realm);
+            Assert.NotEqual(string.Empty, binding.SnapshotToken);
+            Assert.Equal(WoundAcceptedEventSetFingerprint.Compute(binding.AcceptedEvents), binding.AcceptedEventsFingerprint);
+            Assert.NotEmpty(binding.AcceptedEvents);
+            if (input is not null)
+            {
+                Assert.Equal(binding.SessionId, input.Binding.SessionId);
+                Assert.Equal(binding.RequestId, input.Binding.RequestId);
+                Assert.Equal(binding.SnapshotToken, input.Binding.SnapshotToken);
+                Assert.Equal(binding.Realm, input.Binding.Realm);
+                Assert.Equal(binding.Turn, input.Binding.Turn);
+                Assert.Equal(binding.AcceptedEventsFingerprint, input.Binding.AcceptedEventsFingerprint);
+            }
+        }
 
         private JsonObject? Read(string path)
         {
