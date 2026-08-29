@@ -458,7 +458,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.True(cached.Success, DescribeIssues(cached.Issues));
         Assert.Same(publicationPlan, cached.Plan);
         fixture.AssertCachedPublicationPlanBinding(cachedBinding);
-        fixture.AssertPublicationPlanBindsOnlyTheSelectedRoot(publicationPlan, proposal);
+        fixture.AssertPublicationPlanBindsExpectedRoots(publicationPlan, proposal);
         return publicationPlan;
     }
 
@@ -1210,7 +1210,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         {
             "player_active_skill_exports_physical_capability" or
             "untouched_player_skill_reads_current_lease_bound_root" or
-            "touched_player_active_skill_reads_exact_final_after_image" => ("player", "activeSkills"),
+            "touched_player_active_skill_reads_exact_final_after_image" or
+            "duplicate_or_confusable_final_skill_row_rejects" or
+            "confusable_final_skill_sibling_rejects" => ("player", "activeSkills"),
             "player_passive_skill_exports_physical_capability" or
             "touched_player_passive_skill_reads_exact_final_after_image" => ("player", "passiveSkills"),
             "target_owned_combatant_requires_promotion" => ("player", "activeSkills"),
@@ -1711,6 +1713,28 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 proposal.NPCActiveSkillChanges is { Length: > 0 } ||
                 proposal.NPCPassiveSkillChanges is { Length: > 0 });
             AssertProposalCarriesExactSelectedSkillChange(proposal);
+            AssertProposalCarriesEveryExpectedPlayerRootChange(proposal);
+        }
+
+        private void AssertProposalCarriesEveryExpectedPlayerRootChange(GameResponse proposal)
+        {
+            foreach (var path in ExpectedPublicationRoots(FinalSource).Keys
+                         .Where(static path => path.StartsWith("game_state/player/", StringComparison.Ordinal)))
+            {
+                var skillArray = path.EndsWith("skills_active.json", StringComparison.Ordinal)
+                    ? "activeSkills"
+                    : "passiveSkills";
+                if (path == SelectedSkillRootPath)
+                    continue;
+
+                var expected = Assert.IsType<JsonArray>(FinalSource["player"]![skillArray]);
+                var actual = skillArray == "activeSkills"
+                    ? proposal.ActiveSkillChanges
+                    : proposal.PassiveSkillChanges;
+                Assert.NotNull(actual);
+                Assert.Equal(expected.ToJsonString(), new JsonArray(actual!
+                    .Select(static row => JsonNode.Parse(row.GetRawText())).ToArray()).ToJsonString());
+            }
         }
 
         private void AssertProposalCarriesExactSelectedSkillChange(GameResponse proposal)
@@ -1910,7 +1934,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             return document.RootElement.Clone();
         }
 
-        internal void AssertPublicationPlanBindsOnlyTheSelectedRoot(
+        internal void AssertPublicationPlanBindsExpectedRoots(
             object plan,
             GameResponse proposal)
         {
@@ -1923,11 +1947,14 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 return;
             }
 
-            Assert.Equal(new[] { SelectedSkillRootPath }, afterImages.Keys.OrderBy(static path => path));
-            Assert.True(afterImages.TryGetValue(SelectedSkillRootPath, out var actual));
-            Assert.Equal(
-                SelectedSkillRoot(FinalSource).ToJsonString(),
-                actual!.ToJsonString());
+            var expectedRoots = ExpectedPublicationRoots(FinalSource);
+            Assert.Equal(expectedRoots.Keys.OrderBy(static path => path),
+                afterImages.Keys.OrderBy(static path => path));
+            foreach (var (path, expected) in expectedRoots)
+            {
+                Assert.True(afterImages.TryGetValue(path, out var actual));
+                Assert.Equal(expected.ToJsonString(), actual!.ToJsonString());
+            }
         }
 
         internal void AssertPublicationFinalRootScenario()
@@ -1935,22 +1962,33 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             if (!Scenario.Publication)
                 return;
 
-            var current = SelectedSkillRoot(CurrentSource).ToJsonString();
-            var final = SelectedSkillRoot(FinalSource).ToJsonString();
             if (!UsesFinalAfterImage)
             {
-                Assert.NotEqual(current, final);
+                Assert.NotEqual(
+                    SelectedSkillRoot(CurrentSource).ToJsonString(),
+                    SelectedSkillRoot(FinalSource).ToJsonString());
                 return;
             }
+            var currentRoots = ExpectedPublicationRoots(CurrentSource);
+            var finalRoots = ExpectedPublicationRoots(FinalSource);
             if (Scenario.ExpectedValid)
             {
-                Assert.Equal(current, final);
+                Assert.Equal(currentRoots.Keys.OrderBy(static path => path),
+                    finalRoots.Keys.OrderBy(static path => path));
+                foreach (var path in finalRoots.Keys)
+                    Assert.Equal(currentRoots[path].ToJsonString(), finalRoots[path].ToJsonString());
                 return;
             }
 
             Assert.Equal(CapabilityFailureBoundary.Exporter, Scenario.ExpectedBoundary);
             Assert.NotNull(Scenario.ExpectedCode);
-            Assert.NotEqual(current, final);
+            Assert.Equal(currentRoots.Keys.OrderBy(static path => path),
+                finalRoots.Keys.OrderBy(static path => path));
+            Assert.Contains(finalRoots.Keys,
+                path => !string.Equals(
+                    currentRoots[path].ToJsonString(),
+                    finalRoots[path].ToJsonString(),
+                    StringComparison.Ordinal));
         }
 
         internal void AssertCachedPublicationPlanBinding(AcceptedMechanicsPlanBinding binding)
@@ -1979,7 +2017,10 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 Assert.Equal(expected.SemanticFingerprint, actual.SemanticFingerprint);
             }
             if (UsesFinalAfterImage)
-                Assert.True(binding.BeforeImages.ContainsKey(SelectedSkillRootPath));
+            {
+                foreach (var path in ExpectedPublicationRoots(FinalSource).Keys)
+                    Assert.True(binding.BeforeImages.ContainsKey(path));
+            }
             else
                 Assert.DoesNotContain(SelectedSkillRootPath, binding.BeforeImages.Keys);
         }
@@ -2019,16 +2060,48 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         };
 
         private JsonObject SelectedSkillRoot(JsonObject source)
+            => PublicationRoot(source, SelectedSkillRootPath);
+
+        private IReadOnlyDictionary<string, JsonObject> ExpectedPublicationRoots(JsonObject source)
+        {
+            var roots = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+            if (!UsesFinalAfterImage)
+                return roots;
+
+            if (Scenario.SourceOwner == "npc")
+            {
+                roots.Add("game_state/npcs/npc_core.json", PublicationRoot(source, "game_state/npcs/npc_core.json"));
+                return roots;
+            }
+
+            var currentPlayer = Assert.IsType<JsonObject>(CurrentSource["player"]);
+            var finalPlayer = Assert.IsType<JsonObject>(FinalSource["player"]);
+            var selectedPath = SelectedSkillRootPath;
+            foreach (var (arrayName, path) in new[]
+                     {
+                         ("activeSkills", "game_state/player/skills_active.json"),
+                         ("passiveSkills", "game_state/player/skills_passive.json")
+                     })
+            {
+                var current = Assert.IsType<JsonArray>(currentPlayer[arrayName]);
+                var final = Assert.IsType<JsonArray>(finalPlayer[arrayName]);
+                if (path == selectedPath || !JsonNode.DeepEquals(current, final))
+                    roots.Add(path, PublicationRoot(source, path));
+            }
+            return roots;
+        }
+
+        private JsonObject PublicationRoot(JsonObject source, string path)
         {
             var player = Assert.IsType<JsonObject>(source["player"]);
             var npc = Assert.IsType<JsonObject>(source["npc"]);
-            return Scenario.SourceOwner switch
+            return path switch
             {
-                "player" when Scenario.SourceSkillArray == "activeSkills" => new JsonObject
+                "game_state/player/skills_active.json" => new JsonObject
                 {
                     ["activeSkillChanges"] = player["activeSkills"]!.DeepClone()
                 },
-                "player" => new JsonObject
+                "game_state/player/skills_passive.json" => new JsonObject
                 {
                     ["passiveSkillChanges"] = player["passiveSkills"]!.DeepClone()
                 },
