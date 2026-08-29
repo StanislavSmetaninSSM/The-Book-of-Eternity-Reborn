@@ -92,6 +92,9 @@ public sealed class MortalWoundRecoveryTests
         Assert.Contains(Values(result, "Issues").Select(Assert.IsType<ValidationIssue>), issue =>
             issue.Code == "wound_materialization_client_owned_field" &&
             issue.FilePath == "wound.recovery.recoveryAnchor");
+        Assert.Contains(Values(result, "Issues").Select(Assert.IsType<ValidationIssue>), issue =>
+            issue.Code == "wound_materialization_client_owned_field" &&
+            issue.FilePath == "wound.recovery.deteriorationAnchor");
 
         var nullAnchors = WoundContractTestData.CreateActiveWound();
         nullAnchors["recovery"]!["recoveryAnchor"] = null;
