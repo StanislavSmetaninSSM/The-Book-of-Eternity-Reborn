@@ -28,6 +28,8 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         "provider_owned_proof_may_target_combatant",
         "provider_owned_proof_may_target_combatant_member",
         "target_owned_combatant_requires_promotion",
+        "cross_root_player_npc_exact_skill_id_is_owner_scoped",
+        "cross_root_player_npc_confusable_skill_id_is_owner_scoped",
         "ordinary_capability_projection_comes_from_same_skill",
         "mastery_gate_remains_separate_skill_tier_requirement",
         "idless_extension_bearing_skill_rejects",
@@ -205,6 +207,18 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 ReadRequiredProperty(current.Proof!, "ProofFingerprint"),
                 ReadRequiredProperty(result.Proof!, "ProofFingerprint"));
         }
+        if (scenario.Name.StartsWith("touched_", StringComparison.Ordinal))
+        {
+            var current = InvokeExportCurrent(fixture, scenario);
+            Assert.NotNull(current.Proof);
+            Assert.NotNull(result.Proof);
+            Assert.NotEqual(
+                ReadRequiredProperty(current.Proof!, "SourceSemanticFingerprint"),
+                ReadRequiredProperty(result.Proof!, "SourceSemanticFingerprint"));
+            Assert.NotEqual(
+                ReadRequiredProperty(current.Proof!, "ProofFingerprint"),
+                ReadRequiredProperty(result.Proof!, "ProofFingerprint"));
+        }
         return result;
     }
 
@@ -325,6 +339,14 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             fixture.CreatePublicationPlanningInput());
         Assert.True(result.Success, DescribeIssues(result.Issues));
         Assert.NotNull(result.Plan);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out var cachedBinding,
+            out var cached));
+        Assert.True(cached.Success, DescribeIssues(cached.Issues));
+        Assert.Same(result.Plan, cached.Plan);
+        fixture.AssertCachedPublicationPlanBinding(cachedBinding);
         fixture.AssertPublicationPlanBindsOnlyTheSelectedRoot(result.Plan!);
         return result.Plan!;
     }
@@ -493,6 +515,13 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             case "duplicate_skill_id_across_active_and_passive_rejects":
                 OtherSkill(fixture, scenario)["skillId"] = sourceSkill["skillId"]!.DeepClone();
                 break;
+            case "cross_root_player_npc_exact_skill_id_is_owner_scoped":
+                Skill(fixture, "player", "passiveSkills")["skillId"] = sourceSkill["skillId"]!.DeepClone();
+                break;
+            case "cross_root_player_npc_confusable_skill_id_is_owner_scoped":
+                Skill(fixture, "player", "passiveSkills")["skillId"] =
+                    scenario.SkillId.Replace("i", "і", StringComparison.Ordinal);
+                break;
             case "case_changed_skill_id_rejects":
                 OtherSkill(fixture, scenario)["skillId"] = scenario.SkillId.ToUpperInvariant();
                 break;
@@ -546,6 +575,13 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 break;
             case "source_semantic_change_changes_proof":
             case "changed_final_operation_limits_reject":
+                Limits(capability)["maximumRecoveryPoints"] = 2;
+                break;
+            case "touched_player_active_skill_reads_exact_final_after_image":
+            case "touched_player_passive_skill_reads_exact_final_after_image":
+            case "touched_npc_skill_reads_exact_final_after_image":
+                // A touched final companion must be semantically different from its
+                // sealed current root, otherwise a current-root reader could pass.
                 Limits(capability)["maximumRecoveryPoints"] = 2;
                 break;
             case "display_name_change_never_grants_authority":
@@ -1017,7 +1053,6 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         {
             "wrong_realm_rejects" => CapabilityFailureBoundary.Context,
             "idless_extension_bearing_skill_rejects" or
-            "target_owned_combatant_requires_promotion" or
             "duplicate_skill_id_across_active_and_passive_rejects" or
             "case_changed_skill_id_rejects" or
             "unicode_confusable_skill_id_rejects" or
@@ -1034,6 +1069,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "retired_skill_rejects" or
             "wrong_owner_rejects" or
             "wrong_role_rejects" or
+            "target_owned_combatant_requires_promotion" or
             "removed_final_skill_rejects" or
             "retired_final_skill_rejects" or
             "changed_final_skill_id_rejects" or
@@ -1339,9 +1375,10 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     Assert.Equal("npc", Scenario.SourceOwner);
                     Assert.IsType<JsonObject>(CurrentSource["npc"])["ownerId"] = "npc_wrong_owner_01";
                     break;
-                // Wrong role retains the sealed valid context/root and is rejected
-                // solely by the capability exporter.
+                // Wrong role and an unpromoted combat target retain the sealed valid
+                // context/root and are rejected solely by the capability exporter.
                 case "wrong_role_rejects":
+                case "target_owned_combatant_requires_promotion":
                     break;
                 default:
                     throw new InvalidOperationException(
@@ -1517,6 +1554,17 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Assert.Equal(
                 SelectedSkillRoot(FinalSource).ToJsonString(),
                 actual!.ToJsonString());
+        }
+
+        internal void AssertCachedPublicationPlanBinding(AcceptedMechanicsPlanBinding binding)
+        {
+            Assert.Equal("session_capability_publication", binding.SessionId);
+            Assert.Equal("request_capability_publication", binding.RequestId);
+            Assert.Equal("snapshot_capability_publication", binding.SnapshotToken);
+            if (UsesFinalAfterImage)
+                Assert.True(binding.BeforeImages.ContainsKey(SelectedSkillRootPath));
+            else
+                Assert.DoesNotContain(SelectedSkillRootPath, binding.BeforeImages.Keys);
         }
 
         internal void AssertPublicationExportReadsSelectedRoot(CapabilityProofView result)
