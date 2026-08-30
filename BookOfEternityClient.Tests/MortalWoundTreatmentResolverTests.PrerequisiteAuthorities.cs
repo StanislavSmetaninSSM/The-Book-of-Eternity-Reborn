@@ -928,6 +928,1375 @@ public sealed partial class MortalWoundTreatmentResolverTests
             MortalWoundTreatmentRouteFingerprint.Compute(changedOutcome, route.RouteId));
     }
 
+    [Theory]
+    [InlineData("procedure_normal_uses_lowest_free_die", "procedure", "CreateForProcedure", 2)]
+    [InlineData("guaranteed_current_capability_proof_stabilizes", "guaranteed", "CreateForGuaranteed", 1)]
+    public void PrerequisiteAuthority_NonCourseRequirementBundleWrapsExactT060Rows(
+        string scenarioName,
+        string mode,
+        string factoryName,
+        int expectedBindings)
+    {
+        var scenario = CreateScenario(scenarioName, mode);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = fixture.GetAcceptedState();
+        var before = fixture.ReadCurrentWound();
+        var coordinates = CreatePrerequisiteCoordinates(
+            acceptedState,
+            before,
+            "operation_t066_" + mode + "_requirement_bundle",
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+
+        var result = Invoke(
+            ExactStaticMethod(
+                RequiredPrerequisiteType(
+                    "MortalWoundTreatmentRequirementAuthorityBundle"),
+                factoryName,
+                3),
+            new[] { acceptedState, coordinates, (object)before });
+
+        AssertClosedProperties(result, new[] { "IsValid", "Issues", "Authority" });
+        Assert.True(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")));
+        Assert.Empty(AsObjects(ReadRequiredProperty(result, "Issues")));
+        var bundle = ReadRequiredProperty(result, "Authority");
+        AssertClosedProperties(bundle, new[]
+        {
+            "Mode", "ContextFingerprint", "AcceptedStateFingerprint", "RouteFingerprint",
+            "CourseId", "CourseMilestoneOrdinal", "CourseCoordinateFingerprint",
+            "CourseRequirementStatus", "InterruptionReason", "Scopes",
+            "AuthorityFingerprint"
+        });
+        Assert.Equal(mode, ReadRequiredProperty(bundle, "Mode"));
+        Assert.Null(ReadPropertyAllowingNull(bundle, "CourseId"));
+        Assert.Null(ReadPropertyAllowingNull(bundle, "CourseMilestoneOrdinal"));
+        Assert.Null(ReadPropertyAllowingNull(bundle, "CourseCoordinateFingerprint"));
+        Assert.Null(ReadPropertyAllowingNull(bundle, "CourseRequirementStatus"));
+        Assert.Null(ReadPropertyAllowingNull(bundle, "InterruptionReason"));
+        AssertAuthorityFingerprint(ReadRequiredProperty(bundle, "RouteFingerprint"));
+        AssertAuthorityFingerprint(ReadRequiredProperty(bundle, "AuthorityFingerprint"));
+
+        var scope = Assert.Single(AsObjects(ReadRequiredProperty(bundle, "Scopes")));
+        AssertClosedProperties(scope, new[]
+        {
+            "Scope", "CourseMilestoneOrdinal", "Status", "Bindings",
+            "FailureWitnesses", "AuthorityFingerprint"
+        });
+        Assert.Equal("common", ReadRequiredProperty(scope, "Scope"));
+        Assert.Null(ReadPropertyAllowingNull(scope, "CourseMilestoneOrdinal"));
+        Assert.Equal("Satisfied", ReadRequiredProperty(scope, "Status"));
+        Assert.Empty(AsObjects(ReadRequiredProperty(scope, "FailureWitnesses")));
+        Assert.Equal(expectedBindings,
+            AsObjects(ReadRequiredProperty(scope, "Bindings")).Count());
+        AssertAuthorityFingerprint(ReadRequiredProperty(scope, "AuthorityFingerprint"));
+        foreach (var binding in AsObjects(ReadRequiredProperty(scope, "Bindings")))
+        {
+            AssertClosedProperties(binding, new[]
+            {
+                "RequirementIndex", "ResolvedRequirement", "SuccessWitness",
+                "BindingFingerprint"
+            });
+            AssertAuthorityFingerprint(ReadRequiredProperty(binding, "BindingFingerprint"));
+            var witness = ReadRequiredProperty(binding, "SuccessWitness");
+            foreach (var property in new[]
+                     {
+                         "Scope", "RequirementIndex", "Kind", "AuthorityRef",
+                         "SnapshotToken", "Realm", "WitnessFingerprint"
+                     })
+            {
+                Assert.NotNull(witness.GetType().GetProperty(property));
+            }
+            Assert.Equal("common", ReadRequiredProperty(witness, "Scope"));
+            AssertAuthorityFingerprint(ReadRequiredProperty(witness, "WitnessFingerprint"));
+        }
+    }
+
+    [Fact]
+    public void PrerequisiteAuthority_FirstCourseRequirementBundleClassifiesTrustedAbsence()
+    {
+        var scenario = ConfigureCourseConsequenceEnvelope(
+            CreateScenario(
+                "course_unsatisfied_dose_requirement_has_no_reservation",
+                "course"),
+            removeOwnedComplicationBeforeReduction: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = fixture.GetAcceptedState();
+        var before = fixture.ReadCurrentWound();
+        var coordinates = CreatePrerequisiteCoordinates(
+            acceptedState,
+            before,
+            "operation_t066_course_requirement_absence",
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+        var history = fixture.ReadCurrentHistory();
+        var courseMode = ReadRequiredProperty(
+            InvokeCreateCourseMode(
+                acceptedState,
+                coordinates,
+                before,
+                history,
+                CreatePrerequisiteGameTime(acceptedState, coordinates)),
+            "Authority");
+
+        var result = Invoke(
+            ExactStaticMethod(
+                RequiredPrerequisiteType(
+                    "MortalWoundTreatmentRequirementAuthorityBundle"),
+                "CreateForCourseMilestone",
+                5),
+            new[] { acceptedState, coordinates, (object)before, history, courseMode });
+
+        AssertClosedProperties(result, new[] { "Status", "Issues", "Authority" });
+        Assert.True(
+            string.Equals(
+                Convert.ToString(ReadRequiredProperty(result, "Status")),
+                "Unsatisfied",
+                StringComparison.Ordinal),
+            DescribeIssues(AsObjects(ReadRequiredProperty(result, "Issues"))
+                .Select(Assert.IsType<ValidationIssue>)));
+        Assert.Empty(AsObjects(ReadRequiredProperty(result, "Issues")));
+        var bundle = ReadRequiredProperty(result, "Authority");
+        Assert.Equal("Unsatisfied", ReadRequiredProperty(bundle, "CourseRequirementStatus"));
+        var scopes = AsObjects(ReadRequiredProperty(bundle, "Scopes")).ToArray();
+        Assert.Equal(2, scopes.Length);
+        var common = Assert.Single(scopes, scope =>
+            string.Equals(
+                Convert.ToString(ReadRequiredProperty(scope, "Scope")),
+                "common",
+                StringComparison.Ordinal));
+        var milestone = Assert.Single(scopes, scope =>
+            string.Equals(
+                Convert.ToString(ReadRequiredProperty(scope, "Scope")),
+                "course_milestone",
+                StringComparison.Ordinal));
+        Assert.Equal("Satisfied", ReadRequiredProperty(common, "Status"));
+        Assert.Equal("Unsatisfied", ReadRequiredProperty(milestone, "Status"));
+        Assert.Single(AsObjects(ReadRequiredProperty(common, "Bindings")));
+        Assert.Empty(AsObjects(ReadRequiredProperty(milestone, "Bindings")));
+        var failure = Assert.Single(AsObjects(
+            ReadRequiredProperty(milestone, "FailureWitnesses")));
+        AssertClosedProperties(failure, new[]
+        {
+            "Scope", "RequirementIndex", "Kind", "AuthorityRef", "LossReason",
+            "Observation", "WitnessFingerprint"
+        });
+        Assert.Equal("authority_absent", ReadRequiredProperty(failure, "LossReason"));
+        Assert.Null(ReadPropertyAllowingNull(failure, "Observation"));
+        AssertAuthorityFingerprint(ReadRequiredProperty(failure, "WitnessFingerprint"));
+    }
+
+    [Fact]
+    public void PrerequisiteAuthority_CourseRequirementBundleRejectsCrossScopeQuantityOverbooking()
+    {
+        var scenario = ConfigureCourseCrossScopeItemOverbooking(
+            ConfigureCourseConsequenceEnvelope(
+                CreateScenario(
+                    "course_first_milestone_is_ready_at_inclusive_due_time",
+                    "course"),
+                removeOwnedComplicationBeforeReduction: true));
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = fixture.GetAcceptedState();
+        var before = fixture.ReadCurrentWound();
+        var coordinates = CreatePrerequisiteCoordinates(
+            acceptedState,
+            before,
+            "operation_t066_cross_scope_overbooking",
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+        var history = fixture.ReadCurrentHistory();
+        var courseMode = ReadRequiredProperty(
+            InvokeCreateCourseMode(
+                acceptedState,
+                coordinates,
+                before,
+                history,
+                CreatePrerequisiteGameTime(acceptedState, coordinates)),
+            "Authority");
+
+        var result = Invoke(
+            ExactStaticMethod(
+                RequiredPrerequisiteType(
+                    "MortalWoundTreatmentRequirementAuthorityBundle"),
+                "CreateForCourseMilestone",
+                5),
+            new[] { acceptedState, coordinates, (object)before, history, courseMode });
+
+        Assert.Equal("Unsatisfied", ReadRequiredProperty(result, "Status"));
+        Assert.Empty(AsObjects(ReadRequiredProperty(result, "Issues")));
+        var bundle = ReadRequiredProperty(result, "Authority");
+        var scopes = AsObjects(ReadRequiredProperty(bundle, "Scopes")).ToArray();
+        var common = Assert.Single(scopes, scope =>
+            string.Equals(
+                Convert.ToString(ReadRequiredProperty(scope, "Scope")),
+                "common",
+                StringComparison.Ordinal));
+        var milestone = Assert.Single(scopes, scope =>
+            string.Equals(
+                Convert.ToString(ReadRequiredProperty(scope, "Scope")),
+                "course_milestone",
+                StringComparison.Ordinal));
+        Assert.Equal("Satisfied", ReadRequiredProperty(common, "Status"));
+        Assert.Single(AsObjects(ReadRequiredProperty(common, "Bindings")));
+        Assert.Equal("Unsatisfied", ReadRequiredProperty(milestone, "Status"));
+        Assert.Empty(AsObjects(ReadRequiredProperty(milestone, "Bindings")));
+        var failure = Assert.Single(AsObjects(
+            ReadRequiredProperty(milestone, "FailureWitnesses")));
+        Assert.Equal("quantity_insufficient", ReadRequiredProperty(failure, "LossReason"));
+        var observation = Assert.IsType<MortalWoundTreatmentRequirementFailureObservation>(
+            ReadRequiredProperty(failure, "Observation"));
+        var evidence = Assert.IsType<MortalWoundItemQuantityRequirementEvidence>(
+            observation.Evidence);
+        Assert.Equal(1, evidence.RequestedQuantity);
+        Assert.Equal(2, evidence.CumulativeRequestedQuantity);
+        Assert.Equal(1, evidence.Count);
+        Assert.Equal(1, evidence.AvailableCount);
+    }
+
+    [Theory]
+    [InlineData(6, 6, "Unsatisfied", 12L)]
+    [InlineData(5, 5, "Satisfied", 10L)]
+    public void PrerequisiteAuthority_CourseResourceLedgerUsesOneCrossScopeExactBoundary(
+        int commonQuantity,
+        int milestoneQuantity,
+        string expectedStatus,
+        long expectedCumulativeQuantity)
+    {
+        var scenario = ConfigureCourseCrossScopeResourceQuantity(
+            ConfigureCourseConsequenceEnvelope(
+                CreateScenario(
+                    "course_first_milestone_is_ready_at_inclusive_due_time",
+                    "course"),
+                removeOwnedComplicationBeforeReduction: true),
+            commonQuantity,
+            milestoneQuantity);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerHealthForRequirementTest(10);
+        var result = CreateCourseRequirementBundle(
+            fixture,
+            scenario,
+            "operation_t066_cross_scope_resource_" + expectedStatus.ToLowerInvariant());
+
+        Assert.Equal(expectedStatus, ReadRequiredProperty(result, "Status"));
+        Assert.Empty(AsObjects(ReadRequiredProperty(result, "Issues")));
+        var bundle = ReadRequiredProperty(result, "Authority");
+        var scopes = AsObjects(ReadRequiredProperty(bundle, "Scopes")).ToArray();
+        var common = Assert.Single(scopes, scope =>
+            string.Equals(
+                Convert.ToString(ReadRequiredProperty(scope, "Scope")),
+                "common",
+                StringComparison.Ordinal));
+        var milestone = Assert.Single(scopes, scope =>
+            string.Equals(
+                Convert.ToString(ReadRequiredProperty(scope, "Scope")),
+                "course_milestone",
+                StringComparison.Ordinal));
+        Assert.Equal("Satisfied", ReadRequiredProperty(common, "Status"));
+        Assert.Single(AsObjects(ReadRequiredProperty(common, "Bindings")));
+
+        if (string.Equals(expectedStatus, "Unsatisfied", StringComparison.Ordinal))
+        {
+            Assert.Equal("Unsatisfied", ReadRequiredProperty(milestone, "Status"));
+            Assert.Empty(AsObjects(ReadRequiredProperty(milestone, "Bindings")));
+            var failure = Assert.Single(AsObjects(
+                ReadRequiredProperty(milestone, "FailureWitnesses")));
+            Assert.Equal("quantity_insufficient", ReadRequiredProperty(failure, "LossReason"));
+            var observation = Assert.IsType<MortalWoundTreatmentRequirementFailureObservation>(
+                ReadRequiredProperty(failure, "Observation"));
+            var evidence = Assert.IsType<MortalWoundResourceQuantityRequirementEvidence>(
+                observation.Evidence);
+            Assert.Equal(milestoneQuantity, evidence.RequestedQuantity);
+            Assert.Equal(expectedCumulativeQuantity, evidence.CumulativeRequestedQuantity);
+            Assert.Equal(10, evidence.CurrentValue);
+            Assert.Equal(10, evidence.AvailableValue);
+            return;
+        }
+
+        Assert.Equal("Satisfied", ReadRequiredProperty(milestone, "Status"));
+        Assert.Empty(AsObjects(ReadRequiredProperty(milestone, "FailureWitnesses")));
+        var binding = Assert.Single(AsObjects(ReadRequiredProperty(milestone, "Bindings")));
+        var witness = ReadRequiredProperty(binding, "SuccessWitness");
+        var successEvidence = Assert.IsType<MortalWoundResourceQuantityRequirementEvidence>(
+            ReadRequiredProperty(witness, "Evidence"));
+        Assert.Equal(milestoneQuantity, successEvidence.CumulativeRequestedQuantity);
+        Assert.Equal(expectedCumulativeQuantity, successEvidence.AvailableValue);
+    }
+
+    [Theory]
+    [InlineData("item_case")]
+    [InlineData("item_unicode")]
+    [InlineData("source_capability_case")]
+    [InlineData("facility_case")]
+    public void PrerequisiteAuthority_CourseFactoryRejectsConfusableCurrentReferenceAsInvalidAuthority(
+        string caseName)
+    {
+        var scenario = ConfigureCourseConfusableCommonRequirement(
+            ConfigureCourseConsequenceEnvelope(
+                CreateScenario(
+                    "course_first_milestone_is_ready_at_inclusive_due_time",
+                    "course"),
+                removeOwnedComplicationBeforeReduction: true),
+            caseName);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+
+        var result = CreateCourseRequirementBundle(
+            fixture,
+            scenario,
+            "operation_t066_confusable_" + caseName);
+
+        Assert.Equal("InvalidAuthority", ReadRequiredProperty(result, "Status"));
+        Assert.Null(ReadPropertyAllowingNull(result, "Authority"));
+        Assert.Contains(
+            AsObjects(ReadRequiredProperty(result, "Issues"))
+                .Select(Assert.IsType<ValidationIssue>),
+            issue => string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_requirement_failure_witness_invalid",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void PrerequisiteAuthority_RequirementBundleCreatesKindCompleteSuccessWitnesses()
+    {
+        var scenario = ConfigureAllRequirementKinds(
+            CreateScenario(
+                "procedure_advantage_uses_two_contiguous_dice",
+                "procedure"));
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = fixture.GetAcceptedState();
+        var before = fixture.ReadCurrentWound();
+        var coordinates = CreatePrerequisiteCoordinates(
+            acceptedState,
+            before,
+            "operation_t066_kind_complete_bundle",
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+
+        var result = Invoke(
+            ExactStaticMethod(
+                RequiredPrerequisiteType(
+                    "MortalWoundTreatmentRequirementAuthorityBundle"),
+                "CreateForProcedure",
+                3),
+            new[] { acceptedState, coordinates, (object)before });
+        var bundle = ReadValidTypedResult(
+            result,
+            "Authority",
+            "kind-complete requirement bundle");
+        var scope = Assert.Single(AsObjects(ReadRequiredProperty(bundle, "Scopes")));
+        var bindings = AsObjects(ReadRequiredProperty(scope, "Bindings")).ToArray();
+        Assert.Equal(11, bindings.Length);
+        Assert.Equal(
+            new[]
+            {
+                "item_quantity", "resource_quantity", "skill_tier",
+                "source_capability", "provider", "consent", "facility",
+                "location", "quest_state", "effect_state", "environment"
+            },
+            bindings.Select(binding => Convert.ToString(ReadRequiredProperty(
+                ReadRequiredProperty(binding, "SuccessWitness"),
+                "Kind"))));
+        Assert.All(bindings, binding =>
+        {
+            var witness = ReadRequiredProperty(binding, "SuccessWitness");
+            Assert.NotNull(ReadRequiredProperty(witness, "Evidence"));
+            AssertAuthorityFingerprint(ReadRequiredProperty(witness, "WitnessFingerprint"));
+        });
+    }
+
+    [Fact]
+    public void PrerequisiteAuthority_SuccessWitnessFingerprintIgnoresRequirementPropertyOrder()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = fixture.GetAcceptedState();
+        var context = Assert.IsType<MortalWoundTreatmentAuthority.Context>(
+            ReadAcceptedStateMember(acceptedState, "RequirementContext"));
+        var snapshot = Assert.IsType<MortalWoundTreatmentAuthority.Snapshot>(
+            ReadAcceptedStateMember(acceptedState, "RequirementSnapshot"));
+        var route = Assert.Single(fixture.ReadCurrentWound().Treatment.Routes);
+        var resolved = MortalWoundTreatmentAuthority.ResolveRequirements(
+            route,
+            context,
+            snapshot);
+        Assert.True(resolved.Success, DescribeIssues(resolved.Issues));
+        var row = Assert.Single(resolved.ResolvedRequirements, candidate =>
+            candidate.RequirementIndex == 0);
+        var canonicalOrder = CreatePrerequisiteRequirement(new JsonObject
+        {
+            ["kind"] = "item_quantity",
+            ["itemRef"] = "sterile_thread",
+            ["quantity"] = 1,
+            ["ownerRole"] = "provider"
+        });
+        var reordered = CreatePrerequisiteRequirement(new JsonObject
+        {
+            ["ownerRole"] = "provider",
+            ["quantity"] = 1,
+            ["itemRef"] = "sterile_thread",
+            ["kind"] = "item_quantity"
+        });
+
+        Assert.True(MortalWoundTreatmentRequirementWitnessFactory.TryCreateSuccess(
+            "common",
+            canonicalOrder,
+            row,
+            context,
+            snapshot,
+            new Dictionary<string, long>(StringComparer.Ordinal),
+            out var canonicalWitness));
+        Assert.True(MortalWoundTreatmentRequirementWitnessFactory.TryCreateSuccess(
+            "common",
+            reordered,
+            row,
+            context,
+            snapshot,
+            new Dictionary<string, long>(StringComparer.Ordinal),
+            out var reorderedWitness));
+
+        Assert.NotNull(canonicalWitness);
+        Assert.NotNull(reorderedWitness);
+        Assert.Equal(
+            canonicalWitness.WitnessFingerprint,
+            reorderedWitness.WitnessFingerprint);
+    }
+
+    [Fact]
+    public void PrerequisiteAuthority_ProcedureBundleFingerprintIgnoresRequirementPropertyOrder()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = fixture.GetAcceptedState();
+        var canonicalBefore = fixture.ReadCurrentWound();
+        var coordinates = CreatePrerequisiteCoordinates(
+            acceptedState,
+            canonicalBefore,
+            "operation_t066_reordered_requirement_bundle",
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+        var reorderedRoot = scenario.Before.DeepClone().AsObject();
+        reorderedRoot["treatment"]!["routes"]![0]!["requirements"]![0] =
+            new JsonObject
+            {
+                ["ownerRole"] = "provider",
+                ["quantity"] = 1,
+                ["itemRef"] = "sterile_thread",
+                ["kind"] = "item_quantity"
+            };
+        var parsedReordered = WoundMaterializationContract.Parse(
+            reorderedRoot.ToJsonString(),
+            "t066.reorderedRequirement.before");
+        Assert.True(parsedReordered.IsValid, DescribeIssues(parsedReordered.Issues));
+        var reorderedBefore = Assert.IsType<WoundMaterializationEnvelope>(
+            parsedReordered.Wound);
+        Assert.Equal(
+            WoundIdentityState.ComputeSemanticFingerprint(canonicalBefore),
+            WoundIdentityState.ComputeSemanticFingerprint(reorderedBefore));
+
+        object Create(WoundMaterializationEnvelope before) => Invoke(
+            ExactStaticMethod(
+                RequiredPrerequisiteType(
+                    "MortalWoundTreatmentRequirementAuthorityBundle"),
+                "CreateForProcedure",
+                3),
+            new[] { acceptedState, coordinates, (object)before });
+
+        var canonicalBundle = ReadValidTypedResult(
+            Create(canonicalBefore),
+            "Authority",
+            "canonical requirement order bundle");
+        var reorderedBundle = ReadValidTypedResult(
+            Create(reorderedBefore),
+            "Authority",
+            "reordered requirement bundle");
+        Assert.Equal(
+            ReadRequiredProperty(canonicalBundle, "AuthorityFingerprint"),
+            ReadRequiredProperty(reorderedBundle, "AuthorityFingerprint"));
+        var canonicalScope = Assert.Single(AsObjects(
+            ReadRequiredProperty(canonicalBundle, "Scopes")));
+        var reorderedScope = Assert.Single(AsObjects(
+            ReadRequiredProperty(reorderedBundle, "Scopes")));
+        Assert.Equal(
+            ReadRequiredProperty(canonicalScope, "AuthorityFingerprint"),
+            ReadRequiredProperty(reorderedScope, "AuthorityFingerprint"));
+        var canonicalBinding = AsObjects(
+            ReadRequiredProperty(canonicalScope, "Bindings")).First();
+        var reorderedBinding = AsObjects(
+            ReadRequiredProperty(reorderedScope, "Bindings")).First();
+        Assert.Equal(
+            ReadRequiredProperty(
+                ReadRequiredProperty(canonicalBinding, "SuccessWitness"),
+                "WitnessFingerprint"),
+            ReadRequiredProperty(
+                ReadRequiredProperty(reorderedBinding, "SuccessWitness"),
+                "WitnessFingerprint"));
+    }
+
+    [Theory]
+    [InlineData("provider_unreachable", "provider_offscene")]
+    [InlineData("facility_unavailable", "facility_unavailable")]
+    [InlineData("consent_absent", "withdrawn_consent")]
+    [InlineData("quantity_insufficient", "resource_zero_unavailable")]
+    [InlineData("tier_insufficient", null)]
+    [InlineData("state_mismatch", null)]
+    public void PrerequisiteAuthority_CourseRequirementBundleSealsTrustedNegativeObservation(
+        string expectedLossReason,
+        string? canonicalMutation)
+    {
+        var scenario = ConfigureCourseCommonRequirement(
+            ConfigureCourseConsequenceEnvelope(
+                CreateScenario(
+                    "course_first_milestone_is_ready_at_inclusive_due_time",
+                    "course"),
+                removeOwnedComplicationBeforeReduction: true),
+            expectedLossReason);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        if (canonicalMutation is not null)
+            fixture.ApplyExplicitNegativeCanonicalRow(canonicalMutation);
+        var acceptedState = fixture.GetAcceptedState();
+        if (string.Equals(expectedLossReason, "consent_absent", StringComparison.Ordinal))
+        {
+            var context = Assert.IsType<MortalWoundTreatmentAuthority.Context>(
+                ReadAcceptedStateMember(acceptedState, "RequirementContext"));
+            var snapshot = Assert.IsType<MortalWoundTreatmentAuthority.Snapshot>(
+                ReadAcceptedStateMember(acceptedState, "RequirementSnapshot"));
+            var provider = Assert.Single(snapshot.Actors, actor =>
+                string.Equals(actor.ActorKind, context.ProviderKind, StringComparison.Ordinal) &&
+                string.Equals(actor.ActorId, context.ProviderId, StringComparison.Ordinal));
+            var consent = Assert.Single(provider.Consents, candidate =>
+                string.Equals(
+                    candidate.ConsentRef,
+                    "consent_field_medic_player_01",
+                    StringComparison.Ordinal));
+            Assert.Equal("withdrawn", consent.Status);
+            Assert.Equal(context.ProviderKind, consent.ProviderKind);
+            Assert.Equal(context.ProviderId, consent.ProviderId);
+            Assert.Equal(context.TargetKind, consent.TargetKind);
+            Assert.Equal(context.TargetId, consent.TargetId);
+        }
+        var before = fixture.ReadCurrentWound();
+        var coordinates = CreatePrerequisiteCoordinates(
+            acceptedState,
+            before,
+            "operation_t066_negative_" + expectedLossReason,
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+        var history = fixture.ReadCurrentHistory();
+        var courseMode = ReadRequiredProperty(
+            InvokeCreateCourseMode(
+                acceptedState,
+                coordinates,
+                before,
+                history,
+                CreatePrerequisiteGameTime(acceptedState, coordinates)),
+            "Authority");
+
+        var result = Invoke(
+            ExactStaticMethod(
+                RequiredPrerequisiteType(
+                    "MortalWoundTreatmentRequirementAuthorityBundle"),
+                "CreateForCourseMilestone",
+                5),
+            new[] { acceptedState, coordinates, (object)before, history, courseMode });
+
+        Assert.True(
+            string.Equals(
+                Convert.ToString(ReadRequiredProperty(result, "Status")),
+                "Unsatisfied",
+                StringComparison.Ordinal),
+            DescribeIssues(AsObjects(ReadRequiredProperty(result, "Issues"))
+                .Select(Assert.IsType<ValidationIssue>)));
+        Assert.Empty(AsObjects(ReadRequiredProperty(result, "Issues")));
+        var bundle = ReadRequiredProperty(result, "Authority");
+        var common = Assert.Single(
+            AsObjects(ReadRequiredProperty(bundle, "Scopes")),
+            scope => string.Equals(
+                Convert.ToString(ReadRequiredProperty(scope, "Scope")),
+                "common",
+                StringComparison.Ordinal));
+        var failure = Assert.Single(AsObjects(
+            ReadRequiredProperty(common, "FailureWitnesses")));
+        Assert.Equal(expectedLossReason, ReadRequiredProperty(failure, "LossReason"));
+        var observation = ReadRequiredProperty(failure, "Observation");
+        Assert.NotNull(ReadRequiredProperty(observation, "Evidence"));
+        AssertAuthorityFingerprint(ReadRequiredProperty(
+            observation,
+            "ObservationFingerprint"));
+        AssertAuthorityFingerprint(ReadRequiredProperty(failure, "WitnessFingerprint"));
+    }
+
+    [Theory]
+    [InlineData("quest_active_false", "retired", "inactive")]
+    [InlineData("quest_retired", "retired", "retired")]
+    [InlineData("skill_wrong_owner", "owner_unavailable", "owner_unavailable")]
+    [InlineData("provider_wrong_location", "provider_unreachable", "wrong_location")]
+    [InlineData("provider_not_present", "provider_unreachable", "actor_not_present")]
+    [InlineData("facility_inactive", "facility_unavailable", "inactive")]
+    [InlineData("consent_inactive", "consent_absent", "inactive")]
+    [InlineData("consent_withdrawn", "consent_absent", "consent_absent")]
+    [InlineData("location_wrong_location", "actor_not_present", "wrong_location")]
+    [InlineData("location_not_present", "actor_not_present", "actor_not_present")]
+    [InlineData("item_reserved", "reserved", "reserved")]
+    [InlineData("resource_reserved", "reserved", "reserved")]
+    [InlineData("resource_inactive", "inactive", "inactive")]
+    public void PrerequisiteAuthority_FailureWitnessUsesClosedReasonValueMatrix(
+        string caseName,
+        string classifiedReason,
+        string expectedReason)
+    {
+        var scenario = CreateFailureWitnessMatrixScenario(caseName);
+
+        var created = MortalWoundTreatmentRequirementWitnessFactory.TryCreateFailure(
+            "common",
+            0,
+            scenario.Requirement,
+            classifiedReason,
+            scenario.Context,
+            scenario.Snapshot,
+            new Dictionary<string, long>(StringComparer.Ordinal),
+            out var failure);
+
+        Assert.True(created);
+        Assert.NotNull(failure);
+        Assert.Equal(expectedReason, failure.LossReason);
+        Assert.NotNull(failure.Observation);
+        AssertAuthorityFingerprint(failure.Observation!.ObservationFingerprint);
+        AssertAuthorityFingerprint(failure.WitnessFingerprint);
+    }
+
+    [Fact]
+    public void PrerequisiteAuthority_ConfusableCurrentReferenceCannotBecomeTrustedAbsence()
+    {
+        var context = CreateFailureWitnessContext();
+        var snapshot = CreateFailureWitnessSnapshot(items: new[]
+        {
+            new MortalWoundTreatmentAuthority.Item(
+                "medicаl_kit",
+                "Medical kit",
+                "mortal_world",
+                "player",
+                "player_current",
+                1,
+                1,
+                "available",
+                "active",
+                true)
+        });
+        var requirement = CreatePrerequisiteRequirement(new JsonObject
+        {
+            ["kind"] = "item_quantity",
+            ["itemRef"] = "medical_kit",
+            ["quantity"] = 1,
+            ["ownerRole"] = "target"
+        });
+
+        var created = MortalWoundTreatmentRequirementWitnessFactory.TryCreateFailure(
+            "common",
+            0,
+            requirement,
+            "authority_absent",
+            context,
+            snapshot,
+            new Dictionary<string, long>(StringComparer.Ordinal),
+            out var failure);
+
+        Assert.False(created);
+        Assert.Null(failure);
+    }
+
+    [Fact]
+    public void PrerequisiteAuthority_UnsupportedKindCannotBecomeTrustedAbsence()
+    {
+        var requirement = CreatePrerequisiteRequirement(new JsonObject
+        {
+            ["kind"] = "unknown_requirement",
+            ["authorityRef"] = "missing_unknown_authority"
+        });
+
+        var created = MortalWoundTreatmentRequirementWitnessFactory.TryCreateFailure(
+            "common",
+            0,
+            requirement,
+            "authority_absent",
+            CreateFailureWitnessContext(),
+            CreateFailureWitnessSnapshot(),
+            new Dictionary<string, long>(StringComparer.Ordinal),
+            out var failure);
+
+        Assert.False(created);
+        Assert.Null(failure);
+    }
+
+    [Fact]
+    public void PrerequisiteAuthority_ForeignRealmWrongOwnerCannotBecomeTrustedFailure()
+    {
+        var context = CreateFailureWitnessContext();
+        var snapshot = CreateFailureWitnessSnapshot(items: new[]
+        {
+            new MortalWoundTreatmentAuthority.Item(
+                "sterile_thread",
+                "Sterile thread",
+                "afterlife",
+                "npc",
+                "field_medic_01",
+                1,
+                1,
+                "available",
+                "active",
+                true)
+        });
+        var requirement = CreatePrerequisiteRequirement(new JsonObject
+        {
+            ["kind"] = "item_quantity",
+            ["itemRef"] = "sterile_thread",
+            ["quantity"] = 1,
+            ["ownerRole"] = "target"
+        });
+
+        var created = MortalWoundTreatmentRequirementWitnessFactory.TryCreateFailure(
+            "common",
+            0,
+            requirement,
+            "owner_unavailable",
+            context,
+            snapshot,
+            new Dictionary<string, long>(StringComparer.Ordinal),
+            out var failure);
+
+        Assert.False(created);
+        Assert.Null(failure);
+    }
+
+    [Fact]
+    public void PrerequisiteAuthority_CourseRequirementBundleRejectsStaleHistoryAsInvalidAuthority()
+    {
+        var scenario = ConfigureCourseConsequenceEnvelope(
+            CreateScenario(
+                "course_first_milestone_is_ready_at_inclusive_due_time",
+                "course"),
+            removeOwnedComplicationBeforeReduction: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = fixture.GetAcceptedState();
+        var before = fixture.ReadCurrentWound();
+        var coordinates = CreatePrerequisiteCoordinates(
+            acceptedState,
+            before,
+            "operation_t066_stale_requirement_history",
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+        var currentHistory = fixture.ReadCurrentHistory();
+        var courseMode = ReadRequiredProperty(
+            InvokeCreateCourseMode(
+                acceptedState,
+                coordinates,
+                before,
+                currentHistory,
+                CreatePrerequisiteGameTime(acceptedState, coordinates)),
+            "Authority");
+        var staleHistory = WoundHistoryState.Parse(
+            CreateCurrentWoundHistory(scenario.Before).ToJsonString(),
+            "t066.staleRequirementHistory");
+        Assert.True(staleHistory.IsValid, DescribeIssues(staleHistory.Issues));
+
+        var result = Invoke(
+            ExactStaticMethod(
+                RequiredPrerequisiteType(
+                    "MortalWoundTreatmentRequirementAuthorityBundle"),
+                "CreateForCourseMilestone",
+                5),
+            new[]
+            {
+                acceptedState,
+                coordinates,
+                (object)before,
+                staleHistory,
+                courseMode
+            });
+
+        Assert.Equal("InvalidAuthority", ReadRequiredProperty(result, "Status"));
+        Assert.Null(ReadPropertyAllowingNull(result, "Authority"));
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues")));
+    }
+
+    private static (
+        JsonElement Requirement,
+        MortalWoundTreatmentAuthority.Context Context,
+        MortalWoundTreatmentAuthority.Snapshot Snapshot)
+        CreateFailureWitnessMatrixScenario(string caseName)
+    {
+        const string realm = "mortal_world";
+        const string currentLocationId = "loc_field_clinic_001";
+        const string remoteLocationId = "loc_remote_clinic_001";
+        var context = new MortalWoundTreatmentAuthority.Context(
+            1,
+            realm,
+            "player",
+            "player_current",
+            "npc",
+            "field_medic_01",
+            currentLocationId);
+
+        JsonElement Requirement(JsonObject value)
+        {
+            using var document = JsonDocument.Parse(value.ToJsonString());
+            return document.RootElement.Clone();
+        }
+
+        MortalWoundTreatmentAuthority.Actor Provider(
+            string locationId,
+            bool reachable,
+            IReadOnlyList<MortalWoundTreatmentAuthority.Consent>? consents = null) => new(
+            "npc",
+            "field_medic_01",
+            "Field medic",
+            realm,
+            locationId,
+            "active",
+            true,
+            reachable,
+            Array.Empty<MortalWoundTreatmentAuthority.Skill>(),
+            Array.Empty<MortalWoundTreatmentAuthority.Capability>(),
+            consents ?? Array.Empty<MortalWoundTreatmentAuthority.Consent>());
+
+        MortalWoundTreatmentAuthority.Location Location(
+            string locationId,
+            params MortalWoundTreatmentAuthority.ActorCoordinate[] actors) => new(
+            locationId,
+            locationId,
+            realm,
+            "active",
+            true,
+            Array.AsReadOnly(actors));
+
+        MortalWoundTreatmentAuthority.Snapshot Snapshot(
+            IReadOnlyList<MortalWoundTreatmentAuthority.Item>? items = null,
+            IReadOnlyList<MortalWoundTreatmentAuthority.Resource>? resources = null,
+            IReadOnlyList<MortalWoundTreatmentAuthority.Actor>? actors = null,
+            IReadOnlyList<MortalWoundTreatmentAuthority.Facility>? facilities = null,
+            IReadOnlyList<MortalWoundTreatmentAuthority.Location>? locations = null,
+            IReadOnlyList<MortalWoundTreatmentAuthority.Quest>? quests = null) => new(
+            1,
+            "snapshot_t066_failure_matrix",
+            items ?? Array.Empty<MortalWoundTreatmentAuthority.Item>(),
+            resources ?? Array.Empty<MortalWoundTreatmentAuthority.Resource>(),
+            actors ?? Array.Empty<MortalWoundTreatmentAuthority.Actor>(),
+            facilities ?? Array.Empty<MortalWoundTreatmentAuthority.Facility>(),
+            locations ?? Array.Empty<MortalWoundTreatmentAuthority.Location>(),
+            quests ?? Array.Empty<MortalWoundTreatmentAuthority.Quest>(),
+            Array.Empty<MortalWoundTreatmentAuthority.Effect>(),
+            Array.Empty<MortalWoundTreatmentAuthority.EnvironmentState>());
+
+        var target = new MortalWoundTreatmentAuthority.ActorCoordinate(
+            "player",
+            "player_current");
+        var provider = new MortalWoundTreatmentAuthority.ActorCoordinate(
+            "npc",
+            "field_medic_01");
+        return caseName switch
+        {
+            "quest_active_false" => (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "quest_state",
+                    ["questRef"] = "quest_field_clinic_intro",
+                    ["requiredState"] = "Active"
+                }),
+                context,
+                Snapshot(quests: new[]
+                {
+                    new MortalWoundTreatmentAuthority.Quest(
+                        "quest_field_clinic_intro", "Quest", realm, "Active",
+                        "active", false)
+                })),
+            "quest_retired" => (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "quest_state",
+                    ["questRef"] = "quest_field_clinic_intro",
+                    ["requiredState"] = "Active"
+                }),
+                context,
+                Snapshot(quests: new[]
+                {
+                    new MortalWoundTreatmentAuthority.Quest(
+                        "quest_field_clinic_intro", "Quest", realm, "Active",
+                        "retired", false)
+                })),
+            "skill_wrong_owner" => (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "skill_tier",
+                    ["capabilityRef"] = "field_medicine",
+                    ["minimumTier"] = 2,
+                    ["actorRole"] = "provider"
+                }),
+                context,
+                Snapshot(
+                    actors: new[]
+                    {
+                        new MortalWoundTreatmentAuthority.Actor(
+                            "player", "player_current", "Player", realm,
+                            currentLocationId, "active", true, true,
+                            new[]
+                            {
+                                new MortalWoundTreatmentAuthority.Skill(
+                                    "field_medicine", "Field medicine", 3,
+                                    "active", true)
+                            },
+                            Array.Empty<MortalWoundTreatmentAuthority.Capability>(),
+                            Array.Empty<MortalWoundTreatmentAuthority.Consent>())
+                    },
+                    locations: new[] { Location(currentLocationId, target) })),
+            "provider_wrong_location" => (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "provider",
+                    ["providerRef"] = "field_medic_01"
+                }),
+                context,
+                Snapshot(
+                    actors: new[] { Provider(remoteLocationId, reachable: true) },
+                    locations: new[]
+                    {
+                        Location(currentLocationId, target),
+                        Location(remoteLocationId, provider)
+                    })),
+            "provider_not_present" => (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "provider",
+                    ["providerRef"] = "field_medic_01"
+                }),
+                context,
+                Snapshot(
+                    actors: new[] { Provider(currentLocationId, reachable: true) },
+                    locations: new[] { Location(currentLocationId, target) })),
+            "facility_inactive" => (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "facility",
+                    ["facilityRef"] = "clean_work_surface"
+                }),
+                context,
+                Snapshot(
+                    facilities: new[]
+                    {
+                        new MortalWoundTreatmentAuthority.Facility(
+                            "clean_work_surface", "Facility", realm,
+                            currentLocationId, "active", false, true)
+                    },
+                    locations: new[] { Location(currentLocationId, target, provider) })),
+            "consent_inactive" => ConsentScenario(
+                context,
+                currentLocationId,
+                status: "granted",
+                active: false),
+            "consent_withdrawn" => ConsentScenario(
+                context,
+                currentLocationId,
+                status: "withdrawn",
+                active: true),
+            "location_wrong_location" => (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "location",
+                    ["locationRef"] = remoteLocationId,
+                    ["targetRole"] = "target"
+                }),
+                context,
+                Snapshot(locations: new[] { Location(remoteLocationId, target) })),
+            "location_not_present" => (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "location",
+                    ["locationRef"] = currentLocationId,
+                    ["targetRole"] = "target"
+                }),
+                context,
+                Snapshot(locations: new[] { Location(currentLocationId, provider) })),
+            "item_reserved" => (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "item_quantity",
+                    ["itemRef"] = "sterile_thread",
+                    ["quantity"] = 1,
+                    ["ownerRole"] = "provider"
+                }),
+                context,
+                Snapshot(items: new[]
+                {
+                    new MortalWoundTreatmentAuthority.Item(
+                        "sterile_thread", "Sterile thread", realm,
+                        "npc", "field_medic_01", 2, 0,
+                        "reserved", "active", true)
+                })),
+            "resource_reserved" => (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "resource_quantity",
+                    ["resourceRef"] = "health",
+                    ["quantity"] = 1,
+                    ["ownerRole"] = "target"
+                }),
+                context,
+                Snapshot(resources: new[]
+                {
+                    new MortalWoundTreatmentAuthority.Resource(
+                        "health", "Health", realm,
+                        "player", "player_current", 10, 0,
+                        "reserved", "active", true)
+                })),
+            "resource_inactive" => (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "resource_quantity",
+                    ["resourceRef"] = "health",
+                    ["quantity"] = 1,
+                    ["ownerRole"] = "target"
+                }),
+                context,
+                Snapshot(resources: new[]
+                {
+                    new MortalWoundTreatmentAuthority.Resource(
+                        "health", "Health", realm,
+                        "player", "player_current", 10, 0,
+                        "available", "active", false)
+                })),
+            _ => throw new ArgumentOutOfRangeException(nameof(caseName), caseName, null)
+        };
+
+        (
+            JsonElement Requirement,
+            MortalWoundTreatmentAuthority.Context Context,
+            MortalWoundTreatmentAuthority.Snapshot Snapshot) ConsentScenario(
+            MortalWoundTreatmentAuthority.Context context,
+            string locationId,
+            string status,
+            bool active)
+        {
+            var consent = new MortalWoundTreatmentAuthority.Consent(
+                "consent_field_medic_player_01",
+                "Consent",
+                "npc",
+                "field_medic_01",
+                "player",
+                "player_current",
+                status,
+                "active",
+                active);
+            var actor = Provider(locationId, reachable: true, new[] { consent });
+            return (
+                Requirement(new JsonObject
+                {
+                    ["kind"] = "consent",
+                    ["consentRef"] = "consent_field_medic_player_01",
+                    ["providerRef"] = "field_medic_01",
+                    ["targetRef"] = "player_current"
+                }),
+                context,
+                Snapshot(
+                    actors: new[] { actor },
+                    locations: new[]
+                    {
+                        Location(
+                            locationId,
+                            new MortalWoundTreatmentAuthority.ActorCoordinate(
+                                "player",
+                                "player_current"),
+                            new MortalWoundTreatmentAuthority.ActorCoordinate(
+                                "npc",
+                                "field_medic_01"))
+                    }));
+        }
+    }
+
+    private static MortalWoundTreatmentAuthority.Context CreateFailureWitnessContext() => new(
+        1,
+        "mortal_world",
+        "player",
+        "player_current",
+        "npc",
+        "field_medic_01",
+        "loc_field_clinic_001");
+
+    private static MortalWoundTreatmentAuthority.Snapshot CreateFailureWitnessSnapshot(
+        IReadOnlyList<MortalWoundTreatmentAuthority.Item>? items = null,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Resource>? resources = null,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Actor>? actors = null,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Facility>? facilities = null,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Location>? locations = null,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Quest>? quests = null,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Effect>? effects = null,
+        IReadOnlyList<MortalWoundTreatmentAuthority.EnvironmentState>? environments = null) => new(
+        1,
+        "snapshot_t066_failure_guard",
+        items ?? Array.Empty<MortalWoundTreatmentAuthority.Item>(),
+        resources ?? Array.Empty<MortalWoundTreatmentAuthority.Resource>(),
+        actors ?? Array.Empty<MortalWoundTreatmentAuthority.Actor>(),
+        facilities ?? Array.Empty<MortalWoundTreatmentAuthority.Facility>(),
+        locations ?? Array.Empty<MortalWoundTreatmentAuthority.Location>(),
+        quests ?? Array.Empty<MortalWoundTreatmentAuthority.Quest>(),
+        effects ?? Array.Empty<MortalWoundTreatmentAuthority.Effect>(),
+        environments ?? Array.Empty<MortalWoundTreatmentAuthority.EnvironmentState>());
+
+    private static JsonElement CreatePrerequisiteRequirement(JsonObject value)
+    {
+        using var document = JsonDocument.Parse(value.ToJsonString());
+        return document.RootElement.Clone();
+    }
+
+    private static ResolverScenario ConfigureCourseCommonRequirement(
+        ResolverScenario scenario,
+        string lossReason)
+    {
+        var before = scenario.Before.DeepClone().AsObject();
+        var route = before["treatment"]!["routes"]![0]!.AsObject();
+        route["requirements"] = new JsonArray(lossReason switch
+        {
+            "provider_unreachable" => new JsonObject
+            {
+                ["kind"] = "provider",
+                ["providerRef"] = "field_medic_01"
+            },
+            "facility_unavailable" => new JsonObject
+            {
+                ["kind"] = "facility",
+                ["facilityRef"] = "clean_work_surface"
+            },
+            "consent_absent" => new JsonObject
+            {
+                ["kind"] = "consent",
+                ["consentRef"] = "consent_field_medic_player_01",
+                ["providerRef"] = "field_medic_01",
+                ["targetRef"] = "player_current"
+            },
+            "quantity_insufficient" => new JsonObject
+            {
+                ["kind"] = "resource_quantity",
+                ["resourceRef"] = "health",
+                ["quantity"] = 1,
+                ["ownerRole"] = "target"
+            },
+            "tier_insufficient" => new JsonObject
+            {
+                ["kind"] = "skill_tier",
+                ["capabilityRef"] = "field_medicine",
+                ["minimumTier"] = 4,
+                ["actorRole"] = "target"
+            },
+            "state_mismatch" => new JsonObject
+            {
+                ["kind"] = "quest_state",
+                ["questRef"] = "quest_field_clinic_intro",
+                ["requiredState"] = "Active"
+            },
+            _ => throw new ArgumentOutOfRangeException(nameof(lossReason), lossReason, null)
+        });
+        return scenario with { Before = before };
+    }
+
+    private static ResolverScenario ConfigureCourseCrossScopeItemOverbooking(
+        ResolverScenario scenario)
+    {
+        var before = scenario.Before.DeepClone().AsObject();
+        before["treatment"]!["routes"]![0]!["requirements"] = new JsonArray(
+            new JsonObject
+            {
+                ["kind"] = "item_quantity",
+                ["itemRef"] = "antibiotic_dose",
+                ["quantity"] = 1,
+                ["ownerRole"] = "target"
+            });
+        var acceptedState = scenario.AcceptedState.DeepClone().AsObject();
+        acceptedState["antibioticDoseCount"] = 1;
+        return scenario with { Before = before, AcceptedState = acceptedState };
+    }
+
+    private static ResolverScenario ConfigureCourseCrossScopeResourceQuantity(
+        ResolverScenario scenario,
+        int commonQuantity,
+        int milestoneQuantity)
+    {
+        var before = scenario.Before.DeepClone().AsObject();
+        var route = before["treatment"]!["routes"]![0]!.AsObject();
+        route["requirements"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "resource_quantity",
+            ["resourceRef"] = "health",
+            ["quantity"] = commonQuantity,
+            ["ownerRole"] = "target"
+        });
+        route["outcomes"]![0]!["requirements"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "resource_quantity",
+            ["resourceRef"] = "health",
+            ["quantity"] = milestoneQuantity,
+            ["ownerRole"] = "target"
+        });
+        return scenario with { Before = before };
+    }
+
+    private static ResolverScenario ConfigureCourseConfusableCommonRequirement(
+        ResolverScenario scenario,
+        string caseName)
+    {
+        var before = scenario.Before.DeepClone().AsObject();
+        before["treatment"]!["routes"]![0]!["requirements"] = new JsonArray(
+            caseName switch
+            {
+                "item_case" => new JsonObject
+                {
+                    ["kind"] = "item_quantity",
+                    ["itemRef"] = "ANTIBIOTIC_DOSE",
+                    ["quantity"] = 1,
+                    ["ownerRole"] = "target"
+                },
+                "item_unicode" => new JsonObject
+                {
+                    ["kind"] = "item_quantity",
+                    ["itemRef"] = "antibiotic_dos\u0435",
+                    ["quantity"] = 1,
+                    ["ownerRole"] = "target"
+                },
+                "source_capability_case" => new JsonObject
+                {
+                    ["kind"] = "source_capability",
+                    ["capabilityRef"] = "EXACT_MATERIALIZED_HEALING_SOURCE",
+                    ["actorRole"] = "provider"
+                },
+                "facility_case" => new JsonObject
+                {
+                    ["kind"] = "facility",
+                    ["facilityRef"] = "CLEAN_WORK_SURFACE"
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(caseName), caseName, null)
+            });
+        return scenario with { Before = before };
+    }
+
+    private static object CreateCourseRequirementBundle(
+        AcceptedStateFixture fixture,
+        ResolverScenario scenario,
+        string operationKey)
+    {
+        var acceptedState = fixture.GetAcceptedState();
+        var before = fixture.ReadCurrentWound();
+        var coordinates = CreatePrerequisiteCoordinates(
+            acceptedState,
+            before,
+            operationKey,
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+        var history = fixture.ReadCurrentHistory();
+        var courseMode = ReadRequiredProperty(
+            InvokeCreateCourseMode(
+                acceptedState,
+                coordinates,
+                before,
+                history,
+                CreatePrerequisiteGameTime(acceptedState, coordinates)),
+            "Authority");
+
+        return Invoke(
+            ExactStaticMethod(
+                RequiredPrerequisiteType(
+                    "MortalWoundTreatmentRequirementAuthorityBundle"),
+                "CreateForCourseMilestone",
+                5),
+            new[] { acceptedState, coordinates, (object)before, history, courseMode });
+    }
+
+    private sealed partial class AcceptedStateFixture
+    {
+        internal void SetCanonicalPlayerHealthForRequirementTest(int current)
+        {
+            WriteCanonicalPlayerHealthAuthority(FileSystem, current);
+            PrepareFreshSnapshot("t066_health_" + current);
+        }
+    }
+
+    private static ResolverScenario ConfigureAllRequirementKinds(
+        ResolverScenario scenario)
+    {
+        var before = scenario.Before.DeepClone().AsObject();
+        var route = before["treatment"]!["routes"]![0]!.AsObject();
+        route["requirements"] = new JsonArray(
+            new JsonObject
+            {
+                ["kind"] = "item_quantity",
+                ["itemRef"] = "sterile_thread",
+                ["quantity"] = 1,
+                ["ownerRole"] = "provider"
+            },
+            new JsonObject
+            {
+                ["kind"] = "resource_quantity",
+                ["resourceRef"] = "health",
+                ["quantity"] = 1,
+                ["ownerRole"] = "target"
+            },
+            new JsonObject
+            {
+                ["kind"] = "skill_tier",
+                ["capabilityRef"] = "field_medicine",
+                ["minimumTier"] = 2,
+                ["actorRole"] = "target"
+            },
+            new JsonObject
+            {
+                ["kind"] = "source_capability",
+                ["capabilityRef"] = "exact_materialized_healing_source",
+                ["actorRole"] = "provider"
+            },
+            new JsonObject
+            {
+                ["kind"] = "provider",
+                ["providerRef"] = "field_medic_01"
+            },
+            new JsonObject
+            {
+                ["kind"] = "consent",
+                ["consentRef"] = "consent_field_medic_player_01",
+                ["providerRef"] = "field_medic_01",
+                ["targetRef"] = "player_current"
+            },
+            new JsonObject
+            {
+                ["kind"] = "facility",
+                ["facilityRef"] = "clean_work_surface"
+            },
+            new JsonObject
+            {
+                ["kind"] = "location",
+                ["locationRef"] = "loc_field_clinic_001",
+                ["targetRole"] = "target"
+            },
+            new JsonObject
+            {
+                ["kind"] = "quest_state",
+                ["questRef"] = "quest_field_clinic_intro",
+                ["requiredState"] = "Completed"
+            },
+            new JsonObject
+            {
+                ["kind"] = "effect_state",
+                ["effectRef"] = "effect_roll_modifier_advantage",
+                ["requiredState"] = "active",
+                ["targetRole"] = "target"
+            },
+            new JsonObject
+            {
+                ["kind"] = "environment",
+                ["environmentRef"] = "sterile_field",
+                ["requiredState"] = "active"
+            });
+        route["resolution"]!["modifierSource"]!["requirementIndex"] = 2;
+        return scenario with { Before = before };
+    }
+
     private static ResolverScenario ConfigureCourseConsequenceEnvelope(
         ResolverScenario scenario,
         bool removeOwnedComplicationBeforeReduction)

@@ -1598,6 +1598,36 @@ internal sealed class MortalWoundTreatmentAuthority
             fingerprint);
     }
 
+    internal static string RecomputeResolvedRequirementFingerprint(
+        MortalWoundResolvedRequirement row,
+        Context context,
+        JsonElement requirement,
+        IReadOnlyList<string?> mechanicalFields)
+    {
+        ArgumentNullException.ThrowIfNull(row);
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(mechanicalFields);
+        return CreateResolved(
+            row.RequirementIndex,
+            row.Kind,
+            row.AuthorityRef,
+            row.Realm,
+            context,
+            requirement,
+            mechanicalFields,
+            row.OwnerKind,
+            row.OwnerId,
+            row.ProviderKind,
+            row.ProviderId,
+            row.TargetKind,
+            row.TargetId,
+            row.LocationId,
+            row.RequestedQuantity,
+            row.MinimumTier,
+            row.CurrentTier,
+            row.CurrentState).AuthorityFingerprint;
+    }
+
     private static string ComputeResultFingerprint(
         WoundTreatmentRoute route,
         Context context,
