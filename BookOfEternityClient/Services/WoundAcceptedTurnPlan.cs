@@ -344,14 +344,17 @@ internal sealed class WoundAcceptedTurnIdentityAllocator :
     IWoundAcceptedTurnIdentityAllocator
 {
     public string CreateWoundId(WoundAcceptedTurnIdentityScope scope) =>
-        Create("wound", "book_of_eternity.wound.accepted_turn_identity.wound", scope);
+        WoundAcceptedTurnIdentityWriter.Create(
+            "wound",
+            "book_of_eternity.wound.accepted_turn_identity.wound",
+            scope);
 
     public string CreateApplicationRef(
         WoundAcceptedTurnIdentityScope scope,
         string localApplicationRef,
         string definitionKey,
         string operationKey) =>
-        Create(
+        WoundAcceptedTurnIdentityWriter.Create(
             "wound_application",
             "book_of_eternity.wound.accepted_turn_identity.application",
             scope,
@@ -362,13 +365,16 @@ internal sealed class WoundAcceptedTurnIdentityAllocator :
     public string CreateTransitionId(
         WoundAcceptedTurnIdentityScope scope,
         string localTransitionRef) =>
-        Create(
+        WoundAcceptedTurnIdentityWriter.Create(
             "wound_transition",
             "book_of_eternity.wound.accepted_turn_identity.transition",
             scope,
             localTransitionRef);
+}
 
-    private static string Create(
+internal static class WoundAcceptedTurnIdentityWriter
+{
+    internal static string Create(
         string prefix,
         string domain,
         WoundAcceptedTurnIdentityScope scope,

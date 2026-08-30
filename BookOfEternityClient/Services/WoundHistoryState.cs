@@ -787,6 +787,15 @@ internal sealed class WoundHistoryState
                 "courseId whenever courseMilestoneOrdinal is present",
                 "null");
         }
+        if (transition.CourseId is not null && !transition.CourseMilestoneOrdinal.HasValue)
+        {
+            AddIssue(
+                issues,
+                path + ".courseMilestoneOrdinal",
+                "wound_history_course_coordinate_incomplete",
+                "courseMilestoneOrdinal whenever courseId is present",
+                "null");
+        }
         if (transition.Ordinal < 1 || transition.Ordinal > MaxTransitions)
         {
             AddIssue(

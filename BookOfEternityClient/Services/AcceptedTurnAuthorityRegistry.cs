@@ -261,6 +261,30 @@ internal static class AcceptedTurnAuthorityRegistry
         }
     }
 
+    internal static bool IsCurrentMortalWoundTreatmentAcceptedState(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentAcceptedStateAuthority authority)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(authority);
+        try
+        {
+            return GetState(fileSystem, writeLease)
+                .IsCurrentMortalWoundTreatmentAcceptedState(
+                    fileSystem,
+                    writeLease,
+                    authority);
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException)
+        {
+            return false;
+        }
+    }
+
     private static bool IsValidCandidateDetached(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -395,6 +419,20 @@ internal static class AcceptedTurnAuthorityRegistry
 
                 _mortalWoundTreatmentAcceptedState = candidate.Authority;
                 return AcceptedTurnAuthorityRegistry.Detach(candidate);
+            }
+        }
+
+        internal bool IsCurrentMortalWoundTreatmentAcceptedState(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority authority)
+        {
+            lock (_gate)
+            {
+                return ReferenceEquals(
+                           _mortalWoundTreatmentAcceptedState,
+                           authority) &&
+                       authority.IsLeaseBoundTo(fileSystem, writeLease);
             }
         }
 

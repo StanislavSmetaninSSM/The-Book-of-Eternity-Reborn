@@ -160,6 +160,17 @@ public sealed class WoundHistoryStateTests
     }
 
     [Fact]
+    public void Parse_CourseIdentityRequiresExactMilestoneOrdinal()
+    {
+        var row = Transition(courseId: "mortal_wound_course_test_001");
+
+        AssertInvalid(
+            Parse(History(row)),
+            FirstRowPath + ".courseMilestoneOrdinal",
+            "wound_history_course_coordinate_incomplete");
+    }
+
+    [Fact]
     public void Parse_GlobalOrdinalsAndNextOrdinalAreExactContiguousAndInArrayOrder()
     {
         var first = Transition();

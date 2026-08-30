@@ -573,6 +573,56 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         }
     }
 
+    internal bool HasCurrentAdmissionAuthority() =>
+        AcceptedTurnAuthorityRegistry.IsCurrentMortalWoundTreatmentAcceptedState(
+            _fileSystem,
+            _writeLease,
+            this);
+
+    internal bool MatchesCurrentWound(WoundMaterializationEnvelope? wound)
+    {
+        if (wound is null)
+            return false;
+        try
+        {
+            return string.Equals(
+                       WoundIdentityState.ComputeSemanticFingerprint(wound),
+                       WoundFingerprint,
+                       StringComparison.Ordinal) &&
+                   string.Equals(
+                       WoundMaterializationContract.SerializeCanonical(wound),
+                       WoundMaterializationContract.SerializeCanonical(_currentWound),
+                       StringComparison.Ordinal);
+        }
+        catch (Exception exception) when (exception is ArgumentException or
+                                           InvalidOperationException or
+                                           OverflowException)
+        {
+            return false;
+        }
+    }
+
+    internal bool MatchesCompleteHistory(WoundHistoryParseResult? history)
+    {
+        if (history is not { IsValid: true, State: not null })
+            return false;
+        try
+        {
+            return string.Equals(
+                Hash(
+                    "mortal_wound_treatment_history",
+                    WoundHistoryState.SerializeCanonical(history.State)),
+                HistoryFingerprint,
+                StringComparison.Ordinal);
+        }
+        catch (Exception exception) when (exception is ArgumentException or
+                                           InvalidOperationException or
+                                           OverflowException)
+        {
+            return false;
+        }
+    }
+
     private static PendingTurnSnapshotPathSelection BuildPathSelection(
         MortalWoundTreatmentAuthority.Context context,
         ICollection<ValidationIssue> issues)
