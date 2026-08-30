@@ -49,6 +49,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthorityResult
 internal sealed partial class MortalWoundProcedureCheckAuthority :
     MortalWoundTreatmentModeAuthority
 {
+    private static readonly object ProcedureReservationCapability = new();
     private readonly ReadOnlyCollection<MortalWoundProcedureRollContribution>
         _rollContributions;
     private readonly ReadOnlyCollection<int> _sourceIndices;
@@ -56,6 +57,11 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
     private readonly MortalWoundProcedureDiceReservation _diceReservation;
     private readonly MortalWoundCriticalReactionReservation?
         _criticalReactionReservation;
+    private readonly MortalWoundCriticalReactionReservationAgreement?
+        _criticalReactionAgreement;
+
+    internal static bool IsProcedureReservationCapability(object capability) =>
+        ReferenceEquals(capability, ProcedureReservationCapability);
 
     private MortalWoundProcedureCheckAuthority(
         string sourcePath,
@@ -76,7 +82,8 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         MortalWoundPreparedCriticalReaction? preparedCriticalReaction,
         string authorityFingerprint,
         MortalWoundProcedureDiceReservation diceReservation,
-        MortalWoundCriticalReactionReservation? criticalReactionReservation)
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement)
     {
         SourcePath = sourcePath;
         RollMode = rollMode;
@@ -97,6 +104,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         AuthorityFingerprint = authorityFingerprint;
         _diceReservation = diceReservation;
         _criticalReactionReservation = criticalReactionReservation;
+        _criticalReactionAgreement = criticalReactionAgreement;
     }
 
     public string SourcePath { get; }
@@ -246,10 +254,13 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
 
         MortalWoundProcedureDiceReservation? reservation = null;
         MortalWoundCriticalReactionReservation? criticalReactionReservation = null;
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement = null;
+        MortalWoundProcedureReservationOwnership? reservationOwnership = null;
         var transferred = false;
         try
         {
             var reservationResult = acceptedState.ReserveProcedureReservations(
+                ProcedureReservationCapability,
                 coordinates,
                 rollMode!,
                 rollActorKind!,
@@ -261,6 +272,12 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             reservation = reservationResult.DiceReservation;
             criticalReactionReservation =
                 reservationResult.CriticalReactionReservation;
+            criticalReactionAgreement =
+                reservationResult.CriticalReactionAgreement;
+            reservationOwnership = reservationResult.Ownership;
+            if (reservationOwnership is null)
+                throw new InvalidOperationException(
+                    "A valid procedure reservation requires ownership provenance.");
 
             var selectedOrdinal = SelectSourceOrdinal(
                 reservation.SourceRolls,
@@ -307,7 +324,8 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 preparedCriticalReaction,
                 authorityFingerprint,
                 reservation,
-                criticalReactionReservation);
+                criticalReactionReservation,
+                criticalReactionAgreement);
             transferred = true;
             return MortalWoundProcedureCheckAuthorityResult.Valid(authority);
         }
@@ -323,11 +341,15 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         }
         finally
         {
-            if (!transferred && reservation is not null)
+            if (!transferred &&
+                reservation is not null &&
+                reservationOwnership is not null)
             {
-                acceptedState.ReleaseProcedureReservations(
+                acceptedState.RollbackNewProcedureReservations(
                     reservation,
-                    criticalReactionReservation);
+                    criticalReactionReservation,
+                    criticalReactionAgreement,
+                    reservationOwnership);
             }
         }
     }
@@ -336,7 +358,8 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         MortalWoundTreatmentAcceptedStateAuthority acceptedState) =>
         acceptedState is not null && acceptedState.ReleaseProcedureReservations(
             _diceReservation,
-            _criticalReactionReservation);
+            _criticalReactionReservation,
+            _criticalReactionAgreement);
 
     private static bool TryValidateRequirementAuthority(
         MortalWoundTreatmentAttemptCoordinates coordinates,

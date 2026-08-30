@@ -288,6 +288,13 @@ internal sealed class MortalWoundTreatmentAttemptCoordinates
     {
         if (acceptedState is null || !acceptedState.HasCurrentAdmissionAuthority())
             return false;
+        return AgreesWithAcceptedStateSemantics(acceptedState);
+    }
+
+    internal bool AgreesWithAcceptedStateSemantics(
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState)
+    {
+        ArgumentNullException.ThrowIfNull(acceptedState);
         var binding = acceptedState.Binding;
         var context = acceptedState.RequirementContext;
         var currentWound = acceptedState.CurrentWound;

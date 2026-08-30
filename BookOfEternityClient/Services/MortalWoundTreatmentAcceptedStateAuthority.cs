@@ -624,6 +624,24 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                     quests,
                     effects,
                     environments)));
+        var acceptedD20PoolFields = new List<string?>
+        {
+            "book_of_eternity.mortal_wound_treatment.accepted_d20_pool",
+            "1",
+            generation,
+            signed.SessionId,
+            signed.RequestId,
+            signed.SnapshotToken,
+            Number(signed.TurnNumber),
+            Number(signed.AcceptedD20EventValues.Count)
+        };
+        for (var index = 0; index < signed.AcceptedD20EventValues.Count; index++)
+        {
+            acceptedD20PoolFields.Add(Number(index));
+            acceptedD20PoolFields.Add(Number(signed.AcceptedD20EventValues[index]));
+        }
+        var acceptedD20PoolFingerprint =
+            WoundAcceptedTurnFingerprintWriter.Compute(acceptedD20PoolFields);
         var acceptedStateFingerprint = Hash(
             "mortal_wound_treatment_accepted_state",
             "1",
@@ -657,7 +675,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             currentGameMinute,
             effectMechanics,
             signed.AcceptedD20EventValues,
-            requestFingerprint,
+            acceptedD20PoolFingerprint,
             playerCapabilities,
             npcCapabilities,
             treatment.Treatment,
@@ -736,26 +754,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             _writeLease,
             this);
 
-    internal MortalWoundProcedureDiceReservationResult ReserveProcedureDice(
-        MortalWoundTreatmentAttemptCoordinates coordinates,
-        string rollMode) =>
-        AcceptedTurnAuthorityRegistry.ReserveMortalWoundProcedureDice(
-            _fileSystem,
-            _writeLease,
-            this,
-            coordinates,
-            rollMode,
-            _acceptedD20EventValues.AsSpan());
-
-    internal bool ReleaseProcedureDice(
-        MortalWoundProcedureDiceReservation reservation) =>
-        AcceptedTurnAuthorityRegistry.ReleaseMortalWoundProcedureDice(
-            _fileSystem,
-            _writeLease,
-            this,
-            reservation);
-
     internal MortalWoundProcedureReservationSetResult ReserveProcedureReservations(
+        object reservationCapability,
         MortalWoundTreatmentAttemptCoordinates coordinates,
         string rollMode,
         string rollActorKind,
@@ -764,21 +764,55 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             _fileSystem,
             _writeLease,
             this,
+            reservationCapability,
             coordinates,
             rollMode,
             rollActorKind,
-            rollActorId,
-            _acceptedD20EventValues.AsSpan());
+            rollActorId);
 
     internal bool ReleaseProcedureReservations(
         MortalWoundProcedureDiceReservation diceReservation,
-        MortalWoundCriticalReactionReservation? criticalReactionReservation) =>
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement) =>
         AcceptedTurnAuthorityRegistry.ReleaseMortalWoundProcedureReservations(
             _fileSystem,
             _writeLease,
             this,
             diceReservation,
-            criticalReactionReservation);
+            criticalReactionReservation,
+            criticalReactionAgreement);
+
+    internal bool RollbackNewProcedureReservations(
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement,
+        MortalWoundProcedureReservationOwnership ownership) =>
+        AcceptedTurnAuthorityRegistry.RollbackNewMortalWoundProcedureReservations(
+            _fileSystem,
+            _writeLease,
+            this,
+            diceReservation,
+            criticalReactionReservation,
+            criticalReactionAgreement,
+            ownership);
+
+    internal bool TryReadProcedureDicePool(
+        object readCapability,
+        out int[] acceptedD20EventValues,
+        out string poolFingerprint)
+    {
+        if (!AcceptedTurnAuthorityRegistry.IsProcedureDicePoolReadCapability(
+                readCapability))
+        {
+            acceptedD20EventValues = Array.Empty<int>();
+            poolFingerprint = string.Empty;
+            return false;
+        }
+
+        acceptedD20EventValues = _acceptedD20EventValues.ToArray();
+        poolFingerprint = _acceptedD20PoolFingerprint;
+        return true;
+    }
 
     internal bool MatchesCurrentWound(WoundMaterializationEnvelope? wound)
     {

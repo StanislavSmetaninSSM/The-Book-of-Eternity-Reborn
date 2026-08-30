@@ -5,13 +5,115 @@ namespace BookOfEternityClient.Services;
 internal sealed record MortalWoundCriticalReactionReservationResult(
     bool IsValid,
     IReadOnlyList<ValidationIssue> Issues,
-    MortalWoundCriticalReactionReservation? Reservation);
+    MortalWoundCriticalReactionReservation? Reservation,
+    MortalWoundCriticalReactionReservationAgreement? Agreement = null,
+    bool WasCreated = false);
 
 internal sealed record MortalWoundProcedureReservationSetResult(
     bool IsValid,
     IReadOnlyList<ValidationIssue> Issues,
     MortalWoundProcedureDiceReservation? DiceReservation,
-    MortalWoundCriticalReactionReservation? CriticalReactionReservation);
+    MortalWoundCriticalReactionReservation? CriticalReactionReservation,
+    MortalWoundCriticalReactionReservationAgreement? CriticalReactionAgreement = null,
+    MortalWoundProcedureReservationOwnership? Ownership = null);
+
+internal sealed class MortalWoundProcedureReservationOwnership
+{
+    private MortalWoundProcedureReservationOwnership(
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement,
+        bool diceWasCreated,
+        bool criticalReactionWasCreated)
+    {
+        DiceReservation = diceReservation;
+        CriticalReactionReservation = criticalReactionReservation;
+        CriticalReactionAgreement = criticalReactionAgreement;
+        DiceWasCreated = diceWasCreated;
+        CriticalReactionWasCreated = criticalReactionWasCreated;
+    }
+
+    private MortalWoundProcedureDiceReservation DiceReservation { get; }
+    private MortalWoundCriticalReactionReservation? CriticalReactionReservation { get; }
+    private MortalWoundCriticalReactionReservationAgreement?
+        CriticalReactionAgreement { get; }
+    internal bool DiceWasCreated { get; }
+    internal bool CriticalReactionWasCreated { get; }
+
+    internal static MortalWoundProcedureReservationOwnership Create(
+        object capability,
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement,
+        bool diceWasCreated,
+        bool criticalReactionWasCreated)
+    {
+        if (!AcceptedTurnAuthorityRegistry.IsProcedureReservationOwnershipCapability(
+                capability))
+        {
+            throw new InvalidOperationException(
+                "Procedure reservation ownership requires registry authority.");
+        }
+        return new MortalWoundProcedureReservationOwnership(
+            diceReservation,
+            criticalReactionReservation,
+            criticalReactionAgreement,
+            diceWasCreated,
+            criticalReactionWasCreated);
+    }
+
+    internal bool Matches(
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement) =>
+        ReferenceEquals(DiceReservation, diceReservation) &&
+        ReferenceEquals(CriticalReactionReservation, criticalReactionReservation) &&
+        ReferenceEquals(CriticalReactionAgreement, criticalReactionAgreement);
+}
+
+internal sealed class MortalWoundCriticalReactionReservationAgreement
+{
+    internal MortalWoundCriticalReactionReservationAgreement(
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        MortalWoundCriticalReactionReservation? reservation)
+    {
+        OperationKey = coordinates.OperationKey;
+        AttemptId = coordinates.AttemptId;
+        CoordinatesFingerprint = coordinates.CoordinatesFingerprint;
+        AcceptedStateFingerprint = coordinates.AcceptedStateFingerprint;
+        Reservation = reservation;
+    }
+
+    internal string OperationKey { get; }
+    internal string AttemptId { get; }
+    internal string CoordinatesFingerprint { get; }
+    internal string AcceptedStateFingerprint { get; }
+    internal MortalWoundCriticalReactionReservation? Reservation { get; }
+
+    internal bool Agrees(MortalWoundTreatmentAttemptCoordinates coordinates) =>
+        string.Equals(OperationKey, coordinates.OperationKey, StringComparison.Ordinal) &&
+        string.Equals(AttemptId, coordinates.AttemptId, StringComparison.Ordinal) &&
+        string.Equals(
+            CoordinatesFingerprint,
+            coordinates.CoordinatesFingerprint,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            AcceptedStateFingerprint,
+            coordinates.AcceptedStateFingerprint,
+            StringComparison.Ordinal);
+
+    internal bool Agrees(MortalWoundProcedureDiceReservation reservation) =>
+        string.Equals(OperationKey, reservation.OperationKey, StringComparison.Ordinal) &&
+        string.Equals(AttemptId, reservation.AttemptId, StringComparison.Ordinal) &&
+        string.Equals(
+            CoordinatesFingerprint,
+            reservation.CoordinatesFingerprint,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            AcceptedStateFingerprint,
+            reservation.AcceptedStateFingerprint,
+            StringComparison.Ordinal);
+}
 
 internal sealed class MortalWoundCriticalReactionReservation
 {
@@ -50,7 +152,7 @@ internal sealed class MortalWoundCriticalReactionReservation
 
 internal sealed class MortalWoundCriticalReactionReservationRegistry
 {
-    private readonly Dictionary<string, ReservationAgreement>
+    private readonly Dictionary<string, MortalWoundCriticalReactionReservationAgreement>
         _byOperationKey = new(StringComparer.Ordinal);
     private readonly HashSet<string> _claimedEffectIds = new(StringComparer.Ordinal);
 
@@ -75,11 +177,12 @@ internal sealed class MortalWoundCriticalReactionReservationRegistry
                 return new MortalWoundCriticalReactionReservationResult(
                     true,
                     Array.Empty<ValidationIssue>(),
-                    null);
+                    null,
+                    existing);
             }
             return candidates.Any(candidate =>
                     CandidateAgrees(existing.Reservation, candidate))
-                ? Valid(existing.Reservation)
+                ? Valid(existing.Reservation, existing)
                 : Invalid(
                     "mortal_wound_treatment_critical_reaction_reservation_conflict",
                     "the exact prior attempt, coordinates, accepted state, and Fate candidate",
@@ -91,13 +194,18 @@ internal sealed class MortalWoundCriticalReactionReservationRegistry
             _claimedEffectIds);
         if (candidate is null)
         {
+            var agreement = new MortalWoundCriticalReactionReservationAgreement(
+                coordinates,
+                reservation: null);
             _byOperationKey.Add(
                 coordinates.OperationKey,
-                new ReservationAgreement(coordinates, reservation: null));
+                agreement);
             return new MortalWoundCriticalReactionReservationResult(
                 true,
                 Array.Empty<ValidationIssue>(),
-                null);
+                null,
+                agreement,
+                WasCreated: true);
         }
 
         var preparedFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
@@ -133,11 +241,16 @@ internal sealed class MortalWoundCriticalReactionReservationRegistry
             candidate.AcceptedEffectFingerprint,
             preparedFingerprint,
             claimFingerprint);
-        _byOperationKey.Add(
-            coordinates.OperationKey,
-            new ReservationAgreement(coordinates, reservation));
+        var reservationAgreement =
+            new MortalWoundCriticalReactionReservationAgreement(
+                coordinates,
+                reservation);
+        _byOperationKey.Add(coordinates.OperationKey, reservationAgreement);
         _claimedEffectIds.Add(candidate.EffectId);
-        return Valid(reservation);
+        return Valid(
+            reservation,
+            reservationAgreement,
+            wasCreated: true);
     }
 
     internal bool CanRelease(MortalWoundCriticalReactionReservation reservation)
@@ -150,26 +263,32 @@ internal sealed class MortalWoundCriticalReactionReservationRegistry
 
     internal bool MatchesReleaseAgreement(
         MortalWoundProcedureDiceReservation diceReservation,
-        MortalWoundCriticalReactionReservation? reservation)
+        MortalWoundCriticalReactionReservation? reservation,
+        MortalWoundCriticalReactionReservationAgreement? agreement)
     {
         ArgumentNullException.ThrowIfNull(diceReservation);
-        if (!_byOperationKey.TryGetValue(diceReservation.OperationKey, out var agreement))
-            return reservation is null;
-        if (!agreement.Agrees(diceReservation))
+        if (!_byOperationKey.TryGetValue(
+                diceReservation.OperationKey,
+                out var current))
+        {
+            return reservation is null && agreement is null;
+        }
+        if (!ReferenceEquals(current, agreement) ||
+            !current.Agrees(diceReservation) ||
+            !ReferenceEquals(current.Reservation, reservation))
+        {
             return false;
-        if (reservation is null)
-            return agreement.Reservation is null;
-        return CanRelease(reservation) &&
-               ReferenceEquals(agreement.Reservation, reservation);
+        }
+        return reservation is null || CanRelease(reservation);
     }
 
     internal void ReleaseUnchecked(
         MortalWoundProcedureDiceReservation diceReservation,
-        MortalWoundCriticalReactionReservation? reservation)
+        MortalWoundCriticalReactionReservationAgreement? agreement)
     {
         _byOperationKey.Remove(diceReservation.OperationKey);
-        if (reservation is not null)
-            _claimedEffectIds.Remove(reservation.EffectId);
+        if (agreement?.Reservation is not null)
+            _claimedEffectIds.Remove(agreement.Reservation.EffectId);
     }
 
     internal void InvalidateAll()
@@ -189,10 +308,14 @@ internal sealed class MortalWoundCriticalReactionReservationRegistry
             StringComparison.Ordinal);
 
     private static MortalWoundCriticalReactionReservationResult Valid(
-        MortalWoundCriticalReactionReservation reservation) => new(
+        MortalWoundCriticalReactionReservation reservation,
+        MortalWoundCriticalReactionReservationAgreement agreement,
+        bool wasCreated = false) => new(
         true,
         Array.Empty<ValidationIssue>(),
-        reservation);
+        reservation,
+        agreement,
+        wasCreated);
 
     private static MortalWoundCriticalReactionReservationResult Invalid(
         string code,
@@ -213,46 +336,4 @@ internal sealed class MortalWoundCriticalReactionReservationRegistry
         }),
         null);
 
-    private sealed class ReservationAgreement
-    {
-        internal ReservationAgreement(
-            MortalWoundTreatmentAttemptCoordinates coordinates,
-            MortalWoundCriticalReactionReservation? reservation)
-        {
-            OperationKey = coordinates.OperationKey;
-            AttemptId = coordinates.AttemptId;
-            CoordinatesFingerprint = coordinates.CoordinatesFingerprint;
-            AcceptedStateFingerprint = coordinates.AcceptedStateFingerprint;
-            Reservation = reservation;
-        }
-
-        internal string OperationKey { get; }
-        internal string AttemptId { get; }
-        internal string CoordinatesFingerprint { get; }
-        internal string AcceptedStateFingerprint { get; }
-        internal MortalWoundCriticalReactionReservation? Reservation { get; }
-
-        internal bool Agrees(MortalWoundTreatmentAttemptCoordinates coordinates) =>
-            string.Equals(OperationKey, coordinates.OperationKey, StringComparison.Ordinal) &&
-            string.Equals(AttemptId, coordinates.AttemptId, StringComparison.Ordinal) &&
-            string.Equals(
-                CoordinatesFingerprint,
-                coordinates.CoordinatesFingerprint,
-                StringComparison.Ordinal) &&
-            string.Equals(
-                AcceptedStateFingerprint,
-                coordinates.AcceptedStateFingerprint,
-                StringComparison.Ordinal);
-
-        internal bool Agrees(MortalWoundProcedureDiceReservation reservation) =>
-            string.Equals(OperationKey, reservation.OperationKey, StringComparison.Ordinal) &&
-            string.Equals(
-                CoordinatesFingerprint,
-                reservation.CoordinatesFingerprint,
-                StringComparison.Ordinal) &&
-            string.Equals(
-                AcceptedStateFingerprint,
-                reservation.AcceptedStateFingerprint,
-                StringComparison.Ordinal);
-    }
 }
