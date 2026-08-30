@@ -519,6 +519,50 @@ source-group identity count; no unrelated global effect-history limit is invente
 enforce bounded execution and report artifacts. Explicit limits prevent malicious or
 accidental GM payload expansion without constraining ordinary play.
 
+## R-019: Break the Mortal authority cycle with production-only phases
+
+**Decision**: Execute the mutually dependent T067/T068/T069/T070 work as explicit
+production-only phases rather than pretending each numbered task can close in one
+contiguous block:
+
+1. T068-A builds typed resource preparation, immutable policy/claim/reservation
+   authority, and the generation-scoped provisional registry.
+2. T069-A builds both typed deterioration-policy factories and their strict-worsening
+   classification.
+3. T070-A adds canonical recovery-anchor representation plus the sealed wound-stage to
+   common-plan overload and allocates anchors only during accepted initial creation.
+4. T069-B builds non-replay recovery scheduling and closed typed intents from the
+   production-created canonical wound.
+5. T067-B seals/persists requests and resolves attempts using T068-A and T069-A.
+6. T068-B completes `Finalize(resolution)`, command/pending reconstruction, confirmation,
+   cancellation, rollback, and restart behavior from production-created T067-B values.
+7. T070-B composes treatment/recovery/re-entry after-images and durable receipts through
+   the sole common accepted-plan publisher.
+8. T069-C closes durable recovery replay against the T070-B history/receipt evidence.
+
+No phase may expose a test constructor, raw JSON authority seam, caller fingerprint,
+alternate writer, or temporary compatibility DTO. The same immutable resource and
+deterioration authorities flow forward into the later phases.
+
+**Rationale**: A complete T068 finalizer cannot be behaviorally verified before T067-B
+can create a sealed `MortalWoundTreatmentResolution`, while T067-B cannot seal a request
+before T068-A supplies its resource authority. Likewise, the T069 scheduler cannot read
+or verify canonical recovery anchors before T070-A creates them through the ordinary
+accepted-plan path, and its durable replay cannot be proved before T070-B publishes a
+receipt. This ordering makes every positive test use production-created authority and
+keeps the client harness responsible for making forged state unrepresentable.
+
+**Alternatives rejected**:
+
+- Complete T067-B before T068: creates a circular or incomplete request because the
+  request contract requires the full resource authority.
+- Complete all T069 scheduler tests before any T070 work: requires hand-written anchors,
+  bindings, history, or after-images and violates the frozen recovery authority boundary.
+- Mint private requests/resolutions or receipts from tests: makes the exact authority
+  paths untestable and would hide lifecycle/rollback defects.
+- Add placeholder adapters and replace them later: introduces two competing contracts
+  and recreates the fragile half-model explicitly rejected for this feature.
+
 ## Resolved research conclusion
 
 All design-critical unknowns are resolved. Implementation can proceed without a

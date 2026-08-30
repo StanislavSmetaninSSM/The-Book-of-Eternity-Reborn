@@ -1191,7 +1191,7 @@ entrypoints require no update for T065.
   publication rows blocked before the exporter remain explicit T067/T070 integration
   evidence rather than a T066 closure gap.
 - [ ] T067 [US2] Implement diagnosis/alternative-authoring orchestration and the complete
-  production treatment resolver in two explicit phases around T068: deterministic request/attempt/
+  production treatment resolver in two explicit phases around T068-A: deterministic request/attempt/
   course identities; strict response adaptation and repair; exact six-argument request
   factories; procedure dice/effect/Fate semantics with same-turn legacy-report guard;
   complete course mode/start/single-active-course/restart precedence; canonical
@@ -1219,10 +1219,10 @@ entrypoints require no update for T065.
   `BookOfEternityClient/Services/WoundTransitionReducer.cs`,
   `BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs`, and
   `BookOfEternityClient/Services/WoundHistoryState.cs`
-  Phase A (after T066, before T068/T069) owns only the production procedure-check authority,
+  Phase A (after T066, before T068-A/T069-A) owns only the production procedure-check authority,
   dice/Fate registries and shared arbiter/typed reaction seam, plus immutable request/
   resolution/outcome-intent type shells required by T068; it performs no request sealing
-  or semantic resolution. Phase B (after T068) owns high-level request sealing,
+  or semantic resolution. Phase B (after T068-A/T069-A/T070-A/T069-B) owns high-level request sealing,
   persistence, resolver semantics, history/replay, course-continuation reconstruction,
   final `CreateForCourseMilestone` integration, cold restored-request reduction back to
   the exact full typed Resolution, and accepted-transition integration.
@@ -1246,7 +1246,22 @@ entrypoints require no update for T065.
   T068 MUST accept complete course-mode authority (not bare time), seal matching course
   ID/ordinal/coordinate evidence into bundle/reservation claims, and finalize solely from
   the resolution's full nested RequestAuthority without an unsealed live lookup.
+  T068 Phase A, before T067-B, owns the exact three preparation overloads, immutable
+  policy/claim/reservation authority, provisional generation-scoped registry, aggregate
+  non-overbooking, exact retry/conflict, and opaque newly-created-only release ownership.
+  It is proved directly from production T066/T067-A authority without a request shell.
+  T068 Phase B, after T067-B creates sealed requests/resolutions and durable commands,
+  owns `Finalize(resolution)`, confirmation/finalization, command/pending reconstruction,
+  cancellation/validation/rollback release, and cold-restart evidence. Phase A does not
+  invent a test resolution or a temporary finalization DTO to simulate Phase B.
 - [ ] T069 [US2] Implement canonical-world-minute recovery/deterioration policies, independent recovery versus condition/deterioration anchors, cadence/blockers/overflow/elapsed-next-anchor semantics, exact strictly-worsening policy classification for treatment interruption references, and exact closed typed tick outcomes in `BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs`. Stabilization clears the satisfied condition anchor while rebasing only recovery; a later accepted condition re-entry allocates a fresh deterioration anchor from that exact transition and minute without reallocating recovery. `MortalWoundDeteriorationPolicyAuthority` must offer the resolver-bound `Create(acceptedState, coordinates, policyRef)` overload as well as the canonical recovery-planner factory; neither accepts injected JSON/fingerprint/authority.
+  T069 Phase A owns both closed deterioration-policy authority factories and exact
+  strict-worsening classification. After T070-A has created canonical anchor state only
+  through the accepted initial-wound path, T069 Phase B owns non-replay clock arithmetic,
+  dispositions, and typed intents. T069 Phase C, after T070-B publishes the durable
+  recovery receipt/history evidence, closes invalid-history-first and exact replay.
+  Neither scheduler tests nor replay tests may hand-write an anchor, binding, receipt,
+  history row, or after-image.
 - [ ] T070 [US2] Compose Mortal accepted-occurrence creation, opportunity-decision receipt/pending-occurrence consumption, plus diagnosis/alternative-route/treatment/recovery wound/effect/item/resource/history/output after-images; re-export guaranteed authority from the final composed player/NPC skill after-image whenever its root is touched; revalidate and atomically consume/expire the already T067-resolved exact per-attempt Fate Shield intent or roll back; and prepare deterministic cosmetic IDs plus non-GM `wound_legacy` source exports/history through `MortalWoundHealLegacyPlanner` before publication. On a source-result transaction, accept only T064's complete harmful typed candidate batch, read both occurrence and receipt roots as signed before-images, combine pending and consumed replay by producer operation key plus batch ordinal/count, reject changed or incomplete batches, derive canonical occurrence/public identities inside the common plan, append only genuinely new candidates atomically in ordinal order, and expose opportunities only after the next active pending-turn snapshot has sealed exact bytes. On the later wound-decision transaction, extend the common signed-snapshot/before-image inventory with both occurrence and receipt roots. Every accepted `none` or `materialize` decision appends exactly one sealed receipt carrying the consumed occurrence's source replay authority and consumes exactly one occurrence; a decline publishes null wound/transition coordinates without inventing a wound-history row, while a materialized receipt carries exact wound/transition IDs and matches exactly one ordinary `create|worsen` history row on transition/wound/turn/event/operation/source authority. Exact cold replay emits no command/transition, changed decision conflicts, and failed publication/rollback leaves neither receipt nor consumed occurrence. Register the closed legacy source, feed its ordered per-mechanical-legacy typed batches through #1535 while leaving effect IDs solely to that planner, exclude it from active-wound cleanup, and preserve source/history after later effect removal in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/MortalWoundHealLegacyPlanner.cs`, `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs`, `BookOfEternityClient/Services/EffectSourceAuthority.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
   T070 MUST consume the exact T067 outcome-intent/DeclaredResult pair without raw-route
   reparsing or identity allocation; update the existing non-heal/follow-up-heal reducer
@@ -1274,19 +1289,28 @@ entrypoints require no update for T065.
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
   stabilization-rebased recovery anchor.
+  T070 Phase A, after T069-A and before T069-B, owns typed canonical anchor
+  representation, the sealed `AcceptedMechanicsWoundStageBundle` common-authority
+  overload, and accepted initial-create anchor allocation/publication. It adds no
+  treatment or recovery shortcut. T070 Phase B, after T067-B/T068-B/T069-B, owns
+  treatment, stabilization, recovery, re-entry, durable receipt/history, and remaining
+  atomic publication integration required before T069-C replay closure.
 - [ ] T071 [US2] Remove loose Mortal aliases/wrappers, `generatedEffects`, `healingState.canBeImprovedBy`, `WoundReference`, `sourceWoundId`, `duration=999`, and NPC-effect-carrier fallbacks in `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`
 
-**T066/T067-A/T068+T069/T067-B execution gate**: implement T066's accepted-state,
-coordinate/time/course/start and bundle/capability types plus first-course/non-course
-factories; implement only T067 phase A's procedure die/Fate authority and shared immutable
-shells; implement T068 resource authority and T069 deterioration authority; then finish
-T067 phase B's typed history/course-continuation/bundle integration, request factories,
-and resolver. T068's pre-B control covers procedure/guaranteed/first-course preparation;
-continuation/restart resource integration is verified after B. T066 owns lease/base
-bundle/course types, T067-A owns procedure authority, T068 owns resources, T069 owns
-deterioration policy, and T067-B owns history-driven course authority plus orchestration/
-persistence/outcome resolution. None may use test-created authority/reservation or a raw
-mutation fallback.
+**T066/T067-A/T068-A+T069-A/T070-A/T069-B/T067-B/T068-B/T070-B/T069-C execution
+gate**: implement T066's accepted-state, coordinate/time/course/start and
+bundle/capability types plus first-course/non-course factories; implement T067-A's
+procedure die/Fate authority and shared immutable shells; implement T068-A resource
+preparation/registry and T069-A deterioration policy authority; use T070-A's sole common
+accepted-create path to materialize canonical anchors; implement T069-B scheduling;
+finish T067-B history-driven course authority, request factories, persistence, and
+resolver; finish T068-B finalization/restart; finish T070-B treatment/recovery
+publication; then close T069-C durable replay. T066 owns lease/base bundle/course types,
+T067-A owns procedure authority, T068 owns resources, T069 owns deterioration/recovery
+evaluation, T067-B owns history-driven course authority plus request/resolution
+orchestration, and T070 owns all canonical anchor mutation and accepted publication.
+None may use test-created authority/reservation/request/resolution/binding/anchor/receipt,
+hand-written history/after-images, or a raw mutation fallback.
 
 ### GM contract synchronization
 

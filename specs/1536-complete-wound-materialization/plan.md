@@ -473,9 +473,15 @@ history atomically for every owner carrier; effect removal never heals it.
    diagnosis/alternative-route authority, reservation, and outcomes.
    The dependency contour is T066 accepted-state/coordinates/course/start/bundle types
    and first-course/non-course factories, then T067-A procedure die/Fate authority and
-   immutable shells, then T068 resources plus T069 deterioration authority, then T067-B
-   typed-history continuation/course-bundle integration and request resolution/
-   persistence. Continuation resource controls run after B.
+   immutable shells. The remaining mutually dependent work follows the production-only
+   phase graph from research decision R-019: T068-A resource preparation/registry and
+   T069-A deterioration-policy authority; T070-A canonical anchor representation plus
+   accepted-create common composition; T069-B non-replay recovery scheduling/intents;
+   T067-B typed-history continuation, request sealing/resolution/persistence; T068-B
+   finalization and durable claim reconstruction; T070-B treatment/recovery/re-entry
+   publication; then T069-C durable replay verification. No test-created request,
+   resolution, binding, anchor, history row, receipt, claim, or raw authority is used to
+   cross a phase boundary.
 5. Add RED recovery/deterioration/canonical `world_time.currentTimeInMinutes`/retry/
    death-boundary tests and implement the registered Mortal policy scheduler without a
    parallel seconds or wall-time clock. The GM proposal cannot author canonical anchors:
@@ -485,8 +491,11 @@ history atomically for every owner carrier; effect removal never heals it.
    next-anchor state, stabilization rebases recovery and clears its satisfied condition
    anchor, while an accepted worsening re-entry allocates a fresh deterioration anchor
    from the exact `worsen` transition without resetting recovery; death remains a lifecycle
-   handoff. T070 composes typed transition intents into the existing accepted-plan
-   authority; `CanonicalStateNormalizer` remains the only publisher.
+   handoff. T070-A first makes the canonical anchor state reachable only through an
+   accepted initial-create plan; T069-B then evaluates that real state. T070-B composes
+   typed transition intents into the existing accepted-plan authority and publishes the
+   durable receipt required by T069-C replay; `CanonicalStateNormalizer` remains the
+   only publisher.
 6. Replace legacy Mortal rule/example/UI preview shapes and add a complete GM worked
    lifecycle before exposing the Mortal command flow.
 
