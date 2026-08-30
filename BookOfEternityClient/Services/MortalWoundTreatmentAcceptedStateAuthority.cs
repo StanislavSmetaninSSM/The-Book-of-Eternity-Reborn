@@ -69,6 +69,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
     private readonly WoundMaterializationEnvelope _currentWound;
     private readonly WoundHistoryState _history;
     private readonly EffectMechanicsSnapshot _effectMechanics;
+    private readonly int[] _acceptedD20EventValues;
+    private readonly string _acceptedD20PoolFingerprint;
     private readonly MortalWoundTreatmentCapabilitySkillSource[] _playerCapabilityCatalog;
     private readonly MortalWoundTreatmentCapabilitySkillSource[] _npcCapabilityCatalog;
 
@@ -85,6 +87,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         WoundHistoryState history,
         long currentGameMinute,
         EffectMechanicsSnapshot effectMechanics,
+        IReadOnlyList<int> acceptedD20EventValues,
+        string acceptedD20PoolFingerprint,
         IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> playerCapabilityCatalog,
         IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> npcCapabilityCatalog,
         MortalWoundTreatmentDefinition treatmentDefinition,
@@ -115,6 +119,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         _history = history;
         CurrentGameMinute = currentGameMinute;
         _effectMechanics = effectMechanics;
+        _acceptedD20EventValues = acceptedD20EventValues.ToArray();
+        _acceptedD20PoolFingerprint = acceptedD20PoolFingerprint;
         _playerCapabilityCatalog = playerCapabilityCatalog.Select(Clone).ToArray();
         _npcCapabilityCatalog = npcCapabilityCatalog.Select(Clone).ToArray();
         TreatmentDefinition = treatmentDefinition;
@@ -650,6 +656,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             history.State,
             currentGameMinute,
             effectMechanics,
+            signed.AcceptedD20EventValues,
+            requestFingerprint,
             playerCapabilities,
             npcCapabilities,
             treatment.Treatment,
@@ -677,6 +685,11 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
     {
         ArgumentNullException.ThrowIfNull(other);
         return BindingAgrees(_binding, other._binding) &&
+               _acceptedD20EventValues.SequenceEqual(other._acceptedD20EventValues) &&
+               string.Equals(
+                   _acceptedD20PoolFingerprint,
+                   other._acceptedD20PoolFingerprint,
+                   StringComparison.Ordinal) &&
                string.Equals(SessionGeneration, other.SessionGeneration, StringComparison.Ordinal) &&
                string.Equals(ContextFingerprint, other.ContextFingerprint, StringComparison.Ordinal) &&
                string.Equals(BindingFingerprint, other.BindingFingerprint, StringComparison.Ordinal) &&
@@ -722,6 +735,25 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             _fileSystem,
             _writeLease,
             this);
+
+    internal MortalWoundProcedureDiceReservationResult ReserveProcedureDice(
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        string rollMode) =>
+        AcceptedTurnAuthorityRegistry.ReserveMortalWoundProcedureDice(
+            _fileSystem,
+            _writeLease,
+            this,
+            coordinates,
+            rollMode,
+            _acceptedD20EventValues.AsSpan());
+
+    internal bool ReleaseProcedureDice(
+        MortalWoundProcedureDiceReservation reservation) =>
+        AcceptedTurnAuthorityRegistry.ReleaseMortalWoundProcedureDice(
+            _fileSystem,
+            _writeLease,
+            this,
+            reservation);
 
     internal bool MatchesCurrentWound(WoundMaterializationEnvelope? wound)
     {

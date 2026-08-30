@@ -285,6 +285,84 @@ internal static class AcceptedTurnAuthorityRegistry
         }
     }
 
+    internal static MortalWoundProcedureDiceReservationResult
+        ReserveMortalWoundProcedureDice(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            MortalWoundTreatmentAttemptCoordinates coordinates,
+            string rollMode,
+            ReadOnlySpan<int> acceptedD20EventValues)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(acceptedState);
+        ArgumentNullException.ThrowIfNull(coordinates);
+        try
+        {
+            return GetState(fileSystem, writeLease).ReserveMortalWoundProcedureDice(
+                fileSystem,
+                writeLease,
+                acceptedState,
+                coordinates,
+                rollMode,
+                acceptedD20EventValues);
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException)
+        {
+            return MortalWoundProcedureDiceReservationRegistryFailure(
+                "one current accepted-state authority and active canonical lease",
+                exception.GetType().Name);
+        }
+    }
+
+    internal static bool ReleaseMortalWoundProcedureDice(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        MortalWoundProcedureDiceReservation reservation)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(acceptedState);
+        ArgumentNullException.ThrowIfNull(reservation);
+        try
+        {
+            return GetState(fileSystem, writeLease).ReleaseMortalWoundProcedureDice(
+                fileSystem,
+                writeLease,
+                acceptedState,
+                reservation);
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException)
+        {
+            return false;
+        }
+    }
+
+    private static MortalWoundProcedureDiceReservationResult
+        MortalWoundProcedureDiceReservationRegistryFailure(
+            string expected,
+            string actual) => new(
+            false,
+            Array.AsReadOnly(new[]
+            {
+                new ValidationIssue(
+                    LiveTurnPreparationService.TurnRequestPath,
+                    IssueSeverity.Error,
+                    "The accepted d20 reservation for the Mortal wound procedure cannot be trusted.",
+                    code: "mortal_wound_treatment_procedure_dice_authority_invalid",
+                    actor: "Client",
+                    section: "wound_materialization",
+                    expected: expected,
+                    actual: actual)
+            }),
+            null);
+
     private static bool IsValidCandidateDetached(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -360,6 +438,7 @@ internal static class AcceptedTurnAuthorityRegistry
         private readonly EffectAcceptedTurnPlanCache _effectPlan;
         private readonly WoundAcceptedTurnPlanCache _woundPlan;
         private readonly MortalItemAcceptedTurnAuthority.Cache _mortalItems;
+        private readonly MortalWoundProcedureDiceReservationRegistry _procedureDice = new();
         private MortalWoundTreatmentAcceptedStateAuthority?
             _mortalWoundTreatmentAcceptedState;
         private object? _woundEffectStageToken;
@@ -392,12 +471,14 @@ internal static class AcceptedTurnAuthorityRegistry
                     candidate.Authority is null ||
                     candidate.Issues.Count != 0)
                 {
+                    _procedureDice.InvalidateAll();
                     _mortalWoundTreatmentAcceptedState = null;
                     return AcceptedTurnAuthorityRegistry.Detach(candidate);
                 }
 
                 if (!candidate.Authority.IsLeaseBoundTo(fileSystem, writeLease))
                 {
+                    _procedureDice.InvalidateAll();
                     _mortalWoundTreatmentAcceptedState = null;
                     return MortalWoundTreatmentAcceptedStateAuthority
                         .RegistryCandidateBindingFailure(
@@ -417,8 +498,54 @@ internal static class AcceptedTurnAuthorityRegistry
                         _mortalWoundTreatmentAcceptedState);
                 }
 
+                _procedureDice.InvalidateAll();
                 _mortalWoundTreatmentAcceptedState = candidate.Authority;
                 return AcceptedTurnAuthorityRegistry.Detach(candidate);
+            }
+        }
+
+        internal MortalWoundProcedureDiceReservationResult ReserveMortalWoundProcedureDice(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            MortalWoundTreatmentAttemptCoordinates coordinates,
+            string rollMode,
+            ReadOnlySpan<int> acceptedD20EventValues)
+        {
+            lock (_gate)
+            {
+                if (!ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) ||
+                    !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
+                    !coordinates.MatchesAcceptedState(acceptedState))
+                {
+                    return AcceptedTurnAuthorityRegistry
+                        .MortalWoundProcedureDiceReservationRegistryFailure(
+                            "the exact current accepted state and matching attempt coordinates",
+                            "stale, foreign, or mismatched authority");
+                }
+
+                return _procedureDice.Reserve(
+                    coordinates,
+                    rollMode,
+                    acceptedD20EventValues);
+            }
+        }
+
+        internal bool ReleaseMortalWoundProcedureDice(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            MortalWoundProcedureDiceReservation reservation)
+        {
+            lock (_gate)
+            {
+                return ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) &&
+                       acceptedState.IsLeaseBoundTo(fileSystem, writeLease) &&
+                       string.Equals(
+                           reservation.AcceptedStateFingerprint,
+                           acceptedState.AcceptedStateFingerprint,
+                           StringComparison.Ordinal) &&
+                       _procedureDice.Release(reservation);
             }
         }
 
@@ -1006,6 +1133,7 @@ internal static class AcceptedTurnAuthorityRegistry
             ClearWoundEffectCore();
             _woundPlan.InvalidateAll();
             _mortalItems.InvalidateValidated();
+            _procedureDice.InvalidateAll();
             _mortalWoundTreatmentAcceptedState = null;
         }
 
