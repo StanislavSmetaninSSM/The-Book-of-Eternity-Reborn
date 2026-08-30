@@ -140,6 +140,46 @@ public sealed class MortalWoundTreatmentCapabilityContractTests
         Assert.Contains(synthesizedIssues, issue => issue.Code == "mortal_wound_treatment_capability_synthesized");
     }
 
+    [Fact]
+    public void ValidateComposedActorCatalog_PreservesTheCompleteExtensionNodeIncludingOrderAndEmptyArrays()
+    {
+        var currentActiveSkill = Skill("skill_field_medicine_01", "Field Medicine", true);
+        currentActiveSkill["mortalWoundTreatmentCapabilities"]!.AsArray().Add(CapabilityDefinition("second_guaranteed_care"));
+        var currentActive = Root("activeSkillChanges", currentActiveSkill);
+        var currentPassive = Root("passiveSkillChanges", Skill("skill_observation_01", "Observation", false));
+
+        var reorderedActive = currentActive.DeepClone().AsObject();
+        var reorderedCapabilities = reorderedActive["activeSkillChanges"]!.AsArray()[0]!["mortalWoundTreatmentCapabilities"]!.AsArray();
+        var first = reorderedCapabilities[0]!.DeepClone();
+        reorderedCapabilities[0] = reorderedCapabilities[1]!.DeepClone();
+        reorderedCapabilities[1] = first;
+        Assert.Contains(
+            MortalWoundTreatmentCapabilityContract.ValidateComposedActorCatalog(
+                "player", "player", currentActive, "game_state/player/skills_active.json",
+                currentPassive, "game_state/player/skills_passive.json",
+                reorderedActive, currentPassive.DeepClone().AsObject()),
+            issue => issue.Code == "mortal_wound_treatment_capability_preservation_invalid");
+
+        var composedWithEmptyExtension = currentActive.DeepClone().AsObject();
+        var passiveWithEmptyExtension = currentPassive.DeepClone().AsObject();
+        passiveWithEmptyExtension["passiveSkillChanges"]!.AsArray()[0]!.AsObject()["mortalWoundTreatmentCapabilities"] = new JsonArray();
+        Assert.Contains(
+            MortalWoundTreatmentCapabilityContract.ValidateComposedActorCatalog(
+                "player", "player", currentActive, "game_state/player/skills_active.json",
+                currentPassive, "game_state/player/skills_passive.json",
+                composedWithEmptyExtension, passiveWithEmptyExtension),
+            issue => issue.Code == "mortal_wound_treatment_capability_synthesized");
+
+        var currentWithEmptyExtension = currentPassive.DeepClone().AsObject();
+        currentWithEmptyExtension["passiveSkillChanges"]!.AsArray()[0]!.AsObject()["mortalWoundTreatmentCapabilities"] = new JsonArray();
+        Assert.Contains(
+            MortalWoundTreatmentCapabilityContract.ValidateComposedActorCatalog(
+                "player", "player", currentActive, "game_state/player/skills_active.json",
+                currentWithEmptyExtension, "game_state/player/skills_passive.json",
+                currentActive.DeepClone().AsObject(), currentPassive.DeepClone().AsObject()),
+            issue => issue.Code == "mortal_wound_treatment_capability_preservation_invalid");
+    }
+
     private static object[] Row(
         string name,
         string ownerKind,
@@ -199,27 +239,29 @@ public sealed class MortalWoundTreatmentCapabilityContractTests
         };
         if (withCapability)
         {
-            skill["mortalWoundTreatmentCapabilities"] = new JsonArray(new JsonObject
-            {
-                ["schemaVersion"] = 1,
-                ["capabilityRef"] = "field_medicine_guaranteed_care",
-                ["woundDomain"] = "physical",
-                ["minimumSeverityRank"] = 1,
-                ["maximumSeverityRank"] = 4,
-                ["operationLimits"] = new JsonObject
-                {
-                    ["mayStabilize"] = true,
-                    ["maximumRecoveryPoints"] = 1,
-                    ["maximumSeverityReductionSteps"] = 1,
-                    ["removableComplicationKinds"] = new JsonArray("bleeding", "infection"),
-                    ["mayHealAtSeverityI"] = true,
-                    ["maximumCosmeticHealLegacies"] = 1,
-                    ["maximumMechanicalEffectHealLegacies"] = 1
-                }
-            });
+            skill["mortalWoundTreatmentCapabilities"] = new JsonArray(CapabilityDefinition("field_medicine_guaranteed_care"));
         }
         return skill;
     }
+
+    private static JsonObject CapabilityDefinition(string capabilityRef) => new()
+    {
+        ["schemaVersion"] = 1,
+        ["capabilityRef"] = capabilityRef,
+        ["woundDomain"] = "physical",
+        ["minimumSeverityRank"] = 1,
+        ["maximumSeverityRank"] = 4,
+        ["operationLimits"] = new JsonObject
+        {
+            ["mayStabilize"] = true,
+            ["maximumRecoveryPoints"] = 1,
+            ["maximumSeverityReductionSteps"] = 1,
+            ["removableComplicationKinds"] = new JsonArray("bleeding", "infection"),
+            ["mayHealAtSeverityI"] = true,
+            ["maximumCosmeticHealLegacies"] = 1,
+            ["maximumMechanicalEffectHealLegacies"] = 1
+        }
+    };
 
     private static JsonObject Capability(JsonObject skill) =>
         Assert.IsType<JsonObject>(Assert.Single(skill["mortalWoundTreatmentCapabilities"]!.AsArray()));

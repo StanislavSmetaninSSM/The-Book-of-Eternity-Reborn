@@ -607,6 +607,65 @@ public sealed class ValidationPhaseSelectionTests : IDisposable
             AcceptedTurnReasoningValidationScope.Core));
     }
 
+    [Theory]
+    [InlineData("game_state/player/skills_active.json")]
+    [InlineData("game_state/player/skills_passive.json")]
+    public async Task ValidateGameStateAsync_SelectedPlayerSkillRoot_ReadsTheSiblingAsACrossCatalogDependency(
+        string selectedPath)
+    {
+        const string activePath = "game_state/player/skills_active.json";
+        const string passivePath = "game_state/player/skills_passive.json";
+        await _fileSystem.WriteFileAtomicAsync(activePath, new JsonObject
+        {
+            ["activeSkillChanges"] = new JsonArray(new JsonObject
+            {
+                ["skillId"] = "skill_field_medicine_01",
+                ["mortalWoundTreatmentCapabilities"] = new JsonArray(CreateWoundTreatmentCapability())
+            })
+        }.ToJsonString());
+        await _fileSystem.WriteFileAtomicAsync(passivePath, new JsonObject
+        {
+            ["passiveSkillChanges"] = new JsonArray(new JsonObject
+            {
+                ["skillId"] = "skill_field_medicine_01",
+                ["mortalWoundTreatmentCapabilities"] = new JsonArray(CreateWoundTreatmentCapability())
+            })
+        }.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.PlayerStateFiles,
+            new[] { selectedPath }));
+        var siblingPath = string.Equals(selectedPath, activePath, StringComparison.Ordinal)
+            ? passivePath
+            : activePath;
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_wound_treatment_capability_skill_id_confusable");
+        Assert.DoesNotContain(issues, issue =>
+            issue.FilePath == siblingPath &&
+            issue.Code is not "mortal_wound_treatment_capability_skill_id_confusable" and
+                not "mortal_wound_treatment_capability_ref_confusable");
+    }
+
+    private static JsonObject CreateWoundTreatmentCapability() => new()
+    {
+        ["schemaVersion"] = 1,
+        ["capabilityRef"] = "field_medicine_guaranteed_care",
+        ["woundDomain"] = "physical",
+        ["minimumSeverityRank"] = 1,
+        ["maximumSeverityRank"] = 1,
+        ["operationLimits"] = new JsonObject
+        {
+            ["mayStabilize"] = true,
+            ["maximumRecoveryPoints"] = 0,
+            ["maximumSeverityReductionSteps"] = 0,
+            ["removableComplicationKinds"] = new JsonArray(),
+            ["mayHealAtSeverityI"] = false,
+            ["maximumCosmeticHealLegacies"] = 0,
+            ["maximumMechanicalEffectHealLegacies"] = 0
+        }
+    };
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))

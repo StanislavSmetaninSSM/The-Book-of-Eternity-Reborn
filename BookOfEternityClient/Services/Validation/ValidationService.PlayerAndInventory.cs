@@ -141,7 +141,7 @@ public partial class ValidationService
     {
         const string activePath = "game_state/player/skills_active.json";
         const string passivePath = "game_state/player/skills_passive.json";
-        if (!ShouldValidateStateFile(activePath) || !ShouldValidateStateFile(passivePath))
+        if (!ShouldValidateStateFile(activePath) && !ShouldValidateStateFile(passivePath))
             return;
 
         try

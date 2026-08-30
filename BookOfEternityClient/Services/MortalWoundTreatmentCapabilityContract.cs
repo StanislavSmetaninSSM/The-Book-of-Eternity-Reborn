@@ -444,22 +444,21 @@ internal static class MortalWoundTreatmentCapabilityContract
         string alternateArrayName,
         IDictionary<ExtensionKey, JsonNode> map)
     {
-        var array = root[preferredArrayName] as JsonArray ?? root[alternateArrayName] as JsonArray;
+        var arrayName = root[preferredArrayName] is JsonArray ? preferredArrayName : alternateArrayName;
+        var array = root[arrayName] as JsonArray;
         if (array is null)
             return;
         for (var index = 0; index < array.Count; index++)
         {
-            if (array[index] is not JsonObject skill || skill[ExtensionProperty] is not JsonArray capabilities ||
-                ReadString(skill, "skillId") is not { } skillId)
+            if (array[index] is not JsonObject skill ||
+                !skill.TryGetPropertyValue(ExtensionProperty, out var extension) ||
+                extension is null)
             {
                 continue;
             }
-            foreach (var capabilityNode in capabilities)
-            {
-                if (capabilityNode is not JsonObject capability || ReadString(capability, "capabilityRef") is not { } capabilityRef)
-                    continue;
-                map[new ExtensionKey(skillId, capabilityRef, $"{preferredArrayName}[{index}].{ExtensionProperty}")] = capability.DeepClone();
-            }
+            map[new ExtensionKey(
+                ReadString(skill, "skillId") ?? string.Empty,
+                $"{arrayName}[{index}].{ExtensionProperty}")] = extension.DeepClone();
         }
     }
 
@@ -511,5 +510,5 @@ internal static class MortalWoundTreatmentCapabilityContract
     private static void AddIssue(ICollection<ValidationIssue> issues, string path, string code, string message) =>
         issues.Add(new ValidationIssue(path, IssueSeverity.Error, message, code: code, section: "MortalWoundTreatmentCapability"));
 
-    private sealed record ExtensionKey(string SkillId, string CapabilityRef, string Path);
+    private sealed record ExtensionKey(string SkillId, string Path);
 }
