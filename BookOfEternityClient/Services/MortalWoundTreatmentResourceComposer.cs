@@ -49,7 +49,9 @@ internal sealed class MortalWoundTreatmentResourceClaim
         string ownerId,
         int quantity,
         string successWitnessFingerprint,
-        string claimFingerprint)
+        string claimFingerprint,
+        long availableQuantity,
+        string bindingFingerprint)
     {
         Scope = scope;
         RequirementIndex = requirementIndex;
@@ -61,6 +63,8 @@ internal sealed class MortalWoundTreatmentResourceClaim
         Quantity = quantity;
         SuccessWitnessFingerprint = successWitnessFingerprint;
         ClaimFingerprint = claimFingerprint;
+        AvailableQuantity = availableQuantity;
+        BindingFingerprint = bindingFingerprint;
     }
 
     public string Scope { get; }
@@ -73,6 +77,55 @@ internal sealed class MortalWoundTreatmentResourceClaim
     public int Quantity { get; }
     public string SuccessWitnessFingerprint { get; }
     public string ClaimFingerprint { get; }
+
+    internal long AvailableQuantity { get; }
+    internal string BindingFingerprint { get; }
+
+    internal static MortalWoundTreatmentResourceClaim Create(
+        object mintCapability,
+        MortalWoundTreatmentRequirementBinding binding,
+        long availableQuantity)
+    {
+        MortalWoundTreatmentResourceComposer.RequireClaimMintCapability(mintCapability);
+        ArgumentNullException.ThrowIfNull(binding);
+        var row = binding.ResolvedRequirement;
+        var witness = binding.SuccessWitness;
+        if (row.RequestedQuantity is not { } quantity ||
+            quantity <= 0 ||
+            row.OwnerKind is null ||
+            row.OwnerId is null)
+        {
+            throw new InvalidOperationException(
+                "A resource claim requires one complete positive quantity binding.");
+        }
+        var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.resource_claim",
+            "1",
+            witness.Scope,
+            row.RequirementIndex.ToString(CultureInfo.InvariantCulture),
+            row.Kind,
+            row.AuthorityRef,
+            row.Realm,
+            row.OwnerKind,
+            row.OwnerId,
+            quantity.ToString(CultureInfo.InvariantCulture),
+            witness.WitnessFingerprint
+        });
+        return new MortalWoundTreatmentResourceClaim(
+            witness.Scope,
+            row.RequirementIndex,
+            row.Kind,
+            row.AuthorityRef,
+            row.Realm,
+            row.OwnerKind,
+            row.OwnerId,
+            quantity,
+            witness.WitnessFingerprint,
+            fingerprint,
+            availableQuantity,
+            binding.BindingFingerprint);
+    }
 }
 
 internal sealed partial class MortalWoundTreatmentResourceReservationAuthority
@@ -121,11 +174,13 @@ internal sealed partial class MortalWoundTreatmentResourceReservationAuthority
     public string AuthorityFingerprint { get; }
 
     internal static MortalWoundTreatmentResourceReservationAuthority CreateNotRequired(
+        object mintCapability,
         MortalWoundTreatmentAttemptCoordinates coordinates,
         string routeFingerprint,
         MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
         MortalWoundTreatmentResourcePolicy policy)
     {
+        MortalWoundTreatmentResourceComposer.RequireAuthorityMintCapability(mintCapability);
         ArgumentNullException.ThrowIfNull(coordinates);
         ArgumentNullException.ThrowIfNull(requirementAuthority);
         ArgumentNullException.ThrowIfNull(policy);
@@ -154,6 +209,63 @@ internal sealed partial class MortalWoundTreatmentResourceReservationAuthority
             requirementAuthority.AuthorityFingerprint,
             detachedPolicy,
             Array.Empty<MortalWoundTreatmentResourceClaim>(),
+            authorityFingerprint);
+    }
+
+    internal static MortalWoundTreatmentResourceReservationAuthority CreateHeld(
+        object mintCapability,
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        string routeFingerprint,
+        MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
+        MortalWoundTreatmentResourcePolicy policy,
+        IReadOnlyList<MortalWoundTreatmentResourceClaim> claims)
+    {
+        MortalWoundTreatmentResourceComposer.RequireAuthorityMintCapability(mintCapability);
+        ArgumentNullException.ThrowIfNull(coordinates);
+        ArgumentNullException.ThrowIfNull(requirementAuthority);
+        ArgumentNullException.ThrowIfNull(policy);
+        ArgumentNullException.ThrowIfNull(claims);
+        if (claims.Count == 0)
+            throw new InvalidOperationException("A held authority requires at least one claim.");
+        var detachedPolicy = ClonePolicy(policy);
+        var reservationSemanticFingerprint = ComputeFingerprint(
+            "held",
+            reservationId: null,
+            coordinates.CoordinatesFingerprint,
+            coordinates.AcceptedStateFingerprint,
+            routeFingerprint,
+            requirementAuthority.CourseId,
+            requirementAuthority.CourseMilestoneOrdinal,
+            requirementAuthority.CourseCoordinateFingerprint,
+            requirementAuthority.AuthorityFingerprint,
+            detachedPolicy,
+            claims);
+        var reservationId = "wound_treatment_resource_reservation_" +
+            reservationSemanticFingerprint["sha256:".Length..];
+        var authorityFingerprint = ComputeFingerprint(
+            "held",
+            reservationId,
+            coordinates.CoordinatesFingerprint,
+            coordinates.AcceptedStateFingerprint,
+            routeFingerprint,
+            requirementAuthority.CourseId,
+            requirementAuthority.CourseMilestoneOrdinal,
+            requirementAuthority.CourseCoordinateFingerprint,
+            requirementAuthority.AuthorityFingerprint,
+            detachedPolicy,
+            claims);
+        return new MortalWoundTreatmentResourceReservationAuthority(
+            "held",
+            reservationId,
+            coordinates.CoordinatesFingerprint,
+            coordinates.AcceptedStateFingerprint,
+            routeFingerprint,
+            requirementAuthority.CourseId,
+            requirementAuthority.CourseMilestoneOrdinal,
+            requirementAuthority.CourseCoordinateFingerprint,
+            requirementAuthority.AuthorityFingerprint,
+            detachedPolicy,
+            claims,
             authorityFingerprint);
     }
 
@@ -201,6 +313,21 @@ internal sealed partial class MortalWoundTreatmentResourceReservationAuthority
 internal static class MortalWoundTreatmentResourceComposer
 {
     private const string IssuePath = "treatmentAttempt.resources";
+    private static readonly object ClaimMintCapability = new();
+    private static readonly object AuthorityMintCapability = new();
+
+    internal static void RequireClaimMintCapability(object? capability)
+    {
+        if (!ReferenceEquals(capability, ClaimMintCapability))
+            throw new InvalidOperationException("Only the resource composer may mint claims.");
+    }
+
+    internal static void RequireAuthorityMintCapability(object? capability)
+    {
+        if (!ReferenceEquals(capability, AuthorityMintCapability))
+            throw new InvalidOperationException(
+                "Only the resource composer may mint reservation authority.");
+    }
 
     internal static MortalWoundTreatmentResourcePreparationResult PrepareProcedure(
         MortalWoundTreatmentAcceptedStateAuthority acceptedState,
@@ -302,25 +429,151 @@ internal static class MortalWoundTreatmentResourceComposer
             return MortalWoundTreatmentResourcePreparationResult.Invalid(issues);
         }
 
-        if (requirementAuthority.Scopes.Any(static scope =>
-                scope.Bindings.Any(static binding =>
-                    binding.ResolvedRequirement.Kind is
-                        "item_quantity" or "resource_quantity")))
+        if (!TryBuildClaims(requirementAuthority, issues, out var claims))
         {
-            AddIssue(
-                issues,
-                "mortal_wound_treatment_resource_claim_preparation_required",
-                "sealed quantity-claim preparation",
-                "quantity requirements are not yet reserved");
             return MortalWoundTreatmentResourcePreparationResult.Invalid(issues);
+        }
+
+        if (claims!.Count != 0)
+        {
+            return MortalWoundTreatmentResourcePreparationResult.Valid(
+                MortalWoundTreatmentResourceReservationAuthority.CreateHeld(
+                    AuthorityMintCapability,
+                    coordinates,
+                    routeFingerprint!,
+                    requirementAuthority,
+                    route!.ResourcePolicy,
+                    claims));
         }
 
         return MortalWoundTreatmentResourcePreparationResult.Valid(
             MortalWoundTreatmentResourceReservationAuthority.CreateNotRequired(
+                AuthorityMintCapability,
                 coordinates,
                 routeFingerprint!,
                 requirementAuthority,
                 route!.ResourcePolicy));
+    }
+
+    private static bool TryBuildClaims(
+        MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
+        ICollection<ValidationIssue> issues,
+        out IReadOnlyList<MortalWoundTreatmentResourceClaim>? claims)
+    {
+        var result = new List<MortalWoundTreatmentResourceClaim>();
+        try
+        {
+            foreach (var scope in requirementAuthority.Scopes)
+            {
+                if (!string.Equals(scope.Status, "Satisfied", StringComparison.Ordinal) ||
+                    scope.FailureWitnesses.Count != 0)
+                {
+                    AddIssue(
+                        issues,
+                        "mortal_wound_treatment_resource_requirements_unsatisfied",
+                        "only satisfied current scopes may produce claims",
+                        scope.Status);
+                    claims = null;
+                    return false;
+                }
+                foreach (var binding in scope.Bindings)
+                {
+                    var row = binding.ResolvedRequirement;
+                    var witness = binding.SuccessWitness;
+                    if (row.Kind is not ("item_quantity" or "resource_quantity"))
+                        continue;
+                    if (!TryValidateQuantityBinding(
+                            scope,
+                            binding,
+                            out var availableQuantity))
+                    {
+                        AddIssue(
+                            issues,
+                            "mortal_wound_treatment_resource_quantity_witness_invalid",
+                            "one exact current positive quantity success witness",
+                            binding.BindingFingerprint);
+                        claims = null;
+                        return false;
+                    }
+                    result.Add(MortalWoundTreatmentResourceClaim.Create(
+                        ClaimMintCapability,
+                        binding,
+                        availableQuantity));
+                }
+            }
+        }
+        catch (Exception exception) when (exception is ArgumentException or
+                                           InvalidOperationException or
+                                           OverflowException)
+        {
+            AddIssue(
+                issues,
+                "mortal_wound_treatment_resource_claim_invalid",
+                "one complete ordered immutable claim set",
+                exception.GetType().Name);
+            claims = null;
+            return false;
+        }
+
+        claims = new ReadOnlyCollection<MortalWoundTreatmentResourceClaim>(
+            result.ToArray());
+        return true;
+    }
+
+    private static bool TryValidateQuantityBinding(
+        MortalWoundTreatmentRequirementScopeAuthority scope,
+        MortalWoundTreatmentRequirementBinding binding,
+        out long availableQuantity)
+    {
+        availableQuantity = 0;
+        var row = binding.ResolvedRequirement;
+        var witness = binding.SuccessWitness;
+        if (row.RequestedQuantity is not { } requested ||
+            requested <= 0 ||
+            row.OwnerKind is null ||
+            row.OwnerId is null ||
+            !string.Equals(witness.Scope, scope.Scope, StringComparison.Ordinal) ||
+            witness.RequirementIndex != binding.RequirementIndex ||
+            !string.Equals(witness.Kind, row.Kind, StringComparison.Ordinal) ||
+            !string.Equals(witness.AuthorityRef, row.AuthorityRef, StringComparison.Ordinal) ||
+            !string.Equals(witness.Realm, row.Realm, StringComparison.Ordinal) ||
+            !string.Equals(witness.OwnerKind, row.OwnerKind, StringComparison.Ordinal) ||
+            !string.Equals(witness.OwnerId, row.OwnerId, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        switch (witness.Evidence)
+        {
+            case MortalWoundItemQuantityRequirementEvidence item
+                when row.Kind == "item_quantity" &&
+                     item.RequestedQuantity == requested &&
+                     item.Count >= 0 &&
+                     item.AvailableCount >= requested &&
+                     item.AvailableCount <= item.Count &&
+                     item.CumulativeRequestedQuantity >= requested &&
+                     item.CumulativeRequestedQuantity <= item.AvailableCount &&
+                     item.ReservationState == "available" &&
+                     item.Lifecycle == "active" &&
+                     item.Active:
+                availableQuantity = item.AvailableCount;
+                return true;
+            case MortalWoundResourceQuantityRequirementEvidence resource
+                when row.Kind == "resource_quantity" &&
+                     resource.RequestedQuantity == requested &&
+                     resource.CurrentValue >= 0 &&
+                     resource.AvailableValue >= requested &&
+                     resource.AvailableValue <= resource.CurrentValue &&
+                     resource.CumulativeRequestedQuantity >= requested &&
+                     resource.CumulativeRequestedQuantity <= resource.AvailableValue &&
+                     resource.ReservationState == "available" &&
+                     resource.Lifecycle == "active" &&
+                     resource.Active:
+                availableQuantity = resource.AvailableValue;
+                return true;
+            default:
+                return false;
+        }
     }
 
     private static bool TryResolveCurrentRoute(
@@ -674,6 +927,9 @@ internal static class MortalWoundTreatmentResourceComposer
         var allowedConsumeOn = route.Mode == "procedure"
             ? new[] { "success", "partial_success", "failed_attempt" }
             : new[] { "success" };
+        var expectedConsumeOrder = allowedConsumeOn.Where(value =>
+            policy.ConsumeOn.Contains(value, StringComparer.Ordinal));
+        var selectorKeys = new HashSet<string>(StringComparer.Ordinal);
         var valid = policy.ReserveBeforeResolution &&
                     policy.ConsumeOn.Length <= allowedConsumeOn.Length &&
                     policy.ConsumeOn.Distinct(StringComparer.Ordinal).Count() ==
@@ -681,10 +937,14 @@ internal static class MortalWoundTreatmentResourceComposer
                     policy.ConsumeOn.All(value => allowedConsumeOn.Contains(
                         value,
                         StringComparer.Ordinal)) &&
+                    policy.ConsumeOn.SequenceEqual(expectedConsumeOrder) &&
                     policy.RefundOn.SequenceEqual(new[]
                     {
                         "cancelled", "validation_failed", "rolled_back"
-                    });
+                    }) &&
+                    policy.Mutations.Length <= 64 &&
+                    policy.Mutations.All(mutation =>
+                        TryValidatePolicySelector(route, mutation, selectorKeys));
         if (!valid)
         {
             AddIssue(
@@ -694,6 +954,53 @@ internal static class MortalWoundTreatmentResourceComposer
                 ComputePolicyFingerprint(policy));
         }
         return valid;
+    }
+
+    private static bool TryValidatePolicySelector(
+        MortalWoundTreatmentRouteDefinition route,
+        MortalWoundTreatmentResourceMutation mutation,
+        ISet<string> selectorKeys)
+    {
+        if (!string.Equals(mutation.Kind, "consume_requirement", StringComparison.Ordinal) ||
+            mutation.RequirementIndex < 0)
+        {
+            return false;
+        }
+
+        IReadOnlyList<MortalWoundTreatmentRequirement>? requirements = null;
+        if (string.Equals(mutation.Scope, "common", StringComparison.Ordinal) &&
+            mutation.MilestoneOrdinal is null)
+        {
+            requirements = route.Requirements;
+        }
+        else if (string.Equals(
+                     mutation.Scope,
+                     "course_milestone",
+                     StringComparison.Ordinal) &&
+                 mutation.MilestoneOrdinal is > 0 &&
+                 route is MortalWoundCourseRouteDefinition course)
+        {
+            var milestones = course.Milestones.Where(candidate =>
+                candidate.Ordinal == mutation.MilestoneOrdinal.Value).ToArray();
+            if (milestones.Length != 1)
+                return false;
+            requirements = milestones[0].Requirements;
+        }
+
+        if (requirements is null ||
+            mutation.RequirementIndex >= requirements.Count ||
+            requirements[mutation.RequirementIndex].Kind is not
+                ("item_quantity" or "resource_quantity"))
+        {
+            return false;
+        }
+        var key = string.Join(
+            "\u001f",
+            mutation.Kind,
+            mutation.Scope,
+            mutation.MilestoneOrdinal?.ToString(CultureInfo.InvariantCulture) ?? "null",
+            mutation.RequirementIndex.ToString(CultureInfo.InvariantCulture));
+        return selectorKeys.Add(key);
     }
 
     internal static string ComputePolicyFingerprint(

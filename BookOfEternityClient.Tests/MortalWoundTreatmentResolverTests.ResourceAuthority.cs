@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -183,6 +184,173 @@ public sealed partial class MortalWoundTreatmentResolverTests
             policy.Mutations.ToArray());
         Assert.Empty(AsObjects(ReadRequiredProperty(firstAuthority, "Claims")));
         AssertAuthorityFingerprint(ReadRequiredProperty(firstAuthority, "AuthorityFingerprint"));
+    }
+
+    [Fact]
+    public void ResourcePreparation_ProcedureQuantityProducesClosedHeldClaim()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var prepared = PrepareProcedureCheckAuthorityInputs(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var invocation = InvokePreparedProcedureCheckAuthority(prepared);
+        var procedureAuthority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            AssertValidProcedureCheckAuthority(invocation));
+
+        var result = MortalWoundTreatmentResourceComposer.PrepareProcedure(
+            prepared.AcceptedState,
+            prepared.Coordinates,
+            prepared.Before,
+            prepared.RequirementAuthority,
+            procedureAuthority);
+
+        Assert.True(result.IsValid, DescribeIssues(result.Issues));
+        var authority = Assert.IsType<MortalWoundTreatmentResourceReservationAuthority>(
+            result.Authority);
+        Assert.Equal("held", authority.ReservationDisposition);
+        Assert.False(string.IsNullOrWhiteSpace(authority.ReservationId));
+        Assert.Equal(prepared.Coordinates.CoordinatesFingerprint,
+            authority.CoordinatesFingerprint);
+        Assert.Equal(prepared.Coordinates.AcceptedStateFingerprint,
+            authority.AcceptedStateFingerprint);
+        Assert.Equal(prepared.RequirementAuthority.RouteFingerprint,
+            authority.RouteFingerprint);
+        Assert.Equal(prepared.RequirementAuthority.AuthorityFingerprint,
+            authority.RequirementAuthorityFingerprint);
+        Assert.Null(authority.CourseId);
+        Assert.Null(authority.CourseMilestoneOrdinal);
+        Assert.Null(authority.CourseCoordinateFingerprint);
+        var claim = Assert.Single(authority.Claims);
+        AssertImmutableConcreteSurface(claim.GetType(), new[]
+        {
+            "Scope", "RequirementIndex", "Kind", "AuthorityRef", "Realm",
+            "OwnerKind", "OwnerId", "Quantity", "SuccessWitnessFingerprint",
+            "ClaimFingerprint"
+        });
+        var binding = Assert.Single(
+            Assert.Single(prepared.RequirementAuthority.Scopes).Bindings,
+            static candidate => candidate.RequirementIndex == 0);
+        Assert.Equal("common", claim.Scope);
+        Assert.Equal(0, claim.RequirementIndex);
+        Assert.Equal("item_quantity", claim.Kind);
+        Assert.Equal("sterile_thread", claim.AuthorityRef);
+        Assert.Equal("mortal_world", claim.Realm);
+        Assert.Equal("npc", claim.OwnerKind);
+        Assert.Equal("field_medic_01", claim.OwnerId);
+        Assert.Equal(1, claim.Quantity);
+        Assert.Equal(binding.SuccessWitness.WitnessFingerprint,
+            claim.SuccessWitnessFingerprint);
+        AssertAuthorityFingerprint(claim.ClaimFingerprint);
+        AssertAuthorityFingerprint(authority.AuthorityFingerprint);
+        AssertFrozenSequence(authority.Claims, allowEmptyArray: false);
+    }
+
+    [Fact]
+    public void ResourcePreparation_FirstCourseClaimsOnlyCommonAndOrdinalOneRequirements()
+    {
+        var scenario = CreateFirstCourseResourceScenario();
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var probe = InspectCourseMode(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            probe.AcceptedState);
+        var coordinates = Assert.IsType<MortalWoundTreatmentAttemptCoordinates>(
+            probe.Coordinates);
+        var courseMode = Assert.IsType<MortalWoundCourseModeAuthority>(
+            AssertReadyCourseModeAuthority(probe.Result, scenario));
+        Assert.Equal(1, courseMode.MilestoneOrdinal);
+        var bundleResult =
+            MortalWoundTreatmentRequirementAuthorityBundle.CreateForCourseMilestone(
+                acceptedState,
+                coordinates,
+                probe.Before,
+                probe.History,
+                courseMode);
+        Assert.Equal("Satisfied", bundleResult.Status);
+        var bundle = Assert.IsType<MortalWoundTreatmentRequirementAuthorityBundle>(
+            bundleResult.Authority);
+
+        var result = MortalWoundTreatmentResourceComposer.PrepareCourse(
+            acceptedState,
+            coordinates,
+            probe.Before,
+            bundle,
+            courseMode);
+
+        Assert.True(result.IsValid, DescribeIssues(result.Issues));
+        var authority = Assert.IsType<MortalWoundTreatmentResourceReservationAuthority>(
+            result.Authority);
+        Assert.Equal("held", authority.ReservationDisposition);
+        Assert.Equal(courseMode.CourseId, authority.CourseId);
+        Assert.Equal(1, authority.CourseMilestoneOrdinal);
+        Assert.Equal(courseMode.CourseCoordinateFingerprint,
+            authority.CourseCoordinateFingerprint);
+        Assert.Equal(
+            new[]
+            {
+                (Scope: "common", Index: 0, Ref: "sterile_thread"),
+                (Scope: "course_milestone", Index: 0, Ref: "antibiotic_dose")
+            },
+            authority.Claims.Select(static claim =>
+                (claim.Scope, claim.RequirementIndex, claim.AuthorityRef)));
+        Assert.DoesNotContain(authority.Claims, static claim =>
+            claim.AuthorityRef.StartsWith("future_course_dose_", StringComparison.Ordinal));
+    }
+
+    private static ResolverScenario CreateFirstCourseResourceScenario()
+    {
+        var scenario = ConfigureCourseConsequenceEnvelope(
+            CreateScenario(
+                "course_first_milestone_is_ready_at_inclusive_due_time",
+                "course"),
+            removeOwnedComplicationBeforeReduction: true);
+        var before = scenario.Before.DeepClone().AsObject();
+        var route = before["treatment"]!["routes"]![0]!.AsObject();
+        route["requirements"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "item_quantity",
+            ["itemRef"] = "sterile_thread",
+            ["quantity"] = 1,
+            ["ownerRole"] = "provider"
+        });
+        var outcomes = route["outcomes"]!.AsArray();
+        outcomes[0]!["completion"] = "active";
+        var second = CourseMilestone(
+            2,
+            480,
+            "active",
+            new JsonArray(new JsonObject { ["kind"] = "stabilize" }));
+        second["requirements"]![0]!["itemRef"] = "future_course_dose_2";
+        outcomes.Add(second);
+        var third = CourseMilestone(
+            3,
+            960,
+            "completed",
+            new JsonArray(new JsonObject
+            {
+                ["kind"] = "heal",
+                ["legacies"] = new JsonArray()
+            }));
+        third["requirements"]![0]!["itemRef"] = "future_course_dose_3";
+        outcomes.Add(third);
+        route["resourcePolicy"]!["mutations"] = new JsonArray(
+            new JsonObject
+            {
+                ["kind"] = "consume_requirement",
+                ["scope"] = "common",
+                ["milestoneOrdinal"] = null,
+                ["requirementIndex"] = 0
+            },
+            CourseMutation(1),
+            CourseMutation(2),
+            CourseMutation(3));
+        return scenario with { Before = before };
     }
 
     private static object AssertValidResourcePreparation(object result)
