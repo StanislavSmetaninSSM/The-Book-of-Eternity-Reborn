@@ -265,6 +265,147 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             ReadRequiredProperty(second.Proof!, "ProofFingerprint"));
     }
 
+    [Fact]
+    public void CapabilityProofMinting_RequiresAnUnforgeableAuthorityOwnedCapability()
+    {
+        var assembly = typeof(WoundMaterializationContract).Assembly;
+        var authorityType = Assert.IsAssignableFrom<Type>(assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundTreatmentCapabilityAuthority",
+            throwOnError: false,
+            ignoreCase: false));
+        var resultType = Assert.IsAssignableFrom<Type>(assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundTreatmentCapabilityProofResult",
+            throwOnError: false,
+            ignoreCase: false));
+        var proofType = Assert.IsAssignableFrom<Type>(resultType.GetProperty("Proof")!.PropertyType);
+        Assert.Equal(
+            new[] { "ExportCurrent", "ExportForPublication" },
+            authorityType
+                .GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(static method => method.IsAssembly)
+                .Select(static method => method.Name)
+                .OrderBy(static name => name, StringComparer.Ordinal));
+
+        Assert.All(
+            new[] { resultType, proofType },
+            type => Assert.All(
+                type.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic),
+                static constructor => Assert.True(constructor.IsPrivate)));
+
+        var mintingMethods = proofType
+            .GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+            .Where(method => method.Name == "Create")
+            .Concat(resultType
+                .GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(method => method.Name == "Valid"))
+            .ToArray();
+        Assert.Equal(2, mintingMethods.Length);
+        foreach (var method in mintingMethods)
+        {
+            Assert.True(method.IsAssembly);
+            var capabilityParameter = Assert.Single(
+                method.GetParameters(),
+                parameter => parameter.ParameterType.DeclaringType == authorityType &&
+                             parameter.ParameterType.Name == "ProofMintCapability");
+            var capabilityType = capabilityParameter.ParameterType;
+            Assert.True(capabilityType.IsSealed);
+            Assert.DoesNotContain(
+                authorityType.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+                field => field.FieldType == capabilityType && !field.IsPrivate);
+            Assert.DoesNotContain(
+                authorityType.GetProperties(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+                property => property.PropertyType == capabilityType &&
+                            property.GetMethod is { IsPrivate: false });
+            Assert.DoesNotContain(
+                authorityType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+                method => method.ReturnType == capabilityType && !method.IsPrivate);
+
+            var rejected = Assert.Throws<TargetInvocationException>(() =>
+                method.Invoke(null, method.GetParameters().Select(static _ => (object?)null).ToArray()));
+            Assert.IsType<InvalidOperationException>(rejected.InnerException);
+
+            var forgedCapability = Assert.IsAssignableFrom<object>(
+                Activator.CreateInstance(capabilityType, nonPublic: true));
+            var forgedArguments = method.GetParameters()
+                .Select(parameter => parameter == capabilityParameter ? forgedCapability : null)
+                .ToArray();
+            var forgedRejected = Assert.Throws<TargetInvocationException>(() =>
+                method.Invoke(null, forgedArguments));
+            Assert.IsType<InvalidOperationException>(forgedRejected.InnerException);
+        }
+    }
+
+    [Fact]
+    public void ExportCurrent_StabilizeAppliesToFreshUntreatedWoundWithoutRecoveryBlockers()
+    {
+        var scenario = DescribeScenario(
+            "fresh_untreated_empty_blockers_stabilize_exports",
+            publication: false);
+        using var fixture = CapabilityAuthorityFixture.Create(scenario);
+        Assert.Equal("untreated", fixture.Before.Care.State);
+        Assert.Empty(fixture.Before.Recovery.Blockers);
+
+        var result = InvokeExportCurrent(fixture, scenario);
+
+        AssertCapabilityResult(result, scenario);
+    }
+
+    [Fact]
+    public void AcceptedStateRequirementContextProjection_IsValidOnlyWhileOriginAuthorityIsCurrent()
+    {
+        var scenario = DescribeScenario(
+            "player_active_skill_exports_physical_capability",
+            publication: false);
+        using var fixture = CapabilityAuthorityFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            RequireAcceptedState(ExportAcceptedState(fixture)));
+        var marked = acceptedState.RequirementContext;
+        var copied = marked with { };
+        var parsed = MortalWoundTreatmentAuthority.ParseContext(
+            fixture.ContextRoot.ToJsonString(),
+            "generic_context.json");
+        Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
+        var generic = Assert.IsType<MortalWoundTreatmentAuthority.Context>(parsed.Context);
+
+        Assert.True(MortalWoundTreatmentAcceptedStateAuthority
+            .IsAcceptedStateContextProjection(marked));
+        Assert.False(MortalWoundTreatmentAcceptedStateAuthority
+            .IsAcceptedStateContextProjection(copied));
+        Assert.False(MortalWoundTreatmentAcceptedStateAuthority
+            .IsAcceptedStateContextProjection(generic));
+
+        fixture.ReleaseLeaseForTopLevelPublication();
+
+        Assert.False(MortalWoundTreatmentAcceptedStateAuthority
+            .IsAcceptedStateContextProjection(marked));
+    }
+
+    [Fact]
+    public void ExportForPublication_InvalidRolePrecedesNullPlanAuthentication()
+    {
+        var scenario = DescribeScenario(
+            "player_active_skill_exports_physical_capability",
+            publication: false);
+        using var fixture = CapabilityAuthorityFixture.Create(scenario);
+        var acceptedState = RequireAcceptedState(ExportAcceptedState(fixture));
+        var coordinates = CreateCoordinates(fixture, acceptedState);
+
+        var result = InvokeCapabilityExporter(
+            "ExportForPublication",
+            acceptedState,
+            coordinates,
+            CapabilityRef,
+            "invalid_actor_role",
+            publicationPlan: null,
+            includeNullPublicationPlan: true);
+
+        Assert.False(result.IsValid);
+        Assert.Null(result.Proof);
+        var issue = Assert.Single(result.Issues);
+        Assert.Equal("mortal_wound_treatment_capability_binding_mismatch", issue.Code);
+        Assert.Equal("treatmentCapability.actorRole", issue.FilePath);
+    }
+
     [Theory]
     [MemberData(nameof(PublicationExportRows))]
     public void ExportForPublication_RevalidatesTheExactCurrentOrFinalSkillSource(
@@ -852,7 +993,8 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         object coordinates,
         string capabilityRef,
         string actorRole,
-        object? publicationPlan = null)
+        object? publicationPlan = null,
+        bool includeNullPublicationPlan = false)
     {
         var authorityType = typeof(WoundMaterializationContract).Assembly.GetType(
             "BookOfEternityClient.Services.MortalWoundTreatmentCapabilityAuthority",
@@ -861,26 +1003,29 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
         Assert.NotNull(authorityType);
 
+        var parameterCount = publicationPlan is not null || includeNullPublicationPlan ? 5 : 4;
         var method = Assert.Single(
             authorityType.GetMethods(
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static),
             candidate =>
                 candidate.Name == methodName &&
-                candidate.GetParameters().Length == (publicationPlan is null ? 4 : 5));
+                candidate.GetParameters().Length == parameterCount);
 
         var parameters = method.GetParameters();
         Assert.Equal(acceptedState.GetType(), parameters[0].ParameterType);
         Assert.Equal(coordinates.GetType(), parameters[1].ParameterType);
         Assert.Equal(typeof(string), parameters[2].ParameterType);
         Assert.Equal(typeof(string), parameters[3].ParameterType);
-        if (publicationPlan is not null)
+        if (parameterCount == 5)
         {
-            Assert.Equal(publicationPlan.GetType(), parameters[4].ParameterType);
+            Assert.Equal(typeof(AcceptedMechanicsPlan), parameters[4].ParameterType);
+            if (publicationPlan is not null)
+                Assert.Equal(publicationPlan.GetType(), parameters[4].ParameterType);
         }
 
-        var arguments = publicationPlan is null
-            ? new[] { acceptedState, coordinates, (object)capabilityRef, actorRole }
-            : new[] { acceptedState, coordinates, (object)capabilityRef, actorRole, publicationPlan };
+        var arguments = parameterCount == 4
+            ? new object?[] { acceptedState, coordinates, capabilityRef, actorRole }
+            : new object?[] { acceptedState, coordinates, capabilityRef, actorRole, publicationPlan };
         var result = Invoke(method, arguments);
         Assert.Equal("MortalWoundTreatmentCapabilityProofResult", result.GetType().Name);
         var typedResult = ReadTypedResult(result, "Proof");
@@ -2241,6 +2386,8 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     carrierPath: carrierPath)
                 : WoundContractTestData.CreateActiveWound(woundId: WoundId);
             ConfigureEffectlessMortalWound(woundRoot);
+            if (scenario.Name == "fresh_untreated_empty_blockers_stabilize_exports")
+                woundRoot["recovery"]!["blockers"] = new JsonArray();
             woundRoot["treatment"]!["routes"] = new JsonArray(
                 CreateGuaranteedRoute(scenario));
             woundRoot["treatment"]!["knownRouteIds"] = new JsonArray(RouteId);

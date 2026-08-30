@@ -84,8 +84,14 @@ internal sealed class MortalWoundTreatmentCapabilityProofResult
     public MortalWoundTreatmentCapabilityProof? Proof { get; }
 
     internal static MortalWoundTreatmentCapabilityProofResult Valid(
-        MortalWoundTreatmentCapabilityProof proof) =>
-        new(true, Array.Empty<ValidationIssue>(), proof);
+        MortalWoundTreatmentCapabilityAuthority.ProofMintCapability mintCapability,
+        MortalWoundTreatmentCapabilityProof proof)
+    {
+        MortalWoundTreatmentCapabilityAuthority.ProofMintCapability.RequireAuthority(
+            mintCapability);
+        ArgumentNullException.ThrowIfNull(proof);
+        return new(true, Array.Empty<ValidationIssue>(), proof);
+    }
 
     internal static MortalWoundTreatmentCapabilityProofResult Invalid(
         ValidationIssue issue) => new(false, new[] { issue }, null);
@@ -148,11 +154,14 @@ internal sealed class MortalWoundTreatmentCapabilityProof
     public string ProofFingerprint { get; }
 
     internal static MortalWoundTreatmentCapabilityProof Create(
+        MortalWoundTreatmentCapabilityAuthority.ProofMintCapability mintCapability,
         MortalWoundTreatmentAcceptedStateAuthority acceptedState,
         MortalWoundTreatmentAttemptCoordinates coordinates,
         MortalWoundTreatmentCapabilitySkillSource source,
         MortalWoundTreatmentCapabilityDefinition capability)
     {
+        MortalWoundTreatmentCapabilityAuthority.ProofMintCapability.RequireAuthority(
+            mintCapability);
         var sourcePath = SourceRootPath(source);
         var limits = MortalWoundTreatmentCapabilityOperationLimits.Create(
             capability.OperationLimits.MayStabilize,
@@ -289,6 +298,25 @@ internal sealed class MortalWoundTreatmentCapabilityProof
 
 internal static class MortalWoundTreatmentCapabilityAuthority
 {
+    private static readonly ProofMintCapability ProofMint = new();
+
+    internal sealed class ProofMintCapability
+    {
+        internal ProofMintCapability()
+        {
+        }
+
+        internal static void RequireAuthority(
+            ProofMintCapability? mintCapability)
+        {
+            if (!ReferenceEquals(mintCapability, ProofMint))
+            {
+                throw new InvalidOperationException(
+                    "A capability proof can only be minted by the canonical capability authority.");
+            }
+        }
+    }
+
     internal static MortalWoundTreatmentCapabilityProofResult ExportCurrent(
         MortalWoundTreatmentAcceptedStateAuthority? acceptedState,
         MortalWoundTreatmentAttemptCoordinates? coordinates,
@@ -332,12 +360,6 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                 "treatmentCapability.actorRole",
                 "mortal_wound_treatment_capability_binding_mismatch",
                 "The capability export requires the current accepted state and its exact attempt coordinates.");
-        }
-
-        if (forPublication && publicationPlan is null)
-        {
-            return PublicationMismatch(
-                "Publication export requires the exact validated accepted mechanics plan.");
         }
 
         if (!ResourceMaterializationContract.IsExactIdentifier(capabilityRef) ||
@@ -427,6 +449,12 @@ internal static class MortalWoundTreatmentCapabilityAuthority
         }
 
         var accepted = acceptedSelections[0];
+        if (forPublication && publicationPlan is null)
+        {
+            return PublicationMismatch(
+                "Publication export requires the exact validated accepted mechanics plan.");
+        }
+
         var read = acceptedState.ReadCanonicalCapabilityCatalog(
             coordinates,
             actorRole!,
@@ -503,7 +531,9 @@ internal static class MortalWoundTreatmentCapabilityAuthority
         }
 
         return MortalWoundTreatmentCapabilityProofResult.Valid(
+            ProofMint,
             MortalWoundTreatmentCapabilityProof.Create(
+                ProofMint,
                 acceptedState,
                 coordinates,
                 live.Source,
@@ -653,9 +683,6 @@ internal static class MortalWoundTreatmentCapabilityAuthority
         var healCount = 0;
         var workingSeverityRank = wound.Severity.Rank;
         var workingRecoveryProgress = wound.Recovery.CurrentStepProgress;
-        var remainsUnstabilized = wound.Recovery.Blockers.Contains(
-            "not_stabilized",
-            StringComparer.Ordinal);
         var workingCareState = wound.Care.State;
         var removedComplicationIds = new HashSet<string>(StringComparer.Ordinal);
         var applicablePositive = false;
@@ -671,13 +698,11 @@ internal static class MortalWoundTreatmentCapabilityAuthority
             {
                 case MortalWoundStabilizeOperation:
                     if (!capability.OperationLimits.MayStabilize ||
-                        workingCareState is "stabilized" or "healed" ||
-                        !remainsUnstabilized)
+                        workingCareState is "stabilized" or "healed")
                     {
                         return false;
                     }
                     workingCareState = "stabilized";
-                    remainsUnstabilized = false;
                     applicablePositive = true;
                     break;
 

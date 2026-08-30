@@ -167,14 +167,37 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
     internal string AcceptedStateFingerprint { get; }
 
     internal static bool IsAcceptedStateContextProjection(
-        MortalWoundTreatmentAuthority.Context context) =>
-        RequirementContextProjectionRegistry.TryGetValue(
-            context,
-            out var provenance) &&
-        string.Equals(
-            provenance.Seal,
-            ComputeRequirementContextProjectionSeal(context),
-            StringComparison.Ordinal);
+        MortalWoundTreatmentAuthority.Context context)
+    {
+        if (!RequirementContextProjectionRegistry.TryGetValue(
+                context,
+                out var provenance) ||
+            !string.Equals(
+                provenance.Seal,
+                ComputeRequirementContextProjectionSeal(context),
+                StringComparison.Ordinal) ||
+            !provenance.AcceptedState.TryGetTarget(out var acceptedState) ||
+            !string.Equals(
+                provenance.AcceptedStateFingerprint,
+                acceptedState.AcceptedStateFingerprint,
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        try
+        {
+            return acceptedState.HasCurrentAdmissionAuthority();
+        }
+        catch (Exception exception) when (exception is InvalidOperationException or
+                                           ObjectDisposedException or
+                                           ArgumentException or
+                                           IOException or
+                                           UnauthorizedAccessException)
+        {
+            return false;
+        }
+    }
 
     /// <summary>
     /// Reads only the canonical player/NPC capability namespace fixed by the accepted
@@ -295,6 +318,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         RequirementContextProjectionRegistry.Add(
             projection,
             new RequirementContextProjectionProvenance(
+                new WeakReference<MortalWoundTreatmentAcceptedStateAuthority>(this),
+                AcceptedStateFingerprint,
                 ComputeRequirementContextProjectionSeal(projection)));
         return projection;
     }
@@ -315,7 +340,10 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             context.SourcePath
         });
 
-    private sealed record RequirementContextProjectionProvenance(string Seal);
+    private sealed record RequirementContextProjectionProvenance(
+        WeakReference<MortalWoundTreatmentAcceptedStateAuthority> AcceptedState,
+        string AcceptedStateFingerprint,
+        string Seal);
 
     private static MortalWoundTreatmentAcceptedStateAuthorityResult ExportCurrentCore(
         FileSystemManager fileSystem,
