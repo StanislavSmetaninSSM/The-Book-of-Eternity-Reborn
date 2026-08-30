@@ -165,9 +165,6 @@ internal sealed partial class MortalWoundTreatmentResolution
 
 internal sealed partial class MortalWoundTreatmentResourceReservationAuthority
 {
-    private MortalWoundTreatmentResourceReservationAuthority()
-    {
-    }
 }
 
 internal sealed partial class MortalWoundTreatmentReceipt
