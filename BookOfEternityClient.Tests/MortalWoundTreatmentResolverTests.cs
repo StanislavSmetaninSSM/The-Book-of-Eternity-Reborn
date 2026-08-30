@@ -800,7 +800,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var player = Assert.Single(fixture.GetRequirementSnapshot().Actors, actor =>
             actor.ActorKind == "player");
 
-        Assert.Empty(player.Skills);
+        Assert.DoesNotContain(player.Skills, skill =>
+            skill.CapabilityRef == "skill_field_medicine_01");
+        Assert.Contains(player.Skills, skill =>
+            skill.CapabilityRef == "skill_patient_observation_01");
     }
 
     [Fact]
@@ -2138,6 +2141,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var item = MortalItemTestFixture.CreateCanonicalRoot(itemId);
         item["count"] = count;
+        item["quality"] = "Rare";
+        item["rarity"] = "Rare";
         MortalItemTestFixture.ResealCanonical(item);
         return item;
     }
@@ -2325,17 +2330,22 @@ public sealed partial class MortalWoundTreatmentResolverTests
             composed.CanonicalAuthorityJson);
     }
 
-    private static JsonObject NpcCoreRoot(params JsonObject[] inventory) => new()
+    private static JsonObject NpcCoreRoot(params JsonObject[] inventory)
     {
+        var actor = MortalActorTestFixtures.CreateActor(
+            "field_medic_01",
+            "loc_field_clinic_001",
+            "Field clinic");
+        actor["inventory"] = new JsonArray(inventory.Cast<JsonNode?>().ToArray());
+
         // MortalItemCarrierCatalog deliberately accepts only UpdateNPCs and
         // NPCsInScene for canonical NPC inventories.  Keep the item in the latter
         // rather than an ignored compatibility section.
-        ["NPCsInScene"] = new JsonArray(new JsonObject
+        return new JsonObject
         {
-            ["NPCId"] = "field_medic_01",
-            ["inventory"] = new JsonArray(inventory.Cast<JsonNode?>().ToArray())
-        })
-    };
+            ["NPCsInScene"] = new JsonArray(actor)
+        };
+    }
 
     private static JsonObject CreateTreatmentSkill(string skillId, string capabilityRef) => new()
     {
@@ -4122,7 +4132,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal void Arm() => _armed = true;
     }
 
-    private sealed class AcceptedStateFixture : IDisposable
+    private sealed partial class AcceptedStateFixture : IDisposable
     {
         private const string NpcCorePath = "game_state/npcs/npc_core.json";
         private const string PlayerInventoryPath = "game_state/inventory/items.json";
@@ -4228,7 +4238,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     }.ToJsonString());
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/player/skills_passive.json"),
-                    new JsonObject { ["passiveSkillChanges"] = new JsonArray() }.ToJsonString());
+                    new JsonObject
+                    {
+                        ["passiveSkillChanges"] = new JsonArray(
+                            CreateProductionPassiveSkill())
+                    }.ToJsonString());
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/player/skill_mastery.json"),
                     new JsonObject
@@ -4335,12 +4349,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     fileSystem.ResolvePath("game_state/quests/regular_quests.json"),
                     new JsonObject
                     {
-                        ["quests"] = new JsonArray(new JsonObject
-                        {
-                            ["questId"] = "quest_field_clinic_intro",
-                            ["questName"] = "Field clinic introduction",
-                            ["status"] = "Completed"
-                        })
+                        ["quests"] = new JsonArray(CreateProductionRegularQuest())
                     }.ToJsonString());
                 WriteCanonicalResourceAuthority(fileSystem);
                 var effectState = CreateCanonicalPlayerEffectState(scenario);
@@ -4466,21 +4475,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 targetKind,
                 "combatant_member",
                 StringComparison.Ordinal)
-                ? new JsonObject
-                {
-                    ["combatantId"] = "combatant_group_t061",
-                    ["isGroup"] = true,
-                    ["members"] = new JsonArray(new JsonObject
-                    {
-                        ["memberId"] = targetId,
-                        ["activeWounds"] = new JsonArray(wound.DeepClone())
-                    })
-                }
-                : new JsonObject
-                {
-                    ["combatantId"] = targetId,
-                    ["activeWounds"] = new JsonArray(wound.DeepClone())
-                };
+                ? CreateProductionCombatGroup(
+                    "combatant_group_t061",
+                    targetId,
+                    wound)
+                : CreateProductionCombatant(targetId, wound);
             var collectionName = string.Equals(
                 targetKind,
                 "combatant_member",

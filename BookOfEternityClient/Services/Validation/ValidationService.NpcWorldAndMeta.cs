@@ -5066,9 +5066,6 @@ public partial class ValidationService
                     continue;
                 }
 
-                ValidateNpcSceneIdentity(item, itemContext, issues);
-                RequireString(item, itemContext, issues, "name");
-                issues.AddRange(ActorMaterializationContract.ValidateMortalNpc(item, itemContext, sectionName));
                 var hasEffectiveNpcId = TryReadCanonicalCurrentMortalActorId(item, out var effectiveNpcId);
                 var requiresCompletePersonality = RequiresCompleteCurrentMortalPersonality(
                     item,
@@ -5076,13 +5073,12 @@ public partial class ValidationService
                     effectiveNpcId,
                     mortalActorPreTurnAuthority,
                     validateCurrentMaterializationPersonality);
-                ValidateNpcCoreObjectShape(
+                ValidateFullNpcCoreObject(
                     item,
                     itemContext,
                     issues,
                     sectionName,
                     requiresCompletePersonality);
-                ValidateNpcTradeState(item, itemContext, issues);
 
                 var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id");
                 var usesSameTurnInitialId = string.IsNullOrWhiteSpace(npcId) && hasEffectiveNpcId;
@@ -5312,6 +5308,28 @@ public partial class ValidationService
                 }
             }
         }
+    }
+
+    private void ValidateFullNpcCoreObject(
+        JsonElement item,
+        string itemContext,
+        List<ValidationIssue> issues,
+        string sectionName,
+        bool requiresCompletePersonality)
+    {
+        ValidateNpcSceneIdentity(item, itemContext, issues);
+        RequireString(item, itemContext, issues, "name");
+        issues.AddRange(ActorMaterializationContract.ValidateMortalNpc(
+            item,
+            itemContext,
+            sectionName));
+        ValidateNpcCoreObjectShape(
+            item,
+            itemContext,
+            issues,
+            sectionName,
+            requiresCompletePersonality);
+        ValidateNpcTradeState(item, itemContext, issues);
     }
 
     private static bool RequiresCompleteCurrentMortalPersonality(

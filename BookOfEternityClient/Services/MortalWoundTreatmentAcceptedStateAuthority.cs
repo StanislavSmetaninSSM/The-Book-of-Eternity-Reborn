@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.Services;
 
@@ -269,6 +270,14 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                 continue;
             roots.Add(path, root!);
         }
+        if (issues.Count != 0)
+            return Failure(issues);
+
+        var sourceValidation = new ValidationService(
+                fileSystem,
+                NullLogger<ValidationService>.Instance)
+            .ValidateMortalWoundTreatmentDetachedSources(roots);
+        AddIssues(issues, sourceValidation);
         if (issues.Count != 0)
             return Failure(issues);
 

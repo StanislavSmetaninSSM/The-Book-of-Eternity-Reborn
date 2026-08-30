@@ -4461,8 +4461,15 @@ public partial class ValidationService
 
     private void ValidatePlayerSkillMastery(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
-        if (!TryGetArray(root, "skillMasteryChanges", $"{contextPrefix}.skillMasteryChanges", issues, out var arr))
+        if (!TryGetArray(
+                root,
+                "skillMasteryChanges",
+                $"{contextPrefix}.skillMasteryChanges",
+                issues,
+                out _))
+        {
             return;
+        }
 
         var knownActiveSkills = ReadCurrentPlayerActiveSkillNamesSync();
         knownActiveSkills.UnionWith(ParsePlayerSkillNames(
@@ -4480,6 +4487,23 @@ public partial class ValidationService
                 }
             }
         }
+
+        ValidatePlayerSkillMasteryCore(
+            root,
+            contextPrefix,
+            issues,
+            knownActiveSkills);
+    }
+
+    private static void ValidatePlayerSkillMasteryCore(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        IReadOnlySet<string> knownActiveSkills)
+    {
+        if (!TryGetArray(root, "skillMasteryChanges", $"{contextPrefix}.skillMasteryChanges", issues, out var arr))
+            return;
+
         var index = 0;
         foreach (var item in arr.EnumerateArray())
         {
