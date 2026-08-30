@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -21,6 +22,10 @@ internal sealed record MortalWoundTreatmentAcceptedStateAuthorityResult(
 /// </summary>
 internal sealed class MortalWoundTreatmentAcceptedStateAuthority
 {
+    private static readonly ConditionalWeakTable<
+        MortalWoundTreatmentAuthority.Context,
+        RequirementContextProjectionProvenance>
+        RequirementContextProjectionRegistry = new();
     private const string WorldTimePath = "game_state/world/world_time.json";
     private const string CurrentLocationPath = "game_state/world/current_location.json";
     private const string PlayerActiveSkillsPath = "game_state/player/skills_active.json";
@@ -131,7 +136,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
 
     internal WoundAcceptedTurnBinding Binding => Clone(_binding);
     internal MortalWoundTreatmentAuthority.Context RequirementContext =>
-        _requirementContext with { };
+        ExportRequirementContextProjection();
     internal MortalWoundTreatmentAuthority.Snapshot RequirementSnapshot =>
         _requirementSnapshot with { };
     internal WoundMaterializationEnvelope CurrentWound => _currentWound;
@@ -160,6 +165,88 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
     internal string SkillSourceFingerprint { get; }
     internal string RequirementSnapshotFingerprint { get; }
     internal string AcceptedStateFingerprint { get; }
+
+    internal static bool IsAcceptedStateContextProjection(
+        MortalWoundTreatmentAuthority.Context context) =>
+        RequirementContextProjectionRegistry.TryGetValue(
+            context,
+            out var provenance) &&
+        string.Equals(
+            provenance.Seal,
+            ComputeRequirementContextProjectionSeal(context),
+            StringComparison.Ordinal);
+
+    /// <summary>
+    /// Reads only the canonical player/NPC capability namespace fixed by the accepted
+    /// coordinates. Filesystem and lease authority remain private; callers receive a
+    /// detached typed catalog and a closed failure classification only.
+    /// </summary>
+    internal MortalWoundTreatmentCapabilityCatalogReadResult
+        ReadCanonicalCapabilityCatalog(
+            MortalWoundTreatmentAttemptCoordinates? coordinates,
+            string? actorRole,
+            AcceptedMechanicsPlan? publicationPlan)
+    {
+        if (coordinates is null ||
+            !coordinates.MatchesAcceptedState(this) ||
+            actorRole is not ("provider" or "target"))
+        {
+            return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                MortalWoundTreatmentCapabilityCatalogReadStatus.CoordinatesInvalid);
+        }
+
+        var ownerKind = actorRole == "provider"
+            ? coordinates.ProviderKind
+            : coordinates.TargetKind;
+        var ownerId = actorRole == "provider"
+            ? coordinates.ProviderId
+            : coordinates.TargetId;
+        if (actorRole == "target" &&
+            ownerKind is "combatant" or "combatant_member")
+        {
+            return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                MortalWoundTreatmentCapabilityCatalogReadStatus.PromotionRequired);
+        }
+        if (ownerKind is not ("player" or "npc") ||
+            (ownerKind == "player" &&
+             !string.Equals(ownerId, "player_current", StringComparison.Ordinal)))
+        {
+            return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                MortalWoundTreatmentCapabilityCatalogReadStatus.SourceOwnerMismatch);
+        }
+
+        try
+        {
+            if (!HasCurrentAdmissionAuthority())
+            {
+                return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                    MortalWoundTreatmentCapabilityCatalogReadStatus.CoordinatesInvalid);
+            }
+            if (publicationPlan is not null &&
+                !MatchesValidatedPublicationPlan(publicationPlan))
+            {
+                return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                    MortalWoundTreatmentCapabilityCatalogReadStatus.PublicationMismatch);
+            }
+
+            return ownerKind == "player"
+                ? ReadPlayerCapabilityCatalog(publicationPlan)
+                : ReadNpcCapabilityCatalog(ownerId, publicationPlan);
+        }
+        catch (Exception exception) when (exception is InvalidOperationException or
+                                           ObjectDisposedException or
+                                           IOException or
+                                           UnauthorizedAccessException or
+                                           JsonException or
+                                           ArgumentException or
+                                           OverflowException)
+        {
+            return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                publicationPlan is null
+                    ? MortalWoundTreatmentCapabilityCatalogReadStatus.SourceInvalid
+                    : MortalWoundTreatmentCapabilityCatalogReadStatus.PublicationMismatch);
+        }
+    }
 
     internal static MortalWoundTreatmentAcceptedStateAuthorityResult ExportCurrent(
         FileSystemManager fileSystem,
@@ -200,6 +287,35 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             writeLease,
             candidate);
     }
+
+    private MortalWoundTreatmentAuthority.Context
+        ExportRequirementContextProjection()
+    {
+        var projection = _requirementContext with { };
+        RequirementContextProjectionRegistry.Add(
+            projection,
+            new RequirementContextProjectionProvenance(
+                ComputeRequirementContextProjectionSeal(projection)));
+        return projection;
+    }
+
+    private static string ComputeRequirementContextProjectionSeal(
+        MortalWoundTreatmentAuthority.Context context) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "mortal_wound_treatment.accepted_state.requirement_context_projection",
+            "1",
+            context.SchemaVersion.ToString(CultureInfo.InvariantCulture),
+            context.Realm,
+            context.TargetKind,
+            context.TargetId,
+            context.ProviderKind,
+            context.ProviderId,
+            context.CurrentLocationId,
+            context.SourcePath
+        });
+
+    private sealed record RequirementContextProjectionProvenance(string Seal);
 
     private static MortalWoundTreatmentAcceptedStateAuthorityResult ExportCurrentCore(
         FileSystemManager fileSystem,
@@ -621,6 +737,209 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         {
             return false;
         }
+    }
+
+    private MortalWoundTreatmentCapabilityCatalogReadResult
+        ReadPlayerCapabilityCatalog(AcceptedMechanicsPlan? publicationPlan)
+    {
+        if (!TryReadCapabilityRoot(
+                PlayerActiveSkillsPath,
+                publicationPlan,
+                out var activeRoot) ||
+            !TryReadCapabilityRoot(
+                PlayerPassiveSkillsPath,
+                publicationPlan,
+                out var passiveRoot))
+        {
+            return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                publicationPlan is null
+                    ? MortalWoundTreatmentCapabilityCatalogReadStatus.SourceInvalid
+                    : MortalWoundTreatmentCapabilityCatalogReadStatus.PublicationMismatch);
+        }
+
+        return ParseLiveCapabilityCatalog(
+            "player",
+            "player_current",
+            activeRoot!,
+            PlayerActiveSkillsPath,
+            passiveRoot!,
+            PlayerPassiveSkillsPath);
+    }
+
+    private MortalWoundTreatmentCapabilityCatalogReadResult ReadNpcCapabilityCatalog(
+        string ownerId,
+        AcceptedMechanicsPlan? publicationPlan)
+    {
+        if (!TryReadCapabilityRoot(NpcCorePath, publicationPlan, out var npcRoot))
+        {
+            return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                publicationPlan is null
+                    ? MortalWoundTreatmentCapabilityCatalogReadStatus.SourceInvalid
+                    : MortalWoundTreatmentCapabilityCatalogReadStatus.PublicationMismatch);
+        }
+
+        var owners = new List<JsonObject>();
+        foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+        {
+            if (npcRoot![section] is not JsonArray rows)
+                continue;
+            foreach (var npc in rows.OfType<JsonObject>())
+            {
+                if (GuardianPolicyContracts.TryResolveStrictPermanentNpcId(
+                        npc,
+                        out var npcId) &&
+                    string.Equals(npcId, ownerId, StringComparison.Ordinal))
+                {
+                    owners.Add(npc);
+                }
+            }
+        }
+
+        if (owners.Count != 1)
+        {
+            return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                owners.Count > 1
+                    ? MortalWoundTreatmentCapabilityCatalogReadStatus.SourceAmbiguous
+                    : MortalWoundTreatmentCapabilityCatalogReadStatus.SourceOwnerMismatch);
+        }
+
+        var activeRoot = new JsonObject
+        {
+            ["activeSkills"] = owners[0]["activeSkills"]?.DeepClone() ?? new JsonArray()
+        };
+        var passiveRoot = new JsonObject
+        {
+            ["passiveSkills"] = owners[0]["passiveSkills"]?.DeepClone() ?? new JsonArray()
+        };
+        return ParseLiveCapabilityCatalog(
+            "npc",
+            ownerId,
+            activeRoot,
+            NpcCorePath + $".npc[{ownerId}].activeSkills",
+            passiveRoot,
+            NpcCorePath + $".npc[{ownerId}].passiveSkills");
+    }
+
+    private static MortalWoundTreatmentCapabilityCatalogReadResult
+        ParseLiveCapabilityCatalog(
+            string ownerKind,
+            string ownerId,
+            JsonObject activeRoot,
+            string activePath,
+            JsonObject passiveRoot,
+            string passivePath)
+    {
+        var parsed = MortalWoundTreatmentCapabilityContract.ParseActorCatalog(
+            ownerKind,
+            ownerId,
+            activeRoot,
+            activePath,
+            passiveRoot,
+            passivePath);
+        if (!parsed.IsValid)
+        {
+            var ambiguous = parsed.Issues.Any(issue =>
+                issue.Code?.Contains("confusable", StringComparison.Ordinal) == true);
+            return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                ambiguous
+                    ? MortalWoundTreatmentCapabilityCatalogReadStatus.SourceAmbiguous
+                    : MortalWoundTreatmentCapabilityCatalogReadStatus.SourceInvalid);
+        }
+
+        var sources = parsed.Sources.Select(source =>
+        {
+            var root = source.SkillKind == "active" ? activeRoot : passiveRoot;
+            var preferredArray = source.SkillKind == "active"
+                ? "activeSkillChanges"
+                : "passiveSkillChanges";
+            var alternateArray = source.SkillKind == "active"
+                ? "activeSkills"
+                : "passiveSkills";
+            var arrayName = root[preferredArray] is JsonArray
+                ? preferredArray
+                : alternateArray;
+            var rows = root[arrayName] as JsonArray;
+            var exactRows = rows?.OfType<JsonObject>().Where(row =>
+                row["skillId"] is JsonValue value &&
+                value.TryGetValue<string>(out var skillId) &&
+                string.Equals(skillId, source.SkillId, StringComparison.Ordinal))
+                .ToArray() ?? Array.Empty<JsonObject>();
+            if (exactRows.Length != 1)
+                return null;
+            var row = exactRows[0];
+            var lifecycle = row["lifecycle"] is JsonValue lifecycleValue &&
+                            lifecycleValue.TryGetValue<string>(out var lifecycleText)
+                ? lifecycleText
+                : row.ContainsKey("lifecycle") ? "invalid" : "active";
+            var active = row["active"] is JsonValue activeValue &&
+                         activeValue.TryGetValue<bool>(out var activeFlag)
+                ? activeFlag
+                : !row.ContainsKey("active");
+            return source with
+            {
+                Lifecycle = lifecycle,
+                Active = active
+            };
+        }).ToArray();
+        if (sources.Any(static source => source is null))
+        {
+            return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                MortalWoundTreatmentCapabilityCatalogReadStatus.SourceInvalid);
+        }
+        return new MortalWoundTreatmentCapabilityCatalogReadResult(
+            MortalWoundTreatmentCapabilityCatalogReadStatus.Success,
+            sources.Select(static source => source!));
+    }
+
+    private bool TryReadCapabilityRoot(
+        string path,
+        AcceptedMechanicsPlan? publicationPlan,
+        out JsonObject? root)
+    {
+        root = null;
+        if (publicationPlan is not null &&
+            publicationPlan.TouchedPaths.Contains(path, StringComparer.Ordinal))
+        {
+            if (!publicationPlan.OwnerCompanionAfterImages.TryGetValue(
+                    path,
+                    out var afterImage))
+            {
+                return false;
+            }
+            root = afterImage;
+            return true;
+        }
+
+        var bytes = _fileSystem.ReadFileBytesAsync(_writeLease, path)
+            .GetAwaiter()
+            .GetResult();
+        if (bytes is null)
+            return false;
+        var issues = new List<ValidationIssue>();
+        return TryParseObject(bytes, path, issues, out root) &&
+               issues.Count == 0;
+    }
+
+    private bool MatchesValidatedPublicationPlan(AcceptedMechanicsPlan publicationPlan)
+    {
+        if (!AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                _fileSystem,
+                _writeLease,
+                out var binding,
+                out var cached) ||
+            !cached.Success ||
+            !ReferenceEquals(cached.Plan, publicationPlan) ||
+            !string.Equals(binding.SessionId, _binding.SessionId, StringComparison.Ordinal) ||
+            !string.Equals(binding.RequestId, _binding.RequestId, StringComparison.Ordinal) ||
+            !string.Equals(binding.SnapshotToken, _binding.SnapshotToken, StringComparison.Ordinal) ||
+            !string.Equals(binding.Realm, _binding.Realm, StringComparison.Ordinal) ||
+            binding.Turn != _binding.Turn ||
+            binding.WoundInput is not { } woundInput)
+        {
+            return false;
+        }
+
+        return BindingAgrees(_binding, woundInput.Binding);
     }
 
     private static PendingTurnSnapshotPathSelection BuildPathSelection(
@@ -1379,23 +1698,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
     private static string Describe(JsonNode? node) => node?.ToJsonString() ?? "missing";
 
     private static MortalWoundTreatmentCapabilitySkillSource Clone(
-        MortalWoundTreatmentCapabilitySkillSource source) => new(
-        source.OwnerKind,
-        source.OwnerId,
-        source.SkillKind,
-        source.SkillId,
-        source.DisplayName,
-        source.Lifecycle,
-        source.Active,
-        source.SourcePath,
-        source.Capabilities.Select(capability => capability with
-        {
-            OperationLimits = capability.OperationLimits with
-            {
-                RemovableComplicationKinds = capability.OperationLimits
-                    .RemovableComplicationKinds.ToArray()
-            }
-        }).ToArray());
+        MortalWoundTreatmentCapabilitySkillSource source) =>
+        MortalWoundTreatmentCapabilityDetachment.CloneSource(source);
 
     private static WoundAcceptedTurnBinding Clone(WoundAcceptedTurnBinding binding) => new(
         binding.SessionId,

@@ -838,6 +838,8 @@ internal sealed class MortalWoundTreatmentAuthority
             return null;
         }
 
+        var acceptedStateProjection = MortalWoundTreatmentAcceptedStateAuthority
+            .IsAcceptedStateContextProjection(context);
         return CreateResolved(
             index,
             kind,
@@ -856,6 +858,11 @@ internal sealed class MortalWoundTreatmentAuthority
                 .ToArray(),
             ownerKind: actor.ActorKind,
             ownerId: actor.ActorId,
+            providerKind: acceptedStateProjection ? context.ProviderKind : null,
+            providerId: acceptedStateProjection ? context.ProviderId : null,
+            targetKind: acceptedStateProjection ? context.TargetKind : null,
+            targetId: acceptedStateProjection ? context.TargetId : null,
+            locationId: acceptedStateProjection ? context.CurrentLocationId : null,
             minimumTier: minimumTier,
             currentTier: skill.Tier);
     }
@@ -915,6 +922,8 @@ internal sealed class MortalWoundTreatmentAuthority
             return null;
         }
 
+        var acceptedStateProjection = MortalWoundTreatmentAcceptedStateAuthority
+            .IsAcceptedStateContextProjection(context);
         return CreateResolved(
             index,
             kind,
@@ -931,7 +940,12 @@ internal sealed class MortalWoundTreatmentAuthority
                 })
                 .ToArray(),
             ownerKind: actor.ActorKind,
-            ownerId: actor.ActorId);
+            ownerId: actor.ActorId,
+            providerKind: acceptedStateProjection ? context.ProviderKind : null,
+            providerId: acceptedStateProjection ? context.ProviderId : null,
+            targetKind: acceptedStateProjection ? context.TargetKind : null,
+            targetId: acceptedStateProjection ? context.TargetId : null,
+            locationId: acceptedStateProjection ? context.CurrentLocationId : null);
     }
 
     private static MortalWoundResolvedRequirement? ResolveProvider(

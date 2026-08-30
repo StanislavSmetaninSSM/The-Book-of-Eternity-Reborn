@@ -1,16 +1,58 @@
+using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
-internal sealed record MortalWoundTreatmentCapabilityOperationLimits(
-    bool MayStabilize,
-    int MaximumRecoveryPoints,
-    int MaximumSeverityReductionSteps,
-    IReadOnlyList<string> RemovableComplicationKinds,
-    bool MayHealAtSeverityI,
-    int MaximumCosmeticHealLegacies,
-    int MaximumMechanicalEffectHealLegacies);
+internal sealed class MortalWoundTreatmentCapabilityOperationLimits
+{
+    private readonly ReadOnlyCollection<string> _removableComplicationKinds;
+
+    private MortalWoundTreatmentCapabilityOperationLimits(
+        bool mayStabilize,
+        int maximumRecoveryPoints,
+        int maximumSeverityReductionSteps,
+        IReadOnlyList<string> removableComplicationKinds,
+        bool mayHealAtSeverityI,
+        int maximumCosmeticHealLegacies,
+        int maximumMechanicalEffectHealLegacies)
+    {
+        ArgumentNullException.ThrowIfNull(removableComplicationKinds);
+        MayStabilize = mayStabilize;
+        MaximumRecoveryPoints = maximumRecoveryPoints;
+        MaximumSeverityReductionSteps = maximumSeverityReductionSteps;
+        _removableComplicationKinds = new ReadOnlyCollection<string>(
+            removableComplicationKinds.ToArray());
+        MayHealAtSeverityI = mayHealAtSeverityI;
+        MaximumCosmeticHealLegacies = maximumCosmeticHealLegacies;
+        MaximumMechanicalEffectHealLegacies = maximumMechanicalEffectHealLegacies;
+    }
+
+    public bool MayStabilize { get; }
+    public int MaximumRecoveryPoints { get; }
+    public int MaximumSeverityReductionSteps { get; }
+    public IReadOnlyList<string> RemovableComplicationKinds =>
+        _removableComplicationKinds;
+    public bool MayHealAtSeverityI { get; }
+    public int MaximumCosmeticHealLegacies { get; }
+    public int MaximumMechanicalEffectHealLegacies { get; }
+
+    internal static MortalWoundTreatmentCapabilityOperationLimits Create(
+        bool mayStabilize,
+        int maximumRecoveryPoints,
+        int maximumSeverityReductionSteps,
+        IReadOnlyList<string> removableComplicationKinds,
+        bool mayHealAtSeverityI,
+        int maximumCosmeticHealLegacies,
+        int maximumMechanicalEffectHealLegacies) => new(
+        mayStabilize,
+        maximumRecoveryPoints,
+        maximumSeverityReductionSteps,
+        removableComplicationKinds,
+        mayHealAtSeverityI,
+        maximumCosmeticHealLegacies,
+        maximumMechanicalEffectHealLegacies);
+}
 
 internal sealed record MortalWoundTreatmentCapabilityDefinition(
     int SchemaVersion,
@@ -378,7 +420,7 @@ internal static class MortalWoundTreatmentCapabilityContract
             return false;
         }
 
-        limits = new MortalWoundTreatmentCapabilityOperationLimits(
+        limits = MortalWoundTreatmentCapabilityOperationLimits.Create(
             mayStabilize,
             maximumRecoveryPoints,
             maximumSeverityReductionSteps,
