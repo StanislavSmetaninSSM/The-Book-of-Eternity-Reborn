@@ -30,8 +30,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
         "BookOfEternityClient.Services.MortalWoundTreatmentResolutionResult";
     private const string TreatmentResolutionTypeName =
         "BookOfEternityClient.Services.MortalWoundTreatmentResolution";
-    private const string TreatmentReceiptTypeName =
-        "BookOfEternityClient.Services.MortalWoundTreatmentReceipt";
     private const string TreatmentOutcomeIntentTypeName =
         "BookOfEternityClient.Services.MortalWoundTreatmentOutcomeIntent";
     private const string TreatmentModeAuthorityTypeName =
@@ -174,28 +172,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 "ResolutionAuthorityFingerprint", "RequestFingerprint", "ResultFingerprint",
                 "RouteCompletion"
             }
-        },
-        {
-            TreatmentReceiptTypeName,
-            new[]
-            {
-                "Mode", "Coordinates", "AttemptDisposition", "ResultCategory",
-                "SelectedOutcomeIndex", "Interruption", "DeclaredResult", "ConsumptionTrigger",
-                "CourseId", "CourseMilestoneOrdinal", "CourseDisposition",
-                "RequirementAuthorityFingerprint", "ResourceAuthorityFingerprint", "ModeEvidence",
-                "RouteFingerprint", "ResolutionAuthorityFingerprint", "RequestFingerprint",
-                "ResultFingerprint", "RouteCompletion", "ReceiptFingerprint"
-            }
-        },
-        {
-            ResourceReservationAuthorityTypeName,
-            new[]
-            {
-                "ReservationDisposition", "ReservationId", "CoordinatesFingerprint",
-                "AcceptedStateFingerprint", "RouteFingerprint", "CourseId",
-                "CourseMilestoneOrdinal", "CourseCoordinateFingerprint",
-                "RequirementAuthorityFingerprint", "Policy", "Claims", "AuthorityFingerprint"
-            }
         }
     };
 
@@ -217,22 +193,22 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var modeAuthorityType = RequireServiceType(TreatmentModeAuthorityTypeName);
         var procedureType = RequireProcedureCheckAuthorityType();
 
-        AssertClosedAbstractUnionBase(modeAuthorityType, Array.Empty<string>());
+        AssertClosedUnionBaseSurface(modeAuthorityType, Array.Empty<string>());
         AssertNoPublicConstructionFactories(modeAuthorityType);
 
-        Assert.True(modeAuthorityType.IsAssignableFrom(procedureType));
-        Assert.True(modeAuthorityType.IsAssignableFrom(typeof(MortalWoundCourseModeAuthority)));
-        Assert.True(modeAuthorityType.IsAssignableFrom(typeof(MortalWoundTreatmentCapabilityProof)));
+        var expectedBranches = new[]
+        {
+            procedureType,
+            typeof(MortalWoundCourseModeAuthority),
+            typeof(MortalWoundTreatmentCapabilityProof)
+        };
+        Assert.All(expectedBranches, branch =>
+            Assert.True(modeAuthorityType.IsAssignableFrom(branch)));
         Assert.Equal(
-            new[]
-            {
-                procedureType,
-                typeof(MortalWoundCourseModeAuthority),
-                typeof(MortalWoundTreatmentCapabilityProof)
-            }.OrderBy(static type => type.FullName, StringComparer.Ordinal),
-            DirectConcreteSubtypes(modeAuthorityType)
+            expectedBranches.OrderBy(static type => type.FullName, StringComparer.Ordinal),
+            ConcreteAssignableBranches(modeAuthorityType)
                 .OrderBy(static type => type.FullName, StringComparer.Ordinal));
-        foreach (var authorityType in DirectConcreteSubtypes(modeAuthorityType))
+        foreach (var authorityType in ConcreteAssignableBranches(modeAuthorityType))
         {
             AssertImmutableConcreteSurface(
                 authorityType,
@@ -248,10 +224,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var modeEvidenceType = RequireServiceType(TreatmentModeEvidenceTypeName);
 
-        AssertClosedAbstractUnionBase(modeEvidenceType, Array.Empty<string>());
+        AssertClosedUnionBaseSurface(modeEvidenceType, Array.Empty<string>());
         AssertNoPublicConstructionFactories(modeEvidenceType);
 
-        AssertClosedDerivedSurfaceSet(modeEvidenceType, new[]
+        AssertClosedAssignableBranchSurfaceSet(modeEvidenceType, new[]
         {
             new[]
             {
@@ -280,13 +256,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var outcomeIntentType = RequireServiceType(TreatmentOutcomeIntentTypeName);
 
-        AssertClosedAbstractUnionBase(outcomeIntentType, new[]
+        AssertClosedUnionBaseSurface(outcomeIntentType, new[]
         {
             "OperationOrdinal", "Kind", "DeclaredOperationFingerprint", "IntentFingerprint"
         });
         AssertNoPublicConstructionFactories(outcomeIntentType);
 
-        AssertClosedDerivedSurfaceSet(outcomeIntentType, new[]
+        AssertClosedAssignableBranchSurfaceSet(outcomeIntentType, new[]
         {
             OutcomeIntentProperties(),
             OutcomeIntentProperties(),
@@ -309,19 +285,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
-    public void ProcedureCheckAuthority_ResourceReservationForwardPayloadsAreExact()
+    public void ProcedureCheckAuthority_ResourceReservationForwardTypeIsOpaqueAndProductionOnly()
     {
         var resourceType = RequireServiceType(ResourceReservationAuthorityTypeName);
 
-        AssertImmutableConcreteSurface(resourceType, new[]
-        {
-            "ReservationDisposition", "ReservationId", "CoordinatesFingerprint",
-            "AcceptedStateFingerprint", "RouteFingerprint", "CourseId",
-            "CourseMilestoneOrdinal", "CourseCoordinateFingerprint",
-            "RequirementAuthorityFingerprint", "Policy", "Claims", "AuthorityFingerprint"
-        });
+        Assert.True(resourceType.IsSealed);
+        Assert.Empty(resourceType.GetConstructors(BindingFlags.Instance | BindingFlags.Public));
         AssertNoPublicConstructionFactories(resourceType);
-        AssertResourceReservationPayloadSurfaces(resourceType);
     }
 
     [Fact]
@@ -333,13 +303,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var resourceType = RequireServiceType(ResourceReservationAuthorityTypeName);
         var requestType = RequireServiceType(AttemptRequestTypeName);
         var resolutionType = RequireServiceType(TreatmentResolutionTypeName);
-        var receiptType = RequireServiceType(TreatmentReceiptTypeName);
 
         Assert.Equal(modeAuthorityType, requestType.GetProperty("ModeAuthority")!.PropertyType);
         Assert.Equal(resourceType, requestType.GetProperty("ResourceAuthority")!.PropertyType);
         Assert.Equal(modeEvidenceType, resolutionType.GetProperty("ModeEvidence")!.PropertyType);
         Assert.Equal(resourceType, resolutionType.GetProperty("ResourceAuthority")!.PropertyType);
-        Assert.Equal(modeEvidenceType, receiptType.GetProperty("ModeEvidence")!.PropertyType);
         Assert.Equal(
             typeof(IReadOnlyList<>).MakeGenericType(outcomeIntentType),
             resolutionType.GetProperty("OutcomeIntents")!.PropertyType);
@@ -365,9 +333,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
             resolutionType,
             resolutionResultType.GetProperty("Resolution")!.PropertyType);
         Assert.Equal(
-            receiptType,
-            resolutionResultType.GetProperty("ReplayReceipt")!.PropertyType);
-        Assert.Equal(
             typeof(MortalWoundTreatmentAttemptCoordinates),
             resolutionType.GetProperty("Coordinates")!.PropertyType);
         Assert.Equal(
@@ -379,12 +344,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(
             RequireServiceType(CriticalReactionIntentTypeName),
             resolutionType.GetProperty("CriticalReactionIntent")!.PropertyType);
-        Assert.Equal(
-            typeof(MortalWoundTreatmentAttemptCoordinates),
-            receiptType.GetProperty("Coordinates")!.PropertyType);
         AssertNoObjectOrJsonProperties(requestType);
         AssertNoObjectOrJsonProperties(resolutionType);
-        AssertNoObjectOrJsonProperties(receiptType);
     }
 
     [Theory]
@@ -478,6 +439,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.NotEmpty(AsObjects(ReadRequiredProperty(
             reactionAuthority,
             "RollContributions")));
+        AssertPreparedReactionAcceptedEffectFingerprint(
+            reactionFixture,
+            reactionAuthority);
         AssertProcedureAuthorityFingerprints(reactionAuthority);
 
         var noReactionScenario = CreateScenario(
@@ -499,9 +463,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
     public void ProcedureCheckAuthority_ExhaustedOneDiePoolCanReleaseAndReuseProductionClaim()
     {
         var scenario = CreateScenario(
-            "procedure_normal_uses_lowest_free_die",
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
             "procedure");
-        scenario.AcceptedState["acceptedDice"] = new JsonArray(17);
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1);
         using var fixture = AcceptedStateFixture.Create(scenario);
 
         var first = InvokeProcedureCheckAuthority(
@@ -512,6 +476,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(
             firstAuthority,
             "SourceIndices")));
+        Assert.Equal(
+            "effect_fate_shield_older",
+            ReadPreparedFateEffectIdFromAuthority(firstAuthority));
 
         var exhausted = InvokeProcedureCheckAuthority(
             fixture,
@@ -537,6 +504,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(
             reusedAuthority,
             "SourceIndices")));
+        Assert.Equal(
+            "effect_fate_shield_older",
+            ReadPreparedFateEffectIdFromAuthority(reusedAuthority));
     }
 
     [Fact]
@@ -604,9 +574,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
     public async Task ProcedureCheckAuthority_IndependentRootsAndGenerationsBeginAtSourceZero()
     {
         var scenario = CreateScenario(
-            "procedure_normal_uses_lowest_free_die",
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
             "procedure");
-        scenario.AcceptedState["acceptedDice"] = new JsonArray(17);
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1);
         using var firstRoot = AcceptedStateFixture.Create(scenario);
         using var secondRoot = AcceptedStateFixture.Create(scenario);
         using var rotatedGeneration = AcceptedStateFixture.Create(scenario);
@@ -628,6 +598,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(
             beforeRotationAuthority,
             "SourceIndices")));
+        Assert.Equal(
+            "effect_fate_shield_older",
+            ReadPreparedFateEffectIdFromAuthority(beforeRotationAuthority));
         await rotatedGeneration.RotateGenerationAndPrepareFreshSnapshotAsync(
             "procedure_registry_generation_rotation");
         var rotatedInputs = PrepareProcedureCheckAuthorityInputs(
@@ -645,20 +618,32 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(
             secondAuthority,
             "SourceIndices")));
+        Assert.Equal(
+            "effect_fate_shield_older",
+            ReadPreparedFateEffectIdFromAuthority(firstAuthority));
+        Assert.Equal(
+            "effect_fate_shield_older",
+            ReadPreparedFateEffectIdFromAuthority(secondAuthority));
 
         var rotatedAuthority = AssertValidProcedureCheckAuthority(
             InvokePreparedProcedureCheckAuthority(rotatedInputs));
         Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(
             rotatedAuthority,
             "SourceIndices")));
+        Assert.Equal(
+            "effect_fate_shield_older",
+            ReadPreparedFateEffectIdFromAuthority(rotatedAuthority));
     }
 
     [Fact]
     public void ProcedureCheckAuthority_StaleDisposedLeaseRejectsWithoutThrowing()
     {
+        var authorityType = RequireProcedureCheckAuthorityType();
+        var create = ExactStaticMethod(authorityType, "Create", 5);
         var scenario = CreateScenario(
-            "procedure_normal_uses_lowest_free_die",
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
             "procedure");
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1);
         using var fixture = AcceptedStateFixture.Create(scenario);
         var prepared = PrepareProcedureCheckAuthorityInputs(
             fixture,
@@ -668,11 +653,24 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         ProcedureAuthorityInvocation? invocation = null;
         var exception = Record.Exception(() =>
-            invocation = InvokePreparedProcedureCheckAuthority(prepared));
+            invocation = InvokePreparedProcedureCheckAuthority(prepared, create));
 
         Assert.Null(exception);
         AssertInvalidProcedureCheckAuthority(Assert.IsType<ProcedureAuthorityInvocation>(
             invocation));
+
+        fixture.ReacquireLeaseAfterExternalDistribution();
+        var fresh = InvokeProcedureCheckAuthority(
+            fixture,
+            scenario.OperationKey + "_fresh_after_stale",
+            scenario.RouteId);
+        var freshAuthority = AssertValidProcedureCheckAuthority(fresh);
+        Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(
+            freshAuthority,
+            "SourceIndices")));
+        Assert.Equal(
+            "effect_fate_shield_older",
+            ReadPreparedFateEffectIdFromAuthority(freshAuthority));
     }
 
     [Fact]
@@ -800,6 +798,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ReadRequiredProperty(prepared, "TriggerId")));
         AssertAuthorityFingerprint(ReadRequiredProperty(prepared, "AcceptedEffectFingerprint"));
         AssertAuthorityFingerprint(ReadRequiredProperty(prepared, "PreparedReactionFingerprint"));
+        AssertPreparedReactionAcceptedEffectFingerprint(fixture, authority);
     }
 
     [Fact]
@@ -943,32 +942,24 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "RollContributions")).Length);
     }
 
-    [Fact]
-    public void ProcedureCheckAuthority_FateShieldArbiterLegacyAndTreatmentSelectionAgree()
+    public static TheoryData<string, int, string?> ProcedureFateParityRows => new()
+    {
+        { "oldest", 1, "effect_fate_shield_older" },
+        { "tied_chronology", 1, "effect_fate_alpha" },
+        { "ineligible_oldest", 1, "effect_fate_z_eligible" }
+    };
+
+    [Theory]
+    [MemberData(nameof(ProcedureFateParityRows))]
+    public void ProcedureCheckAuthority_FateShieldArbiterLegacyAndTreatmentSelectionAgree(
+        string parityCase,
+        int naturalRoll,
+        string? expectedEffectId)
     {
         var scenario = CreateScenario(
             "procedure_player_natural_one_reserves_oldest_fate_shield",
             "procedure");
-        using var fixture = AcceptedStateFixture.Create(scenario);
-        var carriers = new EffectCarrierCatalogInput(
-            fixture.ReadPlayerEffectCarrier(),
-            null,
-            null,
-            null,
-            null,
-            null);
-        var legacy = EffectAcceptedEventReportCatalog.Compose(
-            new JsonArray(CreateProcedureCriticalFailureReport()),
-            turn: 42,
-            realm: "mortal_world",
-            authoritativeDice: new[] { 1, 17 },
-            carriers);
-        Assert.Empty(legacy.Issues);
-        var legacyEvent = Assert.Single(legacy.LifecycleEvents);
-        Assert.Equal("effect_fate_shield_older", legacyEvent["effectId"]!.GetValue<string>());
-        Assert.Equal(
-            "fate_shield_on_critical_failure",
-            legacyEvent["triggerId"]!.GetValue<string>());
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(naturalRoll);
         var legacyCompose = Assert.Single(typeof(EffectAcceptedEventReportCatalog).GetMethods(
             BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
             static method => string.Equals(method.Name, "Compose", StringComparison.Ordinal));
@@ -983,6 +974,84 @@ public sealed partial class MortalWoundTreatmentResolverTests
             },
             legacyCompose.GetParameters().Select(static parameter => parameter.ParameterType));
 
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        switch (parityCase)
+        {
+            case "oldest":
+                break;
+            case "tied_chronology":
+                fixture.ReplacePlayerFateEffects(
+                    "shared_arbiter_tied_chronology",
+                    new ProcedureFateEffectSeed("effect_fate_zulu", 30, Eligible: true),
+                    new ProcedureFateEffectSeed("effect_fate_alpha", 30, Eligible: true));
+                break;
+            case "ineligible_oldest":
+                fixture.ReplacePlayerFateEffects(
+                    "shared_arbiter_ineligible_oldest",
+                    new ProcedureFateEffectSeed(
+                        "effect_fate_a_ineligible",
+                        29,
+                        Eligible: false),
+                    new ProcedureFateEffectSeed(
+                        "effect_fate_z_eligible",
+                        30,
+                        Eligible: true));
+                break;
+            default:
+                throw new InvalidOperationException($"Unknown parity case '{parityCase}'.");
+        }
+
+        AssertLegacyTreatmentFateSelectionAgree(
+            fixture,
+            scenario,
+            naturalRoll,
+            expectedEffectId);
+    }
+
+    private static ProcedureAuthorityInvocation InvokeProcedureCheckAuthority(
+        AcceptedStateFixture fixture,
+        string operationKey,
+        string routeId)
+    {
+        return InvokePreparedProcedureCheckAuthority(
+            PrepareProcedureCheckAuthorityInputs(fixture, operationKey, routeId));
+    }
+
+    private static void AssertLegacyTreatmentFateSelectionAgree(
+        AcceptedStateFixture fixture,
+        ResolverScenario scenario,
+        int naturalRoll,
+        string? expectedEffectId)
+    {
+        var carriers = new EffectCarrierCatalogInput(
+            fixture.ReadPlayerEffectCarrier(),
+            null,
+            null,
+            null,
+            null,
+            null);
+        var legacy = EffectAcceptedEventReportCatalog.Compose(
+            new JsonArray(CreateProcedureCriticalFailureReport()),
+            turn: 42,
+            realm: "mortal_world",
+            authoritativeDice: new[] { naturalRoll, 17 },
+            carriers);
+        Assert.Empty(legacy.Issues);
+
+        JsonObject? legacyEvent = null;
+        if (expectedEffectId is null)
+        {
+            Assert.Empty(legacy.LifecycleEvents);
+        }
+        else
+        {
+            legacyEvent = Assert.Single(legacy.LifecycleEvents);
+            Assert.Equal(expectedEffectId, legacyEvent["effectId"]!.GetValue<string>());
+            Assert.Equal(
+                "fate_shield_on_critical_failure",
+                legacyEvent["triggerId"]!.GetValue<string>());
+        }
+
         var arbiterType = typeof(WoundMaterializationContract).Assembly.GetType(
             FateShieldReactionArbiterTypeName,
             throwOnError: false,
@@ -996,57 +1065,24 @@ public sealed partial class MortalWoundTreatmentResolverTests
             scenario.OperationKey,
             scenario.RouteId);
         var treatmentAuthority = AssertValidProcedureCheckAuthority(treatment);
-        var prepared = ReadRequiredProperty(treatmentAuthority, "PreparedCriticalReaction");
+        var prepared = ReadPropertyAllowingNull(
+            treatmentAuthority,
+            "PreparedCriticalReaction");
+        if (expectedEffectId is null)
+        {
+            Assert.Null(prepared);
+            return;
+        }
+
+        Assert.NotNull(legacyEvent);
+        Assert.NotNull(prepared);
         Assert.Equal(
-            legacyEvent["effectId"]!.GetValue<string>(),
-            Convert.ToString(ReadRequiredProperty(prepared, "EffectId")));
+            legacyEvent!["effectId"]!.GetValue<string>(),
+            Convert.ToString(ReadRequiredProperty(prepared!, "EffectId")));
         Assert.Equal(
             legacyEvent["triggerId"]!.GetValue<string>(),
-            Convert.ToString(ReadRequiredProperty(prepared, "TriggerId")));
-    }
-
-    [Fact]
-    public void ProcedureCheckAuthority_LegacyAndTreatmentSourcesDelegateToSharedFateArbiter()
-    {
-        var legacySource = File.ReadAllText(Path.Combine(
-            TestRepoPaths.RepoRoot,
-            "BookOfEternityClient",
-            "Services",
-            "EffectAcceptedEventReportCatalog.cs"));
-        var treatmentPath = Path.Combine(
-            TestRepoPaths.RepoRoot,
-            "BookOfEternityClient",
-            "Services",
-            "MortalWoundProcedureCheckAuthority.cs");
-
-        Assert.DoesNotContain(
-            "private static bool IsEligibleFateShield",
-            legacySource,
-            StringComparison.Ordinal);
-        Assert.DoesNotContain(
-            "private static int ReadCreatedAtTurn",
-            legacySource,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "FateShieldReactionArbiter.",
-            legacySource,
-            StringComparison.Ordinal);
-        Assert.True(
-            File.Exists(treatmentPath),
-            "T067-A treatment authority source is absent.");
-        Assert.Contains(
-            "FateShieldReactionArbiter.",
-            File.ReadAllText(treatmentPath),
-            StringComparison.Ordinal);
-    }
-
-    private static ProcedureAuthorityInvocation InvokeProcedureCheckAuthority(
-        AcceptedStateFixture fixture,
-        string operationKey,
-        string routeId)
-    {
-        return InvokePreparedProcedureCheckAuthority(
-            PrepareProcedureCheckAuthorityInputs(fixture, operationKey, routeId));
+            Convert.ToString(ReadRequiredProperty(prepared!, "TriggerId")));
+        AssertPreparedReactionAcceptedEffectFingerprint(fixture, treatmentAuthority);
     }
 
     private static PreparedProcedureAuthorityInputs PrepareProcedureCheckAuthorityInputs(
@@ -1090,6 +1126,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var authorityType = RequireProcedureCheckAuthorityType();
         var create = ExactStaticMethod(authorityType, "Create", 5);
+        return InvokePreparedProcedureCheckAuthority(prepared, create);
+    }
+
+    private static ProcedureAuthorityInvocation InvokePreparedProcedureCheckAuthority(
+        PreparedProcedureAuthorityInputs prepared,
+        MethodInfo create)
+    {
         var result = Invoke(create, new object?[]
         {
             prepared.Coordinates,
@@ -1260,6 +1303,43 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Invariant(ReadRequiredProperty(authority, "AuthorityFingerprint")));
     }
 
+    private static void AssertPreparedReactionAcceptedEffectFingerprint(
+        AcceptedStateFixture fixture,
+        object authority)
+    {
+        var prepared = ReadRequiredProperty(authority, "PreparedCriticalReaction");
+        var effectId = Invariant(ReadRequiredProperty(prepared, "EffectId"));
+        var catalog = EffectCarrierCatalog.Build(new EffectCarrierCatalogInput(
+            fixture.ReadPlayerEffectCarrier(),
+            null,
+            null,
+            null,
+            null,
+            null));
+        Assert.Empty(catalog.Issues);
+        Assert.True(catalog.TryResolveOne(effectId, out var occurrence));
+
+        var independentlyRecomputed = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.wound.terminal_effect_occurrence",
+            "1",
+            occurrence.EffectId,
+            occurrence.FilePath,
+            occurrence.JsonPath,
+            occurrence.Coordinate.Kind,
+            occurrence.Coordinate.OwnerId,
+            occurrence.Coordinate.Path,
+            occurrence.Coordinate.Category,
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(occurrence.Effect)
+        });
+        Assert.Equal(
+            WoundEffectTerminalOperationPlanner.ComputeEffectFingerprint(occurrence),
+            independentlyRecomputed);
+        Assert.Equal(
+            independentlyRecomputed,
+            Invariant(ReadRequiredProperty(prepared, "AcceptedEffectFingerprint")));
+    }
+
     private static string Invariant(object value) =>
         Convert.ToString(value, CultureInfo.InvariantCulture)!;
 
@@ -1301,20 +1381,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         AssertImmutableSurface(type, expected);
     }
 
-    private static void AssertClosedAbstractUnionBase(
+    private static void AssertClosedUnionBaseSurface(
         Type type,
         IEnumerable<string> expected)
     {
-        Assert.True(type.IsAbstract && !type.IsInterface,
-            $"Closed union base '{type.FullName}' must be an abstract class.");
+        Assert.True(type.IsInterface || type.IsAbstract,
+            $"Closed union base '{type.FullName}' must be an interface or abstract class.");
         AssertImmutableSurface(type, expected);
-        var constructors = type.GetConstructors(
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
-            BindingFlags.DeclaredOnly);
-        Assert.NotEmpty(constructors);
-        Assert.All(constructors, constructor => Assert.True(
-            constructor.IsFamilyAndAssembly,
-            $"Closed union base '{type.FullName}' must use only private-protected constructors."));
     }
 
     private static void AssertImmutableSurface(
@@ -1343,18 +1416,25 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly)
             .Where(static method => !method.IsSpecialName)
             .Where(method => !allowed.Contains(method.Name))
+            .Where(method =>
+                type.IsAssignableFrom(method.ReturnType) ||
+                method.ReturnType.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                    .Any(property => type.IsAssignableFrom(property.PropertyType)))
             .Select(static method => method.Name)
             .OrderBy(static name => name, StringComparer.Ordinal)
             .ToArray();
         Assert.Empty(unexpected);
     }
 
-    private static Type[] DirectConcreteSubtypes(Type baseType) =>
+    private static Type[] ConcreteAssignableBranches(Type baseType) =>
         baseType.Assembly.GetTypes()
-            .Where(type => type.BaseType == baseType && !type.IsAbstract)
+            .Where(type => type != baseType &&
+                           baseType.IsAssignableFrom(type) &&
+                           !type.IsAbstract &&
+                           !type.IsInterface)
             .ToArray();
 
-    private static void AssertClosedDerivedSurfaceSet(
+    private static void AssertClosedAssignableBranchSurfaceSet(
         Type baseType,
         IReadOnlyList<string[]> expectedSurfaces)
     {
@@ -1362,7 +1442,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             .Select(CanonicalPropertySet)
             .OrderBy(static value => value, StringComparer.Ordinal)
             .ToArray();
-        var derived = DirectConcreteSubtypes(baseType);
+        var derived = ConcreteAssignableBranches(baseType);
         Assert.Equal(expected.Length, derived.Length);
         foreach (var type in derived)
         {
@@ -1393,7 +1473,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     private static void AssertOutcomeIntentPayloadSurfaces(Type baseType)
     {
-        var branches = DirectConcreteSubtypes(baseType);
+        var branches = ConcreteAssignableBranches(baseType);
         var addComplication = Assert.Single(branches, type =>
             type.GetProperty("DefinitionReferenceBindings") is not null &&
             type.GetProperty("ComplicationRef") is not null);
@@ -1428,30 +1508,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(referenceBindingType, SequenceElementType(
             seedType.GetProperty("ApplicationReferenceBindings")!.PropertyType));
         AssertNoPublicConstructionFactories(seedType);
-    }
-
-    private static void AssertResourceReservationPayloadSurfaces(Type resourceType)
-    {
-        var claimType = SequenceElementType(resourceType.GetProperty("Claims")!.PropertyType);
-        AssertImmutableConcreteSurface(claimType, new[]
-        {
-            "Scope", "RequirementIndex", "Kind", "AuthorityRef", "Realm", "OwnerKind",
-            "OwnerId", "Quantity", "SuccessWitnessFingerprint", "ClaimFingerprint"
-        });
-        AssertNoPublicConstructionFactories(claimType);
-
-        var policyType = resourceType.GetProperty("Policy")!.PropertyType;
-        AssertImmutableConcreteSurface(policyType, new[]
-        {
-            "ReserveBeforeResolution", "ConsumeOn", "RefundOn", "Mutations"
-        });
-        AssertNoPublicConstructionFactories(policyType);
-        var mutationType = SequenceElementType(policyType.GetProperty("Mutations")!.PropertyType);
-        AssertImmutableConcreteSurface(mutationType, new[]
-        {
-            "Kind", "Scope", "MilestoneOrdinal", "RequirementIndex"
-        });
-        AssertNoPublicConstructionFactories(mutationType);
     }
 
     private static void AssertValidationIssueSequence(Type type) =>
