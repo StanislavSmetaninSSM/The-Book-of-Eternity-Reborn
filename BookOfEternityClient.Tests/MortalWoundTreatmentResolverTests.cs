@@ -842,13 +842,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
         using var fixture = AcceptedStateFixture.Create(CreateScenario(
             "procedure_normal_uses_lowest_free_die",
             "procedure"));
-        fixture.AddExactProviderCrossCarrierMirrorWithoutInventory();
+        fixture.AddExactProviderCrossCarrierMirrorWithInventory();
 
         var snapshot = fixture.GetRequirementSnapshot();
 
         var provider = Assert.Single(snapshot.Actors, actor =>
             actor.ActorKind == "npc" && actor.ActorId == "field_medic_01");
         Assert.True(provider.Reachable);
+        var providerItem = Assert.Single(snapshot.Items, item =>
+            item.OwnerKind == "npc" && item.OwnerId == "field_medic_01");
+        Assert.Equal("sterile_thread", providerItem.ItemId);
     }
 
     [Fact]
@@ -4584,22 +4587,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
             PrepareFreshSnapshot("retired_live_item");
         }
 
-        internal void AddExactProviderCrossCarrierMirrorWithoutInventory()
+        internal void AddExactProviderCrossCarrierMirrorWithInventory()
         {
             var root = ReadObject(NpcCorePath);
             var provider = Assert.IsType<JsonObject>(Assert.Single(root["NPCsInScene"]!.AsArray()));
-            provider["inventory"] = new JsonArray();
             root["UpdateNPCs"] = new JsonArray(provider.DeepClone());
             WriteObject(NpcCorePath, root);
-
-            var playerItems = ReadObject(PlayerInventoryPath)["items"]!.AsArray();
-            var dose = Assert.IsType<JsonObject>(Assert.Single(playerItems));
-            WriteObject(
-                ItemIdentityPath,
-                MortalItemTestFixture.CreateIndexForCarrier(
-                    dose,
-                    "player_inventory",
-                    "player"));
             PrepareFreshSnapshot("exact_npc_cross_carrier_mirror");
         }
 

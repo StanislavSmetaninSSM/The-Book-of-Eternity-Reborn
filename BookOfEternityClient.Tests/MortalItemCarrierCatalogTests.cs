@@ -176,6 +176,56 @@ public sealed class MortalItemCarrierCatalogTests
             issue.Code == "mortal_item_materialization_duplicate_receipt_id");
     }
 
+    [Theory]
+    [InlineData("identical_cross_carrier", true)]
+    [InlineData("divergent_cross_carrier", false)]
+    [InlineData("same_section_duplicate", false)]
+    public void Build_CoalescesOnlyIdenticalPermanentNpcCrossCarrierItemMirrors(
+        string mutation,
+        bool expectedValid)
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot("itm_mirrored_npc");
+        var npc = new JsonObject
+        {
+            ["NPCId"] = "npc_mirrored_owner",
+            ["displayName"] = "Mirrored owner",
+            ["inventory"] = Items(item)
+        };
+        var root = new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray(npc.DeepClone()),
+            ["NPCsInScene"] = mutation == "same_section_duplicate"
+                ? new JsonArray()
+                : new JsonArray(npc.DeepClone())
+        };
+        if (mutation == "same_section_duplicate")
+            root["UpdateNPCs"]!.AsArray().Add(npc.DeepClone());
+        if (mutation == "divergent_cross_carrier")
+            root["NPCsInScene"]![0]!["displayName"] = "Divergent owner";
+
+        var result = MortalItemCarrierCatalog.Build(new MortalItemCarrierCatalogInput(
+            null,
+            root,
+            null,
+            null,
+            null,
+            EmptyCompanions()));
+
+        Assert.Equal(expectedValid, result.Issues.Count == 0);
+        if (expectedValid)
+        {
+            var occurrence = Assert.Single(result.ByItemId["itm_mirrored_npc"]);
+            Assert.Equal("npc_inventory", occurrence.Carrier.Kind);
+            Assert.Equal("npc_mirrored_owner", occurrence.Carrier.OwnerId);
+        }
+        else
+        {
+            Assert.Equal(2, result.ByItemId["itm_mirrored_npc"].Count);
+            Assert.Contains(result.Issues, issue =>
+                issue.Code == "mortal_item_materialization_duplicate_item_id");
+        }
+    }
+
     [Fact]
     public void Build_DoesNotCollapseCaseDistinctIds()
     {
