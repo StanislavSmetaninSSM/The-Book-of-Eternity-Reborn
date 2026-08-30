@@ -226,6 +226,34 @@ internal static class AcceptedTurnAuthorityRegistry
             sessionId,
             snapshotToken);
 
+    internal static MortalWoundTreatmentAcceptedStateAuthorityResult
+        BindMortalWoundTreatmentAcceptedState(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthorityResult candidate)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(candidate);
+
+        try
+        {
+            return GetState(fileSystem, writeLease)
+                .BindMortalWoundTreatmentAcceptedState(candidate);
+        }
+        catch (Exception exception) when (
+            !candidate.IsValid &&
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException)
+        {
+            return Detach(candidate);
+        }
+    }
+
+    private static MortalWoundTreatmentAcceptedStateAuthorityResult Detach(
+        MortalWoundTreatmentAcceptedStateAuthorityResult candidate) =>
+        new(candidate.IsValid, candidate.Issues.ToArray(), candidate.Authority);
+
     private static AcceptedTurnAuthorityState GetState(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease)
@@ -285,6 +313,8 @@ internal static class AcceptedTurnAuthorityRegistry
         private readonly EffectAcceptedTurnPlanCache _effectPlan;
         private readonly WoundAcceptedTurnPlanCache _woundPlan;
         private readonly MortalItemAcceptedTurnAuthority.Cache _mortalItems;
+        private MortalWoundTreatmentAcceptedStateAuthority?
+            _mortalWoundTreatmentAcceptedState;
         private object? _woundEffectStageToken;
         private string? _woundEffectFingerprint;
         private WoundEffectBatchPlanningResult? _woundEffectResult;
@@ -301,6 +331,35 @@ internal static class AcceptedTurnAuthorityRegistry
             _woundPlan = woundPlan ?? new WoundAcceptedTurnPlanCache();
             _mortalItems = mortalItems ??
                 new MortalItemAcceptedTurnAuthority.Cache();
+        }
+
+        internal MortalWoundTreatmentAcceptedStateAuthorityResult
+            BindMortalWoundTreatmentAcceptedState(
+                MortalWoundTreatmentAcceptedStateAuthorityResult candidate)
+        {
+            lock (_gate)
+            {
+                if (!candidate.IsValid ||
+                    candidate.Authority is null ||
+                    candidate.Issues.Count != 0)
+                {
+                    _mortalWoundTreatmentAcceptedState = null;
+                    return AcceptedTurnAuthorityRegistry.Detach(candidate);
+                }
+
+                if (_mortalWoundTreatmentAcceptedState is not null &&
+                    _mortalWoundTreatmentAcceptedState.SemanticallyEquals(
+                        candidate.Authority))
+                {
+                    return new MortalWoundTreatmentAcceptedStateAuthorityResult(
+                        true,
+                        Array.Empty<ValidationIssue>(),
+                        _mortalWoundTreatmentAcceptedState);
+                }
+
+                _mortalWoundTreatmentAcceptedState = candidate.Authority;
+                return AcceptedTurnAuthorityRegistry.Detach(candidate);
+            }
         }
 
         internal AcceptedMechanicsPlanningResult GetOrBuildCommonValidated(
@@ -873,6 +932,7 @@ internal static class AcceptedTurnAuthorityRegistry
             ClearWoundEffectCore();
             _woundPlan.InvalidateAll();
             _mortalItems.InvalidateValidated();
+            _mortalWoundTreatmentAcceptedState = null;
         }
 
         private void ClearWoundEffectCore()

@@ -1964,6 +1964,15 @@ public sealed class MortalWoundRequirementAuthorityTests
         var wound = WoundContractTestData.CreateActiveWound();
         wound["treatment"]!["routes"]![0]!["requirements"] = new JsonArray(
             requirements.Select(static requirement => requirement.DeepClone()).ToArray());
+        var skillRequirementIndex = Array.FindIndex(
+            requirements,
+            static requirement => string.Equals(
+                requirement["kind"]?.GetValue<string>(),
+                "skill_tier",
+                StringComparison.Ordinal));
+        Assert.True(skillRequirementIndex >= 0);
+        wound["treatment"]!["routes"]![0]!["resolution"]!["modifierSource"]![
+            "requirementIndex"] = skillRequirementIndex;
         return wound;
     }
 

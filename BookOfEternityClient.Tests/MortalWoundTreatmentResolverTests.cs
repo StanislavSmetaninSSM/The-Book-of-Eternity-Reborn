@@ -753,6 +753,81 @@ public sealed partial class MortalWoundTreatmentResolverTests
                                property.Name.Contains("Dice", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public void AcceptedStateExport_RejectsAReleasedCanonicalWriteLease()
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        fixture.ReleaseLeaseForExternalDistribution();
+
+        var result = fixture.ExportCurrent();
+
+        Assert.False(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")));
+        Assert.Null(ReadPropertyAllowingNull(result, "Authority"));
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues")));
+        fixture.ReacquireLeaseAfterExternalDistribution();
+    }
+
+    [Theory]
+    [InlineData("stale_snapshot")]
+    [InlineData("carrier_identity_history_mismatch")]
+    [InlineData("missing_accepted_event")]
+    [InlineData("ambiguous_actor_coordinate")]
+    [InlineData("malformed_required_root")]
+    public void AcceptedStateExport_RejectsUntrustedCanonicalSourceFaults(string mutation)
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        fixture.ApplyUntrustedSourceMutation(mutation);
+
+        var result = fixture.ExportCurrent();
+
+        Assert.False(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")));
+        Assert.Null(ReadPropertyAllowingNull(result, "Authority"));
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues")));
+    }
+
+    [Theory]
+    [InlineData("withdrawn_consent")]
+    [InlineData("resource_unavailable")]
+    public void AcceptedStateExport_RetainsTrustedNegativePredicateEvidence(string mutation)
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        fixture.ApplyTrustedNegativePredicateMutation(mutation);
+
+        var result = fixture.ExportCurrent();
+
+        Assert.True(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")),
+            DescribeIssues(AsObjects(ReadRequiredProperty(result, "Issues"))
+                .Select(Assert.IsType<ValidationIssue>)));
+        Assert.NotNull(ReadRequiredProperty(result, "Authority"));
+    }
+
+    [Fact]
+    public void AcceptedStateExport_ReturnsDetachedStateAfterPersistedRootMutation()
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        var result = fixture.ExportCurrent();
+        var authority = ReadValidTypedResult(result, "Authority", "detached accepted state");
+        var before = Assert.IsType<WoundMaterializationEnvelope>(
+            ReadAcceptedStateMember(authority, "CurrentWound"));
+
+        fixture.MutateLiveCarrierDisplayOnly();
+
+        var detached = Assert.IsType<WoundMaterializationEnvelope>(
+            ReadAcceptedStateMember(authority, "CurrentWound"));
+        Assert.Equal(
+            WoundIdentityState.ComputeSemanticFingerprint(before),
+            WoundIdentityState.ComputeSemanticFingerprint(detached));
+        Assert.NotEqual(before.Display.Name, fixture.ReadPersistedWoundDisplayName());
+    }
+
     [Theory]
     [MemberData(nameof(ProcedureRows))]
     public void PrepareProcedureRequest_ResolvesOnlyThroughLeaseBoundAcceptedState(
@@ -2517,7 +2592,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var valid = Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid"));
         var issues = ReadRequiredProperty(result, "Issues") as System.Collections.IEnumerable;
         Assert.NotNull(issues);
-        Assert.True(valid, $"{boundary} was rejected by the production boundary.");
+        var diagnostics = issues.Cast<object>()
+            .Select(issue => issue is ValidationIssue typed
+                ? $"{typed.Code}: expected={typed.Expected}; actual={typed.Actual}"
+                : issue.ToString())
+            .ToArray();
+        Assert.True(
+            valid,
+            $"{boundary} was rejected by the production boundary.{Environment.NewLine}" +
+            string.Join(Environment.NewLine, diagnostics));
         Assert.Empty(issues.Cast<object>());
         return ReadRequiredProperty(result, propertyName);
     }
@@ -3469,10 +3552,28 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 var npcCore = reusableTool is null
                     ? NpcCoreRoot(sterileThread)
                     : NpcCoreRoot(sterileThread, reusableTool);
-                npcCore["NPCsInScene"]![0]!["activeSkills"] = new JsonArray(
+                var medic = npcCore["NPCsInScene"]![0]!.AsObject();
+                medic["displayName"] = "Field medic";
+                medic["currentLocationId"] = "loc_field_clinic_001";
+                medic["lifecycle"] = "active";
+                medic["active"] = true;
+                medic["reachable"] = true;
+                medic["activeSkills"] = new JsonArray(
                     CreateTreatmentSkill("skill_guaranteed_care_01", "exact_materialized_healing_source"),
                     CreateTreatmentSkill("skill_field_medicine_npc_01", "field_medicine"));
-                npcCore["NPCsInScene"]![0]!["passiveSkills"] = new JsonArray();
+                medic["passiveSkills"] = new JsonArray();
+                medic["consents"] = new JsonArray(new JsonObject
+                {
+                    ["consentRef"] = "consent_field_medic_player_01",
+                    ["displayName"] = "Field treatment consent",
+                    ["providerKind"] = "npc",
+                    ["providerId"] = "field_medic_01",
+                    ["targetKind"] = targetKind,
+                    ["targetId"] = targetId,
+                    ["status"] = "granted",
+                    ["lifecycle"] = "active",
+                    ["active"] = true
+                });
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/npcs/npc_core.json"),
                     npcCore.ToJsonString());
@@ -3488,7 +3589,35 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     new JsonObject
                     {
                         ["locationId"] = "loc_field_clinic_001",
-                        ["name"] = "T061 field clinic"
+                        ["name"] = "T061 field clinic",
+                        ["realm"] = "mortal_world",
+                        ["lifecycle"] = "active",
+                        ["active"] = true,
+                        ["presentActors"] = new JsonArray(
+                            new JsonObject
+                            {
+                                ["actorKind"] = targetKind,
+                                ["actorId"] = targetId
+                            },
+                            new JsonObject
+                            {
+                                ["actorKind"] = "npc",
+                                ["actorId"] = "field_medic_01"
+                            }),
+                        ["facilities"] = new JsonArray(),
+                        ["resources"] = new JsonArray(new JsonObject
+                        {
+                            ["resourceRef"] = "clinic_supply",
+                            ["displayName"] = "Clinic supply",
+                            ["realm"] = "mortal_world",
+                            ["ownerKind"] = "npc",
+                            ["ownerId"] = "field_medic_01",
+                            ["currentValue"] = 1,
+                            ["availableValue"] = 1,
+                            ["reservationState"] = "available",
+                            ["lifecycle"] = "active",
+                            ["active"] = true
+                        })
                     }.ToJsonString());
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/meta/soul_state.json"),
@@ -3665,6 +3794,139 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         internal void ReacquireLeaseAfterExternalDistribution() =>
             Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+
+        internal void ApplyUntrustedSourceMutation(string mutation)
+        {
+            switch (mutation)
+            {
+                case "stale_snapshot":
+                {
+                    var request = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                        LiveTurnPreparationService.TurnRequestPath)))!.AsObject();
+                    request["requestId"] = "request_t061_stale_snapshot";
+                    File.WriteAllText(
+                        FileSystem.ResolvePath(LiveTurnPreparationService.TurnRequestPath),
+                        request.ToJsonString());
+                    return;
+                }
+                case "carrier_identity_history_mismatch":
+                {
+                    var carrier = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                        TargetCarrierPath)))!.AsObject();
+                    var wound = FindPersistedWound(carrier);
+                    wound["display"]!["name"] = "Changed without identity/history";
+                    File.WriteAllText(FileSystem.ResolvePath(TargetCarrierPath), carrier.ToJsonString());
+                    PrepareFreshSnapshot("carrier_mismatch");
+                    return;
+                }
+                case "missing_accepted_event":
+                {
+                    var request = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                        LiveTurnPreparationService.TurnRequestPath)))!.AsObject();
+                    request.Remove("gameMode");
+                    File.WriteAllText(
+                        FileSystem.ResolvePath(LiveTurnPreparationService.TurnRequestPath),
+                        request.ToJsonString());
+                    return;
+                }
+                case "ambiguous_actor_coordinate":
+                {
+                    var npc = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                        "game_state/npcs/npc_core.json")))!.AsObject();
+                    npc["NPCsInScene"]!.AsArray().Add(
+                        npc["NPCsInScene"]![0]!.DeepClone());
+                    File.WriteAllText(
+                        FileSystem.ResolvePath("game_state/npcs/npc_core.json"),
+                        npc.ToJsonString());
+                    PrepareFreshSnapshot("ambiguous_actor");
+                    return;
+                }
+                case "malformed_required_root":
+                    File.WriteAllText(
+                        FileSystem.ResolvePath("game_state/world/current_location.json"),
+                        "[]");
+                    PrepareFreshSnapshot("malformed_location");
+                    return;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+            }
+        }
+
+        internal void ApplyTrustedNegativePredicateMutation(string mutation)
+        {
+            switch (mutation)
+            {
+                case "withdrawn_consent":
+                {
+                    var npc = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                        "game_state/npcs/npc_core.json")))!.AsObject();
+                    npc["NPCsInScene"]![0]!["consents"]![0]!["status"] = "withdrawn";
+                    File.WriteAllText(
+                        FileSystem.ResolvePath("game_state/npcs/npc_core.json"),
+                        npc.ToJsonString());
+                    break;
+                }
+                case "resource_unavailable":
+                {
+                    var location = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                        "game_state/world/current_location.json")))!.AsObject();
+                    location["resources"]![0]!["availableValue"] = 0;
+                    File.WriteAllText(
+                        FileSystem.ResolvePath("game_state/world/current_location.json"),
+                        location.ToJsonString());
+                    break;
+                }
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+            }
+
+            PrepareFreshSnapshot(mutation);
+        }
+
+        internal void MutateLiveCarrierDisplayOnly()
+        {
+            var carrier = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                TargetCarrierPath)))!.AsObject();
+            FindPersistedWound(carrier)["display"]!["name"] = "Persisted mutation";
+            File.WriteAllText(FileSystem.ResolvePath(TargetCarrierPath), carrier.ToJsonString());
+        }
+
+        internal string ReadPersistedWoundDisplayName()
+        {
+            var carrier = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                TargetCarrierPath)))!.AsObject();
+            return FindPersistedWound(carrier)["display"]!["name"]!.GetValue<string>();
+        }
+
+        private JsonObject FindPersistedWound(JsonObject carrier)
+        {
+            if (string.Equals(TargetKind, "player", StringComparison.Ordinal))
+                return carrier["activeWounds"]![0]!.AsObject();
+            if (string.Equals(TargetKind, "combatant_member", StringComparison.Ordinal))
+                return carrier["alliesData"]![0]!["members"]![0]!["activeWounds"]![0]!.AsObject();
+            return carrier["enemiesData"]![0]!["activeWounds"]![0]!.AsObject();
+        }
+
+        private void PrepareFreshSnapshot(string label)
+        {
+            Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            var request = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                LiveTurnPreparationService.TurnRequestPath)))!.AsObject();
+            var prepared = new LiveTurnPreparationService(FileSystem).PrepareAsync(
+                new LiveTurnPreparationOptions
+                {
+                    SessionId = request["sessionId"]!.GetValue<string>(),
+                    RequestId = request["requestId"]!.GetValue<string>() + "_" + label,
+                    TurnNumber = request["turnNumber"]!.GetValue<int>(),
+                    PlayerAction = "Refresh accepted-state authority for " + label + ".",
+                    CurrentRealm = "Mortal World",
+                    PreGeneratedDices1d20 = request["preGeneratedDices1d20"]!.AsArray()
+                        .Select(static value => value!.GetValue<int>())
+                        .ToArray()
+                }).GetAwaiter().GetResult();
+            Assert.Equal(request["turnNumber"]!.GetValue<int>(), prepared.TurnNumber);
+            Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        }
 
         internal AcceptedStateFixture AttachColdRoot(
             string root,

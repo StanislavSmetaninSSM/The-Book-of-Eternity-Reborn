@@ -2196,6 +2196,31 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     ["schemaVersion"] = 1,
                     ["currentTimeInMinutes"] = 1_260
                 }.ToJsonString());
+            var presentActors = new[]
+                {
+                    (scenario.TargetKind, scenario.TargetId),
+                    (scenario.ProviderKind, scenario.ProviderId)
+                }
+                .Distinct()
+                .Select(static actor => (JsonNode)new JsonObject
+                {
+                    ["actorKind"] = actor.Item1,
+                    ["actorId"] = actor.Item2
+                })
+                .ToArray();
+            File.WriteAllText(
+                fileSystem.ResolvePath("game_state/world/current_location.json"),
+                new JsonObject
+                {
+                    ["locationId"] = "loc_field_clinic_001",
+                    ["name"] = "Capability authority field clinic",
+                    ["realm"] = "mortal_world",
+                    ["lifecycle"] = "active",
+                    ["active"] = true,
+                    ["presentActors"] = new JsonArray(presentActors),
+                    ["facilities"] = new JsonArray(),
+                    ["resources"] = new JsonArray()
+                }.ToJsonString());
             var combatTarget = scenario.TargetKind is "combatant" or "combatant_member";
             var carrierPath = scenario.TargetKind == "combatant_member"
                 ? WoundCarrierCatalog.AlliesPath
@@ -3188,8 +3213,14 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     ["NPCs"] = new JsonArray(new JsonObject
                     {
                         ["npcId"] = npc["ownerId"]!.DeepClone(),
+                        ["displayName"] = "Field medic",
+                        ["currentLocationId"] = "loc_field_clinic_001",
+                        ["lifecycle"] = "active",
+                        ["active"] = true,
+                        ["reachable"] = true,
                         ["activeSkills"] = npc["activeSkills"]!.DeepClone(),
-                        ["passiveSkills"] = npc["passiveSkills"]!.DeepClone()
+                        ["passiveSkills"] = npc["passiveSkills"]!.DeepClone(),
+                        ["consents"] = new JsonArray()
                     })
                 }.ToJsonString());
         }
