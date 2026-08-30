@@ -336,6 +336,346 @@ public sealed partial class MortalWoundTreatmentResolverTests
             claim.AuthorityRef.StartsWith("future_course_dose_", StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void ResourcePreparation_ExactRetryReusesReservationWithoutDoubleBooking()
+    {
+        var scenario = CreateGuaranteedResourceRegistryScenario(
+            quantity: 2,
+            includeAlternateRoute: false);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var prepared = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+
+        var first = InvokePreparedGuaranteedResource(prepared);
+        var retry = InvokePreparedGuaranteedResource(prepared);
+
+        Assert.True(first.IsValid, DescribeIssues(first.Issues));
+        Assert.True(retry.IsValid, DescribeIssues(retry.Issues));
+        Assert.Same(first.Authority, retry.Authority);
+
+        var competing = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey + "_competing",
+            scenario.RouteId);
+        AssertInvalidResourcePreparation(
+            InvokePreparedGuaranteedResource(competing),
+            "mortal_wound_treatment_resource_reservation_overbooked");
+    }
+
+    [Fact]
+    public void ResourcePreparation_DivergentRetryConflicts()
+    {
+        var scenario = CreateGuaranteedResourceRegistryScenario(
+            quantity: 1,
+            includeAlternateRoute: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var first = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var changed = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey,
+            AlternateGuaranteedRouteId);
+
+        var firstResult = InvokePreparedGuaranteedResource(first);
+        Assert.True(firstResult.IsValid, DescribeIssues(firstResult.Issues));
+        AssertInvalidResourcePreparation(
+            InvokePreparedGuaranteedResource(changed),
+            "mortal_wound_treatment_resource_reservation_conflict");
+    }
+
+    [Fact]
+    public void ResourcePreparation_SecondOperationCannotOverbookHeldQuantity()
+    {
+        var scenario = CreateGuaranteedResourceRegistryScenario(
+            quantity: 2,
+            includeAlternateRoute: false);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var first = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey + "_first",
+            scenario.RouteId);
+        var second = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey + "_second",
+            scenario.RouteId);
+
+        var firstResult = InvokePreparedGuaranteedResource(first);
+        Assert.True(firstResult.IsValid, DescribeIssues(firstResult.Issues));
+        AssertInvalidResourcePreparation(
+            InvokePreparedGuaranteedResource(second),
+            "mortal_wound_treatment_resource_reservation_overbooked");
+    }
+
+    [Fact]
+    public void ResourcePreparation_FirstCourseResourceQuantityClaimsCannotOverbook()
+    {
+        var scenario = ConfigureCourseCrossScopeResourceQuantity(
+            ConfigureCourseConsequenceEnvelope(
+                CreateScenario(
+                    "course_first_milestone_is_ready_at_inclusive_due_time",
+                    "course"),
+                removeOwnedComplicationBeforeReduction: true),
+            commonQuantity: 5,
+            milestoneQuantity: 5);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerHealthForRequirementTest(10);
+
+        var first = PrepareCourseResourceInputs(
+            fixture,
+            scenario,
+            scenario.OperationKey + "_first");
+        var firstResult = MortalWoundTreatmentResourceComposer.PrepareCourse(
+            first.AcceptedState,
+            first.Coordinates,
+            first.Before,
+            first.RequirementAuthority,
+            first.CourseAuthority);
+
+        Assert.True(firstResult.IsValid, DescribeIssues(firstResult.Issues));
+        var authority = Assert.IsType<MortalWoundTreatmentResourceReservationAuthority>(
+            firstResult.Authority);
+        Assert.Equal(
+            new[]
+            {
+                (Scope: "common", Quantity: 5),
+                (Scope: "course_milestone", Quantity: 5)
+            },
+            authority.Claims.Select(static claim => (claim.Scope, claim.Quantity)));
+        Assert.All(authority.Claims, static claim =>
+        {
+            Assert.Equal("resource_quantity", claim.Kind);
+            Assert.Equal("health", claim.AuthorityRef);
+            Assert.Equal("player", claim.OwnerKind);
+            Assert.Equal("player_current", claim.OwnerId);
+        });
+
+        var second = PrepareCourseResourceInputs(
+            fixture,
+            scenario,
+            scenario.OperationKey + "_second");
+        AssertInvalidResourcePreparation(
+            MortalWoundTreatmentResourceComposer.PrepareCourse(
+                second.AcceptedState,
+                second.Coordinates,
+                second.Before,
+                second.RequirementAuthority,
+                second.CourseAuthority),
+            "mortal_wound_treatment_resource_reservation_overbooked");
+    }
+
+    [Fact]
+    public void ResourcePreparation_ReleasedProcedureAuthorityCannotReserveResources()
+    {
+        const string guaranteedRouteId = "guaranteed_t068a_after_released_procedure";
+        var source = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        var before = source.Before.DeepClone().AsObject();
+        var guaranteed = StrictGuaranteedRoute();
+        guaranteed["routeId"] = guaranteedRouteId;
+        before["treatment"]!["routes"]!.AsArray().Add(guaranteed);
+        before["treatment"]!["knownRouteIds"]!.AsArray().Add(guaranteedRouteId);
+        var scenario = source with { Before = before };
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var prepared = PrepareProcedureCheckAuthorityInputs(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var procedureAuthority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            AssertValidProcedureCheckAuthority(
+                InvokePreparedProcedureCheckAuthority(prepared)));
+        Assert.True(procedureAuthority.ReleaseProvisionalReservations(
+            prepared.AcceptedState));
+
+        var rejected = MortalWoundTreatmentResourceComposer.PrepareProcedure(
+            prepared.AcceptedState,
+            prepared.Coordinates,
+            prepared.Before,
+            prepared.RequirementAuthority,
+            procedureAuthority);
+
+        AssertInvalidResourcePreparation(
+            rejected,
+            "mortal_wound_treatment_resource_procedure_reservation_invalid");
+        var zeroClaim = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey,
+            guaranteedRouteId);
+        var zeroClaimResult = InvokePreparedGuaranteedResource(zeroClaim);
+        Assert.True(zeroClaimResult.IsValid, DescribeIssues(zeroClaimResult.Issues));
+        Assert.Equal("not_required", zeroClaimResult.Authority!.ReservationDisposition);
+    }
+
+    [Fact]
+    public void ResourcePreparation_NotRequiredChangedRetryConflicts()
+    {
+        var source = CreateScenario(
+            "guaranteed_current_capability_proof_stabilizes",
+            "guaranteed");
+        var before = source.Before.DeepClone().AsObject();
+        var alternate = before["treatment"]!["routes"]![0]!.DeepClone().AsObject();
+        alternate["routeId"] = AlternateGuaranteedRouteId;
+        before["treatment"]!["routes"]!.AsArray().Add(alternate);
+        before["treatment"]!["knownRouteIds"]!.AsArray().Add(
+            AlternateGuaranteedRouteId);
+        var scenario = source with { Before = before };
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var first = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var changed = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey,
+            AlternateGuaranteedRouteId);
+
+        var firstResult = InvokePreparedGuaranteedResource(first);
+        Assert.True(firstResult.IsValid, DescribeIssues(firstResult.Issues));
+        Assert.Equal("not_required", firstResult.Authority!.ReservationDisposition);
+        AssertInvalidResourcePreparation(
+            InvokePreparedGuaranteedResource(changed),
+            "mortal_wound_treatment_resource_reservation_conflict");
+    }
+
+    private const string AlternateGuaranteedRouteId =
+        "guaranteed_t068a_alternate_resource_route";
+
+    private static ResolverScenario CreateGuaranteedResourceRegistryScenario(
+        int quantity,
+        bool includeAlternateRoute)
+    {
+        var source = CreateScenario(
+            "guaranteed_current_capability_proof_stabilizes",
+            "guaranteed");
+        var before = source.Before.DeepClone().AsObject();
+        var route = before["treatment"]!["routes"]![0]!.AsObject();
+        route["requirements"]!.AsArray().Add(new JsonObject
+        {
+            ["kind"] = "item_quantity",
+            ["itemRef"] = "sterile_thread",
+            ["quantity"] = quantity,
+            ["ownerRole"] = "provider"
+        });
+        route["resourcePolicy"]!["mutations"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "consume_requirement",
+            ["scope"] = "common",
+            ["milestoneOrdinal"] = null,
+            ["requirementIndex"] = 1
+        });
+        if (includeAlternateRoute)
+        {
+            var alternate = route.DeepClone().AsObject();
+            alternate["routeId"] = AlternateGuaranteedRouteId;
+            before["treatment"]!["routes"]!.AsArray().Add(alternate);
+            before["treatment"]!["knownRouteIds"]!.AsArray().Add(
+                AlternateGuaranteedRouteId);
+        }
+        return source with { Before = before };
+    }
+
+    private static PreparedGuaranteedResourceInputs PrepareGuaranteedResourceInputs(
+        AcceptedStateFixture fixture,
+        string operationKey,
+        string routeId)
+    {
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        var before = fixture.ReadCurrentWound();
+        var coordinatesResult = MortalWoundTreatmentPlanner.CreateAttemptCoordinates(
+            acceptedState,
+            before,
+            operationKey,
+            routeId,
+            fixture.AcceptedEventRef(acceptedState));
+        Assert.True(coordinatesResult.IsValid, DescribeIssues(coordinatesResult.Issues));
+        var coordinates = Assert.IsType<MortalWoundTreatmentAttemptCoordinates>(
+            coordinatesResult.Coordinates);
+        var route = Assert.IsType<MortalWoundGuaranteedRouteDefinition>(Assert.Single(
+            acceptedState.TreatmentDefinition.Routes,
+            candidate => string.Equals(
+                candidate.RouteId,
+                routeId,
+                StringComparison.Ordinal)));
+        var bundleResult =
+            MortalWoundTreatmentRequirementAuthorityBundle.CreateForGuaranteed(
+                acceptedState,
+                coordinates,
+                before);
+        Assert.True(bundleResult.IsValid, DescribeIssues(bundleResult.Issues));
+        var bundle = Assert.IsType<MortalWoundTreatmentRequirementAuthorityBundle>(
+            bundleResult.Authority);
+        var proofResult = MortalWoundTreatmentCapabilityAuthority.ExportCurrent(
+            acceptedState,
+            coordinates,
+            route.Resolution.CapabilityRef,
+            route.Resolution.ActorRole);
+        Assert.True(proofResult.IsValid, DescribeIssues(proofResult.Issues));
+        var proof = Assert.IsType<MortalWoundTreatmentCapabilityProof>(
+            proofResult.Proof);
+        return new PreparedGuaranteedResourceInputs(
+            acceptedState,
+            coordinates,
+            before,
+            bundle,
+            proof);
+    }
+
+    private static PreparedCourseResourceInputs PrepareCourseResourceInputs(
+        AcceptedStateFixture fixture,
+        ResolverScenario scenario,
+        string operationKey)
+    {
+        var probe = InspectCourseMode(fixture, operationKey, scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            probe.AcceptedState);
+        var coordinates = Assert.IsType<MortalWoundTreatmentAttemptCoordinates>(
+            probe.Coordinates);
+        var courseAuthority = Assert.IsType<MortalWoundCourseModeAuthority>(
+            AssertReadyCourseModeAuthority(probe.Result, scenario));
+        var bundleResult =
+            MortalWoundTreatmentRequirementAuthorityBundle.CreateForCourseMilestone(
+                acceptedState,
+                coordinates,
+                probe.Before,
+                probe.History,
+                courseAuthority);
+        Assert.Equal("Satisfied", bundleResult.Status);
+        var bundle = Assert.IsType<MortalWoundTreatmentRequirementAuthorityBundle>(
+            bundleResult.Authority);
+        return new PreparedCourseResourceInputs(
+            acceptedState,
+            coordinates,
+            probe.Before,
+            bundle,
+            courseAuthority);
+    }
+
+    private static MortalWoundTreatmentResourcePreparationResult
+        InvokePreparedGuaranteedResource(PreparedGuaranteedResourceInputs prepared) =>
+        MortalWoundTreatmentResourceComposer.PrepareGuaranteed(
+            prepared.AcceptedState,
+            prepared.Coordinates,
+            prepared.Before,
+            prepared.RequirementAuthority,
+            prepared.CapabilityProof);
+
+    private static void AssertInvalidResourcePreparation(
+        MortalWoundTreatmentResourcePreparationResult result,
+        string expectedCode)
+    {
+        Assert.False(result.IsValid);
+        Assert.Null(result.Authority);
+        Assert.Contains(result.Issues, issue => string.Equals(
+            issue.Code,
+            expectedCode,
+            StringComparison.Ordinal));
+    }
+
     private static ResolverScenario CreateFirstCourseResourceScenario()
     {
         var scenario = ConfigureCourseConsequenceEnvelope(
@@ -397,6 +737,20 @@ public sealed partial class MortalWoundTreatmentResolverTests
         AssertFrozenSequence(issues, allowEmptyArray: true);
         return ReadRequiredProperty(result, "Authority");
     }
+
+    private sealed record PreparedGuaranteedResourceInputs(
+        MortalWoundTreatmentAcceptedStateAuthority AcceptedState,
+        MortalWoundTreatmentAttemptCoordinates Coordinates,
+        WoundMaterializationEnvelope Before,
+        MortalWoundTreatmentRequirementAuthorityBundle RequirementAuthority,
+        MortalWoundTreatmentCapabilityProof CapabilityProof);
+
+    private sealed record PreparedCourseResourceInputs(
+        MortalWoundTreatmentAcceptedStateAuthority AcceptedState,
+        MortalWoundTreatmentAttemptCoordinates Coordinates,
+        WoundMaterializationEnvelope Before,
+        MortalWoundTreatmentRequirementAuthorityBundle RequirementAuthority,
+        MortalWoundCourseModeAuthority CourseAuthority);
 
     private static MethodInfo RequireResourcePreparationMethod(
         string name,
