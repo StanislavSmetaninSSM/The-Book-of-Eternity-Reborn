@@ -541,6 +541,149 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "mortal_wound_treatment_resource_reservation_conflict");
     }
 
+    [Fact]
+    public void ResourcePreparation_RollbackNewReleasesOnlyCreatingPreparation()
+    {
+        var scenario = CreateGuaranteedResourceRegistryScenario(
+            quantity: 2,
+            includeAlternateRoute: false);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var creating = InvokePreparedGuaranteedResource(
+            PrepareGuaranteedResourceInputs(
+                fixture,
+                scenario.OperationKey + "_creating",
+                scenario.RouteId));
+        Assert.True(creating.IsValid, DescribeIssues(creating.Issues));
+
+        Assert.True(RollbackNewResourcePreparation(creating));
+
+        var replacement = InvokePreparedGuaranteedResource(
+            PrepareGuaranteedResourceInputs(
+                fixture,
+                scenario.OperationKey + "_replacement",
+                scenario.RouteId));
+        Assert.True(replacement.IsValid, DescribeIssues(replacement.Issues));
+    }
+
+    [Fact]
+    public void ResourcePreparation_ExactRetryRollbackDoesNotReleaseExistingReservation()
+    {
+        var scenario = CreateGuaranteedResourceRegistryScenario(
+            quantity: 2,
+            includeAlternateRoute: false);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var prepared = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var creating = InvokePreparedGuaranteedResource(prepared);
+        var retry = InvokePreparedGuaranteedResource(prepared);
+        Assert.True(creating.IsValid, DescribeIssues(creating.Issues));
+        Assert.True(retry.IsValid, DescribeIssues(retry.Issues));
+        Assert.Same(creating.Authority, retry.Authority);
+
+        Assert.True(RollbackNewResourcePreparation(retry));
+
+        AssertInvalidResourcePreparation(
+            InvokePreparedGuaranteedResource(PrepareGuaranteedResourceInputs(
+                fixture,
+                scenario.OperationKey + "_competing",
+                scenario.RouteId)),
+            "mortal_wound_treatment_resource_reservation_overbooked");
+    }
+
+    [Fact]
+    public void ResourcePreparation_StaleOwnershipCannotReleaseRecreatedReservation()
+    {
+        var scenario = CreateGuaranteedResourceRegistryScenario(
+            quantity: 2,
+            includeAlternateRoute: false);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var prepared = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var original = InvokePreparedGuaranteedResource(prepared);
+        Assert.True(original.IsValid, DescribeIssues(original.Issues));
+        Assert.True(RollbackNewResourcePreparation(original));
+
+        var recreated = InvokePreparedGuaranteedResource(prepared);
+        Assert.True(recreated.IsValid, DescribeIssues(recreated.Issues));
+        Assert.NotSame(original.Authority, recreated.Authority);
+        Assert.Equal(original.Authority!.ReservationId, recreated.Authority!.ReservationId);
+        Assert.Equal(
+            original.Authority.AuthorityFingerprint,
+            recreated.Authority.AuthorityFingerprint);
+
+        Assert.False(RollbackNewResourcePreparation(original));
+        AssertInvalidResourcePreparation(
+            InvokePreparedGuaranteedResource(PrepareGuaranteedResourceInputs(
+                fixture,
+                scenario.OperationKey + "_competing",
+                scenario.RouteId)),
+            "mortal_wound_treatment_resource_reservation_overbooked");
+    }
+
+    [Fact]
+    public void ResourcePreparation_AcceptedStateRebindInvalidatesHeldReservations()
+    {
+        var scenario = CreateGuaranteedResourceRegistryScenario(
+            quantity: 2,
+            includeAlternateRoute: false);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var oldPreparation = InvokePreparedGuaranteedResource(
+            PrepareGuaranteedResourceInputs(
+                fixture,
+                scenario.OperationKey + "_old",
+                scenario.RouteId));
+        Assert.True(oldPreparation.IsValid, DescribeIssues(oldPreparation.Issues));
+
+        fixture.SetCanonicalPlayerHealthForRequirementTest(9);
+
+        var rebound = InvokePreparedGuaranteedResource(
+            PrepareGuaranteedResourceInputs(
+                fixture,
+                scenario.OperationKey + "_rebound",
+                scenario.RouteId));
+        Assert.True(rebound.IsValid, DescribeIssues(rebound.Issues));
+        Assert.False(RollbackNewResourcePreparation(oldPreparation));
+    }
+
+    [Fact]
+    public void ResourcePreparation_NotRequiredRollbackReleasesOnlyCreatingAgreement()
+    {
+        var scenario = CreateTwoZeroClaimGuaranteedRoutesScenario();
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var first = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var changed = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey,
+            AlternateGuaranteedRouteId);
+        var creating = InvokePreparedGuaranteedResource(first);
+        var retry = InvokePreparedGuaranteedResource(first);
+        Assert.True(creating.IsValid, DescribeIssues(creating.Issues));
+        Assert.True(retry.IsValid, DescribeIssues(retry.Issues));
+        Assert.Equal("not_required", creating.Authority!.ReservationDisposition);
+        Assert.Same(creating.Authority, retry.Authority);
+
+        Assert.True(RollbackNewResourcePreparation(retry));
+        AssertInvalidResourcePreparation(
+            InvokePreparedGuaranteedResource(changed),
+            "mortal_wound_treatment_resource_reservation_conflict");
+        Assert.True(RollbackNewResourcePreparation(creating));
+
+        var changedAfterRollback = InvokePreparedGuaranteedResource(changed);
+        Assert.True(
+            changedAfterRollback.IsValid,
+            DescribeIssues(changedAfterRollback.Issues));
+        Assert.Equal(
+            "not_required",
+            changedAfterRollback.Authority!.ReservationDisposition);
+    }
+
     private const string AlternateGuaranteedRouteId =
         "guaranteed_t068a_alternate_resource_route";
 
@@ -575,6 +718,20 @@ public sealed partial class MortalWoundTreatmentResolverTests
             before["treatment"]!["knownRouteIds"]!.AsArray().Add(
                 AlternateGuaranteedRouteId);
         }
+        return source with { Before = before };
+    }
+
+    private static ResolverScenario CreateTwoZeroClaimGuaranteedRoutesScenario()
+    {
+        var source = CreateScenario(
+            "guaranteed_current_capability_proof_stabilizes",
+            "guaranteed");
+        var before = source.Before.DeepClone().AsObject();
+        var alternate = before["treatment"]!["routes"]![0]!.DeepClone().AsObject();
+        alternate["routeId"] = AlternateGuaranteedRouteId;
+        before["treatment"]!["routes"]!.AsArray().Add(alternate);
+        before["treatment"]!["knownRouteIds"]!.AsArray().Add(
+            AlternateGuaranteedRouteId);
         return source with { Before = before };
     }
 
@@ -674,6 +831,21 @@ public sealed partial class MortalWoundTreatmentResolverTests
             issue.Code,
             expectedCode,
             StringComparison.Ordinal));
+    }
+
+    private static bool RollbackNewResourcePreparation(
+        MortalWoundTreatmentResourcePreparationResult preparation)
+    {
+        var rollback = typeof(MortalWoundTreatmentResourceComposer).GetMethods(
+                BindingFlags.Static | BindingFlags.NonPublic)
+            .SingleOrDefault(method =>
+                string.Equals(method.Name, "RollbackNew", StringComparison.Ordinal) &&
+                method.GetParameters().Length == 1 &&
+                method.GetParameters()[0].ParameterType ==
+                    typeof(MortalWoundTreatmentResourcePreparationResult));
+        Assert.NotNull(rollback);
+        Assert.Equal(typeof(bool), rollback!.ReturnType);
+        return Assert.IsType<bool>(rollback.Invoke(null, new object?[] { preparation }));
     }
 
     private static ResolverScenario CreateFirstCourseResourceScenario()

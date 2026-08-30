@@ -393,6 +393,128 @@ public sealed partial class MortalWoundTreatmentResolverTests
             StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void ProcedureCheckAuthority_ExactRetryRollbackDoesNotReleaseOriginalAuthorityClaims()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1, 1, 1);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+
+        var creating = InvokeProcedureCheckAuthority(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var creatingAuthority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            AssertValidProcedureCheckAuthority(creating));
+        var retry = InvokeProcedureCheckAuthority(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var retryAuthority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            AssertValidProcedureCheckAuthority(retry));
+        Assert.Equal(
+            CanonicalValue(creatingAuthority),
+            CanonicalValue(retryAuthority));
+
+        Assert.True(RollbackNewProcedureAuthority(
+            retryAuthority,
+            retry.AcceptedState));
+
+        var distinct = InvokeProcedureCheckAuthority(
+            fixture,
+            scenario.OperationKey + "_distinct",
+            scenario.RouteId);
+        var distinctAuthority = AssertValidProcedureCheckAuthority(distinct);
+        Assert.Equal(
+            new[] { 1 },
+            ReadIntSequence(ReadRequiredProperty(distinctAuthority, "SourceIndices")));
+        Assert.Equal(
+            "effect_fate_shield_newer",
+            ReadPreparedFateEffectIdFromAuthority(distinctAuthority));
+    }
+
+    [Fact]
+    public void ProcedureCheckAuthority_CreatingAuthorityRollbackReleasesOnlyItsLiveClaims()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1, 1, 1);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+
+        var first = InvokeProcedureCheckAuthority(
+            fixture,
+            scenario.OperationKey + "_first",
+            scenario.RouteId);
+        var firstAuthority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            AssertValidProcedureCheckAuthority(first));
+        var second = InvokeProcedureCheckAuthority(
+            fixture,
+            scenario.OperationKey + "_second",
+            scenario.RouteId);
+        var secondAuthority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            AssertValidProcedureCheckAuthority(second));
+        Assert.Equal(new[] { 0 }, firstAuthority.SourceIndices);
+        Assert.Equal(new[] { 1 }, secondAuthority.SourceIndices);
+        Assert.Equal(
+            "effect_fate_shield_older",
+            ReadPreparedFateEffectIdFromAuthority(firstAuthority));
+        Assert.Equal(
+            "effect_fate_shield_newer",
+            ReadPreparedFateEffectIdFromAuthority(secondAuthority));
+
+        Assert.True(RollbackNewProcedureAuthority(
+            firstAuthority,
+            first.AcceptedState));
+
+        var secondRetry = InvokeProcedureCheckAuthority(
+            fixture,
+            scenario.OperationKey + "_second",
+            scenario.RouteId);
+        var secondRetryAuthority = AssertValidProcedureCheckAuthority(secondRetry);
+        Assert.Equal(
+            new[] { 1 },
+            ReadIntSequence(ReadRequiredProperty(secondRetryAuthority, "SourceIndices")));
+        Assert.Equal(
+            "effect_fate_shield_newer",
+            ReadPreparedFateEffectIdFromAuthority(secondRetryAuthority));
+
+        var replacement = InvokeProcedureCheckAuthority(
+            fixture,
+            scenario.OperationKey + "_replacement",
+            scenario.RouteId);
+        var replacementAuthority = AssertValidProcedureCheckAuthority(replacement);
+        Assert.Equal(
+            new[] { 0 },
+            ReadIntSequence(ReadRequiredProperty(replacementAuthority, "SourceIndices")));
+        Assert.Equal(
+            "effect_fate_shield_older",
+            ReadPreparedFateEffectIdFromAuthority(replacementAuthority));
+    }
+
+    private static bool RollbackNewProcedureAuthority(
+        MortalWoundProcedureCheckAuthority authority,
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState)
+    {
+        var rollback = authority.GetType().GetMethods(
+                BindingFlags.Instance | BindingFlags.NonPublic)
+            .SingleOrDefault(method =>
+                string.Equals(
+                    method.Name,
+                    "RollbackNewProvisionalReservations",
+                    StringComparison.Ordinal) &&
+                method.GetParameters().Length == 1 &&
+                method.GetParameters()[0].ParameterType ==
+                    typeof(MortalWoundTreatmentAcceptedStateAuthority));
+        Assert.NotNull(rollback);
+        Assert.Equal(typeof(bool), rollback!.ReturnType);
+        return Assert.IsType<bool>(rollback.Invoke(
+            authority,
+            new object?[] { acceptedState }));
+    }
+
     private static object ProcedureReservationCapabilityForTest() =>
         typeof(MortalWoundProcedureCheckAuthority).GetField(
             "ProcedureReservationCapability",
