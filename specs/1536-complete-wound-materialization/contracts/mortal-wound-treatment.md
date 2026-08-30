@@ -1277,6 +1277,50 @@ location and effect requirements additionally bind the exact selected target. Th
 objects declare predicates only and never contain reservations, mutations, consumed
 amounts, or caller-authored authority fingerprints.
 
+The canonical Mortal source for facility, environment, and consent is a recognized
+closed version-1 row in the exact validated current location's existing
+`customStates[]`, never a lookalike `current_location.facilities/resources/presentActors`
+array or an NPC `consents/reachable` field:
+
+```json
+{
+  "customStates": [
+    {
+      "kind": "mortal_wound_treatment_facility",
+      "schemaVersion": 1,
+      "facilityId": "clean_work_surface",
+      "displayName": "Чистый рабочий стол",
+      "available": true
+    },
+    {
+      "kind": "mortal_wound_treatment_environment",
+      "schemaVersion": 1,
+      "environmentId": "sterile_field",
+      "displayName": "Стерильное поле",
+      "state": "active"
+    },
+    {
+      "kind": "mortal_wound_treatment_consent",
+      "schemaVersion": 1,
+      "consentRef": "consent_field_medic_player",
+      "displayName": "Согласие полевого медика",
+      "providerKind": "npc",
+      "providerId": "npc_field_medic_01",
+      "targetKind": "player",
+      "targetId": "player_current",
+      "status": "granted"
+    }
+  ]
+}
+```
+
+The IDs and environment state are setting-specific exact identifiers, not entries in a
+global catalog. The client validates the closed shapes and uniqueness, inherits
+realm/location/current lifecycle only from the exact canonical location, and re-resolves
+both consent actors against current co-presence. Unrecognized custom states never grant
+treatment mechanics. A present unavailable facility or withdrawn consent remains valid
+negative evidence; deleting or moving the row makes the old authority absent.
+
 ## Resource and item handling
 
 The treatment service emits typed resource/item intents into the common

@@ -1147,6 +1147,20 @@ entrypoints require no update for T065.
   witness writers and the `CreateForCourseMilestone` API shell, complete
   course coordinate binding, and version-1 `woundDomain=physical` enforcement. These
   prerequisite authority types MUST exist before T068 and T067 consume them.
+  T066's accepted-state source adapter MUST use the canonical item identity/carrier,
+  resource definition/state/history/recomposed owner agreement, exact current-location
+  map/identity agreement, `NPCsInScene`, signed combat roots, canonical mastery fields,
+  regular-quest `status`, and accepted effect mechanics. It also owns three closed
+  version-1 registered current-location `customStates[]` kinds for arbitrary
+  world-specific treatment facility, environment, and consent authority, their shared
+  validator/export contract, focused GM documentation/example/source guard, and strict
+  optional-snapshot case/duplicate coverage. Projection-shaped NPC/location shadow
+  fields MUST grant no authority.
+  The documentation slice updates `OtherGuides/Wound_Materialization_Contract.md`, one
+  worked current-location case in `Examples/E_Block_21.txt`,
+  `Examples/example_validation_manifest.json`, and
+  `PromptDocumentationCoverageTests.Wounds.cs`; the existing daemon entrypoint already
+  loads that guide and therefore needs no code change.
 - [ ] T067 [US2] Implement diagnosis/alternative-authoring orchestration and the complete
   production treatment resolver in two explicit phases around T068: deterministic request/attempt/
   course identities; strict response adaptation and repair; exact six-argument request

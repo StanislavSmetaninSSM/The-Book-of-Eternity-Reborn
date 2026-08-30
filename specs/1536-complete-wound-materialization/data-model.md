@@ -2518,6 +2518,28 @@ The completed T060 projection and its resolved row shape remain unchanged. In
 particular, transient `actors[].capabilities[]` rows do not carry treatment guarantees
 or source-contract fingerprints and parsing such a row never grants provenance.
 
+### Canonical Mortal treatment scene states
+
+The exact accepted current Mortal location may register treatment-only scene authority
+inside its existing `customStates[]`. Only the following three exact `kind` values grant
+authority; every recognized object is closed and has `schemaVersion=1`:
+
+| `kind` | Exact remaining fields | Projection rule |
+|---|---|---|
+| `mortal_wound_treatment_facility` | exact `facilityId`, non-empty `displayName`, boolean `available` | realm/location are inherited from the independently validated exact current location; lifecycle=`active`, active=`true` |
+| `mortal_wound_treatment_environment` | exact `environmentId`, non-empty `displayName`, exact setting-specific `state` | realm/location are inherited from the exact current location; lifecycle=`active`, active=`true` |
+| `mortal_wound_treatment_consent` | exact `consentRef`, non-empty `displayName`, `providerKind`, exact `providerId`, `targetKind`, exact `targetId`, `status=granted|withdrawn` | the exporter must resolve both typed actors exactly once in the same current location; lifecycle=`active`, active=`true`; the row is attached to the exact provider actor in the transient projection |
+
+Actor kinds are exactly `player|npc|combatant|combatant_member`. Facility IDs,
+environment IDs, consent refs, and environment state values are exact/confusable-unique
+within their registered kind. Unrecognized `customStates[]` rows remain setting data and
+cannot satisfy a treatment requirement. A recognized malformed, duplicate, confusable,
+wrong-location, or unresolved-actor row invalidates scene authority; it is not ignored.
+Removing a registered row makes that exact authority absent. Retaining a facility with
+`available=false` or consent with `status=withdrawn` preserves trustworthy negative
+evidence for the unchanged T060 classifier. No recognized row may carry lifecycle,
+reservation, fingerprint, location, or client-owned authority fields.
+
 ### Canonical Mortal wound-treatment skill capability
 
 A guaranteed route uses a separate optional extension on a canonical current player or

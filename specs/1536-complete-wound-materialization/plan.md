@@ -544,6 +544,29 @@ lifecycle/availability/reservation or state values, and display text only as
 non-authoritative diagnostics. Actor entries additionally carry exact reachability and
 target-specific treatment consent.
 
+The production T066 adapter does not accept lookalike fields from a signed file merely
+because they match the transient projection. Item rows come from exact current carrier
+plus item-identity/quantity agreement. Resource rows come from the registered resource
+definition, state, history, and recomposed owner-authority agreement. Player/NPC skill
+tier is read from the canonical mastery field for that skill kind, and membership in a
+current active/passive catalog supplies current lifecycle rather than ad-hoc
+`lifecycle`/`active` fields. Regular Mortal quests use their canonical `status`.
+Current-location identity must agree with the world map and location identity index;
+player presence, exact `NPCsInScene` membership, and signed current combat roots compose
+co-presence. NPC `reachable`, location `presentActors/resources/facilities`, wound
+occurrences, and other unregistered shadow fields grant no authority.
+
+Facility, environment, and consent use three closed version-1 registered members of the
+already canonical current location's `customStates[]`:
+`mortal_wound_treatment_facility`, `mortal_wound_treatment_environment`, and
+`mortal_wound_treatment_consent`. These rows are GM-authored setting semantics but are
+strictly shape-validated and re-bound by the client. Their exact IDs and environment
+states are world-specific; there is no universal facility, medicine, environment, or
+wound catalog. Absence means no current authority. A retained facility with
+`available=false` and a retained consent with `status=withdrawn` are valid negative
+predicate evidence. Membership in the exact current location supplies active lifecycle;
+moving/removing the row makes the old reference absent rather than silently portable.
+
 Tests and integration adapters obtain those types only through the production-owned
 `ParseContext(json, path)` and `ParseSnapshot(json, path)` entry points on
 `MortalWoundTreatmentAuthority`. They return `IsValid`, ordinary `ValidationIssue`s,

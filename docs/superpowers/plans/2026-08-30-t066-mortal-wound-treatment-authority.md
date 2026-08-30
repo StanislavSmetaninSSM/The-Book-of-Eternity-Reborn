@@ -202,9 +202,18 @@ git commit -m "feat(wounds): validate treatment skill capabilities (#1536)"
 **Files:**
 
 - Create: `BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.cs`
+- Create: `BookOfEternityClient/Services/MortalWoundTreatmentSceneAuthorityContract.cs`
 - Modify: `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs`
+- Modify: `BookOfEternityClient/Services/MortalLocationCustomStateContract.cs`
+- Modify: `BookOfEternityClient/Services/PendingTurnSnapshotReader.cs`
 - Modify: `BookOfEternityClient.Tests/MortalWoundTreatmentCapabilityAuthorityTests.cs` only where a fixture lacks required canonical actor/location/co-presence source rows
 - Modify: `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.cs` only where the same source-shaped fixture omission exists
+- Modify: `BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs`
+- Modify: `BookOfEternityClient.Tests/MortalLocationMaterializationContractTests.cs`
+- Modify: `OtherGuides/Wound_Materialization_Contract.md`
+- Modify: `Examples/E_Block_21.txt`
+- Modify: `Examples/example_validation_manifest.json`
+- Modify: `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs`
 
 **Interfaces:**
 
@@ -253,7 +262,7 @@ Expected: 0/1 because `MortalWoundTreatmentAcceptedStateAuthority` is absent.
 
 - [ ] **Step 2: Add canonical source-fault RED cases**
 
-Add method-level cases for stale lease/snapshot, changed wound carrier versus identity/history, missing accepted event, ambiguous player/NPC/combat coordinate, malformed required root, structurally valid withdrawn consent, structurally valid unavailable resource, and detached output after persisted-root mutation. The last two must export valid accepted state; later requirement classification owns their negative result.
+Add method-level cases for stale lease/snapshot, changed wound carrier versus identity/history, missing accepted event, ambiguous player/NPC/combat coordinate, malformed required root, structurally valid withdrawn consent, structurally valid unavailable resource, and detached output after persisted-root mutation. The last two must export valid accepted state; later requirement classification owns their negative result. Build these tests from actual canonical resource definition/state/history/owner agreement, item carrier/identity agreement, exact current-location/world-map/identity agreement, `NPCsInScene`, signed combat roots, canonical skill mastery, regular-quest `status`, and the registered scene-state contract. Add explicit RED cases proving projection-shaped NPC/location shadow fields grant nothing.
 
 ```csharp
 [Theory]
@@ -293,6 +302,26 @@ wound/carrier/index/history, clock, effect, item/resource, actor/location, skill
 and accepted-state fingerprints on every call. Exact semantic equality may reuse the
 entry; any difference replaces/invalidates it. Never decide a hit from only context and
 wound IDs, and never let a hit skip current signed-snapshot validation.
+
+Resource authority must validate the signed definition/state/history/persisted-owner
+quartet against a recomposed owner authority using only signed source roots. Items must
+agree with their canonical identity and current transition quantity. Actor presence is
+derived from player, exact `NPCsInScene`, and signed combat roots; current-location
+identity is independently agreed with world map and location identity. Skill tier comes
+from the canonical mastery field and current catalog membership supplies lifecycle.
+Regular quests use `status`. Facility/environment/consent come only from the three
+closed version-1 registered `customStates[]` kinds in the exact current location.
+
+Harden optional snapshot selection in the same slice: resolve keys ordinally and reject
+case variants, raw duplicate keys, exact-plus-case aliases, asymmetric file/hash rows,
+or more than 64 actually enumerated requested paths. Preserve the sole three-argument
+reader API.
+
+Document the three registered GM-authored scene-state kinds in the wound guide and one
+worked current-location example, register that example in the validation manifest, and
+add a source/documentation guard proving the daemon-loaded guide and example retain the
+exact kinds and closed fields. No daemon entrypoint edit is needed because it already
+loads `Wound_Materialization_Contract.md` as a mandatory context pack.
 
 ```csharp
 var candidate = ExportCurrentCore(fileSystem, writeLease, context, woundId);
